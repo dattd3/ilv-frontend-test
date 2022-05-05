@@ -271,6 +271,7 @@
                     border-collapse: separate;
                     border-spacing: 0;
                     table-layout: fixed;
+                    width: 100%;
                     th, td {
                         width: 17.6%;
                         padding: 5px;
@@ -450,6 +451,7 @@
                                 border-spacing: 0;
                                 table-layout: fixed;
                                 border: 1px solid #DEE2E6;
+                                width: 100%;
                                 th, td {
                                     width: 15.6666666667%;
                                     padding: 5px;

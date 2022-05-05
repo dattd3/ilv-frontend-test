@@ -23,6 +23,7 @@ function EvaluationDetail(props) {
     const guard = useGuardStore()
     const user = guard.getCurentUser()
     const evaluationFormId = props.match.params.id
+    const formCode = props.match.params.formCode
 
     const stepStatusMapping = {
         [evaluationStatus.launch]: 0,
@@ -48,7 +49,8 @@ function EvaluationDetail(props) {
                 const config = getRequestConfigurations()
                 config.params = {
                     checkPhaseFormId: evaluationFormId,
-                    EmployeeCode: user?.employeeNo
+                    EmployeeCode: user?.employeeNo,
+                    FormCode: formCode
                 }
                 const response = await axios.get(`${process.env.REACT_APP_HRDX_URL}api/targetform/formbyuser`, config)
                 processEvaluationFormDetailData(response)
@@ -156,6 +158,29 @@ function EvaluationDetail(props) {
         })
     }
 
+    const formatIndexText = index => {
+        const mapping = {
+            1: 'I',
+            2: 'II',
+            3: 'III',
+            4: 'IV',
+            5: 'V',
+            6: 'VI',
+            7: 'VII',
+            8: 'VIII',
+            9: 'IX',
+            10: 'X'
+        }
+        return mapping[index]
+    }
+
+    // const { listGroup } = evaluationFormDetail
+
+    // console.log("RRRRRRRRRRRRRRR")
+    // console.log(listGroup)
+
+    const listGroupToShow = (evaluationFormDetail?.listGroup || []).sort((pre, next) => pre.groupOrder - next.groupOrder)
+
     return (
         <>
         <LoadingModal show={isLoading} />
@@ -257,163 +282,190 @@ function EvaluationDetail(props) {
                                     </div>
                                 </div>
                             </div>
-                            <div className="part-block attitude">
-                                <div className="title">Phần I - Tinh thần thái độ<span className="red">(20%)</span></div>
-                                <div className="wrap-score-table">
-                                    <table>
-                                        <thead>
-                                            <tr>
-                                                <th className="red">Điểm</th>
-                                                <th><span className="milestones">1</span></th>
-                                                <th><span className="milestones">2</span></th>
-                                                <th><span className="milestones">3</span></th>
-                                                <th><span className="milestones">4</span></th>
-                                                <th><span className="milestones">5</span></th>
-                                            </tr>
-                                            <tr>
-                                                <th>%</th>
-                                                <th><span>0% - 10%</span></th>
-                                                <th><span>11% - 49%</span></th>
-                                                <th><span>50% - 69%</span></th>
-                                                <th><span>70% - 89%</span></th>
-                                                <th><span>90% - 100%</span></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>Mức độ thể hiện</td>
-                                                <td><div>Không thể hiện</div></td>
-                                                <td><div>Không thể hiện</div></td>
-                                                <td><div>Thể hiện nhưng chưa rõ nét hoặc chỉ thể hiện những khi cần hoặc khi được yêu cầu</div></td>
-                                                <td><div>Thường xuyên thể hiện</div></td>
-                                                <td><div>Luôn luôn chủ động thể hiện và là tấm gương cho người khác học tập</div></td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div className="list-attitudes">
-                                    <div className="attitude-item">
-                                        <div className="title">1. Luôn tuân thủ các nội quy, quy định, quy chế của Tập đoàn</div>
-                                        <div className="score-block">
-                                            <div className="self">
-                                                <span className="red label">Điểm tự đánh giá</span>
-                                                <select>
-                                                    <option>Chọn điểm</option>
-                                                    <option>10</option>
-                                                </select>
+
+                            {
+                                listGroupToShow.map((item, index) => {
+                                    let indexText = formatIndexText(index + 1)
+                                    return <div className="part-block attitude" key={index}>
+                                                <div className="title">{`Phần ${indexText} - ${item?.groupName}`} <span className="red">({item?.groupWeight || 0}%)</span></div>
+                                                {
+                                                    item?.listGroupConfig && item?.listGroupConfig?.length > 0 && 
+                                                    <div className="wrap-score-table">
+                                                        <table>
+                                                            <thead>
+                                                                <tr>
+                                                                    <th className="red">Điểm</th>
+                                                                    {
+                                                                        item?.listGroupConfig?.map((sub, subIndex) => {
+                                                                            return <th key={subIndex}><span className="milestones">{subIndex + 1}</span></th>
+                                                                        })
+                                                                    }
+                                                                    {/* <th><span className="milestones">1</span></th>
+                                                                    <th><span className="milestones">2</span></th>
+                                                                    <th><span className="milestones">3</span></th>
+                                                                    <th><span className="milestones">4</span></th>
+                                                                    <th><span className="milestones">5</span></th> */}
+                                                                </tr>
+                                                                <tr>
+                                                                    <th>%</th>
+                                                                    {
+                                                                        item?.listGroupConfig?.map((sub, subIndex) => {
+                                                                            return <th key={subIndex}><span>{sub?.weight}</span></th>
+                                                                        })
+                                                                    }
+                                                                    {/* <th><span>0% - 10%</span></th>
+                                                                    <th><span>11% - 49%</span></th>
+                                                                    <th><span>50% - 69%</span></th>
+                                                                    <th><span>70% - 89%</span></th>
+                                                                    <th><span>90% - 100%</span></th> */}
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td>Mức độ thể hiện</td>
+                                                                    {
+                                                                        item?.listGroupConfig?.map((sub, subIndex) => {
+                                                                            return <td key={subIndex}><div>{sub?.description}</div></td>
+                                                                            // return <th key={subIndex}><span>{sub?.weight}</span></th>
+                                                                        })
+                                                                    }
+                                                                    {/* <td><div>Không thể hiện</div></td>
+                                                                    <td><div>Không thể hiện</div></td>
+                                                                    <td><div>Thể hiện nhưng chưa rõ nét hoặc chỉ thể hiện những khi cần hoặc khi được yêu cầu</div></td>
+                                                                    <td><div>Thường xuyên thể hiện</div></td>
+                                                                    <td><div>Luôn luôn chủ động thể hiện và là tấm gương cho người khác học tập</div></td> */}
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                }
+                                                
+                                                <div className="list-attitudes">
+                                                    <div className="attitude-item">
+                                                        <div className="title">1. Luôn tuân thủ các nội quy, quy định, quy chế của Tập đoàn</div>
+                                                        <div className="score-block">
+                                                            <div className="self">
+                                                                <span className="red label">Điểm tự đánh giá</span>
+                                                                <select>
+                                                                    <option>Chọn điểm</option>
+                                                                    <option>10</option>
+                                                                </select>
+                                                            </div>
+                                                            <div className="qltt">
+                                                                <span className="red label">Điểm QLTT đánh giá</span>
+                                                                <input type="text" value={""} disabled />
+                                                            </div>
+                                                            <div className="deviant">
+                                                                <span className="red label">Điểm chênh lệch</span>
+                                                                <input type="text" value={"aa"} disabled />
+                                                            </div>
+                                                        </div>
+                                                        <div className="comment">
+                                                            <div className="self">
+                                                                <p>Ý kiến của CBNV tự đánh giá</p>
+                                                                <textarea rows={1} placeholder="Nhập thông tin" />
+                                                            </div>
+                                                            <div className="qltt">
+                                                                <p>Ý kiến của QLTT đánh giá</p>
+                                                                <textarea rows={1} disabled />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div className="attitude-item">
+                                                        <div className="title">2. Luôn thể hiện bản lĩnh, sự khẩn trương, quyết liệt trong công việc, làm việc có trách nhiệm cao, chủ động, không né tránh, ỷ lại</div>
+                                                        <div className="score-block">
+                                                            <div className="self">
+                                                                <span className="red label">Điểm tự đánh giá</span>
+                                                                <select>
+                                                                    <option>Chọn điểm</option>
+                                                                    <option>10</option>
+                                                                </select>
+                                                            </div>
+                                                            <div className="qltt">
+                                                                <span className="red label">Điểm QLTT đánh giá</span>
+                                                                <input type="text" value={""} disabled />
+                                                            </div>
+                                                            <div className="deviant">
+                                                                <span className="red label">Điểm chênh lệch</span>
+                                                                <input type="text" value={"aa"} disabled />
+                                                            </div>
+                                                        </div>
+                                                        <div className="comment">
+                                                            <div className="self">
+                                                                <p>Ý kiến của CBNV tự đánh giá</p>
+                                                                <textarea rows={1} placeholder="Nhập thông tin" />
+                                                            </div>
+                                                            <div className="qltt">
+                                                                <p>Ý kiến của QLTT đánh giá</p>
+                                                                <textarea rows={1} disabled />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div className="attitude-item">
+                                                        <div className="title">3. Luôn làm việc khẩn trương với tinh thần phục vụ cao, giải quyết nhanh, dứt điểm thỏa đáng các vấn đề của đồng nghiệp, đối tác, khách hàng</div>
+                                                        <div className="score-block">
+                                                            <div className="self">
+                                                                <span className="red label">Điểm tự đánh giá</span>
+                                                                <select>
+                                                                    <option>Chọn điểm</option>
+                                                                    <option>10</option>
+                                                                </select>
+                                                            </div>
+                                                            <div className="qltt">
+                                                                <span className="red label">Điểm QLTT đánh giá</span>
+                                                                <input type="text" value={""} disabled />
+                                                            </div>
+                                                            <div className="deviant">
+                                                                <span className="red label">Điểm chênh lệch</span>
+                                                                <input type="text" value={"aa"} disabled />
+                                                            </div>
+                                                        </div>
+                                                        <div className="comment">
+                                                            <div className="self">
+                                                                <p>Ý kiến của CBNV tự đánh giá</p>
+                                                                <textarea rows={1} placeholder="Nhập thông tin" />
+                                                            </div>
+                                                            <div className="qltt">
+                                                                <p>Ý kiến của QLTT đánh giá</p>
+                                                                <textarea rows={1} disabled />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div className="attitude-item">
+                                                        <div className="title">4. Công bằng, quyết liệt đấu tranh với những hành vi không phù hợp với văn hóa và các quy định của Tập đoàn</div>
+                                                        <div className="score-block">
+                                                            <div className="self">
+                                                                <span className="red label">Điểm tự đánh giá</span>
+                                                                <select>
+                                                                    <option>Chọn điểm</option>
+                                                                    <option>10</option>
+                                                                </select>
+                                                            </div>
+                                                            <div className="qltt">
+                                                                <span className="red label">Điểm QLTT đánh giá</span>
+                                                                <input type="text" value={""} disabled />
+                                                            </div>
+                                                            <div className="deviant">
+                                                                <span className="red label">Điểm chênh lệch</span>
+                                                                <input type="text" value={"aa"} disabled />
+                                                            </div>
+                                                        </div>
+                                                        <div className="comment">
+                                                            <div className="self">
+                                                                <p>Ý kiến của CBNV tự đánh giá</p>
+                                                                <textarea rows={1} placeholder="Nhập thông tin" />
+                                                            </div>
+                                                            <div className="qltt">
+                                                                <p>Ý kiến của QLTT đánh giá</p>
+                                                                <textarea rows={1} disabled />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div className="qltt">
-                                                <span className="red label">Điểm QLTT đánh giá</span>
-                                                <input type="text" value={""} disabled />
-                                            </div>
-                                            <div className="deviant">
-                                                <span className="red label">Điểm chênh lệch</span>
-                                                <input type="text" value={"aa"} disabled />
-                                            </div>
-                                        </div>
-                                        <div className="comment">
-                                            <div className="self">
-                                                <p>Ý kiến của CBNV tự đánh giá</p>
-                                                <textarea rows={1} placeholder="Nhập thông tin" />
-                                            </div>
-                                            <div className="qltt">
-                                                <p>Ý kiến của QLTT đánh giá</p>
-                                                <textarea rows={1} disabled />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="attitude-item">
-                                        <div className="title">2. Luôn thể hiện bản lĩnh, sự khẩn trương, quyết liệt trong công việc, làm việc có trách nhiệm cao, chủ động, không né tránh, ỷ lại</div>
-                                        <div className="score-block">
-                                            <div className="self">
-                                                <span className="red label">Điểm tự đánh giá</span>
-                                                <select>
-                                                    <option>Chọn điểm</option>
-                                                    <option>10</option>
-                                                </select>
-                                            </div>
-                                            <div className="qltt">
-                                                <span className="red label">Điểm QLTT đánh giá</span>
-                                                <input type="text" value={""} disabled />
-                                            </div>
-                                            <div className="deviant">
-                                                <span className="red label">Điểm chênh lệch</span>
-                                                <input type="text" value={"aa"} disabled />
-                                            </div>
-                                        </div>
-                                        <div className="comment">
-                                            <div className="self">
-                                                <p>Ý kiến của CBNV tự đánh giá</p>
-                                                <textarea rows={1} placeholder="Nhập thông tin" />
-                                            </div>
-                                            <div className="qltt">
-                                                <p>Ý kiến của QLTT đánh giá</p>
-                                                <textarea rows={1} disabled />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="attitude-item">
-                                        <div className="title">3. Luôn làm việc khẩn trương với tinh thần phục vụ cao, giải quyết nhanh, dứt điểm thỏa đáng các vấn đề của đồng nghiệp, đối tác, khách hàng</div>
-                                        <div className="score-block">
-                                            <div className="self">
-                                                <span className="red label">Điểm tự đánh giá</span>
-                                                <select>
-                                                    <option>Chọn điểm</option>
-                                                    <option>10</option>
-                                                </select>
-                                            </div>
-                                            <div className="qltt">
-                                                <span className="red label">Điểm QLTT đánh giá</span>
-                                                <input type="text" value={""} disabled />
-                                            </div>
-                                            <div className="deviant">
-                                                <span className="red label">Điểm chênh lệch</span>
-                                                <input type="text" value={"aa"} disabled />
-                                            </div>
-                                        </div>
-                                        <div className="comment">
-                                            <div className="self">
-                                                <p>Ý kiến của CBNV tự đánh giá</p>
-                                                <textarea rows={1} placeholder="Nhập thông tin" />
-                                            </div>
-                                            <div className="qltt">
-                                                <p>Ý kiến của QLTT đánh giá</p>
-                                                <textarea rows={1} disabled />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="attitude-item">
-                                        <div className="title">4. Công bằng, quyết liệt đấu tranh với những hành vi không phù hợp với văn hóa và các quy định của Tập đoàn</div>
-                                        <div className="score-block">
-                                            <div className="self">
-                                                <span className="red label">Điểm tự đánh giá</span>
-                                                <select>
-                                                    <option>Chọn điểm</option>
-                                                    <option>10</option>
-                                                </select>
-                                            </div>
-                                            <div className="qltt">
-                                                <span className="red label">Điểm QLTT đánh giá</span>
-                                                <input type="text" value={""} disabled />
-                                            </div>
-                                            <div className="deviant">
-                                                <span className="red label">Điểm chênh lệch</span>
-                                                <input type="text" value={"aa"} disabled />
-                                            </div>
-                                        </div>
-                                        <div className="comment">
-                                            <div className="self">
-                                                <p>Ý kiến của CBNV tự đánh giá</p>
-                                                <textarea rows={1} placeholder="Nhập thông tin" />
-                                            </div>
-                                            <div className="qltt">
-                                                <p>Ý kiến của QLTT đánh giá</p>
-                                                <textarea rows={1} disabled />
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                                })
+                            }
+
 
                             <div className="part-block work-result">
                                 <div className="title">Phần II - Kết quả công việc<span className="red">(80%)</span></div>

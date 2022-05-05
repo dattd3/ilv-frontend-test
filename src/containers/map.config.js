@@ -96,7 +96,7 @@ export default {
 
   // Đánh giá
   // Evaluation: "",
-  EvaluationDetail: "/evaluations/:id",
+  EvaluationDetail: "/evaluations/:id/:formCode",
   MyEvaluation: "/my-evaluation",
   EvaluationApproval: "/evaluation-approval",
   
