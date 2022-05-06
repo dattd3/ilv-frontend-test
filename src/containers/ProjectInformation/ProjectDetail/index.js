@@ -502,10 +502,10 @@ function ProjectDetail(props) {
     }
 
     const handleChangeActualTime = (parentIndex, timeSheetIndex, e) => {
-        const actualTimeValid = [0, 2, 4, 6, 8]
+        const actualTimeValid = ['0', '2', '4', '6', '8']
         let value = e?.target?.value || ""
 
-        if (!actualTimeValid.includes(parseInt(value))) {
+        if (!actualTimeValid.includes(value)) {
             value = ""
         }
 
