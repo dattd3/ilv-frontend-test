@@ -502,10 +502,10 @@ function ProjectDetail(props) {
     }
 
     const handleChangeActualTime = (parentIndex, timeSheetIndex, e) => {
-        const actualTimeValid = [0, 2, 4, 6, 8]
+        const actualTimeValid = ['0', '2', '4', '6', '8']
         let value = e?.target?.value || ""
 
-        if (!actualTimeValid.includes(parseInt(value))) {
+        if (!actualTimeValid.includes(value)) {
             value = ""
         }
 
@@ -607,7 +607,7 @@ function ProjectDetail(props) {
         let notes = []
         const isUnusualShift = (
             ((!fromTime1 || !toTime1) && timeSheet.shift_id !== 'OFF')
-            || ((startTime1Fact > fromTime1 || endTime1Fact < toTime1) && (timeSheet.shift_id !== 'OFF'))
+            || ((startTime1Fact > fromTime1 || (endTime1Fact && endTime1Fact < toTime1)) && (timeSheet.shift_id !== 'OFF'))
         )
 
         const leaveData = (rsmLeaveTypeAndComment || []).filter(item => leaveCodes.includes(item?.baseTypeModel?.value) 
