@@ -673,6 +673,16 @@ function ProjectDetail(props) {
         }
     }
 
+    const prepareTimeSheetSpecial = (timeSheets) => {
+        const timeSheetResult = (days || []).reduce((initial, current) => {
+            let isExistDateInTimeSheet = (timeSheets || []).find(sub => sub?.date === moment(current).format('DD-MM-YYYY'))
+            initial.push(isExistDateInTimeSheet ? isExistDateInTimeSheet : {})
+            return initial
+        }, [])
+
+        return timeSheetResult
+    }
+
     return (
         <>
         <LoadingModal show={isLoading} />
@@ -771,6 +781,8 @@ function ProjectDetail(props) {
                                     {
                                         (projectTimeSheetFiltered && projectTimeSheetFiltered.length > 0 ? projectTimeSheetFiltered : projectTimeSheetOriginal).map((item, index) => {
                                             let isMe = currentEmployeeNoLogged == item.employeeId
+                                            let timeSheetPrepared = prepareTimeSheetSpecial(item?.timeSheets)
+
                                             return <div className={`data-item ${isMe ? 'me' : ''}`} key={index}>
                                                         <div className="col-left">
                                                             <div className="user-info">
@@ -820,7 +832,7 @@ function ProjectDetail(props) {
                                                                     </ReactTooltip>
                                                                     { isMe && <button className="btn-submit" data-tip data-for='label-submit-time-sheet' onClick={submitTimeSheet}><Image src={IconCheckWhite} alt="Check" /></button> }
                                                                     {
-                                                                        (item?.timeSheets || []).map((timeSheet, tIndex) => {
+                                                                        (timeSheetPrepared || []).map((timeSheet, tIndex) => {
                                                                             let noteInfos = getNoteInfos(timeSheet, item?.rsmLeaveTypeAndComment, item.source?.key)
                                                                             let hasEditTime = isMe && projectData?.processStatusId != status.closed 
                                                                                                 && ![timeSheetStatusApproved].includes(timeSheet?.rsmStatus)
