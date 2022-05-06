@@ -3647,7 +3647,21 @@ span.badge-notification[data-badge]::after {
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
 }
-
+.dialog-loading {
+  background: #FFFFFF;
+  padding-left: 0!important;
+  overflow: hidden!important;
+}
+.modal-loading {
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  width: 100%;
+  max-width: 100%;
+  height: 100%;
+}
 
 :root {
   --ck-image-style-spacing: 1.5rem;
