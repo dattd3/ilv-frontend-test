@@ -1,16 +1,17 @@
 import React from "react";
-import logo from '../../assets/img/myvp-logo.png';
-import { Modal, Spinner } from 'react-bootstrap';
+import { Modal, Image } from 'react-bootstrap';
+import IconLoading from '../../assets/img/icon/ic-loading.gif';
 
 function LoadingModal(props) {
     const { show, content, isloading = true } = props;
     return (
-        <Modal centered show={show} onHide={() => { return; }}>
+        <Modal show={show} onHide={() => { return; }} className='dialog-loading' backdropClassName="dialog-loading2" dialogClassName="modal-loading">
             <Modal.Body className='text-center no-bg'>
-                {isloading ? <Spinner animation="border" variant="light" size='lg' /> : null}
-                {content ? <p className='loading-note'>{content}</p> : ''}
+                {isloading && <Image src={IconLoading} alt='Loading' />}
+                {/* {content ? <p className='loading-note'>{content}</p> : ''} */}
             </Modal.Body>
         </Modal>
     );
 }
+
 export default LoadingModal;

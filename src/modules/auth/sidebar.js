@@ -178,7 +178,7 @@ export const Navigation = [
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     to: map.EvaluationManager,
     label: 'Quản lý đánh giá',
-    role: 'U'//['V030']
+    role:  ['V061']
   },
   {
     id: 4,
@@ -387,7 +387,7 @@ export const Navigation = [
     parentId: 17,
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     label: "vaccination",
-    to: map.VaxcinList,
+    to: map.VaccineList,
     role: 'U'
   },
 

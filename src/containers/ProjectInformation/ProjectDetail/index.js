@@ -145,6 +145,7 @@ function ProjectDetail(props) {
 
                     const timeSheets = (data || []).map(item => {
                         return {
+                            resourceId: item?.resourceId,
                             avatar: item?.rsmResources?.avatar,
                             fullName: item?.rsmResources?.fullName,
                             title: item?.rsmResources?.title,
@@ -288,11 +289,20 @@ function ProjectDetail(props) {
 
         const fetchData = async () => {
             SetIsLoading(true)
-            const projectDetailData = await getProjectDetail(projectId)
-            SetProjectData(projectDetailData)
-            if (projectDetailData && [status.inProgress, status.closed].includes(projectDetailData?.processStatusId)) {
+            let projectDetailData = {...projectData}
+            if (!projectDetailData || _.size(projectDetailData) === 0) {
+                projectDetailData = await getProjectDetail(projectId)
+                SetProjectData(projectDetailData)
+            }
+
+            if (projectDetailData && [status.inProgress, status.closed, status.pendingScheduleUpdate].includes(projectDetailData?.processStatusId)) {
                 const startDate = moment(days[0]).format('YYYY-MM-DD')
                 const endDate = moment(days[days?.length - 1]).format('YYYY-MM-DD')
+                const typeCreateNewResources = 1
+                const pendingResourceStatus = 0
+                const resourceIdAddedPendingApprover = (projectDetailData?.rsmProjectTeams || [])
+                .filter(item => item?.actions == typeCreateNewResources && item?.status == pendingResourceStatus)
+                .map(item => item?.rsmResourceId)
                 const internalEmployeeIds = (projectDetailData?.rsmProjectTeams || [])
                 .filter(item => item?.rsmResources?.employeeNo && !item?.rsmResources?.employeeNo?.startsWith(prefixOutSource))
                 .map(item => item?.rsmResources?.employeeNo)
@@ -312,7 +322,9 @@ function ProjectDetail(props) {
 
                 let projectTimeSheetData = await getProjectTimeSheetData(projectId, payloadProjectTimeSheet)
                 const userTimeSheetData = await getUserTimeSheetData(projectId, payloadUserTimeSheet)
-                projectTimeSheetData = ([...projectTimeSheetData] || []).map(item => ({...item, timeSheets: item?.employeeId?.startsWith(prefixOutSource) ? prepareOutSourceTimeSheets(item?.rsmTimeSheet, item?.employeeId, item?.email) : userTimeSheetData && userTimeSheetData[item?.employeeId] || []}))              
+                projectTimeSheetData = ([...projectTimeSheetData] || [])
+                .filter(item => !resourceIdAddedPendingApprover.includes(item?.resourceId))
+                .map(item => ({...item, timeSheets: item?.employeeId?.startsWith(prefixOutSource) ? prepareOutSourceTimeSheets(item?.rsmTimeSheet, item?.employeeId, item?.email) : userTimeSheetData && userTimeSheetData[item?.employeeId] || []}))              
 
                 projectTimeSheetData = (projectTimeSheetData || []).map(item => {
                     return {
@@ -320,8 +332,13 @@ function ProjectDetail(props) {
                         timeSheets: mappingActualHours(item?.timeSheets, item?.rsmTimeSheet)
                     }
                 })
-                
                 SetProjectTimeSheetOriginal(projectTimeSheetData)
+
+                if (projectTimeSheetFiltered?.length > 0) {
+                    const employeeFilteredIds = ([...projectTimeSheetFiltered] || []).map(item => item?.employeeId)
+                    const projectTimeSheetFilteredTemp = projectTimeSheetData.filter(item => employeeFilteredIds.includes(item.employeeId))
+                    SetProjectTimeSheetFiltered(projectTimeSheetFilteredTemp)
+                }
 
                 const filterTemp = {...filter}
                 filterTemp.employees = projectTimeSheetData.map(item => {
@@ -369,7 +386,7 @@ function ProjectDetail(props) {
         const statusModalTemp = {...statusModal}
         statusModalTemp.isShow = false
         SetStatusModal(statusModalTemp)
-        window.location.reload()
+        // window.location.reload()
     }
 
     const onAcceptClick = async () => {
@@ -417,9 +434,20 @@ function ProjectDetail(props) {
             SetIsLoading(true)
             const dataToSubmit = (projectTimeSheetOriginal || []).find(item => item.employeeId == currentEmployeeNoLogged)
             const { rsmTimeSheet, timeSheets } = dataToSubmit
-            const payload = (timeSheets || [])
+            let timeSheetToSubmit = timeSheets
+
+            if (projectTimeSheetFiltered && projectTimeSheetFiltered?.length > 0) {
+                const currentTimeSheetFiltered = projectTimeSheetFiltered.find(item => item.employeeId == currentEmployeeNoLogged)
+                if (currentTimeSheetFiltered) {
+                    timeSheetToSubmit = currentTimeSheetFiltered?.timeSheets
+                }
+            }
+
+            const payload = (timeSheetToSubmit || [])
             .filter(item => moment(item?.date, 'DD-MM-YYYY').isSameOrAfter(moment(moment(projectData?.startDate).format('DD-MM-YYYY'), 'DD-MM-YYYY')) 
-                            && moment(item?.date, 'DD-MM-YYYY').isSameOrBefore(moment(moment(projectData?.endDate).format('DD-MM-YYYY'), 'DD-MM-YYYY')))
+                            && moment(item?.date, 'DD-MM-YYYY').isSameOrBefore(moment(moment(projectData?.endDate).format('DD-MM-YYYY'), 'DD-MM-YYYY')) 
+                            && rsmTimeSheet[item.date]
+                    )
             .map(item => {
                 return {
                     id: rsmTimeSheet[item.date][0]?.id,
@@ -474,10 +502,10 @@ function ProjectDetail(props) {
     }
 
     const handleChangeActualTime = (parentIndex, timeSheetIndex, e) => {
-        const actualTimeValid = [0, 2, 4, 6, 8]
+        const actualTimeValid = ['0', '2', '4', '6', '8']
         let value = e?.target?.value || ""
 
-        if (!actualTimeValid.includes(parseInt(value))) {
+        if (!actualTimeValid.includes(value)) {
             value = ""
         }
 
@@ -555,14 +583,6 @@ function ProjectDetail(props) {
     const { rsmBusinessOwners, rsmProjectTeams, rsmTargets, projectComment, plant, actual, mandayActual, mandayPlant } = projectData
     const rangeTimeFilter = `${projectData?.startDate ? moment(projectData?.startDate).format('DD/MM/YYYY') : ''} - ${projectData?.endDate ? moment(projectData?.endDate).format('DD/MM/YYYY') : ''}`
 
-    const customStyles = {
-        control: base => ({
-            ...base,
-            height: 35,
-            minHeight: 35
-        })
-    };
-
     const formatMulesoftValue = val => {
         if (!val || val === '0' || val === '#' || val === '000000' || val === '00000000' || val === '0000') {
             return ""
@@ -587,7 +607,7 @@ function ProjectDetail(props) {
         let notes = []
         const isUnusualShift = (
             ((!fromTime1 || !toTime1) && timeSheet.shift_id !== 'OFF')
-            || ((startTime1Fact > fromTime1 || endTime1Fact < toTime1) && (timeSheet.shift_id !== 'OFF'))
+            || ((startTime1Fact > fromTime1 || (endTime1Fact && endTime1Fact < toTime1)) && (timeSheet.shift_id !== 'OFF'))
         )
 
         const leaveData = (rsmLeaveTypeAndComment || []).filter(item => leaveCodes.includes(item?.baseTypeModel?.value) 
@@ -653,6 +673,16 @@ function ProjectDetail(props) {
         }
     }
 
+    const prepareTimeSheetSpecial = (timeSheets) => {
+        const timeSheetResult = (days || []).reduce((initial, current) => {
+            let isExistDateInTimeSheet = (timeSheets || []).find(sub => sub?.date === moment(current).format('DD-MM-YYYY'))
+            initial.push(isExistDateInTimeSheet ? isExistDateInTimeSheet : {})
+            return initial
+        }, [])
+
+        return timeSheetResult
+    }
+
     return (
         <>
         <LoadingModal show={isLoading} />
@@ -677,7 +707,7 @@ function ProjectDetail(props) {
                     <ButtonComponent handleApply={handleApply} projectStatus={projectData?.processStatusId} />
                 </Tab>
                 {
-                    [status.inProgress, status.closed].includes(projectData?.processStatusId)
+                    [status.inProgress, status.closed, status.pendingScheduleUpdate].includes(projectData?.processStatusId)
                     && <Tab eventKey="project-management" title='Quản lý dự án'>
                         <div className="table-title">Đội ngũ dự án</div>
                         <div className="project-management">
@@ -751,6 +781,8 @@ function ProjectDetail(props) {
                                     {
                                         (projectTimeSheetFiltered && projectTimeSheetFiltered.length > 0 ? projectTimeSheetFiltered : projectTimeSheetOriginal).map((item, index) => {
                                             let isMe = currentEmployeeNoLogged == item.employeeId
+                                            let timeSheetPrepared = prepareTimeSheetSpecial(item?.timeSheets)
+
                                             return <div className={`data-item ${isMe ? 'me' : ''}`} key={index}>
                                                         <div className="col-left">
                                                             <div className="user-info">
@@ -800,7 +832,7 @@ function ProjectDetail(props) {
                                                                     </ReactTooltip>
                                                                     { isMe && <button className="btn-submit" data-tip data-for='label-submit-time-sheet' onClick={submitTimeSheet}><Image src={IconCheckWhite} alt="Check" /></button> }
                                                                     {
-                                                                        (item?.timeSheets || []).map((timeSheet, tIndex) => {
+                                                                        (timeSheetPrepared || []).map((timeSheet, tIndex) => {
                                                                             let noteInfos = getNoteInfos(timeSheet, item?.rsmLeaveTypeAndComment, item.source?.key)
                                                                             let hasEditTime = isMe && projectData?.processStatusId != status.closed 
                                                                                                 && ![timeSheetStatusApproved].includes(timeSheet?.rsmStatus)
