@@ -226,7 +226,7 @@ class ListStaffResignationComponent extends React.PureComponent {
                                 <table className="list-staff table">
                                     <thead>
                                         <tr>
-                                            <th className="sticky-col full-name-col">Họ và tên</th>
+                                            <th className="sticky-col full-name-col"><div className="data full-name">Họ và tên</div></th>
                                             <th className="sticky-col employee-code-col">Mã nhân viên</th>
                                             <th>Chức danh</th>
                                             <th>Khối/Phòng/Bộ phận</th>
