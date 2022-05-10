@@ -495,7 +495,7 @@ export default [
           key: "vaccination",
           routeProps: {
             exact: true,
-            path: map.VaxcinList
+            path: map.VaccineList
           },
           component: lazy(() => import("./Vaccination/List"))
         },
@@ -538,6 +538,14 @@ export default [
             path: map.MyProjects,
           },
           component: lazy(() => import("./ProjectInformation/MyProjects")),
+        },
+        {
+          key: "my-project-detail",
+          routeProps: {
+            exact: true,
+            path: map.MyProjectDetail,
+          },
+          component: lazy(() => import("./ProjectInformation/ProjectDetail")),
         },
         {
           key: "project-detail",

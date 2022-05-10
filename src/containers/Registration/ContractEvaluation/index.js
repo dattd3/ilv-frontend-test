@@ -23,6 +23,7 @@ import { getMuleSoftHeaderConfigurations } from '../../../commons/Utils'
 import LoadingSpinner from '../../../components/Forms/CustomForm/LoadingSpinner'
 import LoadingModal from '../../../components/Common/LoadingModal'
 import { checkIsExactPnL } from '../../../commons/commonFunctions'
+import ContractEvaluationdetail from './detail'
 
 const TIME_FORMAT = 'HH:mm'
 const DATE_FORMAT = 'DD/MM/YYYY'
@@ -169,7 +170,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
   checkAuthorize = async () => {
     const currentEmployeeNo = localStorage.getItem('email');
     const data = this.state.data;
-    const dateToCheck = data.contractType == 'VA' ? -45 : -7; 
+    const dateToCheck = data.contractType == 'VA' ? (checkIsExactPnL(Constants.pnlVCode.VinSchool) ? -75 : -45) : -7;
     const isAfterT_7 = data.employeeInfo && data.employeeInfo.startDate && moment(new Date()).diff(moment(data.employeeInfo.expireDate), 'days') > dateToCheck ? true : false;
     let shouldDisable = false;
     let isNguoidanhgia = false;
@@ -373,7 +374,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
       this.setState({loading: false})
     })
     .finally(() => {
-      
+
     })
 
   }
@@ -541,16 +542,15 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         weak: infos.additionInforEvaluations.managersEvaluatePointImprove || ''
       }
       let defaultStartDate = '', defaultEndDate = '';
-      if(this.state.type == 'assess' && localStorage.getItem('companyCode') == Constants.pnlVCode.VinSchool) {
+      if(this.state.type == 'assess' && localStorage.getItem('companyCode') == Constants.pnlVCode.VinSchool && (infos.additionInforEvaluations.contractKpiResult != 4 && infos.additionInforEvaluations.contractKpiResult != 5)) {
         defaultStartDate = moment(infos.staffContracts.expireDate).add(1, 'days').format('DD/MM/YYYY');
         defaultEndDate = `31/05/${moment(infos.staffContracts.expireDate).add(2, 'years').year()}`
       }
-      console.log(defaultStartDate, defaultEndDate);
 
       candidateInfos.qlttOpinion = {
         result : infos.additionInforEvaluations.contractKpiResult ? this.resultOptions.filter(item => item.value == infos.additionInforEvaluations.contractKpiResult)[0] || {} : {},
         contract: infos.additionInforEvaluations.contractType ? this.contractTypeOptions.filter(item => item.value == infos.additionInforEvaluations.contractType)[0] || {} : {},
-        startDate: infos.additionInforEvaluations.startDate ? moment(infos.additionInforEvaluations.startDate).format('DD/MM/YYYY') || null : defaultStartDate,
+        startDate: infos.additionInforEvaluations.startDate ? moment(infos.additionInforEvaluations.startDate).format('DD/MM/YYYY') || null : defaultStartDate, 
         endDate:  infos.additionInforEvaluations.expireDate ? moment(infos.additionInforEvaluations.expireDate).format('DD/MM/YYYY') || null : defaultEndDate,
         otherOption: infos.additionInforEvaluations.proposed || ''
       }
@@ -1168,6 +1168,12 @@ renderEvalution = (name, data, isDisable) => {
     const data = this.state.data;
     const loading = this.state.loading;
     const comment =  data?.comment || null;
+    if(data?.processStatus == 2 ) {
+      return  <div className="registration-section">
+         <LoadingModal show={loading}/>
+       <ContractEvaluationdetail data={data} />
+       </div>
+    }
     return (
       <div className="registration-section">
         <LoadingModal show={loading}/>
@@ -1214,10 +1220,11 @@ renderEvalution = (name, data, isDisable) => {
              Thang điểm đánh giá
             </div>
             <div className="col-9">
-              <span>(4) Vượt yêu cầu</span>
-              <span>(3) Đạt</span>
-              <span>(2) Chưa đạt</span>
-              <span>(1) Không đạt</span>
+                   <span>(5) Vượt yêu cầu</span>
+                    <span>(4) Đạt</span>
+                    <span>(3) Trung Bình</span>
+                    <span>(2) Kém</span>
+                    <span>(1) Yếu</span>
             </div>
           </div>
           <div className="row">
@@ -1445,7 +1452,7 @@ renderEvalution = (name, data, isDisable) => {
         </div>
         </>
         }
-
+          
         <h5>QUYẾT ĐỊNH XỬ LÝ VI PHẠM</h5>
         {
           data.violation.length > 0 ? 
@@ -1500,7 +1507,7 @@ renderEvalution = (name, data, isDisable) => {
                       <><span className="title">QUẢN LÝ TRỰC TIẾP ĐÁNH GIÁ</span></>
                       : <><span className="title">NGƯỜI ĐÁNH GIÁ</span><span className="sub-title">(Nếu có)</span></>
                   }
-
+                
                 </div>
               </div>
               <div className="row">
@@ -1531,10 +1538,10 @@ renderEvalution = (name, data, isDisable) => {
               {this.state.errors && this.state.errors['qltt'] ? <p className="text-danger">{this.state.errors['qltt']}</p> : null}
             </div>
           </> : 
-          this.state.isNguoidanhgia ?
+          this.state.isNguoidanhgia ? 
           <>
           {
-              checkIsExactPnL(Constants.PnLCODE.VinSchool) ?
+              checkIsExactPnL(Constants.PnLCODE.VinSchool) ? 
               <div className="box shadow cbnv more-description">
               <div className="title">
                 Ý KIẾN ĐỀ XUẤT CỦA CBQL TRỰC TIẾP
@@ -1542,7 +1549,7 @@ renderEvalution = (name, data, isDisable) => {
               <div className="row">
                 <div className="col-3">
                   Kết quả
-                  <Select  placeholder={"Lựa chọn kết quả"} options={this.resultOptions} isDisabled={disableComponent.disableAll || !disableComponent.qlttSide}  isClearable={true}
+                  <Select  placeholder={"Lựa chọn kết quả"} options={this.resultOptions} isDisabled={disableComponent.disableAll || !disableComponent.qlttSide}  isClearable={true} 
                   value={this.resultOptions.filter(d => data.qlttOpinion.result != null && d.value == data.qlttOpinion.result.value)}
                   onChange={e => this.handleChangeSelectInputs(e,'qlttOpinion', 'result')} className="input mv-10"
                   styles={{menu: provided => ({ ...provided, zIndex: 2 })}}/>
@@ -1551,7 +1558,7 @@ renderEvalution = (name, data, isDisable) => {
                 </div>
                 <div className="col-3">
                   Loại hợp đồng lao động
-                  <Select  placeholder={"Lựa chọn loại hợp đồng"} options={this.contractTypeOptions} isDisabled={disableComponent.disableAll || !disableComponent.qlttSide}  isClearable={true}
+                  <Select  placeholder={"Lựa chọn loại hợp đồng"} options={this.contractTypeOptions} isDisabled={disableComponent.disableAll || !disableComponent.qlttSide}  isClearable={true} 
                   value={this.contractTypeOptions.filter(d => data.qlttOpinion.contract != null && d.value == data.qlttOpinion.contract.value)}
                   onChange={e => this.handleChangeSelectInputs(e,'qlttOpinion', 'contract')} className="input mv-10"
                   styles={{menu: provided => ({ ...provided, zIndex: 2 })}}/>
@@ -1628,7 +1635,7 @@ renderEvalution = (name, data, isDisable) => {
               <ApproverComponent comment={(data.processStatus == 10 || (data.processStatus == 9 && !data.hasnguoidanhgia)) && comment ? comment : null} isEdit={disableComponent.disableAll || !disableComponent.employeeSide} approver={data.qltt}  updateApprover={(approver, isApprover) => this.updateApprover('qltt', approver,isApprover )} />
               {this.state.errors && this.state.errors['qltt'] ? <p className="text-danger">{this.state.errors['qltt']}</p> : null}
             </div>
-
+            
             {
               checkIsExactPnL(Constants.PnLCODE.VinSchool) ?
               <div className="box shadow cbnv">
@@ -1646,7 +1653,7 @@ renderEvalution = (name, data, isDisable) => {
                 {this.state.errors && this.state.errors['boss'] ? <p className="text-danger">{this.state.errors['boss']}</p> : null}
               </div> : null
             }
-
+            
             </>
             : 
           <>

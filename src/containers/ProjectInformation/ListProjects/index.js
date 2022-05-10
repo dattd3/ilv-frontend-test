@@ -63,7 +63,11 @@ function ListProjects(props) {
     }, [paging])
 
     const handleStatusClick = (projectId, statusId) => {
-        window.location.replace(`/project/${projectId}`)
+        if (props.from === myProjectPageKey) {
+            window.location.replace(`/my-projects/project/${projectId}`)
+        } else {
+            window.location.replace(`/list-projects/project/${projectId}`)
+        }
     }
 
     const onChangePage = (page) => {
