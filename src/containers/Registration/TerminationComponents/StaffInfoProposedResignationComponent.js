@@ -129,7 +129,7 @@ class StaffInfoProposedResignationComponent extends React.PureComponent {
                 }
 
                 this.setState({userInfos: userInfosTemp, employeeIdChecked: []})
-                this.props.updateErrors(errorObj)
+                //this.props.updateErrors(errorObj)
                 this.props.updateUserInfos(userInfosTemp)
             }
         }

@@ -1,6 +1,7 @@
 import React from 'react'
 import { withTranslation } from "react-i18next"
 import PropTypes from 'prop-types'
+import ResizableTextarea from '../TextareaComponent'
 
 class InterviewContentFormComponent extends React.PureComponent {
     constructor(props) {
@@ -147,7 +148,19 @@ class InterviewContentFormComponent extends React.PureComponent {
                                                         </td>
                                                         <td className="explain">
                                                             <div className="item comment">
-                                                                <textarea value={comments[item.categoryCode] || ""} onChange={e => this.handleTextareaChange(item.categoryCode, e)} rows={5} readOnly={isViewOnly} disabled={isViewOnly} />
+                                                                {
+                                                                    isViewOnly ? 
+                                                                    <div className='detail'>
+                                                                        {
+                                                                            comments[item.categoryCode] ?
+                                                                            comments[item.categoryCode].split ('\n').map ((item, i) => <p style={{margin: 0}} key={i}>{item}</p>)
+                                                                            : ''
+                                                                        }
+                                                                    </div>
+                                                                    :
+                                                                    <ResizableTextarea value={comments[item.categoryCode] || ""} onChange={e => this.handleTextareaChange(item.categoryCode, e)} rows={5} readOnly={isViewOnly} disabled={isViewOnly} /> 
+                                                                }
+                                                                
                                                             </div>
                                                         </td>
                                                     </tr>
