@@ -94,6 +94,17 @@
         }
         .card-completed {
             width: 25%;
+            .chart {
+                .result {
+                    position: relative;
+                    .percent {
+                        font-size: 14px;
+                        position: absolute;
+                        top: 45%;
+                        left: 42%;
+                    }
+                }
+            }
         }
         .card-overall {
             width: 25%;
@@ -106,8 +117,8 @@
                 display: flex;
                 justify-content: center;
                 .detail {
-                    width: 120px;
-                    height: 120px;
+                    width: 49%;
+                    height: 100%;
                     background-image: url("../img/icon/overall-score.svg");
                     background-repeat: no-repeat;
                     background-size: cover;
@@ -624,6 +635,23 @@
                 width: 200px;
                 background: #347EF9;
                 margin-left: 15px;
+            }
+            &.reject {
+                background: #FF0000;
+                text-decoration: none;
+                width: 110px;
+            }
+            &.confirm {
+                width: 200px;
+                background: #347EF9;
+                margin-left: 15px;
+                width: 110px;
+            }
+            &.approve {
+                width: 200px;
+                background: #05BD29;
+                margin-left: 15px;
+                width: 110px;
             }
         }
     }
