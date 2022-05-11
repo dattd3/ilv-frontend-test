@@ -3625,7 +3625,40 @@ span.badge-notification[data-badge]::after {
     }
   }
 }
-
+.user-option {
+  padding: 4px 8px;
+  font-size: 13px;
+  cursor: pointer;
+  .user-info {
+    display: flex;
+    align-items: center;
+    .avatar {
+      margin-right: 8px;
+      img {
+        width: 40px;
+        height: 40px;
+        border-radius: 20px;
+        object-fit: cover;
+      }
+    }
+    .main-info {
+      flex: 1 1;
+      .full-name {
+        font-weight: bold;
+      }
+      .other-info {
+        font-style: italic;
+        margin: -2px 0 0 0;
+        .account {
+          font-size: 12px;
+        }
+        .title {
+          margin-left: 4px;
+        }
+      }
+    }
+  }
+}
 .scroll-custom {
   overflow-y: auto;
   overflow-x: hidden;
