@@ -393,6 +393,11 @@
             margin: 0;
         }
     }
+    .react-datepicker-wrapper{
+        [class$="-container"] {
+            margin: 10px 0 0 0 ;
+        }   
+    }
     .document{
         padding: 12px !important;
         span{
@@ -513,7 +518,8 @@
                 text-align: left !important;
               }
               th{
-                border: 1px solid #707070;
+                border-left: 1px solid #707070;
+                border-right:1px solid #707070;
                 padding: 7px;
                 text-align: center;
                 color: #000000;
@@ -843,6 +849,9 @@
         margin-top: 10px;
         
     }
+    .btn-save{
+        background-color: #05BD29;
+    }
 
     .check-box {
         top: 494px;
@@ -866,11 +875,11 @@
         overflow: hidden;
     }
     .auto-height {
-        padding-bottom: 99999px; 
+        padding-bottom: 99999px;
         margin-bottom: -99999px;
     }
     @media (max-width: 1200px){
-        .auto-height { 
+        .auto-height {
             padding-bottom: 0px;
              margin-bottom: 0px;
         }
@@ -897,7 +906,7 @@
     }
 
     .message-danger{
-        margin-top: 38px !important; 
+        margin-top: 38px !important;
         margin-bottom: 0px !important;
     }
     .bottom {

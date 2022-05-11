@@ -426,6 +426,14 @@ export default [
           component: lazy(() => import("./Registration/RegistrationEditComponent"))
         },
         {
+          key: "evalution-edit",
+          routeProps: {
+            exact: true,
+            path: map.Evaluation
+          },
+          component: lazy(() => import("./Registration/ContractEvaluation"))
+        },
+        {
           key: "question-and-answer",
           routeProps: {
             exact: true,
@@ -546,7 +554,23 @@ export default [
             path: map.MyProfile,
           },
           component: lazy(() => import("./ProjectInformation/MyProfile")),
-        }
+        },
+        {
+          key: "support-onboard",
+          routeProps: {
+            exact: true,
+            path: map.SupportOnBoarding
+          },
+          component: lazy(() => import("./TaskRecruitment/SupportOnboard"))
+        },
+        {
+          key: "evaluation-onboard",
+          routeProps: {
+            exact: true,
+            path: map.EvaluationManager
+          },
+          component: lazy(() => import("./TaskRecruitment/Evalution"))
+        },
       ],
     },
   },

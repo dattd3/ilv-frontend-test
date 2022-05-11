@@ -157,6 +157,22 @@ export const Navigation = [
     role: 'U'
   },
   {
+    id:1006,
+    parentId: 999,
+    icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+    to: map.SupportOnBoarding,
+    label: 'Hỗ trợ chuẩn bị nhận việc',
+    role: 'U'
+  },
+  {
+    id:1007,
+    parentId: 999,
+    icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+    to: map.EvaluationManager,
+    label: 'Quản lý đánh giá',
+    role:  ['V061']
+  },
+  {
     id: 4,
     parentId: 2,
     icon: "menu-bullet-lv2 icon-sub-menu-lv2",
