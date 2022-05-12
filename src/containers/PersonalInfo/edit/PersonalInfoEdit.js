@@ -10,6 +10,7 @@ import moment from 'moment'
 import { withTranslation } from "react-i18next"
 import { t } from 'i18next'
 import { getMuleSoftHeaderConfigurations } from "../../../commons/Utils"
+import Constants from '../../../commons/Constants'
 
 const code = localStorage.getItem('employeeNo') || "";
 const fullName = localStorage.getItem('fullName') || "";
@@ -572,11 +573,11 @@ class PersonalInfoEdit extends React.Component {
         this.setState({ isShowModalConfirm: false });
         if (response && response.data && response.data.result) {
           const code = response.data.result.code;
-          if (code == "999") {
+          if (code != Constants.API_SUCCESS_CODE) {
             this.handleShowResultModal(t("Notification"), response.data.result.message, false);
           } else {
             this.handleShowResultModal(t("Successful"), t("RequestSent"), true);
-            setTimeout(() => { window.location.href = "/personal-info"; }, 2000);
+            setTimeout(() => { window.location.href = "/personal-info"; }, 4000);
 
           }
         }
