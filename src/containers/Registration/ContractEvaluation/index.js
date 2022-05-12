@@ -1159,7 +1159,34 @@ renderEvalution = (name, data, isDisable) => {
             this.setDisabledSubmitButton(false, actionType)
         })
 }
-  
+
+  checkShowQlttComment = (data) => {
+  // CBLF tham dinh VSC -field qltt -- 11
+  if(checkIsExactPnL(Constants.PnLCODE.VinSchool)) {
+    return ((data.processStatus == 10 && data.qltt.account));
+   } else {
+     return(data.processStatus == 10 || (data.processStatus == 9 && !data.hasnguoidanhgia));
+   }
+
+  }
+
+  checkShownguoidanhgiaComment = (data) => {
+    // QLTT VSC - filed nguoidanhgia -- 10
+    
+    if(checkIsExactPnL(Constants.PnLCODE.VinSchool)) {
+     return (data.processStatus == 9 && data.nguoidanhgia.account);
+    } else {
+      return (data.processStatus == 9 && !data.qltt.account);
+    }
+  }
+ 
+  checkShowApprovalComment = (data) => {
+    if(checkIsExactPnL(Constants.PnLCODE.VinSchool)) {
+      return data.processStatus == 11 || (data.processStatus == 10 && !data.qltt.account); 
+    } else {
+      return data.processStatus == 11;
+    }
+  }
 
   render() {
     const { t } = this.props
@@ -1496,6 +1523,7 @@ renderEvalution = (name, data, isDisable) => {
         } */}
         
         {
+          //------------------ Hien thi nhan vien nhin thay -----------------------------------------
           showComponent.employeeSide ? 
           <>
             <div className="box shadow cbnv">
@@ -1515,7 +1543,7 @@ renderEvalution = (name, data, isDisable) => {
                 <div  style={{height: '2px', backgroundColor: '#F2F2F2', margin: '15px 0'}}></div>
                 </div>
               </div>
-              <ApproverComponent comment={(data.processStatus == 9 && data.hasnguoidanhgia) && comment ? comment : null}  isEdit={disableComponent.disableAll || !disableComponent.employeeSide} approver={data.nguoidanhgia}  updateApprover={(approver, isApprover) => this.updateApprover('nguoidanhgia', approver,isApprover )} />
+              <ApproverComponent comment={this.checkShownguoidanhgiaComment(data) && comment ? comment : null}  isEdit={disableComponent.disableAll || !disableComponent.employeeSide} approver={data.nguoidanhgia}  updateApprover={(approver, isApprover) => this.updateApprover('nguoidanhgia', approver,isApprover )} />
               {this.state.errors && this.state.errors['nguoidanhgia'] ? <p className="text-danger">{this.state.errors['nguoidanhgia']}</p> : null}
             </div>
 
@@ -1534,13 +1562,13 @@ renderEvalution = (name, data, isDisable) => {
                 <div  style={{height: '2px', backgroundColor: '#F2F2F2', margin: '15px 0'}}></div>
                 </div>
               </div>
-              <ApproverComponent comment={( (data.processStatus == 10 && !checkIsExactPnL(Constants.PnLCODE.VinSchool)) || (checkIsExactPnL(Constants.PnLCODE.VinSchool) && data.processStatus == 10 && data.qltt.value ) || (data.processStatus == 9 && !data.hasnguoidanhgia)) && comment ? comment : null} isEdit={disableComponent.disableAll || !disableComponent.employeeSide} approver={data.qltt}  updateApprover={(approver, isApprover) => this.updateApprover('qltt', approver,isApprover )} />
+              <ApproverComponent comment={this.checkShowQlttComment(data) && comment ? comment : null} isEdit={disableComponent.disableAll || !disableComponent.employeeSide} approver={data.qltt}  updateApprover={(approver, isApprover) => this.updateApprover('qltt', approver,isApprover )} />
               {this.state.errors && this.state.errors['qltt'] ? <p className="text-danger">{this.state.errors['qltt']}</p> : null}
             </div>
           </> : 
           this.state.isNguoidanhgia ? 
           <>
-          {
+          {  // ---------------check hien thij cho vinschool khi nguowif danh gia ton tai y kien danh gia 
               checkIsExactPnL(Constants.PnLCODE.VinSchool) ? 
               <div className="box shadow cbnv more-description">
               <div className="title">
@@ -1614,9 +1642,10 @@ renderEvalution = (name, data, isDisable) => {
                 </div>
               </div>
             </div>
+            // +++++++ heet check hien thij cho vinschool khi nguowif danh gia ton tai  y kien danh gia 
             : null
             }
-
+              
              <div className="box shadow cbnv">
               <div className="row approve">
                 <div className="col-12">
@@ -1632,7 +1661,7 @@ renderEvalution = (name, data, isDisable) => {
                 <div  style={{height: '2px', backgroundColor: '#F2F2F2', margin: '15px 0'}}></div>
                 </div>
               </div>
-              <ApproverComponent comment={( (data.processStatus == 10 && !checkIsExactPnL(Constants.PnLCODE.VinSchool)) || (checkIsExactPnL(Constants.PnLCODE.VinSchool) && data.processStatus == 10 && data.qltt.value ) || (data.processStatus == 9 && !data.hasnguoidanhgia)) && comment ? comment : null} isEdit={disableComponent.disableAll || !disableComponent.employeeSide} approver={data.qltt}  updateApprover={(approver, isApprover) => this.updateApprover('qltt', approver,isApprover )} />
+              <ApproverComponent comment={this.checkShowQlttComment(data) && comment ? comment : null} isEdit={disableComponent.disableAll || !disableComponent.employeeSide} approver={data.qltt}  updateApprover={(approver, isApprover) => this.updateApprover('qltt', approver,isApprover )} />
               {this.state.errors && this.state.errors['qltt'] ? <p className="text-danger">{this.state.errors['qltt']}</p> : null}
             </div>
             
@@ -1649,7 +1678,7 @@ renderEvalution = (name, data, isDisable) => {
                   <div  style={{height: '2px', backgroundColor: '#F2F2F2', margin: '15px 0'}}></div>
                   </div>
                 </div>
-                <ApproverComponent approvalDate = {data.approvalDate && data.processStatus == 2 ? data.approvalDate : null} comment={(data.processStatus == 11 || (checkIsExactPnL(Constants.PnLCODE.VinSchool) && data.processStatus == 10 && !data.qltt.value)) && comment ? comment : null} isEdit={disableComponent.disableAll || !disableComponent.qlttSide} approver={data.nguoipheduyet}  updateApprover={(approver, isApprover) => this.updateApprover('nguoipheduyet', approver,isApprover )} />
+                <ApproverComponent approvalDate = {data.approvalDate && data.processStatus == 2 ? data.approvalDate : null} comment={this.checkShowApprovalComment(data) && comment ? comment : null} isEdit={disableComponent.disableAll || !disableComponent.qlttSide} approver={data.nguoipheduyet}  updateApprover={(approver, isApprover) => this.updateApprover('nguoipheduyet', approver,isApprover )} />
                 {this.state.errors && this.state.errors['boss'] ? <p className="text-danger">{this.state.errors['boss']}</p> : null}
               </div> : null
             }
@@ -1781,7 +1810,7 @@ renderEvalution = (name, data, isDisable) => {
                 <div  style={{height: '2px', backgroundColor: '#F2F2F2', margin: '15px 0'}}></div>
                 </div>
               </div>
-              <ApproverComponent approvalDate = {data.approvalDate && data.processStatus == 2 ? data.approvalDate : null} comment={data.processStatus == 11 && comment ? comment : null} isEdit={disableComponent.disableAll || !disableComponent.qlttSide} approver={data.nguoipheduyet}  updateApprover={(approver, isApprover) => this.updateApprover('nguoipheduyet', approver,isApprover )} />
+              <ApproverComponent approvalDate = {data.approvalDate && data.processStatus == 2 ? data.approvalDate : null} comment={this.checkShowApprovalComment(data) && comment ? comment : null} isEdit={disableComponent.disableAll || !disableComponent.qlttSide} approver={data.nguoipheduyet}  updateApprover={(approver, isApprover) => this.updateApprover('nguoipheduyet', approver,isApprover )} />
               {this.state.errors && this.state.errors['boss'] ? <p className="text-danger">{this.state.errors['boss']}</p> : null}
             </div>
             }
