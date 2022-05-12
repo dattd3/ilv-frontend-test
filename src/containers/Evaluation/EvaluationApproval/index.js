@@ -521,7 +521,9 @@ function EvaluationApproval(props) {
         blocks: [],
         regions: [],
         units: [],
-        groups: []
+        groups: [],
+        ranks: [],
+        titles: []
     })
     const [activeTab, SetActiveTab] = useState('approval')
 
@@ -530,6 +532,50 @@ function EvaluationApproval(props) {
     const total = 30
 
     useEffect(() => {
+        const prepareRanksAndTitles = (name, raw) => {
+            const rankCodeLevelMapping = {
+                'C': {value: 'C', label: 'C'},
+                'C1': {value: 'C', label: 'C'},
+                'M0': {value: 'CV', label: 'Chuyên viên'},
+                'M1': {value: 'CV', label: 'Chuyên viên'},
+                'M2': {value: 'CV', label: 'Chuyên viên'},
+                'M3': {value: 'CV', label: 'Chuyên viên'},
+                'L0': {value: 'CG', label: 'Chuyên gia'},
+                'L1': {value: 'CG', label: 'Chuyên gia'},
+                'L2': {value: 'CG', label: 'Chuyên gia'},
+                'L3': {value: 'CG', label: 'Chuyên gia'},
+                'L4': {value: 'CG', label: 'Chuyên gia'},
+                'N0': {value: 'NV', label: 'Nhân viên'},
+                'N1': {value: 'NV', label: 'Nhân viên'},
+                'N2': {value: 'NV', label: 'Nhân viên'},
+                'N3': {value: 'NV', label: 'Nhân viên'}
+            }
+    
+            if (raw && raw?.status === 'fulfilled') {
+                const dataValue = raw?.value
+                if (dataValue && dataValue?.data && dataValue?.data?.result && dataValue?.data?.result?.code == Constants.API_SUCCESS_CODE) {
+                    const ranksAndTitles = dataValue?.data?.data
+                    let result = (ranksAndTitles[name] || []).map(item => {
+                        return item && { value: name === "titles" ? item.short : rankCodeLevelMapping[item.rank] ? rankCodeLevelMapping[item.rank].value : item.rank,
+                        label: name === "titles" ? item.title : rankCodeLevelMapping[item.rank] ? rankCodeLevelMapping[item.rank].label : item.text }
+                    })
+                    result =  _.uniqWith(result, _.isEqual)
+                    return result
+                }
+            }
+
+            return []
+
+            // if (rankAndTitleResponses && rankAndTitleResponses.data) {
+            //     const ranksAndTitles = rankAndTitleResponses.data.data
+            //     const result = (ranksAndTitles[name] || []).map(item => {
+            //         return item && { value: name === "titles" ? item.short : rankCodeLevelMapping[item.rank] ? rankCodeLevelMapping[item.rank].value : item.rank,
+            //         label: name === "titles" ? item.title : rankCodeLevelMapping[item.rank] ? rankCodeLevelMapping[item.rank].label : item.text }
+            //     });
+            //     this.setState({[nameMappingState[name]] : _.uniqWith(result, _.isEqual)});
+            // }
+        }
+
         const prepareOrgData = (raw, key) => {
             if (raw && raw?.status === 'fulfilled') {
                 const dataValue = raw?.value
@@ -545,11 +591,13 @@ function EvaluationApproval(props) {
 
         const processMasterData = response => {
             const masterDataTemp = {...masterData}
-            const [level3Response, level4Response, level5Response, level6Response] = response
+            const [level3Response, level4Response, level5Response, level6Response, rankAndTitleResponse] = response
             masterDataTemp.blocks = prepareOrgData(level3Response, 'organization_lv3')
             masterDataTemp.regions = prepareOrgData(level4Response, 'organization_lv4')
             masterDataTemp.units = prepareOrgData(level5Response, 'organization_lv5')
             masterDataTemp.groups = prepareOrgData(level6Response, 'organization_lv6')
+            masterDataTemp.ranks = prepareRanksAndTitles('ranks', rankAndTitleResponse)
+            masterDataTemp.titles = prepareRanksAndTitles('titles', rankAndTitleResponse)
             SetMasterData(masterDataTemp)
             SetIsLoading(false)
         }
@@ -561,7 +609,8 @@ function EvaluationApproval(props) {
             const requestGetOrgLevel4 = axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/organization/structure/levels?page_no=1&page_size=10000&level=4`, config)
             const requestGetOrgLevel5 = axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/organization/structure/levels?page_no=1&page_size=10000&level=5`, config)
             const requestGetOrgLevel6 = axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/organization/structure/levels?page_no=1&page_size=10000&level=6`, config)
-            const response = await Promise.allSettled([requestGetOrgLevel3, requestGetOrgLevel4, requestGetOrgLevel5, requestGetOrgLevel6])
+            const requestGetRanksAndTitles = axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/position`, config)
+            const response = await Promise.allSettled([requestGetOrgLevel3, requestGetOrgLevel4, requestGetOrgLevel5, requestGetOrgLevel6, requestGetRanksAndTitles])
             processMasterData(response)
         }
 
@@ -604,6 +653,9 @@ function EvaluationApproval(props) {
 
         }
     }
+
+    console.log("UUUUUUUUUUUUUUUUUUU")
+    console.log(masterData)
 
     return (
         <>
