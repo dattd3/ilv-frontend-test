@@ -34,7 +34,7 @@ const currentSteps = [
 ]
 
 function ApprovalTabContent(props) {
-    const { handleFilter, masterData, ranks, titles } = props
+    const { handleFilter, masterData } = props
     const [filter, SetFilter] = useState({
         isOpenFilterAdvanced: false,
         status: null,
@@ -85,17 +85,17 @@ function ApprovalTabContent(props) {
         })
     }
 
-    const handleFormFilter = (e, tab) => {
-        e.preventDefault()
-        const filterToSubmit = _.omit({...filter}, 'blocks', 'employees', 'groups', 'isOpenFilterAdvanced', 'regions', 'units')
-        handleFilter(filterToSubmit, 'approval')
-    }
-
     const handleShowFilterAdvanced = () => {
         SetFilter({
             ...filter,
             isOpenFilterAdvanced: !filter.isOpenFilterAdvanced
         })
+    }
+
+    const handleFormFilter = (e, tab) => {
+        e.preventDefault()
+        const filterToSubmit = _.omit({...filter}, 'blocks', 'employees', 'groups', 'isOpenFilterAdvanced', 'regions', 'units')
+        handleFilter(filterToSubmit, 'approval')
     }
 
     return (
@@ -218,7 +218,7 @@ function ApprovalTabContent(props) {
                                             placeholder="Lựa chọn" 
                                             isClearable={true} 
                                             value={filter.rank} 
-                                            options={[]} 
+                                            options={masterData?.ranks} 
                                             onChange={e => handleInputChange('rank', e)} />
                                     </Col>
                                 </Form.Group>
@@ -231,7 +231,7 @@ function ApprovalTabContent(props) {
                                             placeholder="Lựa chọn" 
                                             isClearable={true} 
                                             value={filter.title} 
-                                            options={[]} 
+                                            options={masterData?.titles} 
                                             onChange={e => handleInputChange('title', e)} />
                                     </Col>
                                 </Form.Group>
@@ -281,7 +281,7 @@ function ApprovalTabContent(props) {
 }
 
 function BatchApprovalTabContent(props) {
-    const { handleFilter, masterData, ranks, titles } = props
+    const { handleFilter, masterData } = props
     const [filter, SetFilter] = useState({
         isOpenFilterAdvanced: false,
         status: null,
@@ -302,12 +302,34 @@ function BatchApprovalTabContent(props) {
         toDate: null
     })
 
-    const handleChangeSelectInput = e => {
-
+    const updateUser = (user) => {
+        console.log("user selected ...")
+        console.log(user)
     }
 
-    const handleDatePickerInputChange = (date, stateName) => {
-
+    const handleInputChange = (key, value, childKey) => {
+        let childData = []
+        if (childKey) {
+            switch (key) {
+                case 'block':
+                    childData = (masterData?.regions || []).filter(item => item?.parentId === value?.value)
+                    break
+                case 'region':
+                    childData = (masterData?.units || []).filter(item => item?.parentId === value?.value)
+                    break
+                case 'unit':
+                    childData = (masterData?.groups || []).filter(item => item?.parentId === value?.value)
+                    break
+            }
+        }
+        SetFilter({
+            ...filter,
+            [key]: value,
+            ...(childKey && { [childKey]: childData }),
+            ...(key === 'block' && { region: null, unit: null, group: null }),
+            ...(key === 'region' && { unit: null, group: null }),
+            ...(key === 'unit' && { group: null })
+        })
     }
 
     const handleShowFilterAdvanced = () => {
@@ -327,7 +349,7 @@ function BatchApprovalTabContent(props) {
             <Form id="batch-approval-form" onSubmit={e => handleFormFilter(e, 'batch-approval')}>
                 <Row>
                     <Col md={6}>
-                        <Form.Group as={Row} controlId="status">
+                        <Form.Group as={Row} controlId="form">
                             <Form.Label column sm={12}>Chọn biểu mẫu<span className="required">(*)</span></Form.Label>
                             <Col sm={12}>
                                 <Select 
@@ -335,7 +357,7 @@ function BatchApprovalTabContent(props) {
                                     isClearable={true} 
                                     value={null} 
                                     options={[]} 
-                                    onChange={handleChangeSelectInput} />
+                                    onChange={e => handleInputChange('form', e)} />
                             </Col>
                         </Form.Group>
                     </Col>
@@ -343,12 +365,7 @@ function BatchApprovalTabContent(props) {
                         <Form.Group as={Row} controlId="employee">
                             <Form.Label column sm={12}>Tìm kiếm nhân viên</Form.Label>
                             <Col sm={12}>
-                                <Select 
-                                    placeholder="Lựa chọn" 
-                                    isClearable={true} 
-                                    value={null} 
-                                    options={[]} 
-                                    onChange={handleChangeSelectInput} />
+                                <SearchUser updateUser={updateUser} />
                             </Col>
                         </Form.Group>
                     </Col>
@@ -375,9 +392,9 @@ function BatchApprovalTabContent(props) {
                                         <Select 
                                             placeholder="Lựa chọn" 
                                             isClearable={true} 
-                                            value={null} 
+                                            value={filter.currentStep} 
                                             options={currentSteps} 
-                                            onChange={handleChangeSelectInput} />
+                                            onChange={e => handleInputChange('currentStep', e)} />
                                     </Col>
                                 </Form.Group>
                             </Col>
@@ -388,9 +405,9 @@ function BatchApprovalTabContent(props) {
                                         <Select 
                                             placeholder="Lựa chọn" 
                                             isClearable={true} 
-                                            value={null} 
-                                            options={[]} 
-                                            onChange={handleChangeSelectInput} />
+                                            value={filter.block} 
+                                            options={masterData.blocks} 
+                                            onChange={e => handleInputChange('block', e, 'regions')} />
                                     </Col>
                                 </Form.Group>
                             </Col>
@@ -403,9 +420,9 @@ function BatchApprovalTabContent(props) {
                                         <Select 
                                             placeholder="Lựa chọn" 
                                             isClearable={true} 
-                                            value={null} 
-                                            options={[]} 
-                                            onChange={handleChangeSelectInput} />
+                                            value={filter.region} 
+                                            options={filter.regions} 
+                                            onChange={e => handleInputChange('region', e, 'units')} />
                                     </Col>
                                 </Form.Group>
                             </Col>
@@ -416,9 +433,9 @@ function BatchApprovalTabContent(props) {
                                         <Select 
                                             placeholder="Lựa chọn" 
                                             isClearable={true} 
-                                            value={null} 
-                                            options={[]} 
-                                            onChange={handleChangeSelectInput} />
+                                            value={filter.unit} 
+                                            options={filter.units} 
+                                            onChange={e => handleInputChange('unit', e, 'groups')} />
                                     </Col>
                                 </Form.Group>
                             </Col>
@@ -431,9 +448,9 @@ function BatchApprovalTabContent(props) {
                                         <Select 
                                             placeholder="Lựa chọn" 
                                             isClearable={true} 
-                                            value={null} 
-                                            options={[]} 
-                                            onChange={handleChangeSelectInput} />
+                                            value={filter.group} 
+                                            options={filter.groups} 
+                                            onChange={e => handleInputChange('group', e)} />
                                     </Col>
                                 </Form.Group>
                             </Col>
@@ -446,9 +463,9 @@ function BatchApprovalTabContent(props) {
                                         <Select 
                                             placeholder="Lựa chọn" 
                                             isClearable={true} 
-                                            value={null} 
-                                            options={[]} 
-                                            onChange={handleChangeSelectInput} />
+                                            value={filter.rank} 
+                                            options={masterData?.ranks} 
+                                            onChange={e => handleInputChange('rank', e)} />
                                     </Col>
                                 </Form.Group>
                             </Col>
@@ -459,9 +476,9 @@ function BatchApprovalTabContent(props) {
                                         <Select 
                                             placeholder="Lựa chọn" 
                                             isClearable={true} 
-                                            value={null} 
-                                            options={[]} 
-                                            onChange={handleChangeSelectInput} />
+                                            value={filter.title} 
+                                            options={masterData?.titles} 
+                                            onChange={e => handleInputChange('title', e)} />
                                     </Col>
                                 </Form.Group>
                             </Col>
@@ -470,9 +487,8 @@ function BatchApprovalTabContent(props) {
                                     <Form.Label column sm={12}>Từ ngày</Form.Label>
                                     <Col sm={12}>
                                         <DatePicker
-                                            // selected={item.new_dob ? moment(item.new_dob, 'DD-MM-YYYY').toDate() : null}
-                                            selected={null}
-                                            onChange={fromDate => handleDatePickerInputChange(fromDate, "fromDate")}
+                                            selected={filter.fromDate ? moment(filter.fromDate, 'YYYY-MM-DD').toDate() : null}
+                                            onChange={fromDate => handleInputChange('fromDate', fromDate ? moment(fromDate).format('YYYY-MM-DD') : null)}
                                             dateFormat="dd/MM/yyyy"
                                             showMonthDropdown={true}
                                             showYearDropdown={true}
@@ -485,10 +501,10 @@ function BatchApprovalTabContent(props) {
                                 <Form.Group as={Row} controlId="to-date">
                                     <Form.Label column sm={12}>Đến ngày</Form.Label>
                                     <Col sm={12}>
-                                        <DatePicker
-                                            // selected={item.new_dob ? moment(item.new_dob, 'DD-MM-YYYY').toDate() : null}
-                                            selected={null}
-                                            onChange={toDate => handleDatePickerInputChange(toDate, "toDate")}
+                                        <DatePicker 
+                                            selected={filter.toDate ? moment(filter.toDate, 'YYYY-MM-DD').toDate() : null}
+                                            minDate={filter.fromDate ? moment(filter.fromDate, 'YYYY-MM-DD').toDate() : null}
+                                            onChange={toDate => handleInputChange('toDate', toDate ? moment(toDate).format('YYYY-MM-DD') : null)}
                                             dateFormat="dd/MM/yyyy"
                                             showMonthDropdown={true}
                                             showYearDropdown={true}
@@ -625,21 +641,21 @@ function EvaluationApproval(props) {
         SetIsLoading(true)
         const config = getRequestConfigurations()
         config.headers['content-type'] = 'multipart/form-data'
-
+        const organizationLevel6Selected = (data?.group || []).map(item => item.value)
         let formData = new FormData()
         formData.append('PageIndex', paging.pageIndex)
         formData.append('PageSize', paging.pageSize)
-        formData.append('startDate', data?.fromDate)
-        formData.append('endDate', data?.toDate)
-        formData.append('organization_lv3', data?.block?.value)
-        formData.append('organization_lv4', data?.region?.value)
-        formData.append('organization_lv5', data?.unit?.value)
-        formData.append('organization_lv6', JSON.stringify((data?.group || []).map(item => item.value)))
-        formData.append('employee_level', data?.rank?.value)
-        formData.append('positionName', data?.title?.value)
-        formData.append('ReviewerEmployeeCode', localStorage.getItem('employeeNo'))
-        formData.append('CurrentStatus', data?.status?.value)
-        formData.append('CurrentStep', data?.currentStep?.value)
+        formData.append('startDate', data?.fromDate || '')
+        formData.append('endDate', data?.toDate || '')
+        formData.append('organization_lv3', data?.block?.value || '')
+        formData.append('organization_lv4', data?.region?.value || '')
+        formData.append('organization_lv5', data?.unit?.value || '')
+        formData.append('organization_lv6', organizationLevel6Selected?.length === 0 ? '' : JSON.stringify(organizationLevel6Selected))
+        formData.append('employee_level', data?.rank?.value || '')
+        formData.append('positionName', data?.title?.value || '')
+        formData.append('ReviewerEmployeeCode', localStorage.getItem('employeeNo') || '')
+        formData.append('CurrentStatus', data?.status?.value || null)
+        formData.append('CurrentStep', data?.currentStep?.value || 0)
      
         if (tab === 'approval') {
             const response = await axios.post(`${process.env.REACT_APP_HRDX_URL}api/form/listReview`, formData, config)
@@ -653,9 +669,6 @@ function EvaluationApproval(props) {
 
         }
     }
-
-    console.log("UUUUUUUUUUUUUUUUUUU")
-    console.log(masterData)
 
     return (
         <>
