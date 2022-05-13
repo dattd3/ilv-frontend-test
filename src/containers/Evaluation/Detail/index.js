@@ -11,7 +11,6 @@ import { evaluationStatus } from '../Constants'
 import { useGuardStore } from '../../../modules'
 import LoadingModal from '../../../components/Common/LoadingModal'
 import StatusModal from '../../../components/Common/StatusModal'
-
 import IconArrowRightWhite from '../../../assets/img/icon/pms/arrow-right-white.svg'
 import IconArrowRightGray from '../../../assets/img/icon/pms/arrow-right-gray.svg'
 import IconUp from '../../../assets/img/icon/pms/icon-up.svg'
@@ -20,8 +19,6 @@ import IconSave from '../../../assets/img/ic-save.svg'
 import IconSendRequest from '../../../assets/img/icon/Icon_send.svg'
 import IconReject from '../../../assets/img/icon/Icon_Cancel.svg'
 import IconApprove from '../../../assets/img/icon/Icon_Check.svg'
-
-import map from '../../map.config'
 
 function EvaluationOverall(props) {
     const { evaluationFormDetail } = props
@@ -356,7 +353,13 @@ function EvaluationProcess(props) {
                                                                             <td className="text-center self-assessment">
                                                                                 { !showByManager && evaluationFormDetail.status == evaluationStatus.launch ? <input type="text" placeholder="Nhập" value={target?.seftPoint || ""} onChange={(e) => handleInputChange(i, index, 'seftPoint', e)} /> : <span>{target?.seftPoint}</span> }
                                                                             </td>
-                                                                            <td className="text-center qltt-assessment"><span>{target?.leadReviewPoint}</span></td>
+                                                                            <td className="text-center qltt-assessment">
+                                                                                {
+                                                                                    showByManager && evaluationFormDetail.status == evaluationStatus.selfAssessment 
+                                                                                    ? <input type="text" placeholder="Nhập" value={target?.leadReviewPoint || ""} onChange={(e) => handleInputChange(i, index, 'leadReviewPoint', e)} />
+                                                                                    : <span>{target?.leadReviewPoint}</span>
+                                                                                }
+                                                                            </td>
                                                                             <td className="text-center deviant">
                                                                                 <span className={`value ${deviant > 0 ? 'up' : deviant < 0 ? 'down' : ''}`}>{`${deviant > 0 ? '+' : ''}${deviant}`}{deviant != 0 && <Image alt='Note' src={deviant > 0 ? IconUp : deviant < 0 ? IconDown : ''} />}</span>
                                                                             </td>
@@ -368,11 +371,11 @@ function EvaluationProcess(props) {
                                                         <div className="comment">
                                                             <div className="self">
                                                                 <p>Ý kiến của CBNV tự đánh giá</p>
-                                                                <textarea rows={1} placeholder="Nhập thông tin" value={target?.seftOpinion || ""} onChange={(e) => handleInputChange(i, index, 'seftOpinion', e)} disabled={!showByManager && evaluationFormDetail.status != evaluationStatus.launch} />
+                                                                <textarea rows={1} placeholder="Nhập thông tin" value={target?.seftOpinion || ""} onChange={(e) => handleInputChange(i, index, 'seftOpinion', e)} disabled={showByManager || evaluationFormDetail.status != evaluationStatus.launch} />
                                                             </div>
                                                             <div className="qltt">
                                                                 <p>Ý kiến của QLTT đánh giá</p>
-                                                                <textarea rows={1} value={target?.leaderReviewOpinion || ""} onChange={(e) => handleInputChange(i, index, 'leaderReviewOpinion', e)} disabled={!showByManager} />
+                                                                <textarea rows={1} value={target?.leaderReviewOpinion || ""} onChange={(e) => handleInputChange(i, index, 'leaderReviewOpinion', e)} disabled={!showByManager || (showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment))} />
                                                             </div>
                                                         </div>
                                                     </div>
@@ -395,12 +398,11 @@ function EvaluationDetail(props) {
         approve: 2,
         reject: 3
     }
-
+    const { showByManager, updateParent } = props
     const guard = useGuardStore()
     const user = guard.getCurentUser()
-    const evaluationFormId = props.match.params.id
-    const formCode = props.match.params.formCode
-    const showByManager = props.showByManager
+    const evaluationFormId = showByManager ? props?.evaluationFormId : props.match.params.id
+    const formCode = showByManager ? props?.formCode : props.match.params.formCode
     
     useEffect(() => {
         const processEvaluationFormDetailData = response => {
@@ -430,7 +432,7 @@ function EvaluationDetail(props) {
                 const config = getRequestConfigurations()
                 config.params = {
                     checkPhaseFormId: evaluationFormId,
-                    EmployeeCode: user?.employeeNo,
+                    EmployeeCode: showByManager ? props.employeeCode : user?.employeeNo,
                     FormCode: formCode
                 }
                 const response = await axios.get(`${process.env.REACT_APP_HRDX_URL}api/targetform/formbyuser`, config)
@@ -518,7 +520,7 @@ function EvaluationDetail(props) {
                     return  (
                         <>
                             <button className="btn-action reject" onClick={() => handleSubmit(action.reject)}><Image src={IconReject} alt="Reject" />Từ chối</button>
-                            <button className="btn-action approve" onClick={() => handleSubmit(action.approve)}><Image src={IconApprove} alt="Approve" />Phê duyệt</button>
+                            <button className="btn-action approve" onClick={() => handleSubmit(action.approve, true)}><Image src={IconApprove} alt="Approve" />Phê duyệt</button>
                         </>
                     )
                 }
@@ -569,32 +571,57 @@ function EvaluationDetail(props) {
         statusModalTemp.content = ""
         SetStatusModal(statusModalTemp)
         window.location.reload()
-    }
+    } 
 
-    const handleSubmit = async (actionCode) => {
+    const handleSubmit = async (actionCode, isApprove) => {
         SetIsLoading(true)
         const statusModalTemp = {...statusModal}
         try {
             const config = getRequestConfigurations()
-            const payload = {...evaluationFormDetail}
-            payload.nextStep = actionCode
-            const response = await axios.post(`${process.env.REACT_APP_HRDX_URL}api/targetform/update`, payload, config)
-            SetIsLoading(false)
-            statusModalTemp.isShow = true
-            if (response && response.data) {
-                const result = response.data.result
-                if (result.code == Constants.PMS_API_SUCCESS_CODE) {
-                    statusModalTemp.isSuccess = true
-                    statusModalTemp.content = getResponseMessages(payload.status, actionCode, 'success')
+            if (actionCode == action.reject || isApprove) { // Từ chối hoặc Phê duyệt
+                const payload = {
+                    ListFormCode : [evaluationFormDetail?.formCode],
+                    type: actionCode,
+                    CurrentStatus: evaluationFormDetail?.status
+                }
+                const response = await axios.post(`${process.env.REACT_APP_HRDX_URL}api/form/ApproveBothReject`, payload, config)
+                SetIsLoading(false)
+                statusModalTemp.isShow = true
+                if (response && response.data) {
+                    const result = response.data.result
+                    if (result.code == Constants.PMS_API_SUCCESS_CODE) {
+                        statusModalTemp.isSuccess = true
+                        statusModalTemp.content = getResponseMessages(evaluationFormDetail?.status, actionCode, 'success')
+                    } else {
+                        statusModalTemp.isSuccess = false
+                        statusModalTemp.content = getResponseMessages(evaluationFormDetail?.status, actionCode, 'failed')
+                    }
+                } else {
+                    statusModalTemp.isSuccess = false
+                    statusModalTemp.content = getResponseMessages(evaluationFormDetail?.status, actionCode, 'failed')
+                }
+                SetStatusModal(statusModalTemp)
+            } else { // Lưu, CBNV Gửi tới bước tiếp theo, CBQLTT xác nhận
+                const payload = {...evaluationFormDetail}
+                payload.nextStep = actionCode
+                const response = await axios.post(`${process.env.REACT_APP_HRDX_URL}api/targetform/update`, payload, config)
+                SetIsLoading(false)
+                statusModalTemp.isShow = true
+                if (response && response.data) {
+                    const result = response.data.result
+                    if (result.code == Constants.PMS_API_SUCCESS_CODE) {
+                        statusModalTemp.isSuccess = true
+                        statusModalTemp.content = getResponseMessages(payload.status, actionCode, 'success')
+                    } else {
+                        statusModalTemp.isSuccess = false
+                        statusModalTemp.content = getResponseMessages(payload.status, actionCode, 'failed')
+                    }
                 } else {
                     statusModalTemp.isSuccess = false
                     statusModalTemp.content = getResponseMessages(payload.status, actionCode, 'failed')
                 }
-            } else {
-                statusModalTemp.isSuccess = false
-                statusModalTemp.content = getResponseMessages(payload.status, actionCode, 'failed')
+                SetStatusModal(statusModalTemp)
             }
-            SetStatusModal(statusModalTemp)
         } catch (e) {
             SetIsLoading(false)
             statusModalTemp.isShow = false
