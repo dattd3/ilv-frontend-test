@@ -2316,7 +2316,42 @@
         }
     }
 }
-
+.evaluation-detail-modal {
+    font-family: Arial, Helvetica, sans-serif;
+    .modal-dialog {
+        max-width: 1100px;
+        .modal-content {
+            .modal-header {
+                border-radius: 0;
+                padding: 0;
+                .close {
+                    width: 30px;
+                    height: 30px;
+                    font-size: 22px;
+                    background: #707070;
+                    color: #FFFFFF;
+                    font-weight: normal;
+                    border: 1px solid #FFFFFF;
+                    right: 4px;
+                    span {
+                        top: 46%;
+                        left: 26%;
+                    }
+                }
+            }
+            .modal-body {
+                border-radius: 0;
+                padding: 15px;
+                .evaluation-detail-page {
+                    margin-top: 10px;
+                    .button-block {
+                        margin: 10px 0 0 0;
+                    }
+                }
+            }
+        }
+    }
+}
 .evaluation-approval-page {
     margin-top: 15px;
     font-size: 14px;
@@ -2373,6 +2408,9 @@
             }
         }
     }
+    .not-found-data {
+        margin: 0;
+    }
     .data-block {
         margin-top: 15px;
         .approval-data {
@@ -2392,6 +2430,12 @@
                     }
                     .c-form-code {
                         width: 15%;
+                        .form-code {
+                            cursor: pointer;
+                            &:hover {
+                                color: #347EF9;
+                            }
+                        }
                     }
                     .c-form-sender {
                         width: 18%;
@@ -2432,13 +2476,13 @@
             }
         }
         .batch-approval-data {
-            padding: 0 15px 15px 15px;
+            padding: 15px;
             .wrap-table-list-evaluation {
                 .select-item-block {
                     display: flex;
                     align-items: center;
                     color: #000000;
-                    margin: 15px 0;
+                    margin: 0 0 15px 0;
                     label {
                         margin: 0 0 0 5px;
                         cursor: pointer;

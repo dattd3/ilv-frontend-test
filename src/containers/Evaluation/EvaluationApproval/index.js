@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, Fragment } from "react"
 import Select from 'react-select'
 import { Image, Tabs, Tab, Form, Button, Modal, Row, Col, Collapse } from 'react-bootstrap'
 import DatePicker, { registerLocale } from 'react-datepicker'
@@ -10,6 +10,7 @@ import { evaluationStatus } from '../Constants'
 import Constants from '../../../commons/Constants'
 import { getRequestConfigurations, getMuleSoftHeaderConfigurations } from '../../../commons/Utils'
 import LoadingModal from '../../../components/Common/LoadingModal'
+import EvaluationDetailModal from '../EvaluationDetailModal'
 import SearchUser from '../SearchUser'
 import CustomPaging from '../../../components/Common/CustomPaging'
 import IconExpand from '../../../assets/img/icon/pms/icon-expand.svg'
@@ -32,6 +33,149 @@ const currentSteps = [
     {value: evaluationStatus.qlttAssessment, label: 'CBLĐ phê duyệt'},
     // {value: evaluationStatus.launch, label: 'Hoàn thành'},
 ]
+
+function AdvancedFilter(props) {
+    const { masterData, filter, updateData } = props
+
+    const handleInputChange = (key, value, childKey) => {
+        updateData(key, value, childKey)
+    }
+
+    return (
+        <div className="filter-advanced-form">
+            <Row>
+                <Col md={6}>
+                    <Form.Group as={Row} controlId="current-step">
+                        <Form.Label column sm={12}>Bước hiện tại</Form.Label>
+                        <Col sm={12}>
+                            <Select 
+                                placeholder="Lựa chọn" 
+                                isClearable={true} 
+                                value={filter.currentStep} 
+                                options={currentSteps} 
+                                onChange={e => handleInputChange('currentStep', e)} />
+                        </Col>
+                    </Form.Group>
+                </Col>
+                <Col md={6}>
+                    <Form.Group as={Row} controlId="block">
+                        <Form.Label column sm={12}>Ban/Chuỗi/Khối</Form.Label>
+                        <Col sm={12}>
+                            <Select 
+                                placeholder="Lựa chọn" 
+                                isClearable={true} 
+                                value={filter.block} 
+                                options={masterData.blocks} 
+                                onChange={e => handleInputChange('block', e, 'regions')} />
+                        </Col>
+                    </Form.Group>
+                </Col>
+            </Row>
+            <Row>
+                <Col md={6}>
+                    <Form.Group as={Row} controlId="region">
+                        <Form.Label column sm={12}>Phòng/Vùng/Miền</Form.Label>
+                        <Col sm={12}>
+                            <Select 
+                                placeholder="Lựa chọn" 
+                                isClearable={true} 
+                                value={filter.region} 
+                                options={filter.regions} 
+                                onChange={e => handleInputChange('region', e, 'units')} />
+                        </Col>
+                    </Form.Group>
+                </Col>
+                <Col md={6}>
+                    <Form.Group as={Row} controlId="unit">
+                        <Form.Label column sm={12}>Các đơn vị thành viên</Form.Label>
+                        <Col sm={12}>
+                            <Select 
+                                placeholder="Lựa chọn" 
+                                isClearable={true} 
+                                value={filter.unit} 
+                                options={filter.units} 
+                                onChange={e => handleInputChange('unit', e, 'groups')} />
+                        </Col>
+                    </Form.Group>
+                </Col>
+            </Row>
+            <Row>
+                <Col md={12}>
+                    <Form.Group as={Row} controlId="group">
+                        <Form.Label column sm={12}>Phòng/Bộ phận/Nhóm</Form.Label>
+                        <Col sm={12}>
+                            <Select 
+                                placeholder="Lựa chọn" 
+                                isClearable={true} 
+                                value={filter.group} 
+                                options={filter.groups} 
+                                onChange={e => handleInputChange('group', e)} />
+                        </Col>
+                    </Form.Group>
+                </Col>
+            </Row>
+            <Row>
+                <Col md={3}>
+                    <Form.Group as={Row} controlId="rank">
+                        <Form.Label column sm={12}>Cấp bậc</Form.Label>
+                        <Col sm={12}>
+                            <Select 
+                                placeholder="Lựa chọn" 
+                                isClearable={true} 
+                                value={filter.rank} 
+                                options={masterData?.ranks} 
+                                onChange={e => handleInputChange('rank', e)} />
+                        </Col>
+                    </Form.Group>
+                </Col>
+                <Col md={3}>
+                    <Form.Group as={Row} controlId="title">
+                        <Form.Label column sm={12}>Chức danh</Form.Label>
+                        <Col sm={12}>
+                            <Select 
+                                placeholder="Lựa chọn" 
+                                isClearable={true} 
+                                value={filter.title} 
+                                options={masterData?.titles} 
+                                onChange={e => handleInputChange('title', e)} />
+                        </Col>
+                    </Form.Group>
+                </Col>
+                <Col md={3}>
+                    <Form.Group as={Row} controlId="from-date">
+                        <Form.Label column sm={12}>Từ ngày</Form.Label>
+                        <Col sm={12}>
+                            <DatePicker
+                                selected={filter.fromDate ? moment(filter.fromDate, 'YYYY-MM-DD').toDate() : null}
+                                onChange={fromDate => handleInputChange('fromDate', fromDate ? moment(fromDate).format('YYYY-MM-DD') : null)}
+                                dateFormat="dd/MM/yyyy"
+                                showMonthDropdown={true}
+                                showYearDropdown={true}
+                                locale="vi"
+                                className="form-control input" />
+                        </Col>
+                    </Form.Group>
+                </Col>
+                <Col md={3}>
+                    <Form.Group as={Row} controlId="to-date">
+                        <Form.Label column sm={12}>Đến ngày</Form.Label>
+                        <Col sm={12}>
+                            <DatePicker 
+                                selected={filter.toDate ? moment(filter.toDate, 'YYYY-MM-DD').toDate() : null}
+                                minDate={filter.fromDate ? moment(filter.fromDate, 'YYYY-MM-DD').toDate() : null}
+                                onChange={toDate => handleInputChange('toDate', toDate ? moment(toDate).format('YYYY-MM-DD') : null)}
+                                dateFormat="dd/MM/yyyy"
+                                showMonthDropdown={true}
+                                showYearDropdown={true}
+                                locale="vi"
+                                className="form-control input" />
+                        </Col>
+                    </Form.Group>
+                </Col>
+            </Row>
+        </div>
+    )
+}
 
 function ApprovalTabContent(props) {
     const { handleFilter, masterData } = props
@@ -85,6 +229,10 @@ function ApprovalTabContent(props) {
         })
     }
 
+    const updateData = (key, value, childKey) => {
+        handleInputChange(key, value, childKey)
+    }
+
     const handleShowFilterAdvanced = () => {
         SetFilter({
             ...filter,
@@ -130,145 +278,16 @@ function ApprovalTabContent(props) {
                             <span 
                                 className="btn-filter-advanced" 
                                 onClick={handleShowFilterAdvanced}
-                                aria-controls="approval-form-filter-advanced-collapse"
                                 aria-expanded={filter.isOpenFilterAdvanced}
                             >Tìm kiếm nâng cao<Image src={filter.isOpenFilterAdvanced ? IconCollapse : IconExpand} alt='Toggle' /></span>
                         </div>
                     </Col>
                 </Row>
                 <Collapse in={filter.isOpenFilterAdvanced}>
-                    <div id="approval-form-filter-advanced-collapse" className="filter-advanced-form">
-                        <Row>
-                            <Col md={6}>
-                                <Form.Group as={Row} controlId="current-step">
-                                    <Form.Label column sm={12}>Bước hiện tại</Form.Label>
-                                    <Col sm={12}>
-                                        <Select 
-                                            placeholder="Lựa chọn" 
-                                            isClearable={true} 
-                                            value={filter.currentStep} 
-                                            options={currentSteps} 
-                                            onChange={e => handleInputChange('currentStep', e)} />
-                                    </Col>
-                                </Form.Group>
-                            </Col>
-                            <Col md={6}>
-                                <Form.Group as={Row} controlId="block">
-                                    <Form.Label column sm={12}>Ban/Chuỗi/Khối</Form.Label>
-                                    <Col sm={12}>
-                                        <Select 
-                                            placeholder="Lựa chọn" 
-                                            isClearable={true} 
-                                            value={filter.block} 
-                                            options={masterData.blocks} 
-                                            onChange={e => handleInputChange('block', e, 'regions')} />
-                                    </Col>
-                                </Form.Group>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col md={6}>
-                                <Form.Group as={Row} controlId="region">
-                                    <Form.Label column sm={12}>Phòng/Vùng/Miền</Form.Label>
-                                    <Col sm={12}>
-                                        <Select 
-                                            placeholder="Lựa chọn" 
-                                            isClearable={true} 
-                                            value={filter.region} 
-                                            options={filter.regions} 
-                                            onChange={e => handleInputChange('region', e, 'units')} />
-                                    </Col>
-                                </Form.Group>
-                            </Col>
-                            <Col md={6}>
-                                <Form.Group as={Row} controlId="unit">
-                                    <Form.Label column sm={12}>Các đơn vị thành viên</Form.Label>
-                                    <Col sm={12}>
-                                        <Select 
-                                            placeholder="Lựa chọn" 
-                                            isClearable={true} 
-                                            value={filter.unit} 
-                                            options={filter.units} 
-                                            onChange={e => handleInputChange('unit', e, 'groups')} />
-                                    </Col>
-                                </Form.Group>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col md={12}>
-                                <Form.Group as={Row} controlId="group">
-                                    <Form.Label column sm={12}>Phòng/Bộ phận/Nhóm</Form.Label>
-                                    <Col sm={12}>
-                                        <Select 
-                                            placeholder="Lựa chọn" 
-                                            isClearable={true} 
-                                            value={filter.group} 
-                                            options={filter.groups} 
-                                            onChange={e => handleInputChange('group', e)} />
-                                    </Col>
-                                </Form.Group>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col md={3}>
-                                <Form.Group as={Row} controlId="rank">
-                                    <Form.Label column sm={12}>Cấp bậc</Form.Label>
-                                    <Col sm={12}>
-                                        <Select 
-                                            placeholder="Lựa chọn" 
-                                            isClearable={true} 
-                                            value={filter.rank} 
-                                            options={masterData?.ranks} 
-                                            onChange={e => handleInputChange('rank', e)} />
-                                    </Col>
-                                </Form.Group>
-                            </Col>
-                            <Col md={3}>
-                                <Form.Group as={Row} controlId="title">
-                                    <Form.Label column sm={12}>Chức danh</Form.Label>
-                                    <Col sm={12}>
-                                        <Select 
-                                            placeholder="Lựa chọn" 
-                                            isClearable={true} 
-                                            value={filter.title} 
-                                            options={masterData?.titles} 
-                                            onChange={e => handleInputChange('title', e)} />
-                                    </Col>
-                                </Form.Group>
-                            </Col>
-                            <Col md={3}>
-                                <Form.Group as={Row} controlId="from-date">
-                                    <Form.Label column sm={12}>Từ ngày</Form.Label>
-                                    <Col sm={12}>
-                                        <DatePicker
-                                            selected={filter.fromDate ? moment(filter.fromDate, 'YYYY-MM-DD').toDate() : null}
-                                            onChange={fromDate => handleInputChange('fromDate', fromDate ? moment(fromDate).format('YYYY-MM-DD') : null)}
-                                            dateFormat="dd/MM/yyyy"
-                                            showMonthDropdown={true}
-                                            showYearDropdown={true}
-                                            locale="vi"
-                                            className="form-control input" />
-                                    </Col>
-                                </Form.Group>
-                            </Col>
-                            <Col md={3}>
-                                <Form.Group as={Row} controlId="to-date">
-                                    <Form.Label column sm={12}>Đến ngày</Form.Label>
-                                    <Col sm={12}>
-                                        <DatePicker 
-                                            selected={filter.toDate ? moment(filter.toDate, 'YYYY-MM-DD').toDate() : null}
-                                            minDate={filter.fromDate ? moment(filter.fromDate, 'YYYY-MM-DD').toDate() : null}
-                                            onChange={toDate => handleInputChange('toDate', toDate ? moment(toDate).format('YYYY-MM-DD') : null)}
-                                            dateFormat="dd/MM/yyyy"
-                                            showMonthDropdown={true}
-                                            showYearDropdown={true}
-                                            locale="vi"
-                                            className="form-control input" />
-                                    </Col>
-                                </Form.Group>
-                            </Col>
-                        </Row>
-                    </div>
+                    <AdvancedFilter 
+                        masterData={{blocks: masterData.blocks, ranks: masterData.ranks, titles: masterData.titles}} 
+                        filter={_.omit({...filter}, 'isOpenFilterAdvanced', 'status', 'employees', 'employee')} 
+                        updateData={updateData} />
                 </Collapse>
                 <Row>
                     <Col md={12}>
@@ -332,6 +351,10 @@ function BatchApprovalTabContent(props) {
         })
     }
 
+    const updateData = (key, value, childKey) => {
+        handleInputChange(key, value, childKey)
+    }
+
     const handleShowFilterAdvanced = () => {
         SetFilter({
             ...filter,
@@ -341,7 +364,8 @@ function BatchApprovalTabContent(props) {
 
     const handleFormFilter = (e, tab) => {
         e.preventDefault()
-        handleFilter()
+        const filterToSubmit = _.omit({...filter}, 'blocks', 'employees', 'groups', 'isOpenFilterAdvanced', 'regions', 'units')
+        handleFilter(filterToSubmit, 'batch-approval')
     }
 
     return (
@@ -376,145 +400,16 @@ function BatchApprovalTabContent(props) {
                             <span 
                                 className="btn-filter-advanced" 
                                 onClick={handleShowFilterAdvanced}
-                                aria-controls="approval-form-filter-advanced-collapse"
                                 aria-expanded={filter.isOpenFilterAdvanced}
                             >Tìm kiếm nâng cao<Image src={filter.isOpenFilterAdvanced ? IconCollapse : IconExpand} alt='Toggle' /></span>
                         </div>
                     </Col>
                 </Row>
                 <Collapse in={filter.isOpenFilterAdvanced}>
-                    <div id="approval-form-filter-advanced-collapse" className="filter-advanced-form">
-                        <Row>
-                            <Col md={6}>
-                                <Form.Group as={Row} controlId="current-step">
-                                    <Form.Label column sm={12}>Bước hiện tại</Form.Label>
-                                    <Col sm={12}>
-                                        <Select 
-                                            placeholder="Lựa chọn" 
-                                            isClearable={true} 
-                                            value={filter.currentStep} 
-                                            options={currentSteps} 
-                                            onChange={e => handleInputChange('currentStep', e)} />
-                                    </Col>
-                                </Form.Group>
-                            </Col>
-                            <Col md={6}>
-                                <Form.Group as={Row} controlId="block">
-                                    <Form.Label column sm={12}>Ban/Chuỗi/Khối</Form.Label>
-                                    <Col sm={12}>
-                                        <Select 
-                                            placeholder="Lựa chọn" 
-                                            isClearable={true} 
-                                            value={filter.block} 
-                                            options={masterData.blocks} 
-                                            onChange={e => handleInputChange('block', e, 'regions')} />
-                                    </Col>
-                                </Form.Group>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col md={6}>
-                                <Form.Group as={Row} controlId="region">
-                                    <Form.Label column sm={12}>Phòng/Vùng/Miền</Form.Label>
-                                    <Col sm={12}>
-                                        <Select 
-                                            placeholder="Lựa chọn" 
-                                            isClearable={true} 
-                                            value={filter.region} 
-                                            options={filter.regions} 
-                                            onChange={e => handleInputChange('region', e, 'units')} />
-                                    </Col>
-                                </Form.Group>
-                            </Col>
-                            <Col md={6}>
-                                <Form.Group as={Row} controlId="unit">
-                                    <Form.Label column sm={12}>Các đơn vị thành viên</Form.Label>
-                                    <Col sm={12}>
-                                        <Select 
-                                            placeholder="Lựa chọn" 
-                                            isClearable={true} 
-                                            value={filter.unit} 
-                                            options={filter.units} 
-                                            onChange={e => handleInputChange('unit', e, 'groups')} />
-                                    </Col>
-                                </Form.Group>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col md={12}>
-                                <Form.Group as={Row} controlId="group">
-                                    <Form.Label column sm={12}>Phòng/Bộ phận/Nhóm</Form.Label>
-                                    <Col sm={12}>
-                                        <Select 
-                                            placeholder="Lựa chọn" 
-                                            isClearable={true} 
-                                            value={filter.group} 
-                                            options={filter.groups} 
-                                            onChange={e => handleInputChange('group', e)} />
-                                    </Col>
-                                </Form.Group>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col md={3}>
-                                <Form.Group as={Row} controlId="rank">
-                                    <Form.Label column sm={12}>Cấp bậc</Form.Label>
-                                    <Col sm={12}>
-                                        <Select 
-                                            placeholder="Lựa chọn" 
-                                            isClearable={true} 
-                                            value={filter.rank} 
-                                            options={masterData?.ranks} 
-                                            onChange={e => handleInputChange('rank', e)} />
-                                    </Col>
-                                </Form.Group>
-                            </Col>
-                            <Col md={3}>
-                                <Form.Group as={Row} controlId="title">
-                                    <Form.Label column sm={12}>Chức danh</Form.Label>
-                                    <Col sm={12}>
-                                        <Select 
-                                            placeholder="Lựa chọn" 
-                                            isClearable={true} 
-                                            value={filter.title} 
-                                            options={masterData?.titles} 
-                                            onChange={e => handleInputChange('title', e)} />
-                                    </Col>
-                                </Form.Group>
-                            </Col>
-                            <Col md={3}>
-                                <Form.Group as={Row} controlId="from-date">
-                                    <Form.Label column sm={12}>Từ ngày</Form.Label>
-                                    <Col sm={12}>
-                                        <DatePicker
-                                            selected={filter.fromDate ? moment(filter.fromDate, 'YYYY-MM-DD').toDate() : null}
-                                            onChange={fromDate => handleInputChange('fromDate', fromDate ? moment(fromDate).format('YYYY-MM-DD') : null)}
-                                            dateFormat="dd/MM/yyyy"
-                                            showMonthDropdown={true}
-                                            showYearDropdown={true}
-                                            locale="vi"
-                                            className="form-control input" />
-                                    </Col>
-                                </Form.Group>
-                            </Col>
-                            <Col md={3}>
-                                <Form.Group as={Row} controlId="to-date">
-                                    <Form.Label column sm={12}>Đến ngày</Form.Label>
-                                    <Col sm={12}>
-                                        <DatePicker 
-                                            selected={filter.toDate ? moment(filter.toDate, 'YYYY-MM-DD').toDate() : null}
-                                            minDate={filter.fromDate ? moment(filter.fromDate, 'YYYY-MM-DD').toDate() : null}
-                                            onChange={toDate => handleInputChange('toDate', toDate ? moment(toDate).format('YYYY-MM-DD') : null)}
-                                            dateFormat="dd/MM/yyyy"
-                                            showMonthDropdown={true}
-                                            showYearDropdown={true}
-                                            locale="vi"
-                                            className="form-control input" />
-                                    </Col>
-                                </Form.Group>
-                            </Col>
-                        </Row>
-                    </div>
+                    <AdvancedFilter 
+                        masterData={{blocks: masterData.blocks, ranks: masterData.ranks, titles: masterData.titles}} 
+                        filter={_.omit({...filter}, 'isOpenFilterAdvanced', 'status', 'employees', 'employee')} 
+                        updateData={updateData} />
                 </Collapse>
                 <Row>
                     <Col md={12}>
@@ -529,6 +424,13 @@ function BatchApprovalTabContent(props) {
 function EvaluationApproval(props) {
     const { t } = useTranslation()
     const [isLoading, SetIsLoading] = useState(false)
+    const [isSelectedAll, SetIsSelectedAll] = useState(false)
+    const [evaluationDetailPopup, SetEvaluationDetailPopup] = useState({
+        isShow: false,
+        evaluationFormId: null,
+        formCode: null,
+        employeeCode: null
+    })
     const [paging, SetPaging] = useState({
         pageIndex: 1,
         pageSize: 10
@@ -542,10 +444,11 @@ function EvaluationApproval(props) {
         titles: []
     })
     const [activeTab, SetActiveTab] = useState('approval')
-
-    const evaluationForms = [1]
-    const pageSize = 10
-    const total = 30
+    const [evaluationData, SetEvaluationData] = useState({
+        data: [],
+        total: 0
+    })
+    const statusDone = 5
 
     useEffect(() => {
         const prepareRanksAndTitles = (name, raw) => {
@@ -579,17 +482,7 @@ function EvaluationApproval(props) {
                     return result
                 }
             }
-
             return []
-
-            // if (rankAndTitleResponses && rankAndTitleResponses.data) {
-            //     const ranksAndTitles = rankAndTitleResponses.data.data
-            //     const result = (ranksAndTitles[name] || []).map(item => {
-            //         return item && { value: name === "titles" ? item.short : rankCodeLevelMapping[item.rank] ? rankCodeLevelMapping[item.rank].value : item.rank,
-            //         label: name === "titles" ? item.title : rankCodeLevelMapping[item.rank] ? rankCodeLevelMapping[item.rank].label : item.text }
-            //     });
-            //     this.setState({[nameMappingState[name]] : _.uniqWith(result, _.isEqual)});
-            // }
         }
 
         const prepareOrgData = (raw, key) => {
@@ -637,11 +530,21 @@ function EvaluationApproval(props) {
 
     }
 
+    const handleTabChange = key => {
+        SetActiveTab(key)
+        SetEvaluationData({
+            ...evaluationData,
+            data: [],
+            total: 0
+        })
+    }
+
     const handleFilter = async (data, tab) => {
         SetIsLoading(true)
         const config = getRequestConfigurations()
         config.headers['content-type'] = 'multipart/form-data'
         const organizationLevel6Selected = (data?.group || []).map(item => item.value)
+        let apiPath = ''
         let formData = new FormData()
         formData.append('PageIndex', paging.pageIndex)
         formData.append('PageSize', paging.pageSize)
@@ -653,31 +556,96 @@ function EvaluationApproval(props) {
         formData.append('organization_lv6', organizationLevel6Selected?.length === 0 ? '' : JSON.stringify(organizationLevel6Selected))
         formData.append('employee_level', data?.rank?.value || '')
         formData.append('positionName', data?.title?.value || '')
-        formData.append('ReviewerEmployeeCode', localStorage.getItem('employeeNo') || '')
+        if (tab === 'approval') {
+            formData.append('ReviewerEmployeeCode', localStorage.getItem('employeeNo') || '')
+            apiPath = `${process.env.REACT_APP_HRDX_URL}api/form/listReview`
+        } else if (tab === 'batch-approval') {
+            formData.append('ApproveEmployeeCode', localStorage.getItem('employeeNo') || '')
+            apiPath = `${process.env.REACT_APP_HRDX_URL}api/form/listApprove`
+        }
         formData.append('CurrentStatus', data?.status?.value || null)
         formData.append('CurrentStep', data?.currentStep?.value || 0)
      
-        if (tab === 'approval') {
-            const response = await axios.post(`${process.env.REACT_APP_HRDX_URL}api/form/listReview`, formData, config)
+        try {
+            const response = await axios.post(apiPath, formData, config)
+            if (response && response?.data) {
+                const result = response?.data?.result
+                if (result?.code == Constants.PMS_API_SUCCESS_CODE) {
+                    let data = response?.data?.data
+                    if (tab === 'batch-approval') {
+                        data = [...data].map(item => ({...item, isSelected: false}))
+                    }
+                    SetEvaluationData({
+                        ...evaluationData,
+                        data: data,
+                        total: result?.totalRecords || 0
+                    })
+                }
+            }
             SetIsLoading(false)
-            console.log("TTTYYYYYYYYYYYYYYYYY")
-            console.log(response)
-            // console.log(data)
+        } catch (e) {
+            SetIsLoading(false)
         }
+    }
 
-        if (tab === 'batch-approval') {
+    const handleShowEvaluationDetailPopup = (formCode, checkPhaseFormId, employeeCode) => {
+        SetEvaluationDetailPopup({
+            ...evaluationDetailPopup,
+            isShow: true,
+            evaluationFormId: checkPhaseFormId,
+            formCode: formCode,
+            employeeCode: employeeCode
+        })
+    }
 
+    const onHideEvaluationDetailModal = () => {
+        SetEvaluationDetailPopup({
+            ...evaluationDetailPopup,
+            isShow: false,
+            evaluationFormId: null,
+            formCode: null,
+            employeeCode: null
+        })
+    }
+
+    const isAllEvaluationFormSelected = (data) => {
+        const isSelectedAll = (data || []).every(item => item?.isSelected)
+        return isSelectedAll
+    }
+
+    const handleCheckboxChange = (element, index) => {
+        const value = element?.target?.checked || false
+        const evaluationDataTemp = {...evaluationData}
+        if (index !== null) {
+            evaluationDataTemp.data[index].isSelected = value
+            const isSelectedAllEvaluationForm = isAllEvaluationFormSelected(evaluationDataTemp.data)
+            SetIsSelectedAll(isSelectedAllEvaluationForm)
+            SetEvaluationData(evaluationDataTemp)
+        } else {
+            SetIsSelectedAll(value)
+            if (value) {
+                evaluationDataTemp.data = [...evaluationDataTemp.data].map(item => ({...item, isSelected: true}))
+            } else {
+                evaluationDataTemp.data = [...evaluationDataTemp.data].map(item => ({...item, isSelected: false}))
+            }
+            SetEvaluationData(evaluationDataTemp)
         }
     }
 
     return (
         <>
         <LoadingModal show={isLoading} />
+        <EvaluationDetailModal 
+            isShow={evaluationDetailPopup.isShow} 
+            evaluationFormId={evaluationDetailPopup.evaluationFormId} 
+            formCode={evaluationDetailPopup.formCode} 
+            employeeCode={evaluationDetailPopup.employeeCode} 
+            onHide={onHideEvaluationDetailModal} />
         <div className="evaluation-approval-page">
             <h1 className="content-page-header">Đánh giá</h1>
             <div className="filter-block">
                 <div className="card shadow card-filter">
-                    <Tabs id="filter-tabs" defaultActiveKey={activeTab} onSelect={key => SetActiveTab(key)}>
+                    <Tabs id="filter-tabs" defaultActiveKey={activeTab} onSelect={key => handleTabChange(key)}>
                         <Tab eventKey="approval" title='Đánh giá/Phê duyệt' className="tab-item">
                             <ApprovalTabContent masterData={masterData} handleFilter={handleFilter} />
                         </Tab>
@@ -693,7 +661,7 @@ function EvaluationApproval(props) {
                     activeTab === 'approval' && 
                     <div className="card shadow approval-data">
                     {
-                        evaluationForms?.length > 0 ?
+                        evaluationData?.data?.length > 0 ?
                         <>
                         <div className="wrap-table-list-evaluation">
                             <table className='table-list-evaluation'>
@@ -708,22 +676,18 @@ function EvaluationApproval(props) {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td className="c-form-code"><div className="form-code">A12345</div></td>
-                                        <td className="c-form-sender"><div className="form-sender">Nguyễn Văn An</div></td>
-                                        <td className="c-form-name"><div className="form-name">Biểu mẫu Q1/2022</div></td>
-                                        <td className="c-sent-date"><div className="sent-date">01/03/2021</div></td>
-                                        <td className="c-status"><div className="status">Đang đánh giá</div></td>
-                                        <td className="c-current-step"><div className="current-step">QLTT đánh giá</div></td>
-                                    </tr>
-                                    <tr>
-                                        <td className="c-form-code"><div className="form-code">A12345</div></td>
-                                        <td className="c-form-sender"><div className="form-sender">Nguyễn Văn An</div></td>
-                                        <td className="c-form-name"><div className="form-name">Biểu mẫu Q1/2022</div></td>
-                                        <td className="c-sent-date"><div className="sent-date">01/03/2021</div></td>
-                                        <td className="c-status"><div className="status">Đang đánh giá</div></td>
-                                        <td className="c-current-step"><div className="current-step">QLTT đánh giá</div></td>
-                                    </tr>
+                                    {
+                                        evaluationData?.data.map((item, index) => {
+                                            return <tr key={index}>
+                                                        <td className="c-form-code"><div className="form-code" onClick={() => handleShowEvaluationDetailPopup(item?.formCode, item?.checkPhaseFormId, item?.employeeCode)}>{item?.formCode || ''}</div></td>
+                                                        <td className="c-form-sender"><div className="form-sender">{item?.poolUser?.fullname || ''}</div></td>
+                                                        <td className="c-form-name"><div className="form-name">{item?.checkPhaseFormName || ''}</div></td>
+                                                        <td className="c-sent-date"><div className="sent-date">{item?.sendDateLv1 && moment(item?.sendDateLv1).format('DD/MM/YYYY')}</div></td>
+                                                        <td className="c-status"><div className={`status ${item?.status == statusDone ? 'done' : 'in-progress'}`}>{item?.status == statusDone ? 'Đã hoàn thành' : 'Đang đánh giá'}</div></td>
+                                                        <td className="c-current-step"><div className="current-step">{currentSteps.find(step => step?.value == item?.status)?.label}</div></td>
+                                                    </tr>
+                                        })
+                                    }
                                 </tbody>
                             </table>
                         </div>
@@ -740,7 +704,7 @@ function EvaluationApproval(props) {
                                 </select>
                             </div>
                             <div className="paging-block">
-                                <CustomPaging pageSize={parseInt(pageSize)} onChangePage={onChangePage} totalRecords={total} />
+                                <CustomPaging pageSize={parseInt(paging.pageSize)} onChangePage={onChangePage} totalRecords={evaluationData?.total} />
                             </div>
                         </div>
                         </>
@@ -748,16 +712,15 @@ function EvaluationApproval(props) {
                     }
                     </div>
                 }
-
                 {
                     activeTab === 'batch-approval' &&
                     <div className="card shadow batch-approval-data">
                     {
-                        evaluationForms?.length > 0 ?
+                        evaluationData?.data?.length > 0 ?
                         <>
                         <div className="wrap-table-list-evaluation">
                             <div className="select-item-block">
-                                <input type="checkbox" checked={false} id="check-all" name="check-all" />
+                                <input type="checkbox" checked={isSelectedAll} id="check-all" name="check-all" onChange={(e) => handleCheckboxChange(e, null)} />
                                 <label htmlFor="check-all">Chọn tất cả</label>
                             </div>
                             <table className='table-list-evaluation'>
@@ -779,7 +742,26 @@ function EvaluationApproval(props) {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr className="divider"></tr>
+                                    {
+                                        evaluationData?.data.map((item, i) => {
+                                            let attitudeData = item?.listGroup[0]
+                                            let workResultData = item?.listGroup[1]
+                                            return <Fragment key={i}>
+                                                        <tr className="divider"></tr>
+                                                        <tr>
+                                                            <td className="c-check"><div className="check"><input type="checkbox" checked={item?.isSelected || false} onChange={(e) => handleCheckboxChange(e, i)} /></div></td>
+                                                            <td className="c-full-name"><div className="full-name">{item?.fullName || ''}</div></td>
+                                                            <td className="text-center c-self-assessment">{attitudeData?.seftPoint || 0}</td>
+                                                            <td className="text-center highlight-first c-cbql-assessment">{attitudeData?.leadReviewPoint || 0}</td>
+                                                            <td className="text-center c-self-assessment">{workResultData?.seftPoint || 0}</td>
+                                                            <td className="text-center highlight-first c-cbql-assessment">{workResultData?.leadReviewPoint || 0}</td>
+                                                            <td className="text-center highlight-second c-self-assessment">{item?.totalSeftPoint || 0}</td>
+                                                            <td className="text-center highlight-third c-cbql-assessment">{item?.totalLeadReviewPoint || 0}</td>
+                                                        </tr>
+                                                    </Fragment>
+                                        })
+                                    }
+                                    {/* <tr className="divider"></tr>
                                     <tr>
                                         <td className="c-check"><div className="check"><input type="checkbox" checked={false} /></div></td>
                                         <td className="c-full-name"><div className="full-name">Nguyễn Hoàng Minh Duy</div></td>
@@ -833,18 +815,7 @@ function EvaluationApproval(props) {
                                         <td className="text-center highlight-first c-cbql-assessment">90</td>
                                         <td className="text-center highlight-second c-self-assessment">96</td>
                                         <td className="text-center highlight-third c-cbql-assessment">89</td>
-                                    </tr>
-                                    <tr className="divider"></tr>
-                                    <tr>
-                                        <td className="c-check"><div className="check"><input type="checkbox" checked={false} /></div></td>
-                                        <td className="c-full-name"><div className="full-name">Nguyễn Hoàng Minh Duy</div></td>
-                                        <td className="text-center c-self-assessment">80</td>
-                                        <td className="text-center highlight-first c-cbql-assessment">85</td>
-                                        <td className="text-center c-self-assessment">100</td>
-                                        <td className="text-center highlight-first c-cbql-assessment">90</td>
-                                        <td className="text-center highlight-second c-self-assessment">96</td>
-                                        <td className="text-center highlight-third c-cbql-assessment">89</td>
-                                    </tr>
+                                    </tr> */}
                                 </tbody>
                             </table>
                         </div>
@@ -861,7 +832,7 @@ function EvaluationApproval(props) {
                                 </select>
                             </div>
                             <div className="paging-block">
-                                <CustomPaging pageSize={parseInt(pageSize)} onChangePage={onChangePage} totalRecords={total} />
+                                <CustomPaging pageSize={parseInt(paging.pageSize)} onChangePage={onChangePage} totalRecords={evaluationData?.total} />
                             </div>
                         </div>
                         </>
@@ -869,10 +840,13 @@ function EvaluationApproval(props) {
                     }
                     </div>
                 }
-                <div className="button-block">
-                    <button className="btn-action reject"><Image src={IconReject} alt="Reject" />Từ chối</button>
-                    <button className="btn-action approve"><Image src={IconApprove} alt="Approve" />Phê duyệt</button>
-                </div>
+                {
+                    activeTab === 'batch-approval' && evaluationData?.data?.length > 0 && 
+                    <div className="button-block">
+                        <button className="btn-action reject"><Image src={IconReject} alt="Reject" />Từ chối</button>
+                        <button className="btn-action approve"><Image src={IconApprove} alt="Approve" />Phê duyệt</button>
+                    </div>
+                }
             </div>
         </div>
         </>
