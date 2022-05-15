@@ -7,7 +7,7 @@ import { withRouter } from 'react-router-dom'
 import axios from 'axios'
 import Constants from '../../../commons/Constants'
 import { getRequestConfigurations } from '../../../commons/Utils'
-import { evaluationStatus } from '../Constants'
+import { evaluationStatus, actionButton } from '../Constants'
 import { useGuardStore } from '../../../modules'
 import LoadingModal from '../../../components/Common/LoadingModal'
 import StatusModal from '../../../components/Common/StatusModal'
@@ -393,11 +393,6 @@ function EvaluationDetail(props) {
     const [evaluationFormDetail, SetEvaluationFormDetail] = useState(null)
     const [isLoading, SetIsLoading] = useState(false)
     const [statusModal, SetStatusModal] = useState({isShow: false, isSuccess: true, content: ""})
-    const action = {
-        save: 1,
-        approve: 2,
-        reject: 3
-    }
     const { showByManager, updateParent } = props
     const guard = useGuardStore()
     const user = guard.getCurentUser()
@@ -501,16 +496,16 @@ function EvaluationDetail(props) {
             case evaluationStatus.launch:
                 return  (
                     <>
-                        <button className="btn-action save" onClick={() => handleSubmit(action.save)}><Image src={IconSave} alt="Save" />Lưu</button>
-                        <button className="btn-action send" onClick={() => handleSubmit(action.approve)}><Image src={IconSendRequest} alt="Send" />Gửi tới bước tiếp theo</button>
+                        <button className="btn-action save" onClick={() => handleSubmit(actionButton.save)}><Image src={IconSave} alt="Save" />Lưu</button>
+                        <button className="btn-action send" onClick={() => handleSubmit(actionButton.approve)}><Image src={IconSendRequest} alt="Send" />Gửi tới bước tiếp theo</button>
                     </>
                 )
             case evaluationStatus.selfAssessment:
                 if (showByManager) {
                     return  (
                         <>
-                            <button className="btn-action reject" onClick={() => handleSubmit(action.reject)}><Image src={IconReject} alt="Reject" />Từ chối</button>
-                            <button className="btn-action confirm" onClick={() => handleSubmit(action.approve)}><Image src={IconApprove} alt="Confirm" />Xác nhận</button>
+                            <button className="btn-action reject" onClick={() => handleSubmit(actionButton.reject)}><Image src={IconReject} alt="Reject" />Từ chối</button>
+                            <button className="btn-action confirm" onClick={() => handleSubmit(actionButton.approve)}><Image src={IconApprove} alt="Confirm" />Xác nhận</button>
                         </>
                     )
                 }
@@ -519,8 +514,8 @@ function EvaluationDetail(props) {
                 if (showByManager) {
                     return  (
                         <>
-                            <button className="btn-action reject" onClick={() => handleSubmit(action.reject)}><Image src={IconReject} alt="Reject" />Từ chối</button>
-                            <button className="btn-action approve" onClick={() => handleSubmit(action.approve, true)}><Image src={IconApprove} alt="Approve" />Phê duyệt</button>
+                            <button className="btn-action reject" onClick={() => handleSubmit(actionButton.reject)}><Image src={IconReject} alt="Reject" />Từ chối</button>
+                            <button className="btn-action approve" onClick={() => handleSubmit(actionButton.approve, true)}><Image src={IconApprove} alt="Approve" />Phê duyệt</button>
                         </>
                     )
                 }
@@ -530,13 +525,13 @@ function EvaluationDetail(props) {
 
     const getResponseMessages = (formStatus, actionCode, apiStatus) => {
         const messageMapping = {
-            [action.save]: {
+            [actionButton.save]: {
                 [evaluationStatus.launch]: {
                     success: 'Lưu biểu mẫu thành công!',
                     failed: 'Lưu biểu mẫu thất bại. Xin vui lòng thử lại!',
                 }
             },
-            [action.approve]: {
+            [actionButton.approve]: {
                 [evaluationStatus.launch]: {
                     success: 'Biểu mẫu đã được gửi tới QLTT đánh giá!',
                     failed: 'Gửi biểu mẫu thất bại. Xin vui lòng thử lại!',
@@ -550,7 +545,7 @@ function EvaluationDetail(props) {
                     failed: 'Phê duyệt biểu mẫu thất bại. Xin vui lòng thử lại!',
                 }
             },
-            [action.reject]: {
+            [actionButton.reject]: {
                 [evaluationStatus.selfAssessment]: {
                     success: 'Biểu mẫu đã được gửi lại CBNV thành công!',
                     failed: 'Biểu mẫu chưa được gửi lại CBNV. Xin vui lòng thử lại!',
@@ -578,7 +573,7 @@ function EvaluationDetail(props) {
         const statusModalTemp = {...statusModal}
         try {
             const config = getRequestConfigurations()
-            if (actionCode == action.reject || isApprove) { // Từ chối hoặc Phê duyệt
+            if (actionCode == actionButton.reject || isApprove) { // Từ chối hoặc Phê duyệt
                 const payload = {
                     ListFormCode : [evaluationFormDetail?.formCode],
                     type: actionCode,

@@ -20,7 +20,7 @@ const UserOption = props => {
                     <img src={`data:image/png;base64,${data.avatar}`} onError={addDefaultSrc} alt="avatar" />
                 </div>
                 <div className='main-info'>
-                    <div className="full-name">{data.fullName}</div>
+                    <div className="full-name">{data.label}</div>
                     <div className="other-info"><span className='account'>({data.account})</span><span className='title'>{data.current_position}</span></div>
                 </div>
             </div>
@@ -37,7 +37,7 @@ class SearchUser extends React.Component {
             userTyping: "",
             isSearching: false
         }
-        this.onInputChange = debounce(this.searchUserInfos, 900)
+        this.onInputChange = debounce(this.searchUserInfos, 800)
     }
 
     handleSelectChange = (name, value) => {
@@ -61,18 +61,25 @@ class SearchUser extends React.Component {
                     const data = res.data.data || []
                     const users = data.map(res => {
                         return {
-                            value: res.username,
-                            label: res.fullname,
-                            uid: res.uid,
-                            fullName: res.fullname,
+                            value: res?.uid,
+                            label: res?.fullname,
+                            account: res?.username,
                             avatar: res.avatar,
-                            employeeLevel: res.rank_title || res.rank,
-                            pnl: res.pnl,
-                            orglv2Id: res.organization_lv2,
-                            account: res.username,
-                            current_position: res.postition_name,
-                            department: res.division + (res.department ? '/' + res.department : '') + (res.part ? '/' + res.part : '')
+                            current_position: res.postition_name
                         }
+                        // return {
+                        //     value: res.username,
+                        //     label: res.fullname,
+                        //     uid: res.uid,
+                        //     fullName: res.fullname,
+                        //     avatar: res.avatar,
+                        //     employeeLevel: res.rank_title || res.rank,
+                        //     pnl: res.pnl,
+                        //     orglv2Id: res.organization_lv2,
+                        //     account: res.username,
+                        //     current_position: res.postition_name,
+                        //     department: res.division + (res.department ? '/' + res.department : '') + (res.part ? '/' + res.part : '')
+                        // }
                     })
                     this.setState({ users: users })
                 }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment } from "react"
+import React, { useState, useEffect, useRef, Fragment } from "react"
 import Select from 'react-select'
 import { Image, Tabs, Tab, Form, Button, Modal, Row, Col, Collapse } from 'react-bootstrap'
 import DatePicker, { registerLocale } from 'react-datepicker'
@@ -6,10 +6,11 @@ import { useTranslation } from "react-i18next"
 import moment from 'moment'
 import axios from 'axios'
 import _ from 'lodash'
-import { evaluationStatus } from '../Constants'
+import { evaluationStatus, actionButton } from '../Constants'
 import Constants from '../../../commons/Constants'
 import { getRequestConfigurations, getMuleSoftHeaderConfigurations } from '../../../commons/Utils'
 import LoadingModal from '../../../components/Common/LoadingModal'
+import StatusModal from '../../../components/Common/StatusModal'
 import EvaluationDetailModal from '../EvaluationDetailModal'
 import SearchUser from '../SearchUser'
 import CustomPaging from '../../../components/Common/CustomPaging'
@@ -23,6 +24,7 @@ import vi from 'date-fns/locale/vi'
 registerLocale("vi", vi)
 
 const PnLOrgNumber = localStorage.getItem('organizationLv2')
+const employeeCode = localStorage.getItem('employeeNo')
 const formStatuses = [
     {value: 0, label: 'Đang đánh giá'},
     {value: 1, label: 'Hoàn thành'},
@@ -200,8 +202,10 @@ function ApprovalTabContent(props) {
     })
 
     const updateUser = (user) => {
-        console.log("user selected ...")
-        console.log(user)
+        SetFilter({
+            ...filter,
+            employee: _.omit({...user}, 'avatar', 'current_position')
+        })
     }
 
     const handleInputChange = (key, value, childKey) => {
@@ -300,10 +304,12 @@ function ApprovalTabContent(props) {
 }
 
 function BatchApprovalTabContent(props) {
-    const { handleFilter, masterData } = props
+    const { isOpen, masterData, handleFilter, processLoading } = props
+    const { t } = useTranslation()
     const [filter, SetFilter] = useState({
         isOpenFilterAdvanced: false,
-        status: null,
+        evaluationForms: [],
+        evaluationForm: null,
         employees: [],
         employee: null,
         currentStep: null,
@@ -318,12 +324,44 @@ function BatchApprovalTabContent(props) {
         rank: null,
         title: null,
         fromDate: null,
-        toDate: null
+        toDate: null,
+        isFormFilterValid: true
     })
 
+    useEffect(() => {
+        const processEvaluationForms = response => {
+            if (response && response.data) {
+                const result = response.data.result
+                if (result.code == Constants.PMS_API_SUCCESS_CODE) {
+                    const data = (response?.data?.data || []).map(item => {
+                        return {value: item?.checkPhaseId, label: item?.name}
+                    })
+                    SetFilter({
+                        ...filter,
+                        evaluationForms: data
+                    })
+                }
+            }
+            processLoading(false)
+        }
+
+        const fetchEvaluationForms = async () => {
+            processLoading(true)
+            const config = getRequestConfigurations()
+            const response = await axios.get(`${process.env.REACT_APP_HRDX_URL}api/form/listFormToApprove?EmployeeCode=${employeeCode}`, config)
+            processEvaluationForms(response)
+        }
+
+        if (isOpen && filter.evaluationForms?.length === 0) {
+            fetchEvaluationForms()
+        }
+    }, [isOpen])
+
     const updateUser = (user) => {
-        console.log("user selected ...")
-        console.log(user)
+        SetFilter({
+            ...filter,
+            employee: _.omit({...user}, 'avatar', 'current_position')
+        })
     }
 
     const handleInputChange = (key, value, childKey) => {
@@ -362,15 +400,32 @@ function BatchApprovalTabContent(props) {
         })
     }
 
-    const handleFormFilter = (e, tab) => {
+    const isFormFilterValid = () => {
+        let isValid = true
+        if (!filter.evaluationForm || _.size(filter.evaluationForm) === 0) {
+            isValid = false
+        }
+        SetFilter({
+            ...filter,
+            isFormFilterValid: isValid
+        })
+        return isValid
+    }
+
+    const handleFormFilter = (e) => {
         e.preventDefault()
-        const filterToSubmit = _.omit({...filter}, 'blocks', 'employees', 'groups', 'isOpenFilterAdvanced', 'regions', 'units')
-        handleFilter(filterToSubmit, 'batch-approval')
+        const isValid = isFormFilterValid()
+        if (!isValid) {
+            return
+        }
+
+        const filterToSubmit = _.omit({...filter}, 'evaluationForms', 'blocks', 'employees', 'groups', 'isOpenFilterAdvanced', 'regions', 'units')
+        handleFilter(filterToSubmit, 'batchApproval')
     }
 
     return (
         <div className="batch-approval-tab-content">
-            <Form id="batch-approval-form" onSubmit={e => handleFormFilter(e, 'batch-approval')}>
+            <Form id="batch-approval-form" onSubmit={e => handleFormFilter(e)}>
                 <Row>
                     <Col md={6}>
                         <Form.Group as={Row} controlId="form">
@@ -379,9 +434,14 @@ function BatchApprovalTabContent(props) {
                                 <Select 
                                     placeholder="Lựa chọn" 
                                     isClearable={true} 
-                                    value={null} 
-                                    options={[]} 
-                                    onChange={e => handleInputChange('form', e)} />
+                                    value={filter.evaluationForm} 
+                                    options={filter.evaluationForms} 
+                                    onChange={e => handleInputChange('evaluationForm', e)} />
+                            </Col>
+                            <Col sm={12}>
+                                {
+                                    !filter.isFormFilterValid && <p className="alert alert-danger invalid-message" role="alert">{t('Required')}</p>
+                                }
                             </Col>
                         </Form.Group>
                     </Col>
@@ -431,9 +491,16 @@ function EvaluationApproval(props) {
         formCode: null,
         employeeCode: null
     })
+    const [statusModal, SetStatusModal] = useState({isShow: false, isSuccess: true, content: ""})
     const [paging, SetPaging] = useState({
-        pageIndex: 1,
-        pageSize: 10
+        approval: {
+            pageIndex: 1,
+            pageSize: 1
+        },
+        batchApproval: {
+            pageIndex: 1,
+            pageSize: 1
+        }
     })
     const [masterData, SetMasterData] = useState({
         blocks: [],
@@ -443,13 +510,32 @@ function EvaluationApproval(props) {
         ranks: [],
         titles: []
     })
+    const [hasChangePageSize, SetHasChangePageSize] = useState(false)
     const [activeTab, SetActiveTab] = useState('approval')
     const [evaluationData, SetEvaluationData] = useState({
         data: [],
         total: 0
     })
-    const statusDone = 5
+    const [dataFilter, SetDataFilter] = useState(null)
 
+    const statusDone = 5
+    const listPageSizes = [1, 10, 20, 30, 40, 50]
+
+    const useHasChanged= (val) => {
+        const prevVal = usePrevious(val)
+        return prevVal !== val
+    }
+    
+    const usePrevious = (value) => {
+        const ref = useRef()
+        useEffect(() => {
+          ref.current = value
+        })
+        return ref.current
+    }
+
+    const hasPageIndexChanged = useHasChanged(paging[activeTab].pageIndex)
+    
     useEffect(() => {
         const prepareRanksAndTitles = (name, raw) => {
             const rankCodeLevelMapping = {
@@ -526,8 +612,24 @@ function EvaluationApproval(props) {
         fetchMasterData()
     }, [])
 
-    const onChangePage = () => {
+    useEffect(() => {
+        const pagingTemp = {...paging}
+        pagingTemp.approval.pageIndex = 1
+        pagingTemp.batchApproval.pageIndex = 1
+        SetPaging(pagingTemp)
+        handleFilter(dataFilter, activeTab)
+    }, [paging[activeTab].pageSize])
 
+    useEffect(() => {
+        if (hasPageIndexChanged) {
+            handleFilter(dataFilter, activeTab)
+        }
+    }, [paging[activeTab].pageIndex])
+    
+    const handleChangePage = (key, page) => {
+        const pagingTemp = {...paging}
+        pagingTemp[key].pageIndex = page
+        SetPaging(pagingTemp)
     }
 
     const handleTabChange = key => {
@@ -541,13 +643,14 @@ function EvaluationApproval(props) {
 
     const handleFilter = async (data, tab) => {
         SetIsLoading(true)
+        SetDataFilter(data)
         const config = getRequestConfigurations()
         config.headers['content-type'] = 'multipart/form-data'
         const organizationLevel6Selected = (data?.group || []).map(item => item.value)
         let apiPath = ''
         let formData = new FormData()
-        formData.append('PageIndex', paging.pageIndex)
-        formData.append('PageSize', paging.pageSize)
+        formData.append('PageIndex', paging[tab].pageIndex)
+        formData.append('PageSize', paging[tab].pageSize)
         formData.append('startDate', data?.fromDate || '')
         formData.append('endDate', data?.toDate || '')
         formData.append('organization_lv3', data?.block?.value || '')
@@ -556,14 +659,17 @@ function EvaluationApproval(props) {
         formData.append('organization_lv6', organizationLevel6Selected?.length === 0 ? '' : JSON.stringify(organizationLevel6Selected))
         formData.append('employee_level', data?.rank?.value || '')
         formData.append('positionName', data?.title?.value || '')
+        // data?.employee // Thiếu param user để filter
+
         if (tab === 'approval') {
             formData.append('ReviewerEmployeeCode', localStorage.getItem('employeeNo') || '')
+            formData.append('CurrentStatus', data?.status?.value || null)
             apiPath = `${process.env.REACT_APP_HRDX_URL}api/form/listReview`
-        } else if (tab === 'batch-approval') {
+        } else if (tab === 'batchApproval') {
             formData.append('ApproveEmployeeCode', localStorage.getItem('employeeNo') || '')
+            formData.append('CheckPhaseFormId', data?.evaluationForm?.value || null)
             apiPath = `${process.env.REACT_APP_HRDX_URL}api/form/listApprove`
         }
-        formData.append('CurrentStatus', data?.status?.value || null)
         formData.append('CurrentStep', data?.currentStep?.value || 0)
      
         try {
@@ -572,7 +678,7 @@ function EvaluationApproval(props) {
                 const result = response?.data?.result
                 if (result?.code == Constants.PMS_API_SUCCESS_CODE) {
                     let data = response?.data?.data
-                    if (tab === 'batch-approval') {
+                    if (tab === 'batchApproval') {
                         data = [...data].map(item => ({...item, isSelected: false}))
                     }
                     SetEvaluationData({
@@ -632,9 +738,80 @@ function EvaluationApproval(props) {
         }
     }
 
+    const getResponseMessages = (actionCode, apiStatus) => {
+        const messageMapping = {
+            [actionButton.approve]: {
+                success: 'Phê duyệt biểu mẫu thành công!',
+                failed: 'Phê duyệt biểu mẫu thất bại. Xin vui lòng thử lại!',
+            },
+            [actionButton.reject]: {
+                success: 'Biểu mẫu đã được gửi lại QLTT thành công!',
+                failed: 'Biểu mẫu chưa được gửi lại QLTT. Xin vui lòng thử lại!',
+            }
+        }
+        return messageMapping[actionCode][apiStatus]
+    }
+
+    const handleAction = async (actionCode) => {
+        SetIsLoading(true)
+        const statusModalTemp = {...statusModal}
+        try {
+            const config = getRequestConfigurations()
+            const formCodeSelected = evaluationData?.data.filter(item => item?.isSelected).map(item => item?.formCode)
+            const payload = {
+                ListFormCode: formCodeSelected,
+                type: actionCode,
+                CurrentStatus: evaluationStatus.qlttAssessment
+            }
+            const response = await axios.post(`${process.env.REACT_APP_HRDX_URL}api/form/ApproveBothReject`, payload, config)
+            SetIsLoading(false)
+            statusModalTemp.isShow = true
+            if (response && response.data) {
+                const result = response.data.result
+                if (result.code == Constants.PMS_API_SUCCESS_CODE) {
+                    statusModalTemp.isSuccess = true
+                    statusModalTemp.content = getResponseMessages(actionCode, 'success')
+                } else {
+                    statusModalTemp.isSuccess = false
+                    statusModalTemp.content = getResponseMessages(actionCode, 'failed')
+                }
+            } else {
+                statusModalTemp.isSuccess = false
+                statusModalTemp.content = getResponseMessages(actionCode, 'failed')
+            }
+            SetStatusModal(statusModalTemp)
+        } catch (e) {
+            SetIsLoading(false)
+            statusModalTemp.isShow = false
+            statusModalTemp.isSuccess = false
+            statusModalTemp.content = t("AnErrorOccurred")
+            SetStatusModal(statusModalTemp)
+        }
+    }
+
+    const onHideStatusModal = () => {
+        const statusModalTemp = {...statusModal}
+        statusModalTemp.isShow = false
+        statusModalTemp.isSuccess = true
+        statusModalTemp.content = ""
+        SetStatusModal(statusModalTemp)
+        window.location.reload()
+    }
+
+    const processLoading = (status) => {
+        SetIsLoading(status)
+    }
+
+    const handleChangePageSize = (key, e) => {
+        const pagingTemp = {...paging}
+        pagingTemp[key].pageSize = e?.target?.value
+        SetPaging(pagingTemp)
+    }
+
     return (
         <>
         <LoadingModal show={isLoading} />
+        <StatusModal show={statusModal.isShow} isSuccess={statusModal.isSuccess} content={statusModal.content} onHide={onHideStatusModal} />
         <EvaluationDetailModal 
             isShow={evaluationDetailPopup.isShow} 
             evaluationFormId={evaluationDetailPopup.evaluationFormId} 
@@ -647,15 +824,22 @@ function EvaluationApproval(props) {
                 <div className="card shadow card-filter">
                     <Tabs id="filter-tabs" defaultActiveKey={activeTab} onSelect={key => handleTabChange(key)}>
                         <Tab eventKey="approval" title='Đánh giá/Phê duyệt' className="tab-item">
-                            <ApprovalTabContent masterData={masterData} handleFilter={handleFilter} />
+                            <ApprovalTabContent 
+                                masterData={masterData} 
+                                hasChangePageSize={hasChangePageSize} 
+                                handleFilter={handleFilter} />
                         </Tab>
-                        <Tab eventKey="batch-approval" title='Phê duyệt hàng loạt' className="tab-item">
-                            <BatchApprovalTabContent masterData={masterData} handleFilter={handleFilter} />
+                        <Tab eventKey="batchApproval" title='Phê duyệt hàng loạt' className="tab-item">
+                            <BatchApprovalTabContent 
+                                isOpen={activeTab === 'batchApproval'} 
+                                masterData={masterData} 
+                                hasChangePageSize={hasChangePageSize} 
+                                handleFilter={handleFilter} 
+                                processLoading={processLoading} />
                         </Tab>
                     </Tabs>
                 </div>
             </div>
-
             <div className="data-block">
                 {
                     activeTab === 'approval' && 
@@ -694,17 +878,16 @@ function EvaluationApproval(props) {
                         <div className="bottom-region">
                             <div className="customize-display">
                                 <label>Hiển thị</label>
-                                <select>
-                                    <option></option>
-                                    <option>10</option>
-                                    <option>20</option>
-                                    <option>30</option>
-                                    <option>40</option>
-                                    <option>50</option>
+                                <select value={paging.approval.pageSize || listPageSizes[0]} onChange={(e) => handleChangePageSize('approval', e)}>
+                                    {
+                                        listPageSizes.map((page, i) => {
+                                            return <option value={page} key={i}>{page}</option>
+                                        })
+                                    }
                                 </select>
                             </div>
                             <div className="paging-block">
-                                <CustomPaging pageSize={parseInt(paging.pageSize)} onChangePage={onChangePage} totalRecords={evaluationData?.total} />
+                                <CustomPaging pageSize={parseInt(paging.approval.pageSize)} onChangePage={(page) => handleChangePage('approval', page)} totalRecords={evaluationData?.total} />
                             </div>
                         </div>
                         </>
@@ -713,7 +896,7 @@ function EvaluationApproval(props) {
                     </div>
                 }
                 {
-                    activeTab === 'batch-approval' &&
+                    activeTab === 'batchApproval' &&
                     <div className="card shadow batch-approval-data">
                     {
                         evaluationData?.data?.length > 0 ?
@@ -761,78 +944,22 @@ function EvaluationApproval(props) {
                                                     </Fragment>
                                         })
                                     }
-                                    {/* <tr className="divider"></tr>
-                                    <tr>
-                                        <td className="c-check"><div className="check"><input type="checkbox" checked={false} /></div></td>
-                                        <td className="c-full-name"><div className="full-name">Nguyễn Hoàng Minh Duy</div></td>
-                                        <td className="text-center c-self-assessment">80</td>
-                                        <td className="text-center highlight-first c-cbql-assessment">85</td>
-                                        <td className="text-center c-self-assessment">100</td>
-                                        <td className="text-center highlight-first c-cbql-assessment">90</td>
-                                        <td className="text-center highlight-second c-self-assessment">96</td>
-                                        <td className="text-center highlight-third c-cbql-assessment">89</td>
-                                    </tr>
-                                    <tr className="divider"></tr>
-                                    <tr>
-                                        <td className="c-check"><div className="check"><input type="checkbox" checked={false} /></div></td>
-                                        <td className="c-full-name"><div className="full-name">Nguyễn Hoàng Minh Duy</div></td>
-                                        <td className="text-center c-self-assessment">80</td>
-                                        <td className="text-center highlight-first c-cbql-assessment">85</td>
-                                        <td className="text-center c-self-assessment">100</td>
-                                        <td className="text-center highlight-first c-cbql-assessment">90</td>
-                                        <td className="text-center highlight-second c-self-assessment">96</td>
-                                        <td className="text-center highlight-third c-cbql-assessment">89</td>
-                                    </tr>
-                                    <tr className="divider"></tr>
-                                    <tr>
-                                        <td className="c-check"><div className="check"><input type="checkbox" checked={false} /></div></td>
-                                        <td className="c-full-name"><div className="full-name">Nguyễn Hoàng Minh Duy</div></td>
-                                        <td className="text-center c-self-assessment">80</td>
-                                        <td className="text-center highlight-first c-cbql-assessment">85</td>
-                                        <td className="text-center c-self-assessment">100</td>
-                                        <td className="text-center highlight-first c-cbql-assessment">90</td>
-                                        <td className="text-center highlight-second c-self-assessment">96</td>
-                                        <td className="text-center highlight-third c-cbql-assessment">89</td>
-                                    </tr>
-                                    <tr className="divider"></tr>
-                                    <tr>
-                                        <td className="c-check"><div className="check"><input type="checkbox" checked={false} /></div></td>
-                                        <td className="c-full-name"><div className="full-name">Nguyễn Hoàng Minh Duy</div></td>
-                                        <td className="text-center c-self-assessment">80</td>
-                                        <td className="text-center highlight-first c-cbql-assessment">85</td>
-                                        <td className="text-center c-self-assessment">100</td>
-                                        <td className="text-center highlight-first c-cbql-assessment">90</td>
-                                        <td className="text-center highlight-second c-self-assessment">96</td>
-                                        <td className="text-center highlight-third c-cbql-assessment">89</td>
-                                    </tr>
-                                    <tr className="divider"></tr>
-                                    <tr>
-                                        <td className="c-check"><div className="check"><input type="checkbox" checked={false} /></div></td>
-                                        <td className="c-full-name"><div className="full-name">Nguyễn Hoàng Minh Duy</div></td>
-                                        <td className="text-center c-self-assessment">80</td>
-                                        <td className="text-center highlight-first c-cbql-assessment">85</td>
-                                        <td className="text-center c-self-assessment">100</td>
-                                        <td className="text-center highlight-first c-cbql-assessment">90</td>
-                                        <td className="text-center highlight-second c-self-assessment">96</td>
-                                        <td className="text-center highlight-third c-cbql-assessment">89</td>
-                                    </tr> */}
                                 </tbody>
                             </table>
                         </div>
                         <div className="bottom-region">
                             <div className="customize-display">
                                 <label>Hiển thị</label>
-                                <select>
-                                    <option></option>
-                                    <option>10</option>
-                                    <option>20</option>
-                                    <option>30</option>
-                                    <option>40</option>
-                                    <option>50</option>
+                                <select value={paging.batchApproval.pageSize || listPageSizes[0]} onChange={(e) => handleChangePageSize('batchApproval', e)}>
+                                    {
+                                        listPageSizes.map((page, i) => {
+                                            return <option value={page} key={i}>{page}</option>
+                                        })
+                                    }
                                 </select>
                             </div>
                             <div className="paging-block">
-                                <CustomPaging pageSize={parseInt(paging.pageSize)} onChangePage={onChangePage} totalRecords={evaluationData?.total} />
+                                <CustomPaging pageSize={parseInt(paging.batchApproval.pageSize)} onChangePage={(page) => handleChangePage('batchApproval', page)} totalRecords={evaluationData?.total} />
                             </div>
                         </div>
                         </>
@@ -841,10 +968,10 @@ function EvaluationApproval(props) {
                     </div>
                 }
                 {
-                    activeTab === 'batch-approval' && evaluationData?.data?.length > 0 && 
+                    activeTab === 'batchApproval' && evaluationData?.data?.length > 0 && 
                     <div className="button-block">
-                        <button className="btn-action reject"><Image src={IconReject} alt="Reject" />Từ chối</button>
-                        <button className="btn-action approve"><Image src={IconApprove} alt="Approve" />Phê duyệt</button>
+                        <button className="btn-action reject" onClick={() => handleAction(actionButton.reject)}><Image src={IconReject} alt="Reject" />Từ chối</button>
+                        <button className="btn-action approve" onClick={() => handleAction(actionButton.approve)}><Image src={IconApprove} alt="Approve" />Phê duyệt</button>
                     </div>
                 }
             </div>

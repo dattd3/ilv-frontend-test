@@ -5,5 +5,10 @@ const evaluationStatus = {
     qlttAssessment: 4,
     cbldApproved: 5,
 }
+const actionButton = {
+    save: 1,
+    approve: 2,
+    reject: 3
+}
 
-export { evaluationStatus }
+export { evaluationStatus, actionButton }
