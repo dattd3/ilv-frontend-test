@@ -334,7 +334,7 @@ function BatchApprovalTabContent(props) {
                 const result = response.data.result
                 if (result.code == Constants.PMS_API_SUCCESS_CODE) {
                     const data = (response?.data?.data || []).map(item => {
-                        return {value: item?.checkPhaseId, label: item?.name}
+                        return {value: item?.id, label: item?.name}
                     })
                     SetFilter({
                         ...filter,
@@ -651,6 +651,7 @@ function EvaluationApproval(props) {
         let formData = new FormData()
         formData.append('PageIndex', paging[tab].pageIndex)
         formData.append('PageSize', paging[tab].pageSize)
+        formData.append('Employee', data?.employee?.value || '')
         formData.append('startDate', data?.fromDate || '')
         formData.append('endDate', data?.toDate || '')
         formData.append('organization_lv3', data?.block?.value || '')
@@ -659,11 +660,10 @@ function EvaluationApproval(props) {
         formData.append('organization_lv6', organizationLevel6Selected?.length === 0 ? '' : JSON.stringify(organizationLevel6Selected))
         formData.append('employee_level', data?.rank?.value || '')
         formData.append('positionName', data?.title?.value || '')
-        // data?.employee // Thiếu param user để filter
 
         if (tab === 'approval') {
             formData.append('ReviewerEmployeeCode', localStorage.getItem('employeeNo') || '')
-            formData.append('CurrentStatus', data?.status?.value || null)
+            formData.append('CurrentStatus', data?.status?.value)
             apiPath = `${process.env.REACT_APP_HRDX_URL}api/form/listReview`
         } else if (tab === 'batchApproval') {
             formData.append('ApproveEmployeeCode', localStorage.getItem('employeeNo') || '')

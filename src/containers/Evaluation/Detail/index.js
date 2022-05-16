@@ -22,27 +22,7 @@ import IconApprove from '../../../assets/img/icon/Icon_Check.svg'
 
 function EvaluationOverall(props) {
     const { evaluationFormDetail } = props
-    const assessmentScale = 5
     const totalCompleted = evaluationFormDetail?.totalComplete || 0
-
-    const calculateAssessment = (listTarget) => {
-        const assessment = (listTarget || []).reduce((initial, current) => {
-            initial.selfAssessment += Number(current?.seftPoint || 0) / assessmentScale * Number(current?.weight || 0)
-            initial.managerAssessment += Number(current?.leadReviewPoint || 0) / assessmentScale * Number(current?.weight || 0)
-            return initial
-        }, {selfAssessment: 0, managerAssessment: 0})
-
-        return assessment
-    }
-
-    const totalInfo = (evaluationFormDetail?.listGroup || []).reduce((initial, current) => {
-        let assessment = calculateAssessment(current?.listTarget)
-        initial.self += assessment?.selfAssessment * Number(current?.groupWeight) / 100
-        initial.manager += assessment?.managerAssessment * Number(current?.groupWeight) / 100
-        return initial
-    }, {self: 0, manager: 0})
-
-
 
     const overallData = {
         // labels: ["Red", "Green"],
@@ -81,7 +61,7 @@ function EvaluationOverall(props) {
                 <div className="card shadow card-overall">
                     <h6 className="text-center chart-title">Điểm tổng thể</h6>
                     <div className="chart">
-                        <div className="detail">{evaluationFormDetail?.status == evaluationStatus.launch  ? totalInfo.self : totalInfo.manager}</div>
+                        <div className="detail">{evaluationFormDetail?.status == evaluationStatus.launch  ? evaluationFormDetail?.totalSeftPoint || 0 : evaluationFormDetail?.totalLeadReviewPoint || 0}</div>
                     </div>
                 </div>
                 <div className="card shadow card-detail">
@@ -96,19 +76,18 @@ function EvaluationOverall(props) {
                         <tbody>
                             {
                                 (evaluationFormDetail?.listGroup || []).map((item, i) => {
-                                    let assessment = calculateAssessment(item?.listTarget)
-
+                                    // let assessment = calculateAssessment(item?.listTarget)
                                     return <tr key={i}>
                                                 <td className='c-criteria'><div className='criteria'>{item?.groupName}</div></td>
-                                                <td className='c-self-assessment text-center'>{assessment.selfAssessment}</td>
-                                                <td className='c-manager-assessment text-center color-red'>{assessment.managerAssessment}</td>
+                                                <td className='c-self-assessment text-center'>{item?.groupSeftPoint || 0}</td>
+                                                <td className='c-manager-assessment text-center color-red'>{item?.groupLeadReviewPoint || 0}</td>
                                             </tr>
                                 })
                             }
                             <tr>
                                 <td className='c-criteria'><div className='font-weight-bold text-uppercase criteria'>Điểm tổng thể</div></td>
-                                <td className='c-self-assessment text-center font-weight-bold'>{totalInfo.self}</td>
-                                <td className='c-manager-assessment text-center font-weight-bold color-red'>{totalInfo.manager}</td>
+                                <td className='c-self-assessment text-center font-weight-bold'>{evaluationFormDetail?.totalSeftPoint || 0}</td>
+                                <td className='c-manager-assessment text-center font-weight-bold color-red'>{evaluationFormDetail?.totalLeadReviewPoint || 0}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -406,15 +385,15 @@ function EvaluationDetail(props) {
                 if (result && result.code == Constants.PMS_API_SUCCESS_CODE) {
                     const evaluationFormDetailTemp = response.data?.data
                     evaluationFormDetailTemp.listGroup = ([...evaluationFormDetailTemp?.listGroup] || []).sort((pre, next) => pre.groupOrder - next.groupOrder)
-                    const totalQuestionsAnswered = (evaluationFormDetailTemp?.listGroup || []).reduce((initial, current) => {
-                        let questionsAnswered = (current?.listTarget || []).reduce((subInitial, subCurrent) => {
-                            subInitial += subCurrent?.seftPoint ? 1 : 0
-                            return subInitial
-                        }, 0)
-                        initial += questionsAnswered
-                        return initial
-                    }, 0)
-                    evaluationFormDetailTemp.totalComplete = totalQuestionsAnswered
+                    // const totalQuestionsAnswered = (evaluationFormDetailTemp?.listGroup || []).reduce((initial, current) => {
+                    //     let questionsAnswered = (current?.listTarget || []).reduce((subInitial, subCurrent) => {
+                    //         subInitial += subCurrent?.seftPoint ? 1 : 0
+                    //         return subInitial
+                    //     }, 0)
+                    //     initial += questionsAnswered
+                    //     return initial
+                    // }, 0)
+                    // evaluationFormDetailTemp.totalComplete = totalQuestionsAnswered
                     SetEvaluationFormDetail(evaluationFormDetailTemp)
                 }
             }
@@ -441,6 +420,26 @@ function EvaluationDetail(props) {
         fetchEvaluationFormDetails()
     }, [])
 
+    const calculateAssessment = (listTarget) => {
+        const assessmentScale = 5
+        const assessment = (listTarget || []).reduce((initial, current) => {
+            initial.selfAssessment += Number(current?.seftPoint || 0) / assessmentScale * Number(current?.weight || 0)
+            initial.managerAssessment += Number(current?.leadReviewPoint || 0) / assessmentScale * Number(current?.weight || 0)
+            return initial
+        }, {selfAssessment: 0, managerAssessment: 0})
+        return assessment
+    }
+
+    const getTotalInfoByListGroup = (listGroup) => {
+        const result = (listGroup || []).reduce((initial, current) => {
+            let assessment = calculateAssessment(current?.listTarget)
+            initial.self += assessment?.selfAssessment * Number(current?.groupWeight) / 100
+            initial.manager += assessment?.managerAssessment * Number(current?.groupWeight) / 100
+            return initial
+        }, {self: 0, manager: 0})
+        return result
+    }
+
     const updateData = (subIndex, parentIndex, stateName, value) => {
         const evaluationFormDetailTemp = {...evaluationFormDetail}
         evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex][stateName] = value
@@ -452,7 +451,17 @@ function EvaluationDetail(props) {
             initial += questionsAnswered
             return initial
         }, 0)
+        evaluationFormDetailTemp.listGroup = [...evaluationFormDetailTemp.listGroup || []].map(item => {
+            return {
+                ...item,
+                groupSeftPoint: calculateAssessment(item?.listTarget)?.selfAssessment || 0,
+                groupLeadReviewPoint: calculateAssessment(item?.listTarget)?.managerAssessment || 0
+            }
+        })
+        const totalInfos = getTotalInfoByListGroup(evaluationFormDetailTemp.listGroup)
         evaluationFormDetailTemp.totalComplete = totalQuestionsAnswered
+        evaluationFormDetailTemp.totalSeftPoint = totalInfos?.self || 0
+        evaluationFormDetailTemp.totalLeadReviewPoint = totalInfos?.manager || 0
         SetEvaluationFormDetail(evaluationFormDetailTemp)
     }
     
