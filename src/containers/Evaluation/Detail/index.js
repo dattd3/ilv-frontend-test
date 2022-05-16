@@ -31,10 +31,7 @@ function EvaluationOverall(props) {
                 data: [evaluationFormDetail?.totalTarget - totalCompleted, totalCompleted],
                 backgroundColor: ["#DEE2E6", "#7AD731"],
                 hoverBackgroundColor: ["#DEE2E6", "#7AD731"],
-                borderWidth: 0,
-                options: {
-                    events: []
-                }
+                borderWidth: 0
             }
         ]
     }
@@ -43,7 +40,8 @@ function EvaluationOverall(props) {
         responsive: true,
         aspectRatio: 1,
         tooltips: {enabled: false},
-        hover: {mode: null}
+        hover: {mode: null},
+        cutoutPercentage: 70
     }
 
     return <div className="block-overall">
