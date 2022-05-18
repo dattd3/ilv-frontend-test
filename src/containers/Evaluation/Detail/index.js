@@ -21,7 +21,7 @@ import IconReject from '../../../assets/img/icon/Icon_Cancel.svg'
 import IconApprove from '../../../assets/img/icon/Icon_Check.svg'
 
 function EvaluationOverall(props) {
-    const { evaluationFormDetail } = props
+    const { evaluationFormDetail, showByManager } = props
     const totalCompleted = evaluationFormDetail?.totalComplete || 0
 
     const overallData = {
@@ -59,7 +59,7 @@ function EvaluationOverall(props) {
                 <div className="card shadow card-overall">
                     <h6 className="text-center chart-title">Điểm tổng thể</h6>
                     <div className="chart">
-                        <div className="detail">{evaluationFormDetail?.status == evaluationStatus.launch  ? evaluationFormDetail?.totalSeftPoint || 0 : evaluationFormDetail?.totalLeadReviewPoint || 0}</div>
+                        <div className="detail">{(evaluationFormDetail?.status == evaluationStatus.launch || (evaluationFormDetail?.status == evaluationStatus.selfAssessment && !showByManager))  ? evaluationFormDetail?.totalSeftPoint || 0 : evaluationFormDetail?.totalLeadReviewPoint || 0}</div>
                     </div>
                 </div>
                 <div className="card shadow card-detail">

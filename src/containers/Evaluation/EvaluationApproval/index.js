@@ -30,10 +30,9 @@ const formStatuses = [
     {value: 1, label: 'Hoàn thành'},
 ]
 const currentSteps = [
-    // {value: evaluationStatus.launch, label: 'Tự đánh giá'},
     {value: evaluationStatus.selfAssessment, label: 'QLTT đánh giá'},
     {value: evaluationStatus.qlttAssessment, label: 'CBLĐ phê duyệt'},
-    // {value: evaluationStatus.launch, label: 'Hoàn thành'},
+    {value: evaluationStatus.cbldApproved, label: 'Hoàn thành'}
 ]
 
 function AdvancedFilter(props) {
