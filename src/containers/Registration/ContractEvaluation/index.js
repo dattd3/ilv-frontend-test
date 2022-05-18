@@ -546,7 +546,6 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         defaultStartDate = moment(infos.staffContracts.expireDate).add(1, 'days').format('DD/MM/YYYY');
         defaultEndDate = `31/05/${moment(infos.staffContracts.expireDate).add(2, 'years').year()}`
       }
-      
       candidateInfos.qlttOpinion = {
         result : infos.additionInforEvaluations.contractKpiResult ? this.resultOptions.filter(item => item.value == infos.additionInforEvaluations.contractKpiResult)[0] || {} : {},
         contract: infos.additionInforEvaluations.contractType ? this.contractTypeOptions.filter(item => item.value == infos.additionInforEvaluations.contractType)[0] || {} : {},
@@ -554,6 +553,20 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         endDate:  infos.additionInforEvaluations.expireDate ? moment(infos.additionInforEvaluations.expireDate).format('DD/MM/YYYY') || null : defaultEndDate,
         otherOption: infos.additionInforEvaluations.proposed || ''
       }
+
+      if(infos.additionInforEvaluations.contractKpiResult == 5) {
+        candidateInfos['qlttOpinion']['startDateTmp'] = candidateInfos.qlttOpinion.startDate;
+        candidateInfos['qlttOpinion']['endDateTmp'] = candidateInfos.qlttOpinion.endDate;
+        candidateInfos['qlttOpinion']['startDate'] = null;
+        candidateInfos['qlttOpinion']['endDate'] = null;
+        candidateInfos['qlttOpinion']['disableTime'] = true;
+      }
+  
+      if(infos.additionInforEvaluations.contractType == 'VB') {
+        candidateInfos['qlttOpinion']['endDateTmp'] = candidateInfos.qlttOpinion.endDate;
+        candidateInfos['qlttOpinion']['endDate'] = null;
+      }
+
     }
 
     if(infos.requestHistorys){
@@ -816,6 +829,34 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     //   }
     //   errors[subName] = null;
     // }
+    //'qlttOpinion', 'result'
+    if(name =='qlttOpinion' && subName == 'result') {
+      if(e?.value == 5) {
+        candidateInfos[name]['startDateTmp'] = candidateInfos[name]['startDateTmp'] || candidateInfos[name]['startDate'];
+        candidateInfos[name]['endDateTmp'] = candidateInfos[name]['endDateTmp'] || candidateInfos[name]['endDate'];
+        candidateInfos[name]['startDate'] = null;
+        candidateInfos[name]['endDate'] = null;
+        candidateInfos[name]['disableTime'] = true;
+      } else {
+        candidateInfos[name]['startDate'] =  candidateInfos[name]['startDate'] || candidateInfos[name]['startDateTmp'];
+        candidateInfos[name]['endDate'] = candidateInfos[name]['endDate'] || candidateInfos[name]['endDateTmp'];
+        candidateInfos[name]['startDateTmp'] = null;
+        candidateInfos[name]['endDateTmp'] = null
+        candidateInfos[name]['disableTime'] = false;
+      }
+    }
+    //'qlttOpinion', 'contract'
+    if(name =='qlttOpinion' && subName == 'contract') {
+      if(e?.value == 'VB') {
+        console.log('fail')
+        candidateInfos[name]['endDateTmp'] = candidateInfos[name]['endDateTmp'] || candidateInfos[name]['endDate'];
+        candidateInfos[name]['endDate'] = null;
+      } else {
+        console.log('pass');
+        candidateInfos[name]['endDate'] = candidateInfos[name]['endDate'] || candidateInfos[name]['endDateTmp'];
+        candidateInfos[name]['endDateTmp'] = null
+      }
+    }
     candidateInfos[name][subName] = e != null ? { value: e.value, label: e.label } : {}
     this.setState({errors: errors, data : candidateInfos})
   }
@@ -1247,10 +1288,10 @@ renderEvalution = (name, data, isDisable) => {
              Thang điểm đánh giá
             </div>
             <div className="col-9">
-                   <span>(5) Vượt yêu cầu</span>
-                    <span>(4) Đạt</span>
-                    <span>(3) Trung Bình</span>
-                    <span>(2) Kém</span>
+                   <span>(5) Xuất sắc</span>
+                    <span>(4) Tốt</span>
+                    <span>(3) Khá</span>
+                    <span>(2) Trung Bình</span>
                     <span>(1) Yếu</span>
             </div>
           </div>
@@ -1597,7 +1638,7 @@ renderEvalution = (name, data, isDisable) => {
                   Ngày bắt đầu hợp đồng
                   <DatePicker
                     name="startDate"
-                    readOnly={disableComponent.disableAll || !disableComponent.qlttSide}
+                    readOnly={disableComponent.disableAll || !disableComponent.qlttSide  || data.qlttOpinion.disableTime == true}
                     autoComplete="off"
                     selected={data.qlttOpinion.startDate ? moment(data.qlttOpinion.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
                     //startDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
@@ -1616,7 +1657,7 @@ renderEvalution = (name, data, isDisable) => {
                   Ngày kết thúc hợp đồng
                   <DatePicker
                     name="startDate"
-                    readOnly={disableComponent.disableAll || !disableComponent.qlttSide}
+                    readOnly={disableComponent.disableAll || !disableComponent.qlttSide  || data.qlttOpinion.disableTime == true}
                     autoComplete="off"
                     selected={data.qlttOpinion.endDate ? moment(data.qlttOpinion.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
                     //startDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
@@ -1714,7 +1755,7 @@ renderEvalution = (name, data, isDisable) => {
                   Ngày bắt đầu hợp đồng
                   <DatePicker
                     name="startDate"
-                    readOnly={disableComponent.disableAll || !disableComponent.qlttSide}
+                    readOnly={disableComponent.disableAll || !disableComponent.qlttSide || data.qlttOpinion.disableTime == true}
                     autoComplete="off"
                     selected={data.qlttOpinion.startDate ? moment(data.qlttOpinion.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
                     //startDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
@@ -1733,7 +1774,7 @@ renderEvalution = (name, data, isDisable) => {
                   Ngày kết thúc hợp đồng
                   <DatePicker
                     name="startDate"
-                    readOnly={disableComponent.disableAll || !disableComponent.qlttSide}
+                    readOnly={disableComponent.disableAll || !disableComponent.qlttSide || data.qlttOpinion.disableTime == true}
                     autoComplete="off"
                     selected={data.qlttOpinion.endDate ? moment(data.qlttOpinion.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
                     //startDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
