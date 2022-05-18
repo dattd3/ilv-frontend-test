@@ -21,11 +21,11 @@ function EvaluationFormItem(props) {
     }
 
     const stepMapping = {
-        [evaluationStatus.initialization]: 'Khởi tạo',
-        [evaluationStatus.launch]: 'Khởi chạy',
-        [evaluationStatus.selfAssessment]: 'Tự đánh giá',
-        [evaluationStatus.qlttAssessment]: 'QLTT đánh giá',
-        [evaluationStatus.cbldApproved]: 'CBLĐ phê duyệt'
+        [evaluationStatus.initialization]: {label: 'Khởi tạo', nextStep: 'Khởi chạy'},
+        [evaluationStatus.launch]: {label: 'Khởi chạy', nextStep: 'Tự đánh giá'},
+        [evaluationStatus.selfAssessment]: {label: 'Tự đánh giá', nextStep: 'QLTT đánh giá'},
+        [evaluationStatus.qlttAssessment]: {label: 'QLTT đánh giá', nextStep: 'CBLĐ phê duyệt'},
+        [evaluationStatus.cbldApproved]: {label: 'CBLĐ phê duyệt', nextStep: 'Hoàn thành'},
     }
 
     return (
@@ -33,7 +33,7 @@ function EvaluationFormItem(props) {
             <td className='c-form-name'><div className='form-name'><a href={`/evaluations/${item?.checkPhaseFormId}/${item?.formCode}`} alt={item?.checkPhaseFormName} className={`form-name ${statusMapping?.className}`}>{item?.checkPhaseFormName}</a></div></td>
             <td className='c-created-date text-center'><div className='created-date'>{item?.createDate && moment(item?.createDate).format("DD/MM/YYYY")}</div></td>
             <td className='c-status text-center'><div className={`status ${statusMapping?.className}`}>{statusMapping?.label}</div></td>
-            <td className='c-step text-center'><div className='step'>{stepMapping[item?.status]}</div></td>
+            <td className='c-step text-center'><div className='step'>{stepMapping[item?.status].nextStep}</div></td>
         </tr>
     )
 }
