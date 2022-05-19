@@ -4,8 +4,8 @@ import { useTranslation } from "react-i18next";
 import { Auth } from 'aws-amplify';
 import config from '../../commons/aws-config';
 import logo from '../../assets/img/LogoVingroup.svg';
-import imageIos from '../../assets/img/image_ios.svg';
-import imageAndroid from '../../assets/img/image_android.svg';
+import imageIos from '../../assets/img/image_ios.png';
+import imageAndroid from '../../assets/img/image_android.png';
 import imageWeb from '../../assets/img/image_web.svg';
 import ic_ios from '../../assets/img/icon/ic_ios.svg';
 import ic_android from '../../assets/img/icon/ic_android.svg';
@@ -205,7 +205,7 @@ function Login() {
                           <span className="version-web-title">ILOVEVINGROUP!</span>
                         </div>
                         <img
-                          className="d-block"
+                          className="d-block h-270"
                           src={imageWeb}
                           alt="First slide"
                         />
@@ -232,7 +232,7 @@ function Login() {
 
                         </div>
                         <img
-                          className="d-block"
+                          className="d-block h-270"
                           src={imageIos}
                           alt="First slide"
                         />
@@ -259,7 +259,7 @@ function Login() {
 
                         </div>
                         <img
-                          className="d-block"
+                          className="d-block h-270"
                           src={imageAndroid}
                           alt="First slide"
                         />
