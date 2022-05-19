@@ -496,6 +496,9 @@
     padding: 6px 10px;
     align-items: center;
   }
+  .mobile-contain:hover {
+    box-shadow: 0 0.5rem 0.5rem 0 rgb(58 59 69 / 20%) !important;
+  }
   .ic-mobile {
     width: 22px;
     height: 22px;
