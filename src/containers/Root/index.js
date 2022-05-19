@@ -35,9 +35,9 @@ function Root() {
   return (
     <ContextProviders>
       <BrowserRouter>
-        { !listUsersIgnoreMaintenanceMode.includes(currentUserLogged) && <Maintenance /> }
+        {/* { !listUsersIgnoreMaintenanceMode.includes(currentUserLogged) && <Maintenance /> } */}
 
-        { listUsersIgnoreMaintenanceMode.includes(currentUserLogged) &&
+        {/* { listUsersIgnoreMaintenanceMode.includes(currentUserLogged) && */}
         <Switch>
           {routes.map(
             ({ component: Content, key, routeProps, contentProps }) => (
@@ -57,7 +57,7 @@ function Root() {
             )
           )}
         </Switch>
-        }
+        {/* } */}
       </BrowserRouter>
     </ContextProviders>
   );
