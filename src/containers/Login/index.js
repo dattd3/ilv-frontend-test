@@ -71,33 +71,15 @@ function Login() {
   const langData = [
     { value: "vi-VN", label: t("LangViet") },
     { value: "en-US", label: t("LangEng") }
-  ]
+  ];
+  
 
   const customStyles = {
-    control: (base, state) => ({
-      ...base,
-      background: "#8c2332",
-      color: "#FFFFFF",
-      borderRadius: 0,
-      borderColor: "#8c2332",
-      boxShadow: state.isFocused ? null : null,
-      cursor: "pointer",
-      "&:hover": {
-        borderColor: "#8c2332",
-        color: "#FFFFFF"
-      }
-    }),
     indicatorSeparator: base => ({
       ...base,
       display: "none",
     }),
-    dropdownIndicator: base => ({
-      ...base,
-      color: "#FFFFFF",
-      "&:hover": {
-        color: "#FFFFFF"
-      }
-    }),
+    
     singleValue: base => ({
       ...base,
       color: "#FFFFFF",
@@ -114,11 +96,11 @@ function Login() {
     option: (styles, { data, isDisabled, isFocused, isSelected }) => {
       return {
         ...styles,
-        backgroundColor: isFocused ? "#8c2332" : "#FFFFFF",
-        color: isFocused ? "#FFFFFF" : "#8c2332",
+        backgroundColor: isFocused ? "#F9F9F9" : "#FFFFFF",
+        color: isFocused ? "#000000" : "#000000",
         cursor: "pointer",
         "&:hover": {
-          color: "#FFFFFF"
+          color: "#000000"
         }
       };
     }
@@ -156,7 +138,7 @@ function Login() {
 
                       <Select options={langData} value={(langData || []).filter(l => l.value === langCode)}
                         onChange={handleChangeSelectInputs} className="input i_lang" name="i_lang"
-
+                        styles={customStyles}
                         components={{ ValueContainer: CustomOption, IndicatorSeparator: () => null }} />
                     </div>
                     <div className="p-5">
@@ -168,7 +150,7 @@ function Login() {
                       <p className="select-title text-center" >{t('LoginGuideOS')}</p>
 
                       <div className="link-mobile">
-                        <a style={{ flex: 1 }} href="https://apps.apple.com/app/ilovevingroup/id1617033050" target="_blank">
+                        <a style={{ flex: 1, textDecoration: 'none' }} href="https://apps.apple.com/app/ilovevingroup/id1617033050" target="_blank">
                           <div className="mobile-contain shadow-sm">
                             <img src={ic_ios} className='ic-mobile' />
 
@@ -179,7 +161,7 @@ function Login() {
                           </div>
                         </a>
                         <div style={{ width: '20px' }}></div>
-                        <a style={{ flex: 1 }} href="https://play.google.com/store/apps/details?id=com.vinpearl.myvinpearl.app&hl=en&gl=VN" target="_blank">
+                        <a style={{ flex: 1, textDecoration: 'none' }} href="https://play.google.com/store/apps/details?id=com.vinpearl.myvinpearl.app&hl=en&gl=VN" target="_blank">
                           <div className="mobile-contain shadow-sm">
                             <img src={ic_android} className='ic-mobile' />
                             <div className="mobile-title-contain">
