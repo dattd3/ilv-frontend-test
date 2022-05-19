@@ -848,13 +848,19 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     //'qlttOpinion', 'contract'
     if(name =='qlttOpinion' && subName == 'contract') {
       if(e?.value == 'VB') {
-        console.log('fail')
         candidateInfos[name]['endDateTmp'] = candidateInfos[name]['endDateTmp'] || candidateInfos[name]['endDate'];
         candidateInfos[name]['endDate'] = null;
       } else {
-        console.log('pass');
         candidateInfos[name]['endDate'] = candidateInfos[name]['endDate'] || candidateInfos[name]['endDateTmp'];
         candidateInfos[name]['endDateTmp'] = null
+      }
+      
+      if(candidateInfos[name]['result']?.value == 5) {
+        candidateInfos[name]['startDateTmp'] = candidateInfos[name]['startDateTmp'] || candidateInfos[name]['startDate'];
+        candidateInfos[name]['endDateTmp'] = candidateInfos[name]['endDateTmp'] || candidateInfos[name]['endDate'];
+        candidateInfos[name]['startDate'] = null;
+        candidateInfos[name]['endDate'] = null;
+        candidateInfos[name]['disableTime'] = true;
       }
     }
     candidateInfos[name][subName] = e != null ? { value: e.value, label: e.label } : {}
