@@ -178,7 +178,7 @@ function Login() {
                     </div>
                   </div>
                 </div>
-                <div className="col-lg-7 d-none d-lg-block">
+                <div className="col-lg-7">
                   <Carousel nextIcon={null} prevIcon={null}>
                     <Carousel.Item interval={1000}>
                       <div className="detail-contain">
