@@ -369,6 +369,9 @@
 .my-10 {
   margin: 10rem 0 !important;
 }
+.my-5 {
+  margin: 6rem 0 !important;
+}
 
 .img-profile {
   height: 2.5rem !important;
@@ -384,6 +387,55 @@
   color: yellow;
 }
 .login-page {
+
+  .detail-contain {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 27px;
+    background-color: #F9F9F9;
+  }
+  .version-contain {
+    margin-bottom: 40px;
+  }
+  .version-subtitle {
+    color:#0D1B3C;
+  }
+  .version-title {
+    color: black;
+     font-weight: 700;
+  }
+  .version-web-subtitle {
+    color:#D13238;
+  }
+  .version-web-title {
+    color:#D13238;
+     font-weight: 700;
+  }
+  .scan-title {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    color: #0D1B3C;
+  }
+
+  .scan-image {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 30px;
+    
+  }
+
+  .carousel .carousel-indicators li {
+    background-color: #EBEBEB;
+    &.active {
+      background-color: #D13238;
+    }
+  }
+
+  .h-270 {
+    height: 270px;
+  }
+
   font-family: Arial, Helvetica, sans-serif;
   font-size: 14px;
   .bg-login-image {
@@ -394,18 +446,87 @@
   .btn-login {
     background-image: linear-gradient(to right, #92000c, #ec5662);
     border: none;
-    padding: 15px 0;
+    padding: 9px 0;
     font-family: inherit;
     font-size: 16px;
     text-transform: uppercase;
     letter-spacing: 1px;
   }
+  .btn-help-login {
+    border: 1px solid #C11D2A;
+    background-color: white;
+    color: #C11D2A;
+    padding: 9px 0;
+    font-family: inherit;
+    font-size: 14px;
+    letter-spacing: 1px;
+    margin-top: 15px;
+  }
+
+  .select-title { 
+    margin-top: 12px;
+    margin-bottom: 18px;
+    color:  #0D1B3C;
+    font-size: 12px;
+  }
+
+  .bottom-link {
+    width: 100%;
+    background-color: #D13238;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    padding: 7px 0;
+
+    span:before {
+      margin-right: 5px;
+      content: "\e907";
+      font-family: icomoon!important;
+    }
+  }
+
+  .link-mobile {
+    flex-direction: row;
+    display: flex;
+  }
+  .mobile-contain {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    padding: 6px 10px;
+    align-items: center;
+  }
+  .mobile-contain:hover {
+    box-shadow: 0 0.5rem 0.5rem 0 rgb(58 59 69 / 20%) !important;
+  }
+  .ic-mobile {
+    width: 22px;
+    height: 22px;
+  }
+  .mobile-title-contain {
+    display: flex;
+    flex-direction: column;
+    margin-left: 10px;
+  }
+  .mobile-title {
+    font-size: 12px;
+    color: #000000;
+  }
+  .mobile-subtitle {
+    font-size: 14px;
+    font-weight: 700;
+    color: #000000;
+    line-height: 24px;
+  }
+
   .logo-login {
-    max-width: 80%;
+    max-width: 60%;
     padding: 5vh 0;
   }
   .language-selector {
     padding: 10px;
+    min-width: 110px;
     button {
       cursor: pointer;
       padding: 0 10px;
