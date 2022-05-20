@@ -97,12 +97,6 @@
             .chart {
                 .result {
                     position: relative;
-                    .percent {
-                        font-size: 14px;
-                        position: absolute;
-                        top: 45%;
-                        left: 38%;
-                    }
                 }
             }
         }
@@ -273,6 +267,13 @@
                     margin-left: 5px;
                 }
             }
+            .invalid-message {
+                margin: 8px 0 0 0;
+                padding: 3px 6px;
+                font-size: 12px;
+                border-radius: 4px;
+                font-style: italic;
+            }
             .list-evaluation {
                 .evaluation-item {
                     padding: 10px 0;
@@ -283,7 +284,7 @@
                     }
                     .score-block {
                         display: flex;
-                        align-items: center;
+                        align-items: flex-start;
                         input {
                             border: none;
                             border-radius: 5px;
@@ -317,6 +318,13 @@
                         .self, .qltt, .deviant {
                             display: flex;
                             align-items: center;
+                            &.attitude-score {
+                                display: block;
+                                .item {
+                                    display: flex;
+                                    align-items: center;
+                                }
+                            }
                         }
                     }
                     .comment {
@@ -461,48 +469,6 @@
                     }
                 }
             }
-
-            // &.work-result {
-            //     .list-work-result {
-            //         .work-result-item {
-            //             border-bottom: 1px solid #DEE2E6;
-            //             padding: 10px 0;
-            //             &:last-child {
-            //                 border-bottom: none;
-            //                 padding-bottom: 0;
-            //             }
-            //             .title {
-            //                 text-transform: unset;
-            //                 background: none;
-            //                 padding-left: 0;
-            //             }
-                        
-            //             .comment {
-            //                 padding: 15px 0 0 0;
-            //                 p {
-            //                     margin-bottom: 8px;
-            //                 }
-            //                 textarea {
-            //                     width: 100%;
-            //                     border: 1px solid #DEE2E6;
-            //                     padding: 5px 10px;
-            //                     border-radius: 5px;
-            //                     &:focus-visible {
-            //                         outline: none;
-            //                         border: 1px solid #DEE2E6;
-            //                     }
-            //                     &:disabled {
-            //                         background: #F2F2F2;
-            //                     }
-            //                 }
-            //                 .qltt {
-            //                     margin-top: 10px;
-            //                 }
-            //             }
-            //         }
-            //     }
-            // }
-
             &.work-result {
                 .list-evaluation {
                     .evaluation-item {
@@ -515,6 +481,10 @@
                     }
                 }
                 .wrap-score-table {
+                    .invalid-message {
+                        display: inline-block;
+                        width: 60%;
+                    }
                     table {
                         white-space: pre-wrap;
                         margin: 0;
