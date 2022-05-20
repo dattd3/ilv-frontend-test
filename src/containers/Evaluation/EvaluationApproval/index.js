@@ -347,7 +347,7 @@ function BatchApprovalTabContent(props) {
         const fetchEvaluationForms = async () => {
             processLoading(true)
             const config = getRequestConfigurations()
-            const response = await axios.get(`${process.env.REACT_APP_HRDX_URL}api/form/listFormToApprove?EmployeeCode=${employeeCode}`, config)
+            const response = await axios.get(`${process.env.REACT_APP_HRDX_PMS_URL}api/form/listFormToApprove?EmployeeCode=${employeeCode}`, config)
             processEvaluationForms(response)
         }
 
@@ -663,11 +663,11 @@ function EvaluationApproval(props) {
         if (tab === 'approval') {
             formData.append('ReviewerEmployeeCode', localStorage.getItem('employeeNo') || '')
             formData.append('CurrentStatus', data?.status?.value)
-            apiPath = `${process.env.REACT_APP_HRDX_URL}api/form/listReview`
+            apiPath = `${process.env.REACT_APP_HRDX_PMS_URL}api/form/listReview`
         } else if (tab === 'batchApproval') {
             formData.append('ApproveEmployeeCode', localStorage.getItem('employeeNo') || '')
             formData.append('CheckPhaseFormId', data?.evaluationForm?.value || null)
-            apiPath = `${process.env.REACT_APP_HRDX_URL}api/form/listApprove`
+            apiPath = `${process.env.REACT_APP_HRDX_PMS_URL}api/form/listApprove`
         }
         formData.append('CurrentStep', data?.currentStep?.value || 0)
      
@@ -762,7 +762,7 @@ function EvaluationApproval(props) {
                 type: actionCode,
                 CurrentStatus: evaluationStatus.qlttAssessment
             }
-            const response = await axios.post(`${process.env.REACT_APP_HRDX_URL}api/form/ApproveBothReject`, payload, config)
+            const response = await axios.post(`${process.env.REACT_APP_HRDX_PMS_URL}api/form/ApproveBothReject`, payload, config)
             SetIsLoading(false)
             statusModalTemp.isShow = true
             if (response && response.data) {
