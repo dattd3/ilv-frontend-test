@@ -12,7 +12,7 @@ export default function Maintenance({ location }) {
         <h1 className="title">{t('Announcement')}</h1>
         <div className="message-block">
           <Image src={ApplicationImage} alt="Application name" className="application-image" />
-          <span className="message">đang tiến hành nâng cấp và bảo trì hệ thống!</span>
+          <span className="message">đang tiến hành nâng cấp và bảo trì hệ thống từ 19/05/2022 00:00 - 19/05/2022 10:00!</span>
         </div>
       </div>
     </div>
