@@ -101,7 +101,10 @@ function EvaluationProcess(props) {
         [evaluationStatus.qlttAssessment]: 2,
         [evaluationStatus.cbldApproved]: 3,
     }
-
+    const processStep = {
+        oneLevel: '1NF',
+        twoLevels: '2NF',
+    }
     const formatIndexText = index => {
         const mapping = {
             1: 'I',
@@ -118,8 +121,13 @@ function EvaluationProcess(props) {
         return mapping[index]
     }
 
+    console.log(1111111111)
+    console.log(evaluationFormDetail)
+
     const renderEvaluationStep = () => {
-        const stepEvaluationConfig = ['CBNV tự đánh giá', 'CBQLTT đánh giá', 'CBLĐ có thẩm quyền phê duyệt', 'Hoàn thành']
+        const stepEvaluationConfig = evaluationFormDetail?.reviewStreamCode === processStep.oneLevel 
+                                    ? ['CBNV tự đánh giá', 'CBQLTT đánh giá', 'Hoàn thành']
+                                    : ['CBNV tự đánh giá', 'CBQLTT đánh giá', 'CBLĐ có thẩm quyền phê duyệt', 'Hoàn thành']
         return stepEvaluationConfig.map((item, index) => {
             let activeClass = index === stepStatusMapping[evaluationFormDetail?.status] ? 'active' : ''
             return (
