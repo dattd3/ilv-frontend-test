@@ -451,7 +451,7 @@ function EvaluationDetail(props) {
                     EmployeeCode: showByManager ? props.employeeCode : user?.employeeNo,
                     FormCode: formCode
                 }
-                const response = await axios.get(`${process.env.REACT_APP_HRDX_URL}api/targetform/formbyuser`, config)
+                const response = await axios.get(`${process.env.REACT_APP_HRDX_PMS_URL}api/targetform/formbyuser`, config)
                 processEvaluationFormDetailData(response)
             } catch (e) {
                 console.error(e)
@@ -642,7 +642,7 @@ function EvaluationDetail(props) {
                     type: actionCode,
                     CurrentStatus: evaluationFormDetail?.status
                 }
-                const response = await axios.post(`${process.env.REACT_APP_HRDX_URL}api/form/ApproveBothReject`, payload, config)
+                const response = await axios.post(`${process.env.REACT_APP_HRDX_PMS_URL}api/form/ApproveBothReject`, payload, config)
                 SetIsLoading(false)
                 statusModalTemp.isShow = true
                 if (response && response.data) {
@@ -662,7 +662,7 @@ function EvaluationDetail(props) {
             } else { // Lưu, CBNV Gửi tới bước tiếp theo, CBQLTT xác nhận
                 const payload = {...evaluationFormDetail}
                 payload.nextStep = actionCode
-                const response = await axios.post(`${process.env.REACT_APP_HRDX_URL}api/targetform/update`, payload, config)
+                const response = await axios.post(`${process.env.REACT_APP_HRDX_PMS_URL}api/targetform/update`, payload, config)
                 SetIsLoading(false)
                 statusModalTemp.isShow = true
                 if (response && response.data) {

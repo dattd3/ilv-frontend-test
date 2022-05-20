@@ -80,7 +80,7 @@ function MyEvaluation(props) {
                 getEvaluationYearConfig.params = {
                     EmployeeCode: user?.employeeNo
                 }
-                const requestGetEvaluationYears = axios.get(`${process.env.REACT_APP_HRDX_URL}api/form/listYear`, getEvaluationYearConfig)
+                const requestGetEvaluationYears = axios.get(`${process.env.REACT_APP_HRDX_PMS_URL}api/form/listYear`, getEvaluationYearConfig)
                 const requestGetListEvaluationForms = fetchListEvaluationForms()
                 const response = await Promise.allSettled([requestGetEvaluationYears, requestGetListEvaluationForms])
                 processInitialData(response)
@@ -105,7 +105,7 @@ function MyEvaluation(props) {
             EmployeeCode: user?.employeeNo,
             Year: year?.value
         }
-        return axios.get(`${process.env.REACT_APP_HRDX_URL}api/form/listUseForm`, config)
+        return axios.get(`${process.env.REACT_APP_HRDX_PMS_URL}api/form/listUseForm`, config)
     }
 
     const handleOnSubmit = async (e) => {
