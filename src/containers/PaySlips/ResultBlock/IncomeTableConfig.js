@@ -89,7 +89,8 @@ export const IncomeTablesConfig = t => {
                                     { label: t("BenefitNet"), field: 'welfare_net_allowance' },
                                     { label: t("AnnualWelfare"), field: 'annual_welfare_allowance' },
                                     { label: t("OtherPayment"), field: 'other_payment' },
-                                    { label: t("VFCarElectricStakeGross"), field: 'vf_car_electric_stake' }
+                                    { label: t("VFCarElectricStakeGross"), field: 'vf_car_electric_stake' },
+                                    { label: t("VinmecTaxRefundsAfterTaxFinalization"), field: 'tax_refunds_after' }
                                 ]
                             }
                         ]
@@ -117,6 +118,7 @@ export const IncomeTablesConfig = t => {
                             { label: t("DeductionOnDormitoryVinpearlBusPhuQuoc"), field: 'bus_reduction' },
                             { label: 'Bồi thường ưu đãi mua xe VF', field: 'refund_for_vf_car_and_electric_motobike_purchase_discount' },
                             { label: t("OtherDeductions"), field: 'other_deduction' },
+                            { label: t("VinmecAdditionalTaxAfterTaxFinalization"), field: 'tax_additional_after' }
                         ]
                     },
                     {
@@ -280,7 +282,8 @@ export const IncomeTablesConfig = t => {
                                     { label: t("VfRentalSupport"), field: 'car_rent_allowance', isSplit: true },
                                     { label: 'Hỗ trợ tiền thuê xe VF (GROSSUP từ khoản NET tương ứng)', field: 'car_rent_grossup_allowance' },
                                     { label: t("OtherPayment"), field: 'other_payment' },
-                                    { label: t("VFCarElectricStakeGross"), field: 'vf_car_electric_stake' }
+                                    { label: t("VFCarElectricStakeGross"), field: 'vf_car_electric_stake' },
+                                    { label: t("VinmecTaxRefundsAfterTaxFinalization"), field: 'tax_refunds_after' }
                                 ]
                             }
                         ]
@@ -308,6 +311,7 @@ export const IncomeTablesConfig = t => {
                             { label: 'Khấu trừ tiền thuê xe VF', field: 'vf_car_and_electric_motobike_leasing_deduction' },
                             { label: 'Bồi thường ưu đãi mua xe VF', field: 'refund_for_vf_car_and_electric_motobike_purchase_discount' },
                             { label: t("OtherDeductions"), field: 'other_deduction' },
+                            { label: t("VinmecAdditionalTaxAfterTaxFinalization"), field: 'tax_additional_after' }
                         ]
                     },
                     {
@@ -466,10 +470,11 @@ export const IncomeTablesConfig = t => {
                                     { label: t("BenefitForVfPurchase"), field: 'car_rent_allowance_welfare' },
                                     { label: t("BankInterestSupportForVfPurchase"), field: 'interest_rate_allowance' },
                                     { label: t("BenefitNet"), field: 'welfare_net_allowance' },
-                                    { label: 'Hỗ trợ mùa dịch Covid 19(NET)', field: 'covid_allowance'},
+                                    { label: t("NETCovid19PandemicSubsidy"), field: 'covid_allowance'},
                                     { label: t("AnnualWelfare"), field: 'annual_welfare_allowance' },
                                     { label: t("OtherPayment"), field: 'other_payment' },
-                                    { label: t("VFCarElectricStakeGross"), field: 'vf_car_electric_stake' }
+                                    { label: t("VFCarElectricStakeGross"), field: 'vf_car_electric_stake' },
+                                    { label: t("VinmecTaxRefundsAfterTaxFinalization"), field: 'tax_refunds_after' }
                                 ]
                             }
                         ]
@@ -498,6 +503,7 @@ export const IncomeTablesConfig = t => {
                             // {label: t("RefundForVfVihicle"), field: 'refund_for_vf_car_and_electric_motobike_purchase_discount'},
                             { label: t("OtherDeductions"), field: 'other_deduction' },
                             { label: t("DeductionOnVfLeaseAndVfLoans"), field: 'vf_car_and_electric_motobike_leasing_deduction' },
+                            { label: t("VinmecAdditionalTaxAfterTaxFinalization"), field: 'tax_additional_after' }
                         ]
                     },
                     {
@@ -702,7 +708,7 @@ export const IncomeTablesConfig = t => {
                                     { label: 'Hỗ trợ học phí cho con CBNV NNN', field: 'tuition_fee_allowance' },
                                     { label: 'Hỗ trợ thu hút khó tuyển dụng', field: 'special_industry_subsidy' },
                                     { label: 'Hỗ trợ vé máy bay NNN', field: 'plane_ticket_allowance' },
-                                    { label: 'Hỗ trợ mùa dịch Covid 19(NET)', field: 'covid_allowance', isSplit: true },
+                                    { label: t("NETCovid19PandemicSubsidy"), field: 'covid_allowance', isSplit: true },
                                     { label: 'Hỗ trợ mùa dịch Covid 19 (GROSSUP từ khoản NET tương ứng)', field: 'covid_grossup_allowance' },
                                     { label: t("GROSSCovid19PandemicSubsidy"), field: 'covid_gross_subsidy' },
                                     { label: t("NETF0EmployeesSubsidy"), field: 'covid_net_f0' },
@@ -746,7 +752,7 @@ export const IncomeTablesConfig = t => {
                             { label: 'Khấu trừ lãi vay mua xe VF', field: 'vf_car_and_electric_motobike_purchase_deduction' },
                             { label: t("RefundForVfVihicle"), field: 'refund_for_vf_car_and_electric_motobike_purchase_discount' },
                             { label: t("VinmecAdditionalTaxAfterTaxFinalization"), field: 'tax_additional_after' },
-                            { label: t("OtherDeductions"), field: 'other_deduction' }
+                            { label: t("OtherDeductions"), field: 'other_deduction' },
                         ]
                     },
                     {
@@ -911,7 +917,8 @@ export const IncomeTablesConfig = t => {
                                     { label: t("BenefitNet"), field: 'welfare_net_allowance' },
                                     { label: t("AnnualWelfare"), field: 'annual_welfare_allowance' },
                                     { label: t("OtherPayment"), field: 'other_payment' },
-                                    { label: t("VFCarElectricStakeGross"), field: 'vf_car_electric_stake' }
+                                    { label: t("VFCarElectricStakeGross"), field: 'vf_car_electric_stake' },
+                                    { label: t("VinmecTaxRefundsAfterTaxFinalization"), field: 'tax_refunds_after' }
                                 ]
                             }
                         ]
@@ -935,12 +942,10 @@ export const IncomeTablesConfig = t => {
                             { label: t("CollectionOnBehalfOfQuyThienTam"), field: 'loan_reduction' },
                             { label: t("AdvanceDeduction"), field: 'advance_reduction' },
                             { label: t("AdvanceViaVinidDeduction"), field: 'vinid_pay_reduction' },
-
-
                             { label: t("DeductionOnUsedBenefits"), field: 'bonus_received_reduction' },
-
                             { label: 'Bồi thường ưu đãi mua xe VF', field: 'refund_for_vf_car_and_electric_motobike_purchase_discount' },
                             { label: t("OtherDeductions"), field: 'other_deduction' },
+                            { label: t("VinmecAdditionalTaxAfterTaxFinalization"), field: 'tax_additional_after' }
                         ]
                     },
                     {
@@ -1106,7 +1111,8 @@ export const IncomeTablesConfig = t => {
                                     { label: t("BenefitNet"), field: 'welfare_net_allowance' },
                                     { label: t("AnnualWelfare"), field: 'annual_welfare_allowance' },
                                     { label: t("OtherPayment"), field: 'other_payment' },
-                                    { label: t("VFCarElectricStakeGross"), field: 'vf_car_electric_stake' }
+                                    { label: t("VFCarElectricStakeGross"), field: 'vf_car_electric_stake' },
+                                    { label: t("VinmecTaxRefundsAfterTaxFinalization"), field: 'tax_refunds_after' }
                                 ]
                             }
                         ]
@@ -1132,6 +1138,7 @@ export const IncomeTablesConfig = t => {
                             { label: t("AdvanceViaVinidDeduction"), field: 'vinid_pay_reduction' },
                             { label: t("RefundForVfVihicle"), field: 'refund_for_vf_car_and_electric_motobike_purchase_discount' },
                             { label: 'Khấu trừ lãi vay mua xe VinFast', field: 'vf_car_and_electric_motobike_purchase_deduction' },
+                            { label: t("VinmecAdditionalTaxAfterTaxFinalization"), field: 'tax_additional_after' }
                         ]
                     },
                     {
@@ -1303,7 +1310,8 @@ export const IncomeTablesConfig = t => {
                                     { label: t("BenefitNet"), field: 'welfare_net_allowance' },
                                     { label: t("AnnualWelfare"), field: 'annual_welfare_allowance' },
                                     { label: t("OtherPayment"), field: 'other_payment' },
-                                    { label: t("VFCarElectricStakeGross"), field: 'vf_car_electric_stake' }
+                                    { label: t("VFCarElectricStakeGross"), field: 'vf_car_electric_stake' },
+                                    { label: t("VinmecTaxRefundsAfterTaxFinalization"), field: 'tax_refunds_after' }
                                 ]
                             }
                         ]
@@ -1330,6 +1338,7 @@ export const IncomeTablesConfig = t => {
                             { label: t("DeductionOnUsedBenefits"), field: 'bonus_received_reduction' },
                             { label: 'Bồi thường ưu đãi mua xe VF', field: 'refund_for_vf_car_and_electric_motobike_purchase_discount' },
                             { label: t("OtherDeductions"), field: 'other_deduction' },
+                            { label: t("VinmecAdditionalTaxAfterTaxFinalization"), field: 'tax_additional_after' }
                         ]
                     },
                     {
@@ -1529,7 +1538,7 @@ export const IncomeTablesConfig = t => {
                                     { label: 'Hỗ trợ học phí cho con CBNV NNN', field: 'tuition_fee_allowance' },
                                     { label: 'Hỗ trợ thu hút khó tuyển dụng', field: 'special_industry_subsidy' },
                                     { label: 'Hỗ trợ vé máy bay NNN', field: 'plane_ticket_allowance' },
-                                    { label: 'Hỗ trợ mùa dịch Covid 19 (NET)', field: 'covid_allowance', isSplit: true },
+                                    { label: t("NETCovid19PandemicSubsidy"), field: 'covid_allowance', isSplit: true },
                                     { label: 'Hỗ trợ mùa dịch Covid 19 (GROSSUP từ khoản NET tương ứng)', field: 'covid_grossup_allowance' },
                                     { label: 'Hỗ trợ lãi suất vay mua xe VF (NET)', field: 'interest_rate_allowance', isSplit: true },
                                     { label: 'Hỗ trợ lãi suất vay mua xe VF (GROSSUP từ khoản NET tương ứng)', field: 'interest_rate_grossup_allowance' },
@@ -1538,7 +1547,9 @@ export const IncomeTablesConfig = t => {
                                     { label: 'Hỗ trợ thuê nhà Vinhomes (NET)', field: 'house_rent_allowance', isSplit: true },
                                     { label: 'Hỗ trợ thuê nhà Vinhomes (GROSSUP từ khoản NET tương ứng)', field: 'house_rent_grossup_allowance' },
                                     { label: t("OtherPayment"), field: 'other_payment' },
-                                    { label: t("VFCarElectricStakeGross"), field: 'vf_car_electric_stake' }
+                                    { label: t("VFCarElectricStakeNet"), field: 'vf_car_electric_stake_net' },
+                                    { label: t("VFCarElectricStakeGross"), field: 'vf_car_electric_stake' },
+                                    { label: t("VinmecTaxRefundsAfterTaxFinalization"), field: 'tax_refunds_after' }
                                 ]
                             }
                         ]
@@ -1568,6 +1579,7 @@ export const IncomeTablesConfig = t => {
                             { label: 'Khấu trừ lãi vay mua xe VF', field: 'vf_car_and_electric_motobike_purchase_deduction' },
                             { label: 'Bồi thường ưu đãi mua xe VF', field: 'refund_for_vf_car_and_electric_motobike_purchase_discount' },
                             { label: t("OtherDeductions"), field: 'other_deduction' },
+                            { label: t("VinmecAdditionalTaxAfterTaxFinalization"), field: 'tax_additional_after' }
                         ]
                     },
                     {
