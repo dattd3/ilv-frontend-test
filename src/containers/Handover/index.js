@@ -175,6 +175,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
   prepareDataToSubmit = (data, remoteData) => {
     const isEmployee = this.state.canEditable.currentActive.includes("employee");
     if(isEmployee) {
+      remoteData.contractTerminationInfoId  = this.props.match.params.id;
       remoteData.projessionlWork = data.job.mainWork;
       remoteData.controlWord = data.job.controlWork;
       remoteData.otherWork = data.job.otherWork;
