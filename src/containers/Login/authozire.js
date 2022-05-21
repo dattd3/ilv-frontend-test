@@ -215,7 +215,8 @@ function Authorize(props) {
             else {
                 SetNotifyContent(t("WaitNotice"));
             }
-        });
+        })
+        .catch(error => {});
     }
 
     function updateUser(userProfile, jwtToken) {

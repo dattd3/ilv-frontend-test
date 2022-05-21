@@ -564,6 +564,30 @@ export default [
           component: lazy(() => import("./ProjectInformation/MyProfile")),
         },
         {
+          key: "my-evaluation",
+          routeProps: {
+            exact: true,
+            path: map.MyEvaluation,
+          },
+          component: lazy(() => import("./Evaluation/MyEvaluation")),
+        },
+        {
+          key: "evaluation-approval",
+          routeProps: {
+            exact: true,
+            path: map.EvaluationApproval,
+          },
+          component: lazy(() => import("./Evaluation/EvaluationApproval")),
+        },
+        {
+          key: "evaluation-detail",
+          routeProps: {
+            exact: true,
+            path: map.EvaluationDetail,
+          },
+          component: lazy(() => import("./Evaluation/Detail")),
+        },
+        {
           key: "support-onboard",
           routeProps: {
             exact: true,
