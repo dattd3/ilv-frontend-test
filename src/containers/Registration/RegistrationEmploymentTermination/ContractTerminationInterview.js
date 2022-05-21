@@ -264,6 +264,7 @@ class ContractTerminationInterview extends React.Component {
 
         let bodyFormData = new FormData()
         bodyFormData.append('requestStatusProcessId', requestStatusProcessId)
+        bodyFormData.append('contractTerminationInfoId', requestStatusProcessId);
         bodyFormData.append('requestHistoryId', userInfos.requestHistoryId)
         bodyFormData.append('userInfo', JSON.stringify(userInfos))
         bodyFormData.append('dateTermination', userInfos.dateTermination)
