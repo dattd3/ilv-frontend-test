@@ -170,7 +170,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
   checkAuthorize = async () => {
     const currentEmployeeNo = localStorage.getItem('email');
     const data = this.state.data;
-    const dateToCheck = data.contractType == 'VA' ? (checkIsExactPnL(Constants.pnlVCode.VinSchool) ? -75 : -45) : -7;
+    const dateToCheck = data.contractType == 'VA' ? (checkIsExactPnL(Constants.pnlVCode.VinSchool) ? -75 : -45) : -7; 
     const isAfterT_7 = data.employeeInfo && data.employeeInfo.startDate && moment(new Date()).diff(moment(data.employeeInfo.expireDate), 'days') > dateToCheck ? true : false;
     let shouldDisable = false;
     let isNguoidanhgia = false;
@@ -374,7 +374,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
       this.setState({loading: false})
     })
     .finally(() => {
-
+      
     })
 
   }
@@ -546,7 +546,6 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         defaultStartDate = moment(infos.staffContracts.expireDate).add(1, 'days').format('DD/MM/YYYY');
         defaultEndDate = `31/05/${moment(infos.staffContracts.expireDate).add(2, 'years').year()}`
       }
-
       candidateInfos.qlttOpinion = {
         result : infos.additionInforEvaluations.contractKpiResult ? this.resultOptions.filter(item => item.value == infos.additionInforEvaluations.contractKpiResult)[0] || {} : {},
         contract: infos.additionInforEvaluations.contractType ? this.contractTypeOptions.filter(item => item.value == infos.additionInforEvaluations.contractType)[0] || {} : {},
@@ -554,6 +553,20 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         endDate:  infos.additionInforEvaluations.expireDate ? moment(infos.additionInforEvaluations.expireDate).format('DD/MM/YYYY') || null : defaultEndDate,
         otherOption: infos.additionInforEvaluations.proposed || ''
       }
+
+      if(infos.additionInforEvaluations.contractKpiResult == 5) {
+        candidateInfos['qlttOpinion']['startDateTmp'] = candidateInfos.qlttOpinion.startDate;
+        candidateInfos['qlttOpinion']['endDateTmp'] = candidateInfos.qlttOpinion.endDate;
+        candidateInfos['qlttOpinion']['startDate'] = null;
+        candidateInfos['qlttOpinion']['endDate'] = null;
+        candidateInfos['qlttOpinion']['disableTime'] = true;
+      }
+
+      if(infos.additionInforEvaluations.contractType == 'VB') {
+        candidateInfos['qlttOpinion']['endDateTmp'] = candidateInfos.qlttOpinion.endDate;
+        candidateInfos['qlttOpinion']['endDate'] = null;
+      }
+
     }
 
     if(infos.requestHistorys){
@@ -816,6 +829,40 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     //   }
     //   errors[subName] = null;
     // }
+    //'qlttOpinion', 'result'
+    if(name =='qlttOpinion' && subName == 'result') {
+      if(e?.value == 5) {
+        candidateInfos[name]['startDateTmp'] = candidateInfos[name]['startDateTmp'] || candidateInfos[name]['startDate'];
+        candidateInfos[name]['endDateTmp'] = candidateInfos[name]['endDateTmp'] || candidateInfos[name]['endDate'];
+        candidateInfos[name]['startDate'] = null;
+        candidateInfos[name]['endDate'] = null;
+        candidateInfos[name]['disableTime'] = true;
+      } else {
+        candidateInfos[name]['startDate'] =  candidateInfos[name]['startDate'] || candidateInfos[name]['startDateTmp'];
+        candidateInfos[name]['endDate'] = candidateInfos[name]['endDate'] || candidateInfos[name]['endDateTmp'];
+        candidateInfos[name]['startDateTmp'] = null;
+        candidateInfos[name]['endDateTmp'] = null
+        candidateInfos[name]['disableTime'] = false;
+      }
+    }
+    //'qlttOpinion', 'contract'
+    if(name =='qlttOpinion' && subName == 'contract') {
+      if(e?.value == 'VB') {
+        candidateInfos[name]['endDateTmp'] = candidateInfos[name]['endDateTmp'] || candidateInfos[name]['endDate'];
+        candidateInfos[name]['endDate'] = null;
+      } else {
+        candidateInfos[name]['endDate'] = candidateInfos[name]['endDate'] || candidateInfos[name]['endDateTmp'];
+        candidateInfos[name]['endDateTmp'] = null
+      }
+
+      if(candidateInfos[name]['result']?.value == 5) {
+        candidateInfos[name]['startDateTmp'] = candidateInfos[name]['startDateTmp'] || candidateInfos[name]['startDate'];
+        candidateInfos[name]['endDateTmp'] = candidateInfos[name]['endDateTmp'] || candidateInfos[name]['endDate'];
+        candidateInfos[name]['startDate'] = null;
+        candidateInfos[name]['endDate'] = null;
+        candidateInfos[name]['disableTime'] = true;
+      }
+    }
     candidateInfos[name][subName] = e != null ? { value: e.value, label: e.label } : {}
     this.setState({errors: errors, data : candidateInfos})
   }
@@ -1159,7 +1206,34 @@ renderEvalution = (name, data, isDisable) => {
             this.setDisabledSubmitButton(false, actionType)
         })
 }
-  
+
+  checkShowQlttComment = (data) => {
+  // CBLF tham dinh VSC -field qltt -- 11
+  if(checkIsExactPnL(Constants.PnLCODE.VinSchool)) {
+    return ((data.processStatus == 10 && data.qltt.account));
+   } else {
+     return(data.processStatus == 10 || (data.processStatus == 9 && !data.hasnguoidanhgia));
+   }
+
+  }
+
+  checkShownguoidanhgiaComment = (data) => {
+    // QLTT VSC - filed nguoidanhgia -- 10
+
+    if(checkIsExactPnL(Constants.PnLCODE.VinSchool)) {
+     return (data.processStatus == 9 && data.nguoidanhgia.account);
+    } else {
+      return (data.processStatus == 9 && !data.qltt.account);
+    }
+  }
+
+  checkShowApprovalComment = (data) => {
+    if(checkIsExactPnL(Constants.PnLCODE.VinSchool)) {
+      return data.processStatus == 11 || (data.processStatus == 10 && !data.qltt.account);
+    } else {
+      return data.processStatus == 11;
+    }
+  }
 
   render() {
     const { t } = this.props
@@ -1220,10 +1294,10 @@ renderEvalution = (name, data, isDisable) => {
              Thang điểm đánh giá
             </div>
             <div className="col-9">
-                   <span>(5) Vượt yêu cầu</span>
-                    <span>(4) Đạt</span>
-                    <span>(3) Trung Bình</span>
-                    <span>(2) Kém</span>
+                   <span>(5) Xuất sắc</span>
+                    <span>(4) Tốt</span>
+                    <span>(3) Khá</span>
+                    <span>(2) Trung Bình</span>
                     <span>(1) Yếu</span>
             </div>
           </div>
@@ -1372,7 +1446,7 @@ renderEvalution = (name, data, isDisable) => {
         </div>
         <div className="box shadow cbnv more-description">
           <div className="title">
-            CBLĐ TT ĐÁNH GIÁ
+            QLTT ĐÁNH GIÁ
           </div>
           <div className="row">
             <div className="col-6">
@@ -1453,7 +1527,7 @@ renderEvalution = (name, data, isDisable) => {
         </>
         }
           
-        <h5>QUYẾT ĐỊNH XỬ LÝ VI PHẠM</h5>
+        {/* <h5>QUYẾT ĐỊNH XỬ LÝ VI PHẠM</h5>
         {
           data.violation.length > 0 ? 
           data.violation.map((item, index) => {
@@ -1493,10 +1567,11 @@ renderEvalution = (name, data, isDisable) => {
             </div>
           </div>
          </div>
-        }
+        } */}
         
         {
-          showComponent.employeeSide ? 
+          //------------------ Hien thi nhan vien nhin thay -----------------------------------------
+          showComponent.employeeSide ?
           <>
             <div className="box shadow cbnv">
             
@@ -1515,7 +1590,7 @@ renderEvalution = (name, data, isDisable) => {
                 <div  style={{height: '2px', backgroundColor: '#F2F2F2', margin: '15px 0'}}></div>
                 </div>
               </div>
-              <ApproverComponent comment={(data.processStatus == 9 && data.hasnguoidanhgia) && comment ? comment : null}  isEdit={disableComponent.disableAll || !disableComponent.employeeSide} approver={data.nguoidanhgia}  updateApprover={(approver, isApprover) => this.updateApprover('nguoidanhgia', approver,isApprover )} />
+              <ApproverComponent comment={this.checkShownguoidanhgiaComment(data) && comment ? comment : null}  isEdit={disableComponent.disableAll || !disableComponent.employeeSide} approver={data.nguoidanhgia}  updateApprover={(approver, isApprover) => this.updateApprover('nguoidanhgia', approver,isApprover )} />
               {this.state.errors && this.state.errors['nguoidanhgia'] ? <p className="text-danger">{this.state.errors['nguoidanhgia']}</p> : null}
             </div>
 
@@ -1534,13 +1609,13 @@ renderEvalution = (name, data, isDisable) => {
                 <div  style={{height: '2px', backgroundColor: '#F2F2F2', margin: '15px 0'}}></div>
                 </div>
               </div>
-              <ApproverComponent comment={(data.processStatus == 10 || (data.processStatus == 9 && !data.hasnguoidanhgia)) && comment ? comment : null} isEdit={disableComponent.disableAll || !disableComponent.employeeSide} approver={data.qltt}  updateApprover={(approver, isApprover) => this.updateApprover('qltt', approver,isApprover )} />
+              <ApproverComponent comment={this.checkShowQlttComment(data) && comment ? comment : null} isEdit={disableComponent.disableAll || !disableComponent.employeeSide} approver={data.qltt}  updateApprover={(approver, isApprover) => this.updateApprover('qltt', approver,isApprover )} />
               {this.state.errors && this.state.errors['qltt'] ? <p className="text-danger">{this.state.errors['qltt']}</p> : null}
             </div>
           </> : 
           this.state.isNguoidanhgia ? 
           <>
-          {
+          {  // ---------------check hien thij cho vinschool khi nguowif danh gia ton tai y kien danh gia
               checkIsExactPnL(Constants.PnLCODE.VinSchool) ? 
               <div className="box shadow cbnv more-description">
               <div className="title">
@@ -1569,7 +1644,7 @@ renderEvalution = (name, data, isDisable) => {
                   Ngày bắt đầu hợp đồng
                   <DatePicker
                     name="startDate"
-                    readOnly={disableComponent.disableAll || !disableComponent.qlttSide}
+                    readOnly={disableComponent.disableAll || !disableComponent.qlttSide  || data.qlttOpinion.disableTime == true}
                     autoComplete="off"
                     selected={data.qlttOpinion.startDate ? moment(data.qlttOpinion.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
                     //startDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
@@ -1588,7 +1663,7 @@ renderEvalution = (name, data, isDisable) => {
                   Ngày kết thúc hợp đồng
                   <DatePicker
                     name="startDate"
-                    readOnly={disableComponent.disableAll || !disableComponent.qlttSide}
+                    readOnly={disableComponent.disableAll || !disableComponent.qlttSide  || data.qlttOpinion.disableTime == true}
                     autoComplete="off"
                     selected={data.qlttOpinion.endDate ? moment(data.qlttOpinion.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
                     //startDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
@@ -1614,6 +1689,7 @@ renderEvalution = (name, data, isDisable) => {
                 </div>
               </div>
             </div>
+            // +++++++ heet check hien thij cho vinschool khi nguowif danh gia ton tai  y kien danh gia
             : null
             }
 
@@ -1632,7 +1708,7 @@ renderEvalution = (name, data, isDisable) => {
                 <div  style={{height: '2px', backgroundColor: '#F2F2F2', margin: '15px 0'}}></div>
                 </div>
               </div>
-              <ApproverComponent comment={(data.processStatus == 10 || (data.processStatus == 9 && !data.hasnguoidanhgia)) && comment ? comment : null} isEdit={disableComponent.disableAll || !disableComponent.employeeSide} approver={data.qltt}  updateApprover={(approver, isApprover) => this.updateApprover('qltt', approver,isApprover )} />
+              <ApproverComponent comment={this.checkShowQlttComment(data) && comment ? comment : null} isEdit={disableComponent.disableAll || !disableComponent.employeeSide} approver={data.qltt}  updateApprover={(approver, isApprover) => this.updateApprover('qltt', approver,isApprover )} />
               {this.state.errors && this.state.errors['qltt'] ? <p className="text-danger">{this.state.errors['qltt']}</p> : null}
             </div>
             
@@ -1649,7 +1725,7 @@ renderEvalution = (name, data, isDisable) => {
                   <div  style={{height: '2px', backgroundColor: '#F2F2F2', margin: '15px 0'}}></div>
                   </div>
                 </div>
-                <ApproverComponent approvalDate = {data.approvalDate && data.processStatus == 2 ? data.approvalDate : null} comment={data.processStatus == 11 && comment ? comment : null} isEdit={disableComponent.disableAll || !disableComponent.qlttSide} approver={data.nguoipheduyet}  updateApprover={(approver, isApprover) => this.updateApprover('nguoipheduyet', approver,isApprover )} />
+                <ApproverComponent approvalDate = {data.approvalDate && data.processStatus == 2 ? data.approvalDate : null} comment={this.checkShowApprovalComment(data) && comment ? comment : null} isEdit={disableComponent.disableAll || !disableComponent.qlttSide} approver={data.nguoipheduyet}  updateApprover={(approver, isApprover) => this.updateApprover('nguoipheduyet', approver,isApprover )} />
                 {this.state.errors && this.state.errors['boss'] ? <p className="text-danger">{this.state.errors['boss']}</p> : null}
               </div> : null
             }
@@ -1685,7 +1761,7 @@ renderEvalution = (name, data, isDisable) => {
                   Ngày bắt đầu hợp đồng
                   <DatePicker
                     name="startDate"
-                    readOnly={disableComponent.disableAll || !disableComponent.qlttSide}
+                    readOnly={disableComponent.disableAll || !disableComponent.qlttSide || data.qlttOpinion.disableTime == true}
                     autoComplete="off"
                     selected={data.qlttOpinion.startDate ? moment(data.qlttOpinion.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
                     //startDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
@@ -1704,7 +1780,7 @@ renderEvalution = (name, data, isDisable) => {
                   Ngày kết thúc hợp đồng
                   <DatePicker
                     name="startDate"
-                    readOnly={disableComponent.disableAll || !disableComponent.qlttSide}
+                    readOnly={disableComponent.disableAll || !disableComponent.qlttSide || data.qlttOpinion.disableTime == true}
                     autoComplete="off"
                     selected={data.qlttOpinion.endDate ? moment(data.qlttOpinion.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
                     //startDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
@@ -1781,7 +1857,7 @@ renderEvalution = (name, data, isDisable) => {
                 <div  style={{height: '2px', backgroundColor: '#F2F2F2', margin: '15px 0'}}></div>
                 </div>
               </div>
-              <ApproverComponent approvalDate = {data.approvalDate && data.processStatus == 2 ? data.approvalDate : null} comment={data.processStatus == 11 && comment ? comment : null} isEdit={disableComponent.disableAll || !disableComponent.qlttSide} approver={data.nguoipheduyet}  updateApprover={(approver, isApprover) => this.updateApprover('nguoipheduyet', approver,isApprover )} />
+              <ApproverComponent approvalDate = {data.approvalDate && data.processStatus == 2 ? data.approvalDate : null} comment={this.checkShowApprovalComment(data) && comment ? comment : null} isEdit={disableComponent.disableAll || !disableComponent.qlttSide} approver={data.nguoipheduyet}  updateApprover={(approver, isApprover) => this.updateApprover('nguoipheduyet', approver,isApprover )} />
               {this.state.errors && this.state.errors['boss'] ? <p className="text-danger">{this.state.errors['boss']}</p> : null}
             </div>
             }

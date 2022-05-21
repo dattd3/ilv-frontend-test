@@ -54,10 +54,10 @@ export default class ContractEvaluationdetail extends React.Component {
                   Thang điểm đánh giá
                 </div>
                 <div className="col-9">
-                    <span>(5) Vượt yêu cầu</span>
-                    <span>(4) Đạt</span>
-                    <span>(3) Trung Bình</span>
-                    <span>(2) Kém</span>
+                   <span>(5) Xuất sắc</span>
+                    <span>(4) Tốt</span>
+                    <span>(3) Khá</span>
+                    <span>(2) Trung Bình</span>
                     <span>(1) Yếu</span>
                 </div>
               </div>

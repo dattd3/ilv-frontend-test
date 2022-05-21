@@ -23,6 +23,7 @@ const Constants = {
 
   // success code
   API_SUCCESS_CODE: "000000",
+  PMS_API_SUCCESS_CODE: "200",
 
   //error_code
   API_ERROR_CODE: 1,
