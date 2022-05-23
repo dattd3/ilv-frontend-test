@@ -43,7 +43,7 @@ function AdvancedFilter(props) {
     }
 
     return (
-        <div className="filter-advanced-form">
+        <>
             <Row>
                 <Col md={6}>
                     <Form.Group as={Row} controlId="current-step">
@@ -174,7 +174,7 @@ function AdvancedFilter(props) {
                     </Form.Group>
                 </Col>
             </Row>
-        </div>
+        </>
     )
 }
 
@@ -281,16 +281,19 @@ function ApprovalTabContent(props) {
                             <span 
                                 className="btn-filter-advanced" 
                                 onClick={handleShowFilterAdvanced}
-                                aria-expanded={filter.isOpenFilterAdvanced}
+                                aria-controls="filter-advanced-block"
+                                aria-expanded={filter?.isOpenFilterAdvanced}
                             >Tìm kiếm nâng cao<Image src={filter.isOpenFilterAdvanced ? IconCollapse : IconExpand} alt='Toggle' /></span>
                         </div>
                     </Col>
                 </Row>
-                <Collapse in={filter.isOpenFilterAdvanced}>
-                    <AdvancedFilter 
-                        masterData={{blocks: masterData.blocks, ranks: masterData.ranks, titles: masterData.titles}} 
-                        filter={_.omit({...filter}, 'isOpenFilterAdvanced', 'status', 'employees', 'employee')} 
-                        updateData={updateData} />
+                <Collapse in={filter?.isOpenFilterAdvanced}>
+                    <div className="filter-advanced-form" id="filter-advanced-block">
+                        <AdvancedFilter 
+                            masterData={{blocks: masterData.blocks, ranks: masterData.ranks, titles: masterData.titles}} 
+                            filter={_.omit({...filter}, 'isOpenFilterAdvanced', 'status', 'employees', 'employee')} 
+                            updateData={updateData} />
+                    </div>
                 </Collapse>
                 <Row>
                     <Col md={12}>
@@ -459,16 +462,19 @@ function BatchApprovalTabContent(props) {
                             <span 
                                 className="btn-filter-advanced" 
                                 onClick={handleShowFilterAdvanced}
+                                aria-controls="filter-advanced-block"
                                 aria-expanded={filter.isOpenFilterAdvanced}
                             >Tìm kiếm nâng cao<Image src={filter.isOpenFilterAdvanced ? IconCollapse : IconExpand} alt='Toggle' /></span>
                         </div>
                     </Col>
                 </Row>
                 <Collapse in={filter.isOpenFilterAdvanced}>
-                    <AdvancedFilter 
-                        masterData={{blocks: masterData.blocks, ranks: masterData.ranks, titles: masterData.titles}} 
-                        filter={_.omit({...filter}, 'isOpenFilterAdvanced', 'status', 'employees', 'employee')} 
-                        updateData={updateData} />
+                    <div className="filter-advanced-form" id="filter-advanced-block">
+                        <AdvancedFilter 
+                            masterData={{blocks: masterData.blocks, ranks: masterData.ranks, titles: masterData.titles}} 
+                            filter={_.omit({...filter}, 'isOpenFilterAdvanced', 'status', 'employees', 'employee')} 
+                            updateData={updateData} />
+                    </div>
                 </Collapse>
                 <Row>
                     <Col md={12}>
