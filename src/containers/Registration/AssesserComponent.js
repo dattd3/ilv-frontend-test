@@ -116,15 +116,11 @@ class AssesserComponent extends React.Component {
         listLevelsAdditional = listLevelsAdditional.concat(Constants.CONSENTER_LIST_LEVEL)
         const indexCurrentUserLevel = _.findIndex(listLevelsAdditional, function (item) { return item == currentUserLevel })
         const indexAppraiserFilterLevel = _.findIndex(listLevelsAdditional, function (item) { return item == levelAppraiserFilter }, 0)
-        if (indexAppraiserFilterLevel === -1 
-            || (indexCurrentUserLevel > indexAppraiserFilterLevel && (!listLevelsSpecificPnL.includes(currentUserLevel) || !listLevelsSpecificPnL.includes(levelAppraiserFilter))) 
+        if ((currentUserPnLVCodeLogged !== Constants.pnlVCode.Vin3S && (indexAppraiserFilterLevel === -1 || indexCurrentUserLevel > indexAppraiserFilterLevel || !listLevelsAdditional.includes(levelAppraiserFilter)))
             || account?.toLowerCase() === currentUserEmailLogged?.split("@")[0]?.toLowerCase()) {
             return false
         }
-        if (listLevelsAdditional.includes(levelAppraiserFilter)) {
-            return true
-        }
-        return false
+        return true
     }
 
     getAppraiser = (value) => {
