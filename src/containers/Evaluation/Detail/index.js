@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next"
 import { Doughnut } from 'react-chartjs-2'
 import { withRouter } from 'react-router-dom'
 import axios from 'axios'
+import _ from 'lodash'
 import Constants from '../../../commons/Constants'
 import { getRequestConfigurations } from '../../../commons/Utils'
 import { evaluationStatus, actionButton } from '../Constants'
@@ -22,7 +23,7 @@ import IconApprove from '../../../assets/img/icon/Icon_Check.svg'
 
 function EvaluationOverall(props) {
     const { evaluationFormDetail, showByManager } = props
-    const totalCompleted = evaluationFormDetail?.totalComplete || 0
+    const totalCompleted = showByManager ? evaluationFormDetail?.leadReviewTotalComplete || 0 : evaluationFormDetail?.seftTotalComplete || 0
 
     const overallData = {
         // labels: ["Red", "Green"],
@@ -41,25 +42,11 @@ function EvaluationOverall(props) {
         aspectRatio: 1,
         tooltips: {enabled: false},
         hover: {mode: null},
-        cutoutPercentage: 75
+        cutoutPercentage: 75,
+        plugins: {
+            report: `${(totalCompleted/evaluationFormDetail?.totalTarget*100).toFixed(2)}%`
+        }
     }
-
-    const plugins = [{
-        beforeDraw: function(chart) {
-            let width = chart.width,
-            height = chart.height,
-            ctx = chart.ctx;
-            ctx.restore()
-            // const fontSize = (height / 160).toFixed(2)
-            ctx.font = `normal normal bold 1.2em arial`
-            ctx.textBaseline = "top"
-            const text = `${(totalCompleted/evaluationFormDetail?.totalTarget*100).toFixed(2)}%`,
-            textX = Math.round((width - ctx.measureText(text).width) / 2),
-            textY = height / 2;
-            ctx.fillText(text, textX, textY)
-            ctx.save()
-        } 
-    }]
 
     return <div className="block-overall">
                 <div className="card shadow card-completed">
@@ -70,7 +57,24 @@ function EvaluationOverall(props) {
                                 <Doughnut 
                                     data={overallData} 
                                     options={chartOption} 
-                                    plugins={plugins}
+                                    plugins={
+                                        [{
+                                            beforeDraw: function(chart, args, options) {
+                                                const width = chart.width,
+                                                height = chart.height,
+                                                ctx = chart.ctx;
+                                                ctx.restore()
+                                                // const fontSize = (height / 160).toFixed(2)
+                                                ctx.font = `normal normal bold 1.2em arial`
+                                                ctx.textBaseline = "top"
+                                                const text = chart?.options?.plugins?.report,
+                                                textX = Math.round((width - ctx.measureText(text).width) / 2),
+                                                textY = height / 2;
+                                                ctx.fillText(text, textX, textY)
+                                                ctx.save()
+                                            }
+                                        }]
+                                    }
                                 />
                             </div>
                         </div>
@@ -94,7 +98,6 @@ function EvaluationOverall(props) {
                         <tbody>
                             {
                                 (evaluationFormDetail?.listGroup || []).map((item, i) => {
-                                    // let assessment = calculateAssessment(item?.listTarget)
                                     return <tr key={i}>
                                                 <td className='c-criteria'><div className='criteria'>{item?.groupName}</div></td>
                                                 <td className='c-self-assessment text-center'>{item?.groupSeftPoint || 0}</td>
@@ -220,7 +223,11 @@ function EvaluationProcess(props) {
     }
 
     const handleInputChange = (subIndex, parentIndex, stateName, element) => {
-        updateData(subIndex, parentIndex, stateName, element?.target?.value || "")
+        const val = element?.target?.value || ""
+        // if (['realResult', 'seftPoint', 'leadReviewPoint'].includes(stateName) && !/^\/(\d+)$/.test(Number(val))) {
+        //     return
+        // }
+        updateData(subIndex, parentIndex, stateName, val)
     }
 
     return <div className="card shadow evaluation-process">
@@ -501,7 +508,11 @@ function EvaluationDetail(props) {
             }
         })
         const totalInfos = getTotalInfoByListGroup(evaluationFormDetailTemp.listGroup)
-        evaluationFormDetailTemp.totalComplete = totalQuestionsAnswered
+        if (showByManager) {
+            evaluationFormDetailTemp.leadReviewTotalComplete = totalQuestionsAnswered
+        } else {
+            evaluationFormDetailTemp.seftTotalComplete = totalQuestionsAnswered
+        }
         evaluationFormDetailTemp.totalSeftPoint = totalInfos?.self || 0
         evaluationFormDetailTemp.totalLeadReviewPoint = totalInfos?.manager || 0
         SetEvaluationFormDetail(evaluationFormDetailTemp)
