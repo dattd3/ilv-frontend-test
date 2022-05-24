@@ -167,7 +167,7 @@ class ResignationRequestsManagementPage extends React.Component {
         const requestStatusProcessIds = requestIdChecked.filter(item => {
             return item && item.value
         })
-        .map(item => item.requestStatusProcessId)
+        .map(item => item.key)
 
         const fullTextSearch = searchingDataToFilter.fullTextSearch || ""
         const typeMethodMapping = {
