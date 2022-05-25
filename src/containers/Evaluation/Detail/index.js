@@ -224,9 +224,9 @@ function EvaluationProcess(props) {
 
     const handleInputChange = (subIndex, parentIndex, stateName, element) => {
         const val = element?.target?.value || ""
-        // if (['realResult', 'seftPoint', 'leadReviewPoint'].includes(stateName) && !/^\/(\d+)$/.test(Number(val))) {
-        //     return
-        // }
+        if (['realResult', 'seftPoint', 'leadReviewPoint'].includes(stateName) && (!(/^\d*$/.test(Number(val))) || val.includes('.'))) {
+            return
+        }
         updateData(subIndex, parentIndex, stateName, val)
     }
 
@@ -313,7 +313,7 @@ function EvaluationProcess(props) {
                                                                 </div>
                                                                 <div className="qltt attitude-score">
                                                                     <div className="item">
-                                                                        <span className="red label">Điểm QLTT đánh giá</span>
+                                                                        <span className="red label">Điểm QLTT đánh giá{showByManager && <span className="required">(*)</span>}</span>
                                                                         {
                                                                             showByManager && evaluationFormDetail.status == evaluationStatus.selfAssessment 
                                                                             ?
@@ -345,7 +345,7 @@ function EvaluationProcess(props) {
                                                                             <th className="text-center target"><span>Mục tiêu</span></th>
                                                                             <th className="text-center actual-results"><span>Kết quả thực tế</span>{!showByManager && <span className="required">(*)</span>}</th>
                                                                             <th className="text-center self-assessment"><span>Điểm tự đánh giá</span>{!showByManager && <span className="required">(*)</span>}</th>
-                                                                            <th className="text-center qltt-assessment"><span>Điểm QLTT đánh giá</span></th>
+                                                                            <th className="text-center qltt-assessment"><span>Điểm QLTT đánh giá</span>{showByManager && <span className="required">(*)</span>}</th>
                                                                             <th className="text-center deviant"><span>Điểm chênh lệch</span></th>
                                                                         </tr>
                                                                     </thead>
@@ -531,7 +531,7 @@ function EvaluationDetail(props) {
                 if (showByManager) {
                     return  (
                         <>
-                            <button className="btn-action reject" onClick={() => handleSubmit(actionButton.reject)}><Image src={IconReject} alt="Reject" />Từ chối</button>
+                            <button className="btn-action reject" onClick={() => handleSubmit(actionButton.reject, null, true)}><Image src={IconReject} alt="Reject" />Từ chối</button>
                             <button className="btn-action confirm" onClick={() => handleSubmit(actionButton.approve)}><Image src={IconApprove} alt="Confirm" />Xác nhận</button>
                         </>
                     )
@@ -541,7 +541,7 @@ function EvaluationDetail(props) {
                 if (showByManager) {
                     return  (
                         <>
-                            <button className="btn-action reject" onClick={() => handleSubmit(actionButton.reject)}><Image src={IconReject} alt="Reject" />Từ chối</button>
+                            <button className="btn-action reject" onClick={() => handleSubmit(actionButton.reject, null, true)}><Image src={IconReject} alt="Reject" />Từ chối</button>
                             <button className="btn-action approve" onClick={() => handleSubmit(actionButton.approve, true)}><Image src={IconApprove} alt="Approve" />Phê duyệt</button>
                         </>
                     )
@@ -636,7 +636,7 @@ function EvaluationDetail(props) {
     }
 
     const handleSubmit = async (actionCode, isApprove, isSaveDraft) => {
-        if (!isSaveDraft) {
+        if (!isSaveDraft || actionCode !== actionButton.reject) {
             const isValid = isDataValid()
             if (!isValid) {
                 return
@@ -663,13 +663,17 @@ function EvaluationDetail(props) {
                         statusModalTemp.content = getResponseMessages(evaluationFormDetail?.status, actionCode, 'success')
                     } else {
                         statusModalTemp.isSuccess = false
-                        statusModalTemp.content = getResponseMessages(evaluationFormDetail?.status, actionCode, 'failed')
+                        statusModalTemp.content = result?.message
                     }
                 } else {
                     statusModalTemp.isSuccess = false
                     statusModalTemp.content = getResponseMessages(evaluationFormDetail?.status, actionCode, 'failed')
                 }
-                SetStatusModal(statusModalTemp)
+                if (!showByManager) {
+                    SetStatusModal(statusModalTemp)
+                } else {
+                    updateParent(statusModalTemp)
+                }
             } else { // Lưu, CBNV Gửi tới bước tiếp theo, CBQLTT xác nhận
                 const payload = {...evaluationFormDetail}
                 payload.nextStep = actionCode
@@ -683,27 +687,35 @@ function EvaluationDetail(props) {
                         statusModalTemp.content = getResponseMessages(payload.status, actionCode, 'success')
                     } else {
                         statusModalTemp.isSuccess = false
-                        statusModalTemp.content = getResponseMessages(payload.status, actionCode, 'failed')
+                        statusModalTemp.content = result?.message
                     }
                 } else {
                     statusModalTemp.isSuccess = false
                     statusModalTemp.content = getResponseMessages(payload.status, actionCode, 'failed')
                 }
-                SetStatusModal(statusModalTemp)
+                if (!showByManager) {
+                    SetStatusModal(statusModalTemp)
+                } else {
+                    updateParent(statusModalTemp)
+                }
             }
         } catch (e) {
             SetIsLoading(false)
             statusModalTemp.isShow = false
             statusModalTemp.isSuccess = false
             statusModalTemp.content = t("AnErrorOccurred")
-            SetStatusModal(statusModalTemp)
+            if (!showByManager) {
+                SetStatusModal(statusModalTemp)
+            } else {
+                updateParent(statusModalTemp)
+            }
         }
     }
 
     return (
         <>
         <LoadingModal show={isLoading} />
-        <StatusModal show={statusModal.isShow} isSuccess={statusModal.isSuccess} content={statusModal.content} onHide={onHideStatusModal} />
+        { !showByManager && <StatusModal show={statusModal.isShow} isSuccess={statusModal.isSuccess} content={statusModal.content} onHide={onHideStatusModal} /> }
         <div className="evaluation-detail-page">
             {
                 evaluationFormDetail ? 
