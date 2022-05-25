@@ -25,6 +25,8 @@ registerLocale("vi", vi)
 
 const PnLOrgNumber = localStorage.getItem('organizationLv2')
 const employeeCode = localStorage.getItem('employeeNo')
+const employeeAD = localStorage.getItem('email').split('@')[0]
+
 const formStatuses = [
     {value: 0, label: 'Đang đánh giá'},
     {value: 1, label: 'Hoàn thành'},
@@ -500,11 +502,11 @@ function EvaluationApproval(props) {
     const [paging, SetPaging] = useState({
         approval: {
             pageIndex: 1,
-            pageSize: 1
+            pageSize: 10
         },
         batchApproval: {
             pageIndex: 1,
-            pageSize: 1
+            pageSize: 10
         }
     })
     const [masterData, SetMasterData] = useState({
@@ -524,7 +526,7 @@ function EvaluationApproval(props) {
     const [dataFilter, SetDataFilter] = useState(null)
 
     const statusDone = 5
-    const listPageSizes = [1, 10, 20, 30, 40, 50]
+    const listPageSizes = [10, 20, 30, 40, 50]
 
     const useHasChanged= (val) => {
         const prevVal = usePrevious(val)
@@ -599,11 +601,15 @@ function EvaluationApproval(props) {
             masterDataTemp.ranks = prepareRanksAndTitles('ranks', rankAndTitleResponse)
             masterDataTemp.titles = prepareRanksAndTitles('titles', rankAndTitleResponse)
             SetMasterData(masterDataTemp)
-            SetIsLoading(false)
+            if (isLoading) {
+                SetIsLoading(false)
+            }
         }
 
         const fetchMasterData = async () => {
-            SetIsLoading(true)
+            if (!isLoading) {
+                SetIsLoading(true)
+            }
             const config = getMuleSoftHeaderConfigurations()
             const requestGetOrgLevel3 = axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/organization/structure/levels?page_no=1&page_size=10000&level=3&parent_id=${PnLOrgNumber}`, config)
             const requestGetOrgLevel4 = axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/organization/structure/levels?page_no=1&page_size=10000&level=4`, config)
@@ -667,11 +673,13 @@ function EvaluationApproval(props) {
         formData.append('positionName', data?.title?.value || '')
 
         if (tab === 'approval') {
-            formData.append('ReviewerEmployeeCode', localStorage.getItem('employeeNo') || '')
+            formData.append('ReviewerEmployeeCode', employeeCode || '')
+            formData.append('ReviewerEmployeeAdCode', employeeAD || '')
             formData.append('CurrentStatus', data?.status?.value)
             apiPath = `${process.env.REACT_APP_HRDX_PMS_URL}api/form/listReview`
         } else if (tab === 'batchApproval') {
-            formData.append('ApproveEmployeeCode', localStorage.getItem('employeeNo') || '')
+            formData.append('ApproveEmployeeCode', employeeCode || '')
+            formData.append('ApproveEmployeeAdCode', employeeAD || '')
             formData.append('CheckPhaseFormId', data?.evaluationForm?.value || null)
             apiPath = `${process.env.REACT_APP_HRDX_PMS_URL}api/form/listApprove`
         }
@@ -709,13 +717,20 @@ function EvaluationApproval(props) {
         })
     }
 
-    const onHideEvaluationDetailModal = () => {
+    const onHideEvaluationDetailModal = (statusModalFromChild) => {
         SetEvaluationDetailPopup({
             ...evaluationDetailPopup,
             isShow: false,
             evaluationFormId: null,
             formCode: null,
             employeeCode: null
+        })
+
+        SetStatusModal({
+            ...statusModal,
+            isShow: statusModalFromChild?.isShow,
+            isSuccess: statusModalFromChild?.isSuccess,
+            content: statusModalFromChild?.content
         })
     }
 

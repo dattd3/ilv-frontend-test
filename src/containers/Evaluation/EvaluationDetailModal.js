@@ -5,8 +5,8 @@ import EvaluationDetail from './Detail/index'
 function EvaluationDetailModal(props) {
     const { isShow, evaluationFormId, formCode, employeeCode, onHide} = props
     
-    const updateParent = () => {
-        onHide()
+    const updateParent = (statusModal) => {
+        onHide(statusModal)
     }
 
     return (
