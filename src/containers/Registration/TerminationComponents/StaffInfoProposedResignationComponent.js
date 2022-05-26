@@ -7,6 +7,7 @@ import _, { debounce } from 'lodash'
 import { withTranslation } from "react-i18next"
 import Constants from '../../../commons/Constants'
 import { getMuleSoftHeaderConfigurations } from '../../../commons/Utils'
+import ResultModal from '../ResultModal'
 
 const MyOption = props => {
     const { innerProps, innerRef } = props;
@@ -58,22 +59,23 @@ class StaffInfoProposedResignationComponent extends React.PureComponent {
         }
     }
 
-    addEmployees = () => {
+    addEmployees = async () => {
         let { userInfos, employee } = this.state
         const itemExist = (userInfos || []).filter(item => item.email?.toLowerCase() === employee.email?.toLowerCase())
         const errorObj = {employees: "Nhân viên đề xuất cho nghỉ đã nằm trong danh sách đề xuất cho nghỉ!"}
 
         if (!itemExist || itemExist.length === 0 && employee) {
             errorObj.employees = "Vui lòng chọn nhân viên đề xuất cho nghỉ!"
+            const contractInfo = await this.getMoreInfoContract(employee.employee_no);
             const employeeTemp = {
                 employeeNo: employee.employee_no,
                 ad: employee.account?.toLowerCase(),
                 fullName: employee.fullname,
                 jobTitle: employee.job_title,
                 department: employee.department,
-                dateStartWork: employee.date_start_work,
-                contractType: employee.contract_type,
-                contractName: employee.contract_name,
+                dateStartWork: contractInfo?.dateStartWork,
+                contractType: contractInfo?.lastestContractType,
+                contractName:contractInfo?.lastestContractName,
                 email: employee.email,
                 rank: employee.rank_name,
                 unitName: employee.unit_name,
@@ -132,6 +134,41 @@ class StaffInfoProposedResignationComponent extends React.PureComponent {
                 //this.props.updateErrors(errorObj)
                 this.props.updateUserInfos(userInfosTemp)
             }
+        }
+    }
+
+    // lấy thông tin hơp đồng, và ngày bắt đàu làm việc
+    getMoreInfoContract = async (employeeId) => {
+        const config = {
+            headers: {            
+                'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+                'Content-Type': 'application/json-patch+json'
+            }  
+        };
+        try {
+            this.setState({isSearching: true})
+            const res = await axios.post(`${process.env.REACT_APP_REQUEST_URL}ReasonType/getadditionalinfo`, employeeId, config)
+            if(res?.data?.data) {
+                return {
+                    dateStartWork: res.data.data.dateStartWork,
+                    lastestContractName: res.data.data.lastestContractName,
+                    lastestContractType: res.data.data.lastestContractType
+                }
+            }
+            return {
+                dateStartWork: '',
+                lastestContractName: '',
+                lastestContractType: ''
+            }
+        } catch(err) {
+            return {
+                dateStartWork: '',
+                lastestContractName: '',
+                lastestContractType: ''
+            }
+        }
+        finally {
+            this.setState({isSearching: false})
         }
     }
 
@@ -255,7 +292,7 @@ class StaffInfoProposedResignationComponent extends React.PureComponent {
                                     <tbody>
                                         {
                                             (userInfos || []).map((item, index) => {
-                                                const dateStartWork = item && item.dateStartWork ? moment(item.dateStartWork, "YYYY-MM-DD").format("DD/MM/YYYY") : ""
+                                                const dateStartWork = item && item.dateStartWork ? moment(item.dateStartWork).format("DD/MM/YYYY") : ""
 
                                                 return <tr key={index}>
                                                             <td className="full-name">
