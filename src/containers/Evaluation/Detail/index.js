@@ -176,37 +176,37 @@ function EvaluationProcess(props) {
                     <div className="left">
                         <div className="info-item">
                             <span className="label"><span className="font-weight-bold">Họ và tên</span><span>:</span></span>
-                            <span className="value">{evaluationFormDetail?.fullName}</span>
+                            <span className="value">{evaluationFormDetail?.fullName || ''}</span>
                         </div>
                         <div className="info-item">
                             <span className="label"><span className="font-weight-bold">Chức danh</span><span>:</span></span>
-                            <span className="value">{evaluationFormDetail?.position}</span>
+                            <span className="value">{evaluationFormDetail?.position || ''}</span>
                         </div>
                         <div className="info-item">
                             <span className="label"><span className="font-weight-bold">Cấp bậc</span><span>:</span></span>
-                            <span className="value">{evaluationFormDetail?.employeeLevel}</span>
+                            <span className="value">{evaluationFormDetail?.employeeLevel || ''}</span>
                         </div>
                         <div className="info-item">
                             <span className="label"><span className="font-weight-bold">Ban/Chuỗi/Khối</span><span>:</span></span>
-                            <span className="value">{evaluationFormDetail?.organization_lv3}</span>
+                            <span className="value">{evaluationFormDetail?.organization_lv3 || ''}</span>
                         </div>
                     </div>
                     <div className="right">
                         <div className="info-item">
                             <span className="label"><span className="font-weight-bold">Phòng/Vùng/Miền</span><span>:</span></span>
-                            <span className="value">{evaluationFormDetail?.organization_lv4}</span>
+                            <span className="value">{evaluationFormDetail?.organization_lv4 || ''}</span>
                         </div>
                         <div className="info-item">
                             <span className="label"><span className="font-weight-bold">QLTT đánh giá</span><span>:</span></span>
-                            <span className="value">{`${reviewerInfos?.fullname} - ${approverInfos?.position_title}`}</span>
+                            <span className="value">{reviewerInfos?.fullname && `${reviewerInfos?.fullname || ''} - ${approverInfos?.position_title || ''}`}</span>
                         </div>
                         <div className="info-item">
                             <span className="label"><span className="font-weight-bold">CBLĐ phê duyệt</span><span>:</span></span>
-                            <span className="value">{`${approverInfos?.fullname} - ${approverInfos?.position_title}`}</span>
+                            <span className="value">{approverInfos?.fullname && `${approverInfos?.fullname || ''} - ${approverInfos?.position_title || ''}`}</span>
                         </div>
                         <div className="info-item">
                             <span className="label"><span className="font-weight-bold">HR Admin</span><span>:</span></span>
-                            <span className="value">{`${evaluationFormDetail?.hrAdmin}`}</span>
+                            <span className="value">{`${evaluationFormDetail?.hrAdmin || ''}`}</span>
                         </div>
                     </div>
                 </div>
@@ -285,7 +285,7 @@ function EvaluationProcess(props) {
                                     <div className="list-evaluation">
                                     {
                                         (item?.listTarget || []).map((target, i) => {
-                                            let deviant = Number(target?.leadReviewPoint) - Number(target?.seftPoint)
+                                            let deviant = (target?.leadReviewPoint === '' || target?.leadReviewPoint === null || target?.seftPoint === '' || target?.seftPoint === null) ? '' : Number(target?.leadReviewPoint) - Number(target?.seftPoint)
 
                                             return <div className="evaluation-item" key={i}>
                                                         <div className="title">{`${i + 1}. ${target?.targetName}`}</div>
@@ -332,7 +332,7 @@ function EvaluationProcess(props) {
                                                                 </div>
                                                                 <div className="deviant">
                                                                     <span className="red label">Điểm chênh lệch</span>
-                                                                    <span className={`value ${deviant > 0 ? 'up' : deviant < 0 ? 'down' : ''}`}>{`${deviant > 0 ? '+' : ''}${deviant}`}{deviant != 0 && <Image alt='Note' src={deviant > 0 ? IconUp : deviant < 0 ? IconDown : ''} />}</span>
+                                                                    <span className={`value ${deviant && deviant > 0 ? 'up' : deviant && deviant < 0 ? 'down' : ''}`}>&nbsp;{`${deviant && deviant > 0 ? '+' : ''}${deviant}`}{deviant && deviant != 0 ? <Image alt='Note' src={deviant && deviant > 0 ? IconUp : deviant && deviant < 0 ? IconDown : ''} /> : ''}</span>
                                                                 </div>
                                                             </div>
                                                             : 
@@ -385,7 +385,7 @@ function EvaluationProcess(props) {
                                                                                 { errors[`${index}_${i}_leadReviewPoint`] && <div className="alert alert-danger invalid-message" role="alert">{errors[`${index}_${i}_leadReviewPoint`]}</div> }
                                                                             </td>
                                                                             <td className="text-center deviant">
-                                                                                <span className={`value ${deviant > 0 ? 'up' : deviant < 0 ? 'down' : ''}`}>{`${deviant > 0 ? '+' : ''}${deviant}`}{deviant != 0 && <Image alt='Note' src={deviant > 0 ? IconUp : deviant < 0 ? IconDown : ''} />}</span>
+                                                                                <span className={`value ${deviant && deviant > 0 ? 'up' : deviant && deviant < 0 ? 'down' : ''}`}>&nbsp;{`${deviant && deviant > 0 ? '+' : ''}${deviant}`}{deviant && deviant != 0 ? <Image alt='Note' src={deviant && deviant > 0 ? IconUp : deviant && deviant < 0 ? IconDown : ''} /> : ''}</span>
                                                                             </td>
                                                                         </tr>
                                                                     </tbody>
@@ -492,14 +492,27 @@ function EvaluationDetail(props) {
     const updateData = (subIndex, parentIndex, stateName, value) => {
         const evaluationFormDetailTemp = {...evaluationFormDetail}
         evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex][stateName] = value
-        const totalQuestionsAnswered = (evaluationFormDetailTemp?.listGroup || []).reduce((initial, current) => {
-            let questionsAnswered = (current?.listTarget || []).reduce((subInitial, subCurrent) => {
-                subInitial += subCurrent?.seftPoint ? 1 : 0
-                return subInitial
+        let totalQuestionsAnswered = 0
+        if (showByManager) {
+            totalQuestionsAnswered = (evaluationFormDetailTemp?.listGroup || []).reduce((initial, current) => {
+                let questionsAnswered = (current?.listTarget || []).reduce((subInitial, subCurrent) => {
+                    subInitial += subCurrent?.leadReviewPoint ? 1 : 0
+                    return subInitial
+                }, 0)
+                initial += questionsAnswered
+                return initial
             }, 0)
-            initial += questionsAnswered
-            return initial
-        }, 0)
+        } else {
+            totalQuestionsAnswered = (evaluationFormDetailTemp?.listGroup || []).reduce((initial, current) => {
+                let questionsAnswered = (current?.listTarget || []).reduce((subInitial, subCurrent) => {
+                    subInitial += subCurrent?.seftPoint ? 1 : 0
+                    return subInitial
+                }, 0)
+                initial += questionsAnswered
+                return initial
+            }, 0)
+        }
+
         evaluationFormDetailTemp.listGroup = [...evaluationFormDetailTemp.listGroup || []].map(item => {
             return {
                 ...item,
@@ -636,7 +649,7 @@ function EvaluationDetail(props) {
     }
 
     const handleSubmit = async (actionCode, isApprove, isSaveDraft) => {
-        if (!isSaveDraft || actionCode !== actionButton.reject) {
+        if (!isSaveDraft || (actionCode !== actionButton.reject && actionCode !== actionButton.save)) {
             const isValid = isDataValid()
             if (!isValid) {
                 return
