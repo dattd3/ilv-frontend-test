@@ -49,14 +49,24 @@ class RegistrationEmploymentTerminationForm extends React.Component {
     }
 
     initialData = async () => {
+        const config = {
+            headers: {            
+                'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+                'Content-Type': 'application/json-patch+json'
+            }  
+        };
+
         const reasonTypesEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/resignation_reason`
         const userInfosEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/profile`
         const userContractInfosEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/contract`
+        const userContractMoreInfosEndpoint = `${process.env.REACT_APP_REQUEST_URL}ReasonType/getadditionalinfo`;
+
         const requestReasonTypes = axios.get(reasonTypesEndpoint, getMuleSoftHeaderConfigurations())
         const requestUserInfos = axios.get(userInfosEndpoint, getMuleSoftHeaderConfigurations())
-        const requestUserContractInfos = axios.get(userContractInfosEndpoint, getMuleSoftHeaderConfigurations())
+        //const requestUserContractInfos = axios.get(userContractInfosEndpoint, getMuleSoftHeaderConfigurations())
+        const requestUserMoreInfos = axios.post(userContractMoreInfosEndpoint, localStorage.getItem('employeeNo'), config)
 
-        await axios.all([requestReasonTypes, requestUserInfos, requestUserContractInfos]).then(axios.spread((...responses) => {
+        await axios.all([requestReasonTypes, requestUserInfos, requestUserMoreInfos]).then(axios.spread((...responses) => {
             const reasonTypes = this.prepareReasonTypes(responses[0])
             const userInfos = this.prepareUserInfos(responses[1], responses[2])
 
@@ -95,12 +105,16 @@ class RegistrationEmploymentTerminationForm extends React.Component {
         }
 
         if (contractResponses && contractResponses.data) {
-            const contractInfos = contractResponses.data.data
-            if (contractInfos && contractInfos.length > 0) {
-                const infos = contractInfos[0]
+            const infos = contractResponses.data.data
+            if (infos) {
                 userContractInfoResults = {
-                    contractType: infos.contract_number,
-                    contractName: infos.contract_type || ""
+                    contractType: infos.lastestContractType,
+                    contractName: infos.lastestContractName || ""
+                }
+                const dateStartWork = infos && infos.dateStartWork && moment(infos.dateStartWork).isValid() ? moment(infos.dateStartWork).format("YYYY-MM-DD") : ""
+                userInfoResults = { 
+                    ...userInfoResults,
+                    dateStartWork: dateStartWork
                 }
             }
         }
