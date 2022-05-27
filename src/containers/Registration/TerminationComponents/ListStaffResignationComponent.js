@@ -259,7 +259,7 @@ class ListStaffResignationComponent extends React.PureComponent {
                                                 const userInfos = item.userInfo
                                                 const reason = item.reason
                                                 const attachments = item.profileDocuments
-                                                const interviewQuestionnaire = item.processStatus == Constants.STATUS_APPROVED ? <a className="data interview-card" href={`/contract-termination-interview/${item.requestStatusProcessId}/export`} title="Phiếu phỏng vấn" target="_blank">Phiếu phỏng vấn</a>  : <span className="data interview-card">Phiếu phỏng vấn</span>
+                                                const interviewQuestionnaire = item.processStatus == Constants.STATUS_APPROVED ? <a className="data interview-card" href={`/contract-termination-interview/${item.contractTerminationInfoId}/export`} title="Phiếu phỏng vấn" target="_blank">Phiếu phỏng vấn</a>  : <span className="data interview-card">Phiếu phỏng vấn</span>
 
                                                 return <tr key={index}>
                                                             <td className="sticky-col full-name-col">
@@ -280,7 +280,7 @@ class ListStaffResignationComponent extends React.PureComponent {
                                                             <td className="contract-type-col"><div className="data contract-type">{userInfos?.contractName || ""}</div></td>
                                                             <td className="created-by-col"><div className="data created-by">{item?.createdBy?.fullName || ""}</div></td>
                                                             <td className="attachment-col"><div className="data attachment">{this.renderAttachmentView(attachments, index)}</div></td>
-                                                            <td className="handover-status-col"><a className="data handover-status" href={`/handover/${item.requestStatusProcessId}/request`} title={item?.statusDeliverString}>{item?.statusDeliverString}</a></td>
+                                                            <td className="handover-status-col"><a className="data handover-status" href={`/handover/${item.contractTerminationInfoId}/request`} title={item?.statusDeliverString}>{item?.statusDeliverString}</a></td>
                                                             <td className="handover-job-col"><div className="data handover-job">{this.renderStatus(index, item.isHandoverWork, item.statusWork, "statusWork")}</div></td>
                                                             <td className="asset-transfer-col"><div className="data asset-transfer">{this.renderStatus(index, item.isHandoverAsset, item.statusAsset, "statusAsset")}</div></td>
                                                             <td className="handover-insurance-col"><div className="data handover-insurance">{this.renderStatus(index, item.isHandoverSocial, item.statusSocial, "statusSocial")}</div></td>
