@@ -1094,5 +1094,10 @@
   "VinmecTaxRefundsAfterTaxFinalization": "Tax Refunds After Tax Finalization",
   "VinmecAdditionalTaxAfterTaxFinalization": "Additional tax after tax finalization",
   "VinmecReferralRevenueBonus": "Referral revenue bonus",
-  "AllowanceForNursingPosition": "Allowance for Nursing Position"
+  "AllowanceForNursingPosition": "Allowance for Nursing Position",
+  "Welfare": "Phúc lợi",
+  "InteralWelfare": "Nội bộ",
+  "InsuranceRegime": "Chế độ bảo hiểm",
+  "WelfareResource": "Khách sạn",
+  "RegimeInfo": " THÔNG TIN CHẾ ĐỘ"
 }

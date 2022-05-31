@@ -595,6 +595,38 @@ export default [
           },
           component: lazy(() => import("./TaskRecruitment/Evalution"))
         },
+        {
+          key: "internal-welfare",
+          routeProps: {
+            exact: true,
+            path: map.InteralWelfare
+          },
+          component: lazy(() => import("./Welfare/InternalWelfare"))
+        },
+        {
+          key: "insurance-regime",
+          routeProps: {
+            exact: true,
+            path: map.InsuranceRegime
+          },
+          component: lazy(() => import("./Welfare/InsuranceRegime"))
+        },
+        {
+          key: "create-insurance-social",
+          routeProps: {
+            exact: true,
+            path: map.CreateInsuranceSocial
+          },
+          component: lazy(() => import("./Welfare/CreateInsuranceSocial"))
+        },
+        {
+          key: "create-insurance-health",
+          routeProps: {
+            exact: true,
+            path: map.CreateInsuranceHealth
+          },
+          component: lazy(() => import("./Welfare/CreateInsuranceSocial"))
+        },
       ],
     },
   },
