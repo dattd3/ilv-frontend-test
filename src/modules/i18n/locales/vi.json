@@ -1111,5 +1111,11 @@
   "VinmecTaxRefundsAfterTaxFinalization": "Thuế hoàn lại sau Quyết toán thuế",
   "VinmecAdditionalTaxAfterTaxFinalization": "Thuế nộp thêm sau Quyết toán thuế",
   "VinmecReferralRevenueBonus": "Thưởng doanh thu giới thiệu khách",
-  "AllowanceForNursingPosition": "Phụ cấp ưu đãi nghề Điều dưỡng"
+  "AllowanceForNursingPosition": "Phụ cấp ưu đãi nghề Điều dưỡng",
+  "Welfare": "Phúc lợi",
+  "InteralWelfare": "Nội bộ",
+  "InsuranceRegime": "Chế độ bảo hiểm",
+  "WelfareResource": "Khách sạn",
+  "RegimeInfo": " THÔNG TIN CHẾ ĐỘ"
+
 }

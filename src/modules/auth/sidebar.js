@@ -295,6 +295,29 @@ export const Navigation = [
     role: 'U'
   },
   {
+    id: 110,
+    parentId: 10,
+    icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+    label: "Welfare",
+    role: 'U'
+  },
+  {
+    id: 111,
+    parentId: 110,
+    icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+    label: "InteralWelfare",
+    to: map.InteralWelfare,
+    role: 'U'
+  },
+  {
+    id: 112,
+    parentId: 110,
+    icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+    label: "InsuranceRegime",
+    to: map.InsuranceRegime,
+    role: 'U'
+  },
+  {
     id: 30,
     parentId: 17,
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',

@@ -102,5 +102,11 @@ export default {
   
   MyProjectDetail: "/my-projects/project/:id",
   ProjectDetail: "/list-projects/project/:id",
-  MyProfile: "/my-profile"
+  MyProfile: "/my-profile",
+
+  //Phúc lợi
+  InteralWelfare: '/welfare-manager',
+  InsuranceRegime: '/insurance-manager',
+  CreateInsuranceSocial: '/insurance-manager/createSocialInsurance',
+  CreateInsuranceHealth: '/insurance-manager/createHealthInsurance'
 };
