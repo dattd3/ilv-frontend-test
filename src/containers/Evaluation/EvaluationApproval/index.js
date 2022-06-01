@@ -545,31 +545,31 @@ function EvaluationApproval(props) {
     
     useEffect(() => {
         const prepareRanksAndTitles = (name, raw) => {
-            const rankCodeLevelMapping = {
-                'C': {value: 'C', label: 'C'},
-                'C1': {value: 'C', label: 'C'},
-                'M0': {value: 'CV', label: 'Chuyên viên'},
-                'M1': {value: 'CV', label: 'Chuyên viên'},
-                'M2': {value: 'CV', label: 'Chuyên viên'},
-                'M3': {value: 'CV', label: 'Chuyên viên'},
-                'L0': {value: 'CG', label: 'Chuyên gia'},
-                'L1': {value: 'CG', label: 'Chuyên gia'},
-                'L2': {value: 'CG', label: 'Chuyên gia'},
-                'L3': {value: 'CG', label: 'Chuyên gia'},
-                'L4': {value: 'CG', label: 'Chuyên gia'},
-                'N0': {value: 'NV', label: 'Nhân viên'},
-                'N1': {value: 'NV', label: 'Nhân viên'},
-                'N2': {value: 'NV', label: 'Nhân viên'},
-                'N3': {value: 'NV', label: 'Nhân viên'}
-            }
+            // const rankCodeLevelMapping = {
+            //     'C': {value: 'C', label: 'C'},
+            //     'C1': {value: 'C', label: 'C'},
+            //     'M0': {value: 'CV', label: 'Chuyên viên'},
+            //     'M1': {value: 'CV', label: 'Chuyên viên'},
+            //     'M2': {value: 'CV', label: 'Chuyên viên'},
+            //     'M3': {value: 'CV', label: 'Chuyên viên'},
+            //     'L0': {value: 'CG', label: 'Chuyên gia'},
+            //     'L1': {value: 'CG', label: 'Chuyên gia'},
+            //     'L2': {value: 'CG', label: 'Chuyên gia'},
+            //     'L3': {value: 'CG', label: 'Chuyên gia'},
+            //     'L4': {value: 'CG', label: 'Chuyên gia'},
+            //     'N0': {value: 'NV', label: 'Nhân viên'},
+            //     'N1': {value: 'NV', label: 'Nhân viên'},
+            //     'N2': {value: 'NV', label: 'Nhân viên'},
+            //     'N3': {value: 'NV', label: 'Nhân viên'}
+            // }
     
             if (raw && raw?.status === 'fulfilled') {
                 const dataValue = raw?.value
                 if (dataValue && dataValue?.data && dataValue?.data?.result && dataValue?.data?.result?.code == Constants.API_SUCCESS_CODE) {
                     const ranksAndTitles = dataValue?.data?.data
                     let result = (ranksAndTitles[name] || []).map(item => {
-                        return item && { value: name === "titles" ? item.short : rankCodeLevelMapping[item.rank] ? rankCodeLevelMapping[item.rank].value : item.rank,
-                        label: name === "titles" ? item.title : rankCodeLevelMapping[item.rank] ? rankCodeLevelMapping[item.rank].label : item.text }
+                        return item && { value: name === "titles" ? item.short : item.rank,
+                        label: name === "titles" ? item.title : `${item.text} (${item.rank})` }
                     })
                     result =  _.uniqWith(result, _.isEqual)
                     return result
