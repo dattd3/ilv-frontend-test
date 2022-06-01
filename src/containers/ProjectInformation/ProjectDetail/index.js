@@ -156,7 +156,11 @@ function ProjectDetail(props) {
                             source: item?.resources,
                             timeSheets: [],
                             rsmTimeSheet: _.groupBy(item?.rsmTimeSheets, sub => sub.date),
-                            rsmLeaveTypeAndComment: item.rsmLeaveTypeAndComment
+                            rsmLeaveTypeAndComment: item?.rsmLeaveTypeAndComment,
+                            startJoinProject: item?.startDate,
+                            endJoinProject: item?.endDate,
+                            mandays: item?.mandays,
+                            mandayCheck: item?.mandayCheck
                         }
                     })
                     return timeSheets
@@ -581,7 +585,11 @@ function ProjectDetail(props) {
     }
 
     const { rsmBusinessOwners, rsmProjectTeams, rsmTargets, projectComment, plant, actual, mandayActual, mandayPlant } = projectData
-    const rangeTimeFilter = `${projectData?.startDate ? moment(projectData?.startDate).format('DD/MM/YYYY') : ''} - ${projectData?.endDate ? moment(projectData?.endDate).format('DD/MM/YYYY') : ''}`
+    // const rangeTimeFilter = `${projectData?.startDate ? moment(projectData?.startDate).format('DD/MM/YYYY') : ''} - ${projectData?.endDate ? moment(projectData?.endDate).format('DD/MM/YYYY') : ''}`
+
+    const getRangeTimeJoinProject = (startDate, endDate) => {
+        return `${startDate ? moment(startDate).format('DD/MM/YYYY') : ''} - ${endDate ? moment(endDate).format('DD/MM/YYYY') : ''}`
+    }
 
     const formatMulesoftValue = val => {
         if (!val || val === '0' || val === '#' || val === '000000' || val === '00000000' || val === '0000') {
@@ -822,9 +830,25 @@ function ProjectDetail(props) {
                                                                 <div className="col-first">
                                                                     <div className="planned">
                                                                         <div className="font-weight-bold">Planned Total</div>
-                                                                        <div className="range-time">{rangeTimeFilter}</div>
+                                                                        <div className="range-time">{getRangeTimeJoinProject(item?.startJoinProject, item?.endJoinProject)}</div>
+                                                                        <div className="font-weight-bold total-md-plan">{item?.mandays || 0} MD</div>
                                                                     </div>
-                                                                    <div className="actual">Actual</div>
+                                                                    <div className="actual">
+                                                                        <div className="wrap-actual">
+                                                                            <div className="font-weight-bold">Actual</div>
+                                                                            {
+                                                                                Number(item?.mandayCheck || 0) <= Number(item?.mandays || 0)
+                                                                                ? <div className="font-weight-bold total-md-actual">{item?.mandayCheck || 0} MD</div>
+                                                                                : 
+                                                                                <>
+                                                                                    <div className="total-md-actual-warning">
+                                                                                        <div className="font-weight-bold">{item?.mandayCheck || 0} MD</div>
+                                                                                        <div className="note">Đã vượt quá MD Plan</div>
+                                                                                    </div>
+                                                                                </>
+                                                                            }
+                                                                        </div>
+                                                                    </div>
                                                                 </div>
                                                                 <div className="col-item">
                                                                     <ReactTooltip id='label-submit-time-sheet' scrollHide isCapture place="left" type='light' border={true} arrowColor='#FFFFFF' borderColor="#e3e6f0" className="item-tooltip-submit-time-sheet">

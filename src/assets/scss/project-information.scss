@@ -563,6 +563,9 @@
                                     .range-time {
                                         font-size: 12px;
                                     }
+                                    .total-md-plan {
+                                        color: #F2B153;
+                                    }
                                 }
                                 .actual {
                                     width: 100%;
@@ -570,7 +573,17 @@
                                     padding-left: 5px;
                                     display: flex;
                                     align-items: center;
-                                    font-weight: bold;
+                                    .wrap-actual {
+                                        .total-md-actual {
+                                            color: #F2B153;
+                                        }
+                                        .total-md-actual-warning {
+                                            color: #FF5370;
+                                            .note {
+                                                font-size: 12px;
+                                            }
+                                        }
+                                    }
                                 }
                             }
                             .col-item {
