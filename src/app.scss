@@ -14,6 +14,7 @@
 @import "./assets/scss/change-divison-shift.scss";
 @import "./assets/scss/upload-avatar.scss";
 @import "./assets/scss/project-information.scss";
+@import "./assets/scss/evaluation.scss";
 
 @font-face {
   font-family: "icomoon";
@@ -773,10 +774,41 @@
         color: #e52c08 !important;
         background: rgba(247, 225, 225, 0.5);
       }
-
       .active {
         background: rgba(247, 225, 225, 0.5);
         color: #e52c08 !important;
+      }
+      .metismenu-link {
+        .icon-arrow_collapse {
+          background: url("./assets/img/icon/icon-arrow-collapse.svg") center center/11px 11px no-repeat;
+          line-height: unset;
+          &::before {
+            content: '';
+          }
+        }
+        .icon-arrow_expand {
+          background: url("./assets/img/icon/icon-arrow-expand.svg") center center/11px 11px no-repeat;
+          line-height: unset;
+          &::before {
+            content: '';
+          }
+        }
+        &.has-active-child {
+          .icon-arrow_collapse {
+            background: url("./assets/img/icon/icon-arrow-collapse-active.svg") center center/11px 11px no-repeat;
+          }
+          .icon-arrow_expand {
+            background: url("./assets/img/icon/icon-arrow-expand-active.svg") center center/11px 11px no-repeat;
+          }
+        }
+        &:hover {
+          .icon-arrow_collapse {
+            background: url("./assets/img/icon/icon-arrow-collapse-active.svg") center center/11px 11px no-repeat;
+          }
+          .icon-arrow_expand {
+            background: url("./assets/img/icon/icon-arrow-expand-active.svg") center center/11px 11px no-repeat;
+          }
+        }
       }
     }
 
@@ -1195,9 +1227,25 @@ span.badge-notification[data-badge]::after {
 .navigation-top-bar-custom {
   margin-top: 0px;
   margin-bottom: 0px;
-  padding: 1rem;
+  padding: 0.5rem 0.5rem 0.5rem 25px;
   .user-infor-header {
     padding: 0;
+  }
+  & > button {
+    padding: 5px 10px;
+    border-radius: 0;
+    font-size: 0.8rem;
+    &:hover {
+      background-color: #347EF9;
+      border-color: transparent;
+    }
+    &:active {
+      background-color: #347EF9 !important;
+      border-color: transparent !important;
+    }
+    &:focus {
+      box-shadow: 0 0 0 0.1rem #347EF9;
+    }
   }
 }
 .model-body-notify {
@@ -3729,7 +3777,40 @@ span.badge-notification[data-badge]::after {
     }
   }
 }
-
+.user-option {
+  padding: 4px 8px;
+  font-size: 13px;
+  cursor: pointer;
+  .user-info {
+    display: flex;
+    align-items: center;
+    .avatar {
+      margin-right: 8px;
+      img {
+        width: 40px;
+        height: 40px;
+        border-radius: 20px;
+        object-fit: cover;
+      }
+    }
+    .main-info {
+      flex: 1 1;
+      .full-name {
+        font-weight: bold;
+      }
+      .other-info {
+        font-style: italic;
+        margin: -2px 0 0 0;
+        .account {
+          font-size: 12px;
+        }
+        .title {
+          margin-left: 4px;
+        }
+      }
+    }
+  }
+}
 .scroll-custom {
   overflow-y: auto;
   overflow-x: hidden;
