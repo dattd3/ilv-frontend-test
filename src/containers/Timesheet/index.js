@@ -6,6 +6,7 @@ import TimesheetSearch from './timesheetSearch'
 import TimesheetSummary from './TimesheetSummary'
 import TimesheetDetail from './TimesheetDetail'
 import TimeTableDetail from './TimeTableDetail'
+import LoadingModal from '../../components/Common/LoadingModal'
 import { getMuleSoftHeaderConfigurations, getRequestConfigurations } from "../../commons/Utils"
 
 class Timesheet extends React.Component {
@@ -16,12 +17,13 @@ class Timesheet extends React.Component {
           timesheets: [],
           timeTableData: null,
           isSearch: false,
-          isTableSearch: false
+          isTableSearch: false,
+          isShowLoadingModal: false
         }
     }
 
     search(startDate, endDate) {
-      this.setState({ isSearch: false, isTableSearch: false })
+      this.setState({ isSearch: false, isTableSearch: false, isShowLoadingModal: true })
       let start = moment(startDate).format('YYYYMMDD').toString()
       let end = moment(endDate).format('YYYYMMDD').toString()
 
@@ -102,29 +104,36 @@ class Timesheet extends React.Component {
         }
 
         this.setState(localState)
+        this.setState({isShowLoadingModal: false})
       }))
     }
   
     render() {
       const { t } = this.props
+      const { isShowLoadingModal } = this.state
+
       return (
-      <div className="timesheet-section personal-timesheet">
-        <TimesheetSearch clickSearch={this.search.bind(this)}/>
-        { (this.state.isSearch && this.state.timsheetSummary) ?
-          <>
-            <TimesheetSummary timsheetSummary={this.state.timsheetSummary}/>
-          </>
-          : this.state.isSearch ? 
-            <div className="alert alert-warning shadow" role="alert">{t("NoDataFound")}</div> 
-          : null
-        }
-        {
-          (this.state.isTableSearch && this.state.timeTableData) ? 
-          <TimeTableDetail timesheetData ={this.state.timeTableData} isSearch={this.state.isTableSearch} showCavet = {false} isOpen = {true}/> 
-          : null
-        }
-      
-      </div>)
+        <>
+          <LoadingModal show={isShowLoadingModal} isloading />
+          <div className="timesheet-section personal-timesheet">
+            <TimesheetSearch clickSearch={this.search.bind(this)}/>
+            { (this.state.isSearch && this.state.timsheetSummary) ?
+              <>
+                <TimesheetSummary timsheetSummary={this.state.timsheetSummary}/>
+              </>
+              : this.state.isSearch ? 
+                <div className="alert alert-warning shadow" role="alert">{t("NoDataFound")}</div> 
+              : null
+            }
+            {
+              (this.state.isTableSearch && this.state.timeTableData) ? 
+              <TimeTableDetail timesheetData ={this.state.timeTableData} isSearch={this.state.isTableSearch} showCavet = {false} isOpen = {true}/> 
+              : null
+            }
+          
+          </div>
+        </>
+      )
     }
   }
 export default withTranslation()(Timesheet);
