@@ -774,10 +774,41 @@
         color: #e52c08 !important;
         background: rgba(247, 225, 225, 0.5);
       }
-
       .active {
         background: rgba(247, 225, 225, 0.5);
         color: #e52c08 !important;
+      }
+      .metismenu-link {
+        .icon-arrow_collapse {
+          background: url("./assets/img/icon/icon-arrow-collapse.svg") center center/11px 11px no-repeat;
+          line-height: unset;
+          &::before {
+            content: '';
+          }
+        }
+        .icon-arrow_expand {
+          background: url("./assets/img/icon/icon-arrow-expand.svg") center center/11px 11px no-repeat;
+          line-height: unset;
+          &::before {
+            content: '';
+          }
+        }
+        &.has-active-child {
+          .icon-arrow_collapse {
+            background: url("./assets/img/icon/icon-arrow-collapse-active.svg") center center/11px 11px no-repeat;
+          }
+          .icon-arrow_expand {
+            background: url("./assets/img/icon/icon-arrow-expand-active.svg") center center/11px 11px no-repeat;
+          }
+        }
+        &:hover {
+          .icon-arrow_collapse {
+            background: url("./assets/img/icon/icon-arrow-collapse-active.svg") center center/11px 11px no-repeat;
+          }
+          .icon-arrow_expand {
+            background: url("./assets/img/icon/icon-arrow-expand-active.svg") center center/11px 11px no-repeat;
+          }
+        }
       }
     }
 
