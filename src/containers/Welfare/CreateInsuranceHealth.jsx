@@ -1,26 +1,47 @@
 import React, { useState } from "react";
 import { withTranslation } from "react-i18next";
-import Select from "react-select";
-import { Form } from "react-bootstrap";
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { vi, enUS } from "date-fns/locale";
 import moment from "moment";
-import ResizableTextarea from "../Registration/TextareaComponent";
 import Constants from "../../commons/Constants";
 import BulletIcon from "../../assets/img/icon/ic_bullet.svg";
 import _ from "lodash";
-import {
-  DECLARE_FORM_OPTIONS,
-  HOSPITAL_LINE,
-  RECEIVE_TYPE,
-  SICK_PLAN,
-  WORKING_CONDITION,
-} from "./InsuranceComponents/InsuranceData";
 
 const CreateInsuranceHealth = ({ t }) => {
   const [type, setType] = useState(null);
-  const [data, setData] = useState({});
+  const [data, setData] = useState({
+    insuranceClaimant : '',
+    insuranceRelation: '',
+    address: '',
+    phone: '',
+    email: '',
+    insuredName: '',
+    gender: null,
+    insuredId: '',
+    insuredBirth: null,
+    insuredUnit: '',
+    insuredNumber: '',
+    accidentDate: null,
+    accidentAddress: '',
+    examDate: null,
+    hospitalizedDate: null,
+    hospitalizedAddress: '' ,
+    reason: '',
+    result: '',
+    fromDate: null,
+    toDate: null,
+    treatType: null,
+    payAmount: '',
+    payCase: null,
+    payType: null,
+    receiveName: '',
+    receiveAccount: '',
+    bankName: '',
+    bankAddress: '',
+    formDate: null,
+    formAddress: ''
+  });
   const [errors, setErrors] = useState({});
   const InsuranceOptions = [
     { value: 1, label: "Ốm đau" },
@@ -51,26 +72,26 @@ const CreateInsuranceHealth = ({ t }) => {
     { value: 2, label: "Nội trú" }
   ];
 
-  const handleTextInputChange = (e, name, subName) => {
+  const handleTextInputChange = (e, name) => {
     const candidateInfos = { ...data };
-    candidateInfos[name][subName] = e != null ? e.target.value : "";
+    candidateInfos[name] = e != null ? e.target.value : "";
     setData(candidateInfos);
   };
 
-  const handleChangeSelectInputs = (e, name, subName) => {
+  const handleChangeSelectInputs = (e, name) => {
     const candidateInfos = { ...data };
-    candidateInfos[name][subName] =
+    candidateInfos[name] =
       e != null ? { value: e.value, label: e.label } : {};
     setData(candidateInfos);
   };
 
-  const handleDatePickerInputChange = (value, name, subname) => {
+  const handleDatePickerInputChange = (value, name) => {
     const candidateInfos = { ...data };
     if (moment(value, "DD/MM/YYYY").isValid()) {
       const date = moment(value).format("DD/MM/YYYY");
-      candidateInfos[name][subname] = date;
+      candidateInfos[name] = date;
     } else {
-      candidateInfos[name][subname] = null;
+      candidateInfos[name] = null;
     }
     setData(candidateInfos);
   };
@@ -126,8 +147,9 @@ const CreateInsuranceHealth = ({ t }) => {
             {"Người yêu cầu trả tiền bảo hiểm"}
             <input
               type="text"
-              value={data.childInsuranceNumber}
-              onChange={(e) => handleTextInputChange(e, "childInsuranceNumber")}
+              placeholder="Nhập"
+              value={data.insuranceClaimant}
+              onChange={(e) => handleTextInputChange(e, "insuranceClaimant")}
               className="form-control input mv-10 w-100"
               name="inputName"
               autoComplete="off"
@@ -137,8 +159,9 @@ const CreateInsuranceHealth = ({ t }) => {
             {"Mối quan hệ với Người được bảo hiểm"}
             <input
               type="text"
-              value={data.childInsuranceNumber}
-              onChange={(e) => handleTextInputChange(e, "childInsuranceNumber")}
+              placeholder="Nhập"
+              value={data.insuranceRelation}
+              onChange={(e) => handleTextInputChange(e, "insuranceRelation")}
               className="form-control input mv-10 w-100"
               name="inputName"
               autoComplete="off"
@@ -150,8 +173,9 @@ const CreateInsuranceHealth = ({ t }) => {
             {"Địa chỉ"}
             <input
               type="text"
-              value={data.childInsuranceNumber}
-              onChange={(e) => handleTextInputChange(e, "childInsuranceNumber")}
+              placeholder="Nhập"
+              value={data.address}
+              onChange={(e) => handleTextInputChange(e, "address")}
               className="form-control input mv-10 w-100"
               name="inputName"
               autoComplete="off"
@@ -163,8 +187,9 @@ const CreateInsuranceHealth = ({ t }) => {
             {"Số điện thoại"}
             <input
               type="text"
-              value={data.childInsuranceNumber}
-              onChange={(e) => handleTextInputChange(e, "childInsuranceNumber")}
+              placeholder="Nhập"
+              value={data.phone}
+              onChange={(e) => handleTextInputChange(e, "phone")}
               className="form-control input mv-10 w-100"
               name="inputName"
               autoComplete="off"
@@ -174,8 +199,9 @@ const CreateInsuranceHealth = ({ t }) => {
             {"Email"}
             <input
               type="text"
-              value={data.childInsuranceNumber}
-              onChange={(e) => handleTextInputChange(e, "childInsuranceNumber")}
+              placeholder="Nhập"
+              value={data.email}
+              onChange={(e) => handleTextInputChange(e, "email")}
               className="form-control input mv-10 w-100"
               name="inputName"
               autoComplete="off"
@@ -191,8 +217,9 @@ const CreateInsuranceHealth = ({ t }) => {
             {"Họ tên NĐBH"}
             <input
               type="text"
-              value={data.childInsuranceNumber}
-              onChange={(e) => handleTextInputChange(e, "childInsuranceNumber")}
+              placeholder="Nhập"
+              value={data.insuredName}
+              onChange={(e) => handleTextInputChange(e, "insuredName")}
               className="form-control input mv-10 w-100"
               name="inputName"
               autoComplete="off"
@@ -209,11 +236,13 @@ const CreateInsuranceHealth = ({ t }) => {
                 return (
                   <div className="form-check form-check-inline" key={index}>
                     <input
+                    placeholder="Nhập"
                       name="gender"
                       type="radio"
+                      checked={data.gender?.value == item.value}
                       className="form-check-input"
                       id={`gender-${item.value}`}
-                      onChange={(e) => console.log(item)}
+                      onChange={(e) => handleChangeSelectInputs(item, "gender")}
                     />
                     <label
                       title=""
@@ -232,9 +261,10 @@ const CreateInsuranceHealth = ({ t }) => {
           <div className="col-6">
             {"Số CMND/Hộ chiếu"}
             <input
+            placeholder="Nhập"
               type="text"
-              value={data.childInsuranceNumber}
-              onChange={(e) => handleTextInputChange(e, "childInsuranceNumber")}
+              value={data.insuredId}
+              onChange={(e) => handleTextInputChange(e, "insuredId")}
               className="form-control input mv-10 w-100"
               name="inputName"
               autoComplete="off"
@@ -248,11 +278,11 @@ const CreateInsuranceHealth = ({ t }) => {
               //readOnly={disableComponent.disableAll || !disableComponent.qlttSide || data.qlttOpinion.disableTime == true}
               autoComplete="off"
               selected={
-                data.fromDate
-                  ? moment(data.fromDate, Constants.LEAVE_DATE_FORMAT).toDate()
+                data.insuredBirth
+                  ? moment(data.insuredBirth, Constants.LEAVE_DATE_FORMAT).toDate()
                   : null
               }
-              onChange={(date) => handleDatePickerInputChange(date, "fromDate")}
+              onChange={(date) => handleDatePickerInputChange(date, "insuredBirth")}
               dateFormat="dd/MM/yyyy"
               placeholderText={t("Select")}
               locale={t("locale")}
@@ -267,8 +297,9 @@ const CreateInsuranceHealth = ({ t }) => {
             {"Đơn vị tham gia bảo hiểm"}
             <input
               type="text"
-              value={data.childInsuranceNumber}
-              onChange={(e) => handleTextInputChange(e, "childInsuranceNumber")}
+              placeholder="Nhập"
+              value={data.insuredUnit}
+              onChange={(e) => handleTextInputChange(e, "insuredUnit")}
               className="form-control input mv-10 w-100"
               name="inputName"
               autoComplete="off"
@@ -279,8 +310,9 @@ const CreateInsuranceHealth = ({ t }) => {
             {"Số GCNBH/Số thẻ BH"}
             <input
               type="text"
-              value={data.childInsuranceNumber}
-              onChange={(e) => handleTextInputChange(e, "childInsuranceNumber")}
+              placeholder="Nhập"
+              value={data.insuredNumber}
+              onChange={(e) => handleTextInputChange(e, "insuredNumber")}
               className="form-control input mv-10 w-100"
               name="inputName"
               autoComplete="off"
@@ -300,15 +332,15 @@ const CreateInsuranceHealth = ({ t }) => {
               //readOnly={disableComponent.disableAll || !disableComponent.qlttSide || data.qlttOpinion.disableTime == true}
               autoComplete="off"
               selected={
-                data.childBirth
+                data.accidentDate
                   ? moment(
-                      data.childBirth,
+                      data.accidentDate,
                       Constants.LEAVE_DATE_FORMAT
                     ).toDate()
                   : null
               }
               onChange={(date) =>
-                handleDatePickerInputChange(date, "childBirth")
+                handleDatePickerInputChange(date, "accidentDate")
               }
               dateFormat="dd/MM/yyyy"
               placeholderText={t("Select")}
@@ -321,8 +353,9 @@ const CreateInsuranceHealth = ({ t }) => {
             <div>{"Nơi xảy ra tai nạn"}</div>
             <input
               type="text"
-              value={data.childInsuranceNumber}
-              onChange={(e) => handleTextInputChange(e, "childInsuranceNumber")}
+              placeholder="Nhập"
+              value={data.accidentAddress}
+              onChange={(e) => handleTextInputChange(e, "accidentAddress")}
               className="form-control input mv-10 w-100"
               name="inputName"
               autoComplete="off"
@@ -338,15 +371,15 @@ const CreateInsuranceHealth = ({ t }) => {
               //readOnly={disableComponent.disableAll || !disableComponent.qlttSide || data.qlttOpinion.disableTime == true}
               autoComplete="off"
               selected={
-                data.childBirth
+                data.examDate
                   ? moment(
-                      data.childBirth,
+                      data.examDate,
                       Constants.LEAVE_DATE_FORMAT
                     ).toDate()
                   : null
               }
               onChange={(date) =>
-                handleDatePickerInputChange(date, "childBirth")
+                handleDatePickerInputChange(date, "examDate")
               }
               dateFormat="dd/MM/yyyy"
               placeholderText={t("Select")}
@@ -362,15 +395,15 @@ const CreateInsuranceHealth = ({ t }) => {
               //readOnly={disableComponent.disableAll || !disableComponent.qlttSide || data.qlttOpinion.disableTime == true}
               autoComplete="off"
               selected={
-                data.childBirth
+                data.hospitalizedDate
                   ? moment(
-                      data.childBirth,
+                      data.hospitalizedDate,
                       Constants.LEAVE_DATE_FORMAT
                     ).toDate()
                   : null
               }
               onChange={(date) =>
-                handleDatePickerInputChange(date, "childBirth")
+                handleDatePickerInputChange(date, "hospitalizedDate")
               }
               dateFormat="dd/MM/yyyy"
               placeholderText={t("Select")}
@@ -386,8 +419,9 @@ const CreateInsuranceHealth = ({ t }) => {
             <div>{"Nơi điều trị"}</div>
             <input
               type="text"
-              value={data.childInsuranceNumber}
-              onChange={(e) => handleTextInputChange(e, "childInsuranceNumber")}
+              placeholder="Nhập"
+              value={data.hospitalizedAddress}
+              onChange={(e) => handleTextInputChange(e, "hospitalizedAddress")}
               className="form-control input mv-10 w-100"
               name="inputName"
               autoComplete="off"
@@ -400,8 +434,9 @@ const CreateInsuranceHealth = ({ t }) => {
             <div>{"Nguyên nhân / Chẩn đoán về tai nạn/bệnh"}</div>
             <input
               type="text"
-              value={data.childInsuranceNumber}
-              onChange={(e) => handleTextInputChange(e, "childInsuranceNumber")}
+              placeholder="Nhập"
+              value={data.reason}
+              onChange={(e) => handleTextInputChange(e, "reason")}
               className="form-control input mv-10 w-100"
               name="inputName"
               autoComplete="off"
@@ -414,8 +449,9 @@ const CreateInsuranceHealth = ({ t }) => {
             <div>{"Hậu quả"}</div>
             <input
               type="text"
-              value={data.childInsuranceNumber}
-              onChange={(e) => handleTextInputChange(e, "childInsuranceNumber")}
+              placeholder="Nhập"
+              value={data.result}
+              onChange={(e) => handleTextInputChange(e, "result")}
               className="form-control input mv-10 w-100"
               name="inputName"
               autoComplete="off"
@@ -431,15 +467,15 @@ const CreateInsuranceHealth = ({ t }) => {
               //readOnly={disableComponent.disableAll || !disableComponent.qlttSide || data.qlttOpinion.disableTime == true}
               autoComplete="off"
               selected={
-                data.childBirth
+                data.fromDate
                   ? moment(
-                      data.childBirth,
+                      data.fromDate,
                       Constants.LEAVE_DATE_FORMAT
                     ).toDate()
                   : null
               }
               onChange={(date) =>
-                handleDatePickerInputChange(date, "childBirth")
+                handleDatePickerInputChange(date, "fromDate")
               }
               dateFormat="dd/MM/yyyy"
               placeholderText={t("Select")}
@@ -455,15 +491,15 @@ const CreateInsuranceHealth = ({ t }) => {
               //readOnly={disableComponent.disableAll || !disableComponent.qlttSide || data.qlttOpinion.disableTime == true}
               autoComplete="off"
               selected={
-                data.childBirth
+                data.toDate
                   ? moment(
-                      data.childBirth,
+                      data.toDate,
                       Constants.LEAVE_DATE_FORMAT
                     ).toDate()
                   : null
               }
               onChange={(date) =>
-                handleDatePickerInputChange(date, "childBirth")
+                handleDatePickerInputChange(date, "toDate")
               }
               dateFormat="dd/MM/yyyy"
               placeholderText={t("Select")}
@@ -485,9 +521,10 @@ const CreateInsuranceHealth = ({ t }) => {
                     <input
                       name="treat"
                       type="radio"
+                      checked={data.treatType?.value == item.value}
                       className="form-check-input"
                       id={`treat-${item.value}`}
-                      onChange={(e) => console.log(item)}
+                      onChange={(e) => handleChangeSelectInputs(item, 'treatType')}
                     />
                     <label
                       title=""
@@ -517,8 +554,9 @@ const CreateInsuranceHealth = ({ t }) => {
             <div>{"Tổng số tiền yêu cầu chi trả"}</div>
             <input
               type="text"
-              value={data.childInsuranceNumber}
-              onChange={(e) => handleTextInputChange(e, "childInsuranceNumber")}
+              placeholder="Nhập"
+              value={data.payAmount}
+              onChange={(e) => handleTextInputChange(e, "payAmount")}
               className="form-control input mv-10 w-100"
               name="inputName"
               autoComplete="off"
@@ -530,7 +568,7 @@ const CreateInsuranceHealth = ({ t }) => {
         <div className="row mv-10 mb-3">
           <div className="col-12">
             <div className="">
-              <div className="form-check-inline">
+              <div className="form-check-inline mt-2">
                 Chi trả bảo hiểm cho trường hợp:
               </div>
 
@@ -541,8 +579,9 @@ const CreateInsuranceHealth = ({ t }) => {
                       name="case"
                       type="radio"
                       className="form-check-input"
+                      checked={data.payCase?.value == item.value}
                       id={`case-${item.value}`}
-                      onChange={(e) => console.log(item)}
+                      onChange={(e) => handleTextInputChange(e, 'payCase')}
                     />
                     <label
                       title=""
@@ -577,9 +616,10 @@ const CreateInsuranceHealth = ({ t }) => {
                     <input
                       name="pay"
                       type="radio"
+                      checked={data.payType?.value == item.value}
                       className="form-check-input"
                       id={`pay-${item.value}`}
-                      onChange={(e) => console.log(item)}
+                      onChange={(e) => handleChangeSelectInputs(item, 'payType')}
                     />
                     <label
                       title=""
@@ -599,9 +639,10 @@ const CreateInsuranceHealth = ({ t }) => {
           <div className="col-6">
             <div>{"Người thụ hưởng"}</div>
             <input
-              value={data.sickId}
-              onChange={(e) => handleTextInputChange(e, "sickId")}
+              value={data.receiveName}
+              onChange={(e) => handleTextInputChange(e, "receiveName")}
               type="text"
+              placeholder="Nhập"
               className="form-control input mv-10 w-100"
               name="inputName"
               autoComplete="off"
@@ -611,9 +652,10 @@ const CreateInsuranceHealth = ({ t }) => {
           <div className="col-6">
             <div>{"Số tài khoản"}</div>
             <input
-              value={data.sickId}
-              onChange={(e) => handleTextInputChange(e, "sickId")}
+              value={data.receiveAccount}
+              onChange={(e) => handleTextInputChange(e, "receiveAccount")}
               type="text"
+              placeholder="Nhập"
               className="form-control input mv-10 w-100"
               name="inputName"
               autoComplete="off"
@@ -625,9 +667,10 @@ const CreateInsuranceHealth = ({ t }) => {
           <div className="col-12">
             <div>{"Ngân hàng"}</div>
             <input
-              value={data.sickId}
-              onChange={(e) => handleTextInputChange(e, "sickId")}
+              value={data.bankName}
+              onChange={(e) => handleTextInputChange(e, "bankName")}
               type="text"
+              placeholder="Nhập"
               className="form-control input mv-10 w-100"
               name="inputName"
               autoComplete="off"
@@ -639,9 +682,10 @@ const CreateInsuranceHealth = ({ t }) => {
           <div className="col-12">
             <div>{"Địa chỉ ngân hàng"}</div>
             <input
-              value={data.sickId}
-              onChange={(e) => handleTextInputChange(e, "sickId")}
+              value={data.bankAddress}
+              onChange={(e) => handleTextInputChange(e, "bankAddress")}
               type="text"
+              placeholder="Nhập"
               className="form-control input mv-10 w-100"
               name="inputName"
               autoComplete="off"
@@ -678,10 +722,10 @@ const CreateInsuranceHealth = ({ t }) => {
           <div className="col-7"></div>
           <div className="col-5">
             <div className="row">
-              <div className="col-6">
+              <div className="col-4">
                 <input
-                  value={data.accountName}
-                  onChange={(e) => handleTextInputChange(e, "accountName")}
+                  value={data.formAddress}
+                  onChange={(e) => handleTextInputChange(e, "formAddress")}
                   type="text"
                   placeholder="Nhập"
                   className="form-control input mv-10 w-100 only-border-bottom"
@@ -689,21 +733,21 @@ const CreateInsuranceHealth = ({ t }) => {
                   autoComplete="off"
                 />
               </div>
-              <div className="col-6">
+              <div className="col-8">
                 <DatePicker
                   name="startDate"
                   //readOnly={disableComponent.disableAll || !disableComponent.qlttSide || data.qlttOpinion.disableTime == true}
                   autoComplete="off"
                   selected={
-                    data.childBirth
+                    data.formDate
                       ? moment(
-                          data.childBirth,
+                          data.formDate,
                           Constants.LEAVE_DATE_FORMAT
                         ).toDate()
                       : null
                   }
                   onChange={(date) =>
-                    handleDatePickerInputChange(date, "childBirth")
+                    handleDatePickerInputChange(date, "formDate")
                   }
                   dateFormat="dd/MM/yyyy"
                   placeholderText={t("Select")}
