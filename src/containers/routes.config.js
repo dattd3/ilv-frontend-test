@@ -625,7 +625,7 @@ export default [
             exact: true,
             path: map.CreateInsuranceHealth
           },
-          component: lazy(() => import("./Welfare/CreateInsuranceSocial"))
+          component: lazy(() => import("./Welfare/CreateInsuranceHealth"))
         },
       ],
     },
