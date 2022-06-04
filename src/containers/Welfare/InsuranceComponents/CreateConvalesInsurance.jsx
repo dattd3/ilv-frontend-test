@@ -13,15 +13,20 @@ import {
 } from "./InsuranceData";
 import Constants from "../../../commons/Constants";
 import _ from "lodash";
+import { Spinner } from "react-bootstrap";
 
 const CreateConvalesInsurance = ({
   t,
   type,
   setType,
   data,
+  userInfo,
   handleTextInputChange,
   handleChangeSelectInputs,
   handleDatePickerInputChange,
+  onSend,
+  notifyMessage,
+  disabledSubmitButton
 }) => {
   
   const [errors, setErrors] = useState({});
@@ -36,6 +41,50 @@ const CreateConvalesInsurance = ({
     if (!verify) {
       return;
     }
+
+    const formData = new FormData();
+    formData.append('requestType', type.value);
+    formData.append('requestName', type.label);
+    formData.append('formTypeInfo', JSON.stringify({id: data.declareForm.value, name: data.declareForm.label}));
+    formData.append('recommendEnjoyDate', data.dateRequest ? moment(data.dateRequest, 'DD/MM/YYYY').format('YYYY-MM-DD') : '' );
+    formData.append('solvedFirstDate', data.dateLastResolved ?  moment(data.dateLastResolved, 'DD/MM/YYYY').format('YYYY-MM-DD') : '');
+    formData.append('planInfo', data.plan ?  JSON.stringify({id: data.plan.value, name: data.plan.label}) : '');
+    formData.append('description', data.note);
+    //thong tin ca nhan
+    formData.append('fullName', userInfo.fullName);
+    formData.append('insuranceNumber', userInfo.socialId);
+    formData.append('idNumber', userInfo.IndentifiD);
+    formData.append('employeeNo', userInfo.employeeNo);
+    formData.append('backToWorkDate', data.startWork || '');
+
+    //Số ngày đề nghị hưởng chế độ tại đơn vị
+    formData.append('receiveBenefitsUnitInfo', JSON.stringify({
+      "seriNumber": data.seri,
+      "fromDate":  data.fromDate ? moment(data.fromDate, 'DD/MM/YYYY').format('YYYY-MM-DD') : '',
+      "toDate":  data.toDate ? moment(data.toDate, 'DD/MM/YYYY').format('YYYY-MM-DD') : '',
+      total: data.total
+    }));
+    //Thông tin giám định 
+    formData.append('inspectionDataInfo', JSON.stringify({
+      "rateOfDecline": data.declineRate,
+      "inspectionDate": data.assessmentDate ? moment(data.assessmentDate, 'DD/MM/YYYY').format('YYYY-MM-DD') : ""
+    }));
+
+    formData.append('SettlementContent', data.resolveContent);
+    formData.append('SettlementPeriod', data.resolveDate ? moment(data.resolveDate, 'DD/MM/YYYY').format('YYYY-MM-DD') : '') ;
+    formData.append('AdditionalPhaseContent',data.addtionContent );
+    formData.append('AdditionalPhasePeriod', data.addtionDate ? moment(data.addtionDate, 'DD/MM/YYYY').format('YYYY-MM-DD') : '');
+    formData.append('orgLv2Id', localStorage.getItem('organizationLv2'));
+    formData.append('divisionId', localStorage.getItem('divisionId'));
+    formData.append('division', localStorage.getItem('division'));
+    formData.append('regionId', localStorage.getItem('regionId'));
+    formData.append('region', localStorage.getItem('region'));
+    formData.append('unitId', localStorage.getItem('unitId'));
+    formData.append('unit', localStorage.getItem('unit'));
+    formData.append('partId', localStorage.getItem('partId'));
+    formData.append('part', localStorage.getItem('part'));
+    formData.append('companyCode', localStorage.getItem('companyCode'));
+    onSend(formData);
   };
 
   const verifyData = () => {
@@ -69,6 +118,9 @@ const CreateConvalesInsurance = ({
     const hasErrors = !Object.values(_errors).every(
       (item) => item === null || item === undefined
     );
+    if(hasErrors) {
+      notifyMessage('Vui lòng nhập giá trị !', true);
+    }
     return hasErrors ? false : true;
   };
 
@@ -194,23 +246,23 @@ const CreateConvalesInsurance = ({
           <div className="col-4">
             {t("FullName")}
             <span className="required">(*)</span>
-            <div className="detail">{"Nguyễn Văn An"}</div>
+            <div className="detail">{userInfo.fullName}</div>
           </div>
           <div className="col-4">
             {"Mã sổ/số sổ BHXH"}
             <span className="required">(*)</span>
-            <div className="detail">{"8859683968"}</div>
+            <div className="detail">{userInfo.socialId}</div>
           </div>
           <div className="col-4">
             {"Số CMND/Hộ chiếu/Thẻ căn cước"}
             <span className="required">(*)</span>
-            <div className="detail">{"012345678"}</div>
+            <div className="detail">{userInfo.personal_id_no}</div>
           </div>
         </div>
         <div className="row mv-10">
           <div className="col-4">
             {"Mã nhân viên"}
-            <div className="detail">{"03567865"}</div>
+            <div className="detail">{userInfo.employeeNo}</div>
           </div>
 
           <div className="col-4">
@@ -540,7 +592,21 @@ const CreateConvalesInsurance = ({
           className="btn btn-primary float-right ml-3 shadow"
           onClick={() => onSubmit()}
         >
-          <i className="fa fa-paper-plane" aria-hidden="true"></i> {t("Send")}
+          {!disabledSubmitButton ? (
+            <>
+              <i className="fa fa-paper-plane mr-2" aria-hidden="true"></i>
+            </>
+          ) : (
+            <Spinner
+              as="span"
+              animation="border"
+              size="sm"
+              role="status"
+              aria-hidden="true"
+              className="mr-2"
+            />
+          )}
+          {t("Send")}
         </button>
       </div>
     </>

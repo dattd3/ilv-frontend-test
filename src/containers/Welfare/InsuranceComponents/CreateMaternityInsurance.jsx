@@ -17,15 +17,20 @@ import {
 } from "./InsuranceData";
 import Constants from "../../../commons/Constants";
 import _ from "lodash";
+import { Spinner } from "react-bootstrap";
 
 const CreateMaternityInsurance = ({
   t,
   type,
   setType,
   data,
+  userInfo,
   handleTextInputChange,
   handleChangeSelectInputs,
   handleDatePickerInputChange,
+  onSend,
+  notifyMessage,
+  disabledSubmitButton
 }) => {
   const [errors, setErrors] = useState({});
 
@@ -40,6 +45,88 @@ const CreateMaternityInsurance = ({
     if (!verify) {
       return;
     }
+
+    const formData = new FormData();
+
+    formData.append('requestType', type.value);
+    formData.append('requestName', type.label);
+    formData.append('formTypeInfo', JSON.stringify({id: data.declareForm.value, name: data.declareForm.label}));
+    formData.append('maternityRegimeInfo', data.maternityRegime ?  JSON.stringify({id: data.maternityRegime.value, name: data.maternityRegime.label}) : '');
+    formData.append('pregnancyCheckUpInfo', data.maternityCondition ? JSON.stringify({id: data.maternityCondition.value, name: data.maternityCondition.label}) : '');
+    formData.append('conditionsChildbirth', data.birthCondition ? JSON.stringify({id: data.birthCondition.value, name: data.birthCondition.label}) : '');
+    formData.append('nurturerInsuranceNumber', data.raiserInsuranceNumber );
+    formData.append('recommendEnjoyDate', data.dateRequest ? moment(data.dateRequest, 'DD/MM/YYYY').format('YYYY-MM-DD') : '' );
+    formData.append('solvedFirstDate', data.dateLastResolved ?  moment(data.dateLastResolved, 'DD/MM/YYYY').format('YYYY-MM-DD') : '');
+    formData.append('childcareLeaveInfo', data.dadCare ? JSON.stringify({id: data.dadCare.value, name: data.dadCare.label}) : '');
+    formData.append('planInfo', data.plan ? JSON.stringify({id: data.plan.value, name: data.plan.label}) : '');
+    formData.append('reasonRequestingAdjustment', data.reason);
+    formData.append('description', data.note);
+    //thong tin ca nhan
+    formData.append('fullName', userInfo.fullName);
+    formData.append('insuranceNumber', userInfo.socialId);
+    formData.append('idNumber', userInfo.IndentifiD);
+    formData.append('employeeNo', userInfo.employeeNo);
+    formData.append('backToWorkDate', data.startWork || '');
+    formData.append('weeklyRestDay', data.leaveOfWeek)
+
+    formData.append('certificateInsuranceBenefit', JSON.stringify({
+      hospitalLine: data.hospitalLine?.label || '',
+      seriNumber: data.seri,
+      fromDate: data.fromDate ? moment(data.fromDate, 'DD/MM/YYYY').format('YYYY-MM-DD') : '',
+      toDate: data.toDate ? moment(data.toDate, 'DD/MM/YYYY').format('YYYY-MM-DD') : '',
+      total: data.total
+    }));
+
+    //Chỉ định chế độ nghỉ hưởng của bác sĩ
+
+    formData.append('indicationSickLeaveInfo', JSON.stringify({
+      "seriNumber": data.seri,
+      "fromDate": data.fromDate ? moment(data.fromDate, 'DD/MM/YYYY').format('YYYY-MM-DD') : '',
+      toDate: data.toDate ? moment(data.toDate, 'DD/MM/YYYY').format('YYYY-MM-DD') : '',
+      total: data.total
+    }));
+
+    // Thông tin của con
+    formData.append('childrenDataInfo', JSON.stringify({
+      socialInsuranceNumber: data.childInsuranceNumber,
+      "healthInsuranceNumber": data.childHealthNumber,
+      "ageOfFetus": data.age,
+      "childDob": data.childBirth ? moment(data.childBirth, 'DD/MM/YYYY').format('YYYY-MM-DD') : '',
+      "childDiedDate": data.childDead ? moment(data.childDead, 'DD/MM/YYYY').format('YYYY-MM-DD') : '',
+      "numberOfChildren": data.childNumbers,
+      "numberOfDeadChildren": data.childDeadNumbers,
+      "adoptionDate": data.childReceiveDate ? moment(data.childReceiveDate, 'DD/MM/YYYY').format('YYYY-MM-DD') : '',
+      "dateReceivingBiologicalChild": data.childRaiseDate ? moment(data.childRaiseDate, 'DD/MM/YYYY').format('YYYY-MM-DD') : ''
+    }));
+
+    //Thông tin của mẹ
+    formData.append('motherDataInfo', JSON.stringify({
+      "socialInsuranceNumber": data.momInsuranceNumber,
+      "healthInsuranceNumber": data.momHealthNumber,
+      "motherIdNumber": data.momIdNumber,
+      "pregnancyVacation": data.maternityLeave?  JSON.stringify({id: data.maternityLeave.value, name: data.maternityLeave.label}) : '',
+      "surrogacy":  data.hasRainser ? JSON.stringify({id: data.hasRainser.value, name: data.hasRainser.label}) : '',
+      "surgeryOrPregnancy":  data.hasSurgery ? JSON.stringify({id: data.hasSurgery.value, name: data.hasSurgery.label}) : '',
+      "motherDiedDate": data.momDeadDate ? moment(data.momDeadDate, 'DD/MM/YYYY').format('YYYY-MM-DD') : '',
+      "conclusionDate": data.resultDate ? moment(data.resultDate, 'DD/MM/YYYY').format('YYYY-MM-DD') : '',
+      "medicalAssessmentFee": data.assessment
+    }));
+
+    formData.append('SettlementContent', data.resolveContent);
+    formData.append('SettlementPeriod', data.resolveDate ? moment(data.resolveDate, 'DD/MM/YYYY').format('YYYY-MM-DD') : '') ;
+    formData.append('AdditionalPhaseContent',data.addtionContent );
+    formData.append('AdditionalPhasePeriod', data.addtionDate ? moment(data.addtionDate, 'DD/MM/YYYY').format('YYYY-MM-DD') : '');
+    formData.append('orgLv2Id', localStorage.getItem('organizationLv2'));
+    formData.append('divisionId', localStorage.getItem('divisionId'));
+    formData.append('division', localStorage.getItem('division'));
+    formData.append('regionId', localStorage.getItem('regionId'));
+    formData.append('region', localStorage.getItem('region'));
+    formData.append('unitId', localStorage.getItem('unitId'));
+    formData.append('unit', localStorage.getItem('unit'));
+    formData.append('partId', localStorage.getItem('partId'));
+    formData.append('part', localStorage.getItem('part'));
+    formData.append('companyCode', localStorage.getItem('companyCode'));
+    onSend(formData);
   };
 
   const verifyData = () => {
@@ -71,6 +158,9 @@ const CreateMaternityInsurance = ({
     const hasErrors = !Object.values(_errors).every(
       (item) => item === null || item === undefined
     );
+    if(hasErrors) {
+      notifyMessage('Vui lòng nhập giá trị !', true);
+    }
     return hasErrors ? false : true;
   };
 
@@ -273,23 +363,23 @@ const CreateMaternityInsurance = ({
           <div className="col-4">
             {t("FullName")}
             <span className="required">(*)</span>
-            <div className="detail">{"Nguyễn Văn An"}</div>
+            <div className="detail">{userInfo.fullName}</div>
           </div>
           <div className="col-4">
             {"Mã sổ/số sổ BHXH"}
             <span className="required">(*)</span>
-            <div className="detail">{"8859683968"}</div>
+            <div className="detail">{userInfo.socialId}</div>
           </div>
           <div className="col-4">
             {"Số CMND/Hộ chiếu/Thẻ căn cước"}
             <span className="required">(*)</span>
-            <div className="detail">{"012345678"}</div>
+            <div className="detail">{userInfo.personal_id_no}</div>
           </div>
         </div>
         <div className="row mv-10">
           <div className="col-4">
             {"Mã nhân viên"}
-            <div className="detail">{"03567865"}</div>
+            <div className="detail">{userInfo.employeeNo}</div>
           </div>
 
           <div className="col-4">
@@ -891,7 +981,21 @@ const CreateMaternityInsurance = ({
           className="btn btn-primary float-right ml-3 shadow"
           onClick={() => onSubmit()}
         >
-          <i className="fa fa-paper-plane" aria-hidden="true"></i> {t("Send")}
+          {!disabledSubmitButton ? (
+            <>
+              <i className="fa fa-paper-plane mr-2" aria-hidden="true"></i>
+            </>
+          ) : (
+            <Spinner
+              as="span"
+              animation="border"
+              size="sm"
+              role="status"
+              aria-hidden="true"
+              className="mr-2"
+            />
+          )}
+          {t("Send")}
         </button>
       </div>
     </>

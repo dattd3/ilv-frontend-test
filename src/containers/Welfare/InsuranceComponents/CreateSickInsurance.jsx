@@ -5,7 +5,6 @@ import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { vi, enUS } from "date-fns/locale";
 import moment from "moment";
-import ResizableTextarea from "../../Registration/TextareaComponent";
 import Constants from "../../../commons/Constants";
 import _ from "lodash";
 import {
@@ -15,15 +14,20 @@ import {
   SICK_PLAN,
   WORKING_CONDITION,
 } from "./InsuranceData";
+import { Spinner } from "react-bootstrap";
 
 const CreateSickInsurance = ({
   t,
   type,
   setType,
   data,
+  userInfo,
   handleTextInputChange,
   handleChangeSelectInputs,
   handleDatePickerInputChange,
+  onSend,
+  notifyMessage,
+  disabledSubmitButton,
 }) => {
   const [errors, setErrors] = useState({});
   const InsuranceOptions = [
@@ -37,6 +41,118 @@ const CreateSickInsurance = ({
     if (!verify) {
       return;
     }
+    const formData = new FormData();
+    formData.append("requestType", type.value);
+    formData.append("requestName", type.label);
+    formData.append(
+      "formTypeInfo",
+      JSON.stringify({
+        id: data.declareForm.value,
+        name: data.declareForm.label,
+      })
+    );
+    formData.append(
+      "recommendEnjoyDate",
+      data.dateRequest
+        ? moment(data.dateRequest, "DD/MM/YYYY").format("YYYY-MM-DD")
+        : ""
+    );
+    formData.append(
+      "solvedFirstDate",
+      data.dateLastResolved
+        ? moment(data.dateLastResolved, "DD/MM/YYYY").format("YYYY-MM-DD")
+        : ""
+    );
+    formData.append(
+      "planInfo",
+      data.plan
+        ? JSON.stringify({ id: data.plan.value, name: data.plan.label })
+        : ""
+    );
+    formData.append("description", data.note);
+    //thong tin ca nhan
+    formData.append("fullName", userInfo.fullName);
+    formData.append("insuranceNumber", userInfo.socialId);
+    formData.append("idNumber", userInfo.IndentifiD);
+    formData.append("employeeNo", userInfo.employeeNo);
+    formData.append(
+      "workingConditionInfo",
+      data.workingCondition
+        ? JSON.stringify({
+            id: data.workingCondition.value,
+            name: data.workingCondition.label,
+          })
+        : ""
+    );
+    formData.append("weeklyRestDay", data.leaveOfWeek);
+
+    formData.append(
+      "certificateInsuranceBenefit",
+      JSON.stringify({
+        hospitalLine: data.hospitalLine?.label || "",
+        seriNumber: data.seri,
+        fromDate: data.fromDate
+          ? moment(data.fromDate, "DD/MM/YYYY").format("YYYY-MM-DD")
+          : "",
+        toDate: data.toDate
+          ? moment(data.toDate, "DD/MM/YYYY").format("YYYY-MM-DD")
+          : "",
+        total: data.total,
+      })
+    );
+    formData.append(
+      "sickChildrenInfo",
+      JSON.stringify({
+        childDob: data.childBirth
+          ? moment(data.childBirth, "DD/MM/YYYY").format("YYYY-MM-DD")
+          : "",
+        healthInsuranceNumber: data.childInsuranceNumber,
+        sickChildrenNumber: data.childSickNumbers,
+      })
+    );
+    formData.append(
+      "diagnosisDiseaseInfo",
+      JSON.stringify({
+        diseaseCode: data.sickId,
+        diseaseName: data.sickName,
+      })
+    );
+    formData.append(
+      "receiveSubsidiesInfo",
+      JSON.stringify({
+        receivingForm: data.receiveType?.label || "",
+        bankAccountNumber: data.accountNumber,
+        accountName: data.accountName,
+        bankCode: data.bankId,
+        bankName: data.bankName,
+      })
+    );
+
+    formData.append("SettlementContent", data.resolveContent);
+    formData.append(
+      "SettlementPeriod",
+      data.resolveDate
+        ? moment(data.resolveDate, "DD/MM/YYYY").format("YYYY-MM-DD")
+        : ""
+    );
+    formData.append("AdditionalPhaseContent", data.addtionContent);
+    formData.append(
+      "AdditionalPhasePeriod",
+      data.addtionDate
+        ? moment(data.addtionDate, "DD/MM/YYYY").format("YYYY-MM-DD")
+        : ""
+    );
+    formData.append("orgLv2Id", localStorage.getItem("organizationLv2"));
+    formData.append("divisionId", localStorage.getItem("divisionId"));
+    formData.append("division", localStorage.getItem("division"));
+    formData.append("regionId", localStorage.getItem("regionId"));
+    formData.append("region", localStorage.getItem("region"));
+    formData.append("unitId", localStorage.getItem("unitId"));
+    formData.append("unit", localStorage.getItem("unit"));
+    formData.append("partId", localStorage.getItem("partId"));
+    formData.append("part", localStorage.getItem("part"));
+    formData.append("companyCode", localStorage.getItem("companyCode"));
+    onSend(formData);
   };
 
   const verifyData = () => {
@@ -44,6 +160,7 @@ const CreateSickInsurance = ({
     const candidateInfos = { ...data };
     const requiredFields = [
       "declareForm",
+      "plan",
       "seri",
       "total",
       "receiveType",
@@ -52,7 +169,7 @@ const CreateSickInsurance = ({
       "bankId",
       "bankName",
     ];
-    const optionFields = ["declareForm", "receiveType"];
+    const optionFields = ["declareForm", "plan", "receiveType"];
 
     requiredFields.forEach((name) => {
       if (
@@ -70,6 +187,9 @@ const CreateSickInsurance = ({
     const hasErrors = !Object.values(_errors).every(
       (item) => item === null || item === undefined
     );
+    if (hasErrors) {
+      notifyMessage("Vui lòng nhập giá trị !", true);
+    }
     return hasErrors ? false : true;
   };
 
@@ -194,23 +314,23 @@ const CreateSickInsurance = ({
           <div className="col-4">
             {t("FullName")}
             <span className="required">(*)</span>
-            <div className="detail">{"Nguyễn Văn An"}</div>
+            <div className="detail">{userInfo.fullName}</div>
           </div>
           <div className="col-4">
             {"Mã sổ/số sổ BHXH"}
             <span className="required">(*)</span>
-            <div className="detail">{"8859683968"}</div>
+            <div className="detail">{userInfo.socialId}</div>
           </div>
           <div className="col-4">
             {"Số CMND/Hộ chiếu/Thẻ căn cước"}
             <span className="required">(*)</span>
-            <div className="detail">{"012345678"}</div>
+            <div className="detail">{userInfo.IndentifiD}</div>
           </div>
         </div>
         <div className="row mv-10">
           <div className="col-4">
             {"Mã nhân viên"}
-            <div className="detail">{"03567865"}</div>
+            <div className="detail">{userInfo.employeeNo}</div>
           </div>
 
           <div className="col-4">
@@ -267,6 +387,9 @@ const CreateSickInsurance = ({
               name="inputName"
               autoComplete="off"
             />
+            {errors["seri"] ? (
+              <p className="text-danger">{errors["seri"]}</p>
+            ) : null}
           </div>
         </div>
         <div className="row mv-10">
@@ -319,6 +442,9 @@ const CreateSickInsurance = ({
               name="inputName"
               autoComplete="off"
             />
+            {errors["total"] ? (
+              <p className="text-danger">{errors["total"]}</p>
+            ) : null}
           </div>
         </div>
       </div>
@@ -586,7 +712,21 @@ const CreateSickInsurance = ({
           className="btn btn-primary float-right ml-3 shadow"
           onClick={() => onSubmit()}
         >
-          <i className="fa fa-paper-plane" aria-hidden="true"></i> {t("Send")}
+          {!disabledSubmitButton ? (
+            <>
+              <i className="fa fa-paper-plane mr-2" aria-hidden="true"></i>
+            </>
+          ) : (
+            <Spinner
+              as="span"
+              animation="border"
+              size="sm"
+              role="status"
+              aria-hidden="true"
+              className="mr-2"
+            />
+          )}
+          {t("Send")}
         </button>
       </div>
     </>
