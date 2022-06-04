@@ -581,25 +581,70 @@ function EvaluationApproval(props) {
         const prepareOrgData = (raw, key) => {
             if (raw && raw?.status === 'fulfilled') {
                 const dataValue = raw?.value
-                if (dataValue && dataValue?.data && dataValue?.data?.result && dataValue?.data?.result?.code == Constants.API_SUCCESS_CODE) {
-                    const data = (dataValue?.data?.data || []).map(item => {
-                        return {value: item[key], label: item?.organization_name, parentId: item?.parent_id}
-                    })
-                    return data
+                if (dataValue && dataValue?.data && dataValue?.data?.result && dataValue?.data?.result?.code == Constants.PMS_API_SUCCESS_CODE) {
+                    // const data = (dataValue?.data?.data || []).map(item => {
+                    //     return {value: item[key], label: item?.organization_name, parentId: item?.parent_id}
+                    // })
+                    return dataValue?.data?.data
                 }
             }
-            return []
+            return null
         }
 
         const processMasterData = response => {
             const masterDataTemp = {...masterData}
-            const [level3Response, level4Response, level5Response, level6Response, rankAndTitleResponse] = response
-            masterDataTemp.blocks = prepareOrgData(level3Response, 'organization_lv3')
-            masterDataTemp.regions = prepareOrgData(level4Response, 'organization_lv4')
-            masterDataTemp.units = prepareOrgData(level5Response, 'organization_lv5')
-            masterDataTemp.groups = prepareOrgData(level6Response, 'organization_lv6')
-            masterDataTemp.ranks = prepareRanksAndTitles('ranks', rankAndTitleResponse)
-            masterDataTemp.titles = prepareRanksAndTitles('titles', rankAndTitleResponse)
+            // const [level3Response, level4Response, level5Response, level6Response, rankAndTitleResponse] = response
+            // masterDataTemp.blocks = prepareOrgData(level3Response, 'organization_lv3')
+            // masterDataTemp.regions = prepareOrgData(level4Response, 'organization_lv4')
+            // masterDataTemp.units = prepareOrgData(level5Response, 'organization_lv5')
+            // masterDataTemp.groups = prepareOrgData(level6Response, 'organization_lv6')
+            // masterDataTemp.ranks = prepareRanksAndTitles('ranks', rankAndTitleResponse)
+            // masterDataTemp.titles = prepareRanksAndTitles('titles', rankAndTitleResponse)
+
+            const [masterDataResponse] = response
+            const dataPrepared = prepareOrgData(masterDataResponse)
+
+            masterDataTemp.blocks = (dataPrepared?.listOrg3 || []).map(item => {
+                return {
+                    value: item?.organization_lv3,
+                    label: item?.organization_name,
+                    parentId: item?.parent_id
+                }
+            })
+            masterDataTemp.regions = (dataPrepared?.listOrg4 || []).map(item => {
+                return {
+                    value: item?.organization_lv4,
+                    label: item?.organization_name,
+                    parentId: item?.parent_id
+                }
+            })
+            masterDataTemp.units = (dataPrepared?.listOrg5 || []).map(item => {
+                return {
+                    value: item?.organization_lv5,
+                    label: item?.organization_name,
+                    parentId: item?.parent_id
+                }
+            })
+            masterDataTemp.groups = (dataPrepared?.listOrg6 || []).map(item => {
+                return {
+                    value: item?.organization_lv6,
+                    label: item?.organization_name,
+                    parentId: item?.parent_id
+                }
+            })
+            masterDataTemp.ranks = (dataPrepared?.ranks || []).map(item => {
+                return {
+                    value: item?.rank,
+                    label: item?.text
+                }
+            })
+            masterDataTemp.titles = (dataPrepared?.titles || []).map(item => {
+                return {
+                    value: item?.short,
+                    label: item?.title
+                }
+            })
+
             SetMasterData(masterDataTemp)
             if (isLoading) {
                 SetIsLoading(false)
@@ -610,13 +655,20 @@ function EvaluationApproval(props) {
             if (!isLoading) {
                 SetIsLoading(true)
             }
-            const config = getMuleSoftHeaderConfigurations()
-            const requestGetOrgLevel3 = axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/organization/structure/levels?page_no=1&page_size=10000&level=3&parent_id=${PnLOrgNumber}`, config)
-            const requestGetOrgLevel4 = axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/organization/structure/levels?page_no=1&page_size=10000&level=4`, config)
-            const requestGetOrgLevel5 = axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/organization/structure/levels?page_no=1&page_size=10000&level=5`, config)
-            const requestGetOrgLevel6 = axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/organization/structure/levels?page_no=1&page_size=10000&level=6`, config)
-            const requestGetRanksAndTitles = axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/position`, config)
-            const response = await Promise.allSettled([requestGetOrgLevel3, requestGetOrgLevel4, requestGetOrgLevel5, requestGetOrgLevel6, requestGetRanksAndTitles])
+            // const muleSoftConfig = getMuleSoftHeaderConfigurations()
+            const config = getRequestConfigurations()
+            let formData = new FormData()
+            formData.append('ReviewerEmployeeCode', employeeCode)
+            formData.append('ReviewerEmployeeAdCode', employeeAD)
+
+            // const requestGetOrgLevel3 = axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/organization/structure/levels?page_no=1&page_size=10000&level=3&parent_id=${PnLOrgNumber}`, config)
+            // const requestGetOrgLevel4 = axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/organization/structure/levels?page_no=1&page_size=10000&level=4`, config)
+            // const requestGetOrgLevel5 = axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/organization/structure/levels?page_no=1&page_size=10000&level=5`, config)
+            // const requestGetOrgLevel6 = axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/organization/structure/levels?page_no=1&page_size=10000&level=6`, config)
+
+            const requestGetMasterData = axios.post(`${process.env.REACT_APP_HRDX_PMS_URL}api/form/MasterData`, formData, config)
+            // const requestGetRanksAndTitles = axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/position`, muleSoftConfig)
+            const response = await Promise.allSettled([requestGetMasterData])
             processMasterData(response)
         }
 
