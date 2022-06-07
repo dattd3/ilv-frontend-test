@@ -532,6 +532,10 @@ function EvaluationDetail(props) {
     }
     
     const renderButtonBlock = () => {
+        const currentUserLoggedUID = localStorage.getItem('employeeNo')
+        const reviewerUID = JSON.parse(evaluationFormDetail?.reviewer || '{}')?.uid
+        const approverUID = JSON.parse(evaluationFormDetail?.approver || '{}')?.uid
+
         switch (evaluationFormDetail?.status) {
             case evaluationStatus.launch:
                 return  (
@@ -541,7 +545,7 @@ function EvaluationDetail(props) {
                     </>
                 )
             case evaluationStatus.selfAssessment:
-                if (showByManager) {
+                if (showByManager && currentUserLoggedUID == reviewerUID) {
                     return  (
                         <>
                             <button className="btn-action reject" onClick={() => handleSubmit(actionButton.reject, null, true)}><Image src={IconReject} alt="Reject" />Từ chối</button>
@@ -551,7 +555,7 @@ function EvaluationDetail(props) {
                 }
                 return null
             case evaluationStatus.qlttAssessment:
-                if (showByManager) {
+                if (showByManager && currentUserLoggedUID == approverUID) {
                     return  (
                         <>
                             <button className="btn-action reject" onClick={() => handleSubmit(actionButton.reject, null, true)}><Image src={IconReject} alt="Reject" />Từ chối</button>
