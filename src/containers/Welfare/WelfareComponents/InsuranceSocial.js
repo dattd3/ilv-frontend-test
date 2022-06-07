@@ -16,14 +16,14 @@ class InsuranceSocial extends React.Component {
         super(props);
         this.state = {
             listData: [],
+            total: 0,
             showModelDetail: false,
             rowId: null,
             loadSuccess: false,
             editLastRow: false,
             dataForSearch: {
                 pageIndex: Constants.TASK_PAGE_INDEX_DEFAULT,
-                pageSize: Constants.TASK_PAGE_SIZE_DEFAULT,
-                total: 25
+                pageSize: Constants.TASK_PAGE_SIZE_DEFAULT
 
             }
         };
@@ -31,13 +31,19 @@ class InsuranceSocial extends React.Component {
 
     componentDidMount() {
         const { t } = this.props;
+        this.fetchData(this.state.dataForSearch.pageIndex, this.state.dataForSearch.pageSize);
+    }
+
+    fetchData = (page, size) => {
         const config = getRequestConfigurations()
 
-        axios.get(`${process.env.REACT_APP_REQUEST_URL}vaccin/list?culture=${t('langCode')}`, config)
+        axios.get(`${process.env.REACT_APP_HRDX_URL}api/BenefitClaim/list?pageIndex=${page}&pageSize=${size}`, config)
             .then(res => {
                 if (res && res.data && res.data.data) {
-                    this.setState({ listData: res.data.data });
-                   
+                    console.log(res.data.data)
+                    this.setState({ listData: res.data.data?.requests || [],
+                    total: res.data.data?.total || 0 });
+
                 }
             }).catch(error => {
             });
@@ -52,57 +58,59 @@ class InsuranceSocial extends React.Component {
                 pageIndex: index
             }
         }, () => {
-           // this.searchRemoteData(false);
+            // this.searchRemoteData(false);
+            this.fetchData(index, this.state.dataForSearch.pageSize)
         });
     }
 
     render() {
         const { t } = this.props;
-        //const { listData } = this.state
-        const listData = [
-            {
-                id: '1511321',
-                requestDate: '17/03/2022',
-                status: 'PNS đã gửi hồ sơ BHXH',
-                link: '#'
-            },
-            {
-                id: '1812145',
-                requestDate: '15/03/2022',
-                applyDate: '15/03/2022',
-                amount: '2400500',
-                status: 'PNS đã gửi hồ sơ PVI',
-                link: '#'
-            },
-            {
-                id: '1954578',
-                requestDate: '13/03/2022',
-                applyDate: '13/03/2022',
-                amount: '24500',
-                status: 'Hồ sơ đang điều chỉnh tại CQBHXH',
-                link: '#'
-            },
-            {
-                id: '1542362',
-                requestDate: '08/03/2022',
-                applyDate: '08/03/2022',
-                amount: '249809500',
-                status: 'NLĐ chưa nộp hồ sơ cho công ty',
-                link: '#'
-            },
+        const { listData, total } = this.state
+    
+        // const listData = [
+        //     {
+        //         id: '1511321',
+        //         requestDate: '17/03/2022',
+        //         status: 'PNS đã gửi hồ sơ BHXH',
+        //         link: '#'
+        //     },
+        //     {
+        //         id: '1812145',
+        //         requestDate: '15/03/2022',
+        //         applyDate: '15/03/2022',
+        //         amount: '2400500',
+        //         status: 'PNS đã gửi hồ sơ PVI',
+        //         link: '#'
+        //     },
+        //     {
+        //         id: '1954578',
+        //         requestDate: '13/03/2022',
+        //         applyDate: '13/03/2022',
+        //         amount: '24500',
+        //         status: 'Hồ sơ đang điều chỉnh tại CQBHXH',
+        //         link: '#'
+        //     },
+        //     {
+        //         id: '1542362',
+        //         requestDate: '08/03/2022',
+        //         applyDate: '08/03/2022',
+        //         amount: '249809500',
+        //         status: 'NLĐ chưa nộp hồ sơ cho công ty',
+        //         link: '#'
+        //     },
 
-        ]
-        const lastItem = listData && listData?.length > 0 ? listData[listData.length - 1] : {
+        // ]
+        // const lastItem = listData && listData?.length > 0 ? listData[listData.length - 1] : {
 
-        }
-        const pageNumber = 1;
-        const total = 20;
+        // }
+        // const pageNumber = 1;
+        // const total = 20;
 
         return <>
             <div className="health-info-page">
                 <div className="clearfix edit-button w-100 pb-2">
-                <a href="/insurance-manager/createSocialInsurance"><div className="btn bg-white btn-create"
-                       ><i className="fas fa-plus"></i> {'Tạo yêu cầu'}</div></a>
+                    <a href="/insurance-manager/createSocialInsurance"><div className="btn bg-white btn-create"
+                    ><i className="fas fa-plus"></i> {'Tạo yêu cầu'}</div></a>
                 </div>
                 <div className="task-list request-list shadow">
                     {
@@ -122,9 +130,9 @@ class InsuranceSocial extends React.Component {
 
                                             return (
                                                 <tr key={index}>
-                                                    <td className="code text-center">{child.id}</td>
-                                                    <td className="request-type text-center">{child.requestDate}</td>
-                                                    <td className="status1 text-left">{child.status}</td>
+                                                    <td className="code text-center">{child.idDisplay}</td>
+                                                    <td className="request-type text-center">{child.createdDate ? moment(child.createdDate).format('DD/MM/YYYY') : ''}</td>
+                                                    <td className="status1 text-left">{child.statusName || ''}</td>
                                                     <td className="tool">
                                                         <a href={child.link}><img alt="Sửa" src={Download} className="icon-download" /></a>
                                                     </td>
@@ -140,7 +148,7 @@ class InsuranceSocial extends React.Component {
                         <div className="col-sm"></div>
                         <div className="col-sm"></div>
                         <div className="col-sm">
-                            <CustomPaging pageSize={this.state.dataForSearch.pageSize} onChangePage={this.onChangePage.bind(this)} totalRecords={this.state.dataForSearch.total} />
+                            <CustomPaging pageSize={this.state.dataForSearch.pageSize} onChangePage={this.onChangePage.bind(this)} totalRecords={total} />
                         </div>
                         <div className="col-sm"></div>
                         <div className="col-sm text-right"></div>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { withTranslation } from "react-i18next";
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -7,7 +7,10 @@ import moment from "moment";
 import Constants from "../../commons/Constants";
 import BulletIcon from "../../assets/img/icon/ic_bullet.svg";
 import _ from "lodash";
-import { getMuleSoftHeaderConfigurations } from "../../commons/Utils";
+import {
+  getMuleSoftHeaderConfigurations,
+  getRequestConfigurations,
+} from "../../commons/Utils";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -57,35 +60,38 @@ const CreateInsuranceHealth = ({ t }) => {
     isSuccess: false,
   });
   const [disabledSubmitButton, setdisabledSubmitButton] = useState(false);
+  const [InsuranceOptions, setInsuranceOptions] = useState([]);
+  const [INSURANCE_CASE, setINSURANCE_CASE] = useState([]);
+  const [PAY_TYPE, setPAY_TYPE] = useState([]); 
+  const [GENDER_OPTIONS, setGENDER_OPTIONS] = useState([]);
+  const [TREATMENT_OPTIONS, setTREATMENT_OPTIONS] = useState([]);
 
-  const InsuranceOptions = [
-    { value: 1, label: "Ốm đau" },
-    { value: 2, label: "Thai sản" },
-    { value: 3, label: "Dưỡng sưc" },
-  ];
-
-  const INSURANCE_CASE = [
-    { value: 1, label: "Tử vong" },
-    { value: 2, label: "Thương tật" },
-    { value: 3, label: "Chi phí y tế" },
-    { value: 4, label: "Vận chuyển cấp cứu" },
-    { value: 5, label: "Trợ cấp" },
-  ];
-
-  const PAY_TYPE = [
-    { value: 1, label: "Tiền mặt" },
-    { value: 2, label: "Chuyển khoản" },
-  ];
-
-  const GENDER_OPTIONS = [
-    { value: 1, label: "Nam" },
-    { value: 2, label: "Nữ" },
-  ];
-
-  const TREATMENT_OPTIONS = [
-    { value: 1, label: "Ngoại trú" },
-    { value: 2, label: "Nội trú" },
-  ];
+  useEffect(() => {
+    const config = getRequestConfigurations();
+    const payload = {
+      lsStr: [
+        "INSURANCEOPTION",
+        "INSURANCE_CASE",
+        "INSURANCEPAYTYPE",
+        "INSURANCEGENDER",
+        "INSURANCETREATMENT",
+      ],
+    };
+    axios.post(
+      `${process.env.REACT_APP_HRDX_URL}api/data/getcommongroup`,
+      payload,
+      config
+    ).then((res) => {
+      if(res?.data?.data) {
+        const remoteData = res.data.data;
+        setInsuranceOptions((remoteData.INSURANCEOPTION || []).map(item => {return {value: item.keyNumber, label: item.textValue}}));
+        setINSURANCE_CASE((remoteData.INSURANCE_CASE || []).map(item => {return {value: item.keyNumber, label: item.textValue}}));
+        setPAY_TYPE((remoteData.INSURANCEPAYTYPE || []).map(item => {return {value: item.keyNumber, label: item.textValue}}));
+        setGENDER_OPTIONS((remoteData.INSURANCEGENDER || []).map(item => {return {value: item.keyNumber, label: item.textValue}}));
+        setTREATMENT_OPTIONS((remoteData.INSURANCETREATMENT || []).map(item => {return {value: item.keyNumber, label: item.textValue}}));
+      }
+    });
+  }, []);
 
   const handleTextInputChange = (e, name) => {
     const candidateInfos = { ...data };
@@ -99,15 +105,16 @@ const CreateInsuranceHealth = ({ t }) => {
     setData(candidateInfos);
   };
 
-  const handleDatePickerInputChange = (value, name) => { //YYYY-MM-DD
+  const handleDatePickerInputChange = (value, name) => {
+    //YYYY-MM-DD
     const candidateInfos = { ...data };
     if (moment(value, "DD/MM/YYYY").isValid()) {
       const date = moment(value).format("DD/MM/YYYY");
       candidateInfos[name] = date;
-      candidateInfos[name+'_raw'] = value;
+      candidateInfos[name + "_raw"] = value;
     } else {
       candidateInfos[name] = null;
-      candidateInfos[name+'_raw'] = null;
+      candidateInfos[name + "_raw"] = null;
     }
     setData(candidateInfos);
   };
@@ -117,11 +124,11 @@ const CreateInsuranceHealth = ({ t }) => {
     if (!verify) {
       return;
     }
-   
+
     const payload = {
       requestorFullName: data.insuranceClaimant,
-      requestorRelationship: data.insuranceRelation || '',
-      requestorAddress: data.address || '',
+      requestorRelationship: data.insuranceRelation || "",
+      requestorAddress: data.address || "",
       requestorPhone: data.phone,
       requestorEmail: data.email,
       recieverFullName: data.insuredName,
@@ -129,17 +136,17 @@ const CreateInsuranceHealth = ({ t }) => {
       recieverIdentityCard: data.insuredId,
       recieverBirthDay: data.insuredBirth_raw,
       employeeCode: data.employeeNo,
-      recieverInsurer: data.insuredUnit || '',
+      recieverInsurer: data.insuredUnit || "",
       insuranceNumber: data.insuredNumber,
       accidentDate: data.accidentDate_raw,
-      accidentPlace: data.accidentAddress || '',
+      accidentPlace: data.accidentAddress || "",
       examineDate: data.examDate_raw,
       hospitalizedDate: data.hospitalizedDate_raw,
       treatmentPlace: data.hospitalizedAddress,
-      accidentalCause: data.reason || '',
-      consequence: data.result || '',
-      fromDate: data.fromDate_raw || '',
-      toDate: data.toDate_raw || '',
+      accidentalCause: data.reason || "",
+      consequence: data.result || "",
+      fromDate: data.fromDate_raw || "",
+      toDate: data.toDate_raw || "",
       treatmentForm: data.treatType?.value,
       totalMoneyAmount: data.payAmount,
       paymentCase: data.payCase?.value,
@@ -148,18 +155,18 @@ const CreateInsuranceHealth = ({ t }) => {
       recieverAccountNumber: data.receiveAccount,
       recieverBanker: data.bankName,
       recieverBankerAddress: data.bankAddress,
-      signingPlace: data.formAddress || '',
-      signingDate: data.formDate_raw || '',
-      orgLv2Id: localStorage.getItem('organizationLv2'),
-      divisionId: localStorage.getItem('divisionId'),
-      division: localStorage.getItem('division'),
-      regionId: localStorage.getItem('regionId'),
-      region: localStorage.getItem('region'),
-      unitId: localStorage.getItem('unitId'),
-      unit: localStorage.getItem('unit'),
-      partId: localStorage.getItem('partId'),
-      part: localStorage.getItem('part'),
-      companyCode: localStorage.getItem('companyCode'),
+      signingPlace: data.formAddress || "",
+      signingDate: data.formDate_raw || "",
+      orgLv2Id: localStorage.getItem("organizationLv2"),
+      divisionId: localStorage.getItem("divisionId"),
+      division: localStorage.getItem("division"),
+      regionId: localStorage.getItem("regionId"),
+      region: localStorage.getItem("region"),
+      unitId: localStorage.getItem("unitId"),
+      unit: localStorage.getItem("unit"),
+      partId: localStorage.getItem("partId"),
+      part: localStorage.getItem("part"),
+      companyCode: localStorage.getItem("companyCode"),
     };
     setdisabledSubmitButton(true);
     axios({
@@ -787,7 +794,9 @@ const CreateInsuranceHealth = ({ t }) => {
                       className="form-check-input"
                       checked={data.payCase?.value == item.value}
                       id={`case-${item.value}`}
-                      onChange={(e) => handleChangeSelectInputs(item, "payCase")}
+                      onChange={(e) =>
+                        handleChangeSelectInputs(item, "payCase")
+                      }
                     />
                     <label
                       title=""
