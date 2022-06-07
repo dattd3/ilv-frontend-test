@@ -4,7 +4,7 @@ import axios from 'axios'
 import _, { debounce } from 'lodash'
 import { withTranslation } from "react-i18next";
 import APPROVER_LIST_LEVEL from "../../../commons/Constants"
-import { getMuleSoftHeaderConfigurations } from '../../../commons/Utils';
+import { getMuleSoftHeaderConfigurations, getRequestConfigurations } from '../../../commons/Utils';
 import moment from 'moment';
 
 const MyOption = props => {
@@ -140,13 +140,14 @@ class ApproverComponent extends React.Component {
   getApproverInfo = (value) => {
     const { appraiser } = this.props
     if (value !== "") {
-      const config = {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-          'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-          'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
-        }
-      }
+      // const config = {
+      //   headers: {
+      //     'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+      //     'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
+      //     'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
+      //   }
+      // }
+      const config = getRequestConfigurations();
 
       const payload = {
         account: value,

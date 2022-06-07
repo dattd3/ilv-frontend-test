@@ -25,6 +25,8 @@ registerLocale("vi", vi)
 
 const PnLOrgNumber = localStorage.getItem('organizationLv2')
 const employeeCode = localStorage.getItem('employeeNo')
+const employeeAD = localStorage.getItem('email').split('@')[0]
+
 const formStatuses = [
     {value: 0, label: 'Đang đánh giá'},
     {value: 1, label: 'Hoàn thành'},
@@ -43,7 +45,7 @@ function AdvancedFilter(props) {
     }
 
     return (
-        <div className="filter-advanced-form">
+        <>
             <Row>
                 <Col md={6}>
                     <Form.Group as={Row} controlId="current-step">
@@ -174,7 +176,7 @@ function AdvancedFilter(props) {
                     </Form.Group>
                 </Col>
             </Row>
-        </div>
+        </>
     )
 }
 
@@ -281,16 +283,19 @@ function ApprovalTabContent(props) {
                             <span 
                                 className="btn-filter-advanced" 
                                 onClick={handleShowFilterAdvanced}
-                                aria-expanded={filter.isOpenFilterAdvanced}
+                                aria-controls="filter-advanced-block"
+                                aria-expanded={filter?.isOpenFilterAdvanced}
                             >Tìm kiếm nâng cao<Image src={filter.isOpenFilterAdvanced ? IconCollapse : IconExpand} alt='Toggle' /></span>
                         </div>
                     </Col>
                 </Row>
-                <Collapse in={filter.isOpenFilterAdvanced}>
-                    <AdvancedFilter 
-                        masterData={{blocks: masterData.blocks, ranks: masterData.ranks, titles: masterData.titles}} 
-                        filter={_.omit({...filter}, 'isOpenFilterAdvanced', 'status', 'employees', 'employee')} 
-                        updateData={updateData} />
+                <Collapse in={filter?.isOpenFilterAdvanced}>
+                    <div className="filter-advanced-form" id="filter-advanced-block">
+                        <AdvancedFilter 
+                            masterData={{blocks: masterData.blocks, ranks: masterData.ranks, titles: masterData.titles}} 
+                            filter={_.omit({...filter}, 'isOpenFilterAdvanced', 'status', 'employees', 'employee')} 
+                            updateData={updateData} />
+                    </div>
                 </Collapse>
                 <Row>
                     <Col md={12}>
@@ -459,16 +464,19 @@ function BatchApprovalTabContent(props) {
                             <span 
                                 className="btn-filter-advanced" 
                                 onClick={handleShowFilterAdvanced}
+                                aria-controls="filter-advanced-block"
                                 aria-expanded={filter.isOpenFilterAdvanced}
                             >Tìm kiếm nâng cao<Image src={filter.isOpenFilterAdvanced ? IconCollapse : IconExpand} alt='Toggle' /></span>
                         </div>
                     </Col>
                 </Row>
                 <Collapse in={filter.isOpenFilterAdvanced}>
-                    <AdvancedFilter 
-                        masterData={{blocks: masterData.blocks, ranks: masterData.ranks, titles: masterData.titles}} 
-                        filter={_.omit({...filter}, 'isOpenFilterAdvanced', 'status', 'employees', 'employee')} 
-                        updateData={updateData} />
+                    <div className="filter-advanced-form" id="filter-advanced-block">
+                        <AdvancedFilter 
+                            masterData={{blocks: masterData.blocks, ranks: masterData.ranks, titles: masterData.titles}} 
+                            filter={_.omit({...filter}, 'isOpenFilterAdvanced', 'status', 'employees', 'employee')} 
+                            updateData={updateData} />
+                    </div>
                 </Collapse>
                 <Row>
                     <Col md={12}>
@@ -494,11 +502,11 @@ function EvaluationApproval(props) {
     const [paging, SetPaging] = useState({
         approval: {
             pageIndex: 1,
-            pageSize: 1
+            pageSize: 10
         },
         batchApproval: {
             pageIndex: 1,
-            pageSize: 1
+            pageSize: 10
         }
     })
     const [masterData, SetMasterData] = useState({
@@ -518,7 +526,7 @@ function EvaluationApproval(props) {
     const [dataFilter, SetDataFilter] = useState(null)
 
     const statusDone = 5
-    const listPageSizes = [1, 10, 20, 30, 40, 50]
+    const listPageSizes = [10, 20, 30, 40, 50]
 
     const useHasChanged= (val) => {
         const prevVal = usePrevious(val)
@@ -537,31 +545,31 @@ function EvaluationApproval(props) {
     
     useEffect(() => {
         const prepareRanksAndTitles = (name, raw) => {
-            const rankCodeLevelMapping = {
-                'C': {value: 'C', label: 'C'},
-                'C1': {value: 'C', label: 'C'},
-                'M0': {value: 'CV', label: 'Chuyên viên'},
-                'M1': {value: 'CV', label: 'Chuyên viên'},
-                'M2': {value: 'CV', label: 'Chuyên viên'},
-                'M3': {value: 'CV', label: 'Chuyên viên'},
-                'L0': {value: 'CG', label: 'Chuyên gia'},
-                'L1': {value: 'CG', label: 'Chuyên gia'},
-                'L2': {value: 'CG', label: 'Chuyên gia'},
-                'L3': {value: 'CG', label: 'Chuyên gia'},
-                'L4': {value: 'CG', label: 'Chuyên gia'},
-                'N0': {value: 'NV', label: 'Nhân viên'},
-                'N1': {value: 'NV', label: 'Nhân viên'},
-                'N2': {value: 'NV', label: 'Nhân viên'},
-                'N3': {value: 'NV', label: 'Nhân viên'}
-            }
+            // const rankCodeLevelMapping = {
+            //     'C': {value: 'C', label: 'C'},
+            //     'C1': {value: 'C', label: 'C'},
+            //     'M0': {value: 'CV', label: 'Chuyên viên'},
+            //     'M1': {value: 'CV', label: 'Chuyên viên'},
+            //     'M2': {value: 'CV', label: 'Chuyên viên'},
+            //     'M3': {value: 'CV', label: 'Chuyên viên'},
+            //     'L0': {value: 'CG', label: 'Chuyên gia'},
+            //     'L1': {value: 'CG', label: 'Chuyên gia'},
+            //     'L2': {value: 'CG', label: 'Chuyên gia'},
+            //     'L3': {value: 'CG', label: 'Chuyên gia'},
+            //     'L4': {value: 'CG', label: 'Chuyên gia'},
+            //     'N0': {value: 'NV', label: 'Nhân viên'},
+            //     'N1': {value: 'NV', label: 'Nhân viên'},
+            //     'N2': {value: 'NV', label: 'Nhân viên'},
+            //     'N3': {value: 'NV', label: 'Nhân viên'}
+            // }
     
             if (raw && raw?.status === 'fulfilled') {
                 const dataValue = raw?.value
                 if (dataValue && dataValue?.data && dataValue?.data?.result && dataValue?.data?.result?.code == Constants.API_SUCCESS_CODE) {
                     const ranksAndTitles = dataValue?.data?.data
                     let result = (ranksAndTitles[name] || []).map(item => {
-                        return item && { value: name === "titles" ? item.short : rankCodeLevelMapping[item.rank] ? rankCodeLevelMapping[item.rank].value : item.rank,
-                        label: name === "titles" ? item.title : rankCodeLevelMapping[item.rank] ? rankCodeLevelMapping[item.rank].label : item.text }
+                        return item && { value: name === "titles" ? item.short : item.rank,
+                        label: name === "titles" ? item.title : `${item.text} (${item.rank})` }
                     })
                     result =  _.uniqWith(result, _.isEqual)
                     return result
@@ -573,38 +581,94 @@ function EvaluationApproval(props) {
         const prepareOrgData = (raw, key) => {
             if (raw && raw?.status === 'fulfilled') {
                 const dataValue = raw?.value
-                if (dataValue && dataValue?.data && dataValue?.data?.result && dataValue?.data?.result?.code == Constants.API_SUCCESS_CODE) {
-                    const data = (dataValue?.data?.data || []).map(item => {
-                        return {value: item[key], label: item?.organization_name, parentId: item?.parent_id}
-                    })
-                    return data
+                if (dataValue && dataValue?.data && dataValue?.data?.result && dataValue?.data?.result?.code == Constants.PMS_API_SUCCESS_CODE) {
+                    // const data = (dataValue?.data?.data || []).map(item => {
+                    //     return {value: item[key], label: item?.organization_name, parentId: item?.parent_id}
+                    // })
+                    return dataValue?.data?.data
                 }
             }
-            return []
+            return null
         }
 
         const processMasterData = response => {
             const masterDataTemp = {...masterData}
-            const [level3Response, level4Response, level5Response, level6Response, rankAndTitleResponse] = response
-            masterDataTemp.blocks = prepareOrgData(level3Response, 'organization_lv3')
-            masterDataTemp.regions = prepareOrgData(level4Response, 'organization_lv4')
-            masterDataTemp.units = prepareOrgData(level5Response, 'organization_lv5')
-            masterDataTemp.groups = prepareOrgData(level6Response, 'organization_lv6')
-            masterDataTemp.ranks = prepareRanksAndTitles('ranks', rankAndTitleResponse)
-            masterDataTemp.titles = prepareRanksAndTitles('titles', rankAndTitleResponse)
+            // const [level3Response, level4Response, level5Response, level6Response, rankAndTitleResponse] = response
+            // masterDataTemp.blocks = prepareOrgData(level3Response, 'organization_lv3')
+            // masterDataTemp.regions = prepareOrgData(level4Response, 'organization_lv4')
+            // masterDataTemp.units = prepareOrgData(level5Response, 'organization_lv5')
+            // masterDataTemp.groups = prepareOrgData(level6Response, 'organization_lv6')
+            // masterDataTemp.ranks = prepareRanksAndTitles('ranks', rankAndTitleResponse)
+            // masterDataTemp.titles = prepareRanksAndTitles('titles', rankAndTitleResponse)
+
+            const [masterDataResponse] = response
+            const dataPrepared = prepareOrgData(masterDataResponse)
+
+            masterDataTemp.blocks = (dataPrepared?.listOrg3 || []).map(item => {
+                return {
+                    value: item?.organization_lv3,
+                    label: item?.organization_name,
+                    parentId: item?.parent_id
+                }
+            })
+            masterDataTemp.regions = (dataPrepared?.listOrg4 || []).map(item => {
+                return {
+                    value: item?.organization_lv4,
+                    label: item?.organization_name,
+                    parentId: item?.parent_id
+                }
+            })
+            masterDataTemp.units = (dataPrepared?.listOrg5 || []).map(item => {
+                return {
+                    value: item?.organization_lv5,
+                    label: item?.organization_name,
+                    parentId: item?.parent_id
+                }
+            })
+            masterDataTemp.groups = (dataPrepared?.listOrg6 || []).map(item => {
+                return {
+                    value: item?.organization_lv6,
+                    label: item?.organization_name,
+                    parentId: item?.parent_id
+                }
+            })
+            masterDataTemp.ranks = (dataPrepared?.ranks || []).map(item => {
+                return {
+                    value: item?.rank,
+                    label: item?.text
+                }
+            })
+            masterDataTemp.titles = (dataPrepared?.titles || []).map(item => {
+                return {
+                    value: item?.short,
+                    label: item?.title
+                }
+            })
+
             SetMasterData(masterDataTemp)
-            SetIsLoading(false)
+            if (isLoading) {
+                SetIsLoading(false)
+            }
         }
 
         const fetchMasterData = async () => {
-            SetIsLoading(true)
-            const config = getMuleSoftHeaderConfigurations()
-            const requestGetOrgLevel3 = axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/organization/structure/levels?page_no=1&page_size=10000&level=3&parent_id=${PnLOrgNumber}`, config)
-            const requestGetOrgLevel4 = axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/organization/structure/levels?page_no=1&page_size=10000&level=4`, config)
-            const requestGetOrgLevel5 = axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/organization/structure/levels?page_no=1&page_size=10000&level=5`, config)
-            const requestGetOrgLevel6 = axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/organization/structure/levels?page_no=1&page_size=10000&level=6`, config)
-            const requestGetRanksAndTitles = axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/position`, config)
-            const response = await Promise.allSettled([requestGetOrgLevel3, requestGetOrgLevel4, requestGetOrgLevel5, requestGetOrgLevel6, requestGetRanksAndTitles])
+            if (!isLoading) {
+                SetIsLoading(true)
+            }
+            // const muleSoftConfig = getMuleSoftHeaderConfigurations()
+            const config = getRequestConfigurations()
+            let formData = new FormData()
+            formData.append('ReviewerEmployeeCode', employeeCode)
+            formData.append('ReviewerEmployeeAdCode', employeeAD)
+
+            // const requestGetOrgLevel3 = axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/organization/structure/levels?page_no=1&page_size=10000&level=3&parent_id=${PnLOrgNumber}`, config)
+            // const requestGetOrgLevel4 = axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/organization/structure/levels?page_no=1&page_size=10000&level=4`, config)
+            // const requestGetOrgLevel5 = axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/organization/structure/levels?page_no=1&page_size=10000&level=5`, config)
+            // const requestGetOrgLevel6 = axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/organization/structure/levels?page_no=1&page_size=10000&level=6`, config)
+
+            const requestGetMasterData = axios.post(`${process.env.REACT_APP_HRDX_PMS_URL}api/form/MasterData`, formData, config)
+            // const requestGetRanksAndTitles = axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/position`, muleSoftConfig)
+            const response = await Promise.allSettled([requestGetMasterData])
             processMasterData(response)
         }
 
@@ -661,11 +725,13 @@ function EvaluationApproval(props) {
         formData.append('positionName', data?.title?.value || '')
 
         if (tab === 'approval') {
-            formData.append('ReviewerEmployeeCode', localStorage.getItem('employeeNo') || '')
+            formData.append('ReviewerEmployeeCode', employeeCode || '')
+            formData.append('ReviewerEmployeeAdCode', employeeAD || '')
             formData.append('CurrentStatus', data?.status?.value)
             apiPath = `${process.env.REACT_APP_HRDX_PMS_URL}api/form/listReview`
         } else if (tab === 'batchApproval') {
-            formData.append('ApproveEmployeeCode', localStorage.getItem('employeeNo') || '')
+            formData.append('ApproveEmployeeCode', employeeCode || '')
+            formData.append('ApproveEmployeeAdCode', employeeAD || '')
             formData.append('CheckPhaseFormId', data?.evaluationForm?.value || null)
             apiPath = `${process.env.REACT_APP_HRDX_PMS_URL}api/form/listApprove`
         }
@@ -703,13 +769,20 @@ function EvaluationApproval(props) {
         })
     }
 
-    const onHideEvaluationDetailModal = () => {
+    const onHideEvaluationDetailModal = (statusModalFromChild) => {
         SetEvaluationDetailPopup({
             ...evaluationDetailPopup,
             isShow: false,
             evaluationFormId: null,
             formCode: null,
             employeeCode: null
+        })
+
+        SetStatusModal({
+            ...statusModal,
+            isShow: statusModalFromChild?.isShow,
+            isSuccess: statusModalFromChild?.isSuccess,
+            content: statusModalFromChild?.content
         })
     }
 
