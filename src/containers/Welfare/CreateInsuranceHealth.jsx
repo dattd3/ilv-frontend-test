@@ -7,42 +7,57 @@ import moment from "moment";
 import Constants from "../../commons/Constants";
 import BulletIcon from "../../assets/img/icon/ic_bullet.svg";
 import _ from "lodash";
+import { getMuleSoftHeaderConfigurations } from "../../commons/Utils";
+import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import ResultModal from "../Registration/ResultModal";
+import { Spinner } from "react-bootstrap";
 
 const CreateInsuranceHealth = ({ t }) => {
   const [type, setType] = useState(null);
   const [data, setData] = useState({
-    insuranceClaimant : '',
-    insuranceRelation: '',
-    address: '',
-    phone: '',
-    email: '',
-    insuredName: '',
+    employeeNo: localStorage.getItem("employeeNo"),
+    insuranceClaimant: "",
+    insuranceRelation: "",
+    address: "",
+    phone: "",
+    email: "",
+    insuredName: "",
     gender: null,
-    insuredId: '',
+    insuredId: "",
     insuredBirth: null,
-    insuredUnit: '',
-    insuredNumber: '',
+    insuredUnit: "",
+    insuredNumber: "",
     accidentDate: null,
-    accidentAddress: '',
+    accidentAddress: "",
     examDate: null,
     hospitalizedDate: null,
-    hospitalizedAddress: '' ,
-    reason: '',
-    result: '',
+    hospitalizedAddress: "",
+    reason: "",
+    result: "",
     fromDate: null,
     toDate: null,
     treatType: null,
-    payAmount: '',
+    payAmount: "",
     payCase: null,
     payType: null,
-    receiveName: '',
-    receiveAccount: '',
-    bankName: '',
-    bankAddress: '',
+    receiveName: "",
+    receiveAccount: "",
+    bankName: "",
+    bankAddress: "",
     formDate: null,
-    formAddress: ''
+    formAddress: "",
   });
   const [errors, setErrors] = useState({});
+  const [resultModal, setresultModal] = useState({
+    isShowStatusModal: false,
+    titleModal: "",
+    messageModal: "",
+    isSuccess: false,
+  });
+  const [disabledSubmitButton, setdisabledSubmitButton] = useState(false);
+
   const InsuranceOptions = [
     { value: 1, label: "Ốm đau" },
     { value: 2, label: "Thai sản" },
@@ -69,7 +84,7 @@ const CreateInsuranceHealth = ({ t }) => {
 
   const TREATMENT_OPTIONS = [
     { value: 1, label: "Ngoại trú" },
-    { value: 2, label: "Nội trú" }
+    { value: 2, label: "Nội trú" },
   ];
 
   const handleTextInputChange = (e, name) => {
@@ -80,18 +95,19 @@ const CreateInsuranceHealth = ({ t }) => {
 
   const handleChangeSelectInputs = (e, name) => {
     const candidateInfos = { ...data };
-    candidateInfos[name] =
-      e != null ? { value: e.value, label: e.label } : {};
+    candidateInfos[name] = e != null ? { value: e.value, label: e.label } : {};
     setData(candidateInfos);
   };
 
-  const handleDatePickerInputChange = (value, name) => {
+  const handleDatePickerInputChange = (value, name) => { //YYYY-MM-DD
     const candidateInfos = { ...data };
     if (moment(value, "DD/MM/YYYY").isValid()) {
       const date = moment(value).format("DD/MM/YYYY");
       candidateInfos[name] = date;
+      candidateInfos[name+'_raw'] = value;
     } else {
       candidateInfos[name] = null;
+      candidateInfos[name+'_raw'] = null;
     }
     setData(candidateInfos);
   };
@@ -101,22 +117,109 @@ const CreateInsuranceHealth = ({ t }) => {
     if (!verify) {
       return;
     }
+   
+    const payload = {
+      requestorFullName: data.insuranceClaimant,
+      requestorRelationship: data.insuranceRelation || '',
+      requestorAddress: data.address || '',
+      requestorPhone: data.phone,
+      requestorEmail: data.email,
+      recieverFullName: data.insuredName,
+      recieverSex: data.gender?.value,
+      recieverIdentityCard: data.insuredId,
+      recieverBirthDay: data.insuredBirth_raw,
+      employeeCode: data.employeeNo,
+      recieverInsurer: data.insuredUnit || '',
+      insuranceNumber: data.insuredNumber,
+      accidentDate: data.accidentDate_raw,
+      accidentPlace: data.accidentAddress || '',
+      examineDate: data.examDate_raw,
+      hospitalizedDate: data.hospitalizedDate_raw,
+      treatmentPlace: data.hospitalizedAddress,
+      accidentalCause: data.reason || '',
+      consequence: data.result || '',
+      fromDate: data.fromDate_raw || '',
+      toDate: data.toDate_raw || '',
+      treatmentForm: data.treatType?.value,
+      totalMoneyAmount: data.payAmount,
+      paymentCase: data.payCase?.value,
+      paymentForm: data.payType?.value,
+      recieverAccountName: data.receiveName,
+      recieverAccountNumber: data.receiveAccount,
+      recieverBanker: data.bankName,
+      recieverBankerAddress: data.bankAddress,
+      signingPlace: data.formAddress || '',
+      signingDate: data.formDate_raw || '',
+      orgLv2Id: localStorage.getItem('organizationLv2'),
+      divisionId: localStorage.getItem('divisionId'),
+      division: localStorage.getItem('division'),
+      regionId: localStorage.getItem('regionId'),
+      region: localStorage.getItem('region'),
+      unitId: localStorage.getItem('unitId'),
+      unit: localStorage.getItem('unit'),
+      partId: localStorage.getItem('partId'),
+      part: localStorage.getItem('part'),
+      companyCode: localStorage.getItem('companyCode'),
+    };
+    setdisabledSubmitButton(true);
+    axios({
+      method: "POST",
+      url: `${process.env.REACT_APP_HRDX_URL}api/HealthInsurance/Create`,
+      data: payload,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `${localStorage.getItem("accessToken")}`,
+      },
+    })
+      .then((response) => {
+        if (
+          response &&
+          response.data &&
+          response.data.result &&
+          response.data.result.code == 200
+        ) {
+          showStatusModal(t("Successful"), t("RequestSent"), true);
+          setdisabledSubmitButton(false);
+        } else {
+          notifyMessage(
+            response.data.result.message ||
+              "Có lỗi xảy ra trong quá trình cập nhật thông tin!"
+          );
+          setdisabledSubmitButton(false);
+        }
+      })
+      .catch((response) => {
+        notifyMessage("Có lỗi xảy ra trong quá trình cập nhật thông tin!");
+        setdisabledSubmitButton(false);
+      });
   };
 
   const verifyData = () => {
     let _errors = {};
     const candidateInfos = { ...data };
     const requiredFields = [
-      "declareForm",
-      "seri",
-      "total",
-      "receiveType",
-      "accountNumber",
-      "accountName",
-      "bankId",
+      "insuranceClaimant",
+      "phone",
+      "email",
+      "insuredName",
+      "gender",
+      "insuredId",
+      "insuredBirth",
+      "insuredNumber",
+      "accidentDate",
+      "examDate",
+      "hospitalizedDate",
+      "hospitalizedAddress",
+      "treatType",
+      "payAmount",
+      "payCase",
+      "payType",
+      "receiveName",
+      "receiveAccount",
       "bankName",
+      "bankAddress",
     ];
-    const optionFields = ["declareForm", "receiveType"];
+    const optionFields = ["treatType", "payCase", "payTypes"];
 
     requiredFields.forEach((name) => {
       if (
@@ -134,17 +237,63 @@ const CreateInsuranceHealth = ({ t }) => {
     const hasErrors = !Object.values(_errors).every(
       (item) => item === null || item === undefined
     );
+    if (hasErrors) {
+      notifyMessage("Vui lòng nhập giá trị !", true);
+    }
     return hasErrors ? false : true;
+  };
+
+  const notifyMessage = (message, isError = true) => {
+    if (isError) {
+      toast.error(message);
+    } else {
+      toast.success(message);
+    }
+  };
+
+  const hideStatusModal = () => {
+    setresultModal({
+      isShowStatusModal: false,
+    });
+    window.location.reload();
+  };
+
+  const showStatusModal = (title, message, isSuccess = false) => {
+    setresultModal({
+      isShowStatusModal: true,
+      titleModal: title,
+      messageModal: message,
+      isSuccess: isSuccess,
+    });
   };
 
   return (
     <div className="registration-insurance-section">
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
+      <ResultModal
+        show={resultModal.isShowStatusModal}
+        title={resultModal.titleModal}
+        message={resultModal.messageModal}
+        isSuccess={resultModal.isSuccess}
+        onHide={hideStatusModal}
+      />
       {/* A. THÔNG TIN VỀ NGƯỜI YÊU CẦU TRẢ TIỀN BẢO HIỂM */}
       <h5>A. THÔNG TIN VỀ NGƯỜI YÊU CẦU TRẢ TIỀN BẢO HIỂM</h5>
       <div className="box shadow cbnv">
         <div className="row">
           <div className="col-6">
-            {"Người yêu cầu trả tiền bảo hiểm"}
+            {"Người yêu cầu trả tiền bảo hiểm"}{" "}
+            <span className="required">(*)</span>
             <input
               type="text"
               placeholder="Nhập"
@@ -154,6 +303,9 @@ const CreateInsuranceHealth = ({ t }) => {
               name="inputName"
               autoComplete="off"
             />
+            {errors["insuranceClaimant"] ? (
+              <p className="text-danger">{errors["insuranceClaimant"]}</p>
+            ) : null}
           </div>
           <div className="col-6">
             {"Mối quan hệ với Người được bảo hiểm"}
@@ -184,7 +336,7 @@ const CreateInsuranceHealth = ({ t }) => {
         </div>
         <div className="row mv-10">
           <div className="col-6">
-            {"Số điện thoại"}
+            {"Số điện thoại"} <span className="required">(*)</span>
             <input
               type="text"
               placeholder="Nhập"
@@ -194,9 +346,12 @@ const CreateInsuranceHealth = ({ t }) => {
               name="inputName"
               autoComplete="off"
             />
+            {errors["phone"] ? (
+              <p className="text-danger">{errors["phone"]}</p>
+            ) : null}
           </div>
           <div className="col-6">
-            {"Email"}
+            {"Email"} <span className="required">(*)</span>
             <input
               type="text"
               placeholder="Nhập"
@@ -206,6 +361,9 @@ const CreateInsuranceHealth = ({ t }) => {
               name="inputName"
               autoComplete="off"
             />
+            {errors["email"] ? (
+              <p className="text-danger">{errors["email"]}</p>
+            ) : null}
           </div>
         </div>
       </div>
@@ -215,6 +373,7 @@ const CreateInsuranceHealth = ({ t }) => {
         <div className="row">
           <div className="col-6">
             {"Họ tên NĐBH"}
+            <span className="required">(*)</span>
             <input
               type="text"
               placeholder="Nhập"
@@ -224,6 +383,9 @@ const CreateInsuranceHealth = ({ t }) => {
               name="inputName"
               autoComplete="off"
             />
+            {errors["insuredName"] ? (
+              <p className="text-danger">{errors["insuredName"]}</p>
+            ) : null}
           </div>
           <div className="col-6">
             <div style={{ color: "white" }}>{"."}</div>
@@ -231,12 +393,14 @@ const CreateInsuranceHealth = ({ t }) => {
               className="form-control mv-10 border-0"
               style={{ color: "#000", paddingLeft: 0 }}
             >
-              <div className="form-check-inline">Giới tính:</div>
+              <div className="form-check-inline">
+                Giới tính: <span className="required">(*)</span>
+              </div>
               {GENDER_OPTIONS.map((item, index) => {
                 return (
                   <div className="form-check form-check-inline" key={index}>
                     <input
-                    placeholder="Nhập"
+                      placeholder="Nhập"
                       name="gender"
                       type="radio"
                       checked={data.gender?.value == item.value}
@@ -254,14 +418,17 @@ const CreateInsuranceHealth = ({ t }) => {
                   </div>
                 );
               })}
+              {errors["gender"] ? (
+                <p className="text-danger">{errors["gender"]}</p>
+              ) : null}
             </div>
           </div>
         </div>
         <div className="row mv-10">
           <div className="col-6">
-            {"Số CMND/Hộ chiếu"}
+            {"Số CMND/Hộ chiếu"} <span className="required">(*)</span>
             <input
-            placeholder="Nhập"
+              placeholder="Nhập"
               type="text"
               value={data.insuredId}
               onChange={(e) => handleTextInputChange(e, "insuredId")}
@@ -269,26 +436,43 @@ const CreateInsuranceHealth = ({ t }) => {
               name="inputName"
               autoComplete="off"
             />
+            {errors["insuredId"] ? (
+              <p className="text-danger">{errors["insuredId"]}</p>
+            ) : null}
           </div>
 
-          <div className="col-6">
-            {"Ngày sinh"}
+          <div className="col-3">
+            {"Ngày sinh"} <span className="required">(*)</span>
             <DatePicker
               name="startDate"
               //readOnly={disableComponent.disableAll || !disableComponent.qlttSide || data.qlttOpinion.disableTime == true}
               autoComplete="off"
               selected={
                 data.insuredBirth
-                  ? moment(data.insuredBirth, Constants.LEAVE_DATE_FORMAT).toDate()
+                  ? moment(
+                      data.insuredBirth,
+                      Constants.LEAVE_DATE_FORMAT
+                    ).toDate()
                   : null
               }
-              onChange={(date) => handleDatePickerInputChange(date, "insuredBirth")}
+              onChange={(date) =>
+                handleDatePickerInputChange(date, "insuredBirth")
+              }
+              showMonthDropdown={true}
+              showYearDropdown={true}
               dateFormat="dd/MM/yyyy"
               placeholderText={t("Select")}
               locale={t("locale")}
               className="form-control input"
               styles={{ width: "100%" }}
             />
+            {errors["insuredBirth"] ? (
+              <p className="text-danger">{errors["insuredBirth"]}</p>
+            ) : null}
+          </div>
+          <div className="col-3">
+            {"Mã số nhân viên"} <span className="required">(*)</span>
+            <div className="detail">{data.employeeNo}</div>
           </div>
         </div>
 
@@ -307,7 +491,7 @@ const CreateInsuranceHealth = ({ t }) => {
           </div>
 
           <div className="col-6">
-            {"Số GCNBH/Số thẻ BH"}
+            {"Số GCNBH/Số thẻ BH"} <span className="required">(*)</span>
             <input
               type="text"
               placeholder="Nhập"
@@ -317,6 +501,9 @@ const CreateInsuranceHealth = ({ t }) => {
               name="inputName"
               autoComplete="off"
             />
+            {errors["insuredNumber"] ? (
+              <p className="text-danger">{errors["insuredNumber"]}</p>
+            ) : null}
           </div>
         </div>
       </div>
@@ -326,7 +513,9 @@ const CreateInsuranceHealth = ({ t }) => {
       <div className="box shadow cbnv">
         <div className="row mv-10">
           <div className="col-6">
-            <div>{"Ngày tai nạn"}</div>
+            <div>
+              {"Ngày tai nạn"} <span className="required">(*)</span>
+            </div>
             <DatePicker
               name="startDate"
               //readOnly={disableComponent.disableAll || !disableComponent.qlttSide || data.qlttOpinion.disableTime == true}
@@ -348,6 +537,9 @@ const CreateInsuranceHealth = ({ t }) => {
               className="form-control input"
               styles={{ width: "100%" }}
             />
+            {errors["accidentDate"] ? (
+              <p className="text-danger">{errors["accidentDate"]}</p>
+            ) : null}
           </div>
           <div className="col-6">
             <div>{"Nơi xảy ra tai nạn"}</div>
@@ -365,31 +557,33 @@ const CreateInsuranceHealth = ({ t }) => {
 
         <div className="row mv-10">
           <div className="col-6">
-            <div>{"Ngày khám bệnh"}</div>
+            <div>
+              {"Ngày khám bệnh"} <span className="required">(*)</span>
+            </div>
             <DatePicker
               name="startDate"
               //readOnly={disableComponent.disableAll || !disableComponent.qlttSide || data.qlttOpinion.disableTime == true}
               autoComplete="off"
               selected={
                 data.examDate
-                  ? moment(
-                      data.examDate,
-                      Constants.LEAVE_DATE_FORMAT
-                    ).toDate()
+                  ? moment(data.examDate, Constants.LEAVE_DATE_FORMAT).toDate()
                   : null
               }
-              onChange={(date) =>
-                handleDatePickerInputChange(date, "examDate")
-              }
+              onChange={(date) => handleDatePickerInputChange(date, "examDate")}
               dateFormat="dd/MM/yyyy"
               placeholderText={t("Select")}
               locale={t("locale")}
               className="form-control input"
               styles={{ width: "100%" }}
             />
+            {errors["examDate"] ? (
+              <p className="text-danger">{errors["examDate"]}</p>
+            ) : null}
           </div>
           <div className="col-6">
-            <div>{"Ngày nhập viện"}</div>
+            <div>
+              {"Ngày nhập viện"} <span className="required">(*)</span>
+            </div>
             <DatePicker
               name="startDate"
               //readOnly={disableComponent.disableAll || !disableComponent.qlttSide || data.qlttOpinion.disableTime == true}
@@ -411,12 +605,17 @@ const CreateInsuranceHealth = ({ t }) => {
               className="form-control input"
               styles={{ width: "100%" }}
             />
+            {errors["hospitalizedDate"] ? (
+              <p className="text-danger">{errors["hospitalizedDate"]}</p>
+            ) : null}
           </div>
         </div>
 
         <div className="row mv-10">
           <div className="col-12">
-            <div>{"Nơi điều trị"}</div>
+            <div>
+              {"Nơi điều trị"} <span className="required">(*)</span>
+            </div>
             <input
               type="text"
               placeholder="Nhập"
@@ -426,6 +625,9 @@ const CreateInsuranceHealth = ({ t }) => {
               name="inputName"
               autoComplete="off"
             />
+            {errors["hospitalizedAddress"] ? (
+              <p className="text-danger">{errors["hospitalizedAddress"]}</p>
+            ) : null}
           </div>
         </div>
 
@@ -468,15 +670,10 @@ const CreateInsuranceHealth = ({ t }) => {
               autoComplete="off"
               selected={
                 data.fromDate
-                  ? moment(
-                      data.fromDate,
-                      Constants.LEAVE_DATE_FORMAT
-                    ).toDate()
+                  ? moment(data.fromDate, Constants.LEAVE_DATE_FORMAT).toDate()
                   : null
               }
-              onChange={(date) =>
-                handleDatePickerInputChange(date, "fromDate")
-              }
+              onChange={(date) => handleDatePickerInputChange(date, "fromDate")}
               dateFormat="dd/MM/yyyy"
               placeholderText={t("Select")}
               locale={t("locale")}
@@ -492,15 +689,10 @@ const CreateInsuranceHealth = ({ t }) => {
               autoComplete="off"
               selected={
                 data.toDate
-                  ? moment(
-                      data.toDate,
-                      Constants.LEAVE_DATE_FORMAT
-                    ).toDate()
+                  ? moment(data.toDate, Constants.LEAVE_DATE_FORMAT).toDate()
                   : null
               }
-              onChange={(date) =>
-                handleDatePickerInputChange(date, "toDate")
-              }
+              onChange={(date) => handleDatePickerInputChange(date, "toDate")}
               dateFormat="dd/MM/yyyy"
               placeholderText={t("Select")}
               locale={t("locale")}
@@ -514,7 +706,9 @@ const CreateInsuranceHealth = ({ t }) => {
               className="form-control mv-10 border-0"
               style={{ color: "#000", paddingLeft: 0 }}
             >
-              <div className="form-check-inline">Hình thức điều trị:</div>           
+              <div className="form-check-inline">
+                Hình thức điều trị:<span className="required">(*)</span>
+              </div>
               {TREATMENT_OPTIONS.map((item, index) => {
                 return (
                   <div className="form-check form-check-inline" key={index}>
@@ -524,7 +718,9 @@ const CreateInsuranceHealth = ({ t }) => {
                       checked={data.treatType?.value == item.value}
                       className="form-check-input"
                       id={`treat-${item.value}`}
-                      onChange={(e) => handleChangeSelectInputs(item, 'treatType')}
+                      onChange={(e) =>
+                        handleChangeSelectInputs(item, "treatType")
+                      }
                     />
                     <label
                       title=""
@@ -536,6 +732,9 @@ const CreateInsuranceHealth = ({ t }) => {
                   </div>
                 );
               })}
+              {errors["treatType"] ? (
+                <p className="text-danger">{errors["treatType"]}</p>
+              ) : null}
             </div>
           </div>
         </div>
@@ -551,7 +750,10 @@ const CreateInsuranceHealth = ({ t }) => {
 
         <div className="row mv-10">
           <div className="col-12">
-            <div>{"Tổng số tiền yêu cầu chi trả"}</div>
+            <div>
+              {"Tổng số tiền yêu cầu chi trả"}{" "}
+              <span className="required">(*)</span>
+            </div>
             <input
               type="text"
               placeholder="Nhập"
@@ -562,6 +764,9 @@ const CreateInsuranceHealth = ({ t }) => {
               autoComplete="off"
               checked={"checked"}
             />
+            {errors["payAmount"] ? (
+              <p className="text-danger">{errors["payAmount"]}</p>
+            ) : null}
           </div>
         </div>
 
@@ -569,7 +774,8 @@ const CreateInsuranceHealth = ({ t }) => {
           <div className="col-12">
             <div className="">
               <div className="form-check-inline mt-2">
-                Chi trả bảo hiểm cho trường hợp:
+                Chi trả bảo hiểm cho trường hợp:{" "}
+                <span className="required">(*)</span>
               </div>
 
               {INSURANCE_CASE.map((item, index) => {
@@ -581,7 +787,7 @@ const CreateInsuranceHealth = ({ t }) => {
                       className="form-check-input"
                       checked={data.payCase?.value == item.value}
                       id={`case-${item.value}`}
-                      onChange={(e) => handleTextInputChange(e, 'payCase')}
+                      onChange={(e) => handleChangeSelectInputs(item, "payCase")}
                     />
                     <label
                       title=""
@@ -593,6 +799,9 @@ const CreateInsuranceHealth = ({ t }) => {
                   </div>
                 );
               })}
+              {errors["payCase"] ? (
+                <p className="text-danger">{errors["payCase"]}</p>
+              ) : null}
             </div>
           </div>
         </div>
@@ -607,7 +816,8 @@ const CreateInsuranceHealth = ({ t }) => {
           <div className="col-12">
             <div>
               <div className="form-check-inline">
-                Lựa chọn hình thức thanh toán:
+                Lựa chọn hình thức thanh toán:{" "}
+                <span className="required">(*)</span>
               </div>
 
               {PAY_TYPE.map((item, index) => {
@@ -619,7 +829,9 @@ const CreateInsuranceHealth = ({ t }) => {
                       checked={data.payType?.value == item.value}
                       className="form-check-input"
                       id={`pay-${item.value}`}
-                      onChange={(e) => handleChangeSelectInputs(item, 'payType')}
+                      onChange={(e) =>
+                        handleChangeSelectInputs(item, "payType")
+                      }
                     />
                     <label
                       title=""
@@ -631,13 +843,18 @@ const CreateInsuranceHealth = ({ t }) => {
                   </div>
                 );
               })}
+              {errors["payType"] ? (
+                <p className="text-danger">{errors["payType"]}</p>
+              ) : null}
             </div>
           </div>
         </div>
 
         <div className="row mv-10">
           <div className="col-6">
-            <div>{"Người thụ hưởng"}</div>
+            <div>
+              {"Người thụ hưởng"} <span className="required">(*)</span>
+            </div>
             <input
               value={data.receiveName}
               onChange={(e) => handleTextInputChange(e, "receiveName")}
@@ -647,10 +864,15 @@ const CreateInsuranceHealth = ({ t }) => {
               name="inputName"
               autoComplete="off"
             />
+            {errors["receiveName"] ? (
+              <p className="text-danger">{errors["receiveName"]}</p>
+            ) : null}
           </div>
 
           <div className="col-6">
-            <div>{"Số tài khoản"}</div>
+            <div>
+              {"Số tài khoản"} <span className="required">(*)</span>
+            </div>
             <input
               value={data.receiveAccount}
               onChange={(e) => handleTextInputChange(e, "receiveAccount")}
@@ -660,12 +882,17 @@ const CreateInsuranceHealth = ({ t }) => {
               name="inputName"
               autoComplete="off"
             />
+            {errors["receiveAccount"] ? (
+              <p className="text-danger">{errors["receiveAccount"]}</p>
+            ) : null}
           </div>
         </div>
 
         <div className="row mv-10">
           <div className="col-12">
-            <div>{"Ngân hàng"}</div>
+            <div>
+              {"Ngân hàng"} <span className="required">(*)</span>
+            </div>
             <input
               value={data.bankName}
               onChange={(e) => handleTextInputChange(e, "bankName")}
@@ -675,12 +902,17 @@ const CreateInsuranceHealth = ({ t }) => {
               name="inputName"
               autoComplete="off"
             />
+            {errors["bankName"] ? (
+              <p className="text-danger">{errors["bankName"]}</p>
+            ) : null}
           </div>
         </div>
 
         <div className="row mv-10">
           <div className="col-12">
-            <div>{"Địa chỉ ngân hàng"}</div>
+            <div>
+              {"Địa chỉ ngân hàng"} <span className="required">(*)</span>
+            </div>
             <input
               value={data.bankAddress}
               onChange={(e) => handleTextInputChange(e, "bankAddress")}
@@ -690,6 +922,9 @@ const CreateInsuranceHealth = ({ t }) => {
               name="inputName"
               autoComplete="off"
             />
+            {errors["bankAddress"] ? (
+              <p className="text-danger">{errors["bankAddress"]}</p>
+            ) : null}
           </div>
         </div>
       </div>
@@ -784,7 +1019,21 @@ const CreateInsuranceHealth = ({ t }) => {
           className="btn btn-primary float-right ml-3 shadow"
           onClick={() => onSubmit()}
         >
-          <i className="fa fa-paper-plane" aria-hidden="true"></i> {t("Send")}
+          {!disabledSubmitButton ? (
+            <>
+              <i className="fa fa-paper-plane mr-2" aria-hidden="true"></i>
+            </>
+          ) : (
+            <Spinner
+              as="span"
+              animation="border"
+              size="sm"
+              role="status"
+              aria-hidden="true"
+              className="mr-2"
+            />
+          )}
+          {t("Send")}
         </button>
       </div>
     </div>
