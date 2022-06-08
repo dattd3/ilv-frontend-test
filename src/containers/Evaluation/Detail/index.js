@@ -198,7 +198,7 @@ function EvaluationProcess(props) {
                         </div>
                         <div className="info-item">
                             <span className="label"><span className="font-weight-bold">QLTT đánh giá</span><span>:</span></span>
-                            <span className="value">{reviewerInfos?.fullname && `${reviewerInfos?.fullname || ''} - ${approverInfos?.position_title || ''}`}</span>
+                            <span className="value">{reviewerInfos?.fullname && `${reviewerInfos?.fullname || ''} - ${reviewerInfos?.position_title || ''}`}</span>
                         </div>
                         <div className="info-item">
                             <span className="label"><span className="font-weight-bold">CBLĐ phê duyệt</span><span>:</span></span>
