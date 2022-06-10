@@ -264,10 +264,19 @@ class ResignationRequestsManagementPage extends React.Component {
         }
     }
 
-    handleExportResponses = (responses, fileName) => {
+    handleExportResponses = async (responses, fileName) => {
         this.setState({isShowLoadingModal: false})
         if (responses && responses.data && responses.status === 200) {
-            this.handleDownloadFiles(responses.data, fileName)
+            try {
+                let message = ''
+                const blobText = new Blob([responses.data], { type: "application/json" });
+                let dataerr = JSON.parse(await blobText.text());
+                message = dataerr?.result?.message || 'Có lỗi xảy ra trong quá trình xuất báo cáo!';
+                toast.error(message)
+            } catch(err) {
+                this.handleDownloadFiles(responses.data, fileName)
+            }
+            
         } else {
             toast.error("Có lỗi xảy ra trong quá trình xuất báo cáo!")
         }
