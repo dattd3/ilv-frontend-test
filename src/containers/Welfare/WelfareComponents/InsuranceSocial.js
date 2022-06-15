@@ -40,7 +40,6 @@ class InsuranceSocial extends React.Component {
         axios.get(`${process.env.REACT_APP_HRDX_URL}api/BenefitClaim/list?pageIndex=${page}&pageSize=${size}`, config)
             .then(res => {
                 if (res && res.data && res.data.data) {
-                    console.log(res.data.data)
                     this.setState({ listData: res.data.data?.requests || [],
                     total: res.data.data?.total || 0 });
 
@@ -66,45 +65,6 @@ class InsuranceSocial extends React.Component {
     render() {
         const { t } = this.props;
         const { listData, total } = this.state
-    
-        // const listData = [
-        //     {
-        //         id: '1511321',
-        //         requestDate: '17/03/2022',
-        //         status: 'PNS đã gửi hồ sơ BHXH',
-        //         link: '#'
-        //     },
-        //     {
-        //         id: '1812145',
-        //         requestDate: '15/03/2022',
-        //         applyDate: '15/03/2022',
-        //         amount: '2400500',
-        //         status: 'PNS đã gửi hồ sơ PVI',
-        //         link: '#'
-        //     },
-        //     {
-        //         id: '1954578',
-        //         requestDate: '13/03/2022',
-        //         applyDate: '13/03/2022',
-        //         amount: '24500',
-        //         status: 'Hồ sơ đang điều chỉnh tại CQBHXH',
-        //         link: '#'
-        //     },
-        //     {
-        //         id: '1542362',
-        //         requestDate: '08/03/2022',
-        //         applyDate: '08/03/2022',
-        //         amount: '249809500',
-        //         status: 'NLĐ chưa nộp hồ sơ cho công ty',
-        //         link: '#'
-        //     },
-
-        // ]
-        // const lastItem = listData && listData?.length > 0 ? listData[listData.length - 1] : {
-
-        // }
-        // const pageNumber = 1;
-        // const total = 20;
 
         return <>
             <div className="health-info-page">
@@ -134,7 +94,7 @@ class InsuranceSocial extends React.Component {
                                                     <td className="request-type text-center">{child.createdDate ? moment(child.createdDate).format('DD/MM/YYYY') : ''}</td>
                                                     <td className="status1 text-left">{child.statusName || ''}</td>
                                                     <td className="tool">
-                                                        <a href={child.link}><img alt="Sửa" src={Download} className="icon-download" /></a>
+                                                        <a href={`/insurance-manager/detail/${child.id}`}><img alt="Sửa" src={Download} className="icon-download" /></a>
                                                     </td>
                                                 </tr>
                                             )
@@ -142,7 +102,7 @@ class InsuranceSocial extends React.Component {
                                     }
                                 </tbody>
                             </table>
-                            : <div className="data-not-found">{t("NoDataFound")}</div>
+                            : <div className="data-not-found p-2">{t("NoDataFound")}</div>
                     }
                     {(listData.length > 0 || Math.ceil(total / Constants.TASK_PAGE_SIZE_DEFAULT) == this.state.dataForSearch.pageIndex) ? <div className="row paging mt-4">
                         <div className="col-sm"></div>
