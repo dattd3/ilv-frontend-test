@@ -16,27 +16,31 @@ class Health extends React.Component {
         super(props);
         this.state = {
             listData: [],
+            total: 0,
             showModelDetail: false,
             rowId: null,
             loadSuccess: false,
             editLastRow: false,
             dataForSearch: {
                 pageIndex: Constants.TASK_PAGE_INDEX_DEFAULT,
-                pageSize: Constants.TASK_PAGE_SIZE_DEFAULT,
-                total: 25
-
+                pageSize: Constants.TASK_PAGE_SIZE_DEFAULT
             }
         };
     }
 
     componentDidMount() {
         const { t } = this.props;
+        this.fetchData(this.state.dataForSearch.pageIndex, this.state.dataForSearch.pageSize);
+    }
+
+    fetchData = (page, size) => {
         const config = getRequestConfigurations()
 
-        axios.get(`${process.env.REACT_APP_REQUEST_URL}vaccin/list?culture=${t('langCode')}`, config)
+        axios.get(`${process.env.REACT_APP_HRDX_URL}api/HealthInsurance/employeelist?pageIndex=${page}&pageSize=${size}&CompanyCode=${localStorage.getItem('companyCode')}`, config)
             .then(res => {
-                if (res && res.data && res.data.data) {
-                    this.setState({ listData: res.data.data });
+                if (res && res.data) {
+                    this.setState({ listData: res.data.data.data || [],
+                    total: res.data.data.total || 0 });
 
                 }
             }).catch(error => {
@@ -53,53 +57,17 @@ class Health extends React.Component {
             }
         }, () => {
             // this.searchRemoteData(false);
+            this.fetchData(index, this.state.dataForSearch.pageSize)
         });
     }
 
     render() {
         const { t } = this.props;
-        //const { listData } = this.state
-        const listData = [
-            {
-                id: '1511321',
-                requestDate: '17/03/2022',
-                applyDate: '17/03/2022',
-                amount: '2450000',
-                status: 'NLD chưa gửi hồ sơ',
-                link: '#'
-            },
-            {
-                id: '1812145',
-                requestDate: '15/03/2022',
-                applyDate: '15/03/2022',
-                amount: '2400500',
-                status: 'NLD chưa gửi hồ sơ PVI',
-                link: '#'
-            },
-            {
-                id: '1954578',
-                requestDate: '13/03/2022',
-                applyDate: '13/03/2022',
-                amount: '24500',
-                status: 'NLD chưa gửi hồ sơ',
-                link: '#'
-            },
-            {
-                id: '1542362',
-                requestDate: '08/03/2022',
-                applyDate: '08/03/2022',
-                amount: '249809500',
-                status: 'NLD chưa gửi hồ sơ',
-                link: '#'
-            },
-
-        ]
-        const lastItem = listData && listData?.length > 0 ? listData[listData.length - 1] : {
-
-        }
-        const pageNumber = 1;
-        const total = 20;
-
+        const {  listData, total } = this.state
+        const statusOptions = [
+            { value: 1, label: 'NLĐ chưa nộp hồ sơ cho công ty' },
+            { value: 2, label: 'PNS đã gửi hồ sơ PVI' }
+        ];
         return <>
             <div className="health-info-page">
                 <div className="clearfix edit-button w-100 pb-2">
@@ -125,14 +93,14 @@ class Health extends React.Component {
                                 <tbody>
                                     {
                                         listData.map((child, index) => {
-
+                                            const status = statusOptions.filter(st => st.value == child.status).length > 0 ? statusOptions.filter(st => st.value == child.status).label : ''
                                             return (
                                                 <tr key={index}>
                                                     <td className="code text-center">{child.id}</td>
-                                                    <td className="request-type text-center">{child.requestDate}</td>
-                                                    <td className="request-type text-center">{child.applyDate}</td>
-                                                    <td className="break-time text-center">{child.amount}</td>
-                                                    <td className="status text-left">{child.status}</td>
+                                                    <td className="request-type text-center">{child.createdDate ? moment(child.createdDate).format('DD/MM/YYYY') : ''}</td>
+                                                    <td className="request-type text-center">{child.submissionDate ? moment(child.submissionDate).format('DD/MM/YYYY') : ''}</td>
+                                                    <td className="break-time text-center">{child.totalMoneyAmount}</td>
+                                                    <td className="status text-left">{status}</td>
                                                     <td className="tool">
                                                         <a href={child.link}><img alt="Sửa" src={Download} className="icon-download" /></a>
                                                     </td>
@@ -142,13 +110,13 @@ class Health extends React.Component {
                                     }
                                 </tbody>
                             </table>
-                            : <div className="data-not-found">{t("NoDataFound")}</div>
+                            : <div className="data-not-found p-2">{t("NoDataFound")}</div>
                     }
                     {(listData.length > 0 || Math.ceil(total / Constants.TASK_PAGE_SIZE_DEFAULT) == this.state.dataForSearch.pageIndex) ? <div className="row paging mt-4">
                         <div className="col-sm"></div>
                         <div className="col-sm"></div>
                         <div className="col-sm">
-                            <CustomPaging pageSize={this.state.dataForSearch.pageSize} onChangePage={this.onChangePage.bind(this)} totalRecords={this.state.dataForSearch.total} />
+                            <CustomPaging pageSize={this.state.dataForSearch.pageSize} onChangePage={this.onChangePage.bind(this)} totalRecords={total} />
                         </div>
                         <div className="col-sm"></div>
                         <div className="col-sm text-right"></div>
