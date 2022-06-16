@@ -11,6 +11,9 @@ import { getRequestConfigurations } from "../../../commons/Utils"
 import Download from "../../../assets/img/icon/ic_download_blue.svg";
 import CustomPaging from "../../../components/Common/CustomPaging";
 
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 class Health extends React.Component {
     constructor(props) {
         super(props);
@@ -39,8 +42,10 @@ class Health extends React.Component {
         axios.get(`${process.env.REACT_APP_HRDX_URL}api/HealthInsurance/employeelist?pageIndex=${page}&pageSize=${size}&CompanyCode=${localStorage.getItem('companyCode')}`, config)
             .then(res => {
                 if (res && res.data) {
-                    this.setState({ listData: res.data.data.data || [],
-                    total: res.data.data.total || 0 });
+                    this.setState({
+                        listData: res.data.data.data || [],
+                        total: res.data.data.total || 0
+                    });
 
                 }
             }).catch(error => {
@@ -61,14 +66,59 @@ class Health extends React.Component {
         });
     }
 
+    handleExportDocument = (e, id) => {
+        e.preventDefault()
+        const config = {
+            headers: { 'Authorization': `Bearer ${localStorage.getItem('accessToken')}`, 'Content-Type': 'application/json' }
+        }
+        const filename = "BaoHiemSucKhoe.docx";
+        const searchAdvanceEndpoint = `${process.env.REACT_APP_HRDX_URL}api/HealthInsurance/ExportWordDetail?Id=${id}`;
+        axios.get(searchAdvanceEndpoint, { ...config, responseType: 'blob' }).then((response) => {
+            if (response && response.data && response.data.type === 'application/json') {
+                toast.error('Không tìm thấy dữ liệu để kết xuất');
+                return;
+            }
+
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', filename);
+            link.setAttribute('target', "_self");
+            document.body.appendChild(link);
+            link.click();
+            link.parentNode.removeChild(link);
+            this.setState({
+                modal: {
+                    ...this.state.modal,
+                    isShowLoadingModal: false
+                }
+            })
+        })
+            .catch(errors => {
+                const messages = 'Xuất dữ liệu không thành công !'
+                toast.error(messages);
+            })
+    }
+
     render() {
         const { t } = this.props;
-        const {  listData, total } = this.state
+        const { listData, total } = this.state
         const statusOptions = [
             { value: 1, label: 'NLĐ chưa nộp hồ sơ cho công ty' },
             { value: 2, label: 'PNS đã gửi hồ sơ PVI' }
         ];
         return <>
+            <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+            />
             <div className="health-info-page">
                 <div className="clearfix edit-button w-100 pb-2">
                     <a href="/insurance-manager/createHealthInsurance"><div className="btn bg-white btn-create"
@@ -102,7 +152,7 @@ class Health extends React.Component {
                                                     <td className="break-time text-center">{child.totalMoneyAmount}</td>
                                                     <td className="status text-left">{status}</td>
                                                     <td className="tool">
-                                                        <a href={child.link}><img alt="Sửa" src={Download} className="icon-download" /></a>
+                                                        <a onClick={(e) => this.handleExportDocument(e, child.id)}><img alt="Sửa" src={Download} className="icon-download" /></a>
                                                     </td>
                                                 </tr>
                                             )
