@@ -1096,8 +1096,14 @@
   "VinmecReferralRevenueBonus": "Referral revenue bonus",
   "AllowanceForNursingPosition": "Allowance for Nursing Position",
   "Welfare": "Phúc lợi",
+  "WelfareLevel": "Welfare level",
   "InteralWelfare": "Nội bộ",
   "InsuranceRegime": "Chế độ bảo hiểm",
   "WelfareResource": "Khách sạn",
-  "RegimeInfo": " THÔNG TIN CHẾ ĐỘ"
+  "RegimeInfo": " THÔNG TIN CHẾ ĐỘ",
+  "RegimeInfoBy": "PRIORITY MODE OF SERVICE AT",
+  "WelfareNoteTitle": "These concepts are hereby construed as follows:",
+  "WelfareNoteContent1": "Relatives are spouses, natural parents, parents-in-law, legal children of employees.",
+  "WelfareNoteContent2": "VinID program is not applicable for cost items that have been exempted/reduced under the Internal Service Preferential System.",
+  "WelfareNoteContent3": "Accommodation offer is not applicable at Vinpearl Luxury with level T3 and below and not applied during peak periods with level T4 and below."
 }
