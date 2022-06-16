@@ -112,6 +112,17 @@ const CreateMaternityInsurance = ({
       "medicalAssessmentFee": data.assessment
     }));
 
+    formData.append(
+      "receiveSubsidiesInfo",
+      JSON.stringify({
+        receivingForm: data.receiveType?.label || "",
+        bankAccountNumber: data.accountNumber,
+        accountName: data.accountName,
+        bankCode: data.bankId,
+        bankName: data.bankName,
+      })
+    );
+
     formData.append('SettlementContent', data.resolveContent);
     formData.append('SettlementPeriod', data.resolveDate ? moment(data.resolveDate, 'DD/MM/YYYY').format('YYYY-MM-DD') : '') ;
     formData.append('AdditionalPhaseContent',data.addtionContent );

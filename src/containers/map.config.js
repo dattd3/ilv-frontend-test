@@ -108,5 +108,6 @@ export default {
   InteralWelfare: '/welfare-manager',
   InsuranceRegime: '/insurance-manager',
   CreateInsuranceSocial: '/insurance-manager/createSocialInsurance',
-  CreateInsuranceHealth: '/insurance-manager/createHealthInsurance'
+  CreateInsuranceHealth: '/insurance-manager/createHealthInsurance',
+  DetailInsuranceSocial: '/insurance-manager/detail/:id',
 };
