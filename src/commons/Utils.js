@@ -141,20 +141,20 @@ const isEnableFunctionByFunctionName = name => {
 
     switch (name) {
         case Constants.listFunctionsForPnLACL.qnA:
-            listPnLAccepted = [Constants.pnlVCode.VinPearl, Constants.pnlVCode.VinSoftware, Constants.pnlVCode.VinMec, Constants.pnlVCode.VinFast, 
-                Constants.pnlVCode.VinFastTrading, Constants.pnlVCode.VinSmart, Constants.pnlVCode.VincomRetail, Constants.pnlVCode.VinAI]
+            listPnLAccepted = [Constants.pnlVCode.VinPearl, Constants.pnlVCode.VinSoftware, Constants.pnlVCode.VinMec, Constants.pnlVCode.VinFast,
+            Constants.pnlVCode.VinFastTrading, Constants.pnlVCode.VinSmart, Constants.pnlVCode.VincomRetail, Constants.pnlVCode.VinAI]
             break
         case Constants.listFunctionsForPnLACL.editProfile:
-            listPnLAccepted = [Constants.pnlVCode.VinPearl, Constants.pnlVCode.VinMec, Constants.pnlVCode.VinSmart, Constants.pnlVCode.VincomRetail, 
-                Constants.pnlVCode.VinITIS, Constants.pnlVCode.VinUni, Constants.pnlVCode.Vin3S, Constants.pnlVCode.VinAI]
+            listPnLAccepted = [Constants.pnlVCode.VinPearl, Constants.pnlVCode.VinMec, Constants.pnlVCode.VinSmart, Constants.pnlVCode.VincomRetail,
+            Constants.pnlVCode.VinITIS, Constants.pnlVCode.VinUni, Constants.pnlVCode.Vin3S, Constants.pnlVCode.VinAI]
             break
         case Constants.listFunctionsForPnLACL.editEducation:
-            listPnLAccepted = [Constants.pnlVCode.VinPearl, Constants.pnlVCode.VinMec, Constants.pnlVCode.VinSmart, Constants.pnlVCode.VincomRetail, 
-                Constants.pnlVCode.VinITIS, Constants.pnlVCode.VinUni, Constants.pnlVCode.Vin3S, Constants.pnlVCode.VinAI]
+            listPnLAccepted = [Constants.pnlVCode.VinPearl, Constants.pnlVCode.VinMec, Constants.pnlVCode.VinSmart, Constants.pnlVCode.VincomRetail,
+            Constants.pnlVCode.VinITIS, Constants.pnlVCode.VinUni, Constants.pnlVCode.Vin3S, Constants.pnlVCode.VinAI]
             break
         case Constants.listFunctionsForPnLACL.editRelationship:
-            listPnLAccepted = [Constants.pnlVCode.VinSmart, Constants.pnlVCode.VincomRetail, Constants.pnlVCode.VinITIS, Constants.pnlVCode.VinPearl, 
-                Constants.pnlVCode.VinUni, Constants.pnlVCode.Vin3S, Constants.pnlVCode.VinAI]
+            listPnLAccepted = [Constants.pnlVCode.VinSmart, Constants.pnlVCode.VincomRetail, Constants.pnlVCode.VinITIS, Constants.pnlVCode.VinPearl,
+            Constants.pnlVCode.VinUni, Constants.pnlVCode.Vin3S, Constants.pnlVCode.VinAI]
             break
         case Constants.listFunctionsForPnLACL.changeStaffShift:
             listPnLAccepted = [Constants.pnlVCode.VinPearl]
@@ -214,7 +214,7 @@ const getMuleSoftHeaderConfigurations = () => {
     const requestConfigurations = getRequestConfigurations()
     requestConfigurations.headers['client_id'] = process.env.REACT_APP_MULE_CLIENT_ID
     requestConfigurations.headers['client_secret'] = process.env.REACT_APP_MULE_CLIENT_SECRET
-    
+
     return requestConfigurations
 }
 
@@ -244,7 +244,7 @@ const isAdjacentDateBy2Date = (start, end) => {
 // Show range date as string group by date array. Ex: ['10/10/2021', '12/10/2021', '13/10/2021', '14/10/2021', '16/10/2021'] => return 10/10/2021, 12/10/2021 - 14/10/2021, 16/10/2021
 // Apply for format DD/MM/YYYY
 const showRangeDateGroupByArrayDate = (arrayDate) => {
-    const dateSorted = arrayDate && arrayDate.length > 0 ?  [...new Set(arrayDate)].sort((pre, next) => moment(pre, 'DD/MM/YYYY') - moment(next, 'DD/MM/YYYY')) : []
+    const dateSorted = arrayDate && arrayDate.length > 0 ? [...new Set(arrayDate)].sort((pre, next) => moment(pre, 'DD/MM/YYYY') - moment(next, 'DD/MM/YYYY')) : []
     if (dateSorted.length === 0) {
         return ""
     }
@@ -324,6 +324,24 @@ const generateTaskCodeByCode = code => {
     }
 }
 
-export { getRequestConfigurations, removeAccents, formatStringByMuleValue, formatNumberInteger, exportToPDF, isEnableFunctionByFunctionName, getValueParamByQueryString, getDateByRangeAndFormat,
-    calculateBackDateByPnLVCodeAndFormatType, isEnableShiftChangeFunctionByPnLVCode, isEnableInOutTimeUpdateFunctionByPnLVCode, getRequestTypeIdsAllowedToReApproval, getMuleSoftHeaderConfigurations, 
-    isAdjacentDateBy2Date, showRangeDateGroupByArrayDate, generateTaskCodeByCode }
+function parsteStringToHtml(arrHtml) {
+    let htmlReturn = '';
+    JSON.parse(arrHtml).forEach(objHtml => {
+        if (objHtml.Text === '\r\n') {
+            htmlReturn += '<br />'
+        } else {
+            let objCss = '';
+            if (objHtml.B) objCss += `font-weight: bold;`
+            if (objHtml.U) objCss += `text-decoration: underline;`
+            if (objHtml.I) objCss += `font-style: italic;`
+            htmlReturn += `<span style="${objCss}">${objHtml.Text}</span>`
+        }
+    })
+    return htmlReturn;
+}
+
+export {
+    getRequestConfigurations, removeAccents, formatStringByMuleValue, formatNumberInteger, exportToPDF, isEnableFunctionByFunctionName, getValueParamByQueryString, getDateByRangeAndFormat,
+    calculateBackDateByPnLVCodeAndFormatType, isEnableShiftChangeFunctionByPnLVCode, isEnableInOutTimeUpdateFunctionByPnLVCode, getRequestTypeIdsAllowedToReApproval, getMuleSoftHeaderConfigurations,
+    isAdjacentDateBy2Date, showRangeDateGroupByArrayDate, generateTaskCodeByCode, parsteStringToHtml
+}

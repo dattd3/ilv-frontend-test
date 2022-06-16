@@ -1,4 +1,7 @@
 .internal-welfare {
+  .color-red {
+    color: red !important;
+  }
   .nav-item {
     width: auto;
     padding-left: 17px;
@@ -138,6 +141,9 @@
         padding: 0;
       }
     }
+  }
+  .notice {
+    font-style: italic;
   }
 }
 
@@ -368,7 +374,7 @@
   .sign-title {
     color: #000;
     font-size: 16px;
-    font-weight: 700; 
+    font-weight: 700;
   }
 
   .sign-subtitle {

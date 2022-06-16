@@ -1113,9 +1113,14 @@
   "VinmecReferralRevenueBonus": "Thưởng doanh thu giới thiệu khách",
   "AllowanceForNursingPosition": "Phụ cấp ưu đãi nghề Điều dưỡng",
   "Welfare": "Phúc lợi",
+  "WelfareLevel": "Cấp bậc phúc lợi",
   "InteralWelfare": "Nội bộ",
   "InsuranceRegime": "Chế độ bảo hiểm",
   "WelfareResource": "Khách sạn",
-  "RegimeInfo": " THÔNG TIN CHẾ ĐỘ"
-
+  "RegimeInfo": " THÔNG TIN CHẾ ĐỘ",
+  "RegimeInfoBy": "CHẾ ĐỘ ƯU ĐÃI DỊCH VỤ TẠI",
+  "WelfareNoteTitle": "Các khái niệm này từ đây được hiểu như sau:",
+  "WelfareNoteContent1": "Người thân là vợ/chồng, cha mẹ đẻ, cha mẹ vợ/chồng, con hợp pháp của CBNV.",
+  "WelfareNoteContent2": "Không áp dụng chương trình VinID cho các hạng mục chi phí đã được miễn/giảm theo Chế độ ưu đãi dịch vụ nội bộ.",
+  "WelfareNoteContent3": "Ưu đãi phòng ở không áp dụng tại Vinpearl Luxury với cấp T3 trở xuống và không áp dụng trong các giai đoạn đỉnh điểm với cấp T4 trở xuống."
 }
