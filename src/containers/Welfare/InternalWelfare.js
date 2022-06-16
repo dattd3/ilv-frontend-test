@@ -34,7 +34,6 @@ class InternalWelfareComponent extends React.Component {
             .then(res => {
                 if (res && res.data && res.data.data) {
                     const arrTmp = Object.keys(res.data.data).map(key => ({ plName: key, regimeInfo: res.data.data[key] }));
-                    console.log(arrTmp);
                     this.setState({
                         dataWelfare: arrTmp || [],
                         isLoading: false,
@@ -99,12 +98,14 @@ class InternalWelfareComponent extends React.Component {
                             )
                         })
                     }
-                    <div className="notice">
-                        <span>* {t("WelfareNoteTitle")}</span><br />
-                        <span>- {t("WelfareNoteContent1")}</span><br />
-                        <span>- {t("WelfareNoteContent2")}</span><br />
-                        <span>- {t("WelfareNoteContent3")}</span><br />
-                    </div>
+                    {dataWelfare.length !== 0 &&
+                        <div className="notice">
+                            <span>* {t("WelfareNoteTitle")}</span><br />
+                            <span>- {t("WelfareNoteContent1")}</span><br />
+                            <span>- {t("WelfareNoteContent2")}</span><br />
+                            <span>- {t("WelfareNoteContent3")}</span><br />
+                        </div>
+                    }
                 </div>
             </>
         )
