@@ -21,7 +21,7 @@ class RouterLink extends React.Component {
   
     onLocationChange(e) {
       let pathname = e.pathname;
-      if(e.pathname.indexOf('/', 1) > 0 ){
+      if (e.pathname.indexOf('/', 1) > 0 ) {
         pathname = e.pathname.substring(0, e.pathname.indexOf('/', 1));
       }
       if ((pathname || '/') === this.to) {
@@ -45,29 +45,29 @@ class RouterLink extends React.Component {
       } = this.props;
   
       return (
-            hasSubMenu || externalLink
-      ? children[0].props.className.indexOf('has-tooltip') > 0 ? (
-        <OverlayTrigger
-                key={"td"}
-                placement="right"
-                overlay={ <Popover id="popover-basic" {...this.props}>
-                <Popover.Content>
-                  <span style={{color: '#8c2332'}}>{label}</span>
-                </Popover.Content>
-              </Popover>}>
-          <a
-            className={classnames(
-              className,
-              hasActiveChild && classNameHasActiveChild
-            )}
-            target={externalLink ? '_blank' : undefined}
-            href={to}
-            onClick={toggleSubMenu}
-          >
-            {children}
-          </a>
-        </OverlayTrigger>
-      ) : (
+        hasSubMenu || externalLink
+        ? children[0].props.className.indexOf('has-tooltip') > 0 ? (
+          <OverlayTrigger
+                  key={"td"}
+                  placement="right"
+                  overlay={ <Popover id="popover-basic" {...this.props}>
+                  <Popover.Content>
+                    <span style={{color: '#8c2332'}}>{label}</span>
+                  </Popover.Content>
+                </Popover>}>
+            <a
+              className={classnames(
+                className,
+                hasActiveChild && classNameHasActiveChild
+              )}
+              target={externalLink ? '_blank' : undefined}
+              href={to}
+              onClick={toggleSubMenu}
+            >
+              {children}
+            </a>
+          </OverlayTrigger>
+        ) : (
         <a
           className={classnames(
             className,
@@ -107,11 +107,11 @@ class RouterLink extends React.Component {
           )}
           to={to ? to : ''}
           >
-            {children}
-          </Link>
+          {children}
+        </Link>
       )
-        )
-    }
+    );
+  }
 }
 
 function SideBar(props) {
@@ -119,7 +119,6 @@ function SideBar(props) {
     const { t } = useTranslation();
     const user = guard.getCurentUser();
     const { companyLogoUrl } = props.user;
-
     const { show } = props;
 
     const getNavigation = (role) => {
@@ -174,7 +173,7 @@ function SideBar(props) {
             label: t(c.label)
         }
     });
-
+   
     const isUpdate = (prevProps, nextProps) => true
 
     const MetisMenuMemo = React.memo(props => {
@@ -190,25 +189,28 @@ function SideBar(props) {
     }, isUpdate);
 
     return (
-        <div style={{position: 'fixed'}}>
-            <div style={{borderColor: localStorage.getItem("companyThemeColor")}} className={show ? 'bg-vp-blue sidebar scroll-custom-sidebar' : 'bg-vp-blue sidebar scroll-custom-sidebar d-none'}>
-                <Animated animationIn="fadeIn" isVisible={show} >
-                    <div className="text-center">
-                        <a href="/">
-                            <img className='vp-logo' src={companyLogoUrl ? companyLogoUrl : VingroupLogo} alt='My VinGroup' />
-                        </a>
-                    </div>
-                </Animated>
-                <MetisMenuMemo show={show}/>
-                {/* <MetisMenu
-                    content={contents}
-                    activeLinkFromLocation
-                    iconNameStateVisible="arrow_expand"
-                    iconNameStateHidden="arrow_collapse"
-                    iconNamePrefix="icon-"
-                /> */}
+        <>
+            <div style={{position: 'fixed'}}>
+                <div style={{borderColor: localStorage.getItem("companyThemeColor")}} className={show ? 'bg-vp-blue sidebar scroll-custom-sidebar' : 'bg-vp-blue sidebar scroll-custom-sidebar d-none'}>
+                    <Animated animationIn="fadeIn" isVisible={show} >
+                        <div className="text-center">
+                            <a href="/">
+                                <img className='vp-logo' src={companyLogoUrl ? companyLogoUrl : VingroupLogo} alt='My VinGroup' />
+                            </a>
+                        </div>
+                    </Animated>
+                    <MetisMenuMemo show={show}/>
+                    {/* <MetisMenu
+                        content={contents}
+                        activeLinkFromLocation
+                        iconNameStateVisible="arrow_expand"
+                        iconNameStateHidden="arrow_collapse"
+                        iconNamePrefix="icon-"
+                        LinkComponent={withRouter(RouterLink)}
+                    /> */}
+                </div>
             </div>
-        </div>
+        </>
     );
 }
 export default SideBar;
