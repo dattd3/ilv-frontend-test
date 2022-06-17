@@ -55,7 +55,7 @@ const CreateConvalesInsurance = ({
     formData.append('insuranceNumber', userInfo.socialId);
     formData.append('idNumber', userInfo.IndentifiD);
     formData.append('employeeNo', userInfo.employeeNo);
-    formData.append('backToWorkDate', data.startWork || '');
+    formData.append('backToWorkDate', data.startWork ?  moment(data.startWork, 'DD/MM/YYYY').format('YYYY-MM-DD') : '');
 
     //Số ngày đề nghị hưởng chế độ tại đơn vị
     formData.append('receiveBenefitsUnitInfo', JSON.stringify({
