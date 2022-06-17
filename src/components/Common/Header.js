@@ -155,6 +155,10 @@ function Header(props) {
                                          return '/personal-info?tab=document'
                                     case Constants.notificationType.NOTIFICATION_ADD_MEMBER_TO_PROJECT:
                                         return `/my-projects/project/${item?.userProfileHistoryId}`
+                                    case Constants.notificationType.NOTIFICATION_MY_EVALUATION:
+                                        return `/my-evaluation`
+                                    case Constants.notificationType.NOTIFICATION_LEAD_EVALUATION:
+                                        return `/evaluation-approval`
                                     default:
                                         return `${item.url}`
                                 }
