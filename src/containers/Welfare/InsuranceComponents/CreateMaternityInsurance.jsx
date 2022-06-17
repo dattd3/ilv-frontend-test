@@ -100,17 +100,17 @@ const CreateMaternityInsurance = ({
     }));
 
     //Thông tin của mẹ
-    formData.append('motherDataInfo', JSON.stringify({
+    formData.append('motherDataInfo',{
       "socialInsuranceNumber": data.momInsuranceNumber,
       "healthInsuranceNumber": data.momHealthNumber,
       "motherIdNumber": data.momIdNumber,
-      "pregnancyVacation": data.maternityLeave?  JSON.stringify({id: data.maternityLeave.value, name: data.maternityLeave.label}) : '',
-      "surrogacy":  data.hasRainser ? JSON.stringify({id: data.hasRainser.value, name: data.hasRainser.label}) : '',
-      "surgeryOrPregnancy":  data.hasSurgery ? JSON.stringify({id: data.hasSurgery.value, name: data.hasSurgery.label}) : '',
+      "pregnancyVacation": data.maternityLeave? {id: data.maternityLeave.value, name: data.maternityLeave.label} : '',
+      "surrogacy":  data.hasRainser ? {id: data.hasRainser.value, name: data.hasRainser.label} : '',
+      "surgeryOrPregnancy":  data.hasSurgery ? {id: data.hasSurgery.value, name: data.hasSurgery.label} : '',
       "motherDiedDate": data.momDeadDate ? moment(data.momDeadDate, 'DD/MM/YYYY').format('YYYY-MM-DD') : '',
       "conclusionDate": data.resultDate ? moment(data.resultDate, 'DD/MM/YYYY').format('YYYY-MM-DD') : '',
       "medicalAssessmentFee": data.assessment
-    }));
+    });
 
     formData.append(
       "receiveSubsidiesInfo",
