@@ -79,6 +79,7 @@ class InsuranceSocial extends React.Component {
                                 <thead>
                                     <tr>
                                         <th scope="col" className="code text-center">Mã yêu cầu</th>
+                                        <th scope="col" className="request-type text-center">Loại yêu cầu</th>
                                         <th scope="col" className="request-type text-center">Ngày nộp yêu cầu</th>
                                         <th scope="col" className="status1 pl-8">Tình trạng</th>
                                         <th scope="col" className="tool text-center">{t("action")}</th>
@@ -91,6 +92,7 @@ class InsuranceSocial extends React.Component {
                                             return (
                                                 <tr key={index}>
                                                     <td className="code text-center">{child.idDisplay}</td>
+                                                    <td className="request-type text-center">{child.requestName || ''}</td>
                                                     <td className="request-type text-center">{child.createdDate ? moment(child.createdDate).format('DD/MM/YYYY') : ''}</td>
                                                     <td className="status1 text-left">{child.statusName || ''}</td>
                                                     <td className="tool">

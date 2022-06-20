@@ -243,9 +243,9 @@ const DetailInsuranceSocial = (props) => {
                     momInsuranceNumber: motherDataInfo.socialInsuranceNumber || '',
                     momHealthNumber: motherDataInfo.healthInsuranceNumber || '',
                     momIdNumber: motherDataInfo.motherIdNumber || '',
-                    maternityLeave: motherDataInfo.pregnancyVacation ? JSON.parse(motherDataInfo.pregnancyVacation).name : '',
-                    hasRainser: motherDataInfo.surrogacy ? JSON.parse(motherDataInfo.surrogacy).name : '',
-                    hasSurgery: motherDataInfo.surgeryOrPregnancy ? JSON.parse(motherDataInfo.surgeryOrPregnancy).name : '',
+                    maternityLeave: motherDataInfo.pregnancyVacation ? motherDataInfo.pregnancyVacation.name : '',
+                    hasRainser: motherDataInfo.surrogacy ? motherDataInfo.surrogacy.name : '',
+                    hasSurgery: motherDataInfo.surgeryOrPregnancy ? motherDataInfo.surgeryOrPregnancy.name : '',
                     momDeadDate: motherDataInfo.motherDiedDate ? moment(motherDataInfo.motherDiedDate).format('DD/MM/YYYY') : '',
                     resultDate: motherDataInfo.conclusionDate ? moment(motherDataInfo.conclusionDate).format('DD/MM/YYYY') : '',
                     assessment: motherDataInfo.medicalAssessmentFee || '',
@@ -261,7 +261,6 @@ const DetailInsuranceSocial = (props) => {
                 }
             })
         } else if (infoDetail.requestType == 1) {
-            console.log(1);
             setType({ value: 1, label: 'Ốm đau' });
             const sickChildrenInfo = infoDetail.sickChildrenInfo ? JSON.parse(infoDetail.sickChildrenInfo) : {};
             const certificateInsuranceBenefit = infoDetail.certificateInsuranceBenefit ? JSON.parse(infoDetail.certificateInsuranceBenefit) : {}
@@ -295,7 +294,7 @@ const DetailInsuranceSocial = (props) => {
                     resolveContent: infoDetail.settlementContent,
                     resolveDate: infoDetail.settlementPeriod ? moment(infoDetail.settlementPeriod).format('DD/MM/YYYY') : '',
                     addtionContent: infoDetail.additionalPhaseContent || '',
-                    addtionDate: infoDetail.additionalPhaseContent ? moment(infoDetail.additionalPhaseContent).format('DD/MM/YYYY') : '',
+                    addtionDate: infoDetail.additionalPhasePeriod ? moment(infoDetail.additionalPhasePeriod).format('DD/MM/YYYY') : '',
                     receiveType: receiveSubsidiesInfo.receivingForm || '',
                     accountNumber: receiveSubsidiesInfo.bankAccountNumber || '',
                     accountName: receiveSubsidiesInfo.accountName || '',
