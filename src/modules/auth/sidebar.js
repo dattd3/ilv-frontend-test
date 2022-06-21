@@ -91,6 +91,40 @@ export const Navigation = [
     label: "MenuMyProfile",
     role: "U",
   },
+  // Đánh giá
+  {
+    id: 997,
+    parentId: 0,
+    icon: 'evaluation',
+    to: "",
+    label: "MenuEvaluation",
+    role: "U"
+    // role: ['V005'],
+  },
+  {
+    id: 99701,
+    parentId: 997,
+    icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+    to: map.MyEvaluation,
+    label: "MenuMyEvaluation",
+    role: "U",
+  },
+  {
+    id: 99702,
+    parentId: 997,
+    icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+    to: map.EvaluationApproval,
+    label: "MenuEvaluationApproval",
+    role: "U",
+  },
+  // {
+  //   id: 99702,
+  //   parentId: 997,
+  //   icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+  //   to: map.ListProjects,
+  //   label: "MenuListProjects",
+  //   role: "U",
+  // },
   //workflow management
   {
     id: 999,

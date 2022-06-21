@@ -91,6 +91,15 @@ export default {
   // Thông tin dự án
   ListProjects: "/list-projects",
   MyProjects: "/my-projects",
+  ProjectDetail: "/project/:id",
+  MyProfile: "/my-profile",
+
+  // Đánh giá
+  // Evaluation: "",
+  EvaluationDetail: "/evaluations/:id/:formCode",
+  MyEvaluation: "/my-evaluation",
+  EvaluationApproval: "/evaluation-approval",
+  
   MyProjectDetail: "/my-projects/project/:id",
   ProjectDetail: "/list-projects/project/:id",
   MyProfile: "/my-profile"
