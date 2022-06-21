@@ -143,7 +143,7 @@ class Health extends React.Component {
                                 <tbody>
                                     {
                                         listData.map((child, index) => {
-                                            const status = statusOptions.filter(st => st.value == child.status).length > 0 ? statusOptions.filter(st => st.value == child.status).label : ''
+                                            const status = statusOptions.filter(st => st.value == child.status).length > 0 ? statusOptions.filter(st => st.value == child.status)[0].label : ''
                                             return (
                                                 <tr key={index}>
                                                     <td className="code text-center">{child.id}</td>
