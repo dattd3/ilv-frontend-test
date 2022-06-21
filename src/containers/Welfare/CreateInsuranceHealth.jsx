@@ -109,9 +109,13 @@ const CreateInsuranceHealth = ({ t }) => {
     //YYYY-MM-DD
     const candidateInfos = { ...data };
     if (moment(value, "DD/MM/YYYY").isValid()) {
-      const date = moment(value).format("DD/MM/YYYY");
+      if(moment(value).year() > 9999) {
+        const year = (moment(value).year() + '').substring(0, 4);
+        value = moment(value).set('year', year).format("DD/MM/YYYY")
+      } 
+      const date = moment(value, "DD/MM/YYYY").format("DD/MM/YYYY");
       candidateInfos[name] = date;
-      candidateInfos[name + "_raw"] = value;
+      candidateInfos[name + "_raw"] = moment(value, "DD/MM/YYYY").format("YYYY-MM-DD");
     } else {
       candidateInfos[name] = null;
       candidateInfos[name + "_raw"] = null;
@@ -238,6 +242,22 @@ const CreateInsuranceHealth = ({ t }) => {
         _errors[name] =
           _errors[name] == "Vui lòng nhập giá trị !" ? null : _errors[name];
       }
+
+      if (name === 'email') {
+        if (/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(candidateInfos[name])) {
+        } else {
+          _errors.email = 'Sai định dạng email. Xin vui lòng nhập lại !'
+        }
+      }
+
+      if(name === 'phone'){
+          if (/^\d+$/.test(candidateInfos[name])) {
+          } else {
+            _errors.phone = 'Sai định dạng số điện thoại. Xin vui lòng nhập lại !'
+          }
+          
+    }
+
     });
     setErrors(_errors);
 
