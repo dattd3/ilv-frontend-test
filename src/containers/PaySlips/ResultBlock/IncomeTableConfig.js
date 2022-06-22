@@ -657,6 +657,7 @@ export const IncomeTablesConfig = t => {
                                     { label: t("Medicine_sales_bonus"), field: 'medicine_sales_bonus' },
                                     { label: t("High_tech_center_sales_bonus"), field: 'high_tech_center_sales_bonus' },
                                     { label: t("VinmecOtherBonus"), field: 'vm_bonus_revenue_other' },
+                                    { label: t("TelehealthServicesBonus"), field: 'telehealth_services' },
                                     { label: t("VinmecReferralRevenueBonus"), field: 'referral_revenue_bonus' },
                                     { label: t("CovidMobilzationAllowance"), field: 'covid_mobilzation' },
                                     { label: t("VinmecRollOutBonus"), field: 'roll_out_bonus' },
