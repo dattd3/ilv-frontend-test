@@ -829,12 +829,22 @@ function EvaluationApproval(props) {
         const statusModalTemp = {...statusModal}
         try {
             const config = getRequestConfigurations()
-            const formCodeSelected = evaluationData?.data.filter(item => item?.isSelected).map(item => item?.formCode)
+            const itemSelected = (evaluationData?.data || [])
+            .filter(item => item?.isSelected)
+            .map(item => {
+                return {
+                    formCode: item?.formCode,
+                    Approver: item?.approver,
+                    Reviewer: item?.reviewer
+                }
+            })
+
             const payload = {
-                ListFormCode: formCodeSelected,
+                ListFormCode: itemSelected,
                 type: actionCode,
                 CurrentStatus: evaluationStatus.qlttAssessment
             }
+
             const response = await axios.post(`${process.env.REACT_APP_HRDX_PMS_URL}api/form/ApproveBothReject`, payload, config)
             SetIsLoading(false)
             statusModalTemp.isShow = true

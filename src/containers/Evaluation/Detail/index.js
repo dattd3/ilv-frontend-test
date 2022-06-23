@@ -687,7 +687,11 @@ function EvaluationDetail(props) {
             const config = getRequestConfigurations()
             if (actionCode == actionButton.reject || isApprove) { // Từ chối hoặc Phê duyệt
                 const payload = {
-                    ListFormCode : [evaluationFormDetail?.formCode],
+                    ListFormCode : [{
+                        formCode: evaluationFormDetail?.formCode,
+                        Approver: evaluationFormDetail?.approver,
+                        Reviewer: evaluationFormDetail?.reviewer
+                    }],
                     type: actionCode,
                     CurrentStatus: evaluationFormDetail?.status
                 }
