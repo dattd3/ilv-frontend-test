@@ -328,7 +328,7 @@ function parsteStringToHtml(arrHtml) {
     try {
         let htmlReturn = '';
         JSON.parse(arrHtml).forEach(objHtml => {
-            if (objHtml.Text === '\r\n') {
+            if (objHtml.Text === '\r\n' || objHtml.Text === '\n') {
                 htmlReturn += '<br />'
             } else {
                 let objCss = '';
