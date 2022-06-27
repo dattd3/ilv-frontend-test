@@ -30,6 +30,7 @@ class ConsentComponent extends React.Component {
         'Authorization': `${localStorage.getItem('accessToken')}`
       }
     }
+    config.timeout = Constants.timeoutForSpecificApis
     axios.get(`${process.env.REACT_APP_REQUEST_URL}request/assessing?${params}companyCode=`+localStorage.getItem("companyCode"), config)
     .then(res => {
       if (res && res.data && res.data.data && res.data.result) {

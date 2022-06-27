@@ -53,6 +53,7 @@ class Task extends React.Component {
                   'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
                 }
             }
+            config.timeout = Constants.timeoutForSpecificApis
             const response = await axios.get(`${process.env.REACT_APP_REQUEST_URL}user/delegation`, config)
             if (response && response.data) {
                 const result = response.data.result
