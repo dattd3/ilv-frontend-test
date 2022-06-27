@@ -224,7 +224,7 @@ function EvaluationProcess(props) {
 
     const handleInputChange = (subIndex, parentIndex, stateName, element) => {
         const val = element?.target?.value || ""
-        if (['realResult', 'seftPoint', 'leadReviewPoint'].includes(stateName) && (!(/^\d*$/.test(Number(val))) || val.includes('.'))) {
+        if (['seftPoint', 'leadReviewPoint'].includes(stateName) && (!(/^\d*$/.test(Number(val))) || val.includes('.'))) {
             return
         }
         updateData(subIndex, parentIndex, stateName, val)
@@ -362,10 +362,10 @@ function EvaluationProcess(props) {
                                                                                 </ul>
                                                                             </td>
                                                                             <td className="text-center proportion"><span>{target?.weight}%</span></td>
-                                                                            <td className="text-center target"><span>{target?.target}%</span></td>
-                                                                            <td className="text-center actual-results">
+                                                                            <td className="text-center target"><span>{target?.target}</span></td>
+                                                                            <td className="actual-results">
                                                                                 <div>
-                                                                                    { !showByManager && evaluationFormDetail.status == evaluationStatus.launch ? <input type="text" placeholder="Nhập" value={target?.realResult || ""} onChange={(e) => handleInputChange(i, index, 'realResult', e)} /> : <span>{target?.realResult}</span> }
+                                                                                    { !showByManager && evaluationFormDetail.status == evaluationStatus.launch ? <textarea rows={3} placeholder="Nhập" value={target?.realResult || ""} onChange={(e) => handleInputChange(i, index, 'realResult', e)} /> : <span>{target?.realResult}</span> }
                                                                                 </div>
                                                                                 { errors[`${index}_${i}_realResult`] && <div className="alert alert-danger invalid-message" role="alert">{errors[`${index}_${i}_realResult`]}</div> }
                                                                             </td>
@@ -659,7 +659,7 @@ function EvaluationDetail(props) {
                         if (!Number(subCurrent?.seftPoint)) {
                             subInitial[`${indexParent}_${subIndex}_seftPoint`] = t("Required")
                         }
-                        if (!Number(subCurrent?.realResult)) {
+                        if (!subCurrent?.realResult) {
                             subInitial[`${indexParent}_${subIndex}_realResult`] = t("Required")
                         }
                         return subInitial
