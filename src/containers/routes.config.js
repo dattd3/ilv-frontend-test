@@ -635,6 +635,14 @@ export default [
           },
           component: lazy(() => import("./Welfare/InsuranceDetailComponents/DetailInsuranceSocial"))
         },
+        {
+          key: "detail-insurance-health",
+          routeProps: {
+            exact: true,
+            path: map.DetailInsuranceHealth
+          },
+          component: lazy(() => import("./Welfare/DetailInsuranceHealth"))
+        },
       ],
     },
   },
