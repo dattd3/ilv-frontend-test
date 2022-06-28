@@ -110,4 +110,5 @@ export default {
   CreateInsuranceSocial: '/insurance-manager/createSocialInsurance',
   CreateInsuranceHealth: '/insurance-manager/createHealthInsurance',
   DetailInsuranceSocial: '/insurance-manager/detail/:id',
+  DetailInsuranceHealth: '/insurance-manager/detail-health/:id',
 };
