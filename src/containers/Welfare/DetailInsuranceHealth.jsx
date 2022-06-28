@@ -111,7 +111,7 @@ const DetailInsuranceHealth = (props) => {
               style={{ color: "#000", paddingLeft: 0 }}
             >
               <div className="form-check-inline">
-                Giới tính: <span className="required">(*)</span>
+                Giới tính:
               </div>
               {GENDER_OPTIONS.map((item, index) => {
                 return (
@@ -240,7 +240,7 @@ const DetailInsuranceHealth = (props) => {
               style={{ color: "#000", paddingLeft: 0 }}
             >
               <div className="form-check-inline">
-                Hình thức điều trị:<span className="required">(*)</span>
+                Hình thức điều trị:
               </div>
               {TREATMENT_OPTIONS.map((item, index) => {
                 return (
