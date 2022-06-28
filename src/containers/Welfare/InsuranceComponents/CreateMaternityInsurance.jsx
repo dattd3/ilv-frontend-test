@@ -37,7 +37,7 @@ const CreateMaternityInsurance = ({
   const InsuranceOptions = [
     { value: 1, label: "Ốm đau" },
     { value: 2, label: "Thai sản" },
-    { value: 3, label: "Dưỡng sưc" },
+    { value: 3, label: "Dưỡng sức" },
   ];
 
   const onSubmit = () => {
@@ -489,7 +489,7 @@ const CreateMaternityInsurance = ({
             <input
               value={data.total}
               onChange={(e) => handleTextInputChange(e, "total")}
-              type="text"
+              type="number"
               className="form-control input mv-10 w-100"
               name="inputName"
               autoComplete="off"
