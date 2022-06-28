@@ -33,7 +33,7 @@ const CreateSickInsurance = ({
   const InsuranceOptions = [
     { value: 1, label: "Ốm đau" },
     { value: 2, label: "Thai sản" },
-    { value: 3, label: "Dưỡng sưc" },
+    { value: 3, label: "Dưỡng sức" },
   ];
 
   const onSubmit = () => {
@@ -435,7 +435,7 @@ const CreateSickInsurance = ({
             {"Tổng số"}
             <span className="required">(*)</span>
             <input
-              type="text"
+              type="number"
               value={data.total}
               onChange={(e) => handleTextInputChange(e, "total")}
               className="form-control input mv-10 w-100"

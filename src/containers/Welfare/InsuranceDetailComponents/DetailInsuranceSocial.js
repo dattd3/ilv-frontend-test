@@ -17,7 +17,7 @@ const DetailInsuranceSocial = (props) => {
     const InsuranceOptions = [
         { value: 1, label: 'Ốm đau' },
         { value: 2, label: 'Thai sản' },
-        { value: 3, label: 'Dưỡng sưc' }
+        { value: 3, label: 'Dưỡng sức' }
     ];
     const [type, setType] = useState(null);
     const [data, setData] = useState({
@@ -165,7 +165,7 @@ const DetailInsuranceSocial = (props) => {
 
     const prepareDetailData = (infoDetail) => {
         if (infoDetail.requestType == 3) {
-            setType({ value: 3, label: 'Dưỡng sưc' });
+            setType({ value: 3, label: 'Dưỡng sức' });
             const receiveBenefitsUnitInfo = infoDetail.receiveBenefitsUnitInfo ? JSON.parse(infoDetail.receiveBenefitsUnitInfo) : {};
             const inspectionDataInfo = infoDetail.inspectionDataInfo ? JSON.parse(infoDetail.inspectionDataInfo) : {}
             const receiveSubsidiesInfo = infoDetail.receiveSubsidiesInfo ? JSON.parse(infoDetail.receiveSubsidiesInfo) : {};

@@ -17,7 +17,7 @@ const CreateInsuranceSocial = (props) => {
     const InsuranceOptions = [
         { value: 1, label: 'Ốm đau' },
         { value: 2, label: 'Thai sản' },
-        { value: 3, label: 'Dưỡng sưc' }
+        { value: 3, label: 'Dưỡng sức' }
     ];
     const [type, setType] = useState(null);
     const [data, setData] = useState({
