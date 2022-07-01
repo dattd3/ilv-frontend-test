@@ -212,7 +212,7 @@ export const Navigation = [
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     to: map.EvaluationManager,
     label: 'Quản lý đánh giá',
-    role:  ['V061', 'V040']
+    role:  ['V061', 'V053', 'V040']
   },
   {
     id: 4,
@@ -300,6 +300,29 @@ export const Navigation = [
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     label: "MyJob",
     to: map.Job,
+    role: 'U'
+  },
+  {
+    id: 110,
+    parentId: 10,
+    icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+    label: "Welfare",
+    role: 'U'
+  },
+  {
+    id: 111,
+    parentId: 110,
+    icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+    label: "InteralWelfare",
+    to: map.InteralWelfare,
+    role: 'U'
+  },
+  {
+    id: 112,
+    parentId: 110,
+    icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+    label: "InsuranceRegime",
+    to: map.InsuranceRegime,
     role: 'U'
   },
   {
