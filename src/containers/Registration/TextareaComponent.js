@@ -54,8 +54,10 @@ class ResizableTextarea extends React.Component {
             if(currentRows == this.state.rows){
                 return;
             }
+			
             this.setState({
                 rows: currentRows < maxRows ? currentRows : maxRows,
+				firstTime: false
             }); 
         }
     }

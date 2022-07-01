@@ -50,6 +50,14 @@ export const Navigation = [
     to: map.Learning,
     role: "U",
   },
+  {
+      id: 104,
+      parentId: 0,
+      icon: 'c-resignation-requests-management',
+      label: "ResignationRequestsManagement",
+      to: map.ResignationRequestsManagement,
+      role: [Constants.pnlVCode.VinHome]
+    },
 
   // {
   //   id: 48,
@@ -204,7 +212,7 @@ export const Navigation = [
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     to: map.EvaluationManager,
     label: 'Quản lý đánh giá',
-    role:  ['V061', 'V053']
+    role:  ['V061', 'V040']
   },
   {
     id: 4,
@@ -405,7 +413,7 @@ export const Navigation = [
     icon: 'c-qa',
     label: "QuestionAndAnswer",
     to: map.QuestionAndAnswer,
-    role: [Constants.pnlVCode.VinPearl, Constants.pnlVCode.VinSoftware, Constants.pnlVCode.VinMec, Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading, 
+    role: [Constants.pnlVCode.VinPearl, Constants.pnlVCode.VinSoftware, Constants.pnlVCode.VinMec, Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading,
       Constants.pnlVCode.VinSmart, Constants.pnlVCode.VincomRetail, Constants.pnlVCode.VinAI]
   },
   {
@@ -424,6 +432,21 @@ export const Navigation = [
     label: "instruct",
     to: map.Instruct,
     role: 'U'
-  }
-
+  },
+  {
+    id: 119999,
+    parentId: 10,
+    icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+    label: "RegistrationEmploymentTermination",
+    to: map.RegistrationEmploymentTermination,
+    role: [Constants.pnlVCode.VinHome]
+  },
+  {
+      id: 129999,
+      parentId: 10,
+      icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+      label: "ProposedResignation",
+      to: map.ProposedResignation,
+      role: ["P","T","P2", "P1", "T4", "T3", "T2", "T1"]
+    },
 ];

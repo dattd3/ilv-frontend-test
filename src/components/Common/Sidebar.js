@@ -10,6 +10,7 @@ import { Navigation } from '../../modules';
 import { useGuardStore } from '../../modules';
 import VingroupLogo from '../../assets/img/LogoVingroup.svg';
 import 'react-metismenu/dist/react-metismenu-standart.min.css';
+import Constants from "../../commons/Constants";
 
 class RouterLink extends React.Component {
     componentWillMount() {
@@ -147,6 +148,9 @@ function SideBar(props) {
         }
         if (user.companyCode !== "V030") {
             rootNav = rootNav.filter(x => x.label !== 'Menu_Training')
+        }
+        if(user.companyCode != Constants.pnlVCode.VinHome) {
+          rootNav = rootNav.filter(x => x.label !== 'ProposedResignation')
         }
         if(user.prepare != 'true') {
             rootNav = rootNav.filter(x => x.id != 1006)

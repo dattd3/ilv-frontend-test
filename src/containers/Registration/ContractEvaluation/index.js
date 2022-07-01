@@ -561,7 +561,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         candidateInfos['qlttOpinion']['endDate'] = null;
         candidateInfos['qlttOpinion']['disableTime'] = true;
       }
-  
+
       if(infos.additionInforEvaluations.contractType == 'VB') {
         candidateInfos['qlttOpinion']['endDateTmp'] = candidateInfos.qlttOpinion.endDate;
         candidateInfos['qlttOpinion']['endDate'] = null;
@@ -854,7 +854,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         candidateInfos[name]['endDate'] = candidateInfos[name]['endDate'] || candidateInfos[name]['endDateTmp'];
         candidateInfos[name]['endDateTmp'] = null
       }
-      
+
       if(candidateInfos[name]['result']?.value == 5) {
         candidateInfos[name]['startDateTmp'] = candidateInfos[name]['startDateTmp'] || candidateInfos[name]['startDate'];
         candidateInfos[name]['endDateTmp'] = candidateInfos[name]['endDateTmp'] || candidateInfos[name]['endDate'];
@@ -1219,17 +1219,17 @@ renderEvalution = (name, data, isDisable) => {
 
   checkShownguoidanhgiaComment = (data) => {
     // QLTT VSC - filed nguoidanhgia -- 10
-    
+
     if(checkIsExactPnL(Constants.PnLCODE.VinSchool)) {
      return (data.processStatus == 9 && data.nguoidanhgia.account);
     } else {
       return (data.processStatus == 9 && !data.qltt.account);
     }
   }
- 
+
   checkShowApprovalComment = (data) => {
     if(checkIsExactPnL(Constants.PnLCODE.VinSchool)) {
-      return data.processStatus == 11 || (data.processStatus == 10 && !data.qltt.account); 
+      return data.processStatus == 11 || (data.processStatus == 10 && !data.qltt.account);
     } else {
       return data.processStatus == 11;
     }
@@ -1571,7 +1571,7 @@ renderEvalution = (name, data, isDisable) => {
         
         {
           //------------------ Hien thi nhan vien nhin thay -----------------------------------------
-          showComponent.employeeSide ? 
+          showComponent.employeeSide ?
           <>
             <div className="box shadow cbnv">
             
@@ -1615,7 +1615,7 @@ renderEvalution = (name, data, isDisable) => {
           </> : 
           this.state.isNguoidanhgia ? 
           <>
-          {  // ---------------check hien thij cho vinschool khi nguowif danh gia ton tai y kien danh gia 
+          {  // ---------------check hien thij cho vinschool khi nguowif danh gia ton tai y kien danh gia
               checkIsExactPnL(Constants.PnLCODE.VinSchool) ? 
               <div className="box shadow cbnv more-description">
               <div className="title">
@@ -1689,10 +1689,10 @@ renderEvalution = (name, data, isDisable) => {
                 </div>
               </div>
             </div>
-            // +++++++ heet check hien thij cho vinschool khi nguowif danh gia ton tai  y kien danh gia 
+            // +++++++ heet check hien thij cho vinschool khi nguowif danh gia ton tai  y kien danh gia
             : null
             }
-              
+
              <div className="box shadow cbnv">
               <div className="row approve">
                 <div className="col-12">
