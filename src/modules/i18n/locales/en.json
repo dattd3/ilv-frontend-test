@@ -1094,5 +1094,6 @@
   "VinmecTaxRefundsAfterTaxFinalization": "Tax Refunds After Tax Finalization",
   "VinmecAdditionalTaxAfterTaxFinalization": "Additional tax after tax finalization",
   "VinmecReferralRevenueBonus": "Referral revenue bonus",
-  "AllowanceForNursingPosition": "Allowance for Nursing Position"
+  "AllowanceForNursingPosition": "Allowance for Nursing Position",
+  "TelehealthServicesBonus": "Telehealth services bonus"
 }

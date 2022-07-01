@@ -185,6 +185,7 @@ const Constants = {
     VinFastPB: "V070"
   },
   LOGIN_INSTRUCTION_PATH: "https://myvinpearl.s3.ap-southeast-1.amazonaws.com/shared/templates/ILOVEVINGROUP-HDDang+nhap-LoginInstruction.pdf",
-  statusUserActiveMulesoft: 3
+  statusUserActiveMulesoft: 3,
+  timeoutForSpecificApis: 180000
 };
 export default Constants

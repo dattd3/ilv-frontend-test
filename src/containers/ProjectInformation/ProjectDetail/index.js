@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react"
+import React, { useState, useEffect, useRef, Fragment } from "react"
 import { Image } from 'react-bootstrap'
 import { useTranslation } from "react-i18next"
 import { Tabs, Tab } from 'react-bootstrap'
@@ -31,14 +31,324 @@ import IconInfoRed from '../../../assets/img/icon/Icon_Info_Red.svg'
 import IconInfoViolet from '../../../assets/img/icon/Icon_Info_Violet.svg'
 import IconInfoYellow from '../../../assets/img/icon/Icon_Info_Yellow.svg'
 
+// import WebWorker from './WebWorker'
+// import processWorker from './process'
+
 import 'react-datepicker/dist/react-datepicker.css'
 import vi from 'date-fns/locale/vi'
 registerLocale("vi", vi)
 
 const currentEmployeeNoLogged = localStorage.getItem('employeeNo')
+const employeeSource = {
+    NOI_BO: 'NB',
+    THUE_NGOAI: 'TN'
+}
+
+const timeSheetStatusPending = 0
+const timeSheetStatusApproved = 1
+const timeSheetStatusDenied = 2
+
+const timeSheetStatusStyleMapping = {
+    [timeSheetStatusPending]: {label: 'Pending', className: 'pending'},
+    [timeSheetStatusApproved]: {label: 'Approved', className: 'approved'},
+    [timeSheetStatusDenied]: {label: 'Rejected', className: 'denied'}
+}
+
+const leaveCodes = ['IN01', 'IN02', 'IN03', 'PN01', 'PN02', 'PN03', 'PQ01', 'PQ04', 'PQ02', 'UN01']
+const businessTripTrainingCodes = ['CT01', 'CT02', 'CT03', 'CT04', 'DT01', 'WFH1', 'WFH2']
+const prefixOutSource = 'TN'
+
+const formatMulesoftValue = val => {
+    if (!val || val === '0' || val === '#' || val === '000000' || val === '00000000' || val === '0000') {
+        return ""
+    }
+    return val
+}
+
+const getNoteInfos = (timeSheet, rsmLeaveTypeAndComment, source) => {
+    const fromTime1 = formatMulesoftValue(timeSheet.from_time1)
+    const toTime1 = formatMulesoftValue(timeSheet.to_time1)
+    const startTime1Fact = formatMulesoftValue(timeSheet.start_time1_fact)
+    const endTime1Fact = formatMulesoftValue(timeSheet.end_time1_fact)
+
+    let hasLeave = false
+    let hasBusinessTripTraining = false
+    let icon = IconInfoRed
+    let notes = []
+    const isUnusualShift = (
+        ((!fromTime1 || !toTime1) && timeSheet.shift_id !== 'OFF')
+        || ((startTime1Fact > fromTime1 || (endTime1Fact && endTime1Fact < toTime1)) && (timeSheet.shift_id !== 'OFF'))
+    )
+
+    const leaveData = (rsmLeaveTypeAndComment || []).filter(item => leaveCodes.includes(item?.baseTypeModel?.value) 
+        && moment(timeSheet?.date, 'DD-MM-YYYY').isSameOrAfter(moment(moment(item?.startDate, 'YYYYMMDD').format('DD-MM-YYYY'), 'DD-MM-YYYY')) 
+        && moment(timeSheet?.date, 'DD-MM-YYYY').isSameOrBefore(moment(moment(item?.endDate, 'YYYYMMDD').format('DD-MM-YYYY'), 'DD-MM-YYYY'))
+    )
+    const businessTripTrainingData = (rsmLeaveTypeAndComment || []).filter(item => businessTripTrainingCodes.includes(item?.baseTypeModel?.value)
+        && moment(timeSheet?.date, 'DD-MM-YYYY').isSameOrAfter(moment(moment(item?.startDate, 'YYYYMMDD').format('DD-MM-YYYY'), 'DD-MM-YYYY')) 
+        && moment(timeSheet?.date, 'DD-MM-YYYY').isSameOrBefore(moment(moment(item?.endDate, 'YYYYMMDD').format('DD-MM-YYYY'), 'DD-MM-YYYY'))
+    )
+
+    if (isUnusualShift) {
+        icon = IconInfoRed
+    } else {
+        if (leaveData && leaveData?.length > 0) {
+            icon = IconInfoYellow
+            hasLeave = true
+        } else if (businessTripTrainingData && businessTripTrainingData?.length > 0) {
+            icon = IconInfoViolet
+            hasBusinessTripTraining = true
+        }
+    }
+
+    if (isUnusualShift) {
+        // notes.push({
+        //     className: 'red',
+        //     line1: 'Bất thường công:',
+        //     line2: `Giờ kế hoạch: ${moment(fromTime1, 'HHmmss').isValid() ? moment(fromTime1, 'HHmmss').format('HH:mm:ss') : ""} - ${moment(toTime1, 'HHmmss').isValid() ? moment(toTime1, 'HHmmss').format('HH:mm:ss') : ""}`,
+        //     line3: `Giờ thực tế: ${moment(startTime1Fact, 'HHmmss').isValid() ? moment(startTime1Fact, 'HHmmss').format('HH:mm:ss') : ""} - ${moment(endTime1Fact, 'HHmmss').isValid() ? moment(endTime1Fact, 'HHmmss').format('HH:mm:ss') : ""}`
+        // })
+        notes = notes.concat([
+            {
+                className: 'red',
+                line1: 'Bất thường công:',
+                line2: `Giờ kế hoạch: ${moment(fromTime1, 'HHmmss').isValid() ? moment(fromTime1, 'HHmmss').format('HH:mm:ss') : ""} - ${moment(toTime1, 'HHmmss').isValid() ? moment(toTime1, 'HHmmss').format('HH:mm:ss') : ""}`,
+                line3: `Giờ thực tế: ${moment(startTime1Fact, 'HHmmss').isValid() ? moment(startTime1Fact, 'HHmmss').format('HH:mm:ss') : ""} - ${moment(endTime1Fact, 'HHmmss').isValid() ? moment(endTime1Fact, 'HHmmss').format('HH:mm:ss') : ""}`
+            }
+        ])
+    }
+
+    if (leaveData && leaveData?.length > 0) {
+        const leaveDataToSave = leaveData.map(item => {
+            return {
+                className: 'yellow',
+                line1: `${item?.baseTypeModel?.label}:`,
+                line2: item?.user_Comment,
+                line3: `${moment(item?.startTime, 'HHmm').isValid() ? moment(item?.startTime, 'HHmm').format('HH:mm') : ""} - ${moment(item?.endTime, 'HHmm').isValid() ? moment(item?.endTime, 'HHmm').format('HH:mm') : ""}`
+                
+            }
+        })
+        notes = notes.concat(leaveDataToSave)
+    }
+
+    if (businessTripTrainingData && businessTripTrainingData?.length > 0) {
+        const businessTripTrainingDataToSave = businessTripTrainingData.map(item => {
+            return {
+                className: 'violet',
+                line1: `${item?.baseTypeModel?.label}:`,
+                line2: item?.user_Comment,
+                line3: `${moment(item?.startTime, 'HHmm').isValid() ? moment(item?.startTime, 'HHmm').format('HH:mm') : ""} - ${moment(item?.endTime, 'HHmm').isValid() ? moment(item?.endTime, 'HHmm').format('HH:mm') : ""}`
+                
+            }
+        })
+        notes = notes.concat(businessTripTrainingDataToSave)
+    }
+
+    const result = {
+        hasShowNote: source == employeeSource.THUE_NGOAI ? false : (isUnusualShift || hasLeave || hasBusinessTripTraining),
+        icon: icon,
+        notes: notes || []
+    }
+
+    return result
+}
+
+function UserInfo(props) {
+    const { item } = props
+
+    return (
+        <div className="user-info">
+            { item.source?.key == employeeSource.THUE_NGOAI && <span className="source">Thuê ngoài</span> }
+            <div className="avatar-block">
+            <Image src={`data:image/png;base64,${item?.avatar}`} alt="Avatar" className="avatar"
+                onError={(e) => {
+                    e.target.src = "/LogoVingroupCircle.svg"
+                }}
+            />
+            </div>
+            <div className="full-name">{item?.fullName || ""}</div>
+            <div className="title">{item?.title || ""}</div>
+            <div className="other-info">
+                <div className="first">
+                    <div className="employee-no"><Image src={IconMaNhanVienBlue} alt='No' />{item?.employeeId || ""}</div>
+                    <div className="pool"><Image src={IconVitriBlue} alt='Pool' />{item?.position || ""}</div>
+                </div>
+                <div className="second">
+                    <div className="email" title={item?.email || ""}><Image src={IconEmailBlue} alt='Email' /><span>{item?.email || ""}</span></div>
+                    <div className="skill">
+                        <Image src={IconKyNangBlue} alt='Skill' />
+                        <ul className="skills">
+                            {
+                                (item?.skills || []).map((item, sId) => {
+                                    return <li key={sId}>{item}</li>
+                                })
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    )
+}
+
+const areEqual = (prevProps, nextProps) => {
+    return JSON.stringify(prevProps) === JSON.stringify(nextProps)
+}
+
+const ItemTimeSheetUser = React.memo(function ItemTimeSheetUser(props) {
+    const { timeSheet, noteInfos, hasEditTime, index, tIndex, item, handleChangeActualTimeLevel1 } = props
+
+    const handleChangeActualTimeLevel2 = (parentIndex, timeSheetIndex, e) => {
+        handleChangeActualTimeLevel1(parentIndex, timeSheetIndex, e)
+    }
+
+    return (
+        <div className="item">
+            <div className="top">
+                {
+                    (timeSheet.shift_id === 'OFF' || timeSheet.is_holiday === 1 || timeSheet.is_holiday === '1')
+                    ? 
+                        <>
+                        <ReactTooltip id={`shift-infos-${tIndex}-user-index-${index}`} scrollHide isCapture globalEventOff="click" effect="solid" clickable place="top" type='light' border={true} arrowColor='#FFFFFF' borderColor="#e3e6f0" className="note-time-sheet">
+                            <div style={{padding: '5px 15px'}}>{(timeSheet.is_holiday === 1 || timeSheet.is_holiday === '1') ? 'Holiday' : 'OFF'}</div>
+                        </ReactTooltip>
+                        { item?.rsmTimeSheet[timeSheet?.date] && <div className="text-center off-shift" data-tip data-for={`shift-infos-${tIndex}-user-index-${index}`}>OFF</div> }
+                        </>
+                    : <>
+                    {
+                        noteInfos?.hasShowNote
+                        ? <>
+                            <ReactTooltip id={`note-infos-${tIndex}-user-index-${index}`} scrollHide isCapture globalEventOff="click" effect="solid" clickable place="bottom" type='light' border={true} arrowColor='#FFFFFF' borderColor="#e3e6f0" className="note-time-sheet">
+                                <ul>
+                                    {
+                                        (noteInfos?.notes || []).map((note, nIndex) => {
+                                            return <li key={nIndex}>
+                                                        <p className={`title ${note?.className}`}>{note?.line1}</p>
+                                                        <ul>
+                                                            <li>{note?.line2}</li>
+                                                            <li>{note?.line3}</li>
+                                                        </ul>
+                                                    </li>
+                                        })
+                                    }
+                                </ul>
+                            </ReactTooltip>
+                            { item?.rsmTimeSheet[timeSheet?.date] && <span className="note" data-tip data-for={`note-infos-${tIndex}-user-index-${index}`}><Image src={noteInfos?.icon} alt="Note" /></span> }
+                        </>
+                        : null
+                    }
+                    { item?.rsmTimeSheet[timeSheet?.date] && <div className="time">{`${timeSheet?.hoursValue}h`}</div> }
+                    </>
+                }
+            </div>
+            <div className="bottom">
+                {
+                    (timeSheet.shift_id === 'OFF' || timeSheet.is_holiday === 1 || timeSheet.is_holiday === '1' || !item?.rsmTimeSheet[timeSheet?.date])
+                    ? null
+                    : timeSheet?.rsmStatus !== null && <span className={`status ${timeSheetStatusStyleMapping[timeSheet?.rsmStatus]?.className}`}>{timeSheetStatusStyleMapping[timeSheet?.rsmStatus]?.label}</span>
+                }
+                {
+                    (timeSheet.shift_id === 'OFF' || timeSheet.is_holiday === 1 || timeSheet.is_holiday === '1' || !item?.rsmTimeSheet[timeSheet?.date]) 
+                    ? null
+                    : <div className="time">
+                    {
+                        hasEditTime
+                        ? <><input type="text" onChange={(e) => handleChangeActualTimeLevel2(index, tIndex, e)} value={timeSheet?.actualHoursTemp !== null && timeSheet?.actualHoursTemp !== undefined ? timeSheet?.actualHoursTemp : timeSheet?.actualHours || ""} /><span>h</span></>
+                        : `${timeSheet?.actualHours || 0}h`
+                    }
+                    </div>
+                }
+            </div>
+        </div>
+    )
+}, areEqual)
+
+const TimeSheetUserInfos = React.memo(function TimeSheetUserInfos(props) {
+    const { timeSheetPrepared, item, isMe, index, projectData, submitTimeSheet, handleChangeActualTimeLevel0 } = props
+
+    const getRangeTimeJoinProject = (startDate, endDate) => {
+        return `${startDate ? moment(startDate).format('DD/MM/YYYY') : ''} - ${endDate ? moment(endDate).format('DD/MM/YYYY') : ''}`
+    }
+    
+    const handleChangeActualTimeLevel1 = (parentIndex, timeSheetIndex, e) => {
+        handleChangeActualTimeLevel0(parentIndex, timeSheetIndex, e)
+    }
+
+    // let worker = new WebWorker(processWorker)
+
+    // useEffect(() => {
+    //     // worker = new WebWorker(processWorker)
+    
+    //     worker.addEventListener('message', event => {
+    //         console.log('kakakakaka')
+    //         console.log(event?.data)
+    //     });
+    // }, [])
+
+    return (
+        <div className="time-sheet-item">
+            <div className="col-first">
+                <div className="planned">
+                    <div className="font-weight-bold">Planned Total</div>
+                    <div className="range-time">{getRangeTimeJoinProject(item?.startJoinProject, item?.endJoinProject)}</div>
+                    <div className="font-weight-bold total-md-plan">{item?.mandays || 0} MD</div>
+                </div>
+                <div className="actual">
+                    <div className="wrap-actual">
+                        <div className="font-weight-bold">Actual</div>
+                        {
+                            Number(item?.mandayCheck || 0) <= Number(item?.mandays || 0)
+                            ? <div className="font-weight-bold total-md-actual">{item?.mandayCheck || 0} MD</div>
+                            : 
+                            <>
+                                <div className="total-md-actual-warning">
+                                    <div className="font-weight-bold">{item?.mandayCheck || 0} MD</div>
+                                    <div className="note">Đã vượt quá MD Plan</div>
+                                </div>
+                            </>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div className="col-item">
+                <ReactTooltip id='label-submit-time-sheet' scrollHide isCapture place="left" type='light' border={true} arrowColor='#FFFFFF' borderColor="#e3e6f0" className="item-tooltip-submit-time-sheet">
+                    <span>Xác nhận Timesheet</span>
+                </ReactTooltip>
+                { isMe && <button className="btn-submit" data-tip data-for='label-submit-time-sheet' onClick={submitTimeSheet}><Image src={IconCheckWhite} alt="Check" /></button> }
+                {
+                    (timeSheetPrepared || []).map((timeSheet, tIndex) => {
+                        // worker.postMessage({timeSheet: timeSheet, rsmLeaveTypeAndComment: item?.rsmLeaveTypeAndComment, source: item.source?.key})
+                        // worker.addEventListener('message', event => {
+                        //     console.log('kakakakaka')
+                        //     console.log(event)
+                        // });
+
+                        let noteInfos = timeSheet?.pernr == currentEmployeeNoLogged && getNoteInfos(timeSheet, item?.rsmLeaveTypeAndComment, item.source?.key)
+                        let hasEditTime = isMe && projectData?.processStatusId != status.closed 
+                                            && ![timeSheetStatusApproved].includes(timeSheet?.rsmStatus)
+                                            && moment(timeSheet?.date, 'DD-MM-YYYY').isSameOrAfter(moment(moment(projectData?.startDate).format('DD-MM-YYYY'), 'DD-MM-YYYY')) 
+                                            && moment(timeSheet?.date, 'DD-MM-YYYY').isSameOrBefore(moment(moment(projectData?.endDate).format('DD-MM-YYYY'), 'DD-MM-YYYY'))
+                        return (
+                            <Fragment key={tIndex}>
+                                <ItemTimeSheetUser 
+                                    timeSheet={timeSheet} 
+                                    index={index}
+                                    tIndex={tIndex}
+                                    noteInfos={noteInfos}
+                                    hasEditTime={hasEditTime}
+                                    item={item}
+                                    handleChangeActualTimeLevel1={handleChangeActualTimeLevel1}
+                                />
+                            </Fragment>
+                        )
+                    })
+                }
+            </div>
+        </div>
+    )
+}, areEqual)
 
 function ProjectDetail(props) {
-    // const history = useHistory();
     const { t } = useTranslation()
     const [projectData, SetProjectData] = useState({})
     const [projectTimeSheetOriginal, SetProjectTimeSheetOriginal] = useState([])
@@ -61,23 +371,6 @@ function ProjectDetail(props) {
         previous: 0,
         next: 1
     }
-    const employeeSource = {
-        NOI_BO: 'NB',
-        THUE_NGOAI: 'TN'
-    }
-
-    const timeSheetStatusPending = 0
-    const timeSheetStatusApproved = 1
-    const timeSheetStatusDenied = 2
-
-    const timeSheetStatusStyleMapping = {
-        [timeSheetStatusPending]: {label: 'Pending', className: 'pending'},
-        [timeSheetStatusApproved]: {label: 'Approved', className: 'approved'},
-        [timeSheetStatusDenied]: {label: 'Rejected', className: 'denied'}
-    }
-    const leaveCodes = ['IN01', 'IN02', 'IN03', 'PN01', 'PN02', 'PN03', 'PQ01', 'PQ04', 'PQ02', 'UN01']
-    const businessTripTrainingCodes = ['CT01', 'CT02', 'CT03', 'CT04', 'DT01', 'WFH1', 'WFH2']
-    const prefixOutSource = 'TN'
 
     const usePrevious = (value) => {
         const ref = useRef()
@@ -98,6 +391,16 @@ function ProjectDetail(props) {
         const dayTemps = getDaysOfWeekByDateOnWeek(moment())
         setDateForFilter(dayTemps)
         SetDays(dayTemps)
+
+
+        // const worker = new WebWorker(processWorker)
+
+        // worker.postMessage('Fetch Users')
+    
+        // worker.addEventListener('message', event => {
+        //     console.log('kakakakaka')
+        //     console.log(event?.data)
+        // });
     }, [])
 
     useEffect(() => {
@@ -585,100 +888,10 @@ function ProjectDetail(props) {
     }
 
     const { rsmBusinessOwners, rsmProjectTeams, rsmTargets, projectComment, plant, actual, mandayActual, mandayPlant } = projectData
-    // const rangeTimeFilter = `${projectData?.startDate ? moment(projectData?.startDate).format('DD/MM/YYYY') : ''} - ${projectData?.endDate ? moment(projectData?.endDate).format('DD/MM/YYYY') : ''}`
-
-    const getRangeTimeJoinProject = (startDate, endDate) => {
-        return `${startDate ? moment(startDate).format('DD/MM/YYYY') : ''} - ${endDate ? moment(endDate).format('DD/MM/YYYY') : ''}`
-    }
-
-    const formatMulesoftValue = val => {
-        if (!val || val === '0' || val === '#' || val === '000000' || val === '00000000' || val === '0000') {
-            return ""
-        }
-        return val
-    }
 
     const goBack = () => {
         const backUrl = localStorage.getItem('backUrl')
         window.location.href = backUrl
-    }
-
-    const getNoteInfos = (timeSheet, rsmLeaveTypeAndComment, source) => {
-        const fromTime1 = formatMulesoftValue(timeSheet.from_time1)
-        const toTime1 = formatMulesoftValue(timeSheet.to_time1)
-        const startTime1Fact = formatMulesoftValue(timeSheet.start_time1_fact)
-        const endTime1Fact = formatMulesoftValue(timeSheet.end_time1_fact)
-
-        let hasLeave = false
-        let hasBusinessTripTraining = false
-        let icon = IconInfoRed
-        let notes = []
-        const isUnusualShift = (
-            ((!fromTime1 || !toTime1) && timeSheet.shift_id !== 'OFF')
-            || ((startTime1Fact > fromTime1 || (endTime1Fact && endTime1Fact < toTime1)) && (timeSheet.shift_id !== 'OFF'))
-        )
-
-        const leaveData = (rsmLeaveTypeAndComment || []).filter(item => leaveCodes.includes(item?.baseTypeModel?.value) 
-            && moment(timeSheet?.date, 'DD-MM-YYYY').isSameOrAfter(moment(item?.startDate, 'YYYYMMDD')) 
-            && moment(timeSheet?.date, 'DD-MM-YYYY').isSameOrBefore(moment(item?.endDate, 'YYYYMMDD'))
-        )
-        const businessTripTrainingData = (rsmLeaveTypeAndComment || []).filter(item => businessTripTrainingCodes.includes(item?.baseTypeModel?.value)
-            && moment(timeSheet?.date, 'DD-MM-YYYY').isSameOrAfter(moment(item?.startDate, 'YYYYMMDD')) 
-            && moment(timeSheet?.date, 'DD-MM-YYYY').isSameOrBefore(moment(item?.endDate, 'YYYYMMDD'))
-        )
-
-        if (isUnusualShift) {
-            icon = IconInfoRed
-        } else {
-            if (leaveData && leaveData?.length > 0) {
-                icon = IconInfoYellow
-                hasLeave = true
-            } else if (businessTripTrainingData && businessTripTrainingData?.length > 0) {
-                icon = IconInfoViolet
-                hasBusinessTripTraining = true
-            }
-        }
-
-        if (isUnusualShift) {
-            notes.push({
-                className: 'red',
-                line1: 'Bất thường công:',
-                line2: `Giờ kế hoạch: ${moment(fromTime1, 'HHmmss').isValid() ? moment(fromTime1, 'HHmmss').format('HH:mm:ss') : ""} - ${moment(toTime1, 'HHmmss').isValid() ? moment(toTime1, 'HHmmss').format('HH:mm:ss') : ""}`,
-                line3: `Giờ thực tế: ${moment(startTime1Fact, 'HHmmss').isValid() ? moment(startTime1Fact, 'HHmmss').format('HH:mm:ss') : ""} - ${moment(endTime1Fact, 'HHmmss').isValid() ? moment(endTime1Fact, 'HHmmss').format('HH:mm:ss') : ""}`
-            })
-        }
-
-        if (leaveData && leaveData?.length > 0) {
-            const leaveDataToSave = leaveData.map(item => {
-                return {
-                    className: 'yellow',
-                    line1: `${item?.baseTypeModel?.label}:`,
-                    line2: item?.user_Comment,
-                    line3: `${moment(item?.startTime, 'HHmm').isValid() ? moment(item?.startTime, 'HHmm').format('HH:mm') : ""} - ${moment(item?.endTime, 'HHmm').isValid() ? moment(item?.endTime, 'HHmm').format('HH:mm') : ""}`
-                    
-                }
-            })
-            notes = notes.concat(leaveDataToSave)
-        }
-
-        if (businessTripTrainingData && businessTripTrainingData?.length > 0) {
-            const businessTripTrainingDataToSave = businessTripTrainingData.map(item => {
-                return {
-                    className: 'violet',
-                    line1: `${item?.baseTypeModel?.label}:`,
-                    line2: item?.user_Comment,
-                    line3: `${moment(item?.startTime, 'HHmm').isValid() ? moment(item?.startTime, 'HHmm').format('HH:mm') : ""} - ${moment(item?.endTime, 'HHmm').isValid() ? moment(item?.endTime, 'HHmm').format('HH:mm') : ""}`
-                    
-                }
-            })
-            notes = notes.concat(businessTripTrainingDataToSave)
-        }
-
-        return {
-            hasShowNote: source == employeeSource.THUE_NGOAI ? false : (isUnusualShift || hasLeave || hasBusinessTripTraining),
-            icon: icon,
-            notes: notes
-        }
     }
 
     const prepareTimeSheetSpecial = (timeSheets) => {
@@ -791,140 +1004,24 @@ function ProjectDetail(props) {
                                             let isMe = currentEmployeeNoLogged == item.employeeId
                                             let timeSheetPrepared = prepareTimeSheetSpecial(item?.timeSheets)
 
-                                            return <div className={`data-item ${isMe ? 'me' : ''}`} key={index}>
-                                                        <div className="col-left">
-                                                            <div className="user-info">
-                                                                { item.source?.key == employeeSource.THUE_NGOAI && <span className="source">Thuê ngoài</span> }
-                                                                <div className="avatar-block">
-                                                                <Image src={`data:image/png;base64,${item?.avatar}`} alt="Avatar" className="avatar"
-                                                                    onError={(e) => {
-                                                                        e.target.src = "/LogoVingroupCircle.svg"
-                                                                    }}
-                                                                />
-                                                                </div>
-                                                                <div className="full-name">{item?.fullName || ""}</div>
-                                                                <div className="title">{item?.title || ""}</div>
-                                                                <div className="other-info">
-                                                                    <div className="first">
-                                                                        <div className="employee-no"><Image src={IconMaNhanVienBlue} alt='No' />{item?.employeeId || ""}</div>
-                                                                        <div className="pool"><Image src={IconVitriBlue} alt='Pool' />{item?.position || ""}</div>
-                                                                    </div>
-                                                                    <div className="second">
-                                                                        <div className="email" title={item?.email || ""}><Image src={IconEmailBlue} alt='Email' /><span>{item?.email || ""}</span></div>
-                                                                        <div className="skill">
-                                                                            <Image src={IconKyNangBlue} alt='Skill' />
-                                                                            <ul className="skills">
-                                                                                {
-                                                                                    (item?.skills || []).map((item, sId) => {
-                                                                                        return <li key={sId}>{item}</li>
-                                                                                    })
-                                                                                }
-                                                                            </ul>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div className="col-right">
-                                                            <div className="time-sheet-item">
-                                                                <div className="col-first">
-                                                                    <div className="planned">
-                                                                        <div className="font-weight-bold">Planned Total</div>
-                                                                        <div className="range-time">{getRangeTimeJoinProject(item?.startJoinProject, item?.endJoinProject)}</div>
-                                                                        <div className="font-weight-bold total-md-plan">{item?.mandays || 0} MD</div>
-                                                                    </div>
-                                                                    <div className="actual">
-                                                                        <div className="wrap-actual">
-                                                                            <div className="font-weight-bold">Actual</div>
-                                                                            {
-                                                                                Number(item?.mandayCheck || 0) <= Number(item?.mandays || 0)
-                                                                                ? <div className="font-weight-bold total-md-actual">{item?.mandayCheck || 0} MD</div>
-                                                                                : 
-                                                                                <>
-                                                                                    <div className="total-md-actual-warning">
-                                                                                        <div className="font-weight-bold">{item?.mandayCheck || 0} MD</div>
-                                                                                        <div className="note">Đã vượt quá MD Plan</div>
-                                                                                    </div>
-                                                                                </>
-                                                                            }
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div className="col-item">
-                                                                    <ReactTooltip id='label-submit-time-sheet' scrollHide isCapture place="left" type='light' border={true} arrowColor='#FFFFFF' borderColor="#e3e6f0" className="item-tooltip-submit-time-sheet">
-                                                                        <span>Xác nhận Timesheet</span>
-                                                                    </ReactTooltip>
-                                                                    { isMe && <button className="btn-submit" data-tip data-for='label-submit-time-sheet' onClick={submitTimeSheet}><Image src={IconCheckWhite} alt="Check" /></button> }
-                                                                    {
-                                                                        (timeSheetPrepared || []).map((timeSheet, tIndex) => {
-                                                                            let noteInfos = getNoteInfos(timeSheet, item?.rsmLeaveTypeAndComment, item.source?.key)
-                                                                            let hasEditTime = isMe && projectData?.processStatusId != status.closed 
-                                                                                                && ![timeSheetStatusApproved].includes(timeSheet?.rsmStatus)
-                                                                                                && moment(timeSheet?.date, 'DD-MM-YYYY').isSameOrAfter(moment(moment(projectData?.startDate).format('DD-MM-YYYY'), 'DD-MM-YYYY')) 
-                                                                                                && moment(timeSheet?.date, 'DD-MM-YYYY').isSameOrBefore(moment(moment(projectData?.endDate).format('DD-MM-YYYY'), 'DD-MM-YYYY'))
-                                                                            return <div className="item" key={tIndex}>
-                                                                                        <div className="top">
-                                                                                            {
-                                                                                                (timeSheet.shift_id === 'OFF' || timeSheet.is_holiday === 1 || timeSheet.is_holiday === '1')
-                                                                                                ? 
-                                                                                                    <>
-                                                                                                    <ReactTooltip id={`shift-infos-${tIndex}-user-index-${index}`} scrollHide isCapture globalEventOff="click" effect="solid" clickable place="top" type='light' border={true} arrowColor='#FFFFFF' borderColor="#e3e6f0" className="note-time-sheet">
-                                                                                                        <div style={{padding: '5px 15px'}}>{(timeSheet.is_holiday === 1 || timeSheet.is_holiday === '1') ? 'Holiday' : 'OFF'}</div>
-                                                                                                    </ReactTooltip>
-                                                                                                    { item?.rsmTimeSheet[timeSheet?.date] && <div className="text-center off-shift" data-tip data-for={`shift-infos-${tIndex}-user-index-${index}`}>OFF</div> }
-                                                                                                    </>
-                                                                                                : <>
-                                                                                                {
-                                                                                                    noteInfos.hasShowNote
-                                                                                                    ? <>
-                                                                                                        <ReactTooltip id={`note-infos-${tIndex}-user-index-${index}`} scrollHide isCapture globalEventOff="click" effect="solid" clickable place="bottom" type='light' border={true} arrowColor='#FFFFFF' borderColor="#e3e6f0" className="note-time-sheet">
-                                                                                                            <ul>
-                                                                                                                {
-                                                                                                                    (noteInfos?.notes).map((note, nIndex) => {
-                                                                                                                        return <li key={nIndex}>
-                                                                                                                                    <p className={`title ${note?.className}`}>{note?.line1}</p>
-                                                                                                                                    <ul>
-                                                                                                                                        <li>{note?.line2}</li>
-                                                                                                                                        <li>{note?.line3}</li>
-                                                                                                                                    </ul>
-                                                                                                                                </li>
-                                                                                                                    })
-                                                                                                                }
-                                                                                                            </ul>
-                                                                                                        </ReactTooltip>
-                                                                                                        { item?.rsmTimeSheet[timeSheet?.date] && <span className="note" data-tip data-for={`note-infos-${tIndex}-user-index-${index}`}><Image src={noteInfos.icon} alt="Note" /></span> }
-                                                                                                    </>
-                                                                                                    : null
-                                                                                                }
-                                                                                                { item?.rsmTimeSheet[timeSheet?.date] && <div className="time">{`${timeSheet?.hoursValue}h`}</div> }
-                                                                                                </>
-                                                                                            }
-                                                                                        </div>
-                                                                                        <div className="bottom">
-                                                                                            {
-                                                                                                (timeSheet.shift_id === 'OFF' || timeSheet.is_holiday === 1 || timeSheet.is_holiday === '1' || !item?.rsmTimeSheet[timeSheet?.date])
-                                                                                                ? null
-                                                                                                : timeSheet?.rsmStatus !== null && <span className={`status ${timeSheetStatusStyleMapping[timeSheet?.rsmStatus]?.className}`}>{timeSheetStatusStyleMapping[timeSheet?.rsmStatus]?.label}</span>
-                                                                                            }
-                                                                                            {
-                                                                                                (timeSheet.shift_id === 'OFF' || timeSheet.is_holiday === 1 || timeSheet.is_holiday === '1' || !item?.rsmTimeSheet[timeSheet?.date]) 
-                                                                                                ? null
-                                                                                                : <div className="time">
-                                                                                                {
-                                                                                                    hasEditTime
-                                                                                                    ? <><input type="text" onChange={(e) => handleChangeActualTime(index, tIndex, e)} value={timeSheet?.actualHoursTemp !== null && timeSheet?.actualHoursTemp !== undefined ? timeSheet?.actualHoursTemp : timeSheet?.actualHours || ""} /><span>h</span></>
-                                                                                                    : `${timeSheet?.actualHours || 0}h`
-                                                                                                }
-                                                                                                </div>
-                                                                                            }
-                                                                                        </div>
-                                                                                    </div>
-                                                                        })
-                                                                    }
-                                                                </div>
-                                                            </div>
-                                                        </div>
+                                            return (
+                                                <div className={`data-item ${isMe ? 'me' : ''}`} key={index}>
+                                                    <div className="col-left">
+                                                        <UserInfo item={item} />
                                                     </div>
+                                                    <div className="col-right">
+                                                        <TimeSheetUserInfos 
+                                                            timeSheetPrepared={timeSheetPrepared} 
+                                                            item={item}
+                                                            isMe={isMe}
+                                                            index={index}
+                                                            projectData={projectData}
+                                                            submitTimeSheet={submitTimeSheet}
+                                                            handleChangeActualTimeLevel0={handleChangeActualTime}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            )
                                         })
                                     }
                                 </div>
