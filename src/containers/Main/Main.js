@@ -22,7 +22,7 @@ function MainLayout(props) {
 
   const searchParams = new URLSearchParams(props.location.search);
   const isApp = searchParams.get('isApp') || false;
-  
+
   if (props.location.pathname.indexOf("training") > 0 && localStorage.getItem("companyCode") !== "V030") {
     history.push(map.NotFound);
   }
@@ -40,7 +40,7 @@ function MainLayout(props) {
         <div id="content">
           <Header user={user} setShow={setShow} isApp={isApp} updateLayout={updateLayout} />
           <div className={`${isDashBoard === true ? "" : "container-fluid"}`} id='main-content'>
-            <NestedRoute routes={props.routes} />
+            <NestedRoute routes={props.routes} show={show} />
           </div>
           <ScrollToTop />
         </div>
