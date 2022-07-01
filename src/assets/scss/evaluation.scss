@@ -566,6 +566,21 @@
                                     outline: none;
                                 }
                             }
+                            &.actual-results {
+                                textarea {
+                                    width: 90%;
+                                    border: 1px solid #DEE2E6;
+                                    outline: none;
+                                }
+                            }
+                            select {
+                                border: 1px solid #DEE2E6;
+                                border-radius: 5px;
+                                cursor: pointer;
+                                height: 30px;
+                                width: 110px;
+                                padding: 5px;
+                            }
                         }
                     }
                 }
