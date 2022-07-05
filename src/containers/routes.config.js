@@ -595,6 +595,14 @@ export default [
           },
           component: lazy(() => import("./TaskRecruitment/Evalution"))
         },
+        {
+          key: "evaluation-salary-propse",
+          routeProps: {
+            exact: true,
+            path: map.SalaryPropse
+          },
+          component: lazy(() => import("./Registration/ContractEvaluation/SalaryPropose"))
+        },
       ],
     },
   },
