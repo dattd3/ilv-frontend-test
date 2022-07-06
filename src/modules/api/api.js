@@ -329,5 +329,13 @@ export default class Api {
      }
    })
  }
+  
+  fetchSalaryPropose = async (id) => {
+    return await this.request.get(`${process.env.REACT_APP_REQUEST_URL}StaffContract/getManageEvaluation`, {
+      params: {
+        idDisplay: id
+      }
+    })
+  }
 
 }
