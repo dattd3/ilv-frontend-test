@@ -1112,5 +1112,18 @@
   "VinmecAdditionalTaxAfterTaxFinalization": "Thuế nộp thêm sau Quyết toán thuế",
   "VinmecReferralRevenueBonus": "Thưởng doanh thu giới thiệu khách",
   "AllowanceForNursingPosition": "Phụ cấp ưu đãi nghề Điều dưỡng",
-  "TelehealthServicesBonus": "Thưởng hoa hồng dịch vụ Chăm sóc sức khỏe từ xa"
+  "TelehealthServicesBonus": "Thưởng hoa hồng dịch vụ Chăm sóc sức khỏe từ xa",
+  "DateWork": "Ngày làm việc",
+  "ExpriseDate":"Ngày hết hạn HĐTV/HĐLĐ",
+  "SalaryNow":"Mức lương hiện tại (GROSS)",
+  "SalaryRequest":"Mức lương đề xuất",
+  "RequiredInput": "Bắt buộc nhập !",
+  "ManagerEvaluate":"Quản lý trực tiếp đánh giá",
+  "ProposeInfo":"Thông tin người được đề xuất",
+  "AssetmentInfo":"Thông tin đánh giá",
+  "HumanForReviewSalary":"Nhân sự hỗ trợ xin quyền xem lương",
+  "ViewDetail":"Xem chi tiết",
+  "Status_1":"Tình trạng",
+  "Oke": "Đồng ý",
+  "confirmCancleConsent":"Xác nhận từ chối thẩm định"
 }
