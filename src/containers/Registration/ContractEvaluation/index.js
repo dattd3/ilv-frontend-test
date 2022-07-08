@@ -24,6 +24,7 @@ import LoadingSpinner from '../../../components/Forms/CustomForm/LoadingSpinner'
 import LoadingModal from '../../../components/Common/LoadingModal'
 import { checkIsExactPnL } from '../../../commons/commonFunctions'
 import ContractEvaluationdetail from './detail'
+import SalaryModal from './SalaryModal'
 
 const TIME_FORMAT = 'HH:mm'
 const DATE_FORMAT = 'DD/MM/YYYY'
@@ -248,6 +249,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     this.state = {
       loading: false,
       isShowStatusModal: false,
+      isShowSalaryPropose: true,
       annualLeaveSummary: {},
       data: {
         processStatus: 0,
@@ -764,7 +766,6 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
       }else{
         window.location.reload();
       }
-      
     }
   }
 
@@ -1189,8 +1190,15 @@ renderEvalution = (name, data, isDisable) => {
     })
         .then(response => {
           if(response.data.result && response.data.result.code == '000000'){
-            this.showStatusModal(message, true, true, home)
-            this.setDisabledSubmitButton(false, actionType)
+            if(this.state.type == 'assess' && 
+              ((this.state.data.processStatus == 10 && localStorage.getItem('companyCode') == Constants.pnlVCode.VinSchool) || 
+                (this.state.processStatus == 11 && localStorage.getItem('companyCode') != Constants.pnlVCode.VinSchool ))) {
+                  this.showSalaryPropose(actionType, home);
+            } else {
+              this.showStatusModal(message, true, true, home)
+              this.setDisabledSubmitButton(false, actionType)
+            }
+            
             return;
           }
           this.showStatusModal(response.data.result.message || 'Có lỗi xảy ra trong quá trình cập nhật thông tin!', false)
@@ -1206,6 +1214,17 @@ renderEvalution = (name, data, isDisable) => {
             this.setDisabledSubmitButton(false, actionType)
         })
 }
+
+  showSalaryPropose = (actionType, url) => {
+    this.setState({ isShowSalaryPropose: true,url: url});
+    this.setDisabledSubmitButton(false, actionType)
+  }
+
+  createFormSalary = () => {
+    console.log('create form salary');
+    this.setState({ isShowSalaryPropose: false });
+    window.location.href = `/salary-propse/${this.state.id}`;
+  }
 
   checkShowQlttComment = (data) => {
   // CBLF tham dinh VSC -field qltt -- 11
@@ -1287,6 +1306,7 @@ renderEvalution = (name, data, isDisable) => {
           </div>
         </div>
         <StatusModal show={this.state.isShowStatusModal} content={this.state.content} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
+        <SalaryModal show={this.state.isShowSalaryPropose} content={this.state.content} isSuccess={this.state.isSuccess} onAccept = {this.createFormSalary} onHide={this.hideStatusModal} />
         <h5>Thông tin đánh giá</h5>
         <div className="box shadow cbnv">
           <div className="row description">
