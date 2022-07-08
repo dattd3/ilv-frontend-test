@@ -1,4 +1,131 @@
 
+.create-salary-modal {
+  font-family: HelveticaNeue, Arial, Helvetica, sans-serif !important;
+  font-size: 14px !important;
+  .modal-dialog {
+    max-width: 700px;
+    .modal-content {
+      hr {
+        height: 1px;
+        border: none;
+        border-top: 1px solid #E0E0E0;
+      }
+      border-radius: 0;
+      .modal-header {
+        display: flex;
+        border-radius: 0;
+        padding: 0;
+        align-items: center;
+        background-color: #FFF;
+        color: #000;
+        text-transform: uppercase;
+        justify-content: flex-start;
+        border-top-left-radius: 4px;
+        border-top-right-radius: 4px;
+
+        .header-contain {
+          border-bottom: 1px solid #000 !important;
+          flex: 1;
+          padding-top: 15px;
+          padding-bottom: 15px;
+          margin-left: 15px;
+          margin-right: 15px;
+        }
+        .ic-header {
+          img {
+            height: 20px;
+          }
+        }
+        .sigle-text-header {
+          font-weight: 700;
+          font-size: 16px;
+          color: #000;
+        }
+        .ic-action {
+          color: #000;
+          transform: scale(1.25);
+        }
+        .ic-close {
+          position: absolute;
+          top: 9px;
+          right: 9px;
+        }
+      }
+      .block-input {
+        margin: 0 0 15px 0;
+        color: #000000;
+        .label {
+          display: block;
+        }
+        .note {
+          font-size: 14px;
+          font-family: inherit;
+          width: 100%;
+          border: 1px solid #d3d3d3;
+          padding: 10px;
+          border-radius: 3px;
+          &:active {
+            outline: none;
+          }
+          &:focus {
+            outline: none;
+          }
+          &::-webkit-input-placeholder {
+            font-style: italic;
+            color: #a4afb7;
+          }
+          &:-moz-placeholder {
+            font-style: italic;
+            color: #a4afb7;
+          }
+          &::-moz-placeholder {
+            font-style: italic;
+            color: #a4afb7;
+          }
+          &:-ms-input-placeholder {  
+            font-style: italic;
+            color: #a4afb7;
+          }
+        }
+      }
+      .modal-body {
+        padding: 15px;
+        border-bottom-left-radius: 4px;
+        border-bottom-right-radius: 4px;
+      }
+      .action-block {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        .btn-action {
+          cursor: pointer;
+          padding: 8px 40px;
+          display: flex;
+          align-items: center;
+          border: 1px solid;
+          &:last-child {
+            margin-left: 20px;
+          }
+          img {
+            margin-right: 10px;
+          }
+          &.btn-reset {
+            background-color: #CED4DA;
+            color: #FFF;
+            font-weight: 500;
+            border-radius: 3px;
+          }
+          &.btn-accept {
+            background-color: #4099FF;
+            color: #FFF;
+            border-radius: 3px;
+          }
+        }
+      }
+    }
+  }
+}
+
 /* Detail evaluation results */
 .contract-evaluation-result-detail-page {
   color: #000000;
