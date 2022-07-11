@@ -249,7 +249,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     this.state = {
       loading: false,
       isShowStatusModal: false,
-      isShowSalaryPropose: true,
+      isShowSalaryPropose: false,
       annualLeaveSummary: {},
       data: {
         processStatus: 0,
@@ -1216,7 +1216,7 @@ renderEvalution = (name, data, isDisable) => {
 }
 
   showSalaryPropose = (actionType, url) => {
-    this.setState({ isShowSalaryPropose: true,url: url});
+    this.setState({ isShowSalaryPropose: true,url: url, shouldReload: true});
     this.setDisabledSubmitButton(false, actionType)
   }
 
