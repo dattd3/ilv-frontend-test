@@ -147,7 +147,7 @@ export default class ContractEvaluationdetail extends React.Component {
               </div>
             </div>
             {
-              checkIsExactPnL(Constants.pnlVCode.VinSchool) ?
+              checkIsExactPnL(Constants.pnlVCode.VinSchool, Constants.pnlVCode.VinHome) ?
                 null :
                 <>
                   <h5>Thông tin khóa học</h5>
@@ -240,7 +240,7 @@ export default class ContractEvaluationdetail extends React.Component {
               <div className="row approve">
                 <div className="col-12">
                 {
-                  checkIsExactPnL(Constants.PnLCODE.VinSchool) ?
+                  checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.pnlVCode.VinHome) ?
                     <><span className="title">QUẢN LÝ TRỰC TIẾP ĐÁNH GIÁ</span></>
                     : <><span className="title">NGƯỜI ĐÁNH GIÁ</span><span className="sub-title">(Nếu có)</span></>
                 }
@@ -261,7 +261,7 @@ export default class ContractEvaluationdetail extends React.Component {
               <div className="row approve">
                 <div className="col-12">
                 {
-                  checkIsExactPnL(Constants.PnLCODE.VinSchool) ?
+                  checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.pnlVCode.VinHome) ?
                   <><span className="title">CBLD thẩm định</span><span className="sub-title">(Nếu có)</span></>
                   : <span className="title">QUẢN LÝ TRỰC TIẾP ĐÁNH GIÁ</span>
                 }
