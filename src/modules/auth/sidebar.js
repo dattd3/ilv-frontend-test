@@ -50,6 +50,15 @@ export const Navigation = [
     to: map.Learning,
     role: "U",
   },
+  {
+      id: 104,
+      parentId: 0,
+      icon: 'c-resignation-requests-management',
+      label: "ResignationRequestsManagement",
+      to: map.ResignationRequestsManagement,
+      //role: [Constants.pnlVCode.VinHome]
+      role: 'NA'
+    },
 
   // {
   //   id: 48,
@@ -98,7 +107,7 @@ export const Navigation = [
     icon: 'evaluation',
     to: "",
     label: "MenuEvaluation",
-    role: "U"
+    role: "NA"
     // role: ['V005'],
   },
   {
@@ -204,7 +213,7 @@ export const Navigation = [
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     to: map.EvaluationManager,
     label: 'Quản lý đánh giá',
-    role:  ['V061']
+    role:  ['V061', 'V053', 'V040']
   },
   {
     id: 4,
@@ -292,6 +301,29 @@ export const Navigation = [
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     label: "MyJob",
     to: map.Job,
+    role: 'U'
+  },
+  {
+    id: 110,
+    parentId: 10,
+    icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+    label: "Welfare",
+    role: 'NA'
+  },
+  {
+    id: 111,
+    parentId: 110,
+    icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+    label: "InteralWelfare",
+    to: map.InteralWelfare,
+    role: 'U'
+  },
+  {
+    id: 112,
+    parentId: 110,
+    icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+    label: "InsuranceRegime",
+    to: map.InsuranceRegime,
     role: 'U'
   },
   {
@@ -405,7 +437,7 @@ export const Navigation = [
     icon: 'c-qa',
     label: "QuestionAndAnswer",
     to: map.QuestionAndAnswer,
-    role: [Constants.pnlVCode.VinPearl, Constants.pnlVCode.VinSoftware, Constants.pnlVCode.VinMec, Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading, 
+    role: [Constants.pnlVCode.VinPearl, Constants.pnlVCode.VinSoftware, Constants.pnlVCode.VinMec, Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading,
       Constants.pnlVCode.VinSmart, Constants.pnlVCode.VincomRetail, Constants.pnlVCode.VinAI]
   },
   {
@@ -424,6 +456,23 @@ export const Navigation = [
     label: "instruct",
     to: map.Instruct,
     role: 'U'
-  }
-
+  },
+  {
+    id: 119999,
+    parentId: 10,
+    icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+    label: "RegistrationEmploymentTermination",
+    to: map.RegistrationEmploymentTermination,
+    //role: [Constants.pnlVCode.VinHome]
+    role: 'NA'
+  },
+  {
+      id: 129999,
+      parentId: 10,
+      icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+      label: "ProposedResignation",
+      to: map.ProposedResignation,
+      //role: ["P","T","P2", "P1", "T4", "T3", "T2", "T1"]
+      role: 'NA'
+    },
 ];
