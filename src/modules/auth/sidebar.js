@@ -56,7 +56,8 @@ export const Navigation = [
       icon: 'c-resignation-requests-management',
       label: "ResignationRequestsManagement",
       to: map.ResignationRequestsManagement,
-      role: [Constants.pnlVCode.VinHome]
+      //role: [Constants.pnlVCode.VinHome]
+      role: 'NA'
     },
 
   // {
@@ -106,7 +107,7 @@ export const Navigation = [
     icon: 'evaluation',
     to: "",
     label: "MenuEvaluation",
-    role: "U"
+    role: "NA"
     // role: ['V005'],
   },
   {
@@ -462,7 +463,8 @@ export const Navigation = [
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     label: "RegistrationEmploymentTermination",
     to: map.RegistrationEmploymentTermination,
-    role: [Constants.pnlVCode.VinHome]
+    //role: [Constants.pnlVCode.VinHome]
+    role: 'NA'
   },
   {
       id: 129999,
@@ -470,6 +472,7 @@ export const Navigation = [
       icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
       label: "ProposedResignation",
       to: map.ProposedResignation,
-      role: ["P","T","P2", "P1", "T4", "T3", "T2", "T1"]
+      //role: ["P","T","P2", "P1", "T4", "T3", "T2", "T1"]
+      role: 'NA'
     },
 ];
