@@ -262,7 +262,7 @@ export default class ContractEvaluationdetail extends React.Component {
                 <div className="col-12">
                 {
                   checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.pnlVCode.VinHome) ?
-                  <><span className="title">CBLD thẩm định</span><span className="sub-title">(Nếu có)</span></>
+                  <><span className="title">CBLĐ thẩm định</span><span className="sub-title">(Nếu có)</span></>
                   : <span className="title">QUẢN LÝ TRỰC TIẾP ĐÁNH GIÁ</span>
                 }
                 </div>
