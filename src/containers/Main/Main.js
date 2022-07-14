@@ -22,7 +22,7 @@ function MainLayout(props) {
 
   const searchParams = new URLSearchParams(props.location.search);
   const isApp = searchParams.get('isApp') || false;
-
+  
   if (props.location.pathname.indexOf("training") > 0 && localStorage.getItem("companyCode") !== "V030") {
     history.push(map.NotFound);
   }

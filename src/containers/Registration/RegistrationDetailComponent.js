@@ -33,6 +33,7 @@ class RegistrationDetailComponent extends React.Component {
         subid: subId
       }
     }
+  
     axios.get(`${process.env.REACT_APP_REQUEST_URL}request/detail`, config)
     .then(res => {
       if (res && res.data) {
