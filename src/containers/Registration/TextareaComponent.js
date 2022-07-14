@@ -51,9 +51,11 @@ class ResizableTextarea extends React.Component {
             const textareaLineHeight = 24;
             const { minRows, maxRows } = this.state;
             const currentRows = ~~( e.scrollHeight / textareaLineHeight);
+			
             if(currentRows == this.state.rows){
                 return;
             }
+			
             this.setState({
                 rows: currentRows < maxRows ? currentRows : maxRows,
 				firstTime: false
