@@ -1343,7 +1343,7 @@ renderEvalution = (name, data, isDisable) => {
                       <tr>
                         <th style={{width: '22%'}}>Tổng điểm</th>
                         <th style={{width: '16%'}}>{data.SelfAssessmentScoreTotal}</th>
-                        <th style={{width: '22%'}}>{data.ManagementScoreTotal}</th>
+                        <th style={{width: '22%'}}>{this.state.type == 'request' ? '' : data.ManagementScoreTotal}</th>
                         <th style={{width: '40%'}}></th>
                       </tr>
                     </thead>
@@ -1370,7 +1370,7 @@ renderEvalution = (name, data, isDisable) => {
                       <tr>
                         <th style={{width: '20%'}}>Tổng điểm</th>
                         <th style={{width: '14%'}}>{data.SelfAssessmentScoreTotal}</th>
-                        <th style={{width: '16%'}}>{data.ManagementScoreTotal}</th>
+                        <th style={{width: '16%'}}>{this.state.type == 'request' ? '' : data.ManagementScoreTotal}</th>
                         <th style={{width: '42%'}}></th>
                         <th style={{width: '8%'}}></th>
                       </tr>
