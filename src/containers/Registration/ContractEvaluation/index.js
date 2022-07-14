@@ -57,7 +57,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     {value: 10, label: 'Người đánh giá'},
     {value: 11, label: 'QLTT đánh giá'},
     {value: 12, label: 'HR thẩm định'},
-    {value: 13, label: 'CBLD phê duyệt'},
+    {value: 13, label: 'CBLĐ phê duyệt'},
     {value: 2, label: 'Đã phê duyệt'},
     {value: 1, label: 'Từ chối phê duyệt'}
   ];
@@ -1599,7 +1599,7 @@ renderEvalution = (name, data, isDisable) => {
                 <div className="col-12">
                   {
                     checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.pnlVCode.VinHome) ?
-                    <><span className="title">CBLD thẩm định</span><span className="sub-title">(Nếu có)</span></>
+                    <><span className="title">CBLĐ thẩm định</span><span className="sub-title">(Nếu có)</span></>
                     : <span className="title">QUẢN LÝ TRỰC TIẾP ĐÁNH GIÁ</span>
                   }
                 </div>
@@ -1698,7 +1698,7 @@ renderEvalution = (name, data, isDisable) => {
                 <div className="col-12">
                 {
                     checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.pnlVCode.VinHome) ?
-                    <><span className="title">CBLD thẩm định</span><span className="sub-title">(Nếu có)</span></>
+                    <><span className="title">CBLĐ thẩm định</span><span className="sub-title">(Nếu có)</span></>
                     : <span className="title">QUẢN LÝ TRỰC TIẾP ĐÁNH GIÁ</span>
                   }
                 </div>
