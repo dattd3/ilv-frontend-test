@@ -1122,8 +1122,16 @@
   "ProposeInfo":"Thông tin người được đề xuất",
   "AssetmentInfo":"Thông tin đánh giá",
   "HumanForReviewSalary":"Nhân sự hỗ trợ xin quyền xem lương",
+  "HumanResourceChangeSalary": "Nhân sự thẩm định quyền điều chỉnh lương",
+  "ManagerApproved": "CBQL cấp cơ sở",
+  "BossApproved": "CBLĐ phê duyệt",
   "ViewDetail":"Xem chi tiết",
   "Status_1":"Tình trạng",
   "Oke": "Đồng ý",
-  "confirmCancleConsent":"Xác nhận từ chối thẩm định"
+  "ConfirmCancleConsent":"Xác nhận từ chối thẩm định",
+  "ReasonCancleConsent":"Lý do từ chối thẩm định",
+  "ConfirmNotApprove": "Xác nhận không phê duyệt",
+  "ReasonNotApprove": "Lý do không phê duyệt",
+  "EnterPasswordToViewPayslip": "Nhập mật khẩu để xem lương",
+  "EnterPassword": "Nhập mật khẩu"
 }

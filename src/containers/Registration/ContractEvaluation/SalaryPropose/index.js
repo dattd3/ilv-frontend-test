@@ -9,43 +9,194 @@ import IconDelete from '../../../../assets/img/icon/Icon_Cancel.svg';
 import ModalConsent from './ModalConsent';
 import moment from 'moment';
 import HumanForReviewSalaryComponent from '../../HumanForReviewSalaryComponent';
+import ConfirmPasswordModal from './ConfirmPasswordModal';
 
-function SalaryPropse() {
+function SalaryPropse(props) {
   const { t } = useTranslation();
   const api = useApi();
+  // 1739084
   const { id } = useParams();
   const history = useHistory();
-  const [visibleInput, setVisibleInput] = useState(false);
   const [data, setData] = useState();
-  const FullName = localStorage.getItem('fullName');
-  const Title = localStorage.getItem('jobTitle');
-  const Department = localStorage.getItem('department');
+  const [currentSalary, setCurrentSalary] = useState('0978978');
+  const [modalConfirmPassword, setModalConfirmPassword] = useState(false);
+  const [acessToken, setAcessToken] = useState(null);
   const [formData, setFormData] = useState({
-    salaryRequest: '',
+    suggestedSalary: '',
   });
 
   const [error, setError] = useState({
-    salaryRequest: false,
+    suggestedSalary: false,
   });
 
   const [modal, setModal] = useState({
     visible: false,
+    type: '',
+    header: '',
+    title: '',
     content: '',
+  });
+
+  const [approver, setApprover] = useState({
+    fullName: 'Nguyễn Thu Hoài',
+    account: 'nth',
+    avatar: "",
+    employeeLevel: "",
+    pnl: "",
+    orglv2Id: "",
+    current_position: "Chuyên viên",
+    department: "Phòng Phát triển Sản phẩm"
+  });
+
+  const processStatus = 21;
+
+  const [viewSetting, setViewSetting] = useState({
+    showComponent: {
+      humanForReviewSalary: false, //NHÂN SỰ HỖ TRỢ XIN QUYỀN XEM LƯƠNG
+      humanResourceChangeSalary: false, //NHÂN SỰ THẨM ĐỊNH QUYỀN ĐIỀU CHỈNH LƯƠNG
+      managerApproved: false, //CBQL CẤP CƠ SỞ
+      bossApproved: false, //CBLĐ PHÊ DUYỆT
+      btnCancel: false, // Button Hủy
+      btnSendRequest: false, // Button Gửi yêu cầu
+      btnRefuse: false, // Button Từ chối
+      btnStateRefuse: false, // Button trang thai Từ chối
+      btnExpertise: false, // Button Thẩm định
+      btnNotApprove: false, // Button Không phê duyệt
+      btnApprove: false, // Button phê duyệt
+    },
+    disableComponent: {
+      currentSalary: true, //Mức lương hiện tại (GROSS) - Disable/Enable Input
+      showCurrentSalary: false, //Change type text & password
+      viewCurrentSalary: false, //Hiển thị eye
+      suggestedSalary: true, //Mức lương đề xuất - Disable/Enable Input
+    }
   });
 
   useEffect(() => {
     async function getData() {
       try {
-        const {
-          data: { data: response },
-        } = await api.fetchSalaryPropose(id);
+        const { data: { data: response } } = await api.fetchSalaryPropose(id);
         setData(response);
       } catch (error) {
         console.log(error);
       }
     }
     getData();
+    checkAuthorize();
   }, [id]);
+
+  const checkAuthorize = () => {
+    let viewSettingTmp = { ...viewSetting };
+    // Todo: check nguoi danh gia
+    switch (processStatus) {
+      case 21:
+        viewSettingTmp.showComponent.humanForReviewSalary = true;
+        viewSettingTmp.disableComponent.viewCurrentSalary = true;
+        viewSettingTmp.showComponent.btnCancel = true;
+        viewSettingTmp.showComponent.btnSendRequest = true;
+        break;
+      case 22:
+        viewSettingTmp.showComponent.humanForReviewSalary = true;
+        viewSettingTmp.disableComponent.viewCurrentSalary = true;
+        break;
+      case 23:
+        viewSettingTmp.showComponent.humanResourceChangeSalary = true;
+        viewSettingTmp.showComponent.bossApproved = true;
+        viewSettingTmp.disableComponent.viewCurrentSalary = true;
+        viewSettingTmp.disableComponent.suggestedSalary = false;
+        viewSettingTmp.showComponent.btnCancel = true;
+        viewSettingTmp.showComponent.btnSendRequest = true;
+        break;
+      case 8:
+        viewSettingTmp.showComponent.managerApproved = true;
+        viewSettingTmp.showComponent.humanResourceChangeSalary = true;
+        viewSettingTmp.disableComponent.viewCurrentSalary = true;
+        viewSettingTmp.showComponent.btnRefuse = true;
+        viewSettingTmp.showComponent.btnStateRefuse = true;
+        viewSettingTmp.showComponent.btnExpertise = true;
+        break;
+      case 24:
+        viewSetting.showComponent.humanResourceChangeSalary = true;
+        viewSetting.showComponent.bossApproved = true;
+        viewSettingTmp.disableComponent.viewCurrentSalary = true;
+        viewSetting.showComponent.btnRefuse = true;
+        viewSetting.showComponent.btnStateRefuse = true;
+        viewSettingTmp.showComponent.btnExpertise = true;
+        break;
+      case 5:
+        viewSettingTmp.showComponent.humanResourceChangeSalary = true;
+        viewSettingTmp.showComponent.bossApproved = true;
+        viewSettingTmp.disableComponent.viewCurrentSalary = true;
+        viewSettingTmp.showComponent.btnNotApprove = true;
+        viewSettingTmp.showComponent.btnApprove = true;
+        break;
+      case 2:
+        viewSettingTmp.showComponent.humanForReviewSalary = true;
+        break;
+      default:
+        break;
+    }
+    setViewSetting(viewSettingTmp)
+  }
+
+  const handleShowCurrentSalary = () => {
+    if (!acessToken) {
+      setModalConfirmPassword(true)
+      return;
+    }
+    let viewSettingTmp = { ...viewSetting };
+    viewSettingTmp.disableComponent.showCurrentSalary = !viewSettingTmp.disableComponent.showCurrentSalary;
+    setViewSetting(viewSettingTmp)
+  }
+
+  // Từ chối
+  const handleRefuse = () => {
+    setModal({
+      visible: true,
+      type: 'refuse',
+      header: t('ConfirmCancleConsent'),
+      title: t('ReasonCancleConsent'),
+      content: '',
+    })
+  }
+
+  // Không phê duyệt
+  const handleReject = () => {
+    setModal({
+      visible: true,
+      type: 'approve',
+      header: t('ConfirmNotApprove'),
+      title: t('ReasonNotApprove'),
+      content: '',
+    })
+  }
+
+  // Hủy
+  const handleCancel = () => { console.log('handleCancel'); }
+
+  // Thẩm định
+  const handleConsent = () => {
+    console.log('handleConsent');
+  }
+
+  // Phê duyệt
+  const handleApprove = () => { console.log('handleApprove'); }
+
+  // Gửi yêu cầu
+  const handleSendForm = () => {
+    if (processStatus === 23) {
+      validation();
+    }
+    console.log('Submit');
+  };
+
+  const handleChangeModalConfirmPassword = (acessToken) => {
+    setAcessToken(acessToken)
+    setModalConfirmPassword(false)
+    let viewSettingTmp = { ...viewSetting };
+    viewSettingTmp.disableComponent.showCurrentSalary = !viewSettingTmp.disableComponent.showCurrentSalary;
+    setViewSetting(viewSettingTmp)
+  }
 
   const validation = () => {
     Object.entries(formData).forEach(([key, value]) => {
@@ -66,11 +217,25 @@ function SalaryPropse() {
       });
     });
   };
-  const handleSendForm = () => {
-    validation();
-  };
+  
+  const handleUpdateApprover = (approver,isApprover) => {
+    console.log(approver,isApprover);
+  }
+
+  const handleCloseModal = () => {
+    console.log('data', modal.content);
+    const modalTmp = { ...modal }
+    modalTmp.visible = !modalTmp.visible
+    setModal(modalTmp)
+  }
+
   return (
     <div className='container-salary'>
+      <ConfirmPasswordModal
+        show={modalConfirmPassword}
+        onUpdateToken={handleChangeModalConfirmPassword}
+        onHide={() => setModalConfirmPassword(false)}
+      />
       <div className='block-content-salary'>
         <h6 className='block-content-salary__title'>{t('ManagerEvaluate')}</h6>
         <div className='block-content-salary__content'>
@@ -79,19 +244,19 @@ function SalaryPropse() {
               <label className='block-content-salary__content--label'>
                 {t('FullName')}
               </label>
-              <input className='form-control' value={FullName} disabled />
+              <input className='form-control' value={localStorage.getItem('fullName')} disabled />
             </div>
             <div className='col-input'>
               <label className='block-content-salary__content--label'>
                 {t('Title')}
               </label>
-              <input className='form-control' value={Title} disabled />
+              <input className='form-control' value={localStorage.getItem('jobTitle')} disabled />
             </div>
             <div className='col-input'>
               <label className='block-content-salary__content--label'>
                 {t('DepartmentManage')}
               </label>
-              <input className='form-control' disabled value={Department} />
+              <input className='form-control' disabled value={localStorage.getItem('department')} />
             </div>
           </div>
         </div>
@@ -138,7 +303,7 @@ function SalaryPropse() {
               <input
                 className='form-control'
                 value={
-                  data?.staffContracts.startDate &&
+                  data?.staffContracts?.startDate &&
                   moment(data.staffContracts.startDate).format('MM/DD/YYYY')
                 }
                 disabled
@@ -152,7 +317,7 @@ function SalaryPropse() {
               <input
                 className='form-control'
                 value={
-                  data?.staffContracts.expireDate &&
+                  data?.staffContracts?.expireDate &&
                   moment(data.staffContracts.expireDate).format('MM/DD/YYYY')
                 }
                 disabled
@@ -167,15 +332,18 @@ function SalaryPropse() {
               </label>
               <input
                 className='form-control'
-                type={`${visibleInput ? 'text' : 'password'}`}
-                value={928129000}
+                type={`${viewSetting.disableComponent.showCurrentSalary ? 'text' : 'password'}`}
+                value={currentSalary}
+                disabled={viewSetting.disableComponent.currentSalary}
               />
-              <div
-                className='col-input__icon'
-                onClick={() => setVisibleInput(!visibleInput)}
-              >
-                <img src={visibleInput ? IconEye : IconNotEye} alt='eye' />
-              </div>
+              {viewSetting.disableComponent.viewCurrentSalary &&
+                <div
+                  className='col-input__icon'
+                  onClick={() => handleShowCurrentSalary()}
+                >
+                  <img src={viewSetting.disableComponent.showCurrentSalary ? IconEye : IconNotEye} alt='eye' />
+                </div>
+              }
             </div>
             <div className='col-input'>
               <label className='block-content-salary__content--label'>
@@ -184,19 +352,20 @@ function SalaryPropse() {
               <input
                 type='number'
                 className='form-control'
-                value={formData.salaryRequest}
+                value={formData.suggestedSalary}
+                disabled={viewSetting.disableComponent.suggestedSalary}
                 onChange={(val) => {
                   setError({
                     ...error,
-                    salaryRequest: val.target.value.trim().length === 0,
+                    suggestedSalary: val.target.value.trim().length === 0,
                   });
                   setFormData({
                     ...formData,
-                    salaryRequest: val.target.value,
+                    suggestedSalary: val.target.value,
                   });
                 }}
               />
-              {error.salaryRequest && (
+              {error.suggestedSalary && (
                 <span className='text-danger text-xs'>
                   {t('RequiredInput')}
                 </span>
@@ -217,7 +386,7 @@ function SalaryPropse() {
             <div
               className='detail'
               onClick={() => {
-                history.push(`/propose-salary/${id}`);
+                history.push(`/evaluation/${id}/salary`);
               }}
             >
               {t('ViewDetail')} {'>>'}
@@ -226,50 +395,117 @@ function SalaryPropse() {
         </div>
       </div>
 
-      <div className='block-content-salary'>
-        <h6 className='block-content-salary__title'> {t('AssetmentInfo')}</h6>
-        <div className='block-content-salary__content'>
-          <HumanForReviewSalaryComponent />
+      {/* NHÂN SỰ HỖ TRỢ XIN QUYỀN XEM LƯƠNG */}
+      {viewSetting.showComponent.humanForReviewSalary &&
+        <div className='block-content-salary'>
+          <h6 className='block-content-salary__title'> {t('HumanForReviewSalary')}</h6>
+          <div className='block-content-salary__content'>
+            <HumanForReviewSalaryComponent
+              isEdit={processStatus !== 21}
+              approver={approver}
+              updateApprover={(approver, isApprover) => handleUpdateApprover(approver,isApprover)}
+            />
+          </div>
         </div>
-      </div>
-
-      <div className='d-flex justify-content-end mb-2'>
-        <button type='button' className='btn btn-secondary ml-3 shadow'>
-          <img src={IconDelete} className='mr-1' />
-          {t('CancelSearch')}
-        </button>
-        <button
-          type='button'
-          className='btn btn-primary ml-3 shadow'
-          onClick={handleSendForm}
-        >
-          <i className='fa fa-paper-plane mr-1' aria-hidden='true'></i>
-          {t('Send')}
-        </button>
-      </div>
+      }
+      {/* CBQL CẤP CƠ SỞ */}
+      {viewSetting.showComponent.managerApproved &&
+        <div className='block-content-salary'>
+          <h6 className='block-content-salary__title'> {t('ManagerApproved')}</h6>
+          <div className='block-content-salary__content'>
+            <HumanForReviewSalaryComponent isEdit={true} approver={approver} />
+          </div>
+        </div>
+      }
+      {/* NHÂN SỰ THẨM ĐỊNH QUYỀN ĐIỀU CHỈNH LƯƠNG */}
+      {viewSetting.showComponent.humanResourceChangeSalary &&
+        <div className='block-content-salary'>
+          <h6 className='block-content-salary__title'> {t('HumanResourceChangeSalary')}</h6>
+          <div className='block-content-salary__content'>
+            <HumanForReviewSalaryComponent isEdit={true} approver={approver} />
+          </div>
+        </div>
+      }
+      {/* CBLĐ PHÊ DUYỆT */}
+      {viewSetting.showComponent.bossApproved &&
+        <div className='block-content-salary'>
+          <h6 className='block-content-salary__title'> {t('BossApproved')}</h6>
+          <div className='block-content-salary__content'>
+            <HumanForReviewSalaryComponent isEdit={true} approver={approver} />
+          </div>
+        </div>
+      }
       <div className='d-flex justify-content-end mb-5'>
-        <button
-          type='button'
-          className='btn btn-danger'
-          onClick={() => {
-            setModal({
-              ...modal,
-              visible: true,
-            });
-          }}
-        >
-          <img src={IconDelete} className='mr-1' />
-          {t('RejectQuestionButtonLabel')}
-        </button>
-        <button
-          type='button'
-          className='btn btn-primary float-right ml-3 shadow'
-        >
-          <i className='fas fa-check' aria-hidden='true'></i> {t('Consent')}
-        </button>
+        {/* Hủy */}
+        {viewSetting.showComponent.btnCancel &&
+          <button
+            type='button'
+            className='btn btn-secondary ml-3 shadow'
+            onClick={() => handleCancel()}
+          >
+            <img src={IconDelete} className='mr-1' />
+            {t('CancelSearch')}
+          </button>
+        }
+        {/* Gửi yêu cầu */}
+        {viewSetting.showComponent.btnSendRequest &&
+          <button
+            type='button'
+            className='btn btn-primary ml-3 shadow'
+            onClick={() => handleSendForm()}
+          >
+            <i className='fa fa-paper-plane mr-1' aria-hidden='true'></i>
+            {t('Send')}
+          </button>
+        }
+        {/* Từ chối */}
+        {viewSetting.showComponent.btnRefuse &&
+          <button
+            type='button'
+            className='btn btn-danger'
+            onClick={() => handleRefuse()}
+          >
+            <img src={IconDelete} className='mr-1' />
+            {t('RejectQuestionButtonLabel')}
+          </button>
+        }
+        {/* Thẩm định */}
+        {viewSetting.showComponent.btnExpertise &&
+          <button
+            type='button'
+            className='btn btn-primary float-right ml-3 shadow'
+            onClick={() => handleConsent()}
+          >
+            <i className='fas fa-check' aria-hidden='true'></i> {t('Consent')}
+          </button>
+        }
+        {/* Không phê duyệt */}
+        {viewSetting.showComponent.btnNotApprove &&
+          <button
+            type='button'
+            className='btn btn-danger'
+            onClick={() => handleReject()}
+          >
+            <img src={IconDelete} className='mr-1' />
+            {t('Reject')}
+          </button>
+        }
+        {/* Phê duyệt */}
+        {viewSetting.showComponent.btnApprove &&
+          <button
+            type='button'
+            className='btn btn-success float-right ml-3 shadow'
+            onClick={() => handleApprove()}
+          >
+            <i className='fas fa-check' aria-hidden='true'></i> {t('Approval')}
+          </button>
+        }
       </div>
       <ModalConsent
         show={modal.visible}
+        type={modal.type}
+        header={modal.header}
+        title={modal.title}
         onHide={() => {
           setModal({
             ...modal,
@@ -283,9 +519,7 @@ function SalaryPropse() {
             content: val,
           });
         }}
-        onConfirm={() => {
-          console.log('data', modal.content);
-        }}
+        onConfirm={() => handleCloseModal()}
       />
     </div>
   );

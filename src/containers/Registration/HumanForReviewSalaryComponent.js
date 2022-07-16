@@ -52,31 +52,31 @@ class ApproverComponent extends React.Component {
       return this.setState({
         approver: {
           ...approver,
-          label: approver.fullName,
-          value: approver.account
+          label: approver?.fullName,
+          value: approver?.account
         }
       })
     }
 
-    const companiesUsing = [Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading, Constants.pnlVCode.VinMec]
-    if (companiesUsing.includes(currentUserPnLVCodeLogged)) {
-      const managerApproval = await this.loadApproverForPnL()
-      this.setState({approver: managerApproval} , () => {
-        if (approver) {
-          this.setState({
-            approver: {
-              ...approver,
-              label: approver.fullName,
-              value: approver.account
-            }
-          })
-        }
-      })
-      this.props.updateApprover(managerApproval, true)
-    } else {
-      const recentlyApprover = await this.loadRecentlyApprover()
-      this.setState({ users: recentlyApprover })
-    }
+    // const companiesUsing = [Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading, Constants.pnlVCode.VinMec]
+    // if (companiesUsing.includes(currentUserPnLVCodeLogged)) {
+    //   const managerApproval = await this.loadApproverForPnL()
+    //   this.setState({approver: managerApproval} , () => {
+    //     if (approver) {
+    //       this.setState({
+    //         approver: {
+    //           ...approver,
+    //           label: approver.fullName,
+    //           value: approver.account
+    //         }
+    //       })
+    //     }
+    //   })
+    //   this.props.updateApprover(managerApproval, true)
+    // } else {
+    //   const recentlyApprover = await this.loadRecentlyApprover()
+    //   this.setState({ users: recentlyApprover })
+    // }
   }
 
   loadApproverForPnL = async () => {
@@ -175,7 +175,8 @@ class ApproverComponent extends React.Component {
       const config = getRequestConfigurations()
       const payload = {
         account: value,
-        employee_type: "APPROVER",
+        // employee_type: "APPROVER",
+        pnl_code: localStorage.getItem('companyCode'),
         status: Constants.statusUserActiveMulesoft
       }
       axios.post(`${process.env.REACT_APP_REQUEST_URL}user/employee/search`, payload, config)
