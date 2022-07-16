@@ -358,7 +358,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     //axios.get(`${process.env.REACT_APP_REQUEST_URL}StaffContract/infoevaluation?idDisplay=${id}&employeeCode=${localStorage.getItem('employeeNo')}&regionId=${localStorage.getItem('organizationLv4')}&rankId=${localStorage.getItem('employeeLevel')}&org=${localStorage.getItem('organizationLv3')}`, config)
     let url = `${process.env.REACT_APP_REQUEST_URL}StaffContract/infoevaluation?idDisplay=${id}&employeeCode=${localStorage.getItem('employeeNo')}&regionId=${localStorage.getItem('organizationLv4')}&rankId=${localStorage.getItem('employeeLevel')}&org=${localStorage.getItem('organizationLv3')}&orgLv02=${localStorage.getItem('organizationLv2')}&orgLv05=${localStorage.getItem('organizationLv5') == '#' ? null : localStorage.getItem('organizationLv5')}`;
     
-    if(type == 'assess' || type == 'approval'){
+    if(type == 'assess' || type == 'approval' || type == 'salary'){
       url = `${process.env.REACT_APP_REQUEST_URL}StaffContract/getManageEvaluation?idDisplay=${id}`
     }
     axios.get(url, config)
@@ -1261,10 +1261,11 @@ renderEvalution = (name, data, isDisable) => {
     const data = this.state.data;
     const loading = this.state.loading;
     const comment =  data?.comment || null;
-    if(data?.processStatus == 2 ) {
+    const type = this.props.match.params.type;
+    if(data?.processStatus == 2 || type === 'salary') {
       return  <div className="registration-section">
-         <LoadingModal show={loading}/>
-       <ContractEvaluationdetail data={data} />
+        <LoadingModal show={loading}/>
+        <ContractEvaluationdetail id={this.props.match.params.id} data={data} />
        </div>
     }
     return (

@@ -244,19 +244,19 @@ function SalaryPropse(props) {
               <label className='block-content-salary__content--label'>
                 {t('FullName')}
               </label>
-              <input className='form-control' value={localStorage.getItem('fullName')} disabled />
+              <input className='form-control' value={localStorage.getItem('fullName') || ''} disabled />
             </div>
             <div className='col-input'>
               <label className='block-content-salary__content--label'>
                 {t('Title')}
               </label>
-              <input className='form-control' value={localStorage.getItem('jobTitle')} disabled />
+              <input className='form-control' value={localStorage.getItem('jobTitle') || ''} disabled />
             </div>
             <div className='col-input'>
               <label className='block-content-salary__content--label'>
                 {t('DepartmentManage')}
               </label>
-              <input className='form-control' disabled value={localStorage.getItem('department')} />
+              <input className='form-control' disabled value={localStorage.getItem('department') || ''} />
             </div>
           </div>
         </div>
@@ -272,7 +272,7 @@ function SalaryPropse(props) {
               </label>
               <input
                 className='form-control'
-                value={data?.staffContracts?.fullName}
+                value={data?.staffContracts?.fullName || ''}
                 disabled
               />
             </div>
@@ -282,7 +282,7 @@ function SalaryPropse(props) {
               </label>
               <input
                 className='form-control'
-                value={data?.staffContracts?.positionName}
+                value={data?.staffContracts?.positionName || ''}
                 disabled
               />
             </div>
@@ -292,7 +292,7 @@ function SalaryPropse(props) {
               </label>
               <input
                 className='form-control'
-                value={data?.staffContracts?.departmentName}
+                value={data?.staffContracts?.departmentName || ''}
                 disabled
               />
             </div>
