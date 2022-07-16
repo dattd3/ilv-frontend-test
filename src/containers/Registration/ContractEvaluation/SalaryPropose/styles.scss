@@ -84,6 +84,28 @@
       }
     }
   }
+  .approver {
+    .avatar {
+        height: 50px;
+        width: 50px;
+        border: 0;
+        border-radius: 50%;
+    }
+    .comment {
+        font-size: small;
+        font-style: italic;
+    }
+
+    .title, .comment {
+        margin: 0 5px;
+        padding: 0;
+    }
+
+    .title2{
+        margin: 0 0 10px 0;
+        padding: 0;
+    }
+}
 }
 .modal-consent {
   .icon-delete {
