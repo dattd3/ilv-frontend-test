@@ -4,18 +4,18 @@ import Rating from 'react-rating'
 import _ from 'lodash'
 import { Image } from 'react-bootstrap'
 import Constants from '../.../../../../commons/Constants'
-import { checkIsExactPnL} from '../../../commons/commonFunctions'
+import { checkIsExactPnL } from '../../../commons/commonFunctions'
 import 'react-datepicker/dist/react-datepicker.css'
 import { vi, enUS } from 'date-fns/locale'
 
 import './styles.scss'
 export default class ContractEvaluationdetail extends React.Component {
-  
 
   render() {
     const data = this.props.data
+    const id = this.props?.id
     return (
-        <div className="font-size-14 contract-evaluation-result-detail-page">
+      <div className="font-size-14 contract-evaluation-result-detail-page">
         <div className="evalution">
           <div id="frame-for-export" className="frame-for-export">
             <div className="eval-heading">BIÊN BẢN ĐÁNH GIÁ GIAO KẾT / GIA HẠN HĐLĐ</div>
@@ -54,11 +54,11 @@ export default class ContractEvaluationdetail extends React.Component {
                   Thang điểm đánh giá
                 </div>
                 <div className="col-9">
-                   <span>(5) Xuất sắc</span>
-                    <span>(4) Tốt</span>
-                    <span>(3) Khá</span>
-                    <span>(2) Trung Bình</span>
-                    <span>(1) Yếu</span>
+                  <span>(5) Xuất sắc</span>
+                  <span>(4) Tốt</span>
+                  <span>(3) Khá</span>
+                  <span>(2) Trung Bình</span>
+                  <span>(1) Yếu</span>
                 </div>
               </div>
               <div className="row">
@@ -239,11 +239,11 @@ export default class ContractEvaluationdetail extends React.Component {
             <div className="box cbnv">
               <div className="row approve">
                 <div className="col-12">
-                {
-                  checkIsExactPnL(Constants.PnLCODE.VinSchool) ?
-                    <><span className="title">QUẢN LÝ TRỰC TIẾP ĐÁNH GIÁ</span></>
-                    : <><span className="title">NGƯỜI ĐÁNH GIÁ</span><span className="sub-title">(Nếu có)</span></>
-                }
+                  {
+                    checkIsExactPnL(Constants.PnLCODE.VinSchool) ?
+                      <><span className="title">QUẢN LÝ TRỰC TIẾP ĐÁNH GIÁ</span></>
+                      : <><span className="title">NGƯỜI ĐÁNH GIÁ</span><span className="sub-title">(Nếu có)</span></>
+                  }
                 </div>
               </div>
               <div className="row">
@@ -260,11 +260,11 @@ export default class ContractEvaluationdetail extends React.Component {
             <div className="box cbnv">
               <div className="row approve">
                 <div className="col-12">
-                {
-                  checkIsExactPnL(Constants.PnLCODE.VinSchool) ?
-                  <><span className="title">CBLD thẩm định</span><span className="sub-title">(Nếu có)</span></>
-                  : <span className="title">QUẢN LÝ TRỰC TIẾP ĐÁNH GIÁ</span>
-                }
+                  {
+                    checkIsExactPnL(Constants.PnLCODE.VinSchool) ?
+                      <><span className="title">CBLD thẩm định</span><span className="sub-title">(Nếu có)</span></>
+                      : <span className="title">QUẢN LÝ TRỰC TIẾP ĐÁNH GIÁ</span>
+                  }
                 </div>
               </div>
               <div className="row">
@@ -375,14 +375,30 @@ export default class ContractEvaluationdetail extends React.Component {
                 }
                 {
                   data.nguoipheduyet && data.approvalDate ?
-                  <div className="col-12">
-                    Ngày phê duyệt
-                    <div className="detail">{moment(data.approvalDate).format('DD/MM/YYYY')}</div>
-                  </div>
-                  : null
+                    <div className="col-12">
+                      Ngày phê duyệt
+                      <div className="detail">{moment(data.approvalDate).format('DD/MM/YYYY')}</div>
+                    </div>
+                    : null
                 }
               </div>
             </div>
+
+            <h5>Thông tin đề xuất lương</h5>
+            <div className="box cbnv salary">
+              <div className="row">
+                <div className="col-6">
+                  <div className='wrapper-status'>
+                    <span className='font-normal'>Tình trạng: </span>
+                    <div>Đang chờ phê duyệt</div>
+                  </div>
+                </div>
+                <div className="col-6 view-detail">
+                  <a href={`/salary-propse/${id}`} title="Xem chi tiết" className="detail-link">{'Xem chi tiết >>'}</a>
+                </div>
+              </div>
+            </div>
+
             <ul className="list-inline">
               {data.cvs.map((file, index) => {
                 return <li className="list-inline-item" key={index}>
