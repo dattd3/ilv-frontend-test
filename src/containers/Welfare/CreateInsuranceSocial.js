@@ -257,7 +257,7 @@ const CreateInsuranceSocial = (props) => {
             {
                 type == null ?
                     <>
-                        <h5>YÊU CẦU BẢO HIỂM Y TẾ</h5>
+                        <h5>YÊU CẦU BẢO HIỂM XÃ HỘI</h5>
                         <div className="box shadow cbnv">
                             <div className="row">
                                 <div className="col-4">
