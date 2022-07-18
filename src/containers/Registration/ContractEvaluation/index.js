@@ -1460,7 +1460,8 @@ renderEvalution = (name, data, isDisable) => {
           </div>
         </div>
         {
-          checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.pnlVCode.VinHome) ?
+          //checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.pnlVCode.VinHome) ?
+          false ?
           null :
         <>
         <h5>Thông tin khóa học</h5>
