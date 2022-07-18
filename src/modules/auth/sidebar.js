@@ -309,7 +309,7 @@ export const Navigation = [
     parentId: 10,
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     label: "Welfare",
-    role: 'NA'
+    role: 'U'
   },
   {
     id: 111,
