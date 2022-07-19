@@ -290,8 +290,8 @@ const CreateSickInsurance = ({
               className="input mv-10"
               styles={{ menu: (provided) => ({ ...provided, zIndex: 2 }) }}
             />
-            {errors["declareForm"] ? (
-              <p className="text-danger">{errors["declareForm"]}</p>
+            {errors["plan"] ? (
+              <p className="text-danger">{errors["plan"]}</p>
             ) : null}
           </div>
         </div>
