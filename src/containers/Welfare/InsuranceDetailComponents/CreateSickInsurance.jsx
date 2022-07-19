@@ -35,32 +35,31 @@ const CreateSickInsurance = ({
       <div className="box shadow cbnv">
         <div className="row">
           <div className="col-4">
-            {"Loại yêu cầu"}
+            <strong>{"Loại yêu cầu"}</strong>
              <div className="detail">{type?.label}</div>
           </div>
           <div className="col-8">
-            {"Hình thức kê khai phát sinh"}
+            <strong>{"Hình thức kê khai phát sinh"}</strong>
             <div className="detail">{data.declareForm}</div>
           </div>
         </div>
         <div className="row mv-10">
           <div className="col-4">
-            {"Từ ngày đơn vị đề nghị hưởng"}
+            <strong>{"Từ ngày đơn vị đề nghị hưởng"}</strong>
             <div className="detail">{data.dateRequest}</div>
-            
           </div>
           <div className="col-4">
-            {"Từ ngày giải quyết trước"}
+            <strong>{"Từ ngày giải quyết trước"}</strong>
             <div className="detail">{data.dateLastResolved}</div>
           </div>
           <div className="col-4">
-            {"Phương án"}
+            <strong>{"Phương án"}</strong>
             <div className="detail">{data.plan}</div>
           </div>
         </div>
         <div className="row mv-10">
           <div className="col-12">
-            {"Ghi chú"}
+            <strong>{"Ghi chú"}</strong>
             <div className="detail">{data.note}</div>
           </div>
         </div>
@@ -70,31 +69,31 @@ const CreateSickInsurance = ({
       <div className="box shadow cbnv">
         <div className="row">
           <div className="col-4">
-            {t("FullName")}
+            <strong>{t("FullName")}</strong>
             <div className="detail">{data.fullName}</div>
           </div>
           <div className="col-4">
-            {"Mã sổ/số sổ BHXH"}
+            <strong>{"Mã sổ/số sổ BHXH"}</strong>
             <div className="detail">{data.socialId}</div>
           </div>
           <div className="col-4">
-            {"Số CMND/Hộ chiếu/Thẻ căn cước"}
+            <strong>{"Số CMND/Hộ chiếu/Thẻ căn cước"}</strong>
             <div className="detail">{data.IndentifiD}</div>
           </div>
         </div>
         <div className="row mv-10">
           <div className="col-4">
-            {"Mã nhân viên"}
+            <strong>{"Mã nhân viên"}</strong>
             <div className="detail">{data.employeeNo}</div>
           </div>
 
           <div className="col-4">
-            {"Điều kiện làm việc"}
+            <strong>{"Điều kiện làm việc"}</strong>
             <div className="detail">{data.workingCondition}</div>
           </div>
 
           <div className="col-4">
-            {"Ngày nghỉ hàng tuần"}
+            <strong>{"Ngày nghỉ hàng tuần"}</strong>
             <div className="detail">{data.leaveOfWeek}</div>
           </div>
         </div>
@@ -104,25 +103,25 @@ const CreateSickInsurance = ({
       <div className="box shadow cbnv">
         <div className="row">
           <div className="col-8">
-            {"Tuyến bệnh viện"}
+            <strong>{"Tuyến bệnh viện"}</strong>
             <div className="detail">{data.hospitalLine}</div>
           </div>
           <div className="col-4">
-            {"Số Seri"}
+            <strong>{"Số Seri"}</strong>
             <div className="detail">{data.seri}</div>
           </div>
         </div>
         <div className="row mv-10">
           <div className="col-4">
-            <div>{"Từ ngày"}</div>
+            <strong>{"Từ ngày"}</strong>
             <div className="detail">{data.fromDate}</div>
           </div>
           <div className="col-4">
-            <div>{"Đến ngày"}</div>
+            <strong>{"Đến ngày"}</strong>
             <div className="detail">{data.toDate}</div>
           </div>
           <div className="col-4">
-            {"Tổng số"}
+            <strong>{"Tổng số"}</strong>
             <div className="detail">{data.total}</div>
           </div>
         </div>
@@ -135,15 +134,15 @@ const CreateSickInsurance = ({
       <div className="box shadow cbnv">
         <div className="row mv-10">
           <div className="col-4">
-            <div>{"Ngày sinh con"}</div>
+            <strong>{"Ngày sinh con"}</strong>
             <div className="detail">{data.childBirth}</div>
           </div>
           <div className="col-4">
-            <div>{"Số thẻ BHYT của con"}</div>
+            <strong>{"Số thẻ BHYT của con"}</strong>
             <div className="detail">{data.childInsuranceNumber}</div>
           </div>
           <div className="col-4">
-            {"Số con bị ốm"}
+            <strong>{"Số con bị ốm"}</strong>
             <div className="detail">{data.childSickNumbers}</div>
           </div>
         </div>
@@ -153,11 +152,11 @@ const CreateSickInsurance = ({
       <div className="box shadow cbnv">
         <div className="row mv-10">
           <div className="col-4">
-            <div>{"Mã bệnh dài ngày"}</div>
+            <strong>{"Mã bệnh dài ngày"}</strong>
             <div className="detail">{data.sickId}</div>
           </div>
           <div className="col-8">
-            {"Tên bệnh"}
+            <strong>{"Tên bệnh"}</strong>
             <div className="detail">{data.sickName}</div>
           </div>
         </div>
@@ -167,11 +166,11 @@ const CreateSickInsurance = ({
       <div className="box shadow cbnv">
         <div className="row mv-10">
           <div className="col-8">
-            <div>{"Nội dung đợt"}</div>
+            <strong>{"Nội dung đợt"}</strong>
             <div className="detail">{data.resolveContent}</div>
           </div>
           <div className="col-4">
-            {"Tháng năm"}
+            <strong>{"Tháng năm"}</strong>
             <div className="detail">{data.resolveDate}</div>
           </div>
         </div>
@@ -181,11 +180,11 @@ const CreateSickInsurance = ({
       <div className="box shadow cbnv">
         <div className="row mv-10">
           <div className="col-8">
-            <div>{"Nội dung đợt"}</div>
+            <strong>{"Nội dung đợt"}</strong>
             <div className="detail">{data.addtionContent}</div>
           </div>
           <div className="col-4">
-            {"Tháng năm"}
+            <strong>{"Tháng năm"}</strong>
             <div className="detail">{data.addtionDate}</div>
           </div>
         </div>
@@ -195,33 +194,25 @@ const CreateSickInsurance = ({
       <div className="box shadow cbnv">
         <div className="row mv-10">
           <div className="col-4">
-            <div>
-              {"Hình thức nhận"}
-            </div>
+            <strong>{"Hình thức nhận"}</strong>
             <div className="detail">{data.receiveType}</div>
           </div>
           <div className="col-4">
-            <div>
-              {"Số tài khoản"}
-            </div>
+            <strong>{"Số tài khoản"}</strong>
             <div className="detail">{data.accountNumber}</div>
           </div>
           <div className="col-4">
-            {"Tên chủ tài khoản"}
+            <strong>{"Tên chủ tài khoản"}</strong>
             <div className="detail">{data.accountName}</div>
           </div>
         </div>
         <div className="row mv-10">
           <div className="col-4">
-            <div>
-              {"Mã ngân hàng"}
-            </div>
+            <strong>{"Mã ngân hàng"}</strong>
             <div className="detail">{data.bankId}</div>
           </div>
           <div className="col-8">
-            <div>
-              {"Tên ngân hàng"}
-            </div>
+            <strong>{"Tên ngân hàng"}</strong>
             <div className="detail">{data.bankName}</div>
           </div>
         </div>
