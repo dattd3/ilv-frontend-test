@@ -36,61 +36,61 @@ const CreateMaternityInsurance = ({
       <div className="box shadow cbnv">
         <div className="row">
           <div className="col-4">
-            {"Loại yêu cầu"}
+            <strong>{"Loại yêu cầu"}</strong>
             <div className="detail">{type?.label}</div>
           </div>
           <div className="col-4">
-            {"Hình thức kê khai phát sinh"}
+            <strong>{"Hình thức kê khai phát sinh"}</strong>
             <div className="detail">{data.declareForm}</div>
           </div>
           <div className="col-4">
-            {"Trường hợp hưởng chế độ thai sản"}
+            <strong>{"Trường hợp hưởng chế độ thai sản"}</strong>
             <div className="detail">{data.maternityRegime}</div>
           </div>
         </div>
         <div className="row mv-10">
           <div className="col-4">
-            {"Từ ngày đơn vị đề nghị hưởng"}
+            <strong>{"Từ ngày đơn vị đề nghị hưởng"}</strong>
             <div className="detail">{data.dateRequest}</div>
           </div>
           <div className="col-4">
-            {"Từ ngày giải quyết trước"}
+            <strong>{"Từ ngày giải quyết trước"}</strong>
             <div className="detail">{data.dateLastResolved}</div>
           </div>
           <div className="col-4">
-            {"Điều kiện khám thai"}
+            <strong>{"Điều kiện khám thai"}</strong>
             <div className="detail">{data.maternityCondition}</div>
           </div>
         </div>
         <div className="row mv-10">
           <div className="col-4">
-            {"Điều kiện sinh con"}
+            <strong>{"Điều kiện sinh con"}</strong>
             <div className="detail">{data.birthCondition}</div>
           </div>
           <div className="col-8">
-            {"Số sổ BHXH của người nuôi dưỡng (trường hợp mẹ chết)"}
+            <strong>{"Số sổ BHXH của người nuôi dưỡng (trường hợp mẹ chết)"}</strong>
             <div className="detail">{data.raiserInsuranceNumber}</div>
           </div>
         </div>
         <div className="row mv-10">
           <div className="col-4">
-            {"Cha nghỉ chăm con"}
+            <strong>{"Cha nghỉ chăm con"}</strong>
             <div className="detail">{data.dadCare}</div>
           </div>
           <div className="col-8">
-            {"Phương án"}
+            <strong>{"Phương án"}</strong>
             <div className="detail">{data.plan}</div>
           </div>
         </div>
         <div className="row mv-10">
           <div className="col-12">
-            {"Lý do đề nghị điều chỉnh"}
+            <strong>{"Lý do đề nghị điều chỉnh"}</strong>
             <div className="detail">{data.reason}</div>
           </div>
         </div>
         <div className="row mv-10">
           <div className="col-12">
-            {"Ghi chú"}
+            <strong>{"Ghi chú"}</strong>
             <div className="detail">{data.note}</div>
           </div>
         </div>
@@ -101,31 +101,29 @@ const CreateMaternityInsurance = ({
       <div className="box shadow cbnv">
         <div className="row">
           <div className="col-4">
-            {t("FullName")}
+            <strong>{t("FullName")}</strong>
             <div className="detail">{data.fullName}</div>
           </div>
           <div className="col-4">
-            {"Mã sổ/số sổ BHXH"}
+            <strong>{"Mã sổ/số sổ BHXH"}</strong>
             <div className="detail">{data.socialId}</div>
           </div>
           <div className="col-4">
-            {"Số CMND/Hộ chiếu/Thẻ căn cước"}
+            <strong>{"Số CMND/Hộ chiếu/Thẻ căn cước"}</strong>
             <div className="detail">{data.personal_id_no}</div>
           </div>
         </div>
         <div className="row mv-10">
           <div className="col-4">
-            {"Mã nhân viên"}
+            <strong>{"Mã nhân viên"}</strong>
             <div className="detail">{data.employeeNo}</div>
           </div>
-
           <div className="col-4">
-            {"Ngày nghỉ hàng tuần"}
+            <strong>{"Ngày nghỉ hàng tuần"}</strong>
             <div className="detail">{data.leaveOfWeek}</div>
           </div>
-
           <div className="col-4">
-            {"Ngày bắt đầu đi làm lại thực tế"}
+            <strong>{"Ngày bắt đầu đi làm lại thực tế"}</strong>
             <div className="detail">{data.startWork}</div>
           </div>
         </div>
@@ -136,21 +134,21 @@ const CreateMaternityInsurance = ({
       <div className="box shadow cbnv">
         <div className="row mv-10">
           <div className="col-4">
-            {"Số Seri/Số lưu trữ"}
+            <strong>{"Số Seri/Số lưu trữ"}</strong>
             <div className="detail">{data.seri}</div>
           </div>
           <div className="col-4">
-            <div>{"Từ ngày"}</div>
+            <strong>{"Từ ngày"}</strong>
             <div className="detail">{data.fromDate}</div>
           </div>
           <div className="col-4">
-            <div>{"Đến ngày"}</div>
+            <strong>{"Đến ngày"}</strong>
             <div className="detail">{data.toDate}</div>
           </div>
         </div>
         <div className="row mv-10">
           <div className="col-12">
-            {"Tổng số"}
+            <strong>{"Tổng số"}</strong>
             <div className="detail">{data.total}</div>
           </div>
         </div>
@@ -161,50 +159,47 @@ const CreateMaternityInsurance = ({
       <div className="box shadow cbnv">
         <div className="row mv-10">
           <div className="col-4">
-            <div>{"Mã số BHXH của con"}</div>
+            <strong>{"Mã số BHXH của con"}</strong>
             <div className="detail">{data.childInsuranceNumber}</div>
           </div>
           <div className="col-4">
-            <div>{"Số thẻ BHYT của con"}</div>
+            <strong>{"Số thẻ BHYT của con"}</strong>
             <div className="detail">{data.childHealthNumber}</div>
           </div>
           <div className="col-4">
-            <div>{"Tuổi thai"}</div>
+            <strong>{"Tuổi thai"}</strong>
             <div className="detail">{data.age}</div>
           </div>
         </div>
         <div className="row mv-10">
           <div className="col-4">
-            <div>{"Ngày sinh con"}</div>
+            <strong>{"Ngày sinh con"}</strong>
             <div className="detail">{data.childBirth}</div>
           </div>
           <div className="col-4">
-            <div>{"Ngày con chết"}</div>
+            <strong>{"Ngày con chết"}</strong>
             <div className="detail">{data.childDead}</div>
           </div>
-
           <div className="col-4">
-            {"Số con"}
+            <strong>{"Số con"}</strong>
             <div className="detail">{data.childNumbers}</div>
           </div>
         </div>
 
         <div className="row mv-10">
           <div className="col-8">
-            <div>{"Số con chết hoặc số thai chết lưu khi sinh"}</div>
+            <strong>{"Số con chết hoặc số thai chết lưu khi sinh"}</strong>
             <div className="detail">{data.childDeadNumbers}</div>
           </div>
           <div className="col-4">
-            <div>{"Ngày nhận nuôi con nuôi"}</div>
+            <strong>{"Ngày nhận nuôi con nuôi"}</strong>
             <div className="detail">{data.childReceiveDate}</div>
           </div>
         </div>
 
         <div className="row mv-10">
           <div className="col-12">
-            <div>
-              {"Ngày nhận nuôi (Đối với người mẹ nhờ mang thai hộ nhận con)"}
-            </div>
+            <strong>{"Ngày nhận nuôi (Đối với người mẹ nhờ mang thai hộ nhận con)"}</strong>
             <div className="detail">{data.childRaiseDate}</div>
           </div>
         </div>
@@ -215,48 +210,48 @@ const CreateMaternityInsurance = ({
       <div className="box shadow cbnv">
         <div className="row mv-10">
           <div className="col-4">
-            <div>{"Mã số BHXH của mẹ"}</div>
+            <strong>{"Mã số BHXH của mẹ"}</strong>
             <div className="detail">{data.momInsuranceNumber}</div>
           </div>
           <div className="col-4">
-            <div>{"Số thẻ BHYT của mẹ"}</div>
+            <strong>{"Số thẻ BHYT của mẹ"}</strong>
             <div className="detail">{data.momHealthNumber}</div>
           </div>
           <div className="col-4">
-            <div>{"Số CMTND của mẹ"}</div>
+            <strong>{"Số CMTND của mẹ"}</strong>
             <div className="detail">{data.momIdNumber}</div>
           </div>
         </div>
         <div className="row mv-10">
           <div className="col-4">
-            <div>{"Nghỉ dưỡng thai"}</div>
+            <strong>{"Nghỉ dưỡng thai"}</strong>
             <div className="detail">{data.maternityLeave}</div>
           </div>
           <div className="col-4">
-            <div>{"Mang thai hộ"}</div>
+            <strong>{"Mang thai hộ"}</strong>
             <div className="detail">{data.hasRainser}</div>
           </div>
 
           <div className="col-4">
-            {"Phẫu thuật hoặc thai dưới 32 tuần"}
+            <strong>{"Phẫu thuật hoặc thai dưới 32 tuần"}</strong>
             <div className="detail">{data.hasSurgery}</div>
           </div>
         </div>
 
         <div className="row mv-10">
           <div className="col-4">
-            <div>{"Ngày mẹ chết"}</div>
+            <strong>{"Ngày mẹ chết"}</strong>
             <div className="detail">{data.momDeadDate}</div>
           </div>
           <div className="col-8">
-            <div>{"Ngày kết luận (mẹ không đủ điều kiện chăm con)"}</div>
+            <strong>{"Ngày kết luận (mẹ không đủ điều kiện chăm con)"}</strong>
             <div className="detail">{data.resultDate}</div>
           </div>
         </div>
 
         <div className="row mv-10">
           <div className="col-12">
-            <div>{"Phí giám định y khoa"}</div>
+            <strong>{"Phí giám định y khoa"}</strong>
             <div className="detail">{data.assessment}</div>
           </div>
         </div>
@@ -267,11 +262,11 @@ const CreateMaternityInsurance = ({
       <div className="box shadow cbnv">
         <div className="row mv-10">
           <div className="col-8">
-            <div>{"Nội dung đợt"}</div>
+            <strong>{"Nội dung đợt"}</strong>
             <div className="detail">{data.resolveContent}</div>
           </div>
           <div className="col-4">
-            {"Tháng năm"}
+            <strong>{"Tháng năm"}</strong>
             <div className="detail">{data.resolveDate}</div>
           </div>
         </div>
@@ -282,11 +277,11 @@ const CreateMaternityInsurance = ({
       <div className="box shadow cbnv">
         <div className="row mv-10">
           <div className="col-8">
-            <div>{"Nội dung đợt"}</div>
+            <strong>{"Nội dung đợt"}</strong>
             <div className="detail">{data.addtionContent}</div>
           </div>
           <div className="col-4">
-            {"Tháng năm"}
+            <strong>{"Tháng năm"}</strong>
             <div className="detail">{data.addtionDate}</div>
           </div>
         </div>
@@ -297,33 +292,25 @@ const CreateMaternityInsurance = ({
       <div className="box shadow cbnv">
         <div className="row mv-10">
           <div className="col-4">
-            <div>
-              {"Hình thức nhận"}
-            </div>
+            <strong>{"Hình thức nhận"}</strong>
             <div className="detail">{data.receiveType}</div>
           </div>
           <div className="col-4">
-            <div>
-              {"Số tài khoản"}
-            </div>
+            <strong>{"Số tài khoản"}</strong>
             <div className="detail">{data.accountNumber}</div>
           </div>
           <div className="col-4">
-            {"Tên chủ tài khoản"}
+            <strong>{"Tên chủ tài khoản"}</strong>
             <div className="detail">{data.accountName}</div>
           </div>
         </div>
         <div className="row mv-10">
           <div className="col-4">
-            <div>
-              {"Mã ngân hàng"}
-            </div>
+            <strong>{"Mã ngân hàng"}</strong>
             <div className="detail">{data.bankId}</div>
           </div>
           <div className="col-8">
-            <div>
-              {"Tên ngân hàng"}
-            </div>
+            <strong>{"Tên ngân hàng"}</strong>
             <div className="detail">{data.bankName}</div>
           </div>
         </div>
