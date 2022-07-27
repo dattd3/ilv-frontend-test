@@ -71,7 +71,7 @@ class SubmitQuestionModal extends React.Component {
     }
 
     alertSuccess = () => {
-        this.props.showStatusModal('Gửi câu hỏi thành công !', true);
+        this.props.showStatusModal('Gửi câu hỏi thành công!', true);
     }
 
     alertFail = () => {
