@@ -18,7 +18,8 @@ class ConfirmRequestModal extends React.Component {
             isShowStatusModal: false,
             disabledSubmitButton: false,
             approverComment: "",
-            errorMessage: null
+            errorMessage: null,
+            statusCodeAPIException: null
         }
     }
 
@@ -87,12 +88,14 @@ class ConfirmRequestModal extends React.Component {
                     }
                 }
             })
-            .finally(res => {
-                this.props.onHide()
-            })
-            .catch(response => {
-                this.showStatusModal(this.props.t("Notification"), "Có lỗi xảy ra! Xin vui lòng liên hệ IT để hỗ trợ", false)
+            .catch(error => {
+                const errorCode = error?.response?.status
+                this.setState({statusCodeAPIException: errorCode})
+                this.showStatusModal(this.props.t("Notification"), errorCode === 504 ? "Yêu cầu đang được xử lý." : "Có lỗi xảy ra! Xin vui lòng liên hệ IT để hỗ trợ", [], errorCode === 504 ? true : false)
                 // this.props.updateTask(id,0)
+        })
+        .finally(res => {
+            this.props.onHide()
         })
     }
     
@@ -214,7 +217,7 @@ class ConfirmRequestModal extends React.Component {
         const {t} = this.props
         return (
             <>
-                <ResultDetailModal show={this.state.isShowStatusModal} title={this.state.resultTitle} message={this.state.resultMessage} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} resultDetail={this.state.resultDetail}/>
+                <ResultDetailModal show={this.state.isShowStatusModal} title={this.state.resultTitle} message={this.state.resultMessage} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} resultDetail={this.state.resultDetail} statusCodeAPIException={this.state.statusCodeAPIException} />
                 <Modal className='info-modal-common position-apply-modal' centered show={this.props.show} onHide={this.props.onHide}>
                     <Modal.Header className={`apply-position-modal ${backgroundColorMapping[this.props.type]}`} closeButton>
                         <Modal.Title>{this.props.title}</Modal.Title>
