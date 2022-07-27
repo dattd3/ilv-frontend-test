@@ -197,12 +197,13 @@ class ConfirmationModal extends React.Component {
                     }
                 }
             })
+            .catch(error => {
+                const errorCode = error?.response?.status
+                this.showStatusModal(this.props.t("Notification"), errorCode === 504 ? "Yêu cầu đang được xử lý." : "Có lỗi xảy ra! Xin vui lòng liên hệ IT để hỗ trợ", errorCode === 504 ? true : false)
+                // this.props.updateTask(id,0)
+            })
             .finally(res => {
                 this.props.onHide()
-            })
-            .catch(response => {
-                this.showStatusModal(this.props.t("Notification"), "Có lỗi xảy ra! Xin vui lòng liên hệ IT để hỗ trợ", false)
-                // this.props.updateTask(id,0)
             })
     }
 
