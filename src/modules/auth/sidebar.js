@@ -207,6 +207,14 @@ export const Navigation = [
     role:  ['V061']
   },
   {
+    id:1008,
+    parentId: 1001,
+    icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+    to: map.ProposalManagement,
+    label: 'MenuProposalManagement',
+    role: 'U'
+  },
+  {
     id: 4,
     parentId: 2,
     icon: "menu-bullet-lv2 icon-sub-menu-lv2",

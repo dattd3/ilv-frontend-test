@@ -47,6 +47,7 @@ class ConfirmPasswordModal extends React.Component {
                         if (res.data.data.access_token && res.data.data.access_token != '') {
                             this.props.onUpdateToken(res.data.data.access_token)
                             this.props.onHide()
+                            this.setState({ disabledSubmitButton: false });
                         } else {
                             this.setState({ error: this.props.t("InvalidPassword") })
                             this.setState({ disabledSubmitButton: false });

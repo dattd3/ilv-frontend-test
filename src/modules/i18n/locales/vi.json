@@ -948,6 +948,7 @@
   "MenuLeaveTOILManagement": "Quỹ phép",
   "MenuIndividualManagement": "Chi tiết cá nhân",
   "MenuChangeShiftReport": "Báo cáo thay đổi phân ca",
+  "MenuProposalManagement": "Quản lý đề xuất",
   "NoticeQuest": "* Để biết chính xác gửi yêu cầu đến ai vui lòng liên hệ CBQL trực tiếp để biết thông tin!", 
   "Withdraw": "Thu hồi", 
   "AllowRegisterFor1Hour":"Cho phép Đăng ký nghỉ 1 khung giờ trong nhiều ngày liên tiếp (Giới hạn trong chu kỳ lương)",
@@ -1133,5 +1134,6 @@
   "ConfirmNotApprove": "Xác nhận không phê duyệt",
   "ReasonNotApprove": "Lý do không phê duyệt",
   "EnterPasswordToViewPayslip": "Nhập mật khẩu để xem lương",
-  "EnterPassword": "Nhập mật khẩu"
+  "EnterPassword": "Nhập mật khẩu",
+  "SalaryAdjustmentPropse": "Đề xuất điều chỉnh tăng lương"
 }

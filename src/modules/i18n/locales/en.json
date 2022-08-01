@@ -927,6 +927,7 @@
   "MenuLeaveTOILManagement": "Leave/TOIL Management",
   "MenuIndividualManagement": "Individual Management",
   "MenuChangeShiftReport": "Change Shift Report",
+  "MenuProposalManagement": "Quản lý đề xuất",
   "AppraisalDuplicateApproval": "Please skip if Consenter is the same as Approver",
   "AllowRegisterFor1Hour":"Allow to apply leave for the same period in consecutive days (Limited in payroll cycle).",
   "APPROVER":"APPROVER",
@@ -1116,5 +1117,6 @@
   "ConfirmNotApprove": "Xác nhận không phê duyệt",
   "ReasonNotApprove": "Lý do không phê duyệt",
   "EnterPasswordToViewPayslip": "Nhập mật khẩu để xem lương",
-  "EnterPassword": "Nhập mật khẩu"
+  "EnterPassword": "Nhập mật khẩu",
+  "SalaryAdjustmentPropse": "Đề xuất điều chỉnh tăng lương"
 }

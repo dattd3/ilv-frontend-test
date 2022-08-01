@@ -80,6 +80,8 @@ export default {
   EmployeeTimeSheets: "/employee-timesheet-management",
   LeaveFund: "/leave-fund-management",
   PersonalDetails: "/personal-detail-management",
+  ProposalManagement: "/proposal-management",
+  SalaryAdjustmentPropse: "/salary-adjustment-propse",
 
   //Vaccine
   VaccineList: "/vaccination",
