@@ -484,6 +484,22 @@ export default [
           component: lazy(() => import("./WorkflowManagement/DepartmentManagement/EmployeeTimesheets"))
         },
         {
+          key: "proposal-management",
+          routeProps: {
+            exact: true,
+            path: map.ProposalManagement
+          },
+          component: lazy(() => import("./WorkflowManagement/DepartmentManagement/ProposalManagement"))
+        },
+        {
+          key: "salary-adjustment-propse",
+          routeProps: {
+            exact: true,
+            path: map.SalaryAdjustmentPropse
+          },
+          component: lazy(() => import("./WorkflowManagement/DepartmentManagement/ProposalManagement/SalaryAdjustmentPropse"))
+        },
+        {
           key: "vaccination",
           routeProps: {
             exact: true,

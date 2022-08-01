@@ -10,6 +10,7 @@ import ModalConsent from './ModalConsent';
 import moment from 'moment';
 import HumanForReviewSalaryComponent from '../../HumanForReviewSalaryComponent';
 import ConfirmPasswordModal from './ConfirmPasswordModal';
+import Constants from '../.../../../../../commons/Constants';
 
 function SalaryPropse(props) {
   const { t } = useTranslation();
@@ -56,10 +57,10 @@ function SalaryPropse(props) {
       humanResourceChangeSalary: false, //NHÂN SỰ THẨM ĐỊNH QUYỀN ĐIỀU CHỈNH LƯƠNG
       managerApproved: false, //CBQL CẤP CƠ SỞ
       bossApproved: false, //CBLĐ PHÊ DUYỆT
+      stateProcess: false, // Button trang thai Từ chối
       btnCancel: false, // Button Hủy
       btnSendRequest: false, // Button Gửi yêu cầu
       btnRefuse: false, // Button Từ chối
-      btnStateRefuse: false, // Button trang thai Từ chối
       btnExpertise: false, // Button Thẩm định
       btnNotApprove: false, // Button Không phê duyệt
       btnApprove: false, // Button phê duyệt
@@ -112,7 +113,6 @@ function SalaryPropse(props) {
         viewSettingTmp.showComponent.humanResourceChangeSalary = true;
         viewSettingTmp.disableComponent.viewCurrentSalary = true;
         viewSettingTmp.showComponent.btnRefuse = true;
-        viewSettingTmp.showComponent.btnStateRefuse = true;
         viewSettingTmp.showComponent.btnExpertise = true;
         break;
       case 24:
@@ -120,7 +120,6 @@ function SalaryPropse(props) {
         viewSetting.showComponent.bossApproved = true;
         viewSettingTmp.disableComponent.viewCurrentSalary = true;
         viewSetting.showComponent.btnRefuse = true;
-        viewSetting.showComponent.btnStateRefuse = true;
         viewSettingTmp.showComponent.btnExpertise = true;
         break;
       case 5:
@@ -131,7 +130,12 @@ function SalaryPropse(props) {
         viewSettingTmp.showComponent.btnApprove = true;
         break;
       case 2:
+        viewSettingTmp.showComponent.stateProcess = true;
         viewSettingTmp.showComponent.humanForReviewSalary = true;
+        break;
+      // case tu choi, khong phe duyet
+      case 1:
+        viewSettingTmp.showComponent.stateProcess = true;
         break;
       default:
         break;
@@ -217,9 +221,9 @@ function SalaryPropse(props) {
       });
     });
   };
-  
-  const handleUpdateApprover = (approver,isApprover) => {
-    console.log(approver,isApprover);
+
+  const handleUpdateApprover = (approver, isApprover) => {
+    console.log(approver, isApprover);
   }
 
   const handleCloseModal = () => {
@@ -403,7 +407,7 @@ function SalaryPropse(props) {
             <HumanForReviewSalaryComponent
               isEdit={processStatus !== 21}
               approver={approver}
-              updateApprover={(approver, isApprover) => handleUpdateApprover(approver,isApprover)}
+              updateApprover={(approver, isApprover) => handleUpdateApprover(approver, isApprover)}
             />
           </div>
         </div>
@@ -435,68 +439,48 @@ function SalaryPropse(props) {
           </div>
         </div>
       }
+      {/* Show status */}
+      {viewSetting.showComponent.stateProcess &&
+        <div className="block-status">
+          <span className={`status ${Constants.mappingStatusRequest[processStatus].className}`}>
+            {t(Constants.mappingStatusRequest[processStatus].label)}
+          </span>
+        </div>
+      }
       <div className='d-flex justify-content-end mb-5'>
         {/* Hủy */}
         {viewSetting.showComponent.btnCancel &&
-          <button
-            type='button'
-            className='btn btn-secondary ml-3 shadow'
-            onClick={() => handleCancel()}
-          >
-            <img src={IconDelete} className='mr-1' />
-            {t('CancelSearch')}
+          <button type='button' className='btn btn-secondary ml-3 shadow' onClick={() => handleCancel()}  >
+            <img src={IconDelete} className='mr-1' /> {t('CancelSearch')}
           </button>
         }
         {/* Gửi yêu cầu */}
         {viewSetting.showComponent.btnSendRequest &&
-          <button
-            type='button'
-            className='btn btn-primary ml-3 shadow'
-            onClick={() => handleSendForm()}
-          >
-            <i className='fa fa-paper-plane mr-1' aria-hidden='true'></i>
-            {t('Send')}
+          <button type='button' className='btn btn-primary ml-3 shadow' onClick={() => handleSendForm()}>
+            <i className='fa fa-paper-plane mr-1' aria-hidden='true'></i> {t('Send')}
           </button>
         }
         {/* Từ chối */}
         {viewSetting.showComponent.btnRefuse &&
-          <button
-            type='button'
-            className='btn btn-danger'
-            onClick={() => handleRefuse()}
-          >
-            <img src={IconDelete} className='mr-1' />
-            {t('RejectQuestionButtonLabel')}
+          <button type='button' className='btn btn-danger' onClick={() => handleRefuse()}  >
+            <img src={IconDelete} className='mr-1' /> {t('RejectQuestionButtonLabel')}
           </button>
         }
         {/* Thẩm định */}
         {viewSetting.showComponent.btnExpertise &&
-          <button
-            type='button'
-            className='btn btn-primary float-right ml-3 shadow'
-            onClick={() => handleConsent()}
-          >
+          <button type='button' className='btn btn-primary float-right ml-3 shadow' onClick={() => handleConsent()} >
             <i className='fas fa-check' aria-hidden='true'></i> {t('Consent')}
           </button>
         }
         {/* Không phê duyệt */}
         {viewSetting.showComponent.btnNotApprove &&
-          <button
-            type='button'
-            className='btn btn-danger'
-            onClick={() => handleReject()}
-          >
-            <img src={IconDelete} className='mr-1' />
-            {t('Reject')}
+          <button type='button' className='btn btn-danger' onClick={() => handleReject()} >
+            <img src={IconDelete} className='mr-1' /> {t('Reject')}
           </button>
         }
         {/* Phê duyệt */}
         {viewSetting.showComponent.btnApprove &&
-          <button
-            type='button'
-            className='btn btn-success float-right ml-3 shadow'
-            onClick={() => handleApprove()}
-          >
+          <button type='button' className='btn btn-success float-right ml-3 shadow' onClick={() => handleApprove()} >
             <i className='fas fa-check' aria-hidden='true'></i> {t('Approval')}
           </button>
         }
