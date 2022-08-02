@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useHistory } from 'react-router';
 import './styles.scss';
 import { useTranslation } from 'react-i18next';
+import CurrencyInput from 'react-currency-input-field';
 import IconEye from '../../../../assets/img/icon/eye.svg';
 import IconNotEye from '../../../../assets/img/icon/not-eye.svg';
 import { useApi } from '../../../../modules/api';
@@ -49,8 +50,6 @@ function SalaryPropse(props) {
     department: "Phòng Phát triển Sản phẩm"
   });
 
-  const processStatus = 21;
-
   const [viewSetting, setViewSetting] = useState({
     showComponent: {
       humanForReviewSalary: false, //NHÂN SỰ HỖ TRỢ XIN QUYỀN XEM LƯƠNG
@@ -72,6 +71,8 @@ function SalaryPropse(props) {
       suggestedSalary: true, //Mức lương đề xuất - Disable/Enable Input
     }
   });
+
+  const processStatus = 23;
 
   useEffect(() => {
     async function getData() {
@@ -222,6 +223,17 @@ function SalaryPropse(props) {
     });
   };
 
+  const handleTextInputChange = (value, objName) => {
+    setError({
+      ...error,
+      suggestedSalary: value ? value.length === 0 : true,
+    });
+    setFormData({
+      ...formData,
+      suggestedSalary: value ? value : '',
+    });
+  }
+
   const handleUpdateApprover = (approver, isApprover) => {
     console.log(approver, isApprover);
   }
@@ -334,12 +346,22 @@ function SalaryPropse(props) {
               <label className='block-content-salary__content--label'>
                 {t('SalaryNow')}
               </label>
-              <input
-                className='form-control'
-                type={`${viewSetting.disableComponent.showCurrentSalary ? 'text' : 'password'}`}
-                value={currentSalary}
-                disabled={viewSetting.disableComponent.currentSalary}
-              />
+              {viewSetting.disableComponent.showCurrentSalary ?
+                <CurrencyInput
+                  disabled={viewSetting.disableComponent.currentSalary}
+                  intlConfig={{ locale: 'vi-VN', currency: 'VND' }}
+                  className="form-control"
+                  value={currentSalary}
+                  placeholder="Nhập"
+                />
+                :
+                <input
+                  className='form-control'
+                  type={'password'}
+                  value={'**********'}
+                  disabled={viewSetting.disableComponent.currentSalary}
+                />
+              }
               {viewSetting.disableComponent.viewCurrentSalary &&
                 <div
                   className='col-input__icon'
@@ -353,21 +375,13 @@ function SalaryPropse(props) {
               <label className='block-content-salary__content--label'>
                 {t('SalaryRequest')}
               </label>
-              <input
-                type='number'
-                className='form-control'
+              <CurrencyInput
+                disabled={false}
+                intlConfig={{ locale: 'vi-VN', currency: 'VND' }}
+                className="form-control"
                 value={formData.suggestedSalary}
-                disabled={viewSetting.disableComponent.suggestedSalary}
-                onChange={(val) => {
-                  setError({
-                    ...error,
-                    suggestedSalary: val.target.value.trim().length === 0,
-                  });
-                  setFormData({
-                    ...formData,
-                    suggestedSalary: val.target.value,
-                  });
-                }}
+                onValueChange={(value) => { handleTextInputChange(value, 'suggestedSalary') }}
+                placeholder="Nhập"
               />
               {error.suggestedSalary && (
                 <span className='text-danger text-xs'>

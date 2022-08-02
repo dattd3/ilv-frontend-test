@@ -8,19 +8,29 @@ import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import FilterMember from "../../ShareComponents/FilterMember";
 import ModalConsent from "../../ShareComponents/ModalConsent";
+import ResultModal from "./ResultModal";
 import ApproverComponent from "../../ShareComponents/HrReviewSalaryComponent";
 import ConfirmPasswordModal from '../../../Registration/ContractEvaluation/SalaryPropose/ConfirmPasswordModal';
 import Constants from '../.../../../../../commons/Constants';
+import CurrencyInput from 'react-currency-input-field';
 import IconDelete from '../../../../assets/img/icon/Icon_Cancel.svg';
 import IconEye from '../../../../assets/img/icon/eye.svg';
 import IconNotEye from '../../../../assets/img/icon/not-eye.svg';
+import vi from 'date-fns/locale/vi'
+registerLocale("vi", vi)
 
 const InsuranceOptions = [
   { value: 1, label: 'Đề xuất Điều chỉnh thu nhập' },
 ];
 const ListTypeContract = [
-  { value: 1, label: "Thử việc" },
-  { value: 2, label: "Chính thức" },
+  { value: 'VA', label: 'HĐLĐ XĐ thời hạn' },
+  { value: 'VB', label: 'HĐLĐ KXĐ thời hạn' },
+  { value: 'VC', label: 'HĐLĐ theo mùa vụ' },
+  { value: 'VD', label: 'Hợp đồng tập nghề' },
+  { value: 'VE', label: 'Hợp đồng thử việc' },
+  { value: 'VF', label: 'HĐDV theo tháng' },
+  { value: 'VG', label: 'HĐDV theo giờ' },
+  { value: 'VH', label: 'HĐDV khoán' }
 ]
 
 const SalaryAdjustmentPropse = (props) => {
@@ -30,6 +40,12 @@ const SalaryAdjustmentPropse = (props) => {
     header: '',
     title: '',
     content: '',
+  });
+  const [resultModal, setResultModal] = useState({
+    show: false,
+    title: '',
+    message: '',
+    isSuccess: false,
   });
   const [isCreateMode, setIsCreateMode] = useState(false);
   const [modalConfirmPassword, setModalConfirmPassword] = useState(false);
@@ -183,13 +199,13 @@ const SalaryAdjustmentPropse = (props) => {
         fullname: "Trần Thị Thu Hằng",
         job_name: "Chuyên viên Nhân sự",
         department: "Nhân sự - Đào tạo",
-        typeContract: 1,
+        typeContract: 'VE',
         currentSalary: '',
-        proposedContract: 1,
+        proposedContract: '',
         proposedSalary: '',
-        effectiveTime: '20/10/2022',
-        strength: 'Luôn hoàn thành công việc',
-        weakness: 'Cải thiện thêm kỹ năng nghiệp vụ',
+        effectiveTime: '',
+        strength: '',
+        weakness: '',
       }
     ])
     setSelectMembers([
@@ -198,9 +214,9 @@ const SalaryAdjustmentPropse = (props) => {
         fullname: "Trần Thị Thu Hằng",
         job_name: "Chuyên viên Nhân sự",
         department: "Nhân sự - Đào tạo",
-        typeContract: 1,
+        typeContract: 'VE',
         currentSalary: '',
-        proposedContract: 1,
+        proposedContract: 'VE',
         proposedSalary: '',
         effectiveTime: '20/10/2022',
         strength: 'Luôn hoàn thành công việc',
@@ -238,11 +254,11 @@ const SalaryAdjustmentPropse = (props) => {
     setSelectedMembers(selectedMembersTmp)
   }
 
-  const handleTextInputChange = (e, uid, objName) => {
+  const handleTextInputChange = (value, uid, objName) => {
     const selectedMembersTmp = [...selectedMembers];
     selectedMembersTmp.forEach(item => {
       if (item.uid === uid) {
-        item[objName] = e.target.value
+        item[objName] = value
       }
     })
     setSelectedMembers(selectedMembersTmp)
@@ -306,37 +322,69 @@ const SalaryAdjustmentPropse = (props) => {
   const handleAttachFile = (e) => {
     const files = Object.values(e.target.files)
     const listFilesTmp = [...listFiles, ...files];
-    console.log(listFilesTmp);
     setListFiles(listFilesTmp)
   }
 
-  const removeFiles = (id, index) => { 
+  const removeFiles = (id, index) => {
     // Todo: handle remove file
-    console.log(id, index) 
+    const listFilesTmp = [...listFiles].filter((item, i) => i !== index)
+    setListFiles(listFilesTmp)
   }
 
   // Thẩm định
-  const handleConsent = () => { console.log('handleConsent'); }
+  const handleConsent = () => {
+    console.log('handleConsent');
+  }
 
   // Phê duyệt
-  const handleApprove = () => { console.log('handleApprove'); }
+  const handleApprove = () => {
+    console.log('handleApprove');
+  }
 
   // Gửi yêu cầu
   const handleSendForm = () => {
-    // Check HR có mã org qly trùng với mã org của ông QLTT
-    // Check Có quyền HR trên SAP => Request API mule check 
     if (processStatus === 23) {
-      validation();
+      const listErrors = validation();
+      if (listErrors.length !== 0) {
+        setResultModal({
+          show: true,
+          title: 'Yêu cầu nhập thông tin',
+          message: listErrors[0],
+          isSuccess: false,
+        })
+        return;
+      }
     }
-    console.log('Submit');
+    console.log('Submit call API');
   };
 
-  const validation = () => { }
+  const validation = () => {
+    const selectedMembersTmp = [...selectedMembers];
+    let errors = [];
+    selectedMembersTmp.forEach(u => {
+      if (!u.proposedContract) errors.push('Bắt buộc chọn Loại HĐ đề xuất!')
+      if (!u.proposedSalary) errors.push('Bắt buộc nhập mức lương đề xuất!')
+      if (!u.effectiveTime) errors.push('Bắt buộc chọn thời gian có hiệu lực!')
+    })
+    return errors;
+  }
 
   const handleChangeModalConfirmPassword = (acessToken) => {
     console.log(acessToken);
+    const viewSettingTmp = [...viewSetting];
+    viewSettingTmp.disableComponent.showSuggestedSalary = !viewSettingTmp.disableComponent.showSuggestedSalary
     setAcessToken(acessToken)
     setModalConfirmPassword(false)
+    setViewSetting(viewSettingTmp)
+  }
+
+  const hideStatusModal = () => {
+    setResultModal({
+      show: false,
+      title: '',
+      message: '',
+      isSuccess: false,
+    })
   }
 
   const renderListMember = (members) => {
@@ -376,7 +424,7 @@ const SalaryAdjustmentPropse = (props) => {
                   placeholder={t("Select")}
                   options={ListTypeContract}
                   isClearable={false}
-                  value={ListTypeContract.filter(u => u?.value === +item?.proposedContract)}
+                  value={ListTypeContract.filter(u => u?.value === item?.proposedContract)}
                   onChange={(e) => handleChangeSelectInputs(e, item?.uid, "proposedContract")}
                   className="input mv-10"
                   menuPortalTarget={document.body}
@@ -390,13 +438,12 @@ const SalaryAdjustmentPropse = (props) => {
           <td className="text-center">
             <span className="same-width">
               {viewSetting.disableComponent.editSubjectApply && !isCreateMode ?
-                <input
-                  type="number"
+                <CurrencyInput
+                  disabled={false}
+                  intlConfig={{ locale: 'vi-VN', currency: 'VND' }}
+                  className="form-control"
                   value={item?.proposedSalary}
-                  onChange={(e) => handleTextInputChange(e, item?.uid, "proposedSalary")}
-                  className="form-control input mv-10 w-100"
-                  name="proposedSalary"
-                  autoComplete="off"
+                  onValueChange={(value) => { handleTextInputChange(value, item?.uid, 'proposedSalary') }}
                   placeholder="Nhập"
                 />
                 :
@@ -444,7 +491,7 @@ const SalaryAdjustmentPropse = (props) => {
                 <input
                   type="text"
                   value={item?.strength}
-                  onChange={(e) => handleTextInputChange(e, item?.uid, "strength")}
+                  onChange={(e) => handleTextInputChange(e.target.value, item?.uid, "strength")}
                   className="form-control input mv-10 w-100"
                   name="strength"
                   autoComplete="off"
@@ -460,7 +507,7 @@ const SalaryAdjustmentPropse = (props) => {
                 <input
                   type="text"
                   value={item?.weakness}
-                  onChange={(e) => handleTextInputChange(e, item?.uid, "weakness")}
+                  onChange={(e) => handleTextInputChange(e.target.value, item?.uid, "weakness")}
                   className="form-control input mv-10 w-100"
                   name="weakness"
                   autoComplete="off"
@@ -481,6 +528,13 @@ const SalaryAdjustmentPropse = (props) => {
         show={modalConfirmPassword}
         onUpdateToken={handleChangeModalConfirmPassword}
         onHide={() => setModalConfirmPassword(false)}
+      />
+      <ResultModal
+        show={resultModal.show}
+        title={resultModal.title}
+        message={resultModal.message}
+        isSuccess={resultModal.resultModal}
+        onHide={hideStatusModal}
       />
       {/* ĐỀ XUẤT ĐIỀU CHỈNH LƯƠNG */}
       <h5 className="content-page-header">{t("SalaryAdjustmentPropse")}</h5>
@@ -548,14 +602,14 @@ const SalaryAdjustmentPropse = (props) => {
                 <td rowSpan="2" className="min-width text-center font-weight-bold">Khối/Phòng/Bộ phận</td>
                 <td rowSpan="2" className="min-width text-center font-weight-bold">Loại HĐ hiện tại</td>
                 <td rowSpan="2" className="min-width1 text-center"><strong>Thu nhập hiện tại</strong><span> (Gross)</span></td>
-                <td rowSpan="2" className="min-width1 text-center font-weight-bold">Loại HĐ đề xuất</td>
+                <td rowSpan="2" className="min-width2 text-center font-weight-bold">Loại HĐ đề xuất</td>
                 <td rowSpan="2" className="min-width1 text-center"><strong>Mức lương đề xuất</strong><span> (Gross)</span></td>
                 <td rowSpan="2" className="min-width text-center font-weight-bold"><strong>Thời gian hiệu lực</strong></td>
                 <th colSpan="2" scope="colgroup" className="min-width text-center font-weight-bold">Đánh giá chung</th>
               </tr>
               <tr>
-                <th scope="col" className="min-width2 text-center">Điểm mạnh</th>
-                <th scope="col" className="min-width2 text-center">Điểm yếu</th>
+                <th scope="col" className="min-width3 text-center">Điểm mạnh</th>
+                <th scope="col" className="min-width3 text-center">Điểm yếu</th>
               </tr>
             </thead>
             <tbody>
@@ -633,7 +687,7 @@ const SalaryAdjustmentPropse = (props) => {
         {/* Đính kèm tệp */}
         {viewSetting.showComponent.btnAttachFile &&
           <>
-            <input type="file" hidden id="i_files" name="i_files" onChange={(e) => handleAttachFile(e)} multiple />
+            <input type="file" hidden id="i_files" name="i_files" onChange={(e) => handleAttachFile(e)} accept=".xls, .xlsx, .doc, .docx, .jpg, .png, .pdf" multiple />
             <label htmlFor="i_files" className="btn btn-light float-right shadow" style={{ marginBottom: '0px' }}>
               <i className="fas fa-paperclip"></i> {t('AttachmentFile')}
             </label>
