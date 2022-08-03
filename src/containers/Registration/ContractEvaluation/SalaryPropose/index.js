@@ -88,6 +88,7 @@ function SalaryPropse(props) {
   }, [id]);
 
   const checkAuthorize = () => {
+    const currentEmployeeNo = localStorage.getItem('email');
     let viewSettingTmp = { ...viewSetting };
     // Todo: check nguoi danh gia
     switch (processStatus) {
@@ -350,7 +351,7 @@ function SalaryPropse(props) {
                 <CurrencyInput
                   disabled={viewSetting.disableComponent.currentSalary}
                   intlConfig={{ locale: 'vi-VN', currency: 'VND' }}
-                  className="form-control"
+                  className="no-vborder"
                   value={currentSalary}
                   placeholder="Nhập"
                 />
@@ -375,14 +376,24 @@ function SalaryPropse(props) {
               <label className='block-content-salary__content--label'>
                 {t('SalaryRequest')}
               </label>
-              <CurrencyInput
-                disabled={false}
-                intlConfig={{ locale: 'vi-VN', currency: 'VND' }}
-                className="form-control"
-                value={formData.suggestedSalary}
-                onValueChange={(value) => { handleTextInputChange(value, 'suggestedSalary') }}
-                placeholder="Nhập"
-              />
+              {viewSetting.disableComponent.suggestedSalary ?
+                <CurrencyInput
+                  disabled={true}
+                  intlConfig={{ locale: 'vi-VN', currency: 'VND' }}
+                  className="no-vborder"
+                  value={formData.suggestedSalary}
+                  placeholder="Nhập"
+                />
+                :
+                <CurrencyInput
+                  disabled={false}
+                  intlConfig={{ locale: 'vi-VN', currency: 'VND' }}
+                  className="form-control"
+                  value={formData.suggestedSalary}
+                  onValueChange={(value) => { handleTextInputChange(value, 'suggestedSalary') }}
+                  placeholder="Nhập"
+                />
+              }
               {error.suggestedSalary && (
                 <span className='text-danger text-xs'>
                   {t('RequiredInput')}
