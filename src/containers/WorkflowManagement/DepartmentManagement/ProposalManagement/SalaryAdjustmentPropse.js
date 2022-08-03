@@ -84,6 +84,7 @@ const SalaryAdjustmentPropse = (props) => {
       selectHrCoordinator: false, // Cho phep chon HR ĐIỀU PHỐI
       showCurrentSalary: false, // Change type text & password lương hiện tại
       showSuggestedSalary: false, // Change type text & password lương đề xuất 
+      disableAll: false,
     },
     proposedStaff: {
       fullName: '',
@@ -128,8 +129,8 @@ const SalaryAdjustmentPropse = (props) => {
 
   const checkAuthorize = () => {
     console.log('checkAuthorize');
+    const currentEmployeeNo = localStorage.getItem('email');
     let viewSettingTmp = { ...viewSetting };
-    // Todo: kiem tra ai la nguoi view
     switch (processStatus) {
       // Đang chờ nhân sự điều phối & Đang chờ nhân sự thẩm định người xem lương
       case 21:
@@ -138,6 +139,10 @@ const SalaryAdjustmentPropse = (props) => {
         break;
       // Đang chờ QLTT nhập lương đề xuất, xem lương hiện tại
       case 23:
+        // Todo: kiem tra ai la nguoi view
+        // if(!data.nguoipheduyet || !data.nguoipheduyet.account || (data.nguoipheduyet.account.toLowerCase()  + '@vingroup.net') != currentEmployeeNo.toLowerCase()){
+        //   viewSettingTmp.disableComponent.disableAll = true;
+        // }
         viewSettingTmp.showComponent.showHrSupportViewSalary = true;
         viewSettingTmp.showComponent.showCBQL = true;
         viewSettingTmp.showComponent.showHrAssessment = true;
@@ -404,7 +409,16 @@ const SalaryAdjustmentPropse = (props) => {
               {!isCreateMode ?
                 <div className="d-flex w-100">
                   <div style={{ width: '90%' }}>
-                    {item?.currentSalary && acessToken ? item?.currentSalary : '**********'}
+                    {item?.currentSalary && acessToken ?
+                      <CurrencyInput
+                        disabled={true}
+                        intlConfig={{ locale: 'vi-VN', currency: 'VND' }}
+                        className="no-vborder"
+                        value={item?.currentSalary}
+                        placeholder="Nhập"
+                      />
+                      : <span>{'**********'}</span>
+                    }
                   </div>
                   <div
                     style={{ width: '10%', cursor: 'pointer' }}
@@ -448,17 +462,19 @@ const SalaryAdjustmentPropse = (props) => {
                 />
                 :
                 <>
-                  <div className="d-flex w-100">
-                    <div style={{ width: '90%' }}>
-                      {item?.proposedSalary && acessToken ? item?.proposedSalary : '**********'}
+                  {!isCreateMode &&
+                    <div className="d-flex w-100">
+                      <div style={{ width: '90%' }}>
+                        {item?.proposedSalary && acessToken ? item?.proposedSalary : '**********'}
+                      </div>
+                      <div
+                        style={{ width: '10%', cursor: 'pointer' }}
+                        onClick={() => handleShowSuggestedSalary()}
+                      >
+                        <img src={viewSetting.disableComponent.showSuggestedSalary ? IconEye : IconNotEye} alt='eye' />
+                      </div>
                     </div>
-                    <div
-                      style={{ width: '10%', cursor: 'pointer' }}
-                      onClick={() => handleShowSuggestedSalary()}
-                    >
-                      <img src={viewSetting.disableComponent.showSuggestedSalary ? IconEye : IconNotEye} alt='eye' />
-                    </div>
-                  </div>
+                  }
                 </>
               }
             </span>
