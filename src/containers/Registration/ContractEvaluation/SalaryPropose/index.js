@@ -65,6 +65,7 @@ function SalaryPropse(props) {
       btnApprove: false, // Button phê duyệt
     },
     disableComponent: {
+      selectHrSupportViewSalary: false, // Cho phep chon Nhân sự hỗ trợ quyền xem lương
       currentSalary: true, //Mức lương hiện tại (GROSS) - Disable/Enable Input
       showCurrentSalary: false, //Change type text & password
       viewCurrentSalary: false, //Hiển thị eye
@@ -72,7 +73,7 @@ function SalaryPropse(props) {
     }
   });
 
-  const processStatus = 23;
+  const processStatus = 21;
 
   useEffect(() => {
     async function getData() {
@@ -103,7 +104,9 @@ function SalaryPropse(props) {
         viewSettingTmp.disableComponent.viewCurrentSalary = true;
         break;
       case 23:
+        viewSettingTmp.showComponent.humanForReviewSalary = true;
         viewSettingTmp.showComponent.humanResourceChangeSalary = true;
+        viewSettingTmp.showComponent.managerApproved = true;
         viewSettingTmp.showComponent.bossApproved = true;
         viewSettingTmp.disableComponent.viewCurrentSalary = true;
         viewSettingTmp.disableComponent.suggestedSalary = false;
@@ -111,29 +114,38 @@ function SalaryPropse(props) {
         viewSettingTmp.showComponent.btnSendRequest = true;
         break;
       case 8:
-        viewSettingTmp.showComponent.managerApproved = true;
+        viewSettingTmp.showComponent.humanForReviewSalary = true;
         viewSettingTmp.showComponent.humanResourceChangeSalary = true;
+        viewSettingTmp.showComponent.managerApproved = true;
+        viewSettingTmp.showComponent.bossApproved = true;
         viewSettingTmp.disableComponent.viewCurrentSalary = true;
         viewSettingTmp.showComponent.btnRefuse = true;
         viewSettingTmp.showComponent.btnExpertise = true;
         break;
       case 24:
-        viewSetting.showComponent.humanResourceChangeSalary = true;
-        viewSetting.showComponent.bossApproved = true;
+        viewSettingTmp.showComponent.humanForReviewSalary = true;
+        viewSettingTmp.showComponent.humanResourceChangeSalary = true;
+        viewSettingTmp.showComponent.managerApproved = true;
+        viewSettingTmp.showComponent.bossApproved = true;
         viewSettingTmp.disableComponent.viewCurrentSalary = true;
         viewSetting.showComponent.btnRefuse = true;
         viewSettingTmp.showComponent.btnExpertise = true;
         break;
       case 5:
+        viewSettingTmp.showComponent.humanForReviewSalary = true;
         viewSettingTmp.showComponent.humanResourceChangeSalary = true;
+        viewSettingTmp.showComponent.managerApproved = true;
         viewSettingTmp.showComponent.bossApproved = true;
         viewSettingTmp.disableComponent.viewCurrentSalary = true;
         viewSettingTmp.showComponent.btnNotApprove = true;
         viewSettingTmp.showComponent.btnApprove = true;
         break;
       case 2:
-        viewSettingTmp.showComponent.stateProcess = true;
         viewSettingTmp.showComponent.humanForReviewSalary = true;
+        viewSettingTmp.showComponent.humanResourceChangeSalary = true;
+        viewSettingTmp.showComponent.managerApproved = true;
+        viewSettingTmp.showComponent.bossApproved = true;
+        viewSettingTmp.showComponent.stateProcess = true;
         break;
       // case tu choi, khong phe duyet
       case 1:
@@ -253,6 +265,7 @@ function SalaryPropse(props) {
         onUpdateToken={handleChangeModalConfirmPassword}
         onHide={() => setModalConfirmPassword(false)}
       />
+      <div className="eval-heading">ĐỀ XUẤT ĐIỀU CHỈNH THU NHẬP</div>
       <div className='block-content-salary'>
         <h6 className='block-content-salary__title'>{t('ManagerEvaluate')}</h6>
         <div className='block-content-salary__content'>
@@ -351,7 +364,7 @@ function SalaryPropse(props) {
                 <CurrencyInput
                   disabled={viewSetting.disableComponent.currentSalary}
                   intlConfig={{ locale: 'vi-VN', currency: 'VND' }}
-                  className="no-vborder"
+                  className="form-control"
                   value={currentSalary}
                   placeholder="Nhập"
                 />
@@ -380,7 +393,7 @@ function SalaryPropse(props) {
                 <CurrencyInput
                   disabled={true}
                   intlConfig={{ locale: 'vi-VN', currency: 'VND' }}
-                  className="no-vborder"
+                  className="form-control"
                   value={formData.suggestedSalary}
                   placeholder="Nhập"
                 />
@@ -430,7 +443,7 @@ function SalaryPropse(props) {
           <h6 className='block-content-salary__title'> {t('HumanForReviewSalary')}</h6>
           <div className='block-content-salary__content'>
             <HumanForReviewSalaryComponent
-              isEdit={processStatus !== 21}
+              isEdit={!viewSetting.disableComponent.selectHrSupportViewSalary}
               approver={approver}
               updateApprover={(approver, isApprover) => handleUpdateApprover(approver, isApprover)}
             />
