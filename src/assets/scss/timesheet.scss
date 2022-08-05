@@ -1106,6 +1106,15 @@
     }
   }
   &.proposal-management {
+    .eval-heading {
+      text-transform: uppercase;
+      display: flex;
+      justify-content: center;
+      color: #ff0000;
+      font-size: 18px;
+      font-weight: bold;
+      margin: 0 0 0.5rem 0;
+    }
     .box {
       border: 1px solid #ddd;
       border-radius: 10px;

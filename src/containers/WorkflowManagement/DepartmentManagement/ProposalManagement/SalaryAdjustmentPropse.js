@@ -81,7 +81,7 @@ const SalaryAdjustmentPropse = (props) => {
     },
     disableComponent: {
       editSubjectApply: false, // Cho phép xem, sửa thông tin đối tượng
-      selectHrCoordinator: false, // Cho phep chon HR ĐIỀU PHỐI
+      selectHrSupportViewSalary: false, // Cho phep chon Nhân sự hỗ trợ quyền xem lương
       showCurrentSalary: false, // Change type text & password lương hiện tại
       showSuggestedSalary: false, // Change type text & password lương đề xuất 
       disableAll: false,
@@ -119,7 +119,7 @@ const SalaryAdjustmentPropse = (props) => {
     viewSettingTmp.showComponent.btnSendRequest = true;
     viewSettingTmp.showComponent.showHrSupportViewSalary = true;
     viewSettingTmp.disableComponent.editSubjectApply = true;
-    viewSettingTmp.disableComponent.selectHrCoordinator = true;
+    viewSettingTmp.disableComponent.selectHrSupportViewSalary = true;
 
     viewSettingTmp.proposedStaff.fullName = localStorage.getItem('fullName') || ""
     viewSettingTmp.proposedStaff.jobTitle = localStorage.getItem('jobTitle') || ""
@@ -552,6 +552,7 @@ const SalaryAdjustmentPropse = (props) => {
         isSuccess={resultModal.resultModal}
         onHide={hideStatusModal}
       />
+      <div className="eval-heading">ĐỀ XUẤT ĐIỀU CHỈNH THU NHẬP</div>
       {/* ĐỀ XUẤT ĐIỀU CHỈNH LƯƠNG */}
       <h5 className="content-page-header">{t("SalaryAdjustmentPropse")}</h5>
       <div className="timesheet-box1 shadow">
@@ -643,7 +644,7 @@ const SalaryAdjustmentPropse = (props) => {
           <h5 className="content-page-header">{"Nhân sự hỗ trợ quyền xem lương"}</h5>
           <div className="timesheet-box1 timesheet-box shadow">
             <ApproverComponent
-              isEdit={!viewSetting.disableComponent.selectHrCoordinator}
+              isEdit={!viewSetting.disableComponent.selectHrSupportViewSalary}
               approver={approver}
               updateApprover={(approver, isApprover) => console.log(approver, isApprover)}
             />
