@@ -275,6 +275,29 @@
                 font-style: italic;
             }
             .list-evaluation {
+                .evaluation-sub-group {
+                  border: 1px solid #DEE2E6;
+                  border-radius: 5px;
+                  margin-top: 30px;
+                  .sub-group-name{
+                    background-color: #F3F3F3;
+                    padding: 7px 20px;
+                    text-transform: uppercase;
+                    font-weight: 700;
+                  }
+                  .sub-group-targets {
+                    padding: 5px 20px;
+                    .divider {
+                      width: 100%;
+                      height: 0px;
+                      border-top: 1px solid #DEE2E6;
+                      margin-bottom: 10px;
+                      &:last-of-type {
+                        display: none;
+                      }
+                    }
+                  }
+                }
                 .evaluation-item {
                     padding: 10px 0;
                     .title {
