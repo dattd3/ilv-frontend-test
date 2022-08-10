@@ -542,9 +542,19 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         weak: infos.additionInforEvaluations.managersEvaluatePointImprove || ''
       }
       let defaultStartDate = '', defaultEndDate = '';
-      if(this.state.type == 'assess' && localStorage.getItem('companyCode') == Constants.pnlVCode.VinSchool && (infos.additionInforEvaluations.contractKpiResult != 4 && infos.additionInforEvaluations.contractKpiResult != 5)) {
-        defaultStartDate = moment(infos.staffContracts.expireDate).add(1, 'days').format('DD/MM/YYYY');
-        defaultEndDate = `31/05/${moment(infos.staffContracts.expireDate).add(2, 'years').year()}`
+      if(this.state.type == 'assess' && (infos.additionInforEvaluations.contractKpiResult != 4 && infos.additionInforEvaluations.contractKpiResult != 5)) {
+        if(localStorage.getItem('companyCode') == Constants.pnlVCode.VinSchool) {
+          defaultStartDate = moment(infos.staffContracts.expireDate).add(1, 'days').format('DD/MM/YYYY');
+          defaultEndDate = `31/05/${moment(infos.staffContracts.expireDate).add(2, 'years').year()}`
+        } else {
+          defaultStartDate = moment(infos.staffContracts.expireDate).add(1, 'days').format('DD/MM/YYYY');
+
+          if(infos.additionInforEvaluations.contractType == 'VA') {
+            defaultEndDate = moment(candidateInfos.employeeInfo.expireDate).add(12, 'months').format('DD/MM/YYYY');
+          } else if (['VF', 'VG', 'VH'].indexOf(infos.additionInforEvaluations.contractType) != -1) {
+            defaultEndDate =moment(candidateInfos.employeeInfo.expireDate).add(6, 'months').format('DD/MM/YYYY');
+          }
+        }
       }
       candidateInfos.qlttOpinion = {
         result : infos.additionInforEvaluations.contractKpiResult ? this.resultOptions.filter(item => item.value == infos.additionInforEvaluations.contractKpiResult)[0] || {} : {},
@@ -862,7 +872,18 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         candidateInfos[name]['endDate'] = null;
         candidateInfos[name]['disableTime'] = true;
       }
+
+      //check ngày hết hạn hợp đồng cho các pnl không phải VSC 9799
+      if(localStorage.getItem('companyCode') != Constants.pnlVCode.VinSchool && this.state.type == 'assess' && (candidateInfos[name]['result'] != 4 && candidateInfos[name]['result'] != 5)) {
+        if(e?.value == 'VA') {
+          candidateInfos[name]['endDate'] = moment(candidateInfos.employeeInfo.expireDate).add(12, 'months').format('DD/MM/YYYY');
+        } else if (['VF', 'VG', 'VH'].indexOf(e?.value) != -1) {
+          candidateInfos[name]['endDate'] =moment(candidateInfos.employeeInfo.expireDate).add(6, 'months').format('DD/MM/YYYY');
+        }
+        
+      }
     }
+    
     candidateInfos[name][subName] = e != null ? { value: e.value, label: e.label } : {}
     this.setState({errors: errors, data : candidateInfos})
   }
