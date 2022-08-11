@@ -230,10 +230,10 @@ function EvaluationProcess(props) {
     updateData(subIndex, parentIndex, stateName, val)
   }
 
-  const renderEvaluationItem = (item, index, scores, target, i, deviant, subGroupIndex, subGroupTargetIndex) => {
-    const isChild = !!target.subGroupTargetCode
+  const renderEvaluationItem = (item, index, scores, target, i, deviant, parentIndex, subGroupTargetIndex) => {
+    const isChild = !_.isNil(parentIndex)
     return <div className="evaluation-item" key={target.id}>
-      {!isChild ? <div className="title">{`${i + 1}. ${target?.targetName}`}</div> : <div className="sub-title">{`${subGroupIndex + 1}.${subGroupTargetIndex + 1} ${target?.targetName}`}</div>}
+      {!isChild ? <div className="title">{`${i + 1}. ${target?.targetName}`}</div> : <div className="sub-title">{`${parentIndex + 1}.${subGroupTargetIndex + 1} ${target?.targetName}`}</div>}
       {
         item?.listGroupConfig && item?.listGroupConfig?.length > 0 ?
           <div className="score-block">
@@ -262,15 +262,15 @@ function EvaluationProcess(props) {
                 {
                   showByManager && evaluationFormDetail.status == evaluationStatus.selfAssessment
                     ?
-                    <select onChange={(e) => handleInputChange(i, index, 'leadReviewPoint', e)} value={target?.leadReviewPoint || ''}>
-                      <option value=''>Chọn điểm</option>
-                      {
-                        (scores || []).map((score, i) => {
-                          return <option value={score} key={i}>{score}</option>
-                        })
-                      }
-                    </select>
-                    : <input type="text" value={target?.leadReviewPoint || ''} disabled />
+                  <select onChange={(e) => handleInputChange(i, index, 'leadReviewPoint', e)} value={target?.leadReviewPoint || ''}>
+                    <option value=''>Chọn điểm</option>
+                    {
+                      (scores || []).map((score, i) => {
+                        return <option value={score} key={i}>{score}</option>
+                      })
+                    }
+                  </select>
+                  : <input type="text" value={target?.leadReviewPoint || ''} disabled />
                 }
               </div>
               {errors[`${index}_${i}_leadReviewPoint`] && <div className="alert alert-danger invalid-message" role="alert">{errors[`${index}_${i}_leadReviewPoint`]}</div>}
@@ -364,7 +364,7 @@ function EvaluationProcess(props) {
         </div>
         <div className="qltt">
           <p>Ý kiến của QLTT đánh giá</p>
-          <textarea rows={1} value={target?.leaderReviewOpinion || ""} onChange={(e) => handleInputChange(i, index, 'leaderReviewOpinion', e)} disabled={!showByManager || (showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment))} />
+          <textarea rows={1} placeholder="Nhập thông tin" value={target?.leaderReviewOpinion || ""} onChange={(e) => handleInputChange(i, index, 'leaderReviewOpinion', e)} disabled={(showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment))} />
         </div>
       </div>
     </div>
@@ -425,26 +425,18 @@ function EvaluationProcess(props) {
 
           <div className="list-evaluation">
             {
-              // (item?.listTarget || []).map((target, i) => {
-              //   let deviant = (target?.leadReviewPoint === '' || target?.leadReviewPoint === null || target?.seftPoint === '' || target?.seftPoint === null) ? '' : Number(target?.leadReviewPoint) - Number(target?.seftPoint)
-
-              //   return renderEvaluationItem(item, index, scores, target, i, deviant)
-              // })
-              Object.entries(_.groupBy(item?.listTarget, "subGroupTargetCode")).map(([key, subGroup], subGroupIndex) => {
-                if (key === "undefined") {
-                  return (subGroup || []).map((target, i) => {
-                    let deviant = (target?.leadReviewPoint === '' || target?.leadReviewPoint === null || target?.seftPoint === '' || target?.seftPoint === null) ? '' : Number(target?.leadReviewPoint) - Number(target?.seftPoint)
-                    return renderEvaluationItem(item, index, scores, target, i, deviant)
-                  })
+              (item?.listTarget || []).map((target, i) => {
+                let deviant = (target?.leadReviewPoint === '' || target?.leadReviewPoint === null || target?.seftPoint === '' || target?.seftPoint === null) ? '' : Number(target?.leadReviewPoint) - Number(target?.seftPoint)
+                if (_.isEmpty(target.listTarget)) {
+                  return renderEvaluationItem(item, index, scores, target, i, deviant)
                 }
                 return <div className="evaluation-sub-group">
-                  <div className="sub-group-name">{`${subGroupIndex + 1}. ${subGroup[0].subGroupName}`} <span className="red">({subGroup[0].weight}%)</span></div>
+                  <div className="sub-group-name">{`${i + 1}. ${target.groupName}`} <span className="red">({target.groupWeight}%)</span></div>
                   <div className="sub-group-targets">
-                    {(subGroup || []).map((target, i) => {
-                      let deviant = (target?.leadReviewPoint === '' || target?.leadReviewPoint === null || target?.seftPoint === '' || target?.seftPoint === null) ? '' : Number(target?.leadReviewPoint) - Number(target?.seftPoint)
-                      const rawIndex = _.findIndex(item.listTarget, t => t.id === target.id)
-                      return <React.Fragment key={rawIndex}>
-                        {renderEvaluationItem(item, index, scores, target, rawIndex, deviant, subGroupIndex, i)}
+                    {(target.listTarget || []).map((childTarget, childIndex) => {
+                      let deviant = (childTarget?.leadReviewPoint === '' || childTarget?.leadReviewPoint === null || childTarget?.seftPoint === '' || childTarget?.seftPoint === null) ? '' : Number(childTarget?.leadReviewPoint) - Number(childTarget?.seftPoint)
+                      return <React.Fragment key={childIndex}>
+                        {renderEvaluationItem(item, index, scores, childTarget, 0, deviant, i, childIndex)}
                         <div className="divider" />
                       </React.Fragment>
                     })}
@@ -490,8 +482,8 @@ function EvaluationDetail(props) {
           //     return initial
           // }, 0)
           // evaluationFormDetailTemp.totalComplete = totalQuestionsAnswered
-          // SetEvaluationFormDetail(evaluationFormDetailTemp)
-          SetEvaluationFormDetail(testEvaluationData)
+          SetEvaluationFormDetail(evaluationFormDetailTemp)
+          // SetEvaluationFormDetail(testEvaluationData)
         }
       }
       SetIsLoading(false)
@@ -808,405 +800,345 @@ function EvaluationDetail(props) {
 export default EvaluationDetail
 
 const testEvaluationData = {
-  "id": 240,
-  "listGroup": [
-    {
-      "id": 301,
-      "listTarget": [
-        {
-          "id": 853,
-          "targetGuiId": "7bdcf123-c4ff-420a-9984-8c5279c9b8b9",
-          "targetId": 1092,
-          "target": null,
-          "realResult": "",
-          "targetName": "Khả năng thúc đẩy, tạo động lực và gắn kết nhân viên",
-          "metric1": null,
-          "metric2": null,
-          "metric3": null,
-          "metric4": null,
-          "metric5": null,
-          "seftPoint": null,
-          "leadReviewPoint": null,
-          "seftOpinion": null,
-          "leaderReviewOpinion": null,
-          "groupTargetId": 0,
-          "groupTargetCode": "G1",
-          "groupName": "Tinh thần thái độ",
-          "groupWeight": 30,
-          "subGroupTargetCode": "G1.1",
-          "subGroupName": "Con người",
-          "weight": 10,
-          "checkPhaseFormId": 0,
-          "employeeCode": null,
-          "formCode": "A00240",
-          "createDate": "2022-07-29T14:55:52.005171",
-          "listTarget": null
-        },
-        {
-          "id": 854,
-          "targetGuiId": "b2d00259-7fa1-4ebe-bfc6-9190c5d9f5b7",
-          "targetId": 1091,
-          "target": null,
-          "realResult": "",
-          "targetName": "Khả năng giao việc, kiểm soát công việc và đào tạo, phát triển nhân viên",
-          "metric1": null,
-          "metric2": null,
-          "metric3": null,
-          "metric4": null,
-          "metric5": null,
-          "seftPoint": null,
-          "leadReviewPoint": null,
-          "seftOpinion": null,
-          "leaderReviewOpinion": null,
-          "groupTargetId": 0,
-          "groupTargetCode": "G1",
-          "groupName": "Tinh thần thái độ",
-          "groupWeight": 20,
-          "subGroupTargetCode": "G1.1",
-          "subGroupName": "Con người",
-          "weight": 25,
-          "checkPhaseFormId": 0,
-          "employeeCode": null,
-          "formCode": "A00240",
-          "createDate": "2022-07-29T14:55:52.005171",
-          "listTarget": null
-        },
-        {
-          "id": 858,
-          "targetGuiId": "a005df1d-1fff-40b0-83cd-9ff594dbfd69",
-          "targetId": 1089,
-          "target": null,
-          "realResult": "",
-          "targetName": "Mức độ tin tưởng và sử dụng các sản phẩm/ dịch vụ Tập đoàn",
-          "metric1": null,
-          "metric2": null,
-          "metric3": null,
-          "metric4": null,
-          "metric5": null,
-          "seftPoint": null,
-          "leadReviewPoint": null,
-          "seftOpinion": null,
-          "leaderReviewOpinion": null,
-          "groupTargetId": 0,
-          "groupTargetCode": "G1",
-          "groupName": "Tinh thần thái độ",
-          "groupWeight": 20,
-          "subGroupTargetCode": "G1.2",
-          "subGroupName": "Thương hiệu",
-          "weight": 25,
-          "checkPhaseFormId": 0,
-          "employeeCode": null,
-          "formCode": "A00240",
-          "createDate": "2022-07-29T14:55:52.005171",
-          "listTarget": null
-        },
-        {
-          "id": 859,
-          "targetGuiId": "a005df1d-1fff-40b0-83cd-9ff594dbfd69",
-          "targetId": 1089,
-          "target": null,
-          "realResult": "",
-          "targetName": "Mức độ lan tỏa các giá trị văn hóa/ thương hiệu (Đánh giá bằng số lượng người thân, bạn bè, cấp dưới sử dụng các sản phẩm của Tập đoàn)",
-          "metric1": null,
-          "metric2": null,
-          "metric3": null,
-          "metric4": null,
-          "metric5": null,
-          "seftPoint": null,
-          "leadReviewPoint": null,
-          "seftOpinion": null,
-          "leaderReviewOpinion": null,
-          "groupTargetId": 0,
-          "groupTargetCode": "G1",
-          "groupName": "Tinh thần thái độ",
-          "groupWeight": 20,
-          "subGroupTargetCode": "G1.2",
-          "subGroupName": "Thương hiệu",
-          "weight": 25,
-          "checkPhaseFormId": 0,
-          "employeeCode": null,
-          "formCode": "A00240",
-          "createDate": "2022-07-29T14:55:52.005171",
-          "listTarget": null
-        },
-        {
-          "id": 860,
-          "targetGuiId": "a005df1d-1fff-40b0-83cd-9ff594dbfd69",
-          "targetId": 1090,
-          "target": null,
-          "realResult": "",
-          "targetName": "Khả năng Quản lý tài sản của Công ty/Bộ phận một cách sát sao, hiệu quả",
-          "metric1": null,
-          "metric2": null,
-          "metric3": null,
-          "metric4": null,
-          "metric5": null,
-          "seftPoint": null,
-          "leadReviewPoint": null,
-          "seftOpinion": null,
-          "leaderReviewOpinion": null,
-          "groupTargetId": 0,
-          "groupTargetCode": "G1",
-          "groupName": "Tinh thần thái độ",
-          "groupWeight": 20,
-          "subGroupTargetCode": "G1.3",
-          "subGroupName": "Tài sản",
-          "weight": 25,
-          "checkPhaseFormId": 0,
-          "employeeCode": null,
-          "formCode": "A00240",
-          "createDate": "2022-07-29T14:55:52.005171",
-          "listTarget": null
-        },
-        {
-          "id": 861,
-          "targetGuiId": "a005df1d-1fff-40b0-83cd-9ff594dbfd69",
-          "targetId": 1091,
-          "target": null,
-          "realResult": "",
-          "targetName": "Đấu tranh với hành vi lãng phí tài sản của công ty",
-          "metric1": null,
-          "metric2": null,
-          "metric3": null,
-          "metric4": null,
-          "metric5": null,
-          "seftPoint": null,
-          "leadReviewPoint": null,
-          "seftOpinion": null,
-          "leaderReviewOpinion": null,
-          "groupTargetId": 0,
-          "groupTargetCode": "G1",
-          "groupName": "Tinh thần thái độ",
-          "groupWeight": 20,
-          "subGroupTargetCode": "G1.3",
-          "subGroupName": "Tài sản",
-          "weight": 25,
-          "checkPhaseFormId": 0,
-          "employeeCode": null,
-          "formCode": "A00240",
-          "createDate": "2022-07-29T14:55:52.005171",
-          "listTarget": null
-        }
-      ],
-      "checkPhaseFormId": 130,
-      "groupWeight": 20,
-      "groupName": "Tinh thần thái độ",
-      "listGroupConfig": [
-        {
-          "id": 1,
-          "groupTargetCode": "G1",
-          "weight": "0% - 10%",
-          "description": "Không thể hiện"
-        },
-        {
-          "id": 2,
-          "groupTargetCode": "G1",
-          "weight": "11% - 49% ",
-          "description": "Thể hiện còn ít"
-        },
-        {
-          "id": 3,
-          "groupTargetCode": "G1",
-          "weight": "50% - 69%",
-          "description": "Thể hiện nhưng chưa rõ nét hoặc chỉ thể hiện những khi thực sự cần,hoặc khi được yêu cầu"
-        },
-        {
-          "id": 4,
-          "groupTargetCode": "G1",
-          "weight": "70% - 89%",
-          "description": "Thường xuyên thể hiện"
-        },
-        {
-          "id": 5,
-          "groupTargetCode": "G1",
-          "weight": "90% - 100%",
-          "description": "Luôn luôn chủ động thể hiện và là tấm gương cho người khác học tập"
-        }
-      ],
-      "groupTargetId": 1,
+  "id": 238,
+  "listGroup": [{
+    "id": 296,
+    "listTarget": [{
+      "id": 0,
+      "targetGuiId": null,
+      "targetId": 0,
+      "target": null,
+      "realResult": null,
+      "targetName": null,
+      "metric1": null,
+      "metric2": null,
+      "metric3": null,
+      "metric4": null,
+      "metric5": null,
+      "seftPoint": null,
+      "leadReviewPoint": null,
+      "seftOpinion": null,
+      "leaderReviewOpinion": null,
+      "groupTargetId": 0,
+      "groupTargetCode": "G11",
+      "groupName": "Con người",
+      "groupWeight": 10,
+      "weight": 0,
+      "checkPhaseFormId": 0,
+      "employeeCode": null,
+      "formCode": null,
+      "createDate": null,
+      "listTarget": [{
+        "id": 905,
+        "targetGuiId": "a28a53e4-4a12-401e-b265-532472f96b3d",
+        "targetId": 1120,
+        "target": "Đạt được mục tiêu",
+        "realResult": "",
+        "targetName": "Khả năng thúc đẩy, tạo động lực và gắn kết nhân viên",
+        "metric1": "1 điểm: Đạt 60% <70%",
+        "metric2": "2 điểm: Đạt 70% < 80%",
+        "metric3": "3 điểm: Đạt 80% < 90%",
+        "metric4": "4 điểm: Đạt 90% - dưới 100%",
+        "metric5": "5 điểm: Đạt 100%",
+        "seftPoint": 1,
+        "leadReviewPoint": null,
+        "seftOpinion": "1",
+        "leaderReviewOpinion": null,
+        "groupTargetId": 0,
+        "groupTargetCode": "G11",
+        "groupName": "Con người",
+        "groupWeight": 10,
+        "weight": 100,
+        "checkPhaseFormId": 0,
+        "employeeCode": null,
+        "formCode": "A00238",
+        "createDate": "2022-07-18T16:01:34.952565",
+        "listTarget": null
+      }, {
+        "id": 906,
+        "targetGuiId": "a28a53e4-4a12-401e-b265-532472f96b4d",
+        "targetId": 1121,
+        "target": "Đạt được mục tiêu",
+        "realResult": "",
+        "targetName": "Khả năng giao việc, kiểm soát công việc và đào tạo, phát triển nhân viên",
+        "metric1": "1 điểm: Đạt 60% <70%",
+        "metric2": "2 điểm: Đạt 70% < 80%",
+        "metric3": "3 điểm: Đạt 80% < 90%",
+        "metric4": "4 điểm: Đạt 90% - dưới 100%",
+        "metric5": "5 điểm: Đạt 100%",
+        "seftPoint": 4,
+        "leadReviewPoint": null,
+        "seftOpinion": "3",
+        "leaderReviewOpinion": null,
+        "groupTargetId": 0,
+        "groupTargetCode": "G11",
+        "groupName": "Con người",
+        "groupWeight": 10,
+        "weight": 100,
+        "checkPhaseFormId": 0,
+        "employeeCode": null,
+        "formCode": "A00238",
+        "createDate": "2022-07-18T16:01:34.952565",
+        "listTarget": null
+      }]
+    }, {
+      "id": 0,
+      "targetGuiId": null,
+      "targetId": 0,
+      "target": null,
+      "realResult": null,
+      "targetName": null,
+      "metric1": null,
+      "metric2": null,
+      "metric3": null,
+      "metric4": null,
+      "metric5": null,
+      "seftPoint": null,
+      "leadReviewPoint": null,
+      "seftOpinion": null,
+      "leaderReviewOpinion": null,
+      "groupTargetId": 0,
+      "groupTargetCode": "G12",
+      "groupName": "Thương hiệu",
+      "groupWeight": 10,
+      "weight": 0,
+      "checkPhaseFormId": 0,
+      "employeeCode": null,
+      "formCode": null,
+      "createDate": null,
+      "listTarget": [{
+        "id": 907,
+        "targetGuiId": "a28a53e4-4a12-401e-b265-532472f96b9d",
+        "targetId": 1122,
+        "target": "Đạt được mục tiêu",
+        "realResult": "",
+        "targetName": "Mức độ tin tưởng và sử dụng các sản phẩm/ dịch vụ Tập đoàn",
+        "metric1": "1 điểm: Đạt 60% <70%",
+        "metric2": "2 điểm: Đạt 70% < 80%",
+        "metric3": "3 điểm: Đạt 80% < 90%",
+        "metric4": "4 điểm: Đạt 90% - dưới 100%",
+        "metric5": "5 điểm: Đạt 100%",
+        "seftPoint": 4,
+        "leadReviewPoint": null,
+        "seftOpinion": "3",
+        "leaderReviewOpinion": null,
+        "groupTargetId": 0,
+        "groupTargetCode": "G12",
+        "groupName": "Thương hiệu",
+        "groupWeight": 10,
+        "weight": 100,
+        "checkPhaseFormId": 0,
+        "employeeCode": null,
+        "formCode": "A00238",
+        "createDate": "2022-07-18T16:01:34.952565",
+        "listTarget": null
+      }, {
+        "id": 908,
+        "targetGuiId": "a28a53e4-4a12-401e-b265-532472f96bud",
+        "targetId": 1123,
+        "target": "Đạt được mục tiêu",
+        "realResult": "",
+        "targetName": "Mức độ lan tỏa các giá trị văn hóa/ thương hiệu (Đánh giá bằng số lượng người thân, bạn bè, cấp dưới sử dụng các sản phẩm của Tập đoàn)",
+        "metric1": "1 điểm: Đạt 60% <70%",
+        "metric2": "2 điểm: Đạt 70% < 80%",
+        "metric3": "3 điểm: Đạt 80% < 90%",
+        "metric4": "4 điểm: Đạt 90% - dưới 100%",
+        "metric5": "5 điểm: Đạt 100%",
+        "seftPoint": 4,
+        "leadReviewPoint": null,
+        "seftOpinion": "3",
+        "leaderReviewOpinion": null,
+        "groupTargetId": 0,
+        "groupTargetCode": "G12",
+        "groupName": "Thương hiệu",
+        "groupWeight": 10,
+        "weight": 100,
+        "checkPhaseFormId": 0,
+        "employeeCode": null,
+        "formCode": "A00238",
+        "createDate": "2022-07-18T16:01:34.952565",
+        "listTarget": null
+      }]
+    }, {
+      "id": 0,
+      "targetGuiId": null,
+      "targetId": 0,
+      "target": null,
+      "realResult": null,
+      "targetName": null,
+      "metric1": null,
+      "metric2": null,
+      "metric3": null,
+      "metric4": null,
+      "metric5": null,
+      "seftPoint": null,
+      "leadReviewPoint": null,
+      "seftOpinion": null,
+      "leaderReviewOpinion": null,
+      "groupTargetId": 0,
+      "groupTargetCode": "G13",
+      "groupName": "Tài sản",
+      "groupWeight": 10,
+      "weight": 0,
+      "checkPhaseFormId": 0,
+      "employeeCode": null,
+      "formCode": null,
+      "createDate": null,
+      "listTarget": [{
+        "id": 904,
+        "targetGuiId": "a28a53e4-4a12-401e-b265-532472f96b2d",
+        "targetId": 1124,
+        "target": "Đạt được mục tiêu",
+        "realResult": "",
+        "targetName": "Khả năng Quản lý tài sản của Công ty/Bộ phận một cách sát sao, hiệu quả",
+        "metric1": "1 điểm: Đạt 60% <70%",
+        "metric2": "2 điểm: Đạt 70% < 80%",
+        "metric3": "3 điểm: Đạt 80% < 90%",
+        "metric4": "4 điểm: Đạt 90% - dưới 100%",
+        "metric5": "5 điểm: Đạt 100%",
+        "seftPoint": 4,
+        "leadReviewPoint": null,
+        "seftOpinion": "3",
+        "leaderReviewOpinion": null,
+        "groupTargetId": 0,
+        "groupTargetCode": "G13",
+        "groupName": "Tài sản",
+        "groupWeight": 10,
+        "weight": 100,
+        "checkPhaseFormId": 0,
+        "employeeCode": null,
+        "formCode": "A00238",
+        "createDate": "2022-07-18T16:01:34.952565",
+        "listTarget": null
+      }, {
+        "id": 909,
+        "targetGuiId": "a28a53e4-4a12-401e-b265-532472f96b2d",
+        "targetId": 1124,
+        "target": "Đạt được mục tiêu",
+        "realResult": "",
+        "targetName": "Khả năng Quản lý tài sản của Công ty/Bộ phận một cách sát sao, hiệu quả",
+        "metric1": "1 điểm: Đạt 60% <70%",
+        "metric2": "2 điểm: Đạt 70% < 80%",
+        "metric3": "3 điểm: Đạt 80% < 90%",
+        "metric4": "4 điểm: Đạt 90% - dưới 100%",
+        "metric5": "5 điểm: Đạt 100%",
+        "seftPoint": 4,
+        "leadReviewPoint": null,
+        "seftOpinion": "3",
+        "leaderReviewOpinion": null,
+        "groupTargetId": 0,
+        "groupTargetCode": "G13",
+        "groupName": "Tài sản",
+        "groupWeight": 10,
+        "weight": 100,
+        "checkPhaseFormId": 0,
+        "employeeCode": null,
+        "formCode": "A00238",
+        "createDate": "2022-07-18T16:01:34.952565",
+        "listTarget": null
+      }]
+    }],
+    "checkPhaseFormId": 130,
+    "groupWeight": 20,
+    "groupName": "Tinh thần thái độ",
+    "listGroupConfig": [{
+      "id": 1,
       "groupTargetCode": "G1",
-      "groupOrder": 1,
-      "groupSeftPoint": null,
-      "groupLeadReviewPoint": null,
-      "isDeleted": false
-    },
-    {
-      "id": 300,
-      "listTarget": [
-        {
-          "id": 851,
-          "targetGuiId": "KPI05",
-          "targetId": 1115,
-          "target": "100",
-          "realResult": "",
-          "targetName": "KPI5",
-          "metric1": "0%-10%",
-          "metric2": "11%-49%",
-          "metric3": "50%-69%",
-          "metric4": "70%-89%",
-          "metric5": "90%-100%",
-          "seftPoint": null,
-          "leadReviewPoint": null,
-          "seftOpinion": null,
-          "leaderReviewOpinion": null,
-          "groupTargetId": 0,
-          "groupTargetCode": "G2",
-          "groupName": "Kết quả công việc",
-          "groupWeight": 80,
-          "weight": 20,
-          "checkPhaseFormId": 0,
-          "employeeCode": null,
-          "formCode": "A00240",
-          "createDate": "2022-07-29T14:55:52.005171",
-          "listTarget": null
-        },
-        {
-          "id": 850,
-          "targetGuiId": "KPI04",
-          "targetId": 1114,
-          "target": "100",
-          "realResult": "",
-          "targetName": "KPI4",
-          "metric1": "0%-10%",
-          "metric2": "11%-49%",
-          "metric3": "50%-69%",
-          "metric4": "70%-89%",
-          "metric5": "90%-100%",
-          "seftPoint": null,
-          "leadReviewPoint": null,
-          "seftOpinion": null,
-          "leaderReviewOpinion": null,
-          "groupTargetId": 0,
-          "groupTargetCode": "G2",
-          "groupName": "Kết quả công việc",
-          "groupWeight": 80,
-          "weight": 20,
-          "checkPhaseFormId": 0,
-          "employeeCode": null,
-          "formCode": "A00240",
-          "createDate": "2022-07-29T14:55:52.005171",
-          "listTarget": null
-        },
-        {
-          "id": 857,
-          "targetGuiId": "KPI03",
-          "targetId": 1113,
-          "target": "100",
-          "realResult": "",
-          "targetName": "KPI3",
-          "metric1": "0%-10%",
-          "metric2": "11%-49%",
-          "metric3": "50%-69%",
-          "metric4": "70%-89%",
-          "metric5": "90%-100%",
-          "seftPoint": null,
-          "leadReviewPoint": null,
-          "seftOpinion": null,
-          "leaderReviewOpinion": null,
-          "groupTargetId": 0,
-          "groupTargetCode": "G2",
-          "groupName": "Kết quả công việc",
-          "groupWeight": 80,
-          "weight": 20,
-          "checkPhaseFormId": 0,
-          "employeeCode": null,
-          "formCode": "A00240",
-          "createDate": "2022-07-29T14:55:52.005171",
-          "listTarget": null
-        },
-        {
-          "id": 852,
-          "targetGuiId": "KPI02",
-          "targetId": 1112,
-          "target": "100",
-          "realResult": "",
-          "targetName": "KPI2",
-          "metric1": "0%-10%",
-          "metric2": "11%-49%",
-          "metric3": "50%-69%",
-          "metric4": "70%-89%",
-          "metric5": "90%-100%",
-          "seftPoint": null,
-          "leadReviewPoint": null,
-          "seftOpinion": null,
-          "leaderReviewOpinion": null,
-          "groupTargetId": 0,
-          "groupTargetCode": "G2",
-          "groupName": "Kết quả công việc",
-          "groupWeight": 80,
-          "weight": 20,
-          "checkPhaseFormId": 0,
-          "employeeCode": null,
-          "formCode": "A00240",
-          "createDate": "2022-07-29T14:55:52.005171",
-          "listTarget": null
-        },
-        {
-          "id": 856,
-          "targetGuiId": "KPI01",
-          "targetId": 1111,
-          "target": "100",
-          "realResult": "",
-          "targetName": "KPI1",
-          "metric1": "0%-10%",
-          "metric2": "11%-49%",
-          "metric3": "50%-69%",
-          "metric4": "70%-89%",
-          "metric5": "90%-100%",
-          "seftPoint": null,
-          "leadReviewPoint": null,
-          "seftOpinion": null,
-          "leaderReviewOpinion": null,
-          "groupTargetId": 0,
-          "groupTargetCode": "G2",
-          "groupName": "Kết quả công việc",
-          "groupWeight": 80,
-          "weight": 20,
-          "checkPhaseFormId": 0,
-          "employeeCode": null,
-          "formCode": "A00240",
-          "createDate": "2022-07-29T14:55:52.005171",
-          "listTarget": null
-        }
-      ],
-      "checkPhaseFormId": 130,
-      "groupWeight": 80,
-      "groupName": "Kết quả công việc",
-      "listGroupConfig": [],
-      "groupTargetId": 2,
+      "weight": "0% - 10%",
+      "description": "Không thể hiện"
+    }, {
+      "id": 2,
+      "groupTargetCode": "G1",
+      "weight": "11% - 49% ",
+      "description": "Thể hiện còn ít"
+    }, {
+      "id": 3,
+      "groupTargetCode": "G1",
+      "weight": "50% - 69%",
+      "description": "Thể hiện nhưng chưa rõ nét hoặc chỉ thể hiện những khi thực sự cần,hoặc khi được yêu cầu"
+    }, {
+      "id": 4,
+      "groupTargetCode": "G1",
+      "weight": "70% - 89%",
+      "description": "Thường xuyên thể hiện"
+    }, {
+      "id": 5,
+      "groupTargetCode": "G1",
+      "weight": "90% - 100%",
+      "description": "Luôn luôn chủ động thể hiện và là tấm gương cho người khác học tập"
+    }],
+    "groupTargetId": 1,
+    "groupTargetCode": "G1",
+    "groupOrder": 1,
+    "groupSeftPoint": 50,
+    "groupLeadReviewPoint": null,
+    "isDeleted": false
+  }, {
+    "id": 297,
+    "listTarget": [{
+      "id": 845,
+      "targetGuiId": "3d59295f-ebeb-41d1-8ad8-f2c9ecf04158",
+      "targetId": 1077,
+      "target": "Đạt được mục tiêu",
+      "realResult": "234",
+      "targetName": "Đánh giá chuyên môn",
+      "metric1": "1 điểm: Đạt 60% <70%",
+      "metric2": "2 điểm: Đạt 70% < 80%",
+      "metric3": "3 điểm: Đạt 80% < 90%",
+      "metric4": "4 điểm: Đạt 90% - dưới 100%",
+      "metric5": "5 điểm: Đạt 100%",
+      "seftPoint": 4,
+      "leadReviewPoint": null,
+      "seftOpinion": null,
+      "leaderReviewOpinion": null,
+      "groupTargetId": 0,
       "groupTargetCode": "G2",
-      "groupOrder": 2,
-      "groupSeftPoint": null,
-      "groupLeadReviewPoint": null,
-      "isDeleted": false
-    }
-  ],
+      "groupName": "Kết quả công việc",
+      "groupWeight": 80,
+      "weight": 100,
+      "checkPhaseFormId": 0,
+      "employeeCode": null,
+      "formCode": "A00238",
+      "createDate": "2022-07-18T16:01:34.952565",
+      "listTarget": null
+    }],
+    "checkPhaseFormId": 130,
+    "groupWeight": 80,
+    "groupName": "Kết quả công việc",
+    "listGroupConfig": [],
+    "groupTargetId": 2,
+    "groupTargetCode": "G2",
+    "groupOrder": 2,
+    "groupSeftPoint": 80,
+    "groupLeadReviewPoint": null,
+    "isDeleted": false
+  }],
   "checkPhaseFormId": 130,
-  "employeeCode": "3644798",
-  "createDate": "2022-07-29T14:55:52.005171",
+  "employeeCode": "3644790",
+  "createDate": "2022-07-18T16:01:34.952565",
   "checkPhaseFormName": "Biểu mẫu 13/07",
-  "fullName": "Khương Văn Minh",
-  "position": "Chuyên viên Phát triển sản phẩm",
-  "employeeLevel": "CV",
+  "fullName": null,
+  "position": null,
+  "employeeLevel": "",
   "organization_lv3": null,
   "organization_lv4": null,
   "status": 2,
   "isDeleted": false,
-  "seftTotalComplete": 0,
+  "seftTotalComplete": 5,
   "leadReviewTotalComplete": 0,
-  "reviewer": "{\"uid\":\"3529661\",\"fullname\":\"DD_Truongkhoa_03\",\"job_code\":\"61T323400001\",\"username\":\"VM.TEST65\",\"company_email\":\"VM.TEST65@VINGROUP.NET\",\"position_title\":\"Chuyên viên Hành chính Nhân sự\",\"work_localtion\":null,\"pnl\":\"Vin3S\",\"division\":null,\"department\":null,\"unit\":null,\"part\":null,\"avatar\":null,\"status\":\"3\"}",
+  "reviewer": "null",
   "approver": "null",
-  "formCode": "A00240",
-  "totalSeftPoint": 0,
-  "totalLeadReviewPoint": 0,
-  "reviewPoolId": 5352,
-  "adCode": "MINHKV1",
+  "formCode": "A00238",
+  "totalSeftPoint": 74.0,
+  "totalLeadReviewPoint": 0.0,
+  "reviewPoolId": 5347,
+  "adCode": null,
   "description": null,
-  "hrAdmin": "Nguyễn Văn VinMec - Quản lý Tuyển dụng",
-  "hrAccount": "3644797",
+  "hrAdmin": "Khương Văn Minh - Chuyên viên Phát triển sản phẩm",
+  "hrAccount": "3516934",
   "nextStep": 0,
-  "totalTarget": 9,
+  "totalTarget": 11,
   "reviewStreamCode": "1NF",
-  "sendDateLv1": "2022-07-29T14:55:52.005171",
-  "formType": null
+  "sendDateLv1": "2022-08-11T10:02:23.128859",
+  "formType": "LD"
 }
