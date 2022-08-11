@@ -18,6 +18,9 @@
             min-height: 40px;
         }
     }
+    .btn-search-substitution, .btn-search-in-out-time {
+        margin-top: 10px;
+    }
     .block-time-item-edit {
         .box-time, input {
             font-size: inherit;
@@ -632,10 +635,10 @@
         }
         .input-img {
             position: absolute;
-            top: 8px;
-            right: 2px;
-            width: 24px;
-            height: 24px;
+            top: 20px;
+            // right: 2px;
+            // width: 24px;
+            // height: 24px;
         }
         .input-clock {
             position: absolute;
@@ -648,7 +651,7 @@
             margin-bottom: 0;
         }
         i {
-            font-size: 20px;
+            font-size: 16px;
             font-weight: 100;
         }
     }

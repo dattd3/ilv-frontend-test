@@ -16,7 +16,7 @@ import ShiftForm from './ShiftForm'
 import ResultModal from '../ResultModal'
 import Constants from '../.../../../../commons/Constants'
 import map from '../../../../src/containers/map.config'
-import { getValueParamByQueryString, getMuleSoftHeaderConfigurations, formatStringByMuleValue } from "../../../commons/Utils"
+import { getValueParamByQueryString, getMuleSoftHeaderConfigurations, formatStringByMuleValue, getRegistrationMinDateByConditions } from "../../../commons/Utils"
 import EditIcon from '../../../assets/img/icon/Icon-edit.svg'
 import 'react-datepicker/dist/react-datepicker.css'
 import vi from 'date-fns/locale/vi'
@@ -683,6 +683,8 @@ class SubstitutionComponent extends React.Component {
       return moment(applyFrom, "YYYYMMDD").isValid() ? moment(applyFrom, "YYYYMMDD").add(maxDayForApplyTo, 'days').toDate() : null
     }
 
+    const minDate = getRegistrationMinDateByConditions()
+
     return (
       <div className="shift-work">
         <ResultModal show={isShowResultModal} title={titleModal} message={messageModal} isSuccess={isSuccess} onHide={this.hideResultModal} />
@@ -710,7 +712,8 @@ class SubstitutionComponent extends React.Component {
                     selected={startDate ? moment(startDate, DATE_FORMAT).toDate() : null}
                     startDate={startDate ? moment(startDate, DATE_FORMAT).toDate() : null}
                     endDate={endDate ? moment(endDate, DATE_FORMAT).toDate() : null}
-                    minDate={[Constants.pnlVCode.VinPearl].includes(currentUserCompanyVCode) ? moment(new Date().getDate() - 1, DATE_FORMAT).toDate() : null}
+                    // minDate={[Constants.pnlVCode.VinPearl].includes(currentUserCompanyVCode) ? moment(new Date().getDate() - 1, DATE_FORMAT).toDate() : null}
+                    minDate={minDate?.toDate() || null}
                     onChange={this.setStartDate.bind(this)}
                     dateFormat="dd/MM/yyyy"
                     placeholderText={t("Select")}
@@ -733,7 +736,7 @@ class SubstitutionComponent extends React.Component {
                     selected={endDate ? moment(endDate, DATE_FORMAT).toDate() : null}
                     startDate={startDate ? moment(startDate, DATE_FORMAT).toDate() : null}
                     endDate={endDate ? moment(endDate, DATE_FORMAT).toDate() : null}
-                    minDate={startDate ? moment(startDate, DATE_FORMAT).toDate() : ([Constants.pnlVCode.VinPearl].includes(currentUserCompanyVCode) ? moment(new Date().getDate() - 1, Constants.LEAVE_DATE_FORMAT).toDate() : null)}
+                    minDate={startDate ? moment(startDate, DATE_FORMAT).toDate() : minDate?.toDate() || null}
                     onChange={this.setEndDate.bind(this)}
                     dateFormat="dd/MM/yyyy"
                     placeholderText={t("Select")}
@@ -747,7 +750,7 @@ class SubstitutionComponent extends React.Component {
 
             <div className="col-4">
               <p className="title">&nbsp;</p>
-              <button type="button" className="btn btn-warning btn-search w-100" onClick={this.search.bind(this)}>{t("Search")}</button>
+              <button type="button" className="btn btn-warning btn-search-substitution w-100" onClick={this.search.bind(this)}>{t("Search")}</button>
             </div>
           </div>
         </div>
