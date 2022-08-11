@@ -13,7 +13,7 @@ import _ from 'lodash'
 import moment from 'moment'
 import map from '../../../../src/containers/map.config'
 import { withTranslation } from "react-i18next";
-import { getValueParamByQueryString } from "../../../commons/Utils"
+import { getValueParamByQueryString, getRegistrationMinDateByConditions } from "../../../commons/Utils"
 import { checkIsExactPnL } from '../../../commons/commonFunctions';
 
 registerLocale("vi", vi)
@@ -787,6 +787,8 @@ class BusinessTripComponent extends React.Component {
             ]
         }
         const checkVinmec = checkIsExactPnL(Constants.PnLCODE.Vinmec);
+        const minDate = getRegistrationMinDateByConditions()
+        
         return (
             <div className="business-trip">
                 <ResultModal show={this.state.isShowStatusModal} title={this.state.titleModal} message={this.state.messageModal} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
@@ -844,7 +846,8 @@ class BusinessTripComponent extends React.Component {
                                                                             startDate={reqDetail.startDate ? moment(reqDetail.startDate, DATE_FORMAT).toDate() : null}
                                                                             endDate={reqDetail.endDate ? moment(reqDetail.endDate, DATE_FORMAT).toDate() : null}
                                                                             // minDate = {['V030'].includes(localStorage.getItem('companyCode')) ? moment(new Date().getDate() - 1, DATE_FORMAT).toDate() : null}
-                                                                            minDate={(['V030'].includes(localStorage.getItem('companyCode')) ? moment(new Date((new Date()).valueOf() - 1000 * 60 * 60 * 24), Constants.LEAVE_DATE_FORMAT).toDate() : null)}
+                                                                            // minDate={(['V030'].includes(localStorage.getItem('companyCode')) ? moment(new Date((new Date()).valueOf() - 1000 * 60 * 60 * 24), Constants.LEAVE_DATE_FORMAT).toDate() : null)}
+                                                                            minDate={minDate?.toDate() || null}
                                                                             onChange={date => this.setStartDate(date, reqDetail.groupId, reqDetail.groupItem)}
                                                                             dateFormat="dd/MM/yyyy"
                                                                             placeholderText={t('Select')}
@@ -892,7 +895,8 @@ class BusinessTripComponent extends React.Component {
                                                                             startDate={reqDetail.startDate ? moment(reqDetail.startDate, DATE_FORMAT).toDate() : null}
                                                                             endDate={reqDetail.endDate ? moment(reqDetail.endDate, DATE_FORMAT).toDate() : null}
                                                                             // minDate={reqDetail.startDate ? moment(reqDetail.startDate, DATE_FORMAT).toDate() : (['V030'].includes(localStorage.getItem('companyCode')) ? moment(new Date().getDate() - 1, Constants.LEAVE_DATE_FORMAT).toDate() : null)}
-                                                                            minDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : (['V030'].includes(localStorage.getItem('companyCode')) ? moment(new Date((new Date()).valueOf() - 1000 * 60 * 60 * 24), Constants.LEAVE_DATE_FORMAT).toDate() : null)}
+                                                                            // minDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : (['V030'].includes(localStorage.getItem('companyCode')) ? moment(new Date((new Date()).valueOf() - 1000 * 60 * 60 * 24), Constants.LEAVE_DATE_FORMAT).toDate() : null)}
+                                                                            minDate={reqDetail?.startDate ? moment(reqDetail?.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : minDate?.toDate() || null}
                                                                             onChange={date => this.setEndDate(date, reqDetail.groupId, reqDetail.groupItem)}
                                                                             dateFormat="dd/MM/yyyy"
                                                                             placeholderText={t('Select')}
