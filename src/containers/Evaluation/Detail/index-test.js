@@ -222,12 +222,12 @@ function EvaluationProcess(props) {
     return scores
   }
 
-  const handleInputChange = (subIndex, parentIndex, stateName, element) => {
+  const handleInputChange = (subIndex, parentIndex, stateName, element, childIndex) => {
     const val = element?.target?.value || ""
     if (['seftPoint', 'leadReviewPoint'].includes(stateName) && (!(/^\d*$/.test(Number(val))) || val.includes('.'))) {
       return
     }
-    updateData(subIndex, parentIndex, stateName, val)
+    updateData(subIndex, parentIndex, stateName, val, childIndex)
   }
 
   const renderEvaluationItem = (item, index, scores, target, i, deviant, parentIndex, subGroupTargetIndex) => {
@@ -260,9 +260,9 @@ function EvaluationProcess(props) {
               <div className="item">
                 <span className="red label">Điểm QLTT đánh giá{showByManager && <span className="required">(*)</span>}</span>
                 {
-                  showByManager && evaluationFormDetail.status == evaluationStatus.selfAssessment
+                  !showByManager && evaluationFormDetail.status == evaluationStatus.selfAssessment
                     ?
-                  <select onChange={(e) => handleInputChange(i, index, 'leadReviewPoint', e)} value={target?.leadReviewPoint || ''}>
+                  <select onChange={(e) => handleInputChange(parentIndex, index, 'leadReviewPoint', e, subGroupTargetIndex)} value={target?.leadReviewPoint || ''}>
                     <option value=''>Chọn điểm</option>
                     {
                       (scores || []).map((score, i) => {
@@ -482,8 +482,8 @@ function EvaluationDetail(props) {
           //     return initial
           // }, 0)
           // evaluationFormDetailTemp.totalComplete = totalQuestionsAnswered
-          SetEvaluationFormDetail(evaluationFormDetailTemp)
-          // SetEvaluationFormDetail(testEvaluationData)
+          // SetEvaluationFormDetail(evaluationFormDetailTemp)
+          SetEvaluationFormDetail(testEvaluationData)
         }
       }
       SetIsLoading(false)
@@ -529,9 +529,14 @@ function EvaluationDetail(props) {
     return result
   }
 
-  const updateData = (subIndex, parentIndex, stateName, value) => {
+  const updateData = (subIndex, parentIndex, stateName, value, childIndex) => {
+    console.log("update",{subIndex, parentIndex, childIndex});
     const evaluationFormDetailTemp = { ...evaluationFormDetail }
-    evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex][stateName] = value
+    if(_.isNil(childIndex)) {
+      evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex][stateName] = value
+    } else {
+      evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex].listTarget[childIndex][stateName] = value
+    }
     let totalQuestionsAnswered = 0
     if (showByManager) {
       totalQuestionsAnswered = (evaluationFormDetailTemp?.listGroup || []).reduce((initial, current) => {
@@ -1122,7 +1127,7 @@ const testEvaluationData = {
   "employeeLevel": "",
   "organization_lv3": null,
   "organization_lv4": null,
-  "status": 2,
+  "status": 3,
   "isDeleted": false,
   "seftTotalComplete": 5,
   "leadReviewTotalComplete": 0,
