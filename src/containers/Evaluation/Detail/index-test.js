@@ -222,12 +222,152 @@ function EvaluationProcess(props) {
     return scores
   }
 
-  const handleInputChange = (subIndex, parentIndex, stateName, element) => {
+  const handleInputChange = (subIndex, parentIndex, stateName, element, childIndex) => {
     const val = element?.target?.value || ""
     if (['seftPoint', 'leadReviewPoint'].includes(stateName) && (!(/^\d*$/.test(Number(val))) || val.includes('.'))) {
       return
     }
-    updateData(subIndex, parentIndex, stateName, val)
+    updateData(subIndex, parentIndex, stateName, val, childIndex)
+  }
+
+  const renderEvaluationItem = (item, index, scores, target, i, deviant, parentIndex, subGroupTargetIndex) => {
+    const isChild = !_.isNil(parentIndex)
+    return <div className="evaluation-item" key={target.id}>
+      {!isChild ? <div className="title">{`${i + 1}. ${target?.targetName}`}</div> : <div className="sub-title">{`${parentIndex + 1}.${subGroupTargetIndex + 1} ${target?.targetName}`}</div>}
+      {
+        item?.listGroupConfig && item?.listGroupConfig?.length > 0 ?
+          <div className="score-block">
+            <div className="self attitude-score">
+              <div className="item">
+                <span className="red label">Điểm tự đánh giá{!showByManager && <span className="required">(*)</span>}</span>
+                {
+                  !showByManager && evaluationFormDetail.status == evaluationStatus.launch
+                    ?
+                    <select onChange={(e) => handleInputChange(i, index, 'seftPoint', e)} value={target?.seftPoint || ''}>
+                      <option value=''>Chọn điểm</option>
+                      {
+                        (scores || []).map((score, i) => {
+                          return <option value={score} key={i}>{score}</option>
+                        })
+                      }
+                    </select>
+                    : <input type="text" value={target?.seftPoint || ''} disabled />
+                }
+              </div>
+              {errors[`${index}_${i}_seftPoint`] && <div className="alert alert-danger invalid-message" role="alert">{errors[`${index}_${i}_seftPoint`]}</div>}
+            </div>
+            <div className="qltt attitude-score">
+              <div className="item">
+                <span className="red label">Điểm QLTT đánh giá{showByManager && <span className="required">(*)</span>}</span>
+                {
+                  !showByManager && evaluationFormDetail.status == evaluationStatus.selfAssessment
+                    ?
+                    <select onChange={(e) => handleInputChange(parentIndex, index, 'leadReviewPoint', e, subGroupTargetIndex)} value={target?.leadReviewPoint || ''}>
+                      <option value=''>Chọn điểm</option>
+                      {
+                        (scores || []).map((score, i) => {
+                          return <option value={score} key={i}>{score}</option>
+                        })
+                      }
+                    </select>
+                    : <input type="text" value={target?.leadReviewPoint || ''} disabled />
+                }
+              </div>
+              {errors[`${index}_${i}_${subGroupTargetIndex}_leadReviewPoint`] && <div className="alert alert-danger invalid-message" role="alert">{errors[`${index}_${i}_${subGroupTargetIndex}_leadReviewPoint`]}</div>}
+            </div>
+            <div className="deviant">
+              <span className="red label">Điểm chênh lệch</span>
+              <span className={`value ${deviant && deviant > 0 ? 'up' : deviant && deviant < 0 ? 'down' : ''}`}>&nbsp;{`${deviant && deviant > 0 ? '+' : ''}${deviant}`}{deviant && deviant != 0 ? <Image alt='Note' src={deviant && deviant > 0 ? IconUp : deviant && deviant < 0 ? IconDown : ''} /> : ''}</span>
+            </div>
+          </div>
+          :
+          <div className="wrap-score-table">
+            <table>
+              <thead>
+                <tr>
+                  <th className="measurement"><span>Cách đo lường<span className="note">(Tính theo điểm)</span></span></th>
+                  <th className="text-center proportion"><span>Tỷ trọng %</span></th>
+                  <th className="text-center target"><span>Mục tiêu</span></th>
+                  <th className="text-center actual-results"><span>Kết quả thực tế</span>{!showByManager && <span className="required">(*)</span>}</th>
+                  <th className="text-center self-assessment"><span>Điểm tự đánh giá</span>{!showByManager && <span className="required">(*)</span>}</th>
+                  <th className="text-center qltt-assessment"><span>Điểm QLTT đánh giá</span>{showByManager && <span className="required">(*)</span>}</th>
+                  <th className="text-center deviant"><span>Điểm chênh lệch</span></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td className="measurement">
+                    <ul>
+                      <li>{target?.metric1}</li>
+                      <li>{target?.metric2}</li>
+                      <li>{target?.metric3}</li>
+                      <li>{target?.metric4}</li>
+                      <li>{target?.metric5}</li>
+                    </ul>
+                  </td>
+                  <td className="text-center proportion"><span>{target?.weight}%</span></td>
+                  <td className="text-center target"><span>{target?.target}</span></td>
+                  <td className="actual-results">
+                    <div>
+                      {!showByManager && evaluationFormDetail.status == evaluationStatus.launch ? <textarea rows={3} placeholder="Nhập" value={target?.realResult || ""} onChange={(e) => handleInputChange(i, index, 'realResult', e)} /> : <span>{target?.realResult}</span>}
+                    </div>
+                    {errors[`${index}_${i}_realResult`] && <div className="alert alert-danger invalid-message" role="alert">{errors[`${index}_${i}_realResult`]}</div>}
+                  </td>
+                  <td className="text-center self-assessment">
+                    <div>
+                      {
+                        !showByManager && evaluationFormDetail.status == evaluationStatus.launch
+                          // ? <input type="text" placeholder="Nhập" value={target?.seftPoint || ""} onChange={(e) => handleInputChange(i, index, 'seftPoint', e)} /> 
+                          ? <select onChange={(e) => handleInputChange(i, index, 'seftPoint', e)} value={target?.seftPoint || ''}>
+                            <option value=''>Chọn điểm</option>
+                            {
+                              (scores || []).map((score, i) => {
+                                return <option value={score} key={i}>{score}</option>
+                              })
+                            }
+                          </select>
+                          : <span>{target?.seftPoint}</span>
+                      }
+                    </div>
+                    {errors[`${index}_${i}_seftPoint`] && <div className="alert alert-danger invalid-message" role="alert">{errors[`${index}_${i}_seftPoint`]}</div>}
+                  </td>
+                  <td className="text-center qltt-assessment">
+                    <div>
+                      {
+                        showByManager && evaluationFormDetail.status == evaluationStatus.selfAssessment
+                          // ? <input type="text" placeholder="Nhập" value={target?.leadReviewPoint || ""} onChange={(e) => handleInputChange(i, index, 'leadReviewPoint', e)} />
+                          ? <select onChange={(e) => handleInputChange(i, index, 'leadReviewPoint', e)} value={target?.leadReviewPoint || ''}>
+                            <option value=''>Chọn điểm</option>
+                            {
+                              (scores || []).map((score, i) => {
+                                return <option value={score} key={i}>{score}</option>
+                              })
+                            }
+                          </select>
+                          : <span>{target?.leadReviewPoint}</span>
+                      }
+                    </div>
+                    {errors[`${index}_${i}_leadReviewPoint`] && <div className="alert alert-danger invalid-message" role="alert">{errors[`${index}_${i}_leadReviewPoint`]}</div>}
+                  </td>
+                  <td className="text-center deviant">
+                    <span className={`value ${deviant && deviant > 0 ? 'up' : deviant && deviant < 0 ? 'down' : ''}`}>&nbsp;{`${deviant && deviant > 0 ? '+' : ''}${deviant}`}{deviant && deviant != 0 ? <Image alt='Note' src={deviant && deviant > 0 ? IconUp : deviant && deviant < 0 ? IconDown : ''} /> : ''}</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+      }
+      <div className="comment">
+        <div className="self">
+          <p>Ý kiến của CBNV tự đánh giá</p>
+          <textarea rows={1} placeholder="Nhập thông tin" value={target?.seftOpinion || ""} onChange={(e) => handleInputChange(i, index, 'seftOpinion', e)} disabled={showByManager || evaluationFormDetail.status != evaluationStatus.launch} />
+        </div>
+        <div className="qltt">
+          <p>Ý kiến của QLTT đánh giá</p>
+          <textarea rows={1} placeholder="Nhập thông tin" value={target?.leaderReviewOpinion || ""} onChange={(e) => handleInputChange(parentIndex, index, 'leaderReviewOpinion', e, subGroupTargetIndex)} disabled={(showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment))} />
+        </div>
+      </div>
+    </div>
   }
 
   return <div className="card shadow evaluation-process">
@@ -287,141 +427,19 @@ function EvaluationProcess(props) {
             {
               (item?.listTarget || []).map((target, i) => {
                 let deviant = (target?.leadReviewPoint === '' || target?.leadReviewPoint === null || target?.seftPoint === '' || target?.seftPoint === null) ? '' : Number(target?.leadReviewPoint) - Number(target?.seftPoint)
-
-                return <div className="evaluation-item" key={i}>
-                  <div className="title">{`${i + 1}. ${target?.targetName}`}</div>
-                  {
-                    item?.listGroupConfig && item?.listGroupConfig?.length > 0 ?
-                      <div className="score-block">
-                        <div className="self attitude-score">
-                          <div className="item">
-                            <span className="red label">Điểm tự đánh giá{!showByManager && <span className="required">(*)</span>}</span>
-                            {
-                              !showByManager && evaluationFormDetail.status == evaluationStatus.launch
-                                ?
-                                <select onChange={(e) => handleInputChange(i, index, 'seftPoint', e)} value={target?.seftPoint || ''}>
-                                  <option value=''>Chọn điểm</option>
-                                  {
-                                    (scores || []).map((score, i) => {
-                                      return <option value={score} key={i}>{score}</option>
-                                    })
-                                  }
-                                </select>
-                                : <input type="text" value={target?.seftPoint || ''} disabled />
-                            }
-                          </div>
-                          {errors[`${index}_${i}_seftPoint`] && <div className="alert alert-danger invalid-message" role="alert">{errors[`${index}_${i}_seftPoint`]}</div>}
-                        </div>
-                        <div className="qltt attitude-score">
-                          <div className="item">
-                            <span className="red label">Điểm QLTT đánh giá{showByManager && <span className="required">(*)</span>}</span>
-                            {
-                              showByManager && evaluationFormDetail.status == evaluationStatus.selfAssessment
-                                ?
-                                <select onChange={(e) => handleInputChange(i, index, 'leadReviewPoint', e)} value={target?.leadReviewPoint || ''}>
-                                  <option value=''>Chọn điểm</option>
-                                  {
-                                    (scores || []).map((score, i) => {
-                                      return <option value={score} key={i}>{score}</option>
-                                    })
-                                  }
-                                </select>
-                                : <input type="text" value={target?.leadReviewPoint || ''} disabled />
-                            }
-                          </div>
-                          {errors[`${index}_${i}_leadReviewPoint`] && <div className="alert alert-danger invalid-message" role="alert">{errors[`${index}_${i}_leadReviewPoint`]}</div>}
-                        </div>
-                        <div className="deviant">
-                          <span className="red label">Điểm chênh lệch</span>
-                          <span className={`value ${deviant && deviant > 0 ? 'up' : deviant && deviant < 0 ? 'down' : ''}`}>&nbsp;{`${deviant && deviant > 0 ? '+' : ''}${deviant}`}{deviant && deviant != 0 ? <Image alt='Note' src={deviant && deviant > 0 ? IconUp : deviant && deviant < 0 ? IconDown : ''} /> : ''}</span>
-                        </div>
-                      </div>
-                      :
-                      <div className="wrap-score-table">
-                        <table>
-                          <thead>
-                            <tr>
-                              <th className="measurement"><span>Cách đo lường<span className="note">(Tính theo điểm)</span></span></th>
-                              <th className="text-center proportion"><span>Tỷ trọng %</span></th>
-                              <th className="text-center target"><span>Mục tiêu</span></th>
-                              <th className="text-center actual-results"><span>Kết quả thực tế</span>{!showByManager && <span className="required">(*)</span>}</th>
-                              <th className="text-center self-assessment"><span>Điểm tự đánh giá</span>{!showByManager && <span className="required">(*)</span>}</th>
-                              <th className="text-center qltt-assessment"><span>Điểm QLTT đánh giá</span>{showByManager && <span className="required">(*)</span>}</th>
-                              <th className="text-center deviant"><span>Điểm chênh lệch</span></th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            <tr>
-                              <td className="measurement">
-                                <ul>
-                                  <li>{target?.metric1}</li>
-                                  <li>{target?.metric2}</li>
-                                  <li>{target?.metric3}</li>
-                                  <li>{target?.metric4}</li>
-                                  <li>{target?.metric5}</li>
-                                </ul>
-                              </td>
-                              <td className="text-center proportion"><span>{target?.weight}%</span></td>
-                              <td className="text-center target"><span>{target?.target}</span></td>
-                              <td className="actual-results">
-                                <div>
-                                  {!showByManager && evaluationFormDetail.status == evaluationStatus.launch ? <textarea rows={3} placeholder="Nhập" value={target?.realResult || ""} onChange={(e) => handleInputChange(i, index, 'realResult', e)} /> : <span>{target?.realResult}</span>}
-                                </div>
-                                {errors[`${index}_${i}_realResult`] && <div className="alert alert-danger invalid-message" role="alert">{errors[`${index}_${i}_realResult`]}</div>}
-                              </td>
-                              <td className="text-center self-assessment">
-                                <div>
-                                  {
-                                    !showByManager && evaluationFormDetail.status == evaluationStatus.launch
-                                      // ? <input type="text" placeholder="Nhập" value={target?.seftPoint || ""} onChange={(e) => handleInputChange(i, index, 'seftPoint', e)} /> 
-                                      ? <select onChange={(e) => handleInputChange(i, index, 'seftPoint', e)} value={target?.seftPoint || ''}>
-                                        <option value=''>Chọn điểm</option>
-                                        {
-                                          (scores || []).map((score, i) => {
-                                            return <option value={score} key={i}>{score}</option>
-                                          })
-                                        }
-                                      </select>
-                                      : <span>{target?.seftPoint}</span>
-                                  }
-                                </div>
-                                {errors[`${index}_${i}_seftPoint`] && <div className="alert alert-danger invalid-message" role="alert">{errors[`${index}_${i}_seftPoint`]}</div>}
-                              </td>
-                              <td className="text-center qltt-assessment">
-                                <div>
-                                  {
-                                    showByManager && evaluationFormDetail.status == evaluationStatus.selfAssessment
-                                      // ? <input type="text" placeholder="Nhập" value={target?.leadReviewPoint || ""} onChange={(e) => handleInputChange(i, index, 'leadReviewPoint', e)} />
-                                      ? <select onChange={(e) => handleInputChange(i, index, 'leadReviewPoint', e)} value={target?.leadReviewPoint || ''}>
-                                        <option value=''>Chọn điểm</option>
-                                        {
-                                          (scores || []).map((score, i) => {
-                                            return <option value={score} key={i}>{score}</option>
-                                          })
-                                        }
-                                      </select>
-                                      : <span>{target?.leadReviewPoint}</span>
-                                  }
-                                </div>
-                                {errors[`${index}_${i}_leadReviewPoint`] && <div className="alert alert-danger invalid-message" role="alert">{errors[`${index}_${i}_leadReviewPoint`]}</div>}
-                              </td>
-                              <td className="text-center deviant">
-                                <span className={`value ${deviant && deviant > 0 ? 'up' : deviant && deviant < 0 ? 'down' : ''}`}>&nbsp;{`${deviant && deviant > 0 ? '+' : ''}${deviant}`}{deviant && deviant != 0 ? <Image alt='Note' src={deviant && deviant > 0 ? IconUp : deviant && deviant < 0 ? IconDown : ''} /> : ''}</span>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                  }
-                  <div className="comment">
-                    <div className="self">
-                      <p>Ý kiến của CBNV tự đánh giá</p>
-                      <textarea rows={1} placeholder="Nhập thông tin" value={target?.seftOpinion || ""} onChange={(e) => handleInputChange(i, index, 'seftOpinion', e)} disabled={showByManager || evaluationFormDetail.status != evaluationStatus.launch} />
-                    </div>
-                    <div className="qltt">
-                      <p>Ý kiến của QLTT đánh giá</p>
-                      <textarea rows={1} value={target?.leaderReviewOpinion || ""} onChange={(e) => handleInputChange(i, index, 'leaderReviewOpinion', e)} disabled={!showByManager || (showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment))} />
-                    </div>
+                if (_.isEmpty(target.listTarget)) {
+                  return renderEvaluationItem(item, index, scores, target, i, deviant)
+                }
+                return <div className="evaluation-sub-group">
+                  <div className="sub-group-name">{`${i + 1}. ${target.groupName}`} <span className="red">({target.groupWeight}%)</span></div>
+                  <div className="sub-group-targets">
+                    {(target.listTarget || []).map((childTarget, childIndex) => {
+                      let deviant = (childTarget?.leadReviewPoint === '' || childTarget?.leadReviewPoint === null || childTarget?.seftPoint === '' || childTarget?.seftPoint === null) ? '' : Number(childTarget?.leadReviewPoint) - Number(childTarget?.seftPoint)
+                      return <React.Fragment key={childIndex}>
+                        {renderEvaluationItem(item, index, scores, childTarget, 0, deviant, i, childIndex)}
+                        <div className="divider" />
+                      </React.Fragment>
+                    })}
                   </div>
                 </div>
               })
@@ -464,7 +482,8 @@ function EvaluationDetail(props) {
           //     return initial
           // }, 0)
           // evaluationFormDetailTemp.totalComplete = totalQuestionsAnswered
-          SetEvaluationFormDetail(evaluationFormDetailTemp)
+          // SetEvaluationFormDetail(evaluationFormDetailTemp)
+          SetEvaluationFormDetail(testEvaluationData)
         }
       }
       SetIsLoading(false)
@@ -510,9 +529,13 @@ function EvaluationDetail(props) {
     return result
   }
 
-  const updateData = (subIndex, parentIndex, stateName, value) => {
+  const updateData = (subIndex, parentIndex, stateName, value, childIndex) => {
     const evaluationFormDetailTemp = { ...evaluationFormDetail }
-    evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex][stateName] = value
+    if (_.isNil(childIndex)) {
+      evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex][stateName] = value
+    } else {
+      evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex].listTarget[childIndex][stateName] = value
+    }
     let totalQuestionsAnswered = 0
     if (showByManager) {
       totalQuestionsAnswered = (evaluationFormDetailTemp?.listGroup || []).reduce((initial, current) => {
@@ -640,9 +663,19 @@ function EvaluationDetail(props) {
         targetErrors = (currentParent?.listTarget || []).reduce((subInitial, subCurrent, subIndex) => {
           let keyData = showByManager ? 'leadReviewPoint' : 'seftPoint'
           subInitial[`${indexParent}_${subIndex}_${keyData}`] = null
-          if (!Number(subCurrent[keyData])) {
-            subInitial[`${indexParent}_${subIndex}_${keyData}`] = t("Required")
+          if (!subCurrent.listTarget?.length) {
+            if (!Number(subCurrent[keyData])) {
+              subInitial[`${indexParent}_${subIndex}_${keyData}`] = t("Required")
+            }
+          } else {
+            const childErrors = subCurrent.listTarget?.map((childTarget, childIndex) => {
+              subInitial[`${indexParent}_${subIndex}_${childIndex}_${keyData}`] = null
+              if (!Number(childTarget[keyData])) {
+                subInitial[`${indexParent}_${subIndex}_${childIndex}_${keyData}`] = t("Required")
+              }
+            })
           }
+
           return subInitial
         }, {})
       } else {
@@ -779,3 +812,347 @@ function EvaluationDetail(props) {
 }
 
 export default EvaluationDetail
+
+const testEvaluationData = {
+  "id": 238,
+  "listGroup": [{
+    "id": 296,
+    "listTarget": [{
+      "id": 0,
+      "targetGuiId": null,
+      "targetId": 0,
+      "target": null,
+      "realResult": null,
+      "targetName": null,
+      "metric1": null,
+      "metric2": null,
+      "metric3": null,
+      "metric4": null,
+      "metric5": null,
+      "seftPoint": null,
+      "leadReviewPoint": null,
+      "seftOpinion": null,
+      "leaderReviewOpinion": null,
+      "groupTargetId": 0,
+      "groupTargetCode": "G11",
+      "groupName": "Con người",
+      "groupWeight": 10,
+      "weight": 0,
+      "checkPhaseFormId": 0,
+      "employeeCode": null,
+      "formCode": null,
+      "createDate": null,
+      "listTarget": [{
+        "id": 905,
+        "targetGuiId": "a28a53e4-4a12-401e-b265-532472f96b3d",
+        "targetId": 1120,
+        "target": "Đạt được mục tiêu",
+        "realResult": "",
+        "targetName": "Khả năng thúc đẩy, tạo động lực và gắn kết nhân viên",
+        "metric1": "1 điểm: Đạt 60% <70%",
+        "metric2": "2 điểm: Đạt 70% < 80%",
+        "metric3": "3 điểm: Đạt 80% < 90%",
+        "metric4": "4 điểm: Đạt 90% - dưới 100%",
+        "metric5": "5 điểm: Đạt 100%",
+        "seftPoint": 1,
+        "leadReviewPoint": null,
+        "seftOpinion": "1",
+        "leaderReviewOpinion": null,
+        "groupTargetId": 0,
+        "groupTargetCode": "G11",
+        "groupName": "Con người",
+        "groupWeight": 10,
+        "weight": 100,
+        "checkPhaseFormId": 0,
+        "employeeCode": null,
+        "formCode": "A00238",
+        "createDate": "2022-07-18T16:01:34.952565",
+        "listTarget": null
+      }, {
+        "id": 906,
+        "targetGuiId": "a28a53e4-4a12-401e-b265-532472f96b4d",
+        "targetId": 1121,
+        "target": "Đạt được mục tiêu",
+        "realResult": "",
+        "targetName": "Khả năng giao việc, kiểm soát công việc và đào tạo, phát triển nhân viên",
+        "metric1": "1 điểm: Đạt 60% <70%",
+        "metric2": "2 điểm: Đạt 70% < 80%",
+        "metric3": "3 điểm: Đạt 80% < 90%",
+        "metric4": "4 điểm: Đạt 90% - dưới 100%",
+        "metric5": "5 điểm: Đạt 100%",
+        "seftPoint": 4,
+        "leadReviewPoint": null,
+        "seftOpinion": "3",
+        "leaderReviewOpinion": null,
+        "groupTargetId": 0,
+        "groupTargetCode": "G11",
+        "groupName": "Con người",
+        "groupWeight": 10,
+        "weight": 100,
+        "checkPhaseFormId": 0,
+        "employeeCode": null,
+        "formCode": "A00238",
+        "createDate": "2022-07-18T16:01:34.952565",
+        "listTarget": null
+      }]
+    }, {
+      "id": 0,
+      "targetGuiId": null,
+      "targetId": 0,
+      "target": null,
+      "realResult": null,
+      "targetName": null,
+      "metric1": null,
+      "metric2": null,
+      "metric3": null,
+      "metric4": null,
+      "metric5": null,
+      "seftPoint": null,
+      "leadReviewPoint": null,
+      "seftOpinion": null,
+      "leaderReviewOpinion": null,
+      "groupTargetId": 0,
+      "groupTargetCode": "G12",
+      "groupName": "Thương hiệu",
+      "groupWeight": 10,
+      "weight": 0,
+      "checkPhaseFormId": 0,
+      "employeeCode": null,
+      "formCode": null,
+      "createDate": null,
+      "listTarget": [{
+        "id": 907,
+        "targetGuiId": "a28a53e4-4a12-401e-b265-532472f96b9d",
+        "targetId": 1122,
+        "target": "Đạt được mục tiêu",
+        "realResult": "",
+        "targetName": "Mức độ tin tưởng và sử dụng các sản phẩm/ dịch vụ Tập đoàn",
+        "metric1": "1 điểm: Đạt 60% <70%",
+        "metric2": "2 điểm: Đạt 70% < 80%",
+        "metric3": "3 điểm: Đạt 80% < 90%",
+        "metric4": "4 điểm: Đạt 90% - dưới 100%",
+        "metric5": "5 điểm: Đạt 100%",
+        "seftPoint": 4,
+        "leadReviewPoint": null,
+        "seftOpinion": "3",
+        "leaderReviewOpinion": null,
+        "groupTargetId": 0,
+        "groupTargetCode": "G12",
+        "groupName": "Thương hiệu",
+        "groupWeight": 10,
+        "weight": 100,
+        "checkPhaseFormId": 0,
+        "employeeCode": null,
+        "formCode": "A00238",
+        "createDate": "2022-07-18T16:01:34.952565",
+        "listTarget": null
+      }, {
+        "id": 908,
+        "targetGuiId": "a28a53e4-4a12-401e-b265-532472f96bud",
+        "targetId": 1123,
+        "target": "Đạt được mục tiêu",
+        "realResult": "",
+        "targetName": "Mức độ lan tỏa các giá trị văn hóa/ thương hiệu (Đánh giá bằng số lượng người thân, bạn bè, cấp dưới sử dụng các sản phẩm của Tập đoàn)",
+        "metric1": "1 điểm: Đạt 60% <70%",
+        "metric2": "2 điểm: Đạt 70% < 80%",
+        "metric3": "3 điểm: Đạt 80% < 90%",
+        "metric4": "4 điểm: Đạt 90% - dưới 100%",
+        "metric5": "5 điểm: Đạt 100%",
+        "seftPoint": 4,
+        "leadReviewPoint": null,
+        "seftOpinion": "3",
+        "leaderReviewOpinion": null,
+        "groupTargetId": 0,
+        "groupTargetCode": "G12",
+        "groupName": "Thương hiệu",
+        "groupWeight": 10,
+        "weight": 100,
+        "checkPhaseFormId": 0,
+        "employeeCode": null,
+        "formCode": "A00238",
+        "createDate": "2022-07-18T16:01:34.952565",
+        "listTarget": null
+      }]
+    }, {
+      "id": 0,
+      "targetGuiId": null,
+      "targetId": 0,
+      "target": null,
+      "realResult": null,
+      "targetName": null,
+      "metric1": null,
+      "metric2": null,
+      "metric3": null,
+      "metric4": null,
+      "metric5": null,
+      "seftPoint": null,
+      "leadReviewPoint": null,
+      "seftOpinion": null,
+      "leaderReviewOpinion": null,
+      "groupTargetId": 0,
+      "groupTargetCode": "G13",
+      "groupName": "Tài sản",
+      "groupWeight": 10,
+      "weight": 0,
+      "checkPhaseFormId": 0,
+      "employeeCode": null,
+      "formCode": null,
+      "createDate": null,
+      "listTarget": [{
+        "id": 904,
+        "targetGuiId": "a28a53e4-4a12-401e-b265-532472f96b2d",
+        "targetId": 1124,
+        "target": "Đạt được mục tiêu",
+        "realResult": "",
+        "targetName": "Khả năng Quản lý tài sản của Công ty/Bộ phận một cách sát sao, hiệu quả",
+        "metric1": "1 điểm: Đạt 60% <70%",
+        "metric2": "2 điểm: Đạt 70% < 80%",
+        "metric3": "3 điểm: Đạt 80% < 90%",
+        "metric4": "4 điểm: Đạt 90% - dưới 100%",
+        "metric5": "5 điểm: Đạt 100%",
+        "seftPoint": 4,
+        "leadReviewPoint": null,
+        "seftOpinion": "3",
+        "leaderReviewOpinion": null,
+        "groupTargetId": 0,
+        "groupTargetCode": "G13",
+        "groupName": "Tài sản",
+        "groupWeight": 10,
+        "weight": 100,
+        "checkPhaseFormId": 0,
+        "employeeCode": null,
+        "formCode": "A00238",
+        "createDate": "2022-07-18T16:01:34.952565",
+        "listTarget": null
+      }, {
+        "id": 909,
+        "targetGuiId": "a28a53e4-4a12-401e-b265-532472f96b2d",
+        "targetId": 1124,
+        "target": "Đạt được mục tiêu",
+        "realResult": "",
+        "targetName": "Khả năng Quản lý tài sản của Công ty/Bộ phận một cách sát sao, hiệu quả",
+        "metric1": "1 điểm: Đạt 60% <70%",
+        "metric2": "2 điểm: Đạt 70% < 80%",
+        "metric3": "3 điểm: Đạt 80% < 90%",
+        "metric4": "4 điểm: Đạt 90% - dưới 100%",
+        "metric5": "5 điểm: Đạt 100%",
+        "seftPoint": 4,
+        "leadReviewPoint": null,
+        "seftOpinion": "3",
+        "leaderReviewOpinion": null,
+        "groupTargetId": 0,
+        "groupTargetCode": "G13",
+        "groupName": "Tài sản",
+        "groupWeight": 10,
+        "weight": 100,
+        "checkPhaseFormId": 0,
+        "employeeCode": null,
+        "formCode": "A00238",
+        "createDate": "2022-07-18T16:01:34.952565",
+        "listTarget": null
+      }]
+    }],
+    "checkPhaseFormId": 130,
+    "groupWeight": 20,
+    "groupName": "Tinh thần thái độ",
+    "listGroupConfig": [{
+      "id": 1,
+      "groupTargetCode": "G1",
+      "weight": "0% - 10%",
+      "description": "Không thể hiện"
+    }, {
+      "id": 2,
+      "groupTargetCode": "G1",
+      "weight": "11% - 49% ",
+      "description": "Thể hiện còn ít"
+    }, {
+      "id": 3,
+      "groupTargetCode": "G1",
+      "weight": "50% - 69%",
+      "description": "Thể hiện nhưng chưa rõ nét hoặc chỉ thể hiện những khi thực sự cần,hoặc khi được yêu cầu"
+    }, {
+      "id": 4,
+      "groupTargetCode": "G1",
+      "weight": "70% - 89%",
+      "description": "Thường xuyên thể hiện"
+    }, {
+      "id": 5,
+      "groupTargetCode": "G1",
+      "weight": "90% - 100%",
+      "description": "Luôn luôn chủ động thể hiện và là tấm gương cho người khác học tập"
+    }],
+    "groupTargetId": 1,
+    "groupTargetCode": "G1",
+    "groupOrder": 1,
+    "groupSeftPoint": 50,
+    "groupLeadReviewPoint": null,
+    "isDeleted": false
+  }, {
+    "id": 297,
+    "listTarget": [{
+      "id": 845,
+      "targetGuiId": "3d59295f-ebeb-41d1-8ad8-f2c9ecf04158",
+      "targetId": 1077,
+      "target": "Đạt được mục tiêu",
+      "realResult": "234",
+      "targetName": "Đánh giá chuyên môn",
+      "metric1": "1 điểm: Đạt 60% <70%",
+      "metric2": "2 điểm: Đạt 70% < 80%",
+      "metric3": "3 điểm: Đạt 80% < 90%",
+      "metric4": "4 điểm: Đạt 90% - dưới 100%",
+      "metric5": "5 điểm: Đạt 100%",
+      "seftPoint": 4,
+      "leadReviewPoint": null,
+      "seftOpinion": null,
+      "leaderReviewOpinion": null,
+      "groupTargetId": 0,
+      "groupTargetCode": "G2",
+      "groupName": "Kết quả công việc",
+      "groupWeight": 80,
+      "weight": 100,
+      "checkPhaseFormId": 0,
+      "employeeCode": null,
+      "formCode": "A00238",
+      "createDate": "2022-07-18T16:01:34.952565",
+      "listTarget": null
+    }],
+    "checkPhaseFormId": 130,
+    "groupWeight": 80,
+    "groupName": "Kết quả công việc",
+    "listGroupConfig": [],
+    "groupTargetId": 2,
+    "groupTargetCode": "G2",
+    "groupOrder": 2,
+    "groupSeftPoint": 80,
+    "groupLeadReviewPoint": null,
+    "isDeleted": false
+  }],
+  "checkPhaseFormId": 130,
+  "employeeCode": "3644790",
+  "createDate": "2022-07-18T16:01:34.952565",
+  "checkPhaseFormName": "Biểu mẫu 13/07",
+  "fullName": null,
+  "position": null,
+  "employeeLevel": "",
+  "organization_lv3": null,
+  "organization_lv4": null,
+  "status": 3,
+  "isDeleted": false,
+  "seftTotalComplete": 5,
+  "leadReviewTotalComplete": 0,
+  "reviewer": "null",
+  "approver": "null",
+  "formCode": "A00238",
+  "totalSeftPoint": 74.0,
+  "totalLeadReviewPoint": 0.0,
+  "reviewPoolId": 5347,
+  "adCode": null,
+  "description": null,
+  "hrAdmin": "Khương Văn Minh - Chuyên viên Phát triển sản phẩm",
+  "hrAccount": "3516934",
+  "nextStep": 0,
+  "totalTarget": 11,
+  "reviewStreamCode": "1NF",
+  "sendDateLv1": "2022-08-11T10:02:23.128859",
+  "formType": "LD"
+}
