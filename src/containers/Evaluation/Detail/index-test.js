@@ -262,18 +262,18 @@ function EvaluationProcess(props) {
                 {
                   !showByManager && evaluationFormDetail.status == evaluationStatus.selfAssessment
                     ?
-                  <select onChange={(e) => handleInputChange(parentIndex, index, 'leadReviewPoint', e, subGroupTargetIndex)} value={target?.leadReviewPoint || ''}>
-                    <option value=''>Chọn điểm</option>
-                    {
-                      (scores || []).map((score, i) => {
-                        return <option value={score} key={i}>{score}</option>
-                      })
-                    }
-                  </select>
-                  : <input type="text" value={target?.leadReviewPoint || ''} disabled />
+                    <select onChange={(e) => handleInputChange(parentIndex, index, 'leadReviewPoint', e, subGroupTargetIndex)} value={target?.leadReviewPoint || ''}>
+                      <option value=''>Chọn điểm</option>
+                      {
+                        (scores || []).map((score, i) => {
+                          return <option value={score} key={i}>{score}</option>
+                        })
+                      }
+                    </select>
+                    : <input type="text" value={target?.leadReviewPoint || ''} disabled />
                 }
               </div>
-              {errors[`${index}_${i}_leadReviewPoint`] && <div className="alert alert-danger invalid-message" role="alert">{errors[`${index}_${i}_leadReviewPoint`]}</div>}
+              {errors[`${index}_${i}_${subGroupTargetIndex}_leadReviewPoint`] && <div className="alert alert-danger invalid-message" role="alert">{errors[`${index}_${i}_${subGroupTargetIndex}_leadReviewPoint`]}</div>}
             </div>
             <div className="deviant">
               <span className="red label">Điểm chênh lệch</span>
@@ -364,7 +364,7 @@ function EvaluationProcess(props) {
         </div>
         <div className="qltt">
           <p>Ý kiến của QLTT đánh giá</p>
-          <textarea rows={1} placeholder="Nhập thông tin" value={target?.leaderReviewOpinion || ""} onChange={(e) => handleInputChange(i, index, 'leaderReviewOpinion', e)} disabled={(showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment))} />
+          <textarea rows={1} placeholder="Nhập thông tin" value={target?.leaderReviewOpinion || ""} onChange={(e) => handleInputChange(parentIndex, index, 'leaderReviewOpinion', e, subGroupTargetIndex)} disabled={(showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment))} />
         </div>
       </div>
     </div>
@@ -530,9 +530,8 @@ function EvaluationDetail(props) {
   }
 
   const updateData = (subIndex, parentIndex, stateName, value, childIndex) => {
-    console.log("update",{subIndex, parentIndex, childIndex});
     const evaluationFormDetailTemp = { ...evaluationFormDetail }
-    if(_.isNil(childIndex)) {
+    if (_.isNil(childIndex)) {
       evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex][stateName] = value
     } else {
       evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex].listTarget[childIndex][stateName] = value
@@ -664,9 +663,19 @@ function EvaluationDetail(props) {
         targetErrors = (currentParent?.listTarget || []).reduce((subInitial, subCurrent, subIndex) => {
           let keyData = showByManager ? 'leadReviewPoint' : 'seftPoint'
           subInitial[`${indexParent}_${subIndex}_${keyData}`] = null
-          if (!Number(subCurrent[keyData])) {
-            subInitial[`${indexParent}_${subIndex}_${keyData}`] = t("Required")
+          if (!subCurrent.listTarget?.length) {
+            if (!Number(subCurrent[keyData])) {
+              subInitial[`${indexParent}_${subIndex}_${keyData}`] = t("Required")
+            }
+          } else {
+            const childErrors = subCurrent.listTarget?.map((childTarget, childIndex) => {
+              subInitial[`${indexParent}_${subIndex}_${childIndex}_${keyData}`] = null
+              if (!Number(childTarget[keyData])) {
+                subInitial[`${indexParent}_${subIndex}_${childIndex}_${keyData}`] = t("Required")
+              }
+            })
           }
+
           return subInitial
         }, {})
       } else {
