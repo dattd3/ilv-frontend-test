@@ -95,7 +95,7 @@ class Health extends React.Component {
             })
         })
             .catch(errors => {
-                const messages = 'Xuất dữ liệu không thành công !'
+                const messages = 'Xuất dữ liệu không thành công!'
                 toast.error(messages);
             })
     }
