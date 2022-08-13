@@ -158,8 +158,8 @@ class TaskList extends React.Component {
             8: { label: this.props.t("Waiting"), className: 'request-status' },
             20: { label: this.props.t("Consented"), className: 'request-status' },
             9: {className: 'request-status', label: 'Tự đánh giá'},
-            10: {className: 'request-status', label: checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.PnLCODE.Vinhome, Constants.pnlVCode.Vin3S) ? 'QLTT đánh giá' : 'Người đánh giá'},
-            11: {className: 'request-status', label:  checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.PnLCODE.Vinhome, Constants.pnlVCode.Vin3S)  ? 'CBLĐ thẩm định' : 'QLTT đánh giá'},
+            10: {className: 'request-status', label: checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.PnLCODE.Vinhome, Constants.PnLCODE.Vin3S) ? 'QLTT đánh giá' : 'Người đánh giá'},
+            11: {className: 'request-status', label:  checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.PnLCODE.Vinhome, Constants.PnLCODE.Vin3S)  ? 'CBLĐ thẩm định' : 'QLTT đánh giá'},
             12: {className: 'request-status', label: 'HR thẩm định'},
             13: {className: 'request-status', label: 'CBLĐ phê duyệt'},
             //14: {className: 'request-status', label: 'Đã phê duyệt'}
