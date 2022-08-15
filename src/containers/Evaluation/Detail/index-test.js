@@ -482,8 +482,8 @@ function EvaluationDetail(props) {
           //     return initial
           // }, 0)
           // evaluationFormDetailTemp.totalComplete = totalQuestionsAnswered
-          SetEvaluationFormDetail(evaluationFormDetailTemp)
-          // SetEvaluationFormDetail(testEvaluationData)
+          // SetEvaluationFormDetail(evaluationFormDetailTemp)
+          SetEvaluationFormDetail(testEvaluationData)
         }
       }
       SetIsLoading(false)
