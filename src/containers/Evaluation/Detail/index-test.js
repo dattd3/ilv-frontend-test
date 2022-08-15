@@ -243,7 +243,7 @@ function EvaluationProcess(props) {
                 {
                   !showByManager && evaluationFormDetail.status == evaluationStatus.launch
                     ?
-                    <select onChange={(e) => handleInputChange(i, index, 'seftPoint', e)} value={target?.seftPoint || ''}>
+                    <select onChange={(e) => !_.isNil(subGroupTargetIndex) ? handleInputChange(parentIndex, index, 'seftPoint', e, subGroupTargetIndex) : handleInputChange(i, index, 'seftPoint', e)} value={target?.seftPoint || ''}>
                       <option value=''>Chọn điểm</option>
                       {
                         (scores || []).map((score, i) => {
@@ -360,7 +360,7 @@ function EvaluationProcess(props) {
       <div className="comment">
         <div className="self">
           <p>Ý kiến của CBNV tự đánh giá</p>
-          <textarea rows={1} placeholder="Nhập thông tin" value={target?.seftOpinion || ""} onChange={(e) => handleInputChange(i, index, 'seftOpinion', e)} disabled={showByManager || evaluationFormDetail.status != evaluationStatus.launch} />
+          <textarea rows={1} placeholder="Nhập thông tin" value={target?.seftOpinion || ""} onChange={(e) => !_.isNil(subGroupTargetIndex) ? handleInputChange(parentIndex, index, 'seftOpinion', e, subGroupTargetIndex) : handleInputChange(i, index, 'seftOpinion', e)} disabled={showByManager || evaluationFormDetail.status != evaluationStatus.launch} />
         </div>
         <div className="qltt">
           <p>Ý kiến của QLTT đánh giá</p>
