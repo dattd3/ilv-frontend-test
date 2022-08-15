@@ -364,7 +364,7 @@ function EvaluationProcess(props) {
         </div>
         <div className="qltt">
           <p>Ý kiến của QLTT đánh giá</p>
-          <textarea rows={1} placeholder="Nhập thông tin" value={target?.leaderReviewOpinion || ""} onChange={(e) => !_.isNil(subGroupTargetIndex) ? handleInputChange(parentIndex, index, 'leaderReviewOpinion', e, subGroupTargetIndex) : handleInputChange(i, index, "leaderReviewOpinion", e)} disabled={(showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment))} />
+          <textarea rows={1} placeholder="Nhập thông tin" value={target?.leaderReviewOpinion || ""} onChange={(e) => !_.isNil(subGroupTargetIndex) ? handleInputChange(parentIndex, index, 'leaderReviewOpinion', e, subGroupTargetIndex) : handleInputChange(i, index, "leaderReviewOpinion", e)} disabled={!showByManager || (showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment))} />
         </div>
       </div>
     </div>
@@ -514,6 +514,15 @@ function EvaluationDetail(props) {
     const assessment = (listTarget || []).reduce((initial, current) => {
       initial.selfAssessment += Number(current?.seftPoint || 0) / assessmentScale * Number(current?.weight || 0)
       initial.managerAssessment += Number(current?.leadReviewPoint || 0) / assessmentScale * Number(current?.weight || 0)
+      if(current.listTarget?.length) {
+        const sub = current.listTarget?.reduce((subInitial, item) => {
+          subInitial.selfAssessment += Number(item?.seftPoint || 0) / assessmentScale * Number(item?.weight || 0)
+          subInitial.managerAssessment += Number(item?.leadReviewPoint || 0) / assessmentScale * Number(item?.weight || 0)
+          return subInitial
+        },{ selfAssessment: 0, managerAssessment: 0 })
+        initial.selfAssessment += sub.selfAssessment
+        initial.managerAssessment += sub.managerAssessment
+      }
       return initial
     }, { selfAssessment: 0, managerAssessment: 0 })
     return assessment
@@ -550,6 +559,13 @@ function EvaluationDetail(props) {
       totalQuestionsAnswered = (evaluationFormDetailTemp?.listGroup || []).reduce((initial, current) => {
         let questionsAnswered = (current?.listTarget || []).reduce((subInitial, subCurrent) => {
           subInitial += subCurrent?.seftPoint ? 1 : 0
+          if(subCurrent.listTarget?.length) {
+            const subQuestionsAnswered = subCurrent.listTarget?.reduce((res, item) => {
+              res+=item.seftPoint ? 1 : 0
+              return res
+            },0)
+            subInitial+=subQuestionsAnswered
+          }
           return subInitial
         }, 0)
         initial += questionsAnswered
