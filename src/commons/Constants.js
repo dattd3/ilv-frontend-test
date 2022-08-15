@@ -94,7 +94,7 @@ const Constants = {
       ReasonRequestLeave: 'ReasonLeaveRequest'
     },
     'MOD': {
-      TitleLeave: 'Thông tin chỉnh sửa đăng ký nghỉ',
+      TitleLeave: 'Thông tin điều chỉnh đăng ký nghỉ',
       TitleTripAndTrainning: 'Thông tin chỉnh sửa đăng ký công tác/đào tạo',
       ReasonTripAndTrainning: 'Lý do chỉnh sửa đăng ký công tác/đào tạo',
       ReasonRequestLeave: 'ReasonEditLeaveRequest'
