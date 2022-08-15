@@ -260,7 +260,7 @@ function EvaluationProcess(props) {
               <div className="item">
                 <span className="red label">Điểm QLTT đánh giá{showByManager && <span className="required">(*)</span>}</span>
                 {
-                  !showByManager && evaluationFormDetail.status == evaluationStatus.selfAssessment
+                  !(!showByManager || (showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment)))
                     ?
                     <select onChange={(e) => !_.isNil(subGroupTargetIndex) ? handleInputChange(parentIndex, index, 'leadReviewPoint', e, subGroupTargetIndex) : handleInputChange(i ,index, "leadReviewPoint", e)} value={target?.leadReviewPoint || ''}>
                       <option value=''>Chọn điểm</option>
