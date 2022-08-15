@@ -319,7 +319,7 @@ class LeaveOfAbsenceComponent extends React.Component {
 
     validateTimeRequest(requestInfo, indexItem) {
         const config = getRequestConfigurations()
-        const times = [];
+        let times = [];
         requestInfo.forEach(req => {
             const startTime = req.startTime ? moment(req.startTime, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION) : null
             const endTime = req.endTime ? moment(req.endTime, Constants.LEAVE_TIME_FORMAT_TO_VALIDATION).format(Constants.LEAVE_TIME_FORMAT_TO_VALIDATION) : null
@@ -340,7 +340,23 @@ class LeaveOfAbsenceComponent extends React.Component {
 
         if (times.length === 0) return
 
-        axios.post(`${process.env.REACT_APP_REQUEST_URL}request/validate`, {perno: currentEmployeeNo, times: times}, config)
+        const { isEdit } = this.state
+
+        if (isEdit) {
+            times = times.map(item => {
+                return {
+                    id: item?.id,
+                    from_date: item?.from_date || '',
+                    from_time: item?.from_time || '',
+                    to_date: item?.to_date || '',
+                    to_time: item?.to_time || '',
+                    leave_type: item?.leave_type || '',
+                    group_id: item?.group_id,
+                }
+            })
+        }
+
+        axios.post(`${process.env.REACT_APP_REQUEST_URL}request/validate`, {perno: currentEmployeeNo, ...(isEdit && { requestId: this.props.taskId }), times: times}, config)
             .then(res => {
                 if (res && res.data && res.data.data && res.data.data.times.length > 0) {
                     const newRequestInfo = requestInfo.map((req, index) => {
@@ -613,8 +629,8 @@ class LeaveOfAbsenceComponent extends React.Component {
     submit() {
         const { t } = this.props
         const { files, isEdit, requestInfo } = this.state
-
         const err = this.verifyInput()
+
         this.setDisabledSubmitButton(true)
         if (!err) {
             this.setDisabledSubmitButton(false)
@@ -638,8 +654,8 @@ class LeaveOfAbsenceComponent extends React.Component {
             if (isEdit) {
                 reqItem = {
                     ...reqItem,
-                    processStatusId: req.processStatusId,
-                    id: req.id
+                    processStatusId: req?.processStatusId ? req?.processStatusId : requestInfo[0]?.processStatusId,
+                    id: req?.id ? req?.id : requestInfo[0]?.id
                 }
             }
             return reqItem
@@ -795,7 +811,7 @@ class LeaveOfAbsenceComponent extends React.Component {
     }
 
     render() {
-        const { t } = this.props;
+        const { t, leaveOfAbsence } = this.props;
         const absenceRequestTypesPrepare = absenceRequestTypes.map(item => ({...item, label: t(item.label)}))
         const PN03ListPrepare = PN03List.map(item => ({...item, label: t(item.label)}))
         const {
@@ -813,11 +829,15 @@ class LeaveOfAbsenceComponent extends React.Component {
             appraiser,
             approver
         } = this.state
-
         const sortRequestListByGroup = requestInfo.sort((reqPrev, reqNext) => reqPrev.groupId - reqNext.groupId)
         const requestInfoArr = _.valuesIn(_.groupBy(sortRequestListByGroup, (req) => req.groupId))
         const checkVinmec = checkIsExactPnL(Constants.PnLCODE.Vinmec);
         const minDate = getRegistrationMinDateByConditions()
+
+        console.log(222222222222)
+        console.log(leaveOfAbsence)
+
+        const registeredInformation = (leaveOfAbsence?.requestInfoOld || leaveOfAbsence?.requestInfoOld?.length > 0) ? leaveOfAbsence.requestInfoOld : leaveOfAbsence?.requestInfo
 
         return (
             <div className="leave-of-absence">
@@ -861,6 +881,52 @@ class LeaveOfAbsenceComponent extends React.Component {
                         </div>
                     </div> */}
                 </div>
+
+                
+
+                { isEdit && 
+                    <div className="box shadow registered-information">
+                        <div className='text-uppercase font-weight-bold box-title'>Thông tin đã đăng ký nghỉ</div>
+                        <div className='content'>
+                            {
+                                (registeredInformation || []).map((ri, riIndex) => {
+                                    let  totalTimeRegistered = ri?.isAllDay ? `${ri?.days || 0} ${t('DayUnit')}` : `${ri?.hours || 0} ${t('HourUnit')}`
+                                    return (
+                                        <div className='item' key={`old-request-info-${riIndex}`}>
+                                            <div className='d-flex main-info'>
+                                                <div className='main-info__item'>
+                                                    <label>{t('StartDateTime')}</label>
+                                                    <div className='d-flex align-items-center value'>
+                                                        {ri?.startDate && moment(ri?.startDate, 'YYYYMMDD').isValid() ? moment(ri?.startDate, 'YYYYMMDD').format('DD/MM/YYYY') : ''}
+                                                    </div>
+                                                </div>
+                                                <div className='main-info__item'>
+                                                    <label>{t('EndDateTime')}</label>
+                                                    <div className='d-flex align-items-center value'>
+                                                        {ri?.endDate && moment(ri?.endDate, 'YYYYMMDD').isValid() ? moment(ri?.endDate, 'YYYYMMDD').format('DD/MM/YYYY') : ''}
+                                                    </div>
+                                                </div>
+                                                <div className='main-info__item'>
+                                                    <label>{t('TotalLeaveTime')}</label>
+                                                    <div className='d-flex align-items-center value'>{totalTimeRegistered}</div>
+                                                </div>
+                                                <div className='main-info__item'>
+                                                    <label>{t('LeaveCategory')}</label>
+                                                    <div className='d-flex align-items-center value'>{ri?.absenceType?.label || ''}</div>
+                                                </div>
+                                            </div>
+                                            <div className='reason'>
+                                                <label>{t('ReasonRequestLeave')}</label>
+                                                <div className='d-flex align-items-center value'>{ri?.comment || ''}</div>
+                                            </div>
+                                        </div>
+                                    )
+                                })
+                            }
+                        </div>
+                    </div>
+                }
+
                 {requestInfoArr.map((req, index) => {
                     let totalDay = 0
                     let totalTime = 0
@@ -874,6 +940,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                     })
                     return (
                         <div className="box shadow position-relative" key={index}>
+                            { isEdit && <div className='text-uppercase font-weight-bold box-title'>Thông tin điều chỉnh đăng ký nghỉ</div> }
                             <div className="form">
                                 <div className="row">
                                     <div className="col-lg-8 col-xl-8">
@@ -1147,13 +1214,12 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                 }
 
                                                 {!indexDetail ?
-                                                    !isEdit &&
                                                     <React.Fragment>
                                                         <button type="button" className="btn btn-add-multiple-in-out" onClick={() => this.addMultiDateTime(req[0].groupId, req, req[0].isAllDay, req[0].absenceType, req[0].comment, req[0].funeralWeddingInfo)}><i className="fas fa-plus"></i> {t("AddMore")}</button>
                                                         <button type="button" className="btn btn-add-multiple" onClick={() => this.setState({ isShowNoteModal: true })}><i className="fas fa-info"></i></button>
                                                     </React.Fragment>
                                                     :
-                                                    !isEdit && <button type="button" className="btn btn-danger btn-top-right-corner" onClick={() => this.onRemoveLeave(reqDetail.groupId, reqDetail.groupItem)}><i className="fas fa-times"></i> {t("Cancel")}</button>
+                                                    <button type="button" className="btn btn-danger btn-top-right-corner" onClick={() => this.onRemoveLeave(reqDetail.groupId, reqDetail.groupItem)}><i className="fas fa-times"></i> {t("Cancel")}</button>
                                                 }
                                                 {
                                                     reqDetail.errors.totalDaysOff ?
