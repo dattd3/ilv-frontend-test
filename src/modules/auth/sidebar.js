@@ -107,7 +107,7 @@ export const Navigation = [
     icon: 'evaluation',
     to: "",
     label: "MenuEvaluation",
-    role: "NA"
+    role: "U"
     // role: ['V005'],
   },
   {
