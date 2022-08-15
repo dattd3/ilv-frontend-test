@@ -70,21 +70,21 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
   }
 
   render() {
-    const { t, action } = this.props
-    const userProfileInfo = this.props.leaveOfAbsence.user
-    const requestTypeId = this.props.leaveOfAbsence.requestTypeId
-    const requestInfo = this.props.leaveOfAbsence.requestInfo[0]
-    const appraiser = this.props.leaveOfAbsence.appraiser
+    const { t, action, viewPopup, leaveOfAbsence } = this.props
+    const userProfileInfo = leaveOfAbsence.user
+    const requestTypeId = leaveOfAbsence.requestTypeId
+    const requestInfo = leaveOfAbsence.requestInfo[0]
+    const appraiser = leaveOfAbsence.appraiser
     const annualLeaveSummary = this.state.annualLeaveSummary
 
     const requestTypeIdsAllowedToReApproval = getRequestTypeIdsAllowedToReApproval()
     const isShowApproval = (requestInfo.processStatusId === Constants.STATUS_WAITING) || (action === "approval" && requestInfo.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && requestTypeIdsAllowedToReApproval.includes(requestTypeId))
     
     let messageSAP = null;
-    if (this.props.leaveOfAbsence.processStatusId === Constants.STATUS_PARTIALLY_SUCCESSFUL)
+    if (leaveOfAbsence.processStatusId === Constants.STATUS_PARTIALLY_SUCCESSFUL)
     {
-      if (this.props.leaveOfAbsence.responseDataFromSAP && Array.isArray(this.props.leaveOfAbsence.responseDataFromSAP)) {
-        const data = this.props.leaveOfAbsence.responseDataFromSAP.filter(val => val.STATUS === 'E');
+      if (leaveOfAbsence.responseDataFromSAP && Array.isArray(leaveOfAbsence.responseDataFromSAP)) {
+        const data = leaveOfAbsence.responseDataFromSAP.filter(val => val.STATUS === 'E');
         if (data) {
           const temp = data.map(val => val?.MESSAGE);
           messageSAP = temp.filter(function(item, pos) {
@@ -100,24 +100,28 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
       isShowAppraisalInfo = true
     }
 
+    console.log("sdfgdfgsdfgsfdgsdfgs")
+    console.log(leaveOfAbsence)
+
+
     return (
       <div className="leave-of-absence">
         <h5>{t("EmployeeInfomation")}</h5>
         <div className="box shadow cbnv">
           <div className="row group">
-            <div className="col-xl-2">
+            <div className={`${viewPopup ? 'col-xl-4' : 'col-xl-2'}`}>
              {t("FullName")}
               <div className="detail auto-height">{userProfileInfo? userProfileInfo.fullName : ""}</div>
             </div>
-            <div className="col-xl-2">
+            <div className={`${viewPopup ? 'col-xl-4' : 'col-xl-2'}`}>
               {t("EmployeeNo")}
               <div className="detail auto-height">{userProfileInfo ? userProfileInfo.employeeNo : ""}</div>
             </div>
-            <div className="col-xl-3">
+            <div className={`${viewPopup ? 'col-xl-4' : 'col-xl-3'}`}>
               {t("Title")}
               <div className="detail auto-height">{userProfileInfo ? userProfileInfo.jobTitle : ""}</div>
             </div>
-            <div className="col-xl-5">
+            <div className={`${viewPopup ? 'col-xl-12 view-popup' : 'col-xl-5'}`}>
               {t('DepartmentManage')}
               <div className="detail auto-height">{userProfileInfo ? userProfileInfo.department : ""}</div>
             </div>
@@ -150,6 +154,55 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
           </div>
         </div>
         <StatusModal show={this.state.isShowStatusModal} content={this.state.content} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
+
+        {
+          leaveOfAbsence?.requestInfoOld && leaveOfAbsence?.requestInfoOld?.length > 0 &&
+          <div className='registered-leave-info'>
+            <h5>{'Thông tin đã đăng ký nghỉ'}</h5>
+            <div className="box shadow">
+              {
+                (leaveOfAbsence?.requestInfoOld).map((oldInfo, oldInfoIndex) => {
+                  return (
+                    <div className='item' key={`old-${oldInfoIndex}`}>
+                      <div className="row">
+                        <div className="col-xl-3">
+                          {t("StartDateTime")}
+                          <div className="detail">{oldInfo ? moment(oldInfo?.startDate).format("DD/MM/YYYY") + (oldInfo?.startTime ? ' ' + moment(oldInfo?.startTime, TIME_FORMAT).locale('en-us').format('HH:mm') : '') : ""}</div>
+                        </div>
+                        <div className="col-xl-3">
+                          {t("EndDateTime")}
+                          <div className="detail">{oldInfo ? moment(oldInfo?.endDate).format("DD/MM/YYYY") + (oldInfo?.endTime ? ' ' + moment(oldInfo?.endTime, TIME_FORMAT).locale('en-us').format('HH:mm') : '') : ""}</div>
+                        </div>
+                        <div className="col-xl-3">
+                          {t("TotalLeaveTime")}
+                          {/* <div className="detail">{ requestInfo && requestInfo.days && requestInfo.absenceType.value != "PQ02" ? requestInfo.days + ' ngày' : null } { requestInfo && requestInfo.hours  && requestInfo.absenceType.value == "PQ02" ? requestInfo.hours  + ' giờ' : null}</div> */}
+                          <div className="detail">{( oldInfo && oldInfo?.days >= 1) ? oldInfo?.days + ' ' + t("Day") : oldInfo?.hours + ' ' + t("Hour")}</div>
+                        </div>
+                        <div className="col-xl-3">
+                          {t("LeaveCategory")}
+                          <div className="detail">{oldInfo && oldInfo?.absenceType ? oldInfo?.absenceType?.label : ""}</div>
+                        </div>
+                      </div>
+                      {(oldInfo && oldInfo?.absenceType && oldInfo?.absenceType?.value === 'PN03') ? <div className="row">
+                        <div className="col">
+                          {t("MarriageFuneral")}
+                          <div className="detail">{oldInfo?.absenceType?.label}</div>
+                        </div>
+                      </div> : null}
+                      <div className="row">
+                        <div className="col" style={{marginTop: 10}}>
+                          {t(Constants.mappingActionType[oldInfo.actionType]?.ReasonRequestLeave)}
+                          <div className="detail">{oldInfo ? oldInfo?.comment : ""}</div>
+                        </div>
+                      </div>
+                    </div>
+                  )
+                })
+              }
+            </div>
+          </div>
+        }
+
         <h5>{t(Constants.mappingActionType[requestInfo.actionType].TitleLeave)}</h5>
         <div className="box shadow cbnv">
           <div className="row">
@@ -189,7 +242,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
           isShowAppraisalInfo && 
           <>
             <h5>{t("ConsenterInformation")}</h5>
-            <ApproverDetailComponent title={t("Consenter")} approver={this.props.leaveOfAbsence.appraiser} status={requestInfo ? requestInfo.processStatusId : ""} hrComment={requestInfo.appraiserComment} />
+            <ApproverDetailComponent title={t("Consenter")} approver={leaveOfAbsence.appraiser} status={requestInfo ? requestInfo.processStatusId : ""} hrComment={requestInfo.appraiserComment} />
           </>
         }
 
@@ -198,16 +251,16 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
           requestInfo && (Constants.STATUS_TO_SHOW_APPROVER.includes(requestInfo.processStatusId )) ?
             <>
               <h5>{t("ApproverInformation")}</h5>
-              <ApproverDetailComponent title={t("Approver")} approver={this.props.leaveOfAbsence.approver} status={requestInfo ? requestInfo.processStatusId : ""} hrComment={requestInfo.approverComment} />
+              <ApproverDetailComponent title={t("Approver")} approver={leaveOfAbsence.approver} status={requestInfo ? requestInfo.processStatusId : ""} hrComment={requestInfo.approverComment} />
             </> : null
         }
 
         {
-          this.props.leaveOfAbsence.requestDocuments.length > 0 ?
+          leaveOfAbsence.requestDocuments.length > 0 ?
             <>
               <h5>{t("Evidence")}</h5>
               <ul className="list-inline">
-                {this.props.leaveOfAbsence.requestDocuments.map((file, index) => {
+                {leaveOfAbsence.requestDocuments.map((file, index) => {
                   return <li className="list-inline-item" key={index}>
                     <a className="file-name" href={file.fileUrl} title={file.fileName} target="_blank" download={file.fileName}>{file.fileName}</a>
                   </li>
@@ -235,7 +288,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
           <DetailButtonComponent dataToSap={
             [
               {
-                "id": this.props.leaveOfAbsence.id,
+                "id": leaveOfAbsence.id,
                 "requestTypeId":2,
                 "sub": [
                   {
@@ -248,8 +301,8 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
             isShowRevocationOfApproval={requestInfo.processStatusId === Constants.STATUS_APPROVED && (requestInfo.actionType == "INS" || requestInfo.actionType == "MOD")}
             isShowApproval={isShowApproval}
             isShowConsent = {requestInfo.processStatusId === Constants.STATUS_WAITING_CONSENTED}
-            isShowRevocationOfConsent = {requestInfo.processStatusId === Constants.STATUS_WAITING && this.props.leaveOfAbsence.appraiser}
-            id={this.props.leaveOfAbsence.id}
+            isShowRevocationOfConsent = {requestInfo.processStatusId === Constants.STATUS_WAITING && leaveOfAbsence.appraiser}
+            id={leaveOfAbsence.id}
             urlName={'requestabsence'}
             requestTypeId={requestTypeId}
             action={action}
