@@ -262,7 +262,7 @@ function EvaluationProcess(props) {
                 {
                   !showByManager && evaluationFormDetail.status == evaluationStatus.selfAssessment
                     ?
-                    <select onChange={(e) => handleInputChange(parentIndex, index, 'leadReviewPoint', e, subGroupTargetIndex)} value={target?.leadReviewPoint || ''}>
+                    <select onChange={(e) => !_.isNil(subGroupTargetIndex) ? handleInputChange(parentIndex, index, 'leadReviewPoint', e, subGroupTargetIndex) : handleInputChange(i ,index, "leadReviewPoint", e)} value={target?.leadReviewPoint || ''}>
                       <option value=''>Chọn điểm</option>
                       {
                         (scores || []).map((score, i) => {
@@ -364,7 +364,7 @@ function EvaluationProcess(props) {
         </div>
         <div className="qltt">
           <p>Ý kiến của QLTT đánh giá</p>
-          <textarea rows={1} placeholder="Nhập thông tin" value={target?.leaderReviewOpinion || ""} onChange={(e) => handleInputChange(parentIndex, index, 'leaderReviewOpinion', e, subGroupTargetIndex)} disabled={(showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment))} />
+          <textarea rows={1} placeholder="Nhập thông tin" value={target?.leaderReviewOpinion || ""} onChange={(e) => !_.isNil(subGroupTargetIndex) ? handleInputChange(parentIndex, index, 'leaderReviewOpinion', e, subGroupTargetIndex) : handleInputChange(i, index, "leaderReviewOpinion", e)} disabled={(showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment))} />
         </div>
       </div>
     </div>
@@ -482,8 +482,8 @@ function EvaluationDetail(props) {
           //     return initial
           // }, 0)
           // evaluationFormDetailTemp.totalComplete = totalQuestionsAnswered
-          // SetEvaluationFormDetail(evaluationFormDetailTemp)
-          SetEvaluationFormDetail(testEvaluationData)
+          SetEvaluationFormDetail(evaluationFormDetailTemp)
+          // SetEvaluationFormDetail(testEvaluationData)
         }
       }
       SetIsLoading(false)
