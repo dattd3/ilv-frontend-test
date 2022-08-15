@@ -5,7 +5,7 @@ import moment from 'moment'
 import { useTranslation } from "react-i18next"
 import Constants from "../../commons/Constants"
 import map from '../../containers/map.config'
-import { formatStringByMuleValue, calculateBackDateByPnLVCodeAndFormatType, isEnableShiftChangeFunctionByPnLVCode, isEnableInOutTimeUpdateFunctionByPnLVCode } from "../../commons/Utils"
+import { formatStringByMuleValue, calculateBackDateByPnLVCodeAndFormatType, isEnableShiftChangeFunctionByPnLVCode, isEnableInOutTimeUpdateFunctionByPnLVCode, getRegistrationMinDateByConditions } from "../../commons/Utils"
 
 const DATE_TYPE = {
   DATE_OFFSET: 0,
@@ -58,7 +58,8 @@ const chunk = (arr, size) => arr.reduce((acc, e, i) => (i % size ? acc[acc.lengt
 
 function RenderRow0(props) {
   const { t } = useTranslation()
-  const backDate = calculateBackDateByPnLVCodeAndFormatType(currentUserPnLCode, 'YYYYMMDD')
+  // const backDate = calculateBackDateByPnLVCodeAndFormatType(currentUserPnLCode, 'YYYYMMDD')
+  const backDate = getRegistrationMinDateByConditions()
   const isEnableShiftChangeFunction = isEnableShiftChangeFunctionByPnLVCode(currentUserPnLCode)
   const isEnableInOutTimeUpdateFunction = isEnableInOutTimeUpdateFunctionByPnLVCode(currentUserPnLCode)
   const pathName = window.location.pathname
@@ -70,7 +71,12 @@ function RenderRow0(props) {
     if (pathName === map.PersonalDetails) {
       isBlockActions = true
     } else {
-      isBlockActions = moment(item.day, "DD/MM/YYYY").isBefore(moment(backDate, "YYYYMMDD"))
+      if (backDate) {
+        isBlockActions = moment(item.day, "DD/MM/YYYY").isBefore(backDate?.toDate())
+      } else {
+        const backDateOldLogic = calculateBackDateByPnLVCodeAndFormatType(currentUserPnLCode, 'YYYYMMDD')
+        isBlockActions = moment(item.day, "DD/MM/YYYY").isBefore(moment(backDateOldLogic, "YYYYMMDD"))
+      }
     }
 
     return <Fragment key={index}>
