@@ -18,6 +18,9 @@
             min-height: 40px;
         }
     }
+    .btn-search-substitution, .btn-search-in-out-time {
+        margin-top: 10px;
+    }
     .block-time-item-edit {
         .box-time, input {
             font-size: inherit;
@@ -619,7 +622,17 @@
             opacity: 1;
         }
     }
-
+    .registered-leave-info {
+        .item {
+            border: 1px solid #DEE2E6;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            &:last-child {
+                margin-bottom: 0;
+            }
+        }
+    }
     .input-container {
         position:relative;
         label, .react-datepicker-wrapper {
@@ -632,10 +645,10 @@
         }
         .input-img {
             position: absolute;
-            top: 8px;
-            right: 2px;
-            width: 24px;
-            height: 24px;
+            top: 20px;
+            // right: 2px;
+            // width: 24px;
+            // height: 24px;
         }
         .input-clock {
             position: absolute;
@@ -648,7 +661,7 @@
             margin-bottom: 0;
         }
         i {
-            font-size: 20px;
+            font-size: 16px;
             font-weight: 100;
         }
     }
@@ -707,7 +720,13 @@
                 padding: 10px;
                 text-align: center;
                 box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+                .title {
+                    margin-bottom: 5px;
+                }
             }
+        }
+        .view-popup {
+            margin: 15px 0 10px 0;
         }
         .leave-type {
             label {
@@ -730,6 +749,42 @@
             margin-bottom: 0;
             display: flex;
             align-items: center;
+        }
+        .box-title {
+            padding-bottom: 15px;
+            border-bottom: 1px solid #DEE2E6;
+            font-size: 14px;
+            color: #000000;
+        }
+        .registered-information {
+            color: #000000;
+            .content {
+                padding: 15px 0 0 0;
+                .item {
+                    padding: 15px;
+                    border: 1px solid #DEE2E6;
+                    border-radius: 4px;
+                    .value {
+                        background: #F2F2F2;
+                        border-radius: 4px;
+                        height: 38px;
+                        padding: 0 10px;
+                    }
+                    .main-info {
+                        margin-bottom: 15px;
+                        &__item {
+                            flex: 1 1;
+                            margin-right: 20px;
+                            &:last-child {
+                                margin-right: 0;
+                            }
+                        }
+                    }
+                    .reason {
+
+                    }
+                }
+            }
         }
     }
     .business-trip {
