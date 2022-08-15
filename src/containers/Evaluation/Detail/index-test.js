@@ -550,6 +550,13 @@ function EvaluationDetail(props) {
       totalQuestionsAnswered = (evaluationFormDetailTemp?.listGroup || []).reduce((initial, current) => {
         let questionsAnswered = (current?.listTarget || []).reduce((subInitial, subCurrent) => {
           subInitial += subCurrent?.leadReviewPoint ? 1 : 0
+          if(subCurrent.listTarget?.length) {
+            const subQuestionsAnswered = subCurrent.listTarget?.reduce((res, item) => {
+              res+=item.leadReviewPoint ? 1 : 0
+              return res
+            },0)
+            subInitial+=subQuestionsAnswered
+          }
           return subInitial
         }, 0)
         initial += questionsAnswered
