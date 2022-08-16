@@ -58,8 +58,8 @@ class ConsentComponent extends React.Component {
       { value: Constants.STATUS_NO_CONSENTED , label: t("Rejected") },
       // { value: Constants.STATUS_REVOCATION , label: t("Canceled") },
       { value: Constants.STATUS_OB_SELF_EVALUATION , label:'Tự đánh giá' },
-      { value: Constants.STATUS_OB_APPRAISER_EVALUATION , label:  checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.pnlVCode.VinHome) ? 'QLTT đánh giá' : 'Người đánh giá'},
-      { value: Constants.STATUS_OB_SUPERVISOR_EVALUATION , label: checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.pnlVCode.VinHome)  ? 'CBLĐ thẩm định' : 'QLTT đánh giá' },
+      { value: Constants.STATUS_OB_APPRAISER_EVALUATION , label:  checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.pnlVCode.VinHome, Constants.PnLCODE.Vin3S) ? 'QLTT đánh giá' : 'Người đánh giá'},
+      { value: Constants.STATUS_OB_SUPERVISOR_EVALUATION , label: checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.pnlVCode.VinHome, Constants.PnLCODE.Vin3S)  ? 'CBLĐ thẩm định' : 'QLTT đánh giá' },
       { value: Constants.STATUS_OB_APPROVER_EVALUATION , label: "CBLĐ phê duyệt" },
     ]
     return (

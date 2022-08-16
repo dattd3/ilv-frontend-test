@@ -290,8 +290,8 @@ const CreateSickInsurance = ({
               className="input mv-10"
               styles={{ menu: (provided) => ({ ...provided, zIndex: 2 }) }}
             />
-            {errors["declareForm"] ? (
-              <p className="text-danger">{errors["declareForm"]}</p>
+            {errors["plan"] ? (
+              <p className="text-danger">{errors["plan"]}</p>
             ) : null}
           </div>
         </div>
@@ -314,23 +314,23 @@ const CreateSickInsurance = ({
           <div className="col-4">
             {t("FullName")}
             <span className="required">(*)</span>
-            <div className="detail">{userInfo.fullName}</div>
+            <div className="detail1">{userInfo.fullName}</div>
           </div>
           <div className="col-4">
             {"Mã sổ/số sổ BHXH"}
             <span className="required">(*)</span>
-            <div className="detail">{userInfo.socialId}</div>
+            <div className="detail1">{userInfo.socialId}</div>
           </div>
           <div className="col-4">
             {"Số CMND/Hộ chiếu/Thẻ căn cước"}
             <span className="required">(*)</span>
-            <div className="detail">{userInfo.IndentifiD}</div>
+            <div className="detail1">{userInfo.IndentifiD}</div>
           </div>
         </div>
         <div className="row mv-10">
           <div className="col-4">
             {"Mã nhân viên"}
-            <div className="detail">{userInfo.employeeNo}</div>
+            <div className="detail1">{userInfo.employeeNo}</div>
           </div>
 
           <div className="col-4">
