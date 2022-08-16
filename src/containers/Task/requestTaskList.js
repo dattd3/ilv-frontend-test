@@ -645,6 +645,9 @@ class RequestTaskList extends React.Component {
                                 <tbody>
                                     {
                                         tasks.map((child, index) => {
+                                            console.log("*********************")
+                                            console.log(child)
+
                                             let isShowEditButton = this.isShowEditButton(child.processStatusId, child.appraiserId, child.requestTypeId, child.startDate, child.isEdit)
                                             let isShowEvictionButton = this.isShowEvictionButton(child.processStatusId, child.requestTypeId, child.startDate)
                                             let actionType = child?.actionType || null
@@ -667,7 +670,7 @@ class RequestTaskList extends React.Component {
                                                 <tr key={index}>
                                                     <td className="code"><a href={detailLink} title={child.requestType.name} className="task-title">{generateTaskCodeByCode(child.id)}</a></td>
                                                     <td className="request-type">{getRequestTypeLabel(child.requestType, child.absenceType?.value)}</td>
-                                                    <td className="day-off"><div dangerouslySetInnerHTML={{ __html: dateChanged }} /></td>
+                                                    <td className="day-off"><div dangerouslySetInnerHTML={{ __html: dateChanged }} />aaaa</td>
                                                     <td className="break-time text-center">{totalTime}</td>
                                                     <td className="status text-center">{this.showStatus(child.id, child.processStatusId, child.requestType.id, child.appraiserId)}</td>
                                                     <td className="tool">
