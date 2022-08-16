@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import moment from 'moment'
 import { withTranslation } from "react-i18next"
 import axios from 'axios'
@@ -100,9 +100,20 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
       isShowAppraisalInfo = true
     }
 
-    console.log("sdfgdfgsdfgsfdgsdfgs")
-    console.log(leaveOfAbsence)
+    const newItem = [...requestInfo?.newItem]
+    const requestInfoToShow = [_.omit(requestInfo, ['newItem']) || [], ...newItem || []]
+    const requestedTime = (requestInfoToShow || []).reduce((initial, current) => {
+      initial.totalHours += current?.hours || 0
+      initial.totalDays += current?.days || 0
+      return initial
+    }, {totalHours: 0, totalDays: 0}) 
 
+
+    const totalRequestedTime = requestInfo?.isAllDay ? `${requestedTime?.totalDays} ${t("Day")}`  : `${requestedTime?.totalHours} ${t("Hour")}`
+
+    console.log("TTTTTTTTTTTTTTTTTTTTTTTTT")
+    console.log(requestInfo)
+    console.log(requestInfoToShow)
 
     return (
       <div className="leave-of-absence">
@@ -205,35 +216,46 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
 
         <h5>{t(Constants.mappingActionType[requestInfo.actionType].TitleLeave)}</h5>
         <div className="box shadow cbnv">
-          <div className="row">
-            <div className="col-xl-3">
-              {t("StartDateTime")}
-              <div className="detail">{requestInfo ? moment(requestInfo.startDate).format("DD/MM/YYYY") + (requestInfo.startTime ? ' ' + moment(requestInfo.startTime, TIME_FORMAT).locale('en-us').format('HH:mm') : '') : ""}</div>
-            </div>
-            <div className="col-xl-3">
-              {t("EndDateTime")}
-              <div className="detail">{requestInfo ? moment(requestInfo.endDate).format("DD/MM/YYYY") + (requestInfo.endTime ? ' ' + moment(requestInfo.endTime, TIME_FORMAT).locale('en-us').format('HH:mm') : '') : ""}</div>
-            </div>
-            <div className="col-xl-3">
-              {t("TotalLeaveTime")}
-              {/* <div className="detail">{ requestInfo && requestInfo.days && requestInfo.absenceType.value != "PQ02" ? requestInfo.days + ' ngày' : null } { requestInfo && requestInfo.hours  && requestInfo.absenceType.value == "PQ02" ? requestInfo.hours  + ' giờ' : null}</div> */}
-              <div className="detail">{( requestInfo && requestInfo.days >= 1) ? requestInfo.days + ' ' + t("Day") : requestInfo.hours + ' ' + t("Hour")}</div>
-            </div>
-            <div className="col-xl-3">
-              {t("LeaveCategory")}
-              <div className="detail">{requestInfo && requestInfo.absenceType ? requestInfo.absenceType.label : ""}</div>
-            </div>
-          </div>
-          {(requestInfo && requestInfo.absenceType && requestInfo.absenceType.value === 'PN03') ? <div className="row">
-            <div className="col">
-              {t("MarriageFuneral")}
-              <div className="detail">{requestInfo.absenceType.label}</div>
-            </div>
-          </div> : null}
-          <div className="row">
-            <div className="col" style={{marginTop: 10}}>
-              {t(Constants.mappingActionType[requestInfo.actionType].ReasonRequestLeave)}
-              <div className="detail">{requestInfo ? requestInfo.comment : ""}</div>
+          {
+            (requestInfoToShow || []).map((requestItem, requestItemIndex) => {
+              return (
+                <div className='time-info' key={`request-item-${requestItemIndex}`}>
+                  <div className="row">
+                    <div className="col-xl-3">
+                      {t("StartDate")}
+                      <div className="detail">{requestItem?.startDate ? moment(requestItem?.startDate).format("DD/MM/YYYY") : ""}</div>
+                    </div>
+                    <div className="col-xl-3">
+                      {t("StartHour")}
+                      <div className="detail">{requestItem?.startTime ? moment(requestItem.startTime, TIME_FORMAT).locale('en-us').format('HH:mm') : ''}</div>
+                    </div>
+                    <div className="col-xl-3">
+                      {t("EndDate")}
+                      <div className="detail">{requestItem?.endDate ? moment(requestItem.endDate).format("DD/MM/YYYY") : ""}</div>
+                    </div>
+                    <div className="col-xl-3">
+                      {t("Endtime")}
+                      <div className="detail">{requestItem.endTime ? moment(requestItem.endTime, TIME_FORMAT).locale('en-us').format('HH:mm') : ''}</div>
+                    </div>
+                  </div>
+                </div>
+              )
+            })
+          }
+          <div className='other-info'>
+            <div className='row'>
+              <div className="col-md-6">
+                <label>{(requestInfo && requestInfo.absenceType && requestInfo.absenceType.value === 'PN03') ? t("MarriageFuneral") : t("LeaveCategory")}</label>
+                <div className="detail">{requestInfo && requestInfo?.absenceType ? requestInfo.absenceType?.label : ""}</div>
+              </div>
+              <div className="col-md-6">
+                <label>{t("TotalLeaveTime")}</label>
+                <div className="detail">{totalRequestedTime}</div>
+              </div>
+              <div className='col-md-12 reason-block'>
+                <label>{t(Constants.mappingActionType[requestInfo.actionType].ReasonRequestLeave)}</label>
+                <div className="detail">{requestInfo ? requestInfo?.comment : ""}</div>
+              </div>
             </div>
           </div>
         </div>

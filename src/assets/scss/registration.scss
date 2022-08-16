@@ -621,6 +621,27 @@
         .close {
             opacity: 1;
         }
+        .time-info {
+            border: 1px solid #DEE2E6;
+            border-radius: 4px;
+            padding: 15px;
+            margin-bottom: 15px;
+            &:last-child {
+                margin-bottom: 0;
+            }
+        }
+        .other-info {
+            border: 1px solid #DEE2E6;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 15px;
+            .reason-block {
+                margin-top: 15px;
+            }
+            label {
+                margin-bottom: 0;
+            }
+        }
     }
     .registered-leave-info {
         .item {
