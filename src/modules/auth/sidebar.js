@@ -56,8 +56,8 @@ export const Navigation = [
       icon: 'c-resignation-requests-management',
       label: "ResignationRequestsManagement",
       to: map.ResignationRequestsManagement,
-      //role: [Constants.pnlVCode.VinHome, , Constants.PnLCODE.Vin3S]
-      role: 'NA'
+      role: [Constants.pnlVCode.VinHome, , Constants.PnLCODE.Vin3S]
+      //role: 'NA'
     },
 
   // {
@@ -309,8 +309,8 @@ export const Navigation = [
     parentId: 10,
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     label: "Welfare",
-    //role: 'U'
-    role: 'NA'
+    role: 'U'
+    //role: 'NA'
   },
   {
     id: 111,
@@ -465,8 +465,8 @@ export const Navigation = [
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     label: "RegistrationEmploymentTermination",
     to: map.RegistrationEmploymentTermination,
-    //role: [Constants.pnlVCode.VinHome, Constants.PnLCODE.Vin3S]
-    role: 'NA'
+    role: [Constants.pnlVCode.VinHome, Constants.PnLCODE.Vin3S]
+    //role: 'NA'
   },
   {
       id: 129999,
@@ -474,7 +474,7 @@ export const Navigation = [
       icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
       label: "ProposedResignation",
       to: map.ProposedResignation,
-      //role: ["P","T","P2", "P1", "T4", "T3", "T2", "T1"]
-      role: 'NA'
+      role: ["P","T","P2", "P1", "T4", "T3", "T2", "T1"]
+      //role: 'NA'
     },
 ];
