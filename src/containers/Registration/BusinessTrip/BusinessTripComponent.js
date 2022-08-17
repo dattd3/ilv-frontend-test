@@ -311,6 +311,7 @@ class BusinessTripComponent extends React.Component {
 
         axios.post(`${process.env.REACT_APP_REQUEST_URL}request/validate`, {
             perno: localStorage.getItem('employeeNo'),
+            ...(this.state.isEdit && { requestId: this.props.taskId }),
             times: times,
         }, config)
             .then(res => {
@@ -541,12 +542,13 @@ class BusinessTripComponent extends React.Component {
             if (isEdit) {
                 reqItem = {
                     ...reqItem,
-                    processStatusId: req.processStatusId,
-                    id: req.id
+                    processStatusId: req.processStatusId ? req.processStatusId : requestInfo[0]?.processStatusId,
+                    id: req?.id ? req?.id : requestInfo[0]?.id
                 }
             }
             return reqItem
         })
+
         const approver = { ...this.state.approver }
         const appraiser = { ...this.state.appraiser }
         delete approver.avatar
@@ -614,7 +616,7 @@ class BusinessTripComponent extends React.Component {
         } else {
             indexReq = requestInfo.findIndex(req => req.groupId === groupId)
         }
-        const errorMsg = requestInfo[indexReq].errors[name]
+        const errorMsg = requestInfo[indexReq]?.errors[name]
         return errorMsg ? <p className="text-danger">{errorMsg}</p> : null
     }
 
@@ -751,7 +753,7 @@ class BusinessTripComponent extends React.Component {
     }
 
     render() {
-        const { t } = this.props;
+        const { t, businessTrip } = this.props;
         const { requestInfo, errors, approver, appraiser, isEdit } = this.state
         const sortRequestListByGroup = requestInfo.sort((reqPrev, reqNext) => reqPrev.groupId - reqNext.groupId)
         const requestInfoArr = _.valuesIn(_.groupBy(sortRequestListByGroup, (req) => req.groupId))
@@ -788,10 +790,65 @@ class BusinessTripComponent extends React.Component {
         }
         const checkVinmec = checkIsExactPnL(Constants.PnLCODE.Vinmec);
         const minDate = getRegistrationMinDateByConditions()
+        const registeredInformation = (businessTrip?.requestInfoOld || businessTrip?.requestInfoOld?.length > 0) ? businessTrip.requestInfoOld : businessTrip?.requestInfo
         
         return (
             <div className="business-trip">
                 <ResultModal show={this.state.isShowStatusModal} title={this.state.titleModal} message={this.state.messageModal} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
+
+                { isEdit && 
+                    <div className="box shadow registered-information">
+                        <div className='text-uppercase font-weight-bold box-title'>Thông tin đã đăng ký công tác/đào tạo</div>
+                        <div className='content'>
+                            {
+                                (registeredInformation || []).map((ri, riIndex) => {
+                                    let  totalTimeRegistered = ri?.isAllDay ? `${ri?.days || 0} ${t('DayUnit')}` : `${ri?.hours || 0} ${t('HourUnit')}`
+                                    return (
+                                        <div className='item' key={`old-request-info-${riIndex}`}>
+                                            <div className='d-flex row-main-info'>
+                                                <div className='row-main-info__item'>
+                                                    <label>{t('StartDateTime')}</label>
+                                                    <div className='d-flex align-items-center value'>
+                                                        {ri?.startDate && moment(ri?.startDate, 'YYYYMMDD').isValid() ? moment(ri?.startDate, 'YYYYMMDD').format('DD/MM/YYYY') : ''}
+                                                    </div>
+                                                </div>
+                                                <div className='row-main-info__item'>
+                                                    <label>{t('EndDateTime')}</label>
+                                                    <div className='d-flex align-items-center value'>
+                                                        {ri?.endDate && moment(ri?.endDate, 'YYYYMMDD').isValid() ? moment(ri?.endDate, 'YYYYMMDD').format('DD/MM/YYYY') : ''}
+                                                    </div>
+                                                </div>
+                                                <div className='row-main-info__item'>
+                                                    <label>{t('TotalLeaveTime')}</label>
+                                                    <div className='d-flex align-items-center value'>{totalTimeRegistered}</div>
+                                                </div>
+                                            </div>
+                                            <div className='d-flex row-main-info'>
+                                                <div className='row-main-info__item'>
+                                                    <label>{t('TypeOfBizTripAndTraining')}</label>
+                                                    <div className='d-flex align-items-center value'>{ri?.attendanceType?.label || ''}</div>
+                                                </div>
+                                                <div className='row-main-info__item'>
+                                                    <label>{t('Location')}</label>
+                                                    <div className='d-flex align-items-center value'>{ri?.location?.label || ''}</div>
+                                                </div>
+                                                <div className='row-main-info__item'>
+                                                    <label>{t('MeansOfTransportation')}</label>
+                                                    <div className='d-flex align-items-center value'>{ri?.vehicle?.label || ''}</div>
+                                                </div>
+                                            </div>
+                                            <div className='reason'>
+                                                <label>{t('ReasonTripAndTrainning')}</label>
+                                                <div className='d-flex align-items-center value'>{ri?.comment || ''}</div>
+                                            </div>
+                                        </div>
+                                    )
+                                })
+                            }
+                        </div>
+                    </div>
+                }
+
                 {requestInfoArr && requestInfoArr.map((req, index) => {
                     let totalDay = 0
                     let totalTime = 0
@@ -932,10 +989,9 @@ class BusinessTripComponent extends React.Component {
                                                         </div>
                                                     </div>
                                                 </div>
-                                                {!indexDetail ?
-                                                    !isEdit && <button type="button" className="btn btn-add-multiple-in-out" style={{ right: 0 }} onClick={() => this.addMultiDateTime(req[0].groupId, req, req[0].isAllDay, req[0])}><i className="fas fa-plus"></i> {t("AddMore")}</button>
-                                                    :
-                                                    !isEdit && <button type="button" className="btn btn-danger btn-top-right-corner" onClick={() => this.onRemoveBizTrip(reqDetail.groupId, reqDetail.groupItem)}><i className="fas fa-times"></i> {t("Cancel")}</button>
+                                                {!indexDetail 
+                                                    ? <button type="button" className="btn btn-add-multiple-in-out" style={{ right: 0 }} onClick={() => this.addMultiDateTime(req[0].groupId, req, req[0].isAllDay, req[0])}><i className="fas fa-plus"></i> {t("AddMore")}</button>
+                                                    : <button type="button" className="btn btn-danger btn-top-right-corner" onClick={() => this.onRemoveBizTrip(reqDetail.groupId, reqDetail.groupItem)}><i className="fas fa-times"></i> {t("Cancel")}</button>
                                                 }
                                                 {
                                                     reqDetail.errors.startTimeAndEndTime ?
@@ -972,7 +1028,7 @@ class BusinessTripComponent extends React.Component {
                                     <div className="col-5">
                                         <p className="title">{t('TypeOfBizTripAndTraining')}</p>
                                         <div>
-                                            <Select name="attendanceQuotaType" value={req[0].attendanceQuotaType} onChange={attendanceQuotaType => this.handleSelectChange('attendanceQuotaType', attendanceQuotaType, req[0].groupId)} placeholder={t('Select')} key="attendanceQuotaType" options={attendanceQuotaTypes} />
+                                            <Select name="attendanceQuotaType" value={req[0]?.attendanceQuotaType} onChange={attendanceQuotaType => this.handleSelectChange('attendanceQuotaType', attendanceQuotaType, req[0].groupId)} placeholder={t('Select')} key="attendanceQuotaType" options={attendanceQuotaTypes} />
                                         </div>
 
                                         {this.error('attendanceQuotaType', req[0].groupId)}
@@ -983,16 +1039,16 @@ class BusinessTripComponent extends React.Component {
                                                 <div className="col-5">
                                                     <p className="title">{t('Location')}</p>
                                                     <div>
-                                                        <Select name="place" value={req[0].place} onChange={place => this.handleSelectChange('place', place, req[0].groupId)} placeholder={t('Select')} key="place" options={places} />
+                                                        <Select name="place" value={req[0]?.place} onChange={place => this.handleSelectChange('place', place, req[0]?.groupId)} placeholder={t('Select')} key="place" options={places} />
                                                     </div>
-                                                    {this.error('place', req[0].groupId)}
+                                                    {this.error('place', req[0]?.groupId)}
                                                 </div>
                                                 <div className="col-2">
                                                     <p className="title">{t('MeansOfTransportation')}</p>
                                                     <div>
                                                         <Select name="vehicle" value={req[0].vehicle} onChange={vehicle => this.handleSelectChange('vehicle', vehicle, req[0].groupId)} placeholder={t('Select')} key="vehicle" options={vehicles} />
                                                     </div>
-                                                    {this.error('vehicle', req[0].groupId)}
+                                                    {this.error('vehicle', req[0]?.groupId)}
                                                 </div>
                                             </>
                                             : null
