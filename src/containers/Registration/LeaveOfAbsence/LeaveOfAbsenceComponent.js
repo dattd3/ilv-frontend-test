@@ -833,10 +833,6 @@ class LeaveOfAbsenceComponent extends React.Component {
         const requestInfoArr = _.valuesIn(_.groupBy(sortRequestListByGroup, (req) => req.groupId))
         const checkVinmec = checkIsExactPnL(Constants.PnLCODE.Vinmec);
         const minDate = getRegistrationMinDateByConditions()
-
-        console.log(222222222222)
-        console.log(leaveOfAbsence)
-
         const registeredInformation = (leaveOfAbsence?.requestInfoOld || leaveOfAbsence?.requestInfoOld?.length > 0) ? leaveOfAbsence.requestInfoOld : leaveOfAbsence?.requestInfo
 
         return (
@@ -881,8 +877,6 @@ class LeaveOfAbsenceComponent extends React.Component {
                         </div>
                     </div> */}
                 </div>
-
-                
 
                 { isEdit && 
                     <div className="box shadow registered-information">
