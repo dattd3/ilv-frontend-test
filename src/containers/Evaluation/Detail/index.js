@@ -20,8 +20,8 @@ import IconSave from '../../../assets/img/ic-save.svg'
 import IconSendRequest from '../../../assets/img/icon/Icon_send.svg'
 import IconReject from '../../../assets/img/icon/Icon_Cancel.svg'
 import IconApprove from '../../../assets/img/icon/Icon_Check.svg'
-
 function EvaluationOverall(props) {
+    const { t } = useTranslation()
     const { evaluationFormDetail, showByManager } = props
     const totalCompleted = showByManager ? evaluationFormDetail?.leadReviewTotalComplete || 0 : evaluationFormDetail?.seftTotalComplete || 0
 
@@ -40,84 +40,85 @@ function EvaluationOverall(props) {
     const chartOption = {
         responsive: true,
         aspectRatio: 1,
-        tooltips: {enabled: false},
-        hover: {mode: null},
+        tooltips: { enabled: false },
+        hover: { mode: null },
         cutoutPercentage: 75,
         plugins: {
-            report: `${(totalCompleted/evaluationFormDetail?.totalTarget*100).toFixed(2)}%`
+            report: `${(totalCompleted / evaluationFormDetail?.totalTarget * 100).toFixed(2)}%`
         }
     }
 
     return <div className="block-overall">
-                <div className="card shadow card-completed">
-                    <h6 className="text-center">Đã hoàn thành: {totalCompleted || 0}/{evaluationFormDetail?.totalTarget}</h6>
-                    <div className="chart">
-                        <div className="detail">
-                            <div className="result">
-                                <Doughnut 
-                                    data={overallData} 
-                                    options={chartOption} 
-                                    plugins={
-                                        [{
-                                            beforeDraw: function(chart, args, options) {
-                                                const width = chart.width,
-                                                height = chart.height,
-                                                ctx = chart.ctx;
-                                                ctx.restore()
-                                                // const fontSize = (height / 160).toFixed(2)
-                                                ctx.font = `normal normal bold 1.2em arial`
-                                                ctx.textBaseline = "top"
-                                                const text = chart?.options?.plugins?.report,
-                                                textX = Math.round((width - ctx.measureText(text).width) / 2),
-                                                textY = height / 2;
-                                                ctx.fillText(text, textX, textY)
-                                                ctx.save()
-                                            }
-                                        }]
+        <div className="card shadow card-completed">
+            <h6 className="text-center">{t("EvaluationDetailAccomplished")}: {totalCompleted || 0}/{evaluationFormDetail?.totalTarget}</h6>
+            <div className="chart">
+                <div className="detail">
+                    <div className="result">
+                        <Doughnut
+                            data={overallData}
+                            options={chartOption}
+                            plugins={
+                                [{
+                                    beforeDraw: function (chart, args, options) {
+                                        const width = chart.width,
+                                            height = chart.height,
+                                            ctx = chart.ctx;
+                                        ctx.restore()
+                                        // const fontSize = (height / 160).toFixed(2)
+                                        ctx.font = `normal normal bold 1.2em arial`
+                                        ctx.textBaseline = "top"
+                                        const text = chart?.options?.plugins?.report,
+                                            textX = Math.round((width - ctx.measureText(text).width) / 2),
+                                            textY = height / 2;
+                                        ctx.fillText(text, textX, textY)
+                                        ctx.save()
                                     }
-                                />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div className="card shadow card-overall">
-                    <h6 className="text-center chart-title">Điểm tổng thể</h6>
-                    <div className="chart">
-                        <div className="detail">{(evaluationFormDetail?.status == evaluationStatus.launch || (evaluationFormDetail?.status == evaluationStatus.selfAssessment && !showByManager))  ? evaluationFormDetail?.totalSeftPoint || 0 : evaluationFormDetail?.totalLeadReviewPoint || 0}</div>
-                    </div>
-                </div>
-                <div className="card shadow card-detail">
-                    <table className='table-list-evaluation'>
-                        <thead>
-                            <tr>
-                                <th className='c-criteria'><div className='criteria'>Tiêu chí đánh giá</div></th>
-                                <th className='c-self-assessment text-center'><div className='self-assessment'>Tự đánh giá</div></th>
-                                <th className='c-manager-assessment text-center'><div className='manager-assessment color-red'>QLTT đánh giá</div></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {
-                                (evaluationFormDetail?.listGroup || []).map((item, i) => {
-                                    return <tr key={i}>
-                                                <td className='c-criteria'><div className='criteria'>{item?.groupName}</div></td>
-                                                <td className='c-self-assessment text-center'>{item?.groupSeftPoint || 0}</td>
-                                                <td className='c-manager-assessment text-center color-red'>{item?.groupLeadReviewPoint || 0}</td>
-                                            </tr>
-                                })
+                                }]
                             }
-                            <tr>
-                                <td className='c-criteria'><div className='font-weight-bold text-uppercase criteria'>Điểm tổng thể</div></td>
-                                <td className='c-self-assessment text-center font-weight-bold'>{evaluationFormDetail?.totalSeftPoint || 0}</td>
-                                <td className='c-manager-assessment text-center font-weight-bold color-red'>{evaluationFormDetail?.totalLeadReviewPoint || 0}</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                        />
+                    </div>
                 </div>
             </div>
+        </div>
+        <div className="card shadow card-overall">
+            <h6 className="text-center chart-title">{t("EvaluationDetailOverallScore")}</h6>
+            <div className="chart">
+                <div className="detail">{(evaluationFormDetail?.status == evaluationStatus.launch || (evaluationFormDetail?.status == evaluationStatus.selfAssessment && !showByManager)) ? evaluationFormDetail?.totalSeftPoint || 0 : evaluationFormDetail?.totalLeadReviewPoint || 0}</div>
+            </div>
+        </div>
+        <div className="card shadow card-detail">
+            <table className='table-list-evaluation'>
+                <thead>
+                    <tr>
+                        <th className='c-criteria'><div className='criteria'>{t("EvaluationDetailCriteria")}</div></th>
+                        <th className='c-self-assessment text-center'><div className='self-assessment'>{t("EvaluationDetailSelfAssessment")}</div></th>
+                        <th className='c-manager-assessment text-center'><div className='manager-assessment color-red'>{t("EvaluationDetailManagerAssessment")}</div></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {
+                        (evaluationFormDetail?.listGroup || []).map((item, i) => {
+                            return <tr key={i}>
+                                <td className='c-criteria'><div className='criteria'>{item?.groupName}</div></td>
+                                <td className='c-self-assessment text-center'>{item?.groupSeftPoint || 0}</td>
+                                <td className='c-manager-assessment text-center color-red'>{item?.groupLeadReviewPoint || 0}</td>
+                            </tr>
+                        })
+                    }
+                    <tr>
+                        <td className='c-criteria'><div className='font-weight-bold text-uppercase criteria'>{t("EvaluationDetailOverallScore")}</div></td>
+                        <td className='c-self-assessment text-center font-weight-bold'>{evaluationFormDetail?.totalSeftPoint || 0}</td>
+                        <td className='c-manager-assessment text-center font-weight-bold color-red'>{evaluationFormDetail?.totalLeadReviewPoint || 0}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 }
 
 function EvaluationProcess(props) {
     const { evaluationFormDetail, showByManager, errors, updateData } = props
+    const { t } = useTranslation()
     const processStep = {
         oneLevel: '1NF',
         twoLevels: '2NF',
@@ -145,9 +146,9 @@ function EvaluationProcess(props) {
     }
 
     const renderEvaluationStep = () => {
-        const stepEvaluationConfig = evaluationFormDetail?.reviewStreamCode === processStep.oneLevel 
-                                    ? ['CBNV tự đánh giá', 'CBQLTT đánh giá', 'Hoàn thành']
-                                    : ['CBNV tự đánh giá', 'CBQLTT đánh giá', 'CBLĐ có thẩm quyền phê duyệt', 'Hoàn thành']
+        const stepEvaluationConfig = evaluationFormDetail?.reviewStreamCode === processStep.oneLevel
+            ? [t("EvaluationDetailSelfAssessment"), t("EvaluationDetailManagerAssessment"), t("EvaluationDetailCompleted")]
+            : [t("EvaluationDetailSelfAssessment"), t("EvaluationDetailManagerAssessment"), t("EvaluationDetailManagerApprove"), t("EvaluationDetailCompleted")]
         return stepEvaluationConfig.map((item, index) => {
             let activeClass = index === stepStatusMapping[evaluationFormDetail?.status] ? 'active' : ''
             return (
@@ -171,37 +172,37 @@ function EvaluationProcess(props) {
 
         return (
             <>
-                <div className="title">Thông tin nhân viên</div>
+                <div className="title">{t("EvaluationDetailEmployeeInfo")}</div>
                 <div className="detail">
                     <div className="left">
                         <div className="info-item">
-                            <span className="label"><span className="font-weight-bold">Họ và tên</span><span>:</span></span>
+                            <span className="label"><span className="font-weight-bold">{t("EvaluationDetailEmployeeFullName")}</span><span>:</span></span>
                             <span className="value">{evaluationFormDetail?.fullName || ''}</span>
                         </div>
                         <div className="info-item">
-                            <span className="label"><span className="font-weight-bold">Chức danh</span><span>:</span></span>
+                            <span className="label"><span className="font-weight-bold">{t("EvaluationDetailEmployeeJobTitle")}</span><span>:</span></span>
                             <span className="value">{evaluationFormDetail?.position || ''}</span>
                         </div>
                         <div className="info-item">
-                            <span className="label"><span className="font-weight-bold">Cấp bậc</span><span>:</span></span>
+                            <span className="label"><span className="font-weight-bold">{t("EvaluationDetailEmployeeJobLevel")}</span><span>:</span></span>
                             <span className="value">{evaluationFormDetail?.employeeLevel || ''}</span>
                         </div>
                         <div className="info-item">
-                            <span className="label"><span className="font-weight-bold">Ban/Chuỗi/Khối</span><span>:</span></span>
+                            <span className="label"><span className="font-weight-bold">{t("EvaluationDetailEmployeeDivision")}</span><span>:</span></span>
                             <span className="value">{evaluationFormDetail?.organization_lv3 || ''}</span>
                         </div>
                     </div>
                     <div className="right">
                         <div className="info-item">
-                            <span className="label"><span className="font-weight-bold">Phòng/Vùng/Miền</span><span>:</span></span>
+                            <span className="label"><span className="font-weight-bold">{t("EvaluationDetailEmployeeDepartment")}</span><span>:</span></span>
                             <span className="value">{evaluationFormDetail?.organization_lv4 || ''}</span>
                         </div>
                         <div className="info-item">
-                            <span className="label"><span className="font-weight-bold">QLTT đánh giá</span><span>:</span></span>
+                            <span className="label"><span className="font-weight-bold">{t("EvaluationDetailEmployeeManagerAssessment")}</span><span>:</span></span>
                             <span className="value">{reviewerInfos?.fullname && `${reviewerInfos?.fullname || ''} - ${reviewerInfos?.position_title || ''}`}</span>
                         </div>
                         <div className="info-item">
-                            <span className="label"><span className="font-weight-bold">CBLĐ phê duyệt</span><span>:</span></span>
+                            <span className="label"><span className="font-weight-bold">{t("EvaluationDetailEmployeeManagerApprove")}</span><span>:</span></span>
                             <span className="value">{approverInfos?.fullname && `${approverInfos?.fullname || ''} - ${approverInfos?.position_title || ''}`}</span>
                         </div>
                         <div className="info-item">
@@ -231,220 +232,220 @@ function EvaluationProcess(props) {
     }
 
     return <div className="card shadow evaluation-process">
-                <div className="title">Quy trình đánh giá</div>
-                <div className="step-block">
-                    { renderEvaluationStep() }
-                </div>
-                <div className="employee-info-block">
-                    { renderEmployeeInfos() }
-                </div>
+        <div className="title">{t("EvaluationDetailASSESSMENTPROCESS")}</div>
+        <div className="step-block">
+            {renderEvaluationStep()}
+        </div>
+        <div className="employee-info-block">
+            {renderEmployeeInfos()}
+        </div>
 
-                {
-                    (evaluationFormDetail?.listGroup || []).map((item, index) => {
-                        let indexText = formatIndexText(index + 1)
-                        // let scores = prepareScores(item?.listGroupConfig)
-                        let scores = [1, 2, 3, 4, 5]
+        {
+            (evaluationFormDetail?.listGroup || []).map((item, index) => {
+                let indexText = formatIndexText(index + 1)
+                // let scores = prepareScores(item?.listGroupConfig)
+                let scores = [1, 2, 3, 4, 5]
 
-                        return <div className={`part-block ${item?.listGroupConfig && item?.listGroupConfig?.length > 0 ? 'attitude' : 'work-result'}`} key={index}>
-                                    <div className="title">{`Phần ${indexText} - ${item?.groupName}`} <span className="red">({item?.groupWeight || 0}%)</span></div>
+                return <div className={`part-block ${item?.listGroupConfig && item?.listGroupConfig?.length > 0 ? 'attitude' : 'work-result'}`} key={index}>
+                    <div className="title">{`${t("EvaluationDetailPart")} ${indexText} - ${item?.groupName}`} <span className="red">({item?.groupWeight || 0}%)</span></div>
+                    {
+                        item?.listGroupConfig && item?.listGroupConfig?.length > 0 &&
+                        <div className="wrap-score-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th className="red">{t("EvaluationDetailPartAttitudeScore")}</th>
+                                        {
+                                            item?.listGroupConfig?.map((sub, subIndex) => {
+                                                return <th key={subIndex}><span className="milestones">{subIndex + 1}</span></th>
+                                            })
+                                        }
+                                    </tr>
+                                    <tr>
+                                        <th>%</th>
+                                        {
+                                            item?.listGroupConfig?.map((sub, subIndex) => {
+                                                return <th key={subIndex}><span>{sub?.weight}</span></th>
+                                            })
+                                        }
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>{t("EvaluationDetailPartAttitudeLevelExpression")}</td>
+                                        {
+                                            item?.listGroupConfig?.map((sub, subIndex) => {
+                                                return <td key={subIndex}><div>{sub?.description}</div></td>
+                                            })
+                                        }
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+
+                    <div className="list-evaluation">
+                        {
+                            (item?.listTarget || []).map((target, i) => {
+                                let deviant = (target?.leadReviewPoint === '' || target?.leadReviewPoint === null || target?.seftPoint === '' || target?.seftPoint === null) ? '' : Number(target?.leadReviewPoint) - Number(target?.seftPoint)
+
+                                return <div className="evaluation-item" key={i}>
+                                    <div className="title">{`${i + 1}. ${target?.targetName}`}</div>
                                     {
-                                        item?.listGroupConfig && item?.listGroupConfig?.length > 0 && 
-                                        <div className="wrap-score-table">
-                                            <table>
-                                                <thead>
-                                                    <tr>
-                                                        <th className="red">Điểm</th>
+                                        item?.listGroupConfig && item?.listGroupConfig?.length > 0 ?
+                                            <div className="score-block">
+                                                <div className="self attitude-score">
+                                                    <div className="item">
+                                                        <span className="red label">{t("EvaluationDetailPartAttitudeSelfAssessment")}{!showByManager && <span className="required">(*)</span>}</span>
                                                         {
-                                                            item?.listGroupConfig?.map((sub, subIndex) => {
-                                                                return <th key={subIndex}><span className="milestones">{subIndex + 1}</span></th>
-                                                            })
+                                                            !showByManager && evaluationFormDetail.status == evaluationStatus.launch
+                                                                ?
+                                                                <select onChange={(e) => handleInputChange(i, index, 'seftPoint', e)} value={target?.seftPoint || ''}>
+                                                                    <option value=''>{t("EvaluationDetailPartSelectScore")}</option>
+                                                                    {
+                                                                        (scores || []).map((score, i) => {
+                                                                            return <option value={score} key={i}>{score}</option>
+                                                                        })
+                                                                    }
+                                                                </select>
+                                                                : <input type="text" value={target?.seftPoint || ''} disabled />
                                                         }
-                                                    </tr>
-                                                    <tr>
-                                                        <th>%</th>
-                                                        {
-                                                            item?.listGroupConfig?.map((sub, subIndex) => {
-                                                                return <th key={subIndex}><span>{sub?.weight}</span></th>
-                                                            })
-                                                        }
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td>Mức độ thể hiện</td>
-                                                        {
-                                                            item?.listGroupConfig?.map((sub, subIndex) => {
-                                                                return <td key={subIndex}><div>{sub?.description}</div></td>
-                                                            })
-                                                        }
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    }
-
-                                    <div className="list-evaluation">
-                                    {
-                                        (item?.listTarget || []).map((target, i) => {
-                                            let deviant = (target?.leadReviewPoint === '' || target?.leadReviewPoint === null || target?.seftPoint === '' || target?.seftPoint === null) ? '' : Number(target?.leadReviewPoint) - Number(target?.seftPoint)
-
-                                            return <div className="evaluation-item" key={i}>
-                                                        <div className="title">{`${i + 1}. ${target?.targetName}`}</div>
-                                                        {
-                                                            item?.listGroupConfig && item?.listGroupConfig?.length > 0 ? 
-                                                            <div className="score-block">
-                                                                <div className="self attitude-score">
-                                                                    <div className="item">
-                                                                        <span className="red label">Điểm tự đánh giá{!showByManager && <span className="required">(*)</span>}</span>
-                                                                        {
-                                                                            !showByManager && evaluationFormDetail.status == evaluationStatus.launch
-                                                                            ? 
-                                                                            <select onChange={(e) => handleInputChange(i, index, 'seftPoint', e)} value={target?.seftPoint || ''}>
-                                                                                <option value=''>Chọn điểm</option>
-                                                                                {
-                                                                                    (scores || []).map((score, i) => {
-                                                                                        return <option value={score} key={i}>{score}</option>
-                                                                                    })
-                                                                                }
-                                                                            </select>
-                                                                            : <input type="text" value={target?.seftPoint || ''} disabled />
-                                                                        }
-                                                                    </div>
-                                                                    { errors[`${index}_${i}_seftPoint`] && <div className="alert alert-danger invalid-message" role="alert">{errors[`${index}_${i}_seftPoint`]}</div> }
-                                                                </div>
-                                                                <div className="qltt attitude-score">
-                                                                    <div className="item">
-                                                                        <span className="red label">Điểm QLTT đánh giá{showByManager && <span className="required">(*)</span>}</span>
-                                                                        {
-                                                                            showByManager && evaluationFormDetail.status == evaluationStatus.selfAssessment 
-                                                                            ?
-                                                                            <select onChange={(e) => handleInputChange(i, index, 'leadReviewPoint', e)} value={target?.leadReviewPoint || ''}>
-                                                                                <option value=''>Chọn điểm</option>
-                                                                                {
-                                                                                    (scores || []).map((score, i) => {
-                                                                                        return <option value={score} key={i}>{score}</option>
-                                                                                    })
-                                                                                }
-                                                                            </select>
-                                                                            : <input type="text" value={target?.leadReviewPoint || ''} disabled />
-                                                                        }
-                                                                    </div>
-                                                                    { errors[`${index}_${i}_leadReviewPoint`] && <div className="alert alert-danger invalid-message" role="alert">{errors[`${index}_${i}_leadReviewPoint`]}</div> }
-                                                                </div>
-                                                                <div className="deviant">
-                                                                    <span className="red label">Điểm chênh lệch</span>
-                                                                    <span className={`value ${deviant && deviant > 0 ? 'up' : deviant && deviant < 0 ? 'down' : ''}`}>&nbsp;{`${deviant && deviant > 0 ? '+' : ''}${deviant}`}{deviant && deviant != 0 ? <Image alt='Note' src={deviant && deviant > 0 ? IconUp : deviant && deviant < 0 ? IconDown : ''} /> : ''}</span>
-                                                                </div>
-                                                            </div>
-                                                            : 
-                                                            <div className="wrap-score-table">
-                                                                <table>
-                                                                    <thead>
-                                                                        <tr>
-                                                                            <th className="measurement"><span>Cách đo lường<span className="note">(Tính theo điểm)</span></span></th>
-                                                                            <th className="text-center proportion"><span>Tỷ trọng %</span></th>
-                                                                            <th className="text-center target"><span>Mục tiêu</span></th>
-                                                                            <th className="text-center actual-results"><span>Kết quả thực tế</span>{!showByManager && <span className="required">(*)</span>}</th>
-                                                                            <th className="text-center self-assessment"><span>Điểm tự đánh giá</span>{!showByManager && <span className="required">(*)</span>}</th>
-                                                                            <th className="text-center qltt-assessment"><span>Điểm QLTT đánh giá</span>{showByManager && <span className="required">(*)</span>}</th>
-                                                                            <th className="text-center deviant"><span>Điểm chênh lệch</span></th>
-                                                                        </tr>
-                                                                    </thead>
-                                                                    <tbody>
-                                                                        <tr>
-                                                                            <td className="measurement">
-                                                                                <ul>
-                                                                                    <li>{target?.metric1}</li>
-                                                                                    <li>{target?.metric2}</li>
-                                                                                    <li>{target?.metric3}</li>
-                                                                                    <li>{target?.metric4}</li>
-                                                                                    <li>{target?.metric5}</li>
-                                                                                </ul>
-                                                                            </td>
-                                                                            <td className="text-center proportion"><span>{target?.weight}%</span></td>
-                                                                            <td className="text-center target"><span>{target?.target}</span></td>
-                                                                            <td className="actual-results">
-                                                                                <div>
-                                                                                    { !showByManager && evaluationFormDetail.status == evaluationStatus.launch ? <textarea rows={3} placeholder="Nhập" value={target?.realResult || ""} onChange={(e) => handleInputChange(i, index, 'realResult', e)} /> : <span>{target?.realResult}</span> }
-                                                                                </div>
-                                                                                { errors[`${index}_${i}_realResult`] && <div className="alert alert-danger invalid-message" role="alert">{errors[`${index}_${i}_realResult`]}</div> }
-                                                                            </td>
-                                                                            <td className="text-center self-assessment">
-                                                                                <div>
-                                                                                    { 
-                                                                                        !showByManager && evaluationFormDetail.status == evaluationStatus.launch 
-                                                                                        // ? <input type="text" placeholder="Nhập" value={target?.seftPoint || ""} onChange={(e) => handleInputChange(i, index, 'seftPoint', e)} /> 
-                                                                                        ? <select onChange={(e) => handleInputChange(i, index, 'seftPoint', e)} value={target?.seftPoint || ''}>
-                                                                                                <option value=''>Chọn điểm</option>
-                                                                                                {
-                                                                                                    (scores || []).map((score, i) => {
-                                                                                                        return <option value={score} key={i}>{score}</option>
-                                                                                                    })
-                                                                                                }
-                                                                                            </select>
-                                                                                        : <span>{target?.seftPoint}</span> 
-                                                                                    }
-                                                                                </div>
-                                                                                { errors[`${index}_${i}_seftPoint`] && <div className="alert alert-danger invalid-message" role="alert">{errors[`${index}_${i}_seftPoint`]}</div> }
-                                                                            </td>
-                                                                            <td className="text-center qltt-assessment">
-                                                                                <div>
-                                                                                    {
-                                                                                        showByManager && evaluationFormDetail.status == evaluationStatus.selfAssessment 
-                                                                                        // ? <input type="text" placeholder="Nhập" value={target?.leadReviewPoint || ""} onChange={(e) => handleInputChange(i, index, 'leadReviewPoint', e)} />
-                                                                                        ? <select onChange={(e) => handleInputChange(i, index, 'leadReviewPoint', e)} value={target?.leadReviewPoint || ''}>
-                                                                                                <option value=''>Chọn điểm</option>
-                                                                                                {
-                                                                                                    (scores || []).map((score, i) => {
-                                                                                                        return <option value={score} key={i}>{score}</option>
-                                                                                                    })
-                                                                                                }
-                                                                                            </select>
-                                                                                        : <span>{target?.leadReviewPoint}</span>
-                                                                                    }
-                                                                                </div>
-                                                                                { errors[`${index}_${i}_leadReviewPoint`] && <div className="alert alert-danger invalid-message" role="alert">{errors[`${index}_${i}_leadReviewPoint`]}</div> }
-                                                                            </td>
-                                                                            <td className="text-center deviant">
-                                                                                <span className={`value ${deviant && deviant > 0 ? 'up' : deviant && deviant < 0 ? 'down' : ''}`}>&nbsp;{`${deviant && deviant > 0 ? '+' : ''}${deviant}`}{deviant && deviant != 0 ? <Image alt='Note' src={deviant && deviant > 0 ? IconUp : deviant && deviant < 0 ? IconDown : ''} /> : ''}</span>
-                                                                            </td>
-                                                                        </tr>
-                                                                    </tbody>
-                                                                </table>
-                                                            </div>
-                                                        }
-                                                        <div className="comment">
-                                                            <div className="self">
-                                                                <p>Ý kiến của CBNV tự đánh giá</p>
-                                                                <textarea rows={1} placeholder="Nhập thông tin" value={target?.seftOpinion || ""} onChange={(e) => handleInputChange(i, index, 'seftOpinion', e)} disabled={showByManager || evaluationFormDetail.status != evaluationStatus.launch} />
-                                                            </div>
-                                                            <div className="qltt">
-                                                                <p>Ý kiến của QLTT đánh giá</p>
-                                                                <textarea rows={1} value={target?.leaderReviewOpinion || ""} onChange={(e) => handleInputChange(i, index, 'leaderReviewOpinion', e)} disabled={!showByManager || (showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment))} />
-                                                            </div>
-                                                        </div>
                                                     </div>
-                                        })
+                                                    {errors[`${index}_${i}_seftPoint`] && <div className="alert alert-danger invalid-message" role="alert">{errors[`${index}_${i}_seftPoint`]}</div>}
+                                                </div>
+                                                <div className="qltt attitude-score">
+                                                    <div className="item">
+                                                        <span className="red label">{t("EvaluationDetailPartAttitudeManagerAssessment")}{showByManager && <span className="required">(*)</span>}</span>
+                                                        {
+                                                            showByManager && evaluationFormDetail.status == evaluationStatus.selfAssessment
+                                                                ?
+                                                                <select onChange={(e) => handleInputChange(i, index, 'leadReviewPoint', e)} value={target?.leadReviewPoint || ''}>
+                                                                    <option value=''>{t("EvaluationDetailPartSelectScore")}</option>
+                                                                    {
+                                                                        (scores || []).map((score, i) => {
+                                                                            return <option value={score} key={i}>{score}</option>
+                                                                        })
+                                                                    }
+                                                                </select>
+                                                                : <input type="text" value={target?.leadReviewPoint || ''} disabled />
+                                                        }
+                                                    </div>
+                                                    {errors[`${index}_${i}_leadReviewPoint`] && <div className="alert alert-danger invalid-message" role="alert">{errors[`${index}_${i}_leadReviewPoint`]}</div>}
+                                                </div>
+                                                <div className="deviant">
+                                                    <span className="red label">{t("EvaluationDetailPartAttitudeDifferent")}</span>
+                                                    <span className={`value ${deviant && deviant > 0 ? 'up' : deviant && deviant < 0 ? 'down' : ''}`}>&nbsp;{`${deviant && deviant > 0 ? '+' : ''}${deviant}`}{deviant && deviant != 0 ? <Image alt='Note' src={deviant && deviant > 0 ? IconUp : deviant && deviant < 0 ? IconDown : ''} /> : ''}</span>
+                                                </div>
+                                            </div>
+                                            :
+                                            <div className="wrap-score-table">
+                                                <table>
+                                                    <thead>
+                                                        <tr>
+                                                            <th className="measurement"><span>{t("EvaluationDetailPartLevelOfPerformance")}<span className="note">({t("EvaluationDetailPartByScore")})</span></span></th>
+                                                            <th className="text-center proportion"><span>{t("EvaluationDetailPartWeight")} %</span></th>
+                                                            <th className="text-center target"><span>{t("EvaluationDetailPartTarget")}</span></th>
+                                                            <th className="text-center actual-results"><span>{t("EvaluationDetailPartActualResult")}</span>{!showByManager && <span className="required">(*)</span>}</th>
+                                                            <th className="text-center self-assessment"><span>{t("EvaluationDetailPartAttitudeSelfAssessment")}</span>{!showByManager && <span className="required">(*)</span>}</th>
+                                                            <th className="text-center qltt-assessment"><span>{t("EvaluationDetailPartAttitudeManagerAssessment")}</span>{showByManager && <span className="required">(*)</span>}</th>
+                                                            <th className="text-center deviant"><span>{t("EvaluationDetailPartAttitudeDifferent")}</span></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td className="measurement">
+                                                                <ul>
+                                                                    <li>{target?.metric1}</li>
+                                                                    <li>{target?.metric2}</li>
+                                                                    <li>{target?.metric3}</li>
+                                                                    <li>{target?.metric4}</li>
+                                                                    <li>{target?.metric5}</li>
+                                                                </ul>
+                                                            </td>
+                                                            <td className="text-center proportion"><span>{target?.weight}%</span></td>
+                                                            <td className="text-center target"><span>{target?.target}</span></td>
+                                                            <td className="actual-results">
+                                                                <div>
+                                                                    {!showByManager && evaluationFormDetail.status == evaluationStatus.launch ? <textarea rows={3} placeholder="Nhập" value={target?.realResult || ""} onChange={(e) => handleInputChange(i, index, 'realResult', e)} /> : <span>{target?.realResult}</span>}
+                                                                </div>
+                                                                {errors[`${index}_${i}_realResult`] && <div className="alert alert-danger invalid-message" role="alert">{errors[`${index}_${i}_realResult`]}</div>}
+                                                            </td>
+                                                            <td className="text-center self-assessment">
+                                                                <div>
+                                                                    {
+                                                                        !showByManager && evaluationFormDetail.status == evaluationStatus.launch
+                                                                            // ? <input type="text" placeholder="Nhập" value={target?.seftPoint || ""} onChange={(e) => handleInputChange(i, index, 'seftPoint', e)} /> 
+                                                                            ? <select onChange={(e) => handleInputChange(i, index, 'seftPoint', e)} value={target?.seftPoint || ''}>
+                                                                                <option value=''>{t("EvaluationDetailPartSelectScore")}</option>
+                                                                                {
+                                                                                    (scores || []).map((score, i) => {
+                                                                                        return <option value={score} key={i}>{score}</option>
+                                                                                    })
+                                                                                }
+                                                                            </select>
+                                                                            : <span>{target?.seftPoint}</span>
+                                                                    }
+                                                                </div>
+                                                                {errors[`${index}_${i}_seftPoint`] && <div className="alert alert-danger invalid-message" role="alert">{errors[`${index}_${i}_seftPoint`]}</div>}
+                                                            </td>
+                                                            <td className="text-center qltt-assessment">
+                                                                <div>
+                                                                    {
+                                                                        showByManager && evaluationFormDetail.status == evaluationStatus.selfAssessment
+                                                                            // ? <input type="text" placeholder="Nhập" value={target?.leadReviewPoint || ""} onChange={(e) => handleInputChange(i, index, 'leadReviewPoint', e)} />
+                                                                            ? <select onChange={(e) => handleInputChange(i, index, 'leadReviewPoint', e)} value={target?.leadReviewPoint || ''}>
+                                                                                <option value=''>{t("EvaluationDetailPartSelectScore")}</option>
+                                                                                {
+                                                                                    (scores || []).map((score, i) => {
+                                                                                        return <option value={score} key={i}>{score}</option>
+                                                                                    })
+                                                                                }
+                                                                            </select>
+                                                                            : <span>{target?.leadReviewPoint}</span>
+                                                                    }
+                                                                </div>
+                                                                {errors[`${index}_${i}_leadReviewPoint`] && <div className="alert alert-danger invalid-message" role="alert">{errors[`${index}_${i}_leadReviewPoint`]}</div>}
+                                                            </td>
+                                                            <td className="text-center deviant">
+                                                                <span className={`value ${deviant && deviant > 0 ? 'up' : deviant && deviant < 0 ? 'down' : ''}`}>&nbsp;{`${deviant && deviant > 0 ? '+' : ''}${deviant}`}{deviant && deviant != 0 ? <Image alt='Note' src={deviant && deviant > 0 ? IconUp : deviant && deviant < 0 ? IconDown : ''} /> : ''}</span>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
                                     }
+                                    <div className="comment">
+                                        <div className="self">
+                                            <p>{t("EvaluationDetailPartAttitudeCommentOfEmployee")}</p>
+                                            <textarea rows={1} placeholder={`${t("EvaluationDetailPartSelectScoreInput")}`} value={target?.seftOpinion || ""} onChange={(e) => handleInputChange(i, index, 'seftOpinion', e)} disabled={showByManager || evaluationFormDetail.status != evaluationStatus.launch} />
+                                        </div>
+                                        <div className="qltt">
+                                            <p>{t("EvaluationDetailPartAttitudeCommentOfManager")}</p>
+                                            <textarea rows={1} placeholder={`${t("EvaluationDetailPartSelectScoreInput")}`} value={target?.leaderReviewOpinion || ""} onChange={(e) => handleInputChange(i, index, 'leaderReviewOpinion', e)} disabled={!showByManager || (showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment))} />
+                                        </div>
                                     </div>
                                 </div>
-                    })
-                }
-            </div>
+                            })
+                        }
+                    </div>
+                </div>
+            })
+        }
+    </div>
 }
 
 function EvaluationDetail(props) {
     const { t } = useTranslation()
     const [evaluationFormDetail, SetEvaluationFormDetail] = useState(null)
     const [isLoading, SetIsLoading] = useState(false)
-    const [statusModal, SetStatusModal] = useState({isShow: false, isSuccess: true, content: ""})
+    const [statusModal, SetStatusModal] = useState({ isShow: false, isSuccess: true, content: "" })
     const [errors, SetErrors] = useState({})
     const { showByManager, updateParent } = props
     const guard = useGuardStore()
     const user = guard.getCurentUser()
     const evaluationFormId = showByManager ? props?.evaluationFormId : props.match.params.id
     const formCode = showByManager ? props?.formCode : props.match.params.formCode
-    
+
     useEffect(() => {
         const processEvaluationFormDetailData = response => {
             if (response && response.data) {
@@ -454,7 +455,7 @@ function EvaluationDetail(props) {
                     if (evaluationFormDetailTemp.listGroup) {
                         evaluationFormDetailTemp.listGroup = ([...evaluationFormDetailTemp?.listGroup] || []).sort((pre, next) => pre?.groupOrder - next?.groupOrder)
                     }
-                    
+
                     // const totalQuestionsAnswered = (evaluationFormDetailTemp?.listGroup || []).reduce((initial, current) => {
                     //     let questionsAnswered = (current?.listTarget || []).reduce((subInitial, subCurrent) => {
                     //         subInitial += subCurrent?.seftPoint ? 1 : 0
@@ -496,7 +497,7 @@ function EvaluationDetail(props) {
             initial.selfAssessment += Number(current?.seftPoint || 0) / assessmentScale * Number(current?.weight || 0)
             initial.managerAssessment += Number(current?.leadReviewPoint || 0) / assessmentScale * Number(current?.weight || 0)
             return initial
-        }, {selfAssessment: 0, managerAssessment: 0})
+        }, { selfAssessment: 0, managerAssessment: 0 })
         return assessment
     }
 
@@ -506,12 +507,12 @@ function EvaluationDetail(props) {
             initial.self += assessment?.selfAssessment * Number(current?.groupWeight) / 100
             initial.manager += assessment?.managerAssessment * Number(current?.groupWeight) / 100
             return initial
-        }, {self: 0, manager: 0})
+        }, { self: 0, manager: 0 })
         return result
     }
 
     const updateData = (subIndex, parentIndex, stateName, value) => {
-        const evaluationFormDetailTemp = {...evaluationFormDetail}
+        const evaluationFormDetailTemp = { ...evaluationFormDetail }
         evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex][stateName] = value
         let totalQuestionsAnswered = 0
         if (showByManager) {
@@ -551,7 +552,7 @@ function EvaluationDetail(props) {
         evaluationFormDetailTemp.totalLeadReviewPoint = totalInfos?.manager || 0
         SetEvaluationFormDetail(evaluationFormDetailTemp)
     }
-    
+
     const renderButtonBlock = () => {
         const currentUserLoggedUID = localStorage.getItem('employeeNo')
         const reviewerUID = JSON.parse(evaluationFormDetail?.reviewer || '{}')?.uid
@@ -559,28 +560,28 @@ function EvaluationDetail(props) {
 
         switch (evaluationFormDetail?.status) {
             case evaluationStatus.launch:
-                return  (
+                return (
                     <>
-                        <button className="btn-action save" onClick={() => handleSubmit(actionButton.save, null, true)}><Image src={IconSave} alt="Save" />Lưu</button>
-                        <button className="btn-action send" onClick={() => handleSubmit(actionButton.approve)}><Image src={IconSendRequest} alt="Send" />Gửi tới bước tiếp theo</button>
+                        <button className="btn-action save" onClick={() => handleSubmit(actionButton.save, null, true)}><Image src={IconSave} alt="Save" />{t("EvaluationDetailPartSave")}</button>
+                        <button className="btn-action send" onClick={() => handleSubmit(actionButton.approve)}><Image src={IconSendRequest} alt="Send" />{t("EvaluationDetailPartSubmitToNextStep")}</button>
                     </>
                 )
             case evaluationStatus.selfAssessment:
                 if (showByManager && currentUserLoggedUID == reviewerUID) {
-                    return  (
+                    return (
                         <>
-                            <button className="btn-action reject" onClick={() => handleSubmit(actionButton.reject, null, true)}><Image src={IconReject} alt="Reject" />Từ chối</button>
-                            <button className="btn-action confirm" onClick={() => handleSubmit(actionButton.approve)}><Image src={IconApprove} alt="Confirm" />Xác nhận</button>
+                            <button className="btn-action reject" onClick={() => handleSubmit(actionButton.reject, null, true)}><Image src={IconReject} alt="Reject" />{t("EvaluationDetailPartReject")}</button>
+                            <button className="btn-action confirm" onClick={() => handleSubmit(actionButton.approve)}><Image src={IconApprove} alt="Confirm" />{t("EvaluationDetailPartConfirm")}</button>
                         </>
                     )
                 }
                 return null
             case evaluationStatus.qlttAssessment:
                 if (showByManager && currentUserLoggedUID == approverUID) {
-                    return  (
+                    return (
                         <>
-                            <button className="btn-action reject" onClick={() => handleSubmit(actionButton.reject, null, true)}><Image src={IconReject} alt="Reject" />Từ chối</button>
-                            <button className="btn-action approve" onClick={() => handleSubmit(actionButton.approve, true)}><Image src={IconApprove} alt="Approve" />Phê duyệt</button>
+                            <button className="btn-action reject" onClick={() => handleSubmit(actionButton.reject, null, true)}><Image src={IconReject} alt="Reject" />{t("EvaluationDetailPartReject")}</button>
+                            <button className="btn-action approve" onClick={() => handleSubmit(actionButton.approve, true)}><Image src={IconApprove} alt="Approve" />{t("EvaluationDetailPartApprove")}</button>
                         </>
                     )
                 }
@@ -625,7 +626,7 @@ function EvaluationDetail(props) {
     }
 
     const onHideStatusModal = () => {
-        const statusModalTemp = {...statusModal}
+        const statusModalTemp = { ...statusModal }
         statusModalTemp.isShow = false
         statusModalTemp.isSuccess = true
         statusModalTemp.content = ""
@@ -666,7 +667,7 @@ function EvaluationDetail(props) {
                     }
                 }, {})
             }
-            initial = {...initial, ...targetErrors}
+            initial = { ...initial, ...targetErrors }
             return initial
         }, {})
         SetErrors(errorResult)
@@ -682,12 +683,12 @@ function EvaluationDetail(props) {
         }
 
         SetIsLoading(true)
-        const statusModalTemp = {...statusModal}
+        const statusModalTemp = { ...statusModal }
         try {
             const config = getRequestConfigurations()
             if (actionCode == actionButton.reject || isApprove) { // Từ chối hoặc Phê duyệt
                 const payload = {
-                    ListFormCode : [{
+                    ListFormCode: [{
                         formCode: evaluationFormDetail?.formCode,
                         Approver: evaluationFormDetail?.approver,
                         Reviewer: evaluationFormDetail?.reviewer
@@ -717,7 +718,7 @@ function EvaluationDetail(props) {
                     updateParent(statusModalTemp)
                 }
             } else { // Lưu, CBNV Gửi tới bước tiếp theo, CBQLTT xác nhận
-                const payload = {...evaluationFormDetail}
+                const payload = { ...evaluationFormDetail }
                 payload.nextStep = actionCode
                 const response = await axios.post(`${process.env.REACT_APP_HRDX_PMS_URL}api/targetform/update`, payload, config)
                 SetIsLoading(false)
@@ -756,24 +757,24 @@ function EvaluationDetail(props) {
 
     return (
         <>
-        <LoadingModal show={isLoading} />
-        { !showByManager && <StatusModal show={statusModal.isShow} isSuccess={statusModal.isSuccess} content={statusModal.content} onHide={onHideStatusModal} /> }
-        <div className="evaluation-detail-page">
-            {
-                evaluationFormDetail ? 
-                <>
-                    <h1 className="content-page-header">{`${evaluationFormDetail?.checkPhaseFormName} của ${evaluationFormDetail?.fullName}`}</h1>
-                    <div>
-                        <EvaluationOverall evaluationFormDetail={evaluationFormDetail} showByManager={showByManager} />
-                        <EvaluationProcess evaluationFormDetail={evaluationFormDetail} showByManager={showByManager} errors={errors} updateData={updateData} />
-                        <div className="button-block">
-                            { renderButtonBlock() }
-                        </div>
-                    </div>
-                </>
-                : <h6 className="alert alert-danger" role="alert">{t("NoDataFound")}</h6>
-            }
-        </div>
+            <LoadingModal show={isLoading} />
+            {!showByManager && <StatusModal show={statusModal.isShow} isSuccess={statusModal.isSuccess} content={statusModal.content} onHide={onHideStatusModal} />}
+            <div className="evaluation-detail-page">
+                {
+                    evaluationFormDetail ?
+                        <>
+                            <h1 className="content-page-header">{`${evaluationFormDetail?.checkPhaseFormName} của ${evaluationFormDetail?.fullName}`}</h1>
+                            <div>
+                                <EvaluationOverall evaluationFormDetail={evaluationFormDetail} showByManager={showByManager} />
+                                <EvaluationProcess evaluationFormDetail={evaluationFormDetail} showByManager={showByManager} errors={errors} updateData={updateData} />
+                                <div className="button-block">
+                                    {renderButtonBlock()}
+                                </div>
+                            </div>
+                        </>
+                        : <h6 className="alert alert-danger" role="alert">{t("NoDataFound")}</h6>
+                }
+            </div>
         </>
     )
 }
