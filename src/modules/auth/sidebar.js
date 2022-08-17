@@ -56,7 +56,7 @@ export const Navigation = [
       icon: 'c-resignation-requests-management',
       label: "ResignationRequestsManagement",
       to: map.ResignationRequestsManagement,
-      //role: [Constants.pnlVCode.VinHome]
+      //role: [Constants.pnlVCode.VinHome, , Constants.PnLCODE.Vin3S]
       role: 'NA'
     },
 
@@ -213,8 +213,8 @@ export const Navigation = [
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     to: map.EvaluationManager,
     label: 'Quản lý đánh giá',
-    //role:  ['V061', 'V053', 'V040']
-    role:  ['V061', 'V040']
+    //role:  ['V061', 'V053', 'V040', 'V005']
+    role:  ['V061', 'V040', Constants.PnLCODE.Vin3S]
   },
   {
     id: 4,
@@ -309,6 +309,7 @@ export const Navigation = [
     parentId: 10,
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     label: "Welfare",
+    //role: 'U'
     role: 'NA'
   },
   {
@@ -464,7 +465,7 @@ export const Navigation = [
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     label: "RegistrationEmploymentTermination",
     to: map.RegistrationEmploymentTermination,
-    //role: [Constants.pnlVCode.VinHome]
+    //role: [Constants.pnlVCode.VinHome, Constants.PnLCODE.Vin3S]
     role: 'NA'
   },
   {
