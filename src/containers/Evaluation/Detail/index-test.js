@@ -20,8 +20,8 @@ import IconSave from '../../../assets/img/ic-save.svg'
 import IconSendRequest from '../../../assets/img/icon/Icon_send.svg'
 import IconReject from '../../../assets/img/icon/Icon_Cancel.svg'
 import IconApprove from '../../../assets/img/icon/Icon_Check.svg'
-
 function EvaluationOverall(props) {
+  const { t } = useTranslation()
   const { evaluationFormDetail, showByManager } = props
   const totalCompleted = showByManager ? evaluationFormDetail?.leadReviewTotalComplete || 0 : evaluationFormDetail?.seftTotalComplete || 0
 
@@ -50,7 +50,7 @@ function EvaluationOverall(props) {
 
   return <div className="block-overall">
     <div className="card shadow card-completed">
-      <h6 className="text-center">Đã hoàn thành: {totalCompleted || 0}/{evaluationFormDetail?.totalTarget}</h6>
+      <h6 className="text-center">{t("EvaluationDetailAccomplished")}: {totalCompleted || 0}/{evaluationFormDetail?.totalTarget}</h6>
       <div className="chart">
         <div className="detail">
           <div className="result">
@@ -81,7 +81,7 @@ function EvaluationOverall(props) {
       </div>
     </div>
     <div className="card shadow card-overall">
-      <h6 className="text-center chart-title">Điểm tổng thể</h6>
+      <h6 className="text-center chart-title">{t("EvaluationDetailOverallScore")}</h6>
       <div className="chart">
         <div className="detail">{(evaluationFormDetail?.status == evaluationStatus.launch || (evaluationFormDetail?.status == evaluationStatus.selfAssessment && !showByManager)) ? evaluationFormDetail?.totalSeftPoint || 0 : evaluationFormDetail?.totalLeadReviewPoint || 0}</div>
       </div>
@@ -90,9 +90,9 @@ function EvaluationOverall(props) {
       <table className='table-list-evaluation'>
         <thead>
           <tr>
-            <th className='c-criteria'><div className='criteria'>Tiêu chí đánh giá</div></th>
-            <th className='c-self-assessment text-center'><div className='self-assessment'>Tự đánh giá</div></th>
-            <th className='c-manager-assessment text-center'><div className='manager-assessment color-red'>QLTT đánh giá</div></th>
+            <th className='c-criteria'><div className='criteria'>{t("EvaluationDetailCriteria")}</div></th>
+            <th className='c-self-assessment text-center'><div className='self-assessment'>{t("EvaluationDetailSelfAssessment")}</div></th>
+            <th className='c-manager-assessment text-center'><div className='manager-assessment color-red'>{t("EvaluationDetailManagerAssessment")}</div></th>
           </tr>
         </thead>
         <tbody>
@@ -106,7 +106,7 @@ function EvaluationOverall(props) {
             })
           }
           <tr>
-            <td className='c-criteria'><div className='font-weight-bold text-uppercase criteria'>Điểm tổng thể</div></td>
+            <td className='c-criteria'><div className='font-weight-bold text-uppercase criteria'>{t("EvaluationDetailOverallScore")}</div></td>
             <td className='c-self-assessment text-center font-weight-bold'>{evaluationFormDetail?.totalSeftPoint || 0}</td>
             <td className='c-manager-assessment text-center font-weight-bold color-red'>{evaluationFormDetail?.totalLeadReviewPoint || 0}</td>
           </tr>
@@ -118,6 +118,7 @@ function EvaluationOverall(props) {
 
 function EvaluationProcess(props) {
   const { evaluationFormDetail, showByManager, errors, updateData } = props
+  const { t } = useTranslation()
   const processStep = {
     oneLevel: '1NF',
     twoLevels: '2NF',
@@ -146,8 +147,8 @@ function EvaluationProcess(props) {
 
   const renderEvaluationStep = () => {
     const stepEvaluationConfig = evaluationFormDetail?.reviewStreamCode === processStep.oneLevel
-      ? ['CBNV tự đánh giá', 'CBQLTT đánh giá', 'Hoàn thành']
-      : ['CBNV tự đánh giá', 'CBQLTT đánh giá', 'CBLĐ có thẩm quyền phê duyệt', 'Hoàn thành']
+      ? [t("EvaluationDetailSelfAssessment"), t("EvaluationDetailManagerAssessment"), t("EvaluationDetailCompleted")]
+      : [t("EvaluationDetailSelfAssessment"), t("EvaluationDetailManagerAssessment"), t("EvaluationDetailManagerApprove"), t("EvaluationDetailCompleted")]
     return stepEvaluationConfig.map((item, index) => {
       let activeClass = index === stepStatusMapping[evaluationFormDetail?.status] ? 'active' : ''
       return (
@@ -171,37 +172,37 @@ function EvaluationProcess(props) {
 
     return (
       <>
-        <div className="title">Thông tin nhân viên</div>
+        <div className="title">{t("EvaluationDetailEmployeeInfo")}</div>
         <div className="detail">
           <div className="left">
             <div className="info-item">
-              <span className="label"><span className="font-weight-bold">Họ và tên</span><span>:</span></span>
+              <span className="label"><span className="font-weight-bold">{t("EvaluationDetailEmployeeFullName")}</span><span>:</span></span>
               <span className="value">{evaluationFormDetail?.fullName || ''}</span>
             </div>
             <div className="info-item">
-              <span className="label"><span className="font-weight-bold">Chức danh</span><span>:</span></span>
+              <span className="label"><span className="font-weight-bold">{t("EvaluationDetailEmployeeJobTitle")}</span><span>:</span></span>
               <span className="value">{evaluationFormDetail?.position || ''}</span>
             </div>
             <div className="info-item">
-              <span className="label"><span className="font-weight-bold">Cấp bậc</span><span>:</span></span>
+              <span className="label"><span className="font-weight-bold">{t("EvaluationDetailEmployeeJobLevel")}</span><span>:</span></span>
               <span className="value">{evaluationFormDetail?.employeeLevel || ''}</span>
             </div>
             <div className="info-item">
-              <span className="label"><span className="font-weight-bold">Ban/Chuỗi/Khối</span><span>:</span></span>
+              <span className="label"><span className="font-weight-bold">{t("EvaluationDetailEmployeeDivision")}</span><span>:</span></span>
               <span className="value">{evaluationFormDetail?.organization_lv3 || ''}</span>
             </div>
           </div>
           <div className="right">
             <div className="info-item">
-              <span className="label"><span className="font-weight-bold">Phòng/Vùng/Miền</span><span>:</span></span>
+              <span className="label"><span className="font-weight-bold">{t("EvaluationDetailEmployeeDepartment")}</span><span>:</span></span>
               <span className="value">{evaluationFormDetail?.organization_lv4 || ''}</span>
             </div>
             <div className="info-item">
-              <span className="label"><span className="font-weight-bold">QLTT đánh giá</span><span>:</span></span>
+              <span className="label"><span className="font-weight-bold">{t("EvaluationDetailEmployeeManagerAssessment")}</span><span>:</span></span>
               <span className="value">{reviewerInfos?.fullname && `${reviewerInfos?.fullname || ''} - ${reviewerInfos?.position_title || ''}`}</span>
             </div>
             <div className="info-item">
-              <span className="label"><span className="font-weight-bold">CBLĐ phê duyệt</span><span>:</span></span>
+              <span className="label"><span className="font-weight-bold">{t("EvaluationDetailEmployeeManagerApprove")}</span><span>:</span></span>
               <span className="value">{approverInfos?.fullname && `${approverInfos?.fullname || ''} - ${approverInfos?.position_title || ''}`}</span>
             </div>
             <div className="info-item">
@@ -231,6 +232,7 @@ function EvaluationProcess(props) {
   }
 
   const renderEvaluationItem = (item, index, scores, target, i, deviant, parentIndex, subGroupTargetIndex) => {
+
     const isChild = !_.isNil(parentIndex)
     return <div className="evaluation-item" key={target.id}>
       {!isChild ? <div className="title">{`${i + 1}. ${target?.targetName}`}</div> : <div className="sub-title">{`${parentIndex + 1}.${subGroupTargetIndex + 1} ${target?.targetName}`}</div>}
@@ -239,12 +241,12 @@ function EvaluationProcess(props) {
           <div className="score-block">
             <div className="self attitude-score">
               <div className="item">
-                <span className="red label">Điểm tự đánh giá{!showByManager && <span className="required">(*)</span>}</span>
+                <span className="red label">{t("EvaluationDetailPartAttitudeSelfAssessment")}{!showByManager && <span className="required">(*)</span>}</span>
                 {
                   !showByManager && evaluationFormDetail.status == evaluationStatus.launch
                     ?
                     <select onChange={(e) => !_.isNil(subGroupTargetIndex) ? handleInputChange(parentIndex, index, 'seftPoint', e, subGroupTargetIndex) : handleInputChange(i, index, 'seftPoint', e)} value={target?.seftPoint || ''}>
-                      <option value=''>Chọn điểm</option>
+                      <option value=''>{t("EvaluationDetailPartSelectScore")}</option>
                       {
                         (scores || []).map((score, i) => {
                           return <option value={score} key={i}>{score}</option>
@@ -258,12 +260,12 @@ function EvaluationProcess(props) {
             </div>
             <div className="qltt attitude-score">
               <div className="item">
-                <span className="red label">Điểm QLTT đánh giá{showByManager && <span className="required">(*)</span>}</span>
+                <span className="red label">{t("EvaluationDetailPartAttitudeManagerAssessment")}{showByManager && <span className="required">(*)</span>}</span>
                 {
                   !(!showByManager || (showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment)))
                     ?
-                    <select onChange={(e) => !_.isNil(subGroupTargetIndex) ? handleInputChange(parentIndex, index, 'leadReviewPoint', e, subGroupTargetIndex) : handleInputChange(i ,index, "leadReviewPoint", e)} value={target?.leadReviewPoint || ''}>
-                      <option value=''>Chọn điểm</option>
+                    <select onChange={(e) => !_.isNil(subGroupTargetIndex) ? handleInputChange(parentIndex, index, 'leadReviewPoint', e, subGroupTargetIndex) : handleInputChange(i, index, "leadReviewPoint", e)} value={target?.leadReviewPoint || ''}>
+                      <option value=''>{t("EvaluationDetailPartSelectScore")}</option>
                       {
                         (scores || []).map((score, i) => {
                           return <option value={score} key={i}>{score}</option>
@@ -276,7 +278,7 @@ function EvaluationProcess(props) {
               {errors[`${index}_${i}_${subGroupTargetIndex}_leadReviewPoint`] && <div className="alert alert-danger invalid-message" role="alert">{errors[`${index}_${i}_${subGroupTargetIndex}_leadReviewPoint`]}</div>}
             </div>
             <div className="deviant">
-              <span className="red label">Điểm chênh lệch</span>
+              <span className="red label">{t("EvaluationDetailPartAttitudeDifferent")}</span>
               <span className={`value ${deviant && deviant > 0 ? 'up' : deviant && deviant < 0 ? 'down' : ''}`}>&nbsp;{`${deviant && deviant > 0 ? '+' : ''}${deviant}`}{deviant && deviant != 0 ? <Image alt='Note' src={deviant && deviant > 0 ? IconUp : deviant && deviant < 0 ? IconDown : ''} /> : ''}</span>
             </div>
           </div>
@@ -285,13 +287,13 @@ function EvaluationProcess(props) {
             <table>
               <thead>
                 <tr>
-                  <th className="measurement"><span>Cách đo lường<span className="note">(Tính theo điểm)</span></span></th>
-                  <th className="text-center proportion"><span>Tỷ trọng %</span></th>
-                  <th className="text-center target"><span>Mục tiêu</span></th>
-                  <th className="text-center actual-results"><span>Kết quả thực tế</span>{!showByManager && <span className="required">(*)</span>}</th>
-                  <th className="text-center self-assessment"><span>Điểm tự đánh giá</span>{!showByManager && <span className="required">(*)</span>}</th>
-                  <th className="text-center qltt-assessment"><span>Điểm QLTT đánh giá</span>{showByManager && <span className="required">(*)</span>}</th>
-                  <th className="text-center deviant"><span>Điểm chênh lệch</span></th>
+                  <th className="measurement"><span>{t("EvaluationDetailPartLevelOfPerformance")}<span className="note">({t("EvaluationDetailPartByScore")})</span></span></th>
+                  <th className="text-center proportion"><span>{t("EvaluationDetailPartWeight")} %</span></th>
+                  <th className="text-center target"><span>{t("EvaluationDetailPartTarget")}</span></th>
+                  <th className="text-center actual-results"><span>{t("EvaluationDetailPartActualResult")}</span>{!showByManager && <span className="required">(*)</span>}</th>
+                  <th className="text-center self-assessment"><span>{t("EvaluationDetailPartAttitudeSelfAssessment")}</span>{!showByManager && <span className="required">(*)</span>}</th>
+                  <th className="text-center qltt-assessment"><span>{t("EvaluationDetailPartAttitudeManagerAssessment")}</span>{showByManager && <span className="required">(*)</span>}</th>
+                  <th className="text-center deviant"><span>{t("EvaluationDetailPartAttitudeDifferent")}</span></th>
                 </tr>
               </thead>
               <tbody>
@@ -319,7 +321,7 @@ function EvaluationProcess(props) {
                         !showByManager && evaluationFormDetail.status == evaluationStatus.launch
                           // ? <input type="text" placeholder="Nhập" value={target?.seftPoint || ""} onChange={(e) => handleInputChange(i, index, 'seftPoint', e)} /> 
                           ? <select onChange={(e) => handleInputChange(i, index, 'seftPoint', e)} value={target?.seftPoint || ''}>
-                            <option value=''>Chọn điểm</option>
+                            <option value=''>{t("EvaluationDetailPartSelectScore")}</option>
                             {
                               (scores || []).map((score, i) => {
                                 return <option value={score} key={i}>{score}</option>
@@ -337,7 +339,7 @@ function EvaluationProcess(props) {
                         showByManager && evaluationFormDetail.status == evaluationStatus.selfAssessment
                           // ? <input type="text" placeholder="Nhập" value={target?.leadReviewPoint || ""} onChange={(e) => handleInputChange(i, index, 'leadReviewPoint', e)} />
                           ? <select onChange={(e) => handleInputChange(i, index, 'leadReviewPoint', e)} value={target?.leadReviewPoint || ''}>
-                            <option value=''>Chọn điểm</option>
+                            <option value=''>{t("EvaluationDetailPartSelectScore")}</option>
                             {
                               (scores || []).map((score, i) => {
                                 return <option value={score} key={i}>{score}</option>
@@ -359,19 +361,19 @@ function EvaluationProcess(props) {
       }
       <div className="comment">
         <div className="self">
-          <p>Ý kiến của CBNV tự đánh giá</p>
-          <textarea rows={1} placeholder="Nhập thông tin" value={target?.seftOpinion || ""} onChange={(e) => !_.isNil(subGroupTargetIndex) ? handleInputChange(parentIndex, index, 'seftOpinion', e, subGroupTargetIndex) : handleInputChange(i, index, 'seftOpinion', e)} disabled={showByManager || evaluationFormDetail.status != evaluationStatus.launch} />
+          <p>{t("EvaluationDetailPartAttitudeCommentOfEmployee")}</p>
+          <textarea rows={1} placeholder={`${t("EvaluationDetailPartSelectScoreInput")}`} value={target?.seftOpinion || ""} onChange={(e) => !_.isNil(subGroupTargetIndex) ? handleInputChange(parentIndex, index, 'seftOpinion', e, subGroupTargetIndex) : handleInputChange(i, index, 'seftOpinion', e)} disabled={showByManager || evaluationFormDetail.status != evaluationStatus.launch} />
         </div>
         <div className="qltt">
-          <p>Ý kiến của QLTT đánh giá</p>
-          <textarea rows={1} placeholder="Nhập thông tin" value={target?.leaderReviewOpinion || ""} onChange={(e) => !_.isNil(subGroupTargetIndex) ? handleInputChange(parentIndex, index, 'leaderReviewOpinion', e, subGroupTargetIndex) : handleInputChange(i, index, "leaderReviewOpinion", e)} disabled={!showByManager || (showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment))} />
+          <p>{t("EvaluationDetailPartAttitudeCommentOfManager")}</p>
+          <textarea rows={1} placeholder={`${t("EvaluationDetailPartSelectScoreInput")}`} value={target?.leaderReviewOpinion || ""} onChange={(e) => !_.isNil(subGroupTargetIndex) ? handleInputChange(parentIndex, index, 'leaderReviewOpinion', e, subGroupTargetIndex) : handleInputChange(i, index, "leaderReviewOpinion", e)} disabled={!showByManager || (showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment))} />
         </div>
       </div>
     </div>
   }
 
   return <div className="card shadow evaluation-process">
-    <div className="title">Quy trình đánh giá</div>
+    <div className="title">{t("EvaluationDetailASSESSMENTPROCESS")}</div>
     <div className="step-block">
       {renderEvaluationStep()}
     </div>
@@ -386,14 +388,14 @@ function EvaluationProcess(props) {
         let scores = [1, 2, 3, 4, 5]
 
         return <div className={`part-block ${item?.listGroupConfig && item?.listGroupConfig?.length > 0 ? 'attitude' : 'work-result'}`} key={index}>
-          <div className="title">{`Phần ${indexText} - ${item?.groupName}`} <span className="red">({item?.groupWeight || 0}%)</span></div>
+          <div className="title">{`${t("EvaluationDetailPart")} ${indexText} - ${item?.groupName}`} <span className="red">({item?.groupWeight || 0}%)</span></div>
           {
             item?.listGroupConfig && item?.listGroupConfig?.length > 0 &&
             <div className="wrap-score-table">
               <table>
                 <thead>
                   <tr>
-                    <th className="red">Điểm</th>
+                    <th className="red">{t("EvaluationDetailPartAttitudeScore")}</th>
                     {
                       item?.listGroupConfig?.map((sub, subIndex) => {
                         return <th key={subIndex}><span className="milestones">{subIndex + 1}</span></th>
@@ -411,7 +413,7 @@ function EvaluationProcess(props) {
                 </thead>
                 <tbody>
                   <tr>
-                    <td>Mức độ thể hiện</td>
+                    <td>{t("EvaluationDetailPartAttitudeLevelExpression")}</td>
                     {
                       item?.listGroupConfig?.map((sub, subIndex) => {
                         return <td key={subIndex}><div>{sub?.description}</div></td>
@@ -514,12 +516,12 @@ function EvaluationDetail(props) {
     const assessment = (listTarget || []).reduce((initial, current) => {
       initial.selfAssessment += Number(current?.seftPoint || 0) / assessmentScale * Number(current?.weight || 0)
       initial.managerAssessment += Number(current?.leadReviewPoint || 0) / assessmentScale * Number(current?.weight || 0)
-      if(current.listTarget?.length) {
+      if (current.listTarget?.length) {
         const sub = current.listTarget?.reduce((subInitial, item) => {
           subInitial.selfAssessment += Number(item?.seftPoint || 0) / assessmentScale * Number(item?.weight || 0)
           subInitial.managerAssessment += Number(item?.leadReviewPoint || 0) / assessmentScale * Number(item?.weight || 0)
           return subInitial
-        },{ selfAssessment: 0, managerAssessment: 0 })
+        }, { selfAssessment: 0, managerAssessment: 0 })
         initial.selfAssessment += sub.selfAssessment
         initial.managerAssessment += sub.managerAssessment
       }
@@ -550,12 +552,12 @@ function EvaluationDetail(props) {
       totalQuestionsAnswered = (evaluationFormDetailTemp?.listGroup || []).reduce((initial, current) => {
         let questionsAnswered = (current?.listTarget || []).reduce((subInitial, subCurrent) => {
           subInitial += subCurrent?.leadReviewPoint ? 1 : 0
-          if(subCurrent.listTarget?.length) {
+          if (subCurrent.listTarget?.length) {
             const subQuestionsAnswered = subCurrent.listTarget?.reduce((res, item) => {
-              res+=item.leadReviewPoint ? 1 : 0
+              res += item.leadReviewPoint ? 1 : 0
               return res
-            },0)
-            subInitial+=subQuestionsAnswered
+            }, 0)
+            subInitial += subQuestionsAnswered
           }
           return subInitial
         }, 0)
@@ -566,12 +568,12 @@ function EvaluationDetail(props) {
       totalQuestionsAnswered = (evaluationFormDetailTemp?.listGroup || []).reduce((initial, current) => {
         let questionsAnswered = (current?.listTarget || []).reduce((subInitial, subCurrent) => {
           subInitial += subCurrent?.seftPoint ? 1 : 0
-          if(subCurrent.listTarget?.length) {
+          if (subCurrent.listTarget?.length) {
             const subQuestionsAnswered = subCurrent.listTarget?.reduce((res, item) => {
-              res+=item.seftPoint ? 1 : 0
+              res += item.seftPoint ? 1 : 0
               return res
-            },0)
-            subInitial+=subQuestionsAnswered
+            }, 0)
+            subInitial += subQuestionsAnswered
           }
           return subInitial
         }, 0)
@@ -607,16 +609,16 @@ function EvaluationDetail(props) {
       case evaluationStatus.launch:
         return (
           <>
-            <button className="btn-action save" onClick={() => handleSubmit(actionButton.save, null, true)}><Image src={IconSave} alt="Save" />Lưu</button>
-            <button className="btn-action send" onClick={() => handleSubmit(actionButton.approve)}><Image src={IconSendRequest} alt="Send" />Gửi tới bước tiếp theo</button>
+            <button className="btn-action save" onClick={() => handleSubmit(actionButton.save, null, true)}><Image src={IconSave} alt="Save" />{t("EvaluationDetailPartSave")}</button>
+            <button className="btn-action send" onClick={() => handleSubmit(actionButton.approve)}><Image src={IconSendRequest} alt="Send" />{t("EvaluationDetailPartSubmitToNextStep")}</button>
           </>
         )
       case evaluationStatus.selfAssessment:
         if (showByManager && currentUserLoggedUID == reviewerUID) {
           return (
             <>
-              <button className="btn-action reject" onClick={() => handleSubmit(actionButton.reject, null, true)}><Image src={IconReject} alt="Reject" />Từ chối</button>
-              <button className="btn-action confirm" onClick={() => handleSubmit(actionButton.approve)}><Image src={IconApprove} alt="Confirm" />Xác nhận</button>
+              <button className="btn-action reject" onClick={() => handleSubmit(actionButton.reject, null, true)}><Image src={IconReject} alt="Reject" />{t("EvaluationDetailPartReject")}</button>
+              <button className="btn-action confirm" onClick={() => handleSubmit(actionButton.approve)}><Image src={IconApprove} alt="Confirm" />{t("EvaluationDetailPartConfirm")}</button>
             </>
           )
         }
@@ -625,8 +627,8 @@ function EvaluationDetail(props) {
         if (showByManager && currentUserLoggedUID == approverUID) {
           return (
             <>
-              <button className="btn-action reject" onClick={() => handleSubmit(actionButton.reject, null, true)}><Image src={IconReject} alt="Reject" />Từ chối</button>
-              <button className="btn-action approve" onClick={() => handleSubmit(actionButton.approve, true)}><Image src={IconApprove} alt="Approve" />Phê duyệt</button>
+              <button className="btn-action reject" onClick={() => handleSubmit(actionButton.reject, null, true)}><Image src={IconReject} alt="Reject" />{t("EvaluationDetailPartReject")}</button>
+              <button className="btn-action approve" onClick={() => handleSubmit(actionButton.approve, true)}><Image src={IconApprove} alt="Approve" />{t("EvaluationDetailPartApprove")}</button>
             </>
           )
         }
@@ -835,347 +837,3 @@ function EvaluationDetail(props) {
 }
 
 export default EvaluationDetail
-
-const testEvaluationData = {
-  "id": 238,
-  "listGroup": [{
-    "id": 296,
-    "listTarget": [{
-      "id": 0,
-      "targetGuiId": null,
-      "targetId": 0,
-      "target": null,
-      "realResult": null,
-      "targetName": null,
-      "metric1": null,
-      "metric2": null,
-      "metric3": null,
-      "metric4": null,
-      "metric5": null,
-      "seftPoint": null,
-      "leadReviewPoint": null,
-      "seftOpinion": null,
-      "leaderReviewOpinion": null,
-      "groupTargetId": 0,
-      "groupTargetCode": "G11",
-      "groupName": "Con người",
-      "groupWeight": 10,
-      "weight": 0,
-      "checkPhaseFormId": 0,
-      "employeeCode": null,
-      "formCode": null,
-      "createDate": null,
-      "listTarget": [{
-        "id": 905,
-        "targetGuiId": "a28a53e4-4a12-401e-b265-532472f96b3d",
-        "targetId": 1120,
-        "target": "Đạt được mục tiêu",
-        "realResult": "",
-        "targetName": "Khả năng thúc đẩy, tạo động lực và gắn kết nhân viên",
-        "metric1": "1 điểm: Đạt 60% <70%",
-        "metric2": "2 điểm: Đạt 70% < 80%",
-        "metric3": "3 điểm: Đạt 80% < 90%",
-        "metric4": "4 điểm: Đạt 90% - dưới 100%",
-        "metric5": "5 điểm: Đạt 100%",
-        "seftPoint": 1,
-        "leadReviewPoint": null,
-        "seftOpinion": "1",
-        "leaderReviewOpinion": null,
-        "groupTargetId": 0,
-        "groupTargetCode": "G11",
-        "groupName": "Con người",
-        "groupWeight": 10,
-        "weight": 100,
-        "checkPhaseFormId": 0,
-        "employeeCode": null,
-        "formCode": "A00238",
-        "createDate": "2022-07-18T16:01:34.952565",
-        "listTarget": null
-      }, {
-        "id": 906,
-        "targetGuiId": "a28a53e4-4a12-401e-b265-532472f96b4d",
-        "targetId": 1121,
-        "target": "Đạt được mục tiêu",
-        "realResult": "",
-        "targetName": "Khả năng giao việc, kiểm soát công việc và đào tạo, phát triển nhân viên",
-        "metric1": "1 điểm: Đạt 60% <70%",
-        "metric2": "2 điểm: Đạt 70% < 80%",
-        "metric3": "3 điểm: Đạt 80% < 90%",
-        "metric4": "4 điểm: Đạt 90% - dưới 100%",
-        "metric5": "5 điểm: Đạt 100%",
-        "seftPoint": 4,
-        "leadReviewPoint": null,
-        "seftOpinion": "3",
-        "leaderReviewOpinion": null,
-        "groupTargetId": 0,
-        "groupTargetCode": "G11",
-        "groupName": "Con người",
-        "groupWeight": 10,
-        "weight": 100,
-        "checkPhaseFormId": 0,
-        "employeeCode": null,
-        "formCode": "A00238",
-        "createDate": "2022-07-18T16:01:34.952565",
-        "listTarget": null
-      }]
-    }, {
-      "id": 0,
-      "targetGuiId": null,
-      "targetId": 0,
-      "target": null,
-      "realResult": null,
-      "targetName": null,
-      "metric1": null,
-      "metric2": null,
-      "metric3": null,
-      "metric4": null,
-      "metric5": null,
-      "seftPoint": null,
-      "leadReviewPoint": null,
-      "seftOpinion": null,
-      "leaderReviewOpinion": null,
-      "groupTargetId": 0,
-      "groupTargetCode": "G12",
-      "groupName": "Thương hiệu",
-      "groupWeight": 10,
-      "weight": 0,
-      "checkPhaseFormId": 0,
-      "employeeCode": null,
-      "formCode": null,
-      "createDate": null,
-      "listTarget": [{
-        "id": 907,
-        "targetGuiId": "a28a53e4-4a12-401e-b265-532472f96b9d",
-        "targetId": 1122,
-        "target": "Đạt được mục tiêu",
-        "realResult": "",
-        "targetName": "Mức độ tin tưởng và sử dụng các sản phẩm/ dịch vụ Tập đoàn",
-        "metric1": "1 điểm: Đạt 60% <70%",
-        "metric2": "2 điểm: Đạt 70% < 80%",
-        "metric3": "3 điểm: Đạt 80% < 90%",
-        "metric4": "4 điểm: Đạt 90% - dưới 100%",
-        "metric5": "5 điểm: Đạt 100%",
-        "seftPoint": 4,
-        "leadReviewPoint": null,
-        "seftOpinion": "3",
-        "leaderReviewOpinion": null,
-        "groupTargetId": 0,
-        "groupTargetCode": "G12",
-        "groupName": "Thương hiệu",
-        "groupWeight": 10,
-        "weight": 100,
-        "checkPhaseFormId": 0,
-        "employeeCode": null,
-        "formCode": "A00238",
-        "createDate": "2022-07-18T16:01:34.952565",
-        "listTarget": null
-      }, {
-        "id": 908,
-        "targetGuiId": "a28a53e4-4a12-401e-b265-532472f96bud",
-        "targetId": 1123,
-        "target": "Đạt được mục tiêu",
-        "realResult": "",
-        "targetName": "Mức độ lan tỏa các giá trị văn hóa/ thương hiệu (Đánh giá bằng số lượng người thân, bạn bè, cấp dưới sử dụng các sản phẩm của Tập đoàn)",
-        "metric1": "1 điểm: Đạt 60% <70%",
-        "metric2": "2 điểm: Đạt 70% < 80%",
-        "metric3": "3 điểm: Đạt 80% < 90%",
-        "metric4": "4 điểm: Đạt 90% - dưới 100%",
-        "metric5": "5 điểm: Đạt 100%",
-        "seftPoint": 4,
-        "leadReviewPoint": null,
-        "seftOpinion": "3",
-        "leaderReviewOpinion": null,
-        "groupTargetId": 0,
-        "groupTargetCode": "G12",
-        "groupName": "Thương hiệu",
-        "groupWeight": 10,
-        "weight": 100,
-        "checkPhaseFormId": 0,
-        "employeeCode": null,
-        "formCode": "A00238",
-        "createDate": "2022-07-18T16:01:34.952565",
-        "listTarget": null
-      }]
-    }, {
-      "id": 0,
-      "targetGuiId": null,
-      "targetId": 0,
-      "target": null,
-      "realResult": null,
-      "targetName": null,
-      "metric1": null,
-      "metric2": null,
-      "metric3": null,
-      "metric4": null,
-      "metric5": null,
-      "seftPoint": null,
-      "leadReviewPoint": null,
-      "seftOpinion": null,
-      "leaderReviewOpinion": null,
-      "groupTargetId": 0,
-      "groupTargetCode": "G13",
-      "groupName": "Tài sản",
-      "groupWeight": 10,
-      "weight": 0,
-      "checkPhaseFormId": 0,
-      "employeeCode": null,
-      "formCode": null,
-      "createDate": null,
-      "listTarget": [{
-        "id": 904,
-        "targetGuiId": "a28a53e4-4a12-401e-b265-532472f96b2d",
-        "targetId": 1124,
-        "target": "Đạt được mục tiêu",
-        "realResult": "",
-        "targetName": "Khả năng Quản lý tài sản của Công ty/Bộ phận một cách sát sao, hiệu quả",
-        "metric1": "1 điểm: Đạt 60% <70%",
-        "metric2": "2 điểm: Đạt 70% < 80%",
-        "metric3": "3 điểm: Đạt 80% < 90%",
-        "metric4": "4 điểm: Đạt 90% - dưới 100%",
-        "metric5": "5 điểm: Đạt 100%",
-        "seftPoint": 4,
-        "leadReviewPoint": null,
-        "seftOpinion": "3",
-        "leaderReviewOpinion": null,
-        "groupTargetId": 0,
-        "groupTargetCode": "G13",
-        "groupName": "Tài sản",
-        "groupWeight": 10,
-        "weight": 100,
-        "checkPhaseFormId": 0,
-        "employeeCode": null,
-        "formCode": "A00238",
-        "createDate": "2022-07-18T16:01:34.952565",
-        "listTarget": null
-      }, {
-        "id": 909,
-        "targetGuiId": "a28a53e4-4a12-401e-b265-532472f96b2d",
-        "targetId": 1124,
-        "target": "Đạt được mục tiêu",
-        "realResult": "",
-        "targetName": "Khả năng Quản lý tài sản của Công ty/Bộ phận một cách sát sao, hiệu quả",
-        "metric1": "1 điểm: Đạt 60% <70%",
-        "metric2": "2 điểm: Đạt 70% < 80%",
-        "metric3": "3 điểm: Đạt 80% < 90%",
-        "metric4": "4 điểm: Đạt 90% - dưới 100%",
-        "metric5": "5 điểm: Đạt 100%",
-        "seftPoint": 4,
-        "leadReviewPoint": null,
-        "seftOpinion": "3",
-        "leaderReviewOpinion": null,
-        "groupTargetId": 0,
-        "groupTargetCode": "G13",
-        "groupName": "Tài sản",
-        "groupWeight": 10,
-        "weight": 100,
-        "checkPhaseFormId": 0,
-        "employeeCode": null,
-        "formCode": "A00238",
-        "createDate": "2022-07-18T16:01:34.952565",
-        "listTarget": null
-      }]
-    }],
-    "checkPhaseFormId": 130,
-    "groupWeight": 20,
-    "groupName": "Tinh thần thái độ",
-    "listGroupConfig": [{
-      "id": 1,
-      "groupTargetCode": "G1",
-      "weight": "0% - 10%",
-      "description": "Không thể hiện"
-    }, {
-      "id": 2,
-      "groupTargetCode": "G1",
-      "weight": "11% - 49% ",
-      "description": "Thể hiện còn ít"
-    }, {
-      "id": 3,
-      "groupTargetCode": "G1",
-      "weight": "50% - 69%",
-      "description": "Thể hiện nhưng chưa rõ nét hoặc chỉ thể hiện những khi thực sự cần,hoặc khi được yêu cầu"
-    }, {
-      "id": 4,
-      "groupTargetCode": "G1",
-      "weight": "70% - 89%",
-      "description": "Thường xuyên thể hiện"
-    }, {
-      "id": 5,
-      "groupTargetCode": "G1",
-      "weight": "90% - 100%",
-      "description": "Luôn luôn chủ động thể hiện và là tấm gương cho người khác học tập"
-    }],
-    "groupTargetId": 1,
-    "groupTargetCode": "G1",
-    "groupOrder": 1,
-    "groupSeftPoint": 50,
-    "groupLeadReviewPoint": null,
-    "isDeleted": false
-  }, {
-    "id": 297,
-    "listTarget": [{
-      "id": 845,
-      "targetGuiId": "3d59295f-ebeb-41d1-8ad8-f2c9ecf04158",
-      "targetId": 1077,
-      "target": "Đạt được mục tiêu",
-      "realResult": "234",
-      "targetName": "Đánh giá chuyên môn",
-      "metric1": "1 điểm: Đạt 60% <70%",
-      "metric2": "2 điểm: Đạt 70% < 80%",
-      "metric3": "3 điểm: Đạt 80% < 90%",
-      "metric4": "4 điểm: Đạt 90% - dưới 100%",
-      "metric5": "5 điểm: Đạt 100%",
-      "seftPoint": 4,
-      "leadReviewPoint": null,
-      "seftOpinion": null,
-      "leaderReviewOpinion": null,
-      "groupTargetId": 0,
-      "groupTargetCode": "G2",
-      "groupName": "Kết quả công việc",
-      "groupWeight": 80,
-      "weight": 100,
-      "checkPhaseFormId": 0,
-      "employeeCode": null,
-      "formCode": "A00238",
-      "createDate": "2022-07-18T16:01:34.952565",
-      "listTarget": null
-    }],
-    "checkPhaseFormId": 130,
-    "groupWeight": 80,
-    "groupName": "Kết quả công việc",
-    "listGroupConfig": [],
-    "groupTargetId": 2,
-    "groupTargetCode": "G2",
-    "groupOrder": 2,
-    "groupSeftPoint": 80,
-    "groupLeadReviewPoint": null,
-    "isDeleted": false
-  }],
-  "checkPhaseFormId": 130,
-  "employeeCode": "3644790",
-  "createDate": "2022-07-18T16:01:34.952565",
-  "checkPhaseFormName": "Biểu mẫu 13/07",
-  "fullName": null,
-  "position": null,
-  "employeeLevel": "",
-  "organization_lv3": null,
-  "organization_lv4": null,
-  "status": 3,
-  "isDeleted": false,
-  "seftTotalComplete": 5,
-  "leadReviewTotalComplete": 0,
-  "reviewer": "null",
-  "approver": "null",
-  "formCode": "A00238",
-  "totalSeftPoint": 74.0,
-  "totalLeadReviewPoint": 0.0,
-  "reviewPoolId": 5347,
-  "adCode": null,
-  "description": null,
-  "hrAdmin": "Khương Văn Minh - Chuyên viên Phát triển sản phẩm",
-  "hrAccount": "3516934",
-  "nextStep": 0,
-  "totalTarget": 11,
-  "reviewStreamCode": "1NF",
-  "sendDateLv1": "2022-08-11T10:02:23.128859",
-  "formType": "LD"
-}
