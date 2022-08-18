@@ -108,7 +108,7 @@ class BusinessTripComponent extends React.Component {
                         processStatusId: processStatusId,
                         comment: comment,
                         isAllDay: isAllDay,
-                        groupId: parseInt(groupID),
+                        groupId: parseInt(groupID || 1),
                         errors: {},
                         attendanceQuotaType: attendanceType,
                         place: {
