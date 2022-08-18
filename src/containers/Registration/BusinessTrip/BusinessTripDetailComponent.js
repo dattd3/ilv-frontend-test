@@ -68,9 +68,6 @@ const RegisteredBusinessTripInfo = ({ businessTrip, t }) => {
 }
 
 const AdjustmentBusinessTripInfo = ({ requestInfoToShow, requestInfo, totalRequestedTime, t }) => {
-  console.log(2222222222)
-  console.log(requestInfo)
-
   return (
     <>
       <h5 className='content-page-header'>Thông tin điều chỉnh đăng ký công tác/đào tạo</h5>
@@ -214,9 +211,6 @@ class BusinessTripDetailComponent extends React.Component {
       return initial
     }, {totalHours: 0, totalDays: 0})
     const totalRequestedTime = requestInfo?.isAllDay ? `${requestedTime?.totalDays} ${t("Day")}`  : `${requestedTime?.totalHours} ${t("Hour")}`
-
-    console.log(234234234234)
-    console.log(businessTrip)
 
     return (
       <div className="business-trip">
