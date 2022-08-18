@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import moment from 'moment'
 import { withTranslation } from "react-i18next"
 import axios from 'axios'
@@ -14,6 +14,173 @@ const DATE_FORMAT = 'DD/MM/YYYY'
 const DATE_OF_SAP_FORMAT = 'YYYYMMDD'
 const TIME_OF_SAP_FORMAT = 'HHmm00'
 const FULL_DAY = true
+
+const RegisteredLeaveInfo = ({ leaveOfAbsence, t }) => {
+  return (
+    <div className='registered-leave-info'>
+      <h5 className='content-page-header'>{'Thông tin đã đăng ký nghỉ'}</h5>
+      <div className="box shadow">
+        {
+          (leaveOfAbsence?.requestInfoOld && leaveOfAbsence?.requestInfoOld?.length > 0 ? leaveOfAbsence?.requestInfoOld : leaveOfAbsence?.requestInfo).map((info, infoIndex) => {
+            return (
+              <div className='item' key={`info-${infoIndex}`}>
+                <div className="row">
+                  <div className="col-xl-3">
+                    {t("StartDateTime")}
+                    <div className="detail">{info ? moment(info?.startDate).format("DD/MM/YYYY") + (info?.startTime ? ' ' + moment(info?.startTime, TIME_FORMAT).locale('en-us').format('HH:mm') : '') : ""}</div>
+                  </div>
+                  <div className="col-xl-3">
+                    {t("EndDateTime")}
+                    <div className="detail">{info ? moment(info?.endDate).format("DD/MM/YYYY") + (info?.endTime ? ' ' + moment(info?.endTime, TIME_FORMAT).locale('en-us').format('HH:mm') : '') : ""}</div>
+                  </div>
+                  <div className="col-xl-3">
+                    {t("TotalLeaveTime")}
+                    {/* <div className="detail">{ requestInfo && requestInfo.days && requestInfo.absenceType.value != "PQ02" ? requestInfo.days + ' ngày' : null } { requestInfo && requestInfo.hours  && requestInfo.absenceType.value == "PQ02" ? requestInfo.hours  + ' giờ' : null}</div> */}
+                    <div className="detail">{( info && info?.days >= 1) ? info?.days + ' ' + t("Day") : info?.hours + ' ' + t("Hour")}</div>
+                  </div>
+                  <div className="col-xl-3">
+                    {t("LeaveCategory")}
+                    <div className="detail">{info && info?.absenceType ? info?.absenceType?.label : ""}</div>
+                  </div>
+                </div>
+                {(info && info?.absenceType && info?.absenceType?.value === 'PN03') ? <div className="row">
+                  <div className="col">
+                    {t("MarriageFuneral")}
+                    <div className="detail">{info?.absenceType?.label}</div>
+                  </div>
+                </div> : null}
+                <div className="row">
+                  <div className="col" style={{marginTop: 10}}>
+                    {t(Constants.mappingActionType[info.actionType]?.ReasonRequestLeave)}
+                    <div className="detail">{info ? info?.comment : ""}</div>
+                  </div>
+                </div>
+              </div>
+            )
+          })
+        }
+      </div>
+    </div>
+  )
+}
+
+const AdjustmentLeaveInfo = ({ requestInfoToShow, requestInfo, totalRequestedTime, t }) => {
+  return (
+    <div className="box shadow cbnv">
+      {
+        (requestInfoToShow || []).map((requestItem, requestItemIndex) => {
+          return (
+            <div className='time-info' key={`request-item-${requestItemIndex}`}>
+              <div className="row">
+                <div className="col-xl-3">
+                  {t("StartDate")}
+                  <div className="detail adjustment">{requestItem?.startDate ? moment(requestItem?.startDate).format("DD/MM/YYYY") : ""}</div>
+                </div>
+                <div className="col-xl-3">
+                  {t("StartHour")}
+                  <div className="detail adjustment">{requestItem?.startTime ? moment(requestItem.startTime, TIME_FORMAT).locale('en-us').format('HH:mm') : ''}</div>
+                </div>
+                <div className="col-xl-3">
+                  {t("EndDate")}
+                  <div className="detail adjustment">{requestItem?.endDate ? moment(requestItem.endDate).format("DD/MM/YYYY") : ""}</div>
+                </div>
+                <div className="col-xl-3">
+                  {t("Endtime")}
+                  <div className="detail adjustment">{requestItem.endTime ? moment(requestItem.endTime, TIME_FORMAT).locale('en-us').format('HH:mm') : ''}</div>
+                </div>
+              </div>
+            </div>
+          )
+        })
+      }
+      <div className='other-info'>
+        <div className='row'>
+          <div className="col-md-6">
+            <label>{(requestInfo && requestInfo.absenceType && requestInfo.absenceType.value === 'PN03') ? t("MarriageFuneral") : t("LeaveCategory")}</label>
+            <div className="detail adjustment">{requestInfo && requestInfo?.absenceType ? requestInfo.absenceType?.label : ""}</div>
+          </div>
+          <div className="col-md-6">
+            <label>{t("TotalLeaveTime")}</label>
+            <div className="detail adjustment">{totalRequestedTime}</div>
+          </div>
+          <div className='col-md-12 reason-block'>
+            <label>{t(Constants.mappingActionType[requestInfo.actionType].ReasonRequestLeave)}</label>
+            <div className="detail adjustment">{requestInfo ? requestInfo?.comment : ""}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+const LeaveUserInfo = ({ userProfileInfo, annualLeaveSummary, viewPopup, t }) => {
+  return (
+    <>
+    <h5 className='content-page-header'>{t("EmployeeInfomation")}</h5>
+    <div className="box shadow cbnv">
+      <div className="row group">
+        <div className={`${viewPopup ? 'col-xl-4' : 'col-xl-2'}`}>
+          {t("FullName")}
+          <div className="detail">{userProfileInfo? userProfileInfo.fullName : ""}</div>
+        </div>
+        <div className={`${viewPopup ? 'col-xl-4' : 'col-xl-2'}`}>
+          {t("EmployeeNo")}
+          <div className="detail">{userProfileInfo ? userProfileInfo.employeeNo : ""}</div>
+        </div>
+        <div className={`${viewPopup ? 'col-xl-4' : 'col-xl-3'}`}>
+          {t("Title")}
+          <div className="detail">{userProfileInfo ? userProfileInfo.jobTitle : ""}</div>
+        </div>
+        <div className={`${viewPopup ? 'col-xl-12 view-popup' : 'col-xl-5'}`}>
+          {t('DepartmentManage')}
+          <div className="detail">{userProfileInfo ? userProfileInfo.department : ""}</div>
+        </div>
+      </div>
+      <div className="row mt-2">
+        <div className="col-xl-2">
+          {t("LeaveBalance")}
+          <div className="detail">{annualLeaveSummary && annualLeaveSummary.DAY_LEA_REMAIN ? _.ceil(annualLeaveSummary.DAY_LEA_REMAIN, 2) : null}</div>
+        </div>
+        <div className="col-xl-3">
+          {t("LeavesThisYear")}
+          <div className="detail">{annualLeaveSummary && annualLeaveSummary.DAY_LEA ? _.ceil(annualLeaveSummary.DAY_LEA, 2) : null}</div>
+        </div>
+        <div className="col-xl-3">
+          {t("AdvancecdAnnualLeave")}
+          <div className="detail">{annualLeaveSummary && annualLeaveSummary.DAY_ADV_LEA ? _.ceil(annualLeaveSummary.DAY_ADV_LEA, 2) : null}</div>
+        </div>
+        <div className="col-xl-4">
+          <div className="row">
+            <div className="col-xl-6">
+              {t("ToilHoursBalance")}
+              <div className="detail">{annualLeaveSummary && annualLeaveSummary.HOUR_TIME_OFF_REMAIN ? _.ceil(annualLeaveSummary.HOUR_TIME_OFF_REMAIN, 2) : null}</div>
+            </div>
+            <div className="col-xl-6">
+              {t("ToilHours")}
+              <div className="detail">{annualLeaveSummary && annualLeaveSummary.HOUR_COMP ? _.ceil(annualLeaveSummary.HOUR_COMP, 2) : null}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    </>
+  )
+}
+
+const Attachment = ({ leaveOfAbsence, t }) => {
+  return (
+    <>
+      <h5 className='content-page-header'>{t("Evidence")}</h5>
+      <ul className="list-inline">
+        {leaveOfAbsence.requestDocuments.map((file, index) => {
+          return <li className="list-inline-item" key={index}>
+            <a className="file-name" href={file.fileUrl} title={file.fileName} target="_blank" download={file.fileName}>{file.fileName}</a>
+          </li>
+        })}
+      </ul>
+    </>
+  )
+}
 
 class LeaveOfAbsenceDetailComponent extends React.Component {
   constructor(props) {
@@ -76,7 +243,6 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     const requestInfo = leaveOfAbsence.requestInfo[0]
     const appraiser = leaveOfAbsence.appraiser
     const annualLeaveSummary = this.state.annualLeaveSummary
-
     const requestTypeIdsAllowedToReApproval = getRequestTypeIdsAllowedToReApproval()
     const isShowApproval = (requestInfo.processStatusId === Constants.STATUS_WAITING) || (action === "approval" && requestInfo.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && requestTypeIdsAllowedToReApproval.includes(requestTypeId))
     
@@ -100,148 +266,33 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
       isShowAppraisalInfo = true
     }
 
-    console.log("sdfgdfgsdfgsfdgsdfgs")
-    console.log(leaveOfAbsence)
-
+    const newItem = [...requestInfo?.newItem]
+    const requestInfoToShow = [_.omit(requestInfo, ['newItem']) || [], ...newItem || []]
+    const requestedTime = (requestInfoToShow || []).reduce((initial, current) => {
+      initial.totalHours += current?.hours || 0
+      initial.totalDays += current?.days || 0
+      return initial
+    }, {totalHours: 0, totalDays: 0})
+    const totalRequestedTime = requestInfo?.isAllDay ? `${requestedTime?.totalDays} ${t("Day")}`  : `${requestedTime?.totalHours} ${t("Hour")}`
 
     return (
       <div className="leave-of-absence">
-        <h5>{t("EmployeeInfomation")}</h5>
-        <div className="box shadow cbnv">
-          <div className="row group">
-            <div className={`${viewPopup ? 'col-xl-4' : 'col-xl-2'}`}>
-             {t("FullName")}
-              <div className="detail auto-height">{userProfileInfo? userProfileInfo.fullName : ""}</div>
-            </div>
-            <div className={`${viewPopup ? 'col-xl-4' : 'col-xl-2'}`}>
-              {t("EmployeeNo")}
-              <div className="detail auto-height">{userProfileInfo ? userProfileInfo.employeeNo : ""}</div>
-            </div>
-            <div className={`${viewPopup ? 'col-xl-4' : 'col-xl-3'}`}>
-              {t("Title")}
-              <div className="detail auto-height">{userProfileInfo ? userProfileInfo.jobTitle : ""}</div>
-            </div>
-            <div className={`${viewPopup ? 'col-xl-12 view-popup' : 'col-xl-5'}`}>
-              {t('DepartmentManage')}
-              <div className="detail auto-height">{userProfileInfo ? userProfileInfo.department : ""}</div>
-            </div>
-          </div>
-          <div className="row mt-2">
-            <div className="col-xl-2">
-              {t("LeaveBalance")}
-              <div className="detail">{annualLeaveSummary && annualLeaveSummary.DAY_LEA_REMAIN ? _.ceil(annualLeaveSummary.DAY_LEA_REMAIN, 2) : null}</div>
-            </div>
-            <div className="col-xl-3">
-              {t("LeavesThisYear")}
-              <div className="detail">{annualLeaveSummary && annualLeaveSummary.DAY_LEA ? _.ceil(annualLeaveSummary.DAY_LEA, 2) : null}</div>
-            </div>
-            <div className="col-xl-3">
-              {t("AdvancecdAnnualLeave")}
-              <div className="detail">{annualLeaveSummary && annualLeaveSummary.DAY_ADV_LEA ? _.ceil(annualLeaveSummary.DAY_ADV_LEA, 2) : null}</div>
-            </div>
-            <div className="col-xl-4">
-              <div className="row">
-                <div className="col-xl-6">
-                  {t("ToilHoursBalance")}
-                  <div className="detail">{annualLeaveSummary && annualLeaveSummary.HOUR_TIME_OFF_REMAIN ? _.ceil(annualLeaveSummary.HOUR_TIME_OFF_REMAIN, 2) : null}</div>
-                </div>
-                <div className="col-xl-6">
-                  {t("ToilHours")}
-                  <div className="detail">{annualLeaveSummary && annualLeaveSummary.HOUR_COMP ? _.ceil(annualLeaveSummary.HOUR_COMP, 2) : null}</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <LeaveUserInfo userProfileInfo={userProfileInfo} annualLeaveSummary={annualLeaveSummary} t={t} viewPopup={viewPopup} />
         <StatusModal show={this.state.isShowStatusModal} content={this.state.content} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
-
-        {
-          leaveOfAbsence?.requestInfoOld && leaveOfAbsence?.requestInfoOld?.length > 0 &&
-          <div className='registered-leave-info'>
-            <h5>{'Thông tin đã đăng ký nghỉ'}</h5>
-            <div className="box shadow">
-              {
-                (leaveOfAbsence?.requestInfoOld).map((oldInfo, oldInfoIndex) => {
-                  return (
-                    <div className='item' key={`old-${oldInfoIndex}`}>
-                      <div className="row">
-                        <div className="col-xl-3">
-                          {t("StartDateTime")}
-                          <div className="detail">{oldInfo ? moment(oldInfo?.startDate).format("DD/MM/YYYY") + (oldInfo?.startTime ? ' ' + moment(oldInfo?.startTime, TIME_FORMAT).locale('en-us').format('HH:mm') : '') : ""}</div>
-                        </div>
-                        <div className="col-xl-3">
-                          {t("EndDateTime")}
-                          <div className="detail">{oldInfo ? moment(oldInfo?.endDate).format("DD/MM/YYYY") + (oldInfo?.endTime ? ' ' + moment(oldInfo?.endTime, TIME_FORMAT).locale('en-us').format('HH:mm') : '') : ""}</div>
-                        </div>
-                        <div className="col-xl-3">
-                          {t("TotalLeaveTime")}
-                          {/* <div className="detail">{ requestInfo && requestInfo.days && requestInfo.absenceType.value != "PQ02" ? requestInfo.days + ' ngày' : null } { requestInfo && requestInfo.hours  && requestInfo.absenceType.value == "PQ02" ? requestInfo.hours  + ' giờ' : null}</div> */}
-                          <div className="detail">{( oldInfo && oldInfo?.days >= 1) ? oldInfo?.days + ' ' + t("Day") : oldInfo?.hours + ' ' + t("Hour")}</div>
-                        </div>
-                        <div className="col-xl-3">
-                          {t("LeaveCategory")}
-                          <div className="detail">{oldInfo && oldInfo?.absenceType ? oldInfo?.absenceType?.label : ""}</div>
-                        </div>
-                      </div>
-                      {(oldInfo && oldInfo?.absenceType && oldInfo?.absenceType?.value === 'PN03') ? <div className="row">
-                        <div className="col">
-                          {t("MarriageFuneral")}
-                          <div className="detail">{oldInfo?.absenceType?.label}</div>
-                        </div>
-                      </div> : null}
-                      <div className="row">
-                        <div className="col" style={{marginTop: 10}}>
-                          {t(Constants.mappingActionType[oldInfo.actionType]?.ReasonRequestLeave)}
-                          <div className="detail">{oldInfo ? oldInfo?.comment : ""}</div>
-                        </div>
-                      </div>
-                    </div>
-                  )
-                })
-              }
-            </div>
-          </div>
+        { leaveOfAbsence?.requestInfoOld && leaveOfAbsence?.requestInfoOld?.length > 0 
+          ? 
+          <>
+            <RegisteredLeaveInfo leaveOfAbsence={leaveOfAbsence} t={t} />
+            <h5 className='content-page-header'>{t(Constants.mappingActionType[requestInfo.actionType].TitleLeave)}</h5>
+            <AdjustmentLeaveInfo requestInfoToShow={requestInfoToShow} requestInfo={requestInfo} totalRequestedTime={totalRequestedTime} t={t} />
+          </>
+          : <RegisteredLeaveInfo leaveOfAbsence={leaveOfAbsence} t={t} />
         }
-
-        <h5>{t(Constants.mappingActionType[requestInfo.actionType].TitleLeave)}</h5>
-        <div className="box shadow cbnv">
-          <div className="row">
-            <div className="col-xl-3">
-              {t("StartDateTime")}
-              <div className="detail">{requestInfo ? moment(requestInfo.startDate).format("DD/MM/YYYY") + (requestInfo.startTime ? ' ' + moment(requestInfo.startTime, TIME_FORMAT).locale('en-us').format('HH:mm') : '') : ""}</div>
-            </div>
-            <div className="col-xl-3">
-              {t("EndDateTime")}
-              <div className="detail">{requestInfo ? moment(requestInfo.endDate).format("DD/MM/YYYY") + (requestInfo.endTime ? ' ' + moment(requestInfo.endTime, TIME_FORMAT).locale('en-us').format('HH:mm') : '') : ""}</div>
-            </div>
-            <div className="col-xl-3">
-              {t("TotalLeaveTime")}
-              {/* <div className="detail">{ requestInfo && requestInfo.days && requestInfo.absenceType.value != "PQ02" ? requestInfo.days + ' ngày' : null } { requestInfo && requestInfo.hours  && requestInfo.absenceType.value == "PQ02" ? requestInfo.hours  + ' giờ' : null}</div> */}
-              <div className="detail">{( requestInfo && requestInfo.days >= 1) ? requestInfo.days + ' ' + t("Day") : requestInfo.hours + ' ' + t("Hour")}</div>
-            </div>
-            <div className="col-xl-3">
-              {t("LeaveCategory")}
-              <div className="detail">{requestInfo && requestInfo.absenceType ? requestInfo.absenceType.label : ""}</div>
-            </div>
-          </div>
-          {(requestInfo && requestInfo.absenceType && requestInfo.absenceType.value === 'PN03') ? <div className="row">
-            <div className="col">
-              {t("MarriageFuneral")}
-              <div className="detail">{requestInfo.absenceType.label}</div>
-            </div>
-          </div> : null}
-          <div className="row">
-            <div className="col" style={{marginTop: 10}}>
-              {t(Constants.mappingActionType[requestInfo.actionType].ReasonRequestLeave)}
-              <div className="detail">{requestInfo ? requestInfo.comment : ""}</div>
-            </div>
-          </div>
-        </div>
 
         {
           isShowAppraisalInfo && 
           <>
-            <h5>{t("ConsenterInformation")}</h5>
+            <h5 className='content-page-header'>{t("ConsenterInformation")}</h5>
             <ApproverDetailComponent title={t("Consenter")} approver={leaveOfAbsence.appraiser} status={requestInfo ? requestInfo.processStatusId : ""} hrComment={requestInfo.appraiserComment} />
           </>
         }
@@ -250,25 +301,13 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
           // this.getTypeDetail() === "request" ?
           requestInfo && (Constants.STATUS_TO_SHOW_APPROVER.includes(requestInfo.processStatusId )) ?
             <>
-              <h5>{t("ApproverInformation")}</h5>
+              <h5 className='content-page-header'>{t("ApproverInformation")}</h5>
               <ApproverDetailComponent title={t("Approver")} approver={leaveOfAbsence.approver} status={requestInfo ? requestInfo.processStatusId : ""} hrComment={requestInfo.approverComment} />
             </> : null
         }
 
-        {
-          leaveOfAbsence.requestDocuments.length > 0 ?
-            <>
-              <h5>{t("Evidence")}</h5>
-              <ul className="list-inline">
-                {leaveOfAbsence.requestDocuments.map((file, index) => {
-                  return <li className="list-inline-item" key={index}>
-                    <a className="file-name" href={file.fileUrl} title={file.fileName} target="_blank" download={file.fileName}>{file.fileName}</a>
-                  </li>
-                })}
-              </ul>
-            </>
-            : null
-        }
+        { leaveOfAbsence.requestDocuments.length > 0 && <Attachment leaveOfAbsence={leaveOfAbsence} t={t} /> }
+
         <div className="block-status">
           <span className={`status ${Constants.mappingStatusRequest[requestInfo.processStatusId].className}`}>{t(this.showStatus(requestInfo.processStatusId, appraiser))}</span>
           {messageSAP && 
@@ -281,6 +320,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
               </div>
             </div>}
         </div>
+
         {
           requestInfo && (requestInfo.processStatusId === 8 || (action != "consent" && requestInfo.processStatusId === 5) || requestInfo.processStatusId === 2 || 
           (action === "approval" && requestInfo.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && requestTypeIdsAllowedToReApproval.includes(requestTypeId))) 
