@@ -440,7 +440,7 @@ function EvaluationProcess(props) {
                   return renderEvaluationItem(item, index, scores, target, i, deviant)
                 }
                 return <div className="evaluation-sub-group">
-                  <div className="sub-group-name">{`${i + 1}. ${target.groupName}`} <span className="red">({target.groupWeight}%)</span></div>
+                  <div className="sub-group-name">{`${i + 1}. ${JSON.parse(target?.groupName || '{}')[languageCodeMapping[currentLocale]]}`} <span className="red">({target.groupWeight}%)</span></div>
                   <div className="sub-group-targets">
                     {(target.listTarget || []).map((childTarget, childIndex) => {
                       let deviant = (childTarget?.leadReviewPoint === '' || childTarget?.leadReviewPoint === null || childTarget?.seftPoint === '' || childTarget?.seftPoint === null) ? '' : Number(childTarget?.leadReviewPoint) - Number(childTarget?.seftPoint)
