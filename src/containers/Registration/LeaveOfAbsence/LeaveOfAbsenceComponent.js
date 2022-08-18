@@ -998,7 +998,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                                 <div className="col-lg-12 col-xl-6">
                                                                     <div className="row">
                                                                         <div className="col-6">
-                                                                            <p className="title">{t('StartTime')}</p>
+                                                                            <p className="title">{t('StartHour')}</p>
                                                                             <div className="content input-container">
                                                                                 <label>
                                                                                     <DatePicker
