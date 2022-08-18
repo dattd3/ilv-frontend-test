@@ -207,7 +207,7 @@ function Header(props) {
         const isChangedLanguage = await updateLanguageByCode(lang)
         if (isChangedLanguage) {
             setActiveLang(lang)
-            if (window.location.pathname.match('vaccination')) {
+            if (window.location.pathname.match('vaccination') || window.location.pathname.match('evaluations')) {
                 window.location.reload()
             }
         }

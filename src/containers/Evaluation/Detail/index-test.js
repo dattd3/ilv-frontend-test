@@ -20,6 +20,14 @@ import IconSave from '../../../assets/img/ic-save.svg'
 import IconSendRequest from '../../../assets/img/icon/Icon_send.svg'
 import IconReject from '../../../assets/img/icon/Icon_Cancel.svg'
 import IconApprove from '../../../assets/img/icon/Icon_Check.svg'
+
+const currentLocale = localStorage.getItem("locale")
+
+const languageCodeMapping = {
+  'vi-VN': 'vi',
+  'en-US': 'en',
+}
+
 function EvaluationOverall(props) {
   const { t } = useTranslation()
   const { evaluationFormDetail, showByManager } = props
@@ -99,7 +107,7 @@ function EvaluationOverall(props) {
           {
             (evaluationFormDetail?.listGroup || []).map((item, i) => {
               return <tr key={i}>
-                <td className='c-criteria'><div className='criteria'>{item?.groupName}</div></td>
+                <td className='c-criteria'><div className='criteria'>{JSON.parse(item?.groupName || '{}')[languageCodeMapping[currentLocale]]}</div></td>
                 <td className='c-self-assessment text-center'>{item?.groupSeftPoint || 0}</td>
                 <td className='c-manager-assessment text-center color-red'>{item?.groupLeadReviewPoint || 0}</td>
               </tr>
@@ -232,10 +240,9 @@ function EvaluationProcess(props) {
   }
 
   const renderEvaluationItem = (item, index, scores, target, i, deviant, parentIndex, subGroupTargetIndex) => {
-
     const isChild = !_.isNil(parentIndex)
     return <div className="evaluation-item" key={target.id}>
-      {!isChild ? <div className="title">{`${i + 1}. ${target?.targetName}`}</div> : <div className="sub-title">{`${parentIndex + 1}.${subGroupTargetIndex + 1} ${target?.targetName}`}</div>}
+      {!isChild ? <div className="title">{`${i + 1}. ${JSON.parse(target?.targetName || '{}')[languageCodeMapping[currentLocale]]}`}</div> : <div className="sub-title">{`${parentIndex + 1}.${subGroupTargetIndex + 1} ${JSON.parse(target?.targetName || '{}')[languageCodeMapping[currentLocale]]}`}</div>}
       {
         item?.listGroupConfig && item?.listGroupConfig?.length > 0 ?
           <div className="score-block">
@@ -388,7 +395,7 @@ function EvaluationProcess(props) {
         let scores = [1, 2, 3, 4, 5]
 
         return <div className={`part-block ${item?.listGroupConfig && item?.listGroupConfig?.length > 0 ? 'attitude' : 'work-result'}`} key={index}>
-          <div className="title">{`${t("EvaluationDetailPart")} ${indexText} - ${item?.groupName}`} <span className="red">({item?.groupWeight || 0}%)</span></div>
+          <div className="title">{`${t("EvaluationDetailPart")} ${indexText} - ${JSON.parse(item?.groupName || '{}')[languageCodeMapping[currentLocale]]}`} <span className="red">({item?.groupWeight || 0}%)</span></div>
           {
             item?.listGroupConfig && item?.listGroupConfig?.length > 0 &&
             <div className="wrap-score-table">
@@ -416,7 +423,7 @@ function EvaluationProcess(props) {
                     <td>{t("EvaluationDetailPartAttitudeLevelExpression")}</td>
                     {
                       item?.listGroupConfig?.map((sub, subIndex) => {
-                        return <td key={subIndex}><div>{sub?.description}</div></td>
+                        return <td key={subIndex}><div>{JSON.parse(sub?.description || '{}')[languageCodeMapping[currentLocale]]}</div></td>
                       })
                     }
                   </tr>
