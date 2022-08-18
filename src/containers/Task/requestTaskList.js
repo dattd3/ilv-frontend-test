@@ -667,8 +667,34 @@ class RequestTaskList extends React.Component {
                                                 <tr key={index}>
                                                     <td className="code"><a href={detailLink} title={child.requestType.name} className="task-title">{generateTaskCodeByCode(child.id)}</a></td>
                                                     <td className="request-type">{getRequestTypeLabel(child.requestType, child.absenceType?.value)}</td>
-                                                    <td className="day-off"><div dangerouslySetInnerHTML={{ __html: dateChanged }} /></td>
-                                                    <td className="break-time text-center">{totalTime}</td>
+                                                    <td className="day-off">
+                                                        <div dangerouslySetInnerHTML={{ __html: dateChanged }} />
+                                                        {
+                                                            (child?.newItem || []).map((item, itemIndex) => {
+                                                                let subDateChanged = ''
+                                                                if ([Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP].includes(child.requestTypeId)) {
+                                                                    subDateChanged = showRangeDateGroupByArrayDate([moment(item?.startDate, 'YYYYMMDD').format('DD/MM/YYYY'), moment(item?.endDate, 'YYYYMMDD').format('DD/MM/YYYY')])
+                                                                }
+                                                                return (
+                                                                    <div key={`sub-date-${itemIndex}`} dangerouslySetInnerHTML={{ __html: subDateChanged }} style={{marginTop: 5}} />
+                                                                )
+                                                            })
+                                                        }
+                                                    </td>
+                                                    <td className="break-time text-center">
+                                                        <div>{totalTime}</div>
+                                                        {
+                                                            (child?.newItem || []).map((item, itemIndex) => {
+                                                                let subTotalTime = ''
+                                                                if ([Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP].includes(child.requestTypeId)) {
+                                                                    subTotalTime = item?.days >= fullDay ? `${item?.days} ${t('DayUnit')}` : `${item?.hours} ${t('HourUnit')}`
+                                                                }
+                                                                return (
+                                                                    <div key={`sub-break-time-${itemIndex}`} style={{marginTop: 5}}>{subTotalTime}</div>
+                                                                )
+                                                            })
+                                                        }
+                                                    </td>
                                                     <td className="status text-center">{this.showStatus(child.id, child.processStatusId, child.requestType.id, child.appraiserId)}</td>
                                                     <td className="tool">
                                                         { (isShowEditButton && child?.absenceType?.value != MOTHER_LEAVE_KEY) && <a href={editLink} title={t("Edit")}><img alt="Sửa" src={editButton} /></a> }
