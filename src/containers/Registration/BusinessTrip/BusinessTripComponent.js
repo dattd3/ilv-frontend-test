@@ -515,7 +515,7 @@ class BusinessTripComponent extends React.Component {
     }
 
     submit() {
-        const { t } = this.props
+        const { t, businessTrip } = this.props
         const { requestInfo, files, isEdit, isShowAddressAndVehicle } = this.state
         this.setDisabledSubmitButton(true)
         const err = this.verifyInput()
@@ -576,7 +576,7 @@ class BusinessTripComponent extends React.Component {
         }))
         bodyFormData.append('requestInfo', JSON.stringify(dataRequestInfo))
         if (isEdit) {
-            bodyFormData.append('id', this.props.businessTrip.id)
+            bodyFormData.append('id', businessTrip?.id)
         }
 
         if(!isEdit)
@@ -642,6 +642,8 @@ class BusinessTripComponent extends React.Component {
         const { requestInfo, dateRequest } = this.state
         const newRequestInfo = requestInfo.filter(req => req.groupId !== groupId)
         newRequestInfo.push({
+            id: requestInfo[0]?.id,
+            processStatusId: requestInfo[0]?.processStatusId,
             groupItem: 1,
             startDate: dateRequest,
             startTime: 0,
