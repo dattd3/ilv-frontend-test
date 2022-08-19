@@ -980,10 +980,22 @@
     }
 
     .all-day-area {
-        margin-left: 10px;
-        margin-right: 10px;
-        margin-top: 20px;
-        border-bottom: 1px solid #d1d3e2
+        margin: 20px 10px 0 10px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #d1d3e2;
+        .wrap-item {
+            display: inline-flex;
+            align-items: center;
+            label {
+                margin-bottom: 0;
+                cursor: pointer;
+            }
+            input {
+                cursor: pointer;
+                width: 18px;
+                height: 18px;
+            }
+        }
     }
 
     .group {

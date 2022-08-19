@@ -986,8 +986,10 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                 {
                                                     !req[0].isAllDay ?
                                                         <div className="all-day-area">
-                                                            <input type="checkbox" value={reqDetail.groupId + "." + reqDetail.groupItem} checked={reqDetail.isChecked || false} className="check-box mr-2" onChange={this.handleCheckboxChange} />
-                                                            <label>{t('FullDay')}</label>
+                                                            <span className='wrap-item'>
+                                                                <input type="checkbox" value={reqDetail.groupId + "." + reqDetail.groupItem} checked={reqDetail.isChecked || false} id={`check-${index}-${indexDetail}`} className="check-box mr-2" onChange={this.handleCheckboxChange} />
+                                                                <label htmlFor={`check-${index}-${indexDetail}`}>{t('FullDay')}</label>
+                                                            </span>
                                                         </div>
                                                         : null
                                                 }
