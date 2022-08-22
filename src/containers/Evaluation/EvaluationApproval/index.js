@@ -38,6 +38,7 @@ const currentSteps = [
 ]
 
 function AdvancedFilter(props) {
+    const { t } = useTranslation()
     const { masterData, filter, updateData } = props
 
     const handleInputChange = (key, value, childKey) => {
@@ -49,10 +50,10 @@ function AdvancedFilter(props) {
             <Row>
                 <Col md={6}>
                     <Form.Group as={Row} controlId="current-step">
-                        <Form.Label column sm={12}>Bước hiện tại</Form.Label>
+                        <Form.Label column sm={12}>{t("EvaluationCurrentStep")}</Form.Label>
                         <Col sm={12}>
                             <Select 
-                                placeholder="Lựa chọn" 
+                                placeholder={t("Select")} 
                                 isClearable={true} 
                                 value={filter.currentStep} 
                                 options={currentSteps} 
@@ -62,10 +63,10 @@ function AdvancedFilter(props) {
                 </Col>
                 <Col md={6}>
                     <Form.Group as={Row} controlId="block">
-                        <Form.Label column sm={12}>Ban/Chuỗi/Khối</Form.Label>
+                        <Form.Label column sm={12}>{t("EvaluationDetailEmployeeDivision")}</Form.Label>
                         <Col sm={12}>
                             <Select 
-                                placeholder="Lựa chọn" 
+                                placeholder={t("Select")} 
                                 isClearable={true} 
                                 value={filter.block} 
                                 options={masterData.blocks} 
@@ -77,10 +78,10 @@ function AdvancedFilter(props) {
             <Row>
                 <Col md={6}>
                     <Form.Group as={Row} controlId="region">
-                        <Form.Label column sm={12}>Phòng/Vùng/Miền</Form.Label>
+                        <Form.Label column sm={12}>{t("EvaluationDetailEmployeeDepartment")}</Form.Label>
                         <Col sm={12}>
                             <Select 
-                                placeholder="Lựa chọn" 
+                                placeholder={t("Select")} 
                                 isClearable={true} 
                                 value={filter.region} 
                                 options={filter.regions} 
@@ -90,10 +91,10 @@ function AdvancedFilter(props) {
                 </Col>
                 <Col md={6}>
                     <Form.Group as={Row} controlId="unit">
-                        <Form.Label column sm={12}>Các đơn vị thành viên</Form.Label>
+                        <Form.Label column sm={12}>{t("EvaluationMemberUnits")}</Form.Label>
                         <Col sm={12}>
                             <Select 
-                                placeholder="Lựa chọn" 
+                                placeholder={t("Select")} 
                                 isClearable={true} 
                                 value={filter.unit} 
                                 options={filter.units} 
@@ -105,10 +106,10 @@ function AdvancedFilter(props) {
             <Row>
                 <Col md={12}>
                     <Form.Group as={Row} controlId="group">
-                        <Form.Label column sm={12}>Phòng/Bộ phận/Nhóm</Form.Label>
+                        <Form.Label column sm={12}>{t("EvaluationTeam")}</Form.Label>
                         <Col sm={12}>
                             <Select 
-                                placeholder="Lựa chọn" 
+                                placeholder={t("Select")} 
                                 isClearable={true} 
                                 value={filter.group} 
                                 options={filter.groups} 
@@ -120,10 +121,10 @@ function AdvancedFilter(props) {
             <Row>
                 <Col md={3}>
                     <Form.Group as={Row} controlId="rank">
-                        <Form.Label column sm={12}>Cấp bậc</Form.Label>
+                        <Form.Label column sm={12}>{t("EvaluationGrade")}</Form.Label>
                         <Col sm={12}>
                             <Select 
-                                placeholder="Lựa chọn" 
+                                placeholder={t("Select")} 
                                 isClearable={true} 
                                 value={filter.rank} 
                                 options={masterData?.ranks} 
@@ -133,10 +134,10 @@ function AdvancedFilter(props) {
                 </Col>
                 <Col md={3}>
                     <Form.Group as={Row} controlId="title">
-                        <Form.Label column sm={12}>Chức danh</Form.Label>
+                        <Form.Label column sm={12}>{t("EvaluationTitle")}</Form.Label>
                         <Col sm={12}>
                             <Select 
-                                placeholder="Lựa chọn" 
+                                placeholder={t("Select")} 
                                 isClearable={true} 
                                 value={filter.title} 
                                 options={masterData?.titles} 
@@ -146,7 +147,7 @@ function AdvancedFilter(props) {
                 </Col>
                 <Col md={3}>
                     <Form.Group as={Row} controlId="from-date">
-                        <Form.Label column sm={12}>Từ ngày</Form.Label>
+                        <Form.Label column sm={12}>{t("EvaluationFromDate")}</Form.Label>
                         <Col sm={12}>
                             <DatePicker
                                 selected={filter.fromDate ? moment(filter.fromDate, 'YYYY-MM-DD').toDate() : null}
@@ -161,7 +162,7 @@ function AdvancedFilter(props) {
                 </Col>
                 <Col md={3}>
                     <Form.Group as={Row} controlId="to-date">
-                        <Form.Label column sm={12}>Đến ngày</Form.Label>
+                        <Form.Label column sm={12}>{t("EvaluationToDate")}</Form.Label>
                         <Col sm={12}>
                             <DatePicker 
                                 selected={filter.toDate ? moment(filter.toDate, 'YYYY-MM-DD').toDate() : null}
@@ -181,6 +182,7 @@ function AdvancedFilter(props) {
 }
 
 function ApprovalTabContent(props) {
+    const { t } = useTranslation()
     const { handleFilter, masterData } = props
     const [filter, SetFilter] = useState({
         isOpenFilterAdvanced: false,
@@ -257,10 +259,10 @@ function ApprovalTabContent(props) {
                 <Row>
                     <Col md={6}>
                         <Form.Group as={Row} controlId="status">
-                            <Form.Label column sm={12}>Trạng thái</Form.Label>
+                            <Form.Label column sm={12}>{t("Status")}</Form.Label>
                             <Col sm={12}>
                                 <Select 
-                                    placeholder="Lựa chọn" 
+                                    placeholder={t("Select")} 
                                     isClearable={true} 
                                     value={filter.status} 
                                     options={formStatuses} 
@@ -270,7 +272,7 @@ function ApprovalTabContent(props) {
                     </Col>
                     <Col md={6}>
                         <Form.Group as={Row} controlId="employee">
-                            <Form.Label column sm={12}>Tìm kiếm nhân viên</Form.Label>
+                            <Form.Label column sm={12}>{t("EvaluationSearchForEmployees")}</Form.Label>
                             <Col sm={12}>
                                 <SearchUser updateUser={updateUser} />
                             </Col>
@@ -285,7 +287,7 @@ function ApprovalTabContent(props) {
                                 onClick={handleShowFilterAdvanced}
                                 aria-controls="filter-advanced-block"
                                 aria-expanded={filter?.isOpenFilterAdvanced}
-                            >Tìm kiếm nâng cao<Image src={filter.isOpenFilterAdvanced ? IconCollapse : IconExpand} alt='Toggle' /></span>
+                            >{t("EvaluationAdvancedSearch")}<Image src={filter.isOpenFilterAdvanced ? IconCollapse : IconExpand} alt='Toggle' /></span>
                         </div>
                     </Col>
                 </Row>
@@ -299,7 +301,7 @@ function ApprovalTabContent(props) {
                 </Collapse>
                 <Row>
                     <Col md={12}>
-                        <Button type="submit" className="btn btn-submit"><Image src={IconSearch} alt="Search" />Tìm kiếm</Button>
+                        <Button type="submit" className="btn btn-submit"><Image src={IconSearch} alt="Search" />{t("Search")}</Button>
                     </Col>
                 </Row>
             </Form>
@@ -433,10 +435,10 @@ function BatchApprovalTabContent(props) {
                 <Row>
                     <Col md={6}>
                         <Form.Group as={Row} controlId="form">
-                            <Form.Label column sm={12}>Chọn biểu mẫu<span className="required">(*)</span></Form.Label>
+                            <Form.Label column sm={12}>{t("EvaluationSelectForm")}<span className="required">(*)</span></Form.Label>
                             <Col sm={12}>
                                 <Select 
-                                    placeholder="Lựa chọn" 
+                                    placeholder={t("Select")} 
                                     isClearable={true} 
                                     value={filter.evaluationForm} 
                                     options={filter.evaluationForms} 
@@ -451,7 +453,7 @@ function BatchApprovalTabContent(props) {
                     </Col>
                     <Col md={6}>
                         <Form.Group as={Row} controlId="employee">
-                            <Form.Label column sm={12}>Tìm kiếm nhân viên</Form.Label>
+                            <Form.Label column sm={12}>{t("EvaluationSearchForEmployees")}</Form.Label>
                             <Col sm={12}>
                                 <SearchUser updateUser={updateUser} />
                             </Col>
@@ -466,7 +468,7 @@ function BatchApprovalTabContent(props) {
                                 onClick={handleShowFilterAdvanced}
                                 aria-controls="filter-advanced-block"
                                 aria-expanded={filter.isOpenFilterAdvanced}
-                            >Tìm kiếm nâng cao<Image src={filter.isOpenFilterAdvanced ? IconCollapse : IconExpand} alt='Toggle' /></span>
+                            >{t("EvaluationAdvancedSearch")}<Image src={filter.isOpenFilterAdvanced ? IconCollapse : IconExpand} alt='Toggle' /></span>
                         </div>
                     </Col>
                 </Row>
@@ -480,7 +482,7 @@ function BatchApprovalTabContent(props) {
                 </Collapse>
                 <Row>
                     <Col md={12}>
-                        <Button type="submit" className="btn btn-submit"><Image src={IconSearch} alt="Search" />Tìm kiếm</Button>
+                        <Button type="submit" className="btn btn-submit"><Image src={IconSearch} alt={t("Search")} />{t("Search")}</Button>
                     </Col>
                 </Row>
             </Form>
@@ -813,12 +815,12 @@ function EvaluationApproval(props) {
     const getResponseMessages = (actionCode, apiStatus) => {
         const messageMapping = {
             [actionButton.approve]: {
-                success: 'Phê duyệt biểu mẫu thành công!',
-                failed: 'Phê duyệt biểu mẫu thất bại. Xin vui lòng thử lại!',
+                success: t("EvaluationFormApprovedSuccessfully"),
+                failed: t("EvaluationFailedToApproveForm"),
             },
             [actionButton.reject]: {
-                success: 'Biểu mẫu đã được gửi lại QLTT thành công!',
-                failed: 'Biểu mẫu chưa được gửi lại QLTT. Xin vui lòng thử lại!',
+                success: t("EvaluationFormSubmittedToManager"),
+                failed: t("EvaluationFailedToSubmitForm"),
             }
         }
         return messageMapping[actionCode][apiStatus]
@@ -901,17 +903,17 @@ function EvaluationApproval(props) {
             employeeCode={evaluationDetailPopup.employeeCode} 
             onHide={onHideEvaluationDetailModal} />
         <div className="evaluation-approval-page">
-            <h1 className="content-page-header">Đánh giá</h1>
+            <h1 className="content-page-header">{t("EvaluationLabel")}</h1>
             <div className="filter-block">
                 <div className="card shadow card-filter">
                     <Tabs id="filter-tabs" defaultActiveKey={activeTab} onSelect={key => handleTabChange(key)}>
-                        <Tab eventKey="approval" title='Đánh giá/Phê duyệt' className="tab-item">
+                        <Tab eventKey="approval" title={t("EvaluationApprovalTab")} className="tab-item">
                             <ApprovalTabContent 
                                 masterData={masterData} 
                                 hasChangePageSize={hasChangePageSize} 
                                 handleFilter={handleFilter} />
                         </Tab>
-                        <Tab eventKey="batchApproval" title='Phê duyệt hàng loạt' className="tab-item">
+                        <Tab eventKey="batchApproval" title={t("EvaluationBulkApproval")} className="tab-item">
                             <BatchApprovalTabContent 
                                 isOpen={activeTab === 'batchApproval'} 
                                 masterData={masterData} 
@@ -933,12 +935,12 @@ function EvaluationApproval(props) {
                             <table className='table-list-evaluation'>
                                 <thead>
                                     <tr>
-                                        <th className="c-form-code"><div className="form-code">Mã biểu mẫu</div></th>
-                                        <th className="c-form-sender"><div className="form-sender">Người gửi biểu mẫu</div></th>
-                                        <th className="c-form-name"><div className="form-name">Tên biểu mẫu</div></th>
-                                        <th className="c-sent-date"><div className="sent-date">Ngày gửi</div></th>
-                                        <th className="c-status"><div className="status">Tình trạng</div></th>
-                                        <th className="c-current-step"><div className="current-step">Bước hiện tại</div></th>
+                                        <th className="c-form-code"><div className="form-code">{t("EvaluationFormCode")}</div></th>
+                                        <th className="c-form-sender"><div className="form-sender">{t("EvaluationSubmittedBy")}</div></th>
+                                        <th className="c-form-name"><div className="form-name">{t("EvaluationFormName")}</div></th>
+                                        <th className="c-sent-date"><div className="sent-date">{t("EvaluationSubmittedDate")}</div></th>
+                                        <th className="c-status"><div className="status">{t("EvaluationStatus")}</div></th>
+                                        <th className="c-current-step"><div className="current-step">{t("EvaluationCurrentStep")}</div></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -949,7 +951,7 @@ function EvaluationApproval(props) {
                                                         <td className="c-form-sender"><div className="form-sender">{item?.poolUser?.fullname || ''}</div></td>
                                                         <td className="c-form-name"><div className="form-name">{item?.checkPhaseFormName || ''}</div></td>
                                                         <td className="c-sent-date"><div className="sent-date">{item?.sendDateLv1 && moment(item?.sendDateLv1).format('DD/MM/YYYY')}</div></td>
-                                                        <td className="c-status"><div className={`status ${item?.status == statusDone ? 'done' : 'in-progress'}`}>{item?.status == statusDone ? 'Đã hoàn thành' : 'Đang đánh giá'}</div></td>
+                                                        <td className="c-status"><div className={`status ${item?.status == statusDone ? 'done' : 'in-progress'}`}>{item?.status == statusDone ? t("EvaluationDetailCompleted") : t("EvaluationInProgress")}</div></td>
                                                         <td className="c-current-step"><div className="current-step">{currentSteps.find(step => step?.value == item?.status)?.label}</div></td>
                                                     </tr>
                                         })
@@ -959,7 +961,7 @@ function EvaluationApproval(props) {
                         </div>
                         <div className="bottom-region">
                             <div className="customize-display">
-                                <label>Hiển thị</label>
+                                <label>{t("EvaluationShow")}</label>
                                 <select value={paging.approval.pageSize || listPageSizes[0]} onChange={(e) => handleChangePageSize('approval', e)}>
                                     {
                                         listPageSizes.map((page, i) => {
@@ -986,24 +988,24 @@ function EvaluationApproval(props) {
                         <div className="wrap-table-list-evaluation">
                             <div className="select-item-block">
                                 <input type="checkbox" checked={isSelectedAll} id="check-all" name="check-all" onChange={(e) => handleCheckboxChange(e, null)} />
-                                <label htmlFor="check-all">Chọn tất cả</label>
+                                <label htmlFor="check-all">{t("EvaluationSelectAll")}</label>
                             </div>
                             <table className='table-list-evaluation'>
                                 <thead>
                                     <tr>
                                         <th className="c-user-info" colSpan="2"></th>
-                                        <th className="text-center text-uppercase c-attitude" colSpan="2">Tinh thần thái độ</th>
-                                        <th className="text-center text-uppercase c-work-results" colSpan="2">Kết quả công việc</th>
-                                        <th className="text-center text-uppercase highlight-third c-summary" colSpan="2">Tổng kết</th>
+                                        <th className="text-center text-uppercase c-attitude" colSpan="2">{t("EvaluationDetailAttitude")}</th>
+                                        <th className="text-center text-uppercase c-work-results" colSpan="2">{t("EvaluationDetailPartWORKINGPERFORMANCERESULT")}</th>
+                                        <th className="text-center text-uppercase highlight-third c-summary" colSpan="2">{t("EvaluationSummary")}</th>
                                     </tr>
                                     <tr>
-                                        <th className="c-user-info" colSpan="2"><div className="user-info">Họ và tên CBNV được đánh giá</div></th>
-                                        <th className="c-self-assessment"><div className="text-center self-assessment">Tự đánh giá</div></th>
-                                        <th className="highlight-first c-cbql-assessment"><div className="text-center cbql-assessment">CBQL đánh giá</div></th>
-                                        <th className="c-self-assessment"><div className="text-center self-assessment">Tự đánh giá</div></th>
-                                        <th className="highlight-first c-cbql-assessment"><div className="text-center cbql-assessment">CBQL đánh giá</div></th>
-                                        <th className="highlight-second c-self-assessment"><div className="text-center self-assessment">Tự đánh giá</div></th>
-                                        <th className="highlight-third c-cbql-assessment"><div className="text-center cbql-assessment">CBQL đánh giá</div></th>
+                                        <th className="c-user-info" colSpan="2"><div className="user-info">{t("EvaluationEmployeeFullName")}</div></th>
+                                        <th className="c-self-assessment"><div className="text-center self-assessment">{t("EvaluationSelfAssessment")}</div></th>
+                                        <th className="highlight-first c-cbql-assessment"><div className="text-center cbql-assessment">{t("EvaluationDetailManagerAssessment")}</div></th>
+                                        <th className="c-self-assessment"><div className="text-center self-assessment">{t("EvaluationSelfAssessment")}</div></th>
+                                        <th className="highlight-first c-cbql-assessment"><div className="text-center cbql-assessment">{t("EvaluationDetailManagerAssessment")}</div></th>
+                                        <th className="highlight-second c-self-assessment"><div className="text-center self-assessment">{t("EvaluationSelfAssessment")}</div></th>
+                                        <th className="highlight-third c-cbql-assessment"><div className="text-center cbql-assessment">{t("EvaluationDetailManagerAssessment")}</div></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -1031,7 +1033,7 @@ function EvaluationApproval(props) {
                         </div>
                         <div className="bottom-region">
                             <div className="customize-display">
-                                <label>Hiển thị</label>
+                                <label>{t("EvaluationShow")}</label>
                                 <select value={paging.batchApproval.pageSize || listPageSizes[0]} onChange={(e) => handleChangePageSize('batchApproval', e)}>
                                     {
                                         listPageSizes.map((page, i) => {
@@ -1052,8 +1054,8 @@ function EvaluationApproval(props) {
                 {
                     activeTab === 'batchApproval' && evaluationData?.data?.length > 0 && 
                     <div className="button-block">
-                        <button className="btn-action reject" onClick={() => handleAction(actionButton.reject)}><Image src={IconReject} alt="Reject" />Từ chối</button>
-                        <button className="btn-action approve" onClick={() => handleAction(actionButton.approve)}><Image src={IconApprove} alt="Approve" />Phê duyệt</button>
+                        <button className="btn-action reject" onClick={() => handleAction(actionButton.reject)}><Image src={IconReject} alt="Reject" />{t("EvaluationDetailPartReject")}</button>
+                        <button className="btn-action approve" onClick={() => handleAction(actionButton.approve)}><Image src={IconApprove} alt="Approve" />{t("EvaluationDetailPartApprove")}</button>
                     </div>
                 }
             </div>

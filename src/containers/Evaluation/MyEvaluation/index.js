@@ -8,24 +8,24 @@ import Constants from '../../../commons/Constants'
 import { useGuardStore } from '../../../modules'
 import { getRequestConfigurations } from '../../../commons/Utils'
 import LoadingModal from '../../../components/Common/LoadingModal'
-import map from '../../map.config'
 import { evaluationStatus } from '../Constants'
 import IconLoop from '../../../assets/img/icon/Icon_Loop.svg'
 
 function EvaluationFormItem(props) {
+    const { t } = useTranslation()
     const { item } = props
     const statusDone = 5
     const statusMapping = {
-        label: item?.status === statusDone ? 'Đã hoàn thành' : 'Đang đánh giá',
+        label: item?.status === statusDone ? t("EvaluationDetailCompleted") : t("EvaluationInProgress"),
         className: item?.status === statusDone ? 'done' : 'in-progress',
     }
 
     const stepMapping = {
         [evaluationStatus.initialization]: {label: 'Khởi tạo', nextStep: 'Khởi chạy'},
-        [evaluationStatus.launch]: {label: 'Khởi chạy', nextStep: 'Tự đánh giá'},
-        [evaluationStatus.selfAssessment]: {label: 'Tự đánh giá', nextStep: 'QLTT đánh giá'},
-        [evaluationStatus.qlttAssessment]: {label: 'QLTT đánh giá', nextStep: 'CBLĐ phê duyệt'},
-        [evaluationStatus.cbldApproved]: {label: 'CBLĐ phê duyệt', nextStep: 'Hoàn thành'},
+        [evaluationStatus.launch]: {label: 'Khởi chạy', nextStep: t("EvaluationSelfAssessment")},
+        [evaluationStatus.selfAssessment]: {label: t("EvaluationSelfAssessment"), nextStep: t("EvaluationDetailEmployeeManagerAssessment")},
+        [evaluationStatus.qlttAssessment]: {label: t("EvaluationDetailEmployeeManagerAssessment"), nextStep: t("EvaluationManagerApproval")},
+        [evaluationStatus.cbldApproved]: {label: t("EvaluationManagerApproval"), nextStep: t("EvaluationDetailCompleted")},
     }
 
     return (
@@ -132,21 +132,21 @@ function MyEvaluation(props) {
         <>
         <LoadingModal show={isLoading} />
         <div className="my-evaluation-page">
-            <h1 className="content-page-header">Đánh giá</h1>
+            <h1 className="content-page-header">{t("EvaluationLabel")}</h1>
             <div className="card shadow card-evaluation">
                 <form onSubmit={handleOnSubmit}>
                     <div className="filter-block">
-                        <p className="label-filter">Lựa chọn năm</p>
+                        <p className="label-filter">{t("EvaluationSelectYear")}</p>
                         <div className="form-filter">
                             <div className="year-input">
                                 <Select 
-                                    placeholder="Lựa chọn năm" 
+                                    placeholder={t("EvaluationSelectYear")} 
                                     isClearable={true} 
                                     value={year} 
                                     options={years} 
                                     onChange={handleChangeSelectInput} />
                             </div>
-                            <button type="submit" className="btn-filter"><Image src={IconLoop} alt='Loop' />Tìm kiếm</button>
+                            <button type="submit" className="btn-filter"><Image src={IconLoop} alt='Loop' />{t("Search")}</button>
                         </div>
                     </div>
                 </form>
@@ -156,10 +156,10 @@ function MyEvaluation(props) {
                         <table className='table-list-evaluation'>
                             <thead>
                                 <tr>
-                                    <th className='c-form-name text-center'><div className='form-name'>Tên biểu mẫu</div></th>
-                                    <th className='c-created-date text-center'><div className='created-date'>Được tạo ngày</div></th>
-                                    <th className='c-status text-center'><div className='status'>Tình trạng</div></th>
-                                    <th className='c-step text-center'><div className='step'>Bước hiện tại</div></th>
+                                    <th className='c-form-name text-center'><div className='form-name'>{t("EvaluationFormName")}</div></th>
+                                    <th className='c-created-date text-center'><div className='created-date'>{t("EvaluationCreatedOn")}</div></th>
+                                    <th className='c-status text-center'><div className='status'>{t("EvaluationStatus")}</div></th>
+                                    <th className='c-step text-center'><div className='step'>{t("EvaluationCurrentStep")}</div></th>
                                 </tr>
                             </thead>
                             <tbody>
