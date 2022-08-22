@@ -8,6 +8,7 @@ import { OverlayTrigger, Tooltip } from 'react-bootstrap'
 import Popover from 'react-bootstrap/Popover'
 import Select from 'react-select'
 import moment from 'moment'
+import purify from "dompurify"
 import _ from 'lodash'
 import ConfirmationModal from '../../containers/Registration/ConfirmationModal'
 import Constants from '../../commons/Constants'
@@ -668,7 +669,9 @@ class RequestTaskList extends React.Component {
                                                     <td className="code"><a href={detailLink} title={child.requestType.name} className="task-title">{generateTaskCodeByCode(child.id)}</a></td>
                                                     <td className="request-type">{getRequestTypeLabel(child.requestType, child.absenceType?.value)}</td>
                                                     <td className="day-off">
-                                                        <div dangerouslySetInnerHTML={{ __html: dateChanged }} />
+                                                        <div dangerouslySetInnerHTML={{
+                                                            __html: purify.sanitize(dateChanged || ''),
+                                                        }} />
                                                         {
                                                             (child?.newItem || []).map((item, itemIndex) => {
                                                                 let subDateChanged = ''
@@ -676,7 +679,9 @@ class RequestTaskList extends React.Component {
                                                                     subDateChanged = showRangeDateGroupByArrayDate([moment(item?.startDate, 'YYYYMMDD').format('DD/MM/YYYY'), moment(item?.endDate, 'YYYYMMDD').format('DD/MM/YYYY')])
                                                                 }
                                                                 return (
-                                                                    <div key={`sub-date-${itemIndex}`} dangerouslySetInnerHTML={{ __html: subDateChanged }} style={{marginTop: 5}} />
+                                                                    <div key={`sub-date-${itemIndex}`} dangerouslySetInnerHTML={{
+                                                                        __html: purify.sanitize(subDateChanged || ''),
+                                                                    }} style={{marginTop: 5}} />
                                                                 )
                                                             })
                                                         }

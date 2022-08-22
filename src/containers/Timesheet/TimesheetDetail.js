@@ -3,6 +3,7 @@ import Button from 'react-bootstrap/Button'
 import Fade from 'react-bootstrap/Fade'
 import moment from 'moment'
 import { useTranslation } from "react-i18next"
+import Constants from '../../commons/Constants'
 
 function WorkingDay(props) {
   const { t } = useTranslation();
@@ -51,7 +52,7 @@ function Content(props) {
         block >
         <div className="row">
           <div className="col-9">
-            <i className={!open ? 'fa fa-plus-circle text-lowercase' : 'fa fa-minus-circle text-lowercase'}>&nbsp;</i>{getDayName(props.timesheet.date) + `${lang === "vi-VN" ? " ngày " : ", "}` + props.timesheet.date.replace(/-/g, '/')}
+            <i className={!open ? 'fa fa-plus-circle text-lowercase' : 'fa fa-minus-circle text-lowercase'}>&nbsp;</i>{getDayName(props.timesheet.date) + `${lang === Constants.LANGUAGE_VI ? " ngày " : ", "}` + props.timesheet.date.replace(/-/g, '/')}
           </div>
           <div className="col-3">
             <Fade in={props.timesheet.start_time1_plan == null}>

@@ -30,7 +30,7 @@ const CustomOption = ({ children, ...props }) => {
       {
         props?.selectProps?.value?.length > 0 ?
           <>
-            <img src={props.selectProps.value[0].value == 'vi-VN' ? icVietnam : icEnglish} style={{ marginRight: '7px', width: '22px', height: '16px' }} />
+            <img src={props.selectProps.value[0].value == Constants.LANGUAGE_VI ? icVietnam : icEnglish} style={{ marginRight: '7px', width: '22px', height: '16px' }} />
             {props.selectProps.value[0].label}
           </>
           : ''
@@ -69,8 +69,8 @@ function Login() {
   const [modalShow, setModalShow] = useState(false);
   const [langCode, setLangCode] = useState(localStorage.getItem("locale"));
   const langData = [
-    { value: "vi-VN", label: t("LangViet") },
-    { value: "en-US", label: t("LangEng") }
+    { value: Constants.LANGUAGE_VI, label: t("LangViet") },
+    { value: Constants.LANGUAGE_EN, label: t("LangEng") }
   ];
   
 
@@ -107,7 +107,7 @@ function Login() {
   };
 
   useEffect(() => {
-    localizeStore.setLocale(langCode || "vi-VN")
+    localizeStore.setLocale(langCode || Constants.LANGUAGE_VI)
   }, [langCode, localizeStore]);
 
   const handleLoginClick = () => {
@@ -119,7 +119,7 @@ function Login() {
   }
 
   const handleChangeSelectInputs = (e) => {
-    setLangCode(e ? e.value : "vi-VN")
+    setLangCode(e ? e.value : Constants.LANGUAGE_VI)
   }
 
   return (
@@ -133,8 +133,8 @@ function Login() {
                 <div className="col-lg-5 bg-white-trasparent">
                   <div className="opacity-1">
                     <div className="float-right language-selector">
-                      {/* <Button className={langCode === 'vi-VN' ? "lang-active" : ""} variant="link" onClick={(e) => setLangCode('vi-VN')}>{t("LangViet")}</Button>|
-                    <Button className={langCode === 'en-US' ? "lang-active" : ""} variant="link" onClick={(e) => setLangCode('en-US')}>{t("LangEng")}</Button> */}
+                      {/* <Button className={langCode === Constants.LANGUAGE_VI ? "lang-active" : ""} variant="link" onClick={(e) => setLangCode(Constants.LANGUAGE_VI)}>{t("LangViet")}</Button>|
+                    <Button className={langCode === Constants.LANGUAGE_EN ? "lang-active" : ""} variant="link" onClick={(e) => setLangCode(Constants.LANGUAGE_EN)}>{t("LangEng")}</Button> */}
 
                       <Select options={langData} value={(langData || []).filter(l => l.value === langCode)}
                         onChange={handleChangeSelectInputs} className="input i_lang" name="i_lang"
@@ -200,7 +200,7 @@ function Login() {
                       <div className="detail-contain">
                         <div className="version-contain">
                           {
-                            langCode == 'vi-VN' ?
+                            langCode == Constants.LANGUAGE_VI ?
                               <>
                                 <span className="version-subtitle">{t('LoginVersionOS')}</span>
                                 <span className="version-title">iOS</span>
@@ -226,7 +226,7 @@ function Login() {
                       <div className="detail-contain">
                         <div className="version-contain">
                           {
-                            langCode == 'vi-VN'
+                            langCode == Constants.LANGUAGE_VI
                               ?
                               <>
                                 <span className="version-subtitle">{t('LoginVersionOS')}</span>

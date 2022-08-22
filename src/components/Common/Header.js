@@ -27,12 +27,14 @@ const getOrganizationLevelByRawLevel = level => {
     return (level == undefined || level == null || level == "" || level == "#") ? 0 : level
 }
 
+const currentLocale = localStorage.getItem("locale")
+
 function Header(props) {
     const localizeStore = useLocalizeStore();
     const { fullName, email, avatar } = props.user;
     const { setShow, isApp } = props;
     const [isShow, SetIsShow] = useState(false);
-    const [activeLang, setActiveLang] = useState(localStorage.getItem("locale"));
+    const [activeLang, setActiveLang] = useState(currentLocale);
     const [totalNotificationUnRead, setTotalNotificationUnRead] = useState("");
     const [totalNotificationCount, setTotalNotificationCount] = useState(0);
     const [isShowUploadAvatar, setIsShowUploadAvatar]= useState(false);
@@ -163,9 +165,16 @@ function Header(props) {
                                         return `${item.url}`
                                 }
                             }
+                            let titleNotice = [Constants.notificationType.NOTIFICATION_MY_EVALUATION, Constants.notificationType.NOTIFICATION_LEAD_EVALUATION].includes(item?.type)
+                            ? currentLocale == Constants.LANGUAGE_VI ? item?.title : item?.en_Title || ''
+                            : item?.title || ''
+                            let descriptionNotice = [Constants.notificationType.NOTIFICATION_MY_EVALUATION, Constants.notificationType.NOTIFICATION_LEAD_EVALUATION].includes(item?.type)
+                            ? currentLocale == Constants.LANGUAGE_VI ? item?.description : item?.en_Description || ''
+                            : item?.description || ''
+
                             return <div key={i} className="item">
-                                <a onClick={() => clickNotification(item.id)} className="title" href={notificationLink(item.type)} title={item.title}>{item.title}</a>
-                                <p className="description">{item.description != null ? item.description : ""}</p>
+                                <a onClick={() => clickNotification(item.id)} className="title" href={notificationLink(item.type)} title={titleNotice}>{titleNotice}</a>
+                                <p className="description">{descriptionNotice}</p>
                                 <div className="time-file">
                                     <span className="time"><i className='far fa-clock ic-clock'></i><span>{timePost}</span></span>
                                     {item.hasAttachmentFiles ? <span className="attachment-files"><i className='fa fa-paperclip ic-attachment'></i><span>{t("HasAttachments")}</span></span> : ""}
@@ -207,9 +216,10 @@ function Header(props) {
         const isChangedLanguage = await updateLanguageByCode(lang)
         if (isChangedLanguage) {
             setActiveLang(lang)
-            if (window.location.pathname.match('vaccination') || window.location.pathname.match('evaluations')) {
-                window.location.reload()
-            }
+            window.location.reload()
+            // if (window.location.pathname.match('vaccination') || window.location.pathname.match('evaluations')) {
+            //     window.location.reload()
+            // }
         }
     }
 
@@ -217,8 +227,8 @@ function Header(props) {
         if (lang) {
             try {
                 const languageKeyMapping = {
-                    'en-US': 'en',
-                    'vi-VN': 'vi'
+                    [Constants.LANGUAGE_EN]: 'en',
+                    [Constants.LANGUAGE_VI]: 'vi'
                 }
                 const config = getRequestConfigurations()
                 const response = await axios.post(`${process.env.REACT_APP_REQUEST_URL}user/setlanguage?culture=${languageKeyMapping[[lang]]}`, null, config)
@@ -244,8 +254,9 @@ function Header(props) {
     const onHideUploadAvatar = () => {
         setIsShowUploadAvatar(false);
     }
+
     useEffect(() => {
-        localizeStore.setLocale(activeLang || "vi-VN")
+        localizeStore.setLocale(activeLang || Constants.LANGUAGE_VI)
     }, [activeLang, localizeStore]);
 
     return (
@@ -299,12 +310,12 @@ function Header(props) {
                                 <img alt="cam" src={uploadAvatarIcon} className="mr-2"/>
                                 {t("ChangeAvatar")}
                             </Dropdown.Item> */}
-                            <Dropdown.Item onClick={() => onChangeLocale("vi-VN")}>
-                                <i className="fas fa-circle fa-sm fa-fw mr-2" style={{ color: activeLang === "vi-VN" ? "#347ef9" : "white" }}></i>
+                            <Dropdown.Item onClick={() => onChangeLocale(Constants.LANGUAGE_VI)}>
+                                <i className="fas fa-circle fa-sm fa-fw mr-2" style={{ color: activeLang === Constants.LANGUAGE_VI ? "#347ef9" : "#FFFFFF" }}></i>
                                 {t("LangViet")}
                             </Dropdown.Item>
-                            <Dropdown.Item onClick={() => onChangeLocale("en-US")}>
-                                <i className="fas fa-circle fa-sm fa-fw mr-2" style={{ color: activeLang === "en-US" ? "#347ef9" : "white" }}></i>
+                            <Dropdown.Item onClick={() => onChangeLocale(Constants.LANGUAGE_EN)}>
+                                <i className="fas fa-circle fa-sm fa-fw mr-2" style={{ color: activeLang === Constants.LANGUAGE_EN ? "#347ef9" : "#FFFFFF" }}></i>
                                 {t("LangEng")}
                             </Dropdown.Item>
                             <Dropdown.Item onClick={userLogOut}><i className="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>

@@ -5,6 +5,7 @@ import { OverlayTrigger, Tooltip, Popover, InputGroup, FormControl } from 'react
 import Select from 'react-select'
 import moment from 'moment'
 import _ from 'lodash'
+import purify from "dompurify"
 import { withTranslation } from "react-i18next"
 import noteButton from '../../assets/img/icon-note.png'
 import excelButton from '../../assets/img/excel-icon.svg'
@@ -508,7 +509,9 @@ class TaskList extends React.Component {
                                                     }
 
                                                     <td className="day-off">
-                                                        <div dangerouslySetInnerHTML={{__html: dateChanged}} />
+                                                        <div dangerouslySetInnerHTML={{
+                                                            __html: purify.sanitize(dateChanged || ''),
+                                                        }} />
                                                         {
                                                             (child?.newItem || []).map((item, itemIndex) => {
                                                                 let subDateChanged = ''
@@ -516,7 +519,9 @@ class TaskList extends React.Component {
                                                                     subDateChanged = showRangeDateGroupByArrayDate([moment(item?.startDate, 'YYYYMMDD').format('DD/MM/YYYY'), moment(item?.endDate, 'YYYYMMDD').format('DD/MM/YYYY')])
                                                                 }
                                                                 return (
-                                                                    <div key={`sub-date-${itemIndex}`} dangerouslySetInnerHTML={{ __html: subDateChanged }} style={{marginTop: 5}} />
+                                                                    <div key={`sub-date-${itemIndex}`} dangerouslySetInnerHTML={{
+                                                                        __html: purify.sanitize(subDateChanged || ''),
+                                                                    }}  style={{marginTop: 5}} />
                                                                 )
                                                             })
                                                         }
