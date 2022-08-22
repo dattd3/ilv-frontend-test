@@ -758,7 +758,7 @@ class SubstitutionComponent extends React.Component {
         {timesheets.map((timesheet, index) => {
           return <div className="box shadow" key={index}>
             <div className="row">
-              <div className="col-2"><p><i className="fa fa-clock-o"></i> <b>{this.getDayName(timesheet.date)} {lang === "vi-VN" && "Ngày"} {timesheet.date.replace(/-/g, '/')}</b></p></div>
+              <div className="col-2"><p><i className="fa fa-clock-o"></i> <b>{this.getDayName(timesheet.date)} {lang === Constants.LANGUAGE_VI && "Ngày"} {timesheet.date.replace(/-/g, '/')}</b></p></div>
               <div className="col-8">
                 <p className="text-uppercase"><b>{t("ScheduledTime")}</b></p>
                 <p>{t("Start")} 1: <b>{!this.isNullCustomize(timesheet.fromTime) ? moment(timesheet.fromTime, TIME_OF_SAP_FORMAT).format(TIME_FORMAT):''}</b> | {t("End")} 1: <b>{ !this.isNullCustomize(timesheet.toTime)? moment(timesheet.toTime, TIME_OF_SAP_FORMAT).format(TIME_FORMAT):''}</b></p>

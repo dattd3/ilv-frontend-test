@@ -24,8 +24,8 @@ import IconApprove from '../../../assets/img/icon/Icon_Check.svg'
 const currentLocale = localStorage.getItem("locale")
 
 const languageCodeMapping = {
-  'vi-VN': 'vi',
-  'en-US': 'en',
+  [Constants.LANGUAGE_VI]: 'vi',
+  [Constants.LANGUAGE_EN]: 'en',
 }
 
 function EvaluationOverall(props) {
