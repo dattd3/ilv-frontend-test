@@ -50,16 +50,6 @@ export const Navigation = [
     to: map.Learning,
     role: "U",
   },
-  {
-      id: 104,
-      parentId: 0,
-      icon: 'c-resignation-requests-management',
-      label: "ResignationRequestsManagement",
-      to: map.ResignationRequestsManagement,
-      role: [Constants.pnlVCode.VinHome, , Constants.PnLCODE.Vin3S]
-      //role: 'NA'
-    },
-
   // {
   //   id: 48,
   //   parentId: 0,
@@ -215,6 +205,15 @@ export const Navigation = [
     label: 'Quản lý đánh giá',
     //role:  ['V061', 'V053', 'V040', 'V005']
     role:  ['V061', 'V040', Constants.PnLCODE.Vin3S]
+  },
+  {
+    id: 104,
+    parentId: 999,
+    icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+    label: "ResignationRequestsManagement",
+    to: map.ResignationRequestsManagement,
+    role: [Constants.pnlVCode.VinHome, , Constants.PnLCODE.Vin3S]
+    //role: 'NA'
   },
   {
     id: 4,
