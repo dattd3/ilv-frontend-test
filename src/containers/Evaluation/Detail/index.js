@@ -28,6 +28,11 @@ const languageCodeMapping = {
   [Constants.LANGUAGE_EN]: 'en',
 }
 
+const formType = {
+  MANAGER: 'LD',
+  EMPLOYEE: 'NV',
+}
+
 function EvaluationOverall(props) {
   const { t } = useTranslation()
   const { evaluationFormDetail, showByManager } = props
@@ -436,7 +441,7 @@ function EvaluationProcess(props) {
             {
               (item?.listTarget || []).map((target, i) => {
                 let deviant = (target?.leadReviewPoint === '' || target?.leadReviewPoint === null || target?.seftPoint === '' || target?.seftPoint === null) ? '' : Number(target?.leadReviewPoint) - Number(target?.seftPoint)
-                if (_.isEmpty(target.listTarget)) {
+                if (evaluationFormDetail?.formType == formType.EMPLOYEE) {
                   return renderEvaluationItem(item, index, scores, target, i, deviant)
                 }
                 return <div className="evaluation-sub-group">
