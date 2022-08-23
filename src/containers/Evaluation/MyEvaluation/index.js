@@ -8,6 +8,7 @@ import Constants from '../../../commons/Constants'
 import { useGuardStore } from '../../../modules'
 import { getRequestConfigurations } from '../../../commons/Utils'
 import LoadingModal from '../../../components/Common/LoadingModal'
+import StatusModal from '../../../components/Common/StatusModal'
 import { evaluationStatus } from '../Constants'
 import IconLoop from '../../../assets/img/icon/Icon_Loop.svg'
 
@@ -45,8 +46,9 @@ function MyEvaluation(props) {
     const user = guard.getCurentUser()
     const [evaluationForms, SetEvaluationForms] = useState([])
     const [years, SetYears] = useState([])
-    const [year, SetYear] = useState({value: currentYear, label: currentYear} )
+    const [year, SetYear] = useState({value: currentYear, label: currentYear})
     const [isLoading, SetIsLoading] = useState(false)
+    const [statusModal, SetStatusModal] = useState({isShow: false, content: '', isSuccess: true})
 
     useEffect(() => {
         const processInitialData = response => {
@@ -69,7 +71,6 @@ function MyEvaluation(props) {
                     SetEvaluationForms(evaluationFormDataValue?.data?.data || [])
                 }
             }
-            SetIsLoading(false)
         }
 
         const fetchDataInitial = async () => {
@@ -85,7 +86,13 @@ function MyEvaluation(props) {
                 const response = await Promise.allSettled([requestGetEvaluationYears, requestGetListEvaluationForms])
                 processInitialData(response)
             } catch (e) {
-                console.log(e)
+                SetStatusModal({
+                    ...statusModal,
+                    isShow: true,
+                    content: t("AnErrorOccurred"),
+                    isSuccess: false
+                })
+            } finally {
                 SetIsLoading(false)
             }
         }
@@ -111,9 +118,19 @@ function MyEvaluation(props) {
     const handleOnSubmit = async (e) => {
         e.preventDefault()
         SetIsLoading(true)
-        const response = await fetchListEvaluationForms()
-        if (response && response?.data && response?.data?.result && response?.data?.result?.code == Constants.PMS_API_SUCCESS_CODE) {
-            SetEvaluationForms(response?.data?.data || [])
+        try {
+            const response = await fetchListEvaluationForms()
+            if (response && response?.data && response?.data?.result && response?.data?.result?.code == Constants.PMS_API_SUCCESS_CODE) {
+                SetEvaluationForms(response?.data?.data || [])
+            }
+        } catch (e) {
+            SetStatusModal({
+                ...statusModal,
+                isShow: true,
+                content: t("AnErrorOccurred"),
+                isSuccess: false
+            })
+        } finally {
             SetIsLoading(false)
         }
     }
@@ -128,9 +145,19 @@ function MyEvaluation(props) {
         )
     }
 
+    const onHideStatusModal = () => {
+        SetStatusModal({
+            ...statusModal,
+            isShow: false,
+            content: '',
+            isSuccess: true
+        })
+    }
+
     return (
         <>
         <LoadingModal show={isLoading} />
+        <StatusModal show={statusModal.isShow} content={statusModal.content} isSuccess={statusModal.isSuccess} onHide={onHideStatusModal} />
         <div className="my-evaluation-page">
             <h1 className="content-page-header">{t("EvaluationLabel")}</h1>
             <div className="card shadow card-evaluation">

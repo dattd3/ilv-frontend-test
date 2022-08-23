@@ -1,6 +1,6 @@
 import React from "react";
 import { Modal } from 'react-bootstrap'
-import EvaluationDetail from './Detail/index-test'
+import EvaluationDetail from './Detail'
 
 function EvaluationDetailModal(props) {
     const { isShow, evaluationFormId, formCode, employeeCode, onHide} = props

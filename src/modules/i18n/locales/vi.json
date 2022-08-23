@@ -1217,5 +1217,13 @@
   "EvaluationFormApprovedSuccessfully": "Phê duyệt biểu mẫu thành công!",
   "EvaluationFailedToApproveForm": "Phê duyệt biểu mẫu thất bại. Xin vui lòng thử lại!",
   "EvaluationFormSubmittedToManager": "Biểu mẫu đã được gửi lại QLTT thành công!",
-  "EvaluationFailedToSubmitForm": "Biểu mẫu chưa được gửi lại QLTT. Xin vui lòng thử lại!"
+  "EvaluationFailedToReSubmitForm": "Biểu mẫu chưa được gửi lại QLTT. Xin vui lòng thử lại!",
+  "EvaluationFormSaveSuccessfully": "Lưu biểu mẫu thành công!",
+  "EvaluationFailedToSaveForm": "Lưu biểu mẫu thất bại. Xin vui lòng thử lại!",
+  "EvaluationFormSubmittedToDirectManagerEvaluation": "Biểu mẫu đã được gửi tới QLTT đánh giá!",
+  "EvaluationFailedToSubmitForm": "Gửi biểu mẫu thất bại. Xin vui lòng thử lại!",
+  "EvaluationFormEvaluatedSuccessfully": "Đánh giá biểu mẫu thành công!",
+  "EvaluationFailedToEvaluateForm": "Đánh giá biểu mẫu thất bại. Xin vui lòng thử lại!",
+  "EvaluationFormSentBackToEmployeeSuccessfully": "Biểu mẫu đã được gửi lại CBNV thành công!",
+  "EvaluationFailedToSendTheFormBackToEmployee": "Biểu mẫu chưa được gửi lại CBNV. Xin vui lòng thử lại!"
 }

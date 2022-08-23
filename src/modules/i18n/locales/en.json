@@ -1200,5 +1200,13 @@
   "EvaluationFormApprovedSuccessfully": "Form approved successfully!",
   "EvaluationFailedToApproveForm": "Failed to approve form. Please try again!",
   "EvaluationFormSubmittedToManager": "Form submitted to manager successfully!",
-  "EvaluationFailedToSubmitForm": "Failed to submit form to manager. Please try again!"
+  "EvaluationFailedToReSubmitForm": "Failed to submit form to manager. Please try again!",
+  "EvaluationFormSaveSuccessfully": "Form saved successfully!",
+  "EvaluationFailedToSaveForm": "Failed to save form. Please try again!",
+  "EvaluationFormSubmittedToDirectManagerEvaluation": "Form submitted to direct manager for evaluation successfully!",
+  "EvaluationFailedToSubmitForm": "Failed to submit form. Please try again!",
+  "EvaluationFormEvaluatedSuccessfully": "Form evaluated successfully!",
+  "EvaluationFailedToEvaluateForm": "Failed to evaluate form. Please try again!",
+  "EvaluationFormSentBackToEmployeeSuccessfully": "Form sent back to employee successfully!",
+  "EvaluationFailedToSendTheFormBackToEmployee": "Failed to send the form back to employee. Please try again!"
 }

@@ -586,7 +586,7 @@ export default [
             path: map.EvaluationDetail,
           },
           // component: lazy(() => import("./Evaluation/Detail")),
-          component: lazy(() => import("./Evaluation/Detail/index-test")),
+          component: lazy(() => import("./Evaluation/Detail/")),
         },
         {
           key: "support-onboard",
