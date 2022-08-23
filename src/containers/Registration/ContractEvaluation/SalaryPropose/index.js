@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useHistory } from 'react-router';
+import axios from 'axios'
+import { useHistory } from 'react-router';
 import './styles.scss';
 import { useTranslation } from 'react-i18next';
 import CurrencyInput from 'react-currency-input-field';
@@ -12,14 +13,15 @@ import moment from 'moment';
 import HumanForReviewSalaryComponent from '../../HumanForReviewSalaryComponent';
 import ConfirmPasswordModal from './ConfirmPasswordModal';
 import Constants from '../.../../../../../commons/Constants';
+import StatusModal from '../../../../components/Common/StatusModal'
 
 function SalaryPropse(props) {
   const { t } = useTranslation();
   const api = useApi();
-  // 1739084
-  const { id } = useParams();
   const history = useHistory();
-  const [data, setData] = useState();
+  const [dataContract, setDataContract] = useState(undefined);
+  const [dataSalary, setDataSalary] = useState(undefined);
+  const [isCreateMode, setIsCreateMode] = useState(false);
   const [currentSalary, setCurrentSalary] = useState('0978978');
   const [modalConfirmPassword, setModalConfirmPassword] = useState(false);
   const [acessToken, setAcessToken] = useState(null);
@@ -39,16 +41,14 @@ function SalaryPropse(props) {
     content: '',
   });
 
-  const [approver, setApprover] = useState({
-    fullName: 'Nguyễn Thu Hoài',
-    account: 'nth',
-    avatar: "",
-    employeeLevel: "",
-    pnl: "",
-    orglv2Id: "",
-    current_position: "Chuyên viên",
-    department: "Phòng Phát triển Sản phẩm"
+  const [modalStatus, setModalStatus] = useState({
+    isShowStatusModal: false,
+    content: '',
+    isSuccess: true,
+    url: '',
   });
+
+  const [approver, setApprover] = useState(null);
 
   const [viewSetting, setViewSetting] = useState({
     showComponent: {
@@ -71,32 +71,49 @@ function SalaryPropse(props) {
       viewCurrentSalary: false, //Hiển thị eye
       suggestedSalary: true, //Mức lương đề xuất - Disable/Enable Input
       disableAll: false,
-    }
+    },
+    proposedStaff: {
+      employeeNo: '',
+      fullName: '',
+      jobTitle: '',
+      department: '',
+      orgLv2Id: '',
+      orgLv3Id: '',
+      orgLv4Id: '',
+      orgLv5Id: '',
+      orgLv2Text: '',
+      orgLv3Text: '',
+      orgLv4Text: '',
+      orgLv5Text: '',
+      companyCode: '',
+    },
   });
 
   const processStatus = 21;
-  const locationState = { idContract: 1739084, idSalary: null };
+  const locationState = { idContract: 1739154, idSalary: null };
 
   useEffect(() => {
     console.log(props.location.state, locationState);
+    getDataContract();
     // props.location.state <=> locationState
     if (locationState) {
       if (locationState?.idSalary) {
         // Review mode
+        setIsCreateMode(false);
         checkAuthorize();
       } else {
         // Create mode
+        setIsCreateMode(true);
         checkViewCreate();
       }
     }
-    getData();
     // eslint-disable-next-line
   }, []);
 
-  const getData = async () => {
+  const getDataContract = async () => {
     try {
       const { data: { data: response } } = await api.fetchSalaryPropose(locationState?.idContract);
-      setData(response);
+      setDataContract(response);
     } catch (error) {
       console.log(error);
     }
@@ -108,11 +125,28 @@ function SalaryPropse(props) {
     viewSettingTmp.showComponent.btnCancel = true;
     viewSettingTmp.showComponent.btnSendRequest = true;
     viewSettingTmp.disableComponent.selectHrSupportViewSalary = true;
+
+    viewSettingTmp.proposedStaff.email = localStorage.getItem('email') || ""
+    viewSettingTmp.proposedStaff.employeeNo = localStorage.getItem('employeeNo') || ""
+    viewSettingTmp.proposedStaff.fullName = localStorage.getItem('fullName') || ""
+    viewSettingTmp.proposedStaff.jobTitle = localStorage.getItem('jobTitle') || ""
+    viewSettingTmp.proposedStaff.department = localStorage.getItem('department') || ""
+    viewSettingTmp.proposedStaff.orgLv2Id = localStorage.getItem('organizationLv2') || ""
+    viewSettingTmp.proposedStaff.orgLv3Id = localStorage.getItem('organizationLv3') || ""
+    viewSettingTmp.proposedStaff.orgLv4Id = localStorage.getItem('organizationLv4') || ""
+    viewSettingTmp.proposedStaff.orgLv5Id = localStorage.getItem('organizationLv5') || ""
+    viewSettingTmp.proposedStaff.orgLv6Id = localStorage.getItem('organizationLv6') || ""
+    viewSettingTmp.proposedStaff.orgLv2Text = ""
+    viewSettingTmp.proposedStaff.orgLv3Text = ""
+    viewSettingTmp.proposedStaff.orgLv4Text = ""
+    viewSettingTmp.proposedStaff.orgLv5Text = ""
+    viewSettingTmp.proposedStaff.orgLv6Text = ""
+    viewSettingTmp.proposedStaff.companyCode = localStorage.getItem('companyCode') || ""
     setViewSetting(viewSettingTmp)
   }
 
   const checkAuthorize = () => {
-    const currentEmployeeNo = localStorage.getItem('email');
+    // const currentEmployeeNo = localStorage.getItem('email');
     let viewSettingTmp = { ...viewSetting };
     // Todo: check nguoi danh gia
     switch (processStatus) {
@@ -213,7 +247,12 @@ function SalaryPropse(props) {
   }
 
   // Hủy
-  const handleCancel = () => { console.log('handleCancel'); }
+  const handleCancel = () => {
+    console.log('handleCancel');
+    if (isCreateMode) {
+      history.push('/tasks');
+    }
+  }
 
   // Thẩm định
   const handleConsent = () => {
@@ -225,11 +264,104 @@ function SalaryPropse(props) {
 
   // Gửi yêu cầu
   const handleSendForm = () => {
-    if (processStatus === 23) {
-      validation();
+    console.log('Gửi yêu cầu');
+    // Create
+    if (isCreateMode) {
+      if (!approver) {
+        showStatusModal("Nhân sự hỗ trợ quyền xem lương chưa được nhập!", false)
+        return;
+      }
+      const bodyFormData = prepareDataToSubmit()
+      axios({
+        method: 'POST',
+        url: `${process.env.REACT_APP_REQUEST_URL}salaryAdjustment/create`,
+        data: bodyFormData,
+        headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
+      })
+        .then(response => {
+          if (response.data.result && response.data.result.code === '000000') {
+            showStatusModal(t("RequestSent"), true, '/tasks')
+          }
+          showStatusModal(response.data.result.message || 'Có lỗi xảy ra trong quá trình cập nhật thông tin!', false)
+        })
+        .catch(response => {
+          showStatusModal("Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
+        })
+    } else {
+      // Review
+      if (processStatus === 23) {
+        validation();
+      }
+      // Todo
     }
-    console.log('Submit');
   };
+
+  const prepareDataToSubmit = () => {
+    if (isCreateMode) {
+      let bodyFormData = new FormData();
+      bodyFormData.append('requestHistoryId', locationState?.idContract);
+      bodyFormData.append('userId', viewSetting.proposedStaff.email);
+      bodyFormData.append('userInfo', JSON.stringify({
+        employeeNo: viewSetting.proposedStaff.employeeNo,
+        fullName: viewSetting.proposedStaff.fullName,
+        jobTitle: viewSetting.proposedStaff.jobTitle,
+        department: viewSetting.proposedStaff.department,
+      }));
+      bodyFormData.append('coordinatorId', approver?.account.toLowerCase() + "@vingroup.net");
+      bodyFormData.append('coordinatorInfo', JSON.stringify({
+        avatar: approver?.avatar,
+        account: approver?.account,
+        fullName: approver?.fullName,
+        employeeLevel: approver?.employeeLevel,
+        pnl: approver?.pnl,
+        orglv2Id: approver?.orglv2Id,
+        current_position: approver?.current_position,
+        department: approver?.department,
+      }));
+      bodyFormData.append('employeeInfoLst', JSON.stringify([{
+        employeeNo: dataContract?.staffContracts?.employeeCode,
+        account: dataContract?.staffContracts?.employeeEmail,
+        fullName: dataContract?.staffContracts?.fullName,
+        jobTitle: dataContract?.staffContracts?.positionName,
+        department: dataContract?.staffContracts?.departmentName,
+        startDate: dataContract?.staffContracts?.startDate,
+        expireDate: dataContract?.staffContracts?.expireDate,
+        contractName: dataContract?.staffContracts?.contractName,
+        contractType: dataContract?.staffContracts?.contractType,
+      }]));
+      bodyFormData.append('orgLv2Id', viewSetting.proposedStaff.orgLv2Id);
+      bodyFormData.append('orgLv3Id', viewSetting.proposedStaff.orgLv3Id);
+      bodyFormData.append('orgLv4Id', viewSetting.proposedStaff.orgLv4Id);
+      bodyFormData.append('orgLv5Id', viewSetting.proposedStaff.orgLv5Id);
+      bodyFormData.append('orgLv6Id', viewSetting.proposedStaff.orgLv6Id);
+      bodyFormData.append('orgLv2Text', viewSetting.proposedStaff.orgLv2Text);
+      bodyFormData.append('orgLv3Text', viewSetting.proposedStaff.orgLv3Text);
+      bodyFormData.append('orgLv4Text', viewSetting.proposedStaff.orgLv4Text);
+      bodyFormData.append('orgLv5Text', viewSetting.proposedStaff.orgLv5Text);
+      bodyFormData.append('orgLv6Text', viewSetting.proposedStaff.orgLv6Text);
+      bodyFormData.append('companyCode', viewSetting.proposedStaff.companyCode);
+      return bodyFormData
+    }
+  }
+
+  const showStatusModal = (message, isSuccess = false, url = null) => {
+    setModalStatus({
+      isShowStatusModal: true,
+      content: message,
+      isSuccess: isSuccess,
+      url: url,
+    })
+  }
+
+  const hideStatusModal = () => {
+    setModalStatus({
+      ...modalStatus,
+      isShowStatusModal: false,
+    })
+    if (modalStatus.url) {
+      window.location.href = modalStatus.url;
+    }
+  }
 
   const handleChangeModalConfirmPassword = (acessToken) => {
     setAcessToken(acessToken)
@@ -271,7 +403,8 @@ function SalaryPropse(props) {
   }
 
   const handleUpdateApprover = (approver, isApprover) => {
-    console.log(approver, isApprover);
+    console.log(approver);
+    setApprover(approver)
   }
 
   const handleCloseModal = () => {
@@ -288,6 +421,12 @@ function SalaryPropse(props) {
         onUpdateToken={handleChangeModalConfirmPassword}
         onHide={() => setModalConfirmPassword(false)}
       />
+      <StatusModal
+        show={modalStatus.isShowStatusModal}
+        content={modalStatus.content}
+        isSuccess={modalStatus.isSuccess}
+        onHide={hideStatusModal}
+      />
       <div className="eval-heading">ĐỀ XUẤT ĐIỀU CHỈNH THU NHẬP</div>
       <div className='block-content-salary'>
         <h6 className='block-content-salary__title'>{t('ManagerEvaluate')}</h6>
@@ -297,19 +436,19 @@ function SalaryPropse(props) {
               <label className='block-content-salary__content--label'>
                 {t('FullName')}
               </label>
-              <input className='form-control' value={localStorage.getItem('fullName') || ''} disabled />
+              <input className='form-control' value={viewSetting.proposedStaff.fullName || ''} disabled />
             </div>
             <div className='col-input'>
               <label className='block-content-salary__content--label'>
                 {t('Title')}
               </label>
-              <input className='form-control' value={localStorage.getItem('jobTitle') || ''} disabled />
+              <input className='form-control' value={viewSetting.proposedStaff.jobTitle || ''} disabled />
             </div>
             <div className='col-input'>
               <label className='block-content-salary__content--label'>
                 {t('DepartmentManage')}
               </label>
-              <input className='form-control' disabled value={localStorage.getItem('department') || ''} />
+              <input className='form-control' disabled value={viewSetting.proposedStaff.department || ''} />
             </div>
           </div>
         </div>
@@ -325,7 +464,7 @@ function SalaryPropse(props) {
               </label>
               <input
                 className='form-control'
-                value={data?.staffContracts?.fullName || ''}
+                value={dataContract?.staffContracts?.fullName || ''}
                 disabled
               />
             </div>
@@ -335,7 +474,7 @@ function SalaryPropse(props) {
               </label>
               <input
                 className='form-control'
-                value={data?.staffContracts?.positionName || ''}
+                value={dataContract?.staffContracts?.positionName || ''}
                 disabled
               />
             </div>
@@ -345,7 +484,7 @@ function SalaryPropse(props) {
               </label>
               <input
                 className='form-control'
-                value={data?.staffContracts?.departmentName || ''}
+                value={dataContract?.staffContracts?.departmentName || ''}
                 disabled
               />
             </div>
@@ -356,8 +495,8 @@ function SalaryPropse(props) {
               <input
                 className='form-control'
                 value={
-                  data?.staffContracts?.startDate &&
-                  moment(data.staffContracts.startDate).format('MM/DD/YYYY')
+                  dataContract?.staffContracts?.startDate &&
+                  moment(dataContract.staffContracts.startDate).format('MM/DD/YYYY')
                 }
                 disabled
               />
@@ -370,8 +509,8 @@ function SalaryPropse(props) {
               <input
                 className='form-control'
                 value={
-                  data?.staffContracts?.expireDate &&
-                  moment(data.staffContracts.expireDate).format('MM/DD/YYYY')
+                  dataContract?.staffContracts?.expireDate &&
+                  moment(dataContract.staffContracts.expireDate).format('MM/DD/YYYY')
                 }
                 disabled
               />

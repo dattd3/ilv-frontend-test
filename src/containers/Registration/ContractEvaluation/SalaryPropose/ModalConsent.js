@@ -17,6 +17,7 @@ const ModalConsent = ({ show, type, header, title, onHide, data, setData, onConf
           src={IconX}
           className='mr-1 cursor-pointer icon-delete'
           onClick={onHide}
+          alt="delete"
         />
       </Modal.Header>
       <Modal.Body className='modal-consent__body'>
@@ -45,7 +46,7 @@ const ModalConsent = ({ show, type, header, title, onHide, data, setData, onConf
               className='btn btn-secondary ml-3 shadow'
               onClick={onHide}
             >
-              <img src={IconDelete} className='mr-1' />
+              <img src={IconDelete} className='mr-1' alt="delete"/>
               {t('CancelSearch')}
             </button>
             <button
