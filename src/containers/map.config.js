@@ -68,9 +68,16 @@ export default {
   RegistrationDetailRequest: "/registration/:id/:childId/request",
   RegistrationDetailApproval: "/registration/:id/:childId/approval",
   RegistrationDetailConsent: "/registration/:id/:childId/consent",
-
+  RegistrationEmploymentTermination: "/registration-employment-termination",
+  ProposedResignation: "/proposed-resignation",
+  ResignationRequestsManagement: "/management-resignation-requests",
+  ContractTerminationInterview: "/contract-termination-interview/:id",
+  ContractTerminationInterviewExport: "/contract-termination-interview/:id/:type",
   //Evalution
   Evaluation: '/evaluation/:id/:type',
+
+  //Handover
+  HandOverForm: "/handover/:id/request",
 
   //Q&A
   QuestionAndAnswer: "/question-and-answer",
@@ -104,6 +111,15 @@ export default {
   
   MyProjectDetail: "/my-projects/project/:id",
   ProjectDetail: "/list-projects/project/:id",
+  MyProfile: "/my-profile",
+
+  //Phúc lợi
+  InteralWelfare: '/welfare-manager',
+  InsuranceRegime: '/insurance-manager',
+  CreateInsuranceSocial: '/insurance-manager/createSocialInsurance',
+  CreateInsuranceHealth: '/insurance-manager/createHealthInsurance',
+  DetailInsuranceSocial: '/insurance-manager/detail/:id',
+  DetailInsuranceHealth: '/insurance-manager/detail-health/:id',
   MyProfile: "/my-profile",
   SalaryPropse: '/salary-propse'
 };

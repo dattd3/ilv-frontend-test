@@ -59,7 +59,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     {value: 10, label: 'Người đánh giá'},
     {value: 11, label: 'QLTT đánh giá'},
     {value: 12, label: 'HR thẩm định'},
-    {value: 13, label: 'CBLD phê duyệt'},
+    {value: 13, label: 'CBLĐ phê duyệt'},
     {value: 2, label: 'Đã phê duyệt'},
     {value: 1, label: 'Từ chối phê duyệt'}
   ];
@@ -172,7 +172,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
   checkAuthorize = async () => {
     const currentEmployeeNo = localStorage.getItem('email');
     const data = this.state.data;
-    const dateToCheck = data.contractType == 'VA' ? (checkIsExactPnL(Constants.pnlVCode.VinSchool) ? -75 : -45) : -7; 
+    const dateToCheck = data.contractType == 'VA' ? (checkIsExactPnL(Constants.pnlVCode.VinSchool, Constants.pnlVCode.VinHome, Constants.PnLCODE.Vin3S) ? -75 : -45) : -7; 
     const isAfterT_7 = data.employeeInfo && data.employeeInfo.startDate && moment(new Date()).diff(moment(data.employeeInfo.expireDate), 'days') > dateToCheck ? true : false;
     let shouldDisable = false;
     let isNguoidanhgia = false;
@@ -545,9 +545,19 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         weak: infos.additionInforEvaluations.managersEvaluatePointImprove || ''
       }
       let defaultStartDate = '', defaultEndDate = '';
-      if(this.state.type == 'assess' && localStorage.getItem('companyCode') == Constants.pnlVCode.VinSchool && (infos.additionInforEvaluations.contractKpiResult != 4 && infos.additionInforEvaluations.contractKpiResult != 5)) {
-        defaultStartDate = moment(infos.staffContracts.expireDate).add(1, 'days').format('DD/MM/YYYY');
-        defaultEndDate = `31/05/${moment(infos.staffContracts.expireDate).add(2, 'years').year()}`
+      if(this.state.type == 'assess' && (infos.additionInforEvaluations.contractKpiResult != 4 && infos.additionInforEvaluations.contractKpiResult != 5)) {
+        if(localStorage.getItem('companyCode') == Constants.pnlVCode.VinSchool) {
+          defaultStartDate = moment(infos.staffContracts.expireDate).add(1, 'days').format('DD/MM/YYYY');
+          defaultEndDate = `31/05/${moment(infos.staffContracts.expireDate).add(2, 'years').year()}`
+        } else {
+          defaultStartDate = moment(infos.staffContracts.expireDate).add(1, 'days').format('DD/MM/YYYY');
+
+          if(infos.additionInforEvaluations.contractType == 'VA') {
+            defaultEndDate = moment(candidateInfos.employeeInfo.expireDate).add(12, 'months').format('DD/MM/YYYY');
+          } else if (['VF', 'VG', 'VH'].indexOf(infos.additionInforEvaluations.contractType) != -1) {
+            defaultEndDate =moment(candidateInfos.employeeInfo.expireDate).add(6, 'months').format('DD/MM/YYYY');
+          }
+        }
       }
       candidateInfos.qlttOpinion = {
         result : infos.additionInforEvaluations.contractKpiResult ? this.resultOptions.filter(item => item.value == infos.additionInforEvaluations.contractKpiResult)[0] || {} : {},
@@ -564,7 +574,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         candidateInfos['qlttOpinion']['endDate'] = null;
         candidateInfos['qlttOpinion']['disableTime'] = true;
       }
-  
+
       if(infos.additionInforEvaluations.contractType == 'VB') {
         candidateInfos['qlttOpinion']['endDateTmp'] = candidateInfos.qlttOpinion.endDate;
         candidateInfos['qlttOpinion']['endDate'] = null;
@@ -652,7 +662,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         } else if(isMissing)
           errors['rating'] = '(Bắt buộc điền tự đánh giá)'
       }
-      if(checkIsExactPnL(Constants.pnlVCode.VinSchool)) {
+      if(checkIsExactPnL(Constants.pnlVCode.VinSchool, Constants.pnlVCode.VinHome, Constants.PnLCODE.Vin3S)) {
         if(!this.state.data.nguoidanhgia || !this.state.data.nguoidanhgia.account) {
           errors['nguoidanhgia'] = '(Bắt buộc)';
         }
@@ -708,7 +718,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         if(isMissing)
           errors['rating'] = '(Bắt buộc điền CBLĐ TT đánh giá)'
       }
-      if(this.state.isNguoidanhgia == false || checkIsExactPnL(Constants.pnlVCode.VinSchool)) {
+      if(this.state.isNguoidanhgia == false || checkIsExactPnL(Constants.pnlVCode.VinSchool, Constants.pnlVCode.VinHome, Constants.PnLCODE.Vin3S)) {
         if(!this.state.data.nguoipheduyet || !this.state.data.nguoipheduyet.account){
           errors['boss'] = '(Bắt buộc)';
         }
@@ -856,7 +866,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         candidateInfos[name]['endDate'] = candidateInfos[name]['endDate'] || candidateInfos[name]['endDateTmp'];
         candidateInfos[name]['endDateTmp'] = null
       }
-      
+
       if(candidateInfos[name]['result']?.value == 5) {
         candidateInfos[name]['startDateTmp'] = candidateInfos[name]['startDateTmp'] || candidateInfos[name]['startDate'];
         candidateInfos[name]['endDateTmp'] = candidateInfos[name]['endDateTmp'] || candidateInfos[name]['endDate'];
@@ -864,7 +874,20 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         candidateInfos[name]['endDate'] = null;
         candidateInfos[name]['disableTime'] = true;
       }
+
+      //check ngày hết hạn hợp đồng cho các pnl không phải VSC 9799
+      if(localStorage.getItem('companyCode') != Constants.pnlVCode.VinSchool && this.state.type == 'assess' && (candidateInfos[name]['result'] != 4 && candidateInfos[name]['result'] != 5)) {
+        if(e?.value == 'VA') {
+          candidateInfos[name]['endDate'] = moment(candidateInfos.employeeInfo.expireDate).add(12, 'months').format('DD/MM/YYYY');
+        } else if (['VF', 'VG', 'VH'].indexOf(e?.value) != -1) {
+          candidateInfos[name]['endDate'] = moment(candidateInfos.employeeInfo.expireDate).add(6, 'months').format('DD/MM/YYYY');
+        } else {
+          candidateInfos[name]['endDate'] = null;
+        }
+        
+      }
     }
+    
     candidateInfos[name][subName] = e != null ? { value: e.value, label: e.label } : {}
     this.setState({errors: errors, data : candidateInfos})
   }
@@ -1230,7 +1253,7 @@ renderEvalution = (name, data, isDisable) => {
 
   checkShowQlttComment = (data) => {
   // CBLF tham dinh VSC -field qltt -- 11
-  if(checkIsExactPnL(Constants.PnLCODE.VinSchool)) {
+  if(checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.pnlVCode.VinHome, Constants.PnLCODE.Vin3S)) {
     return ((data.processStatus == 10 && data.qltt.account));
    } else {
      return(data.processStatus == 10 || (data.processStatus == 9 && !data.hasnguoidanhgia));
@@ -1240,17 +1263,17 @@ renderEvalution = (name, data, isDisable) => {
 
   checkShownguoidanhgiaComment = (data) => {
     // QLTT VSC - filed nguoidanhgia -- 10
-    
-    if(checkIsExactPnL(Constants.PnLCODE.VinSchool)) {
+
+    if(checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.pnlVCode.VinHome, Constants.PnLCODE.Vin3S)) {
      return (data.processStatus == 9 && data.nguoidanhgia.account);
     } else {
       return (data.processStatus == 9 && !data.qltt.account);
     }
   }
- 
+
   checkShowApprovalComment = (data) => {
-    if(checkIsExactPnL(Constants.PnLCODE.VinSchool)) {
-      return data.processStatus == 11 || (data.processStatus == 10 && !data.qltt.account); 
+    if(checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.pnlVCode.VinHome, Constants.PnLCODE.Vin3S)) {
+      return data.processStatus == 11 || (data.processStatus == 10 && !data.qltt.account);
     } else {
       return data.processStatus == 11;
     }
@@ -1366,7 +1389,7 @@ renderEvalution = (name, data, isDisable) => {
                       <tr>
                         <th style={{width: '22%'}}>Tổng điểm</th>
                         <th style={{width: '16%'}}>{data.SelfAssessmentScoreTotal}</th>
-                        <th style={{width: '22%'}}>{data.ManagementScoreTotal}</th>
+                        <th style={{width: '22%'}}>{this.state.type == 'request' ? '' : data.ManagementScoreTotal}</th>
                         <th style={{width: '40%'}}></th>
                       </tr>
                     </thead>
@@ -1393,7 +1416,7 @@ renderEvalution = (name, data, isDisable) => {
                       <tr>
                         <th style={{width: '20%'}}>Tổng điểm</th>
                         <th style={{width: '14%'}}>{data.SelfAssessmentScoreTotal}</th>
-                        <th style={{width: '16%'}}>{data.ManagementScoreTotal}</th>
+                        <th style={{width: '16%'}}>{this.state.type == 'request' ? '' : data.ManagementScoreTotal}</th>
                         <th style={{width: '42%'}}></th>
                         <th style={{width: '8%'}}></th>
                       </tr>
@@ -1483,7 +1506,8 @@ renderEvalution = (name, data, isDisable) => {
           </div>
         </div>
         {
-          checkIsExactPnL(Constants.PnLCODE.VinSchool) ?
+          //checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.pnlVCode.VinHome, Constants.PnLCODE.Vin3S) ?
+          false ?
           null :
         <>
         <h5>Thông tin khóa học</h5>
@@ -1594,14 +1618,14 @@ renderEvalution = (name, data, isDisable) => {
         
         {
           //------------------ Hien thi nhan vien nhin thay -----------------------------------------
-          showComponent.employeeSide ? 
+          showComponent.employeeSide ?
           <>
             <div className="box shadow cbnv">
             
               <div className="row approve">
                 <div className="col-12">
                   {
-                    checkIsExactPnL(Constants.PnLCODE.VinSchool) ?
+                    checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.pnlVCode.VinHome, Constants.PnLCODE.Vin3S) ?
                       <><span className="title">QUẢN LÝ TRỰC TIẾP ĐÁNH GIÁ</span></>
                       : <><span className="title">NGƯỜI ĐÁNH GIÁ</span><span className="sub-title">(Nếu có)</span></>
                   }
@@ -1621,8 +1645,8 @@ renderEvalution = (name, data, isDisable) => {
               <div className="row approve">
                 <div className="col-12">
                   {
-                    checkIsExactPnL(Constants.PnLCODE.VinSchool) ?
-                    <><span className="title">CBLD thẩm định</span><span className="sub-title">(Nếu có)</span></>
+                    checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.pnlVCode.VinHome, Constants.PnLCODE.Vin3S) ?
+                    <><span className="title">CBLĐ thẩm định</span><span className="sub-title">(Nếu có)</span></>
                     : <span className="title">QUẢN LÝ TRỰC TIẾP ĐÁNH GIÁ</span>
                   }
                 </div>
@@ -1638,8 +1662,8 @@ renderEvalution = (name, data, isDisable) => {
           </> : 
           this.state.isNguoidanhgia ? 
           <>
-          {  // ---------------check hien thij cho vinschool khi nguowif danh gia ton tai y kien danh gia 
-              checkIsExactPnL(Constants.PnLCODE.VinSchool) ? 
+          {  // ---------------check hien thij cho vinschool khi nguowif danh gia ton tai y kien danh gia
+              checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.pnlVCode.VinHome, Constants.PnLCODE.Vin3S) ? 
               <div className="box shadow cbnv more-description">
               <div className="title">
                 Ý KIẾN ĐỀ XUẤT CỦA CBQL TRỰC TIẾP
@@ -1712,16 +1736,16 @@ renderEvalution = (name, data, isDisable) => {
                 </div>
               </div>
             </div>
-            // +++++++ heet check hien thij cho vinschool khi nguowif danh gia ton tai  y kien danh gia 
+            // +++++++ heet check hien thij cho vinschool khi nguowif danh gia ton tai  y kien danh gia
             : null
             }
-              
+
              <div className="box shadow cbnv">
               <div className="row approve">
                 <div className="col-12">
                 {
-                    checkIsExactPnL(Constants.PnLCODE.VinSchool) ?
-                    <><span className="title">CBLD thẩm định</span><span className="sub-title">(Nếu có)</span></>
+                    checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.pnlVCode.VinHome, Constants.PnLCODE.Vin3S) ?
+                    <><span className="title">CBLĐ thẩm định</span><span className="sub-title">(Nếu có)</span></>
                     : <span className="title">QUẢN LÝ TRỰC TIẾP ĐÁNH GIÁ</span>
                   }
                 </div>
@@ -1736,7 +1760,7 @@ renderEvalution = (name, data, isDisable) => {
             </div>
             
             {
-              checkIsExactPnL(Constants.PnLCODE.VinSchool) ?
+              checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.pnlVCode.VinHome, Constants.PnLCODE.Vin3S) ?
               <div className="box shadow cbnv">
                 <div className="row approve">
                   <div className="col-12">

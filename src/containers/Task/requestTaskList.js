@@ -217,6 +217,10 @@ class RequestTaskList extends React.Component {
             }
             return <span className={status[statusOriginal].className}>{status[statusOriginal].label}</span>
         }
+        
+        if(taskData?.account != null && statusOriginal == 5) {
+            statusOriginal = 6;
+        }
         return <span className={status[statusOriginal]?.className}>{status[statusOriginal]?.label}</span>
     }
 
@@ -643,7 +647,12 @@ class RequestTaskList extends React.Component {
                                         tasks.map((child, index) => {
                                             let isShowEditButton = this.isShowEditButton(child.processStatusId, child.appraiserId, child.requestTypeId, child.startDate, child.isEdit)
                                             let isShowEvictionButton = this.isShowEvictionButton(child.processStatusId, child.requestTypeId, child.startDate)
-                                            let isShowDeleteButton = this.isShowDeleteButton(child.processStatusId, child.appraiserId, child.requestTypeId, child.actionType)
+                                            let actionType = child?.actionType || null
+                                            if (child?.requestTypeId == Constants.RESIGN_SELF) {
+                                                const requestItem = child.requestInfo ? child.requestInfo[0] : null // BE xác nhận chỉ có duy nhất 1 item trong requestInfo
+                                                actionType = requestItem ? requestItem.actionType : null
+                                            }
+                                            let isShowDeleteButton = this.isShowDeleteButton(child.processStatusId, child.appraiserId, child.requestTypeId, actionType)
                                             let totalTime = null
 
                                             if ([Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP].includes(child.requestTypeId)) {
@@ -663,7 +672,7 @@ class RequestTaskList extends React.Component {
                                                     <td className="status text-center">{this.showStatus(child.id, child.processStatusId, child.requestType.id, child.appraiserId)}</td>
                                                     <td className="tool">
                                                         { (isShowEditButton && child?.absenceType?.value != MOTHER_LEAVE_KEY) && <a href={editLink} title={t("Edit")}><img alt="Sửa" src={editButton} /></a> }
-                                                        { isShowEvictionButton && child.absenceType?.value != MOTHER_LEAVE_KEY 
+                                                        { isShowEvictionButton && child.absenceType?.value != MOTHER_LEAVE_KEY
                                                             && <span title="Thu hồi hồ sơ" onClick={e => this.evictionRequest(child.requestTypeId, child)}><img alt="Thu hồi" src={evictionButton} /></span> }
                                                         { isShowDeleteButton && <span title="Hủy" onClick={e => this.deleteRequest(child.requestTypeId, child)}><img alt="Hủy" src={deleteButton} /></span> }
                                                     </td>

@@ -15,6 +15,8 @@
 @import "./assets/scss/upload-avatar.scss";
 @import "./assets/scss/project-information.scss";
 @import "./assets/scss/evaluation.scss";
+@import "./assets/scss//employee-termination.scss";
+@import "./assets//scss//welfare.scss";
 
 @font-face {
   font-family: "icomoon";
@@ -2098,10 +2100,12 @@ span.badge-notification[data-badge]::after {
   }
   .staff-information-proposed-resignation-block {
     .search-action-block {
+      margin-bottom: 15px;
       .btn-action-group {
         display: flex;
         justify-content: space-between;
         align-items: center;
+
         .btn-action {
           width: 45%;
           padding: 6px;
@@ -2260,10 +2264,12 @@ span.badge-notification[data-badge]::after {
   }
   .staff-information-proposed-resignation-block {
     .search-action-block {
+      margin-bottom: 15px;
       .btn-action-group {
         display: flex;
         justify-content: space-between;
         align-items: center;
+
         .btn-action {
           width: 45%;
           padding: 6px;
@@ -2327,6 +2333,10 @@ span.badge-notification[data-badge]::after {
               position: -webkit-sticky;
               background: #eaecf4;
               z-index: 1;
+            }
+
+            .full-name {
+              width: 200px;
             }
           }
           th:first-child {

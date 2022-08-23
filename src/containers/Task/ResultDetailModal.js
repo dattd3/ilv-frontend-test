@@ -10,7 +10,7 @@ class ResultDetailModal extends React.Component {
     }
 
     render () {
-        const {t} = this.props
+        const {t, statusCodeAPIException} = this.props
         const resultDetail = this.props.resultDetail || [];
         let total = 0;
         let sucessReqs = 0;
@@ -69,8 +69,8 @@ class ResultDetailModal extends React.Component {
                             <p><span className="text-success">{t("Successful")}: </span><strong>{sucessReqs}/{total}</strong></p>
                         </>
                         : <div className="wrap-result">
-                            <p dangerouslySetInnerHTML={{ __html: "Đã có lỗi xảy ra" }}></p>
-                            <Image src={IconFailed} alt="faile" className="ic-status" />
+                            <p dangerouslySetInnerHTML={{ __html: statusCodeAPIException === 504 ? "Yêu cầu đang được xử lý." : "Đã có lỗi xảy ra" }}></p>
+                            { statusCodeAPIException === 504 ? <Image src={IconSuccess} alt="success" className="ic-status" /> : <Image src={IconFailed} alt="failed" className="ic-status" /> }
                           </div>   
                     }
                     

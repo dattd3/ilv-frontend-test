@@ -158,10 +158,10 @@ class TaskList extends React.Component {
             8: { label: this.props.t("Waiting"), className: 'request-status' },
             20: { label: this.props.t("Consented"), className: 'request-status' },
             9: {className: 'request-status', label: 'Tự đánh giá'},
-            10: {className: 'request-status', label: checkIsExactPnL(Constants.PnLCODE.VinSchool) ? 'QLTT đánh giá' : 'Người đánh giá'},
-            11: {className: 'request-status', label:  checkIsExactPnL(Constants.PnLCODE.VinSchool)  ? 'CBLD thẩm định' : 'QLTT đánh giá'},
+            10: {className: 'request-status', label: checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.PnLCODE.Vinhome, Constants.PnLCODE.Vin3S) ? 'QLTT đánh giá' : 'Người đánh giá'},
+            11: {className: 'request-status', label:  checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.PnLCODE.Vinhome, Constants.PnLCODE.Vin3S)  ? 'CBLĐ thẩm định' : 'QLTT đánh giá'},
             12: {className: 'request-status', label: 'HR thẩm định'},
-            13: {className: 'request-status', label: 'CBLD phê duyệt'},
+            13: {className: 'request-status', label: 'CBLĐ phê duyệt'},
             //14: {className: 'request-status', label: 'Đã phê duyệt'}
         }
 
@@ -498,7 +498,7 @@ class TaskList extends React.Component {
                                                     <td className="user-title">{child.user?.jobTitle || ''}</td>
 
                                                     {
-                                                        child.requestType?.id == 6 ?
+                                                        child.requestType?.id == 6 || child.requestType?.id == Constants.RESIGN_SELF ?
                                                         <td className="request-type">
                                                            {child.requestType?.name}
                                                         </td>
