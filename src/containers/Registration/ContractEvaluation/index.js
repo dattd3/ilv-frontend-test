@@ -1,4 +1,5 @@
 import React from 'react'
+import { withRouter } from 'react-router-dom'
 import moment from 'moment'
 import Spinner from 'react-bootstrap/Spinner'
 import StatusModal from '../../../components/Common/StatusModal'
@@ -1223,7 +1224,8 @@ renderEvalution = (name, data, isDisable) => {
   createFormSalary = () => {
     console.log('create form salary');
     this.setState({ isShowSalaryPropose: false });
-    window.location.href = `/salary-propse/${this.state.id}`;
+    // window.location.href = `/salary-propse/${this.state.id}`;
+    this.props.history.push('/salary-propse', { idContract: this.state.id, idSalary: null })
   }
 
   checkShowQlttComment = (data) => {
@@ -2022,4 +2024,4 @@ renderEvalution = (name, data, isDisable) => {
   }
 }
 
-export default withTranslation()(LeaveOfAbsenceDetailComponent)
+export default withTranslation()(withRouter(LeaveOfAbsenceDetailComponent))
