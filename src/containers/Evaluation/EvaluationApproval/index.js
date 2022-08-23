@@ -27,19 +27,15 @@ const PnLOrgNumber = localStorage.getItem('organizationLv2')
 const employeeCode = localStorage.getItem('employeeNo')
 const employeeAD = localStorage.getItem('email').split('@')[0]
 
-const formStatuses = [
-    {value: 0, label: 'Đang đánh giá'},
-    {value: 1, label: 'Hoàn thành'},
-]
-const currentSteps = [
-    {value: evaluationStatus.selfAssessment, label: 'QLTT đánh giá'},
-    {value: evaluationStatus.qlttAssessment, label: 'CBLĐ phê duyệt'},
-    {value: evaluationStatus.cbldApproved, label: 'Hoàn thành'}
-]
-
 function AdvancedFilter(props) {
     const { t } = useTranslation()
     const { masterData, filter, updateData } = props
+
+    const currentSteps = [
+        { value: evaluationStatus.selfAssessment, label: t("EvaluationDetailEmployeeManagerAssessment") },
+        { value: evaluationStatus.qlttAssessment, label: t("EvaluationDetailEmployeeManagerApprove") },
+        { value: evaluationStatus.cbldApproved, label: t("EvaluationDetailCompleted") }
+    ]
 
     const handleInputChange = (key, value, childKey) => {
         updateData(key, value, childKey)
@@ -203,6 +199,11 @@ function ApprovalTabContent(props) {
         fromDate: null,
         toDate: null
     })
+
+    const formStatuses = [
+        { value: 0, label: t("EvaluationInProgress") },
+        { value: 1, label: t("EvaluationDetailCompleted") },
+    ]
 
     const updateUser = (user) => {
         SetFilter({
@@ -529,6 +530,11 @@ function EvaluationApproval(props) {
 
     const statusDone = 5
     const listPageSizes = [10, 20, 30, 40, 50]
+    const currentSteps = [
+        { value: evaluationStatus.selfAssessment, label: t("EvaluationDetailEmployeeManagerAssessment") },
+        { value: evaluationStatus.qlttAssessment, label: t("EvaluationDetailEmployeeManagerApprove") },
+        { value: evaluationStatus.cbldApproved, label: t("EvaluationDetailCompleted") }
+    ]
 
     const useHasChanged= (val) => {
         const prevVal = usePrevious(val)
@@ -820,7 +826,7 @@ function EvaluationApproval(props) {
             },
             [actionButton.reject]: {
                 success: t("EvaluationFormSubmittedToManager"),
-                failed: t("EvaluationFailedToSubmitForm"),
+                failed: t("EvaluationFailedToReSubmitForm"),
             }
         }
         return messageMapping[actionCode][apiStatus]
