@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-target-blank */
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import moment from "moment";
@@ -110,6 +111,7 @@ const SalaryAdjustmentPropse = (props) => {
     } else {
       props.history.push('proposal-management')
     }
+    // eslint-disable-next-line
   }, []);
 
   const checkViewCreate = () => {
@@ -719,7 +721,7 @@ const SalaryAdjustmentPropse = (props) => {
         {/* Từ chối */}
         {viewSetting.showComponent.btnRefuse &&
           <button type='button' className='btn btn-danger' onClick={() => handleRefuse()}   >
-            <img src={IconDelete} className='mr-1' /> {t('RejectQuestionButtonLabel')}
+            <img src={IconDelete} className='mr-1' alt="delete" /> {t('RejectQuestionButtonLabel')}
           </button>
         }
         {/* Thẩm định */}
@@ -731,7 +733,7 @@ const SalaryAdjustmentPropse = (props) => {
         {/* Không phê duyệt */}
         {viewSetting.showComponent.btnNotApprove &&
           <button type='button' className='btn btn-danger' onClick={() => handleReject()} >
-            <img src={IconDelete} className='mr-1' /> {t('Reject')}
+            <img src={IconDelete} className='mr-1' alt="delete" /> {t('Reject')}
           </button>
         }
         {/* Phê duyệt */}
@@ -745,19 +747,9 @@ const SalaryAdjustmentPropse = (props) => {
         show={modal.visible}
         header={modal.header}
         title={modal.title}
-        onHide={() => {
-          setModal({
-            ...modal,
-            visible: false,
-          });
-        }}
+        onHide={() => setModal({ ...modal, visible: false })}
         data={modal.content}
-        setData={(val) => {
-          setModal({
-            ...modal,
-            content: val,
-          });
-        }}
+        setData={(val) => setModal({ ...modal, content: val })}
         onConfirm={() => handleCloseModal()}
       />
     </div>

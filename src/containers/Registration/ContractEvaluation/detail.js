@@ -1,4 +1,5 @@
 import React from 'react'
+import { withRouter } from 'react-router-dom'
 import moment from 'moment'
 import Rating from 'react-rating'
 import _ from 'lodash'
@@ -9,7 +10,7 @@ import 'react-datepicker/dist/react-datepicker.css'
 import { vi, enUS } from 'date-fns/locale'
 
 import './styles.scss'
-export default class ContractEvaluationdetail extends React.Component {
+class ContractEvaluationdetail extends React.Component {
 
   render() {
     const data = this.props.data
@@ -394,7 +395,8 @@ export default class ContractEvaluationdetail extends React.Component {
                   </div>
                 </div>
                 <div className="col-6 view-detail">
-                  <a href={`/salary-propse/${id}`} title="Xem chi tiết" className="detail-link">{'Xem chi tiết >>'}</a>
+                  {/* <a href={`/salary-propse/${id}`} title="Xem chi tiết" className="detail-link">{'Xem chi tiết >>'}</a> */}
+                  <span onClick={() => this.props.history.push('/salary-propse', { idContract: id, idSalary: 1 })}>{'Xem chi tiết >>'}</span>
                 </div>
               </div>
             </div>
@@ -414,3 +416,4 @@ export default class ContractEvaluationdetail extends React.Component {
     )
   }
 }
+export default withRouter(ContractEvaluationdetail);

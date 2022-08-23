@@ -70,23 +70,46 @@ function SalaryPropse(props) {
       showCurrentSalary: false, //Change type text & password
       viewCurrentSalary: false, //Hiển thị eye
       suggestedSalary: true, //Mức lương đề xuất - Disable/Enable Input
+      disableAll: false,
     }
   });
 
   const processStatus = 21;
+  const locationState = { idContract: 1739084, idSalary: null };
 
   useEffect(() => {
-    async function getData() {
-      try {
-        const { data: { data: response } } = await api.fetchSalaryPropose(id);
-        setData(response);
-      } catch (error) {
-        console.log(error);
+    console.log(props.location.state, locationState);
+    // props.location.state <=> locationState
+    if (locationState) {
+      if (locationState?.idSalary) {
+        // Review mode
+        checkAuthorize();
+      } else {
+        // Create mode
+        checkViewCreate();
       }
     }
     getData();
-    checkAuthorize();
-  }, [id]);
+    // eslint-disable-next-line
+  }, []);
+
+  const getData = async () => {
+    try {
+      const { data: { data: response } } = await api.fetchSalaryPropose(locationState?.idContract);
+      setData(response);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const checkViewCreate = () => {
+    let viewSettingTmp = { ...viewSetting };
+    viewSettingTmp.showComponent.humanForReviewSalary = true;
+    viewSettingTmp.showComponent.btnCancel = true;
+    viewSettingTmp.showComponent.btnSendRequest = true;
+    viewSettingTmp.disableComponent.selectHrSupportViewSalary = true;
+    setViewSetting(viewSettingTmp)
+  }
 
   const checkAuthorize = () => {
     const currentEmployeeNo = localStorage.getItem('email');
@@ -428,7 +451,7 @@ function SalaryPropse(props) {
             <div
               className='detail'
               onClick={() => {
-                history.push(`/evaluation/${id}/salary`);
+                history.push(`/evaluation/${locationState?.idContract}/salary`);
               }}
             >
               {t('ViewDetail')} {'>>'}
@@ -489,7 +512,7 @@ function SalaryPropse(props) {
         {/* Hủy */}
         {viewSetting.showComponent.btnCancel &&
           <button type='button' className='btn btn-secondary ml-3 shadow' onClick={() => handleCancel()}  >
-            <img src={IconDelete} className='mr-1' /> {t('CancelSearch')}
+            <img src={IconDelete} className='mr-1' alt="cancel" /> {t('CancelSearch')}
           </button>
         }
         {/* Gửi yêu cầu */}
@@ -501,7 +524,7 @@ function SalaryPropse(props) {
         {/* Từ chối */}
         {viewSetting.showComponent.btnRefuse &&
           <button type='button' className='btn btn-danger' onClick={() => handleRefuse()}  >
-            <img src={IconDelete} className='mr-1' /> {t('RejectQuestionButtonLabel')}
+            <img src={IconDelete} className='mr-1' alt="delete" /> {t('RejectQuestionButtonLabel')}
           </button>
         }
         {/* Thẩm định */}
@@ -513,7 +536,7 @@ function SalaryPropse(props) {
         {/* Không phê duyệt */}
         {viewSetting.showComponent.btnNotApprove &&
           <button type='button' className='btn btn-danger' onClick={() => handleReject()} >
-            <img src={IconDelete} className='mr-1' /> {t('Reject')}
+            <img src={IconDelete} className='mr-1' alt="reject" /> {t('Reject')}
           </button>
         }
         {/* Phê duyệt */}
@@ -528,19 +551,9 @@ function SalaryPropse(props) {
         type={modal.type}
         header={modal.header}
         title={modal.title}
-        onHide={() => {
-          setModal({
-            ...modal,
-            visible: false,
-          });
-        }}
+        onHide={() => setModal({ ...modal, visible: false })}
         data={modal.content}
-        setData={(val) => {
-          setModal({
-            ...modal,
-            content: val,
-          });
-        }}
+        setData={(val) => setModal({ ...modal, content: val })}
         onConfirm={() => handleCloseModal()}
       />
     </div>
