@@ -434,7 +434,7 @@ class SupportOnboardComponent extends React.Component {
                             <th scope="col" className="col-devices text-center">Cập nhật đầy đủ thông tin lên SAP và các group mail/Ms Teams</th>
                             <th scope="col" className="col-devices text-center">Ký HĐLĐ</th>
                           </>
-                          : checkIsExactPnL(Constants.PnLCODE.VinSchool) ?
+                          : checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.PnLCODE.Vinhome, Constants.PnLCODE.Vin3S) ?
                             <>
                               <th scope="col" className="col-devices text-center">Tài khoản AD, email, các phần mềm phục vụ công việc, cá nhân</th>
                               <th scope="col" className="col-devices text-center">Máy tính / Điện thoại bàn</th>

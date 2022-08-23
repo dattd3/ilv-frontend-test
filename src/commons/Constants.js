@@ -182,10 +182,17 @@ const Constants = {
     VinSchool: "V061",
     VinFast: "V077",
     VinFastTrading: "V078",
-    VinFastPB: "V070"
+    VinFastPB: "V070",
+    Vin3S: "V005"
   },
   LOGIN_INSTRUCTION_PATH: "https://myvinpearl.s3.ap-southeast-1.amazonaws.com/shared/templates/ILOVEVINGROUP-HDDang+nhap-LoginInstruction.pdf",
   statusUserActiveMulesoft: 3,
+  PAGE_INDEX_DEFAULT: 1,
+  PAGE_SIZE_DEFAULT: 10,
+  // Register and Proposed contract termination
+  REGISTER_CONTRACT_TERMINATION_CODE: 1,
+  PROPOSED_CONTRACT_TERMINATION_CODE: 2,
+  GROUP_EMAIL_EXTENSION: '@vingroup.net',
   timeoutForSpecificApis: 180000
 };
 export default Constants

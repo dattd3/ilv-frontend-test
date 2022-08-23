@@ -40,7 +40,8 @@
     }
     .list-notification-popup {
         width: 400px;
-        left: -130px;
+        right: -130px;
+        left: unset;
         border-radius: 6px;
         border: none;
         margin: 0;

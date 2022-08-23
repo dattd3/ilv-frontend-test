@@ -324,6 +324,28 @@ const generateTaskCodeByCode = code => {
     }
 }
 
-export { getRequestConfigurations, removeAccents, formatStringByMuleValue, formatNumberInteger, exportToPDF, isEnableFunctionByFunctionName, getValueParamByQueryString, getDateByRangeAndFormat,
-    calculateBackDateByPnLVCodeAndFormatType, isEnableShiftChangeFunctionByPnLVCode, isEnableInOutTimeUpdateFunctionByPnLVCode, getRequestTypeIdsAllowedToReApproval, getMuleSoftHeaderConfigurations, 
-    isAdjacentDateBy2Date, showRangeDateGroupByArrayDate, generateTaskCodeByCode }
+function parsteStringToHtml(arrHtml) {
+    try {
+        let htmlReturn = '';
+        JSON.parse(arrHtml).forEach(objHtml => {
+            if (objHtml.Text === '\r\n' || objHtml.Text === '\n') {
+                htmlReturn += '<br />'
+            } else {
+                let objCss = '';
+                if (objHtml.B) objCss += `font-weight: bold;`
+                if (objHtml.U) objCss += `text-decoration: underline;`
+                if (objHtml.I) objCss += `font-style: italic;`
+                htmlReturn += `<span style="${objCss}">${objHtml.Text}</span>`
+            }
+        })
+        return htmlReturn;
+    } catch (e) {
+        return arrHtml
+    }
+}
+
+export {
+    getRequestConfigurations, removeAccents, formatStringByMuleValue, formatNumberInteger, exportToPDF, isEnableFunctionByFunctionName, getValueParamByQueryString, getDateByRangeAndFormat,
+    calculateBackDateByPnLVCodeAndFormatType, isEnableShiftChangeFunctionByPnLVCode, isEnableInOutTimeUpdateFunctionByPnLVCode, getRequestTypeIdsAllowedToReApproval, getMuleSoftHeaderConfigurations,
+    isAdjacentDateBy2Date, showRangeDateGroupByArrayDate, generateTaskCodeByCode, parsteStringToHtml
+}

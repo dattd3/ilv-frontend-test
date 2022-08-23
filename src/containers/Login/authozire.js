@@ -75,7 +75,8 @@ function Authorize(props) {
             }
             const response = await axios.get(`${process.env.REACT_APP_HRDX_URL}user/managementPoint?companyCode=${companyCode}`, config)
             if (response && response.data) {
-                return  response.data.data?.isSupporter == true || ( [Constants.pnlVCode.VinSchool].includes(companyCode) && response.data.data?.hasSubordinate == true) ? true : false;
+                //return  response.data.data?.isSupporter == true || ( [Constants.pnlVCode.VinSchool, Constants.pnlVCode.VincomRetail, Constants.pnlVCode.VinHome, Constants.PnLCODE.Vin3S].includes(companyCode) && response.data.data?.hasSubordinate == true) ? true : false;
+                return  response.data.data?.isSupporter == true || ( [Constants.pnlVCode.VinSchool, Constants.pnlVCode.VinHome, Constants.PnLCODE.Vin3S].includes(companyCode) && response.data.data?.hasSubordinate == true) ? true : false;
             }
             return false;
         } catch(e) {
@@ -132,10 +133,12 @@ function Authorize(props) {
                             employeeNo: user.uid,
                             jobType: user.rank_name,
                             department: `${user.division} / ${user.department} / ${user.unit}`,
+                            organizationLv1: user.organization_lv1,
                             organizationLv2: user.organization_lv2,
                             organizationLv3: user.organization_lv3,
                             organizationLv4: user.organization_lv4,
                             organizationLv5: user.organization_lv5,
+                            organizationLv6: user.organization_lv6,
                             region: user.department,
                             companyCode: user.company_code,
                             companyLogoUrl: res.data.data.logoUrl,
@@ -171,10 +174,12 @@ function Authorize(props) {
                         employeeNo: user.uid,
                         jobType: user.rank_name,
                         department: `${user.division} / ${user.department} / ${user.unit}`,
+                        organizationLv1: user.organization_lv1,
                         organizationLv2: user.organization_lv2,
                         organizationLv3: user.organization_lv3,
                         organizationLv4: user.organization_lv4,
                         organizationLv5: user.organization_lv5,
+                        organizationLv6: user.organization_lv6,
                         region: user.department,
                         companyCode: user.company_code,
                         companyLogoUrl: '',

@@ -243,7 +243,7 @@ class ApproverComponent extends React.Component {
           </div> : null
       }
       {
-        approvalDate ? 
+        approvalDate ?
         <div className="row mt-3">
             <div className="col-4">
               Ngày phê duyệt

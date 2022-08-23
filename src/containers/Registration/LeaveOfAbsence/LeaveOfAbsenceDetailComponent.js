@@ -78,7 +78,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     const annualLeaveSummary = this.state.annualLeaveSummary
 
     const requestTypeIdsAllowedToReApproval = getRequestTypeIdsAllowedToReApproval()
-    const isShowApproval = (requestInfo.processStatusId === Constants.STATUS_WAITING) || (action === "approval" && requestInfo.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && requestTypeIdsAllowedToReApproval.includes(requestInfo.requestTypeId))
+    const isShowApproval = (requestInfo.processStatusId === Constants.STATUS_WAITING) || (action === "approval" && requestInfo.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && requestTypeIdsAllowedToReApproval.includes(requestTypeId))
     
     let messageSAP = null;
     if (this.props.leaveOfAbsence.processStatusId === Constants.STATUS_PARTIALLY_SUCCESSFUL)
@@ -230,7 +230,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         </div>
         {
           requestInfo && (requestInfo.processStatusId === 8 || (action != "consent" && requestInfo.processStatusId === 5) || requestInfo.processStatusId === 2 || 
-          (action === "approval" && requestInfo.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && requestTypeIdsAllowedToReApproval.includes(requestInfo.requestTypeId))) 
+          (action === "approval" && requestInfo.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && requestTypeIdsAllowedToReApproval.includes(requestTypeId))) 
           ? 
           <DetailButtonComponent dataToSap={
             [
