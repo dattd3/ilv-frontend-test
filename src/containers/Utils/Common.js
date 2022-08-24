@@ -21,12 +21,21 @@ export default function processingDataReq(dataRawFromApi, tab) {
     const listRequestTypeIdToShowTime = [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP, Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE]
     const listRequestTypeIdToGetSubId = [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP]
     dataRawFromApi.forEach(element => {
-        if(element.requestTypeId == Constants.ONBOARDING || element.requestTypeId == Constants.RESIGN_SELF) {
+        if(element.requestTypeId == Constants.ONBOARDING || element.requestTypeId == Constants.RESIGN_SELF || element.requestTypeId == Constants.SALARY_PROPOSE) {
             if(element.requestTypeId == Constants.RESIGN_SELF) {
                 element.id = element.id + '.1';
                 element.appraiser = element.appraiserInfo ? element.appraiserInfo : {}
                 element.startDate = ""
             }
+
+            if(element.requestTypeId == Constants.SALARY_PROPOSE) {
+                element.salaryId = element.id;
+                element.id = element.id + '.1';
+                element.appraiser = {};
+                element.user = element.userInfo;
+                element.startDate = ""
+            }
+            
             taskList.push(element);
         } else {
             if (element.requestInfo) {
