@@ -73,7 +73,12 @@ function SalaryPropse(props) {
       disableAll: false,
     },
     proposedStaff: {
+      avatar: '',
+      account: '',
+      email: '',
       employeeNo: '',
+      employeeLevel: '',
+      orglv2Id: '',
       fullName: '',
       jobTitle: '',
       department: '',
@@ -96,8 +101,8 @@ function SalaryPropse(props) {
     console.log(props.location.state, locationState);
     getDataContract();
     // props.location.state <=> locationState
-    if (locationState) {
-      if (locationState?.idSalary) {
+    if (props.location.state) {
+      if (props.location.state?.idSalary) {
         // Review mode
         setIsCreateMode(false);
         checkAuthorize();
@@ -112,7 +117,7 @@ function SalaryPropse(props) {
 
   const getDataContract = async () => {
     try {
-      const { data: { data: response } } = await api.fetchSalaryPropose(locationState?.idContract);
+      const { data: { data: response } } = await api.fetchSalaryPropose(props.location.state?.idContract);
       setDataContract(response);
     } catch (error) {
       console.log(error);
@@ -126,8 +131,12 @@ function SalaryPropse(props) {
     viewSettingTmp.showComponent.btnSendRequest = true;
     viewSettingTmp.disableComponent.selectHrSupportViewSalary = true;
 
+    viewSettingTmp.proposedStaff.avatar = localStorage.getItem('avatar') || ""
+    viewSettingTmp.proposedStaff.account = localStorage.getItem('email').split('@')[0] || ""
     viewSettingTmp.proposedStaff.email = localStorage.getItem('email') || ""
     viewSettingTmp.proposedStaff.employeeNo = localStorage.getItem('employeeNo') || ""
+    viewSettingTmp.proposedStaff.employeeLevel = localStorage.getItem('employeeLevel') || ""
+    viewSettingTmp.proposedStaff.orglv2Id = localStorage.getItem('organizationLv2') || ""
     viewSettingTmp.proposedStaff.fullName = localStorage.getItem('fullName') || ""
     viewSettingTmp.proposedStaff.jobTitle = localStorage.getItem('jobTitle') || ""
     viewSettingTmp.proposedStaff.department = localStorage.getItem('department') || ""
@@ -299,18 +308,22 @@ function SalaryPropse(props) {
   const prepareDataToSubmit = () => {
     if (isCreateMode) {
       let bodyFormData = new FormData();
-      bodyFormData.append('requestHistoryId', locationState?.idContract);
+      bodyFormData.append('requestHistoryId', props.location.state?.idContract);
       bodyFormData.append('userId', viewSetting.proposedStaff.email);
       bodyFormData.append('userInfo', JSON.stringify({
         employeeNo: viewSetting.proposedStaff.employeeNo,
+        avatar: viewSetting.proposedStaff.avatar,
+        account: viewSetting.proposedStaff.account,
         fullName: viewSetting.proposedStaff.fullName,
+        employeeLevel: viewSetting.proposedStaff.employeeLevel,
+        orglv2Id: viewSetting.proposedStaff.orgLv2Id,
         jobTitle: viewSetting.proposedStaff.jobTitle,
         department: viewSetting.proposedStaff.department,
       }));
       bodyFormData.append('coordinatorId', approver?.account.toLowerCase() + "@vingroup.net");
       bodyFormData.append('coordinatorInfo', JSON.stringify({
         avatar: approver?.avatar,
-        account: approver?.account,
+        account: approver?.account.toLowerCase(),
         fullName: approver?.fullName,
         employeeLevel: approver?.employeeLevel,
         pnl: approver?.pnl,
@@ -590,7 +603,7 @@ function SalaryPropse(props) {
             <div
               className='detail'
               onClick={() => {
-                history.push(`/evaluation/${locationState?.idContract}/salary`);
+                history.push(`/evaluation/${props.location.state?.idContract}/salary`);
               }}
             >
               {t('ViewDetail')} {'>>'}
