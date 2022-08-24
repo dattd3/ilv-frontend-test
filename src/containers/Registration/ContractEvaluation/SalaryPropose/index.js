@@ -288,7 +288,7 @@ function SalaryPropse(props) {
         headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
       })
         .then(response => {
-          if (response.data.result && response.data.result.code == '000000') {
+          if (response.data.result && response.data.result.code === '000000') {
             showStatusModal(t("RequestSent"), true, '/tasks')
             return;
           }

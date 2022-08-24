@@ -12,6 +12,7 @@ import ModalConsent from "../../ShareComponents/ModalConsent";
 import ResultModal from "./ResultModal";
 import ApproverComponent from "../../ShareComponents/HrReviewSalaryComponent";
 import ConfirmPasswordModal from '../../../Registration/ContractEvaluation/SalaryPropose/ConfirmPasswordModal';
+import StatusModal from '../../../../components/Common/StatusModal'
 import Constants from '../.../../../../../commons/Constants';
 import CurrencyInput from 'react-currency-input-field';
 import IconDelete from '../../../../assets/img/icon/Icon_Cancel.svg';
@@ -48,6 +49,12 @@ const SalaryAdjustmentPropse = (props) => {
     message: '',
     isSuccess: false,
   });
+  const [modalStatus, setModalStatus] = useState({
+    isShowStatusModal: false,
+    content: '',
+    isSuccess: true,
+    url: '',
+  });
   const [isCreateMode, setIsCreateMode] = useState(false);
   const [modalConfirmPassword, setModalConfirmPassword] = useState(false);
   const [acessToken, setAcessToken] = useState(null);
@@ -55,16 +62,7 @@ const SalaryAdjustmentPropse = (props) => {
   const [listFiles, setListFiles] = useState([]);
   const [selectMembers, setSelectMembers] = useState([]);
   const [selectedMembers, setSelectedMembers] = useState([]);
-  const [approver, setApprover] = useState({
-    fullName: 'Nguyễn Thu Hoài',
-    account: 'nth',
-    avatar: "",
-    employeeLevel: "",
-    pnl: "",
-    orglv2Id: "",
-    current_position: "Chuyên viên",
-    department: "Phòng Phát triển Sản phẩm"
-  });
+  const [approver, setApprover] = useState(null);
   const [viewSetting, setViewSetting] = useState({
     showComponent: {
       stateProcess: false, // Button trang thai
@@ -88,10 +86,25 @@ const SalaryAdjustmentPropse = (props) => {
       disableAll: false,
     },
     proposedStaff: {
+      avatar: '',
+      account: '',
+      email: '',
+      employeeNo: '',
+      employeeLevel: '',
+      orglv2Id: '',
       fullName: '',
       jobTitle: '',
-      department: ''
-    }
+      department: '',
+      orgLv2Id: '',
+      orgLv3Id: '',
+      orgLv4Id: '',
+      orgLv5Id: '',
+      orgLv2Text: '',
+      orgLv3Text: '',
+      orgLv4Text: '',
+      orgLv5Text: '',
+      companyCode: '',
+    },
   });
   const processStatus = 23;
 
@@ -123,15 +136,32 @@ const SalaryAdjustmentPropse = (props) => {
     viewSettingTmp.disableComponent.editSubjectApply = true;
     viewSettingTmp.disableComponent.selectHrSupportViewSalary = true;
 
+    viewSettingTmp.proposedStaff.avatar = localStorage.getItem('avatar') || ""
+    viewSettingTmp.proposedStaff.account = localStorage.getItem('email').split('@')[0] || ""
+    viewSettingTmp.proposedStaff.email = localStorage.getItem('email') || ""
+    viewSettingTmp.proposedStaff.employeeNo = localStorage.getItem('employeeNo') || ""
+    viewSettingTmp.proposedStaff.employeeLevel = localStorage.getItem('employeeLevel') || ""
+    viewSettingTmp.proposedStaff.orglv2Id = localStorage.getItem('organizationLv2') || ""
     viewSettingTmp.proposedStaff.fullName = localStorage.getItem('fullName') || ""
     viewSettingTmp.proposedStaff.jobTitle = localStorage.getItem('jobTitle') || ""
     viewSettingTmp.proposedStaff.department = localStorage.getItem('department') || ""
+    viewSettingTmp.proposedStaff.orgLv2Id = localStorage.getItem('organizationLv2') || ""
+    viewSettingTmp.proposedStaff.orgLv3Id = localStorage.getItem('organizationLv3') || ""
+    viewSettingTmp.proposedStaff.orgLv4Id = localStorage.getItem('organizationLv4') || ""
+    viewSettingTmp.proposedStaff.orgLv5Id = localStorage.getItem('organizationLv5') || ""
+    viewSettingTmp.proposedStaff.orgLv6Id = localStorage.getItem('organizationLv6') || ""
+    viewSettingTmp.proposedStaff.orgLv2Text = ""
+    viewSettingTmp.proposedStaff.orgLv3Text = ""
+    viewSettingTmp.proposedStaff.orgLv4Text = ""
+    viewSettingTmp.proposedStaff.orgLv5Text = ""
+    viewSettingTmp.proposedStaff.orgLv6Text = ""
+    viewSettingTmp.proposedStaff.companyCode = localStorage.getItem('companyCode') || ""
     setViewSetting(viewSettingTmp)
   }
 
   const checkAuthorize = () => {
     console.log('checkAuthorize');
-    const currentEmployeeNo = localStorage.getItem('email');
+    // const currentEmployeeNo = localStorage.getItem('email');
     let viewSettingTmp = { ...viewSetting };
     switch (processStatus) {
       // Đang chờ nhân sự điều phối & Đang chờ nhân sự thẩm định người xem lương
@@ -200,49 +230,22 @@ const SalaryAdjustmentPropse = (props) => {
       default:
         break;
     }
-    setSelectedMembers([
-      {
-        uid: '3659898',
-        fullname: "Trần Thị Thu Hằng",
-        job_name: "Chuyên viên Nhân sự",
-        department: "Nhân sự - Đào tạo",
-        typeContract: 'VE',
-        currentSalary: '',
-        proposedContract: '',
-        proposedSalary: '',
-        effectiveTime: '',
-        strength: '',
-        weakness: '',
-      }
-    ])
-    setSelectMembers([
-      {
-        uid: '3659898',
-        fullname: "Trần Thị Thu Hằng",
-        job_name: "Chuyên viên Nhân sự",
-        department: "Nhân sự - Đào tạo",
-        typeContract: 'VE',
-        currentSalary: '',
-        proposedContract: 'VE',
-        proposedSalary: '',
-        effectiveTime: '20/10/2022',
-        strength: 'Luôn hoàn thành công việc',
-        weakness: 'Cải thiện thêm kỹ năng nghiệp vụ',
-      }
-    ])
     setViewSetting(viewSettingTmp)
   }
 
   const handleSelectMembers = (members) => {
-    console.log(members);
     const membersMapping = members.map(u => ({
       uid: u?.uid,
-      fullname: u?.fullname,
-      job_name: u?.job_name,
+      employeeNo: u?.uid,
+      account: u?.username.toLowerCase(),
+      fullName: u?.fullname,
+      jobTitle: u?.job_name,
+      startDate: '',
+      expireDate: '',
+      contractName: u?.contractName,
+      contractType: u?.contractType,
       department: u?.department,
-      typeContract: '',
       currentSalary: '',
-      proposedContract: '',
       proposedSalary: '',
       effectiveTime: '',
       strength: '',
@@ -251,15 +254,15 @@ const SalaryAdjustmentPropse = (props) => {
     setSelectMembers(membersMapping)
   }
 
-  const handleChangeSelectInputs = (e, uid, objName) => {
-    const selectedMembersTmp = [...selectedMembers];
-    selectedMembersTmp.forEach(item => {
-      if (item.uid === uid) {
-        item[objName] = e.value
-      }
-    })
-    setSelectedMembers(selectedMembersTmp)
-  }
+  // const handleChangeSelectInputs = (e, uid, objName) => {
+  //   const selectedMembersTmp = [...selectedMembers];
+  //   selectedMembersTmp.forEach(item => {
+  //     if (item.uid === uid) {
+  //       item[objName] = e.value
+  //     }
+  //   })
+  //   setSelectedMembers(selectedMembersTmp)
+  // }
 
   const handleTextInputChange = (value, uid, objName) => {
     const selectedMembersTmp = [...selectedMembers];
@@ -350,26 +353,132 @@ const SalaryAdjustmentPropse = (props) => {
 
   // Gửi yêu cầu
   const handleSendForm = () => {
-    if (processStatus === 23) {
-      const listErrors = validation();
-      if (listErrors.length !== 0) {
-        setResultModal({
-          show: true,
-          title: 'Yêu cầu nhập thông tin',
-          message: listErrors[0],
-          isSuccess: false,
-        })
+    // Create
+    if (isCreateMode) {
+      console.log(selectMembers);
+      if (selectMembers.length === 0) {
+        showStatusModal("CBNV được đề xuất chưa được chọn!", false)
         return;
       }
+      if (!approver) {
+        showStatusModal("Nhân sự hỗ trợ quyền xem lương chưa được nhập!", false)
+        return;
+      }
+      const bodyFormData = prepareDataToSubmit()
+      console.log(...bodyFormData);
+      axios({
+        method: 'POST',
+        url: `${process.env.REACT_APP_REQUEST_URL}salaryAdjustment/create`,
+        data: bodyFormData,
+        headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
+      })
+        .then(response => {
+          if (response.data.result && response.data.result.code === '000000') {
+            showStatusModal(t("RequestSent"), true, '/tasks')
+            return;
+          }
+          showStatusModal(response.data.result.message || 'Có lỗi xảy ra trong quá trình cập nhật thông tin!', false)
+        })
+        .catch(response => {
+          showStatusModal("Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
+        })
+    } else {
+      // Review
+      if (processStatus === 23) {
+        const listErrors = validation();
+        if (listErrors.length !== 0) {
+          setResultModal({
+            show: true,
+            title: 'Yêu cầu nhập thông tin',
+            message: listErrors[0],
+            isSuccess: false,
+          })
+          return;
+        }
+      }
     }
-    console.log('Submit call API');
   };
+
+  const prepareDataToSubmit = () => {
+    if (isCreateMode) {
+      let bodyFormData = new FormData();
+      const employeeInfoLst = selectMembers.map(u => ({
+        employeeNo: u?.employeeNo,
+        account: u?.account,
+        fullName: u?.fullName,
+        jobTitle: u?.jobTitle,
+        department: u?.department,
+        startDate: u?.startDate,
+        expireDate: u?.expireDate,
+        contractName: u?.contractName,
+        contractType: u?.contractType,
+      }))
+      bodyFormData.append('userId', viewSetting.proposedStaff.email);
+      bodyFormData.append('userInfo', JSON.stringify({
+        employeeNo: viewSetting.proposedStaff.employeeNo,
+        avatar: viewSetting.proposedStaff.avatar,
+        account: viewSetting.proposedStaff.account,
+        fullName: viewSetting.proposedStaff.fullName,
+        employeeLevel: viewSetting.proposedStaff.employeeLevel,
+        orglv2Id: viewSetting.proposedStaff.orgLv2Id,
+        jobTitle: viewSetting.proposedStaff.jobTitle,
+        department: viewSetting.proposedStaff.department,
+      }));
+      bodyFormData.append('coordinatorId', approver?.account.toLowerCase() + "@vingroup.net");
+      bodyFormData.append('coordinatorInfo', JSON.stringify({
+        avatar: approver?.avatar,
+        account: approver?.account.toLowerCase(),
+        fullName: approver?.fullName,
+        employeeLevel: approver?.employeeLevel,
+        pnl: approver?.pnl,
+        orglv2Id: approver?.orglv2Id,
+        current_position: approver?.current_position,
+        department: approver?.department,
+      }));
+      bodyFormData.append('employeeInfoLst', JSON.stringify(employeeInfoLst));
+      bodyFormData.append('orgLv2Id', viewSetting.proposedStaff.orgLv2Id);
+      bodyFormData.append('orgLv3Id', viewSetting.proposedStaff.orgLv3Id);
+      bodyFormData.append('orgLv4Id', viewSetting.proposedStaff.orgLv4Id);
+      bodyFormData.append('orgLv5Id', viewSetting.proposedStaff.orgLv5Id);
+      bodyFormData.append('orgLv6Id', viewSetting.proposedStaff.orgLv6Id);
+      bodyFormData.append('orgLv2Text', viewSetting.proposedStaff.orgLv2Text);
+      bodyFormData.append('orgLv3Text', viewSetting.proposedStaff.orgLv3Text);
+      bodyFormData.append('orgLv4Text', viewSetting.proposedStaff.orgLv4Text);
+      bodyFormData.append('orgLv5Text', viewSetting.proposedStaff.orgLv5Text);
+      bodyFormData.append('orgLv6Text', viewSetting.proposedStaff.orgLv6Text);
+      bodyFormData.append('companyCode', viewSetting.proposedStaff.companyCode);
+      return bodyFormData
+    }
+  }
+
+  const showStatusModal = (message, isSuccess = false, url = null) => {
+    setModalStatus({
+      isShowStatusModal: true,
+      content: message,
+      isSuccess: isSuccess,
+      url: url,
+    })
+  }
+
+  const hideStatusModal = () => {
+    setModalStatus({
+      ...modalStatus,
+      isShowStatusModal: false,
+    })
+    if (modalStatus.url) {
+      window.location.href = modalStatus.url;
+    }
+  }
+
+  const handleUpdateApprover = (approver, isApprover) => {
+    console.log(approver);
+    setApprover(approver)
+  }
 
   const validation = () => {
     const selectedMembersTmp = [...selectedMembers];
     let errors = [];
     selectedMembersTmp.forEach(u => {
-      if (!u.proposedContract) errors.push('Bắt buộc chọn Loại HĐ đề xuất!')
       if (!u.proposedSalary) errors.push('Bắt buộc nhập mức lương đề xuất!')
       if (!u.effectiveTime) errors.push('Bắt buộc chọn thời gian có hiệu lực!')
     })
@@ -385,7 +494,7 @@ const SalaryAdjustmentPropse = (props) => {
     setViewSetting(viewSettingTmp)
   }
 
-  const hideStatusModal = () => {
+  const hideResultModal = () => {
     setResultModal({
       show: false,
       title: '',
@@ -398,12 +507,12 @@ const SalaryAdjustmentPropse = (props) => {
     return (
       members.map((item, index) => {
         return <tr key={index}>
-          <td className="text-center"><span className="same-width">{item?.fullname}</span></td>
-          <td className="text-center"><span className="same-width">{item?.job_name}</span></td>
+          <td className="text-center"><span className="same-width">{item?.fullName}</span></td>
+          <td className="text-center"><span className="same-width">{item?.jobTitle}</span></td>
           <td className="text-center"><span className="same-width">{item?.department}</span></td>
           <td className="text-center">
             <span className="same-width">
-              {ListTypeContract.find(u => u?.value === item?.typeContract)?.label}
+              {ListTypeContract.find(u => u?.value === item?.contractType)?.label}
             </span>
           </td>
           <td className="text-center">
@@ -430,24 +539,6 @@ const SalaryAdjustmentPropse = (props) => {
                   </div>
                 </div>
                 : <></>
-              }
-            </span>
-          </td>
-          <td className="text-center">
-            <span className="same-width">
-              {viewSetting.disableComponent.editSubjectApply && !isCreateMode ?
-                <Select
-                  placeholder={t("Select")}
-                  options={ListTypeContract}
-                  isClearable={false}
-                  value={ListTypeContract.filter(u => u?.value === item?.proposedContract)}
-                  onChange={(e) => handleChangeSelectInputs(e, item?.uid, "proposedContract")}
-                  className="input mv-10"
-                  menuPortalTarget={document.body}
-                  styles={{ menu: (provided) => ({ ...provided, zIndex: 2 }) }}
-                />
-                :
-                <>{ListTypeContract.find(u => u?.value === item?.proposedContract)?.label}</>
               }
             </span>
           </td>
@@ -552,6 +643,12 @@ const SalaryAdjustmentPropse = (props) => {
         title={resultModal.title}
         message={resultModal.message}
         isSuccess={resultModal.resultModal}
+        onHide={hideResultModal}
+      />
+      <StatusModal
+        show={modalStatus.isShowStatusModal}
+        content={modalStatus.content}
+        isSuccess={modalStatus.isSuccess}
         onHide={hideStatusModal}
       />
       <div className="eval-heading">ĐỀ XUẤT ĐIỀU CHỈNH THU NHẬP</div>
@@ -621,7 +718,6 @@ const SalaryAdjustmentPropse = (props) => {
                 <td rowSpan="2" className="min-width text-center font-weight-bold">Khối/Phòng/Bộ phận</td>
                 <td rowSpan="2" className="min-width text-center font-weight-bold">Loại HĐ hiện tại</td>
                 <td rowSpan="2" className="min-width1 text-center"><strong>Thu nhập hiện tại</strong><span> (Gross)</span></td>
-                <td rowSpan="2" className="min-width2 text-center font-weight-bold">Loại HĐ đề xuất</td>
                 <td rowSpan="2" className="min-width1 text-center"><strong>Mức lương đề xuất</strong><span> (Gross)</span></td>
                 <td rowSpan="2" className="min-width text-center font-weight-bold"><strong>Thời gian hiệu lực</strong></td>
                 <th colSpan="2" scope="colgroup" className="min-width text-center font-weight-bold">Đánh giá chung</th>
@@ -648,7 +744,7 @@ const SalaryAdjustmentPropse = (props) => {
             <ApproverComponent
               isEdit={!viewSetting.disableComponent.selectHrSupportViewSalary}
               approver={approver}
-              updateApprover={(approver, isApprover) => console.log(approver, isApprover)}
+              updateApprover={(approver, isApprover) => handleUpdateApprover(approver, isApprover)}
             />
           </div>
         </>

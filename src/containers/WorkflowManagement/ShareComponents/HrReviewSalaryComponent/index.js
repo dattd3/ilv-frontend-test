@@ -79,67 +79,67 @@ class ApproverComponent extends React.Component {
     // }
   }
 
-  loadApproverForPnL = async () => {
-    try {
-      const config = getMuleSoftHeaderConfigurations()
-      const response = await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/manager`, config)
-      if (response && response.data) {
-        const result = response.data.result
-        if (result && result.code == Constants.API_SUCCESS_CODE) {
-          const data = response.data?.data[0]
-          return {
-            value: data?.userid?.toLowerCase() || "",
-            label: data?.fullname || "",
-            fullName: data?.fullname || "",
-            avatar: data?.avatar || "",
-            employeeLevel: data?.rank_title,
-            pnl: "",
-            orglv2Id: "",
-            account: data?.userid?.toLowerCase() || "",
-            current_position: data?.title || "",
-            department: data?.department || ""
-          }
-        }
-        return null
-      }
-      return null
-    } catch (e) {
-      return null
-    }
-  }
+  // loadApproverForPnL = async () => {
+  //   try {
+  //     const config = getMuleSoftHeaderConfigurations()
+  //     const response = await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/manager`, config)
+  //     if (response && response.data) {
+  //       const result = response.data.result
+  //       if (result && result.code == Constants.API_SUCCESS_CODE) {
+  //         const data = response.data?.data[0]
+  //         return {
+  //           value: data?.userid?.toLowerCase() || "",
+  //           label: data?.fullname || "",
+  //           fullName: data?.fullname || "",
+  //           avatar: data?.avatar || "",
+  //           employeeLevel: data?.rank_title,
+  //           pnl: "",
+  //           orglv2Id: "",
+  //           account: data?.userid?.toLowerCase() || "",
+  //           current_position: data?.title || "",
+  //           department: data?.department || ""
+  //         }
+  //       }
+  //       return null
+  //     }
+  //     return null
+  //   } catch (e) {
+  //     return null
+  //   }
+  // }
 
-  loadRecentlyApprover = async () => {
-    try {
-      const config = getRequestConfigurations()
-      const response = await axios.get(`${process.env.REACT_APP_REQUEST_URL}user/suggests`, config)
-      if (response && response.data) {
-        const result = response.data.result
-        if (result && result.code == Constants.API_SUCCESS_CODE) {
-          const data = response.data?.data
-          const approverInfo = data.approverInfo
-          if (approverInfo) {
-            return [{
-              value: approverInfo?.account?.toLowerCase() || "",
-              label: approverInfo?.fullName || "",
-              fullName: approverInfo?.fullName || "",
-              avatar: approverInfo?.avatar || "",
-              employeeLevel: approverInfo?.employeeLevel || "",
-              pnl: approverInfo?.pnl || "",
-              orglv2Id: approverInfo?.orglv2Id || "",
-              account: approverInfo?.account?.toLowerCase() || "",
-              current_position: approverInfo?.current_position || "",
-              department: approverInfo?.department || ""
-            }]
-          }
-          return []
-        }
-        return []
-      }
-      return []
-    } catch (e) {
-      return []
-    }
-  }
+  // loadRecentlyApprover = async () => {
+  //   try {
+  //     const config = getRequestConfigurations()
+  //     const response = await axios.get(`${process.env.REACT_APP_REQUEST_URL}user/suggests`, config)
+  //     if (response && response.data) {
+  //       const result = response.data.result
+  //       if (result && result.code == Constants.API_SUCCESS_CODE) {
+  //         const data = response.data?.data
+  //         const approverInfo = data.approverInfo
+  //         if (approverInfo) {
+  //           return [{
+  //             value: approverInfo?.account?.toLowerCase() || "",
+  //             label: approverInfo?.fullName || "",
+  //             fullName: approverInfo?.fullName || "",
+  //             avatar: approverInfo?.avatar || "",
+  //             employeeLevel: approverInfo?.employeeLevel || "",
+  //             pnl: approverInfo?.pnl || "",
+  //             orglv2Id: approverInfo?.orglv2Id || "",
+  //             account: approverInfo?.account?.toLowerCase() || "",
+  //             current_position: approverInfo?.current_position || "",
+  //             department: approverInfo?.department || ""
+  //           }]
+  //         }
+  //         return []
+  //       }
+  //       return []
+  //     }
+  //     return []
+  //   } catch (e) {
+  //     return []
+  //   }
+  // }
 
   handleSelectChange(name, value) {
     if (value) {

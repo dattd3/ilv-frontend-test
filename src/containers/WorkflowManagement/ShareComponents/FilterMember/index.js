@@ -20,12 +20,14 @@ const FilterMember = (props) => {
     } else {
       setSelectedMembers(props.selectedMembers)
     }
+    // eslint-disable-next-line
   }, [props.isEdit]);
-  
+
   useEffect(() => {
     if (!props.isEdit) {
       setSelectedMembers(props.selectedMembers)
     }
+    // eslint-disable-next-line
   }, [props.selectedMembers]);
 
   const getApproverInfo = () => {
@@ -100,6 +102,10 @@ const FilterMember = (props) => {
           company_email: profile.company_email.includes("@") ? profile.company_email.split("@")[0] : profile.company_email,
           checked: profile.checked || false,
           isExpand: profile.isExpand || false,
+          contractName: profile.contract_type_name || "",
+          contractType: profile.contract_type_code || "",
+          startDate: profile.startDate || "",
+          expireDate: profile.expireDate || "",
         };
       });
     }
