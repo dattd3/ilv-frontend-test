@@ -52,6 +52,7 @@ const Constants = {
   DEPARTMENT_TIMESHEET: 9,
   ONBOARDING: 6,
   RESIGN_SELF: 7,
+  SALARY_PROPOSE: 12,
 
   //Status request
   STATUS_PENDING: 0,
