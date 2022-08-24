@@ -288,8 +288,9 @@ function SalaryPropse(props) {
         headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
       })
         .then(response => {
-          if (response.data.result && response.data.result.code === '000000') {
+          if (response.data.result && response.data.result.code == '000000') {
             showStatusModal(t("RequestSent"), true, '/tasks')
+            return;
           }
           showStatusModal(response.data.result.message || 'Có lỗi xảy ra trong quá trình cập nhật thông tin!', false)
         })
@@ -308,7 +309,7 @@ function SalaryPropse(props) {
   const prepareDataToSubmit = () => {
     if (isCreateMode) {
       let bodyFormData = new FormData();
-      bodyFormData.append('requestHistoryId', props.location.state?.idContract);
+      bodyFormData.append('requestHistoryId', locationState?.idContract);
       bodyFormData.append('userId', viewSetting.proposedStaff.email);
       bodyFormData.append('userInfo', JSON.stringify({
         employeeNo: viewSetting.proposedStaff.employeeNo,
