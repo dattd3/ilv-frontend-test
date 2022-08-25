@@ -323,7 +323,7 @@ function EvaluationProcess(props) {
                   <td className="text-center target"><span>{target?.target}</span></td>
                   <td className="actual-results">
                     <div>
-                      {!showByManager && evaluationFormDetail.status == evaluationStatus.launch ? <textarea rows={3} placeholder="Nhập" value={target?.realResult || ""} onChange={(e) => handleInputChange(i, index, 'realResult', e)} /> : <span>{target?.realResult}</span>}
+                      {!showByManager && evaluationFormDetail.status == evaluationStatus.launch ? <textarea rows={3} placeholder={t("EvaluationInput")} value={target?.realResult || ""} onChange={(e) => handleInputChange(i, index, 'realResult', e)} /> : <span>{target?.realResult}</span>}
                     </div>
                     {errors[`${index}_${i}_realResult`] && <div className="alert alert-danger invalid-message" role="alert">{errors[`${index}_${i}_realResult`]}</div>}
                   </td>
@@ -331,7 +331,7 @@ function EvaluationProcess(props) {
                     <div>
                       {
                         !showByManager && evaluationFormDetail.status == evaluationStatus.launch
-                          // ? <input type="text" placeholder="Nhập" value={target?.seftPoint || ""} onChange={(e) => handleInputChange(i, index, 'seftPoint', e)} /> 
+                          // ? <input type="text" placeholder={t("EvaluationInput")} value={target?.seftPoint || ""} onChange={(e) => handleInputChange(i, index, 'seftPoint', e)} /> 
                           ? <select onChange={(e) => handleInputChange(i, index, 'seftPoint', e)} value={target?.seftPoint || ''}>
                             <option value=''>{t("EvaluationDetailPartSelectScore")}</option>
                             {
@@ -349,7 +349,7 @@ function EvaluationProcess(props) {
                     <div>
                       {
                         showByManager && evaluationFormDetail.status == evaluationStatus.selfAssessment
-                          // ? <input type="text" placeholder="Nhập" value={target?.leadReviewPoint || ""} onChange={(e) => handleInputChange(i, index, 'leadReviewPoint', e)} />
+                          // ? <input type="text" placeholder={t("EvaluationInput")} value={target?.leadReviewPoint || ""} onChange={(e) => handleInputChange(i, index, 'leadReviewPoint', e)} />
                           ? <select onChange={(e) => handleInputChange(i, index, 'leadReviewPoint', e)} value={target?.leadReviewPoint || ''}>
                             <option value=''>{t("EvaluationDetailPartSelectScore")}</option>
                             {
@@ -492,7 +492,7 @@ function EvaluationProcess(props) {
                                 <td className="text-center target"><span>{target?.target}</span></td>
                                 <td className="actual-results">
                                   <div>
-                                    {!showByManager && evaluationFormDetail.status == evaluationStatus.launch ? <textarea rows={3} placeholder="Nhập" value={target?.realResult || ""} onChange={(e) => handleInputChange(i, index, 'realResult', e)} /> : <span>{target?.realResult}</span>}
+                                    {!showByManager && evaluationFormDetail.status == evaluationStatus.launch ? <textarea rows={3} placeholder={t("EvaluationInput")} value={target?.realResult || ""} onChange={(e) => handleInputChange(i, index, 'realResult', e)} /> : <span>{target?.realResult}</span>}
                                   </div>
                                   {errors[`${index}_${i}_realResult`] && <div className="alert alert-danger invalid-message" role="alert">{errors[`${index}_${i}_realResult`]}</div>}
                                 </td>
@@ -500,7 +500,7 @@ function EvaluationProcess(props) {
                                   <div>
                                     {
                                       !showByManager && evaluationFormDetail.status == evaluationStatus.launch
-                                        // ? <input type="text" placeholder="Nhập" value={target?.seftPoint || ""} onChange={(e) => handleInputChange(i, index, 'seftPoint', e)} /> 
+                                        // ? <input type="text" placeholder={t("EvaluationInput")} value={target?.seftPoint || ""} onChange={(e) => handleInputChange(i, index, 'seftPoint', e)} /> 
                                         ? <select onChange={(e) => handleInputChange(i, index, 'seftPoint', e)} value={target?.seftPoint || ''}>
                                           <option value=''>{t("EvaluationDetailPartSelectScore")}</option>
                                           {
@@ -518,7 +518,7 @@ function EvaluationProcess(props) {
                                   <div>
                                     {
                                       showByManager && evaluationFormDetail.status == evaluationStatus.selfAssessment
-                                        // ? <input type="text" placeholder="Nhập" value={target?.leadReviewPoint || ""} onChange={(e) => handleInputChange(i, index, 'leadReviewPoint', e)} />
+                                        // ? <input type="text" placeholder={t("EvaluationInput")} value={target?.leadReviewPoint || ""} onChange={(e) => handleInputChange(i, index, 'leadReviewPoint', e)} />
                                         ? <select onChange={(e) => handleInputChange(i, index, 'leadReviewPoint', e)} value={target?.leadReviewPoint || ''}>
                                           <option value=''>{t("EvaluationDetailPartSelectScore")}</option>
                                           {
