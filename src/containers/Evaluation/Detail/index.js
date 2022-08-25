@@ -398,11 +398,12 @@ function EvaluationProcess(props) {
         let indexText = formatIndexText(index + 1)
         // let scores = prepareScores(item?.listGroupConfig)
         let scores = [1, 2, 3, 4, 5]
+        let isAttitudeBlock = item?.listGroupConfig && item?.listGroupConfig?.length > 0
 
-        return <div className={`part-block ${item?.listGroupConfig && item?.listGroupConfig?.length > 0 ? 'attitude' : 'work-result'}`} key={index}>
+        return <div className={`part-block ${isAttitudeBlock ? 'attitude' : 'work-result'}`} key={index}>
           <div className="title">{`${t("EvaluationDetailPart")} ${indexText} - ${JSON.parse(item?.groupName || '{}')[languageCodeMapping[currentLocale]]}`} <span className="red">({item?.groupWeight || 0}%)</span></div>
           {
-            item?.listGroupConfig && item?.listGroupConfig?.length > 0 &&
+            isAttitudeBlock &&
             <div className="wrap-score-table">
               <table>
                 <thead>
@@ -441,21 +442,117 @@ function EvaluationProcess(props) {
             {
               (item?.listTarget || []).map((target, i) => {
                 let deviant = (target?.leadReviewPoint === '' || target?.leadReviewPoint === null || target?.seftPoint === '' || target?.seftPoint === null) ? '' : Number(target?.leadReviewPoint) - Number(target?.seftPoint)
-                if (evaluationFormDetail?.formType == formType.EMPLOYEE) {
+                if (evaluationFormDetail?.formType == formType.EMPLOYEE) { // Biểu mẫu giành cho Nhân viên
                   return renderEvaluationItem(item, index, scores, target, i, deviant)
                 }
-                return <div className="evaluation-sub-group">
-                  <div className="sub-group-name">{`${i + 1}. ${JSON.parse(target?.groupName || '{}')[languageCodeMapping[currentLocale]]}`} <span className="red">({target.groupWeight}%)</span></div>
-                  <div className="sub-group-targets">
-                    {(target.listTarget || []).map((childTarget, childIndex) => {
-                      let deviant = (childTarget?.leadReviewPoint === '' || childTarget?.leadReviewPoint === null || childTarget?.seftPoint === '' || childTarget?.seftPoint === null) ? '' : Number(childTarget?.leadReviewPoint) - Number(childTarget?.seftPoint)
-                      return <React.Fragment key={childIndex}>
-                        {renderEvaluationItem(item, index, scores, childTarget, 0, deviant, i, childIndex)}
-                        <div className="divider" />
-                      </React.Fragment>
-                    })}
-                  </div>
-                </div>
+
+                if (evaluationFormDetail?.formType == formType.MANAGER) { // Biểu mẫu giành cho CBLĐ
+                  if (isAttitudeBlock) {
+                    return <div className="evaluation-sub-group" key={`sub-group-${i}`}>
+                      <div className='sub-group-name'>{`${i + 1}. ${JSON.parse(target?.groupName || '{}')[languageCodeMapping[currentLocale]]}`} <span className="red">({target.groupWeight}%)</span></div>
+                      <div className="sub-group-targets"> 
+                        {(target.listTarget || []).map((childTarget, childIndex) => {
+                          let deviant = (childTarget?.leadReviewPoint === '' || childTarget?.leadReviewPoint === null || childTarget?.seftPoint === '' || childTarget?.seftPoint === null) ? '' : Number(childTarget?.leadReviewPoint) - Number(childTarget?.seftPoint)
+                          return <React.Fragment key={childIndex}>
+                            {renderEvaluationItem(item, index, scores, childTarget, 0, deviant, i, childIndex)}
+                            <div className="divider" />
+                          </React.Fragment>
+                        })}
+                      </div>
+                    </div>
+                  } else {
+                    return (
+                      <div className="evaluation-item" key={i}>
+                        <div className="title">{`${i + 1}. ${JSON.parse(target?.targetName || '{}')[languageCodeMapping[currentLocale]]}`}</div>
+                        <div className="wrap-score-table">
+                          <table>
+                            <thead>
+                              <tr>
+                                <th className="measurement"><span>{t("EvaluationDetailPartLevelOfPerformance")}<span className="note">({t("EvaluationDetailPartByScore")})</span></span></th>
+                                <th className="text-center proportion"><span>{t("EvaluationDetailPartWeight")} %</span></th>
+                                <th className="text-center target"><span>{t("EvaluationDetailPartTarget")}</span></th>
+                                <th className="text-center actual-results"><span>{t("EvaluationDetailPartActualResult")}</span>{!showByManager && <span className="required">(*)</span>}</th>
+                                <th className="text-center self-assessment"><span>{t("EvaluationDetailPartAttitudeSelfAssessment")}</span>{!showByManager && <span className="required">(*)</span>}</th>
+                                <th className="text-center qltt-assessment"><span>{t("EvaluationDetailPartAttitudeManagerAssessment")}</span>{showByManager && <span className="required">(*)</span>}</th>
+                                <th className="text-center deviant"><span>{t("EvaluationDetailPartAttitudeDifferent")}</span></th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr>
+                                <td className="measurement">
+                                  <ul>
+                                    <li>{target?.metric1}</li>
+                                    <li>{target?.metric2}</li>
+                                    <li>{target?.metric3}</li>
+                                    <li>{target?.metric4}</li>
+                                    <li>{target?.metric5}</li>
+                                  </ul>
+                                </td>
+                                <td className="text-center proportion"><span>{target?.weight}%</span></td>
+                                <td className="text-center target"><span>{target?.target}</span></td>
+                                <td className="actual-results">
+                                  <div>
+                                    {!showByManager && evaluationFormDetail.status == evaluationStatus.launch ? <textarea rows={3} placeholder="Nhập" value={target?.realResult || ""} onChange={(e) => handleInputChange(i, index, 'realResult', e)} /> : <span>{target?.realResult}</span>}
+                                  </div>
+                                  {errors[`${index}_${i}_realResult`] && <div className="alert alert-danger invalid-message" role="alert">{errors[`${index}_${i}_realResult`]}</div>}
+                                </td>
+                                <td className="text-center self-assessment">
+                                  <div>
+                                    {
+                                      !showByManager && evaluationFormDetail.status == evaluationStatus.launch
+                                        // ? <input type="text" placeholder="Nhập" value={target?.seftPoint || ""} onChange={(e) => handleInputChange(i, index, 'seftPoint', e)} /> 
+                                        ? <select onChange={(e) => handleInputChange(i, index, 'seftPoint', e)} value={target?.seftPoint || ''}>
+                                          <option value=''>{t("EvaluationDetailPartSelectScore")}</option>
+                                          {
+                                            (scores || []).map((score, i) => {
+                                              return <option value={score} key={i}>{score}</option>
+                                            })
+                                          }
+                                        </select>
+                                        : <span>{target?.seftPoint}</span>
+                                    }
+                                  </div>
+                                  {errors[`${index}_${i}_seftPoint`] && <div className="alert alert-danger invalid-message" role="alert">{errors[`${index}_${i}_seftPoint`]}</div>}
+                                </td>
+                                <td className="text-center qltt-assessment">
+                                  <div>
+                                    {
+                                      showByManager && evaluationFormDetail.status == evaluationStatus.selfAssessment
+                                        // ? <input type="text" placeholder="Nhập" value={target?.leadReviewPoint || ""} onChange={(e) => handleInputChange(i, index, 'leadReviewPoint', e)} />
+                                        ? <select onChange={(e) => handleInputChange(i, index, 'leadReviewPoint', e)} value={target?.leadReviewPoint || ''}>
+                                          <option value=''>{t("EvaluationDetailPartSelectScore")}</option>
+                                          {
+                                            (scores || []).map((score, i) => {
+                                              return <option value={score} key={i}>{score}</option>
+                                            })
+                                          }
+                                        </select>
+                                        : <span>{target?.leadReviewPoint}</span>
+                                    }
+                                  </div>
+                                  {errors[`${index}_${i}_leadReviewPoint`] && <div className="alert alert-danger invalid-message" role="alert">{errors[`${index}_${i}_leadReviewPoint`]}</div>}
+                                </td>
+                                <td className="text-center deviant">
+                                  <span className={`value ${deviant && deviant > 0 ? 'up' : deviant && deviant < 0 ? 'down' : ''}`}>&nbsp;{`${deviant && deviant > 0 ? '+' : ''}${deviant}`}{deviant && deviant != 0 ? <Image alt='Note' src={deviant && deviant > 0 ? IconUp : deviant && deviant < 0 ? IconDown : ''} /> : ''}</span>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                        <div className="comment">
+                          <div className="self">
+                            <p>{t("EvaluationDetailPartAttitudeCommentOfEmployee")}</p>
+                            <textarea rows={1} placeholder={`${t("EvaluationDetailPartSelectScoreInput")}`} value={target?.seftOpinion || ""} onChange={(e) => handleInputChange(i, index, 'seftOpinion', e)} disabled={showByManager || evaluationFormDetail.status != evaluationStatus.launch} />
+                          </div>
+                          <div className="qltt">
+                            <p>{t("EvaluationDetailPartAttitudeCommentOfManager")}</p>
+                            <textarea rows={1} placeholder={`${t("EvaluationDetailPartSelectScoreInput")}`} value={target?.leaderReviewOpinion || ""} onChange={(e) => handleInputChange(i, index, "leaderReviewOpinion", e)} disabled={!showByManager || (showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment))} />
+                          </div>
+                        </div>
+                      </div>
+                    )
+                  }
+                }
               })
             }
           </div>
@@ -837,7 +934,7 @@ function EvaluationDetail(props) {
         {
           evaluationFormDetail ?
             <>
-              <h1 className="content-page-header">{`${evaluationFormDetail?.checkPhaseFormName} của ${evaluationFormDetail?.fullName}`}</h1>
+              <h1 className="content-page-header">{`${evaluationFormDetail?.checkPhaseFormName} ${t("of")} ${evaluationFormDetail?.fullName}`}</h1>
               <div>
                 <EvaluationOverall evaluationFormDetail={evaluationFormDetail} showByManager={showByManager} />
                 <EvaluationProcess evaluationFormDetail={evaluationFormDetail} showByManager={showByManager} errors={errors} updateData={updateData} />
