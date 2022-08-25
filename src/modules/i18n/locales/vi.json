@@ -1226,5 +1226,6 @@
   "EvaluationFailedToEvaluateForm": "Đánh giá biểu mẫu thất bại. Xin vui lòng thử lại!",
   "EvaluationFormSentBackToEmployeeSuccessfully": "Biểu mẫu đã được gửi lại CBNV thành công!",
   "EvaluationFailedToSendTheFormBackToEmployee": "Biểu mẫu chưa được gửi lại CBNV. Xin vui lòng thử lại!",
-  "of": "của"
+  "of": "của",
+  "EvaluationInput": "Nhập"
 }
