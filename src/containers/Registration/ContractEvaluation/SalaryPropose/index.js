@@ -48,7 +48,10 @@ function SalaryPropse(props) {
     url: '',
   });
 
-  const [approver, setApprover] = useState(null);
+  const [coordinator, setCoordinator] = useState(null); // Nhân sự hỗ trợ xin quyền xem lương
+  const [supervisor, setSupervisor] = useState(null); // CBQL cấp cơ sở
+  const [appraiser, setAppraiser] = useState(null); // HR thẩm định quyền điều chỉnh lương
+  const [approver, setApprover] = useState(null); // CBLĐ phê duyệt
 
   const [viewSetting, setViewSetting] = useState({
     showComponent: {
@@ -94,18 +97,18 @@ function SalaryPropse(props) {
     },
   });
 
-  const processStatus = 21;
-  const locationState = { idContract: 1739154, idSalary: null };
+  // const processStatus = 21;
+  // const locationState = { idContract: 1739154, idSalary: null };
 
   useEffect(() => {
-    console.log(props.location.state, locationState);
+    console.log(props.location.state);
     getDataContract();
-    // props.location.state <=> locationState
     if (props.location.state) {
       if (props.location.state?.idSalary) {
         // Review mode
         setIsCreateMode(false);
-        checkAuthorize();
+        getDataSalary();
+
       } else {
         // Create mode
         setIsCreateMode(true);
@@ -117,8 +120,18 @@ function SalaryPropse(props) {
 
   const getDataContract = async () => {
     try {
-      const { data: { data: response } } = await api.fetchSalaryPropose(props.location.state?.idContract);
+      const { data: { data: response } } = await api.fetchStaffContract(props.location.state?.idContract);
       setDataContract(response);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const getDataSalary = async () => {
+    try {
+      const { data: { data: response } } = await api.fetchSalaryPropose(props.location.state?.idSalary);
+      await setDataSalary(response)
+      await checkAuthorize(response);
     } catch (error) {
       console.log(error);
     }
@@ -154,22 +167,18 @@ function SalaryPropse(props) {
     setViewSetting(viewSettingTmp)
   }
 
-  const checkAuthorize = () => {
+  const checkAuthorize = (dataSalaryInfo) => {
     // const currentEmployeeNo = localStorage.getItem('email');
     let viewSettingTmp = { ...viewSetting };
     // Todo: check nguoi danh gia
-    switch (processStatus) {
+    switch (dataSalaryInfo?.processStatusId) {
       case 21:
-        viewSettingTmp.showComponent.humanForReviewSalary = true;
-        viewSettingTmp.disableComponent.viewCurrentSalary = true;
-        viewSettingTmp.showComponent.btnCancel = true;
-        viewSettingTmp.showComponent.btnSendRequest = true;
-        break;
       case 22:
         viewSettingTmp.showComponent.humanForReviewSalary = true;
         viewSettingTmp.disableComponent.viewCurrentSalary = true;
         break;
       case 23:
+        // Todo: kiem tra ai la nguoi view
         viewSettingTmp.showComponent.humanForReviewSalary = true;
         viewSettingTmp.showComponent.humanResourceChangeSalary = true;
         viewSettingTmp.showComponent.managerApproved = true;
@@ -219,6 +228,40 @@ function SalaryPropse(props) {
         break;
       default:
         break;
+    }
+    viewSettingTmp.proposedStaff.fullName = dataSalaryInfo?.user?.fullName
+    viewSettingTmp.proposedStaff.jobTitle = dataSalaryInfo?.user?.jobTitle
+    viewSettingTmp.proposedStaff.department = dataSalaryInfo?.user?.department
+    if (dataSalaryInfo?.requestInfo.length !== 0) {
+      const requestInfo = dataSalaryInfo?.requestInfo[0];
+      if (requestInfo?.coordinatorInfo)
+        setCoordinator({
+          fullName: JSON.parse(requestInfo?.coordinatorInfo)?.FullName,
+          account: requestInfo?.coordinatorInfo?.coordinatorId,
+          current_position: JSON.parse(requestInfo?.coordinatorInfo)?.JobTitle,
+          department: JSON.parse(requestInfo?.coordinatorInfo)?.Department
+        })
+      if (requestInfo?.supervisorInfo)
+        setSupervisor({
+          fullName: JSON.parse(requestInfo?.supervisorInfo)?.FullName,
+          account: requestInfo?.supervisorInfo?.supervisorId,
+          current_position: JSON.parse(requestInfo?.supervisorInfo)?.JobTitle,
+          department: JSON.parse(requestInfo?.supervisorInfo)?.Department
+        })
+      if (requestInfo?.appraiserInfo)
+        setAppraiser({
+          fullName: JSON.parse(requestInfo?.appraiserInfo)?.FullName,
+          account: requestInfo?.appraiserInfo?.appraiserId,
+          current_position: JSON.parse(requestInfo?.appraiserInfo)?.JobTitle,
+          department: JSON.parse(requestInfo?.appraiserInfo)?.Department
+        })
+      if (requestInfo?.approverInfo)
+        setApprover({
+          fullName: JSON.parse(requestInfo?.approverInfo)?.FullName,
+          account: requestInfo?.approverInfo?.approverId,
+          current_position: JSON.parse(requestInfo?.approverInfo)?.JobTitle,
+          department: JSON.parse(requestInfo?.approverInfo)?.Department
+        })
     }
     setViewSetting(viewSettingTmp)
   }
@@ -276,7 +319,7 @@ function SalaryPropse(props) {
     console.log('Gửi yêu cầu');
     // Create
     if (isCreateMode) {
-      if (!approver) {
+      if (!coordinator) {
         showStatusModal("Nhân sự hỗ trợ quyền xem lương chưa được nhập!", false)
         return;
       }
@@ -299,7 +342,7 @@ function SalaryPropse(props) {
         })
     } else {
       // Review
-      if (processStatus === 23) {
+      if (dataSalary?.processStatusId === 23) {
         validation();
       }
       // Todo
@@ -309,7 +352,7 @@ function SalaryPropse(props) {
   const prepareDataToSubmit = () => {
     if (isCreateMode) {
       let bodyFormData = new FormData();
-      bodyFormData.append('requestHistoryId', locationState?.idContract);
+      bodyFormData.append('requestHistoryId', props.location.state?.idContract);
       bodyFormData.append('userId', viewSetting.proposedStaff.email);
       bodyFormData.append('userInfo', JSON.stringify({
         employeeNo: viewSetting.proposedStaff.employeeNo,
@@ -321,16 +364,16 @@ function SalaryPropse(props) {
         jobTitle: viewSetting.proposedStaff.jobTitle,
         department: viewSetting.proposedStaff.department,
       }));
-      bodyFormData.append('coordinatorId', approver?.account.toLowerCase() + "@vingroup.net");
+      bodyFormData.append('coordinatorId', coordinator?.account.toLowerCase() + "@vingroup.net");
       bodyFormData.append('coordinatorInfo', JSON.stringify({
-        avatar: approver?.avatar,
-        account: approver?.account.toLowerCase(),
-        fullName: approver?.fullName,
-        employeeLevel: approver?.employeeLevel,
-        pnl: approver?.pnl,
-        orglv2Id: approver?.orglv2Id,
-        current_position: approver?.current_position,
-        department: approver?.department,
+        avatar: coordinator?.avatar,
+        account: coordinator?.account.toLowerCase(),
+        fullName: coordinator?.fullName,
+        employeeLevel: coordinator?.employeeLevel,
+        pnl: coordinator?.pnl,
+        orglv2Id: coordinator?.orglv2Id,
+        current_position: coordinator?.current_position,
+        department: coordinator?.department,
       }));
       bodyFormData.append('employeeInfoLst', JSON.stringify([{
         employeeNo: dataContract?.staffContracts?.employeeCode,
@@ -416,9 +459,8 @@ function SalaryPropse(props) {
     });
   }
 
-  const handleUpdateApprover = (approver, isApprover) => {
-    console.log(approver);
-    setApprover(approver)
+  const handleUpdateCoordinator = (approver, isApprover) => {
+    setCoordinator(approver)
   }
 
   const handleCloseModal = () => {
@@ -620,8 +662,8 @@ function SalaryPropse(props) {
           <div className='block-content-salary__content'>
             <HumanForReviewSalaryComponent
               isEdit={!viewSetting.disableComponent.selectHrSupportViewSalary}
-              approver={approver}
-              updateApprover={(approver, isApprover) => handleUpdateApprover(approver, isApprover)}
+              approver={coordinator}
+              updateApprover={(approver, isApprover) => handleUpdateCoordinator(approver, isApprover)}
             />
           </div>
         </div>
@@ -631,16 +673,16 @@ function SalaryPropse(props) {
         <div className='block-content-salary'>
           <h6 className='block-content-salary__title'> {t('ManagerApproved')}</h6>
           <div className='block-content-salary__content'>
-            <HumanForReviewSalaryComponent isEdit={true} approver={approver} />
+            <HumanForReviewSalaryComponent isEdit={true} approver={supervisor} />
           </div>
         </div>
       }
       {/* NHÂN SỰ THẨM ĐỊNH QUYỀN ĐIỀU CHỈNH LƯƠNG */}
-      {viewSetting.showComponent.humanResourceChangeSalary &&
+      {viewSetting.showComponent.humanResourceChangeSalary && appraiser &&
         <div className='block-content-salary'>
           <h6 className='block-content-salary__title'> {t('HumanResourceChangeSalary')}</h6>
           <div className='block-content-salary__content'>
-            <HumanForReviewSalaryComponent isEdit={true} approver={approver} />
+            <HumanForReviewSalaryComponent isEdit={true} approver={appraiser} />
           </div>
         </div>
       }
@@ -656,8 +698,8 @@ function SalaryPropse(props) {
       {/* Show status */}
       {viewSetting.showComponent.stateProcess &&
         <div className="block-status">
-          <span className={`status ${Constants.mappingStatusRequest[processStatus].className}`}>
-            {t(Constants.mappingStatusRequest[processStatus].label)}
+          <span className={`status ${Constants.mappingStatusRequest[dataSalary?.processStatusId].className}`}>
+            {t(Constants.mappingStatusRequest[dataSalary?.processStatusId].label)}
           </span>
         </div>
       }
