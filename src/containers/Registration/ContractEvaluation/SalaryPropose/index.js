@@ -237,36 +237,36 @@ function SalaryPropse(props) {
       const requestInfo = dataSalaryInfo?.requestInfo[0];
       if (requestInfo?.coordinatorInfo)
         setCoordinator({
-          fullName: JSON.parse(requestInfo?.coordinatorInfo)?.FullName,
-          account: requestInfo?.coordinatorInfo?.coordinatorId,
-          current_position: JSON.parse(requestInfo?.coordinatorInfo)?.JobTitle,
-          department: JSON.parse(requestInfo?.coordinatorInfo)?.Department
+          fullName: JSON.parse(requestInfo?.coordinatorInfo)?.fullname,
+          account: JSON.parse(requestInfo?.coordinatorInfo)?.account,
+          current_position: JSON.parse(requestInfo?.coordinatorInfo)?.current_position,
+          department: JSON.parse(requestInfo?.coordinatorInfo)?.department
         })
     }
 
     // CBQL cấp cơ sở
     if (dataSalaryInfo?.supervisorInfo)
       setSupervisor({
-        fullName: JSON.parse(dataSalaryInfo?.supervisorInfo)?.FullName,
-        account: dataSalaryInfo?.supervisorId,
-        current_position: JSON.parse(dataSalaryInfo?.supervisorInfo)?.JobTitle,
-        department: JSON.parse(dataSalaryInfo?.supervisorInfo)?.Department
+        fullName: JSON.parse(dataSalaryInfo?.supervisorInfo)?.fullname,
+        account: JSON.parse(dataSalaryInfo?.supervisorInfo)?.account,
+        current_position: JSON.parse(dataSalaryInfo?.supervisorInfo)?.current_position,
+        department: JSON.parse(dataSalaryInfo?.supervisorInfo)?.department
       })
     // HR thẩm định quyền điều chỉnh lương
     if (dataSalaryInfo?.appraiserInfo)
       setAppraiser({
-        fullName: JSON.parse(dataSalaryInfo?.appraiserInfo)?.FullName,
-        account: dataSalaryInfo?.appraiserId,
-        current_position: JSON.parse(dataSalaryInfo?.appraiserInfo)?.JobTitle,
-        department: JSON.parse(dataSalaryInfo?.appraiserInfo)?.Department
+        fullName: JSON.parse(dataSalaryInfo?.appraiserInfo)?.fullname,
+        account: JSON.parse(dataSalaryInfo?.appraiserInfo)?.account,
+        current_position: JSON.parse(dataSalaryInfo?.appraiserInfo)?.current_position,
+        department: JSON.parse(dataSalaryInfo?.appraiserInfo)?.department
       })
     // CBLĐ phê duyệt
     if (dataSalaryInfo?.approverInfo)
       setApprover({
-        fullName: JSON.parse(dataSalaryInfo?.approverInfo)?.FullName,
-        account: dataSalaryInfo?.approverId,
-        current_position: JSON.parse(dataSalaryInfo?.approverInfo)?.JobTitle,
-        department: JSON.parse(dataSalaryInfo?.approverInfo)?.Department
+        fullName: JSON.parse(dataSalaryInfo?.approverInfo)?.fullname,
+        account: JSON.parse(dataSalaryInfo?.approverInfo)?.account,
+        current_position: JSON.parse(dataSalaryInfo?.approverInfo)?.current_position,
+        department: JSON.parse(dataSalaryInfo?.approverInfo)?.department
       })
 
     setViewSetting(viewSettingTmp)
