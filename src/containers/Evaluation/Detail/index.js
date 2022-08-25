@@ -891,7 +891,7 @@ function EvaluationDetail(props) {
       } else { // Lưu, CBNV Gửi tới bước tiếp theo, CBQLTT xác nhận
         const payload = { ...evaluationFormDetail }
         payload.nextStep = actionCode
-        const response = await axios.post(`${process.env.REACT_APP_HRDX_PMS_URL}api/targetform/update`, payload, config)
+        const response = await axios.post(`${process.env.REACT_APP_HRDX_PMS_URL}api/targetform/update`, {requestString: JSON.stringify(payload || {})}, config)
         SetIsLoading(false)
         statusModalTemp.isShow = true
         if (response && response.data) {
