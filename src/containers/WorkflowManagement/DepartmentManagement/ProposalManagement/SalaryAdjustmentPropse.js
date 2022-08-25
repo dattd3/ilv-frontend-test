@@ -1,6 +1,5 @@
 /* eslint-disable react/jsx-no-target-blank */
 import React, { useEffect, useState } from "react";
-import { useHistory } from 'react-router';
 import axios from "axios";
 import moment from "moment";
 import Select from 'react-select'
@@ -40,7 +39,6 @@ const ListTypeContract = [
 const SalaryAdjustmentPropse = (props) => {
   const { t } = props;
   const api = useApi();
-  const history = useHistory();
   const [modal, setModal] = useState({
     visible: false,
     header: '',
@@ -254,7 +252,7 @@ const SalaryAdjustmentPropse = (props) => {
 
     if (dataSalaryInfo?.requestInfo.length !== 0) {
       const requestInfo = dataSalaryInfo?.requestInfo[0];
-      // Thong tin nguoi phe duyet
+      // Nhân sự điều phối
       if (requestInfo?.coordinatorInfo)
         setCoordinator({
           fullName: JSON.parse(requestInfo?.coordinatorInfo)?.FullName,
@@ -262,52 +260,58 @@ const SalaryAdjustmentPropse = (props) => {
           current_position: JSON.parse(requestInfo?.coordinatorInfo)?.JobTitle,
           department: JSON.parse(requestInfo?.coordinatorInfo)?.Department
         })
-      if (requestInfo?.supervisorInfo)
-        setSupervisor({
-          fullName: JSON.parse(requestInfo?.supervisorInfo)?.FullName,
-          account: requestInfo?.supervisorInfo?.supervisorId,
-          current_position: JSON.parse(requestInfo?.supervisorInfo)?.JobTitle,
-          department: JSON.parse(requestInfo?.supervisorInfo)?.Department
-        })
-      if (requestInfo?.appraiserInfo)
-        setAppraiser({
-          fullName: JSON.parse(requestInfo?.appraiserInfo)?.FullName,
-          account: requestInfo?.appraiserInfo?.appraiserId,
-          current_position: JSON.parse(requestInfo?.appraiserInfo)?.JobTitle,
-          department: JSON.parse(requestInfo?.appraiserInfo)?.Department
-        })
-      if (requestInfo?.approverInfo)
-        setApprover({
-          fullName: JSON.parse(requestInfo?.approverInfo)?.FullName,
-          account: requestInfo?.approverInfo?.approverId,
-          current_position: JSON.parse(requestInfo?.approverInfo)?.JobTitle,
-          department: JSON.parse(requestInfo?.approverInfo)?.Department
-        })
       // Thong tin CBNV
-      const employeeInfo = JSON.parse(requestInfo?.employeeInfo)
-      setSelectedMembers([{
-        uid: employeeInfo?.employeeNo,
-        employeeNo: employeeInfo?.employeeNo,
-        account: employeeInfo?.account,
-        fullName: employeeInfo?.fullName,
-        fullname: employeeInfo?.fullName,
-        jobTitle: employeeInfo?.jobTitle,
-        startDate: employeeInfo?.startDate,
-        expireDate: employeeInfo?.expireDate,
-        contractName: employeeInfo?.contractName,
-        contractType: employeeInfo?.contractType,
-        department: employeeInfo?.department,
-        currentSalary: '',
-        proposedSalary: '',
-        effectiveTime: '',
-        strength: '',
-        weakness: '',
-      }])
+      const employeeLists = dataSalaryInfo?.requestInfo.map(u => {
+        const requestTmp = JSON.parse(u?.employeeInfo)
+        return {
+          uid: requestTmp?.employeeNo,
+          employeeNo: requestTmp?.employeeNo,
+          account: requestTmp?.account,
+          fullName: requestTmp?.fullName,
+          fullname: requestTmp?.fullName,
+          jobTitle: requestTmp?.jobTitle,
+          startDate: requestTmp?.startDate,
+          expireDate: requestTmp?.expireDate,
+          contractName: requestTmp?.contractName,
+          contractType: requestTmp?.contractType,
+          department: requestTmp?.department,
+          currentSalary: '',
+          proposedSalary: '',
+          effectiveTime: '',
+          strength: '',
+          weakness: '',
+        }
+      })
+      setSelectedMembers(employeeLists)
     }
+
+    // CBQL cấp cơ sở
+    if (dataSalaryInfo?.supervisorInfo)
+      setSupervisor({
+        fullName: JSON.parse(dataSalaryInfo?.supervisorInfo)?.FullName,
+        account: dataSalaryInfo?.supervisorId,
+        current_position: JSON.parse(dataSalaryInfo?.supervisorInfo)?.JobTitle,
+        department: JSON.parse(dataSalaryInfo?.supervisorInfo)?.Department
+      })
+    // HR thẩm định quyền điều chỉnh lương
+    if (dataSalaryInfo?.appraiserInfo)
+      setAppraiser({
+        fullName: JSON.parse(dataSalaryInfo?.appraiserInfo)?.FullName,
+        account: dataSalaryInfo?.appraiserId,
+        current_position: JSON.parse(dataSalaryInfo?.appraiserInfo)?.JobTitle,
+        department: JSON.parse(dataSalaryInfo?.appraiserInfo)?.Department
+      })
+    // CBLĐ phê duyệt
+    if (dataSalaryInfo?.approverInfo)
+      setApprover({
+        fullName: JSON.parse(dataSalaryInfo?.approverInfo)?.FullName,
+        account: dataSalaryInfo?.approverId,
+        current_position: JSON.parse(dataSalaryInfo?.approverInfo)?.JobTitle,
+        department: JSON.parse(dataSalaryInfo?.approverInfo)?.Department
+      })
 
     const requestDocuments = dataSalaryInfo?.requestDocuments.map(u => ({ id: u.id, name: u.fileName, link: u.fileUrl }))
     setListFiles(requestDocuments)
-
     setViewSetting(viewSettingTmp)
   }
 
