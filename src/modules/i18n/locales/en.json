@@ -1137,7 +1137,7 @@
   "EvaluationDetailCompleted": "Completed",
   "EvaluationDetailEmployeeInfo": "EMPLOYEE INFORMATION",
   "EvaluationDetailEmployeeFullName": "Full name",
-  "EvaluationDetailEmployeeJobTitle": "Job tittle",
+  "EvaluationDetailEmployeeJobTitle": "Job title",
   "EvaluationDetailEmployeeJobLevel": "Job level",
   "EvaluationDetailEmployeeDivision": "Division",
   "EvaluationDetailEmployeeDepartment": "Department",
@@ -1208,5 +1208,6 @@
   "EvaluationFormEvaluatedSuccessfully": "Form evaluated successfully!",
   "EvaluationFailedToEvaluateForm": "Failed to evaluate form. Please try again!",
   "EvaluationFormSentBackToEmployeeSuccessfully": "Form sent back to employee successfully!",
-  "EvaluationFailedToSendTheFormBackToEmployee": "Failed to send the form back to employee. Please try again!"
+  "EvaluationFailedToSendTheFormBackToEmployee": "Failed to send the form back to employee. Please try again!",
+  "of": "of"
 }
