@@ -116,7 +116,6 @@ const SalaryAdjustmentPropse = (props) => {
       companyCode: '',
     },
   });
-  // const processStatus = 23;
 
   useEffect(() => {
     console.log(props.location.state);
@@ -152,6 +151,7 @@ const SalaryAdjustmentPropse = (props) => {
     viewSettingTmp.showComponent.btnAttachFile = true;
     viewSettingTmp.showComponent.btnSendRequest = true;
     viewSettingTmp.showComponent.showHrSupportViewSalary = true;
+    viewSettingTmp.showComponent.showRemoveFile = true;
     viewSettingTmp.disableComponent.editSubjectApply = true;
     viewSettingTmp.disableComponent.selectHrSupportViewSalary = true;
 
@@ -200,7 +200,6 @@ const SalaryAdjustmentPropse = (props) => {
         viewSettingTmp.showComponent.showOfficerApproved = true;
         viewSettingTmp.showComponent.btnAttachFile = true;
         viewSettingTmp.showComponent.btnSendRequest = true;
-        viewSettingTmp.showComponent.showRemoveFile = true;
         viewSettingTmp.disableComponent.editSubjectApply = true;
         break;
       // Đang chờ CBQL Cấp cơ sở thẩm định
@@ -305,6 +304,10 @@ const SalaryAdjustmentPropse = (props) => {
         weakness: '',
       }])
     }
+
+    const requestDocuments = dataSalaryInfo?.requestDocuments.map(u => ({ id: u.id, name: u.fileName, link: u.fileUrl }))
+    setListFiles(requestDocuments)
+
     setViewSetting(viewSettingTmp)
   }
 
@@ -543,6 +546,13 @@ const SalaryAdjustmentPropse = (props) => {
       bodyFormData.append('orgLv5Text', viewSetting.proposedStaff.orgLv5Text);
       bodyFormData.append('orgLv6Text', viewSetting.proposedStaff.orgLv6Text);
       bodyFormData.append('companyCode', viewSetting.proposedStaff.companyCode);
+
+      if (listFiles.length > 0) {
+        listFiles.forEach(file => {
+          bodyFormData.append('attachedFiles', file)
+        })
+      }
+
       return bodyFormData
     }
   }

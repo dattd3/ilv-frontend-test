@@ -97,9 +97,6 @@ function SalaryPropse(props) {
     },
   });
 
-  // const processStatus = 21;
-  // const locationState = { idContract: 1739154, idSalary: null };
-
   useEffect(() => {
     console.log(props.location.state);
     getDataContract();
@@ -504,7 +501,7 @@ function SalaryPropse(props) {
               <label className='block-content-salary__content--label'>
                 {t('DepartmentManage')}
               </label>
-              <input className='form-control' disabled value={viewSetting.proposedStaff.department || ''} />
+              <input className='form-control' value={viewSetting.proposedStaff.department || ''} disabled />
             </div>
           </div>
         </div>
