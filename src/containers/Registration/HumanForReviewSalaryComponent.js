@@ -79,6 +79,19 @@ class ApproverComponent extends React.Component {
     // }
   }
 
+  UNSAFE_componentWillReceiveProps(newProps) {
+    const { approver, isEdit } = newProps
+    if (isEdit) {
+      return this.setState({
+        approver: {
+          ...approver,
+          label: approver?.fullName,
+          value: approver?.account
+        }
+      })
+    }
+  };
+
   // loadApproverForPnL = async () => {
   //   try {
   //     const config = getMuleSoftHeaderConfigurations()
