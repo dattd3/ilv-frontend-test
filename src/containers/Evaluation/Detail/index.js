@@ -63,13 +63,15 @@ function EvaluationOverall(props) {
 
   return <div className="block-overall">
     <div className="card shadow card-completed">
-      <h6 className="text-center">{t("EvaluationDetailAccomplished")}: {totalCompleted || 0}/{evaluationFormDetail?.totalTarget}</h6>
+      <h6 className="text-center chart-title">{t("EvaluationDetailAccomplished")}: {totalCompleted || 0}/{evaluationFormDetail?.totalTarget}</h6>
       <div className="chart">
         <div className="detail">
           <div className="result">
             <Doughnut
               data={overallData}
               options={chartOption}
+              width={"138"}
+              height={"138"}
               plugins={
                 [{
                   beforeDraw: function (chart, args, options) {
@@ -426,7 +428,7 @@ function EvaluationProcess(props) {
                 </thead>
                 <tbody>
                   <tr>
-                    <td>{t("EvaluationDetailPartAttitudeLevelExpression")}</td>
+                    <td className="font-weight-bold">{t("EvaluationDetailPartAttitudeLevelExpression")}</td>
                     {
                       item?.listGroupConfig?.map((sub, subIndex) => {
                         return <td key={subIndex}><div>{JSON.parse(sub?.description || '{}')[languageCodeMapping[currentLocale]]}</div></td>
