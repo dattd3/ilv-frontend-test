@@ -178,7 +178,7 @@ const SalaryAdjustmentPropse = (props) => {
 
   const checkAuthorize = (dataSalaryInfo) => {
     console.log('checkAuthorize');
-    // const currentEmployeeNo = localStorage.getItem('email');
+    const currentEmail = localStorage.getItem('email');
     let viewSettingTmp = { ...viewSetting };
     switch (dataSalaryInfo?.processStatusId) {
       // Đang chờ nhân sự điều phối & Đang chờ nhân sự thẩm định người xem lương
@@ -188,17 +188,15 @@ const SalaryAdjustmentPropse = (props) => {
         break;
       // Đang chờ QLTT nhập lương đề xuất, xem lương hiện tại
       case 23:
-        // Todo: kiem tra ai la nguoi view
-        // if(!data.nguoipheduyet || !data.nguoipheduyet.account || (data.nguoipheduyet.account.toLowerCase()  + '@vingroup.net') != currentEmployeeNo.toLowerCase()){
-        //   viewSettingTmp.disableComponent.disableAll = true;
-        // }
         viewSettingTmp.showComponent.showHrSupportViewSalary = true;
         viewSettingTmp.showComponent.showCBQL = true;
         viewSettingTmp.showComponent.showHrAssessment = true;
         viewSettingTmp.showComponent.showOfficerApproved = true;
-        viewSettingTmp.showComponent.btnAttachFile = true;
-        viewSettingTmp.showComponent.btnSendRequest = true;
-        viewSettingTmp.disableComponent.editSubjectApply = true;
+        if (currentEmail.toLowerCase() === dataSalaryInfo?.userId.toLowerCase()) {
+          viewSettingTmp.showComponent.btnAttachFile = true;
+          viewSettingTmp.showComponent.btnSendRequest = true;
+          viewSettingTmp.disableComponent.editSubjectApply = true;
+        }
         break;
       // Đang chờ CBQL Cấp cơ sở thẩm định
       case 8:
@@ -206,8 +204,10 @@ const SalaryAdjustmentPropse = (props) => {
         viewSettingTmp.showComponent.showCBQL = true;
         viewSettingTmp.showComponent.showHrAssessment = true;
         viewSettingTmp.showComponent.showOfficerApproved = true;
-        viewSettingTmp.showComponent.btnRefuse = true;
-        viewSettingTmp.showComponent.btnExpertise = true;
+        if (currentEmail.toLowerCase() === dataSalaryInfo?.supervisorId.toLowerCase()) {
+          viewSettingTmp.showComponent.btnRefuse = true;
+          viewSettingTmp.showComponent.btnExpertise = true;
+        }
         break;
       // Đang chờ nhân sự thẩm định lương đề xuất
       case 24:
@@ -215,8 +215,10 @@ const SalaryAdjustmentPropse = (props) => {
         viewSettingTmp.showComponent.showCBQL = true;
         viewSettingTmp.showComponent.showHrAssessment = true;
         viewSettingTmp.showComponent.showOfficerApproved = true;
-        viewSettingTmp.showComponent.btnRefuse = true;
-        viewSettingTmp.showComponent.btnExpertise = true;
+        if (currentEmail.toLowerCase() === dataSalaryInfo?.appraiserId.toLowerCase()) {
+          viewSettingTmp.showComponent.btnRefuse = true;
+          viewSettingTmp.showComponent.btnExpertise = true;
+        }
         break;
       // Đang chờ CBLĐ phê duyệt 
       case 5:
@@ -224,12 +226,14 @@ const SalaryAdjustmentPropse = (props) => {
         viewSettingTmp.showComponent.showCBQL = true;
         viewSettingTmp.showComponent.showHrAssessment = true;
         viewSettingTmp.showComponent.showOfficerApproved = true;
-        viewSettingTmp.showComponent.btnNotApprove = true;
-        viewSettingTmp.showComponent.btnApprove = true;
+        if (currentEmail.toLowerCase() === dataSalaryInfo?.approverId.toLowerCase()) {
+          viewSettingTmp.showComponent.btnNotApprove = true;
+          viewSettingTmp.showComponent.btnApprove = true;
+        }
         break;
       // View phe duyet thanh cong
       case 2:
-        viewSetting.showComponent.stateProcess = true;
+        viewSettingTmp.showComponent.stateProcess = true;
         viewSettingTmp.showComponent.showHrSupportViewSalary = true;
         viewSettingTmp.showComponent.showCBQL = true;
         viewSettingTmp.showComponent.showHrAssessment = true;
@@ -237,7 +241,7 @@ const SalaryAdjustmentPropse = (props) => {
         break;
       // Case từ chối, không phê duyệt
       case 1:
-        viewSetting.showComponent.stateProcess = true;
+        viewSettingTmp.showComponent.stateProcess = true;
         viewSettingTmp.showComponent.showHrSupportViewSalary = true;
         viewSettingTmp.showComponent.showCBQL = true;
         viewSettingTmp.showComponent.showHrAssessment = true;
@@ -255,7 +259,7 @@ const SalaryAdjustmentPropse = (props) => {
       // Nhân sự điều phối
       if (requestInfo?.coordinatorInfo)
         setCoordinator({
-          fullName: JSON.parse(requestInfo?.coordinatorInfo)?.fullname,
+          fullName: JSON.parse(requestInfo?.coordinatorInfo)?.fullName,
           account: JSON.parse(requestInfo?.coordinatorInfo)?.account,
           current_position: JSON.parse(requestInfo?.coordinatorInfo)?.current_position,
           department: JSON.parse(requestInfo?.coordinatorInfo)?.department
@@ -288,7 +292,7 @@ const SalaryAdjustmentPropse = (props) => {
     // CBQL cấp cơ sở
     if (dataSalaryInfo?.supervisorInfo)
       setSupervisor({
-        fullName: JSON.parse(dataSalaryInfo?.supervisorInfo)?.fullname,
+        fullName: JSON.parse(dataSalaryInfo?.supervisorInfo)?.fullName,
         account: JSON.parse(dataSalaryInfo?.supervisorInfo)?.account,
         current_position: JSON.parse(dataSalaryInfo?.supervisorInfo)?.current_position,
         department: JSON.parse(dataSalaryInfo?.supervisorInfo)?.department
@@ -296,7 +300,7 @@ const SalaryAdjustmentPropse = (props) => {
     // HR thẩm định quyền điều chỉnh lương
     if (dataSalaryInfo?.appraiserInfo)
       setAppraiser({
-        fullName: JSON.parse(dataSalaryInfo?.appraiserInfo)?.fullname,
+        fullName: JSON.parse(dataSalaryInfo?.appraiserInfo)?.fullName,
         account: JSON.parse(dataSalaryInfo?.appraiserInfo)?.account,
         current_position: JSON.parse(dataSalaryInfo?.appraiserInfo)?.current_position,
         department: JSON.parse(dataSalaryInfo?.appraiserInfo)?.department
@@ -304,7 +308,7 @@ const SalaryAdjustmentPropse = (props) => {
     // CBLĐ phê duyệt
     if (dataSalaryInfo?.approverInfo)
       setApprover({
-        fullName: JSON.parse(dataSalaryInfo?.approverInfo)?.fullname,
+        fullName: JSON.parse(dataSalaryInfo?.approverInfo)?.fullName,
         account: JSON.parse(dataSalaryInfo?.approverInfo)?.account,
         current_position: JSON.parse(dataSalaryInfo?.approverInfo)?.current_position,
         department: JSON.parse(dataSalaryInfo?.approverInfo)?.department
