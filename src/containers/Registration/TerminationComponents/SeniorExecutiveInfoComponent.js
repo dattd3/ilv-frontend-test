@@ -134,7 +134,7 @@ class SeniorExecutiveInfoComponent extends React.PureComponent {
               pnl: res?.pnl,
               organizationLv2: res?.orglv2_id,
               account: res?.username,
-              jobTitle:  res.postition_name,
+              jobTitle:  res.position_name,
               department: res.division + (res.department ? '/' + res.department : '') + (res.part ? '/' + res.part : '')
             }
           })
