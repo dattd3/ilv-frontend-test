@@ -1017,8 +1017,8 @@ function EvaluationApproval(props) {
                                 <tbody>
                                     {
                                         evaluationData?.data.map((item, i) => {
-                                            let attitudeData = item?.listGroup[0]
-                                            let workResultData = item?.listGroup[1]
+                                            let attitudeData = item?.listGroup?.filter(item => item.groupTargetCode == 'G1')?.length > 0 ? item?.listGroup?.filter(item => item.groupTargetCode == 'G1')[0] : null
+                                            let workResultData = item?.listGroup?.filter(item => item.groupTargetCode == 'G2')?.length > 0 ? item?.listGroup?.filter(item => item.groupTargetCode == 'G2')[0] : null
                                             return <Fragment key={i}>
                                                         <tr className="divider"></tr>
                                                         <tr>
