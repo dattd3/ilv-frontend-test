@@ -73,7 +73,7 @@ function SalaryPropse(props) {
       showCurrentSalary: false, //Change type text & password
       viewCurrentSalary: false, //Hiển thị eye
       suggestedSalary: true, //Mức lương đề xuất - Disable/Enable Input
-      disableAll: false,
+      // disableAll: false,
     },
     proposedStaff: {
       avatar: '',
@@ -165,7 +165,8 @@ function SalaryPropse(props) {
   }
 
   const checkAuthorize = (dataSalaryInfo) => {
-    // const currentEmployeeNo = localStorage.getItem('email');
+    const currentEmail = localStorage.getItem('email');
+    const currentEmployeeNo = localStorage.getItem('employeeNo');
     let viewSettingTmp = { ...viewSetting };
     // Todo: check nguoi danh gia
     switch (dataSalaryInfo?.processStatusId) {
@@ -180,37 +181,45 @@ function SalaryPropse(props) {
         viewSettingTmp.showComponent.humanResourceChangeSalary = true;
         viewSettingTmp.showComponent.managerApproved = true;
         viewSettingTmp.showComponent.bossApproved = true;
-        viewSettingTmp.disableComponent.viewCurrentSalary = true;
-        viewSettingTmp.disableComponent.suggestedSalary = false;
-        viewSettingTmp.showComponent.btnCancel = true;
-        viewSettingTmp.showComponent.btnSendRequest = true;
+        if (currentEmail.toLowerCase() === dataSalaryInfo?.userId.toLowerCase() && currentEmployeeNo === dataSalaryInfo?.user?.employeeNo) {
+          viewSettingTmp.disableComponent.viewCurrentSalary = true;
+          viewSettingTmp.disableComponent.suggestedSalary = false;
+          viewSettingTmp.showComponent.btnCancel = true;
+          viewSettingTmp.showComponent.btnSendRequest = true;
+        }
         break;
       case 8:
         viewSettingTmp.showComponent.humanForReviewSalary = true;
         viewSettingTmp.showComponent.humanResourceChangeSalary = true;
         viewSettingTmp.showComponent.managerApproved = true;
         viewSettingTmp.showComponent.bossApproved = true;
-        viewSettingTmp.disableComponent.viewCurrentSalary = true;
-        viewSettingTmp.showComponent.btnRefuse = true;
-        viewSettingTmp.showComponent.btnExpertise = true;
+        if (currentEmail.toLowerCase() === dataSalaryInfo?.supervisorId.toLowerCase()) {
+          viewSettingTmp.disableComponent.viewCurrentSalary = true;
+          viewSettingTmp.showComponent.btnRefuse = true;
+          viewSettingTmp.showComponent.btnExpertise = true;
+        }
         break;
       case 24:
         viewSettingTmp.showComponent.humanForReviewSalary = true;
         viewSettingTmp.showComponent.humanResourceChangeSalary = true;
         viewSettingTmp.showComponent.managerApproved = true;
         viewSettingTmp.showComponent.bossApproved = true;
-        viewSettingTmp.disableComponent.viewCurrentSalary = true;
-        viewSetting.showComponent.btnRefuse = true;
-        viewSettingTmp.showComponent.btnExpertise = true;
+        if (currentEmail.toLowerCase() === dataSalaryInfo?.appraiserId.toLowerCase()) {
+          viewSettingTmp.disableComponent.viewCurrentSalary = true;
+          viewSettingTmp.showComponent.btnRefuse = true;
+          viewSettingTmp.showComponent.btnExpertise = true;
+        }
         break;
       case 5:
         viewSettingTmp.showComponent.humanForReviewSalary = true;
         viewSettingTmp.showComponent.humanResourceChangeSalary = true;
         viewSettingTmp.showComponent.managerApproved = true;
         viewSettingTmp.showComponent.bossApproved = true;
-        viewSettingTmp.disableComponent.viewCurrentSalary = true;
-        viewSettingTmp.showComponent.btnNotApprove = true;
-        viewSettingTmp.showComponent.btnApprove = true;
+        if (currentEmail.toLowerCase() === dataSalaryInfo?.approverId.toLowerCase()) {
+          viewSettingTmp.disableComponent.viewCurrentSalary = true;
+          viewSettingTmp.showComponent.btnNotApprove = true;
+          viewSettingTmp.showComponent.btnApprove = true;
+        }
         break;
       case 2:
         viewSettingTmp.showComponent.humanForReviewSalary = true;
@@ -235,7 +244,7 @@ function SalaryPropse(props) {
       const requestInfo = dataSalaryInfo?.requestInfo[0];
       if (requestInfo?.coordinatorInfo)
         setCoordinator({
-          fullName: JSON.parse(requestInfo?.coordinatorInfo)?.fullname,
+          fullName: JSON.parse(requestInfo?.coordinatorInfo)?.fullName,
           account: JSON.parse(requestInfo?.coordinatorInfo)?.account,
           current_position: JSON.parse(requestInfo?.coordinatorInfo)?.current_position,
           department: JSON.parse(requestInfo?.coordinatorInfo)?.department
@@ -244,7 +253,7 @@ function SalaryPropse(props) {
     // CBQL cấp cơ sở
     if (dataSalaryInfo?.supervisorInfo)
       setSupervisor({
-        fullName: JSON.parse(dataSalaryInfo?.supervisorInfo)?.fullname,
+        fullName: JSON.parse(dataSalaryInfo?.supervisorInfo)?.fullName,
         account: JSON.parse(dataSalaryInfo?.supervisorInfo)?.account,
         current_position: JSON.parse(dataSalaryInfo?.supervisorInfo)?.current_position,
         department: JSON.parse(dataSalaryInfo?.supervisorInfo)?.department
@@ -252,7 +261,7 @@ function SalaryPropse(props) {
     // HR thẩm định quyền điều chỉnh lương
     if (dataSalaryInfo?.appraiserInfo)
       setAppraiser({
-        fullName: JSON.parse(dataSalaryInfo?.appraiserInfo)?.fullname,
+        fullName: JSON.parse(dataSalaryInfo?.appraiserInfo)?.fullName,
         account: JSON.parse(dataSalaryInfo?.appraiserInfo)?.account,
         current_position: JSON.parse(dataSalaryInfo?.appraiserInfo)?.current_position,
         department: JSON.parse(dataSalaryInfo?.appraiserInfo)?.department
@@ -260,7 +269,7 @@ function SalaryPropse(props) {
     // CBLĐ phê duyệt
     if (dataSalaryInfo?.approverInfo)
       setApprover({
-        fullName: JSON.parse(dataSalaryInfo?.approverInfo)?.fullname,
+        fullName: JSON.parse(dataSalaryInfo?.approverInfo)?.fullName,
         account: JSON.parse(dataSalaryInfo?.approverInfo)?.account,
         current_position: JSON.parse(dataSalaryInfo?.approverInfo)?.current_position,
         department: JSON.parse(dataSalaryInfo?.approverInfo)?.department
@@ -494,19 +503,19 @@ function SalaryPropse(props) {
               <label className='block-content-salary__content--label'>
                 {t('FullName')}
               </label>
-              <input className='form-control' value={viewSetting.proposedStaff.fullName || ''} disabled />
+              <input className='form-control' value={viewSetting.proposedStaff.fullName} disabled />
             </div>
             <div className='col-input'>
               <label className='block-content-salary__content--label'>
                 {t('Title')}
               </label>
-              <input className='form-control' value={viewSetting.proposedStaff.jobTitle || ''} disabled />
+              <input className='form-control' value={viewSetting.proposedStaff.jobTitle} disabled />
             </div>
             <div className='col-input'>
               <label className='block-content-salary__content--label'>
                 {t('DepartmentManage')}
               </label>
-              <input className='form-control' value={viewSetting.proposedStaff.department || ''} disabled />
+              <input className='form-control' value={viewSetting.proposedStaff.department} disabled />
             </div>
           </div>
         </div>
@@ -552,23 +561,20 @@ function SalaryPropse(props) {
               </label>
               <input
                 className='form-control'
-                value={
-                  dataContract?.staffContracts?.startDate &&
-                  moment(dataContract.staffContracts.startDate).format('MM/DD/YYYY')
+                value={dataContract?.staffContracts?.startDate ?
+                  moment(dataContract.staffContracts.startDate).format('MM/DD/YYYY') : ''
                 }
                 disabled
               />
             </div>
-
             <div className='col-input'>
               <label className='block-content-salary__content--label'>
                 {t('ExpriseDate')}
               </label>
               <input
                 className='form-control'
-                value={
-                  dataContract?.staffContracts?.expireDate &&
-                  moment(dataContract.staffContracts.expireDate).format('MM/DD/YYYY')
+                value={dataContract?.staffContracts?.expireDate ?
+                  moment(dataContract.staffContracts.expireDate).format('MM/DD/YYYY') : ''
                 }
                 disabled
               />
