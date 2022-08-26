@@ -226,12 +226,10 @@ function SalaryPropse(props) {
       default:
         break;
     }
-
     // Cán bộ đề xuất
     viewSettingTmp.proposedStaff.fullName = dataSalaryInfo?.user?.fullName
     viewSettingTmp.proposedStaff.jobTitle = dataSalaryInfo?.user?.jobTitle
     viewSettingTmp.proposedStaff.department = dataSalaryInfo?.user?.department
-
     // Nhân sự điều phối
     if (dataSalaryInfo?.requestInfo.length !== 0) {
       const requestInfo = dataSalaryInfo?.requestInfo[0];
@@ -243,7 +241,6 @@ function SalaryPropse(props) {
           department: JSON.parse(requestInfo?.coordinatorInfo)?.department
         })
     }
-
     // CBQL cấp cơ sở
     if (dataSalaryInfo?.supervisorInfo)
       setSupervisor({
@@ -268,7 +265,6 @@ function SalaryPropse(props) {
         current_position: JSON.parse(dataSalaryInfo?.approverInfo)?.current_position,
         department: JSON.parse(dataSalaryInfo?.approverInfo)?.department
       })
-
     setViewSetting(viewSettingTmp)
   }
 
@@ -647,7 +643,9 @@ function SalaryPropse(props) {
           <div className='block-content-salary__content--vote'>
             <div className='wrapper-status'>
               <p className='font-normal'>{t('Status_1')}: </p>
-              <div>Đang chờ phê duyệt</div>
+              {dataSalary?.statusName &&
+                <div>{dataSalary?.statusName}</div>
+              }
             </div>
             <div
               className='detail'
