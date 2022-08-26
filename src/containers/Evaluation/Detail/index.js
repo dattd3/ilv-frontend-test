@@ -113,15 +113,15 @@ function EvaluationOverall(props) {
             (evaluationFormDetail?.listGroup || []).map((item, i) => {
               return <tr key={i}>
                 <td className='c-criteria'><div className='criteria'>{JSON.parse(item?.groupName || '{}')[languageCodeMapping[currentLocale]]}</div></td>
-                <td className='c-self-assessment text-center'>{item?.groupSeftPoint || 0}</td>
-                <td className='c-manager-assessment text-center color-red'>{item?.groupLeadReviewPoint || 0}</td>
+                <td className='c-self-assessment text-center'>{(item?.groupSeftPoint || 0).toFixed(2)}</td>
+                <td className='c-manager-assessment text-center color-red'>{(item?.groupLeadReviewPoint || 0).toFixed(2)}</td>
               </tr>
             })
           }
           <tr>
             <td className='c-criteria'><div className='font-weight-bold text-uppercase criteria'>{t("EvaluationDetailOverallScore")}</div></td>
-            <td className='c-self-assessment text-center font-weight-bold'>{evaluationFormDetail?.totalSeftPoint || 0}</td>
-            <td className='c-manager-assessment text-center font-weight-bold color-red'>{evaluationFormDetail?.totalLeadReviewPoint || 0}</td>
+            <td className='c-self-assessment text-center font-weight-bold'>{(evaluationFormDetail?.totalSeftPoint || 0).toFixed(2)}</td>
+            <td className='c-manager-assessment text-center font-weight-bold color-red'>{(evaluationFormDetail?.totalLeadReviewPoint || 0).toFixed(2)}</td>
           </tr>
         </tbody>
       </table>
