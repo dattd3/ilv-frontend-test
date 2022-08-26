@@ -735,7 +735,7 @@ function EvaluationApproval(props) {
         if (tab === 'approval') {
             formData.append('ReviewerEmployeeCode', employeeCode || '')
             formData.append('ReviewerEmployeeAdCode', employeeAD || '')
-            formData.append('CurrentStatus', data?.status?.value)
+            formData.append('CurrentStatus', data?.status?.value || '')
             apiPath = `${process.env.REACT_APP_HRDX_PMS_URL}api/form/listReview`
         } else if (tab === 'batchApproval') {
             formData.append('ApproveEmployeeCode', employeeCode || '')
@@ -954,7 +954,7 @@ function EvaluationApproval(props) {
                                         evaluationData?.data.map((item, index) => {
                                             return <tr key={index}>
                                                         <td className="c-form-code"><div className="form-code" onClick={() => handleShowEvaluationDetailPopup(item?.formCode, item?.checkPhaseFormId, item?.employeeCode)}>{item?.formCode || ''}</div></td>
-                                                        <td className="c-form-sender"><div className="form-sender">{item?.poolUser?.fullname || ''}</div></td>
+                                                        <td className="c-form-sender"><div className="form-sender">{item?.poolUser?.fullname || ''} ({item?.poolUser?.username || ''})</div></td>
                                                         <td className="c-form-name"><div className="form-name">{item?.checkPhaseFormName || ''}</div></td>
                                                         <td className="c-sent-date"><div className="sent-date">{item?.sendDateLv1 && moment(item?.sendDateLv1).format('DD/MM/YYYY')}</div></td>
                                                         <td className="c-status"><div className={`status ${item?.status == statusDone ? 'done' : 'in-progress'}`}>{item?.status == statusDone ? t("EvaluationDetailCompleted") : t("EvaluationInProgress")}</div></td>
@@ -1023,13 +1023,13 @@ function EvaluationApproval(props) {
                                                         <tr className="divider"></tr>
                                                         <tr>
                                                             <td className="c-check"><div className="check"><input type="checkbox" checked={item?.isSelected || false} onChange={(e) => handleCheckboxChange(e, i)} /></div></td>
-                                                            <td className="c-full-name"><div className="full-name">{item?.fullName || ''}</div></td>
-                                                            <td className="text-center c-self-assessment">{attitudeData?.seftPoint || 0}</td>
-                                                            <td className="text-center highlight-first c-cbql-assessment">{attitudeData?.leadReviewPoint || 0}</td>
-                                                            <td className="text-center c-self-assessment">{workResultData?.seftPoint || 0}</td>
-                                                            <td className="text-center highlight-first c-cbql-assessment">{workResultData?.leadReviewPoint || 0}</td>
-                                                            <td className="text-center highlight-second c-self-assessment">{item?.totalSeftPoint || 0}</td>
-                                                            <td className="text-center highlight-third c-cbql-assessment">{item?.totalLeadReviewPoint || 0}</td>
+                                                            <td className="c-full-name"><div className="full-name">{item?.fullName || ''} ({item?.username || ''})</div></td>
+                                                            <td className="text-center c-self-assessment">{attitudeData?.seftPoint?.toFixed(2) || 0}</td>
+                                                            <td className="text-center highlight-first c-cbql-assessment">{attitudeData?.leadReviewPoint?.toFixed(2) || 0}</td>
+                                                            <td className="text-center c-self-assessment">{workResultData?.seftPoint?.toFixed(2) || 0}</td>
+                                                            <td className="text-center highlight-first c-cbql-assessment">{workResultData?.leadReviewPoint?.toFixed(2) || 0}</td>
+                                                            <td className="text-center highlight-second c-self-assessment">{item?.totalSeftPoint?.toFixed(2) || 0}</td>
+                                                            <td className="text-center highlight-third c-cbql-assessment">{item?.totalLeadReviewPoint?.toFixed(2) || 0}</td>
                                                         </tr>
                                                     </Fragment>
                                         })

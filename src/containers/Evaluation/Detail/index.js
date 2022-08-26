@@ -70,8 +70,8 @@ function EvaluationOverall(props) {
             <Doughnut
               data={overallData}
               options={chartOption}
-              width={"138"}
-              height={"138"}
+              width={138}
+              height={138}
               plugins={
                 [{
                   beforeDraw: function (chart, args, options) {
