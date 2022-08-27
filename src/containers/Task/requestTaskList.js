@@ -17,7 +17,6 @@ import { withTranslation } from "react-i18next"
 import { showRangeDateGroupByArrayDate, generateTaskCodeByCode } from "../../commons/Utils"
 import { absenceRequestTypes, requestTypes } from "../Task/Constants"
 import { MOTHER_LEAVE_KEY } from "./Constants"
-import { withRouter } from 'react-router-dom'
 
 const TIME_FORMAT = 'HH:mm:ss'
 const DATE_FORMAT = 'DD-MM-YYYY'
@@ -255,15 +254,16 @@ class RequestTaskList extends React.Component {
         return `/registration/${mainId}/${subId}/request`
     }
 
-    handleClickSalaryPropose = (e, request) => {
-        e.preventDefault();
+    getSalaryProposeLink = (request) => {
+        let url = '';
         if(request.parentRequestHistoryId) {
             //xu ly mot nguoi
-            this.props.history.push('/salary-propse', { idContract: request.parentRequestHistoryId, idSalary: request.salaryId});
+            url = `salary-propse/${request.parentRequestHistoryId}/${request.salaryId}`
         } else {
             //xu ly nhieu nguoi
-            this.props.history.push('/salary-adjustment-propse', { id: request.salaryId});
+            url = `salary-adjustment-propse/${request.salaryId}`
         }
+        return url;
     }
 
     getRequestEditLink = (id, requestTypeId, processStatusId) => {
@@ -677,17 +677,12 @@ class RequestTaskList extends React.Component {
                                             }
 
                                             let editLink = this.getRequestEditLink(child.id, child.requestTypeId, child.processStatusId)
-                                            let detailLink = this.getRequestDetailLink(child.id, child.requestTypeId)
+                                            let detailLink = child.requestTypeId == Constants.SALARY_PROPOSE ? this.getSalaryProposeLink(child) : this.getRequestDetailLink(child.id, child.requestTypeId)
                                             let dateChanged = showRangeDateGroupByArrayDate(child.startDate)
 
                                             return (
                                                 <tr key={index}>
-                                                    {
-                                                        child.requestTypeId == Constants.SALARY_PROPOSE ?
-                                                        <td className="code"><a onClick={e => this.handleClickSalaryPropose(e, child)} title={child.requestType.name} className="task-title">{generateTaskCodeByCode(child.id)}</a></td>
-                                                        : 
-                                                        <td className="code"><a href={detailLink} title={child.requestType.name} className="task-title">{generateTaskCodeByCode(child.id)}</a></td>
-                                                    }
+                                                    <td className="code"><a href={detailLink} title={child.requestType.name} className="task-title">{generateTaskCodeByCode(child.id)}</a></td>
                                                     <td className="request-type">{getRequestTypeLabel(child.requestType, child.absenceType?.value)}</td>
                                                     <td className="day-off"><div dangerouslySetInnerHTML={{ __html: dateChanged }} /></td>
                                                     <td className="break-time text-center">{totalTime}</td>
@@ -721,4 +716,4 @@ class RequestTaskList extends React.Component {
     }
 }
 
-export default withTranslation()(withRouter(RequestTaskList))
+export default withTranslation()(RequestTaskList)

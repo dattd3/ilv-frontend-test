@@ -191,6 +191,18 @@ class TaskList extends React.Component {
         return this.props.page === "approval" ? `/evaluation/${id}/approval` : `/evaluation/${id}/assess`
     }
 
+    getSalaryProposeLink = (request) => {
+        let url = '';
+        if(request.parentRequestHistoryId) {
+            //xu ly mot nguoi
+            url = `salary-propse/${request.parentRequestHistoryId}/${request.salaryId}`
+        } else {
+            //xu ly nhieu nguoi
+            url = `salary-adjustment-propse/${request.salaryId}`
+        }
+        return url;
+    }
+
     getLinkRegistration(id,childId) {
         return this.props.page ? `/registration/${id}/${childId}/${this.props.page}` : `/registration/${id}/${childId}/request`
     }
@@ -483,6 +495,13 @@ class TaskList extends React.Component {
                                                         child.requestType?.id == 6 ?
                                                         <td className="code sticky-col">
                                                             <a href={this.getLinkEvalution(child.id)}
+                                                             title={child.id} className="task-title">
+                                                                 {generateTaskCodeByCode(child.id)}
+                                                            </a>
+                                                        </td>
+                                                        : child.requestType?.id == Constants.SALARY_PROPOSE ?
+                                                        <td className="code sticky-col">
+                                                            <a href={this.getSalaryProposeLink(child)}
                                                              title={child.id} className="task-title">
                                                                  {generateTaskCodeByCode(child.id)}
                                                             </a>
