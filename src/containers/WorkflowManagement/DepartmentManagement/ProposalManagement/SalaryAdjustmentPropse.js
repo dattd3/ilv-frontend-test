@@ -14,6 +14,7 @@ import ResultModal from "./ResultModal";
 import ApproverComponent from "../../ShareComponents/HrReviewSalaryComponent";
 import ConfirmPasswordModal from '../../../Registration/ContractEvaluation/SalaryPropose/ConfirmPasswordModal';
 import StatusModal from '../../../../components/Common/StatusModal'
+import ResizableTextarea from '../../../Registration/TextareaComponent';
 import Constants from '../.../../../../../commons/Constants';
 import CurrencyInput from 'react-currency-input-field';
 import IconDelete from '../../../../assets/img/icon/Icon_Cancel.svg';
@@ -147,7 +148,6 @@ const SalaryAdjustmentPropse = (props) => {
   }
 
   const checkViewCreate = () => {
-    console.log('checkViewCreate');
     let viewSettingTmp = { ...viewSetting };
     viewSettingTmp.showComponent.btnAttachFile = true;
     viewSettingTmp.showComponent.btnSendRequest = true;
@@ -180,7 +180,6 @@ const SalaryAdjustmentPropse = (props) => {
   }
 
   const checkAuthorize = (dataSalaryInfo) => {
-    console.log('checkAuthorize');
     const currentEmail = localStorage.getItem('email');
     let viewSettingTmp = { ...viewSetting };
     switch (dataSalaryInfo?.processStatusId) {
@@ -395,7 +394,9 @@ const SalaryAdjustmentPropse = (props) => {
   }
 
   const handleShowCurrentSalary = () => {
-    setModalConfirmPassword(true)
+    if (!acessToken) {
+      setModalConfirmPassword(true)
+    }
   }
 
   const handleShowSuggestedSalary = () => {
@@ -551,7 +552,7 @@ const SalaryAdjustmentPropse = (props) => {
         if (listErrors.length !== 0) {
           setResultModal({
             show: true,
-            title: t("ProposedEmployee"),
+            title: t("InformationRequired"),
             message: listErrors[0],
             isSuccess: false,
           })
@@ -687,10 +688,16 @@ const SalaryAdjustmentPropse = (props) => {
 
   const handleChangeModalConfirmPassword = (acessToken) => {
     console.log(acessToken);
-    const viewSettingTmp = [...viewSetting];
-    viewSettingTmp.disableComponent.showSuggestedSalary = !viewSettingTmp.disableComponent.showSuggestedSalary
     setAcessToken(acessToken)
     setModalConfirmPassword(false)
+
+    const selectedMembersTmp = [...selectedMembers]
+    selectedMembersTmp.forEach(u => u.currentSalary = '10000')
+    setSelectedMembers(selectedMembersTmp)
+
+    const viewSettingTmp = [...viewSetting];
+    viewSettingTmp.disableComponent.showSuggestedSalary = !viewSettingTmp.disableComponent.showSuggestedSalary
+    viewSettingTmp.disableComponent.editSubjectApply = true
     setViewSetting(viewSettingTmp)
   }
 
@@ -804,14 +811,11 @@ const SalaryAdjustmentPropse = (props) => {
           <td>
             <span className="same-width text-center">
               {viewSetting.disableComponent.editSubjectApply && !isCreateMode ?
-                <input
-                  type="text"
+                <ResizableTextarea
+                  placeholder={"Nhập"}
                   value={item?.strength}
                   onChange={(e) => handleTextInputChange(e.target.value, item?.uid, "strength")}
                   className="form-control input mv-10 w-100"
-                  name="strength"
-                  autoComplete="off"
-                  placeholder="Nhập"
                 />
                 : <>{item?.strength}</>
               }
@@ -820,14 +824,11 @@ const SalaryAdjustmentPropse = (props) => {
           <td>
             <span className="same-width text-center">
               {viewSetting.disableComponent.editSubjectApply && !isCreateMode ?
-                <input
-                  type="text"
+                <ResizableTextarea
+                  placeholder={"Nhập"}
                   value={item?.weakness}
                   onChange={(e) => handleTextInputChange(e.target.value, item?.uid, "weakness")}
                   className="form-control input mv-10 w-100"
-                  name="weakness"
-                  autoComplete="off"
-                  placeholder="Nhập"
                 />
                 : <>{item?.weakness}</>
               }
@@ -935,7 +936,7 @@ const SalaryAdjustmentPropse = (props) => {
                 <td rowSpan="2" className="min-width text-center font-weight-bold">Loại HĐ hiện tại</td>
                 <td rowSpan="2" className="min-width1 text-center"><strong>Thu nhập hiện tại</strong><span> (Gross)</span></td>
                 <td rowSpan="2" className="min-width1 text-center"><strong>Mức lương đề xuất</strong><span> (Gross)</span></td>
-                <td rowSpan="2" className="min-width text-center font-weight-bold"><strong>Thời gian hiệu lực</strong></td>
+                <td rowSpan="2" className="min-width text-center font-weight-bold">Thời gian hiệu lực</td>
                 <th colSpan="2" scope="colgroup" className="min-width text-center font-weight-bold">Đánh giá chung</th>
               </tr>
               <tr>
