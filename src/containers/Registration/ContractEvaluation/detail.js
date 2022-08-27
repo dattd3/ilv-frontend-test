@@ -396,7 +396,7 @@ class ContractEvaluationdetail extends React.Component {
                 </div>
                 <div className="col-6 view-detail">
                   {/* <a href={`/salary-propse/${id}`} title="Xem chi tiết" className="detail-link">{'Xem chi tiết >>'}</a> */}
-                  <span onClick={() => this.props.history.push('/salary-propse', { idContract: id, idSalary: 1 })}>{'Xem chi tiết >>'}</span>
+                  <span onClick={() => this.props.history.push(`/salary-propse/${id}/${1}`)}>{'Xem chi tiết >>'}</span>
                 </div>
               </div>
             </div>
