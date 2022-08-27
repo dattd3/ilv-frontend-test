@@ -70,7 +70,7 @@ class SelectSupporterModal extends React.Component {
                 departmentToCompare: `${res.division} / ${res.department} / ${res.unit}`,
                 userAccount: res.username,
                 part: res.part,
-                current_position: res.postition_name,
+                current_position: res.position_name,
                 department: res.division + (res.department ? '/' + res.department : '') + (res.part ? '/' + res.part : '')
               }
             })

@@ -459,7 +459,7 @@ class InOutTimeUpdateComponent extends React.Component {
             <div className="col-4">
               <p className="title">&nbsp;</p>
               <div>
-                <button type="button" className="btn btn-warning btn-search w-100" onClick={this.search.bind(this)}>{t('Search')}</button>
+                <button type="button" className="btn btn-warning btn-search-in-out-time w-100" onClick={this.search.bind(this)}>{t('Search')}</button>
               </div>
             </div>
           </div>
@@ -467,7 +467,7 @@ class InOutTimeUpdateComponent extends React.Component {
         {timesheets.map((timesheet, index) => {
           return <div className="box shadow pt-1 pb-1" key={index}>
             <div className="row">
-              <div className="col-4"><p><i className="fa fa-clock-o"></i> <b>{this.getDayName(timesheet.date)} {lang === "vi-VN" ? t("Day") : null} {timesheet.date.replace(/-/g, '/')}</b></p></div>
+              <div className="col-4"><p><i className="fa fa-clock-o"></i> <b>{this.getDayName(timesheet.date)} {lang === Constants.LANGUAGE_VI ? t("Day") : null} {timesheet.date.replace(/-/g, '/')}</b></p></div>
               <div className="col-6">
                 {!timesheet.isEdited ? <p>{t("StartTime")} 1: <b>{this.printTimeFormat(timesheet.start_time1_fact)}</b> | {t("EndTime")} 1: <b>{this.printTimeFormat(timesheet.end_time1_fact)}</b></p> : null}
                 {!timesheet.isEdited && (!this.isNullCustomize(timesheet.start_time2_fact) || !this.isNullCustomize(timesheet.end_time2_fact)) ?

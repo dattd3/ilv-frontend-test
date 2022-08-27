@@ -4,7 +4,7 @@ import moment from 'moment'
 import _ from 'lodash'
 import { useTranslation } from "react-i18next"
 import Constants from "../../../../commons/Constants"
-import { formatStringByMuleValue, formatNumberInteger, isEnableFunctionByFunctionName } from "../../../../commons/Utils"
+import { formatStringByMuleValue, formatNumberInteger, isEnableFunctionByFunctionName, getRegistrationMinDateByConditions } from "../../../../commons/Utils"
 import TableUtil from '../../../../components/Common/table'
 import CustomPaging from '../../../../components/Common/CustomPaging'
 import ShiftUpdateModal from "../modals/ShiftUpdateModal"
@@ -372,12 +372,18 @@ function Content(props) {
     }
 
     const isShiftUpdatable = (date) => {
-        const backDateConfig = 1
-        const duration = moment().diff(date, 'days')
-        if (duration > backDateConfig) {
-            return false
+        const minDate = getRegistrationMinDateByConditions()
+        
+        if (!minDate) {
+            const backDateConfig = 1
+            const duration = moment().diff(date, 'days')
+            if (duration > backDateConfig) {
+                return false
+            }
+            return true
         }
-        return true
+
+        return moment(minDate).isSameOrBefore(moment(date, 'YYYYMMDD'))
     }
 
     const onHideShiftUpdateModal = () => {

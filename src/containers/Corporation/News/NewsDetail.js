@@ -2,6 +2,7 @@ import React from "react";
 import { BrowserRouter as Router, Route } from 'react-router-dom'
 import { Image } from 'react-bootstrap'
 import moment from 'moment';
+import purify from "dompurify"
 import { useTranslation } from "react-i18next";
 import { useApi, useFetcher } from "../../../modules";
 import NewsRelation from './NewsRelation';
@@ -62,7 +63,9 @@ function NewsDetailElement({ match, location }) {
                         <span className="time"><Image src={IconTime} alt="Time" className="icon" /><span className="hour">{timePublished?.date}</span></span>
                     </div>
                     <h2 className="news-description">{detail.description}</h2>
-                    <div className="news-detail" dangerouslySetInnerHTML={{ __html: content }}>
+                    <div className="news-detail" dangerouslySetInnerHTML={{
+                        __html: purify.sanitize(content || ''),
+                    }}>
                     </div>
                     <div className="news-source">{t("Source")}: {detail.sourceSite}</div>
                 </div>
