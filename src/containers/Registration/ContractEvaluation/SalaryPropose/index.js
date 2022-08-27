@@ -93,7 +93,6 @@ function SalaryPropse(props) {
   });
 
   useEffect(() => {
-    console.log(props.match.params);
     getDataContract();
     if (props.match.params?.idContract) {
       if (props.match.params?.idSalary !== 'create') {
