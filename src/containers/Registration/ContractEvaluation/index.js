@@ -1248,7 +1248,7 @@ renderEvalution = (name, data, isDisable) => {
     console.log('create form salary');
     this.setState({ isShowSalaryPropose: false });
     // window.location.href = `/salary-propse/${this.state.id}`;
-    this.props.history.push('/salary-propse', { idContract: this.state.id, idSalary: null })
+    this.props.history.push(`/salary-propse/${this.state.id}/create`)
   }
 
   checkShowQlttComment = (data) => {

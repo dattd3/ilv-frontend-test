@@ -8,7 +8,8 @@ import "react-toastify/dist/ReactToastify.css";
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import FilterMember from "../../ShareComponents/FilterMember";
-import ModalConsent from "../../ShareComponents/ModalConsent";
+// import ModalConsent from "../../ShareComponents/ModalConsent";
+import ConfirmationModal from '../../../Registration/ConfirmationModal';
 import ResultModal from "./ResultModal";
 import ApproverComponent from "../../ShareComponents/HrReviewSalaryComponent";
 import ConfirmPasswordModal from '../../../Registration/ContractEvaluation/SalaryPropose/ConfirmPasswordModal';
@@ -39,12 +40,6 @@ const ListTypeContract = [
 const SalaryAdjustmentPropse = (props) => {
   const { t } = props;
   const api = useApi();
-  const [modal, setModal] = useState({
-    visible: false,
-    header: '',
-    title: '',
-    content: '',
-  });
   const [resultModal, setResultModal] = useState({
     show: false,
     title: '',
@@ -57,6 +52,15 @@ const SalaryAdjustmentPropse = (props) => {
     isSuccess: true,
     url: '',
   });
+
+  const [confirmModal, setConfirmModal] = useState({
+    isShowModalConfirm: false,
+    modalTitle: "",
+    typeRequest: "",
+    modalMessage: "",
+    confirmStatus: ""
+  });
+
   const [isCreateMode, setIsCreateMode] = useState(false);
   const [modalConfirmPassword, setModalConfirmPassword] = useState(false);
   const [acessToken, setAcessToken] = useState(null);
@@ -116,9 +120,8 @@ const SalaryAdjustmentPropse = (props) => {
   });
 
   useEffect(() => {
-    console.log(props.location.state);
-    if (props.location.state) {
-      if (props.location.state?.id) {
+    if (props.match.params.id) {
+      if (props.match.params.id !== 'create') {
         // Review mode
         setIsCreateMode(false);
         getDataSalary();
@@ -135,7 +138,7 @@ const SalaryAdjustmentPropse = (props) => {
 
   const getDataSalary = async () => {
     try {
-      const { data: { data: response } } = await api.fetchSalaryPropose(props.location.state?.id);
+      const { data: { data: response } } = await api.fetchSalaryPropose(props.match.params.id);
       await setDataSalary(response)
       await checkAuthorize(response);
     } catch (error) {
@@ -268,11 +271,12 @@ const SalaryAdjustmentPropse = (props) => {
       const employeeLists = dataSalaryInfo?.requestInfo.map(u => {
         const requestTmp = JSON.parse(u?.employeeInfo)
         return {
+          id: requestTmp?.id,
           uid: requestTmp?.employeeNo,
           employeeNo: requestTmp?.employeeNo,
           account: requestTmp?.account,
-          fullName: requestTmp?.fullname,
-          fullname: requestTmp?.fullname,
+          fullName: requestTmp?.fullName,
+          fullname: requestTmp?.fullName,
           jobTitle: requestTmp?.jobTitle,
           startDate: requestTmp?.startDate,
           expireDate: requestTmp?.expireDate,
@@ -361,16 +365,6 @@ const SalaryAdjustmentPropse = (props) => {
     setSelectedMembers(membersMapping)
   }
 
-  // const handleChangeSelectInputs = (e, uid, objName) => {
-  //   const selectedMembersTmp = [...selectedMembers];
-  //   selectedMembersTmp.forEach(item => {
-  //     if (item.uid === uid) {
-  //       item[objName] = e.value
-  //     }
-  //   })
-  //   setSelectedMembers(selectedMembersTmp)
-  // }
-
   const handleTextInputChange = (value, uid, objName) => {
     const selectedMembersTmp = [...selectedMembers];
     selectedMembersTmp.forEach(item => {
@@ -408,30 +402,53 @@ const SalaryAdjustmentPropse = (props) => {
     setModalConfirmPassword(true)
   }
 
-  const handleCloseModal = () => {
-    console.log('data', modal.content);
-    const modalTmp = { ...modal }
-    modalTmp.visible = !modalTmp.visible
-    setModal(modalTmp)
-  }
-
   // Từ chối
   const handleRefuse = () => {
-    setModal({
-      visible: true,
-      header: t('ConfirmCancleConsent'),
-      title: t('ReasonCancleConsent'),
-      content: '',
+    setConfirmModal({
+      isShowModalConfirm: true,
+      modalTitle: t("RejectConsenterRequest"),
+      modalMessage: t("ReasonRejectRequest"),
+      typeRequest: Constants.STATUS_NO_CONSENTED,
+      confirmStatus: "",
+      dataToUpdate: [
+        {
+          id: props.match.params.id,
+          requestTypeId: 12,
+          sub: [
+            {
+              id: props.match.params.id,
+              processStatusId: 7,
+              comment: "",
+              status: "",
+            }
+          ],
+        }
+      ],
     })
   }
 
   // Không phê duyệt
   const handleReject = () => {
-    setModal({
-      visible: true,
-      header: t('ConfirmNotApprove'),
-      title: t('ReasonNotApprove'),
-      content: '',
+    setConfirmModal({
+      isShowModalConfirm: true,
+      modalTitle: t("ConfirmNotApprove"),
+      modalMessage: `${t("ReasonNotApprove")}`,
+      typeRequest: Constants.STATUS_NOT_APPROVED,
+      confirmStatus: "",
+      dataToUpdate: [
+        {
+          id: props.match.params.id,
+          requestTypeId: 12,
+          sub: [
+            {
+              id: props.match.params.id,
+              processStatusId: 1,
+              comment: "",
+              status: "",
+            }
+          ],
+        }
+      ],
     })
   }
 
@@ -450,29 +467,67 @@ const SalaryAdjustmentPropse = (props) => {
 
   // Thẩm định
   const handleConsent = () => {
-    console.log('handleConsent');
+    setConfirmModal({
+      isShowModalConfirm: true,
+      modalTitle: t("ConsentConfirmation"),
+      modalMessage: t("ConfirmConsentRequest"),
+      typeRequest: Constants.STATUS_CONSENTED,
+      confirmStatus: "",
+      dataToUpdate: [
+        {
+          id: props.match.params.id,
+          requestTypeId: 12,
+          sub: [
+            {
+              id: props.match.params.id,
+              processStatusId: 5,
+              comment: "",
+              status: "",
+            }
+          ],
+        }
+      ],
+    })
   }
 
   // Phê duyệt
   const handleApprove = () => {
-    console.log('handleApprove');
+    setConfirmModal({
+      isShowModalConfirm: true,
+      modalTitle: t("ApproveRequest"),
+      modalMessage: t("ConfirmApproveChangeRequest"),
+      typeRequest: Constants.STATUS_APPROVED,
+      confirmStatus: "",
+      dataToUpdate: [
+        {
+          id: props.match.params.id,
+          requestTypeId: 12,
+          sub: [
+            {
+              id: props.match.params.id,
+              processStatusId: 2,
+              comment: "",
+              status: "",
+            }
+          ],
+        }
+      ],
+    })
   }
 
   // Gửi yêu cầu
   const handleSendForm = () => {
     // Create
     if (isCreateMode) {
-      console.log(selectMembers);
       if (selectMembers.length === 0) {
-        showStatusModal("CBNV được đề xuất chưa được chọn!", false)
+        showStatusModal(t("ProposedEmployeeValidate"), false)
         return;
       }
       if (!coordinator) {
-        showStatusModal("Nhân sự hỗ trợ quyền xem lương chưa được nhập!", false)
+        showStatusModal(t("HumanForReviewSalaryValidate"), false)
         return;
       }
       const bodyFormData = prepareDataToSubmit()
-      console.log(...bodyFormData);
       axios({
         method: 'POST',
         url: `${process.env.REACT_APP_REQUEST_URL}salaryAdjustment/create`,
@@ -484,10 +539,10 @@ const SalaryAdjustmentPropse = (props) => {
             showStatusModal(t("RequestSent"), true, '/tasks')
             return;
           }
-          showStatusModal(response.data.result.message || 'Có lỗi xảy ra trong quá trình cập nhật thông tin!', false)
+          showStatusModal(response.data.result.message || t("Error"), false)
         })
         .catch(response => {
-          showStatusModal("Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
+          showStatusModal(t("Error"), false)
         })
     } else {
       // Review
@@ -496,11 +551,42 @@ const SalaryAdjustmentPropse = (props) => {
         if (listErrors.length !== 0) {
           setResultModal({
             show: true,
-            title: 'Yêu cầu nhập thông tin',
+            title: t("ProposedEmployee"),
             message: listErrors[0],
             isSuccess: false,
           })
           return;
+        } else {
+          const dataSend = {
+            requestHistoryId: props.match.params.id,
+            companyCode: localStorage.getItem('companyCode') || "",
+            staffSalaryUpdate: selectedMembers.map(u => ({
+              salaryAdjustmentId: u?.id,
+              employeeNo: u?.employeeNo,
+              currentSalary: u?.currentSalary,
+              suggestedSalary: u?.suggestedSalary,
+              contractType: u?.contractType,
+              staffStrengths: u?.strength,
+              staffWknesses: u?.weakness,
+              startDate: u?.startDate
+            }))
+          }
+          axios({
+            method: 'POST',
+            url: `${process.env.REACT_APP_REQUEST_URL}SalaryAdjustment/submitsalary`,
+            data: dataSend,
+            headers: { 'Content-Type': 'application/json-patch+json', Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
+          })
+            .then(response => {
+              if (response.data.result && response.data.result.code === '000000') {
+                showStatusModal(t("RequestSent"), true, '/tasks')
+                return;
+              }
+              showStatusModal(response.data.result.message || t("Error"), false)
+            })
+            .catch(response => {
+              showStatusModal(t("Error"), false)
+            })
         }
       }
     }
@@ -592,8 +678,9 @@ const SalaryAdjustmentPropse = (props) => {
     const selectedMembersTmp = [...selectedMembers];
     let errors = [];
     selectedMembersTmp.forEach(u => {
-      if (!u.proposedSalary) errors.push('Bắt buộc nhập mức lương đề xuất!')
-      if (!u.effectiveTime) errors.push('Bắt buộc chọn thời gian có hiệu lực!')
+      if (!u.currentSalary) errors.push(t("CurrentSalaryValidate"))
+      if (!u.proposedSalary) errors.push(t("SuggestedSalaryValidate"))
+      if (!u.effectiveTime) errors.push(t("SelecTimePeriodValidate"))
     })
     return errors;
   }
@@ -613,6 +700,13 @@ const SalaryAdjustmentPropse = (props) => {
       title: '',
       message: '',
       isSuccess: false,
+    })
+  }
+
+  const onHideModalConfirm = () => {
+    setConfirmModal({
+      ...confirmModal,
+      isShowModalConfirm: false
     })
   }
 
@@ -764,7 +858,16 @@ const SalaryAdjustmentPropse = (props) => {
         isSuccess={modalStatus.isSuccess}
         onHide={hideStatusModal}
       />
-      <div className="eval-heading">ĐỀ XUẤT ĐIỀU CHỈNH THU NHẬP</div>
+      <ConfirmationModal
+        show={confirmModal.isShowModalConfirm}
+        title={confirmModal.modalTitle}
+        type={confirmModal.typeRequest}
+        message={confirmModal.modalMessage}
+        confirmStatus={confirmModal.confirmStatus}
+        dataToSap={confirmModal.dataToUpdate}
+        onHide={onHideModalConfirm}
+      />
+      <div className="eval-heading">{t("SalaryPropse")}</div>
       {/* ĐỀ XUẤT ĐIỀU CHỈNH LƯƠNG */}
       <h5 className="content-page-header">{t("SalaryAdjustmentPropse")}</h5>
       <div className="timesheet-box1 shadow">
@@ -841,7 +944,7 @@ const SalaryAdjustmentPropse = (props) => {
               </tr>
             </thead>
             <tbody>
-              {props.location.state?.id ?
+              {props.match.params.id ?
                 <>{renderListMember(selectedMembers)}</>
                 : <>{renderListMember(selectMembers)}</>
               }
@@ -895,7 +998,7 @@ const SalaryAdjustmentPropse = (props) => {
         {listFiles.map((file, index) => {
           return <li className="list-inline-item" key={index}>
             <span className="file-name">
-              <a title={file.name} href={file.link} download={file.name} target="_blank">{file.name}</a>
+              <a title={file.name} href={file.link} download={file.name} target="_blank" style={{ color: '#858796' }}>{file.name}</a>
               {viewSetting.showComponent.showRemoveFile ?
                 <i className="fa fa-times remove" aria-hidden="true" onClick={e => removeFiles(file.id, index)}></i>
                 : null}
@@ -952,15 +1055,6 @@ const SalaryAdjustmentPropse = (props) => {
           </button>
         }
       </div>
-      <ModalConsent
-        show={modal.visible}
-        header={modal.header}
-        title={modal.title}
-        onHide={() => setModal({ ...modal, visible: false })}
-        data={modal.content}
-        setData={(val) => setModal({ ...modal, content: val })}
-        onConfirm={() => handleCloseModal()}
-      />
     </div>
   );
 }
