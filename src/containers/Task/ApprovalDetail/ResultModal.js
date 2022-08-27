@@ -1,4 +1,5 @@
 import React from "react";
+import purify from "dompurify"
 import IconSuccess from '../../../assets/img/ic-success.svg';
 import IconFailed from '../../../assets/img/ic-failed.svg';
 import { Modal, Image } from 'react-bootstrap';
@@ -16,7 +17,9 @@ class ResultModal extends React.Component {
                     <Modal.Title>{this.props.title}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <p dangerouslySetInnerHTML={{ __html: this.props.message }}></p>
+                    <p dangerouslySetInnerHTML={{
+                        __html: purify.sanitize(this.props?.message || ''),
+                    }}></p>
                     <div className="wrap-result">
                         {this.props.isSuccess ? <Image src={IconSuccess} alt="Success" className="ic-status" /> : <Image src={IconFailed} alt="Success" className="ic-status" />}
                     </div>

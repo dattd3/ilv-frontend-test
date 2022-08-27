@@ -3,6 +3,7 @@ import StatusModal from '../../components/Common/StatusModal'
 import ApplyPositionModal from './ApplyPositionModal'
 import axios from 'axios'
 import unescape from 'lodash/unescape'
+import purify from "dompurify"
 import moment from 'moment'
 import { withRouter } from 'react-router-dom'
 import { withTranslation} from "react-i18next"
@@ -90,19 +91,27 @@ class PositionRecruitingDetail extends React.Component {
               <div className="company">{t("Company")}: Vinpearl</div>
               {this.state.job.jobDescription && this.state.job.jobDescription != 'undefined' ? <div className="cate description-position">
                 {this.state.job.sourceName == 'Vinpearl' ? null : <div className="title">{t("JobDetail")}</div>}
-                <div  dangerouslySetInnerHTML={{__html: unescape(this.state.job.jobDescription)}} />
+                <div dangerouslySetInnerHTML={{
+                    __html: purify.sanitize(this.state?.job?.jobDescription || ''),
+                }} />
               </div> : null}
               {this.state.job.jobRequirement && this.state.job.jobRequirement != 'undefined' ? <div className="cate condition-position">
               {this.state.job.sourceName == 'Vinpearl' ? null : <div className="title">{t("JobRequire")}</div>}
-                <div dangerouslySetInnerHTML={{__html: unescape(this.state.job.jobRequirement)}} />
+                <div dangerouslySetInnerHTML={{
+                    __html: purify.sanitize(this.state?.job?.jobRequirement || ''),
+                }} />
               </div> : null }
               {this.state.job.benefit && this.state.job.benefit != 'undefined' ? <div className="cate benefit-position">
                 {this.state.job.sourceName == 'Vinpearl' ? null : <div className="title">{t("Benefit")}</div> }
-                <div dangerouslySetInnerHTML={{__html: unescape(this.state.job.benefit)}} />
+                <div dangerouslySetInnerHTML={{
+                    __html: purify.sanitize(this.state?.job?.benefit || ''),
+                }} />
               </div> : null}
               {this.state.job.contactInfo && this.state.job.contactInfo != 'undefined' ? <div className="cate contact-position">
                 {this.state.job.sourceName == 'Vinpearl' ? null : <div className="title">{t("Contact")}</div>}
-                <div dangerouslySetInnerHTML={{__html: unescape(this.state.job.contactInfo)}} />
+                <div dangerouslySetInnerHTML={{
+                    __html: purify.sanitize(this.state?.job?.contactInfo || ''),
+                }} />
               </div> : null}
             </div>
           </div>

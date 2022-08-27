@@ -258,7 +258,7 @@ class VaccinationDetail extends React.Component {
                 this.setState({
                     citys: res.data.data.map(v => {
                         // var e = v.name.split("-");
-                        let labelLocale = localStorage.getItem('locale') == 'vi-VN' ? v.TEXT : v.TEXT_EN
+                        let labelLocale = localStorage.getItem('locale') == Constants.LANGUAGE_VI ? v.TEXT : v.TEXT_EN
                         return {value: v.ID, label: labelLocale}
                     })
                 });
@@ -278,7 +278,7 @@ class VaccinationDetail extends React.Component {
                     districts: res.data.data.map(v => {
                         // var e = v.name.split("-");
                         // return {value: e[0].trim(), label: e[1].trim()}
-                        let labelLocale = localStorage.getItem('locale') == 'vi-VN' ? v.TEXT : v.TEXT_EN
+                        let labelLocale = localStorage.getItem('locale') == Constants.LANGUAGE_VI ? v.TEXT : v.TEXT_EN
                         return {value: v.ID, label: labelLocale}
                     })
                 });
@@ -300,7 +300,7 @@ class VaccinationDetail extends React.Component {
                     wards: res.data.data.map(v => {
                         // var e = v.name.split("-");
                         // return {value: e[0].trim(), label: e[1].trim()}
-                        let labelLocale = localStorage.getItem('locale') == 'vi-VN' ? v.TEXT : v.TEXT_EN
+                        let labelLocale = localStorage.getItem('locale') == Constants.LANGUAGE_VI ? v.TEXT : v.TEXT_EN
                         return {value: v.ID, label: labelLocale}
                     })
                 });

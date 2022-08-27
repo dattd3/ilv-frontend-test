@@ -1,5 +1,6 @@
 import React from 'react'
 import moment from 'moment'
+import _ from 'lodash'
 import { withTranslation } from "react-i18next"
 import DetailButtonComponent from '../DetailButtonComponent'
 import RequesterDetailComponent from '../RequesterDetailComponent'
@@ -13,6 +14,137 @@ const DATE_FORMAT = 'DD/MM/YYYY'
 const DATE_OF_SAP_FORMAT = 'YYYYMMDD'
 const TIME_OF_SAP_FORMAT = 'HHmm00'
 const FULL_DAY = 1
+
+const RegisteredBusinessTripInfo = ({ businessTrip, t }) => {
+  return (
+    <>
+      <h5 className='content-page-header'>{t('TitleTripAndTrainning')}</h5>
+      <div className="box shadow cbnv">
+        {
+          (businessTrip?.requestInfoOld && businessTrip?.requestInfoOld?.length > 0 ? businessTrip?.requestInfoOld : businessTrip?.requestInfo).map((info, infoIndex) => {
+            return (
+              <div className='item' key={`info-${infoIndex}`}>
+                <div className="row">
+                  <div className="col-xl-4">
+                    {t("StartDateTime")}
+                    <div className="detail">{moment(info?.startDate).format('DD/MM/YYYY') + (info?.startTime ? ' ' + moment(info?.startTime, TIME_FORMAT).locale('en-us').format('HH:mm') : '')}</div>
+                  </div>
+                  <div className="col-xl-4">
+                    {t("EndDateTime")}
+                    <div className="detail">{moment(info?.endDate).format('DD/MM/YYYY') + (info?.endTime ? ' ' + moment(info?.endTime, TIME_FORMAT).locale('en-us').format('HH:mm') : '')}</div>
+                  </div>
+                  <div className="col-xl-4">
+                    {t('TotalTimeForBizTripAndTraining')}
+                    <div className="detail">{(businessTrip && info?.days >=1) ? info?.days + ' ' + t("Day") : info?.hours + ' ' + t("Hour")}</div>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-xl-4">
+                    {t('TypeOfBizTripAndTraining')}
+                    <div className="detail">{info?.attendanceType?.label || ''}</div>
+                  </div>
+                  <div className="col-xl-4">
+                    {t('Location')}
+                    <div className="detail">{info?.location && info?.location?.label || ''}</div>
+                  </div>
+                  <div className="col-xl-4">
+                    {t('MeansOfTransportation')}
+                    <div className="detail">{info?.vehicle && info?.vehicle?.label || ''}</div>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col">
+                    {t('ReasonTripAndTrainning')}
+                    <div className="detail">{info?.comment || ''}</div>
+                  </div>
+                </div>
+              </div>
+            )
+          })
+        }
+      </div>
+    </>
+  )
+}
+
+const AdjustmentBusinessTripInfo = ({ requestInfoToShow, requestInfo, totalRequestedTime, t }) => {
+  return (
+    <>
+      <h5 className='content-page-header'>Thông tin điều chỉnh đăng ký công tác/đào tạo</h5>
+      <div className="box shadow cbnv">
+        {
+          (requestInfoToShow || []).map((requestItem, requestItemIndex) => {
+            return (
+              <div className='time-info' key={`request-item-${requestItemIndex}`}>
+                <div className="row">
+                  <div className="col-xl-3">
+                    {t("StartDate")}
+                    <div className="detail adjustment">{requestItem?.startDate ? moment(requestItem?.startDate).format("DD/MM/YYYY") : ""}</div>
+                  </div>
+                  <div className="col-xl-3">
+                    {t("StartHour")}
+                    <div className="detail adjustment">{requestItem?.startTime ? moment(requestItem.startTime, TIME_FORMAT).locale('en-us').format('HH:mm') : ''}</div>
+                  </div>
+                  <div className="col-xl-3">
+                    {t("EndDate")}
+                    <div className="detail adjustment">{requestItem?.endDate ? moment(requestItem.endDate).format("DD/MM/YYYY") : ""}</div>
+                  </div>
+                  <div className="col-xl-3">
+                    {t("Endtime")}
+                    <div className="detail adjustment">{requestItem.endTime ? moment(requestItem.endTime, TIME_FORMAT).locale('en-us').format('HH:mm') : ''}</div>
+                  </div>
+                </div>
+              </div>
+            )
+          })
+        }
+        <div className='other-info'>
+          <div className='row'>
+            <div className="col-md-6">
+              <label>{t("TypeOfBizTripAndTraining")}</label>
+              <div className="detail adjustment">{requestInfo?.attendanceType?.label || ''}</div>
+            </div>
+            <div className="col-md-6">
+              <label>{t("TotalLeaveTime")}</label>
+              <div className="detail adjustment">{totalRequestedTime}</div>
+            </div>
+            <div className="col-md-6">
+              <label>{t("Location")}</label>
+              <div className="detail adjustment">{requestInfo?.location?.label || ''}</div>
+            </div>
+            <div className="col-md-6">
+              <label>{t("MeansOfTransportation")}</label>
+              <div className="detail adjustment">{requestInfo?.vehicle?.label || ''}</div>
+            </div>
+            <div className='col-md-12 reason-block'>
+              <label>{t("ReasonTripAndTrainning")}</label>
+              <div className="detail adjustment">{requestInfo?.comment || ''}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  )
+}
+
+const Attachment = ({ requestDocuments, t }) => {
+  return (
+    <>
+      <h5 className='content-page-header'>{t("Evidence")}</h5>
+      <ul className="list-inline">
+        {
+          (requestDocuments || []).map((file, index) => {
+            return (
+              <li className="list-inline-item" key={index}>
+                <a className="file-name" href={file?.fileUrl} title={file?.fileName} target="_blank" download={file?.fileName}>{file?.fileName}</a>
+              </li>
+            )
+          })
+        }
+      </ul>
+    </>
+  )
+}
 
 class BusinessTripDetailComponent extends React.Component {
   constructor(props) {
@@ -42,8 +174,9 @@ class BusinessTripDetailComponent extends React.Component {
     } 
     return (this.props.action == "consent" && status == 5 && appraiser) ? Constants.mappingStatusRequest[20].label : Constants.mappingStatusRequest[status].label
   }
+
   render() {
-    const { t, businessTrip, action } = this.props
+    const { t, businessTrip, action, viewPopup } = this.props
     const requestInfo = businessTrip.requestInfo[0]
     const requestTypeId = businessTrip.requestTypeId
     const requestTypeIdsAllowedToReApproval = getRequestTypeIdsAllowedToReApproval()
@@ -70,54 +203,34 @@ class BusinessTripDetailComponent extends React.Component {
       isShowAppraisalInfo = true
     }
 
+    const newItem = [...requestInfo?.newItem]
+    const requestInfoToShow = [_.omit(requestInfo, ['newItem']) || [], ...newItem || []]
+    const requestedTime = (requestInfoToShow || []).reduce((initial, current) => {
+      initial.totalHours += current?.hours || 0
+      initial.totalDays += current?.days || 0
+      return initial
+    }, {totalHours: 0, totalDays: 0})
+    const totalRequestedTime = requestInfo?.isAllDay ? `${requestedTime?.totalDays} ${t("Day")}`  : `${requestedTime?.totalHours} ${t("Hour")}`
+
     return (
       <div className="business-trip">
-        <h5>{t("EmployeeInfomation")}</h5>
-        <RequesterDetailComponent user={businessTrip.user} />
+        <h5 className='content-page-header'>{t("EmployeeInfomation")}</h5>
+        <RequesterDetailComponent user={businessTrip.user} viewPopup={viewPopup} />
         <StatusModal show={this.state.isShowStatusModal} content={this.state.content} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
-        <h5>{t('TitleTripAndTrainning')}</h5>
-        <div className="box shadow cbnv">
-          <div className="row">
-            <div className="col-xl-4">
-              {t("StartDateTime")}
-              <div className="detail">{moment(requestInfo?.startDate).format('DD/MM/YYYY') + (requestInfo?.startTime ? ' ' + moment(requestInfo?.startTime, TIME_FORMAT).locale('en-us').format('HH:mm') : '')}</div>
-            </div>
-            <div className="col-xl-4">
-              {t("EndDateTime")}
-              <div className="detail">{moment(requestInfo?.endDate).format('DD/MM/YYYY') + (requestInfo?.endTime ? ' ' + moment(requestInfo?.endTime, TIME_FORMAT).locale('en-us').format('HH:mm') : '')}</div>
-            </div>
-            <div className="col-xl-4">
-              {t('TotalTimeForBizTripAndTraining')}
-              {/* <div className="detail">{(businessTrip && requestInfo?.hours) ? ((requestInfo.isAllDay == FULL_DAY) ? requestInfo?.days + ' ' + t("Day") : requestInfo?.days + ' ' + t("Day") +' '+requestInfo?.hours + ' ' + t("Hour")) : null}</div> */}
-              <div className="detail">{(businessTrip && requestInfo?.days >=1) ? requestInfo?.days + ' ' + t("Day") : requestInfo?.hours + ' ' + t("Hour")}</div>
-            </div>
-          </div>
-          <div className="row">
-            <div className="col-xl-4">
-              {t('TypeOfBizTripAndTraining')}
-              <div className="detail">{requestInfo.attendanceType?.label}</div>
-            </div>
-            <div className="col-xl-4">
-              {t('Location')}
-              <div className="detail">{requestInfo.location && requestInfo.location?.label}</div>
-            </div>
-            <div className="col-xl-4">
-              {t('MeansOfTransportation')}
-              <div className="detail">{requestInfo.vehicle && requestInfo.vehicle.label}</div>
-            </div>
-          </div>
-          <div className="row">
-            <div className="col">
-              {t('ReasonTripAndTrainning')}
-              <div className="detail">{requestInfo.comment}</div>
-            </div>
-          </div>
-        </div>
+
+        { businessTrip?.requestInfoOld && businessTrip?.requestInfoOld?.length > 0 
+          ? 
+          <>
+            <RegisteredBusinessTripInfo businessTrip={businessTrip} t={t} />
+            <AdjustmentBusinessTripInfo requestInfoToShow={requestInfoToShow|| []} requestInfo={requestInfo} totalRequestedTime={totalRequestedTime} t={t} />
+          </>
+          : <RegisteredBusinessTripInfo businessTrip={businessTrip} t={t} />
+        }
 
         {
           isShowAppraisalInfo && 
           <>
-            <h5>{t("ConsenterInformation")}</h5>
+            <h5 className='content-page-header'>{t("ConsenterInformation")}</h5>
             <ApproverDetailComponent title={t("Consenter")} approver={businessTrip.appraiser} status={requestInfo ? requestInfo.processStatusId : ""} hrComment={requestInfo.appraiserComment} />
           </>
         }
@@ -125,29 +238,13 @@ class BusinessTripDetailComponent extends React.Component {
         {
           this.getTypeDetail() === "request" || Constants.STATUS_TO_SHOW_APPROVER.includes(requestInfo.processStatusId)?
           <>
-            <h5>{t("ApproverInformation")}</h5>
+            <h5 className='content-page-header'>{t("ApproverInformation")}</h5>
             <ApproverDetailComponent title={t("Approver")} approver={businessTrip.approver} status={requestInfo.processStatusId} hrComment={requestInfo.approverComment} />
           </> : null
         }
 
-        {
-          businessTrip.requestDocuments.length > 0 ?
-          <>
-            <h5>{t("Evidence")}</h5>
-            <ul className="list-inline">
-              {
-                businessTrip.requestDocuments.map((file, index) => {
-                  return (
-                    <li className="list-inline-item" key={index}>
-                      <a className="file-name" href={file.fileUrl} title={file.fileName} target="_blank" download={file.fileName}>{file.fileName}</a>
-                    </li>
-                  )
-                })
-              }
-            </ul>
-          </>
-          : null
-        }
+        { businessTrip?.requestDocuments?.length > 0 && <Attachment requestDocuments={businessTrip?.requestDocuments || []} /> }
+
         <div className="block-status">
           <span className={`status ${Constants.mappingStatusRequest[requestInfo.processStatusId].className}`}>{t(this.showStatus(requestInfo.processStatusId, businessTrip.appraiser))}</span>
           {messageSAP && 
