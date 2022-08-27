@@ -8,7 +8,7 @@ import IconEye from '../../../../assets/img/icon/eye.svg';
 import IconNotEye from '../../../../assets/img/icon/not-eye.svg';
 import { useApi } from '../../../../modules/api';
 import IconDelete from '../../../../assets/img/icon/Icon_Cancel.svg';
-import ModalConsent from './ModalConsent';
+import ConfirmationModal from '../../ConfirmationModal';
 import moment from 'moment';
 import HumanForReviewSalaryComponent from '../../HumanForReviewSalaryComponent';
 import ConfirmPasswordModal from './ConfirmPasswordModal';
@@ -22,30 +22,25 @@ function SalaryPropse(props) {
   const [dataContract, setDataContract] = useState(undefined);
   const [dataSalary, setDataSalary] = useState(undefined);
   const [isCreateMode, setIsCreateMode] = useState(false);
-  const [currentSalary, setCurrentSalary] = useState('0978978');
+  const [currentSalary, setCurrentSalary] = useState('');
+  const [suggestedSalary, setSuggestedSalary] = useState('');
   const [modalConfirmPassword, setModalConfirmPassword] = useState(false);
   const [acessToken, setAcessToken] = useState(null);
-  const [formData, setFormData] = useState({
-    suggestedSalary: '',
-  });
-
-  const [error, setError] = useState({
-    suggestedSalary: false,
-  });
-
-  const [modal, setModal] = useState({
-    visible: false,
-    type: '',
-    header: '',
-    title: '',
-    content: '',
-  });
 
   const [modalStatus, setModalStatus] = useState({
     isShowStatusModal: false,
     content: '',
     isSuccess: true,
     url: '',
+  });
+
+  const [confirmModal, setConfirmModal] = useState({
+    isShowModalConfirm: false,
+    modalTitle: "",
+    typeRequest: "",
+    modalMessage: "",
+    confirmStatus: "",
+    dataToUpdate: [],
   });
 
   const [coordinator, setCoordinator] = useState(null); // Nhân sự hỗ trợ xin quyền xem lương
@@ -98,10 +93,10 @@ function SalaryPropse(props) {
   });
 
   useEffect(() => {
-    console.log(props.location.state);
+    console.log(props.match.params);
     getDataContract();
-    if (props.location.state) {
-      if (props.location.state?.idSalary) {
+    if (props.match.params?.idContract) {
+      if (props.match.params?.idSalary !== 'create') {
         // Review mode
         setIsCreateMode(false);
         getDataSalary();
@@ -111,13 +106,15 @@ function SalaryPropse(props) {
         setIsCreateMode(true);
         checkViewCreate();
       }
+    } else {
+      props.history.push('/tasks')
     }
     // eslint-disable-next-line
   }, []);
 
   const getDataContract = async () => {
     try {
-      const { data: { data: response } } = await api.fetchStaffContract(props.location.state?.idContract);
+      const { data: { data: response } } = await api.fetchStaffContract(props.match.params?.idContract);
       setDataContract(response);
     } catch (error) {
       console.log(error);
@@ -126,7 +123,7 @@ function SalaryPropse(props) {
 
   const getDataSalary = async () => {
     try {
-      const { data: { data: response } } = await api.fetchSalaryPropose(props.location.state?.idSalary);
+      const { data: { data: response } } = await api.fetchSalaryPropose(props.match.params?.idSalary);
       await setDataSalary(response)
       await checkAuthorize(response);
     } catch (error) {
@@ -168,12 +165,13 @@ function SalaryPropse(props) {
     const currentEmail = localStorage.getItem('email');
     const currentEmployeeNo = localStorage.getItem('employeeNo');
     let viewSettingTmp = { ...viewSetting };
+
     // Todo: check nguoi danh gia
     switch (dataSalaryInfo?.processStatusId) {
+      // switch (8) {
       case 21:
       case 22:
         viewSettingTmp.showComponent.humanForReviewSalary = true;
-        viewSettingTmp.disableComponent.viewCurrentSalary = true;
         break;
       case 23:
         // Todo: kiem tra ai la nguoi view
@@ -181,7 +179,7 @@ function SalaryPropse(props) {
         viewSettingTmp.showComponent.humanResourceChangeSalary = true;
         viewSettingTmp.showComponent.managerApproved = true;
         viewSettingTmp.showComponent.bossApproved = true;
-        if (currentEmail.toLowerCase() === dataSalaryInfo?.userId.toLowerCase() && currentEmployeeNo === dataSalaryInfo?.user?.employeeNo) {
+        if (currentEmail.toLowerCase() === dataSalaryInfo?.userId.toLowerCase() && currentEmployeeNo === dataSalaryInfo?.user?.employeeNo.toString()) {
           viewSettingTmp.disableComponent.viewCurrentSalary = true;
           viewSettingTmp.disableComponent.suggestedSalary = false;
           viewSettingTmp.showComponent.btnCancel = true;
@@ -289,49 +287,115 @@ function SalaryPropse(props) {
 
   // Từ chối
   const handleRefuse = () => {
-    setModal({
-      visible: true,
-      type: 'refuse',
-      header: t('ConfirmCancleConsent'),
-      title: t('ReasonCancleConsent'),
-      content: '',
+    setConfirmModal({
+      isShowModalConfirm: true,
+      modalTitle: t("RejectConsenterRequest"),
+      modalMessage: t("ReasonRejectRequest"),
+      typeRequest: Constants.STATUS_NO_CONSENTED,
+      confirmStatus: "",
+      dataToUpdate: [
+        {
+          id: props.match.params?.idSalary,
+          requestTypeId: 12,
+          sub: [
+            {
+              id: props.match.params?.idSalary,
+              processStatusId: 7,
+              comment: "",
+              status: "",
+            }
+          ],
+        }
+      ],
     })
   }
 
   // Không phê duyệt
   const handleReject = () => {
-    setModal({
-      visible: true,
-      type: 'approve',
-      header: t('ConfirmNotApprove'),
-      title: t('ReasonNotApprove'),
-      content: '',
+    setConfirmModal({
+      isShowModalConfirm: true,
+      modalTitle: t("ConfirmNotApprove"),
+      modalMessage: `${t("ReasonNotApprove")}`,
+      typeRequest: Constants.STATUS_NOT_APPROVED,
+      confirmStatus: "",
+      dataToUpdate: [
+        {
+          id: props.match.params?.idSalary,
+          requestTypeId: 12,
+          sub: [
+            {
+              id: props.match.params?.idSalary,
+              processStatusId: 1,
+              comment: "",
+              status: "",
+            }
+          ],
+        }
+      ],
     })
   }
 
   // Hủy
   const handleCancel = () => {
-    console.log('handleCancel');
-    if (isCreateMode) {
-      history.push('/tasks');
-    }
+    history.push('/tasks');
   }
 
   // Thẩm định
   const handleConsent = () => {
-    console.log('handleConsent');
+    setConfirmModal({
+      isShowModalConfirm: true,
+      modalTitle: t("ConsentConfirmation"),
+      modalMessage: t("ConfirmConsentRequest"),
+      typeRequest: Constants.STATUS_CONSENTED,
+      confirmStatus: "",
+      dataToUpdate: [
+        {
+          id: props.match.params?.idSalary,
+          requestTypeId: 12,
+          sub: [
+            {
+              id: props.match.params?.idSalary,
+              processStatusId: 5,
+              comment: "",
+              status: "",
+            }
+          ],
+        }
+      ],
+    })
   }
 
   // Phê duyệt
-  const handleApprove = () => { console.log('handleApprove'); }
+  const handleApprove = () => {
+    setConfirmModal({
+      isShowModalConfirm: true,
+      modalTitle: t("ApproveRequest"),
+      modalMessage: t("ConfirmApproveChangeRequest"),
+      typeRequest: Constants.STATUS_APPROVED,
+      confirmStatus: "",
+      dataToUpdate: [
+        {
+          id: props.match.params?.idSalary,
+          requestTypeId: 12,
+          sub: [
+            {
+              id: props.match.params?.idSalary,
+              processStatusId: 2,
+              comment: "",
+              status: "",
+            }
+          ],
+        }
+      ],
+    })
+  }
 
   // Gửi yêu cầu
   const handleSendForm = () => {
-    console.log('Gửi yêu cầu');
     // Create
     if (isCreateMode) {
       if (!coordinator) {
-        showStatusModal("Nhân sự hỗ trợ quyền xem lương chưa được nhập!", false)
+        showStatusModal(t("HumanForReviewSalaryValidate"), false)
         return;
       }
       const bodyFormData = prepareDataToSubmit()
@@ -346,24 +410,65 @@ function SalaryPropse(props) {
             showStatusModal(t("RequestSent"), true, '/tasks')
             return;
           }
-          showStatusModal(response.data.result.message || 'Có lỗi xảy ra trong quá trình cập nhật thông tin!', false)
+          showStatusModal(response.data.result.message || t("Error"), false)
         })
         .catch(response => {
-          showStatusModal("Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
+          showStatusModal(t("Error"), false)
         })
     } else {
       // Review
       if (dataSalary?.processStatusId === 23) {
-        validation();
+        if (!currentSalary) {
+          showStatusModal(t("CurrentSalaryValidate"), false)
+          return;
+        }
+        if (!suggestedSalary) {
+          showStatusModal(t("SuggestedSalaryValidate"), false)
+          return;
+        }
+        if (currentSalary && suggestedSalary) {
+          const requestInfoSalary = dataSalary?.requestInfo.length !== 0 ? JSON.parse(dataSalary?.requestInfo[0]?.employeeInfo) : {}
+          const dataSend = {
+            requestHistoryId: props.match.params?.idContract,
+            companyCode: localStorage.getItem('companyCode') || "",
+            staffSalaryUpdate: [
+              {
+                salaryAdjustmentId: dataSalary?.requestInfo.length !== 0 ? dataSalary?.requestInfo[0].id : '',
+                employeeNo: requestInfoSalary?.employeeNo,
+                currentSalary: currentSalary,
+                suggestedSalary: suggestedSalary,
+                contractType: requestInfoSalary?.contractType,
+                staffStrengths: "",
+                staffWknesses: "",
+                startDate: requestInfoSalary?.startDate
+              }
+            ]
+          }
+          axios({
+            method: 'POST',
+            url: `${process.env.REACT_APP_REQUEST_URL}SalaryAdjustment/submitsalary`,
+            data: dataSend,
+            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
+          })
+            .then(response => {
+              if (response.data.result && response.data.result.code === '000000') {
+                showStatusModal(t("RequestSent"), true, '/tasks')
+                return;
+              }
+              showStatusModal(response.data.result.message || t("Error"), false)
+            })
+            .catch(response => {
+              showStatusModal(t("Error"), false)
+            })
+        }
       }
-      // Todo
     }
   };
 
   const prepareDataToSubmit = () => {
     if (isCreateMode) {
       let bodyFormData = new FormData();
-      bodyFormData.append('requestHistoryId', props.location.state?.idContract);
+      bodyFormData.append('requestHistoryId', props.match.params?.idContract);
       bodyFormData.append('userId', viewSetting.proposedStaff.email);
       bodyFormData.append('userInfo', JSON.stringify({
         employeeNo: viewSetting.proposedStaff.employeeNo,
@@ -433,52 +538,26 @@ function SalaryPropse(props) {
 
   const handleChangeModalConfirmPassword = (acessToken) => {
     setAcessToken(acessToken)
+    setCurrentSalary('1234')
     setModalConfirmPassword(false)
     let viewSettingTmp = { ...viewSetting };
     viewSettingTmp.disableComponent.showCurrentSalary = !viewSettingTmp.disableComponent.showCurrentSalary;
     setViewSetting(viewSettingTmp)
   }
 
-  const validation = () => {
-    Object.entries(formData).forEach(([key, value]) => {
-      if (value.trim().length === 0) {
-        setError((prev) => {
-          return {
-            ...prev,
-            [key]: true,
-          };
-        });
-        return;
-      }
-      setError((prev) => {
-        return {
-          ...prev,
-          [key]: false,
-        };
-      });
-    });
-  };
-
-  const handleTextInputChange = (value, objName) => {
-    setError({
-      ...error,
-      suggestedSalary: value ? value.length === 0 : true,
-    });
-    setFormData({
-      ...formData,
-      suggestedSalary: value ? value : '',
-    });
+  const handleTextInputChange = (value) => {
+    setSuggestedSalary(value)
   }
 
   const handleUpdateCoordinator = (approver, isApprover) => {
     setCoordinator(approver)
   }
 
-  const handleCloseModal = () => {
-    console.log('data', modal.content);
-    const modalTmp = { ...modal }
-    modalTmp.visible = !modalTmp.visible
-    setModal(modalTmp)
+  const onHideModalConfirm = () => {
+    setConfirmModal({
+      ...confirmModal,
+      isShowModalConfirm: false
+    })
   }
 
   return (
@@ -494,7 +573,16 @@ function SalaryPropse(props) {
         isSuccess={modalStatus.isSuccess}
         onHide={hideStatusModal}
       />
-      <div className="eval-heading">ĐỀ XUẤT ĐIỀU CHỈNH THU NHẬP</div>
+      <ConfirmationModal
+        show={confirmModal.isShowModalConfirm}
+        title={confirmModal.modalTitle}
+        type={confirmModal.typeRequest}
+        message={confirmModal.modalMessage}
+        confirmStatus={confirmModal.confirmStatus}
+        dataToSap={confirmModal.dataToUpdate}
+        onHide={onHideModalConfirm}
+      />
+      <div className="eval-heading">{t("SalaryPropse")}</div>
       <div className='block-content-salary'>
         <h6 className='block-content-salary__title'>{t('ManagerEvaluate')}</h6>
         <div className='block-content-salary__content'>
@@ -620,7 +708,7 @@ function SalaryPropse(props) {
                   disabled={true}
                   intlConfig={{ locale: 'vi-VN', currency: 'VND' }}
                   className="form-control"
-                  value={formData.suggestedSalary}
+                  value={suggestedSalary}
                   placeholder="Nhập"
                 />
                 :
@@ -628,16 +716,11 @@ function SalaryPropse(props) {
                   disabled={false}
                   intlConfig={{ locale: 'vi-VN', currency: 'VND' }}
                   className="form-control"
-                  value={formData.suggestedSalary}
-                  onValueChange={(value) => { handleTextInputChange(value, 'suggestedSalary') }}
+                  value={suggestedSalary}
+                  onValueChange={(value) => { handleTextInputChange(value) }}
                   placeholder="Nhập"
                 />
               }
-              {error.suggestedSalary && (
-                <span className='text-danger text-xs'>
-                  {t('RequiredInput')}
-                </span>
-              )}
             </div>
           </div>
         </div>
@@ -656,7 +739,7 @@ function SalaryPropse(props) {
             <div
               className='detail'
               onClick={() => {
-                history.push(`/evaluation/${props.location.state?.idContract}/salary`);
+                history.push(`/evaluation/${props.match.params?.idContract}/salary`);
               }}
             >
               {t('ViewDetail')} {'>>'}
@@ -751,16 +834,6 @@ function SalaryPropse(props) {
           </button>
         }
       </div>
-      <ModalConsent
-        show={modal.visible}
-        type={modal.type}
-        header={modal.header}
-        title={modal.title}
-        onHide={() => setModal({ ...modal, visible: false })}
-        data={modal.content}
-        setData={(val) => setModal({ ...modal, content: val })}
-        onConfirm={() => handleCloseModal()}
-      />
     </div>
   );
 }

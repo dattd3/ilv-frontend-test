@@ -13,7 +13,7 @@ const ProposalManagement = (props) => {
   const handleChangeType = (e) => {
     setType(e)
     if (e.value === 1) {
-      props.history.push('salary-adjustment-propse', { id: null })
+      props.history.push(`/salary-adjustment-propse/create`)
     }
   }
 
