@@ -33,7 +33,9 @@ class ResultDetailModal extends React.Component {
                     <Modal.Title>{this.props.title}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    {/* <p dangerouslySetInnerHTML={{ __html: this.props.message }}></p> */}
+                    {/* <p dangerouslySetInnerHTML={{
+                        __html: purify.sanitize(this.props?.message || ''),
+                    }}></p> */}
                     {/* <div className="wrap-result">
                         {this.props.isSuccess ? <Image src={IconSuccess} alt="Success" className="ic-status" /> : <Image src={IconFailed} alt="Success" className="ic-status" />}
                     </div> */}
@@ -69,7 +71,7 @@ class ResultDetailModal extends React.Component {
                             <p><span className="text-success">{t("Successful")}: </span><strong>{sucessReqs}/{total}</strong></p>
                         </>
                         : <div className="wrap-result">
-                            <p dangerouslySetInnerHTML={{ __html: statusCodeAPIException === 504 ? "Yêu cầu đang được xử lý." : "Đã có lỗi xảy ra" }}></p>
+                            <p>{statusCodeAPIException === 504 ? "Yêu cầu đang được xử lý." : "Đã có lỗi xảy ra"}</p>
                             { statusCodeAPIException === 504 ? <Image src={IconSuccess} alt="success" className="ic-status" /> : <Image src={IconFailed} alt="failed" className="ic-status" /> }
                           </div>   
                     }
