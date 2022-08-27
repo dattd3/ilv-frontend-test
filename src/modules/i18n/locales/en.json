@@ -958,6 +958,7 @@
   "ConfirmApproveRequestHolder": "Are you sure to approve this {{- name}}?",
   "ConfirmConsentRequestHolder": "Are you sure to consent this {{- name}}?",
   "ConfirmConsentRequests": "Are you sure to consent these requests?",
+  "ConfirmConsentRequest": "Are you sure to consent this request?",
   "CancelRequest": "CANCEL REQUEST",
   "ConfirmCancelRequest": "Are you sure to cancel this request?",
   "ReasonRejectRequest": "Reason for rejecting request (Required)",
@@ -1147,5 +1148,12 @@
   "ReasonNotApprove": "Lý do không phê duyệt",
   "EnterPasswordToViewPayslip": "Nhập mật khẩu để xem lương",
   "EnterPassword": "Nhập mật khẩu",
-  "SalaryAdjustmentPropse": "Đề xuất điều chỉnh tăng lương"
+  "SalaryAdjustmentPropse": "Đề xuất điều chỉnh tăng lương",
+  "SalaryPropse": "Đề xuất điều chỉnh thu nhập",
+  "HumanForReviewSalaryValidate": "Vui lòng nhập nhân sự hỗ trợ quyền xem lương!",
+  "ProposedEmployee": "CBNV được đề xuất chưa được chọn!",
+  "InformationRequired": "Yêu cầu nhập thông tin",
+  "CurrentSalaryValidate": "Vui lòng lấy về mức lương hiện tại!",
+  "SuggestedSalaryValidate": "Vui lòng nhập mức lương đề xuất!",
+  "SelecTimePeriodValidate": "Vui lòng chọn thời gian có hiệu lực!"
 }

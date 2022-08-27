@@ -259,10 +259,10 @@ class RequestTaskList extends React.Component {
         e.preventDefault();
         if(request.parentRequestHistoryId) {
             //xu ly mot nguoi
-            this.props.history.push('/salary-propse', { idContract: request.parentRequestHistoryId, idSalary: request.salaryId});
+            this.props.history.push(`/salary-propse/${request.parentRequestHistoryId}/${request.salaryId}`);
         } else {
             //xu ly nhieu nguoi
-            this.props.history.push('/salary-adjustment-propse', { id: request.salaryId});
+            this.props.history.push(`/salary-adjustment-propse/${request.salaryId}`);
         }
     }
 
