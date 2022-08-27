@@ -1,5 +1,6 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
+import purify from "dompurify"
 
 export default function BenefitItem(props) {
   const { t } = useTranslation();
@@ -23,7 +24,9 @@ export default function BenefitItem(props) {
                 <td> {index + 1} </td>
                 <td>
                   <div
-                    dangerouslySetInnerHTML={{ __html: item.subtitle }}
+                    dangerouslySetInnerHTML={{
+                      __html: purify.sanitize(item?.subtitle || ''),
+                    }}
                   ></div>
                 </td>
                 <td>

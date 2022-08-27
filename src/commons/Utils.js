@@ -344,8 +344,22 @@ function parsteStringToHtml(arrHtml) {
     }
 }
 
+const getRegistrationMinDateByConditions = () => {
+    const userLoggedCompanyCode = localStorage.getItem('companyCode')
+    let firstDay = null
+    if ([Constants.pnlVCode.VinPearl].includes(userLoggedCompanyCode)) {
+        let indexWednesdayInWeek = 3
+        let indexCurrentDayInWeek = moment().day()
+        firstDay = moment().startOf('week').isoWeekday(1) // Từ thứ 4 trở đi của tuần hiện tại đến cuối tuần hiện tại thì sẽ lấy ngày đầu tiên của tuần hiện tại 
+        if (indexCurrentDayInWeek <= indexWednesdayInWeek) { // Từ thứ 4 trở về trước thì sẽ lấy ngày đầu tiên của tuần trước đó
+            firstDay = moment().subtract(1, 'weeks').startOf('week').isoWeekday(1)
+        }
+    }
+    return firstDay
+}
+
 export {
     getRequestConfigurations, removeAccents, formatStringByMuleValue, formatNumberInteger, exportToPDF, isEnableFunctionByFunctionName, getValueParamByQueryString, getDateByRangeAndFormat,
     calculateBackDateByPnLVCodeAndFormatType, isEnableShiftChangeFunctionByPnLVCode, isEnableInOutTimeUpdateFunctionByPnLVCode, getRequestTypeIdsAllowedToReApproval, getMuleSoftHeaderConfigurations,
-    isAdjacentDateBy2Date, showRangeDateGroupByArrayDate, generateTaskCodeByCode, parsteStringToHtml
+    isAdjacentDateBy2Date, showRangeDateGroupByArrayDate, generateTaskCodeByCode, parsteStringToHtml, getRegistrationMinDateByConditions
 }

@@ -1,10 +1,11 @@
 import React from "react";
 import { useApi, useFetcher } from "../../../../modules";
 import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { useTranslation } from "react-i18next";
+import purify from "dompurify"
+import moment from 'moment';
 import NewsRelationApp from './NewsRelationApp';
 import LoadingSpinner from "../../../../components/Forms/CustomForm/LoadingSpinner";
-import moment from 'moment';
-import { useTranslation } from "react-i18next";
 
 const usePreload = (params) => {
     const api = useApi();
@@ -56,7 +57,9 @@ function NewsDetailElement({ match, location }) {
                             {moment(detail.publishedDate).format('DD/MM/YYYY')}
                     </span>
                 </div>
-                <div className="news-detail" dangerouslySetInnerHTML={{ __html: content }}>
+                <div className="news-detail" dangerouslySetInnerHTML={{
+                    __html: purify.sanitize(content || ''),
+                }}>
                 </div>
                 <div className="news-source text-right small">
                     <a href={detail.sourceUrl} className="text-gray-600" target='_blank'>{t("SeeOriginalArticle")}</a>

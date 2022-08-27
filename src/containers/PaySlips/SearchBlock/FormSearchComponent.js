@@ -1,6 +1,7 @@
 import React from "react";
 import { withTranslation } from "react-i18next"
 import { Form, Button, Col, Row } from 'react-bootstrap';
+import Constants from '../../../commons/Constants'
 
 class FormSearchComponent extends React.Component {
 
@@ -59,7 +60,7 @@ class FormSearchComponent extends React.Component {
                 <Col sm={4}>
                     <Form.Control as="select" name="year" value={this.state.year} className="text-capitalize" onChange={this.setMonthYear.bind(this)}>
                         {years.map((year, index) => {
-                            return <option key={index} value={year} className="text-capitalize">{`${lang === "vi-VN" ? t("Year") : ""} ` + year}</option>
+                            return <option key={index} value={year} className="text-capitalize">{`${lang === Constants.LANGUAGE_VI ? t("Year") : ""} ` + year}</option>
                         })}
                     </Form.Control>
                 </Col>

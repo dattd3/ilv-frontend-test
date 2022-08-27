@@ -18,6 +18,9 @@
             min-height: 40px;
         }
     }
+    .btn-search-substitution, .btn-search-in-out-time {
+        margin-top: 10px;
+    }
     .block-time-item-edit {
         .box-time, input {
             font-size: inherit;
@@ -618,8 +621,39 @@
         .close {
             opacity: 1;
         }
+        .time-info {
+            border: 1px solid #DEE2E6;
+            border-radius: 4px;
+            padding: 15px;
+            margin-bottom: 15px;
+            &:last-child {
+                margin-bottom: 0;
+            }
+        }
+        .other-info {
+            border: 1px solid #DEE2E6;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 15px;
+            .reason-block {
+                margin-top: 15px;
+            }
+            label {
+                margin-bottom: 0;
+            }
+        }
     }
-
+    .registered-leave-info {
+        .item {
+            border: 1px solid #DEE2E6;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            &:last-child {
+                margin-bottom: 0;
+            }
+        }
+    }
     .input-container {
         position:relative;
         label, .react-datepicker-wrapper {
@@ -632,10 +666,10 @@
         }
         .input-img {
             position: absolute;
-            top: 8px;
-            right: 2px;
-            width: 24px;
-            height: 24px;
+            top: 20px;
+            // right: 2px;
+            // width: 24px;
+            // height: 24px;
         }
         .input-clock {
             position: absolute;
@@ -648,7 +682,7 @@
             margin-bottom: 0;
         }
         i {
-            font-size: 20px;
+            font-size: 16px;
             font-weight: 100;
         }
     }
@@ -696,6 +730,12 @@
         border-radius: 5px;
         width: 100%;
         min-height: 40px;
+        display: flex;
+        align-items: center;
+        &.adjustment {
+            background: #E8EFF8;
+            border: none;
+        }
     }
     .leave-of-absence {
         .summary {
@@ -707,7 +747,13 @@
                 padding: 10px;
                 text-align: center;
                 box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+                .title {
+                    margin-bottom: 5px;
+                }
             }
+        }
+        .view-popup {
+            margin: 15px 0 10px 0;
         }
         .leave-type {
             label {
@@ -731,6 +777,42 @@
             display: flex;
             align-items: center;
         }
+        .box-title {
+            padding-bottom: 15px;
+            border-bottom: 1px solid #DEE2E6;
+            font-size: 14px;
+            color: #000000;
+        }
+        .registered-information {
+            color: #000000;
+            .content {
+                padding: 15px 0 0 0;
+                .item {
+                    padding: 15px;
+                    border: 1px solid #DEE2E6;
+                    border-radius: 4px;
+                    .value {
+                        background: #F2F2F2;
+                        border-radius: 4px;
+                        height: 38px;
+                        padding: 0 10px;
+                    }
+                    .main-info {
+                        margin-bottom: 15px;
+                        &__item {
+                            flex: 1 1;
+                            margin-right: 20px;
+                            &:last-child {
+                                margin-right: 0;
+                            }
+                        }
+                    }
+                    .reason {
+
+                    }
+                }
+            }
+        }
     }
     .business-trip {
         .leave-type {
@@ -741,6 +823,39 @@
         .form {
             input {
                 font-size: inherit;
+            }
+        }
+        .view-popup {
+            margin: 5px 0 0 0;
+        }
+        .registered-information {
+            color: #000000;
+            .content {
+                padding: 15px 0 0 0;
+                .item {
+                    padding: 15px;
+                    border: 1px solid #DEE2E6;
+                    border-radius: 4px;
+                    .value {
+                        background: #F2F2F2;
+                        border-radius: 4px;
+                        height: 38px;
+                        padding: 0 10px;
+                    }
+                    .row-main-info {
+                        margin-bottom: 15px;
+                        &__item {
+                            flex: 1 1;
+                            margin-right: 20px;
+                            &:last-child {
+                                margin-right: 0;
+                            }
+                        }
+                    }
+                    .reason {
+
+                    }
+                }
             }
         }
     }
@@ -865,10 +980,22 @@
     }
 
     .all-day-area {
-        margin-left: 10px;
-        margin-right: 10px;
-        margin-top: 20px;
-        border-bottom: 1px solid #d1d3e2
+        margin: 20px 10px 0 10px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #d1d3e2;
+        .wrap-item {
+            display: inline-flex;
+            align-items: center;
+            label {
+                margin-bottom: 0;
+                cursor: pointer;
+            }
+            input {
+                cursor: pointer;
+                width: 18px;
+                height: 18px;
+            }
+        }
     }
 
     .group {
