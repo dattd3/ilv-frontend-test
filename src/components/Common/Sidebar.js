@@ -101,6 +101,18 @@ class RouterLink extends React.Component {
           </Link>
         </OverlayTrigger>
       ) : (
+        to === "/about-vingroup" ?
+        <a
+          className={classnames(
+            className,
+            active && classNameActive
+          )}
+          target={'_blank'}
+          href={"https://vingroup.net/gioi-thieu"}
+        >
+        {children}
+        </a>
+        :
         <Link
           className={classnames(
             className,
