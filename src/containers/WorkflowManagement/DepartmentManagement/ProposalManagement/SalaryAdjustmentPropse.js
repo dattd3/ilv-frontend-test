@@ -195,7 +195,7 @@ const SalaryAdjustmentPropse = (props) => {
         viewSettingTmp.showComponent.showHrAssessment = true;
         viewSettingTmp.showComponent.showOfficerApproved = true;
         if (currentEmail.toLowerCase() === dataSalaryInfo?.userId.toLowerCase()) {
-          viewSettingTmp.showComponent.btnAttachFile = true;
+          // viewSettingTmp.showComponent.btnAttachFile = true;
           viewSettingTmp.showComponent.btnSendRequest = true;
           viewSettingTmp.disableComponent.editSubjectApply = true;
         }
@@ -270,7 +270,7 @@ const SalaryAdjustmentPropse = (props) => {
       const employeeLists = dataSalaryInfo?.requestInfo.map(u => {
         const requestTmp = JSON.parse(u?.employeeInfo)
         return {
-          id: requestTmp?.id,
+          id: requestInfo?.id,
           uid: requestTmp?.employeeNo,
           employeeNo: requestTmp?.employeeNo,
           account: requestTmp?.account,
@@ -468,6 +468,7 @@ const SalaryAdjustmentPropse = (props) => {
 
   // Thẩm định
   const handleConsent = () => {
+    const processStatusId = appraiser ? 8 : 5
     setConfirmModal({
       isShowModalConfirm: true,
       modalTitle: t("ConsentConfirmation"),
@@ -481,7 +482,7 @@ const SalaryAdjustmentPropse = (props) => {
           sub: [
             {
               id: props.match.params.id,
-              processStatusId: 5,
+              processStatusId: processStatusId,
               comment: "",
               status: "",
             }
@@ -565,11 +566,11 @@ const SalaryAdjustmentPropse = (props) => {
               salaryAdjustmentId: u?.id,
               employeeNo: u?.employeeNo,
               currentSalary: u?.currentSalary,
-              suggestedSalary: u?.suggestedSalary,
+              suggestedSalary: u?.proposedSalary,
               contractType: u?.contractType,
               staffStrengths: u?.strength,
               staffWknesses: u?.weakness,
-              startDate: u?.startDate
+              startDate: u?.effectiveTime
             }))
           }
           axios({
@@ -598,7 +599,7 @@ const SalaryAdjustmentPropse = (props) => {
       let bodyFormData = new FormData();
       const employeeInfoLst = selectMembers.map(u => ({
         employeeNo: u?.employeeNo,
-        account: u?.account,
+        account: u?.account.toLowerCase() + "@vingroup.net",
         fullName: u?.fullName,
         jobTitle: u?.jobTitle,
         department: u?.department,
@@ -611,7 +612,7 @@ const SalaryAdjustmentPropse = (props) => {
       bodyFormData.append('userInfo', JSON.stringify({
         employeeNo: viewSetting.proposedStaff.employeeNo,
         avatar: viewSetting.proposedStaff.avatar,
-        account: viewSetting.proposedStaff.account,
+        account: viewSetting.proposedStaff.account.toLowerCase() + "@vingroup.net",
         fullName: viewSetting.proposedStaff.fullName,
         employeeLevel: viewSetting.proposedStaff.employeeLevel,
         orglv2Id: viewSetting.proposedStaff.orgLv2Id,
@@ -621,7 +622,7 @@ const SalaryAdjustmentPropse = (props) => {
       bodyFormData.append('coordinatorId', coordinator?.account.toLowerCase() + "@vingroup.net");
       bodyFormData.append('coordinatorInfo', JSON.stringify({
         avatar: coordinator?.avatar,
-        account: coordinator?.account.toLowerCase(),
+        account: coordinator?.account.toLowerCase() + "@vingroup.net",
         fullName: coordinator?.fullName,
         employeeLevel: coordinator?.employeeLevel,
         pnl: coordinator?.pnl,
@@ -945,7 +946,7 @@ const SalaryAdjustmentPropse = (props) => {
               </tr>
             </thead>
             <tbody>
-              {props.match.params.id ?
+              {props.match.params.id !== 'create' ?
                 <>{renderListMember(selectedMembers)}</>
                 : <>{renderListMember(selectMembers)}</>
               }
