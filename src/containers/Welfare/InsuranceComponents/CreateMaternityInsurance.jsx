@@ -374,23 +374,23 @@ const CreateMaternityInsurance = ({
           <div className="col-4">
             {t("FullName")}
             <span className="required">(*)</span>
-            <div className="detail">{userInfo.fullName}</div>
+            <div className="detail1">{userInfo.fullName}</div>
           </div>
           <div className="col-4">
             {"Mã sổ/số sổ BHXH"}
             <span className="required">(*)</span>
-            <div className="detail">{userInfo.socialId}</div>
+            <div className="detail1">{userInfo.socialId}</div>
           </div>
           <div className="col-4">
             {"Số CMND/Hộ chiếu/Thẻ căn cước"}
             <span className="required">(*)</span>
-            <div className="detail">{userInfo.personal_id_no}</div>
+            <div className="detail1">{userInfo.personal_id_no}</div>
           </div>
         </div>
         <div className="row mv-10">
           <div className="col-4">
             {"Mã nhân viên"}
-            <div className="detail">{userInfo.employeeNo}</div>
+            <div className="detail1">{userInfo.employeeNo}</div>
           </div>
 
           <div className="col-4">
