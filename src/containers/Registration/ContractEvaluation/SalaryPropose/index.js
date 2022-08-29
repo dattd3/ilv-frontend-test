@@ -472,7 +472,7 @@ function SalaryPropse(props) {
       bodyFormData.append('userInfo', JSON.stringify({
         employeeNo: viewSetting.proposedStaff.employeeNo,
         avatar: viewSetting.proposedStaff.avatar,
-        account: viewSetting.proposedStaff.account,
+        account: viewSetting.proposedStaff.account.toLowerCase() + "@vingroup.net",
         fullName: viewSetting.proposedStaff.fullName,
         employeeLevel: viewSetting.proposedStaff.employeeLevel,
         orglv2Id: viewSetting.proposedStaff.orgLv2Id,
@@ -482,7 +482,7 @@ function SalaryPropse(props) {
       bodyFormData.append('coordinatorId', coordinator?.account.toLowerCase() + "@vingroup.net");
       bodyFormData.append('coordinatorInfo', JSON.stringify({
         avatar: coordinator?.avatar,
-        account: coordinator?.account.toLowerCase(),
+        account: coordinator?.account.toLowerCase() + "@vingroup.net",
         fullName: coordinator?.fullName,
         employeeLevel: coordinator?.employeeLevel,
         pnl: coordinator?.pnl,
