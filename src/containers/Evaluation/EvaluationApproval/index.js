@@ -179,7 +179,7 @@ function AdvancedFilter(props) {
 
 function ApprovalTabContent(props) {
     const { t } = useTranslation()
-    const { handleFilter, masterData } = props
+    const { isOpen, handleFilter, masterData, resetPaging } = props
     const [filter, SetFilter] = useState({
         isOpenFilterAdvanced: false,
         status: null,
@@ -197,13 +197,38 @@ function ApprovalTabContent(props) {
         rank: null,
         title: null,
         fromDate: null,
-        toDate: null
+        toDate: null,
     })
-
     const formStatuses = [
         { value: 0, label: t("EvaluationInProgress") },
         { value: 1, label: t("EvaluationDetailCompleted") },
     ]
+
+    useEffect(() => {
+        if (isOpen) {
+            SetFilter({
+                ...filter,
+                isOpenFilterAdvanced: false,
+                status: null,
+                employees: [],
+                employee: null,
+                currentStep: null,
+                blocks: [],
+                block: null,
+                regions: [],
+                region: null,
+                units: [],
+                unit: null,
+                groups: [],
+                group: [],
+                rank: null,
+                title: null,
+                fromDate: null,
+                toDate: null,
+            })
+            // resetPaging('batchApproval')
+        }
+    }, [isOpen])
 
     const updateUser = (user) => {
         SetFilter({
@@ -311,7 +336,7 @@ function ApprovalTabContent(props) {
 }
 
 function BatchApprovalTabContent(props) {
-    const { isOpen, masterData, handleFilter, processLoading } = props
+    const { isOpen, masterData, handleFilter, processLoading, resetPaging } = props
     const { t } = useTranslation()
     const [filter, SetFilter] = useState({
         isOpenFilterAdvanced: false,
@@ -332,20 +357,38 @@ function BatchApprovalTabContent(props) {
         title: null,
         fromDate: null,
         toDate: null,
-        isFormFilterValid: true
+        isFormFilterValid: true,
     })
 
     useEffect(() => {
         const processEvaluationForms = response => {
             if (response && response.data) {
                 const result = response.data.result
-                if (result.code == Constants.PMS_API_SUCCESS_CODE) {
+                if (result?.code == Constants.PMS_API_SUCCESS_CODE) {
                     const data = (response?.data?.data || []).map(item => {
                         return {value: item?.id, label: item?.name}
                     })
                     SetFilter({
                         ...filter,
-                        evaluationForms: data
+                        isOpenFilterAdvanced: false,
+                        evaluationForm: null,
+                        employees: [],
+                        employee: null,
+                        currentStep: null,
+                        blocks: [],
+                        block: null,
+                        regions: [],
+                        region: null,
+                        units: [],
+                        unit: null,
+                        groups: [],
+                        group: [],
+                        rank: null,
+                        title: null,
+                        fromDate: null,
+                        toDate: null,
+                        isFormFilterValid: true,
+                        evaluationForms: data,
                     })
                 }
             }
@@ -359,7 +402,8 @@ function BatchApprovalTabContent(props) {
             processEvaluationForms(response)
         }
 
-        if (isOpen && filter.evaluationForms?.length === 0) {
+        if (isOpen) {
+            // resetPaging('approval')
             fetchEvaluationForms()
         }
     }, [isOpen])
@@ -491,6 +535,14 @@ function BatchApprovalTabContent(props) {
     )
 }
 
+const usePrevious = (value) => {
+    const ref = useRef()
+    useEffect(() => {
+      ref.current = value
+    })
+    return ref.current
+}
+
 function EvaluationApproval(props) {
     const { t } = useTranslation()
     const [isLoading, SetIsLoading] = useState(false)
@@ -505,11 +557,11 @@ function EvaluationApproval(props) {
     const [paging, SetPaging] = useState({
         approval: {
             pageIndex: 1,
-            pageSize: 10
+            pageSize: 1,
         },
         batchApproval: {
             pageIndex: 1,
-            pageSize: 10
+            pageSize: 1,
         }
     })
     const [masterData, SetMasterData] = useState({
@@ -520,7 +572,6 @@ function EvaluationApproval(props) {
         ranks: [],
         titles: []
     })
-    const [hasChangePageSize, SetHasChangePageSize] = useState(false)
     const [activeTab, SetActiveTab] = useState('approval')
     const [evaluationData, SetEvaluationData] = useState({
         data: [],
@@ -529,7 +580,7 @@ function EvaluationApproval(props) {
     const [dataFilter, SetDataFilter] = useState(null)
 
     const statusDone = 5
-    const listPageSizes = [10, 20, 30, 40, 50]
+    const listPageSizes = [1, 10, 20, 30, 40, 50]
     const currentSteps = [
         { value: evaluationStatus.selfAssessment, label: t("EvaluationDetailEmployeeManagerAssessment") },
         { value: evaluationStatus.qlttAssessment, label: t("EvaluationDetailEmployeeManagerApprove") },
@@ -540,16 +591,9 @@ function EvaluationApproval(props) {
         const prevVal = usePrevious(val)
         return prevVal !== val
     }
-    
-    const usePrevious = (value) => {
-        const ref = useRef()
-        useEffect(() => {
-          ref.current = value
-        })
-        return ref.current
-    }
 
-    const hasPageIndexChanged = useHasChanged(paging[activeTab].pageIndex)
+    const prevApprovalPageIndex = usePrevious(paging.approval.pageIndex)
+    const prevBatchApprovalPageIndex = usePrevious(paging.batchApproval.pageIndex)
     
     useEffect(() => {
         const prepareRanksAndTitles = (name, raw) => {
@@ -654,15 +698,12 @@ function EvaluationApproval(props) {
             })
 
             SetMasterData(masterDataTemp)
-            if (isLoading) {
-                SetIsLoading(false)
-            }
+            SetIsLoading(false)
         }
 
         const fetchMasterData = async () => {
-            if (!isLoading) {
-                SetIsLoading(true)
-            }
+            SetIsLoading(true)
+
             // const muleSoftConfig = getMuleSoftHeaderConfigurations()
             const config = getRequestConfigurations()
             let formData = new FormData()
@@ -684,37 +725,81 @@ function EvaluationApproval(props) {
     }, [])
 
     useEffect(() => {
-        const pagingTemp = {...paging}
-        pagingTemp.approval.pageIndex = 1
-        pagingTemp.batchApproval.pageIndex = 1
-        SetPaging(pagingTemp)
-        handleFilter(dataFilter, activeTab)
-    }, [paging[activeTab].pageSize])
+        SetDataFilter(null)
+
+        if (activeTab === 'approval') {
+            const pagingTemp = {...paging}
+            pagingTemp.batchApproval.pageIndex = 1
+            pagingTemp.batchApproval.pageSize = listPageSizes[0]
+            SetPaging(pagingTemp)
+
+            handleFilter(null, 'approval')
+        } else if (activeTab === 'batchApproval') {
+            const pagingTemp = {...paging}
+            pagingTemp.approval.pageIndex = 1
+            pagingTemp.approval.pageSize = listPageSizes[0]
+            SetPaging(pagingTemp)
+
+            SetEvaluationData({
+                ...evaluationData,
+                data: [],
+                total: 0
+            })
+        }
+    }, [activeTab])
 
     useEffect(() => {
-        if (hasPageIndexChanged) {
+        if (!prevApprovalPageIndex || activeTab === 'batchApproval') {
+            return
+        }
+
+        if (prevApprovalPageIndex && prevApprovalPageIndex != paging.approval.pageIndex) {
             handleFilter(dataFilter, activeTab)
         }
-    }, [paging[activeTab].pageIndex])
-    
+    }, [paging?.approval?.pageIndex])
+
+    useEffect(() => {
+        if (activeTab === 'batchApproval') {
+            return
+        }
+
+        const pagingTemp = {...paging}
+        pagingTemp.approval.pageIndex = 1
+        SetPaging(pagingTemp)
+
+        handleFilter(dataFilter, activeTab)
+    }, [paging.approval.pageSize])
+
+    useEffect(() => {
+        if (!prevBatchApprovalPageIndex || activeTab === 'approval') {
+            return
+        }
+
+        if (prevBatchApprovalPageIndex && prevBatchApprovalPageIndex != paging.batchApproval.pageIndex) {
+            handleFilter(dataFilter, activeTab)
+        }
+    }, [paging.batchApproval.pageIndex])
+
+    useEffect(() => {
+        if (activeTab === 'approval') {
+            return
+        }
+
+        const pagingTemp = {...paging}
+        pagingTemp.batchApproval.pageIndex = 1
+        SetPaging(pagingTemp)
+
+        handleFilter(dataFilter, activeTab)
+    }, [paging.batchApproval.pageSize])
+
     const handleChangePage = (key, page) => {
         const pagingTemp = {...paging}
         pagingTemp[key].pageIndex = page
         SetPaging(pagingTemp)
     }
 
-    const handleTabChange = key => {
-        SetActiveTab(key)
-        SetEvaluationData({
-            ...evaluationData,
-            data: [],
-            total: 0
-        })
-    }
-
     const handleFilter = async (data, tab) => {
         SetIsLoading(true)
-        SetDataFilter(data)
         const config = getRequestConfigurations()
         config.headers['content-type'] = 'multipart/form-data'
         const organizationLevel6Selected = (data?.group || []).map(item => item.value)
@@ -738,12 +823,16 @@ function EvaluationApproval(props) {
             formData.append('CurrentStatus', data?.status?.value || '')
             apiPath = `${process.env.REACT_APP_HRDX_PMS_URL}api/form/listReview`
         } else if (tab === 'batchApproval') {
+            if (!data?.evaluationForm?.value) {
+                return
+            }
             formData.append('ApproveEmployeeCode', employeeCode || '')
             formData.append('ApproveEmployeeAdCode', employeeAD || '')
             formData.append('CheckPhaseFormId', data?.evaluationForm?.value || null)
             apiPath = `${process.env.REACT_APP_HRDX_PMS_URL}api/form/listApprove`
         }
         formData.append('CurrentStep', data?.currentStep?.value || 0)
+        SetDataFilter(data)
      
         try {
             const response = await axios.post(apiPath, formData, config)
@@ -763,6 +852,8 @@ function EvaluationApproval(props) {
             }
             SetIsLoading(false)
         } catch (e) {
+            SetIsLoading(false)
+        } finally {
             SetIsLoading(false)
         }
     }
@@ -892,9 +983,16 @@ function EvaluationApproval(props) {
         SetIsLoading(status)
     }
 
-    const handleChangePageSize = (key, e) => {
+    const handleChangePageSize = (key, pageSize) => {
         const pagingTemp = {...paging}
-        pagingTemp[key].pageSize = e?.target?.value
+        pagingTemp[key].pageSize = pageSize
+        SetPaging(pagingTemp)
+    }
+
+    const resetPaging = key => {
+        const pagingTemp = {...paging}
+        pagingTemp[key].pageIndex = 1
+        pagingTemp[key].pageSize = listPageSizes[0]
         SetPaging(pagingTemp)
     }
 
@@ -912,18 +1010,19 @@ function EvaluationApproval(props) {
             <h1 className="content-page-header">{t("EvaluationLabel")}</h1>
             <div className="filter-block">
                 <div className="card shadow card-filter">
-                    <Tabs id="filter-tabs" defaultActiveKey={activeTab} onSelect={key => handleTabChange(key)}>
-                        <Tab eventKey="approval" title={t("EvaluationApprovalTab")} className="tab-item">
+                    <Tabs id="filter-tabs" defaultActiveKey={activeTab} onSelect={key => SetActiveTab(key)}>
+                        <Tab eventKey="approval" title={t("EvaluationApprovalTab")} className="tab-item" id='approval-tab'>
                             <ApprovalTabContent 
+                                isOpen={activeTab === 'approval'} 
                                 masterData={masterData} 
-                                hasChangePageSize={hasChangePageSize} 
+                                // resetPaging={resetPaging} 
                                 handleFilter={handleFilter} />
-                        </Tab>
-                        <Tab eventKey="batchApproval" title={t("EvaluationBulkApproval")} className="tab-item">
+                            </Tab>
+                        <Tab eventKey="batchApproval" title={t("EvaluationBulkApproval")} className="tab-item" id='batch-approval-tab'>
                             <BatchApprovalTabContent 
                                 isOpen={activeTab === 'batchApproval'} 
                                 masterData={masterData} 
-                                hasChangePageSize={hasChangePageSize} 
+                                // resetPaging={resetPaging} 
                                 handleFilter={handleFilter} 
                                 processLoading={processLoading} />
                         </Tab>
@@ -968,7 +1067,7 @@ function EvaluationApproval(props) {
                         <div className="bottom-region">
                             <div className="customize-display">
                                 <label>{t("EvaluationShow")}</label>
-                                <select value={paging.approval.pageSize || listPageSizes[0]} onChange={(e) => handleChangePageSize('approval', e)}>
+                                <select value={paging.approval.pageSize || listPageSizes[0]} onChange={(e) => handleChangePageSize('approval', e?.target?.value)}>
                                     {
                                         listPageSizes.map((page, i) => {
                                             return <option value={page} key={i}>{page}</option>
@@ -1040,7 +1139,7 @@ function EvaluationApproval(props) {
                         <div className="bottom-region">
                             <div className="customize-display">
                                 <label>{t("EvaluationShow")}</label>
-                                <select value={paging.batchApproval.pageSize || listPageSizes[0]} onChange={(e) => handleChangePageSize('batchApproval', e)}>
+                                <select value={paging.batchApproval.pageSize || listPageSizes[0]} onChange={(e) => handleChangePageSize('batchApproval', e?.target?.value)}>
                                     {
                                         listPageSizes.map((page, i) => {
                                             return <option value={page} key={i}>{page}</option>
