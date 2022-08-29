@@ -101,6 +101,18 @@ class RouterLink extends React.Component {
           </Link>
         </OverlayTrigger>
       ) : (
+        to === "/about-vingroup" ?
+        <a
+          className={classnames(
+            className,
+            active && classNameActive
+          )}
+          target={'_blank'}
+          href={"https://vingroup.net/gioi-thieu"}
+        >
+        {children}
+        </a>
+        :
         <Link
           className={classnames(
             className,
@@ -149,7 +161,7 @@ function SideBar(props) {
         if (user.companyCode !== "V030") {
             rootNav = rootNav.filter(x => x.label !== 'Menu_Training')
         }
-        if(user.companyCode != Constants.pnlVCode.VinHome) {
+        if(user.companyCode != Constants.pnlVCode.VinHome && user.companyCode != Constants.PnLCODE.Vin3S) {
           rootNav = rootNav.filter(x => x.label !== 'ProposedResignation')
         }
         if(user.prepare != 'true') {
