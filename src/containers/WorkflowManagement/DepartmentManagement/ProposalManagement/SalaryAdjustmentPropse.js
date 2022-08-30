@@ -8,7 +8,6 @@ import "react-toastify/dist/ReactToastify.css";
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import FilterMember from "../../ShareComponents/FilterMember";
-// import ModalConsent from "../../ShareComponents/ModalConsent";
 import ConfirmationModal from '../../../Registration/ConfirmationModal';
 import ResultModal from "./ResultModal";
 import ApproverComponent from "../../ShareComponents/HrReviewSalaryComponent";
@@ -202,23 +201,14 @@ const SalaryAdjustmentPropse = (props) => {
         break;
       // Đang chờ CBQL Cấp cơ sở thẩm định
       case 8:
-        viewSettingTmp.showComponent.showHrSupportViewSalary = true;
-        viewSettingTmp.showComponent.showCBQL = true;
-        viewSettingTmp.showComponent.showHrAssessment = true;
-        viewSettingTmp.showComponent.showOfficerApproved = true;
-        // if (currentEmail.toLowerCase() === dataSalaryInfo?.supervisorId?.toLowerCase()) {
-        if (currentEmail.toLowerCase() === JSON.parse(dataSalaryInfo?.supervisorInfo)?.account.toLowerCase()) {
-          viewSettingTmp.showComponent.btnRefuse = true;
-          viewSettingTmp.showComponent.btnExpertise = true;
-        }
-        break;
       // Đang chờ nhân sự thẩm định lương đề xuất
       case 24:
         viewSettingTmp.showComponent.showHrSupportViewSalary = true;
         viewSettingTmp.showComponent.showCBQL = true;
         viewSettingTmp.showComponent.showHrAssessment = true;
         viewSettingTmp.showComponent.showOfficerApproved = true;
-        if (currentEmail.toLowerCase() === dataSalaryInfo?.appraiserId?.toLowerCase()) {
+        if (currentEmail.toLowerCase() === dataSalaryInfo?.appraiserId?.toLowerCase()
+          || currentEmail.toLowerCase() === dataSalaryInfo?.supervisorId?.toLowerCase()) {
           viewSettingTmp.showComponent.btnRefuse = true;
           viewSettingTmp.showComponent.btnExpertise = true;
         }
