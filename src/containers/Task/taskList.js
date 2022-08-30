@@ -196,10 +196,10 @@ class TaskList extends React.Component {
         let url = '';
         if(request.parentRequestHistoryId) {
             //xu ly mot nguoi
-            url = `salarypropse/${request.parentRequestHistoryId}/${request.salaryId}`
+            url = `salarypropse/${request.parentRequestHistoryId}/${request.salaryId}/request`
         } else {
             //xu ly nhieu nguoi
-            url = `salaryadjustment/${request.salaryId}`
+            url = `salaryadjustment/${request.salaryId}/request`
         }
         return url;
     }

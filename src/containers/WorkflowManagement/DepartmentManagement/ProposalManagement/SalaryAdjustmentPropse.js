@@ -194,7 +194,8 @@ const SalaryAdjustmentPropse = (props) => {
         viewSettingTmp.showComponent.showCBQL = true;
         viewSettingTmp.showComponent.showHrAssessment = true;
         viewSettingTmp.showComponent.showOfficerApproved = true;
-        if (currentEmail.toLowerCase() === dataSalaryInfo?.userId?.toLowerCase()) {
+        if (currentEmail.toLowerCase() === dataSalaryInfo?.userId?.toLowerCase()
+          && props.match.params.type === 'request') {
           // viewSettingTmp.showComponent.btnAttachFile = true;
           viewSettingTmp.showComponent.btnSendRequest = true;
           viewSettingTmp.disableComponent.editSubjectApply = true;
@@ -208,8 +209,10 @@ const SalaryAdjustmentPropse = (props) => {
         viewSettingTmp.showComponent.showCBQL = true;
         viewSettingTmp.showComponent.showHrAssessment = true;
         viewSettingTmp.showComponent.showOfficerApproved = true;
-        if (currentEmail.toLowerCase() === dataSalaryInfo?.appraiserId?.toLowerCase()
-          || currentEmail.toLowerCase() === dataSalaryInfo?.supervisorId?.toLowerCase()) {
+        if ((currentEmail.toLowerCase() === dataSalaryInfo?.appraiserId?.toLowerCase()
+          || currentEmail.toLowerCase() === dataSalaryInfo?.supervisorId?.toLowerCase())
+          && props.match.params.type === 'access'
+        ) {
           viewSettingTmp.showComponent.btnRefuse = true;
           viewSettingTmp.showComponent.btnExpertise = true;
         }
@@ -220,7 +223,9 @@ const SalaryAdjustmentPropse = (props) => {
         viewSettingTmp.showComponent.showCBQL = true;
         viewSettingTmp.showComponent.showHrAssessment = true;
         viewSettingTmp.showComponent.showOfficerApproved = true;
-        if (currentEmail.toLowerCase() === dataSalaryInfo?.approverId?.toLowerCase()) {
+        if (currentEmail.toLowerCase() === dataSalaryInfo?.approverId?.toLowerCase()
+          && props.match.params.type === 'approval'
+        ) {
           viewSettingTmp.showComponent.btnNotApprove = true;
           viewSettingTmp.showComponent.btnApprove = true;
         }
