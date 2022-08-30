@@ -294,6 +294,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         canAddJob: false,
         SelfAssessmentScoreTotal: 0,
         ManagementScoreTotal: 0,
+        childRequestHistoryId: null,
       },
       errors: {
         // rating: '(Bắt buộc)',
@@ -465,6 +466,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     candidateInfos.remoteData = infos;
     candidateInfos.canAddJob = infos.isEdit;
     candidateInfos.comment = null;
+    candidateInfos.childRequestHistoryId = infos?.childRequestHistoryId
     
     //save staff contract
     if(infos.staffContracts){
@@ -1247,8 +1249,7 @@ renderEvalution = (name, data, isDisable) => {
   createFormSalary = () => {
     console.log('create form salary');
     this.setState({ isShowSalaryPropose: false });
-    // window.location.href = `/salary-propse/${this.state.id}`;
-    this.props.history.push(`/salary-propse/${this.state.id}/create`)
+    this.props.history.push(`/salarypropse/${this.state.id}/create`)
   }
 
   checkShowQlttComment = (data) => {
@@ -1290,7 +1291,7 @@ renderEvalution = (name, data, isDisable) => {
     if(data?.processStatus == 2 || type === 'salary') {
       return  <div className="registration-section">
         <LoadingModal show={loading}/>
-        <ContractEvaluationdetail id={this.props.match.params.id} data={data} />
+        <ContractEvaluationdetail id={this.props.match.params.id} data={data} type={type}/>
        </div>
     }
     return (

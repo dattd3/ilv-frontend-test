@@ -262,7 +262,7 @@ class RequestTaskList extends React.Component {
             url = `salary-propse/${request.parentRequestHistoryId}/${request.salaryId}`
         } else {
             //xu ly nhieu nguoi
-            url = `salary-adjustment-propse/${request.salaryId}`
+            url = `salaryadjustment/${request.salaryId}`
         }
         return url;
     }
