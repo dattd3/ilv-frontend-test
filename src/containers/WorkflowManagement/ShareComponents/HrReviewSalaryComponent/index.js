@@ -207,7 +207,7 @@ class ApproverComponent extends React.Component {
                 pnl: res.pnl,
                 orglv2Id: res.organization_lv2,
                 account: res.username,
-                current_position: res.postition_name,
+                current_position: res.position_name,
                 department: res.division + (res.department ? '/' + res.department : '') + (res.part ? '/' + res.part : '')
               }
             })
