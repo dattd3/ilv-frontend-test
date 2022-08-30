@@ -1249,7 +1249,7 @@ renderEvalution = (name, data, isDisable) => {
   createFormSalary = () => {
     console.log('create form salary');
     this.setState({ isShowSalaryPropose: false });
-    this.props.history.push(`/salarypropse/${this.state.id}/create`)
+    this.props.history.push(`/salarypropse/${this.state.id}/create/request`)
   }
 
   checkShowQlttComment = (data) => {
@@ -1291,7 +1291,7 @@ renderEvalution = (name, data, isDisable) => {
     if(data?.processStatus == 2 || type === 'salary') {
       return  <div className="registration-section">
         <LoadingModal show={loading}/>
-        <ContractEvaluationdetail id={this.props.match.params.id} data={data} type={type}/>
+        <ContractEvaluationdetail id={this.props.match.params.id} data={data} type={type} idSalary={data?.childRequestHistoryId}/>
        </div>
     }
     return (
