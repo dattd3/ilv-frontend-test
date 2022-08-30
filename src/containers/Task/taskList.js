@@ -132,7 +132,7 @@ class TaskList extends React.Component {
         this.setState({ isShowTaskDetailModal: false });
     }
 
-    showStatus = (taskId, statusOriginal = 0, request, taskData) => {
+    showStatus = (taskId, statusOriginal = 0, request, taskData, statusName) => {
         const { t } = this.props
         const customStylesStatus = {
             control: base => ({
@@ -164,6 +164,12 @@ class TaskList extends React.Component {
             12: {className: 'request-status', label: 'HR thẩm định'},
             13: {className: 'request-status', label: 'CBLĐ phê duyệt'},
             //14: {className: 'request-status', label: 'Đã phê duyệt'}
+        }
+
+        if(request == Constants.SALARY_PROPOSE && statusName) {
+            let statusLabel = this.props.t(statusName);
+            let tmp = Object.keys(status).filter(key => status[key].label == statusLabel );
+            statusOriginal = tmp?.length > 0 ? tmp[0] : statusOriginal;
         }
 
         const options = [
@@ -242,7 +248,7 @@ class TaskList extends React.Component {
         const requestTypeIdsAllowedToReApproval = getRequestTypeIdsAllowedToReApproval()
 
         tasks.forEach((child) => {
-            if (child.processStatusId == 8 || (child.processStatusId == 11 && child.supervisorId?.toLowerCase() == localStorage.getItem('email')?.toLowerCase()) || (child.processStatusId == 10 && child.appraiserId?.toLowerCase() == localStorage.getItem('email')?.toLowerCase()) || (page == "approval" && (child.processStatusId == 5  || child.processStatusId == 13 || (child.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && requestTypeIdsAllowedToReApproval.includes(child.requestTypeId))))) {
+            if ((child.requestTypeId == Constants.SALARY_PROPOSE && child.isEdit == true) || child.processStatusId == 8 || (child.processStatusId == 11 && child.supervisorId?.toLowerCase() == localStorage.getItem('email')?.toLowerCase()) || (child.processStatusId == 10 && child.appraiserId?.toLowerCase() == localStorage.getItem('email')?.toLowerCase()) || (page == "approval" && (child.processStatusId == 5  || child.processStatusId == 13 || (child.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && requestTypeIdsAllowedToReApproval.includes(child.requestTypeId))))) {
                 child.isChecked = event.target.checked;
                 if (child.isChecked) {
                     // child.canChecked = true
@@ -487,7 +493,7 @@ class TaskList extends React.Component {
                                                 <tr key={index}>
                                                     {
                                                         (((child.processStatusId == 5 || child.processStatusId == 13 || (child.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && requestTypeIdsAllowedToReApproval.includes(child.requestTypeId)))
-                                                        && this.props.page == "approval") || child.processStatusId == 8 || (child.processStatusId == 11 && child.supervisorId?.toLowerCase() == localStorage.getItem('email')?.toLowerCase()) || (child.processStatusId == 10 && child.appraiserId?.toLowerCase() == localStorage.getItem('email')?.toLowerCase())) ?
+                                                        && this.props.page == "approval") || child.processStatusId == 8 || (child.processStatusId == 11 && child.supervisorId?.toLowerCase() == localStorage.getItem('email')?.toLowerCase()) || (child.processStatusId == 10 && child.appraiserId?.toLowerCase() == localStorage.getItem('email')?.toLowerCase()) || (child.requestTypeId == Constants.SALARY_PROPOSE && child.isEdit == true)) ?
                                                         <td scope="col" className="check-box text-left sticky-col">
                                                             <input type="checkbox"  onChange={this.handleCheckChildElement} checked={!!child.isChecked} value={child.id || ''}/>
                                                         </td>
@@ -564,7 +570,7 @@ class TaskList extends React.Component {
                                                         ? <td className="appraiser text-center">{child.appraiser?.fullName}</td>
                                                         : null
                                                     }
-                                                    <td className="status text-center">{this.showStatus(child.id, child.processStatusId, child.requestType.id, child.appraiser)}</td>
+                                                    <td className="status text-center">{this.showStatus(child.id, child.processStatusId, child.requestType.id, child.appraiser, child.statusName)}</td>
                                                     {
                                                         this.props.page != "consent" ?
                                                             <td className="tool">

@@ -179,7 +179,7 @@ class RequestTaskList extends React.Component {
         this.setState({ isShowModalRegistrationConfirm: false });
     }
 
-    showStatus = (taskId, statusOriginal, request, taskData) => {
+    showStatus = (taskId, statusOriginal, request, taskData, statusName) => {
         const customStylesStatus = {
             control: base => ({
                 ...base,
@@ -212,6 +212,12 @@ class RequestTaskList extends React.Component {
             { value: 2, label: 'Phê duyệt' }
         ]
 
+        if(request == Constants.SALARY_PROPOSE && statusName) {
+            let statusLabel = this.props.t(statusName);
+            let tmp = Object.keys(status).filter(key => status[key].label == statusLabel );
+            statusOriginal = tmp?.length > 0 ? tmp[0] : statusOriginal;
+        }
+
         if (this.props.page === "approval") {
             if (statusOriginal == 0) {
                 return <Select defaultValue={options[0]} options={options} isSearchable={false} onChange={value => this.onChangeStatus(value, taskId, request, value, taskData, statusOriginal)} styles={customStylesStatus} />
@@ -222,11 +228,7 @@ class RequestTaskList extends React.Component {
         if(taskData?.account != null && statusOriginal == 5) {
             statusOriginal = 6;
         }
-        if(request == Constants.SALARY_PROPOSE) {
-            if([21, 22, 23, 24].includes(statusOriginal)) {
-                statusOriginal = 8;
-            }
-        }
+        
         return <span className={status[statusOriginal]?.className}>{status[statusOriginal]?.label}</span>
     }
 
@@ -717,7 +719,7 @@ class RequestTaskList extends React.Component {
                                                             })
                                                         }
                                                     </td>
-                                                    <td className="status text-center">{this.showStatus(child.id, child.processStatusId, child.requestType.id, child.appraiserId)}</td>
+                                                    <td className="status text-center">{this.showStatus(child.id, child.processStatusId, child.requestType.id, child.appraiserId, child.statusName)}</td>
                                                     <td className="tool">
                                                         { (isShowEditButton && child?.absenceType?.value != MOTHER_LEAVE_KEY) && <a href={editLink} title={t("Edit")}><img alt="Sửa" src={editButton} /></a> }
                                                         { isShowEvictionButton && child.absenceType?.value != MOTHER_LEAVE_KEY
