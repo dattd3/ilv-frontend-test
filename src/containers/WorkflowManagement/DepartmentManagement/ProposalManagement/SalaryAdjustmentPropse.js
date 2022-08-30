@@ -120,6 +120,7 @@ const SalaryAdjustmentPropse = (props) => {
   });
 
   useEffect(() => {
+    setAcessToken(new URLSearchParams(props.history.location.search).get('accesstoken') || null)
     if (props.match.params.id) {
       if (props.match.params.id !== 'create') {
         // Review mode
@@ -193,7 +194,8 @@ const SalaryAdjustmentPropse = (props) => {
         viewSettingTmp.showComponent.showCBQL = true;
         viewSettingTmp.showComponent.showHrAssessment = true;
         viewSettingTmp.showComponent.showOfficerApproved = true;
-        if (currentEmail.toLowerCase() === dataSalaryInfo?.userId?.toLowerCase()) {
+        if (currentEmail.toLowerCase() === dataSalaryInfo?.userId?.toLowerCase()
+          && props.match.params.type === 'request') {
           // viewSettingTmp.showComponent.btnAttachFile = true;
           viewSettingTmp.showComponent.btnSendRequest = true;
           viewSettingTmp.disableComponent.editSubjectApply = true;
@@ -207,8 +209,10 @@ const SalaryAdjustmentPropse = (props) => {
         viewSettingTmp.showComponent.showCBQL = true;
         viewSettingTmp.showComponent.showHrAssessment = true;
         viewSettingTmp.showComponent.showOfficerApproved = true;
-        if (currentEmail.toLowerCase() === dataSalaryInfo?.appraiserId?.toLowerCase()
-          || currentEmail.toLowerCase() === dataSalaryInfo?.supervisorId?.toLowerCase()) {
+        if ((currentEmail.toLowerCase() === dataSalaryInfo?.appraiserId?.toLowerCase()
+          || currentEmail.toLowerCase() === dataSalaryInfo?.supervisorId?.toLowerCase())
+          && props.match.params.type === 'access'
+        ) {
           viewSettingTmp.showComponent.btnRefuse = true;
           viewSettingTmp.showComponent.btnExpertise = true;
         }
@@ -219,7 +223,9 @@ const SalaryAdjustmentPropse = (props) => {
         viewSettingTmp.showComponent.showCBQL = true;
         viewSettingTmp.showComponent.showHrAssessment = true;
         viewSettingTmp.showComponent.showOfficerApproved = true;
-        if (currentEmail.toLowerCase() === dataSalaryInfo?.approverId?.toLowerCase()) {
+        if (currentEmail.toLowerCase() === dataSalaryInfo?.approverId?.toLowerCase()
+          && props.match.params.type === 'approval'
+        ) {
           viewSettingTmp.showComponent.btnNotApprove = true;
           viewSettingTmp.showComponent.btnApprove = true;
         }
@@ -269,11 +275,11 @@ const SalaryAdjustmentPropse = (props) => {
           contractName: requestTmp?.contractName,
           contractType: requestTmp?.contractType,
           department: requestTmp?.department,
-          currentSalary: '',
-          proposedSalary: '',
-          effectiveTime: '',
-          strength: '',
-          weakness: '',
+          currentSalary: u?.currentSalary,
+          proposedSalary: u?.suggestedSalary,
+          effectiveTime: moment(u?.startDate).format(Constants.LEAVE_DATE_FORMAT),
+          strength: u?.staffStrengths,
+          weakness: u?.staffWknesses,
         }
       })
       setSelectedMembers(employeeLists)
