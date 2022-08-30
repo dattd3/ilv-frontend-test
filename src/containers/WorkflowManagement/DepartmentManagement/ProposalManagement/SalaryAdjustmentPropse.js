@@ -277,7 +277,7 @@ const SalaryAdjustmentPropse = (props) => {
           department: requestTmp?.department,
           currentSalary: u?.currentSalary,
           proposedSalary: u?.suggestedSalary,
-          effectiveTime: moment(u?.startDate).format(Constants.LEAVE_DATE_FORMAT),
+          effectiveTime: u?.startDate ? moment(u?.startDate).format(Constants.LEAVE_DATE_FORMAT) : "",
           strength: u?.staffStrengths,
           weakness: u?.staffWknesses,
         }
