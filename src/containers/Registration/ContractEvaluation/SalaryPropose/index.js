@@ -225,7 +225,9 @@ function SalaryPropse(props) {
         viewSettingTmp.showComponent.bossApproved = true;
         viewSettingTmp.showComponent.stateProcess = true;
         break;
-      // case tu choi, khong phe duyet
+      // Case không phê duyệt
+      case 7:
+      // Case tu choi
       case 1:
         viewSettingTmp.showComponent.stateProcess = true;
         break;
@@ -341,6 +343,7 @@ function SalaryPropse(props) {
 
   // Thẩm định
   const handleConsent = () => {
+    // const processStatusId = appraiser ? 24 : 5
     setConfirmModal({
       isShowModalConfirm: true,
       modalTitle: t("ConsentConfirmation"),
@@ -439,7 +442,7 @@ function SalaryPropse(props) {
                 contractType: requestInfoSalary?.contractType,
                 staffStrengths: "",
                 staffWknesses: "",
-                startDate: requestInfoSalary?.startDate
+                startDate: ""
               }
             ]
           }
@@ -537,7 +540,9 @@ function SalaryPropse(props) {
 
   const handleChangeModalConfirmPassword = (acessToken) => {
     setAcessToken(acessToken)
-    setCurrentSalary('1234')
+
+    // Todo call api get luong
+    setCurrentSalary('10000')
     setModalConfirmPassword(false)
     let viewSettingTmp = { ...viewSetting };
     viewSettingTmp.disableComponent.showCurrentSalary = !viewSettingTmp.disableComponent.showCurrentSalary;
