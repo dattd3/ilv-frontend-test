@@ -194,7 +194,7 @@ const SalaryAdjustmentPropse = (props) => {
         viewSettingTmp.showComponent.showCBQL = true;
         viewSettingTmp.showComponent.showHrAssessment = true;
         viewSettingTmp.showComponent.showOfficerApproved = true;
-        if (currentEmail.toLowerCase() === dataSalaryInfo?.userId.toLowerCase()) {
+        if (currentEmail.toLowerCase() === dataSalaryInfo?.userId?.toLowerCase()) {
           // viewSettingTmp.showComponent.btnAttachFile = true;
           viewSettingTmp.showComponent.btnSendRequest = true;
           viewSettingTmp.disableComponent.editSubjectApply = true;
@@ -206,7 +206,8 @@ const SalaryAdjustmentPropse = (props) => {
         viewSettingTmp.showComponent.showCBQL = true;
         viewSettingTmp.showComponent.showHrAssessment = true;
         viewSettingTmp.showComponent.showOfficerApproved = true;
-        if (currentEmail.toLowerCase() === dataSalaryInfo?.supervisorId.toLowerCase()) {
+        // if (currentEmail.toLowerCase() === dataSalaryInfo?.supervisorId?.toLowerCase()) {
+        if (currentEmail.toLowerCase() === JSON.parse(dataSalaryInfo?.supervisorInfo)?.account.toLowerCase()) {
           viewSettingTmp.showComponent.btnRefuse = true;
           viewSettingTmp.showComponent.btnExpertise = true;
         }
@@ -217,7 +218,7 @@ const SalaryAdjustmentPropse = (props) => {
         viewSettingTmp.showComponent.showCBQL = true;
         viewSettingTmp.showComponent.showHrAssessment = true;
         viewSettingTmp.showComponent.showOfficerApproved = true;
-        if (currentEmail.toLowerCase() === dataSalaryInfo?.appraiserId.toLowerCase()) {
+        if (currentEmail.toLowerCase() === dataSalaryInfo?.appraiserId?.toLowerCase()) {
           viewSettingTmp.showComponent.btnRefuse = true;
           viewSettingTmp.showComponent.btnExpertise = true;
         }
@@ -228,20 +229,16 @@ const SalaryAdjustmentPropse = (props) => {
         viewSettingTmp.showComponent.showCBQL = true;
         viewSettingTmp.showComponent.showHrAssessment = true;
         viewSettingTmp.showComponent.showOfficerApproved = true;
-        if (currentEmail.toLowerCase() === dataSalaryInfo?.approverId.toLowerCase()) {
+        if (currentEmail.toLowerCase() === dataSalaryInfo?.approverId?.toLowerCase()) {
           viewSettingTmp.showComponent.btnNotApprove = true;
           viewSettingTmp.showComponent.btnApprove = true;
         }
         break;
       // View phe duyet thanh cong
       case 2:
-        viewSettingTmp.showComponent.stateProcess = true;
-        viewSettingTmp.showComponent.showHrSupportViewSalary = true;
-        viewSettingTmp.showComponent.showCBQL = true;
-        viewSettingTmp.showComponent.showHrAssessment = true;
-        viewSettingTmp.showComponent.showOfficerApproved = true;
-        break;
-      // Case từ chối, không phê duyệt
+      // Case từ chối
+      case 7:
+      // Case không phê duyệt
       case 1:
         viewSettingTmp.showComponent.stateProcess = true;
         viewSettingTmp.showComponent.showHrSupportViewSalary = true;
@@ -378,12 +375,8 @@ const SalaryAdjustmentPropse = (props) => {
     const selectedMembersTmp = [...selectedMembers];
     selectedMembersTmp.forEach(item => {
       if (item.uid === uid) {
-        if (moment(value, "DD/MM/YYYY").isValid()) {
-          if (moment(value).year() > 9999) {
-            const year = (moment(value).year() + '').substring(0, 4);
-            value = moment(value).set('year', year).format("DD/MM/YYYY")
-          }
-          const date = moment(value, "DD/MM/YYYY").format("DD/MM/YYYY");
+        if (moment(value, 'DD-MM-YYYY').isValid()) {
+          const date = moment(value, Constants.LEAVE_DATE_FORMAT);
           item[objName] = date;
         } else {
           item[objName] = '';
@@ -468,7 +461,7 @@ const SalaryAdjustmentPropse = (props) => {
 
   // Thẩm định
   const handleConsent = () => {
-    const processStatusId = appraiser ? 8 : 5
+    // const processStatusId = appraiser ? 24 : 5
     setConfirmModal({
       isShowModalConfirm: true,
       modalTitle: t("ConsentConfirmation"),
@@ -482,7 +475,7 @@ const SalaryAdjustmentPropse = (props) => {
           sub: [
             {
               id: props.match.params.id,
-              processStatusId: processStatusId,
+              processStatusId: 5,
               comment: "",
               status: "",
             }
@@ -570,14 +563,14 @@ const SalaryAdjustmentPropse = (props) => {
               contractType: u?.contractType,
               staffStrengths: u?.strength,
               staffWknesses: u?.weakness,
-              startDate: u?.effectiveTime
+              startDate: moment(u?.effectiveTime, Constants.LEAVE_DATE_FORMAT).format()
             }))
           }
           axios({
             method: 'POST',
             url: `${process.env.REACT_APP_REQUEST_URL}SalaryAdjustment/submitsalary`,
             data: dataSend,
-            headers: { 'Content-Type': 'application/json-patch+json', Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
+            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
           })
             .then(response => {
               if (response.data.result && response.data.result.code === '000000') {
@@ -692,6 +685,7 @@ const SalaryAdjustmentPropse = (props) => {
     setAcessToken(acessToken)
     setModalConfirmPassword(false)
 
+    // Todo: call api get luong
     const selectedMembersTmp = [...selectedMembers]
     selectedMembersTmp.forEach(u => u.currentSalary = '10000')
     setSelectedMembers(selectedMembersTmp)
