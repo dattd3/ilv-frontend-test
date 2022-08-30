@@ -15,6 +15,8 @@ class ContractEvaluationdetail extends React.Component {
   render() {
     const data = this.props.data
     const id = this.props?.id
+    const type = this.props?.type
+    console.log(type, data);
     return (
       <div className="font-size-14 contract-evaluation-result-detail-page">
         <div className="evalution">
@@ -385,21 +387,24 @@ class ContractEvaluationdetail extends React.Component {
               </div>
             </div>
 
-            <h5>Thông tin đề xuất lương</h5>
-            <div className="box cbnv salary">
-              <div className="row">
-                <div className="col-6">
-                  <div className='wrapper-status'>
-                    <span className='font-normal'>Tình trạng: </span>
-                    <div>Đang chờ phê duyệt</div>
+            {type && data?.childRequestHistoryId &&
+              <>
+              <h5>Thông tin đề xuất lương</h5>
+              <div className="box cbnv salary">
+                <div className="row">
+                  <div className="col-6">
+                    <div className='wrapper-status'>
+                      <span className='font-normal'>Tình trạng: </span>
+                      <div>Đang chờ phê duyệt</div>
+                    </div>
+                  </div>
+                  <div className="col-6 view-detail">
+                    <span onClick={() => this.props.history.push(`/salarypropse/${id}/${data?.childRequestHistoryId}`)}>{'Xem chi tiết >>'}</span>
                   </div>
                 </div>
-                <div className="col-6 view-detail">
-                  {/* <a href={`/salary-propse/${id}`} title="Xem chi tiết" className="detail-link">{'Xem chi tiết >>'}</a> */}
-                  <span onClick={() => this.props.history.push(`/salary-propse/${id}/${1}`)}>{'Xem chi tiết >>'}</span>
-                </div>
               </div>
-            </div>
+              </>
+            }
 
             <ul className="list-inline">
               {data.cvs.map((file, index) => {

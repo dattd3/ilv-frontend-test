@@ -93,6 +93,7 @@ function SalaryPropse(props) {
   });
 
   useEffect(() => {
+    setAcessToken(new URLSearchParams(props.history.location.search).get('accesstoken') || null)
     getDataContract();
     if (props.match.params?.idContract) {
       if (props.match.params?.idSalary !== 'create') {

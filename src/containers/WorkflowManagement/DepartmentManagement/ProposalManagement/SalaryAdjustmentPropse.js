@@ -120,6 +120,7 @@ const SalaryAdjustmentPropse = (props) => {
   });
 
   useEffect(() => {
+    setAcessToken(new URLSearchParams(props.history.location.search).get('accesstoken') || null)
     if (props.match.params.id) {
       if (props.match.params.id !== 'create') {
         // Review mode
@@ -269,11 +270,11 @@ const SalaryAdjustmentPropse = (props) => {
           contractName: requestTmp?.contractName,
           contractType: requestTmp?.contractType,
           department: requestTmp?.department,
-          currentSalary: '',
-          proposedSalary: '',
-          effectiveTime: '',
-          strength: '',
-          weakness: '',
+          currentSalary: u?.currentSalary,
+          proposedSalary: u?.suggestedSalary,
+          effectiveTime: moment(u?.startDate).format(Constants.LEAVE_DATE_FORMAT),
+          strength: u?.staffStrengths,
+          weakness: u?.staffWknesses,
         }
       })
       setSelectedMembers(employeeLists)
