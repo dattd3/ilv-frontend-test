@@ -500,7 +500,7 @@ export default [
           component: lazy(() => import("./WorkflowManagement/DepartmentManagement/ProposalManagement"))
         },
         {
-          key: "salary-adjustment-propse",
+          key: "salaryadjustment",
           routeProps: {
             exact: true,
             path: map.SalaryAdjustmentPropse

@@ -93,6 +93,7 @@ function SalaryPropse(props) {
   });
 
   useEffect(() => {
+    setAcessToken(new URLSearchParams(props.history.location.search).get('accesstoken') || null)
     getDataContract();
     if (props.match.params?.idContract) {
       if (props.match.params?.idSalary !== 'create') {
@@ -167,7 +168,6 @@ function SalaryPropse(props) {
 
     // Todo: check nguoi danh gia
     switch (dataSalaryInfo?.processStatusId) {
-      // switch (8) {
       case 21:
       case 22:
         viewSettingTmp.showComponent.humanForReviewSalary = true;
@@ -178,7 +178,10 @@ function SalaryPropse(props) {
         viewSettingTmp.showComponent.humanResourceChangeSalary = true;
         viewSettingTmp.showComponent.managerApproved = true;
         viewSettingTmp.showComponent.bossApproved = true;
-        if (currentEmail.toLowerCase() === dataSalaryInfo?.userId.toLowerCase() && currentEmployeeNo === dataSalaryInfo?.user?.employeeNo.toString()) {
+        if (currentEmail.toLowerCase() === dataSalaryInfo?.userId.toLowerCase()
+          && currentEmployeeNo === dataSalaryInfo?.user?.employeeNo.toString()
+          && props.match.params.type === 'request'
+        ) {
           viewSettingTmp.disableComponent.viewCurrentSalary = true;
           viewSettingTmp.disableComponent.suggestedSalary = false;
           viewSettingTmp.showComponent.btnCancel = true;
@@ -191,8 +194,10 @@ function SalaryPropse(props) {
         viewSettingTmp.showComponent.humanResourceChangeSalary = true;
         viewSettingTmp.showComponent.managerApproved = true;
         viewSettingTmp.showComponent.bossApproved = true;
-        if (currentEmail.toLowerCase() === dataSalaryInfo?.appraiserId.toLowerCase()
-          || currentEmail.toLowerCase() === dataSalaryInfo?.supervisorId.toLowerCase()) {
+        if ((currentEmail.toLowerCase() === dataSalaryInfo?.appraiserId.toLowerCase()
+          || currentEmail.toLowerCase() === dataSalaryInfo?.supervisorId.toLowerCase())
+          && props.match.params.type === 'access'
+        ) {
           viewSettingTmp.disableComponent.viewCurrentSalary = true;
           viewSettingTmp.showComponent.btnRefuse = true;
           viewSettingTmp.showComponent.btnExpertise = true;
@@ -203,7 +208,9 @@ function SalaryPropse(props) {
         viewSettingTmp.showComponent.humanResourceChangeSalary = true;
         viewSettingTmp.showComponent.managerApproved = true;
         viewSettingTmp.showComponent.bossApproved = true;
-        if (currentEmail.toLowerCase() === dataSalaryInfo?.approverId.toLowerCase()) {
+        if (currentEmail.toLowerCase() === dataSalaryInfo?.approverId.toLowerCase()
+          && props.match.params.type === 'approval'
+        ) {
           viewSettingTmp.disableComponent.viewCurrentSalary = true;
           viewSettingTmp.showComponent.btnNotApprove = true;
           viewSettingTmp.showComponent.btnApprove = true;

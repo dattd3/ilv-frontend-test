@@ -200,12 +200,13 @@ class TaskList extends React.Component {
 
     getSalaryProposeLink = (request) => {
         let url = '';
+        const typeRequest = this.props.page === "approval" ? "approval" : "access"
         if(request.parentRequestHistoryId) {
             //xu ly mot nguoi
-            url = `salary-propse/${request.parentRequestHistoryId}/${request.salaryId}`
+            url = `salarypropse/${request.parentRequestHistoryId}/${request.salaryId}/${typeRequest}`
         } else {
             //xu ly nhieu nguoi
-            url = `salary-adjustment-propse/${request.salaryId}`
+            url = `salaryadjustment/${request.salaryId}/${typeRequest}`
         }
         return url;
     }

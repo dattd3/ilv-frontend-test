@@ -88,7 +88,7 @@ export default {
   LeaveFund: "/leave-fund-management",
   PersonalDetails: "/personal-detail-management",
   ProposalManagement: "/proposal-management",
-  SalaryAdjustmentPropse: "/salary-adjustment-propse/:id",
+  SalaryAdjustmentPropse: "/salaryadjustment/:id/:type",
 
   //Vaccine
   VaccineList: "/vaccination",
@@ -121,5 +121,5 @@ export default {
   DetailInsuranceSocial: '/insurance-manager/detail/:id',
   DetailInsuranceHealth: '/insurance-manager/detail-health/:id',
   MyProfile: "/my-profile",
-  SalaryPropse: '/salary-propse/:idContract/:idSalary'
+  SalaryPropse: '/salarypropse/:idContract/:idSalary/:type'
 };
