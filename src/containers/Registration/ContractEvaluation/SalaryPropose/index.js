@@ -109,6 +109,14 @@ function SalaryPropse(props) {
     } else {
       props.history.push('/tasks')
     }
+
+    const queryParams = new URLSearchParams(props.history.location.search)
+    if (queryParams.has('accesstoken')) {
+        queryParams.delete('accesstoken')
+        props.history.replace({
+            search: queryParams.toString(),
+        })
+    }
     // eslint-disable-next-line
   }, []);
 
@@ -561,10 +569,11 @@ function SalaryPropse(props) {
       isShowModalConfirm: false
     })
   }
-
+  const salaryState = `salarypropse_${props.match.params?.idContract}_${props.match.params?.idSalary}_${props.match.params?.type}`;
   return (
     <div className='container-salary'>
       <ConfirmPasswordModal
+        state = {salaryState}
         show={modalConfirmPassword}
         onUpdateToken={handleChangeModalConfirmPassword}
         onHide={() => setModalConfirmPassword(false)}

@@ -134,6 +134,14 @@ const SalaryAdjustmentPropse = (props) => {
     } else {
       props.history.push('proposal-management')
     }
+
+    const queryParams = new URLSearchParams(props.history.location.search)
+    if (queryParams.has('accesstoken')) {
+        queryParams.delete('accesstoken')
+        props.history.replace({
+            search: queryParams.toString(),
+        })
+    }
     // eslint-disable-next-line
   }, []);
 
@@ -830,10 +838,11 @@ const SalaryAdjustmentPropse = (props) => {
       })
     )
   }
-
+  const salaryState = `salaryadjustment_${props.match.params?.id}_${props.match.params?.type}`;
   return (
     <div className="timesheet-section proposal-management">
       <ConfirmPasswordModal
+        state = {salaryState}
         show={modalConfirmPassword}
         onUpdateToken={handleChangeModalConfirmPassword}
         onHide={() => setModalConfirmPassword(false)}
