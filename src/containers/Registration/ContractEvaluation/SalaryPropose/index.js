@@ -25,7 +25,7 @@ function SalaryPropse(props) {
   const [currentSalary, setCurrentSalary] = useState('');
   const [suggestedSalary, setSuggestedSalary] = useState('');
   const [modalConfirmPassword, setModalConfirmPassword] = useState(false);
-  const [acessToken, setAcessToken] = useState(null);
+  const [acessToken, setAcessToken] = useState(new URLSearchParams(props.history.location.search).get('accesstoken') || null);
 
   const [modalStatus, setModalStatus] = useState({
     isShowStatusModal: false,
@@ -93,7 +93,6 @@ function SalaryPropse(props) {
   });
 
   useEffect(() => {
-    setAcessToken(new URLSearchParams(props.history.location.search).get('accesstoken') || null)
     getDataContract();
     if (props.match.params?.idContract) {
       if (props.match.params?.idSalary !== 'create') {
@@ -112,10 +111,10 @@ function SalaryPropse(props) {
 
     const queryParams = new URLSearchParams(props.history.location.search)
     if (queryParams.has('accesstoken')) {
-        queryParams.delete('accesstoken')
-        props.history.replace({
-            search: queryParams.toString(),
-        })
+      queryParams.delete('accesstoken')
+      props.history.replace({
+        search: queryParams.toString(),
+      })
     }
     // eslint-disable-next-line
   }, []);
@@ -179,6 +178,10 @@ function SalaryPropse(props) {
       case 21:
       case 22:
         viewSettingTmp.showComponent.humanForReviewSalary = true;
+        if (acessToken) {
+          viewSettingTmp.disableComponent.showCurrentSalary = true;
+          viewSettingTmp.disableComponent.showSuggestedSalary = true;
+        }
         break;
       case 23:
         // Todo: kiem tra ai la nguoi view
@@ -194,6 +197,10 @@ function SalaryPropse(props) {
           viewSettingTmp.disableComponent.suggestedSalary = false;
           viewSettingTmp.showComponent.btnCancel = true;
           viewSettingTmp.showComponent.btnSendRequest = true;
+          if (acessToken) {
+            viewSettingTmp.disableComponent.showCurrentSalary = true;
+            viewSettingTmp.disableComponent.showSuggestedSalary = true;
+          }
         }
         break;
       case 8:
@@ -209,6 +216,10 @@ function SalaryPropse(props) {
           viewSettingTmp.disableComponent.viewCurrentSalary = true;
           viewSettingTmp.showComponent.btnRefuse = true;
           viewSettingTmp.showComponent.btnExpertise = true;
+          if (acessToken) {
+            viewSettingTmp.disableComponent.showCurrentSalary = true;
+            viewSettingTmp.disableComponent.showSuggestedSalary = true;
+          }
         }
         break;
       case 5:
@@ -222,6 +233,10 @@ function SalaryPropse(props) {
           viewSettingTmp.disableComponent.viewCurrentSalary = true;
           viewSettingTmp.showComponent.btnNotApprove = true;
           viewSettingTmp.showComponent.btnApprove = true;
+          if (acessToken) {
+            viewSettingTmp.disableComponent.showCurrentSalary = true;
+            viewSettingTmp.disableComponent.showSuggestedSalary = true;
+          }
         }
         break;
       case 2:
@@ -573,7 +588,7 @@ function SalaryPropse(props) {
   return (
     <div className='container-salary'>
       <ConfirmPasswordModal
-        state = {salaryState}
+        state={salaryState}
         show={modalConfirmPassword}
         onUpdateToken={handleChangeModalConfirmPassword}
         onHide={() => setModalConfirmPassword(false)}
