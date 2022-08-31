@@ -263,7 +263,7 @@ const SalaryAdjustmentPropse = (props) => {
       const employeeLists = dataSalaryInfo?.requestInfo.map(u => {
         const requestTmp = JSON.parse(u?.employeeInfo)
         return {
-          id: requestInfo?.id,
+          id: u?.id,
           uid: requestTmp?.employeeNo,
           employeeNo: requestTmp?.employeeNo,
           account: requestTmp?.account,
@@ -732,6 +732,7 @@ const SalaryAdjustmentPropse = (props) => {
                         className="no-vborder"
                         value={item?.currentSalary}
                         placeholder="Nhập"
+                        style={{ width: '100%', background: '#fff' }}
                       />
                       : <span>{'**********'}</span>
                     }
@@ -918,7 +919,7 @@ const SalaryAdjustmentPropse = (props) => {
       <br />
       <div className="timesheet-box1 shadow">
         <div className="result-wrap-table">
-          <table className="result-table">
+          <table className="result-table" style={{ width: '100%' }}>
             <thead>
               <tr>
                 <td rowSpan="2" className="min-width text-center font-weight-bold">Họ và tên</td>
