@@ -37,6 +37,9 @@ class ConfirmPasswordModal extends React.Component {
         }
         let bodyFormData = new FormData()
         bodyFormData.append('pwd', this.state.password)
+        if(this.props.state) {
+            bodyFormData.append('state', this.props.state)
+        }
 
         axios.post(`${process.env.REACT_APP_REQUEST_URL}user/payslip/getaccesstoken`, bodyFormData, config)
             .then(res => {
