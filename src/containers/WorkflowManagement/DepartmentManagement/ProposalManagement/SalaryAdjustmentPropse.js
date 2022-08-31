@@ -63,7 +63,7 @@ const SalaryAdjustmentPropse = (props) => {
 
   const [isCreateMode, setIsCreateMode] = useState(false);
   const [modalConfirmPassword, setModalConfirmPassword] = useState(false);
-  const [acessToken, setAcessToken] = useState(null);
+  const [acessToken, setAcessToken] = useState(new URLSearchParams(props.history.location.search).get('accesstoken') || null);
   const [type, setType] = useState(InsuranceOptions[0]);
   const [listFiles, setListFiles] = useState([]);
   const [selectMembers, setSelectMembers] = useState([]);
@@ -120,7 +120,6 @@ const SalaryAdjustmentPropse = (props) => {
   });
 
   useEffect(() => {
-    setAcessToken(new URLSearchParams(props.history.location.search).get('accesstoken') || null)
     if (props.match.params.id) {
       if (props.match.params.id !== 'create') {
         // Review mode
@@ -137,10 +136,10 @@ const SalaryAdjustmentPropse = (props) => {
 
     const queryParams = new URLSearchParams(props.history.location.search)
     if (queryParams.has('accesstoken')) {
-        queryParams.delete('accesstoken')
-        props.history.replace({
-            search: queryParams.toString(),
-        })
+      queryParams.delete('accesstoken')
+      props.history.replace({
+        search: queryParams.toString(),
+      })
     }
     // eslint-disable-next-line
   }, []);
@@ -195,6 +194,10 @@ const SalaryAdjustmentPropse = (props) => {
       case 21:
       case 22:
         viewSettingTmp.showComponent.showHrSupportViewSalary = true;
+        if (acessToken) {
+          viewSettingTmp.disableComponent.showCurrentSalary = true;
+          viewSettingTmp.disableComponent.showSuggestedSalary = true;
+        }
         break;
       // Đang chờ QLTT nhập lương đề xuất, xem lương hiện tại
       case 23:
@@ -207,6 +210,10 @@ const SalaryAdjustmentPropse = (props) => {
           // viewSettingTmp.showComponent.btnAttachFile = true;
           viewSettingTmp.showComponent.btnSendRequest = true;
           viewSettingTmp.disableComponent.editSubjectApply = true;
+          if (acessToken) {
+            viewSettingTmp.disableComponent.showCurrentSalary = true;
+            viewSettingTmp.disableComponent.showSuggestedSalary = true;
+          }
         }
         break;
       // Đang chờ CBQL Cấp cơ sở thẩm định
@@ -223,6 +230,10 @@ const SalaryAdjustmentPropse = (props) => {
         ) {
           viewSettingTmp.showComponent.btnRefuse = true;
           viewSettingTmp.showComponent.btnExpertise = true;
+          if (acessToken) {
+            viewSettingTmp.disableComponent.showCurrentSalary = true;
+            viewSettingTmp.disableComponent.showSuggestedSalary = true;
+          }
         }
         break;
       // Đang chờ CBLĐ phê duyệt 
@@ -236,6 +247,10 @@ const SalaryAdjustmentPropse = (props) => {
         ) {
           viewSettingTmp.showComponent.btnNotApprove = true;
           viewSettingTmp.showComponent.btnApprove = true;
+          if (acessToken) {
+            viewSettingTmp.disableComponent.showCurrentSalary = true;
+            viewSettingTmp.disableComponent.showSuggestedSalary = true;
+          }
         }
         break;
       // View phe duyet thanh cong
@@ -397,7 +412,9 @@ const SalaryAdjustmentPropse = (props) => {
   }
 
   const handleShowSuggestedSalary = () => {
-    setModalConfirmPassword(true)
+    if (!acessToken) {
+      setModalConfirmPassword(true)
+    }
   }
 
   // Từ chối
@@ -842,7 +859,7 @@ const SalaryAdjustmentPropse = (props) => {
   return (
     <div className="timesheet-section proposal-management">
       <ConfirmPasswordModal
-        state = {salaryState}
+        state={salaryState}
         show={modalConfirmPassword}
         onUpdateToken={handleChangeModalConfirmPassword}
         onHide={() => setModalConfirmPassword(false)}
