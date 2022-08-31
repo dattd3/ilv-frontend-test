@@ -203,7 +203,8 @@ class RequestTaskList extends React.Component {
             6: { label: this.props.t("PartiallySuccessful"), className: 'request-status warning' },
             7: { label: this.props.t("Rejected"), className: 'request-status fail' },
             8: { label: this.props.t("PendingConsent"), className: 'request-status' },
-            20: { label: this.props.t("Consented"), className: 'request-status' }
+            20: { label: this.props.t("Consented"), className: 'request-status' },
+            100: { label: this.props.t("Waiting"), className: 'request-status' }
         }
 
         const options = [
