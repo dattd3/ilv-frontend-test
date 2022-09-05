@@ -398,7 +398,7 @@ function BatchApprovalTabContent(props) {
         const fetchEvaluationForms = async () => {
             processLoading(true)
             const config = getRequestConfigurations()
-            const response = await axios.get(`${process.env.REACT_APP_HRDX_PMS_URL}api/form/listFormToApprove?EmployeeCode=${employeeCode}`, config)
+            const response = await axios.get(`${process.env.REACT_APP_HRDX_PMS_URL}api/form/listFormToApprove?EmployeeCode=${employeeCode}&ApproverEmployeeAdCode=${employeeAD}`, config)
             processEvaluationForms(response)
         }
 
