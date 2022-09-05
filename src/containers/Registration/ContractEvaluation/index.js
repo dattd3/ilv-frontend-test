@@ -170,7 +170,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
   checkAuthorize = async () => {
     const currentEmployeeNo = localStorage.getItem('email');
     const data = this.state.data;
-    const dateToCheck = data.contractType == 'VA' ? (checkIsExactPnL(Constants.pnlVCode.VinSchool, Constants.pnlVCode.VinHome, Constants.PnLCODE.Vin3S) ? -75 : -45) : -7; 
+    const dateToCheck = data.contractType == 'VA' ? (checkIsExactPnL(Constants.pnlVCode.VinSchool, Constants.pnlVCode.VinHome,  Constants.PnLCODE.VinFast, Constants.PnLCODE.VinFastTrading, Constants.PnLCODE.Vin3S) ? -75 : -45) : -7; 
     const isAfterT_7 = data.employeeInfo && data.employeeInfo.startDate && moment(new Date()).diff(moment(data.employeeInfo.expireDate), 'days') > dateToCheck ? true : false;
     let shouldDisable = false;
     let isNguoidanhgia = false;
@@ -659,7 +659,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         } else if(isMissing)
           errors['rating'] = '(Bắt buộc điền tự đánh giá)'
       }
-      if(checkIsExactPnL(Constants.pnlVCode.VinSchool, Constants.pnlVCode.VinHome, Constants.PnLCODE.Vin3S)) {
+      if(checkIsExactPnL(Constants.pnlVCode.VinSchool, Constants.pnlVCode.VinHome,  Constants.PnLCODE.VinFast, Constants.PnLCODE.VinFastTrading, Constants.PnLCODE.Vin3S)) {
         if(!this.state.data.nguoidanhgia || !this.state.data.nguoidanhgia.account) {
           errors['nguoidanhgia'] = '(Bắt buộc)';
         }
@@ -715,7 +715,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         if(isMissing)
           errors['rating'] = '(Bắt buộc điền CBLĐ TT đánh giá)'
       }
-      if(this.state.isNguoidanhgia == false || checkIsExactPnL(Constants.pnlVCode.VinSchool, Constants.pnlVCode.VinHome, Constants.PnLCODE.Vin3S)) {
+      if(this.state.isNguoidanhgia == false || checkIsExactPnL(Constants.pnlVCode.VinSchool, Constants.pnlVCode.VinHome,  Constants.PnLCODE.VinFast, Constants.PnLCODE.VinFastTrading, Constants.PnLCODE.Vin3S)) {
         if(!this.state.data.nguoipheduyet || !this.state.data.nguoipheduyet.account){
           errors['boss'] = '(Bắt buộc)';
         }
@@ -1232,7 +1232,7 @@ renderEvalution = (name, data, isDisable) => {
 
   checkShowQlttComment = (data) => {
   // CBLF tham dinh VSC -field qltt -- 11
-  if(checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.pnlVCode.VinHome, Constants.PnLCODE.Vin3S)) {
+  if(checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.pnlVCode.VinHome,  Constants.PnLCODE.VinFast, Constants.PnLCODE.VinFastTrading, Constants.PnLCODE.Vin3S)) {
     return ((data.processStatus == 10 && data.qltt.account));
    } else {
      return(data.processStatus == 10 || (data.processStatus == 9 && !data.hasnguoidanhgia));
@@ -1243,7 +1243,7 @@ renderEvalution = (name, data, isDisable) => {
   checkShownguoidanhgiaComment = (data) => {
     // QLTT VSC - filed nguoidanhgia -- 10
 
-    if(checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.pnlVCode.VinHome, Constants.PnLCODE.Vin3S)) {
+    if(checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.pnlVCode.VinHome,  Constants.PnLCODE.VinFast, Constants.PnLCODE.VinFastTrading, Constants.PnLCODE.Vin3S)) {
      return (data.processStatus == 9 && data.nguoidanhgia.account);
     } else {
       return (data.processStatus == 9 && !data.qltt.account);
@@ -1251,7 +1251,7 @@ renderEvalution = (name, data, isDisable) => {
   }
 
   checkShowApprovalComment = (data) => {
-    if(checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.pnlVCode.VinHome, Constants.PnLCODE.Vin3S)) {
+    if(checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.pnlVCode.VinHome,  Constants.PnLCODE.VinFast, Constants.PnLCODE.VinFastTrading, Constants.PnLCODE.Vin3S)) {
       return data.processStatus == 11 || (data.processStatus == 10 && !data.qltt.account);
     } else {
       return data.processStatus == 11;
@@ -1483,7 +1483,7 @@ renderEvalution = (name, data, isDisable) => {
           </div>
         </div>
         {
-          //checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.pnlVCode.VinHome, Constants.PnLCODE.Vin3S) ?
+          //checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.pnlVCode.VinHome,  Constants.PnLCODE.VinFast, Constants.PnLCODE.VinFastTrading, Constants.PnLCODE.Vin3S) ?
           false ?
           null :
         <>
@@ -1602,7 +1602,7 @@ renderEvalution = (name, data, isDisable) => {
               <div className="row approve">
                 <div className="col-12">
                   {
-                    checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.pnlVCode.VinHome, Constants.PnLCODE.Vin3S) ?
+                    checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.pnlVCode.VinHome,  Constants.PnLCODE.VinFast, Constants.PnLCODE.VinFastTrading, Constants.PnLCODE.Vin3S) ?
                       <><span className="title">QUẢN LÝ TRỰC TIẾP ĐÁNH GIÁ</span></>
                       : <><span className="title">NGƯỜI ĐÁNH GIÁ</span><span className="sub-title">(Nếu có)</span></>
                   }
@@ -1622,7 +1622,7 @@ renderEvalution = (name, data, isDisable) => {
               <div className="row approve">
                 <div className="col-12">
                   {
-                    checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.pnlVCode.VinHome, Constants.PnLCODE.Vin3S) ?
+                    checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.pnlVCode.VinHome,  Constants.PnLCODE.VinFast, Constants.PnLCODE.VinFastTrading, Constants.PnLCODE.Vin3S) ?
                     <><span className="title">CBLĐ thẩm định</span><span className="sub-title">(Nếu có)</span></>
                     : <span className="title">QUẢN LÝ TRỰC TIẾP ĐÁNH GIÁ</span>
                   }
@@ -1640,7 +1640,7 @@ renderEvalution = (name, data, isDisable) => {
           this.state.isNguoidanhgia ? 
           <>
           {  // ---------------check hien thij cho vinschool khi nguowif danh gia ton tai y kien danh gia
-              checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.pnlVCode.VinHome, Constants.PnLCODE.Vin3S) ? 
+              checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.pnlVCode.VinHome,  Constants.PnLCODE.VinFast, Constants.PnLCODE.VinFastTrading, Constants.PnLCODE.Vin3S) ? 
               <div className="box shadow cbnv more-description">
               <div className="title">
                 Ý KIẾN ĐỀ XUẤT CỦA CBQL TRỰC TIẾP
@@ -1721,7 +1721,7 @@ renderEvalution = (name, data, isDisable) => {
               <div className="row approve">
                 <div className="col-12">
                 {
-                    checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.pnlVCode.VinHome, Constants.PnLCODE.Vin3S) ?
+                    checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.pnlVCode.VinHome,  Constants.PnLCODE.VinFast, Constants.PnLCODE.VinFastTrading, Constants.PnLCODE.Vin3S) ?
                     <><span className="title">CBLĐ thẩm định</span><span className="sub-title">(Nếu có)</span></>
                     : <span className="title">QUẢN LÝ TRỰC TIẾP ĐÁNH GIÁ</span>
                   }
@@ -1737,7 +1737,7 @@ renderEvalution = (name, data, isDisable) => {
             </div>
             
             {
-              checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.pnlVCode.VinHome, Constants.PnLCODE.Vin3S) ?
+              checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.pnlVCode.VinHome,  Constants.PnLCODE.VinFast, Constants.PnLCODE.VinFastTrading, Constants.PnLCODE.Vin3S) ?
               <div className="box shadow cbnv">
                 <div className="row approve">
                   <div className="col-12">
