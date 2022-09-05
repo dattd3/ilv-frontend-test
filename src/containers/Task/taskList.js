@@ -169,7 +169,7 @@ class TaskList extends React.Component {
         if(request == Constants.SALARY_PROPOSE && statusName) {
             let statusLabel = this.props.t(statusName);
             let tmp = Object.keys(status).filter(key => status[key].label == statusLabel );
-            statusOriginal = tmp?.length > 0 ? tmp[0] : statusOriginal;
+            statusOriginal = tmp?.length > 0 ? tmp[tmp.length - 1] : statusOriginal;
         }
 
         const options = [
