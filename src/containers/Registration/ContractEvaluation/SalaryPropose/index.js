@@ -197,10 +197,10 @@ function SalaryPropse(props) {
           viewSettingTmp.disableComponent.suggestedSalary = false;
           viewSettingTmp.showComponent.btnCancel = true;
           viewSettingTmp.showComponent.btnSendRequest = true;
-          if (acessToken) {
-            viewSettingTmp.disableComponent.showCurrentSalary = true;
-            viewSettingTmp.disableComponent.showSuggestedSalary = true;
-          }
+        }
+        if (acessToken) {
+          viewSettingTmp.disableComponent.showCurrentSalary = true;
+          viewSettingTmp.disableComponent.showSuggestedSalary = true;
         }
         break;
       case 8:
@@ -216,10 +216,10 @@ function SalaryPropse(props) {
           viewSettingTmp.disableComponent.viewCurrentSalary = true;
           viewSettingTmp.showComponent.btnRefuse = true;
           viewSettingTmp.showComponent.btnExpertise = true;
-          if (acessToken) {
-            viewSettingTmp.disableComponent.showCurrentSalary = true;
-            viewSettingTmp.disableComponent.showSuggestedSalary = true;
-          }
+        }
+        if (acessToken) {
+          viewSettingTmp.disableComponent.showCurrentSalary = true;
+          viewSettingTmp.disableComponent.showSuggestedSalary = true;
         }
         break;
       case 5:
@@ -233,10 +233,10 @@ function SalaryPropse(props) {
           viewSettingTmp.disableComponent.viewCurrentSalary = true;
           viewSettingTmp.showComponent.btnNotApprove = true;
           viewSettingTmp.showComponent.btnApprove = true;
-          if (acessToken) {
-            viewSettingTmp.disableComponent.showCurrentSalary = true;
-            viewSettingTmp.disableComponent.showSuggestedSalary = true;
-          }
+        }
+        if (acessToken) {
+          viewSettingTmp.disableComponent.showCurrentSalary = true;
+          viewSettingTmp.disableComponent.showSuggestedSalary = true;
         }
         break;
       case 2:

@@ -210,10 +210,10 @@ const SalaryAdjustmentPropse = (props) => {
           // viewSettingTmp.showComponent.btnAttachFile = true;
           viewSettingTmp.showComponent.btnSendRequest = true;
           viewSettingTmp.disableComponent.editSubjectApply = true;
-          if (acessToken) {
-            viewSettingTmp.disableComponent.showCurrentSalary = true;
-            viewSettingTmp.disableComponent.showSuggestedSalary = true;
-          }
+        }
+        if (acessToken) {
+          viewSettingTmp.disableComponent.showCurrentSalary = true;
+          viewSettingTmp.disableComponent.showSuggestedSalary = true;
         }
         break;
       // Đang chờ CBQL Cấp cơ sở thẩm định
@@ -230,10 +230,10 @@ const SalaryAdjustmentPropse = (props) => {
         ) {
           viewSettingTmp.showComponent.btnRefuse = true;
           viewSettingTmp.showComponent.btnExpertise = true;
-          if (acessToken) {
-            viewSettingTmp.disableComponent.showCurrentSalary = true;
-            viewSettingTmp.disableComponent.showSuggestedSalary = true;
-          }
+        }
+        if (acessToken) {
+          viewSettingTmp.disableComponent.showCurrentSalary = true;
+          viewSettingTmp.disableComponent.showSuggestedSalary = true;
         }
         break;
       // Đang chờ CBLĐ phê duyệt 
@@ -247,10 +247,10 @@ const SalaryAdjustmentPropse = (props) => {
         ) {
           viewSettingTmp.showComponent.btnNotApprove = true;
           viewSettingTmp.showComponent.btnApprove = true;
-          if (acessToken) {
-            viewSettingTmp.disableComponent.showCurrentSalary = true;
-            viewSettingTmp.disableComponent.showSuggestedSalary = true;
-          }
+        }
+        if (acessToken) {
+          viewSettingTmp.disableComponent.showCurrentSalary = true;
+          viewSettingTmp.disableComponent.showSuggestedSalary = true;
         }
         break;
       // View phe duyet thanh cong
