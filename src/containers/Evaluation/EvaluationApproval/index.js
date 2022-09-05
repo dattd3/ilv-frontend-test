@@ -557,11 +557,11 @@ function EvaluationApproval(props) {
     const [paging, SetPaging] = useState({
         approval: {
             pageIndex: 1,
-            pageSize: 1,
+            pageSize: 10,
         },
         batchApproval: {
             pageIndex: 1,
-            pageSize: 1,
+            pageSize: 10,
         }
     })
     const [masterData, SetMasterData] = useState({
@@ -580,7 +580,7 @@ function EvaluationApproval(props) {
     const [dataFilter, SetDataFilter] = useState(null)
 
     const statusDone = 5
-    const listPageSizes = [1, 10, 20, 30, 40, 50]
+    const listPageSizes = [10, 20, 30, 40, 50]
     const currentSteps = [
         { value: evaluationStatus.selfAssessment, label: t("EvaluationDetailEmployeeManagerAssessment") },
         { value: evaluationStatus.qlttAssessment, label: t("EvaluationDetailEmployeeManagerApprove") },
