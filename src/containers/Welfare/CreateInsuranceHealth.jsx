@@ -780,14 +780,14 @@ const CreateInsuranceHealth = ({ t }) => {
           <div className="col-3">
             <div>{"Từ ngày"}</div>
             <DatePicker
+              selectsStart
               name="startDate"
               //readOnly={disableComponent.disableAll || !disableComponent.qlttSide || data.qlttOpinion.disableTime == true}
               autoComplete="off"
-              selected={
-                data.fromDate
-                  ? moment(data.fromDate, Constants.LEAVE_DATE_FORMAT).toDate()
-                  : null
-              }
+              selected={data.fromDate ? moment(data.fromDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+              maxDate={data.toDate ? moment(data.toDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+              startDate={data.fromDate ? moment(data.fromDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+              endDate={data.toDate ? moment(data.toDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
               onChange={(date) => handleDatePickerInputChange(date, "fromDate")}
               dateFormat="dd/MM/yyyy"
               placeholderText={t("Select")}
@@ -799,14 +799,14 @@ const CreateInsuranceHealth = ({ t }) => {
           <div className="col-3">
             <div>{"Đến ngày"}</div>
             <DatePicker
+              selectsEnd
               name="startDate"
               //readOnly={disableComponent.disableAll || !disableComponent.qlttSide || data.qlttOpinion.disableTime == true}
               autoComplete="off"
-              selected={
-                data.toDate
-                  ? moment(data.toDate, Constants.LEAVE_DATE_FORMAT).toDate()
-                  : null
-              }
+              selected={data.toDate ? moment(data.toDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+              minDate={data.fromDate ? moment(data.fromDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+              startDate={data.fromDate ? moment(data.fromDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+              endDate={data.toDate ? moment(data.toDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
               onChange={(date) => handleDatePickerInputChange(date, "toDate")}
               dateFormat="dd/MM/yyyy"
               placeholderText={t("Select")}
