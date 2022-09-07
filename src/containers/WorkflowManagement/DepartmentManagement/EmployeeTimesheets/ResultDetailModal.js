@@ -68,7 +68,7 @@ class ResultDetailModal extends React.Component {
                         </>
                         : 
                         <div className="wrap-result">
-                            <p dangerouslySetInnerHTML={{ __html: "Đã có lỗi xảy ra" }}></p>
+                            <p>Đã có lỗi xảy ra</p>
                             <Image src={IconFailed} alt="failed" className="ic-status" />
                         </div>
                     }

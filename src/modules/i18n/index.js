@@ -6,6 +6,7 @@ import moment from "moment";
 import "moment/locale/vi";
 import en from "./locales/en.json";
 import vi from "./locales/vi.json";
+import Constants from '../../commons/Constants'
 
 export const LocalizeContext = createContext();
 
@@ -28,7 +29,7 @@ function createStore() {
   i18n.init({
     keySeparator: ">",
     nsSeparator: "|",
-    lng: "vi-VN",
+    lng: Constants.LANGUAGE_VI,
     resources: {
       en: {
         common: en
@@ -43,10 +44,10 @@ function createStore() {
 
   const store = {
     i18n,
-    locale: "vi-VN",
+    locale: Constants.LANGUAGE_VI,
     appSupportedLanguages: [
-      { language: "English", code: "en-US" },
-      { language: "Vietnamese", code: "vi-VN" }
+      { language: "English", code: Constants.LANGUAGE_EN },
+      { language: "Vietnamese", code: Constants.LANGUAGE_VI }
     ],
     setLocale(locale) {
       i18n.removeResourceBundle(this.locale, "remote");

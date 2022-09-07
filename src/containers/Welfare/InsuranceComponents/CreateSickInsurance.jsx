@@ -79,9 +79,9 @@ const CreateSickInsurance = ({
       "workingConditionInfo",
       data.workingCondition
         ? JSON.stringify({
-            id: data.workingCondition.value,
-            name: data.workingCondition.label,
-          })
+          id: data.workingCondition.value,
+          name: data.workingCondition.label,
+        })
         : ""
     );
     formData.append("weeklyRestDay", data.leaveOfWeek);
@@ -239,9 +239,9 @@ const CreateSickInsurance = ({
               selected={
                 data.dateRequest
                   ? moment(
-                      data.dateRequest,
-                      Constants.LEAVE_DATE_FORMAT
-                    ).toDate()
+                    data.dateRequest,
+                    Constants.LEAVE_DATE_FORMAT
+                  ).toDate()
                   : null
               }
               onChange={(date) =>
@@ -263,9 +263,9 @@ const CreateSickInsurance = ({
               selected={
                 data.dateLastResolved
                   ? moment(
-                      data.dateLastResolved,
-                      Constants.LEAVE_DATE_FORMAT
-                    ).toDate()
+                    data.dateLastResolved,
+                    Constants.LEAVE_DATE_FORMAT
+                  ).toDate()
                   : null
               }
               onChange={(date) =>
@@ -396,14 +396,14 @@ const CreateSickInsurance = ({
           <div className="col-4">
             <div>{"Từ ngày"}</div>
             <DatePicker
+              selectsStart
               name="startDate"
               //readOnly={disableComponent.disableAll || !disableComponent.qlttSide || data.qlttOpinion.disableTime == true}
               autoComplete="off"
-              selected={
-                data.fromDate
-                  ? moment(data.fromDate, Constants.LEAVE_DATE_FORMAT).toDate()
-                  : null
-              }
+              selected={data.fromDate ? moment(data.fromDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+              maxDate={data.toDate ? moment(data.toDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+              startDate={data.fromDate ? moment(data.fromDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+              endDate={data.toDate ? moment(data.toDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
               onChange={(date) => handleDatePickerInputChange(date, "fromDate")}
               dateFormat="dd/MM/yyyy"
               placeholderText={t("Select")}
@@ -415,14 +415,14 @@ const CreateSickInsurance = ({
           <div className="col-4">
             <div>{"Đến ngày"}</div>
             <DatePicker
+              selectsEnd
               name="startDate"
               //readOnly={disableComponent.disableAll || !disableComponent.qlttSide || data.qlttOpinion.disableTime == true}
               autoComplete="off"
-              selected={
-                data.toDate
-                  ? moment(data.toDate, Constants.LEAVE_DATE_FORMAT).toDate()
-                  : null
-              }
+              selected={data.toDate ? moment(data.toDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+              minDate={data.fromDate ? moment(data.fromDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+              startDate={data.fromDate ? moment(data.fromDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+              endDate={data.toDate ? moment(data.toDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
               onChange={(date) => handleDatePickerInputChange(date, "toDate")}
               dateFormat="dd/MM/yyyy"
               placeholderText={t("Select")}
@@ -464,9 +464,9 @@ const CreateSickInsurance = ({
               selected={
                 data.childBirth
                   ? moment(
-                      data.childBirth,
-                      Constants.LEAVE_DATE_FORMAT
-                    ).toDate()
+                    data.childBirth,
+                    Constants.LEAVE_DATE_FORMAT
+                  ).toDate()
                   : null
               }
               onChange={(date) =>
@@ -555,9 +555,9 @@ const CreateSickInsurance = ({
               selected={
                 data.resolveDate
                   ? moment(
-                      data.resolveDate,
-                      Constants.LEAVE_DATE_FORMAT
-                    ).toDate()
+                    data.resolveDate,
+                    Constants.LEAVE_DATE_FORMAT
+                  ).toDate()
                   : null
               }
               onChange={(date) =>
@@ -596,9 +596,9 @@ const CreateSickInsurance = ({
               selected={
                 data.addtionDate
                   ? moment(
-                      data.addtionDate,
-                      Constants.LEAVE_DATE_FORMAT
-                    ).toDate()
+                    data.addtionDate,
+                    Constants.LEAVE_DATE_FORMAT
+                  ).toDate()
                   : null
               }
               onChange={(date) =>

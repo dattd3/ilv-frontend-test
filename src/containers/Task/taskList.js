@@ -5,6 +5,7 @@ import { OverlayTrigger, Tooltip, Popover, InputGroup, FormControl } from 'react
 import Select from 'react-select'
 import moment from 'moment'
 import _ from 'lodash'
+import purify from "dompurify"
 import { withTranslation } from "react-i18next"
 import noteButton from '../../assets/img/icon-note.png'
 import excelButton from '../../assets/img/excel-icon.svg'
@@ -356,6 +357,7 @@ class TaskList extends React.Component {
             5: t("LineManagerSResponse")
         }
         const requestTypeIdsAllowedToReApproval = getRequestTypeIdsAllowedToReApproval()
+        const fullDay = 1
 
         const getRequestTypeLabel = (requestType, absenceTypeValue) => {
             if (requestType.id == Constants.LEAVE_OF_ABSENCE) {
@@ -506,8 +508,38 @@ class TaskList extends React.Component {
                                                         <td className="request-type">{getRequestTypeLabel(child.requestType, child.absenceType?.value)}</td>
                                                     }
 
-                                                    <td className="day-off"><div dangerouslySetInnerHTML={{__html: dateChanged}} /></td>
-                                                    <td className="break-time text-center">{totalTime}</td>
+                                                    <td className="day-off">
+                                                        <div dangerouslySetInnerHTML={{
+                                                            __html: purify.sanitize(dateChanged || ''),
+                                                        }} />
+                                                        {
+                                                            (child?.newItem || []).map((item, itemIndex) => {
+                                                                let subDateChanged = ''
+                                                                if ([Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP].includes(child.requestTypeId)) {
+                                                                    subDateChanged = showRangeDateGroupByArrayDate([moment(item?.startDate, 'YYYYMMDD').format('DD/MM/YYYY'), moment(item?.endDate, 'YYYYMMDD').format('DD/MM/YYYY')])
+                                                                }
+                                                                return (
+                                                                    <div key={`sub-date-${itemIndex}`} dangerouslySetInnerHTML={{
+                                                                        __html: purify.sanitize(subDateChanged || ''),
+                                                                    }}  style={{marginTop: 5}} />
+                                                                )
+                                                            })
+                                                        }
+                                                    </td>
+                                                    <td className="break-time text-center">
+                                                        <div>{totalTime}</div>
+                                                        {
+                                                            (child?.newItem || []).map((item, itemIndex) => {
+                                                                let subTotalTime = ''
+                                                                if ([Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP].includes(child.requestTypeId)) {
+                                                                    subTotalTime = item?.days >= fullDay ? `${item?.days} ${t('DayUnit')}` : `${item?.hours} ${t('HourUnit')}`
+                                                                }
+                                                                return (
+                                                                    <div key={`sub-break-time-${itemIndex}`} style={{marginTop: 5}}>{subTotalTime}</div>
+                                                                )
+                                                            })
+                                                        }
+                                                    </td>
                                                     {
                                                         this.props.page == "approval"
                                                         ? <td className="appraiser text-center">{child.appraiser?.fullName}</td>

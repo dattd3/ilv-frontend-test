@@ -1,6 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import { withTranslation } from "react-i18next"
+import purify from "dompurify"
 import Constants from '../../../commons/Constants';
 import SubmitQuestionModal from '../../QuestionAndAnswer/SubmitQuestionModal'
 import StatusModal from '../../../components/Common/StatusModal'
@@ -120,7 +121,9 @@ class NotificationDetailComponent extends React.Component {
             <div className="card-body">
               <div className="detail-notifications-block">
                 <div className="content"
-                  dangerouslySetInnerHTML={{ __html: this.state.notificationInfo.content != null ? this.state.notificationInfo.content : "" }} />
+                  dangerouslySetInnerHTML={{
+                    __html: purify.sanitize(this.state?.notificationInfo?.content || ''),
+                }} />
                 {
                   this.hasAttachmentFiles(this.state.notificationInfo.notificationDocuments) ?
                     <>

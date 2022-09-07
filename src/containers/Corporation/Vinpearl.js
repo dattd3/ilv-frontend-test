@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useApi, useFetcher } from "../../modules";
 import { useTranslation } from "react-i18next";
+import purify from "dompurify"
 import LoadingSpinner from "../../components/Forms/CustomForm/LoadingSpinner";
 
 const usePreload = (params) => {
@@ -37,7 +38,10 @@ function Vingroup(props) {
                         <p className="about_name">Tinh hoa Việt Nam - Đẳng cấp thế giới</p>
                         <hr className="line mt30 mb30" />
                         <div className="about_content_detail">
-                        <p dangerouslySetInnerHTML={{__html: result.data.content}} /></div>
+                            <p dangerouslySetInnerHTML={{
+                                __html: purify.sanitize(result?.data?.content || ''),
+                            }} />
+                        </div>
                     </div>
                 </div>
             </div>

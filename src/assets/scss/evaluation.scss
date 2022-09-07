@@ -91,12 +91,25 @@
         justify-content: space-between;
         .card {
             padding: 15px;
+            .chart-title {
+                margin-bottom: 1rem;
+            }
         }
         .card-completed {
             width: 25%;
             .chart {
+                height: 100%;
+                display: flex;
+                align-items: center;
+                width: 100%;
+                justify-content: center;
                 .result {
                     position: relative;
+                    display: flex;
+                    justify-content: center;
+                    canvas {
+                        margin-top: -10px;
+                    }
                 }
             }
         }
@@ -110,9 +123,10 @@
                 height: 100%;
                 display: flex;
                 justify-content: center;
+                align-items: center;
                 .detail {
-                    width: 49%;
-                    height: 100%;
+                    width: 130px;
+                    height: 130px;
                     background-image: url("../img/icon/overall-score.svg");
                     background-repeat: no-repeat;
                     background-size: contain;
@@ -121,7 +135,7 @@
                     align-items: center;
                     justify-content: center;
                     color: #C11D2A;
-                    font-size: 35px;
+                    font-size: 30px;
                     font-weight: bold;
                 }
             }
@@ -275,12 +289,39 @@
                 font-style: italic;
             }
             .list-evaluation {
+                .evaluation-sub-group {
+                  border: 1px solid #DEE2E6;
+                  border-radius: 5px;
+                  margin-top: 30px;
+                  .sub-group-name{
+                    background-color: #F3F3F3;
+                    padding: 7px 20px;
+                    text-transform: uppercase;
+                    font-weight: 700;
+                  }
+                  .sub-group-targets {
+                    padding: 5px 20px;
+                    .divider {
+                      width: 100%;
+                      height: 0px;
+                      border-top: 1px solid #DEE2E6;
+                      margin-bottom: 10px;
+                      &:last-of-type {
+                        display: none;
+                      }
+                    }
+                  }
+                }
                 .evaluation-item {
                     padding: 10px 0;
                     .title {
                         text-transform: unset;
                         background: none;
                         padding-left: 0;
+                    }
+                    .sub-title {
+                      font-weight: 500;
+                      margin-bottom: 10px;
                     }
                     .score-block {
                         display: flex;
@@ -299,7 +340,7 @@
                             border-radius: 5px;
                             cursor: pointer;
                             height: 30px;
-                            width: 110px;
+                            width: 120px;
                             padding: 5px;
                             option {
                                 padding: 8px 5px;
@@ -2410,16 +2451,39 @@
                 // border: 1px solid #DEE2E6;
                 box-shadow: rgba(9, 30, 66, 0.25) 0px 1px 1px, rgba(9, 30, 66, 0.13) 0px 0px 1px 1px;
                 border-radius: 5px;
+                overflow-x: auto;
+                &::-webkit-scrollbar {
+                    height: 8px;
+                    background-color: #f5f5f5;
+                }
+                &::-webkit-scrollbar-thumb {
+                    background-color: #a4afb7;
+                    border-left: 1px solid #FFFFFF;
+                    border-right: 1px solid #FFFFFF;
+                    border-top: 1px solid #FFFFFF;
+                    border-bottom: 1px solid #FFFFFF;
+                    border-radius: 4px;
+                }
+                &::-webkit-scrollbar-track {
+                    background-color: #d3d3d3;
+                    border-left: 3.5px solid #FFFFFF;
+                    border-right: 3.5px solid #FFFFFF;
+                    border-top: 3.5px solid #FFFFFF;
+                    border-bottom: 3.5px solid #FFFFFF;
+                }
                 .table-list-evaluation {
                     width: 100%;
                     color: #000000;
+                    table-layout: fixed;
+                    border-spacing: 0;
+                    white-space: nowrap;
                     thead {
                         th {
                             padding: 15px 0;
                         }
                     }
                     .c-form-code {
-                        width: 15%;
+                        width: 120px;
                         .form-code {
                             cursor: pointer;
                             &:hover {
@@ -2428,19 +2492,39 @@
                         }
                     }
                     .c-form-sender {
-                        width: 18%;
+                        // width: 18%;
+                        width: 160px;
+                        .form-sender {
+
+                        }
                     }
                     .c-form-name {
-                        width: 25%;
+                        // width: 25%;
+                        width: 220px;
+                        .form-name {
+                            // width: 200px;
+                        }
                     }
                     .c-sent-date {
-                        width: 12%;
+                        // width: 12%;
+                        width: 130px;
+                        .sent-date {
+                            // width: 130px;
+                        }
                     }
                     .c-status {
-                        width: 15%;
+                        // width: 15%;
+                        width: 130px;
+                        .status {
+                            // width: 130px;
+                        }
                     }
                     .c-current-step {
-                        width: 15%;
+                        // width: 15%;
+                        width: 130px;
+                        .current-step {
+                            // width: 130px;
+                        }
                     }
                     tbody {
                         tr {
