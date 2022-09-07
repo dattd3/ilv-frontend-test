@@ -13,7 +13,6 @@ import {
 import { I18nextProvider } from "react-i18next";
 import { autorun } from "mobx";
 import { useDisposable } from "mobx-react-lite";
-import { Auth } from 'aws-amplify';
 import { AlertList } from "react-bs-notifier";
 import { render } from 'react-dom';
 import AccessDenied from '../AccessDenied';
@@ -74,7 +73,6 @@ const ComposeApiWithGuard = function ({ children }) {
           }]);
           if (err.response.status === 401) {
             guard.setLogOut();
-            Auth.signOut();
           } else if (err.response.status === 403) {
             render(<AccessDenied />, document.getElementById('main-content'));
           }
@@ -94,7 +92,6 @@ const ComposeApiWithGuard = function ({ children }) {
         }]);
         if (err.response.status === 401) {
           guard.setLogOut();
-          Auth.signOut();
         } else if (err.response.status === 403) {
           render(<AccessDenied />, document.getElementById('main-content'));
         }

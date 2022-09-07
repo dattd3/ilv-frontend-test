@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Button, Modal, Carousel } from 'react-bootstrap';
 import { useTranslation } from "react-i18next";
-import { Auth } from 'aws-amplify';
 import config from '../../commons/aws-config';
 import logo from '../../assets/img/LogoVingroup.svg';
 import imageIos from '../../assets/img/image_ios.png';
@@ -111,10 +110,8 @@ function Login() {
   }, [langCode, localizeStore]);
 
   const handleLoginClick = () => {
-    const authConfig = Auth.configure();
-    const { domain, redirectSignIn, responseType } = authConfig.oauth;
     const clientId = config.AWS_COGNITO_CLIENT_ID;
-    const url = `https://${domain}/oauth2/authorize?identity_provider=${config.AWS_COGNITO_IDP_NAME}&redirect_uri=${redirectSignIn}&response_type=${responseType}&client_id=${clientId}`;
+    const url = `https://${config.AWS_COGNITO_CLIENT_DOMAIN_NAME}/oauth2/authorize?identity_provider=${config.AWS_COGNITO_IDP_NAME}&redirect_uri=${config.AWS_COGNITO_IDP_SIGNIN_URL}&response_type=${config.AWS_COGNITO_IDP_GRANT_FLOW}&client_id=${clientId}`;
     window.location.assign(url);
   }
 

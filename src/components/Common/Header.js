@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { Auth } from 'aws-amplify';
 import { useGuardStore } from '../../modules';
 import { Navbar, Form, InputGroup, Button, FormControl, Dropdown, Modal } from 'react-bootstrap';
 import { useTranslation } from "react-i18next";
@@ -190,21 +189,16 @@ function Header(props) {
     const userLogOut = () => {
         try {
             guard.setLogOut();
-            Auth.signOut({ global: true });
         } catch {
             guard.setLogOut();
             window.location.reload();
         }
     }
 
-
-    Auth.currentUserInfo().then(currentAuthUser => {
-        if (currentAuthUser === undefined || currentAuthUser === null) {
-            Auth.signOut({ global: true });
-            guard.setLogOut();
-            window.location.reload();
-        }
-    });
+    if(!localStorage.getItem('tokenExpired') || !moment(localStorage.getItem('tokenExpired')).isValid() ||  moment().isAfter(moment(localStorage.getItem('tokenExpired')))) {
+        guard.setLogOut();
+        window.location.reload();
+    }
 
     const handleClickSetShow = () => {
         SetIsShow(!isShow);

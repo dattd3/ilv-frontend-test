@@ -120,7 +120,7 @@ const CreateInsuranceHealth = ({ t }) => {
 
   const getPersonalInfo = async () => {
     const config = getMuleSoftHeaderConfigurations()
-    await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/personalinfo`, config)
+    await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/personalinfo`, config)
       .then(res => {
         if (res && res.data && res.data.data) {
           let profile = res.data.data[0];

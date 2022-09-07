@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Auth, Hub } from 'aws-amplify';
 import { useGuardStore } from '../../modules';
 import map from '../map.config';
 import LoadingModal from '../../components/Common/LoadingModal'
@@ -7,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import axios from 'axios';
 import { getMuleSoftHeaderConfigurations } from "../../commons/Utils"
 import Constants from "../../commons/Constants"
+import moment from 'moment';
 
 const ERROR_TYPE = {
     NETWORK: 1,
@@ -26,7 +26,7 @@ function Authorize(props) {
     const [errorType, SetErrorType] = useState(null);
     const [isShowLoadingModal, SetIsShowLoadingModal] = useState(true);
 
-    const getUser = (token, jwtToken, vgEmail) => {
+    const getUser = (token, jwtToken) => {
         if (jwtToken == null || jwtToken == "") {
             return;
         }
@@ -38,10 +38,11 @@ function Authorize(props) {
         const config = getMuleSoftHeaderConfigurations() 
         config.headers['Authorization'] = `Bearer ${jwtToken}`
 
-        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/profile`, config)
+        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/profile`, config)
             .then(res => {
                 if (res && res.data && res.data.data[0]) {
                     let userProfile = res.data.data[0];
+                    const vgEmail = userProfile?.company_email?.toLowerCase() || ""
                     checkUser(userProfile, jwtToken, vgEmail, () => {
                         SetIsShowLoadingModal(false)
                     });
@@ -118,7 +119,7 @@ function Authorize(props) {
                         guard.setIsAuth({
                             tokenType: 'Bearer',
                             accessToken: jwtToken,
-                            tokenExpired: '',
+                            tokenExpired: moment().add(3600, 'seconds'),
                             email: vgEmail,
                             plEmail: user.company_email,
                             avatar: user.avatar,
@@ -159,7 +160,7 @@ function Authorize(props) {
                     guard.setIsAuth({
                         tokenType: 'Bearer',
                         accessToken: jwtToken,
-                        tokenExpired: '',
+                        tokenExpired: moment().add(3600, 'seconds'),
                         email: vgEmail,
                         plEmail: user.company_email,
                         avatar: '',
@@ -201,23 +202,13 @@ function Authorize(props) {
         }
     }
 
-    function getUserData() {
-        Auth.currentAuthenticatedUser().then(currentAuthUser => {
-            if (currentAuthUser.signInUserSession.isValid()) {
-                if (isLoadingUser == false) {
-                    SetIsLoadingUser(true);
-                    SetToken(currentAuthUser.signInUserSession.idToken.jwtToken);
-                    let email = currentAuthUser.attributes.family_name;
-                    let vgUsernameMatch = (/([^@]+)/gmi).exec(email.replace('v.', ''));
-                    let vgEmail = `${vgUsernameMatch[1]}@vingroup.net`;
-                    getUser(token, currentAuthUser.signInUserSession.idToken.jwtToken, vgEmail);
-                }
-            }
-            else {
-                SetNotifyContent(t("WaitNotice"));
-            }
-        })
-        .catch(error => {});
+    function getUserData(_token) {
+        //_token = 'eyJraWQiOiJIT3E5TEREUUVMb1FGWmtVVmpEYlNSZjZvUVlTS096ek16VGNJcU1WRXUwPSIsImFsZyI6IlJTMjU2In0.eyJhdF9oYXNoIjoiTndwNGRJWmNud1A5aVk3bTVOOS1rZyIsInN1YiI6IjFlMmU3YWY4LWU2MWQtNGVlZC1iOGQ5LTk0ZmFhMjEwYmVjMiIsImNvZ25pdG86Z3JvdXBzIjpbImFwLXNvdXRoZWFzdC0xX2c4ZjRkQkc2NV9WaW5ncm91cEF6dXJlQUQiXSwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJpc3MiOiJodHRwczpcL1wvY29nbml0by1pZHAuYXAtc291dGhlYXN0LTEuYW1hem9uYXdzLmNvbVwvYXAtc291dGhlYXN0LTFfZzhmNGRCRzY1IiwiY29nbml0bzp1c2VybmFtZSI6InZpbmdyb3VwYXp1cmVhZF9kZnZzal93a3E3bG1wOG02czdvcjFpYzRpZDJpb3ZndGJjc3JsbXBlaW9jIiwibm9uY2UiOiIxMC1aaDRsTXhxb0JCMGF0a3l6clFMNWVkbklSbDVjTmNTVmFLdUtaSzVrOV9UX19la2c3NVdpV0RFSzBUSzdsNUhBRmJ6VmgwaTFRZEZJMmNNbFEtcEZCSHlWOWhITVoyemNxLXZhYk5SQ0RLMHdmOEpmb1BKQWFjUDJjRGl2SzQ4a1FNM3B5dEtNMVdhVkt1b25LR0hjdHVKVUZCTXJrcllFMGFrZ25fSjQiLCJhdWQiOiIzcm9ibmdnZjZtYjJtYWFiaWJoNWE3b3JtZSIsImlkZW50aXRpZXMiOlt7InVzZXJJZCI6ImRGdlNKX1dLUTdMbXA4bTZTN09yMUlDNElEMklvdkd0YmNTUkxNUEVpb2MiLCJwcm92aWRlck5hbWUiOiJWaW5ncm91cEF6dXJlQUQiLCJwcm92aWRlclR5cGUiOiJPSURDIiwiaXNzdWVyIjpudWxsLCJwcmltYXJ5IjoidHJ1ZSIsImRhdGVDcmVhdGVkIjoiMTYzMTMzNDM1MDMyNiJ9XSwidG9rZW5fdXNlIjoiaWQiLCJhdXRoX3RpbWUiOjE2NjI1NDA3ODcsIm5hbWUiOiJUZXN0IDY3IiwiZXhwIjoxNjYyNTQ0Mzg3LCJpYXQiOjE2NjI1NDA3ODcsImZhbWlseV9uYW1lIjoidm0udGVzdDY3QHZpbmdyb3VwLm5ldCJ9.NkIENmMIJOpLifm0K5CZTewQ_u_di85TBfL2PONV_i8A9NMLt3Pep73waio1dJgP9mGHWz7ktYuWNaA_3XDXhj2HGoRUPSSfwQY7DU-yPFP7a69aeY90t6DWigYwdNKiNvirRiKspCZFyJxT0DWbNnd22FZBkvJs0QbbiRMnw1VGCPsMMRt7tVYY1rsqxFRFJ6dEUQfAtKx-7bM_GkMCGTJyldIZw5is3ExpF06HT1U6ODnLz1-iD7ixCqbY1YHCXdeky9wuCG4h2FAgfpnYy-FZUVWfEZ7u1tuq5NjxcKNn6Rmgt9Iglbt42k0s2qcZCUAN2NW-_haCICgC3vsqUA';
+        if (isLoadingUser == false) {
+            SetIsLoadingUser(true);
+            SetToken(_token);
+            getUser(_token, _token);
+        }
     }
 
     function updateUser(userProfile, jwtToken) {
@@ -255,20 +246,12 @@ function Authorize(props) {
     }
 
     useEffect(() => {
-        getUserData();
-        Hub.listen('auth', data => {
-            switch (data.payload.event) {
-                case 'signIn':
-                    getUserData();
-                    break;
-                default:
-                    return;
-            }
-        });
-    });
+        const accessToken = new URLSearchParams(props.location.hash?.replace('#', '?')).get('access_token') || null;
+        getUserData(accessToken);
+    }, []);
 
     const tryAgain = () => {
-        window.location.reload()
+        window.location.href = process.env.REACT_APP_AWS_COGNITO_IDP_SIGNOUT_URL;
     }
 
     return (
