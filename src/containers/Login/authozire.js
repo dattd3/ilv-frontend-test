@@ -248,9 +248,9 @@ function Authorize(props) {
         })
         .then(res => {
         })
-        .finally(res => {
-        })
         .catch(response => {
+        })
+        .finally(res => {
         })    
     }
 

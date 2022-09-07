@@ -94,7 +94,7 @@ const Constants = {
       ReasonRequestLeave: 'ReasonLeaveRequest'
     },
     'MOD': {
-      TitleLeave: 'Thông tin chỉnh sửa đăng ký nghỉ',
+      TitleLeave: 'Thông tin điều chỉnh đăng ký nghỉ',
       TitleTripAndTrainning: 'Thông tin chỉnh sửa đăng ký công tác/đào tạo',
       ReasonTripAndTrainning: 'Lý do chỉnh sửa đăng ký công tác/đào tạo',
       ReasonRequestLeave: 'ReasonEditLeaveRequest'
@@ -193,6 +193,8 @@ const Constants = {
   REGISTER_CONTRACT_TERMINATION_CODE: 1,
   PROPOSED_CONTRACT_TERMINATION_CODE: 2,
   GROUP_EMAIL_EXTENSION: '@vingroup.net',
-  timeoutForSpecificApis: 180000
+  timeoutForSpecificApis: 180000,
+  LANGUAGE_VI: 'vi-VN',
+  LANGUAGE_EN: 'en-US',
 };
 export default Constants
