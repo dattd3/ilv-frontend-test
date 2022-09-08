@@ -1217,8 +1217,8 @@ renderEvalution = (name, data, isDisable) => {
         .then(response => {
           if(response.data.result && response.data.result.code == '000000'){
             if(this.state.type == 'assess' && 
-              ((this.state.data.processStatus == 10 && checkIsExactPnL(Constants.pnlVCode.VinSchool, Constants.pnlVCode.VinHome, Constants.pnlVCode.Vin3S)) || 
-                (this.state.processStatus == 11 && !checkIsExactPnL(Constants.pnlVCode.VinSchool, Constants.pnlVCode.VinHome, Constants.pnlVCode.Vin3S)))) {
+              ((this.state.data.processStatus == 10 && checkIsExactPnL(Constants.pnlVCode.VinSchool, Constants.pnlVCode.VinHome, Constants.PnLCODE.VinFast, Constants.PnLCODE.VinFastTrading, Constants.pnlVCode.Vin3S)) || 
+                (this.state.processStatus == 11 && !checkIsExactPnL(Constants.pnlVCode.VinSchool, Constants.pnlVCode.VinHome, Constants.PnLCODE.VinFast, Constants.PnLCODE.VinFastTrading, Constants.pnlVCode.Vin3S)))) {
                   this.showSalaryPropose(actionType, home);
             } else {
               this.showStatusModal(message, true, true, home)
