@@ -181,8 +181,8 @@ const Constants = {
     Vinpearl: "V030",
     Vinmec: "V060",
     VinSchool: "V061",
-    VinFast: "V077",
-    VinFastTrading: "V078",
+    VinFast: "V070",
+    VinFastTrading: "V077",
     VinFastPB: "V070",
     Vin3S: "V005"
   },

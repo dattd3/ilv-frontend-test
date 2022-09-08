@@ -50,15 +50,15 @@ const CreateMaternityInsurance = ({
 
     formData.append('requestType', type.value);
     formData.append('requestName', type.label);
-    formData.append('formTypeInfo', JSON.stringify({id: data.declareForm.value, name: data.declareForm.label}));
-    formData.append('maternityRegimeInfo', data.maternityRegime ?  JSON.stringify({id: data.maternityRegime.value, name: data.maternityRegime.label}) : '');
-    formData.append('pregnancyCheckUpInfo', data.maternityCondition ? JSON.stringify({id: data.maternityCondition.value, name: data.maternityCondition.label}) : '');
-    formData.append('conditionsChildbirth', data.birthCondition ? JSON.stringify({id: data.birthCondition.value, name: data.birthCondition.label}) : '');
-    formData.append('nurturerInsuranceNumber', data.raiserInsuranceNumber );
-    formData.append('recommendEnjoyDate', data.dateRequest ? moment(data.dateRequest, 'DD/MM/YYYY').format('YYYY-MM-DD') : '' );
-    formData.append('solvedFirstDate', data.dateLastResolved ?  moment(data.dateLastResolved, 'DD/MM/YYYY').format('YYYY-MM-DD') : '');
-    formData.append('childcareLeaveInfo', data.dadCare ? JSON.stringify({id: data.dadCare.value, name: data.dadCare.label}) : '');
-    formData.append('planInfo', data.plan ? JSON.stringify({id: data.plan.value, name: data.plan.label}) : '');
+    formData.append('formTypeInfo', JSON.stringify({ id: data.declareForm.value, name: data.declareForm.label }));
+    formData.append('maternityRegimeInfo', data.maternityRegime ? JSON.stringify({ id: data.maternityRegime.value, name: data.maternityRegime.label }) : '');
+    formData.append('pregnancyCheckUpInfo', data.maternityCondition ? JSON.stringify({ id: data.maternityCondition.value, name: data.maternityCondition.label }) : '');
+    formData.append('conditionsChildbirth', data.birthCondition ? JSON.stringify({ id: data.birthCondition.value, name: data.birthCondition.label }) : '');
+    formData.append('nurturerInsuranceNumber', data.raiserInsuranceNumber);
+    formData.append('recommendEnjoyDate', data.dateRequest ? moment(data.dateRequest, 'DD/MM/YYYY').format('YYYY-MM-DD') : '');
+    formData.append('solvedFirstDate', data.dateLastResolved ? moment(data.dateLastResolved, 'DD/MM/YYYY').format('YYYY-MM-DD') : '');
+    formData.append('childcareLeaveInfo', data.dadCare ? JSON.stringify({ id: data.dadCare.value, name: data.dadCare.label }) : '');
+    formData.append('planInfo', data.plan ? JSON.stringify({ id: data.plan.value, name: data.plan.label }) : '');
     formData.append('reasonRequestingAdjustment', data.reason);
     formData.append('description', data.note);
     //thong tin ca nhan
@@ -66,7 +66,7 @@ const CreateMaternityInsurance = ({
     formData.append('insuranceNumber', userInfo.socialId);
     formData.append('idNumber', userInfo.IndentifiD);
     formData.append('employeeNo', userInfo.employeeNo);
-    formData.append('backToWorkDate', data.startWork ?  moment(data.startWork, 'DD/MM/YYYY').format('YYYY-MM-DD') : '');
+    formData.append('backToWorkDate', data.startWork ? moment(data.startWork, 'DD/MM/YYYY').format('YYYY-MM-DD') : '');
     formData.append('weeklyRestDay', data.leaveOfWeek)
 
     formData.append('certificateInsuranceBenefit', JSON.stringify({
@@ -100,13 +100,13 @@ const CreateMaternityInsurance = ({
     }));
 
     //Thông tin của mẹ
-    formData.append('motherDataInfo',JSON.stringify({
+    formData.append('motherDataInfo', JSON.stringify({
       "socialInsuranceNumber": data.momInsuranceNumber,
       "healthInsuranceNumber": data.momHealthNumber,
       "motherIdNumber": data.momIdNumber,
-      "pregnancyVacation": data.maternityLeave? {id: data.maternityLeave.value, name: data.maternityLeave.label} : '',
-      "surrogacy":  data.hasRainser ? {id: data.hasRainser.value, name: data.hasRainser.label} : '',
-      "surgeryOrPregnancy":  data.hasSurgery ? {id: data.hasSurgery.value, name: data.hasSurgery.label} : '',
+      "pregnancyVacation": data.maternityLeave ? { id: data.maternityLeave.value, name: data.maternityLeave.label } : '',
+      "surrogacy": data.hasRainser ? { id: data.hasRainser.value, name: data.hasRainser.label } : '',
+      "surgeryOrPregnancy": data.hasSurgery ? { id: data.hasSurgery.value, name: data.hasSurgery.label } : '',
       "motherDiedDate": data.momDeadDate ? moment(data.momDeadDate, 'DD/MM/YYYY').format('YYYY-MM-DD') : '',
       "conclusionDate": data.resultDate ? moment(data.resultDate, 'DD/MM/YYYY').format('YYYY-MM-DD') : '',
       "medicalAssessmentFee": data.assessment
@@ -124,8 +124,8 @@ const CreateMaternityInsurance = ({
     );
 
     formData.append('SettlementContent', data.resolveContent);
-    formData.append('SettlementPeriod', data.resolveDate ? moment(data.resolveDate, 'DD/MM/YYYY').format('YYYY-MM-DD') : '') ;
-    formData.append('AdditionalPhaseContent',data.addtionContent );
+    formData.append('SettlementPeriod', data.resolveDate ? moment(data.resolveDate, 'DD/MM/YYYY').format('YYYY-MM-DD') : '');
+    formData.append('AdditionalPhaseContent', data.addtionContent);
     formData.append('AdditionalPhasePeriod', data.addtionDate ? moment(data.addtionDate, 'DD/MM/YYYY').format('YYYY-MM-DD') : '');
     formData.append('orgLv2Id', localStorage.getItem('organizationLv2'));
     formData.append('divisionId', localStorage.getItem('divisionId'));
@@ -169,7 +169,7 @@ const CreateMaternityInsurance = ({
     const hasErrors = !Object.values(_errors).every(
       (item) => item === null || item === undefined
     );
-    if(hasErrors) {
+    if (hasErrors) {
       notifyMessage('Vui lòng nhập giá trị !', true);
     }
     return hasErrors ? false : true;
@@ -233,9 +233,9 @@ const CreateMaternityInsurance = ({
               selected={
                 data.dateRequest
                   ? moment(
-                      data.dateRequest,
-                      Constants.LEAVE_DATE_FORMAT
-                    ).toDate()
+                    data.dateRequest,
+                    Constants.LEAVE_DATE_FORMAT
+                  ).toDate()
                   : null
               }
               onChange={(date) =>
@@ -257,9 +257,9 @@ const CreateMaternityInsurance = ({
               selected={
                 data.dateLastResolved
                   ? moment(
-                      data.dateLastResolved,
-                      Constants.LEAVE_DATE_FORMAT
-                    ).toDate()
+                    data.dateLastResolved,
+                    Constants.LEAVE_DATE_FORMAT
+                  ).toDate()
                   : null
               }
               onChange={(date) =>
@@ -447,14 +447,14 @@ const CreateMaternityInsurance = ({
           <div className="col-4">
             <div>{"Từ ngày"}</div>
             <DatePicker
+              selectsStart
               name="startDate"
               //readOnly={disableComponent.disableAll || !disableComponent.qlttSide || data.qlttOpinion.disableTime == true}
               autoComplete="off"
-              selected={
-                data.fromDate
-                  ? moment(data.fromDate, Constants.LEAVE_DATE_FORMAT).toDate()
-                  : null
-              }
+              selected={data.fromDate ? moment(data.fromDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+              maxDate={data.toDate ? moment(data.toDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+              startDate={data.fromDate ? moment(data.fromDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+              endDate={data.toDate ? moment(data.toDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
               onChange={(date) => handleDatePickerInputChange(date, "fromDate")}
               dateFormat="dd/MM/yyyy"
               placeholderText={t("Select")}
@@ -466,14 +466,14 @@ const CreateMaternityInsurance = ({
           <div className="col-4">
             <div>{"Đến ngày"}</div>
             <DatePicker
+              selectsEnd
               name="startDate"
               //readOnly={disableComponent.disableAll || !disableComponent.qlttSide || data.qlttOpinion.disableTime == true}
               autoComplete="off"
-              selected={
-                data.toDate
-                  ? moment(data.toDate, Constants.LEAVE_DATE_FORMAT).toDate()
-                  : null
-              }
+              selected={data.toDate ? moment(data.toDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+              minDate={data.fromDate ? moment(data.fromDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+              startDate={data.fromDate ? moment(data.fromDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+              endDate={data.toDate ? moment(data.toDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
               onChange={(date) => handleDatePickerInputChange(date, "toDate")}
               dateFormat="dd/MM/yyyy"
               placeholderText={t("Select")}
@@ -546,9 +546,9 @@ const CreateMaternityInsurance = ({
               selected={
                 data.childBirth
                   ? moment(
-                      data.childBirth,
-                      Constants.LEAVE_DATE_FORMAT
-                    ).toDate()
+                    data.childBirth,
+                    Constants.LEAVE_DATE_FORMAT
+                  ).toDate()
                   : null
               }
               onChange={(date) =>
@@ -617,9 +617,9 @@ const CreateMaternityInsurance = ({
               selected={
                 data.childReceiveDate
                   ? moment(
-                      data.childReceiveDate,
-                      Constants.LEAVE_DATE_FORMAT
-                    ).toDate()
+                    data.childReceiveDate,
+                    Constants.LEAVE_DATE_FORMAT
+                  ).toDate()
                   : null
               }
               onChange={(date) =>
@@ -646,9 +646,9 @@ const CreateMaternityInsurance = ({
               selected={
                 data.childRaiseDate
                   ? moment(
-                      data.childRaiseDate,
-                      Constants.LEAVE_DATE_FORMAT
-                    ).toDate()
+                    data.childRaiseDate,
+                    Constants.LEAVE_DATE_FORMAT
+                  ).toDate()
                   : null
               }
               onChange={(date) =>
@@ -752,9 +752,9 @@ const CreateMaternityInsurance = ({
               selected={
                 data.momDeadDate
                   ? moment(
-                      data.momDeadDate,
-                      Constants.LEAVE_DATE_FORMAT
-                    ).toDate()
+                    data.momDeadDate,
+                    Constants.LEAVE_DATE_FORMAT
+                  ).toDate()
                   : null
               }
               onChange={(date) =>
@@ -776,9 +776,9 @@ const CreateMaternityInsurance = ({
               selected={
                 data.resultDate
                   ? moment(
-                      data.resultDate,
-                      Constants.LEAVE_DATE_FORMAT
-                    ).toDate()
+                    data.resultDate,
+                    Constants.LEAVE_DATE_FORMAT
+                  ).toDate()
                   : null
               }
               onChange={(date) =>
@@ -832,9 +832,9 @@ const CreateMaternityInsurance = ({
               selected={
                 data.resolveDate
                   ? moment(
-                      data.resolveDate,
-                      Constants.LEAVE_DATE_FORMAT
-                    ).toDate()
+                    data.resolveDate,
+                    Constants.LEAVE_DATE_FORMAT
+                  ).toDate()
                   : null
               }
               onChange={(date) =>
@@ -874,9 +874,9 @@ const CreateMaternityInsurance = ({
               selected={
                 data.addtionDate
                   ? moment(
-                      data.addtionDate,
-                      Constants.LEAVE_DATE_FORMAT
-                    ).toDate()
+                    data.addtionDate,
+                    Constants.LEAVE_DATE_FORMAT
+                  ).toDate()
                   : null
               }
               onChange={(date) =>

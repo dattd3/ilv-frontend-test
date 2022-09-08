@@ -28,7 +28,7 @@ const CreateConvalesInsurance = ({
   notifyMessage,
   disabledSubmitButton
 }) => {
-  
+
   const [errors, setErrors] = useState({});
   const InsuranceOptions = [
     { value: 1, label: "Ốm đau" },
@@ -45,23 +45,23 @@ const CreateConvalesInsurance = ({
     const formData = new FormData();
     formData.append('requestType', type.value);
     formData.append('requestName', type.label);
-    formData.append('formTypeInfo', JSON.stringify({id: data.declareForm.value, name: data.declareForm.label}));
-    formData.append('recommendEnjoyDate', data.dateRequest ? moment(data.dateRequest, 'DD/MM/YYYY').format('YYYY-MM-DD') : '' );
-    formData.append('solvedFirstDate', data.dateLastResolved ?  moment(data.dateLastResolved, 'DD/MM/YYYY').format('YYYY-MM-DD') : '');
-    formData.append('planInfo', data.plan ?  JSON.stringify({id: data.plan.value, name: data.plan.label}) : '');
+    formData.append('formTypeInfo', JSON.stringify({ id: data.declareForm.value, name: data.declareForm.label }));
+    formData.append('recommendEnjoyDate', data.dateRequest ? moment(data.dateRequest, 'DD/MM/YYYY').format('YYYY-MM-DD') : '');
+    formData.append('solvedFirstDate', data.dateLastResolved ? moment(data.dateLastResolved, 'DD/MM/YYYY').format('YYYY-MM-DD') : '');
+    formData.append('planInfo', data.plan ? JSON.stringify({ id: data.plan.value, name: data.plan.label }) : '');
     formData.append('description', data.note);
     //thong tin ca nhan
     formData.append('fullName', userInfo.fullName);
     formData.append('insuranceNumber', userInfo.socialId);
     formData.append('idNumber', userInfo.IndentifiD);
     formData.append('employeeNo', userInfo.employeeNo);
-    formData.append('backToWorkDate', data.startWork ?  moment(data.startWork, 'DD/MM/YYYY').format('YYYY-MM-DD') : '');
+    formData.append('backToWorkDate', data.startWork ? moment(data.startWork, 'DD/MM/YYYY').format('YYYY-MM-DD') : '');
 
     //Số ngày đề nghị hưởng chế độ tại đơn vị
     formData.append('receiveBenefitsUnitInfo', JSON.stringify({
       "seriNumber": data.seri,
-      "fromDate":  data.fromDate ? moment(data.fromDate, 'DD/MM/YYYY').format('YYYY-MM-DD') : '',
-      "toDate":  data.toDate ? moment(data.toDate, 'DD/MM/YYYY').format('YYYY-MM-DD') : '',
+      "fromDate": data.fromDate ? moment(data.fromDate, 'DD/MM/YYYY').format('YYYY-MM-DD') : '',
+      "toDate": data.toDate ? moment(data.toDate, 'DD/MM/YYYY').format('YYYY-MM-DD') : '',
       total: data.total
     }));
     //Thông tin giám định 
@@ -81,8 +81,8 @@ const CreateConvalesInsurance = ({
     );
 
     formData.append('SettlementContent', data.resolveContent);
-    formData.append('SettlementPeriod', data.resolveDate ? moment(data.resolveDate, 'DD/MM/YYYY').format('YYYY-MM-DD') : '') ;
-    formData.append('AdditionalPhaseContent',data.addtionContent );
+    formData.append('SettlementPeriod', data.resolveDate ? moment(data.resolveDate, 'DD/MM/YYYY').format('YYYY-MM-DD') : '');
+    formData.append('AdditionalPhaseContent', data.addtionContent);
     formData.append('AdditionalPhasePeriod', data.addtionDate ? moment(data.addtionDate, 'DD/MM/YYYY').format('YYYY-MM-DD') : '');
     formData.append('orgLv2Id', localStorage.getItem('organizationLv2'));
     formData.append('divisionId', localStorage.getItem('divisionId'));
@@ -128,7 +128,7 @@ const CreateConvalesInsurance = ({
     const hasErrors = !Object.values(_errors).every(
       (item) => item === null || item === undefined
     );
-    if(hasErrors) {
+    if (hasErrors) {
       notifyMessage('Vui lòng nhập giá trị !', true);
     }
     return hasErrors ? false : true;
@@ -178,9 +178,9 @@ const CreateConvalesInsurance = ({
               selected={
                 data.dateRequest
                   ? moment(
-                      data.dateRequest,
-                      Constants.LEAVE_DATE_FORMAT
-                    ).toDate()
+                    data.dateRequest,
+                    Constants.LEAVE_DATE_FORMAT
+                  ).toDate()
                   : null
               }
               onChange={(date) =>
@@ -204,9 +204,9 @@ const CreateConvalesInsurance = ({
               selected={
                 data.dateLastResolved
                   ? moment(
-                      data.dateLastResolved,
-                      Constants.LEAVE_DATE_FORMAT
-                    ).toDate()
+                    data.dateLastResolved,
+                    Constants.LEAVE_DATE_FORMAT
+                  ).toDate()
                   : null
               }
               onChange={(date) =>
@@ -321,14 +321,14 @@ const CreateConvalesInsurance = ({
           <div className="col-4">
             <div>{"Từ ngày"}</div>
             <DatePicker
+              selectsStart
               name="startDate"
               //readOnly={disableComponent.disableAll || !disableComponent.qlttSide || data.qlttOpinion.disableTime == true}
               autoComplete="off"
-              selected={
-                data.fromDate
-                  ? moment(data.fromDate, Constants.LEAVE_DATE_FORMAT).toDate()
-                  : null
-              }
+              selected={data.fromDate ? moment(data.fromDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+              maxDate={data.toDate ? moment(data.toDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+              startDate={data.fromDate ? moment(data.fromDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+              endDate={data.toDate ? moment(data.toDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
               onChange={(date) => handleDatePickerInputChange(date, "fromDate")}
               dateFormat="dd/MM/yyyy"
               placeholderText={t("Select")}
@@ -340,14 +340,14 @@ const CreateConvalesInsurance = ({
           <div className="col-4">
             <div>{"Đến ngày"}</div>
             <DatePicker
+              selectsEnd
               name="startDate"
               //readOnly={disableComponent.disableAll || !disableComponent.qlttSide || data.qlttOpinion.disableTime == true}
               autoComplete="off"
-              selected={
-                data.toDate
-                  ? moment(data.toDate, Constants.LEAVE_DATE_FORMAT).toDate()
-                  : null
-              }
+              selected={data.toDate ? moment(data.toDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+              minDate={data.fromDate ? moment(data.fromDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+              startDate={data.fromDate ? moment(data.fromDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+              endDate={data.toDate ? moment(data.toDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
               onChange={(date) => handleDatePickerInputChange(date, "toDate")}
               dateFormat="dd/MM/yyyy"
               placeholderText={t("Select")}
@@ -400,9 +400,9 @@ const CreateConvalesInsurance = ({
               selected={
                 data.assessmentDate
                   ? moment(
-                      data.assessmentDate,
-                      Constants.LEAVE_DATE_FORMAT
-                    ).toDate()
+                    data.assessmentDate,
+                    Constants.LEAVE_DATE_FORMAT
+                  ).toDate()
                   : null
               }
               onChange={(date) =>
@@ -442,9 +442,9 @@ const CreateConvalesInsurance = ({
               selected={
                 data.resolveDate
                   ? moment(
-                      data.resolveDate,
-                      Constants.LEAVE_DATE_FORMAT
-                    ).toDate()
+                    data.resolveDate,
+                    Constants.LEAVE_DATE_FORMAT
+                  ).toDate()
                   : null
               }
               onChange={(date) =>
@@ -484,9 +484,9 @@ const CreateConvalesInsurance = ({
               selected={
                 data.addtionDate
                   ? moment(
-                      data.addtionDate,
-                      Constants.LEAVE_DATE_FORMAT
-                    ).toDate()
+                    data.addtionDate,
+                    Constants.LEAVE_DATE_FORMAT
+                  ).toDate()
                   : null
               }
               onChange={(date) =>

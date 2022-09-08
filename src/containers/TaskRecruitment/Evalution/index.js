@@ -20,8 +20,8 @@ class EvaluationComponent extends React.Component {
   
   STATUS_OPTIONS = [
     {value: 9, label: 'Tự đánh giá'},
-    {value: 10, label: checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.pnlVCode.VinHome, Constants.PnLCODE.Vin3S) ? 'QLTT đánh giá' : 'Người đánh giá'},
-    {value: 11, label: checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.pnlVCode.VinHome, Constants.PnLCODE.Vin3S)  ? 'CBLĐ thẩm định' : 'QLTT đánh giá' },
+    {value: 10, label: checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.pnlVCode.VinHome, Constants.PnLCODE.VinFast, Constants.PnLCODE.VinFastTrading, Constants.PnLCODE.Vin3S) ? 'QLTT đánh giá' : 'Người đánh giá'},
+    {value: 11, label: checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.pnlVCode.VinHome, Constants.PnLCODE.VinFast, Constants.PnLCODE.VinFastTrading, Constants.PnLCODE.Vin3S)  ? 'CBLĐ thẩm định' : 'QLTT đánh giá' },
     {value: 12, label: 'HR thẩm định'},
     {value: 13, label: 'CBLĐ phê duyệt'},
     {value: 2, label: 'Đã phê duyệt'},
