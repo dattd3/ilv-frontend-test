@@ -204,7 +204,7 @@ export const Navigation = [
     to: map.EvaluationManager,
     label: 'Quản lý đánh giá',
     //role:  ['V061', 'V053', 'V040', 'V005']
-    role:  ['V061', 'V040', Constants.PnLCODE.Vin3S]
+    role:  ['V061', 'V040', Constants.PnLCODE.Vin3S, Constants.PnLCODE.VinFast, Constants.PnLCODE.VinFastTrading]
   },
   {
     id: 104,
@@ -212,7 +212,7 @@ export const Navigation = [
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     label: "ResignationRequestsManagement",
     to: map.ResignationRequestsManagement,
-    role: [Constants.pnlVCode.VinHome, , Constants.PnLCODE.Vin3S]
+    role: [Constants.pnlVCode.VinHome, Constants.PnLCODE.Vin3S]
     //role: 'NA'
   },
   {

@@ -35,7 +35,6 @@ export default function processingDataReq(dataRawFromApi, tab) {
                 element.user = element.userInfo;
                 element.startDate = ""
             }
-            
             taskList.push(element);
         } else {
             if (element.requestInfo) {
@@ -118,3 +117,12 @@ export default function processingDataReq(dataRawFromApi, tab) {
 
     return taskList
 }
+
+export const replaceAll = (str, find, replace) => {
+    if (str && str.length > 0) {
+        var escapedFind = find.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, '\\$1');
+        return str.replace(new RegExp(escapedFind, 'g'), replace);
+    } else {
+        return '';
+    }
+};
