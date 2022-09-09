@@ -246,7 +246,14 @@ function Authorize(props) {
     }
 
     useEffect(() => {
-        const accessToken = new URLSearchParams(props.history.location.search).get('accesstoken') || null;//new URLSearchParams(props.location.hash?.replace('#', '?')).get('access_token') || null;
+        const queryParams = new URLSearchParams(props.history.location.search);
+        const accessToken = queryParams?.get('accesstoken') || null
+        if (queryParams.has('accesstoken')) {
+        queryParams.delete('accesstoken')
+        props.history.replace({
+            search: queryParams.toString(),
+        })
+        }
         getUserData(accessToken);
     }, []);
 
