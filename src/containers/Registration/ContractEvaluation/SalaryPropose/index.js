@@ -76,7 +76,6 @@ function SalaryPropse(props) {
       email: '',
       employeeNo: '',
       employeeLevel: '',
-      orglv2Id: '',
       fullName: '',
       jobTitle: '',
       department: '',
@@ -150,7 +149,6 @@ function SalaryPropse(props) {
     viewSettingTmp.proposedStaff.email = localStorage.getItem('email') || ""
     viewSettingTmp.proposedStaff.employeeNo = localStorage.getItem('employeeNo') || ""
     viewSettingTmp.proposedStaff.employeeLevel = localStorage.getItem('employeeLevel') || ""
-    viewSettingTmp.proposedStaff.orglv2Id = localStorage.getItem('organizationLv2') || ""
     viewSettingTmp.proposedStaff.fullName = localStorage.getItem('fullName') || ""
     viewSettingTmp.proposedStaff.jobTitle = localStorage.getItem('jobTitle') || ""
     viewSettingTmp.proposedStaff.department = localStorage.getItem('department') || ""
@@ -204,13 +202,28 @@ function SalaryPropse(props) {
         }
         break;
       case 8:
+        viewSettingTmp.showComponent.humanForReviewSalary = true;
+        viewSettingTmp.showComponent.humanResourceChangeSalary = true;
+        viewSettingTmp.showComponent.managerApproved = true;
+        viewSettingTmp.showComponent.bossApproved = true;
+        if ((currentEmail.toLowerCase() === dataSalaryInfo?.appraiserId.toLowerCase())
+          && props.match.params.type === 'access'
+        ) {
+          viewSettingTmp.disableComponent.viewCurrentSalary = true;
+          viewSettingTmp.showComponent.btnRefuse = true;
+          viewSettingTmp.showComponent.btnExpertise = true;
+        }
+        if (acessToken) {
+          viewSettingTmp.disableComponent.showCurrentSalary = true;
+          viewSettingTmp.disableComponent.showSuggestedSalary = true;
+        }
+        break;
       case 24:
         viewSettingTmp.showComponent.humanForReviewSalary = true;
         viewSettingTmp.showComponent.humanResourceChangeSalary = true;
         viewSettingTmp.showComponent.managerApproved = true;
         viewSettingTmp.showComponent.bossApproved = true;
-        if ((currentEmail.toLowerCase() === dataSalaryInfo?.appraiserId.toLowerCase()
-          || currentEmail.toLowerCase() === dataSalaryInfo?.supervisorId.toLowerCase())
+        if (currentEmail.toLowerCase() === dataSalaryInfo?.supervisorId.toLowerCase()
           && props.match.params.type === 'access'
         ) {
           viewSettingTmp.disableComponent.viewCurrentSalary = true;

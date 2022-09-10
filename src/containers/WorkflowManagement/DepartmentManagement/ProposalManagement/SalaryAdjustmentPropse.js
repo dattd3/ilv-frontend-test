@@ -168,7 +168,6 @@ const SalaryAdjustmentPropse = (props) => {
     viewSettingTmp.proposedStaff.email = localStorage.getItem('email') || ""
     viewSettingTmp.proposedStaff.employeeNo = localStorage.getItem('employeeNo') || ""
     viewSettingTmp.proposedStaff.employeeLevel = localStorage.getItem('employeeLevel') || ""
-    viewSettingTmp.proposedStaff.orglv2Id = localStorage.getItem('organizationLv2') || ""
     viewSettingTmp.proposedStaff.fullName = localStorage.getItem('fullName') || ""
     viewSettingTmp.proposedStaff.jobTitle = localStorage.getItem('jobTitle') || ""
     viewSettingTmp.proposedStaff.department = localStorage.getItem('department') || ""
@@ -218,14 +217,28 @@ const SalaryAdjustmentPropse = (props) => {
         break;
       // Đang chờ CBQL Cấp cơ sở thẩm định
       case 8:
+        viewSettingTmp.showComponent.showHrSupportViewSalary = true;
+        viewSettingTmp.showComponent.showCBQL = true;
+        viewSettingTmp.showComponent.showHrAssessment = true;
+        viewSettingTmp.showComponent.showOfficerApproved = true;
+        if (currentEmail.toLowerCase() === dataSalaryInfo?.appraiserId?.toLowerCase()
+          && props.match.params.type === 'access'
+        ) {
+          viewSettingTmp.showComponent.btnRefuse = true;
+          viewSettingTmp.showComponent.btnExpertise = true;
+        }
+        if (acessToken) {
+          viewSettingTmp.disableComponent.showCurrentSalary = true;
+          viewSettingTmp.disableComponent.showSuggestedSalary = true;
+        }
+        break;
       // Đang chờ nhân sự thẩm định lương đề xuất
       case 24:
         viewSettingTmp.showComponent.showHrSupportViewSalary = true;
         viewSettingTmp.showComponent.showCBQL = true;
         viewSettingTmp.showComponent.showHrAssessment = true;
         viewSettingTmp.showComponent.showOfficerApproved = true;
-        if ((currentEmail.toLowerCase() === dataSalaryInfo?.appraiserId?.toLowerCase()
-          || currentEmail.toLowerCase() === dataSalaryInfo?.supervisorId?.toLowerCase())
+        if (currentEmail.toLowerCase() === dataSalaryInfo?.supervisorId?.toLowerCase()
           && props.match.params.type === 'access'
         ) {
           viewSettingTmp.showComponent.btnRefuse = true;
