@@ -84,6 +84,13 @@ function Authorize(props) {
         }
     }
 
+    const formatMuleSoftValue = val => {
+        if (val == '#' || val == null || val == undefined) {
+            return ""
+        }
+        return val
+    }
+
     const checkUser = async (user, jwtToken, vgEmail, onSaveSuccess) => {
         if (user == null || user.uid == null) {
             SetIsError(true)
@@ -126,7 +133,7 @@ function Authorize(props) {
                             jobTitle: user.job_name,
                             jobId: user.job_id,
                             benefitLevel: user.benefit_level || user.employee_level,
-                            employeeLevel: user.rank_title || user.employee_level, // Cấp bậc chức danh để phân quyền.
+                            employeeLevel: formatMuleSoftValue(user?.rank_title) ? user?.rank_title : user?.employee_level, // Cấp bậc chức danh để phân quyền.
                             benefitTitle: benefitTitle,
                             company: user.pnl,
                             sabaId: `saba-${user.uid}`,
