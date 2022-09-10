@@ -465,7 +465,7 @@ function SalaryPropse(props) {
         if (currentSalary && suggestedSalary) {
           const requestInfoSalary = dataSalary?.requestInfo.length !== 0 ? JSON.parse(dataSalary?.requestInfo[0]?.employeeInfo) : {}
           const dataSend = {
-            requestHistoryId: props.match.params?.idSalary,
+            requestHistoryId: props.match.params?.idContract,
             companyCode: localStorage.getItem('companyCode') || "",
             staffSalaryUpdate: [
               {
