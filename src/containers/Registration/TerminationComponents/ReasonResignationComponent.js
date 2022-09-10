@@ -93,7 +93,7 @@ class ReasonResignationComponent extends React.PureComponent {
                                             placeholderText={t('Select')}
                                             locale={t("locale")}
                                             className="form-control input" />
-                                        <span className="input-group-addon input-img"><i className="fas fa-calendar-alt text-info"></i></span>
+                                        <span className="input-group-addon input-img" style={{top: '12px'}}><i className="fas fa-calendar-alt text-info"></i></span>
                                     </label>
                                 </div>
                             </div>
