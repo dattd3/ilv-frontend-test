@@ -2483,7 +2483,7 @@
                         }
                     }
                     .c-form-code {
-                        width: 120px;
+                        width: 110px;
                         .form-code {
                             cursor: pointer;
                             &:hover {
@@ -2493,21 +2493,23 @@
                     }
                     .c-form-sender {
                         // width: 18%;
-                        width: 160px;
+                        width: 235px;
+                        padding-right: 10px;
                         .form-sender {
 
                         }
                     }
                     .c-form-name {
                         // width: 25%;
-                        width: 220px;
+                        width: 250px;
+                        padding-right: 10px;
                         .form-name {
                             // width: 200px;
                         }
                     }
                     .c-sent-date {
                         // width: 12%;
-                        width: 130px;
+                        width: 120px;
                         .sent-date {
                             // width: 130px;
                         }
