@@ -1,6 +1,7 @@
 /* eslint-disable react/jsx-no-target-blank */
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useHistory } from 'react-router';
 import moment from "moment";
 import Select from 'react-select'
 import { withTranslation } from "react-i18next";
@@ -40,6 +41,7 @@ const ListTypeContract = [
 const SalaryAdjustmentPropse = (props) => {
   const { t } = props;
   const api = useApi();
+  const history = useHistory();
   const [resultModal, setResultModal] = useState({
     show: false,
     title: '',
@@ -78,7 +80,8 @@ const SalaryAdjustmentPropse = (props) => {
   const [viewSetting, setViewSetting] = useState({
     showComponent: {
       stateProcess: false, // Button trang thai
-      btnAttachFile: false, // Button Hủy
+      btnAttachFile: false, // Button Dinh kem tep
+      btnCancel: false, // Button Hủy
       btnSendRequest: false, // Button Gửi yêu cầu
       btnRefuse: false, // Button Từ chối
       btnExpertise: false, // Button Thẩm định
@@ -206,7 +209,7 @@ const SalaryAdjustmentPropse = (props) => {
         viewSettingTmp.showComponent.showOfficerApproved = true;
         if (currentEmail.toLowerCase() === dataSalaryInfo?.userId?.toLowerCase()
           && props.match.params.type === 'request') {
-          // viewSettingTmp.showComponent.btnAttachFile = true;
+          viewSettingTmp.showComponent.btnCancel = true;
           viewSettingTmp.showComponent.btnSendRequest = true;
           viewSettingTmp.disableComponent.editSubjectApply = true;
         }
@@ -478,6 +481,11 @@ const SalaryAdjustmentPropse = (props) => {
         }
       ],
     })
+  }
+
+  // Hủy
+  const handleCancel = () => {
+    history.push('/tasks');
   }
 
   // Attach file
@@ -1056,6 +1064,13 @@ const SalaryAdjustmentPropse = (props) => {
             </label>
           </>
         }
+        {/* Hủy */}
+        {viewSetting.showComponent.btnCancel &&
+          <button type='button' className='btn btn-secondary ml-3 shadow' onClick={() => handleCancel()}  >
+            <img src={IconDelete} className='mr-1' alt="cancel" /> {t('CancelSearch')}
+          </button>
+        }
+
         {/* Gửi yêu cầu */}
         {viewSetting.showComponent.btnSendRequest &&
           <button type='button' className='btn btn-primary ml-3 shadow' onClick={() => handleSendForm()} >
