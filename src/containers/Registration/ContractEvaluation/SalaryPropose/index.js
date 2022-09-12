@@ -281,6 +281,9 @@ function SalaryPropse(props) {
           current_position: JSON.parse(requestInfo?.coordinatorInfo)?.current_position,
           department: JSON.parse(requestInfo?.coordinatorInfo)?.department
         })
+      if (requestInfo?.suggestedSalary) {
+        setSuggestedSalary(requestInfo?.suggestedSalary);
+      }
     }
     // CBQL cấp cơ sở
     if (dataSalaryInfo?.supervisorInfo)
@@ -742,13 +745,20 @@ function SalaryPropse(props) {
                 {t('SalaryRequest')}
               </label>
               {viewSetting.disableComponent.suggestedSalary ?
-                <CurrencyInput
-                  disabled={true}
-                  intlConfig={{ locale: 'vi-VN', currency: 'VND' }}
-                  className="form-control"
-                  value={suggestedSalary}
-                  placeholder="Nhập"
-                />
+                acessToken ?
+                  <CurrencyInput
+                    disabled={true}
+                    intlConfig={{ locale: 'vi-VN', currency: 'VND' }}
+                    className="form-control"
+                    value={suggestedSalary}
+                    placeholder="Nhập"
+                  /> :
+                  <input
+                    className='form-control'
+                    type={'password'}
+                    value={'**********'}
+                    disabled={viewSetting.disableComponent.currentSalary}
+                  />
                 :
                 <CurrencyInput
                   disabled={false}
