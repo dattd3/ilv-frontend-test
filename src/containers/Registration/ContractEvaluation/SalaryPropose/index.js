@@ -252,18 +252,17 @@ function SalaryPropse(props) {
           viewSettingTmp.disableComponent.showSuggestedSalary = true;
         }
         break;
+      // View phe duyet thanh cong
       case 2:
-        viewSettingTmp.showComponent.humanForReviewSalary = true;
-        viewSettingTmp.showComponent.humanResourceChangeSalary = true;
-        viewSettingTmp.showComponent.managerApproved = true;
-        viewSettingTmp.showComponent.bossApproved = true;
-        viewSettingTmp.showComponent.stateProcess = true;
-        break;
       // Case không phê duyệt
       case 7:
       // Case tu choi
       case 1:
         viewSettingTmp.showComponent.stateProcess = true;
+        viewSettingTmp.showComponent.humanForReviewSalary = true;
+        viewSettingTmp.showComponent.humanResourceChangeSalary = true;
+        viewSettingTmp.showComponent.managerApproved = true;
+        viewSettingTmp.showComponent.bossApproved = true;
         break;
       default:
         break;
@@ -465,7 +464,7 @@ function SalaryPropse(props) {
         if (currentSalary && suggestedSalary) {
           const requestInfoSalary = dataSalary?.requestInfo.length !== 0 ? JSON.parse(dataSalary?.requestInfo[0]?.employeeInfo) : {}
           const dataSend = {
-            requestHistoryId: props.match.params?.idContract,
+            requestHistoryId: props.match.params?.idSalary,
             companyCode: localStorage.getItem('companyCode') || "",
             staffSalaryUpdate: [
               {
