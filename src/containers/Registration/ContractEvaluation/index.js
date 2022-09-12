@@ -7,6 +7,7 @@ import { Image } from 'react-bootstrap'
 import IconEdit from '../../../assets/img/ic-edit.svg';
 import IconRemove from '../../../assets/img/ic-remove.svg';
 import IconAdd from '../../../assets/img/ic-add.svg';
+import IconDelete from '../../../assets/img/icon/Icon_Cancel.svg';
 import IconSave from '../../../assets/img/ic-save.svg';
 import ResizableTextarea from '../TextareaComponent';
 import ApproverComponent from './SearchPeopleComponent'
@@ -26,6 +27,7 @@ import LoadingModal from '../../../components/Common/LoadingModal'
 import { checkIsExactPnL } from '../../../commons/commonFunctions'
 import ContractEvaluationdetail from './detail'
 import SalaryModal from './SalaryModal'
+import ConfirmationModal from '../ConfirmationModal'
 
 const TIME_FORMAT = 'HH:mm'
 const DATE_FORMAT = 'DD/MM/YYYY'
@@ -251,6 +253,14 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
       loading: false,
       isShowStatusModal: false,
       isShowSalaryPropose: false,
+      confirmModal: {
+        isShowModalConfirm: false,
+        modalTitle: "",
+        typeRequest: "",
+        modalMessage: "",
+        confirmStatus: "",
+        dataToUpdate: [],
+      },
       annualLeaveSummary: {},
       data: {
         processStatus: 0,
@@ -1280,6 +1290,71 @@ renderEvalution = (name, data, isDisable) => {
     }
   }
 
+  onHideModalConfirm = () => {
+    this.setState({
+      confirmModal: {
+        ...this.state.confirmModal,
+        isShowModalConfirm: false
+      }
+    })
+  }
+
+  // từ chối thẩm định
+  handleRefuse = () => {
+    this.setState({
+      confirmModal: {
+        ...this.state.confirmModal,
+        isShowModalConfirm: true,
+        modalTitle: this.props.t("RejectConsenterRequest"),
+        modalMessage: this.props.t("ReasonRejectRequest"),
+        typeRequest: Constants.STATUS_NO_CONSENTED,
+        confirmStatus: "",
+        dataToUpdate: [
+          {
+            id: this.props.match.params?.id,
+            requestTypeId: 6,
+            sub: [
+              {
+                id: this.props.match.params?.id,
+                processStatusId: this.state.data.processStatus,
+                comment: "",
+                status: "0",
+              }
+            ],
+          }
+        ],
+      }
+    })
+  }
+
+  // Không phê duyệt
+  handleReject = () => {
+    this.setState({
+      confirmModal: {
+        ...this.state.confirmModal,
+        isShowModalConfirm: true,
+        modalTitle: this.props.t("ConfirmNotApprove"),
+        modalMessage: `${this.props.t("ReasonNotApprove")}`,
+        typeRequest: Constants.STATUS_NOT_APPROVED,
+        confirmStatus: "",
+        dataToUpdate: [
+          {
+            id: this.props.match.params?.id,
+            requestTypeId: 6,
+            sub: [
+              {
+                id: this.props.match.params?.id,
+                processStatusId: this.state.data.processStatus,
+                comment: "",
+                status: "0",
+              }
+            ],
+          }
+      ],
+      }
+    })
+  }
+
   render() {
     const { t } = this.props
     const showComponent = this.state.showComponent;
@@ -1288,6 +1363,7 @@ renderEvalution = (name, data, isDisable) => {
     const loading = this.state.loading;
     const comment =  data?.comment || null;
     const type = this.props.match.params.type;
+    const confirmModal = this.state.confirmModal;
     if(data?.processStatus == 2 || type === 'salary') {
       return  <div className="registration-section">
         <LoadingModal show={loading}/>
@@ -1296,6 +1372,15 @@ renderEvalution = (name, data, isDisable) => {
     }
     return (
       <div className="registration-section">
+        <ConfirmationModal
+          show={confirmModal.isShowModalConfirm}
+          title={confirmModal.modalTitle}
+          type={confirmModal.typeRequest}
+          message={confirmModal.modalMessage}
+          confirmStatus={confirmModal.confirmStatus}
+          dataToSap={confirmModal.dataToUpdate}
+          onHide={this.onHideModalConfirm}
+        />
         <LoadingModal show={loading}/>
       <div className="leave-of-absence evalution">
         <div className="eval-heading">
@@ -1980,6 +2065,7 @@ renderEvalution = (name, data, isDisable) => {
                 </button> :
                 <>
                   {showComponent.bossSide ? 
+                  <>
                   <button type="button" className="btn btn-success float-right ml-3 shadow" onClick={this.submit.bind(this)} disabled={this.state.disabledSubmitButton}>
                       {!this.state.disabledSubmitButton ?
                           <>
@@ -1995,7 +2081,23 @@ renderEvalution = (name, data, isDisable) => {
                               className="mr-2"
                           />}
                           {'Phê duyệt'}
-                  </button> : 
+                  </button>
+                  <button type="button" className="btn btn-danger float-right ml-3 shadow" onClick={() => this.handleReject()} disabled={this.state.disabledSubmitButton}>
+                      {!this.state.disabledSubmitButton ?
+                          <>
+                              <img src={IconDelete} className='mr-2' alt="cancel" />
+                          </> :
+                          <Spinner
+                              as="span"
+                              animation="border"
+                              size="sm"
+                              role="status"
+                              aria-hidden="true"
+                              className="mr-2"
+                          />}
+                          {'Từ chối'}
+                  </button>
+                  </> : 
                   <button type="button" className="btn btn-primary float-right ml-3 shadow" onClick={() => this.submit(2)} disabled={this.state.disabledSubmitButton}>
                     {!(this.state.disabledSubmitButton && this.state.actionType == 2) ?
                         <>
@@ -2020,8 +2122,10 @@ renderEvalution = (name, data, isDisable) => {
                     <i className="fas fa-paperclip"></i> {t('AttachmentFile')}
                   </label>
                   </> 
-                  : !showComponent.bossSide ? <button type="button" className=" btn btn-success  float-right ml-3 shadow" onClick={() => this.submit(1)} disabled={this.state.disabledSubmitButton}>
-                    {!(this.state.disabledSubmitButton && this.state.actionType == 1) ?
+                  : !showComponent.bossSide ? 
+                  <>
+                    <button type="button" className=" btn btn-success  float-right ml-3 shadow" onClick={() => this.submit(1)} disabled={this.state.disabledSubmitButton}>
+                      {!(this.state.disabledSubmitButton && this.state.actionType == 1) ?
                         <>
                             {/* <i className="fa fa-paper-plane mr-2" aria-hidden="true">
                             </i> */}
@@ -2036,7 +2140,26 @@ renderEvalution = (name, data, isDisable) => {
                             className="mr-2"
                         />}
                         {'Lưu'}
-                    </button> : null }
+                    </button>
+
+                    <button type="button" className=" btn btn-danger  float-right ml-3 shadow" onClick={() => this.handleRefuse()} disabled={this.state.disabledSubmitButton}>
+                      {!(this.state.disabledSubmitButton && this.state.actionType == 1) ?
+                        <>
+                            {/* <i className="fa fa-paper-plane mr-2" aria-hidden="true">
+                            </i> */}
+                        <img src={IconDelete} className='mr-2' alt="cancel" />
+                        </> :
+                        <Spinner
+                            as="span"
+                            animation="border"
+                            size="sm"
+                            role="status"
+                            aria-hidden="true"
+                            className="mr-2"
+                        />}
+                        {'Từ chối'}
+                    </button>
+                    </> : null }
                 </>
                 }
 
