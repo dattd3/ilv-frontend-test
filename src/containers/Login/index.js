@@ -114,7 +114,7 @@ function Login() {
     const clientId = config.AWS_COGNITO_CLIENT_ID;
     //const url = `https://login.microsoftonline.com/ed6a2939-d153-4f92-94f8-3d790d96c9f8/oauth2/v2.0/authorize?client_id=58dc3771-a3e6-48b1-8e31-6900947347a6&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Foauth2&scope=user.read+openid`;
     const state = getStateRedirect(process.env.REACT_APP_AWS_COGNITO_IDP_SIGNIN_URL);
-    const url = `https://login.microsoftonline.com/ed6a2939-d153-4f92-94f8-3d790d96c9f8/oauth2/v2.0/authorize?client_id=58dc3771-a3e6-48b1-8e31-6900947347a6&response_type=code&redirect_uri=${process.env.REACT_APP_REDIRECT_URL}&scope=user.read&prompt=select_account&state=${state}`
+    const url = `https://login.microsoftonline.com/ed6a2939-d153-4f92-94f8-3d790d96c9f8/oauth2/authorize?client_id=58dc3771-a3e6-48b1-8e31-6900947347a6&response_type=code&redirect_uri=${process.env.REACT_APP_REDIRECT_URL}&scope=user.read&prompt=select_account&state=${state}`
     window.location.assign(url);
   }
 
