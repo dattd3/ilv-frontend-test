@@ -26,6 +26,7 @@ function SalaryPropse(props) {
   const [suggestedSalary, setSuggestedSalary] = useState('');
   const [modalConfirmPassword, setModalConfirmPassword] = useState(false);
   const [acessToken, setAcessToken] = useState(new URLSearchParams(props.history.location.search).get('accesstoken') || null);
+  const [listFiles, setListFiles] = useState([]);
 
   const [modalStatus, setModalStatus] = useState({
     isShowStatusModal: false,
@@ -55,12 +56,14 @@ function SalaryPropse(props) {
       managerApproved: false, //CBQL CẤP CƠ SỞ
       bossApproved: false, //CBLĐ PHÊ DUYỆT
       stateProcess: false, // Button trang thai Từ chối
+      btnAttachFile: false, // Button Dinh kem tep
       btnCancel: false, // Button Hủy
       btnSendRequest: false, // Button Gửi yêu cầu
       btnRefuse: false, // Button Từ chối
       btnExpertise: false, // Button Thẩm định
       btnNotApprove: false, // Button Không phê duyệt
       btnApprove: false, // Button phê duyệt
+      showRemoveFile: false, // Hien thi icon remove file
     },
     disableComponent: {
       selectHrSupportViewSalary: false, // Cho phep chon Nhân sự hỗ trợ quyền xem lương
@@ -140,7 +143,8 @@ function SalaryPropse(props) {
   const checkViewCreate = () => {
     let viewSettingTmp = { ...viewSetting };
     viewSettingTmp.showComponent.humanForReviewSalary = true;
-    viewSettingTmp.showComponent.btnCancel = true;
+    viewSettingTmp.showComponent.btnAttachFile = true;
+    viewSettingTmp.showComponent.showRemoveFile = true;
     viewSettingTmp.showComponent.btnSendRequest = true;
     viewSettingTmp.disableComponent.selectHrSupportViewSalary = true;
 
@@ -309,6 +313,8 @@ function SalaryPropse(props) {
         current_position: JSON.parse(dataSalaryInfo?.approverInfo)?.current_position,
         department: JSON.parse(dataSalaryInfo?.approverInfo)?.department
       })
+    const requestDocuments = dataSalaryInfo?.requestDocuments.map(u => ({ id: u.id, name: u.fileName, link: u.fileUrl }))
+    setListFiles(requestDocuments)
     setViewSetting(viewSettingTmp)
   }
 
@@ -375,6 +381,19 @@ function SalaryPropse(props) {
   // Hủy
   const handleCancel = () => {
     history.push('/tasks');
+  }
+
+  // Attach file
+  const handleAttachFile = (e) => {
+    const files = Object.values(e.target.files)
+    const listFilesTmp = [...listFiles, ...files];
+    setListFiles(listFilesTmp)
+  }
+
+  const removeFiles = (id, index) => {
+    // Todo: handle remove file
+    const listFilesTmp = [...listFiles].filter((item, i) => i !== index)
+    setListFiles(listFilesTmp)
   }
 
   // Thẩm định
@@ -551,6 +570,13 @@ function SalaryPropse(props) {
       bodyFormData.append('orgLv5Text', viewSetting.proposedStaff.orgLv5Text);
       bodyFormData.append('orgLv6Text', viewSetting.proposedStaff.orgLv6Text);
       bodyFormData.append('companyCode', viewSetting.proposedStaff.companyCode);
+
+      if (listFiles.length > 0) {
+        listFiles.forEach(file => {
+          bodyFormData.append('attachedFiles', file)
+        })
+      }
+
       return bodyFormData
     }
   }
@@ -836,6 +862,19 @@ function SalaryPropse(props) {
           </div>
         </div>
       }
+      {/* List file */}
+      <ul className="list-inline">
+        {listFiles.map((file, index) => {
+          return <li className="list-inline-item" key={index}>
+            <span className="file-name">
+              <a title={file.name} href={file.link} download={file.name} target="_blank" style={{ color: '#858796' }}>{file.name}</a>
+              {viewSetting.showComponent.showRemoveFile ?
+                <i className="fa fa-times remove" aria-hidden="true" onClick={e => removeFiles(file.id, index)}></i>
+                : null}
+            </span>
+          </li>
+        })}
+      </ul>
       {/* Show status */}
       {viewSetting.showComponent.stateProcess &&
         <div className="block-status">
@@ -845,6 +884,15 @@ function SalaryPropse(props) {
         </div>
       }
       <div className='d-flex justify-content-end mb-5'>
+        {/* Đính kèm tệp */}
+        {viewSetting.showComponent.btnAttachFile &&
+          <>
+            <input type="file" hidden id="i_files" name="i_files" onChange={(e) => handleAttachFile(e)} accept=".xls, .xlsx, .doc, .docx, .jpg, .png, .pdf" multiple />
+            <label htmlFor="i_files" className="btn btn-light float-right shadow" style={{ marginBottom: '0px' }}>
+              <i className="fas fa-paperclip"></i> {t('AttachmentFile')}
+            </label>
+          </>
+        }
         {/* Hủy */}
         {viewSetting.showComponent.btnCancel &&
           <button type='button' className='btn btn-secondary ml-3 shadow' onClick={() => handleCancel()}  >
