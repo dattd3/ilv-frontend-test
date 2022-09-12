@@ -132,7 +132,7 @@ class TaskList extends React.Component {
         this.setState({ isShowTaskDetailModal: false });
     }
 
-    showStatus = (taskId, statusOriginal = 0, request, taskData, statusName) => {
+    showStatus = (taskId, statusOriginal = 0, request, taskData, statusName, child) => {
         const { t } = this.props
         const customStylesStatus = {
             control: base => ({
@@ -158,12 +158,6 @@ class TaskList extends React.Component {
             7: { label: this.props.t("Rejected"), className: 'request-status fail' },
             8: { label: this.props.t("Waiting"), className: 'request-status' },
             20: { label: this.props.t("Consented"), className: 'request-status' },
-            9: {className: 'request-status', label: 'Tự đánh giá'},
-            10: {className: 'request-status', label: checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.PnLCODE.Vinhome, Constants.PnLCODE.VinFast, Constants.PnLCODE.VinFastTrading, Constants.PnLCODE.Vin3S) ? 'QLTT đánh giá' : 'Người đánh giá'},
-            11: {className: 'request-status', label:  checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.PnLCODE.VinFast, Constants.PnLCODE.VinFastTrading, Constants.PnLCODE.Vinhome, Constants.PnLCODE.Vin3S)  ? 'CBLĐ thẩm định' : 'QLTT đánh giá'},
-            12: {className: 'request-status', label: 'HR thẩm định'},
-            13: {className: 'request-status', label: 'CBLĐ phê duyệt'},
-            //14: {className: 'request-status', label: 'Đã phê duyệt'}
         }
 
         if(request == Constants.SALARY_PROPOSE && statusName) {
@@ -177,6 +171,18 @@ class TaskList extends React.Component {
             { value: 1, label: t("Rejected") },
             { value: 2, label: t("Approval") }
         ]
+
+        //check status for ONBOARDING
+        if([10, 11, 13].indexOf(statusOriginal) != -1) {
+            if((child.processStatusId == 11 && child.supervisorId?.toLowerCase() == localStorage.getItem('email')?.toLowerCase()) ||
+            (child.processStatusId == 10 && child.appraiserId?.toLowerCase() == localStorage.getItem('email')?.toLowerCase())) {
+                statusOriginal = 8;
+            } else if (child.processStatusId == 13) {
+                statusOriginal = 5;
+            } else if (child.processStatusId == 11) {
+                statusOriginal = 5;
+            }
+        }
 
         if (this.props.page === "approval") {
             if (statusOriginal == 0) {
@@ -571,7 +577,7 @@ class TaskList extends React.Component {
                                                         ? <td className="appraiser text-center">{child.appraiser?.fullName}</td>
                                                         : null
                                                     }
-                                                    <td className="status text-center">{this.showStatus(child.id, child.processStatusId, child.requestType.id, child.appraiser, child.statusName)}</td>
+                                                    <td className="status text-center">{this.showStatus(child.id, child.processStatusId, child.requestType.id, child.appraiser, child.statusName, child)}</td>
                                                     {
                                                         this.props.page != "consent" ?
                                                             <td className="tool">
