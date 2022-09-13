@@ -98,6 +98,56 @@ a {
   }
 }
 
+.scroll-to-save {
+  position: fixed;
+  right: 6rem;
+  bottom: 4em;
+  display: block;
+  width: 2.75rem;
+  height: 2.75rem;
+  text-align: center;
+  color: #e74a3b;
+  opacity: 1;
+  background: transparent;
+  line-height: 46px;
+  &:focus,
+  &:hover {
+    opacity: 1;
+    border: none;
+    outline: none;
+  }
+  &:hover {
+    cursor: pointer;
+  }
+  i {
+    font-weight: 800;
+  }
+  img {
+    height: 12px;
+    margin-right: 6px;
+  }
+ 
+  .btn-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 42px;
+    color: #FFFFFF;
+    border: none;
+    outline: none;
+    height: 35px;
+    width: 90px;
+    font-weight: normal;
+    &.save {
+      background: #FFAE46;
+      text-decoration: none;
+    }
+  }
+}
+
+
+
+
 .info-modal-common {
   font-family: Arial, Helvetica, sans-serif;
   font-size: 14px;
