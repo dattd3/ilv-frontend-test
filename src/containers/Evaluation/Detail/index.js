@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useRef } from "react"
 import Select from 'react-select'
 import { Image } from 'react-bootstrap'
 import { useTranslation } from "react-i18next"
@@ -575,6 +575,7 @@ function EvaluationDetail(props) {
   const user = guard.getCurentUser()
   const evaluationFormId = showByManager ? props?.evaluationFormId : props.match.params.id
   const formCode = showByManager ? props?.formCode : props.match.params.formCode
+  const [bottom, setBottom] = useState(false);
 
   useEffect(() => {
     const processEvaluationFormDetailData = response => {
@@ -626,6 +627,19 @@ function EvaluationDetail(props) {
 
     fetchEvaluationFormDetails()
   }, [])
+
+   useEffect(() => {
+      window.addEventListener("scroll", handleScroll, true);
+    
+      return () => {
+        window.removeEventListener("scroll", handleScroll);
+      };
+    }, []);
+
+    const handleScroll = (e) => {
+      const bottom = e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
+      setBottom(bottom)
+    };
 
   const calculateAssessment = (listTarget) => {
     const assessmentScale = 5
@@ -733,6 +747,7 @@ function EvaluationDetail(props) {
         if (showByManager && currentUserLoggedUID == reviewerUID) {
           return (
             <>
+              <button className="btn-action save mr-3" onClick={() => handleSubmit(actionButton.save, null, true)}><Image src={IconSave} alt="Save" />{t("EvaluationDetailPartSave")}</button>
               <button className="btn-action reject" onClick={() => handleSubmit(actionButton.reject, null, true)}><Image src={IconReject} alt="Reject" />{t("EvaluationDetailPartReject")}</button>
               <button className="btn-action confirm" onClick={() => handleSubmit(actionButton.approve)}><Image src={IconApprove} alt="Confirm" />{t("EvaluationDetailPartConfirm")}</button>
             </>
@@ -927,12 +942,11 @@ function EvaluationDetail(props) {
       }
     }
   }
-
   return (
     <>
       <LoadingModal show={isLoading} />
       {!showByManager && <StatusModal show={statusModal.isShow} isSuccess={statusModal.isSuccess} content={statusModal.content} onHide={onHideStatusModal} />}
-      <div className="evaluation-detail-page">
+      <div className="evaluation-detail-page" >
         {
           evaluationFormDetail ?
             <>
@@ -947,7 +961,17 @@ function EvaluationDetail(props) {
             </>
             : <h6 className="alert alert-danger" role="alert">{t("NoDataFound")}</h6>
         }
+         {!bottom && (evaluationFormDetail?.status == evaluationStatus.launch || evaluationFormDetail?.status == evaluationStatus.selfAssessment) &&
+          <div  className="scroll-to-save" style={{ color: localStorage.getItem("companyThemeColor"), zIndex: '10' }}>
+
+              <div>
+                <button className="btn-action save mr-3" onClick={() => handleSubmit(actionButton.save, null, true)}><Image src={IconSave} alt="Save" />{t("EvaluationDetailPartSave")}</button>
+              </div>
+
+          </div>
+        }
       </div>
+     
     </>
   )
 }
