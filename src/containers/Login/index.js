@@ -18,7 +18,6 @@ import Constants from "../../commons/Constants";
 import Select, { components } from 'react-select'
 
 const CustomOption = ({ children, ...props }) => {
-  console.log(props);
   return (<components.ValueContainer {...props}>
     <div style={{
       display: 'inline-block',

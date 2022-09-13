@@ -755,7 +755,7 @@ class BusinessTripComponent extends React.Component {
     }
 
     render() {
-        const { t, businessTrip } = this.props;
+        const { t, businessTrip, recentlyManagers } = this.props;
         const { requestInfo, errors, approver, appraiser, isEdit } = this.state
         const sortRequestListByGroup = requestInfo.sort((reqPrev, reqNext) => reqPrev.groupId - reqNext.groupId)
         const requestInfoArr = _.valuesIn(_.groupBy(sortRequestListByGroup, (req) => req.groupId))
@@ -1089,10 +1089,22 @@ class BusinessTripComponent extends React.Component {
                         </div>
                     )
                 })}
-                {/* {employeeLevel === "N0" && */}
-                <AssesserComponent isEdit={isEdit} appraiser={appraiser} errors={errors} approver={approver} updateAppraiser={this.updateAppraiser.bind(this)} />
-                {/* } */}
-                <ApproverComponent isEdit={isEdit} approver={approver} errors={errors} appraiser={appraiser} updateApprover={this.updateApprover.bind(this)} />
+                { (!isEdit || (isEdit && businessTrip?.appraiserId)) 
+                    && <AssesserComponent 
+                            isEdit={isEdit} 
+                            appraiser={appraiser} 
+                            errors={errors} 
+                            approver={approver} 
+                            recentlyAppraiser={recentlyManagers?.appraiser} 
+                            updateAppraiser={this.updateAppraiser.bind(this)} />
+                }
+                <ApproverComponent 
+                    isEdit={isEdit} 
+                    approver={approver} 
+                    errors={errors} 
+                    appraiser={appraiser} 
+                    recentlyApprover={recentlyManagers?.approver} 
+                    updateApprover={this.updateApprover.bind(this)} />
                 <ul className="list-inline">
                     {this.state.files.map((file, index) => {
                         return <li className="list-inline-item" key={index}>

@@ -37,7 +37,7 @@ class AssesserComponent extends React.Component {
         super();
         this.state = {
             appraiser: null,
-            users: [],
+            users: null,
             typingTimeout: 0,
             appraiserTyping: "",
             isSearch: false
@@ -57,41 +57,11 @@ class AssesserComponent extends React.Component {
             }
           })
         }
-
-        const recentlyAppraiser = await this.loadRecentlyAppraiser()
-        this.setState({ users: recentlyAppraiser })
     }
 
-    loadRecentlyAppraiser = async () => {
-        try {
-            const config = getRequestConfigurations()
-            const response = await axios.get(`${process.env.REACT_APP_REQUEST_URL}user/suggests`, config)
-            if (response && response.data) {
-                const result = response.data.result
-                if (result && result.code == Constants.API_SUCCESS_CODE) {
-                    const data = response.data?.data
-                    const appraiserInfo = data?.appraiserInfo
-                    if (appraiserInfo) {
-                        return [{
-                            value: appraiserInfo?.account?.toLowerCase() || "",
-                            label: appraiserInfo?.fullName || "",
-                            fullName: appraiserInfo?.fullName || "",
-                            avatar: appraiserInfo?.avatar || "",
-                            employeeLevel: appraiserInfo?.employeeLevel || "",
-                            pnl: appraiserInfo?.pnl || "",
-                            orglv2Id: appraiserInfo?.orglv2Id || "",
-                            account: appraiserInfo?.account?.toLowerCase() || "",
-                            current_position: appraiserInfo?.current_position || "",
-                            department: appraiserInfo?.department || ""
-                        }]
-                    }
-                    return []
-                }
-                return []
-            }
-            return []
-        } catch (e) {
-            return []
+    componentWillReceiveProps = (nextProps) => {
+        if (nextProps?.recentlyAppraiser !== this.props?.recentlyAppraiser) {
+            this.setState({ users: nextProps?.recentlyAppraiser || [] })
         }
     }
 
@@ -155,7 +125,7 @@ class AssesserComponent extends React.Component {
                             }
                         })
                         const lst = approver ? users.filter(user => user.account !== approver.account) : users;
-                        this.setState({ users: lst})
+                        this.setState({ users: lst || []})
                     }
                 }).catch(error => { })
         }
@@ -189,7 +159,7 @@ class AssesserComponent extends React.Component {
                 minHeight: 35
             })
         }
-        const { t, isEdit, errors } = this.props
+        const { t, isEdit, errors, recentlyAppraiser } = this.props
         const { appraiser, users, isSearch } = this.state
 
         return <div className="appraiser">
@@ -216,7 +186,7 @@ class AssesserComponent extends React.Component {
                                 placeholder={t('Search') + '...'}
                                 key="appraiser"
                                 filterOption={this.filterOption}
-                                options={users} />
+                                options={users ? users : recentlyAppraiser || []} />
                         </div>
                         {errors && errors['appraiser'] ? <p className="text-danger">{errors['appraiser']}</p> : null}
                     </div>
