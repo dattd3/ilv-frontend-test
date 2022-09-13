@@ -99,9 +99,11 @@ a {
 }
 
 .scroll-to-save {
-  position: fixed;
+  position: sticky;
+  margin-right: 60px;
+  float: right;
   right: 6rem;
-  bottom: 4em;
+  bottom: 6em;
   display: block;
   width: 2.75rem;
   height: 2.75rem;

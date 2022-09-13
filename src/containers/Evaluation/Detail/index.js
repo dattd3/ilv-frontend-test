@@ -637,7 +637,7 @@ function EvaluationDetail(props) {
     }, []);
 
     const handleScroll = (e) => {
-      const bottom = e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
+      const bottom = e.target.scrollHeight - e.target.scrollTop - e.target.clientHeight < 200;
       setBottom(bottom)
     };
 
