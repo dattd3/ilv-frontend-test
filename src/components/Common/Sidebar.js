@@ -211,7 +211,7 @@ function SideBar(props) {
                     <Animated animationIn="fadeIn" isVisible={show} >
                         <div className="text-center">
                             <a href="/">
-                                <img className='vp-logo' src={companyLogoUrl ? companyLogoUrl : VingroupLogo} alt='My VinGroup' />
+                                <img className='vp-logo' src={companyLogoUrl && companyLogoUrl != 'undefined' ? companyLogoUrl : VingroupLogo} alt='My VinGroup' />
                             </a>
                         </div>
                     </Animated>

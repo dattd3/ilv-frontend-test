@@ -37,7 +37,7 @@ class ApproverComponent extends React.Component {
     super();
     this.state = {
       approver: null,
-      users: [],
+      users: null,
       typingTimeout: 0,
       approverTyping: "",
       isSearch: false
@@ -74,8 +74,14 @@ class ApproverComponent extends React.Component {
       })
       this.props.updateApprover(managerApproval, true)
     } else {
-      const recentlyApprover = await this.loadRecentlyApprover()
-      this.setState({ users: recentlyApprover })
+      // const recentlyApprover = await this.loadRecentlyApprover()
+      // this.setState({ users: recentlyApprover })
+    }
+  }
+
+  componentWillReceiveProps = (nextProps) => {
+    if (nextProps?.recentlyApprover !== this.props?.recentlyApprover) {
+      this.setState({ users: nextProps?.recentlyApprover || [] })
     }
   }
 
@@ -105,39 +111,6 @@ class ApproverComponent extends React.Component {
       return null
     } catch (e) {
       return null
-    }
-  }
-
-  loadRecentlyApprover = async () => {
-    try {
-      const config = getRequestConfigurations()
-      const response = await axios.get(`${process.env.REACT_APP_REQUEST_URL}user/suggests`, config)
-      if (response && response.data) {
-        const result = response.data.result
-        if (result && result.code == Constants.API_SUCCESS_CODE) {
-          const data = response.data?.data
-          const approverInfo = data.approverInfo
-          if (approverInfo) {
-            return [{
-              value: approverInfo?.account?.toLowerCase() || "",
-              label: approverInfo?.fullName || "",
-              fullName: approverInfo?.fullName || "",
-              avatar: approverInfo?.avatar || "",
-              employeeLevel: approverInfo?.employeeLevel || "",
-              pnl: approverInfo?.pnl || "",
-              orglv2Id: approverInfo?.orglv2Id || "",
-              account: approverInfo?.account?.toLowerCase() || "",
-              current_position: approverInfo?.current_position || "",
-              department: approverInfo?.department || ""
-            }]
-          }
-          return []
-        }
-        return []
-      }
-      return []
-    } catch (e) {
-      return []
     }
   }
 
@@ -198,7 +171,7 @@ class ApproverComponent extends React.Component {
               }
             })
             const lst = appraiser ? users.filter(user => user.account !== appraiser.account) : users;
-            this.setState({ users: lst })
+            this.setState({ users: lst || [] })
           }
         }).catch(error => { })
     }
@@ -232,7 +205,7 @@ class ApproverComponent extends React.Component {
         minHeight: 35
       })
     }
-    const { t, isEdit, errors } = this.props;
+    const { t, isEdit, errors, recentlyApprover } = this.props;
     const { isSearch, approver, users } = this.state
 
     return <div className="approver">
@@ -258,7 +231,7 @@ class ApproverComponent extends React.Component {
                 placeholder={t('Search') + '...'}
                 key="approver"
                 filterOption={this.filterOption}
-                options={users}
+                options={users ? users : recentlyApprover || []}
                />
             </div>
             {errors && errors['approver'] ? <div className="text-danger validation-message">{errors['approver']}</div> : null}
