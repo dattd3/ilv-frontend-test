@@ -243,7 +243,7 @@ class BusinessTripDetailComponent extends React.Component {
           </> : null
         }
 
-        { businessTrip?.requestDocuments?.length > 0 && <Attachment requestDocuments={businessTrip?.requestDocuments || []} /> }
+        { businessTrip?.requestDocuments?.length > 0 && <Attachment requestDocuments={businessTrip?.requestDocuments || []} t={t} /> }
 
         <div className="block-status">
           <span className={`status ${Constants.mappingStatusRequest[requestInfo.processStatusId].className}`}>{t(this.showStatus(requestInfo.processStatusId, businessTrip.appraiser))}</span>
