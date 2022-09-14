@@ -79,9 +79,9 @@ class ApproverComponent extends React.Component {
     }
   }
 
-  componentWillReceiveProps = (nextProps) => {
-    if (nextProps?.recentlyApprover !== this.props?.recentlyApprover) {
-      this.setState({ users: nextProps?.recentlyApprover || [] })
+  componentDidUpdate = (prevProps, prevState) => {
+    if (prevProps?.recentlyApprover !== this.props?.recentlyApprover) {
+        this.setState({ users: this.props?.recentlyApprover || [] })
     }
   }
 
