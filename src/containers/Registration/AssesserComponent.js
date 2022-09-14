@@ -59,9 +59,16 @@ class AssesserComponent extends React.Component {
         }
     }
 
-    componentWillReceiveProps = (nextProps) => {
-        if (nextProps?.recentlyAppraiser !== this.props?.recentlyAppraiser) {
-            this.setState({ users: nextProps?.recentlyAppraiser || [] })
+    // static getDerivedStateFromProps(nextProps, prevState){
+    //     if(nextProps.recentlyAppraiser !== prevState.users){
+    //         return { users: nextProps.recentlyAppraiser};
+    //     }
+    //     return null;
+    // }
+
+    componentDidUpdate = (prevProps, prevState) => {
+        if (prevProps?.recentlyAppraiser !== this.props?.recentlyAppraiser) {
+            this.setState({ users: this.props?.recentlyAppraiser || [] })
         }
     }
 
