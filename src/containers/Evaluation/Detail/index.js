@@ -444,15 +444,15 @@ function EvaluationProcess(props) {
             {
               (item?.listTarget || []).map((target, i) => {
                 let deviant = (target?.leadReviewPoint === '' || target?.leadReviewPoint === null || target?.seftPoint === '' || target?.seftPoint === null) ? '' : Number(target?.leadReviewPoint) - Number(target?.seftPoint)
-                if (evaluationFormDetail?.formType == formType.EMPLOYEE) { // Biểu mẫu giành cho Nhân viên
+                const companyCode = localStorage.getItem('companyCode');
+                if (evaluationFormDetail?.formType == formType.EMPLOYEE && companyCode != Constants.pnlVCode.VinMec) { // Biểu mẫu giành cho Nhân viên
                   return renderEvaluationItem(item, index, scores, target, i, deviant)
                 }
-
-                if (evaluationFormDetail?.formType == formType.MANAGER) { // Biểu mẫu giành cho CBLĐ
+                if (evaluationFormDetail?.formType == formType.MANAGER || (companyCode == Constants.pnlVCode.VinMec && evaluationFormDetail?.formType == formType.EMPLOYEE)) { // Biểu mẫu giành cho CBLĐ
                   if (isAttitudeBlock) {
                     return <div className="evaluation-sub-group" key={`sub-group-${i}`}>
                       <div className='sub-group-name'>{`${i + 1}. ${JSON.parse(target?.groupName || '{}')[languageCodeMapping[currentLocale]]}`} <span className="red">({target.groupWeight}%)</span></div>
-                      <div className="sub-group-targets"> 
+                      <div className="sub-group-targets">
                         {(target.listTarget || []).map((childTarget, childIndex) => {
                           let deviant = (childTarget?.leadReviewPoint === '' || childTarget?.leadReviewPoint === null || childTarget?.seftPoint === '' || childTarget?.seftPoint === null) ? '' : Number(childTarget?.leadReviewPoint) - Number(childTarget?.seftPoint)
                           return <React.Fragment key={childIndex}>
@@ -628,18 +628,18 @@ function EvaluationDetail(props) {
     fetchEvaluationFormDetails()
   }, [])
 
-   useEffect(() => {
-      window.addEventListener("scroll", handleScroll, true);
-    
-      return () => {
-        window.removeEventListener("scroll", handleScroll);
-      };
-    }, []);
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll, true);
 
-    const handleScroll = (e) => {
-      const bottom = e.target.scrollHeight - e.target.scrollTop - e.target.clientHeight < 200;
-      setBottom(bottom)
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
     };
+  }, []);
+
+  const handleScroll = (e) => {
+    const bottom = e.target.scrollHeight - e.target.scrollTop - e.target.clientHeight < 200;
+    setBottom(bottom)
+  };
 
   const calculateAssessment = (listTarget) => {
     const assessmentScale = 5
@@ -908,7 +908,7 @@ function EvaluationDetail(props) {
       } else { // Lưu, CBNV Gửi tới bước tiếp theo, CBQLTT xác nhận
         const payload = { ...evaluationFormDetail }
         payload.nextStep = actionCode
-        const response = await axios.post(`${process.env.REACT_APP_HRDX_PMS_URL}api/targetform/update`, {requestString: JSON.stringify(payload || {})}, config)
+        const response = await axios.post(`${process.env.REACT_APP_HRDX_PMS_URL}api/targetform/update`, { requestString: JSON.stringify(payload || {}) }, config)
         SetIsLoading(false)
         statusModalTemp.isShow = true
         if (response && response.data) {
@@ -961,17 +961,17 @@ function EvaluationDetail(props) {
             </>
             : <h6 className="alert alert-danger" role="alert">{t("NoDataFound")}</h6>
         }
-         {!bottom && (evaluationFormDetail?.status == evaluationStatus.launch || evaluationFormDetail?.status == evaluationStatus.selfAssessment) &&
-          <div  className="scroll-to-save" style={{ color: localStorage.getItem("companyThemeColor"), zIndex: '10' }}>
+        {!bottom && (evaluationFormDetail?.status == evaluationStatus.launch || evaluationFormDetail?.status == evaluationStatus.selfAssessment) &&
+          <div className="scroll-to-save" style={{ color: localStorage.getItem("companyThemeColor"), zIndex: '10' }}>
 
-              <div>
-                <button className="btn-action save mr-3" onClick={() => handleSubmit(actionButton.save, null, true)}><Image src={IconSave} alt="Save" />{t("EvaluationDetailPartSave")}</button>
-              </div>
+            <div>
+              <button className="btn-action save mr-3" onClick={() => handleSubmit(actionButton.save, null, true)}><Image src={IconSave} alt="Save" />{t("EvaluationDetailPartSave")}</button>
+            </div>
 
           </div>
         }
       </div>
-     
+
     </>
   )
 }
