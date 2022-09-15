@@ -42,9 +42,9 @@ class Timesheet extends React.Component {
       const muleSoftConfigOriginal = {...muleSoftConfig}
       muleSoftConfig['params'] = timeoverviewParams
 
-      const timOverviewEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/timeoverview`;
+      const timOverviewEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/timeoverview`;
       const ReasonEndpoint = `${process.env.REACT_APP_REQUEST_URL}request/GetLeaveTypeAndComment`;
-      const timekeepingEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/timekeeping?from_time=${start}&to_time=${end}`;
+      const timekeepingEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/timekeeping?from_time=${start}&to_time=${end}`;
       
       const requestTimOverview = axios.get(timOverviewEndpoint, muleSoftConfig);
       const requestReson = axios.get(ReasonEndpoint, config);

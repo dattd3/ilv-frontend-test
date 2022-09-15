@@ -86,7 +86,7 @@ class LeaveOfAbsenceComponent extends React.Component {
         const { leaveOfAbsence, t } = this.props
         registerLocale("vi", t("locale") === "vi" ? vi : enUS)
 
-        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/currentabsence`, config)
+        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/currentabsence`, config)
             .then(res => {
                 if (res && res.data) {
                     const annualLeaveSummary = res.data.data

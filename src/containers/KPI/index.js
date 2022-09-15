@@ -22,7 +22,7 @@ class General extends React.Component {
 
   getAllKPI = async () => {
     const config = getMuleSoftHeaderConfigurations()
-    const responses = await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/successfactor/v1/kpi/general/all`, config)
+    const responses = await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/successfactor/v2/kpi/general/all`, config)
     let years = this.collectYears(responses)
     years = [...new Set(years)]
     this.setState({years: years})

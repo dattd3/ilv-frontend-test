@@ -57,7 +57,7 @@ class SubstitutionComponent extends React.Component {
   componentDidMount() {
     const config = getMuleSoftHeaderConfigurations()
 
-    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/shifts`, config)
+    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/shifts`, config)
       .then(res => {
         if (res && res.data && res.data.data) {
           const shifts = res.data.data.filter((shift, index, arr) => arr.findIndex(a => a.shift_id === shift.shift_id) === index)
@@ -536,7 +536,7 @@ class SubstitutionComponent extends React.Component {
       to_date: end
     }
 
-    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/timeoverview`, config)
+    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/timeoverview`, config)
       .then(res => {
         if (res && res.data && res.data.data) {
           let dataSorted = res.data.data.sort((a, b) => moment(a.date, "DD-MM-YYYY").format("YYYYMMDD") < moment(b.date, "DD-MM-YYYY").format("YYYYMMDD") ? 1 : -1)

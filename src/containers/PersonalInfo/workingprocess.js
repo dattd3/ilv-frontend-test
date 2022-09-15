@@ -86,7 +86,7 @@ class MyComponent extends React.Component {
         const muleSoftConfig = getMuleSoftHeaderConfigurations()
         const config = getRequestConfigurations()
 
-        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/contract`, muleSoftConfig)
+        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/contract`, muleSoftConfig)
             .then(res => {
                 if (res && res.data && res.data.data) {
                     let userContract = res.data.data;
@@ -123,7 +123,7 @@ class MyComponent extends React.Component {
 
     fetchUserChangeWorkingAppointment = async () => {
         const config = getMuleSoftHeaderConfigurations()
-        const changeWorkingAppointmentResponses = await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/workprocess`, config)
+        const changeWorkingAppointmentResponses = await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/workprocess`, config)
 
         if (changeWorkingAppointmentResponses && changeWorkingAppointmentResponses.data ) {
             const result = changeWorkingAppointmentResponses.data.result

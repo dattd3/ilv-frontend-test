@@ -16,6 +16,7 @@ import qrIos from '../../assets/img/qr_ios.svg';
 import { useLocalizeStore } from '../../modules';
 import Constants from "../../commons/Constants";
 import Select, { components } from 'react-select'
+import { getStateRedirect } from "../../commons/commonFunctions";
 
 const CustomOption = ({ children, ...props }) => {
   console.log(props);
@@ -111,10 +112,12 @@ function Login() {
   }, [langCode, localizeStore]);
 
   const handleLoginClick = () => {
-    const authConfig = Auth.configure();
-    const { domain, redirectSignIn, responseType } = authConfig.oauth;
+    //const authConfig = Auth.configure();
+    //const { domain, redirectSignIn, responseType } = authConfig.oauth;
     const clientId = config.AWS_COGNITO_CLIENT_ID;
-    const url = `https://${domain}/oauth2/authorize?identity_provider=${config.AWS_COGNITO_IDP_NAME}&redirect_uri=${redirectSignIn}&response_type=${responseType}&client_id=${clientId}`;
+    const state = getStateRedirect(process.env.REACT_APP_AWS_COGNITO_IDP_SIGNIN_URL);
+    //const url = `https://${domain}/oauth2/authorize?identity_provider=${config.AWS_COGNITO_IDP_NAME}&redirect_uri=${redirectSignIn}&response_type=${responseType}&client_id=${clientId}`;
+    const url = `https://login.microsoftonline.com/ed6a2939-d153-4f92-94f8-3d790d96c9f8/oauth2/authorize?client_id=58dc3771-a3e6-48b1-8e31-6900947347a6&response_type=code&redirect_uri=${process.env.REACT_APP_REDIRECT_URL}&scope=user.read&prompt=select_account&state=${state}`;
     window.location.assign(url);
   }
 
