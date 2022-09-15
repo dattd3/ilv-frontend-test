@@ -42,7 +42,10 @@ function Authorize(props) {
             .then(res => {
                 if (res && res.data && res.data.data[0]) {
                     let userProfile = res.data.data[0];
-                    const vgEmail = userProfile?.company_email?.toLowerCase() || ""
+                    const email = userProfile?.company_email?.toLowerCase() || ""
+                    let vgUsernameMatch = (/([^@]+)/gmi).exec(email.replace('v.', ''));
+                    let vgEmail = `${vgUsernameMatch[1]}@vingroup.net`;
+                    
                     checkUser(userProfile, jwtToken, vgEmail, () => {
                         SetIsShowLoadingModal(false)
                     });
