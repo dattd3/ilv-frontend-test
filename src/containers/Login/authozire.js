@@ -27,7 +27,7 @@ function Authorize(props) {
     const [errorType, SetErrorType] = useState(null);
     const [isShowLoadingModal, SetIsShowLoadingModal] = useState(true);
 
-    const getUser = (token, jwtToken, vgEmail) => {
+    const getUser = (token, jwtToken) => {
         if (jwtToken == null || jwtToken == "") {
             return;
         }
@@ -43,11 +43,13 @@ function Authorize(props) {
             .then(res => {
                 if (res && res.data && res.data.data[0]) {
                     let userProfile = res.data.data[0];
+                    const email = userProfile?.company_email?.toLowerCase() || ""
+                    let vgUsernameMatch = (/([^@]+)/gmi).exec(email.replace('v.', ''));
+                    let vgEmail = `${vgUsernameMatch[1]}@vingroup.net`;
                     checkUser(userProfile, jwtToken, vgEmail, () => {
                         SetIsShowLoadingModal(false)
                     });
                     updateUser(userProfile,jwtToken)
-                   
                 }
                 else {
                     SetIsError(true)
