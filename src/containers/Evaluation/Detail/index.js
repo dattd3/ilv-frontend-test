@@ -314,6 +314,9 @@ function EvaluationProcess(props) {
                 <tr>
                   <td className="measurement">
                     <ul>
+                      {
+                        target?.jobDetail && <li>{target?.jobDetail}</li>
+                      }
                       <li>{target?.metric1}</li>
                       <li>{target?.metric2}</li>
                       <li>{target?.metric3}</li>
@@ -483,6 +486,9 @@ function EvaluationProcess(props) {
                               <tr>
                                 <td className="measurement">
                                   <ul>
+                                    {
+                                      target?.jobDetail && <li>{target?.jobDetail}</li>
+                                    }
                                     <li>{target?.metric1}</li>
                                     <li>{target?.metric2}</li>
                                     <li>{target?.metric3}</li>
@@ -961,7 +967,7 @@ function EvaluationDetail(props) {
             </>
             : <h6 className="alert alert-danger" role="alert">{t("NoDataFound")}</h6>
         }
-        {!bottom && (evaluationFormDetail?.status == evaluationStatus.launch || evaluationFormDetail?.status == evaluationStatus.selfAssessment) &&
+        {!bottom && (evaluationFormDetail?.status == evaluationStatus.launch || (evaluationFormDetail?.status == evaluationStatus.selfAssessment && localStorage.getItem('employeeNo') ==  JSON.parse(evaluationFormDetail?.reviewer || '{}')?.uid)) &&
           <div className="scroll-to-save" style={{ color: localStorage.getItem("companyThemeColor"), zIndex: '10' }}>
 
             <div>
