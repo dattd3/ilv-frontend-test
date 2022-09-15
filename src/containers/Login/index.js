@@ -19,7 +19,6 @@ import Select, { components } from 'react-select'
 import { getStateRedirect } from "../../commons/commonFunctions";
 
 const CustomOption = ({ children, ...props }) => {
-  console.log(props);
   return (<components.ValueContainer {...props}>
     <div style={{
       display: 'inline-block',
