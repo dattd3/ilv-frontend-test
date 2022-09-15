@@ -966,9 +966,9 @@ class PersonalInfoEdit extends React.Component {
   async componentDidMount() {
     const config = getRequestConfigurations()
     const muleSoftConfig = getMuleSoftHeaderConfigurations()
-    const profileEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/profile`;
-    const personalInfoEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/personalinfo`;
-    const personalEducationEnpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/education`;
+    const profileEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/profile`;
+    const personalInfoEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/personalinfo`;
+    const personalEducationEnpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/education`;
 
     const requestProfile = axios.get(profileEndpoint, muleSoftConfig);
     const requestPersonalInfo = axios.get(personalInfoEndpoint, muleSoftConfig);
@@ -981,7 +981,7 @@ class PersonalInfoEdit extends React.Component {
 
     })
 
-    await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/provinces?country_id=${this.store.getState().requestDetail.information.country_id}`, muleSoftConfig)
+    await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/masterdata/provinces?country_id=${this.store.getState().requestDetail.information.country_id}`, muleSoftConfig)
       .then(res => {
         if (res && res.data && res.data.data) {
           const data = res.data.data;
@@ -992,7 +992,7 @@ class PersonalInfoEdit extends React.Component {
       }).catch(error => {
 
       })
-    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/profileinfobase`, muleSoftConfig)
+    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/masterdata/profileinfobase`, muleSoftConfig)
       .then(res => {
         if (res && res.data && res.data.data) {
           const data = res.data.data

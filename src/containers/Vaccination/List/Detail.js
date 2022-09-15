@@ -252,7 +252,7 @@ class VaccinationDetail extends React.Component {
 
     getListCity(call){
         const muleSoftConfig = getMuleSoftHeaderConfigurations()
-        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/provinces?country_id=VN`, muleSoftConfig)
+        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/masterdata/provinces?country_id=VN`, muleSoftConfig)
         .then(res => {
             if(res && res.data && res.data.data){
                 this.setState({
@@ -271,7 +271,7 @@ class VaccinationDetail extends React.Component {
 
     getListDistrict(proviceCode, call){
         const muleSoftConfig = getMuleSoftHeaderConfigurations()
-        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/districts?province_id=${proviceCode}`, muleSoftConfig)
+        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/masterdata/districts?province_id=${proviceCode}`, muleSoftConfig)
         .then(res => {
             if(res && res.data && res.data.data){
                 this.setState({
@@ -293,7 +293,7 @@ class VaccinationDetail extends React.Component {
 
     getListWard(districtCode){
         const muleSoftConfig = getMuleSoftHeaderConfigurations()
-        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/wards?district_id=${districtCode}`, muleSoftConfig)
+        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/masterdata/wards?district_id=${districtCode}`, muleSoftConfig)
         .then(res => {
             if(res && res.data && res.data.data){
                 this.setState({

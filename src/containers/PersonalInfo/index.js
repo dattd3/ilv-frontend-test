@@ -67,7 +67,7 @@ class MyComponent extends React.Component {
     const config = getRequestConfigurations()
     const muleSoftConfig = getMuleSoftHeaderConfigurations()
 
-    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/profile`, muleSoftConfig)
+    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/profile`, muleSoftConfig)
       .then(res => {
         if (res && res.data && res.data.data) {
           let userProfile = res.data.data[0];
@@ -78,7 +78,7 @@ class MyComponent extends React.Component {
         // window.location.href = map.Login;
       });
 
-    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/personalinfo`, muleSoftConfig)
+    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/personalinfo`, muleSoftConfig)
       .then(res => {
         if (res && res.data && res.data.data) {
           let userDetail = res.data.data[0];
@@ -89,7 +89,7 @@ class MyComponent extends React.Component {
         // window.location.href = map.Login;
       });
 
-    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/education`, muleSoftConfig)
+    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/education`, muleSoftConfig)
       .then(res => {
         if (res && res.data && res.data.data) {
           let userEducation = res.data.data;
@@ -100,7 +100,7 @@ class MyComponent extends React.Component {
         // window.location.href = map.Login;
       });
 
-    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/family`, muleSoftConfig)
+    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/family`, muleSoftConfig)
       .then(res => {
         if (res && res.data && res.data.data) {
           let userFamily = res.data.data;
@@ -111,7 +111,7 @@ class MyComponent extends React.Component {
         // window.location.href = map.Login;
       });
 
-    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/health`, muleSoftConfig)
+    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/health`, muleSoftConfig)
       .then(res => {
         if (res && res.data && res.data.data) {
           let userHealth = res.data.data[0];

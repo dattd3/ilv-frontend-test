@@ -98,7 +98,7 @@ function ShiftUpdateModal(props) {
         async function getShiftList() {
             try {
                 const config = getMuleSoftHeaderConfigurations()
-                const responses = await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/shifts`, config)
+                const responses = await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/shifts`, config)
                 const shifts = prepareShifts(responses)
                 SetShiftList(shifts)
                 setShiftTimeFilter(shifts)
@@ -154,7 +154,7 @@ function ShiftUpdateModal(props) {
                     page_size: 10000
                 }
 
-                const responses = await axios.post(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/subordinate/timeoverview`, data, config)
+                const responses = await axios.post(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/subordinate/timeoverview`, data, config)
                 const timeOverviews = prepareSubordinateTimeOverviews(responses)
                 SetSubordinateTimeOverviews(timeOverviews)
             } catch (e) {

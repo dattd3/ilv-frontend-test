@@ -146,8 +146,8 @@ const CreateInsuranceSocial = (props) => {
 
     useEffect(() => {
         const muleSoftConfig = getMuleSoftHeaderConfigurations()
-        const getProfile = axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/profile`, muleSoftConfig)
-        const getPersionalInfo = axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/personalinfo`, muleSoftConfig);
+        const getProfile = axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/profile`, muleSoftConfig)
+        const getPersionalInfo = axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/personalinfo`, muleSoftConfig);
         Promise.allSettled([getProfile, getPersionalInfo]).then(res => {
             if (res && res[0].value && res[1].value) {
                 let userProfile = res[0].value.data.data[0];

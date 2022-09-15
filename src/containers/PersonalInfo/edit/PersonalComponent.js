@@ -80,8 +80,8 @@ class PersonalComponent extends React.Component {
 
     async componentDidMount() {
         let config = getMuleSoftHeaderConfigurations()
-        const profileEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/profile`;
-        const personalInfoEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/personalinfo`;
+        const profileEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/profile`;
+        const personalInfoEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/personalinfo`;
         const requestProfile = axios.get(profileEndpoint, config);
         const requestPersonalInfo = axios.get(personalInfoEndpoint, config);
 
@@ -115,7 +115,7 @@ class PersonalComponent extends React.Component {
             // Edit profile
         } else {
             if (this.state.countryId) {
-                axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/provinces?country_id=${this.state.countryId}`, config)
+                axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/masterdata/provinces?country_id=${this.state.countryId}`, config)
                     .then(res => {
                         if (res && res.data && res.data.data) {
                             const data = res.data.data;
@@ -214,7 +214,7 @@ class PersonalComponent extends React.Component {
     getBirthProvinces = (country_id) => {
         const config = getMuleSoftHeaderConfigurations()
 
-        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/provinces?country_id=${country_id}`, config)
+        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/masterdata/provinces?country_id=${country_id}`, config)
             .then(res => {
                 if (res && res.data && res.data.data) {
                     let provinces = res.data.data;

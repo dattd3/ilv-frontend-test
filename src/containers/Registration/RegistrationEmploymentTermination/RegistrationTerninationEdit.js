@@ -65,7 +65,7 @@ class RegistrationEmploymentTerminationForm extends React.Component {
 
     initialData = async () => {
         try {
-            const reasonTypesEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/resignation_reason`
+            const reasonTypesEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/masterdata/resignation_reason`
             const responses = await axios.get(reasonTypesEndpoint, getRequestConfigs())
             const reasonTypes = this.prepareReasonTypes(responses)
 
