@@ -255,7 +255,7 @@ function Login() {
 
                   </Carousel>
                   <div className="bottom-link">
-                        <span>Website: www.myvingroup.vingroup.net</span>
+                        <span>Website: https://myvingroup.vingroup.net</span>
                   </div>
                 </div>
 
