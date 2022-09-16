@@ -447,11 +447,12 @@ function EvaluationProcess(props) {
             {
               (item?.listTarget || []).map((target, i) => {
                 let deviant = (target?.leadReviewPoint === '' || target?.leadReviewPoint === null || target?.seftPoint === '' || target?.seftPoint === null) ? '' : Number(target?.leadReviewPoint) - Number(target?.seftPoint)
-                const companyCode = localStorage.getItem('companyCode');
-                if (evaluationFormDetail?.formType == formType.EMPLOYEE && companyCode != Constants.pnlVCode.VinMec) { // Biểu mẫu giành cho Nhân viên
+                // const companyCode = localStorage.getItem('companyCode');
+                const companyCodeForTemplate = evaluationFormDetail?.companyCode
+                if (evaluationFormDetail?.formType == formType.EMPLOYEE && companyCodeForTemplate != Constants.pnlVCode.VinMec) { // Biểu mẫu giành cho Nhân viên
                   return renderEvaluationItem(item, index, scores, target, i, deviant)
                 }
-                if (evaluationFormDetail?.formType == formType.MANAGER || (companyCode == Constants.pnlVCode.VinMec && evaluationFormDetail?.formType == formType.EMPLOYEE)) { // Biểu mẫu giành cho CBLĐ
+                if (evaluationFormDetail?.formType == formType.MANAGER || (companyCodeForTemplate == Constants.pnlVCode.VinMec && evaluationFormDetail?.formType == formType.EMPLOYEE)) { // Biểu mẫu giành cho CBLĐ
                   if (isAttitudeBlock) {
                     return <div className="evaluation-sub-group" key={`sub-group-${i}`}>
                       <div className='sub-group-name'>{`${i + 1}. ${JSON.parse(target?.groupName || '{}')[languageCodeMapping[currentLocale]]}`} <span className="red">({target.groupWeight}%)</span></div>
@@ -952,8 +953,31 @@ function EvaluationDetail(props) {
     <>
       <LoadingModal show={isLoading} />
       {!showByManager && <StatusModal show={statusModal.isShow} isSuccess={statusModal.isSuccess} content={statusModal.content} onHide={onHideStatusModal} />}
-      <div className="evaluation-detail-page" >
+      <div className="evaluation-detail-page">
         {
+          !evaluationFormDetail || _.size(evaluationFormDetail) === 0 || !evaluationFormDetail?.companyCode
+          ? <h6 className="alert alert-danger" role="alert">{t("NoDataFound")}</h6>
+          :
+          <>
+            <h1 className="content-page-header">{`${evaluationFormDetail?.checkPhaseFormName} ${t("of")} ${evaluationFormDetail?.fullName}`}</h1>
+            <div>
+              <EvaluationOverall evaluationFormDetail={evaluationFormDetail} showByManager={showByManager} />
+              <EvaluationProcess evaluationFormDetail={evaluationFormDetail} showByManager={showByManager} errors={errors} updateData={updateData} />
+              <div className="button-block">
+                {renderButtonBlock()}
+              </div>
+            </div>
+            {!bottom && (evaluationFormDetail?.status == evaluationStatus.launch || (evaluationFormDetail?.status == evaluationStatus.selfAssessment && localStorage.getItem('employeeNo') ==  JSON.parse(evaluationFormDetail?.reviewer || '{}')?.uid)) &&
+              <div className="scroll-to-save" style={{ color: localStorage.getItem("companyThemeColor"), zIndex: '10' }}>
+                <div>
+                  <button className="btn-action save mr-3" onClick={() => handleSubmit(actionButton.save, null, true)}><Image src={IconSave} alt="Save" />{t("EvaluationDetailPartSave")}</button>
+                </div>
+              </div>
+            }
+          </>
+        }
+
+        {/* {
           evaluationFormDetail ?
             <>
               <h1 className="content-page-header">{`${evaluationFormDetail?.checkPhaseFormName} ${t("of")} ${evaluationFormDetail?.fullName}`}</h1>
@@ -966,16 +990,8 @@ function EvaluationDetail(props) {
               </div>
             </>
             : <h6 className="alert alert-danger" role="alert">{t("NoDataFound")}</h6>
-        }
-        {!bottom && (evaluationFormDetail?.status == evaluationStatus.launch || (evaluationFormDetail?.status == evaluationStatus.selfAssessment && localStorage.getItem('employeeNo') ==  JSON.parse(evaluationFormDetail?.reviewer || '{}')?.uid)) &&
-          <div className="scroll-to-save" style={{ color: localStorage.getItem("companyThemeColor"), zIndex: '10' }}>
+        } */}
 
-            <div>
-              <button className="btn-action save mr-3" onClick={() => handleSubmit(actionButton.save, null, true)}><Image src={IconSave} alt="Save" />{t("EvaluationDetailPartSave")}</button>
-            </div>
-
-          </div>
-        }
       </div>
 
     </>
