@@ -11,7 +11,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import FilterMember from "../../ShareComponents/FilterMember";
 import ConfirmationModal from '../../../Registration/ConfirmationModal';
 import ResultModal from "./ResultModal";
-import ApproverComponent from "../../ShareComponents/HrReviewSalaryComponent";
+import HumanForReviewSalaryComponent from "../../../Registration/HumanForReviewSalaryComponent";
 import ConfirmPasswordModal from '../../../Registration/ContractEvaluation/SalaryPropose/ConfirmPasswordModal';
 import StatusModal from '../../../../components/Common/StatusModal'
 import ResizableTextarea from '../../../Registration/TextareaComponent';
@@ -997,7 +997,7 @@ const SalaryAdjustmentPropse = (props) => {
         <>
           <h5 className="content-page-header">{"Nhân sự hỗ trợ quyền xem lương"}</h5>
           <div className="timesheet-box1 timesheet-box shadow">
-            <ApproverComponent
+            <HumanForReviewSalaryComponent
               isEdit={!viewSetting.disableComponent.selectHrSupportViewSalary}
               approver={coordinator}
               updateApprover={(approver, isApprover) => handleUpdateCoordinator(approver, isApprover)}
@@ -1010,7 +1010,7 @@ const SalaryAdjustmentPropse = (props) => {
         <>
           <h5 className="content-page-header">{"CBQL CẤP CƠ SỞ"}</h5>
           <div className="timesheet-box1 timesheet-box shadow">
-            <ApproverComponent isEdit={true} approver={supervisor} />
+            <HumanForReviewSalaryComponent isEdit={true} approver={supervisor} />
           </div>
         </>
       }
@@ -1019,7 +1019,7 @@ const SalaryAdjustmentPropse = (props) => {
         <>
           <h5 className="content-page-header">{"Nhân sự thẩm định quyền điều chỉnh lương"}</h5>
           <div className="timesheet-box1 timesheet-box shadow">
-            <ApproverComponent isEdit={true} approver={appraiser} />
+            <HumanForReviewSalaryComponent isEdit={true} approver={appraiser} />
           </div>
         </>
       }
@@ -1028,7 +1028,7 @@ const SalaryAdjustmentPropse = (props) => {
         <>
           <h5 className="content-page-header">{"CBLĐ PHÊ DUYỆT"}</h5>
           <div className="timesheet-box1 timesheet-box shadow">
-            <ApproverComponent isEdit={true} approver={approver} />
+            <HumanForReviewSalaryComponent isEdit={true} approver={approver} />
           </div>
         </>
       }
