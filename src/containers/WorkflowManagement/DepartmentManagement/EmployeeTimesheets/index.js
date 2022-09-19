@@ -99,7 +99,7 @@ class EmployeeTimesheets extends Component {
     const muleSoftConfig = getMuleSoftHeaderConfigurations()
 
     this.setState({isLoading: true});
-    const timOverviewEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/subordinate/timeoverview`;
+    const timOverviewEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/subordinate/timeoverview`;
     const ReasonEndpoint = `${process.env.REACT_APP_REQUEST_URL}request/GetLeaveTypeAndComment`;
     const requestTimOverview = axios.post(timOverviewEndpoint, timeoverviewParams, muleSoftConfig);
     const requestReason = axios.get(ReasonEndpoint, config);

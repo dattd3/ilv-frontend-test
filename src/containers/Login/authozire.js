@@ -5,8 +5,9 @@ import map from '../map.config';
 import LoadingModal from '../../components/Common/LoadingModal'
 import { useTranslation } from "react-i18next";
 import axios from 'axios';
-import { getMuleSoftHeaderConfigurations } from "../../commons/Utils"
-import Constants from "../../commons/Constants"
+import { getMuleSoftHeaderConfigurations } from "../../commons/Utils";
+import Constants from "../../commons/Constants";
+import moment from 'moment';
 
 const ERROR_TYPE = {
     NETWORK: 1,
@@ -26,7 +27,7 @@ function Authorize(props) {
     const [errorType, SetErrorType] = useState(null);
     const [isShowLoadingModal, SetIsShowLoadingModal] = useState(true);
 
-    const getUser = (token, jwtToken, vgEmail) => {
+    const getUser = (token, jwtToken) => {
         if (jwtToken == null || jwtToken == "") {
             return;
         }
@@ -38,15 +39,17 @@ function Authorize(props) {
         const config = getMuleSoftHeaderConfigurations() 
         config.headers['Authorization'] = `Bearer ${jwtToken}`
 
-        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/profile`, config)
+        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/profile`, config)
             .then(res => {
                 if (res && res.data && res.data.data[0]) {
                     let userProfile = res.data.data[0];
+                    const email = userProfile?.company_email?.toLowerCase() || ""
+                    let vgUsernameMatch = (/([^@]+)/gmi).exec(email.replace('v.', ''));
+                    let vgEmail = `${vgUsernameMatch[1]}@vingroup.net`;
                     checkUser(userProfile, jwtToken, vgEmail, () => {
                         SetIsShowLoadingModal(false)
                     });
                     updateUser(userProfile,jwtToken)
-                   
                 }
                 else {
                     SetIsError(true)
@@ -125,7 +128,7 @@ function Authorize(props) {
                         guard.setIsAuth({
                             tokenType: 'Bearer',
                             accessToken: jwtToken,
-                            tokenExpired: '',
+                            tokenExpired: moment().add(3600, 'seconds'),
                             email: vgEmail,
                             plEmail: user.company_email,
                             avatar: user.avatar,
@@ -209,23 +212,28 @@ function Authorize(props) {
         }
     }
 
-    function getUserData() {
-        Auth.currentAuthenticatedUser().then(currentAuthUser => {
-            if (currentAuthUser.signInUserSession.isValid()) {
-                if (isLoadingUser == false) {
-                    SetIsLoadingUser(true);
-                    SetToken(currentAuthUser.signInUserSession.idToken.jwtToken);
-                    let email = currentAuthUser.attributes.family_name;
-                    let vgUsernameMatch = (/([^@]+)/gmi).exec(email.replace('v.', ''));
-                    let vgEmail = `${vgUsernameMatch[1]}@vingroup.net`;
-                    getUser(token, currentAuthUser.signInUserSession.idToken.jwtToken, vgEmail);
-                }
-            }
-            else {
-                SetNotifyContent(t("WaitNotice"));
-            }
-        })
-        .catch(error => {});
+    function getUserData(_token) {
+        if (isLoadingUser == false) {
+            SetIsLoadingUser(true);
+            SetToken(_token);
+            getUser(_token, _token);
+        }
+        // Auth.currentAuthenticatedUser().then(currentAuthUser => {
+        //     if (currentAuthUser.signInUserSession.isValid()) {
+        //         if (isLoadingUser == false) {
+        //             SetIsLoadingUser(true);
+        //             SetToken(currentAuthUser.signInUserSession.idToken.jwtToken);
+        //             let email = currentAuthUser.attributes.family_name;
+        //             let vgUsernameMatch = (/([^@]+)/gmi).exec(email.replace('v.', ''));
+        //             let vgEmail = `${vgUsernameMatch[1]}@vingroup.net`;
+        //             getUser(token, currentAuthUser.signInUserSession.idToken.jwtToken, vgEmail);
+        //         }
+        //     }
+        //     else {
+        //         SetNotifyContent(t("WaitNotice"));
+        //     }
+        // })
+        // .catch(error => {});
     }
 
     function updateUser(userProfile, jwtToken) {
@@ -263,20 +271,36 @@ function Authorize(props) {
     }
 
     useEffect(() => {
-        getUserData();
-        Hub.listen('auth', data => {
-            switch (data.payload.event) {
-                case 'signIn':
-                    getUserData();
-                    break;
-                default:
-                    return;
-            }
-        });
-    });
+        // const queryParams = new URLSearchParams(props.history.location.search);
+        // const accessToken = queryParams?.get('accesstoken') || null
+        // if (queryParams.has('accesstoken')) {
+        // queryParams.delete('accesstoken')
+        // props.history.replace({
+        //     search: queryParams.toString(),
+        // })
+        // }
+        const queryParams = new URLSearchParams(props.history.location.search);
+        const accessToken = queryParams?.get('accesstoken') || null
+        if (queryParams.has('accesstoken')) {
+        queryParams.delete('accesstoken')
+        props.history.replace({
+            search: queryParams.toString(),
+        })
+        }
+        getUserData(accessToken);
+        // Hub.listen('auth', data => {
+        //     switch (data.payload.event) {
+        //         case 'signIn':
+        //             getUserData();
+        //             break;
+        //         default:
+        //             return;
+        //     }
+        // });
+    },[]);
 
     const tryAgain = () => {
-        window.location.reload()
+        window.location.href = process.env.REACT_APP_AWS_COGNITO_IDP_SIGNOUT_URL;
     }
 
     return (

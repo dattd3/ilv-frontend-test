@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useRef } from "react"
 import Select from 'react-select'
 import { Image } from 'react-bootstrap'
 import { useTranslation } from "react-i18next"
@@ -314,6 +314,9 @@ function EvaluationProcess(props) {
                 <tr>
                   <td className="measurement">
                     <ul>
+                      {
+                        target?.jobDetail && <li>{target?.jobDetail}</li>
+                      }
                       <li>{target?.metric1}</li>
                       <li>{target?.metric2}</li>
                       <li>{target?.metric3}</li>
@@ -444,15 +447,16 @@ function EvaluationProcess(props) {
             {
               (item?.listTarget || []).map((target, i) => {
                 let deviant = (target?.leadReviewPoint === '' || target?.leadReviewPoint === null || target?.seftPoint === '' || target?.seftPoint === null) ? '' : Number(target?.leadReviewPoint) - Number(target?.seftPoint)
-                if (evaluationFormDetail?.formType == formType.EMPLOYEE) { // Biểu mẫu giành cho Nhân viên
+                // const companyCode = localStorage.getItem('companyCode');
+                const companyCodeForTemplate = evaluationFormDetail?.companyCode
+                if (evaluationFormDetail?.formType == formType.EMPLOYEE && companyCodeForTemplate != Constants.pnlVCode.VinMec) { // Biểu mẫu giành cho Nhân viên
                   return renderEvaluationItem(item, index, scores, target, i, deviant)
                 }
-
-                if (evaluationFormDetail?.formType == formType.MANAGER) { // Biểu mẫu giành cho CBLĐ
+                if (evaluationFormDetail?.formType == formType.MANAGER || (companyCodeForTemplate == Constants.pnlVCode.VinMec && evaluationFormDetail?.formType == formType.EMPLOYEE)) { // Biểu mẫu giành cho CBLĐ
                   if (isAttitudeBlock) {
                     return <div className="evaluation-sub-group" key={`sub-group-${i}`}>
                       <div className='sub-group-name'>{`${i + 1}. ${JSON.parse(target?.groupName || '{}')[languageCodeMapping[currentLocale]]}`} <span className="red">({target.groupWeight}%)</span></div>
-                      <div className="sub-group-targets"> 
+                      <div className="sub-group-targets">
                         {(target.listTarget || []).map((childTarget, childIndex) => {
                           let deviant = (childTarget?.leadReviewPoint === '' || childTarget?.leadReviewPoint === null || childTarget?.seftPoint === '' || childTarget?.seftPoint === null) ? '' : Number(childTarget?.leadReviewPoint) - Number(childTarget?.seftPoint)
                           return <React.Fragment key={childIndex}>
@@ -483,6 +487,9 @@ function EvaluationProcess(props) {
                               <tr>
                                 <td className="measurement">
                                   <ul>
+                                    {
+                                      target?.jobDetail && <li>{target?.jobDetail}</li>
+                                    }
                                     <li>{target?.metric1}</li>
                                     <li>{target?.metric2}</li>
                                     <li>{target?.metric3}</li>
@@ -575,6 +582,7 @@ function EvaluationDetail(props) {
   const user = guard.getCurentUser()
   const evaluationFormId = showByManager ? props?.evaluationFormId : props.match.params.id
   const formCode = showByManager ? props?.formCode : props.match.params.formCode
+  const [bottom, setBottom] = useState(false);
 
   useEffect(() => {
     const processEvaluationFormDetailData = response => {
@@ -626,6 +634,19 @@ function EvaluationDetail(props) {
 
     fetchEvaluationFormDetails()
   }, [])
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll, true);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
+  const handleScroll = (e) => {
+    const bottom = e.target.scrollHeight - e.target.scrollTop - e.target.clientHeight < 200;
+    setBottom(bottom)
+  };
 
   const calculateAssessment = (listTarget) => {
     const assessmentScale = 5
@@ -733,6 +754,7 @@ function EvaluationDetail(props) {
         if (showByManager && currentUserLoggedUID == reviewerUID) {
           return (
             <>
+              <button className="btn-action save mr-3" onClick={() => handleSubmit(actionButton.save, null, true)}><Image src={IconSave} alt="Save" />{t("EvaluationDetailPartSave")}</button>
               <button className="btn-action reject" onClick={() => handleSubmit(actionButton.reject, null, true)}><Image src={IconReject} alt="Reject" />{t("EvaluationDetailPartReject")}</button>
               <button className="btn-action confirm" onClick={() => handleSubmit(actionButton.approve)}><Image src={IconApprove} alt="Confirm" />{t("EvaluationDetailPartConfirm")}</button>
             </>
@@ -893,7 +915,7 @@ function EvaluationDetail(props) {
       } else { // Lưu, CBNV Gửi tới bước tiếp theo, CBQLTT xác nhận
         const payload = { ...evaluationFormDetail }
         payload.nextStep = actionCode
-        const response = await axios.post(`${process.env.REACT_APP_HRDX_PMS_URL}api/targetform/update`, {requestString: JSON.stringify(payload || {})}, config)
+        const response = await axios.post(`${process.env.REACT_APP_HRDX_PMS_URL}api/targetform/update`, { requestString: JSON.stringify(payload || {}) }, config)
         SetIsLoading(false)
         statusModalTemp.isShow = true
         if (response && response.data) {
@@ -927,13 +949,35 @@ function EvaluationDetail(props) {
       }
     }
   }
-
   return (
     <>
       <LoadingModal show={isLoading} />
       {!showByManager && <StatusModal show={statusModal.isShow} isSuccess={statusModal.isSuccess} content={statusModal.content} onHide={onHideStatusModal} />}
       <div className="evaluation-detail-page">
         {
+          !evaluationFormDetail || _.size(evaluationFormDetail) === 0 || !evaluationFormDetail?.companyCode
+          ? <h6 className="alert alert-danger" role="alert">{t("NoDataFound")}</h6>
+          :
+          <>
+            <h1 className="content-page-header">{`${evaluationFormDetail?.checkPhaseFormName} ${t("of")} ${evaluationFormDetail?.fullName}`}</h1>
+            <div>
+              <EvaluationOverall evaluationFormDetail={evaluationFormDetail} showByManager={showByManager} />
+              <EvaluationProcess evaluationFormDetail={evaluationFormDetail} showByManager={showByManager} errors={errors} updateData={updateData} />
+              <div className="button-block">
+                {renderButtonBlock()}
+              </div>
+            </div>
+            {!bottom && (evaluationFormDetail?.status == evaluationStatus.launch || (evaluationFormDetail?.status == evaluationStatus.selfAssessment && localStorage.getItem('employeeNo') ==  JSON.parse(evaluationFormDetail?.reviewer || '{}')?.uid)) &&
+              <div className="scroll-to-save" style={{ color: localStorage.getItem("companyThemeColor"), zIndex: '10' }}>
+                <div>
+                  <button className="btn-action save mr-3" onClick={() => handleSubmit(actionButton.save, null, true)}><Image src={IconSave} alt="Save" />{t("EvaluationDetailPartSave")}</button>
+                </div>
+              </div>
+            }
+          </>
+        }
+
+        {/* {
           evaluationFormDetail ?
             <>
               <h1 className="content-page-header">{`${evaluationFormDetail?.checkPhaseFormName} ${t("of")} ${evaluationFormDetail?.fullName}`}</h1>
@@ -946,8 +990,10 @@ function EvaluationDetail(props) {
               </div>
             </>
             : <h6 className="alert alert-danger" role="alert">{t("NoDataFound")}</h6>
-        }
+        } */}
+
       </div>
+
     </>
   )
 }
