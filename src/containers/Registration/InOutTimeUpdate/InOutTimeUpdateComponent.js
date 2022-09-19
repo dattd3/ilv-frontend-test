@@ -323,7 +323,7 @@ class InOutTimeUpdateComponent extends React.Component {
       to_date: end
     }
 
-    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/timeoverview`, config)
+    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/timeoverview`, config)
       .then(res => {
         if (res && res.data && res.data.data) {
 
@@ -398,7 +398,7 @@ class InOutTimeUpdateComponent extends React.Component {
 
   render() {
     const { startDate, endDate, timesheets, errors, files, disabledSubmitButton } = this.state
-    const { t } = this.props;
+    const { t, recentlyManagers } = this.props;
     const lang = localStorage.getItem("locale")
     const isShowSelectWorkingShift24h = isEnableFunctionByFunctionName(Constants.listFunctionsForPnLACL.selectWorkingShift24h)
 
@@ -644,8 +644,18 @@ class InOutTimeUpdateComponent extends React.Component {
 
         {timesheets.filter(t => t.isEdited).length > 0 ? 
         <>
-          <AssesserComponent isEdit={t.isEdited} errors={errors} approver={this.props.inOutTimeUpdate ? this.props.inOutTimeUpdate.userProfileInfo.approver : null} appraiser={this.props.inOutTimeUpdate ? this.props.inOutTimeUpdate.userProfileInfo.appraiser : null} updateAppraiser={this.updateAppraiser.bind(this)} />
-          <ApproverComponent errors={errors} updateApprover={this.updateApprover.bind(this)} approver={this.props.inOutTimeUpdate ? this.props.inOutTimeUpdate.userProfileInfo.approver : null} /> 
+          <AssesserComponent 
+            isEdit={t.isEdited} 
+            errors={errors} 
+            approver={this.props.inOutTimeUpdate ? this.props.inOutTimeUpdate.userProfileInfo.approver : null} 
+            appraiser={this.props.inOutTimeUpdate ? this.props.inOutTimeUpdate.userProfileInfo.appraiser : null} 
+            recentlyAppraiser={recentlyManagers?.appraiser} 
+            updateAppraiser={this.updateAppraiser.bind(this)} />
+          <ApproverComponent 
+            errors={errors} 
+            updateApprover={this.updateApprover.bind(this)} 
+            approver={this.props.inOutTimeUpdate ? this.props.inOutTimeUpdate.userProfileInfo.approver : null} 
+            recentlyApprover={recentlyManagers?.approver} /> 
         </>
           : null}
 

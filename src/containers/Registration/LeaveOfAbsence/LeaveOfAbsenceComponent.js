@@ -86,7 +86,7 @@ class LeaveOfAbsenceComponent extends React.Component {
         const { leaveOfAbsence, t } = this.props
         registerLocale("vi", t("locale") === "vi" ? vi : enUS)
 
-        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/currentabsence`, config)
+        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/currentabsence`, config)
             .then(res => {
                 if (res && res.data) {
                     const annualLeaveSummary = res.data.data
@@ -811,7 +811,7 @@ class LeaveOfAbsenceComponent extends React.Component {
     }
 
     render() {
-        const { t, leaveOfAbsence } = this.props;
+        const { t, leaveOfAbsence, recentlyManagers } = this.props;
         const absenceRequestTypesPrepare = absenceRequestTypes.map(item => ({...item, label: t(item.label)}))
         const PN03ListPrepare = PN03List.map(item => ({...item, label: t(item.label)}))
         const {
@@ -1267,8 +1267,23 @@ class LeaveOfAbsenceComponent extends React.Component {
                     )
                 })}
 
-                <AssesserComponent isEdit={isEdit} errors={errors} approver={approver} appraiser={appraiser} updateAppraiser={this.updateAppraiser.bind(this)} />
-                <ApproverComponent isEdit={isEdit} errors={errors} appraiser={appraiser} approver={approver} updateApprover={this.updateApprover.bind(this)} />
+                {
+                    (!isEdit || (isEdit && leaveOfAbsence?.appraiserId)) 
+                    && <AssesserComponent 
+                            isEdit={isEdit} 
+                            errors={errors} 
+                            approver={approver} 
+                            appraiser={appraiser} 
+                            recentlyAppraiser={recentlyManagers?.appraiser} 
+                            updateAppraiser={this.updateAppraiser.bind(this)} />
+                }
+                <ApproverComponent 
+                    isEdit={isEdit} 
+                    errors={errors} 
+                    appraiser={appraiser} 
+                    approver={approver} 
+                    recentlyApprover={recentlyManagers?.approver} 
+                    updateApprover={this.updateApprover.bind(this)} />
 
                 <ul className="list-inline">
                     {files.map((file, index) => {

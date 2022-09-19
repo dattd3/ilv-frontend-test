@@ -56,9 +56,9 @@ class RegistrationEmploymentTerminationForm extends React.Component {
             }  
         };
 
-        const reasonTypesEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/resignation_reason`
-        const userInfosEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/profile`
-        const userContractInfosEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/contract`
+        const reasonTypesEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/masterdata/resignation_reason`
+        const userInfosEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/profile`
+        const userContractInfosEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/contract`
         const userContractMoreInfosEndpoint = `${process.env.REACT_APP_REQUEST_URL}ReasonType/getadditionalinfo`;
 
         const requestReasonTypes = axios.get(reasonTypesEndpoint, getMuleSoftHeaderConfigurations())
@@ -166,7 +166,7 @@ class RegistrationEmploymentTerminationForm extends React.Component {
         const userAccount = directManager.account?.toLowerCase()
 
         try {
-            const responses = await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/manager`, getMuleSoftHeaderConfigurations())
+            const responses = await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/manager`, getMuleSoftHeaderConfigurations())
             const realUserAccounts = this.getUserAccountDirectManagerByResponses(responses)
             
             if (realUserAccounts.includes(userAccount)) {

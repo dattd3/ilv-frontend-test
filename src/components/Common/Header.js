@@ -190,7 +190,8 @@ function Header(props) {
     const userLogOut = () => {
         try {
             guard.setLogOut();
-            Auth.signOut({ global: true });
+            window.location.href = process.env.REACT_APP_AWS_COGNITO_IDP_SIGNOUT_URL;
+            //Auth.signOut({ global: true });
         } catch {
             guard.setLogOut();
             window.location.reload();
@@ -198,13 +199,18 @@ function Header(props) {
     }
 
 
-    Auth.currentUserInfo().then(currentAuthUser => {
-        if (currentAuthUser === undefined || currentAuthUser === null) {
-            Auth.signOut({ global: true });
-            guard.setLogOut();
-            window.location.reload();
-        }
-    });
+    // Auth.currentUserInfo().then(currentAuthUser => {
+    //     if (currentAuthUser === undefined || currentAuthUser === null) {
+    //         Auth.signOut({ global: true });
+    //         guard.setLogOut();
+    //         window.location.reload();
+    //     }
+    // });
+
+    if(!localStorage.getItem('tokenExpired') || !moment(localStorage.getItem('tokenExpired')).isValid() ||  moment().isAfter(moment(localStorage.getItem('tokenExpired')))) {
+        guard.setLogOut();
+        window.location.reload();
+    }
 
     const handleClickSetShow = () => {
         SetIsShow(!isShow);
