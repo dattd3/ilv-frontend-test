@@ -32,7 +32,7 @@ const MyOption = props => {
   )
 }
 
-class ApproverComponent extends React.Component {
+class HumanForReviewSalaryComponent extends React.Component {
   constructor(props) {
     super();
     this.state = {
@@ -188,11 +188,9 @@ class ApproverComponent extends React.Component {
       const config = getRequestConfigurations()
       const payload = {
         account: value,
-        // employee_type: "APPROVER",
-        pnl_code: localStorage.getItem('companyCode'),
-        status: Constants.statusUserActiveMulesoft
+        employeeNo: localStorage.getItem('employeeNo')
       }
-      axios.post(`${process.env.REACT_APP_REQUEST_URL}user/employee/search`, payload, config)
+      axios.post(`${process.env.REACT_APP_REQUEST_URL}user/employee/hr_officer`, payload, config)
         .then(res => {
           if (res && res.data && res.data.data) {
             const data = res.data.data || []
@@ -295,4 +293,4 @@ class ApproverComponent extends React.Component {
   }
 }
 
-export default withTranslation()(ApproverComponent)
+export default withTranslation()(HumanForReviewSalaryComponent)
