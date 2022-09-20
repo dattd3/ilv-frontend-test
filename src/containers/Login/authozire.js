@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Auth, Hub } from 'aws-amplify';
+// import { useCookies } from 'react-cookie';
 import { useGuardStore } from '../../modules';
 import map from '../map.config';
 import LoadingModal from '../../components/Common/LoadingModal'
@@ -26,6 +27,7 @@ function Authorize(props) {
     const [isError, SetIsError] = useState(false);
     const [errorType, SetErrorType] = useState(null);
     const [isShowLoadingModal, SetIsShowLoadingModal] = useState(true);
+    // const [cookies, setCookie] = useCookies(['accessToken']);
 
     const getUser = (token, jwtToken) => {
         if (jwtToken == null || jwtToken == "") {
@@ -271,23 +273,31 @@ function Authorize(props) {
     }
 
     useEffect(() => {
-        // const queryParams = new URLSearchParams(props.history.location.search);
-        // const accessToken = queryParams?.get('accesstoken') || null
-        // if (queryParams.has('accesstoken')) {
-        // queryParams.delete('accesstoken')
-        // props.history.replace({
-        //     search: queryParams.toString(),
-        // })
-        // }
         const queryParams = new URLSearchParams(props.history.location.search);
-        const accessToken = queryParams?.get('accesstoken') || null
         if (queryParams.has('accesstoken')) {
-        queryParams.delete('accesstoken')
-        props.history.replace({
-            search: queryParams.toString(),
-        })
+            const accessToken = queryParams?.get('accesstoken') || ''
+            const refreshToken = queryParams?.get('refreshtoken') || ''
+            const expireIn = queryParams?.get('expirein') || 3600 // Nếu không trả về thì mặc định thời gian hết hạn là 1h
+            const timeTokenExpire = moment().add(Number(expireIn), 'seconds').format('YYYYMMDDHHmmss')
+
+            localStorage.setItem('refreshToken', refreshToken)
+            localStorage.setItem('timeTokenExpire', timeTokenExpire)
+
+            // if (accessToken) {
+            //     setCookie('accessToken', accessToken, { path: '/', secure: true, httpOnly: true });
+            // }
+            
+            queryParams.delete('accesstoken')
+            queryParams.delete('refreshtoken')
+            queryParams.delete('expirein')
+            queryParams.delete('expireon')
+            props.history.replace({
+                search: queryParams.toString(),
+            })
+
+            getUserData(accessToken);
         }
-        getUserData(accessToken);
+
         // Hub.listen('auth', data => {
         //     switch (data.payload.event) {
         //         case 'signIn':

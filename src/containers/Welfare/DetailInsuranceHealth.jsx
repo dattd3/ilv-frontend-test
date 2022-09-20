@@ -6,6 +6,7 @@ import _ from "lodash";
 import { getRequestConfigurations } from "../../commons/Utils";
 import axios from "axios";
 import moment from 'moment';
+import HOCComponent from '../../components/Common/HOCComponent'
 import "react-toastify/dist/ReactToastify.css";
 
 const DetailInsuranceHealth = (props) => {
@@ -438,4 +439,4 @@ const DetailInsuranceHealth = (props) => {
   );
 };
 
-export default withTranslation()(DetailInsuranceHealth);
+export default HOCComponent(withTranslation()(DetailInsuranceHealth))

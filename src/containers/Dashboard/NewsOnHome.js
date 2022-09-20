@@ -98,7 +98,7 @@ function NewsOnHome(props) {
                                 <div className="row">
                                     <div className="col-md-6 special">
                                         <div className="top-one">
-                                            <a href={`/news/${convertToSlug(topOne?.title)}/${topOne.id}`} title={topOne?.title} className="link-detail">
+                                            <a href={`/news/${convertToSlug(topOne?.title)}/${topOne.id}`} className="link-detail">
                                                 <Image src={topOne?.thumbnail} alt="News" className="thumbnail"
                                                     onError={(e) => {
                                                         e.target.src = "/logo-large.svg"
@@ -113,7 +113,7 @@ function NewsOnHome(props) {
                                                 </div>
                                                 <p className="description">{subStringDescription(topOne?.description)}...</p>
                                                 <div className="btn-detail">
-                                                    <a href={`/news/${convertToSlug(topOne?.title)}/${topOne?.id}`} title={topOne?.title} className="detail"><span>{t("Details")}</span><Image src={IconViewDetail} alt="Detail" className="icon-view-detail" /></a>
+                                                    <a href={`/news/${convertToSlug(topOne?.title)}/${topOne?.id}`} className="detail"><span>{t("Details")}</span><Image src={IconViewDetail} alt="Detail" className="icon-view-detail" /></a>
                                                 </div>
                                             </div>
                                         </div>
@@ -125,7 +125,7 @@ function NewsOnHome(props) {
                                                     topFour.map((item, index) => {
                                                         let timePublished = getTimeByRawTime(item?.publishedDate)
                                                         return <div className="item" key={item.id}>
-                                                            <a href={`/news/${convertToSlug(item.title)}/${item.id}`} title={item.title} className="link-image-detail">
+                                                            <a href={`/news/${convertToSlug(item.title)}/${item.id}`} className="link-image-detail">
                                                                 <Image src={item.thumbnail} className="thumbnail"
                                                                     onError={(e) => {
                                                                         e.target.src = "/logo-small.svg"
@@ -134,7 +134,7 @@ function NewsOnHome(props) {
                                                                 />
                                                             </a>
                                                             <div className="title-source-time-info">
-                                                                <a href={`/news/${convertToSlug(item.title)}/${item.id}`} title={item.title} className="title">{item.title}</a>
+                                                                <a href={`/news/${convertToSlug(item.title)}/${item.id}`} className="title">{item.title}</a>
                                                                 <div className="source-time-info">
                                                                     <span className="source"><Image src={IconUser} alt="Source" className="icon" /><span className="source-name">{item.sourceSite || ""}</span></span>
                                                                     <span className="time"><Image src={IconTime} alt="Time" className="icon" /><span className="hour">{timePublished.date}</span></span>
@@ -142,7 +142,6 @@ function NewsOnHome(props) {
                                                             </div>
                                                         </div>
                                                     })
-
                                                     : t("DataNotFound")
                                             }
                                         </div>
@@ -152,14 +151,13 @@ function NewsOnHome(props) {
                             <div className="other-news">
                                 <div className="row">
                                     <div className="col-md-12">
-
                                         <ReactList
                                             itemRenderer={
                                                 (index, key) => {
                                                     const item = others[index];
                                                     let timePublished = getTimeByRawTime(item?.publishedDate)
                                                     return <div className="item" key={key}>
-                                                        `                                        <a href={`/news/${convertToSlug(item.title)}/${item.id}`} title={item.title} className="link-image-detail">
+                                                        <a href={`/news/${convertToSlug(item.title)}/${item.id}`} className="link-image-detail">
                                                             <Image src={item.thumbnail} alt="News" className="thumbnail"
                                                                 onError={(e) => {
                                                                     e.target.src = "/logo-normal.svg"
@@ -169,7 +167,7 @@ function NewsOnHome(props) {
                                                         </a>
                                                         <div className="title-source-time-info">
                                                             <div className="main-info">
-                                                                <a href={`/news/${convertToSlug(item.title)}/${item.id}`} title={item.title} className="title">{item.title}</a>
+                                                                <a href={`/news/${convertToSlug(item.title)}/${item.id}`} className="title">{item.title}</a>
                                                                 <p className="description">{subStringDescription(item.description)}...</p>
                                                                 <div className="source-time-info">
                                                                     <span className="source"><Image src={IconUser} alt="Source" className="icon" /><span className="source-name">{item.sourceSite || ""}</span></span>
@@ -177,7 +175,7 @@ function NewsOnHome(props) {
                                                                 </div>
                                                             </div>
                                                             <div className="btn-detail">
-                                                                <a href={`/news/${convertToSlug(item.title)}/${item.id}`} title={topOne.title} className="detail"><span>{t("Details")}</span><Image src={IconViewDetail} alt="Detail" className="icon-view-detail" /></a>
+                                                                <a href={`/news/${convertToSlug(item.title)}/${item.id}`} className="detail"><span>{t("Details")}</span><Image src={IconViewDetail} alt="Detail" className="icon-view-detail" /></a>
                                                             </div>
                                                         </div>
                                                     </div>

@@ -9,6 +9,7 @@ import WorkingInformationComponent from './ResultBlock/WorkingInformationCompone
 import LeaveInformationComponent from './ResultBlock/LeaveInformationComponent'
 import { exportToPDF } from "../../commons/Utils"
 import ReactHTMLTableToExcel from "react-html-table-to-excel"
+import HOCComponent from '../../components/Common/HOCComponent'
 
 class PaySlipsComponent extends React.Component {
   constructor(props) {

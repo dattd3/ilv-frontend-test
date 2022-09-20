@@ -2,6 +2,7 @@ import React from 'react'
 import { Tabs, Tab } from 'react-bootstrap'
 import ResignationRequestsManagementPage from './ResignationRequestsManagementPage'
 import { withTranslation  } from "react-i18next";
+import HOCComponent from '../../../components/Common/HOCComponent'
 
 class ResignationRequestsManagement extends React.Component {
   constructor(props) {
@@ -29,4 +30,5 @@ class ResignationRequestsManagement extends React.Component {
     )
   }
 }
-export default withTranslation()(ResignationRequestsManagement)
+
+export default HOCComponent(withTranslation()(ResignationRequestsManagement))

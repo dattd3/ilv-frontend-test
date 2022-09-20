@@ -8,6 +8,7 @@ import ProjectInProgress from "./ProjectInProgress"
 import ProjectCompleted from "./ProjectCompleted"
 import UserInfo from './UserInfo'
 import LoadingModal from '../../../components/Common/LoadingModal'
+import HOCComponent from '../../../components/Common/HOCComponent'
 
 function MyProfile() {
     const { t } = useTranslation()
@@ -65,4 +66,4 @@ function MyProfile() {
     )
 }
 
-export default MyProfile
+export default HOCComponent(MyProfile)

@@ -8,6 +8,7 @@ import Constants from '../../../commons/Constants'
 import LoadingSpinner from "../../../components/Forms/CustomForm/LoadingSpinner";
 import ResultModal from '../../Registration/ResultModal';
 import CustomPaging from '../../../components/Common/CustomPaging'
+import HOCComponent from '../../../components/Common/HOCComponent'
 import { checkIsExactPnL } from '../../../commons/commonFunctions';
 
 class SupportOnboardComponent extends React.Component {
@@ -520,4 +521,4 @@ class SupportOnboardComponent extends React.Component {
   }
 }
 
-export default withTranslation()(SupportOnboardComponent)
+export default HOCComponent(withTranslation()(SupportOnboardComponent))

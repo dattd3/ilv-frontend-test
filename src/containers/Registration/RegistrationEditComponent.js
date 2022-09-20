@@ -4,6 +4,7 @@ import BusinessTripComponent from './BusinessTrip/BusinessTripComponent'
 import InOutTimeUpdateComponent from './InOutTimeUpdate/InOutTimeUpdateComponent'
 import SubstitutionComponent from './Substitution/SubstitutionComponent'
 import axios from 'axios'
+import HOCComponent from '../../components/Common/HOCComponent'
 import Constants from '../../commons/Constants'
 
 class RegistrationEditComponent extends React.Component {
@@ -43,4 +44,5 @@ class RegistrationEditComponent extends React.Component {
       )
     }
   }
-export default RegistrationEditComponent
+  
+export default HOCComponent(RegistrationEditComponent)

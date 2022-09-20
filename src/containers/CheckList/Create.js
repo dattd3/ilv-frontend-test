@@ -2,7 +2,7 @@ import React from "react";
 import { Button, Card } from 'react-bootstrap';
 import readXlsxFile from 'read-excel-file'
 import { useTranslation } from "react-i18next"
-
+import HOCComponent from '../../components/Common/HOCComponent'
 
 function Create(props) {
     const { t } = useTranslation()
@@ -122,4 +122,4 @@ function Create(props) {
     );
 }
 
-export default Create;
+export default HOCComponent(Create);

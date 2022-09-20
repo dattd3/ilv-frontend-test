@@ -7,6 +7,7 @@ import '../../assets/css/about-vinfast/contact_page.css';
 import '../../assets/css/about-vinfast/theme-elements.css';
 import '../../assets/css/about-vinfast/vendor.min.css';
 import Carousel from 'react-bootstrap/Carousel'
+import HOCComponent from '../../components/Common/HOCComponent'
 
 const usePreload = (params) => {
   const api = useApi();
@@ -320,4 +321,4 @@ function Vingroup(props) {
   }
 }
 
-export default Vingroup;
+export default HOCComponent(Vingroup)

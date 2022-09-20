@@ -6,6 +6,7 @@ import moment from 'moment'
 import map from '../map.config'
 import { getRequestConfigurations, getMuleSoftHeaderConfigurations } from "../../commons/Utils"
 import WorkingProcessSearch from './workingProcessSearch'
+import HOCComponent from '../../components/Common/HOCComponent'
 import Constants from '../../commons/Constants'
 
 const ChangeWorkingAppointment = (props) => {
@@ -342,7 +343,7 @@ class MyComponent extends React.Component {
     }
 }
 
-const WorkingProcess = withTranslation()(MyComponent)
+const WorkingProcess = HOCComponent(withTranslation()(MyComponent))
 
 export default function App() {
     return (

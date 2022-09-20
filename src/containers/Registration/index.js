@@ -8,6 +8,7 @@ import LeaveOfAbsence from './LeaveOfAbsence/LeaveOfAbsenceComponent'
 import BusinessTrip from './BusinessTrip/BusinessTripComponent'
 import SubstitutionComponent from './Substitution/SubstitutionComponent'
 import InOutTimeUpdate from './InOutTimeUpdate/InOutTimeUpdateComponent'
+import HOCComponent from '../../components/Common/HOCComponent'
 import { isEnableShiftChangeFunctionByPnLVCode, isEnableInOutTimeUpdateFunctionByPnLVCode, getRequestConfigurations } from "../../commons/Utils"
 
 class RegistrationComponent extends React.Component {
@@ -109,4 +110,5 @@ class RegistrationComponent extends React.Component {
     )
   }
 }
-export default withTranslation()(RegistrationComponent)
+
+export default HOCComponent(withTranslation()(RegistrationComponent))

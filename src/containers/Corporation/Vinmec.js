@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import Media from 'react-bootstrap/Media';
 import { useTranslation } from "react-i18next";
 import LoadingSpinner from "../../components/Forms/CustomForm/LoadingSpinner";
+import HOCComponent from '../../components/Common/HOCComponent'
 
 function Vingroup(props) {
     const { t } = useTranslation();
@@ -96,4 +97,5 @@ function Vingroup(props) {
         return <LoadingSpinner />;
     }
 }
-export default Vingroup;
+
+export default HOCComponent(Vingroup)

@@ -24,6 +24,7 @@ import LoadingSpinner from '../../../components/Forms/CustomForm/LoadingSpinner'
 import LoadingModal from '../../../components/Common/LoadingModal'
 import { checkIsExactPnL } from '../../../commons/commonFunctions'
 import ContractEvaluationdetail from './detail'
+import HOCComponent from '../../../components/Common/HOCComponent'
 
 const TIME_FORMAT = 'HH:mm'
 const DATE_FORMAT = 'DD/MM/YYYY'
@@ -2025,4 +2026,4 @@ renderEvalution = (name, data, isDisable) => {
   }
 }
 
-export default withTranslation()(LeaveOfAbsenceDetailComponent)
+export default HOCComponent(withTranslation()(LeaveOfAbsenceDetailComponent))

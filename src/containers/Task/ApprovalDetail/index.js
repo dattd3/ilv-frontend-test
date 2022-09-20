@@ -7,6 +7,7 @@ import Constants from '../../../commons/Constants'
 import ConfirmationModal from '../../PersonalInfo/edit/ConfirmationModal'
 import { withTranslation } from "react-i18next"
 import _ from 'lodash'
+import HOCComponent from '../../../components/Common/HOCComponent'
 
 class ApprovalDetail extends React.Component {
   constructor() {
@@ -348,4 +349,4 @@ class ApprovalDetail extends React.Component {
   }
 }
 
-export default withTranslation()(ApprovalDetail)
+export default HOCComponent(withTranslation()(ApprovalDetail))

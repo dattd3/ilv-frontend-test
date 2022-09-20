@@ -15,6 +15,7 @@ import ActionButtons from "./ActionButtons"
 import ResultModal from './edit/ResultModal'
 import ConfirmationModal from './edit/ConfirmationModal'
 import PersonalInfoEdit from "../PersonalInfo/edit/PersonalInfoEdit"
+import HOCComponent from '../../components/Common/HOCComponent'
 import map from '../../containers/map.config'
 
 const actionType = {
@@ -603,11 +604,10 @@ class MyComponent extends React.Component {
   }
 }
 
-const PersonInfo = withTranslation()(withRouter(MyComponent))
+const PersonInfo = HOCComponent(withTranslation()(withRouter(MyComponent)))
 
 export default function App() {
   return (
     <PersonInfo />
   );
 }
-
