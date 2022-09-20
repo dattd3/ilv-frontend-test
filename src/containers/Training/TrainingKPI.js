@@ -3,7 +3,7 @@ import { Row, Col, Card, ProgressBar } from 'react-bootstrap';
 import { useApi, useFetcher, useGuardStore } from "../../modules";
 import LoadingSpinner from "../../components/Forms/CustomForm/LoadingSpinner";
 import { useTranslation } from "react-i18next";
-
+import HOCComponent from '../../components/Common/HOCComponent'
 
 const usePreload = (params) => {
     const api = useApi();
@@ -120,4 +120,4 @@ function TrainingKPI(props) {
     );
 }
 
-export default TrainingKPI;
+export default HOCComponent(TrainingKPI);

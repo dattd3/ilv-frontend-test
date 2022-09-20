@@ -7,6 +7,7 @@ import { getRequestConfigurations } from '../../../commons/Utils'
 import ProjectRowItem from '../Share/ProjectRowItem'
 import LoadingModal from '../../../components/Common/LoadingModal'
 import CustomPaging from '../../../components/Common/CustomPaging'
+import HOCComponent from '../../../components/Common/HOCComponent'
 import map from '../../map.config'
 
 function ListProjects(props) {
@@ -129,4 +130,4 @@ function ListProjects(props) {
 
 }
 
-export default ListProjects
+export default HOCComponent(ListProjects)

@@ -4,6 +4,7 @@ import PositionRecruitingSearch from './PositionRecruitingSearch'
 import PositionRecruitingTable from './PositionRecruitingTable'
 import CustomPaging from '../../../components/Common/CustomPaging'
 import TableUtil from '../../../components/Common/table'
+import HOCComponent from '../../../components/Common/HOCComponent'
 
 class PositionRecruiting extends React.Component {
   constructor(props) {
@@ -95,4 +96,4 @@ class PositionRecruiting extends React.Component {
   }
 }
 
-export default PositionRecruiting
+export default HOCComponent(PositionRecruiting)

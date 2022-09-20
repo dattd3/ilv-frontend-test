@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next";
 import { useApi, useFetcher } from "../../../modules";
 import NewsRelation from './NewsRelation';
 import LoadingSpinner from "../../../components/Forms/CustomForm/LoadingSpinner";
+import HOCComponent from '../../../components/Common/HOCComponent'
 import IconBack from '../../../assets/img/icon/Icon-Arrow-Left.svg'
 import IconUser from '../../../assets/img/icon/Icon-User.svg'
 import IconTime from '../../../assets/img/icon/Icon-Time.svg'
@@ -88,4 +89,5 @@ function NewsDetail(props) {
         </div>
     );
 }
-export default NewsDetail;
+
+export default HOCComponent(NewsDetail);

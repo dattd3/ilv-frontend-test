@@ -11,6 +11,7 @@ import TimeSheetMember from './TimeSheetMember'
 import Constants from "../../../../commons/Constants";
 import { formatStringByMuleValue, getMuleSoftHeaderConfigurations, getRequestConfigurations, getDateByRangeAndFormat } from "../../../../commons/Utils"
 import ResultDetailModal from './ResultDetailModal'
+import HOCComponent from '../../../../components/Common/HOCComponent'
 
 const DATE_TYPE = {
   DATE_OFFSET: 0,
@@ -949,4 +950,4 @@ class EmployeeTimesheets extends Component {
   }
 }
 
-export default withTranslation()(EmployeeTimesheets);
+export default HOCComponent(withTranslation()(EmployeeTimesheets))

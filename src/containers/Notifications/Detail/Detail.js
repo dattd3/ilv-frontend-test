@@ -5,6 +5,7 @@ import purify from "dompurify"
 import Constants from '../../../commons/Constants';
 import SubmitQuestionModal from '../../QuestionAndAnswer/SubmitQuestionModal'
 import StatusModal from '../../../components/Common/StatusModal'
+import HOCComponent from '../../../components/Common/HOCComponent'
 import { isEnableFunctionByFunctionName } from "../../../commons/Utils"
 
 class NotificationDetailComponent extends React.Component {
@@ -151,4 +152,4 @@ class NotificationDetailComponent extends React.Component {
   }
 }
 
-export default withTranslation()(NotificationDetailComponent)
+export default HOCComponent(withTranslation()(NotificationDetailComponent))

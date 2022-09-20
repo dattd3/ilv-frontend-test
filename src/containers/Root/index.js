@@ -1,5 +1,6 @@
 import React, { Suspense } from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
+// import { CookiesProvider } from 'react-cookie';
 import { GuardianRouter } from "../../modules";
 import routes, { RouteSettings } from "../routes.config";
 import Maintenance from "../Maintenance";
@@ -33,33 +34,35 @@ function Root() {
   // });
 
   return (
-    <ContextProviders>
-      <BrowserRouter>
-        {/* { !listUsersIgnoreMaintenanceMode.includes(currentUserLogged) && <Maintenance /> } */}
+    // <CookiesProvider>
+      <ContextProviders>
+        <BrowserRouter>
+          {/* { !listUsersIgnoreMaintenanceMode.includes(currentUserLogged) && <Maintenance /> } */}
 
-        {/* { listUsersIgnoreMaintenanceMode.includes(currentUserLogged) && */}
-        <Switch>
-          {routes.map(
-            ({ component: Content, key, routeProps, contentProps }) => (
-              <Route
-                key={key}
-                {...routeProps}
-                render={props => (
-                  <GuardianRouter {...props} settings={RouteSettings}>
-                    {childProps => (
-                      <Suspense fallback={<LoadingModal show={true} />}>
-                        <Content {...contentProps} {...childProps} />
-                      </Suspense>
-                    )}
-                  </GuardianRouter>
-                )}
-              />
-            )
-          )}
-        </Switch>
-        {/* } */}
-      </BrowserRouter>
-    </ContextProviders>
+          {/* { listUsersIgnoreMaintenanceMode.includes(currentUserLogged) && */}
+          <Switch>
+            {routes.map(
+              ({ component: Content, key, routeProps, contentProps }) => (
+                <Route
+                  key={key}
+                  {...routeProps}
+                  render={props => (
+                    <GuardianRouter {...props} settings={RouteSettings}>
+                      {childProps => (
+                        <Suspense fallback={<LoadingModal show={true} />}>
+                          <Content {...contentProps} {...childProps} />
+                        </Suspense>
+                      )}
+                    </GuardianRouter>
+                  )}
+                />
+              )
+            )}
+          </Switch>
+          {/* } */}
+        </BrowserRouter>
+      </ContextProviders>
+    // </CookiesProvider>
   );
 }
 

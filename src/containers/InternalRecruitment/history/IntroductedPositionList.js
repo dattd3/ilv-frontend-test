@@ -3,6 +3,7 @@ import axios from 'axios'
 import moment from 'moment'
 import { OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { withTranslation } from "react-i18next"
+import HOCComponent from '../../../components/Common/HOCComponent'
 
 class PositionAppliedList extends React.Component {
   constructor(props) {
@@ -117,4 +118,4 @@ class PositionAppliedList extends React.Component {
   }
 }
 
-export default withTranslation()(PositionAppliedList)
+export default HOCComponent(withTranslation()(PositionAppliedList))

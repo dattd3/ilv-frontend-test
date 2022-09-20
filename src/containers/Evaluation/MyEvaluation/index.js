@@ -11,10 +11,13 @@ import LoadingModal from '../../../components/Common/LoadingModal'
 import StatusModal from '../../../components/Common/StatusModal'
 import { evaluationStatus } from '../Constants'
 import IconLoop from '../../../assets/img/icon/Icon_Loop.svg'
+import { useCookiesHook } from '../../../commons/hooks'
+import HOCComponent from '../../../components/Common/HOCComponent'
 
 function EvaluationFormItem(props) {
     const { t } = useTranslation()
     const { item } = props
+
     const statusDone = 5
     const statusMapping = {
         label: item?.status === statusDone ? t("EvaluationDetailCompleted") : t("EvaluationInProgress"),
@@ -44,6 +47,8 @@ function MyEvaluation(props) {
     const { t } = useTranslation()
     const guard = useGuardStore()
     const user = guard.getCurentUser()
+    // const { accessToken } = useCookiesHook()
+    
     const [evaluationForms, SetEvaluationForms] = useState([])
     const [years, SetYears] = useState([])
     const [year, SetYear] = useState({value: currentYear, label: currentYear})
@@ -202,4 +207,4 @@ function MyEvaluation(props) {
     )
 }
 
-export default MyEvaluation
+export default HOCComponent(MyEvaluation)

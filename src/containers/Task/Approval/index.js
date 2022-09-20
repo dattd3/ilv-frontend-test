@@ -7,6 +7,7 @@ import TaskList from '../taskList'
 import ConfirmRequestModal from '../ConfirmRequestModal'
 import Constants from '../../../commons/Constants'
 import processingDataReq from "../../Utils/Common"
+import HOCComponent from '../../../components/Common/HOCComponent'
 
 class ApprovalComponent extends React.Component {
   constructor(props) {
@@ -89,4 +90,4 @@ class ApprovalComponent extends React.Component {
   }
 }
 
-export default withTranslation()(ApprovalComponent)
+export default HOCComponent(withTranslation()(ApprovalComponent))

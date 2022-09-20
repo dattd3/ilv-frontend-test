@@ -4,6 +4,7 @@ import CustomPaging from '../../../components/Common/CustomPaging';
 import LoadingSpinner from "../../../components/Forms/CustomForm/LoadingSpinner";
 import { useTranslation } from "react-i18next";
 import NewsItemGrid from "./NewsItemGrid";
+import HOCComponent from '../../../components/Common/HOCComponent'
 
 const usePreload = (params) => {
     const api = useApi();
@@ -57,4 +58,5 @@ function ListNews() {
         return <LoadingSpinner />;
     }
 }
-export default ListNews;
+
+export default HOCComponent(ListNews)

@@ -6,6 +6,7 @@ import EmptyComponent from './EmptyComponent'
 import Health from './WelfareComponents/Health'
 import InsuranceSocial from './WelfareComponents/InsuranceSocial'
 import Resource from './WelfareComponents/Resource'
+import HOCComponent from '../../components/Common/HOCComponent'
 
 class InsuranceRegime extends React.Component {
     constructor(props) {
@@ -40,4 +41,5 @@ class InsuranceRegime extends React.Component {
         )
     }
 }
-export default withTranslation()(InsuranceRegime)
+
+export default HOCComponent(withTranslation()(InsuranceRegime))

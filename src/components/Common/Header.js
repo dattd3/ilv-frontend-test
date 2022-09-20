@@ -207,9 +207,9 @@ function Header(props) {
     //     }
     // });
 
-    if(!localStorage.getItem('tokenExpired') || !moment(localStorage.getItem('tokenExpired')).isValid() ||  moment().isAfter(moment(localStorage.getItem('tokenExpired')))) {
-        guard.setLogOut();
-        window.location.reload();
+    const accessToken = localStorage.getItem('accessToken')
+    if (!accessToken || accessToken == 'null' || accessToken == 'undefined') {
+        userLogOut()
     }
 
     const handleClickSetShow = () => {

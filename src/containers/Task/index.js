@@ -11,6 +11,7 @@ import Constants from '../../commons/Constants'
 import processingDataReq from "../Utils/Common"
 import { actionApprovalDelegation } from "./ApprovalDelegation/Constant"
 import StatusModal from "../../components/Common/StatusModal"
+import HOCComponent from '../../components/Common/HOCComponent'
 
 const tabKey = {
     request: 'request',
@@ -160,4 +161,4 @@ class Task extends React.Component {
     }
 }
 
-export default withTranslation()(Task)
+export default HOCComponent(withTranslation()(Task))

@@ -8,6 +8,7 @@ import LeaveOfAbsenceComponent from '../../Registration/LeaveOfAbsence/LeaveOfAb
 import BusinessTripComponent from '../../Registration/BusinessTrip/BusinessTripComponent'
 import TerminationDetailComponent from '../../Registration/RegistrationEmploymentTermination/RegistrationTerninationEdit'
 import ProposedResignationEdit from '../../Registration/RegistrationEmploymentTermination/ProposedResignationEdit'
+import HOCComponent from '../../../components/Common/HOCComponent'
 
 class TaskEditComponent extends React.Component {
     constructor(props) {
@@ -60,4 +61,5 @@ class TaskEditComponent extends React.Component {
       )
     }
   }
-export default TaskEditComponent
+
+export default HOCComponent(TaskEditComponent)

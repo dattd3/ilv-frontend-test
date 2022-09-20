@@ -16,6 +16,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ResultModal from "../Registration/ResultModal";
 import { Spinner } from "react-bootstrap";
+import HOCComponent from '../../components/Common/HOCComponent'
 
 const CreateInsuranceHealth = ({ t }) => {
   const [type, setType] = useState(null);
@@ -1069,4 +1070,4 @@ const CreateInsuranceHealth = ({ t }) => {
   );
 };
 
-export default withTranslation()(CreateInsuranceHealth);
+export default HOCComponent(withTranslation()(CreateInsuranceHealth))
