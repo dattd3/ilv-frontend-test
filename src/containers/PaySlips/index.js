@@ -17,14 +17,14 @@ class PaySlipsComponent extends React.Component {
 
     this.state = {
       isShowConfirmPasswordModal: true,
-      acessToken: new URLSearchParams(props.history.location.search).get('accesstoken') || null,
+      acessToken: new URLSearchParams(props?.history?.location?.search).get('accesstoken') || null,
       payslip: null,
       isSearch: false
     }
   }
 
   componentDidMount() {
-    const queryParams = new URLSearchParams(this.props.history.location.search)
+    const queryParams = new URLSearchParams(this.props?.history?.location?.search)
     if (queryParams.has('accesstoken')) {
       queryParams.delete('accesstoken')
       this.props.history.replace({

@@ -12,7 +12,7 @@ class InternalWelfareComponent extends React.Component {
     constructor(props) {
         super();
         this.state = {
-            tab: new URLSearchParams(props.history.location.search).get('tab') || "Resource",
+            tab: new URLSearchParams(props?.history?.location?.search).get('tab') || "Resource",
             dataWelfare: [],
             isLoading: false,
             hiddenButton: true,

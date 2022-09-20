@@ -27,7 +27,7 @@ class Task extends React.Component {
             isShowApprovalTab: true,
             isShowPrepareTab: false,
             isShowJobEvalutionTab: false,
-            tabActive: new URLSearchParams(props.history.location.search).get('tab') || "request",
+            tabActive: new URLSearchParams(props?.history?.location?.search).get('tab') || "request",
             tasks: [],
             approvalDelegationModal: {
                 isShowApprovalDelegationModal: false,

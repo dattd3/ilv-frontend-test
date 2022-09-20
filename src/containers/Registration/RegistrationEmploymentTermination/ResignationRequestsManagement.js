@@ -8,7 +8,7 @@ class ResignationRequestsManagement extends React.Component {
   constructor(props) {
     super()
     this.state = {
-      tab: new URLSearchParams(props.history.location.search).get('tab') || "ResignationRequestsManagementPage",
+      tab: new URLSearchParams(props?.history?.location?.search).get('tab') || "ResignationRequestsManagementPage",
     }
   }
 

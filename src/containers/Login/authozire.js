@@ -273,7 +273,7 @@ function Authorize(props) {
     }
 
     useEffect(() => {
-        const queryParams = new URLSearchParams(props.history.location.search);
+        const queryParams = new URLSearchParams(props?.history?.location?.search);
         if (queryParams.has('accesstoken')) {
             const accessToken = queryParams?.get('accesstoken') || ''
             const refreshToken = queryParams?.get('refreshtoken') || ''
