@@ -16,7 +16,7 @@ build_development:
   only:
     refs:
       - develop
-      - khanhnn17
+      - Refresh-token
 
 deploy_to_development_environment:
   stage: deploy
@@ -31,7 +31,7 @@ deploy_to_development_environment:
   when: manual
   only:
       - develop
-      - khanhnn17
+      - Refresh-token
       
 build_production:
   stage: build
