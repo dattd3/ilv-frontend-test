@@ -9,7 +9,7 @@ const tokenTimeExpireStorage = localStorage.getItem('timeTokenExpire')
 const refreshToken = localStorage.getItem('refreshToken')
  
 function HOCComponent(Component) {
-    return function WrappedComponent() {
+    return function WrappedComponent(props) {
         const warning = 0
         const expired = 1
         const modalTypeContentMapping = {
@@ -102,13 +102,6 @@ function HOCComponent(Component) {
                 }
             } catch (e) {
                 window.location.reload()
-                // SetWarningTokenModal({
-                //     ...warningTokenModal,
-                //     isShow: false,
-                //     type: warning,
-                //     title: '',
-                //     content: ''
-                // })
             } finally {
                 SetWarningTokenModal({
                     ...warningTokenModal,
@@ -140,7 +133,7 @@ function HOCComponent(Component) {
                 handleHideModal={handleHideModal} 
                 handleAccept={handleAccept}
             />
-            <Component />
+            <Component {...props} />
             </>
         )
     }
