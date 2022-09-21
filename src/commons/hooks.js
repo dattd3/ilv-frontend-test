@@ -1,5 +1,6 @@
+import React, { useEffect, useState } from "react"
 import moment from 'moment'
-import { useEffect, useState } from 'react'
+// import createActivityDetector from 'activity-detector';
 // import { useCookies } from 'react-cookie'
 
 const useCookiesHook = () => {
@@ -33,5 +34,18 @@ const getReturnValues = (remainingTime) => {
     const seconds = Math.floor((remainingTime % (1000 * 60)) / 1000)
     return [minutes < 10 ? `0${minutes}` : minutes, seconds < 10 ? `0${seconds}` : seconds]
 }
+
+// const useIdle = (options) => {
+//     const [isIdle, setIsIdle] = React.useState(false)
+
+//     React.useEffect(() => {
+//         const activityDetector = createActivityDetector(options)
+//         activityDetector.on('idle', () => setIsIdle(true))
+//         activityDetector.on('active', () => setIsIdle(false))
+//         return () => activityDetector.stop()
+//     }, [])
+
+//     return isIdle
+// }
 
 export { useCountdown, useCookiesHook }

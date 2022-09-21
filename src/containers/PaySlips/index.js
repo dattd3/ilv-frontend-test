@@ -132,4 +132,4 @@ class PaySlipsComponent extends React.Component {
   }
 }
 
-export default withTranslation()(PaySlipsComponent)
+export default HOCComponent(withTranslation()(PaySlipsComponent))

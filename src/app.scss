@@ -3881,6 +3881,7 @@ span.badge-notification[data-badge]::after {
 
 .warning-token-expired-modal {
   font: normal 14px Arial, Helvetica, sans-serif;
+  z-index: 99999999;
   .modal-dialog {
     max-width: 600px;
     margin-top: 16rem;

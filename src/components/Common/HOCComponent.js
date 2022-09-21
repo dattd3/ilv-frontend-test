@@ -1,9 +1,9 @@
 import React, { useState } from "react"
 import moment from 'moment'
 import axios from 'axios'
-// import awsConfig from '../../../constants/aws-config'
 import { getRequestConfigurations } from '../../commons/Utils'
 import WarningTokenModal from './WarningTokenModal'
+// import { useIdle } from '../../commons/hooks'
 
 const tokenTimeExpireStorage = localStorage.getItem('timeTokenExpire')
 const refreshToken = localStorage.getItem('refreshToken')
@@ -14,8 +14,10 @@ function HOCComponent(Component) {
         const expired = 1
         const modalTypeContentMapping = {
             [warning]: {
-                title: 'Cảnh báo hết hạn phiên làm việc',
-                content: 'Phiên làm việc của bạn sẽ hết hạn sau 05:00 phút. Bạn có muốn gia hạn phiên làm việc?'
+                // title: 'Cảnh báo hết hạn phiên làm việc',
+                // content: 'Phiên làm việc của bạn sẽ hết hạn sau 05:00 phút. Bạn có muốn gia hạn phiên làm việc?',
+                title: 'Thông báo đăng xuất',
+                content: 'Bạn có muốn đăng xuất khỏi ứng dụng?'
             },
             [expired]: {
                 title: 'Phiên làm việc đã kết thúc',
@@ -23,11 +25,12 @@ function HOCComponent(Component) {
             }
         }
         const [warningTokenModal, SetWarningTokenModal] = useState({
-            isShow: false,
+            isShow: true,
             type: warning,
             title: '',
             content: ''
         })
+        // const isIdle = useIdle({timeToIdle: 5000})
 
         React.useEffect(() => {
             const now = moment()
@@ -51,23 +54,23 @@ function HOCComponent(Component) {
                 clearTimeout(timerForWarning)
             }
 
-            let timerForExpired = null
-            if (countDownTime > 0) {
-                timerForExpired = setTimeout(() => {
-                    SetWarningTokenModal({
-                        ...warningTokenModal,
-                        isShow: true,
-                        type: expired,
-                        title: modalTypeContentMapping[expired].title,
-                        content: modalTypeContentMapping[expired].content
-                    })
-                }, countDownTime)
-            }
+            // let timerForExpired = null
+            // if (countDownTime > 0) {
+            //     timerForExpired = setTimeout(() => {
+            //         SetWarningTokenModal({
+            //             ...warningTokenModal,
+            //             isShow: true,
+            //             type: expired,
+            //             title: modalTypeContentMapping[expired].title,
+            //             content: modalTypeContentMapping[expired].content
+            //         })
+            //     }, countDownTime)
+            // }
 
-            return () => {
-                clearTimeout(timerForWarning)
-                clearTimeout(timerForExpired)
-            }
+            // return () => {
+            //     clearTimeout(timerForWarning)
+            //     // clearTimeout(timerForExpired)
+            // }
         }, [])
 
         const handleAccept = (typeModal) => {
@@ -89,10 +92,6 @@ function HOCComponent(Component) {
                 const response = await axios.post(`https://myvpapi.cloudvst.net/oauth2/token`, formData, config)
 
                 if (response && response?.data) {
-                    // error
-                    // error_description
-                    // expires_in : "4403"
-                    // expires_on: "1663578859"
                     const { access_token, refresh_token, expires_in, expires_on } = response?.data
                     const timeTokenExpire = moment().add(parseInt(expires_in), 'seconds').format('YYYYMMDDHHmmss')
                     localStorage.setItem('timeTokenExpire', timeTokenExpire)
@@ -112,6 +111,7 @@ function HOCComponent(Component) {
                 })
             }
         }
+        
 
         const handleHideModal = () => {
             SetWarningTokenModal({
@@ -133,6 +133,7 @@ function HOCComponent(Component) {
                 handleHideModal={handleHideModal} 
                 handleAccept={handleAccept}
             />
+            {/* <Component {...{...props, isIdle: isIdle}} /> */}
             <Component {...props} />
             </>
         )
