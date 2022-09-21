@@ -24,7 +24,8 @@ const WarningTokenModal = ({isShow, type, title, content, handleHideModal, handl
         >
         <Modal.Body className='rounded'>
             <div className='text-title'>{title}</div>
-            <div className='content'>{type === warning ? `Phiên làm việc của bạn sẽ hết hạn sau ${minutes}:${seconds} phút. Bạn có muốn gia hạn phiên làm việc?` : content}</div>
+            {/* <div className='content'>{type === warning ? `Phiên làm việc của bạn sẽ hết hạn sau ${minutes}:${seconds} phút. Bạn có muốn gia hạn phiên làm việc?` : content}</div> */}
+            <div className='content'>{type === warning ? `Phiên làm việc của bạn đã hết hạn. Bạn có muốn gia hạn phiên làm việc?` : content}</div>
             <div className='text-right form-button-group'>
             {
                 type === warning 
