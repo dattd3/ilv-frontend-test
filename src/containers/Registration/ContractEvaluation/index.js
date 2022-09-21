@@ -1226,7 +1226,7 @@ renderEvalution = (name, data, isDisable) => {
     })
         .then(response => {
           if(response.data.result && response.data.result.code == '000000'){
-            if(this.state.type == 'assess' && 
+            if(this.state.type == 'assess' && actionType != 1 &&
               ((this.state.data.processStatus == 10 && checkIsExactPnL(Constants.pnlVCode.VinSchool, Constants.pnlVCode.VinHome, Constants.PnLCODE.VinFast, Constants.PnLCODE.VinFastTrading, Constants.pnlVCode.Vin3S)) || 
                 (this.state.processStatus == 11 && !checkIsExactPnL(Constants.pnlVCode.VinSchool, Constants.pnlVCode.VinHome, Constants.PnLCODE.VinFast, Constants.PnLCODE.VinFastTrading, Constants.pnlVCode.Vin3S)))) {
                   this.showSalaryPropose(actionType, home);
@@ -1245,7 +1245,7 @@ renderEvalution = (name, data, isDisable) => {
             //     this.setDisabledSubmitButton(false)
             // }
         })
-        .catch(response => {
+        .catch(err => {
             this.showStatusModal("Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
             this.setDisabledSubmitButton(false, actionType)
         })
@@ -2083,18 +2083,9 @@ renderEvalution = (name, data, isDisable) => {
                           {'Phê duyệt'}
                   </button>
                   <button type="button" className="btn btn-danger float-right ml-3 shadow" onClick={() => this.handleReject()} disabled={this.state.disabledSubmitButton}>
-                      {!this.state.disabledSubmitButton ?
                           <>
                               <img src={IconDelete} className='mr-2' alt="cancel" />
-                          </> :
-                          <Spinner
-                              as="span"
-                              animation="border"
-                              size="sm"
-                              role="status"
-                              aria-hidden="true"
-                              className="mr-2"
-                          />}
+                          </>
                           {'Từ chối'}
                   </button>
                   </> : 
@@ -2143,20 +2134,9 @@ renderEvalution = (name, data, isDisable) => {
                     </button>
 
                     <button type="button" className=" btn btn-danger  float-right ml-3 shadow" onClick={() => this.handleRefuse()} disabled={this.state.disabledSubmitButton}>
-                      {!(this.state.disabledSubmitButton && this.state.actionType == 1) ?
-                        <>
-                            {/* <i className="fa fa-paper-plane mr-2" aria-hidden="true">
-                            </i> */}
-                        <img src={IconDelete} className='mr-2' alt="cancel" />
-                        </> :
-                        <Spinner
-                            as="span"
-                            animation="border"
-                            size="sm"
-                            role="status"
-                            aria-hidden="true"
-                            className="mr-2"
-                        />}
+                         <>
+                              <img src={IconDelete} className='mr-2' alt="cancel" />
+                          </>
                         {'Từ chối'}
                     </button>
                     </> : null }
