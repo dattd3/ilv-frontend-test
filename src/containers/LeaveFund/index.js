@@ -33,8 +33,8 @@ class LeaveFund extends React.Component {
 
   initialData = () => {
     const config = getMuleSoftHeaderConfigurations()
-    const subordinatesEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/subordinate`
-    const subordinateLeaveOfAbsencesEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/subordinate/leaveofabsence?current_year=${this.currentYear}`
+    const subordinatesEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/subordinate`
+    const subordinateLeaveOfAbsencesEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/subordinate/leaveofabsence?current_year=${this.currentYear}`
     const requestSubordinates = axios.get(subordinatesEndpoint, config)
     const requestSubordinateLeaveOfAbsences = axios.get(subordinateLeaveOfAbsencesEndpoint, config)
 
@@ -81,7 +81,7 @@ class LeaveFund extends React.Component {
 
   fetchListSubordinates = async () => {
     const config = getMuleSoftHeaderConfigurations()
-    const responses = await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/subordinate`, config)
+    const responses = await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/subordinate`, config)
     const subordinates = this.prepareSubordinates(responses)
 
     this.setState({

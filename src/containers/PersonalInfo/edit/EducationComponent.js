@@ -31,7 +31,7 @@ class EducationComponent extends React.Component {
   componentDidMount() {
     const config = getMuleSoftHeaderConfigurations()
 
-    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/schools`, config)
+    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/masterdata/schools`, config)
       .then(res => {
         if (res && res.data && res.data.data) {
           let schools = res.data.data;
@@ -46,7 +46,7 @@ class EducationComponent extends React.Component {
         this.updateEducation(this.props.requestedUserProfile.userProfileInfo.update ? this.props.requestedUserProfile.userProfileInfo.update.userProfileHistoryEducation : [])
         this.bindingNewEducationEdited(this.props.requestedUserProfile)
       } else {
-        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/education`, config)
+        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/education`, config)
           .then(res => {
             if (res && res.data && res.data.data) {
               if (!this.props.isEdit) {

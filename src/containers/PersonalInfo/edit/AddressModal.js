@@ -53,7 +53,7 @@ class AddressModal extends React.Component {
 
     getProvices(country_id) {
         const config = getMuleSoftHeaderConfigurations()
-        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/provinces?country_id=${country_id}`, config)
+        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/masterdata/provinces?country_id=${country_id}`, config)
             .then(res => {
                 if (res && res.data && res.data.data) {
                     let provinces = res.data.data;
@@ -64,7 +64,7 @@ class AddressModal extends React.Component {
 
     getDistricts(province_id) {
         const config = getMuleSoftHeaderConfigurations()
-        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/districts?province_id=${province_id}`, config)
+        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/masterdata/districts?province_id=${province_id}`, config)
             .then(res => {
                 if (res && res.data && res.data.data) {
                     let districts = res.data.data;
@@ -75,7 +75,7 @@ class AddressModal extends React.Component {
 
     getWards(district_id) {
         const config = getMuleSoftHeaderConfigurations()
-        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/wards?district_id=${district_id}`, config)
+        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/masterdata/wards?district_id=${district_id}`, config)
             .then(res => {
                 if (res && res.data && res.data.data) {
                     let wards = res.data.data;

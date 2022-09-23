@@ -24,7 +24,7 @@ class LeaveFund extends Component {
     const start = moment(startDate).format("YYYYMMDD").toString();
     const end = moment(endDate).format("YYYYMMDD").toString();
 
-    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/timekeeping?from_time=${start}&to_time=${end}`, config)
+    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/timekeeping?from_time=${start}&to_time=${end}`, config)
       .then((res) => {
         if (res && res.data && res.data.data) {
           const defaultData = {
@@ -67,7 +67,7 @@ class LeaveFund extends Component {
     config['params'] = reasonParams
     muleSoftConfig['params'] = timeoverviewParams
 
-    const timOverviewEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/timeoverview`;
+    const timOverviewEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/timeoverview`;
     const ReasonEndpoint = `${process.env.REACT_APP_REQUEST_URL}request/GetLeaveTypeAndComment`;
     const requestTimOverview = axios.get(timOverviewEndpoint, muleSoftConfig);
     const requestReson = axios.get(ReasonEndpoint, config);

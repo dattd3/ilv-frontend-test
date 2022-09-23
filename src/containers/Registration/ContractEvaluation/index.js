@@ -219,7 +219,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
 
   getSubordinates = async () => {
     try {
-        const responses = await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/subordinate`, getMuleSoftHeaderConfigurations())
+        const responses = await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/subordinate`, getMuleSoftHeaderConfigurations())
 
         if (responses && responses.data) {
             const employees = responses.data.data

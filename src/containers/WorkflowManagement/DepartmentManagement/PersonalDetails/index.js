@@ -38,8 +38,8 @@ class PersonalDetails extends Component {
     const config = getRequestConfigurations()
     const muleSoftConfig = getMuleSoftHeaderConfigurations()
 
-    const timOverviewEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/subordinate/timeoverview`;
-    const leaveAbsenceDetailEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/subordinate/leaveofabsence/detail`;
+    const timOverviewEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/subordinate/timeoverview`;
+    const leaveAbsenceDetailEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/subordinate/leaveofabsence/detail`;
     const ReasonEndpoint = `${process.env.REACT_APP_REQUEST_URL}request/GetLeaveTypeAndComment_subordinate `;
     const requestTimeoverview = axios.post(timOverviewEndpoint, {
       personal_no_list: members,

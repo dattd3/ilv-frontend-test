@@ -24,7 +24,7 @@ class KPIDetail extends React.Component {
 
   componentDidMount() {
     let config = getMuleSoftHeaderConfigurations()
-    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/successfactor/v1/kpi/general?Period=${this.state.Period}`, config)
+    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/successfactor/v2/kpi/general?Period=${this.state.Period}`, config)
       .then(res => {
         if (res && res.data && res.data.data) {
           if (res.data.data.length > 0) {

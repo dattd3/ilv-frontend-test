@@ -74,7 +74,7 @@ const ComposeApiWithGuard = function ({ children }) {
           }]);
           if (err.response.status === 401) {
             guard.setLogOut();
-            Auth.signOut();
+            // Auth.signOut();
           } else if (err.response.status === 403) {
             render(<AccessDenied />, document.getElementById('main-content'));
           }
@@ -94,7 +94,7 @@ const ComposeApiWithGuard = function ({ children }) {
         }]);
         if (err.response.status === 401) {
           guard.setLogOut();
-          Auth.signOut();
+          // Auth.signOut();
         } else if (err.response.status === 403) {
           render(<AccessDenied />, document.getElementById('main-content'));
         }
