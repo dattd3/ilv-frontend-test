@@ -208,7 +208,8 @@ function Header(props) {
     // });
 
     const accessToken = localStorage.getItem('accessToken')
-    if (!accessToken || accessToken == 'null' || accessToken == 'undefined') {
+    const timeTokenExpire = localStorage.getItem('timeTokenExpire')
+    if (!accessToken || accessToken == 'null' || accessToken == 'undefined' || !timeTokenExpire || !moment(timeTokenExpire, 'YYYYMMDDHHmmss').isValid() || moment().isAfter(moment(timeTokenExpire, 'YYYYMMDDHHmmss'))) {
         userLogOut()
     }
 

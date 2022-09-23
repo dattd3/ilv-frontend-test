@@ -14,10 +14,8 @@ function HOCComponent(Component) {
         const expired = 1
         const modalTypeContentMapping = {
             [warning]: {
-                // title: 'Cảnh báo hết hạn phiên làm việc',
-                // content: 'Phiên làm việc của bạn sẽ hết hạn sau 05:00 phút. Bạn có muốn gia hạn phiên làm việc?',
-                title: 'Thông báo đăng xuất',
-                content: 'Bạn có muốn đăng xuất khỏi ứng dụng?'
+                title: 'Cảnh báo hết hạn phiên làm việc',
+                content: 'Phiên làm việc của bạn sẽ hết hạn sau 05:00 phút. Bạn có muốn gia hạn phiên làm việc?',
             },
             [expired]: {
                 title: 'Phiên làm việc đã kết thúc',
@@ -25,7 +23,7 @@ function HOCComponent(Component) {
             }
         }
         const [warningTokenModal, SetWarningTokenModal] = useState({
-            isShow: true,
+            isShow: false,
             type: warning,
             title: '',
             content: ''
@@ -38,9 +36,10 @@ function HOCComponent(Component) {
             const countDownTime = tokenTimeExpired.diff(now, 'milliseconds')
             const lastMinutesCountdown = 5
             const totalTimeCountdown = 60000 * lastMinutesCountdown // 5 phút cuối bắt đầu đếm ngược
+            const countDownTimeToMinutes = countDownTime/60000
 
             let timerForWarning = null
-            if (countDownTime > 0) {
+            if (countDownTime > 0 && countDownTimeToMinutes <= lastMinutesCountdown) {
                 timerForWarning = setTimeout(() => {
                     SetWarningTokenModal({
                         ...warningTokenModal,
@@ -50,27 +49,28 @@ function HOCComponent(Component) {
                         content: modalTypeContentMapping[warning].content
                     })
                 }, countDownTime - totalTimeCountdown)
-            } else {
-                clearTimeout(timerForWarning)
+            }
+            // else {
+            //     clearTimeout(timerForWarning)
+            // }
+
+            let timerForExpired = null
+            if (countDownTime > 0 && countDownTimeToMinutes <= lastMinutesCountdown) {
+                timerForExpired = setTimeout(() => {
+                    SetWarningTokenModal({
+                        ...warningTokenModal,
+                        isShow: true,
+                        type: expired,
+                        title: modalTypeContentMapping[expired].title,
+                        content: modalTypeContentMapping[expired].content
+                    })
+                }, countDownTime)
             }
 
-            // let timerForExpired = null
-            // if (countDownTime > 0) {
-            //     timerForExpired = setTimeout(() => {
-            //         SetWarningTokenModal({
-            //             ...warningTokenModal,
-            //             isShow: true,
-            //             type: expired,
-            //             title: modalTypeContentMapping[expired].title,
-            //             content: modalTypeContentMapping[expired].content
-            //         })
-            //     }, countDownTime)
-            // }
-
-            // return () => {
-            //     clearTimeout(timerForWarning)
-            //     // clearTimeout(timerForExpired)
-            // }
+            return () => {
+                clearTimeout(timerForWarning)
+                clearTimeout(timerForExpired)
+            }
         }, [])
 
         const handleAccept = (typeModal) => {
