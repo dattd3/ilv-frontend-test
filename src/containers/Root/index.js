@@ -15,22 +15,22 @@ const currentUserLogged = localStorage.getItem('email')
 
 function Root() {
   // AWS SDK & AWS Amplity Configuration
-  AWS.config.region = config.AWS_REGION;
-  Amplify.configure({
-    Auth: {
-      identityPoolId: config.AWS_COGNITO_IDENTITY_POOL_ID,
-      region: config.AWS_REGION,
-      userPoolId: config.AWS_COGNITO_USER_POOL_ID,
-      userPoolWebClientId: config.AWS_COGNITO_CLIENT_ID,
-      oauth: {
-        domain: config.AWS_COGNITO_CLIENT_DOMAIN_NAME,
-        scope: config.AWS_COGNITO_IDP_OAUTH_CLAIMS,
-        redirectSignIn: config.AWS_COGNITO_IDP_SIGNIN_URL,
-        redirectSignOut: config.AWS_COGNITO_IDP_SIGNOUT_URL,
-        responseType: config.AWS_COGNITO_IDP_GRANT_FLOW
-      }
-    }
-  });
+  // AWS.config.region = config.AWS_REGION;
+  // Amplify.configure({
+  //   Auth: {
+  //     identityPoolId: config.AWS_COGNITO_IDENTITY_POOL_ID,
+  //     region: config.AWS_REGION,
+  //     userPoolId: config.AWS_COGNITO_USER_POOL_ID,
+  //     userPoolWebClientId: config.AWS_COGNITO_CLIENT_ID,
+  //     oauth: {
+  //       domain: config.AWS_COGNITO_CLIENT_DOMAIN_NAME,
+  //       scope: config.AWS_COGNITO_IDP_OAUTH_CLAIMS,
+  //       redirectSignIn: config.AWS_COGNITO_IDP_SIGNIN_URL,
+  //       redirectSignOut: config.AWS_COGNITO_IDP_SIGNOUT_URL,
+  //       responseType: config.AWS_COGNITO_IDP_GRANT_FLOW
+  //     }
+  //   }
+  // });
 
   return (
     <ContextProviders>
