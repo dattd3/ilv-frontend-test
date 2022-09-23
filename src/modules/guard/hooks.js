@@ -158,6 +158,8 @@ const Storage = {
     localStorage.removeItem('part');
     localStorage.removeItem('role_assigment');
     localStorage.removeItem('prepare')
+    localStorage.removeItem('timeTokenExpire')
+    localStorage.removeItem('refreshToken')
   }
 }
 
