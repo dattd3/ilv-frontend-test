@@ -73,7 +73,7 @@ function Authorize(props) {
         try {
             const config = {
                 headers: {
-                  'Authorization': token
+                  'Authorization': `Bearer ${token}`
                 }
             }
             const response = await axios.get(`${process.env.REACT_APP_HRDX_URL}user/managementPoint?companyCode=${companyCode}`, config)
