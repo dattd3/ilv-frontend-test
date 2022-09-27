@@ -810,7 +810,17 @@ const SalaryAdjustmentPropse = (props) => {
                   {!isCreateMode &&
                     <div className="d-flex w-100">
                       <div style={{ width: '90%' }}>
-                        {item?.proposedSalary && acessToken ? item?.proposedSalary : '**********'}
+                        {item?.proposedSalary && acessToken ?
+                          <CurrencyInput
+                            disabled={true}
+                            intlConfig={{ locale: 'vi-VN', currency: 'VND' }}
+                            className="no-vborder"
+                            value={item?.proposedSalary}
+                            placeholder="Nhập"
+                            style={{ width: '100%', background: '#fff' }}
+                          />
+                          : '**********'
+                        }
                       </div>
                       <div
                         style={{ width: '10%', cursor: 'pointer' }}
