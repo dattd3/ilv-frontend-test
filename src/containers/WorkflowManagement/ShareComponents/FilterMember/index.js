@@ -32,7 +32,7 @@ const FilterMember = (props) => {
 
   const getApproverInfo = () => {
     const config = getMuleSoftHeaderConfigurations()
-    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/subordinate?depth=2`, config)
+    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/subordinate?depth=2`, config)
       .then((res) => {
         if (res && res.data && res.data.data) {
           const users = res.data.data || [];
