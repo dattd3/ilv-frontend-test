@@ -732,9 +732,9 @@ const SalaryAdjustmentPropse = (props) => {
     selectedMembersTmp.forEach(u => u.currentSalary = '10000')
     setSelectedMembers(selectedMembersTmp)
 
-    const viewSettingTmp = [...viewSetting];
+    let viewSettingTmp = {...viewSetting};
     viewSettingTmp.disableComponent.showSuggestedSalary = !viewSettingTmp.disableComponent.showSuggestedSalary
-    viewSettingTmp.disableComponent.editSubjectApply = true
+    viewSettingTmp.disableComponent.showCurrentSalary = !viewSettingTmp.disableComponent.showCurrentSalary
     setViewSetting(viewSettingTmp)
   }
 
@@ -807,10 +807,10 @@ const SalaryAdjustmentPropse = (props) => {
                 />
                 :
                 <>
-                  {!isCreateMode &&
+                  {!isCreateMode && item?.proposedSalary &&
                     <div className="d-flex w-100">
                       <div style={{ width: '90%' }}>
-                        {item?.proposedSalary && acessToken ?
+                        {acessToken ?
                           <CurrencyInput
                             disabled={true}
                             intlConfig={{ locale: 'vi-VN', currency: 'VND' }}
