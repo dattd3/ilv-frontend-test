@@ -1227,5 +1227,6 @@
   "EvaluationFormSentBackToEmployeeSuccessfully": "Biểu mẫu đã được gửi lại CBNV thành công!",
   "EvaluationFailedToSendTheFormBackToEmployee": "Biểu mẫu chưa được gửi lại CBNV. Xin vui lòng thử lại!",
   "of": "của",
-  "EvaluationInput": "Nhập"
+  "EvaluationInput": "Nhập",
+  "OnlineSearchLink": "Link tra cứu online"
 }
