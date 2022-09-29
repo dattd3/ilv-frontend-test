@@ -710,13 +710,13 @@ function EvaluationApproval(props) {
             formData.append('ReviewerEmployeeCode', employeeCode)
             formData.append('ReviewerEmployeeAdCode', employeeAD)
 
-            // const requestGetOrgLevel3 = axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/organization/structure/levels?page_no=1&page_size=10000&level=3&parent_id=${PnLOrgNumber}`, config)
-            // const requestGetOrgLevel4 = axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/organization/structure/levels?page_no=1&page_size=10000&level=4`, config)
-            // const requestGetOrgLevel5 = axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/organization/structure/levels?page_no=1&page_size=10000&level=5`, config)
-            // const requestGetOrgLevel6 = axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/organization/structure/levels?page_no=1&page_size=10000&level=6`, config)
+            // const requestGetOrgLevel3 = axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/masterdata/organization/structure/levels?page_no=1&page_size=10000&level=3&parent_id=${PnLOrgNumber}`, config)
+            // const requestGetOrgLevel4 = axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/masterdata/organization/structure/levels?page_no=1&page_size=10000&level=4`, config)
+            // const requestGetOrgLevel5 = axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/masterdata/organization/structure/levels?page_no=1&page_size=10000&level=5`, config)
+            // const requestGetOrgLevel6 = axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/masterdata/organization/structure/levels?page_no=1&page_size=10000&level=6`, config)
 
             const requestGetMasterData = axios.post(`${process.env.REACT_APP_HRDX_PMS_URL}api/form/MasterData`, formData, config)
-            // const requestGetRanksAndTitles = axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/masterdata/position`, muleSoftConfig)
+            // const requestGetRanksAndTitles = axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/masterdata/position`, muleSoftConfig)
             const response = await Promise.allSettled([requestGetMasterData])
             processMasterData(response)
         }
