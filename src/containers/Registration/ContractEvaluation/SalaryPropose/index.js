@@ -3,6 +3,7 @@ import axios from 'axios'
 import { useHistory } from 'react-router';
 import './styles.scss';
 import { useTranslation } from 'react-i18next';
+import { forEach } from 'lodash';
 import CurrencyInput from 'react-currency-input-field';
 import IconEye from '../../../../assets/img/icon/eye.svg';
 import IconNotEye from '../../../../assets/img/icon/not-eye.svg';
@@ -25,7 +26,7 @@ function SalaryPropse(props) {
   const [currentSalary, setCurrentSalary] = useState('');
   const [suggestedSalary, setSuggestedSalary] = useState('');
   const [modalConfirmPassword, setModalConfirmPassword] = useState(false);
-  const [acessToken, setAcessToken] = useState(new URLSearchParams(props.history.location.search).get('accesstoken') || null);
+  const [accessToken, setAccessToken] = useState(new URLSearchParams(props.history.location.search).get('accesstoken') || null);
   const [listFiles, setListFiles] = useState([]);
 
   const [modalStatus, setModalStatus] = useState({
@@ -180,7 +181,7 @@ function SalaryPropse(props) {
       case 21:
       case 22:
         viewSettingTmp.showComponent.humanForReviewSalary = true;
-        if (acessToken) {
+        if (accessToken) {
           viewSettingTmp.disableComponent.showCurrentSalary = true;
           viewSettingTmp.disableComponent.showSuggestedSalary = true;
         }
@@ -200,7 +201,7 @@ function SalaryPropse(props) {
           viewSettingTmp.showComponent.btnCancel = true;
           viewSettingTmp.showComponent.btnSendRequest = true;
         }
-        if (acessToken) {
+        if (accessToken) {
           viewSettingTmp.disableComponent.showCurrentSalary = true;
           viewSettingTmp.disableComponent.showSuggestedSalary = true;
         }
@@ -217,7 +218,7 @@ function SalaryPropse(props) {
           viewSettingTmp.showComponent.btnRefuse = true;
           viewSettingTmp.showComponent.btnExpertise = true;
         }
-        if (acessToken) {
+        if (accessToken) {
           viewSettingTmp.disableComponent.showCurrentSalary = true;
           viewSettingTmp.disableComponent.showSuggestedSalary = true;
         }
@@ -234,7 +235,7 @@ function SalaryPropse(props) {
           viewSettingTmp.showComponent.btnRefuse = true;
           viewSettingTmp.showComponent.btnExpertise = true;
         }
-        if (acessToken) {
+        if (accessToken) {
           viewSettingTmp.disableComponent.showCurrentSalary = true;
           viewSettingTmp.disableComponent.showSuggestedSalary = true;
         }
@@ -251,7 +252,7 @@ function SalaryPropse(props) {
           viewSettingTmp.showComponent.btnNotApprove = true;
           viewSettingTmp.showComponent.btnApprove = true;
         }
-        if (acessToken) {
+        if (accessToken) {
           viewSettingTmp.disableComponent.showCurrentSalary = true;
           viewSettingTmp.disableComponent.showSuggestedSalary = true;
         }
@@ -319,13 +320,12 @@ function SalaryPropse(props) {
   }
 
   const handleShowCurrentSalary = () => {
-    if (!acessToken) {
+    if (!accessToken) {
       setModalConfirmPassword(true)
       return;
+    } else if (!viewSetting.disableComponent.showCurrentSalary) {
+      getSalary(accessToken)
     }
-    let viewSettingTmp = { ...viewSetting };
-    viewSettingTmp.disableComponent.showCurrentSalary = !viewSettingTmp.disableComponent.showCurrentSalary;
-    setViewSetting(viewSettingTmp)
   }
 
   // Từ chối
@@ -600,15 +600,41 @@ function SalaryPropse(props) {
     }
   }
 
-  const handleChangeModalConfirmPassword = (acessToken) => {
-    setAcessToken(acessToken)
-
-    // Todo call api get luong
-    setCurrentSalary('10000')
+  const handleChangeModalConfirmPassword = (token) => {
+    setAccessToken(token)
     setModalConfirmPassword(false)
-    let viewSettingTmp = { ...viewSetting };
-    viewSettingTmp.disableComponent.showCurrentSalary = !viewSettingTmp.disableComponent.showCurrentSalary;
-    setViewSetting(viewSettingTmp)
+    getSalary(token)
+  }
+
+  const getSalary = (token) => {
+    const dataSend = {
+      requestHistoryId: props.match.params?.idSalary,
+      token: token,
+    }
+    axios({
+      method: 'POST',
+      url: `${process.env.REACT_APP_REQUEST_URL}SalaryAdjustment/getsalarystaff`,
+      data: dataSend,
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
+    })
+      .then((response) => {
+        if (response.data.result && response.data.result.code === '000000') {
+          forEach(response.data.data, (value, key) => {
+            setCurrentSalary(value?.currentCurrency || 0)
+            setSuggestedSalary(value?.suggestedCurrency || 0)
+          });
+
+          let viewSettingTmp = { ...viewSetting };
+          viewSettingTmp.disableComponent.showSuggestedSalary = !viewSettingTmp.disableComponent.showSuggestedSalary
+          viewSettingTmp.disableComponent.showCurrentSalary = !viewSettingTmp.disableComponent.showCurrentSalary
+          setViewSetting(viewSettingTmp)
+          return;
+        }
+        showStatusModal(response.data.result.message || t("Error"), false)
+      })
+      .catch(response => {
+        showStatusModal(t("Error"), false)
+      })
   }
 
   const handleTextInputChange = (value) => {
@@ -771,7 +797,7 @@ function SalaryPropse(props) {
                 {t('SalaryRequest')}
               </label>
               {viewSetting.disableComponent.suggestedSalary ?
-                acessToken ?
+                accessToken ?
                   <CurrencyInput
                     disabled={true}
                     intlConfig={{ locale: 'vi-VN', currency: 'VND' }}
