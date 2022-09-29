@@ -2106,7 +2106,7 @@ renderEvalution = (name, data, isDisable) => {
                             aria-hidden="true"
                             className="mr-2"
                         />}
-                        {t('Send')}
+                        {this.state.type == 'assess' ? t('Consent') : t('Send')}
                 </button>
                   }
                   {showComponent.employeeSide ? 
