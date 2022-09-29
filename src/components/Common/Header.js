@@ -191,13 +191,19 @@ function Header(props) {
         try {
             guard.setLogOut();
             window.location.href = process.env.REACT_APP_AWS_COGNITO_IDP_SIGNOUT_URL;
-            //Auth.signOut({ global: true });
+            // Auth.signOut({ global: true });
         } catch {
             guard.setLogOut();
             window.location.reload();
         }
     }
 
+    const tokenExpired = localStorage.getItem('tokenExpired')
+    const accessToken = localStorage.getItem('accessToken')
+    if (!accessToken || !tokenExpired || !moment(tokenExpired).isValid() ||  moment().isAfter(moment(tokenExpired))) {
+        guard.setLogOut();
+        window.location.reload();
+    }
 
     // Auth.currentUserInfo().then(currentAuthUser => {
     //     if (currentAuthUser === undefined || currentAuthUser === null) {

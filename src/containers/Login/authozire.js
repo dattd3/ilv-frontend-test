@@ -6,8 +6,8 @@ import map from '../map.config';
 import LoadingModal from '../../components/Common/LoadingModal'
 import { useTranslation } from "react-i18next";
 import axios from 'axios';
-import { getMuleSoftHeaderConfigurations } from "../../commons/Utils";
-import Constants from "../../commons/Constants";
+import { getMuleSoftHeaderConfigurations } from "../../commons/Utils"
+import Constants from "../../commons/Constants"
 import moment from 'moment';
 
 const ERROR_TYPE = {
@@ -75,7 +75,7 @@ function Authorize(props) {
         try {
             const config = {
                 headers: {
-                  'Authorization': token
+                  'Authorization': `Bearer ${token}`
                 }
             }
             const response = await axios.get(`${process.env.REACT_APP_HRDX_URL}user/managementPoint?companyCode=${companyCode}`, config)
@@ -307,7 +307,7 @@ function Authorize(props) {
         //             return;
         //     }
         // });
-    },[]);
+    }, []);
 
     const tryAgain = () => {
         window.location.href = process.env.REACT_APP_AWS_COGNITO_IDP_SIGNOUT_URL;
