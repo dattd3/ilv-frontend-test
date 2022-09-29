@@ -72,6 +72,7 @@ const SalaryAdjustmentPropse = (props) => {
   const [selectMembers, setSelectMembers] = useState([]);
   const [selectedMembers, setSelectedMembers] = useState([]);
   const [dataSalary, setDataSalary] = useState(undefined);
+  const [currencySalary, setCurrencySalary] = useState('VND');
 
   const [coordinator, setCoordinator] = useState(null); // Nhân sự hỗ trợ xin quyền xem lương
   const [supervisor, setSupervisor] = useState(null); // CBQL cấp cơ sở
@@ -750,15 +751,18 @@ const SalaryAdjustmentPropse = (props) => {
       .then((response) => {
         if (response.data.result && response.data.result.code === '000000') {
           const selectedMembersTmp = [...selectedMembers]
+          let currencySalaryTmp = 'VND'
           forEach(response.data.data, (value, key) => {
             selectedMembersTmp.forEach(u => {
               if (u.id == key) {
                 u.currentSalary = value?.currentSalary || "0"
                 u.suggestedSalary = value?.suggestedSalary || "0"
+                currencySalaryTmp = value?.currentCurrency || 'VND'
               }
             })
           });
           setSelectedMembers(selectedMembersTmp)
+          setCurrencySalary(currencySalaryTmp)
 
           let viewSettingTmp = { ...viewSetting };
           viewSettingTmp.disableComponent.showSuggestedSalary = !viewSettingTmp.disableComponent.showSuggestedSalary
@@ -789,6 +793,16 @@ const SalaryAdjustmentPropse = (props) => {
     })
   }
 
+  function renderCurrency() {
+    let currencySalaryTmp = {}
+    if (currencySalary === 'VND') {
+      currencySalaryTmp = { locale: 'vi-VN', currency: 'VND' }
+    } else {
+      currencySalaryTmp = { locale: 'en-US', currency: 'USD' }
+    }
+    return currencySalaryTmp
+  }
+
   const renderListMember = (members) => {
     return (
       members.map((item, index) => {
@@ -809,7 +823,7 @@ const SalaryAdjustmentPropse = (props) => {
                     {viewSetting.disableComponent.showCurrentSalary && accessToken ?
                       <CurrencyInput
                         disabled={true}
-                        intlConfig={{ locale: 'vi-VN', currency: 'VND' }}
+                        intlConfig={renderCurrency()}
                         className="no-vborder"
                         value={item?.currentSalary}
                         placeholder="Nhập"
@@ -834,7 +848,7 @@ const SalaryAdjustmentPropse = (props) => {
               {viewSetting.disableComponent.editSubjectApply && !isCreateMode ?
                 <CurrencyInput
                   disabled={false}
-                  intlConfig={{ locale: 'vi-VN', currency: 'VND' }}
+                  intlConfig={renderCurrency()}
                   className="form-control"
                   value={item?.proposedSalary}
                   onValueChange={(value) => { handleTextInputChange(value, item?.uid, 'proposedSalary') }}
@@ -848,7 +862,7 @@ const SalaryAdjustmentPropse = (props) => {
                         {accessToken && viewSetting.disableComponent.showSuggestedSalary ?
                           <CurrencyInput
                             disabled={true}
-                            intlConfig={{ locale: 'vi-VN', currency: 'VND' }}
+                            intlConfig={renderCurrency()}
                             className="no-vborder"
                             value={item?.proposedSalary}
                             placeholder="Nhập"
