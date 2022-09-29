@@ -3879,4 +3879,12 @@ span.badge-notification[data-badge]::after {
   --ck-image-style-spacing: 1.5rem;
 }
 
-
+.kpi-training-page {
+  .online-search-link {
+    text-decoration: none;
+    border-radius: 3px;
+    margin: 10px 0 15px 0;
+    width: 200px;
+    font-size: 14px;
+  }
+}

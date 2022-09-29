@@ -205,10 +205,6 @@ function Header(props) {
         window.location.reload();
     }
 
-    // if (!accessToken || accessToken == 'null' || accessToken == 'undefined') {
-    //     userLogOut()
-    // }
-
     // Auth.currentUserInfo().then(currentAuthUser => {
     //     if (currentAuthUser === undefined || currentAuthUser === null) {
     //         Auth.signOut({ global: true });
@@ -216,6 +212,11 @@ function Header(props) {
     //         window.location.reload();
     //     }
     // });
+
+    if(!localStorage.getItem('tokenExpired') || !moment(localStorage.getItem('tokenExpired')).isValid() ||  moment().isAfter(moment(localStorage.getItem('tokenExpired')))) {
+        guard.setLogOut();
+        window.location.reload();
+    }
 
     const handleClickSetShow = () => {
         SetIsShow(!isShow);

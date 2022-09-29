@@ -98,6 +98,61 @@ a {
   }
 }
 
+.scroll-to-save {
+  position: sticky;
+  margin-right: 60px;
+  float: right;
+  right: 6rem;
+  bottom: 6em;
+  display: block;
+  width: 2.75rem;
+  height: 2.75rem;
+  text-align: center;
+  color: #e74a3b;
+  opacity: 0.9;
+  background: transparent;
+  line-height: 46px;
+  &:focus,
+  &:hover {
+    opacity: 1;
+    border: none;
+    outline: none;
+  }
+  &:hover {
+    cursor: pointer;
+  }
+  i {
+    font-weight: 800;
+  }
+  img {
+    height: 13px;
+    margin-right: 9px;
+  }
+ 
+  .btn-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 42px;
+    color: #FFFFFF;
+    border: none;
+    outline: none;
+    height: 42px;
+    width: 115px;
+    font-weight: normal;
+    box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.5);
+    -webkit-box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.5);
+    -moz-box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.5);
+    &.save {
+      background: #FFAE46;
+      text-decoration: none;
+    }
+  }
+}
+
+
+
+
 .info-modal-common {
   font-family: Arial, Helvetica, sans-serif;
   font-size: 14px;

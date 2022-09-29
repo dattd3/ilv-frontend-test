@@ -28,7 +28,7 @@ function OnGoingClass({_year}) {
     const guard = useGuardStore();
     const user = guard.getCurentUser()
    
-    const sabaEnrollments = usePreload([user.sabaId, 100, pageIndex, pageSize, _year]);
+    const sabaEnrollments = usePreload([user?.sabaId, 100, pageIndex, pageSize, _year]);
 
     const [isOnGoing, SetIsOnGoing] = useState(false);
 
