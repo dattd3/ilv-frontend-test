@@ -28,6 +28,7 @@ function SalaryPropse(props) {
   const [modalConfirmPassword, setModalConfirmPassword] = useState(false);
   const [accessToken, setAccessToken] = useState(new URLSearchParams(props.history.location.search).get('accesstoken') || null);
   const [listFiles, setListFiles] = useState([]);
+  const [currencySalary, setCurrencySalary] = useState('VND');
 
   const [modalStatus, setModalStatus] = useState({
     isShowStatusModal: false,
@@ -622,6 +623,7 @@ function SalaryPropse(props) {
           forEach(response.data.data, (value, key) => {
             setCurrentSalary(value?.currentSalary || 0)
             setSuggestedSalary(value?.suggestedSalary || 0)
+            setCurrencySalary(value?.currentCurrency || 'VND')
           });
 
           let viewSettingTmp = { ...viewSetting };
@@ -651,7 +653,19 @@ function SalaryPropse(props) {
       isShowModalConfirm: false
     })
   }
+
+  function renderCurrency() {
+    let currencySalaryTmp = {}
+    if (currencySalary === 'VND') {
+      currencySalaryTmp = { locale: 'vi-VN', currency: 'VND' }
+    } else {
+      currencySalaryTmp = { locale: 'en-US', currency: 'USD' }
+    }
+    return currencySalaryTmp
+  }
+
   const salaryState = `salarypropse_${props.match.params?.idContract}_${props.match.params?.idSalary}_${props.match.params?.type}`;
+
   return (
     <div className='container-salary'>
       <ConfirmPasswordModal
@@ -770,7 +784,7 @@ function SalaryPropse(props) {
               {viewSetting.disableComponent.showCurrentSalary ?
                 <CurrencyInput
                   disabled={viewSetting.disableComponent.currentSalary}
-                  intlConfig={{ locale: 'vi-VN', currency: 'VND' }}
+                  intlConfig={renderCurrency()}
                   className="form-control"
                   value={currentSalary}
                   placeholder="Nhập"
@@ -800,7 +814,7 @@ function SalaryPropse(props) {
                 accessToken ?
                   <CurrencyInput
                     disabled={true}
-                    intlConfig={{ locale: 'vi-VN', currency: 'VND' }}
+                    intlConfig={renderCurrency()}
                     className="form-control"
                     value={suggestedSalary}
                     placeholder="Nhập"
@@ -814,7 +828,7 @@ function SalaryPropse(props) {
                 :
                 <CurrencyInput
                   disabled={false}
-                  intlConfig={{ locale: 'vi-VN', currency: 'VND' }}
+                  intlConfig={renderCurrency()}
                   className="form-control"
                   value={suggestedSalary}
                   onValueChange={(value) => { handleTextInputChange(value) }}
