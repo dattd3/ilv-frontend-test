@@ -53,7 +53,8 @@ function TrainingKPI(props) {
             };
     }
     return (
-        <div>
+        <div className='kpi-training-page'>
+            <a href="https://app.powerbi.com/links/7luTy2-bVy?ctid=ed6a2939-d153-4f92-94f8-3d790d96c9f8&pbi_source=linkShare" target="_blank" className='btn btn-primary online-search-link'>{t("OnlineSearchLink")}</a>
             <Row className="summary-chart">
                 <Col xl={6} className="mb-4">
                     <Card>
