@@ -203,8 +203,8 @@ export const Navigation = [
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     to: map.EvaluationManager,
     label: 'Quản lý đánh giá',
-    //role:  ['V061', 'V053', 'V040', 'V005']
-    role:  ['V061', 'V040', Constants.PnLCODE.Vin3S, Constants.PnLCODE.VinFast, Constants.PnLCODE.VinFastTrading]
+    //role:  ['V061', 'V040', Constants.PnLCODE.Vin3S, Constants.PnLCODE.VinFast, Constants.PnLCODE.VinFastTrading]
+    role:  ['V061', 'V040', Constants.PnLCODE.Vin3S]
   },
   {
     id: 104,
@@ -212,8 +212,8 @@ export const Navigation = [
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     label: "ResignationRequestsManagement",
     to: map.ResignationRequestsManagement,
-    role: [Constants.pnlVCode.VinHome, Constants.PnLCODE.Vin3S]
-    //role: 'NA'
+    //role: [Constants.pnlVCode.VinHome, Constants.PnLCODE.Vin3S]
+    role: 'NA'
   },
   {
     id:1008,
@@ -221,7 +221,8 @@ export const Navigation = [
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     to: map.ProposalManagement,
     label: 'MenuProposalManagement',
-    role: 'U'
+    //role: 'U'
+    role: 'NA'
   },
   {
     id: 4,
@@ -316,8 +317,8 @@ export const Navigation = [
     parentId: 10,
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     label: "Welfare",
-    role: 'U'
-    //role: 'NA'
+    //role: 'U'
+    role: 'NA'
   },
   {
     id: 111,
@@ -472,8 +473,8 @@ export const Navigation = [
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     label: "RegistrationEmploymentTermination",
     to: map.RegistrationEmploymentTermination,
-    role: [Constants.pnlVCode.VinHome, Constants.PnLCODE.Vin3S]
-    //role: 'NA'
+    //role: [Constants.pnlVCode.VinHome, Constants.PnLCODE.Vin3S]
+    role: 'NA'
   },
   {
       id: 129999,
@@ -481,7 +482,7 @@ export const Navigation = [
       icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
       label: "ProposedResignation",
       to: map.ProposedResignation,
-      role: ["P","T","P2", "P1", "T4", "T3", "T2", "T1"]
-      //role: 'NA'
+      //role: ["P","T","P2", "P1", "T4", "T3", "T2", "T1"]
+      role: 'NA'
     },
 ];
