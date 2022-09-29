@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useHistory } from 'react-router';
 import moment from "moment";
+import { forEach } from 'lodash';
 import Select from 'react-select'
 import { withTranslation } from "react-i18next";
 import "react-toastify/dist/ReactToastify.css";
@@ -65,7 +66,7 @@ const SalaryAdjustmentPropse = (props) => {
 
   const [isCreateMode, setIsCreateMode] = useState(false);
   const [modalConfirmPassword, setModalConfirmPassword] = useState(false);
-  const [acessToken, setAcessToken] = useState(new URLSearchParams(props.history.location.search).get('accesstoken') || null);
+  const [accessToken, setAccessToken] = useState(new URLSearchParams(props.history.location.search).get('accesstoken') || null);
   const [type, setType] = useState(InsuranceOptions[0]);
   const [listFiles, setListFiles] = useState([]);
   const [selectMembers, setSelectMembers] = useState([]);
@@ -196,7 +197,7 @@ const SalaryAdjustmentPropse = (props) => {
       case 21:
       case 22:
         viewSettingTmp.showComponent.showHrSupportViewSalary = true;
-        if (acessToken) {
+        if (accessToken) {
           viewSettingTmp.disableComponent.showCurrentSalary = true;
           viewSettingTmp.disableComponent.showSuggestedSalary = true;
         }
@@ -213,7 +214,7 @@ const SalaryAdjustmentPropse = (props) => {
           viewSettingTmp.showComponent.btnSendRequest = true;
           viewSettingTmp.disableComponent.editSubjectApply = true;
         }
-        if (acessToken) {
+        if (accessToken) {
           viewSettingTmp.disableComponent.showCurrentSalary = true;
           viewSettingTmp.disableComponent.showSuggestedSalary = true;
         }
@@ -230,7 +231,7 @@ const SalaryAdjustmentPropse = (props) => {
           viewSettingTmp.showComponent.btnRefuse = true;
           viewSettingTmp.showComponent.btnExpertise = true;
         }
-        if (acessToken) {
+        if (accessToken) {
           viewSettingTmp.disableComponent.showCurrentSalary = true;
           viewSettingTmp.disableComponent.showSuggestedSalary = true;
         }
@@ -247,7 +248,7 @@ const SalaryAdjustmentPropse = (props) => {
           viewSettingTmp.showComponent.btnRefuse = true;
           viewSettingTmp.showComponent.btnExpertise = true;
         }
-        if (acessToken) {
+        if (accessToken) {
           viewSettingTmp.disableComponent.showCurrentSalary = true;
           viewSettingTmp.disableComponent.showSuggestedSalary = true;
         }
@@ -264,7 +265,7 @@ const SalaryAdjustmentPropse = (props) => {
           viewSettingTmp.showComponent.btnNotApprove = true;
           viewSettingTmp.showComponent.btnApprove = true;
         }
-        if (acessToken) {
+        if (accessToken) {
           viewSettingTmp.disableComponent.showCurrentSalary = true;
           viewSettingTmp.disableComponent.showSuggestedSalary = true;
         }
@@ -314,8 +315,10 @@ const SalaryAdjustmentPropse = (props) => {
           contractName: requestTmp?.contractName,
           contractType: requestTmp?.contractType,
           department: requestTmp?.department,
-          currentSalary: u?.currentSalary,
-          proposedSalary: u?.suggestedSalary,
+          currentSalary: "0",
+          proposedSalary: "0",
+          // currentSalary: u?.currentSalary,
+          // proposedSalary: u?.suggestedSalary,
           effectiveTime: u?.startDate ? moment(u?.startDate).format(Constants.LEAVE_DATE_FORMAT) : "",
           strength: u?.staffStrengths,
           weakness: u?.staffWknesses,
@@ -422,14 +425,18 @@ const SalaryAdjustmentPropse = (props) => {
   }
 
   const handleShowCurrentSalary = () => {
-    if (!acessToken) {
+    if (!accessToken) {
       setModalConfirmPassword(true)
+    } else if (!viewSetting.disableComponent.showCurrentSalary) {
+      getSalary(accessToken)
     }
   }
 
   const handleShowSuggestedSalary = () => {
-    if (!acessToken) {
+    if (!accessToken) {
       setModalConfirmPassword(true)
+    } else if (!viewSetting.disableComponent.showSuggestedSalary) {
+      getSalary(accessToken)
     }
   }
 
@@ -722,20 +729,48 @@ const SalaryAdjustmentPropse = (props) => {
     return errors;
   }
 
-  const handleChangeModalConfirmPassword = (acessToken) => {
-    console.log(acessToken);
-    setAcessToken(acessToken)
+  const handleChangeModalConfirmPassword = (token) => {
+    console.log(token);
+    setAccessToken(token)
     setModalConfirmPassword(false)
+    getSalary(token)
+  }
 
-    // Todo: call api get luong
-    const selectedMembersTmp = [...selectedMembers]
-    selectedMembersTmp.forEach(u => u.currentSalary = '10000')
-    setSelectedMembers(selectedMembersTmp)
+  const getSalary = (token) => {
+    const dataSend = {
+      requestHistoryId: props.match.params.id,
+      token: token,
+    }
+    axios({
+      method: 'POST',
+      url: `${process.env.REACT_APP_REQUEST_URL}SalaryAdjustment/getsalarystaff`,
+      data: dataSend,
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
+    })
+      .then((response) => {
+        if (response.data.result && response.data.result.code === '000000') {
+          const selectedMembersTmp = [...selectedMembers]
+          forEach(response.data.data, (value, key) => {
+            selectedMembersTmp.forEach(u => {
+              if (u.id == key) {
+                u.currentSalary = value?.currentCurrency || "0"
+                u.suggestedSalary = value?.suggestedCurrency || "0"
+              }
+            })
+          });
+          setSelectedMembers(selectedMembersTmp)
 
-    let viewSettingTmp = {...viewSetting};
-    viewSettingTmp.disableComponent.showSuggestedSalary = !viewSettingTmp.disableComponent.showSuggestedSalary
-    viewSettingTmp.disableComponent.showCurrentSalary = !viewSettingTmp.disableComponent.showCurrentSalary
-    setViewSetting(viewSettingTmp)
+          let viewSettingTmp = { ...viewSetting };
+          viewSettingTmp.disableComponent.showSuggestedSalary = !viewSettingTmp.disableComponent.showSuggestedSalary
+          viewSettingTmp.disableComponent.showCurrentSalary = !viewSettingTmp.disableComponent.showCurrentSalary
+          setViewSetting(viewSettingTmp)
+          return;
+        }
+        showStatusModal(response.data.result.message || t("Error"), false)
+      })
+      .catch(response => {
+        showStatusModal(t("Error"), false)
+      })
   }
 
   const hideResultModal = () => {
@@ -771,7 +806,7 @@ const SalaryAdjustmentPropse = (props) => {
               {!isCreateMode ?
                 <div className="d-flex w-100">
                   <div style={{ width: '90%' }}>
-                    {item?.currentSalary && acessToken ?
+                    {viewSetting.disableComponent.showCurrentSalary && accessToken ?
                       <CurrencyInput
                         disabled={true}
                         intlConfig={{ locale: 'vi-VN', currency: 'VND' }}
@@ -810,7 +845,7 @@ const SalaryAdjustmentPropse = (props) => {
                   {!isCreateMode && item?.proposedSalary &&
                     <div className="d-flex w-100">
                       <div style={{ width: '90%' }}>
-                        {acessToken ?
+                        {accessToken && viewSetting.disableComponent.showSuggestedSalary ?
                           <CurrencyInput
                             disabled={true}
                             intlConfig={{ locale: 'vi-VN', currency: 'VND' }}
