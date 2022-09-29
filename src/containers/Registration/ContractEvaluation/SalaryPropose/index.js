@@ -620,8 +620,8 @@ function SalaryPropse(props) {
       .then((response) => {
         if (response.data.result && response.data.result.code === '000000') {
           forEach(response.data.data, (value, key) => {
-            setCurrentSalary(value?.currentCurrency || 0)
-            setSuggestedSalary(value?.suggestedCurrency || 0)
+            setCurrentSalary(value?.currentSalary || 0)
+            setSuggestedSalary(value?.suggestedSalary || 0)
           });
 
           let viewSettingTmp = { ...viewSetting };
