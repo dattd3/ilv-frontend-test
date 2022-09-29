@@ -19,7 +19,6 @@ import Select, { components } from 'react-select'
 import { getStateRedirect } from "../../commons/commonFunctions";
 
 const CustomOption = ({ children, ...props }) => {
-  console.log(props);
   return (<components.ValueContainer {...props}>
     <div style={{
       display: 'inline-block',
@@ -256,7 +255,7 @@ function Login() {
 
                   </Carousel>
                   <div className="bottom-link">
-                        <span>Website: www.myvingroup.vingroup.net</span>
+                        <span>Website: https://myvingroup.vingroup.net</span>
                   </div>
                 </div>
 
