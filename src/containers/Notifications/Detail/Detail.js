@@ -122,7 +122,7 @@ class NotificationDetailComponent extends React.Component {
               <div className="detail-notifications-block">
                 <div className="content"
                   dangerouslySetInnerHTML={{
-                    __html: purify.sanitize(this.state?.notificationInfo?.content || ''),
+                    __html: purify.sanitize(this.state?.notificationInfo?.content || '', { ADD_ATTR: ['target'] }),
                 }} />
                 {
                   this.hasAttachmentFiles(this.state.notificationInfo.notificationDocuments) ?
