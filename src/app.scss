@@ -3884,7 +3884,11 @@ span.badge-notification[data-badge]::after {
   z-index: 99999999;
   .modal-dialog {
     max-width: 600px;
-    margin-top: 16rem;
+    margin: 0 auto!important;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     .modal-body {
       padding: 1rem 1.5rem;
       .text-title {

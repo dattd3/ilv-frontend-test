@@ -200,10 +200,6 @@ function Header(props) {
 
     const tokenExpired = localStorage.getItem('tokenExpired')
     const accessToken = localStorage.getItem('accessToken')
-    if (!accessToken || !tokenExpired || !moment(tokenExpired).isValid() ||  moment().isAfter(moment(tokenExpired))) {
-        guard.setLogOut();
-        window.location.reload();
-    }
 
     // Auth.currentUserInfo().then(currentAuthUser => {
     //     if (currentAuthUser === undefined || currentAuthUser === null) {
@@ -213,9 +209,7 @@ function Header(props) {
     //     }
     // });
 
-    const accessToken = localStorage.getItem('accessToken')
-    const timeTokenExpire = localStorage.getItem('timeTokenExpire')
-    if (!accessToken || accessToken == 'null' || accessToken == 'undefined' || !timeTokenExpire || !moment(timeTokenExpire, 'YYYYMMDDHHmmss').isValid() || moment().isAfter(moment(timeTokenExpire, 'YYYYMMDDHHmmss'))) {
+    if (!accessToken || accessToken == 'null' || accessToken == 'undefined' || !tokenExpired || !moment(tokenExpired, 'YYYYMMDDHHmmss').isValid() || moment().isAfter(moment(tokenExpired, 'YYYYMMDDHHmmss'))) {
         userLogOut()
     }
 
