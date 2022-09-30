@@ -1,4 +1,5 @@
 import React from 'react'
+import { withRouter } from 'react-router-dom'
 import moment from 'moment'
 import Spinner from 'react-bootstrap/Spinner'
 import StatusModal from '../../../components/Common/StatusModal'
@@ -6,6 +7,7 @@ import { Image } from 'react-bootstrap'
 import IconEdit from '../../../assets/img/ic-edit.svg';
 import IconRemove from '../../../assets/img/ic-remove.svg';
 import IconAdd from '../../../assets/img/ic-add.svg';
+import IconDelete from '../../../assets/img/icon/Icon_Cancel.svg';
 import IconSave from '../../../assets/img/ic-save.svg';
 import ResizableTextarea from '../TextareaComponent';
 import ApproverComponent from './SearchPeopleComponent'
@@ -25,6 +27,8 @@ import LoadingModal from '../../../components/Common/LoadingModal'
 import { checkIsExactPnL } from '../../../commons/commonFunctions'
 import ContractEvaluationdetail from './detail'
 import HOCComponent from '../../../components/Common/HOCComponent'
+import SalaryModal from './SalaryModal'
+import ConfirmationModal from '../ConfirmationModal'
 
 const TIME_FORMAT = 'HH:mm'
 const DATE_FORMAT = 'DD/MM/YYYY'
@@ -171,7 +175,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
   checkAuthorize = async () => {
     const currentEmployeeNo = localStorage.getItem('email');
     const data = this.state.data;
-    const dateToCheck = data.contractType == 'VA' ? (checkIsExactPnL(Constants.pnlVCode.VinSchool, Constants.pnlVCode.VinHome, Constants.PnLCODE.Vin3S) ? -75 : -45) : -7; 
+    const dateToCheck = data.contractType == 'VA' ? (checkIsExactPnL(Constants.pnlVCode.VinSchool, Constants.pnlVCode.VinHome,  Constants.PnLCODE.VinFast, Constants.PnLCODE.VinFastTrading, Constants.PnLCODE.Vin3S) ? -75 : -45) : -7; 
     const isAfterT_7 = data.employeeInfo && data.employeeInfo.startDate && moment(new Date()).diff(moment(data.employeeInfo.expireDate), 'days') > dateToCheck ? true : false;
     let shouldDisable = false;
     let isNguoidanhgia = false;
@@ -249,6 +253,15 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     this.state = {
       loading: false,
       isShowStatusModal: false,
+      isShowSalaryPropose: false,
+      confirmModal: {
+        isShowModalConfirm: false,
+        modalTitle: "",
+        typeRequest: "",
+        modalMessage: "",
+        confirmStatus: "",
+        dataToUpdate: [],
+      },
       annualLeaveSummary: {},
       data: {
         processStatus: 0,
@@ -292,6 +305,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         canAddJob: false,
         SelfAssessmentScoreTotal: 0,
         ManagementScoreTotal: 0,
+        childRequestHistoryId: null,
       },
       errors: {
         // rating: '(Bắt buộc)',
@@ -357,7 +371,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     //axios.get(`${process.env.REACT_APP_REQUEST_URL}StaffContract/infoevaluation?idDisplay=${id}&employeeCode=${localStorage.getItem('employeeNo')}&regionId=${localStorage.getItem('organizationLv4')}&rankId=${localStorage.getItem('employeeLevel')}&org=${localStorage.getItem('organizationLv3')}`, config)
     let url = `${process.env.REACT_APP_REQUEST_URL}StaffContract/infoevaluation?idDisplay=${id}&employeeCode=${localStorage.getItem('employeeNo')}&regionId=${localStorage.getItem('organizationLv4')}&rankId=${localStorage.getItem('employeeLevel')}&org=${localStorage.getItem('organizationLv3')}&orgLv02=${localStorage.getItem('organizationLv2')}&orgLv05=${localStorage.getItem('organizationLv5') == '#' ? null : localStorage.getItem('organizationLv5')}`;
     
-    if(type == 'assess' || type == 'approval'){
+    if(type == 'assess' || type == 'approval' || type == 'salary'){
       url = `${process.env.REACT_APP_REQUEST_URL}StaffContract/getManageEvaluation?idDisplay=${id}`
     }
     axios.get(url, config)
@@ -463,6 +477,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     candidateInfos.remoteData = infos;
     candidateInfos.canAddJob = infos.isEdit;
     candidateInfos.comment = null;
+    candidateInfos.childRequestHistoryId = infos?.childRequestHistoryId
     
     //save staff contract
     if(infos.staffContracts){
@@ -660,7 +675,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         } else if(isMissing)
           errors['rating'] = '(Bắt buộc điền tự đánh giá)'
       }
-      if(checkIsExactPnL(Constants.pnlVCode.VinSchool, Constants.pnlVCode.VinHome, Constants.PnLCODE.Vin3S)) {
+      if(checkIsExactPnL(Constants.pnlVCode.VinSchool, Constants.pnlVCode.VinHome,  Constants.PnLCODE.VinFast, Constants.PnLCODE.VinFastTrading, Constants.PnLCODE.Vin3S)) {
         if(!this.state.data.nguoidanhgia || !this.state.data.nguoidanhgia.account) {
           errors['nguoidanhgia'] = '(Bắt buộc)';
         }
@@ -716,7 +731,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         if(isMissing)
           errors['rating'] = '(Bắt buộc điền CBLĐ TT đánh giá)'
       }
-      if(this.state.isNguoidanhgia == false || checkIsExactPnL(Constants.pnlVCode.VinSchool, Constants.pnlVCode.VinHome, Constants.PnLCODE.Vin3S)) {
+      if(this.state.isNguoidanhgia == false || checkIsExactPnL(Constants.pnlVCode.VinSchool, Constants.pnlVCode.VinHome,  Constants.PnLCODE.VinFast, Constants.PnLCODE.VinFastTrading, Constants.PnLCODE.Vin3S)) {
         if(!this.state.data.nguoipheduyet || !this.state.data.nguoipheduyet.account){
           errors['boss'] = '(Bắt buộc)';
         }
@@ -775,7 +790,6 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
       }else{
         window.location.reload();
       }
-      
     }
   }
 
@@ -1213,8 +1227,18 @@ renderEvalution = (name, data, isDisable) => {
     })
         .then(response => {
           if(response.data.result && response.data.result.code == '000000'){
+            // if(this.state.type == 'assess' && actionType != 1 &&
+            //   ((this.state.data.processStatus == 10 && checkIsExactPnL(Constants.pnlVCode.VinSchool, Constants.pnlVCode.VinHome, Constants.PnLCODE.VinFast, Constants.PnLCODE.VinFastTrading, Constants.pnlVCode.Vin3S)) || 
+            //     (this.state.processStatus == 11 && !checkIsExactPnL(Constants.pnlVCode.VinSchool, Constants.pnlVCode.VinHome, Constants.PnLCODE.VinFast, Constants.PnLCODE.VinFastTrading, Constants.pnlVCode.Vin3S)))) {
+            //       this.showSalaryPropose(actionType, home);
+            // } else {
+            //   this.showStatusModal(message, true, true, home)
+            //   this.setDisabledSubmitButton(false, actionType)
+            // }
+
             this.showStatusModal(message, true, true, home)
             this.setDisabledSubmitButton(false, actionType)
+            
             return;
           }
           this.showStatusModal(response.data.result.message || 'Có lỗi xảy ra trong quá trình cập nhật thông tin!', false)
@@ -1225,15 +1249,26 @@ renderEvalution = (name, data, isDisable) => {
             //     this.setDisabledSubmitButton(false)
             // }
         })
-        .catch(response => {
+        .catch(err => {
             this.showStatusModal("Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
             this.setDisabledSubmitButton(false, actionType)
         })
 }
 
+  showSalaryPropose = (actionType, url) => {
+    this.setState({ isShowSalaryPropose: true,url: url, shouldReload: true});
+    this.setDisabledSubmitButton(false, actionType)
+  }
+
+  createFormSalary = () => {
+    console.log('create form salary');
+    this.setState({ isShowSalaryPropose: false });
+    this.props.history.push(`/salarypropse/${this.state.id}/create/request`)
+  }
+
   checkShowQlttComment = (data) => {
   // CBLF tham dinh VSC -field qltt -- 11
-  if(checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.pnlVCode.VinHome, Constants.PnLCODE.Vin3S)) {
+  if(checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.pnlVCode.VinHome,  Constants.PnLCODE.VinFast, Constants.PnLCODE.VinFastTrading, Constants.PnLCODE.Vin3S)) {
     return ((data.processStatus == 10 && data.qltt.account));
    } else {
      return(data.processStatus == 10 || (data.processStatus == 9 && !data.hasnguoidanhgia));
@@ -1244,7 +1279,7 @@ renderEvalution = (name, data, isDisable) => {
   checkShownguoidanhgiaComment = (data) => {
     // QLTT VSC - filed nguoidanhgia -- 10
 
-    if(checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.pnlVCode.VinHome, Constants.PnLCODE.Vin3S)) {
+    if(checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.pnlVCode.VinHome,  Constants.PnLCODE.VinFast, Constants.PnLCODE.VinFastTrading, Constants.PnLCODE.Vin3S)) {
      return (data.processStatus == 9 && data.nguoidanhgia.account);
     } else {
       return (data.processStatus == 9 && !data.qltt.account);
@@ -1252,11 +1287,76 @@ renderEvalution = (name, data, isDisable) => {
   }
 
   checkShowApprovalComment = (data) => {
-    if(checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.pnlVCode.VinHome, Constants.PnLCODE.Vin3S)) {
+    if(checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.pnlVCode.VinHome,  Constants.PnLCODE.VinFast, Constants.PnLCODE.VinFastTrading, Constants.PnLCODE.Vin3S)) {
       return data.processStatus == 11 || (data.processStatus == 10 && !data.qltt.account);
     } else {
       return data.processStatus == 11;
     }
+  }
+
+  onHideModalConfirm = () => {
+    this.setState({
+      confirmModal: {
+        ...this.state.confirmModal,
+        isShowModalConfirm: false
+      }
+    })
+  }
+
+  // từ chối thẩm định
+  handleRefuse = () => {
+    this.setState({
+      confirmModal: {
+        ...this.state.confirmModal,
+        isShowModalConfirm: true,
+        modalTitle: this.props.t("RejectConsenterRequest"),
+        modalMessage: this.props.t("ReasonRejectRequest"),
+        typeRequest: Constants.STATUS_NO_CONSENTED,
+        confirmStatus: "",
+        dataToUpdate: [
+          {
+            id: this.props.match.params?.id,
+            requestTypeId: 6,
+            sub: [
+              {
+                id: this.props.match.params?.id,
+                processStatusId: this.state.data.processStatus,
+                comment: "",
+                status: "0",
+              }
+            ],
+          }
+        ],
+      }
+    })
+  }
+
+  // Không phê duyệt
+  handleReject = () => {
+    this.setState({
+      confirmModal: {
+        ...this.state.confirmModal,
+        isShowModalConfirm: true,
+        modalTitle: this.props.t("ConfirmNotApprove"),
+        modalMessage: `${this.props.t("ReasonNotApprove")}`,
+        typeRequest: Constants.STATUS_NOT_APPROVED,
+        confirmStatus: "",
+        dataToUpdate: [
+          {
+            id: this.props.match.params?.id,
+            requestTypeId: 6,
+            sub: [
+              {
+                id: this.props.match.params?.id,
+                processStatusId: this.state.data.processStatus,
+                comment: "",
+                status: "0",
+              }
+            ],
+          }
+      ],
+      }
+    })
   }
 
   render() {
@@ -1266,14 +1366,25 @@ renderEvalution = (name, data, isDisable) => {
     const data = this.state.data;
     const loading = this.state.loading;
     const comment =  data?.comment || null;
-    if(data?.processStatus == 2 ) {
+    const type = this.props.match.params.type;
+    const confirmModal = this.state.confirmModal;
+    if(data?.processStatus == 2 || type === 'salary') {
       return  <div className="registration-section">
-         <LoadingModal show={loading}/>
-       <ContractEvaluationdetail data={data} />
+        <LoadingModal show={loading}/>
+        <ContractEvaluationdetail id={this.props.match.params.id} data={data} type={type} idSalary={data?.childRequestHistoryId}/>
        </div>
     }
     return (
       <div className="registration-section">
+        <ConfirmationModal
+          show={confirmModal.isShowModalConfirm}
+          title={confirmModal.modalTitle}
+          type={confirmModal.typeRequest}
+          message={confirmModal.modalMessage}
+          confirmStatus={confirmModal.confirmStatus}
+          dataToSap={confirmModal.dataToUpdate}
+          onHide={this.onHideModalConfirm}
+        />
         <LoadingModal show={loading}/>
       <div className="leave-of-absence evalution">
         <div className="eval-heading">
@@ -1311,6 +1422,7 @@ renderEvalution = (name, data, isDisable) => {
           </div>
         </div>
         <StatusModal show={this.state.isShowStatusModal} content={this.state.content} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
+        <SalaryModal show={this.state.isShowSalaryPropose} content={this.state.content} isSuccess={this.state.isSuccess} onAccept = {this.createFormSalary} onHide={this.hideStatusModal} />
         <h5>Thông tin đánh giá</h5>
         <div className="box shadow cbnv">
           <div className="row description">
@@ -1484,7 +1596,7 @@ renderEvalution = (name, data, isDisable) => {
           </div>
         </div>
         {
-          //checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.pnlVCode.VinHome, Constants.PnLCODE.Vin3S) ?
+          //checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.pnlVCode.VinHome,  Constants.PnLCODE.VinFast, Constants.PnLCODE.VinFastTrading, Constants.PnLCODE.Vin3S) ?
           false ?
           null :
         <>
@@ -1603,7 +1715,7 @@ renderEvalution = (name, data, isDisable) => {
               <div className="row approve">
                 <div className="col-12">
                   {
-                    checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.pnlVCode.VinHome, Constants.PnLCODE.Vin3S) ?
+                    checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.pnlVCode.VinHome,  Constants.PnLCODE.VinFast, Constants.PnLCODE.VinFastTrading, Constants.PnLCODE.Vin3S) ?
                       <><span className="title">QUẢN LÝ TRỰC TIẾP ĐÁNH GIÁ</span></>
                       : <><span className="title">NGƯỜI ĐÁNH GIÁ</span><span className="sub-title">(Nếu có)</span></>
                   }
@@ -1623,7 +1735,7 @@ renderEvalution = (name, data, isDisable) => {
               <div className="row approve">
                 <div className="col-12">
                   {
-                    checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.pnlVCode.VinHome, Constants.PnLCODE.Vin3S) ?
+                    checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.pnlVCode.VinHome,  Constants.PnLCODE.VinFast, Constants.PnLCODE.VinFastTrading, Constants.PnLCODE.Vin3S) ?
                     <><span className="title">CBLĐ thẩm định</span><span className="sub-title">(Nếu có)</span></>
                     : <span className="title">QUẢN LÝ TRỰC TIẾP ĐÁNH GIÁ</span>
                   }
@@ -1641,7 +1753,7 @@ renderEvalution = (name, data, isDisable) => {
           this.state.isNguoidanhgia ? 
           <>
           {  // ---------------check hien thij cho vinschool khi nguowif danh gia ton tai y kien danh gia
-              checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.pnlVCode.VinHome, Constants.PnLCODE.Vin3S) ? 
+              checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.pnlVCode.VinHome,  Constants.PnLCODE.VinFast, Constants.PnLCODE.VinFastTrading, Constants.PnLCODE.Vin3S) ? 
               <div className="box shadow cbnv more-description">
               <div className="title">
                 Ý KIẾN ĐỀ XUẤT CỦA CBQL TRỰC TIẾP
@@ -1722,7 +1834,7 @@ renderEvalution = (name, data, isDisable) => {
               <div className="row approve">
                 <div className="col-12">
                 {
-                    checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.pnlVCode.VinHome, Constants.PnLCODE.Vin3S) ?
+                    checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.pnlVCode.VinHome,  Constants.PnLCODE.VinFast, Constants.PnLCODE.VinFastTrading, Constants.PnLCODE.Vin3S) ?
                     <><span className="title">CBLĐ thẩm định</span><span className="sub-title">(Nếu có)</span></>
                     : <span className="title">QUẢN LÝ TRỰC TIẾP ĐÁNH GIÁ</span>
                   }
@@ -1738,7 +1850,7 @@ renderEvalution = (name, data, isDisable) => {
             </div>
             
             {
-              checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.pnlVCode.VinHome, Constants.PnLCODE.Vin3S) ?
+              checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.pnlVCode.VinHome,  Constants.PnLCODE.VinFast, Constants.PnLCODE.VinFastTrading, Constants.PnLCODE.Vin3S) ?
               <div className="box shadow cbnv">
                 <div className="row approve">
                   <div className="col-12">
@@ -1957,6 +2069,7 @@ renderEvalution = (name, data, isDisable) => {
                 </button> :
                 <>
                   {showComponent.bossSide ? 
+                  <>
                   <button type="button" className="btn btn-success float-right ml-3 shadow" onClick={this.submit.bind(this)} disabled={this.state.disabledSubmitButton}>
                       {!this.state.disabledSubmitButton ?
                           <>
@@ -1972,7 +2085,14 @@ renderEvalution = (name, data, isDisable) => {
                               className="mr-2"
                           />}
                           {'Phê duyệt'}
-                  </button> : 
+                  </button>
+                  <button type="button" className="btn btn-danger float-right ml-3 shadow" onClick={() => this.handleReject()} disabled={this.state.disabledSubmitButton}>
+                          <>
+                              <img src={IconDelete} className='mr-2' alt="cancel" />
+                          </>
+                          {'Từ chối'}
+                  </button>
+                  </> : 
                   <button type="button" className="btn btn-primary float-right ml-3 shadow" onClick={() => this.submit(2)} disabled={this.state.disabledSubmitButton}>
                     {!(this.state.disabledSubmitButton && this.state.actionType == 2) ?
                         <>
@@ -1987,7 +2107,7 @@ renderEvalution = (name, data, isDisable) => {
                             aria-hidden="true"
                             className="mr-2"
                         />}
-                        {t('Send')}
+                        {this.state.type == 'assess' ? t('Consent') : t('Send')}
                 </button>
                   }
                   {showComponent.employeeSide ? 
@@ -1997,8 +2117,10 @@ renderEvalution = (name, data, isDisable) => {
                     <i className="fas fa-paperclip"></i> {t('AttachmentFile')}
                   </label>
                   </> 
-                  : !showComponent.bossSide ? <button type="button" className=" btn btn-success  float-right ml-3 shadow" onClick={() => this.submit(1)} disabled={this.state.disabledSubmitButton}>
-                    {!(this.state.disabledSubmitButton && this.state.actionType == 1) ?
+                  : !showComponent.bossSide ? 
+                  <>
+                    <button type="button" className=" btn btn-success  float-right ml-3 shadow" onClick={() => this.submit(1)} disabled={this.state.disabledSubmitButton}>
+                      {!(this.state.disabledSubmitButton && this.state.actionType == 1) ?
                         <>
                             {/* <i className="fa fa-paper-plane mr-2" aria-hidden="true">
                             </i> */}
@@ -2013,7 +2135,15 @@ renderEvalution = (name, data, isDisable) => {
                             className="mr-2"
                         />}
                         {'Lưu'}
-                    </button> : null }
+                    </button>
+
+                    <button type="button" className=" btn btn-danger  float-right ml-3 shadow" onClick={() => this.handleRefuse()} disabled={this.state.disabledSubmitButton}>
+                         <>
+                              <img src={IconDelete} className='mr-2' alt="cancel" />
+                          </>
+                        {'Từ chối'}
+                    </button>
+                    </> : null }
                 </>
                 }
 
@@ -2026,4 +2156,4 @@ renderEvalution = (name, data, isDisable) => {
   }
 }
 
-export default HOCComponent(withTranslation()(LeaveOfAbsenceDetailComponent))
+export default HOCComponent(withTranslation()(withRouter(LeaveOfAbsenceDetailComponent)))

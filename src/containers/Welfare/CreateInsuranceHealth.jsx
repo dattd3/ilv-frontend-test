@@ -17,6 +17,23 @@ import "react-toastify/dist/ReactToastify.css";
 import ResultModal from "../Registration/ResultModal";
 import { Spinner } from "react-bootstrap";
 import HOCComponent from '../../components/Common/HOCComponent'
+import Select from "react-select";
+import CurrencyInput from 'react-currency-input-field';
+import { replaceAll } from '../Utils/Common';
+
+const RELATIONSHIP_WITH_INSURED = [
+  { value: 'V000', label: 'Bản thân' },
+  { value: 'V001', label: 'Cha ruột' },
+  { value: 'V002', label: 'Mẹ ruột' },
+  { value: 'V005', label: 'Vợ' },
+  { value: 'V006', label: 'Cha chồng' },
+  { value: 'V007', label: 'Mẹ chồng' },
+  { value: 'V008', label: 'Cha vợ' },
+  { value: 'V009', label: 'Mẹ vợ' },
+  { value: 'V013', label: 'Chồng' },
+  { value: 'V014', label: 'Con trai' },
+  { value: 'V015', label: 'Con gái' },
+];
 
 const CreateInsuranceHealth = ({ t }) => {
   const [type, setType] = useState(null);
@@ -63,11 +80,16 @@ const CreateInsuranceHealth = ({ t }) => {
   const [disabledSubmitButton, setdisabledSubmitButton] = useState(false);
   const [InsuranceOptions, setInsuranceOptions] = useState([]);
   const [INSURANCE_CASE, setINSURANCE_CASE] = useState([]);
-  const [PAY_TYPE, setPAY_TYPE] = useState([]); 
+  const [PAY_TYPE, setPAY_TYPE] = useState([]);
   const [GENDER_OPTIONS, setGENDER_OPTIONS] = useState([]);
   const [TREATMENT_OPTIONS, setTREATMENT_OPTIONS] = useState([]);
+  let GENDER_OPTIONS_TMP = [];
 
   useEffect(() => {
+    getCommonGroupData()
+  }, []);
+
+  const getCommonGroupData = async () => {
     const config = getRequestConfigurations();
     const payload = {
       lsStr: [
@@ -78,21 +100,51 @@ const CreateInsuranceHealth = ({ t }) => {
         "INSURANCETREATMENT",
       ],
     };
-    axios.post(
+    await axios.post(
       `${process.env.REACT_APP_HRDX_URL}api/data/getcommongroup`,
       payload,
       config
     ).then((res) => {
-      if(res?.data?.data) {
+      if (res?.data?.data) {
         const remoteData = res.data.data;
-        setInsuranceOptions((remoteData.INSURANCEOPTION || []).map(item => {return {value: item.keyNumber, label: item.textValue}}));
-        setINSURANCE_CASE((remoteData.INSURANCE_CASE || []).map(item => {return {value: item.keyNumber, label: item.textValue}}));
-        setPAY_TYPE((remoteData.INSURANCEPAYTYPE || []).map(item => {return {value: item.keyNumber, label: item.textValue}}));
-        setGENDER_OPTIONS((remoteData.INSURANCEGENDER || []).map(item => {return {value: item.keyNumber, label: item.textValue}}));
-        setTREATMENT_OPTIONS((remoteData.INSURANCETREATMENT || []).map(item => {return {value: item.keyNumber, label: item.textValue}}));
+        setInsuranceOptions((remoteData.INSURANCEOPTION || []).map(item => { return { value: item.keyNumber, label: item.textValue } }));
+        setINSURANCE_CASE((remoteData.INSURANCE_CASE || []).map(item => { return { value: item.keyNumber, label: item.textValue } }));
+        setPAY_TYPE((remoteData.INSURANCEPAYTYPE || []).map(item => { return { value: item.keyNumber, label: item.textValue } }));
+        setGENDER_OPTIONS((remoteData.INSURANCEGENDER || []).map(item => { return { value: item.keyNumber, label: item.textValue } }));
+        setTREATMENT_OPTIONS((remoteData.INSURANCETREATMENT || []).map(item => { return { value: item.keyNumber, label: item.textValue } }));
+        GENDER_OPTIONS_TMP = (remoteData.INSURANCEGENDER || []).map(item => { return { value: item.keyNumber, label: item.textValue } });
       }
+    }).finally(() => {
+      getPersonalInfo()
     });
-  }, []);
+  }
+
+  const getPersonalInfo = async () => {
+    const config = getMuleSoftHeaderConfigurations()
+    await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/personalinfo`, config)
+      .then(res => {
+        if (res && res.data && res.data.data) {
+          let profile = res.data.data[0];
+          const candidateInfos = { ...data };
+          candidateInfos["insuranceClaimant"] = profile?.fullname // Nguoi yeu cau tra BHXH
+          candidateInfos["insuranceRelation"] = RELATIONSHIP_WITH_INSURED[0].label // Moi quan he voi nguoi duoc bao hiem
+          // Địa chỉ thường trú
+          const compiledAddress = _.template('<%= street_name %>,<%= wards %>,<%= district %>,<%= province %>');
+          candidateInfos["address"] = compiledAddress({ street_name: profile?.street_name, wards: profile?.wards, district: profile?.district, province: profile?.province })
+          candidateInfos["phone"] = profile?.cell_phone_no // So dien thoai
+          candidateInfos["email"] = profile?.personal_email.toLowerCase() // email
+          candidateInfos["gender"] = GENDER_OPTIONS_TMP.find(u => u?.value == profile?.gender) // Giới tính
+          candidateInfos["insuredName"] = profile?.fullname // Ho ten NDBH
+          candidateInfos["insuredId"] = profile?.personal_id_no ? profile?.personal_id_no : profile?.passport_id_no // So CMND/ Ho chieu
+          candidateInfos["insuredBirth"] = replaceAll(profile.birthday, '-', '/') // Ngay sinh
+          candidateInfos["insuredNumber"] = profile?.insurance_number // So GCNBH/So the BH
+          setData(candidateInfos);
+        }
+      }).catch(error => {
+        // localStorage.clear();
+        // window.location.href = map.Login;
+      });
+  }
 
   const handleTextInputChange = (e, name) => {
     const candidateInfos = { ...data };
@@ -106,14 +158,26 @@ const CreateInsuranceHealth = ({ t }) => {
     setData(candidateInfos);
   };
 
+  const handleChangeSelect = (e, name) => {
+    const candidateInfos = { ...data };
+    candidateInfos[name] = e != null ? e.label : "";
+    setData(candidateInfos);
+  }
+
+  const handleChangeInputCurrency = (e, name) => {
+    const candidateInfos = { ...data };
+    candidateInfos[name] = e != null ? e : "";
+    setData(candidateInfos);
+  }
+
   const handleDatePickerInputChange = (value, name) => {
     //YYYY-MM-DD
     const candidateInfos = { ...data };
     if (moment(value, "DD/MM/YYYY").isValid()) {
-      if(moment(value).year() > 9999) {
+      if (moment(value).year() > 9999) {
         const year = (moment(value).year() + '').substring(0, 4);
         value = moment(value).set('year', year).format("DD/MM/YYYY")
-      } 
+      }
       const date = moment(value, "DD/MM/YYYY").format("DD/MM/YYYY");
       candidateInfos[name] = date;
       candidateInfos[name + "_raw"] = moment(value, "DD/MM/YYYY").format("YYYY-MM-DD");
@@ -195,7 +259,7 @@ const CreateInsuranceHealth = ({ t }) => {
         } else {
           notifyMessage(
             response.data.result.message ||
-              "Có lỗi xảy ra trong quá trình cập nhật thông tin!"
+            "Có lỗi xảy ra trong quá trình cập nhật thông tin!"
           );
           setdisabledSubmitButton(false);
         }
@@ -209,7 +273,7 @@ const CreateInsuranceHealth = ({ t }) => {
   const verifyData = () => {
     let _errors = {};
     const candidateInfos = { ...data };
-    const requiredFields = [
+    const requiredFieldsFull = [
       "insuranceClaimant",
       "phone",
       "email",
@@ -231,9 +295,35 @@ const CreateInsuranceHealth = ({ t }) => {
       "bankName",
       "bankAddress",
     ];
+    const requiredFieldsNotFull = [
+      "insuranceClaimant",
+      "phone",
+      "email",
+      "insuredName",
+      "gender",
+      "insuredId",
+      "insuredBirth",
+      "insuredNumber",
+      "accidentDate",
+      "examDate",
+      "hospitalizedDate",
+      "hospitalizedAddress",
+      "treatType",
+      "payAmount",
+      "payCase",
+      "payType",
+      "receiveName",
+    ]
     const optionFields = ["treatType", "payCase", "payTypes"];
 
-    requiredFields.forEach((name) => {
+    let requiredFieldsCheck = []
+    if (candidateInfos.payType?.value === 1) {
+      requiredFieldsCheck = requiredFieldsNotFull
+    } else {
+      requiredFieldsCheck = requiredFieldsFull
+    }
+
+    requiredFieldsCheck.forEach((name) => {
       if (
         _.isEmpty(candidateInfos[name]) ||
         (!candidateInfos[name].value && optionFields.includes(name))
@@ -251,14 +341,12 @@ const CreateInsuranceHealth = ({ t }) => {
         }
       }
 
-      if(name === 'phone'){
-          if (/^\d+$/.test(candidateInfos[name])) {
-          } else {
-            _errors.phone = 'Sai định dạng số điện thoại. Xin vui lòng nhập lại !'
-          }
-          
-    }
-
+      if (name === 'phone') {
+        if (/^\d+$/.test(candidateInfos[name])) {
+        } else {
+          _errors.phone = 'Sai định dạng số điện thoại. Xin vui lòng nhập lại !'
+        }
+      }
     });
     setErrors(_errors);
 
@@ -337,14 +425,14 @@ const CreateInsuranceHealth = ({ t }) => {
           </div>
           <div className="col-6">
             {"Mối quan hệ với Người được bảo hiểm"}
-            <input
-              type="text"
-              placeholder="Nhập"
-              value={data.insuranceRelation}
-              onChange={(e) => handleTextInputChange(e, "insuranceRelation")}
-              className="form-control input mv-10 w-100"
-              name="inputName"
-              autoComplete="off"
+            <Select
+              placeholder={"Lựa chọn"}
+              options={RELATIONSHIP_WITH_INSURED}
+              isClearable={false}
+              value={RELATIONSHIP_WITH_INSURED.find(u => u.label === data.insuranceRelation)}
+              onChange={(value) => handleChangeSelect(value, "insuranceRelation")}
+              className="input mv-10"
+              styles={{ menu: (provided) => ({ ...provided, zIndex: 2 }) }}
             />
           </div>
         </div>
@@ -478,9 +566,9 @@ const CreateInsuranceHealth = ({ t }) => {
               selected={
                 data.insuredBirth
                   ? moment(
-                      data.insuredBirth,
-                      Constants.LEAVE_DATE_FORMAT
-                    ).toDate()
+                    data.insuredBirth,
+                    Constants.LEAVE_DATE_FORMAT
+                  ).toDate()
                   : null
               }
               onChange={(date) =>
@@ -551,9 +639,9 @@ const CreateInsuranceHealth = ({ t }) => {
               selected={
                 data.accidentDate
                   ? moment(
-                      data.accidentDate,
-                      Constants.LEAVE_DATE_FORMAT
-                    ).toDate()
+                    data.accidentDate,
+                    Constants.LEAVE_DATE_FORMAT
+                  ).toDate()
                   : null
               }
               onChange={(date) =>
@@ -619,9 +707,9 @@ const CreateInsuranceHealth = ({ t }) => {
               selected={
                 data.hospitalizedDate
                   ? moment(
-                      data.hospitalizedDate,
-                      Constants.LEAVE_DATE_FORMAT
-                    ).toDate()
+                    data.hospitalizedDate,
+                    Constants.LEAVE_DATE_FORMAT
+                  ).toDate()
                   : null
               }
               onChange={(date) =>
@@ -693,14 +781,14 @@ const CreateInsuranceHealth = ({ t }) => {
           <div className="col-3">
             <div>{"Từ ngày"}</div>
             <DatePicker
+              selectsStart
               name="startDate"
               //readOnly={disableComponent.disableAll || !disableComponent.qlttSide || data.qlttOpinion.disableTime == true}
               autoComplete="off"
-              selected={
-                data.fromDate
-                  ? moment(data.fromDate, Constants.LEAVE_DATE_FORMAT).toDate()
-                  : null
-              }
+              selected={data.fromDate ? moment(data.fromDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+              maxDate={data.toDate ? moment(data.toDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+              startDate={data.fromDate ? moment(data.fromDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+              endDate={data.toDate ? moment(data.toDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
               onChange={(date) => handleDatePickerInputChange(date, "fromDate")}
               dateFormat="dd/MM/yyyy"
               placeholderText={t("Select")}
@@ -712,14 +800,14 @@ const CreateInsuranceHealth = ({ t }) => {
           <div className="col-3">
             <div>{"Đến ngày"}</div>
             <DatePicker
+              selectsEnd
               name="startDate"
               //readOnly={disableComponent.disableAll || !disableComponent.qlttSide || data.qlttOpinion.disableTime == true}
               autoComplete="off"
-              selected={
-                data.toDate
-                  ? moment(data.toDate, Constants.LEAVE_DATE_FORMAT).toDate()
-                  : null
-              }
+              selected={data.toDate ? moment(data.toDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+              minDate={data.fromDate ? moment(data.fromDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+              startDate={data.fromDate ? moment(data.fromDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+              endDate={data.toDate ? moment(data.toDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
               onChange={(date) => handleDatePickerInputChange(date, "toDate")}
               dateFormat="dd/MM/yyyy"
               placeholderText={t("Select")}
@@ -782,15 +870,13 @@ const CreateInsuranceHealth = ({ t }) => {
               {"Tổng số tiền yêu cầu chi trả"}{" "}
               <span className="required">(*)</span>
             </div>
-            <input
-              type="text"
-              placeholder="Nhập"
-              value={data.payAmount}
-              onChange={(e) => handleTextInputChange(e, "payAmount")}
+
+            <CurrencyInput
+              intlConfig={{ locale: 'vi-VN', currency: 'VND' }}
               className="form-control input mv-10 w-100"
-              name="inputName"
-              autoComplete="off"
-              checked={"checked"}
+              value={data.payAmount}
+              placeholder="Nhập"
+              onValueChange={(value) => handleChangeInputCurrency(value, "payAmount")}
             />
             {errors["payAmount"] ? (
               <p className="text-danger">{errors["payAmount"]}</p>
@@ -899,64 +985,68 @@ const CreateInsuranceHealth = ({ t }) => {
             ) : null}
           </div>
 
-          <div className="col-6">
-            <div>
-              {"Số tài khoản"} <span className="required">(*)</span>
+          {data.payType?.value !== 1 &&
+            <div className="col-6">
+              <div>
+                {"Số tài khoản"} <span className="required">(*)</span>
+              </div>
+              <input
+                value={data.receiveAccount}
+                onChange={(e) => handleTextInputChange(e, "receiveAccount")}
+                type="text"
+                placeholder="Nhập"
+                className="form-control input mv-10 w-100"
+                name="inputName"
+                autoComplete="off"
+              />
+              {errors["receiveAccount"] ? (
+                <p className="text-danger">{errors["receiveAccount"]}</p>
+              ) : null}
             </div>
-            <input
-              value={data.receiveAccount}
-              onChange={(e) => handleTextInputChange(e, "receiveAccount")}
-              type="text"
-              placeholder="Nhập"
-              className="form-control input mv-10 w-100"
-              name="inputName"
-              autoComplete="off"
-            />
-            {errors["receiveAccount"] ? (
-              <p className="text-danger">{errors["receiveAccount"]}</p>
-            ) : null}
-          </div>
+          }
         </div>
-
-        <div className="row mv-10">
-          <div className="col-12">
-            <div>
-              {"Ngân hàng"} <span className="required">(*)</span>
+        {data.payType?.value !== 1 &&
+          <>
+            <div className="row mv-10">
+              <div className="col-12">
+                <div>
+                  {"Ngân hàng"} <span className="required">(*)</span>
+                </div>
+                <input
+                  value={data.bankName}
+                  onChange={(e) => handleTextInputChange(e, "bankName")}
+                  type="text"
+                  placeholder="Nhập"
+                  className="form-control input mv-10 w-100"
+                  name="inputName"
+                  autoComplete="off"
+                />
+                {errors["bankName"] ? (
+                  <p className="text-danger">{errors["bankName"]}</p>
+                ) : null}
+              </div>
             </div>
-            <input
-              value={data.bankName}
-              onChange={(e) => handleTextInputChange(e, "bankName")}
-              type="text"
-              placeholder="Nhập"
-              className="form-control input mv-10 w-100"
-              name="inputName"
-              autoComplete="off"
-            />
-            {errors["bankName"] ? (
-              <p className="text-danger">{errors["bankName"]}</p>
-            ) : null}
-          </div>
-        </div>
-
-        <div className="row mv-10">
-          <div className="col-12">
-            <div>
-              {"Địa chỉ ngân hàng"} <span className="required">(*)</span>
+            <div className="row mv-10">
+              <div className="col-12">
+                <div>
+                  {"Địa chỉ ngân hàng"} <span className="required">(*)</span>
+                </div>
+                <input
+                  value={data.bankAddress}
+                  onChange={(e) => handleTextInputChange(e, "bankAddress")}
+                  type="text"
+                  placeholder="Nhập"
+                  className="form-control input mv-10 w-100"
+                  name="inputName"
+                  autoComplete="off"
+                />
+                {errors["bankAddress"] ? (
+                  <p className="text-danger">{errors["bankAddress"]}</p>
+                ) : null}
+              </div>
             </div>
-            <input
-              value={data.bankAddress}
-              onChange={(e) => handleTextInputChange(e, "bankAddress")}
-              type="text"
-              placeholder="Nhập"
-              className="form-control input mv-10 w-100"
-              name="inputName"
-              autoComplete="off"
-            />
-            {errors["bankAddress"] ? (
-              <p className="text-danger">{errors["bankAddress"]}</p>
-            ) : null}
-          </div>
-        </div>
+          </>
+        }
       </div>
 
       {/* E. CAM KẾT VÀ ỦY QUYỀN */}
@@ -1006,9 +1096,9 @@ const CreateInsuranceHealth = ({ t }) => {
                   selected={
                     data.formDate
                       ? moment(
-                          data.formDate,
-                          Constants.LEAVE_DATE_FORMAT
-                        ).toDate()
+                        data.formDate,
+                        Constants.LEAVE_DATE_FORMAT
+                      ).toDate()
                       : null
                   }
                   onChange={(date) =>

@@ -202,7 +202,7 @@ class StaffInfoProposedResignationComponent extends React.PureComponent {
                         avatar: res.avatar,
                         account: res.username,
                         employee_no: res.uid, // need update
-                        job_title: res.rank_title || res.rank,
+                        job_title: res.position_name,
                         department: res.division + (res.department ? '/' + res.department : '') + (res.part ? '/' + res.part : ''),
                         date_start_work: null,
                         contract_type: null, // need update
@@ -215,8 +215,8 @@ class StaffInfoProposedResignationComponent extends React.PureComponent {
                         orglv4_id: res.organization_lv4, // need check
                         orglv5_id: res.organization_lv5, // need check
                         orglv6_id: res.organization_lv6, // need update
-                        rank_id: null, // need update
-                        rank_name: null // need update
+                        rank_id: res.rank, // need update
+                        rank_name: res.rank_title && res.rank_title != '#' ? res.rank_title : res.rank // need update
                     }
                 });
                 this.setState({ users: employee ? users.filter(user => user.account !== employee.account) : users, isSearching: false })

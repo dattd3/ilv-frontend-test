@@ -52,6 +52,7 @@ const Constants = {
   DEPARTMENT_TIMESHEET: 9,
   ONBOARDING: 6,
   RESIGN_SELF: 7,
+  SALARY_PROPOSE: 12,
 
   //Status request
   STATUS_PENDING: 0,
@@ -180,10 +181,10 @@ const Constants = {
     Vinpearl: "V030",
     Vinmec: "V060",
     VinSchool: "V061",
-    VinFast: "V077",
-    VinFastTrading: "V078",
+    VinFast: "V070",
+    VinFastTrading: "V077",
     VinFastPB: "V070",
-    Vin3S: "V10000"
+    Vin3S: "V005"
   },
   LOGIN_INSTRUCTION_PATH: "https://myvinpearl.s3.ap-southeast-1.amazonaws.com/shared/templates/ILOVEVINGROUP-HDDang+nhap-LoginInstruction.pdf",
   statusUserActiveMulesoft: 3,

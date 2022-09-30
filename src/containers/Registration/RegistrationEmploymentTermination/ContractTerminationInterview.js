@@ -12,7 +12,7 @@ import StaffInfoForContractTerminationInterviewComponent from '../TerminationCom
 import InterviewContentFormComponent from '../TerminationComponents/InterviewContentFormComponent'
 import ResultModal from '../ResultModal'
 import HOCComponent from '../../../components/Common/HOCComponent'
-import VinpearlLogo from '../../../assets/img/logo-vp-vt.png'
+import VinpearlLogo from '../../../assets/img/LogoVingroup.svg'//assets/img/logo-vp-vt.png
 import { exportToPDF } from '../../../commons/Utils';
 
 const CURRENT_JOB = 1
