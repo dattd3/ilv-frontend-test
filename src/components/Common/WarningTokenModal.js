@@ -7,7 +7,7 @@ import { useCountdown } from '../../commons/hooks'
 import IconReject from '../../assets/img/icon/Icon_Cancel.svg'
 import IconCheck from '../../assets/img/icon/Icon_Check_White.svg'
 
-const tokenTimeExpireStorage = localStorage.getItem('timeTokenExpire')
+const tokenTimeExpireStorage = localStorage.getItem('tokenExpired')
 
 const WarningTokenModal = ({isShow, type, title, content, handleHideModal, handleAccept}) => {
     const warning = 0
@@ -17,7 +17,7 @@ const WarningTokenModal = ({isShow, type, title, content, handleHideModal, handl
     return (
         <Modal
             show={isShow}
-            onHide={handleHideModal}
+            onHide={() => handleHideModal(false)}
             className='warning-token-expired-modal'
             backdrop="static" 
             keyboard={false}
@@ -30,7 +30,7 @@ const WarningTokenModal = ({isShow, type, title, content, handleHideModal, handl
                 type === warning 
                 && <Button
                     className='button-cancel d-inline-flex align-items-center justify-content-center'
-                    onClick={handleHideModal}
+                    onClick={() => handleHideModal(true)}
                     >
                     <Image src={IconReject} alt='Không' className='ic-status' />
                     Hủy

@@ -9,6 +9,7 @@
     "aws-sdk": "^2.524.0",
     "axios": "^0.21.1",
     "bootstrap": "^4.3.1",
+    "broadcast-channel": "^4.17.0",
     "chart.js": "^2.9.4",
     "chart.piecelabel.js": "^0.15.0",
     "clsx": "^1.0.4",
