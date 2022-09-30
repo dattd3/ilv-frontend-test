@@ -2158,7 +2158,7 @@ span.badge-notification[data-badge]::after {
                 align-items: flex-start;
                 input {
                   margin-right: 8px;
-                  margin-top: 6px;
+                  margin-top: 2px;
                 }
               }
               &.employee-code {
@@ -3927,6 +3927,10 @@ span.badge-notification[data-badge]::after {
       }
     }
   }
+}
+.no-vborder {
+  border: none;
+  text-align: center;
 }
 
 .kpi-training-page {

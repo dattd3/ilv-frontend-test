@@ -67,7 +67,7 @@ function Login() {
   const localizeStore = useLocalizeStore();
   const { t } = useTranslation();
   const [modalShow, setModalShow] = useState(false);
-  const [langCode, setLangCode] = useState(localStorage.getItem("locale"));
+  const [langCode, setLangCode] = useState(localStorage.getItem("locale")  || Constants.LANGUAGE_VI);
   const langData = [
     { value: Constants.LANGUAGE_VI, label: t("LangViet") },
     { value: Constants.LANGUAGE_EN, label: t("LangEng") }

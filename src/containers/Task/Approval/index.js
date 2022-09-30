@@ -78,7 +78,6 @@ class ApprovalComponent extends React.Component {
       // { value: Constants.STATUS_EVICTION , label: t("Recalled") },
       { value: Constants.STATUS_NOT_APPROVED , label: t("Rejected") },
       // { value: Constants.STATUS_REVOCATION , label: t("Canceled") },
-      { value: Constants.STATUS_OB_APPROVER_EVALUATION , label: "CBLĐ phê duyệt" },
     ]
     return (
       <>

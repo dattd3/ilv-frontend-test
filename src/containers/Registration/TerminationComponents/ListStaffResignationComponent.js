@@ -246,7 +246,7 @@ class ListStaffResignationComponent extends React.PureComponent {
                                             <th>Bàn giao vân tay/email</th>
                                             <th>Bàn giao công nợ</th>
                                             <th className="handover-software-col">Các phần mềm phục vụ công việc (nếu có)</th>
-                                            <th>Xác nhận biên bản vi phạm chưa xử lý</th>
+                                            <th>Xác nhận biên bản vi phạm chưa xử lý(Nếu có)</th>
                                             <th>Tình trạng phê duyệt</th>
                                             <th>Tình trạng sổ BHXH</th>
                                             <th>Tình trạng lương</th>

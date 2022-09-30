@@ -179,7 +179,7 @@ class RequestTaskList extends React.Component {
         this.setState({ isShowModalRegistrationConfirm: false });
     }
 
-    showStatus = (taskId, statusOriginal, request, taskData) => {
+    showStatus = (taskId, statusOriginal, request, taskData, statusName) => {
         const customStylesStatus = {
             control: base => ({
                 ...base,
@@ -203,7 +203,8 @@ class RequestTaskList extends React.Component {
             6: { label: this.props.t("PartiallySuccessful"), className: 'request-status warning' },
             7: { label: this.props.t("Rejected"), className: 'request-status fail' },
             8: { label: this.props.t("PendingConsent"), className: 'request-status' },
-            20: { label: this.props.t("Consented"), className: 'request-status' }
+            20: { label: this.props.t("Consented"), className: 'request-status' },
+            100: { label: this.props.t("Waiting"), className: 'request-status' }
         }
 
         const options = [
@@ -211,6 +212,12 @@ class RequestTaskList extends React.Component {
             { value: 1, label: 'Từ chối' },
             { value: 2, label: 'Phê duyệt' }
         ]
+
+        if(request == Constants.SALARY_PROPOSE && statusName) {
+            let statusLabel = this.props.t(statusName);
+            let tmp = Object.keys(status).filter(key => status[key].label == statusLabel );
+            statusOriginal = tmp?.length > 0 ? tmp[0] : statusOriginal;
+        }
 
         if (this.props.page === "approval") {
             if (statusOriginal == 0) {
@@ -222,6 +229,7 @@ class RequestTaskList extends React.Component {
         if(taskData?.account != null && statusOriginal == 5) {
             statusOriginal = 6;
         }
+        
         return <span className={status[statusOriginal]?.className}>{status[statusOriginal]?.label}</span>
     }
 
@@ -248,6 +256,18 @@ class RequestTaskList extends React.Component {
             return requestTypeId == Constants.UPDATE_PROFILE ? `/registration/${mainId}/${subId}/approval` : `/registration/${mainId}/${subId}`
         }
         return `/registration/${mainId}/${subId}/request`
+    }
+
+    getSalaryProposeLink = (request) => {
+        let url = '';
+        if(request.parentRequestHistoryId) {
+            //xu ly mot nguoi
+            url = `salarypropse/${request.parentRequestHistoryId}/${request.salaryId}/request`
+        } else {
+            //xu ly nhieu nguoi
+            url = `salaryadjustment/${request.salaryId}/request`
+        }
+        return url;
     }
 
     getRequestEditLink = (id, requestTypeId, processStatusId) => {
@@ -661,7 +681,7 @@ class RequestTaskList extends React.Component {
                                             }
 
                                             let editLink = this.getRequestEditLink(child.id, child.requestTypeId, child.processStatusId)
-                                            let detailLink = this.getRequestDetailLink(child.id, child.requestTypeId)
+                                            let detailLink = child.requestTypeId == Constants.SALARY_PROPOSE ? this.getSalaryProposeLink(child) : this.getRequestDetailLink(child.id, child.requestTypeId)
                                             let dateChanged = showRangeDateGroupByArrayDate(child.startDate)
 
                                             return (
@@ -700,7 +720,7 @@ class RequestTaskList extends React.Component {
                                                             })
                                                         }
                                                     </td>
-                                                    <td className="status text-center">{this.showStatus(child.id, child.processStatusId, child.requestType.id, child.appraiserId)}</td>
+                                                    <td className="status text-center">{this.showStatus(child.id, child.processStatusId, child.requestType.id, child.appraiserId, child.statusName)}</td>
                                                     <td className="tool">
                                                         { (isShowEditButton && child?.absenceType?.value != MOTHER_LEAVE_KEY) && <a href={editLink} title={t("Edit")}><img alt="Sửa" src={editButton} /></a> }
                                                         { isShowEvictionButton && child.absenceType?.value != MOTHER_LEAVE_KEY

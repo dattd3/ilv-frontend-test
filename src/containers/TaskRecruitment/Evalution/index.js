@@ -18,20 +18,20 @@ class EvaluationComponent extends React.Component {
     {value: true, label: 'Đã xong'},
     {value: false, label: 'Chưa xong'},
   ];
-  
-  STATUS_OPTIONS = [
-    {value: 9, label: 'Tự đánh giá'},
-    {value: 10, label: checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.pnlVCode.VinHome, Constants.PnLCODE.Vin3S) ? 'QLTT đánh giá' : 'Người đánh giá'},
-    {value: 11, label: checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.pnlVCode.VinHome, Constants.PnLCODE.Vin3S)  ? 'CBLĐ thẩm định' : 'QLTT đánh giá' },
-    {value: 12, label: 'HR thẩm định'},
-    {value: 13, label: 'CBLĐ phê duyệt'},
-    {value: 2, label: 'Đã phê duyệt'},
-    {value: 1, label: 'Từ chối'}
-  ];
 
+  STATUS_OPTIONS = [
+    {value: 9, label: this.props.t("Waiting")},
+    {value: 10, label: this.props.t("PendingConsent")},
+    {value: 11, label: this.props.t("PendingConsent")},
+    {value: 12, label: this.props.t("PendingConsent")},
+    {value: 13, label: this.props.t("PendingApproval")},
+    {value: 2, label: this.props.t('Approved')},
+    {value: 1, label: this.props.t('Rejected')}
+  ];
+  
   _isMounted = false;
   constructor(props) {
-    super();
+    super(props);
     this.state = {
       tasks: [],
       dataResponse: {},

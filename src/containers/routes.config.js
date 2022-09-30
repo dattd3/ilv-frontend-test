@@ -492,6 +492,22 @@ export default [
           component: lazy(() => import("./WorkflowManagement/DepartmentManagement/EmployeeTimesheets"))
         },
         {
+          key: "proposal-management",
+          routeProps: {
+            exact: true,
+            path: map.ProposalManagement
+          },
+          component: lazy(() => import("./WorkflowManagement/DepartmentManagement/ProposalManagement"))
+        },
+        {
+          key: "salaryadjustment",
+          routeProps: {
+            exact: true,
+            path: map.SalaryAdjustmentPropse
+          },
+          component: lazy(() => import("./WorkflowManagement/DepartmentManagement/ProposalManagement/SalaryAdjustmentPropse"))
+        },
+        {
           key: "vaccination",
           routeProps: {
             exact: true,
@@ -691,6 +707,14 @@ export default [
             path: map.DetailInsuranceHealth
           },
           component: lazy(() => import("./Welfare/DetailInsuranceHealth"))
+        },
+        {
+          key: "evaluation-salary-propse",
+          routeProps: {
+            exact: true,
+            path: map.SalaryPropse
+          },
+          component: lazy(() => import("./Registration/ContractEvaluation/SalaryPropose"))
         },
       ],
     },

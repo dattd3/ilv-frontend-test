@@ -657,7 +657,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
             </div>
 
             <div className="row">
-                <div className="sub-title">II.2.7 Xác nhận về biên bản vi phạm đang xử lý (nếu có)</div>
+                <div className="sub-title">II.2.7 Xác nhận về biên bản vi phạm chưa xử lý (nếu có)</div>
             </div>
             <div className="row">
                 <div className="col-4">
