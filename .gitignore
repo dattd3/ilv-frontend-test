@@ -25,3 +25,6 @@ yarn-debug.log*
 yarn-error.log*
 build-web.zip
 build-web
+
+yarn.lock
+package-lock.json

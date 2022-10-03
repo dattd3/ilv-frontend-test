@@ -1226,14 +1226,17 @@ renderEvalution = (name, data, isDisable) => {
     })
         .then(response => {
           if(response.data.result && response.data.result.code == '000000'){
-            if(this.state.type == 'assess' && actionType != 1 &&
-              ((this.state.data.processStatus == 10 && checkIsExactPnL(Constants.pnlVCode.VinSchool, Constants.pnlVCode.VinHome, Constants.PnLCODE.VinFast, Constants.PnLCODE.VinFastTrading, Constants.pnlVCode.Vin3S)) || 
-                (this.state.processStatus == 11 && !checkIsExactPnL(Constants.pnlVCode.VinSchool, Constants.pnlVCode.VinHome, Constants.PnLCODE.VinFast, Constants.PnLCODE.VinFastTrading, Constants.pnlVCode.Vin3S)))) {
-                  this.showSalaryPropose(actionType, home);
-            } else {
-              this.showStatusModal(message, true, true, home)
-              this.setDisabledSubmitButton(false, actionType)
-            }
+            // if(this.state.type == 'assess' && actionType != 1 &&
+            //   ((this.state.data.processStatus == 10 && checkIsExactPnL(Constants.pnlVCode.VinSchool, Constants.pnlVCode.VinHome, Constants.PnLCODE.VinFast, Constants.PnLCODE.VinFastTrading, Constants.pnlVCode.Vin3S)) || 
+            //     (this.state.processStatus == 11 && !checkIsExactPnL(Constants.pnlVCode.VinSchool, Constants.pnlVCode.VinHome, Constants.PnLCODE.VinFast, Constants.PnLCODE.VinFastTrading, Constants.pnlVCode.Vin3S)))) {
+            //       this.showSalaryPropose(actionType, home);
+            // } else {
+            //   this.showStatusModal(message, true, true, home)
+            //   this.setDisabledSubmitButton(false, actionType)
+            // }
+
+            this.showStatusModal(message, true, true, home)
+            this.setDisabledSubmitButton(false, actionType)
             
             return;
           }
@@ -2103,7 +2106,7 @@ renderEvalution = (name, data, isDisable) => {
                             aria-hidden="true"
                             className="mr-2"
                         />}
-                        {t('Send')}
+                        {this.state.type == 'assess' ? t('Consent') : t('Send')}
                 </button>
                   }
                   {showComponent.employeeSide ? 
