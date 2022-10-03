@@ -5,8 +5,8 @@ import map from '../map.config';
 import LoadingModal from '../../components/Common/LoadingModal'
 import { useTranslation } from "react-i18next";
 import axios from 'axios';
-import { getMuleSoftHeaderConfigurations } from "../../commons/Utils";
-import Constants from "../../commons/Constants";
+import { getMuleSoftHeaderConfigurations } from "../../commons/Utils"
+import Constants from "../../commons/Constants"
 import moment from 'moment';
 
 const ERROR_TYPE = {
@@ -73,13 +73,13 @@ function Authorize(props) {
         try {
             const config = {
                 headers: {
-                  'Authorization': token
+                  'Authorization': `Bearer ${token}`
                 }
             }
             const response = await axios.get(`${process.env.REACT_APP_HRDX_URL}user/managementPoint?companyCode=${companyCode}`, config)
             if (response && response.data) {
-                //return  response.data.data?.isSupporter == true || ( [Constants.pnlVCode.VinSchool, Constants.pnlVCode.VincomRetail, Constants.pnlVCode.VinHome, Constants.PnLCODE.Vin3S].includes(companyCode) && response.data.data?.hasSubordinate == true) ? true : false;
-                return  response.data.data?.isSupporter == true || ( [Constants.pnlVCode.VinSchool, Constants.pnlVCode.VinHome, Constants.PnLCODE.Vin3S, Constants.PnLCODE.VinFast, Constants.PnLCODE.VinFastTrading].includes(companyCode) && response.data.data?.hasSubordinate == true) ? true : false;
+                //return  response.data.data?.isSupporter == true || ( [Constants.pnlVCode.VinSchool, Constants.pnlVCode.VinHome, Constants.PnLCODE.Vin3S, Constants.PnLCODE.VinFast, Constants.PnLCODE.VinFastTrading].includes(companyCode) && response.data.data?.hasSubordinate == true) ? true : false;
+                return  response.data.data?.isSupporter == true || ( [Constants.pnlVCode.VinSchool, Constants.pnlVCode.VinHome, Constants.PnLCODE.Vin3S].includes(companyCode) && response.data.data?.hasSubordinate == true) ? true : false;
             }
             return false;
         } catch(e) {
@@ -271,23 +271,32 @@ function Authorize(props) {
     }
 
     useEffect(() => {
-        // const queryParams = new URLSearchParams(props.history.location.search);
-        // const accessToken = queryParams?.get('accesstoken') || null
-        // if (queryParams.has('accesstoken')) {
-        // queryParams.delete('accesstoken')
-        // props.history.replace({
-        //     search: queryParams.toString(),
-        // })
-        // }
-        const queryParams = new URLSearchParams(props.history.location.search);
-        const accessToken = queryParams?.get('accesstoken') || null
+        const queryParams = new URLSearchParams(props?.history?.location?.search);
         if (queryParams.has('accesstoken')) {
-        queryParams.delete('accesstoken')
-        props.history.replace({
-            search: queryParams.toString(),
-        })
+            const accessToken = queryParams?.get('accesstoken') || ''
+            const refreshToken = queryParams?.get('refreshtoken') || ''
+            const expireIn = queryParams?.get('expirein') || 3600 // Nếu không trả về thì mặc định thời gian hết hạn là 1h
+            const timeTokenExpire = moment().add(Number(expireIn), 'seconds').format('YYYYMMDDHHmmss')
+
+            localStorage.setItem('refreshToken', refreshToken)
+            localStorage.setItem('timeTokenExpire', timeTokenExpire)
+
+            // if (accessToken) {
+            //     setCookie('accessToken', accessToken, { path: '/', secure: true, httpOnly: true });
+            // }
+            
+            queryParams.delete('accesstoken')
+            queryParams.delete('refreshtoken')
+            queryParams.delete('expirein')
+            queryParams.delete('expireon')
+            props.history.replace({
+                search: queryParams.toString(),
+            })
+
+            getUserData(accessToken);
         }
-        getUserData(accessToken);
+
+        // getUserData();
         // Hub.listen('auth', data => {
         //     switch (data.payload.event) {
         //         case 'signIn':
@@ -297,7 +306,7 @@ function Authorize(props) {
         //             return;
         //     }
         // });
-    },[]);
+    }, []);
 
     const tryAgain = () => {
         window.location.href = process.env.REACT_APP_AWS_COGNITO_IDP_SIGNOUT_URL;
