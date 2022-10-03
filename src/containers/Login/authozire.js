@@ -73,13 +73,13 @@ function Authorize(props) {
         try {
             const config = {
                 headers: {
-                  'Authorization': `Bearer ${token}`
+                  'Authorization': token
                 }
             }
             const response = await axios.get(`${process.env.REACT_APP_HRDX_URL}user/managementPoint?companyCode=${companyCode}`, config)
             if (response && response.data) {
-                //return  response.data.data?.isSupporter == true || ( [Constants.pnlVCode.VinSchool, Constants.pnlVCode.VinHome, Constants.PnLCODE.Vin3S, Constants.PnLCODE.VinFast, Constants.PnLCODE.VinFastTrading].includes(companyCode) && response.data.data?.hasSubordinate == true) ? true : false;
-                return  response.data.data?.isSupporter == true || ( [Constants.pnlVCode.VinSchool, Constants.pnlVCode.VinHome, Constants.PnLCODE.Vin3S].includes(companyCode) && response.data.data?.hasSubordinate == true) ? true : false;
+                //return  response.data.data?.isSupporter == true || ( [Constants.pnlVCode.VinSchool, Constants.pnlVCode.VincomRetail, Constants.pnlVCode.VinHome, Constants.PnLCODE.Vin3S].includes(companyCode) && response.data.data?.hasSubordinate == true) ? true : false;
+                return  response.data.data?.isSupporter == true || ( [Constants.pnlVCode.VinSchool, Constants.pnlVCode.VinHome, Constants.PnLCODE.Vin3S, Constants.PnLCODE.VinFast, Constants.PnLCODE.VinFastTrading].includes(companyCode) && response.data.data?.hasSubordinate == true) ? true : false;
             }
             return false;
         } catch(e) {
