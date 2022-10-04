@@ -66,6 +66,7 @@ class ResignationRequestsManagementPage extends React.Component {
 
     fetchDeparmtData = async () => {
         const config = getRequestConfigs()
+        config.params = {companyCode: localStorage.getItem('companyCode')};
         const responses = await axios.get(`${process.env.REACT_APP_REQUEST_URL}ReasonType/getdepartments`, config)
         if (responses && responses.data && responses.data.data) {
             const departmentData = responses.data.data.map(item => {
