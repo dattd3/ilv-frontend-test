@@ -12,6 +12,7 @@ import ListStaffResignationComponent from '../TerminationComponents/ListStaffRes
 import ResultModal from '../ResultModal'
 import CustomPaging from '../../../components/Common/CustomPaging'
 import "react-toastify/dist/ReactToastify.css"
+import ReactSelect from 'react-select'
 
 const REPORT_RESIGNATION_REQUESTS = 1
 const HANDOVER_STATUS = 2
@@ -22,17 +23,29 @@ const CONTRACT_TERMINATION_AGREEMENT = 6
 const DECISION_CONTRACT_TERMINATION = 7
 
 class ResignationRequestsManagementPage extends React.Component {
+    pagingSize = [
+        {value: 10, label: '10'},
+        {value: 30, label: '30'},
+        {value: 50, label: '50'},
+        {value: 100, label: '100'},
+    ]
     constructor(props) {
         super();
         this.state = {
             listUserTerminations: [],
+            listDepartments: [],
             totalUserTerminations: 0,
             searchingDataToFilter: {
                 pageIndex: Constants.PAGE_INDEX_DEFAULT,
                 pageSize: Constants.PAGE_SIZE_DEFAULT,
-                fullTextSearch: ""
+                fullTextSearch: "",
+                employeeNo: null,
+                department: null,
+                handoverStatus: null,
+                approvalStatus: null
             },
             requestIdChecked: [],
+            isCheckedAll: false,
             isShowLoadingModal: false,
             isShowStatusModal: false,
             annualLeaveSummary: null,
@@ -47,12 +60,31 @@ class ResignationRequestsManagementPage extends React.Component {
     }
 
     componentDidMount() {
+        this.fetchDeparmtData();
         this.fetchListUserTerminations()
     }
 
-    updateKeywordsToFilter = value => {
+    fetchDeparmtData = async () => {
+        const config = getRequestConfigs()
+        const responses = await axios.get(`${process.env.REACT_APP_REQUEST_URL}ReasonType/getdepartments`, config)
+        if (responses && responses.data && responses.data.data) {
+            const departmentData = responses.data.data.map(item => {
+                return {
+                    value: item.code,
+                    label: item.name
+                };
+            });
+
+            this.setState({listDepartments: departmentData});
+        }
+    }
+
+    updateKeywordsToFilter = (value, advancedData) => {
         const searchingDataToFilter = {...this.state.searchingDataToFilter}
         searchingDataToFilter.fullTextSearch = value
+        Object.keys(advancedData).map(key => {
+            searchingDataToFilter[key] = advancedData[key];
+        })
         this.setState({searchingDataToFilter: searchingDataToFilter}, () => {
             this.fetchListUserTerminations()
         })
@@ -65,34 +97,47 @@ class ResignationRequestsManagementPage extends React.Component {
         config.params = params
         const responses = await axios.get(`${process.env.REACT_APP_REQUEST_URL}ReasonType/getlistterminal`, config)
         const listUserTerminations = this.prepareListUserTerminations(responses)
-        this.setState({listUserTerminations: listUserTerminations.data, totalUserTerminations: listUserTerminations.total, isShowLoadingModal: false})
+        this.setState({listUserTerminations: listUserTerminations.data, totalUserTerminations: listUserTerminations.total, isCheckedAll: listUserTerminations.isCheckedAll, isShowLoadingModal: false})
     }
 
     prepareParamsToFilter = () => {
-        return Object.entries({...this.state.searchingDataToFilter}).reduce((item, [k, v]) => (v === null || v === "" ? item : (item[k] = v, item)), {})
+        const params =  Object.entries({...this.state.searchingDataToFilter}).reduce((item, [k, v]) => (v === null || v === "" ? item : (item[k] = v, item)), {})
+        if(params.employeeNo) {
+            params.employeeNo = (params.employeeNo|| '').trim().replace(/\s\s+/g, ",").replace(/\s/g, ',').replace(/\,\,+/g, ",");
+        }
+        return params;
     }
 
     prepareListUserTerminations = responses => {
         if (responses && responses.data && responses.data.data) {
             const total = responses.data.data.totalRecord
             const userTerminations = responses.data.data.data
-
+            let isCheckedAll = true;
             if (userTerminations && userTerminations.length > 0) {
+                const itemsChecked = (this.state.requestIdChecked || []).filter(item => item?.value).map(item => item.requestStatusProcessId);
+                userTerminations.map(item => {
+                    if(!itemsChecked.includes(item.requestStatusProcessId)) {
+                        isCheckedAll = false;
+                    }
+                });
                 return {
                     data: userTerminations,
-                    total: total
+                    total: total,
+                    isCheckedAll: isCheckedAll
                 }
             }
 
             return {
                 data: [],
-                total: 0
+                total: 0,
+                isCheckedAll: false
             }
         }
 
         return {
             data: [],
-            total: 0
+            total: 0,
+            isCheckedAll: false
         }
     }
 
@@ -122,8 +167,8 @@ class ResignationRequestsManagementPage extends React.Component {
         this.setState({ isUpdateFiles: status })
     }
 
-    updateTerminationRequestList = (stateName, data) => {
-        this.setState({[stateName]: data})
+    updateTerminationRequestList = (stateName, data, isCheckedAll) => {
+        this.setState({[stateName]: data, isCheckedAll: isCheckedAll})
     }
 
     updateOptionToExport = exportOption => {
@@ -340,35 +385,28 @@ class ResignationRequestsManagementPage extends React.Component {
         return errors
     }
 
-    save = async () => {
+    massUpdate = async (type, key, value) => {
         const {t} = this.props
-        const {requestIdChecked, listUserTerminations, files} = this.state
+        const {requestIdChecked, files} = this.state
         const isDataValid = this.isDataValid()
-        const fileInfoValidation = this.validateAttachmentFile()
-
         if (!isDataValid) {
             toast.error("Xin vui lòng tích chọn thông tin cần lưu!")
             return
-        } else if (_.size(fileInfoValidation) > 0 && fileInfoValidation.files) {
-            toast.error(fileInfoValidation.files)
-            return
         } else {
-            const itemsChecked = (requestIdChecked || []).filter(item => item?.value).map(item => item?.item)
-
+            const itemsChecked = (requestIdChecked || []).filter(item => item?.value).filter(item => item?.item[type] == true).map(item => {
+                const _item = item.item;
+                _item[key] = value;
+                return _item;
+            });
             if (itemsChecked.length > 0) {
                 this.setState({isShowLoadingModal: true})
                 try {
                     let bodyFormData = new FormData()
                     bodyFormData.append('models', JSON.stringify(itemsChecked))
+                    bodyFormData.append('type', key);
 
-                    if (files && files.length > 0) {
-                        files.forEach(file => {
-                            bodyFormData.append('attachFiles', file)
-                        })
-                    }
-
-                    const responses = await axios.post(`${process.env.REACT_APP_REQUEST_URL}ReasonType/updatecontractterminal`, bodyFormData, getRequestConfigs())
-                    this.setState({isShowLoadingModal: false, requestIdChecked: []})
+                    const responses = await axios.post(`${process.env.REACT_APP_REQUEST_URL}ReasonType/updatecontractterminal1`, bodyFormData, getRequestConfigs())
+                    this.setState({isShowLoadingModal: false, requestIdChecked: [], isCheckedAll: false})
 
                     if (responses && responses.data) {
                         const result = responses.data.result
@@ -381,7 +419,54 @@ class ResignationRequestsManagementPage extends React.Component {
                         this.showStatusModal(t("Notification"), "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
                     }
                 } catch (error) {
-                    this.setState({isShowLoadingModal: false, requestIdChecked: []})
+                    this.setState({isShowLoadingModal: false, requestIdChecked: [], isCheckedAll: false})
+                }
+            } else {
+                toast.error("Không có quyền trên thay đổi trên những bản ghi đã chọn!")
+            }
+        }
+    }
+
+    save = async () => {
+        const {t} = this.props
+        const {requestIdChecked, listUserTerminations, files} = this.state
+        const isDataValid = this.isDataValid()
+        const fileInfoValidation = this.validateAttachmentFile()
+        if (!isDataValid) {
+            toast.error("Xin vui lòng tích chọn thông tin cần lưu!")
+            return
+        } else if (_.size(fileInfoValidation) > 0 && fileInfoValidation.files) {
+            toast.error(fileInfoValidation.files)
+            return
+        } else {
+            const itemsChecked = (requestIdChecked || []).filter(item => item?.value).map(item => item?.item)
+            if (itemsChecked.length > 0) {
+                this.setState({isShowLoadingModal: true})
+                try {
+                    let bodyFormData = new FormData()
+                    bodyFormData.append('models', JSON.stringify(itemsChecked))
+
+                    if (files && files.length > 0) {
+                        files.forEach(file => {
+                            bodyFormData.append('attachFiles', file)
+                        })
+                    }
+
+                    const responses = await axios.post(`${process.env.REACT_APP_REQUEST_URL}ReasonType/updatecontractterminal1`, bodyFormData, getRequestConfigs())
+                    this.setState({isShowLoadingModal: false, requestIdChecked: [], isCheckedAll: false})
+
+                    if (responses && responses.data) {
+                        const result = responses.data.result
+                        if (result.code != Constants.API_ERROR_CODE) {
+                            this.showStatusModal(t("Successful"), t("RequestSent"), true)
+                        } else {
+                            this.showStatusModal(t("Notification"), result.message, false)
+                        }
+                    } else {
+                        this.showStatusModal(t("Notification"), "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
+                    }
+                } catch (error) {
+                    this.setState({isShowLoadingModal: false, requestIdChecked: [], isCheckedAll: false})
                 }
             }
         }
@@ -409,17 +494,28 @@ class ResignationRequestsManagementPage extends React.Component {
         })
     }
 
+    handlePageSizeChange = (e) => {
+        const searchingDataToFilter = this.state.searchingDataToFilter
+        searchingDataToFilter.pageSize = e.value;
+        searchingDataToFilter.pageIndex = 1;
+        this.setState({searchingDataToFilter: searchingDataToFilter}, () => {
+            this.fetchListUserTerminations()
+        })
+    }
+
     render() {
         const { t } = this.props
         const {
             listUserTerminations,
             totalUserTerminations,
+            listDepartments,
             titleModal,
             messageModal,
             isShowStatusModal,
             isSuccess,
             isShowLoadingModal,
-            searchingDataToFilter
+            searchingDataToFilter,
+            isCheckedAll
         } = this.state
 
         return (
@@ -431,10 +527,22 @@ class ResignationRequestsManagementPage extends React.Component {
             <LoadingModal show={isShowLoadingModal} />
             <ResultModal show={isShowStatusModal} title={titleModal} message={messageModal} isSuccess={isSuccess} onHide={this.hideStatusModal} />
             <div className="leave-of-absence resignation-requests-management-page">
-                <ResignationRequestsManagementActionButton updateKeywordsToFilter={this.updateKeywordsToFilter} updateAttachedFiles={this.updateAttachedFiles} save={this.save} updateOptionToExport={this.updateOptionToExport} />
-                <ListStaffResignationComponent listUserTerminations={listUserTerminations} updateTerminationRequestList={this.updateTerminationRequestList} />
+                <ResignationRequestsManagementActionButton listDepartments ={listDepartments} updateKeywordsToFilter={this.updateKeywordsToFilter} updateAttachedFiles={this.updateAttachedFiles} save={this.save} massUpdate={this.massUpdate} updateOptionToExport={this.updateOptionToExport} />
+                <ListStaffResignationComponent listUserTerminations={listUserTerminations} isCheckedAll ={isCheckedAll} updateTerminationRequestList={this.updateTerminationRequestList} />
             </div>
-            <CustomPaging pageSize={searchingDataToFilter.pageSize} onChangePage={this.onChangePage} totalRecords={totalUserTerminations} />
+            <div className='row'>
+                <div className='col-sm d-flex flex-row align-items-center'>
+                Hiển thị: <div style={{width: '100px', marginLeft: '5px'}}>
+                    <ReactSelect options={this.pagingSize} value = {this.pagingSize.filter(item => item.value == searchingDataToFilter.pageSize)} 
+                        onChange={e => this.handlePageSizeChange(e)} isClearable={false}  />
+                    </div>
+                </div>
+                <div className='col-sm'></div>
+                <div className='col-sm'> <CustomPaging pageSize={searchingDataToFilter.pageSize} onChangePage={this.onChangePage} totalRecords={totalUserTerminations} /></div>
+                <div className='col-sm'></div>
+                <div className='col-sm'></div>
+            </div>
+           
             </>
         )
     }

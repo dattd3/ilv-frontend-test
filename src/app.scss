@@ -2213,11 +2213,11 @@ span.badge-notification[data-badge]::after {
   .resignation-requests-management-action-button {
     .filter-action-block {
       align-items: center;
-      justify-content: flex-end;
       margin-bottom: 20px;
       .action-group {
         align-items: center;
         .attachment {
+          color: #000000;
           text-align: center;
           cursor: pointer;
           width: 100%;
@@ -2235,6 +2235,7 @@ span.badge-notification[data-badge]::after {
           }
         }
         .save {
+          color: #000000;
           width: 100%;
           border: 1px solid #CCCCCC;
           border-radius: .35rem;
@@ -2250,13 +2251,76 @@ span.badge-notification[data-badge]::after {
         }
       }
       .input-filter {
-        input {
-          width: 100%;
-          border: 1px solid #CCCCCC;
-          border-radius: .35rem;
+        border-radius: .35rem;
+        background-color: white;
+        align-items: center;
+        padding:  0.375rem;
+        > input {
+          height: calc(1.5em + 2px);
+          border: none;
+          margin-right: 10px;
+          border-right: 1px solid hsl(0,0%,80%);
+          flex: 1;
+          //border: 1px solid #CCCCCC;
+          
           padding: 6px 10px;
           &:focus-visible {
             outline: none;
+          }
+        }
+        svg {
+          display: inline-block;
+          fill: hsl(0,0%,80%);
+          line-height: 1;
+          stroke: hsl(0,0%,80%);
+          stroke-width: 0;
+          margin-left: 3px;
+        }
+
+        .popup {
+          position: absolute;
+          border-radius: .35rem;
+          z-index: 2;
+          left: 2rem;
+          padding: 10px;
+          top: calc(1.5em + 0.75rem + 5px);
+          width: 25vw;
+          background-color: white;
+          border: 1px solid hsl(0,0%,80%);
+          box-shadow: rgb(9 30 66 / 25%) 0px 4px 8px -2px, rgb(9 30 66 / 8%) 0px 0px 0px 1px;
+          .col-6 {
+            padding-left: 6px;
+            padding-right: 6px;
+          }
+          .save {
+            color: #FFF;
+            background-color: #f6c23e;
+            width: 100%;
+            border: 1px solid #CCCCCC;
+            border-radius: .35rem;
+            padding: 8px;
+            &:focus {
+              outline: none;
+            }
+            i {
+              margin-right: 5px;
+              font-size: 11px;
+            }
+          }
+          .discard {
+            color: #FFF;
+            background-color: #c1c1c1;
+            width: 100%;
+            border: 1px solid #d1d3e2;
+            border-radius: .35rem;
+            padding: 8px;
+            &:focus {
+              outline: none;
+            }
+            i {
+              margin-right: 5px;
+              font-size: 11px;
+            }
           }
         }
       }

@@ -45,7 +45,8 @@ class ListStaffResignationComponent extends React.PureComponent {
         super(props)
         this.state = {
             listUserTerminations: [],
-            requestIdChecked: {}
+            requestIdChecked: {},
+            isCheckedAll : false
         }
     }
 
@@ -207,16 +208,47 @@ class ListStaffResignationComponent extends React.PureComponent {
         this.props.updateTerminationRequestList("listUserTerminations", listUserTerminations)
     }
 
+    handleCheckAll = (e) => {
+        //this.handleCheckboxChange(item, item.id, item.requestStatusProcessId, item.isUploadFile, userInfos?.employeeNo, e)}
+        
+        if(e.target.checked == false) {
+            this.setState({requestIdChecked: {}, isCheckedAll: false});
+            this.props.updateTerminationRequestList("requestIdChecked", Object.values({}), false);
+            return;
+        }
+
+        const requestIdChecked = {...this.state.requestIdChecked};
+        const itemsChecked = {};
+        Object.keys(requestIdChecked).map(key => {
+            const item = requestIdChecked[key];
+            item.value = true;
+            itemsChecked[key] = item;
+        });
+        this.state.listUserTerminations.map(item => {
+            if(!itemsChecked[item.requestStatusProcessId]) {
+                itemsChecked[item.requestStatusProcessId] = {key: item.id, value: true, requestStatusProcessId: item.requestStatusProcessId, isUploadFile: item.isUploadFile, employeeNo: item.userInfo?.employeeNo, item: item};
+            }
+        });
+        this.setState({requestIdChecked: itemsChecked, isCheckedAll: true});
+        this.props.updateTerminationRequestList("requestIdChecked", Object.values(itemsChecked), true)
+
+    }
+
     handleCheckboxChange = (item, code, requestStatusProcessId, isUploadFile, employeeNo, e) => {
         const requestIdChecked = {...this.state.requestIdChecked}
         requestIdChecked[requestStatusProcessId] = {key: code, value: e.target.checked, requestStatusProcessId: requestStatusProcessId, isUploadFile: isUploadFile, employeeNo: employeeNo, item: item}
-
-        this.setState({requestIdChecked: requestIdChecked})
-        this.props.updateTerminationRequestList("requestIdChecked", Object.values(requestIdChecked))
+        let checkedNumer = 0;
+        Object.keys(requestIdChecked).map(key => {
+            if(requestIdChecked[key].value) {
+                checkedNumer++;
+            }
+        });
+        this.setState({requestIdChecked: requestIdChecked, isCheckedAll: checkedNumer == this.state.listUserTerminations.length});
+        this.props.updateTerminationRequestList("requestIdChecked", Object.values(requestIdChecked), checkedNumer == this.state.listUserTerminations.length)
     }
 
     render() {
-        const { t } = this.props
+        const { t , isCheckedAll} = this.props
         const {listUserTerminations, requestIdChecked} = this.state
 
         return <div className="block staff-information-proposed-resignation-block">
@@ -226,7 +258,12 @@ class ListStaffResignationComponent extends React.PureComponent {
                                 <table className="list-staff table">
                                     <thead>
                                         <tr>
-                                            <th className="sticky-col full-name-col"><div className="data full-name">Họ và tên</div></th>
+                                            <th className="sticky-col full-name-col text-left">
+                                                <div className="data full-name text-left">
+                                                    <input type="checkbox" style={{marginRight: '8px'}} checked={isCheckedAll}  onChange={e => this.handleCheckAll(e)} />
+                                                    Họ và tên
+                                                </div>
+                                            </th>
                                             <th className="sticky-col employee-code-col">Mã nhân viên</th>
                                             <th>Chức danh</th>
                                             <th>Khối/Phòng/Bộ phận</th>
