@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Button, Modal, Carousel } from 'react-bootstrap';
 import { useTranslation } from "react-i18next";
-import { Auth } from 'aws-amplify';
 import config from '../../commons/aws-config';
 import logo from '../../assets/img/LogoVingroup.svg';
 import imageIos from '../../assets/img/image_ios.png';

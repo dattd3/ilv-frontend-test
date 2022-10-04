@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Auth, Hub } from 'aws-amplify';
 import { useGuardStore } from '../../modules';
 import map from '../map.config';
 import LoadingModal from '../../components/Common/LoadingModal'
