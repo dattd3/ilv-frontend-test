@@ -621,8 +621,8 @@ function SalaryPropse(props) {
       .then((response) => {
         if (response.data.result && response.data.result.code === '000000') {
           forEach(response.data.data, (value, key) => {
-            setCurrentSalary(value?.currentSalary || 0)
-            setSuggestedSalary(value?.suggestedSalary || 0)
+            setCurrentSalary(value?.currentSalary || "")
+            setSuggestedSalary(value?.suggestedSalary || "")
             setCurrencySalary(value?.currentCurrency || 'VND')
           });
 

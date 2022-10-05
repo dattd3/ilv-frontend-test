@@ -755,8 +755,8 @@ const SalaryAdjustmentPropse = (props) => {
           forEach(response.data.data, (value, key) => {
             selectedMembersTmp.forEach(u => {
               if (u.id == key) {
-                u.currentSalary = value?.currentSalary || "0"
-                u.suggestedSalary = value?.suggestedSalary || "0"
+                u.currentSalary = value?.currentSalary || ""
+                u.suggestedSalary = value?.suggestedSalary || ""
                 currencySalaryTmp = value?.currentCurrency || 'VND'
               }
             })
