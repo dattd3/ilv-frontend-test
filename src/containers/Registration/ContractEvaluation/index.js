@@ -173,6 +173,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
 
   checkAuthorize = async () => {
     const currentEmployeeNo = localStorage.getItem('email');
+    const currentEmployeeCode = localStorage.getItem('employeeNo');
     const data = this.state.data;
     const dateToCheck = data.contractType == 'VA' ? (checkIsExactPnL(Constants.pnlVCode.VinSchool, Constants.pnlVCode.VinHome,  Constants.PnLCODE.VinFast, Constants.PnLCODE.VinFastTrading, Constants.PnLCODE.Vin3S) ? -75 : -45) : -7; 
     const isAfterT_7 = data.employeeInfo && data.employeeInfo.startDate && moment(new Date()).diff(moment(data.employeeInfo.expireDate), 'days') > dateToCheck ? true : false;
@@ -183,7 +184,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     }
     switch(data.processStatus) {
       case 9: 
-        if(!isAfterT_7 || (this.state.type != 'request') || (!data.employeeInfo || !data.employeeInfo.employeeEmail || data.employeeInfo.employeeEmail.toLowerCase()  != currentEmployeeNo.toLowerCase())){
+        if(!isAfterT_7 || (this.state.type != 'request') || (!data.employeeInfo || !data.employeeInfo.employeeNo || data.employeeInfo.employeeNo  != currentEmployeeCode)){
           shouldDisable = true;
         }
         break;
@@ -211,7 +212,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     }
     if(this.state.type == 'edit' && data.processStatus == 9 && data.canAddJob && !isAfterT_7 ){
       const subordinates = await this.getSubordinates()
-      const directManagerValidation = this.validateDirectManager( data.employeeInfo.employeeEmail.toLowerCase(), subordinates)
+      const directManagerValidation = this.validateDirectManager( data.employeeInfo.employeeNo, subordinates)
       shouldDisable = directManagerValidation ? false : true;
     }
     this.setState({
@@ -239,9 +240,9 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     }
   }
 
-  validateDirectManager = (employeeEmail, subordinates) => {
-    const subordinateAds = subordinates.map(item => item.username?.toLowerCase() + GROUP_EMAIL_EXTENSION)
-    if(subordinateAds.indexOf(employeeEmail) != -1){
+  validateDirectManager = (employeeNo, subordinates) => {
+    const subordinateAds = subordinates.map(item => item.uid +'');
+    if(subordinateAds.indexOf(employeeNo) != -1){
       return true;
     }
     return false;
