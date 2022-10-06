@@ -150,7 +150,7 @@ class ResignationRequestsManagementActionButton extends React.PureComponent {
                                     </div>
                                     <div className="col-6">
                                         <div>
-                                            <Select options={this.listDepartments} onChange={e => this.handleSelectAdvancedChange(e, 'departmentId')} value={this.statusOptions.filter(item => item.value == advancedData.departmentId)} placeholder="Khối/phòng/bộ phận" isClearable={true} styles={customStyles} />
+                                            <Select options={listDepartments} onChange={e => this.handleSelectAdvancedChange(e, 'departmentId')} value={listDepartments.filter(item => item.value == advancedData.departmentId)} placeholder="Khối/phòng/bộ phận" isClearable={true} styles={customStyles} />
                                         </div>
                                     </div>  
                                     <div className="col-6 mt-3">

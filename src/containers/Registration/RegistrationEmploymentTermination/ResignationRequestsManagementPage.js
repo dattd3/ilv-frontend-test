@@ -74,7 +74,7 @@ class ResignationRequestsManagementPage extends React.Component {
                     value: item.code,
                     label: item.name
                 };
-            });
+            }).filter(item => item.label);
 
             this.setState({listDepartments: departmentData});
         }
