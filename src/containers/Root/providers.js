@@ -13,7 +13,6 @@ import {
 import { I18nextProvider } from "react-i18next";
 import { autorun } from "mobx";
 import { useDisposable } from "mobx-react-lite";
-import { Auth } from 'aws-amplify';
 import { AlertList } from "react-bs-notifier";
 import { render } from 'react-dom';
 import AccessDenied from '../AccessDenied';

@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Auth, Hub } from 'aws-amplify';
-// import { useCookies } from 'react-cookie';
 import { useGuardStore } from '../../modules';
 import map from '../map.config';
 import LoadingModal from '../../components/Common/LoadingModal'
@@ -41,9 +39,9 @@ function Authorize(props) {
             .then(res => {
                 if (res && res.data && res.data.data[0]) {
                     let userProfile = res.data.data[0];
-                    const email = userProfile?.company_email?.toLowerCase() || ""
-                    let vgUsernameMatch = (/([^@]+)/gmi).exec(email.replace('v.', ''));
-                    let vgEmail = `${vgUsernameMatch[1]}@vingroup.net`;
+                    //const email = userProfile?.company_email?.toLowerCase() || ""
+                    //let vgUsernameMatch = (/([^@]+)/gmi).exec(email.replace('v.', ''));
+                    let vgEmail = `${userProfile.username?.toLowerCase()}@vingroup.net`;
                     checkUser(userProfile, jwtToken, refreshToken, timeTokenExpire, vgEmail, () => {
                         SetIsShowLoadingModal(false)
                     });
