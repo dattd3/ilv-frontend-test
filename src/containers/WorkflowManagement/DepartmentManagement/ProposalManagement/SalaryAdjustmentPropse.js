@@ -317,9 +317,7 @@ const SalaryAdjustmentPropse = (props) => {
           contractType: requestTmp?.contractType,
           department: requestTmp?.department,
           currentSalary: "0",
-          proposedSalary: "0",
-          // currentSalary: u?.currentSalary,
-          // proposedSalary: u?.suggestedSalary,
+          suggestedSalary: "0",
           effectiveTime: u?.startDate ? moment(u?.startDate).format(Constants.LEAVE_DATE_FORMAT) : "",
           strength: u?.staffStrengths,
           weakness: u?.staffWknesses,
@@ -371,7 +369,7 @@ const SalaryAdjustmentPropse = (props) => {
       contractType: u?.contractType,
       department: u?.department,
       currentSalary: '',
-      proposedSalary: '',
+      suggestedSalary: '',
       effectiveTime: '',
       strength: '',
       weakness: '',
@@ -392,7 +390,7 @@ const SalaryAdjustmentPropse = (props) => {
       contractType: u?.contractType,
       department: u?.department,
       currentSalary: '',
-      proposedSalary: '',
+      suggestedSalary: '',
       effectiveTime: '',
       strength: '',
       weakness: '',
@@ -609,7 +607,7 @@ const SalaryAdjustmentPropse = (props) => {
               salaryAdjustmentId: u?.id,
               employeeNo: u?.employeeNo,
               currentSalary: u?.currentSalary,
-              suggestedSalary: u?.proposedSalary,
+              suggestedSalary: u?.suggestedSalary,
               contractType: u?.contractType,
               staffStrengths: u?.strength,
               staffWknesses: u?.weakness,
@@ -724,7 +722,7 @@ const SalaryAdjustmentPropse = (props) => {
     let errors = [];
     selectedMembersTmp.forEach(u => {
       if (!u.currentSalary) errors.push(t("CurrentSalaryValidate"))
-      if (!u.proposedSalary) errors.push(t("SuggestedSalaryValidate"))
+      if (!u.suggestedSalary) errors.push(t("SuggestedSalaryValidate"))
       if (!u.effectiveTime) errors.push(t("SelecTimePeriodValidate"))
     })
     return errors;
@@ -850,13 +848,13 @@ const SalaryAdjustmentPropse = (props) => {
                   disabled={false}
                   intlConfig={renderCurrency()}
                   className="form-control"
-                  value={item?.proposedSalary}
-                  onValueChange={(value) => { handleTextInputChange(value, item?.uid, 'proposedSalary') }}
+                  value={item?.suggestedSalary}
+                  onValueChange={(value) => { handleTextInputChange(value, item?.uid, 'suggestedSalary') }}
                   placeholder="Nhập"
                 />
                 :
                 <>
-                  {!isCreateMode && item?.proposedSalary &&
+                  {!isCreateMode && item?.suggestedSalary &&
                     <div className="d-flex w-100">
                       <div style={{ width: '90%' }}>
                         {accessToken && viewSetting.disableComponent.showSuggestedSalary ?
@@ -864,7 +862,7 @@ const SalaryAdjustmentPropse = (props) => {
                             disabled={true}
                             intlConfig={renderCurrency()}
                             className="no-vborder"
-                            value={item?.proposedSalary}
+                            value={item?.suggestedSalary}
                             placeholder="Nhập"
                             style={{ width: '100%', background: '#fff' }}
                           />
