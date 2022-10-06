@@ -5,8 +5,6 @@ import { GuardianRouter } from "../../modules";
 import routes, { RouteSettings } from "../routes.config";
 import Maintenance from "../Maintenance";
 import ContextProviders from "./providers";
-import Amplify from 'aws-amplify';
-import AWS from 'aws-sdk';
 import config from '../../commons/aws-config';
 import '../../assets/scss/sb-admin-2.scss';
 import LoadingModal from '../../components/Common/LoadingModal';
