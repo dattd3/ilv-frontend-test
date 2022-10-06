@@ -406,7 +406,7 @@ class ResignationRequestsManagementPage extends React.Component {
                     bodyFormData.append('models', JSON.stringify(itemsChecked))
                     bodyFormData.append('type', key);
 
-                    const responses = await axios.post(`${process.env.REACT_APP_REQUEST_URL}ReasonType/updatecontractterminal1`, bodyFormData, getRequestConfigs())
+                    const responses = await axios.post(`${process.env.REACT_APP_REQUEST_URL}ReasonType/updatecontractterminal`, bodyFormData, getRequestConfigs())
                     this.setState({isShowLoadingModal: false, requestIdChecked: [], isCheckedAll: false})
 
                     if (responses && responses.data) {
@@ -453,7 +453,7 @@ class ResignationRequestsManagementPage extends React.Component {
                         })
                     }
 
-                    const responses = await axios.post(`${process.env.REACT_APP_REQUEST_URL}ReasonType/updatecontractterminal1`, bodyFormData, getRequestConfigs())
+                    const responses = await axios.post(`${process.env.REACT_APP_REQUEST_URL}ReasonType/updatecontractterminal`, bodyFormData, getRequestConfigs())
                     this.setState({isShowLoadingModal: false, requestIdChecked: [], isCheckedAll: false})
 
                     if (responses && responses.data) {
