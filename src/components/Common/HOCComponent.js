@@ -7,9 +7,6 @@ import { getRequestConfigurations } from '../../commons/Utils'
 import { getStateRedirect } from "../../commons/commonFunctions";
 import WarningTokenModal from './WarningTokenModal'
 // import { useIdle } from '../../commons/hooks'
-
-const tokenTimeExpireStorage = localStorage.getItem('tokenExpired')
-const refreshToken = localStorage.getItem('refreshToken')
  
 function HOCComponent(Component) {
     return function WrappedComponent(props) {
@@ -37,6 +34,7 @@ function HOCComponent(Component) {
         // const isIdle = useIdle({timeToIdle: 5000})
 
         React.useEffect(() => {
+            const tokenTimeExpireStorage = localStorage.getItem('tokenExpired')
             const now = moment()
             const tokenTimeExpired = moment(tokenTimeExpireStorage, 'YYYYMMDDHHmmss')
             const countDownTime = tokenTimeExpired.diff(now, 'milliseconds')
@@ -129,6 +127,7 @@ function HOCComponent(Component) {
 
         const processRefreshToken = async () => {
             try {
+                const refreshToken = localStorage.getItem('refreshToken')
                 const state = getStateRedirect(process.env.REACT_APP_AWS_COGNITO_IDP_SIGNIN_URL, process.env.REACT_APP_ENVIRONMENT);
                 let formData = new FormData()
                 formData.append('refresh_token', refreshToken)
