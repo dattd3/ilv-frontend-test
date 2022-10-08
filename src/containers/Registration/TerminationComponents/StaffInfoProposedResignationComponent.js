@@ -48,6 +48,9 @@ class StaffInfoProposedResignationComponent extends React.PureComponent {
     componentWillReceiveProps(nextProps) {
         if(nextProps.userInfos && nextProps.userInfos.length > 0 && (this.state.userInfos || this.state.userInfos.length == 0)) {
             this.setState({userInfos: nextProps.userInfos});
+        }
+        if(nextProps.subordinateInfos && nextProps.subordinateInfos.length > 0 && (this.state.users && this.state.users.length == 0)) {
+            this.setState({users: [...nextProps.subordinateInfos]});
         }    
     }
         
@@ -173,57 +176,60 @@ class StaffInfoProposedResignationComponent extends React.PureComponent {
     }
 
     getEmployeeInfos = value => {
-        const { employee } = this.props
-    
+        const { employee, subordinateInfos } = this.props
         if (value !== "") {
-            this.setState({isSearching: true})
-            const config = {
-                headers: {
-                  'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-                  'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-                  'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
-                }
-              }
+            const users = [...subordinateInfos].filter(item => item.fullname.includes(value) || item.account.includes(value));
+            this.setState({ users: employee ? users.filter(user => user.account !== employee.account) : users, isSearching: false })
+            // this.setState({isSearching: true})
+            // const config = {
+            //     headers: {
+            //       'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+            //       'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
+            //       'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
+            //     }
+            //   }
         
-              const payload = {
-                account: value,
-                status: 3
-              }
-            // Need update when has Mule api
-            axios.post(`${process.env.REACT_APP_REQUEST_URL}user/employee/search`, payload, config)
-            .then(res => {
-                if (res && res.data && res.data.data) {
-                 const data = res.data.data || []
-                 const users = data.map(res => {
-                    return {
-                        label: res.fullname,
-                        value: res.uid,
-                        fullname: res.fullname,
-                        avatar: res.avatar,
-                        account: res.username,
-                        employee_no: res.uid, // need update
-                        job_title: res.position_name,
-                        department: res.division + (res.department ? '/' + res.department : '') + (res.part ? '/' + res.part : ''),
-                        date_start_work: null,
-                        contract_type: null, // need update
-                        contract_name: null, // need update
-                        email: `${res.username?.toLowerCase()}${Constants.GROUP_EMAIL_EXTENSION}`, // need check
-                        unit_name: null, // need update
-                        orglv1_id: null, // need update
-                        orglv2_id: res.organization_lv2, // need check
-                        orglv3_id: res.organization_lv3, // need check
-                        orglv4_id: res.organization_lv4, // need check
-                        orglv5_id: res.organization_lv5, // need check
-                        orglv6_id: res.organization_lv6, // need update
-                        rank_id: res.rank, // need update
-                        rank_name: res.rank_title && res.rank_title != '#' ? res.rank_title : res.rank // need update
-                    }
-                });
-                this.setState({ users: employee ? users.filter(user => user.account !== employee.account) : users, isSearching: false })
-                }
-            }).catch(error => {
-                this.setState({isSearching: false})
-            })
+            //   const payload = {
+            //     account: value,
+            //     status: 3
+            //   }
+            // // Need update when has Mule api
+            // axios.post(`${process.env.REACT_APP_REQUEST_URL}user/employee/search`, payload, config)
+            // .then(res => {
+            //     if (res && res.data && res.data.data) {
+            //      const data = res.data.data || []
+            //      const users = data.map(res => {
+            //         return {
+            //             label: res.fullname,
+            //             value: res.uid,
+            //             fullname: res.fullname,
+            //             avatar: res.avatar,
+            //             account: res.username,
+            //             employee_no: res.uid, // need update
+            //             job_title: res.position_name,
+            //             department: res.division + (res.department ? '/' + res.department : '') + (res.part ? '/' + res.part : ''),
+            //             date_start_work: null,
+            //             contract_type: null, // need update
+            //             contract_name: null, // need update
+            //             email: `${res.username?.toLowerCase()}${Constants.GROUP_EMAIL_EXTENSION}`, // need check
+            //             unit_name: null, // need update
+            //             orglv1_id: null, // need update
+            //             orglv2_id: res.organization_lv2, // need check
+            //             orglv3_id: res.organization_lv3, // need check
+            //             orglv4_id: res.organization_lv4, // need check
+            //             orglv5_id: res.organization_lv5, // need check
+            //             orglv6_id: res.organization_lv6, // need update
+            //             rank_id: res.rank, // need update
+            //             rank_name: res.rank_title && res.rank_title != '#' ? res.rank_title : res.rank // need update
+            //         }
+            //     });
+            //     this.setState({ users: employee ? users.filter(user => user.account !== employee.account) : users, isSearching: false })
+            //     }
+            // }).catch(error => {
+            //     this.setState({isSearching: false})
+            // })
+        } else {
+            this.setState({ users: employee ? subordinateInfos.filter(user => user.account !== employee.account) : subordinateInfos, isSearching: false })
         }
     }
 

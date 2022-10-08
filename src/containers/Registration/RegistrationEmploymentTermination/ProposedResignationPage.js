@@ -20,6 +20,7 @@ class ProposedResignationPage extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
+            subordinateInfos: [],
             reasonTypes: [],
             userInfos: [],
             staffTerminationDetail: {},
@@ -50,19 +51,58 @@ class ProposedResignationPage extends React.Component {
     initialData = async () => {
         const reasonTypesEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/masterdata/resignation_reason`
         const userInfosEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/profile`
+        const subordinateInfosEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/subordinate`;
         const requestReasonTypes = axios.get(reasonTypesEndpoint, getMuleSoftHeaderConfigurations())
         const requestUserInfos = axios.get(userInfosEndpoint, getMuleSoftHeaderConfigurations())
+        const subordinateInfos = axios.get(subordinateInfosEndpoint, getMuleSoftHeaderConfigurations());
 
-        await axios.all([requestReasonTypes, requestUserInfos]).then(axios.spread((...responses) => {
+        await axios.all([requestReasonTypes, requestUserInfos, subordinateInfos]).then(axios.spread((...responses) => {
             const reasonTypes = this.prepareReasonTypes(responses[0])
             const directManagerInfos = this.prepareDirectManagerInfos(responses[1])
-
-            this.setState({reasonTypes: reasonTypes, directManager: directManagerInfos})
+            const subordinateInfos = this.prepareSubodinateInfos(responses[2]);
+            this.setState({reasonTypes: reasonTypes, directManager: directManagerInfos, subordinateInfos})
         })).catch(errors => {
             return null
         })
     }
 
+
+    prepareSubodinateInfos = (responses) => {
+        let result = [];
+        if (responses && responses.data) {
+            const employees = responses.data.data
+
+            if (employees && employees.length > 0) {
+                result = employees.map(res => {
+                    return {
+                        label: res.fullname,
+                        value: res.uid,
+                        fullname: res.fullname,
+                        avatar: res.avatar,
+                        account: res.username,
+                        username: res.username,
+                        employee_no: res.uid, // need update
+                        job_title: res.position_name,
+                        department: res.division + (res.department ? '/' + res.department : '') + (res.part ? '/' + res.part : ''),
+                        date_start_work: null,
+                        contract_type: null, // need update
+                        contract_name: null, // need update
+                        email: `${res.username?.toLowerCase()}${Constants.GROUP_EMAIL_EXTENSION}`, // need check
+                        unit_name: null, // need update
+                        orglv1_id: null, // need update
+                        orglv2_id: res.organization_lv2, // need check
+                        orglv3_id: res.organization_lv3, // need check
+                        orglv4_id: res.organization_lv4, // need check
+                        orglv5_id: res.organization_lv5, // need check
+                        orglv6_id: res.organization_lv6, // need update
+                        rank_id: res.rank, // need update
+                        rank_name: res.rank_title && res.rank_title != '#' ? res.rank_title : res.rank // need update
+                    }
+                })
+            }
+        }
+        return result;
+    }
     prepareDirectManagerInfos = (userResponses) => {
         if (userResponses && userResponses.data) {
             const userInfos = userResponses.data.data
@@ -153,7 +193,7 @@ class ProposedResignationPage extends React.Component {
             this.setDisabledSubmitButton(false)
             return
         } else {
-            const subordinates = await this.getSubordinates()
+            const subordinates = this.state.subordinateInfos;
             const directManagerValidation = this.validateDirectManager(subordinates)
             if (!directManagerValidation.isValid) {
                 toast.error(directManagerValidation.messages)
@@ -375,7 +415,8 @@ class ProposedResignationPage extends React.Component {
             userInfos,
             reasonTypes,
             seniorExecutive,
-            isShowLoadingModal
+            isShowLoadingModal,
+            subordinateInfos
         } = this.state
 
         return (
@@ -388,7 +429,7 @@ class ProposedResignationPage extends React.Component {
             <ResultModal show={isShowStatusModal} title={titleModal} message={messageModal} isSuccess={isSuccess} onHide={this.hideStatusModal} />
             <div className="leave-of-absence proposed-registration-employment-termination">
                 <h5 className="page-title">{t('ProposeForEmployeesResignation')}</h5>
-                <StaffInfoProposedResignationComponent userInfos={userInfos} updateUserInfos={this.updateUserInfos} updateErrors={this.updateErrors} />
+                <StaffInfoProposedResignationComponent userInfos={userInfos} subordinateInfos={subordinateInfos} updateUserInfos={this.updateUserInfos} updateErrors={this.updateErrors} />
                 <ReasonResignationComponent reasonTypes={reasonTypes} updateResignationReasons={this.updateResignationReasons} updateErrors={this.updateErrors} />
                 <SeniorExecutiveInfoComponent seniorExecutive={seniorExecutive} updateApprovalInfos={this.updateApprovalInfos} updateErrors={this.updateErrors} />
                 <AttachmentComponent files={files} updateFiles={this.updateFiles} />

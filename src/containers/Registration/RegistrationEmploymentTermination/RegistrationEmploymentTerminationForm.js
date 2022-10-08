@@ -60,20 +60,49 @@ class RegistrationEmploymentTerminationForm extends React.Component {
         const userInfosEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/profile`
         const userContractInfosEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/contract`
         const userContractMoreInfosEndpoint = `${process.env.REACT_APP_REQUEST_URL}ReasonType/getadditionalinfo`;
+        const userDirectManagerEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/manager`;
 
         const requestReasonTypes = axios.get(reasonTypesEndpoint, getMuleSoftHeaderConfigurations())
         const requestUserInfos = axios.get(userInfosEndpoint, getMuleSoftHeaderConfigurations())
         //const requestUserContractInfos = axios.get(userContractInfosEndpoint, getMuleSoftHeaderConfigurations())
         const requestUserMoreInfos = axios.post(userContractMoreInfosEndpoint, localStorage.getItem('employeeNo'), config)
+        const userDirectManager = axios.get(userDirectManagerEndpoint, getMuleSoftHeaderConfigurations());
 
-        await axios.all([requestReasonTypes, requestUserInfos, requestUserMoreInfos]).then(axios.spread((...responses) => {
+        await axios.all([requestReasonTypes, requestUserInfos, requestUserMoreInfos, userDirectManager]).then(axios.spread((...responses) => {
             const reasonTypes = this.prepareReasonTypes(responses[0])
             const userInfos = this.prepareUserInfos(responses[1], responses[2])
-
-            this.setState({reasonTypes: reasonTypes, userInfos: userInfos})
+            const directManager = this.prepareDirectManagerInfos(responses[3]);
+            const errors = {...this.state.errors};
+            if(directManager) {
+                errors.directManager = null;
+            }
+            this.setState({reasonTypes: reasonTypes, userInfos: userInfos, directManager: directManager, directManagerRaw: responses[3], errors});
         })).catch(errors => {
             return null
         })
+    }
+
+    prepareDirectManagerInfos = (managerResponse) => {
+        let userInfoDetail = null;
+        if (managerResponse && managerResponse.data) {
+            const userInfos = managerResponse.data.data;
+            if(userInfos?.length > 0) {
+                const res = userInfos[0];
+                userInfoDetail = {
+                    label: res?.fullname,
+                    value: res?.username,
+                    fullName: res?.fullname,
+                    avatar: null,
+                    employeeLevel:  res.rank_title,
+                    pnl: '',
+                    organizationLv2: '',
+                    account: res?.username,
+                    jobTitle: res?.title,
+                    department:  res.department
+                };
+            }
+        }
+        return userInfoDetail;
     }
 
     prepareUserInfos = (userResponses, contractResponses) => {
@@ -166,8 +195,8 @@ class RegistrationEmploymentTerminationForm extends React.Component {
         const userAccount = directManager.account?.toLowerCase()
 
         try {
-            const responses = await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/manager`, getMuleSoftHeaderConfigurations())
-            const realUserAccounts = this.getUserAccountDirectManagerByResponses(responses)
+            //const responses = await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/manager`, getMuleSoftHeaderConfigurations())
+            const realUserAccounts = this.getUserAccountDirectManagerByResponses(this.state.directManagerRaw);
             
             if (realUserAccounts.includes(userAccount)) {
                 return true
