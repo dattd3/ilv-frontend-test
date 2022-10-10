@@ -13,7 +13,7 @@ const ProposalManagement = (props) => {
 
   const handleChangeType = (e) => {
     setType(e)
-    if (e.value === 1) {
+    if (e.value == 1) {
       props.history.push(`/salaryadjustment/create/request`)
     } else if(e.value == 2) {
       props.history.push(`/proposed-resignation`)

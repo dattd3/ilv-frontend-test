@@ -14,7 +14,8 @@ import moment from 'moment';
 import HumanForReviewSalaryComponent from '../../HumanForReviewSalaryComponent';
 import ConfirmPasswordModal from './ConfirmPasswordModal';
 import Constants from '../.../../../../../commons/Constants';
-import StatusModal from '../../../../components/Common/StatusModal'
+import StatusModal from '../../../../components/Common/StatusModal';
+import Spinner from 'react-bootstrap/Spinner';
 
 function SalaryPropse(props) {
   const { t } = useTranslation();
@@ -29,6 +30,7 @@ function SalaryPropse(props) {
   const [accessToken, setAccessToken] = useState(new URLSearchParams(props.history.location.search).get('accesstoken') || null);
   const [listFiles, setListFiles] = useState([]);
   const [currencySalary, setCurrencySalary] = useState('VND');
+  const [isLoading, setIsLoading] = useState(false)
 
   const [modalStatus, setModalStatus] = useState({
     isShowStatusModal: false,
@@ -456,6 +458,7 @@ function SalaryPropse(props) {
         showStatusModal(t("HumanForReviewSalaryValidate"), false)
         return;
       }
+      setIsLoading(true)
       const bodyFormData = prepareDataToSubmit()
       axios({
         method: 'POST',
@@ -472,6 +475,9 @@ function SalaryPropse(props) {
         })
         .catch(response => {
           showStatusModal(t("Error"), false)
+        })
+        .finally(() => {
+          setIsLoading(false)
         })
     } else {
       // Review
@@ -502,6 +508,7 @@ function SalaryPropse(props) {
               }
             ]
           }
+          setIsLoading(true)
           axios({
             method: 'POST',
             url: `${process.env.REACT_APP_REQUEST_URL}SalaryAdjustment/submitsalary`,
@@ -517,6 +524,9 @@ function SalaryPropse(props) {
             })
             .catch(response => {
               showStatusModal(t("Error"), false)
+            })
+            .finally(() => {
+              setIsLoading(false)
             })
         }
       }
@@ -941,8 +951,13 @@ function SalaryPropse(props) {
         }
         {/* Gửi yêu cầu */}
         {viewSetting.showComponent.btnSendRequest &&
-          <button type='button' className='btn btn-primary ml-3 shadow' onClick={() => handleSendForm()}>
-            <i className='fa fa-paper-plane mr-1' aria-hidden='true'></i> {t('Send')}
+          <button type='button' className='btn btn-primary ml-3 shadow' disabled={isLoading} onClick={() => handleSendForm()}>
+            {isLoading ?
+              <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
+              :
+              <i className='fa fa-paper-plane mr-1' aria-hidden='true'></i>
+            }
+            {" "}{t('Send')}
           </button>
         }
         {/* Từ chối */}
