@@ -8,12 +8,15 @@ const ProposalManagement = (props) => {
   const [type, setType] = useState(null);
   const InsuranceOptions = [
     { value: 1, label: 'Đề xuất Điều chỉnh thu nhập' },
+    { value: 2, label: 'Đề xuất cho nhân viên nghỉ việc' },
   ];
 
   const handleChangeType = (e) => {
     setType(e)
     if (e.value === 1) {
       props.history.push(`/salaryadjustment/create/request`)
+    } else if(e.value == 2) {
+      props.history.push(`/proposed-resignation`)
     }
   }
 
