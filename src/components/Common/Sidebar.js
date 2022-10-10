@@ -161,9 +161,6 @@ function SideBar(props) {
         if (user.companyCode !== "V030") {
             rootNav = rootNav.filter(x => x.label !== 'Menu_Training')
         }
-        if(user.companyCode != Constants.pnlVCode.VinHome && user.companyCode != Constants.PnLCODE.Vin3S) {
-          rootNav = rootNav.filter(x => x.label !== 'ProposedResignation')
-        }
         if(user.prepare != 'true') {
             rootNav = rootNav.filter(x => x.id != 1006)
         }
