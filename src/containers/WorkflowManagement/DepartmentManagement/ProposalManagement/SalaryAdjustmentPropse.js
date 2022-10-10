@@ -4,7 +4,8 @@ import axios from "axios";
 import { useHistory } from 'react-router';
 import moment from "moment";
 import { forEach } from 'lodash';
-import Select from 'react-select'
+import Select from 'react-select';
+import Spinner from 'react-bootstrap/Spinner';
 import { withTranslation } from "react-i18next";
 import "react-toastify/dist/ReactToastify.css";
 import DatePicker, { registerLocale } from "react-datepicker";
@@ -65,6 +66,7 @@ const SalaryAdjustmentPropse = (props) => {
   });
 
   const [isCreateMode, setIsCreateMode] = useState(false);
+  const [isLoading, setIsLoading] = useState(false)
   const [modalConfirmPassword, setModalConfirmPassword] = useState(false);
   const [accessToken, setAccessToken] = useState(new URLSearchParams(props.history.location.search).get('accesstoken') || null);
   const [type, setType] = useState(InsuranceOptions[0]);
@@ -100,6 +102,7 @@ const SalaryAdjustmentPropse = (props) => {
       selectHrSupportViewSalary: false, // Cho phep chon Nhân sự hỗ trợ quyền xem lương
       showCurrentSalary: false, // Change type text & password lương hiện tại
       showSuggestedSalary: false, // Change type text & password lương đề xuất 
+      showEye: false, // Hiển thị mắt xem lương
       disableAll: false,
     },
     proposedStaff: {
@@ -214,10 +217,12 @@ const SalaryAdjustmentPropse = (props) => {
           viewSettingTmp.showComponent.btnCancel = true;
           viewSettingTmp.showComponent.btnSendRequest = true;
           viewSettingTmp.disableComponent.editSubjectApply = true;
+          viewSettingTmp.disableComponent.showEye = true;
         }
         if (accessToken) {
           viewSettingTmp.disableComponent.showCurrentSalary = true;
           viewSettingTmp.disableComponent.showSuggestedSalary = true;
+          viewSettingTmp.disableComponent.showEye = true;
         }
         break;
       // Đang chờ CBQL Cấp cơ sở thẩm định
@@ -231,10 +236,12 @@ const SalaryAdjustmentPropse = (props) => {
         ) {
           viewSettingTmp.showComponent.btnRefuse = true;
           viewSettingTmp.showComponent.btnExpertise = true;
+          viewSettingTmp.disableComponent.showEye = true;
         }
         if (accessToken) {
           viewSettingTmp.disableComponent.showCurrentSalary = true;
           viewSettingTmp.disableComponent.showSuggestedSalary = true;
+          viewSettingTmp.disableComponent.showEye = true;
         }
         break;
       // Đang chờ nhân sự thẩm định lương đề xuất
@@ -248,10 +255,12 @@ const SalaryAdjustmentPropse = (props) => {
         ) {
           viewSettingTmp.showComponent.btnRefuse = true;
           viewSettingTmp.showComponent.btnExpertise = true;
+          viewSettingTmp.disableComponent.showEye = true;
         }
         if (accessToken) {
           viewSettingTmp.disableComponent.showCurrentSalary = true;
           viewSettingTmp.disableComponent.showSuggestedSalary = true;
+          viewSettingTmp.disableComponent.showEye = true;
         }
         break;
       // Đang chờ CBLĐ phê duyệt 
@@ -265,10 +274,12 @@ const SalaryAdjustmentPropse = (props) => {
         ) {
           viewSettingTmp.showComponent.btnNotApprove = true;
           viewSettingTmp.showComponent.btnApprove = true;
+          viewSettingTmp.disableComponent.showEye = true;
         }
         if (accessToken) {
           viewSettingTmp.disableComponent.showCurrentSalary = true;
           viewSettingTmp.disableComponent.showSuggestedSalary = true;
+          viewSettingTmp.disableComponent.showEye = true;
         }
         break;
       // View phe duyet thanh cong
@@ -570,6 +581,7 @@ const SalaryAdjustmentPropse = (props) => {
         showStatusModal(t("HumanForReviewSalaryValidate"), false)
         return;
       }
+      setIsLoading(true)
       const bodyFormData = prepareDataToSubmit()
       axios({
         method: 'POST',
@@ -586,6 +598,8 @@ const SalaryAdjustmentPropse = (props) => {
         })
         .catch(response => {
           showStatusModal(t("Error"), false)
+        }).finally(() => {
+          setIsLoading(false)
         })
     } else {
       // Review
@@ -600,6 +614,7 @@ const SalaryAdjustmentPropse = (props) => {
           })
           return;
         } else {
+          setIsLoading(true)
           const dataSend = {
             requestHistoryId: props.match.params.id,
             companyCode: localStorage.getItem('companyCode') || "",
@@ -629,6 +644,9 @@ const SalaryAdjustmentPropse = (props) => {
             })
             .catch(response => {
               showStatusModal(t("Error"), false)
+            })
+            .finally(() => {
+              setIsLoading(false)
             })
         }
       }
@@ -817,7 +835,7 @@ const SalaryAdjustmentPropse = (props) => {
             <span className="same-width">
               {!isCreateMode ?
                 <div className="d-flex w-100">
-                  <div style={{ width: '90%' }}>
+                  <div style={{ width: viewSetting.disableComponent.showEye ? '90%' : '100%' }}>
                     {viewSetting.disableComponent.showCurrentSalary && accessToken ?
                       <CurrencyInput
                         disabled={true}
@@ -830,12 +848,14 @@ const SalaryAdjustmentPropse = (props) => {
                       : <span>{'**********'}</span>
                     }
                   </div>
-                  <div
-                    style={{ width: '10%', cursor: 'pointer' }}
-                    onClick={() => handleShowCurrentSalary()}
-                  >
-                    <img src={viewSetting.disableComponent.showCurrentSalary ? IconEye : IconNotEye} alt='eye' />
-                  </div>
+                  {viewSetting.disableComponent.showEye &&
+                    <div
+                      style={{ width: '10%', cursor: 'pointer' }}
+                      onClick={() => handleShowCurrentSalary()}
+                    >
+                      <img src={viewSetting.disableComponent.showCurrentSalary ? IconEye : IconNotEye} alt='eye' />
+                    </div>
+                  }
                 </div>
                 : <></>
               }
@@ -856,7 +876,7 @@ const SalaryAdjustmentPropse = (props) => {
                 <>
                   {!isCreateMode && item?.suggestedSalary &&
                     <div className="d-flex w-100">
-                      <div style={{ width: '90%' }}>
+                      <div style={{ width: viewSetting.disableComponent.showEye ? '90%' : '100%' }}>
                         {accessToken && viewSetting.disableComponent.showSuggestedSalary ?
                           <CurrencyInput
                             disabled={true}
@@ -869,12 +889,14 @@ const SalaryAdjustmentPropse = (props) => {
                           : '**********'
                         }
                       </div>
-                      <div
-                        style={{ width: '10%', cursor: 'pointer' }}
-                        onClick={() => handleShowSuggestedSalary()}
-                      >
-                        <img src={viewSetting.disableComponent.showSuggestedSalary ? IconEye : IconNotEye} alt='eye' />
-                      </div>
+                      {viewSetting.disableComponent.showEye &&
+                        <div
+                          style={{ width: '10%', cursor: 'pointer' }}
+                          onClick={() => handleShowSuggestedSalary()}
+                        >
+                          <img src={viewSetting.disableComponent.showSuggestedSalary ? IconEye : IconNotEye} alt='eye' />
+                        </div>
+                      }
                     </div>
                   }
                 </>
@@ -999,28 +1021,32 @@ const SalaryAdjustmentPropse = (props) => {
       </div>
       {/* II. THÔNG TIN CBNV ĐƯỢC ĐỀ XUẤT */}
       <h5 className="content-page-header">{"II. THÔNG TIN CBNV ĐƯỢC ĐỀ XUẤT"}</h5>
-      <div className="timesheet-box1 timesheet-box shadow">
-        <div className="row">
-          <div className="col-12">
-            {isCreateMode ?
-              <FilterMember
-                {...props}
-                isEdit={true}
-                selectedMembers={[]}
-                handleSelectMembers={handleSelectMembers}
-              />
-              :
-              <FilterMember
-                {...props}
-                isEdit={false}
-                selectedMembers={selectedMembers}
-                handleSelectMembers={handleSelectedMembers}
-              />
-            }
+      {isCreateMode &&
+        <>
+          <div className="timesheet-box1 timesheet-box shadow">
+            <div className="row">
+              <div className="col-12">
+                {isCreateMode ?
+                  <FilterMember
+                    {...props}
+                    isEdit={true}
+                    selectedMembers={[]}
+                    handleSelectMembers={handleSelectMembers}
+                  />
+                  :
+                  <FilterMember
+                    {...props}
+                    isEdit={false}
+                    selectedMembers={selectedMembers}
+                    handleSelectMembers={handleSelectedMembers}
+                  />
+                }
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-      <br />
+          <br />
+        </>
+      }
       <div className="timesheet-box1 shadow">
         <div className="result-wrap-table">
           <table className="result-table" style={{ width: '100%' }}>
@@ -1130,8 +1156,13 @@ const SalaryAdjustmentPropse = (props) => {
 
         {/* Gửi yêu cầu */}
         {viewSetting.showComponent.btnSendRequest &&
-          <button type='button' className='btn btn-primary ml-3 shadow' onClick={() => handleSendForm()} >
-            <i className='fa fa-paper-plane mr-1' aria-hidden='true'></i> {t('Send')}
+          <button type='button' className='btn btn-primary ml-3 shadow' disabled={isLoading} onClick={() => handleSendForm()} >
+            {isLoading ?
+              <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
+              :
+              <i className='fa fa-paper-plane mr-1' aria-hidden='true'></i>
+            }
+            {" "}{t('Send')}
           </button>
         }
         {/* Từ chối */}
