@@ -165,11 +165,11 @@ function SalaryPropse(props) {
     viewSettingTmp.proposedStaff.orgLv4Id = localStorage.getItem('organizationLv4') || ""
     viewSettingTmp.proposedStaff.orgLv5Id = localStorage.getItem('organizationLv5') || ""
     viewSettingTmp.proposedStaff.orgLv6Id = localStorage.getItem('organizationLv6') || ""
-    viewSettingTmp.proposedStaff.orgLv2Text = ""
-    viewSettingTmp.proposedStaff.orgLv3Text = ""
-    viewSettingTmp.proposedStaff.orgLv4Text = ""
-    viewSettingTmp.proposedStaff.orgLv5Text = ""
-    viewSettingTmp.proposedStaff.orgLv6Text = ""
+    viewSettingTmp.proposedStaff.orgLv2Text = localStorage.getItem('company') || ""
+    viewSettingTmp.proposedStaff.orgLv3Text = localStorage.getItem('division') || ""
+    viewSettingTmp.proposedStaff.orgLv4Text = localStorage.getItem('region') || ""
+    viewSettingTmp.proposedStaff.orgLv5Text = localStorage.getItem('unit') || ""
+    viewSettingTmp.proposedStaff.orgLv6Text = localStorage.getItem('part') || ""
     viewSettingTmp.proposedStaff.companyCode = localStorage.getItem('companyCode') || ""
     setViewSetting(viewSettingTmp)
   }
