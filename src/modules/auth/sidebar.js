@@ -212,7 +212,7 @@ export const Navigation = [
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     label: "ResignationRequestsManagement",
     to: map.ResignationRequestsManagement,
-    role: [Constants.pnlVCode.VinHome, Constants.PnLCODE.Vin3S, Constants.PnLCODE.VinES, Constants.PnLCODE.VinES]
+    role: [Constants.pnlVCode.VinHome, Constants.PnLCODE.Vin3S, Constants.PnLCODE.VinES]
     //role: 'NA'
   },
   {
