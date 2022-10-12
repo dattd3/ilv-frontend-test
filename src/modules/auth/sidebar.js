@@ -447,7 +447,7 @@ export const Navigation = [
     label: "QuestionAndAnswer",
     to: map.QuestionAndAnswer,
     role: [Constants.pnlVCode.VinPearl, Constants.pnlVCode.VinSoftware, Constants.pnlVCode.VinMec, Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading,
-      Constants.pnlVCode.VinSmart, Constants.pnlVCode.VincomRetail, Constants.pnlVCode.VinAI]
+      Constants.pnlVCode.VinSmart, Constants.pnlVCode.VincomRetail, Constants.pnlVCode.VinAI, Constants.PnLCODE.Vin3S]
   },
   {
     id: 99999,
