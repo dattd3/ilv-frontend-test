@@ -293,10 +293,10 @@ function Authorize(props) {
                 const expireIn = expires_in || 3600 // Nếu không trả về thì mặc định thời gian hết hạn là 1h
                 const timeTokenExpire = moment().add(Number(expireIn), 'seconds').format('YYYYMMDDHHmmss')
         
-                localStorage.setItem('refreshToken', refresh_token)
-                localStorage.setItem('timeTokenExpire', timeTokenExpire)
+                // localStorage.setItem('refreshToken', refresh_token)
+                // localStorage.setItem('tokenExpired', timeTokenExpire)
 
-                getUserData(access_token);
+                getUserData(access_token, refresh_token, timeTokenExpire);
             } else {
                 return window.location.replace(process.env.REACT_APP_AWS_COGNITO_IDP_SIGNOUT_URL)
             }

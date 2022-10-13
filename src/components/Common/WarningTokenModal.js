@@ -13,6 +13,16 @@ const WarningTokenModal = ({isShow, type, title, content, handleHideModal, handl
     const warning = 0
     const tokenTimeExpired = moment(tokenTimeExpireStorage, 'YYYYMMDDHHmmss').valueOf()
     const [minutes, seconds] = useCountdown(tokenTimeExpired)
+    const [isDisableOkButton, setIsDisableOkButton] = React.useState(false)
+
+    React.useEffect(() => {
+        setIsDisableOkButton(false)
+    }, [isShow])
+
+    const handleClickOkButton = () => {
+        setIsDisableOkButton(true)
+        handleAccept(type)
+    }
 
     return (
         <Modal
@@ -38,7 +48,8 @@ const WarningTokenModal = ({isShow, type, title, content, handleHideModal, handl
             }
             <Button
                 className='button-approve d-inline-flex align-items-center justify-content-center'
-                onClick={() => handleAccept(type)}
+                onClick={handleClickOkButton}
+                disabled={isDisableOkButton}
             >
                 <Image src={IconCheck} alt='Đồng ý' className='ic-status' />
                 Đồng ý
