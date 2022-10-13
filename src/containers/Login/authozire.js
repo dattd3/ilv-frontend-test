@@ -252,27 +252,57 @@ function Authorize(props) {
     }
 
     useEffect(() => {
-        const queryParams = new URLSearchParams(props?.history?.location?.search);
-        if (queryParams.has('accesstoken')) {
-            const accessToken = queryParams?.get('accesstoken') || ''
-            const refreshToken = queryParams?.get('refreshtoken') || ''
-            const expireIn = queryParams?.get('expirein') || 3600 // Nếu không trả về thì mặc định thời gian hết hạn là 1h
-            const timeTokenExpire = moment().add(Number(expireIn), 'seconds').format('YYYYMMDDHHmmss')
-
-            // if (accessToken) {
-            //     setCookie('accessToken', accessToken, { path: '/', secure: true, httpOnly: true });
-            // }
-            
-            queryParams.delete('accesstoken')
-            queryParams.delete('refreshtoken')
-            queryParams.delete('expirein')
-            queryParams.delete('expireon')
-            props.history.replace({
-                search: queryParams.toString(),
-            })
-
-            getUserData(accessToken, refreshToken, timeTokenExpire);
+        const fetchUserInfoLogged = async (code) => {
+            try {
+                const bodyFormData = new FormData()
+                bodyFormData.append('code', code)
+                const response = await axios.post(
+                    `${process.env.REACT_APP_REDIRECT_URL}/gettoken`,
+                    bodyFormData,
+                )
+        
+                return response?.data
+            } catch (e) {
+                return null
+            }
         }
+
+        const processUserLogged = async () => {
+            const queryParams = new URLSearchParams(history?.location?.search)
+            if (queryParams.has('code')) {
+                const code = queryParams?.get('code') || ''
+                if (!code) {
+                    return window.location.replace(process.env.REACT_APP_AWS_COGNITO_IDP_SIGNOUT_URL)
+                }
+        
+                queryParams.delete('code')
+                history.replace({
+                    search: queryParams.toString(),
+                })
+        
+                const response = await fetchUserInfoLogged(code)
+                if (!response) {
+                    return window.location.replace(process.env.REACT_APP_AWS_COGNITO_IDP_SIGNOUT_URL)
+                }
+        
+                const { access_token, expires_in, refresh_token } = response
+                if (!access_token) {
+                    return window.location.replace(process.env.REACT_APP_AWS_COGNITO_IDP_SIGNOUT_URL)
+                }
+        
+                const expireIn = expires_in || 3600 // Nếu không trả về thì mặc định thời gian hết hạn là 1h
+                const timeTokenExpire = moment().add(Number(expireIn), 'seconds').format('YYYYMMDDHHmmss')
+        
+                localStorage.setItem('refreshToken', refresh_token)
+                localStorage.setItem('timeTokenExpire', timeTokenExpire)
+
+                getUserData(access_token);
+            } else {
+                return window.location.replace(process.env.REACT_APP_AWS_COGNITO_IDP_SIGNOUT_URL)
+            }
+        }
+      
+        processUserLogged()
     }, []);
 
     const tryAgain = () => {
