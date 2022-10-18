@@ -75,6 +75,7 @@ class ProposedResignationPage extends React.Component {
             if (employees && employees.length > 0) {
                 result = employees.map(res => {
                     return {
+                        uid: res.uid,
                         label: res.fullname,
                         value: res.uid,
                         fullname: res.fullname,
@@ -429,7 +430,7 @@ class ProposedResignationPage extends React.Component {
             <ResultModal show={isShowStatusModal} title={titleModal} message={messageModal} isSuccess={isSuccess} onHide={this.hideStatusModal} />
             <div className="leave-of-absence proposed-registration-employment-termination">
                 <h5 className="page-title">{t('ProposeForEmployeesResignation')}</h5>
-                <StaffInfoProposedResignationComponent userInfos={userInfos} subordinateInfos={subordinateInfos} updateUserInfos={this.updateUserInfos} updateErrors={this.updateErrors} />
+                <StaffInfoProposedResignationComponent loading={isShowLoadingModal} userInfos={userInfos} subordinateInfos={subordinateInfos} updateUserInfos={this.updateUserInfos} updateErrors={this.updateErrors} />
                 <ReasonResignationComponent reasonTypes={reasonTypes} updateResignationReasons={this.updateResignationReasons} updateErrors={this.updateErrors} />
                 <SeniorExecutiveInfoComponent seniorExecutive={seniorExecutive} updateApprovalInfos={this.updateApprovalInfos} updateErrors={this.updateErrors} />
                 <AttachmentComponent files={files} updateFiles={this.updateFiles} />

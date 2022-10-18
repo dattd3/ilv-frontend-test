@@ -8,6 +8,8 @@ import { withTranslation } from "react-i18next"
 import Constants from '../../../commons/Constants'
 import { getMuleSoftHeaderConfigurations } from '../../../commons/Utils'
 import ResultModal from '../ResultModal'
+import DropdownCustomize from '../../LeaveFund/DropdownCustomize'
+import DropdownResignCustomize from './DropdownResignCustomize'
 
 const MyOption = props => {
     const { innerProps, innerRef } = props;
@@ -63,36 +65,45 @@ class StaffInfoProposedResignationComponent extends React.PureComponent {
     }
 
     addEmployees = async () => {
-        let { userInfos, employee } = this.state
-        const itemExist = (userInfos || []).filter(item => item.email?.toLowerCase() === employee.email?.toLowerCase())
+        let { userInfos } = this.state
+        const employeeCodeToSearch = this.state.filter?.employeeCodeToSearch || [];
+        //console.log(employee, userInfos, employeeCodeToSearch);
+        const employeeCodeToSearchIds =employeeCodeToSearch.map(item => item.uid);
+
+        const itemExist = (userInfos || []).filter(item => employeeCodeToSearchIds.includes(item.uid));
         const errorObj = {employees: "Nhân viên đề xuất cho nghỉ đã nằm trong danh sách đề xuất cho nghỉ!"}
 
-        if (!itemExist || itemExist.length === 0 && employee) {
+        if (!itemExist || itemExist.length === 0 && employeeCodeToSearchIds.length > 0) {
             errorObj.employees = "Vui lòng chọn nhân viên đề xuất cho nghỉ!"
-            const contractInfo = await this.getMoreInfoContract(employee.employee_no);
-            const employeeTemp = {
-                employeeNo: employee.employee_no,
-                ad: employee.account?.toLowerCase(),
-                fullName: employee.fullname,
-                jobTitle: employee.job_title,
-                department: employee.department,
-                dateStartWork: contractInfo?.dateStartWork,
-                contractType: contractInfo?.lastestContractType,
-                contractName:contractInfo?.lastestContractName,
-                email: employee.email,
-                rank: employee.rank_name,
-                unitName: employee.unit_name,
-                organizationLv1: employee.orglv1_id,
-                organizationLv2: employee.orglv2_id,
-                organizationLv6: employee.orglv6_id,
-                regionId: employee.orglv4_id,
-                divisionId: employee.orglv3_id,
-                departmentId: employee.orglv3_id,
-                unitId: employee.orglv5_id,
-                rankId: employee.rank_id
-            }
+            const contractInfo = await this.getMoreInfoContract(employeeCodeToSearchIds.join(','));
+            console.log(employeeCodeToSearchIds.join(','), contractInfo);
+
+            const newEmployeeAdded = employeeCodeToSearch.map(employee => {
+                return {
+                    uid: employee.employee_no,
+                    employeeNo: employee.employee_no,
+                    ad: employee.account?.toLowerCase(),
+                    fullName: employee.fullname,
+                    jobTitle: employee.job_title,
+                    department: employee.department,
+                    dateStartWork: contractInfo[employee.employee_no]?.dateStartWork || '',
+                    contractType: contractInfo[employee.employee_no]?.lastestContractType || '',
+                    contractName:contractInfo[employee.employee_no]?.lastestContractName || '',
+                    email: employee.email,
+                    rank: employee.rank_name,
+                    unitName: employee.unit_name,
+                    organizationLv1: employee.orglv1_id,
+                    organizationLv2: employee.orglv2_id,
+                    organizationLv6: employee.orglv6_id,
+                    regionId: employee.orglv4_id,
+                    divisionId: employee.orglv3_id,
+                    departmentId: employee.orglv3_id,
+                    unitId: employee.orglv5_id,
+                    rankId: employee.rank_id
+                };
+            })
     
-            userInfos = userInfos.concat([{...employeeTemp}])
+            userInfos = userInfos.concat([...newEmployeeAdded]);
             if (userInfos.length > 0) {
                 errorObj.employees = null
             }
@@ -145,30 +156,29 @@ class StaffInfoProposedResignationComponent extends React.PureComponent {
         const config = {
             headers: {            
                 'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-                'Content-Type': 'application/json-patch+json'
-            }  
+                'Content-Type': 'application/json-patch+json',
+            },
+            params: {
+                "employeeCode": employeeId
+            }
         };
         try {
             this.setState({isSearching: true})
-            const res = await axios.post(`${process.env.REACT_APP_REQUEST_URL}ReasonType/getadditionalinfo`, employeeId, config)
+            const res = await axios.get(`${process.env.REACT_APP_REQUEST_URL}ReasonType/getadditionalinfo`, config)
             if(res?.data?.data) {
-                return {
-                    dateStartWork: res.data.data.dateStartWork,
-                    lastestContractName: res.data.data.lastestContractName,
-                    lastestContractType: res.data.data.lastestContractType
-                }
-            }
-            return {
-                dateStartWork: '',
-                lastestContractName: '',
-                lastestContractType: ''
+                let result = {};
+                Object.values(res.data.data).map(item => {
+                    result[item.employeeCode] = {
+                        dateStartWork: item.dateStartWork,
+                        lastestContractName: item.lastestContractName,
+                        lastestContractType: item.lastestContractType    
+                    };
+                })
+                return result;
             }
         } catch(err) {
-            return {
-                dateStartWork: '',
-                lastestContractName: '',
-                lastestContractType: ''
-            }
+            console.log(err);
+            return {}
         }
         finally {
             this.setState({isSearching: false})
@@ -239,6 +249,17 @@ class StaffInfoProposedResignationComponent extends React.PureComponent {
         })
     }
 
+    updateParent = data => {
+        console.log('updateParent', data);
+        this.setState({
+          filter: {
+            ...this.state.filter,
+            employeeCodeToSearch: data
+          },
+        })
+      }
+    
+
     render() {
         const customStyles = {
             option: (styles, state) => ({
@@ -250,7 +271,7 @@ class StaffInfoProposedResignationComponent extends React.PureComponent {
                 cursor: 'pointer',
             })
         }
-        const { t, isEdit } = this.props
+        const { t, isEdit, loading } = this.props
         const { employee, userInfos, isSearching, employeeIdChecked } = this.state
 
         return <div className="block staff-information-proposed-resignation-block">
@@ -259,21 +280,10 @@ class StaffInfoProposedResignationComponent extends React.PureComponent {
                         { !isEdit ?
                         <div className="row search-action-block">
                             <div className="col-4">
-                                <div>
-                                <Select
-                                    isLoading={isSearching}
-                                    isDisabled={isEdit}
-                                    isClearable={true}
-                                    styles={customStyles}
-                                    components={{ Option: MyOption }}
-                                    onInputChange={this.onInputChange}
-                                    filterOption={(option, inputvalue) => true}
-                                    onChange={employeeOption => this.handleSelectChange('employee', employeeOption)}
-                                    value={employee}
-                                    placeholder="Tìm kiếm theo mã nhân viên hoặc tên"
-                                    key="employee"
-                                    options={this.state.users} />
-                                </div>
+                               
+                                <DropdownResignCustomize loading={loading} users={this.state.users} getSelecteMembers = {this.updateParent} resetSelectedMember = {this.updateParent}
+                                    onCloseTabEvent = {this.updateParent} onCloseAllEvent = {this.updateParent}/>
+                               
                             </div>
                             <div className="col-2 btn-action-group">
                                 <button type="button" className="btn-action add" onClick={this.addEmployees}>Thêm</button>

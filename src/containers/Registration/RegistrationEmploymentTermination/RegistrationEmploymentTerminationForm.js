@@ -65,7 +65,7 @@ class RegistrationEmploymentTerminationForm extends React.Component {
         const requestReasonTypes = axios.get(reasonTypesEndpoint, getMuleSoftHeaderConfigurations())
         const requestUserInfos = axios.get(userInfosEndpoint, getMuleSoftHeaderConfigurations())
         //const requestUserContractInfos = axios.get(userContractInfosEndpoint, getMuleSoftHeaderConfigurations())
-        const requestUserMoreInfos = axios.post(userContractMoreInfosEndpoint, localStorage.getItem('employeeNo'), config)
+        const requestUserMoreInfos = axios.get(userContractMoreInfosEndpoint, {...config, params: {"employeeCode": localStorage.getItem('employeeNo')}});
         const userDirectManager = axios.get(userDirectManagerEndpoint, getMuleSoftHeaderConfigurations());
 
         await axios.all([requestReasonTypes, requestUserInfos, requestUserMoreInfos, userDirectManager]).then(axios.spread((...responses) => {
@@ -134,7 +134,7 @@ class RegistrationEmploymentTerminationForm extends React.Component {
         }
 
         if (contractResponses && contractResponses.data) {
-            const infos = contractResponses.data.data
+            const infos = contractResponses?.data?.data[localStorage.getItem('employeeNo')] ? contractResponses.data.data[localStorage.getItem('employeeNo')] : {};
             if (infos) {
                 userContractInfoResults = {
                     contractType: infos.lastestContractType,
