@@ -373,7 +373,7 @@ const SalaryAdjustmentPropse = (props) => {
       employeeNo: u?.uid,
       account: u?.username.toLowerCase(),
       fullName: u?.fullname,
-      jobTitle: u?.job_name,
+      jobTitle: u?.title,
       startDate: '',
       expireDate: '',
       contractName: u?.contractName,
