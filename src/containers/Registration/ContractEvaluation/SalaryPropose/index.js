@@ -547,6 +547,7 @@ function SalaryPropse(props) {
         orglv2Id: viewSetting.proposedStaff.orgLv2Id,
         jobTitle: viewSetting.proposedStaff.jobTitle,
         department: viewSetting.proposedStaff.department,
+        company_email: viewSetting.proposedStaff.email,
       }));
       bodyFormData.append('coordinatorId', coordinator?.account.toLowerCase() + "@vingroup.net");
       bodyFormData.append('coordinatorInfo', JSON.stringify({
@@ -558,6 +559,7 @@ function SalaryPropse(props) {
         orglv2Id: coordinator?.orglv2Id,
         current_position: coordinator?.current_position,
         department: coordinator?.department,
+        company_email: coordinator?.company_email.toLowerCase(),
       }));
       bodyFormData.append('employeeInfoLst', JSON.stringify([{
         employeeNo: dataContract?.staffContracts?.employeeCode,
@@ -886,7 +888,7 @@ function SalaryPropse(props) {
         </div>
       }
       {/* CBQL CẤP CƠ SỞ */}
-      {viewSetting.showComponent.managerApproved &&
+      {viewSetting.showComponent.managerApproved && supervisor &&
         <div className='block-content-salary'>
           <h6 className='block-content-salary__title'> {t('ManagerApproved')}</h6>
           <div className='block-content-salary__content'>

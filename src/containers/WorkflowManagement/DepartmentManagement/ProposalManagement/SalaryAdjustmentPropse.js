@@ -677,6 +677,7 @@ const SalaryAdjustmentPropse = (props) => {
         orglv2Id: viewSetting.proposedStaff.orgLv2Id,
         jobTitle: viewSetting.proposedStaff.jobTitle,
         department: viewSetting.proposedStaff.department,
+        company_email: viewSetting.proposedStaff.email,
       }));
       bodyFormData.append('coordinatorId', coordinator?.account.toLowerCase() + "@vingroup.net");
       bodyFormData.append('coordinatorInfo', JSON.stringify({
@@ -688,6 +689,7 @@ const SalaryAdjustmentPropse = (props) => {
         orglv2Id: coordinator?.orglv2Id,
         current_position: coordinator?.current_position,
         department: coordinator?.department,
+        company_email: coordinator?.company_email.toLowerCase(),
       }));
       bodyFormData.append('employeeInfoLst', JSON.stringify(employeeInfoLst));
       bodyFormData.append('orgLv2Id', viewSetting.proposedStaff.orgLv2Id);
@@ -747,7 +749,6 @@ const SalaryAdjustmentPropse = (props) => {
   }
 
   const handleChangeModalConfirmPassword = (token) => {
-    console.log(token);
     setAccessToken(token)
     setModalConfirmPassword(false)
     getSalary(token)
@@ -1089,7 +1090,7 @@ const SalaryAdjustmentPropse = (props) => {
         </>
       }
       {/* CBQL CẤP CƠ SỞ */}
-      {viewSetting.showComponent.showCBQL &&
+      {viewSetting.showComponent.showCBQL && supervisor &&
         <>
           <h5 className="content-page-header">{"CBQL CẤP CƠ SỞ"}</h5>
           <div className="timesheet-box1 timesheet-box shadow">
@@ -1098,7 +1099,7 @@ const SalaryAdjustmentPropse = (props) => {
         </>
       }
       {/* Nhân sự thẩm định quyền điều chỉnh lương */}
-      {viewSetting.showComponent.showHrAssessment &&
+      {viewSetting.showComponent.showHrAssessment && appraiser &&
         <>
           <h5 className="content-page-header">{"Nhân sự thẩm định quyền điều chỉnh lương"}</h5>
           <div className="timesheet-box1 timesheet-box shadow">
