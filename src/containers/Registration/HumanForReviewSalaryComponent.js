@@ -206,7 +206,8 @@ class HumanForReviewSalaryComponent extends React.Component {
                 orglv2Id: res.organization_lv2,
                 account: res.username,
                 current_position: res.position_name,
-                department: res.division + (res.department ? '/' + res.department : '') + (res.part ? '/' + res.part : '')
+                department: res.division + (res.department ? '/' + res.department : '') + (res.part ? '/' + res.part : ''),
+                company_email: res?.company_email
               }
             })
             const lst = appraiser ? users.filter(user => user.account !== appraiser.account) : users;
