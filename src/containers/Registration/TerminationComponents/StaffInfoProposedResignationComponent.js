@@ -157,14 +157,13 @@ class StaffInfoProposedResignationComponent extends React.PureComponent {
             headers: {            
                 'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
                 'Content-Type': 'application/json-patch+json',
-            },
-            params: {
-                "employeeCode": employeeId
-            }
+            } 
         };
         try {
             this.setState({isSearching: true})
-            const res = await axios.get(`${process.env.REACT_APP_REQUEST_URL}ReasonType/getadditionalinfo`, config)
+            const res = await axios.post(`${process.env.REACT_APP_REQUEST_URL}ReasonType/getadditionalinfo`, {
+                "employeeCode": employeeId
+            }, config)
             if(res?.data?.data) {
                 let result = {};
                 Object.values(res.data.data).map(item => {
