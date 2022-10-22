@@ -195,7 +195,7 @@ const isEnableShiftChangeFunctionByPnLVCode = PnLVCode => {
 }
 
 const isEnableInOutTimeUpdateFunctionByPnLVCode = PnLVCode => {
-    return ![Constants.pnlVCode.VinSchool, Constants.pnlVCode.VinSchool.VinAI].includes(PnLVCode) ? true : false
+    return ![Constants.pnlVCode.VinSchool, Constants.pnlVCode.VinAI].includes(PnLVCode) ? true : false
 }
 
 const getRequestTypeIdsAllowedToReApproval = () => {
