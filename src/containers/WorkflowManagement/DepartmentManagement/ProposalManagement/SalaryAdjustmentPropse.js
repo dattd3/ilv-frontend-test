@@ -174,6 +174,7 @@ const SalaryAdjustmentPropse = (props) => {
     viewSettingTmp.proposedStaff.avatar = localStorage.getItem('avatar') || ""
     viewSettingTmp.proposedStaff.account = localStorage.getItem('email').split('@')[0] || ""
     viewSettingTmp.proposedStaff.email = localStorage.getItem('email') || ""
+    viewSettingTmp.proposedStaff.company_email = localStorage.getItem('plEmail') || ""
     viewSettingTmp.proposedStaff.employeeNo = localStorage.getItem('employeeNo') || ""
     viewSettingTmp.proposedStaff.employeeLevel = localStorage.getItem('employeeLevel') || ""
     viewSettingTmp.proposedStaff.fullName = localStorage.getItem('fullName') || ""
@@ -677,7 +678,7 @@ const SalaryAdjustmentPropse = (props) => {
         orglv2Id: viewSetting.proposedStaff.orgLv2Id,
         jobTitle: viewSetting.proposedStaff.jobTitle,
         department: viewSetting.proposedStaff.department,
-        company_email: viewSetting.proposedStaff.email,
+        company_email: viewSetting.proposedStaff.company_email,
       }));
       bodyFormData.append('coordinatorId', coordinator?.account.toLowerCase() + "@vingroup.net");
       bodyFormData.append('coordinatorInfo', JSON.stringify({
