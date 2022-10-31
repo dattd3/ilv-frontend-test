@@ -128,6 +128,18 @@ function SalaryPropse(props) {
   const getDataContract = async () => {
     try {
       const { data: { data: response } } = await api.fetchStaffContract(props.match.params?.idContract);
+      if(response?.requestHistorys?.processStatusId) {
+        let statusOriginal = response?.requestHistorys?.processStatusId;
+        let child = response?.requestHistorys;
+        if([10, 11, 13].indexOf(statusOriginal) != -1) {
+          if(child.processStatusId == 11 || child.processStatusId == 10) {
+              statusOriginal = 8;
+          } else if (child.processStatusId == 13) {
+              statusOriginal = 5;
+          }
+        }
+        response.requestHistorys.processStatusId = statusOriginal;
+      }
       setDataContract(response);
     } catch (error) {
       console.log(error);
@@ -858,8 +870,8 @@ function SalaryPropse(props) {
           <div className='block-content-salary__content--vote'>
             <div className='wrapper-status'>
               <p className='font-normal'>{t('Status_1')}: </p>
-              {dataSalary?.statusName &&
-                <div>{dataSalary?.statusName}</div>
+              {Constants.mappingStatusRequest[dataContract?.requestHistorys?.processStatusId]?.label &&
+                <div>{t(Constants.mappingStatusRequest[dataContract?.requestHistorys?.processStatusId]?.label)}</div>
               }
             </div>
             <div
