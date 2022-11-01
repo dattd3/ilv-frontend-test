@@ -103,8 +103,8 @@ const FilterMember = (props) => {
           company_email: profile.company_email.includes("@") ? profile.company_email.split("@")[0] : profile.company_email,
           checked: profile.checked || false,
           isExpand: profile.isExpand || false,
-          contractName: profile.contract_type_name || "",
-          contractType: profile.contract_type_code || "",
+          contractName: profile.contract_type_name || profile.contractName || "",
+          contractType: profile.contract_type_code || profile.contractType || "",
           startDate: profile.startDate || "",
           expireDate: profile.expireDate || "",
         };
