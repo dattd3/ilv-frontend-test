@@ -185,7 +185,7 @@ const Constants = {
     VinFastTrading: "V077",
     VinFastPB: "V070",
     Vin3S: "V005",
-    VinES: "V079",
+    VinES: "V1000",
     Vincon: "V041"
   },
   LOGIN_INSTRUCTION_PATH: "https://myvinpearl.s3.ap-southeast-1.amazonaws.com/shared/templates/ILOVEVINGROUP-HDDang+nhap-LoginInstruction.pdf",
