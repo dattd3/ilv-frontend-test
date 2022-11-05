@@ -441,8 +441,9 @@ export const IncomeTablesConfig = t => {
                                     { label: t("ReferralBonus"), field: 'reference_bonus' },
                                     { label: t("TrainingBonus"), field: 'trainning_bonus' },
                                     { label: t("GrossOtherBonus"), field: 'other_gross_bonus' },
-                                    { label: t("NetKpiBonus"), field: 'kpi_bonus_net' },
-                                    { label: t("BonusNet"), field: 'other_net_bonus' }
+                                    // { label: t("NetKpiBonus"), field: 'kpi_bonus_net' },
+                                    // { label: t("BonusNet"), field: 'other_net_bonus' }
+                                    { label: t("KpiBonusGrossup"), field: 'kpi_grossup_bonus' }
                                 ]
                             },
                             {
@@ -474,6 +475,7 @@ export const IncomeTablesConfig = t => {
                                     { label: t("AnnualWelfare"), field: 'annual_welfare_allowance' },
                                     { label: t("OtherPayment"), field: 'other_payment' },
                                     { label: t("VFCarElectricStakeGross"), field: 'vf_car_electric_stake' },
+                                    { label: t("HousingSubsidyGrossup"), field: 'housing_allowance_grossup' },
                                     { label: t("VinmecTaxRefundsAfterTaxFinalization"), field: 'tax_refunds_after' }
                                 ]
                             }

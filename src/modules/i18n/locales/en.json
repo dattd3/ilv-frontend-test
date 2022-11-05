@@ -390,6 +390,8 @@
   "Kpi": "KPI",
   "KpiBonus": "KPI Bonus",
   "NetKpiBonus": "KPI Bonus (Net)",
+  "KpiBonusGrossup": "KPI Bonus (Grossup)",
+  "HousingSubsidyGrossup": "Housing subsidy (GrossUp)",
   "LaborContract": "Labor Contract",
   "Learning": "Learning",
   "LearningTarget": "Learning Target",
