@@ -402,6 +402,8 @@
   "Kpi": "Hiệu quả công việc",
   "KpiBonus": "Thưởng khoán/KPI",
   "NetKpiBonus": "Thưởng khoán/KPI (Net)",
+  "KpiBonusGrossup": "Thưởng KPIs (Grossup)",
+  "HousingSubsidyGrossup": "Hỗ trợ Nhà ở (GrossUp)",
   "LaborContract": "Hợp đồng lao động",
   "Learning": "Học tập",
   "LearningTarget": "Chỉ tiêu học tập",
