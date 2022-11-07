@@ -29,6 +29,7 @@ const BROKEN_SHIFT_OPTION_VALUE = "02"
 const queryString = window.location.search
 const currentUserCompanyVCode = localStorage.getItem("companyCode")
 const shiftCodesAllowedToUpdateForVin3S = ['0501', '0502']
+const substitutionTypeAllowedToUpdateForVin3S = '01'
 
 class SubstitutionComponent extends React.Component {
   constructor(props) {
@@ -56,6 +57,11 @@ class SubstitutionComponent extends React.Component {
     }
 
     this.isVin3S = currentUserCompanyVCode === Constants.pnlVCode.Vin3S
+    this.substitutionTypes = [
+      { value: '01', label: props.t("Shiftchange") },
+      { value: '02', label: props.t("IntermittenShift") },
+      { value: '03', label: props.t("CoastShoreShiftChange") }
+    ]
   }
 
   componentDidMount() {
@@ -275,7 +281,7 @@ class SubstitutionComponent extends React.Component {
     bodyFormData.append('appraiser', JSON.stringify(appraiser))
     bodyFormData.append('approver', JSON.stringify(approver))
     bodyFormData.append('user', JSON.stringify(user))
-    bodyFormData.append('companyCode', localStorage.getItem("companyCode"))
+    bodyFormData.append('companyCode', currentUserCompanyVCode)
     this.state.files.forEach(file => {
       bodyFormData.append('Files', file)
     })
@@ -533,7 +539,7 @@ class SubstitutionComponent extends React.Component {
               shiftType: Constants.SUBSTITUTION_SHIFT_CODE,
               shiftId: null,
               shiftHours: null,
-              substitutionType: null,
+              substitutionType: this.isVin3S ? (this.substitutionTypes || []).find(substitutionType => substitutionType?.value === substitutionTypeAllowedToUpdateForVin3S) : null,
               shifts: this.state.shifts,
               applyFrom: null,
               applyTo: null
@@ -636,13 +642,12 @@ class SubstitutionComponent extends React.Component {
     const { t, substitution, recentlyManagers } = this.props;
     const {startDate, endDate, isShowResultModal, titleModal, messageModal, isSuccess, timesheets, errors, isShowStartBreakTimeAndEndBreakTime, 
       files, disabledSubmitButton, shifts, statusModal} = this.state
-    const substitutionTypes = [
-      { value: '01', label: t("Shiftchange") },
-      { value: '02', label: t("IntermittenShift") },
-      { value: '03', label: t("CoastShoreShiftChange") }
-    ]
+    
+    const substitutionTypes = this.isVin3S 
+    ? (this.substitutionTypes || []).filter(substitutionType => substitutionType?.value === substitutionTypeAllowedToUpdateForVin3S) 
+    : this.substitutionTypes
+    
     const lang = localStorage.getItem("locale")
-    const currentUserCompanyVCode = localStorage.getItem("companyCode")
     const customStyles = {
       control: base => ({
         ...base,
