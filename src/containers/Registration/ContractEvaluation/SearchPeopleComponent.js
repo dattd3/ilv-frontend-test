@@ -55,7 +55,7 @@ class ApproverComponent extends React.Component {
     }
     const config = getMuleSoftHeaderConfigurations();
     const { approver } = this.props
-    const companiesUsing = ['V070', 'V077', 'V060']
+    const companiesUsing = []
     if (companiesUsing.includes(localStorage.getItem("companyCode"))) {
       axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/manager`, config)
         .then(res => {
@@ -90,10 +90,10 @@ class ApproverComponent extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     const { approver } = nextProps;
-    const companiesUsing = ['V070', 'V077', 'V060']
-    if (companiesUsing.includes(localStorage.getItem("companyCode"))) {
-      return;
-    }
+    // const companiesUsing = ['V070', 'V077', 'V060']
+    // if (companiesUsing.includes(localStorage.getItem("companyCode"))) {
+    //   return;
+    // }
     if (approver) {
       this.setState({
         approver: {
