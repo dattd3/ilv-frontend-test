@@ -9,29 +9,11 @@ import { checkIsExactPnL } from '../../../commons/commonFunctions'
 import 'react-datepicker/dist/react-datepicker.css'
 import { vi, enUS } from 'date-fns/locale'
 import { withTranslation } from "react-i18next";
-import { useApi } from '../../../modules/api';
 import './styles.scss'
 
 const ContractEvaluationdetail = (props) => {
   const { data, id, type, idSalary } = props
-  const api = useApi();
-  const [dataSalary, setDataSalary] = useState(undefined);
-
-  useEffect(() => {
-    if (type === 'salary' && idSalary) {
-      getDataSalary()
-    }
-    // eslint-disable-next-line
-  }, [idSalary]);
-
-  const getDataSalary = async () => {
-    try {
-      const { data: { data: response } } = await api.fetchSalaryPropose(idSalary);
-      setDataSalary(response)
-    } catch (error) {
-      console.log(error);
-    }
-  }
+  const dataSalary = props.dataSalary;
 
   const handleViewDetailSalary = () => {
     let typeRequest = ''

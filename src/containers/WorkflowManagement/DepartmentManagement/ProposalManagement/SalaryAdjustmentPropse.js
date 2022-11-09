@@ -627,7 +627,7 @@ const SalaryAdjustmentPropse = (props) => {
               contractType: u?.contractType,
               staffStrengths: u?.strength,
               staffWknesses: u?.weakness,
-              startDate: moment(u?.effectiveTime, Constants.LEAVE_DATE_FORMAT).format()
+              startDate: moment(u?.effectiveTime, Constants.LEAVE_DATE_FORMAT).format('YYYY-MM-DD')
             }))
           }
           axios({
