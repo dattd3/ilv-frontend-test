@@ -381,6 +381,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         if (result.code != Constants.API_ERROR_CODE) {
           const responseData = this.saveStateInfos(res.data.data);
           this.setState({data : responseData}, () => {
+            this.getDataSalary();
             this.checkAuthorize();
           });
         }
@@ -391,7 +392,32 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     .finally(() => {
       
     })
+    
+  }
 
+  getDataSalary = async () => {
+    const data = this.state.data;
+    const idSalary = data.childRequestHistoryId;
+    const type = this.props.match.params.type;
+    const currentEmployeeCode = localStorage.getItem('employeeNo');
+    if(idSalary && (type == 'salary' || data.employeeInfo?.employeeNo  != currentEmployeeCode)) {
+      try {
+        const { data: { data: response } } = await axios.get(`${process.env.REACT_APP_REQUEST_URL}SalaryAdjustment/detail`, {
+          params: {
+            idDisplay: idSalary
+          },
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+          }
+        })
+        this.setState({
+          dataSalary: response
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    
   }
 
   prepareDataToSubmit = (data) => {
@@ -1227,7 +1253,7 @@ renderEvalution = (name, data, isDisable) => {
     })
         .then(response => {
           if(response.data.result && response.data.result.code == '000000'){
-            if(this.state.data?.childRequestHistoryId == null && this.state.type == 'assess' && actionType != 1 &&
+            if(this.state.data.qlttOpinion?.result?.value != 5 && this.state.data?.childRequestHistoryId == null && this.state.type == 'assess' && actionType != 1 &&
               ((this.state.data.processStatus == 10 && checkIsExactPnL(Constants.pnlVCode.VinSchool, Constants.pnlVCode.VinHome, Constants.PnLCODE.VinFast, Constants.PnLCODE.VinFastTrading, Constants.PnLCODE.Vin3S, Constants.PnLCODE.VinES)) || 
                 (this.state.processStatus == 11 && !checkIsExactPnL(Constants.pnlVCode.VinSchool, Constants.pnlVCode.VinHome, Constants.PnLCODE.VinFast, Constants.PnLCODE.VinFastTrading, Constants.PnLCODE.Vin3S, Constants.PnLCODE.VinES)))) {
                   this.showSalaryPropose(actionType, home);
@@ -1356,11 +1382,29 @@ renderEvalution = (name, data, isDisable) => {
     })
   }
 
+  handleViewDetailSalary = () => {
+    let typeRequest = ''
+    switch (this.state.dataSalary.processStatusId) {
+      case 5:
+        typeRequest = 'approval'
+        break;
+      case 8:
+      case 24:
+        typeRequest = 'access'
+        break;
+      default:
+        typeRequest = 'request'
+        break;
+    }
+    this.props.history.push(`/salarypropse/${this.props.match.params.id}/${this.state.data.childRequestHistoryId}/${typeRequest}`)
+  }
+
   render() {
     const { t } = this.props
     const showComponent = this.state.showComponent;
     const disableComponent = this.state.disableComponent;
     const data = this.state.data;
+    const dataSalary = this.state.dataSalary;
     const loading = this.state.loading;
     const comment =  data?.comment || null;
     const type = this.props.match.params.type;
@@ -1368,7 +1412,7 @@ renderEvalution = (name, data, isDisable) => {
     if(data?.processStatus == 2 || type === 'salary') {
       return  <div className="registration-section">
         <LoadingModal show={loading}/>
-        <ContractEvaluationdetail id={this.props.match.params.id} data={data} type={type} idSalary={data?.childRequestHistoryId}/>
+        <ContractEvaluationdetail id={this.props.match.params.id} data={data} type={type} dataSalary ={this.state.dataSalary} idSalary={data?.childRequestHistoryId}/>
        </div>
     }
     return (
@@ -2028,6 +2072,27 @@ renderEvalution = (name, data, isDisable) => {
         </div>
         </> : null
         } */}
+
+          {dataSalary &&
+            <>
+              <h5>Thông tin đề xuất lương</h5>
+              <div className="box cbnv salary">
+                <div className="row">
+                  <div className="col-6">
+                    <div className='wrapper-status'>
+                      <span className='font-normal'>Tình trạng: </span>
+                      {dataSalary?.statusName &&
+                        <div>{dataSalary?.statusName}</div>
+                      }
+                    </div>
+                  </div>
+                  <div className="col-6 view-detail">
+                    <span onClick={() => this.handleViewDetailSalary()}>{'Xem chi tiết >>'}</span>
+                  </div>
+                </div>
+              </div>
+            </>
+          }
 
         <ul className="list-inline">
             {data.cvs.map((file, index) => {
