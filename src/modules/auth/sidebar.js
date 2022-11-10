@@ -204,7 +204,7 @@ export const Navigation = [
     to: map.EvaluationManager,
     label: 'Quản lý đánh giá',
     //role:  ['V061', 'V053', 'V040', 'V005']
-    role:  ['V061', 'V040', Constants.PnLCODE.Vin3S, Constants.PnLCODE.VinES, Constants.PnLCODE.VinFast, Constants.PnLCODE.VinFastTrading]
+    role:  ['V061', 'V040', Constants.PnLCODE.Vin3S, Constants.PnLCODE.VinES, Constants.PnLCODE.VinFast, Constants.PnLCODE.VinFastTrading, Constants.PnLCODE.Vincon]
   },
   {
     id: 104,

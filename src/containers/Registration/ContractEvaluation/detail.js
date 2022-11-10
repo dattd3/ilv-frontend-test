@@ -165,7 +165,7 @@ const ContractEvaluationdetail = (props) => {
             </div>
           </div>
           {
-            checkIsExactPnL(Constants.pnlVCode.VinSchool, Constants.pnlVCode.VinHome, Constants.PnLCODE.VinFast, Constants.PnLCODE.VinFastTrading, Constants.PnLCODE.Vin3S, Constants.PnLCODE.VinES) ?
+            checkIsExactPnL(Constants.pnlVCode.VinSchool, Constants.pnlVCode.VinHome, Constants.PnLCODE.VinFast, Constants.PnLCODE.VinFastTrading, Constants.PnLCODE.Vin3S, Constants.PnLCODE.VinES, Constants.PnLCODE.Vincon) ?
               null :
               <>
                 <h5>Thông tin khóa học</h5>
@@ -258,7 +258,7 @@ const ContractEvaluationdetail = (props) => {
             <div className="row approve">
               <div className="col-12">
                 {
-                  checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.pnlVCode.VinHome,  Constants.PnLCODE.VinFast, Constants.PnLCODE.VinFastTrading, Constants.PnLCODE.Vin3S, Constants.PnLCODE.VinES) ?
+                  checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.pnlVCode.VinHome,  Constants.PnLCODE.VinFast, Constants.PnLCODE.VinFastTrading, Constants.PnLCODE.Vin3S, Constants.PnLCODE.VinES, Constants.PnLCODE.Vincon) ?
                     <><span className="title">QUẢN LÝ TRỰC TIẾP ĐÁNH GIÁ</span></>
                     : <><span className="title">NGƯỜI ĐÁNH GIÁ</span><span className="sub-title">(Nếu có)</span></>
                 }
@@ -279,7 +279,7 @@ const ContractEvaluationdetail = (props) => {
             <div className="row approve">
               <div className="col-12">
                 {
-                  checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.pnlVCode.VinHome, Constants.PnLCODE.VinFast, Constants.PnLCODE.VinFastTrading, Constants.PnLCODE.Vin3S, Constants.PnLCODE.VinES) ?
+                  checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.pnlVCode.VinHome, Constants.PnLCODE.VinFast, Constants.PnLCODE.VinFastTrading, Constants.PnLCODE.Vin3S, Constants.PnLCODE.VinES, Constants.PnLCODE.Vincon) ?
                     <><span className="title">CBLĐ thẩm định</span><span className="sub-title">(Nếu có)</span></>
                     : <span className="title">QUẢN LÝ TRỰC TIẾP ĐÁNH GIÁ</span>
                 }
