@@ -225,8 +225,8 @@ class ListStaffResignationComponent extends React.PureComponent {
             itemsChecked[key] = item;
         });
         this.state.listUserTerminations.map(item => {
-            if(!itemsChecked[item.requestStatusProcessId]) {
-                itemsChecked[item.requestStatusProcessId] = {key: item.id, value: true, requestStatusProcessId: item.requestStatusProcessId, isUploadFile: item.isUploadFile, employeeNo: item.userInfo?.employeeNo, item: item};
+            if(!itemsChecked[item.id]) {
+                itemsChecked[item.id] = {key: item.id, value: true, requestStatusProcessId: item.requestStatusProcessId, isUploadFile: item.isUploadFile, employeeNo: item.userInfo?.employeeNo, item: item};
             }
         });
         this.setState({requestIdChecked: itemsChecked, isCheckedAll: true});
@@ -236,15 +236,17 @@ class ListStaffResignationComponent extends React.PureComponent {
 
     handleCheckboxChange = (item, code, requestStatusProcessId, isUploadFile, employeeNo, e) => {
         const requestIdChecked = {...this.state.requestIdChecked}
-        requestIdChecked[requestStatusProcessId] = {key: code, value: e.target.checked, requestStatusProcessId: requestStatusProcessId, isUploadFile: isUploadFile, employeeNo: employeeNo, item: item}
-        let checkedNumer = 0;
-        Object.keys(requestIdChecked).map(key => {
-            if(requestIdChecked[key].value) {
-                checkedNumer++;
+        requestIdChecked[code] = {key: code, value: e.target.checked, requestStatusProcessId: requestStatusProcessId, isUploadFile: isUploadFile, employeeNo: employeeNo, item: item}
+       
+        let checkAll = this.state.listUserTerminations?.length > 0 ? true: false;
+        this.state.listUserTerminations.map(item => {
+            if(requestIdChecked[item.id]?.value != true) {
+                checkAll = false;
             }
+            return item;
         });
-        this.setState({requestIdChecked: requestIdChecked, isCheckedAll: checkedNumer == this.state.listUserTerminations.length});
-        this.props.updateTerminationRequestList("requestIdChecked", Object.values(requestIdChecked), checkedNumer == this.state.listUserTerminations.length)
+        this.setState({requestIdChecked: requestIdChecked, isCheckedAll: checkAll});
+        this.props.updateTerminationRequestList("requestIdChecked", Object.values(requestIdChecked), checkAll)
     }
 
     render() {
@@ -301,7 +303,7 @@ class ListStaffResignationComponent extends React.PureComponent {
                                                 return <tr key={index}>
                                                             <td className="sticky-col full-name-col">
                                                                 <div className="data full-name">
-                                                                    <input type="checkbox" checked={requestIdChecked[item?.requestStatusProcessId]?.value || false} 
+                                                                    <input type="checkbox" checked={requestIdChecked[item?.id]?.value || false} 
                                                                     onChange={e => this.handleCheckboxChange(item, item.id, item.requestStatusProcessId, item.isUploadFile, userInfos?.employeeNo, e)} />
                                                                     <span>{userInfos?.fullName || ""}</span>
                                                                 </div>
