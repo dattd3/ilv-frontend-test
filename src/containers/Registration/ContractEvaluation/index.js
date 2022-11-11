@@ -1252,10 +1252,10 @@ renderEvalution = (name, data, isDisable) => {
         headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
     })
         .then(response => {
-          if(response.data.result && response.data.result.code == '000000'){
+          if(response.data.result && response.data.result.code == '000000'){ // tạm thời vinfast không được đề xuất lương : Constants.PnLCODE.VinFast, Constants.PnLCODE.VinFastTrading,
             if(this.state.data.qlttOpinion?.result?.value != 5 && this.state.data?.childRequestHistoryId == null && this.state.type == 'assess' && actionType != 1 &&
-              ((this.state.data.processStatus == 10 && checkIsExactPnL(Constants.pnlVCode.VinSchool, Constants.pnlVCode.VinHome, Constants.PnLCODE.VinFast, Constants.PnLCODE.VinFastTrading, Constants.PnLCODE.Vin3S, Constants.PnLCODE.VinES, Constants.PnLCODE.Vincon)) || 
-                (this.state.processStatus == 11 && !checkIsExactPnL(Constants.pnlVCode.VinSchool, Constants.pnlVCode.VinHome, Constants.PnLCODE.VinFast, Constants.PnLCODE.VinFastTrading, Constants.PnLCODE.Vin3S, Constants.PnLCODE.VinES, Constants.PnLCODE.Vincon)))) {
+              ((this.state.data.processStatus == 10 && checkIsExactPnL(Constants.pnlVCode.VinSchool, Constants.pnlVCode.VinHome,  Constants.PnLCODE.Vin3S, Constants.PnLCODE.VinES, Constants.PnLCODE.Vincon)) || 
+                (this.state.processStatus == 11 && !checkIsExactPnL(Constants.pnlVCode.VinSchool, Constants.pnlVCode.VinHome, Constants.PnLCODE.Vin3S, Constants.PnLCODE.VinES, Constants.PnLCODE.Vincon)))) {
                   this.showSalaryPropose(actionType, home);
             } else {
               this.showStatusModal(message, true, true, home)

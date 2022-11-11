@@ -90,7 +90,7 @@ const FilterMember = (props) => {
         return {
           uid: profile.uid,
           fullname: profile.fullname,
-          job_name: profile.job_name,
+          job_name: profile.position_name,
           title: profile.title,
           part: profile.part || "",
           division: profile.division || "",
