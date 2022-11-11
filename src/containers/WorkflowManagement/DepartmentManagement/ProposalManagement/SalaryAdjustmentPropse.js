@@ -80,7 +80,7 @@ const SalaryAdjustmentPropse = (props) => {
   const [supervisor, setSupervisor] = useState(null); // CBQL cấp cơ sở
   const [appraiser, setAppraiser] = useState(null); // HR thẩm định quyền điều chỉnh lương
   const [approver, setApprover] = useState(null); // CBLĐ phê duyệt
-
+  const [callSalary, setCalledSalary] = useState(false);
   const [viewSetting, setViewSetting] = useState({
     showComponent: {
       stateProcess: false, // Button trang thai
@@ -151,6 +151,12 @@ const SalaryAdjustmentPropse = (props) => {
     }
     // eslint-disable-next-line
   }, []);
+  
+  useEffect(() => {
+    if(selectedMembers?.length > 0 && callSalary == false && accessToken) {
+      getSalary(accessToken)
+    }
+  }, [selectedMembers]);
 
   const getDataSalary = async () => {
     try {
@@ -213,6 +219,7 @@ const SalaryAdjustmentPropse = (props) => {
         viewSettingTmp.showComponent.showCBQL = true;
         viewSettingTmp.showComponent.showHrAssessment = true;
         viewSettingTmp.showComponent.showOfficerApproved = true;
+        viewSettingTmp.disableComponent.showEye = true;
         if (currentEmail.toLowerCase() === dataSalaryInfo?.userId?.toLowerCase()
           && props.match.params.type === 'request') {
           viewSettingTmp.showComponent.btnCancel = true;
@@ -232,6 +239,7 @@ const SalaryAdjustmentPropse = (props) => {
         viewSettingTmp.showComponent.showCBQL = true;
         viewSettingTmp.showComponent.showHrAssessment = true;
         viewSettingTmp.showComponent.showOfficerApproved = true;
+        viewSettingTmp.disableComponent.showEye = true;
         if (currentEmail.toLowerCase() === dataSalaryInfo?.appraiserId?.toLowerCase()
           && props.match.params.type === 'access'
         ) {
@@ -251,6 +259,7 @@ const SalaryAdjustmentPropse = (props) => {
         viewSettingTmp.showComponent.showCBQL = true;
         viewSettingTmp.showComponent.showHrAssessment = true;
         viewSettingTmp.showComponent.showOfficerApproved = true;
+        viewSettingTmp.disableComponent.showEye = true;
         if (currentEmail.toLowerCase() === dataSalaryInfo?.supervisorId?.toLowerCase()
           && props.match.params.type === 'access'
         ) {
@@ -270,6 +279,7 @@ const SalaryAdjustmentPropse = (props) => {
         viewSettingTmp.showComponent.showCBQL = true;
         viewSettingTmp.showComponent.showHrAssessment = true;
         viewSettingTmp.showComponent.showOfficerApproved = true;
+        viewSettingTmp.disableComponent.showEye = true;
         if (currentEmail.toLowerCase() === dataSalaryInfo?.approverId?.toLowerCase()
           && props.match.params.type === 'approval'
         ) {
@@ -285,8 +295,10 @@ const SalaryAdjustmentPropse = (props) => {
         break;
       // View phe duyet thanh cong
       case 2:
+        viewSettingTmp.disableComponent.showEye = true;
       // Case từ chối
       case 7:
+        viewSettingTmp.disableComponent.showEye = true;
       // Case không phê duyệt
       case 1:
         viewSettingTmp.showComponent.stateProcess = true;
@@ -436,6 +448,16 @@ const SalaryAdjustmentPropse = (props) => {
   }
 
   const handleShowCurrentSalary = () => {
+    if(callSalary) {
+      setViewSetting({
+        ...viewSetting,
+        disableComponent: {
+          ...viewSetting.disableComponent,
+          showCurrentSalary: !viewSetting.disableComponent.showCurrentSalary
+        }
+      });
+      return;
+    }
     if (!accessToken) {
       setModalConfirmPassword(true)
     } else if (!viewSetting.disableComponent.showCurrentSalary) {
@@ -760,6 +782,7 @@ const SalaryAdjustmentPropse = (props) => {
       requestHistoryId: props.match.params.id,
       token: token,
     }
+    setIsLoading(true);
     axios({
       method: 'POST',
       url: `${process.env.REACT_APP_REQUEST_URL}SalaryAdjustment/getsalarystaff`,
@@ -783,8 +806,8 @@ const SalaryAdjustmentPropse = (props) => {
           setCurrencySalary(currencySalaryTmp)
 
           let viewSettingTmp = { ...viewSetting };
-          viewSettingTmp.disableComponent.showSuggestedSalary = !viewSettingTmp.disableComponent.showSuggestedSalary
-          viewSettingTmp.disableComponent.showCurrentSalary = !viewSettingTmp.disableComponent.showCurrentSalary
+          viewSettingTmp.disableComponent.showSuggestedSalary = true;
+          viewSettingTmp.disableComponent.showCurrentSalary = true;
           setViewSetting(viewSettingTmp)
           return;
         }
@@ -793,6 +816,10 @@ const SalaryAdjustmentPropse = (props) => {
       .catch(response => {
         showStatusModal(t("Error"), false)
       })
+      .finally(() => {
+        setIsLoading(false);
+        setCalledSalary(true);
+      });
   }
 
   const hideResultModal = () => {
@@ -879,7 +906,7 @@ const SalaryAdjustmentPropse = (props) => {
                   {!isCreateMode && item?.suggestedSalary &&
                     <div className="d-flex w-100">
                       <div style={{ width: viewSetting.disableComponent.showEye ? '90%' : '100%' }}>
-                        {accessToken && viewSetting.disableComponent.showSuggestedSalary ?
+                        {accessToken && viewSetting.disableComponent.showCurrentSalary ?
                           <CurrencyInput
                             disabled={true}
                             intlConfig={renderCurrency()}
@@ -896,7 +923,7 @@ const SalaryAdjustmentPropse = (props) => {
                           style={{ width: '10%', cursor: 'pointer' }}
                           onClick={() => handleShowSuggestedSalary()}
                         >
-                          <img src={viewSetting.disableComponent.showSuggestedSalary ? IconEye : IconNotEye} alt='eye' />
+                          <img src={viewSetting.disableComponent.showCurrentSalary ? IconEye : IconNotEye} alt='eye' />
                         </div>
                       }
                     </div>

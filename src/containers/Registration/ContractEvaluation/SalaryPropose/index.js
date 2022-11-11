@@ -31,6 +31,7 @@ function SalaryPropse(props) {
   const [listFiles, setListFiles] = useState([]);
   const [currencySalary, setCurrencySalary] = useState('VND');
   const [isLoading, setIsLoading] = useState(false)
+  const [callSalary, setCalledSalary] = useState(false);
 
   const [modalStatus, setModalStatus] = useState({
     isShowStatusModal: false,
@@ -125,6 +126,12 @@ function SalaryPropse(props) {
     // eslint-disable-next-line
   }, []);
 
+  useEffect(() => {
+    if(dataContract && callSalary == false && accessToken) {
+      getSalary(accessToken)
+    }
+  }, [dataContract]);
+
   const getDataContract = async () => {
     try {
       const { data: { data: response } } = await api.fetchStaffContract(props.match.params?.idContract);
@@ -207,6 +214,7 @@ function SalaryPropse(props) {
         viewSettingTmp.showComponent.humanResourceChangeSalary = true;
         viewSettingTmp.showComponent.managerApproved = true;
         viewSettingTmp.showComponent.bossApproved = true;
+        viewSettingTmp.disableComponent.viewCurrentSalary = true;
         if (currentEmail.toLowerCase() === dataSalaryInfo?.userId.toLowerCase()
           && currentEmployeeNo === dataSalaryInfo?.user?.employeeNo.toString()
           && props.match.params.type === 'request'
@@ -226,6 +234,7 @@ function SalaryPropse(props) {
         viewSettingTmp.showComponent.humanResourceChangeSalary = true;
         viewSettingTmp.showComponent.managerApproved = true;
         viewSettingTmp.showComponent.bossApproved = true;
+        viewSettingTmp.disableComponent.viewCurrentSalary = true;
         if ((currentEmail.toLowerCase() === dataSalaryInfo?.appraiserId.toLowerCase())
           && props.match.params.type === 'access'
         ) {
@@ -243,6 +252,7 @@ function SalaryPropse(props) {
         viewSettingTmp.showComponent.humanResourceChangeSalary = true;
         viewSettingTmp.showComponent.managerApproved = true;
         viewSettingTmp.showComponent.bossApproved = true;
+        viewSettingTmp.disableComponent.viewCurrentSalary = true;
         if (currentEmail.toLowerCase() === dataSalaryInfo?.supervisorId.toLowerCase()
           && props.match.params.type === 'access'
         ) {
@@ -260,6 +270,7 @@ function SalaryPropse(props) {
         viewSettingTmp.showComponent.humanResourceChangeSalary = true;
         viewSettingTmp.showComponent.managerApproved = true;
         viewSettingTmp.showComponent.bossApproved = true;
+        viewSettingTmp.disableComponent.viewCurrentSalary = true;
         if (currentEmail.toLowerCase() === dataSalaryInfo?.approverId.toLowerCase()
           && props.match.params.type === 'approval'
         ) {
@@ -274,8 +285,10 @@ function SalaryPropse(props) {
         break;
       // View phe duyet thanh cong
       case 2:
+        viewSettingTmp.disableComponent.viewCurrentSalary = true;
       // Case không phê duyệt
       case 7:
+        viewSettingTmp.disableComponent.viewCurrentSalary = true;
       // Case tu choi
       case 1:
         viewSettingTmp.showComponent.stateProcess = true;
@@ -335,6 +348,17 @@ function SalaryPropse(props) {
   }
 
   const handleShowCurrentSalary = () => {
+    if(callSalary) {
+      setViewSetting({
+        ...viewSetting,
+        disableComponent: {
+          ...viewSetting.disableComponent,
+          showCurrentSalary: !viewSetting.disableComponent.showCurrentSalary
+        }
+      });
+      return;
+    }
+
     if (!accessToken) {
       setModalConfirmPassword(true)
       return;
@@ -636,6 +660,7 @@ function SalaryPropse(props) {
       requestHistoryId: props.match.params?.idSalary,
       token: token,
     }
+    setIsLoading(true);
     axios({
       method: 'POST',
       url: `${process.env.REACT_APP_REQUEST_URL}SalaryAdjustment/getsalarystaff`,
@@ -651,8 +676,8 @@ function SalaryPropse(props) {
           });
 
           let viewSettingTmp = { ...viewSetting };
-          viewSettingTmp.disableComponent.showSuggestedSalary = !viewSettingTmp.disableComponent.showSuggestedSalary
-          viewSettingTmp.disableComponent.showCurrentSalary = !viewSettingTmp.disableComponent.showCurrentSalary
+          viewSettingTmp.disableComponent.showSuggestedSalary = true;
+          viewSettingTmp.disableComponent.showCurrentSalary = true;
           setViewSetting(viewSettingTmp)
           return;
         }
@@ -661,6 +686,10 @@ function SalaryPropse(props) {
       .catch(response => {
         showStatusModal(t("Error"), false)
       })
+      .finally(() => {
+        setIsLoading(false);
+        setCalledSalary(true);
+      });
   }
 
   const handleTextInputChange = (value) => {
