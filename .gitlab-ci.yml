@@ -16,7 +16,6 @@ build_development:
   only:
     refs:
       - develop
-      - Refresh-token
 
 deploy_to_development_environment:
   stage: deploy
@@ -31,7 +30,6 @@ deploy_to_development_environment:
   when: manual
   only:
       - develop
-      - Refresh-token
       
 build_production:
   stage: build
