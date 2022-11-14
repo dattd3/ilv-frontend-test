@@ -185,6 +185,7 @@ function EvaluationProcess(props) {
   const renderEmployeeInfos = () => {
     const approverInfos = JSON.parse(evaluationFormDetail?.approver || '{}')
     const reviewerInfos = JSON.parse(evaluationFormDetail?.reviewer || '{}')
+    const isShowManagerApproverInfo = evaluationFormDetail?.reviewStreamCode === processStep.twoLevels
 
     return (
       <>
@@ -217,10 +218,13 @@ function EvaluationProcess(props) {
               <span className="label"><span className="font-weight-bold">{t("EvaluationDetailEmployeeManagerAssessment")}</span><span>:</span></span>
               <span className="value">{reviewerInfos?.fullname && `${reviewerInfos?.fullname || ''} - ${reviewerInfos?.position_title || ''}`}</span>
             </div>
-            <div className="info-item">
-              <span className="label"><span className="font-weight-bold">{t("EvaluationDetailEmployeeManagerApprove")}</span><span>:</span></span>
-              <span className="value">{approverInfos?.fullname && `${approverInfos?.fullname || ''} - ${approverInfos?.position_title || ''}`}</span>
-            </div>
+            {
+              isShowManagerApproverInfo && 
+              <div className="info-item">
+                <span className="label"><span className="font-weight-bold">{t("EvaluationDetailEmployeeManagerApprove")}</span><span>:</span></span>
+                <span className="value">{approverInfos?.fullname && `${approverInfos?.fullname || ''} - ${approverInfos?.position_title || ''}`}</span>
+              </div>
+            }
             <div className="info-item">
               <span className="label"><span className="font-weight-bold">HR Admin</span><span>:</span></span>
               <span className="value">{`${evaluationFormDetail?.hrAdmin || ''}`}</span>
@@ -380,11 +384,21 @@ function EvaluationProcess(props) {
       <div className="comment">
         <div className="self">
           <p>{t("EvaluationDetailPartAttitudeCommentOfEmployee")}</p>
-          <textarea rows={1} placeholder={`${t("EvaluationDetailPartSelectScoreInput")}`} value={target?.seftOpinion || ""} onChange={(e) => !_.isNil(subGroupTargetIndex) ? handleInputChange(parentIndex, index, 'seftOpinion', e, subGroupTargetIndex) : handleInputChange(i, index, 'seftOpinion', e)} disabled={showByManager || evaluationFormDetail.status != evaluationStatus.launch} />
+          <textarea 
+            rows={1} 
+            placeholder={!(showByManager || evaluationFormDetail.status != evaluationStatus.launch) ? t("EvaluationDetailPartSelectScoreInput") : ''} 
+            value={target?.seftOpinion || ""} 
+            onChange={(e) => !_.isNil(subGroupTargetIndex) ? handleInputChange(parentIndex, index, 'seftOpinion', e, subGroupTargetIndex) : handleInputChange(i, index, 'seftOpinion', e)} 
+            disabled={showByManager || evaluationFormDetail.status != evaluationStatus.launch} />
         </div>
         <div className="qltt">
           <p>{t("EvaluationDetailPartAttitudeCommentOfManager")}</p>
-          <textarea rows={1} placeholder={`${t("EvaluationDetailPartSelectScoreInput")}`} value={target?.leaderReviewOpinion || ""} onChange={(e) => !_.isNil(subGroupTargetIndex) ? handleInputChange(parentIndex, index, 'leaderReviewOpinion', e, subGroupTargetIndex) : handleInputChange(i, index, "leaderReviewOpinion", e)} disabled={!showByManager || (showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment))} />
+          <textarea 
+            rows={1} 
+            placeholder={!(!showByManager || (showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment))) ? t("EvaluationDetailPartSelectScoreInput") : ''} 
+            value={target?.leaderReviewOpinion || ""} 
+            onChange={(e) => !_.isNil(subGroupTargetIndex) ? handleInputChange(parentIndex, index, 'leaderReviewOpinion', e, subGroupTargetIndex) : handleInputChange(i, index, "leaderReviewOpinion", e)} 
+            disabled={!showByManager || (showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment))} />
         </div>
       </div>
     </div>
@@ -552,11 +566,21 @@ function EvaluationProcess(props) {
                         <div className="comment">
                           <div className="self">
                             <p>{t("EvaluationDetailPartAttitudeCommentOfEmployee")}</p>
-                            <textarea rows={1} placeholder={`${t("EvaluationDetailPartSelectScoreInput")}`} value={target?.seftOpinion || ""} onChange={(e) => handleInputChange(i, index, 'seftOpinion', e)} disabled={showByManager || evaluationFormDetail.status != evaluationStatus.launch} />
+                            <textarea 
+                              rows={1} 
+                              placeholder={!(showByManager || evaluationFormDetail.status != evaluationStatus.launch) ? t("EvaluationDetailPartSelectScoreInput") : ''} 
+                              value={target?.seftOpinion || ""} 
+                              onChange={(e) => handleInputChange(i, index, 'seftOpinion', e)} 
+                              disabled={showByManager || evaluationFormDetail.status != evaluationStatus.launch} />
                           </div>
                           <div className="qltt">
                             <p>{t("EvaluationDetailPartAttitudeCommentOfManager")}</p>
-                            <textarea rows={1} placeholder={`${t("EvaluationDetailPartSelectScoreInput")}`} value={target?.leaderReviewOpinion || ""} onChange={(e) => handleInputChange(i, index, "leaderReviewOpinion", e)} disabled={!showByManager || (showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment))} />
+                            <textarea 
+                              rows={1} 
+                              placeholder={!(!showByManager || (showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment))) ? t("EvaluationDetailPartSelectScoreInput") : ''} 
+                              value={target?.leaderReviewOpinion || ""} 
+                              onChange={(e) => handleInputChange(i, index, "leaderReviewOpinion", e)} 
+                              disabled={!showByManager || (showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment))} />
                           </div>
                         </div>
                       </div>

@@ -257,8 +257,8 @@ function ApprovalTabContent(props) {
             ...filter,
             [key]: value,
             ...(childKey && { [childKey]: childData }),
-            ...(key === 'block' && { region: null, unit: null, group: null }),
-            ...(key === 'region' && { unit: null, group: null }),
+            ...(key === 'block' && { region: null, unit: null, group: null, units: [], groups: [] }),
+            ...(key === 'region' && { unit: null, group: null, groups: [] }),
             ...(key === 'unit' && { group: null })
         })
     }
