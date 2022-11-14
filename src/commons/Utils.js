@@ -191,11 +191,11 @@ const calculateBackDateByPnLVCodeAndFormatType = (pnlVCode, formatType) => {
 }
 
 const isEnableShiftChangeFunctionByPnLVCode = PnLVCode => {
-    return ![Constants.pnlVCode.VinSoftware, Constants.pnlVCode.VinSmart, Constants.pnlVCode.VinSchool, Constants.pnlVCode.Vin3S].includes(PnLVCode) ? true : false
+    return ![Constants.pnlVCode.VinSoftware, Constants.pnlVCode.VinSmart, Constants.pnlVCode.VinSchool].includes(PnLVCode) ? true : false
 }
 
 const isEnableInOutTimeUpdateFunctionByPnLVCode = PnLVCode => {
-    return ![Constants.pnlVCode.VinSchool, Constants.pnlVCode.VinSchool.VinAI].includes(PnLVCode) ? true : false
+    return ![Constants.pnlVCode.VinSchool, Constants.pnlVCode.VinAI].includes(PnLVCode) ? true : false
 }
 
 const getRequestTypeIdsAllowedToReApproval = () => {
