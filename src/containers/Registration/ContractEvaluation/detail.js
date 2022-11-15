@@ -5,7 +5,7 @@ import Rating from 'react-rating'
 import _ from 'lodash'
 import { Image } from 'react-bootstrap'
 import Constants from '../.../../../../commons/Constants'
-import { checkIsExactPnL } from '../../../commons/commonFunctions'
+import { checkIsExactPnL, checkVersionPnLSameAsVinhome } from '../../../commons/commonFunctions'
 import 'react-datepicker/dist/react-datepicker.css'
 import { vi, enUS } from 'date-fns/locale'
 import { withTranslation } from "react-i18next";
@@ -165,7 +165,7 @@ const ContractEvaluationdetail = (props) => {
             </div>
           </div>
           {
-            checkIsExactPnL(Constants.pnlVCode.VinSchool, Constants.pnlVCode.VinHome, Constants.PnLCODE.VinFast, Constants.PnLCODE.VinFastTrading, Constants.PnLCODE.Vin3S, Constants.PnLCODE.VinES, Constants.PnLCODE.Vincon) ?
+            checkVersionPnLSameAsVinhome(Constants.MODULE.DANHGIA_TAIKI) ?
               null :
               <>
                 <h5>Thông tin khóa học</h5>
@@ -258,7 +258,7 @@ const ContractEvaluationdetail = (props) => {
             <div className="row approve">
               <div className="col-12">
                 {
-                  checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.pnlVCode.VinHome,  Constants.PnLCODE.VinFast, Constants.PnLCODE.VinFastTrading, Constants.PnLCODE.Vin3S, Constants.PnLCODE.VinES, Constants.PnLCODE.Vincon) ?
+                  checkVersionPnLSameAsVinhome(Constants.MODULE.DANHGIA_TAIKI) ?
                     <><span className="title">QUẢN LÝ TRỰC TIẾP ĐÁNH GIÁ</span></>
                     : <><span className="title">NGƯỜI ĐÁNH GIÁ</span><span className="sub-title">(Nếu có)</span></>
                 }
@@ -279,7 +279,7 @@ const ContractEvaluationdetail = (props) => {
             <div className="row approve">
               <div className="col-12">
                 {
-                  checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.pnlVCode.VinHome, Constants.PnLCODE.VinFast, Constants.PnLCODE.VinFastTrading, Constants.PnLCODE.Vin3S, Constants.PnLCODE.VinES, Constants.PnLCODE.Vincon) ?
+                  checkVersionPnLSameAsVinhome(Constants.MODULE.DANHGIA_TAIKI) ?
                     <><span className="title">CBLĐ thẩm định</span><span className="sub-title">(Nếu có)</span></>
                     : <span className="title">QUẢN LÝ TRỰC TIẾP ĐÁNH GIÁ</span>
                 }
