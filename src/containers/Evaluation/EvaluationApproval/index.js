@@ -108,6 +108,7 @@ function AdvancedFilter(props) {
                             <Select 
                                 placeholder={t("Select")} 
                                 isClearable={true} 
+                                isMulti 
                                 value={filter.group} 
                                 options={filter.groups} 
                                 onChange={e => handleInputChange('group', e)} />
