@@ -199,5 +199,19 @@ const Constants = {
   timeoutForSpecificApis: 180000,
   LANGUAGE_VI: 'vi-VN',
   LANGUAGE_EN: 'en-US',
+  MODULE: {
+    TUYENDUNG: 1,
+    DANHGIA_TAIKI: 2,
+    DEXUATLUONG:3,
+    NGHIVIEC:4,
+    PHUCLOI: 5
+  },
+  MODULE_COMPANY_AVAILABE: {
+    1: ["V040", "V005", "V079", "V041"], //TUYENDUNG
+    2: ["V061","V040", "V005", "V079", "V041", "V070", "V077"],//DANHGIA_TAIKI
+    3:["V061", "V040", "V005", "V079", "V041"],//DEXUATLUONG
+    4:["V040", "V005", "V079"],//NGHIVIEC
+    5: ["V061", "V040", "V005", "V079", "V041"]//PHUCLOI
+  }
 };
 export default Constants

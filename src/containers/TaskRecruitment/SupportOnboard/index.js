@@ -8,7 +8,7 @@ import Constants from '../../../commons/Constants'
 import LoadingSpinner from "../../../components/Forms/CustomForm/LoadingSpinner";
 import ResultModal from '../../Registration/ResultModal';
 import CustomPaging from '../../../components/Common/CustomPaging'
-import { checkIsExactPnL } from '../../../commons/commonFunctions';
+import { checkIsExactPnL, checkVersionPnLSameAsVinhome } from '../../../commons/commonFunctions';
 
 class SupportOnboardComponent extends React.Component {
   CONFIRM_STATUS = [
@@ -434,7 +434,7 @@ class SupportOnboardComponent extends React.Component {
                             <th scope="col" className="col-devices text-center">Cập nhật đầy đủ thông tin lên SAP và các group mail/Ms Teams</th>
                             <th scope="col" className="col-devices text-center">Ký HĐLĐ</th>
                           </>
-                          : checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.PnLCODE.Vinhome, Constants.PnLCODE.Vin3S, Constants.PnLCODE.VinES, Constants.PnLCODE.Vincon) ?
+                          : checkVersionPnLSameAsVinhome(Constants.MODULE.TUYENDUNG, Constants.PnLCODE.VinSchool) ?
                             <>
                               <th scope="col" className="col-devices text-center">Tài khoản AD, email, các phần mềm phục vụ công việc, cá nhân</th>
                               <th scope="col" className="col-devices text-center">Máy tính / Điện thoại bàn</th>
