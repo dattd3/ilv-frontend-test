@@ -95,8 +95,8 @@ class ResignationRequestsManagementPage extends React.Component {
         this.setState({isShowLoadingModal: true})
         const params = this.prepareParamsToFilter()
         const config = getRequestConfigs()
-        config.params = params
-        const responses = await axios.get(`${process.env.REACT_APP_REQUEST_URL}ReasonType/getlistterminal`, config)
+        //config.params = params
+        const responses = await axios.post(`${process.env.REACT_APP_REQUEST_URL}ReasonType/getlistterminal`, params, config)
         const listUserTerminations = this.prepareListUserTerminations(responses)
         this.setState({listUserTerminations: listUserTerminations.data, totalUserTerminations: listUserTerminations.total, isCheckedAll: listUserTerminations.isCheckedAll, isShowLoadingModal: false})
     }
