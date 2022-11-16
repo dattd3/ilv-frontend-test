@@ -2073,7 +2073,7 @@ renderEvalution = (name, data, isDisable) => {
         </> : null
         } */}
 
-          {dataSalary &&
+          {dataSalary?.childRequestHistoryId &&
             <>
               <h5>Thông tin đề xuất lương</h5>
               <div className="box cbnv salary">
