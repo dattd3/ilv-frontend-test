@@ -915,7 +915,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
       }
 
       //check ngày hết hạn hợp đồng cho các pnl không phải VSC 9799
-      if(localStorage.getItem('companyCode') != Constants.pnlVCode.VinSchool && this.state.type == 'assess' && (candidateInfos[name]['result'] != 4 && candidateInfos[name]['result'] != 5)) {
+      if(localStorage.getItem('companyCode') != Constants.pnlVCode.VinSchool && this.state.type == 'assess' && (candidateInfos[name]['result']?.value != 4 && candidateInfos[name]['result']?.value != 5)) {
         if(e?.value == 'VA') {
           candidateInfos[name]['endDate'] = moment(candidateInfos.employeeInfo.expireDate).add(12, 'months').format('DD/MM/YYYY');
         } else if (['VF', 'VG', 'VH'].indexOf(e?.value) != -1) {
