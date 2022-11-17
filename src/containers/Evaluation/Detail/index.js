@@ -6,6 +6,7 @@ import { Doughnut } from 'react-chartjs-2'
 import { withRouter } from 'react-router-dom'
 import axios from 'axios'
 import _ from 'lodash'
+import moment from "moment/moment";
 import Constants from '../../../commons/Constants'
 import { getRequestConfigurations } from '../../../commons/Utils'
 import { evaluationStatus, actionButton } from '../Constants'
@@ -34,10 +35,17 @@ const formType = {
   EMPLOYEE: 'NV',
 }
 
+const processStep = {
+  zeroLevel: '0NF',
+  oneLevel: '1NF',
+  twoLevels: '2NF',
+}
+
 function EvaluationOverall(props) {
   const { t } = useTranslation()
   const { evaluationFormDetail, showByManager } = props
-  const totalCompleted = showByManager ? evaluationFormDetail?.leadReviewTotalComplete || 0 : evaluationFormDetail?.seftTotalComplete || 0
+  const totalCompleted = showByManager ? evaluationFormDetail?.leadReviewTotalComplete || 0 : evaluationFormDetail?.seftTotalComplete || 0;
+  const isDifferentZeroLevel = evaluationFormDetail.reviewStreamCode !== processStep.zeroLevel;
 
   const overallData = {
     // labels: ["Red", "Green"],
@@ -108,7 +116,7 @@ function EvaluationOverall(props) {
           <tr>
             <th className='c-criteria'><div className='criteria'>{t("EvaluationDetailCriteria")}</div></th>
             <th className='c-self-assessment text-center'><div className='self-assessment'>{t("EvaluationDetailSelfAssessment")}</div></th>
-            <th className='c-manager-assessment text-center'><div className='manager-assessment color-red'>{t("EvaluationDetailManagerAssessment")}</div></th>
+            {isDifferentZeroLevel && <th className='c-manager-assessment text-center'><div className='manager-assessment color-red'>{t("EvaluationDetailManagerAssessment")}</div></th>}
           </tr>
         </thead>
         <tbody>
@@ -117,14 +125,14 @@ function EvaluationOverall(props) {
               return <tr key={i}>
                 <td className='c-criteria'><div className='criteria'>{JSON.parse(item?.groupName || '{}')[languageCodeMapping[currentLocale]]}</div></td>
                 <td className='c-self-assessment text-center'>{(item?.groupSeftPoint || 0).toFixed(2)}</td>
-                <td className='c-manager-assessment text-center color-red'>{(item?.groupLeadReviewPoint || 0).toFixed(2)}</td>
+                {isDifferentZeroLevel && <td className='c-manager-assessment text-center color-red'>{(item?.groupLeadReviewPoint || 0).toFixed(2)}</td>}
               </tr>
             })
           }
           <tr>
             <td className='c-criteria'><div className='font-weight-bold text-uppercase criteria'>{t("EvaluationDetailOverallScore")}</div></td>
             <td className='c-self-assessment text-center font-weight-bold'>{(evaluationFormDetail?.totalSeftPoint || 0).toFixed(2)}</td>
-            <td className='c-manager-assessment text-center font-weight-bold color-red'>{(evaluationFormDetail?.totalLeadReviewPoint || 0).toFixed(2)}</td>
+            {isDifferentZeroLevel && <td className='c-manager-assessment text-center font-weight-bold color-red'>{(evaluationFormDetail?.totalLeadReviewPoint || 0).toFixed(2)}</td>}
           </tr>
         </tbody>
       </table>
@@ -134,17 +142,7 @@ function EvaluationOverall(props) {
 
 function EvaluationProcess(props) {
   const { evaluationFormDetail, showByManager, errors, updateData } = props
-  const { t } = useTranslation()
-  const processStep = {
-    oneLevel: '1NF',
-    twoLevels: '2NF',
-  }
-  const stepStatusMapping = {
-    [evaluationStatus.launch]: 0,
-    [evaluationStatus.selfAssessment]: 1,
-    [evaluationStatus.qlttAssessment]: evaluationFormDetail?.reviewStreamCode === processStep.oneLevel ? null : 2,
-    [evaluationStatus.cbldApproved]: evaluationFormDetail?.reviewStreamCode === processStep.oneLevel ? 2 : 3,
-  }
+  const { t } = useTranslation();
   const formatIndexText = index => {
     const mapping = {
       1: 'I',
@@ -160,25 +158,57 @@ function EvaluationProcess(props) {
     }
     return mapping[index]
   }
+  const { checkPhaseFormEndDate, reviewStreamCode, status } = evaluationFormDetail;
+  const isBeforeNow = moment(checkPhaseFormEndDate).isAfter(new Date());
+  const isDifferentZeroLevel = reviewStreamCode !== processStep.zeroLevel;
+  let stepStatusMapping, stepEvaluationConfig;
+
+  switch (reviewStreamCode) {
+    case processStep.zeroLevel:
+      stepEvaluationConfig = [t("EvaluationDetailSelfAssessment"), t("EvaluationDetailCompleted")];
+      stepStatusMapping = {
+        [evaluationStatus.launch]: null,
+        [evaluationStatus.selfAssessment]: 0,
+        [evaluationStatus.qlttAssessment]: null,
+        [evaluationStatus.cbldApproved]: 1,
+      };
+      break;
+    case processStep.oneLevel:
+      stepEvaluationConfig = [t("EvaluationDetailSelfAssessment"), t("EvaluationDetailManagerAssessment"), t("EvaluationDetailCompleted")];
+      stepStatusMapping = {
+        [evaluationStatus.launch]: 0,
+        [evaluationStatus.selfAssessment]: 1,
+        [evaluationStatus.qlttAssessment]: null,
+        [evaluationStatus.cbldApproved]: 2,
+      };
+    default:
+      break;
+    case processStep.twoLevels:
+      stepEvaluationConfig = [t("EvaluationDetailSelfAssessment"), t("EvaluationDetailManagerAssessment"), t("EvaluationDetailManagerApprove"), t("EvaluationDetailCompleted")];
+      stepStatusMapping = {
+        [evaluationStatus.launch]: 0,
+        [evaluationStatus.selfAssessment]: 1,
+        [evaluationStatus.qlttAssessment]: 2,
+        [evaluationStatus.cbldApproved]: 3,
+      };
+      break;
+  }
 
   const renderEvaluationStep = () => {
-    const stepEvaluationConfig = evaluationFormDetail?.reviewStreamCode === processStep.oneLevel
-      ? [t("EvaluationDetailSelfAssessment"), t("EvaluationDetailManagerAssessment"), t("EvaluationDetailCompleted")]
-      : [t("EvaluationDetailSelfAssessment"), t("EvaluationDetailManagerAssessment"), t("EvaluationDetailManagerApprove"), t("EvaluationDetailCompleted")]
-    return stepEvaluationConfig.map((item, index) => {
-      let activeClass = index === stepStatusMapping[evaluationFormDetail?.status] ? 'active' : ''
-      return (
-        <div className="wrap-item" key={index}>
-          <div className="line"><hr /></div>
-          <div className={`info ${activeClass}`}>
-            <div className="item">
-              <span className="no"><span>{index + 1}</span></span>
-              <span className="name">{item}</span>
-              <Image src={!activeClass ? IconArrowRightGray : IconArrowRightWhite} alt="Next" className="next" />
+      return stepEvaluationConfig.map((item, index) => {
+        let activeClass = index === stepStatusMapping[evaluationFormDetail?.status] ? 'active' : ''
+        return (
+          <div className="wrap-item" key={index}>
+            <div className="line"><hr /></div>
+            <div className={`info ${activeClass}`}>
+              <div className="item">
+                <span className="no"><span>{index + 1}</span></span>
+                <span className="name">{item}</span>
+                <Image src={!activeClass ? IconArrowRightGray : IconArrowRightWhite} alt="Next" className="next" />
+              </div>
             </div>
           </div>
-        </div>
-      )
+        )
     })
   }
 
@@ -190,7 +220,7 @@ function EvaluationProcess(props) {
     return (
       <>
         <div className="title">{t("EvaluationDetailEmployeeInfo")}</div>
-        <div className="detail">
+        <div className="detail align-items-start">
           <div className="left">
             <div className="info-item">
               <span className="label"><span className="font-weight-bold">{t("EvaluationDetailEmployeeFullName")}</span><span>:</span></span>
@@ -214,10 +244,13 @@ function EvaluationProcess(props) {
               <span className="label"><span className="font-weight-bold">{t("EvaluationDetailEmployeeDepartment")}</span><span>:</span></span>
               <span className="value">{evaluationFormDetail?.organization_lv4 || ''}</span>
             </div>
-            <div className="info-item">
-              <span className="label"><span className="font-weight-bold">{t("EvaluationDetailEmployeeManagerAssessment")}</span><span>:</span></span>
-              <span className="value">{reviewerInfos?.fullname && `${reviewerInfos?.fullname || ''} - ${reviewerInfos?.position_title || ''}`}</span>
-            </div>
+            {
+              isDifferentZeroLevel && 
+                <div className="info-item">
+                  <span className="label"><span className="font-weight-bold">{t("EvaluationDetailEmployeeManagerAssessment")}</span><span>:</span></span>
+                  <span className="value">{reviewerInfos?.fullname && `${reviewerInfos?.fullname || ''} - ${reviewerInfos?.position_title || ''}`}</span>
+                </div>
+            }
             {
               isShowManagerApproverInfo && 
               <div className="info-item">
@@ -252,7 +285,7 @@ function EvaluationProcess(props) {
   }
 
   const renderEvaluationItem = (item, index, scores, target, i, deviant, parentIndex, subGroupTargetIndex) => {
-    const isChild = !_.isNil(parentIndex)
+    const isChild = !_.isNil(parentIndex);
     return <div className="evaluation-item" key={target.id}>
       {!isChild ? <div className="title">{`${i + 1}. ${JSON.parse(target?.targetName || '{}')[languageCodeMapping[currentLocale]]}`}</div> : <div className="sub-title">{`${parentIndex + 1}.${subGroupTargetIndex + 1} ${JSON.parse(target?.targetName || '{}')[languageCodeMapping[currentLocale]]}`}</div>}
       {
@@ -262,7 +295,7 @@ function EvaluationProcess(props) {
               <div className="item">
                 <span className="red label">{t("EvaluationDetailPartAttitudeSelfAssessment")}{!showByManager && <span className="required">(*)</span>}</span>
                 {
-                  !showByManager && evaluationFormDetail.status == evaluationStatus.launch
+                  !showByManager && evaluationFormDetail.status == evaluationStatus.launch && isBeforeNow
                     ?
                     <select onChange={(e) => !_.isNil(subGroupTargetIndex) ? handleInputChange(parentIndex, index, 'seftPoint', e, subGroupTargetIndex) : handleInputChange(i, index, 'seftPoint', e)} value={target?.seftPoint || ''}>
                       <option value=''>{t("EvaluationDetailPartSelectScore")}</option>
@@ -281,7 +314,7 @@ function EvaluationProcess(props) {
               <div className="item">
                 <span className="red label">{t("EvaluationDetailPartAttitudeManagerAssessment")}{showByManager && <span className="required">(*)</span>}</span>
                 {
-                  !(!showByManager || (showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment)))
+                  !(!showByManager || (showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment))) && isBeforeNow
                     ?
                     <select onChange={(e) => !_.isNil(subGroupTargetIndex) ? handleInputChange(parentIndex, index, 'leadReviewPoint', e, subGroupTargetIndex) : handleInputChange(i, index, "leadReviewPoint", e)} value={target?.leadReviewPoint || ''}>
                       <option value=''>{t("EvaluationDetailPartSelectScore")}</option>
@@ -298,7 +331,30 @@ function EvaluationProcess(props) {
             </div>
             <div className="deviant">
               <span className="red label">{t("EvaluationDetailPartAttitudeDifferent")}</span>
-              <span className={`value ${deviant && deviant > 0 ? 'up' : deviant && deviant < 0 ? 'down' : ''}`}>&nbsp;{`${deviant && deviant > 0 ? '+' : ''}${deviant}`}{deviant && deviant != 0 ? <Image alt='Note' src={deviant && deviant > 0 ? IconUp : deviant && deviant < 0 ? IconDown : ''} /> : ''}</span>
+              <span className={`value ${
+                  deviant && deviant > 0
+                    ? 'up'
+                    : deviant && deviant < 0
+                    ? 'down'
+                    : ''
+                }`}
+              >
+                &nbsp;{`${deviant && deviant > 0 ? '+' : ''}${deviant}`}
+                {deviant && deviant != 0 ? (
+                  <Image
+                    alt="Note"
+                    src={
+                      deviant && deviant > 0
+                        ? IconUp
+                        : deviant && deviant < 0
+                        ? IconDown
+                        : ''
+                    }
+                  />
+                ) : (
+                  ''
+                )}
+              </span>
             </div>
           </div>
           :
@@ -333,14 +389,19 @@ function EvaluationProcess(props) {
                   <td className="text-center target"><span>{target?.target}</span></td>
                   <td className="actual-results">
                     <div>
-                      {!showByManager && evaluationFormDetail.status == evaluationStatus.launch ? <textarea rows={3} placeholder={t("EvaluationInput")} value={target?.realResult || ""} onChange={(e) => handleInputChange(i, index, 'realResult', e)} /> : <span>{target?.realResult}</span>}
+                      {
+                        !showByManager && evaluationFormDetail.status == evaluationStatus.launch && isBeforeNow
+                          ?
+                          <textarea rows={3} placeholder={t("EvaluationInput")} value={target?.realResult || ""} onChange={(e) => handleInputChange(i, index, 'realResult', e)} />
+                          :
+                          <span>{target?.realResult}</span>}
                     </div>
                     {errors[`${index}_${i}_realResult`] && <div className="alert alert-danger invalid-message" role="alert">{errors[`${index}_${i}_realResult`]}</div>}
                   </td>
                   <td className="text-center self-assessment">
                     <div>
                       {
-                        !showByManager && evaluationFormDetail.status == evaluationStatus.launch
+                        !showByManager && evaluationFormDetail.status == evaluationStatus.launch && isBeforeNow
                           // ? <input type="text" placeholder={t("EvaluationInput")} value={target?.seftPoint || ""} onChange={(e) => handleInputChange(i, index, 'seftPoint', e)} /> 
                           ? <select onChange={(e) => handleInputChange(i, index, 'seftPoint', e)} value={target?.seftPoint || ''}>
                             <option value=''>{t("EvaluationDetailPartSelectScore")}</option>
@@ -358,7 +419,7 @@ function EvaluationProcess(props) {
                   <td className="text-center qltt-assessment">
                     <div>
                       {
-                        showByManager && evaluationFormDetail.status == evaluationStatus.selfAssessment
+                        showByManager && evaluationFormDetail.status == evaluationStatus.selfAssessment && isBeforeNow
                           // ? <input type="text" placeholder={t("EvaluationInput")} value={target?.leadReviewPoint || ""} onChange={(e) => handleInputChange(i, index, 'leadReviewPoint', e)} />
                           ? <select onChange={(e) => handleInputChange(i, index, 'leadReviewPoint', e)} value={target?.leadReviewPoint || ''}>
                             <option value=''>{t("EvaluationDetailPartSelectScore")}</option>
@@ -374,7 +435,15 @@ function EvaluationProcess(props) {
                     {errors[`${index}_${i}_leadReviewPoint`] && <div className="alert alert-danger invalid-message" role="alert">{errors[`${index}_${i}_leadReviewPoint`]}</div>}
                   </td>
                   <td className="text-center deviant">
-                    <span className={`value ${deviant && deviant > 0 ? 'up' : deviant && deviant < 0 ? 'down' : ''}`}>&nbsp;{`${deviant && deviant > 0 ? '+' : ''}${deviant}`}{deviant && deviant != 0 ? <Image alt='Note' src={deviant && deviant > 0 ? IconUp : deviant && deviant < 0 ? IconDown : ''} /> : ''}</span>
+                    <span className={`value ${deviant && deviant > 0 ? 'up' : deviant && deviant < 0 ? 'down' : ''}`}>
+                      &nbsp;{`${deviant && deviant > 0 ? '+' : ''}${deviant}`}
+                      {deviant && deviant != 0
+                        ?
+                        <Image alt='Note' src={deviant && deviant > 0 ? IconUp : deviant && deviant < 0 ? IconDown : ''} />
+                        :
+                        ''
+                      }
+                    </span>
                   </td>
                 </tr>
               </tbody>
@@ -386,19 +455,19 @@ function EvaluationProcess(props) {
           <p>{t("EvaluationDetailPartAttitudeCommentOfEmployee")}</p>
           <textarea 
             rows={1} 
-            placeholder={!(showByManager || evaluationFormDetail.status != evaluationStatus.launch) ? t("EvaluationDetailPartSelectScoreInput") : ''} 
+            placeholder={!(showByManager || evaluationFormDetail.status != evaluationStatus.launch) && isBeforeNow ? t("EvaluationDetailPartSelectScoreInput") : ''} 
             value={target?.seftOpinion || ""} 
             onChange={(e) => !_.isNil(subGroupTargetIndex) ? handleInputChange(parentIndex, index, 'seftOpinion', e, subGroupTargetIndex) : handleInputChange(i, index, 'seftOpinion', e)} 
-            disabled={showByManager || evaluationFormDetail.status != evaluationStatus.launch} />
+            disabled={showByManager || evaluationFormDetail.status != evaluationStatus.launch || !isBeforeNow} />
         </div>
         <div className="qltt">
           <p>{t("EvaluationDetailPartAttitudeCommentOfManager")}</p>
           <textarea 
             rows={1} 
-            placeholder={!(!showByManager || (showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment))) ? t("EvaluationDetailPartSelectScoreInput") : ''} 
+            placeholder={!(!showByManager || (showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment))) && isBeforeNow ? t("EvaluationDetailPartSelectScoreInput") : ''} 
             value={target?.leaderReviewOpinion || ""} 
             onChange={(e) => !_.isNil(subGroupTargetIndex) ? handleInputChange(parentIndex, index, 'leaderReviewOpinion', e, subGroupTargetIndex) : handleInputChange(i, index, "leaderReviewOpinion", e)} 
-            disabled={!showByManager || (showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment))} />
+            disabled={(!showByManager || (showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment)))  && !isBeforeNow} />
         </div>
       </div>
     </div>
@@ -516,14 +585,20 @@ function EvaluationProcess(props) {
                                 <td className="text-center target"><span>{target?.target}</span></td>
                                 <td className="actual-results">
                                   <div>
-                                    {!showByManager && evaluationFormDetail.status == evaluationStatus.launch ? <textarea rows={3} placeholder={t("EvaluationInput")} value={target?.realResult || ""} onChange={(e) => handleInputChange(i, index, 'realResult', e)} /> : <span>{target?.realResult}</span>}
+                                    {
+                                    !showByManager && evaluationFormDetail.status == evaluationStatus.launch && isBeforeNow
+                                      ?
+                                      <textarea rows={3} placeholder={t("EvaluationInput")} value={target?.realResult || ""} onChange={(e) => handleInputChange(i, index, 'realResult', e)} />
+                                      :
+                                      <span>{target?.realResult}</span>
+                                    }
                                   </div>
                                   {errors[`${index}_${i}_realResult`] && <div className="alert alert-danger invalid-message" role="alert">{errors[`${index}_${i}_realResult`]}</div>}
                                 </td>
                                 <td className="text-center self-assessment">
                                   <div>
                                     {
-                                      !showByManager && evaluationFormDetail.status == evaluationStatus.launch
+                                      !showByManager && evaluationFormDetail.status == evaluationStatus.launch && isBeforeNow
                                         // ? <input type="text" placeholder={t("EvaluationInput")} value={target?.seftPoint || ""} onChange={(e) => handleInputChange(i, index, 'seftPoint', e)} /> 
                                         ? <select onChange={(e) => handleInputChange(i, index, 'seftPoint', e)} value={target?.seftPoint || ''}>
                                           <option value=''>{t("EvaluationDetailPartSelectScore")}</option>
@@ -541,7 +616,7 @@ function EvaluationProcess(props) {
                                 <td className="text-center qltt-assessment">
                                   <div>
                                     {
-                                      showByManager && evaluationFormDetail.status == evaluationStatus.selfAssessment
+                                      showByManager && evaluationFormDetail.status == evaluationStatus.selfAssessment && isBeforeNow
                                         // ? <input type="text" placeholder={t("EvaluationInput")} value={target?.leadReviewPoint || ""} onChange={(e) => handleInputChange(i, index, 'leadReviewPoint', e)} />
                                         ? <select onChange={(e) => handleInputChange(i, index, 'leadReviewPoint', e)} value={target?.leadReviewPoint || ''}>
                                           <option value=''>{t("EvaluationDetailPartSelectScore")}</option>
@@ -568,19 +643,19 @@ function EvaluationProcess(props) {
                             <p>{t("EvaluationDetailPartAttitudeCommentOfEmployee")}</p>
                             <textarea 
                               rows={1} 
-                              placeholder={!(showByManager || evaluationFormDetail.status != evaluationStatus.launch) ? t("EvaluationDetailPartSelectScoreInput") : ''} 
+                              placeholder={!(showByManager || evaluationFormDetail.status != evaluationStatus.launch) && isBeforeNow ? t("EvaluationDetailPartSelectScoreInput") : ''} 
                               value={target?.seftOpinion || ""} 
                               onChange={(e) => handleInputChange(i, index, 'seftOpinion', e)} 
-                              disabled={showByManager || evaluationFormDetail.status != evaluationStatus.launch} />
+                              disabled={showByManager || evaluationFormDetail.status != evaluationStatus.launch || !isBeforeNow} />
                           </div>
                           <div className="qltt">
                             <p>{t("EvaluationDetailPartAttitudeCommentOfManager")}</p>
                             <textarea 
                               rows={1} 
-                              placeholder={!(!showByManager || (showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment))) ? t("EvaluationDetailPartSelectScoreInput") : ''} 
+                              placeholder={!(!showByManager || (showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment))) && isBeforeNow ? t("EvaluationDetailPartSelectScoreInput") : ''} 
                               value={target?.leaderReviewOpinion || ""} 
                               onChange={(e) => handleInputChange(i, index, "leaderReviewOpinion", e)} 
-                              disabled={!showByManager || (showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment))} />
+                              disabled={(!showByManager || (showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment))) && !isBeforeNow} />
                           </div>
                         </div>
                       </div>
@@ -614,7 +689,7 @@ function EvaluationDetail(props) {
       if (response && response.data) {
         const result = response.data.result
         if (result && result.code == Constants.PMS_API_SUCCESS_CODE) {
-          const evaluationFormDetailTemp = response.data?.data
+          const evaluationFormDetailTemp = response.data?.data;
           if (evaluationFormDetailTemp.listGroup) {
             evaluationFormDetailTemp.listGroup = ([...evaluationFormDetailTemp?.listGroup] || []).sort((pre, next) => pre?.groupOrder - next?.groupOrder)
           }
@@ -766,6 +841,9 @@ function EvaluationDetail(props) {
     const currentUserLoggedUID = localStorage.getItem('employeeNo')
     const reviewerUID = JSON.parse(evaluationFormDetail?.reviewer || '{}')?.uid
     const approverUID = JSON.parse(evaluationFormDetail?.approver || '{}')?.uid
+    const isBeforeNow = moment(evaluationFormDetail.checkPhaseFormEndDate).isAfter(new Date());
+
+    if(isBeforeNow) return null;
 
     switch (evaluationFormDetail?.status) {
       case evaluationStatus.launch:
