@@ -114,6 +114,21 @@ class ResignationRequestsManagementActionButton extends React.PureComponent {
                 cursor: 'pointer',
             })
         }
+        const customStatusStyles = {
+            option: (styles, state) => ({
+                ...styles,
+                cursor: 'pointer',
+            }),
+            control: (styles) => ({
+                ...styles,
+                cursor: 'pointer',
+                border: 0,
+                boxShadow: 'none'
+            }),
+            container: (styles) => ({
+                width: '100%'
+            })
+        }
         const { t, isEdit, listDepartments } = this.props
         const {exportOption, advancedData, keywords, massType, massValue, files} = this.state
 
@@ -122,9 +137,9 @@ class ResignationRequestsManagementActionButton extends React.PureComponent {
             {value: 2, label: 'Tình trạng bàn giao'},
             {value: 3, label: 'Đơn xin nghỉ việc'},
             {value: 4, label: 'Báo cáo kết quả phỏng vấn'},
-            {value: 5, label: 'Biên bản thanh lý'},
-            {value: 6, label: 'Thỏa thuận chấm dứt hợp đồng'},
-            {value: 7, label: 'Quyết định chấm dứt hợp đồng'}
+            // {value: 5, label: 'Biên bản thanh lý'},
+            // {value: 6, label: 'Thỏa thuận chấm dứt hợp đồng'},
+            // {value: 7, label: 'Quyết định chấm dứt hợp đồng'}
         ]
         const taskLists = [
             {value: 'isHandoverWork', key: 'statusWork', label: 'Bàn giao công việc'},
@@ -188,16 +203,13 @@ class ResignationRequestsManagementActionButton extends React.PureComponent {
                         </div>
                         <div className="col-8 btn-action-group">
                             <div className="row action-group">
-                                <div className="col-3">
-                                    <div>
-                                        <Select options={taskLists} onChange={e => this.handleMassTypeChange(e)} value={taskLists.filter(item => item.value == massType)} placeholder="Loại bàn giao" isClearable={true} styles={customStyles} />
+                                <div className="col-5">
+                                    <div className="input-filter d-flex" style={{padding: '2px 5px'}}>
+                                        <Select components={{ IndicatorSeparator: () => null }} options={taskLists} onChange={e => this.handleMassTypeChange(e)} value={taskLists.filter(item => item.value == massType)} placeholder="Loại bàn giao" isClearable={true} styles={customStatusStyles} />
+                                        <Select components={{ IndicatorSeparator: () => null }} options={this.statusOptions} onChange={e => this.massUpdate(e)} value={this.statusOptions.filter(item => item.value == massValue)} placeholder="Tình trạng" isDisabled={massType ? false : true} isClearable={true} styles={customStatusStyles} />
                                     </div>
                                 </div>
-                                <div className="col-2">
-                                    <div>
-                                        <Select options={this.statusOptions} onChange={e => this.massUpdate(e)} value={this.statusOptions.filter(item => item.value == massValue)} placeholder="Tình trạng" isDisabled={massType ? false : true} isClearable={true} styles={customStyles} />
-                                    </div>
-                                </div>
+            
                                 <div className="col-3">
                                     <div>
                                         <Select options={exportOptions} onChange={e => this.handleSelectChange(e)} value={exportOption} placeholder="Xuất file" isClearable={true} styles={customStyles} />

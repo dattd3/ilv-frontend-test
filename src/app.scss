@@ -2281,10 +2281,10 @@ span.badge-notification[data-badge]::after {
           position: absolute;
           border-radius: .35rem;
           z-index: 2;
-          left: 2rem;
+          left: 1.5rem;
           padding: 10px;
-          top: calc(1.5em + 0.75rem + 5px);
-          width: 25vw;
+          top: calc(1.5em + 0.75rem + 7px);
+          width: 28vw;
           background-color: white;
           border: 1px solid hsl(0,0%,80%);
           box-shadow: rgb(9 30 66 / 25%) 0px 4px 8px -2px, rgb(9 30 66 / 8%) 0px 0px 0px 1px;
@@ -2321,6 +2321,10 @@ span.badge-notification[data-badge]::after {
               margin-right: 5px;
               font-size: 11px;
             }
+          }
+          input {
+            font-size: inherit;
+            color: #000000;
           }
         }
       }
