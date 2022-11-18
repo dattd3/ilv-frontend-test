@@ -1254,8 +1254,7 @@ renderEvalution = (name, data, isDisable) => {
         .then(response => {
           if(response.data.result && response.data.result.code == '000000'){ // tạm thời vinfast không được đề xuất lương : Constants.PnLCODE.VinFast, Constants.PnLCODE.VinFastTrading,
             if(this.state.data.qlttOpinion?.result?.value != 5 && this.state.data?.childRequestHistoryId == null && this.state.type == 'assess' && actionType != 1 &&
-              ((this.state.data.processStatus == 10 && checkVersionPnLSameAsVinhome(Constants.MODULE.DEXUATLUONG)) || 
-                (this.state.processStatus == 11 && !checkVersionPnLSameAsVinhome(Constants.MODULE.DEXUATLUONG)))) {
+              ((this.state.data.processStatus == 10 && checkVersionPnLSameAsVinhome(Constants.MODULE.DEXUATLUONG)))) {
                   this.showSalaryPropose(actionType, home);
             } else {
               this.showStatusModal(message, true, true, home)
