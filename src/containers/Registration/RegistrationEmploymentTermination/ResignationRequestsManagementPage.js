@@ -527,6 +527,9 @@ class ResignationRequestsManagementPage extends React.Component {
             </Progress>
             <LoadingModal show={isShowLoadingModal} />
             <ResultModal show={isShowStatusModal} title={titleModal} message={messageModal} isSuccess={isSuccess} onHide={this.hideStatusModal} />
+            <div className="block-title" >
+                <h4 className="title text-uppercase">Quản lý yêu cầu nghỉ việc</h4>
+            </div>
             <div className="leave-of-absence resignation-requests-management-page">
                 <ResignationRequestsManagementActionButton listDepartments ={listDepartments} updateKeywordsToFilter={this.updateKeywordsToFilter} updateAttachedFiles={this.updateAttachedFiles} save={this.save} massUpdate={this.massUpdate} updateOptionToExport={this.updateOptionToExport} />
                 <ListStaffResignationComponent listUserTerminations={listUserTerminations} isCheckedAll ={isCheckedAll} updateTerminationRequestList={this.updateTerminationRequestList} />
