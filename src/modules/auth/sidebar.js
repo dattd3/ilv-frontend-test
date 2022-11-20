@@ -97,8 +97,8 @@ export const Navigation = [
     icon: 'evaluation',
     to: "",
     label: "MenuEvaluation",
-    role: ['V070', 'V077', 'V060'],
-    //role: "U",
+    // role: ['V070', 'V077', 'V060'],
+    role: "U",
   },
   {
     id: 99701,
