@@ -158,8 +158,7 @@ function EvaluationProcess(props) {
     }
     return mapping[index]
   }
-  const { checkPhaseFormEndDate, reviewStreamCode, status } = evaluationFormDetail;
-  const isBeforeNow = moment(checkPhaseFormEndDate).isAfter(new Date());
+  const { checkPhaseFormEndDate, reviewStreamCode, status, isEdit } = evaluationFormDetail;
   const isDifferentZeroLevel = reviewStreamCode !== processStep.zeroLevel;
   let stepStatusMapping, stepEvaluationConfig;
 
@@ -295,7 +294,7 @@ function EvaluationProcess(props) {
               <div className="item">
                 <span className="red label">{t("EvaluationDetailPartAttitudeSelfAssessment")}{!showByManager && <span className="required">(*)</span>}</span>
                 {
-                  !showByManager && evaluationFormDetail.status == evaluationStatus.launch && isBeforeNow
+                  !showByManager && evaluationFormDetail.status == evaluationStatus.launch && isEdit
                     ?
                     <select onChange={(e) => !_.isNil(subGroupTargetIndex) ? handleInputChange(parentIndex, index, 'seftPoint', e, subGroupTargetIndex) : handleInputChange(i, index, 'seftPoint', e)} value={target?.seftPoint || ''}>
                       <option value=''>{t("EvaluationDetailPartSelectScore")}</option>
@@ -314,7 +313,7 @@ function EvaluationProcess(props) {
               <div className="item">
                 <span className="red label">{t("EvaluationDetailPartAttitudeManagerAssessment")}{showByManager && <span className="required">(*)</span>}</span>
                 {
-                  !(!showByManager || (showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment))) && isBeforeNow
+                  !(!showByManager || (showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment))) && isEdit
                     ?
                     <select onChange={(e) => !_.isNil(subGroupTargetIndex) ? handleInputChange(parentIndex, index, 'leadReviewPoint', e, subGroupTargetIndex) : handleInputChange(i, index, "leadReviewPoint", e)} value={target?.leadReviewPoint || ''}>
                       <option value=''>{t("EvaluationDetailPartSelectScore")}</option>
@@ -390,7 +389,7 @@ function EvaluationProcess(props) {
                   <td className="actual-results">
                     <div>
                       {
-                        !showByManager && evaluationFormDetail.status == evaluationStatus.launch && isBeforeNow
+                        !showByManager && evaluationFormDetail.status == evaluationStatus.launch && isEdit
                           ?
                           <textarea rows={3} placeholder={t("EvaluationInput")} value={target?.realResult || ""} onChange={(e) => handleInputChange(i, index, 'realResult', e)} />
                           :
@@ -401,7 +400,7 @@ function EvaluationProcess(props) {
                   <td className="text-center self-assessment">
                     <div>
                       {
-                        !showByManager && evaluationFormDetail.status == evaluationStatus.launch && isBeforeNow
+                        !showByManager && evaluationFormDetail.status == evaluationStatus.launch && isEdit
                           // ? <input type="text" placeholder={t("EvaluationInput")} value={target?.seftPoint || ""} onChange={(e) => handleInputChange(i, index, 'seftPoint', e)} /> 
                           ? <select onChange={(e) => handleInputChange(i, index, 'seftPoint', e)} value={target?.seftPoint || ''}>
                             <option value=''>{t("EvaluationDetailPartSelectScore")}</option>
@@ -419,7 +418,7 @@ function EvaluationProcess(props) {
                   <td className="text-center qltt-assessment">
                     <div>
                       {
-                        showByManager && evaluationFormDetail.status == evaluationStatus.selfAssessment && isBeforeNow
+                        showByManager && evaluationFormDetail.status == evaluationStatus.selfAssessment && isEdit
                           // ? <input type="text" placeholder={t("EvaluationInput")} value={target?.leadReviewPoint || ""} onChange={(e) => handleInputChange(i, index, 'leadReviewPoint', e)} />
                           ? <select onChange={(e) => handleInputChange(i, index, 'leadReviewPoint', e)} value={target?.leadReviewPoint || ''}>
                             <option value=''>{t("EvaluationDetailPartSelectScore")}</option>
@@ -455,19 +454,19 @@ function EvaluationProcess(props) {
           <p>{t("EvaluationDetailPartAttitudeCommentOfEmployee")}</p>
           <textarea 
             rows={1} 
-            placeholder={!(showByManager || evaluationFormDetail.status != evaluationStatus.launch) && isBeforeNow ? t("EvaluationDetailPartSelectScoreInput") : ''} 
+            placeholder={!(showByManager || evaluationFormDetail.status != evaluationStatus.launch) && isEdit ? t("EvaluationDetailPartSelectScoreInput") : ''} 
             value={target?.seftOpinion || ""} 
             onChange={(e) => !_.isNil(subGroupTargetIndex) ? handleInputChange(parentIndex, index, 'seftOpinion', e, subGroupTargetIndex) : handleInputChange(i, index, 'seftOpinion', e)} 
-            disabled={showByManager || evaluationFormDetail.status != evaluationStatus.launch || !isBeforeNow} />
+            disabled={showByManager || evaluationFormDetail.status != evaluationStatus.launch || !isEdit} />
         </div>
         <div className="qltt">
           <p>{t("EvaluationDetailPartAttitudeCommentOfManager")}</p>
           <textarea 
             rows={1} 
-            placeholder={!(!showByManager || (showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment))) && isBeforeNow ? t("EvaluationDetailPartSelectScoreInput") : ''} 
+            placeholder={!(!showByManager || (showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment))) && isEdit ? t("EvaluationDetailPartSelectScoreInput") : ''} 
             value={target?.leaderReviewOpinion || ""} 
             onChange={(e) => !_.isNil(subGroupTargetIndex) ? handleInputChange(parentIndex, index, 'leaderReviewOpinion', e, subGroupTargetIndex) : handleInputChange(i, index, "leaderReviewOpinion", e)} 
-            disabled={(!showByManager || (showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment)))  && !isBeforeNow} />
+            disabled={(!showByManager || (showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment)))  && !isEdit} />
         </div>
       </div>
     </div>
@@ -586,7 +585,7 @@ function EvaluationProcess(props) {
                                 <td className="actual-results">
                                   <div>
                                     {
-                                    !showByManager && evaluationFormDetail.status == evaluationStatus.launch && isBeforeNow
+                                    !showByManager && evaluationFormDetail.status == evaluationStatus.launch && isEdit
                                       ?
                                       <textarea rows={3} placeholder={t("EvaluationInput")} value={target?.realResult || ""} onChange={(e) => handleInputChange(i, index, 'realResult', e)} />
                                       :
@@ -598,7 +597,7 @@ function EvaluationProcess(props) {
                                 <td className="text-center self-assessment">
                                   <div>
                                     {
-                                      !showByManager && evaluationFormDetail.status == evaluationStatus.launch && isBeforeNow
+                                      !showByManager && evaluationFormDetail.status == evaluationStatus.launch && isEdit
                                         // ? <input type="text" placeholder={t("EvaluationInput")} value={target?.seftPoint || ""} onChange={(e) => handleInputChange(i, index, 'seftPoint', e)} /> 
                                         ? <select onChange={(e) => handleInputChange(i, index, 'seftPoint', e)} value={target?.seftPoint || ''}>
                                           <option value=''>{t("EvaluationDetailPartSelectScore")}</option>
@@ -616,7 +615,7 @@ function EvaluationProcess(props) {
                                 <td className="text-center qltt-assessment">
                                   <div>
                                     {
-                                      showByManager && evaluationFormDetail.status == evaluationStatus.selfAssessment && isBeforeNow
+                                      showByManager && evaluationFormDetail.status == evaluationStatus.selfAssessment && isEdit
                                         // ? <input type="text" placeholder={t("EvaluationInput")} value={target?.leadReviewPoint || ""} onChange={(e) => handleInputChange(i, index, 'leadReviewPoint', e)} />
                                         ? <select onChange={(e) => handleInputChange(i, index, 'leadReviewPoint', e)} value={target?.leadReviewPoint || ''}>
                                           <option value=''>{t("EvaluationDetailPartSelectScore")}</option>
@@ -643,19 +642,19 @@ function EvaluationProcess(props) {
                             <p>{t("EvaluationDetailPartAttitudeCommentOfEmployee")}</p>
                             <textarea 
                               rows={1} 
-                              placeholder={!(showByManager || evaluationFormDetail.status != evaluationStatus.launch) && isBeforeNow ? t("EvaluationDetailPartSelectScoreInput") : ''} 
+                              placeholder={!(showByManager || evaluationFormDetail.status != evaluationStatus.launch) && isEdit ? t("EvaluationDetailPartSelectScoreInput") : ''} 
                               value={target?.seftOpinion || ""} 
                               onChange={(e) => handleInputChange(i, index, 'seftOpinion', e)} 
-                              disabled={showByManager || evaluationFormDetail.status != evaluationStatus.launch || !isBeforeNow} />
+                              disabled={showByManager || evaluationFormDetail.status != evaluationStatus.launch || !isEdit} />
                           </div>
                           <div className="qltt">
                             <p>{t("EvaluationDetailPartAttitudeCommentOfManager")}</p>
                             <textarea 
                               rows={1} 
-                              placeholder={!(!showByManager || (showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment))) && isBeforeNow ? t("EvaluationDetailPartSelectScoreInput") : ''} 
+                              placeholder={!(!showByManager || (showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment))) && isEdit ? t("EvaluationDetailPartSelectScoreInput") : ''} 
                               value={target?.leaderReviewOpinion || ""} 
                               onChange={(e) => handleInputChange(i, index, "leaderReviewOpinion", e)} 
-                              disabled={(!showByManager || (showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment))) && !isBeforeNow} />
+                              disabled={(!showByManager || (showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment))) && !isEdit} />
                           </div>
                         </div>
                       </div>
@@ -838,12 +837,12 @@ function EvaluationDetail(props) {
   }
 
   const renderButtonBlock = () => {
-    const currentUserLoggedUID = localStorage.getItem('employeeNo')
-    const reviewerUID = JSON.parse(evaluationFormDetail?.reviewer || '{}')?.uid
-    const approverUID = JSON.parse(evaluationFormDetail?.approver || '{}')?.uid
-    const isBeforeNow = moment(evaluationFormDetail.checkPhaseFormEndDate).isAfter(new Date());
+    const currentUserLoggedUID = localStorage.getItem('employeeNo');
+    const reviewerUID = JSON.parse(evaluationFormDetail?.reviewer || '{}')?.uid;
+    const approverUID = JSON.parse(evaluationFormDetail?.approver || '{}')?.uid;
+    const { isEdit } = evaluationFormDetail;
 
-    if(isBeforeNow) return null;
+    if(!isEdit) return null;
 
     switch (evaluationFormDetail?.status) {
       case evaluationStatus.launch:
