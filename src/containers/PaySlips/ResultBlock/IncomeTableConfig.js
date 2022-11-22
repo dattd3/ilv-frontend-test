@@ -414,7 +414,9 @@ export const IncomeTablesConfig = t => {
                                 field: 'allowance_amount',
                                 level4: [
                                     { label: t("AdditionalResponsibilitiesAllowance"), field: 'pluralism_allowance' },
-                                    { label: t("ResponsibilityAllowance"), field: 'responsibility_allowance' }
+                                    { label: t("ResponsibilityAllowance"), field: 'responsibility_allowance' },
+                                    { label: t("SeniorityAllowance"), field: 'seniority_allowances' },
+                                    { label: t("WorkingConditionsAllowance"), field: 'allowance_working_conditions' },
                                 ]
                             },
                             {
@@ -443,7 +445,8 @@ export const IncomeTablesConfig = t => {
                                     { label: t("GrossOtherBonus"), field: 'other_gross_bonus' },
                                     // { label: t("NetKpiBonus"), field: 'kpi_bonus_net' },
                                     // { label: t("BonusNet"), field: 'other_net_bonus' }
-                                    { label: t("KpiBonusGrossup"), field: 'kpi_grossup_bonus' }
+                                    { label: t("KpiBonusGrossup"), field: 'kpi_grossup_bonus' },
+                                    { label: t("PerformanceBonusVinfastGrossup"), field: 'bonus_hqcv_vf_grossup' },
                                 ]
                             },
                             {
@@ -466,9 +469,9 @@ export const IncomeTablesConfig = t => {
                                     { label: t("AnnualLeaveToilEncashment"), field: 'annual_leave_payment' },
                                     { label: t("MuatuallyAgreedTerminationBonus"), field: 'resignation_agreement_allowance' },
                                     { label: t("SeveranceAllowance"), field: 'severance_allowance' },
-                                    { label: t("Retroactive"), field: 'back_pay' },
                                     { label: t("VfRentalSupport"), field: 'car_rent_allowance' },
                                     { label: t("BenefitForVfPurchase"), field: 'car_rent_allowance_welfare' },
+                                    { label: t("Retroactive"), field: 'back_pay' },
                                     { label: t("BankInterestSupportForVfPurchase"), field: 'interest_rate_allowance' },
                                     { label: t("BenefitNet"), field: 'welfare_net_allowance' },
                                     { label: t("NETCovid19PandemicSubsidy"), field: 'covid_allowance'},
@@ -476,6 +479,8 @@ export const IncomeTablesConfig = t => {
                                     { label: t("OtherPayment"), field: 'other_payment' },
                                     { label: t("VFCarElectricStakeGross"), field: 'vf_car_electric_stake' },
                                     { label: t("HousingSubsidyGrossup"), field: 'housing_allowance_grossup' },
+                                    { label: t("SupportVinfastCampaignAndProject"), field: 'support_vf_campaign_project' },
+                                    { label: t("BenefitsPayingThroughSalaryGrossup"), field: 'welfare_grossup_allowance' },
                                     { label: t("VinmecTaxRefundsAfterTaxFinalization"), field: 'tax_refunds_after' }
                                 ]
                             }
