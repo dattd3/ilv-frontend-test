@@ -1069,13 +1069,15 @@ function EvaluationDetail(props) {
                 {renderButtonBlock()}
               </div>
             </div>
-            {!bottom && (evaluationFormDetail?.status == evaluationStatus.launch || (evaluationFormDetail?.status == evaluationStatus.selfAssessment && localStorage.getItem('employeeNo') ==  JSON.parse(evaluationFormDetail?.reviewer || '{}')?.uid)) &&
-              <div className="scroll-to-save" style={{ color: localStorage.getItem("companyThemeColor"), zIndex: '10' }}>
-                <div>
-                  <button className="btn-action save mr-3" onClick={() => handleSubmit(actionButton.save, null, true)}><Image src={IconSave} alt="Save" />{t("EvaluationDetailPartSave")}</button>
-                </div>
-              </div>
-            }
+            {!bottom &&
+              (evaluationFormDetail?.status == evaluationStatus.launch ||
+                (evaluationFormDetail?.status == evaluationStatus.selfAssessment && localStorage.getItem('employeeNo') == JSON.parse(evaluationFormDetail?.reviewer || '{}')?.uid)) && evaluationFormDetail?.isEdit && (
+                  <div className="scroll-to-save" style={{ color: localStorage.getItem("companyThemeColor"), zIndex: '10' }}>
+                    <div>
+                      <button className="btn-action save mr-3" onClick={() => handleSubmit(actionButton.save, null, true)}><Image src={IconSave} alt="Save" />{t("EvaluationDetailPartSave")}</button>
+                    </div>
+                  </div>
+                )}
           </>
         }
 
