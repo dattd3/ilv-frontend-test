@@ -454,19 +454,19 @@ function EvaluationProcess(props) {
           <p>{t("EvaluationDetailPartAttitudeCommentOfEmployee")}</p>
           <textarea 
             rows={1} 
-            placeholder={!(showByManager || evaluationFormDetail.status != evaluationStatus.launch) && isEdit ? t("EvaluationDetailPartSelectScoreInput") : ''} 
+            placeholder={isEdit ? !(showByManager || evaluationFormDetail.status != evaluationStatus.launch) ? t("EvaluationDetailPartSelectScoreInput") : '' : ''} 
             value={target?.seftOpinion || ""} 
             onChange={(e) => !_.isNil(subGroupTargetIndex) ? handleInputChange(parentIndex, index, 'seftOpinion', e, subGroupTargetIndex) : handleInputChange(i, index, 'seftOpinion', e)} 
-            disabled={showByManager || evaluationFormDetail.status != evaluationStatus.launch || !isEdit} />
+            disabled={isEdit ? (showByManager || evaluationFormDetail.status != evaluationStatus.launch) : true} />
         </div>
         <div className="qltt">
           <p>{t("EvaluationDetailPartAttitudeCommentOfManager")}</p>
           <textarea 
             rows={1} 
-            placeholder={!(!showByManager || (showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment))) && isEdit ? t("EvaluationDetailPartSelectScoreInput") : ''} 
+            placeholder={isEdit ? !(!showByManager || (showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment))) ? t("EvaluationDetailPartSelectScoreInput") : '' : ''} 
             value={target?.leaderReviewOpinion || ""} 
             onChange={(e) => !_.isNil(subGroupTargetIndex) ? handleInputChange(parentIndex, index, 'leaderReviewOpinion', e, subGroupTargetIndex) : handleInputChange(i, index, "leaderReviewOpinion", e)} 
-            disabled={(!showByManager || (showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment)))  && !isEdit} />
+            disabled={isEdit ? (!showByManager || (showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment))) : true} />
         </div>
       </div>
     </div>
@@ -642,19 +642,19 @@ function EvaluationProcess(props) {
                             <p>{t("EvaluationDetailPartAttitudeCommentOfEmployee")}</p>
                             <textarea 
                               rows={1} 
-                              placeholder={!(showByManager || evaluationFormDetail.status != evaluationStatus.launch) && isEdit ? t("EvaluationDetailPartSelectScoreInput") : ''} 
+                              placeholder={isEdit ? !(showByManager || evaluationFormDetail.status != evaluationStatus.launch) ? t("EvaluationDetailPartSelectScoreInput") : '' : ''} 
                               value={target?.seftOpinion || ""} 
                               onChange={(e) => handleInputChange(i, index, 'seftOpinion', e)} 
-                              disabled={showByManager || evaluationFormDetail.status != evaluationStatus.launch || !isEdit} />
+                              disabled={isEdit ? (showByManager || evaluationFormDetail.status != evaluationStatus.launch) : true} />
                           </div>
                           <div className="qltt">
                             <p>{t("EvaluationDetailPartAttitudeCommentOfManager")}</p>
                             <textarea 
                               rows={1} 
-                              placeholder={!(!showByManager || (showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment))) && isEdit ? t("EvaluationDetailPartSelectScoreInput") : ''} 
+                              placeholder={isEdit ? !(!showByManager || (showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment))) ? t("EvaluationDetailPartSelectScoreInput") : '' : ''} 
                               value={target?.leaderReviewOpinion || ""} 
                               onChange={(e) => handleInputChange(i, index, "leaderReviewOpinion", e)} 
-                              disabled={(!showByManager || (showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment))) && !isEdit} />
+                              disabled={isEdit ? (!showByManager || (showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment))) : true} />
                           </div>
                         </div>
                       </div>
@@ -681,7 +681,8 @@ function EvaluationDetail(props) {
   const user = guard.getCurentUser()
   const evaluationFormId = showByManager ? props?.evaluationFormId : props.match.params.id
   const formCode = showByManager ? props?.formCode : props.match.params.formCode
-  const [bottom, setBottom] = useState(false);
+  const [bottom, setBottom] = useState(false)
+  const [dataLoaded, setDataLoaded] = useState(false)
 
   useEffect(() => {
     const processEvaluationFormDetailData = response => {
@@ -704,6 +705,7 @@ function EvaluationDetail(props) {
           // evaluationFormDetailTemp.totalComplete = totalQuestionsAnswered
           SetEvaluationFormDetail(evaluationFormDetailTemp)
           // SetEvaluationFormDetail(testEvaluationData)
+          setDataLoaded(true)
         }
       }
     }
@@ -1051,38 +1053,18 @@ function EvaluationDetail(props) {
       }
     }
   }
+
   return (
     <>
       <LoadingModal show={isLoading} />
       {!showByManager && <StatusModal show={statusModal.isShow} isSuccess={statusModal.isSuccess} content={statusModal.content} onHide={onHideStatusModal} />}
       <div className="evaluation-detail-page">
         {
-          !evaluationFormDetail || _.size(evaluationFormDetail) === 0 || !evaluationFormDetail?.companyCode
+          dataLoaded 
+          ?
+          (!evaluationFormDetail || _.size(evaluationFormDetail) === 0 || !evaluationFormDetail?.companyCode)
           ? <h6 className="alert alert-danger" role="alert">{t("NoDataFound")}</h6>
           :
-          <>
-            <h1 className="content-page-header">{`${evaluationFormDetail?.checkPhaseFormName} ${t("of")} ${evaluationFormDetail?.fullName}`}</h1>
-            <div>
-              <EvaluationOverall evaluationFormDetail={evaluationFormDetail} showByManager={showByManager} />
-              <EvaluationProcess evaluationFormDetail={evaluationFormDetail} showByManager={showByManager} errors={errors} updateData={updateData} />
-              <div className="button-block">
-                {renderButtonBlock()}
-              </div>
-            </div>
-            {!bottom &&
-              (evaluationFormDetail?.status == evaluationStatus.launch ||
-                (evaluationFormDetail?.status == evaluationStatus.selfAssessment && localStorage.getItem('employeeNo') == JSON.parse(evaluationFormDetail?.reviewer || '{}')?.uid)) && evaluationFormDetail?.isEdit && (
-                  <div className="scroll-to-save" style={{ color: localStorage.getItem("companyThemeColor"), zIndex: '10' }}>
-                    <div>
-                      <button className="btn-action save mr-3" onClick={() => handleSubmit(actionButton.save, null, true)}><Image src={IconSave} alt="Save" />{t("EvaluationDetailPartSave")}</button>
-                    </div>
-                  </div>
-                )}
-          </>
-        }
-
-        {/* {
-          evaluationFormDetail ?
             <>
               <h1 className="content-page-header">{`${evaluationFormDetail?.checkPhaseFormName} ${t("of")} ${evaluationFormDetail?.fullName}`}</h1>
               <div>
@@ -1092,10 +1074,18 @@ function EvaluationDetail(props) {
                   {renderButtonBlock()}
                 </div>
               </div>
+              {!bottom &&
+                (evaluationFormDetail?.status == evaluationStatus.launch ||
+                  (evaluationFormDetail?.status == evaluationStatus.selfAssessment && localStorage.getItem('employeeNo') == JSON.parse(evaluationFormDetail?.reviewer || '{}')?.uid)) && evaluationFormDetail?.isEdit && (
+                    <div className="scroll-to-save" style={{ color: localStorage.getItem("companyThemeColor"), zIndex: '10' }}>
+                      <div>
+                        <button className="btn-action save mr-3" onClick={() => handleSubmit(actionButton.save, null, true)}><Image src={IconSave} alt="Save" />{t("EvaluationDetailPartSave")}</button>
+                      </div>
+                    </div>
+                  )}
             </>
-            : <h6 className="alert alert-danger" role="alert">{t("NoDataFound")}</h6>
-        } */}
-
+          : null
+        }
       </div>
 
     </>
