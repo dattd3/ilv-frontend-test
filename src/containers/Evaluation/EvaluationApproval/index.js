@@ -24,13 +24,14 @@ import 'react-datepicker/dist/react-datepicker.css'
 import vi from 'date-fns/locale/vi'
 registerLocale("vi", vi)
 
-const PnLOrgNumber = localStorage.getItem('organizationLv2')
 const employeeCode = localStorage.getItem('employeeNo')
 const employeeAD = localStorage.getItem('email').split('@')[0]
+const approvalTabCode = 'approval'
+const batchApprovalTabCode = 'batchApproval'
 
 function AdvancedFilter(props) {
     const { t } = useTranslation()
-    const { masterData, filter, updateData } = props
+    const { masterData, filter, updateData, tab } = props
 
     const currentSteps = [
         { value: evaluationStatus.selfAssessment, label: t("EvaluationDetailEmployeeManagerAssessment") },
@@ -42,80 +43,152 @@ function AdvancedFilter(props) {
         updateData(key, value, childKey)
     }
 
+    const showPartAdvancedSearch = () => {
+        if (tab === batchApprovalTabCode) {
+            return (
+                <>
+                    <Row>
+                        <Col md={6}>
+                            <Form.Group as={Row} controlId="block">
+                                <Form.Label column sm={12}>{t("EvaluationDetailEmployeeDivision")}</Form.Label>
+                                <Col sm={12}>
+                                    <Select 
+                                        placeholder={t("Select")} 
+                                        isClearable={true} 
+                                        value={filter.block} 
+                                        options={masterData.blocks} 
+                                        onChange={e => handleInputChange('block', e, 'regions')} />
+                                </Col>
+                            </Form.Group>
+                        </Col>
+                        <Col md={6}>
+                            <Form.Group as={Row} controlId="region">
+                                <Form.Label column sm={12}>{t("EvaluationDetailEmployeeDepartment")}</Form.Label>
+                                <Col sm={12}>
+                                    <Select 
+                                        placeholder={t("Select")} 
+                                        isClearable={true} 
+                                        value={filter.region} 
+                                        options={filter.regions} 
+                                        onChange={e => handleInputChange('region', e, 'units')} />
+                                </Col>
+                            </Form.Group>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col md={6}>
+                            <Form.Group as={Row} controlId="unit">
+                                <Form.Label column sm={12}>{t("EvaluationMemberUnits")}</Form.Label>
+                                <Col sm={12}>
+                                    <Select 
+                                        placeholder={t("Select")} 
+                                        isClearable={true} 
+                                        value={filter.unit} 
+                                        options={filter.units} 
+                                        onChange={e => handleInputChange('unit', e, 'groups')} />
+                                </Col>
+                            </Form.Group>
+                        </Col>
+                        <Col md={6}>
+                            <Form.Group as={Row} controlId="group">
+                                <Form.Label column sm={12}>{t("EvaluationTeam")}</Form.Label>
+                                <Col sm={12}>
+                                    <Select 
+                                        placeholder={t("Select")} 
+                                        isClearable={true} 
+                                        isMulti 
+                                        value={filter.group} 
+                                        options={filter.groups} 
+                                        onChange={e => handleInputChange('group', e)} />
+                                </Col>
+                            </Form.Group>
+                        </Col>
+                    </Row>
+                </>
+            )
+        }
+
+        return (
+            <>
+                <Row>
+                    <Col md={6}>
+                        <Form.Group as={Row} controlId="current-step">
+                            <Form.Label column sm={12}>{t("EvaluationCurrentStep")}</Form.Label>
+                            <Col sm={12}>
+                                <Select 
+                                    placeholder={t("Select")} 
+                                    isClearable={true} 
+                                    value={filter.currentStep} 
+                                    options={currentSteps} 
+                                    onChange={e => handleInputChange('currentStep', e)} />
+                            </Col>
+                        </Form.Group>
+                    </Col>
+                    <Col md={6}>
+                        <Form.Group as={Row} controlId="block">
+                            <Form.Label column sm={12}>{t("EvaluationDetailEmployeeDivision")}</Form.Label>
+                            <Col sm={12}>
+                                <Select 
+                                    placeholder={t("Select")} 
+                                    isClearable={true} 
+                                    value={filter.block} 
+                                    options={masterData.blocks} 
+                                    onChange={e => handleInputChange('block', e, 'regions')} />
+                            </Col>
+                        </Form.Group>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col md={6}>
+                        <Form.Group as={Row} controlId="region">
+                            <Form.Label column sm={12}>{t("EvaluationDetailEmployeeDepartment")}</Form.Label>
+                            <Col sm={12}>
+                                <Select 
+                                    placeholder={t("Select")} 
+                                    isClearable={true} 
+                                    value={filter.region} 
+                                    options={filter.regions} 
+                                    onChange={e => handleInputChange('region', e, 'units')} />
+                            </Col>
+                        </Form.Group>
+                    </Col>
+                    <Col md={6}>
+                        <Form.Group as={Row} controlId="unit">
+                            <Form.Label column sm={12}>{t("EvaluationMemberUnits")}</Form.Label>
+                            <Col sm={12}>
+                                <Select 
+                                    placeholder={t("Select")} 
+                                    isClearable={true} 
+                                    value={filter.unit} 
+                                    options={filter.units} 
+                                    onChange={e => handleInputChange('unit', e, 'groups')} />
+                            </Col>
+                        </Form.Group>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col md={12}>
+                        <Form.Group as={Row} controlId="group">
+                            <Form.Label column sm={12}>{t("EvaluationTeam")}</Form.Label>
+                            <Col sm={12}>
+                                <Select 
+                                    placeholder={t("Select")} 
+                                    isClearable={true} 
+                                    isMulti 
+                                    value={filter.group} 
+                                    options={filter.groups} 
+                                    onChange={e => handleInputChange('group', e)} />
+                            </Col>
+                        </Form.Group>
+                    </Col>
+                </Row>
+            </>
+        )
+    }
+
     return (
         <>
-            <Row>
-                <Col md={6}>
-                    <Form.Group as={Row} controlId="current-step">
-                        <Form.Label column sm={12}>{t("EvaluationCurrentStep")}</Form.Label>
-                        <Col sm={12}>
-                            <Select 
-                                placeholder={t("Select")} 
-                                isClearable={true} 
-                                value={filter.currentStep} 
-                                options={currentSteps} 
-                                onChange={e => handleInputChange('currentStep', e)} />
-                        </Col>
-                    </Form.Group>
-                </Col>
-                <Col md={6}>
-                    <Form.Group as={Row} controlId="block">
-                        <Form.Label column sm={12}>{t("EvaluationDetailEmployeeDivision")}</Form.Label>
-                        <Col sm={12}>
-                            <Select 
-                                placeholder={t("Select")} 
-                                isClearable={true} 
-                                value={filter.block} 
-                                options={masterData.blocks} 
-                                onChange={e => handleInputChange('block', e, 'regions')} />
-                        </Col>
-                    </Form.Group>
-                </Col>
-            </Row>
-            <Row>
-                <Col md={6}>
-                    <Form.Group as={Row} controlId="region">
-                        <Form.Label column sm={12}>{t("EvaluationDetailEmployeeDepartment")}</Form.Label>
-                        <Col sm={12}>
-                            <Select 
-                                placeholder={t("Select")} 
-                                isClearable={true} 
-                                value={filter.region} 
-                                options={filter.regions} 
-                                onChange={e => handleInputChange('region', e, 'units')} />
-                        </Col>
-                    </Form.Group>
-                </Col>
-                <Col md={6}>
-                    <Form.Group as={Row} controlId="unit">
-                        <Form.Label column sm={12}>{t("EvaluationMemberUnits")}</Form.Label>
-                        <Col sm={12}>
-                            <Select 
-                                placeholder={t("Select")} 
-                                isClearable={true} 
-                                value={filter.unit} 
-                                options={filter.units} 
-                                onChange={e => handleInputChange('unit', e, 'groups')} />
-                        </Col>
-                    </Form.Group>
-                </Col>
-            </Row>
-            <Row>
-                <Col md={12}>
-                    <Form.Group as={Row} controlId="group">
-                        <Form.Label column sm={12}>{t("EvaluationTeam")}</Form.Label>
-                        <Col sm={12}>
-                            <Select 
-                                placeholder={t("Select")} 
-                                isClearable={true} 
-                                isMulti 
-                                value={filter.group} 
-                                options={filter.groups} 
-                                onChange={e => handleInputChange('group', e)} />
-                        </Col>
-                    </Form.Group>
-                </Col>
-            </Row>
+            { showPartAdvancedSearch() }
             <Row>
                 <Col md={3}>
                     <Form.Group as={Row} controlId="rank">
@@ -522,6 +595,7 @@ function BatchApprovalTabContent(props) {
                 <Collapse in={filter.isOpenFilterAdvanced}>
                     <div className="filter-advanced-form" id="filter-advanced-block">
                         <AdvancedFilter 
+                            tab={batchApprovalTabCode}
                             masterData={{blocks: masterData.blocks, ranks: masterData.ranks, titles: masterData.titles}} 
                             filter={_.omit({...filter}, 'isOpenFilterAdvanced', 'status', 'employees', 'employee')} 
                             updateData={updateData} />
@@ -574,7 +648,7 @@ function EvaluationApproval(props) {
         ranks: [],
         titles: []
     })
-    const [activeTab, SetActiveTab] = useState('approval')
+    const [activeTab, SetActiveTab] = useState(approvalTabCode)
     const [evaluationData, SetEvaluationData] = useState({
         data: [],
         total: 0
@@ -729,14 +803,14 @@ function EvaluationApproval(props) {
     useEffect(() => {
         SetDataFilter(null)
 
-        if (activeTab === 'approval') {
+        if (activeTab === approvalTabCode) {
             const pagingTemp = {...paging}
             pagingTemp.batchApproval.pageIndex = 1
             pagingTemp.batchApproval.pageSize = listPageSizes[0]
             SetPaging(pagingTemp)
 
             handleFilter(null, 'approval')
-        } else if (activeTab === 'batchApproval') {
+        } else if (activeTab === batchApprovalTabCode) {
             const pagingTemp = {...paging}
             pagingTemp.approval.pageIndex = 1
             pagingTemp.approval.pageSize = listPageSizes[0]
@@ -751,7 +825,7 @@ function EvaluationApproval(props) {
     }, [activeTab])
 
     useEffect(() => {
-        if (!prevApprovalPageIndex || activeTab === 'batchApproval') {
+        if (!prevApprovalPageIndex || activeTab === batchApprovalTabCode) {
             return
         }
 
@@ -761,7 +835,7 @@ function EvaluationApproval(props) {
     }, [paging?.approval?.pageIndex])
 
     useEffect(() => {
-        if (activeTab === 'batchApproval') {
+        if (activeTab === batchApprovalTabCode) {
             return
         }
 
@@ -773,7 +847,7 @@ function EvaluationApproval(props) {
     }, [paging.approval.pageSize])
 
     useEffect(() => {
-        if (!prevBatchApprovalPageIndex || activeTab === 'approval') {
+        if (!prevBatchApprovalPageIndex || activeTab === approvalTabCode) {
             return
         }
 
@@ -783,7 +857,7 @@ function EvaluationApproval(props) {
     }, [paging.batchApproval.pageIndex])
 
     useEffect(() => {
-        if (activeTab === 'approval') {
+        if (activeTab === approvalTabCode) {
             return
         }
 
@@ -819,12 +893,12 @@ function EvaluationApproval(props) {
         formData.append('employee_level', data?.rank?.value || '')
         formData.append('positionName', data?.title?.value || '')
 
-        if (tab === 'approval') {
+        if (tab === approvalTabCode) {
             formData.append('ReviewerEmployeeCode', employeeCode || '')
             formData.append('ReviewerEmployeeAdCode', employeeAD || '')
             formData.append('CurrentStatus', data?.status?.value || '')
             apiPath = `${process.env.REACT_APP_HRDX_PMS_URL}api/form/listReview`
-        } else if (tab === 'batchApproval') {
+        } else if (tab === batchApprovalTabCode) {
             if (!data?.evaluationForm?.value) {
                 return
             }
@@ -842,7 +916,7 @@ function EvaluationApproval(props) {
                 const result = response?.data?.result
                 if (result?.code == Constants.PMS_API_SUCCESS_CODE) {
                     let data = response?.data?.data
-                    if (tab === 'batchApproval') {
+                    if (tab === batchApprovalTabCode) {
                         data = [...data].map(item => ({...item, isSelected: false}))
                     }
                     SetEvaluationData({
@@ -1012,17 +1086,17 @@ function EvaluationApproval(props) {
             <h1 className="content-page-header">{t("EvaluationLabel")}</h1>
             <div className="filter-block">
                 <div className="card shadow card-filter">
-                    <Tabs id="filter-tabs" defaultActiveKey={activeTab} onSelect={key => SetActiveTab(key)}>
-                        <Tab eventKey="approval" title={t("EvaluationApprovalTab")} className="tab-item" id='approval-tab'>
+                    <Tabs defaultActiveKey={activeTab} onSelect={key => SetActiveTab(key)}>
+                        <Tab eventKey={approvalTabCode} title={t("EvaluationApprovalTab")} className="tab-item" id='approval-tab'>
                             <ApprovalTabContent 
-                                isOpen={activeTab === 'approval'} 
+                                isOpen={activeTab === approvalTabCode} 
                                 masterData={masterData} 
                                 // resetPaging={resetPaging} 
                                 handleFilter={handleFilter} />
                             </Tab>
-                        <Tab eventKey="batchApproval" title={t("EvaluationBulkApproval")} className="tab-item" id='batch-approval-tab'>
+                        <Tab eventKey={batchApprovalTabCode} title={t("EvaluationBulkApproval")} className="tab-item" id='batch-approval-tab'>
                             <BatchApprovalTabContent 
-                                isOpen={activeTab === 'batchApproval'} 
+                                isOpen={activeTab === batchApprovalTabCode} 
                                 masterData={masterData} 
                                 // resetPaging={resetPaging} 
                                 handleFilter={handleFilter} 
@@ -1033,7 +1107,7 @@ function EvaluationApproval(props) {
             </div>
             <div className="data-block">
                 {
-                    activeTab === 'approval' && 
+                    activeTab === approvalTabCode && 
                     <div className="card shadow approval-data">
                     {
                         evaluationData?.data?.length > 0 ?
@@ -1053,8 +1127,8 @@ function EvaluationApproval(props) {
                                 <tbody>
                                     {
                                         evaluationData?.data.map((item, index) => {
-                                            return <tr key={index}>
-                                                        <td className="c-form-code"><div className="form-code" onClick={() => handleShowEvaluationDetailPopup(item?.formCode, item?.checkPhaseFormId, item?.employeeCode)}>{item?.formCode || ''}</div></td>
+                                            return <tr key={index} role='button' onClick={() => handleShowEvaluationDetailPopup(item?.formCode, item?.checkPhaseFormId, item?.employeeCode)}>
+                                                        <td className="c-form-code"><div className="form-code">{item?.formCode || ''}</div></td>
                                                         <td className="c-form-sender"><div className="form-sender">{item?.poolUser?.fullname || ''} ({item?.poolUser?.username || ''})</div></td>
                                                         <td className="c-form-name"><div className="form-name">{item?.checkPhaseFormName || ''}</div></td>
                                                         <td className="c-sent-date"><div className="sent-date">{item?.sendDateLv1 && moment(item?.sendDateLv1).format('DD/MM/YYYY')}</div></td>
@@ -1087,7 +1161,7 @@ function EvaluationApproval(props) {
                     </div>
                 }
                 {
-                    activeTab === 'batchApproval' &&
+                    activeTab === batchApprovalTabCode &&
                     <div className="card shadow batch-approval-data">
                     {
                         evaluationData?.data?.length > 0 ?
@@ -1159,7 +1233,7 @@ function EvaluationApproval(props) {
                     </div>
                 }
                 {
-                    activeTab === 'batchApproval' && evaluationData?.data?.length > 0 && 
+                    activeTab === batchApprovalTabCode && evaluationData?.data?.length > 0 && 
                     <div className="button-block">
                         <button className="btn-action reject" onClick={() => handleAction(actionButton.reject)}><Image src={IconReject} alt="Reject" />{t("EvaluationDetailPartReject")}</button>
                         <button className="btn-action approve" onClick={() => handleAction(actionButton.approve)}><Image src={IconApprove} alt="Approve" />{t("EvaluationDetailPartApprove")}</button>
