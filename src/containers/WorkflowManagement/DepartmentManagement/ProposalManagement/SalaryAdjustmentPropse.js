@@ -23,6 +23,10 @@ import IconEye from '../../../../assets/img/icon/eye.svg';
 import IconNotEye from '../../../../assets/img/icon/not-eye.svg';
 import { useApi } from '../../../../modules/api';
 import vi from 'date-fns/locale/vi'
+import { ToastContainer } from "react-toastify"
+import "react-toastify/dist/ReactToastify.css";
+import { checkFilesMimeType } from "../../../../utils/file";
+
 registerLocale("vi", vi)
 
 const InsuranceOptions = [
@@ -498,8 +502,10 @@ const SalaryAdjustmentPropse = (props) => {
   // Attach file
   const handleAttachFile = (e) => {
     const files = Object.values(e.target.files)
-    const listFilesTmp = [...listFiles, ...files];
-    setListFiles(listFilesTmp)
+    if (checkFilesMimeType(files)) {
+      const listFilesTmp = [...listFiles, ...files];
+      setListFiles(listFilesTmp)
+    }
   }
 
   const removeFiles = (id, index) => {
@@ -924,6 +930,7 @@ const SalaryAdjustmentPropse = (props) => {
   const salaryState = `salaryadjustment_${props.match.params?.id}_${props.match.params?.type}`;
   return (
     <div className="timesheet-section proposal-management">
+      <ToastContainer autoClose={3000} />
       <ConfirmPasswordModal
         state={salaryState}
         show={modalConfirmPassword}

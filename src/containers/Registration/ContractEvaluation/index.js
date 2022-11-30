@@ -2113,7 +2113,7 @@ renderEvalution = (name, data, isDisable) => {
                   }
                   {showComponent.employeeSide ? 
                   <>
-                  <input type="file" hidden id="i_files" name="i_files" onChange={this.handleChangeFileInput} multiple />
+                  <input type="file" hidden id="i_files" accept=".xls, .xlsx, .doc, .docx, .jpg, .png, .pdf" name="i_files" onChange={this.handleChangeFileInput} multiple />
                   <label htmlFor="i_files" className="btn btn-light float-right shadow">
                     <i className="fas fa-paperclip"></i> {t('AttachmentFile')}
                   </label>

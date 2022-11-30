@@ -1,5 +1,6 @@
 import React from 'react'
 import { Form } from 'react-bootstrap'
+import { ToastContainer } from "react-toastify"
 import PersonalComponent from './PersonalComponent'
 import EducationComponent from './EducationComponent'
 import ConfirmationModal from './ConfirmationModal'
@@ -12,6 +13,8 @@ import { t } from 'i18next'
 import { getMuleSoftHeaderConfigurations } from "../../../commons/Utils"
 import Constants from '../../../commons/Constants'
 import HOCComponent from '../../../components/Common/HOCComponent'
+import { checkFilesMimeType } from '../../../utils/file'
+import "react-toastify/dist/ReactToastify.css";
 
 const code = localStorage.getItem('employeeNo') || "";
 const fullName = localStorage.getItem('fullName') || "";
@@ -239,9 +242,11 @@ class PersonalInfoEdit extends React.Component {
 
   fileUploadInputChange() {
     const files = Object.keys(this.inputReference.current.files).map((key) => this.inputReference.current.files[key])
-    this.setState({ files: this.state.files.concat(files) })
-    let dataClone = this.removeItemForValueNull({ ...this.state.data })
-    const errors = this.verifyInput(dataClone, this.state.files.concat(files))
+    if (checkFilesMimeType(files)) {
+      this.setState({ files: this.state.files.concat(files) })
+      let dataClone = this.removeItemForValueNull({ ...this.state.data })
+      const errors = this.verifyInput(dataClone, this.state.files.concat(files))
+    }
   }
 
   removeFile(index) {
@@ -1284,6 +1289,7 @@ class PersonalInfoEdit extends React.Component {
 
     return (
       <div className="edit-personal">
+        <ToastContainer autoClose={3000} />
         <ConfirmationModal show={isShowModalConfirm} title={modalTitle} type={typeRequest} message={modalMessage} confirmStatus={confirmStatus}
           sendData={this.getMessageFromModal} onHide={this.onHideModalConfirm} />
         <ResultModal show={isShowResultConfirm} title={modalTitle} message={modalMessage} isSuccess={isSuccess} onHide={this.onHideResultModal} />
@@ -1340,7 +1346,7 @@ class PersonalInfoEdit extends React.Component {
 
           <div className="clearfix mb-5 block-action-buttons">
             <button type="button" className="btn btn-primary float-right ml-3 shadow" onClick={this.handleSendRequest}><i className="fa fa-paper-plane" aria-hidden="true"></i>{t("Send")}</button>
-            <input type="file" hidden ref={this.inputReference} id="file-upload" name="file-upload[]" onChange={this.fileUploadInputChange.bind(this)} multiple />
+            <input type="file" hidden accept=".xls, .xlsx, .doc, .docx, .jpg, .png, .pdf" ref={this.inputReference} id="file-upload" name="file-upload[]" onChange={this.fileUploadInputChange.bind(this)} multiple />
             <button type="button" className="btn btn-light float-right shadow" onClick={this.fileUploadAction.bind(this)}><i className="fas fa-paperclip"></i> {t("AttachmentFile")}</button>
           </div>
         </Form>
