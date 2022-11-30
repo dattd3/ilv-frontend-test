@@ -11,6 +11,11 @@ const statusOptions = [
     {value: 0, label: "Chưa hoàn thành"},
     {value: 1, label: "Đã hoàn thành"}
 ]
+const sapStatusOptions = [
+    {value: 0, label: 'Chưa đẩy SAP'},
+    {value: 1, label: 'Đã đẩy SAP'},
+    {value: 2, label: 'Chưa đẩy SAP'},
+];
 
 const AttachmentOption = ({ children, ...props }) => (<components.ValueContainer {...props}>
     <div>File đính kèm</div><div style={{visibility: 'hidden'}}>{children}</div>
@@ -131,6 +136,11 @@ class ListStaffResignationComponent extends React.PureComponent {
         ]
 
         const statusName = insuranceBookOptions.filter(item => item.value == statusCode)
+        return statusName && statusName.length > 0 ? statusName[0]?.label || "" : ""
+    }
+
+    renderSapStatus = (salaryStatus) => {
+        const statusName = sapStatusOptions.filter(item => item.value == salaryStatus)
         return statusName && statusName.length > 0 ? statusName[0]?.label || "" : ""
     }
 
@@ -329,8 +339,8 @@ class ListStaffResignationComponent extends React.PureComponent {
                                                             <td className="handover-software-col"><div className="data handover-software">{this.renderStatus(index, item.isHandoverSoftware, item.statusSoftware, "statusSoftware")}</div></td>
                                                             <td className="confirm-violation-records-col"><div className="data confirm-violation-records">{this.renderStatus(index, item.isHandoverConfirmation, item.statusConfirmation, "statusConfirmation")}</div></td>
                                                             <td className="approval-status-col"><div className="data approval-status">{item?.processStatusString || ""}</div></td>
-                                                            <td className="social-insurance-book-status-col"><div className="data social-insurance-book-status">{this.renderInsuranceBookStatus(item?.statusSocialClosing)}</div></td>
-                                                            <td className="leave-salary-col"><div className="data leave-salary">{item?.statusLastPaymentString || ""}</div></td>
+                                                            <td className="social-insurance-book-status-col"><div className="data social-insurance-book-status">{item?.statusSocialClosing || ''}</div></td>
+                                                            <td className="leave-salary-col"><div className="data leave-salary">{this.renderSapStatus(item?.statusLastPayment)}</div></td>
                                                             <td className="interview-card-col">{interviewQuestionnaire}</td>
                                                         </tr>
                                             })

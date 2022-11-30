@@ -183,11 +183,10 @@ class ResignationRequestsManagementPage extends React.Component {
         const { t } = this.props
         const requestObj = this.getRequestObjectByType(type)
         this.setState({isShowLoadingModal: true})
-
         try {
             const isDataValid = this.isDataValid()
 
-            if (!isDataValid && (type == HANDOVER_STATUS || type == RESIGNATION || type == LIQUIDATION_AGREEMENT 
+            if (!isDataValid && (type == LIQUIDATION_AGREEMENT 
                 || type == CONTRACT_TERMINATION_AGREEMENT || type == DECISION_CONTRACT_TERMINATION)) {
                 this.setState({isShowLoadingModal: false})
                 toast.error("Vui lòng chọn yêu cầu cần xuất dữ liệu!")
@@ -217,10 +216,10 @@ class ResignationRequestsManagementPage extends React.Component {
 
         const fullTextSearch = searchingDataToFilter.fullTextSearch || ""
         const typeMethodMapping = {
-            [REPORT_RESIGNATION_REQUESTS]: "GET",
+            [REPORT_RESIGNATION_REQUESTS]: "POST",
             [HANDOVER_STATUS]: "POST",
             [RESIGNATION]: "POST",
-            [REPORT_INTERVIEW_RESULTS]: "GET",
+            [REPORT_INTERVIEW_RESULTS]: "POST",
             [LIQUIDATION_AGREEMENT]: "POST",
             [CONTRACT_TERMINATION_AGREEMENT]: "POST",
             [DECISION_CONTRACT_TERMINATION]: "POST"
@@ -239,11 +238,11 @@ class ResignationRequestsManagementPage extends React.Component {
                 break
             case HANDOVER_STATUS:
                 requestConfig = this.getRequestConfig(typeMethodMapping[type], `${process.env.REACT_APP_REQUEST_URL}WorkOffDeliver/exporttowordbienbanbangiao`)
-                requestObj = {...requestConfig, ...{data: {ids: requestStatusProcessIds}}}
+                requestObj = {...requestConfig, ...{data: {}}}
                 break
             case RESIGNATION:
                 requestConfig = this.getRequestConfig(typeMethodMapping[type], `${process.env.REACT_APP_REQUEST_URL}ReasonType/exportfileterminalcontract`)
-                requestObj = {...requestConfig, ...{data: {ids: requestStatusProcessIds}}}
+                requestObj = {...requestConfig, ...{data: {}}}
                 break
             case REPORT_INTERVIEW_RESULTS:
                 requestObj = this.getRequestConfig(typeMethodMapping[type], `${process.env.REACT_APP_REQUEST_URL}WorkOffServey/exportToExcel`)
