@@ -22,7 +22,6 @@ export const checkFilesMimeType = (files = [], mimeTypesAllow = whilteListFileEx
       err.push(file.type + " không đúng định dạng! Vui lòng thử lại!\n");
     }
   })
-  console.log(err)
   if (err.length > 0) {
     err.forEach(e => {
       toast.error(e);
