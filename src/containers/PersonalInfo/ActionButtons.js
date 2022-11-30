@@ -10,8 +10,7 @@ function ActionButtons(props) {
     const [files, SetFiles] = useState([])
 
     const handleChangeFileInput = e => {
-        const files = e.target.files
-        if (checkFilesMimeType(files)) {
+        if (checkFilesMimeType(e.target.files)) {
             const filesSelected = Object.values(e.target.files)
             let fileStates = [...files]
             fileStates = fileStates.concat(filesSelected)

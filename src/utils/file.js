@@ -17,7 +17,8 @@ export const whiteListImageExtension = [
 
 export const checkFilesMimeType = (files = [], mimeTypesAllow = whilteListFileExtension) => {
   const err = [];
-  files.forEach((file) => {
+  const filesArr = Array.from(files);
+  filesArr.forEach((file) => {
     if (!mimeTypesAllow.includes(file.type)) {
       err.push(file.type + " không đúng định dạng! Vui lòng thử lại!\n");
     }
