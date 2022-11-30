@@ -16,6 +16,9 @@ import { getMuleSoftHeaderConfigurations, getRequestConfigurations } from "../..
 import moment from 'moment'
 import * as actions from '../../../actions'
 import { t } from 'i18next'
+import { ToastContainer } from "react-toastify"
+import "react-toastify/dist/ReactToastify.css";
+import { checkFilesMimeType } from '../../../utils/file'
 
 class PersonalInfoEdit extends React.Component {
   constructor() {
@@ -639,7 +642,9 @@ class PersonalInfoEdit extends React.Component {
 
   fileUploadInputChange = () => {
     const files = Object.keys(this.inputReference.current.files).map((key) => this.inputReference.current.files[key])
-    this.setState({ files: this.state.files.concat(files) })
+    if (checkFilesMimeType(files)) {
+      this.setState({ files: this.state.files.concat(files) })
+    }
   }
 
   fileUploadAction = () => {
@@ -1078,6 +1083,7 @@ class PersonalInfoEdit extends React.Component {
   render() {
     return (
       <Provider store={this.store}>
+        <ToastContainer autoClose={3000} />
         <div className="edit-personal-detail-request">
           <ConfirmationModal show={this.state.isShowModalConfirm} title={this.state.modalTitle} type={this.state.typeRequest} message={this.state.modalMessage}
             confirmStatus={this.state.confirmStatus} onHide={this.onHideModalConfirm} />
@@ -1120,7 +1126,7 @@ class PersonalInfoEdit extends React.Component {
             <div className="clearfix mb-5">
               {/* <button type="button" className="btn btn-primary float-right ml-3 shadow" onClick={this.showConfirm.bind(this, 'isConfirm')}><i className="fa fa-paper-plane" aria-hidden="true"></i>  Gửi yêu cầu</button> */}
               <button type="button" className="btn btn-primary float-right ml-3 shadow" onClick={this.sendRequest}><i className="fa fa-paper-plane" aria-hidden="true"></i> {t("Send")}</button>
-              <input type="file" hidden ref={this.inputReference} id="file-upload" name="file-upload[]" onChange={this.fileUploadInputChange.bind(this)} multiple />
+              <input type="file" hidden ref={this.inputReference} id="file-upload" name="file-upload[]" accept=".xls, .xlsx, .doc, .docx, .jpg, .png, .pdf" onChange={this.fileUploadInputChange.bind(this)} multiple />
               <button type="button" className="btn btn-light float-right shadow" onClick={this.fileUploadAction.bind(this)}><i className="fas fa-paperclip"></i> {t("AttachFile")}</button>
             </div>
           </Form>
