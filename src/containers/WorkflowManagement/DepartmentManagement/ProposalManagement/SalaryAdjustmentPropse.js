@@ -22,8 +22,11 @@ import CurrencyInput from 'react-currency-input-field';
 import IconDelete from '../../../../assets/img/icon/Icon_Cancel.svg';
 import IconEye from '../../../../assets/img/icon/eye.svg';
 import IconNotEye from '../../../../assets/img/icon/not-eye.svg';
+import IconRemove from '../../../../assets/img/ic-remove.svg';
+import IconAdd from '../../../../assets/img/ic-add-green.svg';
 import { useApi } from '../../../../modules/api';
 import vi from 'date-fns/locale/vi'
+import { Button, Image } from "react-bootstrap";
 registerLocale("vi", vi)
 
 const InsuranceOptions = [
@@ -73,11 +76,15 @@ const SalaryAdjustmentPropse = (props) => {
   const [listFiles, setListFiles] = useState([]);
   const [selectMembers, setSelectMembers] = useState([]);
   const [selectedMembers, setSelectedMembers] = useState([]);
+  const [checkedMemberIds, setCheckedMemberIds] = useState({});
+  const [selectedAll, setSelectedAll] = useState(false);
+  const [canSelectedll, setCanSelectedAll] = useState(true);
   const [dataSalary, setDataSalary] = useState(undefined);
   const [currencySalary, setCurrencySalary] = useState('VND');
 
   const [coordinator, setCoordinator] = useState(null); // Nhân sự hỗ trợ xin quyền xem lương
   const [supervisor, setSupervisor] = useState(null); // CBQL cấp cơ sở
+  const [supervisors, setSupervisors] = useState([null]);
   const [appraiser, setAppraiser] = useState(null); // HR thẩm định quyền điều chỉnh lương
   const [approver, setApprover] = useState(null); // CBLĐ phê duyệt
   const [callSalary, setCalledSalary] = useState(false);
@@ -92,9 +99,9 @@ const SalaryAdjustmentPropse = (props) => {
       btnNotApprove: false, // Button Không phê duyệt
       btnApprove: false, // Button phê duyệt
       showHrSupportViewSalary: false, // Hien thi Nhân sự hỗ trợ quyền xem lương
-      showCBQL: false, // Hien thi CBQL CẤP CƠ SỞ
-      showHrAssessment: false, // Hien thi Nhân sự thẩm định quyền điều chỉnh lương
-      showOfficerApproved: false, // Hien thi CBLĐ PHÊ DUYỆT
+      showCBQL: true, // Hien thi CBQL CẤP CƠ SỞ
+      showHrAssessment: true, // Hien thi Nhân sự thẩm định quyền điều chỉnh lương
+      showOfficerApproved: true, // Hien thi CBLĐ PHÊ DUYỆT
       showRemoveFile: false, // Hien thi icon remove file
     },
     disableComponent: {
@@ -325,8 +332,13 @@ const SalaryAdjustmentPropse = (props) => {
           department: JSON.parse(requestInfo?.coordinatorInfo)?.department
         })
       // Thong tin CBNV
+	 	const memberCheck = {};
+		let canCheckAll = false;
       const employeeLists = dataSalaryInfo?.requestInfo.map(u => {
+		u.accepted = u.accept != false ? true : false;
         const requestTmp = JSON.parse(u?.employeeInfo)
+		memberCheck[requestTmp?.employeeNo] = {uid: requestTmp?.employeeNo, checked: false, canChangeAction: u?.accepted == true}
+		canCheckAll = canCheckAll || u?.accepted == true;
         return {
           id: u?.id,
           uid: requestTmp?.employeeNo,
@@ -345,19 +357,32 @@ const SalaryAdjustmentPropse = (props) => {
           effectiveTime: u?.startDate ? moment(u?.startDate).format(Constants.LEAVE_DATE_FORMAT) : "",
           strength: u?.staffStrengths,
           weakness: u?.staffWknesses,
+		  canChangeAction: u?.accepted == true,
+		  accepted: u?.accepted
         }
       })
+	  setCanSelectedAll(canCheckAll);
+	  setCheckedMemberIds(memberCheck);
       setSelectedMembers(employeeLists)
     }
 
     // CBQL cấp cơ sở
-    if (dataSalaryInfo?.supervisorInfo)
+    if (dataSalaryInfo?.supervisorInfo) {
       setSupervisor({
         fullName: JSON.parse(dataSalaryInfo?.supervisorInfo)?.fullName,
         account: JSON.parse(dataSalaryInfo?.supervisorInfo)?.account,
         current_position: JSON.parse(dataSalaryInfo?.supervisorInfo)?.current_position,
         department: JSON.parse(dataSalaryInfo?.supervisorInfo)?.department
       })
+	  setSupervisors([
+		{
+			fullName: JSON.parse(dataSalaryInfo?.supervisorInfo)?.fullName,
+			account: JSON.parse(dataSalaryInfo?.supervisorInfo)?.account,
+			current_position: JSON.parse(dataSalaryInfo?.supervisorInfo)?.current_position,
+			department: JSON.parse(dataSalaryInfo?.supervisorInfo)?.department
+		}
+	  ])
+	}
     // HR thẩm định quyền điều chỉnh lương
     if (dataSalaryInfo?.appraiserInfo)
       setAppraiser({
@@ -381,6 +406,10 @@ const SalaryAdjustmentPropse = (props) => {
   }
 
   const handleSelectMembers = (members) => {
+	const memberCheck = {};
+	members.map(u => {
+		memberCheck[u.uid] = {uid: u.uid, checked: false, canChangeAction: u?.accepted == true}
+	});
     const membersMapping = members.map(u => ({
       uid: u?.uid,
       employeeNo: u?.uid,
@@ -397,11 +426,17 @@ const SalaryAdjustmentPropse = (props) => {
       effectiveTime: '',
       strength: '',
       weakness: '',
+	  accepted: true
     }))
+	setCheckedMemberIds(memberCheck);
     setSelectMembers(membersMapping)
   }
 
-  const handleSelectedMembers = (members) => {
+  const handleSelectedMembers = (members) => { 
+	const memberCheck = {};
+	members.map(u => {
+		memberCheck[u.uid] = {uid: u.uid, checked: false, canChangeAction: u?.accepted == true}
+	});
     const membersMapping = members.map(u => ({
       uid: u?.uid,
       employeeNo: u?.uid,
@@ -418,8 +453,60 @@ const SalaryAdjustmentPropse = (props) => {
       effectiveTime: '',
       strength: '',
       weakness: '',
+	  accepted: true
     }))
+	setCheckedMemberIds(memberCheck);
     setSelectedMembers(membersMapping)
+  }
+
+  const onSelectAll = (e) => {
+	const value = e.target.checked;
+	const newCheckedMemeberIds = {};
+	Object.values(checkedMemberIds).map(item => {
+		if(item.canChangeAction) {
+			newCheckedMemeberIds[item.uid] = {...item, checked: value};
+		} else {
+			newCheckedMemeberIds[item.uid] = item;
+		}
+	});
+	setCheckedMemberIds(newCheckedMemeberIds);
+	setSelectedAll(value);
+  }
+
+  const onCheckboxSelectChange = (e, uid) => {
+	const value = e.target.checked;
+	let checkall = true;
+	const newCheckedMemeberIds = {};
+	Object.values(checkedMemberIds).map(item => {
+		if(item.uid == uid) {
+			newCheckedMemeberIds[item.uid] = {...item, checked: value};
+		} else {
+			newCheckedMemeberIds[item.uid] = item;
+		}
+		checkall = checkall && newCheckedMemeberIds[item.uid].checked;
+	});
+	setCheckedMemberIds(newCheckedMemeberIds);
+	setSelectedAll(checkall);
+  }
+
+  const onActionChangeAll = (accepted = true) => {
+	const _selectedMembers = selectedMembers.map(item => {
+		if(checkedMemberIds[item.uid]?.checked == true) {
+			return {...item, accepted: accepted};
+		}
+		return item;
+	});
+	setSelectedMembers(_selectedMembers);
+  }
+
+  const onActionChange = (uid, accepted = true) => {
+	const _selectedMembers = selectedMembers.map(item => {
+		if(item.uid == uid) {
+			return {...item, accepted: accepted};
+		}
+		return item;
+	});
+	setSelectedMembers(_selectedMembers);
   }
 
   const handleTextInputChange = (value, uid, objName) => {
@@ -760,6 +847,16 @@ const SalaryAdjustmentPropse = (props) => {
     setCoordinator(approver)
   }
 
+  const removeSupervisorItem = (index) => {
+	const newData = supervisors.splice(index, 1);
+	setSupervisor(newData);
+  }
+  const handleUpdateSupervisors = (approver, index) => {
+	const newData = [...supervisors];
+	newData[index] = approver;
+	setSupervisors(newData);
+  }
+
   const validation = () => {
     const selectedMembersTmp = [...selectedMembers];
     let errors = [];
@@ -851,16 +948,31 @@ const SalaryAdjustmentPropse = (props) => {
   const renderListMember = (members) => {
     return (
       members.map((item, index) => {
-        return <tr key={index}>
-          <td className="text-center"><span className="same-width">{item?.fullName}</span></td>
-          <td className="text-center"><span className="same-width">{item?.jobTitle}</span></td>
-          <td className="text-center"><span className="same-width">{item?.department}</span></td>
-          <td className="text-center">
-            <span className="same-width">
-              {ListTypeContract.find(u => u?.value === item?.contractType)?.label}
-            </span>
-          </td>
-          <td className="text-center">
+		const account = item?.account?.indexOf('@') ? item.account.split('@')[0] : item.account;
+        return <React.Fragment key={index}>
+        <tr style={{border:'none', height: '10px'}}/>
+        <tr key={index}>
+          <td colSpan={3}>
+			<div className="d-flex">
+				<input type="checkbox" style={{alignSelf: 'flex-start', margin: '5px', display: viewSetting.showComponent.btnExpertise || viewSetting.showComponent.btnApprove ? 'inline' : 'none'}}
+					checked={checkedMemberIds[item.uid].checked}
+					disabled={!item.canChangeAction}
+					onChange={e => onCheckboxSelectChange(e, item.uid)}/>
+				<div>
+					<p className="mb-7px font-weight-bold">
+						{item?.fullName} <span className="font-weight-normal">({account})</span>
+					</p>
+					<p className="mb-7px">
+						{item?.jobTitle}
+					</p>
+					<p style={{marginBottom: 0}}>
+						{item?.department}
+					</p>
+				</div>
+			</div>
+				
+			</td>
+          <td colSpan={2} className="text-center">
             <span className="same-width">
               {!isCreateMode ?
                 <div className="d-flex w-100">
@@ -890,7 +1002,7 @@ const SalaryAdjustmentPropse = (props) => {
               }
             </span>
           </td>
-          <td className="text-center">
+          <td colSpan={2} className="text-center">
             <span className="same-width">
               {viewSetting.disableComponent.editSubjectApply && !isCreateMode ?
                 <CurrencyInput
@@ -932,7 +1044,7 @@ const SalaryAdjustmentPropse = (props) => {
               }
             </span>
           </td>
-          <td className="same-width text-center">
+          <td colSpan={2} className="same-width text-center">
             <span className="same-width">
               {viewSetting.disableComponent.editSubjectApply && !isCreateMode ?
                 <DatePicker
@@ -949,38 +1061,89 @@ const SalaryAdjustmentPropse = (props) => {
                   locale={t("locale")}
                   className="form-control input"
                   styles={{ width: "100%" }}
+				  getPopupContainer={(trigger) => trigger.parentElement}
                 />
                 : <>{item?.effectiveTime}</>
               }
             </span>
           </td>
-          <td>
-            <span className="same-width text-center">
-              {viewSetting.disableComponent.editSubjectApply && !isCreateMode ?
-                <ResizableTextarea
-                  placeholder={"Nhập"}
-                  value={item?.strength}
-                  onChange={(e) => handleTextInputChange(e.target.value, item?.uid, "strength")}
-                  className="form-control input mv-10 w-100"
-                />
-                : <>{item?.strength}</>
+          <td colSpan={1} className="same-width ">
+            <div className="d-flex flex-column action">
+              {(viewSetting.showComponent.btnExpertise || viewSetting.showComponent.btnApprove) && !isCreateMode && item.canChangeAction ?
+                <>
+					<span>
+						<input type="radio" id="action_accept" name="action" checked={item.accepted == true} onChange={e => onActionChange(item.uid, true)}/>
+						<label htmlFor="action_accept">Đồng ý</label>
+					</span>
+					<span>
+					<input type="radio" id="action_reject" name="action" checked={item.accepted != true} onChange={e => onActionChange(item.uid, false)}/>
+					<label htmlFor="action_reject">Từ chối</label>
+					</span>
+				</>
+                : 
+				<>
+					<span>
+						<input type="radio" id="action_accept" value="accept"  checked={item.accepted == true} disabled={true}/>
+						<label htmlFor="action_accept">Đồng ý</label>
+					</span>
+					<span>
+					<input type="radio" id="action_reject" value="reject" checked={item.accepted != true} disabled={true}/>
+					<label htmlFor="action_reject">Từ chối</label>
+					</span>
+				</>
               }
-            </span>
+            </div>
           </td>
-          <td>
-            <span className="same-width text-center">
-              {viewSetting.disableComponent.editSubjectApply && !isCreateMode ?
+          <td colSpan={2} >
+		  	{(viewSetting.showComponent.btnExpertise || viewSetting.showComponent.btnApprove) && !isCreateMode && item.canChangeAction ?
                 <ResizableTextarea
                   placeholder={"Nhập"}
-                  value={item?.weakness}
-                  onChange={(e) => handleTextInputChange(e.target.value, item?.uid, "weakness")}
+                  value={item?.comment}
+                  onChange={(e) => handleTextInputChange(e.target.value, item?.uid, "comment")}
                   className="form-control input mv-10 w-100"
                 />
-                : <>{item?.weakness}</>
+                : <>{item?.comment}</>
               }
-            </span>
           </td>
         </tr>
+        <tr>
+          <td colSpan="12">
+			<div className="skill">
+				<span className="title">Điểm mạnh:</span>
+				<span className="input">
+				{viewSetting.disableComponent.editSubjectApply && !isCreateMode ?
+					<ResizableTextarea
+					placeholder={"Nhập"}
+					value={item?.strength}
+					onChange={(e) => handleTextInputChange(e.target.value, item?.uid, "strength")}
+					className="form-control input mv-10 w-100"
+					/>
+					: <>{item?.strength}</>
+				}
+				</span>
+			</div>
+			
+          </td>
+        </tr>
+        <tr>
+          <td colSpan="12">
+		  <div className="skill">
+		  	<span className="title">Điểm yếu:</span>
+			<span className="input">
+				{viewSetting.disableComponent.editSubjectApply && !isCreateMode ?
+					<ResizableTextarea
+					placeholder={"Nhập"}
+					value={item?.weakness}
+					onChange={(e) => handleTextInputChange(e.target.value, item?.uid, "weakness")}
+					className="form-control input mv-10 w-100"
+					/>
+					: <>{item?.weakness}</>
+				}
+				</span>
+			</div>
+          </td>
+        </tr>
+        </React.Fragment>
       })
     )
   }
@@ -1077,23 +1240,40 @@ const SalaryAdjustmentPropse = (props) => {
         </>
       }
       <div className="timesheet-box1 shadow">
+		<div className="user_header">
+			<span className="title">Danh sách CBNV đã lựa chọn</span>
+			<div className="action" style={viewSetting.showComponent.btnExpertise || viewSetting.showComponent.btnApprove ? {} : {visibility: 'hidden'}}>
+			<button className="btn btn-outline-success btn-lg d-flex align-items-center" style={{gap: '7px', paddingLeft: '24px', paddingRight: '24px', fontSize: '14px'}} onClick={(e) => onActionChangeAll(true)}>
+					<i className='fas fa-times fa-lg'></i>
+					Đồng ý
+			</button> 
+			<button className="btn btn-outline-danger btn-lg d-flex align-items-center" style={{gap: '7px', paddingLeft: '24px', paddingRight: '24px', fontSize: '14px'}} onClick={(e) => onActionChangeAll(false)}><i className='fas fa-check fa-lg'></i> Từ chối</button> 
+			</div>
+		</div>
         <div className="result-wrap-table">
           <table className="result-table" style={{ width: '100%' }}>
             <thead>
               <tr>
-                <td rowSpan="2" className="min-width text-center font-weight-bold">Họ và tên</td>
-                <td rowSpan="2" className="min-width text-center font-weight-bold">Chức danh</td>
-                <td rowSpan="2" className="min-width text-center font-weight-bold">Khối/Phòng/Bộ phận</td>
-                <td rowSpan="2" className="min-width text-center font-weight-bold">Loại HĐ hiện tại</td>
-                <td rowSpan="2" className="min-width1 text-center"><strong>Thu nhập hiện tại</strong><span> (Gross)</span></td>
-                <td rowSpan="2" className="min-width1 text-center"><strong>Mức lương đề xuất</strong><span> (Gross)</span></td>
-                <td rowSpan="2" className="min-width text-center font-weight-bold">Thời gian hiệu lực</td>
-                <th colSpan="2" scope="colgroup" className="min-width text-center font-weight-bold">Đánh giá chung</th>
+                <td colSpan={3} className="min-width font-weight-bold">
+					<div className="d-flex">
+						<input type="checkbox" style={{alignSelf: 'flex-start', margin: '5px', display: viewSetting.showComponent.btnExpertise || viewSetting.showComponent.btnApprove ? 'inline' : 'none'}}
+							checked={selectedAll}
+							disabled={!canSelectedll}
+							onChange={(e) => onSelectAll(e)}
+						/>
+						<p className="mb-0">Họ và tên</p>
+					</div>
+				</td>
+                {/* <td rowSpan="2" className="min-width text-center font-weight-bold">Chức danh</td>
+                <td rowSpan="2" className="min-width text-center font-weight-bold">Khối/Phòng/Bộ phận</td> */}
+                {/* <td rowSpan="2" className="min-width text-center font-weight-bold">Loại HĐ hiện tại</td> */}
+                <td colSpan={2} className="min-width1 text-center"><strong>Thu nhập hiện tại</strong><span> (Gross)</span></td>
+                <td colSpan={2} className="min-width1 text-center"><strong>Mức lương đề xuất</strong><span> (Gross)</span></td>
+                <td colSpan={2} className="min-width text-center font-weight-bold">Thời gian hiệu lực</td>
+                <td colSpan={1} className="min-width text-center font-weight-bold">Thao tác</td>
+                <th colSpan={2} scope="colgroup" className="min-width text-center font-weight-bold">Lý do từ chối</th>
               </tr>
-              <tr>
-                <th scope="col" className="min-width3 text-center">Điểm mạnh</th>
-                <th scope="col" className="min-width3 text-center">Điểm yếu</th>
-              </tr>
+             
             </thead>
             <tbody>
               {props.match.params.id !== 'create' ?
@@ -1118,20 +1298,34 @@ const SalaryAdjustmentPropse = (props) => {
         </>
       }
       {/* CBQL CẤP CƠ SỞ */}
-      {viewSetting.showComponent.showCBQL && supervisor &&
+      {viewSetting.showComponent.showCBQL &&
         <>
-          <h5 className="content-page-header">{"CBQL CẤP CƠ SỞ"}</h5>
+          <h5 className="content-page-header">{"CÁN BỘ QUẢN LÝ THẨM ĐỊNH"}<span className="font-weight-normal ml-1 text-lowercase">(Nếu có)</span></h5>
           <div className="timesheet-box1 timesheet-box shadow">
-            <HumanForReviewSalaryComponent isEdit={true} approver={supervisor} />
+			{
+				supervisors.map((item, key) => {
+					return <div key={key} className="appraiser d-flex flex-column position-relative" style={key > 0 ? {marginTop: '20px'} : {}}>
+						{
+							isCreateMode && key > 0 ? <button className="btn btn-outline-danger position-absolute d-flex align-items-center btn-sm" style={{gap: '4px', top: 0, right: 0}} onClick={() => removeSupervisorItem(key)}><Image src={IconRemove}/>Xóa</button> : null
+						}
+						<HumanForReviewSalaryComponent isEdit={!viewSetting.disableComponent.selectHrSupportViewSalary}  approver={item} updateApprover={(sup) => handleUpdateSupervisors(sup, key)} />
+					</div>
+				})
+			}
+			{
+				isCreateMode ?
+				<button className="btn btn-outline-success btn-lg w-fit-content mt-3 d-flex align-items-center" style={{gap: '4px', fontSize: '14px'}} onClick={() => setSupervisors([...supervisors, null])}><Image src={IconAdd}/> Thêm</button> 
+				: null
+			}
           </div>
         </>
       }
       {/* Nhân sự thẩm định quyền điều chỉnh lương */}
-      {viewSetting.showComponent.showHrAssessment && appraiser &&
+      {viewSetting.showComponent.showHrAssessment &&
         <>
           <h5 className="content-page-header">{"Nhân sự thẩm định quyền điều chỉnh lương"}</h5>
           <div className="timesheet-box1 timesheet-box shadow">
-            <HumanForReviewSalaryComponent isEdit={true} approver={appraiser} />
+            <HumanForReviewSalaryComponent isEdit={!viewSetting.disableComponent.selectHrSupportViewSalary} approver={appraiser} />
           </div>
         </>
       }
@@ -1140,7 +1334,7 @@ const SalaryAdjustmentPropse = (props) => {
         <>
           <h5 className="content-page-header">{"CBLĐ PHÊ DUYỆT"}</h5>
           <div className="timesheet-box1 timesheet-box shadow">
-            <HumanForReviewSalaryComponent isEdit={true} approver={approver} />
+            <HumanForReviewSalaryComponent isEdit={!viewSetting.disableComponent.selectHrSupportViewSalary} approver={approver} />
           </div>
         </>
       }
