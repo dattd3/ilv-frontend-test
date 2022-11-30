@@ -1,6 +1,9 @@
 import React from 'react'
 import Spinner from 'react-bootstrap/Spinner'
+import { ToastContainer } from "react-toastify"
 import { withTranslation  } from "react-i18next";
+import { checkFilesMimeType } from '../../utils/file';
+import "react-toastify/dist/ReactToastify.css";
 
 class ButtonComponent extends React.Component {
     constructor(props) {
@@ -26,10 +29,12 @@ class ButtonComponent extends React.Component {
 
     fileUploadInputChange() {
         const files = Object.keys(this.inputReference.current.files).map((key) => this.inputReference.current.files[key])
-        const updateFiles = this.state.files.concat(files)
-        this.setState({ files: updateFiles })
-        this.props.updateFiles(updateFiles)
-        this.props.isUpdateFiles(true)
+        if (checkFilesMimeType(files)) {
+            const updateFiles = this.state.files.concat(files)
+            this.setState({ files: updateFiles })
+            this.props.updateFiles(updateFiles)
+            this.props.isUpdateFiles(true)
+        }
     }
 
     submit() {
@@ -39,6 +44,7 @@ class ButtonComponent extends React.Component {
     render() {
         const {t} = this.props;
         return <div className="bottom">
+            <ToastContainer autoClose={3000} />
             <div className="clearfix mt-5 mb-5">
                 <button type="button" className="btn btn-primary float-right ml-3 shadow" onClick={this.submit.bind(this)} disabled={this.props.disabledSubmitButton}>
                     {!this.props.disabledSubmitButton ?
