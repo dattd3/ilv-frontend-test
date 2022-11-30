@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios'
 import { useHistory } from 'react-router';
+import { ToastContainer } from "react-toastify"
 import './styles.scss';
 import { useTranslation } from 'react-i18next';
 import { forEach } from 'lodash';
@@ -15,6 +16,8 @@ import HumanForReviewSalaryComponent from '../../HumanForReviewSalaryComponent';
 import ConfirmPasswordModal from './ConfirmPasswordModal';
 import Constants from '../.../../../../../commons/Constants';
 import StatusModal from '../../../../components/Common/StatusModal'
+import { checkFilesMimeType } from '../../../../utils/file';
+import "react-toastify/dist/ReactToastify.css";
 
 function SalaryPropse(props) {
   const { t } = useTranslation();
@@ -386,8 +389,10 @@ function SalaryPropse(props) {
   // Attach file
   const handleAttachFile = (e) => {
     const files = Object.values(e.target.files)
-    const listFilesTmp = [...listFiles, ...files];
-    setListFiles(listFilesTmp)
+    if (checkFilesMimeType(files)) {
+      const listFilesTmp = [...listFiles, ...files];
+      setListFiles(listFilesTmp)
+    }
   }
 
   const removeFiles = (id, index) => {
@@ -654,6 +659,7 @@ function SalaryPropse(props) {
   const salaryState = `salarypropse_${props.match.params?.idContract}_${props.match.params?.idSalary}_${props.match.params?.type}`;
   return (
     <div className='container-salary'>
+      <ToastContainer autoClose={3000} />
       <ConfirmPasswordModal
         state={salaryState}
         show={modalConfirmPassword}
