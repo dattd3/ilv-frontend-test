@@ -878,7 +878,7 @@ function EvaluationDetail(props) {
     }
   }
 
-  const getResponseMessages = (formStatus, actionCode, apiStatus) => {
+  const getResponseMessages = (formStatus, actionCode, apiStatus, isZeroLevel = false) => {
     const messageMapping = {
       [actionButton.save]: {
         [evaluationStatus.launch]: {
@@ -888,8 +888,8 @@ function EvaluationDetail(props) {
       },
       [actionButton.approve]: {
         [evaluationStatus.launch]: {
-          success: t("EvaluationFormSubmittedToDirectManagerEvaluation"),
-          failed: t("EvaluationFailedToSubmitForm"),
+          success: isZeroLevel ? t("EvaluationFormEvaluatedSuccessfully") : t("EvaluationFormSubmittedToDirectManagerEvaluation"),
+          failed: isZeroLevel ? t("EvaluationFailedToEvaluateForm") : t("EvaluationFailedToSubmitForm"),
         },
         [evaluationStatus.selfAssessment]: {
           success: t("EvaluationFormEvaluatedSuccessfully"),
@@ -1019,6 +1019,7 @@ function EvaluationDetail(props) {
       } else { // Lưu, CBNV Gửi tới bước tiếp theo, CBQLTT xác nhận
         const payload = { ...evaluationFormDetail }
         payload.nextStep = actionCode
+        const isZeroLevel = payload?.reviewStreamCode === processStep.zeroLevel
         const response = await axios.post(`${process.env.REACT_APP_HRDX_PMS_URL}api/targetform/update`, { requestString: JSON.stringify(payload || {}) }, config)
         SetIsLoading(false)
         statusModalTemp.isShow = true
@@ -1026,14 +1027,14 @@ function EvaluationDetail(props) {
           const result = response.data.result
           if (result.code == Constants.PMS_API_SUCCESS_CODE) {
             statusModalTemp.isSuccess = true
-            statusModalTemp.content = getResponseMessages(payload.status, actionCode, 'success')
+            statusModalTemp.content = getResponseMessages(payload.status, actionCode, 'success', isZeroLevel)
           } else {
             statusModalTemp.isSuccess = false
             statusModalTemp.content = result?.message
           }
         } else {
           statusModalTemp.isSuccess = false
-          statusModalTemp.content = getResponseMessages(payload.status, actionCode, 'failed')
+          statusModalTemp.content = getResponseMessages(payload.status, actionCode, 'failed', isZeroLevel)
         }
         if (!showByManager) {
           SetStatusModal(statusModalTemp)
