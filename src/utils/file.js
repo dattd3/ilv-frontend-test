@@ -15,7 +15,7 @@ export const whiteListImageExtension = [
   'image/jpeg'
 ]
 
-export const checkFilesMimeType = (files = [], mimeTypesAllow = whilteListFileExtension) => {
+export const checkFilesMimeType = (event, files = [], mimeTypesAllow = whilteListFileExtension) => {
   const err = [];
   const filesArr = Array.from(files);
   filesArr.forEach((file) => {
@@ -27,6 +27,7 @@ export const checkFilesMimeType = (files = [], mimeTypesAllow = whilteListFileEx
     err.forEach(e => {
       toast.error(e);
     })
+    event.target.value = null;
     return false;
   }
   return true;

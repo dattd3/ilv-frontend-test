@@ -1,6 +1,5 @@
 import React from 'react'
 import { Form } from 'react-bootstrap'
-import { ToastContainer } from "react-toastify"
 import PersonalComponent from './PersonalComponent'
 import EducationComponent from './EducationComponent'
 import ConfirmationModal from './ConfirmationModal'
@@ -14,7 +13,6 @@ import { getMuleSoftHeaderConfigurations } from "../../../commons/Utils"
 import Constants from '../../../commons/Constants'
 import HOCComponent from '../../../components/Common/HOCComponent'
 import { checkFilesMimeType } from '../../../utils/file'
-import "react-toastify/dist/ReactToastify.css";
 
 const code = localStorage.getItem('employeeNo') || "";
 const fullName = localStorage.getItem('fullName') || "";
@@ -240,9 +238,9 @@ class PersonalInfoEdit extends React.Component {
     this.inputReference.current.click()
   }
 
-  fileUploadInputChange() {
+  fileUploadInputChange(e) {
     const files = Object.keys(this.inputReference.current.files).map((key) => this.inputReference.current.files[key])
-    if (checkFilesMimeType(files)) {
+    if (checkFilesMimeType(e, files)) {
       this.setState({ files: this.state.files.concat(files) })
       let dataClone = this.removeItemForValueNull({ ...this.state.data })
       const errors = this.verifyInput(dataClone, this.state.files.concat(files))
@@ -1289,7 +1287,6 @@ class PersonalInfoEdit extends React.Component {
 
     return (
       <div className="edit-personal">
-        <ToastContainer autoClose={3000} />
         <ConfirmationModal show={isShowModalConfirm} title={modalTitle} type={typeRequest} message={modalMessage} confirmStatus={confirmStatus}
           sendData={this.getMessageFromModal} onHide={this.onHideModalConfirm} />
         <ResultModal show={isShowResultConfirm} title={modalTitle} message={modalMessage} isSuccess={isSuccess} onHide={this.onHideResultModal} />
