@@ -16,8 +16,6 @@ import { getMuleSoftHeaderConfigurations, getRequestConfigurations } from "../..
 import moment from 'moment'
 import * as actions from '../../../actions'
 import { t } from 'i18next'
-import { ToastContainer } from "react-toastify"
-import "react-toastify/dist/ReactToastify.css";
 import { checkFilesMimeType } from '../../../utils/file'
 
 class PersonalInfoEdit extends React.Component {
@@ -640,9 +638,9 @@ class PersonalInfoEdit extends React.Component {
       });
   }
 
-  fileUploadInputChange = () => {
+  fileUploadInputChange = (e) => {
     const files = Object.keys(this.inputReference.current.files).map((key) => this.inputReference.current.files[key])
-    if (checkFilesMimeType(files)) {
+    if (checkFilesMimeType(e, files)) {
       this.setState({ files: this.state.files.concat(files) })
     }
   }
@@ -1083,7 +1081,6 @@ class PersonalInfoEdit extends React.Component {
   render() {
     return (
       <Provider store={this.store}>
-        <ToastContainer autoClose={3000} />
         <div className="edit-personal-detail-request">
           <ConfirmationModal show={this.state.isShowModalConfirm} title={this.state.modalTitle} type={this.state.typeRequest} message={this.state.modalMessage}
             confirmStatus={this.state.confirmStatus} onHide={this.onHideModalConfirm} />

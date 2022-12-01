@@ -2,7 +2,7 @@ import React from 'react'
 import axios from 'axios'
 import _ from 'lodash'
 import { Progress } from "reactstrap"
-import { ToastContainer, toast } from "react-toastify"
+import { toast } from "react-toastify"
 import { withTranslation } from "react-i18next"
 import LoadingModal from '../../../components/Common/LoadingModal'
 import Constants from '../../../commons/Constants'
@@ -11,7 +11,6 @@ import ResignationRequestsManagementActionButton from '../TerminationComponents/
 import ListStaffResignationComponent from '../TerminationComponents/ListStaffResignationComponent'
 import ResultModal from '../ResultModal'
 import CustomPaging from '../../../components/Common/CustomPaging'
-import "react-toastify/dist/ReactToastify.css"
 
 const REPORT_RESIGNATION_REQUESTS = 1
 const HANDOVER_STATUS = 2
@@ -424,7 +423,6 @@ class ResignationRequestsManagementPage extends React.Component {
 
         return (
             <>
-            <ToastContainer autoClose={2000} />
             <Progress max="100" color="success" value={this.state.loaded}>
                 {Math.round(this.state.loaded, 2)}%
             </Progress>
