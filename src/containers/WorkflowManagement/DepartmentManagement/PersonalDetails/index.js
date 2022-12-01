@@ -5,8 +5,7 @@ import TimeTableDetail from '../../../Timesheet/TimeTableDetail'
 import axios from "axios";
 import moment from "moment";
 import { withTranslation } from "react-i18next";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 import { getMuleSoftHeaderConfigurations, getRequestConfigurations } from "../../../../commons/Utils"
 
 class PersonalDetails extends Component {
@@ -155,7 +154,6 @@ class PersonalDetails extends Component {
     return (
       <div className="timesheet-section employee-detail">
         <h1 className="content-page-header">{t("MenuIndividualManagement")}</h1>
-        <ToastContainer />
         <FilterData clickSearch={this.search.bind(this)} type="singleChoice" />
         <div className="detail">
           <TimeTableDetail timesheetData ={this.state.timeTableData} isSearch={this.state.isTableSearch} showCavet = {true} isOpen = {false} /> 

@@ -11,8 +11,7 @@ import { getRequestConfigurations } from "../../../commons/Utils"
 import Download from "../../../assets/img/icon/ic_download_blue.svg";
 import CustomPaging from "../../../components/Common/CustomPaging";
 
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 
 class Health extends React.Component {
     constructor(props) {
@@ -108,17 +107,6 @@ class Health extends React.Component {
             { value: 2, label: 'PNS đã gửi hồ sơ PVI' }
         ];
         return <>
-            <ToastContainer
-                position="top-right"
-                autoClose={5000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-            />
             <div className="health-info-page">
                 <div className="clearfix edit-button w-100 pb-2">
                     <a href="/insurance-manager/createHealthInsurance"><div className="btn bg-white btn-create"
