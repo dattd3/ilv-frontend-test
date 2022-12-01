@@ -12,8 +12,7 @@ import {
   getRequestConfigurations,
 } from "../../commons/Utils";
 import axios from "axios";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 import ResultModal from "../Registration/ResultModal";
 import { Spinner } from "react-bootstrap";
 import Select from "react-select";
@@ -384,17 +383,6 @@ const CreateInsuranceHealth = ({ t }) => {
 
   return (
     <div className="registration-insurance-section">
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
       <ResultModal
         show={resultModal.isShowStatusModal}
         title={resultModal.titleModal}

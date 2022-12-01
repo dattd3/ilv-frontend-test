@@ -1,7 +1,5 @@
 import React, { Component } from "react";
 import { withTranslation } from "react-i18next";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import FilterDataShirfReport from "../../ShareComponents/FilterDataShirfReport";
 
 class ChangeShiftReport extends Component {
@@ -52,7 +50,6 @@ class ChangeShiftReport extends Component {
     return (
       <div className="timesheet-section change-shift-report">
         <h1 className="content-page-header">{t("MenuChangeShiftReport")}</h1>
-        <ToastContainer />
         <FilterDataShirfReport />
       </div>
     );
