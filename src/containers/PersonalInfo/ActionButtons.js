@@ -1,8 +1,6 @@
 import React, { useState } from "react"
 import { useTranslation } from "react-i18next"
 import { checkFilesMimeType } from "../../utils/file"
-import { ToastContainer } from "react-toastify"
-import "react-toastify/dist/ReactToastify.css";
 
 function ActionButtons(props) {
     const { t } = useTranslation()
@@ -10,7 +8,7 @@ function ActionButtons(props) {
     const [files, SetFiles] = useState([])
 
     const handleChangeFileInput = e => {
-        if (checkFilesMimeType(e.target.files)) {
+        if (checkFilesMimeType(e, e.target.files)) {
             const filesSelected = Object.values(e.target.files)
             let fileStates = [...files]
             fileStates = fileStates.concat(filesSelected)
@@ -32,7 +30,6 @@ function ActionButtons(props) {
 
     return (
         <>
-        <ToastContainer autoClose={3000} />
         { errors && errors.other && <div className="text-danger validation-message validation-other">{errors.other}</div> }
         <div className="list-files">
             {
