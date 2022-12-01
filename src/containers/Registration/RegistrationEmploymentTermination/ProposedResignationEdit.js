@@ -5,14 +5,13 @@ import { withTranslation } from "react-i18next"
 import Constants from '../../../commons/Constants'
 import ButtonComponent from '../TerminationComponents/ButtonComponent'
 import { Progress } from "reactstrap"
-import { ToastContainer, toast } from "react-toastify"
+import { toast } from "react-toastify"
 import { getRequestConfigs } from '../../../commons/commonFunctions'
 import SeniorExecutiveInfoComponent from '../TerminationComponents/SeniorExecutiveInfoComponent'
 import StaffInfoProposedResignationComponent from '../TerminationComponents/StaffInfoProposedResignationComponent'
 import ReasonResignationComponent from '../TerminationComponents/ReasonResignationComponent'
 import AttachmentComponent from '../TerminationComponents/AttachmentComponent'
 import ResultModal from '../ResultModal'
-import "react-toastify/dist/ReactToastify.css"
 import { getMuleSoftHeaderConfigurations } from '../../../commons/Utils'
 
 class ProposedResignationEdit extends React.Component {
@@ -217,7 +216,6 @@ class ProposedResignationEdit extends React.Component {
 
         return (
             <>
-            <ToastContainer autoClose={2000} />
             <Progress max="100" color="success" value={this.state.loaded}>
                 {Math.round(this.state.loaded, 2)}%
             </Progress>

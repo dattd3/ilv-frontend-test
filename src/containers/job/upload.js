@@ -1,7 +1,6 @@
 import React from "react";
 import { Progress } from "reactstrap";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 import { ApiContext } from "../../modules";
 import FileUtil from "../Benefit/file-util";
 import { useTranslation } from 'react-i18next';
@@ -130,7 +129,6 @@ class JobDesc extends React.Component {
               />
             </div>
             <div className="form-group">
-              <ToastContainer />
               <Progress max="100" color="success" value={this.state.loaded}>
                 {Math.round(this.state.loaded, 2)}%
               </Progress>
@@ -157,7 +155,6 @@ class JobDesc extends React.Component {
               />
             </div>
             <div className="form-group">
-              <ToastContainer />
               <Progress
                 max="100"
                 color="success"

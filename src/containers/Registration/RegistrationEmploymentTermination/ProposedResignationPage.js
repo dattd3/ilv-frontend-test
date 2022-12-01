@@ -2,7 +2,7 @@ import React from 'react'
 import axios from 'axios'
 import _ from 'lodash'
 import { Progress } from "reactstrap"
-import { ToastContainer, toast } from "react-toastify"
+import { toast } from "react-toastify"
 import { withTranslation } from "react-i18next"
 import Constants from '../../../commons/Constants'
 import { getRequestConfigs } from '../../../commons/commonFunctions'
@@ -13,7 +13,6 @@ import ReasonResignationComponent from '../TerminationComponents/ReasonResignati
 import AttachmentComponent from '../TerminationComponents/AttachmentComponent'
 import ResultModal from '../ResultModal'
 import LoadingModal from '../../../components/Common/LoadingModal'
-import "react-toastify/dist/ReactToastify.css"
 import { getMuleSoftHeaderConfigurations } from '../../../commons/Utils'
 
 class ProposedResignationPage extends React.Component {
@@ -425,7 +424,6 @@ class ProposedResignationPage extends React.Component {
         return (
             <div className='registration-section'>
             <LoadingModal show={isShowLoadingModal} />
-            <ToastContainer autoClose={2000} />
             <Progress max="100" color="success" value={this.state.loaded}>
                 {Math.round(this.state.loaded, 2)}%
             </Progress>
