@@ -7,8 +7,7 @@ import CreateSickInsurance from './InsuranceComponents/CreateSickInsurance';
 import moment from 'moment';
 import axios from 'axios';
 import { getMuleSoftHeaderConfigurations } from '../../commons/Utils';
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 import ResultModal from '../Registration/ResultModal';
 import HOCComponent from '../../components/Common/HOCComponent'
 import Constants from '../../commons/Constants';
@@ -243,17 +242,6 @@ const CreateInsuranceSocial = (props) => {
 
     return (
         <div className="registration-insurance-section">
-            <ToastContainer
-                position="top-right"
-                autoClose={5000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-            />
             <ResultModal show={resultModal.isShowStatusModal} title={resultModal.titleModal} message={resultModal.messageModal} isSuccess={resultModal.isSuccess} onHide={hideStatusModal} />
             {
                 type == null ?

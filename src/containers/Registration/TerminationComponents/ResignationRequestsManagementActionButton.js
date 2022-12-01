@@ -5,8 +5,6 @@ import _, { debounce } from 'lodash'
 import { withTranslation } from "react-i18next"
 import Constants from "../../../commons/Constants"
 import AttachmentComponent from "../TerminationComponents/AttachmentComponent"
-import { ToastContainer } from "react-toastify"
-import "react-toastify/dist/ReactToastify.css";
 import { checkFilesMimeType } from '../../../utils/file'
 
 class ResignationRequestsManagementActionButton extends React.PureComponent {
@@ -45,7 +43,7 @@ class ResignationRequestsManagementActionButton extends React.PureComponent {
 
     handleChangeFileInput = e => {
         const files = Object.values(e.target.files)
-        if (checkFilesMimeType(files)) {
+        if (checkFilesMimeType(e, files)) {
             this.setState({files: files})
             this.props.updateAttachedFiles(files)
         }
@@ -76,7 +74,6 @@ class ResignationRequestsManagementActionButton extends React.PureComponent {
         ]
 
         return <div className="block resignation-requests-management-action-button">
-                    <ToastContainer autoClose={3000} />
                     <div className="row filter-action-block">
                         <div className="col-1 action-group">
                             <button type="button" className="save" onClick={this.save}>
