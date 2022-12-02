@@ -629,7 +629,7 @@ function EvaluationApproval(props) {
         formCode: null,
         employeeCode: null
     })
-    const [statusModal, SetStatusModal] = useState({isShow: false, isSuccess: true, content: ""})
+    const [statusModal, SetStatusModal] = useState({isShow: false, isSuccess: true, content: "", needReload: true})
     const [paging, SetPaging] = useState({
         approval: {
             pageIndex: 1,
@@ -944,20 +944,23 @@ function EvaluationApproval(props) {
         })
     }
 
-    const onHideEvaluationDetailModal = (statusModalFromChild) => {
-        SetEvaluationDetailPopup({
-            ...evaluationDetailPopup,
-            isShow: false,
-            evaluationFormId: null,
-            formCode: null,
-            employeeCode: null
-        })
+    const onHideEvaluationDetailModal = (statusModalFromChild, keepPopupEvaluationDetail = false) => {
+        if (!keepPopupEvaluationDetail) {
+            SetEvaluationDetailPopup({
+                ...evaluationDetailPopup,
+                isShow: false,
+                evaluationFormId: null,
+                formCode: null,
+                employeeCode: null
+            })
+        }
 
         SetStatusModal({
             ...statusModal,
             isShow: statusModalFromChild?.isShow,
             isSuccess: statusModalFromChild?.isSuccess,
-            content: statusModalFromChild?.content
+            content: statusModalFromChild?.content,
+            needReload: keepPopupEvaluationDetail ? false : true
         })
     }
 
@@ -1023,6 +1026,7 @@ function EvaluationApproval(props) {
             const response = await axios.post(`${process.env.REACT_APP_HRDX_PMS_URL}api/form/ApproveBothReject`, payload, config)
             SetIsLoading(false)
             statusModalTemp.isShow = true
+            statusModalTemp.needReload = true
             if (response && response.data) {
                 const result = response.data.result
                 if (result.code == Constants.PMS_API_SUCCESS_CODE) {
@@ -1042,6 +1046,7 @@ function EvaluationApproval(props) {
             statusModalTemp.isShow = false
             statusModalTemp.isSuccess = false
             statusModalTemp.content = t("AnErrorOccurred")
+            statusModalTemp.needReload = true
             SetStatusModal(statusModalTemp)
         }
     }
@@ -1052,7 +1057,10 @@ function EvaluationApproval(props) {
         statusModalTemp.isSuccess = true
         statusModalTemp.content = ""
         SetStatusModal(statusModalTemp)
-        window.location.reload()
+
+        if (statusModalTemp.needReload) {
+            window.location.reload()
+        }
     }
 
     const processLoading = (status) => {
@@ -1075,7 +1083,7 @@ function EvaluationApproval(props) {
     return (
         <>
         <LoadingModal show={isLoading} />
-        <StatusModal show={statusModal.isShow} isSuccess={statusModal.isSuccess} content={statusModal.content} onHide={onHideStatusModal} />
+        <StatusModal show={statusModal.isShow} isSuccess={statusModal.isSuccess} content={statusModal.content} onHide={onHideStatusModal} className='evaluation-status-modal' />
         <EvaluationDetailModal 
             isShow={evaluationDetailPopup.isShow} 
             evaluationFormId={evaluationDetailPopup.evaluationFormId} 

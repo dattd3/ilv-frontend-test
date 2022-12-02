@@ -1060,7 +1060,8 @@ function EvaluationDetail(props) {
         if (!showByManager) {
           SetStatusModal(statusModalTemp)
         } else {
-          updateParent(statusModalTemp)
+          const keepPopupEvaluationDetail = true
+          updateParent(statusModalTemp, keepPopupEvaluationDetail)
         }
       }
     } catch (e) {
