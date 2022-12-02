@@ -285,6 +285,9 @@ function EvaluationProcess(props) {
 
   const renderEvaluationItem = (item, index, scores, target, i, deviant, parentIndex, subGroupTargetIndex) => {
     const isChild = !_.isNil(parentIndex);
+    const isDisableEmployeeComment = isEdit ? (showByManager || evaluationFormDetail.status != evaluationStatus.launch) : true
+    const isDisableManagerComment = isEdit ? (!showByManager || (showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment))) : true
+
     return <div className="evaluation-item" key={target.id}>
       {!isChild ? <div className="title">{`${i + 1}. ${JSON.parse(target?.targetName || '{}')[languageCodeMapping[currentLocale]]}`}</div> : <div className="sub-title">{`${parentIndex + 1}.${subGroupTargetIndex + 1} ${JSON.parse(target?.targetName || '{}')[languageCodeMapping[currentLocale]]}`}</div>}
       {
@@ -452,21 +455,29 @@ function EvaluationProcess(props) {
       <div className="comment">
         <div className="self">
           <p>{t("EvaluationDetailPartAttitudeCommentOfEmployee")}</p>
-          <textarea 
-            rows={1} 
-            placeholder={isEdit ? !(showByManager || evaluationFormDetail.status != evaluationStatus.launch) ? t("EvaluationDetailPartSelectScoreInput") : '' : ''} 
-            value={target?.seftOpinion || ""} 
-            onChange={(e) => !_.isNil(subGroupTargetIndex) ? handleInputChange(parentIndex, index, 'seftOpinion', e, subGroupTargetIndex) : handleInputChange(i, index, 'seftOpinion', e)} 
-            disabled={isEdit ? (showByManager || evaluationFormDetail.status != evaluationStatus.launch) : true} />
+          {
+            isDisableEmployeeComment
+            ? <div className="comment-content">{target?.seftOpinion || ""}</div>
+            : <textarea 
+                rows={1} 
+                placeholder={isEdit ? !(showByManager || evaluationFormDetail.status != evaluationStatus.launch) ? t("EvaluationDetailPartSelectScoreInput") : '' : ''} 
+                value={target?.seftOpinion || ""} 
+                onChange={(e) => !_.isNil(subGroupTargetIndex) ? handleInputChange(parentIndex, index, 'seftOpinion', e, subGroupTargetIndex) : handleInputChange(i, index, 'seftOpinion', e)} 
+                disabled={isDisableEmployeeComment} />
+          }
         </div>
         <div className="qltt">
           <p>{t("EvaluationDetailPartAttitudeCommentOfManager")}</p>
-          <textarea 
-            rows={1} 
-            placeholder={isEdit ? !(!showByManager || (showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment))) ? t("EvaluationDetailPartSelectScoreInput") : '' : ''} 
-            value={target?.leaderReviewOpinion || ""} 
-            onChange={(e) => !_.isNil(subGroupTargetIndex) ? handleInputChange(parentIndex, index, 'leaderReviewOpinion', e, subGroupTargetIndex) : handleInputChange(i, index, "leaderReviewOpinion", e)} 
-            disabled={isEdit ? (!showByManager || (showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment))) : true} />
+          {
+            isDisableManagerComment
+            ? <div className="comment-content">{target?.leaderReviewOpinion || ""}</div>
+            : <textarea 
+                rows={1} 
+                placeholder={isEdit ? !(!showByManager || (showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment))) ? t("EvaluationDetailPartSelectScoreInput") : '' : ''} 
+                value={target?.leaderReviewOpinion || ""} 
+                onChange={(e) => !_.isNil(subGroupTargetIndex) ? handleInputChange(parentIndex, index, 'leaderReviewOpinion', e, subGroupTargetIndex) : handleInputChange(i, index, "leaderReviewOpinion", e)} 
+                disabled={isDisableManagerComment} />
+          }
         </div>
       </div>
     </div>
@@ -487,6 +498,8 @@ function EvaluationProcess(props) {
         // let scores = prepareScores(item?.listGroupConfig)
         let scores = [1, 2, 3, 4, 5]
         let isAttitudeBlock = item?.listGroupConfig && item?.listGroupConfig?.length > 0
+        const isDisableEmployeeComment = isEdit ? (showByManager || evaluationFormDetail.status != evaluationStatus.launch) : true
+        const isDisableManagerComment = isEdit ? (!showByManager || (showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment))) : true
 
         return <div className={`part-block ${isAttitudeBlock ? 'attitude' : 'work-result'}`} key={index}>
           <div className="title">{`${t("EvaluationDetailPart")} ${indexText} - ${JSON.parse(item?.groupName || '{}')[languageCodeMapping[currentLocale]]}`} <span className="red">({item?.groupWeight || 0}%)</span></div>
@@ -640,21 +653,29 @@ function EvaluationProcess(props) {
                         <div className="comment">
                           <div className="self">
                             <p>{t("EvaluationDetailPartAttitudeCommentOfEmployee")}</p>
-                            <textarea 
-                              rows={1} 
-                              placeholder={isEdit ? !(showByManager || evaluationFormDetail.status != evaluationStatus.launch) ? t("EvaluationDetailPartSelectScoreInput") : '' : ''} 
-                              value={target?.seftOpinion || ""} 
-                              onChange={(e) => handleInputChange(i, index, 'seftOpinion', e)} 
-                              disabled={isEdit ? (showByManager || evaluationFormDetail.status != evaluationStatus.launch) : true} />
+                            {
+                              isDisableEmployeeComment
+                              ? <div className="comment-content">{target?.seftOpinion || ""}</div>
+                              : <textarea 
+                                  rows={1} 
+                                  placeholder={isEdit ? !(showByManager || evaluationFormDetail.status != evaluationStatus.launch) ? t("EvaluationDetailPartSelectScoreInput") : '' : ''} 
+                                  value={target?.seftOpinion || ""} 
+                                  onChange={(e) => handleInputChange(i, index, 'seftOpinion', e)} 
+                                  disabled={isDisableEmployeeComment} />
+                            }
                           </div>
                           <div className="qltt">
                             <p>{t("EvaluationDetailPartAttitudeCommentOfManager")}</p>
-                            <textarea 
-                              rows={1} 
-                              placeholder={isEdit ? !(!showByManager || (showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment))) ? t("EvaluationDetailPartSelectScoreInput") : '' : ''} 
-                              value={target?.leaderReviewOpinion || ""} 
-                              onChange={(e) => handleInputChange(i, index, "leaderReviewOpinion", e)} 
-                              disabled={isEdit ? (!showByManager || (showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment))) : true} />
+                            {
+                              isDisableManagerComment
+                              ? <div className="comment-content">{target?.leaderReviewOpinion || ""}</div>
+                              : <textarea 
+                                  rows={1} 
+                                  placeholder={isEdit ? !(!showByManager || (showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment))) ? t("EvaluationDetailPartSelectScoreInput") : '' : ''} 
+                                  value={target?.leaderReviewOpinion || ""} 
+                                  onChange={(e) => handleInputChange(i, index, "leaderReviewOpinion", e)} 
+                                  disabled={isDisableManagerComment} />
+                            }
                           </div>
                         </div>
                       </div>
