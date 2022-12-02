@@ -273,33 +273,33 @@ class ListStaffResignationComponent extends React.PureComponent {
                                             <th className="sticky-col full-name-col text-left">
                                                 <div className="data full-name text-left">
                                                     <input type="checkbox" style={{marginRight: '8px'}} checked={isCheckedAll}  onChange={e => this.handleCheckAll(e)} />
-                                                    Họ và tên
+                                                    {t('FullName')}
                                                 </div>
                                             </th>
-                                            <th className="sticky-col employee-code-col">Mã nhân viên</th>
-                                            <th>Chức danh</th>
-                                            <th>Khối/Phòng/Bộ phận</th>
-                                            <th>Cấp bậc</th>
-                                            <th>Ngày nộp đơn</th>
-                                            <th>Ngày chấm dứt hợp đồng</th>
-                                            <th>Lý do nghỉ</th>
-                                            <th>Lý do chi tiết</th>
-                                            <th>Loại hợp đồng</th>
-                                            <th>Người tạo</th>
-                                            <th>Tệp đính kèm</th>
-                                            <th>Tình trạng bàn giao</th>
-                                            <th>Bàn giao công việc</th>
-                                            <th>Bàn giao tài sản công ty</th>
-                                            <th>Bàn giao BHXH và BHYT</th>
-                                            <th>Bàn giao đồng phục</th>
-                                            <th>Bàn giao vân tay/email</th>
-                                            <th>Bàn giao công nợ</th>
-                                            <th className="handover-software-col">Các phần mềm phục vụ công việc (nếu có)</th>
-                                            <th>Xác nhận biên bản vi phạm chưa xử lý(Nếu có)</th>
-                                            <th>Tình trạng phê duyệt</th>
-                                            <th>Tình trạng sổ BHXH</th>
-                                            <th>Tình trạng lương</th>
-                                            <th>Phiếu phỏng vấn</th>
+                                            <th className="sticky-col employee-code-col">{t('EmployeeNo')}</th>
+                                            <th>{t('Title')}</th>
+                                            <th>{t('DepartmentManage')}</th>
+                                            <th>{t('Grade')}</th>
+                                            <th>{t('resignAt')}</th>
+                                            <th>{t('ContractTerminationDate')}</th>
+                                            <th>{t('ReasonForContractTermination')}</th>
+                                            <th>{t('DetailedReason')}</th>
+                                            <th>{t('loai_hop_dong')}</th>
+                                            <th>{t('CreatedBy')}</th>
+                                            <th>{t('AttachFile')}</th>
+                                            <th>{t('handover_status')}</th>
+                                            <th>{t('work_status')}</th>
+                                            <th>{t('resource_status')}</th>
+                                            <th>{t('social_status')}</th>
+                                            <th>{t('uniform_status')}</th>
+                                            <th>{t('email_status')}</th>
+                                            <th>{t('timesheet_status')}</th>
+                                            <th className="handover-software-col">{t('software_status')}</th>
+                                            <th>{t('policy_status')}</th>
+                                            <th>{t('approval_status')}</th>
+                                            <th>{t('insurance_status')}</th>
+                                            <th>{t('salary_status')}</th>
+                                            <th>{t('interview_form')}</th>
                                         </tr>
                                     </thead>
                                     <tbody>

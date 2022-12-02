@@ -77,11 +77,11 @@ class ReasonResignationComponent extends React.PureComponent {
         const infos = this.state.infos
 
         return <div className="block reason-resignation-block">
-                    <h6 className="block-title">II. {isEmployee ? 'LÝ DO XIN NGHỈ' : 'Lý do CBLĐ TT đề xuất cho nghỉ'}</h6>
+                    <h6 className="block-title">II. {isEmployee ? t('ly_do_xin_nghi') : t('ly_do_cbld_tt_de_xuat_cho_nghi')}</h6>
                     <div className="box shadow">
                     <div className="row">
                             <div className="col-4">
-                                <p className="title">{t('LastWorkingDay')}<span className="required">(*)</span></p>
+                                <p className="title">{t('ngay_lam_viec_cuoi_cung')}<span className="required">(*)</span></p>
                                 <div className="content input-container">
                                     <label>
                                         <DatePicker

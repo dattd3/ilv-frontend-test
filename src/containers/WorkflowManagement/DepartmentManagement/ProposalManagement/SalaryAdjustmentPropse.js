@@ -29,9 +29,6 @@ import vi from 'date-fns/locale/vi'
 import { Button, Image } from "react-bootstrap";
 registerLocale("vi", vi)
 
-const InsuranceOptions = [
-  { value: 1, label: 'Đề xuất Điều chỉnh thu nhập' },
-];
 const ListTypeContract = [
   { value: 'VA', label: 'HĐLĐ XĐ thời hạn' },
   { value: 'VB', label: 'HĐLĐ KXĐ thời hạn' },
@@ -47,6 +44,9 @@ const SalaryAdjustmentPropse = (props) => {
   const { t } = props;
   const api = useApi();
   const history = useHistory();
+  const InsuranceOptions = [
+    { value: 1, label: t('SalaryPropse') },
+  ];
   const [resultModal, setResultModal] = useState({
     show: false,
     title: '',
@@ -1073,22 +1073,22 @@ const SalaryAdjustmentPropse = (props) => {
                 <>
 					<span>
 						<input type="radio" id="action_accept" name="action" checked={item.accepted == true} onChange={e => onActionChange(item.uid, true)}/>
-						<label htmlFor="action_accept">Đồng ý</label>
+						<label htmlFor="action_accept">{t('accept')}</label>
 					</span>
 					<span>
 					<input type="radio" id="action_reject" name="action" checked={item.accepted != true} onChange={e => onActionChange(item.uid, false)}/>
-					<label htmlFor="action_reject">Từ chối</label>
+					<label htmlFor="action_reject">{t('RejectQuestionButtonLabel')}</label>
 					</span>
 				</>
                 : 
 				<>
 					<span>
 						<input type="radio" id="action_accept" value="accept"  checked={item.accepted == true} disabled={true}/>
-						<label htmlFor="action_accept">Đồng ý</label>
+						<label htmlFor="action_accept">{t('accept')}</label>
 					</span>
 					<span>
 					<input type="radio" id="action_reject" value="reject" checked={item.accepted != true} disabled={true}/>
-					<label htmlFor="action_reject">Từ chối</label>
+					<label htmlFor="action_reject">{t('RejectQuestionButtonLabel')}</label>
 					</span>
 				</>
               }
@@ -1109,7 +1109,7 @@ const SalaryAdjustmentPropse = (props) => {
         <tr>
           <td colSpan="12">
 			<div className="skill">
-				<span className="title">Điểm mạnh:</span>
+				<span className="title">{t('strength')}:</span>
 				<span className="input">
 				{viewSetting.disableComponent.editSubjectApply && !isCreateMode ?
 					<ResizableTextarea
@@ -1128,7 +1128,7 @@ const SalaryAdjustmentPropse = (props) => {
         <tr>
           <td colSpan="12">
 		  <div className="skill">
-		  	<span className="title">Điểm yếu:</span>
+		  	<span className="title">{t('weakness')}:</span>
 			<span className="input">
 				{viewSetting.disableComponent.editSubjectApply && !isCreateMode ?
 					<ResizableTextarea
@@ -1197,7 +1197,7 @@ const SalaryAdjustmentPropse = (props) => {
         </div>
       </div>
       {/* I. THÔNG TIN CÁN BỘ ĐỀ XUẤT */}
-      <h5 className="content-page-header">{"I. THÔNG TIN CÁN BỘ ĐỀ XUẤT"}</h5>
+      <h5 className="content-page-header">{t('info_proposed_staff')}</h5>
       <div className="timesheet-box1 shadow">
         <div className="row">
           <div className="col-4">{t("FullName")}
@@ -1212,7 +1212,7 @@ const SalaryAdjustmentPropse = (props) => {
         </div>
       </div>
       {/* II. THÔNG TIN CBNV ĐƯỢC ĐỀ XUẤT */}
-      <h5 className="content-page-header">{"II. THÔNG TIN CBNV ĐƯỢC ĐỀ XUẤT"}</h5>
+      <h5 className="content-page-header">{t('proposed_employee_info')}</h5>
       {isCreateMode &&
         <>
           <div className="timesheet-box1 timesheet-box shadow">
@@ -1241,13 +1241,16 @@ const SalaryAdjustmentPropse = (props) => {
       }
       <div className="timesheet-box1 shadow">
 		<div className="user_header">
-			<span className="title">Danh sách CBNV đã lựa chọn</span>
+			<span className="title">{t('employee_selected')}</span>
 			<div className="action" style={viewSetting.showComponent.btnExpertise || viewSetting.showComponent.btnApprove ? {} : {visibility: 'hidden'}}>
 			<button className="btn btn-outline-success btn-lg d-flex align-items-center" style={{gap: '7px', paddingLeft: '24px', paddingRight: '24px', fontSize: '14px'}} onClick={(e) => onActionChangeAll(true)}>
 					<i className='fas fa-times fa-lg'></i>
-					Đồng ý
+					{t('accept')}
 			</button> 
-			<button className="btn btn-outline-danger btn-lg d-flex align-items-center" style={{gap: '7px', paddingLeft: '24px', paddingRight: '24px', fontSize: '14px'}} onClick={(e) => onActionChangeAll(false)}><i className='fas fa-check fa-lg'></i> Từ chối</button> 
+			<button className="btn btn-outline-danger btn-lg d-flex align-items-center" style={{gap: '7px', paddingLeft: '24px', paddingRight: '24px', fontSize: '14px'}} onClick={(e) => onActionChangeAll(false)}>
+        <i className='fas fa-check fa-lg'></i> 
+        {t('RejectQuestionButtonLabel')}
+      </button> 
 			</div>
 		</div>
         <div className="result-wrap-table">
@@ -1261,17 +1264,17 @@ const SalaryAdjustmentPropse = (props) => {
 							disabled={!canSelectedll}
 							onChange={(e) => onSelectAll(e)}
 						/>
-						<p className="mb-0">Họ và tên</p>
+						<p className="mb-0">{t('FullName')}</p>
 					</div>
 				</td>
                 {/* <td rowSpan="2" className="min-width text-center font-weight-bold">Chức danh</td>
                 <td rowSpan="2" className="min-width text-center font-weight-bold">Khối/Phòng/Bộ phận</td> */}
                 {/* <td rowSpan="2" className="min-width text-center font-weight-bold">Loại HĐ hiện tại</td> */}
-                <td colSpan={2} className="min-width1 text-center"><strong>Thu nhập hiện tại</strong><span> (Gross)</span></td>
-                <td colSpan={2} className="min-width1 text-center"><strong>Mức lương đề xuất</strong><span> (Gross)</span></td>
-                <td colSpan={2} className="min-width text-center font-weight-bold">Thời gian hiệu lực</td>
-                <td colSpan={1} className="min-width text-center font-weight-bold">Thao tác</td>
-                <th colSpan={2} scope="colgroup" className="min-width text-center font-weight-bold">Lý do từ chối</th>
+                <td colSpan={2} className="min-width1 text-center"><strong>{t('current_income_gross')}</strong></td>
+                <td colSpan={2} className="min-width1 text-center"><strong>{t('suggested_salary_gross')}</strong></td>
+                <td colSpan={2} className="min-width text-center font-weight-bold">{t('effective_time')}</td>
+                <td colSpan={1} className="min-width text-center font-weight-bold">{t('Action')}</td>
+                <th colSpan={2} scope="colgroup" className="min-width text-center font-weight-bold">{t('reason_reject')}</th>
               </tr>
              
             </thead>
@@ -1287,7 +1290,7 @@ const SalaryAdjustmentPropse = (props) => {
       {/* Nhân sự hỗ trợ quyền xem lương */}
       {viewSetting.showComponent.showHrSupportViewSalary &&
         <>
-          <h5 className="content-page-header">{"Nhân sự hỗ trợ quyền xem lương"}</h5>
+          <h5 className="content-page-header">{t('support_human_respone_view_salary')}</h5>
           <div className="timesheet-box1 timesheet-box shadow">
             <HumanForReviewSalaryComponent
               isEdit={!viewSetting.disableComponent.selectHrSupportViewSalary}
@@ -1300,13 +1303,13 @@ const SalaryAdjustmentPropse = (props) => {
       {/* CBQL CẤP CƠ SỞ */}
       {viewSetting.showComponent.showCBQL &&
         <>
-          <h5 className="content-page-header">{"CÁN BỘ QUẢN LÝ THẨM ĐỊNH"}<span className="font-weight-normal ml-1 text-lowercase">(Nếu có)</span></h5>
+          <h5 className="content-page-header">{t('Consenter')}<span className="font-weight-normal ml-1 text-lowercase">({t('if_any')})</span></h5>
           <div className="timesheet-box1 timesheet-box shadow">
 			{
 				supervisors.map((item, key) => {
 					return <div key={key} className="appraiser d-flex flex-column position-relative" style={key > 0 ? {marginTop: '20px'} : {}}>
 						{
-							isCreateMode && key > 0 ? <button className="btn btn-outline-danger position-absolute d-flex align-items-center btn-sm" style={{gap: '4px', top: 0, right: 0}} onClick={() => removeSupervisorItem(key)}><Image src={IconRemove}/>Xóa</button> : null
+							isCreateMode && key > 0 ? <button className="btn btn-outline-danger position-absolute d-flex align-items-center btn-sm" style={{gap: '4px', top: 0, right: 0}} onClick={() => removeSupervisorItem(key)}><Image src={IconRemove}/>{t('delete')}</button> : null
 						}
 						<HumanForReviewSalaryComponent isEdit={!viewSetting.disableComponent.selectHrSupportViewSalary}  approver={item} updateApprover={(sup) => handleUpdateSupervisors(sup, key)} />
 					</div>
@@ -1314,7 +1317,7 @@ const SalaryAdjustmentPropse = (props) => {
 			}
 			{
 				isCreateMode ?
-				<button className="btn btn-outline-success btn-lg w-fit-content mt-3 d-flex align-items-center" style={{gap: '4px', fontSize: '14px'}} onClick={() => setSupervisors([...supervisors, null])}><Image src={IconAdd}/> Thêm</button> 
+				<button className="btn btn-outline-success btn-lg w-fit-content mt-3 d-flex align-items-center" style={{gap: '4px', fontSize: '14px'}} onClick={() => setSupervisors([...supervisors, null])}><Image src={IconAdd}/>{t('Add')}</button> 
 				: null
 			}
           </div>
@@ -1323,7 +1326,7 @@ const SalaryAdjustmentPropse = (props) => {
       {/* Nhân sự thẩm định quyền điều chỉnh lương */}
       {viewSetting.showComponent.showHrAssessment &&
         <>
-          <h5 className="content-page-header">{"Nhân sự thẩm định quyền điều chỉnh lương"}</h5>
+          <h5 className="content-page-header">{t('HumanResourceChangeSalary')}</h5>
           <div className="timesheet-box1 timesheet-box shadow">
             <HumanForReviewSalaryComponent isEdit={!viewSetting.disableComponent.selectHrSupportViewSalary} approver={appraiser} />
           </div>
@@ -1332,7 +1335,7 @@ const SalaryAdjustmentPropse = (props) => {
       {/* CBLĐ PHÊ DUYỆT */}
       {viewSetting.showComponent.showOfficerApproved &&
         <>
-          <h5 className="content-page-header">{"CBLĐ PHÊ DUYỆT"}</h5>
+          <h5 className="content-page-header">{t('BossApproved')}</h5>
           <div className="timesheet-box1 timesheet-box shadow">
             <HumanForReviewSalaryComponent isEdit={!viewSetting.disableComponent.selectHrSupportViewSalary} approver={approver} />
           </div>

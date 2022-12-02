@@ -679,7 +679,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
       this.setState({ data: candidateInfos })
   }
 
-  verifyInputs = () => {
+  verifyInputs = (t) => {
     const type = this.state.type;
     const errors = {};
     const evalutions = [...this.state.data.evalution, ...this.state.data.newEvalution].filter(item => !item.isDeleted);
@@ -697,17 +697,17 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
           }
         }
         if(isMissingContent) {
-          errors['rating'] = '(Bắt buộc điền nội dung đánh giá)'
+          errors['rating'] = t('require_fill_evaluation_content')
         } else if(isMissing)
-          errors['rating'] = '(Bắt buộc điền tự đánh giá)'
+          errors['rating'] = t('require_fill_self_evaluation')
       }
       if(checkVersionPnLSameAsVinhome(Constants.MODULE.DANHGIA_TAIKI)) {
         if(!this.state.data.nguoidanhgia || !this.state.data.nguoidanhgia.account) {
-          errors['nguoidanhgia'] = '(Bắt buộc)';
+          errors['nguoidanhgia'] = t('Required');
         }
       } else {
         if(!this.state.data.qltt || !this.state.data.qltt.account){
-          errors['qltt'] = '(Bắt buộc)';
+          errors['qltt'] = t('Required');
         }
       }
 
@@ -755,11 +755,11 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
           }
         }
         if(isMissing)
-          errors['rating'] = '(Bắt buộc điền CBLĐ TT đánh giá)'
+          errors['rating'] = t('require_fill_manager_evaluation')
       }
       if(this.state.isNguoidanhgia == false || checkVersionPnLSameAsVinhome(Constants.MODULE.DANHGIA_TAIKI)) {
         if(!this.state.data.nguoipheduyet || !this.state.data.nguoipheduyet.account){
-          errors['boss'] = '(Bắt buộc)';
+          errors['boss'] = t('Required');
         }
         let array = ['result', 'contract', 'startDate'];
         const optionFields = ['result', 'contract']
@@ -771,7 +771,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         }
         array.forEach(name => {
           if (( this.state.data.qlttOpinion[name] && !this.state.data.qlttOpinion[name].value && optionFields.includes(name)) || _.isEmpty(this.state.data.qlttOpinion[name])) {
-              errors[name] = '(Bắt buộc)'
+              errors[name] = t('Required')
           } else {
               errors[name] = null
           }
@@ -789,7 +789,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
           }
         }
         if(isMissing)
-          errors['rating'] = '(Bắt buộc điền nội dung đánh giá)'
+          errors['rating'] = t('require_fill_evaluation_content')
       }
     }
     this.setState({errors: errors});
@@ -826,6 +826,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
   }
 
   validateResult = () => {
+    const {t} = this.props;
     const name = 'qlttOpinion';
     const subName = 'result';   
     const candidateInfos = {...this.state.data}
@@ -846,11 +847,11 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
           data : candidateInfos,
           errors: {
             ...this.state.errors,
-            [subName]: 'Không đủ điều kiện ký HĐ'
+            [subName]: t('my_rating_note')
           }
           
         });
-        return 'Không đủ điều kiện ký HĐ';
+        return t('my_rating_note');
     }
     return null;
   }
@@ -1156,7 +1157,7 @@ renderEvalution = (name, data, isDisable) => {
 
   submitEvalution = () => {
     const { t } = this.props
-    const err = this.verifyInputs()
+    const err = this.verifyInputs(t)
 
     this.setDisabledSubmitButton(true)
     if (!err || Object.values(err).reduce((t, value) => t + (value ? 1 : 0) , 0) > 0) {
@@ -1196,7 +1197,7 @@ renderEvalution = (name, data, isDisable) => {
         }
     })
     .catch(response => {
-        this.showStatusModal("Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
+        this.showStatusModal(t('Error'), false)
         this.setDisabledSubmitButton(false)
     })
   }
@@ -1263,7 +1264,7 @@ renderEvalution = (name, data, isDisable) => {
             
             return;
           }
-          this.showStatusModal(response.data.result.message || 'Có lỗi xảy ra trong quá trình cập nhật thông tin!', false)
+          this.showStatusModal(response.data.result.message || t('Error'), false)
           this.setDisabledSubmitButton(false, actionType)
 
             // if (response && response.data && response.data.result) {
@@ -1272,7 +1273,7 @@ renderEvalution = (name, data, isDisable) => {
             // }
         })
         .catch(err => {
-            this.showStatusModal("Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
+            this.showStatusModal(t('Error'), false)
             this.setDisabledSubmitButton(false, actionType)
         })
 }
@@ -1428,13 +1429,13 @@ renderEvalution = (name, data, isDisable) => {
         <LoadingModal show={loading}/>
       <div className="leave-of-absence evalution">
         <div className="eval-heading">
-            BIÊN BẢN ĐÁNH GIÁ GIAO KẾT / GIA HẠN HĐLĐ 
+            {t('evaluation_title')} 
         </div>
 
         <div className="sub-heading">
-          {showComponent.employeeSide ? '' : '(Quản lý trực tiếp vui lòng nhập các yêu cầu công việc vào phần thông tin đánh giá)'}
+          {showComponent.employeeSide ? '' : t('fill_evaluation_note')}
         </div>
-        <h5>THÔNG TIN NGƯỜI ĐƯỢC ĐÁNH GIÁ</h5>
+        <h5>{t('personal_informations')}</h5>
         <div className="box shadow cbnv">
           <div className="row">
             <div className="col-4">
@@ -1452,29 +1453,29 @@ renderEvalution = (name, data, isDisable) => {
           </div>
           <div className="row mv-10">
             <div className="col-4">
-              {"Ngày làm việc"}
+              {t('working_day')}
               <div className="detail">{data.employeeInfo.startDate ? moment(data.employeeInfo.startDate).format("DD/MM/YYYY") : '' }</div>
             </div>
             <div className="col-4">
-              {"Ngày hết hạn HĐTV/HĐLĐ"}
+              {t('expired_day_contract')}
               <div className="detail">{data.employeeInfo.expireDate ? moment(data.employeeInfo.expireDate).format("DD/MM/YYYY") : '' }</div>
             </div>
           </div>
         </div>
         <StatusModal show={this.state.isShowStatusModal} content={this.state.content} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
         <SalaryModal show={this.state.isShowSalaryPropose} content={this.state.content} isSuccess={this.state.isSuccess} onAccept = {this.createFormSalary} onHide={this.hideStatusModal} />
-        <h5>Thông tin đánh giá</h5>
+        <h5>{t('assessment_informations')}</h5>
         <div className="box shadow cbnv">
           <div className="row description">
             <div className="col-3 title">
-             Thang điểm đánh giá
+             {t('assessment_scale')}
             </div>
             <div className="col-9">
-                   <span>(5) Xuất sắc</span>
-                    <span>(4) Tốt</span>
-                    <span>(3) Khá</span>
-                    <span>(2) Trung Bình</span>
-                    <span>(1) Yếu</span>
+                   <span>(5) {t('excellent')}</span>
+                    <span>(4) {t('good')}</span>
+                    <span>(3) {t('medium')}</span>
+                    <span>(2) {t('normal')}</span>
+                    <span>(1) {t('bad')}</span>
             </div>
           </div>
           <div className="row">
@@ -1490,10 +1491,10 @@ renderEvalution = (name, data, isDisable) => {
                     <table>
                     <thead>
                       <tr>
-                        <th style={{width: '22%'}}>Nội dung đánh giá</th>
-                        <th style={{width: '16%'}}>Tự đánh giá</th>
-                        <th style={{width: '22%'}}>CBLĐ TT đánh giá</th>
-                        <th style={{width: '40%'}}>Nhận xét</th>
+                        <th style={{width: '22%'}}>{t('content_rated')}</th>
+                        <th style={{width: '16%'}}>{t('self_assessment')}</th>
+                        <th style={{width: '22%'}}>{t('leader_assessment')}</th>
+                        <th style={{width: '40%'}}>{t('nhan_xet')}</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -1517,7 +1518,7 @@ renderEvalution = (name, data, isDisable) => {
                     </tbody>
                     <thead>
                       <tr>
-                        <th style={{width: '22%'}}>Tổng điểm</th>
+                        <th style={{width: '22%'}}>{t('total_score')}</th>
                         <th style={{width: '16%'}}>{data.SelfAssessmentScoreTotal}</th>
                         <th style={{width: '22%'}}>{this.state.type == 'request' ? '' : data.ManagementScoreTotal}</th>
                         <th style={{width: '40%'}}></th>
@@ -1530,11 +1531,11 @@ renderEvalution = (name, data, isDisable) => {
                   <table>
                     <thead>
                       <tr>
-                        <th style={{width: '20%'}}>Nội dung đánh giá</th>
-                        <th style={{width: '14%'}}>Tự đánh giá</th>
-                        <th style={{width: '16%'}}>CBLĐ TT đánh giá</th>
-                        <th style={{width: '42%'}}>Nhận xét</th>
-                        <th style={{width: '8%'}}>Thao tác</th>
+                        <th style={{width: '20%'}}>{t('content_rated')}</th>
+                        <th style={{width: '14%'}}>{t('self_assessment')}</th>
+                        <th style={{width: '16%'}}>{t('leader_assessment')}</th>
+                        <th style={{width: '42%'}}>{t('nhan_xet')}</th>
+                        <th style={{width: '8%'}}>{t('action')}</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -1544,7 +1545,7 @@ renderEvalution = (name, data, isDisable) => {
                     </tbody>
                     <thead>
                       <tr>
-                        <th style={{width: '20%'}}>Tổng điểm</th>
+                        <th style={{width: '20%'}}>{t('total_score')}</th>
                         <th style={{width: '14%'}}>{data.SelfAssessmentScoreTotal}</th>
                         <th style={{width: '16%'}}>{this.state.type == 'request' ? '' : data.ManagementScoreTotal}</th>
                         <th style={{width: '42%'}}></th>
@@ -1558,11 +1559,11 @@ renderEvalution = (name, data, isDisable) => {
                   <table>
                     <thead>
                       <tr>
-                        <th style={{width: '20%'}}>Nội dung đánh giá</th>
-                        <th style={{width: '14%'}}>Tự đánh giá</th>
-                        <th style={{width: '16%'}}>CBLĐ TT đánh giá</th>
-                        <th style={{width: '42%'}}>Nhận xét</th>
-                        <th style={{width: '8%'}}>Thao tác</th>
+                        <th style={{width: '20%'}}>{t('content_rated')}</th>
+                        <th style={{width: '14%'}}>{t('self_assessment')}</th>
+                        <th style={{width: '16%'}}>{t('leader_assessment')}</th>
+                        <th style={{width: '42%'}}>{t('nhan_xet')}</th>
+                        <th style={{width: '8%'}}>{t('action')}</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -1592,7 +1593,7 @@ renderEvalution = (name, data, isDisable) => {
                   }
                 }}>
                   <Image src={IconAdd} alt="Hủy" className="ic-action ic-reset" />
-                  Thêm đánh giá
+                  {t('add_evaluation')}
                 </div>
               </div>  
             </div> : null
@@ -1600,37 +1601,37 @@ renderEvalution = (name, data, isDisable) => {
           
         </div>
 
-        <h5>THÔNG TIN THÊM</h5>
+        <h5>{t('more_information')}</h5>
         <div className="box shadow cbnv more-description">
           <div className="title">
-              TỰ ĐÁNH GIÁ
+              {t('self_assessment')}
           </div>
           <div className="row">
             <div className="col-6">
-              Điểm mạnh
+              {t('strength')}
               <ResizableTextarea disabled={disableComponent.disableAll || !disableComponent.employeeSide} value={data.selfEvalution.strong} onChange={(e) => this.handleTextInputChange(e, 'selfEvalution', 'strong')} className="mv-10"/>
             </div>
             <div className="col-6">
-              Điểm cần cải thiện
+              {t('weakness')}
               <ResizableTextarea disabled={disableComponent.disableAll || !disableComponent.employeeSide} value={data.selfEvalution.weak} onChange={(e) => this.handleTextInputChange(e, 'selfEvalution', 'weak')} className="mv-10"/>
             </div>
             <div className="col-12">
-              Ý kiến đề xuất của CBNV
+              {t('suggest_of_staff')}
               <ResizableTextarea disabled={disableComponent.disableAll || !disableComponent.employeeSide} value={data.selfEvalution.opinion} onChange={(e) => this.handleTextInputChange(e, 'selfEvalution', 'opinion')} className="mv-10"/>
             </div>
           </div>
         </div>
         <div className="box shadow cbnv more-description">
           <div className="title">
-            QLTT ĐÁNH GIÁ
+            {t('leader_assessment')}
           </div>
           <div className="row">
             <div className="col-6">
-              Điểm mạnh
+              {t('strength')}
               <ResizableTextarea disabled={disableComponent.disableAll || !disableComponent.qlttSide} value={data.bossEvalution.strong} onChange={(e) => this.handleTextInputChange(e, 'bossEvalution', 'strong')} className="mv-10"/>
             </div>
             <div className="col-6">
-              Điểm cần cải thiện
+              {t('weakness')}
               <ResizableTextarea disabled={disableComponent.disableAll || !disableComponent.qlttSide} value={data.bossEvalution.weak} onChange={(e) => this.handleTextInputChange(e, 'bossEvalution', 'weak')} className="mv-10"/>
             </div>
           </div>
@@ -1640,7 +1641,7 @@ renderEvalution = (name, data, isDisable) => {
           false ?
           null :
         <>
-        <h5>Thông tin khóa học</h5>
+        <h5>{t('course_information')}</h5>
         <div className="box shadow cbnv">
           <div className="row task">
             <div className="col-12">
@@ -1648,10 +1649,10 @@ renderEvalution = (name, data, isDisable) => {
                 <table>
                   <thead>
                     <tr>
-                      <th style={{width: '10%'}}>STT</th>
-                      <th style={{width: '25%'}}>Tên khóa học</th>
-                      <th style={{width: '25%'}}>Tình trạng</th>
-                      <th style={{width: '40%'}}>Ghi chú</th>
+                      <th style={{width: '10%'}}>{t('stt')}</th>
+                      <th style={{width: '25%'}}>{t('course_name')}</th>
+                      <th style={{width: '25%'}}>{t('EvaluationStatus')}</th>
+                      <th style={{width: '40%'}}>{t('Note')}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -1661,11 +1662,11 @@ renderEvalution = (name, data, isDisable) => {
                         return <tr key = {index}>
                           <td style={{width: '10%'}}>{index + 1}</td>
                           <td style={{width: '25%'}}>{item.name}</td>
-                          <td style={{width: '25%'}}>{item.status ? 'Đã hoàn thành' : 'Chưa hoàn thành'}</td>
+                          <td style={{width: '25%'}}>{item.status ? t('accomplished') : t('unfinished')}</td>
                           {
                             index == 0 ?
                             <td style={{width: '40%'}} rowSpan={data.course.length}>
-                              Không đạt sẽ không đủ điều kiện ký kết hợp đồng
+                              {t('my_rating_note')}
                             </td> :
                              null
                           }
@@ -1693,11 +1694,11 @@ renderEvalution = (name, data, isDisable) => {
           </div>
         </div>
         
-        <h5>Thông tin hồ sơ</h5>
+        <h5>{t('profile_information')}</h5>
         <div className="box shadow cbnv document">
           <div className="row">
             <div className="col-12">
-              <label>Tình trạng hồ sơ:</label> <span>{data.documentStatus}</span>
+              <label>{t('application_status')}:</label> <span>{data.documentStatus}</span>
             </div>
           </div>
         </div>
@@ -1756,8 +1757,8 @@ renderEvalution = (name, data, isDisable) => {
                 <div className="col-12">
                   {
                     checkVersionPnLSameAsVinhome(Constants.MODULE.DANHGIA_TAIKI) ?
-                      <><span className="title">QUẢN LÝ TRỰC TIẾP ĐÁNH GIÁ</span></>
-                      : <><span className="title">NGƯỜI ĐÁNH GIÁ</span><span className="sub-title">(Nếu có)</span></>
+                      <><span className="title">{t('manager_review')}</span></>
+                      : <><span className="title">{t('reviewer')}</span><span className="sub-title">({t('if_any')})</span></>
                   }
                 
                 </div>
@@ -1776,8 +1777,8 @@ renderEvalution = (name, data, isDisable) => {
                 <div className="col-12">
                   {
                     checkVersionPnLSameAsVinhome(Constants.MODULE.DANHGIA_TAIKI) ?
-                    <><span className="title">CBLĐ thẩm định</span><span className="sub-title">(Nếu có)</span></>
-                    : <span className="title">QUẢN LÝ TRỰC TIẾP ĐÁNH GIÁ</span>
+                    <><span className="title">{t('manager_assessment')}</span><span className="sub-title">({t('if_any')})</span></>
+                    : <span className="title">{t('manager_review')}</span>
                   }
                 </div>
               </div>
@@ -1796,11 +1797,11 @@ renderEvalution = (name, data, isDisable) => {
               checkVersionPnLSameAsVinhome(Constants.MODULE.DANHGIA_TAIKI) ? 
               <div className="box shadow cbnv more-description">
               <div className="title">
-                Ý KIẾN ĐỀ XUẤT CỦA CBQL TRỰC TIẾP
+                {t('recommend_of_manager')}
               </div>
               <div className="row">
                 <div className="col-3">
-                  Kết quả
+                  {t('result')}
                   <Select  placeholder={"Lựa chọn kết quả"} options={this.resultOptions} isDisabled={disableComponent.disableAll || !disableComponent.qlttSide}  isClearable={true} 
                   value={this.resultOptions.filter(d => data.qlttOpinion.result != null && d.value == data.qlttOpinion.result.value)}
                   onChange={e => this.handleChangeSelectInputs(e,'qlttOpinion', 'result')} className="input mv-10"
@@ -1809,7 +1810,7 @@ renderEvalution = (name, data, isDisable) => {
                   {/* <div className="detail">{requestInfo ? moment(requestInfo.startDate).format("DD/MM/YYYY") + (requestInfo.startTime ? ' ' + moment(requestInfo.startTime, TIME_FORMAT).lang('en-us').format('HH:mm') : '') : ""}</div> */}
                 </div>
                 <div className="col-3">
-                  Loại hợp đồng lao động
+                  {t('contract_type')}
                   <Select  placeholder={"Lựa chọn loại hợp đồng"} options={this.contractTypeOptions} isDisabled={disableComponent.disableAll || !disableComponent.qlttSide}  isClearable={true} 
                   value={this.contractTypeOptions.filter(d => data.qlttOpinion.contract != null && d.value == data.qlttOpinion.contract.value)}
                   onChange={e => this.handleChangeSelectInputs(e,'qlttOpinion', 'contract')} className="input mv-10"
@@ -1818,7 +1819,7 @@ renderEvalution = (name, data, isDisable) => {
                   {/* <ResizableTextarea disabled={true} className="mv-10"/> */}
                 </div>
                 <div className="col-3">
-                  Ngày bắt đầu hợp đồng
+                 {t('contract_start_date')}
                   <DatePicker
                     name="startDate"
                     readOnly={disableComponent.disableAll || !disableComponent.qlttSide  || data.qlttOpinion.disableTime == true}
@@ -1837,7 +1838,7 @@ renderEvalution = (name, data, isDisable) => {
                   {this.state.errors && this.state.errors['startDate'] ? <p className="text-danger">{this.state.errors['startDate']}</p> : null}
                 </div>
                 <div className="col-3">
-                  Ngày kết thúc hợp đồng
+                  {t('contract_end_date')}
                   <DatePicker
                     name="startDate"
                     readOnly={disableComponent.disableAll || !disableComponent.qlttSide  || data.qlttOpinion.disableTime == true}
@@ -1861,7 +1862,7 @@ renderEvalution = (name, data, isDisable) => {
                   <div className="detail">{requestInfo ? moment(requestInfo.startDate).format("DD/MM/YYYY") + (requestInfo.startTime ? ' ' + moment(requestInfo.startTime, TIME_FORMAT).lang('en-us').format('HH:mm') : '') : ""}</div>
                 </div> */}
                 <div className="col-12">
-                  Đề xuất khác
+                  {t('other_suggestions')}
                   <ResizableTextarea onChange={ e => this.handleTextInputChange(e, 'qlttOpinion', 'otherOption' )} value={data.qlttOpinion.otherOption || ''} disabled={disableComponent.disableAll || !disableComponent.qlttSide} className="mv-10"/>
                 </div>
               </div>
@@ -1875,8 +1876,8 @@ renderEvalution = (name, data, isDisable) => {
                 <div className="col-12">
                 {
                     checkVersionPnLSameAsVinhome(Constants.MODULE.DANHGIA_TAIKI) ?
-                    <><span className="title">CBLĐ thẩm định</span><span className="sub-title">(Nếu có)</span></>
-                    : <span className="title">QUẢN LÝ TRỰC TIẾP ĐÁNH GIÁ</span>
+                    <><span className="title">{t('manager_assessment')}</span><span className="sub-title">({t('if_any')})</span></>
+                    : <span className="title">{t('manager_review')}</span>
                   }
                 </div>
               </div>
@@ -1894,7 +1895,7 @@ renderEvalution = (name, data, isDisable) => {
               <div className="box shadow cbnv">
                 <div className="row approve">
                   <div className="col-12">
-                  <span className="title">NGƯỜI PHÊ DUYỆT</span>
+                  <span className="title">{t('approver_assessment')}</span>
                   </div>
                 </div>
                 <div className="row">
@@ -1913,11 +1914,11 @@ renderEvalution = (name, data, isDisable) => {
             {/* quan li */}
             <div className="box shadow cbnv more-description">
               <div className="title">
-                Ý KIẾN ĐỀ XUẤT CỦA CBQL TRỰC TIẾP
+                {t('recommend_of_manager')}
               </div>
               <div className="row">
                 <div className="col-3">
-                  Kết quả
+                  {t('result')}
                   <Select  placeholder={"Lựa chọn kết quả"} options={this.resultOptions} isDisabled={disableComponent.disableAll || !disableComponent.qlttSide}  isClearable={true} 
                   value={this.resultOptions.filter(d => data.qlttOpinion.result != null && d.value == data.qlttOpinion.result.value)}
                   onChange={e => this.handleChangeSelectInputs(e,'qlttOpinion', 'result')} className="input mv-10"
@@ -1926,7 +1927,7 @@ renderEvalution = (name, data, isDisable) => {
                   {/* <div className="detail">{requestInfo ? moment(requestInfo.startDate).format("DD/MM/YYYY") + (requestInfo.startTime ? ' ' + moment(requestInfo.startTime, TIME_FORMAT).lang('en-us').format('HH:mm') : '') : ""}</div> */}
                 </div>
                 <div className="col-3">
-                  Loại hợp đồng lao động
+                  {t('contract_type')}
                   <Select  placeholder={"Lựa chọn loại hợp đồng"} options={this.contractTypeOptions} isDisabled={disableComponent.disableAll || !disableComponent.qlttSide}  isClearable={true} 
                   value={this.contractTypeOptions.filter(d => data.qlttOpinion.contract != null && d.value == data.qlttOpinion.contract.value)}
                   onChange={e => this.handleChangeSelectInputs(e,'qlttOpinion', 'contract')} className="input mv-10"
@@ -1935,7 +1936,7 @@ renderEvalution = (name, data, isDisable) => {
                   {/* <ResizableTextarea disabled={true} className="mv-10"/> */}
                 </div>
                 <div className="col-3">
-                  Ngày bắt đầu hợp đồng
+                  {t('contract_start_date')}
                   <DatePicker
                     name="startDate"
                     readOnly={disableComponent.disableAll || !disableComponent.qlttSide || data.qlttOpinion.disableTime == true}
@@ -1954,7 +1955,7 @@ renderEvalution = (name, data, isDisable) => {
                   {this.state.errors && this.state.errors['startDate'] ? <p className="text-danger">{this.state.errors['startDate']}</p> : null}
                 </div>
                 <div className="col-3">
-                  Ngày kết thúc hợp đồng
+                 {t('contract_end_date')}
                   <DatePicker
                     name="startDate"
                     readOnly={disableComponent.disableAll || !disableComponent.qlttSide || data.qlttOpinion.disableTime == true}
@@ -1978,7 +1979,7 @@ renderEvalution = (name, data, isDisable) => {
                   <div className="detail">{requestInfo ? moment(requestInfo.startDate).format("DD/MM/YYYY") + (requestInfo.startTime ? ' ' + moment(requestInfo.startTime, TIME_FORMAT).lang('en-us').format('HH:mm') : '') : ""}</div>
                 </div> */}
                 <div className="col-12">
-                  Đề xuất khác
+                 {t('other_suggestions')}
                   <ResizableTextarea onChange={ e => this.handleTextInputChange(e, 'qlttOpinion', 'otherOption' )} value={data.qlttOpinion.otherOption || ''} disabled={disableComponent.disableAll || !disableComponent.qlttSide} className="mv-10"/>
                 </div>
               </div>
@@ -2026,7 +2027,7 @@ renderEvalution = (name, data, isDisable) => {
             
               <div className="row approve">
                 <div className="col-12">
-                <span className="title">NGƯỜI PHÊ DUYỆT</span>
+                <span className="title">{t('approver_assessment')}</span>
                 </div>
               </div>
               <div className="row">
@@ -2074,19 +2075,19 @@ renderEvalution = (name, data, isDisable) => {
 
           {dataSalary?.childRequestHistoryId &&
             <>
-              <h5>Thông tin đề xuất lương</h5>
+              <h5>{t('salary_proposed_info')}</h5>
               <div className="box cbnv salary">
                 <div className="row">
                   <div className="col-6">
                     <div className='wrapper-status'>
-                      <span className='font-normal'>Tình trạng: </span>
+                      <span className='font-normal'>{t('EvaluationStatus')}: </span>
                       {dataSalary?.statusName &&
                         <div>{dataSalary?.statusName}</div>
                       }
                     </div>
                   </div>
                   <div className="col-6 view-detail">
-                    <span onClick={() => this.handleViewDetailSalary()}>{'Xem chi tiết >>'}</span>
+                    <span onClick={() => this.handleViewDetailSalary()}>{ t('Details') + ' >>'}</span>
                   </div>
                 </div>
               </div>
@@ -2126,7 +2127,7 @@ renderEvalution = (name, data, isDisable) => {
                             aria-hidden="true"
                             className="mr-2"
                         />}
-                        {'Lưu'}
+                        {t('Save')}
                 </button> :
                 <>
                   {showComponent.bossSide ? 
@@ -2145,13 +2146,13 @@ renderEvalution = (name, data, isDisable) => {
                               aria-hidden="true"
                               className="mr-2"
                           />}
-                          {'Phê duyệt'}
+                          {t('Approval')}
                   </button>
                   <button type="button" className="btn btn-danger float-right ml-3 shadow" onClick={() => this.handleReject()} disabled={this.state.disabledSubmitButton}>
                           <>
                               <img src={IconDelete} className='mr-2' alt="cancel" />
                           </>
-                          {'Từ chối'}
+                          {t('RejectQuestionButtonLabel')}
                   </button>
                   </> : 
                   <button type="button" className="btn btn-primary float-right ml-3 shadow" onClick={() => this.submit(2)} disabled={this.state.disabledSubmitButton}>
@@ -2195,14 +2196,14 @@ renderEvalution = (name, data, isDisable) => {
                             aria-hidden="true"
                             className="mr-2"
                         />}
-                        {'Lưu'}
+                        {t('Save')}
                     </button>
 
                     <button type="button" className=" btn btn-danger  float-right ml-3 shadow" onClick={() => this.handleRefuse()} disabled={this.state.disabledSubmitButton}>
                          <>
                               <img src={IconDelete} className='mr-2' alt="cancel" />
                           </>
-                        {'Từ chối'}
+                        {t('RejectQuestionButtonLabel')}
                     </button>
                     </> : null }
                 </>

@@ -10,6 +10,7 @@ import { getMuleSoftHeaderConfigurations } from '../../../commons/Utils'
 import ResultModal from '../ResultModal'
 import DropdownCustomize from '../../LeaveFund/DropdownCustomize'
 import DropdownResignCustomize from './DropdownResignCustomize'
+import { t } from 'i18next'
 
 const MyOption = props => {
     const { innerProps, innerRef } = props;
@@ -66,15 +67,16 @@ class StaffInfoProposedResignationComponent extends React.PureComponent {
 
     addEmployees = async () => {
         let { userInfos } = this.state
+        const {t} = this.props;
         const employeeCodeToSearch = this.state.filter?.employeeCodeToSearch || [];
         //console.log(employee, userInfos, employeeCodeToSearch);
         const employeeCodeToSearchIds =employeeCodeToSearch.map(item => item.uid);
 
         const itemExist = (userInfos || []).filter(item => employeeCodeToSearchIds.includes(item.uid));
-        const errorObj = {employees: "Nhân viên đề xuất cho nghỉ đã nằm trong danh sách đề xuất cho nghỉ!"}
+        const errorObj = {employees: t('employee_resign_existed')}
 
         if (!itemExist || itemExist.length === 0 && employeeCodeToSearchIds.length > 0) {
-            errorObj.employees = "Vui lòng chọn nhân viên đề xuất cho nghỉ!"
+            errorObj.employees = t('require_choose_employee_resign')
             const contractInfo = await this.getMoreInfoContract(employeeCodeToSearchIds.join(','));
             console.log(employeeCodeToSearchIds.join(','), contractInfo);
 
@@ -123,7 +125,7 @@ class StaffInfoProposedResignationComponent extends React.PureComponent {
 
     removeEmployees = () => {
         const {employeeIdChecked, userInfos} = this.state
-
+        const {t} = this.props;
         if (userInfos && userInfos.length > 0) {
             let indexDeleted = []
 
@@ -138,7 +140,7 @@ class StaffInfoProposedResignationComponent extends React.PureComponent {
             }
 
             if (indexDeleted.length > 0) {
-                let errorObj = {employees: "Vui lòng chọn nhân viên đề xuất cho nghỉ!"}
+                let errorObj = {employees: t('require_choose_employee_resign')}
                 const userInfosTemp = userInfos.filter((item, index) => !indexDeleted.includes(index))
                 if (userInfosTemp.length > 0) {
                     errorObj = {employees: null}
@@ -274,7 +276,7 @@ class StaffInfoProposedResignationComponent extends React.PureComponent {
         const { employee, userInfos, isSearching, employeeIdChecked } = this.state
 
         return <div className="block staff-information-proposed-resignation-block">
-                    <h6 className="block-title">I. Thông tin nhân viên đề xuất cho nghỉ</h6>
+                    <h6 className="block-title">I. {`${t('proposed_employee_info')} ${t('cho_nghi')}`}</h6>
                     <div className="box shadow">
                         { !isEdit ?
                         <div className="row search-action-block">
@@ -296,12 +298,12 @@ class StaffInfoProposedResignationComponent extends React.PureComponent {
                                 <table className="list-staff">
                                     <thead>
                                         <tr>
-                                            <th>Họ và tên</th>
-                                            <th>Mã nhân viên</th>
-                                            <th>Chức danh</th>
-                                            <th>Khối/Phòng/Bộ phận</th>
-                                            <th>Loại hợp đồng</th>
-                                            <th>Ngày vào làm việc</th>
+                                            <th>{t('FullName')}</th>
+                                            <th>{t('EmployeeNo')}</th>
+                                            <th>{t('Title')}</th>
+                                            <th>{t('DepartmentManage')}</th>
+                                            <th>{t('ContractType')}</th>
+                                            <th>{t('DaysOnWorking')}</th>
                                         </tr>
                                     </thead>
                                     <tbody>

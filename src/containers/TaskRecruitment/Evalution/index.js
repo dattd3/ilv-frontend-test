@@ -206,18 +206,18 @@ class EvaluationComponent extends React.Component {
       <>
       <div className="task-section1">
         <div className="block-title" >
-          <h4 className="title text-uppercase">QUẢN LÝ THÔNG TIN ĐÁNH GIÁ CÔNG VIỆC</h4>
+          <h4 className="title text-uppercase">{t('manager_evaluating_title')}</h4>
         </div>
         <div className="candidate-list shadow">
                     <table className="table table-borderless table-hover">
                         <thead>
                             <tr>
-                                <th scope="col" className="col-code text-center">Mã yêu cầu</th>
-                                <th scope="col" className="col-content text-center">Loại yêu cầu</th>
-                                <th scope="col" className="col-region text-center">Hạn hoàn thành</th>
-                                <th scope="col" className="col-code text-center">Người phê duyệt </th>
-                                <th scope="col" className="col-content text-center">Trạng thái</th>
-                                <th scope="col" className="col-code text-center">Thu hồi</th>                             
+                                <th scope="col" className="col-code text-center">{t('RequestNo')}</th>
+                                <th scope="col" className="col-content text-center">{t('TypeOfRequest')}</th>
+                                <th scope="col" className="col-region text-center">{t('completed_dealine')}</th>
+                                <th scope="col" className="col-code text-center">{t('Approver')} </th>
+                                <th scope="col" className="col-content text-center">{t('Status')}</th>
+                                <th scope="col" className="col-code text-center">{t('Withdraw')}</th>                             
                             </tr>
                         </thead>
                         <tbody>
