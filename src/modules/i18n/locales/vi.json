@@ -1232,6 +1232,7 @@
   "EvaluationFailedToEvaluateForm": "Đánh giá biểu mẫu thất bại. Xin vui lòng thử lại!",
   "EvaluationFormSentBackToEmployeeSuccessfully": "Biểu mẫu đã được gửi lại CBNV thành công!",
   "EvaluationFailedToSendTheFormBackToEmployee": "Biểu mẫu chưa được gửi lại CBNV. Xin vui lòng thử lại!",
+  "EvaluationTotalScoreInValid": "Điểm đánh giá không hợp lệ. Vui lòng kiểm tra lại biểu mẫu đánh giá!",
   "of": "của",
   "EvaluationInput": "Nhập",
   "OnlineSearchLink": "Link tra cứu online",
