@@ -1060,7 +1060,7 @@ function EvaluationDetail(props) {
         if (!showByManager) {
           SetStatusModal(statusModalTemp)
         } else {
-          const keepPopupEvaluationDetail = true
+          const keepPopupEvaluationDetail = actionCode == actionButton.save
           updateParent(statusModalTemp, keepPopupEvaluationDetail)
         }
       }
