@@ -881,10 +881,16 @@ function EvaluationDetail(props) {
   const getResponseMessages = (formStatus, actionCode, apiStatus, isZeroLevel = false) => {
     const messageMapping = {
       [actionButton.save]: {
+        //  CBNV lưu biểu mẫu
         [evaluationStatus.launch]: {
           success: t("EvaluationFormSaveSuccessfully"),
           failed: t("EvaluationFailedToSaveForm"),
-        }
+        },
+        // CBQLTT lưu biểu mẫu
+        [evaluationStatus.selfAssessment]: {
+          success: t("EvaluationFormSaveSuccessfully"),
+          failed: t("EvaluationFailedToSaveForm"),
+        },
       },
       [actionButton.approve]: {
         [evaluationStatus.launch]: {
@@ -898,7 +904,7 @@ function EvaluationDetail(props) {
         [evaluationStatus.qlttAssessment]: {
           success: t("EvaluationFormApprovedSuccessfully"),
           failed: t("EvaluationFailedToApproveForm"),
-        }
+        },
       },
       [actionButton.reject]: {
         [evaluationStatus.selfAssessment]: {
@@ -908,7 +914,7 @@ function EvaluationDetail(props) {
         [evaluationStatus.qlttAssessment]: {
           success: t("EvaluationFormSubmittedToManager"),
           failed: t("EvaluationFailedToReSubmitForm"),
-        }
+        },
       }
     }
     return messageMapping[actionCode][formStatus][apiStatus]
@@ -973,16 +979,31 @@ function EvaluationDetail(props) {
     return (Object.values(errorResult) || []).every(item => !item)
   }
 
+  const isValidTotalScore = () => {
+    const { totalSeftPoint, totalLeadReviewPoint } = evaluationFormDetail
+    return Number(totalSeftPoint) < 0 || Number(totalSeftPoint) > 100 || Number(totalLeadReviewPoint) < 0 || Number(totalLeadReviewPoint) > 100 ? false : true
+  }
+
   const handleSubmit = async (actionCode, isApprove, isSaveDraft) => {
-    if (!isSaveDraft || (actionCode !== actionButton.reject && actionCode !== actionButton.save)) {
+    if (!isSaveDraft || (actionCode == actionButton.approve)) {
       const isValid = isDataValid()
       if (!isValid) {
         return
       }
     }
 
-    SetIsLoading(true)
     const statusModalTemp = { ...statusModal }
+
+    const isValidScore = isValidTotalScore()
+    if (!isValidScore) {
+      statusModalTemp.isShow = true
+      statusModalTemp.isSuccess = false
+      statusModalTemp.content = t("EvaluationTotalScoreInValid")
+      SetStatusModal(statusModalTemp)
+      return
+    }
+
+    SetIsLoading(true)
     try {
       const config = getRequestConfigurations()
       if (actionCode == actionButton.reject || isApprove) { // Từ chối hoặc Phê duyệt
@@ -1058,7 +1079,7 @@ function EvaluationDetail(props) {
   return (
     <>
       <LoadingModal show={isLoading} />
-      {!showByManager && <StatusModal show={statusModal.isShow} isSuccess={statusModal.isSuccess} content={statusModal.content} onHide={onHideStatusModal} />}
+      <StatusModal show={statusModal.isShow} isSuccess={statusModal.isSuccess} content={statusModal.content} onHide={onHideStatusModal} />
       <div className="evaluation-detail-page">
         {
           dataLoaded 

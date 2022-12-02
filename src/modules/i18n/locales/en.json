@@ -1215,6 +1215,7 @@
   "EvaluationFailedToEvaluateForm": "Failed to evaluate form. Please try again!",
   "EvaluationFormSentBackToEmployeeSuccessfully": "Form sent back to employee successfully!",
   "EvaluationFailedToSendTheFormBackToEmployee": "Failed to send the form back to employee. Please try again!",
+  "EvaluationTotalScoreInValid": "Invalid score. Please check your Performance review form again!",
   "of": "of",
   "EvaluationInput": "Input",
   "OnlineSearchLink": "Online search link",
