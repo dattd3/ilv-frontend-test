@@ -66,7 +66,8 @@ class ResignationRequestsManagementActionButton extends React.PureComponent {
         this.props.updateOptionToExport(e)
     }
 
-    updateKeywordsToFilter = value => {
+    updateKeywordsToFilter = (value, _, e) => {
+        e.preventDefault();
         this.props.updateKeywordsToFilter(value, this.state.advancedData);
     }
 
@@ -156,6 +157,7 @@ class ResignationRequestsManagementActionButton extends React.PureComponent {
                     <div className="row filter-action-block">
                        
                         <div className="col-4">
+                            <form >
                             <div className="input-filter d-flex">
                                 {this.state.showAdvanced && <div className='popup row py-3'>
                                     <div className="col-6">
@@ -185,7 +187,7 @@ class ResignationRequestsManagementActionButton extends React.PureComponent {
                                         </button>
                                     </div>
                                     <div className="col-6 mt-3">
-                                        <button type="button" className="save" onClick={() => this.updateKeywordsToFilter(this.state.keywords, this.state.advancedData)}>
+                                        <button type="submit" className="save" onClick={(e) => this.updateKeywordsToFilter(this.state.keywords, this.state.advancedData,e )}>
                                             <i className="fas fa-check mr-2"></i>
                                             <span>Áp dụng</span>
                                         </button>
@@ -200,6 +202,7 @@ class ResignationRequestsManagementActionButton extends React.PureComponent {
                                 
                                 
                             </div>
+                            </form>
                         </div>
                         <div className="col-8 btn-action-group">
                             <div className="row action-group">

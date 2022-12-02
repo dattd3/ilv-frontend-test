@@ -66,12 +66,12 @@ class ResignationRequestsManagementPage extends React.Component {
     fetchDeparmtData = async () => {
         const config = getRequestConfigs()
         config.params = {companyCode: localStorage.getItem('companyCode')};
-        const responses = await axios.get(`${process.env.REACT_APP_REQUEST_URL}ReasonType/getdepartments`, config)
+        const responses = await axios.get(`${process.env.REACT_APP_REQUEST_URL}ReasonType/get-divisions`, config)
         if (responses && responses.data && responses.data.data) {
             const departmentData = responses.data.data.map(item => {
                 return {
-                    value: item.code,
-                    label: item.name
+                    value: item.value,
+                    label: item.label
                 };
             }).filter(item => item.label);
 
@@ -226,25 +226,25 @@ class ResignationRequestsManagementPage extends React.Component {
 
         let requestObj = {}
         let requestConfig = {}
+        const data = this.prepareParamsToFilter();
 
         switch (type) {
             case REPORT_RESIGNATION_REQUESTS:
                 let apiPath = `${process.env.REACT_APP_REQUEST_URL}ReasonType/ExportToExcel`
-                if (fullTextSearch) {
-                    apiPath = `${process.env.REACT_APP_REQUEST_URL}ReasonType/ExportToExcel?fullTextSearch=${fullTextSearch}`
-                }
-                requestObj = this.getRequestConfig(typeMethodMapping[type], apiPath)
+                requestConfig = this.getRequestConfig(typeMethodMapping[type], apiPath)
+                requestObj = {...requestConfig, ...{data: data}}
                 break
             case HANDOVER_STATUS:
                 requestConfig = this.getRequestConfig(typeMethodMapping[type], `${process.env.REACT_APP_REQUEST_URL}WorkOffDeliver/exporttowordbienbanbangiao`)
-                requestObj = {...requestConfig, ...{data: {}}}
+                requestObj = {...requestConfig, ...{data: data}}
                 break
             case RESIGNATION:
                 requestConfig = this.getRequestConfig(typeMethodMapping[type], `${process.env.REACT_APP_REQUEST_URL}ReasonType/exportfileterminalcontract`)
-                requestObj = {...requestConfig, ...{data: {}}}
+                requestObj = {...requestConfig, ...{data: data}}
                 break
             case REPORT_INTERVIEW_RESULTS:
-                requestObj = this.getRequestConfig(typeMethodMapping[type], `${process.env.REACT_APP_REQUEST_URL}WorkOffServey/exportToExcel`)
+                requestConfig = this.getRequestConfig(typeMethodMapping[type], `${process.env.REACT_APP_REQUEST_URL}WorkOffServey/exportToExcel`)
+                requestObj = {...requestConfig, ...{data: data}}
                 break
             case LIQUIDATION_AGREEMENT:
                 requestConfig = this.getRequestConfig(typeMethodMapping[type], `${process.env.REACT_APP_REQUEST_URL}Template/exportword_bienban_thanhly_hopdong`)
