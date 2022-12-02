@@ -230,17 +230,17 @@ class RegistrationEmploymentTerminationForm extends React.Component {
         this.setDisabledSubmitButton(true)
         const isValid = this.isValidData()
         const fileInfoValidation = this.validateAttachmentFile()
-        const isDirectManagerValid = await this.isDirectManagerValid()
+        //const isDirectManagerValid = await this.isDirectManagerValid()
 
         if (!isValid) {
             const message = this.getMessageValidation()
             toast.error(message)
             this.setDisabledSubmitButton(false)
             return
-        } else if (!isDirectManagerValid) {
-            toast.error("Cán bộ QLTT không có thẩm quyền")
-            this.setDisabledSubmitButton(false)
-            return
+        // } else if (!isDirectManagerValid) {
+        //     toast.error("Cán bộ QLTT không có thẩm quyền")
+        //     this.setDisabledSubmitButton(false)
+        //     return
         } else if (_.size(fileInfoValidation) > 0 && fileInfoValidation.files) {
             toast.error(fileInfoValidation.files)
             this.setDisabledSubmitButton(false)
