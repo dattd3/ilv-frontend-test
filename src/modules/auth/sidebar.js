@@ -194,7 +194,7 @@ export const Navigation = [
     parentId: 999,
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     to: map.SupportOnBoarding,
-    label: 'Hỗ trợ chuẩn bị nhận việc',
+    label: 'support_in_preparing_for_job',
     role: 'U'
   },
   {
@@ -202,7 +202,7 @@ export const Navigation = [
     parentId: 999,
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     to: map.EvaluationManager,
-    label: 'Quản lý đánh giá',
+    label: 'manage_evaluating',
     //role:  ['V061', 'V053', 'V040', 'V005']
     role:  [...Constants.MODULE_COMPANY_AVAILABE[Constants.MODULE.DANHGIA_TAIKI]]
   },

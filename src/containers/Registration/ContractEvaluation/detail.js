@@ -12,7 +12,7 @@ import { withTranslation } from "react-i18next";
 import './styles.scss'
 
 const ContractEvaluationdetail = (props) => {
-  const { data, id, type, idSalary } = props
+  const { data, id, type, idSalary, t } = props
   const dataSalary = props.dataSalary;
 
   const handleViewDetailSalary = () => {
@@ -36,47 +36,47 @@ const ContractEvaluationdetail = (props) => {
     <div className="font-size-14 contract-evaluation-result-detail-page">
       <div className="evalution">
         <div id="frame-for-export" className="frame-for-export">
-          <div className="eval-heading">BIÊN BẢN ĐÁNH GIÁ GIAO KẾT / GIA HẠN HĐLĐ</div>
-          <h5>THÔNG TIN NGƯỜI ĐƯỢC ĐÁNH GIÁ</h5>
+          <div className="eval-heading">{t('evaluation_title')} </div>
+          <h5>{t('personal_informations')}</h5>
           <div className="box cbnv">
             <div className="row">
               <div className="col-4">
-                Họ và tên
+                {t("FullName")}
                 <div className="detail">{data.employeeInfo.fullName || ""}</div>
               </div>
               <div className="col-4">
-                Chức danh
+                {t("Title")}
                 <div className="detail">{data.employeeInfo.positionName || ""}</div>
               </div>
               <div className="col-4">
-                Khối/Phòng/Bộ phận
+                {t('DepartmentManage')}
                 <div className="detail">{data.employeeInfo.departmentName || ""}</div>
               </div>
             </div>
             <div className="row">
               <div className="col-4">
-                Ngày làm việc
+                {t('working_day')}
                 <div className="detail">{data.employeeInfo.startDate ? moment(data.employeeInfo.startDate).format("DD/MM/YYYY") : ''}</div>
               </div>
               <div className="col-4">
-                Ngày hết hạn HĐTV/HĐLĐ
+                {t('expired_day_contract')}
                 <div className="detail">{data.employeeInfo.expireDate ? moment(data.employeeInfo.expireDate).format("DD/MM/YYYY") : ''}</div>
               </div>
             </div>
           </div>
 
-          <h5>Thông tin đánh giá</h5>
+          <h5>{t('assessment_informations')}</h5>
           <div className="box cbnv">
             <div className="row description">
               <div className="col-3 title">
-                Thang điểm đánh giá
+                {t('assessment_scale')}
               </div>
               <div className="col-9">
-                <span>(5) Xuất sắc</span>
-                <span>(4) Tốt</span>
-                <span>(3) Khá</span>
-                <span>(2) Trung Bình</span>
-                <span>(1) Yếu</span>
+                <span>(5) {t('excellent')}</span>
+                <span>(4) {t('good')}</span>
+                <span>(3) {t('medium')}</span>
+                <span>(2) {t('normal')}</span>
+                <span>(1) {t('bad')}</span>
               </div>
             </div>
             <div className="row">
@@ -90,10 +90,10 @@ const ContractEvaluationdetail = (props) => {
                   <table>
                     <thead>
                       <tr>
-                        <th style={{ width: '30%' }}>Nội dung đánh giá</th>
-                        <th style={{ width: '15%' }}>Tự đánh giá</th>
-                        <th style={{ width: '15%' }}>CBLĐ TT đánh giá</th>
-                        <th style={{ width: '40%' }}>Nhận xét</th>
+                        <th style={{ width: '30%' }}>{t('content_rated')}</th>
+                        <th style={{ width: '15%' }}>{t('self_assessment')}</th>
+                        <th style={{ width: '15%' }}>{t('leader_assessment')}</th>
+                        <th style={{ width: '40%' }}>{t('nhan_xet')}</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -117,7 +117,7 @@ const ContractEvaluationdetail = (props) => {
                     </tbody>
                     <thead>
                       <tr>
-                        <th style={{ width: '22%' }}>Tổng điểm</th>
+                        <th style={{ width: '22%' }}>{t('total_score')}</th>
                         <th style={{ width: '16%' }}>{data.SelfAssessmentScoreTotal}</th>
                         <th style={{ width: '22%' }}>{data.ManagementScoreTotal}</th>
                         <th style={{ width: '40%' }}></th>
@@ -129,46 +129,47 @@ const ContractEvaluationdetail = (props) => {
             </div>
           </div>
 
-          <h5>THÔNG TIN THÊM</h5>
+          <h5>{t('more_information')}</h5>
           <div className="box cbnv more-description">
             <div className="title">
-              TỰ ĐÁNH GIÁ
+            {t('self_assessment')}
             </div>
             <div className="row">
               <div className="col-6">
-                Điểm mạnh
+              {t('strength')}
                 <div className="detail">{data && data.selfEvalution ? data.selfEvalution.strong || "" : ""}</div>
               </div>
               <div className="col-6">
-                Điểm cần cải thiện
+              {t('weakness')}
                 <div className="detail">{data && data.selfEvalution ? data.selfEvalution.weak || "" : ""}</div>
               </div>
               <div className="col-12">
-                Ý kiến đề xuất của CBNV
+              {t('suggest_of_staff')}
                 <div className="detail">{data && data.selfEvalution ? data.selfEvalution.opinion || "" : ""}</div>
               </div>
             </div>
           </div>
           <div className="box cbnv more-description">
             <div className="title">
-              CBLĐ TT ĐÁNH GIÁ
+            {t('leader_assessment')}
             </div>
             <div className="row">
               <div className="col-6">
-                Điểm mạnh
+              {t('strength')}
                 <div className="detail">{data && data.bossEvalution ? data.bossEvalution.strong || "" : ""}</div>
               </div>
               <div className="col-6">
-                Điểm cần cải thiện
+              {t('weakness')}
                 <div className="detail">{data && data.bossEvalution ? data.bossEvalution.weak || "" : ""}</div>
               </div>
             </div>
           </div>
           {
-            checkVersionPnLSameAsVinhome(Constants.MODULE.DANHGIA_TAIKI) ?
+            //checkVersionPnLSameAsVinhome(Constants.MODULE.DANHGIA_TAIKI) ?
+            false ?
               null :
               <>
-                <h5>Thông tin khóa học</h5>
+                <h5>{t('course_information')}</h5>
                 <div className="box cbnv">
                   <div className="row task">
                     <div className="col-12">
@@ -176,10 +177,10 @@ const ContractEvaluationdetail = (props) => {
                         <table>
                           <thead>
                             <tr>
-                              <th className="text-center" style={{ width: '8%' }}>STT</th>
-                              <th style={{ width: '37%' }}>Tên khóa học</th>
-                              <th style={{ width: '15%' }}>Tình trạng</th>
-                              <th style={{ width: '40%' }}>Ghi chú</th>
+                              <th className="text-center" style={{ width: '8%' }}>{t('stt')}</th>
+                              <th style={{ width: '37%' }}>{t('course_name')}</th>
+                              <th style={{ width: '15%' }}>{t('EvaluationStatus')}</th>
+                              <th style={{ width: '40%' }}>{t('Note')}</th>
                             </tr>
                           </thead>
                           <tbody>
@@ -193,7 +194,7 @@ const ContractEvaluationdetail = (props) => {
                                     {
                                       index == 0 ?
                                         <td className="text-center" style={{ width: '40%' }} rowSpan={data.course.length}>
-                                          Không đạt sẽ không đủ điều kiện ký kết hợp đồng
+                                          {t('my_rating_note')}
                                         </td> :
                                         null
                                     }
@@ -207,11 +208,11 @@ const ContractEvaluationdetail = (props) => {
                   </div>
                 </div>
 
-                <h5>Thông tin hồ sơ</h5>
+                <h5>{t('profile_information')}</h5>
                 <div className="box cbnv document">
                   <div className="row">
                     <div className="col-12">
-                      <label>Tình trạng hồ sơ:</label> <span>{data.documentStatus}</span>
+                      <label>{t('application_status')}:</label> <span>{data.documentStatus}</span>
                     </div>
                   </div>
                 </div>
@@ -219,7 +220,7 @@ const ContractEvaluationdetail = (props) => {
           }
 
 
-          <h5>QUYẾT ĐỊNH XỬ LÝ VI PHẠM</h5>
+          {/* <h5>QUYẾT ĐỊNH XỬ LÝ VI PHẠM</h5>
           {
             data && data.violation && data.violation.length > 0 ?
               data.violation.map((item, index) => {
@@ -252,15 +253,15 @@ const ContractEvaluationdetail = (props) => {
                   </div>
                 </div>
               }) : null
-          }
+          } */}
 
           <div className="box cbnv">
             <div className="row approve">
               <div className="col-12">
                 {
                   checkVersionPnLSameAsVinhome(Constants.MODULE.DANHGIA_TAIKI) ?
-                    <><span className="title">QUẢN LÝ TRỰC TIẾP ĐÁNH GIÁ</span></>
-                    : <><span className="title">NGƯỜI ĐÁNH GIÁ</span><span className="sub-title">(Nếu có)</span></>
+                    <><span className="title">{t('manager_review')}</span></>
+                    : <><span className="title">{t('reviewer')}</span><span className="sub-title">({t('if_any')})</span></>
                 }
               </div>
             </div>
@@ -280,8 +281,8 @@ const ContractEvaluationdetail = (props) => {
               <div className="col-12">
                 {
                   checkVersionPnLSameAsVinhome(Constants.MODULE.DANHGIA_TAIKI) ?
-                    <><span className="title">CBLĐ thẩm định</span><span className="sub-title">(Nếu có)</span></>
-                    : <span className="title">QUẢN LÝ TRỰC TIẾP ĐÁNH GIÁ</span>
+                    <><span className="title">{t('manager_assessment')}</span><span className="sub-title">({t('if_any')})</span></>
+                    : <span className="title">{t('manager_review')}</span>
                 }
               </div>
             </div>
@@ -299,22 +300,22 @@ const ContractEvaluationdetail = (props) => {
 
           {/* quan li */}
           <div className="box cbnv more-description">
-            <div className="title">Ý KIẾN ĐỀ XUẤT CỦA CBQL TRỰC TIẾP</div>
+            <div className="title">{t('recommend_of_manager')}</div>
             <div className="row">
               <div className="col-3">
-                Kết quả
+              {t('result')}
                 <div className="detail">{data && data.qlttOpinion ? data.qlttOpinion.result?.label : ""}</div>
               </div>
               <div className="col-3">
-                Loại hợp đồng lao động
+              {t('contract_type')}
                 <div className="detail">{data && data.qlttOpinion ? data.qlttOpinion.contract?.label : ""}</div>
               </div>
               <div className="col-3">
-                Ngày bắt đầu hợp đồng
+              {t('contract_start_date')}
                 <div className="detail">{data && data.qlttOpinion ? data.qlttOpinion.startDate : ""}</div>
               </div>
               <div className="col-3">
-                Ngày kết thúc hợp đồng
+              {t('contract_end_date')}
                 <div className="detail">{data && data.qlttOpinion ? data.qlttOpinion.endDate : ""}</div>
               </div>
             </div>
@@ -324,7 +325,7 @@ const ContractEvaluationdetail = (props) => {
                 <div className="detail">{requestInfo ? moment(requestInfo.startDate).format("DD/MM/YYYY") + (requestInfo.startTime ? ' ' + moment(requestInfo.startTime, TIME_FORMAT).lang('en-us').format('HH:mm') : '') : ""}</div>
               </div> */}
               <div className="col-12">
-                Đề xuất khác
+              {t('other_suggestions')}
                 <div className="detail">{data && data.qlttOpinion ? data.qlttOpinion.otherOption : ""}</div>
               </div>
             </div>
@@ -369,7 +370,7 @@ const ContractEvaluationdetail = (props) => {
           <div className="box cbnv">
             <div className="row approve">
               <div className="col-12">
-                <span className="title">NGƯỜI PHÊ DUYỆT</span>
+                <span className="title">{t('approver_assessment')}</span>
               </div>
             </div>
             <div className="row">
@@ -386,7 +387,7 @@ const ContractEvaluationdetail = (props) => {
               {
                 data.nguoipheduyet && data.comment ?
                   <div className="col-12">
-                    Lý do không duyệt
+                    {t('reason_not_approve')}
                     <div className="detail">{data.nguoipheduyet.comment}</div>
                   </div>
                   : null
@@ -394,7 +395,7 @@ const ContractEvaluationdetail = (props) => {
               {
                 data.nguoipheduyet && data.approvalDate ?
                   <div className="col-12">
-                    Ngày phê duyệt
+                    {t('approval_date')}
                     <div className="detail">{moment(data.approvalDate).format('DD/MM/YYYY')}</div>
                   </div>
                   : null
@@ -404,19 +405,19 @@ const ContractEvaluationdetail = (props) => {
 
           {type === 'salary' && idSalary &&
             <>
-              <h5>Thông tin đề xuất lương</h5>
+              <h5>{t('salary_proposed_info')}</h5>
               <div className="box cbnv salary">
                 <div className="row">
                   <div className="col-6">
                     <div className='wrapper-status'>
-                      <span className='font-normal'>Tình trạng: </span>
+                      <span className='font-normal'>{t('EvaluationStatus')}: </span>
                       {dataSalary?.statusName &&
                         <div>{dataSalary?.statusName}</div>
                       }
                     </div>
                   </div>
                   <div className="col-6 view-detail">
-                    <span onClick={() => handleViewDetailSalary()}>{'Xem chi tiết >>'}</span>
+                    <span onClick={() => handleViewDetailSalary()}>{t('Details') + ' >>'}</span>
                   </div>
                 </div>
               </div>

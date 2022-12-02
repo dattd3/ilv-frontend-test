@@ -202,7 +202,7 @@ class ApproverComponent extends React.Component {
 
       <div className="row">
         <div className="col-4">
-          <p className="title">Họ và tên</p>
+          <p className="title">{t('FullName')}</p>
           <div className='mv-10'>
             <Select
               isClearable={true}
@@ -221,13 +221,13 @@ class ApproverComponent extends React.Component {
           {this.props.errors && this.props.errors['approver'] ? <p className="text-danger">{this.props.errors['approver']}</p> : null}
         </div>
         <div className="col-4">
-          <p className="title">Chức danh</p>
+          <p className="title">{t('Title')}</p>
           <div>
             <input type="text" className="form-control mv-10" value={this.state.approver?.current_position || ""} readOnly />
           </div>
         </div>
         <div className="col-4">
-          <p className="title">Khối/Phòng/Bộ phận</p>
+          <p className="title">{t('DepartmentManage')}</p>
           <div>
             <input type="text" className="form-control mv-10" value={this.state.approver?.department || ""} readOnly />
           </div>
@@ -237,7 +237,7 @@ class ApproverComponent extends React.Component {
         comment ?
           <div className="row mt-3">
             <div className="col-4">
-              Lý do không duyệt
+              {t('reason_not_approve')}
               <div className="detail">{comment}</div>
             </div>
           </div> : null
@@ -246,7 +246,7 @@ class ApproverComponent extends React.Component {
         approvalDate ?
         <div className="row mt-3">
             <div className="col-4">
-              Ngày phê duyệt
+              {t('approval_date')}
               <div className="detail">{moment(approvalDate).format('DD/MM/YYYY')}</div>
             </div>
           </div> : null

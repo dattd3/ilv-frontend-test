@@ -11,10 +11,10 @@ const ProposalManagement = (props) => {
   const InsuranceOptions = [
   ];
   if(checkVersionPnLSameAsVinhome(Constants.MODULE.DEXUATLUONG)) {
-    InsuranceOptions.push({ value: 1, label: 'Đề xuất Điều chỉnh thu nhập' });
+    InsuranceOptions.push({ value: 1, label: t('SalaryAdjustmentPropse')});
   }
   if(checkVersionPnLSameAsVinhome(Constants.MODULE.NGHIVIEC)) {
-    InsuranceOptions.push({ value: 2, label: 'Đề xuất cho nhân viên nghỉ việc' });
+    InsuranceOptions.push({ value: 2, label: t('ProposeForEmployeesResignation') });
   }
 
   const handleChangeType = (e) => {
