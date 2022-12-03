@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next"
 import { Doughnut } from 'react-chartjs-2'
 import { withRouter } from 'react-router-dom'
 import axios from 'axios'
+import purify from "dompurify"
 import _ from 'lodash'
 import moment from "moment/moment";
 import Constants from '../../../commons/Constants'
@@ -457,7 +458,9 @@ function EvaluationProcess(props) {
           <p>{t("EvaluationDetailPartAttitudeCommentOfEmployee")}</p>
           {
             isDisableEmployeeComment
-            ? <div className="comment-content">{target?.seftOpinion || ""}</div>
+            ? <div className="comment-content" dangerouslySetInnerHTML={{
+                __html: purify.sanitize(target?.seftOpinion || ""),
+              }} />
             : <textarea 
                 rows={1} 
                 placeholder={isEdit ? !(showByManager || evaluationFormDetail.status != evaluationStatus.launch) ? t("EvaluationDetailPartSelectScoreInput") : '' : ''} 
@@ -470,7 +473,9 @@ function EvaluationProcess(props) {
           <p>{t("EvaluationDetailPartAttitudeCommentOfManager")}</p>
           {
             isDisableManagerComment
-            ? <div className="comment-content">{target?.leaderReviewOpinion || ""}</div>
+            ? <div className="comment-content" dangerouslySetInnerHTML={{
+                __html: purify.sanitize(target?.leaderReviewOpinion || ""),
+              }} />
             : <textarea 
                 rows={1} 
                 placeholder={isEdit ? !(!showByManager || (showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment))) ? t("EvaluationDetailPartSelectScoreInput") : '' : ''} 
@@ -655,7 +660,9 @@ function EvaluationProcess(props) {
                             <p>{t("EvaluationDetailPartAttitudeCommentOfEmployee")}</p>
                             {
                               isDisableEmployeeComment
-                              ? <div className="comment-content">{target?.seftOpinion || ""}</div>
+                              ? <div className="comment-content" dangerouslySetInnerHTML={{
+                                  __html: purify.sanitize(target?.seftOpinion || ""),
+                                }} />
                               : <textarea 
                                   rows={1} 
                                   placeholder={isEdit ? !(showByManager || evaluationFormDetail.status != evaluationStatus.launch) ? t("EvaluationDetailPartSelectScoreInput") : '' : ''} 
@@ -668,7 +675,9 @@ function EvaluationProcess(props) {
                             <p>{t("EvaluationDetailPartAttitudeCommentOfManager")}</p>
                             {
                               isDisableManagerComment
-                              ? <div className="comment-content">{target?.leaderReviewOpinion || ""}</div>
+                              ? <div className="comment-content" dangerouslySetInnerHTML={{
+                                  __html: purify.sanitize(target?.leaderReviewOpinion || ""),
+                                }} />
                               : <textarea 
                                   rows={1} 
                                   placeholder={isEdit ? !(!showByManager || (showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment))) ? t("EvaluationDetailPartSelectScoreInput") : '' : ''} 
