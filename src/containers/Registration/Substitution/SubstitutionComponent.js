@@ -28,7 +28,7 @@ const TIME_OF_SAP_FORMAT = 'HHmm00'
 const BROKEN_SHIFT_OPTION_VALUE = "02"
 const queryString = window.location.search
 const currentUserCompanyVCode = localStorage.getItem("companyCode")
-const shiftCodesAllowedToUpdateForVin3S = ['0501', '0502']
+const shiftCodesAllowedToUpdateForVin3S = ['0501']
 const substitutionTypeAllowedToUpdateForVin3S = '01'
 
 class SubstitutionComponent extends React.Component {
