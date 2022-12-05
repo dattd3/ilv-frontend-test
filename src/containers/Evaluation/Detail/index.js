@@ -377,15 +377,18 @@ function EvaluationProcess(props) {
               <tbody>
                 <tr>
                   <td className="measurement">
-                    <ul>
-                      {
-                        target?.jobDetail && <li>{target?.jobDetail}</li>
-                      }
-                      <li>{target?.metric1}</li>
-                      <li>{target?.metric2}</li>
-                      <li>{target?.metric3}</li>
-                      <li>{target?.metric4}</li>
-                      <li>{target?.metric5}</li>
+                    {
+                      target?.jobDetail && 
+                      <ul className="first">
+                        <li>{target?.jobDetail}</li>
+                      </ul>
+                    }
+                    <ul className="second">
+                      <li>{target?.metric1 || '--'}</li>
+                      <li>{target?.metric2 || '--'}</li>
+                      <li>{target?.metric3 || '--'}</li>
+                      <li>{target?.metric4 || '--'}</li>
+                      <li>{target?.metric5 || '--'}</li>
                     </ul>
                   </td>
                   <td className="text-center proportion"><span>{target?.weight}%</span></td>
@@ -587,15 +590,18 @@ function EvaluationProcess(props) {
                             <tbody>
                               <tr>
                                 <td className="measurement">
-                                  <ul>
-                                    {
-                                      target?.jobDetail && <li>{target?.jobDetail}</li>
-                                    }
-                                    <li>{target?.metric1}</li>
-                                    <li>{target?.metric2}</li>
-                                    <li>{target?.metric3}</li>
-                                    <li>{target?.metric4}</li>
-                                    <li>{target?.metric5}</li>
+                                  {
+                                    target?.jobDetail && 
+                                    <ul className="first">
+                                      <li>{target?.jobDetail}</li>
+                                    </ul>
+                                  }
+                                  <ul className="second">
+                                    <li>{target?.metric1 || '--'}</li>
+                                    <li>{target?.metric2 || '--'}</li>
+                                    <li>{target?.metric3 || '--'}</li>
+                                    <li>{target?.metric4 || '--'}</li>
+                                    <li>{target?.metric5 || '--'}</li>
                                   </ul>
                                 </td>
                                 <td className="text-center proportion"><span>{target?.weight}%</span></td>
