@@ -85,7 +85,8 @@ class RegistrationEmploymentTerminationForm extends React.Component {
                     dateStartWork: dateStartWork,
                     email: localStorage.getItem("email") || "",
                     rank: infos.rank_name || "",
-                    unitName: infos.unit || ""
+                    unitName: infos.unit || "",
+                    costCenter: infos.cost_center || ''
                 }
             }
         }
@@ -268,7 +269,6 @@ class RegistrationEmploymentTerminationForm extends React.Component {
             directManager,
             seniorExecutive
         } = this.state
-
         return (
             <>
             <Progress max="100" color="success" value={this.state.loaded}>

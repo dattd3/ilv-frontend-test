@@ -33,8 +33,26 @@ class ResignationRequestsManagementActionButton extends React.PureComponent {
             files: [],
             showAdvanced: false
         }
-
+        this.searchForm = React.createRef(null);
         this.onInputChange = debounce(this.updateKeywordsToFilter, 800)
+    }
+
+    componentDidMount() {
+        document.addEventListener("mousedown", this.handleClickOutside);
+    }
+
+    componentWillUnmount() {
+        document.removeEventListener("mousedown", this.handleClickOutside);
+    }
+
+    handleClickOutside = event => {
+        if (this.searchForm.current && !this.searchForm.current.contains(event?.target) && !['svg', 'path'].includes(event?.target?.tagName)) {
+           this.hideAdvanceSearch();
+          }
+    }
+
+    hideAdvanceSearch = () => {
+        this.setState({showAdvanced: false});
     }
 
     handleInputAdvancedChange = (e, name) => {
@@ -77,7 +95,9 @@ class ResignationRequestsManagementActionButton extends React.PureComponent {
             department: null,
             handoverStatus: null,
             approvalStatus: null
-        }});
+        },
+        showAdvanced: false
+    });
     }
 
     save = () => {
@@ -130,7 +150,7 @@ class ResignationRequestsManagementActionButton extends React.PureComponent {
                 width: '100%'
             })
         }
-        const { t, isEdit, listDepartments } = this.props
+        const { t, isEdit, listDepartments, costCenters } = this.props
         const {exportOption, advancedData, keywords, massType, massValue, files} = this.state
 
         const exportOptions = [
@@ -159,7 +179,7 @@ class ResignationRequestsManagementActionButton extends React.PureComponent {
                         <div className="col-4">
                             <form >
                             <div className="input-filter d-flex">
-                                {this.state.showAdvanced && <div className='popup row py-3'>
+                                {this.state.showAdvanced && <div ref={this.searchForm} className='popup row py-3'>
                                     <div className="col-6">
                                         <div>
                                             <input className='form-control' type="text" value={advancedData.employeeNo || ""} placeholder="Nhập mã nhân viên" onChange={e => this.handleInputAdvancedChange(e, 'employeeNo')}  />
@@ -180,6 +200,13 @@ class ResignationRequestsManagementActionButton extends React.PureComponent {
                                             <Select options={this.approvalOptions} onChange={e =>this.handleSelectAdvancedChange(e, 'approvalStatus')} value={this.approvalOptions.filter(item => item.value == advancedData.approvalStatus)} placeholder="Tình trạng phê duyệt" isClearable={true} styles={customStyles} />
                                         </div>
                                     </div>    
+                                    <div className="col-6 mt-3">
+                                        <div>
+                                            <Select options={costCenters } onChange={e => this.handleSelectAdvancedChange(e, 'costCenter')} value={costCenters?.filter(item => item.value == advancedData.costCenter)} placeholder="Cost Center" isClearable={true} styles={customStyles} />
+                                        </div>
+                                    </div>
+                                    <div className="col-6 mt-3">
+                                    </div>   
                                     <div className="col-6 mt-3">
                                         <button type="button" className=" discard" onClick={() => this.resetAdvancedData()}>
                                             <i className="fas fa-times mr-2"></i>
