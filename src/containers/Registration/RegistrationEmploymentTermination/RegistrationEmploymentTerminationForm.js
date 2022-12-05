@@ -127,7 +127,8 @@ class RegistrationEmploymentTerminationForm extends React.Component {
                     regionId: localStorage.getItem("organizationLv4"),
                     departmentId: localStorage.getItem("organizationLv3"),
                     unitId: localStorage.getItem("organizationLv5"),
-                    rankId: localStorage.getItem("employeeLevel")
+                    rankId: localStorage.getItem("employeeLevel"),
+                    costCenter: infos.cost_center || ''
                 }
             }
         }
@@ -416,7 +417,6 @@ class RegistrationEmploymentTerminationForm extends React.Component {
             seniorExecutive,
             isShowLoadingModal
         } = this.state
-
         return (
             <div className='registration-section'>
             <LoadingModal show={isShowLoadingModal} />

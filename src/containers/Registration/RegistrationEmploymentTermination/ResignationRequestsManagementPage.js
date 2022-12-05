@@ -64,19 +64,30 @@ class ResignationRequestsManagementPage extends React.Component {
     }
 
     fetchDeparmtData = async () => {
+        let departmentData = [];
+        let costCenters = [];
+
         const config = getRequestConfigs()
         config.params = {companyCode: localStorage.getItem('companyCode')};
         const responses = await axios.get(`${process.env.REACT_APP_REQUEST_URL}ReasonType/get-divisions`, config)
         if (responses && responses.data && responses.data.data) {
-            const departmentData = responses.data.data.map(item => {
+            departmentData = responses.data.data.map(item => {
                 return {
                     value: item.value,
                     label: item.label
                 };
             }).filter(item => item.label);
-
-            this.setState({listDepartments: departmentData});
         }
+        const constCenterResponse =  await axios.get(`${process.env.REACT_APP_REQUEST_URL}ReasonType/get-costcenter`, config);
+        if(constCenterResponse && constCenterResponse.data?.data) {
+            costCenters = constCenterResponse.data.data.map(item => {
+                return {
+                    value: item,
+                    label: item
+                };
+            }).filter(item => item.label);
+        }
+        this.setState({listDepartments: departmentData, costCenters: costCenters});
     }
 
     updateKeywordsToFilter = (value, advancedData) => {
@@ -505,6 +516,7 @@ class ResignationRequestsManagementPage extends React.Component {
     render() {
         const { t } = this.props
         const {
+            costCenters,
             listUserTerminations,
             totalUserTerminations,
             listDepartments,
@@ -516,7 +528,6 @@ class ResignationRequestsManagementPage extends React.Component {
             searchingDataToFilter,
             isCheckedAll
         } = this.state
-
         return (
             <>
             <Progress max="100" color="success" value={this.state.loaded}>
@@ -528,7 +539,7 @@ class ResignationRequestsManagementPage extends React.Component {
                 <h4 className="title text-uppercase">{t('ResignationRequestsManagement')}</h4>
             </div>
             <div className="leave-of-absence resignation-requests-management-page">
-                <ResignationRequestsManagementActionButton listDepartments ={listDepartments} updateKeywordsToFilter={this.updateKeywordsToFilter} updateAttachedFiles={this.updateAttachedFiles} save={this.save} massUpdate={this.massUpdate} updateOptionToExport={this.updateOptionToExport} />
+                <ResignationRequestsManagementActionButton costCenters={costCenters} listDepartments ={listDepartments} updateKeywordsToFilter={this.updateKeywordsToFilter} updateAttachedFiles={this.updateAttachedFiles} save={this.save} massUpdate={this.massUpdate} updateOptionToExport={this.updateOptionToExport} />
                 <ListStaffResignationComponent listUserTerminations={listUserTerminations} isCheckedAll ={isCheckedAll} updateTerminationRequestList={this.updateTerminationRequestList} />
             </div>
             <div className='row'>

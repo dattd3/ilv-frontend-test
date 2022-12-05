@@ -223,7 +223,6 @@ class RegistrationEmploymentTerminationForm extends React.Component {
                 fileUrl: item.fileUrl || ""
             }
         })
-
         return (
             <div className="registration-section justify-content-between">
                 <Progress max="100" color="success" value={this.state.loaded}>

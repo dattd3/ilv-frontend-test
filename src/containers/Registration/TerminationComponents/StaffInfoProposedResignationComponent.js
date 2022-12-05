@@ -78,7 +78,7 @@ class StaffInfoProposedResignationComponent extends React.PureComponent {
         if (!itemExist || itemExist.length === 0 && employeeCodeToSearchIds.length > 0) {
             errorObj.employees = t('require_choose_employee_resign')
             const contractInfo = await this.getMoreInfoContract(employeeCodeToSearchIds.join(','));
-            console.log(employeeCodeToSearchIds.join(','), contractInfo);
+            //console.log(employeeCodeToSearchIds.join(','), contractInfo);
 
             const newEmployeeAdded = employeeCodeToSearch.map(employee => {
                 return {
@@ -101,7 +101,8 @@ class StaffInfoProposedResignationComponent extends React.PureComponent {
                     divisionId: employee.orglv3_id,
                     departmentId: employee.orglv3_id,
                     unitId: employee.orglv5_id,
-                    rankId: employee.rank_id
+                    rankId: employee.rank_id,
+                    costCenter: employee.costCenter
                 };
             })
     

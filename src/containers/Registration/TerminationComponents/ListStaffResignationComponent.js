@@ -280,6 +280,7 @@ class ListStaffResignationComponent extends React.PureComponent {
                                             <th>{t('Title')}</th>
                                             <th>{t('DepartmentManage')}</th>
                                             <th>{t('Grade')}</th>
+                                            <th>Cost Center</th>
                                             <th>{t('resignAt')}</th>
                                             <th>{t('ContractTerminationDate')}</th>
                                             <th>{t('ReasonForContractTermination')}</th>
@@ -321,7 +322,8 @@ class ListStaffResignationComponent extends React.PureComponent {
                                                             <td className="sticky-col employee-code-col"><div className="data employee-code">{userInfos?.employeeNo || ""}</div></td>
                                                             <td className="job-title-col"><div className="data job-title">{userInfos?.jobTitle || ""}</div></td>
                                                             <td className="block-department-part-col"><div className="data block-department-part">{userInfos?.department || ""}</div></td>
-                                                            <td className="rank-col"><div className="data rank">{userInfos?.rank || ""}</div></td>
+                                                            <td className="rank-col"><div className="data rank text-center">{userInfos?.rank || ""}</div></td>
+                                                            <td className="rank-col"><div className="data rank text-center">{item?.costCenter || ""}</div></td>
                                                             <td className="application-date-col"><div className="data text-center application-date">{item?.createDate ? <Moment format="DD/MM/YYYY">{item.createDate}</Moment> : ""}</div></td>
                                                             <td className="contract-termination-date-col"><div className="data text-center contract-termination-date">{item?.dateTermination ? <Moment format="DD/MM/YYYY">{item?.dateTermination}</Moment> : ""}</div></td>
                                                             <td className="reason-termination-col"><div className="data reason-termination">{reason?.label || ""}</div></td>
