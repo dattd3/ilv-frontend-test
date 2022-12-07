@@ -49,7 +49,6 @@ function EvaluationOverall(props) {
   const isDifferentZeroLevel = evaluationFormDetail.reviewStreamCode !== processStep.zeroLevel;
 
   const overallData = {
-    // labels: ["Red", "Green"],
     datasets: [
       {
         data: [evaluationFormDetail?.totalTarget - totalCompleted, totalCompleted],
@@ -284,6 +283,8 @@ function EvaluationProcess(props) {
     updateData(subIndex, parentIndex, stateName, val, childIndex)
   }
 
+  const formatTargetText = str => str?.replace(/\n|\r/g, "")
+
   const renderEvaluationItem = (item, index, scores, target, i, deviant, parentIndex, subGroupTargetIndex) => {
     const isChild = !_.isNil(parentIndex);
     const isDisableEmployeeComment = isEdit ? (showByManager || evaluationFormDetail.status != evaluationStatus.launch) : true
@@ -380,15 +381,15 @@ function EvaluationProcess(props) {
                     {
                       target?.jobDetail && 
                       <ul className="first">
-                        <li>{target?.jobDetail}</li>
+                        <li>{formatTargetText(target?.jobDetail)}</li>
                       </ul>
                     }
                     <ul className="second">
-                      <li>{target?.metric1 || '--'}</li>
-                      <li>{target?.metric2 || '--'}</li>
-                      <li>{target?.metric3 || '--'}</li>
-                      <li>{target?.metric4 || '--'}</li>
-                      <li>{target?.metric5 || '--'}</li>
+                      <li>{!target?.metric1 ? '--' : formatTargetText(target?.metric1)}</li>
+                      <li>{!target?.metric2 ? '--' : formatTargetText(target?.metric2)}</li>
+                      <li>{!target?.metric3 ? '--' : formatTargetText(target?.metric3)}</li>
+                      <li>{!target?.metric4 ? '--' : formatTargetText(target?.metric4)}</li>
+                      <li>{!target?.metric5 ? '--' : formatTargetText(target?.metric5)}</li>
                     </ul>
                   </td>
                   <td className="text-center proportion"><span>{target?.weight}%</span></td>
@@ -593,15 +594,15 @@ function EvaluationProcess(props) {
                                   {
                                     target?.jobDetail && 
                                     <ul className="first">
-                                      <li>{target?.jobDetail}</li>
+                                      <li>{formatTargetText(target?.jobDetail)}</li>
                                     </ul>
                                   }
                                   <ul className="second">
-                                    <li>{target?.metric1 || '--'}</li>
-                                    <li>{target?.metric2 || '--'}</li>
-                                    <li>{target?.metric3 || '--'}</li>
-                                    <li>{target?.metric4 || '--'}</li>
-                                    <li>{target?.metric5 || '--'}</li>
+                                    <li>{!target?.metric1 ? '--' : formatTargetText(target?.metric1)}</li>
+                                    <li>{!target?.metric2 ? '--' : formatTargetText(target?.metric2)}</li>
+                                    <li>{!target?.metric3 ? '--' : formatTargetText(target?.metric3)}</li>
+                                    <li>{!target?.metric4 ? '--' : formatTargetText(target?.metric4)}</li>
+                                    <li>{!target?.metric5 ? '--' : formatTargetText(target?.metric5)}</li>
                                   </ul>
                                 </td>
                                 <td className="text-center proportion"><span>{target?.weight}%</span></td>
@@ -1015,9 +1016,40 @@ function EvaluationDetail(props) {
     return (Object.values(errorResult) || []).every(item => !item)
   }
 
-  const isValidTotalScore = () => {
+  const isValidTotalScoreFunc = () => {
     const { totalSeftPoint, totalLeadReviewPoint } = evaluationFormDetail
     return Number(totalSeftPoint) < 0 || Number(totalSeftPoint) > 100 || Number(totalLeadReviewPoint) < 0 || Number(totalLeadReviewPoint) > 100 ? false : true
+  }
+
+  const isValidScoreFunc = () => {
+    const maximumScore = 5;
+    const minimumScore = 1;
+    const listGroup = evaluationFormDetail?.listGroup || []
+
+    for (let groupIndex = 0; groupIndex < listGroup.length; groupIndex++) {
+      let group = listGroup[groupIndex]
+      for (let targetIndex = 0; targetIndex < group?.listTarget?.length; targetIndex++) {
+        let target = group?.listTarget[targetIndex]
+        if (target?.seftPoint !== null && (Number(target?.seftPoint) > maximumScore || isNaN(Number(target?.seftPoint)) || Number(target?.seftPoint) < minimumScore)) {
+          return false
+        }
+        if (target?.leadReviewPoint !== null && (Number(target?.leadReviewPoint) > maximumScore || isNaN(Number(target?.leadReviewPoint)) || Number(target?.leadReviewPoint) < minimumScore)) {
+          return false
+        }
+
+        for (let subTargetIndex = 0; subTargetIndex < target?.listTarget?.length; subTargetIndex++) {
+          let subTarget = target?.listTarget[subTargetIndex]
+          if (subTarget?.seftPoint !== null && (Number(subTarget?.seftPoint) > maximumScore || isNaN(Number(subTarget?.seftPoint)) || Number(subTarget?.seftPoint) < minimumScore)) {
+            return false
+          }
+          if (subTarget?.leadReviewPoint !== null && (Number(subTarget?.leadReviewPoint) > maximumScore || isNaN(Number(subTarget?.leadReviewPoint)) || Number(subTarget?.leadReviewPoint) < minimumScore)) {
+            return false
+          }
+        }
+      }
+    }
+
+    return true
   }
 
   const handleSubmit = async (actionCode, isApprove, isSaveDraft) => {
@@ -1030,8 +1062,10 @@ function EvaluationDetail(props) {
 
     const statusModalTemp = { ...statusModal }
 
-    const isValidScore = isValidTotalScore()
-    if (!isValidScore) {
+    const isValidTotalScore = isValidTotalScoreFunc()
+    const isValidScore = isValidScoreFunc()
+
+    if (!isValidTotalScore || !isValidScore) {
       statusModalTemp.isShow = true
       statusModalTemp.isSuccess = false
       statusModalTemp.content = t("EvaluationTotalScoreInValid")
