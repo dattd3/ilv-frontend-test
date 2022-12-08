@@ -1086,7 +1086,8 @@ export const IncomeTablesConfig = t => {
                                     { label: t("ProjectBonus"), field: 'project_campaign_bonus' },
                                     { label: t("MobilizationBonus"), field: 'mobilizing_bonus' },
                                     { label: t("GrossOtherBonus"), field: 'other_gross_bonus' },
-                                    { label: 'Thưởng thành tích tháng (tiền mặt)', field: 'cash_bonus' }
+                                    { label: 'Thưởng thành tích tháng (tiền mặt)', field: 'cash_bonus' },
+                                    { label: t("ReferralBonus"), field: 'reference_bonus' }
                                 ]
                             },
                             {
