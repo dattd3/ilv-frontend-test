@@ -17,6 +17,7 @@ build_development:
     refs:
       - develop
       - Rollout_ILVGR-187
+      - dev-Rollout-To-MeliaVinpearl
 deploy_to_development_environment:
   stage: deploy
   tags:
@@ -31,6 +32,7 @@ deploy_to_development_environment:
   only:
       - develop
       - Rollout_ILVGR-187
+      - dev-Rollout-To-MeliaVinpearl
 build_production:
   stage: build
   environment: development

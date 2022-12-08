@@ -1,6 +1,7 @@
 import React from "react"
 import { IncomeTablesConfig } from './IncomeTableConfig';
 import { useTranslation } from "react-i18next"
+import Constants from "../../../commons/Constants"
 
 function TrTable(props) {
     return (
@@ -15,10 +16,12 @@ function TrTable(props) {
 
 function IncomeComponent(props) {
     const { t } = useTranslation()
+    const currentCompanyCode = localStorage.getItem('companyCode')
     const payslipCalculate = props.payslip.payslip_calculate
     let incomeTables = []
-    switch (localStorage.getItem('companyCode')) {
-        case 'V030':
+    switch (currentCompanyCode) {
+        case Constants.pnlVCode.VinPearl:
+        case Constants.pnlVCode.MeliaVinpearl:
             incomeTables = IncomeTablesConfig(t).Vinpearl
             break;
         case 'V096':
