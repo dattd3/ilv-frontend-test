@@ -365,7 +365,7 @@
   "HousingSupport": "Housing Support",
   "HR": "HR",
   "HrSResponse": "HR's Response",
-  "IdDateOfIssue": "ID Date of Isssue",
+  "IdDateOfIssue": "ID Date of Issue",
   "IdNo": "ID No.",
   "IdPlaceOfIssue": "ID Place of Issue",
   "IdRequired": "ID Required",
@@ -392,6 +392,7 @@
   "Kpi": "KPI",
   "KpiBonus": "KPI Bonus",
   "NetKpiBonus": "KPI Bonus (Net)",
+  "VinSchoolNetKpiBonus": "KPIs (NET) Bonus",
   "KpiBonusGrossup": "KPI Bonus (Grossup)",
   "HousingSubsidyGrossup": "Housing subsidy (GrossUp)",
   "LaborContract": "Labor Contract",
@@ -523,7 +524,7 @@
   "ReasonModifyInOut": "Reason",
   "Record": "Record",
   "RecoveryLeave": "Recovery Leave (After Birth)",
-  "ReferralBonus": "Referral Bonus",
+  "ReferralBonus": "Candidate referral bonus",
   "ReferralDate": "Referral Date",
   "ReferredPositions": "Referred Positions",
   "RefundForVfVihicle": "Refund for VF car and electric motobike purchase discount",
@@ -1094,7 +1095,7 @@
   "MenuEvaluationApproval": "Evaluation/Approval",
   "VinmecOtherBonus": "Other bonus",
   "VinmecRollOutBonus": "Roll out bonus",
-  "VinmecHousingSubsidyNet": "Housing subsidy (net)",
+  "HousingSubsidyNet": "Housing subsidy (net)",
   "VinmecJobLossAllowance": "Job loss allowance",
   "VinmecHolidayWelfarePayment": "Holiday welfare payment",
   "VinmecTaxRefundsAfterTaxFinalization": "Tax Refunds After Tax Finalization",
@@ -1250,5 +1251,6 @@
   "SelecTimePeriodValidate": "Vui lòng chọn thời gian có hiệu lực!",
   "PerformanceBonusVinfastGrossup": "Performance Bonus (Gross up)",
   "SupportVinfastCampaignAndProject": "Vinfast project/campaign Support Payment",
-  "BenefitsPayingThroughSalaryGrossup": "Benefits paid with salary (Gross up)"
+  "BenefitsPayingThroughSalaryGrossup": "Benefits paid with salary (Gross up)",
+  "SpecialJobAllowanceForVinES": "Special job allowance for VinES"
 }

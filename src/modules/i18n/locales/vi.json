@@ -404,6 +404,7 @@
   "Kpi": "Hiệu quả công việc",
   "KpiBonus": "Thưởng khoán/KPI",
   "NetKpiBonus": "Thưởng khoán/KPI (Net)",
+  "VinSchoolNetKpiBonus": "Thưởng KPIs (NET)",
   "KpiBonusGrossup": "Thưởng KPIs (Grossup)",
   "HousingSubsidyGrossup": "Hỗ trợ Nhà ở (GrossUp)",
   "LaborContract": "Hợp đồng lao động",
@@ -1111,7 +1112,7 @@
   "MenuEvaluationApproval": "Cần đánh giá/phê duyệt",
   "VinmecOtherBonus": "Thưởng doanh thu khác",
   "VinmecRollOutBonus": "Thưởng roll - out",
-  "VinmecHousingSubsidyNet": "Hỗ trợ nhà ở (net)",
+  "HousingSubsidyNet": "Hỗ trợ nhà ở (net)",
   "VinmecJobLossAllowance": "Trợ cấp mất việc",
   "VinmecHolidayWelfarePayment": "Phúc lợi ngày lễ",
   "VinmecTaxRefundsAfterTaxFinalization": "Thuế hoàn lại sau Quyết toán thuế",
@@ -1267,5 +1268,6 @@
   "SelecTimePeriodValidate": "Vui lòng chọn thời gian có hiệu lực!",
   "PerformanceBonusVinfastGrossup": "Thưởng HQCV VF (Grossup)",
   "SupportVinfastCampaignAndProject": "HỖ TRỢ CHIẾN DỊCH, DỰ ÁN VF",
-  "BenefitsPayingThroughSalaryGrossup": "PHÚC LỢI CHI TRẢ QUA LƯƠNG (GROSS UP)"
+  "BenefitsPayingThroughSalaryGrossup": "PHÚC LỢI CHI TRẢ QUA LƯƠNG (GROSS UP)",
+  "SpecialJobAllowanceForVinES": "Hỗ trợ đặc thù VINES"
 }
