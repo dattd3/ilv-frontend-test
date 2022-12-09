@@ -243,7 +243,7 @@
   "BenefitForVfPurchase": "Benefit for VF Purchase",
   "BenefitByGrade": "Benefit Grade",
   "BenefitGrade": "Benefit Grade",
-  "BenefitNet": "Benefit Net (GrossUp) (Vinmec, Vinschool, Cash Bonus…)",
+  "BenefitNet": "Net Benefit (Gross up) (Vinmec, Vinpearl, Vinschool, Private Healthcare)",
   "BizTripNoPerDiemNoMeals": "Biz Trip (No Per Diem and Meals)",
   "WFHNoPerDiemNoMeals": "WFH (No Per Diem and Meals)",
   "WFHNoPerDiemHasMeals": "WFH (No Per Diem, Meals Included)",
@@ -345,6 +345,8 @@
   "Flight": "Flight",
   "Foreign": "Foreign",
   "ResponsibilityAllowance": "Responsibility Allowance",
+  "SeniorityAllowance": "Seniority Allowance",
+  "WorkingConditionsAllowance": "Adverse Working Condition allowance",
   "ForeignLanguageBonus": "Foreign language Bonus",
   "ForeignLanguageAllowance": "Foreign language Allowance",
   "From": "From",
@@ -1244,5 +1246,8 @@
   "InformationRequired": "Yêu cầu nhập thông tin",
   "CurrentSalaryValidate": "Vui lòng lấy về mức lương hiện tại!",
   "SuggestedSalaryValidate": "Vui lòng nhập mức lương đề xuất!",
-  "SelecTimePeriodValidate": "Vui lòng chọn thời gian có hiệu lực!"
+  "SelecTimePeriodValidate": "Vui lòng chọn thời gian có hiệu lực!",
+  "PerformanceBonusVinfastGrossup": "Performance Bonus (Gross up)",
+  "SupportVinfastCampaignAndProject": "Vinfast project/campaign Support Payment",
+  "BenefitsPayingThroughSalaryGrossup": "Benefits paid with salary (Gross up)"
 }

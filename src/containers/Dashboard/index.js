@@ -1,6 +1,6 @@
 import React from "react"
-import { Row, Col } from 'react-bootstrap'
 import NewsOnHome from './NewsOnHome'
+import HOCComponent from '../../components/Common/HOCComponent'
  
 function Dashboard(props) {
   return (
@@ -10,4 +10,4 @@ function Dashboard(props) {
   )
 }
 
-export default Dashboard
+export default HOCComponent(Dashboard)

@@ -5,6 +5,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { ApiContext } from "../../modules";
 import FileUtil from "../Benefit/file-util";
 import { useTranslation } from 'react-i18next';
+import HOCComponent from '../../components/Common/HOCComponent'
 
 const types = [
   "application/vnd.ms-excel",
@@ -182,4 +183,4 @@ class JobDesc extends React.Component {
   }
 }
 
-export default UploadJobDescPage;
+export default HOCComponent(UploadJobDescPage)

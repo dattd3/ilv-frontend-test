@@ -19,6 +19,7 @@ import GeneralInformationComponent from './GeneralInformationComponent'
 import LoadingModal from '../../../components/Common/LoadingModal'
 import StatusModal from '../../../components/Common/StatusModal'
 import ConfirmModal from '../../../components/Common/ConfirmModal'
+import HOCComponent from '../../../components/Common/HOCComponent'
 import IconArrowLeft from '../../../assets/img/icon/Icon-Arrow-Left.svg'
 import IconArrowPrevious from '../../../assets/img/icon/arrow-previous.svg'
 import IconArrowNext from '../../../assets/img/icon/arrow-next.svg'
@@ -1071,4 +1072,4 @@ function ProjectDetail(props) {
     )
 }
 
-export default ProjectDetail
+export default HOCComponent(ProjectDetail)

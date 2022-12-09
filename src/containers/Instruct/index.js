@@ -4,6 +4,7 @@ import { withTranslation } from 'react-i18next';
 import iconPhone from '../../assets/img/phone.PNG';
 import iconGlobal from '../../assets/img/global.PNG';
 import _ from "lodash";
+import HOCComponent from '../../components/Common/HOCComponent'
 
 class Instruct extends React.Component {
     constructor(props) {
@@ -118,4 +119,5 @@ class Instruct extends React.Component {
         </>
     }
 }
-export default withTranslation()(Instruct)
+
+export default HOCComponent(withTranslation()(Instruct))

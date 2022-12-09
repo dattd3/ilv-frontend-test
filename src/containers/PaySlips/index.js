@@ -9,6 +9,7 @@ import WorkingInformationComponent from './ResultBlock/WorkingInformationCompone
 import LeaveInformationComponent from './ResultBlock/LeaveInformationComponent'
 import { exportToPDF } from "../../commons/Utils"
 import ReactHTMLTableToExcel from "react-html-table-to-excel"
+import HOCComponent from '../../components/Common/HOCComponent'
 
 class PaySlipsComponent extends React.Component {
   constructor(props) {
@@ -16,14 +17,14 @@ class PaySlipsComponent extends React.Component {
 
     this.state = {
       isShowConfirmPasswordModal: true,
-      acessToken: new URLSearchParams(props.history.location.search).get('accesstoken') || null,
+      acessToken: new URLSearchParams(props?.history?.location?.search).get('accesstoken') || null,
       payslip: null,
       isSearch: false
     }
   }
 
   componentDidMount() {
-    const queryParams = new URLSearchParams(this.props.history.location.search)
+    const queryParams = new URLSearchParams(this.props?.history?.location?.search)
     if (queryParams.has('accesstoken')) {
       queryParams.delete('accesstoken')
       this.props.history.replace({
@@ -131,4 +132,4 @@ class PaySlipsComponent extends React.Component {
   }
 }
 
-export default withTranslation()(PaySlipsComponent)
+export default HOCComponent(withTranslation()(PaySlipsComponent))

@@ -6,12 +6,13 @@ import EmptyComponent from './EmptyComponent'
 import Health from './WelfareComponents/Health'
 import InsuranceSocial from './WelfareComponents/InsuranceSocial'
 import Resource from './WelfareComponents/Resource'
+import HOCComponent from '../../components/Common/HOCComponent'
 
 class InsuranceRegime extends React.Component {
     constructor(props) {
         super();
         this.state = {
-            tab: new URLSearchParams(props.history.location.search).get('tab') || "Health",
+            tab: new URLSearchParams(props?.history?.location?.search).get('tab') || "Health",
         }
     }
 
@@ -40,4 +41,5 @@ class InsuranceRegime extends React.Component {
         )
     }
 }
-export default withTranslation()(InsuranceRegime)
+
+export default HOCComponent(withTranslation()(InsuranceRegime))

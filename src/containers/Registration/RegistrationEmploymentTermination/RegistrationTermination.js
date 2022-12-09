@@ -2,12 +2,13 @@ import React from 'react'
 import { Tabs, Tab } from 'react-bootstrap'
 import { withTranslation  } from "react-i18next"
 import RegistrationEmploymentTerminationForm from './RegistrationEmploymentTerminationForm'
+import HOCComponent from '../../../components/Common/HOCComponent'
 
 class RegistrationEmploymentTermination extends React.Component {
   constructor(props) {
     super()
     this.state = {
-      tab: new URLSearchParams(props.history.location.search).get('tab') || "RegistrationEmploymentTerminationForm",
+      tab: new URLSearchParams(props?.history?.location?.search).get('tab') || "RegistrationEmploymentTerminationForm",
     }
   }
 
@@ -30,4 +31,4 @@ class RegistrationEmploymentTermination extends React.Component {
   }
 }
 
-export default withTranslation()(RegistrationEmploymentTermination)
+export default HOCComponent(withTranslation()(RegistrationEmploymentTermination))

@@ -14,6 +14,7 @@ import StatusModal from '../../../components/Common/StatusModal'
 import EvaluationDetailModal from '../EvaluationDetailModal'
 import SearchUser from '../SearchUser'
 import CustomPaging from '../../../components/Common/CustomPaging'
+import HOCComponent from '../../../components/Common/HOCComponent'
 import IconExpand from '../../../assets/img/icon/pms/icon-expand.svg'
 import IconCollapse from '../../../assets/img/icon/pms/icon-collapse.svg'
 import IconSearch from '../../../assets/img/icon/Icon_Loop.svg'
@@ -1169,4 +1170,4 @@ function EvaluationApproval(props) {
     )
 }
 
-export default EvaluationApproval
+export default HOCComponent(EvaluationApproval)

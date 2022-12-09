@@ -16,6 +16,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ResultModal from "../Registration/ResultModal";
 import { Spinner } from "react-bootstrap";
+import HOCComponent from '../../components/Common/HOCComponent'
 import Select from "react-select";
 import CurrencyInput from 'react-currency-input-field';
 import { replaceAll } from '../Utils/Common';
@@ -1159,4 +1160,4 @@ const CreateInsuranceHealth = ({ t }) => {
   );
 };
 
-export default withTranslation()(CreateInsuranceHealth);
+export default HOCComponent(withTranslation()(CreateInsuranceHealth))

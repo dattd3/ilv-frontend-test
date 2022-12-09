@@ -6,6 +6,7 @@ import axios from "axios";
 import moment from "moment";
 import { withTranslation } from "react-i18next";
 import { ToastContainer, toast } from "react-toastify";
+import HOCComponent from '../../../../components/Common/HOCComponent'
 import "react-toastify/dist/ReactToastify.css";
 import { getMuleSoftHeaderConfigurations, getRequestConfigurations } from "../../../../commons/Utils"
 
@@ -187,4 +188,4 @@ class PersonalDetails extends Component {
   }
 }
 
-export default withTranslation()(PersonalDetails);
+export default HOCComponent(withTranslation()(PersonalDetails))

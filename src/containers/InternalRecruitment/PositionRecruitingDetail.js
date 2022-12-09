@@ -7,6 +7,7 @@ import purify from "dompurify"
 import moment from 'moment'
 import { withRouter } from 'react-router-dom'
 import { withTranslation} from "react-i18next"
+import HOCComponent from '../../components/Common/HOCComponent'
 
 class PositionRecruitingDetail extends React.Component {
   static contextTypes = {
@@ -122,4 +123,4 @@ class PositionRecruitingDetail extends React.Component {
   }
 }
 
-export default withRouter(withTranslation()(PositionRecruitingDetail))
+export default HOCComponent(withRouter(withTranslation()(PositionRecruitingDetail)))

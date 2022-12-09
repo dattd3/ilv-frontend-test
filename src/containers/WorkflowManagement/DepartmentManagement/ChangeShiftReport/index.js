@@ -3,6 +3,7 @@ import { withTranslation } from "react-i18next";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import FilterDataShirfReport from "../../ShareComponents/FilterDataShirfReport";
+import HOCComponent from '../../../../components/Common/HOCComponent'
 
 class ChangeShiftReport extends Component {
   constructor() {
@@ -59,4 +60,4 @@ class ChangeShiftReport extends Component {
   }
 }
 
-export default withTranslation()(ChangeShiftReport);
+export default HOCComponent(withTranslation()(ChangeShiftReport))
