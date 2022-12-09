@@ -3655,7 +3655,7 @@ span.badge-notification[data-badge]::after {
         padding: 0 8px 0 0;
         height: auto;
         .thumbnail {
-          object-fit: fill;
+          object-fit: cover;
           border-radius: 6px;
           height: 150px;
           width: 292px;
@@ -3947,6 +3947,55 @@ span.badge-notification[data-badge]::after {
   --ck-image-style-spacing: 1.5rem;
 }
 
+.warning-token-expired-modal {
+  font: normal 14px Arial, Helvetica, sans-serif;
+  z-index: 99999999;
+  .modal-dialog {
+    max-width: 600px;
+    margin: 0 auto!important;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    .modal-body {
+      padding: 1rem 1.5rem;
+      .text-title {
+        font-weight: bold;
+        font-size: 16px;
+        color: #000000;
+        border-bottom: 1px solid #CED4DA;
+        padding-bottom: 1rem;
+      }
+      .content {
+        color: #0D1B3C;
+        padding: 1rem 0;
+      }
+      .form-button-group {
+        button {
+          width: 120px;
+          font-size: 14px;
+          padding: 7px;
+          border-radius: 3px;
+          cursor: pointer;
+          border: none;
+          img {
+            height: 10px;
+            margin-right: 5px;
+          }
+          &:last-child {
+            margin-left: 15px;
+          }
+          &.button-cancel {
+            background: #CED4DA;
+          }
+          &.button-approve {
+            background: #4099FF;
+          }
+        }
+      }
+    }
+  }
+}
 .no-vborder {
   border: none;
   text-align: center;

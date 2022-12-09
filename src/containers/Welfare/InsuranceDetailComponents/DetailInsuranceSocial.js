@@ -10,6 +10,7 @@ import { exportToPDF, getMuleSoftHeaderConfigurations, getRequestConfigurations 
 import { toast } from "react-toastify";
 import LoadingModal from '../../../components/Common/LoadingModal';
 import { Image } from 'react-bootstrap';
+import HOCComponent from '../../../components/Common/HOCComponent'
 
 const DetailInsuranceSocial = (props) => {
     const { t } = props;
@@ -435,4 +436,4 @@ const DetailInsuranceSocial = (props) => {
     )
 }
 
-export default withTranslation()(DetailInsuranceSocial);
+export default HOCComponent(withTranslation()(DetailInsuranceSocial))

@@ -12,6 +12,7 @@ import { evaluationStatus, actionButton } from '../Constants'
 import { useGuardStore } from '../../../modules'
 import LoadingModal from '../../../components/Common/LoadingModal'
 import StatusModal from '../../../components/Common/StatusModal'
+import HOCComponent from '../../../components/Common/HOCComponent'
 import IconArrowRightWhite from '../../../assets/img/icon/pms/arrow-right-white.svg'
 import IconArrowRightGray from '../../../assets/img/icon/pms/arrow-right-gray.svg'
 import IconUp from '../../../assets/img/icon/pms/icon-up.svg'
@@ -998,4 +999,4 @@ function EvaluationDetail(props) {
   )
 }
 
-export default EvaluationDetail
+export default HOCComponent(EvaluationDetail)

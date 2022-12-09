@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { withTranslation } from "react-i18next";
 import FilterDataShirfReport from "../../ShareComponents/FilterDataShirfReport";
+import HOCComponent from '../../../../components/Common/HOCComponent'
 
 class ChangeShiftReport extends Component {
   constructor() {
@@ -56,4 +57,4 @@ class ChangeShiftReport extends Component {
   }
 }
 
-export default withTranslation()(ChangeShiftReport);
+export default HOCComponent(withTranslation()(ChangeShiftReport))

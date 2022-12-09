@@ -10,7 +10,7 @@ import HistoryModal from './HistoryModal'
 import StatusModal from '../../components/Common/StatusModal'
 import CommonQuestionComponent from './CommonQuestionComponent'
 import LoadingSpinner from '../../components/Forms/CustomForm/LoadingSpinner';
-
+import HOCComponent from '../../components/Common/HOCComponent'
 
 class MyComponent extends React.Component {
 
@@ -175,7 +175,7 @@ class MyComponent extends React.Component {
   }
 }
 
-const QuestionAndAnswer = withTranslation()(MyComponent)
+const QuestionAndAnswer = HOCComponent(withTranslation()(MyComponent))
 
 export default function App() {
   return (

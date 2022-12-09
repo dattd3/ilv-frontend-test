@@ -26,6 +26,7 @@ import LoadingSpinner from '../../../components/Forms/CustomForm/LoadingSpinner'
 import LoadingModal from '../../../components/Common/LoadingModal'
 import { checkIsExactPnL, checkVersionPnLSameAsVinhome } from '../../../commons/commonFunctions'
 import ContractEvaluationdetail from './detail'
+import HOCComponent from '../../../components/Common/HOCComponent'
 import SalaryModal from './SalaryModal'
 import ConfirmationModal from '../ConfirmationModal'
 
@@ -2218,4 +2219,4 @@ renderEvalution = (name, data, isDisable) => {
   }
 }
 
-export default withTranslation()(withRouter(LeaveOfAbsenceDetailComponent))
+export default HOCComponent(withTranslation()(withRouter(LeaveOfAbsenceDetailComponent)))

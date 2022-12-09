@@ -1,5 +1,6 @@
 import React from 'react';
 import ListNotifications from './ListNotifications/ListNotifications';
+import HOCComponent from '../../components/Common/HOCComponent'
 
 class NotificationsComponent extends React.Component {
   render() {
@@ -9,4 +10,4 @@ class NotificationsComponent extends React.Component {
   }
 }
 
-export default NotificationsComponent
+export default HOCComponent(NotificationsComponent)

@@ -16,8 +16,7 @@ build_development:
   only:
     refs:
       - develop
-      - dev-Task-10081
-
+      - Rollout_ILVGR-187
 deploy_to_development_environment:
   stage: deploy
   tags:
@@ -31,8 +30,7 @@ deploy_to_development_environment:
   when: manual
   only:
       - develop
-      - dev-Task-10081
-      
+      - Rollout_ILVGR-187
 build_production:
   stage: build
   environment: development

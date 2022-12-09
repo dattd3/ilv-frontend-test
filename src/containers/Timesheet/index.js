@@ -7,6 +7,7 @@ import TimesheetSummary from './TimesheetSummary'
 import TimesheetDetail from './TimesheetDetail'
 import TimeTableDetail from './TimeTableDetail'
 import LoadingModal from '../../components/Common/LoadingModal'
+import HOCComponent from '../../components/Common/HOCComponent'
 import { getMuleSoftHeaderConfigurations, getRequestConfigurations } from "../../commons/Utils"
 
 class Timesheet extends React.Component {
@@ -136,4 +137,5 @@ class Timesheet extends React.Component {
       )
     }
   }
-export default withTranslation()(Timesheet);
+
+export default HOCComponent(withTranslation()(Timesheet))

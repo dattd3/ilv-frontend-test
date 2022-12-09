@@ -1,5 +1,6 @@
 import React from "react"
 import ListProjects from "../ListProjects"
+import HOCComponent from '../../../components/Common/HOCComponent'
 import { myProjectPageKey } from "../Constants"
 
 function MyProjects() {
@@ -10,4 +11,4 @@ function MyProjects() {
     )
 }
 
-export default MyProjects
+export default HOCComponent(MyProjects)

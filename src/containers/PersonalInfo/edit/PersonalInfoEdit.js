@@ -11,6 +11,7 @@ import { withTranslation } from "react-i18next"
 import { t } from 'i18next'
 import { getMuleSoftHeaderConfigurations } from "../../../commons/Utils"
 import Constants from '../../../commons/Constants'
+import HOCComponent from '../../../components/Common/HOCComponent'
 
 const code = localStorage.getItem('employeeNo') || "";
 const fullName = localStorage.getItem('fullName') || "";
@@ -1348,4 +1349,4 @@ class PersonalInfoEdit extends React.Component {
   }
 }
 
-export default withTranslation()(PersonalInfoEdit)
+export default HOCComponent(withTranslation()(PersonalInfoEdit))
