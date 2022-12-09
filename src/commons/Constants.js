@@ -207,7 +207,7 @@ const Constants = {
     PHUCLOI: 5
   },
   MODULE_COMPANY_AVAILABE: {
-    1: ["V040", "V005", "V079", "V041"], //TUYENDUNG
+    1: ["V040", "V005", "V079", "V041", "V030"], //TUYENDUNG
     2: ["V061","V040", "V005", "V079", "V041", "V070", "V077"],//DANHGIA_TAIKI
     3:["V061", "V040", "V005", "V079", "V041"],//DEXUATLUONG
     4:["V040", "V005", "V079"],//NGHIVIEC
