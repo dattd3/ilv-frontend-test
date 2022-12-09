@@ -10,6 +10,7 @@ import { getMuleSoftHeaderConfigurations } from '../../commons/Utils';
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ResultModal from '../Registration/ResultModal';
+import HOCComponent from '../../components/Common/HOCComponent'
 import Constants from '../../commons/Constants';
 
 const CreateInsuranceSocial = (props) => {
@@ -313,4 +314,4 @@ const CreateInsuranceSocial = (props) => {
     )
 }
 
-export default withTranslation()(CreateInsuranceSocial);
+export default HOCComponent(withTranslation()(CreateInsuranceSocial))

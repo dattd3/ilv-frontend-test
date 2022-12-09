@@ -1,7 +1,7 @@
 import React from "react";
 import { Card, Button, OverlayTrigger, Tooltip, Badge } from 'react-bootstrap';
 import { useTranslation } from "react-i18next"
-
+import HOCComponent from '../../components/Common/HOCComponent'
 
 function Create(props) {
     const { t } = useTranslation()
@@ -176,4 +176,5 @@ function Create(props) {
         </>
     );
 }
-export default Create;
+
+export default HOCComponent(Create);

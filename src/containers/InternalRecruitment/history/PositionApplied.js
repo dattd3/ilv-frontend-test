@@ -1,14 +1,9 @@
 import React from 'react';
-import axios from 'axios';
 import { withTranslation } from 'react-i18next';
-import { Container, Row, Col, Tabs, Tab, Form } from 'react-bootstrap';
-import momeent from 'moment';
-import { Redirect } from 'react-router-dom';
-import map from '../../map.config';
 import PositionAppliedList from './PositionAppliedList'
+import HOCComponent from '../../../components/Common/HOCComponent'
 
 class MyComponent extends React.Component {
-
   constructor(props) {
     super(props);
 
@@ -21,10 +16,6 @@ class MyComponent extends React.Component {
     };
   }
 
-  componentDidMount() {
-
-  }
-
   render() {
     return (
       <div className="position-applied-section">
@@ -34,7 +25,7 @@ class MyComponent extends React.Component {
   }
 }
 
-const PositionApplied = withTranslation()(MyComponent)
+const PositionApplied = HOCComponent(withTranslation()(MyComponent))
 
 export default function App() {
   return (

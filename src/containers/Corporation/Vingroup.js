@@ -3,6 +3,7 @@ import { useApi, useFetcher } from "../../modules";
 import { useTranslation } from "react-i18next";
 import purify from "dompurify"
 import LoadingSpinner from "../../components/Forms/CustomForm/LoadingSpinner";
+import HOCComponent from '../../components/Common/HOCComponent'
 
 const usePreload = (params) => {
     const api = useApi();
@@ -38,4 +39,5 @@ function Vingroup(props) {
         return <LoadingSpinner />;
     }
 }
-export default Vingroup;
+
+export default HOCComponent(Vingroup)

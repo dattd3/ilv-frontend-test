@@ -257,7 +257,7 @@
   "BenefitForVfPurchase": "Phúc lợi hỗ trợ xe VF",
   "BenefitByGrade": "Cấp hàm hưởng phúc lợi",
   "BenefitGrade": "Cấp hàm",
-  "BenefitNet": "Phúc lợi Net (GrossUp) (Vinmec, Vinschool, Thưởng tiền mặt,…)",
+  "BenefitNet": "Phúc lợi Net (GrossUp) (Vinmec, Vinpearl, Vinschool, BHSK)",
   "BizTripNoPerDiemNoMeals": "C/t (Không CTP, không ăn ca)",
   "BizTripNoPerDiemHasMeals": "C/t (Không CTP, có ăn ca)",
   "BizTripHasPerDiemHasMeals": "C/t (Có CTP, có ăn ca)",
@@ -358,6 +358,8 @@
   "Flight": "Máy bay",
   "Foreign": "Nước ngoài",
   "ResponsibilityAllowance": "Phụ cấp trách nhiệm",
+  "SeniorityAllowance": "Phụ cấp thâm niên",
+  "WorkingConditionsAllowance": "Phụ cấp ĐK làm việc",
   "ForeignLanguageBonus": "Thưởng ngoại ngữ",
   "ForeignLanguageAllowance": "Phụ cấp ngoại ngữ",
   "From": "Từ ngày",
@@ -1261,6 +1263,8 @@
   "InformationRequired": "Yêu cầu nhập thông tin",
   "CurrentSalaryValidate": "Vui lòng lấy về mức lương hiện tại!",
   "SuggestedSalaryValidate": "Vui lòng nhập mức lương đề xuất!",
-  "SelecTimePeriodValidate": "Vui lòng chọn thời gian có hiệu lực!"
-
+  "SelecTimePeriodValidate": "Vui lòng chọn thời gian có hiệu lực!",
+  "PerformanceBonusVinfastGrossup": "Thưởng HQCV VF (Grossup)",
+  "SupportVinfastCampaignAndProject": "HỖ TRỢ CHIẾN DỊCH, DỰ ÁN VF",
+  "BenefitsPayingThroughSalaryGrossup": "PHÚC LỢI CHI TRẢ QUA LƯƠNG (GROSS UP)"
 }

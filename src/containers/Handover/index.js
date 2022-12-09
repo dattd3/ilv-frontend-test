@@ -19,6 +19,7 @@ import _, { debounce } from 'lodash'
 import DatePicker, { registerLocale } from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import { vi, enUS } from 'date-fns/locale'
+import HOCComponent from '../../components/Common/HOCComponent'
 
 const TIME_FORMAT = 'HH:mm'
 const DATE_FORMAT = 'DD/MM/YYYY'
@@ -709,4 +710,4 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
   }
 }
 
-export default withTranslation()(LeaveOfAbsenceDetailComponent)
+export default HOCComponent(withTranslation()(LeaveOfAbsenceDetailComponent))

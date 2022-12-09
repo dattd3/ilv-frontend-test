@@ -9,6 +9,7 @@ import {Image} from 'react-bootstrap';
 import LoadingSpinner from "../../../components/Forms/CustomForm/LoadingSpinner";
 import ResultModal from '../../Registration/ResultModal';
 import CustomPaging from '../../../components/Common/CustomPaging'
+import HOCComponent from '../../../components/Common/HOCComponent'
 import IconRecall from '../../../assets/img/ic-recall.svg'
 import { checkIsExactPnL } from '../../../commons/commonFunctions'
 
@@ -261,4 +262,4 @@ class EvaluationComponent extends React.Component {
   }
 }
 
-export default withTranslation()(EvaluationComponent)
+export default HOCComponent(withTranslation()(EvaluationComponent))

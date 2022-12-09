@@ -2,6 +2,7 @@ import React from 'react';
 import BenefitItem from './BenefitItem'
 import { useApi, useFetcher } from "../../modules";
 import NoteItem from './NoteItem'
+import HOCComponent from '../../components/Common/HOCComponent'
 import IconLevelUrl from '../../assets/img/icon-level.svg'
 
 const usePreload = (params) => {
@@ -46,4 +47,4 @@ function Benefit() {
 
 }
 
-export default Benefit;
+export default HOCComponent(Benefit)

@@ -5,6 +5,7 @@ import RejectClass from './RejectClass';
 import { useTranslation } from "react-i18next";
 import { Form } from 'react-bootstrap';
 import _ from "lodash";
+import HOCComponent from '../../../components/Common/HOCComponent'
 
 function Learning(props) {
     const { t } = useTranslation();
@@ -42,4 +43,4 @@ function Learning(props) {
         </>
     );
 }
-export default Learning;
+export default HOCComponent(Learning);

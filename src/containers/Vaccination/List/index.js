@@ -7,6 +7,7 @@ import VaccinationDetail from "./Detail";
 import moment from 'moment';
 import axios from 'axios';
 import _ from "lodash";
+import HOCComponent from '../../../components/Common/HOCComponent'
 import { getRequestConfigurations } from "../../../commons/Utils"
 
 class Vaccination extends React.Component {
@@ -200,4 +201,5 @@ class Vaccination extends React.Component {
         </>
     }
 }
-export default withTranslation()(Vaccination)
+
+export default HOCComponent(withTranslation()(Vaccination))

@@ -2,6 +2,7 @@ import React from "react";
 import { useApi, useFetcher } from "../../modules";
 import JobDescriptionContent from "./JobDescriptionContent"
 import { useTranslation, withTranslation } from "react-i18next"
+import HOCComponent from '../../components/Common/HOCComponent'
 
 const usePreload = (params) => {
   const api = useApi();
@@ -49,4 +50,4 @@ function JobDescriptionPage() {
     )
 }
 
-export default withTranslation()(JobDescriptionPage);
+export default HOCComponent(withTranslation()(JobDescriptionPage))

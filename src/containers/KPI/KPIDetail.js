@@ -3,6 +3,7 @@ import axios from 'axios';
 import KPIDetailGroupItem from './KPIDetailGroupItem';
 import SuccessFactorInfo from "./SuccessFactorInfo";
 import { withTranslation } from 'react-i18next';
+import HOCComponent from '../../components/Common/HOCComponent'
 import { getMuleSoftHeaderConfigurations } from "../../commons/Utils"
 
 class KPIDetail extends React.Component {
@@ -88,4 +89,4 @@ class KPIDetail extends React.Component {
   }
 }
 
-export default withTranslation()(KPIDetail);
+export default HOCComponent(withTranslation()(KPIDetail))

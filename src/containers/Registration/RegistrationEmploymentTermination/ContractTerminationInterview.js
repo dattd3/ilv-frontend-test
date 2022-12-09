@@ -11,6 +11,7 @@ import ButtonComponent from '../TerminationComponents/ButtonComponent'
 import StaffInfoForContractTerminationInterviewComponent from '../TerminationComponents/StaffInfoForContractTerminationInterviewComponent'
 import InterviewContentFormComponent from '../TerminationComponents/InterviewContentFormComponent'
 import ResultModal from '../ResultModal'
+import HOCComponent from '../../../components/Common/HOCComponent'
 import VinpearlLogo from '../../../assets/img/LogoVingroup.svg'//assets/img/logo-vp-vt.png
 import { exportToPDF } from '../../../commons/Utils';
 
@@ -346,4 +347,4 @@ class ContractTerminationInterview extends React.Component {
     }
 }
 
-export default withTranslation()(ContractTerminationInterview)
+export default HOCComponent(withTranslation()(ContractTerminationInterview))
