@@ -155,10 +155,10 @@ class ResignationRequestsManagementActionButton extends React.PureComponent {
         const {exportOption, advancedData, keywords, massType, massValue, files} = this.state
 
         const exportOptions = [
-            {value: 1, label: 'Báo cáo yêu cầu nghỉ việc'},
-            {value: 2, label: 'Tình trạng bàn giao'},
-            {value: 3, label: 'Đơn xin nghỉ việc'},
-            {value: 4, label: 'Báo cáo kết quả phỏng vấn'},
+            {value: 1, label: t('report_resign')},
+            {value: 2, label: t('report_handover')},
+            {value: 3, label: t('report_resign_form')},
+            {value: 4, label: t('report_interview_result')},
             // {value: 5, label: 'Biên bản thanh lý'},
             // {value: 6, label: 'Thỏa thuận chấm dứt hợp đồng'},
             // {value: 7, label: 'Quyết định chấm dứt hợp đồng'}

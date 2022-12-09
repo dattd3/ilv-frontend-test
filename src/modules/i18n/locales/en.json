@@ -1568,5 +1568,9 @@
   "ben_ban_giao": "HANDOVER PARTY",
   "ngay_lam_viec": "Work date",
   "ghi_chu": "Note",
-  "handover_info": "HANDOVER INFORMATION"
+  "handover_info": "HANDOVER INFORMATION",
+  "report_resign": "Report on resignation requests",
+  "report_handover": "Handover status",
+  "report_resign_form": "Resignation application form",
+  "report_interview_result": "Report on interview results"
 }
