@@ -1586,5 +1586,9 @@
   "ben_ban_giao": "BÊN BÀN GIAO",
   "ngay_lam_viec": "Ngày làm việc",
   "ghi_chu": "Ghi chú",
-  "handover_info": "THÔNG TIN BÀN GIAO"
+  "handover_info": "THÔNG TIN BÀN GIAO",
+  "report_resign": "Báo cáo yêu cầu nghỉ việc",
+  "report_handover": "Tình trạng bàn giao",
+  "report_resign_form": "Đơn xin nghỉ việc",
+  "report_interview_result": "Báo cáo kết quả phỏng vấn"
 }
