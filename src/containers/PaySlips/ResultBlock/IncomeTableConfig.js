@@ -1492,7 +1492,6 @@ export const IncomeTablesConfig = t => {
                                     { label: t("ExtraCurriculumStudentRecruitmentCommission"), field: 'extra_curricular_enrol_commissions_bonus' },
                                     { label: t("SummerCourseRecruitmentCommission"), field: 'summer_enrol_commissions_bonus' },
                                     { label: t("GreenseedRecruitment"), field: 'green_sprout_enrol_commissions_bonus' },
-                                    { label: t("NetKpiBonus"), field: 'kpi_bonus_net' },
                                     { label: t("SpecialBonus"), field: 'special_bonus' },
                                     { label: t("9And12GradeAdmissionBonus"), field: 'ninth_twelfth_grade_bonus' },
                                     { label: t("BonusForNapTimeWatching"), field: 'nap_time_watching_bonus' },
