@@ -17,7 +17,6 @@ function Authorize(props) {
     const { t } = useTranslation();
     const { history } = props;
     const guard = useGuardStore();
-    const [token, SetToken] = useState('');
     const [isloading, SetIsloading] = useState(true);
     const [notifyContent, SetNotifyContent] = useState(t("WaitNotice"));
     const [isGetUser, SetIsGetUser] = useState(false);
@@ -25,17 +24,15 @@ function Authorize(props) {
     const [isError, SetIsError] = useState(false);
     const [errorType, SetErrorType] = useState(null);
     const [isShowLoadingModal, SetIsShowLoadingModal] = useState(true);
+    // const [cookies, setCookie] = useCookies(['accessToken']);
 
-    const getUser = (token, jwtToken) => {
-        if (jwtToken == null || jwtToken == "") {
-            return;
-        }
-        if (isGetUser == true) {
+    const getUser = (jwtToken, refreshToken, timeTokenExpire) => {
+        if (!jwtToken || isGetUser == true) {
             return;
         }
 
         SetIsShowLoadingModal(true)
-        const config = getMuleSoftHeaderConfigurations() 
+        const config = getMuleSoftHeaderConfigurations()
         config.headers['Authorization'] = `Bearer ${jwtToken}`
 
         axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/profile`, config)
@@ -45,7 +42,7 @@ function Authorize(props) {
                     //const email = userProfile?.company_email?.toLowerCase() || ""
                     //let vgUsernameMatch = (/([^@]+)/gmi).exec(email.replace('v.', ''));
                     let vgEmail = `${userProfile.username?.toLowerCase()}@vingroup.net`;
-                    checkUser(userProfile, jwtToken, vgEmail, () => {
+                    checkUser(userProfile, jwtToken, refreshToken, timeTokenExpire, vgEmail, () => {
                         SetIsShowLoadingModal(false)
                     });
                     updateUser(userProfile,jwtToken)
@@ -92,7 +89,7 @@ function Authorize(props) {
         return val
     }
 
-    const checkUser = async (user, jwtToken, vgEmail, onSaveSuccess) => {
+    const checkUser = async (user, jwtToken, refreshToken, timeTokenExpire, vgEmail, onSaveSuccess) => {
         if (user == null || user.uid == null) {
             SetIsError(true)
             SetErrorType(ERROR_TYPE.USER_NOT_EXIST)
@@ -126,7 +123,8 @@ function Authorize(props) {
                         guard.setIsAuth({
                             tokenType: 'Bearer',
                             accessToken: jwtToken,
-                            tokenExpired: moment().add(3600, 'seconds'),
+                            refreshToken: refreshToken,
+                            tokenExpired: timeTokenExpire,
                             email: vgEmail,
                             plEmail: user.company_email,
                             avatar: user.avatar,
@@ -168,7 +166,8 @@ function Authorize(props) {
                     guard.setIsAuth({
                         tokenType: 'Bearer',
                         accessToken: jwtToken,
-                        tokenExpired: '',
+                        refreshToken: refreshToken,
+                        tokenExpired: timeTokenExpire,
                         email: vgEmail,
                         plEmail: user.company_email,
                         avatar: '',
@@ -210,11 +209,10 @@ function Authorize(props) {
         }
     }
 
-    function getUserData(_token) {
+    function getUserData(_token, refreshToken, timeTokenExpire) {
         if (isLoadingUser == false) {
             SetIsLoadingUser(true);
-            SetToken(_token);
-            getUser(_token, _token);
+            getUser(_token, refreshToken, timeTokenExpire);
         }
     }
 
@@ -294,10 +292,10 @@ function Authorize(props) {
                 const expireIn = expires_in || 3600 // Nếu không trả về thì mặc định thời gian hết hạn là 1h
                 const timeTokenExpire = moment().add(Number(expireIn), 'seconds').format('YYYYMMDDHHmmss')
         
-                localStorage.setItem('refreshToken', refresh_token)
-                localStorage.setItem('timeTokenExpire', timeTokenExpire)
+                // localStorage.setItem('refreshToken', refresh_token)
+                // localStorage.setItem('tokenExpired', timeTokenExpire)
 
-                getUserData(access_token);
+                getUserData(access_token, refresh_token, timeTokenExpire);
             } else {
                 return window.location.replace(process.env.REACT_APP_AWS_COGNITO_IDP_SIGNOUT_URL)
             }

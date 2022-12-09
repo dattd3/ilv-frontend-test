@@ -865,6 +865,10 @@
         }
         .shift-change-type {
             font-size: inherit;
+            &.disabled {
+                background: #eaecf4;
+                opacity: 1;
+            }
         }
         .edit {
             cursor: pointer;

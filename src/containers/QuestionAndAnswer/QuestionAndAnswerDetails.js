@@ -11,6 +11,7 @@ import SelectSupporterModal from './SelectSupporterModal'
 import defaultAvartar from '../../components/Common/DefaultAvartar'
 import Constants from '../../commons/Constants';
 import { withTranslation } from 'react-i18next';
+import HOCComponent from '../../components/Common/HOCComponent'
 
 class QuestionAndAnswerDetails extends React.Component {
 
@@ -478,4 +479,4 @@ class QuestionAndAnswerDetails extends React.Component {
   }
 }
 
-export default withTranslation()(QuestionAndAnswerDetails) 
+export default HOCComponent(withTranslation()(QuestionAndAnswerDetails))

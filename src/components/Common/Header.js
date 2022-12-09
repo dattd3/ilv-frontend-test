@@ -199,10 +199,6 @@ function Header(props) {
 
     const tokenExpired = localStorage.getItem('tokenExpired')
     const accessToken = localStorage.getItem('accessToken')
-    if (!accessToken || !tokenExpired || !moment(tokenExpired).isValid() ||  moment().isAfter(moment(tokenExpired))) {
-        guard.setLogOut();
-        window.location.reload();
-    }
 
     // Auth.currentUserInfo().then(currentAuthUser => {
     //     if (currentAuthUser === undefined || currentAuthUser === null) {
@@ -212,9 +208,8 @@ function Header(props) {
     //     }
     // });
 
-    if(!localStorage.getItem('tokenExpired') || !moment(localStorage.getItem('tokenExpired')).isValid() ||  moment().isAfter(moment(localStorage.getItem('tokenExpired')))) {
-        guard.setLogOut();
-        window.location.reload();
+    if (!accessToken || accessToken == 'null' || accessToken == 'undefined' || !tokenExpired || !moment(tokenExpired, 'YYYYMMDDHHmmss').isValid() || moment().isAfter(moment(tokenExpired, 'YYYYMMDDHHmmss'))) {
+        userLogOut()
     }
 
     const handleClickSetShow = () => {

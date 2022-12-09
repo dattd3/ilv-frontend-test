@@ -12,6 +12,7 @@ import axios from 'axios'
 import Constants from '../../commons/Constants'
 import map from "../map.config"
 import UpdateProfileDetailComponent from '../Task/RequestDetail'
+import HOCComponent from '../../components/Common/HOCComponent'
 
 class RegistrationDetailComponent extends React.Component {
   constructor(props) {
@@ -73,4 +74,4 @@ class RegistrationDetailComponent extends React.Component {
   }
 }
 
-export default RegistrationDetailComponent
+export default HOCComponent(RegistrationDetailComponent)

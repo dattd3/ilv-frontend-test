@@ -10,6 +10,7 @@ import { getRequestConfigurations } from "../../../commons/Utils"
 import { withTranslation } from "react-i18next"
 import _ from 'lodash'
 import { t } from 'i18next'
+import HOCComponent from '../../../components/Common/HOCComponent'
 
 class RequestDetail extends React.Component {
   constructor(props) {
@@ -325,4 +326,4 @@ class RequestDetail extends React.Component {
   }
 }
 
-export default withTranslation()(RequestDetail)
+export default HOCComponent(withTranslation()(RequestDetail))

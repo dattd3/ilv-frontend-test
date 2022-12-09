@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useApi, useFetcher, useGuardStore } from "../../modules";
 import Course from "../../components/Forms/CustomForm/Course"
+import HOCComponent from '../../components/Common/HOCComponent'
 import LoadingSpinner from "../../components/Forms/CustomForm/LoadingSpinner"
 
 const useGetRoadmap = () => {
@@ -37,4 +38,5 @@ function Roadmap(props) {
       </div>
     );
 }
-export default Roadmap;
+
+export default HOCComponent(Roadmap);

@@ -44,6 +44,7 @@ const Storage = {
     localStorage.setItem('tokenType', currentAuthUser.tokenType);
     localStorage.setItem('accessToken', currentAuthUser.accessToken);
     localStorage.setItem('tokenExpired', currentAuthUser.tokenExpired);
+    localStorage.setItem('refreshToken', currentAuthUser.refreshToken);
     localStorage.setItem('email', currentAuthUser.email);
     localStorage.setItem('plEmail', currentAuthUser.plEmail);
     localStorage.setItem('jobType', currentAuthUser.jobType);
@@ -86,6 +87,7 @@ const Storage = {
       tokenType: localStorage.getItem('tokenType'),
       accessToken: localStorage.getItem('accessToken'),
       tokenExpired: localStorage.getItem('tokenExpired'),
+      refreshToken: localStorage.getItem('refreshToken'),
       email: localStorage.getItem('email'),
       plEmail: localStorage.getItem('plEmail'),
       jobType: localStorage.getItem('jobType'),
@@ -125,6 +127,8 @@ const Storage = {
     localStorage.removeItem('tokenType');
     localStorage.removeItem('accessToken');
     localStorage.removeItem('tokenExpired');
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('isCancelRefreshToken');
     localStorage.removeItem('email');
     localStorage.removeItem('plEmail');
     localStorage.removeItem('fullName');
@@ -157,9 +161,7 @@ const Storage = {
     localStorage.removeItem('partId');
     localStorage.removeItem('part');
     localStorage.removeItem('role_assigment');
-    localStorage.removeItem('prepare')
-    localStorage.removeItem('timeTokenExpire')
-    localStorage.removeItem('refreshToken')
+    localStorage.removeItem('prepare');
   }
 }
 
@@ -167,6 +169,7 @@ const deserialize = (currentAuthUser) => ({
   tokenType: 'Bearer',
   accessToken: currentAuthUser.accessToken,
   tokenExpired: currentAuthUser.tokenExpired,
+  refreshToken: currentAuthUser.refreshToken,
   email: currentAuthUser.email,
   plEmail: currentAuthUser.plEmail,
   fullName: currentAuthUser.fullName,

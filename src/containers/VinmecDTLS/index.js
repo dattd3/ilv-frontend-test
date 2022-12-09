@@ -1,5 +1,6 @@
 import React from "react";
 import { withTranslation } from 'react-i18next';
+import HOCComponent from '../../components/Common/HOCComponent'
 
 class VimecDTLS extends React.Component {
     constructor(props) {
@@ -17,4 +18,5 @@ class VimecDTLS extends React.Component {
         </>
     }
 }
-export default withTranslation()(VimecDTLS)
+
+export default HOCComponent(withTranslation()(VimecDTLS))

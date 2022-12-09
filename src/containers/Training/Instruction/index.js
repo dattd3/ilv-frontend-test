@@ -4,6 +4,7 @@ import SuccessClass from './SuccessClass';
 import { useTranslation } from "react-i18next";
 import { Form } from 'react-bootstrap';
 import _ from "lodash";
+import HOCComponent from '../../../components/Common/HOCComponent'
 
 function Instruction() {
     const { t } = useTranslation();
@@ -38,4 +39,5 @@ function Instruction() {
         </>
     );
 }
-export default Instruction;
+
+export default HOCComponent(Instruction);

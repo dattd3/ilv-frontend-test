@@ -5,6 +5,7 @@ import TimeTableDetail from '../../../Timesheet/TimeTableDetail'
 import axios from "axios";
 import moment from "moment";
 import { withTranslation } from "react-i18next";
+import HOCComponent from '../../../../components/Common/HOCComponent'
 import { toast } from "react-toastify";
 import { getMuleSoftHeaderConfigurations, getRequestConfigurations } from "../../../../commons/Utils"
 
@@ -185,4 +186,4 @@ class PersonalDetails extends Component {
   }
 }
 
-export default withTranslation()(PersonalDetails);
+export default HOCComponent(withTranslation()(PersonalDetails))
