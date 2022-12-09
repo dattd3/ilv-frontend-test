@@ -6,16 +6,7 @@ import _ from 'lodash'
 import { withTranslation } from "react-i18next"
 import Constants from '../../../commons/Constants'
 import IconReset from '../../../assets/img/icon/ic-reset.svg'
-
-const statusOptions = [
-    {value: 0, label: "Chưa hoàn thành"},
-    {value: 1, label: "Đã hoàn thành"}
-]
-const sapStatusOptions = [
-    {value: 0, label: 'Chưa đẩy SAP'},
-    {value: 1, label: 'Đã đẩy SAP'},
-    {value: 2, label: 'Chưa đẩy SAP'},
-];
+import { t } from 'i18next'
 
 const AttachmentOption = ({ children, ...props }) => (<components.ValueContainer {...props}>
     <div>File đính kèm</div><div style={{visibility: 'hidden'}}>{children}</div>
@@ -53,6 +44,15 @@ class ListStaffResignationComponent extends React.PureComponent {
             requestIdChecked: {},
             isCheckedAll : false
         }
+        this.statusOptions = [
+            {value: 0, label: props.t("unfinished")},
+            {value: 1, label: props.t("accomplished")}
+        ]
+        this.sapStatusOptions = [
+            {value: 0, label: props.t('not_push_SAP')},
+            {value: 1, label: props.t('pushed_SAP')},
+            {value: 2, label: props.t('not_push_SAP')},
+        ];
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -104,9 +104,9 @@ class ListStaffResignationComponent extends React.PureComponent {
                     }
                 })
             }
-            element = <Select options={statusOptions} onChange={e => this.handleSelectChange(index, e, stateName)} value={statusOptions.filter(so => so.value == currentItem[stateName])} placeholder="Chọn trạng thái" styles={customStyles} menuPortalTarget={document.body} />
+            element = <Select options={this.statusOptions} onChange={e => this.handleSelectChange(index, e, stateName)} value={this.statusOptions.filter(so => so.value == currentItem[stateName])} placeholder="Chọn trạng thái" styles={customStyles} menuPortalTarget={document.body} />
         } else {
-            const statusName = statusOptions.filter(item => item.value == statusCode)
+            const statusName = this.statusOptions.filter(item => item.value == statusCode)
             if (statusName && statusName.length > 0) {
                 element = statusName[0]?.label || ""
             }
@@ -140,7 +140,7 @@ class ListStaffResignationComponent extends React.PureComponent {
     }
 
     renderSapStatus = (salaryStatus) => {
-        const statusName = sapStatusOptions.filter(item => item.value == salaryStatus)
+        const statusName = this.sapStatusOptions.filter(item => item.value == salaryStatus)
         return statusName && statusName.length > 0 ? statusName[0]?.label || "" : ""
     }
 
@@ -309,7 +309,7 @@ class ListStaffResignationComponent extends React.PureComponent {
                                                 const userInfos = item.userInfo
                                                 const reason = item.reason
                                                 const attachments = item.profileDocuments
-                                                const interviewQuestionnaire = item.processStatus == Constants.STATUS_APPROVED ? <a className="data interview-card" href={`/contract-termination-interview/${item.contractTerminationInfoId}/export`} title="Phiếu phỏng vấn" target="_blank">Phiếu phỏng vấn</a>  : <span className="data interview-card">Phiếu phỏng vấn</span>
+                                                const interviewQuestionnaire = item.processStatus == Constants.STATUS_APPROVED ? <a className="data interview-card" href={`/contract-termination-interview/${item.contractTerminationInfoId}/export`} title={t('interview_form')} target="_blank">{t('interview_form')}</a>  : <span className="data interview-card">{t('interview_form')}</span>
 
                                                 return <tr key={index}>
                                                             <td className="sticky-col full-name-col">

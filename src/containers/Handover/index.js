@@ -28,10 +28,6 @@ const FULL_DAY = true
 
 class LeaveOfAbsenceDetailComponent extends React.Component {
 
-  resultOptions = [
-    {value: 0, label: 'Chưa hoàn thành'},
-    {value: 1, label: 'Hoàn thành'}
-  ];
   HD_THUVIEC = 2;
 
   checkAuthorize = () => {
@@ -149,6 +145,10 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
       errors: {
       }
     }
+    this.resultOptions = [
+      {value: 0, label: props.t('unfinished')},
+      {value: 1, label: props.t('accomplished')}
+    ];
   }
   componentDidMount() {
     const id = this.props.match.params.id;
@@ -422,10 +422,10 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
 
       <div className="leave-of-absence evalution">
         <div className="eval-heading">
-            BIÊN BẢN BÀN GIAO
+            {t('handover_title')}
         </div>
 
-        <h5>I. BÊN BÀN GIAO</h5>
+        <h5>I. {t('ben_ban_giao')}</h5>
         <div className="box cbnv">
           <div className="row">
             <div className="col-4">
@@ -443,241 +443,241 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
           </div>
           <div className="row">
             <div className="col-4">
-              {"Ngày làm việc"}
+              {t('ngay_lam_viec')}
               <div className="detail">{data.employee.startDate ? moment(data.employee.startDate).format("DD/MM/YYYY") : '' }</div>
             </div>
             <div className="col-4">
-              {"Ngày chấm dứt HĐLĐ"}
+              {t('ngay_cham_dut_hdld')}
               <div className="detail">{data.employee.expireDate }</div>
             </div>
           </div>
         </div>
         <StatusModal show={this.state.isShowStatusModal} content={this.state.content} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
-        <h5>II. THÔNG TIN BÀN GIAO</h5>
+        <h5>II. {t('handover_info')}</h5>
         <div className="box  cbnv more-description">
           <div className="title" style={{ marginBottom: '16px'}}>
-            II.1 Bàn giao công việc
+            {t('handover_1')}
           </div>
           <div className="row">
             <div className="col-12">
-                <span className="sub-title" style={{margin: '0px'}}>II.1.1 Các công việc chuyên môn</span>
-                <ResizableTextarea placeholder={disableComponent.employee ? "Nhập nội dung chi tiết" : ''} minRows={3} disabled={!disableComponent.employee} value={data.job.mainWork} onChange={(e) => this.handleTextInputChange(e, 'job', 'mainWork')} className="mv-10"/>
+                <span className="sub-title" style={{margin: '0px'}}>{t('handover_1_1')}</span>
+                <ResizableTextarea placeholder={disableComponent.employee ? t('import') : ''} minRows={3} disabled={!disableComponent.employee} value={data.job.mainWork} onChange={(e) => this.handleTextInputChange(e, 'job', 'mainWork')} className="mv-10"/>
             </div>
             <div className="col-12">
-                <span className="sub-title" style={{margin: '16px 0px 0px 0px', display: 'block'}}>II.1.2 Công việc kiểm soát tuân thủ</span>
-                <ResizableTextarea placeholder={disableComponent.employee ? "Nhập nội dung chi tiết" : ''} minRows={3} disabled={!disableComponent.employee} value={data.job.controlWork} onChange={(e) => this.handleTextInputChange(e, 'job', 'controlWork')} className="mv-10"/>
+                <span className="sub-title" style={{margin: '16px 0px 0px 0px', display: 'block'}}>{t('handover_1_2')}</span>
+                <ResizableTextarea placeholder={disableComponent.employee ? t('import') : ''} minRows={3} disabled={!disableComponent.employee} value={data.job.controlWork} onChange={(e) => this.handleTextInputChange(e, 'job', 'controlWork')} className="mv-10"/>
             </div>
             <div className="col-12">
-                <span className="sub-title" style={{margin: '16px 0px 0px 0px', display: 'block'}}>II.1.3 Các công việc khác</span>
-                <ResizableTextarea placeholder={disableComponent.employee ? "Nhập nội dung chi tiết" : ''} minRows={3} disabled={!disableComponent.employee} value={data.job.otherWork} onChange={(e) => this.handleTextInputChange(e, 'job', 'otherWork')} className="mv-10"/>
+                <span className="sub-title" style={{margin: '16px 0px 0px 0px', display: 'block'}}>{t('handover_1_3')}</span>
+                <ResizableTextarea placeholder={disableComponent.employee ? t('import') : ''} minRows={3} disabled={!disableComponent.employee} value={data.job.otherWork} onChange={(e) => this.handleTextInputChange(e, 'job', 'otherWork')} className="mv-10"/>
             </div>
           </div>
           <div className="row">
             <div className="col-4">
-                Người nhận bàn giao
+                {t('user_action')}
                 <ApproverComponent isEdit={!disableComponent.employee} approver={data.job.user}  updateApprover={(approver, isApprover) => this.updateApprover('job', approver,isApprover )} errors={{approver: this.state.errors['job']}}/>
             </div>
             <div className="col-4">
-                Ngày thực hiện
+                {t('handover_date')}
                 <ResizableTextarea disabled={true} value={data.job.actionDate ? moment(data.job.actionDate).format("DD/MM/YYYY") : ''} onChange={(e) => this.handleTextInputChange(e, 'job', 'actionDate')} className="mv-10"/>
             </div>
             <div className="col-4">
-                Tình trạng
-                <Select  placeholder={"Lựa chọn kết quả"} options={this.resultOptions} isDisabled={!disableComponent.job}  isClearable={true} 
+                {t('handover_status')}
+                <Select  placeholder={t('option')} options={this.resultOptions} isDisabled={!disableComponent.job}  isClearable={true} 
                 value={this.resultOptions.filter(d => data.job.status != null && d.value == data.job.status)}
                 onChange={e => this.handleChangeSelectInputs(e,'job', 'status')} className="input"
                 styles={{menu: provided => ({ ...provided, zIndex: 2 })}}/>
                 {this.state.errors && this.state.errors['job_status'] ? <p className="text-danger">{this.state.errors['job_status']}</p> : null}
             </div>
             <div className="col-12">
-                Ghi chú
-                <ResizableTextarea placeholder={disableComponent.job ? "Nhập ghi chú" : ''} disabled={!disableComponent.job} value={data.job.note} onChange={(e) => this.handleTextInputChange(e, 'job', 'note')} className="mv-10"/>
+                {t('ghi_chu')}
+                <ResizableTextarea placeholder={disableComponent.job ? t('import') : ''} disabled={!disableComponent.job} value={data.job.note} onChange={(e) => this.handleTextInputChange(e, 'job', 'note')} className="mv-10"/>
             </div>
           </div>
         </div>
         <div className="box cbnv more-description">
             <div className="title">
-                II.2 Bàn giao tài sản
+            {t('handover_2')}
             </div>
             <div className="row">
-                <div className="sub-title" style={{marginTop: '16px'}}>II.2.1 Tài sản Công ty (Thẻ ra vào, Máy tính, Điện thoại, Thẻ taxi, Tài sản khác nếu có)</div>
+                <div className="sub-title" style={{marginTop: '16px'}}>{t('handover_2_1')}</div>
             </div>
             <div className="row">
                 <div className="col-4">
-                    Người nhận bàn giao
+                    {t('user_action')}
                     <ApproverComponent isEdit={!disableComponent.employee} approver={data.asset.user}  updateApprover={(approver, isApprover) => this.updateApprover('asset', approver,isApprover )} errors={{approver: this.state.errors['asset']}}/>
                 </div>
                 <div className="col-4">
-                    Ngày thực hiện
+                    {t('handover_date')}
                     <ResizableTextarea disabled={true} value={data.asset.actionDate ? moment(data.asset.actionDate).format("DD/MM/YYYY") : ''} onChange={(e) => this.handleTextInputChange(e, 'asset', 'actionDate')} className="mv-10"/>
                 </div>
                 <div className="col-4">
-                    Tình trạng
-                        <Select  placeholder={"Lựa chọn kết quả"} options={this.resultOptions} isDisabled={!disableComponent.asset}  isClearable={true} 
+                    {t('handover_status')}
+                        <Select  placeholder={t('option')} options={this.resultOptions} isDisabled={!disableComponent.asset}  isClearable={true} 
                     value={this.resultOptions.filter(d => data.asset.status != null && d.value == data.asset.status)}
                     onChange={e => this.handleChangeSelectInputs(e,'asset', 'status')} className="input"
                     styles={{menu: provided => ({ ...provided, zIndex: 2 })}}/>
                     {this.state.errors && this.state.errors['asset_status'] ? <p className="text-danger">{this.state.errors['asset_status']}</p> : null}
                 </div>
                 <div className="col-12">
-                    Ghi chú
-                    <ResizableTextarea placeholder={disableComponent.asset ? "Nhập ghi chú" : ''} disabled={!disableComponent.asset} value={data.asset.note} onChange={(e) => this.handleTextInputChange(e, 'asset', 'note')} className="mv-10"/>
+                  {t('ghi_chu')}
+                    <ResizableTextarea placeholder={disableComponent.asset ? t('import') : ''} disabled={!disableComponent.asset} value={data.asset.note} onChange={(e) => this.handleTextInputChange(e, 'asset', 'note')} className="mv-10"/>
                 </div>
             </div>
 
             <div className="row">
-                <div className="sub-title">II.2.2 Sổ BHXH và BHSK</div>
+                <div className="sub-title">{t('handover_2_2')}</div>
             </div>
             <div className="row">
                 <div className="col-4">
-                    Người nhận bàn giao
+                {t('user_action')}
                     <ApproverComponent isEdit={!disableComponent.employee} approver={data.associateCard.user}  updateApprover={(approver, isApprover) => this.updateApprover('associateCard', approver,isApprover )} errors={{approver: this.state.errors['associateCard']}}/>
                 </div>
                 <div className="col-4">
-                    Ngày thực hiện
+                {t('handover_date')}
                     <ResizableTextarea disabled={true} value={data.associateCard.actionDate ? moment(data.associateCard.actionDate).format("DD/MM/YYYY") : ''} onChange={(e) => this.handleTextInputChange(e, 'associateCard', 'actionDate')} className="mv-10"/>
                 </div>
                 <div className="col-4">
-                    Tình trạng
-                    <Select  placeholder={"Lựa chọn kết quả"} options={this.resultOptions} isDisabled={!disableComponent.associateCard}  isClearable={true} 
+                {t('handover_status')}
+                    <Select  placeholder={t('option')} options={this.resultOptions} isDisabled={!disableComponent.associateCard}  isClearable={true} 
                     value={this.resultOptions.filter(d => data.associateCard.status != null && d.value == data.associateCard.status)}
                     onChange={e => this.handleChangeSelectInputs(e,'associateCard', 'status')} className="input"
                     styles={{menu: provided => ({ ...provided, zIndex: 2 })}}/>
                     {this.state.errors && this.state.errors['associateCard_status'] ? <p className="text-danger">{this.state.errors['associateCard_status']}</p> : null}
                 </div>
                 <div className="col-12">
-                    Ghi chú
-                    <ResizableTextarea placeholder={disableComponent.associateCard ? "Nhập ghi chú" : ''} disabled={!disableComponent.associateCard} value={data.associateCard.note} onChange={(e) => this.handleTextInputChange(e, 'associateCard', 'note')} className="mv-10"/>
+                {t('ghi_chu')}
+                    <ResizableTextarea placeholder={disableComponent.associateCard ? t('import') : ''} disabled={!disableComponent.associateCard} value={data.associateCard.note} onChange={(e) => this.handleTextInputChange(e, 'associateCard', 'note')} className="mv-10"/>
                 </div>
             </div>
 
             <div className="row">
-                <div className="sub-title">II.2.3 Đồng phục</div>
+                <div className="sub-title">{t('handover_2_3')}</div>
             </div>
             <div className="row">
                 <div className="col-4">
-                    Người nhận bàn giao
+                {t('user_action')}
                     <ApproverComponent isEdit={!disableComponent.employee} approver={data.uniform.user}  updateApprover={(approver, isApprover) => this.updateApprover('uniform', approver,isApprover )} errors={{approver: this.state.errors['uniform']}}/>
                 </div>
                 <div className="col-4">
-                    Ngày thực hiện
+                {t('handover_date')}
                     <ResizableTextarea disabled={true} value={data.uniform.actionDate ? moment(data.uniform.actionDate).format("DD/MM/YYYY") : ''} onChange={(e) => this.handleTextInputChange(e, 'uniform', 'actionDate')} className="mv-10"/>
                 </div>
                 <div className="col-4">
-                    Tình trạng
-                    <Select  placeholder={"Lựa chọn kết quả"} options={this.resultOptions} isDisabled={!disableComponent.uniform}  isClearable={true} 
+                {t('handover_status')}
+                    <Select  placeholder={t('option')} options={this.resultOptions} isDisabled={!disableComponent.uniform}  isClearable={true} 
                     value={this.resultOptions.filter(d => data.uniform.status != null && d.value == data.uniform.status)}
                     onChange={e => this.handleChangeSelectInputs(e,'uniform', 'status')} className="input"
                     styles={{menu: provided => ({ ...provided, zIndex: 2 })}}/>
                     {this.state.errors && this.state.errors['uniform_status'] ? <p className="text-danger">{this.state.errors['uniform_status']}</p> : null}
                 </div>
                 <div className="col-12">
-                    Ghi chú
-                    <ResizableTextarea placeholder={disableComponent.uniform ? "Nhập ghi chú" : ''}  disabled={!disableComponent.uniform} value={data.uniform.note} onChange={(e) => this.handleTextInputChange(e, 'uniform', 'note')} className="mv-10"/>
+                {t('ghi_chu')}
+                    <ResizableTextarea placeholder={disableComponent.uniform ? t('import') : ''}  disabled={!disableComponent.uniform} value={data.uniform.note} onChange={(e) => this.handleTextInputChange(e, 'uniform', 'note')} className="mv-10"/>
                 </div>
             </div>
 
             <div className="row">
-                <div className="sub-title">II.2.4 Vân tay, Email</div>
+                <div className="sub-title">{t('handover_2_4')}</div>
             </div>
             <div className="row">
                 <div className="col-4">
-                    Người nhận bàn giao
+                {t('user_action')}
                     <ApproverComponent isEdit={!disableComponent.employee} approver={data.finger.user}  updateApprover={(approver, isApprover) => this.updateApprover('finger', approver,isApprover )} errors={{approver: this.state.errors['finger']}}/>
                 </div>
                 <div className="col-4">
-                    Ngày thực hiện
+                {t('handover_date')}
                     <ResizableTextarea disabled={true} value={data.finger.actionDate ? moment(data.finger.actionDate).format("DD/MM/YYYY") : ''} onChange={(e) => this.handleTextInputChange(e, 'finger', 'actionDate')} className="mv-10"/>
                 </div>
                 <div className="col-4">
-                    Tình trạng
-                    <Select  placeholder={"Lựa chọn kết quả"} options={this.resultOptions} isDisabled={!disableComponent.finger}  isClearable={true} 
+                {t('handover_status')}
+                    <Select  placeholder={t('option')} options={this.resultOptions} isDisabled={!disableComponent.finger}  isClearable={true} 
                     value={this.resultOptions.filter(d => data.finger.status != null && d.value == data.finger.status)}
                     onChange={e => this.handleChangeSelectInputs(e,'finger', 'status')} className="input"
                     styles={{menu: provided => ({ ...provided, zIndex: 2 })}}/>
                     {this.state.errors && this.state.errors['finger_status'] ? <p className="text-danger">{this.state.errors['finger_status']}</p> : null}
                 </div>
                 <div className="col-12">
-                    Ghi chú
-                    <ResizableTextarea placeholder={disableComponent.finger ? "Nhập ghi chú" : ''} disabled={!disableComponent.finger} value={data.finger.note} onChange={(e) => this.handleTextInputChange(e, 'finger', 'note')} className="mv-10"/>
+                {t('ghi_chu')}
+                    <ResizableTextarea placeholder={disableComponent.finger ? t('import') : ''} disabled={!disableComponent.finger} value={data.finger.note} onChange={(e) => this.handleTextInputChange(e, 'finger', 'note')} className="mv-10"/>
                 </div>
             </div>
 
             <div className="row">
-                <div className="sub-title">II.2.5 Công nợ (Tài chính Kế toán) người nhận</div>
+                <div className="sub-title">{t('handover_2_5')}</div>
             </div>
             <div className="row">
                 <div className="col-4">
-                    Người nhận bàn giao
+                {t('user_action')}
                     <ApproverComponent isEdit={!disableComponent.employee } approver={data.inout.user}  updateApprover={(approver, isApprover) => this.updateApprover('inout', approver,isApprover )} errors={{approver: this.state.errors['inout']}} />
                 </div>
                 <div className="col-4">
-                    Ngày thực hiện
+                {t('handover_date')}
                     <ResizableTextarea disabled={true} value={data.inout.actionDate ? moment(data.inout.actionDate).format("DD/MM/YYYY") : ''} onChange={(e) => this.handleTextInputChange(e, 'inout', 'actionDate')} className="mv-10"/>
                 </div>
                 <div className="col-4">
-                    Tình trạng
-                    <Select  placeholder={"Lựa chọn kết quả"} options={this.resultOptions} isDisabled={!disableComponent.inout}  isClearable={true} 
+                {t('handover_status')}
+                    <Select  placeholder={t('option')} options={this.resultOptions} isDisabled={!disableComponent.inout}  isClearable={true} 
                     value={this.resultOptions.filter(d => data.inout.status != null && d.value == data.inout.status)}
                     onChange={e => this.handleChangeSelectInputs(e,'inout', 'status')} className="input"
                     styles={{menu: provided => ({ ...provided, zIndex: 2 })}}/>
                     {this.state.errors && this.state.errors['inout_status'] ? <p className="text-danger">{this.state.errors['inout_status']}</p> : null}
                 </div>
                 <div className="col-12">
-                    Ghi chú
-                    <ResizableTextarea placeholder={disableComponent.inout ? "Nhập ghi chú" : ''} disabled={!disableComponent.inout} value={data.inout.note} onChange={(e) => this.handleTextInputChange(e, 'inout', 'note')} className="mv-10"/>
+                {t('ghi_chu')}
+                    <ResizableTextarea placeholder={disableComponent.inout ? t('import') : ''} disabled={!disableComponent.inout} value={data.inout.note} onChange={(e) => this.handleTextInputChange(e, 'inout', 'note')} className="mv-10"/>
                 </div>
             </div>
 
             <div className="row">
-                <div className="sub-title">II.2.6 Các phần mềm phục vụ công việc (nếu có)</div>
+                <div className="sub-title">{t('handover_2_6')}</div>
             </div>
             <div className="row">
                 <div className="col-4">
-                    Người nhận bàn giao
+                {t('user_action')}
                     <ApproverComponent isEdit={!disableComponent.employee} approver={data.tool.user}  updateApprover={(approver, isApprover) => this.updateApprover('tool', approver,isApprover )} errors={{approver: this.state.errors['tool']}}/>
                 </div>
                 <div className="col-4">
-                    Ngày thực hiện
+                {t('handover_date')}
                     <ResizableTextarea disabled={true} value={data.tool.actionDate ? moment(data.tool.actionDate).format("DD/MM/YYYY") : ''} onChange={(e) => this.handleTextInputChange(e, 'tool', 'actionDate')} className="mv-10"/>
                 </div>
                 <div className="col-4">
-                    Tình trạng
-                    <Select  placeholder={"Lựa chọn kết quả"} options={this.resultOptions} isDisabled={!disableComponent.tool}  isClearable={true} 
+                {t('handover_status')}
+                    <Select  placeholder={t('option')} options={this.resultOptions} isDisabled={!disableComponent.tool}  isClearable={true} 
                     value={this.resultOptions.filter(d => data.tool.status != null && d.value == data.tool.status)}
                     onChange={e => this.handleChangeSelectInputs(e,'tool', 'status')} className="input"
                     styles={{menu: provided => ({ ...provided, zIndex: 2 })}}/>
                     {this.state.errors && this.state.errors['tool_status'] ? <p className="text-danger">{this.state.errors['tool_status']}</p> : null}
                 </div>
                 <div className="col-12">
-                    Ghi chú
-                    <ResizableTextarea placeholder={disableComponent.tool ? "Nhập ghi chú" : ''} disabled={!disableComponent.tool} value={data.tool.note} onChange={(e) => this.handleTextInputChange(e, 'tool', 'note')} className="mv-10"/>
+                {t('ghi_chu')}
+                    <ResizableTextarea placeholder={disableComponent.tool ? t('import') : ''} disabled={!disableComponent.tool} value={data.tool.note} onChange={(e) => this.handleTextInputChange(e, 'tool', 'note')} className="mv-10"/>
                 </div>
             </div>
 
             <div className="row">
-                <div className="sub-title">II.2.7 Xác nhận về biên bản vi phạm chưa xử lý (nếu có)</div>
+                <div className="sub-title">{t('handover_2_7')}</div>
             </div>
             <div className="row">
                 <div className="col-4">
-                    Người nhận bàn giao
+                {t('user_action')}
                     <ApproverComponent isEdit={!disableComponent.employee} approver={data.policy.user}  updateApprover={(approver, isApprover) => this.updateApprover('policy', approver,isApprover )} errors={{approver: this.state.errors['policy']}}/>
                 </div>
                 <div className="col-4">
-                    Ngày thực hiện
+                {t('handover_date')}
                     <ResizableTextarea disabled={true} value={data.policy.actionDate ? moment(data.policy.actionDate).format("DD/MM/YYYY") : ''} onChange={(e) => this.handleTextInputChange(e, 'tool', 'actionDate')} className="mv-10"/>
                 </div>
                 <div className="col-4">
-                    Tình trạng
-                    <Select  placeholder={"Lựa chọn kết quả"} options={this.resultOptions} isDisabled={!disableComponent.policy}  isClearable={true} 
+                {t('handover_status')}
+                    <Select  placeholder={t('option')} options={this.resultOptions} isDisabled={!disableComponent.policy}  isClearable={true} 
                     value={this.resultOptions.filter(d => data.policy.status != null && d.value == data.policy.status)}
                     onChange={e => this.handleChangeSelectInputs(e,'policy', 'status')} className="input"
                     styles={{menu: provided => ({ ...provided, zIndex: 2 })}}/>
                     {this.state.errors && this.state.errors['policy_status'] ? <p className="text-danger">{this.state.errors['policy_status']}</p> : null}
                 </div>
                 <div className="col-12">
-                    Ghi chú
-                    <ResizableTextarea placeholder={disableComponent.policy ? "Nhập ghi chú" : ''}  disabled={!disableComponent.policy} value={data.policy.note} onChange={(e) => this.handleTextInputChange(e, 'policy', 'note')} className="mv-10"/>
+                {t('ghi_chu')}
+                    <ResizableTextarea placeholder={disableComponent.policy ? t('import') : ''}  disabled={!disableComponent.policy} value={data.policy.note} onChange={(e) => this.handleTextInputChange(e, 'policy', 'note')} className="mv-10"/>
                 </div>
             </div>
 

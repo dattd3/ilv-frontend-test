@@ -14,12 +14,12 @@ class InterviewContentFormComponent extends React.PureComponent {
         }
     }
 
-    getTimeSurveyOptions = (type) => {
+    getTimeSurveyOptions = (type, t) => {
         return [
-            { value: 1, label: "< 6 tháng", element: `${type}-less-6-month`},
-            { value: 2, label: "2 năm", element: `${type}-2-year`},
-            { value: 3, label: "2 - 5 năm", element: `${type}-2-5-year`},
-            { value: 4, label: "> 5 năm", element: `${type}-than-5-year`}
+            { value: 1, label: t('less_6_months'), element: `${type}-less-6-month`},
+            { value: 2, label: t('2_years'), element: `${type}-2-year`},
+            { value: 3, label: t('2_5_years'), element: `${type}-2-5-year`},
+            { value: 4, label: t('greater_5_years'), element: `${type}-than-5-year`}
         ]
     }
 
@@ -64,16 +64,16 @@ class InterviewContentFormComponent extends React.PureComponent {
     render() {
         const { t, serveyInfos, serveyDetail, isViewOnly, timeJoinDefault, timeInDefault, resignationReasonOptionsChecked, comments } = this.props
         
-        const timeJoinSurveyOptions = this.getTimeSurveyOptions("join")
-        const timeInSurveyOptions = this.getTimeSurveyOptions("in")
+        const timeJoinSurveyOptions = this.getTimeSurveyOptions("join", t)
+        const timeInSurveyOptions = this.getTimeSurveyOptions("in", t)
         return (
             <>
             <div className="block interview-content-block">
-                    <h6 className="block-title">II. Nội dung phỏng vấn</h6>
+                    <h6 className="block-title">II. {t('noi_dung_phong_van')}</h6>
                     <div className="box">
                         <div className="row">
                             <div className="col-12">
-                                <p className="question">Bạn gia nhập công ty cách đây bao lâu ?</p>
+                                <p className="question">{t('ban_gia_nhap_cong_ty_cach_day_bao_lau')}</p>
                                 <div className="answer">
                                     {
                                         (timeJoinSurveyOptions || []).map((item, index) => {
@@ -94,7 +94,7 @@ class InterviewContentFormComponent extends React.PureComponent {
                         </div>
                         <div className="row">
                             <div className="col-12">
-                                <p className="question">Bạn ở vị trí hiện tại được bao lâu ?</p>
+                                <p className="question">{t('ban_o_vi_tri_hien_tai_duoc_bao_lau')}</p>
                                 <div className="answer">
                                     {
                                         (timeInSurveyOptions || []).map((item, index) => {
@@ -111,15 +111,15 @@ class InterviewContentFormComponent extends React.PureComponent {
                     </div>
                 </div>
                 <div className="block interview-content-block">
-                    <h6 className="block-title">III. Lý do thôi việc</h6>
+                    <h6 className="block-title">III. {t('ly_do_thoi_viec')}</h6>
                     <div className="row">
                         <div className="col-12">
                             <table className="list-staff">
                                 <thead>
                                     <tr>
-                                        <th className="col-first">Danh mục</th>
-                                        <th className="col-second">Lựa chọn</th>
-                                        <th className="col-third">Diễn giải</th>
+                                        <th className="col-first">{t('danh_muc')}</th>
+                                        <th className="col-second">{t('option')}</th>
+                                        <th className="col-third">{t('dien_giai')}</th>
                                     </tr>
                                 </thead>
                                 <tbody>

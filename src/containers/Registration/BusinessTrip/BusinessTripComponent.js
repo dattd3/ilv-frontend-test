@@ -995,7 +995,7 @@ class BusinessTripComponent extends React.Component {
                                                 </div>
                                                 {!indexDetail 
                                                     ? <button type="button" className="btn btn-add-multiple-in-out" style={{ right: 0 }} onClick={() => this.addMultiDateTime(req[0].groupId, req, req[0].isAllDay, req[0])}><i className="fas fa-plus"></i> {t("AddMore")}</button>
-                                                    : <button type="button" className="btn btn-danger btn-top-right-corner" onClick={() => this.onRemoveBizTrip(reqDetail.groupId, reqDetail.groupItem)}><i className="fas fa-times"></i> {t("Cancel")}</button>
+                                                    : <button type="button" className="btn btn-danger btn-top-right-corner" onClick={() => this.onRemoveBizTrip(reqDetail.groupId, reqDetail.groupItem)}><i className="fas fa-times"></i> {t("delete")}</button>
                                                 }
                                                 {
                                                     reqDetail.errors.startTimeAndEndTime ?

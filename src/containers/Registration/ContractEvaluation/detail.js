@@ -190,7 +190,7 @@ const ContractEvaluationdetail = (props) => {
                                   return <tr key={index}>
                                     <td className="text-center" style={{ width: '8%' }}>{index + 1}</td>
                                     <td style={{ width: '37%' }}>{item.name}</td>
-                                    <td className="text-center" style={{ width: '15%' }}>{item.status ? 'Đã hoàn thành' : 'Chưa hoàn thành'}</td>
+                                    <td className="text-center" style={{ width: '15%' }}>{item.status ? t('accomplished') : t('unfinished')}</td>
                                     {
                                       index == 0 ?
                                         <td className="text-center" style={{ width: '40%' }} rowSpan={data.course.length}>

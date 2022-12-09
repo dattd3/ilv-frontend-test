@@ -127,7 +127,7 @@ class ShiftForm extends React.Component {
                                             timeCaption="Giờ"
                                             dateFormat="HH:mm"
                                             timeFormat="HH:mm"
-                                            placeholderText="Lựa chọn"
+                                            placeholderText={t('option')}
                                             className="form-control input"
                                         />
                                     </label>
@@ -149,7 +149,7 @@ class ShiftForm extends React.Component {
                                             timeCaption="Giờ"
                                             dateFormat="HH:mm"
                                             timeFormat="HH:mm"
-                                            placeholderText="Lựa chọn"
+                                            placeholderText={t('option')}
                                             className="form-control input"
                                         />
                                     </label>
@@ -175,7 +175,7 @@ class ShiftForm extends React.Component {
                                             timeCaption="Giờ"
                                             dateFormat="HH:mm"
                                             timeFormat="HH:mm"
-                                            placeholderText="Lựa chọn"
+                                            placeholderText={t('option')}
                                             className="form-control input"
                                         />
                                     </label>
