@@ -13,6 +13,7 @@ import InterviewContentFormComponent from '../TerminationComponents/InterviewCon
 import ResultModal from '../ResultModal'
 import VinpearlLogo from '../../../assets/img/LogoVingroup.svg'//assets/img/logo-vp-vt.png
 import { exportToPDF } from '../../../commons/Utils';
+import { t } from 'i18next';
 
 const CURRENT_JOB = 1
 const MANAGER = 2
@@ -123,28 +124,28 @@ class ContractTerminationInterview extends React.Component {
 
             return [
                 {
-                    category: "Công việc hiện tại",
+                    category: this.props.t('cong_viec_hien_tai'),
                     categoryCode: CURRENT_JOB,
                     data: currentJobItems,
                     responseKeyOptionSelects: "currentWorksServey",
                     responseKeyDescription: "workCurrentDescription"
                 },
                 {
-                    category: "Quản lý",
+                    category: this.props.t('quan_ly'),
                     categoryCode: MANAGER,
                     data: managerItems,
                     responseKeyOptionSelects: "managementServey",
                     responseKeyDescription: "managementDescription"
                 },
                 {
-                    category: "Lương thưởng & Chế độ đãi ngộ",
+                    category: this.props.t('luong_thuong_va_che_do_dai_ngo'),
                     categoryCode: SALARY_BONUS_REMUNERATION,
                     data: salaryBonusRemunerationItems,
                     responseKeyOptionSelects: "salaryServey",
                     responseKeyDescription: "salaryDescription"
                 },
                 {
-                    category: "Lý do cá nhân",
+                    category: this.props.t('ly_do_ca_nhan'),
                     categoryCode: PERSONAL_REASONS,
                     data: personalReasonItems,
                     responseKeyOptionSelects: "personalReasonServey",
@@ -322,7 +323,7 @@ class ContractTerminationInterview extends React.Component {
             {
                 isViewOnly ?
                 <div className="export-button-block">
-                    <button className="export-to-pdf" type="button" onClick={this.exportToPDF1}><i className="fas fa-file-export"></i>Xuất PDF</button>
+                    <button className="export-to-pdf" type="button" onClick={this.exportToPDF1}><i className="fas fa-file-export"></i>{t('export_pdf')}</button>
                 </div>
                 : null
             }
@@ -330,7 +331,7 @@ class ContractTerminationInterview extends React.Component {
                 <div className="logo-block">
                     <Image src={VinpearlLogo} alt="Vinpearl" className="logo" />
                 </div>
-                <h5 className="page-title">Biểu mẫu phỏng vấn thôi việc</h5>
+                <h5 className="page-title">{t('bieu_mau_phong_van_thoi_viec')}</h5>
                 <StaffInfoForContractTerminationInterviewComponent userInfos={userInfos} />
                 <InterviewContentFormComponent serveyInfos={serveyInfos} serveyDetail={serveyDetail} timeJoinDefault={this.state.timeJoinDefault} 
                 timeInDefault={this.state.timeInDefault}

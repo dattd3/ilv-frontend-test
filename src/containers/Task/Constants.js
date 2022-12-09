@@ -31,9 +31,9 @@ const requestTypes = [
   { value: [Constants.IN_OUT_TIME_UPDATE], label: 'InOutChangeRequest' },
   { value: [Constants.CHANGE_DIVISON_SHIFT], label: 'AdminUploadShiftChange' },
   { value: [Constants.DEPARTMENT_TIMESHEET], label: 'DepartmentTimesheet' },
-  // { value: [Constants.ONBOARDING], label: 'InOutChangeRequest' },
-  { value: [Constants.RESIGN_SELF], label: 'Đề nghị chấm dứt hợp đồng' },
-  { value: [Constants.SALARY_PROPOSE], label: 'Đề xuất điều chỉnh lương' }
+  { value: [Constants.ONBOARDING], label: 'ContractEvaluationType' },
+  { value: [Constants.RESIGN_SELF], label: 'ResignationType'},
+  { value: [Constants.SALARY_PROPOSE], label: 'SalaryType' }
 ]
 
 const PN03List = [

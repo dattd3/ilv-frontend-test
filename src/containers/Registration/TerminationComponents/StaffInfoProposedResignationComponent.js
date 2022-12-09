@@ -288,8 +288,8 @@ class StaffInfoProposedResignationComponent extends React.PureComponent {
                                
                             </div>
                             <div className="col-2 btn-action-group">
-                                <button type="button" className="btn-action add" onClick={this.addEmployees}>Thêm</button>
-                                <button type="button" className="btn-action delete" onClick={this.removeEmployees}>Xóa</button>
+                                <button type="button" className="btn-action add" onClick={this.addEmployees}>{t('AddMore')}</button>
+                                <button type="button" className="btn-action delete" onClick={this.removeEmployees}>{t('delete')}</button>
                             </div>
                         </div>
                         : null

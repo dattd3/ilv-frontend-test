@@ -106,7 +106,7 @@ class ReasonResignationComponent extends React.PureComponent {
                             <div className="col-4">
                                 <p className="title">{t('ReasonForContractTermination')}<span className="required">(*)</span></p>
                                 <div>
-                                    <Select options={reasonTypes} placeholder="Vui lòng chọn lý do" onChange={this.handleSelectChange} value={infos.reason} styles={customStyles} />
+                                    <Select options={reasonTypes} placeholder={t('option')} onChange={this.handleSelectChange} value={infos.reason} styles={customStyles} />
                                 </div>
                             </div>
                         </div>

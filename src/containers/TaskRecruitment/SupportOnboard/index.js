@@ -11,10 +11,6 @@ import CustomPaging from '../../../components/Common/CustomPaging'
 import { checkIsExactPnL, checkVersionPnLSameAsVinhome } from '../../../commons/commonFunctions';
 
 class SupportOnboardComponent extends React.Component {
-  CONFIRM_STATUS = [
-    { value: true, label: 'Đã xong' },
-    { value: false, label: 'Chưa xong' },
-  ]
   _isMounted = false;
   constructor(props) {
     super();
@@ -42,6 +38,10 @@ class SupportOnboardComponent extends React.Component {
         isSuccessStatusModal: true
       },
     }
+    this.CONFIRM_STATUS = [
+      { value: true, label: props.t('done') },
+      { value: false, label: props.t('notDone') },
+    ]
   }
 
   componentDidMount() {
