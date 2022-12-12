@@ -1577,5 +1577,18 @@
   "report_resign": "Report on resignation requests",
   "report_handover": "Handover status",
   "report_resign_form": "Resignation application form",
-  "report_interview_result": "Report on interview results"
+  "report_interview_result": "Report on interview results",
+  "contract_definite": "Definite-term labor contract",
+  "contract_indefinite":"Indefinite-term labor contract",
+  "contract_session":"Seasonal contract",
+  "contract_apprent": "Apprenticeship contract",
+  "contract_probation": "Probationary contract",
+  "contract_monthly":"Monthly service contract",
+  "contract_hourly":"Hourly service contract",
+  "contract_package": "Work package contract",
+  "contract_result_sign": "Sign service contract",
+  "contract_result_apprent": "Sign contract after probation or apprenticeship",
+  "contract_result_extend": "Extend contract'",
+  "contract_result_nopass": "Not pass probation or apprenticeship",
+  "contract_result_noextend": "Because of not extending contract"
 }
