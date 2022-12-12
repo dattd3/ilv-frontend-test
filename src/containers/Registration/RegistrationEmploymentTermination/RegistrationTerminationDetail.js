@@ -123,7 +123,7 @@ class RegistrationEmploymentTermination extends React.Component {
                         </div>
                         <div className="row">
                             <div className="col-12">
-                                <p className="title">Lý do chi tiết chấm dứt hợp đồng</p>
+                                <p className="title">{t('DetailedReason')}</p>
                                 <div>
                                     {/* <input type="text" className="form-control" value={requestInfo?.reasonDetailed || ""} readOnly /> */}
                                     <div className="detail">{requestInfo?.reasonDetailed || ""}</div>

@@ -1595,5 +1595,18 @@
   "report_resign": "Báo cáo yêu cầu nghỉ việc",
   "report_handover": "Tình trạng bàn giao",
   "report_resign_form": "Đơn xin nghỉ việc",
-  "report_interview_result": "Báo cáo kết quả phỏng vấn"
+  "report_interview_result": "Báo cáo kết quả phỏng vấn",
+  "contract_definite": "HĐLĐ XĐ thời hạn",
+  "contract_indefinite":"HĐLĐ KXĐ thời hạn",
+  "contract_session":"HĐLĐ theo mùa vụ",
+  "contract_apprent": "Hợp đồng tập nghề",
+  "contract_probation": "Hợp đồng thử việc",
+  "contract_monthly":"HĐDV theo tháng",
+  "contract_hourly":"HĐDV theo giờ",
+  "contract_package": "HĐDV khoán",
+  "contract_result_sign": "Ký HĐDV",
+  "contract_result_apprent": "Ký HĐ sau thử việc, học việc",
+  "contract_result_extend": "Gia hạn hợp đồng",
+  "contract_result_nopass": "Không đạt HĐ thử việc, học việc",
+  "contract_result_noextend": "Do không gia hạn hợp đồng"
 }

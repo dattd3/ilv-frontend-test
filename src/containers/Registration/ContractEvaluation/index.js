@@ -39,24 +39,8 @@ const GROUP_EMAIL_EXTENSION = '@vingroup.net'
 
 class LeaveOfAbsenceDetailComponent extends React.Component {
 
-  resultOptions = [
-    {value: 1, label: 'Ký HĐDV'},
-    {value: 2, label: 'Ký HĐ sau thử việc, học việc'},
-    {value: 3, label: 'Gia hạn hợp đồng'},
-    {value: 4, label: 'Không đạt HĐ thử việc, học việc'},
-    {value: 5, label: 'Do không gia hạn hợp đồng'},
-  ];
   HD_THUVIEC = 2;
-  contractTypeOptions = [
-    {value: 'VA', label: 'HĐLĐ XĐ thời hạn'},
-    {value: 'VB', label: 'HĐLĐ KXĐ thời hạn'},
-    {value: 'VC', label: 'HĐLĐ theo mùa vụ'},
-    {value: 'VD', label: 'Hợp đồng tập nghề'},
-    {value: 'VE', label: 'Hợp đồng thử việc'},
-    {value: 'VF', label: 'HĐDV theo tháng'},
-    {value: 'VG', label: 'HĐDV theo giờ'},
-    {value: 'VH', label: 'HĐDV khoán'}
-  ];
+ 
   STATUS_OPTIONS = [
     {value: 9, label: 'Tự đánh giá'},
     {value: 10, label: 'Người đánh giá'},
@@ -319,6 +303,23 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
       showComponent: this.editableSetting.showComponent, 
       disableComponent: this.editableSetting.disableComponent
     }
+    this.contractTypeOptions = [
+      {value: 'VA', label: props.t('contract_definite')},
+      {value: 'VB', label: props.t('contract_indefinite')},
+      {value: 'VC', label: props.t('contract_session')},
+      {value: 'VD', label: props.t('contract_apprent')},
+      {value: 'VE', label: props.t('contract_probation')},
+      {value: 'VF', label: props.t('contract_monthly')},
+      {value: 'VG', label: props.t('contract_hourly')},
+      {value: 'VH', label: props.t('contract_package')}
+    ];
+    this.resultOptions = [
+      {value: 1, label: props.t('contract_result_sign')},
+      {value: 2, label: props.t('contract_result_apprent')},
+      {value: 3, label: props.t('contract_result_extend')},
+      {value: 4, label: props.t('contract_result_nopass')},
+      {value: 5, label: props.t('contract_result_noextend')},
+    ];
   }
   componentDidMount() {
 
