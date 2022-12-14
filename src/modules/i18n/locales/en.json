@@ -1251,6 +1251,7 @@
   "SelecTimePeriodValidate": "Vui lòng chọn thời gian có hiệu lực!",
   "PerformanceBonusVinfastGrossup": "Performance Bonus (Gross up)",
   "SupportVinfastCampaignAndProject": "Vinfast project/campaign Support Payment",
+  "SupportCampaignAndProject": "Project/campaign Support Payment",
   "BenefitsPayingThroughSalaryGrossup": "Benefits paid with salary (Gross up)",
   "SpecialJobAllowanceForVinES": "Special job allowance for VinES"
 }

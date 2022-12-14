@@ -1550,7 +1550,7 @@ export const IncomeTablesConfig = t => {
                                     { label: 'Hỗ trợ thu hút khó tuyển dụng', field: 'special_industry_subsidy' },
                                     { label: t("HousingSubsidyNet"), field: 'housing_allowance_net' },
                                     { label: t("SpecialJobAllowanceForVinES"), field: 'specific_work_allowance_vines' },
-                                    { label: t("SupportVinfastCampaignAndProject"), field: 'support_vf_campaign_project' },
+                                    { label: t("SupportCampaignAndProject"), field: 'support_vf_campaign_project' },
                                     { label: 'Hỗ trợ vé máy bay NNN', field: 'plane_ticket_allowance' },
                                     { label: t("NETCovid19PandemicSubsidy"), field: 'covid_allowance', isSplit: true },
                                     { label: 'Hỗ trợ mùa dịch Covid 19 (GROSSUP từ khoản NET tương ứng)', field: 'covid_grossup_allowance' },
