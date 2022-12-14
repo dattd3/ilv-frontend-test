@@ -158,7 +158,7 @@ function SideBar(props) {
                 rootNav[i].content = getSubNav(allNav, rootNav[i].id);
             }
         }
-        if (user.companyCode !== "V030") {
+        if (![Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl].includes(user.companyCode)) {
             rootNav = rootNav.filter(x => x.label !== 'Menu_Training')
         }
         if(user.companyCode != Constants.pnlVCode.VinHome && user.companyCode != Constants.PnLCODE.Vin3S) {
