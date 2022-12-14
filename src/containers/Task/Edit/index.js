@@ -238,6 +238,7 @@ class PersonalInfoEdit extends React.Component {
   }
 
   formatSapData(st, updatedFieldName_arr) {
+    const currentCompanyCode = localStorage.getItem("companyCode")
     let dt = st.data;
     let sapData = {};
     let pernr = localStorage.getItem('employeeNo');
@@ -261,7 +262,7 @@ class PersonalInfoEdit extends React.Component {
         if (!st.userDetail.country_id && !st.userDetail.province_id && !st.userDetail.street_name && !st.userDetail.district_id && !st.userDetail.ward_id) {
           actio = 'INS';
         }
-        if (localStorage.getItem("companyCode") != "V030") {
+        if (![Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl].includes(currentCompanyCode)) {
           actio = 'INS';
         }
         sapData.address.push({
@@ -284,7 +285,7 @@ class PersonalInfoEdit extends React.Component {
         if (!st.userDetail.tmp_province_id && !st.userDetail.tmp_street_name && !st.userDetail.temp_district_id && !st.userDetail.tmp_ward_id) {
           actio = 'INS';
         }
-        if (localStorage.getItem("companyCode") != "V030") {
+        if (![Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl].includes(currentCompanyCode)) {
           actio = 'INS';
         }
         sapData.address.push({
@@ -308,7 +309,7 @@ class PersonalInfoEdit extends React.Component {
       if (!st.userDetail.race_id) {
         actio = 'INS';
       }
-      if (localStorage.getItem("companyCode") != "V030") {
+      if (![Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl].includes(currentCompanyCode)) {
         actio = 'INS';
       }
       sapData.race = [{
@@ -329,7 +330,7 @@ class PersonalInfoEdit extends React.Component {
         if (!st.userDetail.personal_email) {
           actio = 'INS';
         }
-        if (localStorage.getItem("companyCode") != "V030") {
+        if (![Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl].includes(currentCompanyCode)) {
           actio = 'INS';
         }
         sapData.contact.push({
@@ -347,7 +348,7 @@ class PersonalInfoEdit extends React.Component {
         if (!st.userDetail.cell_phone_no) {
           actio = 'INS';
         }
-        if (localStorage.getItem("companyCode") != "V030") {
+        if (![Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl].includes(currentCompanyCode)) {
           actio = 'INS';
         }
         sapData.contact.push({
@@ -365,7 +366,7 @@ class PersonalInfoEdit extends React.Component {
         if (!st.userDetail.urgent_contact_no) {
           actio = 'INS';
         }
-        if (localStorage.getItem("companyCode") != "V030") {
+        if (![Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl].includes(currentCompanyCode)) {
           actio = 'INS';
         }
         sapData.contact.push({
@@ -382,7 +383,7 @@ class PersonalInfoEdit extends React.Component {
     let shouldUpdateInformation = updatedFieldName_arr.some(u => informationKeyNames.indexOf(u) >= 0);
     if (shouldUpdateInformation) {
       let actio = 'MOD';
-      if (localStorage.getItem("companyCode") != "V030") {
+      if (![Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl].includes(currentCompanyCode)) {
         actio = 'INS';
       }
       // thông tin cá nhân luôn luôn là update
@@ -430,7 +431,7 @@ class PersonalInfoEdit extends React.Component {
     //let shouldUpdateEducation = updatedFieldName_arr.some(u => educationKeyNames.indexOf(u) >= 0);
     if ((dt.update.userProfileHistoryEducation && dt.update.userProfileHistoryEducation.length > 0) || (dt.create.educations && dt.create.educations.length > 0)) {
       let actio = 'MOD';
-      if (localStorage.getItem("companyCode") != "V030") {
+      if (![Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl].includes(currentCompanyCode)) {
         actio = 'INS';
       }
       sapData.education = [];
@@ -516,7 +517,7 @@ class PersonalInfoEdit extends React.Component {
         if (!st.userDetail.personal_id_no || st.userDetail.pid_date_of_issue || st.userDetail.pid_place_of_issue) {
           actio = 'INS';
         }
-        if (localStorage.getItem("companyCode") != "V030") {
+        if (![Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl].includes(currentCompanyCode)) {
           actio = 'INS';
         }
         let _pid_date_of_issue = dt.update.userProfileHistoryMainInfo.NewMainInfo.PersonalIdentifyDate === undefined ? st.userDetail.pid_date_of_issue : dt.update.userProfileHistoryMainInfo.NewMainInfo.PersonalIdentifyDate;
@@ -547,7 +548,7 @@ class PersonalInfoEdit extends React.Component {
         if (!st.userDetail.passport_id_no || !st.userDetail.passport_date_of_issue || !st.userDetail.passport_place_of_issue) {
           actio = 'INS';
         }
-        if (localStorage.getItem("companyCode") != "V030") {
+        if (![Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl].includes(currentCompanyCode)) {
           actio = 'INS';
         }
         let _passport_date_of_issue = dt.update.userProfileHistoryMainInfo.NewMainInfo.PassportDate === undefined ? st.userDetail.passport_date_of_issue : dt.update.userProfileHistoryMainInfo.NewMainInfo.PassportDate;
@@ -582,7 +583,7 @@ class PersonalInfoEdit extends React.Component {
       if (!st.userDetail.bank_number) {
         actio = 'INS';
       }
-      if (localStorage.getItem("companyCode") != "V030") {
+      if (![Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl].includes(currentCompanyCode)) {
         actio = 'INS';
       }
       sapData.bank.push({

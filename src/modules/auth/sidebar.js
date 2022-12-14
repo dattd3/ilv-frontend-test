@@ -32,7 +32,7 @@ export const Navigation = [
     icon: 'c-recruiment',
     label: "Menu_InternalRecruitment",
     to: map.InternalRecruitment,
-    role: ['V030']
+    role: [Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl]
   },
   // {
   //   id: 12,
@@ -270,7 +270,7 @@ export const Navigation = [
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     label: "Menu_VinpearlIntroduction",
     to: map.Vinpearl,
-    role: ['V030']
+    role: [Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl]
   },
   {
     id: 102,
@@ -382,7 +382,7 @@ export const Navigation = [
   //   icon: "menu-bullet-lv2 icon-sub-menu-lv2",
   //   label: "Phúc lợi",
   //   to: map.Benefit,
-  //   role: ['V030']
+  //   role: [Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl]
   // },
   {
     id: 19,
@@ -390,7 +390,7 @@ export const Navigation = [
     icon: "menu-bullet-lv2 icon-sub-menu-lv2",
     label: "JobDescription",
     to: map.Job,
-    role: ['V030','V096','V073','V060']
+    role: [Constants.pnlVCode.VinSmart, Constants.pnlVCode.VinMec, Constants.pnlVCode.VinSoftware, Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl]
   },
   {
     id: 20,

@@ -18,6 +18,7 @@ const code = localStorage.getItem('employeeNo') || "";
 const fullName = localStorage.getItem('fullName') || "";
 const title = localStorage.getItem('jobTitle') || "";
 const department = localStorage.getItem('department') || "";
+const currentCompanyCode = localStorage.getItem("companyCode")
 const actionTypes = {
   create: 'create',
   update: 'update'
@@ -313,7 +314,7 @@ class PersonalInfoEdit extends React.Component {
       errors.notChange = `(${t("NoInformationUpdated")})`
     }
 
-    if (!isValidFileUpload && !['V073'].includes(localStorage.getItem("companyCode"))) {
+    if (!isValidFileUpload && !['V073'].includes(currentCompanyCode)) {
       errors.fileUpload = t("AttachmentRequired")
     }
 
@@ -358,7 +359,7 @@ class PersonalInfoEdit extends React.Component {
         if ((newMainInfo.PersonalIdentifyDate || newMainInfo.PersonalIdentifyPlace) && !newMainInfo.PersonalIdentifyNumber) {
           errors.personalIdentifyNumber = t("IdRequired")
         }
-        if (localStorage.getItem("companyCode") === "V073") {
+        if (currentCompanyCode === "V073") {
           if (newMainInfo.PersonalIdentifyNumber && !this.isValidIdentifyNumber(newMainInfo.PersonalIdentifyNumber)) {
             errors.personalIdentifyNumber = '(' + t("Invalid format (9 or 12 digits)") + ')'
           }
@@ -657,7 +658,7 @@ class PersonalInfoEdit extends React.Component {
         if (newMainInfo.Religion || newMainInfo.Birthday || newMainInfo.Nationality || newMainInfo.BirthProvince || newMainInfo.MaritalStatus || newMainInfo.Religion || newMainInfo.Gender) {
           const userDetail = this.state.userDetail;
           let obj = { ...this.objectToSap };
-          obj.actio = localStorage.getItem("companyCode") === "V030" ? "MOD" : "INS";
+          obj.actio = [Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl].includes(currentCompanyCode) ? "MOD" : "INS";
           obj.gbdat = this.prepareBirthday(newMainInfo, userDetail);
           const nationalityAndBirthCountry = this.prepareNationalityAndBirthCountry(newMainInfo, userDetail);
           obj.natio = nationalityAndBirthCountry[1];
@@ -685,7 +686,7 @@ class PersonalInfoEdit extends React.Component {
         if (newMainInfo.BankAccountNumber || newMainInfo.Bank) {
           const userDetail = this.state.userDetail;
           let obj = { ...this.objectToSap };
-          obj.actio = localStorage.getItem("companyCode") === "V030" ? "MOD" : "INS";
+          obj.actio = [Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl].includes(currentCompanyCode) ? "MOD" : "INS";
           obj.bankn = this.getDataSpecificFields(newMainInfo.BankAccountNumber, userDetail.bank_number);
           obj.bankl = this.getDataSpecificFields(newMainInfo.Bank, userDetail.bank_name_id);
           return [obj];
@@ -705,7 +706,7 @@ class PersonalInfoEdit extends React.Component {
         if (newMainInfo.Ethinic) {
           const userDetail = this.state.userDetail;
           let obj = { ...this.objectToSap };
-          obj.actio = localStorage.getItem("companyCode") === "V030" ? "MOD" : "INS";
+          obj.actio = [Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl].includes(currentCompanyCode) ? "MOD" : "INS";
           obj.racky = this.getDataSpecificFields(newMainInfo.Ethinic, userDetail.race_id);
           return [obj];
         }
@@ -734,7 +735,7 @@ class PersonalInfoEdit extends React.Component {
               } else {
                 obj.actio = "MOD";
               }
-              if (localStorage.getItem("companyCode") != "V030") {
+              if (![Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl].includes(currentCompanyCode)) {
                 obj.actio = "INS";
               }
               obj.subty = "0030";
@@ -744,7 +745,7 @@ class PersonalInfoEdit extends React.Component {
               } else {
                 obj.actio = "MOD";
               }
-              if (localStorage.getItem("companyCode") != "V030") {
+              if (![Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl].includes(currentCompanyCode)) {
                 obj.actio = "INS";
               }
               obj.subty = "CELL";
@@ -754,7 +755,7 @@ class PersonalInfoEdit extends React.Component {
               } else {
                 obj.actio = "MOD";
               }
-              if (localStorage.getItem("companyCode") != "V030") {
+              if (![Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl].includes(currentCompanyCode)) {
                 obj.actio = "INS";
               }
               obj.subty = "V002";
@@ -801,7 +802,7 @@ class PersonalInfoEdit extends React.Component {
           if (newMainInfo.District || newMainInfo.Province || newMainInfo.Wards || newMainInfo.StreetName || newMainInfo.Country) {
             let obj = { ...this.objectToSap };
             obj.actio = "MOD";
-            if (localStorage.getItem("companyCode") != "V030") {
+            if (![Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl].includes(currentCompanyCode)) {
               obj.actio = "INS";
             }
             obj.anssa = "1";
@@ -949,7 +950,7 @@ class PersonalInfoEdit extends React.Component {
         obj.isspl = this.resetValueInValid(newMainInfo.PassportPlace) || "";
       } else {
         obj.actio = "MOD";
-        if (localStorage.getItem("companyCode") != "V030") {
+        if (![Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl].includes(currentCompanyCode)) {
           obj.actio = "INS";
         }
         obj.icnum = this.resetValueInValid(newMainInfo.PassportNumber) || passportIdNo;
@@ -975,7 +976,7 @@ class PersonalInfoEdit extends React.Component {
         obj.isspl = this.resetValueInValid(newMainInfo.PersonalIdentifyPlace) || "";
       } else {
         obj.actio = "MOD";
-        if (localStorage.getItem("companyCode") != "V030") {
+        if (![Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl].includes(currentCompanyCode)) {
           obj.actio = "INS";
         }
         obj.icnum = this.resetValueInValid(newMainInfo.PersonalIdentifyNumber) || personalIdNo;
