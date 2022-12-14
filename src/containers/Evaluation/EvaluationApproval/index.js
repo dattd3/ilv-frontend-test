@@ -874,6 +874,13 @@ function EvaluationApproval(props) {
         SetPaging(pagingTemp)
     }
 
+    const prepareStatusToFilter = status => {
+        if (status === null || status === undefined || status === '') {
+            return ''
+        }
+        return status
+    }
+
     const handleFilter = async (data, tab) => {
         SetIsLoading(true)
         const config = getRequestConfigurations()
@@ -896,7 +903,7 @@ function EvaluationApproval(props) {
         if (tab === approvalTabCode) {
             formData.append('ReviewerEmployeeCode', employeeCode || '')
             formData.append('ReviewerEmployeeAdCode', employeeAD || '')
-            formData.append('CurrentStatus', data?.status?.value || '')
+            formData.append('CurrentStatus', prepareStatusToFilter(data?.status?.value))
             apiPath = `${process.env.REACT_APP_HRDX_PMS_URL}api/form/listReview`
         } else if (tab === batchApprovalTabCode) {
             if (!data?.evaluationForm?.value) {
