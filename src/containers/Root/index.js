@@ -1,6 +1,5 @@
 import React, { Suspense } from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
 // import { CookiesProvider } from 'react-cookie';
 import { ToastContainer } from "react-toastify";
 import { GuardianRouter } from "../../modules";

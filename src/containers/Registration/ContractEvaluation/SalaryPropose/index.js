@@ -16,7 +16,6 @@ import ConfirmPasswordModal from './ConfirmPasswordModal';
 import Constants from '../.../../../../../commons/Constants';
 import StatusModal from '../../../../components/Common/StatusModal';
 import Spinner from 'react-bootstrap/Spinner';
-import StatusModal from '../../../../components/Common/StatusModal'
 import { checkFilesMimeType } from '../../../../utils/file';
 
 function SalaryPropse(props) {
