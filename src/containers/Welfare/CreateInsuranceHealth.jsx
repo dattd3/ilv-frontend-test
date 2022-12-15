@@ -12,8 +12,7 @@ import {
   getRequestConfigurations,
 } from "../../commons/Utils";
 import axios from "axios";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 import ResultModal from "../Registration/ResultModal";
 import { Spinner } from "react-bootstrap";
 import HOCComponent from '../../components/Common/HOCComponent'
@@ -385,17 +384,6 @@ const CreateInsuranceHealth = ({ t }) => {
 
   return (
     <div className="registration-insurance-section">
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
       <ResultModal
         show={resultModal.isShowStatusModal}
         title={resultModal.titleModal}
@@ -404,15 +392,15 @@ const CreateInsuranceHealth = ({ t }) => {
         onHide={hideStatusModal}
       />
       {/* A. THÔNG TIN VỀ NGƯỜI YÊU CẦU TRẢ TIỀN BẢO HIỂM */}
-      <h5>A. THÔNG TIN VỀ NGƯỜI YÊU CẦU TRẢ TIỀN BẢO HIỂM</h5>
+      <h5>A. {t("welfare_heath_insurance_title1")}</h5>
       <div className="box shadow cbnv">
         <div className="row">
           <div className="col-6">
-            {"Người yêu cầu trả tiền bảo hiểm"}{" "}
+            {t("insurance_claimant")}{" "}
             <span className="required">(*)</span>
             <input
               type="text"
-              placeholder="Nhập"
+              placeholder={t('import')}
               value={data.insuranceClaimant}
               onChange={(e) => handleTextInputChange(e, "insuranceClaimant")}
               className="form-control input mv-10 w-100"
@@ -424,9 +412,9 @@ const CreateInsuranceHealth = ({ t }) => {
             ) : null}
           </div>
           <div className="col-6">
-            {"Mối quan hệ với Người được bảo hiểm"}
+            {t("relationship_with_insured")}
             <Select
-              placeholder={"Lựa chọn"}
+              placeholder={t('option')}
               options={RELATIONSHIP_WITH_INSURED}
               isClearable={false}
               value={RELATIONSHIP_WITH_INSURED.find(u => u.label === data.insuranceRelation)}
@@ -438,10 +426,10 @@ const CreateInsuranceHealth = ({ t }) => {
         </div>
         <div className="row mv-10">
           <div className="col-12">
-            {"Địa chỉ"}
+          {t("Address")}
             <input
               type="text"
-              placeholder="Nhập"
+              placeholder={t('import')}
               value={data.address}
               onChange={(e) => handleTextInputChange(e, "address")}
               className="form-control input mv-10 w-100"
@@ -452,10 +440,10 @@ const CreateInsuranceHealth = ({ t }) => {
         </div>
         <div className="row mv-10">
           <div className="col-6">
-            {"Số điện thoại"} <span className="required">(*)</span>
+          {t("number_phone")} <span className="required">(*)</span>
             <input
               type="text"
-              placeholder="Nhập"
+              placeholder={t('import')}
               value={data.phone}
               onChange={(e) => handleTextInputChange(e, "phone")}
               className="form-control input mv-10 w-100"
@@ -470,7 +458,7 @@ const CreateInsuranceHealth = ({ t }) => {
             {"Email"} <span className="required">(*)</span>
             <input
               type="text"
-              placeholder="Nhập"
+              placeholder={t('import')}
               value={data.email}
               onChange={(e) => handleTextInputChange(e, "email")}
               className="form-control input mv-10 w-100"
@@ -484,15 +472,15 @@ const CreateInsuranceHealth = ({ t }) => {
         </div>
       </div>
       {/* B. THÔNG TIN VỀ NGƯỜI ĐƯỢC BẢO HIỂM (NĐBH) */}
-      <h5>B. THÔNG TIN VỀ NGƯỜI ĐƯỢC BẢO HIỂM (NĐBH)</h5>
+      <h5>B. {t("welfare_heath_insurance_title2")}</h5>
       <div className="box shadow cbnv">
         <div className="row">
           <div className="col-6">
-            {"Họ tên NĐBH"}
+            {t("name_of_patient")}
             <span className="required">(*)</span>
             <input
               type="text"
-              placeholder="Nhập"
+              placeholder={t('import')}
               value={data.insuredName}
               onChange={(e) => handleTextInputChange(e, "insuredName")}
               className="form-control input mv-10 w-100"
@@ -510,13 +498,13 @@ const CreateInsuranceHealth = ({ t }) => {
               style={{ color: "#000", paddingLeft: 0 }}
             >
               <div className="form-check-inline">
-                Giới tính: <span className="required">(*)</span>
+                {t("sex")}: <span className="required">(*)</span>
               </div>
               {GENDER_OPTIONS.map((item, index) => {
                 return (
                   <div className="form-check form-check-inline" key={index}>
                     <input
-                      placeholder="Nhập"
+                      placeholder={t('import')}
                       name="gender"
                       type="radio"
                       checked={data.gender?.value == item.value}
@@ -542,9 +530,9 @@ const CreateInsuranceHealth = ({ t }) => {
         </div>
         <div className="row mv-10">
           <div className="col-6">
-            {"Số CMND/Hộ chiếu"} <span className="required">(*)</span>
+            {t("indenfy_number_3")} <span className="required">(*)</span>
             <input
-              placeholder="Nhập"
+              placeholder={t('import')}
               type="text"
               value={data.insuredId}
               onChange={(e) => handleTextInputChange(e, "insuredId")}
@@ -558,7 +546,7 @@ const CreateInsuranceHealth = ({ t }) => {
           </div>
 
           <div className="col-3">
-            {"Ngày sinh"} <span className="required">(*)</span>
+            {t("birthday")} <span className="required">(*)</span>
             <DatePicker
               name="startDate"
               //readOnly={disableComponent.disableAll || !disableComponent.qlttSide || data.qlttOpinion.disableTime == true}
@@ -587,17 +575,17 @@ const CreateInsuranceHealth = ({ t }) => {
             ) : null}
           </div>
           <div className="col-3">
-            {"Mã số nhân viên"} <span className="required">(*)</span>
+            {t("employee_number")} <span className="required">(*)</span>
             <div className="detail">{data.employeeNo}</div>
           </div>
         </div>
 
         <div className="row mv-10">
           <div className="col-6">
-            {"Đơn vị tham gia bảo hiểm"}
+            {t("participating_in_insurance")}
             <input
               type="text"
-              placeholder="Nhập"
+              placeholder={t('import')}
               value={data.insuredUnit}
               onChange={(e) => handleTextInputChange(e, "insuredUnit")}
               className="form-control input mv-10 w-100"
@@ -607,10 +595,10 @@ const CreateInsuranceHealth = ({ t }) => {
           </div>
 
           <div className="col-6">
-            {"Số GCNBH/Số thẻ BH"} <span className="required">(*)</span>
+            {t("insurance_certificate_card_number")} <span className="required">(*)</span>
             <input
               type="text"
-              placeholder="Nhập"
+              placeholder={t('import')}
               value={data.insuredNumber}
               onChange={(e) => handleTextInputChange(e, "insuredNumber")}
               className="form-control input mv-10 w-100"
@@ -625,12 +613,12 @@ const CreateInsuranceHealth = ({ t }) => {
       </div>
 
       {/* C. THÔNG TIN VỀ TAI NẠN / BỆNH VÀ KHÁM CHỮA */}
-      <h5>C. THÔNG TIN VỀ TAI NẠN / BỆNH VÀ KHÁM CHỮA</h5>
+      <h5>C. {t("welfare_heath_insurance_title3")}</h5>
       <div className="box shadow cbnv">
         <div className="row mv-10">
           <div className="col-6">
             <div>
-              {"Ngày tai nạn"} <span className="required">(*)</span>
+            {t("day_of_accident")}<span className="required">(*)</span>
             </div>
             <DatePicker
               name="startDate"
@@ -658,10 +646,10 @@ const CreateInsuranceHealth = ({ t }) => {
             ) : null}
           </div>
           <div className="col-6">
-            <div>{"Nơi xảy ra tai nạn"}</div>
+            <div>{t("place_where_accident")}</div>
             <input
               type="text"
-              placeholder="Nhập"
+              placeholder={t('import')}
               value={data.accidentAddress}
               onChange={(e) => handleTextInputChange(e, "accidentAddress")}
               className="form-control input mv-10 w-100"
@@ -674,7 +662,7 @@ const CreateInsuranceHealth = ({ t }) => {
         <div className="row mv-10">
           <div className="col-6">
             <div>
-              {"Ngày khám bệnh"} <span className="required">(*)</span>
+            {t("medical_examination_day")}<span className="required">(*)</span>
             </div>
             <DatePicker
               name="startDate"
@@ -698,7 +686,7 @@ const CreateInsuranceHealth = ({ t }) => {
           </div>
           <div className="col-6">
             <div>
-              {"Ngày nhập viện"} <span className="required">(*)</span>
+            {t("hospitalized_day")} <span className="required">(*)</span>
             </div>
             <DatePicker
               name="startDate"
@@ -730,11 +718,11 @@ const CreateInsuranceHealth = ({ t }) => {
         <div className="row mv-10">
           <div className="col-12">
             <div>
-              {"Nơi điều trị"} <span className="required">(*)</span>
+            {t("place_of_treatment")} <span className="required">(*)</span>
             </div>
             <input
               type="text"
-              placeholder="Nhập"
+              placeholder={t('import')}
               value={data.hospitalizedAddress}
               onChange={(e) => handleTextInputChange(e, "hospitalizedAddress")}
               className="form-control input mv-10 w-100"
@@ -749,10 +737,10 @@ const CreateInsuranceHealth = ({ t }) => {
 
         <div className="row mv-10">
           <div className="col-12">
-            <div>{"Nguyên nhân / Chẩn đoán về tai nạn/bệnh"}</div>
+            <div>{t("cause_diagnosis_accident")}</div>
             <input
               type="text"
-              placeholder="Nhập"
+              placeholder={t('import')}
               value={data.reason}
               onChange={(e) => handleTextInputChange(e, "reason")}
               className="form-control input mv-10 w-100"
@@ -764,10 +752,10 @@ const CreateInsuranceHealth = ({ t }) => {
 
         <div className="row mv-10">
           <div className="col-12">
-            <div>{"Hậu quả"}</div>
+            <div> {t("consequence")}</div>
             <input
               type="text"
-              placeholder="Nhập"
+              placeholder={t('import')}
               value={data.result}
               onChange={(e) => handleTextInputChange(e, "result")}
               className="form-control input mv-10 w-100"
@@ -779,7 +767,7 @@ const CreateInsuranceHealth = ({ t }) => {
 
         <div className="row mv-10">
           <div className="col-3">
-            <div>{"Từ ngày"}</div>
+            <div>{t("StartDate")}</div>
             <DatePicker
               selectsStart
               name="startDate"
@@ -798,7 +786,7 @@ const CreateInsuranceHealth = ({ t }) => {
             />
           </div>
           <div className="col-3">
-            <div>{"Đến ngày"}</div>
+            <div>{t("EndDate")}</div>
             <DatePicker
               selectsEnd
               name="startDate"
@@ -823,7 +811,7 @@ const CreateInsuranceHealth = ({ t }) => {
               style={{ color: "#000", paddingLeft: 0 }}
             >
               <div className="form-check-inline">
-                Hình thức điều trị:<span className="required">(*)</span>
+              {t("treatment_form")}<span className="required">(*)</span>
               </div>
               {TREATMENT_OPTIONS.map((item, index) => {
                 return (
@@ -856,18 +844,18 @@ const CreateInsuranceHealth = ({ t }) => {
         </div>
       </div>
       {/*D. THÔNG TIN THANH TOÁN */}
-      <h5>D. THÔNG TIN THANH TOÁN</h5>
+      <h5>D. {t("welfare_heath_insurance_title4")}</h5>
       <div className="box shadow cbnv">
         <div className="row mv-10">
           <div className="pay-title">
-            {"1. Nội dung yêu cầu chi trả bảo hiểm"}
+            1. {t("contents_claim_insurance_payment")}
           </div>
         </div>
 
         <div className="row mv-10">
           <div className="col-12">
             <div>
-              {"Tổng số tiền yêu cầu chi trả"}{" "}
+            {t("total_amount_requested_pay")}{" "}
               <span className="required">(*)</span>
             </div>
 
@@ -875,7 +863,7 @@ const CreateInsuranceHealth = ({ t }) => {
               intlConfig={{ locale: 'vi-VN', currency: 'VND' }}
               className="form-control input mv-10 w-100"
               value={data.payAmount}
-              placeholder="Nhập"
+              placeholder={t('import')}
               onValueChange={(value) => handleChangeInputCurrency(value, "payAmount")}
             />
             {errors["payAmount"] ? (
@@ -888,7 +876,7 @@ const CreateInsuranceHealth = ({ t }) => {
           <div className="col-12">
             <div className="">
               <div className="form-check-inline mt-2">
-                Chi trả bảo hiểm cho trường hợp:{" "}
+              {t("insurance_payment_for_case")}{" "}
                 <span className="required">(*)</span>
               </div>
 
@@ -924,7 +912,7 @@ const CreateInsuranceHealth = ({ t }) => {
 
         <div className="row mv-10">
           <div className="pay-title">
-            {"2. Hình thức thanh toán thông tin người thụ hưởng"}
+            2. {t("payment_method_beneficiary_information")}
           </div>
         </div>
 
@@ -932,7 +920,7 @@ const CreateInsuranceHealth = ({ t }) => {
           <div className="col-12">
             <div>
               <div className="form-check-inline">
-                Lựa chọn hình thức thanh toán:{" "}
+              {t("select_payment_method")}{" "}
                 <span className="required">(*)</span>
               </div>
 
@@ -969,13 +957,13 @@ const CreateInsuranceHealth = ({ t }) => {
         <div className="row mv-10">
           <div className="col-6">
             <div>
-              {"Người thụ hưởng"} <span className="required">(*)</span>
+            {t("beneficiary")} <span className="required">(*)</span>
             </div>
             <input
               value={data.receiveName}
               onChange={(e) => handleTextInputChange(e, "receiveName")}
               type="text"
-              placeholder="Nhập"
+              placeholder={t('import')}
               className="form-control input mv-10 w-100"
               name="inputName"
               autoComplete="off"
@@ -988,13 +976,13 @@ const CreateInsuranceHealth = ({ t }) => {
           {data.payType?.value !== 1 &&
             <div className="col-6">
               <div>
-                {"Số tài khoản"} <span className="required">(*)</span>
+              {t("account_number")} <span className="required">(*)</span>
               </div>
               <input
                 value={data.receiveAccount}
                 onChange={(e) => handleTextInputChange(e, "receiveAccount")}
                 type="text"
-                placeholder="Nhập"
+                placeholder={t('import')}
                 className="form-control input mv-10 w-100"
                 name="inputName"
                 autoComplete="off"
@@ -1010,13 +998,13 @@ const CreateInsuranceHealth = ({ t }) => {
             <div className="row mv-10">
               <div className="col-12">
                 <div>
-                  {"Ngân hàng"} <span className="required">(*)</span>
+                {t("bank")} <span className="required">(*)</span>
                 </div>
                 <input
                   value={data.bankName}
                   onChange={(e) => handleTextInputChange(e, "bankName")}
                   type="text"
-                  placeholder="Nhập"
+                  placeholder={t('import')}
                   className="form-control input mv-10 w-100"
                   name="inputName"
                   autoComplete="off"
@@ -1029,13 +1017,13 @@ const CreateInsuranceHealth = ({ t }) => {
             <div className="row mv-10">
               <div className="col-12">
                 <div>
-                  {"Địa chỉ ngân hàng"} <span className="required">(*)</span>
+                {t("bank_address")} <span className="required">(*)</span>
                 </div>
                 <input
                   value={data.bankAddress}
                   onChange={(e) => handleTextInputChange(e, "bankAddress")}
                   type="text"
-                  placeholder="Nhập"
+                  placeholder={t('import')}
                   className="form-control input mv-10 w-100"
                   name="inputName"
                   autoComplete="off"
@@ -1050,24 +1038,17 @@ const CreateInsuranceHealth = ({ t }) => {
       </div>
 
       {/* E. CAM KẾT VÀ ỦY QUYỀN */}
-      <h5>E. CAM KẾT VÀ ỦY QUYỀN</h5>
+      <h5>E. {t("welfare_heath_insurance_title5")}</h5>
       <div className="box shadow cbnv" style={{ padding: "10px 20px" }}>
         <p className="policy">
           {" "}
           <img src={BulletIcon} style={{ paddingRight: "7px" }} />
-          Tôi cam đoan những thông tin kê khai trên đây là chính xác và đầy đủ.
-          Tôi xin hoàn toàn chịu trách nhiệm trước pháp luật nếu có bất cứ sự
-          sai lệch nào về thông tin đã cung cấp và bất cứ tranh chấp nào về
-          quyền thụ hưởng số tiền được chi trả bảo hiểm.
+          {t("welfare_heath_insurance_title_note1")}
         </p>
         <p className="policy">
           {" "}
           <img src={BulletIcon} style={{ paddingRight: "7px" }} />
-          Tôi cũng đồng ý rằng, bằng Giấy yêu cầu trả tiền bảo hiểm này, tôi cho
-          phép đại diện của Bảo hiểm PVI được quyền tiếp xúc với các bên thứ ba
-          để thu thập thông tin cần thiết cho việc xét bồi thường này, bao gồm
-          nhưng không giới hạn ở việc tiếp xúc với (các) bác sĩ đã và đang điều
-          trị cho tôi.
+          {t("welfare_heath_insurance_title_note2")}
         </p>
       </div>
       {/* ĐỢT BỔ SUNG */}
@@ -1082,7 +1063,7 @@ const CreateInsuranceHealth = ({ t }) => {
                   value={data.formAddress}
                   onChange={(e) => handleTextInputChange(e, "formAddress")}
                   type="text"
-                  placeholder="Nhập"
+                  placeholder={t('import')}
                   className="form-control input mv-10 w-100 only-border-bottom"
                   name="inputName"
                   autoComplete="off"
@@ -1117,17 +1098,15 @@ const CreateInsuranceHealth = ({ t }) => {
 
         <div className="row mv-10">
           <div className="col-6 sign-contain">
-            <div className="sign-title">{"XÁC NHẬN"}</div>
+            <div className="sign-title">{t("confirm")}</div>
             <div className="sign-subtitle">
-              {
-                "(Chữ ký và dấu của đơn vị tham gia bảo hiểm/cơ quan chủ quản\nhoặc chính quyền, công an nơi xảy ra tai nạn)"
-              }
+              ({t("welfare_heath_insurance_title_note4")})
             </div>
           </div>
           <div className="col-1"></div>
           <div className="col-5 sign-contain">
-            <div className="sign-title">{"NGƯỜI YÊU CẦU"}</div>
-            <div className="sign-subtitle">{"(Ký và ghi rõ họ tên)"}</div>
+            <div className="sign-title">{t("petitioner")}</div>
+            <div className="sign-subtitle">({t("sign_and_write_name")})</div>
           </div>
         </div>
       </div>

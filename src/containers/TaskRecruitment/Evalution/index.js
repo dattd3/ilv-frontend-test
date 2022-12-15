@@ -14,10 +14,6 @@ import IconRecall from '../../../assets/img/ic-recall.svg'
 import { checkIsExactPnL } from '../../../commons/commonFunctions'
 
 class EvaluationComponent extends React.Component {
-  CONFIRM_STATUS = [
-    {value: true, label: 'Đã xong'},
-    {value: false, label: 'Chưa xong'},
-  ];
 
   STATUS_OPTIONS = [
     {value: 9, label: this.props.t("Waiting")},
@@ -52,6 +48,10 @@ class EvaluationComponent extends React.Component {
         isSuccessStatusModal: true
     },
     }
+    this.CONFIRM_STATUS = [
+      { value: true, label: props.t('done') },
+      { value: false, label: props.t('notDone') },
+    ]
   }
 
   componentDidMount() {
@@ -207,18 +207,18 @@ class EvaluationComponent extends React.Component {
       <>
       <div className="task-section1">
         <div className="block-title" >
-          <h4 className="title text-uppercase">QUẢN LÝ THÔNG TIN ĐÁNH GIÁ CÔNG VIỆC</h4>
+          <h4 className="title text-uppercase">{t('manager_evaluating_title')}</h4>
         </div>
         <div className="candidate-list shadow">
                     <table className="table table-borderless table-hover">
                         <thead>
                             <tr>
-                                <th scope="col" className="col-code text-center">Mã yêu cầu</th>
-                                <th scope="col" className="col-content text-center">Loại yêu cầu</th>
-                                <th scope="col" className="col-region text-center">Hạn hoàn thành</th>
-                                <th scope="col" className="col-code text-center">Người phê duyệt </th>
-                                <th scope="col" className="col-content text-center">Trạng thái</th>
-                                <th scope="col" className="col-code text-center">Thu hồi</th>                             
+                                <th scope="col" className="col-code text-center">{t('RequestNo')}</th>
+                                <th scope="col" className="col-content text-center">{t('TypeOfRequest')}</th>
+                                <th scope="col" className="col-region text-center">{t('completed_dealine')}</th>
+                                <th scope="col" className="col-code text-center">{t('Approver')} </th>
+                                <th scope="col" className="col-content text-center">{t('Status')}</th>
+                                <th scope="col" className="col-code text-center">{t('Withdraw')}</th>                             
                             </tr>
                         </thead>
                         <tbody>
@@ -228,7 +228,7 @@ class EvaluationComponent extends React.Component {
                                 <td className="col-code text-center">
                                     <a href={`/evaluation/${item.taskId}/request`}>{item.taskId}</a>
                                 </td>
-                                <td className="col-name text-center">{item.taskType}</td>
+                                <td className="col-name text-center">{t('ContractEvaluationType')}</td>
                                 <td className="col-region text-center">{item.dateExpire ? moment(item.dateExpire).format('DD/MM/YYYY') : ''}</td>
                                 <td className="col-unit text-center">{item.approver}</td>
                                 <td className="col-unit text-center">{item.status}</td>

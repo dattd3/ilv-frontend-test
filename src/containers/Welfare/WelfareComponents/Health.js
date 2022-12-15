@@ -11,8 +11,7 @@ import { getRequestConfigurations } from "../../../commons/Utils"
 import Download from "../../../assets/img/icon/ic_download_blue.svg";
 import CustomPaging from "../../../components/Common/CustomPaging";
 
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 
 class Health extends React.Component {
     constructor(props) {
@@ -108,21 +107,10 @@ class Health extends React.Component {
             { value: 2, label: 'PNS đã gửi hồ sơ PVI' }
         ];
         return <>
-            <ToastContainer
-                position="top-right"
-                autoClose={5000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-            />
             <div className="health-info-page">
                 <div className="clearfix edit-button w-100 pb-2">
                     <a href="/insurance-manager/createHealthInsurance"><div className="btn bg-white btn-create"
-                    ><i className="fas fa-plus"></i> {'Tạo yêu cầu'}</div></a>
+                    ><i className="fas fa-plus"></i> {t('createRequest')}</div></a>
                 </div>
 
 
@@ -132,11 +120,11 @@ class Health extends React.Component {
                             <table className="table table-borderless">
                                 <thead>
                                     <tr>
-                                        <th scope="col" className="code text-center">Mã yêu cầu</th>
-                                        <th scope="col" className="request-type text-center">Ngày nộp yêu cầu</th>
-                                        <th scope="col" className="request-type text-center">Ngày nộp BHSK</th>
-                                        <th scope="col" className="break-time text-center">Số tiền</th>
-                                        <th scope="col" className="status pl-5">Tình trạng</th>
+                                        <th scope="col" className="code text-center">{t('RequestNo')}</th>
+                                        <th scope="col" className="request-type text-center">{t('claim_submission_date')}</th>
+                                        <th scope="col" className="request-type text-center">{t('date_of_filing_BHSK')}</th>
+                                        <th scope="col" className="break-time text-center">{t('price')}</th>
+                                        <th scope="col" className="status pl-5">{t('Status')}</th>
                                         <th scope="col" className="tool text-center">{t("action")}</th>
                                     </tr>
                                 </thead>

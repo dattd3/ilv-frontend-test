@@ -3,7 +3,7 @@ import axios from 'axios'
 import moment from 'moment'
 import _ from 'lodash'
 import { Progress } from "reactstrap"
-import { ToastContainer, toast } from "react-toastify"
+import { toast } from "react-toastify"
 import { withTranslation } from "react-i18next"
 import Constants from '../../../commons/Constants'
 import ButtonComponent from '../TerminationComponents/ButtonComponent'
@@ -13,7 +13,6 @@ import StaffInfoComponent from '../TerminationComponents/StaffInfoComponent'
 import StaffTerminationDetailComponent from '../TerminationComponents/StaffTerminationDetailComponent'
 import AttachmentComponent from '../TerminationComponents/AttachmentComponent'
 import ResultModal from '../ResultModal'
-import "react-toastify/dist/ReactToastify.css"
 import { getMuleSoftHeaderConfigurations } from '../../../commons/Utils'
 
 const config = {
@@ -86,7 +85,8 @@ class RegistrationEmploymentTerminationForm extends React.Component {
                     dateStartWork: dateStartWork,
                     email: localStorage.getItem("email") || "",
                     rank: infos.rank_name || "",
-                    unitName: infos.unit || ""
+                    unitName: infos.unit || "",
+                    costCenter: infos.cost_center || ''
                 }
             }
         }
@@ -269,10 +269,8 @@ class RegistrationEmploymentTerminationForm extends React.Component {
             directManager,
             seniorExecutive
         } = this.state
-
         return (
             <>
-            <ToastContainer autoClose={2000} />
             <Progress max="100" color="success" value={this.state.loaded}>
                 {Math.round(this.state.loaded, 2)}%
             </Progress>

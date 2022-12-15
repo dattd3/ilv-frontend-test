@@ -2,18 +2,27 @@ import React, { useState } from "react";
 import Select from 'react-select'
 import { withTranslation } from "react-i18next";
 import "react-toastify/dist/ReactToastify.css";
+import { checkVersionPnLSameAsVinhome } from "../../../../commons/commonFunctions";
+import Constants from "../../../../commons/Constants";
 
 const ProposalManagement = (props) => {
   const { t } = props;
   const [type, setType] = useState(null);
   const InsuranceOptions = [
-    { value: 1, label: 'Đề xuất Điều chỉnh thu nhập' },
   ];
+  if(checkVersionPnLSameAsVinhome(Constants.MODULE.DEXUATLUONG)) {
+    InsuranceOptions.push({ value: 1, label: t('SalaryAdjustmentPropse')});
+  }
+  if(checkVersionPnLSameAsVinhome(Constants.MODULE.NGHIVIEC)) {
+    InsuranceOptions.push({ value: 2, label: t('ProposeForEmployeesResignation') });
+  }
 
   const handleChangeType = (e) => {
     setType(e)
-    if (e.value === 1) {
+    if (e.value == 1) {
       props.history.push(`/salaryadjustment/create/request`)
+    } else if(e.value == 2) {
+      props.history.push(`/proposed-resignation`)
     }
   }
 

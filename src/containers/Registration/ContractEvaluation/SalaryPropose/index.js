@@ -14,7 +14,8 @@ import moment from 'moment';
 import HumanForReviewSalaryComponent from '../../HumanForReviewSalaryComponent';
 import ConfirmPasswordModal from './ConfirmPasswordModal';
 import Constants from '../.../../../../../commons/Constants';
-import StatusModal from '../../../../components/Common/StatusModal'
+import StatusModal from '../../../../components/Common/StatusModal';
+import Spinner from 'react-bootstrap/Spinner';
 
 function SalaryPropse(props) {
   const { t } = useTranslation();
@@ -28,6 +29,9 @@ function SalaryPropse(props) {
   const [modalConfirmPassword, setModalConfirmPassword] = useState(false);
   const [accessToken, setAccessToken] = useState(new URLSearchParams(props.history.location.search).get('accesstoken') || null);
   const [listFiles, setListFiles] = useState([]);
+  const [currencySalary, setCurrencySalary] = useState('VND');
+  const [isLoading, setIsLoading] = useState(false)
+  const [callSalary, setCalledSalary] = useState(false);
 
   const [modalStatus, setModalStatus] = useState({
     isShowStatusModal: false,
@@ -122,9 +126,27 @@ function SalaryPropse(props) {
     // eslint-disable-next-line
   }, []);
 
+  useEffect(() => {
+    if(dataContract && callSalary == false && accessToken) {
+      getSalary(accessToken)
+    }
+  }, [dataContract]);
+
   const getDataContract = async () => {
     try {
       const { data: { data: response } } = await api.fetchStaffContract(props.match.params?.idContract);
+      if(response?.requestHistorys?.processStatusId) {
+        let statusOriginal = response?.requestHistorys?.processStatusId;
+        let child = response?.requestHistorys;
+        if([10, 11, 13].indexOf(statusOriginal) != -1) {
+          if(child.processStatusId == 11 || child.processStatusId == 10) {
+              statusOriginal = 8;
+          } else if (child.processStatusId == 13) {
+              statusOriginal = 5;
+          }
+        }
+        response.requestHistorys.processStatusId = statusOriginal;
+      }
       setDataContract(response);
     } catch (error) {
       console.log(error);
@@ -162,11 +184,11 @@ function SalaryPropse(props) {
     viewSettingTmp.proposedStaff.orgLv4Id = localStorage.getItem('organizationLv4') || ""
     viewSettingTmp.proposedStaff.orgLv5Id = localStorage.getItem('organizationLv5') || ""
     viewSettingTmp.proposedStaff.orgLv6Id = localStorage.getItem('organizationLv6') || ""
-    viewSettingTmp.proposedStaff.orgLv2Text = ""
-    viewSettingTmp.proposedStaff.orgLv3Text = ""
-    viewSettingTmp.proposedStaff.orgLv4Text = ""
-    viewSettingTmp.proposedStaff.orgLv5Text = ""
-    viewSettingTmp.proposedStaff.orgLv6Text = ""
+    viewSettingTmp.proposedStaff.orgLv2Text = localStorage.getItem('company') || ""
+    viewSettingTmp.proposedStaff.orgLv3Text = localStorage.getItem('division') || ""
+    viewSettingTmp.proposedStaff.orgLv4Text = localStorage.getItem('region') || ""
+    viewSettingTmp.proposedStaff.orgLv5Text = localStorage.getItem('unit') || ""
+    viewSettingTmp.proposedStaff.orgLv6Text = localStorage.getItem('part') || ""
     viewSettingTmp.proposedStaff.companyCode = localStorage.getItem('companyCode') || ""
     setViewSetting(viewSettingTmp)
   }
@@ -192,6 +214,7 @@ function SalaryPropse(props) {
         viewSettingTmp.showComponent.humanResourceChangeSalary = true;
         viewSettingTmp.showComponent.managerApproved = true;
         viewSettingTmp.showComponent.bossApproved = true;
+        viewSettingTmp.disableComponent.viewCurrentSalary = true;
         if (currentEmail.toLowerCase() === dataSalaryInfo?.userId.toLowerCase()
           && currentEmployeeNo === dataSalaryInfo?.user?.employeeNo.toString()
           && props.match.params.type === 'request'
@@ -211,6 +234,7 @@ function SalaryPropse(props) {
         viewSettingTmp.showComponent.humanResourceChangeSalary = true;
         viewSettingTmp.showComponent.managerApproved = true;
         viewSettingTmp.showComponent.bossApproved = true;
+        viewSettingTmp.disableComponent.viewCurrentSalary = true;
         if ((currentEmail.toLowerCase() === dataSalaryInfo?.appraiserId.toLowerCase())
           && props.match.params.type === 'access'
         ) {
@@ -228,6 +252,7 @@ function SalaryPropse(props) {
         viewSettingTmp.showComponent.humanResourceChangeSalary = true;
         viewSettingTmp.showComponent.managerApproved = true;
         viewSettingTmp.showComponent.bossApproved = true;
+        viewSettingTmp.disableComponent.viewCurrentSalary = true;
         if (currentEmail.toLowerCase() === dataSalaryInfo?.supervisorId.toLowerCase()
           && props.match.params.type === 'access'
         ) {
@@ -245,6 +270,7 @@ function SalaryPropse(props) {
         viewSettingTmp.showComponent.humanResourceChangeSalary = true;
         viewSettingTmp.showComponent.managerApproved = true;
         viewSettingTmp.showComponent.bossApproved = true;
+        viewSettingTmp.disableComponent.viewCurrentSalary = true;
         if (currentEmail.toLowerCase() === dataSalaryInfo?.approverId.toLowerCase()
           && props.match.params.type === 'approval'
         ) {
@@ -259,8 +285,10 @@ function SalaryPropse(props) {
         break;
       // View phe duyet thanh cong
       case 2:
+        viewSettingTmp.disableComponent.viewCurrentSalary = true;
       // Case không phê duyệt
       case 7:
+        viewSettingTmp.disableComponent.viewCurrentSalary = true;
       // Case tu choi
       case 1:
         viewSettingTmp.showComponent.stateProcess = true;
@@ -320,6 +348,17 @@ function SalaryPropse(props) {
   }
 
   const handleShowCurrentSalary = () => {
+    if(callSalary) {
+      setViewSetting({
+        ...viewSetting,
+        disableComponent: {
+          ...viewSetting.disableComponent,
+          showCurrentSalary: !viewSetting.disableComponent.showCurrentSalary
+        }
+      });
+      return;
+    }
+
     if (!accessToken) {
       setModalConfirmPassword(true)
       return;
@@ -455,6 +494,7 @@ function SalaryPropse(props) {
         showStatusModal(t("HumanForReviewSalaryValidate"), false)
         return;
       }
+      setIsLoading(true)
       const bodyFormData = prepareDataToSubmit()
       axios({
         method: 'POST',
@@ -471,6 +511,9 @@ function SalaryPropse(props) {
         })
         .catch(response => {
           showStatusModal(t("Error"), false)
+        })
+        .finally(() => {
+          setIsLoading(false)
         })
     } else {
       // Review
@@ -501,6 +544,7 @@ function SalaryPropse(props) {
               }
             ]
           }
+          setIsLoading(true)
           axios({
             method: 'POST',
             url: `${process.env.REACT_APP_REQUEST_URL}SalaryAdjustment/submitsalary`,
@@ -516,6 +560,9 @@ function SalaryPropse(props) {
             })
             .catch(response => {
               showStatusModal(t("Error"), false)
+            })
+            .finally(() => {
+              setIsLoading(false)
             })
         }
       }
@@ -536,6 +583,7 @@ function SalaryPropse(props) {
         orglv2Id: viewSetting.proposedStaff.orgLv2Id,
         jobTitle: viewSetting.proposedStaff.jobTitle,
         department: viewSetting.proposedStaff.department,
+        company_email: viewSetting.proposedStaff.email,
       }));
       bodyFormData.append('coordinatorId', coordinator?.account.toLowerCase() + "@vingroup.net");
       bodyFormData.append('coordinatorInfo', JSON.stringify({
@@ -547,6 +595,7 @@ function SalaryPropse(props) {
         orglv2Id: coordinator?.orglv2Id,
         current_position: coordinator?.current_position,
         department: coordinator?.department,
+        company_email: coordinator?.company_email.toLowerCase(),
       }));
       bodyFormData.append('employeeInfoLst', JSON.stringify([{
         employeeNo: dataContract?.staffContracts?.employeeCode,
@@ -611,6 +660,7 @@ function SalaryPropse(props) {
       requestHistoryId: props.match.params?.idSalary,
       token: token,
     }
+    setIsLoading(true);
     axios({
       method: 'POST',
       url: `${process.env.REACT_APP_REQUEST_URL}SalaryAdjustment/getsalarystaff`,
@@ -620,13 +670,14 @@ function SalaryPropse(props) {
       .then((response) => {
         if (response.data.result && response.data.result.code === '000000') {
           forEach(response.data.data, (value, key) => {
-            setCurrentSalary(value?.currentCurrency || 0)
-            setSuggestedSalary(value?.suggestedCurrency || 0)
+            setCurrentSalary(value?.currentSalary || "")
+            setSuggestedSalary(value?.suggestedSalary || "")
+            setCurrencySalary(value?.currentCurrency || 'VND')
           });
 
           let viewSettingTmp = { ...viewSetting };
-          viewSettingTmp.disableComponent.showSuggestedSalary = !viewSettingTmp.disableComponent.showSuggestedSalary
-          viewSettingTmp.disableComponent.showCurrentSalary = !viewSettingTmp.disableComponent.showCurrentSalary
+          viewSettingTmp.disableComponent.showSuggestedSalary = true;
+          viewSettingTmp.disableComponent.showCurrentSalary = true;
           setViewSetting(viewSettingTmp)
           return;
         }
@@ -635,6 +686,10 @@ function SalaryPropse(props) {
       .catch(response => {
         showStatusModal(t("Error"), false)
       })
+      .finally(() => {
+        setIsLoading(false);
+        setCalledSalary(true);
+      });
   }
 
   const handleTextInputChange = (value) => {
@@ -651,7 +706,19 @@ function SalaryPropse(props) {
       isShowModalConfirm: false
     })
   }
+
+  function renderCurrency() {
+    let currencySalaryTmp = {}
+    if (currencySalary === 'VND') {
+      currencySalaryTmp = { locale: 'vi-VN', currency: 'VND' }
+    } else {
+      currencySalaryTmp = { locale: 'en-US', currency: 'USD' }
+    }
+    return currencySalaryTmp
+  }
+
   const salaryState = `salarypropse_${props.match.params?.idContract}_${props.match.params?.idSalary}_${props.match.params?.type}`;
+
   return (
     <div className='container-salary'>
       <ConfirmPasswordModal
@@ -770,7 +837,7 @@ function SalaryPropse(props) {
               {viewSetting.disableComponent.showCurrentSalary ?
                 <CurrencyInput
                   disabled={viewSetting.disableComponent.currentSalary}
-                  intlConfig={{ locale: 'vi-VN', currency: 'VND' }}
+                  intlConfig={renderCurrency()}
                   className="form-control"
                   value={currentSalary}
                   placeholder="Nhập"
@@ -800,7 +867,7 @@ function SalaryPropse(props) {
                 accessToken ?
                   <CurrencyInput
                     disabled={true}
-                    intlConfig={{ locale: 'vi-VN', currency: 'VND' }}
+                    intlConfig={renderCurrency()}
                     className="form-control"
                     value={suggestedSalary}
                     placeholder="Nhập"
@@ -814,7 +881,7 @@ function SalaryPropse(props) {
                 :
                 <CurrencyInput
                   disabled={false}
-                  intlConfig={{ locale: 'vi-VN', currency: 'VND' }}
+                  intlConfig={renderCurrency()}
                   className="form-control"
                   value={suggestedSalary}
                   onValueChange={(value) => { handleTextInputChange(value) }}
@@ -832,8 +899,8 @@ function SalaryPropse(props) {
           <div className='block-content-salary__content--vote'>
             <div className='wrapper-status'>
               <p className='font-normal'>{t('Status_1')}: </p>
-              {dataSalary?.statusName &&
-                <div>{dataSalary?.statusName}</div>
+              {Constants.mappingStatusRequest[dataContract?.requestHistorys?.processStatusId]?.label &&
+                <div>{t(Constants.mappingStatusRequest[dataContract?.requestHistorys?.processStatusId]?.label)}</div>
               }
             </div>
             <div
@@ -862,7 +929,7 @@ function SalaryPropse(props) {
         </div>
       }
       {/* CBQL CẤP CƠ SỞ */}
-      {viewSetting.showComponent.managerApproved &&
+      {viewSetting.showComponent.managerApproved && supervisor &&
         <div className='block-content-salary'>
           <h6 className='block-content-salary__title'> {t('ManagerApproved')}</h6>
           <div className='block-content-salary__content'>
@@ -927,8 +994,13 @@ function SalaryPropse(props) {
         }
         {/* Gửi yêu cầu */}
         {viewSetting.showComponent.btnSendRequest &&
-          <button type='button' className='btn btn-primary ml-3 shadow' onClick={() => handleSendForm()}>
-            <i className='fa fa-paper-plane mr-1' aria-hidden='true'></i> {t('Send')}
+          <button type='button' className='btn btn-primary ml-3 shadow' disabled={isLoading} onClick={() => handleSendForm()}>
+            {isLoading ?
+              <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
+              :
+              <i className='fa fa-paper-plane mr-1' aria-hidden='true'></i>
+            }
+            {" "}{t('Send')}
           </button>
         }
         {/* Từ chối */}

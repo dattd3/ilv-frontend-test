@@ -532,11 +532,6 @@ class TaskList extends React.Component {
                                                     <td className="user-title">{child.user?.jobTitle || ''}</td>
 
                                                     {
-                                                        child.requestType?.id == 6 || child.requestType?.id == Constants.RESIGN_SELF ?
-                                                        <td className="request-type">
-                                                           {child.requestType?.name}
-                                                        </td>
-                                                        :
                                                         <td className="request-type">{getRequestTypeLabel(child.requestType, child.absenceType?.value)}</td>
                                                     }
 
