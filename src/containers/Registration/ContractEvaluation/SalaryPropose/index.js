@@ -14,7 +14,8 @@ import moment from 'moment';
 import HumanForReviewSalaryComponent from '../../HumanForReviewSalaryComponent';
 import ConfirmPasswordModal from './ConfirmPasswordModal';
 import Constants from '../.../../../../../commons/Constants';
-import StatusModal from '../../../../components/Common/StatusModal'
+import StatusModal from '../../../../components/Common/StatusModal';
+import Spinner from 'react-bootstrap/Spinner';
 import { checkFilesMimeType } from '../../../../utils/file';
 
 function SalaryPropse(props) {
