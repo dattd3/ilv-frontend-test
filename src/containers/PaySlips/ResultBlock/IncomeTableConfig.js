@@ -1119,7 +1119,8 @@ export const IncomeTablesConfig = t => {
                                     { label: t("AnnualWelfare"), field: 'annual_welfare_allowance' },
                                     { label: t("OtherPayment"), field: 'other_payment' },
                                     { label: t("VFCarElectricStakeGross"), field: 'vf_car_electric_stake' },
-                                    { label: t("VinmecTaxRefundsAfterTaxFinalization"), field: 'tax_refunds_after' }
+                                    { label: t("VinmecTaxRefundsAfterTaxFinalization"), field: 'tax_refunds_after' },
+                                    { label: t("SupportCampaignAndProject"), field: 'support_vf_campaign_project' }
                                 ]
                             }
                         ]
