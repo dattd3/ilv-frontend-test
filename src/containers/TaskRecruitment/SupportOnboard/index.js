@@ -9,13 +9,9 @@ import LoadingSpinner from "../../../components/Forms/CustomForm/LoadingSpinner"
 import ResultModal from '../../Registration/ResultModal';
 import CustomPaging from '../../../components/Common/CustomPaging'
 import HOCComponent from '../../../components/Common/HOCComponent'
-import { checkIsExactPnL } from '../../../commons/commonFunctions';
+import { checkIsExactPnL, checkVersionPnLSameAsVinhome } from '../../../commons/commonFunctions';
 
 class SupportOnboardComponent extends React.Component {
-  CONFIRM_STATUS = [
-    { value: true, label: 'Đã xong' },
-    { value: false, label: 'Chưa xong' },
-  ]
   _isMounted = false;
   constructor(props) {
     super();
@@ -43,6 +39,10 @@ class SupportOnboardComponent extends React.Component {
         isSuccessStatusModal: true
       },
     }
+    this.CONFIRM_STATUS = [
+      { value: true, label: props.t('done') },
+      { value: false, label: props.t('notDone') },
+    ]
   }
 
   componentDidMount() {
@@ -398,16 +398,16 @@ class SupportOnboardComponent extends React.Component {
           <>
             <div className="task-section1">
               <div className="block-title" style={{ paddingBottom: '0px' }}>
-                <h4 className="title text-uppercase">Hỗ trợ chuẩn bị nhận việc</h4>
+                <h4 className="title text-uppercase">({t('support_in_preparing_for_job')})</h4>
               </div>
               <div className="action-section">
-                <div className="note">(Gợi ý: Các Anh/Chị điền lại các đầu việc Đã/Chưa xong hoặc ghi chú vào ô công việc tương ứng)</div>
+                <div className="note">{t('support_note')}</div>
                 <div className="action-groups">
                   <div className="action-button" onClick={(e) => this.handleCancel(e)}>
-                    <span>Hủy</span>
+                    <span>{t('CancelSearch')}</span>
                   </div>
                   <div className="action-button" onClick={(e) => this.handleSubmit(e)}>
-                    <span>Lưu</span>
+                    <span>{t('Save')}</span>
                   </div>
                 </div>
               </div>
@@ -415,39 +415,39 @@ class SupportOnboardComponent extends React.Component {
                 <table className="table table-borderless table-hover">
                   <thead>
                     <tr>
-                      <th scope="col" className="col-code sticky-col text-center">Mã nhân viên</th>
-                      <th scope="col" className="col-name sticky-col text-center">Họ và tên</th>
-                      <th scope="col" className="col-region text-center">Vùng</th>
-                      <th scope="col" className="col-unit text-center">Cơ sở </th>
-                      <th scope="col" className="col-unit text-center">Bộ phận</th>
-                      <th scope="col" className="col-unit text-center">Chức danh</th>
-                      <th scope="col" className="col-deadline text-center">Ngày bắt đầu đi làm</th>
-                      <th scope="col" className="col-deadline text-center">Hạn hoàn thành</th>
+                      <th scope="col" className="col-code sticky-col text-center">{t('EmployeeNo')}</th>
+                      <th scope="col" className="col-name sticky-col text-center">{t('FullName')}</th>
+                      <th scope="col" className="col-region text-center">{t('RegionName')}</th>
+                      <th scope="col" className="col-unit text-center">{t('Unit')} </th>
+                      <th scope="col" className="col-unit text-center">{t('DepartmentName')}</th>
+                      <th scope="col" className="col-unit text-center">{t('Title')}</th>
+                      <th scope="col" className="col-deadline text-center">{t('work_start_date')}</th>
+                      <th scope="col" className="col-deadline text-center">{t('completed_dealine')}</th>
                       {
                         checkIsExactPnL(Constants.PnLCODE.Vinbrain) ?
                           <>
-                            <th scope="col" className="col-devices text-center">Chuẩn bị Logistic: chỗ ngồi, máy móc, voucher, VPP ...</th>
-                            <th scope="col" className="col-devices text-center">Tạo account, cài đặt máy tính</th>
-                            <th scope="col" className="col-devices text-center">Tạo mã nhân viên và HĐLĐ/HĐTV, cam kết</th>
-                            <th scope="col" className="col-devices text-center">Gửi thư chào mừng nhân viên mới: Nội quy/SĐTC/Hệ thống nội bộ/ contact hữu dụng</th>
-                            <th scope="col" className="col-devices text-center">Tổ chức khóa Đào tạo định hướng</th>
-                            <th scope="col" className="col-devices text-center">Hoàn thiện hồ sơ theo quy định Tập đoàn</th>
-                            <th scope="col" className="col-devices text-center">Cập nhật đầy đủ thông tin lên SAP và các group mail/Ms Teams</th>
-                            <th scope="col" className="col-devices text-center">Ký HĐLĐ</th>
+                            <th scope="col" className="col-devices text-center">{t("title_render_actionview_1")}</th>
+                            <th scope="col" className="col-devices text-center">{t('title_render_actionview_2')}</th>
+                            <th scope="col" className="col-devices text-center">{t('title_render_actionview_3')}</th>
+                            <th scope="col" className="col-devices text-center">{t('title_render_actionview_4')}</th>
+                            <th scope="col" className="col-devices text-center">{t('title_render_actionview_5')}</th>
+                            <th scope="col" className="col-devices text-center">{t('title_render_actionview_6')}</th>
+                            <th scope="col" className="col-devices text-center">{t('title_render_actionview_7')}</th>
+                            <th scope="col" className="col-devices text-center">{t('title_render_actionview_8')}</th>
                           </>
-                          : checkIsExactPnL(Constants.PnLCODE.VinSchool, Constants.PnLCODE.Vinhome, Constants.PnLCODE.Vin3S) ?
+                          : checkVersionPnLSameAsVinhome(Constants.MODULE.TUYENDUNG, Constants.PnLCODE.VinSchool) ?
                             <>
-                              <th scope="col" className="col-devices text-center">Tài khoản AD, email, các phần mềm phục vụ công việc, cá nhân</th>
-                              <th scope="col" className="col-devices text-center">Máy tính / Điện thoại bàn</th>
-                              <th scope="col" className="col-devices text-center">Đồng phục / Thẻ tên / Tủ cá nhân / Chìa khóa kho… Văn phòng phẩm</th>
-                              <th scope="col" className="col-devices text-center">Lấy vân tay cho CBNV vào ngày đầu làm việc</th>
+                              <th scope="col" className="col-devices text-center">{t('title_render_actionview_9')}</th>
+                              <th scope="col" className="col-devices text-center">{t('title_render_actionview_10')}</th>
+                              <th scope="col" className="col-devices text-center">{t('title_render_actionview_11')}</th>
+                              <th scope="col" className="col-devices text-center">{t('title_render_actionview_12')}</th>
                             </>
                             :
                             <>
-                              {this.state.isShowDevices ? <th scope="col" className="col-devices text-center">Chuẩn bị công cụ dụng cụ <br /> (Phòng làm việc, Bàn/ghế/tủ, máy tính, đồng phục)</th> : null}
-                              {this.state.isShowAccount ? <th scope="col" className="col-devices text-center">Tài khoản AD, email, các phần mềm phục vụ công việc, máy in</th> : null}
-                              {this.state.isShowVoucher ? <th scope="col" className="col-devices text-center">Lấy dấu vân tay, phiếu ăn, vé gửi xe</th> : null}
-                              {this.state.isShowDonitory ? <th scope="col" className="col-devices text-center">Ký túc xá (Áp dụng với Phú Quốc,Nha Trang, Đà Nẵng)</th> : null}
+                              {this.state.isShowDevices ? <th scope="col" className="col-devices text-center">{t('title_render_actionview_13')}</th> : null}
+                              {this.state.isShowAccount ? <th scope="col" className="col-devices text-center">{t('title_render_actionview_14')}</th> : null}
+                              {this.state.isShowVoucher ? <th scope="col" className="col-devices text-center">{t('title_render_actionview_15')}</th> : null}
+                              {this.state.isShowDonitory ? <th scope="col" className="col-devices text-center">{t('title_render_actionview_16')})</th> : null}
                             </>
                       }
 

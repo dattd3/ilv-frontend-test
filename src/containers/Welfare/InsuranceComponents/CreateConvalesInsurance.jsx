@@ -31,9 +31,9 @@ const CreateConvalesInsurance = ({
 
   const [errors, setErrors] = useState({});
   const InsuranceOptions = [
-    { value: 1, label: "Ốm đau" },
-    { value: 2, label: "Thai sản" },
-    { value: 3, label: "Dưỡng sức" },
+    { value: 1, label: t('sick') },
+    { value: 2, label: t('maternity') },
+    { value: 3, label: t('convales') },
   ];
 
   const onSubmit = () => {
@@ -137,14 +137,14 @@ const CreateConvalesInsurance = ({
   return (
     <>
       {/* YÊU CẦU BẢO HIỂM Y TẾ */}
-      <h5>YÊU CẦU BẢO HIỂM Y TẾ</h5>
+      <h5>{t('health_insurance_claim')}</h5>
       <div className="box shadow cbnv">
         <div className="row">
           <div className="col-4">
-            {"Loại yêu cầu"}
+            {t('TypeOfRequest')}
             <span className="required">(*)</span>
             <Select
-              placeholder={"Lựa chọn"}
+              placeholder={t('option')}
               options={InsuranceOptions}
               isClearable={false}
               value={type}
@@ -154,10 +154,10 @@ const CreateConvalesInsurance = ({
             />
           </div>
           <div className="col-4">
-            {"Hình thức kê khai phát sinh"}
+            {t('generate_declaration_form')}
             <span className="required">(*)</span>
             <Select
-              placeholder={"Lựa chọn"}
+              placeholder={t('option')}
               options={DECLARE_FORM_OPTIONS}
               isClearable={false}
               value={data?.declareForm}
@@ -170,7 +170,7 @@ const CreateConvalesInsurance = ({
             ) : null}
           </div>
           <div className="col-4">
-            {"Từ ngày đơn vị đề nghị hưởng"}
+            {t('from_date_applies_benefits')}
             <DatePicker
               name="startDate"
               //readOnly={disableComponent.disableAll || !disableComponent.qlttSide || data.qlttOpinion.disableTime == true}
@@ -196,7 +196,7 @@ const CreateConvalesInsurance = ({
         </div>
         <div className="row mv-10">
           <div className="col-4">
-            {"Từ ngày giải quyết trước"}
+            {t('from_date_settlement')}
             <DatePicker
               name="startDate"
               //readOnly={disableComponent.disableAll || !disableComponent.qlttSide || data.qlttOpinion.disableTime == true}
@@ -220,10 +220,10 @@ const CreateConvalesInsurance = ({
             />
           </div>
           <div className="col-8">
-            {"Phương án"}
+            {t('plan')}
             <span className="required">(*)</span>
             <Select
-              placeholder={"Lựa chọn"}
+              placeholder={t('option')}
               options={CONVALES_PLAN}
               isClearable={false}
               value={data.plan}
@@ -238,7 +238,7 @@ const CreateConvalesInsurance = ({
         </div>
         <div className="row mv-10">
           <div className="col-12">
-            {"Ghi chú"}
+            {t('note')}
             <textarea
               value={data.note}
               onChange={(e) => handleTextInputChange(e, "note")}
@@ -250,7 +250,7 @@ const CreateConvalesInsurance = ({
       </div>
 
       {/* THÔNG TIN CÁ NHÂN */}
-      <h5>THÔNG TIN CÁ NHÂN</h5>
+      <h5>{t('info_profile')}</h5>
       <div className="box shadow cbnv">
         <div className="row">
           <div className="col-4">
@@ -259,24 +259,24 @@ const CreateConvalesInsurance = ({
             <div className="detail1">{userInfo.fullName}</div>
           </div>
           <div className="col-4">
-            {"Mã sổ/số sổ BHXH"}
+            {t('id_BHXH')}
             <span className="required">(*)</span>
             <div className="detail1">{userInfo.socialId}</div>
           </div>
           <div className="col-4">
-            {"Số CMND/Hộ chiếu/Thẻ căn cước"}
+            {t('indenfy_number_2')}
             <span className="required">(*)</span>
             <div className="detail1">{userInfo.personal_id_no}</div>
           </div>
         </div>
         <div className="row mv-10">
           <div className="col-4">
-            {"Mã nhân viên"}
+            {t('EmployeeNo')}
             <div className="detail1">{userInfo.employeeNo}</div>
           </div>
 
           <div className="col-4">
-            {"Ngày quay trở lại làm việc tại đơn vị"}
+            {t('back_to_work_date')}
             <DatePicker
               name="startDate"
               //readOnly={disableComponent.disableAll || !disableComponent.qlttSide || data.qlttOpinion.disableTime == true}
@@ -300,11 +300,11 @@ const CreateConvalesInsurance = ({
       </div>
 
       {/* SỐ NGÀY ĐỀ NGHỊ HƯỞNG CHẾ ĐỘ TẠI ĐƠN VỊ */}
-      <h5>SỐ NGÀY ĐỀ NGHỊ HƯỞNG CHẾ ĐỘ TẠI ĐƠN VỊ</h5>
+      <h5>{t('number_of_day_benifit')}</h5>
       <div className="box shadow cbnv">
         <div className="row mv-10">
           <div className="col-4">
-            {"Số Seri"}
+            {t('seri')}
             <span className="required">(*)</span>
             <input
               value={data.seri}
@@ -319,7 +319,7 @@ const CreateConvalesInsurance = ({
             ) : null}
           </div>
           <div className="col-4">
-            <div>{"Từ ngày"}</div>
+            <div>{t('StartDate')}</div>
             <DatePicker
               selectsStart
               name="startDate"
@@ -338,7 +338,7 @@ const CreateConvalesInsurance = ({
             />
           </div>
           <div className="col-4">
-            <div>{"Đến ngày"}</div>
+            <div>{t('EndDate')}</div>
             <DatePicker
               selectsEnd
               name="startDate"
@@ -359,7 +359,7 @@ const CreateConvalesInsurance = ({
         </div>
         <div className="row mv-10">
           <div className="col-12">
-            {"Tổng số"}
+            {t('total')}
             <span className="required">(*)</span>
             <input
               value={data.total}
@@ -377,11 +377,11 @@ const CreateConvalesInsurance = ({
       </div>
 
       {/* THÔNG TIN GIÁM ĐỊNH */}
-      <h5>THÔNG TIN GIÁM ĐỊNH</h5>
+      <h5>{t('assessment_information')}</h5>
       <div className="box shadow cbnv">
         <div className="row mv-10">
           <div className="col-8">
-            <div>{"Tỷ lệ suy giảm"}</div>
+            <div>{t('rate_of_decline')}</div>
             <input
               value={data.declineRate}
               onChange={(e) => handleTextInputChange(e, "declineRate")}
@@ -392,7 +392,7 @@ const CreateConvalesInsurance = ({
             />
           </div>
           <div className="col-4">
-            <div>{"Ngày giám định"}</div>
+            <div>{t('inspection_date')}</div>
             <DatePicker
               name="startDate"
               //readOnly={disableComponent.disableAll || !disableComponent.qlttSide || data.qlttOpinion.disableTime == true}
@@ -419,11 +419,11 @@ const CreateConvalesInsurance = ({
       </div>
 
       {/* ĐỢT GIẢI QUYẾT */}
-      <h5>ĐỢT GIẢI QUYẾT</h5>
+      <h5>{t('resolution')}</h5>
       <div className="box shadow cbnv">
         <div className="row mv-10">
           <div className="col-8">
-            <div>{"Nội dung đợt"}</div>
+            <div>{t('content_batch')}</div>
             <input
               value={data.resolveContent}
               onChange={(e) => handleTextInputChange(e, "resolveContent")}
@@ -434,7 +434,7 @@ const CreateConvalesInsurance = ({
             />
           </div>
           <div className="col-4">
-            {"Tháng năm"}
+            {t('may')}
             <DatePicker
               name="startDate"
               //readOnly={disableComponent.disableAll || !disableComponent.qlttSide || data.qlttOpinion.disableTime == true}
@@ -461,11 +461,11 @@ const CreateConvalesInsurance = ({
       </div>
 
       {/* ĐỢT BỔ SUNG */}
-      <h5>ĐỢT BỔ SUNG</h5>
+      <h5>{t('bonus_batch')}</h5>
       <div className="box shadow cbnv">
         <div className="row mv-10">
           <div className="col-8">
-            <div>{"Nội dung đợt"}</div>
+            <div>{t('content_batch')}</div>
             <input
               value={data.addtionContent}
               onChange={(e) => handleTextInputChange(e, "addtionContent")}
@@ -476,7 +476,7 @@ const CreateConvalesInsurance = ({
             />
           </div>
           <div className="col-4">
-            {"Tháng năm"}
+            {t('may')}
             <DatePicker
               name="startDate"
               //readOnly={disableComponent.disableAll || !disableComponent.qlttSide || data.qlttOpinion.disableTime == true}
@@ -503,16 +503,16 @@ const CreateConvalesInsurance = ({
       </div>
 
       {/* HÌNH THỨC TRỢ CẤP */}
-      <h5>HÌNH THỨC TRỢ CẤP</h5>
+      <h5>{t('type_support')}</h5>
       <div className="box shadow cbnv">
         <div className="row mv-10">
           <div className="col-4">
             <div>
-              {"Hình thức nhận"}
+              {t('receiving_form')}
               <span className="required">(*)</span>
             </div>
             <Select
-              placeholder={"Lựa chọn"}
+              placeholder={t('option')}
               options={RECEIVE_TYPE}
               isClearable={false}
               value={data.receiveType}
@@ -526,7 +526,7 @@ const CreateConvalesInsurance = ({
           </div>
           <div className="col-4">
             <div>
-              {"Số tài khoản"}
+              {t('account_number')}
               <span className="required">(*)</span>
             </div>
             <input
@@ -542,7 +542,7 @@ const CreateConvalesInsurance = ({
             ) : null}
           </div>
           <div className="col-4">
-            {"Tên chủ tài khoản"}
+            {t('account_name')}
             <span className="required">(*)</span>
             <input
               value={data.accountName}
@@ -560,7 +560,7 @@ const CreateConvalesInsurance = ({
         <div className="row mv-10">
           <div className="col-4">
             <div>
-              {"Mã ngân hàng"}
+              {t('bank_code')}
               <span className="required">(*)</span>
             </div>
             <input
@@ -577,7 +577,7 @@ const CreateConvalesInsurance = ({
           </div>
           <div className="col-8">
             <div>
-              {"Tên ngân hàng"}
+              {t('bank_name')}
               <span className="required">(*)</span>
             </div>
             <input

@@ -90,7 +90,8 @@ const FilterMember = (props) => {
         return {
           uid: profile.uid,
           fullname: profile.fullname,
-          job_name: profile.job_name,
+          job_name: profile.position_name,
+          title: profile.title,
           part: profile.part || "",
           division: profile.division || "",
           department: profile.department || "",
@@ -102,8 +103,8 @@ const FilterMember = (props) => {
           company_email: profile.company_email.includes("@") ? profile.company_email.split("@")[0] : profile.company_email,
           checked: profile.checked || false,
           isExpand: profile.isExpand || false,
-          contractName: profile.contract_type_name || "",
-          contractType: profile.contract_type_code || "",
+          contractName: profile.contract_type_name || profile.contractName || "",
+          contractType: profile.contract_type_code || profile.contractType || "",
           startDate: profile.startDate || "",
           expireDate: profile.expireDate || "",
         };

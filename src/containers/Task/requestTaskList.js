@@ -213,10 +213,14 @@ class RequestTaskList extends React.Component {
             { value: 2, label: 'Phê duyệt' }
         ]
 
-        if(request == Constants.SALARY_PROPOSE && statusName) {
-            let statusLabel = this.props.t(statusName);
-            let tmp = Object.keys(status).filter(key => status[key].label == statusLabel );
-            statusOriginal = tmp?.length > 0 ? tmp[0] : statusOriginal;
+        if(request == Constants.SALARY_PROPOSE) {
+            if(statusName) {
+                let statusLabel = this.props.t(statusName);
+                let tmp = Object.keys(status).filter(key => status[key].label == statusLabel );
+                statusOriginal = tmp?.length > 0 ? tmp[0] : statusOriginal;
+            } else {
+                statusOriginal = statusOriginal == 21 || statusOriginal == 22 ? 100 : statusOriginal;
+            }
         }
 
         if (this.props.page === "approval") {

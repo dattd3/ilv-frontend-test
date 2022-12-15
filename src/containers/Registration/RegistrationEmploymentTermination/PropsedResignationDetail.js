@@ -90,19 +90,19 @@ class RegistrationEmploymentTermination extends React.Component {
                 </div>
 
                 <div className="block staff-information-proposed-resignation-block">
-                    <h6 className="block-title">II. Thông tin nhân viên đề xuất cho nghỉ</h6>
+                    <h6 className="block-title">II. {`${t('proposed_employee_info')} ${t('cho_nghi')}`}</h6>
                     <div className="box shadow">
                         <div className="row">
                             <div className="col-12">
                                 <table className="list-staff">
                                     <thead>
                                         <tr>
-                                            <th>Họ và tên</th>
-                                            <th>Mã nhân viên</th>
-                                            <th>Chức danh</th>
-                                            <th>Khối/Phòng/Bộ phận</th>
-                                            <th>Loại hợp đồng</th>
-                                            <th>Ngày vào làm việc</th>
+                                            <th>{t('FullName')}</th>
+                                            <th>{t('EmployeeNo')}</th>
+                                            <th>{t('Title')}</th>
+                                            <th>{t('DepartmentManage')}</th>
+                                            <th>{t('ContractType')}</th>
+                                            <th>{t('DaysOnWorking')}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -132,7 +132,7 @@ class RegistrationEmploymentTermination extends React.Component {
                 </div>
 
                 <div className="block staff-information-block">
-                    <h6 className="block-title">III. LÝ DO CBLĐ TT ĐỀ XUẤT CHO NGHỈ</h6>
+                    <h6 className="block-title">III. {t('ly_do_cbld_tt_de_xuat_cho_nghi')}</h6>
                     <div className="box shadow">
                         <div className="row">
                             <div className="col-4">
@@ -158,7 +158,7 @@ class RegistrationEmploymentTermination extends React.Component {
                         </div>
                         <div className="row">
                             <div className="col-12">
-                                <p className="title">Lý do chi tiết chấm dứt hợp đồng</p>
+                                <p className="title">{t('DetailedReason')}</p>
                                 <div>
                                     <div className="detail">{requestInfo.reasonDetailed || ""}</div>
                                 </div>
@@ -168,7 +168,7 @@ class RegistrationEmploymentTermination extends React.Component {
                             requestInfo?.processStatusId == Constants.STATUS_REVOCATION && requestInfo?.commentExtend != null && requestInfo?.commentExtend != "" && requestInfo?.commentExtend != undefined ?
                                 <div className="row">
                                     <div className="col-12">
-                                        <p className="title">Lý do hủy yêu cầu</p>
+                                        <p className="title">{t('reason_cancel')}</p>
                                         <div>
                                             <div className="detail">{requestInfo?.commentExtend || ""}</div>
                                         </div>
@@ -208,7 +208,7 @@ class RegistrationEmploymentTermination extends React.Component {
                             requestInfo?.approverComment != null && requestInfo?.approverComment != undefined && requestInfo?.approverComment != "" ?
                                 <div className="row">
                                     <div className="col-12">
-                                        <p className="title">Lý do từ chối</p>
+                                        <p className="title">{t('reason_reject')}</p>
                                         <div>
                                             <div className="detail">{requestInfo?.approverComment || ""}</div>
                                         </div>

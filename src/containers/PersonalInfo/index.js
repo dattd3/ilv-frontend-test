@@ -6,7 +6,7 @@ import moment from 'moment';
 import { withRouter } from 'react-router-dom';
 import Constants from "../../commons/Constants"
 import { isEnableFunctionByFunctionName, getMuleSoftHeaderConfigurations, getRequestConfigurations, formatStringByMuleValue } from "../../commons/Utils"
-import { checkIsExactPnL } from '../../commons/commonFunctions';
+import { checkIsExactPnL, checkVersionPnLSameAsVinhome } from '../../commons/commonFunctions';
 import RelationshipList from "./RelationshipList"
 import MainInfoList from "./MainInfoList"
 import EducationList from "./EducationList"
@@ -540,7 +540,7 @@ class MyComponent extends React.Component {
 
           {
            /*  checkIsExactPnL(Constants.PnLCODE.Vinpearl) || checkVinfast  ?  */
-            checkIsExactPnL(Constants.PnLCODE.Vinpearl) ? // open for golive1106
+           checkVersionPnLSameAsVinhome(Constants.MODULE.DANHGIA_TAIKI) ? // open for golive1106
               <Tab eventKey="PersonalDocument" title={t("PersonalDocuments")}>
                 <Row >
                   {documents && documents.length > 0 ? <>

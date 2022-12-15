@@ -22,7 +22,7 @@ class StaffInfoForContractTerminationInterviewComponent extends React.PureCompon
                                 </div>
                             </div>
                             <div className="col-4">
-                                <p className="title">Mã số nhân viên</p>
+                                <p className="title">{t('employee_number')}</p>
                                 <div>
                                     <input type="text" className="form-control" value={userInfos?.employeeNo || ""} readOnly />
                                 </div>
@@ -48,7 +48,7 @@ class StaffInfoForContractTerminationInterviewComponent extends React.PureCompon
                                 </div>
                             </div>
                             <div className="col-4">
-                                <p className="title">Ngày chấm dứt HĐLĐ</p>
+                                <p className="title">{t('ngay_cham_dut_hdld')}</p>
                                 <div>
                                     <input type="text" className="form-control" value={dateTermination} readOnly />
                                 </div>
