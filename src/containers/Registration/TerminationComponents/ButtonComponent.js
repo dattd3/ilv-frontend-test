@@ -1,6 +1,7 @@
 import React from 'react'
 import Spinner from 'react-bootstrap/Spinner'
 import { withTranslation  } from "react-i18next";
+import { checkFilesMimeType } from '../../../utils/file';
 
 class ButtonComponent extends React.PureComponent {
     constructor(props) {
@@ -24,13 +25,14 @@ class ButtonComponent extends React.PureComponent {
         this.inputReference.current.click()
     }
 
-    fileUploadInputChange = () => {
+    fileUploadInputChange = (e) => {
         const files = Object.keys(this.inputReference.current.files).map((key) => this.inputReference.current.files[key])
-        const updateFiles = this.state.files.concat(files)
-
-        this.setState({ files: updateFiles })
-        this.props.updateFiles(updateFiles)
-        this.props.isUpdateFiles(true)
+        if (checkFilesMimeType(e, files)) {
+            const updateFiles = this.state.files.concat(files)
+            this.setState({ files: updateFiles })
+            this.props.updateFiles(updateFiles)
+            this.props.isUpdateFiles(true)
+        }
     }
 
     submit = () => {
@@ -61,7 +63,7 @@ class ButtonComponent extends React.PureComponent {
                 {
                     !isEdit ?
                     <>
-                        <input type="file" hidden ref={this.inputReference} id="file-upload" name="file-upload[]" onChange={this.fileUploadInputChange} multiple />
+                        <input type="file" hidden accept=".xls, .xlsx, .doc, .docx, .jpg, .png, .pdf" ref={this.inputReference} id="file-upload" name="file-upload[]" onChange={this.fileUploadInputChange} multiple />
                         <button type="button" className="btn btn-light float-right shadow" onClick={this.fileUploadAction}><i className="fas fa-paperclip"></i> {t('AttachmentFile')}</button>
                     </> : null
                 }

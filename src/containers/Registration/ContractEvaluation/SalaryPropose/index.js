@@ -16,6 +16,8 @@ import ConfirmPasswordModal from './ConfirmPasswordModal';
 import Constants from '../.../../../../../commons/Constants';
 import StatusModal from '../../../../components/Common/StatusModal';
 import Spinner from 'react-bootstrap/Spinner';
+import StatusModal from '../../../../components/Common/StatusModal'
+import { checkFilesMimeType } from '../../../../utils/file';
 
 function SalaryPropse(props) {
   const { t } = useTranslation();
@@ -425,8 +427,10 @@ function SalaryPropse(props) {
   // Attach file
   const handleAttachFile = (e) => {
     const files = Object.values(e.target.files)
-    const listFilesTmp = [...listFiles, ...files];
-    setListFiles(listFilesTmp)
+    if (checkFilesMimeType(e, files)) {
+      const listFilesTmp = [...listFiles, ...files];
+      setListFiles(listFilesTmp)
+    }
   }
 
   const removeFiles = (id, index) => {

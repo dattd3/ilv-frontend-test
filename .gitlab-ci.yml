@@ -16,7 +16,6 @@ build_development:
   only:
     refs:
       - develop
-      - Rollout_ILVGR-187
 deploy_to_development_environment:
   stage: deploy
   tags:
@@ -30,7 +29,7 @@ deploy_to_development_environment:
   when: manual
   only:
       - develop
-      - Rollout_ILVGR-187
+      
 build_production:
   stage: build
   environment: development
