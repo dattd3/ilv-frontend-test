@@ -27,6 +27,8 @@ import IconAdd from '../../../../assets/img/ic-add-green.svg';
 import { useApi } from '../../../../modules/api';
 import vi from 'date-fns/locale/vi'
 import { Button, Image } from "react-bootstrap";
+import { checkFilesMimeType } from "../../../../utils/file";
+
 registerLocale("vi", vi)
 
 const ListTypeContract = [
@@ -618,8 +620,10 @@ const SalaryAdjustmentPropse = (props) => {
   // Attach file
   const handleAttachFile = (e) => {
     const files = Object.values(e.target.files)
-    const listFilesTmp = [...listFiles, ...files];
-    setListFiles(listFilesTmp)
+    if (checkFilesMimeType(e, files)) {
+      const listFilesTmp = [...listFiles, ...files];
+      setListFiles(listFilesTmp)
+    }
   }
 
   const removeFiles = (id, index) => {

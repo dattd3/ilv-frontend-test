@@ -443,8 +443,6 @@ export const IncomeTablesConfig = t => {
                                     { label: t("ReferralBonus"), field: 'reference_bonus' },
                                     { label: t("TrainingBonus"), field: 'trainning_bonus' },
                                     { label: t("GrossOtherBonus"), field: 'other_gross_bonus' },
-                                    // { label: t("NetKpiBonus"), field: 'kpi_bonus_net' },
-                                    // { label: t("BonusNet"), field: 'other_net_bonus' }
                                     { label: t("KpiBonusGrossup"), field: 'kpi_grossup_bonus' },
                                     { label: t("PerformanceBonusVinfastGrossup"), field: 'bonus_hqcv_vf_grossup' },
                                 ]
@@ -695,7 +693,7 @@ export const IncomeTablesConfig = t => {
                                     { label: t("MarriageSupport"), field: 'marriage_subsidy' },
                                     { label: t("FunerralSupport"), field: 'funerral_subsidy' },
                                     { label: t("HousingSupport"), field: 'housing_allowance' },
-                                    { label: t("VinmecHousingSubsidyNet"), field: 'housing_allowance_net' },
+                                    { label: t("HousingSubsidyNet"), field: 'housing_allowance_net' },
                                     { label: t("TransportationSupport"), field: 'transfer_allowance' },
                                     { label: t("TelephoneSupport"), field: 'phone_allowance' },
                                     { label: t("LivingConditionSupport"), field: 'region_allowance' },
@@ -1088,7 +1086,8 @@ export const IncomeTablesConfig = t => {
                                     { label: t("ProjectBonus"), field: 'project_campaign_bonus' },
                                     { label: t("MobilizationBonus"), field: 'mobilizing_bonus' },
                                     { label: t("GrossOtherBonus"), field: 'other_gross_bonus' },
-                                    { label: 'Thưởng thành tích tháng (tiền mặt)', field: 'cash_bonus' }
+                                    { label: 'Thưởng thành tích tháng (tiền mặt)', field: 'cash_bonus' },
+                                    { label: t("ReferralBonus"), field: 'reference_bonus' }
                                 ]
                             },
                             {
@@ -1120,7 +1119,8 @@ export const IncomeTablesConfig = t => {
                                     { label: t("AnnualWelfare"), field: 'annual_welfare_allowance' },
                                     { label: t("OtherPayment"), field: 'other_payment' },
                                     { label: t("VFCarElectricStakeGross"), field: 'vf_car_electric_stake' },
-                                    { label: t("VinmecTaxRefundsAfterTaxFinalization"), field: 'tax_refunds_after' }
+                                    { label: t("VinmecTaxRefundsAfterTaxFinalization"), field: 'tax_refunds_after' },
+                                    { label: t("SupportCampaignAndProject"), field: 'support_vf_campaign_project' }
                                 ]
                             }
                         ]
@@ -1282,13 +1282,14 @@ export const IncomeTablesConfig = t => {
                                 level4: [
                                     { label: t("13ThMonthSalary"), field: 'thirteenth_month_bonus' },
                                     { label: t("AnnualPerformanceBonusAtTimeOfPayment"), field: 'lunar_new_year_bonus' },
+                                    { label: t("VinSchoolNetKpiBonus"), field: 'kpi_bonus' },
                                     { label: t("AchievementBonus"), field: 'archievement_bonus' },
                                     { label: t("ProjectBonus"), field: 'project_campaign_bonus' },
                                     { label: t("MobilizationBonus"), field: 'mobilizing_bonus' },
                                     { label: t("TrainingBonus"), field: 'trainning_bonus' },
                                     { label: t("GrossOtherBonus"), field: 'other_gross_bonus' },
-
                                     { label: t("VSC1OutOfSalaryBonus"), field: 'non_salary_VSC_1_bonus' },
+                                    { label: t("ReferralBonus"), field: 'reference_bonus' },
                                     { label: t("VSC2OutOfSalaryBonus"), field: 'non_salary_VSC_2_bonus' },
                                     { label: t("StudentRecruitmentCommission"), field: 'primary_course_enrol_commissions_bonus' },
                                     { label: t("ExtraCurriculumStudentRecruitmentCommission"), field: 'extra_curricular_enrol_commissions_bonus' },
@@ -1455,6 +1456,8 @@ export const IncomeTablesConfig = t => {
                                     { label: t("PositionAllowance"), field: 'position_allowance' },
                                     { label: t("ToxicSubstancesAllowance"), field: 'dangerous_allowance' },
                                     { label: t("ResponsibilityAllowance"), field: 'responsibility_allowance' },
+                                    { label: t("SeniorityAllowance"), field: 'seniority_allowances' },
+                                    { label: t("WorkingConditionsAllowance"), field: 'allowance_working_conditions' },
                                     { label: t("ForeignLanguageAllowance"), field: 'foreign_language_allowance' },
                                     { label: t("AppearanceAllowance"), field: 'looking_allowance' },
                                     { label: t("AllowanceForNursingPosition"), field: 'nursing_allowance' }
@@ -1483,6 +1486,7 @@ export const IncomeTablesConfig = t => {
                                     { label: t("AnnualPerformanceBonusAtTimeOfPayment"), field: 'lunar_new_year_bonus' },
                                     { label: t("AchievementBonus"), field: 'archievement_bonus' },
                                     { label: t("ProjectBonus"), field: 'project_campaign_bonus' },
+                                    { label: t("ReferralBonus"), field: 'reference_bonus' },
                                     { label: t("VSC1OutOfSalaryBonus"), field: 'non_salary_VSC_1_bonus' },
                                     { label: t("VSC2OutOfSalaryBonus"), field: 'non_salary_VSC_2_bonus' },
                                     { label: t("StudentRecruitmentCommission"), field: 'primary_course_enrol_commissions_bonus' },
@@ -1545,6 +1549,9 @@ export const IncomeTablesConfig = t => {
                                     { label: 'Công tác phí', field: 'mission_fee' },
                                     { label: 'Hỗ trợ học phí cho con CBNV NNN', field: 'tuition_fee_allowance' },
                                     { label: 'Hỗ trợ thu hút khó tuyển dụng', field: 'special_industry_subsidy' },
+                                    { label: t("HousingSubsidyNet"), field: 'housing_allowance_net' },
+                                    { label: t("SpecialJobAllowanceForVinES"), field: 'specific_work_allowance_vines' },
+                                    { label: t("SupportCampaignAndProject"), field: 'support_vf_campaign_project' },
                                     { label: 'Hỗ trợ vé máy bay NNN', field: 'plane_ticket_allowance' },
                                     { label: t("NETCovid19PandemicSubsidy"), field: 'covid_allowance', isSplit: true },
                                     { label: 'Hỗ trợ mùa dịch Covid 19 (GROSSUP từ khoản NET tương ứng)', field: 'covid_grossup_allowance' },

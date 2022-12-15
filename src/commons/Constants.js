@@ -155,6 +155,7 @@ const Constants = {
     VinHome: "V040",
     VinBrain: "V095",
     VinPearl: "V030",
+    MeliaVinpearl: "V035",
     VinMec: "V060",
     VinSchool: "V061",
     Vin3S: "V005",
@@ -165,7 +166,8 @@ const Constants = {
     VinFastTrading: "V077",
     VinITIS: "V097",
     VinUni: "V066",
-    VinAI: "V099"
+    VinAI: "V099",
+    VinBus: "V033",
   },
   listFunctionsForPnLACL: {
     editProfile: 'EDIT_PROFILE',
@@ -179,6 +181,7 @@ const Constants = {
     Vinhome: "V040",
     Vinbrain: "V095",
     Vinpearl: "V030",
+    MeliaVinpearl: "V035",
     Vinmec: "V060",
     VinSchool: "V061",
     VinFast: "V070",
@@ -186,7 +189,8 @@ const Constants = {
     VinFastPB: "V070",
     Vin3S: "V005",
     VinES: "V079",
-    Vincon: "V041"
+    Vincon: "V041",
+    VinBus: "V033",
   },
   LOGIN_INSTRUCTION_PATH: "https://myvinpearl.s3.ap-southeast-1.amazonaws.com/shared/templates/ILOVEVINGROUP-HDDang+nhap-LoginInstruction.pdf",
   statusUserActiveMulesoft: 3,
