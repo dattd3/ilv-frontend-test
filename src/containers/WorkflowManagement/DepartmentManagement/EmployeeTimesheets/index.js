@@ -420,7 +420,7 @@ class EmployeeTimesheets extends Component {
 
       if (this.checkExist(item.trip_start_time1)) {
         line3ForTrip.type = EVENT_TYPE.EVENT_CONGTAC;
-        line3ForTrip.subtype =1 + line3ForTrip.subtype[1]
+        line3ForTrip.subtype =1 + '0'
         timeSteps.push(this.getDatetimeForCheckFail(item.trip_start_time1, item.trip_end_time1, currentDay, nextDay));
       }
 
