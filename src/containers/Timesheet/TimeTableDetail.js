@@ -738,7 +738,7 @@ const processDataForTable = (data1, fromDateString, toDateString, reasonData) =>
 
       if( checkExist(item.trip_start_time1)) {
         line3ForTrip.type = EVENT_TYPE.EVENT_CONGTAC;
-        line3ForTrip.subtype =1 + line3ForTrip.subtype[1]
+        line3ForTrip.subtype =1 + '0'
         
         timeSteps.push( getDatetimeForCheckFail(item.trip_start_time1, item.trip_end_time1, currentDay, nextDay));
       }
