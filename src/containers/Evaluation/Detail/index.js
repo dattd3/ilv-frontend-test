@@ -466,7 +466,7 @@ function EvaluationProcess(props) {
                 __html: purify.sanitize(target?.seftOpinion || ""),
               }} />
             : <textarea 
-                rows={1} 
+                rows={3} 
                 placeholder={isEdit ? !(showByManager || evaluationFormDetail.status != evaluationStatus.launch) ? t("EvaluationDetailPartSelectScoreInput") : '' : ''} 
                 value={target?.seftOpinion || ""} 
                 onChange={(e) => !_.isNil(subGroupTargetIndex) ? handleInputChange(parentIndex, index, 'seftOpinion', e, subGroupTargetIndex) : handleInputChange(i, index, 'seftOpinion', e)} 
@@ -481,7 +481,7 @@ function EvaluationProcess(props) {
                 __html: purify.sanitize(target?.leaderReviewOpinion || ""),
               }} />
             : <textarea 
-                rows={1} 
+                rows={3} 
                 placeholder={isEdit ? !(!showByManager || (showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment))) ? t("EvaluationDetailPartSelectScoreInput") : '' : ''} 
                 value={target?.leaderReviewOpinion || ""} 
                 onChange={(e) => !_.isNil(subGroupTargetIndex) ? handleInputChange(parentIndex, index, 'leaderReviewOpinion', e, subGroupTargetIndex) : handleInputChange(i, index, "leaderReviewOpinion", e)} 
@@ -671,7 +671,7 @@ function EvaluationProcess(props) {
                                   __html: purify.sanitize(target?.seftOpinion || ""),
                                 }} />
                               : <textarea 
-                                  rows={1} 
+                                  rows={3} 
                                   placeholder={isEdit ? !(showByManager || evaluationFormDetail.status != evaluationStatus.launch) ? t("EvaluationDetailPartSelectScoreInput") : '' : ''} 
                                   value={target?.seftOpinion || ""} 
                                   onChange={(e) => handleInputChange(i, index, 'seftOpinion', e)} 
@@ -686,7 +686,7 @@ function EvaluationProcess(props) {
                                   __html: purify.sanitize(target?.leaderReviewOpinion || ""),
                                 }} />
                               : <textarea 
-                                  rows={1} 
+                                  rows={3} 
                                   placeholder={isEdit ? !(!showByManager || (showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment))) ? t("EvaluationDetailPartSelectScoreInput") : '' : ''} 
                                   value={target?.leaderReviewOpinion || ""} 
                                   onChange={(e) => handleInputChange(i, index, "leaderReviewOpinion", e)} 
@@ -1018,7 +1018,7 @@ function EvaluationDetail(props) {
 
   const isValidTotalScoreFunc = () => {
     const { totalSeftPoint, totalLeadReviewPoint } = evaluationFormDetail
-    return Number(totalSeftPoint) < 0 || Number(totalSeftPoint) > 100 || Number(totalLeadReviewPoint) < 0 || Number(totalLeadReviewPoint) > 100 ? false : true
+    return Number(totalSeftPoint).toFixed(2) < 0 || Number(totalSeftPoint).toFixed(2) > 100 || Number(totalLeadReviewPoint).toFixed(2) < 0 || Number(totalLeadReviewPoint).toFixed(2) > 100 ? false : true
   }
 
   const isValidScoreFunc = () => {
@@ -1110,6 +1110,9 @@ function EvaluationDetail(props) {
       } else { // Lưu, CBNV Gửi tới bước tiếp theo, CBQLTT xác nhận
         const payload = { ...evaluationFormDetail }
         payload.nextStep = actionCode
+        payload.totalSeftPoint = Number(payload.totalSeftPoint).toFixed(2)
+        payload.totalLeadReviewPoint = Number(payload.totalLeadReviewPoint).toFixed(2)
+
         const isZeroLevel = payload?.reviewStreamCode === processStep.zeroLevel
         const response = await axios.post(`${process.env.REACT_APP_HRDX_PMS_URL}api/targetform/update`, { requestString: JSON.stringify(payload || {}) }, config)
         SetIsLoading(false)
