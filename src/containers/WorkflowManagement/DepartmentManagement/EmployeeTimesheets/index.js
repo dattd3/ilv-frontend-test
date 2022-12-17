@@ -802,8 +802,8 @@ class EmployeeTimesheets extends Component {
         startDate: dateChanged, // Required
         endDate: dateChanged, // Required
         shift_Id: shiftUpdateType == Constants.SUBSTITUTION_SHIFT_CODE ? dataChanged[per].shiftFilter.shiftSelected.shift_id : "", // Mã ca thay đổi (Nhập mã ca thì không nhập (startTime, endTime, shiftHours) và ngược lại)
-        startTime: shiftUpdateType == Constants.SUBSTITUTION_SHIFT_UPDATE ? dataChanged[per].startTime : "", // Giờ bắt đầu HHmmss
-        endTime: shiftUpdateType == Constants.SUBSTITUTION_SHIFT_UPDATE ? dataChanged[per].endTime : "", // Giờ kết thúc HHmmss
+        startTime: shiftUpdateType == Constants.SUBSTITUTION_SHIFT_UPDATE ? moment(dataChanged[per].startTime, 'YYYYMMDD HHmmss').format('HHmmss') : "", // Giờ bắt đầu HHmmss
+        endTime: shiftUpdateType == Constants.SUBSTITUTION_SHIFT_UPDATE ? moment(dataChanged[per].endTime, 'YYYYMMDD HHmmss').format('HHmmss') : "", // Giờ kết thúc HHmmss
         shiftHours: shiftUpdateType == Constants.SUBSTITUTION_SHIFT_UPDATE ? dataChanged[per].totalTime : "", // Tổng thời gian
         causes: dataChanged[per].reason || "" // Comment
       }
