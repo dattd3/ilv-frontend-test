@@ -162,7 +162,7 @@ export const Navigation = [
     parentId: 1001,
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     to: map.EmployeeTimeSheets,
-    label: companyVCodeUserLogged === Constants.pnlVCode.VinPearl ? "SubMenuTimesheetManagementDivision" : "SubMenuTimesheetManagement",
+    label: [Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl].includes(companyVCodeUserLogged) ? "SubMenuTimesheetManagementDivision" : "SubMenuTimesheetManagement",
     role: 'U'
   },
   {
@@ -445,7 +445,7 @@ export const Navigation = [
     icon: 'c-qa',
     label: "QuestionAndAnswer",
     to: map.QuestionAndAnswer,
-    role: [Constants.pnlVCode.VinPearl, Constants.pnlVCode.VinSoftware, Constants.pnlVCode.VinMec, Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading,
+    role: [Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinSoftware, Constants.pnlVCode.VinMec, Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading,
       Constants.pnlVCode.VinSmart, Constants.pnlVCode.VincomRetail, Constants.pnlVCode.VinAI, Constants.PnLCODE.Vin3S]
   },
   {
