@@ -141,23 +141,23 @@ const isEnableFunctionByFunctionName = name => {
 
     switch (name) {
         case Constants.listFunctionsForPnLACL.qnA:
-            listPnLAccepted = [Constants.pnlVCode.VinPearl, Constants.pnlVCode.VinSoftware, Constants.pnlVCode.VinMec, Constants.pnlVCode.VinFast, 
+            listPnLAccepted = [Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinSoftware, Constants.pnlVCode.VinMec, Constants.pnlVCode.VinFast, 
                 Constants.pnlVCode.VinFastTrading, Constants.pnlVCode.VinSmart, Constants.pnlVCode.VincomRetail, Constants.pnlVCode.VinAI]
             break
         case Constants.listFunctionsForPnLACL.editProfile:
-            listPnLAccepted = [Constants.pnlVCode.VinPearl, Constants.pnlVCode.VinMec, Constants.pnlVCode.VinSmart, Constants.pnlVCode.VincomRetail, 
+            listPnLAccepted = [Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinMec, Constants.pnlVCode.VinSmart, Constants.pnlVCode.VincomRetail, 
                 Constants.pnlVCode.VinITIS, Constants.pnlVCode.VinUni, Constants.pnlVCode.Vin3S, Constants.pnlVCode.VinAI]
             break
         case Constants.listFunctionsForPnLACL.editEducation:
-            listPnLAccepted = [Constants.pnlVCode.VinPearl, Constants.pnlVCode.VinMec, Constants.pnlVCode.VinSmart, Constants.pnlVCode.VincomRetail, 
+            listPnLAccepted = [Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinMec, Constants.pnlVCode.VinSmart, Constants.pnlVCode.VincomRetail, 
                 Constants.pnlVCode.VinITIS, Constants.pnlVCode.VinUni, Constants.pnlVCode.Vin3S, Constants.pnlVCode.VinAI]
             break
         case Constants.listFunctionsForPnLACL.editRelationship:
-            listPnLAccepted = [Constants.pnlVCode.VinSmart, Constants.pnlVCode.VincomRetail, Constants.pnlVCode.VinITIS, Constants.pnlVCode.VinPearl, 
+            listPnLAccepted = [Constants.pnlVCode.VinSmart, Constants.pnlVCode.VincomRetail, Constants.pnlVCode.VinITIS, Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl,
                 Constants.pnlVCode.VinUni, Constants.pnlVCode.Vin3S, Constants.pnlVCode.VinAI]
             break
         case Constants.listFunctionsForPnLACL.changeStaffShift:
-            listPnLAccepted = [Constants.pnlVCode.VinPearl]
+            listPnLAccepted = [Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl]
             break
         case Constants.listFunctionsForPnLACL.selectWorkingShift24h:
             listPnLAccepted = [Constants.pnlVCode.VinMec]
@@ -177,7 +177,8 @@ const getValueParamByQueryString = (queryString, key) => {
 const calculateBackDateByPnLVCodeAndFormatType = (pnlVCode, formatType) => {
     try {
         const PnLVCodeDayMapping = {
-            [Constants.pnlVCode.VinPearl]: 1
+            [Constants.pnlVCode.VinPearl]: 1,
+            [Constants.pnlVCode.MeliaVinpearl]: 1,
         }
         if (!PnLVCodeDayMapping[pnlVCode]) {
             return null
@@ -347,7 +348,7 @@ function parsteStringToHtml(arrHtml) {
 const getRegistrationMinDateByConditions = () => {
     const userLoggedCompanyCode = localStorage.getItem('companyCode')
     let firstDay = null
-    if ([Constants.pnlVCode.VinPearl].includes(userLoggedCompanyCode)) {
+    if ([Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl].includes(userLoggedCompanyCode)) {
         let indexWednesdayInWeek = 3
         let indexCurrentDayInWeek = moment().day()
         firstDay = moment().startOf('week').isoWeekday(1) // Từ thứ 4 trở đi của tuần hiện tại đến cuối tuần hiện tại thì sẽ lấy ngày đầu tiên của tuần hiện tại 
