@@ -5,7 +5,9 @@ import { useTranslation } from "react-i18next"
 import { Doughnut } from 'react-chartjs-2'
 import { withRouter } from 'react-router-dom'
 import axios from 'axios'
+import purify from "dompurify"
 import _ from 'lodash'
+import moment from "moment/moment";
 import Constants from '../../../commons/Constants'
 import { getRequestConfigurations } from '../../../commons/Utils'
 import { evaluationStatus, actionButton } from '../Constants'
@@ -34,13 +36,19 @@ const formType = {
   EMPLOYEE: 'NV',
 }
 
+const processStep = {
+  zeroLevel: '0NF',
+  oneLevel: '1NF',
+  twoLevels: '2NF',
+}
+
 function EvaluationOverall(props) {
   const { t } = useTranslation()
   const { evaluationFormDetail, showByManager } = props
-  const totalCompleted = showByManager ? evaluationFormDetail?.leadReviewTotalComplete || 0 : evaluationFormDetail?.seftTotalComplete || 0
+  const totalCompleted = showByManager ? evaluationFormDetail?.leadReviewTotalComplete || 0 : evaluationFormDetail?.seftTotalComplete || 0;
+  const isDifferentZeroLevel = evaluationFormDetail.reviewStreamCode !== processStep.zeroLevel;
 
   const overallData = {
-    // labels: ["Red", "Green"],
     datasets: [
       {
         data: [evaluationFormDetail?.totalTarget - totalCompleted, totalCompleted],
@@ -99,7 +107,7 @@ function EvaluationOverall(props) {
     <div className="card shadow card-overall">
       <h6 className="text-center chart-title">{t("EvaluationDetailOverallScore")}</h6>
       <div className="chart">
-        <div className="detail">{(evaluationFormDetail?.status == evaluationStatus.launch || (evaluationFormDetail?.status == evaluationStatus.selfAssessment && !showByManager)) ? evaluationFormDetail?.totalSeftPoint?.toFixed(2) || 0 : evaluationFormDetail?.totalLeadReviewPoint?.toFixed(2) || 0}</div>
+        <div className="detail">{(evaluationFormDetail?.status == evaluationStatus.launch || (evaluationFormDetail?.status == evaluationStatus.selfAssessment && !showByManager) || evaluationFormDetail?.reviewStreamCode === processStep.zeroLevel) ? evaluationFormDetail?.totalSeftPoint?.toFixed(2) || 0 : evaluationFormDetail?.totalLeadReviewPoint?.toFixed(2) || 0}</div>
       </div>
     </div>
     <div className="card shadow card-detail">
@@ -108,7 +116,7 @@ function EvaluationOverall(props) {
           <tr>
             <th className='c-criteria'><div className='criteria'>{t("EvaluationDetailCriteria")}</div></th>
             <th className='c-self-assessment text-center'><div className='self-assessment'>{t("EvaluationDetailSelfAssessment")}</div></th>
-            <th className='c-manager-assessment text-center'><div className='manager-assessment color-red'>{t("EvaluationDetailManagerAssessment")}</div></th>
+            {isDifferentZeroLevel && <th className='c-manager-assessment text-center'><div className='manager-assessment color-red'>{t("EvaluationDetailManagerAssessment")}</div></th>}
           </tr>
         </thead>
         <tbody>
@@ -117,14 +125,14 @@ function EvaluationOverall(props) {
               return <tr key={i}>
                 <td className='c-criteria'><div className='criteria'>{JSON.parse(item?.groupName || '{}')[languageCodeMapping[currentLocale]]}</div></td>
                 <td className='c-self-assessment text-center'>{(item?.groupSeftPoint || 0).toFixed(2)}</td>
-                <td className='c-manager-assessment text-center color-red'>{(item?.groupLeadReviewPoint || 0).toFixed(2)}</td>
+                {isDifferentZeroLevel && <td className='c-manager-assessment text-center color-red'>{(item?.groupLeadReviewPoint || 0).toFixed(2)}</td>}
               </tr>
             })
           }
           <tr>
             <td className='c-criteria'><div className='font-weight-bold text-uppercase criteria'>{t("EvaluationDetailOverallScore")}</div></td>
             <td className='c-self-assessment text-center font-weight-bold'>{(evaluationFormDetail?.totalSeftPoint || 0).toFixed(2)}</td>
-            <td className='c-manager-assessment text-center font-weight-bold color-red'>{(evaluationFormDetail?.totalLeadReviewPoint || 0).toFixed(2)}</td>
+            {isDifferentZeroLevel && <td className='c-manager-assessment text-center font-weight-bold color-red'>{(evaluationFormDetail?.totalLeadReviewPoint || 0).toFixed(2)}</td>}
           </tr>
         </tbody>
       </table>
@@ -134,17 +142,7 @@ function EvaluationOverall(props) {
 
 function EvaluationProcess(props) {
   const { evaluationFormDetail, showByManager, errors, updateData } = props
-  const { t } = useTranslation()
-  const processStep = {
-    oneLevel: '1NF',
-    twoLevels: '2NF',
-  }
-  const stepStatusMapping = {
-    [evaluationStatus.launch]: 0,
-    [evaluationStatus.selfAssessment]: 1,
-    [evaluationStatus.qlttAssessment]: evaluationFormDetail?.reviewStreamCode === processStep.oneLevel ? null : 2,
-    [evaluationStatus.cbldApproved]: evaluationFormDetail?.reviewStreamCode === processStep.oneLevel ? 2 : 3,
-  }
+  const { t } = useTranslation();
   const formatIndexText = index => {
     const mapping = {
       1: 'I',
@@ -160,36 +158,68 @@ function EvaluationProcess(props) {
     }
     return mapping[index]
   }
+  const { checkPhaseFormEndDate, reviewStreamCode, status, isEdit } = evaluationFormDetail;
+  const isDifferentZeroLevel = reviewStreamCode !== processStep.zeroLevel;
+  let stepStatusMapping, stepEvaluationConfig;
+
+  switch (reviewStreamCode) {
+    case processStep.zeroLevel:
+      stepEvaluationConfig = [t("EvaluationDetailSelfAssessment"), t("EvaluationDetailCompleted")];
+      stepStatusMapping = {
+        [evaluationStatus.launch]: 0,
+        [evaluationStatus.selfAssessment]: null,
+        [evaluationStatus.qlttAssessment]: null,
+        [evaluationStatus.cbldApproved]: 1,
+      };
+      break;
+    case processStep.oneLevel:
+      stepEvaluationConfig = [t("EvaluationDetailSelfAssessment"), t("EvaluationDetailManagerAssessment"), t("EvaluationDetailCompleted")];
+      stepStatusMapping = {
+        [evaluationStatus.launch]: 0,
+        [evaluationStatus.selfAssessment]: 1,
+        [evaluationStatus.qlttAssessment]: null,
+        [evaluationStatus.cbldApproved]: 2,
+      };
+    default:
+      break;
+    case processStep.twoLevels:
+      stepEvaluationConfig = [t("EvaluationDetailSelfAssessment"), t("EvaluationDetailManagerAssessment"), t("EvaluationDetailManagerApprove"), t("EvaluationDetailCompleted")];
+      stepStatusMapping = {
+        [evaluationStatus.launch]: 0,
+        [evaluationStatus.selfAssessment]: 1,
+        [evaluationStatus.qlttAssessment]: 2,
+        [evaluationStatus.cbldApproved]: 3,
+      };
+      break;
+  }
 
   const renderEvaluationStep = () => {
-    const stepEvaluationConfig = evaluationFormDetail?.reviewStreamCode === processStep.oneLevel
-      ? [t("EvaluationDetailSelfAssessment"), t("EvaluationDetailManagerAssessment"), t("EvaluationDetailCompleted")]
-      : [t("EvaluationDetailSelfAssessment"), t("EvaluationDetailManagerAssessment"), t("EvaluationDetailManagerApprove"), t("EvaluationDetailCompleted")]
-    return stepEvaluationConfig.map((item, index) => {
-      let activeClass = index === stepStatusMapping[evaluationFormDetail?.status] ? 'active' : ''
-      return (
-        <div className="wrap-item" key={index}>
-          <div className="line"><hr /></div>
-          <div className={`info ${activeClass}`}>
-            <div className="item">
-              <span className="no"><span>{index + 1}</span></span>
-              <span className="name">{item}</span>
-              <Image src={!activeClass ? IconArrowRightGray : IconArrowRightWhite} alt="Next" className="next" />
+      return stepEvaluationConfig.map((item, index) => {
+        let activeClass = index === stepStatusMapping[evaluationFormDetail?.status] ? 'active' : ''
+        return (
+          <div className="wrap-item" key={index}>
+            <div className="line"><hr /></div>
+            <div className={`info ${activeClass}`}>
+              <div className="item">
+                <span className="no"><span>{index + 1}</span></span>
+                <span className="name">{item}</span>
+                <Image src={!activeClass ? IconArrowRightGray : IconArrowRightWhite} alt="Next" className="next" />
+              </div>
             </div>
           </div>
-        </div>
-      )
+        )
     })
   }
 
   const renderEmployeeInfos = () => {
     const approverInfos = JSON.parse(evaluationFormDetail?.approver || '{}')
     const reviewerInfos = JSON.parse(evaluationFormDetail?.reviewer || '{}')
+    const isShowManagerApproverInfo = evaluationFormDetail?.reviewStreamCode === processStep.twoLevels
 
     return (
       <>
         <div className="title">{t("EvaluationDetailEmployeeInfo")}</div>
-        <div className="detail">
+        <div className="detail align-items-start">
           <div className="left">
             <div className="info-item">
               <span className="label"><span className="font-weight-bold">{t("EvaluationDetailEmployeeFullName")}</span><span>:</span></span>
@@ -213,14 +243,20 @@ function EvaluationProcess(props) {
               <span className="label"><span className="font-weight-bold">{t("EvaluationDetailEmployeeDepartment")}</span><span>:</span></span>
               <span className="value">{evaluationFormDetail?.organization_lv4 || ''}</span>
             </div>
-            <div className="info-item">
-              <span className="label"><span className="font-weight-bold">{t("EvaluationDetailEmployeeManagerAssessment")}</span><span>:</span></span>
-              <span className="value">{reviewerInfos?.fullname && `${reviewerInfos?.fullname || ''} - ${reviewerInfos?.position_title || ''}`}</span>
-            </div>
-            <div className="info-item">
-              <span className="label"><span className="font-weight-bold">{t("EvaluationDetailEmployeeManagerApprove")}</span><span>:</span></span>
-              <span className="value">{approverInfos?.fullname && `${approverInfos?.fullname || ''} - ${approverInfos?.position_title || ''}`}</span>
-            </div>
+            {
+              isDifferentZeroLevel && 
+                <div className="info-item">
+                  <span className="label"><span className="font-weight-bold">{t("EvaluationDetailEmployeeManagerAssessment")}</span><span>:</span></span>
+                  <span className="value">{reviewerInfos?.fullname && `${reviewerInfos?.fullname || ''} - ${reviewerInfos?.position_title || ''}`}</span>
+                </div>
+            }
+            {
+              isShowManagerApproverInfo && 
+              <div className="info-item">
+                <span className="label"><span className="font-weight-bold">{t("EvaluationDetailEmployeeManagerApprove")}</span><span>:</span></span>
+                <span className="value">{approverInfos?.fullname && `${approverInfos?.fullname || ''} - ${approverInfos?.position_title || ''}`}</span>
+              </div>
+            }
             <div className="info-item">
               <span className="label"><span className="font-weight-bold">HR Admin</span><span>:</span></span>
               <span className="value">{`${evaluationFormDetail?.hrAdmin || ''}`}</span>
@@ -247,8 +283,13 @@ function EvaluationProcess(props) {
     updateData(subIndex, parentIndex, stateName, val, childIndex)
   }
 
+  const formatTargetText = str => str?.replace(/\n|\r/g, "")
+
   const renderEvaluationItem = (item, index, scores, target, i, deviant, parentIndex, subGroupTargetIndex) => {
-    const isChild = !_.isNil(parentIndex)
+    const isChild = !_.isNil(parentIndex);
+    const isDisableEmployeeComment = isEdit ? (showByManager || evaluationFormDetail.status != evaluationStatus.launch) : true
+    const isDisableManagerComment = isEdit ? (!showByManager || (showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment))) : true
+
     return <div className="evaluation-item" key={target.id}>
       {!isChild ? <div className="title">{`${i + 1}. ${JSON.parse(target?.targetName || '{}')[languageCodeMapping[currentLocale]]}`}</div> : <div className="sub-title">{`${parentIndex + 1}.${subGroupTargetIndex + 1} ${JSON.parse(target?.targetName || '{}')[languageCodeMapping[currentLocale]]}`}</div>}
       {
@@ -258,7 +299,7 @@ function EvaluationProcess(props) {
               <div className="item">
                 <span className="red label">{t("EvaluationDetailPartAttitudeSelfAssessment")}{!showByManager && <span className="required">(*)</span>}</span>
                 {
-                  !showByManager && evaluationFormDetail.status == evaluationStatus.launch
+                  !showByManager && evaluationFormDetail.status == evaluationStatus.launch && isEdit
                     ?
                     <select onChange={(e) => !_.isNil(subGroupTargetIndex) ? handleInputChange(parentIndex, index, 'seftPoint', e, subGroupTargetIndex) : handleInputChange(i, index, 'seftPoint', e)} value={target?.seftPoint || ''}>
                       <option value=''>{t("EvaluationDetailPartSelectScore")}</option>
@@ -277,7 +318,7 @@ function EvaluationProcess(props) {
               <div className="item">
                 <span className="red label">{t("EvaluationDetailPartAttitudeManagerAssessment")}{showByManager && <span className="required">(*)</span>}</span>
                 {
-                  !(!showByManager || (showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment)))
+                  !(!showByManager || (showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment))) && isEdit
                     ?
                     <select onChange={(e) => !_.isNil(subGroupTargetIndex) ? handleInputChange(parentIndex, index, 'leadReviewPoint', e, subGroupTargetIndex) : handleInputChange(i, index, "leadReviewPoint", e)} value={target?.leadReviewPoint || ''}>
                       <option value=''>{t("EvaluationDetailPartSelectScore")}</option>
@@ -294,7 +335,30 @@ function EvaluationProcess(props) {
             </div>
             <div className="deviant">
               <span className="red label">{t("EvaluationDetailPartAttitudeDifferent")}</span>
-              <span className={`value ${deviant && deviant > 0 ? 'up' : deviant && deviant < 0 ? 'down' : ''}`}>&nbsp;{`${deviant && deviant > 0 ? '+' : ''}${deviant}`}{deviant && deviant != 0 ? <Image alt='Note' src={deviant && deviant > 0 ? IconUp : deviant && deviant < 0 ? IconDown : ''} /> : ''}</span>
+              <span className={`value ${
+                  deviant && deviant > 0
+                    ? 'up'
+                    : deviant && deviant < 0
+                    ? 'down'
+                    : ''
+                }`}
+              >
+                &nbsp;{`${deviant && deviant > 0 ? '+' : ''}${deviant}`}
+                {deviant && deviant != 0 ? (
+                  <Image
+                    alt="Note"
+                    src={
+                      deviant && deviant > 0
+                        ? IconUp
+                        : deviant && deviant < 0
+                        ? IconDown
+                        : ''
+                    }
+                  />
+                ) : (
+                  ''
+                )}
+              </span>
             </div>
           </div>
           :
@@ -314,29 +378,37 @@ function EvaluationProcess(props) {
               <tbody>
                 <tr>
                   <td className="measurement">
-                    <ul>
-                      {
-                        target?.jobDetail && <li>{target?.jobDetail}</li>
-                      }
-                      <li>{target?.metric1}</li>
-                      <li>{target?.metric2}</li>
-                      <li>{target?.metric3}</li>
-                      <li>{target?.metric4}</li>
-                      <li>{target?.metric5}</li>
+                    {
+                      target?.jobDetail && 
+                      <ul className="first">
+                        <li>{formatTargetText(target?.jobDetail)}</li>
+                      </ul>
+                    }
+                    <ul className="second">
+                      <li>{!target?.metric1 ? '--' : formatTargetText(target?.metric1)}</li>
+                      <li>{!target?.metric2 ? '--' : formatTargetText(target?.metric2)}</li>
+                      <li>{!target?.metric3 ? '--' : formatTargetText(target?.metric3)}</li>
+                      <li>{!target?.metric4 ? '--' : formatTargetText(target?.metric4)}</li>
+                      <li>{!target?.metric5 ? '--' : formatTargetText(target?.metric5)}</li>
                     </ul>
                   </td>
                   <td className="text-center proportion"><span>{target?.weight}%</span></td>
                   <td className="text-center target"><span>{target?.target}</span></td>
                   <td className="actual-results">
                     <div>
-                      {!showByManager && evaluationFormDetail.status == evaluationStatus.launch ? <textarea rows={3} placeholder={t("EvaluationInput")} value={target?.realResult || ""} onChange={(e) => handleInputChange(i, index, 'realResult', e)} /> : <span>{target?.realResult}</span>}
+                      {
+                        !showByManager && evaluationFormDetail.status == evaluationStatus.launch && isEdit
+                          ?
+                          <textarea rows={3} placeholder={t("EvaluationInput")} value={target?.realResult || ""} onChange={(e) => handleInputChange(i, index, 'realResult', e)} />
+                          :
+                          <span>{target?.realResult}</span>}
                     </div>
                     {errors[`${index}_${i}_realResult`] && <div className="alert alert-danger invalid-message" role="alert">{errors[`${index}_${i}_realResult`]}</div>}
                   </td>
                   <td className="text-center self-assessment">
                     <div>
                       {
-                        !showByManager && evaluationFormDetail.status == evaluationStatus.launch
+                        !showByManager && evaluationFormDetail.status == evaluationStatus.launch && isEdit
                           // ? <input type="text" placeholder={t("EvaluationInput")} value={target?.seftPoint || ""} onChange={(e) => handleInputChange(i, index, 'seftPoint', e)} /> 
                           ? <select onChange={(e) => handleInputChange(i, index, 'seftPoint', e)} value={target?.seftPoint || ''}>
                             <option value=''>{t("EvaluationDetailPartSelectScore")}</option>
@@ -354,7 +426,7 @@ function EvaluationProcess(props) {
                   <td className="text-center qltt-assessment">
                     <div>
                       {
-                        showByManager && evaluationFormDetail.status == evaluationStatus.selfAssessment
+                        showByManager && evaluationFormDetail.status == evaluationStatus.selfAssessment && isEdit
                           // ? <input type="text" placeholder={t("EvaluationInput")} value={target?.leadReviewPoint || ""} onChange={(e) => handleInputChange(i, index, 'leadReviewPoint', e)} />
                           ? <select onChange={(e) => handleInputChange(i, index, 'leadReviewPoint', e)} value={target?.leadReviewPoint || ''}>
                             <option value=''>{t("EvaluationDetailPartSelectScore")}</option>
@@ -370,7 +442,15 @@ function EvaluationProcess(props) {
                     {errors[`${index}_${i}_leadReviewPoint`] && <div className="alert alert-danger invalid-message" role="alert">{errors[`${index}_${i}_leadReviewPoint`]}</div>}
                   </td>
                   <td className="text-center deviant">
-                    <span className={`value ${deviant && deviant > 0 ? 'up' : deviant && deviant < 0 ? 'down' : ''}`}>&nbsp;{`${deviant && deviant > 0 ? '+' : ''}${deviant}`}{deviant && deviant != 0 ? <Image alt='Note' src={deviant && deviant > 0 ? IconUp : deviant && deviant < 0 ? IconDown : ''} /> : ''}</span>
+                    <span className={`value ${deviant && deviant > 0 ? 'up' : deviant && deviant < 0 ? 'down' : ''}`}>
+                      &nbsp;{`${deviant && deviant > 0 ? '+' : ''}${deviant}`}
+                      {deviant && deviant != 0
+                        ?
+                        <Image alt='Note' src={deviant && deviant > 0 ? IconUp : deviant && deviant < 0 ? IconDown : ''} />
+                        :
+                        ''
+                      }
+                    </span>
                   </td>
                 </tr>
               </tbody>
@@ -380,11 +460,33 @@ function EvaluationProcess(props) {
       <div className="comment">
         <div className="self">
           <p>{t("EvaluationDetailPartAttitudeCommentOfEmployee")}</p>
-          <textarea rows={1} placeholder={`${t("EvaluationDetailPartSelectScoreInput")}`} value={target?.seftOpinion || ""} onChange={(e) => !_.isNil(subGroupTargetIndex) ? handleInputChange(parentIndex, index, 'seftOpinion', e, subGroupTargetIndex) : handleInputChange(i, index, 'seftOpinion', e)} disabled={showByManager || evaluationFormDetail.status != evaluationStatus.launch} />
+          {
+            isDisableEmployeeComment
+            ? <div className="comment-content" dangerouslySetInnerHTML={{
+                __html: purify.sanitize(target?.seftOpinion || ""),
+              }} />
+            : <textarea 
+                rows={3} 
+                placeholder={isEdit ? !(showByManager || evaluationFormDetail.status != evaluationStatus.launch) ? t("EvaluationDetailPartSelectScoreInput") : '' : ''} 
+                value={target?.seftOpinion || ""} 
+                onChange={(e) => !_.isNil(subGroupTargetIndex) ? handleInputChange(parentIndex, index, 'seftOpinion', e, subGroupTargetIndex) : handleInputChange(i, index, 'seftOpinion', e)} 
+                disabled={isDisableEmployeeComment} />
+          }
         </div>
         <div className="qltt">
           <p>{t("EvaluationDetailPartAttitudeCommentOfManager")}</p>
-          <textarea rows={1} placeholder={`${t("EvaluationDetailPartSelectScoreInput")}`} value={target?.leaderReviewOpinion || ""} onChange={(e) => !_.isNil(subGroupTargetIndex) ? handleInputChange(parentIndex, index, 'leaderReviewOpinion', e, subGroupTargetIndex) : handleInputChange(i, index, "leaderReviewOpinion", e)} disabled={!showByManager || (showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment))} />
+          {
+            isDisableManagerComment
+            ? <div className="comment-content" dangerouslySetInnerHTML={{
+                __html: purify.sanitize(target?.leaderReviewOpinion || ""),
+              }} />
+            : <textarea 
+                rows={3} 
+                placeholder={isEdit ? !(!showByManager || (showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment))) ? t("EvaluationDetailPartSelectScoreInput") : '' : ''} 
+                value={target?.leaderReviewOpinion || ""} 
+                onChange={(e) => !_.isNil(subGroupTargetIndex) ? handleInputChange(parentIndex, index, 'leaderReviewOpinion', e, subGroupTargetIndex) : handleInputChange(i, index, "leaderReviewOpinion", e)} 
+                disabled={isDisableManagerComment} />
+          }
         </div>
       </div>
     </div>
@@ -405,6 +507,8 @@ function EvaluationProcess(props) {
         // let scores = prepareScores(item?.listGroupConfig)
         let scores = [1, 2, 3, 4, 5]
         let isAttitudeBlock = item?.listGroupConfig && item?.listGroupConfig?.length > 0
+        const isDisableEmployeeComment = isEdit ? (showByManager || evaluationFormDetail.status != evaluationStatus.launch) : true
+        const isDisableManagerComment = isEdit ? (!showByManager || (showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment))) : true
 
         return <div className={`part-block ${isAttitudeBlock ? 'attitude' : 'work-result'}`} key={index}>
           <div className="title">{`${t("EvaluationDetailPart")} ${indexText} - ${JSON.parse(item?.groupName || '{}')[languageCodeMapping[currentLocale]]}`} <span className="red">({item?.groupWeight || 0}%)</span></div>
@@ -487,29 +591,38 @@ function EvaluationProcess(props) {
                             <tbody>
                               <tr>
                                 <td className="measurement">
-                                  <ul>
-                                    {
-                                      target?.jobDetail && <li>{target?.jobDetail}</li>
-                                    }
-                                    <li>{target?.metric1}</li>
-                                    <li>{target?.metric2}</li>
-                                    <li>{target?.metric3}</li>
-                                    <li>{target?.metric4}</li>
-                                    <li>{target?.metric5}</li>
+                                  {
+                                    target?.jobDetail && 
+                                    <ul className="first">
+                                      <li>{formatTargetText(target?.jobDetail)}</li>
+                                    </ul>
+                                  }
+                                  <ul className="second">
+                                    <li>{!target?.metric1 ? '--' : formatTargetText(target?.metric1)}</li>
+                                    <li>{!target?.metric2 ? '--' : formatTargetText(target?.metric2)}</li>
+                                    <li>{!target?.metric3 ? '--' : formatTargetText(target?.metric3)}</li>
+                                    <li>{!target?.metric4 ? '--' : formatTargetText(target?.metric4)}</li>
+                                    <li>{!target?.metric5 ? '--' : formatTargetText(target?.metric5)}</li>
                                   </ul>
                                 </td>
                                 <td className="text-center proportion"><span>{target?.weight}%</span></td>
                                 <td className="text-center target"><span>{target?.target}</span></td>
                                 <td className="actual-results">
                                   <div>
-                                    {!showByManager && evaluationFormDetail.status == evaluationStatus.launch ? <textarea rows={3} placeholder={t("EvaluationInput")} value={target?.realResult || ""} onChange={(e) => handleInputChange(i, index, 'realResult', e)} /> : <span>{target?.realResult}</span>}
+                                    {
+                                    !showByManager && evaluationFormDetail.status == evaluationStatus.launch && isEdit
+                                      ?
+                                      <textarea rows={3} placeholder={t("EvaluationInput")} value={target?.realResult || ""} onChange={(e) => handleInputChange(i, index, 'realResult', e)} />
+                                      :
+                                      <span>{target?.realResult}</span>
+                                    }
                                   </div>
                                   {errors[`${index}_${i}_realResult`] && <div className="alert alert-danger invalid-message" role="alert">{errors[`${index}_${i}_realResult`]}</div>}
                                 </td>
                                 <td className="text-center self-assessment">
                                   <div>
                                     {
-                                      !showByManager && evaluationFormDetail.status == evaluationStatus.launch
+                                      !showByManager && evaluationFormDetail.status == evaluationStatus.launch && isEdit
                                         // ? <input type="text" placeholder={t("EvaluationInput")} value={target?.seftPoint || ""} onChange={(e) => handleInputChange(i, index, 'seftPoint', e)} /> 
                                         ? <select onChange={(e) => handleInputChange(i, index, 'seftPoint', e)} value={target?.seftPoint || ''}>
                                           <option value=''>{t("EvaluationDetailPartSelectScore")}</option>
@@ -527,7 +640,7 @@ function EvaluationProcess(props) {
                                 <td className="text-center qltt-assessment">
                                   <div>
                                     {
-                                      showByManager && evaluationFormDetail.status == evaluationStatus.selfAssessment
+                                      showByManager && evaluationFormDetail.status == evaluationStatus.selfAssessment && isEdit
                                         // ? <input type="text" placeholder={t("EvaluationInput")} value={target?.leadReviewPoint || ""} onChange={(e) => handleInputChange(i, index, 'leadReviewPoint', e)} />
                                         ? <select onChange={(e) => handleInputChange(i, index, 'leadReviewPoint', e)} value={target?.leadReviewPoint || ''}>
                                           <option value=''>{t("EvaluationDetailPartSelectScore")}</option>
@@ -552,11 +665,33 @@ function EvaluationProcess(props) {
                         <div className="comment">
                           <div className="self">
                             <p>{t("EvaluationDetailPartAttitudeCommentOfEmployee")}</p>
-                            <textarea rows={1} placeholder={`${t("EvaluationDetailPartSelectScoreInput")}`} value={target?.seftOpinion || ""} onChange={(e) => handleInputChange(i, index, 'seftOpinion', e)} disabled={showByManager || evaluationFormDetail.status != evaluationStatus.launch} />
+                            {
+                              isDisableEmployeeComment
+                              ? <div className="comment-content" dangerouslySetInnerHTML={{
+                                  __html: purify.sanitize(target?.seftOpinion || ""),
+                                }} />
+                              : <textarea 
+                                  rows={3} 
+                                  placeholder={isEdit ? !(showByManager || evaluationFormDetail.status != evaluationStatus.launch) ? t("EvaluationDetailPartSelectScoreInput") : '' : ''} 
+                                  value={target?.seftOpinion || ""} 
+                                  onChange={(e) => handleInputChange(i, index, 'seftOpinion', e)} 
+                                  disabled={isDisableEmployeeComment} />
+                            }
                           </div>
                           <div className="qltt">
                             <p>{t("EvaluationDetailPartAttitudeCommentOfManager")}</p>
-                            <textarea rows={1} placeholder={`${t("EvaluationDetailPartSelectScoreInput")}`} value={target?.leaderReviewOpinion || ""} onChange={(e) => handleInputChange(i, index, "leaderReviewOpinion", e)} disabled={!showByManager || (showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment))} />
+                            {
+                              isDisableManagerComment
+                              ? <div className="comment-content" dangerouslySetInnerHTML={{
+                                  __html: purify.sanitize(target?.leaderReviewOpinion || ""),
+                                }} />
+                              : <textarea 
+                                  rows={3} 
+                                  placeholder={isEdit ? !(!showByManager || (showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment))) ? t("EvaluationDetailPartSelectScoreInput") : '' : ''} 
+                                  value={target?.leaderReviewOpinion || ""} 
+                                  onChange={(e) => handleInputChange(i, index, "leaderReviewOpinion", e)} 
+                                  disabled={isDisableManagerComment} />
+                            }
                           </div>
                         </div>
                       </div>
@@ -583,14 +718,15 @@ function EvaluationDetail(props) {
   const user = guard.getCurentUser()
   const evaluationFormId = showByManager ? props?.evaluationFormId : props.match.params.id
   const formCode = showByManager ? props?.formCode : props.match.params.formCode
-  const [bottom, setBottom] = useState(false);
+  const [bottom, setBottom] = useState(false)
+  const [dataLoaded, setDataLoaded] = useState(false)
 
   useEffect(() => {
     const processEvaluationFormDetailData = response => {
       if (response && response.data) {
         const result = response.data.result
         if (result && result.code == Constants.PMS_API_SUCCESS_CODE) {
-          const evaluationFormDetailTemp = response.data?.data
+          const evaluationFormDetailTemp = response.data?.data;
           if (evaluationFormDetailTemp.listGroup) {
             evaluationFormDetailTemp.listGroup = ([...evaluationFormDetailTemp?.listGroup] || []).sort((pre, next) => pre?.groupOrder - next?.groupOrder)
           }
@@ -606,6 +742,7 @@ function EvaluationDetail(props) {
           // evaluationFormDetailTemp.totalComplete = totalQuestionsAnswered
           SetEvaluationFormDetail(evaluationFormDetailTemp)
           // SetEvaluationFormDetail(testEvaluationData)
+          setDataLoaded(true)
         }
       }
     }
@@ -739,9 +876,12 @@ function EvaluationDetail(props) {
   }
 
   const renderButtonBlock = () => {
-    const currentUserLoggedUID = localStorage.getItem('employeeNo')
-    const reviewerUID = JSON.parse(evaluationFormDetail?.reviewer || '{}')?.uid
-    const approverUID = JSON.parse(evaluationFormDetail?.approver || '{}')?.uid
+    const currentUserLoggedUID = localStorage.getItem('employeeNo');
+    const reviewerUID = JSON.parse(evaluationFormDetail?.reviewer || '{}')?.uid;
+    const approverUID = JSON.parse(evaluationFormDetail?.approver || '{}')?.uid;
+    const { isEdit } = evaluationFormDetail;
+
+    if(!isEdit) return null;
 
     switch (evaluationFormDetail?.status) {
       case evaluationStatus.launch:
@@ -775,18 +915,24 @@ function EvaluationDetail(props) {
     }
   }
 
-  const getResponseMessages = (formStatus, actionCode, apiStatus) => {
+  const getResponseMessages = (formStatus, actionCode, apiStatus, isZeroLevel = false) => {
     const messageMapping = {
       [actionButton.save]: {
+        //  CBNV lưu biểu mẫu
         [evaluationStatus.launch]: {
           success: t("EvaluationFormSaveSuccessfully"),
           failed: t("EvaluationFailedToSaveForm"),
-        }
+        },
+        // CBQLTT lưu biểu mẫu
+        [evaluationStatus.selfAssessment]: {
+          success: t("EvaluationFormSaveSuccessfully"),
+          failed: t("EvaluationFailedToSaveForm"),
+        },
       },
       [actionButton.approve]: {
         [evaluationStatus.launch]: {
-          success: t("EvaluationFormSubmittedToDirectManagerEvaluation"),
-          failed: t("EvaluationFailedToSubmitForm"),
+          success: isZeroLevel ? t("EvaluationFormEvaluatedSuccessfully") : t("EvaluationFormSubmittedToDirectManagerEvaluation"),
+          failed: isZeroLevel ? t("EvaluationFailedToEvaluateForm") : t("EvaluationFailedToSubmitForm"),
         },
         [evaluationStatus.selfAssessment]: {
           success: t("EvaluationFormEvaluatedSuccessfully"),
@@ -795,7 +941,7 @@ function EvaluationDetail(props) {
         [evaluationStatus.qlttAssessment]: {
           success: t("EvaluationFormApprovedSuccessfully"),
           failed: t("EvaluationFailedToApproveForm"),
-        }
+        },
       },
       [actionButton.reject]: {
         [evaluationStatus.selfAssessment]: {
@@ -805,7 +951,7 @@ function EvaluationDetail(props) {
         [evaluationStatus.qlttAssessment]: {
           success: t("EvaluationFormSubmittedToManager"),
           failed: t("EvaluationFailedToReSubmitForm"),
-        }
+        },
       }
     }
     return messageMapping[actionCode][formStatus][apiStatus]
@@ -870,16 +1016,64 @@ function EvaluationDetail(props) {
     return (Object.values(errorResult) || []).every(item => !item)
   }
 
+  const isValidTotalScoreFunc = () => {
+    const { totalSeftPoint, totalLeadReviewPoint } = evaluationFormDetail
+    return Number(totalSeftPoint).toFixed(2) < 0 || Number(totalSeftPoint).toFixed(2) > 100 || Number(totalLeadReviewPoint).toFixed(2) < 0 || Number(totalLeadReviewPoint).toFixed(2) > 100 ? false : true
+  }
+
+  const isValidScoreFunc = () => {
+    const maximumScore = 5;
+    const minimumScore = 1;
+    const listGroup = evaluationFormDetail?.listGroup || []
+
+    for (let groupIndex = 0; groupIndex < listGroup.length; groupIndex++) {
+      let group = listGroup[groupIndex]
+      for (let targetIndex = 0; targetIndex < group?.listTarget?.length; targetIndex++) {
+        let target = group?.listTarget[targetIndex]
+        if (target?.seftPoint !== null && (Number(target?.seftPoint) > maximumScore || isNaN(Number(target?.seftPoint)) || Number(target?.seftPoint) < minimumScore)) {
+          return false
+        }
+        if (target?.leadReviewPoint !== null && (Number(target?.leadReviewPoint) > maximumScore || isNaN(Number(target?.leadReviewPoint)) || Number(target?.leadReviewPoint) < minimumScore)) {
+          return false
+        }
+
+        for (let subTargetIndex = 0; subTargetIndex < target?.listTarget?.length; subTargetIndex++) {
+          let subTarget = target?.listTarget[subTargetIndex]
+          if (subTarget?.seftPoint !== null && (Number(subTarget?.seftPoint) > maximumScore || isNaN(Number(subTarget?.seftPoint)) || Number(subTarget?.seftPoint) < minimumScore)) {
+            return false
+          }
+          if (subTarget?.leadReviewPoint !== null && (Number(subTarget?.leadReviewPoint) > maximumScore || isNaN(Number(subTarget?.leadReviewPoint)) || Number(subTarget?.leadReviewPoint) < minimumScore)) {
+            return false
+          }
+        }
+      }
+    }
+
+    return true
+  }
+
   const handleSubmit = async (actionCode, isApprove, isSaveDraft) => {
-    if (!isSaveDraft || (actionCode !== actionButton.reject && actionCode !== actionButton.save)) {
+    if (!isSaveDraft || (actionCode == actionButton.approve)) {
       const isValid = isDataValid()
       if (!isValid) {
         return
       }
     }
 
-    SetIsLoading(true)
     const statusModalTemp = { ...statusModal }
+
+    const isValidTotalScore = isValidTotalScoreFunc()
+    const isValidScore = isValidScoreFunc()
+
+    if (!isValidTotalScore || !isValidScore) {
+      statusModalTemp.isShow = true
+      statusModalTemp.isSuccess = false
+      statusModalTemp.content = t("EvaluationTotalScoreInValid")
+      SetStatusModal(statusModalTemp)
+      return
+    }
+
+    SetIsLoading(true)
     try {
       const config = getRequestConfigurations()
       if (actionCode == actionButton.reject || isApprove) { // Từ chối hoặc Phê duyệt
@@ -916,6 +1110,10 @@ function EvaluationDetail(props) {
       } else { // Lưu, CBNV Gửi tới bước tiếp theo, CBQLTT xác nhận
         const payload = { ...evaluationFormDetail }
         payload.nextStep = actionCode
+        payload.totalSeftPoint = Number(payload.totalSeftPoint).toFixed(2)
+        payload.totalLeadReviewPoint = Number(payload.totalLeadReviewPoint).toFixed(2)
+
+        const isZeroLevel = payload?.reviewStreamCode === processStep.zeroLevel
         const response = await axios.post(`${process.env.REACT_APP_HRDX_PMS_URL}api/targetform/update`, { requestString: JSON.stringify(payload || {}) }, config)
         SetIsLoading(false)
         statusModalTemp.isShow = true
@@ -923,19 +1121,20 @@ function EvaluationDetail(props) {
           const result = response.data.result
           if (result.code == Constants.PMS_API_SUCCESS_CODE) {
             statusModalTemp.isSuccess = true
-            statusModalTemp.content = getResponseMessages(payload.status, actionCode, 'success')
+            statusModalTemp.content = getResponseMessages(payload.status, actionCode, 'success', isZeroLevel)
           } else {
             statusModalTemp.isSuccess = false
             statusModalTemp.content = result?.message
           }
         } else {
           statusModalTemp.isSuccess = false
-          statusModalTemp.content = getResponseMessages(payload.status, actionCode, 'failed')
+          statusModalTemp.content = getResponseMessages(payload.status, actionCode, 'failed', isZeroLevel)
         }
         if (!showByManager) {
           SetStatusModal(statusModalTemp)
         } else {
-          updateParent(statusModalTemp)
+          const keepPopupEvaluationDetail = actionCode == actionButton.save
+          updateParent(statusModalTemp, keepPopupEvaluationDetail)
         }
       }
     } catch (e) {
@@ -950,36 +1149,18 @@ function EvaluationDetail(props) {
       }
     }
   }
+
   return (
     <>
       <LoadingModal show={isLoading} />
-      {!showByManager && <StatusModal show={statusModal.isShow} isSuccess={statusModal.isSuccess} content={statusModal.content} onHide={onHideStatusModal} />}
+      <StatusModal show={statusModal.isShow} isSuccess={statusModal.isSuccess} content={statusModal.content} onHide={onHideStatusModal} />
       <div className="evaluation-detail-page">
         {
-          !evaluationFormDetail || _.size(evaluationFormDetail) === 0 || !evaluationFormDetail?.companyCode
+          dataLoaded 
+          ?
+          (!evaluationFormDetail || _.size(evaluationFormDetail) === 0 || !evaluationFormDetail?.companyCode)
           ? <h6 className="alert alert-danger" role="alert">{t("NoDataFound")}</h6>
           :
-          <>
-            <h1 className="content-page-header">{`${evaluationFormDetail?.checkPhaseFormName} ${t("of")} ${evaluationFormDetail?.fullName}`}</h1>
-            <div>
-              <EvaluationOverall evaluationFormDetail={evaluationFormDetail} showByManager={showByManager} />
-              <EvaluationProcess evaluationFormDetail={evaluationFormDetail} showByManager={showByManager} errors={errors} updateData={updateData} />
-              <div className="button-block">
-                {renderButtonBlock()}
-              </div>
-            </div>
-            {!bottom && (evaluationFormDetail?.status == evaluationStatus.launch || (evaluationFormDetail?.status == evaluationStatus.selfAssessment && localStorage.getItem('employeeNo') ==  JSON.parse(evaluationFormDetail?.reviewer || '{}')?.uid)) &&
-              <div className="scroll-to-save" style={{ color: localStorage.getItem("companyThemeColor"), zIndex: '10' }}>
-                <div>
-                  <button className="btn-action save mr-3" onClick={() => handleSubmit(actionButton.save, null, true)}><Image src={IconSave} alt="Save" />{t("EvaluationDetailPartSave")}</button>
-                </div>
-              </div>
-            }
-          </>
-        }
-
-        {/* {
-          evaluationFormDetail ?
             <>
               <h1 className="content-page-header">{`${evaluationFormDetail?.checkPhaseFormName} ${t("of")} ${evaluationFormDetail?.fullName}`}</h1>
               <div>
@@ -989,10 +1170,18 @@ function EvaluationDetail(props) {
                   {renderButtonBlock()}
                 </div>
               </div>
+              {!bottom &&
+                (evaluationFormDetail?.status == evaluationStatus.launch ||
+                  (evaluationFormDetail?.status == evaluationStatus.selfAssessment && localStorage.getItem('employeeNo') == JSON.parse(evaluationFormDetail?.reviewer || '{}')?.uid)) && evaluationFormDetail?.isEdit && (
+                    <div className="scroll-to-save" style={{ color: localStorage.getItem("companyThemeColor"), zIndex: '10' }}>
+                      <div>
+                        <button className="btn-action save mr-3" onClick={() => handleSubmit(actionButton.save, null, true)}><Image src={IconSave} alt="Save" />{t("EvaluationDetailPartSave")}</button>
+                      </div>
+                    </div>
+                  )}
             </>
-            : <h6 className="alert alert-danger" role="alert">{t("NoDataFound")}</h6>
-        } */}
-
+          : null
+        }
       </div>
 
     </>

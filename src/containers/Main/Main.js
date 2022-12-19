@@ -7,7 +7,7 @@ import Footer from '../../components/Common/Footer';
 import { useGuardStore } from '../../modules';
 import ScrollToTop from '../../components/Common/ScrollToTop';
 import map from "../map.config";
-
+import Constants from '../../commons/Constants'
 
 function MainLayout(props) {
   const guard = useGuardStore();
@@ -22,8 +22,9 @@ function MainLayout(props) {
 
   const searchParams = new URLSearchParams(props.location.search);
   const isApp = searchParams.get('isApp') || false;
+  const currentCompanyCode = localStorage.getItem("companyCode")
   
-  if (props.location.pathname.indexOf("training") > 0 && localStorage.getItem("companyCode") !== "V030") {
+  if (props.location.pathname.indexOf("training") > 0 && ![Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl].includes(currentCompanyCode)) {
     history.push(map.NotFound);
   }
 

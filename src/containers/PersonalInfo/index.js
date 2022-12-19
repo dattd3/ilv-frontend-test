@@ -539,8 +539,9 @@ class MyComponent extends React.Component {
           </Tab>
 
           {
-           /*  checkIsExactPnL(Constants.PnLCODE.Vinpearl) || checkVinfast  ?  */
            checkVersionPnLSameAsVinhome(Constants.MODULE.DANHGIA_TAIKI) ? // open for golive1106
+           /*  checkIsExactPnL(Constants.pnlVCode.VinPearl) || checkIsExactPnL(Constants.pnlVCode.MeliaVinpearl) || checkVinfast  ?  */
+            // (checkIsExactPnL(Constants.pnlVCode.VinPearl) || checkIsExactPnL(Constants.pnlVCode.MeliaVinpearl)) ? // open for golive1106
               <Tab eventKey="PersonalDocument" title={t("PersonalDocuments")}>
                 <Row >
                   {documents && documents.length > 0 ? <>
