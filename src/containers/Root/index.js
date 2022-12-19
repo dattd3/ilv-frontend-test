@@ -38,7 +38,6 @@ function Root() {
       <ContextProviders>
         <BrowserRouter>
           {/* { !listUsersIgnoreMaintenanceMode.includes(currentUserLogged) && <Maintenance /> } */}
-
           {/* { listUsersIgnoreMaintenanceMode.includes(currentUserLogged) && */}
           <ToastContainer
               position="top-right"

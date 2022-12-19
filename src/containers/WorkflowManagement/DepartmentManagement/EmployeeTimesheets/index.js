@@ -420,7 +420,7 @@ class EmployeeTimesheets extends Component {
 
       if (this.checkExist(item.trip_start_time1)) {
         line3ForTrip.type = EVENT_TYPE.EVENT_CONGTAC;
-        line3ForTrip.subtype =1 + line3ForTrip.subtype[1]
+        line3ForTrip.subtype =1 + '0'
         timeSteps.push(this.getDatetimeForCheckFail(item.trip_start_time1, item.trip_end_time1, currentDay, nextDay));
       }
 
@@ -802,8 +802,8 @@ class EmployeeTimesheets extends Component {
         startDate: dateChanged, // Required
         endDate: dateChanged, // Required
         shift_Id: shiftUpdateType == Constants.SUBSTITUTION_SHIFT_CODE ? dataChanged[per].shiftFilter.shiftSelected.shift_id : "", // Mã ca thay đổi (Nhập mã ca thì không nhập (startTime, endTime, shiftHours) và ngược lại)
-        startTime: shiftUpdateType == Constants.SUBSTITUTION_SHIFT_UPDATE ? dataChanged[per].startTime : "", // Giờ bắt đầu HHmmss
-        endTime: shiftUpdateType == Constants.SUBSTITUTION_SHIFT_UPDATE ? dataChanged[per].endTime : "", // Giờ kết thúc HHmmss
+        startTime: shiftUpdateType == Constants.SUBSTITUTION_SHIFT_UPDATE ? moment(dataChanged[per].startTime, 'YYYYMMDD HHmmss').format('HHmmss') : "", // Giờ bắt đầu HHmmss
+        endTime: shiftUpdateType == Constants.SUBSTITUTION_SHIFT_UPDATE ? moment(dataChanged[per].endTime, 'YYYYMMDD HHmmss').format('HHmmss') : "", // Giờ kết thúc HHmmss
         shiftHours: shiftUpdateType == Constants.SUBSTITUTION_SHIFT_UPDATE ? dataChanged[per].totalTime : "", // Tổng thời gian
         causes: dataChanged[per].reason || "" // Comment
       }
@@ -857,7 +857,7 @@ class EmployeeTimesheets extends Component {
       <>
       <ResultDetailModal show={isShowStatusModal} title="Trạng thái cập nhật phân ca" onHide={this.hideStatusModal} resultDetail={resultShiftUpdateDetail}/>
       <div className="timesheet-section department-timesheet">
-        <h1 className="content-page-header">{companyVCodeUserLogged === Constants.pnlVCode.VinPearl ? t("TimesheetDivision") : t("Timesheet")}</h1>
+        <h1 className="content-page-header">{[Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl].includes(companyVCodeUserLogged) ? t("TimesheetDivision") : t("Timesheet")}</h1>
         <FilterData clickSearch={this.searchTimesheetByDate.bind(this)} updateEmployees={this.updateEmployees} />
         {
           (isSearch && timeTables.length > 0)  ?
