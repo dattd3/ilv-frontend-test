@@ -1023,7 +1023,7 @@ function EvaluationDetail(props) {
 
   const isValidScoreFunc = () => {
     const maximumScore = 5;
-    const minimumScore = 1;
+    const minimumScore = 0;
     const listGroup = evaluationFormDetail?.listGroup || []
 
     for (let groupIndex = 0; groupIndex < listGroup.length; groupIndex++) {
