@@ -1332,7 +1332,7 @@ const SalaryAdjustmentPropse = (props) => {
         <>
           <h5 className="content-page-header">{t('HumanResourceChangeSalary')}</h5>
           <div className="timesheet-box1 timesheet-box shadow">
-            <HumanForReviewSalaryComponent isEdit={!viewSetting.disableComponent.selectHrSupportViewSalary} approver={appraiser} />
+            <HumanForReviewSalaryComponent isEdit={!viewSetting.disableComponent.selectHrSupportViewSalary} approver={appraiser} updateApprover={(sup) => handleUpdateSupervisors(sup, 'appraiser')}/>
           </div>
         </>
       }
@@ -1341,7 +1341,7 @@ const SalaryAdjustmentPropse = (props) => {
         <>
           <h5 className="content-page-header">{t('BossApproved')}</h5>
           <div className="timesheet-box1 timesheet-box shadow">
-            <HumanForReviewSalaryComponent isEdit={!viewSetting.disableComponent.selectHrSupportViewSalary} approver={approver} />
+            <HumanForReviewSalaryComponent isEdit={!viewSetting.disableComponent.selectHrSupportViewSalary} approver={approver} updateApprover={(sup) => handleUpdateSupervisors(sup, 'approver')}/>
           </div>
         </>
       }
