@@ -1091,6 +1091,7 @@
   "VFCarElectricStakeNet": "VF car electric stake (net)",
   "VFCarElectricStakeGross": "VF car electric stake (gross)",
   "MenuEvaluation": "Evaluation",
+  "MenuTargetManagement": "Target Management",
   "MenuMyEvaluation": "My Evaluation",
   "MenuEvaluationApproval": "Evaluation/Approval",
   "VinmecOtherBonus": "Other bonus",
@@ -1594,5 +1595,13 @@
   "contract_result_noextend": "Because of not extending contract",
   "SupportCampaignAndProject": "Project/campaign Support Payment",
   "BenefitsPayingThroughSalaryGrossup": "Benefits paid with salary (Gross up)",
-  "SpecialJobAllowanceForVinES": "Special job allowance for VinES"
+  "SpecialJobAllowanceForVinES": "Special job allowance for VinES",
+  "TargetRegistration": "Target Registration",
+  "AssessmentPeriod": "Assessment Period",
+  "TotalTargets": "Total Targets",
+  "RequestDate": "Request Date",
+  "ADCode": "AD",
+  "RegistrationType": "Registration Type",
+  "TargetRegistrationManual": "Target Registration Manually",
+  "TargetRegistrationLibrary": "Target Registration From Library"
 }

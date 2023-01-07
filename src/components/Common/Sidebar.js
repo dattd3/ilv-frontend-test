@@ -189,7 +189,6 @@ function SideBar(props) {
             label: t(c.label)
         }
     });
-   
     const isUpdate = (prevProps, nextProps) => true
 
     const MetisMenuMemo = React.memo(props => {

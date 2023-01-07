@@ -17,6 +17,7 @@
 @import "./assets/scss/evaluation.scss";
 @import "./assets/scss//employee-termination.scss";
 @import "./assets//scss//welfare.scss";
+@import "./assets/scss/target-management.scss";
 
 @font-face {
   font-family: "icomoon";
@@ -4008,5 +4009,61 @@ span.badge-notification[data-badge]::after {
     margin: 10px 0 15px 0;
     width: 200px;
     font-size: 14px;
+  }
+}
+
+.pagination-new {
+  cursor: pointer;
+  display: inline-block;
+  font-style: normal;
+  font-weight: 300;
+  height: 50px;
+  select {
+      border: 1px solid #707070;
+      border-radius: 4px;
+      color: rgba(112, 112, 112, 1);
+      height: 19px;
+      width: 39px;
+      cursor: pointer;
+      border: 1px solid #707070;
+      font-size: 14px;
+  }
+  .pages {
+      & > div {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          span {
+              width: 24px;
+              height: 24px;
+              display: inline-flex;
+              align-items: center;
+              justify-content: center;
+              background: rgba(242, 242, 242, 1);
+              -webkit-transition: background .8s; /* For Safari 3.0 to 6.0 */
+              transition: background .8s;
+              color: black;
+              text-decoration: none;
+              border: 1px solid #ddd;
+              border-radius: 24px;
+              margin: 0 3px;
+              font-size: 12px;
+              &.active {
+                  background-color: #C11D2A;
+                  color: white;
+                  border: 1px solid #C11D2A;
+              }
+            
+              &:hover:not(.active) {background-color: #ddd;}
+          }
+          .icon {
+              padding: 2px;
+              img {
+                  display: inline-block;
+                  width: 14px;
+                  object-fit: contain;
+              }
+          }
+      }
   }
 }
