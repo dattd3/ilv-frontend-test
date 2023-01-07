@@ -1621,5 +1621,7 @@
   "ADCode": "Mã AD",
   "RegistrationType": "Loại đăng ký",
   "TargetRegistrationManual": "Đăng ký mục tiêu thủ công",
-  "TargetRegistrationLibrary": "Đăng ký từ thư viện mục tiêu"
+  "TargetRegistrationLibrary": "Đăng ký từ thư viện mục tiêu",
+  "Draft": "Nháp",
+  "TotalTarget": "Tổng số mục tiêu"
 }

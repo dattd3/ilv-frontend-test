@@ -1603,5 +1603,7 @@
   "ADCode": "AD",
   "RegistrationType": "Registration Type",
   "TargetRegistrationManual": "Target Registration Manually",
-  "TargetRegistrationLibrary": "Target Registration From Library"
+  "TargetRegistrationLibrary": "Target Registration From Library",
+  "Draft": "Draft",
+  "TotalTarget": "Total Target"
 }
