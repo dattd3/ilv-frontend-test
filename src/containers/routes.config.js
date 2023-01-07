@@ -580,6 +580,14 @@ export default [
           component: lazy(() => import("./ProjectInformation/MyProfile")),
         },
         {
+          key: "evaluation-target-management",
+          routeProps: {
+            exact: true,
+            path: map.TargetManagement,
+          },
+          component: lazy(() => import("./Evaluation/TargetManagement/")),
+        },
+        {
           key: "my-evaluation",
           routeProps: {
             exact: true,

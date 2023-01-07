@@ -105,6 +105,7 @@ export default {
 
   // Đánh giá
   // Evaluation: "",
+  TargetManagement: "/target-management",
   EvaluationDetail: "/evaluations/:id/:formCode",
   MyEvaluation: "/my-evaluation",
   EvaluationApproval: "/evaluation-approval",
