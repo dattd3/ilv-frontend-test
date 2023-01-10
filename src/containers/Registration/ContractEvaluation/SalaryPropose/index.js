@@ -7,6 +7,8 @@ import { forEach } from 'lodash';
 import CurrencyInput from 'react-currency-input-field';
 import IconEye from '../../../../assets/img/icon/eye.svg';
 import IconNotEye from '../../../../assets/img/icon/not-eye.svg';
+import IconRemove from '../../../../assets/img/ic-remove.svg';
+import IconAdd from '../../../../assets/img/ic-add-green.svg';
 import { useApi } from '../../../../modules/api';
 import IconDelete from '../../../../assets/img/icon/Icon_Cancel.svg';
 import ConfirmationModal from '../../ConfirmationModal';
@@ -16,6 +18,7 @@ import ConfirmPasswordModal from './ConfirmPasswordModal';
 import Constants from '../.../../../../../commons/Constants';
 import StatusModal from '../../../../components/Common/StatusModal';
 import Spinner from 'react-bootstrap/Spinner';
+import { Button, Image } from "react-bootstrap";
 import { checkFilesMimeType } from '../../../../utils/file';
 
 function SalaryPropse(props) {
@@ -52,15 +55,16 @@ function SalaryPropse(props) {
 
   const [coordinator, setCoordinator] = useState(null); // Nhân sự hỗ trợ xin quyền xem lương
   const [supervisor, setSupervisor] = useState(null); // CBQL cấp cơ sở
+  const [supervisors, setSupervisors] = useState([null]); 
   const [appraiser, setAppraiser] = useState(null); // HR thẩm định quyền điều chỉnh lương
   const [approver, setApprover] = useState(null); // CBLĐ phê duyệt
 
   const [viewSetting, setViewSetting] = useState({
     showComponent: {
       humanForReviewSalary: false, //NHÂN SỰ HỖ TRỢ XIN QUYỀN XEM LƯƠNG
-      humanResourceChangeSalary: false, //NHÂN SỰ THẨM ĐỊNH QUYỀN ĐIỀU CHỈNH LƯƠNG
-      managerApproved: false, //CBQL CẤP CƠ SỞ
-      bossApproved: false, //CBLĐ PHÊ DUYỆT
+      humanResourceChangeSalary: true, //NHÂN SỰ THẨM ĐỊNH QUYỀN ĐIỀU CHỈNH LƯƠNG
+      managerApproved: true, //CBQL CẤP CƠ SỞ
+      bossApproved: true, //CBLĐ PHÊ DUYỆT
       stateProcess: false, // Button trang thai Từ chối
       btnAttachFile: false, // Button Dinh kem tep
       btnCancel: false, // Button Hủy
@@ -327,6 +331,14 @@ function SalaryPropse(props) {
         current_position: JSON.parse(dataSalaryInfo?.supervisorInfo)?.current_position,
         department: JSON.parse(dataSalaryInfo?.supervisorInfo)?.department
       })
+      setSupervisors([
+        {
+          fullName: JSON.parse(dataSalaryInfo?.supervisorInfo)?.fullName,
+          account: JSON.parse(dataSalaryInfo?.supervisorInfo)?.account,
+          current_position: JSON.parse(dataSalaryInfo?.supervisorInfo)?.current_position,
+          department: JSON.parse(dataSalaryInfo?.supervisorInfo)?.department
+        }
+      ])
     // HR thẩm định quyền điều chỉnh lương
     if (dataSalaryInfo?.appraiserInfo)
       setAppraiser({
@@ -703,6 +715,16 @@ function SalaryPropse(props) {
     setCoordinator(approver)
   }
 
+  const removeSupervisorItem = (index) => {
+    const newData = supervisors.splice(index, 1);
+    setSupervisor(newData);
+  }
+  const handleUpdateSupervisors = (approver, index) => {
+    const newData = [...supervisors];
+    newData[index] = approver;
+    setSupervisors(newData);
+  }
+
   const onHideModalConfirm = () => {
     setConfirmModal({
       ...confirmModal,
@@ -723,7 +745,7 @@ function SalaryPropse(props) {
   const salaryState = `salarypropse_${props.match.params?.idContract}_${props.match.params?.idSalary}_${props.match.params?.type}`;
 
   return (
-    <div className='container-salary'>
+    <div className='timesheet-section container-salary'>
       <ConfirmPasswordModal
         state={salaryState}
         show={modalConfirmPassword}
@@ -931,21 +953,43 @@ function SalaryPropse(props) {
           </div>
         </div>
       }
-      {/* CBQL CẤP CƠ SỞ */}
-      {viewSetting.showComponent.managerApproved && supervisor &&
+      {/* {viewSetting.showComponent.managerApproved &&
         <div className='block-content-salary'>
           <h6 className='block-content-salary__title'> {t('ManagerApproved')}</h6>
           <div className='block-content-salary__content'>
             <HumanForReviewSalaryComponent isEdit={true} approver={supervisor} />
           </div>
         </div>
+      } */}
+      {/* CBQL CẤP CƠ SỞ */}
+      {viewSetting.showComponent.managerApproved &&
+        <>
+          <h5 className="content-page-header">{t('Consenter')}<span className="font-weight-normal ml-1 text-lowercase">({t('if_any')})</span></h5>
+          <div className="timesheet-box1 timesheet-box shadow">
+          {
+            supervisors.map((item, key) => {
+              return <div key={key} className="appraiser d-flex flex-column position-relative" style={key > 0 ? {marginTop: '20px'} : {}}>
+                {
+                  isCreateMode && key > 0 ? <button className="btn btn-outline-danger position-absolute d-flex align-items-center btn-sm" style={{gap: '4px', top: 0, right: 0}} onClick={() => removeSupervisorItem(key)}><Image src={IconRemove}/>{t('delete')}</button> : null
+                }
+                <HumanForReviewSalaryComponent isEdit={!viewSetting.disableComponent.selectHrSupportViewSalary}  approver={item} updateApprover={(sup) => handleUpdateSupervisors(sup, key)} />
+              </div>
+            })
+          }
+			{
+				isCreateMode ?
+				<button className="btn btn-outline-success btn-lg w-fit-content mt-3 d-flex align-items-center" style={{gap: '4px', fontSize: '14px'}} onClick={() => setSupervisors([...supervisors, null])}><Image src={IconAdd}/>{t('Add')}</button> 
+				: null
+			}
+          </div>
+        </>
       }
       {/* NHÂN SỰ THẨM ĐỊNH QUYỀN ĐIỀU CHỈNH LƯƠNG */}
-      {viewSetting.showComponent.humanResourceChangeSalary && appraiser &&
+      {viewSetting.showComponent.humanResourceChangeSalary &&
         <div className='block-content-salary'>
           <h6 className='block-content-salary__title'> {t('HumanResourceChangeSalary')}</h6>
           <div className='block-content-salary__content'>
-            <HumanForReviewSalaryComponent isEdit={true} approver={appraiser} />
+            <HumanForReviewSalaryComponent isEdit={!viewSetting.disableComponent.selectHrSupportViewSalary} approver={appraiser} updateApprover={(sup) => handleUpdateCoordinator(sup, 'appraiser')} />
           </div>
         </div>
       }
@@ -954,7 +998,7 @@ function SalaryPropse(props) {
         <div className='block-content-salary'>
           <h6 className='block-content-salary__title'> {t('BossApproved')}</h6>
           <div className='block-content-salary__content'>
-            <HumanForReviewSalaryComponent isEdit={true} approver={approver} />
+            <HumanForReviewSalaryComponent isEdit={!viewSetting.disableComponent.selectHrSupportViewSalary} approver={approver} updateApprover={(sup) => handleUpdateCoordinator(sup, 'approver')}/>
           </div>
         </div>
       }
