@@ -852,13 +852,13 @@ const SalaryAdjustmentPropse = (props) => {
   }
 
   const removeSupervisorItem = (index) => {
-	const newData = supervisors.splice(index, 1);
-	setSupervisor(newData);
+    const newData = supervisors.splice(index, 1);
+    setSupervisor(newData);
   }
   const handleUpdateSupervisors = (approver, index) => {
-	const newData = [...supervisors];
-	newData[index] = approver;
-	setSupervisors(newData);
+    const newData = [...supervisors];
+    newData[index] = approver;
+    setSupervisors(newData);
   }
 
   const validation = () => {
