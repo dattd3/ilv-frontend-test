@@ -6,10 +6,15 @@ import ReactTooltip from "react-tooltip";
 import axios from "axios";
 import { ReactComponent as IconFilter } from "assets/img/ic-filter.svg";
 import { ReactComponent as IconReason } from "assets/img/ic-reason.svg";
+import { ReactComponent as IconRemove } from "assets/img/icon-delete.svg";
+import { ReactComponent as IconEdit } from "assets/img/Icon-edit-2.svg";
+
 import HOCComponent from "components/Common/HOCComponent";
 import CustomPaging from "components/Common/CustomPagingNew";
 import { getRequestConfigurations } from "commons/Utils";
 import LoadingModal from "components/Common/LoadingModal";
+import { STATUS_DELETEABLE, STATUS_EDITABLE, TABS, CHECK_PHASE_LIST_ENDPOINT, FETCH_TARGET_LIST_ENDPOINT } from './Constant';
+import TargetRegistrationManualModal from "./TargetRegistrationManualModal";
 
 const filterPlaceholder = (text) => (
   <div>
@@ -41,10 +46,9 @@ const getStatusTagStyle = (value) => {
   }
 };
 
-const CHECK_PHASE_LIST_ENDPOINT = `${process.env.REACT_APP_HRDX_PMS_URL}api/checkphase/list`;
-const FETCH_TARGET_LIST_ENDPOINT = `${process.env.REACT_APP_HRDX_PMS_URL}api/targetregist/list`;
 
 function TargetManagement() {
+  const [currentTab, setCurrentTab] = useState(TABS.OWNER);
   const [phaseOptions, setPhaseOptions] = useState([]);
   const [targetRegistration, setTargetRegistration] = useState([]);
   const [isShowLoadingModal, setIsShowLoadingModal] = useState([]);
@@ -66,7 +70,7 @@ function TargetManagement() {
     if (pageSize && pageIndex) {
       fetchTargetList();
     }
-  }, [pageSize, pageIndex]);
+  }, [pageSize, pageIndex, currentTab]);
 
   const fetchInitData = () => {
     const bodyFormData = new FormData();
@@ -96,8 +100,8 @@ function TargetManagement() {
           pageSize,
           checkPhaseId: phaseIdSelected,
           status: statusSelected,
-          EmployeeCode: localStorage.getItem("employeeNo"),
-          type: "OWNER",
+          EmployeeCode: localStorage.getItem("employeeNo") || 3644797,
+          type: currentTab,
         },
         config
       );
@@ -134,8 +138,22 @@ function TargetManagement() {
     <div className="target-management-page">
       <LoadingModal show={isShowLoadingModal} />
       <div className="menu-btns">
-        <Button className="button primary-button">{t("Request")}</Button>
-        <Button className="button">{t("Menu_Task_Approval")}</Button>
+        <Button
+          className={`button ${
+            currentTab === TABS.OWNER && "primary-button"
+          }`}
+          onClick={() => setCurrentTab(TABS.OWNER)}
+        >
+          {t("Request")}
+        </Button>
+        <Button
+          className={`button ${
+            currentTab === TABS.REQUEST && "primary-button"
+          }`}
+          onClick={() => setCurrentTab(TABS.REQUEST)}
+        >
+          {t("Menu_Task_Approval")}
+        </Button>
       </div>
       <div className="filter-container">
         <div className="menu-registration-container">
@@ -217,24 +235,42 @@ function TargetManagement() {
                   </div>
                 </td>
                 <td className="text-center">
-                  <a
-                    data-for={`${item.reason}-${item.id}`}
-                  >
-                    <IconReason />
-                  </a>
-                  <ReactTooltip
-                    id={`${item.reason}-${item.id}`}
-                    scrollHide
-                    isCapture
-                    clickable
-                    place="left"
-                    backgroundColor="#FFFFFF"
-                    arrowColor="#FFFFFF"
-                  >
-                    <div>ssss</div>
-                  </ReactTooltip>
+                  {item.status === 4 && item.rejectReson && (
+                    <>
+                      <a data-tip data-for={`reason-${item.id}`}>
+                        <IconReason />
+                      </a>
+                      <ReactTooltip
+                        id={`reason-${item.id}`}
+                        scrollHide
+                        isCapture
+                        clickable
+                        place="left"
+                        backgroundColor="#FFFFFF"
+                        arrowColor="#FFFFFF"
+                        className="tooltip"
+                      >
+                        <div className="tooltip-content">
+                          <div className="tooltip-header">
+                            Ý kiến của CBQL phê duyệt:
+                          </div>
+                          <div>{item.rejectReson}</div>
+                        </div>
+                      </ReactTooltip>
+                    </>
+                  )}
                 </td>
-                <td className="text-center"></td>
+                <td className="text-center">
+                  {STATUS_DELETEABLE.includes(item.status) && (
+                    <IconRemove 
+                      className="rm-icon action-icon"
+                      // onClick={() => deleteTarget(item.id)}
+                    />
+                  )}
+                  {STATUS_EDITABLE.includes(item.status) && (
+                    <IconEdit className="action-icon" />
+                  )}
+                </td>
               </tr>
             ))}
           </tbody>
@@ -249,6 +285,7 @@ function TargetManagement() {
           />
         </div>
       </div>
+      <TargetRegistrationManualModal phaseOptions={phaseOptions} />
     </div>
   );
 }

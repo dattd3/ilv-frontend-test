@@ -1,0 +1,13 @@
+const STATUS_DELETEABLE = [1];
+const STATUS_EDITABLE = [1, 4];
+const TABS = {
+  OWNER: "OWNER",
+  REQUEST: "REQUEST",
+};
+
+const CHECK_PHASE_LIST_ENDPOINT = `${process.env.REACT_APP_HRDX_PMS_URL}api/checkphase/list`;
+const FETCH_TARGET_LIST_ENDPOINT = `${process.env.REACT_APP_HRDX_PMS_URL}api/targetregist/list`;
+
+export {
+  STATUS_DELETEABLE, STATUS_EDITABLE, TABS, CHECK_PHASE_LIST_ENDPOINT, FETCH_TARGET_LIST_ENDPOINT
+}
