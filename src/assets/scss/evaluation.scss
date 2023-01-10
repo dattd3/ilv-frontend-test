@@ -2724,10 +2724,11 @@
         }
     }
 }
-.register-target-modal {
+.register-target-from-library-modal {
     font-family: Arial, Helvetica, sans-serif;
     font-size: 13px;
     color: #000000;
+    z-index: 11000;
     .content-page-header {
         font-size: 14px !important;
         border-bottom: 1px solid #CED4DA;
@@ -2740,22 +2741,19 @@
                 border-radius: 0;
                 padding: 0;
                 .close {
-                    width: 30px;
-                    height: 30px;
+                    width: auto;
+                    height: auto;
                     font-size: 22px;
-                    background: #707070;
-                    color: #FFFFFF;
+                    color: #707070;
                     font-weight: normal;
-                    border: 1px solid #FFFFFF;
-                    right: 4px;
-                    span {
-                        top: 46%;
-                        left: 26%;
-                    }
+                    border: none;
+                    right: 15px;
+                    border-radius: 0;
+                    margin: 0;
                 }
             }
             .modal-body {
-                border-radius: 0;
+                border-radius: 4px;
                 padding: 10px 15px;
                 .register-target-page {
                     // .button-block {
@@ -2924,6 +2922,9 @@
                                         td {
                                             padding: 5px 0;
                                         }
+                                        &:last-child {
+                                            border-bottom: 1px solid #DEE2E6;
+                                        }
                                     }
                                 }
                                 .target-col {
@@ -2950,7 +2951,34 @@
                                     }
                                 }
                             }
+                            .paging-region {
+                                margin: 15px 0;
+                                display: flex;
+                                align-items: center;
+                                justify-content: space-between;
+                                .show-block {
+                                    width: 95px;
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: space-between;
+                                    label {
+                                        margin: 0;
+                                    }
+                                    select {
+                                        width: 40px;
+                                        border-radius: 3px;
+                                        font-size: 12px;
+                                        height: 22px;
+                                    }
+                                }
+                            }
                         }
+                    }
+                    .action-region {
+                        height: 50px;
+                        background: red;
+                        position: sticky;
+                        bottom: 0;
                     }
                 }
             }

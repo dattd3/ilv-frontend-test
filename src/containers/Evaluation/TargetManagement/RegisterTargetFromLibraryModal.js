@@ -2,13 +2,14 @@ import React from "react";
 import { Modal } from 'react-bootstrap'
 import Select from 'react-select'
 import { useTranslation } from "react-i18next"
+import CustomPaging from "components/Common/CustomPagingNew";
 import IconArrowRightWhite from '../../../assets/img/icon/pms/arrow-right-white.svg'
 import IconArrowRightGray from '../../../assets/img/icon/pms/arrow-right-gray.svg'
 import IconSearch from '../../../assets/img/icon/ic_search.svg'
 import IconAdd from '../../../assets/img/icon/ic_btn_add_green.svg'
 import IconRemove from '../../../assets/img/icon/ic_btn_remove_red.svg'
 
-function RegisterTargetModal(props) {
+function RegisterTargetFromLibraryModal(props) {
     const { registerTargetModal, onHideRegisterTargetModal } = props
     const { t } = useTranslation()
     
@@ -54,7 +55,7 @@ function RegisterTargetModal(props) {
     }
 
     const evaluationPeriod = [
-        { value: 1, label: 'Quý 1/2022', isDisabled: true },
+        { value: 1, label: 'Quý 1/2022' },
         { value: 2, label: 'Quý 2/2022' },
         { value: 3, label: 'Quý 3/2022' },
         { value: 4, label: 'Quý 4/2022' },
@@ -88,7 +89,7 @@ function RegisterTargetModal(props) {
         <Modal 
             backdrop="static" 
             keyboard={false}
-            className={'register-target-modal'}
+            className={'register-target-from-library-modal'}
             centered 
             show={registerTargetModal?.isShow || false}
             onHide={onHideRegisterTargetModal}
@@ -313,7 +314,33 @@ function RegisterTargetModal(props) {
                                     </tr>
                                 </tbody>
                             </table>
+                            <div className="paging-region">
+                                <div className="show-block">
+                                    <label>Hiển thị</label>
+                                    <select onChange={e => {
+                                        // const size = parseInt(e.target.value);
+                                        // setPageSize(size);
+                                        // onChangePageSize(size);
+                                    }}>
+                                        <option>10</option>
+                                        <option>20</option>
+                                    </select>
+                                </div>
+                                {/* <CustomPaging
+                                    onChangePageSize={setPageSize}
+                                    onChangePageIndex={setPageIndex}
+                                    totalRecords={totalRecords}
+                                    pageSize={pageSize}
+                                    pageIndex={pageIndex}
+                                /> */}
+                                <div className="show-block">
+                                
+                                </div>
+                            </div>
                         </div>
+                    </div>
+                    <div className="action-region">
+                        
                     </div>
                 </div>
             </Modal.Body>
@@ -321,4 +348,4 @@ function RegisterTargetModal(props) {
     )
 }
 
-export default RegisterTargetModal
+export default RegisterTargetFromLibraryModal

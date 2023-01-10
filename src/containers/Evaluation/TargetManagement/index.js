@@ -13,7 +13,7 @@ import HOCComponent from "components/Common/HOCComponent";
 import CustomPaging from "components/Common/CustomPagingNew";
 import { getRequestConfigurations } from "commons/Utils";
 import LoadingModal from "components/Common/LoadingModal";
-import RegisterTargetModal from './RegisterTargetModal'
+import RegisterTargetFromLibraryModal from './RegisterTargetFromLibraryModal'
 import { STATUS_DELETEABLE, STATUS_EDITABLE, TABS, CHECK_PHASE_LIST_ENDPOINT, FETCH_TARGET_LIST_ENDPOINT } from './Constant';
 import TargetRegistrationManualModal from "./TargetRegistrationManualModal";
 
@@ -161,8 +161,8 @@ function TargetManagement() {
 
   return (
     <div className="target-management-page">
-      {/* <LoadingModal show={isShowLoadingModal} /> */}
-      <RegisterTargetModal registerTargetModal={registerTargetModal} onHideRegisterTargetModal={onHideRegisterTargetModal} />
+      <LoadingModal show={isShowLoadingModal} />
+      <RegisterTargetFromLibraryModal registerTargetModal={registerTargetModal} onHideRegisterTargetModal={onHideRegisterTargetModal} />
       <div className="menu-btns">
         <Button
           className={`button ${
