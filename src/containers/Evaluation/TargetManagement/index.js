@@ -10,6 +10,7 @@ import HOCComponent from "components/Common/HOCComponent";
 import CustomPaging from "components/Common/CustomPagingNew";
 import { getRequestConfigurations } from "commons/Utils";
 import LoadingModal from "components/Common/LoadingModal";
+import RegisterTargetModal from './RegisterTargetModal'
 
 const filterPlaceholder = (text) => (
   <div>
@@ -52,11 +53,16 @@ function TargetManagement() {
   const [pageIndex, setPageIndex] = useState(1);
   const [phaseIdSelected, setPhaseIdSelected] = useState(0);
   const [statusSelected, setStatusSelected] = useState(0);
-
   const [totalRecords, setTotalRecords] = useState(0);
   const [openMenuRegistration, setOpenMenuRegistration] = useState(false);
+  const [registerTargetModal, setRegisterTargetModal] = useState({isShow: true});
+
   const { t } = useTranslation();
   const config = getRequestConfigurations();
+  const registerActions = {
+    manual: 0,
+    fromLibrary: 1,
+  }
 
   useEffect(() => {
     fetchInitData();
@@ -85,6 +91,25 @@ function TargetManagement() {
       })
       .catch((error) => {});
   };
+
+  const handleRegistrationAction = (optionCode = registerActions.manual) => {
+    const registerTargetModalModel = {
+      isShow: true,
+      registerType: optionCode,
+    }
+
+    if (optionCode === registerActions.manual) {
+
+    } else {
+
+    }
+
+    setRegisterTargetModal(registerTargetModalModel)
+  }
+
+  const onHideRegisterTargetModal = () => {
+    setRegisterTargetModal({})
+  }
 
   const fetchTargetList = async () => {
     setIsShowLoadingModal(true);
@@ -132,7 +157,8 @@ function TargetManagement() {
 
   return (
     <div className="target-management-page">
-      <LoadingModal show={isShowLoadingModal} />
+      {/* <LoadingModal show={isShowLoadingModal} /> */}
+      <RegisterTargetModal registerTargetModal={registerTargetModal} onHideRegisterTargetModal={onHideRegisterTargetModal} />
       <div className="menu-btns">
         <Button className="button primary-button">{t("Request")}</Button>
         <Button className="button">{t("Menu_Task_Approval")}</Button>
@@ -150,10 +176,10 @@ function TargetManagement() {
           </Button>
           {openMenuRegistration && (
             <div className="menu-registration">
-              <div className="menu-registration-option">
+              <div className="menu-registration-option" onClick={() => handleRegistrationAction(registerActions.manual)}>
                 {t("TargetRegistrationManual")}
               </div>
-              <div className="menu-registration-option">
+              <div className="menu-registration-option" onClick={() => handleRegistrationAction(registerActions.fromLibrary)}>
                 {t("TargetRegistrationLibrary")}
               </div>
             </div>
