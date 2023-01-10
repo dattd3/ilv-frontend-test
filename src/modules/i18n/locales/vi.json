@@ -1623,5 +1623,7 @@
   "TargetRegistrationManual": "Đăng ký mục tiêu thủ công",
   "TargetRegistrationLibrary": "Đăng ký từ thư viện mục tiêu",
   "Draft": "Nháp",
-  "TotalTarget": "Tổng số mục tiêu"
+  "TotalTarget": "Tổng số mục tiêu",
+  "Collapse": "Thu gọn",
+  "Expand": "Mở rộng"
 }

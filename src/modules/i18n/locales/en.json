@@ -1605,5 +1605,7 @@
   "TargetRegistrationManual": "Target Registration Manually",
   "TargetRegistrationLibrary": "Target Registration From Library",
   "Draft": "Draft",
-  "TotalTarget": "Total Target"
+  "TotalTarget": "Total Target",
+  "Collapse": "Collapse",
+  "Expand": "Expand"
 }
