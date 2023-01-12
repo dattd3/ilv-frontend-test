@@ -159,7 +159,7 @@
       padding-bottom: 0px;
       border-top-left-radius: 0px;
       border-top-right-radius: 0px;
-      background: #FFFFFF;
+      background: #ffffff;
       font-size: 16px;
       font-weight: 700;
       line-height: 20px;
@@ -179,7 +179,7 @@
         }
       }
       .modal-title {
-        border-bottom: 1px solid #CED4DA;
+        border-bottom: 1px solid #ced4da;
         width: 100%;
         padding-bottom: 16px;
       }
@@ -188,7 +188,7 @@
       padding: 16px 20px;
       border-radius: 0px;
       .red-color {
-        color: #FF0000
+        color: #ff0000;
       }
       .select-container {
         height: 40px;
@@ -200,35 +200,44 @@
       .filter-select__indicator-separator {
         width: 0px;
       }
-      .control-btns {
-        button {
-          margin-right: 20px;
-          font-size: 14px;
-          font-weight: 400;
-          line-height: 17px;
-          background: #fff;
-          padding: 10px 20px;
-          border-radius: 4px;
-        }
-        .collapse-btn {
-          color: #4099FF;
-          border: 1px solid #4099FF
-        }
-        .expand-btn {
-          color: #44A257;
-          border: 1px solid #44A257
-        }
+      button {
+        margin-right: 20px;
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 17px;
+        background: #fff;
+        border-radius: 4px;
+        width: 100px;
+        height: 36px;
+      }
+      .collapse-btn {
+        color: #4099ff;
+        border: 1px solid #4099ff;
+      }
+      .expand-btn {
+        color: #44a257;
+        border: 1px solid #44a257;
+      }
+      .add-target-btn {
+        width: 120px;
+        color: #44a257;
+        border: 1px solid #44a257;
       }
       .form-container {
         border-radius: 4px;
-        border: 1px solid #DEE2E6;
+        border: 1px solid #dee2e6;
         padding: 20px;
       }
       .target-collapse {
-        padding-bottom: 16px;
+        // padding-bottom: 16px;
         font-weight: 700;
         line-height: 17px;
-        border-bottom: 1px solid #CED4DA;
+        // border-bottom: 1px solid #ced4da;
+      }
+      .collapse-container {
+        margin-top: 16px;
+        padding-top: 16px;
+        border-top: 1px solid #CED4DA;
       }
       .form-textarea {
         font-size: 14px;
@@ -251,7 +260,7 @@
         align-items: center;
         background: #fff;
         // border: 1px solid #a0a0a0;
-        border: 1px solid #DEE2E6;
+        border: 1px solid #dee2e6;
         border-radius: 4px;
         overflow: hidden;
         height: 40px;
@@ -259,7 +268,7 @@
           font-weight: 300;
           font-size: 14px;
           color: #000;
-          background: #E2E2E2;
+          background: #e2e2e2;
           padding: 15px;
         }
       }
@@ -269,6 +278,43 @@
     }
     .mb-16 {
       margin-bottom: 16px;
+    }
+    .custom-modal-footer {
+      display: flex;
+      justify-content: space-between;
+      background: #fff;
+      padding: 16px;
+      position: sticky;
+      bottom: 0px;
+      .total-weight-container {
+        // border: 1px solid #D13238;
+        padding: 8px 32px 12px 32px;
+        font-weight: 700;
+        span {
+          font-weight: 400;
+        }
+      }
+      .button {
+        height: 36px;
+        width: 120px;
+        font-size: 14px;
+        font-weight: 400;
+        border-radius: 3px;
+        color: #fff;
+        border: none;
+      }
+      .cancel-btn {
+        background: #CED4DA;
+        margin-right: 20px;
+      }
+      .save-btn {
+        background: #FFAE46;
+        margin-right: 20px;
+      }
+      .send-request-btn {
+        background: #4099FF;
+        margin-right: 0px;
+      }
     }
   }
 }

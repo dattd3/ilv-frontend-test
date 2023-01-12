@@ -15,7 +15,7 @@ import { getRequestConfigurations } from "commons/Utils";
 import LoadingModal from "components/Common/LoadingModal";
 import RegisterTargetFromLibraryModal from './RegisterTargetFromLibraryModal'
 import { STATUS_DELETEABLE, STATUS_EDITABLE, TABS, CHECK_PHASE_LIST_ENDPOINT, FETCH_TARGET_LIST_ENDPOINT } from './Constant';
-import TargetRegistrationManualModal from "./TargetRegistrationManualModal";
+import TargetRegistrationManualModal from "./RegisterTargetManualModal";
 
 const filterPlaceholder = (text) => (
   <div>
@@ -47,7 +47,6 @@ const getStatusTagStyle = (value) => {
   }
 };
 
-
 function TargetManagement() {
   const [currentTab, setCurrentTab] = useState(TABS.OWNER);
   const [phaseOptions, setPhaseOptions] = useState([]);
@@ -59,14 +58,14 @@ function TargetManagement() {
   const [statusSelected, setStatusSelected] = useState(0);
   const [totalRecords, setTotalRecords] = useState(0);
   const [openMenuRegistration, setOpenMenuRegistration] = useState(false);
-  const [registerTargetModal, setRegisterTargetModal] = useState({isShow: true});
+  const [registerTargetModalShow, setRegisterTargetModalShow] = useState(null);
 
   const { t } = useTranslation();
   const config = getRequestConfigurations();
   const registerActions = {
     manual: 0,
     fromLibrary: 1,
-  }
+  };
 
   useEffect(() => {
     fetchInitData();
@@ -97,23 +96,13 @@ function TargetManagement() {
   };
 
   const handleRegistrationAction = (optionCode = registerActions.manual) => {
-    const registerTargetModalModel = {
-      isShow: true,
-      registerType: optionCode,
-    }
-
-    if (optionCode === registerActions.manual) {
-
-    } else {
-
-    }
-
-    setRegisterTargetModal(registerTargetModalModel)
-  }
+    setOpenMenuRegistration(false);
+    setRegisterTargetModalShow(optionCode);
+  };
 
   const onHideRegisterTargetModal = () => {
-    setRegisterTargetModal({})
-  }
+    setRegisterTargetModalShow(null);
+  };
 
   const fetchTargetList = async () => {
     setIsShowLoadingModal(true);
@@ -131,7 +120,7 @@ function TargetManagement() {
         config
       );
       if (response?.data?.data) {
-        setTargetRegistration(response.data.data);
+        setTargetRegistration(response.data.data?.requests);
       }
       if (response?.data?.result) {
         setTotalRecords(response.data.result.totalRecords);
@@ -159,15 +148,31 @@ function TargetManagement() {
     },
   ];
 
+  const REGISTER_TYPES = [
+    {
+      label: t("Manually"),
+      value: 0,
+    },
+    {
+      label: t("FromLibrary"),
+      value: 1,
+    },
+  ];
+
   return (
     <div className="target-management-page">
       <LoadingModal show={isShowLoadingModal} />
-      <RegisterTargetFromLibraryModal registerTargetModal={registerTargetModal} onHideRegisterTargetModal={onHideRegisterTargetModal} />
+      {registerTargetModalShow === registerActions.fromLibrary && (
+        <RegisterTargetFromLibraryModal
+          onHideRegisterTargetModal={onHideRegisterTargetModal}
+        />
+      )}
+      {registerTargetModalShow === registerActions.manual && (
+        <TargetRegistrationManualModal phaseOptions={phaseOptions} onHide={onHideRegisterTargetModal} />
+      )}
       <div className="menu-btns">
         <Button
-          className={`button ${
-            currentTab === TABS.OWNER && "primary-button"
-          }`}
+          className={`button ${currentTab === TABS.OWNER && "primary-button"}`}
           onClick={() => setCurrentTab(TABS.OWNER)}
         >
           {t("Request")}
@@ -194,10 +199,18 @@ function TargetManagement() {
           </Button>
           {openMenuRegistration && (
             <div className="menu-registration">
-              <div className="menu-registration-option" onClick={() => handleRegistrationAction(registerActions.manual)}>
+              <div
+                className="menu-registration-option"
+                onClick={() => handleRegistrationAction(registerActions.manual)}
+              >
                 {t("TargetRegistrationManual")}
               </div>
-              <div className="menu-registration-option" onClick={() => handleRegistrationAction(registerActions.fromLibrary)}>
+              <div
+                className="menu-registration-option"
+                onClick={() =>
+                  handleRegistrationAction(registerActions.fromLibrary)
+                }
+              >
                 {t("TargetRegistrationLibrary")}
               </div>
             </div>
@@ -244,10 +257,15 @@ function TargetManagement() {
             </tr>
           </thead>
           <tbody>
-            {targetRegistration.map((item) => (
+            {targetRegistration?.map((item) => (
               <tr key={item.id}>
                 <td>{item.id}</td>
-                <td>{item.requestType}</td>
+                <td>
+                  {
+                    REGISTER_TYPES.find((it) => it.value === item.requestType)
+                      ?.label
+                  }
+                </td>
                 <td>{item.checkPhaseName}</td>
                 <td className="text-center">{item.totalTarget}</td>
                 <td>{JSON.parse(item.userInfo)?.fullName}</td>
@@ -288,7 +306,7 @@ function TargetManagement() {
                 </td>
                 <td className="text-center">
                   {STATUS_DELETEABLE.includes(item.status) && (
-                    <IconRemove 
+                    <IconRemove
                       className="rm-icon action-icon"
                       // onClick={() => deleteTarget(item.id)}
                     />
@@ -311,7 +329,6 @@ function TargetManagement() {
           />
         </div>
       </div>
-      <TargetRegistrationManualModal phaseOptions={phaseOptions} />
     </div>
   );
 }

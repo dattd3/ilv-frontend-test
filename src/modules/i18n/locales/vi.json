@@ -1625,5 +1625,7 @@
   "Draft": "Nháp",
   "TotalTarget": "Tổng số mục tiêu",
   "Collapse": "Thu gọn",
-  "Expand": "Mở rộng"
+  "Expand": "Mở rộng",
+  "Manually": "Thủ công",
+  "FromLibrary": "Từ thư viện"
 }

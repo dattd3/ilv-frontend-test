@@ -10,7 +10,7 @@ import IconAdd from '../../../assets/img/icon/ic_btn_add_green.svg'
 import IconRemove from '../../../assets/img/icon/ic_btn_remove_red.svg'
 
 function RegisterTargetFromLibraryModal(props) {
-    const { registerTargetModal, onHideRegisterTargetModal } = props
+    const { onHideRegisterTargetModal } = props
     const { t } = useTranslation()
     
     // const updateParent = (statusModal, keepPopupEvaluationDetail = false) => {
@@ -91,7 +91,7 @@ function RegisterTargetFromLibraryModal(props) {
             keyboard={false}
             className={'register-target-from-library-modal'}
             centered 
-            show={registerTargetModal?.isShow || false}
+            show={true}
             onHide={onHideRegisterTargetModal}
         >
             <Modal.Header closeButton>
