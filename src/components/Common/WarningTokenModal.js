@@ -28,7 +28,7 @@ const WarningTokenModal = ({isShow, type, title, content, handleHideModal, handl
         <Modal
             show={isShow}
             onHide={() => handleHideModal(false)}
-            className='warning-token-expired-modal'
+            className='confirm-modal-new'
             backdrop="static" 
             keyboard={false}
         >

@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Select from "react-select";
 import { useTranslation } from "react-i18next";
 import { Button } from "react-bootstrap";
 import ReactTooltip from "react-tooltip";
 import axios from "axios";
+import moment from "moment";
+
 import { ReactComponent as IconFilter } from "assets/img/ic-filter.svg";
 import { ReactComponent as IconReason } from "assets/img/ic-reason.svg";
 import { ReactComponent as IconRemove } from "assets/img/icon-delete.svg";
@@ -13,9 +15,22 @@ import HOCComponent from "components/Common/HOCComponent";
 import CustomPaging from "components/Common/CustomPagingNew";
 import { getRequestConfigurations } from "commons/Utils";
 import LoadingModal from "components/Common/LoadingModal";
-import RegisterTargetFromLibraryModal from './RegisterTargetFromLibraryModal'
-import { STATUS_DELETEABLE, STATUS_EDITABLE, TABS, CHECK_PHASE_LIST_ENDPOINT, FETCH_TARGET_LIST_ENDPOINT } from './Constant';
+import RegisterTargetFromLibraryModal from "./RegisterTargetFromLibraryModal";
+import {
+  STATUS_DELETEABLE,
+  STATUS_EDITABLE,
+  TABS,
+  CHECK_PHASE_LIST_ENDPOINT,
+  FETCH_TARGET_LIST_ENDPOINT,
+  UPDATE_STATUS_TARGET_ENDPOINT,
+  STATUS_EDITABLE_APPROVE_TAB,
+  MODAL_TYPES,
+  STATUS_TYPES,
+} from "./Constant";
 import TargetRegistrationManualModal from "./RegisterTargetManualModal";
+import ConfirmModal from "components/Common/ConfirmModalNew";
+import StatusModal from "components/Common/StatusModal";
+import RejectConfirmModal from "./RejectConfirmModal";
 
 const filterPlaceholder = (text) => (
   <div>
@@ -49,23 +64,22 @@ const getStatusTagStyle = (value) => {
 
 function TargetManagement() {
   const [currentTab, setCurrentTab] = useState(TABS.OWNER);
+  const [loading, setLoading] = useState(false);
   const [phaseOptions, setPhaseOptions] = useState([]);
   const [targetRegistration, setTargetRegistration] = useState([]);
-  const [isShowLoadingModal, setIsShowLoadingModal] = useState([]);
   const [pageSize, setPageSize] = useState(5);
   const [pageIndex, setPageIndex] = useState(1);
   const [phaseIdSelected, setPhaseIdSelected] = useState(0);
-  const [statusSelected, setStatusSelected] = useState(0);
+  const [statusSelected, setStatusSelected] = useState(null);
   const [totalRecords, setTotalRecords] = useState(0);
   const [openMenuRegistration, setOpenMenuRegistration] = useState(false);
-  const [registerTargetModalShow, setRegisterTargetModalShow] = useState(null);
+  const [modalManagement, setModalManagement] = useState({
+    type: null,
+    data: null,
+  });
 
   const { t } = useTranslation();
   const config = getRequestConfigurations();
-  const registerActions = {
-    manual: 0,
-    fromLibrary: 1,
-  };
 
   useEffect(() => {
     fetchInitData();
@@ -95,17 +109,8 @@ function TargetManagement() {
       .catch((error) => {});
   };
 
-  const handleRegistrationAction = (optionCode = registerActions.manual) => {
-    setOpenMenuRegistration(false);
-    setRegisterTargetModalShow(optionCode);
-  };
-
-  const onHideRegisterTargetModal = () => {
-    setRegisterTargetModalShow(null);
-  };
-
   const fetchTargetList = async () => {
-    setIsShowLoadingModal(true);
+    setLoading(true);
     try {
       const response = await axios.post(
         FETCH_TARGET_LIST_ENDPOINT,
@@ -113,7 +118,7 @@ function TargetManagement() {
           pageIndex,
           pageSize,
           checkPhaseId: phaseIdSelected,
-          status: statusSelected,
+          status: statusSelected || null,
           EmployeeCode: localStorage.getItem("employeeNo") || 3644797,
           type: currentTab,
         },
@@ -121,13 +126,181 @@ function TargetManagement() {
       );
       if (response?.data?.data) {
         setTargetRegistration(response.data.data?.requests);
-      }
-      if (response?.data?.result) {
-        setTotalRecords(response.data.result.totalRecords);
+        setTotalRecords(response.data.data?.total);
       }
     } catch (error) {}
-    setIsShowLoadingModal(false);
+    setLoading(false);
   };
+
+  const handleRegistrationAction = (
+    optionCode = MODAL_TYPES.REGISTER_MANUAL
+  ) => {
+    setOpenMenuRegistration(false);
+    setModalManagement({
+      type: optionCode,
+      data: null,
+    });
+  };
+
+  const onHideModal = (shouldRefresh = false) => {
+    setModalManagement({
+      type: null,
+      data: null,
+    });
+    if (shouldRefresh === true) {
+      fetchTargetList();
+      setPageSize(5);
+      setPageIndex(1);
+    }
+  };
+
+  const updateStatusTargetRegister = async (id, type, reason = "") => {
+    if (id) {
+      setLoading(true);
+      console.log(type);
+      let typeMessage = "Xoá yêu cầu ";
+      if (type === STATUS_TYPES.APPROVE) {
+        typeMessage = "Phê duyệt yêu cầu ";
+      } else if (type === STATUS_TYPES.REJECT) {
+        typeMessage = "Từ chối yêu cầu ";
+      }
+      try {
+        await axios.post(UPDATE_STATUS_TARGET_ENDPOINT, {
+          id,
+          type,
+          reason,
+        });
+        setModalManagement({
+          type: MODAL_TYPES.SUCCESS,
+          data: `${typeMessage} thành công!`,
+        });
+      } catch (error) {
+        setModalManagement({
+          type: MODAL_TYPES.FAIL,
+          data: `${typeMessage} thất bại!`,
+        });
+      }
+      setLoading(false);
+    }
+  };
+
+  const onEditTargetRegisterClick = (item) => {
+    setModalManagement({
+      type: MODAL_TYPES.REGISTER_MANUAL,
+      data: item,
+    });
+  };
+
+  const onDeleteTargetRegisterClick = (item) => {
+    setModalManagement({
+      type: MODAL_TYPES.DELETE_CONFIRM,
+      data: item,
+    });
+  };
+
+  const modalShow = useMemo(() => {
+    if (!modalManagement.type) return <></>;
+    switch (modalManagement.type) {
+      case MODAL_TYPES.SUCCESS:
+        return (
+          <StatusModal
+            show={true}
+            isSuccess={true}
+            onHide={() => onHideModal(true)}
+            content={modalManagement.data}
+          />
+        );
+
+      case MODAL_TYPES.FAIL:
+        return (
+          <StatusModal
+            isSuccess={false}
+            show={true}
+            onHide={onHideModal}
+            content={modalManagement.data}
+          />
+        );
+
+      case MODAL_TYPES.REGISTER_MANUAL:
+        return (
+          <TargetRegistrationManualModal
+            phaseOptions={phaseOptions}
+            onHide={onHideModal}
+            data={modalManagement.data}
+            isApprover={currentTab === TABS.REQUEST && !!modalManagement.data}
+            setModalManagement={setModalManagement}
+            setLoading={setLoading}
+          />
+        );
+
+      case MODAL_TYPES.REGISTER_LIBRARY:
+        return (
+          <RegisterTargetFromLibraryModal
+            onHideRegisterTargetModal={onHideModal}
+          />
+        );
+
+      case MODAL_TYPES.DELETE_CONFIRM:
+        return (
+          <ConfirmModal
+            show={true}
+            confirmHeader="XÁC NHẬN XOÁ"
+            confirmContent="Bạn chắc chắn muốn xoá yêu cầu này?"
+            onHide={onHideModal}
+            onCancelClick={onHideModal}
+            onAcceptClick={() =>
+              updateStatusTargetRegister(
+                modalManagement.data?.id,
+                STATUS_TYPES.DELETE
+              )
+            }
+            tempButtonLabel="Hủy"
+            mainButtonLabel="Đồng ý"
+            modalClassName="delete-target-modal"
+          />
+        );
+
+      case MODAL_TYPES.APPROVE_CONFIRM:
+        return (
+          <ConfirmModal
+            show={true}
+            confirmHeader="XÁC NHẬN PHÊ DUYỆT"
+            confirmContent="Bạn có đồng ý phê duyệt yêu cầu này?"
+            onHide={onHideModal}
+            onCancelClick={onHideModal}
+            onAcceptClick={() =>
+              updateStatusTargetRegister(
+                modalManagement.data?.id,
+                STATUS_TYPES.APPROVE
+              )
+            }
+            tempButtonLabel="Hủy"
+            mainButtonLabel="Đồng ý"
+            modalClassName="delete-target-modal"
+          />
+        );
+
+      case MODAL_TYPES.REJECT_CONFIRM:
+        return (
+          <RejectConfirmModal
+            show={true}
+            onHide={onHideModal}
+            onCancelClick={onHideModal}
+            onReject={(reason) => {
+              updateStatusTargetRegister(
+                modalManagement.data?.id,
+                STATUS_TYPES.REJECT,
+                reason
+              );
+            }}
+            modalClassName="reject-target-modal"
+          />
+        );
+
+      default:
+        break;
+    }
+  }, [modalManagement]);
 
   const STATUS_OPTIONS = [
     {
@@ -160,16 +333,12 @@ function TargetManagement() {
   ];
 
   return (
-    <div className="target-management-page">
-      <LoadingModal show={isShowLoadingModal} />
-      {registerTargetModalShow === registerActions.fromLibrary && (
-        <RegisterTargetFromLibraryModal
-          onHideRegisterTargetModal={onHideRegisterTargetModal}
-        />
-      )}
-      {registerTargetModalShow === registerActions.manual && (
-        <TargetRegistrationManualModal phaseOptions={phaseOptions} onHide={onHideRegisterTargetModal} />
-      )}
+    <div
+      className="target-management-page"
+      onClick={() => setOpenMenuRegistration(false)}
+    >
+      <LoadingModal show={loading} />
+      {modalShow}
       <div className="menu-btns">
         <Button
           className={`button ${currentTab === TABS.OWNER && "primary-button"}`}
@@ -191,7 +360,8 @@ function TargetManagement() {
           <Button
             className="button add-button"
             variant="info"
-            onClick={() => {
+            onClick={(e) => {
+              e.stopPropagation();
               setOpenMenuRegistration(!openMenuRegistration);
             }}
           >
@@ -201,14 +371,16 @@ function TargetManagement() {
             <div className="menu-registration">
               <div
                 className="menu-registration-option"
-                onClick={() => handleRegistrationAction(registerActions.manual)}
+                onClick={() =>
+                  handleRegistrationAction(MODAL_TYPES.REGISTER_MANUAL)
+                }
               >
                 {t("TargetRegistrationManual")}
               </div>
               <div
                 className="menu-registration-option"
                 onClick={() =>
-                  handleRegistrationAction(registerActions.fromLibrary)
+                  handleRegistrationAction(MODAL_TYPES.REGISTER_LIBRARY)
                 }
               >
                 {t("TargetRegistrationLibrary")}
@@ -250,6 +422,7 @@ function TargetManagement() {
               <th>{t("AssessmentPeriod")}</th>
               <th className="text-center">{t("TotalTarget")}</th>
               <th>{t("Requestor")}</th>
+              {/* <th>Ngày gửi yêu cầu</th> */}
               <th>{t("ADCode")}</th>
               <th className="text-center">{t("Status")}</th>
               <th className="text-center">{t("Reason")}</th>
@@ -269,6 +442,7 @@ function TargetManagement() {
                 <td>{item.checkPhaseName}</td>
                 <td className="text-center">{item.totalTarget}</td>
                 <td>{JSON.parse(item.userInfo)?.fullName}</td>
+                {/* <td>{item.sendDate && item.sendDate !== '0001-01-01T00:00:00' ? moment(item.sendDate) : ''}</td> */}
                 <td>{JSON.parse(item.userInfo)?.account}</td>
                 <td className="text-center">
                   <div
@@ -282,7 +456,7 @@ function TargetManagement() {
                   {item.status === 4 && item.rejectReson && (
                     <>
                       <a data-tip data-for={`reason-${item.id}`}>
-                        <IconReason />
+                        <IconReason width={24} height={24} />
                       </a>
                       <ReactTooltip
                         id={`reason-${item.id}`}
@@ -308,11 +482,18 @@ function TargetManagement() {
                   {STATUS_DELETEABLE.includes(item.status) && (
                     <IconRemove
                       className="rm-icon action-icon"
-                      // onClick={() => deleteTarget(item.id)}
+                      onClick={() => onDeleteTargetRegisterClick(item)}
                     />
                   )}
-                  {STATUS_EDITABLE.includes(item.status) && (
-                    <IconEdit className="action-icon" />
+                  {(currentTab === TABS.OWNER && STATUS_EDITABLE.includes(item.status) ||
+                    (currentTab === TABS.REQUEST &&
+                      STATUS_EDITABLE_APPROVE_TAB.includes(item.status))) && (
+                    <IconEdit
+                      width={28}
+                      height={28}
+                      className="action-icon"
+                      onClick={() => onEditTargetRegisterClick(item)}
+                    />
                   )}
                 </td>
               </tr>
