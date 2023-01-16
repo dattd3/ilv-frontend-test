@@ -339,11 +339,7 @@ export default class Api {
   }
 
   fetchSalaryPropose = async (id) => {
-    return await this.request.get(`${process.env.REACT_APP_REQUEST_URL}SalaryAdjustment/detail`, {
-      params: {
-        idDisplay: id
-      }
-    })
+    return await this.request.get(`${process.env.REACT_APP_SALARY_URL}request/${id}`)
   }
 
 }
