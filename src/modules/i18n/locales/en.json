@@ -1244,6 +1244,7 @@
   "SalaryAdjustmentPropse": "Proposed Income Adjustment",
   "SalaryPropse": "Proposed Income Adjustment",
   "HumanForReviewSalaryValidate": "Please enter support personnel to view salary!",
+  "HumanForChangeSalaryValidate": "Please enter personnel to consent the right to adjust salary!",
   "ProposedEmployee": "The proposed employee has not been selected!",
   "InformationRequired": "Please input information",
   "CurrentSalaryValidate": "Vui lòng lấy về mức lương hiện tại!",
@@ -1594,5 +1595,6 @@
   "contract_result_noextend": "Because of not extending contract",
   "SupportCampaignAndProject": "Project/campaign Support Payment",
   "BenefitsPayingThroughSalaryGrossup": "Benefits paid with salary (Gross up)",
-  "SpecialJobAllowanceForVinES": "Special job allowance for VinES"
+  "SpecialJobAllowanceForVinES": "Special job allowance for VinES",
+  "AppraiserExisted" : "CBLĐ thẩm định đã tồn tại!"
 }

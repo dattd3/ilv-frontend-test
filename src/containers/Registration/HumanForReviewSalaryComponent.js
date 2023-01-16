@@ -49,13 +49,20 @@ class HumanForReviewSalaryComponent extends React.Component {
     const { approver, isEdit } = this.props
 
     if (isEdit) {
-      return this.setState({
-        approver: {
-          ...approver,
-          label: approver?.fullName,
-          value: approver?.account
-        }
-      })
+      if(approver) {
+        return this.setState({
+          approver: {
+            ...approver,
+            label: approver?.fullName,
+            value: approver?.account
+          }
+        })
+      } else {
+        return this.setState({
+          approver: null
+        })
+      }
+      
     }
 
     // const companiesUsing = [Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading, Constants.pnlVCode.VinMec]
@@ -81,15 +88,22 @@ class HumanForReviewSalaryComponent extends React.Component {
 
   UNSAFE_componentWillReceiveProps(newProps) {
     const { approver, isEdit } = newProps
-    if (isEdit) {
-      return this.setState({
-        approver: {
-          ...approver,
-          label: approver?.fullName,
-          value: approver?.account
-        }
-      })
-    }
+    //if (isEdit) {
+      if(approver) {
+        return this.setState({
+          approver: {
+            ...approver,
+            label: approver?.fullName,
+            value: approver?.account
+          }
+        })
+      } else {
+        return this.setState({
+          approver: null
+        })
+      }
+    //}
+    
   };
 
   // loadApproverForPnL = async () => {
@@ -247,7 +261,6 @@ class HumanForReviewSalaryComponent extends React.Component {
     }
     const { t, isEdit, errors } = this.props;
     const { isSearch, approver, users } = this.state
-
     return <div className="approver">
       <div>
         <div className="row">

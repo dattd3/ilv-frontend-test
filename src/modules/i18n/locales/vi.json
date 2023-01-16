@@ -1261,6 +1261,7 @@
   "SalaryAdjustmentPropse": "Đề xuất điều chỉnh tăng lương",
   "SalaryPropse": "Đề xuất điều chỉnh thu nhập",
   "HumanForReviewSalaryValidate": "Vui lòng nhập nhân sự hỗ trợ quyền xem lương!",
+  "HumanForChangeSalaryValidate": "Vui lòng nhập nhân sự thẩm định quyền xem lương!",
   "ProposedEmployeeValidate": "CBNV được đề xuất chưa được chọn!",
   "InformationRequired": "Yêu cầu nhập thông tin",
   "CurrentSalaryValidate": "Vui lòng lấy về mức lương hiện tại!",
@@ -1612,5 +1613,6 @@
   "SupportVinfastCampaignAndProject": "Hỗ trợ chiến dịch, dự án VF",
   "SupportCampaignAndProject": "Hỗ trợ chiến dịch, dự án",
   "BenefitsPayingThroughSalaryGrossup": "Phúc lợi chi trả qua lương (GROSS UP)",
-  "SpecialJobAllowanceForVinES": "Hỗ trợ đặc thù VINES"
+  "SpecialJobAllowanceForVinES": "Hỗ trợ đặc thù VINES",
+  "AppraiserExisted" : "CBLĐ thẩm định đã tồn tại!"
 }
