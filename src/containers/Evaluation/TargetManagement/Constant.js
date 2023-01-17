@@ -45,6 +45,7 @@ const getUserInfo = () => ({
   fullName: localStorage.getItem("fullName"),
   employeeLevel: localStorage.getItem("employeeLevel"),
   EmployeeNo: localStorage.getItem("employeeNo"),
+  jobCode: localStorage.getItem("jobId"),
   organizationLv1: localStorage.getItem("organizationLv1"),
   organizationLv2: localStorage.getItem("organizationLv2"),
   organizationLv3: localStorage.getItem("organizationLv3"),
