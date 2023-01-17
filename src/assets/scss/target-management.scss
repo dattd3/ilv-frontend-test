@@ -190,6 +190,9 @@
       .red-color {
         color: #ff0000;
       }
+      .green-color {
+        color: #44a257;
+      }
       .select-container {
         height: 40px;
         width: 100%;
@@ -216,6 +219,21 @@
         width: 100px;
         height: 36px;
       }
+      .delete-button {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border: 1px solid #c74141;
+        color: #c74141;
+        height: 24px;
+        width: 60px;
+        border-radius: 4px;
+        position: absolute;
+        top: -12px;
+        right: 0;
+        margin-right: 0px;
+        font-size: 13px;
+      }
       .collapse-btn {
         color: #4099ff;
         border: 1px solid #4099ff;
@@ -235,9 +253,14 @@
         padding: 20px;
       }
       .target-collapse {
+        position: relative;
         font-weight: 700;
         line-height: 17px;
+        padding-right: 64px;
         cursor: pointer;
+        .fw-400 {
+          font-weight: 400;
+        }
       }
       .collapse-container {
         margin-top: 16px;
@@ -249,11 +272,11 @@
         color: #000;
         height: 80px;
       }
-      .form-textarea:disabled, 
-      .form-textarea[readonly], 
-      .form-input:disabled, 
+      .form-textarea:disabled,
+      .form-textarea[readonly],
+      .form-input:disabled,
       .form-input[readonly] {
-        background: #F2F2F2;
+        background: #f2f2f2;
       }
       .form-input {
         height: 40px;
@@ -303,7 +326,7 @@
         align-items: center;
         border-radius: 3px;
         width: 200px;
-        height: 36px;        
+        height: 36px;
         font-weight: 700;
         span {
           font-weight: 400;
@@ -343,17 +366,17 @@
         margin-right: 20px;
       }
       .reject-btn {
-        background: #FF0000;
+        background: #ff0000;
       }
       .approve-btn {
-        background: #05BD29;
+        background: #05bd29;
         margin-right: 0px;
       }
       .edit-btn {
         height: 36px;
         width: 90px;
-        color: #FFAE46;
-        border: 1px solid #FFAE46;
+        color: #ffae46;
+        border: 1px solid #ffae46;
       }
       .send-request-btn {
         background: #4099ff;
@@ -384,7 +407,7 @@
     }
     .icon-collapse {
       path {
-        fill: #4099ff
+        fill: #4099ff;
       }
     }
     .icon-expand {
@@ -397,7 +420,7 @@
 
 .reject-target-modal {
   .red-color {
-    color: #FF0000;
+    color: #ff0000;
   }
   .form-textarea {
     margin-top: 12px;
@@ -408,6 +431,98 @@
     height: 80px;
   }
   .reject-approve-btn {
-    background: #FF0000;
+    background: #ff0000;
   }
+}
+
+.zi-1040 {
+  z-index: 1040 !important;
+}
+
+.target-register-table {
+  .target-register-thead {
+    tr {
+      th:nth-child(1) {
+        width: 10%;
+      }
+      th:nth-child(2) {
+        width: 10%;
+      }
+      th:nth-child(3) {
+        width: 10%;
+      }
+      th:nth-child(4) {
+        width: 10%;
+      }
+      th:nth-child(5) {
+        width: 14%;
+      }
+      th:nth-child(6) {
+        width: 13%;
+      }
+      th:nth-child(7) {
+        width: 10%;
+      }
+      th:nth-child(8) {
+        width: 8%;
+      }
+      th:nth-child(9) {
+        width: 6%;
+      }
+      th:nth-child(10) {
+        width: 8%;
+      }
+    }
+  }
+  .target-register-tbody {
+    tr {
+      td:nth-child(1) {
+        width: 10%;
+      }
+      td:nth-child(2) {
+        width: 10%;
+      }
+      td:nth-child(3) {
+        width: 10%;
+      }
+      td:nth-child(4) {
+        width: 10%;
+      }
+      td:nth-child(5) {
+        width: 14%;
+      }
+      td:nth-child(6) {
+        width: 13%;
+      }
+      td:nth-child(7) {
+        width: 10%;
+      }
+      td:nth-child(8) {
+        width: 8%;
+      }
+      td:nth-child(9) {
+        width: 6%;
+      }
+      td:nth-child(10) {
+        width: 8%;
+      }
+    }
+  }
+}
+
+.avatar {
+  height: 36px;
+  width: 36px;
+  border: 0;
+  border-radius: 50%;
+}
+.comment {
+  font-size: small;
+  font-style: italic;
+}
+
+.title,
+.comment {
+  margin: 0 5px;
+  padding: 0;
 }
