@@ -784,7 +784,7 @@
   "DegreeRequirement" : "Degree Requirement",
   "SearchRequester": "Tìm kiếm người yêu cầu",
   "SortByStatus": "Lọc theo trạng thái",
-  "Reject": "Không phê duyệt",
+  "Reject": "Từ chối",
   "Consent" : "Thẩm định",
   "ApprovalDelegation": "Ủy quyền phê duyệt",
   "DelegateTo": "Người được ủy quyền",
@@ -1627,5 +1627,6 @@
   "Collapse": "Thu gọn",
   "Expand": "Mở rộng",
   "Manually": "Thủ công",
-  "FromLibrary": "Từ thư viện"
+  "FromLibrary": "Từ thư viện",
+  "WaitProcessing": "Đang chờ xử lý"
 }

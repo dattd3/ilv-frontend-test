@@ -20,7 +20,7 @@ export default function ConfirmModal(props) {
     <Modal
       centered
       show={show}
-      className={clsx("confirm-modal-new", modalClassName)}
+      className={clsx("zi-1040 confirm-modal-new", modalClassName)}
       onHide={onHide}
     >
       <Modal.Body className="rounded">

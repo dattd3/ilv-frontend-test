@@ -1609,5 +1609,6 @@
   "Collapse": "Collapse",
   "Expand": "Expand",
   "Manually": "Manually",
-  "FromLibrary": "From Library"
+  "FromLibrary": "From Library",
+  "WaitProcessing": "Wait Processing"
 }

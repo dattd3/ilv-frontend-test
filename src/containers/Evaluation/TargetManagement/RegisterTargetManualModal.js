@@ -3,34 +3,24 @@ import Select from "react-select";
 import { Modal } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { Collapse, Form, Button } from "react-bootstrap";
-import { debounce, transform, isEmpty } from "lodash";
+import { debounce, isEmpty, omit } from "lodash";
 import {
   getMuleSoftHeaderConfigurations,
   getRequestConfigurations,
 } from "commons/Utils";
 import Constants from "commons/Constants";
 import axios from "axios";
-import {
-  CREATE_TARGET_REGISTER,
-  getUserInfo,
-  MODAL_TYPES,
-  TARGET_INITIAL_DATA,
-} from "./Constant";
+import { MODAL_TYPES, TARGET_INITIAL_DATA } from "./Constant";
 import { toast } from "react-toastify";
 import { ReactComponent as IconCollapse } from "assets/img/icon/pms/icon-collapse.svg";
 import { ReactComponent as IconExpand } from "assets/img/icon/pms/icon-expand.svg";
 import { ReactComponent as IconRemove } from "assets/img/icon/pms/icon-trash.svg";
+import { ReactComponent as IconRedRemove } from "assets/img/icon/pms/icon-red-remove.svg";
 import { ReactComponent as IconSave } from "assets/img/icon/pms/icon-save.svg";
 import { ReactComponent as IconSend } from "assets/img/icon/pms/icon-send.svg";
 import { ReactComponent as IconReject } from "assets/img/icon/Icon_Cancel.svg";
 import { ReactComponent as IconApprove } from "assets/img/icon/Icon_Check_White.svg";
 import { ReactComponent as IconEdit } from "assets/img/icon/pms/icon-edit.svg";
-
-const lowerObjKeys = (obj) => {
-  return transform(obj, function (result, val, key) {
-    result[key.toLowerCase()] = val;
-  });
-};
 
 const requestConfig = getRequestConfigurations();
 
@@ -54,10 +44,10 @@ const MyOption = (props) => {
         </div>
         <div className="float-left text-wrap w-75">
           {/* {props.isSearch === false && <div className="title font-weight-bold text-dark">{t('ApproverRecently')}</div>} */}
-          <div className="title">{props.data.fullname}</div>
+          <div className="title">{props.data.fullName}</div>
           <div className="comment">
             <i>
-              ({props.data.username}) {props.data.position_name}
+              ({props.data.account}) {props.data.positionName}
             </i>
           </div>
         </div>
@@ -65,6 +55,21 @@ const MyOption = (props) => {
     </div>
   );
 };
+
+const mapApproverOption = (approver) => ({
+  avatar: approver.avatar,
+  account: approver.username,
+  fullName: approver.fullname,
+  employeeLevel: approver.rank_title,
+  EmployeeNo: approver.uid,
+  positionName: approver.position_name,
+  organizationLv1: approver.organization_lv1,
+  organizationLv2: approver.organization_lv2,
+  organizationLv3: approver.organization_lv3,
+  organizationLv4: approver.organization_lv4,
+  organizationLv5: approver.organization_lv5,
+  organizationLv6: approver.organization_lv6,
+});
 
 const REQUIRED_FIELDS = ["checkPhaseId", "listTarget", "approverInfo"];
 const REQUIRED_FIELDS_TARGET = ["targetName", "metric1", "weight"];
@@ -77,8 +82,9 @@ export default function TargetRegistrationManualModal(props) {
     data,
     isApprover = false,
     setModalManagement,
-    setLoading,
-    onApproveTargetRegisterClick
+    sendTargetRegister,
+    saveTargetRegister,
+    viewOnly,
   } = props;
   const [isApproverEditing, setIsApproverEditing] = useState(false);
 
@@ -90,7 +96,7 @@ export default function TargetRegistrationManualModal(props) {
     ...(data && data),
   });
   const [targetToggleStatuses, setTargetToggleStatuses] = useState(
-    Array(formValues.listTarget.length).fill(true)
+    Array(formValues.listTarget.length).fill(!viewOnly)
   );
   const [approverOptions, setApproverOptions] = useState([]);
   const totalWeight = formValues.listTarget.reduce(
@@ -98,7 +104,6 @@ export default function TargetRegistrationManualModal(props) {
     0
   );
   const approverJSON = JSON.parse(formValues.approverInfo || "{}") || null;
-    console.log(totalWeight, formValues)
   useEffect(() => {
     if (!data) {
       loadApproverForPnL();
@@ -116,11 +121,7 @@ export default function TargetRegistrationManualModal(props) {
         const result = response.data.result;
         const approver = response.data?.data[0];
         if (result && result.code === Constants.API_SUCCESS_CODE) {
-          onChangeFormValues("approverInfo", {
-            value: response.username,
-            label: approver.fullname,
-            ...approver,
-          });
+          onChangeFormValues("approverInfo", mapApproverOption(approver));
         }
       }
     } catch (e) {}
@@ -183,89 +184,39 @@ export default function TargetRegistrationManualModal(props) {
         .then((res) => {
           if (res && res.data && res.data.data) {
             const data = res.data.data || [];
-            const users = data.map((res) => {
-              return {
-                value: res.username,
-                label: res.fullname,
-                ...res,
-              };
-            });
+            const users = data.map((approver) => mapApproverOption(approver));
             setApproverOptions(users);
           }
         });
     }
   }, 1000);
 
-  const saveTargetRegister = async () => {
+  const onSaveTargetRegister = async () => {
     if (!checkIsFormValid()) {
       return toast.error("Vui lòng điền đầy đủ các trường bắt buộc");
     }
-    setLoading(true);
-    try {
-      const response = await axios.post(
-        CREATE_TARGET_REGISTER,
-        {
-          RequestType: 0, // 0 - thủ công,1 -từ thư viện
-          type: "Save",
-          userInfo: JSON.stringify(getUserInfo()),
-          ...formValues,
-        },
-        requestConfig
-      );
-      if (response.data?.result?.code !== "200") {
-        toast.error(`Lưu mục tiêu thất bại: ${response.data?.result?.message}`);
-      } else {
-        if (isApprover) {
-          setIsApproverEditing(false);
-        } else {
-          setModalManagement({
-            type: MODAL_TYPES.SUCCESS,
-            data: "Lưu mục tiêu thành công!",
-          });
-        }
-      }
-    } catch {
-      toast.error("Lưu mục tiêu thất bại!");
+    await saveTargetRegister(formValues);
+    if (isApprover) {
+      setIsApproverEditing(false);
     }
-    setLoading(false);
   };
 
-  const sendTargetRegister = () => {
+  const onSendTargetRegister = () => {
     if (!checkIsFormValid()) {
       return toast.error("Vui lòng điền đầy đủ các trường bắt buộc");
     }
-    setLoading(true);
-    axios
-      .post(
-        CREATE_TARGET_REGISTER,
-        {
-          RequestType: 0, // 0 - thủ công,1 -từ thư viện
-          type: "Next",
-          userInfo: JSON.stringify(getUserInfo()),
-          ...formValues,
-        },
-        requestConfig
-      )
-      .then((response) => {
-        if (response.data?.result?.code !== "200") {
-          toast.error(
-            `Gửi yêu cầu mục tiêu thất bại: ${response.data?.result?.message}`
-          );
-        } else {
-          setModalManagement({
-            type: MODAL_TYPES.SUCCESS,
-            data: "Yêu cầu của bạn đã được gửi đi!",
-          });
-        }
-        setLoading(false);
-      })
-      .catch((e) => {
-        toast.error("Gửi yêu cầu mục tiêu thất bại");
-        setLoading(false);
-      });
+    sendTargetRegister(formValues);
   };
 
-  const isReadOnlyField = isApprover && !isApproverEditing;
+  const onRemoveTarget = (idx) => {
+    setFormValues({
+      ...formValues,
+      listTarget: [...formValues?.listTarget?.filter((_, index) => index !== idx)],
+    });
+    setTargetToggleStatuses([...targetToggleStatuses?.filter((_, index) => index !== idx)]);
+  }
+
+  const isReadOnlyField = (isApprover && !isApproverEditing) || viewOnly;
 
   return (
     <Modal
@@ -299,7 +250,7 @@ export default function TargetRegistrationManualModal(props) {
             (opt) => opt.value === formValues.checkPhaseId
           )}
           isClearable
-          isDisabled={isApprover}
+          isDisabled={isApprover || isReadOnlyField}
         />
         {!!formValues.checkPhaseId && (
           <>
@@ -336,9 +287,27 @@ export default function TargetRegistrationManualModal(props) {
                   ) : (
                     <IconExpand />
                   )}
-                  &nbsp; Mục tiêu {index + 1}
+                  <span>
+                    <span>&nbsp; Mục tiêu {index + 1}</span>
+                    <span className="fw-400">
+                      {!targetToggleStatuses[index] &&
+                        target.targetName &&
+                        ` | ${target.targetName} |`}
+                    </span>
+                    <span className="fw-400 green-color">
+                      {!targetToggleStatuses[index] &&
+                        target.weight &&
+                        ` ${target.weight}`}
+                    </span>
+                  </span>
+                  {!isReadOnlyField && index !== 0 && (
+                    <button className="button delete-button" onClick={() => onRemoveTarget(index)}>
+                      <IconRedRemove />&nbsp;
+                      Xóa
+                    </button>
+                  )}
                 </div>
-                <Collapse in={!!targetToggleStatuses[index]}>
+                <Collapse in={targetToggleStatuses[index]}>
                   <div className="collapse-container">
                     <div className="mb-16">
                       <div className="mb-16">
@@ -522,17 +491,25 @@ export default function TargetRegistrationManualModal(props) {
                 + Thêm mục tiêu
               </button>
             )}
-            {/* <div className="mb-16">
-          <div className="mb-16">
-            Ý kiến của CBQL phê duyệt <span className="red-color">(*)</span>
-          </div>
-          <Form.Control
-            as="textarea"
-            placeholder={!isReadOnlyField && "Nhập"}
-            className="form-textarea"
-          />
-        </div> */}
-            <div className="form-container">
+            {(isApprover || (!isApprover && data?.ReviewComment)) && (
+              <div className="mb-16">
+                <div className="mb-16">
+                  Ý kiến của CBQL phê duyệt{" "}
+                  <span className="red-color">(*)</span>
+                </div>
+                <Form.Control
+                  as="textarea"
+                  placeholder={!isReadOnlyField && "Nhập"}
+                  className="form-textarea"
+                  readOnly={isReadOnlyField}
+                  onChange={(e) =>
+                    onChangeFormValues("ReviewComment", e?.target?.value)
+                  }
+                  value={data?.ReviewComment}
+                />
+              </div>
+            )}
+            <div className="form-container mb-16">
               <div className="target-collapse mb-16">CBQL phê duyệt</div>
               <div className="row group">
                 <div className="col-xl-4">
@@ -544,22 +521,24 @@ export default function TargetRegistrationManualModal(props) {
                     onChange={(approverItem) =>
                       onChangeFormValues(
                         "approverInfo",
-                        JSON.stringify(approverItem)
+                        JSON.stringify(omit(approverItem, "avatar"))
                       )
                     }
                     value={approverJSON}
                     placeholder={t("Search") + "..."}
                     key="approver"
                     options={approverOptions}
-                    isDisabled={isApprover}
                     classNamePrefix="filter-select"
+                    getOptionLabel={(option) => option.fullName}
+                    getOptionValue={(option) => option.account}
+                    isDisabled={isApprover || isReadOnlyField}
                   />
                 </div>
                 <div className="col-xl-4">
                   <div className="mb-16">Chức danh</div>
                   <Form.Control
                     readOnly
-                    value={approverJSON.position_name}
+                    value={approverJSON.positionName}
                     className="form-input"
                   />
                 </div>
@@ -571,7 +550,7 @@ export default function TargetRegistrationManualModal(props) {
                     value={
                       isEmpty(approverJSON)
                         ? ""
-                        : approverJSON.division +
+                        : (approverJSON.division || "") +
                           (approverJSON.department
                             ? "/" + approverJSON.department
                             : "") +
@@ -581,6 +560,17 @@ export default function TargetRegistrationManualModal(props) {
                 </div>
               </div>
             </div>
+            {viewOnly && data.rejectReson && (
+              <div className="mb-16">
+                <div className="mb-16">Lý do</div>
+                <Form.Control
+                  as="textarea"
+                  className="form-textarea"
+                  readOnly={true}
+                  value={data.rejectReson}
+                />
+              </div>
+            )}
             <div className="custom-modal-footer">
               <div>
                 {!isReadOnlyField && (
@@ -600,77 +590,85 @@ export default function TargetRegistrationManualModal(props) {
                   </div>
                 )}
               </div>
-              {isApprover ? (
-                <div>
-                  <button
-                    className="button cancel-approver-btn"
-                    onClick={onHide}
-                  >
-                    <IconRemove />
-                    &nbsp; Hủy
-                  </button>
-                  {!isApproverEditing ? (
-                    <button
-                      className="button edit-btn"
-                      onClick={() => setIsApproverEditing(true)}
-                    >
-                      <IconEdit />
-                      &nbsp; Sửa
-                    </button>
+              {!viewOnly && (
+                <>
+                  {isApprover ? (
+                    <div>
+                      <button
+                        className="button cancel-approver-btn"
+                        onClick={onHide}
+                      >
+                        <IconRemove />
+                        &nbsp; Hủy
+                      </button>
+                      {!isApproverEditing ? (
+                        <button
+                          className="button edit-btn"
+                          onClick={() => setIsApproverEditing(true)}
+                        >
+                          <IconEdit />
+                          &nbsp; Sửa
+                        </button>
+                      ) : (
+                        <button
+                          className="button save-approver-btn"
+                          onClick={onSaveTargetRegister}
+                        >
+                          <IconSave />
+                          &nbsp; Lưu
+                        </button>
+                      )}
+                      <button
+                        className="button reject-btn"
+                        onClick={() =>
+                          setModalManagement({
+                            type: MODAL_TYPES.REJECT_CONFIRM,
+                            data,
+                          })
+                        }
+                        disabled={isApproverEditing}
+                      >
+                        <IconReject />
+                        &nbsp; Từ chối
+                      </button>
+                      <button
+                        className="button approve-btn"
+                        onClick={() =>
+                          setModalManagement({
+                            type: MODAL_TYPES.APPROVE_CONFIRM,
+                            data,
+                          })
+                        }
+                        disabled={isApproverEditing}
+                      >
+                        <IconApprove />
+                        &nbsp; Phê duyệt
+                      </button>
+                    </div>
                   ) : (
-                    <button
-                      className="button save-approver-btn"
-                      onClick={saveTargetRegister}
-                    >
-                      <IconSave />
-                      &nbsp; Lưu
-                    </button>
+                    <div>
+                      <button className="button cancel-btn" onClick={onHide}>
+                        <IconRemove className="ic-remove-white" />
+                        &nbsp; Hủy
+                      </button>
+                      <button
+                        className="button save-btn"
+                        onClick={onSaveTargetRegister}
+                      >
+                        <IconSave />
+                        &nbsp; Lưu
+                      </button>
+                      <button
+                        className="button send-request-btn"
+                        disabled={totalWeight !== 100}
+                        onClick={onSendTargetRegister}
+                      >
+                        <IconSend />
+                        &nbsp; Gửi yêu cầu
+                      </button>
+                    </div>
                   )}
-                  <button
-                    className="button reject-btn"
-                    onClick={() => setModalManagement({
-                      type: MODAL_TYPES.REJECT_CONFIRM,
-                      data,
-                    })}                    
-                    disabled={isApproverEditing}
-                  >
-                    <IconReject />
-                    &nbsp; Từ chối
-                  </button>
-                  <button
-                    className="button approve-btn"
-                    onClick={() => setModalManagement({
-                      type: MODAL_TYPES.APPROVE_CONFIRM,
-                      data,
-                    })}
-                    disabled={isApproverEditing}
-                  >
-                    <IconApprove />
-                    &nbsp; Phê duyệt
-                  </button>
-                </div>
-              ) : (
-                <div>
-                  <button className="button cancel-btn" onClick={onHide}>
-                    <IconRemove className="ic-remove-white" />
-                    &nbsp; Hủy
-                  </button>
-                  <button
-                    className="button save-btn"
-                    onClick={saveTargetRegister}
-                  >
-                    <IconSave />
-                    &nbsp; Lưu
-                  </button>
-                  <button
-                    className="button send-request-btn"
-                    disabled={totalWeight !== 100}
-                    onClick={sendTargetRegister}
-                  >
-                    <IconSend />
-                    &nbsp; Gửi yêu cầu
-                  </button>
-                </div>
+                </>
               )}
             </div>
           </>
