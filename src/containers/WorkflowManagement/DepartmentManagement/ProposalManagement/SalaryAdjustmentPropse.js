@@ -28,6 +28,7 @@ import { useApi } from "../../../../modules/api";
 import vi from "date-fns/locale/vi";
 import { Button, Image } from "react-bootstrap";
 import { checkFilesMimeType } from "../../../../utils/file";
+import LoadingModal from "../../../../components/Common/LoadingModal";
 
 registerLocale("vi", vi);
 
@@ -171,12 +172,15 @@ const SalaryAdjustmentPropse = (props) => {
 
   const getDataSalary = async () => {
     try {
+      setIsLoading(true);
       const { data: { data: response } } = await api.fetchSalaryPropose(props.match.params.id);
       //const response = dataDetailSalaryPropose;
       await setDataSalary(response);
       await checkAuthorize(response);
     } catch (error) {
       console.log(error);
+    }finally {
+      setIsLoading(false);
     }
   };
 
@@ -1491,6 +1495,7 @@ const SalaryAdjustmentPropse = (props) => {
   const salaryState = `salaryadjustment_${props.match.params?.id}_${props.match.params?.type}`;
   return (
     <div className="timesheet-section proposal-management">
+      <LoadingModal show={isLoading} isloading />
       <ConfirmPasswordModal
         state={salaryState}
         show={modalConfirmPassword}
