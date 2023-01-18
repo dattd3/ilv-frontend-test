@@ -106,7 +106,7 @@ export const Navigation = [
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     to: map.TargetManagement,
     label: "MenuTargetManagement",
-    role: "U",
+    role: [Constants.pnlVCode.VinMec],
   },
   {
     id: 99702,
