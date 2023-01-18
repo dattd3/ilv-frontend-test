@@ -158,7 +158,8 @@ function Authorize(props) {
                             partId: user.organization_lv6,
                             part: user.part,
                             role_assigment: user.role_assigment,
-                            prepare: shouldShowPrepareOnboard
+                            prepare: shouldShowPrepareOnboard,
+                            jobCode: user?.job_code,
                         });
                     }
                 })
@@ -199,7 +200,8 @@ function Authorize(props) {
                         partId: user.organization_lv6,
                         part: user.part,
                         role_assigment: user.role_assigment,
-                        prepare: shouldShowPrepareOnboard
+                        prepare: shouldShowPrepareOnboard,
+                        jobCode: user?.job_code,
                     });
                 })
                 .finally(result => {
