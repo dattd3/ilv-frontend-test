@@ -100,7 +100,7 @@ export default function TargetRegistrationManualModal(props) {
   );
   const [approverOptions, setApproverOptions] = useState([]);
   const totalWeight = formValues.listTarget.reduce(
-    (acc, currValue) => Number((acc += currValue.weight || 0)),
+    (acc, curr) => Number((acc += curr.weight * 1 || 0)),
     0
   );
   const approverJSON = JSON.parse(formValues.approverInfo || "{}") || null;
