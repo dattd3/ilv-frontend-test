@@ -148,6 +148,7 @@ export default function TargetRegistrationManualModal(props) {
     targets[index] = {
       ...targets[index],
       [key]: value,
+      isEdit: isApprover,
     };
     onChangeFormValues("listTarget", targets);
   };
@@ -211,10 +212,14 @@ export default function TargetRegistrationManualModal(props) {
   const onRemoveTarget = (idx) => {
     setFormValues({
       ...formValues,
-      listTarget: [...formValues?.listTarget?.filter((_, index) => index !== idx)],
+      listTarget: [
+        ...formValues?.listTarget?.filter((_, index) => index !== idx),
+      ],
     });
-    setTargetToggleStatuses([...targetToggleStatuses?.filter((_, index) => index !== idx)]);
-  }
+    setTargetToggleStatuses([
+      ...targetToggleStatuses?.filter((_, index) => index !== idx),
+    ]);
+  };
 
   const isReadOnlyField = (isApprover && !isApproverEditing) || viewOnly;
 
@@ -300,10 +305,19 @@ export default function TargetRegistrationManualModal(props) {
                         ` ${target.weight}`}
                     </span>
                   </span>
+                  {data &&
+                    data.createBy?.split("@")?.[0] !== data.lastUpdateBy && (
+                      <div className="yellow-color">
+                        * Mục tiêu đã được QLTT chỉnh sửa
+                      </div>
+                    )}
                   {!isReadOnlyField && index !== 0 && (
-                    <button className="button delete-button" onClick={() => onRemoveTarget(index)}>
-                      <IconRedRemove />&nbsp;
-                      Xóa
+                    <button
+                      className="button delete-button"
+                      onClick={() => onRemoveTarget(index)}
+                    >
+                      <IconRedRemove />
+                      &nbsp; Xóa
                     </button>
                   )}
                 </div>
