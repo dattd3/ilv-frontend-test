@@ -2724,3 +2724,264 @@
         }
     }
 }
+.register-target-from-library-modal {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 13px;
+    color: #000000;
+    z-index: 11000;
+    .content-page-header {
+        font-size: 14px !important;
+        border-bottom: 1px solid #CED4DA;
+        padding-bottom: 10px;
+    }
+    .modal-dialog {
+        max-width: 800px;
+        .modal-content {
+            .modal-header {
+                border-radius: 0;
+                padding: 0;
+                .close {
+                    width: auto;
+                    height: auto;
+                    font-size: 22px;
+                    color: #707070;
+                    font-weight: normal;
+                    border: none;
+                    right: 15px;
+                    border-radius: 0;
+                    margin: 0;
+                }
+            }
+            .modal-body {
+                border-radius: 4px;
+                padding: 10px 15px;
+                .register-target-page {
+                    // .button-block {
+                    //     margin: 10px 0 0 0;
+                    // }
+                    .step-block {
+                        display: flex;
+                        align-items: center;
+                        padding: 0;
+                        border-bottom: 1px solid #DEE2E6;
+                        .wrap-item {
+                            display: flex;
+                            align-items: center;
+                            .line {
+                                width: 25px;
+                                padding-bottom: 10px;
+                                & > hr {
+                                    height: 1px;
+                                    border: none;
+                                    border-bottom: 1px solid #A7A7A7;
+                                }
+                            }
+                            &:first-child {
+                                .line {
+                                    display: none;
+                                }
+                            }
+                            .info {
+                                padding-bottom: 9px;
+                                .item {
+                                    background: #F2F2F2;
+                                    color: #414141;
+                                    padding: 7px 10px;
+                                    display: flex;
+                                    align-items: center;
+                                    border-radius: 5px;
+                                    cursor: pointer;
+                                    .no {
+                                        border: 1px solid #A7A7A7;
+                                        color: #A7A7A7 ;
+                                        display: inline-flex;
+                                        width: 15px;
+                                        height: 15px;
+                                        align-items: center;
+                                        justify-content: center;
+                                        border-radius: 2px;
+                                        transform: rotate(45deg);
+                                        & > span {
+                                            transform: rotate(-45deg);
+                                            font-size: 10px;
+                                        }
+                                    }
+                                    .name {
+                                        margin: 0 8px;
+                                    }
+                                    .next {
+                                        height: 12px;
+                                    }
+                                }
+                                &.active {
+                                    border-bottom: 1px solid #347EF9;
+                                    .item {
+                                        background: #347EF9;
+                                        color: #FFFFFF;
+                                        .no {
+                                            background: #FFFFFF;
+                                            border: 1px solid #FFFFFF;
+                                            color: #347EF9;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    .search-region {
+                        padding: 8px 0 10px 0;
+                        border-bottom: 1px solid #DEE2E6;
+                        .row-form {
+                            margin-bottom: 10px;
+                            label {
+                                margin-bottom: 5px;
+                            }
+                            &:last-child {
+                                margin-bottom: 0;
+                            }
+                            .region-input {
+                                display: flex;
+                                .block-input-text {
+                                    border: 1px solid #DEE2E6;
+                                    border-radius: 4px;
+                                    height: 35px;
+                                    display: flex;
+                                    align-items: center;
+                                    flex: 1 1;
+                                    span {
+                                        display: inline-flex;
+                                        align-items: center;
+                                        justify-content: center;
+                                        width: 30px;
+                                        img {
+                                            height: 15px;
+                                        }
+                                    }
+                                    input {
+                                        border: none;
+                                        outline: none;
+                                        padding: 0 10px 0 0;
+                                        height: 100%;
+                                        flex: 1 1;
+                                        border-top-right-radius: 4px;
+                                        border-bottom-right-radius: 4px;
+                                    }
+                                }
+                                .block-button {
+                                    margin-left: 20px;
+                                    height: 35px;
+                                    button {
+                                        background: #347EF9;
+                                        border-radius: 4px;
+                                        border: none;
+                                        color: #FFFFFF;
+                                        height: 100%;
+                                        padding: 0 20px;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    .region-result {
+                        padding: 10px 0;
+                        .header-region {
+                            display: flex;
+                            align-items: center;
+                            justify-content: space-between;
+                            .title {
+
+                            }
+                            .select-all {
+                                border: 1px solid #347EF9;
+                                border-radius: 4px;
+                                outline: none;
+                                color: #347EF9;
+                                padding: 4px 10px;
+                                cursor: pointer;
+                                font-size: 12px;
+                            }
+                        }
+                        .result-block {
+                            padding: 10px 10px 0 10px;
+                            border: 1px solid #DEE2E6;
+                            border-radius: 4px;
+                            margin-top: 10px;
+                            table {
+                                border: none;
+                                width: 100%;
+                                thead {
+                                    tr {
+                                        th {
+                                            padding: 0 0 10px 0;
+                                        }
+                                    }
+                                }
+                                tbody {
+                                    tr {
+                                        border-top: 1px solid #DEE2E6;
+                                        td {
+                                            padding: 5px 0;
+                                        }
+                                        &:last-child {
+                                            border-bottom: 1px solid #DEE2E6;
+                                        }
+                                    }
+                                }
+                                .target-col {
+                                    width: 30%;
+                                    vertical-align: top;
+                                }
+                                .measure-col {
+                                    width: 60%;
+                                    padding-left: 15px;
+                                    padding-right: 15px;
+                                    & > div {
+                                        overflow: hidden;
+                                        ul {
+                                            padding: 0;
+                                            margin: 0 0 0 15px;
+                                        }
+                                    }
+                                }
+                                .action-col {
+                                    width: 10%;
+                                    vertical-align: top;
+                                    .btn-action {
+                                        cursor: pointer;
+                                    }
+                                }
+                            }
+                            .paging-region {
+                                margin: 15px 0;
+                                display: flex;
+                                align-items: center;
+                                justify-content: space-between;
+                                .show-block {
+                                    width: 95px;
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: space-between;
+                                    label {
+                                        margin: 0;
+                                    }
+                                    select {
+                                        width: 40px;
+                                        border-radius: 3px;
+                                        font-size: 12px;
+                                        height: 22px;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    .action-region {
+                        height: 50px;
+                        background: red;
+                        position: sticky;
+                        bottom: 0;
+                    }
+                }
+            }
+        }
+    }
+}
