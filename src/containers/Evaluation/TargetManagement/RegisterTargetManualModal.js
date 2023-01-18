@@ -119,9 +119,10 @@ export default function TargetRegistrationManualModal(props) {
       );
       if (response && response.data) {
         const result = response.data.result;
-        const approver = response.data?.data[0];
+        const approver = response.data?.data[0] || {};
+
         if (result && result.code === Constants.API_SUCCESS_CODE) {
-          onChangeFormValues("approverInfo", mapApproverOption(approver));
+          onChangeFormValues("approverInfo", JSON.stringify(mapApproverOption(approver)));
         }
       }
     } catch (e) {}
@@ -193,9 +194,9 @@ export default function TargetRegistrationManualModal(props) {
   }, 1000);
 
   const onSaveTargetRegister = async () => {
-    if (!checkIsFormValid()) {
-      return toast.error("Vui lòng điền đầy đủ các trường bắt buộc");
-    }
+    // if (!checkIsFormValid()) {
+    //   return toast.error("Vui lòng điền đầy đủ các trường bắt buộc");
+    // }
     await saveTargetRegister(formValues);
     if (isApprover) {
       setIsApproverEditing(false);
