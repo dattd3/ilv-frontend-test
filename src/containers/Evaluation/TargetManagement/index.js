@@ -153,6 +153,7 @@ function TargetManagement() {
         if (res?.data?.data) {
           setPhaseOptions(
             res.data.data.map((item) => ({
+              ...item,
               value: item.id,
               label: item.name,
             }))
@@ -381,6 +382,8 @@ function TargetManagement() {
         return (
           <RegisterTargetFromLibraryModal
             onHideRegisterTargetModal={onHideModal}
+            registerType={MODAL_TYPES.REGISTER_LIBRARY}
+            phaseOptions={phaseOptions}
           />
         );
 
