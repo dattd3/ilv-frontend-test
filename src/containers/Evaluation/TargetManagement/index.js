@@ -384,6 +384,7 @@ function TargetManagement() {
             onHideRegisterTargetModal={onHideModal}
             registerType={MODAL_TYPES.REGISTER_LIBRARY}
             phaseOptions={phaseOptions}
+            setModalManagement={setModalManagement}
           />
         );
 
