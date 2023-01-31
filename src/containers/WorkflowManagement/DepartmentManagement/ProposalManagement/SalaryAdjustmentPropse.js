@@ -467,11 +467,15 @@ const SalaryAdjustmentPropse = (props) => {
         if(_itemInfo.type) { // HR thẩm định quyền điều chỉnh lương
           setAppraiser({
             ..._itemInfo,
+            uid: _itemInfo?.employeeNo,
+            employeeNo: _itemInfo?.employeeNo,
             requestHistoryId: item.requestHistoryId
           });
         } else {
           _supervisors.push({
             ..._itemInfo,
+            uid: _itemInfo?.employeeNo,
+            employeeNo: _itemInfo?.employeeNo,
             requestHistoryId: item.requestHistoryId
           })
         }
@@ -479,10 +483,14 @@ const SalaryAdjustmentPropse = (props) => {
       setSupervisors(_supervisors);
     }
     // CBLĐ phê duyệt
-    if (dataSalaryInfo?.approverInfo)
+    if (dataSalaryInfo?.approverInfo) {
+      const approvalData = JSON.parse(requestInfo?.approverInfo);
       setApprover({
-        ...JSON.parse(requestInfo?.approverInfo)
+        ...approvalData,
+        uid: approvalData?.employeeNo,
+        employeeNo: approvalData?.employeeNo,
       });
+    }
     const requestDocuments = (dataSalaryInfo?.userProfileDocuments || []).map((u) => ({
       id: u.id,
       name: u.fileName,
@@ -505,6 +513,7 @@ const SalaryAdjustmentPropse = (props) => {
       uid: u?.uid,
       employeeNo: u?.uid,
       account: u?.username.toLowerCase(),
+      username: u?.username.toLowerCase(),
       fullName: u?.fullname,
       jobTitle: u?.title,
       startDate: "",
@@ -905,7 +914,7 @@ const SalaryAdjustmentPropse = (props) => {
       const employeeInfoLst = (id ?selectedMembers : selectMembers).map((u) => ({
         employeeNo: u?.employeeNo,
         username: u?.account.toLowerCase(),
-        account: u?.account.toLowerCase() + "@vingroup.net",
+        account: u?.account.toLowerCase().includes('@vingroup.net') ? u?.account.toLowerCase() : u?.account.toLowerCase() + "@vingroup.net",
         fullName: u?.fullName,
         jobTitle: u?.jobTitle,
         department: u?.department,
@@ -919,7 +928,7 @@ const SalaryAdjustmentPropse = (props) => {
         .map((item, index) => {
           return {
             avatar: "",
-            account: item?.account.toLowerCase() + "@vingroup.net",
+            account: item?.username.toLowerCase() + "@vingroup.net",
             fullName: item?.fullName,
             employeeLevel: item?.employeeLevel,
             pnl: item?.pnl,
@@ -929,14 +938,14 @@ const SalaryAdjustmentPropse = (props) => {
             order: index + 1,
             company_email: item?.company_email?.toLowerCase(),
             type: 0,
-            employeeNo: item?.uid,
-            username: item?.account.toLowerCase(),
+            employeeNo: item?.uid || item?.employeeNo,
+            username: item?.username.toLowerCase(),
           };
         });
       if (appraiser) {
         appraiserInfoLst.push({
           avatar: "",
-          account: appraiser?.account?.toLowerCase() + "@vingroup.net",
+          account: appraiser?.username?.toLowerCase() + "@vingroup.net",
           fullName: appraiser?.fullName,
           employeeLevel: appraiser?.employeeLevel,
           pnl: appraiser?.pnl,
@@ -946,8 +955,8 @@ const SalaryAdjustmentPropse = (props) => {
           order: appraiserInfoLst.length + 1,
           company_email: appraiser?.company_email?.toLowerCase(),
           type: 1,
-          employeeNo: appraiser?.uid,
-          username: appraiser?.account?.toLowerCase(),
+          employeeNo: appraiser?.uid || appraiser?.employeeNo,
+          username: appraiser?.username?.toLowerCase(),
         });
       }
 
@@ -969,13 +978,13 @@ const SalaryAdjustmentPropse = (props) => {
       );
       bodyFormData.append(
         "coordinatorId",
-        coordinator?.account.toLowerCase() + "@vingroup.net"
+        coordinator?.username.toLowerCase() + "@vingroup.net"
       );
       bodyFormData.append(
         "coordinatorInfo",
         JSON.stringify({
           avatar: "",
-          account: coordinator?.account.toLowerCase() + "@vingroup.net",
+          account: coordinator?.username.toLowerCase() + "@vingroup.net",
           fullName: coordinator?.fullName,
           employeeLevel: coordinator?.employeeLevel,
           pnl: coordinator?.pnl,
@@ -983,21 +992,21 @@ const SalaryAdjustmentPropse = (props) => {
           current_position: coordinator?.current_position,
           department: coordinator?.department,
           company_email: coordinator?.company_email?.toLowerCase(),
-          employeeNo: coordinator?.uid,
-          username: coordinator?.account?.toLowerCase(),
+          employeeNo: coordinator?.uid || coordinator?.employeeNo,
+          username: coordinator?.username?.toLowerCase(),
         })
       );
       bodyFormData.append("employeeInfoLst", JSON.stringify(employeeInfoLst));
       bodyFormData.append("appraiserInfoLst", JSON.stringify(appraiserInfoLst));
       bodyFormData.append(
         "approverId",
-        approver?.account.toLowerCase() + "@vingroup.net"
+        approver?.username.toLowerCase() + "@vingroup.net"
       );
       bodyFormData.append(
         "approverInfo",
         JSON.stringify({
           avatar: "",
-          account: approver?.account?.toLowerCase() + "@vingroup.net",
+          account: approver?.username?.toLowerCase() + "@vingroup.net",
           fullName: approver?.fullName,
           employeeLevel: approver?.employeeLevel,
           pnl: approver?.pnl,
@@ -1005,8 +1014,8 @@ const SalaryAdjustmentPropse = (props) => {
           current_position: approver?.current_position,
           department: approver?.department,
           company_email: approver?.company_email?.toLowerCase(),
-          employeeNo: coordinator?.uid,
-          username: coordinator?.account?.toLowerCase(),
+          employeeNo: approver?.uid || approver?.employeeNo,
+          username: approver?.username?.toLowerCase(),
         })
       );
 
@@ -1031,10 +1040,7 @@ const SalaryAdjustmentPropse = (props) => {
           bodyFormData.append("attachedFiles", file);
         });
       }
-
-      if(listFileDeleted.length > 0) {
-        bodyFormData.append('deletedDocumentIds', listFileDeleted.join(','));
-      }
+      bodyFormData.append('deletedDocumentIds', listFileDeleted.join(','));
 
       return bodyFormData;
     }
