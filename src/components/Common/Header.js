@@ -160,6 +160,10 @@ function Header(props) {
                                         return `/my-evaluation`
                                     case Constants.notificationType.NOTIFICATION_LEAD_EVALUATION:
                                         return `/evaluation-approval`
+                                    case Constants.notificationType.NOTIFICATION_MY_KPI_REGISTRATION_REQUEST:
+                                        return `/target-management`
+                                    case Constants.notificationType.NOTIFICATION_MY_KPI_REGISTRATION_APPROVAL_REQUEST:
+                                        return `/target-management?tab=REQUEST`
                                     default:
                                         return `${item.url}`
                                 }
