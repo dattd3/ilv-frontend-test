@@ -326,10 +326,11 @@ const SalaryAdjustmentPropse = (props) => {
         viewSettingTmp.showComponent.showHrAssessment = true;
         viewSettingTmp.showComponent.showOfficerApproved = true;
         viewSettingTmp.disableComponent.showEye = true;
+        let currentAppraiserIndex = 0;
         if (
           currentEmail.toLowerCase() ===
-            dataSalaryInfo?.appraiserId?.toLowerCase() &&
-          props.match.params.type === "access"
+          dataSalaryInfo?.requestAppraisers[currentAppraiserIndex].appraiserId?.toLowerCase() &&
+          props.match.params.type === "assess"
         ) {
           viewSettingTmp.showComponent.btnRefuse = true;
           viewSettingTmp.showComponent.btnExpertise = true;
@@ -351,7 +352,7 @@ const SalaryAdjustmentPropse = (props) => {
         if (
           currentEmail.toLowerCase() ===
             dataSalaryInfo?.supervisorId?.toLowerCase() &&
-          props.match.params.type === "access"
+          props.match.params.type === "assess"
         ) {
           viewSettingTmp.showComponent.btnRefuse = true;
           viewSettingTmp.showComponent.btnExpertise = true;
