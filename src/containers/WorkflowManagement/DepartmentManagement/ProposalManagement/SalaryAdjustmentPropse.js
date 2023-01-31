@@ -93,6 +93,7 @@ const SalaryAdjustmentPropse = (props) => {
   const [appraiser, setAppraiser] = useState(null); // HR thẩm định quyền điều chỉnh lương
   const [approver, setApprover] = useState(null); // CBLĐ phê duyệt
   const [callSalary, setCalledSalary] = useState(false);
+  const [isOpenDatepick, setIsOpenDatepick] = useState(false);
   const [viewSetting, setViewSetting] = useState({
     showComponent: {
       stateProcess: false, // Button trang thai
@@ -846,7 +847,7 @@ const SalaryAdjustmentPropse = (props) => {
         });
     } else {
       // Review
-      if (dataSalary?.processStatusId === 23) {
+      if (dataSalary?.processStatusId === 22) {
         const listErrors = validation();
         if (listErrors.length !== 0) {
           setResultModal({
@@ -877,7 +878,7 @@ const SalaryAdjustmentPropse = (props) => {
           };
           axios({
             method: "POST",
-            url: `${process.env.REACT_APP_REQUEST_URL}SalaryAdjustment/submitsalary`,
+            url: `${process.env.REACT_APP_SALARY_URL}salaryadjustment/submitsalary`,
             data: dataSend,
             headers: {
               "Content-Type": "application/json",
@@ -1354,6 +1355,9 @@ const SalaryAdjustmentPropse = (props) => {
                         "effectiveTime"
                       )
                     }
+                    onChangeRaw={() => {setIsOpenDatepick(false)}}
+                    onFocus={() => {setIsOpenDatepick(true)}}
+                    onBlur={() => {setIsOpenDatepick(false)}}
                     dateFormat="dd/MM/yyyy"
                     placeholderText={t("Select")}
                     locale={t("locale")}
@@ -1636,7 +1640,7 @@ const SalaryAdjustmentPropse = (props) => {
             </button>
           </div>
         </div>
-        <div className="result-wrap-table">
+        <div className="result-wrap-table" style={{overflowY: isOpenDatepick ? 'unset' : 'auto'}}>
           <table className="result-table" style={{ width: "100%" }}>
             <thead>
               <tr>
