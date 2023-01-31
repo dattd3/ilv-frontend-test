@@ -206,7 +206,7 @@ class TaskList extends React.Component {
 
     getSalaryProposeLink = (request) => {
         let url = '';
-        const typeRequest = this.props.page === "approval" ? "approval" : "access"
+        const typeRequest = this.props.page === "approval" ? "approval" : "assess"
         if(request.parentRequestHistoryId) {
             //xu ly mot nguoi
             url = `salarypropse/${request.parentRequestHistoryId}/${request.salaryId}/${typeRequest}`
