@@ -82,9 +82,9 @@ export default function TargetRegistrationManualModal(props) {
       );
       if (response && response.data) {
         const result = response.data.result;
-        const approver = response.data?.data?.[0] || {};
+        const approver = response.data?.data?.[0];
 
-        if (result?.code === Constants.API_SUCCESS_CODE) {
+        if (result?.code === Constants.API_SUCCESS_CODE && approver) {
           onChangeFormValues(
             "approverInfo",
             JSON.stringify(mapApproverOption(approver))
@@ -95,7 +95,7 @@ export default function TargetRegistrationManualModal(props) {
   };
 
   const checkIsFormValid = () => {
-    if (Object.keys(approverJSON).length === 0) return false;
+    if (!approverJSON) return false;
     return (
       !REQUIRED_FIELDS.some((item) => !formValues[item]) &&
       !formValues.listTarget.some((item) =>
@@ -256,7 +256,7 @@ export default function TargetRegistrationManualModal(props) {
                         `  | ${target.weight}%`}
                     </span>
                   </span>
-                  {target &&
+                  {target && target.lastUpdateBy &&
                     target.createBy?.split("@")?.[0] !==
                       target.lastUpdateBy && (
                       <div className="yellow-color">
@@ -478,7 +478,7 @@ export default function TargetRegistrationManualModal(props) {
                   <div className="mb-16">Họ và tên</div>
                   <Form.Control
                     readOnly
-                    value={approverJSON.fullName}
+                    value={approverJSON?.fullName}
                     className="form-input"
                   />
                 </div>
@@ -486,7 +486,7 @@ export default function TargetRegistrationManualModal(props) {
                   <div className="mb-16">Chức danh</div>
                   <Form.Control
                     readOnly
-                    value={approverJSON.positionName}
+                    value={approverJSON?.positionName}
                     className="form-input"
                   />
                 </div>
@@ -498,11 +498,11 @@ export default function TargetRegistrationManualModal(props) {
                     value={
                       isEmpty(approverJSON)
                         ? ""
-                        : (approverJSON.division || "") +
-                          (approverJSON.department
-                            ? "/" + approverJSON.department
+                        : (approverJSON?.division || "") +
+                          (approverJSON?.department
+                            ? "/" + approverJSON?.department
                             : "") +
-                          (approverJSON.part ? "/" + approverJSON.part : "")
+                          (approverJSON?.part ? "/" + approverJSON?.part : "")
                     }
                   />
                 </div>
@@ -520,14 +520,14 @@ export default function TargetRegistrationManualModal(props) {
               </div>
             )}
             <div className="custom-modal-footer">
-              {!Object.keys(approverJSON).length && (
+              {!approverJSON && (
                 <div className="red-color mb-16">
                   * Chưa có thông tin CBQL phê duyệt, vui lòng liên hệ Nhân sự
                   để được hỗ trợ!
                 </div>
               )}
 
-              {totalWeight !== 100 && !isReadOnlyField && (
+              {totalWeight > 100 && !isReadOnlyField && (
                 <div className="red-color mb-16">
                   * Yêu cầu tổng trọng số bằng 100%. Vui lòng kiểm tra lại!
                 </div>
