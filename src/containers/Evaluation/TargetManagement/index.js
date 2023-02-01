@@ -32,6 +32,8 @@ import {
   STATUS_TYPES,
   CREATE_TARGET_REGISTER,
   getUserInfo,
+  REGISTER_TYPES,
+  REQUEST_STATUS,
 } from "./Constant";
 import TargetRegistrationManualModal from "./RegisterTargetManualModal";
 import ConfirmModal from "components/Common/ConfirmModalNew";
@@ -327,10 +329,19 @@ function TargetManagement() {
   };
 
   const onEditTargetRegisterClick = (item) => {
-    setModalManagement({
-      type: MODAL_TYPES.REGISTER_MANUAL,
-      data: item,
-    });
+    console.log('kakakak', item)
+
+    if (item?.status === REQUEST_STATUS.draft && item?.requestType === REGISTER_TYPES.LIBRARY) {
+      setModalManagement({
+        type: MODAL_TYPES.REGISTER_LIBRARY,
+        data: null,
+      });
+    } else {
+      setModalManagement({
+        type: MODAL_TYPES.REGISTER_MANUAL,
+        data: item,
+      });
+    }
   };
 
   const onDeleteTargetRegisterClick = (item) => {
@@ -452,7 +463,7 @@ function TargetManagement() {
   const STATUS_OPTIONS = [
     {
       label: t("Draft"),
-      value: 1,
+      value: REQUEST_STATUS.draft,
     },
     {
       label: t("WaitProcessing"),
@@ -468,7 +479,7 @@ function TargetManagement() {
     },
   ];
 
-  const REGISTER_TYPES = [
+  const REGISTER_TYPE_OPTIONS = [
     {
       label: t("Manually"),
       value: MODAL_TYPES.REGISTER_MANUAL,
@@ -626,7 +637,7 @@ function TargetManagement() {
                 </td>
                 <td>
                   {
-                    REGISTER_TYPES.find((it) => it.value === item.requestType)
+                    REGISTER_TYPE_OPTIONS.find((it) => it.value === item.requestType)
                       ?.label
                   }
                 </td>
