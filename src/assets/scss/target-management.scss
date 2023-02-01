@@ -154,28 +154,30 @@
     max-width: none !important;
   }
   .modal-content {
+    border-radius: 4px;
     .modal-header {
       padding: 16px 20px;
       padding-bottom: 0px;
-      border-top-left-radius: 0px;
-      border-top-right-radius: 0px;
+      border-top-left-radius: 4px;
+      border-top-right-radius: 4px;
       background: #ffffff;
       font-size: 16px;
       font-weight: 700;
       line-height: 20px;
       text-align: left;
       .close {
-        top: 25px;
-        right: 20px;
+        width: auto;
+        height: auto;
+        font-size: 22px;
         color: #707070;
-        width: 25px;
-        height: 25px;
-        font-size: 26px;
-        outline: none;
-        cursor: pointer;
+        font-weight: normal;
+        border: none;
+        right: 15px;
+        border-radius: 0;
+        margin: 0;
         span {
-          top: 10px;
-          left: 0;
+          top: 16px;
+          left: 6px;
         }
       }
       .modal-title {
@@ -186,7 +188,7 @@
     }
     .modal-body {
       padding: 16px 20px;
-      border-radius: 0px;
+      border-radius: 4px;
       .red-color {
         color: #ff0000;
       }

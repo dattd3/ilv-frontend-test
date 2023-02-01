@@ -31,7 +31,7 @@ const TARGET_INITIAL_DATA = {
   metric3: "",
   metric4: "",
   metric5: "",
-  weight: null,
+  weight: "",
   jobDetail: "",
   target: "",
 };
