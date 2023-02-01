@@ -2,6 +2,11 @@ const STATUS_DELETEABLE = [1];
 const STATUS_EDITABLE = [1, 4];
 const STATUS_EDITABLE_APPROVE_TAB = [2];
 
+const REGISTER_TYPES = {
+  MANUAL: 0,
+  LIBRARY: 1
+}
+
 const TABS = {
   OWNER: "OWNER",
   REQUEST: "REQUEST",
@@ -11,12 +16,7 @@ const STATUS_TYPES = {
   DELETE: 'Delete',
   APPROVE: 'Approve',
   REJECT: 'Reject'
-}
-
-const CHECK_PHASE_LIST_ENDPOINT = `${process.env.REACT_APP_HRDX_PMS_URL}api/checkphase/list`;
-const FETCH_TARGET_LIST_ENDPOINT = `${process.env.REACT_APP_HRDX_PMS_URL}api/targetregist/list`;
-const CREATE_TARGET_REGISTER = `${process.env.REACT_APP_HRDX_PMS_URL}api/target/regist`;
-const UPDATE_STATUS_TARGET_ENDPOINT = `${process.env.REACT_APP_HRDX_PMS_URL}api/targetregist/updatestatus`;
+};
 
 const TARGET_INITIAL_DATA = {
   targetName: "",
@@ -31,8 +31,8 @@ const TARGET_INITIAL_DATA = {
 };
 
 const MODAL_TYPES = {
-  REGISTER_MANUAL: 1,
-  REGISTER_LIBRARY: 2,
+  REGISTER_MANUAL: REGISTER_TYPES.MANUAL,
+  REGISTER_LIBRARY: REGISTER_TYPES.LIBRARY,
   FAIL: 3,
   SUCCESS: 4,
   DELETE_CONFIRM: 5,
@@ -45,7 +45,9 @@ const getUserInfo = () => ({
   fullName: localStorage.getItem("fullName"),
   employeeLevel: localStorage.getItem("employeeLevel"),
   EmployeeNo: localStorage.getItem("employeeNo"),
-  jobCode: localStorage.getItem("jobId"),
+  jobCode: localStorage.getItem("jobCode"),
+  current_position: localStorage.getItem("current_position"),
+  department: localStorage.getItem("department"),
   organizationLv1: localStorage.getItem("organizationLv1"),
   organizationLv2: localStorage.getItem("organizationLv2"),
   organizationLv3: localStorage.getItem("organizationLv3"),
@@ -53,6 +55,11 @@ const getUserInfo = () => ({
   organizationLv5: localStorage.getItem("organizationLv5"),
   organizationLv6: localStorage.getItem("organizationLv6"),
 });
+
+const CHECK_PHASE_LIST_ENDPOINT = `${process.env.REACT_APP_HRDX_PMS_URL}api/checkphase/list`;
+const FETCH_TARGET_LIST_ENDPOINT = `${process.env.REACT_APP_HRDX_PMS_URL}api/targetregist/list`;
+const CREATE_TARGET_REGISTER = `${process.env.REACT_APP_HRDX_PMS_URL}api/target/regist`;
+const UPDATE_STATUS_TARGET_ENDPOINT = `${process.env.REACT_APP_HRDX_PMS_URL}api/targetregist/updatestatus`;
 
 export {
   STATUS_DELETEABLE,
@@ -66,5 +73,6 @@ export {
   UPDATE_STATUS_TARGET_ENDPOINT,
   STATUS_EDITABLE_APPROVE_TAB,
   MODAL_TYPES,
-  STATUS_TYPES
+  STATUS_TYPES,
+  REGISTER_TYPES
 };
