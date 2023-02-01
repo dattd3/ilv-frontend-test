@@ -32,7 +32,8 @@ import {
   STATUS_TYPES,
   CREATE_TARGET_REGISTER,
   getUserInfo,
-  STATUS_VALUES,
+  REGISTER_TYPES,
+  REQUEST_STATUS,
 } from "./Constant";
 import TargetRegistrationManualModal from "./RegisterTargetManualModal";
 import ConfirmModal from "components/Common/ConfirmModalNew";
@@ -61,19 +62,19 @@ const searchPlaceholder = (text) => (
 
 const getStatusTagStyle = (value) => {
   switch (value) {
-    case STATUS_VALUES.DRAFT:
+    case REQUEST_STATUS.DRAFT:
       return {
         color: "#000",
         backgroundColor: "#F2F2F2",
         border: "none",
       };
 
-    case STATUS_VALUES.APPROVED:
+    case REQUEST_STATUS.APPROVED:
       return {
         color: "#05BD29",
         border: "1px solid #05BD29",
       };
-    case STATUS_VALUES.REJECT:
+    case REQUEST_STATUS.REJECT:
       return {
         color: "#FF0000",
         border: "1px solid #FF0000",
@@ -282,7 +283,7 @@ function TargetManagement() {
       const response = await axios.post(
         CREATE_TARGET_REGISTER,
         {
-          RequestType: 0, // 0 - thủ công,1 -từ thư viện
+          RequestType: modalManagement.type, // 0 - thủ công,1 -từ thư viện
           type: "Save",
           userInfo: JSON.stringify(getUserInfo()),
           ...formValues,
@@ -292,12 +293,10 @@ function TargetManagement() {
       if (response.data?.result?.code !== "200") {
         toast.error(`Lưu mục tiêu thất bại: ${response.data?.result?.message}`);
       } else {
-        if (currentTab === TABS.OWNER) {
-          setModalManagement({
-            type: MODAL_TYPES.SUCCESS,
-            data: "Lưu mục tiêu thành công!",
-          });
-        }
+        setModalManagement({
+          type: MODAL_TYPES.SUCCESS,
+          data: "Lưu mục tiêu thành công!",
+        });
       }
     } catch {
       toast.error("Lưu mục tiêu thất bại!");
@@ -336,10 +335,18 @@ function TargetManagement() {
 
   const onEditTargetRegisterClick = (event, item) => {
     event.stopPropagation();
-    setModalManagement({
-      type: MODAL_TYPES.REGISTER_MANUAL,
-      data: item,
-    });
+
+    if (item?.status === REQUEST_STATUS.draft && item?.requestType === REGISTER_TYPES.LIBRARY) {
+      setModalManagement({
+        type: MODAL_TYPES.REGISTER_LIBRARY,
+        data: null,
+      });
+    } else {
+      setModalManagement({
+        type: MODAL_TYPES.REGISTER_MANUAL,
+        data: item,
+      });
+    }
   };
 
   const onDeleteTargetRegisterClick = (event, item) => {
@@ -459,7 +466,7 @@ function TargetManagement() {
     }
   }, [modalManagement]);
 
-  const REGISTER_TYPES = [
+  const REGISTER_TYPE_OPTIONS = [
     {
       label: t("Manually"),
       value: MODAL_TYPES.REGISTER_MANUAL,
@@ -475,33 +482,33 @@ function TargetManagement() {
       ? [
           {
             label: t("Draft"),
-            value: STATUS_VALUES.DRAFT,
+            value: REQUEST_STATUS.DRAFT,
           },
           {
             label: t("WaitProcessing"),
-            value: STATUS_VALUES.PROCESSING,
+            value: REQUEST_STATUS.PROCESSING,
           },
           {
             label: t("Approved"),
-            value: STATUS_VALUES.APPROVED,
+            value: REQUEST_STATUS.APPROVED,
           },
           {
             label: t("Reject"),
-            value: STATUS_VALUES.REJECT,
+            value: REQUEST_STATUS.REJECT,
           },
         ]
       : [
           {
             label: t("WaitProcessing"),
-            value: STATUS_VALUES.PROCESSING,
+            value: REQUEST_STATUS.PROCESSING,
           },
           {
             label: t("Approved"),
-            value: STATUS_VALUES.APPROVED,
+            value: REQUEST_STATUS.APPROVED,
           },
           {
             label: t("Reject"),
-            value: STATUS_VALUES.REJECT,
+            value: REQUEST_STATUS.REJECT,
           },
         ];
 
@@ -648,7 +655,7 @@ function TargetManagement() {
                 <td>{item.id}</td>
                 <td>
                   {
-                    REGISTER_TYPES.find((it) => it.value === item.requestType)
+                    REGISTER_TYPE_OPTIONS.find((it) => it.value === item.requestType)
                       ?.label
                   }
                 </td>
