@@ -3162,6 +3162,7 @@
                         padding: 10px;
                         border: 1px solid #DEE2E6;
                         margin-bottom: 10px;
+                        border-radius: 4px;
                         .title {
                             padding: 0 0 10px 0;
                             margin: 0;
@@ -3209,93 +3210,105 @@
                                     border: none;
                                 }
                             }
-                        }
-                    }
-                    .action-region {
-                        position: sticky;
-                        bottom: 0;
-                        display: flex;
-                        padding: 10px 0;
-                        justify-content: space-between;
-                        box-shadow: 0px -3px 4px -2px rgba(60, 64, 67, 0.3);
-                        background: #FFFFFF;
-                        .total-weight {
-                            .wrap-total-weight {
-                                background: #FEF3F4;
-                                color: #D13238;
-                                padding: 0 15px;
-                                border-radius: 4px;
-                                border: 1px solid #D13238;
-                                height: 35px;
-                                display: inline-flex;
-                                align-items: center;
-                                &.full-weight {
-                                    background: #F1F8F2;
-                                    color: #44A257;
-                                    border-color: #44A257;
-                                }
-                                .label {
-                                    margin: 0 3px 0 0;
-                                }
+                            .col {
+                                width: 33.3333333333%;
                             }
                         }
-                        .button-block {
-                            display: inline-flex;
-                            button {
-                                margin: 0 5px;
-                                border: 1px solid;
-                                height: 35px;
-                                width: 110px;
-                                background: #FFFFFF;
-                                display: flex;
-                                align-items: center;
-                                justify-content: center;
-                                border-radius: 4px;
-                                color: #FFFFFF;
-                                img {
-                                    // height: 10px;
-                                    margin-right: 0px;
+                    }
+                    .wrap-action-region {
+                        position: sticky;
+                        bottom: 0;
+                        padding: 10px 0;
+                        box-shadow: 0px -3px 4px -2px rgba(60, 64, 67, 0.3);
+                        background: #FFFFFF;
+                        .approver-info-missing {
+                            color: red;
+                            margin-bottom: 10px;
+                        }
+                        .action-region {
+                            display: flex;
+                            justify-content: space-between;
+                            .total-weight {
+                                .wrap-total-weight {
+                                    background: #FEF3F4;
+                                    color: #D13238;
+                                    padding: 0 15px;
+                                    border-radius: 4px;
+                                    border: 1px solid #D13238;
+                                    height: 35px;
+                                    display: inline-flex;
+                                    align-items: center;
+                                    &.full-weight {
+                                        background: #F1F8F2;
+                                        color: #44A257;
+                                        border-color: #44A257;
+                                    }
+                                    .label {
+                                        margin: 0 3px 0 0;
+                                    }
                                 }
-                                &:last-child {
-                                    margin-right: 0;
-                                }
-                                &.btn-send {
-                                    background: #4099FF;
+                            }
+                            .button-block {
+                                display: inline-flex;
+                                button {
+                                    margin: 0 5px;
+                                    border: 1px solid;
+                                    height: 35px;
+                                    width: 110px;
+                                    background: #FFFFFF;
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    border-radius: 4px;
+                                    color: #FFFFFF;
                                     img {
-                                        height: 10px;
-                                        margin-right: 4px;
+                                        // height: 10px;
+                                        margin-right: 0px;
                                     }
-                                }
-                                &.btn-next, &.btn-previous {
-                                    color: #4099FF;
-                                    border-color: #4099FF;
-                                    cursor: pointer;
-                                    img {
-                                        height: 20px;
+                                    &:last-child {
+                                        margin-right: 0;
                                     }
-                                    &:disabled {
-                                        opacity: .2;
+                                    &.btn-send {
+                                        background: #4099FF;
+                                        img {
+                                            height: 10px;
+                                            margin-right: 4px;
+                                        }
+                                        &:disabled {
+                                            opacity: .2;
+                                        }
                                     }
-                                }
-                                &.btn-save {
-                                    background: #FFAE46;
-                                    border-color: #FFAE46;
-                                    cursor: pointer;
-                                    img {
-                                        height: 11px;
-                                        margin-right: 3px;
+                                    &.btn-next, &.btn-previous {
+                                        color: #4099FF;
+                                        border-color: #4099FF;
+                                        cursor: pointer;
+                                        img {
+                                            height: 20px;
+                                        }
+                                        &:disabled {
+                                            opacity: .2;
+                                        }
                                     }
-                                    &:disabled {
-                                        opacity: .2;
+                                    &.btn-save {
+                                        background: #FFAE46;
+                                        border-color: #FFAE46;
+                                        cursor: pointer;
+                                        img {
+                                            height: 11px;
+                                            margin-right: 3px;
+                                        }
+                                        &:disabled {
+                                            opacity: .2;
+                                        }
                                     }
-                                }
-                                &.btn-cancel {
-                                    background: #CED4DA;
-                                    border-color: #CED4DA;
-                                    cursor: pointer;
-                                    img {
-                                        height: 13px;
-                                        margin-right: 3px;
+                                    &.btn-cancel {
+                                        background: #CED4DA;
+                                        border-color: #CED4DA;
+                                        cursor: pointer;
+                                        img {
+                                            height: 13px;
+                                            margin-right: 5px;
+                                        }
                                     }
                                 }
                             }
