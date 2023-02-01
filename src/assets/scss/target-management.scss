@@ -144,6 +144,14 @@
   .action-icon {
     cursor: pointer;
   }
+  .target-registration-id {
+    color: #858796;
+    cursor: pointer;
+  }
+  .target-registration-id:hover {
+    color: #4e73df;
+    text-decoration: underline;
+  }
 }
 
 .target-registration-modal {
@@ -195,7 +203,7 @@
       }
       .yellow-color {
         font-weight: 400;
-        margin-top: 4px;
+        margin-top: 8px;
         color: #FFA200;
       }
       .select-container {
@@ -255,7 +263,7 @@
       .form-container {
         border-radius: 4px;
         border: 1px solid #dee2e6;
-        padding: 20px;
+        padding: 16px 20px;
       }
       .target-collapse {
         position: relative;
@@ -319,12 +327,14 @@
       margin-bottom: 16px;
     }
     .custom-modal-footer {
-      display: flex;
-      justify-content: space-between;
       background: #fff;
-      padding: 16px;
+      padding: 16px 0px;
       position: sticky;
       bottom: 0px;
+      .modal-footer-action {
+        display: flex;
+        justify-content: space-between;
+      }
       .total-weight-container {
         display: flex;
         justify-content: center;
@@ -420,7 +430,9 @@
         fill: #44a257;
       }
     }
-
+  }
+  .review-comment-textarea[readonly] {
+    height: 40px !important;
   }
 }
 
@@ -448,6 +460,9 @@
 .target-register-table {
   .target-register-thead {
     tr {
+      th {
+        vertical-align: top;
+      }
       th:nth-child(1) {
         width: 10%;
       }

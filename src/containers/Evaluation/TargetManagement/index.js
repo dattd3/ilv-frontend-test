@@ -120,6 +120,7 @@ function TargetManagement() {
   const [pageSize, setPageSize] = useState(5);
   const [pageIndex, setPageIndex] = useState(1);
   const [employeeSelected, setEmployeeSelected] = useState(null);
+  const [employeeSearchLoading, setEmployeeSearchLoading] = useState(false);
   const [phaseIdSelected, setPhaseIdSelected] = useState(0);
   const [statusSelected, setStatusSelected] = useState(null);
   const [totalRecords, setTotalRecords] = useState(0);
@@ -128,6 +129,7 @@ function TargetManagement() {
     type: null,
     data: null,
   });
+
   const currentTab =
     getValueParamByQueryString(window.location.search, "tab") || TABS.OWNER;
 
@@ -192,25 +194,22 @@ function TargetManagement() {
     setLoading(false);
   };
 
-  const onInputEmployeeSearchChange = debounce((e) => {
-    if (e) {
+  const onInputEmployeeSearchChange = debounce(async (keyword) => {
+    if (keyword) {
+      setEmployeeSearchLoading(true);
       const payload = {
-        account: e,
+        account: keyword,
         employee_type: "EMPLOYEE",
         status: Constants.statusUserActiveMulesoft,
       };
-      axios
-        .post(
-          `${process.env.REACT_APP_REQUEST_URL}user/employee/search`,
-          payload,
-          config
-        )
-        .then((res) => {
-          if (res && res.data && res.data.data) {
-            const data = res.data.data || [];
-            setEmployeeSearchOptions(data);
-          }
-        });
+      const res = await axios.post(
+        `${process.env.REACT_APP_REQUEST_URL}user/employee/search`,
+        payload,
+        config
+      );
+      const data = res.data.data || [];
+      setEmployeeSearchOptions(data);
+      setEmployeeSearchLoading(false);
     }
   }, 1000);
 
@@ -304,7 +303,7 @@ function TargetManagement() {
       const response = await axios.post(
         CREATE_TARGET_REGISTER,
         {
-          RequestType: 0, // 0 - thủ công,1 -từ thư viện
+          RequestType: modalManagement.type, // 0 - thủ công,1 -từ thư viện
           type: "Next",
           userInfo: JSON.stringify(getUserInfo()),
           ...formValues,
@@ -342,7 +341,7 @@ function TargetManagement() {
   };
 
   const modalShow = useMemo(() => {
-    if (!modalManagement.type) return <></>;
+    if (!modalManagement.type && modalManagement.type !== 0) return <></>;
     switch (modalManagement.type) {
       case MODAL_TYPES.SUCCESS:
         return (
@@ -384,6 +383,7 @@ function TargetManagement() {
             onHideRegisterTargetModal={onHideModal}
             registerType={MODAL_TYPES.REGISTER_LIBRARY}
             phaseOptions={phaseOptions}
+            setModalManagement={setModalManagement}
           />
         );
 
@@ -471,11 +471,11 @@ function TargetManagement() {
   const REGISTER_TYPES = [
     {
       label: t("Manually"),
-      value: 0,
+      value: MODAL_TYPES.REGISTER_MANUAL,
     },
     {
       label: t("FromLibrary"),
-      value: 1,
+      value: MODAL_TYPES.REGISTER_LIBRARY,
     },
   ];
 
@@ -572,10 +572,13 @@ function TargetManagement() {
             options={employeeSearchOptions}
             onChange={(val) => setEmployeeSelected(val?.uid || null)}
             components={{ Option: (e) => EmployeeOption(e) }}
-            value={employeeSearchOptions.find(emp => emp.uid === employeeSelected)}
+            value={employeeSearchOptions.find(
+              (emp) => emp.uid === employeeSelected
+            )}
             getOptionLabel={(option) => option.fullname}
-            getOptionValue={(option) => option.uid}
+            getOptionValue={(option) => option.username}
             isClearable
+            isLoading={employeeSearchLoading}
           />
         )}
 
@@ -606,21 +609,21 @@ function TargetManagement() {
           </thead>
           <tbody className="target-register-tbody">
             {targetRegistration?.map((item) => (
-              <tr
-                key={item.id}
-                onClick={
-                  item.status === 2 && currentTab === TABS.OWNER
-                    ? () => {
-                        setModalManagement({
-                          type: MODAL_TYPES.REGISTER_MANUAL,
-                          data: item,
-                          viewOnly: true,
-                        });
-                      }
-                    : () => {}
-                }
-              >
-                <td>{item.id}</td>
+              <tr key={item.id}>
+                <td>
+                  <div
+                    onClick={() =>
+                      setModalManagement({
+                        type: MODAL_TYPES.REGISTER_MANUAL,
+                        data: item,
+                        viewOnly: true,
+                      })
+                    }
+                    className="target-registration-id"
+                  >
+                    {item.id}
+                  </div>
+                </td>
                 <td>
                   {
                     REGISTER_TYPES.find((it) => it.value === item.requestType)
@@ -640,17 +643,6 @@ function TargetManagement() {
                   <div
                     className="status-tag"
                     style={getStatusTagStyle(item.status)}
-                    onClick={
-                      [3, 4].includes(item.status)
-                        ? () => {
-                            setModalManagement({
-                              type: MODAL_TYPES.REGISTER_MANUAL,
-                              data: item,
-                              viewOnly: true,
-                            });
-                          }
-                        : () => {}
-                    }
                   >
                     {STATUS_OPTIONS.find((i) => i.value === item.status)?.label}
                   </div>
@@ -682,7 +674,7 @@ function TargetManagement() {
                   )}
                 </td>
                 <td className="text-center">
-                  {STATUS_DELETEABLE.includes(item.status) && (
+                  {STATUS_DELETEABLE.includes(item.status) && currentTab === TABS.OWNER && (
                     <IconRemove
                       className="rm-icon action-icon"
                       onClick={() => onDeleteTargetRegisterClick(item)}
