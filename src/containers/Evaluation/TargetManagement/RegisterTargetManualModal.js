@@ -205,7 +205,6 @@ export default function TargetRegistrationManualModal(props) {
           value={phaseOptions.find(
             (opt) => opt.value === formValues.checkPhaseId
           )}
-          isClearable
           isDisabled={isApprover || isReadOnlyField}
         />
         {!!formValues.checkPhaseId && (
