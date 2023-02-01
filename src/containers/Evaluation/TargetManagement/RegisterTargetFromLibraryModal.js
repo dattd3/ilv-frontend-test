@@ -511,12 +511,7 @@ function RegisterTargetFromLibraryModal(props) {
     const [stepActive, SetStepActive] = useState(stepConfig.selectTarget)
     const [filter, SetFilter] = useState({
         period: null,
-        listPeriod: [
-            { value: 1, label: 'Quý 1/2022' },
-            { value: 2, label: 'Quý 2/2022' },
-            { value: 3, label: 'Quý 3/2022' },
-            { value: 4, label: 'Quý 4/2022' },
-        ],
+        listPeriod: [],
         keyword: '',
     })
     const [requestId, SetRequestId] = useState(0)
@@ -583,6 +578,7 @@ function RegisterTargetFromLibraryModal(props) {
                         EmployeeNo: approver?.uid,
                         current_position: approver?.title || "",
                         department: approver?.department || "",
+                        jobCode: null,
 
                         value: approver?.uid, // Mã NV
                         label: approver?.fullname || "",
