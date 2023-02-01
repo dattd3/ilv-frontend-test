@@ -3,7 +3,6 @@ import Select from "react-select";
 import { Modal } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { Collapse, Form, Button } from "react-bootstrap";
-import { isEmpty } from "lodash";
 import { getMuleSoftHeaderConfigurations } from "commons/Utils";
 import Constants from "commons/Constants";
 import axios from "axios";
@@ -39,7 +38,9 @@ const REQUIRED_FIELDS = ["checkPhaseId", "listTarget", "approverInfo"];
 const REQUIRED_FIELDS_TARGET = ["targetName", "metric1", "weight"];
 
 export default function TargetRegistrationManualModal(props) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const currentLanguage = i18n.language === Constants.LANGUAGE_EN ? "en" : "vi";
+
   const {
     phaseOptions,
     onHide,
@@ -54,10 +55,13 @@ export default function TargetRegistrationManualModal(props) {
 
   const [formValues, setFormValues] = useState({
     checkPhaseId: 0,
-    listTarget: [TARGET_INITIAL_DATA],
     approverInfo: "",
     rejectReson: "",
     ...(data && data),
+    listTarget: data?.listTarget?.length > 0 ? data.listTarget.map(target => ({
+      ...target,
+      targetName: JSON.parse(target.targetName || "{}")?.[currentLanguage]
+    })) : [TARGET_INITIAL_DATA]
   });
   const [targetToggleStatuses, setTargetToggleStatuses] = useState(
     Array(formValues.listTarget.length).fill(!viewOnly)
@@ -122,10 +126,16 @@ export default function TargetRegistrationManualModal(props) {
   };
 
   const onChangeWeightInput = (index, value) => {
-    if (!isNaN(value)) {
-      onChangeTargetValues(index, 'weight', value * 1);
+    const parsedValue = parseFloat(value);
+    if (!value) {
+      onChangeTargetValues(index, "weight", "");
+      return;
     }
-  }
+
+    if (!isNaN(parsedValue) && !isNaN(value - parsedValue)) {
+      onChangeTargetValues(index, "weight", value);
+    }
+  };
 
   const collapseAll = () => {
     setTargetToggleStatuses(Array(formValues.listTarget.length).fill(false));
@@ -181,16 +191,16 @@ export default function TargetRegistrationManualModal(props) {
       centered
       onHide={onHide}
     >
-      <Modal.Header>
+      <Modal.Header closeButton>
         <div className="modal-title">ĐĂNG KÝ MỤC TIÊU</div>
-        <a
+        {/* <a
           className="close"
           data-dismiss="alert"
           aria-label="Close"
           onClick={() => onHide()}
         >
           <span aria-hidden="true">&times;</span>
-        </a>
+        </a> */}
       </Modal.Header>
       <Modal.Body>
         <div>
@@ -209,22 +219,20 @@ export default function TargetRegistrationManualModal(props) {
         />
         {!!formValues.checkPhaseId && (
           <>
-            {!isReadOnlyField && (
-              <div className="control-btns mb-20">
-                <Button className="collapse-btn" onClick={collapseAll}>
-                  <IconCollapse className="icon-collapse" /> &nbsp;
-                  {t("Collapse")}
-                </Button>
-                <Button
-                  className="expand-btn"
-                  variant="outline-success"
-                  onClick={expandAll}
-                >
-                  <IconExpand className="icon-expand" /> &nbsp;
-                  {t("Expand")}
-                </Button>
-              </div>
-            )}
+            <div className="control-btns mb-20">
+              <Button className="collapse-btn" onClick={collapseAll}>
+                <IconCollapse className="icon-collapse" /> &nbsp;
+                {t("Collapse")}
+              </Button>
+              <Button
+                className="expand-btn"
+                variant="outline-success"
+                onClick={expandAll}
+              >
+                <IconExpand className="icon-expand" /> &nbsp;
+                {t("Expand")}
+              </Button>
+            </div>
             {formValues.listTarget.map((target, index) => (
               <div className="form-container mb-16" key={index}>
                 <div
@@ -255,7 +263,8 @@ export default function TargetRegistrationManualModal(props) {
                         `  | ${target.weight}%`}
                     </span>
                   </span>
-                  {target && target.lastUpdateBy &&
+                  {target &&
+                    target.lastUpdateBy &&
                     target.createBy?.split("@")?.[0] !==
                       target.lastUpdateBy && (
                       <div className="yellow-color">
@@ -485,7 +494,7 @@ export default function TargetRegistrationManualModal(props) {
                   <div className="mb-16">Chức danh</div>
                   <Form.Control
                     readOnly
-                    value={approverJSON?.positionName}
+                    value={approverJSON?.current_position}
                     className="form-input"
                   />
                 </div>
@@ -494,15 +503,7 @@ export default function TargetRegistrationManualModal(props) {
                   <Form.Control
                     readOnly
                     className="form-input"
-                    value={
-                      isEmpty(approverJSON)
-                        ? ""
-                        : (approverJSON?.division || "") +
-                          (approverJSON?.department
-                            ? "/" + approverJSON?.department
-                            : "") +
-                          (approverJSON?.part ? "/" + approverJSON?.part : "")
-                    }
+                    value={approverJSON?.department}
                   />
                 </div>
               </div>

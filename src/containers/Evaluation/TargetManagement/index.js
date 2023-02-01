@@ -155,6 +155,12 @@ function TargetManagement() {
     }
   }, [pageSize, pageIndex, currentTab]);
 
+  useEffect(() => {
+    if (modalManagement.type !== null && openMenuRegistration) {
+      setOpenMenuRegistration(false);
+    }
+  }, [modalManagement, openMenuRegistration])
+
   const fetchInitData = () => {
     const bodyFormData = new FormData();
     bodyFormData.append("nopaging", true);
@@ -677,7 +683,7 @@ function TargetManagement() {
                   </div>
                 </td>
                 <td className="text-center">
-                  {item.status === STATUS_TYPES.REJECT && item.rejectReson && (
+                  {item.status === REQUEST_STATUS.REJECT && item.rejectReson && (
                     <>
                       <a data-tip data-for={`reason-${item.id}`}>
                         <IconReason width={24} height={24} />
