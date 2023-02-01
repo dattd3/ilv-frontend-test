@@ -144,14 +144,6 @@
   .action-icon {
     cursor: pointer;
   }
-  .target-registration-id {
-    color: #858796;
-    cursor: pointer;
-  }
-  .target-registration-id:hover {
-    color: #4e73df;
-    text-decoration: underline;
-  }
 }
 
 .target-registration-modal {
@@ -497,6 +489,7 @@
   }
   .target-register-tbody {
     tr {
+      cursor: pointer;
       td:nth-child(1) {
         width: 10%;
       }
@@ -527,6 +520,9 @@
       td:nth-child(10) {
         width: 8%;
       }
+    }
+    tr:hover {
+      background: #F2F2F2;
     }
   }
 }

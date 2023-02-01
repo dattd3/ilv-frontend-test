@@ -32,6 +32,7 @@ import {
   STATUS_TYPES,
   CREATE_TARGET_REGISTER,
   getUserInfo,
+  STATUS_VALUES,
 } from "./Constant";
 import TargetRegistrationManualModal from "./RegisterTargetManualModal";
 import ConfirmModal from "components/Common/ConfirmModalNew";
@@ -60,12 +61,19 @@ const searchPlaceholder = (text) => (
 
 const getStatusTagStyle = (value) => {
   switch (value) {
-    case 3:
+    case STATUS_VALUES.DRAFT:
+      return {
+        color: "#000",
+        backgroundColor: "#F2F2F2",
+        border: "none",
+      };
+
+    case STATUS_VALUES.APPROVED:
       return {
         color: "#05BD29",
         border: "1px solid #05BD29",
       };
-    case 4:
+    case STATUS_VALUES.REJECT:
       return {
         color: "#FF0000",
         border: "1px solid #FF0000",
@@ -74,7 +82,7 @@ const getStatusTagStyle = (value) => {
     default:
       return {
         color: "#000",
-        border: "1px solid #DEE2E6",
+        border: "1px solid #F2F2F2",
       };
   }
 };
@@ -326,14 +334,16 @@ function TargetManagement() {
     setLoading(false);
   };
 
-  const onEditTargetRegisterClick = (item) => {
+  const onEditTargetRegisterClick = (event, item) => {
+    event.stopPropagation();
     setModalManagement({
       type: MODAL_TYPES.REGISTER_MANUAL,
       data: item,
     });
   };
 
-  const onDeleteTargetRegisterClick = (item) => {
+  const onDeleteTargetRegisterClick = (event, item) => {
+    event.stopPropagation();
     setModalManagement({
       type: MODAL_TYPES.DELETE_CONFIRM,
       data: item,
@@ -449,25 +459,6 @@ function TargetManagement() {
     }
   }, [modalManagement]);
 
-  const STATUS_OPTIONS = [
-    {
-      label: t("Draft"),
-      value: 1,
-    },
-    {
-      label: t("WaitProcessing"),
-      value: 2,
-    },
-    {
-      label: t("Approved"),
-      value: 3,
-    },
-    {
-      label: t("Reject"),
-      value: 4,
-    },
-  ];
-
   const REGISTER_TYPES = [
     {
       label: t("Manually"),
@@ -478,6 +469,41 @@ function TargetManagement() {
       value: MODAL_TYPES.REGISTER_LIBRARY,
     },
   ];
+
+  const STATUS_OPTIONS =
+    currentTab === TABS.OWNER
+      ? [
+          {
+            label: t("Draft"),
+            value: STATUS_VALUES.DRAFT,
+          },
+          {
+            label: t("WaitProcessing"),
+            value: STATUS_VALUES.PROCESSING,
+          },
+          {
+            label: t("Approved"),
+            value: STATUS_VALUES.APPROVED,
+          },
+          {
+            label: t("Reject"),
+            value: STATUS_VALUES.REJECT,
+          },
+        ]
+      : [
+          {
+            label: t("WaitProcessing"),
+            value: STATUS_VALUES.PROCESSING,
+          },
+          {
+            label: t("Approved"),
+            value: STATUS_VALUES.APPROVED,
+          },
+          {
+            label: t("Reject"),
+            value: STATUS_VALUES.REJECT,
+          },
+        ];
 
   return (
     <div
@@ -609,21 +635,17 @@ function TargetManagement() {
           </thead>
           <tbody className="target-register-tbody">
             {targetRegistration?.map((item) => (
-              <tr key={item.id}>
-                <td>
-                  <div
-                    onClick={() =>
-                      setModalManagement({
-                        type: MODAL_TYPES.REGISTER_MANUAL,
-                        data: item,
-                        viewOnly: true,
-                      })
-                    }
-                    className="target-registration-id"
-                  >
-                    {item.id}
-                  </div>
-                </td>
+              <tr
+                key={item.id}
+                onClick={() =>
+                  setModalManagement({
+                    type: MODAL_TYPES.REGISTER_MANUAL,
+                    data: item,
+                    viewOnly: true,
+                  })
+                }
+              >
+                <td>{item.id}</td>
                 <td>
                   {
                     REGISTER_TYPES.find((it) => it.value === item.requestType)
@@ -648,7 +670,7 @@ function TargetManagement() {
                   </div>
                 </td>
                 <td className="text-center">
-                  {item.status === 4 && item.rejectReson && (
+                  {item.status === STATUS_TYPES.REJECT && item.rejectReson && (
                     <>
                       <a data-tip data-for={`reason-${item.id}`}>
                         <IconReason width={24} height={24} />
@@ -674,12 +696,13 @@ function TargetManagement() {
                   )}
                 </td>
                 <td className="text-center">
-                  {STATUS_DELETEABLE.includes(item.status) && currentTab === TABS.OWNER && (
-                    <IconRemove
-                      className="rm-icon action-icon"
-                      onClick={() => onDeleteTargetRegisterClick(item)}
-                    />
-                  )}
+                  {STATUS_DELETEABLE.includes(item.status) &&
+                    currentTab === TABS.OWNER && (
+                      <IconRemove
+                        className="rm-icon action-icon"
+                        onClick={(event) => onDeleteTargetRegisterClick(event, item)}
+                      />
+                    )}
                   {((currentTab === TABS.OWNER &&
                     STATUS_EDITABLE.includes(item.status)) ||
                     (currentTab === TABS.REQUEST &&
@@ -688,7 +711,7 @@ function TargetManagement() {
                       width={28}
                       height={28}
                       className="action-icon"
-                      onClick={() => onEditTargetRegisterClick(item)}
+                      onClick={(event) => onEditTargetRegisterClick(event, item)}
                     />
                   )}
                 </td>
