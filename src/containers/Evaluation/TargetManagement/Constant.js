@@ -1,3 +1,5 @@
+import Constants from '../../../commons/Constants'
+
 const REQUEST_STATUS = {
   DRAFT: 1,
   PROCESSING: 2,
@@ -46,6 +48,11 @@ const MODAL_TYPES = {
   REJECT_CONFIRM: 7
 };
 
+const LANGUAGE_CODE_MAPPING = {
+  [Constants.LANGUAGE_VI]: 'vi',
+  [Constants.LANGUAGE_EN]: 'en',
+}
+
 const getUserInfo = () => ({
   account: localStorage.getItem("email")?.split("@")?.[0],
   fullName: localStorage.getItem("fullName"),
@@ -82,4 +89,5 @@ export {
   STATUS_TYPES,
   REGISTER_TYPES,
   REQUEST_STATUS,
+  LANGUAGE_CODE_MAPPING,
 };

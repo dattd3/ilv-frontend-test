@@ -27,6 +27,8 @@ import {
     MODAL_TYPES,
     CREATE_TARGET_REGISTER,
     getUserInfo,
+    REGISTER_TYPES,
+    LANGUAGE_CODE_MAPPING,
 } from "./Constant"
 import Constants from '../../../commons/Constants'
 
@@ -58,6 +60,8 @@ const customStyles = {
         height: '35px',
     }),
 }
+
+const currentLocale = localStorage.getItem("locale")
 
 const RegistrationStep = ({ stepActive, totalItemAdded = 0, isDisableNextStep, handleChangeStep }) => {
     const isActiveSelectTargetStep = stepActive === stepConfig.selectTarget
@@ -107,8 +111,8 @@ const SelectTargetTabContent = ({ filter, listTarget = [], targetSelected = [], 
                     <label>Chọn kỳ đánh giá<span className="required">(*)</span></label>
                     <Select
                         isClearable={true}
-                        onChange={period => handleInputChange('period', period)}
-                        value={filter?.period}
+                        onChange={period => handleInputChange('period', period?.value || null)}
+                        value={(filter?.listPeriod || []).find(item => item?.value === filter?.period)}
                         placeholder={t('Select')}
                         options={filter?.listPeriod || []}
                         styles={customStyles}
@@ -304,8 +308,8 @@ const DoneTabContent = ({ filter, targetSelected = [], handleInputChange, handle
                     <label>Chọn kỳ đánh giá<span className="required">(*)</span></label>
                     <Select
                         isClearable={true}
-                        onChange={period => handleInputChange('period', period)}
-                        value={filter?.period}
+                        onChange={period => handleInputChange('period', period?.value || null)}
+                        value={(filter?.listPeriod || []).find(item => item?.value === filter?.period)}
                         placeholder={t('Select')}
                         options={filter?.listPeriod || []}
                         styles={customStyles}
@@ -503,7 +507,7 @@ const ApprovalManager = ({ t, approverInfo, approvers, setApprovers, setApprover
 }
 
 function RegisterTargetFromLibraryModal(props) {
-    const { registerType, phaseOptions, onHideRegisterTargetModal, setModalManagement } = props
+    const { registerType, requestId, phaseOptions, onHideRegisterTargetModal, setModalManagement } = props
     const { t } = useTranslation()
     const guard = useGuardStore()
     const user = guard.getCurentUser()
@@ -514,7 +518,7 @@ function RegisterTargetFromLibraryModal(props) {
         listPeriod: [],
         keyword: '',
     })
-    const [requestId, SetRequestId] = useState(0)
+    const [requestIdSaved, SetRequestIdSaved] = useState(0)
     const [paging, SetPaging] = useState({
         pageIndex: 1,
         pageSize: 10,
@@ -523,6 +527,7 @@ function RegisterTargetFromLibraryModal(props) {
     const [targetSelected, SetTargetSelected] = useState([])
     const [error, SetError] = useState({})
     const [approverInfo, SetApproverInfo] = useState(null)
+    const [userInfo, SetUserInfo] = useState('')
     const [approvers, SetApprovers] = useState([])
 
     // const pageSizeMemo = useMemo(() => paging.pageSize, [paging.pageSize])
@@ -543,11 +548,12 @@ function RegisterTargetFromLibraryModal(props) {
         return axios.post(`${process.env.REACT_APP_HRDX_PMS_URL}api/target/mylibrary`, bodyFormData, config)
     }
 
-    const requestGetListEvaluationPeriod = () => {
+    const requestGetRequestDetail = id => {
         const config = getRequestConfigurations()
-        let bodyFormData = new FormData()
-        bodyFormData.append('nopaging', true)
-        return axios.post(`${process.env.REACT_APP_HRDX_PMS_URL}api/checkphase/list`, bodyFormData, config)
+        config.params = {
+            id: id,
+        }
+        return axios.get(`${process.env.REACT_APP_HRDX_PMS_URL}api/targetregist/detail`, config)
     }
 
     const requestGetApproverInfo = () => {
@@ -559,35 +565,69 @@ function RegisterTargetFromLibraryModal(props) {
         const fetchData = async () => {
             try {
                 const requestListTarget = requestGetListTarget()
-                const requestApproverInfo = requestGetApproverInfo()
+                const requestApproverInfo = !requestId && requestGetApproverInfo()
+                const requestGetDetailInfo = requestId && requestGetRequestDetail(requestId)
                 const { data: listTarget } = await requestListTarget
                 const approverInfo = await requestApproverInfo
-
-                if (approverInfo && approverInfo?.data && approverInfo?.data?.data && approverInfo?.data?.data?.length > 0) {
-                    const approver = approverInfo.data.data[0]
+                const requestInfo = await requestGetDetailInfo
+                
+                let period = null
+                if (!requestId) {
+                    if (approverInfo && approverInfo?.data && approverInfo?.data?.data && approverInfo?.data?.data?.length > 0) {
+                        const approver = approverInfo.data.data[0]
+                        SetApproverInfo({
+                            account: approver?.username, // AD
+                            fullName: approver?.fullname || "",
+                            employeeLevel: approver?.rank_title,
+                            organizationLv1: null,
+                            organizationLv2: null,
+                            organizationLv3: null,
+                            organizationLv4: null,
+                            organizationLv5: null,
+                            organizationLv6: null,
+                            EmployeeNo: approver?.uid?.toString(),
+                            current_position: approver?.title || "",
+                            department: approver?.department || "",
+                            jobCode: null,                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+    
+                            value: approver?.uid?.toString(), // Mã NV
+                            label: approver?.fullname || "",
+                            avatar: approver?.avatar || "",
+                        })
+                    }
+                } else if (requestInfo && requestInfo?.data && requestInfo?.data?.data?.requests) {
+                    const request = requestInfo?.data?.data?.requests
+                    period = request?.checkPhaseId || null
+                    const approverInfoData = JSON.parse(request?.approverInfo || '{}')
                     SetApproverInfo({
-                        account: approver?.username, // AD
-                        fullName: approver?.fullname || "",
-                        employeeLevel: approver?.rank_title,
-                        organizationLv1: null,
-                        organizationLv2: null,
-                        organizationLv3: null,
-                        organizationLv4: null,
-                        organizationLv5: null,
-                        organizationLv6: null,
-                        EmployeeNo: approver?.uid,
-                        current_position: approver?.title || "",
-                        department: approver?.department || "",
-                        jobCode: null,
+                        account: approverInfoData?.account,
+                        fullName: approverInfoData?.fullName,
+                        employeeLevel: approverInfoData?.employeeLevel,
+                        organizationLv1: approverInfoData?.organizationLv1 || null,
+                        organizationLv2: approverInfoData?.organizationLv2,
+                        organizationLv3: approverInfoData?.organizationLv3,
+                        organizationLv4: approverInfoData?.organizationLv4,
+                        organizationLv5: approverInfoData?.organizationLv5,
+                        organizationLv6: approverInfoData?.organizationLv6,
+                        EmployeeNo: approverInfoData?.EmployeeNo,
+                        current_position: approverInfoData?.current_position,
+                        department: approverInfoData?.department || "",
+                        jobCode: approverInfoData?.jobCode,
 
-                        value: approver?.uid, // Mã NV
-                        label: approver?.fullname || "",
-                        avatar: approver?.avatar || "",
+                        value: approverInfoData?.EmployeeNo, // Mã NV
+                        label: approverInfoData?.fullName,
+                        avatar: null,
                     })
+                    SetUserInfo(request?.userInfo)
+                    SetTargetSelected(!request?.listTarget ? [] : (request?.listTarget || []).map(item => ({
+                        ...item,
+                        targetName: JSON.parse(item?.targetName || '{}')[LANGUAGE_CODE_MAPPING[currentLocale]],
+                    })))
                 }
 
                 SetFilter({
                     ...filter,
+                    period: period !== null ? period : filter?.period,
                     listPeriod: (phaseOptions || [])
                     .filter(item => item?.isAvailable && !item?.isDeleted && item?.status)
                 })
@@ -599,7 +639,9 @@ function RegisterTargetFromLibraryModal(props) {
             }
         }
 
-        registerType === MODAL_TYPES.REGISTER_LIBRARY && fetchData()
+        if (registerType === MODAL_TYPES.REGISTER_LIBRARY) { // Kiểm tra nếu popup được bật lên thì call api
+            fetchData()
+        }
     }, [registerType])
 
     useEffect(() => {
@@ -630,7 +672,7 @@ function RegisterTargetFromLibraryModal(props) {
             })
         } else if (['weight', 'target']) { // Xử lý phần cập nhật thông tin mục tiêu
             const targetSelectedClone = [...targetSelected]
-            targetSelectedClone[targetIndex].IsEdit = requestId ? true : false // Đã hình thành request IsEdit = true, ngược lại là false
+            targetSelectedClone[targetIndex].IsEdit = (requestIdSaved || requestId) ? true : false // Đã hình thành request IsEdit = true, ngược lại là false
 
             if (key === 'weight') {
                 const re = /^[0-9\b]+$/
@@ -686,7 +728,7 @@ function RegisterTargetFromLibraryModal(props) {
     })()
 
     const isDisableNextStep = (() => {
-        return ((!targetSelected || targetSelected?.length === 0) && !filter?.period) || !approverInfo
+        return (!targetSelected || targetSelected?.length === 0) || !filter?.period || !approverInfo
     })()
 
     const isDisableSaveRequest = (() => {
@@ -699,11 +741,11 @@ function RegisterTargetFromLibraryModal(props) {
 
     const preparePayload = (stepCode, isSendRequest) => {
         const payload = {
-            checkPhaseId: filter?.period.value,
-            id: requestId,
-            RequestType: 1,
+            checkPhaseId: filter?.period,
+            id: requestId ? requestId : requestIdSaved,
+            RequestType: REGISTER_TYPES.LIBRARY,
             type: isSendRequest ? 'Next' : 'Save',
-            userInfo: JSON.stringify(getUserInfo()),
+            userInfo: requestId ? userInfo : JSON.stringify(getUserInfo()),
             ApproverInfo: JSON.stringify(omit(approverInfo, ['value', 'label', 'avatar'])),
             listTarget: (targetSelected || []).map((item, i) => {
                 return {
@@ -740,7 +782,7 @@ function RegisterTargetFromLibraryModal(props) {
                 toast.error(response.data?.result?.message)
             } else {
                 if (!isSendRequest) {
-                    SetRequestId(response?.data?.data?.id || 0)
+                    SetRequestIdSaved(response?.data?.data?.id || 0)
                 }
 
                 if (isSendRequest) {
