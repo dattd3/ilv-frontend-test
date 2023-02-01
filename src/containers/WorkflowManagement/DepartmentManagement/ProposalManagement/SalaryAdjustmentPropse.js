@@ -1122,7 +1122,7 @@ const SalaryAdjustmentPropse = (props) => {
     setIsLoading(true);
     axios({
       method: "POST",
-      url: `${process.env.REACT_APP_REQUEST_URL}SalaryAdjustment/getsalarystaff`,
+      url: `${process.env.REACT_APP_SALARY_URL}salaryadjustment/getsalarystaff`,
       data: dataSend,
       headers: {
         "Content-Type": "application/json",
