@@ -6,6 +6,8 @@ import { useTranslation } from "react-i18next"
 import { omit, uniqBy, debounce } from 'lodash'
 import axios from 'axios'
 import CustomPaging from "components/Common/CustomPagingNew"
+import LoadingModal from "components/Common/LoadingModal"
+import StatusModal from "components/Common/StatusModal"
 import { useGuardStore } from '../../../modules'
 import IconArrowRightWhite from '../../../assets/img/icon/pms/arrow-right-white.svg'
 import IconArrowRightGray from '../../../assets/img/icon/pms/arrow-right-gray.svg'
@@ -529,6 +531,7 @@ function RegisterTargetFromLibraryModal(props) {
     const [approverInfo, SetApproverInfo] = useState(null)
     const [userInfo, SetUserInfo] = useState('')
     const [approvers, SetApprovers] = useState([])
+    const [isLoading, SetIsLoading] = useState(false)
 
     // const pageSizeMemo = useMemo(() => paging.pageSize, [paging.pageSize])
 
@@ -563,6 +566,7 @@ function RegisterTargetFromLibraryModal(props) {
 
     useEffect(() => {
         const fetchData = async () => {
+            SetIsLoading(true)
             try {
                 const requestListTarget = requestGetListTarget()
                 const requestApproverInfo = !requestId && requestGetApproverInfo()
@@ -635,7 +639,7 @@ function RegisterTargetFromLibraryModal(props) {
             } catch (e) {
 
             } finally {
-
+                SetIsLoading(false)
             }
         }
 
@@ -770,6 +774,7 @@ function RegisterTargetFromLibraryModal(props) {
     }
 
     const handleSubmitRequest = async (stepCode = stepConfig.selectTarget, isSendRequest = false) => {
+        SetIsLoading(true)
         try {
             const config = getRequestConfigurations()
             const payload = preparePayload(stepCode, isSendRequest)
@@ -795,7 +800,7 @@ function RegisterTargetFromLibraryModal(props) {
         } catch {
             toast.error(isSendRequest ? "Gửi yêu cầu thất bại. Xin vui lòng thử lại!" : "Lưu mục tiêu thất bại. Xin vui lòng thử lại!")
         } finally {
-
+            SetIsLoading(false)
         }
     }
 
@@ -815,69 +820,78 @@ function RegisterTargetFromLibraryModal(props) {
     }
 
     return (
-        <Modal 
-            backdrop="static" 
-            keyboard={false}
-            className={'register-target-from-library-modal'}
-            centered  
-            show={true}
-            onHide={() => onHideRegisterTargetModal(true)}
-        >
-            <Modal.Header closeButton>
-            </Modal.Header>
-            <Modal.Body>
-                <div className="register-target-page">
-                    <h1 className="content-page-header">Đăng ký mục tiêu</h1>
-                    <RegistrationStep
-                        stepActive={stepActive}
-                        totalItemAdded={targetSelected?.length}
-                        isDisableNextStep={isDisableNextStep}
-                        handleChangeStep={handleChangeStep}
-                    />
-                    {
-                        stepActive === stepConfig.selectTarget &&
-                        <SelectTargetTabContent
-                            filter={filter}
-                            listTarget={listTarget}
-                            targetSelected={targetSelected}
-                            handleInputChange={handleInputChange}
-                            changePageSize={changePageSize}
-                            handleSelectTarget={handleSelectTarget}
-                            submitFilterOnParent={submitFilterOnParent}
+        <>
+            <LoadingModal show={isLoading} />
+            {/* <StatusModal
+                isSuccess={false}
+                show={true}
+                onHide={onHideModal}
+                content={modalManagement.data}
+            /> */}
+            <Modal 
+                backdrop="static" 
+                keyboard={false}
+                className={'register-target-from-library-modal'}
+                centered  
+                show={true}
+                onHide={() => onHideRegisterTargetModal(true)}
+            >
+                <Modal.Header closeButton>
+                </Modal.Header>
+                <Modal.Body>
+                    <div className="register-target-page">
+                        <h1 className="content-page-header">Đăng ký mục tiêu</h1>
+                        <RegistrationStep
+                            stepActive={stepActive}
+                            totalItemAdded={targetSelected?.length}
+                            isDisableNextStep={isDisableNextStep}
+                            handleChangeStep={handleChangeStep}
                         />
-                    }
-                    {
-                        stepActive === stepConfig.done &&
-                        <DoneTabContent
-                            filter={omit(filter, ['keyword'])}
-                            targetSelected={targetSelected}
-                            handleInputChange={handleInputChange}
-                            handleSelectTarget={handleSelectTarget}
-                            handleViewListTargetSelected={handleViewListTargetSelected}
+                        {
+                            stepActive === stepConfig.selectTarget &&
+                            <SelectTargetTabContent
+                                filter={filter}
+                                listTarget={listTarget}
+                                targetSelected={targetSelected}
+                                handleInputChange={handleInputChange}
+                                changePageSize={changePageSize}
+                                handleSelectTarget={handleSelectTarget}
+                                submitFilterOnParent={submitFilterOnParent}
+                            />
+                        }
+                        {
+                            stepActive === stepConfig.done &&
+                            <DoneTabContent
+                                filter={omit(filter, ['keyword'])}
+                                targetSelected={targetSelected}
+                                handleInputChange={handleInputChange}
+                                handleSelectTarget={handleSelectTarget}
+                                handleViewListTargetSelected={handleViewListTargetSelected}
+                            />
+                        }
+                        <ApprovalManager 
+                            t={t}
+                            approverInfo={approverInfo}
+                            approvers={approvers}
+                            setApproverInfo={SetApproverInfo}
+                            setApprovers={SetApprovers}
                         />
-                    }
-                    <ApprovalManager 
-                        t={t}
-                        approverInfo={approverInfo}
-                        approvers={approvers}
-                        setApproverInfo={SetApproverInfo}
-                        setApprovers={SetApprovers}
-                    />
-                    <ActionButton
-                        stepActive={stepActive}
-                        totalWeight={totalWeight}
-                        isDisableNextStep={isDisableNextStep}
-                        isDisableSaveRequest={isDisableSaveRequest}
-                        isDisableSendRequest={isDisableSendRequest}
-                        errorMissingApproverInfo={!approverInfo ? '* Chưa có thông tin CBQL phê duyệt, vui lòng liên hệ Nhân sự để được hỗ trợ!' : ''}
-                        error={error}
-                        onHideRegisterTargetModal={() => onHideRegisterTargetModal(true)}
-                        handleChangeStep={handleChangeStep}
-                        handleSubmitRequest={handleSubmitRequest}
-                    />
-                </div>
-            </Modal.Body>
-        </Modal>
+                        <ActionButton
+                            stepActive={stepActive}
+                            totalWeight={totalWeight}
+                            isDisableNextStep={isDisableNextStep}
+                            isDisableSaveRequest={isDisableSaveRequest}
+                            isDisableSendRequest={isDisableSendRequest}
+                            errorMissingApproverInfo={!approverInfo ? '* Chưa có thông tin CBQL phê duyệt, vui lòng liên hệ Nhân sự để được hỗ trợ!' : ''}
+                            error={error}
+                            onHideRegisterTargetModal={() => onHideRegisterTargetModal(true)}
+                            handleChangeStep={handleChangeStep}
+                            handleSubmitRequest={handleSubmitRequest}
+                        />
+                    </div>
+                </Modal.Body>
+            </Modal>
+        </>
     )
 }
 

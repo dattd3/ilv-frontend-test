@@ -3929,6 +3929,7 @@ span.badge-notification[data-badge]::after {
   padding-bottom: 0.5rem;
 }
 .dialog-loading {
+  z-index: 99999999999;
   background: #FFFFFF;
   padding-left: 0!important;
   overflow: hidden!important;
