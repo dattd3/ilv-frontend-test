@@ -63,6 +63,7 @@ const customStyles = {
     }),
 }
 
+const pageSizeDefault = 10
 const currentLocale = localStorage.getItem("locale")
 
 const RegistrationStep = ({ stepActive, totalItemAdded = 0, isDisableNextStep, handleChangeStep }) => {
@@ -98,13 +99,13 @@ const RegistrationStep = ({ stepActive, totalItemAdded = 0, isDisableNextStep, h
 
 const formatTargetText = str => str?.replace(/\n|\r/g, "")
 
-const SelectTargetTabContent = ({ filter, listTarget = [], targetSelected = [], handleInputChange, changePageSize, handleSelectTarget, submitFilterOnParent }) => {
+const SelectTargetTabContent = ({ filter, listTargetInfo, targetSelected = [], paging, handleInputChange, changePageSize, changePageIndex, handleSelectTarget, submitFilterOnParent }) => {
     const { t } = useTranslation()
     const guiIDSelected = targetSelected.map(item => item?.guiID)
 
     const handleAction = (item, needRemove = false) => {
         handleSelectTarget([item], needRemove)
-    } 
+    }
 
     return (
         <div className="select-target-tab-content">
@@ -138,7 +139,7 @@ const SelectTargetTabContent = ({ filter, listTarget = [], targetSelected = [], 
                 <div className="region-result">
                     <div className="header-region">
                         <span className="font-weight-bold title">Thư viện mục tiêu</span>
-                        <span className="select-all" onClick={() => handleSelectTarget(listTarget)}>Chọn tất cả</span>
+                        <span className="select-all" onClick={() => handleSelectTarget(listTargetInfo?.listTarget || [])}>Chọn tất cả</span>
                     </div>
                     <div className="result-block">
                         <table>
@@ -151,7 +152,7 @@ const SelectTargetTabContent = ({ filter, listTarget = [], targetSelected = [], 
                             </thead>
                             <tbody>
                                 {
-                                    listTarget.map((item, index) => {
+                                    (listTargetInfo?.listTarget || []).map((item, index) => {
                                         let needRemove = guiIDSelected.includes(item?.guiID)
 
                                         return (
@@ -184,17 +185,17 @@ const SelectTargetTabContent = ({ filter, listTarget = [], targetSelected = [], 
                                     const size = parseInt(e.target.value)
                                     changePageSize(size)
                                 }}>
-                                    <option>10</option>
+                                    <option>{pageSizeDefault}</option>
                                     <option>20</option>
                                 </select>
                             </div>
-                            {/* <CustomPaging
-                                onChangePageSize={setPageSize}
-                                onChangePageIndex={setPageIndex}
-                                totalRecords={totalRecords}
-                                pageSize={pageSize}
-                                pageIndex={pageIndex}
-                            /> */}
+                            <CustomPaging
+                                onChangePageSize={changePageSize}
+                                onChangePageIndex={changePageIndex}
+                                totalRecords={listTargetInfo?.totalRecords}
+                                pageSize={paging?.pageSize}
+                                pageIndex={paging?.pageIndex}
+                            />
                             <div className="show-block">
                             
                             </div>
@@ -274,7 +275,7 @@ const DoneTabContent = ({ filter, targetSelected = [], error, handleInputChange,
                                     <div className="row-content">
                                         <label>Mục tiêu cần đạt</label>
                                         <div className="input-block">
-                                            <textarea rows={3} value={item?.target || ''} className="input-border" placeholder="Nhập" onChange={e => handleInputChange('target', e?.target?.value || '', i)} disabled={item?.target !== null && item?.target !== undefined && item?.target?.trim() !== '' ? true : false} />   
+                                            <textarea rows={3} value={item?.target || ''} className="input-border" placeholder="Nhập" onChange={e => handleInputChange('target', e?.target?.value || '', i)} disabled={item?.fillByHr || false} />
                                         </div>
                                     </div>
                                 </div>
@@ -466,7 +467,7 @@ const ApprovalManager = ({ t, approverInfo, approvers, setApprovers, setApprover
                 <div className="row">
                     <div className="col">
                         <p className="full-name">{t('FullName')}</p>
-                        <div>
+                        {/* <div>
                             <Select
                                 isClearable={true}
                                 styles={customStyles}
@@ -479,7 +480,8 @@ const ApprovalManager = ({ t, approverInfo, approvers, setApprovers, setApprover
                                 options={approvers}
                                 isDisabled
                             />
-                        </div>
+                        </div> */}
+                        <div className="value text-truncate">{approverInfo?.fullName || ''}</div>
                     </div>
                     <div className="col">
                         <p className="full-name">{t('Position')}</p>
@@ -510,9 +512,12 @@ function RegisterTargetFromLibraryModal(props) {
     const [requestIdSaved, SetRequestIdSaved] = useState(0)
     const [paging, SetPaging] = useState({
         pageIndex: 1,
-        pageSize: 10,
+        pageSize: pageSizeDefault,
     })
-    const [listTarget, SetListTarget] = useState([])
+    const [listTargetInfo, SetListTargetInfo] = useState({
+        totalRecords: 10,
+        listTarget: []
+    })
     const [targetSelected, SetTargetSelected] = useState([])
     const [error, SetError] = useState({})
     const [approverInfo, SetApproverInfo] = useState(null)
@@ -633,8 +638,14 @@ function RegisterTargetFromLibraryModal(props) {
                     listPeriod: (phaseOptions || [])
                     .filter(item => item?.isAvailable && !item?.isDeleted && item?.status)
                 })
+
                 const listTargetSorted = (listTarget?.data?.targets || []).sort((current, next) => current?.order - next?.order)
-                SetListTarget(listTargetSorted || [])
+
+                SetListTargetInfo({
+                    ...listTargetInfo,
+                    totalRecords: listTarget?.data?.total,
+                    listTarget: listTargetSorted || [],
+                })
             } catch (e) {
 
             } finally {
@@ -656,7 +667,13 @@ function RegisterTargetFromLibraryModal(props) {
                     listTarget = requestListTarget?.data?.data?.targets
                 }
 
-                SetListTarget(listTarget)
+                const listTargetSorted = (listTarget || []).sort((current, next) => current?.order - next?.order)
+
+                SetListTargetInfo({
+                    ...listTargetInfo,
+                    totalRecords: requestListTarget?.data?.data?.total,
+                    listTarget: listTargetSorted || [],
+                })
             } catch (e) {
 
             }
@@ -681,6 +698,7 @@ function RegisterTargetFromLibraryModal(props) {
                 const re = /^[0-9\b]+$/
                 if (val === '' || re.test(val)) {
                     targetSelectedClone[targetIndex][key] = val
+                    // processValidateData(targetIndex, val)
                 }
             } else {
                 targetSelectedClone[targetIndex][key] = val
@@ -690,12 +708,19 @@ function RegisterTargetFromLibraryModal(props) {
         }
     }
 
-    const changePageSize = async (pageSize = 10) => {
+    const changePageSize = (pageSize = pageSizeDefault) => {
         const pagingConfig = {
             pageIndex: 1,
             pageSize: pageSize,
         }
         SetPaging(pagingConfig)
+    }
+
+    const changePageIndex = (page = 1) => {
+        SetPaging({
+            ...paging,
+            pageIndex: page,
+        })
     }
 
     const handleSelectTarget = (targets, needRemove = false) => {                                                                                             
@@ -720,7 +745,13 @@ function RegisterTargetFromLibraryModal(props) {
             listTarget = requestListTarget?.data?.data?.targets
         }
 
-        SetListTarget(listTarget)
+        const listTargetSorted = (listTarget || []).sort((current, next) => current?.order - next?.order)
+
+        SetListTargetInfo({
+            ...listTargetInfo,
+            totalRecords: requestListTarget?.data?.data?.total,
+            listTarget: listTargetSorted || [],
+        })
     }
 
     const totalWeight = (() => {
@@ -765,11 +796,32 @@ function RegisterTargetFromLibraryModal(props) {
                     kpiType: item?.kpiType,
                     order: i + 1,
                     IsEdit : item?.IsEdit || false,
+                    fillByHr: item?.fillByHr,
                 }
             })
         }
 
         return payload
+    }
+
+    const processValidateData = (i = 0, weight = 0) => {
+        const errorInfo = (targetSelected || []).reduce((res, current, index) => {
+            res.item[`error_${index}_weight`] = current?.weight > 100 ? '* Trọng số trong khoảng 1 - 100' : ''
+            res.totalWeight += Number(current?.weight || 0)
+            return res
+        }, {
+            item: {},
+            totalWeight: 0,
+        })
+
+        const isItemsValid = Object.values(errorInfo?.item).every(item => !item)
+        const isTotalWeightValid = Number(errorInfo?.totalWeight).toFixed(2) >= 99.5 && Number(errorInfo?.totalWeight).toFixed(2) <= 100
+
+        SetError({
+            ...error,
+            ...errorInfo?.item,
+            ...(isItemsValid && !isTotalWeightValid && { totalWeight: '* Yêu cầu tổng trọng số bằng 100%. Vui lòng kiểm tra lại!' }),
+        })
     }
 
     const isDataValid = () => {
@@ -883,10 +935,12 @@ function RegisterTargetFromLibraryModal(props) {
                             stepActive === stepConfig.selectTarget &&
                             <SelectTargetTabContent
                                 filter={filter}
-                                listTarget={listTarget}
+                                listTargetInfo={listTargetInfo}
                                 targetSelected={targetSelected}
+                                paging={paging}
                                 handleInputChange={handleInputChange}
                                 changePageSize={changePageSize}
+                                changePageIndex={changePageIndex}
                                 handleSelectTarget={handleSelectTarget}
                                 submitFilterOnParent={submitFilterOnParent}
                             />

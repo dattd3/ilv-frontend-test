@@ -32,7 +32,7 @@ function CustomPaging(props) {
   
   return (
     <div className="d-flex justify-content-between pagination-new">
-      <div className="align-self-center">
+      <div className="align-self-center view-item-number">
         <span className="mr-2">{t('EvaluationShow')}</span>
         <select
           onChange={(e) => {
