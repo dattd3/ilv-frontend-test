@@ -20,6 +20,7 @@ import StatusModal from "../../../../components/Common/StatusModal";
 import Spinner from "react-bootstrap/Spinner";
 import { Button, Image } from "react-bootstrap";
 import { checkFilesMimeType } from "../../../../utils/file";
+import LoadingModal from "../../../../components/Common/LoadingModal";
 
 function SalaryPropse(props) {
   const { t } = useTranslation();
@@ -142,6 +143,7 @@ function SalaryPropse(props) {
 
   const getDataContract = async () => {
     try {
+      setIsLoading(true);
       const {
         data: { data: response },
       } = await api.fetchStaffContract(props.match.params?.idContract);
@@ -160,11 +162,14 @@ function SalaryPropse(props) {
       setDataContract(response);
     } catch (error) {
       console.log(error);
+    }finally {
+      setIsLoading(false);
     }
   };
 
   const getDataSalary = async () => {
     try {
+      setIsLoading(true);
       const {
         data: { data: response },
       } = await api.fetchSalaryPropose(props.match.params?.idSalary);
@@ -172,6 +177,8 @@ function SalaryPropse(props) {
       await checkAuthorize(response);
     } catch (error) {
       console.log(error);
+    }finally {
+      setIsLoading(false);
     }
   };
 
@@ -226,7 +233,6 @@ function SalaryPropse(props) {
     const currentEmail = localStorage.getItem("email");
     const currentEmployeeNo = localStorage.getItem("employeeNo");
     let viewSettingTmp = { ...viewSetting };
-
     // Todo: check nguoi danh gia
     switch (dataSalaryInfo?.processStatusId) {
       //Nhân sự điều phối gửi lại yêu cầu
@@ -293,7 +299,6 @@ function SalaryPropse(props) {
         viewSettingTmp.disableComponent.viewCurrentSalary = true;
         if (
           currentEmail.toLowerCase() === dataSalaryInfo?.userId.toLowerCase() &&
-          currentEmployeeNo === dataSalaryInfo?.user?.employeeNo.toString() &&
           props.match.params.type === "request"
         ) {
           viewSettingTmp.disableComponent.viewCurrentSalary = true;
@@ -385,42 +390,46 @@ function SalaryPropse(props) {
         break;
     }
     // Cán bộ đề xuất
-    viewSettingTmp.proposedStaff.fullName = dataSalaryInfo?.user?.fullName;
-    viewSettingTmp.proposedStaff.jobTitle = dataSalaryInfo?.user?.jobTitle;
-    viewSettingTmp.proposedStaff.department = dataSalaryInfo?.user?.department;
-    // Nhân sự điều phối
-    if (dataSalaryInfo?.requestInfo.length !== 0) {
-      const requestInfo = dataSalaryInfo?.requestInfo[0];
-      if (requestInfo?.coordinatorInfo)
-        setCoordinator({
-          fullName: JSON.parse(requestInfo?.coordinatorInfo)?.fullName,
-          account: JSON.parse(requestInfo?.coordinatorInfo)?.account,
-          current_position: JSON.parse(requestInfo?.coordinatorInfo)
-            ?.current_position,
-          department: JSON.parse(requestInfo?.coordinatorInfo)?.department,
-        });
-      if (requestInfo?.suggestedSalary) {
-        setSuggestedSalary(requestInfo?.suggestedSalary);
-      }
+    // viewSettingTmp.proposedStaff.fullName = dataSalaryInfo?.user?.fullName;
+    // viewSettingTmp.proposedStaff.jobTitle = dataSalaryInfo?.user?.jobTitle;
+    // viewSettingTmp.proposedStaff.department = dataSalaryInfo?.user?.department;
+
+    //QLTT
+    const requestInfo = dataSalaryInfo;
+    if(requestInfo.requestInfo && dataSalaryInfo?.processStatusId != 20) {
+      const userInfo = JSON.parse(requestInfo.userInfo);
+      viewSettingTmp.proposedStaff = {...userInfo};
     }
-    // CBQL cấp cơ sở
-    if (dataSalaryInfo?.supervisorInfo)
-      setSupervisor({
-        fullName: JSON.parse(dataSalaryInfo?.supervisorInfo)?.fullName,
-        account: JSON.parse(dataSalaryInfo?.supervisorInfo)?.account,
-        current_position: JSON.parse(dataSalaryInfo?.supervisorInfo)
-          ?.current_position,
-        department: JSON.parse(dataSalaryInfo?.supervisorInfo)?.department,
+
+    // Nhân sự điều phối
+    if (requestInfo?.coordinatorInfo)
+      setCoordinator({
+        ...JSON.parse(requestInfo?.coordinatorInfo)
       });
-    setSupervisors([
-      {
-        fullName: JSON.parse(dataSalaryInfo?.supervisorInfo)?.fullName,
-        account: JSON.parse(dataSalaryInfo?.supervisorInfo)?.account,
-        current_position: JSON.parse(dataSalaryInfo?.supervisorInfo)
-          ?.current_position,
-        department: JSON.parse(dataSalaryInfo?.supervisorInfo)?.department,
-      },
-    ]);
+
+    // CBQL cấp cơ sở
+    if (dataSalaryInfo?.requestAppraisers?.length > 0) {
+      const _supervisors = [];
+      dataSalaryInfo.requestAppraisers.map(item => {
+        const _itemInfo = JSON.parse(item.appraiserInfo);
+        if(_itemInfo.type) { // HR thẩm định quyền điều chỉnh lương
+          setAppraiser({
+            ..._itemInfo,
+            uid: _itemInfo?.employeeNo,
+            employeeNo: _itemInfo?.employeeNo,
+            requestHistoryId: item.requestHistoryId
+          });
+        } else {
+          _supervisors.push({
+            ..._itemInfo,
+            uid: _itemInfo?.employeeNo,
+            employeeNo: _itemInfo?.employeeNo,
+            requestHistoryId: item.requestHistoryId
+          })
+        }
+      })
+      setSupervisors(_supervisors);
+    }
     // HR thẩm định quyền điều chỉnh lương
     if (dataSalaryInfo?.appraiserInfo)
       setAppraiser({
@@ -430,20 +439,22 @@ function SalaryPropse(props) {
           ?.current_position,
         department: JSON.parse(dataSalaryInfo?.appraiserInfo)?.department,
       });
-    // CBLĐ phê duyệt
-    if (dataSalaryInfo?.approverInfo)
+    
+      // CBLĐ phê duyệt
+    if (dataSalaryInfo?.approverInfo) {
+      const approvalData = JSON.parse(requestInfo?.approverInfo);
       setApprover({
-        fullName: JSON.parse(dataSalaryInfo?.approverInfo)?.fullName,
-        account: JSON.parse(dataSalaryInfo?.approverInfo)?.account,
-        current_position: JSON.parse(dataSalaryInfo?.approverInfo)
-          ?.current_position,
-        department: JSON.parse(dataSalaryInfo?.approverInfo)?.department,
+        ...approvalData,
+        uid: approvalData?.employeeNo,
+        employeeNo: approvalData?.employeeNo,
       });
-    const requestDocuments = dataSalaryInfo?.requestDocuments.map((u) => ({
+    }
+
+    const requestDocuments = (dataSalaryInfo?.userProfileDocuments || []).map((u) => ({
       id: u.id,
       name: u.fileName,
       link: u.fileUrl,
-    }));
+    })) || [];
     setListFiles(requestDocuments);
     setViewSetting(viewSettingTmp);
   };
@@ -607,9 +618,21 @@ function SalaryPropse(props) {
         showStatusModal(t("PleaseInputApprover"), false);
         return;
       }
+      const isUpdate = props.match.params.idSalary !== "create";
       setIsLoading(true);
-      const bodyFormData = prepareDataToSubmit();
-      axios({
+      const bodyFormData = prepareDataToSubmit(isUpdate ? props.match.params.idSalary : null);
+      (isUpdate ? //update yêu cầu salaryadjustment
+        axios({
+          method: "PUT",
+          url: `${process.env.REACT_APP_SALARY_URL}salaryadjustment`,
+          data: bodyFormData,
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        })
+        : 
+        axios({ // Tạo mới yêu cầu đề xuất
         method: "POST",
         url: `${process.env.REACT_APP_SALARY_URL}request`,
         data: bodyFormData,
@@ -617,7 +640,7 @@ function SalaryPropse(props) {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
-      })
+      }))
         .then((response) => {
           if (response.data.result && response.data.result.code === "000000") {
             showStatusModal(t("RequestSent"), true, "/tasks");
@@ -633,7 +656,7 @@ function SalaryPropse(props) {
         });
     } else {
       // Review
-      if (dataSalary?.processStatusId === 23) {
+      if (dataSalary?.processStatusId === 22) {
         if (!currentSalary) {
           showStatusModal(t("CurrentSalaryValidate"), false);
           return;
@@ -643,18 +666,15 @@ function SalaryPropse(props) {
           return;
         }
         if (currentSalary && suggestedSalary) {
-          const requestInfoSalary =
-            dataSalary?.requestInfo.length !== 0
-              ? JSON.parse(dataSalary?.requestInfo[0]?.employeeInfo)
-              : {};
+          const requestInfoSalary = dataContract?.staffContracts;
           const dataSend = {
             requestHistoryId: props.match.params?.idSalary,
             companyCode: localStorage.getItem("companyCode") || "",
             staffSalaryUpdate: [
               {
                 salaryAdjustmentId:
-                  dataSalary?.requestInfo.length !== 0
-                    ? dataSalary?.requestInfo[0].id
+                  dataSalary?.salaryAdjustments?.length !== 0
+                    ? dataSalary?.salaryAdjustments[0].id
                     : "",
                 employeeNo: requestInfoSalary?.employeeNo,
                 currentSalary: currentSalary,
@@ -669,7 +689,7 @@ function SalaryPropse(props) {
           setIsLoading(true);
           axios({
             method: "POST",
-            url: `${process.env.REACT_APP_REQUEST_URL}SalaryAdjustment/submitsalary`,
+            url: `${process.env.REACT_APP_SALARY_URL}salaryadjustment/submitsalary`,
             data: dataSend,
             headers: {
               "Content-Type": "application/json",
@@ -896,6 +916,7 @@ function SalaryPropse(props) {
           viewSettingTmp.disableComponent.showSuggestedSalary = true;
           viewSettingTmp.disableComponent.showCurrentSalary = true;
           setViewSetting(viewSettingTmp);
+          setCalledSalary(true);
           return;
         }
         showStatusModal(response.data.result.message || t("Error"), false);
@@ -905,7 +926,6 @@ function SalaryPropse(props) {
       })
       .finally(() => {
         setIsLoading(false);
-        setCalledSalary(true);
       });
   };
 
@@ -964,6 +984,7 @@ function SalaryPropse(props) {
 
   return (
     <div className="timesheet-section container-salary ">
+      <LoadingModal show={isLoading} />
       <ConfirmPasswordModal
         state={salaryState}
         show={modalConfirmPassword}
@@ -1067,7 +1088,7 @@ function SalaryPropse(props) {
                 value={
                   dataContract?.staffContracts?.startDate
                     ? moment(dataContract.staffContracts.startDate).format(
-                        "MM/DD/YYYY"
+                        "DD/MM/YYYY"
                       )
                     : ""
                 }
@@ -1083,7 +1104,7 @@ function SalaryPropse(props) {
                 value={
                   dataContract?.staffContracts?.expireDate
                     ? moment(dataContract.staffContracts.expireDate).format(
-                        "MM/DD/YYYY"
+                        "DD/MM/YYYY"
                       )
                     : ""
                 }
@@ -1200,7 +1221,7 @@ function SalaryPropse(props) {
       </div>
 
       {/* NHÂN SỰ HỖ TRỢ XIN QUYỀN XEM LƯƠNG */}
-      {viewSetting.showComponent.humanForReviewSalary && (
+      
         <div className="block-content-salary">
           <h6 className="block-content-salary__title">
             {" "}
@@ -1216,7 +1237,7 @@ function SalaryPropse(props) {
             />
           </div>
         </div>
-      )}
+      
 
       {/* CBQL CẤP CƠ SỞ */}
       {viewSetting.showComponent.managerApproved && (
