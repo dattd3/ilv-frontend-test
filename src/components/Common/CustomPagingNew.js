@@ -10,8 +10,9 @@ function CustomPaging(props) {
     onChangePageSize,
     onChangePageIndex,
     totalRecords,
-    pageSize,
-    pageIndex,
+    pageSize = 10,
+    pageIndex = 1,
+    pageSizeOptions = [5, 10, 20]
   } = props;
 
   const totalPages = Math.ceil(totalRecords / pageSize);
@@ -38,10 +39,11 @@ function CustomPaging(props) {
             const size = parseInt(e.target.value);
             onChangePageSize(size);
           }}
+          value={pageSize}
         >
-          <option>5</option>
-          <option>10</option>
-          <option>20</option>
+          {
+            pageSizeOptions.map((option) => <option key={option}>{option}</option>)
+          }
         </select>
       </div>
       <div className="align-self-center pages">

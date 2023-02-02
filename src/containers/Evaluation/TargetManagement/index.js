@@ -126,7 +126,7 @@ function TargetManagement() {
   const [phaseOptions, setPhaseOptions] = useState([]);
   const [employeeSearchOptions, setEmployeeSearchOptions] = useState([]);
   const [targetRegistration, setTargetRegistration] = useState([]);
-  const [pageSize, setPageSize] = useState(5);
+  const [pageSize, setPageSize] = useState(10);
   const [pageIndex, setPageIndex] = useState(1);
   const [employeeSelected, setEmployeeSelected] = useState(null);
   const [employeeSearchLoading, setEmployeeSearchLoading] = useState(false);
@@ -244,7 +244,7 @@ function TargetManagement() {
       data: null,
     });
     if (shouldRefresh === true) {
-      setPageSize(5);
+      setPageSize(10);
       setPageIndex(1);
       fetchTargetList();
     }
