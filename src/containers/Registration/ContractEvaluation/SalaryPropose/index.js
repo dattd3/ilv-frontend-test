@@ -317,7 +317,7 @@ function SalaryPropse(props) {
         viewSettingTmp.showComponent.managerApproved = true;
         viewSettingTmp.showComponent.bossApproved = true;
         viewSettingTmp.disableComponent.viewCurrentSalary = true;
-        let currentAppraiserIndex = 0;
+        let currentAppraiserIndex = dataSalaryInfo?.requestAppraisers?.findIndex(app => app.status == Constants.SALARY_APPRAISER_STATUS.WAITING);
         if (
           currentEmail.toLowerCase() ===
           dataSalaryInfo?.requestAppraisers[currentAppraiserIndex].appraiserId?.toLowerCase() &&
