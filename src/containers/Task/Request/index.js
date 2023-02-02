@@ -47,7 +47,7 @@ class RequestComponent extends React.Component {
       }
     }
     config.timeout = Constants.timeoutForSpecificApis
-    axios.get(`${process.env.REACT_APP_REQUEST_URL}request/list?${params}companyCode=`+localStorage.getItem("companyCode") , config)
+    axios.get(`${process.env.REACT_APP_SALARY_URL}request/list?${params}companyCode=`+localStorage.getItem("companyCode") , config)
     .then(res => {
       if (res && res.data && res.data.data && res.data.result) {
         const result = res.data.result;

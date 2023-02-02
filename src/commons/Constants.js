@@ -203,6 +203,11 @@ const Constants = {
   timeoutForSpecificApis: 180000,
   LANGUAGE_VI: 'vi-VN',
   LANGUAGE_EN: 'en-US',
+  SALARY_APPRAISER_STATUS: {
+    NO_AVAILABE: 0,
+    APPRAISED: 1,
+    WAITING: 2
+  },
   MODULE: {
     TUYENDUNG: 1,
     DANHGIA_TAIKI: 2,

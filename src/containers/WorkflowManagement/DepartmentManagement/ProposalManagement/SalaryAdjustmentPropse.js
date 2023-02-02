@@ -326,7 +326,7 @@ const SalaryAdjustmentPropse = (props) => {
         viewSettingTmp.showComponent.showHrAssessment = true;
         viewSettingTmp.showComponent.showOfficerApproved = true;
         viewSettingTmp.disableComponent.showEye = true;
-        let currentAppraiserIndex = 0;
+        let currentAppraiserIndex = dataSalaryInfo?.requestAppraisers?.findIndex(app => app.status == Constants.SALARY_APPRAISER_STATUS.WAITING);
         if (
           currentEmail.toLowerCase() ===
           dataSalaryInfo?.requestAppraisers[currentAppraiserIndex].appraiserId?.toLowerCase() &&
