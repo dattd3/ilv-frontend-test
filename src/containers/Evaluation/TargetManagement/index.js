@@ -342,10 +342,10 @@ function TargetManagement() {
   const onEditTargetRegisterClick = (event, item) => {
     event.stopPropagation();
 
-    if (item?.status === REQUEST_STATUS.draft && item?.requestType === REGISTER_TYPES.LIBRARY) {
+    if (item?.status === REQUEST_STATUS.DRAFT && item?.requestType === REGISTER_TYPES.LIBRARY) {
       setModalManagement({
         type: MODAL_TYPES.REGISTER_LIBRARY,
-        data: null,
+        data: item,
       });
     } else {
       setModalManagement({
@@ -405,6 +405,7 @@ function TargetManagement() {
           <RegisterTargetFromLibraryModal
             onHideRegisterTargetModal={onHideModal}
             registerType={MODAL_TYPES.REGISTER_LIBRARY}
+            requestId={modalManagement?.data?.id}
             phaseOptions={phaseOptions}
             setModalManagement={setModalManagement}
           />
