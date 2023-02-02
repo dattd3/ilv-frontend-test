@@ -639,11 +639,11 @@ function TargetManagement() {
               <th>{t("AssessmentPeriod")}</th>
               <th className="text-center">{t("TotalTarget")}</th>
               <th>{t("Requestor")}</th>
-              <th>Ngày gửi yêu cầu</th>
+              <th className="text-center">Ngày gửi yêu cầu</th>
               <th>{t("ADCode")}</th>
               <th className="text-center">{t("Status")}</th>
               <th className="text-center">{t("Reason")}</th>
-              <th className="text-center">{t("action")}</th>
+              <th className="text-center sticky-col">{t("action")}</th>
             </tr>
           </thead>
           <tbody className="target-register-tbody">
@@ -668,7 +668,7 @@ function TargetManagement() {
                 <td>{item.checkPhaseName}</td>
                 <td className="text-center">{item.totalTarget}</td>
                 <td>{JSON.parse(item.userInfo)?.fullName}</td>
-                <td>
+                <td className="text-center">
                   {item.sendDate && item.sendDate !== "0001-01-01T00:00:00"
                     ? moment(item.sendDate).format("DD/MM/YYYY")
                     : ""}
@@ -708,7 +708,7 @@ function TargetManagement() {
                     </>
                   )}
                 </td>
-                <td className="text-center">
+                <td className="text-center sticky-col">
                   {STATUS_DELETEABLE.includes(item.status) &&
                     currentTab === TABS.OWNER && (
                       <IconRemove
