@@ -175,24 +175,6 @@ const SelectTargetTabContent = ({ filter, listTarget = [], targetSelected = [], 
                                         )
                                     })
                                 }
-                                {/* 
-                                <tr>
-                                    <td className="target-col">Tham gia các chương trình đào tạo do Tập đoàn, Công ty, Cơ sở tổ chức</td>
-                                    <td className="measure-col">
-                                        <div>
-                                            <ul>
-                                                <li>{`5 điểm: Đạt 100%`}</li>
-                                                <li>{`4 điểm: Đạt 90% - dưới 100%`}</li>
-                                                <li>{`3 điểm: Đạt 80% < 90%`}</li>
-                                                <li>{`2 điểm: Đạt 70% < 80%`}</li>
-                                                <li>{`1 điểm: Đạt 60% < 70%`}</li>
-                                            </ul>
-                                        </div>
-                                    </td>
-                                    <td className="action-col text-center">
-                                        <span className="btn-action"><img src={IconRemove} alt='Remove' /></span>
-                                    </td>
-                                </tr> */}
                             </tbody>
                         </table>
                         <div className="paging-region">
@@ -224,7 +206,7 @@ const SelectTargetTabContent = ({ filter, listTarget = [], targetSelected = [], 
     )
 }
 
-const DoneTabContent = ({ filter, targetSelected = [], handleInputChange, handleSelectTarget, handleViewListTargetSelected }) => {
+const DoneTabContent = ({ filter, targetSelected = [], error, handleInputChange, handleSelectTarget, handleViewListTargetSelected }) => {
     const { t } = useTranslation()
 
     const handleRemoveItem = (e, item) => {
@@ -287,11 +269,12 @@ const DoneTabContent = ({ filter, targetSelected = [], handleInputChange, handle
                                             <span className="unit">%</span>
                                             <input type="text" value={item?.weight || ''} placeholder="Nhập" onChange={e => handleInputChange('weight', e?.target?.value || '', i)} />   
                                         </div>
+                                        { error[`error_${i}_weight`] && <div className="error-item">{ error[`error_${i}_weight`] }</div> }
                                     </div>
                                     <div className="row-content">
                                         <label>Mục tiêu cần đạt</label>
                                         <div className="input-block">
-                                            <textarea rows={3} value={item?.target || ''} className="input-border" placeholder="Nhập" onChange={e => handleInputChange('target', e?.target?.value || '', i)} />   
+                                            <textarea rows={3} value={item?.target || ''} className="input-border" placeholder="Nhập" onChange={e => handleInputChange('target', e?.target?.value || '', i)} disabled={item?.target !== null && item?.target !== undefined && item?.target?.trim() !== '' ? true : false} />   
                                         </div>
                                     </div>
                                 </div>
@@ -335,14 +318,18 @@ const DoneTabContent = ({ filter, targetSelected = [], handleInputChange, handle
     )
 }
 
-const ActionButton = ({ stepActive, totalWeight, isDisableNextStep, isDisableSaveRequest, isDisableSendRequest, errorMissingApproverInfo, onHideRegisterTargetModal, handleChangeStep, handleSubmitRequest }) => {
+const ActionButton = ({ stepActive, totalWeight, isDisableNextStep, isDisableSaveRequest, isDisableSendRequest, error, onHideRegisterTargetModal, handleChangeStep, handleSubmitRequest }) => {
     const totalWeightToShow = Number(totalWeight).toFixed(2)
     const totalWeightClass = totalWeightToShow >= 99.5 && totalWeightToShow <= 100 ? 'full-weight' : ''
     const isSendRequest = true
 
     return (
         <div className="wrap-action-region">
-            { errorMissingApproverInfo && <div className="approver-info-missing">{errorMissingApproverInfo}</div> }
+            { 
+                error?.errorMissingApproverInfo 
+                ? <div className="error-info">{ error?.errorMissingApproverInfo }</div>
+                : error?.totalWeight && <div className="error-info">{ error?.totalWeight }</div>
+            }
             <div className="action-region">
                 <span className="total-weight">
                     {
@@ -576,9 +563,10 @@ function RegisterTargetFromLibraryModal(props) {
                 const requestInfo = await requestGetDetailInfo
                 
                 let period = null
-                if (!requestId) {
+                if (!requestId) { // Khi Đăng ký mục tiêu từ thư viện
                     if (approverInfo && approverInfo?.data && approverInfo?.data?.data && approverInfo?.data?.data?.length > 0) {
                         const approver = approverInfo.data.data[0]
+
                         SetApproverInfo({
                             account: approver?.username, // AD
                             fullName: approver?.fullname || "",
@@ -598,8 +586,13 @@ function RegisterTargetFromLibraryModal(props) {
                             label: approver?.fullname || "",
                             avatar: approver?.avatar || "",
                         })
+                    } else {
+                        SetError({
+                            ...error,
+                            errorMissingApproverInfo: '* Chưa có thông tin CBQL phê duyệt, vui lòng liên hệ Nhân sự để được hỗ trợ!'
+                        })
                     }
-                } else if (requestInfo && requestInfo?.data && requestInfo?.data?.data?.requests) {
+                } else if (requestInfo && requestInfo?.data && requestInfo?.data?.data?.requests) { // Khi sửa yêu cầu đăng ký mục tiêu từ thư viện ở trạng thái Nháp
                     const request = requestInfo?.data?.data?.requests
                     period = request?.checkPhaseId || null
                     const approverInfoData = JSON.parse(request?.approverInfo || '{}')
@@ -623,7 +616,12 @@ function RegisterTargetFromLibraryModal(props) {
                         avatar: null,
                     })
                     SetUserInfo(request?.userInfo)
-                    SetTargetSelected(!request?.listTarget ? [] : (request?.listTarget || []).map(item => ({
+                    SetTargetSelected(
+                        !request?.listTarget 
+                        ? [] 
+                        : (request?.listTarget || [])
+                        .sort((current, next) => current?.order - next?.order)
+                        .map(item => ({
                         ...item,
                         targetName: JSON.parse(item?.targetName || '{}')[LANGUAGE_CODE_MAPPING[currentLocale]],
                     })))
@@ -635,7 +633,8 @@ function RegisterTargetFromLibraryModal(props) {
                     listPeriod: (phaseOptions || [])
                     .filter(item => item?.isAvailable && !item?.isDeleted && item?.status)
                 })
-                SetListTarget(listTarget?.data?.targets || [])
+                const listTargetSorted = (listTarget?.data?.targets || []).sort((current, next) => current?.order - next?.order)
+                SetListTarget(listTargetSorted || [])
             } catch (e) {
 
             } finally {
@@ -743,7 +742,7 @@ function RegisterTargetFromLibraryModal(props) {
         return !filter?.period || !approverInfo || !targetSelected || targetSelected?.length === 0
     })()
 
-    const preparePayload = (stepCode, isSendRequest) => {
+    const preparePayload = (isSendRequest) => {
         const payload = {
             checkPhaseId: filter?.period,
             id: requestId ? requestId : requestIdSaved,
@@ -773,11 +772,44 @@ function RegisterTargetFromLibraryModal(props) {
         return payload
     }
 
+    const isDataValid = () => {
+        const errorInfo = (targetSelected || []).reduce((res, current, index) => {
+            res.item[`error_${index}_weight`] = current?.weight > 100 ? '* Trọng số trong khoảng 1 - 100' : ''
+            res.totalWeight += Number(current?.weight || 0)
+            return res
+        }, {
+            item: {},
+            totalWeight: 0,
+        })
+
+        const isItemsValid = Object.values(errorInfo?.item).every(item => !item)
+        const isTotalWeightValid = Number(errorInfo?.totalWeight).toFixed(2) >= 99.5 && Number(errorInfo?.totalWeight).toFixed(2) <= 100
+
+        SetError({
+            ...error,
+            ...errorInfo?.item,
+            ...(isItemsValid && !isTotalWeightValid && { totalWeight: '* Yêu cầu tổng trọng số bằng 100%. Vui lòng kiểm tra lại!' }),
+        })
+
+        if (isItemsValid && isTotalWeightValid) {
+            return true
+        }
+
+        return false
+    }
+
     const handleSubmitRequest = async (stepCode = stepConfig.selectTarget, isSendRequest = false) => {
         SetIsLoading(true)
         try {
+            if (isSendRequest) {
+                const isValid = isDataValid()
+                if (!isValid) {
+                    return
+                }
+            }
+
             const config = getRequestConfigurations()
-            const payload = preparePayload(stepCode, isSendRequest)
+            const payload = preparePayload(isSendRequest)
 
             console.log('payload ===> ', payload)
 
@@ -864,6 +896,7 @@ function RegisterTargetFromLibraryModal(props) {
                             <DoneTabContent
                                 filter={omit(filter, ['keyword'])}
                                 targetSelected={targetSelected}
+                                error={error}
                                 handleInputChange={handleInputChange}
                                 handleSelectTarget={handleSelectTarget}
                                 handleViewListTargetSelected={handleViewListTargetSelected}
@@ -882,7 +915,6 @@ function RegisterTargetFromLibraryModal(props) {
                             isDisableNextStep={isDisableNextStep}
                             isDisableSaveRequest={isDisableSaveRequest}
                             isDisableSendRequest={isDisableSendRequest}
-                            errorMissingApproverInfo={!approverInfo ? '* Chưa có thông tin CBQL phê duyệt, vui lòng liên hệ Nhân sự để được hỗ trợ!' : ''}
                             error={error}
                             onHideRegisterTargetModal={() => onHideRegisterTargetModal(true)}
                             handleChangeStep={handleChangeStep}
