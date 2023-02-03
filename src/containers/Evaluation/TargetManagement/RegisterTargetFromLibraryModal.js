@@ -88,7 +88,7 @@ const RegistrationStep = ({ stepActive, totalItemAdded = 0, isDisableNextStep, h
                     <button className="item" onClick={() => handleChangeStep(stepConfig.done)} disabled={isDisableNextStep}>
                         <span className="no"><span>2</span></span>
                         <span className="name">Hoàn thành thông tin</span>
-                        <img src={IconArrowRightGray} alt="Next" className="next" />
+                        <img src={isActiveDoneStep ? IconArrowRightWhite : IconArrowRightGray} alt="Next" className="next" />
                     </button>
                 </div>
                 { totalItemAdded > 0 && <span className="notice-total">{totalItemAdded}</span> }
@@ -139,7 +139,7 @@ const SelectTargetTabContent = ({ filter, listTargetInfo, targetSelected = [], p
                 <div className="region-result">
                     <div className="header-region">
                         <span className="font-weight-bold title">Thư viện mục tiêu</span>
-                        <span className="select-all" onClick={() => handleSelectTarget(listTargetInfo?.listTarget || [])}>Chọn tất cả</span>
+                        <span className="select-all" title="Chọn tất cả" onClick={() => handleSelectTarget(listTargetInfo?.listTarget || [])}>Chọn tất cả</span>
                     </div>
                     <div className="result-block">
                         <table>
@@ -170,7 +170,7 @@ const SelectTargetTabContent = ({ filter, listTargetInfo, targetSelected = [], p
                                                     </div>
                                                 </td>
                                                 <td className="action-col text-center">
-                                                    <span className="btn-action" onClick={() => handleAction(item, needRemove)}><img src={needRemove ? IconRemove : IconAdd} alt={needRemove ? 'Remove' : 'Add'} /></span>
+                                                    <span className="btn-action" title={needRemove ? 'Remove' : 'Add'} onClick={() => handleAction(item, needRemove)}><img src={needRemove ? IconRemove : IconAdd} alt={needRemove ? 'Remove' : 'Add'} /></span>
                                                 </td>
                                             </tr>
                                         )
@@ -238,7 +238,7 @@ const DoneTabContent = ({ filter, targetSelected = [], error, handleInputChange,
                                     </>
                                 }
                             </div>
-                            <span role='button' className="btn-remove" onClick={(e) => handleRemoveItem(e, item)}>
+                            <span role='button' className="btn-remove" title='Xóa' onClick={(e) => handleRemoveItem(e, item)}>
                                 <img src={IconRemoveRed} alt='Remove' />
                                 Xóa
                             </span>
@@ -265,7 +265,7 @@ const DoneTabContent = ({ filter, targetSelected = [], error, handleInputChange,
                                         </div>
                                     </div>
                                     <div className="row-content">
-                                        <label>Trọng số</label>
+                                        <label>Trọng số<span className="required">(*)</span></label>
                                         <div className="input-block input-border input-text-customize">
                                             <span className="unit">%</span>
                                             <input type="text" value={item?.weight || ''} placeholder="Nhập" onChange={e => handleInputChange('weight', e?.target?.value || '', i)} />   
@@ -524,6 +524,11 @@ function RegisterTargetFromLibraryModal(props) {
     const [userInfo, SetUserInfo] = useState('')
     const [approvers, SetApprovers] = useState([])
     const [isLoading, SetIsLoading] = useState(false)
+    const [statusModal, SetStatusModal] = useState({
+        isShow: false,
+        isSuccess: true,
+        content: '',
+    })
 
     // const pageSizeMemo = useMemo(() => paging.pageSize, [paging.pageSize])
 
@@ -661,6 +666,7 @@ function RegisterTargetFromLibraryModal(props) {
     useEffect(() => {
         (async function() {
             try {
+                SetIsLoading(true)
                 const requestListTarget = await requestGetListTarget()
                 let listTarget = []
                 if (requestListTarget && requestListTarget?.data && requestListTarget?.data?.data && requestListTarget?.data?.data?.targets?.length > 0) {
@@ -676,7 +682,10 @@ function RegisterTargetFromLibraryModal(props) {
                 })
             } catch (e) {
 
+            } finally {
+                SetIsLoading(false)
             }
+
         })()
     }, [paging])
     
@@ -695,10 +704,10 @@ function RegisterTargetFromLibraryModal(props) {
             targetSelectedClone[targetIndex].IsEdit = (requestIdSaved || requestId) ? true : false // Đã hình thành request IsEdit = true, ngược lại là false
 
             if (key === 'weight') {
-                const re = /^[0-9\b]+$/
+                const re = /^-?\d+\.?\d*$/
                 if (val === '' || re.test(val)) {
                     targetSelectedClone[targetIndex][key] = val
-                    // processValidateData(targetIndex, val)
+                    processValidateData(targetIndex, val)
                 }
             } else {
                 targetSelectedClone[targetIndex][key] = val
@@ -739,19 +748,25 @@ function RegisterTargetFromLibraryModal(props) {
     }
 
     const submitFilterOnParent = async () => {
-        let listTarget = []
-        const requestListTarget = await requestGetListTarget()
-        if (requestListTarget && requestListTarget?.data && requestListTarget?.data?.data && requestListTarget?.data?.data?.targets?.length > 0) {
-            listTarget = requestListTarget?.data?.data?.targets
+        SetIsLoading(true)
+        try {
+            let listTarget = []
+            const requestListTarget = await requestGetListTarget()
+            if (requestListTarget && requestListTarget?.data && requestListTarget?.data?.data && requestListTarget?.data?.data?.targets?.length > 0) {
+                listTarget = requestListTarget?.data?.data?.targets
+            }
+            const listTargetSorted = (listTarget || []).sort((current, next) => current?.order - next?.order)
+
+            SetListTargetInfo({
+                ...listTargetInfo,
+                totalRecords: requestListTarget?.data?.data?.total,
+                listTarget: listTargetSorted || [],
+            })
+        } catch (error) {
+            
+        } finally {
+            SetIsLoading(false)
         }
-
-        const listTargetSorted = (listTarget || []).sort((current, next) => current?.order - next?.order)
-
-        SetListTargetInfo({
-            ...listTargetInfo,
-            totalRecords: requestListTarget?.data?.data?.total,
-            listTarget: listTargetSorted || [],
-        })
     }
 
     const totalWeight = (() => {
@@ -804,10 +819,12 @@ function RegisterTargetFromLibraryModal(props) {
         return payload
     }
 
-    const processValidateData = (i = 0, weight = 0) => {
+    const processValidateData = (i = 0, weightInput = 0) => {
         const errorInfo = (targetSelected || []).reduce((res, current, index) => {
-            res.item[`error_${index}_weight`] = current?.weight > 100 ? '* Trọng số trong khoảng 1 - 100' : ''
-            res.totalWeight += Number(current?.weight || 0)
+            let weight = index === i ? Number(weightInput || 0) : Number(current?.weight || 0)
+            res.item[`error_${index}_weight`] = (weight < 1 || weight > 100) ? '* Trọng số trong khoảng 1 - 100' : ''
+            res.totalWeight += weight
+
             return res
         }, {
             item: {},
@@ -818,7 +835,6 @@ function RegisterTargetFromLibraryModal(props) {
         const isTotalWeightValid = Number(errorInfo?.totalWeight).toFixed(2) >= 99.5 && Number(errorInfo?.totalWeight).toFixed(2) <= 100
 
         SetError({
-            ...error,
             ...errorInfo?.item,
             ...(isItemsValid && !isTotalWeightValid && { totalWeight: '* Yêu cầu tổng trọng số bằng 100%. Vui lòng kiểm tra lại!' }),
         })
@@ -826,8 +842,10 @@ function RegisterTargetFromLibraryModal(props) {
 
     const isDataValid = () => {
         const errorInfo = (targetSelected || []).reduce((res, current, index) => {
-            res.item[`error_${index}_weight`] = current?.weight > 100 ? '* Trọng số trong khoảng 1 - 100' : ''
-            res.totalWeight += Number(current?.weight || 0)
+            let weight = Number(current?.weight || 0)
+            res.item[`error_${index}_weight`] = (weight < 1 || weight > 100) ? '* Trọng số trong khoảng 1 - 100' : ''
+            res.totalWeight += weight
+
             return res
         }, {
             item: {},
@@ -856,22 +874,36 @@ function RegisterTargetFromLibraryModal(props) {
             if (isSendRequest) {
                 const isValid = isDataValid()
                 if (!isValid) {
+                    let targetSelectedClone = [...targetSelected]
+                    targetSelectedClone = targetSelectedClone.map(item => ({
+                        ...item,
+                        isExpand: true,
+                    }))
+                    SetTargetSelected(targetSelectedClone)
                     return
                 }
             }
 
             const config = getRequestConfigurations()
             const payload = preparePayload(isSendRequest)
-
-            console.log('payload ===> ', payload)
-
             const response = await axios.post(CREATE_TARGET_REGISTER, payload, config)
 
             if (response.data?.result?.code !== Constants.PMS_API_SUCCESS_CODE) {
-                toast.error(response.data?.result?.message)
+                SetStatusModal({
+                    ...statusModal,
+                    isShow: true,
+                    isSuccess: false,
+                    content: response?.data?.result?.message,
+                })
             } else {
                 if (!isSendRequest) {
                     SetRequestIdSaved(response?.data?.data?.id || 0)
+                    SetStatusModal({
+                        ...statusModal,
+                        isShow: true,
+                        isSuccess: true,
+                        content: "Lưu mục tiêu thành công!",
+                    })
                 }
 
                 if (isSendRequest) {
@@ -882,7 +914,12 @@ function RegisterTargetFromLibraryModal(props) {
                 }
             }
         } catch {
-            toast.error(isSendRequest ? "Gửi yêu cầu thất bại. Xin vui lòng thử lại!" : "Lưu mục tiêu thất bại. Xin vui lòng thử lại!")
+            SetStatusModal({
+                ...statusModal,
+                isShow: true,
+                isSuccess: false,
+                content: isSendRequest ? "Gửi yêu cầu thất bại. Xin vui lòng thử lại!" : "Lưu mục tiêu thất bại. Xin vui lòng thử lại!",
+            })
         } finally {
             SetIsLoading(false)
         }
@@ -903,15 +940,25 @@ function RegisterTargetFromLibraryModal(props) {
         SetTargetSelected(targetSelectedClone)
     }
 
+    const onHideStatusModal = () => {
+        SetStatusModal({
+            ...statusModal,
+            isShow: false,
+            isSuccess: true,
+            content: "",
+        })
+    }
+
     return (
         <>
             <LoadingModal show={isLoading} />
-            {/* <StatusModal
-                isSuccess={false}
-                show={true}
-                onHide={onHideModal}
-                content={modalManagement.data}
-            /> */}
+            <StatusModal
+                show={statusModal?.isShow || false}
+                isSuccess={statusModal?.isSuccess}
+                content={statusModal?.content}
+                className="register-target-from-library-status-modal"
+                onHide={onHideStatusModal}
+            />
             <Modal 
                 backdrop="static" 
                 keyboard={false}
