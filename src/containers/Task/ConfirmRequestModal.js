@@ -126,7 +126,7 @@ class ConfirmRequestModal extends React.Component {
 
         // let bodyFormData = new FormData()
         // bodyFormData.append('UserProfileInfoToSap', JSON.stringify(dataToSap))
-        this.changeRequest(dataPrepareToSap, `${process.env.REACT_APP_REQUEST_URL}request/approve`, t("Trạng thái phê duyệt"))
+        this.changeRequest(dataPrepareToSap, `${process.env.REACT_APP_SALARY_URL}request/approve`, t("Trạng thái phê duyệt"))
     }
 
     disApprove = (formData, url, id) => {
@@ -149,7 +149,7 @@ class ConfirmRequestModal extends React.Component {
             }
             dataToSap.push(taskObj)
           });
-        this.changeRequest(dataToSap,`${process.env.REACT_APP_REQUEST_URL}request/approve`,this.props.t("Trạng thái hủy phê duyệt"))
+        this.changeRequest(dataToSap,`${process.env.REACT_APP_SALARY_URL}request/approve`,this.props.t("Trạng thái hủy phê duyệt"))
     }
 
     consent = () => {
@@ -172,7 +172,7 @@ class ConfirmRequestModal extends React.Component {
             }
             dataToSap.push(taskObj)
           });
-        this.changeRequest(dataToSap,`${process.env.REACT_APP_REQUEST_URL}request/assess`,this.props.t("Trạng thái thẩm định"))
+        this.changeRequest(dataToSap,`${process.env.REACT_APP_SALARY_URL}request/assess`,this.props.t("Trạng thái thẩm định"))
     }
 
     reject = () => {
@@ -197,7 +197,7 @@ class ConfirmRequestModal extends React.Component {
             dataToSap.push(taskObj)
           });
         
-        this.changeRequest(dataToSap,`${process.env.REACT_APP_REQUEST_URL}request/assess`,this.props.t("Trạng thái hủy thẩm định"))
+        this.changeRequest(dataToSap,`${process.env.REACT_APP_SALARY_URL}request/assess`,this.props.t("Trạng thái hủy thẩm định"))
     }
     
     handleChangeMessage = (e) => {
