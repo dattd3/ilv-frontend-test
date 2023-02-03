@@ -342,7 +342,7 @@ function TargetManagement() {
   const onEditTargetRegisterClick = (event, item) => {
     event.stopPropagation();
 
-    if (item?.status === REQUEST_STATUS.DRAFT && item?.requestType === REGISTER_TYPES.LIBRARY) {
+    if ([REQUEST_STATUS.DRAFT, REQUEST_STATUS.REJECT].includes(Number(item?.status)) && item?.requestType === REGISTER_TYPES.LIBRARY) {
       setModalManagement({
         type: MODAL_TYPES.REGISTER_LIBRARY,
         data: item,
