@@ -1715,6 +1715,7 @@ const SalaryAdjustmentPropse = (props) => {
             <HumanForReviewSalaryComponent
               isEdit={!viewSetting.disableComponent.selectHrSupportViewSalary}
               approver={coordinator}
+              isHR={true}
               updateApprover={(approver, isApprover) =>
                 handleUpdateCoordinator(approver, isApprover)
               }
@@ -1782,6 +1783,7 @@ const SalaryAdjustmentPropse = (props) => {
             <HumanForReviewSalaryComponent
               isEdit={!viewSetting.disableComponent.selectHrSupportViewSalary}
               approver={appraiser}
+              isHR={true}
               updateApprover={(sup) => handleUpdateHrChangeSalary(sup)}
             />
           </div>

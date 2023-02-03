@@ -64,26 +64,6 @@ class HumanForReviewSalaryComponent extends React.Component {
       }
       
     }
-
-    // const companiesUsing = [Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading, Constants.pnlVCode.VinMec]
-    // if (companiesUsing.includes(currentUserPnLVCodeLogged)) {
-    //   const managerApproval = await this.loadApproverForPnL()
-    //   this.setState({approver: managerApproval} , () => {
-    //     if (approver) {
-    //       this.setState({
-    //         approver: {
-    //           ...approver,
-    //           label: approver.fullName,
-    //           value: approver.account
-    //         }
-    //       })
-    //     }
-    //   })
-    //   this.props.updateApprover(managerApproval, true)
-    // } else {
-    //   const recentlyApprover = await this.loadRecentlyApprover()
-    //   this.setState({ users: recentlyApprover })
-    // }
   }
 
   UNSAFE_componentWillReceiveProps(newProps) {
@@ -106,68 +86,6 @@ class HumanForReviewSalaryComponent extends React.Component {
     
   };
 
-  // loadApproverForPnL = async () => {
-  //   try {
-  //     const config = getMuleSoftHeaderConfigurations()
-  //     const response = await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/manager`, config)
-  //     if (response && response.data) {
-  //       const result = response.data.result
-  //       if (result && result.code == Constants.API_SUCCESS_CODE) {
-  //         const data = response.data?.data[0]
-  //         return {
-  //           value: data?.userid?.toLowerCase() || "",
-  //           label: data?.fullname || "",
-  //           fullName: data?.fullname || "",
-  //           avatar: data?.avatar || "",
-  //           employeeLevel: data?.rank_title,
-  //           pnl: "",
-  //           orglv2Id: "",
-  //           account: data?.userid?.toLowerCase() || "",
-  //           current_position: data?.title || "",
-  //           department: data?.department || ""
-  //         }
-  //       }
-  //       return null
-  //     }
-  //     return null
-  //   } catch (e) {
-  //     return null
-  //   }
-  // }
-
-  // loadRecentlyApprover = async () => {
-  //   try {
-  //     const config = getRequestConfigurations()
-  //     const response = await axios.get(`${process.env.REACT_APP_REQUEST_URL}user/suggests`, config)
-  //     if (response && response.data) {
-  //       const result = response.data.result
-  //       if (result && result.code == Constants.API_SUCCESS_CODE) {
-  //         const data = response.data?.data
-  //         const approverInfo = data.approverInfo
-  //         if (approverInfo) {
-  //           return [{
-  //             value: approverInfo?.account?.toLowerCase() || "",
-  //             label: approverInfo?.fullName || "",
-  //             fullName: approverInfo?.fullName || "",
-  //             avatar: approverInfo?.avatar || "",
-  //             employeeLevel: approverInfo?.employeeLevel || "",
-  //             pnl: approverInfo?.pnl || "",
-  //             orglv2Id: approverInfo?.orglv2Id || "",
-  //             account: approverInfo?.account?.toLowerCase() || "",
-  //             current_position: approverInfo?.current_position || "",
-  //             department: approverInfo?.department || ""
-  //           }]
-  //         }
-  //         return []
-  //       }
-  //       return []
-  //     }
-  //     return []
-  //   } catch (e) {
-  //     return []
-  //   }
-  // }
-
   handleSelectChange(name, value) {
     if (value) {
       const currentUserLevel = localStorage.getItem('employeeLevel')
@@ -181,10 +99,10 @@ class HumanForReviewSalaryComponent extends React.Component {
   }
 
   isApprover = (levelApproverFilter, orglv2Id, currentUserLevel, account) => {
-    let listLevelsApprover = Constants.APPROVER_LIST_LEVEL
-    if (![Constants.pnlVCode.VinHome, Constants.pnlVCode.VincomRetail, Constants.pnlVCode.VinSchool, Constants.pnlVCode.VinMec, Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading].includes(currentUserPnLVCodeLogged)) {
-      listLevelsApprover = Constants.APPROVER_LIST_LEVEL.filter((item, index) => index !== 0)
+    if(this.props.isHR) {
+      return true;
     }
+    let listLevelsApprover = Constants.APPROVER_LIST_LEVEL
     const indexCurrentUserLevel = _.findIndex(listLevelsApprover, function (item) { return item == currentUserLevel });
     const indexApproverFilterLevel = _.findIndex(listLevelsApprover, function (item) { return item == levelApproverFilter });
     if ((currentUserPnLVCodeLogged !== Constants.pnlVCode.Vin3S && (indexApproverFilterLevel === -1 || indexCurrentUserLevel > indexApproverFilterLevel || !listLevelsApprover.includes(levelApproverFilter)))
@@ -196,15 +114,24 @@ class HumanForReviewSalaryComponent extends React.Component {
 
   getApproverInfo = (value) => {
     this.setState({ isSearch: false })
-    const { appraiser } = this.props
+    const { appraiser, isHR } = this.props
     if (value !== "") {
       this.setState({ isSearch: true })
       const config = getRequestConfigurations()
-      const payload = {
+      let payload = {
         account: value,
+        depth: "3",
         employeeNo: localStorage.getItem('employeeNo')
       }
-      axios.post(`${process.env.REACT_APP_REQUEST_URL}user/employee/hr_officer`, payload, config)
+      let url = `${process.env.REACT_APP_REQUEST_URL}user/employee/managers`;
+      if(isHR) {
+        url = `${process.env.REACT_APP_REQUEST_URL}user/employee/hr_officer`;
+        payload = {
+          account: value,
+          employeeNo: localStorage.getItem('employeeNo')
+        }
+      }
+      axios.post(url, payload, config)
         .then(res => {
           if (res && res.data && res.data.data) {
             const data = res.data.data || []
