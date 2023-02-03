@@ -153,9 +153,9 @@ class HumanForReviewSalaryComponent extends React.Component {
               }
             })
             const lst = appraiser ? users.filter(user => user.account !== appraiser.account) : users;
-            this.setState({ users: lst })
+            this.setState({ users: lst, isSearch: false })
           }
-        }).catch(error => { })
+        }).catch(error => { console.log(error); this.setState({ isSearch: false })})
     }
     else {
       if (Array.isArray(this.state.users) && this.state.users.length > 1) this.setState({ isSearch: true })
@@ -201,6 +201,7 @@ class HumanForReviewSalaryComponent extends React.Component {
                 isClearable={true}
                 isDisabled={isEdit}
                 styles={customStyles}
+                isLoading={isSearch}
                 components={{ Option: e => MyOption({ ...e, isSearch: isSearch }) }}
                 onInputChange={this.onInputChange.bind(this)}
                 name="approver"
