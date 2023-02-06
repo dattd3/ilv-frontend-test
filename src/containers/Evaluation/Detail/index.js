@@ -1197,7 +1197,12 @@ function EvaluationDetail(props) {
   return (
     <>
       <LoadingModal show={isLoading} />
-      <StatusModal show={statusModal.isShow} isSuccess={statusModal.isSuccess} content={statusModal.content} onHide={onHideStatusModal} />
+      <StatusModal 
+        show={statusModal.isShow} 
+        isSuccess={statusModal.isSuccess} 
+        content={statusModal.content} 
+        className="evaluation-status-modal"
+        onHide={onHideStatusModal} />
       <div className="evaluation-detail-page">
         {
           dataLoaded 

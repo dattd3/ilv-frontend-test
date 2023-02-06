@@ -2763,7 +2763,7 @@
                         display: flex;
                         align-items: center;
                         padding: 0;
-                        border-bottom: 1px solid #DEE2E6;
+                        border-bottom: 1px solid #CED4DA;
                         .wrap-item {
                             display: flex;
                             align-items: center;
@@ -2774,7 +2774,7 @@
                                 & > hr {
                                     height: 1px;
                                     border: none;
-                                    border-bottom: 1px solid #A7A7A7;
+                                    border-bottom: 1px solid #CED4DA;
                                 }
                             }
                             &:first-child {
@@ -2850,10 +2850,9 @@
                     }
                     .search-region {
                         padding: 8px 0 10px 0;
-                        // border-bottom: 1px solid #DEE2E6;
                         hr {
                             margin: 0;
-                            border-top: 1px solid #DEE2E6;
+                            border-top: 1px solid #CED4DA;
                         }
                         .row-form {
                             margin-bottom: 10px;
@@ -2866,7 +2865,7 @@
                             .region-input {
                                 display: flex;
                                 .block-input-text {
-                                    border: 1px solid #DEE2E6;
+                                    border: 1px solid #CED4DA;
                                     border-radius: 4px;
                                     height: 35px;
                                     display: flex;
@@ -2913,9 +2912,6 @@
                                 display: flex;
                                 align-items: center;
                                 justify-content: space-between;
-                                .title {
-    
-                                }
                                 .select-all {
                                     border: 1px solid #347EF9;
                                     border-radius: 4px;
@@ -2928,7 +2924,7 @@
                             }
                             .result-block {
                                 padding: 10px 10px 0 10px;
-                                border: 1px solid #DEE2E6;
+                                border: 1px solid #CED4DA;
                                 border-radius: 4px;
                                 margin-top: 10px;
                                 table {
@@ -2943,12 +2939,12 @@
                                     }
                                     tbody {
                                         tr {
-                                            border-top: 1px solid #DEE2E6;
+                                            border-top: 1px solid #CED4DA;
                                             td {
                                                 padding: 5px 0;
                                             }
                                             &:last-child {
-                                                border-bottom: 1px solid #DEE2E6;
+                                                border-bottom: 1px solid #CED4DA;
                                             }
                                         }
                                     }
@@ -3043,7 +3039,7 @@
                                     text-align: left;
                                     font-size: inherit;
                                     background: #FFFFFF;
-                                    border: 1px solid #DEE2E6;
+                                    border: 1px solid #CED4DA;
                                     border-radius: 4px;
                                     color: #000000;
                                     display: flex;
@@ -3082,7 +3078,7 @@
                                     }
                                 }
                                 .item-content {
-                                    border: 1px solid #DEE2E6;
+                                    border: 1px solid #CED4DA;
                                     border-radius: 4px;
                                     border-top-left-radius: 0;
                                     border-top-right-radius: 0;
@@ -3090,7 +3086,7 @@
                                     border-top: none;
                                     margin-top: -2px;
                                     .content {
-                                        border: 1px solid #DEE2E6;
+                                        border: 1px solid #CED4DA;
                                         border-radius: 4px;
                                         padding: 10px;
                                         .wrap-target-info {
@@ -3098,12 +3094,12 @@
                                                 display: flex;
                                                 align-items: center;
                                                 &.header-row {
-                                                    border-bottom: 1px solid #DEE2E6;
+                                                    border-bottom: 1px solid #CED4DA;
                                                     padding-bottom: 8px;
                                                 }
                                                 &.content-row {
                                                     padding: 5px 0;
-                                                    border-bottom: 1px solid #DEE2E6;
+                                                    border-bottom: 1px solid #CED4DA;
                                                 }
                                             }
                                             .col-first {
@@ -3155,7 +3151,7 @@
                                             }
                                             .input-border {
                                                 border-radius: 3px;
-                                                border: 1px solid #DEE2E6;
+                                                border: 1px solid #CED4DA;
                                                 outline: none;
                                             }
                                             .error-item {
@@ -3170,13 +3166,13 @@
                     }
                     .approval-manager-block {
                         padding: 10px;
-                        border: 1px solid #DEE2E6;
+                        border: 1px solid #CED4DA;
                         margin-bottom: 10px;
                         border-radius: 4px;
                         .title {
                             padding: 0 0 10px 0;
                             margin: 0;
-                            border-bottom: 1px solid #DEE2E6;
+                            border-bottom: 1px solid #CED4DA;
                         }
                         .info {
                             padding-top: 10px;
@@ -3189,11 +3185,12 @@
                                 background: #F2F2F2;
                                 border-radius: 4px;
                                 padding: 0 8px;
+                                border: 1px solid #CED4DA;
                             }
                             .approver {
                                 cursor: pointer;
                                 font-size: 12px;
-                                border-bottom: 1px dashed #DEE2E6;
+                                border-bottom: 1px dashed #CED4DA;
                                 padding: 5px 0;
                                 .avatar-block {
                                     margin: 0 5px;
