@@ -42,7 +42,7 @@
       border-radius: 4px;
       font-size: 14px;
       margin-right: 20px;
-      border: 1px solid #dee2e6;
+      border: 1px solid #CED4DA;
       color: #c2c2c2;
     }
     .filter-select__control {
@@ -194,7 +194,8 @@
     }
     .modal-body {
       padding: 16px 20px;
-      border-radius: 4px;
+      border-bottom-right-radius: 4px;
+      border-bottom-left-radius: 4px;
       .red-color {
         color: #ff0000;
       }
@@ -262,7 +263,7 @@
       }
       .form-container {
         border-radius: 4px;
-        border: 1px solid #dee2e6;
+        border: 1px solid #CED4DA;
         padding: 16px 20px;
       }
       .target-collapse {
@@ -294,7 +295,7 @@
       .form-input {
         height: 40px;
         color: #000;
-        border: none;
+        border: 1px solid #CED4DA;
         font-size: 14px;
       }
       .form-input:focus {
