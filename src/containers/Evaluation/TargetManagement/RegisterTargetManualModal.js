@@ -4,7 +4,7 @@ import { Modal } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { Collapse, Form, Button } from "react-bootstrap";
 import { getMuleSoftHeaderConfigurations } from "commons/Utils";
-import { STATUS_EDITABLE_APPROVE_TAB } from "./Constant";
+import { STATUS_EDITABLE_APPROVE_TAB, REGISTER_TYPES } from "./Constant";
 import Constants from "commons/Constants";
 import axios from "axios";
 import { MODAL_TYPES, TARGET_INITIAL_DATA } from "./Constant";
@@ -202,6 +202,7 @@ export default function TargetRegistrationManualModal(props) {
 
   const isReadOnlyField =
     (isApprover && !isApproverEditing) || (!isApprover && viewOnly);
+    console.log(isApproverEditing)
 
   return (
     <Modal
@@ -270,7 +271,7 @@ export default function TargetRegistrationManualModal(props) {
               </span>
               {target &&
                 target.lastUpdateBy &&
-                target.createBy?.split("@")?.[0] !== target.lastUpdateBy && (
+                approverJSON.account === target.lastUpdateBy && (
                   <div className="yellow-color">
                     * Mục tiêu đã được QLTT chỉnh sửa
                   </div>
@@ -304,7 +305,7 @@ export default function TargetRegistrationManualModal(props) {
                       )
                     }
                     value={target.targetName}
-                    readOnly={isReadOnlyField}
+                    readOnly={isReadOnlyField || data.requestType === REGISTER_TYPES.LIBRARY}
                   />
                 </div>
                 <div className="mb-16">
@@ -320,7 +321,7 @@ export default function TargetRegistrationManualModal(props) {
                       onChangeTargetValues(index, "metric1", e?.target?.value)
                     }
                     value={target.metric1}
-                    readOnly={isReadOnlyField}
+                    readOnly={isReadOnlyField || data.requestType === REGISTER_TYPES.LIBRARY}
                   />
                 </div>
                 <div className="mb-16">
@@ -334,7 +335,7 @@ export default function TargetRegistrationManualModal(props) {
                       onChangeTargetValues(index, "metric2", e?.target?.value)
                     }
                     value={target.metric2}
-                    readOnly={isReadOnlyField}
+                    readOnly={isReadOnlyField || data.requestType === REGISTER_TYPES.LIBRARY}
                   />
                 </div>
                 <div className="mb-16">
@@ -348,7 +349,7 @@ export default function TargetRegistrationManualModal(props) {
                       onChangeTargetValues(index, "metric3", e?.target?.value)
                     }
                     value={target.metric3}
-                    readOnly={isReadOnlyField}
+                    readOnly={isReadOnlyField || data.requestType === REGISTER_TYPES.LIBRARY}
                   />
                 </div>
                 <div className="mb-16">
@@ -362,7 +363,7 @@ export default function TargetRegistrationManualModal(props) {
                       onChangeTargetValues(index, "metric4", e?.target?.value)
                     }
                     value={target.metric4}
-                    readOnly={isReadOnlyField}
+                    readOnly={isReadOnlyField || data.requestType === REGISTER_TYPES.LIBRARY}
                   />
                 </div>
                 <div className="mb-16">
@@ -376,7 +377,7 @@ export default function TargetRegistrationManualModal(props) {
                       onChangeTargetValues(index, "metric5", e?.target?.value)
                     }
                     value={target.metric5}
-                    readOnly={isReadOnlyField}
+                    readOnly={isReadOnlyField || data.requestType === REGISTER_TYPES.LIBRARY}
                   />
                 </div>
                 <div className="mb-16">
@@ -410,7 +411,7 @@ export default function TargetRegistrationManualModal(props) {
                       onChangeTargetValues(index, "jobDetail", e?.target?.value)
                     }
                     value={target.jobDetail}
-                    readOnly={isReadOnlyField}
+                    readOnly={isReadOnlyField || data.requestType === REGISTER_TYPES.LIBRARY}
                   />
                 </div>
                 <div>
@@ -514,14 +515,14 @@ export default function TargetRegistrationManualModal(props) {
             </div>
           )}
 
-          {totalWeight > 100 && !isReadOnlyField && (
+          {totalWeight && totalWeight !== 100 && !isReadOnlyField && (
             <div className="red-color mb-16">
               * Yêu cầu tổng trọng số bằng 100%. Vui lòng kiểm tra lại!
             </div>
           )}
           <div className="modal-footer-action">
             <div>
-              {!viewOnly && (!isApprover || isApproverEditing) && (
+              {!isReadOnlyField && (
                 <div
                   className="total-weight-container"
                   style={{
@@ -586,7 +587,7 @@ export default function TargetRegistrationManualModal(props) {
                         data,
                       })
                     }
-                    disabled={isApproverEditing}
+                    disabled={isApproverEditing || totalWeight !== 100}
                   >
                     <IconApprove />
                     &nbsp; Phê duyệt
