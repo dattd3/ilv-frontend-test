@@ -83,7 +83,7 @@ const getStatusTagStyle = (value) => {
     default:
       return {
         color: "#000",
-        border: "1px solid #F2F2F2",
+        border: "1px solid #dee2e6",
       };
   }
 };
@@ -298,7 +298,7 @@ function TargetManagement() {
       );
       if (response.data?.result?.code !== "200") {
         toast.error(`Lưu mục tiêu thất bại: ${response.data?.result?.message}`);
-      } else {
+      } else if (response.data?.result?.code === "200" && currentTab === TABS.OWNER) {
         setModalManagement({
           type: MODAL_TYPES.SUCCESS,
           data: "Lưu mục tiêu thành công!",
@@ -351,6 +351,7 @@ function TargetManagement() {
       setModalManagement({
         type: MODAL_TYPES.REGISTER_MANUAL,
         data: item,
+        viewOnly: false
       });
     }
   };

@@ -43,7 +43,10 @@
       font-size: 14px;
       margin-right: 20px;
       border: 1px solid #dee2e6;
-      color: "#C2C2C2";
+      color: #c2c2c2;
+    }
+    .filter-select__control {
+      border: none;
     }
     .filter-select__indicator-separator {
       width: 0px;
@@ -120,6 +123,8 @@
     justify-content: center;
     font-size: 12px;
     background: #fff;
+    display: inline-flex;
+    position: relative;
   }
   .tooltip {
     border-radius: 4px;
@@ -354,8 +359,9 @@
         align-items: center;
         justify-content: center;
       }
-      .button:focus {
-        border: none;
+      button,
+      input[type="button"] {
+        outline: none;
       }
       .cancel-btn {
         background: #ced4da;
@@ -476,7 +482,7 @@
     position: sticky;
     background: #fff;
     right: 0;
-    z-index: 1000;
+    z-index: 100;
   }
   .target-register-thead {
     tr {
