@@ -294,7 +294,7 @@ export default function TargetRegistrationManualModal(props) {
                   </div>
                   <Form.Control
                     as="textarea"
-                    placeholder={!isReadOnlyField && "Nhập"}
+                    placeholder={!isReadOnlyField ? "Nhập" : ""}
                     className="form-textarea"
                     name="targetName"
                     onChange={(e) =>
@@ -314,7 +314,7 @@ export default function TargetRegistrationManualModal(props) {
                   </div>
                   <Form.Control
                     as="textarea"
-                    placeholder={!isReadOnlyField && "Nhập"}
+                    placeholder={!isReadOnlyField ? "Nhập" : ""}
                     className="form-textarea"
                     name="metric1"
                     onChange={(e) =>
@@ -328,7 +328,7 @@ export default function TargetRegistrationManualModal(props) {
                   <div className="mb-16">Metric 2 (Điểm 2)</div>
                   <Form.Control
                     as="textarea"
-                    placeholder={!isReadOnlyField && "Nhập"}
+                    placeholder={!isReadOnlyField ? "Nhập" : ""}
                     className="form-textarea"
                     name="metric2"
                     onChange={(e) =>
@@ -342,7 +342,7 @@ export default function TargetRegistrationManualModal(props) {
                   <div className="mb-16">Metric 3 (Điểm 3)</div>
                   <Form.Control
                     as="textarea"
-                    placeholder={!isReadOnlyField && "Nhập"}
+                    placeholder={!isReadOnlyField ? "Nhập" : ""}
                     className="form-textarea"
                     name="metric3"
                     onChange={(e) =>
@@ -356,7 +356,7 @@ export default function TargetRegistrationManualModal(props) {
                   <div className="mb-16">Metric 4 (Điểm 4)</div>
                   <Form.Control
                     as="textarea"
-                    placeholder={!isReadOnlyField && "Nhập"}
+                    placeholder={!isReadOnlyField ? "Nhập" : ""}
                     className="form-textarea"
                     name="metric4"
                     onChange={(e) =>
@@ -370,7 +370,7 @@ export default function TargetRegistrationManualModal(props) {
                   <div className="mb-16">Metric 5 (Điểm 5)</div>
                   <Form.Control
                     as="textarea"
-                    placeholder={!isReadOnlyField && "Nhập"}
+                    placeholder={!isReadOnlyField ? "Nhập" : ""}
                     className="form-textarea"
                     name="metric5"
                     onChange={(e) =>
@@ -388,7 +388,7 @@ export default function TargetRegistrationManualModal(props) {
                     <span className="prefix">%</span>
                     <Form.Control
                       as="input"
-                      placeholder={!isReadOnlyField && "Nhập"}
+                      placeholder={!isReadOnlyField ? "Nhập" : ""}
                       className="form-input"
                       type="text"
                       name="weight"
@@ -404,7 +404,7 @@ export default function TargetRegistrationManualModal(props) {
                   <div className="mb-16">Job Details</div>
                   <Form.Control
                     as="textarea"
-                    placeholder={!isReadOnlyField && "Nhập"}
+                    placeholder={!isReadOnlyField ? "Nhập" : ""}
                     className="form-textarea"
                     name="jobDetail"
                     onChange={(e) =>
@@ -418,7 +418,7 @@ export default function TargetRegistrationManualModal(props) {
                   <div className="mb-16">Mục tiêu cần đạt được</div>
                   <Form.Control
                     as="textarea"
-                    placeholder={!isReadOnlyField && "Nhập"}
+                    placeholder={!isReadOnlyField ? "Nhập" : ""}
                     className="form-textarea"
                     name="target"
                     onChange={(e) =>
@@ -445,7 +445,7 @@ export default function TargetRegistrationManualModal(props) {
             </div>
             <Form.Control
               as="textarea"
-              placeholder={!isReadOnlyField && "Nhập"}
+              placeholder={!isReadOnlyField ? "Nhập" : ""}
               className="form-textarea review-comment-textarea"
               readOnly={isReadOnlyField}
               onChange={(e) =>
@@ -465,7 +465,7 @@ export default function TargetRegistrationManualModal(props) {
               <Form.Control
                 readOnly
                 value={
-                  isApprover ? userInfoJSON?.fullName : approverJSON?.fullName
+                  isApprover ? userInfoJSON?.fullName || '' : approverJSON?.fullName || ''
                 }
                 className="form-input"
               />
@@ -476,8 +476,8 @@ export default function TargetRegistrationManualModal(props) {
                 readOnly
                 value={
                   isApprover
-                    ? userInfoJSON?.current_position
-                    : approverJSON?.current_position
+                    ? userInfoJSON?.current_position || ''
+                    : approverJSON?.current_position || ''
                 }
                 className="form-input"
               />
@@ -489,8 +489,8 @@ export default function TargetRegistrationManualModal(props) {
                 className="form-input"
                 value={
                   isApprover
-                    ? userInfoJSON?.department
-                    : approverJSON?.department
+                    ? userInfoJSON?.department || ''
+                    : approverJSON?.department || ''
                 }
               />
             </div>
@@ -503,7 +503,7 @@ export default function TargetRegistrationManualModal(props) {
               as="textarea"
               className="form-textarea"
               readOnly={true}
-              value={data.rejectReson}
+              value={data.rejectReson || ''}
             />
           </div>
         )}

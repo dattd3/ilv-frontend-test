@@ -141,6 +141,7 @@ function TargetManagement() {
 
   const currentTab =
     getValueParamByQueryString(window.location.search, "tab") || TABS.OWNER;
+  const requestId = getValueParamByQueryString(window.location.search, "id") || 0
 
   const { t } = useTranslation();
   const config = getRequestConfigurations();
@@ -160,6 +161,23 @@ function TargetManagement() {
       setOpenMenuRegistration(false);
     }
   }, [modalManagement, openMenuRegistration])
+
+  useEffect(() => {
+    const processRequestDetailById = async (id) => {
+      const config = getRequestConfigurations()
+      config.params = {
+        id: id,
+      }
+      const response = await axios.get(`${process.env.REACT_APP_HRDX_PMS_URL}api/targetregist/detail`, config)
+      setModalManagement({
+        type: MODAL_TYPES.REGISTER_MANUAL,
+        data: response?.data?.data?.requests || {},
+        viewOnly: true,
+      })
+    }
+
+    requestId && processRequestDetailById(requestId)
+  }, [requestId])
 
   const fetchInitData = () => {
     const bodyFormData = new FormData();
