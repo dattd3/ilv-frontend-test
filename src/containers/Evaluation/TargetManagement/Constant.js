@@ -36,6 +36,7 @@ const TARGET_INITIAL_DATA = {
   weight: "",
   jobDetail: "",
   target: "",
+  fillByHr: false
 };
 
 const MODAL_TYPES = {
@@ -59,7 +60,7 @@ const getUserInfo = () => ({
   employeeLevel: localStorage.getItem("employeeLevel"),
   EmployeeNo: localStorage.getItem("employeeNo"),
   jobCode: localStorage.getItem("jobCode"),
-  current_position: localStorage.getItem("current_position"),
+  current_position: localStorage.getItem("jobTitle"),
   department: localStorage.getItem("department"),
   organizationLv1: localStorage.getItem("organizationLv1"),
   organizationLv2: localStorage.getItem("organizationLv2"),
