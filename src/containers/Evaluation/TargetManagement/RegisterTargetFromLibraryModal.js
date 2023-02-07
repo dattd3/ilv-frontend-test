@@ -44,6 +44,7 @@ const customStyles = {
         ...provided,
         minHeight: '35px',
         height: '35px',
+        border: "1px solid #CED4DA",
         boxShadow: state.isFocused ? null : null,
     }),
 
@@ -122,16 +123,18 @@ const SelectTargetTabContent = ({ filter, listTargetInfo, targetSelected = [], p
                     />
                 </div>
                 <div className="row-form">
-                    <label>Tìm kiếm mục tiêu</label>
-                    <div className="region-input">
-                        <div className="block-input-text">
-                            <span><img src={IconSearch} alt="Icon search" /></span>
-                            <input type='text' placeholder="Nhập từ khóa" value={filter?.keyword || ''} onChange={e => handleInputChange('keyword', e?.target?.value || '')} />
+                    <form onSubmit={submitFilterOnParent}>
+                        <label>Tìm kiếm mục tiêu</label>
+                        <div className="region-input">
+                            <div className="block-input-text">
+                                <span><img src={IconSearch} alt="Icon search" /></span>
+                                <input type='text' placeholder="Nhập từ khóa" value={filter?.keyword || ''} onChange={e => handleInputChange('keyword', e?.target?.value || '')} />
+                            </div>
+                            <div className="block-button">
+                                <button type="submit">Tìm kiếm</button>
+                            </div>
                         </div>
-                        <div className="block-button">
-                            <button type="submit" onClick={submitFilterOnParent}>Tìm kiếm</button>
-                        </div>
-                    </div>
+                    </form>
                 </div>
                 <hr />
             </div>
@@ -747,7 +750,8 @@ function RegisterTargetFromLibraryModal(props) {
         SetTargetSelected(targetSelectedClone)
     }
 
-    const submitFilterOnParent = async () => {
+    const submitFilterOnParent = async (e) => {
+        e.preventDefault()
         SetIsLoading(true)
         try {
             let listTarget = []
