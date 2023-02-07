@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { Modal, Collapse, Button } from 'react-bootstrap'
 import Select from 'react-select'
 import { useTranslation } from "react-i18next"
-import { omit, uniqBy, debounce } from 'lodash'
+import { omit, uniqBy, size, debounce } from 'lodash'
 import axios from 'axios'
 import CustomPaging from "components/Common/CustomPagingNew"
 import LoadingModal from "components/Common/LoadingModal"
@@ -564,6 +564,34 @@ function RegisterTargetFromLibraryModal(props) {
         return axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/manager`, muleSoftConfig)
     }
 
+    const prepareApproverInfoMasterData = (approverInfo) => {
+        if (approverInfo && approverInfo?.data && approverInfo?.data?.data && approverInfo?.data?.data?.length > 0) {
+            const approver = approverInfo.data.data[0]
+            if (size(approver) > 0) {
+                return {
+                    account: approver?.username, // AD
+                    fullName: approver?.fullname || "",
+                    employeeLevel: approver?.rank_title,
+                    organizationLv1: null,
+                    organizationLv2: null,
+                    organizationLv3: null,
+                    organizationLv4: null,
+                    organizationLv5: null,
+                    organizationLv6: null,
+                    EmployeeNo: approver?.uid?.toString(),
+                    current_position: approver?.title || "",
+                    department: approver?.department || "",
+                    jobCode: null,
+                    value: approver?.uid?.toString(), // Mã NV
+                    label: approver?.fullname || "",
+                    avatar: approver?.avatar || "",
+                }
+            }
+        }
+
+        return null
+    }
+
     useEffect(() => {
         const fetchData = async () => {
             SetIsLoading(true)
@@ -577,38 +605,30 @@ function RegisterTargetFromLibraryModal(props) {
                 
                 let period = null
                 if (!requestId) { // Khi bắt đầu đăng ký mục tiêu từ thư viện
-                    if (approverInfo && approverInfo?.data && approverInfo?.data?.data && approverInfo?.data?.data?.length > 0) {
-                        const approver = approverInfo.data.data[0]
-
-                        SetApproverInfo({
-                            account: approver?.username, // AD
-                            fullName: approver?.fullname || "",
-                            employeeLevel: approver?.rank_title,
-                            organizationLv1: null,
-                            organizationLv2: null,
-                            organizationLv3: null,
-                            organizationLv4: null,
-                            organizationLv5: null,
-                            organizationLv6: null,
-                            EmployeeNo: approver?.uid?.toString(),
-                            current_position: approver?.title || "",
-                            department: approver?.department || "",
-                            jobCode: null,                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
-    
-                            value: approver?.uid?.toString(), // Mã NV
-                            label: approver?.fullname || "",
-                            avatar: approver?.avatar || "",
-                        })
+                    const approver = prepareApproverInfoMasterData(approverInfo)
+                    if (approver) {
+                        SetApproverInfo(approver)
                     } else {
                         SetError({
                             ...error,
                             errorMissingApproverInfo: '* Chưa có thông tin CBQL phê duyệt, vui lòng liên hệ Nhân sự để được hỗ trợ!'
                         })
                     }
-                } else if (requestInfo && requestInfo?.data && requestInfo?.data?.data?.requests) { // Khi sửa yêu cầu đăng ký mục tiêu từ thư viện ở trạng thái Nháp
+                } else if (requestInfo && requestInfo?.data && requestInfo?.data?.data?.requests) { // Khi sửa yêu cầu đăng ký mục tiêu từ thư viện ở trạng thái Nháp hoặc Từ chối
                     const request = requestInfo?.data?.data?.requests
                     period = request?.checkPhaseId || null
-                    const approverInfoData = JSON.parse(request?.approverInfo || '{}')
+                    let approverInfoData = JSON.parse(request?.approverInfo || '{}')
+
+                    if (request?.status === REQUEST_STATUS.DRAFT) {
+                        approverInfoData = prepareApproverInfoMasterData(approverInfo)
+                        if (!approverInfoData) {
+                            SetError({
+                                ...error,
+                                errorMissingApproverInfo: '* Chưa có thông tin CBQL phê duyệt, vui lòng liên hệ Nhân sự để được hỗ trợ!'
+                            })
+                        }
+                    }
+
                     SetApproverInfo({
                         account: approverInfoData?.account,
                         fullName: approverInfoData?.fullName,
@@ -623,7 +643,6 @@ function RegisterTargetFromLibraryModal(props) {
                         current_position: approverInfoData?.current_position,
                         department: approverInfoData?.department || "",
                         jobCode: approverInfoData?.jobCode,
-
                         value: approverInfoData?.EmployeeNo, // Mã NV
                         label: approverInfoData?.fullName,
                         avatar: null,
