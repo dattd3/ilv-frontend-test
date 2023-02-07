@@ -303,7 +303,14 @@ function TargetManagement() {
 
   const saveTargetRegister = async (formValues) => {
     setLoading(true);
+    // Add order
     try {
+      if (formValues.listTarget?.length > 0) {
+        formValues.listTarget = formValues.listTarget.map((item, index) => ({
+          ...item,
+          order: index
+        }))
+      }
       const response = await axios.post(
         CREATE_TARGET_REGISTER,
         {
@@ -410,7 +417,7 @@ function TargetManagement() {
           <TargetRegistrationManualModal
             phaseOptions={phaseOptions}
             onHide={onHideModal}
-            data={modalManagement.data}
+            id={modalManagement.data.id}
             isApprover={currentTab === TABS.REQUEST && !!modalManagement.data}
             setModalManagement={setModalManagement}
             sendTargetRegister={sendTargetRegister}
