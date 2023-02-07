@@ -432,6 +432,7 @@ function TargetManagement() {
             onHideRegisterTargetModal={onHideModal}
             registerType={MODAL_TYPES.REGISTER_LIBRARY}
             requestId={modalManagement?.data?.id}
+            status={modalManagement?.data?.status}
             phaseOptions={phaseOptions}
             setModalManagement={setModalManagement}
           />
