@@ -275,7 +275,7 @@ function TargetManagement() {
       if (type === STATUS_TYPES.APPROVE) {
         typeMessage = "Phê duyệt yêu cầu ";
       } else if (type === STATUS_TYPES.REJECT) {
-        typeMessage = "Từ chối yêu cầu ";
+        typeMessage = "Từ chối phê duyệt ";
       }
       try {
         await axios.post(
