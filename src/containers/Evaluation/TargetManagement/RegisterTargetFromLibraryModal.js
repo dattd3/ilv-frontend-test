@@ -838,7 +838,7 @@ function RegisterTargetFromLibraryModal(props) {
             RequestType: REGISTER_TYPES.LIBRARY,
             type: isSendRequest ? 'Next' : 'Save',
             userInfo: requestId ? userInfo : JSON.stringify(getUserInfo()),
-            ApproverInfo: stepCode === stepConfig.done ? JSON.stringify(omit(approverInfo, ['value', 'label', 'avatar'])) : null,
+            ApproverInfo: JSON.stringify(omit(approverInfo, ['value', 'label', 'avatar'])),
             listTarget: (targetSelected || []).map((item, i) => {
                 return {
                     guiID: item?.guiID,
