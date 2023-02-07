@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { Modal, Collapse, Button } from 'react-bootstrap'
 import Select from 'react-select'
-import { toast } from "react-toastify"
 import { useTranslation } from "react-i18next"
 import { omit, uniqBy, debounce } from 'lodash'
 import axios from 'axios'
@@ -31,6 +30,7 @@ import {
     getUserInfo,
     REGISTER_TYPES,
     LANGUAGE_CODE_MAPPING,
+    REQUEST_STATUS,
 } from "./Constant"
 import Constants from '../../../commons/Constants'
 
@@ -102,7 +102,7 @@ const formatTargetText = str => str?.replace(/\n|\r/g, "")
 
 const SelectTargetTabContent = ({ filter, listTargetInfo, targetSelected = [], paging, handleInputChange, changePageSize, changePageIndex, handleSelectTarget, submitFilterOnParent }) => {
     const { t } = useTranslation()
-    const guiIDSelected = targetSelected.map(item => item?.guiID)
+    const guiIDSelected = targetSelected.map(item => item?.guiIDRoot)
 
     const handleAction = (item, needRemove = false) => {
         handleSelectTarget([item], needRemove)
@@ -156,7 +156,7 @@ const SelectTargetTabContent = ({ filter, listTargetInfo, targetSelected = [], p
                             <tbody>
                                 {
                                     (listTargetInfo?.listTarget || []).map((item, index) => {
-                                        let needRemove = guiIDSelected.includes(item?.guiID)
+                                        let needRemove = guiIDSelected.includes(item?.guiIDRoot)
 
                                         return (
                                             <tr key={index}>
@@ -331,7 +331,7 @@ const ActionButton = ({ stepActive, totalWeight, isDisableNextStep, isDisableSav
         <div className="wrap-action-region">
             { 
                 error?.errorMissingApproverInfo 
-                ? <div className="error-info">{ error?.errorMissingApproverInfo }</div>
+                ? stepActive === stepConfig.done && <div className="error-info">{ error?.errorMissingApproverInfo }</div>
                 : error?.totalWeight && <div className="error-info">{ error?.totalWeight }</div>
             }
             <div className="action-region">
@@ -501,7 +501,7 @@ const ApprovalManager = ({ t, approverInfo, approvers, setApprovers, setApprover
 }
 
 function RegisterTargetFromLibraryModal(props) {
-    const { registerType, requestId, phaseOptions, onHideRegisterTargetModal, setModalManagement } = props
+    const { registerType, requestId, status, phaseOptions, onHideRegisterTargetModal, setModalManagement } = props
     const { t } = useTranslation()
     const guard = useGuardStore()
     const user = guard.getCurentUser()
@@ -569,14 +569,14 @@ function RegisterTargetFromLibraryModal(props) {
             SetIsLoading(true)
             try {
                 const requestListTarget = requestGetListTarget()
-                const requestApproverInfo = !requestId && requestGetApproverInfo()
+                const requestApproverInfo = (!requestId || status === REQUEST_STATUS.DRAFT) && requestGetApproverInfo()
                 const requestGetDetailInfo = requestId && requestGetRequestDetail(requestId)
                 const { data: listTarget } = await requestListTarget
                 const approverInfo = await requestApproverInfo
                 const requestInfo = await requestGetDetailInfo
                 
                 let period = null
-                if (!requestId) { // Khi Đăng ký mục tiêu từ thư viện
+                if (!requestId) { // Khi bắt đầu đăng ký mục tiêu từ thư viện
                     if (approverInfo && approverInfo?.data && approverInfo?.data?.data && approverInfo?.data?.data?.length > 0) {
                         const approver = approverInfo.data.data[0]
 
@@ -647,7 +647,12 @@ function RegisterTargetFromLibraryModal(props) {
                     .filter(item => item?.isAvailable && !item?.isDeleted && item?.status)
                 })
 
-                const listTargetSorted = (listTarget?.data?.targets || []).sort((current, next) => current?.order - next?.order)
+                const listTargetSorted = (listTarget?.data?.targets || [])
+                .sort((current, next) => current?.order - next?.order)
+                .map(item => ({
+                    ...item,
+                    guiIDRoot: item?.guiID,
+                }))
 
                 SetListTargetInfo({
                     ...listTargetInfo,
@@ -676,7 +681,12 @@ function RegisterTargetFromLibraryModal(props) {
                     listTarget = requestListTarget?.data?.data?.targets
                 }
 
-                const listTargetSorted = (listTarget || []).sort((current, next) => current?.order - next?.order)
+                const listTargetSorted = (listTarget || [])
+                .sort((current, next) => current?.order - next?.order)
+                .map(item => ({
+                    ...item,
+                    guiIDRoot: item?.guiID,
+                }))
 
                 SetListTargetInfo({
                     ...listTargetInfo,
@@ -735,12 +745,17 @@ function RegisterTargetFromLibraryModal(props) {
         })
     }
 
-    const handleSelectTarget = (targets, needRemove = false) => {                                                                                             
+    const handleSelectTarget = (targets, needRemove = false) => {
+        targets = (targets || []).map(item => ({
+            ...item,
+            guiID: null
+        }))
+
         let targetSelectedClone = []
         if (needRemove) {
-            targetSelectedClone = [...targetSelected].filter(item => item?.guiID !== targets[0]['guiID'])
+            targetSelectedClone = [...targetSelected].filter(item => item?.guiIDRoot !== targets[0]['guiIDRoot'])
         } else {
-            targetSelectedClone = uniqBy([...targetSelected, ...targets], 'guiID')
+            targetSelectedClone = uniqBy([...targetSelected, ...targets], 'guiIDRoot')
         }
         targetSelectedClone = [...targetSelectedClone].map(item => ({
             ...item,
@@ -759,7 +774,12 @@ function RegisterTargetFromLibraryModal(props) {
             if (requestListTarget && requestListTarget?.data && requestListTarget?.data?.data && requestListTarget?.data?.data?.targets?.length > 0) {
                 listTarget = requestListTarget?.data?.data?.targets
             }
-            const listTargetSorted = (listTarget || []).sort((current, next) => current?.order - next?.order)
+            const listTargetSorted = (listTarget || [])
+            .sort((current, next) => current?.order - next?.order)
+            .map(item => ({
+                ...item,
+                guiIDRoot: item?.guiID,
+            }))
 
             SetListTargetInfo({
                 ...listTargetInfo,
@@ -781,28 +801,29 @@ function RegisterTargetFromLibraryModal(props) {
     })()
 
     const isDisableNextStep = (() => {
-        return (!targetSelected || targetSelected?.length === 0) || !filter?.period || !approverInfo
+        return (!targetSelected || targetSelected?.length === 0) || !filter?.period
     })()
 
     const isDisableSaveRequest = (() => {
-        return !filter?.period || !approverInfo
+        return !filter?.period
     })()
 
     const isDisableSendRequest = (() => {
         return !filter?.period || !approverInfo || !targetSelected || targetSelected?.length === 0
     })()
 
-    const preparePayload = (isSendRequest) => {
+    const preparePayload = (stepCode = stepConfig.selectTarget, isSendRequest) => {
         const payload = {
             checkPhaseId: filter?.period,
             id: requestId ? requestId : requestIdSaved,
             RequestType: REGISTER_TYPES.LIBRARY,
             type: isSendRequest ? 'Next' : 'Save',
             userInfo: requestId ? userInfo : JSON.stringify(getUserInfo()),
-            ApproverInfo: JSON.stringify(omit(approverInfo, ['value', 'label', 'avatar'])),
+            ApproverInfo: stepCode === stepConfig.done ? JSON.stringify(omit(approverInfo, ['value', 'label', 'avatar'])) : null,
             listTarget: (targetSelected || []).map((item, i) => {
                 return {
                     guiID: item?.guiID,
+                    guiIDRoot: item?.guiIDRoot,
                     targetName: item?.targetName,
                     jobDetail: item?.jobDetail,
                     metric1: item?.metric1,
@@ -889,7 +910,7 @@ function RegisterTargetFromLibraryModal(props) {
             }
 
             const config = getRequestConfigurations()
-            const payload = preparePayload(isSendRequest)
+            const payload = preparePayload(stepCode, isSendRequest)
             const response = await axios.post(CREATE_TARGET_REGISTER, payload, config)
 
             if (response.data?.result?.code !== Constants.PMS_API_SUCCESS_CODE) {
@@ -1007,13 +1028,16 @@ function RegisterTargetFromLibraryModal(props) {
                                 handleViewListTargetSelected={handleViewListTargetSelected}
                             />
                         }
-                        <ApprovalManager 
-                            t={t}
-                            approverInfo={approverInfo}
-                            approvers={approvers}
-                            setApproverInfo={SetApproverInfo}
-                            setApprovers={SetApprovers}
-                        />
+                        {
+                            stepActive === stepConfig.done &&
+                            <ApprovalManager 
+                                t={t}
+                                approverInfo={approverInfo}
+                                approvers={approvers}
+                                setApproverInfo={SetApproverInfo}
+                                setApprovers={SetApprovers}
+                            />
+                        }
                         <ActionButton
                             stepActive={stepActive}
                             totalWeight={totalWeight}
