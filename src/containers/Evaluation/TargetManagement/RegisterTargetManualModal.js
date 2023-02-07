@@ -3,7 +3,7 @@ import Select from "react-select";
 import { Modal } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { Collapse, Form, Button } from "react-bootstrap";
-import { getMuleSoftHeaderConfigurations } from "commons/Utils";
+import { getMuleSoftHeaderConfigurations, getRequestConfigurations } from "commons/Utils";
 import {
   STATUS_EDITABLE_APPROVE_TAB,
   REGISTER_TYPES,
@@ -22,6 +22,7 @@ import { ReactComponent as IconSend } from "assets/img/icon/pms/icon-send.svg";
 import { ReactComponent as IconReject } from "assets/img/icon/Icon_Cancel.svg";
 import { ReactComponent as IconApprove } from "assets/img/icon/Icon_Check_White.svg";
 import { ReactComponent as IconEdit } from "assets/img/icon/pms/icon-edit.svg";
+import LoadingModal from "components/Common/LoadingModal";
 
 const mapApproverOption = (approver) => ({
   account: approver.username,
@@ -49,7 +50,7 @@ export default function TargetRegistrationManualModal(props) {
   const {
     phaseOptions,
     onHide,
-    data,
+    id,
     isApprover = false,
     setModalManagement,
     sendTargetRegister,
@@ -57,25 +58,17 @@ export default function TargetRegistrationManualModal(props) {
     viewOnly,
   } = props;
   const [isEditing, setIsEditing] = useState(!viewOnly);
+  const [isLoading, setIsLoading] = useState(false);
+  const [data, setData] = useState(null);
 
   const [formValues, setFormValues] = useState({
     checkPhaseId: 0,
     approverInfo: "",
     rejectReson: "",
-    ...(data && data),
-    listTarget:
-      data?.listTarget?.length > 0
-        ? data.listTarget.map((target) => ({
-            ...target,
-            targetName: JSON.parse(target.targetName || "{}")?.[
-              currentLanguage
-            ],
-          }))
-        : [TARGET_INITIAL_DATA],
+    listTarget: [TARGET_INITIAL_DATA]
   });
-  const [targetToggleStatuses, setTargetToggleStatuses] = useState(
-    Array(formValues.listTarget.length).fill(!viewOnly)
-  );
+
+  const [targetToggleStatuses, setTargetToggleStatuses] = useState([]);
   const [isFetchedApprover, setIsFetchedApprover] = useState(false);
 
   const totalWeight = formValues.listTarget.reduce(
@@ -86,8 +79,10 @@ export default function TargetRegistrationManualModal(props) {
   const userInfoJSON = JSON.parse(formValues.userInfo || null);
 
   useEffect(() => {
-    if (!data) {
+    if (!id) {
       loadApproverForPnL();
+    } else {
+      fetchTargetRegisterData(id);
     }
   }, []);
 
@@ -111,6 +106,45 @@ export default function TargetRegistrationManualModal(props) {
       }
     } catch (e) {}
     setIsFetchedApprover(true);
+  };
+
+  const fetchTargetRegisterData = async () => {
+    setIsLoading(true);
+    try {
+      const config = getRequestConfigurations()
+      config.params = {
+          id: id,
+      }
+      const response = await axios.get(`${process.env.REACT_APP_HRDX_PMS_URL}api/targetregist/detail`, config);
+      const data = response?.data?.data?.requests;
+      if (data) {
+        setData(data);
+        setFormValues({
+          checkPhaseId: 0,
+          approverInfo: "",
+          rejectReson: "",
+          ...data,
+          listTarget:
+            data?.listTarget?.length > 0
+              ? data.listTarget
+                  .map((target) => ({
+                    ...target,
+                    targetName: JSON.parse(target.targetName || "{}")?.[
+                      currentLanguage
+                    ],
+                  }))
+                  .sort((a, b) => a.order - b.order)
+              : [TARGET_INITIAL_DATA],
+        });
+        setTargetToggleStatuses(Array(data.listTarget.length).fill(!viewOnly))
+      }
+      else {
+        toast.error(`Không tìm thấy mục tiêu đăng ký! Vui lòng kiểm tra lại`);
+      }
+    } catch (e) {
+      toast.error(`Không tìm thấy mục tiêu đăng ký! Vui lòng kiểm tra lại`);
+    }
+    setIsLoading(false);
   };
 
   const checkIsFormValid = () => {
@@ -163,7 +197,10 @@ export default function TargetRegistrationManualModal(props) {
   const addNewTarget = () => {
     setFormValues({
       ...formValues,
-      listTarget: [...formValues?.listTarget, TARGET_INITIAL_DATA],
+      listTarget: [
+        ...formValues?.listTarget,
+        { ...TARGET_INITIAL_DATA, isEdit: isApprover },
+      ],
     });
     setTargetToggleStatuses([...targetToggleStatuses, true]);
   };
@@ -175,6 +212,7 @@ export default function TargetRegistrationManualModal(props) {
     await saveTargetRegister(formValues);
     if (isApprover) {
       setIsEditing(false);
+      fetchTargetRegisterData();
     }
   };
 
@@ -209,6 +247,7 @@ export default function TargetRegistrationManualModal(props) {
       centered
       onHide={onHide}
     >
+      <LoadingModal show={isLoading} />
       <Modal.Header closeButton>
         <div className="modal-title">ĐĂNG KÝ MỤC TIÊU</div>
       </Modal.Header>
@@ -267,13 +306,12 @@ export default function TargetRegistrationManualModal(props) {
                     `  | ${target.weight}%`}
                 </span>
               </span>
-              {target &&
-                target.lastUpdateBy &&
-                approverJSON.account === target.lastUpdateBy && (
-                  <div className="yellow-color">
-                    * Mục tiêu đã được QLTT chỉnh sửa
-                  </div>
-                )}
+              {target?.lastUpdateBy?.toLowerCase() ===
+                approverJSON?.account?.toLowerCase() && (
+                <div className="yellow-color">
+                  * Mục tiêu đã được QLTT chỉnh sửa
+                </div>
+              )}
               {isEditing && index !== 0 && (
                 <button
                   className="button delete-button"
@@ -411,7 +449,7 @@ export default function TargetRegistrationManualModal(props) {
                     <Form.Control
                       as="input"
                       placeholder={isEditing && "Nhập"}
-                      className="form-input"
+                      className="form-input border-none"
                       type="text"
                       name="weight"
                       onChange={(e) =>
@@ -524,14 +562,14 @@ export default function TargetRegistrationManualModal(props) {
             </div>
           </div>
         </div>
-        {!isEditing && data.rejectReson && (
+        {!isEditing && data?.rejectReson && (
           <div className="mb-16">
             <div className="mb-16">Lý do</div>
             <Form.Control
               as="textarea"
               className="form-textarea"
               readOnly={true}
-              value={data.rejectReson || ""}
+              value={data?.rejectReson || ""}
             />
           </div>
         )}
@@ -649,7 +687,10 @@ export default function TargetRegistrationManualModal(props) {
                     </button>
                     <button
                       className="button send-request-btn"
-                      disabled={totalWeight !== 100 || (data?.status === REQUEST_STATUS.REJECT && !isEditing)}
+                      disabled={
+                        totalWeight !== 100 ||
+                        (data?.status === REQUEST_STATUS.REJECT && !isEditing)
+                      }
                       onClick={onSendTargetRegister}
                     >
                       <IconSend />
