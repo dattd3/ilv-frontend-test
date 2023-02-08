@@ -1159,7 +1159,7 @@ function EvaluationDetail(props) {
         const response = await axios.post(`${process.env.REACT_APP_HRDX_PMS_URL}api/targetform/update`, { requestString: JSON.stringify(payload || {}) }, config)
         SetIsLoading(false)
         statusModalTemp.isShow = true
-        statusModalTemp.needReload = false
+        statusModalTemp.needReload = actionCode == actionButton.approve
         if (response && response.data) {
           const result = response.data.result
           if (result.code == Constants.PMS_API_SUCCESS_CODE) {
