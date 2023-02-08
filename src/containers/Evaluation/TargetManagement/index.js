@@ -417,7 +417,7 @@ function TargetManagement() {
           <TargetRegistrationManualModal
             phaseOptions={phaseOptions}
             onHide={onHideModal}
-            id={modalManagement.data.id}
+            id={modalManagement.data?.id}
             isApprover={currentTab === TABS.REQUEST && !!modalManagement.data}
             setModalManagement={setModalManagement}
             sendTargetRegister={sendTargetRegister}
