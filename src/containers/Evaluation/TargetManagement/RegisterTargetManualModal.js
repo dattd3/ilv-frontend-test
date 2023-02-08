@@ -71,7 +71,7 @@ export default function TargetRegistrationManualModal(props) {
     listTarget: [TARGET_INITIAL_DATA],
   });
 
-  const [targetToggleStatuses, setTargetToggleStatuses] = useState([]);
+  const [targetToggleStatuses, setTargetToggleStatuses] = useState([true]);
   const [isFetchedApprover, setIsFetchedApprover] = useState(false);
 
   const totalWeight = formValues.listTarget.reduce(
@@ -207,6 +207,7 @@ export default function TargetRegistrationManualModal(props) {
         { ...TARGET_INITIAL_DATA, isEdit: isApprover },
       ],
     });
+    console.log(targetToggleStatuses)
     setTargetToggleStatuses([...targetToggleStatuses, true]);
   };
 
@@ -288,7 +289,7 @@ export default function TargetRegistrationManualModal(props) {
           </Button>
         </div>
         {formValues.listTarget.map((target, index) => (
-          <div className="form-container mb-16" key={index}>
+          <div className="form-container mb-15" key={index}>
             <div
               className="target-collapse"
               onClick={() =>
@@ -332,8 +333,8 @@ export default function TargetRegistrationManualModal(props) {
             </div>
             <Collapse in={targetToggleStatuses[index]}>
               <div className="collapse-container">
-                <div className="mb-16">
-                  <div className="mb-16">
+                <div className="mb-15">
+                  <div className="mb-15">
                     Tên mục tiêu <span className="red-color">(*)</span>
                   </div>
                   {isReadonlyField(target) ? (
@@ -355,8 +356,8 @@ export default function TargetRegistrationManualModal(props) {
                     />
                   )}
                 </div>
-                <div className="mb-16">
-                  <div className="mb-16">
+                <div className="mb-15">
+                  <div className="mb-15">
                     Metric 1 (Điểm 1) <span className="red-color">(*)</span>
                   </div>
                   {isReadonlyField(target) ? (
@@ -374,8 +375,8 @@ export default function TargetRegistrationManualModal(props) {
                     />
                   )}
                 </div>
-                <div className="mb-16">
-                  <div className="mb-16">Metric 2 (Điểm 2)</div>
+                <div className="mb-15">
+                  <div className="mb-15">Metric 2 (Điểm 2)</div>
                   {isReadonlyField(target) ? (
                     <div className="read-only-text">{target.metric2}</div>
                   ) : (
@@ -391,8 +392,8 @@ export default function TargetRegistrationManualModal(props) {
                     />
                   )}
                 </div>
-                <div className="mb-16">
-                  <div className="mb-16">Metric 3 (Điểm 3)</div>
+                <div className="mb-15">
+                  <div className="mb-15">Metric 3 (Điểm 3)</div>
                   {isReadonlyField(target) ? (
                     <div className="read-only-text">{target.metric3}</div>
                   ) : (
@@ -408,8 +409,8 @@ export default function TargetRegistrationManualModal(props) {
                     />
                   )}
                 </div>
-                <div className="mb-16">
-                  <div className="mb-16">Metric 4 (Điểm 4)</div>
+                <div className="mb-15">
+                  <div className="mb-15">Metric 4 (Điểm 4)</div>
                   {isReadonlyField(target) ? (
                     <div className="read-only-text">{target.metric4}</div>
                   ) : (
@@ -425,8 +426,8 @@ export default function TargetRegistrationManualModal(props) {
                     />
                   )}
                 </div>
-                <div className="mb-16">
-                  <div className="mb-16">Metric 5 (Điểm 5)</div>
+                <div className="mb-15">
+                  <div className="mb-15">Metric 5 (Điểm 5)</div>
                   {isReadonlyField(target) ? (
                     <div className="read-only-text">{target.metric5}</div>
                   ) : (
@@ -442,8 +443,8 @@ export default function TargetRegistrationManualModal(props) {
                     />
                   )}
                 </div>
-                <div className="mb-16">
-                  <div className="mb-16">
+                <div className="mb-15">
+                  <div className="mb-15">
                     Trọng số <span className="red-color">(*)</span>
                   </div>
                   <div className="weight-input-box">
@@ -462,8 +463,8 @@ export default function TargetRegistrationManualModal(props) {
                     />
                   </div>
                 </div>
-                <div className="mb-16">
-                  <div className="mb-16">Job Details</div>
+                <div className="mb-15">
+                  <div className="mb-15">Job Details</div>
                   {isReadonlyField(target) ? (
                     <div className="read-only-text">{target.jobDetail}</div>
                   ) : (
@@ -480,7 +481,7 @@ export default function TargetRegistrationManualModal(props) {
                   )}
                 </div>
                 <div>
-                  <div className="mb-16">Mục tiêu cần đạt được</div>
+                  <div className="mb-15">Mục tiêu cần đạt được</div>
                   {isReadonlyField(target) ? (
                     <div className="read-only-text">{target.target}</div>
                   ) : (
@@ -502,13 +503,13 @@ export default function TargetRegistrationManualModal(props) {
         ))}
 
         {isEditing && (
-          <button className="add-target-btn mb-16" onClick={addNewTarget}>
+          <button className="add-target-btn mb-15" onClick={addNewTarget}>
             + Thêm mục tiêu
           </button>
         )}
         {(data?.reviewComment || (isApprover && isEditing)) && (
-          <div className="mb-16">
-            <div className="mb-16">
+          <div className="mb-15">
+            <div className="mb-15">
               Ý kiến của CBQL phê duyệt <span className="red-color">(*)</span>
             </div>
             <Form.Control
@@ -523,13 +524,13 @@ export default function TargetRegistrationManualModal(props) {
             />
           </div>
         )}
-        <div className="form-container mb-16">
-          <div className="approver-title mb-16">
+        <div className="form-container mb-15">
+          <div className="approver-title mb-15">
             {isApprover ? "CBNV đăng ký mục tiêu" : "CBQL phê duyệt"}
           </div>
           <div className="row group">
             <div className="col-xl-4">
-              <div className="mb-16">Họ và tên</div>
+              <div className="mb-15">Họ và tên</div>
               <Form.Control
                 readOnly
                 value={
@@ -541,7 +542,7 @@ export default function TargetRegistrationManualModal(props) {
               />
             </div>
             <div className="col-xl-4">
-              <div className="mb-16">Chức danh</div>
+              <div className="mb-15">Chức danh</div>
               <Form.Control
                 readOnly
                 value={
@@ -553,7 +554,7 @@ export default function TargetRegistrationManualModal(props) {
               />
             </div>
             <div className="col-xl-4">
-              <div className="mb-16">Khối/Phòng/Bộ phận</div>
+              <div className="mb-15">Khối/Phòng/Bộ phận</div>
               <Form.Control
                 readOnly
                 className="form-input"
@@ -567,21 +568,21 @@ export default function TargetRegistrationManualModal(props) {
           </div>
         </div>
         {!isEditing && data?.rejectReson && (
-          <div className="mb-16">
-            <div className="mb-16">Lý do</div>
+          <div className="mb-15">
+            <div className="mb-15">Lý do</div>
             {<div className="read-only-text">{data?.rejectReson || ""}</div>}
           </div>
         )}
         <div className="custom-modal-footer">
           {!approverJSON && isFetchedApprover && (
-            <div className="red-color mb-16">
+            <div className="red-color mb-15">
               * Chưa có thông tin CBQL phê duyệt, vui lòng liên hệ Nhân sự để
               được hỗ trợ!
             </div>
           )}
 
           {totalWeight > 0 && totalWeight !== 100 && isEditing && (
-            <div className="red-color mb-16">
+            <div className="red-color mb-15">
               * Yêu cầu tổng trọng số bằng 100%. Vui lòng kiểm tra lại!
             </div>
           )}
