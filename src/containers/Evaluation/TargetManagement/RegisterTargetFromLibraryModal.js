@@ -42,15 +42,15 @@ const stepConfig = {
 const customStyles = {
     control: (provided, state) => ({
         ...provided,
-        minHeight: '35px',
-        height: '35px',
+        minHeight: '40px',
+        height: '40px',
         border: "1px solid #CED4DA",
         boxShadow: state.isFocused ? null : null,
     }),
 
     valueContainer: (provided, state) => ({
         ...provided,
-        height: '35px',
+        height: '40px',
         padding: '0 5px'
     }),
 
@@ -60,7 +60,7 @@ const customStyles = {
     }),
     indicatorsContainer: (provided, state) => ({
         ...provided,
-        height: '35px',
+        height: '40px',
     }),
 }
 
@@ -136,7 +136,7 @@ const SelectTargetTabContent = ({ filter, listTargetInfo, targetSelected = [], p
                         </div>
                     </form>
                 </div>
-                <hr />
+                {/* <hr /> */}
             </div>
             <div className="select-target-tab-content">
                 <div className="region-result">
