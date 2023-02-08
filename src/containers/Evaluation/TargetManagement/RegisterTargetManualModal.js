@@ -581,14 +581,14 @@ export default function TargetRegistrationManualModal(props) {
             </div>
           )}
 
-          {totalWeight > 0 && totalWeight !== 100 && isEditing && (
+          {totalWeight > 0 && totalWeight !== 100 && (isEditing || (isApprover && data?.status === REQUEST_STATUS.PROCESSING)) && (
             <div className="red-color mb-15">
               * Yêu cầu tổng trọng số bằng 100%. Vui lòng kiểm tra lại!
             </div>
           )}
           <div className="modal-footer-action">
             <div>
-              {isEditing && (
+              {(isEditing || (isApprover && data?.status === REQUEST_STATUS.PROCESSING)) && (
                 <div
                   className="total-weight-container"
                   style={{
