@@ -279,6 +279,22 @@
           font-weight: 400;
         }
       }
+      .approver-title {
+        font-weight: 700;
+        line-height: 17px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid #CED4DA;
+      }
+      .read-only-text {
+        padding: 6px 12px;
+        background: #F2F2F2;
+        font-size: 14px;
+        font-weight: 300;
+        white-space: pre-line;
+        border-radius: 4px;
+        border: 1px solid #CED4DA;
+        min-height: 80px;
+      }
       .collapse-container {
         margin-top: 16px;
         padding-top: 16px;

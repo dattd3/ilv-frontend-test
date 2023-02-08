@@ -1,9 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Select from "react-select";
 import { Modal } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { Collapse, Form, Button } from "react-bootstrap";
-import { getMuleSoftHeaderConfigurations, getRequestConfigurations } from "commons/Utils";
+import {
+  getMuleSoftHeaderConfigurations,
+  getRequestConfigurations,
+} from "commons/Utils";
 import {
   STATUS_EDITABLE_APPROVE_TAB,
   REGISTER_TYPES,
@@ -65,7 +68,7 @@ export default function TargetRegistrationManualModal(props) {
     checkPhaseId: 0,
     approverInfo: "",
     rejectReson: "",
-    listTarget: [TARGET_INITIAL_DATA]
+    listTarget: [TARGET_INITIAL_DATA],
   });
 
   const [targetToggleStatuses, setTargetToggleStatuses] = useState([]);
@@ -111,11 +114,14 @@ export default function TargetRegistrationManualModal(props) {
   const fetchTargetRegisterData = async () => {
     setIsLoading(true);
     try {
-      const config = getRequestConfigurations()
+      const config = getRequestConfigurations();
       config.params = {
-          id: id,
-      }
-      const response = await axios.get(`${process.env.REACT_APP_HRDX_PMS_URL}api/targetregist/detail`, config);
+        id: id,
+      };
+      const response = await axios.get(
+        `${process.env.REACT_APP_HRDX_PMS_URL}api/targetregist/detail`,
+        config
+      );
       const data = response?.data?.data?.requests;
       if (data) {
         setData(data);
@@ -136,9 +142,8 @@ export default function TargetRegistrationManualModal(props) {
                   .sort((a, b) => a.order - b.order)
               : [TARGET_INITIAL_DATA],
         });
-        setTargetToggleStatuses(Array(data.listTarget.length).fill(!viewOnly))
-      }
-      else {
+        setTargetToggleStatuses(Array(data.listTarget.length).fill(!viewOnly));
+      } else {
         toast.error(`Không tìm thấy mục tiêu đăng ký! Vui lòng kiểm tra lại`);
       }
     } catch (e) {
@@ -240,6 +245,8 @@ export default function TargetRegistrationManualModal(props) {
     expandAll();
   };
 
+  const isReadonlyField = (target) => !isEditing || (data?.requestType === REGISTER_TYPES.LIBRARY && target?.id);
+
   return (
     <Modal
       show={true}
@@ -306,12 +313,13 @@ export default function TargetRegistrationManualModal(props) {
                     `  | ${target.weight}%`}
                 </span>
               </span>
-              {target?.lastUpdateBy?.toLowerCase() ===
-                approverJSON?.account?.toLowerCase() && (
-                <div className="yellow-color">
-                  * Mục tiêu đã được QLTT chỉnh sửa
-                </div>
-              )}
+              {target?.lastUpdateBy &&
+                target?.lastUpdateBy?.toLowerCase() ===
+                  approverJSON?.account?.toLowerCase() && (
+                  <div className="yellow-color">
+                    * Mục tiêu đã được QLTT chỉnh sửa
+                  </div>
+                )}
               {isEditing && index !== 0 && (
                 <button
                   className="button delete-button"
@@ -328,117 +336,111 @@ export default function TargetRegistrationManualModal(props) {
                   <div className="mb-16">
                     Tên mục tiêu <span className="red-color">(*)</span>
                   </div>
-                  <Form.Control
-                    as="textarea"
-                    placeholder={isEditing && "Nhập"}
-                    className="form-textarea"
-                    name="targetName"
-                    onChange={(e) =>
-                      onChangeTargetValues(
-                        index,
-                        "targetName",
-                        e?.target?.value
-                      )
-                    }
-                    value={target.targetName}
-                    readOnly={
-                      !isEditing ||
-                      (data?.requestType === REGISTER_TYPES.LIBRARY &&
-                        target?.id)
-                    }
-                  />
+                  {isReadonlyField(target) ? (
+                    <div className="read-only-text">{target.targetName}</div>
+                  ) : (
+                    <Form.Control
+                      as="textarea"
+                      placeholder={isEditing && "Nhập"}
+                      className="form-textarea"
+                      name="targetName"
+                      onChange={(e) =>
+                        onChangeTargetValues(
+                          index,
+                          "targetName",
+                          e?.target?.value
+                        )
+                      }
+                      value={target.targetName}
+                    />
+                  )}
                 </div>
                 <div className="mb-16">
                   <div className="mb-16">
                     Metric 1 (Điểm 1) <span className="red-color">(*)</span>
                   </div>
-                  <Form.Control
-                    as="textarea"
-                    placeholder={isEditing && "Nhập"}
-                    className="form-textarea"
-                    name="metric1"
-                    onChange={(e) =>
-                      onChangeTargetValues(index, "metric1", e?.target?.value)
-                    }
-                    value={target.metric1}
-                    readOnly={
-                      !isEditing ||
-                      (data?.requestType === REGISTER_TYPES.LIBRARY &&
-                        target?.id)
-                    }
-                  />
+                  {isReadonlyField(target) ? (
+                    <div className="read-only-text">{target.metric1}</div>
+                  ) : (
+                    <Form.Control
+                      as="textarea"
+                      placeholder={isEditing && "Nhập"}
+                      className="form-textarea"
+                      name="metric1"
+                      onChange={(e) =>
+                        onChangeTargetValues(index, "metric1", e?.target?.value)
+                      }
+                      value={target.metric1}
+                    />
+                  )}
                 </div>
                 <div className="mb-16">
                   <div className="mb-16">Metric 2 (Điểm 2)</div>
-                  <Form.Control
-                    as="textarea"
-                    placeholder={isEditing && "Nhập"}
-                    className="form-textarea"
-                    name="metric2"
-                    onChange={(e) =>
-                      onChangeTargetValues(index, "metric2", e?.target?.value)
-                    }
-                    value={target.metric2}
-                    readOnly={
-                      !isEditing ||
-                      (data?.requestType === REGISTER_TYPES.LIBRARY &&
-                        target?.id)
-                    }
-                  />
+                  {isReadonlyField(target) ? (
+                    <div className="read-only-text">{target.metric2}</div>
+                  ) : (
+                    <Form.Control
+                      as="textarea"
+                      placeholder={isEditing && "Nhập"}
+                      className="form-textarea"
+                      name="metric2"
+                      onChange={(e) =>
+                        onChangeTargetValues(index, "metric2", e?.target?.value)
+                      }
+                      value={target.metric2}
+                    />
+                  )}
                 </div>
                 <div className="mb-16">
                   <div className="mb-16">Metric 3 (Điểm 3)</div>
-                  <Form.Control
-                    as="textarea"
-                    placeholder={isEditing && "Nhập"}
-                    className="form-textarea"
-                    name="metric3"
-                    onChange={(e) =>
-                      onChangeTargetValues(index, "metric3", e?.target?.value)
-                    }
-                    value={target.metric3}
-                    readOnly={
-                      !isEditing ||
-                      (data?.requestType === REGISTER_TYPES.LIBRARY &&
-                        target?.id)
-                    }
-                  />
+                  {isReadonlyField(target) ? (
+                    <div className="read-only-text">{target.metric3}</div>
+                  ) : (
+                    <Form.Control
+                      as="textarea"
+                      placeholder={isEditing && "Nhập"}
+                      className="form-textarea"
+                      name="metric3"
+                      onChange={(e) =>
+                        onChangeTargetValues(index, "metric3", e?.target?.value)
+                      }
+                      value={target.metric3}
+                    />
+                  )}
                 </div>
                 <div className="mb-16">
                   <div className="mb-16">Metric 4 (Điểm 4)</div>
-                  <Form.Control
-                    as="textarea"
-                    placeholder={isEditing && "Nhập"}
-                    className="form-textarea"
-                    name="metric4"
-                    onChange={(e) =>
-                      onChangeTargetValues(index, "metric4", e?.target?.value)
-                    }
-                    value={target.metric4}
-                    readOnly={
-                      !isEditing ||
-                      (data?.requestType === REGISTER_TYPES.LIBRARY &&
-                        target?.id)
-                    }
-                  />
+                  {isReadonlyField(target) ? (
+                    <div className="read-only-text">{target.metric4}</div>
+                  ) : (
+                    <Form.Control
+                      as="textarea"
+                      placeholder={isEditing && "Nhập"}
+                      className="form-textarea"
+                      name="metric4"
+                      onChange={(e) =>
+                        onChangeTargetValues(index, "metric4", e?.target?.value)
+                      }
+                      value={target.metric4}
+                    />
+                  )}
                 </div>
                 <div className="mb-16">
                   <div className="mb-16">Metric 5 (Điểm 5)</div>
-                  <Form.Control
-                    as="textarea"
-                    placeholder={isEditing && "Nhập"}
-                    className="form-textarea"
-                    name="metric5"
-                    onChange={(e) =>
-                      onChangeTargetValues(index, "metric5", e?.target?.value)
-                    }
-                    value={target.metric5}
-                    readOnly={
-                      !isEditing ||
-                      (data?.requestType === REGISTER_TYPES.LIBRARY &&
-                        target?.id)
-                    }
-                  />
+                  {isReadonlyField(target) ? (
+                    <div className="read-only-text">{target.metric5}</div>
+                  ) : (
+                    <Form.Control
+                      as="textarea"
+                      placeholder={isEditing && "Nhập"}
+                      className="form-textarea"
+                      name="metric5"
+                      onChange={(e) =>
+                        onChangeTargetValues(index, "metric5", e?.target?.value)
+                      }
+                      value={target.metric5}
+                    />
+                  )}
                 </div>
                 <div className="mb-16">
                   <div className="mb-16">
@@ -462,35 +464,37 @@ export default function TargetRegistrationManualModal(props) {
                 </div>
                 <div className="mb-16">
                   <div className="mb-16">Job Details</div>
-                  <Form.Control
-                    as="textarea"
-                    placeholder={isEditing && "Nhập"}
-                    className="form-textarea"
-                    name="jobDetail"
-                    onChange={(e) =>
-                      onChangeTargetValues(index, "jobDetail", e?.target?.value)
-                    }
-                    value={target.jobDetail}
-                    readOnly={
-                      !isEditing ||
-                      (data?.requestType === REGISTER_TYPES.LIBRARY &&
-                        target?.id)
-                    }
-                  />
+                  {isReadonlyField(target) ? (
+                    <div className="read-only-text">{target.jobDetail}</div>
+                  ) : (
+                    <Form.Control
+                      as="textarea"
+                      placeholder={isEditing && "Nhập"}
+                      className="form-textarea"
+                      name="jobDetail"
+                      onChange={(e) =>
+                        onChangeTargetValues(index, "jobDetail", e?.target?.value)
+                      }
+                      value={target.jobDetail}
+                    />
+                  )}
                 </div>
                 <div>
                   <div className="mb-16">Mục tiêu cần đạt được</div>
-                  <Form.Control
-                    as="textarea"
-                    placeholder={isEditing && "Nhập"}
-                    className="form-textarea"
-                    name="target"
-                    onChange={(e) =>
-                      onChangeTargetValues(index, "target", e?.target?.value)
-                    }
-                    value={target.target}
-                    readOnly={!isEditing || target.fillByHr}
-                  />
+                  {isReadonlyField(target) ? (
+                    <div className="read-only-text">{target.target}</div>
+                  ) : (
+                    <Form.Control
+                      as="textarea"
+                      placeholder={isEditing && "Nhập"}
+                      className="form-textarea"
+                      name="target"
+                      onChange={(e) =>
+                        onChangeTargetValues(index, "target", e?.target?.value)
+                      }
+                      value={target.target}
+                    />
+                  )}
                 </div>
               </div>
             </Collapse>
@@ -520,7 +524,7 @@ export default function TargetRegistrationManualModal(props) {
           </div>
         )}
         <div className="form-container mb-16">
-          <div className="target-collapse mb-16">
+          <div className="approver-title mb-16">
             {isApprover ? "CBNV đăng ký mục tiêu" : "CBQL phê duyệt"}
           </div>
           <div className="row group">
@@ -565,12 +569,7 @@ export default function TargetRegistrationManualModal(props) {
         {!isEditing && data?.rejectReson && (
           <div className="mb-16">
             <div className="mb-16">Lý do</div>
-            <Form.Control
-              as="textarea"
-              className="form-textarea"
-              readOnly={true}
-              value={data?.rejectReson || ""}
-            />
+            {<div className="read-only-text">{data?.rejectReson || ""}</div>}
           </div>
         )}
         <div className="custom-modal-footer">
