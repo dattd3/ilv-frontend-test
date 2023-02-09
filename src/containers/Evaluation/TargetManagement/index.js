@@ -138,10 +138,12 @@ function TargetManagement() {
     type: null,
     data: null,
   });
+  console.log(employeeSearchOptions);
 
   const currentTab =
     getValueParamByQueryString(window.location.search, "tab") || TABS.OWNER;
-  const requestId = getValueParamByQueryString(window.location.search, "id") || 0
+  const requestId =
+    getValueParamByQueryString(window.location.search, "id") || 0;
 
   const { t } = useTranslation();
   const config = getRequestConfigurations();
@@ -160,24 +162,27 @@ function TargetManagement() {
     if (modalManagement.type !== null && openMenuRegistration) {
       setOpenMenuRegistration(false);
     }
-  }, [modalManagement, openMenuRegistration])
+  }, [modalManagement, openMenuRegistration]);
 
   useEffect(() => {
     const processRequestDetailById = async (id) => {
-      const config = getRequestConfigurations()
+      const config = getRequestConfigurations();
       config.params = {
         id: id,
-      }
-      const response = await axios.get(`${process.env.REACT_APP_HRDX_PMS_URL}api/targetregist/detail`, config)
+      };
+      const response = await axios.get(
+        `${process.env.REACT_APP_HRDX_PMS_URL}api/targetregist/detail`,
+        config
+      );
       setModalManagement({
         type: MODAL_TYPES.REGISTER_MANUAL,
         data: response?.data?.data?.requests || {},
         viewOnly: true,
-      })
-    }
+      });
+    };
 
-    requestId && processRequestDetailById(requestId)
-  }, [requestId])
+    requestId && processRequestDetailById(requestId);
+  }, [requestId]);
 
   const fetchInitData = () => {
     const bodyFormData = new FormData();
@@ -308,8 +313,8 @@ function TargetManagement() {
       if (formValues.listTarget?.length > 0) {
         formValues.listTarget = formValues.listTarget.map((item, index) => ({
           ...item,
-          order: index
-        }))
+          order: index,
+        }));
       }
       const response = await axios.post(
         CREATE_TARGET_REGISTER,
@@ -323,7 +328,10 @@ function TargetManagement() {
       );
       if (response.data?.result?.code !== "200") {
         toast.error(`Lưu mục tiêu thất bại: ${response.data?.result?.message}`);
-      } else if (response.data?.result?.code === "200" && currentTab === TABS.OWNER) {
+      } else if (
+        response.data?.result?.code === "200" &&
+        currentTab === TABS.OWNER
+      ) {
         setModalManagement({
           type: MODAL_TYPES.SUCCESS,
           data: "Lưu mục tiêu thành công!",
@@ -367,7 +375,12 @@ function TargetManagement() {
   const onEditTargetRegisterClick = (event, item) => {
     event.stopPropagation();
 
-    if ([REQUEST_STATUS.DRAFT, REQUEST_STATUS.REJECT].includes(Number(item?.status)) && item?.requestType === REGISTER_TYPES.LIBRARY) {
+    if (
+      [REQUEST_STATUS.DRAFT, REQUEST_STATUS.REJECT].includes(
+        Number(item?.status)
+      ) &&
+      item?.requestType === REGISTER_TYPES.LIBRARY
+    ) {
       setModalManagement({
         type: MODAL_TYPES.REGISTER_LIBRARY,
         data: item,
@@ -376,7 +389,7 @@ function TargetManagement() {
       setModalManagement({
         type: MODAL_TYPES.REGISTER_MANUAL,
         data: item,
-        viewOnly: false
+        viewOnly: false,
       });
     }
   };
@@ -546,6 +559,14 @@ function TargetManagement() {
           },
         ];
 
+  const filterOptionEmployeeSelect = (option, inputValue) => {
+    return (
+      option.data?.fullname?.toLowerCase().includes(inputValue?.toLowerCase()) ||
+      option.data?.username?.toLowerCase().includes(inputValue?.toLowerCase()) ||
+      option.data?.uid?.toLowerCase().includes(inputValue?.toLowerCase())
+    );
+  };
+
   return (
     <div
       className="target-management-page"
@@ -646,6 +667,7 @@ function TargetManagement() {
             getOptionValue={(option) => option.username}
             isClearable
             isLoading={employeeSearchLoading}
+            filterOption={filterOptionEmployeeSelect}
           />
         )}
 
@@ -689,8 +711,9 @@ function TargetManagement() {
                 <td>{item.id}</td>
                 <td>
                   {
-                    REGISTER_TYPE_OPTIONS.find((it) => it.value === item.requestType)
-                      ?.label
+                    REGISTER_TYPE_OPTIONS.find(
+                      (it) => it.value === item.requestType
+                    )?.label
                   }
                 </td>
                 <td>{item.checkPhaseName}</td>
@@ -711,37 +734,40 @@ function TargetManagement() {
                   </div>
                 </td>
                 <td className="text-center">
-                  {item.status === REQUEST_STATUS.REJECT && item.rejectReson && (
-                    <>
-                      <a data-tip data-for={`reason-${item.id}`}>
-                        <IconReason width={24} height={24} />
-                      </a>
-                      <ReactTooltip
-                        id={`reason-${item.id}`}
-                        scrollHide
-                        isCapture
-                        clickable
-                        place="left"
-                        backgroundColor="#FFFFFF"
-                        arrowColor="#FFFFFF"
-                        className="tooltip"
-                      >
-                        <div className="tooltip-content">
-                          <div className="tooltip-header">
-                            Ý kiến của CBQL phê duyệt:
+                  {item.status === REQUEST_STATUS.REJECT &&
+                    item.rejectReson && (
+                      <>
+                        <a data-tip data-for={`reason-${item.id}`}>
+                          <IconReason width={24} height={24} />
+                        </a>
+                        <ReactTooltip
+                          id={`reason-${item.id}`}
+                          scrollHide
+                          isCapture
+                          clickable
+                          place="left"
+                          backgroundColor="#FFFFFF"
+                          arrowColor="#FFFFFF"
+                          className="tooltip"
+                        >
+                          <div className="tooltip-content">
+                            <div className="tooltip-header">
+                              Ý kiến của CBQL phê duyệt:
+                            </div>
+                            <div>{item.rejectReson}</div>
                           </div>
-                          <div>{item.rejectReson}</div>
-                        </div>
-                      </ReactTooltip>
-                    </>
-                  )}
+                        </ReactTooltip>
+                      </>
+                    )}
                 </td>
                 <td className="text-center sticky-col">
                   {STATUS_DELETEABLE.includes(item.status) &&
                     currentTab === TABS.OWNER && (
                       <IconRemove
                         className="rm-icon action-icon"
-                        onClick={(event) => onDeleteTargetRegisterClick(event, item)}
+                        onClick={(event) =>
+                          onDeleteTargetRegisterClick(event, item)
+                        }
                       />
                     )}
                   {((currentTab === TABS.OWNER &&
@@ -752,7 +778,9 @@ function TargetManagement() {
                       width={28}
                       height={28}
                       className="action-icon"
-                      onClick={(event) => onEditTargetRegisterClick(event, item)}
+                      onClick={(event) =>
+                        onEditTargetRegisterClick(event, item)
+                      }
                     />
                   )}
                 </td>
