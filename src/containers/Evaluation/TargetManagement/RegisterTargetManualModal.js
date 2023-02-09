@@ -243,9 +243,16 @@ export default function TargetRegistrationManualModal(props) {
     ]);
   };
 
-  const onApproverEditClick = () => {
-    setIsEditing(true);
-    expandAll();
+  const onEditButtonClick = () => {
+    if(!isApprover) {
+      setModalManagement({
+        type: MODAL_TYPES.REGISTER_LIBRARY,
+        data,
+      });
+    } else {
+      setIsEditing(true);
+      expandAll();
+    }
   };
 
   const isReadonlyField = (target) =>
@@ -632,7 +639,7 @@ export default function TargetRegistrationManualModal(props) {
                   {!isEditing ? (
                     <button
                       className="button edit-btn"
-                      onClick={onApproverEditClick}
+                      onClick={onEditButtonClick}
                     >
                       <IconEdit />
                       &nbsp; Sửa
@@ -681,7 +688,7 @@ export default function TargetRegistrationManualModal(props) {
                     {data?.status === REQUEST_STATUS.REJECT && !isEditing && (
                       <button
                         className="button edit-btn"
-                        onClick={onApproverEditClick}
+                        onClick={onEditButtonClick}
                       >
                         <IconEdit />
                         &nbsp; Sửa
