@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import Select from "react-select";
 import { Modal } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
@@ -207,7 +207,6 @@ export default function TargetRegistrationManualModal(props) {
         { ...TARGET_INITIAL_DATA, isEdit: isApprover },
       ],
     });
-    console.log(targetToggleStatuses)
     setTargetToggleStatuses([...targetToggleStatuses, true]);
   };
 
@@ -215,6 +214,9 @@ export default function TargetRegistrationManualModal(props) {
     // if (!checkIsFormValid()) {
     //   return toast.error("Vui lòng điền đầy đủ các trường bắt buộc");
     // }
+    if (isApprover && !formValues.reviewComment) {
+      return toast.error("Vui lòng nhập ý kiến của CBQL phê duyệt");
+    }
     await saveTargetRegister(formValues);
     if (isApprover) {
       setIsEditing(false);
@@ -246,7 +248,8 @@ export default function TargetRegistrationManualModal(props) {
     expandAll();
   };
 
-  const isReadonlyField = (target) => !isEditing || (data?.requestType === REGISTER_TYPES.LIBRARY && target?.id);
+  const isReadonlyField = (target) =>
+    !isEditing || (data?.requestType === REGISTER_TYPES.LIBRARY && target?.id);
 
   return (
     <Modal
@@ -474,7 +477,11 @@ export default function TargetRegistrationManualModal(props) {
                       className="form-textarea"
                       name="jobDetail"
                       onChange={(e) =>
-                        onChangeTargetValues(index, "jobDetail", e?.target?.value)
+                        onChangeTargetValues(
+                          index,
+                          "jobDetail",
+                          e?.target?.value
+                        )
                       }
                       value={target.jobDetail}
                     />
@@ -512,16 +519,19 @@ export default function TargetRegistrationManualModal(props) {
             <div className="mb-15">
               Ý kiến của CBQL phê duyệt <span className="red-color">(*)</span>
             </div>
-            <Form.Control
-              as="textarea"
-              placeholder={isEditing && "Nhập"}
-              className="form-textarea review-comment-textarea"
-              readOnly={!isEditing}
-              onChange={(e) =>
-                onChangeFormValues("reviewComment", e?.target?.value)
-              }
-              value={data?.reviewComment}
-            />
+            {isEditing ? (
+              <Form.Control
+                as="textarea"
+                placeholder={isEditing && "Nhập"}
+                className="form-textarea review-comment-textarea"
+                onChange={(e) =>
+                  onChangeFormValues("reviewComment", e?.target?.value)
+                }
+                value={formValues?.reviewComment}
+              />
+            ) : (
+              <div className="read-only-text">{data.reviewComment}</div>
+            )}
           </div>
         )}
         <div className="form-container mb-15">
@@ -581,14 +591,18 @@ export default function TargetRegistrationManualModal(props) {
             </div>
           )}
 
-          {totalWeight > 0 && totalWeight !== 100 && (isEditing || (isApprover && data?.status === REQUEST_STATUS.PROCESSING)) && (
-            <div className="red-color mb-15">
-              * Yêu cầu tổng trọng số bằng 100%. Vui lòng kiểm tra lại!
-            </div>
-          )}
+          {totalWeight > 0 &&
+            totalWeight !== 100 &&
+            (isEditing ||
+              (isApprover && data?.status === REQUEST_STATUS.PROCESSING)) && (
+              <div className="red-color mb-15">
+                * Yêu cầu tổng trọng số bằng 100%. Vui lòng kiểm tra lại!
+              </div>
+            )}
           <div className="modal-footer-action">
             <div>
-              {(isEditing || (isApprover && data?.status === REQUEST_STATUS.PROCESSING)) && (
+              {(isEditing ||
+                (isApprover && data?.status === REQUEST_STATUS.PROCESSING)) && (
                 <div
                   className="total-weight-container"
                   style={{

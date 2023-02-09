@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import Select from "react-select";
 import { useTranslation } from "react-i18next";
 import { Button, Table } from "react-bootstrap";
@@ -7,7 +7,7 @@ import axios from "axios";
 import moment from "moment";
 import { toast } from "react-toastify";
 import { debounce } from "lodash";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useParams, useHistory } from "react-router-dom";
 
 import { ReactComponent as IconFilter } from "assets/img/ic-filter.svg";
 import { ReactComponent as IconSearch } from "assets/img/icon/ic_search.svg";
@@ -138,6 +138,8 @@ function TargetManagement() {
     type: null,
     data: null,
   });
+  const history = useHistory();
+  const location = useLocation();
 
   const currentTab =
     getValueParamByQueryString(window.location.search, "tab") || TABS.OWNER;
@@ -149,6 +151,13 @@ function TargetManagement() {
 
   useEffect(() => {
     fetchInitData();
+    if (requestId) {
+      setModalManagement({
+        type: MODAL_TYPES.REGISTER_MANUAL,
+        data: requestId,
+        viewOnly: true,
+      })
+    }
   }, []);
 
   useEffect(() => {
@@ -162,26 +171,6 @@ function TargetManagement() {
       setOpenMenuRegistration(false);
     }
   }, [modalManagement, openMenuRegistration]);
-
-  useEffect(() => {
-    const processRequestDetailById = async (id) => {
-      const config = getRequestConfigurations();
-      config.params = {
-        id: id,
-      };
-      const response = await axios.get(
-        `${process.env.REACT_APP_HRDX_PMS_URL}api/targetregist/detail`,
-        config
-      );
-      setModalManagement({
-        type: MODAL_TYPES.REGISTER_MANUAL,
-        data: response?.data?.data?.requests || {},
-        viewOnly: true,
-      });
-    };
-
-    requestId && processRequestDetailById(requestId);
-  }, [requestId]);
 
   const fetchInitData = () => {
     const bodyFormData = new FormData();
@@ -239,17 +228,20 @@ function TargetManagement() {
         employee_type: "EMPLOYEE",
         status: Constants.statusUserActiveMulesoft,
       };
-      axios.post(
-        `${process.env.REACT_APP_REQUEST_URL}user/employee/search`,
-        payload,
-        config
-      ).then((res) => {
-        const data = res.data.data || [];
-        setEmployeeSearchOptions(data);
-        setEmployeeSearchLoading(false);
-      }).catch(() => {
-        setEmployeeSearchLoading(false);
-      });    
+      axios
+        .post(
+          `${process.env.REACT_APP_REQUEST_URL}user/employee/search`,
+          payload,
+          config
+        )
+        .then((res) => {
+          const data = res.data.data || [];
+          setEmployeeSearchOptions(data);
+          setEmployeeSearchLoading(false);
+        })
+        .catch(() => {
+          setEmployeeSearchLoading(false);
+        });
     }
   }, 1000);
 
@@ -268,6 +260,13 @@ function TargetManagement() {
       type: null,
       data: null,
     });
+    if (requestId) {
+      const queryParams = new URLSearchParams(location.search);
+      queryParams.delete('id');
+      history.replace({
+        search: queryParams.toString()
+      })
+    }
     if (shouldRefresh === true) {
       setPageSize(10);
       setPageIndex(1);
@@ -390,7 +389,7 @@ function TargetManagement() {
     } else {
       setModalManagement({
         type: MODAL_TYPES.REGISTER_MANUAL,
-        data: item,
+        data: item.id,
         viewOnly: false,
       });
     }
@@ -404,7 +403,7 @@ function TargetManagement() {
     });
   };
 
-  const modalShow = useMemo(() => {
+  const modalShow = () => {
     if (!modalManagement.type && modalManagement.type !== 0) return <></>;
     switch (modalManagement.type) {
       case MODAL_TYPES.SUCCESS:
@@ -432,7 +431,7 @@ function TargetManagement() {
           <TargetRegistrationManualModal
             phaseOptions={phaseOptions}
             onHide={onHideModal}
-            id={modalManagement.data?.id}
+            id={modalManagement?.data}
             isApprover={currentTab === TABS.REQUEST && !!modalManagement.data}
             setModalManagement={setModalManagement}
             sendTargetRegister={sendTargetRegister}
@@ -513,7 +512,7 @@ function TargetManagement() {
       default:
         break;
     }
-  }, [modalManagement]);
+  };
 
   const REGISTER_TYPE_OPTIONS = [
     {
@@ -563,8 +562,12 @@ function TargetManagement() {
 
   const filterOptionEmployeeSelect = (option, inputValue) => {
     return (
-      option.data?.fullname?.toLowerCase().includes(inputValue?.toLowerCase()) ||
-      option.data?.username?.toLowerCase().includes(inputValue?.toLowerCase()) ||
+      option.data?.fullname
+        ?.toLowerCase()
+        .includes(inputValue?.toLowerCase()) ||
+      option.data?.username
+        ?.toLowerCase()
+        .includes(inputValue?.toLowerCase()) ||
       option.data?.uid?.toLowerCase().includes(inputValue?.toLowerCase())
     );
   };
@@ -575,7 +578,7 @@ function TargetManagement() {
       onClick={() => setOpenMenuRegistration(false)}
     >
       <LoadingModal show={loading} />
-      {modalShow}
+      {modalShow()}
       <div className="menu-btns">
         <Link to={`/target-management?tab=${TABS.OWNER}`}>
           <Button
@@ -705,7 +708,7 @@ function TargetManagement() {
                 onClick={() =>
                   setModalManagement({
                     type: MODAL_TYPES.REGISTER_MANUAL,
-                    data: item,
+                    data: item.id,
                     viewOnly: true,
                   })
                 }
