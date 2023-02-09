@@ -138,7 +138,6 @@ function TargetManagement() {
     type: null,
     data: null,
   });
-  console.log(employeeSearchOptions);
 
   const currentTab =
     getValueParamByQueryString(window.location.search, "tab") || TABS.OWNER;
@@ -232,7 +231,7 @@ function TargetManagement() {
     setLoading(false);
   };
 
-  const onInputEmployeeSearchChange = debounce(async (keyword) => {
+  const onInputEmployeeSearchChange = debounce((keyword) => {
     if (keyword) {
       setEmployeeSearchLoading(true);
       const payload = {
@@ -240,14 +239,17 @@ function TargetManagement() {
         employee_type: "EMPLOYEE",
         status: Constants.statusUserActiveMulesoft,
       };
-      const res = await axios.post(
+      axios.post(
         `${process.env.REACT_APP_REQUEST_URL}user/employee/search`,
         payload,
         config
-      );
-      const data = res.data.data || [];
-      setEmployeeSearchOptions(data);
-      setEmployeeSearchLoading(false);
+      ).then((res) => {
+        const data = res.data.data || [];
+        setEmployeeSearchOptions(data);
+        setEmployeeSearchLoading(false);
+      }).catch(() => {
+        setEmployeeSearchLoading(false);
+      });    
     }
   }, 1000);
 
