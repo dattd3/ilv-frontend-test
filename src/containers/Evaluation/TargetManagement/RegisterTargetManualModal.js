@@ -244,7 +244,7 @@ export default function TargetRegistrationManualModal(props) {
   };
 
   const onEditButtonClick = () => {
-    if(!isApprover) {
+    if (!isApprover) {
       setModalManagement({
         type: MODAL_TYPES.REGISTER_LIBRARY,
         data,
@@ -710,7 +710,10 @@ export default function TargetRegistrationManualModal(props) {
                       className="button send-request-btn"
                       disabled={
                         totalWeight !== 100 ||
-                        (data?.status === REQUEST_STATUS.REJECT && !isEditing)
+                        (data?.status === REQUEST_STATUS.REJECT &&
+                          !isEditing &&
+                          data?.lastUpdatedBy?.toLowerCase() ===
+                            approverJSON?.account?.toLowerCase())
                       }
                       onClick={onSendTargetRegister}
                     >
