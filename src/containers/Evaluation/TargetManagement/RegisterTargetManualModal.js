@@ -43,7 +43,7 @@ const mapApproverOption = (approver) => ({
   organizationLv6: approver.organization_lv6 || null,
 });
 
-const REQUIRED_FIELDS = ["checkPhaseId", "listTarget", "approverInfo"];
+const REQUIRED_FIELDS = ["checkPhaseId", "listTarget"];
 const REQUIRED_FIELDS_TARGET = ["targetName", "metric1", "weight"];
 
 export default function TargetRegistrationManualModal(props) {
@@ -155,9 +155,9 @@ export default function TargetRegistrationManualModal(props) {
   const checkIsFormValid = () => {
     if (!approverJSON) return false;
     return (
-      !REQUIRED_FIELDS.some((item) => !formValues[item]) &&
+      !REQUIRED_FIELDS.some((item) => typeof formValues[item] === "string" ? !formValues[item]?.trim() : !formValues[item]) &&
       !formValues.listTarget.some((item) =>
-        REQUIRED_FIELDS_TARGET.some((field) => !item[field])
+        REQUIRED_FIELDS_TARGET.some((field) => !item[field]?.trim())
       )
     );
   };
@@ -211,12 +211,12 @@ export default function TargetRegistrationManualModal(props) {
   };
 
   const onSaveTargetRegister = async () => {
-    if (!checkIsFormValid()) {
-      return toast.error("Vui lòng điền đầy đủ các trường bắt buộc");
-    }
-    if (isApprover && !formValues.reviewComment) {
-      return toast.error("Vui lòng nhập ý kiến của CBQL phê duyệt");
-    }
+    // if (!checkIsFormValid()) {
+    //   return toast.error("Vui lòng điền đầy đủ các trường bắt buộc");
+    // }
+    // if (isApprover && !formValues.reviewComment) {
+    //   return toast.error("Vui lòng nhập ý kiến của CBQL phê duyệt");
+    // }
     await saveTargetRegister(formValues);
     if (isApprover) {
       setIsEditing(false);
@@ -650,6 +650,7 @@ export default function TargetRegistrationManualModal(props) {
                     <button
                       className="button save-approver-btn"
                       onClick={onSaveTargetRegister}
+                      disabled={!checkIsFormValid() || !formValues.reviewComment?.trim()}
                     >
                       <IconSave />
                       &nbsp; Lưu
@@ -701,7 +702,7 @@ export default function TargetRegistrationManualModal(props) {
                 </button>
                 <button
                   className="button save-btn"
-                  disabled={!formValues.checkPhaseId}
+                  disabled={!formValues.checkPhaseId || !checkIsFormValid()}
                   onClick={onSaveTargetRegister}
                 >
                   <IconSave />
