@@ -157,7 +157,7 @@ export default function TargetRegistrationManualModal(props) {
     return (
       !REQUIRED_FIELDS.some((item) => typeof formValues[item] === "string" ? !formValues[item]?.trim() : !formValues[item]) &&
       !formValues.listTarget.some((item) =>
-        REQUIRED_FIELDS_TARGET.some((field) => !item[field]?.trim())
+        REQUIRED_FIELDS_TARGET.some((field) => typeof formValues[item] === "string" ? !formValues[item]?.trim() : !item[field])
       )
     );
   };
