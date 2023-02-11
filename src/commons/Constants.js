@@ -210,19 +210,20 @@ const Constants = {
     NGHIVIEC:4,
     PHUCLOI: 5
   },
-  // MODULE_COMPANY_AVAILABE: { //Development
-  //   1: ["V040", "V005", "V079", "V041", "V030"], //TUYENDUNG
-  //   2: ["V061","V040", "V005", "V079", "V041", "V070", "V077"],//DANHGIA_TAIKI
-  //   3:["V061", "V040", "V005", "V079", "V041"],//DEXUATLUONG
-  //   4:["V040", "V005", "V079"],//NGHIVIEC
-  //   5: ["V061", "V040", "V005", "V079", "V041"]//PHUCLOI
-  // }
-  MODULE_COMPANY_AVAILABE: { //production
+  MODULE_COMPANY_AVAILABE: process.env.REACT_APP_ENVIRONMENT === 'PRODUCTION' ? 
+  { //production todo: add  "V077", "V070" to TUYENDUNG
     1: ["V040", "V005", "V079", "V041", "V030"],//TUYENDUNG + V061
     2: ["V040", "V005", "V061", "V077"],//DANHGIA_TAIKI
     3: [],//DEXUATLUONG
     4: [],//NGHIVIEC
     5: []//PHUCLOI
+  } :
+  { //Development
+    1: ["V040", "V005", "V079", "V041", "V030", "V077", "V070"],//TUYENDUNG + V061
+    2: ["V061","V040", "V005", "V079", "V041", "V070", "V077"],//DANHGIA_TAIKI
+    3:["V061", "V040", "V005", "V079", "V041"],//DEXUATLUONG
+    4:["V040", "V005", "V079"],//NGHIVIEC
+    5: ["V061", "V040", "V005", "V079", "V041"]//PHUCLOI
   }
 };
 export default Constants
