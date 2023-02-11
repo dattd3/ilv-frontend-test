@@ -824,11 +824,11 @@ function RegisterTargetFromLibraryModal(props) {
     })()
 
     const isDisableSaveRequest = (() => {
-        return !filter?.period
+        return (!targetSelected || targetSelected?.length === 0) || (targetSelected || []).some(item => !item?.weight) || !filter?.period
     })()
 
     const isDisableSendRequest = (() => {
-        return !filter?.period || !approverInfo || !targetSelected || targetSelected?.length === 0
+        return !filter?.period || !approverInfo || !targetSelected || targetSelected?.length === 0 || (targetSelected || []).some(item => !item?.weight)
     })()
 
     const preparePayload = (stepCode = stepConfig.selectTarget, isSendRequest) => {
