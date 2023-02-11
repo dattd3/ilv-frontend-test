@@ -211,9 +211,9 @@ export default function TargetRegistrationManualModal(props) {
   };
 
   const onSaveTargetRegister = async () => {
-    // if (!checkIsFormValid()) {
-    //   return toast.error("Vui lòng điền đầy đủ các trường bắt buộc");
-    // }
+    if (!checkIsFormValid()) {
+      return toast.error("Vui lòng điền đầy đủ các trường bắt buộc");
+    }
     if (isApprover && !formValues.reviewComment) {
       return toast.error("Vui lòng nhập ý kiến của CBQL phê duyệt");
     }
@@ -221,6 +221,8 @@ export default function TargetRegistrationManualModal(props) {
     if (isApprover) {
       setIsEditing(false);
       fetchTargetRegisterData();
+      collapseAll();
+      toast.success("Lưu mục tiêu CBNV thành công")
     }
   };
 
@@ -316,12 +318,12 @@ export default function TargetRegistrationManualModal(props) {
                 <span className="fw-400">
                   {!targetToggleStatuses[index] &&
                     target.targetName &&
-                    ` | ${target.targetName}`}
+                    ` | ${target.targetName} |`}
                 </span>
                 <span className="fw-400 green-color">
                   {!targetToggleStatuses[index] &&
                     target.weight &&
-                    `  | ${target.weight}%`}
+                    ` ${target.weight}%`}
                 </span>
               </span>
               {target?.lastUpdateBy &&
@@ -681,11 +683,10 @@ export default function TargetRegistrationManualModal(props) {
                   </button>
                 </div>
               )}
-            {!isApprover && (
+            {!isApprover && isEditing && (
               <div>
-                {(data?.status === REQUEST_STATUS.REJECT || isEditing) && (
-                  <>
-                    {data?.status === REQUEST_STATUS.REJECT && !isEditing && (
+                {/* {(data?.status === REQUEST_STATUS.REJECT || isEditing) && ( */}
+                {/* {data?.status === REQUEST_STATUS.REJECT && !isEditing && (
                       <button
                         className="button edit-btn"
                         onClick={onEditButtonClick}
@@ -693,35 +694,33 @@ export default function TargetRegistrationManualModal(props) {
                         <IconEdit />
                         &nbsp; Sửa
                       </button>
-                    )}
-                    <button className="button cancel-btn" onClick={onHide}>
-                      <IconRemove className="ic-remove-white" />
-                      &nbsp; Hủy
-                    </button>
-                    <button
-                      className="button save-btn"
-                      disabled={!formValues.checkPhaseId}
-                      onClick={onSaveTargetRegister}
-                    >
-                      <IconSave />
-                      &nbsp; Lưu
-                    </button>
-                    <button
-                      className="button send-request-btn"
-                      disabled={
-                        totalWeight !== 100 ||
-                        (data?.status === REQUEST_STATUS.REJECT &&
-                          !isEditing &&
-                          data?.lastUpdatedBy?.toLowerCase() ===
-                            approverJSON?.account?.toLowerCase())
-                      }
-                      onClick={onSendTargetRegister}
-                    >
-                      <IconSend />
-                      &nbsp; Gửi yêu cầu
-                    </button>
-                  </>
-                )}
+                    )} */}
+                <button className="button cancel-btn" onClick={onHide}>
+                  <IconRemove className="ic-remove-white" />
+                  &nbsp; Hủy
+                </button>
+                <button
+                  className="button save-btn"
+                  disabled={!formValues.checkPhaseId}
+                  onClick={onSaveTargetRegister}
+                >
+                  <IconSave />
+                  &nbsp; Lưu
+                </button>
+                <button
+                  className="button send-request-btn"
+                  disabled={
+                    totalWeight !== 100 ||
+                    (data?.status === REQUEST_STATUS.REJECT &&
+                      !isEditing &&
+                      data?.lastUpdatedBy?.toLowerCase() ===
+                        approverJSON?.account?.toLowerCase())
+                  }
+                  onClick={onSendTargetRegister}
+                >
+                  <IconSend />
+                  &nbsp; Gửi yêu cầu
+                </button>
               </div>
             )}
           </div>

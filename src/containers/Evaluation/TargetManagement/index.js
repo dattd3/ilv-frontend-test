@@ -7,7 +7,7 @@ import axios from "axios";
 import moment from "moment";
 import { toast } from "react-toastify";
 import { debounce } from "lodash";
-import { Link, useLocation, useParams, useHistory } from "react-router-dom";
+import { Link, useLocation, useHistory } from "react-router-dom";
 
 import { ReactComponent as IconFilter } from "assets/img/ic-filter.svg";
 import { ReactComponent as IconSearch } from "assets/img/icon/ic_search.svg";
@@ -130,8 +130,8 @@ function TargetManagement() {
   const [pageIndex, setPageIndex] = useState(1);
   const [employeeSelected, setEmployeeSelected] = useState(null);
   const [employeeSearchLoading, setEmployeeSearchLoading] = useState(false);
-  const [phaseIdSelected, setPhaseIdSelected] = useState(0);
-  const [statusSelected, setStatusSelected] = useState(null);
+  const [phaseIdSelected, setPhaseIdSelected] = useState(undefined);
+  const [statusSelected, setStatusSelected] = useState(undefined);
   const [totalRecords, setTotalRecords] = useState(0);
   const [openMenuRegistration, setOpenMenuRegistration] = useState(false);
   const [modalManagement, setModalManagement] = useState({
@@ -156,7 +156,7 @@ function TargetManagement() {
         type: MODAL_TYPES.REGISTER_MANUAL,
         data: requestId,
         viewOnly: true,
-      })
+      });
     }
   }, []);
 
@@ -179,13 +179,14 @@ function TargetManagement() {
       .post(CHECK_PHASE_LIST_ENDPOINT, bodyFormData, config)
       .then((res) => {
         if (res?.data?.data) {
-          setPhaseOptions(
-            res.data.data.map((item) => ({
+          const options = [
+            ...res.data.data.map((item) => ({
               ...item,
               value: item.id,
               label: item.name,
-            }))
-          );
+            })),
+          ];
+          setPhaseOptions(options);
         }
       })
       .catch((error) => {});
@@ -199,7 +200,7 @@ function TargetManagement() {
         {
           pageIndex,
           pageSize,
-          checkPhaseId: phaseIdSelected,
+          checkPhaseId: phaseIdSelected || 0,
           status: statusSelected || null,
           EmployeeCode:
             currentTab === TABS.OWNER
@@ -262,10 +263,10 @@ function TargetManagement() {
     });
     if (requestId) {
       const queryParams = new URLSearchParams(location.search);
-      queryParams.delete('id');
+      queryParams.delete("id");
       history.replace({
-        search: queryParams.toString()
-      })
+        search: queryParams.toString(),
+      });
     }
     if (shouldRefresh === true) {
       setPageSize(10);
@@ -529,6 +530,10 @@ function TargetManagement() {
     currentTab === TABS.OWNER
       ? [
           {
+            label: "Tất cả",
+            value: null,
+          },
+          {
             label: t("Draft"),
             value: REQUEST_STATUS.DRAFT,
           },
@@ -546,6 +551,10 @@ function TargetManagement() {
           },
         ]
       : [
+          {
+            label: "Tất cả",
+            value: null,
+          },
           {
             label: t("WaitProcessing"),
             value: REQUEST_STATUS.PROCESSING,
@@ -638,23 +647,33 @@ function TargetManagement() {
           className="select-container"
           classNamePrefix="filter-select"
           placeholder={filterPlaceholder(t("AssessmentPeriod"))}
-          options={phaseOptions}
-          onChange={(val) => setPhaseIdSelected(val?.value || 0)}
+          options={[
+            {
+              value: 0,
+              label: "Tất cả",
+            },
+            ...phaseOptions,
+          ]}
+          onChange={(val) => setPhaseIdSelected(val?.value)}
           value={
-            phaseOptions.find((item) => item.value === phaseIdSelected) || 0
+            [
+              {
+                value: 0,
+                label: "Tất cả",
+              },
+              ...phaseOptions,
+            ].find((item) => item.value === phaseIdSelected)
           }
-          isClearable
         />
         <Select
           className="select-container"
           classNamePrefix="filter-select"
           placeholder={filterPlaceholder(t("Status"))}
           options={STATUS_OPTIONS}
-          onChange={(val) => setStatusSelected(val?.value || null)}
+          onChange={(val) => setStatusSelected(val?.value)}
           value={
-            STATUS_OPTIONS.find((item) => item.value === statusSelected) || null
+            STATUS_OPTIONS.find((item) => item.value === statusSelected)
           }
-          isClearable
         />
         {currentTab === TABS.REQUEST && (
           <Select
