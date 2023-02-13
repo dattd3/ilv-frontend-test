@@ -3959,18 +3959,49 @@ span.badge-notification[data-badge]::after {
     display: flex;
     align-items: center;
     justify-content: center;
+    .modal-content {
+      .modal-header {
+        padding: 16px 20px;
+        padding-bottom: 0px;
+        border-top-left-radius: 4px;
+        border-top-right-radius: 4px;
+        background: #ffffff;
+        font-size: 16px;
+        font-weight: 700;
+        line-height: 20px;
+        text-align: left;
+        .close {
+          width: auto;
+          height: auto;
+          font-size: 22px;
+          color: #707070;
+          font-weight: normal;
+          border: none;
+          right: 15px;
+          border-radius: 0;
+          margin: 0;
+          span {
+            top: 16px;
+            left: 6px;
+          }
+        }
+        .modal-title {
+          border-bottom: 1px solid #ced4da;
+          width: 100%;
+          padding-bottom: 16px;
+          color: #0D1B3C;
+          font-weight: 700;
+        }
+      }
+    }
     .modal-body {
       padding: 1rem 1.5rem;
-      .text-title {
-        font-weight: bold;
-        font-size: 16px;
-        color: #000000;
-        border-bottom: 1px solid #CED4DA;
-        padding-bottom: 1rem;
-      }
+      border-bottom-left-radius: 4px;
+      border-bottom-right-radius: 4px;
       .content {
         color: #0D1B3C;
-        padding: 1rem 0;
+        // padding: 1rem 0;
+        padding-bottom: 1rem;
       }
       .form-button-group {
         button {
@@ -3991,7 +4022,7 @@ span.badge-notification[data-badge]::after {
             background: #CED4DA;
           }
           &.button-approve {
-            background: #4099FF;
+            background: #347EF9;
           }
         }
       }
