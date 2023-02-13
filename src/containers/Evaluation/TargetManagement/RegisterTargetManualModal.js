@@ -333,7 +333,7 @@ export default function TargetRegistrationManualModal(props) {
                     * Mục tiêu đã được QLTT chỉnh sửa
                   </div>
                 )}
-              {isEditing && index !== 0 && (
+              {isEditing && formValues.listTarget?.length > 1 && (
                 <button
                   className="button delete-button"
                   onClick={() => onRemoveTarget(index)}
