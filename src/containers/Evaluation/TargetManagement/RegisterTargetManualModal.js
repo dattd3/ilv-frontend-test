@@ -279,7 +279,7 @@ export default function TargetRegistrationManualModal(props) {
           className="select-container mb-20"
           classNamePrefix="filter-select"
           placeholder={t("Select")}
-          options={phaseOptions}
+          options={phaseOptions.filter(item => item?.isAvailable && !item?.isDeleted && item?.status)}
           onChange={(val) => onChangeFormValues("checkPhaseId", val?.value)}
           value={phaseOptions.find(
             (opt) => opt.value === formValues.checkPhaseId
