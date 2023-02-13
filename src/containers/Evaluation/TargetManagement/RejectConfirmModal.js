@@ -1,17 +1,11 @@
 import React, { useState } from "react";
 import { Modal, Button, Image, Form } from "react-bootstrap";
 import clsx from "clsx";
-import IconReject from 'assets/img/icon/Icon_Cancel.svg'
-import IconCheck from 'assets/img/icon/Icon_Check_White.svg'
+import IconReject from "assets/img/icon/Icon_Cancel.svg";
+import IconCheck from "assets/img/icon/Icon_Check_White.svg";
 
 export default function RejectConfirmModal(props) {
-  const {
-    show,
-    onHide,
-    onCancelClick,
-    modalClassName,
-    onReject
-  } = props;
+  const { show, onHide, onCancelClick, modalClassName, onReject } = props;
   const [reasonInput, setReasonInput] = useState(null);
   const onAcceptClick = () => {
     onReject(reasonInput);
@@ -24,10 +18,14 @@ export default function RejectConfirmModal(props) {
       className={clsx("zi-1040 confirm-modal-new", modalClassName)}
       onHide={onHide}
     >
-      <Modal.Body className="rounded">
-        <div className="text-title">XÁC NHẬN TỪ CHỐI</div>
+      <Modal.Header closeButton>
+        <div className="modal-title">XÁC NHẬN TỪ CHỐI</div>
+      </Modal.Header>
+      <Modal.Body>
         <div className="content">
-          <div>Lý do <span className="red-color">(*)</span></div>
+          <div>
+            Lý do <span className="red-color">(*)</span>
+          </div>
           <Form.Control
             as="textarea"
             placeholder="Nhập"
@@ -39,15 +37,15 @@ export default function RejectConfirmModal(props) {
           />
         </div>
         <div className="text-right form-button-group">
-            <Button
-              className="button-cancel d-inline-flex align-items-center justify-content-center"
-              onClick={onCancelClick}
-            >
-              <Image src={IconReject} alt="Không" className="ic-status" />
-              Hủy
-            </Button>
           <Button
-            className="button-approve d-inline-flex align-items-center justify-content-center reject-approve-btn"
+            className="button-cancel d-inline-flex align-items-center justify-content-center"
+            onClick={onCancelClick}
+          >
+            <Image src={IconReject} alt="Không" className="ic-status" />
+            Hủy
+          </Button>
+          <Button
+            className="reject-approve-btn button-approve d-inline-flex align-items-center justify-content-center"
             onClick={onAcceptClick}
             disabled={!reasonInput}
           >

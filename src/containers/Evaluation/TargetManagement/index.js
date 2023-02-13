@@ -469,7 +469,6 @@ function TargetManagement() {
             }
             tempButtonLabel="Hủy"
             mainButtonLabel="Đồng ý"
-            modalClassName="delete-target-modal"
           />
         );
 
@@ -489,7 +488,6 @@ function TargetManagement() {
             }
             tempButtonLabel="Hủy"
             mainButtonLabel="Đồng ý"
-            modalClassName="delete-target-modal"
           />
         );
 

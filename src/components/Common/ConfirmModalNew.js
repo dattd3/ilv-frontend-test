@@ -1,8 +1,8 @@
 import React from "react";
 import { Modal, Button, Image } from "react-bootstrap";
 import clsx from "clsx";
-import IconReject from '../../assets/img/icon/Icon_Cancel.svg'
-import IconCheck from '../../assets/img/icon/Icon_Check_White.svg'
+import IconReject from "../../assets/img/icon/Icon_Cancel.svg";
+import IconCheck from "../../assets/img/icon/Icon_Check_White.svg";
 
 export default function ConfirmModal(props) {
   const {
@@ -23,11 +23,11 @@ export default function ConfirmModal(props) {
       className={clsx("zi-1040 confirm-modal-new", modalClassName)}
       onHide={onHide}
     >
-      <Modal.Body className="rounded">
-        <div className="text-title">{confirmHeader}</div>
-        <div className="content">
-          {confirmContent}
-        </div>
+      <Modal.Header closeButton>
+        <div className="modal-title">{confirmHeader}</div>
+      </Modal.Header>
+      <Modal.Body>
+        <div className="content">{confirmContent}</div>
         <div className="text-right form-button-group">
           {tempButtonLabel && (
             <Button
