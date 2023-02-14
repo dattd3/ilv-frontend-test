@@ -1628,5 +1628,7 @@
   "Expand": "Mở rộng",
   "Manually": "Thủ công",
   "FromLibrary": "Từ thư viện",
-  "WaitProcessing": "Đang chờ xử lý"
+  "WaitProcessing": "Đang chờ xử lý",
+  "Currency": "Tiền tệ",
+  "YearCapitalize": "Năm"
 }
