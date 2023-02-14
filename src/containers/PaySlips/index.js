@@ -7,19 +7,29 @@ import MainResultComponent from './ResultBlock/MainResultComponent'
 import IncomeComponent from './ResultBlock/IncomeComponent'
 import WorkingInformationComponent from './ResultBlock/WorkingInformationComponent'
 import LeaveInformationComponent from './ResultBlock/LeaveInformationComponent'
+import LoadingModal from '../../components/Common/LoadingModal'
 import { exportToPDF } from "../../commons/Utils"
 import ReactHTMLTableToExcel from "react-html-table-to-excel"
 import HOCComponent from '../../components/Common/HOCComponent'
+import Constants from '../../commons/Constants'
+
+const languageCurrencyMapping = {
+  [Constants.LANGUAGE_VI]: Constants.CURRENCY.VND,
+  [Constants.LANGUAGE_EN]: Constants.CURRENCY.USD,
+}
 
 class PaySlipsComponent extends React.Component {
   constructor(props) {
     super(props);
+    this.currentLocale = localStorage.getItem("locale")
 
     this.state = {
       isShowConfirmPasswordModal: true,
       acessToken: new URLSearchParams(props?.history?.location?.search).get('accesstoken') || null,
       payslip: null,
-      isSearch: false
+      isSearch: false,
+      currencySelected: languageCurrencyMapping[this.currentLocale],
+      isLoading: false,
     }
   }
 
@@ -34,12 +44,12 @@ class PaySlipsComponent extends React.Component {
   }
 
   handleSubmitSearch = (month, year) => {
-      this.setState({isSearch: false})
-      const config = {
-        headers: {
-          'Authorization': `${localStorage.getItem('accessToken')}`,
-            'Content-Type':'multipart/form-data'
-        }
+    this.setState({ isSearch: false, isLoading: true })
+    const config = {
+      headers: {
+        'Authorization': `${localStorage.getItem('accessToken')}`,
+        'Content-Type':'multipart/form-data'
+      }
     }
 
     let bodyFormData = new FormData()
@@ -60,7 +70,9 @@ class PaySlipsComponent extends React.Component {
           this.setState({payslip: null, isSearch: true})
         }
     }).catch(error => {
-    })
+    }).finally(() => {
+      this.setState({ isLoading: false })
+    });
   }
 
   updateToken (acessToken) {
@@ -72,17 +84,27 @@ class PaySlipsComponent extends React.Component {
     exportToPDF(elementView, "payslip")
   }
 
+  updateCurrency = (val) => {
+    this.setState({ currencySelected: val, isLoading: true }, () => {
+      setTimeout(() => {
+        this.setState({ isLoading: false })
+      }, 200)
+    })
+  }
+
   render() {            
     const { t } = this.props
-    const { acessToken, isSearch, payslip } = this.state
+    const { acessToken, isSearch, payslip, currencySelected, isLoading } = this.state
 
     return (
       <>
+      <LoadingModal show={isLoading} />
       <ConfirmPasswordModal show={acessToken == null} onUpdateToken={this.updateToken.bind(this)} />
       <div className="payslips-section">
+        <h1 className="content-page-header">{t("PaySlip")}</h1>
         <div className="card shadow mb-4">
           <div className="card-body">
-            <FormSearchComponent search={this.handleSubmitSearch.bind(this)} />
+            <FormSearchComponent currencySelected={currencySelected} updateCurrency={this.updateCurrency} search={this.handleSubmitSearch.bind(this)} />
             {isSearch && !payslip ? <p className="text-danger">{t("NoDataFound")}</p> : null}
           </div>
         </div>
@@ -107,9 +129,9 @@ class PaySlipsComponent extends React.Component {
               </div>
             </div>
             <div className="other-result-section">
-              <WorkingInformationComponent payslip={payslip} />
+              <WorkingInformationComponent payslip={payslip} currencySelected={currencySelected} />
               <LeaveInformationComponent payslip={payslip} />
-              <IncomeComponent payslip={payslip} />
+              <IncomeComponent payslip={payslip} currencySelected={currencySelected} />
             </div>
           </div>
           <div className="block-buttons">

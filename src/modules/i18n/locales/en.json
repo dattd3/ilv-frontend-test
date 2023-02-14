@@ -1610,5 +1610,7 @@
   "Expand": "Expand",
   "Manually": "Manually",
   "FromLibrary": "From Library",
-  "WaitProcessing": "Wait Processing"
+  "WaitProcessing": "Wait Processing",
+  "Currency": "Currency",
+  "YearCapitalize": "Year"
 }
