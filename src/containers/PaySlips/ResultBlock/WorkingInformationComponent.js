@@ -23,18 +23,8 @@ function WorkingInformationComponent(props) {
                         <td className="title title-second cc" rowSpan="2">{t("StandardWorkingDays")}</td>
                         <td className="title title-second" colSpan="4">{t("TimesheetDetailsOfDay")}</td>
                         <td className="title same-width title-second tchl" rowSpan="2">{t("TotalPaidDays")}</td>
-                        {
-                            currentCompanyCode === "V070" && 
-                            <>
-                                <td className="title same-width title-second sgcd" rowSpan="2">{t("TotalPaidMeals")}</td>
-                            </>
-                        }
-                        {
-                            !['V096','V060'].includes(currentCompanyCode) && 
-                            <>
-                                <td className="title same-width title-second sgcd" rowSpan="2">{t("NightWorkingHours")}</td>
-                            </>
-                        }
+                        { currentCompanyCode === "V070" && <td className="title same-width title-second sgcd" rowSpan="2">{t("TotalPaidMeals")}</td> }
+                        { !['V096','V060'].includes(currentCompanyCode) && <td className="title same-width title-second sgcd" rowSpan="2">{t("NightWorkingHours")}</td> }
                     </tr>
                     <tr className="three-title">
                         <td className="title same-width title-second tn">{t("From")}</td>
@@ -42,10 +32,11 @@ function WorkingInformationComponent(props) {
                         <td className="title same-width title-second lcb">{t("BaseSalary")}</td>
                         <td className="title same-width title-second">{t("BehaviorAndAttitudeBonus")}</td>
                         {
-                            !['V096','V060'].includes(currentCompanyCode) ? <>
+                            !['V096','V060'].includes(currentCompanyCode) && 
+                            <>
                                 <td className="title same-width title-second ttng">{t("ProficiencyBonus")}</td>
                                 <td className="title same-width title-second">{t("ServiceChargeAndCaddieFee")}</td>
-                            </> : null
+                            </>
                         }
                         <td className="title same-width title-second ttn">{t("Total")}</td>
                         <td className="title same-width title-second clvtt">{t("ActualWorkingDays")}</td>
@@ -66,12 +57,11 @@ function WorkingInformationComponent(props) {
                             <td className="same-width lcb">{ baseSalary.toLocaleString(currencyUnitMapping[currencySelected]) }</td>
                             <td className="same-width">{ behaviorBonus.toLocaleString(currencyUnitMapping[currencySelected]) }</td>
                             {
-                                !['V096','V060'].includes(currentCompanyCode) 
-                                ? <>
+                                !['V096','V060'].includes(currentCompanyCode) && 
+                                <>
                                     <td className="same-width ttng">{ vpProficiencyBonus.toLocaleString(currencyUnitMapping[currencySelected]) }</td>
                                     <td className="same-width">{ serviceChargeBonus.toLocaleString(currencyUnitMapping[currencySelected]) }</td>
-                                </> 
-                                : null
+                                </>
                             }
                             <td className="same-width ttn">{ totalBaseSalary.toLocaleString(currencyUnitMapping[currencySelected]) }</td>
                             <td className="same-width cc">{ workingInformation?.standard_day || 0 }</td>

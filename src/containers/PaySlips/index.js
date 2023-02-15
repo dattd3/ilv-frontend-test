@@ -11,24 +11,17 @@ import LoadingModal from '../../components/Common/LoadingModal'
 import { exportToPDF } from "../../commons/Utils"
 import ReactHTMLTableToExcel from "react-html-table-to-excel"
 import HOCComponent from '../../components/Common/HOCComponent'
-import Constants from '../../commons/Constants'
-
-const languageCurrencyMapping = {
-  [Constants.LANGUAGE_VI]: Constants.CURRENCY.VND,
-  [Constants.LANGUAGE_EN]: Constants.CURRENCY.USD,
-}
 
 class PaySlipsComponent extends React.Component {
   constructor(props) {
     super(props);
-    this.currentLocale = localStorage.getItem("locale")
 
     this.state = {
       isShowConfirmPasswordModal: true,
       acessToken: new URLSearchParams(props?.history?.location?.search).get('accesstoken') || null,
       payslip: null,
       isSearch: false,
-      currencySelected: languageCurrencyMapping[this.currentLocale],
+      currencySelected: null,
       isLoading: false,
     }
   }
@@ -43,8 +36,8 @@ class PaySlipsComponent extends React.Component {
     }
   }
 
-  handleSubmitSearch = (month, year) => {
-    this.setState({ isSearch: false, isLoading: true })
+  handleSubmitSearch = (month, year, currency) => {
+    this.setState({ isSearch: false, isLoading: true, currencySelected: currency })
     const config = {
       headers: {
         'Authorization': `${localStorage.getItem('accessToken')}`,
@@ -84,14 +77,6 @@ class PaySlipsComponent extends React.Component {
     exportToPDF(elementView, "payslip")
   }
 
-  updateCurrency = (val) => {
-    this.setState({ currencySelected: val, isLoading: true }, () => {
-      setTimeout(() => {
-        this.setState({ isLoading: false })
-      }, 200)
-    })
-  }
-
   render() {            
     const { t } = this.props
     const { acessToken, isSearch, payslip, currencySelected, isLoading } = this.state
@@ -104,8 +89,8 @@ class PaySlipsComponent extends React.Component {
         <h1 className="content-page-header">{t("PaySlip")}</h1>
         <div className="card shadow mb-4">
           <div className="card-body">
-            <FormSearchComponent currencySelected={currencySelected} updateCurrency={this.updateCurrency} search={this.handleSubmitSearch.bind(this)} />
-            {isSearch && !payslip ? <p className="text-danger">{t("NoDataFound")}</p> : null}
+            <FormSearchComponent search={this.handleSubmitSearch} />
+            { isSearch && !payslip && <p className="text-danger">{t("NoDataFound")}</p> }
           </div>
         </div>
         {
@@ -114,12 +99,12 @@ class PaySlipsComponent extends React.Component {
           <div className="block-buttons">
             <button className="btn-download download-pdf" onClick={this.downloadPDF}>Tải PDF</button>
             <ReactHTMLTableToExcel
-                id="test-table-xls-button"
-                className="btn btn-link pull-right download-excel"
-                table="payslip-download"
-                filename="SalaryInformation"
-                sheet="SalaryInformation"
-                buttonText="Tải Excel"
+              id="test-table-xls-button"
+              className="btn btn-link pull-right download-excel"
+              table="payslip-download"
+              filename="SalaryInformation"
+              sheet="SalaryInformation"
+              buttonText="Tải Excel"
             />
           </div>
           <div className="result-block" id="result-block">
@@ -137,12 +122,12 @@ class PaySlipsComponent extends React.Component {
           <div className="block-buttons">
             <button className="btn-download download-pdf" onClick={this.downloadPDF}>Tải PDF</button>
             <ReactHTMLTableToExcel
-                id="test-table-xls-button"
-                className="btn btn-link pull-right download-excel"
-                table="payslip-download"
-                filename="SalaryInformation"
-                sheet="SalaryInformation"
-                buttonText="Tải Excel"
+              id="test-table-xls-button"
+              className="btn btn-link pull-right download-excel"
+              table="payslip-download"
+              filename="SalaryInformation"
+              sheet="SalaryInformation"
+              buttonText="Tải Excel"
             />
           </div>
           </>

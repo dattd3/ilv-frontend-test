@@ -16,6 +16,11 @@ const currencyUnitMapping = {
     [Constants.CURRENCY.VND]: 'vi-VN',
 }
 
+const languageCurrencyMapping = {
+    [Constants.LANGUAGE_VI]: Constants.CURRENCY.VND,
+    [Constants.LANGUAGE_EN]: Constants.CURRENCY.USD,
+  }
+
 function TrTable(props) {
     const { clsName, tdclsName, spanclsName, rowIndex, row, payslipCalculate, currencySelected } = props
 
@@ -164,5 +169,5 @@ function IncomeComponent(props) {
     );
 }
 
-export { currencyKeyMapping, currencyUnitMapping }
+export { currencyKeyMapping, currencyUnitMapping, languageCurrencyMapping }
 export default IncomeComponent
