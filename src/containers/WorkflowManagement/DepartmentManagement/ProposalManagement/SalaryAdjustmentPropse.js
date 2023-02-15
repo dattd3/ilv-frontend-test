@@ -328,6 +328,7 @@ const SalaryAdjustmentPropse = (props) => {
         viewSettingTmp.disableComponent.showEye = true;
         let currentAppraiserIndex = dataSalaryInfo?.requestAppraisers?.findIndex(app => app.status == Constants.SALARY_APPRAISER_STATUS.WAITING);
         if (
+          currentAppraiserIndex != -1 &&
           currentEmail.toLowerCase() ===
           dataSalaryInfo?.requestAppraisers[currentAppraiserIndex].appraiserId?.toLowerCase() &&
           props.match.params.type === "assess"
@@ -453,6 +454,7 @@ const SalaryAdjustmentPropse = (props) => {
         weakness: u?.staffWknesses,
         canChangeAction: u?.accepted == true,
         accepted: u?.accepted,
+        comment: u.comment
       };
     });
    
@@ -742,6 +744,14 @@ const SalaryAdjustmentPropse = (props) => {
   // Thẩm định
   const handleConsent = () => {
     // const processStatusId = appraiser ? 24 : 5
+    let staffRequestStatusList = selectedMembers?.map(item => {
+      return {
+        employeeNo: item.uid,
+        salaryAdjustmentId: item.id,
+        status: item.accepted ? 1 : 0,
+        comment: item.comment || ''
+      }
+    })
     setConfirmModal({
       isShowModalConfirm: true,
       modalTitle: t("ConsentConfirmation"),
@@ -758,6 +768,7 @@ const SalaryAdjustmentPropse = (props) => {
               processStatusId: 5,
               comment: "",
               status: "",
+              staffRequestStatusList: staffRequestStatusList
             },
           ],
         },
@@ -767,6 +778,14 @@ const SalaryAdjustmentPropse = (props) => {
 
   // Phê duyệt
   const handleApprove = () => {
+    let staffRequestStatusList = selectedMembers?.map(item => {
+      return {
+        employeeNo: item.uid,
+        salaryAdjustmentId: item.id,
+        status: item.accepted ? 1 : 0,
+        comment: item.comment || ''
+      }
+    })
     setConfirmModal({
       isShowModalConfirm: true,
       modalTitle: t("ApproveRequest"),
@@ -783,6 +802,7 @@ const SalaryAdjustmentPropse = (props) => {
               processStatusId: 2,
               comment: "",
               status: "",
+              staffRequestStatusList: staffRequestStatusList
             },
           ],
         },
