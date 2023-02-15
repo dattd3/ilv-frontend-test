@@ -68,6 +68,7 @@ class FormSearchComponent extends React.Component {
                 <Col sm={3}>
                     <Form.Label>{t("Month")}</Form.Label>
                     <Select
+                        className="text-capitalize"
                         placeholder={t("Select")}
                         options={months}
                         onChange={e => this.handleSelectChange(e, 'month')}
@@ -80,6 +81,7 @@ class FormSearchComponent extends React.Component {
                 <Col sm={3}>
                     <Form.Label>{t("YearCapitalize")}</Form.Label>
                     <Select
+                        className="text-capitalize"
                         placeholder={t("Select")}
                         options={years}
                         onChange={e => this.handleSelectChange(e, 'year')}
