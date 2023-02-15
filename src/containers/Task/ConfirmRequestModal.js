@@ -37,7 +37,7 @@ class ConfirmRequestModal extends React.Component {
         let formData = new FormData()
         switch (this.props.type) {
             case Constants.STATUS_NOT_APPROVED: // không phê duyệt
-                this.disApprove(this.props.dataToSap, `${process.env.REACT_APP_REQUEST_URL}request/approve`, id)
+                this.disApprove(this.props.dataToSap, `${process.env.REACT_APP_SALARY_URL}request/approve`, id)
                 break;
             case Constants.STATUS_APPROVED: // phê duyệt
                 this.approve(this.props.dataToSap,id)
