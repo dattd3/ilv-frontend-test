@@ -233,11 +233,14 @@ function SalaryPropse(props) {
     const currentEmail = localStorage.getItem("email");
     const currentEmployeeNo = localStorage.getItem("employeeNo");
     let viewSettingTmp = { ...viewSetting };
+    viewSettingTmp.showComponent.stateProcess = true;
+    let currentStatus = dataSalaryInfo?.processStatusId;
     // Todo: check nguoi danh gia
     switch (dataSalaryInfo?.processStatusId) {
       //Nhân sự điều phối gửi lại yêu cầu
       case 20:
         setIsCreateMode(true);
+        viewSettingTmp.showComponent.stateProcess = false;
         viewSettingTmp.showComponent.btnAttachFile = true;
         viewSettingTmp.showComponent.btnSendRequest = true;
         viewSettingTmp.showComponent.showHrSupportViewSalary = true;
@@ -282,6 +285,7 @@ function SalaryPropse(props) {
           localStorage.getItem("part") || "";
         viewSettingTmp.proposedStaff.companyCode =
           localStorage.getItem("companyCode") || "";
+        currentStatus = 0; 
         break;
       case 21:
         viewSettingTmp.showComponent.humanForReviewSalary = true;
@@ -289,6 +293,7 @@ function SalaryPropse(props) {
           viewSettingTmp.disableComponent.showCurrentSalary = true;
           viewSettingTmp.disableComponent.showSuggestedSalary = true;
         }
+        currentStatus = 0; 
         break;
       case 22:
         // Todo: kiem tra ai la nguoi view
@@ -310,6 +315,7 @@ function SalaryPropse(props) {
           viewSettingTmp.disableComponent.showCurrentSalary = true;
           viewSettingTmp.disableComponent.showSuggestedSalary = true;
         }
+        currentStatus = 0; 
         break;
       case 8:
         viewSettingTmp.showComponent.humanForReviewSalary = true;
@@ -326,6 +332,8 @@ function SalaryPropse(props) {
           viewSettingTmp.disableComponent.viewCurrentSalary = true;
           viewSettingTmp.showComponent.btnRefuse = true;
           viewSettingTmp.showComponent.btnExpertise = true;
+        } else if(props.match.params.type != "request") {
+          currentStatus = 20;
         }
         if (accessToken) {
           viewSettingTmp.disableComponent.showCurrentSalary = true;
@@ -393,7 +401,7 @@ function SalaryPropse(props) {
     // viewSettingTmp.proposedStaff.fullName = dataSalaryInfo?.user?.fullName;
     // viewSettingTmp.proposedStaff.jobTitle = dataSalaryInfo?.user?.jobTitle;
     // viewSettingTmp.proposedStaff.department = dataSalaryInfo?.user?.department;
-
+    viewSettingTmp.currentStatus = currentStatus; 
     //QLTT
     const requestInfo = dataSalaryInfo;
     if(requestInfo.requestInfo && dataSalaryInfo?.processStatusId != 20) {
@@ -1354,12 +1362,12 @@ function SalaryPropse(props) {
         <div className="block-status">
           <span
             className={`status ${
-              Constants.mappingStatusRequest[dataSalary?.processStatusId]
-                .className
+              Constants.mappingStatusRequest[viewSetting?.currentStatus]
+                ?.className
             }`}
           >
             {t(
-              Constants.mappingStatusRequest[dataSalary?.processStatusId].label
+              Constants.mappingStatusRequest[viewSetting?.currentStatus]?.label
             )}
           </span>
         </div>
