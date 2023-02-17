@@ -591,7 +591,7 @@ const SalaryAdjustmentPropse = (props) => {
       } else {
         newCheckedMemeberIds[item.uid] = item;
       }
-      checkall = checkall && newCheckedMemeberIds[item.uid].checked;
+      checkall = checkall && (newCheckedMemeberIds[item.uid].checked || item.canChangeAction == false);
     });
     setCheckedMemberIds(newCheckedMemeberIds);
     setSelectedAll(checkall);
@@ -1401,22 +1401,22 @@ const SalaryAdjustmentPropse = (props) => {
                     <span>
                       <input
                         type="radio"
-                        id="action_accept"
-                        name="action"
+                        id={"action_accept" + item.uid}
+                        name={"action" + item.uid}
                         checked={item.accepted == true}
                         onChange={(e) => onActionChange(item.uid, true)}
                       />
-                      <label htmlFor="action_accept">{t("accept")}</label>
+                      <label htmlFor={"action_accept" + item.uid}>{t("accept")}</label>
                     </span>
                     <span>
                       <input
                         type="radio"
-                        id="action_reject"
-                        name="action"
+                        id={"action_reject" + item.uid}
+                        name={"action" + item.uid}
                         checked={item.accepted != true}
                         onChange={(e) => onActionChange(item.uid, false)}
                       />
-                      <label htmlFor="action_reject">
+                      <label htmlFor={"action_reject" + item.uid}>
                         {t("RejectQuestionButtonLabel")}
                       </label>
                     </span>
