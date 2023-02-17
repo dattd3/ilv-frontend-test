@@ -239,10 +239,13 @@ const SalaryAdjustmentPropse = (props) => {
     
     const currentEmail = localStorage.getItem("email");
     let viewSettingTmp = { ...viewSetting };
+    viewSettingTmp.showComponent.stateProcess = true;
+    let currentStatus = dataSalaryInfo?.processStatusId;
     switch (dataSalaryInfo?.processStatusId) {
       //Nhân sự điều phối gửi lại yêu cầu
       case 20:
         setIsCreateMode(true);
+        viewSettingTmp.showComponent.stateProcess = false;
         viewSettingTmp.showComponent.btnAttachFile = true;
         viewSettingTmp.showComponent.btnSendRequest = true;
         viewSettingTmp.showComponent.showHrSupportViewSalary = true;
@@ -287,6 +290,7 @@ const SalaryAdjustmentPropse = (props) => {
           localStorage.getItem("part") || "";
         viewSettingTmp.proposedStaff.companyCode =
           localStorage.getItem("companyCode") || "";
+        currentStatus = 0; 
         break;
       // Đang chờ nhân sự điều phối & Đang chờ nhân sự thẩm định người xem lương
       case 21:
@@ -295,6 +299,7 @@ const SalaryAdjustmentPropse = (props) => {
           viewSettingTmp.disableComponent.showCurrentSalary = true;
           viewSettingTmp.disableComponent.showSuggestedSalary = true;
         }
+        currentStatus = 0
         break;
       // Đang chờ QLTT nhập lương đề xuất, xem lương hiện tại
       case 22:
@@ -318,6 +323,7 @@ const SalaryAdjustmentPropse = (props) => {
           viewSettingTmp.disableComponent.showSuggestedSalary = true;
           viewSettingTmp.disableComponent.showEye = true;
         }
+        currentStatus = 0;
         break;
       // Đang chờ CBQL Cấp cơ sở thẩm định
       case 8:
@@ -336,6 +342,8 @@ const SalaryAdjustmentPropse = (props) => {
           viewSettingTmp.showComponent.btnRefuse = true;
           viewSettingTmp.showComponent.btnExpertise = true;
           viewSettingTmp.disableComponent.showEye = true;
+        } else if(props.match.params.type != "request") {
+            currentStatus = 20;
         }
         if (accessToken) {
           viewSettingTmp.disableComponent.showCurrentSalary = true;
@@ -407,7 +415,7 @@ const SalaryAdjustmentPropse = (props) => {
     // viewSettingTmp.proposedStaff.fullName = dataSalaryInfo?.user?.fullName;
     // viewSettingTmp.proposedStaff.jobTitle = dataSalaryInfo?.user?.jobTitle;
     // viewSettingTmp.proposedStaff.department = dataSalaryInfo?.user?.department;
-  
+    viewSettingTmp.currentStatus = currentStatus; 
     const requestInfo = dataSalaryInfo;
 
     //QLTT
@@ -1525,7 +1533,7 @@ const SalaryAdjustmentPropse = (props) => {
   };
   const salaryState = `salaryadjustment_${props.match.params?.id}_${props.match.params?.type}`;
   return (
-    <div className="timesheet-section proposal-management">
+    <div className="timesheet-section proposal-management status-contain">
       <LoadingModal show={isLoading} isloading />
       <ConfirmPasswordModal
         state={salaryState}
@@ -1854,13 +1862,13 @@ const SalaryAdjustmentPropse = (props) => {
       {viewSetting.showComponent.stateProcess && (
         <div className="block-status">
           <span
-            className={`status ${
-              Constants.mappingStatusRequest[dataSalary?.processStatusId]
-                .className
+            className={`request-status ${
+              Constants.mappingStatusRequest[viewSetting?.currentStatus]
+                ?.className
             }`}
           >
             {t(
-              Constants.mappingStatusRequest[dataSalary?.processStatusId].label
+              Constants.mappingStatusRequest[viewSetting?.currentStatus]?.label
             )}
           </span>
         </div>

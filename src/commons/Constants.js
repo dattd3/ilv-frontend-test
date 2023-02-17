@@ -84,7 +84,8 @@ const Constants = {
     6: { label: "PartiallySuccessful", className: 'warning' },
     7: { label: "Rejected", className: 'fail' },
     8: { label: "PendingConsent", className: '' },
-    20:{ label: "Consented", className: '' }
+    20:{ label: "Consented", className: '' },
+    0: {label: "Waiting", className: ''}
   },
   //
   mappingActionType : {
