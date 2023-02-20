@@ -3,9 +3,17 @@ import { Modal, Button, Image, Form } from "react-bootstrap";
 import clsx from "clsx";
 import IconReject from "assets/img/icon/Icon_Cancel.svg";
 import IconCheck from "assets/img/icon/Icon_Check_White.svg";
+import { MODAL_TYPES } from "./Constant";
 
 export default function RejectConfirmModal(props) {
-  const { show, onHide, onCancelClick, modalClassName, onReject } = props;
+  const {
+    show,
+    onHide,
+    onCancelClick,
+    modalClassName,
+    onReject,
+    type = MODAL_TYPES.REJECT_CONFIRM,
+  } = props;
   const [reasonInput, setReasonInput] = useState(null);
   const onAcceptClick = () => {
     onReject(reasonInput);
@@ -19,12 +27,27 @@ export default function RejectConfirmModal(props) {
       onHide={onHide}
     >
       <Modal.Header closeButton>
-        <div className="modal-title">XÁC NHẬN TỪ CHỐI</div>
+        <div className="modal-title">
+          {type === MODAL_TYPES.REJECT_CONFIRM ? (
+            <>XÁC NHẬN TỪ CHỐI</>
+          ) : (
+            <>XÁC NHẬN THU HỒI</>
+          )}
+        </div>
       </Modal.Header>
       <Modal.Body>
         <div className="content">
           <div>
-            Lý do <span className="red-color">(*)</span>
+            {type === MODAL_TYPES.REJECT_CONFIRM ? (
+              <>
+                {" "}
+                Lý do <span className="red-color">(*)</span>
+              </>
+            ) : (
+              <>
+                Lý do thu hồi <span className="red-color">(*)</span>
+              </>
+            )}
           </div>
           <Form.Control
             as="textarea"

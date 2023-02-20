@@ -14,6 +14,7 @@ import { ReactComponent as IconSearch } from "assets/img/icon/ic_search.svg";
 import { ReactComponent as IconReason } from "assets/img/ic-reason.svg";
 import { ReactComponent as IconRemove } from "assets/img/icon-delete.svg";
 import { ReactComponent as IconEdit } from "assets/img/Icon-edit-2.svg";
+import { ReactComponent as IconRecall } from "assets/img/Icon-recall.svg";
 
 import HOCComponent from "components/Common/HOCComponent";
 import CustomPaging from "components/Common/CustomPagingNew";
@@ -34,6 +35,8 @@ import {
   getUserInfo,
   REGISTER_TYPES,
   REQUEST_STATUS,
+  STATUS_RECALLABLE,
+  STATUS_RECALLABLE_APPROVE_TAB,
 } from "./Constant";
 import TargetRegistrationManualModal from "./RegisterTargetManualModal";
 import ConfirmModal from "components/Common/ConfirmModalNew";
@@ -166,6 +169,10 @@ function TargetManagement() {
     }
   }, [pageSize, pageIndex, currentTab]);
 
+  useEffect(() =>  {
+    setPageIndex(1);
+  }, [currentTab])
+
   useEffect(() => {
     if (modalManagement.type !== null && openMenuRegistration) {
       setOpenMenuRegistration(false);
@@ -283,6 +290,8 @@ function TargetManagement() {
         typeMessage = "Phê duyệt yêu cầu ";
       } else if (type === STATUS_TYPES.REJECT) {
         typeMessage = "Từ chối phê duyệt ";
+      } else if (type === STATUS_TYPES.RECALL) {
+        typeMessage = "Thu hồi yêu cầu ";
       }
       try {
         await axios.post(
@@ -404,6 +413,14 @@ function TargetManagement() {
     });
   };
 
+  const onRecallTargetRegisterClick = (event, item) => {
+    event.stopPropagation();
+    setModalManagement({
+      type: MODAL_TYPES.RECALL_REQUEST_CONFIRM,
+      data: item,
+    });
+  };
+
   const modalShow = () => {
     if (!modalManagement.type && modalManagement.type !== 0) return <></>;
     switch (modalManagement.type) {
@@ -501,6 +518,24 @@ function TargetManagement() {
               updateStatusTargetRegister(
                 modalManagement.data?.id,
                 STATUS_TYPES.REJECT,
+                reason
+              );
+            }}
+            modalClassName="reject-target-modal"
+          />
+        );
+
+      case MODAL_TYPES.RECALL_REQUEST_CONFIRM:
+        return (
+          <RejectConfirmModal
+            show={true}
+            onHide={onHideModal}
+            onCancelClick={onHideModal}
+            type={MODAL_TYPES.RECALL_REQUEST_CONFIRM}
+            onReject={(reason) => {
+              updateStatusTargetRegister(
+                modalManagement.data?.id,
+                STATUS_TYPES.RECALL,
                 reason
               );
             }}
@@ -653,15 +688,13 @@ function TargetManagement() {
             ...phaseOptions,
           ]}
           onChange={(val) => setPhaseIdSelected(val?.value)}
-          value={
-            [
-              {
-                value: 0,
-                label: "Tất cả",
-              },
-              ...phaseOptions,
-            ].find((item) => item.value === phaseIdSelected)
-          }
+          value={[
+            {
+              value: 0,
+              label: "Tất cả",
+            },
+            ...phaseOptions,
+          ].find((item) => item.value === phaseIdSelected)}
         />
         <Select
           className="select-container"
@@ -669,9 +702,7 @@ function TargetManagement() {
           placeholder={filterPlaceholder(t("Status"))}
           options={STATUS_OPTIONS}
           onChange={(val) => setStatusSelected(val?.value)}
-          value={
-            STATUS_OPTIONS.find((item) => item.value === statusSelected)
-          }
+          value={STATUS_OPTIONS.find((item) => item.value === statusSelected)}
         />
         {currentTab === TABS.REQUEST && (
           <Select
@@ -756,11 +787,12 @@ function TargetManagement() {
                   </div>
                 </td>
                 <td className="text-center">
-                  {item.status === REQUEST_STATUS.REJECT &&
+                  {(item.status === REQUEST_STATUS.REJECT ||
+                    item.status === REQUEST_STATUS.DRAFT) &&
                     item.rejectReson && (
                       <>
                         <a data-tip data-for={`reason-${item.id}`}>
-                          <IconReason width={24} height={24} />
+                          <IconReason width={20} height={20} />
                         </a>
                         <ReactTooltip
                           id={`reason-${item.id}`}
@@ -774,7 +806,19 @@ function TargetManagement() {
                         >
                           <div className="tooltip-content">
                             <div className="tooltip-header">
-                              Ý kiến của CBQL phê duyệt:
+                              {item.status === REQUEST_STATUS.REJECT ? (
+                                <>Ý kiến của CBQL phê duyệt:</>
+                              ) : (
+                                <>
+                                  {item.lastRecallBy ===
+                                  JSON.parse(item?.userInfo || null)
+                                    ?.account ? (
+                                    <>Lý do thu hồi của CBNV</>
+                                  ) : (
+                                    <>Lý do thu hồi của CBQL</>
+                                  )}
+                                </>
+                              )}
                             </div>
                             <div>{item.rejectReson}</div>
                           </div>
@@ -793,12 +837,20 @@ function TargetManagement() {
                       />
                     )}
                   {((currentTab === TABS.OWNER &&
+                    STATUS_RECALLABLE.includes(item.status)) ||
+                    (currentTab === TABS.REQUEST &&
+                      STATUS_RECALLABLE_APPROVE_TAB.includes(item.status))) && (
+                    <IconRecall
+                      onClick={(event) =>
+                        onRecallTargetRegisterClick(event, item)
+                      }
+                    />
+                  )}
+                  {((currentTab === TABS.OWNER &&
                     STATUS_EDITABLE.includes(item.status)) ||
                     (currentTab === TABS.REQUEST &&
                       STATUS_EDITABLE_APPROVE_TAB.includes(item.status))) && (
                     <IconEdit
-                      width={28}
-                      height={28}
                       className="action-icon"
                       onClick={(event) =>
                         onEditTargetRegisterClick(event, item)
