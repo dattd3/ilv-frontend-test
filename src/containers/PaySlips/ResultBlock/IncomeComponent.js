@@ -19,26 +19,54 @@ const currencyUnitMapping = {
 const languageCurrencyMapping = {
     [Constants.LANGUAGE_VI]: Constants.CURRENCY.VND,
     [Constants.LANGUAGE_EN]: Constants.CURRENCY.USD,
-  }
+}
+
+const currentCompanyCode = localStorage.getItem('companyCode')
 
 function TrTable(props) {
     const { clsName, tdclsName, spanclsName, rowIndex, row, payslipCalculate, currencySelected } = props
 
+    const totalIncome = (() => {
+        return row?.field && payslipCalculate[`${row?.field}${currencyKeyMapping[currencySelected]}`]
+        ? Number(payslipCalculate[`${row?.field}${currencyKeyMapping[currencySelected]}`]).toLocaleString(currencyUnitMapping[currencySelected])
+        : null
+    })()
+
+    const totalIncomeTaxable = (() => {
+        if (currentCompanyCode === Constants.pnlVCode.VinHome && row?.field === 'overtime_payment_tax_included') {
+            return totalIncome
+        }
+
+        return row?.field && payslipCalculate[`${row?.field}${taxIncludedPrefix}${currencyKeyMapping[currencySelected]}`]
+        ? Number(payslipCalculate[`${row?.field}${taxIncludedPrefix}${currencyKeyMapping[currencySelected]}`]).toLocaleString(currencyUnitMapping[currencySelected])
+        : null
+    })()
+
+    const totalIncomeWithoutTax = (() => {
+        if (currentCompanyCode === Constants.pnlVCode.VinHome && row?.field === 'overtime_payment_without_tax') {
+            return totalIncome
+        }
+
+        return row?.field && payslipCalculate[`${row?.field}${withoutTaxPrefix}${currencyKeyMapping[currencySelected]}`]
+        ? Number(payslipCalculate[`${row.field}${withoutTaxPrefix}${currencyKeyMapping[currencySelected]}`]).toLocaleString(currencyUnitMapping[currencySelected])
+        : null
+    })()
+
     return (
         <tr className={clsName}>
             <td className={tdclsName}><span className={spanclsName}>{rowIndex}</span></td>
-            <td className="same-width">{(row.field && payslipCalculate[`${row.field}${currencyKeyMapping[currencySelected]}`]) ? Number(payslipCalculate[`${row.field}${currencyKeyMapping[currencySelected]}`]).toLocaleString(currencyUnitMapping[currencySelected]) : null}</td>
-            <td className="same-width">{(row.field && payslipCalculate[`${row.field}${taxIncludedPrefix}${currencyKeyMapping[currencySelected]}`]) ? Number(payslipCalculate[`${row.field}${taxIncludedPrefix}${currencyKeyMapping[currencySelected]}`]).toLocaleString(currencyUnitMapping[currencySelected]) : null}</td>
-            <td className="same-width">{(row.field && payslipCalculate[`${row.field}${withoutTaxPrefix}${currencyKeyMapping[currencySelected]}`]) ? Number(payslipCalculate[`${row.field}${withoutTaxPrefix}${currencyKeyMapping[currencySelected]}`]).toLocaleString(currencyUnitMapping[currencySelected]) : null}</td>
+            <td className="same-width">{totalIncome}</td>
+            <td className="same-width">{totalIncomeTaxable}</td>
+            <td className="same-width">{totalIncomeWithoutTax}</td>
         </tr>
     )
 }
- 
+
 function IncomeComponent(props) {
     const { t } = useTranslation()
     const { currencySelected } = props
-    const currentCompanyCode = localStorage.getItem('companyCode')
     const payslipCalculate = props.payslip.payslip_calculate
+
     let incomeTables = []
     switch (currentCompanyCode) {
         case Constants.pnlVCode.VinPearl:
