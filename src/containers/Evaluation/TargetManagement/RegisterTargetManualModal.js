@@ -26,6 +26,7 @@ import { ReactComponent as IconReject } from "assets/img/icon/Icon_Cancel.svg";
 import { ReactComponent as IconApprove } from "assets/img/icon/Icon_Check_White.svg";
 import { ReactComponent as IconEdit } from "assets/img/icon/pms/icon-edit.svg";
 import LoadingModal from "components/Common/LoadingModal";
+import StatusModal from "components/Common/StatusModal";
 
 const mapApproverOption = (approver) => ({
   account: approver.username,
@@ -45,6 +46,11 @@ const mapApproverOption = (approver) => ({
 
 const REQUIRED_FIELDS = ["checkPhaseId", "listTarget"];
 const REQUIRED_FIELDS_TARGET = ["targetName", "metric1", "weight"];
+const INIT_STATUS_MODAL_MANAGEMENT = {
+  isShow: false,
+  isSuccess: true,
+  content: "",
+};
 
 export default function TargetRegistrationManualModal(props) {
   const { t, i18n } = useTranslation();
@@ -73,6 +79,9 @@ export default function TargetRegistrationManualModal(props) {
 
   const [targetToggleStatuses, setTargetToggleStatuses] = useState([true]);
   const [isFetchedApprover, setIsFetchedApprover] = useState(false);
+  const [statusModalManagement, setStatusModalManagement] = useState(
+    INIT_STATUS_MODAL_MANAGEMENT
+  );
 
   const totalWeight = formValues.listTarget.reduce(
     (acc, curr) => Number((acc += curr.weight * 1 || 0)),
@@ -155,9 +164,17 @@ export default function TargetRegistrationManualModal(props) {
   const checkIsFormValid = () => {
     if (!approverJSON) return false;
     return (
-      !REQUIRED_FIELDS.some((item) => typeof formValues[item] === "string" ? !formValues[item]?.trim() : !formValues[item]) &&
+      !REQUIRED_FIELDS.some((item) =>
+        typeof formValues[item] === "string"
+          ? !formValues[item]?.trim()
+          : !formValues[item]
+      ) &&
       !formValues.listTarget.some((item) =>
-        REQUIRED_FIELDS_TARGET.some((field) => typeof formValues[item] === "string" ? !formValues[item]?.trim() : !item[field])
+        REQUIRED_FIELDS_TARGET.some((field) =>
+          typeof formValues[item] === "string"
+            ? !formValues[item]?.trim()
+            : !item[field]
+        )
       )
     );
   };
@@ -222,7 +239,11 @@ export default function TargetRegistrationManualModal(props) {
       setIsEditing(false);
       fetchTargetRegisterData();
       collapseAll();
-      toast.success("Lưu mục tiêu CBNV thành công")
+      setStatusModalManagement({
+        isShow: true,
+        isSuccess: true,
+        content: "Lưu mục tiêu CBNV thành công",
+      });
     }
   };
 
@@ -260,6 +281,10 @@ export default function TargetRegistrationManualModal(props) {
   const isReadonlyField = (target) =>
     !isEditing || (data?.requestType === REGISTER_TYPES.LIBRARY && target?.id);
 
+  const onHideStatusModal = () => {
+    setStatusModalManagement(INIT_STATUS_MODAL_MANAGEMENT);
+  };
+
   return (
     <Modal
       show={true}
@@ -268,6 +293,13 @@ export default function TargetRegistrationManualModal(props) {
       onHide={onHide}
     >
       <LoadingModal show={isLoading} />
+      <StatusModal
+        show={statusModalManagement?.isShow || false}
+        isSuccess={statusModalManagement?.isSuccess}
+        content={statusModalManagement?.content}
+        className="register-target-from-library-status-modal"
+        onHide={onHideStatusModal}
+      />
       <Modal.Header closeButton>
         <div className="modal-title">ĐĂNG KÝ MỤC TIÊU</div>
       </Modal.Header>
@@ -279,7 +311,9 @@ export default function TargetRegistrationManualModal(props) {
           className="select-container mb-20"
           classNamePrefix="filter-select"
           placeholder={t("Select")}
-          options={phaseOptions.filter(item => item?.isAvailable && !item?.isDeleted && item?.status)}
+          options={phaseOptions.filter(
+            (item) => item?.isAvailable && !item?.isDeleted && item?.status
+          )}
           onChange={(val) => onChangeFormValues("checkPhaseId", val?.value)}
           value={phaseOptions.find(
             (opt) => opt.value === formValues.checkPhaseId
@@ -588,8 +622,14 @@ export default function TargetRegistrationManualModal(props) {
         </div>
         {!isEditing && data?.rejectReson && (
           <div className="mb-15">
-            <div className="mb-15">Lý do</div>
-            {<div className="read-only-text">{data?.rejectReson || ""}</div>}
+            <div className="mb-15">
+              {data.status === REQUEST_STATUS.REJECT ? (
+                <>Lý do từ chối</>
+              ) : (
+                <>Lý do thu hồi</>
+              )}
+            </div>
+            <div className="read-only-text">{data?.rejectReson || ""}</div>
           </div>
         )}
         <div className="custom-modal-footer">
@@ -634,6 +674,10 @@ export default function TargetRegistrationManualModal(props) {
                   <button
                     className="button cancel-approver-btn"
                     onClick={onHide}
+                    style={{
+                      width:
+                        data.status === REQUEST_STATUS.PROCESSING ? 90 : 120,
+                    }}
                   >
                     <IconRemove />
                     &nbsp; Hủy
@@ -642,6 +686,10 @@ export default function TargetRegistrationManualModal(props) {
                     <button
                       className="button edit-btn"
                       onClick={onEditButtonClick}
+                      style={{
+                        width:
+                          data.status === REQUEST_STATUS.PROCESSING ? 90 : 120,
+                      }}
                     >
                       <IconEdit />
                       &nbsp; Sửa
@@ -650,38 +698,50 @@ export default function TargetRegistrationManualModal(props) {
                     <button
                       className="button save-approver-btn"
                       onClick={onSaveTargetRegister}
-                      disabled={!checkIsFormValid() || !formValues.reviewComment?.trim()}
+                      disabled={
+                        !checkIsFormValid() || !formValues.reviewComment?.trim()
+                      }
+                      style={{
+                        width:
+                          data.status === REQUEST_STATUS.PROCESSING ? 90 : 120,
+                        marginRight:
+                          data.status === REQUEST_STATUS.PROCESSING ? 20 : 0,
+                      }}
                     >
                       <IconSave />
                       &nbsp; Lưu
                     </button>
                   )}
-                  <button
-                    className="button reject-btn"
-                    onClick={() =>
-                      setModalManagement({
-                        type: MODAL_TYPES.REJECT_CONFIRM,
-                        data,
-                      })
-                    }
-                    disabled={isEditing}
-                  >
-                    <IconReject />
-                    &nbsp; Từ chối
-                  </button>
-                  <button
-                    className="button approve-btn"
-                    onClick={() =>
-                      setModalManagement({
-                        type: MODAL_TYPES.APPROVE_CONFIRM,
-                        data,
-                      })
-                    }
-                    disabled={isEditing || totalWeight !== 100}
-                  >
-                    <IconApprove />
-                    &nbsp; Phê duyệt
-                  </button>
+                  {data.status === REQUEST_STATUS.PROCESSING && (
+                    <>
+                      <button
+                        className="button reject-btn"
+                        onClick={() =>
+                          setModalManagement({
+                            type: MODAL_TYPES.REJECT_CONFIRM,
+                            data,
+                          })
+                        }
+                        disabled={isEditing}
+                      >
+                        <IconReject />
+                        &nbsp; Từ chối
+                      </button>
+                      <button
+                        className="button approve-btn"
+                        onClick={() =>
+                          setModalManagement({
+                            type: MODAL_TYPES.APPROVE_CONFIRM,
+                            data,
+                          })
+                        }
+                        disabled={isEditing || totalWeight !== 100}
+                      >
+                        <IconApprove />
+                        &nbsp; Phê duyệt
+                      </button>
+                    </>
+                  )}
                 </div>
               )}
             {!isApprover && isEditing && (
@@ -702,7 +762,12 @@ export default function TargetRegistrationManualModal(props) {
                 </button>
                 <button
                   className="button save-btn"
-                  disabled={!formValues.checkPhaseId || !checkIsFormValid()}
+                  disabled={
+                    !formValues.checkPhaseId ||
+                    !checkIsFormValid() ||
+                    (data.status === REQUEST_STATUS.APPROVED &&
+                      totalWeight !== 100)
+                  }
                   onClick={onSaveTargetRegister}
                 >
                   <IconSave />
