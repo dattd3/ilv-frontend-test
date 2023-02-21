@@ -388,7 +388,7 @@ export default function TargetRegistrationManualModal(props) {
                   ) : (
                     <Form.Control
                       as="textarea"
-                      placeholder={isEditing && "Nhập"}
+                      placeholder={(isEditing && "Nhập") || undefined}
                       className="form-textarea"
                       name="targetName"
                       onChange={(e) =>
@@ -411,7 +411,7 @@ export default function TargetRegistrationManualModal(props) {
                   ) : (
                     <Form.Control
                       as="textarea"
-                      placeholder={isEditing && "Nhập"}
+                      placeholder={(isEditing && "Nhập") || undefined}
                       className="form-textarea"
                       name="metric1"
                       onChange={(e) =>
@@ -428,7 +428,7 @@ export default function TargetRegistrationManualModal(props) {
                   ) : (
                     <Form.Control
                       as="textarea"
-                      placeholder={isEditing && "Nhập"}
+                      placeholder={(isEditing && "Nhập") || undefined}
                       className="form-textarea"
                       name="metric2"
                       onChange={(e) =>
@@ -445,7 +445,7 @@ export default function TargetRegistrationManualModal(props) {
                   ) : (
                     <Form.Control
                       as="textarea"
-                      placeholder={isEditing && "Nhập"}
+                      placeholder={(isEditing && "Nhập") || undefined}
                       className="form-textarea"
                       name="metric3"
                       onChange={(e) =>
@@ -462,7 +462,7 @@ export default function TargetRegistrationManualModal(props) {
                   ) : (
                     <Form.Control
                       as="textarea"
-                      placeholder={isEditing && "Nhập"}
+                      placeholder={(isEditing && "Nhập") || undefined}
                       className="form-textarea"
                       name="metric4"
                       onChange={(e) =>
@@ -479,7 +479,7 @@ export default function TargetRegistrationManualModal(props) {
                   ) : (
                     <Form.Control
                       as="textarea"
-                      placeholder={isEditing && "Nhập"}
+                      placeholder={(isEditing && "Nhập") || undefined}
                       className="form-textarea"
                       name="metric5"
                       onChange={(e) =>
@@ -497,7 +497,7 @@ export default function TargetRegistrationManualModal(props) {
                     <span className="prefix">%</span>
                     <Form.Control
                       as="input"
-                      placeholder={isEditing && "Nhập"}
+                      placeholder={(isEditing && "Nhập") || undefined}
                       className="form-input border-none"
                       type="text"
                       name="weight"
@@ -516,7 +516,7 @@ export default function TargetRegistrationManualModal(props) {
                   ) : (
                     <Form.Control
                       as="textarea"
-                      placeholder={isEditing && "Nhập"}
+                      placeholder={(isEditing && "Nhập") || undefined}
                       className="form-textarea"
                       name="jobDetail"
                       onChange={(e) =>
@@ -537,7 +537,7 @@ export default function TargetRegistrationManualModal(props) {
                   ) : (
                     <Form.Control
                       as="textarea"
-                      placeholder={isEditing && "Nhập"}
+                      placeholder={(isEditing && "Nhập") || undefined}
                       className="form-textarea"
                       name="target"
                       onChange={(e) =>
@@ -565,7 +565,7 @@ export default function TargetRegistrationManualModal(props) {
             {isEditing ? (
               <Form.Control
                 as="textarea"
-                placeholder={isEditing && "Nhập"}
+                placeholder={(isEditing && "Nhập") || undefined}
                 className="form-textarea review-comment-textarea"
                 onChange={(e) =>
                   onChangeFormValues("reviewComment", e?.target?.value)

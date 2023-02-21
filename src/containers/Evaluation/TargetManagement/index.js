@@ -276,8 +276,8 @@ function TargetManagement() {
       });
     }
     if (shouldRefresh === true) {
-      setPageSize(10);
-      setPageIndex(1);
+      // setPageSize(10);
+      // setPageIndex(1);
       fetchTargetList();
     }
   };
