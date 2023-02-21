@@ -97,14 +97,14 @@ class PaySlipsComponent extends React.Component {
           isSearch && acessToken && payslip ?
           <>
           <div className="block-buttons">
-            <button className="btn-download download-pdf" onClick={this.downloadPDF}>Tải PDF</button>
+            <button className="btn-download download-pdf" onClick={this.downloadPDF}>{t("DownloadPDF")}</button>
             <ReactHTMLTableToExcel
               id="test-table-xls-button"
               className="btn btn-link pull-right download-excel"
               table="payslip-download"
               filename="SalaryInformation"
               sheet="SalaryInformation"
-              buttonText="Tải Excel"
+              buttonText={t("DownloadExcel")}
             />
           </div>
           <div className="result-block" id="result-block">
@@ -120,14 +120,14 @@ class PaySlipsComponent extends React.Component {
             </div>
           </div>
           <div className="block-buttons">
-            <button className="btn-download download-pdf" onClick={this.downloadPDF}>Tải PDF</button>
+            <button className="btn-download download-pdf" onClick={this.downloadPDF}>{t("DownloadPDF")}</button>
             <ReactHTMLTableToExcel
               id="test-table-xls-button"
               className="btn btn-link pull-right download-excel"
               table="payslip-download"
               filename="SalaryInformation"
               sheet="SalaryInformation"
-              buttonText="Tải Excel"
+              buttonText={t("DownloadExcel")}
             />
           </div>
           </>

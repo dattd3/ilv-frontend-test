@@ -1662,5 +1662,9 @@
   "VFCarAndElectricMotobikeLeasingDeduction": "Khấu trừ tiền thuê xe VF",
   "DeductionLoanFromKindHeartFoundation": "Khấu trừ vay Quỹ Thiện Tâm",
   "VFCarAndElectricMotobikeLeasingGrossSupport": "Hỗ trợ tiền thuê xe VF (GROSSUP từ khoản NET tương ứng)",
-  "GrossLoanInterestSupportVFCarAndElectricMotobikePurchase": "Hỗ trợ lãi suất vay mua xe VF (GROSSUP từ khoản NET tương ứng)"
+  "GrossLoanInterestSupportVFCarAndElectricMotobikePurchase": "Hỗ trợ lãi suất vay mua xe VF (GROSSUP từ khoản NET tương ứng)",
+  "DepartmentSalary": "Ban/Phòng/Bộ phận",
+  "DownloadPDF": "Tải PDF",
+  "DownloadExcel": "Tải Excel"
+
 }
