@@ -1644,5 +1644,8 @@
   "VFCarAndElectricMotobikeLeasingDeduction": "VF car and electric motobike's leasing deduction",
   "DeductionLoanFromKindHeartFoundation": "Deduction of loan from Kind Heart Foundation",
   "VFCarAndElectricMotobikeLeasingGrossSupport": "VF car and electric motobike's leasing gross support",
-  "GrossLoanInterestSupportVFCarAndElectricMotobikePurchase": "Gross loan interest support for VF car and electric motobike purchase"
+  "GrossLoanInterestSupportVFCarAndElectricMotobikePurchase": "Gross loan interest support for VF car and electric motobike purchase",
+  "DepartmentSalary": "Department",
+  "DownloadPDF": "Download PDF",
+  "DownloadExcel": "Download Excel"
 }
