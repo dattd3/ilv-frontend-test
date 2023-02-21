@@ -285,6 +285,25 @@ export default function TargetRegistrationManualModal(props) {
     setStatusModalManagement(INIT_STATUS_MODAL_MANAGEMENT);
   };
 
+  const isShowRevocationRejectReasonByManager  = (() => {
+    const approver = JSON.parse(data?.approverInfo || '{}')
+    return !isEditing 
+    && data?.rejectReson 
+    && approver?.account
+    && (
+      ([REQUEST_STATUS.DRAFT].includes(Number(data?.status)) && approver?.account?.toLowerCase() === data?.lastRecallBy?.toLowerCase()) 
+      || [REQUEST_STATUS.REJECT].includes(Number(data?.status))
+    )
+  })()
+
+  const isShowRevocationReasonByEmployee  = (() => {
+    const userInfo = JSON.parse(data?.userInfo || '{}')
+    return !isEditing 
+    && data?.rejectReson 
+    && userInfo?.account
+    && [REQUEST_STATUS.DRAFT].includes(Number(data?.status)) && userInfo?.account?.toLowerCase() === data?.lastRecallBy?.toLowerCase()
+  })()
+
   return (
     <Modal
       show={true}
@@ -557,6 +576,17 @@ export default function TargetRegistrationManualModal(props) {
             + Thêm mục tiêu
           </button>
         )}
+
+        {/* Hiển thị lý do thu hồi của CBNV */}
+        {
+          isShowRevocationReasonByEmployee && (
+            <div className="mb-15">
+              <div className="mb-15">Lý do thu hồi của CBNV</div>
+              <div className="read-only-text">{data.rejectReson || ''}</div>
+            </div>
+          )
+        }
+
         {(data?.reviewComment || (isApprover && isEditing)) && (
           <div className="mb-15">
             <div className="mb-15">
@@ -619,19 +649,21 @@ export default function TargetRegistrationManualModal(props) {
               />
             </div>
           </div>
-        </div>
-        {!isEditing && data?.rejectReson && (
-          <div className="mb-15">
-            <div className="mb-15">
-              {data.status === REQUEST_STATUS.REJECT ? (
-                <>Lý do từ chối</>
-              ) : (
-                <>Lý do thu hồi</>
-              )}
+          {/* Hiển thị lý do thu hồi và lý do từ chối của CBLĐ Phê duyệt */}
+          {
+            isShowRevocationRejectReasonByManager &&
+            <div className={`row group ${isShowRevocationRejectReasonByManager ? 'mt-20' : ''}`}>
+              <div className="col-xl-12">
+                <div className="mb-15">{data?.status === REQUEST_STATUS.REJECT ? 'Lý do từ chối' : 'Lý do thu hồi của CBQL'}</div>
+                <Form.Control
+                  readOnly
+                  className="form-input"
+                  value={data?.rejectReson || ''}
+                />
+              </div>
             </div>
-            <div className="read-only-text">{data?.rejectReson || ""}</div>
-          </div>
-        )}
+          }
+        </div>
         <div className="custom-modal-footer">
           {!approverJSON && isFetchedApprover && (
             <div className="red-color mb-15">
