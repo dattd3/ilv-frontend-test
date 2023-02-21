@@ -1001,12 +1001,14 @@ function RegisterTargetFromLibraryModal(props) {
                 isSuccess={statusModal?.isSuccess}
                 content={statusModal?.content}
                 className="register-target-from-library-status-modal"
+                backdropClassName="backdrop-register-target-from-library-status-modal"
                 onHide={onHideStatusModal}
             />
             <Modal 
                 backdrop="static" 
                 keyboard={false}
                 className={'register-target-from-library-modal'}
+                backdropClassName="backdrop-register-target-from-library-modal"
                 centered  
                 show={true}
                 onHide={() => onHideRegisterTargetModal(true)}
