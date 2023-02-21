@@ -2674,6 +2674,16 @@ span.badge-notification[data-badge]::after {
         }
       }
     }
+    &.questions {
+      .detail {
+        background-color: #F2f2f2;
+        border: 1px solid #CCCCCC;
+        min-height: 40px;
+        border-radius: 5px;
+        padding: 8px;
+      }
+    }
+    
   }
 }
 
