@@ -16,6 +16,7 @@ build_development:
   only:
     refs:
       - develop
+      - feat/vinmec-target-recall
 deploy_to_development_environment:
   stage: deploy
   tags:
@@ -29,6 +30,7 @@ deploy_to_development_environment:
   when: manual
   only:
       - develop
+      - feat/vinmec-target-recall
       
 build_production:
   stage: build
