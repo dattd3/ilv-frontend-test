@@ -68,7 +68,7 @@ const ResizableNewTextarea = (props) => {
 		const previousRows = event.target.rows;
   	    event.target.rows = minRows; // reset number of rows in textarea 
 		
-		const currentRows = ~~(event.target.scrollHeight / textareaLineHeight);
+		let currentRows = ~~(event.target.scrollHeight / textareaLineHeight);
 		if(minRows > 1 && currentRows < minRows) {
 			currentRows = minRows;
 		}
