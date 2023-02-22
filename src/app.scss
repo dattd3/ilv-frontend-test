@@ -2638,6 +2638,8 @@ span.badge-notification[data-badge]::after {
               &.comment {
                 display: flex;
                 align-items: center;
+                font-size: unset;
+                font-style: unset;
               }
             }
             &.categories {
