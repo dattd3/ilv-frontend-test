@@ -11,6 +11,8 @@ import {
   STATUS_EDITABLE_APPROVE_TAB,
   REGISTER_TYPES,
   REQUEST_STATUS,
+  CREATE_TARGET_REGISTER,
+  getUserInfo,
 } from "./Constant";
 import Constants from "commons/Constants";
 import axios from "axios";
@@ -62,8 +64,6 @@ export default function TargetRegistrationManualModal(props) {
     id,
     isApprover = false,
     setModalManagement,
-    sendTargetRegister,
-    saveTargetRegister,
     viewOnly,
   } = props;
   const [isEditing, setIsEditing] = useState(!viewOnly);
@@ -122,10 +122,10 @@ export default function TargetRegistrationManualModal(props) {
 
   const fetchTargetRegisterData = async () => {
     setIsLoading(true);
+    const config = getRequestConfigurations();
     try {
-      const config = getRequestConfigurations();
       config.params = {
-        id: id,
+        id
       };
       const response = await axios.get(
         `${process.env.REACT_APP_HRDX_PMS_URL}api/targetregist/detail`,
@@ -234,24 +234,88 @@ export default function TargetRegistrationManualModal(props) {
     // if (isApprover && !formValues.reviewComment) {
     //   return toast.error("Vui lòng nhập ý kiến của CBQL phê duyệt");
     // }
-    await saveTargetRegister(formValues);
-    if (isApprover) {
-      setIsEditing(false);
-      fetchTargetRegisterData();
-      collapseAll();
-      setStatusModalManagement({
-        isShow: true,
-        isSuccess: true,
-        content: "Lưu mục tiêu CBNV thành công",
-      });
+    setIsLoading(true);
+    // Add order
+    try {
+      if (formValues.listTarget?.length > 0) {
+        formValues.listTarget = formValues.listTarget.map((item, index) => ({
+          ...item,
+          order: index,
+        }));
+      }
+      const config = getRequestConfigurations();
+      const response = await axios.post(
+        CREATE_TARGET_REGISTER,
+        {
+          RequestType: 0, // 0 - thủ công,1 -từ thư viện
+          type: "Save",
+          userInfo: JSON.stringify(getUserInfo()),
+          ...formValues,
+        },
+        config
+      );
+      if (response.data?.result?.code !== "200") {
+        toast.error(`Lưu mục tiêu thất bại: ${response.data?.result?.message}`);
+      } else {
+        if (isApprover) {
+          setIsEditing(false);
+          fetchTargetRegisterData();
+          collapseAll();
+          setStatusModalManagement({
+            isShow: true,
+            isSuccess: true,
+            content: "Lưu mục tiêu CBNV thành công",
+          });
+        } else {
+          setFormValues({
+            id: response.data?.data?.id,
+            ...formValues
+          })
+          setStatusModalManagement({
+            isShow: true,
+            isSuccess: true,
+            content: "Lưu mục tiêu thành công",
+          });
+        }
+      }
+    } catch {
+      toast.error("Lưu mục tiêu thất bại!");
     }
+    setIsLoading(false);
+
   };
 
-  const onSendTargetRegister = () => {
+  const onSendTargetRegister = async () => {
     if (!checkIsFormValid()) {
       return toast.error("Vui lòng điền đầy đủ các trường bắt buộc");
     }
-    sendTargetRegister(formValues);
+    setIsEditing(true);
+    const config = getRequestConfigurations();
+    try {
+      const response = await axios.post(
+        CREATE_TARGET_REGISTER,
+        {
+          RequestType: 0, // 0 - thủ công,1 -từ thư viện
+          type: "Next",
+          userInfo: JSON.stringify(getUserInfo()),
+          ...formValues,
+        },
+        config
+      );
+      if (response.data?.result?.code !== "200") {
+        toast.error(
+          `Gửi yêu cầu mục tiêu thất bại: ${response.data?.result?.message}`
+        );
+      } else {
+        setModalManagement({
+          type: MODAL_TYPES.SUCCESS,
+          data: "Yêu cầu của bạn đã được gửi đi!",
+        });
+      }
+    } catch {
+      toast.error("Lưu mục tiêu thất bại!");
+    }
+    setIsEditing(false);
   };
 
   const onRemoveTarget = (idx) => {
@@ -309,7 +373,7 @@ export default function TargetRegistrationManualModal(props) {
       show={true}
       className="target-registration-modal"
       centered
-      onHide={onHide}
+      onHide={() => onHide(true)}
     >
       <LoadingModal show={isLoading} />
       <StatusModal
@@ -317,6 +381,7 @@ export default function TargetRegistrationManualModal(props) {
         isSuccess={statusModalManagement?.isSuccess}
         content={statusModalManagement?.content}
         className="register-target-from-library-status-modal"
+        backdropClassName="backdrop-register-target-from-library-status-modal"
         onHide={onHideStatusModal}
       />
       <Modal.Header closeButton>
@@ -587,7 +652,7 @@ export default function TargetRegistrationManualModal(props) {
           )
         }
 
-        {(data?.reviewComment || (isApprover && isEditing)) && (
+        {((data?.reviewComment && !isEditing) || (isApprover && isEditing)) && (
           <div className="mb-15">
             <div className="mb-15">
               Ý kiến của CBQL phê duyệt <span className="red-color">(*)</span>
@@ -708,7 +773,7 @@ export default function TargetRegistrationManualModal(props) {
                     onClick={onHide}
                     style={{
                       width:
-                        data.status === REQUEST_STATUS.PROCESSING ? 90 : 120,
+                        data?.status === REQUEST_STATUS.PROCESSING ? 90 : 120,
                     }}
                   >
                     <IconRemove />
@@ -720,7 +785,7 @@ export default function TargetRegistrationManualModal(props) {
                       onClick={onEditButtonClick}
                       style={{
                         width:
-                          data.status === REQUEST_STATUS.PROCESSING ? 90 : 120,
+                          data?.status === REQUEST_STATUS.PROCESSING ? 90 : 120,
                       }}
                     >
                       <IconEdit />
@@ -735,16 +800,16 @@ export default function TargetRegistrationManualModal(props) {
                       }
                       style={{
                         width:
-                          data.status === REQUEST_STATUS.PROCESSING ? 90 : 120,
+                          data?.status === REQUEST_STATUS.PROCESSING ? 90 : 120,
                         marginRight:
-                          data.status === REQUEST_STATUS.PROCESSING ? 20 : 0,
+                          data?.status === REQUEST_STATUS.PROCESSING ? 20 : 0,
                       }}
                     >
                       <IconSave />
                       &nbsp; Lưu
                     </button>
                   )}
-                  {data.status === REQUEST_STATUS.PROCESSING && (
+                  {data?.status === REQUEST_STATUS.PROCESSING && (
                     <>
                       <button
                         className="button reject-btn"
@@ -778,8 +843,8 @@ export default function TargetRegistrationManualModal(props) {
               )}
             {!isApprover && isEditing && (
               <div>
-                {/* {(data?.status === REQUEST_STATUS.REJECT || isEditing) && ( */}
-                {/* {data?.status === REQUEST_STATUS.REJECT && !isEditing && (
+                {/* {(data??.status === REQUEST_STATUS.REJECT || isEditing) && ( */}
+                {/* {data??.status === REQUEST_STATUS.REJECT && !isEditing && (
                       <button
                         className="button edit-btn"
                         onClick={onEditButtonClick}
@@ -797,7 +862,7 @@ export default function TargetRegistrationManualModal(props) {
                   disabled={
                     !formValues.checkPhaseId ||
                     !checkIsFormValid() ||
-                    (data.status === REQUEST_STATUS.APPROVED &&
+                    (data?.status === REQUEST_STATUS.APPROVED &&
                       totalWeight !== 100)
                   }
                   onClick={onSaveTargetRegister}

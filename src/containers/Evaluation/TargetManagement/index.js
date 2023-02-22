@@ -5,7 +5,6 @@ import { Button, Table } from "react-bootstrap";
 import ReactTooltip from "react-tooltip";
 import axios from "axios";
 import moment from "moment";
-import { toast } from "react-toastify";
 import { debounce } from "lodash";
 import { Link, useLocation, useHistory } from "react-router-dom";
 
@@ -13,7 +12,7 @@ import { ReactComponent as IconFilter } from "assets/img/ic-filter.svg";
 import { ReactComponent as IconSearch } from "assets/img/icon/ic_search.svg";
 import { ReactComponent as IconReason } from "assets/img/ic-reason.svg";
 import { ReactComponent as IconRemove } from "assets/img/icon-delete.svg";
-import { ReactComponent as IconEdit } from "assets/img/Icon-edit-2.svg";
+import { ReactComponent as IconEdit } from "assets/img/icon/Icon-edit.svg";
 import { ReactComponent as IconRecall } from "assets/img/Icon-recall.svg";
 
 import HOCComponent from "components/Common/HOCComponent";
@@ -31,8 +30,6 @@ import {
   STATUS_EDITABLE_APPROVE_TAB,
   MODAL_TYPES,
   STATUS_TYPES,
-  CREATE_TARGET_REGISTER,
-  getUserInfo,
   REGISTER_TYPES,
   REQUEST_STATUS,
   STATUS_RECALLABLE,
@@ -123,6 +120,25 @@ const EmployeeOption = (props) => {
   );
 };
 
+const renderReasonTooltipTitle = (item) => {
+  const { userInfo, approverInfo, lastRecallBy, rejectReson } = item,
+    user = JSON.parse(userInfo || "{}"),
+    approverUser = JSON.parse(approverInfo || "{}");
+  if (item.status === REQUEST_STATUS.REJECT && rejectReson) {
+    return "Lý do từ chối";
+  }
+  if (
+    lastRecallBy
+      ?.toLowerCase()
+      ?.includes(approverUser?.account?.toLowerCase()) && rejectReson
+  )
+    return "Lý do thu hồi của CBQL";
+  if (lastRecallBy?.toLowerCase()?.includes(user?.account?.toLowerCase()) && rejectReson)
+    return "Lý do thu hồi của CBNV";
+
+  return "Ý kiến của CBQL phê duyệt"; // status = 2/3/4 : từ chối
+};
+
 function TargetManagement() {
   // const [currentTab, setCurrentTab] = useState(TABS.OWNER);
   const [loading, setLoading] = useState(false);
@@ -169,9 +185,9 @@ function TargetManagement() {
     }
   }, [pageSize, pageIndex, currentTab]);
 
-  useEffect(() =>  {
+  useEffect(() => {
     setPageIndex(1);
-  }, [currentTab])
+  }, [currentTab]);
 
   useEffect(() => {
     if (modalManagement.type !== null && openMenuRegistration) {
@@ -317,72 +333,6 @@ function TargetManagement() {
     }
   };
 
-  const saveTargetRegister = async (formValues) => {
-    setLoading(true);
-    // Add order
-    try {
-      if (formValues.listTarget?.length > 0) {
-        formValues.listTarget = formValues.listTarget.map((item, index) => ({
-          ...item,
-          order: index,
-        }));
-      }
-      const response = await axios.post(
-        CREATE_TARGET_REGISTER,
-        {
-          RequestType: modalManagement.type, // 0 - thủ công,1 -từ thư viện
-          type: "Save",
-          userInfo: JSON.stringify(getUserInfo()),
-          ...formValues,
-        },
-        config
-      );
-      if (response.data?.result?.code !== "200") {
-        toast.error(`Lưu mục tiêu thất bại: ${response.data?.result?.message}`);
-      } else if (
-        response.data?.result?.code === "200" &&
-        currentTab === TABS.OWNER
-      ) {
-        setModalManagement({
-          type: MODAL_TYPES.SUCCESS,
-          data: "Lưu mục tiêu thành công!",
-        });
-      }
-    } catch {
-      toast.error("Lưu mục tiêu thất bại!");
-    }
-    setLoading(false);
-  };
-
-  const sendTargetRegister = async (formValues) => {
-    setLoading(true);
-    try {
-      const response = await axios.post(
-        CREATE_TARGET_REGISTER,
-        {
-          RequestType: modalManagement.type, // 0 - thủ công,1 -từ thư viện
-          type: "Next",
-          userInfo: JSON.stringify(getUserInfo()),
-          ...formValues,
-        },
-        config
-      );
-      if (response.data?.result?.code !== "200") {
-        toast.error(
-          `Gửi yêu cầu mục tiêu thất bại: ${response.data?.result?.message}`
-        );
-      } else {
-        setModalManagement({
-          type: MODAL_TYPES.SUCCESS,
-          data: "Yêu cầu của bạn đã được gửi đi!",
-        });
-      }
-    } catch {
-      toast.error("Lưu mục tiêu thất bại!");
-    }
-    setLoading(false);
-  };
-
   const onEditTargetRegisterClick = (event, item) => {
     event.stopPropagation();
 
@@ -452,8 +402,6 @@ function TargetManagement() {
             id={modalManagement?.data}
             isApprover={currentTab === TABS.REQUEST && !!modalManagement.data}
             setModalManagement={setModalManagement}
-            sendTargetRegister={sendTargetRegister}
-            saveTargetRegister={saveTargetRegister}
             viewOnly={modalManagement.viewOnly}
           />
         );
@@ -787,9 +735,7 @@ function TargetManagement() {
                   </div>
                 </td>
                 <td className="text-center">
-                  {(item.status === REQUEST_STATUS.REJECT ||
-                    item.status === REQUEST_STATUS.DRAFT) &&
-                    item.rejectReson && (
+                  {(!!item.rejectReson || !!item.reviewComment) && (
                       <>
                         <a data-tip data-for={`reason-${item.id}`}>
                           <IconReason width={20} height={20} />
@@ -806,21 +752,9 @@ function TargetManagement() {
                         >
                           <div className="tooltip-content">
                             <div className="tooltip-header">
-                              {item.status === REQUEST_STATUS.REJECT ? (
-                                <>Ý kiến của CBQL phê duyệt:</>
-                              ) : (
-                                <>
-                                  {item.lastRecallBy ===
-                                  JSON.parse(item?.userInfo || null)
-                                    ?.account ? (
-                                    <>Lý do thu hồi của CBNV</>
-                                  ) : (
-                                    <>Lý do thu hồi của CBQL</>
-                                  )}
-                                </>
-                              )}
+                              {renderReasonTooltipTitle(item)}
                             </div>
-                            <div>{item.rejectReson}</div>
+                            <div>{item.rejectReson || item.reviewComment}</div>
                           </div>
                         </ReactTooltip>
                       </>
@@ -829,33 +763,40 @@ function TargetManagement() {
                 <td className="text-center sticky-col">
                   {STATUS_DELETEABLE.includes(item.status) &&
                     currentTab === TABS.OWNER && (
-                      <IconRemove
-                        className="rm-icon action-icon"
-                        onClick={(event) =>
-                          onDeleteTargetRegisterClick(event, item)
-                        }
-                      />
+                      <span title="Xóa">
+                        <IconRemove
+                          className="rm-icon action-icon"
+                          onClick={(event) =>
+                            onDeleteTargetRegisterClick(event, item)
+                          }
+                          alt="Xóa"
+                        />
+                      </span>
                     )}
                   {((currentTab === TABS.OWNER &&
                     STATUS_RECALLABLE.includes(item.status)) ||
                     (currentTab === TABS.REQUEST &&
                       STATUS_RECALLABLE_APPROVE_TAB.includes(item.status))) && (
-                    <IconRecall
-                      onClick={(event) =>
-                        onRecallTargetRegisterClick(event, item)
-                      }
-                    />
+                    <span title="Thu hồi">
+                      <IconRecall
+                        onClick={(event) =>
+                          onRecallTargetRegisterClick(event, item)
+                        }
+                      />
+                    </span>
                   )}
                   {((currentTab === TABS.OWNER &&
                     STATUS_EDITABLE.includes(item.status)) ||
                     (currentTab === TABS.REQUEST &&
                       STATUS_EDITABLE_APPROVE_TAB.includes(item.status))) && (
-                    <IconEdit
-                      className="action-icon"
-                      onClick={(event) =>
-                        onEditTargetRegisterClick(event, item)
-                      }
-                    />
+                    <span title="Chỉnh sửa">
+                      <IconEdit
+                        className="action-icon"
+                        onClick={(event) =>
+                          onEditTargetRegisterClick(event, item)
+                        }
+                      />
+                    </span>
                   )}
                 </td>
               </tr>
