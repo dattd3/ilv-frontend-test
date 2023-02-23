@@ -595,7 +595,7 @@ export default function TargetRegistrationManualModal(props) {
         <div className="custom-modal-footer">
           {!approverJSON && isFetchedApprover && (
             <div className="red-color mb-15">
-              * Chưa có thông tin CBQL phê duyệt, vui lòng liên hệ Nhân sự để
+              * Chưa có thông tin CBQL phê duyệt. Vui lòng liên hệ Nhân sự để
               được hỗ trợ!
             </div>
           )}
