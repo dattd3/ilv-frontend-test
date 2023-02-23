@@ -313,16 +313,15 @@ export default function TargetRegistrationManualModal(props) {
     setIsEditing(false);
   };
 
-  const onRemoveTarget = (idx) => {
+  const onRemoveTarget = (event, idx) => {
+    event.stopPropagation();
     setFormValues({
       ...formValues,
       listTarget: [
         ...formValues?.listTarget?.filter((_, index) => index !== idx),
       ],
     });
-    setTargetToggleStatuses([
-      ...targetToggleStatuses?.filter((_, index) => index !== idx),
-    ]);
+    setTargetToggleStatuses(targetToggleStatuses?.filter((_, index) => index !== idx));
   };
 
   const onEditButtonClick = () => {
@@ -449,7 +448,7 @@ export default function TargetRegistrationManualModal(props) {
               {isEditing && formValues.listTarget?.length > 1 && (
                 <button
                   className="button delete-button"
-                  onClick={() => onRemoveTarget(index)}
+                  onClick={(event) => onRemoveTarget(event, index)}
                 >
                   <IconRedRemove />
                   &nbsp; Xóa
