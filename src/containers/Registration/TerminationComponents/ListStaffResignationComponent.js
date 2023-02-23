@@ -53,6 +53,10 @@ class ListStaffResignationComponent extends React.PureComponent {
             {value: 1, label: props.t('pushed_SAP')},
             {value: 2, label: props.t('not_push_SAP')},
         ];
+        this.PAYMENT_OPTIONS = [
+            {label: 'Giữ lương', value: 0},
+            {label: 'Đã trả', value: 1}
+        ];
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -139,8 +143,8 @@ class ListStaffResignationComponent extends React.PureComponent {
         return statusName && statusName.length > 0 ? statusName[0]?.label || "" : ""
     }
 
-    renderSapStatus = (salaryStatus) => {
-        const statusName = this.sapStatusOptions.filter(item => item.value == salaryStatus)
+    renderSalaryStatus = (salaryStatus) => {
+        const statusName = this.PAYMENT_OPTIONS.filter(item => item.value == salaryStatus)
         return statusName && statusName.length > 0 ? statusName[0]?.label || "" : ""
     }
 
@@ -338,11 +342,11 @@ class ListStaffResignationComponent extends React.PureComponent {
                                                             <td className="handover-uniforms-col"><div className="data handover-uniforms">{this.renderStatus(index, item.isHandoverUniform, item.statusUniform, "statusUniform")}</div></td>
                                                             <td className="handover-fingerprints-email-col"><div className="data handover-fingerprints-email">{this.renderStatus(index, item.isHandoverFingerprintEmail, item.statusFingerprintEmail, "statusFingerprintEmail")}</div></td>
                                                             <td className="handover-liabilities-col"><div className="data handover-liabilities">{this.renderStatus(index, item.isHandoverDebt, item.statusDebt, "statusDebt")}</div></td>
-                                                            <td className="handover-software-col"><div className="data handover-software">{this.renderStatus(index, item.isHandoverSoftware, item.statusSoftware, "statusSoftware")}</div></td>
-                                                            <td className="confirm-violation-records-col"><div className="data confirm-violation-records">{this.renderStatus(index, item.isHandoverConfirmation, item.statusConfirmation, "statusConfirmation")}</div></td>
-                                                            <td className="approval-status-col"><div className="data approval-status">{item?.processStatusString || ""}</div></td>
-                                                            <td className="social-insurance-book-status-col"><div className="data social-insurance-book-status">{item?.statusSocialClosing || ''}</div></td>
-                                                            <td className="leave-salary-col"><div className="data leave-salary">{this.renderSapStatus(item?.statusLastPayment)}</div></td>
+                                                            <td className="handover-software-col" style={{textAlign: 'center'}}><div className="data handover-software">{this.renderStatus(index, item.isHandoverSoftware, item.statusSoftware, "statusSoftware")}</div></td>
+                                                            <td className="confirm-violation-records-col" style={{textAlign: 'center'}}><div className="data confirm-violation-records">{this.renderStatus(index, item.isHandoverConfirmation, item.statusConfirmation, "statusConfirmation")}</div></td>
+                                                            <td className="approval-status-col" style={{textAlign: 'center'}}><div className="data approval-status">{item?.processStatusString || ""}</div></td>
+                                                            <td className="social-insurance-book-status-col" style={{textAlign: 'center'}}><div className="data social-insurance-book-status">{item?.statusSocialClosing || ''}</div></td>
+                                                            <td className="leave-salary-col" style={{textAlign: 'center'}}><div className="data leave-salary">{this.renderSalaryStatus(item?.statusLastPayment)}</div></td>
                                                             <td className="interview-card-col">{interviewQuestionnaire}</td>
                                                         </tr>
                                             })
