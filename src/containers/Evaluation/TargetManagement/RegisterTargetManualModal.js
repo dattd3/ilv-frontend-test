@@ -255,31 +255,26 @@ export default function TargetRegistrationManualModal(props) {
         config
       );
       if (response.data?.result?.code !== "200") {
-        toast.error(`Lưu mục tiêu thất bại: ${response.data?.result?.message}`);
+        toast.error(`Lưu yêu cầu thất bại: ${response.data?.result?.message}!`);
       } else {
         if (isApprover) {
           setIsEditing(false);
           fetchTargetRegisterData();
           collapseAll();
-          setStatusModalManagement({
-            isShow: true,
-            isSuccess: true,
-            content: "Lưu mục tiêu CBNV thành công",
-          });
         } else {
           setFormValues({
             id: response.data?.data?.id,
             ...formValues
           })
-          setStatusModalManagement({
-            isShow: true,
-            isSuccess: true,
-            content: "Lưu mục tiêu thành công",
-          });
         }
+        setStatusModalManagement({
+          isShow: true,
+          isSuccess: true,
+          content: "Lưu yêu cầu thành công!",
+        });
       }
     } catch {
-      toast.error("Lưu mục tiêu thất bại!");
+      toast.error("Lưu yêu cầu thất bại!");
     }
     setIsLoading(false);
 
@@ -313,7 +308,7 @@ export default function TargetRegistrationManualModal(props) {
         });
       }
     } catch {
-      toast.error("Lưu mục tiêu thất bại!");
+      toast.error("Lưu yêu cầu thất bại!");
     }
     setIsEditing(false);
   };
@@ -672,7 +667,7 @@ export default function TargetRegistrationManualModal(props) {
             )}
           </div>
         )}
-        <div className="form-container mb-15">
+        <div className="form-container">
           <div className="approver-title mb-15">
             {isApprover ? "CBNV đăng ký mục tiêu" : "CBQL phê duyệt"}
           </div>
