@@ -57,7 +57,7 @@ const LANGUAGE_CODE_MAPPING = {
 const getUserInfo = () => ({
   account: localStorage.getItem("email")?.split("@")?.[0],
   fullName: localStorage.getItem("fullName"),
-  employeeLevel: localStorage.getItem("employeeLevel"),
+  employeeLevel: localStorage.getItem("actualRank"),
   EmployeeNo: localStorage.getItem("employeeNo"),
   jobCode: localStorage.getItem("jobCode"),
   current_position: localStorage.getItem("jobTitle"),
