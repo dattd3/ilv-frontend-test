@@ -16,10 +16,10 @@ class InterviewContentFormComponent extends React.PureComponent {
 
     getTimeSurveyOptions = (type, t) => {
         return [
-            { value: 1, label: t('less_6_months'), element: `${type}-less-6-month`},
-            { value: 2, label: t('2_years'), element: `${type}-2-year`},
-            { value: 3, label: t('2_5_years'), element: `${type}-2-5-year`},
-            { value: 4, label: t('greater_5_years'), element: `${type}-than-5-year`}
+            { value: 1, label: t('less_2_months'), element: `${type}-less-2-month`},
+            { value: 2, label: t('2month_1year'), element: `${type}-2-month-1year`},
+            { value: 3, label: t('1_3years'), element: `${type}-1-3-year`},
+            { value: 4, label: t('greater_3_years'), element: `${type}-than-3-year`}
         ]
     }
 
@@ -61,14 +61,23 @@ class InterviewContentFormComponent extends React.PureComponent {
         this.props.updateInterviewContents("comments", comments)
     }
 
+    handleQuestionChange = (key, e) => {
+        const {isViewOnly} = this.props
+        if (isViewOnly) {
+            return
+        }
+        const  questions = {...this.props.questions}
+        questions[key] = e.target.value || ""
+        this.props.updateInterviewContents("questions", questions)
+    }
+
     render() {
-        const { t, serveyInfos, serveyDetail, isViewOnly, timeJoinDefault, timeInDefault, resignationReasonOptionsChecked, comments } = this.props
-        
+        const { t, serveyInfos, serveyDetail, isViewOnly, timeJoinDefault, timeInDefault, resignationReasonOptionsChecked, comments, questions } = this.props
         const timeJoinSurveyOptions = this.getTimeSurveyOptions("join", t)
         const timeInSurveyOptions = this.getTimeSurveyOptions("in", t)
         return (
             <>
-            <div className="block interview-content-block">
+                <div className="block interview-content-block">
                     <h6 className="block-title">II. {t('noi_dung_phong_van')}</h6>
                     <div className="box">
                         <div className="row">
@@ -158,7 +167,7 @@ class InterviewContentFormComponent extends React.PureComponent {
                                                                         }
                                                                     </div>
                                                                     :
-                                                                    <ResizableTextarea value={comments[item.categoryCode] || ""} onChange={e => this.handleTextareaChange(item.categoryCode, e)} rows={5} readOnly={isViewOnly} disabled={isViewOnly} /> 
+                                                                    <ResizableTextarea value={comments[item.categoryCode] || ""} onChange={e => this.handleTextareaChange(item.categoryCode, e)} minRows={5} readOnly={isViewOnly} disabled={isViewOnly} /> 
                                                                 }
                                                                 
                                                             </div>
@@ -166,8 +175,151 @@ class InterviewContentFormComponent extends React.PureComponent {
                                                     </tr>
                                         })
                                     }
+                                    <tr >
+                                        <td className="categories">
+                                            <div className="item">{t('other_reason')}</div>
+                                        </td>
+                                        <td className="selection">
+                                            <div className="item comment">
+                                                {
+                                                    isViewOnly ? 
+                                                    <div className='detail'>
+                                                        {
+                                                            questions?.reason1 ?
+                                                            questions.reason1.split ('\n').map ((item, i) => <p style={{margin: 0}} key={i}>{item}</p>)
+                                                            : ''
+                                                        }
+                                                    </div>
+                                                    :
+                                                    <ResizableTextarea value={questions?.reason1 || ""} onChange={e => this.handleQuestionChange('reason1', e)} minRows={2} readOnly={isViewOnly} disabled={isViewOnly} /> 
+                                                }
+                                                
+                                            </div>
+                                        </td>
+                                        <td className="explain">
+                                            <div className="item comment" style={{marginTop: '10px', marginBottom: '10px'}}>
+                                                {
+                                                    isViewOnly ? 
+                                                    <div className='detail'>
+                                                        {
+                                                            questions?.reason2 ?
+                                                            questions.reason2.split ('\n').map ((item, i) => <p style={{margin: 0}} key={i}>{item}</p>)
+                                                            : ''
+                                                        }
+                                                    </div>
+                                                    :
+                                                    <ResizableTextarea value={questions?.reason2 || ""} onChange={e => this.handleQuestionChange('reason2', e)} minRows={2} readOnly={isViewOnly} disabled={isViewOnly} /> 
+                                                }
+                                                
+                                            </div>
+                                        </td>
+                                    </tr>
                                 </tbody>
                             </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="block interview-content-block questions" style={{marginTop: '15px'}}>
+                    <h6 className="block-title">IV. {t('other_question')}</h6>
+                    <div className="row">
+                        <div className="col-12">
+                            <p className="title" style={{fontWeight: 'bold', marginTop: '0.5rem'}}>{t('servey_question_1')}</p>
+                            <div>
+                                {
+                                    isViewOnly ? 
+                                    <div className='detail'>
+                                        {
+                                            questions?.q1 ?
+                                            questions.q1.split ('\n').map ((item, i) => <p style={{margin: 0}} key={i}>{item}</p>)
+                                            : ''
+                                        }
+                                    </div>
+                                    :
+                                    <ResizableTextarea value={questions?.q1 || ""} onChange={e => this.handleQuestionChange("q1", e)} minRows={2} maxRows={4} readOnly={isViewOnly} disabled={isViewOnly} className="w-100 form-control"/>
+                                }
+                                
+                            </div>
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="col-12">
+                            <p className="title" style={{fontWeight: 'bold', marginTop: '1.5rem'}}>{t('servey_question_2')}</p>
+                            <div>
+                                {
+                                    isViewOnly ? 
+                                    <div className='detail'>
+                                        {
+                                            questions?.q2 ?
+                                            questions.q2.split ('\n').map ((item, i) => <p style={{margin: 0}} key={i}>{item}</p>)
+                                            : ''
+                                        }
+                                    </div>
+                                    :
+                                    <ResizableTextarea value={questions?.q2 || ""} onChange={e => this.handleQuestionChange("q2", e)} minRows={2} maxRows={4} readOnly={isViewOnly} disabled={isViewOnly} className="w-100 form-control"/>
+                                }
+                            
+                            </div>
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="col-12">
+                            <p className="title" style={{fontWeight: 'bold', marginTop: '1.5rem'}}>{t('servey_question_3')}</p>
+                            <div>
+                                {
+                                    isViewOnly ? 
+                                    <div className='detail'>
+                                        {
+                                            questions?.q3 ?
+                                            questions.q3.split ('\n').map ((item, i) => <p style={{margin: 0}} key={i}>{item}</p>)
+                                            : ''
+                                        }
+                                    </div>
+                                    :
+                                    <ResizableTextarea value={questions?.q3 || ""} onChange={e => this.handleQuestionChange("q3", e)} minRows={2} maxRows={4} readOnly={isViewOnly} disabled={isViewOnly} className="w-100 form-control"/>
+                                }
+                            
+                            </div>
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="col-12">
+                            <p className="title" style={{fontWeight: 'bold', marginTop: '1.5rem'}}>{t('servey_question_4')}</p>
+                            <div>
+                                {
+                                    isViewOnly ? 
+                                    <div className='detail'>
+                                        {
+                                            questions?.q4 ?
+                                            questions.q4.split ('\n').map ((item, i) => <p style={{margin: 0}} key={i}>{item}</p>)
+                                            : ''
+                                        }
+                                    </div>
+                                    :
+                                    <ResizableTextarea value={questions?.q4 || ""} onChange={e => this.handleQuestionChange("q4", e)} minRows={2} maxRows={4} readOnly={isViewOnly} disabled={isViewOnly} className="w-100 form-control"/>
+                                }
+                            
+                            </div>
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="col-12">
+                            <p className="title" style={{fontWeight: 'bold', marginTop: '1.5rem'}}>{t('servey_question_5')}</p>
+                            <div>
+                                {
+                                    isViewOnly ? 
+                                    <div className='detail'>
+                                        {
+                                            questions?.q5 ?
+                                            questions.q5.split ('\n').map ((item, i) => <p style={{margin: 0}} key={i}>{item}</p>)
+                                            : ''
+                                        }
+                                    </div>
+                                    :
+                                    <ResizableTextarea value={questions?.q5 || ""} onChange={e => this.handleQuestionChange("q5", e)} minRows={2} maxRows={4} readOnly={isViewOnly} disabled={isViewOnly} className="w-100 form-control"/>
+                                }
+                            
+                            </div>
                         </div>
                     </div>
                 </div>
