@@ -611,7 +611,7 @@ function RegisterTargetFromLibraryModal(props) {
                     } else {
                         SetError({
                             ...error,
-                            errorMissingApproverInfo: '* Chưa có thông tin CBQL phê duyệt, vui lòng liên hệ Nhân sự để được hỗ trợ!'
+                            errorMissingApproverInfo: '* Chưa có thông tin CBQL phê duyệt. Vui lòng liên hệ Nhân sự để được hỗ trợ!'
                         })
                     }
                 } else if (requestInfo && requestInfo?.data && requestInfo?.data?.data?.requests) { // Khi sửa yêu cầu đăng ký mục tiêu từ thư viện ở trạng thái Nháp hoặc Từ chối
@@ -624,7 +624,7 @@ function RegisterTargetFromLibraryModal(props) {
                         if (!approverInfoData) {
                             SetError({
                                 ...error,
-                                errorMissingApproverInfo: '* Chưa có thông tin CBQL phê duyệt, vui lòng liên hệ Nhân sự để được hỗ trợ!'
+                                errorMissingApproverInfo: '* Chưa có thông tin CBQL phê duyệt. Vui lòng liên hệ Nhân sự để được hỗ trợ!'
                             })
                         }
                     }
