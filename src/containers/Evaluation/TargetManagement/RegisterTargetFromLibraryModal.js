@@ -541,7 +541,7 @@ function RegisterTargetFromLibraryModal(props) {
         bodyFormData.append('Organization_lv2', user?.organizationLv2)
         bodyFormData.append('Organization_lv3', user?.organizationLv3)
         bodyFormData.append('Organization_lv4', user?.organizationLv4)
-        bodyFormData.append('Employee_level', user?.employeeLevel)
+        bodyFormData.append('Employee_level', user?.actualRank)
         bodyFormData.append('EmployeeCode', user?.employeeNo)
         bodyFormData.append('PageIndex', paging.pageIndex)
         bodyFormData.append('PageSize', paging.pageSize)
