@@ -68,6 +68,7 @@ export default function TargetRegistrationManualModal(props) {
   } = props;
   const [isEditing, setIsEditing] = useState(!viewOnly);
   const [isLoading, setIsLoading] = useState(false);
+  const [showRequiredWarning, setShowRequiredWarning] = useState(false)
   const [data, setData] = useState(null);
 
   const [formValues, setFormValues] = useState({
@@ -125,7 +126,7 @@ export default function TargetRegistrationManualModal(props) {
     const config = getRequestConfigurations();
     try {
       config.params = {
-        id
+        id,
       };
       const response = await axios.get(
         `${process.env.REACT_APP_HRDX_PMS_URL}api/targetregist/detail`,
@@ -179,6 +180,8 @@ export default function TargetRegistrationManualModal(props) {
     );
   };
 
+  const checkIsFormValidApprover = () => checkIsFormValid() && !!formValues.reviewComment;
+
   const onChangeFormValues = (key, value) => {
     setFormValues({
       ...formValues,
@@ -231,9 +234,9 @@ export default function TargetRegistrationManualModal(props) {
     // if (!checkIsFormValid()) {
     //   return toast.error("Vui lòng điền đầy đủ các trường bắt buộc");
     // }
-    // if (isApprover && !formValues.reviewComment) {
-    //   return toast.error("Vui lòng nhập ý kiến của CBQL phê duyệt");
-    // }
+    if (isApprover && !checkIsFormValidApprover()) {
+      return setShowRequiredWarning(true);
+    }
     setIsLoading(true);
     // Add order
     try {
@@ -255,7 +258,11 @@ export default function TargetRegistrationManualModal(props) {
         config
       );
       if (response.data?.result?.code !== "200") {
-        toast.error(`Lưu yêu cầu thất bại: ${response.data?.result?.message}!`);
+        setStatusModalManagement({
+          isShow: true,
+          isSuccess: false,
+          content: response.data?.result?.message,
+        });
       } else {
         if (isApprover) {
           setIsEditing(false);
@@ -264,8 +271,8 @@ export default function TargetRegistrationManualModal(props) {
         } else {
           setFormValues({
             id: response.data?.data?.id,
-            ...formValues
-          })
+            ...formValues,
+          });
         }
         setStatusModalManagement({
           isShow: true,
@@ -274,10 +281,13 @@ export default function TargetRegistrationManualModal(props) {
         });
       }
     } catch {
-      toast.error("Lưu yêu cầu thất bại!");
+      setStatusModalManagement({
+        isShow: true,
+        isSuccess: false,
+        content: "Lưu yêu cầu thất bại!",
+      });
     }
     setIsLoading(false);
-
   };
 
   const onSendTargetRegister = async () => {
@@ -321,7 +331,9 @@ export default function TargetRegistrationManualModal(props) {
         ...formValues?.listTarget?.filter((_, index) => index !== idx),
       ],
     });
-    setTargetToggleStatuses(targetToggleStatuses?.filter((_, index) => index !== idx));
+    setTargetToggleStatuses(
+      targetToggleStatuses?.filter((_, index) => index !== idx)
+    );
   };
 
   const onEditButtonClick = () => {
@@ -343,24 +355,37 @@ export default function TargetRegistrationManualModal(props) {
     setStatusModalManagement(INIT_STATUS_MODAL_MANAGEMENT);
   };
 
-  const isShowRevocationRejectReasonByManager  = (() => {
-    const approver = JSON.parse(data?.approverInfo || '{}')
-    return !isEditing 
-    && data?.rejectReson 
-    && approver?.account
-    && (
-      ([REQUEST_STATUS.DRAFT].includes(Number(data?.status)) && approver?.account?.toLowerCase() === data?.lastRecallBy?.toLowerCase()) 
-      || [REQUEST_STATUS.REJECT].includes(Number(data?.status))
-    )
-  })()
+  const isShowRevocationRejectReasonByManager = (() => {
+    const approver = JSON.parse(data?.approverInfo || "{}");
+    return (
+      !isEditing &&
+      data?.rejectReson &&
+      approver?.account &&
+      (([REQUEST_STATUS.DRAFT].includes(Number(data?.status)) &&
+        approver?.account?.toLowerCase() ===
+          data?.lastRecallBy?.toLowerCase()) ||
+        [REQUEST_STATUS.REJECT].includes(Number(data?.status)))
+    );
+  })();
 
-  const isShowRevocationReasonByEmployee  = (() => {
-    const userInfo = JSON.parse(data?.userInfo || '{}')
-    return !isEditing 
-    && data?.rejectReson 
-    && userInfo?.account
-    && [REQUEST_STATUS.DRAFT].includes(Number(data?.status)) && userInfo?.account?.toLowerCase() === data?.lastRecallBy?.toLowerCase()
-  })()
+  const isShowRevocationReasonByEmployee = (() => {
+    const userInfo = JSON.parse(data?.userInfo || "{}");
+    return (
+      !isEditing &&
+      data?.rejectReson &&
+      userInfo?.account &&
+      [REQUEST_STATUS.DRAFT].includes(Number(data?.status)) &&
+      userInfo?.account?.toLowerCase() === data?.lastRecallBy?.toLowerCase()
+    );
+  })();
+  const isDisabledSendRequest =
+    !checkIsFormValid() ||
+    totalWeight !== 100 ||
+    (data?.status === REQUEST_STATUS.REJECT &&
+      !isEditing &&
+      data?.lastUpdatedBy?.toLowerCase() ===
+        approverJSON?.account?.toLowerCase()) ||
+    formValues.listTarget.some((item) => Number(item.weight) < 1 || Number(item.weight) > 100);
 
   return (
     <Modal
@@ -571,7 +596,7 @@ export default function TargetRegistrationManualModal(props) {
                   <div className="mb-15">
                     Trọng số <span className="red-color">(*)</span>
                   </div>
-                  <div className="weight-input-box">
+                  <div className="weight-input-box mb-15">
                     <span className="prefix">%</span>
                     <Form.Control
                       as="input"
@@ -586,6 +611,12 @@ export default function TargetRegistrationManualModal(props) {
                       readOnly={!isEditing}
                     />
                   </div>
+                  {target.weight !== "" &&
+                    (Number(target.weight) < 1 || Number(target.weight) > 100) && (
+                      <div className="red-color">
+                        * Vui lòng nhập trọng số trong khoảng 1 - 100
+                      </div>
+                    )}
                 </div>
                 <div className="mb-15">
                   <div className="mb-15">Job Details</div>
@@ -637,14 +668,12 @@ export default function TargetRegistrationManualModal(props) {
         )}
 
         {/* Hiển thị lý do thu hồi của CBNV */}
-        {
-          isShowRevocationReasonByEmployee && (
-            <div className="mb-15">
-              <div className="mb-15">Lý do thu hồi của CBNV</div>
-              <div className="read-only-text">{data.rejectReson || ''}</div>
-            </div>
-          )
-        }
+        {isShowRevocationReasonByEmployee && (
+          <div className="mb-15">
+            <div className="mb-15">Lý do thu hồi của CBNV</div>
+            <div className="read-only-text">{data.rejectReson || ""}</div>
+          </div>
+        )}
 
         {((data?.reviewComment && !isEditing) || (isApprover && isEditing)) && (
           <div className="mb-15">
@@ -709,19 +738,26 @@ export default function TargetRegistrationManualModal(props) {
             </div>
           </div>
           {/* Hiển thị lý do thu hồi và lý do từ chối của CBLĐ Phê duyệt */}
-          {
-            isShowRevocationRejectReasonByManager &&
-            <div className={`row group ${isShowRevocationRejectReasonByManager ? 'mt-20' : ''}`}>
+          {isShowRevocationRejectReasonByManager && (
+            <div
+              className={`row group ${
+                isShowRevocationRejectReasonByManager ? "mt-20" : ""
+              }`}
+            >
               <div className="col-xl-12">
-                <div className="mb-15">{data?.status === REQUEST_STATUS.REJECT ? 'Lý do từ chối' : 'Lý do thu hồi của CBQL'}</div>
+                <div className="mb-15">
+                  {data?.status === REQUEST_STATUS.REJECT
+                    ? "Lý do từ chối"
+                    : "Lý do thu hồi của CBQL"}
+                </div>
                 <Form.Control
                   readOnly
                   className="form-input"
-                  value={data?.rejectReson || ''}
+                  value={data?.rejectReson || ""}
                 />
               </div>
             </div>
-          }
+          )}
         </div>
         <div className="custom-modal-footer">
           {!approverJSON && isFetchedApprover && (
@@ -739,6 +775,11 @@ export default function TargetRegistrationManualModal(props) {
                 * Yêu cầu tổng trọng số bằng 100%. Vui lòng kiểm tra lại!
               </div>
             )}
+            {
+              isApprover && showRequiredWarning && !checkIsFormValidApprover() && <div className="red-color mb-15">
+              * Vui lòng nhập đầy đủ thông tin bắt buộc!
+            </div>
+            }
           <div className="modal-footer-action">
             <div>
               {(isEditing ||
@@ -789,9 +830,6 @@ export default function TargetRegistrationManualModal(props) {
                     <button
                       className="button save-approver-btn"
                       onClick={onSaveTargetRegister}
-                      disabled={
-                        !checkIsFormValid() || !formValues.reviewComment?.trim()
-                      }
                       style={{
                         width:
                           data?.status === REQUEST_STATUS.PROCESSING ? 90 : 120,
@@ -866,13 +904,7 @@ export default function TargetRegistrationManualModal(props) {
                 </button>
                 <button
                   className="button send-request-btn"
-                  disabled={
-                    totalWeight !== 100 ||
-                    (data?.status === REQUEST_STATUS.REJECT &&
-                      !isEditing &&
-                      data?.lastUpdatedBy?.toLowerCase() ===
-                        approverJSON?.account?.toLowerCase())
-                  }
+                  disabled={isDisabledSendRequest}
                   onClick={onSendTargetRegister}
                 >
                   <IconSend />
