@@ -210,7 +210,7 @@ const SelectTargetTabContent = ({ filter, listTargetInfo, targetSelected = [], p
     )
 }
 
-const DoneTabContent = ({ filter, targetSelected = [], error, handleInputChange, handleSelectTarget, handleViewListTargetSelected }) => {
+const DoneTabContent = ({ filter, approverInfo, targetSelected = [], error, handleInputChange, handleSelectTarget, handleViewListTargetSelected }) => {
     const { t } = useTranslation()
 
     const handleRemoveItem = (e, item) => {
@@ -221,6 +221,8 @@ const DoneTabContent = ({ filter, targetSelected = [], error, handleInputChange,
     const renderListTargetSelected = () => {
         return (
             targetSelected.map((item, i) => {
+                let isShowApproverMessage = item?.lastUpdateBy && item?.lastUpdateBy?.toLowerCase() === approverInfo?.account?.toLowerCase()
+
                 return (
                     <div className="item" key={i}>
                         <Button
@@ -228,23 +230,27 @@ const DoneTabContent = ({ filter, targetSelected = [], error, handleInputChange,
                             aria-controls={`item-${i}`}
                             aria-expanded={item?.isExpand || false}
                         >
-                            <div className="title">
-                                <img src={item?.isExpand ? IconCollapse : IconExpand} alt='Collapse' />
-                                <span className="font-weight-bold">Mục tiêu {i + 1}</span>
-                                {
-                                    !item?.isExpand &&
-                                    <>
-                                        <span className="divider">|</span>
-                                        <span>{item?.targetName}</span>
-                                        <span className="divider">|</span>
-                                        <span className="percent">{item?.weight}%</span>
-                                    </>
-                                }
+                            <div className="row-first">
+                                <div className="title">
+                                    <img src={item?.isExpand ? IconCollapse : IconExpand} alt='Collapse' />
+                                    <span className="font-weight-bold">Mục tiêu {i + 1}</span>
+                                    {
+                                        !item?.isExpand &&
+                                        <>
+                                            <span className="divider">|</span>
+                                            <span>{item?.targetName}</span>
+                                            <span className="divider">|</span>
+                                            <span className="percent">{item?.weight}%</span>
+                                        </>
+                                    }
+
+                                </div>
+                                <span role='button' className="btn-remove" title='Xóa' onClick={(e) => handleRemoveItem(e, item)}>
+                                    <img src={IconRemoveRed} alt='Remove' />
+                                    Xóa
+                                </span>
                             </div>
-                            <span role='button' className="btn-remove" title='Xóa' onClick={(e) => handleRemoveItem(e, item)}>
-                                <img src={IconRemoveRed} alt='Remove' />
-                                Xóa
-                            </span>
+                            { isShowApproverMessage && <div className="row-second">* Mục tiêu đã được QLTT chỉnh sửa</div> }
                         </Button>
                         <Collapse in={item?.isExpand}>
                             <div id={`item-${i}`} className="item-content">
@@ -1040,6 +1046,7 @@ function RegisterTargetFromLibraryModal(props) {
                             stepActive === stepConfig.done &&
                             <DoneTabContent
                                 filter={omit(filter, ['keyword'])}
+                                approverInfo={approverInfo}
                                 targetSelected={targetSelected}
                                 error={error}
                                 handleInputChange={handleInputChange}
