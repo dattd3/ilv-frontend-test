@@ -310,7 +310,7 @@ function TargetManagement() {
         typeMessage = "Thu hồi yêu cầu ";
       }
       try {
-        await axios.post(
+        const response = await axios.post(
           UPDATE_STATUS_TARGET_ENDPOINT,
           {
             id,
@@ -319,10 +319,17 @@ function TargetManagement() {
           },
           config
         );
-        setModalManagement({
-          type: MODAL_TYPES.SUCCESS,
-          data: `${typeMessage} thành công!`,
-        });
+        if (response.data?.result?.code !== "200") {
+          setModalManagement({
+            type: MODAL_TYPES.FAIL,
+            content: response.data?.result?.message,
+          });
+        } else {
+          setModalManagement({
+            type: MODAL_TYPES.SUCCESS,
+            data: `${typeMessage} thành công!`,
+          });
+        }
       } catch (error) {
         setModalManagement({
           type: MODAL_TYPES.FAIL,
