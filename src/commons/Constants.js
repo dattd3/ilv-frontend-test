@@ -225,6 +225,7 @@ const Constants = {
     3:[],//DEXUATLUONG "V061", "V040", "V005", "V079", "V041"
     4:["V040", "V005", "V079"],//NGHIVIEC
     5: ["V061", "V040", "V005", "V079", "V041"]//PHUCLOI
-  }
+  },
+  RESIGN_REASON_EMPLOYEE_INVALID: ["GI", "GL", "GM", "GN", "GO"]
 };
 export default Constants
