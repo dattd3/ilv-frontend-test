@@ -80,7 +80,7 @@ class RegistrationEmploymentTerminationForm extends React.Component {
             const reasonTypeCodeForManager = "ZG"
             const reasonTypes = responses.data.data
             const results = (reasonTypes || [])
-            .filter(item => item.code01 === reasonTypeCodeForManager)
+            .filter(item => item.code01 === reasonTypeCodeForManager  && !Constants.RESIGN_REASON_EMPLOYEE_INVALID.includes(item.code02))
             .map(item => {
                 return {value: item.code02, label: item.text}
             })
