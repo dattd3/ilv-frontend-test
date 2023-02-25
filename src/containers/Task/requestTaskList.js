@@ -1,23 +1,21 @@
 import React from 'react'
-import editButton from '../../assets/img/icon/Icon-edit.svg'
-import deleteButton from '../../assets/img/icon-delete.svg'
-import evictionButton from '../../assets/img/eviction.svg'
-import CustomPaging from '../../components/Common/CustomPaging'
-import TableUtil from '../../components/Common/table'
-import { OverlayTrigger, Tooltip } from 'react-bootstrap'
-import Popover from 'react-bootstrap/Popover'
 import Select from 'react-select'
+import { FormControl } from 'react-bootstrap'
+import { withTranslation } from "react-i18next"
 import moment from 'moment'
 import purify from "dompurify"
 import _ from 'lodash'
 import ConfirmationModal from '../../containers/Registration/ConfirmationModal'
-import Constants from '../../commons/Constants'
 import RegistrationConfirmationModal from '../Registration/ConfirmationModal'
-import { InputGroup, FormControl } from 'react-bootstrap'
-import { withTranslation } from "react-i18next"
+import CustomPaging from '../../components/Common/CustomPaging'
+import Constants from '../../commons/Constants'
 import { showRangeDateGroupByArrayDate, generateTaskCodeByCode } from "../../commons/Utils"
 import { absenceRequestTypes, requestTypes } from "../Task/Constants"
 import { MOTHER_LEAVE_KEY } from "./Constants"
+import { ReactComponent as IconFilter } from "../../assets/img/icon/Icon_filter.svg"
+import editButton from '../../assets/img/icon/Icon-edit.svg'
+import deleteButton from '../../assets/img/icon-delete.svg'
+import evictionButton from '../../assets/img/eviction.svg'
 
 const TIME_FORMAT = 'HH:mm:ss'
 const DATE_FORMAT = 'DD-MM-YYYY'
@@ -197,8 +195,8 @@ class RequestTaskList extends React.Component {
         const status = {
             1: { label: this.props.t('Rejected'), className: 'request-status fail' },
             2: { label: this.props.t('Approved'), className: 'request-status success' },
-            3: { label: this.props.t('Canceled'), className: 'request-status' },
-            4: { label: this.props.t('Canceled'), className: 'request-status' },
+            3: { label: this.props.t('Canceled'), className: 'request-status fail' },
+            4: { label: this.props.t('Canceled'), className: 'request-status fail' },
             5: { label: this.props.t("PendingApproval"), className: 'request-status' },
             6: { label: this.props.t("PartiallySuccessful"), className: 'request-status warning' },
             7: { label: this.props.t("Rejected"), className: 'request-status fail' },
@@ -575,6 +573,13 @@ class RequestTaskList extends React.Component {
         this.props.requestRemoteData(params);
     }
 
+    bindPlaceholder = (text) => (
+        <div>
+            <span className="icon-filter" style={{marginRight: '5px'}}><IconFilter style={{ height: '15px' }} /></span>
+            <span>{text}</span>
+        </div>
+    )
+
     render() {
         const { t, total, tasks } = this.props
         const { pageNumber } = this.state
@@ -589,6 +594,23 @@ class RequestTaskList extends React.Component {
                 const requestTypeObj = requestTypes.find(item => item.value == requestType.id)
                 return requestTypeObj ? t(requestTypeObj.label) : ""
             }
+        }
+
+        const customSelectStyles = {
+            option: (styles, state) => ({
+                ...styles,
+                cursor: 'pointer',
+                color: '#000000'
+            }),
+            control: (styles) => ({
+                ...styles,
+                cursor: 'pointer',
+                color: '#000000',
+                border: "1px solid #dee2e6",
+            }),
+            // menuPortal: provided => ({ ...provided, zIndex: 99 }),
+            menu: provided => ({ ...provided, zIndex: 2, colors: "#000000" }),
+            indicatorSeparator: (styles) => ({ display: 'none' })
         }
 
         return (
@@ -606,47 +628,34 @@ class RequestTaskList extends React.Component {
                 />
                 <RegistrationConfirmationModal show={this.state.isShowModalRegistrationConfirm} id={this.state.taskId} title={this.state.modalTitle} message={this.state.modalMessage}
                     type={this.state.typeRequest} urlName={this.state.requestUrl} dataToSap={dataToSap} onHide={this.onHideModalRegistrationConfirm} />
-                <div className="row w-100 mt-2 mb-3 search-block">
-                    <div className="col-xl-4">
-                        <InputGroup className="d-flex">
-                            <InputGroup.Prepend className="">
-                                <InputGroup.Text id="basic-addon1"><i className="fas fa-filter"></i></InputGroup.Text>
-                            </InputGroup.Prepend>
-                            <Select name="absenceType"
-                                className="w-75"
-                                // defaultValue={this.props.filterdata[0]}
-                                value={this.state.absenceType || ""}
-                                isClearable={false}
-                                onChange={absenceType => this.handleSelectChange('absenceType', absenceType)}
-                                placeholder={t('SortByStatus')} key="absenceType" options={this.props.filterdata}
-                                styles={{
-                                    menu: provided => ({ ...provided, zIndex: 2 })
-                                }}
-                                theme={theme => ({
-                                    ...theme,
-                                    colors: {
-                                        ...theme.colors,
-                                        primary25: '#F9C20A',
-                                        primary: '#F9C20A',
-                                    },
-                                })} />
-                        </InputGroup>
+                <div className="w-100 mb-3 d-flex search-block">
+                    <div className="child-item">
+                        <Select name="absenceType"
+                            // defaultValue={this.props.filterdata[0]}
+                            value={this.state.absenceType || ""}
+                            isClearable={false}
+                            onChange={absenceType => this.handleSelectChange('absenceType', absenceType)}
+                            placeholder={this.bindPlaceholder(t('SortByStatus'))}
+                            key="absenceType" options={this.props.filterdata}
+                            styles={customSelectStyles}
+                            theme={theme => ({
+                                ...theme,
+                                colors: {
+                                    ...theme.colors,
+                                    primary25: '#F9C20A',
+                                    primary: '#F9C20A',
+                                },
+                            })} />
                     </div>
-                    <div className="col-xl-4">
-                        <InputGroup>
-                            <InputGroup.Prepend>
-                                <InputGroup.Text id="basic-addon2"><i className="fas fa-search"></i></InputGroup.Text>
-                            </InputGroup.Prepend>
-                            <FormControl
-                                placeholder={t('SearchRequester')}
-                                aria-label="SearchRequester"
-                                aria-describedby="basic-addon2"
-                                className="request-user"
-                                onChange={this.handleInputChange}
-                            />
-                        </InputGroup>
+                    <div className="child-item search-item">
+                        <FormControl
+                            placeholder={t('SearchRequester')}
+                            aria-describedby="basic-addon2"
+                            className="request-user"
+                            onChange={this.handleInputChange}
+                        />
                     </div>
-                    <div className="col-4">
+                    <div className="child-item">
                         <button type="button" onClick={() => this.searchRemoteData(true)} className="btn btn-warning w-100">{t("Search")}</button>
                     </div>
                 </div>

@@ -564,7 +564,7 @@
     }
     .box {
         border: 1px solid #ddd;
-        border-radius: 10px;
+        border-radius: 4px;
         padding: 20px;
         background-color: #fff;
         margin: 15px 0;
@@ -746,7 +746,7 @@
                 border: 1px solid #ddd;
                 background-color: #fff;
                 height: 100%;
-                border-radius: 10px;
+                border-radius: 4px;
                 padding: 10px;
                 text-align: center;
                 box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
@@ -766,6 +766,7 @@
         .form {
             input {
                 font-size: inherit;
+                border-radius: 4px;
             }
         }
         &.shift-change-section {
@@ -935,7 +936,7 @@
         position: absolute;
         top: -1px;
         right: 40px;
-        border-radius: 0 0.35rem;
+        border-radius: 0 4px;
         font-size: 13px;
         color: white;
         i {
@@ -956,7 +957,7 @@
         position: absolute;
         top: -1px;
         right: 0;
-        border-radius: 0 0.35rem;
+        border-radius: 0 4px;
         font-size: 13px;
         color: white;
         i {

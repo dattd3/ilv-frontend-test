@@ -609,7 +609,7 @@
 
 .vg-dard-board {
   background-color: #e52c08;
-  border-radius: 10px;
+  border-radius: 4px;
   margin-left: 10px;
   margin-right: 10px;
   color: white;
@@ -1505,7 +1505,7 @@ span.badge-notification[data-badge]::after {
 
 .personal-info {
   font-size: inherit;
-  padding: 1em 0;
+  padding: 10px 0 1em 0;
   font-size: 14px;
   .edit-button {
     font-size: inherit;
@@ -1749,6 +1749,7 @@ span.badge-notification[data-badge]::after {
       font-size: inherit;
       .btn {
         font-size: inherit;
+        border-radius: 4px;
         i {
           font-size: 12px;
           margin-right: 5px;
@@ -1850,7 +1851,7 @@ span.badge-notification[data-badge]::after {
   .info-tab-content {
     padding: 1rem;
     background-color: #fff;
-    border-radius: 0.5em;
+    border-radius: 4px;
 
     table {
       width: 100%;
@@ -1932,15 +1933,16 @@ span.badge-notification[data-badge]::after {
 
   .nav-tabs {
     border: none;
-    padding: 1em 0;
+    padding: 0 0 20px 0;
     margin: 0 auto;
     .nav-link {
       border: none;
     }
     .nav-item {
-      border: 1px solid #ccc;
-      border-radius: 0.5em;
+      border: 1px solid #dee2e6;
+      border-radius: 4px;
       margin-right: 2em;
+      height: 40px;
       background-color: #fff;
       color: #293281;
     }
@@ -2031,6 +2033,13 @@ span.badge-notification[data-badge]::after {
         }
       }
     }
+  }
+  &.registration-section {
+      .nav-tabs {
+        .nav-item {
+          height: 40px;
+        }
+      }
   }
 }
 
@@ -2682,14 +2691,17 @@ span.badge-notification[data-badge]::after {
   .action-buttons {
     button.btn {
       font-size: inherit;
+      border-radius: 4px;
     }
   }
   .form-qna-search {
     input {
       font-size: inherit;
+      border-radius: 4px;
     }
     .btn-search {
       font-size: inherit;
+      border-radius: 4px;
     }
   }
 }
@@ -2714,8 +2726,12 @@ span.badge-notification[data-badge]::after {
 }
 .kpi-page {
   font-size: 14px;
+  margin-top: 10px;
   .kpi-staff-info {
     margin-bottom: 15px;
+    .title-group {
+      padding-top: 0;
+    }
     .main-info-table {
       margin-bottom: 0;
       td {
@@ -2782,7 +2798,7 @@ span.badge-notification[data-badge]::after {
       width: 350px;
       height: 40px;
       background: #f9c20a 0% 0% no-repeat padding-box;
-      border-radius: 30px;
+      border-radius: 4px;
       color: #ffffff;
       border: none;
       margin-left: 20px;
@@ -3075,6 +3091,7 @@ span.badge-notification[data-badge]::after {
 }
 
 .leave-fund-section {
+  margin-top: 10px;
   .react-datepicker-popper {
     z-index: 9999;
   }
@@ -3082,6 +3099,7 @@ span.badge-notification[data-badge]::after {
     padding-top: 1.5rem;
     padding-bottom: 1.5rem;
     font-size: 15px;
+    border-radius: 4px;
     input {
       font-size: 14px;
       &::-webkit-input-placeholder { /* Chrome/Opera/Safari */
@@ -3104,7 +3122,7 @@ span.badge-notification[data-badge]::after {
       .btn-search {
         width: 100%;
         border: none;
-        border-radius: .3rem;
+        border-radius: 4px;
         background: #f6c23e;
         color: #FFFFFF;
         padding: 0.5rem 0;
@@ -3345,7 +3363,11 @@ span.badge-notification[data-badge]::after {
 }
 
 .vaccine-info-page {
+  padding-top: 10px;
   font-size: 14px;
+  .content-page-header {
+    margin-bottom: 0;
+  }
   .table {
     overflow-x: auto;
     &::-webkit-scrollbar {
@@ -3447,7 +3469,7 @@ span.badge-notification[data-badge]::after {
   }
   .btn-create {
     font-size: inherit;
-    border-radius: 8px;
+    border-radius: 4px;
     border: 1px solid #347EF9;
     color: #347EF9;
     padding: 0.375rem 1rem;
@@ -3492,15 +3514,18 @@ span.badge-notification[data-badge]::after {
 
 .user-manual-page {
   font-size: 14px;
+  margin-top: 10px;
   .item {
     .btn {
       font-size: inherit;
+      border-radius: 4px;
     }
   }
 }
 
 .home-page {
   font: normal 14px Arial, Helvetica, sans-serif;
+  margin-top: 10px;
   .page-title {
     color: #000000;
     font-size: 20px;
@@ -3508,7 +3533,7 @@ span.badge-notification[data-badge]::after {
     text-transform: uppercase;
     display: flex;
     align-items: center;
-    margin: 15px 0 20px 0;
+    margin: 0 0 20px 0;
     .ic-page-title {
       height: 18px;
       margin-right: 5px;
@@ -3565,10 +3590,11 @@ span.badge-notification[data-badge]::after {
           .btn-detail {
             overflow: hidden;
             .detail {
+              font-size: 12px;
               text-decoration: none;
               display: inline-flex;
               align-items: center;
-              padding: 10px;
+              padding: 7px 10px;
               border-radius: 10px;
               border: 1px solid #585858;
               color: #585858;
@@ -3680,11 +3706,11 @@ span.badge-notification[data-badge]::after {
         .btn-detail {
           margin-top: 0;
           .detail {
-            font-size: 13px;
+            font-size: 12px;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
-            padding: 6px 10px;
+            padding: 7px 10px;
             border-radius: 10px;
             border: 1px solid #585858;
             color: #585858;

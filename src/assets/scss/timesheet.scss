@@ -3,6 +3,7 @@
   border-right-color: #6cb5f9 !important;
 }
 .timesheet-section {
+  margin-top: 10px;
   margin-bottom: 30px;
   font-size: 14px;
   .btn-block {
@@ -34,9 +35,9 @@
     display: block;
     background-color: #fff;
     width: 100%;
-    padding: 30px 10px;
+    padding: 15px;
     margin: 20px 0px;
-    border-radius: 10px;
+    border-radius: 4px;
     .title {
       display: block;
       margin-bottom: 10px;
@@ -69,11 +70,13 @@
       }
       input {
         font-size: 14px;
+        border-radius: 4px;
       }
     }
     .btn-search {
       width: 100%;
       font-size: inherit;
+      border-radius: 4px;
     }
     .box-input {
       i {
@@ -821,6 +824,7 @@
         button {
           width: 100%;
           font-size: inherit;
+          border-radius: 4px;
           i {
             font-size: 12px;
           }

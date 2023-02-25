@@ -112,6 +112,9 @@
 
 .list-notifications-section {
     font-size: 14px;
+    .card {
+        border-radius: 4px;
+    }
     .search-block {
         display: flex;
         justify-items: center;

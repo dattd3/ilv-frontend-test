@@ -1,14 +1,15 @@
 .leave-time-page {
     font: normal 14px Arial, Helvetica, sans-serif;
+    margin-top: 10px;
     .searchTitle {
         font-weight: bold;
         color: #2a377c;
     }
     .summary {
-        margin: 30px 10px;
+        margin: 0 10px 30px 10px;
         .box {
             background-color: #fff;
-            border-radius: 10px;
+            border-radius: 4px;
             padding: 20px;
             margin-right: 10px;
 

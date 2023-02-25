@@ -47,6 +47,7 @@
 }
 
 .payslips-section {
+    margin-top: 10px;
     .clear {
         clear: both;
     }
@@ -62,19 +63,23 @@
             text-transform: uppercase;
             color: #283280;
             font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 15px;
         }
         .search-form {
             option {
                 padding-top: 5px;
                 padding-bottom: 5px;
             }
-    
             .btn-submit {
                 width: 100%;
                 background: #F9C20A;
                 border: 1px solid #F9C20A;
                 color: #FFFFFF;
                 outline: none;
+            }
+            .form-group {
+                margin-bottom: 0;
             }
         }
     }
