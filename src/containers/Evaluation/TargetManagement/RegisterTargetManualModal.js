@@ -315,9 +315,11 @@ export default function TargetRegistrationManualModal(props) {
         config
       );
       if (response.data?.result?.code !== "200") {
-        toast.error(
-          `Gửi yêu cầu mục tiêu thất bại: ${response.data?.result?.message}`
-        );
+        setStatusModalManagement({
+          isShow: true,
+          isSuccess: false,
+          content: response.data?.result?.message,
+        });
       } else {
         setModalManagement({
           type: MODAL_TYPES.SUCCESS,
