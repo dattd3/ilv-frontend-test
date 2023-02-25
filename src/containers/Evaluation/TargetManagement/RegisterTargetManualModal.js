@@ -238,8 +238,8 @@ export default function TargetRegistrationManualModal(props) {
       return setShowRequiredWarning(true);
     }
     setIsLoading(true);
-    // Add order
     try {
+      // Add order
       if (formValues.listTarget?.length > 0) {
         formValues.listTarget = formValues.listTarget.map((item, index) => ({
           ...item,
@@ -297,6 +297,13 @@ export default function TargetRegistrationManualModal(props) {
     setIsEditing(true);
     const config = getRequestConfigurations();
     try {
+      // Add order
+      if (formValues.listTarget?.length > 0) {
+        formValues.listTarget = formValues.listTarget.map((item, index) => ({
+          ...item,
+          order: index,
+        }));
+      }
       const response = await axios.post(
         CREATE_TARGET_REGISTER,
         {
