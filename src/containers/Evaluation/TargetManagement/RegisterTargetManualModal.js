@@ -27,6 +27,7 @@ import { ReactComponent as IconSend } from "assets/img/icon/pms/icon-send.svg";
 import { ReactComponent as IconReject } from "assets/img/icon/Icon_Cancel.svg";
 import { ReactComponent as IconApprove } from "assets/img/icon/Icon_Check_White.svg";
 import { ReactComponent as IconEdit } from "assets/img/icon/pms/icon-edit.svg";
+import { ReactComponent as IconRecall } from "assets/img/Icon-recall-white.svg";
 import LoadingModal from "components/Common/LoadingModal";
 import StatusModal from "components/Common/StatusModal";
 
@@ -65,10 +66,11 @@ export default function TargetRegistrationManualModal(props) {
     isApprover = false,
     setModalManagement,
     viewOnly,
+    onRecallTargetRegisterClick,
   } = props;
   const [isEditing, setIsEditing] = useState(!viewOnly);
   const [isLoading, setIsLoading] = useState(false);
-  const [showRequiredWarning, setShowRequiredWarning] = useState(false)
+  const [showRequiredWarning, setShowRequiredWarning] = useState(false);
   const [data, setData] = useState(null);
 
   const [formValues, setFormValues] = useState({
@@ -180,7 +182,8 @@ export default function TargetRegistrationManualModal(props) {
     );
   };
 
-  const checkIsFormValidApprover = () => checkIsFormValid() && !!formValues.reviewComment;
+  const checkIsFormValidApprover = () =>
+    checkIsFormValid() && !!formValues.reviewComment;
 
   const onChangeFormValues = (key, value) => {
     setFormValues({
@@ -236,6 +239,13 @@ export default function TargetRegistrationManualModal(props) {
     // }
     if (isApprover && !checkIsFormValidApprover()) {
       return setShowRequiredWarning(true);
+    }
+    if (data?.status === REQUEST_STATUS.APPROVED && totalWeight !== 100) {
+      return setStatusModalManagement({
+        isShow: true,
+        isSuccess: false,
+        content: "Yêu cầu tổng trọng số bằng 100%. Vui lòng kiểm tra lại!",
+      });
     }
     setIsLoading(true);
     try {
@@ -394,7 +404,9 @@ export default function TargetRegistrationManualModal(props) {
       !isEditing &&
       data?.lastUpdatedBy?.toLowerCase() ===
         approverJSON?.account?.toLowerCase()) ||
-    formValues.listTarget.some((item) => Number(item.weight) < 1 || Number(item.weight) > 100);
+    formValues.listTarget.some(
+      (item) => Number(item.weight) < 1 || Number(item.weight) > 100
+    );
 
   return (
     <Modal
@@ -621,7 +633,8 @@ export default function TargetRegistrationManualModal(props) {
                     />
                   </div>
                   {target.weight !== "" &&
-                    (Number(target.weight) < 1 || Number(target.weight) > 100) && (
+                    (Number(target.weight) < 1 ||
+                      Number(target.weight) > 100) && (
                       <div className="red-color">
                         * Vui lòng nhập trọng số trong khoảng 1 - 100
                       </div>
@@ -784,11 +797,11 @@ export default function TargetRegistrationManualModal(props) {
                 * Yêu cầu tổng trọng số bằng 100%. Vui lòng kiểm tra lại!
               </div>
             )}
-            {
-              isApprover && showRequiredWarning && !checkIsFormValidApprover() && <div className="red-color mb-15">
+          {isApprover && showRequiredWarning && !checkIsFormValidApprover() && (
+            <div className="red-color mb-15">
               * Vui lòng nhập đầy đủ thông tin bắt buộc!
             </div>
-            }
+          )}
           <div className="modal-footer-action">
             <div>
               {(isEditing ||
@@ -824,17 +837,33 @@ export default function TargetRegistrationManualModal(props) {
                     &nbsp; Hủy
                   </button>
                   {!isEditing ? (
-                    <button
-                      className="button edit-btn"
-                      onClick={onEditButtonClick}
-                      style={{
-                        width:
-                          data?.status === REQUEST_STATUS.PROCESSING ? 90 : 120,
-                      }}
-                    >
-                      <IconEdit />
-                      &nbsp; Sửa
-                    </button>
+                    <>
+                      <button
+                        className="button edit-btn"
+                        onClick={onEditButtonClick}
+                        style={{
+                          width:
+                            data?.status === REQUEST_STATUS.PROCESSING
+                              ? 90
+                              : 120,
+                        }}
+                      >
+                        <IconEdit />
+                        &nbsp; Sửa
+                      </button>
+                      {data?.status === REQUEST_STATUS.APPROVED && (
+                        <button
+                          className="button reject-btn"
+                          onClick={(event) =>
+                            onRecallTargetRegisterClick(event, data)
+                          }
+                          style={{ marginRight: 0 }}
+                        >
+                          <IconRecall />
+                          &nbsp; Thu hồi
+                        </button>
+                      )}
+                    </>
                   ) : (
                     <button
                       className="button save-approver-btn"
