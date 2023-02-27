@@ -410,6 +410,7 @@ function TargetManagement() {
             isApprover={currentTab === TABS.REQUEST && !!modalManagement.data}
             setModalManagement={setModalManagement}
             viewOnly={modalManagement.viewOnly}
+            onRecallTargetRegisterClick={onRecallTargetRegisterClick}
           />
         );
 
