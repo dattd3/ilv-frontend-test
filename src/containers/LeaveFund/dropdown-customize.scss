@@ -41,13 +41,15 @@
     }
   }
   .member-list {
+    color: #000000;
     position: absolute;
     z-index: 999999;
-    top: 70px;
+    top: 76px;
     width: 360px;
     height: auto;
     background: #FFFFFF;
     box-shadow: rgba(9, 30, 66, 0.25) 0px 4px 8px -2px, rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;
+    border-radius: 4px;
     .action {
       padding: 10px 0 !important;
       justify-content: space-evenly !important;
@@ -61,6 +63,12 @@
       margin-top: 0 !important;
       input {
         font-size: 14px;
+        border-top-right-radius: 4px;
+        border-bottom-right-radius: 4px;
+      }
+      .input-group-text {
+        border-top-left-radius: 4px;
+        border-bottom-left-radius: 4px;
       }
     }
     .show-list {
@@ -97,12 +105,17 @@
         .account-job {
           font-style: italic;
         }
+        .btn {
+          color: inherit;
+        }
       }
       .lable-custom {
         margin-bottom: 0;
+        color: inherit;
       }
       .label-select-all {
         font-size: 14px;
+        color: #000000;
       }
     }
   }

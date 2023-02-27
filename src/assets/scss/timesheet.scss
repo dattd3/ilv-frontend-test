@@ -6,6 +6,9 @@
   margin-top: 10px;
   margin-bottom: 30px;
   font-size: 14px;
+  .content-page-header {
+    margin-bottom: 0;
+  }
   .btn-block {
     font-size: 14px;
     margin-top: 1.5rem;
@@ -36,8 +39,9 @@
     background-color: #fff;
     width: 100%;
     padding: 15px;
-    margin: 20px 0px;
+    margin: 10px 0px;
     border-radius: 4px;
+    color: #000000;
     .title {
       display: block;
       margin-bottom: 10px;
@@ -65,18 +69,20 @@
         left: 272px;
       }
       i {
-        font-size: 20px;
+        font-size: 16px;
         font-weight: 100;
       }
       input {
         font-size: 14px;
         border-radius: 4px;
+        height: 38px;
       }
     }
     .btn-search {
       width: 100%;
       font-size: inherit;
       border-radius: 4px;
+      height: 38px;
     }
     .box-input {
       i {
@@ -86,10 +92,11 @@
     .member-list {
       position: absolute;
       z-index: 999999;
-      top: 72px;
+      top: 76px;
       width: 360px;
       height: auto;
       background: #FFFFFF;
+      color: #000000;
       box-shadow: rgba(9, 30, 66, 0.25) 0px 4px 8px -2px, rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;
       .action {
         padding: 10px 0 !important;
@@ -545,6 +552,7 @@
         }
         .card-body {
           padding: 1.25rem 0 0 0;
+          color: #000000;
           .title {
             font-size: 13px;
           }
@@ -812,7 +820,7 @@
           width: unset;
           height: unset;
           right: 10px;
-          top: 7px;
+          top: 10px;
           left: unset;
         }
       }
@@ -825,6 +833,7 @@
           width: 100%;
           font-size: inherit;
           border-radius: 4px;
+          height: 38px;
           i {
             font-size: 12px;
           }
@@ -832,7 +841,7 @@
       }
       .ic-calendar {
         position: absolute;
-        top: 8px;
+        top: 10px;
         right: 10px;
       }
     }
@@ -848,7 +857,7 @@
       }
       .ic-calendar {
         position: absolute;
-        top: 8px;
+        top: 10px;
         right: 10px;
       }
     }
@@ -856,6 +865,7 @@
       .card {
         .card-header {
           background: #FFFFFF;
+          cursor: pointer;
           &.card-header-text {
             color: #383838;
             font-weight: bold;

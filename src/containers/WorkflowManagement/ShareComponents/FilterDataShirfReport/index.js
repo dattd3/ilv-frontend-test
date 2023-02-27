@@ -239,8 +239,8 @@ class FilterDataShirfReport extends React.Component {
     const customStyles = {
       control: base => ({
         ...base,
-        height: 35,
-        minHeight: 35
+        height: 38,
+        minHeight: 38
       })
     };
     const reportTypes = [
@@ -256,7 +256,7 @@ class FilterDataShirfReport extends React.Component {
       <>
         <div className="timesheet-box shadow">
           <div className="row">
-            <div className="col-lg-2">
+            <div className="col-lg-3">
               <div className="title">{t("LabelTypeReport")}</div>
               <Select name="reportType"
                 styles={customStyles}

@@ -302,7 +302,7 @@ function Header(props) {
                     <Dropdown>
                         <div className='mr-2 small text-right username'>
                             <Dropdown.Toggle variant="light" className='text-right dropdown-menu-right user-infor-header user-info-margin'>
-                                <span className="text-gray-600 full-name">{fullName}</span>
+                                <span className="full-name">{fullName}</span>
                                 {
                                     (avatar != null && avatar !== '' && avatar !== 'null') ?
                                         <img className="ml-2 img-profile rounded-circle" src={`data:image/png;base64, ${avatar}`} alt={fullName} />

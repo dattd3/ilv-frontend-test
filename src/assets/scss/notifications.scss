@@ -112,6 +112,7 @@
 
 .list-notifications-section {
     font-size: 14px;
+    margin-top: 10px;
     .card {
         border-radius: 4px;
     }
@@ -132,14 +133,14 @@
                 width: 400px;
                 border-radius: 4px;
                 border: 1px solid #d1d3e2;
-                // font-size: 13px;
+                height: 38px;
+                padding: 0 10px;
                 &:active {
                     outline: none;
                 }
                 &:focus {
                     outline: none;
                 }
-                padding: 8px 10px;
             }
         }
         .block-right {
@@ -266,13 +267,18 @@
 
 .notifications-detail-section {
     font-size: 14px;
+    margin-top: 10px;
+    color: #000000;
     .title-block {
-        color: #283280;
         font-weight: bold;
-        margin-bottom: 15px;
+        font-size: 18px;
     }
     .create-qna {
         font-size: inherit;
+        border-radius: 4px;
+    }
+    .card {
+        border-radius: 4px;
     }
     .detail-notifications-block {
         .content {

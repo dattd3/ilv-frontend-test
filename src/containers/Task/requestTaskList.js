@@ -647,14 +647,14 @@ class RequestTaskList extends React.Component {
                                 },
                             })} />
                     </div>
-                    <div className="child-item search-item">
+                    {/* <div className="child-item search-item">
                         <FormControl
                             placeholder={t('SearchRequester')}
                             aria-describedby="basic-addon2"
                             className="request-user"
                             onChange={this.handleInputChange}
                         />
-                    </div>
+                    </div> */}
                     <div className="child-item">
                         <button type="button" onClick={() => this.searchRemoteData(true)} className="btn btn-warning w-100">{t("Search")}</button>
                     </div>
@@ -756,7 +756,7 @@ class RequestTaskList extends React.Component {
                         <CustomPaging pageSize={this.state.dataForSearch.pageSize} onChangePage={this.onChangePage.bind(this)} totalRecords={total} needRefresh={this.state.dataForSearch.needRefresh} />
                     </div>
                     <div className="col-sm"></div>
-                    <div className="col-sm text-right">{t("Total")}: {total}</div>
+                    <div className="col-sm text-right" style={{ color: '#000000' }}>{t("Total")}: {total}</div>
                 </div> : null}
             </>
         )

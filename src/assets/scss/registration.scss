@@ -8,6 +8,7 @@
 
 .registration-section {
     font: normal 14px Arial, Helvetica, sans-serif;
+    color: #000000;
     .validation-message {
         font-size: 13px;
         margin: 6px 0;
@@ -20,6 +21,8 @@
     }
     .btn-search-substitution, .btn-search-in-out-time {
         margin-top: 10px;
+        height: 38px;
+        border-radius: 4px;
     }
     .block-time-item-edit {
         .box-time, input {
@@ -28,6 +31,7 @@
     }
     .block-note-item-edit, textarea {
         font-size: inherit;
+        border-radius: 4px;
     }
     .registration-detail {
         .btn-eviction-task {
@@ -38,6 +42,18 @@
     }
     .in-out-time-update {
         color: #000000;
+        & > .box {
+            margin-top: 0;
+            .title {
+                margin: 0;
+            }
+            .input-container {
+                input[type=text] {
+                    height: 38px;
+                    border-radius: 4px;
+                }
+            }
+        }
         .validation {
             font-size: 12px;
             margin-top: 4px;
@@ -168,6 +184,11 @@
                     line-height: 20px;
                 }
             }
+        }
+    }
+    .business-trip {
+        & > .box {
+            margin-top: 0;
         }
     }
     .block-filter-shift {
@@ -761,6 +782,11 @@
         .leave-type {
             label {
                 font-size: inherit;
+                border-radius: 4px;
+                &:last-child {
+                    border-top-left-radius: 0;
+                    border-bottom-left-radius: 0;
+                }
             }
         }
         .form {
@@ -822,11 +848,17 @@
         .leave-type {
             label {
                 font-size: inherit;
+                border-radius: 4px;
+                &:last-child {
+                    border-top-left-radius: 0;
+                    border-bottom-left-radius: 0;
+                }
             }
         }
         .form {
             input {
                 font-size: inherit;
+                border-radius: 4px;
             }
         }
         .view-popup {
@@ -968,7 +1000,7 @@
     .time-area {
         position: relative;
         border: 1px solid #d1d3e2;
-        border-radius: 0.35rem;
+        border-radius: 4px;
         margin-top: 10px;
         
     }

@@ -1,7 +1,7 @@
 .tabControl
 {
     display: flex;
-    min-height: 35px;
+    min-height: 38px;
     justify-content: space-between;
     align-items: center;
     border-radius: 4px;
@@ -106,7 +106,6 @@
     border-left: 2px solid #d1d3e2;
     width: 40px;
     height: 20px;
-    padding-top: 2px;
     padding-left: 12px;
     cursor: pointer;
     &:hover {

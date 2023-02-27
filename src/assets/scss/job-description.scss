@@ -1,5 +1,6 @@
 .jd-section {
     margin-bottom: 30px;
+    color: #000000;
     #benefit-title {
         margin-left: 0;
         font-size: 18px;
@@ -10,14 +11,17 @@
         border-left-width: 10px !important;
         border-bottom: none !important;
     }
-
     .card {
         margin-top: 20px;
+        .card-header {
+            cursor: pointer;
+        }
     }
-
     .title {
-        color: #2a377c;
         font-weight: bold;
         display: block;
+    }
+    .content {
+        font-size: 14px;
     }
 }

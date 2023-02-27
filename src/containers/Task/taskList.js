@@ -10,6 +10,7 @@ import { withTranslation } from "react-i18next"
 import noteButton from '../../assets/img/icon-note.png'
 import excelButton from '../../assets/img/excel-icon.svg'
 import commentButton from '../../assets/img/Icon-comment.png'
+import { ReactComponent as IconFilter } from "../../assets/img/icon/Icon_filter.svg"
 import CustomPaging from '../../components/Common/CustomPaging'
 import TaskDetailModal from './TaskDetailModal'
 import ExportModal from './ExportModal'
@@ -372,6 +373,13 @@ class TaskList extends React.Component {
         this.props.requestRemoteData(params);
     }
 
+    bindPlaceholder = (text) => (
+        <div>
+            <span className="icon-filter" style={{marginRight: '5px'}}><IconFilter style={{ height: '15px' }} /></span>
+            <span>{text}</span>
+        </div>
+    )
+
     render() {
         const { t, tasks, total, page} = this.props
         const typeFeedbackMapping = {
@@ -393,58 +401,58 @@ class TaskList extends React.Component {
                 return requestTypeObj ? t(requestTypeObj.label) : ""
             }
         }
+
+        const customSelectStyles = {
+            option: (styles, state) => ({
+                ...styles,
+                cursor: 'pointer',
+                color: '#000000'
+            }),
+            control: (styles) => ({
+                ...styles,
+                cursor: 'pointer',
+                color: '#000000',
+                border: "1px solid #dee2e6",
+            }),
+            // menuPortal: provided => ({ ...provided, zIndex: 99 }),
+            menu: provided => ({ ...provided, zIndex: 2, colors: "#000000" }),
+            indicatorSeparator: (styles) => ({ display: 'none' })
+        }
+
         return (
             <>
                 <ExportModal show={this.state.isShowExportModal} onHide={this.onHideisShowExportModal} statusOptions={this.props.filterdata} exportType={this.props.page}/>
                 <TaskDetailModal key= {this.state.taskId+'.'+this.state.subId} show={this.state.isShowTaskDetailModal} onHide={this.onHideisShowTaskDetailModal} taskId = {this.state.taskId} subId = {this.state.subId} action={this.state.action}/>
-                <div className="d-flex justify-content-between w-100 mt-2 mb-3 search-block">
-                    <div className="row w-100">
-                        <div className="col-xl-4">
-                            <InputGroup className="d-flex">
-                            <InputGroup.Prepend className="">
-                                <InputGroup.Text id="basic-addon1"><i className="fas fa-filter"></i></InputGroup.Text>
-                            </InputGroup.Prepend>
-                            <Select name="absenceType"
-                                    className="w-75"
-                                    // defaultValue={this.props.filterdata[0]}
-                                    value={this.state.absenceType || { label: t("Waiting"), value: this.props.page == 'consent' ? Constants.STATUS_WAITING_CONSENTED : Constants.STATUS_WAITING }}
-                                    isClearable={false}
-                                    onChange={absenceType => this.handleSelectChange('absenceType', absenceType)}
-                                    // selectedValue={{ label: t("All"), value: 0 }}
-                                    placeholder={t('SortByStatus')}
-                                    key="absenceType" options={this.props.filterdata}
-                                    styles={{
-                                        menu: provided => ({ ...provided, zIndex: 2 })
-                                    }}
-                                    theme={theme => ({
-                                    ...theme,
-                                    colors: {
-                                        ...theme.colors,
-                                        primary25: '#F9C20A',
-                                        primary: '#F9C20A',
-                                    },
-                                    })}/>
-                            </InputGroup>
-                        </div>
-                        <div className="col-xl-4">
-                            <InputGroup className="">
-                            <InputGroup.Prepend>
-                            <InputGroup.Text id="basic-addon2"><i className="fas fa-search"></i></InputGroup.Text>
-                            </InputGroup.Prepend>
-                            <FormControl
-                                placeholder={t('SearchRequester')}
-                                aria-label="SearchRequester"
-                                aria-describedby="basic-addon2"
-                                className="request-user"
-                                onChange={this.handleInputChange}
-                            />
-                        </InputGroup>
-                        </div>
-                        <div className="col-4">
-                            <button type="button" onClick={() => this.searchRemoteData(true)} className="btn btn-warning w-100">{t("Search")}</button>
-                        </div>
+                <div className="w-100 mb-3 d-flex search-block">
+                    <div className="child-item">
+                        <Select name="absenceType"
+                            // defaultValue={this.props.filterdata[0]}
+                            value={this.state.absenceType || { label: t("Waiting"), value: this.props.page == 'consent' ? Constants.STATUS_WAITING_CONSENTED : Constants.STATUS_WAITING }}
+                            isClearable={false}
+                            onChange={absenceType => this.handleSelectChange('absenceType', absenceType)}
+                            placeholder={this.bindPlaceholder(t('SortByStatus'))}
+                            key="absenceType" options={this.props.filterdata}
+                            styles={customSelectStyles}
+                            theme={theme => ({
+                                ...theme,
+                                colors: {
+                                    ...theme.colors,
+                                    primary25: '#F9C20A',
+                                    primary: '#F9C20A',
+                                },
+                            })} />
                     </div>
-
+                    <div className="child-item search-item">
+                        <FormControl
+                            placeholder={t('SearchRequester')}
+                            aria-describedby="basic-addon2"
+                            className="request-user"
+                            onChange={this.handleInputChange}
+                        />
+                    </div>
+                    <div className="child-item">
+                        <button type="button" onClick={() => this.searchRemoteData(true)} className="btn btn-warning w-100">{t("Search")}</button>
+                    </div>
                 </div>
                 <div className="block-title d-flex">
                     <h4 className="content-page-header">{this.props.title}</h4>
@@ -620,7 +628,7 @@ class TaskList extends React.Component {
                         <CustomPaging pageSize={this.state.dataForSearch.pageSize} onChangePage={this.onChangePage.bind(this)} totalRecords={total} needRefresh={this.state.dataForSearch.needRefresh}/>
                     </div>
                     <div className="col-sm"></div>
-                    <div className="col-sm text-right">{t("Total")}: {total}</div>
+                    <div className="col-sm text-right" style={{ color: '#000000' }}>{t("Total")}: {total}</div>
                 </div> : null}
                 <ChangeReqBtnComponent dataToSap={this.state.taskChecked} action={this.props.page} disabled={this.state.disabled}/>
             </>)

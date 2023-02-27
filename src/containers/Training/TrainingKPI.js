@@ -72,7 +72,7 @@ function TrainingKPI(props) {
                 <Col xl={6} className="mb-4">
                     <Card>
                         <Card.Body>
-                            <h4 className="mb-4 text-gray-800 text-uppercase">{t("LearnKPI")}</h4>
+                            <h4 className="mb-4 text-uppercase">{t("LearnKPI")}</h4>
                             <ProgressBar className="training-kpi-progress learning-progress" now={teachingKpi.perLearned} label={teachingKpi.perLearned + '%'} />
                             <Row className="training-kpi-info">
                                 <Col><i className="fa fa-square color-fe6927"></i> {t("Status_Done")}</Col>
@@ -103,7 +103,7 @@ function TrainingKPI(props) {
                 <Col xl={6} className="mb-4">
                     <Card>
                         <Card.Body>
-                            <h4 className="mb-4 text-gray-800 text-uppercase">{t("TeachingKPI")}</h4>
+                            <h4 className="mb-4 text-uppercase">{t("TeachingKPI")}</h4>
                             <ProgressBar className="training-kpi-progress teaching-progress" now={learningKpi.totalHours} label={learningKpi.totalHours + `%`} />
                             <Row className="training-kpi-info">
                                 <Col><i className="fa fa-square color-67BA24"></i> {t("Status_Done")}</Col>

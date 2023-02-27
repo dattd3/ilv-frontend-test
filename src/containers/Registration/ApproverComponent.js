@@ -23,7 +23,7 @@ const MyOption = props => {
           <img className="avatar" src={`data:image/png;base64,${props.data.avatar}`} onError={addDefaultSrc} alt="avatar" />
         </div>
         <div className="float-left text-wrap w-75">
-          {props.isSearch === false && <div className="title font-weight-bold text-dark">{t('ApproverRecently')}</div>}
+          {props.isSearch === false && <div className="title font-weight-bold">{t('ApproverRecently')}</div>}
           <div className="title">{props.data.fullName}</div>
           <div className="comment"><i>({props.data.account}) {props.data.current_position}</i></div>
         </div>
@@ -201,8 +201,8 @@ class ApproverComponent extends React.Component {
       control: (styles) => ({
         ...styles,
         cursor: 'pointer',
-        height: 35,
-        minHeight: 35
+        height: 38,
+        minHeight: 38
       })
     }
     const { t, isEdit, errors, recentlyApprover } = this.props;

@@ -158,7 +158,7 @@ const MemberOption = (props, onChange) => {
       const id = item.uid.toString();
       return (
         <div key={item.uid} ref={innerRef} {...innerProps} className="option-item" style={{ paddingLeft: "15px" }}>
-          <div className="d-flex border-bottom text-dark btn" >
+          <div className="d-flex border-bottom btn" >
             <label className="lable-custom">
               {
                 props.type !== 'singleChoice' ?
@@ -181,7 +181,7 @@ const MemberOption = (props, onChange) => {
               aria-expanded={upAllChild === item.uid}>
               {
                 props.type !== 'singleChoice' ?
-                  <div className="d-flex border-bottom text-dark btn " style={{ paddingLeft: "15px" }}>
+                  <div className="d-flex border-bottom btn " style={{ paddingLeft: "15px" }}>
                     <label className="lable-custom">
                       <input type="checkbox" className="mtmr5" value="checkedall" onChange={(e) => handleAllCheckedChildren(e, item.children)}
                         checked={item.children.filter(m => m.checked).length === item.children.length} />
@@ -220,7 +220,7 @@ const MemberOption = (props, onChange) => {
         <div className="show-list p-1">
           {
             props.type !== 'singleChoice' ?
-              <div className="d-flex border-bottom text-dark btn ">
+              <div className="d-flex border-bottom btn">
                 <label className="lable-custom">
                   <input type="checkbox" className="mtmr5" value="checkedall" checked={isCheckedAll} onChange={handleAllChecked} />
                   <div className="float-left text-left text-wrap w-75">

@@ -10,7 +10,7 @@ class NoteModal extends React.Component {
     render () {
         const { t } = this.props
         return (
-            <Modal className="text-dark" centered show={this.props.show} onHide={this.props.onHide}>
+            <Modal className="" centered show={this.props.show} onHide={this.props.onHide}>
                 <Modal.Body className="rounded position-relative">
                     <div className="text-center font-weight-bold pb-2">
                         <div className="text-center">

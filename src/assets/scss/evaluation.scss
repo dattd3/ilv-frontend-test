@@ -1,15 +1,18 @@
 .my-evaluation-page {
     font-size: 14px;
     color: #000000;
-    margin-top: 15px;
+    margin-top: 10px;
     .not-found-data {
-        margin-top: 20px;
+        margin-top: 25px;
+        margin-bottom: 0;
+        font-size: 15px;
+        border-radius: 4px;
     }
     .card-evaluation {
         padding: 15px;
         .filter-block {
             .label-filter {
-                margin-bottom: 5px;
+                margin-bottom: 10px;
             }
             .form-filter {
                 display: flex;
@@ -2438,7 +2441,7 @@
                 align-items: center;
                 background: #347EF9;
                 font-size: 14px;
-                border-radius: 5px;
+                border-radius: 4px;
                 img {
                     margin-right: 5px;
                 }

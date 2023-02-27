@@ -193,7 +193,7 @@
             display: block;
             background: #FFFFFF;
             border-radius: 4px;
-            padding: 10px 15px 0 15px;
+            padding: 10px 15px;
             .wrap-table-request {
                 overflow: auto;
                 &::-webkit-scrollbar {
@@ -436,6 +436,7 @@
         .action-btn {
             button {
                 font-size: inherit;
+                border-radius: 4px;
             }
         }
         .data-not-found {
@@ -458,6 +459,8 @@
             }
             & > button {
                 border-radius: 4px;
+                font-size: 14px;
+                height: 38px;
             }
         }
     }

@@ -22,7 +22,7 @@ class CommonQuestionComponent extends React.Component {
     return <>
       <Accordion defaultActiveKey="0">
         <Accordion.Toggle as={Card.Header} eventKey="0" onClick= {() => this.setOpen()}>
-          <h4 className="text-uppercase text-gray-800 common-category pointer">
+          <h4 className="text-uppercase common-category pointer">
             {
               open ? <i className="fas fa-caret-down"></i> : <i className="fas fa-caret-up"></i>
             }

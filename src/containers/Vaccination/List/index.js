@@ -60,12 +60,9 @@ class Vaccination extends React.Component {
                     {/* <Button disabled={!this.state.loadSuccess} variant="info" ></Button> */}
                     {/* <Button disabled={!this.state.loadSuccess} variant="primary" className="ml-3" onClick={() => this.exportExcel()}><i className="fas fa-file-excel"></i> Xuất báo cáo</Button> */}
                 </div>
-                <div className="card mb-4 px-3" style={{
-                    borderRadius: "10px",
-                    border: "none"
-                }}>
+                <div className="card mb-4 px-3" style={{ border: "none" }}>
                     <div className="table">
-                        <table className="table m-0 text-dark">
+                        <table className="table m-0">
                             <thead>
                                 <tr>
                                     <th className="border-0 no">{t('vaccination_injections_mumber')}</th>

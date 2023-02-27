@@ -33,7 +33,7 @@ function Create(props) {
 
     return (
         <>
-            <h1 className="h3 mb-2 text-gray-800">{t("CheckList")}</h1>            
+            <h1 className="h3 mb-2">{t("CheckList")}</h1>            
             <Card className="shadow mb-4">
                 <Card.Header className="py-3">
                     <h6 className="m-0 font-weight-bold text-primary">{t("UploadCheckList")}</h6>

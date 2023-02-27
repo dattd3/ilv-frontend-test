@@ -5,7 +5,7 @@ function TermPolicy(props) {
         <div id="content-wrapper" className="d-flex flex-column">
             <div id="content">
                 <div className="container-fluid">
-                    <h1 className="h3 mt-4 mb-4 text-gray-800">Privacy Policy</h1>
+                    <h1 className="h3 mt-4 mb-4">Privacy Policy</h1>
                     <p>Vinpearl JSC. built the MyVinpearl app as a free app. This SERVICE is provided by Vinpearl JSC. and is intended for use as is.</p>
                     <p>This page is used to inform website visitors regarding my policies with the collection, use, and disclosure of Personal Information if anyone decided to use my Service.</p>
                     <p>If you choose to use my Service, then you agree to the collection and use of information in relation with this policy. The Personal Information that I collect are used for providing and improving the Service. I will not use or share your information with anyone except as described in this Privacy Policy.</p>

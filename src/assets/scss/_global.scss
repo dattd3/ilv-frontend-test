@@ -332,6 +332,7 @@ a {
   }
   &.vaccine-create-info {
     font-size: 14px;
+    color: #000000;
     .modal-content {
       .modal-header {
         padding: 0.7rem 1rem;
@@ -354,6 +355,8 @@ a {
           }
           .effect-infos {
             padding-left: 0;
+            color: inherit;
+            margin-bottom: 10px;
             b {
               font-size: 14px;
             }
@@ -380,6 +383,7 @@ a {
             table {
               margin-bottom: 0;
               border-collapse: separate;
+              color: inherit;
               thead {
                 th {
                   position: sticky;

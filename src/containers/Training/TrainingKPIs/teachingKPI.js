@@ -123,7 +123,7 @@ function Dashboard(props) {
   return (
     <div>
       <div className="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 className="h3 mb-0 text-gray-800">Chỉ tiêu đào tạo / Học tập</h1>
+        <h1 className="h3 mb-0">Chỉ tiêu đào tạo / Học tập</h1>
       </div>
       <Row className="summary-chart">
         <Col xl={4} className="mb-4">

@@ -44,7 +44,7 @@ function NewsDetailElement({ match, location }) {
                 }
 
                 <div className="d-sm-flex align-items-center justify-content-between">
-                    <h1 className="h3 mb-0 text-gray-800">{detail.title}</h1>
+                    <h1 className="h3 mb-0">{detail.title}</h1>
                 </div>
                 <div className="mb-4">
                     <span className="datetime-info w3-left">

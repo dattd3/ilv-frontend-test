@@ -672,7 +672,7 @@ class InOutTimeUpdateComponent extends React.Component {
 
         {
           (timesheets.filter(t => t.isEdited).length > 0 && !["V070", "V077", "V073", "V001", "V079", "V002"].includes(currentUserPnLCode)) ?
-            <div className="p-3 mb-2 bg-warning text-dark">{t('EvidenceRequired')}</div>
+            <div className="p-3 mb-2 bg-warning">{t('EvidenceRequired')}</div>
             : null
         }
         {this.errorWithoutItem("files")}

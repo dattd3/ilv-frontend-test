@@ -1182,7 +1182,7 @@
   font-size: 20px;
   font-weight: bold;
   text-transform: uppercase;
-  color: #2a377c;
+  color: #000000;
   margin: 10px 0 20px 10px;
 }
 
@@ -1527,6 +1527,7 @@ span.badge-notification[data-badge]::after {
     }
   }
   .info-tab-content {
+    color: #000000;
     .info-value {
       p {
         font-size: inherit !important;
@@ -2035,11 +2036,27 @@ span.badge-notification[data-badge]::after {
     }
   }
   &.registration-section {
-      .nav-tabs {
-        .nav-item {
-          height: 40px;
+    .nav-tabs {
+      .nav-item {
+        height: 40px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+    .approver, .appraiser {
+      .box {
+        input[type=text] {
+          border-radius: 4px;
         }
       }
+    }
+    .bottom {
+      button {
+        border-radius: 4px;
+        height: 38px;
+      }
+    }
   }
 }
 
@@ -2700,20 +2717,28 @@ span.badge-notification[data-badge]::after {
 
 .qna-page {
   font-size: 14px;
+  color: #000000;
   .action-buttons {
     button.btn {
       font-size: inherit;
       border-radius: 4px;
     }
   }
+  .card-header {
+    cursor: pointer;
+  }
   .form-qna-search {
     input {
       font-size: inherit;
       border-radius: 4px;
+      height: 38px;
     }
     .btn-search {
       font-size: inherit;
       border-radius: 4px;
+      height: 38px;
+      display: inline-flex;
+      align-items: center;
     }
   }
 }
@@ -2778,6 +2803,7 @@ span.badge-notification[data-badge]::after {
       background-color: #ffffff;
       border-radius: 10px;
       opacity: 1;
+      cursor: pointer;
     }
     .color-group-item {
       float: left;
@@ -2798,7 +2824,12 @@ span.badge-notification[data-badge]::after {
       margin-right: 20px;
     }
     .success-factor-guide-line {
-      margin-top: 15px;
+      margin: 15px 0;
+      & > div {
+        &:first-child {
+          color: #000000;
+        }
+      }
     }
   }
   .kpi-staff-search {
@@ -2820,9 +2851,9 @@ span.badge-notification[data-badge]::after {
     }
   }
   .title-group {
-    color: #283280 !important;
+    color: #000000;
     text-transform: uppercase !important;
-    font-size: 15px !important;
+    font-size: 18px !important;
     font-weight: bold;
     overflow: hidden;
     padding: 5px 0;
@@ -2832,7 +2863,6 @@ span.badge-notification[data-badge]::after {
     height: 14px;
   }
   .success-factor-link {
-    color: #51b1fb;
     font-size: inherit;
   }
 }
@@ -3104,12 +3134,12 @@ span.badge-notification[data-badge]::after {
 
 .leave-fund-section {
   margin-top: 10px;
+  color: #000000;
   .react-datepicker-popper {
     z-index: 9999;
   }
   .filter-block {
-    padding-top: 1.5rem;
-    padding-bottom: 1.5rem;
+    padding: 20px;
     font-size: 15px;
     border-radius: 4px;
     input {
@@ -3368,7 +3398,7 @@ span.badge-notification[data-badge]::after {
   }
 }
 .content-page-header {
-  color: #283280 !important;
+  color: #000000 !important;
   text-transform: uppercase !important;
   font-size: 18px !important;
   font-weight: bold;
@@ -3379,6 +3409,9 @@ span.badge-notification[data-badge]::after {
   font-size: 14px;
   .content-page-header {
     margin-bottom: 0;
+  }
+  .card {
+    border-radius: 4px;
   }
   .table {
     overflow-x: auto;
@@ -3527,9 +3560,16 @@ span.badge-notification[data-badge]::after {
 .user-manual-page {
   font-size: 14px;
   margin-top: 10px;
+  color: #000000;
   .item {
     .btn {
       font-size: inherit;
+      border-radius: 4px;
+    }
+  }
+  .card {
+    border-radius: 4px;
+    .item {
       border-radius: 4px;
     }
   }

@@ -1,9 +1,10 @@
 .leave-time-page {
     font: normal 14px Arial, Helvetica, sans-serif;
     margin-top: 10px;
+    color: #000000;
     .searchTitle {
         font-weight: bold;
-        color: #2a377c;
+        font-size: 18px
     }
     .summary {
         margin: 0 10px 30px 10px;
@@ -59,7 +60,7 @@
         width: 100%;
         padding: 30px 10px;
         margin: 10px 0px;
-        border-radius: 10px;
+        border-radius: 4px;
         .title {
             display: block;
             margin-bottom: 10px;
@@ -74,6 +75,7 @@
                 padding-right: 50px;
                 width: 300px;
                 font-size: inherit;
+                border-radius: 4px;
             }
             .input-img {
                 position: absolute;
@@ -87,6 +89,7 @@
         .btn-search {
             width: 100%;
             font-size: inherit;
+            border-radius: 4px;
         }
         .note {
             display: block;
@@ -97,15 +100,16 @@
         .card {
             margin: 20px 0;
             border: none;
+            .card-header {
+                cursor: pointer;
+            }
         }
-
         .header {
             font-weight: bold;
             color: #4e73df;
             margin-bottom: 10px;
             font-size: 16px;
         }
-
         body {
             .row {
                 padding: 10px;

@@ -17,7 +17,7 @@ const MyOption = props => {
   
     return (
       <div ref={innerRef} {...innerProps} className="">
-        <div className="d-block clearfix border-bottom py-1 text-dark btn btn-light">
+        <div className="d-block clearfix border-bottom py-1 btn btn-light">
           <div className="float-left mr-2 w-20">
             <img className="avatar rounded-circle" src={`data:image/png;base64,${props.data.avatar}`} onError={addDefaultSrc} alt="avatar" width="40" height="40" />
           </div>
