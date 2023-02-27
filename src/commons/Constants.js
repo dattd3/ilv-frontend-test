@@ -218,7 +218,7 @@ const Constants = {
     1: ["V040", "V005", "V079", "V041", "V030"],//TUYENDUNG + V061
     2: ["V040", "V005", "V061", "V077"],//DANHGIA_TAIKI
     3: [],//DEXUATLUONG
-    4: [],//NGHIVIEC
+    4: ["V040"],//NGHIVIEC
     5: []//PHUCLOI
   } :
   { //Development
@@ -232,5 +232,6 @@ const Constants = {
     VND: 'VNĐ',
     USD: 'USD',
   },
+  RESIGN_REASON_EMPLOYEE_INVALID: ["GI", "GL", "GM", "GN", "GO"]
 };
 export default Constants

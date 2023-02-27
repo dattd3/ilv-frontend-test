@@ -77,6 +77,7 @@ class RegistrationEmploymentTerminationForm extends React.Component {
             }
             this.setState({reasonTypes: reasonTypes, userInfos: userInfos, directManager: directManager, directManagerRaw: responses[3], errors});
         })).catch(errors => {
+            console.log(errors);
             return null
         })
     }
@@ -156,7 +157,7 @@ class RegistrationEmploymentTerminationForm extends React.Component {
             const reasonTypeCodeForEmployee = "ZG"
             const reasonTypes = responses.data.data
             const results = (reasonTypes || [])
-            .filter(item => item.code01 === reasonTypeCodeForEmployee)
+            .filter(item => item.code01 === reasonTypeCodeForEmployee && !Constants.RESIGN_REASON_EMPLOYEE_INVALID.includes(item.code02))
             .map(item => {
                 return {value: item.code02, label: item.text}
             })
