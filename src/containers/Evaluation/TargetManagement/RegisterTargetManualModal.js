@@ -71,6 +71,8 @@ export default function TargetRegistrationManualModal(props) {
   const [isEditing, setIsEditing] = useState(!viewOnly);
   const [isLoading, setIsLoading] = useState(false);
   const [showRequiredWarning, setShowRequiredWarning] = useState(false);
+  const [showTotalWeightWarning, setShowTotalWeightWarning] = useState(false);
+
   const [data, setData] = useState(null);
 
   const [formValues, setFormValues] = useState({
@@ -237,10 +239,11 @@ export default function TargetRegistrationManualModal(props) {
     // if (!checkIsFormValid()) {
     //   return toast.error("Vui lòng điền đầy đủ các trường bắt buộc");
     // }
+    setShowTotalWeightWarning(true);
     if (isApprover && !checkIsFormValidApprover()) {
       return setShowRequiredWarning(true);
     }
-    if (data?.status === REQUEST_STATUS.APPROVED && totalWeight !== 100) {
+    if (isApprover && totalWeight !== 100) {
       return setStatusModalManagement({
         isShow: true,
         isSuccess: false,
@@ -301,8 +304,9 @@ export default function TargetRegistrationManualModal(props) {
   };
 
   const onSendTargetRegister = async () => {
-    if (!checkIsFormValid()) {
-      return toast.error("Vui lòng điền đầy đủ các trường bắt buộc");
+    setShowTotalWeightWarning(true);
+    if (totalWeight !== 100) {
+      return ;
     }
     setIsEditing(true);
     const config = getRequestConfigurations();
@@ -399,7 +403,6 @@ export default function TargetRegistrationManualModal(props) {
   })();
   const isDisabledSendRequest =
     !checkIsFormValid() ||
-    totalWeight !== 100 ||
     (data?.status === REQUEST_STATUS.REJECT &&
       !isEditing &&
       data?.lastUpdatedBy?.toLowerCase() ===
@@ -791,6 +794,7 @@ export default function TargetRegistrationManualModal(props) {
 
           {totalWeight > 0 &&
             totalWeight !== 100 &&
+            showTotalWeightWarning && 
             (isEditing ||
               (isApprover && data?.status === REQUEST_STATUS.PROCESSING)) && (
               <div className="red-color mb-15">
