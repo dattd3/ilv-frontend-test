@@ -105,8 +105,6 @@ class DirectManagerInfoComponent extends Component {
       const config = {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-          'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-          'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
         }
       }
 
