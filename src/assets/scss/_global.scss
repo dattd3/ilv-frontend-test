@@ -441,3 +441,9 @@ a {
     }
   }
 }
+
+.modal-backdrop {
+  &.backdrop-register-target-from-library-status-modal {
+    z-index: 11001;
+  }
+}

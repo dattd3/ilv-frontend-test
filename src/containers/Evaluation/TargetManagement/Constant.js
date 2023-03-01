@@ -8,7 +8,9 @@ const REQUEST_STATUS = {
 }
 const STATUS_DELETEABLE = [REQUEST_STATUS.DRAFT];
 const STATUS_EDITABLE = [REQUEST_STATUS.DRAFT, REQUEST_STATUS.REJECT];
-const STATUS_EDITABLE_APPROVE_TAB = [REQUEST_STATUS.PROCESSING];
+const STATUS_EDITABLE_APPROVE_TAB = [REQUEST_STATUS.PROCESSING, REQUEST_STATUS.APPROVED];
+const STATUS_RECALLABLE = [REQUEST_STATUS.PROCESSING];
+const STATUS_RECALLABLE_APPROVE_TAB = [REQUEST_STATUS.APPROVED];
 
 const REGISTER_TYPES = {
   MANUAL: 0,
@@ -21,9 +23,11 @@ const TABS = {
 };
 
 const STATUS_TYPES = {
+  DRAFT: 'DRAFT',
   DELETE: 'Delete',
   APPROVE: 'Approve',
-  REJECT: 'Reject'
+  REJECT: 'Reject',
+  RECALL: 'Recall'
 };
 
 const TARGET_INITIAL_DATA = {
@@ -46,7 +50,8 @@ const MODAL_TYPES = {
   SUCCESS: 4,
   DELETE_CONFIRM: 5,
   APPROVE_CONFIRM: 6,
-  REJECT_CONFIRM: 7
+  REJECT_CONFIRM: 7,
+  RECALL_REQUEST_CONFIRM: 8
 };
 
 const LANGUAGE_CODE_MAPPING = {
@@ -57,7 +62,7 @@ const LANGUAGE_CODE_MAPPING = {
 const getUserInfo = () => ({
   account: localStorage.getItem("email")?.split("@")?.[0],
   fullName: localStorage.getItem("fullName"),
-  employeeLevel: localStorage.getItem("employeeLevel"),
+  employeeLevel: localStorage.getItem("actualRank"),
   EmployeeNo: localStorage.getItem("employeeNo"),
   jobCode: localStorage.getItem("jobCode"),
   current_position: localStorage.getItem("jobTitle"),
@@ -91,4 +96,6 @@ export {
   REGISTER_TYPES,
   REQUEST_STATUS,
   LANGUAGE_CODE_MAPPING,
+  STATUS_RECALLABLE,
+  STATUS_RECALLABLE_APPROVE_TAB
 };

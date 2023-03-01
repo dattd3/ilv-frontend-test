@@ -146,10 +146,9 @@
       font-weight: 700;
     }
   }
-  .rm-icon {
-    margin-right: 10px;
-  }
   .action-icon {
+    width: 20px;
+    height: 20px;
     cursor: pointer;
   }
 }
@@ -349,9 +348,13 @@
     .mb-15 {
       margin-bottom: 15px;
     }
+    .mt-20 {
+      margin-top: 20px;
+    }
     .custom-modal-footer {
       background: #fff;
       padding: 16px 0px;
+      padding-bottom: 0px;
       position: sticky;
       bottom: 0px;
       .modal-footer-action {
@@ -518,6 +521,9 @@
     background: #fff;
     right: 0;
     z-index: 100;
+    span {
+      margin-right: 10px;
+    }
   }
   .target-register-thead {
     tr {

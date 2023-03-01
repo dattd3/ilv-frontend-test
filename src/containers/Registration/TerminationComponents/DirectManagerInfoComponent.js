@@ -105,8 +105,6 @@ class DirectManagerInfoComponent extends Component {
       const config = {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-          'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-          'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
         }
       }
 
@@ -129,7 +127,7 @@ class DirectManagerInfoComponent extends Component {
               organizationLv2: res?.orglv2_id,
               account: res?.username,
               jobTitle: res?.position_name,
-              department:  res.division + (res.department ? '/' + res.department : '') + (res.part ? '/' + res.part : '')
+              department:  res.division + (res.department ? '/' + res.department : '') + (res.unit ? '/' + res.unit : '')
             }
           })
           this.setState({ users: users, isSearching: false })

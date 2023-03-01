@@ -210,7 +210,7 @@ const SelectTargetTabContent = ({ filter, listTargetInfo, targetSelected = [], p
     )
 }
 
-const DoneTabContent = ({ filter, targetSelected = [], error, handleInputChange, handleSelectTarget, handleViewListTargetSelected }) => {
+const DoneTabContent = ({ filter, approverInfo, targetSelected = [], error, handleInputChange, handleSelectTarget, handleViewListTargetSelected }) => {
     const { t } = useTranslation()
 
     const handleRemoveItem = (e, item) => {
@@ -221,6 +221,8 @@ const DoneTabContent = ({ filter, targetSelected = [], error, handleInputChange,
     const renderListTargetSelected = () => {
         return (
             targetSelected.map((item, i) => {
+                let isShowApproverMessage = item?.lastUpdateBy && item?.lastUpdateBy?.toLowerCase() === approverInfo?.account?.toLowerCase()
+
                 return (
                     <div className="item" key={i}>
                         <Button
@@ -228,23 +230,27 @@ const DoneTabContent = ({ filter, targetSelected = [], error, handleInputChange,
                             aria-controls={`item-${i}`}
                             aria-expanded={item?.isExpand || false}
                         >
-                            <div className="title">
-                                <img src={item?.isExpand ? IconCollapse : IconExpand} alt='Collapse' />
-                                <span className="font-weight-bold">Mục tiêu {i + 1}</span>
-                                {
-                                    !item?.isExpand &&
-                                    <>
-                                        <span className="divider">|</span>
-                                        <span>{item?.targetName}</span>
-                                        <span className="divider">|</span>
-                                        <span className="percent">{item?.weight}%</span>
-                                    </>
-                                }
+                            <div className="row-first">
+                                <div className="title">
+                                    <img src={item?.isExpand ? IconCollapse : IconExpand} alt='Collapse' />
+                                    <span className="font-weight-bold">Mục tiêu {i + 1}</span>
+                                    {
+                                        !item?.isExpand &&
+                                        <>
+                                            <span className="divider">|</span>
+                                            <span>{item?.targetName}</span>
+                                            <span className="divider">|</span>
+                                            <span className="percent">{item?.weight}%</span>
+                                        </>
+                                    }
+
+                                </div>
+                                <span role='button' className="btn-remove" title='Xóa' onClick={(e) => handleRemoveItem(e, item)}>
+                                    <img src={IconRemoveRed} alt='Remove' />
+                                    Xóa
+                                </span>
                             </div>
-                            <span role='button' className="btn-remove" title='Xóa' onClick={(e) => handleRemoveItem(e, item)}>
-                                <img src={IconRemoveRed} alt='Remove' />
-                                Xóa
-                            </span>
+                            { isShowApproverMessage && <div className="row-second">* Mục tiêu đã được QLTT chỉnh sửa</div> }
                         </Button>
                         <Collapse in={item?.isExpand}>
                             <div id={`item-${i}`} className="item-content">
@@ -541,7 +547,7 @@ function RegisterTargetFromLibraryModal(props) {
         bodyFormData.append('Organization_lv2', user?.organizationLv2)
         bodyFormData.append('Organization_lv3', user?.organizationLv3)
         bodyFormData.append('Organization_lv4', user?.organizationLv4)
-        bodyFormData.append('Employee_level', user?.employeeLevel)
+        bodyFormData.append('Employee_level', user?.actualRank)
         bodyFormData.append('EmployeeCode', user?.employeeNo)
         bodyFormData.append('PageIndex', paging.pageIndex)
         bodyFormData.append('PageSize', paging.pageSize)
@@ -611,7 +617,7 @@ function RegisterTargetFromLibraryModal(props) {
                     } else {
                         SetError({
                             ...error,
-                            errorMissingApproverInfo: '* Chưa có thông tin CBQL phê duyệt, vui lòng liên hệ Nhân sự để được hỗ trợ!'
+                            errorMissingApproverInfo: '* Chưa có thông tin CBQL phê duyệt. Vui lòng liên hệ Nhân sự để được hỗ trợ!'
                         })
                     }
                 } else if (requestInfo && requestInfo?.data && requestInfo?.data?.data?.requests) { // Khi sửa yêu cầu đăng ký mục tiêu từ thư viện ở trạng thái Nháp hoặc Từ chối
@@ -624,7 +630,7 @@ function RegisterTargetFromLibraryModal(props) {
                         if (!approverInfoData) {
                             SetError({
                                 ...error,
-                                errorMissingApproverInfo: '* Chưa có thông tin CBQL phê duyệt, vui lòng liên hệ Nhân sự để được hỗ trợ!'
+                                errorMissingApproverInfo: '* Chưa có thông tin CBQL phê duyệt. Vui lòng liên hệ Nhân sự để được hỗ trợ!'
                             })
                         }
                     }
@@ -1001,12 +1007,14 @@ function RegisterTargetFromLibraryModal(props) {
                 isSuccess={statusModal?.isSuccess}
                 content={statusModal?.content}
                 className="register-target-from-library-status-modal"
+                backdropClassName="backdrop-register-target-from-library-status-modal"
                 onHide={onHideStatusModal}
             />
             <Modal 
                 backdrop="static" 
                 keyboard={false}
                 className={'register-target-from-library-modal'}
+                backdropClassName="backdrop-register-target-from-library-modal"
                 centered  
                 show={true}
                 onHide={() => onHideRegisterTargetModal(true)}
@@ -1040,6 +1048,7 @@ function RegisterTargetFromLibraryModal(props) {
                             stepActive === stepConfig.done &&
                             <DoneTabContent
                                 filter={omit(filter, ['keyword'])}
+                                approverInfo={approverInfo}
                                 targetSelected={targetSelected}
                                 error={error}
                                 handleInputChange={handleInputChange}
