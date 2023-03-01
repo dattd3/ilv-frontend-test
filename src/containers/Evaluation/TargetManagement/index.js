@@ -762,7 +762,7 @@ function TargetManagement() {
                             <div className="tooltip-header">
                               {renderReasonTooltipTitle(item)}
                             </div>
-                            <div>{item.rejectReson || item.reviewComment}</div>
+                            <div className="tooltip-body">{item.rejectReson || item.reviewComment}</div>
                           </div>
                         </ReactTooltip>
                       </>

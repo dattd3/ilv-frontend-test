@@ -145,6 +145,16 @@
       margin-bottom: 12px;
       font-weight: 700;
     }
+    .tooltip-body {
+      min-width: 235px;
+      max-width: 600px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 4; /* number of lines to show */
+      line-clamp: 4;
+      -webkit-box-orient: vertical;
+    }
   }
   .action-icon {
     width: 20px;
