@@ -33,6 +33,7 @@ class ApproverComponent extends React.Component {
     super();
     this.state = {
       approver: null,
+      isSearching: false,
       users: [],
       typingTimeout: 0,
       approverTyping: ""
@@ -148,7 +149,7 @@ class ApproverComponent extends React.Component {
       //   }
       // }
       const config = getRequestConfigurations();
-
+      this.setState({isSearching: true})
       const payload = {
         account: value,
         status: 3,
@@ -174,9 +175,11 @@ class ApproverComponent extends React.Component {
                 department: res.division + (res.department ? '/' + res.department : '') + (res.part ? '/' + res.part : '')
               }
             })
-            this.setState({ users: appraiser ? users.filter(user => user.account !== appraiser.account) : users })
+            this.setState({ users: appraiser ? users.filter(user => user.account !== appraiser.account) : users, isSearching: false })
           }
-        }).catch(error => { })
+        }).catch(error => { 
+          this.setState({isSearching: false})
+        })
     }
   }
 
@@ -206,6 +209,7 @@ class ApproverComponent extends React.Component {
           <div className='mv-10'>
             <Select
               isClearable={true}
+              isLoading={this.state.isSearching}
               isDisabled={isEdit}
               styles={customStyles}
               components={{ Option: MyOption }}
