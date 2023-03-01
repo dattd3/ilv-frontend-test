@@ -117,7 +117,7 @@ class RegistrationEmploymentTerminationForm extends React.Component {
                     employeeNo: localStorage.getItem("employeeNo") || "",
                     fullName: infos.fullname || "",
                     jobTitle: infos.job_name || "",
-                    department: `${infos.division || ""}${infos.department ? `/${infos.department}` : ""}${infos.part ? `/${infos.part}` : ""}`,
+                    department: `${infos.division || ""}${infos.department ? `/${infos.department}` : ""}${infos.unit ? `/${infos.unit}` : ""}`,
                     dateStartWork: dateStartWork,
                     email: localStorage.getItem("email") || "",
                     rank: infos.rank_name || "",
