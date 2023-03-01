@@ -47,6 +47,7 @@
 }
 
 .payslips-section {
+    margin-top: 10px;
     .clear {
         clear: both;
     }
@@ -284,21 +285,20 @@
             border-style: solid;
             border-radius: 4px;
             border-width: 1px;
-            width: 100px;
             background: #FFFFFF;
-            padding: 5px;
+            padding: 5px 10px 5px 25px;
             font-size: 14px;
             text-decoration: none;
             &.download-excel {
                 margin-left: 15px;
                 border-color: #28a745;
                 color: #28a745;
-                background: #FFFFFF url("../img/icon/Icon_download_green.svg") no-repeat 8px 9px/8px;
+                background: #FFFFFF url("../img/icon/Icon_download_green.svg") no-repeat 10px 9px/9px;
             }
             &.download-pdf {
                 border-color: #e52c08;
                 color: #e52c08;
-                background: #FFFFFF url("../img/icon/Icon_download_red.svg") no-repeat 8px 9px/8px;
+                background: #FFFFFF url("../img/icon/Icon_download_red.svg") no-repeat 10px 9px/9px;
             }
             &:active {
                 outline: none;
