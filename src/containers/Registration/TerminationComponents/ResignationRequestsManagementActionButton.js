@@ -34,8 +34,10 @@ class ResignationRequestsManagementActionButton extends React.PureComponent {
             {value: 1, label: props.t('accomplished')}
         ];
         this.approvalOptions = [
-            {value: 0, label: props.t("not_approved")},
-            {value: 1, label: props.t("Approved")}
+            {value: 8, label: props.t('Waiting') },
+            {value: 5, label: props.t('Consented') },
+            {value: 2, label: props.t('Approved')},
+            {value: 1, label: props.t('Rejected')}   
         ]
     }
 
