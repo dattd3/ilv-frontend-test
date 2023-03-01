@@ -322,7 +322,7 @@ function TargetManagement() {
         if (response.data?.result?.code !== "200") {
           setModalManagement({
             type: MODAL_TYPES.FAIL,
-            content: response.data?.result?.message,
+            data: response.data?.result?.message,
           });
         } else {
           setModalManagement({
@@ -396,7 +396,7 @@ function TargetManagement() {
           <StatusModal
             isSuccess={false}
             show={true}
-            onHide={onHideModal}
+            onHide={() => onHideModal(true)}
             content={modalManagement.data}
           />
         );
@@ -405,7 +405,7 @@ function TargetManagement() {
         return (
           <TargetRegistrationManualModal
             phaseOptions={phaseOptions}
-            onHide={onHideModal}
+            onHide={() => onHideModal(true)}
             id={modalManagement?.data}
             isApprover={currentTab === TABS.REQUEST && !!modalManagement.data}
             setModalManagement={setModalManagement}
