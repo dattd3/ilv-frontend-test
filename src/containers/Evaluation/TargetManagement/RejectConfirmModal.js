@@ -56,7 +56,7 @@ export default function RejectConfirmModal(props) {
             name="targetName"
             onChange={(e) => setReasonInput(e.target?.value)}
             value={reasonInput}
-            maxLength={255}
+            maxLength={1000}
           />
         </div>
         <div className="text-right form-button-group">

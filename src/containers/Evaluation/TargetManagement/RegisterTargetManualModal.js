@@ -180,6 +180,9 @@ export default function TargetRegistrationManualModal(props) {
             ? !formValues[item]?.trim()
             : !item[field]
         )
+      ) &&
+      !formValues.listTarget.some(
+        (item) => Number(item.weight) < 1 || Number(item.weight) > 100
       )
     );
   };
@@ -306,7 +309,7 @@ export default function TargetRegistrationManualModal(props) {
   const onSendTargetRegister = async () => {
     setShowTotalWeightWarning(true);
     if (totalWeight !== 100) {
-      return ;
+      return;
     }
     setIsEditing(true);
     const config = getRequestConfigurations();
@@ -406,10 +409,7 @@ export default function TargetRegistrationManualModal(props) {
     (data?.status === REQUEST_STATUS.REJECT &&
       !isEditing &&
       data?.lastUpdatedBy?.toLowerCase() ===
-        approverJSON?.account?.toLowerCase()) ||
-    formValues.listTarget.some(
-      (item) => Number(item.weight) < 1 || Number(item.weight) > 100
-    );
+        approverJSON?.account?.toLowerCase());
 
   return (
     <Modal
@@ -794,7 +794,7 @@ export default function TargetRegistrationManualModal(props) {
 
           {totalWeight > 0 &&
             totalWeight !== 100 &&
-            showTotalWeightWarning && 
+            showTotalWeightWarning &&
             (isEditing ||
               (isApprover && data?.status === REQUEST_STATUS.PROCESSING)) && (
               <div className="red-color mb-15">
