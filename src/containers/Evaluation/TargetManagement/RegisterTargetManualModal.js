@@ -11,6 +11,8 @@ import {
   STATUS_EDITABLE_APPROVE_TAB,
   REGISTER_TYPES,
   REQUEST_STATUS,
+  CREATE_TARGET_REGISTER,
+  getUserInfo,
 } from "./Constant";
 import Constants from "commons/Constants";
 import axios from "axios";
@@ -25,7 +27,9 @@ import { ReactComponent as IconSend } from "assets/img/icon/pms/icon-send.svg";
 import { ReactComponent as IconReject } from "assets/img/icon/Icon_Cancel.svg";
 import { ReactComponent as IconApprove } from "assets/img/icon/Icon_Check_White.svg";
 import { ReactComponent as IconEdit } from "assets/img/icon/pms/icon-edit.svg";
+import { ReactComponent as IconRecall } from "assets/img/Icon-recall-white.svg";
 import LoadingModal from "components/Common/LoadingModal";
+import StatusModal from "components/Common/StatusModal";
 
 const mapApproverOption = (approver) => ({
   account: approver.username,
@@ -45,6 +49,11 @@ const mapApproverOption = (approver) => ({
 
 const REQUIRED_FIELDS = ["checkPhaseId", "listTarget"];
 const REQUIRED_FIELDS_TARGET = ["targetName", "metric1", "weight"];
+const INIT_STATUS_MODAL_MANAGEMENT = {
+  isShow: false,
+  isSuccess: true,
+  content: "",
+};
 
 export default function TargetRegistrationManualModal(props) {
   const { t, i18n } = useTranslation();
@@ -56,12 +65,14 @@ export default function TargetRegistrationManualModal(props) {
     id,
     isApprover = false,
     setModalManagement,
-    sendTargetRegister,
-    saveTargetRegister,
     viewOnly,
+    onRecallTargetRegisterClick,
   } = props;
   const [isEditing, setIsEditing] = useState(!viewOnly);
   const [isLoading, setIsLoading] = useState(false);
+  const [showRequiredWarning, setShowRequiredWarning] = useState(false);
+  const [showTotalWeightWarning, setShowTotalWeightWarning] = useState(false);
+
   const [data, setData] = useState(null);
 
   const [formValues, setFormValues] = useState({
@@ -73,6 +84,9 @@ export default function TargetRegistrationManualModal(props) {
 
   const [targetToggleStatuses, setTargetToggleStatuses] = useState([true]);
   const [isFetchedApprover, setIsFetchedApprover] = useState(false);
+  const [statusModalManagement, setStatusModalManagement] = useState(
+    INIT_STATUS_MODAL_MANAGEMENT
+  );
 
   const totalWeight = formValues.listTarget.reduce(
     (acc, curr) => Number((acc += curr.weight * 1 || 0)),
@@ -113,10 +127,10 @@ export default function TargetRegistrationManualModal(props) {
 
   const fetchTargetRegisterData = async () => {
     setIsLoading(true);
+    const config = getRequestConfigurations();
     try {
-      const config = getRequestConfigurations();
       config.params = {
-        id: id,
+        id,
       };
       const response = await axios.get(
         `${process.env.REACT_APP_HRDX_PMS_URL}api/targetregist/detail`,
@@ -155,12 +169,23 @@ export default function TargetRegistrationManualModal(props) {
   const checkIsFormValid = () => {
     if (!approverJSON) return false;
     return (
-      !REQUIRED_FIELDS.some((item) => typeof formValues[item] === "string" ? !formValues[item]?.trim() : !formValues[item]) &&
+      !REQUIRED_FIELDS.some((item) =>
+        typeof formValues[item] === "string"
+          ? !formValues[item]?.trim()
+          : !formValues[item]
+      ) &&
       !formValues.listTarget.some((item) =>
-        REQUIRED_FIELDS_TARGET.some((field) => typeof formValues[item] === "string" ? !formValues[item]?.trim() : !item[field])
+        REQUIRED_FIELDS_TARGET.some((field) =>
+          typeof formValues[item] === "string"
+            ? !formValues[item]?.trim()
+            : !item[field]
+        )
       )
     );
   };
+
+  const checkIsFormValidApprover = () =>
+    checkIsFormValid() && !!formValues.reviewComment;
 
   const onChangeFormValues = (key, value) => {
     setFormValues({
@@ -214,35 +239,124 @@ export default function TargetRegistrationManualModal(props) {
     // if (!checkIsFormValid()) {
     //   return toast.error("Vui lòng điền đầy đủ các trường bắt buộc");
     // }
-    // if (isApprover && !formValues.reviewComment) {
-    //   return toast.error("Vui lòng nhập ý kiến của CBQL phê duyệt");
-    // }
-    await saveTargetRegister(formValues);
-    if (isApprover) {
-      setIsEditing(false);
-      fetchTargetRegisterData();
-      collapseAll();
-      toast.success("Lưu mục tiêu CBNV thành công")
+    setShowTotalWeightWarning(true);
+    if (isApprover && !checkIsFormValidApprover()) {
+      return setShowRequiredWarning(true);
     }
+    if (isApprover && totalWeight !== 100) {
+      return setStatusModalManagement({
+        isShow: true,
+        isSuccess: false,
+        content: "Yêu cầu tổng trọng số bằng 100%. Vui lòng kiểm tra lại!",
+      });
+    }
+    setIsLoading(true);
+    try {
+      // Add order
+      if (formValues.listTarget?.length > 0) {
+        formValues.listTarget = formValues.listTarget.map((item, index) => ({
+          ...item,
+          order: index,
+        }));
+      }
+      const config = getRequestConfigurations();
+      const response = await axios.post(
+        CREATE_TARGET_REGISTER,
+        {
+          RequestType: 0, // 0 - thủ công,1 -từ thư viện
+          type: "Save",
+          userInfo: JSON.stringify(getUserInfo()),
+          ...formValues,
+        },
+        config
+      );
+      if (response.data?.result?.code !== "200") {
+        setStatusModalManagement({
+          isShow: true,
+          isSuccess: false,
+          content: response.data?.result?.message,
+        });
+      } else {
+        if (isApprover) {
+          setIsEditing(false);
+          fetchTargetRegisterData();
+          collapseAll();
+        } else {
+          setFormValues({
+            id: response.data?.data?.id,
+            ...formValues,
+          });
+        }
+        setStatusModalManagement({
+          isShow: true,
+          isSuccess: true,
+          content: "Lưu yêu cầu thành công!",
+        });
+      }
+    } catch {
+      setStatusModalManagement({
+        isShow: true,
+        isSuccess: false,
+        content: "Lưu yêu cầu thất bại!",
+      });
+    }
+    setIsLoading(false);
   };
 
-  const onSendTargetRegister = () => {
-    if (!checkIsFormValid()) {
-      return toast.error("Vui lòng điền đầy đủ các trường bắt buộc");
+  const onSendTargetRegister = async () => {
+    setShowTotalWeightWarning(true);
+    if (totalWeight !== 100) {
+      return ;
     }
-    sendTargetRegister(formValues);
+    setIsEditing(true);
+    const config = getRequestConfigurations();
+    try {
+      // Add order
+      if (formValues.listTarget?.length > 0) {
+        formValues.listTarget = formValues.listTarget.map((item, index) => ({
+          ...item,
+          order: index,
+        }));
+      }
+      const response = await axios.post(
+        CREATE_TARGET_REGISTER,
+        {
+          RequestType: 0, // 0 - thủ công,1 -từ thư viện
+          type: "Next",
+          userInfo: JSON.stringify(getUserInfo()),
+          ...formValues,
+        },
+        config
+      );
+      if (response.data?.result?.code !== "200") {
+        setStatusModalManagement({
+          isShow: true,
+          isSuccess: false,
+          content: response.data?.result?.message,
+        });
+      } else {
+        setModalManagement({
+          type: MODAL_TYPES.SUCCESS,
+          data: "Yêu cầu của bạn đã được gửi đi!",
+        });
+      }
+    } catch {
+      toast.error("Lưu yêu cầu thất bại!");
+    }
+    setIsEditing(false);
   };
 
-  const onRemoveTarget = (idx) => {
+  const onRemoveTarget = (event, idx) => {
+    event.stopPropagation();
     setFormValues({
       ...formValues,
       listTarget: [
         ...formValues?.listTarget?.filter((_, index) => index !== idx),
       ],
     });
-    setTargetToggleStatuses([
-      ...targetToggleStatuses?.filter((_, index) => index !== idx),
-    ]);
+    setTargetToggleStatuses(
+      targetToggleStatuses?.filter((_, index) => index !== idx)
+    );
   };
 
   const onEditButtonClick = () => {
@@ -260,14 +374,59 @@ export default function TargetRegistrationManualModal(props) {
   const isReadonlyField = (target) =>
     !isEditing || (data?.requestType === REGISTER_TYPES.LIBRARY && target?.id);
 
+  const onHideStatusModal = () => {
+    setStatusModalManagement(INIT_STATUS_MODAL_MANAGEMENT);
+  };
+
+  const isShowRevocationRejectReasonByManager = (() => {
+    const approver = JSON.parse(data?.approverInfo || "{}");
+    return (
+      !isEditing &&
+      data?.rejectReson &&
+      approver?.account &&
+      (([REQUEST_STATUS.DRAFT].includes(Number(data?.status)) &&
+        approver?.account?.toLowerCase() ===
+          data?.lastRecallBy?.toLowerCase()) ||
+        [REQUEST_STATUS.REJECT].includes(Number(data?.status)))
+    );
+  })();
+
+  const isShowRevocationReasonByEmployee = (() => {
+    const userInfo = JSON.parse(data?.userInfo || "{}");
+    return (
+      !isEditing &&
+      data?.rejectReson &&
+      userInfo?.account &&
+      [REQUEST_STATUS.DRAFT].includes(Number(data?.status)) &&
+      userInfo?.account?.toLowerCase() === data?.lastRecallBy?.toLowerCase()
+    );
+  })();
+  const isDisabledSendRequest =
+    !checkIsFormValid() ||
+    (data?.status === REQUEST_STATUS.REJECT &&
+      !isEditing &&
+      data?.lastUpdatedBy?.toLowerCase() ===
+        approverJSON?.account?.toLowerCase()) ||
+    formValues.listTarget.some(
+      (item) => Number(item.weight) < 1 || Number(item.weight) > 100
+    );
+
   return (
     <Modal
       show={true}
       className="target-registration-modal"
       centered
-      onHide={onHide}
+      onHide={() => onHide(true)}
     >
       <LoadingModal show={isLoading} />
+      <StatusModal
+        show={statusModalManagement?.isShow || false}
+        isSuccess={statusModalManagement?.isSuccess}
+        content={statusModalManagement?.content}
+        className="register-target-from-library-status-modal"
+        backdropClassName="backdrop-register-target-from-library-status-modal"
+        onHide={onHideStatusModal}
+      />
       <Modal.Header closeButton>
         <div className="modal-title">ĐĂNG KÝ MỤC TIÊU</div>
       </Modal.Header>
@@ -279,7 +438,9 @@ export default function TargetRegistrationManualModal(props) {
           className="select-container mb-20"
           classNamePrefix="filter-select"
           placeholder={t("Select")}
-          options={phaseOptions.filter(item => item?.isAvailable && !item?.isDeleted && item?.status)}
+          options={phaseOptions.filter(
+            (item) => item?.isAvailable && !item?.isDeleted && item?.status
+          )}
           onChange={(val) => onChangeFormValues("checkPhaseId", val?.value)}
           value={phaseOptions.find(
             (opt) => opt.value === formValues.checkPhaseId
@@ -336,7 +497,7 @@ export default function TargetRegistrationManualModal(props) {
               {isEditing && formValues.listTarget?.length > 1 && (
                 <button
                   className="button delete-button"
-                  onClick={() => onRemoveTarget(index)}
+                  onClick={(event) => onRemoveTarget(event, index)}
                 >
                   <IconRedRemove />
                   &nbsp; Xóa
@@ -354,7 +515,7 @@ export default function TargetRegistrationManualModal(props) {
                   ) : (
                     <Form.Control
                       as="textarea"
-                      placeholder={isEditing && "Nhập"}
+                      placeholder={(isEditing && "Nhập") || undefined}
                       className="form-textarea"
                       name="targetName"
                       onChange={(e) =>
@@ -377,7 +538,7 @@ export default function TargetRegistrationManualModal(props) {
                   ) : (
                     <Form.Control
                       as="textarea"
-                      placeholder={isEditing && "Nhập"}
+                      placeholder={(isEditing && "Nhập") || undefined}
                       className="form-textarea"
                       name="metric1"
                       onChange={(e) =>
@@ -394,7 +555,7 @@ export default function TargetRegistrationManualModal(props) {
                   ) : (
                     <Form.Control
                       as="textarea"
-                      placeholder={isEditing && "Nhập"}
+                      placeholder={(isEditing && "Nhập") || undefined}
                       className="form-textarea"
                       name="metric2"
                       onChange={(e) =>
@@ -411,7 +572,7 @@ export default function TargetRegistrationManualModal(props) {
                   ) : (
                     <Form.Control
                       as="textarea"
-                      placeholder={isEditing && "Nhập"}
+                      placeholder={(isEditing && "Nhập") || undefined}
                       className="form-textarea"
                       name="metric3"
                       onChange={(e) =>
@@ -428,7 +589,7 @@ export default function TargetRegistrationManualModal(props) {
                   ) : (
                     <Form.Control
                       as="textarea"
-                      placeholder={isEditing && "Nhập"}
+                      placeholder={(isEditing && "Nhập") || undefined}
                       className="form-textarea"
                       name="metric4"
                       onChange={(e) =>
@@ -445,7 +606,7 @@ export default function TargetRegistrationManualModal(props) {
                   ) : (
                     <Form.Control
                       as="textarea"
-                      placeholder={isEditing && "Nhập"}
+                      placeholder={(isEditing && "Nhập") || undefined}
                       className="form-textarea"
                       name="metric5"
                       onChange={(e) =>
@@ -459,11 +620,11 @@ export default function TargetRegistrationManualModal(props) {
                   <div className="mb-15">
                     Trọng số <span className="red-color">(*)</span>
                   </div>
-                  <div className="weight-input-box">
+                  <div className="weight-input-box mb-15">
                     <span className="prefix">%</span>
                     <Form.Control
                       as="input"
-                      placeholder={isEditing && "Nhập"}
+                      placeholder={(isEditing && "Nhập") || undefined}
                       className="form-input border-none"
                       type="text"
                       name="weight"
@@ -474,6 +635,13 @@ export default function TargetRegistrationManualModal(props) {
                       readOnly={!isEditing}
                     />
                   </div>
+                  {target.weight !== "" &&
+                    (Number(target.weight) < 1 ||
+                      Number(target.weight) > 100) && (
+                      <div className="red-color">
+                        * Vui lòng nhập trọng số trong khoảng 1 - 100
+                      </div>
+                    )}
                 </div>
                 <div className="mb-15">
                   <div className="mb-15">Job Details</div>
@@ -482,7 +650,7 @@ export default function TargetRegistrationManualModal(props) {
                   ) : (
                     <Form.Control
                       as="textarea"
-                      placeholder={isEditing && "Nhập"}
+                      placeholder={(isEditing && "Nhập") || undefined}
                       className="form-textarea"
                       name="jobDetail"
                       onChange={(e) =>
@@ -503,7 +671,7 @@ export default function TargetRegistrationManualModal(props) {
                   ) : (
                     <Form.Control
                       as="textarea"
-                      placeholder={isEditing && "Nhập"}
+                      placeholder={(isEditing && "Nhập") || undefined}
                       className="form-textarea"
                       name="target"
                       onChange={(e) =>
@@ -523,7 +691,16 @@ export default function TargetRegistrationManualModal(props) {
             + Thêm mục tiêu
           </button>
         )}
-        {(data?.reviewComment || (isApprover && isEditing)) && (
+
+        {/* Hiển thị lý do thu hồi của CBNV */}
+        {isShowRevocationReasonByEmployee && (
+          <div className="mb-15">
+            <div className="mb-15">Lý do thu hồi của CBNV</div>
+            <div className="read-only-text">{data.rejectReson || ""}</div>
+          </div>
+        )}
+
+        {((data?.reviewComment && !isEditing) || (isApprover && isEditing)) && (
           <div className="mb-15">
             <div className="mb-15">
               Ý kiến của CBQL phê duyệt <span className="red-color">(*)</span>
@@ -531,7 +708,7 @@ export default function TargetRegistrationManualModal(props) {
             {isEditing ? (
               <Form.Control
                 as="textarea"
-                placeholder={isEditing && "Nhập"}
+                placeholder={(isEditing && "Nhập") || undefined}
                 className="form-textarea review-comment-textarea"
                 onChange={(e) =>
                   onChangeFormValues("reviewComment", e?.target?.value)
@@ -543,7 +720,7 @@ export default function TargetRegistrationManualModal(props) {
             )}
           </div>
         )}
-        <div className="form-container mb-15">
+        <div className="form-container">
           <div className="approver-title mb-15">
             {isApprover ? "CBNV đăng ký mục tiêu" : "CBQL phê duyệt"}
           </div>
@@ -585,29 +762,50 @@ export default function TargetRegistrationManualModal(props) {
               />
             </div>
           </div>
+          {/* Hiển thị lý do thu hồi và lý do từ chối của CBLĐ Phê duyệt */}
+          {isShowRevocationRejectReasonByManager && (
+            <div
+              className={`row group ${
+                isShowRevocationRejectReasonByManager ? "mt-20" : ""
+              }`}
+            >
+              <div className="col-xl-12">
+                <div className="mb-15">
+                  {data?.status === REQUEST_STATUS.REJECT
+                    ? "Lý do từ chối"
+                    : "Lý do thu hồi của CBQL"}
+                </div>
+                <Form.Control
+                  readOnly
+                  className="form-input"
+                  value={data?.rejectReson || ""}
+                />
+              </div>
+            </div>
+          )}
         </div>
-        {!isEditing && data?.rejectReson && (
-          <div className="mb-15">
-            <div className="mb-15">Lý do</div>
-            {<div className="read-only-text">{data?.rejectReson || ""}</div>}
-          </div>
-        )}
         <div className="custom-modal-footer">
           {!approverJSON && isFetchedApprover && (
             <div className="red-color mb-15">
-              * Chưa có thông tin CBQL phê duyệt, vui lòng liên hệ Nhân sự để
+              * Chưa có thông tin CBQL phê duyệt. Vui lòng liên hệ Nhân sự để
               được hỗ trợ!
             </div>
           )}
 
           {totalWeight > 0 &&
             totalWeight !== 100 &&
+            showTotalWeightWarning && 
             (isEditing ||
               (isApprover && data?.status === REQUEST_STATUS.PROCESSING)) && (
               <div className="red-color mb-15">
                 * Yêu cầu tổng trọng số bằng 100%. Vui lòng kiểm tra lại!
               </div>
             )}
+          {isApprover && showRequiredWarning && !checkIsFormValidApprover() && (
+            <div className="red-color mb-15">
+              * Vui lòng nhập đầy đủ thông tin bắt buộc!
+            </div>
+          )}
           <div className="modal-footer-action">
             <div>
               {(isEditing ||
@@ -634,60 +832,93 @@ export default function TargetRegistrationManualModal(props) {
                   <button
                     className="button cancel-approver-btn"
                     onClick={onHide}
+                    style={{
+                      width:
+                        data?.status === REQUEST_STATUS.PROCESSING ? 90 : 120,
+                    }}
                   >
                     <IconRemove />
                     &nbsp; Hủy
                   </button>
                   {!isEditing ? (
-                    <button
-                      className="button edit-btn"
-                      onClick={onEditButtonClick}
-                    >
-                      <IconEdit />
-                      &nbsp; Sửa
-                    </button>
+                    <>
+                      <button
+                        className="button edit-btn"
+                        onClick={onEditButtonClick}
+                        style={{
+                          width:
+                            data?.status === REQUEST_STATUS.PROCESSING
+                              ? 90
+                              : 120,
+                        }}
+                      >
+                        <IconEdit />
+                        &nbsp; Sửa
+                      </button>
+                      {data?.status === REQUEST_STATUS.APPROVED && (
+                        <button
+                          className="button reject-btn"
+                          onClick={(event) =>
+                            onRecallTargetRegisterClick(event, data)
+                          }
+                          style={{ marginRight: 0 }}
+                        >
+                          <IconRecall />
+                          &nbsp; Thu hồi
+                        </button>
+                      )}
+                    </>
                   ) : (
                     <button
                       className="button save-approver-btn"
                       onClick={onSaveTargetRegister}
-                      disabled={!checkIsFormValid() || !formValues.reviewComment?.trim()}
+                      style={{
+                        width:
+                          data?.status === REQUEST_STATUS.PROCESSING ? 90 : 120,
+                        marginRight:
+                          data?.status === REQUEST_STATUS.PROCESSING ? 20 : 0,
+                      }}
                     >
                       <IconSave />
                       &nbsp; Lưu
                     </button>
                   )}
-                  <button
-                    className="button reject-btn"
-                    onClick={() =>
-                      setModalManagement({
-                        type: MODAL_TYPES.REJECT_CONFIRM,
-                        data,
-                      })
-                    }
-                    disabled={isEditing}
-                  >
-                    <IconReject />
-                    &nbsp; Từ chối
-                  </button>
-                  <button
-                    className="button approve-btn"
-                    onClick={() =>
-                      setModalManagement({
-                        type: MODAL_TYPES.APPROVE_CONFIRM,
-                        data,
-                      })
-                    }
-                    disabled={isEditing || totalWeight !== 100}
-                  >
-                    <IconApprove />
-                    &nbsp; Phê duyệt
-                  </button>
+                  {data?.status === REQUEST_STATUS.PROCESSING && (
+                    <>
+                      <button
+                        className="button reject-btn"
+                        onClick={() =>
+                          setModalManagement({
+                            type: MODAL_TYPES.REJECT_CONFIRM,
+                            data,
+                          })
+                        }
+                        disabled={isEditing}
+                      >
+                        <IconReject />
+                        &nbsp; Từ chối
+                      </button>
+                      <button
+                        className="button approve-btn"
+                        onClick={() =>
+                          setModalManagement({
+                            type: MODAL_TYPES.APPROVE_CONFIRM,
+                            data,
+                          })
+                        }
+                        disabled={isEditing || totalWeight !== 100}
+                      >
+                        <IconApprove />
+                        &nbsp; Phê duyệt
+                      </button>
+                    </>
+                  )}
                 </div>
               )}
             {!isApprover && isEditing && (
               <div>
-                {/* {(data?.status === REQUEST_STATUS.REJECT || isEditing) && ( */}
-                {/* {data?.status === REQUEST_STATUS.REJECT && !isEditing && (
+                {/* {(data??.status === REQUEST_STATUS.REJECT || isEditing) && ( */}
+                {/* {data??.status === REQUEST_STATUS.REJECT && !isEditing && (
                       <button
                         className="button edit-btn"
                         onClick={onEditButtonClick}
@@ -702,7 +933,12 @@ export default function TargetRegistrationManualModal(props) {
                 </button>
                 <button
                   className="button save-btn"
-                  disabled={!formValues.checkPhaseId || !checkIsFormValid()}
+                  disabled={
+                    !formValues.checkPhaseId ||
+                    !checkIsFormValid() ||
+                    (data?.status === REQUEST_STATUS.APPROVED &&
+                      totalWeight !== 100)
+                  }
                   onClick={onSaveTargetRegister}
                 >
                   <IconSave />
@@ -710,13 +946,7 @@ export default function TargetRegistrationManualModal(props) {
                 </button>
                 <button
                   className="button send-request-btn"
-                  disabled={
-                    totalWeight !== 100 ||
-                    (data?.status === REQUEST_STATUS.REJECT &&
-                      !isEditing &&
-                      data?.lastUpdatedBy?.toLowerCase() ===
-                        approverJSON?.account?.toLowerCase())
-                  }
+                  disabled={isDisabledSendRequest}
                   onClick={onSendTargetRegister}
                 >
                   <IconSend />

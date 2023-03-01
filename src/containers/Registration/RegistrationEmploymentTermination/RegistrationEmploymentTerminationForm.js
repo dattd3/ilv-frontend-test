@@ -77,6 +77,7 @@ class RegistrationEmploymentTerminationForm extends React.Component {
             }
             this.setState({reasonTypes: reasonTypes, userInfos: userInfos, directManager: directManager, directManagerRaw: responses[3], errors});
         })).catch(errors => {
+            console.log(errors);
             return null
         })
     }
@@ -116,7 +117,7 @@ class RegistrationEmploymentTerminationForm extends React.Component {
                     employeeNo: localStorage.getItem("employeeNo") || "",
                     fullName: infos.fullname || "",
                     jobTitle: infos.job_name || "",
-                    department: `${infos.division || ""}${infos.department ? `/${infos.department}` : ""}${infos.part ? `/${infos.part}` : ""}`,
+                    department: `${infos.division || ""}${infos.department ? `/${infos.department}` : ""}${infos.unit ? `/${infos.unit}` : ""}`,
                     dateStartWork: dateStartWork,
                     email: localStorage.getItem("email") || "",
                     rank: infos.rank_name || "",
@@ -156,7 +157,7 @@ class RegistrationEmploymentTerminationForm extends React.Component {
             const reasonTypeCodeForEmployee = "ZG"
             const reasonTypes = responses.data.data
             const results = (reasonTypes || [])
-            .filter(item => item.code01 === reasonTypeCodeForEmployee)
+            .filter(item => item.code01 === reasonTypeCodeForEmployee && !Constants.RESIGN_REASON_EMPLOYEE_INVALID.includes(item.code02))
             .map(item => {
                 return {value: item.code02, label: item.text}
             })

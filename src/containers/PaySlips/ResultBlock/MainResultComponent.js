@@ -30,7 +30,7 @@ function MainResultComponent(props) {
                         <li><span className="label">{t("WorkStartDate")}:</span><span>{personalInformation.hiring_date || null}</span></li>
                         <li><span className="label">{t("TitleGrade")}:</span><span>{personalInformation.position_level}</span></li>
                         <li><span className="label">{t("BenefitGrade")}:</span><span>{personalInformation.c_and_b_level}</span></li>
-                        <li><span className="label">Ban/Phòng/Bộ phận:</span><span>{personalInformation.division_department}</span></li>
+                        <li><span className="label">{t("DepartmentSalary")}:</span><span>{personalInformation.division_department}</span></li>
                         <li><span className="label">{t("Bank")}:</span><span>{personalInformation.bank}</span></li>
                         {/* <li><span className="label">Ngày nghỉ việc:</span><span>{personalInformation.termination_date}</span></li> */}
                     </ul>

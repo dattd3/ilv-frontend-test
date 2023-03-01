@@ -5,7 +5,6 @@ import { Button, Table } from "react-bootstrap";
 import ReactTooltip from "react-tooltip";
 import axios from "axios";
 import moment from "moment";
-import { toast } from "react-toastify";
 import { debounce } from "lodash";
 import { Link, useLocation, useHistory } from "react-router-dom";
 
@@ -13,7 +12,8 @@ import { ReactComponent as IconFilter } from "assets/img/ic-filter.svg";
 import { ReactComponent as IconSearch } from "assets/img/icon/ic_search.svg";
 import { ReactComponent as IconReason } from "assets/img/ic-reason.svg";
 import { ReactComponent as IconRemove } from "assets/img/icon-delete.svg";
-import { ReactComponent as IconEdit } from "assets/img/Icon-edit-2.svg";
+import { ReactComponent as IconEdit } from "assets/img/icon/Icon-edit.svg";
+import { ReactComponent as IconRecall } from "assets/img/Icon-recall.svg";
 
 import HOCComponent from "components/Common/HOCComponent";
 import CustomPaging from "components/Common/CustomPagingNew";
@@ -30,10 +30,10 @@ import {
   STATUS_EDITABLE_APPROVE_TAB,
   MODAL_TYPES,
   STATUS_TYPES,
-  CREATE_TARGET_REGISTER,
-  getUserInfo,
   REGISTER_TYPES,
   REQUEST_STATUS,
+  STATUS_RECALLABLE,
+  STATUS_RECALLABLE_APPROVE_TAB,
 } from "./Constant";
 import TargetRegistrationManualModal from "./RegisterTargetManualModal";
 import ConfirmModal from "components/Common/ConfirmModalNew";
@@ -120,6 +120,25 @@ const EmployeeOption = (props) => {
   );
 };
 
+const renderReasonTooltipTitle = (item) => {
+  const { userInfo, approverInfo, lastRecallBy, rejectReson } = item,
+    user = JSON.parse(userInfo || "{}"),
+    approverUser = JSON.parse(approverInfo || "{}");
+  if (item.status === REQUEST_STATUS.REJECT && rejectReson) {
+    return "Lý do từ chối";
+  }
+  if (
+    lastRecallBy
+      ?.toLowerCase()
+      ?.includes(approverUser?.account?.toLowerCase()) && rejectReson
+  )
+    return "Lý do thu hồi của CBQL";
+  if (lastRecallBy?.toLowerCase()?.includes(user?.account?.toLowerCase()) && rejectReson)
+    return "Lý do thu hồi của CBNV";
+
+  return "Ý kiến của CBQL phê duyệt"; // status = 2/3/4 : từ chối
+};
+
 function TargetManagement() {
   // const [currentTab, setCurrentTab] = useState(TABS.OWNER);
   const [loading, setLoading] = useState(false);
@@ -165,6 +184,10 @@ function TargetManagement() {
       fetchTargetList();
     }
   }, [pageSize, pageIndex, currentTab]);
+
+  useEffect(() => {
+    setPageIndex(1);
+  }, [currentTab]);
 
   useEffect(() => {
     if (modalManagement.type !== null && openMenuRegistration) {
@@ -269,8 +292,8 @@ function TargetManagement() {
       });
     }
     if (shouldRefresh === true) {
-      setPageSize(10);
-      setPageIndex(1);
+      // setPageSize(10);
+      // setPageIndex(1);
       fetchTargetList();
     }
   };
@@ -283,9 +306,11 @@ function TargetManagement() {
         typeMessage = "Phê duyệt yêu cầu ";
       } else if (type === STATUS_TYPES.REJECT) {
         typeMessage = "Từ chối phê duyệt ";
+      } else if (type === STATUS_TYPES.RECALL) {
+        typeMessage = "Thu hồi yêu cầu ";
       }
       try {
-        await axios.post(
+        const response = await axios.post(
           UPDATE_STATUS_TARGET_ENDPOINT,
           {
             id,
@@ -294,10 +319,17 @@ function TargetManagement() {
           },
           config
         );
-        setModalManagement({
-          type: MODAL_TYPES.SUCCESS,
-          data: `${typeMessage} thành công!`,
-        });
+        if (response.data?.result?.code !== "200") {
+          setModalManagement({
+            type: MODAL_TYPES.FAIL,
+            content: response.data?.result?.message,
+          });
+        } else {
+          setModalManagement({
+            type: MODAL_TYPES.SUCCESS,
+            data: `${typeMessage} thành công!`,
+          });
+        }
       } catch (error) {
         setModalManagement({
           type: MODAL_TYPES.FAIL,
@@ -306,72 +338,6 @@ function TargetManagement() {
       }
       setLoading(false);
     }
-  };
-
-  const saveTargetRegister = async (formValues) => {
-    setLoading(true);
-    // Add order
-    try {
-      if (formValues.listTarget?.length > 0) {
-        formValues.listTarget = formValues.listTarget.map((item, index) => ({
-          ...item,
-          order: index,
-        }));
-      }
-      const response = await axios.post(
-        CREATE_TARGET_REGISTER,
-        {
-          RequestType: modalManagement.type, // 0 - thủ công,1 -từ thư viện
-          type: "Save",
-          userInfo: JSON.stringify(getUserInfo()),
-          ...formValues,
-        },
-        config
-      );
-      if (response.data?.result?.code !== "200") {
-        toast.error(`Lưu mục tiêu thất bại: ${response.data?.result?.message}`);
-      } else if (
-        response.data?.result?.code === "200" &&
-        currentTab === TABS.OWNER
-      ) {
-        setModalManagement({
-          type: MODAL_TYPES.SUCCESS,
-          data: "Lưu mục tiêu thành công!",
-        });
-      }
-    } catch {
-      toast.error("Lưu mục tiêu thất bại!");
-    }
-    setLoading(false);
-  };
-
-  const sendTargetRegister = async (formValues) => {
-    setLoading(true);
-    try {
-      const response = await axios.post(
-        CREATE_TARGET_REGISTER,
-        {
-          RequestType: modalManagement.type, // 0 - thủ công,1 -từ thư viện
-          type: "Next",
-          userInfo: JSON.stringify(getUserInfo()),
-          ...formValues,
-        },
-        config
-      );
-      if (response.data?.result?.code !== "200") {
-        toast.error(
-          `Gửi yêu cầu mục tiêu thất bại: ${response.data?.result?.message}`
-        );
-      } else {
-        setModalManagement({
-          type: MODAL_TYPES.SUCCESS,
-          data: "Yêu cầu của bạn đã được gửi đi!",
-        });
-      }
-    } catch {
-      toast.error("Lưu mục tiêu thất bại!");
-    }
-    setLoading(false);
   };
 
   const onEditTargetRegisterClick = (event, item) => {
@@ -400,6 +366,14 @@ function TargetManagement() {
     event.stopPropagation();
     setModalManagement({
       type: MODAL_TYPES.DELETE_CONFIRM,
+      data: item,
+    });
+  };
+
+  const onRecallTargetRegisterClick = (event, item) => {
+    event.stopPropagation();
+    setModalManagement({
+      type: MODAL_TYPES.RECALL_REQUEST_CONFIRM,
       data: item,
     });
   };
@@ -435,9 +409,8 @@ function TargetManagement() {
             id={modalManagement?.data}
             isApprover={currentTab === TABS.REQUEST && !!modalManagement.data}
             setModalManagement={setModalManagement}
-            sendTargetRegister={sendTargetRegister}
-            saveTargetRegister={saveTargetRegister}
             viewOnly={modalManagement.viewOnly}
+            onRecallTargetRegisterClick={onRecallTargetRegisterClick}
           />
         );
 
@@ -501,6 +474,24 @@ function TargetManagement() {
               updateStatusTargetRegister(
                 modalManagement.data?.id,
                 STATUS_TYPES.REJECT,
+                reason
+              );
+            }}
+            modalClassName="reject-target-modal"
+          />
+        );
+
+      case MODAL_TYPES.RECALL_REQUEST_CONFIRM:
+        return (
+          <RejectConfirmModal
+            show={true}
+            onHide={onHideModal}
+            onCancelClick={onHideModal}
+            type={MODAL_TYPES.RECALL_REQUEST_CONFIRM}
+            onReject={(reason) => {
+              updateStatusTargetRegister(
+                modalManagement.data?.id,
+                STATUS_TYPES.RECALL,
                 reason
               );
             }}
@@ -653,15 +644,13 @@ function TargetManagement() {
             ...phaseOptions,
           ]}
           onChange={(val) => setPhaseIdSelected(val?.value)}
-          value={
-            [
-              {
-                value: 0,
-                label: "Tất cả",
-              },
-              ...phaseOptions,
-            ].find((item) => item.value === phaseIdSelected)
-          }
+          value={[
+            {
+              value: 0,
+              label: "Tất cả",
+            },
+            ...phaseOptions,
+          ].find((item) => item.value === phaseIdSelected)}
         />
         <Select
           className="select-container"
@@ -669,9 +658,7 @@ function TargetManagement() {
           placeholder={filterPlaceholder(t("Status"))}
           options={STATUS_OPTIONS}
           onChange={(val) => setStatusSelected(val?.value)}
-          value={
-            STATUS_OPTIONS.find((item) => item.value === statusSelected)
-          }
+          value={STATUS_OPTIONS.find((item) => item.value === statusSelected)}
         />
         {currentTab === TABS.REQUEST && (
           <Select
@@ -756,11 +743,10 @@ function TargetManagement() {
                   </div>
                 </td>
                 <td className="text-center">
-                  {item.status === REQUEST_STATUS.REJECT &&
-                    item.rejectReson && (
+                  {(!!item.rejectReson || !!item.reviewComment) && (
                       <>
                         <a data-tip data-for={`reason-${item.id}`}>
-                          <IconReason width={24} height={24} />
+                          <IconReason width={20} height={20} />
                         </a>
                         <ReactTooltip
                           id={`reason-${item.id}`}
@@ -774,9 +760,9 @@ function TargetManagement() {
                         >
                           <div className="tooltip-content">
                             <div className="tooltip-header">
-                              Ý kiến của CBQL phê duyệt:
+                              {renderReasonTooltipTitle(item)}
                             </div>
-                            <div>{item.rejectReson}</div>
+                            <div>{item.rejectReson || item.reviewComment}</div>
                           </div>
                         </ReactTooltip>
                       </>
@@ -785,25 +771,40 @@ function TargetManagement() {
                 <td className="text-center sticky-col">
                   {STATUS_DELETEABLE.includes(item.status) &&
                     currentTab === TABS.OWNER && (
-                      <IconRemove
-                        className="rm-icon action-icon"
+                      <span title="Xóa">
+                        <IconRemove
+                          className="rm-icon action-icon"
+                          onClick={(event) =>
+                            onDeleteTargetRegisterClick(event, item)
+                          }
+                          alt="Xóa"
+                        />
+                      </span>
+                    )}
+                  {((currentTab === TABS.OWNER &&
+                    STATUS_RECALLABLE.includes(item.status)) ||
+                    (currentTab === TABS.REQUEST &&
+                      STATUS_RECALLABLE_APPROVE_TAB.includes(item.status))) && (
+                    <span title="Thu hồi">
+                      <IconRecall
                         onClick={(event) =>
-                          onDeleteTargetRegisterClick(event, item)
+                          onRecallTargetRegisterClick(event, item)
                         }
                       />
-                    )}
+                    </span>
+                  )}
                   {((currentTab === TABS.OWNER &&
                     STATUS_EDITABLE.includes(item.status)) ||
                     (currentTab === TABS.REQUEST &&
                       STATUS_EDITABLE_APPROVE_TAB.includes(item.status))) && (
-                    <IconEdit
-                      width={28}
-                      height={28}
-                      className="action-icon"
-                      onClick={(event) =>
-                        onEditTargetRegisterClick(event, item)
-                      }
-                    />
+                    <span title="Chỉnh sửa">
+                      <IconEdit
+                        className="action-icon"
+                        onClick={(event) =>
+                          onEditTargetRegisterClick(event, item)
+                        }
+                      />
+                    </span>
                   )}
                 </td>
               </tr>
