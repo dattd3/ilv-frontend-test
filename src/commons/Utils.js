@@ -170,8 +170,8 @@ const isEnableFunctionByFunctionName = name => {
 const getValueParamByQueryString = (queryString, key) => {
     // const queryString = window.location.search
     const params = new URLSearchParams(queryString)
-    const date = params.get(key)
-    return date
+    const value = params.get(key)
+    return value
 }
 
 const calculateBackDateByPnLVCodeAndFormatType = (pnlVCode, formatType) => {

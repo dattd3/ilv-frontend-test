@@ -85,7 +85,7 @@ class ProposedResignationPage extends React.Component {
                         job_title: res.position_name,
                         job_name: res.position_name,
                         company_email: res.username,
-                        department: res.division + (res.department ? '/' + res.department : '') + (res.part ? '/' + res.part : ''),
+                        department: res.division + (res.department ? '/' + res.department : '') + (res.unit ? '/' + res.unit : ''),
                         date_start_work: null,
                         contract_type: null, // need update
                         contract_name: null, // need update
@@ -115,7 +115,7 @@ class ProposedResignationPage extends React.Component {
                     account: infos?.username?.toUpperCase() || "",
                     avatar: "",
                     jobTitle: infos?.current_position || "",
-                    department: `${infos.division || ""}${infos.department ? `/${infos.department}` : ""}${infos.part ? `/${infos.part}` : ""}`,
+                    department: `${infos.division || ""}${infos.department ? `/${infos.department}` : ""}${infos.unit ? `/${infos.unit}` : ""}`,
                     employeeLevel: infos?.employee_level || "",
                     fullName: infos?.fullname || "",
                     organizationLv2: infos?.organization_lv2 || "",

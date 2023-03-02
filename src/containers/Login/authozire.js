@@ -132,7 +132,8 @@ function Authorize(props) {
                             jobTitle: user.job_name,
                             jobId: user.job_id,
                             benefitLevel: user.benefit_level || user.employee_level,
-                            employeeLevel: formatMuleSoftValue(user?.rank_title) ? user?.rank_title : user?.employee_level, // Cấp bậc chức danh để phân quyền.
+                            employeeLevel: formatMuleSoftValue(user?.rank_title) ? user?.rank_title : user?.employee_level, // Có Cấp bậc chức danh thì lấy Cấp bậc chức danh ngược lại lấy Cấp bậc thực tế
+                            actualRank: formatMuleSoftValue(user?.employee_level) ? user?.employee_level : '', // Cấp bậc thực tế
                             benefitTitle: benefitTitle,
                             company: user.pnl,
                             sabaId: `saba-${user.uid}`,
@@ -158,7 +159,8 @@ function Authorize(props) {
                             partId: user.organization_lv6,
                             part: user.part,
                             role_assigment: user.role_assigment,
-                            prepare: shouldShowPrepareOnboard
+                            prepare: shouldShowPrepareOnboard,
+                            jobCode: user?.job_code,
                         });
                     }
                 })
@@ -175,7 +177,8 @@ function Authorize(props) {
                         jobTitle: user.job_name,
                         jobId: user.job_id,
                         benefitLevel: user.benefit_level || user.employee_level,
-                        employeeLevel: user.rank_title || user.employee_level, // Cấp bậc chức danh để phân quyền.
+                        employeeLevel: formatMuleSoftValue(user?.rank_title) ? user?.rank_title : user?.employee_level, // Có Cấp bậc chức danh thì lấy Cấp bậc chức danh ngược lại lấy Cấp bậc thực tế
+                        actualRank: formatMuleSoftValue(user?.employee_level) ? user?.employee_level : '', // Cấp bậc thực tế
                         benefitTitle: benefitTitle,
                         company: user.pnl,
                         sabaId: `saba-${user.uid}`,
@@ -199,7 +202,8 @@ function Authorize(props) {
                         partId: user.organization_lv6,
                         part: user.part,
                         role_assigment: user.role_assigment,
-                        prepare: shouldShowPrepareOnboard
+                        prepare: shouldShowPrepareOnboard,
+                        jobCode: user?.job_code,
                     });
                 })
                 .finally(result => {

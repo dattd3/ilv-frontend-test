@@ -131,7 +131,7 @@ class RegistrationEmploymentTermination extends React.Component {
                             </div>
                         </div>
                         {
-                            requestInfo?.processStatusId == Constants.STATUS_REVOCATION && requestInfo?.commentExtend != null && requestInfo?.commentExtend != "" && requestInfo?.commentExtend != undefined ?
+                            resignInfo?.processStatusId == Constants.STATUS_REVOCATION && requestInfo?.commentExtend != null && requestInfo?.commentExtend != "" && requestInfo?.commentExtend != undefined ?
                                 <div className="row">
                                     <div className="col-12">
                                         <p className="title">Lý do hủy yêu cầu</p>
@@ -227,9 +227,9 @@ class RegistrationEmploymentTermination extends React.Component {
                 <AttachmentComponent files={files} updateFiles={this.updateFiles} />
 
                 <div className="block-status">
-                    <span className={`status ${Constants.mappingStatusRequest[requestInfo.processStatusId].className}`}>{(this.props.action == "consent" && requestInfo.processStatusId == 5 && resignInfo.appraiser) ? t(Constants.mappingStatusRequest[20].label) : t(Constants.mappingStatusRequest[requestInfo.processStatusId].label)}</span>
+                    <span className={`status ${Constants.mappingStatusRequest[resignInfo.processStatusId].className}`}>{(this.props.action == "consent" && resignInfo.processStatusId == 5 && resignInfo.appraiser) ? t(Constants.mappingStatusRequest[20].label) : t(Constants.mappingStatusRequest[resignInfo.processStatusId].label)}</span>
                 </div>
-                {(requestInfo.processStatusId === 8 || (this.props.action != "consent" && requestInfo.processStatusId === 5) || requestInfo.processStatusId === 2) ?
+                {(requestInfo.processStatusId === 8 || (this.props.action != "consent" && resignInfo.processStatusId === 5) || resignInfo.processStatusId === 2) ?
                     <DetailButtonComponent
                         dataToSap={[{
                             "id": resignInfo.id,
@@ -242,9 +242,9 @@ class RegistrationEmploymentTermination extends React.Component {
                         }]}
                         //isShowRevocationOfApproval={resignInfo.processStatusId === Constants.STATUS_APPROVED && (requestInfo.actionType == "INS" || requestInfo.actionType == "MOD")}
                         isShowRevocationOfApproval={false}
-                        isShowApproval={requestInfo.processStatusId === Constants.STATUS_WAITING}
-                        isShowConsent={requestInfo.processStatusId === Constants.STATUS_WAITING_CONSENTED}
-                        isShowRevocationOfConsent={requestInfo.processStatusId === Constants.STATUS_WAITING && resignInfo.appraiser}
+                        isShowApproval={resignInfo.processStatusId === Constants.STATUS_WAITING}
+                        isShowConsent={resignInfo.processStatusId === Constants.STATUS_WAITING_CONSENTED}
+                        isShowRevocationOfConsent={resignInfo.processStatusId === Constants.STATUS_WAITING && resignInfo.appraiser}
                         id={resignInfo.id}
                         urlName={'requestattendance'}
                         requestTypeId={requestTypeId}

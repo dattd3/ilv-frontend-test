@@ -286,12 +286,22 @@ function EvaluationProcess(props) {
   const formatTargetText = str => str?.replace(/\n|\r/g, "")
 
   const renderEvaluationItem = (item, index, scores, target, i, deviant, parentIndex, subGroupTargetIndex) => {
-    const isChild = !_.isNil(parentIndex);
+    // index => index của từng phần (Tinh thần thái độ hoặc Kết quả công việc)
+    // i = 0 Nếu Biểu mẫu giành cho CBLĐ hoặc Nhân viên thuộc Vinmec. Ngược lại = index của item trong listTarget level 0 (ngang cấp Tinh thần thái độ hoặc Kết quả công việc)
+    // parentIndex = index của item trong listTarget level 0 (ngang cấp Tinh thần thái độ hoặc Kết quả công việc) nếu Biểu mẫu giành cho CBLĐ hoặc Nhân viên thuộc Vinmec. Ngược lại = null
+    // subGroupTargetIndex = index của item nằm trong listTarget sâu nhất nếu Biểu mẫu giành cho CBLĐ hoặc Nhân viên thuộc Vinmec. Ngược lại = null
+
+    // const isChild = !_.isNil(parentIndex);
+    const isChild = parentIndex !== null && parentIndex !== undefined && parentIndex !== ''
     const isDisableEmployeeComment = isEdit ? (showByManager || evaluationFormDetail.status != evaluationStatus.launch) : true
     const isDisableManagerComment = isEdit ? (!showByManager || (showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment))) : true
 
     return <div className="evaluation-item" key={target.id}>
-      {!isChild ? <div className="title">{`${i + 1}. ${JSON.parse(target?.targetName || '{}')[languageCodeMapping[currentLocale]]}`}</div> : <div className="sub-title">{`${parentIndex + 1}.${subGroupTargetIndex + 1} ${JSON.parse(target?.targetName || '{}')[languageCodeMapping[currentLocale]]}`}</div>}
+      {
+        !isChild 
+        ? <div className="title">{`${i + 1}. ${JSON.parse(target?.targetName || '{}')[languageCodeMapping[currentLocale]]}`}</div> // 1 level
+        : <div className="sub-title">{`${parentIndex + 1}.${subGroupTargetIndex + 1} ${JSON.parse(target?.targetName || '{}')[languageCodeMapping[currentLocale]]}`}</div> // 2 level
+      }
       {
         item?.listGroupConfig && item?.listGroupConfig?.length > 0 ?
           <div className="score-block">
@@ -312,7 +322,12 @@ function EvaluationProcess(props) {
                     : <input type="text" value={target?.seftPoint || ''} disabled />
                 }
               </div>
-              {errors[`${index}_${i}_seftPoint`] && <div className="alert alert-danger invalid-message" role="alert">{errors[`${index}_${i}_seftPoint`]}</div>}
+              {
+                !isChild
+                ? errors[`${index}_${i}_seftPoint`] && <div className="alert alert-danger invalid-message" role="alert">{errors[`${index}_${i}_seftPoint`]}</div>
+                : errors[`${index}_${parentIndex}_${subGroupTargetIndex}_seftPoint`] && <div className="alert alert-danger invalid-message" role="alert">{errors[`${index}_${parentIndex}_${subGroupTargetIndex}_seftPoint`]}</div>
+              }
+              {/* {errors[`${index}_${i}_seftPoint`] && <div className="alert alert-danger invalid-message" role="alert">{errors[`${index}_${i}_seftPoint`]}</div>} */}
             </div>
             <div className="qltt attitude-score">
               <div className="item">
@@ -331,7 +346,11 @@ function EvaluationProcess(props) {
                     : <input type="text" value={target?.leadReviewPoint || ''} disabled />
                 }
               </div>
-              {errors[`${index}_${i}_${subGroupTargetIndex}_leadReviewPoint`] && <div className="alert alert-danger invalid-message" role="alert">{errors[`${index}_${i}_${subGroupTargetIndex}_leadReviewPoint`]}</div>}
+              {
+                !isChild
+                ? errors[`${index}_${i}_leadReviewPoint`] && <div className="alert alert-danger invalid-message" role="alert">{errors[`${index}_${i}_leadReviewPoint`]}</div>
+                : errors[`${index}_${parentIndex}_${subGroupTargetIndex}_leadReviewPoint`] && <div className="alert alert-danger invalid-message" role="alert">{errors[`${index}_${parentIndex}_${subGroupTargetIndex}_leadReviewPoint`]}</div>
+              }
             </div>
             <div className="deviant">
               <span className="red label">{t("EvaluationDetailPartAttitudeDifferent")}</span>
@@ -362,6 +381,7 @@ function EvaluationProcess(props) {
             </div>
           </div>
           :
+          // Phần 2: Kết quả công việc
           <div className="wrap-score-table">
             <table>
               <thead>
@@ -500,7 +520,6 @@ function EvaluationProcess(props) {
     <div className="employee-info-block">
       {renderEmployeeInfos()}
     </div>
-
     {
       (evaluationFormDetail?.listGroup || []).map((item, index) => {
         let indexText = formatIndexText(index + 1)
@@ -552,12 +571,13 @@ function EvaluationProcess(props) {
             {
               (item?.listTarget || []).map((target, i) => {
                 let deviant = (target?.leadReviewPoint === '' || target?.leadReviewPoint === null || target?.seftPoint === '' || target?.seftPoint === null) ? '' : Number(target?.leadReviewPoint) - Number(target?.seftPoint)
-                // const companyCode = localStorage.getItem('companyCode');
                 const companyCodeForTemplate = evaluationFormDetail?.companyCode
-                if (evaluationFormDetail?.formType == formType.EMPLOYEE && companyCodeForTemplate != Constants.pnlVCode.VinMec) { // Biểu mẫu giành cho Nhân viên
+                if (evaluationFormDetail?.formType == formType.EMPLOYEE && companyCodeForTemplate != Constants.pnlVCode.VinMec) {
+                  // Biểu mẫu giành cho Nhân viên không thuộc Vinmec
                   return renderEvaluationItem(item, index, scores, target, i, deviant)
                 }
-                if (evaluationFormDetail?.formType == formType.MANAGER || (companyCodeForTemplate == Constants.pnlVCode.VinMec && evaluationFormDetail?.formType == formType.EMPLOYEE)) { // Biểu mẫu giành cho CBLĐ
+                if (evaluationFormDetail?.formType == formType.MANAGER || (companyCodeForTemplate == Constants.pnlVCode.VinMec && evaluationFormDetail?.formType == formType.EMPLOYEE)) {
+                  // Biểu mẫu giành cho CBLĐ hoặc Nhân viên thuộc Vinmec
                   if (isAttitudeBlock) {
                     return <div className="evaluation-sub-group" key={`sub-group-${i}`}>
                       <div className='sub-group-name'>{`${i + 1}. ${JSON.parse(target?.groupName || '{}')[languageCodeMapping[currentLocale]]}`} <span className="red">({target.groupWeight}%)</span></div>
@@ -572,6 +592,7 @@ function EvaluationProcess(props) {
                       </div>
                     </div>
                   } else {
+                    // Phần 2: Kết quả công việc
                     return (
                       <div className="evaluation-item" key={i}>
                         <div className="title">{`${i + 1}. ${JSON.parse(target?.targetName || '{}')[languageCodeMapping[currentLocale]]}`}</div>
@@ -711,7 +732,7 @@ function EvaluationDetail(props) {
   const { t } = useTranslation()
   const [evaluationFormDetail, SetEvaluationFormDetail] = useState(null)
   const [isLoading, SetIsLoading] = useState(false)
-  const [statusModal, SetStatusModal] = useState({ isShow: false, isSuccess: true, content: "" })
+  const [statusModal, SetStatusModal] = useState({ isShow: false, isSuccess: true, content: "", needReload: true })
   const [errors, SetErrors] = useState({})
   const { showByManager, updateParent } = props
   const guard = useGuardStore()
@@ -764,6 +785,7 @@ function EvaluationDetail(props) {
           isShow: true,
           content: t("AnErrorOccurred"),
           isSuccess: false,
+          needReload: true,
         })
       } finally {
         SetIsLoading(false)
@@ -962,14 +984,18 @@ function EvaluationDetail(props) {
     statusModalTemp.isShow = false
     statusModalTemp.isSuccess = true
     statusModalTemp.content = ""
+    statusModalTemp.needReload = true
     SetStatusModal(statusModalTemp)
-    window.location.reload()
+
+    if (statusModal.needReload) {
+      window.location.reload()
+    }
   }
 
   const isDataValid = () => {
     const errorResult = (evaluationFormDetail?.listGroup || []).reduce((initial, currentParent, indexParent) => {
       let targetErrors = {}
-      if (currentParent?.listGroupConfig && currentParent?.listGroupConfig?.length > 0) {
+      if (currentParent?.listGroupConfig && currentParent?.listGroupConfig?.length > 0) { // Tinh thần thái độ
         targetErrors = (currentParent?.listTarget || []).reduce((subInitial, subCurrent, subIndex) => {
           let keyData = showByManager ? 'leadReviewPoint' : 'seftPoint'
           subInitial[`${indexParent}_${subIndex}_${keyData}`] = null
@@ -988,7 +1014,7 @@ function EvaluationDetail(props) {
 
           return subInitial
         }, {})
-      } else {
+      } else { // Kết quả công việc
         targetErrors = (currentParent?.listTarget || []).reduce((subInitial, subCurrent, subIndex) => {
           if (showByManager) {
             subInitial[`${indexParent}_${subIndex}_leadReviewPoint`] = null
@@ -1012,8 +1038,22 @@ function EvaluationDetail(props) {
       initial = { ...initial, ...targetErrors }
       return initial
     }, {})
+
+    const isValid = (Object.values(errorResult) || []).every(item => !item)
+
     SetErrors(errorResult)
-    return (Object.values(errorResult) || []).every(item => !item)
+
+    if (!isValid) {
+      SetStatusModal({
+        ...statusModal,
+        isShow: true,
+        isSuccess: false,
+        content: 'Vui lòng nhập các trường bắt buộc!',
+        needReload: false,
+      })
+    }
+
+    return isValid
   }
 
   const isValidTotalScoreFunc = () => {
@@ -1069,6 +1109,7 @@ function EvaluationDetail(props) {
       statusModalTemp.isShow = true
       statusModalTemp.isSuccess = false
       statusModalTemp.content = t("EvaluationTotalScoreInValid")
+      statusModalTemp.needReload = false
       SetStatusModal(statusModalTemp)
       return
     }
@@ -1089,6 +1130,7 @@ function EvaluationDetail(props) {
         const response = await axios.post(`${process.env.REACT_APP_HRDX_PMS_URL}api/form/ApproveBothReject`, payload, config)
         SetIsLoading(false)
         statusModalTemp.isShow = true
+        statusModalTemp.needReload = true
         if (response && response.data) {
           const result = response.data.result
           if (result.code == Constants.PMS_API_SUCCESS_CODE) {
@@ -1117,6 +1159,7 @@ function EvaluationDetail(props) {
         const response = await axios.post(`${process.env.REACT_APP_HRDX_PMS_URL}api/targetform/update`, { requestString: JSON.stringify(payload || {}) }, config)
         SetIsLoading(false)
         statusModalTemp.isShow = true
+        statusModalTemp.needReload = actionCode == actionButton.approve
         if (response && response.data) {
           const result = response.data.result
           if (result.code == Constants.PMS_API_SUCCESS_CODE) {
@@ -1142,6 +1185,7 @@ function EvaluationDetail(props) {
       statusModalTemp.isShow = false
       statusModalTemp.isSuccess = false
       statusModalTemp.content = t("AnErrorOccurred")
+      statusModalTemp.needReload = true
       if (!showByManager) {
         SetStatusModal(statusModalTemp)
       } else {
@@ -1153,7 +1197,12 @@ function EvaluationDetail(props) {
   return (
     <>
       <LoadingModal show={isLoading} />
-      <StatusModal show={statusModal.isShow} isSuccess={statusModal.isSuccess} content={statusModal.content} onHide={onHideStatusModal} />
+      <StatusModal 
+        show={statusModal.isShow} 
+        isSuccess={statusModal.isSuccess} 
+        content={statusModal.content} 
+        className="evaluation-status-modal"
+        onHide={onHideStatusModal} />
       <div className="evaluation-detail-page">
         {
           dataLoaded 
