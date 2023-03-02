@@ -157,7 +157,7 @@ const isEnableFunctionByFunctionName = name => {
                 Constants.pnlVCode.VinUni, Constants.pnlVCode.Vin3S, Constants.pnlVCode.VinAI, Constants.pnlVCode.VinES]
             break
         case Constants.listFunctionsForPnLACL.changeStaffShift:
-            listPnLAccepted = [Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl]
+            listPnLAccepted = [Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading]
             break
         case Constants.listFunctionsForPnLACL.selectWorkingShift24h:
             listPnLAccepted = [Constants.pnlVCode.VinMec]
