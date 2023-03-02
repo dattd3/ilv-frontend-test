@@ -857,7 +857,7 @@ class EmployeeTimesheets extends Component {
       <>
       <ResultDetailModal show={isShowStatusModal} title="Trạng thái cập nhật phân ca" onHide={this.hideStatusModal} resultDetail={resultShiftUpdateDetail}/>
       <div className="timesheet-section department-timesheet">
-        <h1 className="content-page-header">{[Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl].includes(companyVCodeUserLogged) ? t("TimesheetDivision") : t("Timesheet")}</h1>
+        <h1 className="content-page-header">{[Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading].includes(companyVCodeUserLogged) ? t("TimesheetDivision") : t("Timesheet")}</h1>
         <FilterData clickSearch={this.searchTimesheetByDate.bind(this)} updateEmployees={this.updateEmployees} />
         {
           (isSearch && timeTables.length > 0)  ?
@@ -873,14 +873,14 @@ class EmployeeTimesheets extends Component {
                 <th rowSpan="2">{t("RoomPartGroup")}</th>
                 <th rowSpan="2"></th>
                 {
-                  dayList.map((item, i) => {
+                  (dayList || []).map((item, i) => {
                     return <th className="text-center text-uppercase font-weight-bold" key={i}>{moment(item).format("dddd").toLocaleUpperCase()}</th>
                   })
                 }
               </tr>
               <tr>
                 {
-                  dayList.map((item, i) => {
+                  (dayList || []).map((item, i) => {
                     return <th key={i}>{moment(item).format("DD/MM/YYYY")}</th>
                   })
                 }
@@ -888,7 +888,7 @@ class EmployeeTimesheets extends Component {
             </thead>
             <tbody>
               {
-                timeTables.map((item, i) => {
+                (timeTables || []).map((item, i) => {
                   return <React.Fragment key={i}>
                     <tr>
                       <td rowSpan="5">{item.name}</td>
