@@ -339,6 +339,7 @@ function Content(props) {
     const [isShowShiftUpdateModal, SetIsShowShiftUpdateModal] = useState(false)
     const [dateInfo, SetDateInfo] = useState({})
     const [totalEmployeesUpdating, SetTotalEmployeesUpdating] = useState(0)
+    const currentUserPnL = localStorage.getItem("companyCode")
 
     const onChangePage = index => {
         setPageNumber(index)
@@ -350,7 +351,6 @@ function Content(props) {
 
     const handleShowModalShiftChange = (date, day) => {
         let isEnableChangeStaffShift = isEnableFunctionByFunctionName(Constants.listFunctionsForPnLACL.changeStaffShift)
-        const currentUserPnL = localStorage.getItem("companyCode")
         if ([Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading].includes(currentUserPnL)) {
             const currentUserRankTitle = localStorage.getItem("employeeLevel").toUpperCase() // Cấp bậc chức danh của user logged
             const levelAccessFunction = ["P2", "P1", "T4", "T3", "T2", "T1", "T0"]
@@ -375,6 +375,9 @@ function Content(props) {
         const minDate = getRegistrationMinDateByConditions()
         
         if (!minDate) {
+            if ([Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading].includes(currentUserPnL)) {
+                return true
+            }
             const backDateConfig = 1
             const duration = moment().diff(date, 'days')
             if (duration > backDateConfig) {
