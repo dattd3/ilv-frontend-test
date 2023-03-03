@@ -364,16 +364,18 @@ function ShiftUpdateModal(props) {
                 }
                 if (startBreak && endBreak) {
                     if (shiftInfo.shiftUpdateType === Constants.SUBSTITUTION_SHIFT_UPDATE) {
-                        const duration = moment.duration(moment(endBreak, "HHmmss").diff(moment(startBreak, "HHmmss")))
+                        const duration = moment.duration(moment(endBreak, "YYYYMMDD HHmmss").diff(moment(startBreak, "YYYYMMDD HHmmss")))
                         const totalHoursBreak = duration.asHours()
+                        const totalTime = moment.duration(moment(endTime, "YYYYMMDD HHmmss").diff(moment(startTime, "YYYYMMDD HHmmss"))).asHours()
                         const totalTimeBreakValid = 2
                         const totalTimeWorkingValid = 10
-                        if (shiftInfo.shiftType && shiftInfo.shiftType?.value == brokenShiftCode && totalHoursBreak < totalTimeBreakValid) {
-                            errors['totalTime' + '_' + index] = t("WarningTotalBreakTime")
-                        } else if (shiftInfo.shiftType && shiftInfo.shiftType?.value == brokenShiftCode && moment.duration(this.state.totalHours).asHours() > totalTimeWorkingValid) {
-                            errors['totalTime' + '_' + index] = t("WarningTotalRegisTime")
-                        } else {
-                            errors['totalTime' + '_' + index] = null
+                        errors['totalTime' + '_' + index] = null
+                        if (shiftInfo.shiftType && shiftInfo.shiftType?.value == brokenShiftCode) {
+                            if (totalHoursBreak < totalTimeBreakValid) {
+                                errors['totalTime' + '_' + index] = t("WarningTotalBreakTime")
+                            } else if ((totalTime - totalHoursBreak) > totalTimeWorkingValid) {
+                                errors['totalTime' + '_' + index] = t("WarningTotalRegisTime")
+                            }
                         }
                     }
                 }
