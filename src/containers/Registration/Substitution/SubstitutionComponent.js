@@ -6,7 +6,6 @@ import { withTranslation } from "react-i18next"
 import axios from 'axios'
 import moment from 'moment'
 import _ from 'lodash'
-import { t } from 'i18next'
 import ButtonComponent from '../ButtonComponent'
 import ApproverComponent from '../ApproverComponent'
 import AssesserComponent from '../AssesserComponent'
@@ -16,7 +15,7 @@ import ShiftForm from './ShiftForm'
 import ResultModal from '../ResultModal'
 import Constants from '../.../../../../commons/Constants'
 import map from '../../../../src/containers/map.config'
-import { getValueParamByQueryString, getMuleSoftHeaderConfigurations, formatStringByMuleValue, getRegistrationMinDateByConditions } from "../../../commons/Utils"
+import { getValueParamByQueryString, getMuleSoftHeaderConfigurations, formatStringByMuleValue, getRegistrationMinDateByConditions, isVinFast } from "../../../commons/Utils"
 import EditIcon from '../../../assets/img/icon/Icon-edit.svg'
 import 'react-datepicker/dist/react-datepicker.css'
 import vi from 'date-fns/locale/vi'
@@ -539,7 +538,7 @@ class SubstitutionComponent extends React.Component {
               shiftType: Constants.SUBSTITUTION_SHIFT_CODE,
               shiftId: null,
               shiftHours: null,
-              substitutionType: this.isVin3S ? (this.substitutionTypes || []).find(substitutionType => substitutionType?.value === substitutionTypeAllowedToUpdateForVin3S) : null,
+              substitutionType: (this.isVin3S || isVinFast()) ? (this.substitutionTypes || []).find(substitutionType => substitutionType?.value === substitutionTypeAllowedToUpdateForVin3S) : null,
               shifts: this.state.shifts,
               applyFrom: null,
               applyTo: null
@@ -643,7 +642,7 @@ class SubstitutionComponent extends React.Component {
     const {startDate, endDate, isShowResultModal, titleModal, messageModal, isSuccess, timesheets, errors, isShowStartBreakTimeAndEndBreakTime, 
       files, disabledSubmitButton, shifts, statusModal} = this.state
     
-    const substitutionTypes = this.isVin3S 
+    const substitutionTypes = (this.isVin3S || isVinFast())
     ? (this.substitutionTypes || []).filter(substitutionType => substitutionType?.value === substitutionTypeAllowedToUpdateForVin3S) 
     : this.substitutionTypes
     
@@ -761,9 +760,12 @@ class SubstitutionComponent extends React.Component {
                   <label onClick={this.updateShiftType.bind(this, Constants.SUBSTITUTION_SHIFT_CODE, index)} className={`btn btn-outline-info shift-change-type ${timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_CODE ? 'active' : ''}`}>
                     {t("SelectShiftCode")}
                   </label>
-                  <label onClick={this.updateShiftType.bind(this, Constants.SUBSTITUTION_SHIFT_UPDATE, index)} className={`btn btn-outline-info shift-change-type ${timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_UPDATE ? 'active' : ''} ${this.isVin3S ? 'disabled' : ''}`}>
-                    {t("EndNewTime")}
-                  </label>
+                  {
+                    !isVinFast() &&
+                    <label onClick={this.updateShiftType.bind(this, Constants.SUBSTITUTION_SHIFT_UPDATE, index)} className={`btn btn-outline-info shift-change-type ${timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_UPDATE ? 'active' : ''} ${this.isVin3S ? 'disabled' : ''}`}>
+                      {t("EndNewTime")}
+                    </label>
+                  }
                 </div>
                 <div className="row shift-change-type-field">
                   <div className="col-2">
@@ -798,13 +800,14 @@ class SubstitutionComponent extends React.Component {
                           showYearDropdown={true}
                           autoComplete='off'
                           popperPlacement="bottom-end"
-                          className="form-control input" />
+                          className="form-control input" 
+                          disabled={isVinFast()} />
                     </div>
                     {this.error(index, 'applyTo')}
                   </div>
                   <div className="col-4">
                     <p className="title">{t("ShiftCategory")}<span className="text-danger required">(*)</span></p>
-                    <div>
+                    <div style={{paddingTop: 10}}>
                       <Select 
                         name="substitutionType" 
                         value={timesheet.substitutionType} 
