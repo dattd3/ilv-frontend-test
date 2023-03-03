@@ -471,15 +471,15 @@ function Content(props) {
                                 <td rowSpan={isShowLineOT ? 4 : 3} className="fixed-col room-part-group"><span>{timeSheet.departmentPartGroup || ""}</span></td>
                                 <RenderRow1 member = {timeSheet} />
                             </tr>
-                            <tr className="no-border-left" className="line2">
+                            <tr className="no-border-left line2">
                                 <RenderRow2 member = {timeSheet} />
                             </tr>
-                            <tr className="no-border-left" className="line3">
+                            <tr className="no-border-left line3">
                                 <RenderRow3 member={timeSheet} isShowLineOT={isShowLineOT} />
                             </tr>
                             {
                                 isShowLineOT ? 
-                                <tr className="no-border-left" className="line4">
+                                <tr className="no-border-left line4">
                                     <RenderRow4 member={timeSheet} />
                                 </tr>
                                 : null
