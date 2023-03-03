@@ -7,7 +7,7 @@ import DatePicker, { registerLocale } from 'react-datepicker'
 import { useTranslation } from "react-i18next"
 import { Modal, Dropdown, Button } from 'react-bootstrap'
 import Constants from "../../../../commons/Constants"
-import { formatStringByMuleValue, formatNumberInteger, getMuleSoftHeaderConfigurations } from "../../../../commons/Utils"
+import { formatStringByMuleValue, formatNumberInteger, getMuleSoftHeaderConfigurations, isVinFast } from "../../../../commons/Utils"
 import DropdownCustomize from "../../../LeaveFund/DropdownCustomize"
 import './ShiftUpdateModal.scss'
 import 'react-datepicker/dist/react-datepicker.css'
@@ -16,10 +16,16 @@ function ShiftUpdateModal(props) {
     const { t } = useTranslation()
     const brokenShiftCode = "02"
     const shiftCodeOFF = 'OFF'
-    const substitutionTypes = [
+    const substitutionTypes = !isVinFast()
+    ? 
+    [
         { value: '01', label: t("Shiftchange") },
         { value: brokenShiftCode, label: t("IntermittenShift") },
-        { value: '03', label: t("CoastShoreShiftChange") }
+        { value: '03', label: t("CoastShoreShiftChange") },
+    ]
+    :
+    [
+        { value: '01', label: t("Shiftchange") },
     ]
 
     const [shiftStartTimeOptionsFilter, SetShiftStartTimeOptionsFilter] = useState([])
@@ -31,7 +37,7 @@ function ShiftUpdateModal(props) {
         {
             dateChanged: null,
             shiftUpdateType: Constants.SUBSTITUTION_SHIFT_CODE,
-            shiftType: null,
+            shiftType: isVinFast() ? substitutionTypes[0] : null,
             shiftFilter: {
                 isOpenInputShiftCodeFilter: false,
                 shiftCodeFilter: "",
@@ -181,7 +187,7 @@ function ShiftUpdateModal(props) {
             {
                 dateChanged: null,
                 shiftUpdateType: Constants.SUBSTITUTION_SHIFT_CODE,
-                shiftType: null,
+                shiftType: isVinFast() ? substitutionTypes[0] : null,
                 shiftFilter: {
                     isOpenInputShiftCodeFilter: false,
                     shiftCodeFilter: "",
@@ -207,7 +213,7 @@ function ShiftUpdateModal(props) {
     const handleShiftUpdateType = (index, type) => {
         const newShiftInfos = [...shiftInfos]
         newShiftInfos[index].shiftUpdateType = type
-        newShiftInfos[index].shiftType = null
+        newShiftInfos[index].shiftType = isVinFast() ? substitutionTypes[0] : null
         newShiftInfos[index].shiftFilter.isOpenInputShiftCodeFilter = false
         newShiftInfos[index].shiftFilter.shiftCodeFilter = ""
         newShiftInfos[index].shiftFilter.startTimeFilter = null
@@ -420,7 +426,7 @@ function ShiftUpdateModal(props) {
         const newItem = {
             dateChanged: null,
             shiftUpdateType: Constants.SUBSTITUTION_SHIFT_CODE,
-            shiftType: null,
+            shiftType: isVinFast() ? substitutionTypes[0] : null,
             shiftFilter: {
                 isOpenInputShiftCodeFilter: false,
                 shiftCodeFilter: "",
@@ -728,9 +734,12 @@ function ShiftUpdateModal(props) {
                                                 <label onClick={() => handleShiftUpdateType(index, Constants.SUBSTITUTION_SHIFT_CODE)} className={item.shiftUpdateType == Constants.SUBSTITUTION_SHIFT_CODE ? 'btn btn-outline-info active' : 'btn btn-outline-info'}>
                                                     {t("SelectShiftCode")}
                                                 </label>
-                                                <label onClick={() => handleShiftUpdateType(index, Constants.SUBSTITUTION_SHIFT_UPDATE)} className={item.shiftUpdateType == Constants.SUBSTITUTION_SHIFT_UPDATE ? 'btn btn-outline-info active' : 'btn btn-outline-info'}>
-                                                    {t("EndNewTime")}
-                                                </label>
+                                                {
+                                                    !isVinFast() &&
+                                                    <label onClick={() => handleShiftUpdateType(index, Constants.SUBSTITUTION_SHIFT_UPDATE)} className={item.shiftUpdateType == Constants.SUBSTITUTION_SHIFT_UPDATE ? 'btn btn-outline-info active' : 'btn btn-outline-info'}>
+                                                        {t("EndNewTime")}
+                                                    </label>
+                                                }
                                             </div>
                                             <div className="apply-time-shift-type">
                                                 <div className="col-second shift-type">

@@ -858,7 +858,7 @@ class EmployeeTimesheets extends Component {
       <ResultDetailModal show={isShowStatusModal} title="Trạng thái cập nhật phân ca" onHide={this.hideStatusModal} resultDetail={resultShiftUpdateDetail}/>
       <div className="timesheet-section department-timesheet">
         <h1 className="content-page-header">{[Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading].includes(companyVCodeUserLogged) ? t("TimesheetDivision") : t("Timesheet")}</h1>
-        <FilterData clickSearch={this.searchTimesheetByDate.bind(this)} updateEmployees={this.updateEmployees} />
+        <FilterData clickSearch={this.searchTimesheetByDate.bind(this)} isUserRequired={true} updateEmployees={this.updateEmployees} />
         {
           (isSearch && timeTables.length > 0)  ?
           <>
