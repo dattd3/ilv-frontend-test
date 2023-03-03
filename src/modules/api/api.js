@@ -69,20 +69,20 @@ export default class Api {
 
   // fetchSabaUser = async () => {
   //   return await this.request.get(
-  //     `${process.env.REACT_APP_TRAINING_URL}v2/app/saba/people/info`
+  //     `${process.env.REACT_APP_TRAINING_URL}v1/app/saba/people/info`
   //   );
   // };
 
   // training
   fetchSabaCredit = async () => {
     return await this.request.get(
-      `${process.env.REACT_APP_TRAINING_URL}v2/app/saba/people/credits`
+      `${process.env.REACT_APP_TRAINING_URL}v1/app/saba/people/credits`
     );
   };
 
   fetchSabaLearning_OnGoing = async (pageIndex, pageSize, year) => {
     return await this.request.get(
-      `${process.env.REACT_APP_TRAINING_URL}v2/app/saba/people/enrollments`,
+      `${process.env.REACT_APP_TRAINING_URL}v1/app/saba/people/enrollments`,
       {
         params: {
           page_no: pageIndex,
@@ -95,7 +95,7 @@ export default class Api {
 
   fetchSabaLearning_Transcript = async (status, pageIndex, pageSize, year) => {
     return await this.request.get(
-      `${process.env.REACT_APP_TRAINING_URL}v2/app/saba/people/transcripts`,
+      `${process.env.REACT_APP_TRAINING_URL}v1/app/saba/people/transcripts`,
       {
         params: {
           status: status,
@@ -109,7 +109,7 @@ export default class Api {
 
   fetchSabaIntruction = async (user_id, status, pageIndex, pageSize, year) => {
     return await this.request.get(
-      `${process.env.REACT_APP_TRAINING_URL}v2/app/saba/people/instruction`,
+      `${process.env.REACT_APP_TRAINING_URL}v1/app/saba/people/instruction`,
       {
         params: {
           user_id: '',//user_id,
@@ -124,7 +124,7 @@ export default class Api {
 
   fetchRoadmapList = async () => {
     return await this.request.get(
-      `${process.env.REACT_APP_TRAINING_URL}v2/app/saba/people/curriculums`,
+      `${process.env.REACT_APP_TRAINING_URL}v1/app/saba/people/curriculums`,
       {
         params: {
           startPage: 1,
@@ -136,7 +136,7 @@ export default class Api {
 
   fetchRoadmapDetails = async (id) => {
     return await this.request.get(
-      `${process.env.REACT_APP_TRAINING_URL}v2/app/saba/people/curriculums/detail`,
+      `${process.env.REACT_APP_TRAINING_URL}v1/app/saba/people/curriculums/detail`,
       {
         params: {
           id: id,
@@ -147,7 +147,7 @@ export default class Api {
 
   fetchKPI = async () => {
     return await this.request.get(
-      `${process.env.REACT_APP_TRAINING_URL}v2/app/saba/people/credits`
+      `${process.env.REACT_APP_TRAINING_URL}v1/app/saba/people/credits`
     );
   };
 
