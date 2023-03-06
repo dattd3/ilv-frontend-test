@@ -538,7 +538,8 @@ class SubstitutionComponent extends React.Component {
               shiftType: Constants.SUBSTITUTION_SHIFT_CODE,
               shiftId: null,
               shiftHours: null,
-              substitutionType: (this.isVin3S || isVinFast()) ? (this.substitutionTypes || []).find(substitutionType => substitutionType?.value === substitutionTypeAllowedToUpdateForVin3S) : null,
+              substitutionType: this.isVin3S ? (this.substitutionTypes || []).find(substitutionType => substitutionType?.value === substitutionTypeAllowedToUpdateForVin3S) : null,
+              // substitutionType: (this.isVin3S || isVinFast()) ? (this.substitutionTypes || []).find(substitutionType => substitutionType?.value === substitutionTypeAllowedToUpdateForVin3S) : null,
               shifts: this.state.shifts,
               applyFrom: null,
               applyTo: null
@@ -642,7 +643,8 @@ class SubstitutionComponent extends React.Component {
     const {startDate, endDate, isShowResultModal, titleModal, messageModal, isSuccess, timesheets, errors, isShowStartBreakTimeAndEndBreakTime, 
       files, disabledSubmitButton, shifts, statusModal} = this.state
     
-    const substitutionTypes = (this.isVin3S || isVinFast())
+    const substitutionTypes = this.isVin3S
+    // const substitutionTypes = (this.isVin3S || isVinFast())
     ? (this.substitutionTypes || []).filter(substitutionType => substitutionType?.value === substitutionTypeAllowedToUpdateForVin3S) 
     : this.substitutionTypes
     
@@ -760,12 +762,12 @@ class SubstitutionComponent extends React.Component {
                   <label onClick={this.updateShiftType.bind(this, Constants.SUBSTITUTION_SHIFT_CODE, index)} className={`btn btn-outline-info shift-change-type ${timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_CODE ? 'active' : ''}`}>
                     {t("SelectShiftCode")}
                   </label>
-                  {
-                    !isVinFast() &&
+                  {/* {
+                    !isVinFast() && */}
                     <label onClick={this.updateShiftType.bind(this, Constants.SUBSTITUTION_SHIFT_UPDATE, index)} className={`btn btn-outline-info shift-change-type ${timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_UPDATE ? 'active' : ''} ${this.isVin3S ? 'disabled' : ''}`}>
                       {t("EndNewTime")}
                     </label>
-                  }
+                  {/* } */}
                 </div>
                 <div className="row shift-change-type-field">
                   <div className="col-2">
@@ -801,7 +803,8 @@ class SubstitutionComponent extends React.Component {
                           autoComplete='off'
                           popperPlacement="bottom-end"
                           className="form-control input" 
-                          disabled={isVinFast()} />
+                          // disabled={isVinFast()} 
+                      />
                     </div>
                     {this.error(index, 'applyTo')}
                   </div>
