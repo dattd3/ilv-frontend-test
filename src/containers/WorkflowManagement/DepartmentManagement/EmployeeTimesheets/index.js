@@ -739,8 +739,8 @@ class EmployeeTimesheets extends Component {
       }
       for (let j = 0, lenTimesheets = item.timesheets?.length; j < lenTimesheets; j++) {
         if (item.timesheets[j].date === dateChangedFormat && dataChangedForObject[per]) {
-          item.timesheets[j].from_time1 = dataChangedForObject[item.per].startTime || dataChangedForObject[item.per].shiftFilter.shiftSelected?.from_time || ""
-          item.timesheets[j].to_time1 = dataChangedForObject[item.per].endTime || dataChangedForObject[item.per].shiftFilter.shiftSelected?.to_time || ""
+          item.timesheets[j].from_time1 = dataChangedForObject[item.per].startTime ? moment(dataChangedForObject[item.per].startTime, 'YYYYMMDD HHmmss').format('HHmmss') : dataChangedForObject[item.per].shiftFilter.shiftSelected?.from_time || ""
+          item.timesheets[j].to_time1 = dataChangedForObject[item.per].endTime ? moment(dataChangedForObject[item.per].endTime, 'YYYYMMDD HHmmss').format('HHmmss') : dataChangedForObject[item.per].shiftFilter.shiftSelected?.to_time || ""
           item.timesheets[j].old_shift_id = item.timesheets[j].shift_id || ""
           item.timesheets[j].shift_id = dataChangedForObject[item.per].shiftFilter.shiftSelected?.shift_id || ""
         }
