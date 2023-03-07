@@ -108,11 +108,22 @@ function ShiftUpdateModal(props) {
             return []
         }
 
+        function filterShiftsByPnl(shifts) {
+            const currentUserPnL = localStorage.getItem("companyCode");
+            
+            if ([Constants.pnlVCode.VinFast].includes(currentUserPnL)) {
+                shifts = (shifts || []).filter(s => Constants.VFSX_SHIFT_ID_VALID.includes(s?.shift_id));
+            }
+            return shifts;
+        }
+
         async function getShiftList() {
             try {
                 const config = getMuleSoftHeaderConfigurations()
                 const responses = await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/shifts`, config)
-                const shifts = prepareShifts(responses)
+                let shifts = prepareShifts(responses)
+                //ILVG-643: VFXS chỉ phân ca trong 5 mã ca cố định
+                shifts = filterShiftsByPnl(shifts);
                 SetShiftList(shifts)
                 setShiftTimeFilter(shifts)
             } catch (e) {
