@@ -18,7 +18,7 @@ const getDateByRange = (startDate, endDate) => {
 
 export default function processingDataReq(dataRawFromApi, tab) {
     let taskList = [];
-    const listRequestTypeIdToShowTime = [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP, Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE]
+    const listRequestTypeIdToShowTime = [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP, Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE, Constants.OT_REQUEST]
     const listRequestTypeIdToGetSubId = [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP]
     dataRawFromApi.forEach(element => {
         if(element.requestTypeId == Constants.ONBOARDING || element.requestTypeId == Constants.RESIGN_SELF || element.requestTypeId == Constants.SALARY_PROPOSE) {
@@ -84,7 +84,7 @@ export default function processingDataReq(dataRawFromApi, tab) {
                     taskList.push(e)
                 })
             }
-            if (element.requestTypeId == Constants.CHANGE_DIVISON_SHIFT || element.requestTypeId == Constants.DEPARTMENT_TIMESHEET) {
+            if (element.requestTypeId == Constants.CHANGE_DIVISON_SHIFT || element.requestTypeId == Constants.DEPARTMENT_TIMESHEET || element.requestTypeId == Constants.OT_REQUEST) {
                 element.id = element.id.toString()
                 taskList.push(element);
             }
@@ -114,7 +114,6 @@ export default function processingDataReq(dataRawFromApi, tab) {
             return e
         }
     })
-
     return taskList
 }
 
