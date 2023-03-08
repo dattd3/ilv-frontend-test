@@ -374,6 +374,25 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     this.setState({ disabledSubmitButton: status});
   }
 
+  onDownloadsupporterFile() {
+    let url = `${process.env.REACT_APP_REQUEST_URL}user/file-suggests?type=7`;
+    axios.get(url, getRequestConfigs())
+    .then(res => {
+      if (res && res.data && res.data.data && res.data.result) {
+        const result = res.data.result;
+        if (result.code != Constants.API_ERROR_CODE) {
+          const url = res.data.data;
+          const link = document.createElement('a');
+          link.href = url;
+          link.setAttribute('target' , "_self");
+          document.body.appendChild(link);
+          link.click();
+          link.parentNode.removeChild(link);
+        }
+      }
+    }).catch(error => {console.log('Error catch>>>>', error)})
+  }
+
 
   submit() {
     const { t } = this.props
@@ -455,6 +474,10 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         </div>
         <StatusModal show={this.state.isShowStatusModal} content={this.state.content} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
         <h5>II. {t('handover_info')}</h5>
+        <div className="box" style={{padding: '10px 20px'}}>
+          <span>{t('handover_supporter')}</span>
+          <span style={{color: '#4e73df', paddingLeft: '10px', cursor: 'pointer'}} onClick={() => this.onDownloadsupporterFile()}>{t('view_here')}</span>
+        </div>
         <div className="box  cbnv more-description">
           <div className="title" style={{ marginBottom: '16px'}}>
             {t('handover_1')}
