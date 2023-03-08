@@ -1674,6 +1674,23 @@
   "servey_question_3": "3. Bạn sẽ giới thiệu cơ hội nghề nghiệp tại công ty tới người thân/bạn bè hay không? Vì sao?",
   "servey_question_4": "4. Lời khuyên nào bạn muốn để lại cho người sẽ tiếp tục thực hiện công việc hiện giờ của bạn?",
   "servey_question_5": "5. Nếu bạn đã tìm được một công việc mới, điều gì khiến công việc mới hấp dẫn hơn công việc hiện tại của bạn?",
-  "other_reason": "Lý do khác (nếu có)"
-
+  "other_reason": "Lý do khác (nếu có)",
+  "OTRequest": "Đăng ký OT",
+  "OTReason": "Lý do OT",
+  "FromHour": "Từ giờ",
+  "ToHour": "Đến giờ",
+  "OTNote": "* CBNV lưu ý tổng thời gian xin OT không quá 4 giờ/ngày và không quá 40 giờ/tháng.",
+  "MoneyOT": "OT quy ra tiền",
+  "TotalTimePerMonth": "Tổng thời gian đã đăng ký theo tháng",
+  "RegisterReason": "Lý do đăng ký",
+  "BudgetApprover": "CBPT NGÂN SÁCH",
+  "OTReasonOption1": "Tăng cường do thiếu định biên",
+  "OTReasonOption2": "Tăng cường hỗ trợ covid",
+  "OTReasonOption3": "Tăng cường hội nghị/họp BQT",
+  "OTReasonOption4": "Tăng cường ngày Lễ",
+  "OTReasonOption5": "Tăng cường sự kiện/chiến dịch",
+  "OTReasonOption6": "Khác",
+  "OTType": "Loại OT",
+  "OverTimeOT": "(*) Thời gian xin OT quá 4 giờ/ngày",
+  "OverlapTimeOTWorkshift": "(*) Bạn không thể yêu cầu làm thêm giờ trong ca làm việc của mình"
 }

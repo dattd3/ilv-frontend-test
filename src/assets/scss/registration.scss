@@ -18,7 +18,7 @@
             min-height: 40px;
         }
     }
-    .btn-search-substitution, .btn-search-in-out-time {
+    .btn-search-substitution, .btn-search-in-out-time, .btn-search-ot {
         margin-top: 10px;
     }
     .block-time-item-edit {
@@ -926,8 +926,12 @@
         }
     }
     .nav-item {
-        width: 20%;
-        text-align: center;
+        // width: 20%;
+        min-width: 180px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
     .btn-add-multiple-in-out{
         background-color: #44A257;
@@ -1547,4 +1551,173 @@
     .btn-save{
         background-color: #05BD29;
     }
+}
+
+.ot-request-container {
+  input, button {
+    font-size: inherit;
+  }
+  .box {
+    font-size: 14px;
+    color: #000;
+  }
+  .react-datepicker__time-list {
+    .react-datepicker__time-list-item {
+        line-height: 20px;
+    }
+  }
+  .timesheet-container {
+    display: flex;
+    justify-content: space-between;
+  }
+  .request-info-container {
+    padding: 12px 0px;
+    .request-info-card {
+      border: 1px solid #DEE2E6;
+      margin-bottom: 10px;
+      .title {
+        margin: 0;
+        font-size: 14px;
+        font-weight: 700;
+        line-height: 17px;
+        background: #F2F2F2;
+        text-align: center;
+        padding: 6px 0px;
+      }
+      .body {
+        padding: 10px 12px;
+      }
+      .ot-registration-body {
+        padding: 14px
+      }
+      .flex {
+        display: flex;
+      }
+      .form-item {
+        margin-right: 20px;
+        .hour-picker-input {
+          height: 36px;
+          width: 110px;
+          border-radius: 4px;
+        }
+        .react-datepicker__input-container {
+          margin: 0px;
+        }
+        .ot-reason-select__control {
+          height: 36px;
+          width: 271px;
+        }
+      }
+      .field-view {
+        background: #F2F2F2;
+        border-radius: 4px;
+        height: 42px;
+        padding: 10px 15px 15px 15px;
+      }
+      .ot-type-field {
+        width: 271px;
+      }
+      .total-time-field {
+        width: 110px;
+      }
+      .total-time-month-field {
+        width: 240px;
+      }
+    }
+    .col-3, .col-9 {
+      padding: 0
+    }
+    .col-3 {
+      padding-right: 10px;
+    }
+    .ot-note {
+      color: #36B9CC;
+    }
+  }
+  .add-btn {
+    font-size: 16px;
+    line-height: 19px;
+    color: #44A257;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+  .cancel-btn {
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 19px;
+    display: flex;
+    align-items: center;
+    color: #FF0000;
+    cursor: pointer;
+    img {
+      width: 20px;
+      height: 20px;
+    }
+  }
+  .mb-12 {
+    margin-bottom: 12px;
+  }
+  .mb-15 {
+    margin-bottom: 15px;
+  }
+  .mr-20 {
+    margin-right: 20px;
+  }
+  .list-files {
+    display: inline-flex;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: 15px;
+    .item {
+      padding: 5px 10px;
+      background: #FFFFFF;
+      border: 1px solid #B3B3B3;
+      margin-right: 15px;
+      margin-bottom: 10px;
+      .btn-remove {
+        margin-left: 10px;
+        cursor: pointer;
+      }
+    }
+  }
+  .block-button-actions {
+    margin-top: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    .block-buttons {
+      display: flex;
+      align-items: center;
+    }
+    input {
+      display: none;
+    }
+    .btn-attachment {
+      .custom-file-upload {
+        display: flex;
+        align-items: center;
+        height: 42px;
+        color: #000000;
+        cursor: pointer;
+        background: #FFFFFF;
+        border: 1px solid #B3B3B3;
+        margin-bottom: 0;
+        padding: 0.375rem 0.75rem;
+        border-radius: 0.35rem;
+        i {
+          margin-right: 5px;
+          font-size: 12px;
+        }
+      }
+    }
+    button {
+      height: 42px;
+      font-size: inherit;
+      i {
+        font-size: 12px;
+        margin-right: 5px;
+      }
+    }
+  }
 }

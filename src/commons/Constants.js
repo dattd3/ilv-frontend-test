@@ -55,7 +55,8 @@ const Constants = {
   ONBOARDING: 6,
   RESIGN_SELF: 7,
   SALARY_PROPOSE: 12,
-
+  OT_REQUEST: 13,
+  
   //Status request
   STATUS_PENDING: 0,
   STATUS_NOT_APPROVED: 1, // từ chối phê duyệt
