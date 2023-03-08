@@ -151,7 +151,8 @@ const Constants = {
   },
   TYPE_REPORT: {
     DETAIL_REPORT: 0,
-    SUMARY_REPORT: 1
+    SUMARY_REPORT: 1,
+    TIMESHEET_REPORT: 2
   },
   pnlVCode: {
     VinHome: "V040",

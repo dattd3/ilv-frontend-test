@@ -1674,6 +1674,7 @@
   "servey_question_3": "3. Bạn sẽ giới thiệu cơ hội nghề nghiệp tại công ty tới người thân/bạn bè hay không? Vì sao?",
   "servey_question_4": "4. Lời khuyên nào bạn muốn để lại cho người sẽ tiếp tục thực hiện công việc hiện giờ của bạn?",
   "servey_question_5": "5. Nếu bạn đã tìm được một công việc mới, điều gì khiến công việc mới hấp dẫn hơn công việc hiện tại của bạn?",
-  "other_reason": "Lý do khác (nếu có)"
+  "other_reason": "Lý do khác (nếu có)",
+  "TimesheetSumaryReport": "Tổng hợp bảng công"
 
 }
