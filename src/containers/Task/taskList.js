@@ -492,10 +492,16 @@ class TaskList extends React.Component {
                                             let reId = [Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE, Constants.CHANGE_DIVISON_SHIFT, Constants.ONBOARDING].includes(child.requestTypeId) ? child.id : child.id.split(".")[0]
                                             let childId = [Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE, Constants.CHANGE_DIVISON_SHIFT, Constants.ONBOARDING].includes(child.requestTypeId) ? 1 : child.id.split(".")[1]
                                             if ([Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP].includes(child.requestTypeId)) {
-                                                totalTime = child.days >= 1 ? child.days + " ngày" : child.hours + " giờ";
+                                                totalTime = child.days >= 1 ? `${child.days} ${t('DayUnit')}` : `${child.hours} ${t('HourUnit')}`
+                                            } else if ([Constants.OT_REQUEST].includes(child.requestTypeId)) {
+                                              totalTime = `${child.totalTime} ${t('HourUnit')}`
                                             }
                                             let dateChanged = showRangeDateGroupByArrayDate(child.startDate)
 
+                                            if ([Constants.OT_REQUEST].includes(child.requestTypeId)) {
+                                              dateChanged = child.dateRange;
+                                            }
+                                            
                                             return (
                                                 <tr key={index}>
                                                     {

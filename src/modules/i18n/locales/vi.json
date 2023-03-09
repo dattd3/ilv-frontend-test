@@ -1692,5 +1692,6 @@
   "OTReasonOption6": "Khác",
   "OTType": "Loại OT",
   "OverTimeOT": "(*) Thời gian xin OT quá 4 giờ/ngày",
-  "OverlapTimeOTWorkshift": "(*) Bạn không thể yêu cầu làm thêm giờ trong ca làm việc của mình"
+  "OverlapTimeOTWorkshift": "(*) Bạn không thể yêu cầu làm thêm giờ trong ca làm việc của mình",
+  "OTInformation": "THÔNG TIN ĐÃ ĐĂNG KÝ OT"
 }
