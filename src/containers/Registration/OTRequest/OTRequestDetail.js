@@ -1,8 +1,12 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import moment from "moment";
+import axios from "axios";
 import Constants from "commons/Constants";
 import DetailButtonComponent from "../DetailButtonComponent";
+import { getRequestConfigurations } from "commons/Utils";
+
+const config = getRequestConfigurations();
 
 const isNullCustomize = (value) => {
   return value == null ||
@@ -13,11 +17,23 @@ const isNullCustomize = (value) => {
     ? true
     : false;
 };
+const OTRequestType = 13;
+
 export default function OTRequestDetailComponent({ data, action }) {
   const { t } = useTranslation();
+  const [approvalMatrixUrl, setApprovalMatrixUrl] = useState(null);
   const lang = localStorage.getItem("locale");
-  console.log(action);
   const { requestInfo, user, approver, appraiser } = data;
+
+  useEffect(() => {
+    axios
+      .get(
+        `${process.env.REACT_APP_REQUEST_URL}user/file-suggests?type=${OTRequestType}`,
+        config
+      )
+      .then((response) => setApprovalMatrixUrl(response.data?.data))
+      .catch((err) => console.log(err));
+  }, []);
 
   const getDayNameFromDate = (date) => {
     const days = [
@@ -257,7 +273,9 @@ export default function OTRequestDetailComponent({ data, action }) {
                           </div>
                           <div className="col-2">
                             <div className="form-item">
-                              <div className="mb-12 total-leave-time">{t("TotalLeaveTime")}</div>
+                              <div className="mb-12 total-leave-time">
+                                {t("TotalLeaveTime")}
+                              </div>
                               <div className="field-view">
                                 {timesheet.hoursOt}&nbsp;
                                 {t("HourUnit")}
@@ -334,6 +352,20 @@ export default function OTRequestDetailComponent({ data, action }) {
                   <div className="mb-12">{t("DepartmentManage")}</div>
                   <div className="field-view">{approver.department}</div>
                 </div>
+              </div>
+              <div className="col-12">
+                {approvalMatrixUrl && (
+                  <div className="row business-type">
+                    <span className="col-12 text-info smaller font-14">
+                      * {t("NoteSelectApprover")}{" "}
+                      <b>
+                        <a href={approvalMatrixUrl} target="_blank">
+                          {t("ApprovalMatrix")}
+                        </a>
+                      </b>
+                    </span>
+                  </div>
+                )}
               </div>
             </div>
           </div>

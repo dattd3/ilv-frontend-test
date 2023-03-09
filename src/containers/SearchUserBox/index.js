@@ -208,7 +208,7 @@ export default function SearchUserComponent({
             </div>
           </div>
         </div>
-        {!!approvalMatrixUrl && (
+        {approvalMatrixUrl && (
           <div className="row business-type">
             <span className="col-12 text-info smaller font-14">
               * {t("NoteSelectApprover")}{" "}
