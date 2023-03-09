@@ -11,4 +11,25 @@ const actionButton = {
     reject: 3
 }
 
-export { evaluationStatus, actionButton }
+const formType = {
+    MANAGER: 'LD',
+    EMPLOYEE: 'NV',
+}
+
+const groupConfig = {
+    ATTITUDE: 'G1',
+    WORKING_PERFORMANCE_RESULT: 'G2',
+}
+
+const formulaConfig = {
+    CT1: 'VINBUS_CT1',
+    CT2: 'VINBUS_CT2',
+    CT3: 'VINBUS_CT3',
+    CT4: 'VINBUS_CT4',
+    CT5: 'VINBUS_CT5',
+    CT6: 'VINBUS_CT6',
+    CT7: 'VINBUS_CT7',
+    CT8: 'VINBUS_CT8',
+}
+
+export { evaluationStatus, actionButton, formType, groupConfig, formulaConfig }
