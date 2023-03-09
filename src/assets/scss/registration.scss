@@ -1608,12 +1608,6 @@
           width: 271px;
         }
       }
-      .field-view {
-        background: #F2F2F2;
-        border-radius: 4px;
-        height: 42px;
-        padding: 10px 15px 15px 15px;
-      }
       .ot-type-field {
         width: 271px;
       }
@@ -1633,6 +1627,12 @@
     .ot-note {
       color: #36B9CC;
     }
+  }
+  .field-view {
+    background: #F2F2F2;
+    border-radius: 4px;
+    height: 42px;
+    padding: 12px;
   }
   .add-btn {
     font-size: 16px;
@@ -1660,6 +1660,12 @@
   }
   .mb-15 {
     margin-bottom: 15px;
+  }
+  .mb-20 {
+    margin-bottom: 20px;
+  }
+  .mb-30 {
+    margin-bottom: 30px;
   }
   .mr-20 {
     margin-right: 20px;
@@ -1718,6 +1724,22 @@
         font-size: 12px;
         margin-right: 5px;
       }
+    }
+  }
+  .block-title {
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 20px;
+    color: #000000;
+    margin-bottom: 15px;
+  }
+  .total-leave-time {
+    white-space: nowrap;
+  }
+  .ot-request-detail-container {
+    margin-top: 32px;
+    .form-item {
+      margin-right: 0px !important;
     }
   }
 }

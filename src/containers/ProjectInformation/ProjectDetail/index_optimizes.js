@@ -429,10 +429,6 @@ function ProjectDetail(props) {
         })
     };
 
-    console.log("===============================")
-    // console.log(projectTimeSheetFiltered)
-    console.log(projectTimeSheetOriginal)
-
     return (
         <>
         <LoadingModal show={isLoading} />

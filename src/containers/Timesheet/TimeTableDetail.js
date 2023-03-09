@@ -63,7 +63,7 @@ function RenderRow0(props) {
   const backDate = getRegistrationMinDateByConditions()
   const isEnableShiftChangeFunction = isEnableShiftChangeFunctionByPnLVCode(currentUserPnLCode)
   const isEnableInOutTimeUpdateFunction = isEnableInOutTimeUpdateFunctionByPnLVCode(currentUserPnLCode)
-  // const isEnableOTFunction = isEnableOTFunctionByPnLVCode(currentUserPnLCode)
+  const isEnableOTFunction = isEnableOTFunctionByPnLVCode(currentUserPnLCode)
 
   const pathName = window.location.pathname
 
@@ -106,12 +106,12 @@ function RenderRow0(props) {
                   <a href={`/registration?tab=InOutTimeUpdate&date=${item.day}`} target="_blank" title={t('InOutChangeRequest')}>{t('InOutChangeRequest')}</a>
                 </li>
               }
-              {/* {
+              {
                 isEnableOTFunction && 
                 <li className="action-item">
                   <a href={`/registration?tab=OTRequest&date=${item.day}`} target="_blank" title={t('OTRequest')}>{t('OTRequest')}</a>
                 </li>
-              } */}
+              }
             </ul>
           </ReactTooltip>
           : null

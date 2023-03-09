@@ -11,6 +11,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import {
   getMuleSoftHeaderConfigurations,
   getRequestConfigurations,
+  getValueParamByQueryString,
 } from "commons/Utils";
 import AssesserComponent from "../AssesserComponent";
 import SearchUserComponent from "containers/SearchUserBox/index";
@@ -66,13 +67,12 @@ const INIT_STATUS_MODAL_MANAGEMENT = {
   isSuccess: true,
   content: "",
 };
+const queryString = window.location.search
 
 export default function OTRequestComponent({ recentlyManagers }) {
   const { t } = useTranslation();
-  const [startDate, setStartDate] = useState(
-    moment().subtract(7, "d").format("DD/MM/YYYY")
-  );
-  const [endDate, setEndDate] = useState(moment().format("DD/MM/YYYY"));
+  const [startDate, setStartDate] = useState(getValueParamByQueryString(queryString, 'date'));
+  const [endDate, setEndDate] = useState(getValueParamByQueryString(queryString, 'date'));
   const [appraiser, setAppraiser] = useState(null);
   const [budgetApprover, setBudgetApprover] = useState(null);
   const [timeOverviewData, setTimeOverviewData] = useState([]);
@@ -184,7 +184,7 @@ export default function OTRequestComponent({ recentlyManagers }) {
           ).format("YYYYMMDD")}`,
           config
         );
-        newRequestInfoData[index].totalHoursOTInMonth = response.data?.data;
+        newRequestInfoData[index].totalHoursOtInMonth = response.data?.data;
       } catch (error) {}
     }
     setRequestInfoData(newRequestInfoData);
@@ -201,27 +201,27 @@ export default function OTRequestComponent({ recentlyManagers }) {
 
   const OTReasonOptions = [
     {
-      value: 1,
+      value: "1",
       label: t("OTReasonOption1"),
     },
     {
-      value: 2,
+      value: "2",
       label: t("OTReasonOption2"),
     },
     {
-      value: 3,
+      value: "3",
       label: t("OTReasonOption3"),
     },
     {
-      value: 4,
+      value: "4",
       label: t("OTReasonOption4"),
     },
     {
-      value: 5,
+      value: "5",
       label: t("OTReasonOption5"),
     },
     {
-      value: 6,
+      value: "6",
       label: t("OTReasonOption6"),
     },
   ];
@@ -247,11 +247,10 @@ export default function OTRequestComponent({ recentlyManagers }) {
         hours: item.hours ? parseFloat(item.hours) : null,
         date: moment(item.date, "DD-MM-YYYY").format("YYYYMMDD").toString(),
         startTime: moment(item.startTime).format("HHmmss"),
-        endTime: moment(item.startTime).format("HHmmss"),
+        endTime: moment(item.endTime).format("HHmmss"),
         overTimeType: "01",
         hoursOt: getHoursBetween2Times(item.startTime, item.endTime),
       });
-      delete item.totalHoursOTInMonth;
     });
 
     const comments = timesheets
@@ -429,8 +428,10 @@ export default function OTRequestComponent({ recentlyManagers }) {
   };
 
   const hideStatusModal = () => {
+    if (statusModalManagement.isSuccess) {
+      window.location.href = `${map.Registration}?tab=OTRequest`
+    }
     setStatusModalManagement(INIT_STATUS_MODAL_MANAGEMENT);
-    window.location.href = `${map.Registration}?tab=OTRequest`
   }
 
   return (
@@ -793,7 +794,7 @@ export default function OTRequestComponent({ recentlyManagers }) {
                               {t("TotalTimePerMonth")}
                             </div>
                             <div className="field-view total-time-month-field">
-                              {timesheet.totalHoursOTInMonth || 0}{" "}
+                              {timesheet.totalHoursOtInMonth || 0}{" "}
                               {t("HourUnit")}
                             </div>
                           </div>

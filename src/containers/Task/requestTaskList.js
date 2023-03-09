@@ -275,7 +275,7 @@ class RequestTaskList extends React.Component {
     }
 
     getRequestEditLink = (id, requestTypeId, processStatusId) => {
-        if ([Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE, Constants.UPDATE_PROFILE, Constants.CHANGE_DIVISON_SHIFT, Constants.DEPARTMENT_TIMESHEET].includes(requestTypeId)) {
+        if ([Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE, Constants.UPDATE_PROFILE, Constants.CHANGE_DIVISON_SHIFT, Constants.DEPARTMENT_TIMESHEET, Constants.OT_REQUEST].includes(requestTypeId)) {
             return null
         } else {
             const idLengthWrapSub = 2
@@ -682,12 +682,17 @@ class RequestTaskList extends React.Component {
 
                                             if ([Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP].includes(child.requestTypeId)) {
                                                 totalTime = child.days >= fullDay ? `${child.days} ${t('DayUnit')}` : `${child.hours} ${t('HourUnit')}`
+                                            } else if ([Constants.OT_REQUEST].includes(child.requestTypeId)) {
+                                              totalTime = `${child.totalTime} ${t('HourUnit')}`
                                             }
 
                                             let editLink = this.getRequestEditLink(child.id, child.requestTypeId, child.processStatusId)
                                             let detailLink = child.requestTypeId == Constants.SALARY_PROPOSE ? this.getSalaryProposeLink(child) : this.getRequestDetailLink(child.id, child.requestTypeId)
                                             let dateChanged = showRangeDateGroupByArrayDate(child.startDate)
 
+                                            if ([Constants.OT_REQUEST].includes(child.requestTypeId)) {
+                                              dateChanged = child.dateRange;
+                                            }
                                             return (
                                                 <tr key={index}>
                                                     <td className="code"><a href={detailLink} title={child.requestType.name} className="task-title">{generateTaskCodeByCode(child.id)}</a></td>
@@ -701,7 +706,7 @@ class RequestTaskList extends React.Component {
                                                                 let subDateChanged = ''
                                                                 if ([Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP].includes(child.requestTypeId)) {
                                                                     subDateChanged = showRangeDateGroupByArrayDate([moment(item?.startDate, 'YYYYMMDD').format('DD/MM/YYYY'), moment(item?.endDate, 'YYYYMMDD').format('DD/MM/YYYY')])
-                                                                }
+                                                                } 
                                                                 return (
                                                                     <div key={`sub-date-${itemIndex}`} dangerouslySetInnerHTML={{
                                                                         __html: purify.sanitize(subDateChanged || ''),
