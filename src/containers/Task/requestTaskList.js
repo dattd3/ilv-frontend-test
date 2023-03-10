@@ -378,7 +378,7 @@ class RequestTaskList extends React.Component {
         } else {
             if ([Constants.STATUS_WAITING_CONSENTED, Constants.STATUS_WAITING, Constants.STATUS_PARTIALLY_SUCCESSFUL].includes(status)) {
                 if (((status == Constants.STATUS_WAITING_CONSENTED && actionType !== 'DEL') || (status == Constants.STATUS_WAITING && appraiser && _.size(appraiser) > 0 && actionType !== 'DEL'))  
-                    && [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP, Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE, Constants.CHANGE_DIVISON_SHIFT, Constants.DEPARTMENT_TIMESHEET].includes(requestTypeId)) {
+                    && [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP, Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE, Constants.CHANGE_DIVISON_SHIFT, Constants.DEPARTMENT_TIMESHEET, Constants.OT_REQUEST].includes(requestTypeId)) {
                     return true
                 }
                 if (status == Constants.STATUS_WAITING && (!appraiser || _.size(appraiser) === 0) && actionType !== 'DEL'
