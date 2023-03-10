@@ -5,7 +5,8 @@ import moment from 'moment'
 import { useTranslation } from "react-i18next"
 import Constants from "../../commons/Constants"
 import map from '../../containers/map.config'
-import { formatStringByMuleValue, calculateBackDateByPnLVCodeAndFormatType, isEnableShiftChangeFunctionByPnLVCode, isEnableInOutTimeUpdateFunctionByPnLVCode, getRegistrationMinDateByConditions } from "../../commons/Utils"
+import { formatStringByMuleValue, calculateBackDateByPnLVCodeAndFormatType, isEnableShiftChangeFunctionByPnLVCode, 
+  isEnableInOutTimeUpdateFunctionByPnLVCode, getRegistrationMinDateByConditions, isEnableOTFunctionByPnLVCode } from "../../commons/Utils"
 
 const DATE_TYPE = {
   DATE_OFFSET: 0,
@@ -62,6 +63,8 @@ function RenderRow0(props) {
   const backDate = getRegistrationMinDateByConditions()
   const isEnableShiftChangeFunction = isEnableShiftChangeFunctionByPnLVCode(currentUserPnLCode)
   const isEnableInOutTimeUpdateFunction = isEnableInOutTimeUpdateFunctionByPnLVCode(currentUserPnLCode)
+  const isEnableOTFunction = isEnableOTFunctionByPnLVCode(currentUserPnLCode)
+
   const pathName = window.location.pathname
 
   return (props.timesheets || []).map((item, index) => {
@@ -101,6 +104,12 @@ function RenderRow0(props) {
                 isEnableInOutTimeUpdateFunction && 
                 <li className="action-item">
                   <a href={`/registration?tab=InOutTimeUpdate&date=${item.day}`} target="_blank" title={t('InOutChangeRequest')}>{t('InOutChangeRequest')}</a>
+                </li>
+              }
+              {
+                isEnableOTFunction && 
+                <li className="action-item">
+                  <a href={`/registration?tab=OTRequest&date=${item.day}`} target="_blank" title={t('OTRequest')}>{t('OTRequest')}</a>
                 </li>
               }
             </ul>
