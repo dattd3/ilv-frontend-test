@@ -49,7 +49,11 @@ const EvaluationVinBusTemplate = ({ evaluationFormDetail, isEdit, showByManager,
                                     </ul>
                                     }
                                     <ul className="second">
-                                        <li>{!target?.metric1 ? '--' : formatTargetText(target?.metric1)}</li>
+                                        <li>{!formatTargetText(target?.metric1) ? '--' : formatTargetText(target?.metric1)}</li>
+                                        { formatTargetText(target?.metric2) && <li>{formatTargetText(target?.metric2)}</li> }
+                                        { formatTargetText(target?.metric3) && <li>{formatTargetText(target?.metric3)}</li> }
+                                        { formatTargetText(target?.metric4) && <li>{formatTargetText(target?.metric4)}</li> }
+                                        { formatTargetText(target?.metric5) && <li>{formatTargetText(target?.metric5)}</li> }
                                     </ul>
                                 </td>
                                 <td className="text-center proportion"><span>{target?.weight}%</span></td>
@@ -84,7 +88,7 @@ const EvaluationVinBusTemplate = ({ evaluationFormDetail, isEdit, showByManager,
                                 <td className="text-center qltt-assessment">
                                     <div className="data">
                                     {
-                                        !showByManager && evaluationFormDetail.status == evaluationStatus.launch && isEdit
+                                        !showByManager && evaluationFormDetail.status == evaluationStatus.selfAssessment && isEdit
                                         ?
                                         <>
                                             <div>
@@ -212,7 +216,11 @@ const EvaluationVinBusTemplate = ({ evaluationFormDetail, isEdit, showByManager,
                                                             </ul>
                                                             }
                                                             <ul className="second">
-                                                                <li>{!target?.metric1 ? '--' : formatTargetText(target?.metric1)}</li>
+                                                                <li>{!formatTargetText(target?.metric1) ? '--' : formatTargetText(target?.metric1)}</li>
+                                                                { formatTargetText(target?.metric2) && <li>{formatTargetText(target?.metric2)}</li> }
+                                                                { formatTargetText(target?.metric3) && <li>{formatTargetText(target?.metric3)}</li> }
+                                                                { formatTargetText(target?.metric4) && <li>{formatTargetText(target?.metric4)}</li> }
+                                                                { formatTargetText(target?.metric5) && <li>{formatTargetText(target?.metric5)}</li> }
                                                             </ul>
                                                         </td>
                                                         <td className="text-center proportion"><span>{target?.weight}%</span></td>
@@ -247,7 +255,7 @@ const EvaluationVinBusTemplate = ({ evaluationFormDetail, isEdit, showByManager,
                                                         <td className="text-center qltt-assessment">
                                                             <div className="data">
                                                             {
-                                                                !showByManager && evaluationFormDetail.status == evaluationStatus.launch && isEdit
+                                                                !showByManager && evaluationFormDetail.status == evaluationStatus.selfAssessment && isEdit
                                                                 ?
                                                                 <>
                                                                     <div>
