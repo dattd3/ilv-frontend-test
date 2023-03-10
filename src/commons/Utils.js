@@ -199,6 +199,10 @@ const isEnableInOutTimeUpdateFunctionByPnLVCode = PnLVCode => {
     return ![Constants.pnlVCode.VinSchool, Constants.pnlVCode.VinAI].includes(PnLVCode) ? true : false
 }
 
+const isEnableOTFunctionByPnLVCode = PnLVCode => {
+  return [Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading].includes(PnLVCode);
+}
+
 const getRequestTypeIdsAllowedToReApproval = () => {
     return [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP, Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE]
 }
@@ -367,5 +371,5 @@ const isVinFast = () => {
 export {
     getRequestConfigurations, removeAccents, formatStringByMuleValue, formatNumberInteger, exportToPDF, isEnableFunctionByFunctionName, getValueParamByQueryString, getDateByRangeAndFormat,
     calculateBackDateByPnLVCodeAndFormatType, isEnableShiftChangeFunctionByPnLVCode, isEnableInOutTimeUpdateFunctionByPnLVCode, getRequestTypeIdsAllowedToReApproval, getMuleSoftHeaderConfigurations,
-    isAdjacentDateBy2Date, showRangeDateGroupByArrayDate, generateTaskCodeByCode, parsteStringToHtml, getRegistrationMinDateByConditions, isVinFast
+    isAdjacentDateBy2Date, showRangeDateGroupByArrayDate, generateTaskCodeByCode, parsteStringToHtml, getRegistrationMinDateByConditions, isVinFast, isEnableOTFunctionByPnLVCode
 }
