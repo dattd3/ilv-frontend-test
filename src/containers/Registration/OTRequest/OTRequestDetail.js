@@ -5,6 +5,7 @@ import axios from "axios";
 import Constants from "commons/Constants";
 import DetailButtonComponent from "../DetailButtonComponent";
 import { getRequestConfigurations } from "commons/Utils";
+import ExcelIcon from "assets/img/excel-icon.svg";
 
 const config = getRequestConfigurations();
 
@@ -371,6 +372,23 @@ export default function OTRequestDetailComponent({ data, action }) {
           </div>
         </div>
       </div>
+      {
+          data.requestDocuments.length > 0 ?
+            <>
+              <div className="block-title">{t("Evidence").toUpperCase()}</div>
+              <ul className="list-inline">
+                {data.requestDocuments.map((file, index) => {
+                  return <li className="list-inline-item" key={index}>
+                    <a className="file-name" href={file.fileUrl} title={file.fileName} target="_blank" download={file.fileName}>
+                      {file.fileType == "xls" ? <img src={ExcelIcon} className="mr-1 mb-1" alt="excel-icon" /> : null}
+                      {file.fileName}
+                    </a>
+                  </li>
+                })}
+              </ul>
+            </>
+            : null
+        }
       <DetailButtonComponent
         dataToSap={[
           {
