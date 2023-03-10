@@ -400,16 +400,15 @@ function EvaluationDetail(props) {
 
   // Tổng điểm của CBNV hoặc Tổng điểm của CBQL cho từng group mục tiêu (kpi)
   const calculateAssessment = (listTarget) => {
-    console.log('BBBBBBBBBBBBBBBBBB => ', listTarget)
-
+    const isVinBus = isVinBusByCompanyCode(evaluationFormDetail?.companyCode)
     const assessmentScale = 5
     const assessment = (listTarget || []).reduce((initial, current) => {
-      initial.selfAssessment += Number(current?.seftPoint || 0) / assessmentScale * Number(current?.weight || 0)
-      initial.managerAssessment += Number(current?.leadReviewPoint || 0) / assessmentScale * Number(current?.weight || 0)
+      initial.selfAssessment += isVinBus ? Number(current?.seftPoint || 0) : Number(current?.seftPoint || 0) / assessmentScale * Number(current?.weight || 0)
+      initial.managerAssessment += isVinBus ? Number(current?.leadReviewPoint || 0) : Number(current?.leadReviewPoint || 0) / assessmentScale * Number(current?.weight || 0)
       if (current.listTarget?.length) {
         const sub = current.listTarget?.reduce((subInitial, item) => {
-          subInitial.selfAssessment += Number(item?.seftPoint || 0) / assessmentScale * Number(item?.weight || 0)
-          subInitial.managerAssessment += Number(item?.leadReviewPoint || 0) / assessmentScale * Number(item?.weight || 0)
+          subInitial.selfAssessment += isVinBus ? Number(item?.seftPoint || 0) : Number(item?.seftPoint || 0) / assessmentScale * Number(item?.weight || 0)
+          subInitial.managerAssessment += isVinBus ? Number(item?.leadReviewPoint || 0) : Number(item?.leadReviewPoint || 0) / assessmentScale * Number(item?.weight || 0)
           return subInitial
         }, { selfAssessment: 0, managerAssessment: 0 })
         initial.selfAssessment += sub.selfAssessment
@@ -448,7 +447,8 @@ function EvaluationDetail(props) {
         evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex]['leadReviewPoint'] = calculateScore(
           evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex]?.formulaCode, 
           evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex]?.targetValue, 
-          evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex]?.weight, value
+          evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex]?.weight, 
+          value
         )
       }
     } else {

@@ -90,7 +90,7 @@ const calculateScore = (formulaCode, targetValue, weight, actualScore) => {
         }
         return score || 0
     } catch (error) {
-        console.log(error)
+        console.log('calculateScore => ', error)
         return 0
     }
 }
