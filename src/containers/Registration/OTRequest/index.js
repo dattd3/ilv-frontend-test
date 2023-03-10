@@ -18,7 +18,7 @@ import SearchUserComponent from "containers/SearchUserBox/index";
 import { checkFilesMimeType } from "utils/file";
 import IconPlusCircle from "assets/img/icon/Icon-plus-circle.svg";
 import IconRemove from "assets/img/icon-delete.svg";
-import StatusModal from "components/Common/StatusModal";
+import ResultModal from "../ResultModal";
 import map from 'containers/map.config'
 const config = getRequestConfigurations();
 
@@ -65,7 +65,8 @@ const checkOverlap = (timeSegments) => {
 const INIT_STATUS_MODAL_MANAGEMENT = {
   isShow: false,
   isSuccess: true,
-  content: "",
+  titleModal: "",
+  messageModal: ""
 };
 const queryString = window.location.search
 
@@ -158,11 +159,11 @@ export default function OTRequestComponent({ recentlyManagers }) {
   };
 
   const handleChangeStartDate = (date) => {
-    setStartDate(moment(date).format("DD/MM/YYYY"));
+    date ? setStartDate(moment(date).format("DD/MM/YYYY")) : setStartDate(null);
   };
 
   const handleChangeEndDate = (date) => {
-    setEndDate(moment(date).format("DD/MM/YYYY"));
+    date ? setEndDate(moment(date).format("DD/MM/YYYY")) : setEndDate(null);
   };
 
   const handleChangeEditRequestInfo = async (timesheet, index) => {
@@ -328,20 +329,23 @@ export default function OTRequestComponent({ recentlyManagers }) {
         setStatusModalManagement({
           isShow: true,
           isSuccess: false,
-          content: response.data?.result?.message,
+          titleModal: t("Notification"),
+          messageModal: response.data?.result?.message
         });
       } else {
         setStatusModalManagement({
           isShow: true,
           isSuccess: true,
-          content: t("Successful"),
+          titleModal: t("Successful"),
+          messageModal: t("RequestSent")
         });
       }
     } catch (error) {
       setStatusModalManagement({
         isShow: true,
         isSuccess: false,
-        content: t("Failed"),
+        titleModal: t("Notification"),
+        messageModal: t("Error")
       });
     }
     setIsSendingRequest(false);
@@ -436,12 +440,11 @@ export default function OTRequestComponent({ recentlyManagers }) {
 
   return (
     <div className="ot-request-container">
-      <StatusModal
-        show={statusModalManagement?.isShow || false}
-        isSuccess={statusModalManagement?.isSuccess}
-        content={statusModalManagement?.content}
-        className="register-target-from-library-status-modal"
-        backdropClassName="backdrop-register-target-from-library-status-modal"
+      <ResultModal
+        show={statusModalManagement.isShow}
+        isSuccess={statusModalManagement.isSuccess}
+        title={statusModalManagement.titleModal} 
+        message={statusModalManagement.messageModal}
         onHide={hideStatusModal}
       />
       <div className="box shadow">
@@ -460,7 +463,7 @@ export default function OTRequestComponent({ recentlyManagers }) {
                   maxDate={
                     endDate
                       ? moment(endDate, "DD/MM/YYYY").toDate()
-                      : moment().toDate()
+                      : null
                   }
                   onChange={handleChangeStartDate}
                   showDisabledMonthNavigation
@@ -490,11 +493,6 @@ export default function OTRequestComponent({ recentlyManagers }) {
                   }
                   minDate={
                     startDate ? moment(startDate, "DD/MM/YYYY").toDate() : null
-                  }
-                  maxDate={
-                    endDate
-                      ? moment(endDate, "DD/MM/YYYY").toDate()
-                      : moment().toDate()
                   }
                   onChange={handleChangeEndDate}
                   showDisabledMonthNavigation
