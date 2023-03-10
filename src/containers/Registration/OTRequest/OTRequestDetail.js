@@ -118,7 +118,7 @@ export default function OTRequestDetailComponent({ data, action }) {
                 <b>
                   {getDayNameFromDate(timesheet.date)}&nbsp;
                   {lang === Constants.LANGUAGE_VI ? t("Day") : null}{" "}
-                  {moment(timesheet.date, "YYYYMMDD").format("MM/DD/YYYY")}
+                  {moment(timesheet.date, "YYYYMMDD").format("DD/MM/YYYY")}
                 </b>
               </p>
               <div className="request-info-container">
