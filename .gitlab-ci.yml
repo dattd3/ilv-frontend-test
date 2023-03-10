@@ -16,7 +16,7 @@ build_development:
   only:
     refs:
       - develop
-      - feat/vinfast-ot
+      - develop-deploy
 deploy_to_development_environment:
   stage: deploy
   tags:
@@ -30,7 +30,7 @@ deploy_to_development_environment:
   when: manual
   only:
       - develop
-      - feat/vinfast-ot
+      - develop-deploy
       
 build_production:
   stage: build
