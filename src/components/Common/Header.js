@@ -150,8 +150,8 @@ function Header(props) {
                                     case 15:
                                     case 11:
                                         return `/notifications/${item.id}`
-                                    case Constants.notificationType.NOTIFICATION_REGISTRATION:
-                                        if (item.title.indexOf("thẩm định") > 0 || item.title.indexOf('yêu cầu đánh giá') > 0)
+                                    case Constants.notificationType.NOTIFICATION_REGISTRATION: 
+                                        if (item.detailType == 'APPRAISAL')
                                             return `/tasks?tab=consent`
                                         else
                                             return `/tasks?tab=approval`
