@@ -79,6 +79,36 @@ export default function OTRequestDetailComponent({ data, action }) {
     },
   ];
 
+  const showStatus = (status, appraiser) => {
+    const pathName = window.location.pathname;
+    const pathNameArr = pathName.split("/");
+    const getTypeDetail = pathNameArr[pathNameArr.length - 1];
+    if (getTypeDetail == "request" && action == undefined) {
+      return Constants.mappingStatusRequest[status].label;
+    }
+    return action == "consent" && status == 5 && appraiser
+      ? Constants.mappingStatusRequest[20].label
+      : Constants.mappingStatusRequest[status].label;
+  };
+
+  const getMessageFromSap = () => {
+    let messageSAP = null;
+    if (data.processStatusId === Constants.STATUS_PARTIALLY_SUCCESSFUL) {
+      if (data.responseDataFromSAP && Array.isArray(data.responseDataFromSAP)) {
+        const _data = data.responseDataFromSAP.filter(
+          (val) => val.STATUS === "E"
+        );
+        if (_data) {
+          const temp = _data.map((val) => val?.MESSAGE);
+          messageSAP = temp.filter(function (item, pos) {
+            return temp.indexOf(item) === pos;
+          });
+        }
+      }
+    }
+    return messageSAP;
+  };
+
   return (
     <div className="ot-request-container">
       <div className="ot-request-detail-container">
@@ -372,23 +402,54 @@ export default function OTRequestDetailComponent({ data, action }) {
           </div>
         </div>
       </div>
-      {
-          data.requestDocuments.length > 0 ?
-            <>
-              <div className="block-title">{t("Evidence").toUpperCase()}</div>
-              <ul className="list-inline">
-                {data.requestDocuments.map((file, index) => {
-                  return <li className="list-inline-item" key={index}>
-                    <a className="file-name" href={file.fileUrl} title={file.fileName} target="_blank" download={file.fileName}>
-                      {file.fileType == "xls" ? <img src={ExcelIcon} className="mr-1 mb-1" alt="excel-icon" /> : null}
-                      {file.fileName}
-                    </a>
-                  </li>
-                })}
-              </ul>
-            </>
-            : null
-        }
+      {data.requestDocuments.length > 0 ? (
+        <>
+          <div className="block-title">{t("Evidence").toUpperCase()}</div>
+          <ul className="list-inline">
+            {data.requestDocuments.map((file, index) => {
+              return (
+                <li className="list-inline-item" key={index}>
+                  <a
+                    className="file-name"
+                    href={file.fileUrl}
+                    title={file.fileName}
+                    target="_blank"
+                    download={file.fileName}
+                  >
+                    {file.fileType == "xls" ? (
+                      <img
+                        src={ExcelIcon}
+                        className="mr-1 mb-1"
+                        alt="excel-icon"
+                      />
+                    ) : null}
+                    {file.fileName}
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+        </>
+      ) : null}
+      <div className="block-status">
+        <span
+          className={`status ${
+            Constants.mappingStatusRequest[data.processStatusId].className
+          }`}
+        >
+          {t(showStatus(data.processStatusId, data.appraiser))}
+        </span>
+        {getMessageFromSap() && (
+          <div className={`d-flex status fail`}>
+            <i className="fas fa-times pr-2 text-danger align-self-center"></i>
+            <div>
+              {getMessageFromSap().map((msg, index) => {
+                return <div key={index}>{msg}</div>;
+              })}
+            </div>
+          </div>
+        )}
+      </div>
       <DetailButtonComponent
         dataToSap={[
           {
