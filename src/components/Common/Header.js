@@ -10,7 +10,7 @@ import { Animated } from "react-animated-css";
 import { useLocalizeStore } from '../../modules';
 import uploadAvatarIcon from '../../assets/img/icon/camera-sm.svg'
 import UploadAvatar from '../../containers/UploadAvatar'
-import { getRequestConfigurations } from "../../commons/Utils"
+import { getCurrentLanguage, getRequestConfigurations } from "../../commons/Utils"
 
 const usePreload = (params) => {
     const api = useApi();
@@ -117,7 +117,7 @@ function Header(props) {
         }
     }
 
-    const result = usePreload([companyCode, lv3, lv4, lv5]);
+    const result = usePreload([companyCode, lv3, lv4, lv5, getCurrentLanguage()]);
     if (result && result.data && result.result) {
         const res = result.result;
         const data = result.data;
