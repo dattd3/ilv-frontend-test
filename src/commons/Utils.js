@@ -157,7 +157,7 @@ const isEnableFunctionByFunctionName = name => {
                 Constants.pnlVCode.VinUni, Constants.pnlVCode.Vin3S, Constants.pnlVCode.VinAI, Constants.pnlVCode.VinES]
             break
         case Constants.listFunctionsForPnLACL.changeStaffShift:
-            listPnLAccepted = [Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl]
+            listPnLAccepted = [Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading]
             break
         case Constants.listFunctionsForPnLACL.selectWorkingShift24h:
             listPnLAccepted = [Constants.pnlVCode.VinMec]
@@ -359,8 +359,22 @@ const getRegistrationMinDateByConditions = () => {
     return firstDay
 }
 
+const isVinFast = () => {
+    const companyCode = localStorage.getItem("companyCode")
+    return [Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading].includes(companyCode)
+}
+
+const getCurrentLanguage = () => {
+    const languageKeyMapping = {
+        [Constants.LANGUAGE_EN]: 'en',
+        [Constants.LANGUAGE_VI]: 'vi'
+    }
+    const locale = localStorage.getItem("locale") || 'vi-VN';
+    return languageKeyMapping[[locale]];
+}
+
 export {
     getRequestConfigurations, removeAccents, formatStringByMuleValue, formatNumberInteger, exportToPDF, isEnableFunctionByFunctionName, getValueParamByQueryString, getDateByRangeAndFormat,
     calculateBackDateByPnLVCodeAndFormatType, isEnableShiftChangeFunctionByPnLVCode, isEnableInOutTimeUpdateFunctionByPnLVCode, getRequestTypeIdsAllowedToReApproval, getMuleSoftHeaderConfigurations,
-    isAdjacentDateBy2Date, showRangeDateGroupByArrayDate, generateTaskCodeByCode, parsteStringToHtml, getRegistrationMinDateByConditions
+    isAdjacentDateBy2Date, showRangeDateGroupByArrayDate, generateTaskCodeByCode, parsteStringToHtml, getRegistrationMinDateByConditions, isVinFast, getCurrentLanguage
 }
