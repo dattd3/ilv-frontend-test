@@ -1656,5 +1656,12 @@
   "servey_question_3": "3. Would you recommend our company to your friends/ families looking for work? Why?",
   "servey_question_4": "4. What advice would you give to the person who will continue to do your current job?",
   "servey_question_5": "5. If you have found a new job, what makes the new job more attractive than your current job?",
-  "other_reason": "Other reason (If any)"
+  "other_reason": "Other reason (If any)",
+  "TimesheetSumaryReport": "Timesheet Sumary",
+  "AllMemeberChangeTimeShift": "Total staffs changing:",
+  "shift_change_status": "Shift Change Status",
+  "SessionWarning": "Working Session Timeout Warning",
+  "SessionWarningTimeContent": "Your working session will end in {{minute}}:{{second}} m. Do you want to keep working?",
+  "SessionEnd": "Working session timeout",
+  "SessionEndContent": "Working session timeout. Please re-login!"
 }
