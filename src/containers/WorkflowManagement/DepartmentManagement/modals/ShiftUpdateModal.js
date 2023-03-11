@@ -311,12 +311,12 @@ function ShiftUpdateModal(props) {
         let requiredFields = ['shiftType', 'startDate', 'endDate', 'reason', 'applicableObjects']
 
         shiftInfos.forEach((shiftInfo, index) => {
+            requiredFields = ['shiftType', 'startDate', 'endDate', 'reason', 'applicableObjects'];
             if (shiftInfo.shiftUpdateType == Constants.SUBSTITUTION_SHIFT_CODE) {
                 requiredFields = requiredFields.concat(['shiftSelected'])
             } else if (shiftInfo.shiftUpdateType == Constants.SUBSTITUTION_SHIFT_UPDATE) {
                 requiredFields = requiredFields.concat(['startTime', 'endTime'])
             }
-
             let startTime = shiftInfo.startTime
             let endTime = shiftInfo.endTime
             let startBreak = shiftInfo.breakStart
@@ -416,7 +416,7 @@ function ShiftUpdateModal(props) {
                 }
             }
         })
-
+        console.log(errors);
         SetErrors(errors)
         return errors
     }
