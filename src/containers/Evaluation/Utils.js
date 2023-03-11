@@ -45,48 +45,23 @@ const calculateScore = (formulaCode, targetValue, weight, actualScore) => {
                 score = (targetValue/actualScore) * (weight/100)
                 break;
             case formulaConfig.CT3:
-                if (actualScore >= targetValue) {
-                    score = 100 * (weight/100)
-                } else {
-                    score = 0
-                }
+                score = actualScore >= targetValue ? 100 * (weight/100) : 0
                 break;
             case formulaConfig.CT4:
-                if (actualScore <= targetValue) {
-                    score = 100 * (weight/100)
-                } else {
-                    score = 0
-                }
+                score = actualScore <= targetValue ? 100 * (weight/100) : 0
                 break;
             case formulaConfig.CT5:
-                if (actualScore >= targetValue) {
-                    score = 100 * (weight/100)
-                } else {
-                    score = (actualScore/targetValue) * (weight/100)
-                }
+                score = actualScore >= targetValue ? 100 * (weight/100) : (actualScore/targetValue) * (weight/100)
                 break;
             case formulaConfig.CT6:
-                if (actualScore <= targetValue) {
-                    score = 100 * (weight/100)
-                } else {
-                    score = (actualScore/targetValue) * (weight/100)
-                }
+                score = actualScore <= targetValue ? 100 * (weight/100) : (actualScore/targetValue) * (weight/100)
                 break;
             case formulaConfig.CT7:
-                if (actualScore >= targetValue) {
-                    score = 100 * (weight/100)
-                } else {
-                    score = (targetValue/actualScore) * (weight/100)
-                }
+                score = actualScore >= targetValue ? 100 * (weight/100) : (targetValue/actualScore) * (weight/100)
                 break;
             case formulaConfig.CT8:
-                if (actualScore <= targetValue) {
-                    score = 100 * (weight/100)
-                } else {
-                    score = (targetValue/actualScore) * (weight/100)
-                }
+                score = actualScore <= targetValue ? 100 * (weight/100) : (targetValue/actualScore) * (weight/100)
                 break;
-
         }
         return score || 0
     } catch (error) {
