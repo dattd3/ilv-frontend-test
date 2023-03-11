@@ -146,7 +146,7 @@ const LeaveUserInfo = ({ userProfileInfo, annualLeaveSummary, viewPopup, t }) =>
           <div className="detail">{annualLeaveSummary && annualLeaveSummary.DAY_LEA ? _.ceil(annualLeaveSummary.DAY_LEA, 2) : null}</div>
         </div>
         <div className="col-xl-3">
-          {t("AdvancecdAnnualLeave")}
+          {t("AdvancedAnnualLeave")}
           <div className="detail">{annualLeaveSummary && annualLeaveSummary.DAY_ADV_LEA ? _.ceil(annualLeaveSummary.DAY_ADV_LEA, 2) : null}</div>
         </div>
         <div className="col-xl-4">
