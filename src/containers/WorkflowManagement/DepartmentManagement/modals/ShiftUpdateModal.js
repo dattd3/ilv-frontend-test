@@ -42,6 +42,8 @@ function ShiftUpdateModal(props) {
     const [shiftInfos, SetShiftInfos] = useState([
         {
             dateChanged: null,
+            startDate: props.dateInfo.date,
+            enDate: props.dateInfo.date,
             shiftUpdateType: Constants.SUBSTITUTION_SHIFT_CODE,
             shiftType: null,
             // shiftType: isVinFast() ? substitutionTypes[0] : null,
@@ -189,7 +191,7 @@ function ShiftUpdateModal(props) {
         function resetOldShiftInfos() {
             if (shiftInfos.length > 0) {
                 const firstItem = shiftInfos[0]
-                if (firstItem.dateChanged && firstItem.dateChanged != props.dateInfo.date) {
+                if ((firstItem.dateChanged && firstItem.dateChanged != props.dateInfo.date) || (props.dateInfo.date && !firstItem.startDate) || (props.dateInfo.date && props.dateInfo.date != firstItem.startDate)) {
                     resetShiftInfos()
                     SetNeedReset(true)
                 }
@@ -204,6 +206,8 @@ function ShiftUpdateModal(props) {
         const firstItem = [
             {
                 dateChanged: null,
+                startDate: props.dateInfo.date || null,
+                endDate: props.dateInfo.date || null,
                 shiftUpdateType: Constants.SUBSTITUTION_SHIFT_CODE,
                 shiftType: null,
                 // shiftType: isVinFast() ? substitutionTypes[0] : null,
@@ -242,6 +246,8 @@ function ShiftUpdateModal(props) {
         newShiftInfos[index].shiftFilter.shiftSelected = null
         newShiftInfos[index].startTime = null
         newShiftInfos[index].endTime = null
+        newShiftInfos[index].startDate = props.dateInfo.date
+        newShiftInfos[index].endDate = props.dateInfo.date
         newShiftInfos[index].breakStart = null
         newShiftInfos[index].breakEnd = null
         newShiftInfos[index].totalTime = null
@@ -264,6 +270,9 @@ function ShiftUpdateModal(props) {
             const shiftCode = newShiftInfos[index].shiftFilter.shiftCodeFilter
             const shifts = filterShiftListByTimesAndShiftCode(startTime, endTime, shiftCode)
             newShiftInfos[index].shiftFilter.shiftList = shifts
+        }
+        if(key == 'endDate') {
+            newShiftInfos[index][key] = moment(option).isValid() ? moment(option).format('YYYYMMDD') : option
         }
         SetShiftInfos(newShiftInfos)
     }
@@ -299,7 +308,7 @@ function ShiftUpdateModal(props) {
 
     const verifyInputs = () => {
         let errors = {}
-        let requiredFields = ['shiftType', 'reason', 'applicableObjects']
+        let requiredFields = ['shiftType', 'startDate', 'endDate', 'reason', 'applicableObjects']
 
         shiftInfos.forEach((shiftInfo, index) => {
             if (shiftInfo.shiftUpdateType == Constants.SUBSTITUTION_SHIFT_CODE) {
@@ -448,6 +457,8 @@ function ShiftUpdateModal(props) {
             shiftUpdateType: Constants.SUBSTITUTION_SHIFT_CODE,
             // shiftType: isVinFast() ? substitutionTypes[0] : null,
             shiftType: null,
+            startDate: props.dateInfo.date || null,
+            endDate: props.dateInfo.date || null,
             shiftFilter: {
                 isOpenInputShiftCodeFilter: false,
                 shiftCodeFilter: "",
@@ -732,6 +743,14 @@ function ShiftUpdateModal(props) {
         )
     }
 
+    const maxDateForApplyTo = (applyFrom) => {
+        if (!applyFrom) {
+          return null
+        }
+        const maxDayForApplyTo = 30
+        return moment(applyFrom, "YYYYMMDD").isValid() ? moment(applyFrom, "YYYYMMDD").add(maxDayForApplyTo, 'days').toDate() : null
+      }
+
     return (
         <>
         <Modal backdrop="static" keyboard={false} size="xl" className='shift-update-modal' centered show={props.show} onHide={props.onHideShiftUpdateModal}>
@@ -763,7 +782,44 @@ function ShiftUpdateModal(props) {
                                                 {/* } */}
                                             </div>
                                             <div className="apply-time-shift-type">
-                                                <div className="col-second shift-type">
+                                                <div className="col-2">
+                                                    <label >{t("ShiftChangeFrom")}<span className="text-danger required">(*)</span></label>
+                                                    <div>
+                                                    <DatePicker
+                                                        selected={item.startDate ? moment(item.startDate, 'YYYYMMDD').toDate() : null}
+                                                        onChange={applyFrom => handleSelectChange(index, applyFrom, "startDate")}
+                                                        dateFormat="dd/MM/yyyy"
+                                                        locale="vi"
+                                                        showMonthDropdown={true}
+                                                        showYearDropdown={true}
+                                                        autoComplete='off'
+                                                        popperPlacement="bottom-start"
+                                                        className="form-control input"
+                                                        disabled />
+                                                    </div>
+                                                    { errors[`startDate_${index}`] ? errorInfos(index, 'startDate') : null }
+                                                </div>
+                                                <div className="col-2">
+                                                    <label >{t("ShiftChangeTo")}<span className="text-danger required">(*)</span></label>
+                                                    <div>
+                                                    <DatePicker
+                                                        selected={item.endDate ? moment(item.endDate, 'YYYYMMDD').toDate() : null}
+                                                        onChange={applyTo => handleSelectChange(index, applyTo, "endDate")}
+                                                        dateFormat="dd/MM/yyyy"
+                                                        locale="vi"
+                                                        minDate={item.startDate ? moment(item.startDate, 'YYYYMMDD').toDate() : null}
+                                                        maxDate={maxDateForApplyTo(item.startDate)}
+                                                        showMonthDropdown={true}
+                                                        showYearDropdown={true}
+                                                        autoComplete='off'
+                                                        popperPlacement="bottom-end"
+                                                        className="form-control input" 
+                                                        // disabled={isVinFast()} 
+                                                    />
+                                                    </div>
+                                                    { errors[`endDate_${index}`] ? errorInfos(index, 'endDate') : null }
+                                                </div>
+                                                <div className="col-4">
                                                     <label>{t("ShiftCategory")}<span className="text-danger required">(*)</span></label>
                                                     <div className="wrap-shift-type-select">
                                                         <Select 
