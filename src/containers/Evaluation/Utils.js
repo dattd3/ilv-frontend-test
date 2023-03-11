@@ -34,33 +34,33 @@ const formatTargetText = str => str?.replace(/\n|\r/g, "")
 
 const isVinBusByCompanyCode = code => code === Constants.pnlVCode.VinBus
 
-const calculateScore = (formulaCode, targetValue, weight, actualScore) => {
+const calculateScore = (formulaCode, targetValue, weight, actualResult) => {
     try {
         let score = 0
         switch (formulaCode) {
             case formulaConfig.CT1:
-                score = (actualScore/targetValue) * (weight/100)
+                score = (actualResult/targetValue) * weight * 100
                 break;
             case formulaConfig.CT2:
-                score = (targetValue/actualScore) * (weight/100)
+                score = (targetValue/actualResult) * weight * 100
                 break;
             case formulaConfig.CT3:
-                score = actualScore >= targetValue ? 100 * (weight/100) : 0
+                score = actualResult >= targetValue ? 100 * (weight/100) : 0
                 break;
             case formulaConfig.CT4:
-                score = actualScore <= targetValue ? 100 * (weight/100) : 0
+                score = actualResult <= targetValue ? 100 * (weight/100) : 0
                 break;
             case formulaConfig.CT5:
-                score = actualScore >= targetValue ? 100 * (weight/100) : (actualScore/targetValue) * (weight/100)
+                score = actualResult >= targetValue ? 100 * (weight/100) : (actualResult/targetValue) * (weight/100)
                 break;
             case formulaConfig.CT6:
-                score = actualScore <= targetValue ? 100 * (weight/100) : (actualScore/targetValue) * (weight/100)
+                score = actualResult <= targetValue ? 100 * (weight/100) : (actualResult/targetValue) * (weight/100)
                 break;
             case formulaConfig.CT7:
-                score = actualScore >= targetValue ? 100 * (weight/100) : (targetValue/actualScore) * (weight/100)
+                score = actualResult >= targetValue ? 100 * (weight/100) : (targetValue/actualResult) * (weight/100)
                 break;
             case formulaConfig.CT8:
-                score = actualScore <= targetValue ? 100 * (weight/100) : (targetValue/actualScore) * (weight/100)
+                score = actualResult <= targetValue ? 100 * (weight/100) : (targetValue/actualResult) * (weight/100)
                 break;
         }
         return score || 0

@@ -65,19 +65,19 @@ const EvaluationVinBusTemplate = ({ evaluationFormDetail, isEdit, showByManager,
                                         ?
                                         <>
                                             <div>
-                                                <input className="value" type="text" placeholder={t("Nhập 0 - 100")} value={target?.realResult || ""} onChange={(e) => handleInputChange(i, index, 'realResult', e)} />
+                                                <input className="value" type="text" placeholder={t("Nhập 0 - 100")} value={target?.realResult === null || target?.realResult === undefined ? "" : target?.realResult} onChange={(e) => handleInputChange(i, index, 'realResult', e)} />
                                             </div>
                                             <div>
-                                                <span className="value label">{target?.seftPoint || ""}</span>
+                                                <span className="value label">{target?.seftPoint === null || target?.seftPoint === undefined ? "" : target?.seftPoint}</span>
                                             </div>
                                         </>
                                         :
                                         <>
                                             <div>
-                                                <span className="value label">{target?.realResult || ""}</span>
+                                                <span className="value label">{target?.realResult === null || target?.realResult === undefined ? "" : target?.realResult}</span>
                                             </div>
                                             <div>
-                                                <span className="value label">{target?.seftPoint || ""}</span>
+                                                <span className="value label">{target?.seftPoint === null || target?.seftPoint === undefined ? "" : target?.seftPoint}</span>
                                             </div>
                                         </>
                                     }
@@ -92,19 +92,19 @@ const EvaluationVinBusTemplate = ({ evaluationFormDetail, isEdit, showByManager,
                                         ?
                                         <>
                                             <div>
-                                                <input className="value" type="text" placeholder={t("Nhập 0 - 100")} value={target?.leadRealResult || ""} onChange={(e) => handleInputChange(i, index, 'leadRealResult', e)} />
+                                                <input className="value" type="text" placeholder={t("Nhập 0 - 100")} value={target?.leadRealResult === null || target?.leadRealResult === undefined ? "" : target?.leadRealResult} onChange={(e) => handleInputChange(i, index, 'leadRealResult', e)} />
                                             </div>
                                             <div>
-                                                <span className="value label">{target?.leadReviewPoint || ""}</span>
+                                                <span className="value label">{target?.leadReviewPoint === null || target?.leadReviewPoint === undefined ? "" : target?.leadReviewPoint}</span>
                                             </div>
                                         </>
                                         :
                                         <>
                                             <div>
-                                                <span className="value label">{target?.leadRealResult || ""}</span>
+                                                <span className="value label">{target?.leadRealResult === null || target?.leadRealResult === undefined ? "" : target?.leadRealResult}</span>
                                             </div>
                                             <div>
-                                                <span className="value label">{target?.leadReviewPoint || ""}</span>
+                                                <span className="value label">{target?.leadReviewPoint === null || target?.leadReviewPoint === undefined ? "" : target?.leadReviewPoint}</span>
                                             </div>
                                         </>
                                     }
@@ -232,19 +232,19 @@ const EvaluationVinBusTemplate = ({ evaluationFormDetail, isEdit, showByManager,
                                                                 ?
                                                                 <>
                                                                     <div>
-                                                                        <input className="value" type="text" placeholder={t("Nhập 0 - 100")} value={target?.realResult || ""} onChange={(e) => handleInputChange(i, index, 'realResult', e)} />
+                                                                        <input className="value" type="text" placeholder={t("Nhập 0 - 100")} value={target?.realResult === null || target?.realResult === undefined ? "" : target?.realResult} onChange={(e) => handleInputChange(i, index, 'realResult', e)} />
                                                                     </div>
                                                                     <div>
-                                                                        <span className="value label">{target?.seftPoint || ""}</span>
+                                                                        <span className="value label">{target?.seftPoint === null || target?.seftPoint === undefined ? "" : target?.seftPoint}</span>
                                                                     </div>
                                                                 </>
                                                                 :
                                                                 <>
                                                                     <div>
-                                                                        <span className="value label">{target?.realResult || ""}</span>
+                                                                        <span className="value label">{target?.realResult === null || target?.realResult === undefined ? "" : target?.realResult}</span>
                                                                     </div>
                                                                     <div>
-                                                                        <span className="value label">{target?.seftPoint || ""}</span>
+                                                                        <span className="value label">{target?.seftPoint === null || target?.seftPoint === undefined ? "" : target?.seftPoint}</span>
                                                                     </div>
                                                                 </>
                                                             }
@@ -259,19 +259,19 @@ const EvaluationVinBusTemplate = ({ evaluationFormDetail, isEdit, showByManager,
                                                                 ?
                                                                 <>
                                                                     <div>
-                                                                        <input className="value" type="text" placeholder={t("Nhập 0 - 100")} value={target?.leadRealResult || ""} onChange={(e) => handleInputChange(i, index, 'leadRealResult', e)} />
+                                                                        <input className="value" type="text" placeholder={t("Nhập 0 - 100")} value={target?.leadRealResult === null || target?.leadRealResult === undefined ? "" : target?.leadRealResult} onChange={(e) => handleInputChange(i, index, 'leadRealResult', e)} />
                                                                     </div>
                                                                     <div>
-                                                                        <span className="value label">{target?.leadReviewPoint || ""}</span>
+                                                                        <span className="value label">{target?.leadReviewPoint === null || target?.leadReviewPoint === undefined ? "" : target?.leadReviewPoint}</span>
                                                                     </div>
                                                                 </>
                                                                 :
                                                                 <>
                                                                     <div>
-                                                                        <span className="value label">{target?.leadRealResult || ""}</span>
+                                                                        <span className="value label">{target?.leadRealResult === null || target?.leadRealResult === undefined ? "" : target?.leadRealResult}</span>
                                                                     </div>
                                                                     <div>
-                                                                        <span className="value label">{target?.leadReviewPoint || ""}</span>
+                                                                        <span className="value label">{target?.leadReviewPoint === null || target?.leadReviewPoint === undefined ? "" : target?.leadReviewPoint}</span>
                                                                     </div>
                                                                 </>
                                                             }
