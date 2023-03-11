@@ -368,8 +368,17 @@ const isVinFast = () => {
     return [Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading].includes(companyCode)
 }
 
+const getCurrentLanguage = () => {
+    const languageKeyMapping = {
+        [Constants.LANGUAGE_EN]: 'en',
+        [Constants.LANGUAGE_VI]: 'vi'
+    }
+    const locale = localStorage.getItem("locale") || 'vi-VN';
+    return languageKeyMapping[[locale]];
+}
+
 export {
     getRequestConfigurations, removeAccents, formatStringByMuleValue, formatNumberInteger, exportToPDF, isEnableFunctionByFunctionName, getValueParamByQueryString, getDateByRangeAndFormat,
     calculateBackDateByPnLVCodeAndFormatType, isEnableShiftChangeFunctionByPnLVCode, isEnableInOutTimeUpdateFunctionByPnLVCode, getRequestTypeIdsAllowedToReApproval, getMuleSoftHeaderConfigurations,
-    isAdjacentDateBy2Date, showRangeDateGroupByArrayDate, generateTaskCodeByCode, parsteStringToHtml, getRegistrationMinDateByConditions, isVinFast, isEnableOTFunctionByPnLVCode
+    isAdjacentDateBy2Date, showRangeDateGroupByArrayDate, generateTaskCodeByCode, parsteStringToHtml, getRegistrationMinDateByConditions, isVinFast, isEnableOTFunctionByPnLVCode, getCurrentLanguage
 }
