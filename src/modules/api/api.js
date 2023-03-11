@@ -249,7 +249,7 @@ export default class Api {
     );
   };
 
-  fetchListNotifications = async (companyCode, page, pageSize, level3, level4, level5, keyword) => {
+  fetchListNotifications = async (companyCode, page, pageSize, level3, level4, level5, keyword, culture) => {
      return await this.request.get(`${process.env.REACT_APP_REQUEST_URL}notifications`, {
         params: {     
           companyCode: companyCode,     
@@ -258,18 +258,20 @@ export default class Api {
           level3: level3,
           level4: level4,
           level5: level5,
-          keyword: keyword
+          keyword: keyword,
+          culture: culture
         }
       });
   };
 
-  fetchNotificationsUnReadLimitation = async (companyCode, level3, level4, level5) => {
+  fetchNotificationsUnReadLimitation = async (companyCode, level3, level4, level5, culture) => {
     return await this.request.get(`${process.env.REACT_APP_REQUEST_URL}notifications-unread-limitation`, {
       params: {     
         companyCode: companyCode,     
         level3: level3,
         level4: level4,
-        level5: level5
+        level5: level5,
+        culture: culture
       }
     });
   };

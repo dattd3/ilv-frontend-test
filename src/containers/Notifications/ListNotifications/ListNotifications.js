@@ -6,6 +6,7 @@ import CustomPaging from '../../../components/Common/CustomPaging';
 import FormSearchComponent from '../SearchBlock/FormSearchComponent';
 import NotificationIcon from '../../../assets/img/icon/Icon_NotificationList.svg'
 import { useTranslation } from "react-i18next";
+import { getCurrentLanguage } from "commons/Utils";
 
 const usePreload = (params) => {
     const api = useApi();
@@ -42,7 +43,7 @@ function ListNotifications(props) {
     const lv5 = getOrganizationLevelByRawLevel(localStorage.getItem('organizationLv5'))
     const region = localStorage.getItem('region');
     const companyCode = localStorage.getItem('companyCode');
-    const response = usePreload([companyCode, page, pageSize, lv3, lv4, lv5, keyword]);
+    const response = usePreload([companyCode, page, pageSize, lv3, lv4, lv5, keyword, getCurrentLanguage()]);
     const phonesSupportForRegion = usePreloadGetPhoneSupport([region]);
     
     const onChangePage = (page) => {
