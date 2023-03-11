@@ -738,7 +738,8 @@ class EmployeeTimesheets extends Component {
         item.isUpdating = true
       }
       for (let j = 0, lenTimesheets = item.timesheets?.length; j < lenTimesheets; j++) {
-        if (item.timesheets[j].date === dateChangedFormat && dataChangedForObject[per]) {
+         const shouldUpdate = moment(item.timesheets[j].date, 'DD/MM/YYYY').isBetween(moment(dataChangedForObject[item.per].startDate, 'YYYYMMDD'), moment(dataChangedForObject[item.per].endDate, 'YYYYMMDD'), null, '[]');
+        if (shouldUpdate && dataChangedForObject[per]) {
           item.timesheets[j].from_time1 = dataChangedForObject[item.per].startTime ? moment(dataChangedForObject[item.per].startTime, 'YYYYMMDD HHmmss').format('HHmmss') : dataChangedForObject[item.per].shiftFilter.shiftSelected?.from_time || ""
           item.timesheets[j].to_time1 = dataChangedForObject[item.per].endTime ? moment(dataChangedForObject[item.per].endTime, 'YYYYMMDD HHmmss').format('HHmmss') : dataChangedForObject[item.per].shiftFilter.shiftSelected?.to_time || ""
           item.timesheets[j].old_shift_id = item.timesheets[j].shift_id || ""
@@ -855,7 +856,7 @@ class EmployeeTimesheets extends Component {
 
     return (
       <>
-      <ResultDetailModal show={isShowStatusModal} title="Trạng thái cập nhật phân ca" onHide={this.hideStatusModal} resultDetail={resultShiftUpdateDetail}/>
+      <ResultDetailModal show={isShowStatusModal} title={t('shift_change_status')} onHide={this.hideStatusModal} resultDetail={resultShiftUpdateDetail}/>
       <div className="timesheet-section department-timesheet">
         <h1 className="content-page-header">{[Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading].includes(companyVCodeUserLogged) ? t("TimesheetDivision") : t("Timesheet")}</h1>
         <FilterData clickSearch={this.searchTimesheetByDate.bind(this)} isUserRequired={true} updateEmployees={this.updateEmployees} />
