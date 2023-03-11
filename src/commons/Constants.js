@@ -227,7 +227,7 @@ const Constants = {
     2: ["V061","V040", "V005", "V079", "V041", "V070", "V077"],//DANHGIA_TAIKI
     3:[],//DEXUATLUONG "V061", "V040", "V005", "V079", "V041"
     4:["V040", "V005", "V079"],//NGHIVIEC
-    5: ["V061", "V040", "V005", "V079", "V041"]//PHUCLOI
+    5: ["V061", "V040", "V005", "V079", "V041", "V070", "V077"]//PHUCLOI
   },
   CURRENCY: {
     VND: 'VNĐ',
