@@ -15,7 +15,7 @@ import ReasonResignationComponent from '../TerminationComponents/ReasonResignati
 import AttachmentComponent from '../TerminationComponents/AttachmentComponent'
 import ResultModal from '../ResultModal'
 import LoadingModal from '../../../components/Common/LoadingModal'
-import { getMuleSoftHeaderConfigurations } from '../../../commons/Utils'
+import { getMuleSoftHeaderConfigurations, getResignResonsMasterData } from '../../../commons/Utils'
 
 class RegistrationEmploymentTerminationForm extends React.Component {
     constructor(props) {
@@ -156,10 +156,11 @@ class RegistrationEmploymentTerminationForm extends React.Component {
         if (responses && responses.data) {
             const reasonTypeCodeForEmployee = "ZG"
             const reasonTypes = responses.data.data
+            const reasonMasterData = getResignResonsMasterData();
             const results = (reasonTypes || [])
             .filter(item => item.code01 === reasonTypeCodeForEmployee && !Constants.RESIGN_REASON_EMPLOYEE_INVALID.includes(item.code02))
             .map(item => {
-                return {value: item.code02, label: item.text}
+                return {value: item.code02, label: reasonMasterData[item.code02]}
             })
             return results
         }
