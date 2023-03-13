@@ -13,7 +13,7 @@ import ReasonResignationComponent from '../TerminationComponents/ReasonResignati
 import AttachmentComponent from '../TerminationComponents/AttachmentComponent'
 import ResultModal from '../ResultModal'
 import LoadingModal from '../../../components/Common/LoadingModal'
-import { getMuleSoftHeaderConfigurations } from '../../../commons/Utils'
+import { getMuleSoftHeaderConfigurations, getResignResonsMasterData } from '../../../commons/Utils'
 
 class ProposedResignationPage extends React.Component {
     constructor(props) {
@@ -131,10 +131,11 @@ class ProposedResignationPage extends React.Component {
         if (responses && responses.data) {
             const reasonTypeCodeForManager = "ZH"
             const reasonTypes = responses.data.data
+            const reasonMasterData = getResignResonsMasterData();
             const results = (reasonTypes || [])
             .filter(item => item.code01 === reasonTypeCodeForManager)
             .map(item => {
-                return {value: item.code02, label: item.text}
+                return {value: item.code02, label: reasonMasterData[item.code02]}
             })
             return results
         }

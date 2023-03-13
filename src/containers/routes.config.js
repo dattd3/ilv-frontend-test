@@ -489,7 +489,7 @@ export default [
             exact: true,
             path: map.EmployeeTimeSheets
           },
-          component: lazy(() => import("./WorkflowManagement/DepartmentManagement/EmployeeTimesheets"))
+          component: lazy(() => import("./WorkflowManagement/DepartmentManagement/EmployeeTimesheets/index"))
         },
         {
           key: "proposal-management",

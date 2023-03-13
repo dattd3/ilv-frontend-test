@@ -12,7 +12,7 @@ import StaffInfoProposedResignationComponent from '../TerminationComponents/Staf
 import ReasonResignationComponent from '../TerminationComponents/ReasonResignationComponent'
 import AttachmentComponent from '../TerminationComponents/AttachmentComponent'
 import ResultModal from '../ResultModal'
-import { getMuleSoftHeaderConfigurations } from '../../../commons/Utils'
+import { getMuleSoftHeaderConfigurations, getResignResonsMasterData } from '../../../commons/Utils'
 
 class ProposedResignationEdit extends React.Component {
     constructor(props) {
@@ -78,10 +78,11 @@ class ProposedResignationEdit extends React.Component {
         if (responses && responses.data) {
             const reasonTypeCodeForManager = "ZH"
             const reasonTypes = responses.data.data
+            const reasonMasterData = getResignResonsMasterData();
             const results = (reasonTypes || [])
             .filter(item => item.code01 === reasonTypeCodeForManager)
             .map(item => {
-                return {value: item.code02, label: item.text}
+                return {value: item.code02, label: reasonMasterData[item.code02]}
             })
             return results
         }
