@@ -1375,7 +1375,7 @@
   "dang_danh_gia": "Đang đánh giá",
   "da_hoan_thanh": "Đã hoàn thành",
   "ngay_gui": "Ngày gửi",
-  "proposed_employee_info": "II. THÔNG TIN CBNV ĐƯỢC ĐỀ XUẤT",
+  "proposed_employee_info": "THÔNG TIN CBNV ĐƯỢC ĐỀ XUẤT",
   "employee_resign_existed": "Nhân viên đề xuất cho nghỉ đã nằm trong danh sách đề xuất cho nghỉ",
   "require_choose_employee_resign": "Vui lòng chọn nhân viên đề xuất cho nghỉ!",
   "reason_cancel": "Lý do hủy yêu cầu",
@@ -1700,6 +1700,21 @@
   "SessionWarning": "Cảnh báo hết hạn phiên làm việc",
   "SessionWarningTimeContent": "Phiên làm việc của bạn sẽ hết hạn sau {{minute}}:{{second}} phút. Bạn có muốn gia hạn phiên làm việc?",
   "SessionEnd": "Phiên làm việc đã kết thúc",
-  "SessionEndContent": "Phiên làm việc của bạn đã kết thúc. Vui lòng đăng nhập lại!"
-
+  "SessionEndContent": "Phiên làm việc của bạn đã kết thúc. Vui lòng đăng nhập lại!",
+  "disapproval_status": "Trạng thái hủy phê duyệt",
+  "appraisal_status": "Trạng thái thẩm định",
+  "disappraisal_status": "Trạng thái hủy thẩm định",
+  "export_report": "Xuất báo cáo",
+  "handover_supporter": "Danh sách đầu mối hỗ trợ nhận bàn giao công việc",
+  "view_here": "Xem tại đây",
+  "Request_error_file_format": "File không đúng định dạng",
+  "Request_error_file_oversize": "Tổng dung lượng file đính kèm không được vượt quá 10MB",
+  "Request_error_file_size": "Dung lượng mỗi file đính kèm không được vượt quá 2MB",
+  "resign_error_lastWorkingDay": "Vui lòng nhập ngày làm việc cuối cùng!",
+  "resign_error_reason": "Vui lòng chọn lý do chấm dứt hợp đồng!",
+  "resign_error_directManager": "Vui lòng chọn CBQL trực tiếp!",
+  "resign_error_seniorExecutive": "Vui lòng chọn CBLĐ phê duyệt!",
+  "resign_error_permission": "Danh sách nhân viên đề xuất cho nghỉ không thuộc thẩm quyền của QLTT",
+  "select_to_export": "Vui lòng chọn yêu cầu cần xuất dữ liệu!",
+  "select_to_save": "Xin vui lòng tích chọn thông tin cần lưu!"
 }

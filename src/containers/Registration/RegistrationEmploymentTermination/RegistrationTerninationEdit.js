@@ -13,6 +13,7 @@ import StaffInfoComponent from '../TerminationComponents/StaffInfoComponent'
 import StaffTerminationDetailComponent from '../TerminationComponents/StaffTerminationDetailComponent'
 import AttachmentComponent from '../TerminationComponents/AttachmentComponent'
 import ResultModal from '../ResultModal'
+import { getResignResonsMasterData } from 'commons/Utils'
 
 class RegistrationEmploymentTerminationForm extends React.Component {
     constructor(props) {
@@ -79,10 +80,11 @@ class RegistrationEmploymentTerminationForm extends React.Component {
         if (responses && responses.data) {
             const reasonTypeCodeForManager = "ZG"
             const reasonTypes = responses.data.data
+            const reasonMasterData = getResignResonsMasterData();
             const results = (reasonTypes || [])
             .filter(item => item.code01 === reasonTypeCodeForManager  && !Constants.RESIGN_REASON_EMPLOYEE_INVALID.includes(item.code02))
             .map(item => {
-                return {value: item.code02, label: item.text}
+                return {value: item.code02, label: reasonMasterData[item.code02]}
             })
             return results
         }
@@ -152,12 +154,12 @@ class RegistrationEmploymentTerminationForm extends React.Component {
                     this.setDisabledSubmitButton(false)
                 }
             } else {
-                this.showStatusModal(t("Notification"), "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
+                this.showStatusModal(t("Notification"), t("Error"), false)
                 this.setDisabledSubmitButton(false)
             }
 
         } catch (errors) {
-            this.showStatusModal(t("Notification"), "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
+            this.showStatusModal(t("Notification"), t("Error"), false)
             this.setDisabledSubmitButton(false)
         }
     }

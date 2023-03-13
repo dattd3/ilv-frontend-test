@@ -79,7 +79,7 @@ class SeniorExecutiveInfoComponent extends React.PureComponent {
     } else {
       this.setState({ [name]: value, users: [] })
       this.props.updateApprovalInfos("seniorExecutive", value, true)
-      this.props.updateErrors({seniorExecutive: "Vui lòng chọn CBLĐ phê duyệt!"})
+      this.props.updateErrors({seniorExecutive: this.props.t('resign_error_seniorExecutive')})
     }
   }
     
