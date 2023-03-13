@@ -733,10 +733,10 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
           }
 
           if (!fileExtension.includes(file.type)) {
-              errors.cvs = 'Tồn tại file đính kèm không đúng định dạng'
+              errors.cvs = t('Request_error_file_format')
               break
           } else if (parseFloat(file.size / 1000000) > 2) {
-              errors.cvs = 'Dung lượng từng file đính kèm không được vượt quá 2MB'
+              errors.cvs = t('Request_error_file_size')
               break
           } else {
               errors.cvs = null
@@ -745,7 +745,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
       }
 
       if (parseFloat(sizeTotal / 1000000) > 10) {
-          errors.cvs = 'Tổng dung lượng các file đính kèm không được vượt quá 10MB'
+          errors.cvs = t('Request_error_file_oversize')
       }
     }else if(type === 'assess'){
       if(evalutions && evalutions.length > 0){
@@ -1226,7 +1226,7 @@ renderEvalution = (name, data, isDisable) => {
     const { t } = this.props
     let err = {};
     if(actionType != 1) {
-      err = this.verifyInputs()
+      err = this.verifyInputs(t)
     } else {
       this.setState({errors: {}});
     }
@@ -1241,7 +1241,7 @@ renderEvalution = (name, data, isDisable) => {
     if(this.state.type == 'assess'){
       url = `${process.env.REACT_APP_REQUEST_URL}StaffContract/fetchEvaluation?actionRequest=${actionType}`
       home = '/tasks?tab=consent';
-      if(actionType == 1) message = 'Lưu thông tin thành công';
+      if(actionType == 1) message = t('save_information_success');
     }else if(this.state.type == 'approval') {
       url = `${process.env.REACT_APP_REQUEST_URL}StaffContract/approvals`
       home = '/tasks?tab=approval'
