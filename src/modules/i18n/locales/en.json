@@ -1658,5 +1658,15 @@
   "servey_question_5": "5. If you have found a new job, what makes the new job more attractive than your current job?",
   "other_reason": "Other reason (If any)",
   "handover_supporter": "To view offboarding handover contacts",
-  "view_here": "click here"
+  "view_here": "click here",
+  "Request_error_file_format": "The file is not in the correct format",
+  "Request_error_file_oversize": "Total file capacity can not exceed 10MB",
+  "Request_error_file_size": "Each file capacity can not exceed 2MB",
+  "resign_error_lastWorkingDay": "Please input Last working day!",
+  "resign_error_reason": "Please input Reason for contract termination!",
+  "resign_error_directManager": "Please select Direct manager!",
+  "resign_error_seniorExecutive": "Please select Senior executive!",
+  "resign_error_permission": "Staffs not under your management",
+  "select_to_export": "Please choose data record need to export",
+  "select_to_save": "Please choose data record need to save"
 }

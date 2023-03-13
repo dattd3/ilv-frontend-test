@@ -418,7 +418,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
             this.setDisabledSubmitButton(false)
             return;
           }
-          this.showStatusModal(response.data.result.message || 'Có lỗi xảy ra trong quá trình cập nhật thông tin!', false)
+          this.showStatusModal(response.data.result.message || t('Error'), false)
           this.setDisabledSubmitButton(false)    
 
             // if (response && response.data && response.data.result) {
@@ -427,7 +427,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
             // }
         })
         .catch(response => {
-            this.showStatusModal("Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
+            this.showStatusModal(t("Error"), false)
             this.setDisabledSubmitButton(false)
         })
 }
@@ -721,7 +721,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
                             aria-hidden="true"
                             className="mr-2"
                         />}
-                        {'Cập nhật'}
+                        {t('Update')}
                 </button>
 
             </div>

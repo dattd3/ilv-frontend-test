@@ -152,12 +152,12 @@ class ProposedResignationEdit extends React.Component {
                     this.setDisabledSubmitButton(false)
                 }
             } else {
-                this.showStatusModal(t("Notification"), "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
+                this.showStatusModal(t("Notification"), t("Error"), false)
                 this.setDisabledSubmitButton(false)
             }
 
         } catch (errors) {
-            this.showStatusModal(t("Notification"), "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
+            this.showStatusModal(t("Notification"), t("Error"), false)
             this.setDisabledSubmitButton(false)
         }
     }
