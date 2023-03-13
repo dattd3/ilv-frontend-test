@@ -449,7 +449,7 @@ class TaskList extends React.Component {
                 <div className="block-title d-flex">
                     <h4 className="content-page-header">{this.props.title}</h4>
                     <div className="export-btn">
-                       <button type="button" className="btn" onClick={this.showExportModal.bind(this)}><span className="mr-2"><img alt="excel" src={excelButton}/></span>Xuất báo báo</button>
+                       <button type="button" className="btn" onClick={this.showExportModal.bind(this)}><span className="mr-2"><img alt="excel" src={excelButton}/></span>{t('export_report')}</button>
                    </div>
                 </div>
                 <div className={`task-list shadow ${page}`}>

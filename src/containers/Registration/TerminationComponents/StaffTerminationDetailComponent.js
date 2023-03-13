@@ -16,7 +16,7 @@ class StaffTerminationDetailComponent extends React.PureComponent {
     }
 
     handleSelectChange = e => {
-        let errorObj = {reason: "Vui lòng chọn lý do chấm dứt hợp đồng!"}
+        let errorObj = {reason: this.props.t('resign_error_reason')}
         const infos = {...this.state.infos}
         infos.reason = null
 
@@ -34,7 +34,7 @@ class StaffTerminationDetailComponent extends React.PureComponent {
         const infos = {...this.state.infos}
         infos.lastWorkingDay = null
         infos.dateTermination = null
-        let errorObj = {lastWorkingDay: "Vui lòng nhập ngày làm việc cuối cùng!"}
+        let errorObj = {lastWorkingDay: this.props.t('resign_error_lastWorkingDay')}
 
         if (moment(date, 'YYYY-MM-DD').isValid()) {
             infos.lastWorkingDay = moment(date).format('YYYY-MM-DD')
@@ -107,7 +107,7 @@ class StaffTerminationDetailComponent extends React.PureComponent {
                             <div className="col-4">
                                 <p className="title">{t('ReasonForContractTermination')}<span className="required">(*)</span></p>
                                 <div>
-                                    <Select options={reasonTypes} placeholder="Vui lòng chọn lý do" onChange={this.handleSelectChange} value={infos.reason} styles={customStyles} isClearable={true} />
+                                    <Select options={reasonTypes} onChange={this.handleSelectChange} value={infos.reason} styles={customStyles} isClearable={true} />
                                 </div>
                             </div>
                         </div>
