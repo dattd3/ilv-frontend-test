@@ -1663,5 +1663,9 @@
   "SessionWarning": "Working Session Timeout Warning",
   "SessionWarningTimeContent": "Your working session will end in {{minute}}:{{second}} m. Do you want to keep working?",
   "SessionEnd": "Working session timeout",
-  "SessionEndContent": "Working session timeout. Please re-login!"
+  "SessionEndContent": "Working session timeout. Please re-login!",
+  "disapproval_status": "Approval Reject status",
+  "appraisal_status": "Consent status",
+  "disappraisal_status": "Consent Reject status",
+  "export_report": "Export"
 }

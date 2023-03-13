@@ -1681,6 +1681,9 @@
   "SessionWarning": "Cảnh báo hết hạn phiên làm việc",
   "SessionWarningTimeContent": "Phiên làm việc của bạn sẽ hết hạn sau {{minute}}:{{second}} phút. Bạn có muốn gia hạn phiên làm việc?",
   "SessionEnd": "Phiên làm việc đã kết thúc",
-  "SessionEndContent": "Phiên làm việc của bạn đã kết thúc. Vui lòng đăng nhập lại!"
-
+  "SessionEndContent": "Phiên làm việc của bạn đã kết thúc. Vui lòng đăng nhập lại!",
+  "disapproval_status": "Trạng thái hủy phê duyệt",
+  "appraisal_status": "Trạng thái thẩm định",
+  "disappraisal_status": "Trạng thái hủy thẩm định",
+  "export_report": "Xuất báo cáo"
 }
