@@ -19,7 +19,7 @@ import { checkFilesMimeType } from "utils/file";
 import IconPlusCircle from "assets/img/icon/Icon-plus-circle.svg";
 import IconRemove from "assets/img/icon-delete.svg";
 import ResultModal from "../ResultModal";
-import map from 'containers/map.config'
+import map from "containers/map.config";
 const config = getRequestConfigurations();
 
 registerLocale("vi", vi);
@@ -66,14 +66,18 @@ const INIT_STATUS_MODAL_MANAGEMENT = {
   isShow: false,
   isSuccess: true,
   titleModal: "",
-  messageModal: ""
+  messageModal: "",
 };
-const queryString = window.location.search
+const queryString = window.location.search;
 
 export default function OTRequestComponent({ recentlyManagers }) {
   const { t } = useTranslation();
-  const [startDate, setStartDate] = useState(getValueParamByQueryString(queryString, 'date'));
-  const [endDate, setEndDate] = useState(getValueParamByQueryString(queryString, 'date'));
+  const [startDate, setStartDate] = useState(
+    getValueParamByQueryString(queryString, "date")
+  );
+  const [endDate, setEndDate] = useState(
+    getValueParamByQueryString(queryString, "date")
+  );
   const [appraiser, setAppraiser] = useState(null);
   const [budgetApprover, setBudgetApprover] = useState(null);
   const [timeOverviewData, setTimeOverviewData] = useState([]);
@@ -260,7 +264,7 @@ export default function OTRequestComponent({ recentlyManagers }) {
       .join(" - ");
 
     let bodyFormData = new FormData();
-    bodyFormData.append("Name", t("OTRequest"));
+    bodyFormData.append("Name", t("MoneyOT"));
     bodyFormData.append("RequestTypeId", OTRequestType);
     bodyFormData.append("Comment", comments);
     bodyFormData.append("requestInfo", JSON.stringify(timesheets));
@@ -330,14 +334,14 @@ export default function OTRequestComponent({ recentlyManagers }) {
           isShow: true,
           isSuccess: false,
           titleModal: t("Notification"),
-          messageModal: response.data?.result?.message
+          messageModal: response.data?.result?.message,
         });
       } else {
         setStatusModalManagement({
           isShow: true,
           isSuccess: true,
           titleModal: t("Successful"),
-          messageModal: t("RequestSent")
+          messageModal: t("RequestSent"),
         });
       }
     } catch (error) {
@@ -345,7 +349,7 @@ export default function OTRequestComponent({ recentlyManagers }) {
         isShow: true,
         isSuccess: false,
         titleModal: t("Notification"),
-        messageModal: t("Error")
+        messageModal: t("Error"),
       });
     }
     setIsSendingRequest(false);
@@ -433,17 +437,31 @@ export default function OTRequestComponent({ recentlyManagers }) {
 
   const hideStatusModal = () => {
     if (statusModalManagement.isSuccess) {
-      window.location.href = `${map.Registration}?tab=OTRequest`
+      window.location.href = `${map.Registration}?tab=OTRequest`;
     }
     setStatusModalManagement(INIT_STATUS_MODAL_MANAGEMENT);
-  }
+  };
+
+  const isHasTime1 = (timesheet) => {
+    return (
+      !isNullCustomize(timesheet.from_time1) &&
+      !isNullCustomize(timesheet.to_time1)
+    );
+  };
+
+  const isHasTime2 = (timesheet) => {
+    return (
+      !isNullCustomize(timesheet.from_time2) &&
+      !isNullCustomize(timesheet.to_time2)
+    );
+  };
 
   return (
     <div className="ot-request-container">
       <ResultModal
         show={statusModalManagement.isShow}
         isSuccess={statusModalManagement.isSuccess}
-        title={statusModalManagement.titleModal} 
+        title={statusModalManagement.titleModal}
         message={statusModalManagement.messageModal}
         onHide={hideStatusModal}
       />
@@ -461,9 +479,7 @@ export default function OTRequestComponent({ recentlyManagers }) {
                     startDate ? moment(startDate, "DD/MM/YYYY").toDate() : null
                   }
                   maxDate={
-                    endDate
-                      ? moment(endDate, "DD/MM/YYYY").toDate()
-                      : null
+                    endDate ? moment(endDate, "DD/MM/YYYY").toDate() : null
                   }
                   onChange={handleChangeStartDate}
                   showDisabledMonthNavigation
@@ -561,48 +577,58 @@ export default function OTRequestComponent({ recentlyManagers }) {
                       <div className="title">{t("PlannedShift")}</div>
                       <div className="row body">
                         <div className="col-6">
-                          <div className="mb-12">
-                            {t("StartTime")} 1:{" "}
-                            <b>
-                              {!isNullCustomize(timesheet.from_time1)
-                                ? moment(timesheet.from_time1, "HHmmss").format(
-                                    "HH:mm:ss"
-                                  )
-                                : null}
-                            </b>
-                          </div>
-                          <div>
-                            {t("StartTime")} 2:{" "}
-                            <b>
-                              {!isNullCustomize(timesheet.from_time2)
-                                ? moment(timesheet.from_time2, "HHmmss").format(
-                                    "HH:mm:ss"
-                                  )
-                                : null}
-                            </b>
-                          </div>
+                          {isHasTime1(timesheet) && (
+                            <div className="mb-12">
+                              {t("StartTime")} 1:{" "}
+                              <b>
+                                {!isNullCustomize(timesheet.from_time1)
+                                  ? moment(
+                                      timesheet.from_time1,
+                                      "HHmmss"
+                                    ).format("HH:mm:ss")
+                                  : null}
+                              </b>
+                            </div>
+                          )}
+                          {isHasTime2(timesheet) && (
+                            <div>
+                              {t("StartTime")} 2:{" "}
+                              <b>
+                                {!isNullCustomize(timesheet.from_time2)
+                                  ? moment(
+                                      timesheet.from_time2,
+                                      "HHmmss"
+                                    ).format("HH:mm:ss")
+                                  : null}
+                              </b>
+                            </div>
+                          )}
                         </div>
                         <div className="col-6">
-                          <div className="mb-12">
-                            {t("EndTime")} 1:{" "}
-                            <b>
-                              {!isNullCustomize(timesheet.to_time1)
-                                ? moment(timesheet.to_time1, "HHmmss").format(
-                                    "HH:mm:ss"
-                                  )
-                                : null}
-                            </b>
-                          </div>
-                          <div>
-                            {t("EndTime")} 2:{" "}
-                            <b>
-                              {!isNullCustomize(timesheet.to_time2)
-                                ? moment(timesheet.to_time2, "HHmmss").format(
-                                    "HH:mm:ss"
-                                  )
-                                : null}
-                            </b>
-                          </div>
+                          {isHasTime1(timesheet) && (
+                            <div className="mb-12">
+                              {t("EndTime")} 1:{" "}
+                              <b>
+                                {!isNullCustomize(timesheet.to_time1)
+                                  ? moment(timesheet.to_time1, "HHmmss").format(
+                                      "HH:mm:ss"
+                                    )
+                                  : null}
+                              </b>
+                            </div>
+                          )}
+                          {isHasTime2(timesheet) && (
+                            <div>
+                              {t("EndTime")} 2:{" "}
+                              <b>
+                                {!isNullCustomize(timesheet.to_time2)
+                                  ? moment(timesheet.to_time2, "HHmmss").format(
+                                      "HH:mm:ss"
+                                    )
+                                  : null}
+                              </b>
+                            </div>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -610,52 +636,60 @@ export default function OTRequestComponent({ recentlyManagers }) {
                       <div className="title">{t("ActualTime")}</div>
                       <div className="row body">
                         <div className="col-6">
-                          <div className="mb-12">
-                            {t("StartTime")} 1:{" "}
-                            <b>
-                              {!isNullCustomize(timesheet.start_time1_fact)
-                                ? moment(
-                                    timesheet.start_time1_fact,
-                                    "HHmmss"
-                                  ).format("HH:mm:ss")
-                                : null}
-                            </b>
-                          </div>
-                          <div>
-                            {t("StartTime")} 2:{" "}
-                            <b>
-                              {!isNullCustomize(timesheet.start_time2_fact)
-                                ? moment(
-                                    timesheet.start_time2_fact,
-                                    "HHmmss"
-                                  ).format("HH:mm:ss")
-                                : null}
-                            </b>
-                          </div>
+                          {isHasTime1(timesheet) && (
+                            <div className="mb-12">
+                              {t("StartTime")} 1:{" "}
+                              <b>
+                                {!isNullCustomize(timesheet.start_time1_fact)
+                                  ? moment(
+                                      timesheet.start_time1_fact,
+                                      "HHmmss"
+                                    ).format("HH:mm:ss")
+                                  : null}
+                              </b>
+                            </div>
+                          )}
+                          {isHasTime2(timesheet) && (
+                            <div>
+                              {t("StartTime")} 2:{" "}
+                              <b>
+                                {!isNullCustomize(timesheet.start_time2_fact)
+                                  ? moment(
+                                      timesheet.start_time2_fact,
+                                      "HHmmss"
+                                    ).format("HH:mm:ss")
+                                  : null}
+                              </b>
+                            </div>
+                          )}
                         </div>
                         <div className="col-6">
-                          <div className="mb-12">
-                            {t("EndTime")} 1:{" "}
-                            <b>
-                              {!isNullCustomize(timesheet.end_time1_fact)
-                                ? moment(
-                                    timesheet.end_time1_fact,
-                                    "HHmmss"
-                                  ).format("HH:mm:ss")
-                                : null}
-                            </b>
-                          </div>
-                          <div>
-                            {t("EndTime")} 2:{" "}
-                            <b>
-                              {!isNullCustomize(timesheet.end_time2_fact)
-                                ? moment(
-                                    timesheet.end_time2_fact,
-                                    "HHmmss"
-                                  ).format("HH:mm:ss")
-                                : null}
-                            </b>
-                          </div>
+                          {isHasTime1(timesheet) && (
+                            <div className="mb-12">
+                              {t("EndTime")} 1:{" "}
+                              <b>
+                                {!isNullCustomize(timesheet.end_time1_fact)
+                                  ? moment(
+                                      timesheet.end_time1_fact,
+                                      "HHmmss"
+                                    ).format("HH:mm:ss")
+                                  : null}
+                              </b>
+                            </div>
+                          )}
+                          {isHasTime2(timesheet) && (
+                            <div>
+                              {t("EndTime")} 2:{" "}
+                              <b>
+                                {!isNullCustomize(timesheet.end_time2_fact)
+                                  ? moment(
+                                      timesheet.end_time2_fact,
+                                      "HHmmss"
+                                    ).format("HH:mm:ss")
+                                  : null}
+                              </b>
+                            </div>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -664,8 +698,8 @@ export default function OTRequestComponent({ recentlyManagers }) {
                     <div className="request-info-card">
                       <div className="title">{t("OTRequest")}</div>
                       <div className="ot-registration-body">
-                        <div className="flex mb-12">
-                          <div className="form-item">
+                        <div className="row mb-15">
+                          <div className="col-5 mr-12">
                             <div className="mb-12">{t("OTReason")}</div>
                             <Select
                               classNamePrefix="ot-reason-select"
@@ -714,13 +748,12 @@ export default function OTRequestComponent({ recentlyManagers }) {
                               name="startTime"
                               className="form-control input hour-picker-input"
                               placeholderText="hh:mm"
-                              // maxTime={!isNullCustomize(timesheet.maxTime) ? moment(timesheet.maxTime, 'HH:mm').toDate() : null}
                             />
                             <p className="text-danger">
                               {errors[`startTime_${index}`]}
                             </p>
                           </div>
-                          <div className="form-item">
+                          <div className="form-item  end-time-container">
                             <div className="mb-12">{t("ToHour")}</div>
                             <DatePicker
                               selected={
@@ -745,7 +778,6 @@ export default function OTRequestComponent({ recentlyManagers }) {
                               name="endTime"
                               className="form-control input hour-picker-input"
                               placeholderText="hh:mm"
-                              // minTime={!isNullCustomize(timesheet.startTime) ? moment(timesheet.startTime, 'HH:mm').toDate() : null}
                             />
                             <p className="text-danger">
                               {errors[`endTime_${index}`]}
@@ -762,16 +794,18 @@ export default function OTRequestComponent({ recentlyManagers }) {
                           {errors[`overlapTime_${index}`]}
                         </p>
                         <div className="ot-note mb-15">{t("OTNote")}</div>
-                        <div className="flex mb-12">
-                          <div className="form-item">
-                            <div className="mb-12">{t("OTType")}</div>
-                            <div className="field-view ot-type-field">
-                              {t("MoneyOT")}
+                        <div className="row mb-15">
+                          <div className="col-5 mr-12">
+                            <div className="form-item">
+                              <div className="mb-12">{t("OTType")}</div>
+                              <div className="field-view">{t("MoneyOT")}</div>
                             </div>
                           </div>
                           <div className="form-item">
-                            <div className="mb-12">{t("TotalLeaveTime")}</div>
-                            <div className="field-view total-time-field">
+                            <div className="mb-12 total-leave-time">
+                              {t("TotalLeaveTime")}
+                            </div>
+                            <div className="field-view  hour-picker-input">
                               {timesheet.startTime &&
                               timesheet.endTime &&
                               getHoursBetween2Times(
@@ -787,37 +821,35 @@ export default function OTRequestComponent({ recentlyManagers }) {
                               {t("HourUnit")}
                             </div>
                           </div>
-                          <div className="form-item">
-                            <div className="mb-12">
-                              {t("TotalTimePerMonth")}
-                            </div>
-                            <div className="field-view total-time-month-field">
-                              {timesheet.totalHoursOtInMonth || 0}{" "}
-                              {t("HourUnit")}
+                          <div className="total-in-month-container">
+                            <div className="form-item">
+                              <div className="mb-12">
+                                {t("TotalTimePerMonth")}
+                              </div>
+                              <div className="field-view">
+                                {timesheet.totalHoursOtInMonth || 0}&nbsp;
+                                {t("HourUnit")}
+                              </div>
                             </div>
                           </div>
                         </div>
-                        <div>
-                          <div className="mb-12">{t("RegisterReason")}</div>
-                          <Form.Control
-                            as="textarea"
-                            rows={4}
-                            placeholder={t("import")}
-                            name="note"
-                            maxLength={1000}
-                            value={timesheet.note}
-                            onChange={(e) =>
-                              handleChangeRequestInfoData(
-                                "note",
-                                e.target?.value,
-                                index
-                              )
-                            }
-                          />
-                          <p className="text-danger">
-                            {errors[`note_${index}`]}
-                          </p>
-                        </div>
+                        <div className="mb-12">{t("RegisterReason")}</div>
+                        <Form.Control
+                          as="textarea"
+                          rows={4}
+                          placeholder={t("import")}
+                          name="note"
+                          maxLength={1000}
+                          value={timesheet.note}
+                          onChange={(e) =>
+                            handleChangeRequestInfoData(
+                              "note",
+                              e.target?.value,
+                              index
+                            )
+                          }
+                        />
+                        <p className="text-danger">{errors[`note_${index}`]}</p>
                       </div>
                     </div>
                   </div>
