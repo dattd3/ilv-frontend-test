@@ -1226,7 +1226,7 @@ renderEvalution = (name, data, isDisable) => {
     const { t } = this.props
     let err = {};
     if(actionType != 1) {
-      err = this.verifyInputs()
+      err = this.verifyInputs(t)
     } else {
       this.setState({errors: {}});
     }
