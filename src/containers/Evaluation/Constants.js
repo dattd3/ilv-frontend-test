@@ -26,10 +26,6 @@ const formulaConfig = {
     CT2: 'VINBUS_CT2',
     CT3: 'VINBUS_CT3',
     CT4: 'VINBUS_CT4',
-    CT5: 'VINBUS_CT5',
-    CT6: 'VINBUS_CT6',
-    CT7: 'VINBUS_CT7',
-    CT8: 'VINBUS_CT8',
 }
 
 export { evaluationStatus, actionButton, formType, groupConfig, formulaConfig }
