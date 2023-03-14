@@ -34,40 +34,32 @@ const formatTargetText = str => str?.replace(/\n|\r/g, "")
 
 const isVinBusByCompanyCode = code => code === Constants.pnlVCode.VinBus
 
+const formatEvaluationNumber = val => {
+    return parseInt(val) === Number(val) ? val : Number(Number(val).toFixed(2)) || 0
+}
+
 const calculateScore = (formulaCode, targetValue, weight, actualResult) => {
     try {
         let score = 0
         switch (formulaCode) {
             case formulaConfig.CT1:
-                score = (actualResult/targetValue) * weight * 100
-                break;
-            case formulaConfig.CT2:
-                score = (targetValue/actualResult) * weight * 100
-                break;
-            case formulaConfig.CT3:
                 score = actualResult >= targetValue ? 100 * (weight/100) : 0
                 break;
-            case formulaConfig.CT4:
+            case formulaConfig.CT2:
                 score = actualResult <= targetValue ? 100 * (weight/100) : 0
                 break;
-            case formulaConfig.CT5:
-                score = actualResult >= targetValue ? 100 * (weight/100) : (actualResult/targetValue) * (weight/100)
+            case formulaConfig.CT3:
+                score = actualResult >= targetValue ? 100 * (weight/100) : (actualResult/targetValue) * (weight/100) * 100
                 break;
-            case formulaConfig.CT6:
-                score = actualResult <= targetValue ? 100 * (weight/100) : (actualResult/targetValue) * (weight/100)
-                break;
-            case formulaConfig.CT7:
-                score = actualResult >= targetValue ? 100 * (weight/100) : (targetValue/actualResult) * (weight/100)
-                break;
-            case formulaConfig.CT8:
-                score = actualResult <= targetValue ? 100 * (weight/100) : (targetValue/actualResult) * (weight/100)
+            case formulaConfig.CT4:
+                score = actualResult <= targetValue ? 100 * (weight/100) : (targetValue/actualResult) * (weight/100) * 100
                 break;
         }
-        return score || 0
+        return formatEvaluationNumber(score)
     } catch (error) {
         console.log('calculateScore => ', error)
         return 0
     }
 }
 
-export { formatIndexText, calculateRating, formatTargetText, calculateScore, isVinBusByCompanyCode }
+export { formatIndexText, calculateRating, formatTargetText, calculateScore, isVinBusByCompanyCode, formatEvaluationNumber }

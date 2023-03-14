@@ -50,10 +50,10 @@ const EvaluationVinBusTemplate = ({ evaluationFormDetail, isEdit, showByManager,
                                     }
                                     <ul className="second">
                                         <li>{!formatTargetText(target?.metric1) ? '--' : formatTargetText(target?.metric1)}</li>
-                                        { formatTargetText(target?.metric2) && <li>{formatTargetText(target?.metric2)}</li> }
-                                        { formatTargetText(target?.metric3) && <li>{formatTargetText(target?.metric3)}</li> }
-                                        { formatTargetText(target?.metric4) && <li>{formatTargetText(target?.metric4)}</li> }
-                                        { formatTargetText(target?.metric5) && <li>{formatTargetText(target?.metric5)}</li> }
+                                        <li>{!formatTargetText(target?.metric2) ? '--' : formatTargetText(target?.metric2)}</li>
+                                        <li>{!formatTargetText(target?.metric3) ? '--' : formatTargetText(target?.metric3)}</li>
+                                        <li>{!formatTargetText(target?.metric4) ? '--' : formatTargetText(target?.metric4)}</li>
+                                        <li>{!formatTargetText(target?.metric5) ? '--' : formatTargetText(target?.metric5)}</li>
                                     </ul>
                                 </td>
                                 <td className="text-center proportion"><span>{target?.weight}%</span></td>
@@ -67,6 +67,7 @@ const EvaluationVinBusTemplate = ({ evaluationFormDetail, isEdit, showByManager,
                                             <div>
                                                 <input className="value" type="text" placeholder={t("Nhập 0 - 100")} value={target?.realResult === null || target?.realResult === undefined ? "" : target?.realResult} onChange={(e) => handleInputChange(i, index, 'realResult', e)} />
                                             </div>
+                                            {errors[`${index}_${i}_realResult`] && <div className="alert alert-danger invalid-message" role="alert">{errors[`${index}_${i}_realResult`]}</div>}
                                             <div>
                                                 <span className="value label">{target?.seftPoint === null || target?.seftPoint === undefined ? "" : target?.seftPoint}</span>
                                             </div>
@@ -82,18 +83,17 @@ const EvaluationVinBusTemplate = ({ evaluationFormDetail, isEdit, showByManager,
                                         </>
                                     }
                                     </div>
-                                    {errors[`${index}_${i}_realResult`] && <div className="alert alert-danger invalid-message" role="alert">{errors[`${index}_${i}_realResult`]}</div>}
-                                    {/* {errors[`${index}_${i}_seftPoint`] && <div className="alert alert-danger invalid-message" role="alert">{errors[`${index}_${i}_seftPoint`]}</div>} */}
                                 </td>
                                 <td className="text-center qltt-assessment">
                                     <div className="data">
                                     {
-                                        !showByManager && evaluationFormDetail.status == evaluationStatus.selfAssessment && isEdit
+                                        showByManager && evaluationFormDetail.status == evaluationStatus.selfAssessment && isEdit
                                         ?
                                         <>
                                             <div>
                                                 <input className="value" type="text" placeholder={t("Nhập 0 - 100")} value={target?.leadRealResult === null || target?.leadRealResult === undefined ? "" : target?.leadRealResult} onChange={(e) => handleInputChange(i, index, 'leadRealResult', e)} />
                                             </div>
+                                            {errors[`${index}_${i}_leadRealResult`] && <div className="alert alert-danger invalid-message" role="alert">{errors[`${index}_${i}_leadRealResult`]}</div>}
                                             <div>
                                                 <span className="value label">{target?.leadReviewPoint === null || target?.leadReviewPoint === undefined ? "" : target?.leadReviewPoint}</span>
                                             </div>
@@ -109,8 +109,6 @@ const EvaluationVinBusTemplate = ({ evaluationFormDetail, isEdit, showByManager,
                                         </>
                                     }
                                     </div>
-                                    {errors[`${index}_${i}_leadRealResult`] && <div className="alert alert-danger invalid-message" role="alert">{errors[`${index}_${i}_leadRealResult`]}</div>}
-                                    {/* {errors[`${index}_${i}_leadReviewPoint`] && <div className="alert alert-danger invalid-message" role="alert">{errors[`${index}_${i}_leadReviewPoint`]}</div>} */}
                                 </td>
                             </tr>
                         </tbody>
@@ -217,10 +215,10 @@ const EvaluationVinBusTemplate = ({ evaluationFormDetail, isEdit, showByManager,
                                                             }
                                                             <ul className="second">
                                                                 <li>{!formatTargetText(target?.metric1) ? '--' : formatTargetText(target?.metric1)}</li>
-                                                                { formatTargetText(target?.metric2) && <li>{formatTargetText(target?.metric2)}</li> }
-                                                                { formatTargetText(target?.metric3) && <li>{formatTargetText(target?.metric3)}</li> }
-                                                                { formatTargetText(target?.metric4) && <li>{formatTargetText(target?.metric4)}</li> }
-                                                                { formatTargetText(target?.metric5) && <li>{formatTargetText(target?.metric5)}</li> }
+                                                                <li>{!formatTargetText(target?.metric2) ? '--' : formatTargetText(target?.metric2)}</li>
+                                                                <li>{!formatTargetText(target?.metric3) ? '--' : formatTargetText(target?.metric3)}</li>
+                                                                <li>{!formatTargetText(target?.metric4) ? '--' : formatTargetText(target?.metric4)}</li>
+                                                                <li>{!formatTargetText(target?.metric5) ? '--' : formatTargetText(target?.metric5)}</li>
                                                             </ul>
                                                         </td>
                                                         <td className="text-center proportion"><span>{target?.weight}%</span></td>
@@ -234,6 +232,7 @@ const EvaluationVinBusTemplate = ({ evaluationFormDetail, isEdit, showByManager,
                                                                     <div>
                                                                         <input className="value" type="text" placeholder={t("Nhập 0 - 100")} value={target?.realResult === null || target?.realResult === undefined ? "" : target?.realResult} onChange={(e) => handleInputChange(i, index, 'realResult', e)} />
                                                                     </div>
+                                                                    {errors[`${index}_${i}_realResult`] && <div className="alert alert-danger invalid-message" role="alert">{errors[`${index}_${i}_realResult`]}</div>}
                                                                     <div>
                                                                         <span className="value label">{target?.seftPoint === null || target?.seftPoint === undefined ? "" : target?.seftPoint}</span>
                                                                     </div>
@@ -249,18 +248,17 @@ const EvaluationVinBusTemplate = ({ evaluationFormDetail, isEdit, showByManager,
                                                                 </>
                                                             }
                                                             </div>
-                                                            {errors[`${index}_${i}_realResult`] && <div className="alert alert-danger invalid-message" role="alert">{errors[`${index}_${i}_realResult`]}</div>}
-                                                            {/* {errors[`${index}_${i}_seftPoint`] && <div className="alert alert-danger invalid-message" role="alert">{errors[`${index}_${i}_seftPoint`]}</div>} */}
                                                         </td>
                                                         <td className="text-center qltt-assessment">
                                                             <div className="data">
                                                             {
-                                                                !showByManager && evaluationFormDetail.status == evaluationStatus.selfAssessment && isEdit
+                                                                showByManager && evaluationFormDetail.status == evaluationStatus.selfAssessment && isEdit
                                                                 ?
                                                                 <>
                                                                     <div>
                                                                         <input className="value" type="text" placeholder={t("Nhập 0 - 100")} value={target?.leadRealResult === null || target?.leadRealResult === undefined ? "" : target?.leadRealResult} onChange={(e) => handleInputChange(i, index, 'leadRealResult', e)} />
                                                                     </div>
+                                                                    {errors[`${index}_${i}_leadRealResult`] && <div className="alert alert-danger invalid-message" role="alert">{errors[`${index}_${i}_leadRealResult`]}</div>}
                                                                     <div>
                                                                         <span className="value label">{target?.leadReviewPoint === null || target?.leadReviewPoint === undefined ? "" : target?.leadReviewPoint}</span>
                                                                     </div>
@@ -276,8 +274,6 @@ const EvaluationVinBusTemplate = ({ evaluationFormDetail, isEdit, showByManager,
                                                                 </>
                                                             }
                                                             </div>
-                                                            {errors[`${index}_${i}_leadRealResult`] && <div className="alert alert-danger invalid-message" role="alert">{errors[`${index}_${i}_leadRealResult`]}</div>}
-                                                            {/* {errors[`${index}_${i}_leadReviewPoint`] && <div className="alert alert-danger invalid-message" role="alert">{errors[`${index}_${i}_leadReviewPoint`]}</div>} */}
                                                         </td>
                                                     </tr>
                                                 </tbody>

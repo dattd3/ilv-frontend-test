@@ -6,7 +6,7 @@ import axios from 'axios'
 import _ from 'lodash'
 import Constants from '../../../commons/Constants'
 import { getRequestConfigurations } from '../../../commons/Utils'
-import { calculateRating, isVinBusByCompanyCode, calculateScore } from '../Utils'
+import { calculateRating, isVinBusByCompanyCode, calculateScore, formatEvaluationNumber } from '../Utils'
 import { evaluationStatus, actionButton } from '../Constants'
 import { useGuardStore } from '../../../modules'
 import LoadingModal from '../../../components/Common/LoadingModal'
@@ -67,7 +67,11 @@ function EvaluationOverall(props) {
       return calculateRating(Number(evaluationFormDetail?.totalSeftPoint || 0))
     }
 
-    return calculateRating(Number(evaluationFormDetail?.totalLeadReviewPoint || 0))
+    if (Number(evaluationFormDetail?.status) > evaluationStatus.selfAssessment || (Number(evaluationFormDetail?.status) === evaluationStatus.selfAssessment && evaluationFormDetail?.totalLeadReviewPoint)) { // Chỉ tính rate khi biểu mẫu đang đến chân CBQL đánh giá
+      return calculateRating(Number(evaluationFormDetail?.totalLeadReviewPoint || 0))
+    }
+
+    return ''
   })()
   
   return <div className="block-overall">
@@ -129,6 +133,7 @@ function EvaluationOverall(props) {
               </tr>
             })
           }
+          {/* Row điểm tổng thể */}
           <tr>
             <td className='c-criteria'><div className='font-weight-bold text-uppercase criteria'>{t("EvaluationDetailOverallScore")}</div></td>
             <td className='c-self-assessment text-center font-weight-bold'>{(evaluationFormDetail?.totalSeftPoint || 0).toFixed(2)}</td>
@@ -263,7 +268,7 @@ function EvaluationProcess(props) {
     const val = element?.target?.value || ""
 
     if (isVinBusByCompanyCode(evaluationFormDetail?.companyCode)) {
-      if (['realResult', 'leadRealResult'].includes(stateName) && !(/^[0-9][0-9,\.]*$/.test(Number(val)))) {
+      if (['realResult', 'leadRealResult'].includes(stateName) && (!(/^[0-9][0-9,\.]*$/.test(Number(val))) || Number(val) > 100)) {
         return
       }
     } else {
@@ -431,6 +436,7 @@ function EvaluationDetail(props) {
 
   const updateData = (subIndex, parentIndex, stateName, value, childIndex) => {
     const evaluationFormDetailTemp = { ...evaluationFormDetail }
+    const isVinBus = isVinBusByCompanyCode(evaluationFormDetail?.companyCode)
 
     if (_.isNil(childIndex)) {
       evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex][stateName] = value
@@ -476,10 +482,10 @@ function EvaluationDetail(props) {
     if (showByManager) {
       totalQuestionsAnswered = (evaluationFormDetailTemp?.listGroup || []).reduce((initial, current) => {
         let questionsAnswered = (current?.listTarget || []).reduce((subInitial, subCurrent) => {
-          subInitial += subCurrent?.leadReviewPoint ? 1 : 0
+          subInitial += (subCurrent?.leadReviewPoint || (isVinBus && subCurrent?.leadRealResult)) ? 1 : 0
           if (subCurrent.listTarget?.length) {
             const subQuestionsAnswered = subCurrent.listTarget?.reduce((res, item) => {
-              res += item.leadReviewPoint ? 1 : 0
+              res += (item.leadReviewPoint || (isVinBus && subCurrent?.leadRealResult)) ? 1 : 0
               return res
             }, 0)
             subInitial += subQuestionsAnswered
@@ -492,10 +498,10 @@ function EvaluationDetail(props) {
     } else {
       totalQuestionsAnswered = (evaluationFormDetailTemp?.listGroup || []).reduce((initial, current) => {
         let questionsAnswered = (current?.listTarget || []).reduce((subInitial, subCurrent) => {
-          subInitial += subCurrent?.seftPoint ? 1 : 0
+          subInitial += (subCurrent?.seftPoint || (isVinBus && subCurrent?.realResult)) ? 1 : 0
           if (subCurrent.listTarget?.length) {
             const subQuestionsAnswered = subCurrent.listTarget?.reduce((res, item) => {
-              res += item.seftPoint ? 1 : 0
+              res += (item.seftPoint || (isVinBus && subCurrent?.realResult)) ? 1 : 0
               return res
             }, 0)
             subInitial += subQuestionsAnswered
@@ -510,8 +516,8 @@ function EvaluationDetail(props) {
     evaluationFormDetailTemp.listGroup = [...evaluationFormDetailTemp.listGroup || []].map(item => {
       return {
         ...item,
-        groupSeftPoint: calculateAssessment(item?.listTarget)?.selfAssessment || 0,
-        groupLeadReviewPoint: calculateAssessment(item?.listTarget)?.managerAssessment || 0
+        groupSeftPoint: (calculateAssessment(item?.listTarget)?.selfAssessment || 0) * (item?.groupWeight/100),
+        groupLeadReviewPoint: (calculateAssessment(item?.listTarget)?.managerAssessment || 0) * (item?.groupWeight/100),
       }
     })
     const totalInfos = getTotalInfoByListGroup(evaluationFormDetailTemp.listGroup)
@@ -623,43 +629,74 @@ function EvaluationDetail(props) {
   }
 
   const isDataValid = () => {
+    const isVinBus = isVinBusByCompanyCode(evaluationFormDetail?.companyCode)
     const errorResult = (evaluationFormDetail?.listGroup || []).reduce((initial, currentParent, indexParent) => {
       let targetErrors = {}
       if (currentParent?.listGroupConfig && currentParent?.listGroupConfig?.length > 0) { // Tinh thần thái độ
         targetErrors = (currentParent?.listTarget || []).reduce((subInitial, subCurrent, subIndex) => {
           let keyData = showByManager ? 'leadReviewPoint' : 'seftPoint'
-          subInitial[`${indexParent}_${subIndex}_${keyData}`] = null
-          if (!subCurrent.listTarget?.length) {
-            if (!Number(subCurrent[keyData])) {
-              subInitial[`${indexParent}_${subIndex}_${keyData}`] = t("Required")
+          if (isVinBus) {
+            keyData = showByManager ? 'leadRealResult' : 'realResult'
+            subInitial[`${indexParent}_${subIndex}_${keyData}`] = null
+            if (!subCurrent.listTarget?.length) {
+              if (subCurrent[keyData] === '') {
+                subInitial[`${indexParent}_${subIndex}_${keyData}`] = t("Required")
+              }
+            } else {
+              const childErrors = subCurrent.listTarget?.map((childTarget, childIndex) => {
+                subInitial[`${indexParent}_${subIndex}_${childIndex}_${keyData}`] = null
+                if (childTarget[keyData] === '') {
+                  subInitial[`${indexParent}_${subIndex}_${childIndex}_${keyData}`] = t("Required")
+                }
+              })
             }
           } else {
-            const childErrors = subCurrent.listTarget?.map((childTarget, childIndex) => {
-              subInitial[`${indexParent}_${subIndex}_${childIndex}_${keyData}`] = null
-              if (!Number(childTarget[keyData])) {
-                subInitial[`${indexParent}_${subIndex}_${childIndex}_${keyData}`] = t("Required")
+            subInitial[`${indexParent}_${subIndex}_${keyData}`] = null
+            if (!subCurrent.listTarget?.length) {
+              if (!Number(subCurrent[keyData])) {
+                subInitial[`${indexParent}_${subIndex}_${keyData}`] = t("Required")
               }
-            })
+            } else {
+              const childErrors = subCurrent.listTarget?.map((childTarget, childIndex) => {
+                subInitial[`${indexParent}_${subIndex}_${childIndex}_${keyData}`] = null
+                if (!Number(childTarget[keyData])) {
+                  subInitial[`${indexParent}_${subIndex}_${childIndex}_${keyData}`] = t("Required")
+                }
+              })
+            }
           }
-
           return subInitial
         }, {})
       } else { // Kết quả công việc
         targetErrors = (currentParent?.listTarget || []).reduce((subInitial, subCurrent, subIndex) => {
           if (showByManager) {
-            subInitial[`${indexParent}_${subIndex}_leadReviewPoint`] = null
-            if (!Number(subCurrent?.leadReviewPoint)) {
-              subInitial[`${indexParent}_${subIndex}_leadReviewPoint`] = t("Required")
+            if (isVinBus) {
+              subInitial[`${indexParent}_${subIndex}_leadRealResult`] = null
+              if (subCurrent?.leadRealResult === '') {
+                subInitial[`${indexParent}_${subIndex}_leadRealResult`] = t("Required")
+              }
+            } else {
+              subInitial[`${indexParent}_${subIndex}_leadReviewPoint`] = null
+              if (!Number(subCurrent?.leadReviewPoint)) {
+                subInitial[`${indexParent}_${subIndex}_leadReviewPoint`] = t("Required")
+              }
             }
             return subInitial
           } else {
-            subInitial[`${indexParent}_${subIndex}_seftPoint`] = null
-            subInitial[`${indexParent}_${subIndex}_realResult`] = null
-            if (!Number(subCurrent?.seftPoint)) {
-              subInitial[`${indexParent}_${subIndex}_seftPoint`] = t("Required")
-            }
-            if (!subCurrent?.realResult) {
-              subInitial[`${indexParent}_${subIndex}_realResult`] = t("Required")
+            if (isVinBus) {
+              subInitial[`${indexParent}_${subIndex}_realResult`] = null
+              if (subCurrent?.realResult === '') {
+                subInitial[`${indexParent}_${subIndex}_realResult`] = t("Required")
+              }
+            } else {
+              subInitial[`${indexParent}_${subIndex}_seftPoint`] = null
+              subInitial[`${indexParent}_${subIndex}_realResult`] = null
+              if (!Number(subCurrent?.seftPoint)) {
+                subInitial[`${indexParent}_${subIndex}_seftPoint`] = t("Required")
+              }
+              if (!subCurrent?.realResult) {
+                subInitial[`${indexParent}_${subIndex}_realResult`] = t("Required")
+              }
             }
             return subInitial
           }
@@ -700,19 +737,19 @@ function EvaluationDetail(props) {
       let group = listGroup[groupIndex]
       for (let targetIndex = 0; targetIndex < group?.listTarget?.length; targetIndex++) {
         let target = group?.listTarget[targetIndex]
-        if (target?.seftPoint !== null && (Number(target?.seftPoint) > maximumScore || isNaN(Number(target?.seftPoint)) || Number(target?.seftPoint) < minimumScore)) {
+        if (target?.seftPoint !== null && ((!isVinBusByCompanyCode(evaluationFormDetail?.companyCode) && Number(target?.seftPoint) > maximumScore) || isNaN(Number(target?.seftPoint)) || Number(target?.seftPoint) < minimumScore)) {
           return false
         }
-        if (target?.leadReviewPoint !== null && (Number(target?.leadReviewPoint) > maximumScore || isNaN(Number(target?.leadReviewPoint)) || Number(target?.leadReviewPoint) < minimumScore)) {
+        if (target?.leadReviewPoint !== null && ((!isVinBusByCompanyCode(evaluationFormDetail?.companyCode) && Number(target?.leadReviewPoint) > maximumScore) || isNaN(Number(target?.leadReviewPoint)) || Number(target?.leadReviewPoint) < minimumScore)) {
           return false
         }
 
         for (let subTargetIndex = 0; subTargetIndex < target?.listTarget?.length; subTargetIndex++) {
           let subTarget = target?.listTarget[subTargetIndex]
-          if (subTarget?.seftPoint !== null && (Number(subTarget?.seftPoint) > maximumScore || isNaN(Number(subTarget?.seftPoint)) || Number(subTarget?.seftPoint) < minimumScore)) {
+          if (subTarget?.seftPoint !== null && ((!isVinBusByCompanyCode(evaluationFormDetail?.companyCode) && Number(subTarget?.seftPoint) > maximumScore) || isNaN(Number(subTarget?.seftPoint)) || Number(subTarget?.seftPoint) < minimumScore)) {
             return false
           }
-          if (subTarget?.leadReviewPoint !== null && (Number(subTarget?.leadReviewPoint) > maximumScore || isNaN(Number(subTarget?.leadReviewPoint)) || Number(subTarget?.leadReviewPoint) < minimumScore)) {
+          if (subTarget?.leadReviewPoint !== null && ((!isVinBusByCompanyCode(evaluationFormDetail?.companyCode) && Number(subTarget?.leadReviewPoint) > maximumScore) || isNaN(Number(subTarget?.leadReviewPoint)) || Number(subTarget?.leadReviewPoint) < minimumScore)) {
             return false
           }
         }
