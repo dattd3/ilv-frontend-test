@@ -1594,28 +1594,29 @@
         display: flex;
       }
       .form-item {
-        margin-right: 20px;
+        margin-right: 0px;
         .hour-picker-input {
-          height: 36px;
+          height: 42px;
           width: 110px;
           border-radius: 4px;
+          margin-right: 24px;
         }
         .react-datepicker__input-container {
           margin: 0px;
         }
-        .ot-reason-select__control {
-          height: 36px;
-          width: 271px;
-        }
+      }
+      .ot-reason-select__control {
+        height: 42px;
+        // width: 271px;
       }
       .ot-type-field {
-        width: 271px;
+        width: 100%;
       }
       .total-time-field {
-        width: 110px;
+        width: 100%;
       }
       .total-time-month-field {
-        width: 240px;
+        width: 100%;
       }
     }
     .col-3, .col-9 {
@@ -1626,6 +1627,19 @@
     }
     .ot-note {
       color: #36B9CC;
+    }
+  }
+  @media only screen and (max-width: 1300px) {
+    .total-in-month-container {
+      margin-left: 12px;
+      margin-top: 12px;
+      flex: 0 0 41.67%;
+      max-width: 41.67%;
+      padding-right: 24px;
+    }
+    .end-time-container {
+      margin-left: 12px;
+      margin-top: 0px;
     }
   }
   .field-view {
@@ -1669,6 +1683,9 @@
   }
   .mr-20 {
     margin-right: 20px;
+  }
+  .mr-12 {
+    margin-right: 12px;
   }
   .list-files {
     display: inline-flex;

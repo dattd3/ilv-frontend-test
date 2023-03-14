@@ -109,6 +109,20 @@ export default function OTRequestDetailComponent({ data, action }) {
     return messageSAP;
   };
 
+  const isHasTime1 = (timesheet) => {
+    return (
+      !isNullCustomize(timesheet.from_time1) &&
+      !isNullCustomize(timesheet.to_time1)
+    );
+  };
+
+  const isHasTime2 = (timesheet) => {
+    return (
+      !isNullCustomize(timesheet.from_time2) &&
+      !isNullCustomize(timesheet.to_time2)
+    );
+  };
+
   return (
     <div className="ot-request-container">
       <div className="ot-request-detail-container">
@@ -158,48 +172,58 @@ export default function OTRequestDetailComponent({ data, action }) {
                       <div className="title">{t("PlannedShift")}</div>
                       <div className="row body">
                         <div className="col-6">
-                          <div className="mb-12">
-                            {t("StartTime")} 1:{" "}
-                            <b>
-                              {!isNullCustomize(timesheet.from_time1)
-                                ? moment(timesheet.from_time1, "HHmmss").format(
-                                    "HH:mm:ss"
-                                  )
-                                : null}
-                            </b>
-                          </div>
-                          <div>
-                            {t("StartTime")} 2:{" "}
-                            <b>
-                              {!isNullCustomize(timesheet.from_time2)
-                                ? moment(timesheet.from_time2, "HHmmss").format(
-                                    "HH:mm:ss"
-                                  )
-                                : null}
-                            </b>
-                          </div>
+                          {isHasTime1(timesheet) && (
+                            <div className="mb-12">
+                              {t("StartTime")} 1:{" "}
+                              <b>
+                                {!isNullCustomize(timesheet.from_time1)
+                                  ? moment(
+                                      timesheet.from_time1,
+                                      "HHmmss"
+                                    ).format("HH:mm:ss")
+                                  : null}
+                              </b>
+                            </div>
+                          )}
+                          {isHasTime2(timesheet) && (
+                            <div>
+                              {t("StartTime")} 2:{" "}
+                              <b>
+                                {!isNullCustomize(timesheet.from_time2)
+                                  ? moment(
+                                      timesheet.from_time2,
+                                      "HHmmss"
+                                    ).format("HH:mm:ss")
+                                  : null}
+                              </b>
+                            </div>
+                          )}
                         </div>
                         <div className="col-6">
-                          <div className="mb-12">
-                            {t("EndTime")} 1:{" "}
-                            <b>
-                              {!isNullCustomize(timesheet.to_time1)
-                                ? moment(timesheet.to_time1, "HHmmss").format(
-                                    "HH:mm:ss"
-                                  )
-                                : null}
-                            </b>
-                          </div>
-                          <div>
-                            {t("EndTime")} 2:{" "}
-                            <b>
-                              {!isNullCustomize(timesheet.to_time2)
-                                ? moment(timesheet.to_time2, "HHmmss").format(
-                                    "HH:mm:ss"
-                                  )
-                                : null}
-                            </b>
-                          </div>
+                          {isHasTime1(timesheet) && (
+                            <div className="mb-12">
+                              {t("EndTime")} 1:{" "}
+                              <b>
+                                {!isNullCustomize(timesheet.to_time1)
+                                  ? moment(timesheet.to_time1, "HHmmss").format(
+                                      "HH:mm:ss"
+                                    )
+                                  : null}
+                              </b>
+                            </div>
+                          )}
+                          {isHasTime2(timesheet) && (
+                            <div>
+                              {t("EndTime")} 2:{" "}
+                              <b>
+                                {!isNullCustomize(timesheet.to_time2)
+                                  ? moment(timesheet.to_time2, "HHmmss").format(
+                                      "HH:mm:ss"
+                                    )
+                                  : null}
+                              </b>
+                            </div>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -207,52 +231,60 @@ export default function OTRequestDetailComponent({ data, action }) {
                       <div className="title">{t("ActualTime")}</div>
                       <div className="row body">
                         <div className="col-6">
-                          <div className="mb-12">
-                            {t("StartTime")} 1:{" "}
-                            <b>
-                              {!isNullCustomize(timesheet.start_time1_fact)
-                                ? moment(
-                                    timesheet.start_time1_fact,
-                                    "HHmmss"
-                                  ).format("HH:mm:ss")
-                                : null}
-                            </b>
-                          </div>
-                          <div>
-                            {t("StartTime")} 2:{" "}
-                            <b>
-                              {!isNullCustomize(timesheet.start_time2_fact)
-                                ? moment(
-                                    timesheet.start_time2_fact,
-                                    "HHmmss"
-                                  ).format("HH:mm:ss")
-                                : null}
-                            </b>
-                          </div>
+                          {isHasTime1(timesheet) && (
+                            <div className="mb-12">
+                              {t("StartTime")} 1:{" "}
+                              <b>
+                                {!isNullCustomize(timesheet.start_time1_fact)
+                                  ? moment(
+                                      timesheet.start_time1_fact,
+                                      "HHmmss"
+                                    ).format("HH:mm:ss")
+                                  : null}
+                              </b>
+                            </div>
+                          )}
+                          {isHasTime2(timesheet) && (
+                            <div>
+                              {t("StartTime")} 2:{" "}
+                              <b>
+                                {!isNullCustomize(timesheet.start_time2_fact)
+                                  ? moment(
+                                      timesheet.start_time2_fact,
+                                      "HHmmss"
+                                    ).format("HH:mm:ss")
+                                  : null}
+                              </b>
+                            </div>
+                          )}
                         </div>
                         <div className="col-6">
-                          <div className="mb-12">
-                            {t("EndTime")} 1:{" "}
-                            <b>
-                              {!isNullCustomize(timesheet.end_time1_fact)
-                                ? moment(
-                                    timesheet.end_time1_fact,
-                                    "HHmmss"
-                                  ).format("HH:mm:ss")
-                                : null}
-                            </b>
-                          </div>
-                          <div>
-                            {t("EndTime")} 2:{" "}
-                            <b>
-                              {!isNullCustomize(timesheet.end_time2_fact)
-                                ? moment(
-                                    timesheet.end_time2_fact,
-                                    "HHmmss"
-                                  ).format("HH:mm:ss")
-                                : null}
-                            </b>
-                          </div>
+                          {isHasTime1(timesheet) && (
+                            <div className="mb-12">
+                              {t("EndTime")} 1:{" "}
+                              <b>
+                                {!isNullCustomize(timesheet.end_time1_fact)
+                                  ? moment(
+                                      timesheet.end_time1_fact,
+                                      "HHmmss"
+                                    ).format("HH:mm:ss")
+                                  : null}
+                              </b>
+                            </div>
+                          )}
+                          {isHasTime2(timesheet) && (
+                            <div>
+                              {t("EndTime")} 2:{" "}
+                              <b>
+                                {!isNullCustomize(timesheet.end_time2_fact)
+                                  ? moment(
+                                      timesheet.end_time2_fact,
+                                      "HHmmss"
+                                    ).format("HH:mm:ss")
+                                  : null}
+                              </b>
+                            </div>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -315,7 +347,7 @@ export default function OTRequestDetailComponent({ data, action }) {
                           </div>
                           <div className="col-5">
                             <div className="form-item">
-                              <div className="mb-12">
+                              <div className="mb-12 total-leave-time">
                                 {t("TotalTimePerMonth")}
                               </div>
                               <div className="field-view">
@@ -463,7 +495,10 @@ export default function OTRequestDetailComponent({ data, action }) {
           },
         ]} //this.dataToSap()
         id={data.id}
-        isShowApproval={data.processStatusId === Constants.STATUS_WAITING}
+        isShowApproval={
+          data.processStatusId === Constants.STATUS_WAITING ||
+          data.processStatusId === Constants.STATUS_PARTIALLY_SUCCESSFUL
+        }
         isShowRevocationOfApproval={false}
         isShowConsent={
           data.processStatusId === Constants.STATUS_WAITING_CONSENTED
