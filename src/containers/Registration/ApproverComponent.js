@@ -61,17 +61,18 @@ class ApproverComponent extends React.Component {
     const companiesUsing = [Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading, Constants.pnlVCode.VinMec]
     if (companiesUsing.includes(currentUserPnLVCodeLogged)) {
       const managerApproval = await this.loadApproverForPnL()
-      this.setState({approver: managerApproval} , () => {
-        if (approver) {
-          this.setState({
-            approver: {
-              ...approver,
-              label: approver.fullName,
-              value: approver.account
-            }
-          })
-        }
-      })
+      // this.setState({approver: managerApproval} , () => {
+      //   if (approver) {
+      //     this.setState({
+      //       approver: {
+      //         ...approver,
+      //         label: approver.fullName,
+      //         value: approver.account
+      //       }
+      //     })
+      //   }
+      // })
+      this.setState({approver: managerApproval})
       this.props.updateApprover(managerApproval, true)
     } else {
       // const recentlyApprover = await this.loadRecentlyApprover()
@@ -93,20 +94,21 @@ class ApproverComponent extends React.Component {
         const result = response.data.result
         if (result && result.code == Constants.API_SUCCESS_CODE) {
           const data = response.data?.data[0]
-          return {
-            value: data?.userid?.toLowerCase() || "",
-            label: data?.fullname || "",
-            fullName: data?.fullname || "",
-            avatar: data?.avatar || "",
-            employeeLevel: data?.rank_title,
-            pnl: "",
-            orglv2Id: "",
-            account: data?.userid?.toLowerCase() || "",
-            current_position: data?.title || "",
-            department: data?.department || ""
+          if (data) {
+            return {
+              value: data?.userid?.toLowerCase() || "",
+              label: data?.fullname || "",
+              fullName: data?.fullname || "",
+              avatar: data?.avatar || "",
+              employeeLevel: data?.rank_title,
+              pnl: "",
+              orglv2Id: "",
+              account: data?.userid?.toLowerCase() || "",
+              current_position: data?.title || "",
+              department: data?.department || ""
+            }
           }
         }
-        return null
       }
       return null
     } catch (e) {

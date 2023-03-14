@@ -4,7 +4,7 @@ import map from '../map.config';
 import LoadingModal from '../../components/Common/LoadingModal'
 import { useTranslation } from "react-i18next";
 import axios from 'axios';
-import { getMuleSoftHeaderConfigurations } from "../../commons/Utils"
+import { getMuleSoftHeaderConfigurations, getRequestConfigurations } from "../../commons/Utils"
 import Constants from "../../commons/Constants"
 import moment from 'moment';
 
@@ -46,6 +46,7 @@ function Authorize(props) {
                         SetIsShowLoadingModal(false)
                     });
                     updateUser(userProfile,jwtToken)
+                    updateLanguageByCode(localStorage.getItem('locale') || 'vi-VN', jwtToken)
                 }
                 else {
                     SetIsError(true)
@@ -63,6 +64,34 @@ function Authorize(props) {
                 SetErrorType(ERROR_TYPE.NETWORK)
                 SetIsShowLoadingModal(false)
             });
+    }
+
+    const updateLanguageByCode = async (lang, jwtToken) => {
+        if (lang) {
+            try {
+                const languageKeyMapping = {
+                    [Constants.LANGUAGE_EN]: 'en',
+                    [Constants.LANGUAGE_VI]: 'vi'
+                }
+                const config = {
+                    headers: {
+                        'Authorization': `Bearer ${jwtToken}`
+                    }
+                }
+                const response = await axios.post(`${process.env.REACT_APP_REQUEST_URL}user/setlanguage?culture=${languageKeyMapping[[lang]]}`, null, config)
+                if (response && response.data) {
+                    const result = response.data.result
+                    if (result.code == Constants.API_SUCCESS_CODE) {
+                        return true
+                    }
+                    return false
+                }
+                return false
+            } catch (e) {
+                return false
+            }
+        }
+        return false
     }
 
     const hasPermissonShowPrepareTab = async (token, companyCode) => {

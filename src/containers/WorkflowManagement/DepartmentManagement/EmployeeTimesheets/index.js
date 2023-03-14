@@ -738,9 +738,10 @@ class EmployeeTimesheets extends Component {
         item.isUpdating = true
       }
       for (let j = 0, lenTimesheets = item.timesheets?.length; j < lenTimesheets; j++) {
-        if (item.timesheets[j].date === dateChangedFormat && dataChangedForObject[per]) {
-          item.timesheets[j].from_time1 = dataChangedForObject[item.per].startTime || dataChangedForObject[item.per].shiftFilter.shiftSelected?.from_time || ""
-          item.timesheets[j].to_time1 = dataChangedForObject[item.per].endTime || dataChangedForObject[item.per].shiftFilter.shiftSelected?.to_time || ""
+         const shouldUpdate = moment(item.timesheets[j].date, 'DD/MM/YYYY').isBetween(moment(dataChangedForObject[item.per].startDate, 'YYYYMMDD'), moment(dataChangedForObject[item.per].endDate, 'YYYYMMDD'), null, '[]');
+        if (shouldUpdate && dataChangedForObject[per]) {
+          item.timesheets[j].from_time1 = dataChangedForObject[item.per].startTime ? moment(dataChangedForObject[item.per].startTime, 'YYYYMMDD HHmmss').format('HHmmss') : dataChangedForObject[item.per].shiftFilter.shiftSelected?.from_time || ""
+          item.timesheets[j].to_time1 = dataChangedForObject[item.per].endTime ? moment(dataChangedForObject[item.per].endTime, 'YYYYMMDD HHmmss').format('HHmmss') : dataChangedForObject[item.per].shiftFilter.shiftSelected?.to_time || ""
           item.timesheets[j].old_shift_id = item.timesheets[j].shift_id || ""
           item.timesheets[j].shift_id = dataChangedForObject[item.per].shiftFilter.shiftSelected?.shift_id || ""
         }
@@ -799,8 +800,8 @@ class EmployeeTimesheets extends Component {
           }
         ],
         substitutionType: dataChanged[per]?.shiftType?.value, // Loại phân ca - Required
-        startDate: dateChanged, // Required
-        endDate: dateChanged, // Required
+        startDate: dataChanged[per].startDate, // Required
+        endDate: dataChanged[per].endDate, // Required
         shift_Id: shiftUpdateType == Constants.SUBSTITUTION_SHIFT_CODE ? dataChanged[per].shiftFilter.shiftSelected.shift_id : "", // Mã ca thay đổi (Nhập mã ca thì không nhập (startTime, endTime, shiftHours) và ngược lại)
         startTime: shiftUpdateType == Constants.SUBSTITUTION_SHIFT_UPDATE ? moment(dataChanged[per].startTime, 'YYYYMMDD HHmmss').format('HHmmss') : "", // Giờ bắt đầu HHmmss
         endTime: shiftUpdateType == Constants.SUBSTITUTION_SHIFT_UPDATE ? moment(dataChanged[per].endTime, 'YYYYMMDD HHmmss').format('HHmmss') : "", // Giờ kết thúc HHmmss
@@ -855,10 +856,10 @@ class EmployeeTimesheets extends Component {
 
     return (
       <>
-      <ResultDetailModal show={isShowStatusModal} title="Trạng thái cập nhật phân ca" onHide={this.hideStatusModal} resultDetail={resultShiftUpdateDetail}/>
+      <ResultDetailModal show={isShowStatusModal} title={t('shift_change_status')} onHide={this.hideStatusModal} resultDetail={resultShiftUpdateDetail}/>
       <div className="timesheet-section department-timesheet">
-        <h1 className="content-page-header">{[Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl].includes(companyVCodeUserLogged) ? t("TimesheetDivision") : t("Timesheet")}</h1>
-        <FilterData clickSearch={this.searchTimesheetByDate.bind(this)} updateEmployees={this.updateEmployees} />
+        <h1 className="content-page-header">{[Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading].includes(companyVCodeUserLogged) ? t("TimesheetDivision") : t("Timesheet")}</h1>
+        <FilterData clickSearch={this.searchTimesheetByDate.bind(this)} isUserRequired={true} updateEmployees={this.updateEmployees} />
         {
           (isSearch && timeTables.length > 0)  ?
           <>
@@ -873,14 +874,14 @@ class EmployeeTimesheets extends Component {
                 <th rowSpan="2">{t("RoomPartGroup")}</th>
                 <th rowSpan="2"></th>
                 {
-                  dayList.map((item, i) => {
+                  (dayList || []).map((item, i) => {
                     return <th className="text-center text-uppercase font-weight-bold" key={i}>{moment(item).format("dddd").toLocaleUpperCase()}</th>
                   })
                 }
               </tr>
               <tr>
                 {
-                  dayList.map((item, i) => {
+                  (dayList || []).map((item, i) => {
                     return <th key={i}>{moment(item).format("DD/MM/YYYY")}</th>
                   })
                 }
@@ -888,7 +889,7 @@ class EmployeeTimesheets extends Component {
             </thead>
             <tbody>
               {
-                timeTables.map((item, i) => {
+                (timeTables || []).map((item, i) => {
                   return <React.Fragment key={i}>
                     <tr>
                       <td rowSpan="5">{item.name}</td>
