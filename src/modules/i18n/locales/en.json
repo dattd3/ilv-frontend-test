@@ -957,6 +957,7 @@
   "ReasonCancelLeaveRequest": "Reason for canceling leave request",
   "ReasonEditLeaveRequest": "Reason for editing leave request",
   "ApproveRequest": "APPROVE REQUEST",
+  "ConsentConfirmation": "Consent Confirmation",
   "ConfirmApproveRequest": "Are you sure to approve this request?",
   "ConfirmApproveRequests": "Are you sure to approve these requests?",
   "ConfirmApproveChangeRequest": "Are you sure to approve this change?",
