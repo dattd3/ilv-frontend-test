@@ -160,7 +160,7 @@ function Authorize(props) {
                             fullName: user.fullname,
                             jobTitle: user.job_name,
                             jobId: user.job_id,
-                            benefitLevel: user.benefit_level || user.employee_level,
+                            benefitLevel: user.benefit_level ? user.benefit_level.replace('PL', '') : user.employee_level,
                             employeeLevel: formatMuleSoftValue(user?.rank_title) ? user?.rank_title : user?.employee_level, // Có Cấp bậc chức danh thì lấy Cấp bậc chức danh ngược lại lấy Cấp bậc thực tế
                             actualRank: formatMuleSoftValue(user?.employee_level) ? user?.employee_level : '', // Cấp bậc thực tế
                             benefitTitle: benefitTitle,
