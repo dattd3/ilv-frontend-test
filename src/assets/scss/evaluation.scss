@@ -146,6 +146,11 @@
                 border: 1px solid #DEE2E6;
                 border-collapse: collapse;
                 border-spacing: 0px;
+                .highlight {
+                    th, td {
+                        background: #F9F9F9;
+                    }
+                }
                 td, th {
                     border: 1px solid #DEE2E6;
                     padding: 8px;
@@ -2536,15 +2541,21 @@
                 .close {
                     width: 30px;
                     height: 30px;
-                    font-size: 22px;
-                    background: #707070;
-                    color: #FFFFFF;
-                    font-weight: normal;
-                    border: 1px solid #FFFFFF;
+                    background: url("../img/icon/Icon_Close_Modal.svg");
+                    background-repeat: no-repeat;
+                    background-size: cover;
                     right: 4px;
+                    color: transparent;
+                    outline: none;
                     span {
                         top: 46%;
                         left: 26%;
+                    }
+                    &:active {
+                        outline: none;
+                    }
+                    &:focus {
+                        outline: none;
                     }
                 }
             }

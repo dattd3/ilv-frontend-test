@@ -58,7 +58,7 @@ function EvaluationOverall(props) {
     hover: { mode: null },
     cutoutPercentage: 75,
     plugins: {
-      report: `${(totalCompleted / evaluationFormDetail?.totalTarget * 100).toFixed(2)}%`
+      report: `${formatEvaluationNumber((totalCompleted / evaluationFormDetail?.totalTarget * 100))}%`
     }
   }
 
@@ -76,7 +76,7 @@ function EvaluationOverall(props) {
   
   return <div className="block-overall">
     <div className="card shadow card-completed">
-      <h6 className="text-center chart-title">{t("EvaluationDetailAccomplished")}: {totalCompleted || 0}/{evaluationFormDetail?.totalTarget}</h6>
+      <h6 className="text-center text-uppercase chart-title">{t("EvaluationDetailAccomplished")}: <span className="font-weight-bold">{totalCompleted || 0}/{evaluationFormDetail?.totalTarget}</span></h6>
       <div className="chart">
         <div className="detail">
           <div className="result">
@@ -109,15 +109,15 @@ function EvaluationOverall(props) {
       </div>
     </div>
     <div className="card shadow card-overall">
-      <h6 className="text-center chart-title">{t("EvaluationDetailOverallScore")}</h6>
+      <h6 className="text-center text-uppercase font-weight-bold chart-title">{t("EvaluationDetailOverallScore")}</h6>
       <div className="chart">
-        <div className="detail">{(evaluationFormDetail?.status == evaluationStatus.launch || (evaluationFormDetail?.status == evaluationStatus.selfAssessment && !showByManager) || evaluationFormDetail?.reviewStreamCode === processStep.zeroLevel) ? evaluationFormDetail?.totalSeftPoint?.toFixed(2) || 0 : evaluationFormDetail?.totalLeadReviewPoint?.toFixed(2) || 0}</div>
+        <div className="detail">{(evaluationFormDetail?.status == evaluationStatus.launch || (evaluationFormDetail?.status == evaluationStatus.selfAssessment && !showByManager) || evaluationFormDetail?.reviewStreamCode === processStep.zeroLevel) ? formatEvaluationNumber(evaluationFormDetail?.totalSeftPoint) : formatEvaluationNumber(evaluationFormDetail?.totalLeadReviewPoint)}</div>
       </div>
     </div>
     <div className="card shadow card-detail">
       <table className='table-list-evaluation'>
         <thead>
-          <tr>
+          <tr className="highlight">
             <th className='c-criteria'><div className='criteria'>{t("EvaluationDetailCriteria")}</div></th>
             <th className='c-self-assessment text-center'><div className='self-assessment'>{t("EvaluationDetailSelfAssessment")}</div></th>
             {isDifferentZeroLevel && <th className='c-manager-assessment text-center'><div className='manager-assessment color-red'>{t("EvaluationDetailManagerAssessment")}</div></th>}
@@ -134,7 +134,7 @@ function EvaluationOverall(props) {
             })
           }
           {/* Row điểm tổng thể */}
-          <tr>
+          <tr className="highlight">
             <td className='c-criteria'><div className='font-weight-bold text-uppercase criteria'>{t("EvaluationDetailOverallScore")}</div></td>
             <td className='c-self-assessment text-center font-weight-bold'>{(evaluationFormDetail?.totalSeftPoint || 0).toFixed(2)}</td>
             {isDifferentZeroLevel && <td className='c-manager-assessment text-center font-weight-bold color-red'>{(evaluationFormDetail?.totalLeadReviewPoint || 0).toFixed(2)}</td>}
@@ -142,7 +142,7 @@ function EvaluationOverall(props) {
           {
             isVinBusByCompanyCode(evaluationFormDetail?.companyCode) &&
             <tr>
-              <td colSpan={3} className='text-uppercase text-center'>Xếp hạng đánh giá: <span style={{ fontWeight: 'bold', color: '#C11D2A' }}>{rating}</span></td>
+              <td colSpan={3} className='text-uppercase text-center'><div className="d-flex justify-content-center align-items-center">Xếp hạng đánh giá: <span style={{ fontWeight: 'bold', color: '#C11D2A', fontSize: 20, marginLeft: 3, marginTop: -1}}>{rating}</span></div></td>
             </tr>
           }
         </tbody>
