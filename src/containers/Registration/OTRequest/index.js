@@ -227,7 +227,7 @@ export default function OTRequestComponent({ recentlyManagers }) {
       label: t("OTReasonOption5"),
     },
     {
-      value: "6",
+      value: "Z",
       label: t("OTReasonOption6"),
     },
   ];
@@ -263,7 +263,7 @@ export default function OTRequestComponent({ recentlyManagers }) {
       .join(" - ");
 
     let bodyFormData = new FormData();
-    bodyFormData.append("Name", t("MoneyOT"));
+    bodyFormData.append("Name", t("OTRequest"));
     bodyFormData.append("RequestTypeId", OTRequestType);
     bodyFormData.append("Comment", comments);
     bodyFormData.append("requestInfo", JSON.stringify(timesheets));
@@ -368,7 +368,7 @@ export default function OTRequestComponent({ recentlyManagers }) {
           if (getHoursBetween2Times(item.startTime, item.endTime) > 4) {
             _errors[`overtime_${index}`] = t("OverTimeOT");
           }
-          if (getHoursBetween2Times(item.startTime, item.endTime) < 0) {
+          if (getHoursBetween2Times(item.startTime, item.endTime) <= 0) {
             _errors[`invalidHour_${index}`] = t("InvalidHour");
           }
           if (
