@@ -34,7 +34,7 @@ const requestTypes = [
   { value: [Constants.ONBOARDING], label: 'ContractEvaluationType' },
   { value: [Constants.RESIGN_SELF], label: 'ResignationType'},
   { value: [Constants.SALARY_PROPOSE], label: 'SalaryType' },
-  { value: [Constants.OT_REQUEST], label: 'OTRequest' },
+  { value: [Constants.OT_REQUEST], label: 'MoneyOT' },
 ]
 
 const PN03List = [

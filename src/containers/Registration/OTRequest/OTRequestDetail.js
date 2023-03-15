@@ -74,7 +74,7 @@ export default function OTRequestDetailComponent({ data, action }) {
       label: t("OTReasonOption5"),
     },
     {
-      value: "6",
+      value: "Z",
       label: t("OTReasonOption6"),
     },
   ];
@@ -301,7 +301,7 @@ export default function OTRequestDetailComponent({ data, action }) {
                                 {
                                   OTReasonOptions.find(
                                     (item) => item.value == timesheet.reasonType
-                                  ).label
+                                  )?.label
                                 }
                               </div>
                             </div>
