@@ -134,9 +134,9 @@ function Authorize(props) {
 
             var benefitTitle = "";
             if (user.benefit_level && user.benefit_level !== '#') {
-                benefitTitle = user.benefit_level;
+                benefitTitle = user.benefit_level.replace('PL', '');
             } else {
-                benefitTitle = user.rank_name;
+                benefitTitle = user.employee_level;
             }
             //check permission show prepare tab 
             const shouldShowPrepareOnboard = await hasPermissonShowPrepareTab(jwtToken, user.company_code);
@@ -160,7 +160,7 @@ function Authorize(props) {
                             fullName: user.fullname,
                             jobTitle: user.job_name,
                             jobId: user.job_id,
-                            benefitLevel: user.benefit_level ? user.benefit_level.replace('PL', '') : user.employee_level,
+                            benefitLevel: benefitTitle,
                             employeeLevel: formatMuleSoftValue(user?.rank_title) ? user?.rank_title : user?.employee_level, // Có Cấp bậc chức danh thì lấy Cấp bậc chức danh ngược lại lấy Cấp bậc thực tế
                             actualRank: formatMuleSoftValue(user?.employee_level) ? user?.employee_level : '', // Cấp bậc thực tế
                             benefitTitle: benefitTitle,
