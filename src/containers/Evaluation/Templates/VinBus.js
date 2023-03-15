@@ -32,7 +32,7 @@ const EvaluationVinBusTemplate = ({ evaluationFormDetail, isEdit, showByManager,
                     <table className='vin-bus'>
                         <thead>
                             <tr>
-                                <th className="measurement"><span>{t("Diễn giải")}<span className="note"></span></span></th>
+                                <th className="measurement"><span>{t("EvaluationDetailPartLevelOfPerformance")}<span className="note">({t("EvaluationDetailPartByScore")})</span></span></th>
                                 <th className="text-center proportion"><span>{t("EvaluationDetailPartWeight")} %</span></th>
                                 <th className="text-center target"><span>{t("EvaluationDetailPartTarget")}</span></th>
                                 <th className="text-center self-assessment"><span>{t("Kết quả thực tế CBNV đánh giá")}</span>{!showByManager && <span className="required">(*)</span>}</th>
@@ -197,7 +197,7 @@ const EvaluationVinBusTemplate = ({ evaluationFormDetail, isEdit, showByManager,
                                             <table className='vin-bus'>
                                                 <thead>
                                                     <tr>
-                                                        <th className="measurement"><span>{t("Diễn giải")}<span className="note"></span></span></th>
+                                                        <th className="measurement"><span>{t("EvaluationDetailPartLevelOfPerformance")}<span className="note">({t("EvaluationDetailPartByScore")})</span></span></th>
                                                         <th className="text-center proportion"><span>{t("EvaluationDetailPartWeight")} %</span></th>
                                                         <th className="text-center target"><span>{t("EvaluationDetailPartTarget")}</span></th>
                                                         <th className="text-center self-assessment"><span>{t("Kết quả thực tế CBNV đánh giá")}</span>{!showByManager && <span className="required">(*)</span>}</th>
