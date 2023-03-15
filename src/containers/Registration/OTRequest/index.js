@@ -154,6 +154,7 @@ export default function OTRequestComponent({ recentlyManagers }) {
                 isEdited: false,
               }))
             );
+            setErrors({});
             setStartDate(start.format("DD/MM/YYYY"));
             setEndDate(end.format("DD/MM/YYYY"));
           }
@@ -236,7 +237,16 @@ export default function OTRequestComponent({ recentlyManagers }) {
       return;
     }
     setIsSendingRequest(true);
-    const timesheets = [...requestInfoData].filter((item) => item.isEdited);
+    const timesheets = [...requestInfoData].filter((item) => item.isEdited).map(item => ({
+      ...item,
+      hours: item.hours ? parseFloat(item.hours) : null,
+      date: moment(item.date, "DD-MM-YYYY").format("YYYYMMDD").toString(),
+      startTime: moment(item.startTime).format("HHmmss"),
+      endTime: moment(item.endTime).format("HHmmss"),
+      overTimeType: "01",
+      hoursOt: getHoursBetween2Times(item.startTime, item.endTime),
+    }));
+
     const approver = { ...budgetApprover };
     delete approver.avatar;
 
@@ -246,17 +256,6 @@ export default function OTRequestComponent({ recentlyManagers }) {
       department: localStorage.getItem("department"),
       employeeNo: localStorage.getItem("employeeNo"),
     };
-
-    timesheets.forEach((item) => {
-      Object.assign(item, {
-        hours: item.hours ? parseFloat(item.hours) : null,
-        date: moment(item.date, "DD-MM-YYYY").format("YYYYMMDD").toString(),
-        startTime: moment(item.startTime).format("HHmmss"),
-        endTime: moment(item.endTime).format("HHmmss"),
-        overTimeType: "01",
-        hoursOt: getHoursBetween2Times(item.startTime, item.endTime),
-      });
-    });
 
     const comments = timesheets
       .filter((item) => item.note)
