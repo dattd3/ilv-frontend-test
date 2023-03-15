@@ -43,7 +43,6 @@ class DirectManagerInfoComponent extends Component {
 
   componentWillReceiveProps(nextProps) {
     const { directManager } = nextProps
-    const companiesUsing = ['V070','V077', 'V060']
 
     if (directManager) {
       this.setState({
@@ -53,10 +52,6 @@ class DirectManagerInfoComponent extends Component {
           value: directManager.account,
         }
       })
-    }
-
-    if (companiesUsing.includes(localStorage.getItem("companyCode"))) {
-      return
     }
   }
 
