@@ -17,17 +17,23 @@ const formatIndexText = index => {
     return mapping[index]
 }
 
-const calculateRating = (score = 0) => {
-    if (score > 100) {
+const calculateRating = (score) => {
+    if (score === null || score === undefined) {
         return ''
-    } else if (score >= 95 && score <= 100) {
-        return 'A'
-    } else if (score >= 85 && score < 95) {
-        return 'B'
-    } else if (score >= 75 && score < 85) {
-        return 'C'
     }
-    return 'D'
+
+    switch (true) {
+        case score >= 95 && score <= 100:
+            return 'A'
+        case score >= 85 && score < 95:
+            return 'B'
+        case score >= 85 && score < 95:
+            return 'C'
+        case score >= 0 && score < 75:
+            return 'D'
+        default:
+            return ''
+    }
 }
 
 const formatTargetText = str => str?.replace(/\n|\r/g, "")
