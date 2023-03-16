@@ -199,8 +199,12 @@ const isEnableInOutTimeUpdateFunctionByPnLVCode = PnLVCode => {
     return ![Constants.pnlVCode.VinSchool, Constants.pnlVCode.VinAI].includes(PnLVCode) ? true : false
 }
 
+const isEnableOTFunctionByPnLVCode = PnLVCode => {
+  return [Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading].includes(PnLVCode);
+}
+
 const getRequestTypeIdsAllowedToReApproval = () => {
-    return [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP, Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE]
+    return [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP, Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE, Constants.OT_REQUEST]
 }
 
 const getRequestConfigurations = () => {
@@ -525,5 +529,5 @@ const getResignResonsMasterData = () => {
 export {
     getRequestConfigurations, removeAccents, formatStringByMuleValue, formatNumberInteger, exportToPDF, isEnableFunctionByFunctionName, getValueParamByQueryString, getDateByRangeAndFormat,
     calculateBackDateByPnLVCodeAndFormatType, isEnableShiftChangeFunctionByPnLVCode, isEnableInOutTimeUpdateFunctionByPnLVCode, getRequestTypeIdsAllowedToReApproval, getMuleSoftHeaderConfigurations,
-    isAdjacentDateBy2Date, showRangeDateGroupByArrayDate, generateTaskCodeByCode, parsteStringToHtml, getRegistrationMinDateByConditions, isVinFast, getCurrentLanguage, getResignResonsMasterData
+    isAdjacentDateBy2Date, showRangeDateGroupByArrayDate, generateTaskCodeByCode, parsteStringToHtml, getRegistrationMinDateByConditions, isVinFast, isEnableOTFunctionByPnLVCode, getCurrentLanguage, getResignResonsMasterData
 }
