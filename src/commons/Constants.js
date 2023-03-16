@@ -55,7 +55,8 @@ const Constants = {
   ONBOARDING: 6,
   RESIGN_SELF: 7,
   SALARY_PROPOSE: 12,
-
+  OT_REQUEST: 13,
+  
   //Status request
   STATUS_PENDING: 0,
   STATUS_NOT_APPROVED: 1, // từ chối phê duyệt
@@ -225,8 +226,8 @@ const Constants = {
   { //Development
     1: ["V040", "V005", "V079", "V041", "V030", "V077", "V070"],//TUYENDUNG + V061
     2: ["V061","V040", "V005", "V079", "V041", "V070", "V077"],//DANHGIA_TAIKI
-    3:[],//DEXUATLUONG "V061", "V040", "V005", "V079", "V041"
-    4:["V040", "V005", "V079"],//NGHIVIEC
+    3: [],//DEXUATLUONG "V061", "V040", "V005", "V079", "V041"
+    4:["V040", "V005", "V079", "V070", "V077"],//NGHIVIEC
     5: ["V061", "V040", "V005", "V079", "V041", "V070", "V077"]//PHUCLOI
   },
   CURRENCY: {
