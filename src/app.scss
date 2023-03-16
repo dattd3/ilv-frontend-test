@@ -1935,13 +1935,14 @@ span.badge-notification[data-badge]::after {
     border: none;
     padding: 1em 0;
     margin: 0 auto;
+    gap: 24px 32px;
     .nav-link {
       border: none;
     }
     .nav-item {
       border: 1px solid #ccc;
       border-radius: 0.5em;
-      margin-right: 2em;
+      // margin-right: 2em;
       background-color: #fff;
       color: #293281;
     }
@@ -4105,6 +4106,10 @@ span.badge-notification[data-badge]::after {
     width: 200px;
     font-size: 14px;
   }
+}
+
+.font-14 {
+  font-size: 14px;
 }
 
 .pagination-new {

@@ -7,6 +7,7 @@ import { withTranslation } from "react-i18next"
 import Constants from '../../../commons/Constants'
 import IconReset from '../../../assets/img/icon/ic-reset.svg'
 import { t } from 'i18next'
+import { getResignResonsMasterData } from 'commons/Utils'
 
 const AttachmentOption = ({ children, ...props }) => (<components.ValueContainer {...props}>
     <div>File đính kèm</div><div style={{visibility: 'hidden'}}>{children}</div>
@@ -266,6 +267,7 @@ class ListStaffResignationComponent extends React.PureComponent {
     render() {
         const { t , isCheckedAll} = this.props
         const {listUserTerminations, requestIdChecked} = this.state
+        const reasonMasterData = getResignResonsMasterData();
 
         return <div className="block staff-information-proposed-resignation-block">
                     <div className="row">
@@ -330,7 +332,7 @@ class ListStaffResignationComponent extends React.PureComponent {
                                                             <td className="rank-col"><div className="data rank text-center">{item?.costCenter || ""}</div></td>
                                                             <td className="application-date-col"><div className="data text-center application-date">{item?.createDate ? <Moment format="DD/MM/YYYY">{item.createDate}</Moment> : ""}</div></td>
                                                             <td className="contract-termination-date-col"><div className="data text-center contract-termination-date">{item?.dateTermination ? <Moment format="DD/MM/YYYY">{item?.dateTermination}</Moment> : ""}</div></td>
-                                                            <td className="reason-termination-col"><div className="data reason-termination">{reason?.label || ""}</div></td>
+                                                            <td className="reason-termination-col"><div className="data reason-termination">{reasonMasterData[reason?.value] || ""}</div></td>
                                                             <td className="detailed-reason-col"><div className="data detailed-reason">{item?.reasonDetailed || ""}</div></td>
                                                             <td className="contract-type-col"><div className="data contract-type">{userInfos?.contractName || ""}</div></td>
                                                             <td className="created-by-col"><div className="data created-by">{item?.createdBy?.fullName || ""}</div></td>

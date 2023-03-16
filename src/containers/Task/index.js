@@ -8,7 +8,6 @@ import ApprovalDelegationModal from "./ApprovalDelegation/ApprovalDelegationModa
 import ApprovalDelegationList from "./ApprovalDelegation/index"
 import axios from 'axios'
 import Constants from '../../commons/Constants'
-import processingDataReq from "../Utils/Common"
 import { actionApprovalDelegation } from "./ApprovalDelegation/Constant"
 import StatusModal from "../../components/Common/StatusModal"
 import HOCComponent from '../../components/Common/HOCComponent'
