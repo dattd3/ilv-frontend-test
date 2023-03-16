@@ -56,7 +56,7 @@ const EvaluationVinBusTemplate = ({ evaluationFormDetail, isEdit, showByManager,
                                         <li>{!formatTargetText(target?.metric5) ? '--' : formatTargetText(target?.metric5)}</li>
                                     </ul>
                                 </td>
-                                <td className="text-center proportion"><span>{Number(target?.weight).toFixed(2)}%</span></td>
+                                <td className="text-center proportion"><span>{target?.weight}%</span></td>
                                 <td className="text-center target"><span>{target?.target}</span></td>
                                 <td className="self-assessment">
                                     <div className="data">
@@ -231,7 +231,7 @@ const EvaluationVinBusTemplate = ({ evaluationFormDetail, isEdit, showByManager,
                                                                 <li>{!formatTargetText(target?.metric5) ? '--' : formatTargetText(target?.metric5)}</li>
                                                             </ul>
                                                         </td>
-                                                        <td className="text-center proportion"><span>{Number(target?.weight).toFixed(2)}%</span></td>
+                                                        <td className="text-center proportion"><span>{target?.weight}%</span></td>
                                                         <td className="text-center target"><span>{target?.target}</span></td>
                                                         <td className="self-assessment">
                                                             <div className="data">
