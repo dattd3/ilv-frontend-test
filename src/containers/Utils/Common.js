@@ -106,7 +106,7 @@ export default function processingDataReq(dataRawFromApi, tab) {
         if (listRequestIdOriginals.includes(e.id, index + 1)) {
             let indexPosition = listRequestIdOriginals.indexOf(e.id, index + 1);
             // taskListOriginal[indexPosition].startDate = (e.startDate + ",\r" + taskListOriginal[indexPosition].startDate);
-            taskListOriginal[indexPosition].startDate = taskListOriginal[indexPosition].startDate.concat(e.startDate)
+            taskListOriginal[indexPosition].startDate = taskListOriginal[indexPosition].startDate?.concat(e.startDate)
         } else if (e.absenceType && e.absenceType.value == MOTHER_LEAVE_KEY) {
             let startDate = moment(e.startDate, "DD/MM/YYYY")
             let endDate = moment(e.endDate, "YYYYMMDD")

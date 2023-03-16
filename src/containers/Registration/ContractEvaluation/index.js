@@ -1804,7 +1804,7 @@ renderEvalution = (name, data, isDisable) => {
               <div className="row">
                 <div className="col-3">
                   {t('result')}
-                  <Select  placeholder={"Lựa chọn kết quả"} options={this.resultOptions} isDisabled={disableComponent.disableAll || !disableComponent.qlttSide}  isClearable={true} 
+                  <Select  placeholder={t('Select') + ' ' + t('result')} options={this.resultOptions} isDisabled={disableComponent.disableAll || !disableComponent.qlttSide}  isClearable={true} 
                   value={this.resultOptions.filter(d => data.qlttOpinion.result != null && d.value == data.qlttOpinion.result.value)}
                   onChange={e => this.handleChangeSelectInputs(e,'qlttOpinion', 'result')} className="input mv-10"
                   styles={{menu: provided => ({ ...provided, zIndex: 2 })}}/>
@@ -1813,7 +1813,7 @@ renderEvalution = (name, data, isDisable) => {
                 </div>
                 <div className="col-3">
                   {t('contract_type')}
-                  <Select  placeholder={"Lựa chọn loại hợp đồng"} options={this.contractTypeOptions} isDisabled={disableComponent.disableAll || !disableComponent.qlttSide}  isClearable={true} 
+                  <Select  placeholder={t('Select') + ' ' + t('contract_type')} options={this.contractTypeOptions} isDisabled={disableComponent.disableAll || !disableComponent.qlttSide}  isClearable={true} 
                   value={this.contractTypeOptions.filter(d => data.qlttOpinion.contract != null && d.value == data.qlttOpinion.contract.value)}
                   onChange={e => this.handleChangeSelectInputs(e,'qlttOpinion', 'contract')} className="input mv-10"
                   styles={{menu: provided => ({ ...provided, zIndex: 2 })}}/>
@@ -1921,7 +1921,7 @@ renderEvalution = (name, data, isDisable) => {
               <div className="row">
                 <div className="col-3">
                   {t('result')}
-                  <Select  placeholder={"Lựa chọn kết quả"} options={this.resultOptions} isDisabled={disableComponent.disableAll || !disableComponent.qlttSide}  isClearable={true} 
+                  <Select  placeholder={t('Select') + ' ' + t('result')} options={this.resultOptions} isDisabled={disableComponent.disableAll || !disableComponent.qlttSide}  isClearable={true} 
                   value={this.resultOptions.filter(d => data.qlttOpinion.result != null && d.value == data.qlttOpinion.result.value)}
                   onChange={e => this.handleChangeSelectInputs(e,'qlttOpinion', 'result')} className="input mv-10"
                   styles={{menu: provided => ({ ...provided, zIndex: 2 })}}/>
@@ -1930,7 +1930,7 @@ renderEvalution = (name, data, isDisable) => {
                 </div>
                 <div className="col-3">
                   {t('contract_type')}
-                  <Select  placeholder={"Lựa chọn loại hợp đồng"} options={this.contractTypeOptions} isDisabled={disableComponent.disableAll || !disableComponent.qlttSide}  isClearable={true} 
+                  <Select  placeholder={t('Select') + ' ' + t('contract_type')} options={this.contractTypeOptions} isDisabled={disableComponent.disableAll || !disableComponent.qlttSide}  isClearable={true} 
                   value={this.contractTypeOptions.filter(d => data.qlttOpinion.contract != null && d.value == data.qlttOpinion.contract.value)}
                   onChange={e => this.handleChangeSelectInputs(e,'qlttOpinion', 'contract')} className="input mv-10"
                   styles={{menu: provided => ({ ...provided, zIndex: 2 })}}/>
