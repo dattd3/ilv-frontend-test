@@ -207,7 +207,7 @@ class ApproverComponent extends React.Component {
                 name="approver"
                 onChange={approver => this.handleSelectChange('approver', approver)}
                 value={this.state.approver && this.state.approver.label ?  this.state.approver :  null}
-                placeholder={'Tìm kiếm theo mã AD'}
+                placeholder={t('Search') + '...'}
                 key="approver"
                 options={this.state.users}
                />
