@@ -37,7 +37,7 @@ const isNullCustomize = (value) => {
 
 const getHoursBetween2Times = (start, end) => {
   return moment
-    .duration(moment(end).diff(moment(start)))
+    .duration(moment(end, "HH:mm").diff(moment(start, "HH:mm")))
     .asHours()
     .toFixed(2);
 };
@@ -198,10 +198,19 @@ export default function OTRequestComponent({ recentlyManagers }) {
 
   const handleChangeRequestInfoData = (name, value, index) => {
     const newRequestInfoData = [...requestInfoData];
-    newRequestInfoData[index] = {
-      ...newRequestInfoData[index],
-      [name]: value,
-    };
+
+    if (["startTime", "endTime"].includes(name)) {
+      newRequestInfoData[index] = {
+        ...newRequestInfoData[index],
+        [name]: moment(value).format("HH:mm"),
+      };
+    } else {
+      newRequestInfoData[index] = {
+        ...newRequestInfoData[index],
+        [name]: value,
+      };
+    }
+
     setRequestInfoData(newRequestInfoData);
   };
 
@@ -237,15 +246,17 @@ export default function OTRequestComponent({ recentlyManagers }) {
       return;
     }
     setIsSendingRequest(true);
-    const timesheets = [...requestInfoData].filter((item) => item.isEdited).map(item => ({
-      ...item,
-      hours: item.hours ? parseFloat(item.hours) : null,
-      date: moment(item.date, "DD-MM-YYYY").format("YYYYMMDD").toString(),
-      startTime: moment(item.startTime).format("HHmmss"),
-      endTime: moment(item.endTime).format("HHmmss"),
-      overTimeType: "01",
-      hoursOt: getHoursBetween2Times(item.startTime, item.endTime),
-    }));
+    const timesheets = [...requestInfoData]
+      .filter((item) => item.isEdited)
+      .map((item) => ({
+        ...item,
+        hours: item.hours ? parseFloat(item.hours) : null,
+        date: moment(item.date, "DD-MM-YYYY").format("YYYYMMDD").toString(),
+        startTime: moment(item.startTime, "HH:mm").format("HHmmss"),
+        endTime: moment(item.endTime, "HH:mm").format("HHmmss"),
+        overTimeType: "01",
+        hoursOt: getHoursBetween2Times(item.startTime, item.endTime),
+      }));
 
     const approver = { ...budgetApprover };
     delete approver.avatar;
@@ -381,8 +392,8 @@ export default function OTRequestComponent({ recentlyManagers }) {
                 moment(item.to_time1, "HHmmss").format("HH:mm"),
               ],
               [
-                moment(item.startTime).format("HH:mm"),
-                moment(item.endTime).format("HH:mm"),
+                item.startTime,
+                item.endTime,
               ],
             ];
             if (checkOverlap(timeSegments)) {
@@ -399,8 +410,8 @@ export default function OTRequestComponent({ recentlyManagers }) {
                 moment(item.to_time1, "HHmmss").format("HH:mm"),
               ],
               [
-                moment(item.startTime).format("HH:mm"),
-                moment(item.endTime).format("HH:mm"),
+                item.startTime,
+                item.endTime,
               ],
             ];
             if (checkOverlap(timeSegments)) {
@@ -744,6 +755,7 @@ export default function OTRequestComponent({ recentlyManagers }) {
                               timeCaption={t("Hour")}
                               dateFormat="HH:mm"
                               timeFormat="HH:mm"
+                              format="HH:mm"
                               name="startTime"
                               className="form-control input hour-picker-input"
                               placeholderText="hh:mm"
