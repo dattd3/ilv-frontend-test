@@ -73,7 +73,7 @@ class DirectManagerInfoComponent extends Component {
     } else {
       this.setState({ [name]: value, users: [] })
       this.props.updateApprovalInfos("directManager", value, true)
-      this.props.updateErrors({directManager: "Vui lòng chọn CBQL trực tiếp!"})
+      this.props.updateErrors({directManager: this.props.t('resign_error_directManager')})
     }
   }
 
