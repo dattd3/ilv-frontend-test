@@ -43,7 +43,6 @@ class DirectManagerInfoComponent extends Component {
 
   componentWillReceiveProps(nextProps) {
     const { directManager } = nextProps
-    const companiesUsing = ['V070','V077', 'V060']
 
     if (directManager) {
       this.setState({
@@ -53,10 +52,6 @@ class DirectManagerInfoComponent extends Component {
           value: directManager.account,
         }
       })
-    }
-
-    if (companiesUsing.includes(localStorage.getItem("companyCode"))) {
-      return
     }
   }
 
@@ -73,7 +68,7 @@ class DirectManagerInfoComponent extends Component {
     } else {
       this.setState({ [name]: value, users: [] })
       this.props.updateApprovalInfos("directManager", value, true)
-      this.props.updateErrors({directManager: "Vui lòng chọn CBQL trực tiếp!"})
+      this.props.updateErrors({directManager: this.props.t('resign_error_directManager')})
     }
   }
 

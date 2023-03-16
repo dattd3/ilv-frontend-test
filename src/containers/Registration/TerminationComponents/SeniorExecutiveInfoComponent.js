@@ -42,21 +42,6 @@ class SeniorExecutiveInfoComponent extends React.PureComponent {
 
   componentWillReceiveProps(nextProps) {
     const { seniorExecutive } = nextProps
-    const companiesUsing = ['V070','V077', 'V060']
-
-    if (seniorExecutive) {
-      this.setState({
-        seniorExecutive: {
-          ...seniorExecutive,
-          label: seniorExecutive.fullName,
-          value: seniorExecutive.account,
-        }
-      })
-    }
-
-    if (companiesUsing.includes(localStorage.getItem("companyCode"))) {
-      return
-    }
 
     if (seniorExecutive) {
       this.setState({
@@ -79,7 +64,7 @@ class SeniorExecutiveInfoComponent extends React.PureComponent {
     } else {
       this.setState({ [name]: value, users: [] })
       this.props.updateApprovalInfos("seniorExecutive", value, true)
-      this.props.updateErrors({seniorExecutive: "Vui lòng chọn CBLĐ phê duyệt!"})
+      this.props.updateErrors({seniorExecutive: this.props.t('resign_error_seniorExecutive')})
     }
   }
     

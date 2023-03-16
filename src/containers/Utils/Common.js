@@ -18,10 +18,11 @@ const getDateByRange = (startDate, endDate) => {
 
 export default function processingDataReq(dataRawFromApi, tab) {
     let taskList = [];
-    const listRequestTypeIdToShowTime = [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP, Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE]
+    const listRequestTypeIdToShowTime = [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP, Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE, Constants.OT_REQUEST]
     const listRequestTypeIdToGetSubId = [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP]
     dataRawFromApi.forEach(element => {
-        if(element.requestTypeId == Constants.ONBOARDING || element.requestTypeId == Constants.RESIGN_SELF || element.requestTypeId == Constants.SALARY_PROPOSE) {
+        if([Constants.ONBOARDING, Constants.RESIGN_SELF, Constants.SALARY_PROPOSE, Constants.OT_REQUEST].includes(element.requestTypeId)) {
+        // if(element.requestTypeId == Constants.ONBOARDING || element.requestTypeId == Constants.RESIGN_SELF || element.requestTypeId == Constants.SALARY_PROPOSE) {
             if(element.requestTypeId == Constants.RESIGN_SELF) {
                 element.id = element.id + '.1';
                 element.appraiser = element.appraiserInfo ? element.appraiserInfo : {}
@@ -34,6 +35,14 @@ export default function processingDataReq(dataRawFromApi, tab) {
                 element.appraiser = {};
                 element.user = element.userInfo;
                 element.startDate = ""
+            }
+
+            if (element.requestTypeId == Constants.OT_REQUEST) {
+              element.id = element.id.toString();
+              element.user = element.userInfo;
+              element.totalTime = element.requestInfo?.reduce((accumulator, currentValue) => accumulator += (currentValue.hoursOt) * 1, 0);
+              const dateRanges = element.requestInfo?.reduce((accumulator, currentValue) => [...accumulator, moment(currentValue.date, "YYYYMMDD").format("DD/MM/YYYY")], [])
+              element.dateRange = dateRanges.join(", ");
             }
             taskList.push(element);
         } else {
@@ -84,7 +93,7 @@ export default function processingDataReq(dataRawFromApi, tab) {
                     taskList.push(e)
                 })
             }
-            if (element.requestTypeId == Constants.CHANGE_DIVISON_SHIFT || element.requestTypeId == Constants.DEPARTMENT_TIMESHEET) {
+            if (element.requestTypeId == Constants.CHANGE_DIVISON_SHIFT || element.requestTypeId == Constants.DEPARTMENT_TIMESHEET || element.requestTypeId == Constants.OT_REQUEST) {
                 element.id = element.id.toString()
                 taskList.push(element);
             }
@@ -97,7 +106,7 @@ export default function processingDataReq(dataRawFromApi, tab) {
         if (listRequestIdOriginals.includes(e.id, index + 1)) {
             let indexPosition = listRequestIdOriginals.indexOf(e.id, index + 1);
             // taskListOriginal[indexPosition].startDate = (e.startDate + ",\r" + taskListOriginal[indexPosition].startDate);
-            taskListOriginal[indexPosition].startDate = taskListOriginal[indexPosition].startDate.concat(e.startDate)
+            taskListOriginal[indexPosition].startDate = taskListOriginal[indexPosition].startDate?.concat(e.startDate)
         } else if (e.absenceType && e.absenceType.value == MOTHER_LEAVE_KEY) {
             let startDate = moment(e.startDate, "DD/MM/YYYY")
             let endDate = moment(e.endDate, "YYYYMMDD")
@@ -114,7 +123,6 @@ export default function processingDataReq(dataRawFromApi, tab) {
             return e
         }
     })
-
     return taskList
 }
 
