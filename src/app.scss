@@ -600,7 +600,7 @@
   padding-top: 14em !important;
 }
 .vg-footer {
-  background-color: #e52c08;
+  background-color: #C11D2A;
   border-radius: 10px;
   margin-left: 10px;
   margin-right: 10px;
@@ -609,7 +609,7 @@
 }
 
 .vg-dard-board {
-  background-color: #e52c08;
+  background-color: #C11D2A;
   border-radius: 10px;
   margin-left: 10px;
   margin-right: 10px;
@@ -721,7 +721,7 @@
 
 .bg-vp-blue {
   background: #ffffff !important;
-  border-left: 5px solid #e52c08;
+  border-left: 5px solid #C11D2A;
 }
 
 .sidebar-dark {
@@ -1935,13 +1935,14 @@ span.badge-notification[data-badge]::after {
     border: none;
     padding: 1em 0;
     margin: 0 auto;
+    gap: 24px 32px;
     .nav-link {
       border: none;
     }
     .nav-item {
       border: 1px solid #ccc;
       border-radius: 0.5em;
-      margin-right: 2em;
+      // margin-right: 2em;
       background-color: #fff;
       color: #293281;
     }
@@ -4105,6 +4106,10 @@ span.badge-notification[data-badge]::after {
     width: 200px;
     font-size: 14px;
   }
+}
+
+.font-14 {
+  font-size: 14px;
 }
 
 .pagination-new {

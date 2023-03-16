@@ -344,12 +344,12 @@ const DetailInsuranceSocial = (props) => {
                     setdisabledSubmitButton(false)
                 }
                 else {
-                    notifyMessage(response.data.result.message || "Có lỗi xảy ra trong quá trình cập nhật thông tin!")
+                    notifyMessage(response.data.result.message || t("Error"))
                     setdisabledSubmitButton(false)
                 }
             })
             .catch(response => {
-                notifyMessage("Có lỗi xảy ra trong quá trình cập nhật thông tin!");
+                notifyMessage(t("Error"));
                 setdisabledSubmitButton(false);
             })
     }
