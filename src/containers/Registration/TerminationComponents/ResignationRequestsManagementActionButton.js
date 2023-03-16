@@ -241,14 +241,14 @@ class ResignationRequestsManagementActionButton extends React.PureComponent {
                             <div className="row action-group">
                                 <div className="col-5">
                                     <div className="input-filter d-flex" style={{padding: '2px 5px'}}>
-                                        <Select components={{ IndicatorSeparator: () => null }} options={taskLists} onChange={e => this.handleMassTypeChange(e)} value={taskLists.filter(item => item.value == massType)} placeholder={t('handover_type')} isClearable={true} styles={customStatusStyles} />
-                                        <Select components={{ IndicatorSeparator: () => null }} options={this.statusOptions} onChange={e => this.massUpdate(e)} value={this.statusOptions.filter(item => item.value == massValue)} placeholder={t("EvaluationStatus")} isDisabled={massType ? false : true} isClearable={true} styles={customStatusStyles} />
+                                        <Select components={{ IndicatorSeparator: () => null }} options={taskLists} onChange={e => this.handleMassTypeChange(e)} value={taskLists.filter(item => item.value == massType)} placeholder={t('handover_type')} isClearable={true} styles={customStatusStyles}  menuPortalTarget={document.body}/>
+                                        <Select components={{ IndicatorSeparator: () => null }} options={this.statusOptions} onChange={e => this.massUpdate(e)} value={this.statusOptions.filter(item => item.value == massValue)} placeholder={t("EvaluationStatus")} isDisabled={massType ? false : true} isClearable={true} styles={customStatusStyles}  menuPortalTarget={document.body}/>
                                     </div>
                                 </div>
             
                                 <div className="col-3">
                                     <div>
-                                        <Select options={exportOptions} onChange={e => this.handleSelectChange(e)} value={exportOption} placeholder={t('ExportFile')} isClearable={true} styles={customStyles} />
+                                        <Select options={exportOptions} onChange={e => this.handleSelectChange(e)} value={exportOption} placeholder={t('ExportFile')} isClearable={true} styles={customStyles}  menuPortalTarget={document.body}/>
                                     </div>
                                 </div>
                                 <div className="col-2">

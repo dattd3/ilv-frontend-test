@@ -27,7 +27,7 @@ class InternalWelfareComponent extends React.Component {
     fetchData = () => {
         const config = getRequestConfigurations()
         const companyCode = localStorage.getItem("companyCode")
-        const employeeLevel = localStorage.getItem("employeeLevel")
+        const employeeLevel = localStorage.getItem("benefitTitle")
         this.setState({
             isLoading: true,
         });
@@ -63,7 +63,7 @@ class InternalWelfareComponent extends React.Component {
 
     render() {
         const { t } = this.props;
-        const employeeLevel = localStorage.getItem("employeeLevel")
+        const employeeLevel = localStorage.getItem("benefitTitle")
         const { dataWelfare, isLoading, hiddenButton } = this.state;
 
         return (
