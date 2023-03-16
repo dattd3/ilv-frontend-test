@@ -61,18 +61,6 @@ function EvaluationOverall(props) {
       report: `${formatEvaluationNumber((totalCompleted / evaluationFormDetail?.totalTarget * 100))}%`
     }
   }
-
-  const rating = (() => {
-    if (evaluationFormDetail.reviewStreamCode === processStep.zeroLevel) {
-      return calculateRating(Number(evaluationFormDetail?.totalSeftPoint || 0))
-    }
-
-    if (Number(evaluationFormDetail?.status) > evaluationStatus.selfAssessment || (Number(evaluationFormDetail?.status) === evaluationStatus.selfAssessment && evaluationFormDetail?.totalLeadReviewPoint)) { // Chỉ tính rate khi biểu mẫu đang đến chân CBQL đánh giá
-      return calculateRating(Number(evaluationFormDetail?.totalLeadReviewPoint || 0))
-    }
-
-    return ''
-  })()
   
   return <div className="block-overall">
     <div className="card shadow card-completed">
@@ -142,7 +130,7 @@ function EvaluationOverall(props) {
           {
             isVinBusByCompanyCode(evaluationFormDetail?.companyCode) &&
             <tr>
-              <td colSpan={3} className='text-uppercase text-center'><div className="d-flex justify-content-center align-items-center">Xếp hạng đánh giá: <span style={{ fontWeight: 'bold', color: '#C11D2A', fontSize: 20, marginLeft: 3, marginTop: -1}}>{rating}</span></div></td>
+              <td colSpan={3} className='text-uppercase text-center'><div className="d-flex justify-content-center align-items-center">Xếp hạng đánh giá: <span style={{ fontWeight: 'bold', color: '#C11D2A', fontSize: 20, marginLeft: 3, marginTop: -1}}>{evaluationFormDetail?.evaluateRating || ''}</span></div></td>
             </tr>
           }
         </tbody>
@@ -442,7 +430,7 @@ function EvaluationDetail(props) {
       evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex][stateName] = value
 
       if (stateName === 'realResult') {
-        evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex]['seftPoint'] = calculateScore(
+          evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex]['seftPoint'] = calculateScore(
           evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex]?.formulaCode, 
           evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex]?.targetValue, 
           evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex]?.weight, 
@@ -450,7 +438,7 @@ function EvaluationDetail(props) {
       }
 
       if (stateName === 'leadRealResult') {
-        evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex]['leadReviewPoint'] = calculateScore(
+          evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex]['leadReviewPoint'] = calculateScore(
           evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex]?.formulaCode, 
           evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex]?.targetValue, 
           evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex]?.weight, 
@@ -461,15 +449,15 @@ function EvaluationDetail(props) {
       evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex].listTarget[childIndex][stateName] = value
 
       if (stateName === 'realResult') {
-        evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex].listTarget[childIndex]['seftPoint'] = calculateScore(
-          evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex]?.formulaCode, 
-          evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex]?.targetValue, 
-          evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex]?.weight, 
+          evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex].listTarget[childIndex]['seftPoint'] = calculateScore(
+          evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex]?.listTarget[childIndex]?.formulaCode, 
+          evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex]?.listTarget[childIndex]?.targetValue, 
+          evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex]?.listTarget[childIndex]?.weight, 
           value)
       }
 
       if (stateName === 'leadRealResult') {
-        evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex].listTarget[childIndex]['leadReviewPoint'] = calculateScore(
+          evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex].listTarget[childIndex]['leadReviewPoint'] = calculateScore(
           evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex].listTarget[childIndex]?.formulaCode, 
           evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex].listTarget[childIndex]?.targetValue, 
           evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex].listTarget[childIndex]?.weight, 
@@ -530,6 +518,13 @@ function EvaluationDetail(props) {
 
     evaluationFormDetailTemp.totalSeftPoint = totalInfos?.self || 0
     evaluationFormDetailTemp.totalLeadReviewPoint = totalInfos?.manager || 0
+
+    // Bắt đầu tính rating khi Biểu mẫu 0Level hoặc đang đến bước của CBQL đánh giá
+    evaluationFormDetailTemp.evaluateRating = calculateRating(
+      evaluationFormDetail.reviewStreamCode === processStep.zeroLevel 
+      ? Number(totalInfos?.self || 0) 
+      : evaluationFormDetail?.status > evaluationStatus.launch ? Number(totalInfos?.manager || 0) : null)
+
     SetEvaluationFormDetail(evaluationFormDetailTemp)
   }
 
