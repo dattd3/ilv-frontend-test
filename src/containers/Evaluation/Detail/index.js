@@ -504,8 +504,8 @@ function EvaluationDetail(props) {
     evaluationFormDetailTemp.listGroup = [...evaluationFormDetailTemp.listGroup || []].map(item => {
       return {
         ...item,
-        groupSeftPoint: (calculateAssessment(item?.listTarget)?.selfAssessment || 0) * (item?.groupWeight/100),
-        groupLeadReviewPoint: (calculateAssessment(item?.listTarget)?.managerAssessment || 0) * (item?.groupWeight/100),
+        groupSeftPoint: calculateAssessment(item?.listTarget)?.selfAssessment || 0,
+        groupLeadReviewPoint: calculateAssessment(item?.listTarget)?.managerAssessment || 0,
       }
     })
     const totalInfos = getTotalInfoByListGroup(evaluationFormDetailTemp.listGroup)
