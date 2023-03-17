@@ -42,21 +42,6 @@ class SeniorExecutiveInfoComponent extends React.PureComponent {
 
   componentWillReceiveProps(nextProps) {
     const { seniorExecutive } = nextProps
-    const companiesUsing = ['V070','V077', 'V060']
-
-    if (seniorExecutive) {
-      this.setState({
-        seniorExecutive: {
-          ...seniorExecutive,
-          label: seniorExecutive.fullName,
-          value: seniorExecutive.account,
-        }
-      })
-    }
-
-    if (companiesUsing.includes(localStorage.getItem("companyCode"))) {
-      return
-    }
 
     if (seniorExecutive) {
       this.setState({
