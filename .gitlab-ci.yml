@@ -41,11 +41,11 @@ build_uat:
     - echo "Prepare to build uat"
     - pwd
   script:
-    - python3 /home/gitlab-runner/deployment_uat.py build web uat
+    - python3 /home/gitlab-runner/deployment.py build web uat
     - echo "Build successful"
   only:
     refs:
-      - develop
+      - uat-hrms-on-myvingroup
 deploy_to_uat_environment:
   stage: deploy
   tags:
@@ -54,11 +54,11 @@ deploy_to_uat_environment:
     - echo "Prepare to deploy uat"
     - pwd
   script:
-    - python3 /home/gitlab-runner/deployment_uat.py deploy web uat
+    - python3 /home/gitlab-runner/deployment.py deploy web uat
     - echo "Deployed"
   when: manual
   only:
-      - develop
+      - uat-hrms-on-myvingroup
       
 build_production:
   stage: build
