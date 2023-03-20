@@ -27,7 +27,7 @@ const calculateRating = (score) => {
             return 'A'
         case score >= 85 && score < 95:
             return 'B'
-        case score >= 85 && score < 95:
+        case score >= 75 && score < 85:
             return 'C'
         case score >= 0 && score < 75:
             return 'D'
