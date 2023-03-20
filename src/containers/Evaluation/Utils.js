@@ -45,6 +45,10 @@ const formatEvaluationNumber = val => {
 }
 
 const calculateScore = (formulaCode, targetValue, weight, actualResult) => {
+    if (actualResult === '') {
+        return ''
+    }
+
     try {
         let score = 0
         switch (formulaCode) {
@@ -63,8 +67,7 @@ const calculateScore = (formulaCode, targetValue, weight, actualResult) => {
         }
         return formatEvaluationNumber(score)
     } catch (error) {
-        console.log('calculateScore => ', error)
-        return 0
+        return ''
     }
 }
 
