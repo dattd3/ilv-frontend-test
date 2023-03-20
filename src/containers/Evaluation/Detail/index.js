@@ -256,7 +256,14 @@ function EvaluationProcess(props) {
     const val = element?.target?.value || ""
 
     if (isVinBusByCompanyCode(evaluationFormDetail?.companyCode)) {
-      if (['realResult', 'leadRealResult'].includes(stateName) && (!(/^[0-9][0-9,\.]*$/.test(Number(val))) || Number(val) > 100)) {
+      if (['realResult', 'leadRealResult'].includes(stateName) 
+        && (
+          !(/^[0-9][0-9,\.]*$/.test(Number(val))) 
+          || Number(val) > 100 
+          || (val?.split('.')[1] && val?.split('.')[1]?.length > 2) 
+          || (Number(val) === 0 && !val?.includes('.') && val?.length > 1)
+        )
+      ) {
         return
       }
     } else {
@@ -819,6 +826,7 @@ function EvaluationDetail(props) {
 
         const isZeroLevel = payload?.reviewStreamCode === processStep.zeroLevel
         const response = await axios.post(`${process.env.REACT_APP_HRDX_PMS_URL}api/targetform/update`, { requestString: JSON.stringify(payload || {}) }, config)
+        SetErrors({})
         SetIsLoading(false)
         statusModalTemp.isShow = true
         statusModalTemp.needReload = actionCode == actionButton.approve
