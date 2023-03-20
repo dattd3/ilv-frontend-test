@@ -6,7 +6,6 @@ import { GuardianRouter } from "../../modules";
 import routes, { RouteSettings } from "../routes.config";
 import Maintenance from "../Maintenance";
 import ContextProviders from "./providers";
-import config from '../../commons/aws-config';
 import '../../assets/scss/sb-admin-2.scss';
 import LoadingModal from '../../components/Common/LoadingModal';
 import 'react-toastify/dist/ReactToastify.min.css';
@@ -15,24 +14,6 @@ const listUsersIgnoreMaintenanceMode = ['cuongnv56@vingroup.net', 'vuongvt2@ving
 const currentUserLogged = localStorage.getItem('email')
 
 function Root() {
-  // AWS SDK & AWS Amplity Configuration
-  // AWS.config.region = config.AWS_REGION;
-  // Amplify.configure({
-  //   Auth: {
-  //     identityPoolId: config.AWS_COGNITO_IDENTITY_POOL_ID,
-  //     region: config.AWS_REGION,
-  //     userPoolId: config.AWS_COGNITO_USER_POOL_ID,
-  //     userPoolWebClientId: config.AWS_COGNITO_CLIENT_ID,
-  //     oauth: {
-  //       domain: config.AWS_COGNITO_CLIENT_DOMAIN_NAME,
-  //       scope: config.AWS_COGNITO_IDP_OAUTH_CLAIMS,
-  //       redirectSignIn: config.AWS_COGNITO_IDP_SIGNIN_URL,
-  //       redirectSignOut: config.AWS_COGNITO_IDP_SIGNOUT_URL,
-  //       responseType: config.AWS_COGNITO_IDP_GRANT_FLOW
-  //     }
-  //   }
-  // });
-
   return (
     // <CookiesProvider>
       <ContextProviders>
