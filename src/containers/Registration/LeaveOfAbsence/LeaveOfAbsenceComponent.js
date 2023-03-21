@@ -62,7 +62,8 @@ class LeaveOfAbsenceComponent extends React.Component {
                     errors: {},
                 }
             ],
-            errors: {}
+            errors: {},
+            needReload: true
         }
     }
 
@@ -517,6 +518,14 @@ class LeaveOfAbsenceComponent extends React.Component {
 
     verifyInput() {
         let { requestInfo, approver, appraiser, errors } = this.state;
+        const { t } = this.props
+
+        if (approver?.account?.trim()?.toLowerCase() === appraiser?.account?.trim()?.toLowerCase()) {
+            this.showStatusModal(t("Notification"), t("ApproverAndConsenterCannotBeIdentical"), false)
+            this.setState({ needReload: false })
+            return false
+        }
+
         requestInfo.forEach((req, indexReq) => {
             req.errors["startDate"] = null
             if (!req.startDate) {
@@ -560,6 +569,7 @@ class LeaveOfAbsenceComponent extends React.Component {
         }
         return true
     }
+
     isNullCustomize = value => {
         return (value == null || value == "null" || value == "" || value == undefined || value == 0 || value == "#") ? true : false
     }
@@ -717,6 +727,9 @@ class LeaveOfAbsenceComponent extends React.Component {
             this.showStatusModal(t("Notification"), "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
             this.setDisabledSubmitButton(false)
         })
+        .finally(() => {
+            this.setState({ needReload: true })
+        })
     }
 
     error(name, groupId, groupItem) {
@@ -736,12 +749,14 @@ class LeaveOfAbsenceComponent extends React.Component {
     }
 
     hideStatusModal = () => {
-        const { isEdit } = this.state;
+        const { isEdit, needReload } = this.state;
         this.setState({ isShowStatusModal: false });
         if (isEdit) {
             window.location.replace("/tasks")
         } else {
-            window.location.href = map.Registration;
+            if (needReload) {
+                window.location.href = map.Registration;
+            }
         }
     }
 
