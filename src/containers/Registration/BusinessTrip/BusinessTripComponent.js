@@ -73,6 +73,7 @@ class BusinessTripComponent extends React.Component {
                     errors: {},
                 }
             ],
+            needReload: true
         }
     }
 
@@ -481,7 +482,14 @@ class BusinessTripComponent extends React.Component {
 
     verifyInput() {
         let { requestInfo, approver, appraiser } = this.state
+        const { t } = this.props
         const employeeLevel = localStorage.getItem("employeeLevel")
+
+        if (approver?.account?.trim()?.toLowerCase() === appraiser?.account?.trim()?.toLowerCase()) {
+            this.showStatusModal(t("Notification"), t("ApproverAndConsenterCannotBeIdentical"), false)
+            this.setState({ needReload: false })
+            return false
+        }
 
         requestInfo.forEach((req, indexReq) => {
             const { startDate, endDate, startTime, endTime, attendanceQuotaType, vehicle, place, comment, isAllDay } = req
@@ -592,20 +600,23 @@ class BusinessTripComponent extends React.Component {
             data: bodyFormData,
             headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` }
         })
-            .then(response => {
-                if (response && response.data && response.data.result && response.data.result.code != Constants.API_ERROR_CODE) {
-                    this.showStatusModal(this.props.t("Successful"), this.props.t("RequestSent"), true)
-                    this.setDisabledSubmitButton(false)
-                }
-                else {
-                    this.showStatusModal(this.props.t("Notification"), response.data.result.message, false)
-                    this.setDisabledSubmitButton(false)
-                }
-            })
-            .catch(response => {
-                this.showStatusModal(this.props.t("Notification"), "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
+        .then(response => {
+            if (response && response.data && response.data.result && response.data.result.code != Constants.API_ERROR_CODE) {
+                this.showStatusModal(this.props.t("Successful"), this.props.t("RequestSent"), true)
                 this.setDisabledSubmitButton(false)
-            })
+            }
+            else {
+                this.showStatusModal(this.props.t("Notification"), response.data.result.message, false)
+                this.setDisabledSubmitButton(false)
+            }
+        })
+        .catch(response => {
+            this.showStatusModal(this.props.t("Notification"), "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
+            this.setDisabledSubmitButton(false)
+        })
+        .finally(() => {
+            this.setState({ needReload: true })
+        })
     }
 
     error(name, groupId, groupItem) {
@@ -629,12 +640,14 @@ class BusinessTripComponent extends React.Component {
     };
 
     hideStatusModal = () => {
-        const { isEdit } = this.state;
+        const { isEdit, needReload } = this.state;
         this.setState({ isShowStatusModal: false });
         if (isEdit) {
             window.location.replace("/tasks")
         } else {
-            window.location.href = `${map.Registration}?tab=BusinessTripRegistration`
+            if (needReload) {
+                window.location.href = `${map.Registration}?tab=BusinessTripRegistration`
+            }
         }
     }
 

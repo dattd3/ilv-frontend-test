@@ -52,7 +52,8 @@ class SubstitutionComponent extends React.Component {
         isShow: false,
         isSuccess: true,
         content: ""
-      }
+      },
+      needReload: true,
     }
 
     this.isVin3S = currentUserCompanyVCode === Constants.pnlVCode.Vin3S
@@ -115,7 +116,7 @@ class SubstitutionComponent extends React.Component {
 
   verifyInput() {
     const { t } = this.props
-    const { timesheets } = this.state
+    const { timesheets, approver, appraiser } = this.state
     let errors = {}
 
     timesheets.forEach((timesheet, index) => {
@@ -204,8 +205,17 @@ class SubstitutionComponent extends React.Component {
       }
       errors['note' + index] = (_.isNull(timesheet['note']) || !timesheet['note']) ? t('Required') : null
     })
-    if (_.isNull(this.state.approver)) {
+
+    errors['approver'] = null
+    if (_.isNull(approver)) {
       errors['approver'] = t('Required')
+    }
+
+    errors['approverAppraiser'] = null
+    if (approver?.account?.trim() && appraiser?.account?.trim() && approver?.account?.trim()?.toLowerCase() === appraiser?.account?.trim()?.toLowerCase()) {
+      errors['approverAppraiser'] = t("ApproverAndConsenterCannotBeIdentical")
+      this.showResultModal(t("Notification"), t("ApproverAndConsenterCannotBeIdentical"), false)
+      this.setState({ needReload: false })
     }
 
     this.setState({ errors: errors })
@@ -302,16 +312,19 @@ class SubstitutionComponent extends React.Component {
       data: bodyFormData,
       headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` }
     })
-      .then(response => {
-        if (response && response.data && response.data.result) {
-          this.showResultModal(this.props.t("Successful"), this.props.t("RequestSent"), true)
-          this.setDisabledSubmitButton(false)
-        }
-      })
-      .catch(response => {
-        this.showResultModal(this.props.t("Notification"), this.props.t("Error"), false)
+    .then(response => {
+      if (response && response.data && response.data.result) {
+        this.showResultModal(this.props.t("Successful"), this.props.t("RequestSent"), true)
         this.setDisabledSubmitButton(false)
-      })
+      }
+    })
+    .catch(response => {
+      this.showResultModal(this.props.t("Notification"), this.props.t("Error"), false)
+      this.setDisabledSubmitButton(false)
+    })
+    .finally(() => {
+      this.setState({ needReload: true })
+    })
   }
 
   error(index, name) {
@@ -484,7 +497,9 @@ class SubstitutionComponent extends React.Component {
 
   hideResultModal = () => {
     this.setState({ isShowResultModal: false });
-    window.location.href = `${map.Registration}?tab=SubstitutionRegistration`
+    if (this.state.needReload) {
+      window.location.href = `${map.Registration}?tab=SubstitutionRegistration`
+    }
   }
 
   hideStatusModal = () => {

@@ -119,9 +119,9 @@ class AssesserComponent extends React.Component {
                         const users = data.map(res => {
                             return {
                                 value: res.username,
-                                label: res.fullname,
+                                label: res?.fullname || res?.fullName,
                                 uid: res.uid,
-                                fullName: res.fullname,
+                                fullName: res?.fullname || res?.fullName,
                                 avatar: res.avatar,
                                 employeeLevel: res.rank_title || res.rank, // Cấp bậc chức danh để phân quyền
                                 pnl: res.pnl,
