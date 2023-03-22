@@ -46,7 +46,7 @@ export default function OTRequestDetailComponent({ data, action }) {
       t("Fri"),
       t("Sat"),
     ];
-    const dayStr = moment(date, "YYYMMDD").format("MM/DD/YYYY").toString();
+    const dayStr = moment(date, "YYYYMMDD").format("MM/DD/YYYY").toString();
     const d = new Date(dayStr);
     const dayName = days[d.getDay()];
     return dayName;
