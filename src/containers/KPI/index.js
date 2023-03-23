@@ -4,6 +4,7 @@ import { withTranslation } from "react-i18next"
 import KPISearch from "./KPISearch"
 import StaffInfo from "./StaffInfo"
 import ShowKPIDetail from "./ShowKPIDetail"
+import HOCComponent from '../../components/Common/HOCComponent'
 import Constants from "../../commons/Constants"
 import { getMuleSoftHeaderConfigurations } from "../../commons/Utils"
 
@@ -68,4 +69,4 @@ class General extends React.Component {
   }
 }
 
-export default General
+export default HOCComponent(General)

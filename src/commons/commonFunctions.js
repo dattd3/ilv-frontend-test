@@ -46,4 +46,9 @@ const getStateRedirect = (url, environment) => {
     if(item) return item.ConfigureId || '0'
 }
 
-export { getRequestConfigs, checkIsExactPnL, getStateRedirect }
+const checkVersionPnLSameAsVinhome = (moduleType = 1, ...otherPnl) => {
+    const pnlAvaiable = [...Constants.MODULE_COMPANY_AVAILABE[moduleType], ...otherPnl]; 
+    return checkIsExactPnL(...pnlAvaiable);
+}
+
+export { getRequestConfigs, checkIsExactPnL, getStateRedirect, checkVersionPnLSameAsVinhome }

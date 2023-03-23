@@ -7,8 +7,10 @@ import MainResultComponent from './ResultBlock/MainResultComponent'
 import IncomeComponent from './ResultBlock/IncomeComponent'
 import WorkingInformationComponent from './ResultBlock/WorkingInformationComponent'
 import LeaveInformationComponent from './ResultBlock/LeaveInformationComponent'
+import LoadingModal from '../../components/Common/LoadingModal'
 import { exportToPDF } from "../../commons/Utils"
 import ReactHTMLTableToExcel from "react-html-table-to-excel"
+import HOCComponent from '../../components/Common/HOCComponent'
 
 class PaySlipsComponent extends React.Component {
   constructor(props) {
@@ -16,14 +18,16 @@ class PaySlipsComponent extends React.Component {
 
     this.state = {
       isShowConfirmPasswordModal: true,
-      acessToken: new URLSearchParams(props.history.location.search).get('accesstoken') || null,
+      acessToken: new URLSearchParams(props?.history?.location?.search).get('accesstoken') || null,
       payslip: null,
-      isSearch: false
+      isSearch: false,
+      currencySelected: null,
+      isLoading: false,
     }
   }
 
   componentDidMount() {
-    const queryParams = new URLSearchParams(this.props.history.location.search)
+    const queryParams = new URLSearchParams(this.props?.history?.location?.search)
     if (queryParams.has('accesstoken')) {
       queryParams.delete('accesstoken')
       this.props.history.replace({
@@ -32,13 +36,13 @@ class PaySlipsComponent extends React.Component {
     }
   }
 
-  handleSubmitSearch = (month, year) => {
-      this.setState({isSearch: false})
-      const config = {
-        headers: {
-          'Authorization': `${localStorage.getItem('accessToken')}`,
-            'Content-Type':'multipart/form-data'
-        }
+  handleSubmitSearch = (month, year, currency) => {
+    this.setState({ isSearch: false, isLoading: true, currencySelected: currency })
+    const config = {
+      headers: {
+        'Authorization': `${localStorage.getItem('accessToken')}`,
+        'Content-Type':'multipart/form-data'
+      }
     }
 
     let bodyFormData = new FormData()
@@ -59,7 +63,9 @@ class PaySlipsComponent extends React.Component {
           this.setState({payslip: null, isSearch: true})
         }
     }).catch(error => {
-    })
+    }).finally(() => {
+      this.setState({ isLoading: false })
+    });
   }
 
   updateToken (acessToken) {
@@ -73,30 +79,32 @@ class PaySlipsComponent extends React.Component {
 
   render() {            
     const { t } = this.props
-    const { acessToken, isSearch, payslip } = this.state
+    const { acessToken, isSearch, payslip, currencySelected, isLoading } = this.state
 
     return (
       <>
+      <LoadingModal show={isLoading} />
       <ConfirmPasswordModal show={acessToken == null} onUpdateToken={this.updateToken.bind(this)} />
       <div className="payslips-section">
+        <h1 className="content-page-header">{t("PaySlip")}</h1>
         <div className="card shadow mb-4">
           <div className="card-body">
-            <FormSearchComponent search={this.handleSubmitSearch.bind(this)} />
-            {isSearch && !payslip ? <p className="text-danger">{t("NoDataFound")}</p> : null}
+            <FormSearchComponent search={this.handleSubmitSearch} />
+            { isSearch && !payslip && <p className="text-danger">{t("NoDataFound")}</p> }
           </div>
         </div>
         {
           isSearch && acessToken && payslip ?
           <>
           <div className="block-buttons">
-            <button className="btn-download download-pdf" onClick={this.downloadPDF}>Tải PDF</button>
+            <button className="btn-download download-pdf" onClick={this.downloadPDF}>{t("DownloadPDF")}</button>
             <ReactHTMLTableToExcel
-                id="test-table-xls-button"
-                className="btn btn-link pull-right download-excel"
-                table="payslip-download"
-                filename="SalaryInformation"
-                sheet="SalaryInformation"
-                buttonText="Tải Excel"
+              id="test-table-xls-button"
+              className="btn btn-link pull-right download-excel"
+              table="payslip-download"
+              filename="SalaryInformation"
+              sheet="SalaryInformation"
+              buttonText={t("DownloadExcel")}
             />
           </div>
           <div className="result-block" id="result-block">
@@ -106,20 +114,20 @@ class PaySlipsComponent extends React.Component {
               </div>
             </div>
             <div className="other-result-section">
-              <WorkingInformationComponent payslip={payslip} />
+              <WorkingInformationComponent payslip={payslip} currencySelected={currencySelected} />
               <LeaveInformationComponent payslip={payslip} />
-              <IncomeComponent payslip={payslip} />
+              <IncomeComponent payslip={payslip} currencySelected={currencySelected} />
             </div>
           </div>
           <div className="block-buttons">
-            <button className="btn-download download-pdf" onClick={this.downloadPDF}>Tải PDF</button>
+            <button className="btn-download download-pdf" onClick={this.downloadPDF}>{t("DownloadPDF")}</button>
             <ReactHTMLTableToExcel
-                id="test-table-xls-button"
-                className="btn btn-link pull-right download-excel"
-                table="payslip-download"
-                filename="SalaryInformation"
-                sheet="SalaryInformation"
-                buttonText="Tải Excel"
+              id="test-table-xls-button"
+              className="btn btn-link pull-right download-excel"
+              table="payslip-download"
+              filename="SalaryInformation"
+              sheet="SalaryInformation"
+              buttonText={t("DownloadExcel")}
             />
           </div>
           </>
@@ -131,4 +139,4 @@ class PaySlipsComponent extends React.Component {
   }
 }
 
-export default withTranslation()(PaySlipsComponent)
+export default HOCComponent(withTranslation()(PaySlipsComponent))

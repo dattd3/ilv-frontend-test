@@ -5,6 +5,7 @@ import Constants from '../../../commons/Constants';
 import CustomPaging from '../../../components/Common/CustomPaging';
 import FormSearchComponent from '../SearchBlock/FormSearchComponent';
 import { useTranslation } from "react-i18next"
+import HOCComponent from '../../../components/Common/HOCComponent'
 
 const usePreload = (params) => {
     const api = useApi();
@@ -113,4 +114,4 @@ function ListNotificationsUnRead(props) {
     )
 }
 
-export default ListNotificationsUnRead
+export default HOCComponent(ListNotificationsUnRead)

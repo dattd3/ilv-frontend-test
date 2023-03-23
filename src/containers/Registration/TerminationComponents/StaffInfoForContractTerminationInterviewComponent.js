@@ -18,19 +18,19 @@ class StaffInfoForContractTerminationInterviewComponent extends React.PureCompon
                             <div className="col-4">
                                 <p className="title">{t('FullName')}</p>
                                 <div>
-                                    <input type="text" className="form-control" value={userInfos?.fullName || ""} readOnly />
+                                    <input type="text" className="form-control" style={{backgroundColor: '#F2F2F2'}} value={userInfos?.fullName || ""} readOnly />
                                 </div>
                             </div>
                             <div className="col-4">
-                                <p className="title">Mã số nhân viên</p>
+                                <p className="title">{t('employee_number')}</p>
                                 <div>
-                                    <input type="text" className="form-control" value={userInfos?.employeeNo || ""} readOnly />
+                                    <input type="text" className="form-control" style={{backgroundColor: '#F2F2F2'}} value={userInfos?.employeeNo || ""} readOnly />
                                 </div>
                             </div>
                             <div className="col-4">
                                 <p className="title">{t('Title')}</p>
                                 <div>
-                                    <input type="text" className="form-control" value={userInfos?.jobTitle || ""} readOnly />
+                                    <input type="text" className="form-control" style={{backgroundColor: '#F2F2F2'}} value={userInfos?.jobTitle || ""} readOnly />
                                 </div>
                             </div>
                         </div>
@@ -38,19 +38,19 @@ class StaffInfoForContractTerminationInterviewComponent extends React.PureCompon
                             <div className="col-4">
                                 <p className="title">{t('DepartmentManage')}</p>
                                 <div>
-                                    <input type="text" className="form-control" value={userInfos?.department || ""} readOnly />
+                                    <input type="text" className="form-control" style={{backgroundColor: '#F2F2F2'}} value={userInfos?.department || ""} readOnly />
                                 </div>
                             </div>
                             <div className="col-4">
                                 <p className="title">{t('ContractType')}</p>
                                 <div>
-                                    <input type="text" className="form-control" value={userInfos?.contractName || ""} readOnly />
+                                    <input type="text" className="form-control" style={{backgroundColor: '#F2F2F2'}} value={userInfos?.contractName || ""} readOnly />
                                 </div>
                             </div>
                             <div className="col-4">
-                                <p className="title">Ngày chấm dứt HĐLĐ</p>
+                                <p className="title">{t('ngay_cham_dut_hdld')}</p>
                                 <div>
-                                    <input type="text" className="form-control" value={dateTermination} readOnly />
+                                    <input type="text" className="form-control" style={{backgroundColor: '#F2F2F2'}} value={dateTermination} readOnly />
                                 </div>
                             </div>
                         </div>

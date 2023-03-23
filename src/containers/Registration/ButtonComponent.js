@@ -1,6 +1,7 @@
 import React from 'react'
 import Spinner from 'react-bootstrap/Spinner'
 import { withTranslation  } from "react-i18next";
+import { checkFilesMimeType } from '../../utils/file';
 
 class ButtonComponent extends React.Component {
     constructor(props) {
@@ -24,12 +25,14 @@ class ButtonComponent extends React.Component {
         this.inputReference.current.click()
     }
 
-    fileUploadInputChange() {
+    fileUploadInputChange(e) {
         const files = Object.keys(this.inputReference.current.files).map((key) => this.inputReference.current.files[key])
-        const updateFiles = this.state.files.concat(files)
-        this.setState({ files: updateFiles })
-        this.props.updateFiles(updateFiles)
-        this.props.isUpdateFiles(true)
+        if (checkFilesMimeType(e, files)) {
+            const updateFiles = this.state.files.concat(files)
+            this.setState({ files: updateFiles })
+            this.props.updateFiles(updateFiles)
+            this.props.isUpdateFiles(true)
+        }
     }
 
     submit() {

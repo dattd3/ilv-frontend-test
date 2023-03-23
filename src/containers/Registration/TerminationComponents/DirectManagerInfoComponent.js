@@ -43,7 +43,6 @@ class DirectManagerInfoComponent extends Component {
 
   componentWillReceiveProps(nextProps) {
     const { directManager } = nextProps
-    const companiesUsing = ['V070','V077', 'V060']
 
     if (directManager) {
       this.setState({
@@ -53,10 +52,6 @@ class DirectManagerInfoComponent extends Component {
           value: directManager.account,
         }
       })
-    }
-
-    if (companiesUsing.includes(localStorage.getItem("companyCode"))) {
-      return
     }
   }
 
@@ -73,7 +68,7 @@ class DirectManagerInfoComponent extends Component {
     } else {
       this.setState({ [name]: value, users: [] })
       this.props.updateApprovalInfos("directManager", value, true)
-      this.props.updateErrors({directManager: "Vui lòng chọn CBQL trực tiếp!"})
+      this.props.updateErrors({directManager: this.props.t('resign_error_directManager')})
     }
   }
 
@@ -105,8 +100,6 @@ class DirectManagerInfoComponent extends Component {
       const config = {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-          'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-          'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
         }
       }
 
@@ -129,7 +122,7 @@ class DirectManagerInfoComponent extends Component {
               organizationLv2: res?.orglv2_id,
               account: res?.username,
               jobTitle: res?.position_name,
-              department:  res.division + (res.department ? '/' + res.department : '') + (res.part ? '/' + res.part : '')
+              department:  res.division + (res.department ? '/' + res.department : '') + (res.unit ? '/' + res.unit : '')
             }
           })
           this.setState({ users: users, isSearching: false })

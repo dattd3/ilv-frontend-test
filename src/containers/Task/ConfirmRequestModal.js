@@ -102,7 +102,7 @@ class ConfirmRequestModal extends React.Component {
     approve = (id) => {
         const dataPrepareToSap = [];
         const { t, dataToSap } = this.props
-        const requestTypeIdsAllowedToReApproval = [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP, Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE]
+        const requestTypeIdsAllowedToReApproval = [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP, Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE, Constants.OT_REQUEST]
 
         dataToSap.forEach(element => {
             let taskObj = {};
@@ -126,7 +126,7 @@ class ConfirmRequestModal extends React.Component {
 
         // let bodyFormData = new FormData()
         // bodyFormData.append('UserProfileInfoToSap', JSON.stringify(dataToSap))
-        this.changeRequest(dataPrepareToSap, `${process.env.REACT_APP_REQUEST_URL}request/approve`, t("Trạng thái phê duyệt"))
+        this.changeRequest(dataPrepareToSap, `${process.env.REACT_APP_REQUEST_URL}request/approve`, t("approval_status"))
     }
 
     disApprove = (formData, url, id) => {
@@ -149,7 +149,7 @@ class ConfirmRequestModal extends React.Component {
             }
             dataToSap.push(taskObj)
           });
-        this.changeRequest(dataToSap,`${process.env.REACT_APP_REQUEST_URL}request/approve`,this.props.t("Trạng thái hủy phê duyệt"))
+        this.changeRequest(dataToSap,`${process.env.REACT_APP_REQUEST_URL}request/approve`,this.props.t("disapproval_status"))
     }
 
     consent = () => {
@@ -172,7 +172,7 @@ class ConfirmRequestModal extends React.Component {
             }
             dataToSap.push(taskObj)
           });
-        this.changeRequest(dataToSap,`${process.env.REACT_APP_REQUEST_URL}request/assess`,this.props.t("Trạng thái thẩm định"))
+        this.changeRequest(dataToSap,`${process.env.REACT_APP_REQUEST_URL}request/assess`,this.props.t("appraisal_status"))
     }
 
     reject = () => {
@@ -197,7 +197,7 @@ class ConfirmRequestModal extends React.Component {
             dataToSap.push(taskObj)
           });
         
-        this.changeRequest(dataToSap,`${process.env.REACT_APP_REQUEST_URL}request/assess`,this.props.t("Trạng thái hủy thẩm định"))
+        this.changeRequest(dataToSap,`${process.env.REACT_APP_REQUEST_URL}request/assess`,this.props.t("disappraisal_status"))
     }
     
     handleChangeMessage = (e) => {

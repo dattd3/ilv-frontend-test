@@ -72,13 +72,13 @@ export const IncomeTablesConfig = t => {
                                     { label: t("HousingSupport"), field: 'housing_allowance' },
                                     { label: t("TransportationSupport"), field: 'transfer_allowance' },
                                     { label: t("TelephoneSupport"), field: 'phone_allowance' },
-                                    { label: 'Hỗ trợ điều kiện sinh hoạt Vùng Phú Quốc', field: 'region_allowance' },
+                                    { label: t("LivingConditionSupport"), field: 'region_allowance' },
                                     { label: t("RelocationSupport"), field: 'region_displace_allowance' },
                                     { label: t("IntermittenShiftSupport"), field: 'shifts_allowance' },
                                     { label: t("SpecializedJobSupport"), field: 'specific_work_allowance' },
                                     { label: t("IslandSupport"), field: 'work_on_island_allowance' },
                                     { label: t("OtBonus"), field: 'overtime_payment' },
-                                    { label: 'Tiền lương làm đêm', field: 'night_shift_allowance' },
+                                    { label: t("NightBonus"), field: 'night_shift_allowance' },
                                     { label: t("AnnualLeaveToilEncashment"), field: 'annual_leave_payment' },
                                     { label: t("MuatuallyAgreedTerminationBonus"), field: 'resignation_agreement_allowance' },
                                     { label: t("SeveranceAllowance"), field: 'severance_allowance' },
@@ -116,7 +116,7 @@ export const IncomeTablesConfig = t => {
                             { label: t("AdvanceViaVinidDeduction"), field: 'vinid_pay_reduction' },
                             { label: t("DeductionOnUsedBenefits"), field: 'bonus_received_reduction' },
                             { label: t("DeductionOnDormitoryVinpearlBusPhuQuoc"), field: 'bus_reduction' },
-                            { label: 'Bồi thường ưu đãi mua xe VF', field: 'refund_for_vf_car_and_electric_motobike_purchase_discount' },
+                            { label: t("RefundForVFCarAndElectricMotobikePurchaseDiscount"), field: 'refund_for_vf_car_and_electric_motobike_purchase_discount' },
                             { label: t("OtherDeductions"), field: 'other_deduction' },
                             { label: t("VinmecAdditionalTaxAfterTaxFinalization"), field: 'tax_additional_after' }
                         ]
@@ -131,12 +131,12 @@ export const IncomeTablesConfig = t => {
                                 field: 'compulsary_insurance_amount_in_salary',
                                 isSkipSumLabel: true,
                                 level4: [
-                                    { label: 'Mức lương đóng BHXH, BHYT', field: 'social_insurance_amount_in_salary' },
-                                    { label: 'Mức lương đóng BHTN', field: 'unemployment_insurance_amount_in_salary' }
+                                    { label: t("SalaryStatutorySocialAndHealthInsuranceContribution"), field: 'social_insurance_amount_in_salary' },
+                                    { label: t("SalaryStatutoryUnemploymentInsuranceContribution"), field: 'unemployment_insurance_amount_in_salary' }
                                 ]
                             },
                             {
-                                label: 'Trích nộp Bảo hiểm bắt buộc',
+                                label: t("StatutorySocialHealthInsuranceContribution"),
                                 field: 'compulsary_insurance_amount_fee',
                                 level4: [
                                     { label: t("SocialInsurance"), field: 'social_insurance_fee' },
@@ -268,7 +268,7 @@ export const IncomeTablesConfig = t => {
                                     { label: t("TransportationSupport"), field: 'transfer_allowance' },
                                     { label: t("TelephoneSupport"), field: 'phone_allowance' },
                                     { label: t("LivingConditionSupport"), field: 'region_allowance' },
-                                    { label: 'Hỗ trợ đối với chuyên ngành khó tuyển dụng', field: 'special_industry_subsidy' },
+                                    { label: t("SpecialAndRareIndustrySupport"), field: 'special_industry_subsidy' },
                                     { label: t("IntermittenShiftSupport"), field: 'shifts_allowance' },
                                     { label: t("OtBonus"), field: 'overtime_payment' },
                                     { label: t("NightBonus"), field: 'night_shift_allowance' },
@@ -278,9 +278,9 @@ export const IncomeTablesConfig = t => {
                                     { label: t("Retroactive"), field: 'back_pay' },
                                     { label: t("AnnualWelfare"), field: 'annual_welfare_allowance' },
                                     { label: t("BankInterestSupportForVfPurchase"), field: 'interest_rate_allowance', isSplit: true },
-                                    { label: 'Hỗ trợ lãi suất vay mua xe VF (GROSSUP từ khoản NET tương ứng)', field: 'interest_rate_grossup_allowance' },
+                                    { label: t("GrossLoanInterestSupportVFCarAndElectricMotobikePurchase"), field: 'interest_rate_grossup_allowance' },
                                     { label: t("VfRentalSupport"), field: 'car_rent_allowance', isSplit: true },
-                                    { label: 'Hỗ trợ tiền thuê xe VF (GROSSUP từ khoản NET tương ứng)', field: 'car_rent_grossup_allowance' },
+                                    { label: t("VFCarAndElectricMotobikeLeasingGrossSupport"), field: 'car_rent_grossup_allowance' },
                                     { label: t("OtherPayment"), field: 'other_payment' },
                                     { label: t("VFCarElectricStakeGross"), field: 'vf_car_electric_stake' },
                                     { label: t("VinmecTaxRefundsAfterTaxFinalization"), field: 'tax_refunds_after' }
@@ -304,12 +304,12 @@ export const IncomeTablesConfig = t => {
                             { label: t("Reimbursement"), field: 'arrears' },
                             { label: t("DeductionOnBehaviorAndAttitudeBonus"), field: 'quality_of_work_reduction' },
                             { label: t("DeductionOnLoss"), field: 'damages' },
-                            { label: 'Khấu trừ vay Quỹ Thiện Tâm', field: 'deduction_of_loan_from_kind_heart_foundation' },
+                            { label: t("DeductionLoanFromKindHeartFoundation"), field: 'deduction_of_loan_from_kind_heart_foundation' },
                             { label: t("CollectionOnBehalfOfQuyThienTam"), field: 'loan_reduction' },
                             { label: t("AdvanceDeduction"), field: 'advance_reduction' },
                             { label: t("AdvanceViaVinidDeduction"), field: 'vinid_pay_reduction' },
-                            { label: 'Khấu trừ tiền thuê xe VF', field: 'vf_car_and_electric_motobike_leasing_deduction' },
-                            { label: 'Bồi thường ưu đãi mua xe VF', field: 'refund_for_vf_car_and_electric_motobike_purchase_discount' },
+                            { label: t("VFCarAndElectricMotobikeLeasingDeduction"), field: 'vf_car_and_electric_motobike_leasing_deduction' },
+                            { label: t("RefundForVFCarAndElectricMotobikePurchaseDiscount"), field: 'refund_for_vf_car_and_electric_motobike_purchase_discount' },
                             { label: t("OtherDeductions"), field: 'other_deduction' },
                             { label: t("VinmecAdditionalTaxAfterTaxFinalization"), field: 'tax_additional_after' }
                         ]
@@ -324,12 +324,12 @@ export const IncomeTablesConfig = t => {
                                 field: 'compulsary_insurance_amount_in_salary',
                                 isSkipSumLabel: true,
                                 level4: [
-                                    { label: 'Mức lương đóng BHXH, BHYT', field: 'social_insurance_amount_in_salary' },
-                                    { label: 'Mức lương đóng BHTN', field: 'unemployment_insurance_amount_in_salary' }
+                                    { label: t("SalaryStatutorySocialAndHealthInsuranceContribution"), field: 'social_insurance_amount_in_salary' },
+                                    { label: t("SalaryStatutoryUnemploymentInsuranceContribution"), field: 'unemployment_insurance_amount_in_salary' }
                                 ]
                             },
                             {
-                                label: 'Trích nộp Bảo hiểm bắt buộc',
+                                label: t("StatutorySocialHealthInsuranceContribution"),
                                 field: 'compulsary_insurance_amount_fee',
                                 level4: [
                                     { label: t("SocialInsurance"), field: 'social_insurance_fee' },
@@ -383,7 +383,7 @@ export const IncomeTablesConfig = t => {
                 field: 'net_salary_amount',
                 level2: [
                     {
-                        label: 'Trả vào tài khoản ngân hàng',
+                        label: t("PaymentIntoBankAccount"),
                         field: 'net_salary_amount',
                         level3: []
                     }
@@ -414,7 +414,9 @@ export const IncomeTablesConfig = t => {
                                 field: 'allowance_amount',
                                 level4: [
                                     { label: t("AdditionalResponsibilitiesAllowance"), field: 'pluralism_allowance' },
-                                    { label: t("ResponsibilityAllowance"), field: 'responsibility_allowance' }
+                                    { label: t("ResponsibilityAllowance"), field: 'responsibility_allowance' },
+                                    { label: t("SeniorityAllowance"), field: 'seniority_allowances' },
+                                    { label: t("WorkingConditionsAllowance"), field: 'allowance_working_conditions' },
                                 ]
                             },
                             {
@@ -441,8 +443,8 @@ export const IncomeTablesConfig = t => {
                                     { label: t("ReferralBonus"), field: 'reference_bonus' },
                                     { label: t("TrainingBonus"), field: 'trainning_bonus' },
                                     { label: t("GrossOtherBonus"), field: 'other_gross_bonus' },
-                                    { label: t("NetKpiBonus"), field: 'kpi_bonus_net' },
-                                    { label: t("BonusNet"), field: 'other_net_bonus' }
+                                    { label: t("KpiBonusGrossup"), field: 'kpi_grossup_bonus' },
+                                    { label: t("PerformanceBonusVinfastGrossup"), field: 'bonus_hqcv_vf_grossup' },
                                 ]
                             },
                             {
@@ -465,15 +467,18 @@ export const IncomeTablesConfig = t => {
                                     { label: t("AnnualLeaveToilEncashment"), field: 'annual_leave_payment' },
                                     { label: t("MuatuallyAgreedTerminationBonus"), field: 'resignation_agreement_allowance' },
                                     { label: t("SeveranceAllowance"), field: 'severance_allowance' },
-                                    { label: t("Retroactive"), field: 'back_pay' },
                                     { label: t("VfRentalSupport"), field: 'car_rent_allowance' },
                                     { label: t("BenefitForVfPurchase"), field: 'car_rent_allowance_welfare' },
+                                    { label: t("Retroactive"), field: 'back_pay' },
                                     { label: t("BankInterestSupportForVfPurchase"), field: 'interest_rate_allowance' },
                                     { label: t("BenefitNet"), field: 'welfare_net_allowance' },
                                     { label: t("NETCovid19PandemicSubsidy"), field: 'covid_allowance'},
                                     { label: t("AnnualWelfare"), field: 'annual_welfare_allowance' },
                                     { label: t("OtherPayment"), field: 'other_payment' },
                                     { label: t("VFCarElectricStakeGross"), field: 'vf_car_electric_stake' },
+                                    { label: t("HousingSubsidyGrossup"), field: 'housing_allowance_grossup' },
+                                    { label: t("SupportVinfastCampaignAndProject"), field: 'support_vf_campaign_project' },
+                                    { label: t("BenefitsPayingThroughSalaryGrossup"), field: 'welfare_grossup_allowance' },
                                     { label: t("VinmecTaxRefundsAfterTaxFinalization"), field: 'tax_refunds_after' }
                                 ]
                             }
@@ -516,12 +521,12 @@ export const IncomeTablesConfig = t => {
                                 field: 'compulsary_insurance_amount_in_salary',
                                 isSkipSumLabel: true,
                                 level4: [
-                                    { label: 'Mức lương đóng BHXH, BHYT', field: 'social_insurance_amount_in_salary' },
-                                    { label: 'Mức lương đóng BHTN', field: 'unemployment_insurance_amount_in_salary' }
+                                    { label: t("SalaryStatutorySocialAndHealthInsuranceContribution"), field: 'social_insurance_amount_in_salary' },
+                                    { label: t("SalaryStatutoryUnemploymentInsuranceContribution"), field: 'unemployment_insurance_amount_in_salary' }
                                 ]
                             },
                             {
-                                label: 'Trích nộp Bảo hiểm bắt buộc',
+                                label: t("StatutorySocialHealthInsuranceContribution"),
                                 field: 'compulsary_insurance_amount_fee',
                                 level4: [
                                     { label: t("SocialInsurance"), field: 'social_insurance_fee' },
@@ -688,7 +693,7 @@ export const IncomeTablesConfig = t => {
                                     { label: t("MarriageSupport"), field: 'marriage_subsidy' },
                                     { label: t("FunerralSupport"), field: 'funerral_subsidy' },
                                     { label: t("HousingSupport"), field: 'housing_allowance' },
-                                    { label: t("VinmecHousingSubsidyNet"), field: 'housing_allowance_net' },
+                                    { label: t("HousingSubsidyNet"), field: 'housing_allowance_net' },
                                     { label: t("TransportationSupport"), field: 'transfer_allowance' },
                                     { label: t("TelephoneSupport"), field: 'phone_allowance' },
                                     { label: t("LivingConditionSupport"), field: 'region_allowance' },
@@ -703,23 +708,23 @@ export const IncomeTablesConfig = t => {
                                     { label: t("BenefitNet"), field: 'welfare_net_allowance' },
                                     { label: t("VinmecHolidayWelfarePayment"), field: 'holiday_welfare' },
                                     { label: t("AnnualWelfare"), field: 'annual_welfare_allowance' },
-                                    { label: 'Quà ngày lễ (VinID)', field: 'vinid_gift' },
-                                    { label: 'Thưởng tiền mặt', field: 'cash_bonus' },
-                                    { label: 'Công tác phí', field: 'mission_fee' },
-                                    { label: 'Hỗ trợ học phí cho con CBNV NNN', field: 'tuition_fee_allowance' },
-                                    { label: 'Hỗ trợ thu hút khó tuyển dụng', field: 'special_industry_subsidy' },
-                                    { label: 'Hỗ trợ vé máy bay NNN', field: 'plane_ticket_allowance' },
+                                    { label: t("VinIdGift"), field: 'vinid_gift' },
+                                    { label: t("CashBonus"), field: 'cash_bonus' },
+                                    { label: t("PerDiem"), field: 'mission_fee' },
+                                    { label: t("TuitionFeeForExpatChildren"), field: 'tuition_fee_allowance' },
+                                    { label: t("SpecialAndRareIndustrySupport"), field: 'special_industry_subsidy' },
+                                    { label: t("AirTickerForExpat"), field: 'plane_ticket_allowance' },
                                     { label: t("NETCovid19PandemicSubsidy"), field: 'covid_allowance', isSplit: true },
-                                    { label: 'Hỗ trợ mùa dịch Covid 19 (GROSSUP từ khoản NET tương ứng)', field: 'covid_grossup_allowance' },
+                                    { label: t("Covid19SupportGrossUp"), field: 'covid_grossup_allowance' },
                                     { label: t("GROSSCovid19PandemicSubsidy"), field: 'covid_gross_subsidy' },
                                     { label: t("NETF0EmployeesSubsidy"), field: 'covid_net_f0' },
                                     { label: t("GROSSF0EmployeesSubsidy"), field: 'covid_gross_f0' },
-                                    { label: 'Hỗ trợ lãi suất vay mua xe VF (NET)', field: 'interest_rate_allowance', isSplit: true },
-                                    { label: 'Hỗ trợ lãi suất vay mua xe VF (GROSSUP từ khoản NET tương ứng)', field: 'interest_rate_grossup_allowance' },
-                                    { label: 'Hỗ trợ tiền thuê xe VF (NET)', field: 'car_rent_allowance', isSplit: true },
-                                    { label: 'Hỗ trợ tiền thuê xe VF (GROSSUP từ khoản NET tương ứng)', field: 'car_rent_grossup_allowance' },
-                                    { label: 'Hỗ trợ thuê nhà Vinhomes (NET)', field: 'house_rent_allowance', isSplit: true },
-                                    { label: 'Hỗ trợ thuê nhà Vinhomes (GROSSUP từ khoản NET tương ứng)', field: 'house_rent_grossup_allowance' },
+                                    { label: t("NetLoanInterestSupportVFCarAndElectricMotobikePurchaseNet"), field: 'interest_rate_allowance', isSplit: true },
+                                    { label: t("GrossLoanInterestSupportVFCarAndElectricMotobikePurchase"), field: 'interest_rate_grossup_allowance' },
+                                    { label: t("VFCarAndElectricMotobikeLeasingNetSupport"), field: 'car_rent_allowance', isSplit: true },
+                                    { label: t("VFCarAndElectricMotobikeLeasingGrossSupport"), field: 'car_rent_grossup_allowance' },
+                                    { label: t("VinhomeRentalSupportNET"), field: 'house_rent_allowance', isSplit: true },
+                                    { label: t("VinhomeRentalSupportGrossUp"), field: 'house_rent_grossup_allowance' },
                                     { label: t("OtherPayment"), field: 'other_payment' },
                                     { label: t("VinmecTaxRefundsAfterTaxFinalization"), field: 'tax_refunds_after' },
                                     { label: t("VFCarElectricStakeNet"), field: 'vf_car_electric_stake_net' },
@@ -744,13 +749,13 @@ export const IncomeTablesConfig = t => {
                             { label: t("Reimbursement"), field: 'arrears' },
                             { label: t("DeductionOnBehaviorAndAttitudeBonus"), field: 'quality_of_work_reduction' },
                             { label: t("DeductionOnLoss"), field: 'damages' },
-                            { label: 'Khấu trừ vay Quỹ Thiện Tâm', field: 'deduction_of_loan_from_kind_heart_foundation' },
+                            { label: t("DeductionLoanFromKindHeartFoundation"), field: 'deduction_of_loan_from_kind_heart_foundation' },
                             { label: t("CollectionOnBehalfOfQuyThienTam"), field: 'loan_reduction' },
                             { label: t("AdvanceDeduction"), field: 'advance_reduction' },
                             { label: t("AdvanceViaVinidDeduction"), field: 'vinid_pay_reduction' },
                             { label: t("DeductionOnUsedBenefits"), field: 'bonus_received_reduction' },
-                            { label: 'Khấu trừ tiền thuê xe VF', field: 'vf_car_and_electric_motobike_leasing_deduction' },
-                            { label: 'Khấu trừ lãi vay mua xe VF', field: 'vf_car_and_electric_motobike_purchase_deduction' },
+                            { label: t("VFCarAndElectricMotobikeLeasingDeduction"), field: 'vf_car_and_electric_motobike_leasing_deduction' },
+                            { label: t("DeductionForVFPurchaseInterestCost"), field: 'vf_car_and_electric_motobike_purchase_deduction' },
                             { label: t("RefundForVfVihicle"), field: 'refund_for_vf_car_and_electric_motobike_purchase_discount' },
                             { label: t("VinmecAdditionalTaxAfterTaxFinalization"), field: 'tax_additional_after' },
                             { label: t("OtherDeductions"), field: 'other_deduction' },
@@ -766,12 +771,12 @@ export const IncomeTablesConfig = t => {
                                 field: 'compulsary_insurance_amount_in_salary',
                                 isSkipSumLabel: true,
                                 level4: [
-                                    { label: 'Mức lương đóng BHXH, BHYT', field: 'social_insurance_amount_in_salary' },
-                                    { label: 'Mức lương đóng BHTN', field: 'unemployment_insurance_amount_in_salary' }
+                                    { label: t("SalaryStatutorySocialAndHealthInsuranceContribution"), field: 'social_insurance_amount_in_salary' },
+                                    { label: t("SalaryStatutoryUnemploymentInsuranceContribution"), field: 'unemployment_insurance_amount_in_salary' }
                                 ]
                             },
                             {
-                                label: 'Trích nộp Bảo hiểm bắt buộc',
+                                label: t("StatutorySocialHealthInsuranceContribution"),
                                 field: 'compulsary_insurance_amount_fee',
                                 level4: [
                                     { label: t("SocialInsurance"), field: 'social_insurance_fee' },
@@ -899,7 +904,7 @@ export const IncomeTablesConfig = t => {
                                 field: 'other_payment_amount',
                                 level4: [
                                     { label: t("LunchAllowance"), field: 'shift_eating_allowance' },
-                                    { label: 'Hỗ trợ xăng xe cho VSM', field: 'gas_allowance' },
+                                    { label: t("GasAllowance"), field: 'gas_allowance' },
                                     { label: t("SickSupport"), field: 'sick_accident_allowance' },
                                     { label: t("MarriageAndCondolencestSupport"), field: 'funeral_wedding_allowance' },
                                     { label: t("HousingSupport"), field: 'housing_allowance' },
@@ -944,7 +949,7 @@ export const IncomeTablesConfig = t => {
                             { label: t("AdvanceDeduction"), field: 'advance_reduction' },
                             { label: t("AdvanceViaVinidDeduction"), field: 'vinid_pay_reduction' },
                             { label: t("DeductionOnUsedBenefits"), field: 'bonus_received_reduction' },
-                            { label: 'Bồi thường ưu đãi mua xe VF', field: 'refund_for_vf_car_and_electric_motobike_purchase_discount' },
+                            { label: t("RefundForVFCarAndElectricMotobikePurchaseDiscount"), field: 'refund_for_vf_car_and_electric_motobike_purchase_discount' },
                             { label: t("OtherDeductions"), field: 'other_deduction' },
                             { label: t("VinmecAdditionalTaxAfterTaxFinalization"), field: 'tax_additional_after' }
                         ]
@@ -959,12 +964,12 @@ export const IncomeTablesConfig = t => {
                                 field: 'compulsary_insurance_amount_in_salary',
                                 isSkipSumLabel: true,
                                 level4: [
-                                    { label: 'Mức lương đóng BHXH, BHYT', field: 'social_insurance_amount_in_salary' },
-                                    { label: 'Mức lương đóng BHTN', field: 'unemployment_insurance_amount_in_salary' }
+                                    { label: t("SalaryStatutorySocialAndHealthInsuranceContribution"), field: 'social_insurance_amount_in_salary' },
+                                    { label: t("SalaryStatutoryUnemploymentInsuranceContribution"), field: 'unemployment_insurance_amount_in_salary' }
                                 ]
                             },
                             {
-                                label: 'Trích nộp Bảo hiểm bắt buộc',
+                                label: t("StatutorySocialHealthInsuranceContribution"),
                                 field: 'compulsary_insurance_amount_fee',
                                 level4: [
                                     { label: t("SocialInsurance"), field: 'social_insurance_fee' },
@@ -1018,7 +1023,7 @@ export const IncomeTablesConfig = t => {
                 field: 'net_salary_amount',
                 level2: [
                     {
-                        label: 'Trả vào tài khoản ngân hàng',
+                        label: t("PaymentIntoBankAccount"),
                         field: 'net_salary_amount',
                         level3: []
                     }
@@ -1050,13 +1055,13 @@ export const IncomeTablesConfig = t => {
                                 field: 'hourly_salary'
                             },
                             {
-                                label: t("Lương ngừng việc thỏa thuận"),
+                                label: t("SalaryStoppedWorkingAgreement"),
                                 field: 'salary_stopped_working_agreement'
                             }
                         ]
                     },
                     {
-                        label: 'CÁC LOẠI PHỤ CẤP',
+                        label: t("SalaryAllowance"),
                         field: 'allowance_amount',
                         isSkipLevel4: true,
                         level3: [
@@ -1081,7 +1086,8 @@ export const IncomeTablesConfig = t => {
                                     { label: t("ProjectBonus"), field: 'project_campaign_bonus' },
                                     { label: t("MobilizationBonus"), field: 'mobilizing_bonus' },
                                     { label: t("GrossOtherBonus"), field: 'other_gross_bonus' },
-                                    { label: 'Thưởng thành tích tháng (tiền mặt)', field: 'cash_bonus' }
+                                    { label: t("MonthlyIncentivesBonusCash"), field: 'cash_bonus' },
+                                    { label: t("ReferralBonus"), field: 'reference_bonus' }
                                 ]
                             },
                             {
@@ -1089,7 +1095,7 @@ export const IncomeTablesConfig = t => {
                                 field: 'other_payment_amount',
                                 level4: [
                                     { label: t("LunchAllowance"), field: 'shift_eating_allowance' },
-                                    { label: 'Hỗ trợ đặc thù', field: 'specific_work_allowance' },
+                                    { label: t("SpecializedJobSupport"), field: 'specific_work_allowance' },
                                     { label: t("SickSupport"), field: 'sick_accident_allowance' },
                                     { label: t("MarriageAndCondolencestSupport"), field: 'funeral_wedding_allowance' },
                                     { label: t("HousingSupport"), field: 'housing_allowance' },
@@ -1097,15 +1103,15 @@ export const IncomeTablesConfig = t => {
                                     { label: t("TelephoneSupport"), field: 'phone_allowance' },
                                     { label: t("RelocationSupport"), field: 'region_displace_allowance' },
                                     { label: t("IntermittenShiftSupport"), field: 'shifts_allowance' },
-                                    { label: 'Hỗ trợ khác', field: 'other_specific' },
-                                    { label: 'Tiền làm thêm ngoài giờ chịu thuế', field: 'overtime_payment_tax_included' },
-                                    { label: 'Tiền làm thêm ngoài giờ không chịu thuế', field: 'overtime_payment_without_tax' },
+                                    { label: t("OtherSupport"), field: 'other_specific' },
+                                    { label: t("OvertimeTaxIncluded"), field: 'overtime_payment_tax_included' },
+                                    { label: t("OvertimeWithoutTax"), field: 'overtime_payment_without_tax' },
                                     { label: t("NightBonus"), field: 'night_shift_allowance' },
                                     { label: t("AnnualLeaveToilEncashment"), field: 'annual_leave_payment' },
                                     { label: t("MuatuallyAgreedTerminationBonus"), field: 'resignation_agreement_allowance' },
                                     { label: t("SeveranceAllowance"), field: 'severance_allowance' },
-                                    { label: 'Truy lĩnh chịu thuế', field: 'back_pay_tax_included' },
-                                    { label: 'Truy lĩnh không chịu thuế', field: 'back_pay_without_tax' },
+                                    { label: t("RetroTaxIncluded"), field: 'back_pay_tax_included' },
+                                    { label: t("RetroWithoutTax"), field: 'back_pay_without_tax' },
                                     { label: t("VfRentalSupport"), field: 'car_rent_allowance' },
                                     { label: t("BenefitForVfPurchase"), field: 'car_rent_allowance_welfare' },
                                     { label: t("BankInterestSupportForVfPurchase"), field: 'interest_rate_allowance' },
@@ -1113,7 +1119,8 @@ export const IncomeTablesConfig = t => {
                                     { label: t("AnnualWelfare"), field: 'annual_welfare_allowance' },
                                     { label: t("OtherPayment"), field: 'other_payment' },
                                     { label: t("VFCarElectricStakeGross"), field: 'vf_car_electric_stake' },
-                                    { label: t("VinmecTaxRefundsAfterTaxFinalization"), field: 'tax_refunds_after' }
+                                    { label: t("VinmecTaxRefundsAfterTaxFinalization"), field: 'tax_refunds_after' },
+                                    { label: t("SupportCampaignAndProject"), field: 'support_vf_campaign_project' }
                                 ]
                             }
                         ]
@@ -1138,7 +1145,7 @@ export const IncomeTablesConfig = t => {
                             { label: t("AdvanceDeduction"), field: 'advance_reduction' },
                             { label: t("AdvanceViaVinidDeduction"), field: 'vinid_pay_reduction' },
                             { label: t("RefundForVfVihicle"), field: 'refund_for_vf_car_and_electric_motobike_purchase_discount' },
-                            { label: 'Khấu trừ lãi vay mua xe VinFast', field: 'vf_car_and_electric_motobike_purchase_deduction' },
+                            { label: t("VFPurchaseInterestCostDeduction"), field: 'vf_car_and_electric_motobike_purchase_deduction' },
                             { label: t("VinmecAdditionalTaxAfterTaxFinalization"), field: 'tax_additional_after' }
                         ]
                     },
@@ -1152,12 +1159,12 @@ export const IncomeTablesConfig = t => {
                                 field: 'compulsary_insurance_amount_in_salary',
                                 isSkipSumLabel: true,
                                 level4: [
-                                    { label: 'Mức lương đóng BHXH, BHYT', field: 'social_insurance_amount_in_salary' },
-                                    { label: 'Mức lương đóng BHTN', field: 'unemployment_insurance_amount_in_salary' }
+                                    { label: t("SalaryStatutorySocialAndHealthInsuranceContribution"), field: 'social_insurance_amount_in_salary' },
+                                    { label: t("SalaryStatutoryUnemploymentInsuranceContribution"), field: 'unemployment_insurance_amount_in_salary' }
                                 ]
                             },
                             {
-                                label: 'Trích nộp Bảo hiểm bắt buộc',
+                                label: t("StatutorySocialHealthInsuranceContribution"),
                                 field: 'compulsary_insurance_amount_fee',
                                 level4: [
                                     { label: t("SocialInsurance"), field: 'social_insurance_fee' },
@@ -1275,13 +1282,14 @@ export const IncomeTablesConfig = t => {
                                 level4: [
                                     { label: t("13ThMonthSalary"), field: 'thirteenth_month_bonus' },
                                     { label: t("AnnualPerformanceBonusAtTimeOfPayment"), field: 'lunar_new_year_bonus' },
+                                    { label: t("VinSchoolNetKpiBonus"), field: 'kpi_bonus' },
                                     { label: t("AchievementBonus"), field: 'archievement_bonus' },
                                     { label: t("ProjectBonus"), field: 'project_campaign_bonus' },
                                     { label: t("MobilizationBonus"), field: 'mobilizing_bonus' },
                                     { label: t("TrainingBonus"), field: 'trainning_bonus' },
                                     { label: t("GrossOtherBonus"), field: 'other_gross_bonus' },
-
                                     { label: t("VSC1OutOfSalaryBonus"), field: 'non_salary_VSC_1_bonus' },
+                                    { label: t("ReferralBonus"), field: 'reference_bonus' },
                                     { label: t("VSC2OutOfSalaryBonus"), field: 'non_salary_VSC_2_bonus' },
                                     { label: t("StudentRecruitmentCommission"), field: 'primary_course_enrol_commissions_bonus' },
                                     { label: t("ExtraCurriculumStudentRecruitmentCommission"), field: 'extra_curricular_enrol_commissions_bonus' },
@@ -1337,7 +1345,7 @@ export const IncomeTablesConfig = t => {
                             { label: t("AdvanceDeduction"), field: 'advance_reduction' },
                             { label: t("AdvanceViaVinidDeduction"), field: 'vinid_pay_reduction' },
                             { label: t("DeductionOnUsedBenefits"), field: 'bonus_received_reduction' },
-                            { label: 'Bồi thường ưu đãi mua xe VF', field: 'refund_for_vf_car_and_electric_motobike_purchase_discount' },
+                            { label: t("RefundForVFCarAndElectricMotobikePurchaseDiscount"), field: 'refund_for_vf_car_and_electric_motobike_purchase_discount' },
                             { label: t("OtherDeductions"), field: 'other_deduction' },
                             { label: t("VinmecAdditionalTaxAfterTaxFinalization"), field: 'tax_additional_after' }
                         ]
@@ -1352,12 +1360,12 @@ export const IncomeTablesConfig = t => {
                                 field: 'compulsary_insurance_amount_in_salary',
                                 isSkipSumLabel: true,
                                 level4: [
-                                    { label: 'Mức lương đóng BHXH, BHYT', field: 'social_insurance_amount_in_salary' },
-                                    { label: 'Mức lương đóng BHTN', field: 'unemployment_insurance_amount_in_salary' }
+                                    { label: t("SalaryStatutorySocialAndHealthInsuranceContribution"), field: 'social_insurance_amount_in_salary' },
+                                    { label: t("SalaryStatutoryUnemploymentInsuranceContribution"), field: 'unemployment_insurance_amount_in_salary' }
                                 ]
                             },
                             {
-                                label: 'Trích nộp Bảo hiểm bắt buộc',
+                                label: t("StatutorySocialHealthInsuranceContribution"),
                                 field: 'compulsary_insurance_amount_fee',
                                 level4: [
                                     { label: t("SocialInsurance"), field: 'social_insurance_fee' },
@@ -1448,6 +1456,8 @@ export const IncomeTablesConfig = t => {
                                     { label: t("PositionAllowance"), field: 'position_allowance' },
                                     { label: t("ToxicSubstancesAllowance"), field: 'dangerous_allowance' },
                                     { label: t("ResponsibilityAllowance"), field: 'responsibility_allowance' },
+                                    { label: t("SeniorityAllowance"), field: 'seniority_allowances' },
+                                    { label: t("WorkingConditionsAllowance"), field: 'allowance_working_conditions' },
                                     { label: t("ForeignLanguageAllowance"), field: 'foreign_language_allowance' },
                                     { label: t("AppearanceAllowance"), field: 'looking_allowance' },
                                     { label: t("AllowanceForNursingPosition"), field: 'nursing_allowance' }
@@ -1476,6 +1486,7 @@ export const IncomeTablesConfig = t => {
                                     { label: t("AnnualPerformanceBonusAtTimeOfPayment"), field: 'lunar_new_year_bonus' },
                                     { label: t("AchievementBonus"), field: 'archievement_bonus' },
                                     { label: t("ProjectBonus"), field: 'project_campaign_bonus' },
+                                    { label: t("ReferralBonus"), field: 'reference_bonus' },
                                     { label: t("VSC1OutOfSalaryBonus"), field: 'non_salary_VSC_1_bonus' },
                                     { label: t("VSC2OutOfSalaryBonus"), field: 'non_salary_VSC_2_bonus' },
                                     { label: t("StudentRecruitmentCommission"), field: 'primary_course_enrol_commissions_bonus' },
@@ -1533,20 +1544,23 @@ export const IncomeTablesConfig = t => {
                                     { label: t("Retroactive"), field: 'back_pay' },
                                     { label: t("BenefitNet"), field: 'welfare_net_allowance' },
                                     { label: t("AnnualWelfare"), field: 'annual_welfare_allowance' },
-                                    { label: 'Quà ngày lễ (VinID)', field: 'vinid_gift' },
-                                    { label: 'Thưởng tiền mặt', field: 'cash_bonus' },
-                                    { label: 'Công tác phí', field: 'mission_fee' },
-                                    { label: 'Hỗ trợ học phí cho con CBNV NNN', field: 'tuition_fee_allowance' },
-                                    { label: 'Hỗ trợ thu hút khó tuyển dụng', field: 'special_industry_subsidy' },
-                                    { label: 'Hỗ trợ vé máy bay NNN', field: 'plane_ticket_allowance' },
+                                    { label: t("VinIdGift"), field: 'vinid_gift' },
+                                    { label: t("CashBonus"), field: 'cash_bonus' },
+                                    { label: t("PerDiem"), field: 'mission_fee' },
+                                    { label: t("TuitionFeeForExpatChildren"), field: 'tuition_fee_allowance' },
+                                    { label: t("SpecialAndRareIndustrySupport"), field: 'special_industry_subsidy' },
+                                    { label: t("HousingSubsidyNet"), field: 'housing_allowance_net' },
+                                    { label: t("SpecialJobAllowanceForVinES"), field: 'specific_work_allowance_vines' },
+                                    { label: t("SupportCampaignAndProject"), field: 'support_vf_campaign_project' },
+                                    { label: t("AirTickerForExpat"), field: 'plane_ticket_allowance' },
                                     { label: t("NETCovid19PandemicSubsidy"), field: 'covid_allowance', isSplit: true },
-                                    { label: 'Hỗ trợ mùa dịch Covid 19 (GROSSUP từ khoản NET tương ứng)', field: 'covid_grossup_allowance' },
-                                    { label: 'Hỗ trợ lãi suất vay mua xe VF (NET)', field: 'interest_rate_allowance', isSplit: true },
-                                    { label: 'Hỗ trợ lãi suất vay mua xe VF (GROSSUP từ khoản NET tương ứng)', field: 'interest_rate_grossup_allowance' },
+                                    { label: t("Covid19SupportGrossUp"), field: 'covid_grossup_allowance' },
+                                    { label: t("NetLoanInterestSupportVFCarAndElectricMotobikePurchaseNet"), field: 'interest_rate_allowance', isSplit: true },
+                                    { label: t("GrossLoanInterestSupportVFCarAndElectricMotobikePurchase"), field: 'interest_rate_grossup_allowance' },
                                     { label: t("VfRentalSupport"), field: 'car_rent_allowance', isSplit: true },
-                                    { label: 'Hỗ trợ tiền thuê xe VF (GROSSUP từ khoản NET tương ứng)', field: 'car_rent_grossup_allowance' },
-                                    { label: 'Hỗ trợ thuê nhà Vinhomes (NET)', field: 'house_rent_allowance', isSplit: true },
-                                    { label: 'Hỗ trợ thuê nhà Vinhomes (GROSSUP từ khoản NET tương ứng)', field: 'house_rent_grossup_allowance' },
+                                    { label: t("VFCarAndElectricMotobikeLeasingGrossSupport"), field: 'car_rent_grossup_allowance' },
+                                    { label: t("VinhomeRentalSupportNET"), field: 'house_rent_allowance', isSplit: true },
+                                    { label: t("VinhomeRentalSupportGrossUp"), field: 'house_rent_grossup_allowance' },
                                     { label: t("OtherPayment"), field: 'other_payment' },
                                     { label: t("VFCarElectricStakeNet"), field: 'vf_car_electric_stake_net' },
                                     { label: t("VFCarElectricStakeGross"), field: 'vf_car_electric_stake' },
@@ -1571,14 +1585,14 @@ export const IncomeTablesConfig = t => {
                             { label: t("Reimbursement"), field: 'arrears' },
                             { label: t("DeductionOnBehaviorAndAttitudeBonus"), field: 'quality_of_work_reduction' },
                             { label: t("DeductionOnLoss"), field: 'damages' },
-                            { label: 'Khấu trừ vay Quỹ Thiện Tâm', field: 'deduction_of_loan_from_kind_heart_foundation' },
+                            { label: t("DeductionLoanFromKindHeartFoundation"), field: 'deduction_of_loan_from_kind_heart_foundation' },
                             { label: t("CollectionOnBehalfOfQuyThienTam"), field: 'loan_reduction' },
                             { label: t("AdvanceDeduction"), field: 'advance_reduction' },
                             { label: t("AdvanceViaVinidDeduction"), field: 'vinid_pay_reduction' },
                             { label: t("DeductionOnUsedBenefits"), field: 'bonus_received_reduction' },
-                            { label: 'Khấu trừ tiền thuê xe VF', field: 'vf_car_and_electric_motobike_leasing_deduction' },
-                            { label: 'Khấu trừ lãi vay mua xe VF', field: 'vf_car_and_electric_motobike_purchase_deduction' },
-                            { label: 'Bồi thường ưu đãi mua xe VF', field: 'refund_for_vf_car_and_electric_motobike_purchase_discount' },
+                            { label: t("VFCarAndElectricMotobikeLeasingDeduction"), field: 'vf_car_and_electric_motobike_leasing_deduction' },
+                            { label: t("DeductionForVFPurchaseInterestCost"), field: 'vf_car_and_electric_motobike_purchase_deduction' },
+                            { label: t("RefundForVFCarAndElectricMotobikePurchaseDiscount"), field: 'refund_for_vf_car_and_electric_motobike_purchase_discount' },
                             { label: t("OtherDeductions"), field: 'other_deduction' },
                             { label: t("VinmecAdditionalTaxAfterTaxFinalization"), field: 'tax_additional_after' }
                         ]
@@ -1593,12 +1607,12 @@ export const IncomeTablesConfig = t => {
                                 field: 'compulsary_insurance_amount_in_salary',
                                 isSkipSumLabel: true,
                                 level4: [
-                                    { label: 'Mức lương đóng BHXH, BHYT', field: 'social_insurance_amount_in_salary' },
-                                    { label: 'Mức lương đóng BHTN', field: 'unemployment_insurance_amount_in_salary' }
+                                    { label: t("SalaryStatutorySocialAndHealthInsuranceContribution"), field: 'social_insurance_amount_in_salary' },
+                                    { label: t("SalaryStatutoryUnemploymentInsuranceContribution"), field: 'unemployment_insurance_amount_in_salary' }
                                 ]
                             },
                             {
-                                label: 'Trích nộp Bảo hiểm bắt buộc',
+                                label: t("StatutorySocialHealthInsuranceContribution"),
                                 field: 'compulsary_insurance_amount_fee',
                                 level4: [
                                     { label: t("SocialInsurance"), field: 'social_insurance_fee' },
@@ -1657,11 +1671,11 @@ export const IncomeTablesConfig = t => {
                         isSkipLevel4: true,
                         level3: [
                             {
-                                label: 'Trả vào tài khoản ngân hàng',
+                                label: t("PaymentIntoBankAccount"),
                                 field: ''
                             },
                             {
-                                label: 'Trả vào Ví VinID Pay',
+                                label: t("PaymentIntoVinIDPayWallet"),
                                 field: ''
                             }
                         ]
@@ -1672,7 +1686,7 @@ export const IncomeTablesConfig = t => {
                         isSkipLevel4: true,
                         level3: [
                             {
-                                label: 'Trả vào tài khoản ngân hàng',
+                                label: t("PaymentIntoBankAccount"),
                                 field: ''
                             }
                         ]

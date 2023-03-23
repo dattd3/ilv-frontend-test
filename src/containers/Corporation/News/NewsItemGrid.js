@@ -45,7 +45,7 @@ export default function NewsItemGrid(props) {
     return (
         <div key={id} className={`col-md-6`}>
             <div className="item" key={id}>
-                <a href={`/news/${convertToSlug(title)}/${id}`} title={title} className="link-image-detail">
+                <a href={`/news/${convertToSlug(title)}/${id}`} className="link-image-detail">
                     <Image src={thumbnail} className="thumbnail"
                         onError={(e) => {
                             e.target.src = "/logo-normal.svg"
@@ -54,7 +54,7 @@ export default function NewsItemGrid(props) {
                     />
                 </a>
                 <div className="title-source-time-info">
-                    <a href={`/news/${convertToSlug(title)}/${id}`} title={title} className="title">{title}</a>
+                    <a href={`/news/${convertToSlug(title)}/${id}`} className="title">{title}</a>
                     <div className="source-time-info">
                         <span className="source"><Image src={IconUser} alt="Source" className="icon" /><span className="source-name">{sourceSite || ""}</span></span>
                         <span className="time"><Image src={IconTime} alt="Time" className="icon" /><span className="hour">{timePublished.date}</span></span>

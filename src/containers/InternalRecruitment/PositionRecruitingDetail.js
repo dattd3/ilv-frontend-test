@@ -7,6 +7,7 @@ import purify from "dompurify"
 import moment from 'moment'
 import { withRouter } from 'react-router-dom'
 import { withTranslation} from "react-i18next"
+import HOCComponent from '../../components/Common/HOCComponent'
 
 class PositionRecruitingDetail extends React.Component {
   static contextTypes = {
@@ -63,10 +64,14 @@ class PositionRecruitingDetail extends React.Component {
 
   render() {
     const { t } = this.props
+    const { job, isShowStatusModal, content, isSuccess, isShowApplyPositionModal } = this.state
+    const sourceNameVinpearl = 'Vinpearl'
+    const sourceNameMeliaVinpearl = 'MeliaVinpearl'
+
     return (
       this.state.isLoading ? <>
-      <StatusModal show={this.state.isShowStatusModal} content={this.state.content} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
-      {this.state.isShowApplyPositionModal ? <ApplyPositionModal id={this.props.match.params.id} show={this.state.isShowApplyPositionModal} onHide={this.hideApplyPositionModal} showStatusModal={this.showStatusModal.bind(this)} /> : null }
+      <StatusModal show={isShowStatusModal} content={content} isSuccess={isSuccess} onHide={this.hideStatusModal} />
+      {isShowApplyPositionModal ? <ApplyPositionModal id={this.props.match.params.id} show={isShowApplyPositionModal} onHide={this.hideApplyPositionModal} showStatusModal={this.showStatusModal.bind(this)} /> : null }
       <div className="summary position-recruiting-detail-block">
         <div className="header-block">
           <h5 className="result-label">{t("VacancyInfomation")}</h5>
@@ -85,32 +90,32 @@ class PositionRecruitingDetail extends React.Component {
         <div className="card shadow">
           <div className="card-body">
             <div className="content">
-              <div className="title position">{this.state.job.jobTitle}</div>
-              <div className="date text-capitalize">{t("Day")}: {moment(this.state.job.dateCreated).format('DD/MM/YYYY')}</div>
-              <div className="address">{t("Location")}: {this.state.job.placeOfWorkName}</div>
-              <div className="company">{t("Company")}: Vinpearl</div>
-              {this.state.job.jobDescription && this.state.job.jobDescription != 'undefined' ? <div className="cate description-position">
-                {this.state.job.sourceName == 'Vinpearl' ? null : <div className="title">{t("JobDetail")}</div>}
+              <div className="title position">{job.jobTitle}</div>
+              <div className="date text-capitalize">{t("Day")}: {moment(job.dateCreated).format('DD/MM/YYYY')}</div>
+              <div className="address">{t("Location")}: {job.placeOfWorkName}</div>
+              <div className="company">{t("Company")}: {sourceNameVinpearl}({sourceNameMeliaVinpearl})</div>
+              {job.jobDescription && job.jobDescription != 'undefined' ? <div className="cate description-position">
+                {[sourceNameVinpearl, sourceNameMeliaVinpearl].includes(job.sourceName) ? null : <div className="title">{t("JobDetail")}</div>}
                 <div dangerouslySetInnerHTML={{
-                    __html: purify.sanitize(this.state?.job?.jobDescription || ''),
+                    __html: purify.sanitize(job?.jobDescription || ''),
                 }} />
               </div> : null}
-              {this.state.job.jobRequirement && this.state.job.jobRequirement != 'undefined' ? <div className="cate condition-position">
-              {this.state.job.sourceName == 'Vinpearl' ? null : <div className="title">{t("JobRequire")}</div>}
+              {job.jobRequirement && job.jobRequirement != 'undefined' ? <div className="cate condition-position">
+              {[sourceNameVinpearl, sourceNameMeliaVinpearl].includes(job.sourceName) ? null : <div className="title">{t("JobRequire")}</div>}
                 <div dangerouslySetInnerHTML={{
-                    __html: purify.sanitize(this.state?.job?.jobRequirement || ''),
+                    __html: purify.sanitize(job?.jobRequirement || ''),
                 }} />
               </div> : null }
-              {this.state.job.benefit && this.state.job.benefit != 'undefined' ? <div className="cate benefit-position">
-                {this.state.job.sourceName == 'Vinpearl' ? null : <div className="title">{t("Benefit")}</div> }
+              {job.benefit && job.benefit != 'undefined' ? <div className="cate benefit-position">
+                {[sourceNameVinpearl, sourceNameMeliaVinpearl].includes(job.sourceName) ? null : <div className="title">{t("Benefit")}</div> }
                 <div dangerouslySetInnerHTML={{
-                    __html: purify.sanitize(this.state?.job?.benefit || ''),
+                    __html: purify.sanitize(job?.benefit || ''),
                 }} />
               </div> : null}
-              {this.state.job.contactInfo && this.state.job.contactInfo != 'undefined' ? <div className="cate contact-position">
-                {this.state.job.sourceName == 'Vinpearl' ? null : <div className="title">{t("Contact")}</div>}
+              {job.contactInfo && job.contactInfo != 'undefined' ? <div className="cate contact-position">
+                {[sourceNameVinpearl, sourceNameMeliaVinpearl].includes(job.sourceName) ? null : <div className="title">{t("Contact")}</div>}
                 <div dangerouslySetInnerHTML={{
-                    __html: purify.sanitize(this.state?.job?.contactInfo || ''),
+                    __html: purify.sanitize(job?.contactInfo || ''),
                 }} />
               </div> : null}
             </div>
@@ -122,4 +127,4 @@ class PositionRecruitingDetail extends React.Component {
   }
 }
 
-export default withRouter(withTranslation()(PositionRecruitingDetail))
+export default HOCComponent(withRouter(withTranslation()(PositionRecruitingDetail)))

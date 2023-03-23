@@ -245,7 +245,7 @@ const processDataForTable = (data1, fromDateString, toDateString, reasonData) =>
 
         if (checkExist(item.trip_start_time1)) {
             line3.type = EVENT_TYPE.EVENT_CONGTAC;
-            line3.subtype = 1 + line3.subtype[1];
+            line3.subtype = 1 + '0';
 
             timeSteps.push(
                 getDatetimeForCheckFail(

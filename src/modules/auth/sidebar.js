@@ -32,7 +32,7 @@ export const Navigation = [
     icon: 'c-recruiment',
     label: "Menu_InternalRecruitment",
     to: map.InternalRecruitment,
-    role: ['V030']
+    role: [Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl]
   },
   // {
   //   id: 12,
@@ -97,11 +97,19 @@ export const Navigation = [
     icon: 'evaluation',
     to: "",
     label: "MenuEvaluation",
-    role: ['V070', 'V077', 'V060'],
-    //role: "U",
+    // role: ['V070', 'V077', 'V060'],
+    role: "U",
   },
   {
     id: 99701,
+    parentId: 997,
+    icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+    to: map.TargetManagement,
+    label: "MenuTargetManagement",
+    role: [Constants.pnlVCode.VinMec],
+  },
+  {
+    id: 99702,
     parentId: 997,
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     to: map.MyEvaluation,
@@ -109,7 +117,7 @@ export const Navigation = [
     role: "U",
   },
   {
-    id: 99702,
+    id: 99703,
     parentId: 997,
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     to: map.EvaluationApproval,
@@ -162,7 +170,7 @@ export const Navigation = [
     parentId: 1001,
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     to: map.EmployeeTimeSheets,
-    label: companyVCodeUserLogged === Constants.pnlVCode.VinPearl ? "SubMenuTimesheetManagementDivision" : "SubMenuTimesheetManagement",
+    label: [Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl].includes(companyVCodeUserLogged) ? "SubMenuTimesheetManagementDivision" : "SubMenuTimesheetManagement",
     role: 'U'
   },
   {
@@ -194,7 +202,7 @@ export const Navigation = [
     parentId: 999,
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     to: map.SupportOnBoarding,
-    label: 'Hỗ trợ chuẩn bị nhận việc',
+    label: 'support_in_preparing_for_job',
     role: 'U'
   },
   {
@@ -202,9 +210,9 @@ export const Navigation = [
     parentId: 999,
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     to: map.EvaluationManager,
-    label: 'Quản lý đánh giá',
-    //role:  ['V061', 'V040', Constants.PnLCODE.Vin3S, Constants.PnLCODE.VinFast, Constants.PnLCODE.VinFastTrading]
-    role:  ['V061', 'V040', Constants.PnLCODE.Vin3S]
+    label: 'manage_evaluating',
+    //role:  ['V061', 'V053', 'V040', 'V005']
+    role:  [...Constants.MODULE_COMPANY_AVAILABE[Constants.MODULE.DANHGIA_TAIKI]]
   },
   {
     id: 104,
@@ -212,8 +220,8 @@ export const Navigation = [
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     label: "ResignationRequestsManagement",
     to: map.ResignationRequestsManagement,
-    //role: [Constants.pnlVCode.VinHome, Constants.PnLCODE.Vin3S]
-    role: 'NA'
+    role: [...Constants.MODULE_COMPANY_AVAILABE[Constants.MODULE.NGHIVIEC]]
+    //role: 'NA'
   },
   {
     id:1008,
@@ -221,8 +229,7 @@ export const Navigation = [
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     to: map.ProposalManagement,
     label: 'MenuProposalManagement',
-    //role: 'U'
-    role: 'NA'
+    role: ["P","T","P2", "P1", "T4", "T3", "T2", "T1"]
   },
   {
     id: 4,
@@ -270,7 +277,7 @@ export const Navigation = [
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     label: "Menu_VinpearlIntroduction",
     to: map.Vinpearl,
-    role: ['V030']
+    role: [Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl]
   },
   {
     id: 102,
@@ -317,8 +324,7 @@ export const Navigation = [
     parentId: 10,
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     label: "Welfare",
-    //role: 'U'
-    role: 'NA'
+    role: [...Constants.MODULE_COMPANY_AVAILABE[Constants.MODULE.PHUCLOI]]
   },
   {
     id: 111,
@@ -334,7 +340,7 @@ export const Navigation = [
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     label: "InsuranceRegime",
     to: map.InsuranceRegime,
-    role: 'U'
+    role: 'NA'
   },
   {
     id: 30,
@@ -382,7 +388,7 @@ export const Navigation = [
   //   icon: "menu-bullet-lv2 icon-sub-menu-lv2",
   //   label: "Phúc lợi",
   //   to: map.Benefit,
-  //   role: ['V030']
+  //   role: [Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl]
   // },
   {
     id: 19,
@@ -390,7 +396,7 @@ export const Navigation = [
     icon: "menu-bullet-lv2 icon-sub-menu-lv2",
     label: "JobDescription",
     to: map.Job,
-    role: ['V030','V096','V073','V060']
+    role: [Constants.pnlVCode.VinSmart, Constants.pnlVCode.VinMec, Constants.pnlVCode.VinSoftware, Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl]
   },
   {
     id: 20,
@@ -447,8 +453,8 @@ export const Navigation = [
     icon: 'c-qa',
     label: "QuestionAndAnswer",
     to: map.QuestionAndAnswer,
-    role: [Constants.pnlVCode.VinPearl, Constants.pnlVCode.VinSoftware, Constants.pnlVCode.VinMec, Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading,
-      Constants.pnlVCode.VinSmart, Constants.pnlVCode.VincomRetail, Constants.pnlVCode.VinAI]
+    role: [Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinSoftware, Constants.pnlVCode.VinMec, Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading,
+      Constants.pnlVCode.VinSmart, Constants.pnlVCode.VincomRetail, Constants.pnlVCode.VinAI, Constants.PnLCODE.Vin3S]
   },
   {
     id: 99999,
@@ -473,16 +479,16 @@ export const Navigation = [
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     label: "RegistrationEmploymentTermination",
     to: map.RegistrationEmploymentTermination,
-    //role: [Constants.pnlVCode.VinHome, Constants.PnLCODE.Vin3S]
-    role: 'NA'
+    role: [...Constants.MODULE_COMPANY_AVAILABE[Constants.MODULE.NGHIVIEC]]
+    //role: 'NA'
   },
-  {
-      id: 129999,
-      parentId: 10,
-      icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
-      label: "ProposedResignation",
-      to: map.ProposedResignation,
-      //role: ["P","T","P2", "P1", "T4", "T3", "T2", "T1"]
-      role: 'NA'
-    },
+  // {
+  //     id: 129999,
+  //     parentId: 10,
+  //     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+  //     label: "ProposedResignation",
+  //     to: map.ProposedResignation,
+  //     role: ["P","T","P2", "P1", "T4", "T3", "T2", "T1"]
+  //     //role: 'NA'
+  //   },
 ];

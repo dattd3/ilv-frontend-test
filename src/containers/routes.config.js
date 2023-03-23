@@ -489,7 +489,7 @@ export default [
             exact: true,
             path: map.EmployeeTimeSheets
           },
-          component: lazy(() => import("./WorkflowManagement/DepartmentManagement/EmployeeTimesheets"))
+          component: lazy(() => import("./WorkflowManagement/DepartmentManagement/EmployeeTimesheets/index"))
         },
         {
           key: "proposal-management",
@@ -578,6 +578,14 @@ export default [
             path: map.MyProfile,
           },
           component: lazy(() => import("./ProjectInformation/MyProfile")),
+        },
+        {
+          key: `evaluation-target-management`,
+          routeProps: {
+            exact: true,
+            path: map.TargetManagement,
+          },
+          component: lazy(() => import("./Evaluation/TargetManagement/")),
         },
         {
           key: "my-evaluation",

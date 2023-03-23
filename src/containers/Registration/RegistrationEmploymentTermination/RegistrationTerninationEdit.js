@@ -2,7 +2,7 @@ import React from 'react'
 import axios from 'axios'
 import _ from 'lodash'
 import { Progress } from "reactstrap"
-import { ToastContainer, toast } from "react-toastify"
+import { toast } from "react-toastify"
 import { withTranslation } from "react-i18next"
 import Constants from '../../../commons/Constants'
 import { getRequestConfigs } from '../../../commons/commonFunctions'
@@ -13,7 +13,7 @@ import StaffInfoComponent from '../TerminationComponents/StaffInfoComponent'
 import StaffTerminationDetailComponent from '../TerminationComponents/StaffTerminationDetailComponent'
 import AttachmentComponent from '../TerminationComponents/AttachmentComponent'
 import ResultModal from '../ResultModal'
-import "react-toastify/dist/ReactToastify.css"
+import { getResignResonsMasterData } from 'commons/Utils'
 
 class RegistrationEmploymentTerminationForm extends React.Component {
     constructor(props) {
@@ -80,10 +80,11 @@ class RegistrationEmploymentTerminationForm extends React.Component {
         if (responses && responses.data) {
             const reasonTypeCodeForManager = "ZG"
             const reasonTypes = responses.data.data
+            const reasonMasterData = getResignResonsMasterData();
             const results = (reasonTypes || [])
-            .filter(item => item.code01 === reasonTypeCodeForManager)
+            .filter(item => item.code01 === reasonTypeCodeForManager  && !Constants.RESIGN_REASON_EMPLOYEE_INVALID.includes(item.code02))
             .map(item => {
-                return {value: item.code02, label: item.text}
+                return {value: item.code02, label: reasonMasterData[item.code02]}
             })
             return results
         }
@@ -153,12 +154,12 @@ class RegistrationEmploymentTerminationForm extends React.Component {
                     this.setDisabledSubmitButton(false)
                 }
             } else {
-                this.showStatusModal(t("Notification"), "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
+                this.showStatusModal(t("Notification"), t("Error"), false)
                 this.setDisabledSubmitButton(false)
             }
 
         } catch (errors) {
-            this.showStatusModal(t("Notification"), "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
+            this.showStatusModal(t("Notification"), t("Error"), false)
             this.setDisabledSubmitButton(false)
         }
     }
@@ -224,10 +225,8 @@ class RegistrationEmploymentTerminationForm extends React.Component {
                 fileUrl: item.fileUrl || ""
             }
         })
-
         return (
             <div className="registration-section justify-content-between">
-                <ToastContainer autoClose={2000} />
                 <Progress max="100" color="success" value={this.state.loaded}>
                     {Math.round(this.state.loaded, 2)}%
                 </Progress>

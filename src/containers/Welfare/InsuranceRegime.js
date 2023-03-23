@@ -6,12 +6,13 @@ import EmptyComponent from './EmptyComponent'
 import Health from './WelfareComponents/Health'
 import InsuranceSocial from './WelfareComponents/InsuranceSocial'
 import Resource from './WelfareComponents/Resource'
+import HOCComponent from '../../components/Common/HOCComponent'
 
 class InsuranceRegime extends React.Component {
     constructor(props) {
         super();
         this.state = {
-            tab: new URLSearchParams(props.history.location.search).get('tab') || "Health",
+            tab: new URLSearchParams(props?.history?.location?.search).get('tab') || "Health",
         }
     }
 
@@ -29,10 +30,10 @@ class InsuranceRegime extends React.Component {
         return (
             <div className="registration-section personal-info justify-content-between internal-welfare">
                 <Tabs defaultActiveKey={this.state.tab} onSelect={(key) => this.updateTabLink(key)}>
-                    <Tab eventKey="Health" title={'Bảo hiểm sức khỏe'}>
-                        <Health title={t('WelfareResource')}/>
+                    <Tab eventKey="Health" title={t('heath_insurance')}>
+                        <Health title={t('welfare_regime_internal')}/>
                     </Tab>
-                    <Tab eventKey="Social" title={'Bảo hiểm xã hội'}>
+                    <Tab eventKey="Social" title={t('social_insurance')}>
                         <InsuranceSocial title={t('Vinwonder/Safari')}/>
                     </Tab>
                 </Tabs>
@@ -40,4 +41,5 @@ class InsuranceRegime extends React.Component {
         )
     }
 }
-export default withTranslation()(InsuranceRegime)
+
+export default HOCComponent(withTranslation()(InsuranceRegime))

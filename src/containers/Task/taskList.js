@@ -449,7 +449,7 @@ class TaskList extends React.Component {
                 <div className="block-title d-flex">
                     <h4 className="content-page-header">{this.props.title}</h4>
                     <div className="export-btn">
-                       <button type="button" className="btn" onClick={this.showExportModal.bind(this)}><span className="mr-2"><img alt="excel" src={excelButton}/></span>Xuất báo báo</button>
+                       <button type="button" className="btn" onClick={this.showExportModal.bind(this)}><span className="mr-2"><img alt="excel" src={excelButton}/></span>{t('export_report')}</button>
                    </div>
                 </div>
                 <div className={`task-list shadow ${page}`}>
@@ -492,10 +492,16 @@ class TaskList extends React.Component {
                                             let reId = [Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE, Constants.CHANGE_DIVISON_SHIFT, Constants.ONBOARDING].includes(child.requestTypeId) ? child.id : child.id.split(".")[0]
                                             let childId = [Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE, Constants.CHANGE_DIVISON_SHIFT, Constants.ONBOARDING].includes(child.requestTypeId) ? 1 : child.id.split(".")[1]
                                             if ([Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP].includes(child.requestTypeId)) {
-                                                totalTime = child.days >= 1 ? child.days + " ngày" : child.hours + " giờ";
+                                                totalTime = child.days >= 1 ? `${child.days} ${t('DayUnit')}` : `${child.hours} ${t('HourUnit')}`
+                                            } else if ([Constants.OT_REQUEST].includes(child.requestTypeId)) {
+                                              totalTime = `${child.totalTime} ${t('HourUnit')}`
                                             }
                                             let dateChanged = showRangeDateGroupByArrayDate(child.startDate)
 
+                                            if ([Constants.OT_REQUEST].includes(child.requestTypeId)) {
+                                              dateChanged = child.dateRange;
+                                            }
+                                            
                                             return (
                                                 <tr key={index}>
                                                     {
@@ -532,11 +538,6 @@ class TaskList extends React.Component {
                                                     <td className="user-title">{child.user?.jobTitle || ''}</td>
 
                                                     {
-                                                        child.requestType?.id == 6 || child.requestType?.id == Constants.RESIGN_SELF ?
-                                                        <td className="request-type">
-                                                           {child.requestType?.name}
-                                                        </td>
-                                                        :
                                                         <td className="request-type">{getRequestTypeLabel(child.requestType, child.absenceType?.value)}</td>
                                                     }
 

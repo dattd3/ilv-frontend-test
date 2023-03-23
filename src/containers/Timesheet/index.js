@@ -7,11 +7,12 @@ import TimesheetSummary from './TimesheetSummary'
 import TimesheetDetail from './TimesheetDetail'
 import TimeTableDetail from './TimeTableDetail'
 import LoadingModal from '../../components/Common/LoadingModal'
+import HOCComponent from '../../components/Common/HOCComponent'
 import { getMuleSoftHeaderConfigurations, getRequestConfigurations } from "../../commons/Utils"
 
 class Timesheet extends React.Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
           timsheetSummary: {},
           timesheets: [],
@@ -111,12 +112,13 @@ class Timesheet extends React.Component {
     render() {
       const { t } = this.props
       const { isShowLoadingModal } = this.state
-
+      
+      const queryParams = new URLSearchParams(this.props?.history?.location?.search)
       return (
         <>
           <LoadingModal show={isShowLoadingModal} isloading />
           <div className="timesheet-section personal-timesheet">
-            <TimesheetSearch clickSearch={this.search.bind(this)}/>
+            <TimesheetSearch clickSearch={this.search.bind(this)} queryParams = {queryParams}/>
             { (this.state.isSearch && this.state.timsheetSummary) ?
               <>
                 <TimesheetSummary timsheetSummary={this.state.timsheetSummary}/>
@@ -136,4 +138,5 @@ class Timesheet extends React.Component {
       )
     }
   }
-export default withTranslation()(Timesheet);
+
+export default HOCComponent(withTranslation()(Timesheet))

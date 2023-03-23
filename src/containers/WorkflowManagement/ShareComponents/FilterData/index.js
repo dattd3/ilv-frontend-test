@@ -25,6 +25,7 @@ class FilterData extends React.Component {
       checkedMemberIds: [],
       selectedMembers: [],
       showMemberOption: false,
+      error: {},
     };
 
     this.setStartDate = this.setStartDate.bind(this);
@@ -79,7 +80,26 @@ class FilterData extends React.Component {
     });
   }
 
+  isValidFilter = () => {
+    const errorClone = { ...this.state.error }
+    const selectedMembers = this.state.selectedMembers
+
+    errorClone.employee = ''
+    if (!selectedMembers || selectedMembers?.length === 0) {
+      errorClone.employee = 'Vui lòng chọn Nhân viên!'
+    }
+
+    this.setState({ error: errorClone })
+    return Object.values(errorClone).every(item => !item)
+  }
+
   search() {
+    const isValid = this.isValidFilter()
+
+    if (!isValid) {
+      return
+    }
+
     const {selectedMembers, startDate, endDate, checkedMemberIds} = this.state
     const { type, clickSearch, updateEmployees } = this.props
     const checkedMemberUsernames = (selectedMembers || []).map(item => item.username)
@@ -144,10 +164,12 @@ class FilterData extends React.Component {
   }
 
   render() {
-    const { t } = this.props;
+    const { t, isUserRequired, type, useDateFilter } = this.props;
+    const { users, startDate, endDate, selectedMembers, showMemberOption, loading, error } = this.state
+
     let hrProfileDisplay = [];
-    if (this.state.users && this.state.users.length > 0) {
-      hrProfileDisplay = this.state.users.map((profile) => {
+    if (users && users.length > 0) {
+      hrProfileDisplay = (users || []).map((profile) => {
         return {
           uid: profile.uid,
           fullname: profile.fullname,
@@ -172,8 +194,7 @@ class FilterData extends React.Component {
         <div className="timesheet-box shadow">
           <div className="row">
             {
-
-              this.props.useDateFilter === false ? null :
+              useDateFilter === false ? null :
                 <>
                   <div className="col-lg-3">
                     <div className="title">{t("From")}</div>
@@ -181,9 +202,9 @@ class FilterData extends React.Component {
                         <DatePicker
                           name="startDate"
                           selectsStart
-                          selected={this.state.startDate}
-                          startDate={this.state.startDate}
-                          endDate={this.state.endDate}
+                          selected={startDate}
+                          startDate={startDate}
+                          endDate={endDate}
                           onChange={this.setStartDate}
                           dateFormat="dd/MM/yyyy"
                           locale="vi"
@@ -200,11 +221,11 @@ class FilterData extends React.Component {
                         <DatePicker
                           name="endDate"
                           selectsEnd
-                          selected={this.state.endDate}
-                          minDate={this.state.startDate}
-                          startDate={this.state.startDate}
-                          endDate={this.state.endDate}
-                          maxDate={this.addDays(this.state.startDate, 31)}
+                          selected={endDate}
+                          minDate={startDate}
+                          startDate={startDate}
+                          endDate={endDate}
+                          maxDate={this.addDays(startDate, 31)}
                           onChange={this.setEndDate}
                           dateFormat="dd/MM/yyyy"
                           locale="vi"
@@ -218,13 +239,13 @@ class FilterData extends React.Component {
                 </>
             }
             <div className="col-lg-3">
-              <div className="title">{t("staff_selection_label")}</div>
-              <SelectTab className="content input-container" selectedMembers={this.state.selectedMembers} onClick={this.onClickSelectTab}
+              <div className="title">{t("staff_selection_label")}{isUserRequired && <span className="required">(*)</span>}</div>
+              <SelectTab className="content input-container" selectedMembers={selectedMembers} onClick={this.onClickSelectTab}
                 onCloseTab={this.onCloseTabEvent} onCloseAll={this.onCloseAllEvent} />
-              {this.state.showMemberOption ? (
-                //employeeGrTree
-                <MemberOption loading={this.state.loading} data={hrProfileDisplay} hideMembers={this.onHideMembers} resetSelectedMember={this.resetSelectedMember} saveSelectedMember={this.getSelecteMembers} type={this.props.type} />
-              ) : null}
+              { showMemberOption && (
+                  <MemberOption loading={loading} data={hrProfileDisplay} hideMembers={this.onHideMembers} resetSelectedMember={this.resetSelectedMember} saveSelectedMember={this.getSelecteMembers} type={type} />
+                )
+              }
             </div>
             <div className="col-lg-3">
               <div className="title">&nbsp;</div>
@@ -239,9 +260,11 @@ class FilterData extends React.Component {
               </div>
             </div>
           </div>
+          { (error.employee) && <div className="required" style={{ margin: '10px 0 0 0' }}>{ error.employee }</div> }
         </div>
       </>
     );
   }
 }
+
 export default withTranslation()(FilterData);
