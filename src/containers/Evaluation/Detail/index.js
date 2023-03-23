@@ -527,10 +527,13 @@ function EvaluationDetail(props) {
     evaluationFormDetailTemp.totalLeadReviewPoint = totalInfos?.manager || 0
 
     // Bắt đầu tính rating khi Biểu mẫu 0Level hoặc đang đến bước của CBQL đánh giá
-    evaluationFormDetailTemp.evaluateRating = calculateRating(
+    evaluationFormDetailTemp.evaluateRating = evaluationFormDetailTemp?.status == evaluationStatus.launch && evaluationFormDetailTemp?.evaluateRating
+    ? evaluationFormDetailTemp?.evaluateRating
+    : calculateRating(
       evaluationFormDetail.reviewStreamCode === processStep.zeroLevel 
       ? Number(totalInfos?.self || 0) 
-      : evaluationFormDetail?.status > evaluationStatus.launch ? Number(totalInfos?.manager || 0) : null)
+      : evaluationFormDetail?.status > evaluationStatus.launch ? Number(totalInfos?.manager || 0) : null
+    )
 
     SetEvaluationFormDetail(evaluationFormDetailTemp)
   }
