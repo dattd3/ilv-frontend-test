@@ -166,15 +166,17 @@ class AssesserComponent extends React.Component {
                 minHeight: 35
             })
         }
-        const { t, isEdit, errors, recentlyAppraiser } = this.props
+        const { t, isEdit, errors, recentlyAppraiser, isShowDuplicateWarning = true } = this.props
         const { appraiser, users, isSearch } = this.state
 
         return <div className="appraiser">
             <div className="box shadow">
                 <div className="row">
                     <div className="col-12 col-xl-12"> 
-                        <div className="box-bottom"><b className="text-uppercase black-color">{t('CONSENTER')} </b><i className="text-danger">
-                        ({t('AppraisalDuplicateApproval')})</i></div> 
+                        <div className="box-bottom"><b className="text-uppercase black-color">{t('CONSENTER')} </b>
+                        {isShowDuplicateWarning && <i className="text-danger">
+                        ({t('AppraisalDuplicateApproval')})</i>}
+                    </div> 
                     </div>
                 </div>
                 <div className="row">

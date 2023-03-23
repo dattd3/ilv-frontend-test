@@ -119,6 +119,9 @@ class FilterDataShirfReport extends React.Component {
               case 1:
                 fileName = "ReportSummary"
                 break;
+              case 2:
+                fileName = 'ReportTimesheetSummary';
+                break;
               default:
                 fileName = "Report"
                 break;
@@ -245,7 +248,8 @@ class FilterDataShirfReport extends React.Component {
     };
     const reportTypes = [
       { value: Constants.TYPE_REPORT.DETAIL_REPORT, label: t("DetailReport") },
-      { value: Constants.TYPE_REPORT.SUMARY_REPORT, label: t("SumaryReport") }
+      { value: Constants.TYPE_REPORT.SUMARY_REPORT, label: t("SumaryReport") },
+      { value: Constants.TYPE_REPORT.TIMESHEET_REPORT, label: t("TimesheetSumaryReport") }
     ];
 
     const renderErrors = name => {
@@ -266,7 +270,7 @@ class FilterDataShirfReport extends React.Component {
                 placeholder={t('Select')} key="reportType" options={reportTypes} />
               {renderErrors("type")}
             </div>
-            {this.state.reportType === Constants.TYPE_REPORT.DETAIL_REPORT &&
+            {(this.state.reportType === Constants.TYPE_REPORT.DETAIL_REPORT || this.state.reportType === Constants.TYPE_REPORT.TIMESHEET_REPORT) &&
               <div className="col-lg-2">
                 <div className="title">{t("staff_selection_label")}</div>
                 <SelectTab className="content input-container" selectedMembers={this.state.selectedMembers} onClick={this.onClickSelectTab}

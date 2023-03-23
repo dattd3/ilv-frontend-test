@@ -6,7 +6,7 @@ import moment from 'moment';
 import { withRouter } from 'react-router-dom';
 import Constants from "../../commons/Constants"
 import { isEnableFunctionByFunctionName, getMuleSoftHeaderConfigurations, getRequestConfigurations, formatStringByMuleValue } from "../../commons/Utils"
-import { checkIsExactPnL } from '../../commons/commonFunctions';
+import { checkIsExactPnL, checkVersionPnLSameAsVinhome } from '../../commons/commonFunctions';
 import RelationshipList from "./RelationshipList"
 import MainInfoList from "./MainInfoList"
 import EducationList from "./EducationList"
@@ -15,6 +15,7 @@ import ActionButtons from "./ActionButtons"
 import ResultModal from './edit/ResultModal'
 import ConfirmationModal from './edit/ConfirmationModal'
 import PersonalInfoEdit from "../PersonalInfo/edit/PersonalInfoEdit"
+import HOCComponent from '../../components/Common/HOCComponent'
 import map from '../../containers/map.config'
 
 const actionType = {
@@ -538,8 +539,9 @@ class MyComponent extends React.Component {
           </Tab>
 
           {
-           /*  checkIsExactPnL(Constants.PnLCODE.Vinpearl) || checkVinfast  ?  */
-            checkIsExactPnL(Constants.PnLCODE.Vinpearl) ? // open for golive1106
+           checkVersionPnLSameAsVinhome(Constants.MODULE.DANHGIA_TAIKI) ? // open for golive1106
+           /*  checkIsExactPnL(Constants.pnlVCode.VinPearl) || checkIsExactPnL(Constants.pnlVCode.MeliaVinpearl) || checkVinfast  ?  */
+            // (checkIsExactPnL(Constants.pnlVCode.VinPearl) || checkIsExactPnL(Constants.pnlVCode.MeliaVinpearl)) ? // open for golive1106
               <Tab eventKey="PersonalDocument" title={t("PersonalDocuments")}>
                 <Row >
                   {documents && documents.length > 0 ? <>
@@ -603,11 +605,10 @@ class MyComponent extends React.Component {
   }
 }
 
-const PersonInfo = withTranslation()(withRouter(MyComponent))
+const PersonInfo = HOCComponent(withTranslation()(withRouter(MyComponent)))
 
 export default function App() {
   return (
     <PersonInfo />
   );
 }
-

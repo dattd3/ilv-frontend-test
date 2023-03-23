@@ -6,12 +6,13 @@ import ICDownload from "../../assets/img/icon/ic_download.svg";
 import axios from 'axios';
 import { getRequestConfigurations } from "../../commons/Utils";
 import LoadingModal from '../../components/Common/LoadingModal';
+import HOCComponent from '../../components/Common/HOCComponent'
 
 class InternalWelfareComponent extends React.Component {
     constructor(props) {
         super();
         this.state = {
-            tab: new URLSearchParams(props.history.location.search).get('tab') || "Resource",
+            tab: new URLSearchParams(props?.history?.location?.search).get('tab') || "Resource",
             dataWelfare: [],
             isLoading: false,
             hiddenButton: true,
@@ -26,7 +27,7 @@ class InternalWelfareComponent extends React.Component {
     fetchData = () => {
         const config = getRequestConfigurations()
         const companyCode = localStorage.getItem("companyCode")
-        const employeeLevel = localStorage.getItem("employeeLevel")
+        const employeeLevel = localStorage.getItem("benefitTitle")
         this.setState({
             isLoading: true,
         });
@@ -62,7 +63,7 @@ class InternalWelfareComponent extends React.Component {
 
     render() {
         const { t } = this.props;
-        const employeeLevel = localStorage.getItem("employeeLevel")
+        const employeeLevel = localStorage.getItem("benefitTitle")
         const { dataWelfare, isLoading, hiddenButton } = this.state;
 
         return (
@@ -111,4 +112,5 @@ class InternalWelfareComponent extends React.Component {
         )
     }
 }
-export default withTranslation()(InternalWelfareComponent)
+
+export default HOCComponent(withTranslation()(InternalWelfareComponent))

@@ -7,17 +7,26 @@ import CreateSickInsurance from './InsuranceComponents/CreateSickInsurance';
 import moment from 'moment';
 import axios from 'axios';
 import { getMuleSoftHeaderConfigurations } from '../../commons/Utils';
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 import ResultModal from '../Registration/ResultModal';
+import HOCComponent from '../../components/Common/HOCComponent'
 import Constants from '../../commons/Constants';
 
 const CreateInsuranceSocial = (props) => {
     const { t } = props;
     const InsuranceOptions = [
-        { value: 1, label: 'Ốm đau' },
-        { value: 2, label: 'Thai sản' },
-        { value: 3, label: 'Dưỡng sức' }
+        {
+            label: t('sick'),
+            value: 1,
+          },
+          {
+            label: t('maternity'),
+            value: 2,
+          },
+          {
+            label: t('convales'),
+            value: 3,
+          },
     ];
     const [type, setType] = useState(null);
     const [data, setData] = useState({
@@ -202,12 +211,12 @@ const CreateInsuranceSocial = (props) => {
                     setdisabledSubmitButton(false)
                 }
                 else {
-                    notifyMessage(response.data.result.message || "Có lỗi xảy ra trong quá trình cập nhật thông tin!")
+                    notifyMessage(response.data.result.message || t("Error"))
                     setdisabledSubmitButton(false)
                 }
             })
             .catch(response => {
-                notifyMessage("Có lỗi xảy ra trong quá trình cập nhật thông tin!");
+                notifyMessage(t("Error"));
                 setdisabledSubmitButton(false);
             })
     }
@@ -242,27 +251,16 @@ const CreateInsuranceSocial = (props) => {
 
     return (
         <div className="registration-insurance-section">
-            <ToastContainer
-                position="top-right"
-                autoClose={5000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-            />
             <ResultModal show={resultModal.isShowStatusModal} title={resultModal.titleModal} message={resultModal.messageModal} isSuccess={resultModal.isSuccess} onHide={hideStatusModal} />
             {
                 type == null ?
                     <>
-                        <h5>YÊU CẦU BẢO HIỂM XÃ HỘI</h5>
+                        <h5>{t('social_insurance_claim')}</h5>
                         <div className="box shadow cbnv">
                             <div className="row">
                                 <div className="col-4">
-                                    {"Loại yêu cầu"}<span className="required">(*)</span>
-                                    <Select placeholder={"Lựa chọn loại hợp đồng"} options={InsuranceOptions} isClearable={false}
+                                {t('TypeOfRequest')}<span className="required">(*)</span>
+                                    <Select placeholder={t('option')} options={InsuranceOptions} isClearable={false}
                                         value={type}
                                         onChange={e => setType(e)} className="input mv-10"
                                         styles={{ menu: provided => ({ ...provided, zIndex: 2 }) }} />
@@ -313,4 +311,4 @@ const CreateInsuranceSocial = (props) => {
     )
 }
 
-export default withTranslation()(CreateInsuranceSocial);
+export default HOCComponent(withTranslation()(CreateInsuranceSocial))

@@ -8,6 +8,7 @@ import DropdownCustomize from "./DropdownCustomize"
 import { getMuleSoftHeaderConfigurations } from "../../commons/Utils"
 import Constants from '../../commons/Constants'
 import { withTranslation } from "react-i18next"
+import HOCComponent from '../../components/Common/HOCComponent'
 import 'react-datepicker/dist/react-datepicker.css'
 import vi from 'date-fns/locale/vi'
 registerLocale("vi", vi)
@@ -401,4 +402,4 @@ class LeaveFund extends React.Component {
   }
 }
 
-export default withTranslation()(LeaveFund)
+export default HOCComponent(withTranslation()(LeaveFund))

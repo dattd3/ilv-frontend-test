@@ -1,21 +1,21 @@
-import React, { useState, useEffect, useRef } from "react"
-import Select from 'react-select'
+import React, { useState, useEffect } from "react"
 import { Image } from 'react-bootstrap'
 import { useTranslation } from "react-i18next"
 import { Doughnut } from 'react-chartjs-2'
-import { withRouter } from 'react-router-dom'
 import axios from 'axios'
 import _ from 'lodash'
 import Constants from '../../../commons/Constants'
 import { getRequestConfigurations } from '../../../commons/Utils'
+import { calculateRating, isVinBusByCompanyCode, calculateScore, formatEvaluationNumber } from '../Utils'
 import { evaluationStatus, actionButton } from '../Constants'
 import { useGuardStore } from '../../../modules'
 import LoadingModal from '../../../components/Common/LoadingModal'
 import StatusModal from '../../../components/Common/StatusModal'
+import HOCComponent from '../../../components/Common/HOCComponent'
+import EvaluationVinBusTemplate from '../Templates/VinBus'
+import EvaluationVinGroupTemplate from '../Templates/Vingroup'
 import IconArrowRightWhite from '../../../assets/img/icon/pms/arrow-right-white.svg'
 import IconArrowRightGray from '../../../assets/img/icon/pms/arrow-right-gray.svg'
-import IconUp from '../../../assets/img/icon/pms/icon-up.svg'
-import IconDown from '../../../assets/img/icon/pms/icon-down.svg'
 import IconSave from '../../../assets/img/ic-save.svg'
 import IconSendRequest from '../../../assets/img/icon/Icon_send.svg'
 import IconReject from '../../../assets/img/icon/Icon_Cancel.svg'
@@ -28,18 +28,19 @@ const languageCodeMapping = {
   [Constants.LANGUAGE_EN]: 'en',
 }
 
-const formType = {
-  MANAGER: 'LD',
-  EMPLOYEE: 'NV',
+const processStep = {
+  zeroLevel: '0NF',
+  oneLevel: '1NF',
+  twoLevels: '2NF',
 }
 
 function EvaluationOverall(props) {
   const { t } = useTranslation()
   const { evaluationFormDetail, showByManager } = props
-  const totalCompleted = showByManager ? evaluationFormDetail?.leadReviewTotalComplete || 0 : evaluationFormDetail?.seftTotalComplete || 0
+  const totalCompleted = showByManager ? evaluationFormDetail?.leadReviewTotalComplete || 0 : evaluationFormDetail?.seftTotalComplete || 0;
+  const isDifferentZeroLevel = evaluationFormDetail.reviewStreamCode !== processStep.zeroLevel;
 
   const overallData = {
-    // labels: ["Red", "Green"],
     datasets: [
       {
         data: [evaluationFormDetail?.totalTarget - totalCompleted, totalCompleted],
@@ -57,13 +58,13 @@ function EvaluationOverall(props) {
     hover: { mode: null },
     cutoutPercentage: 75,
     plugins: {
-      report: `${(totalCompleted / evaluationFormDetail?.totalTarget * 100).toFixed(2)}%`
+      report: `${formatEvaluationNumber((totalCompleted / evaluationFormDetail?.totalTarget * 100))}%`
     }
   }
-
+  
   return <div className="block-overall">
     <div className="card shadow card-completed">
-      <h6 className="text-center chart-title">{t("EvaluationDetailAccomplished")}: {totalCompleted || 0}/{evaluationFormDetail?.totalTarget}</h6>
+      <h6 className="text-center text-uppercase chart-title">{t("EvaluationDetailAccomplished")}: <span className="font-weight-bold">{totalCompleted || 0}/{evaluationFormDetail?.totalTarget}</span></h6>
       <div className="chart">
         <div className="detail">
           <div className="result">
@@ -96,18 +97,18 @@ function EvaluationOverall(props) {
       </div>
     </div>
     <div className="card shadow card-overall">
-      <h6 className="text-center chart-title">{t("EvaluationDetailOverallScore")}</h6>
+      <h6 className="text-center text-uppercase font-weight-bold chart-title">{t("EvaluationDetailOverallScore")}</h6>
       <div className="chart">
-        <div className="detail">{(evaluationFormDetail?.status == evaluationStatus.launch || (evaluationFormDetail?.status == evaluationStatus.selfAssessment && !showByManager)) ? evaluationFormDetail?.totalSeftPoint?.toFixed(2) || 0 : evaluationFormDetail?.totalLeadReviewPoint?.toFixed(2) || 0}</div>
+        <div className="detail">{(evaluationFormDetail?.status == evaluationStatus.launch || (evaluationFormDetail?.status == evaluationStatus.selfAssessment && !showByManager) || evaluationFormDetail?.reviewStreamCode === processStep.zeroLevel) ? formatEvaluationNumber(evaluationFormDetail?.totalSeftPoint) : formatEvaluationNumber(evaluationFormDetail?.totalLeadReviewPoint)}</div>
       </div>
     </div>
     <div className="card shadow card-detail">
       <table className='table-list-evaluation'>
         <thead>
-          <tr>
+          <tr className="highlight">
             <th className='c-criteria'><div className='criteria'>{t("EvaluationDetailCriteria")}</div></th>
             <th className='c-self-assessment text-center'><div className='self-assessment'>{t("EvaluationDetailSelfAssessment")}</div></th>
-            <th className='c-manager-assessment text-center'><div className='manager-assessment color-red'>{t("EvaluationDetailManagerAssessment")}</div></th>
+            {isDifferentZeroLevel && <th className='c-manager-assessment text-center'><div className='manager-assessment color-red'>{t("EvaluationDetailManagerAssessment")}</div></th>}
           </tr>
         </thead>
         <tbody>
@@ -116,15 +117,22 @@ function EvaluationOverall(props) {
               return <tr key={i}>
                 <td className='c-criteria'><div className='criteria'>{JSON.parse(item?.groupName || '{}')[languageCodeMapping[currentLocale]]}</div></td>
                 <td className='c-self-assessment text-center'>{(item?.groupSeftPoint || 0).toFixed(2)}</td>
-                <td className='c-manager-assessment text-center color-red'>{(item?.groupLeadReviewPoint || 0).toFixed(2)}</td>
+                {isDifferentZeroLevel && <td className='c-manager-assessment text-center color-red'>{(item?.groupLeadReviewPoint || 0).toFixed(2)}</td>}
               </tr>
             })
           }
-          <tr>
+          {/* Row điểm tổng thể */}
+          <tr className="highlight">
             <td className='c-criteria'><div className='font-weight-bold text-uppercase criteria'>{t("EvaluationDetailOverallScore")}</div></td>
             <td className='c-self-assessment text-center font-weight-bold'>{(evaluationFormDetail?.totalSeftPoint || 0).toFixed(2)}</td>
-            <td className='c-manager-assessment text-center font-weight-bold color-red'>{(evaluationFormDetail?.totalLeadReviewPoint || 0).toFixed(2)}</td>
+            {isDifferentZeroLevel && <td className='c-manager-assessment text-center font-weight-bold color-red'>{(evaluationFormDetail?.totalLeadReviewPoint || 0).toFixed(2)}</td>}
           </tr>
+          {
+            isVinBusByCompanyCode(evaluationFormDetail?.companyCode) &&
+            <tr>
+              <td colSpan={3} className='text-uppercase text-center'><div className="d-flex justify-content-center align-items-center">Xếp hạng đánh giá: <span style={{ fontWeight: 'bold', color: '#C11D2A', fontSize: 20, marginLeft: 3, marginTop: -1}}>{evaluationFormDetail?.evaluateRating || ''}</span></div></td>
+            </tr>
+          }
         </tbody>
       </table>
     </div>
@@ -133,62 +141,70 @@ function EvaluationOverall(props) {
 
 function EvaluationProcess(props) {
   const { evaluationFormDetail, showByManager, errors, updateData } = props
-  const { t } = useTranslation()
-  const processStep = {
-    oneLevel: '1NF',
-    twoLevels: '2NF',
-  }
-  const stepStatusMapping = {
-    [evaluationStatus.launch]: 0,
-    [evaluationStatus.selfAssessment]: 1,
-    [evaluationStatus.qlttAssessment]: evaluationFormDetail?.reviewStreamCode === processStep.oneLevel ? null : 2,
-    [evaluationStatus.cbldApproved]: evaluationFormDetail?.reviewStreamCode === processStep.oneLevel ? 2 : 3,
-  }
-  const formatIndexText = index => {
-    const mapping = {
-      1: 'I',
-      2: 'II',
-      3: 'III',
-      4: 'IV',
-      5: 'V',
-      6: 'VI',
-      7: 'VII',
-      8: 'VIII',
-      9: 'IX',
-      10: 'X'
-    }
-    return mapping[index]
+  const { t } = useTranslation();
+
+  const { checkPhaseFormEndDate, reviewStreamCode, status, isEdit } = evaluationFormDetail;
+  const isDifferentZeroLevel = reviewStreamCode !== processStep.zeroLevel;
+  let stepStatusMapping, stepEvaluationConfig;
+
+  switch (reviewStreamCode) {
+    case processStep.zeroLevel:
+      stepEvaluationConfig = [t("EvaluationDetailSelfAssessment"), t("EvaluationDetailCompleted")];
+      stepStatusMapping = {
+        [evaluationStatus.launch]: 0,
+        [evaluationStatus.selfAssessment]: null,
+        [evaluationStatus.qlttAssessment]: null,
+        [evaluationStatus.cbldApproved]: 1,
+      };
+      break;
+    case processStep.oneLevel:
+      stepEvaluationConfig = [t("EvaluationDetailSelfAssessment"), t("EvaluationDetailManagerAssessment"), t("EvaluationDetailCompleted")];
+      stepStatusMapping = {
+        [evaluationStatus.launch]: 0,
+        [evaluationStatus.selfAssessment]: 1,
+        [evaluationStatus.qlttAssessment]: null,
+        [evaluationStatus.cbldApproved]: 2,
+      };
+    default:
+      break;
+    case processStep.twoLevels:
+      stepEvaluationConfig = [t("EvaluationDetailSelfAssessment"), t("EvaluationDetailManagerAssessment"), t("EvaluationDetailManagerApprove"), t("EvaluationDetailCompleted")];
+      stepStatusMapping = {
+        [evaluationStatus.launch]: 0,
+        [evaluationStatus.selfAssessment]: 1,
+        [evaluationStatus.qlttAssessment]: 2,
+        [evaluationStatus.cbldApproved]: 3,
+      };
+      break;
   }
 
   const renderEvaluationStep = () => {
-    const stepEvaluationConfig = evaluationFormDetail?.reviewStreamCode === processStep.oneLevel
-      ? [t("EvaluationDetailSelfAssessment"), t("EvaluationDetailManagerAssessment"), t("EvaluationDetailCompleted")]
-      : [t("EvaluationDetailSelfAssessment"), t("EvaluationDetailManagerAssessment"), t("EvaluationDetailManagerApprove"), t("EvaluationDetailCompleted")]
-    return stepEvaluationConfig.map((item, index) => {
-      let activeClass = index === stepStatusMapping[evaluationFormDetail?.status] ? 'active' : ''
-      return (
-        <div className="wrap-item" key={index}>
-          <div className="line"><hr /></div>
-          <div className={`info ${activeClass}`}>
-            <div className="item">
-              <span className="no"><span>{index + 1}</span></span>
-              <span className="name">{item}</span>
-              <Image src={!activeClass ? IconArrowRightGray : IconArrowRightWhite} alt="Next" className="next" />
+      return stepEvaluationConfig.map((item, index) => {
+        let activeClass = index === stepStatusMapping[evaluationFormDetail?.status] ? 'active' : ''
+        return (
+          <div className="wrap-item" key={index}>
+            <div className="line"><hr /></div>
+            <div className={`info ${activeClass}`}>
+              <div className="item">
+                <span className="no"><span>{index + 1}</span></span>
+                <span className="name">{item}</span>
+                <Image src={!activeClass ? IconArrowRightGray : IconArrowRightWhite} alt="Next" className="next" />
+              </div>
             </div>
           </div>
-        </div>
-      )
+        )
     })
   }
 
   const renderEmployeeInfos = () => {
     const approverInfos = JSON.parse(evaluationFormDetail?.approver || '{}')
     const reviewerInfos = JSON.parse(evaluationFormDetail?.reviewer || '{}')
+    const isShowManagerApproverInfo = evaluationFormDetail?.reviewStreamCode === processStep.twoLevels
 
     return (
       <>
         <div className="title">{t("EvaluationDetailEmployeeInfo")}</div>
-        <div className="detail">
+        <div className="detail align-items-start">
           <div className="left">
             <div className="info-item">
               <span className="label"><span className="font-weight-bold">{t("EvaluationDetailEmployeeFullName")}</span><span>:</span></span>
@@ -212,14 +228,20 @@ function EvaluationProcess(props) {
               <span className="label"><span className="font-weight-bold">{t("EvaluationDetailEmployeeDepartment")}</span><span>:</span></span>
               <span className="value">{evaluationFormDetail?.organization_lv4 || ''}</span>
             </div>
-            <div className="info-item">
-              <span className="label"><span className="font-weight-bold">{t("EvaluationDetailEmployeeManagerAssessment")}</span><span>:</span></span>
-              <span className="value">{reviewerInfos?.fullname && `${reviewerInfos?.fullname || ''} - ${reviewerInfos?.position_title || ''}`}</span>
-            </div>
-            <div className="info-item">
-              <span className="label"><span className="font-weight-bold">{t("EvaluationDetailEmployeeManagerApprove")}</span><span>:</span></span>
-              <span className="value">{approverInfos?.fullname && `${approverInfos?.fullname || ''} - ${approverInfos?.position_title || ''}`}</span>
-            </div>
+            {
+              isDifferentZeroLevel && 
+                <div className="info-item">
+                  <span className="label"><span className="font-weight-bold">{t("EvaluationDetailEmployeeManagerAssessment")}</span><span>:</span></span>
+                  <span className="value">{reviewerInfos?.fullname && `${reviewerInfos?.fullname || ''} - ${reviewerInfos?.position_title || ''}`}</span>
+                </div>
+            }
+            {
+              isShowManagerApproverInfo && 
+              <div className="info-item">
+                <span className="label"><span className="font-weight-bold">{t("EvaluationDetailEmployeeManagerApprove")}</span><span>:</span></span>
+                <span className="value">{approverInfos?.fullname && `${approverInfos?.fullname || ''} - ${approverInfos?.position_title || ''}`}</span>
+              </div>
+            }
             <div className="info-item">
               <span className="label"><span className="font-weight-bold">HR Admin</span><span>:</span></span>
               <span className="value">{`${evaluationFormDetail?.hrAdmin || ''}`}</span>
@@ -230,163 +252,51 @@ function EvaluationProcess(props) {
     )
   }
 
-  const prepareScores = (listGroupConfig) => {
-    if (!listGroupConfig || listGroupConfig?.length === 0) {
-      return []
-    }
-    const scores = (listGroupConfig || []).map((item, index) => index + 1)
-    return scores
-  }
-
   const handleInputChange = (subIndex, parentIndex, stateName, element, childIndex) => {
     const val = element?.target?.value || ""
-    if (['seftPoint', 'leadReviewPoint'].includes(stateName) && (!(/^\d*$/.test(Number(val))) || val.includes('.'))) {
-      return
+
+    if (isVinBusByCompanyCode(evaluationFormDetail?.companyCode)) {
+      if (['realResult', 'leadRealResult'].includes(stateName) && (!(/^[0-9][0-9,\.]*$/.test(Number(val))) || Number(val) > 100)) {
+        return
+      }
+    } else {
+      if (['seftPoint', 'leadReviewPoint'].includes(stateName) && (!(/^\d*$/.test(Number(val))) || val.includes('.'))) {
+        return
+      }
     }
+
     updateData(subIndex, parentIndex, stateName, val, childIndex)
   }
 
-  const renderEvaluationItem = (item, index, scores, target, i, deviant, parentIndex, subGroupTargetIndex) => {
-    const isChild = !_.isNil(parentIndex)
-    return <div className="evaluation-item" key={target.id}>
-      {!isChild ? <div className="title">{`${i + 1}. ${JSON.parse(target?.targetName || '{}')[languageCodeMapping[currentLocale]]}`}</div> : <div className="sub-title">{`${parentIndex + 1}.${subGroupTargetIndex + 1} ${JSON.parse(target?.targetName || '{}')[languageCodeMapping[currentLocale]]}`}</div>}
-      {
-        item?.listGroupConfig && item?.listGroupConfig?.length > 0 ?
-          <div className="score-block">
-            <div className="self attitude-score">
-              <div className="item">
-                <span className="red label">{t("EvaluationDetailPartAttitudeSelfAssessment")}{!showByManager && <span className="required">(*)</span>}</span>
-                {
-                  !showByManager && evaluationFormDetail.status == evaluationStatus.launch
-                    ?
-                    <select onChange={(e) => !_.isNil(subGroupTargetIndex) ? handleInputChange(parentIndex, index, 'seftPoint', e, subGroupTargetIndex) : handleInputChange(i, index, 'seftPoint', e)} value={target?.seftPoint || ''}>
-                      <option value=''>{t("EvaluationDetailPartSelectScore")}</option>
-                      {
-                        (scores || []).map((score, i) => {
-                          return <option value={score} key={i}>{score}</option>
-                        })
-                      }
-                    </select>
-                    : <input type="text" value={target?.seftPoint || ''} disabled />
-                }
-              </div>
-              {errors[`${index}_${i}_seftPoint`] && <div className="alert alert-danger invalid-message" role="alert">{errors[`${index}_${i}_seftPoint`]}</div>}
-            </div>
-            <div className="qltt attitude-score">
-              <div className="item">
-                <span className="red label">{t("EvaluationDetailPartAttitudeManagerAssessment")}{showByManager && <span className="required">(*)</span>}</span>
-                {
-                  !(!showByManager || (showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment)))
-                    ?
-                    <select onChange={(e) => !_.isNil(subGroupTargetIndex) ? handleInputChange(parentIndex, index, 'leadReviewPoint', e, subGroupTargetIndex) : handleInputChange(i, index, "leadReviewPoint", e)} value={target?.leadReviewPoint || ''}>
-                      <option value=''>{t("EvaluationDetailPartSelectScore")}</option>
-                      {
-                        (scores || []).map((score, i) => {
-                          return <option value={score} key={i}>{score}</option>
-                        })
-                      }
-                    </select>
-                    : <input type="text" value={target?.leadReviewPoint || ''} disabled />
-                }
-              </div>
-              {errors[`${index}_${i}_${subGroupTargetIndex}_leadReviewPoint`] && <div className="alert alert-danger invalid-message" role="alert">{errors[`${index}_${i}_${subGroupTargetIndex}_leadReviewPoint`]}</div>}
-            </div>
-            <div className="deviant">
-              <span className="red label">{t("EvaluationDetailPartAttitudeDifferent")}</span>
-              <span className={`value ${deviant && deviant > 0 ? 'up' : deviant && deviant < 0 ? 'down' : ''}`}>&nbsp;{`${deviant && deviant > 0 ? '+' : ''}${deviant}`}{deviant && deviant != 0 ? <Image alt='Note' src={deviant && deviant > 0 ? IconUp : deviant && deviant < 0 ? IconDown : ''} /> : ''}</span>
-            </div>
-          </div>
-          :
-          <div className="wrap-score-table">
-            <table>
-              <thead>
-                <tr>
-                  <th className="measurement"><span>{t("EvaluationDetailPartLevelOfPerformance")}<span className="note">({t("EvaluationDetailPartByScore")})</span></span></th>
-                  <th className="text-center proportion"><span>{t("EvaluationDetailPartWeight")} %</span></th>
-                  <th className="text-center target"><span>{t("EvaluationDetailPartTarget")}</span></th>
-                  <th className="text-center actual-results"><span>{t("EvaluationDetailPartActualResult")}</span>{!showByManager && <span className="required">(*)</span>}</th>
-                  <th className="text-center self-assessment"><span>{t("EvaluationDetailPartAttitudeSelfAssessment")}</span>{!showByManager && <span className="required">(*)</span>}</th>
-                  <th className="text-center qltt-assessment"><span>{t("EvaluationDetailPartAttitudeManagerAssessment")}</span>{showByManager && <span className="required">(*)</span>}</th>
-                  <th className="text-center deviant"><span>{t("EvaluationDetailPartAttitudeDifferent")}</span></th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td className="measurement">
-                    <ul>
-                      {
-                        target?.jobDetail && <li>{target?.jobDetail}</li>
-                      }
-                      <li>{target?.metric1}</li>
-                      <li>{target?.metric2}</li>
-                      <li>{target?.metric3}</li>
-                      <li>{target?.metric4}</li>
-                      <li>{target?.metric5}</li>
-                    </ul>
-                  </td>
-                  <td className="text-center proportion"><span>{target?.weight}%</span></td>
-                  <td className="text-center target"><span>{target?.target}</span></td>
-                  <td className="actual-results">
-                    <div>
-                      {!showByManager && evaluationFormDetail.status == evaluationStatus.launch ? <textarea rows={3} placeholder={t("EvaluationInput")} value={target?.realResult || ""} onChange={(e) => handleInputChange(i, index, 'realResult', e)} /> : <span>{target?.realResult}</span>}
-                    </div>
-                    {errors[`${index}_${i}_realResult`] && <div className="alert alert-danger invalid-message" role="alert">{errors[`${index}_${i}_realResult`]}</div>}
-                  </td>
-                  <td className="text-center self-assessment">
-                    <div>
-                      {
-                        !showByManager && evaluationFormDetail.status == evaluationStatus.launch
-                          // ? <input type="text" placeholder={t("EvaluationInput")} value={target?.seftPoint || ""} onChange={(e) => handleInputChange(i, index, 'seftPoint', e)} /> 
-                          ? <select onChange={(e) => handleInputChange(i, index, 'seftPoint', e)} value={target?.seftPoint || ''}>
-                            <option value=''>{t("EvaluationDetailPartSelectScore")}</option>
-                            {
-                              (scores || []).map((score, i) => {
-                                return <option value={score} key={i}>{score}</option>
-                              })
-                            }
-                          </select>
-                          : <span>{target?.seftPoint}</span>
-                      }
-                    </div>
-                    {errors[`${index}_${i}_seftPoint`] && <div className="alert alert-danger invalid-message" role="alert">{errors[`${index}_${i}_seftPoint`]}</div>}
-                  </td>
-                  <td className="text-center qltt-assessment">
-                    <div>
-                      {
-                        showByManager && evaluationFormDetail.status == evaluationStatus.selfAssessment
-                          // ? <input type="text" placeholder={t("EvaluationInput")} value={target?.leadReviewPoint || ""} onChange={(e) => handleInputChange(i, index, 'leadReviewPoint', e)} />
-                          ? <select onChange={(e) => handleInputChange(i, index, 'leadReviewPoint', e)} value={target?.leadReviewPoint || ''}>
-                            <option value=''>{t("EvaluationDetailPartSelectScore")}</option>
-                            {
-                              (scores || []).map((score, i) => {
-                                return <option value={score} key={i}>{score}</option>
-                              })
-                            }
-                          </select>
-                          : <span>{target?.leadReviewPoint}</span>
-                      }
-                    </div>
-                    {errors[`${index}_${i}_leadReviewPoint`] && <div className="alert alert-danger invalid-message" role="alert">{errors[`${index}_${i}_leadReviewPoint`]}</div>}
-                  </td>
-                  <td className="text-center deviant">
-                    <span className={`value ${deviant && deviant > 0 ? 'up' : deviant && deviant < 0 ? 'down' : ''}`}>&nbsp;{`${deviant && deviant > 0 ? '+' : ''}${deviant}`}{deviant && deviant != 0 ? <Image alt='Note' src={deviant && deviant > 0 ? IconUp : deviant && deviant < 0 ? IconDown : ''} /> : ''}</span>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-      }
-      <div className="comment">
-        <div className="self">
-          <p>{t("EvaluationDetailPartAttitudeCommentOfEmployee")}</p>
-          <textarea rows={1} placeholder={`${t("EvaluationDetailPartSelectScoreInput")}`} value={target?.seftOpinion || ""} onChange={(e) => !_.isNil(subGroupTargetIndex) ? handleInputChange(parentIndex, index, 'seftOpinion', e, subGroupTargetIndex) : handleInputChange(i, index, 'seftOpinion', e)} disabled={showByManager || evaluationFormDetail.status != evaluationStatus.launch} />
-        </div>
-        <div className="qltt">
-          <p>{t("EvaluationDetailPartAttitudeCommentOfManager")}</p>
-          <textarea rows={1} placeholder={`${t("EvaluationDetailPartSelectScoreInput")}`} value={target?.leaderReviewOpinion || ""} onChange={(e) => !_.isNil(subGroupTargetIndex) ? handleInputChange(parentIndex, index, 'leaderReviewOpinion', e, subGroupTargetIndex) : handleInputChange(i, index, "leaderReviewOpinion", e)} disabled={!showByManager || (showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment))} />
-        </div>
-      </div>
-    </div>
+  const renderFormMainInfo = (code) => {
+    switch (code) {
+      case Constants.pnlVCode.VinBus:
+        return (
+          <EvaluationVinBusTemplate 
+            evaluationFormDetail={evaluationFormDetail} 
+            isEdit={isEdit} 
+            showByManager={showByManager}
+            evaluationStatus={evaluationStatus} 
+            currentLocale={currentLocale}
+            languageCodeMapping={languageCodeMapping}
+            errors={errors}
+            handleInputChange={handleInputChange}
+          />
+        )
+      default:
+        return (
+          <EvaluationVinGroupTemplate 
+            evaluationFormDetail={evaluationFormDetail}
+            isEdit={isEdit}
+            showByManager={showByManager} 
+            evaluationStatus={evaluationStatus}
+            currentLocale={currentLocale}
+            languageCodeMapping={languageCodeMapping}
+            errors={errors}
+            handleInputChange={handleInputChange}
+          />
+        )
+    }
   }
 
   return <div className="card shadow evaluation-process">
@@ -397,177 +307,7 @@ function EvaluationProcess(props) {
     <div className="employee-info-block">
       {renderEmployeeInfos()}
     </div>
-
-    {
-      (evaluationFormDetail?.listGroup || []).map((item, index) => {
-        let indexText = formatIndexText(index + 1)
-        // let scores = prepareScores(item?.listGroupConfig)
-        let scores = [1, 2, 3, 4, 5]
-        let isAttitudeBlock = item?.listGroupConfig && item?.listGroupConfig?.length > 0
-
-        return <div className={`part-block ${isAttitudeBlock ? 'attitude' : 'work-result'}`} key={index}>
-          <div className="title">{`${t("EvaluationDetailPart")} ${indexText} - ${JSON.parse(item?.groupName || '{}')[languageCodeMapping[currentLocale]]}`} <span className="red">({item?.groupWeight || 0}%)</span></div>
-          {
-            isAttitudeBlock &&
-            <div className="wrap-score-table">
-              <table>
-                <thead>
-                  <tr>
-                    <th className="red">{t("EvaluationDetailPartAttitudeScore")}</th>
-                    {
-                      item?.listGroupConfig?.map((sub, subIndex) => {
-                        return <th key={subIndex}><span className="milestones">{subIndex + 1}</span></th>
-                      })
-                    }
-                  </tr>
-                  <tr>
-                    <th>%</th>
-                    {
-                      item?.listGroupConfig?.map((sub, subIndex) => {
-                        return <th key={subIndex}><span>{sub?.weight}</span></th>
-                      })
-                    }
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td className="font-weight-bold">{t("EvaluationDetailPartAttitudeLevelExpression")}</td>
-                    {
-                      item?.listGroupConfig?.map((sub, subIndex) => {
-                        return <td key={subIndex}><div>{JSON.parse(sub?.description || '{}')[languageCodeMapping[currentLocale]]}</div></td>
-                      })
-                    }
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          }
-
-          <div className="list-evaluation">
-            {
-              (item?.listTarget || []).map((target, i) => {
-                let deviant = (target?.leadReviewPoint === '' || target?.leadReviewPoint === null || target?.seftPoint === '' || target?.seftPoint === null) ? '' : Number(target?.leadReviewPoint) - Number(target?.seftPoint)
-                // const companyCode = localStorage.getItem('companyCode');
-                const companyCodeForTemplate = evaluationFormDetail?.companyCode
-                if (evaluationFormDetail?.formType == formType.EMPLOYEE && companyCodeForTemplate != Constants.pnlVCode.VinMec) { // Biểu mẫu giành cho Nhân viên
-                  return renderEvaluationItem(item, index, scores, target, i, deviant)
-                }
-                if (evaluationFormDetail?.formType == formType.MANAGER || (companyCodeForTemplate == Constants.pnlVCode.VinMec && evaluationFormDetail?.formType == formType.EMPLOYEE)) { // Biểu mẫu giành cho CBLĐ
-                  if (isAttitudeBlock) {
-                    return <div className="evaluation-sub-group" key={`sub-group-${i}`}>
-                      <div className='sub-group-name'>{`${i + 1}. ${JSON.parse(target?.groupName || '{}')[languageCodeMapping[currentLocale]]}`} <span className="red">({target.groupWeight}%)</span></div>
-                      <div className="sub-group-targets">
-                        {(target.listTarget || []).map((childTarget, childIndex) => {
-                          let deviant = (childTarget?.leadReviewPoint === '' || childTarget?.leadReviewPoint === null || childTarget?.seftPoint === '' || childTarget?.seftPoint === null) ? '' : Number(childTarget?.leadReviewPoint) - Number(childTarget?.seftPoint)
-                          return <React.Fragment key={childIndex}>
-                            {renderEvaluationItem(item, index, scores, childTarget, 0, deviant, i, childIndex)}
-                            <div className="divider" />
-                          </React.Fragment>
-                        })}
-                      </div>
-                    </div>
-                  } else {
-                    return (
-                      <div className="evaluation-item" key={i}>
-                        <div className="title">{`${i + 1}. ${JSON.parse(target?.targetName || '{}')[languageCodeMapping[currentLocale]]}`}</div>
-                        <div className="wrap-score-table">
-                          <table>
-                            <thead>
-                              <tr>
-                                <th className="measurement"><span>{t("EvaluationDetailPartLevelOfPerformance")}<span className="note">({t("EvaluationDetailPartByScore")})</span></span></th>
-                                <th className="text-center proportion"><span>{t("EvaluationDetailPartWeight")} %</span></th>
-                                <th className="text-center target"><span>{t("EvaluationDetailPartTarget")}</span></th>
-                                <th className="text-center actual-results"><span>{t("EvaluationDetailPartActualResult")}</span>{!showByManager && <span className="required">(*)</span>}</th>
-                                <th className="text-center self-assessment"><span>{t("EvaluationDetailPartAttitudeSelfAssessment")}</span>{!showByManager && <span className="required">(*)</span>}</th>
-                                <th className="text-center qltt-assessment"><span>{t("EvaluationDetailPartAttitudeManagerAssessment")}</span>{showByManager && <span className="required">(*)</span>}</th>
-                                <th className="text-center deviant"><span>{t("EvaluationDetailPartAttitudeDifferent")}</span></th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              <tr>
-                                <td className="measurement">
-                                  <ul>
-                                    {
-                                      target?.jobDetail && <li>{target?.jobDetail}</li>
-                                    }
-                                    <li>{target?.metric1}</li>
-                                    <li>{target?.metric2}</li>
-                                    <li>{target?.metric3}</li>
-                                    <li>{target?.metric4}</li>
-                                    <li>{target?.metric5}</li>
-                                  </ul>
-                                </td>
-                                <td className="text-center proportion"><span>{target?.weight}%</span></td>
-                                <td className="text-center target"><span>{target?.target}</span></td>
-                                <td className="actual-results">
-                                  <div>
-                                    {!showByManager && evaluationFormDetail.status == evaluationStatus.launch ? <textarea rows={3} placeholder={t("EvaluationInput")} value={target?.realResult || ""} onChange={(e) => handleInputChange(i, index, 'realResult', e)} /> : <span>{target?.realResult}</span>}
-                                  </div>
-                                  {errors[`${index}_${i}_realResult`] && <div className="alert alert-danger invalid-message" role="alert">{errors[`${index}_${i}_realResult`]}</div>}
-                                </td>
-                                <td className="text-center self-assessment">
-                                  <div>
-                                    {
-                                      !showByManager && evaluationFormDetail.status == evaluationStatus.launch
-                                        // ? <input type="text" placeholder={t("EvaluationInput")} value={target?.seftPoint || ""} onChange={(e) => handleInputChange(i, index, 'seftPoint', e)} /> 
-                                        ? <select onChange={(e) => handleInputChange(i, index, 'seftPoint', e)} value={target?.seftPoint || ''}>
-                                          <option value=''>{t("EvaluationDetailPartSelectScore")}</option>
-                                          {
-                                            (scores || []).map((score, i) => {
-                                              return <option value={score} key={i}>{score}</option>
-                                            })
-                                          }
-                                        </select>
-                                        : <span>{target?.seftPoint}</span>
-                                    }
-                                  </div>
-                                  {errors[`${index}_${i}_seftPoint`] && <div className="alert alert-danger invalid-message" role="alert">{errors[`${index}_${i}_seftPoint`]}</div>}
-                                </td>
-                                <td className="text-center qltt-assessment">
-                                  <div>
-                                    {
-                                      showByManager && evaluationFormDetail.status == evaluationStatus.selfAssessment
-                                        // ? <input type="text" placeholder={t("EvaluationInput")} value={target?.leadReviewPoint || ""} onChange={(e) => handleInputChange(i, index, 'leadReviewPoint', e)} />
-                                        ? <select onChange={(e) => handleInputChange(i, index, 'leadReviewPoint', e)} value={target?.leadReviewPoint || ''}>
-                                          <option value=''>{t("EvaluationDetailPartSelectScore")}</option>
-                                          {
-                                            (scores || []).map((score, i) => {
-                                              return <option value={score} key={i}>{score}</option>
-                                            })
-                                          }
-                                        </select>
-                                        : <span>{target?.leadReviewPoint}</span>
-                                    }
-                                  </div>
-                                  {errors[`${index}_${i}_leadReviewPoint`] && <div className="alert alert-danger invalid-message" role="alert">{errors[`${index}_${i}_leadReviewPoint`]}</div>}
-                                </td>
-                                <td className="text-center deviant">
-                                  <span className={`value ${deviant && deviant > 0 ? 'up' : deviant && deviant < 0 ? 'down' : ''}`}>&nbsp;{`${deviant && deviant > 0 ? '+' : ''}${deviant}`}{deviant && deviant != 0 ? <Image alt='Note' src={deviant && deviant > 0 ? IconUp : deviant && deviant < 0 ? IconDown : ''} /> : ''}</span>
-                                </td>
-                              </tr>
-                            </tbody>
-                          </table>
-                        </div>
-                        <div className="comment">
-                          <div className="self">
-                            <p>{t("EvaluationDetailPartAttitudeCommentOfEmployee")}</p>
-                            <textarea rows={1} placeholder={`${t("EvaluationDetailPartSelectScoreInput")}`} value={target?.seftOpinion || ""} onChange={(e) => handleInputChange(i, index, 'seftOpinion', e)} disabled={showByManager || evaluationFormDetail.status != evaluationStatus.launch} />
-                          </div>
-                          <div className="qltt">
-                            <p>{t("EvaluationDetailPartAttitudeCommentOfManager")}</p>
-                            <textarea rows={1} placeholder={`${t("EvaluationDetailPartSelectScoreInput")}`} value={target?.leaderReviewOpinion || ""} onChange={(e) => handleInputChange(i, index, "leaderReviewOpinion", e)} disabled={!showByManager || (showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment))} />
-                          </div>
-                        </div>
-                      </div>
-                    )
-                  }
-                }
-              })
-            }
-          </div>
-        </div>
-      })
-    }
+    { renderFormMainInfo(evaluationFormDetail?.companyCode) }
   </div>
 }
 
@@ -575,21 +315,22 @@ function EvaluationDetail(props) {
   const { t } = useTranslation()
   const [evaluationFormDetail, SetEvaluationFormDetail] = useState(null)
   const [isLoading, SetIsLoading] = useState(false)
-  const [statusModal, SetStatusModal] = useState({ isShow: false, isSuccess: true, content: "" })
+  const [statusModal, SetStatusModal] = useState({ isShow: false, isSuccess: true, content: "", needReload: true })
   const [errors, SetErrors] = useState({})
   const { showByManager, updateParent } = props
   const guard = useGuardStore()
   const user = guard.getCurentUser()
   const evaluationFormId = showByManager ? props?.evaluationFormId : props.match.params.id
   const formCode = showByManager ? props?.formCode : props.match.params.formCode
-  const [bottom, setBottom] = useState(false);
+  const [bottom, setBottom] = useState(false)
+  const [dataLoaded, setDataLoaded] = useState(false)
 
   useEffect(() => {
     const processEvaluationFormDetailData = response => {
       if (response && response.data) {
         const result = response.data.result
         if (result && result.code == Constants.PMS_API_SUCCESS_CODE) {
-          const evaluationFormDetailTemp = response.data?.data
+          const evaluationFormDetailTemp = response.data?.data;
           if (evaluationFormDetailTemp.listGroup) {
             evaluationFormDetailTemp.listGroup = ([...evaluationFormDetailTemp?.listGroup] || []).sort((pre, next) => pre?.groupOrder - next?.groupOrder)
           }
@@ -605,6 +346,7 @@ function EvaluationDetail(props) {
           // evaluationFormDetailTemp.totalComplete = totalQuestionsAnswered
           SetEvaluationFormDetail(evaluationFormDetailTemp)
           // SetEvaluationFormDetail(testEvaluationData)
+          setDataLoaded(true)
         }
       }
     }
@@ -626,6 +368,7 @@ function EvaluationDetail(props) {
           isShow: true,
           content: t("AnErrorOccurred"),
           isSuccess: false,
+          needReload: true,
         })
       } finally {
         SetIsLoading(false)
@@ -648,15 +391,17 @@ function EvaluationDetail(props) {
     setBottom(bottom)
   };
 
+  // Tổng điểm của CBNV hoặc Tổng điểm của CBQL cho từng group mục tiêu (kpi)
   const calculateAssessment = (listTarget) => {
+    const isVinBus = isVinBusByCompanyCode(evaluationFormDetail?.companyCode)
     const assessmentScale = 5
     const assessment = (listTarget || []).reduce((initial, current) => {
-      initial.selfAssessment += Number(current?.seftPoint || 0) / assessmentScale * Number(current?.weight || 0)
-      initial.managerAssessment += Number(current?.leadReviewPoint || 0) / assessmentScale * Number(current?.weight || 0)
+      initial.selfAssessment += isVinBus ? Number(current?.seftPoint || 0) : Number(current?.seftPoint || 0) / assessmentScale * Number(current?.weight || 0)
+      initial.managerAssessment += isVinBus ? Number(current?.leadReviewPoint || 0) : Number(current?.leadReviewPoint || 0) / assessmentScale * Number(current?.weight || 0)
       if (current.listTarget?.length) {
         const sub = current.listTarget?.reduce((subInitial, item) => {
-          subInitial.selfAssessment += Number(item?.seftPoint || 0) / assessmentScale * Number(item?.weight || 0)
-          subInitial.managerAssessment += Number(item?.leadReviewPoint || 0) / assessmentScale * Number(item?.weight || 0)
+          subInitial.selfAssessment += isVinBus ? Number(item?.seftPoint || 0) : Number(item?.seftPoint || 0) / assessmentScale * Number(item?.weight || 0)
+          subInitial.managerAssessment += isVinBus ? Number(item?.leadReviewPoint || 0) : Number(item?.leadReviewPoint || 0) / assessmentScale * Number(item?.weight || 0)
           return subInitial
         }, { selfAssessment: 0, managerAssessment: 0 })
         initial.selfAssessment += sub.selfAssessment
@@ -679,19 +424,56 @@ function EvaluationDetail(props) {
 
   const updateData = (subIndex, parentIndex, stateName, value, childIndex) => {
     const evaluationFormDetailTemp = { ...evaluationFormDetail }
+    const isVinBus = isVinBusByCompanyCode(evaluationFormDetail?.companyCode)
+
     if (_.isNil(childIndex)) {
       evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex][stateName] = value
+
+      if (stateName === 'realResult') {
+          evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex]['seftPoint'] = calculateScore(
+          evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex]?.formulaCode, 
+          evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex]?.targetValue, 
+          evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex]?.weight, 
+          value)
+      }
+
+      if (stateName === 'leadRealResult') {
+          evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex]['leadReviewPoint'] = calculateScore(
+          evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex]?.formulaCode, 
+          evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex]?.targetValue, 
+          evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex]?.weight, 
+          value
+        )
+      }
     } else {
       evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex].listTarget[childIndex][stateName] = value
+
+      if (stateName === 'realResult') {
+          evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex].listTarget[childIndex]['seftPoint'] = calculateScore(
+          evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex]?.listTarget[childIndex]?.formulaCode, 
+          evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex]?.listTarget[childIndex]?.targetValue, 
+          evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex]?.listTarget[childIndex]?.weight, 
+          value)
+      }
+
+      if (stateName === 'leadRealResult') {
+          evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex].listTarget[childIndex]['leadReviewPoint'] = calculateScore(
+          evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex].listTarget[childIndex]?.formulaCode, 
+          evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex].listTarget[childIndex]?.targetValue, 
+          evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex].listTarget[childIndex]?.weight, 
+          value
+        )
+      }
     }
+
     let totalQuestionsAnswered = 0
     if (showByManager) {
       totalQuestionsAnswered = (evaluationFormDetailTemp?.listGroup || []).reduce((initial, current) => {
         let questionsAnswered = (current?.listTarget || []).reduce((subInitial, subCurrent) => {
-          subInitial += subCurrent?.leadReviewPoint ? 1 : 0
+          subInitial += (subCurrent?.leadReviewPoint || (isVinBus && subCurrent?.leadRealResult)) ? 1 : 0
           if (subCurrent.listTarget?.length) {
             const subQuestionsAnswered = subCurrent.listTarget?.reduce((res, item) => {
-              res += item.leadReviewPoint ? 1 : 0
+              res += (item.leadReviewPoint || (isVinBus && subCurrent?.leadRealResult)) ? 1 : 0
               return res
             }, 0)
             subInitial += subQuestionsAnswered
@@ -704,10 +486,10 @@ function EvaluationDetail(props) {
     } else {
       totalQuestionsAnswered = (evaluationFormDetailTemp?.listGroup || []).reduce((initial, current) => {
         let questionsAnswered = (current?.listTarget || []).reduce((subInitial, subCurrent) => {
-          subInitial += subCurrent?.seftPoint ? 1 : 0
+          subInitial += (subCurrent?.seftPoint || (isVinBus && subCurrent?.realResult)) ? 1 : 0
           if (subCurrent.listTarget?.length) {
             const subQuestionsAnswered = subCurrent.listTarget?.reduce((res, item) => {
-              res += item.seftPoint ? 1 : 0
+              res += (item.seftPoint || (isVinBus && subCurrent?.realResult)) ? 1 : 0
               return res
             }, 0)
             subInitial += subQuestionsAnswered
@@ -723,24 +505,36 @@ function EvaluationDetail(props) {
       return {
         ...item,
         groupSeftPoint: calculateAssessment(item?.listTarget)?.selfAssessment || 0,
-        groupLeadReviewPoint: calculateAssessment(item?.listTarget)?.managerAssessment || 0
+        groupLeadReviewPoint: calculateAssessment(item?.listTarget)?.managerAssessment || 0,
       }
     })
     const totalInfos = getTotalInfoByListGroup(evaluationFormDetailTemp.listGroup)
+
     if (showByManager) {
       evaluationFormDetailTemp.leadReviewTotalComplete = totalQuestionsAnswered
     } else {
       evaluationFormDetailTemp.seftTotalComplete = totalQuestionsAnswered
     }
+
     evaluationFormDetailTemp.totalSeftPoint = totalInfos?.self || 0
     evaluationFormDetailTemp.totalLeadReviewPoint = totalInfos?.manager || 0
+
+    // Bắt đầu tính rating khi Biểu mẫu 0Level hoặc đang đến bước của CBQL đánh giá
+    evaluationFormDetailTemp.evaluateRating = calculateRating(
+      evaluationFormDetail.reviewStreamCode === processStep.zeroLevel 
+      ? Number(totalInfos?.self || 0) 
+      : evaluationFormDetail?.status > evaluationStatus.launch ? Number(totalInfos?.manager || 0) : null)
+
     SetEvaluationFormDetail(evaluationFormDetailTemp)
   }
 
   const renderButtonBlock = () => {
-    const currentUserLoggedUID = localStorage.getItem('employeeNo')
-    const reviewerUID = JSON.parse(evaluationFormDetail?.reviewer || '{}')?.uid
-    const approverUID = JSON.parse(evaluationFormDetail?.approver || '{}')?.uid
+    const currentUserLoggedUID = localStorage.getItem('employeeNo');
+    const reviewerUID = JSON.parse(evaluationFormDetail?.reviewer || '{}')?.uid;
+    const approverUID = JSON.parse(evaluationFormDetail?.approver || '{}')?.uid;
+    const { isEdit } = evaluationFormDetail;
+
+    if(!isEdit) return null;
 
     switch (evaluationFormDetail?.status) {
       case evaluationStatus.launch:
@@ -774,18 +568,24 @@ function EvaluationDetail(props) {
     }
   }
 
-  const getResponseMessages = (formStatus, actionCode, apiStatus) => {
+  const getResponseMessages = (formStatus, actionCode, apiStatus, isZeroLevel = false) => {
     const messageMapping = {
       [actionButton.save]: {
+        //  CBNV lưu biểu mẫu
         [evaluationStatus.launch]: {
           success: t("EvaluationFormSaveSuccessfully"),
           failed: t("EvaluationFailedToSaveForm"),
-        }
+        },
+        // CBQLTT lưu biểu mẫu
+        [evaluationStatus.selfAssessment]: {
+          success: t("EvaluationFormSaveSuccessfully"),
+          failed: t("EvaluationFailedToSaveForm"),
+        },
       },
       [actionButton.approve]: {
         [evaluationStatus.launch]: {
-          success: t("EvaluationFormSubmittedToDirectManagerEvaluation"),
-          failed: t("EvaluationFailedToSubmitForm"),
+          success: isZeroLevel ? t("EvaluationFormEvaluatedSuccessfully") : t("EvaluationFormSubmittedToDirectManagerEvaluation"),
+          failed: isZeroLevel ? t("EvaluationFailedToEvaluateForm") : t("EvaluationFailedToSubmitForm"),
         },
         [evaluationStatus.selfAssessment]: {
           success: t("EvaluationFormEvaluatedSuccessfully"),
@@ -794,7 +594,7 @@ function EvaluationDetail(props) {
         [evaluationStatus.qlttAssessment]: {
           success: t("EvaluationFormApprovedSuccessfully"),
           failed: t("EvaluationFailedToApproveForm"),
-        }
+        },
       },
       [actionButton.reject]: {
         [evaluationStatus.selfAssessment]: {
@@ -804,7 +604,7 @@ function EvaluationDetail(props) {
         [evaluationStatus.qlttAssessment]: {
           success: t("EvaluationFormSubmittedToManager"),
           failed: t("EvaluationFailedToReSubmitForm"),
-        }
+        },
       }
     }
     return messageMapping[actionCode][formStatus][apiStatus]
@@ -815,48 +615,83 @@ function EvaluationDetail(props) {
     statusModalTemp.isShow = false
     statusModalTemp.isSuccess = true
     statusModalTemp.content = ""
+    statusModalTemp.needReload = true
     SetStatusModal(statusModalTemp)
-    window.location.reload()
+
+    if (statusModal.needReload) {
+      window.location.reload()
+    }
   }
 
   const isDataValid = () => {
+    const isVinBus = isVinBusByCompanyCode(evaluationFormDetail?.companyCode)
     const errorResult = (evaluationFormDetail?.listGroup || []).reduce((initial, currentParent, indexParent) => {
       let targetErrors = {}
-      if (currentParent?.listGroupConfig && currentParent?.listGroupConfig?.length > 0) {
+      if (currentParent?.listGroupConfig && currentParent?.listGroupConfig?.length > 0) { // Tinh thần thái độ
         targetErrors = (currentParent?.listTarget || []).reduce((subInitial, subCurrent, subIndex) => {
           let keyData = showByManager ? 'leadReviewPoint' : 'seftPoint'
-          subInitial[`${indexParent}_${subIndex}_${keyData}`] = null
-          if (!subCurrent.listTarget?.length) {
-            if (!Number(subCurrent[keyData])) {
-              subInitial[`${indexParent}_${subIndex}_${keyData}`] = t("Required")
+          if (isVinBus) {
+            keyData = showByManager ? 'leadRealResult' : 'realResult'
+            subInitial[`${indexParent}_${subIndex}_${keyData}`] = null
+            if (!subCurrent.listTarget?.length) {
+              if (subCurrent[keyData] === '') {
+                subInitial[`${indexParent}_${subIndex}_${keyData}`] = t("Required")
+              }
+            } else {
+              const childErrors = subCurrent.listTarget?.map((childTarget, childIndex) => {
+                subInitial[`${indexParent}_${subIndex}_${childIndex}_${keyData}`] = null
+                if (childTarget[keyData] === '') {
+                  subInitial[`${indexParent}_${subIndex}_${childIndex}_${keyData}`] = t("Required")
+                }
+              })
             }
           } else {
-            const childErrors = subCurrent.listTarget?.map((childTarget, childIndex) => {
-              subInitial[`${indexParent}_${subIndex}_${childIndex}_${keyData}`] = null
-              if (!Number(childTarget[keyData])) {
-                subInitial[`${indexParent}_${subIndex}_${childIndex}_${keyData}`] = t("Required")
+            subInitial[`${indexParent}_${subIndex}_${keyData}`] = null
+            if (!subCurrent.listTarget?.length) {
+              if (!Number(subCurrent[keyData])) {
+                subInitial[`${indexParent}_${subIndex}_${keyData}`] = t("Required")
               }
-            })
+            } else {
+              const childErrors = subCurrent.listTarget?.map((childTarget, childIndex) => {
+                subInitial[`${indexParent}_${subIndex}_${childIndex}_${keyData}`] = null
+                if (!Number(childTarget[keyData])) {
+                  subInitial[`${indexParent}_${subIndex}_${childIndex}_${keyData}`] = t("Required")
+                }
+              })
+            }
           }
-
           return subInitial
         }, {})
-      } else {
+      } else { // Kết quả công việc
         targetErrors = (currentParent?.listTarget || []).reduce((subInitial, subCurrent, subIndex) => {
           if (showByManager) {
-            subInitial[`${indexParent}_${subIndex}_leadReviewPoint`] = null
-            if (!Number(subCurrent?.leadReviewPoint)) {
-              subInitial[`${indexParent}_${subIndex}_leadReviewPoint`] = t("Required")
+            if (isVinBus) {
+              subInitial[`${indexParent}_${subIndex}_leadRealResult`] = null
+              if (subCurrent?.leadRealResult === '') {
+                subInitial[`${indexParent}_${subIndex}_leadRealResult`] = t("Required")
+              }
+            } else {
+              subInitial[`${indexParent}_${subIndex}_leadReviewPoint`] = null
+              if (!Number(subCurrent?.leadReviewPoint)) {
+                subInitial[`${indexParent}_${subIndex}_leadReviewPoint`] = t("Required")
+              }
             }
             return subInitial
           } else {
-            subInitial[`${indexParent}_${subIndex}_seftPoint`] = null
-            subInitial[`${indexParent}_${subIndex}_realResult`] = null
-            if (!Number(subCurrent?.seftPoint)) {
-              subInitial[`${indexParent}_${subIndex}_seftPoint`] = t("Required")
-            }
-            if (!subCurrent?.realResult) {
-              subInitial[`${indexParent}_${subIndex}_realResult`] = t("Required")
+            if (isVinBus) {
+              subInitial[`${indexParent}_${subIndex}_realResult`] = null
+              if (subCurrent?.realResult === '') {
+                subInitial[`${indexParent}_${subIndex}_realResult`] = t("Required")
+              }
+            } else {
+              subInitial[`${indexParent}_${subIndex}_seftPoint`] = null
+              subInitial[`${indexParent}_${subIndex}_realResult`] = null
+              if (!Number(subCurrent?.seftPoint)) {
+                subInitial[`${indexParent}_${subIndex}_seftPoint`] = t("Required")
+              }
+              if (!subCurrent?.realResult) {
+                subInitial[`${indexParent}_${subIndex}_realResult`] = t("Required")
+              }
             }
             return subInitial
           }
@@ -865,20 +700,83 @@ function EvaluationDetail(props) {
       initial = { ...initial, ...targetErrors }
       return initial
     }, {})
+
+    const isValid = (Object.values(errorResult) || []).every(item => !item)
+
     SetErrors(errorResult)
-    return (Object.values(errorResult) || []).every(item => !item)
+
+    if (!isValid) {
+      SetStatusModal({
+        ...statusModal,
+        isShow: true,
+        isSuccess: false,
+        content: 'Vui lòng nhập các trường bắt buộc!',
+        needReload: false,
+      })
+    }
+
+    return isValid
+  }
+
+  const isValidTotalScoreFunc = () => {
+    const { totalSeftPoint, totalLeadReviewPoint } = evaluationFormDetail
+    return Number(totalSeftPoint).toFixed(2) < 0 || Number(totalSeftPoint).toFixed(2) > 100 || Number(totalLeadReviewPoint).toFixed(2) < 0 || Number(totalLeadReviewPoint).toFixed(2) > 100 ? false : true
+  }
+
+  const isValidScoreFunc = () => {
+    const maximumScore = 5;
+    const minimumScore = 0;
+    const listGroup = evaluationFormDetail?.listGroup || []
+
+    for (let groupIndex = 0; groupIndex < listGroup.length; groupIndex++) {
+      let group = listGroup[groupIndex]
+      for (let targetIndex = 0; targetIndex < group?.listTarget?.length; targetIndex++) {
+        let target = group?.listTarget[targetIndex]
+        if (target?.seftPoint !== null && ((!isVinBusByCompanyCode(evaluationFormDetail?.companyCode) && Number(target?.seftPoint) > maximumScore) || isNaN(Number(target?.seftPoint)) || Number(target?.seftPoint) < minimumScore)) {
+          return false
+        }
+        if (target?.leadReviewPoint !== null && ((!isVinBusByCompanyCode(evaluationFormDetail?.companyCode) && Number(target?.leadReviewPoint) > maximumScore) || isNaN(Number(target?.leadReviewPoint)) || Number(target?.leadReviewPoint) < minimumScore)) {
+          return false
+        }
+
+        for (let subTargetIndex = 0; subTargetIndex < target?.listTarget?.length; subTargetIndex++) {
+          let subTarget = target?.listTarget[subTargetIndex]
+          if (subTarget?.seftPoint !== null && ((!isVinBusByCompanyCode(evaluationFormDetail?.companyCode) && Number(subTarget?.seftPoint) > maximumScore) || isNaN(Number(subTarget?.seftPoint)) || Number(subTarget?.seftPoint) < minimumScore)) {
+            return false
+          }
+          if (subTarget?.leadReviewPoint !== null && ((!isVinBusByCompanyCode(evaluationFormDetail?.companyCode) && Number(subTarget?.leadReviewPoint) > maximumScore) || isNaN(Number(subTarget?.leadReviewPoint)) || Number(subTarget?.leadReviewPoint) < minimumScore)) {
+            return false
+          }
+        }
+      }
+    }
+
+    return true
   }
 
   const handleSubmit = async (actionCode, isApprove, isSaveDraft) => {
-    if (!isSaveDraft || (actionCode !== actionButton.reject && actionCode !== actionButton.save)) {
+    if (!isSaveDraft || (actionCode == actionButton.approve)) {
       const isValid = isDataValid()
       if (!isValid) {
         return
       }
     }
 
-    SetIsLoading(true)
     const statusModalTemp = { ...statusModal }
+
+    const isValidTotalScore = isValidTotalScoreFunc()
+    const isValidScore = isValidScoreFunc()
+
+    if (!isValidTotalScore || !isValidScore) {
+      statusModalTemp.isShow = true
+      statusModalTemp.isSuccess = false
+      statusModalTemp.content = t("EvaluationTotalScoreInValid")
+      statusModalTemp.needReload = false
+      SetStatusModal(statusModalTemp)
+      return
+    }
+
+    SetIsLoading(true)
     try {
       const config = getRequestConfigurations()
       if (actionCode == actionButton.reject || isApprove) { // Từ chối hoặc Phê duyệt
@@ -894,6 +792,7 @@ function EvaluationDetail(props) {
         const response = await axios.post(`${process.env.REACT_APP_HRDX_PMS_URL}api/form/ApproveBothReject`, payload, config)
         SetIsLoading(false)
         statusModalTemp.isShow = true
+        statusModalTemp.needReload = true
         if (response && response.data) {
           const result = response.data.result
           if (result.code == Constants.PMS_API_SUCCESS_CODE) {
@@ -915,26 +814,32 @@ function EvaluationDetail(props) {
       } else { // Lưu, CBNV Gửi tới bước tiếp theo, CBQLTT xác nhận
         const payload = { ...evaluationFormDetail }
         payload.nextStep = actionCode
+        payload.totalSeftPoint = Number(payload.totalSeftPoint).toFixed(2)
+        payload.totalLeadReviewPoint = Number(payload.totalLeadReviewPoint).toFixed(2)
+
+        const isZeroLevel = payload?.reviewStreamCode === processStep.zeroLevel
         const response = await axios.post(`${process.env.REACT_APP_HRDX_PMS_URL}api/targetform/update`, { requestString: JSON.stringify(payload || {}) }, config)
         SetIsLoading(false)
         statusModalTemp.isShow = true
+        statusModalTemp.needReload = actionCode == actionButton.approve
         if (response && response.data) {
           const result = response.data.result
           if (result.code == Constants.PMS_API_SUCCESS_CODE) {
             statusModalTemp.isSuccess = true
-            statusModalTemp.content = getResponseMessages(payload.status, actionCode, 'success')
+            statusModalTemp.content = getResponseMessages(payload.status, actionCode, 'success', isZeroLevel)
           } else {
             statusModalTemp.isSuccess = false
             statusModalTemp.content = result?.message
           }
         } else {
           statusModalTemp.isSuccess = false
-          statusModalTemp.content = getResponseMessages(payload.status, actionCode, 'failed')
+          statusModalTemp.content = getResponseMessages(payload.status, actionCode, 'failed', isZeroLevel)
         }
         if (!showByManager) {
           SetStatusModal(statusModalTemp)
         } else {
-          updateParent(statusModalTemp)
+          const keepPopupEvaluationDetail = actionCode == actionButton.save
+          updateParent(statusModalTemp, keepPopupEvaluationDetail)
         }
       }
     } catch (e) {
@@ -942,6 +847,7 @@ function EvaluationDetail(props) {
       statusModalTemp.isShow = false
       statusModalTemp.isSuccess = false
       statusModalTemp.content = t("AnErrorOccurred")
+      statusModalTemp.needReload = true
       if (!showByManager) {
         SetStatusModal(statusModalTemp)
       } else {
@@ -949,36 +855,23 @@ function EvaluationDetail(props) {
       }
     }
   }
+
   return (
     <>
       <LoadingModal show={isLoading} />
-      {!showByManager && <StatusModal show={statusModal.isShow} isSuccess={statusModal.isSuccess} content={statusModal.content} onHide={onHideStatusModal} />}
+      <StatusModal 
+        show={statusModal.isShow} 
+        isSuccess={statusModal.isSuccess} 
+        content={statusModal.content} 
+        className="evaluation-status-modal"
+        onHide={onHideStatusModal} />
       <div className="evaluation-detail-page">
         {
-          !evaluationFormDetail || _.size(evaluationFormDetail) === 0 || !evaluationFormDetail?.companyCode
+          dataLoaded 
+          ?
+          (!evaluationFormDetail || _.size(evaluationFormDetail) === 0 || !evaluationFormDetail?.companyCode)
           ? <h6 className="alert alert-danger" role="alert">{t("NoDataFound")}</h6>
           :
-          <>
-            <h1 className="content-page-header">{`${evaluationFormDetail?.checkPhaseFormName} ${t("of")} ${evaluationFormDetail?.fullName}`}</h1>
-            <div>
-              <EvaluationOverall evaluationFormDetail={evaluationFormDetail} showByManager={showByManager} />
-              <EvaluationProcess evaluationFormDetail={evaluationFormDetail} showByManager={showByManager} errors={errors} updateData={updateData} />
-              <div className="button-block">
-                {renderButtonBlock()}
-              </div>
-            </div>
-            {!bottom && (evaluationFormDetail?.status == evaluationStatus.launch || (evaluationFormDetail?.status == evaluationStatus.selfAssessment && localStorage.getItem('employeeNo') ==  JSON.parse(evaluationFormDetail?.reviewer || '{}')?.uid)) &&
-              <div className="scroll-to-save" style={{ color: localStorage.getItem("companyThemeColor"), zIndex: '10' }}>
-                <div>
-                  <button className="btn-action save mr-3" onClick={() => handleSubmit(actionButton.save, null, true)}><Image src={IconSave} alt="Save" />{t("EvaluationDetailPartSave")}</button>
-                </div>
-              </div>
-            }
-          </>
-        }
-
-        {/* {
-          evaluationFormDetail ?
             <>
               <h1 className="content-page-header">{`${evaluationFormDetail?.checkPhaseFormName} ${t("of")} ${evaluationFormDetail?.fullName}`}</h1>
               <div>
@@ -988,14 +881,22 @@ function EvaluationDetail(props) {
                   {renderButtonBlock()}
                 </div>
               </div>
+              {!bottom &&
+                (evaluationFormDetail?.status == evaluationStatus.launch ||
+                  (evaluationFormDetail?.status == evaluationStatus.selfAssessment && localStorage.getItem('employeeNo') == JSON.parse(evaluationFormDetail?.reviewer || '{}')?.uid)) && evaluationFormDetail?.isEdit && (
+                    <div className="scroll-to-save" style={{ color: localStorage.getItem("companyThemeColor"), zIndex: '10' }}>
+                      <div>
+                        <button className="btn-action save mr-3" onClick={() => handleSubmit(actionButton.save, null, true)}><Image src={IconSave} alt="Save" />{t("EvaluationDetailPartSave")}</button>
+                      </div>
+                    </div>
+                  )}
             </>
-            : <h6 className="alert alert-danger" role="alert">{t("NoDataFound")}</h6>
-        } */}
-
+          : null
+        }
       </div>
 
     </>
   )
 }
 
-export default EvaluationDetail
+export default HOCComponent(EvaluationDetail)

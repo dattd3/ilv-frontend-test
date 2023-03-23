@@ -1,11 +1,11 @@
 import React, { Suspense } from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
+// import { CookiesProvider } from 'react-cookie';
 import { FirebaseMessageListener } from '../../commons/Firebase';
 import { GuardianRouter } from "../../modules";
 import routes, { RouteSettings } from "../routes.config";
 import Maintenance from "../Maintenance";
 import ContextProviders from "./providers";
-import config from '../../commons/aws-config';
 import '../../assets/scss/sb-admin-2.scss';
 import LoadingModal from '../../components/Common/LoadingModal';
 import {Toast} from 'react-bootstrap';
@@ -13,7 +13,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 
-const listUsersIgnoreMaintenanceMode = ['cuongnv56@vingroup.net', 'minhtd6@vingroup.net', 'GiangLH21@vingroup.net', 'vuongvt2@vingroup.net', 'thuypx2@vingroup.net', 'chiennd4@vingroup.net', 'datth3@vingroup.net', 'khanhnn17@vingroup.net']
+const listUsersIgnoreMaintenanceMode = ['cuongnv56@vingroup.net', 'vuongvt2@vingroup.net', 'thuypx2@vingroup.net', 'chiennd4@vingroup.net', 'datth3@vingroup.net']
 const currentUserLogged = localStorage.getItem('email')
 
 function Root() {

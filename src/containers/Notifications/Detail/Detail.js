@@ -5,7 +5,8 @@ import purify from "dompurify"
 import Constants from '../../../commons/Constants';
 import SubmitQuestionModal from '../../QuestionAndAnswer/SubmitQuestionModal'
 import StatusModal from '../../../components/Common/StatusModal'
-import { isEnableFunctionByFunctionName } from "../../../commons/Utils"
+import HOCComponent from '../../../components/Common/HOCComponent'
+import { getCurrentLanguage, isEnableFunctionByFunctionName } from "../../../commons/Utils"
 
 class NotificationDetailComponent extends React.Component {
   constructor(props) {
@@ -30,6 +31,9 @@ class NotificationDetailComponent extends React.Component {
     const config = {
       headers: {
         'Authorization': `${localStorage.getItem('accessToken')}`
+      },
+      params: {
+        'culture': getCurrentLanguage()
       }
     }
     axios.get(`${process.env.REACT_APP_REQUEST_URL}notifications/${this.getNotificationId()}`, config)
@@ -151,4 +155,4 @@ class NotificationDetailComponent extends React.Component {
   }
 }
 
-export default withTranslation()(NotificationDetailComponent)
+export default HOCComponent(withTranslation()(NotificationDetailComponent))

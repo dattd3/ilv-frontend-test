@@ -6,7 +6,6 @@ import { withTranslation } from "react-i18next"
 import axios from 'axios'
 import moment from 'moment'
 import _ from 'lodash'
-import { t } from 'i18next'
 import ButtonComponent from '../ButtonComponent'
 import ApproverComponent from '../ApproverComponent'
 import AssesserComponent from '../AssesserComponent'
@@ -16,7 +15,7 @@ import ShiftForm from './ShiftForm'
 import ResultModal from '../ResultModal'
 import Constants from '../.../../../../commons/Constants'
 import map from '../../../../src/containers/map.config'
-import { getValueParamByQueryString, getMuleSoftHeaderConfigurations, formatStringByMuleValue, getRegistrationMinDateByConditions } from "../../../commons/Utils"
+import { getValueParamByQueryString, getMuleSoftHeaderConfigurations, formatStringByMuleValue, getRegistrationMinDateByConditions, isVinFast } from "../../../commons/Utils"
 import EditIcon from '../../../assets/img/icon/Icon-edit.svg'
 import 'react-datepicker/dist/react-datepicker.css'
 import vi from 'date-fns/locale/vi'
@@ -27,6 +26,9 @@ const TIME_FORMAT = 'HH:mm:00'
 const TIME_OF_SAP_FORMAT = 'HHmm00'
 const BROKEN_SHIFT_OPTION_VALUE = "02"
 const queryString = window.location.search
+const currentUserCompanyVCode = localStorage.getItem("companyCode")
+const shiftCodesAllowedToUpdateForVin3S = ['0501']
+const substitutionTypeAllowedToUpdateForVin3S = '01'
 
 class SubstitutionComponent extends React.Component {
   constructor(props) {
@@ -52,6 +54,13 @@ class SubstitutionComponent extends React.Component {
         content: ""
       }
     }
+
+    this.isVin3S = currentUserCompanyVCode === Constants.pnlVCode.Vin3S
+    this.substitutionTypes = [
+      { value: '01', label: props.t("Shiftchange") },
+      { value: '02', label: props.t("IntermittenShift") },
+      { value: '03', label: props.t("CoastShoreShiftChange") }
+    ]
   }
 
   componentDidMount() {
@@ -60,8 +69,15 @@ class SubstitutionComponent extends React.Component {
     axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/shifts`, config)
       .then(res => {
         if (res && res.data && res.data.data) {
-          const shifts = res.data.data.filter((shift, index, arr) => arr.findIndex(a => a.shift_id === shift.shift_id) === index)
+          let shifts = res.data.data.filter((shift, index, arr) => arr.findIndex(a => a.shift_id === shift.shift_id) === index)
           .sort((a,b) =>  a.shift_id.includes("OFF") ? -1 : 1 ).sort((a,b) => a.shift_id < b.shift_id ? (a.shift_id.includes("OFF") ? -1 : 0) : 1)
+
+          if (this.isVin3S) {
+            shifts = (shifts || []).filter(shift => shiftCodesAllowedToUpdateForVin3S.includes(shift?.shift_id))
+          }
+          //ILVG-643: VFXS chỉ phân ca trong 5 mã ca cố định
+          shifts = this.filterShiftByPnl(shifts);
+
           this.setState({ shifts: shifts })
         }
       }).catch(error => { })
@@ -86,6 +102,15 @@ class SubstitutionComponent extends React.Component {
         }),
       })
     }
+  }
+
+  filterShiftByPnl(shifts) {
+    const currentUserPnL = localStorage.getItem("companyCode");
+    
+    if ([Constants.pnlVCode.VinFast].includes(currentUserPnL)) {
+        shifts = (shifts || []).filter(s => Constants.VFSX_SHIFT_ID_VALID.includes(s?.shift_id));
+    }
+    return shifts;
   }
 
   verifyInput() {
@@ -266,7 +291,7 @@ class SubstitutionComponent extends React.Component {
     bodyFormData.append('appraiser', JSON.stringify(appraiser))
     bodyFormData.append('approver', JSON.stringify(approver))
     bodyFormData.append('user', JSON.stringify(user))
-    bodyFormData.append('companyCode', localStorage.getItem("companyCode"))
+    bodyFormData.append('companyCode', currentUserCompanyVCode)
     this.state.files.forEach(file => {
       bodyFormData.append('Files', file)
     })
@@ -408,44 +433,11 @@ class SubstitutionComponent extends React.Component {
     return isInValid
   }
 
-  // isValidApplyTimeByDate = date => {
-  //   const timesheets = [...this.state.timesheets]
-  //   let timeSheetsEdited = timesheets.filter(item => item.isEdited)
-  //   // const dateToCompare = date && moment(date, 'YYYYMMDD').isValid() ? moment(date, 'YYYYMMDD') : null
-  //   timeSheetsEdited = timeSheetsEdited.sort((pre, next)=> (pre.applyFrom > next.applyFrom ? 1 : -1))
-
-  //   console.log("*********************************")
-  //   console.log(timeSheetsEdited)
-
-  //   for (let i = 0; i < timeSheetsEdited.length; i++) {
-  //     debugger
-  //     let elementParent = timeSheetsEdited[i]
-  //     for (let j = 0; j < timeSheetsEdited.length; j++) {
-  //       let elementChild = timeSheetsEdited[j]
-  //       if (i === j) {
-  //         continue
-  //       }
-
-  //       if ((elementParent.applyFrom >= elementChild.applyFrom && elementParent.applyFrom <= elementChild.applyTo) 
-  //         || (elementParent.applyTo >= elementChild.applyFrom && elementParent.applyTo <= elementChild.applyTo)) {
-  //         return false
-  //       }
-        
-  //     }
-  //   }
-
-  //   return true
-
-  //   // const isValid = timeSheetsEdited.every((item, index, timeSheetsEdited) => {
-  //   //   // let applyFromToCompare = item.applyFrom && moment(item.applyFrom, 'YYYYMMDD').isValid() ? moment(item.applyFrom, 'YYYYMMDD') : null
-  //   //   // let applyToToCompare = item.applyTo && moment(item.applyTo, 'YYYYMMDD').isValid() ? moment(item.applyTo, 'YYYYMMDD') : null
-  //   //   return !moment(date).isBetween(item.applyFrom, item.applyTo, undefined, '[]')
-  //   // })
-
-  //   // return isValid
-  // }
-
   updateShiftType(shiftType, index) {
+    if (this.isVin3S && shiftType == Constants.SUBSTITUTION_SHIFT_UPDATE) {
+      return
+    }
+
     if (shiftType !== this.state.timesheets[index].shiftType) {
       let timesheets = this.state.timesheets
       timesheets[index].shiftType = shiftType
@@ -557,7 +549,8 @@ class SubstitutionComponent extends React.Component {
               shiftType: Constants.SUBSTITUTION_SHIFT_CODE,
               shiftId: null,
               shiftHours: null,
-              substitutionType: null,
+              substitutionType: this.isVin3S ? (this.substitutionTypes || []).find(substitutionType => substitutionType?.value === substitutionTypeAllowedToUpdateForVin3S) : null,
+              // substitutionType: (this.isVin3S || isVinFast()) ? (this.substitutionTypes || []).find(substitutionType => substitutionType?.value === substitutionTypeAllowedToUpdateForVin3S) : null,
               shifts: this.state.shifts,
               applyFrom: null,
               applyTo: null
@@ -660,13 +653,13 @@ class SubstitutionComponent extends React.Component {
     const { t, substitution, recentlyManagers } = this.props;
     const {startDate, endDate, isShowResultModal, titleModal, messageModal, isSuccess, timesheets, errors, isShowStartBreakTimeAndEndBreakTime, 
       files, disabledSubmitButton, shifts, statusModal} = this.state
-    const substitutionTypes = [
-      { value: '01', label: t("Shiftchange") },
-      { value: '02', label: t("IntermittenShift") },
-      { value: '03', label: t("CoastShoreShiftChange") }
-    ]
+    
+    const substitutionTypes = this.isVin3S
+    // const substitutionTypes = (this.isVin3S || isVinFast())
+    ? (this.substitutionTypes || []).filter(substitutionType => substitutionType?.value === substitutionTypeAllowedToUpdateForVin3S) 
+    : this.substitutionTypes
+    
     const lang = localStorage.getItem("locale")
-    const currentUserCompanyVCode = localStorage.getItem("companyCode")
     const customStyles = {
       control: base => ({
         ...base,
@@ -693,7 +686,7 @@ class SubstitutionComponent extends React.Component {
           <div className="row">
             <div className="col">
               {
-                currentUserCompanyVCode === Constants.pnlVCode.VinPearl ? <div className="text-danger guide-message"><i className="fa fa-info-circle"></i> {t("NotApplicable")}</div> : null
+                [Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl].includes(currentUserCompanyVCode) ? <div className="text-danger guide-message"><i className="fa fa-info-circle"></i> {t("NotApplicable")}</div> : null
               }
               {
                 currentUserCompanyVCode === Constants.pnlVCode.VinMec ? <div className="text-danger guide-message"><i className="fa fa-info-circle"></i> {t("ShiftChangeApplied")}</div> : null
@@ -777,12 +770,15 @@ class SubstitutionComponent extends React.Component {
               <div>
                 <p className="text-uppercase"><b>{t("SelectShiftType")}</b></p>
                 <div className="btn-group btn-group-toggle" data-toggle="buttons">
-                  <label onClick={this.updateShiftType.bind(this, Constants.SUBSTITUTION_SHIFT_CODE, index)} className={timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_CODE ? 'btn btn-outline-info shift-change-type active' : 'btn btn-outline-info shift-change-type'}>
+                  <label onClick={this.updateShiftType.bind(this, Constants.SUBSTITUTION_SHIFT_CODE, index)} className={`btn btn-outline-info shift-change-type ${timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_CODE ? 'active' : ''}`}>
                     {t("SelectShiftCode")}
                   </label>
-                  <label onClick={this.updateShiftType.bind(this, Constants.SUBSTITUTION_SHIFT_UPDATE, index)} className={timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_UPDATE ? 'btn btn-outline-info shift-change-type active' : 'btn btn-outline-info shift-change-type'}>
-                    {t("EndNewTime")}
-                  </label>
+                  {/* {
+                    !isVinFast() && */}
+                    <label onClick={this.updateShiftType.bind(this, Constants.SUBSTITUTION_SHIFT_UPDATE, index)} className={`btn btn-outline-info shift-change-type ${timesheet.shiftType === Constants.SUBSTITUTION_SHIFT_UPDATE ? 'active' : ''} ${this.isVin3S ? 'disabled' : ''}`}>
+                      {t("EndNewTime")}
+                    </label>
+                  {/* } */}
                 </div>
                 <div className="row shift-change-type-field">
                   <div className="col-2">
@@ -793,7 +789,7 @@ class SubstitutionComponent extends React.Component {
                         onChange={applyFrom => this.handleDatePickerInputChange(index, applyFrom, "applyFrom")}
                         dateFormat="dd/MM/yyyy"
                         locale="vi"
-                        minDate={[Constants.pnlVCode.VinPearl].includes(currentUserCompanyVCode) ? moment(new Date().getDate() - 1, DATE_FORMAT).toDate() : null}
+                        minDate={[Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl].includes(currentUserCompanyVCode) ? moment(new Date().getDate() - 1, DATE_FORMAT).toDate() : null}
                         showMonthDropdown={true}
                         showYearDropdown={true}
                         autoComplete='off'
@@ -817,13 +813,15 @@ class SubstitutionComponent extends React.Component {
                           showYearDropdown={true}
                           autoComplete='off'
                           popperPlacement="bottom-end"
-                          className="form-control input" />
+                          className="form-control input" 
+                          // disabled={isVinFast()} 
+                      />
                     </div>
                     {this.error(index, 'applyTo')}
                   </div>
                   <div className="col-4">
                     <p className="title">{t("ShiftCategory")}<span className="text-danger required">(*)</span></p>
-                    <div>
+                    <div style={{paddingTop: 10}}>
                       <Select 
                         name="substitutionType" 
                         value={timesheet.substitutionType} 

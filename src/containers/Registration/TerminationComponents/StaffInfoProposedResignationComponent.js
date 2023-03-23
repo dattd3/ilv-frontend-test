@@ -8,6 +8,9 @@ import { withTranslation } from "react-i18next"
 import Constants from '../../../commons/Constants'
 import { getMuleSoftHeaderConfigurations } from '../../../commons/Utils'
 import ResultModal from '../ResultModal'
+import DropdownCustomize from '../../LeaveFund/DropdownCustomize'
+import DropdownResignCustomize from './DropdownResignCustomize'
+import { t } from 'i18next'
 
 const MyOption = props => {
     const { innerProps, innerRef } = props;
@@ -48,6 +51,9 @@ class StaffInfoProposedResignationComponent extends React.PureComponent {
     componentWillReceiveProps(nextProps) {
         if(nextProps.userInfos && nextProps.userInfos.length > 0 && (this.state.userInfos || this.state.userInfos.length == 0)) {
             this.setState({userInfos: nextProps.userInfos});
+        }
+        if(nextProps.subordinateInfos && nextProps.subordinateInfos.length > 0 && (this.state.users && this.state.users.length == 0)) {
+            this.setState({users: [...nextProps.subordinateInfos]});
         }    
     }
         
@@ -60,36 +66,50 @@ class StaffInfoProposedResignationComponent extends React.PureComponent {
     }
 
     addEmployees = async () => {
-        let { userInfos, employee } = this.state
-        const itemExist = (userInfos || []).filter(item => item.email?.toLowerCase() === employee.email?.toLowerCase())
-        const errorObj = {employees: "Nhân viên đề xuất cho nghỉ đã nằm trong danh sách đề xuất cho nghỉ!"}
+        let { userInfos } = this.state
+        const {t} = this.props;
+        const employeeCodeToSearch = this.state.filter?.employeeCodeToSearch || [];
+        //console.log(employee, userInfos, employeeCodeToSearch);
+        const employeeCodeToSearchIds =employeeCodeToSearch.map(item => item.uid);
 
-        if (!itemExist || itemExist.length === 0 && employee) {
-            errorObj.employees = "Vui lòng chọn nhân viên đề xuất cho nghỉ!"
-            const contractInfo = await this.getMoreInfoContract(employee.employee_no);
-            const employeeTemp = {
-                employeeNo: employee.employee_no,
-                ad: employee.account?.toLowerCase(),
-                fullName: employee.fullname,
-                jobTitle: employee.job_title,
-                department: employee.department,
-                dateStartWork: contractInfo?.dateStartWork,
-                contractType: contractInfo?.lastestContractType,
-                contractName:contractInfo?.lastestContractName,
-                email: employee.email,
-                rank: employee.rank_name,
-                unitName: employee.unit_name,
-                organizationLv1: employee.orglv1_id,
-                organizationLv2: employee.orglv2_id,
-                organizationLv6: employee.orglv6_id,
-                regionId: employee.orglv4_id,
-                divisionId: employee.orglv3_id,
-                departmentId: employee.orglv3_id,
-                unitId: employee.orglv5_id,
-                rankId: employee.rank_id
-            }
+        const itemExist = (userInfos || []).filter(item => employeeCodeToSearchIds.includes(item.uid));
+        const errorObj = {employees: t('employee_resign_existed')}
+
+        if(employeeCodeToSearchIds.length == 0) {
+            errorObj.employees = t('require_choose_employee_resign')
+        }
+        if (!itemExist || itemExist.length === 0 && employeeCodeToSearchIds.length > 0) {
+            errorObj.employees = t('require_choose_employee_resign')
+            const contractInfo = await this.getMoreInfoContract(employeeCodeToSearchIds.join(','));
+            //console.log(employeeCodeToSearchIds.join(','), contractInfo);
+
+            const newEmployeeAdded = employeeCodeToSearch.map(employee => {
+                return {
+                    uid: employee.employee_no,
+                    employeeNo: employee.employee_no,
+                    ad: employee.account?.toLowerCase(),
+                    fullName: employee.fullname,
+                    jobTitle: employee.job_title,
+                    department: employee.department,
+                    dateStartWork: contractInfo[employee.employee_no]?.dateStartWork || '',
+                    contractType: contractInfo[employee.employee_no]?.lastestContractType || '',
+                    contractName:contractInfo[employee.employee_no]?.lastestContractName || '',
+                    email: employee.email,
+                    rank: employee.rank_name,
+                    unitName: employee.unit_name,
+                    organizationLv1: employee.orglv1_id,
+                    organizationLv2: employee.orglv2_id,
+                    organizationLv6: employee.orglv6_id,
+                    regionId: employee.orglv4_id,
+                    divisionId: employee.orglv3_id,
+                    departmentId: employee.orglv3_id,
+                    unitId: employee.orglv5_id,
+                    rankId: employee.rank_id,
+                    costCenter: employee.costCenter
+                };
+            })
     
-            userInfos = userInfos.concat([{...employeeTemp}])
+            userInfos = userInfos.concat([...newEmployeeAdded]);
             if (userInfos.length > 0) {
                 errorObj.employees = null
             }
@@ -109,7 +129,7 @@ class StaffInfoProposedResignationComponent extends React.PureComponent {
 
     removeEmployees = () => {
         const {employeeIdChecked, userInfos} = this.state
-
+        const {t} = this.props;
         if (userInfos && userInfos.length > 0) {
             let indexDeleted = []
 
@@ -124,7 +144,7 @@ class StaffInfoProposedResignationComponent extends React.PureComponent {
             }
 
             if (indexDeleted.length > 0) {
-                let errorObj = {employees: "Vui lòng chọn nhân viên đề xuất cho nghỉ!"}
+                let errorObj = {employees: t('require_choose_employee_resign')}
                 const userInfosTemp = userInfos.filter((item, index) => !indexDeleted.includes(index))
                 if (userInfosTemp.length > 0) {
                     errorObj = {employees: null}
@@ -142,30 +162,28 @@ class StaffInfoProposedResignationComponent extends React.PureComponent {
         const config = {
             headers: {            
                 'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-                'Content-Type': 'application/json-patch+json'
-            }  
+                'Content-Type': 'application/json-patch+json',
+            } 
         };
         try {
             this.setState({isSearching: true})
-            const res = await axios.post(`${process.env.REACT_APP_REQUEST_URL}ReasonType/getadditionalinfo`, employeeId, config)
+            const res = await axios.post(`${process.env.REACT_APP_REQUEST_URL}ReasonType/getadditionalinfo`, {
+                "employeeCode": employeeId
+            }, config)
             if(res?.data?.data) {
-                return {
-                    dateStartWork: res.data.data.dateStartWork,
-                    lastestContractName: res.data.data.lastestContractName,
-                    lastestContractType: res.data.data.lastestContractType
-                }
-            }
-            return {
-                dateStartWork: '',
-                lastestContractName: '',
-                lastestContractType: ''
+                let result = {};
+                Object.values(res.data.data).map(item => {
+                    result[item.employeeCode] = {
+                        dateStartWork: item.dateStartWork,
+                        lastestContractName: item.lastestContractName,
+                        lastestContractType: item.lastestContractType    
+                    };
+                })
+                return result;
             }
         } catch(err) {
-            return {
-                dateStartWork: '',
-                lastestContractName: '',
-                lastestContractType: ''
-            }
+            console.log(err);
+            return {}
         }
         finally {
             this.setState({isSearching: false})
@@ -173,57 +191,60 @@ class StaffInfoProposedResignationComponent extends React.PureComponent {
     }
 
     getEmployeeInfos = value => {
-        const { employee } = this.props
-    
+        const { employee, subordinateInfos } = this.props
         if (value !== "") {
-            this.setState({isSearching: true})
-            const config = {
-                headers: {
-                  'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-                  'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-                  'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
-                }
-              }
+            const users = [...subordinateInfos].filter(item => item.fullname.includes(value) || item.account.includes(value));
+            this.setState({ users: employee ? users.filter(user => user.account !== employee.account) : users, isSearching: false })
+            // this.setState({isSearching: true})
+            // const config = {
+            //     headers: {
+            //       'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+            //       'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
+            //       'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
+            //     }
+            //   }
         
-              const payload = {
-                account: value,
-                status: 3
-              }
-            // Need update when has Mule api
-            axios.post(`${process.env.REACT_APP_REQUEST_URL}user/employee/search`, payload, config)
-            .then(res => {
-                if (res && res.data && res.data.data) {
-                 const data = res.data.data || []
-                 const users = data.map(res => {
-                    return {
-                        label: res.fullname,
-                        value: res.uid,
-                        fullname: res.fullname,
-                        avatar: res.avatar,
-                        account: res.username,
-                        employee_no: res.uid, // need update
-                        job_title: res.position_name,
-                        department: res.division + (res.department ? '/' + res.department : '') + (res.part ? '/' + res.part : ''),
-                        date_start_work: null,
-                        contract_type: null, // need update
-                        contract_name: null, // need update
-                        email: `${res.username?.toLowerCase()}${Constants.GROUP_EMAIL_EXTENSION}`, // need check
-                        unit_name: null, // need update
-                        orglv1_id: null, // need update
-                        orglv2_id: res.organization_lv2, // need check
-                        orglv3_id: res.organization_lv3, // need check
-                        orglv4_id: res.organization_lv4, // need check
-                        orglv5_id: res.organization_lv5, // need check
-                        orglv6_id: res.organization_lv6, // need update
-                        rank_id: res.rank, // need update
-                        rank_name: res.rank_title && res.rank_title != '#' ? res.rank_title : res.rank // need update
-                    }
-                });
-                this.setState({ users: employee ? users.filter(user => user.account !== employee.account) : users, isSearching: false })
-                }
-            }).catch(error => {
-                this.setState({isSearching: false})
-            })
+            //   const payload = {
+            //     account: value,
+            //     status: 3
+            //   }
+            // // Need update when has Mule api
+            // axios.post(`${process.env.REACT_APP_REQUEST_URL}user/employee/search`, payload, config)
+            // .then(res => {
+            //     if (res && res.data && res.data.data) {
+            //      const data = res.data.data || []
+            //      const users = data.map(res => {
+            //         return {
+            //             label: res.fullname,
+            //             value: res.uid,
+            //             fullname: res.fullname,
+            //             avatar: res.avatar,
+            //             account: res.username,
+            //             employee_no: res.uid, // need update
+            //             job_title: res.position_name,
+            //             department: res.division + (res.department ? '/' + res.department : '') + (res.part ? '/' + res.part : ''),
+            //             date_start_work: null,
+            //             contract_type: null, // need update
+            //             contract_name: null, // need update
+            //             email: `${res.username?.toLowerCase()}${Constants.GROUP_EMAIL_EXTENSION}`, // need check
+            //             unit_name: null, // need update
+            //             orglv1_id: null, // need update
+            //             orglv2_id: res.organization_lv2, // need check
+            //             orglv3_id: res.organization_lv3, // need check
+            //             orglv4_id: res.organization_lv4, // need check
+            //             orglv5_id: res.organization_lv5, // need check
+            //             orglv6_id: res.organization_lv6, // need update
+            //             rank_id: res.rank, // need update
+            //             rank_name: res.rank_title && res.rank_title != '#' ? res.rank_title : res.rank // need update
+            //         }
+            //     });
+            //     this.setState({ users: employee ? users.filter(user => user.account !== employee.account) : users, isSearching: false })
+            //     }
+            // }).catch(error => {
+            //     this.setState({isSearching: false})
+            // })
+        } else {
+            this.setState({ users: employee ? subordinateInfos.filter(user => user.account !== employee.account) : subordinateInfos, isSearching: false })
         }
     }
 
@@ -232,6 +253,17 @@ class StaffInfoProposedResignationComponent extends React.PureComponent {
             this.onInputChange(value)
         })
     }
+
+    updateParent = data => {
+        console.log('updateParent', data);
+        this.setState({
+          filter: {
+            ...this.state.filter,
+            employeeCodeToSearch: data
+          },
+        })
+      }
+    
 
     render() {
         const customStyles = {
@@ -244,34 +276,23 @@ class StaffInfoProposedResignationComponent extends React.PureComponent {
                 cursor: 'pointer',
             })
         }
-        const { t, isEdit } = this.props
+        const { t, isEdit, loading } = this.props
         const { employee, userInfos, isSearching, employeeIdChecked } = this.state
 
         return <div className="block staff-information-proposed-resignation-block">
-                    <h6 className="block-title">I. Thông tin nhân viên đề xuất cho nghỉ</h6>
+                    <h6 className="block-title">I. {`${t('proposed_employee_info')} ${t('cho_nghi')}`}</h6>
                     <div className="box shadow">
                         { !isEdit ?
                         <div className="row search-action-block">
                             <div className="col-4">
-                                <div>
-                                <Select
-                                    isLoading={isSearching}
-                                    isDisabled={isEdit}
-                                    isClearable={true}
-                                    styles={customStyles}
-                                    components={{ Option: MyOption }}
-                                    onInputChange={this.onInputChange}
-                                    filterOption={(option, inputvalue) => true}
-                                    onChange={employeeOption => this.handleSelectChange('employee', employeeOption)}
-                                    value={employee}
-                                    placeholder="Tìm kiếm theo mã nhân viên hoặc tên"
-                                    key="employee"
-                                    options={this.state.users} />
-                                </div>
+                               
+                                <DropdownResignCustomize loading={loading} users={this.state.users} getSelecteMembers = {this.updateParent} resetSelectedMember = {this.updateParent}
+                                    onCloseTabEvent = {this.updateParent} onCloseAllEvent = {this.updateParent}/>
+                               
                             </div>
                             <div className="col-2 btn-action-group">
-                                <button type="button" className="btn-action add" onClick={this.addEmployees}>Thêm</button>
-                                <button type="button" className="btn-action delete" onClick={this.removeEmployees}>Xóa</button>
+                                <button type="button" className="btn-action add" onClick={this.addEmployees}>{t('AddMore')}</button>
+                                <button type="button" className="btn-action delete" onClick={this.removeEmployees}>{t('delete')}</button>
                             </div>
                         </div>
                         : null
@@ -281,12 +302,12 @@ class StaffInfoProposedResignationComponent extends React.PureComponent {
                                 <table className="list-staff">
                                     <thead>
                                         <tr>
-                                            <th>Họ và tên</th>
-                                            <th>Mã nhân viên</th>
-                                            <th>Chức danh</th>
-                                            <th>Khối/Phòng/Bộ phận</th>
-                                            <th>Loại hợp đồng</th>
-                                            <th>Ngày vào làm việc</th>
+                                            <th>{t('FullName')}</th>
+                                            <th>{t('EmployeeNo')}</th>
+                                            <th>{t('Title')}</th>
+                                            <th>{t('DepartmentManage')}</th>
+                                            <th>{t('ContractType')}</th>
+                                            <th>{t('DaysOnWorking')}</th>
                                         </tr>
                                     </thead>
                                     <tbody>

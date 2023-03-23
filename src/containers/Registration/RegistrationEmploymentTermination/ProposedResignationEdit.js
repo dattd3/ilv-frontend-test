@@ -5,15 +5,14 @@ import { withTranslation } from "react-i18next"
 import Constants from '../../../commons/Constants'
 import ButtonComponent from '../TerminationComponents/ButtonComponent'
 import { Progress } from "reactstrap"
-import { ToastContainer, toast } from "react-toastify"
+import { toast } from "react-toastify"
 import { getRequestConfigs } from '../../../commons/commonFunctions'
 import SeniorExecutiveInfoComponent from '../TerminationComponents/SeniorExecutiveInfoComponent'
 import StaffInfoProposedResignationComponent from '../TerminationComponents/StaffInfoProposedResignationComponent'
 import ReasonResignationComponent from '../TerminationComponents/ReasonResignationComponent'
 import AttachmentComponent from '../TerminationComponents/AttachmentComponent'
 import ResultModal from '../ResultModal'
-import "react-toastify/dist/ReactToastify.css"
-import { getMuleSoftHeaderConfigurations } from '../../../commons/Utils'
+import { getMuleSoftHeaderConfigurations, getResignResonsMasterData } from '../../../commons/Utils'
 
 class ProposedResignationEdit extends React.Component {
     constructor(props) {
@@ -79,10 +78,11 @@ class ProposedResignationEdit extends React.Component {
         if (responses && responses.data) {
             const reasonTypeCodeForManager = "ZH"
             const reasonTypes = responses.data.data
+            const reasonMasterData = getResignResonsMasterData();
             const results = (reasonTypes || [])
             .filter(item => item.code01 === reasonTypeCodeForManager)
             .map(item => {
-                return {value: item.code02, label: item.text}
+                return {value: item.code02, label: reasonMasterData[item.code02]}
             })
             return results
         }
@@ -153,12 +153,12 @@ class ProposedResignationEdit extends React.Component {
                     this.setDisabledSubmitButton(false)
                 }
             } else {
-                this.showStatusModal(t("Notification"), "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
+                this.showStatusModal(t("Notification"), t("Error"), false)
                 this.setDisabledSubmitButton(false)
             }
 
         } catch (errors) {
-            this.showStatusModal(t("Notification"), "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
+            this.showStatusModal(t("Notification"), t("Error"), false)
             this.setDisabledSubmitButton(false)
         }
     }
@@ -217,7 +217,6 @@ class ProposedResignationEdit extends React.Component {
 
         return (
             <>
-            <ToastContainer autoClose={2000} />
             <Progress max="100" color="success" value={this.state.loaded}>
                 {Math.round(this.state.loaded, 2)}%
             </Progress>

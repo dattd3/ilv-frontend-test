@@ -16,7 +16,9 @@ const Constants = {
     NOTIFICATION_SHIFT_CHANGE: 10,
     NOTIFICATION_ADD_MEMBER_TO_PROJECT: 19,
     NOTIFICATION_MY_EVALUATION: 21,
-    NOTIFICATION_LEAD_EVALUATION: 22
+    NOTIFICATION_LEAD_EVALUATION: 22,
+    NOTIFICATION_MY_KPI_REGISTRATION_REQUEST: 23,
+    NOTIFICATION_MY_KPI_REGISTRATION_APPROVAL_REQUEST: 24,
   },
 
   //Tasks
@@ -53,7 +55,8 @@ const Constants = {
   ONBOARDING: 6,
   RESIGN_SELF: 7,
   SALARY_PROPOSE: 12,
-
+  OT_REQUEST: 13,
+  
   //Status request
   STATUS_PENDING: 0,
   STATUS_NOT_APPROVED: 1, // từ chối phê duyệt
@@ -149,12 +152,14 @@ const Constants = {
   },
   TYPE_REPORT: {
     DETAIL_REPORT: 0,
-    SUMARY_REPORT: 1
+    SUMARY_REPORT: 1,
+    TIMESHEET_REPORT: 2
   },
   pnlVCode: {
     VinHome: "V040",
     VinBrain: "V095",
     VinPearl: "V030",
+    MeliaVinpearl: "V035",
     VinMec: "V060",
     VinSchool: "V061",
     Vin3S: "V005",
@@ -165,7 +170,9 @@ const Constants = {
     VinFastTrading: "V077",
     VinITIS: "V097",
     VinUni: "V066",
-    VinAI: "V099"
+    VinAI: "V099",
+    VinBus: "V033",
+    VinES: "V079",
   },
   listFunctionsForPnLACL: {
     editProfile: 'EDIT_PROFILE',
@@ -179,12 +186,16 @@ const Constants = {
     Vinhome: "V040",
     Vinbrain: "V095",
     Vinpearl: "V030",
+    MeliaVinpearl: "V035",
     Vinmec: "V060",
     VinSchool: "V061",
     VinFast: "V070",
     VinFastTrading: "V077",
     VinFastPB: "V070",
-    Vin3S: "V005"
+    Vin3S: "V005",
+    VinES: "V079",
+    Vincon: "V041",
+    VinBus: "V033",
   },
   LOGIN_INSTRUCTION_PATH: "https://myvinpearl.s3.ap-southeast-1.amazonaws.com/shared/templates/ILOVEVINGROUP-HDDang+nhap-LoginInstruction.pdf",
   statusUserActiveMulesoft: 3,
@@ -197,5 +208,33 @@ const Constants = {
   timeoutForSpecificApis: 180000,
   LANGUAGE_VI: 'vi-VN',
   LANGUAGE_EN: 'en-US',
+  MODULE: {
+    TUYENDUNG: 1,
+    DANHGIA_TAIKI: 2,
+    DEXUATLUONG:3,
+    NGHIVIEC:4,
+    PHUCLOI: 5
+  },
+  MODULE_COMPANY_AVAILABE: process.env.REACT_APP_ENVIRONMENT === 'PRODUCTION' ? 
+  { //production todo: add  "V077", "V070" to TUYENDUNG
+    1: ["V040", "V005", "V079", "V041", "V030", "V077", "V070"],//TUYENDUNG + V061
+    2: ["V040", "V005", "V061", "V077"],//DANHGIA_TAIKI
+    3: [],//DEXUATLUONG
+    4: ["V040"],//NGHIVIEC
+    5: []//PHUCLOI
+  } :
+  { //Development
+    1: ["V040", "V005", "V079", "V041", "V030", "V077", "V070"],//TUYENDUNG + V061
+    2: ["V061","V040", "V005", "V079", "V041", "V070", "V077"],//DANHGIA_TAIKI
+    3: [],//DEXUATLUONG "V061", "V040", "V005", "V079", "V041"
+    4:["V040", "V005", "V079", "V070", "V077"],//NGHIVIEC
+    5: ["V061", "V040", "V005", "V079", "V041", "V070", "V077"]//PHUCLOI
+  },
+  CURRENCY: {
+    VND: 'VNĐ',
+    USD: 'USD',
+  },
+  RESIGN_REASON_EMPLOYEE_INVALID: ["GI", "GL", "GM", "GN", "GO"],
+  VFSX_SHIFT_ID_VALID: ["7003", "7007", "7008", "7009", "7075", "OFF"]
 };
 export default Constants

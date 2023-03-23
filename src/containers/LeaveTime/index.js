@@ -5,6 +5,7 @@ import LeaveTimeDetail from './LeaveTimeDetail'
 import axios from 'axios'
 import moment from 'moment'
 import { withTranslation } from "react-i18next"
+import HOCComponent from '../../components/Common/HOCComponent'
 import { getMuleSoftHeaderConfigurations } from "../../commons/Utils"
 
 class LeaveTimePage extends React.Component {
@@ -123,4 +124,4 @@ class LeaveTimePage extends React.Component {
 
 }
 
-export default withTranslation()(LeaveTimePage)
+export default HOCComponent(withTranslation()(LeaveTimePage))

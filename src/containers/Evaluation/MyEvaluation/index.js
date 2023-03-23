@@ -11,10 +11,13 @@ import LoadingModal from '../../../components/Common/LoadingModal'
 import StatusModal from '../../../components/Common/StatusModal'
 import { evaluationStatus } from '../Constants'
 import IconLoop from '../../../assets/img/icon/Icon_Loop.svg'
+import { useCookiesHook } from '../../../commons/hooks'
+import HOCComponent from '../../../components/Common/HOCComponent'
 
 function EvaluationFormItem(props) {
     const { t } = useTranslation()
     const { item } = props
+
     const statusDone = 5
     const statusMapping = {
         label: item?.status === statusDone ? t("EvaluationDetailCompleted") : t("EvaluationInProgress"),
@@ -31,7 +34,7 @@ function EvaluationFormItem(props) {
 
     return (
         <tr>
-            <td className='c-form-name'><div className='form-name'><a href={`/evaluations/${item?.checkPhaseFormId}/${item?.formCode}`} alt={item?.checkPhaseFormName} className={`form-name ${statusMapping?.className}`}>{item?.checkPhaseFormName}</a></div></td>
+            <td className='c-form-name'><div className='form-name'><a href={`/evaluations/${item?.checkPhaseFormId}/${item?.formCode}`} alt={item?.checkPhaseFormName} className="form-name">{item?.checkPhaseFormName}</a></div></td>
             <td className='c-created-date text-center'><div className='created-date'>{item?.createDate && moment(item?.createDate).format("DD/MM/YYYY")}</div></td>
             <td className='c-status text-center'><div className={`status ${statusMapping?.className}`}>{statusMapping?.label}</div></td>
             <td className='c-step text-center'><div className='step'>{stepMapping[item?.status]?.nextStep}</div></td>
@@ -44,6 +47,8 @@ function MyEvaluation(props) {
     const { t } = useTranslation()
     const guard = useGuardStore()
     const user = guard.getCurentUser()
+    // const { accessToken } = useCookiesHook()
+    
     const [evaluationForms, SetEvaluationForms] = useState([])
     const [years, SetYears] = useState([])
     const [year, SetYear] = useState({value: currentYear, label: currentYear})
@@ -202,4 +207,4 @@ function MyEvaluation(props) {
     )
 }
 
-export default MyEvaluation
+export default HOCComponent(MyEvaluation)

@@ -5,6 +5,7 @@ import Constants from '../../../commons/Constants'
 import processingDataReq from "../../Utils/Common"
 import LoadingSpinner from "../../../components/Forms/CustomForm/LoadingSpinner";
 import RequestTaskList from '../requestTaskList';
+import HOCComponent from '../../../components/Common/HOCComponent'
 
 class RequestComponent extends React.Component {
   constructor(props) {
@@ -57,6 +58,7 @@ class RequestComponent extends React.Component {
         }
       }
     }).catch(error => { 
+      console.log(error);
       this.setState({tasks : [], totalRecord: 0});
     });
   }
@@ -84,4 +86,4 @@ class RequestComponent extends React.Component {
   }
 }
 
-export default withTranslation()(RequestComponent)
+export default HOCComponent(withTranslation()(RequestComponent))

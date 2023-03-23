@@ -158,11 +158,11 @@ function SideBar(props) {
                 rootNav[i].content = getSubNav(allNav, rootNav[i].id);
             }
         }
-        if (user.companyCode !== "V030") {
+        if (![Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl].includes(user.companyCode)) {
             rootNav = rootNav.filter(x => x.label !== 'Menu_Training')
         }
-        if(user.companyCode != Constants.pnlVCode.VinHome && user.companyCode != Constants.PnLCODE.Vin3S) {
-          rootNav = rootNav.filter(x => x.label !== 'ProposedResignation')
+        if(![...Constants.MODULE_COMPANY_AVAILABE[Constants.MODULE.DEXUATLUONG], ...Constants.MODULE_COMPANY_AVAILABE[Constants.MODULE.NGHIVIEC]].includes(user.companyCode)) {
+          rootNav = rootNav.filter(x => x.label !== 'MenuProposalManagement')
         }
         if(user.prepare != 'true') {
             rootNav = rootNav.filter(x => x.id != 1006)
@@ -189,7 +189,6 @@ function SideBar(props) {
             label: t(c.label)
         }
     });
-   
     const isUpdate = (prevProps, nextProps) => true
 
     const MetisMenuMemo = React.memo(props => {

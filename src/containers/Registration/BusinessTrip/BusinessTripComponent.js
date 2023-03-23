@@ -906,8 +906,6 @@ class BusinessTripComponent extends React.Component {
                                                                             selected={reqDetail.startDate ? moment(reqDetail.startDate, DATE_FORMAT).toDate() : null}
                                                                             startDate={reqDetail.startDate ? moment(reqDetail.startDate, DATE_FORMAT).toDate() : null}
                                                                             endDate={reqDetail.endDate ? moment(reqDetail.endDate, DATE_FORMAT).toDate() : null}
-                                                                            // minDate = {['V030'].includes(localStorage.getItem('companyCode')) ? moment(new Date().getDate() - 1, DATE_FORMAT).toDate() : null}
-                                                                            // minDate={(['V030'].includes(localStorage.getItem('companyCode')) ? moment(new Date((new Date()).valueOf() - 1000 * 60 * 60 * 24), Constants.LEAVE_DATE_FORMAT).toDate() : null)}
                                                                             minDate={minDate?.toDate() || null}
                                                                             onChange={date => this.setStartDate(date, reqDetail.groupId, reqDetail.groupItem)}
                                                                             dateFormat="dd/MM/yyyy"
@@ -955,8 +953,6 @@ class BusinessTripComponent extends React.Component {
                                                                             selected={reqDetail.endDate ? moment(reqDetail.endDate, DATE_FORMAT).toDate() : null}
                                                                             startDate={reqDetail.startDate ? moment(reqDetail.startDate, DATE_FORMAT).toDate() : null}
                                                                             endDate={reqDetail.endDate ? moment(reqDetail.endDate, DATE_FORMAT).toDate() : null}
-                                                                            // minDate={reqDetail.startDate ? moment(reqDetail.startDate, DATE_FORMAT).toDate() : (['V030'].includes(localStorage.getItem('companyCode')) ? moment(new Date().getDate() - 1, Constants.LEAVE_DATE_FORMAT).toDate() : null)}
-                                                                            // minDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : (['V030'].includes(localStorage.getItem('companyCode')) ? moment(new Date((new Date()).valueOf() - 1000 * 60 * 60 * 24), Constants.LEAVE_DATE_FORMAT).toDate() : null)}
                                                                             minDate={reqDetail?.startDate ? moment(reqDetail?.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : minDate?.toDate() || null}
                                                                             onChange={date => this.setEndDate(date, reqDetail.groupId, reqDetail.groupItem)}
                                                                             dateFormat="dd/MM/yyyy"
@@ -995,7 +991,7 @@ class BusinessTripComponent extends React.Component {
                                                 </div>
                                                 {!indexDetail 
                                                     ? <button type="button" className="btn btn-add-multiple-in-out" style={{ right: 0 }} onClick={() => this.addMultiDateTime(req[0].groupId, req, req[0].isAllDay, req[0])}><i className="fas fa-plus"></i> {t("AddMore")}</button>
-                                                    : <button type="button" className="btn btn-danger btn-top-right-corner" onClick={() => this.onRemoveBizTrip(reqDetail.groupId, reqDetail.groupItem)}><i className="fas fa-times"></i> {t("Cancel")}</button>
+                                                    : <button type="button" className="btn btn-danger btn-top-right-corner" onClick={() => this.onRemoveBizTrip(reqDetail.groupId, reqDetail.groupItem)}><i className="fas fa-times"></i> {t("delete")}</button>
                                                 }
                                                 {
                                                     reqDetail.errors.startTimeAndEndTime ?

@@ -8,13 +8,16 @@ import LeaveOfAbsence from './LeaveOfAbsence/LeaveOfAbsenceComponent'
 import BusinessTrip from './BusinessTrip/BusinessTripComponent'
 import SubstitutionComponent from './Substitution/SubstitutionComponent'
 import InOutTimeUpdate from './InOutTimeUpdate/InOutTimeUpdateComponent'
-import { isEnableShiftChangeFunctionByPnLVCode, isEnableInOutTimeUpdateFunctionByPnLVCode, getRequestConfigurations } from "../../commons/Utils"
+import OTRequest from './OTRequest';
+
+import HOCComponent from '../../components/Common/HOCComponent'
+import { isEnableShiftChangeFunctionByPnLVCode, isEnableInOutTimeUpdateFunctionByPnLVCode, getRequestConfigurations, isEnableOTFunctionByPnLVCode } from "../../commons/Utils"
 
 class RegistrationComponent extends React.Component {
   constructor(props) {
     super();
     this.state = {
-      tab: new URLSearchParams(props.history.location.search).get('tab') || "LeaveOfAbsenceRegistration",
+      tab: new URLSearchParams(props?.history?.location?.search).get('tab') || "LeaveOfAbsenceRegistration",
       recentlyManagers: {}
     }
   }
@@ -82,7 +85,7 @@ class RegistrationComponent extends React.Component {
     const PnLVCode = localStorage.getItem("companyCode")
     const isEnableShiftChangeFunction = isEnableShiftChangeFunctionByPnLVCode(PnLVCode)
     const isEnableInOutTimeUpdateFunction = isEnableInOutTimeUpdateFunctionByPnLVCode(PnLVCode)
-
+    const isEnableOTRequestFunction = isEnableOTFunctionByPnLVCode(PnLVCode);
     return (
       <div className="registration-section personal-info justify-content-between">
         <Tabs defaultActiveKey={this.state.tab} onSelect={(key) => this.updateTabLink(key)}>
@@ -104,9 +107,16 @@ class RegistrationComponent extends React.Component {
               <InOutTimeUpdate recentlyManagers={recentlyManagers} />
             </Tab>
           }
+          {
+            isEnableOTRequestFunction && 
+            <Tab eventKey="OTRequest" title={t('OTRequest')}>
+              <OTRequest recentlyManagers={recentlyManagers} />
+            </Tab>
+          }
         </Tabs>
       </div>
     )
   }
 }
-export default withTranslation()(RegistrationComponent)
+
+export default HOCComponent(withTranslation()(RegistrationComponent))

@@ -70,7 +70,7 @@ class InsuranceSocial extends React.Component {
             <div className="health-info-page">
                 <div className="clearfix edit-button w-100 pb-2">
                     <a href="/insurance-manager/createSocialInsurance"><div className="btn bg-white btn-create"
-                    ><i className="fas fa-plus"></i> {'Tạo yêu cầu'}</div></a>
+                    ><i className="fas fa-plus"></i> {t('createRequest')}</div></a>
                 </div>
                 <div className="task-list request-list shadow">
                     {
@@ -78,10 +78,10 @@ class InsuranceSocial extends React.Component {
                             <table className="table table-borderless">
                                 <thead>
                                     <tr>
-                                        <th scope="col" className="code text-center">Mã yêu cầu</th>
-                                        <th scope="col" className="request-type text-center">Loại yêu cầu</th>
-                                        <th scope="col" className="request-type text-center">Ngày nộp yêu cầu</th>
-                                        <th scope="col" className="status1 pl-8">Tình trạng</th>
+                                        <th scope="col" className="code text-center">{t('RequestNo')}</th>
+                                        <th scope="col" className="request-type text-center">{t('TypeOfRequest')}</th>
+                                        <th scope="col" className="request-type text-center">{t('claim_submission_date')}</th>
+                                        <th scope="col" className="status1 pl-8">{t('EvaluationStatus')}</th>
                                         <th scope="col" className="tool text-center">{t("action")}</th>
                                     </tr>
                                 </thead>

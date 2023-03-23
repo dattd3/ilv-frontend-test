@@ -8,9 +8,9 @@ import ApprovalDelegationModal from "./ApprovalDelegation/ApprovalDelegationModa
 import ApprovalDelegationList from "./ApprovalDelegation/index"
 import axios from 'axios'
 import Constants from '../../commons/Constants'
-import processingDataReq from "../Utils/Common"
 import { actionApprovalDelegation } from "./ApprovalDelegation/Constant"
 import StatusModal from "../../components/Common/StatusModal"
+import HOCComponent from '../../components/Common/HOCComponent'
 
 const tabKey = {
     request: 'request',
@@ -26,7 +26,7 @@ class Task extends React.Component {
             isShowApprovalTab: true,
             isShowPrepareTab: false,
             isShowJobEvalutionTab: false,
-            tabActive: new URLSearchParams(props.history.location.search).get('tab') || "request",
+            tabActive: new URLSearchParams(props?.history?.location?.search).get('tab') || "request",
             tasks: [],
             approvalDelegationModal: {
                 isShowApprovalDelegationModal: false,
@@ -160,4 +160,4 @@ class Task extends React.Component {
     }
 }
 
-export default withTranslation()(Task)
+export default HOCComponent(withTranslation()(Task))

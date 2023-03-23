@@ -44,6 +44,7 @@ const Storage = {
     localStorage.setItem('tokenType', currentAuthUser.tokenType);
     localStorage.setItem('accessToken', currentAuthUser.accessToken);
     localStorage.setItem('tokenExpired', currentAuthUser.tokenExpired);
+    localStorage.setItem('refreshToken', currentAuthUser.refreshToken);
     localStorage.setItem('email', currentAuthUser.email);
     localStorage.setItem('plEmail', currentAuthUser.plEmail);
     localStorage.setItem('jobType', currentAuthUser.jobType);
@@ -52,6 +53,7 @@ const Storage = {
     localStorage.setItem('jobId', currentAuthUser.jobId);
     localStorage.setItem('benefitLevel', currentAuthUser.benefitLevel);
     localStorage.setItem('employeeLevel', currentAuthUser.employeeLevel);
+    localStorage.setItem('actualRank', currentAuthUser.actualRank);
     localStorage.setItem('company', currentAuthUser.company);
     localStorage.setItem('sabaId', currentAuthUser.sabaId);
     localStorage.setItem('employeeNo', currentAuthUser.employeeNo);
@@ -77,7 +79,7 @@ const Storage = {
     localStorage.setItem('part', currentAuthUser.part);
     localStorage.setItem('role_assigment', currentAuthUser.role_assigment);
     localStorage.setItem('prepare', currentAuthUser.prepare);
-
+    localStorage.setItem('jobCode', currentAuthUser.jobCode);
   },
   load() {
     const accessToken = localStorage.getItem('accessToken');
@@ -86,6 +88,7 @@ const Storage = {
       tokenType: localStorage.getItem('tokenType'),
       accessToken: localStorage.getItem('accessToken'),
       tokenExpired: localStorage.getItem('tokenExpired'),
+      refreshToken: localStorage.getItem('refreshToken'),
       email: localStorage.getItem('email'),
       plEmail: localStorage.getItem('plEmail'),
       jobType: localStorage.getItem('jobType'),
@@ -94,6 +97,7 @@ const Storage = {
       jobId: localStorage.getItem('jobId'),
       benefitLevel: localStorage.getItem('benefitLevel'),
       employeeLevel: localStorage.getItem('employeeLevel'),
+      actualRank: localStorage.getItem('actualRank'),
       company: localStorage.getItem('company'),
       sabaId: localStorage.getItem('sabaId'),
       department: localStorage.getItem('department'),
@@ -118,13 +122,16 @@ const Storage = {
       partId: localStorage.getItem('partId'),
       part: localStorage.getItem('part'),
       role_assigment: localStorage.getItem('role_assigment'),
-      prepare: localStorage.getItem('prepare')
+      prepare: localStorage.getItem('prepare'),
+      jobCode: localStorage.getItem('jobCode'),
     }
   },
   reset() {
     localStorage.removeItem('tokenType');
     localStorage.removeItem('accessToken');
     localStorage.removeItem('tokenExpired');
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('isCancelRefreshToken');
     localStorage.removeItem('email');
     localStorage.removeItem('plEmail');
     localStorage.removeItem('fullName');
@@ -132,6 +139,7 @@ const Storage = {
     localStorage.removeItem('jobId');
     localStorage.removeItem('benefitLevel');
     localStorage.removeItem('employeeLevel');
+    localStorage.removeItem('actualRank');
     localStorage.removeItem('company');
     localStorage.removeItem('sabaId');
     localStorage.removeItem('employeeNo');
@@ -157,9 +165,8 @@ const Storage = {
     localStorage.removeItem('partId');
     localStorage.removeItem('part');
     localStorage.removeItem('role_assigment');
-    localStorage.removeItem('prepare')
-    localStorage.removeItem('timeTokenExpire')
-    localStorage.removeItem('refreshToken')
+    localStorage.removeItem('prepare');
+    localStorage.removeItem('jobCode');
   }
 }
 
@@ -167,6 +174,7 @@ const deserialize = (currentAuthUser) => ({
   tokenType: 'Bearer',
   accessToken: currentAuthUser.accessToken,
   tokenExpired: currentAuthUser.tokenExpired,
+  refreshToken: currentAuthUser.refreshToken,
   email: currentAuthUser.email,
   plEmail: currentAuthUser.plEmail,
   fullName: currentAuthUser.fullName,
@@ -174,6 +182,7 @@ const deserialize = (currentAuthUser) => ({
   jobId:currentAuthUser.jobId,
   benefitLevel: currentAuthUser.benefitLevel,
   employeeLevel: currentAuthUser.employeeLevel,
+  actualRank: currentAuthUser.actualRank,
   company: currentAuthUser.company,
   sabaId: currentAuthUser.sabaId,
   department: currentAuthUser.department,
@@ -199,5 +208,6 @@ const deserialize = (currentAuthUser) => ({
   partId: currentAuthUser.partId,
   part: currentAuthUser.part,
   role_assigment: currentAuthUser.role_assigment,
-  prepare: currentAuthUser.prepare
+  prepare: currentAuthUser.prepare,
+  jobCode: currentAuthUser.jobCode,
 })

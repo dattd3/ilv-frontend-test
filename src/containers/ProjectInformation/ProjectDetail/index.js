@@ -19,6 +19,7 @@ import GeneralInformationComponent from './GeneralInformationComponent'
 import LoadingModal from '../../../components/Common/LoadingModal'
 import StatusModal from '../../../components/Common/StatusModal'
 import ConfirmModal from '../../../components/Common/ConfirmModal'
+import HOCComponent from '../../../components/Common/HOCComponent'
 import IconArrowLeft from '../../../assets/img/icon/Icon-Arrow-Left.svg'
 import IconArrowPrevious from '../../../assets/img/icon/arrow-previous.svg'
 import IconArrowNext from '../../../assets/img/icon/arrow-next.svg'
@@ -541,8 +542,44 @@ function ProjectDetail(props) {
         }
 
         const prepareOutSourceTimeSheets = (rsmTimeSheet, employeeId, email) => {
+            // rsmTimeSheet =>> sample
+            // {
+            //     '27-06-2022': [
+            //         {
+            //             actual: "",
+            //             date: "27-06-2022",
+            //             hours: 8,
+            //             id: 473025,
+            //             isEdit: false,
+            //             is_Holiday: "0",
+            //             plannedTotal: "66.67%",
+            //             projectId: 196,
+            //             projetctTeamId: 1743,
+            //             resourceId: 1319,
+            //             shift_Id: "0501",
+            //             statusId: 0
+            //         }
+            //     ],
+            //     '28-06-2022': [
+            //         {
+            //             actual: "",
+            //             date: "27-06-2022",
+            //             hours: 8,
+            //             id: 473025,
+            //             isEdit: false,
+            //             is_Holiday: "0",
+            //             plannedTotal: "66.67%",
+            //             projectId: 196,
+            //             projetctTeamId: 1743,
+            //             resourceId: 1319,
+            //             shift_Id: "0501",
+            //             statusId: 0
+            //         }
+            //     ]
+            // }
+            const rsmTimeSheetValues = Object.values(rsmTimeSheet)
             const daysFormat = (days || []).map(item => moment(item).format('DD-MM-YYYY'))
-            const itemExist = Object.values(rsmTimeSheet)[0][0]
+            const itemExist = rsmTimeSheetValues[0] ? rsmTimeSheetValues[0][0] : {}
             const timeSheets = daysFormat.reduce((initial, current) => {
                 let item = rsmTimeSheet[current] && rsmTimeSheet[current].length > 0 ? rsmTimeSheet[current][0] : {}
                 if (rsmTimeSheet[current]?.length > 0) {
@@ -1035,4 +1072,4 @@ function ProjectDetail(props) {
     )
 }
 
-export default ProjectDetail
+export default HOCComponent(ProjectDetail)

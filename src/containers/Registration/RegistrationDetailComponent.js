@@ -7,11 +7,13 @@ import ChangeDivisionShiftDetail from '../Registration/Substitution/ChangeDivisi
 import DepartmentTimeSheetDetail from './DepartmentTimeSheetDetail'
 import TerminationDetailComponent from './RegistrationEmploymentTermination/RegistrationTerminationDetail';
 import ProposeTerminationDetailComponent from './RegistrationEmploymentTermination/PropsedResignationDetail';
+import OTRequestDetailComponent from './OTRequest/OTRequestDetail';
 import RegistrationConfirmationModal from './ConfirmationModal'
 import axios from 'axios'
 import Constants from '../../commons/Constants'
 import map from "../map.config"
 import UpdateProfileDetailComponent from '../Task/RequestDetail'
+import HOCComponent from '../../components/Common/HOCComponent'
 
 class RegistrationDetailComponent extends React.Component {
   constructor(props) {
@@ -67,10 +69,11 @@ class RegistrationDetailComponent extends React.Component {
         {data && data.requestTypeId == Constants.CHANGE_DIVISON_SHIFT ? <ChangeDivisionShiftDetail action={action} substitution={data}/> : null}
         {data && data.requestTypeId == Constants.DEPARTMENT_TIMESHEET ? <DepartmentTimeSheetDetail action={action} substitution={data}/> : null}
         {data && data.requestTypeId == Constants.UPDATE_PROFILE ? <UpdateProfileDetailComponent details={data}/> : null}
+        {data && data.requestTypeId == Constants.OT_REQUEST && <OTRequestDetailComponent data={data}/>}
       </div>
       </>
     )
   }
 }
 
-export default RegistrationDetailComponent
+export default HOCComponent(RegistrationDetailComponent)

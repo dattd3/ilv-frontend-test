@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Button, Modal, Carousel } from 'react-bootstrap';
 import { useTranslation } from "react-i18next";
-import config from '../../commons/aws-config';
 import logo from '../../assets/img/LogoVingroup.svg';
 import imageIos from '../../assets/img/image_ios.png';
 import imageAndroid from '../../assets/img/image_android.png';
@@ -109,11 +108,7 @@ function Login() {
   }, [langCode, localizeStore]);
 
   const handleLoginClick = () => {
-    // const authConfig = Auth.configure();
-    // const { domain, redirectSignIn, responseType } = authConfig.oauth;
-    // const clientId = config.AWS_COGNITO_CLIENT_ID;
     const state = getStateRedirect(process.env.REACT_APP_AWS_COGNITO_IDP_SIGNIN_URL, process.env.REACT_APP_ENVIRONMENT);
-    // const url = `https://${domain}/oauth2/authorize?identity_provider=${config.AWS_COGNITO_IDP_NAME}&redirect_uri=${redirectSignIn}&response_type=${responseType}&client_id=${clientId}`;
     const url = `${process.env.REACT_APP_LOGIN_V2_PATH}&redirect_uri=${process.env.REACT_APP_REDIRECT_URL}&scope=user.read&prompt=select_account&state=${state}%26response_type%3Dcode`;
     window.location.assign(url);
   }
@@ -253,10 +248,9 @@ function Login() {
 
                   </Carousel>
                   <div className="bottom-link">
-                        <span>Website: https://myvingroup.vingroup.net</span>
+                    <span>Website: https://myvingroup.vingroup.net</span>
                   </div>
                 </div>
-
               </div>
             </div>
           </div>

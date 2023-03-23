@@ -7,10 +7,10 @@ import CreateSickInsurance from './CreateSickInsurance';
 import moment from 'moment';
 import axios from 'axios';
 import { exportToPDF, getMuleSoftHeaderConfigurations, getRequestConfigurations } from '../../../commons/Utils';
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 import LoadingModal from '../../../components/Common/LoadingModal';
 import { Image } from 'react-bootstrap';
+import HOCComponent from '../../../components/Common/HOCComponent'
 
 const DetailInsuranceSocial = (props) => {
     const { t } = props;
@@ -344,12 +344,12 @@ const DetailInsuranceSocial = (props) => {
                     setdisabledSubmitButton(false)
                 }
                 else {
-                    notifyMessage(response.data.result.message || "Có lỗi xảy ra trong quá trình cập nhật thông tin!")
+                    notifyMessage(response.data.result.message || t("Error"))
                     setdisabledSubmitButton(false)
                 }
             })
             .catch(response => {
-                notifyMessage("Có lỗi xảy ra trong quá trình cập nhật thông tin!");
+                notifyMessage(t("Error"));
                 setdisabledSubmitButton(false);
             })
     }
@@ -389,17 +389,6 @@ const DetailInsuranceSocial = (props) => {
     return (
         <div className="registration-insurance-section">
             <LoadingModal show={loading} />
-            <ToastContainer
-                position="top-right"
-                autoClose={5000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-            />
             <div className="block-buttons">
             <button className="btn-download download-pdf" onClick={() => exportToPDF1(type?.label || '')}>Tải PDF</button>
             </div>
@@ -447,4 +436,4 @@ const DetailInsuranceSocial = (props) => {
     )
 }
 
-export default withTranslation()(DetailInsuranceSocial);
+export default HOCComponent(withTranslation()(DetailInsuranceSocial))

@@ -4,7 +4,7 @@ import map from '../map.config';
 import LoadingModal from '../../components/Common/LoadingModal'
 import { useTranslation } from "react-i18next";
 import axios from 'axios';
-import { getMuleSoftHeaderConfigurations } from "../../commons/Utils"
+import { getMuleSoftHeaderConfigurations, getRequestConfigurations } from "../../commons/Utils"
 import Constants from "../../commons/Constants"
 import moment from 'moment';
 import { FirebaseUpdateToken } from '../../commons/Firebase';
@@ -18,7 +18,6 @@ function Authorize(props) {
     const { t } = useTranslation();
     const { history } = props;
     const guard = useGuardStore();
-    const [token, SetToken] = useState('');
     const [isloading, SetIsloading] = useState(true);
     const [notifyContent, SetNotifyContent] = useState(t("WaitNotice"));
     const [isGetUser, SetIsGetUser] = useState(false);
@@ -26,17 +25,15 @@ function Authorize(props) {
     const [isError, SetIsError] = useState(false);
     const [errorType, SetErrorType] = useState(null);
     const [isShowLoadingModal, SetIsShowLoadingModal] = useState(true);
+    // const [cookies, setCookie] = useCookies(['accessToken']);
 
-    const getUser = (token, jwtToken) => {
-        if (jwtToken == null || jwtToken == "") {
-            return;
-        }
-        if (isGetUser == true) {
+    const getUser = (jwtToken, refreshToken, timeTokenExpire) => {
+        if (!jwtToken || isGetUser == true) {
             return;
         }
 
         SetIsShowLoadingModal(true)
-        const config = getMuleSoftHeaderConfigurations() 
+        const config = getMuleSoftHeaderConfigurations()
         config.headers['Authorization'] = `Bearer ${jwtToken}`
 
         axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/profile`, config)
@@ -46,10 +43,11 @@ function Authorize(props) {
                     //const email = userProfile?.company_email?.toLowerCase() || ""
                     //let vgUsernameMatch = (/([^@]+)/gmi).exec(email.replace('v.', ''));
                     let vgEmail = `${userProfile.username?.toLowerCase()}@vingroup.net`;
-                    checkUser(userProfile, jwtToken, vgEmail, () => {
+                    checkUser(userProfile, jwtToken, refreshToken, timeTokenExpire, vgEmail, () => {
                         SetIsShowLoadingModal(false)
                     });
                     updateUser(userProfile,jwtToken)
+                    updateLanguageByCode(localStorage.getItem('locale') || 'vi-VN', jwtToken)
                 }
                 else {
                     SetIsError(true)
@@ -69,17 +67,44 @@ function Authorize(props) {
             });
     }
 
+    const updateLanguageByCode = async (lang, jwtToken) => {
+        if (lang) {
+            try {
+                const languageKeyMapping = {
+                    [Constants.LANGUAGE_EN]: 'en',
+                    [Constants.LANGUAGE_VI]: 'vi'
+                }
+                const config = {
+                    headers: {
+                        'Authorization': `Bearer ${jwtToken}`
+                    }
+                }
+                const response = await axios.post(`${process.env.REACT_APP_REQUEST_URL}user/setlanguage?culture=${languageKeyMapping[[lang]]}`, null, config)
+                if (response && response.data) {
+                    const result = response.data.result
+                    if (result.code == Constants.API_SUCCESS_CODE) {
+                        return true
+                    }
+                    return false
+                }
+                return false
+            } catch (e) {
+                return false
+            }
+        }
+        return false
+    }
+
     const hasPermissonShowPrepareTab = async (token, companyCode) => {
         try {
             const config = {
                 headers: {
-                  'Authorization': `Bearer ${token}`
+                  'Authorization': token
                 }
             }
             const response = await axios.get(`${process.env.REACT_APP_HRDX_URL}user/managementPoint?companyCode=${companyCode}`, config)
             if (response && response.data) {
-                //return  response.data.data?.isSupporter == true || ( [Constants.pnlVCode.VinSchool, Constants.pnlVCode.VinHome, Constants.PnLCODE.Vin3S, Constants.PnLCODE.VinFast, Constants.PnLCODE.VinFastTrading].includes(companyCode) && response.data.data?.hasSubordinate == true) ? true : false;
-                return  response.data.data?.isSupporter == true || ( [Constants.pnlVCode.VinSchool, Constants.pnlVCode.VinHome, Constants.PnLCODE.Vin3S].includes(companyCode) && response.data.data?.hasSubordinate == true) ? true : false;
+                return  response.data.data?.isSupporter == true || ( [...Constants.MODULE_COMPANY_AVAILABE[Constants.MODULE.DANHGIA_TAIKI]].includes(companyCode) && response.data.data?.hasSubordinate == true) ? true : false;
             }
             return false;
         } catch(e) {
@@ -94,7 +119,7 @@ function Authorize(props) {
         return val
     }
 
-    const checkUser = async (user, jwtToken, vgEmail, onSaveSuccess) => {
+    const checkUser = async (user, jwtToken, refreshToken, timeTokenExpire, vgEmail, onSaveSuccess) => {
         if (user == null || user.uid == null) {
             SetIsError(true)
             SetErrorType(ERROR_TYPE.USER_NOT_EXIST)
@@ -110,9 +135,9 @@ function Authorize(props) {
 
             var benefitTitle = "";
             if (user.benefit_level && user.benefit_level !== '#') {
-                benefitTitle = user.benefit_level;
+                benefitTitle = user.benefit_level.replace('PL', '');
             } else {
-                benefitTitle = user.rank_name;
+                benefitTitle = user.employee_level;
             }
             //check permission show prepare tab 
             const shouldShowPrepareOnboard = await hasPermissonShowPrepareTab(jwtToken, user.company_code);
@@ -128,15 +153,17 @@ function Authorize(props) {
                         guard.setIsAuth({
                             tokenType: 'Bearer',
                             accessToken: jwtToken,
-                            tokenExpired: moment().add(3600, 'seconds'),
+                            refreshToken: refreshToken,
+                            tokenExpired: timeTokenExpire,
                             email: vgEmail,
                             plEmail: user.company_email,
                             avatar: user.avatar,
                             fullName: user.fullname,
                             jobTitle: user.job_name,
                             jobId: user.job_id,
-                            benefitLevel: user.benefit_level || user.employee_level,
-                            employeeLevel: formatMuleSoftValue(user?.rank_title) ? user?.rank_title : user?.employee_level, // Cấp bậc chức danh để phân quyền.
+                            benefitLevel: benefitTitle,
+                            employeeLevel: formatMuleSoftValue(user?.rank_title) ? user?.rank_title : user?.employee_level, // Có Cấp bậc chức danh thì lấy Cấp bậc chức danh ngược lại lấy Cấp bậc thực tế
+                            actualRank: formatMuleSoftValue(user?.employee_level) ? user?.employee_level : '', // Cấp bậc thực tế
                             benefitTitle: benefitTitle,
                             company: user.pnl,
                             sabaId: `saba-${user.uid}`,
@@ -162,7 +189,8 @@ function Authorize(props) {
                             partId: user.organization_lv6,
                             part: user.part,
                             role_assigment: user.role_assigment,
-                            prepare: shouldShowPrepareOnboard
+                            prepare: shouldShowPrepareOnboard,
+                            jobCode: user?.job_code,
                         });
                         FirebaseUpdateToken();
                     }
@@ -171,7 +199,8 @@ function Authorize(props) {
                     guard.setIsAuth({
                         tokenType: 'Bearer',
                         accessToken: jwtToken,
-                        tokenExpired: '',
+                        refreshToken: refreshToken,
+                        tokenExpired: timeTokenExpire,
                         email: vgEmail,
                         plEmail: user.company_email,
                         avatar: '',
@@ -179,7 +208,8 @@ function Authorize(props) {
                         jobTitle: user.job_name,
                         jobId: user.job_id,
                         benefitLevel: user.benefit_level || user.employee_level,
-                        employeeLevel: user.rank_title || user.employee_level, // Cấp bậc chức danh để phân quyền.
+                        employeeLevel: formatMuleSoftValue(user?.rank_title) ? user?.rank_title : user?.employee_level, // Có Cấp bậc chức danh thì lấy Cấp bậc chức danh ngược lại lấy Cấp bậc thực tế
+                        actualRank: formatMuleSoftValue(user?.employee_level) ? user?.employee_level : '', // Cấp bậc thực tế
                         benefitTitle: benefitTitle,
                         company: user.pnl,
                         sabaId: `saba-${user.uid}`,
@@ -203,7 +233,8 @@ function Authorize(props) {
                         partId: user.organization_lv6,
                         part: user.part,
                         role_assigment: user.role_assigment,
-                        prepare: shouldShowPrepareOnboard
+                        prepare: shouldShowPrepareOnboard,
+                        jobCode: user?.job_code,
                     });
                 })
                 .finally(result => {
@@ -213,11 +244,10 @@ function Authorize(props) {
         }
     }
 
-    function getUserData(_token) {
+    function getUserData(_token, refreshToken, timeTokenExpire) {
         if (isLoadingUser == false) {
             SetIsLoadingUser(true);
-            SetToken(_token);
-            getUser(_token, _token);
+            getUser(_token, refreshToken, timeTokenExpire);
         }
     }
 
@@ -297,10 +327,10 @@ function Authorize(props) {
                 const expireIn = expires_in || 3600 // Nếu không trả về thì mặc định thời gian hết hạn là 1h
                 const timeTokenExpire = moment().add(Number(expireIn), 'seconds').format('YYYYMMDDHHmmss')
         
-                localStorage.setItem('refreshToken', refresh_token)
-                localStorage.setItem('timeTokenExpire', timeTokenExpire)
+                // localStorage.setItem('refreshToken', refresh_token)
+                // localStorage.setItem('tokenExpired', timeTokenExpire)
 
-                getUserData(access_token);
+                getUserData(access_token, refresh_token, timeTokenExpire);
             } else {
                 return window.location.replace(process.env.REACT_APP_AWS_COGNITO_IDP_SIGNOUT_URL)
             }

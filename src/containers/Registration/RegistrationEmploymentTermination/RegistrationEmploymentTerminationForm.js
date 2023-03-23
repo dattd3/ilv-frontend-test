@@ -3,7 +3,7 @@ import axios from 'axios'
 import moment from 'moment'
 import _ from 'lodash'
 import { Progress } from "reactstrap"
-import { ToastContainer, toast } from "react-toastify"
+import { toast } from "react-toastify"
 import { withTranslation } from "react-i18next"
 import Constants from '../../../commons/Constants'
 import { getRequestConfigs } from '../../../commons/commonFunctions'
@@ -15,12 +15,11 @@ import ReasonResignationComponent from '../TerminationComponents/ReasonResignati
 import AttachmentComponent from '../TerminationComponents/AttachmentComponent'
 import ResultModal from '../ResultModal'
 import LoadingModal from '../../../components/Common/LoadingModal'
-import "react-toastify/dist/ReactToastify.css"
-import { getMuleSoftHeaderConfigurations } from '../../../commons/Utils'
+import { getMuleSoftHeaderConfigurations, getResignResonsMasterData } from '../../../commons/Utils'
 
 class RegistrationEmploymentTerminationForm extends React.Component {
     constructor(props) {
-        super();
+        super(props);
         this.state = {
             reasonTypes: [],
             userInfos: {},
@@ -36,10 +35,10 @@ class RegistrationEmploymentTerminationForm extends React.Component {
             loaded: 0,
             isShowLoadingModal: false,
             errors: {
-                lastWorkingDay: "Vui lòng nhập ngày làm việc cuối cùng!",
-                reason: "Vui lòng chọn lý do chấm dứt hợp đồng!",
-                directManager: "Vui lòng chọn CBQL trực tiếp!",
-                seniorExecutive: "Vui lòng chọn CBLĐ phê duyệt!"
+                lastWorkingDay: props.t('resign_error_lastWorkingDay'),
+                reason: props.t('resign_error_reason'),
+                directManager: props.t('resign_error_directManager'),
+                seniorExecutive: props.t('resign_error_seniorExecutive')
             }
         }
     }
@@ -60,20 +59,50 @@ class RegistrationEmploymentTerminationForm extends React.Component {
         const userInfosEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/profile`
         const userContractInfosEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/contract`
         const userContractMoreInfosEndpoint = `${process.env.REACT_APP_REQUEST_URL}ReasonType/getadditionalinfo`;
+        const userDirectManagerEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/manager`;
 
         const requestReasonTypes = axios.get(reasonTypesEndpoint, getMuleSoftHeaderConfigurations())
         const requestUserInfos = axios.get(userInfosEndpoint, getMuleSoftHeaderConfigurations())
         //const requestUserContractInfos = axios.get(userContractInfosEndpoint, getMuleSoftHeaderConfigurations())
-        const requestUserMoreInfos = axios.post(userContractMoreInfosEndpoint, localStorage.getItem('employeeNo'), config)
+        const requestUserMoreInfos = axios.post(userContractMoreInfosEndpoint, {"employeeCode": localStorage.getItem('employeeNo')}, config);
+        const userDirectManager = axios.get(userDirectManagerEndpoint, getMuleSoftHeaderConfigurations());
 
-        await axios.all([requestReasonTypes, requestUserInfos, requestUserMoreInfos]).then(axios.spread((...responses) => {
+        await axios.all([requestReasonTypes, requestUserInfos, requestUserMoreInfos, userDirectManager]).then(axios.spread((...responses) => {
             const reasonTypes = this.prepareReasonTypes(responses[0])
             const userInfos = this.prepareUserInfos(responses[1], responses[2])
-
-            this.setState({reasonTypes: reasonTypes, userInfos: userInfos})
+            const directManager = this.prepareDirectManagerInfos(responses[3]);
+            const errors = {...this.state.errors};
+            if(directManager) {
+                errors.directManager = null;
+            }
+            this.setState({reasonTypes: reasonTypes, userInfos: userInfos, directManager: directManager, directManagerRaw: responses[3], errors});
         })).catch(errors => {
+            console.log(errors);
             return null
         })
+    }
+
+    prepareDirectManagerInfos = (managerResponse) => {
+        let userInfoDetail = null;
+        if (managerResponse && managerResponse.data) {
+            const userInfos = managerResponse.data.data;
+            if(userInfos?.length > 0) {
+                const res = userInfos[0];
+                userInfoDetail = {
+                    label: res?.fullname,
+                    value: res?.username,
+                    fullName: res?.fullname,
+                    avatar: null,
+                    employeeLevel:  res.rank_title,
+                    pnl: '',
+                    organizationLv2: '',
+                    account: res?.username,
+                    jobTitle: res?.title,
+                    department:  res.department
+                };
+            }
+        }
+        return userInfoDetail;
     }
 
     prepareUserInfos = (userResponses, contractResponses) => {
@@ -88,7 +117,7 @@ class RegistrationEmploymentTerminationForm extends React.Component {
                     employeeNo: localStorage.getItem("employeeNo") || "",
                     fullName: infos.fullname || "",
                     jobTitle: infos.job_name || "",
-                    department: `${infos.division || ""}${infos.department ? `/${infos.department}` : ""}${infos.part ? `/${infos.part}` : ""}`,
+                    department: `${infos.division || ""}${infos.department ? `/${infos.department}` : ""}${infos.unit ? `/${infos.unit}` : ""}`,
                     dateStartWork: dateStartWork,
                     email: localStorage.getItem("email") || "",
                     rank: infos.rank_name || "",
@@ -99,13 +128,14 @@ class RegistrationEmploymentTerminationForm extends React.Component {
                     regionId: localStorage.getItem("organizationLv4"),
                     departmentId: localStorage.getItem("organizationLv3"),
                     unitId: localStorage.getItem("organizationLv5"),
-                    rankId: localStorage.getItem("employeeLevel")
+                    rankId: localStorage.getItem("employeeLevel"),
+                    costCenter: infos.cost_center || ''
                 }
             }
         }
 
         if (contractResponses && contractResponses.data) {
-            const infos = contractResponses.data.data
+            const infos = contractResponses?.data?.data[localStorage.getItem('employeeNo')] ? contractResponses.data.data[localStorage.getItem('employeeNo')] : {};
             if (infos) {
                 userContractInfoResults = {
                     contractType: infos.lastestContractType,
@@ -126,10 +156,11 @@ class RegistrationEmploymentTerminationForm extends React.Component {
         if (responses && responses.data) {
             const reasonTypeCodeForEmployee = "ZG"
             const reasonTypes = responses.data.data
+            const reasonMasterData = getResignResonsMasterData();
             const results = (reasonTypes || [])
-            .filter(item => item.code01 === reasonTypeCodeForEmployee)
+            .filter(item => item.code01 === reasonTypeCodeForEmployee && !Constants.RESIGN_REASON_EMPLOYEE_INVALID.includes(item.code02))
             .map(item => {
-                return {value: item.code02, label: item.text}
+                return {value: item.code02, label: reasonMasterData[item.code02]}
             })
             return results
         }
@@ -166,8 +197,8 @@ class RegistrationEmploymentTerminationForm extends React.Component {
         const userAccount = directManager.account?.toLowerCase()
 
         try {
-            const responses = await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/manager`, getMuleSoftHeaderConfigurations())
-            const realUserAccounts = this.getUserAccountDirectManagerByResponses(responses)
+            //const responses = await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/manager`, getMuleSoftHeaderConfigurations())
+            const realUserAccounts = this.getUserAccountDirectManagerByResponses(this.state.directManagerRaw);
             
             if (realUserAccounts.includes(userAccount)) {
                 return true
@@ -202,17 +233,17 @@ class RegistrationEmploymentTerminationForm extends React.Component {
         this.setDisabledSubmitButton(true)
         const isValid = this.isValidData()
         const fileInfoValidation = this.validateAttachmentFile()
-        const isDirectManagerValid = await this.isDirectManagerValid()
+        //const isDirectManagerValid = await this.isDirectManagerValid()
 
         if (!isValid) {
             const message = this.getMessageValidation()
             toast.error(message)
             this.setDisabledSubmitButton(false)
             return
-        } else if (!isDirectManagerValid) {
-            toast.error("Cán bộ QLTT không có thẩm quyền")
-            this.setDisabledSubmitButton(false)
-            return
+        // } else if (!isDirectManagerValid) {
+        //     toast.error("Cán bộ QLTT không có thẩm quyền")
+        //     this.setDisabledSubmitButton(false)
+        //     return
         } else if (_.size(fileInfoValidation) > 0 && fileInfoValidation.files) {
             toast.error(fileInfoValidation.files)
             this.setDisabledSubmitButton(false)
@@ -286,19 +317,20 @@ class RegistrationEmploymentTerminationForm extends React.Component {
                     this.setState({isShowLoadingModal: false})
                 }
             } else {
-                this.showStatusModal(t("Notification"), "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
+                this.showStatusModal(t("Notification"), t("Error"), false)
                 this.setDisabledSubmitButton(false)
                 this.setState({isShowLoadingModal: false})
             }
 
         } catch (errors) {
-            this.showStatusModal(t("Notification"), "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
+            this.showStatusModal(t("Notification"), t("Error"), false)
             this.setDisabledSubmitButton(false)
             this.setState({isShowLoadingModal: false})
         }
     }
 
     validateAttachmentFile = () => {
+        const { t } = this.props
         const files = this.state.files
         const errors = {}
         const fileExtension = [
@@ -315,10 +347,10 @@ class RegistrationEmploymentTerminationForm extends React.Component {
         for (let index = 0, lenFiles = files.length; index < lenFiles; index++) {
             const file = files[index]
             if (!fileExtension.includes(file.type)) {
-                errors.files = 'Tồn tại file đính kèm không đúng định dạng'
+                errors.files = t('Request_error_file_format')
                 break
             } else if (parseFloat(file.size / 1000000) > 2) {
-                errors.files = 'Dung lượng từng file đính kèm không được vượt quá 2MB'
+                errors.files =  t('Request_error_file_size')
                 break
             } else {
                 errors.files = null
@@ -327,7 +359,7 @@ class RegistrationEmploymentTerminationForm extends React.Component {
         }
     
         if (parseFloat(sizeTotal / 1000000) > 10) {
-            errors.files = 'Tổng dung lượng các file đính kèm không được vượt quá 10MB'
+            errors.files =  t('Request_error_file_oversize')
         }
 
         return errors
@@ -388,11 +420,9 @@ class RegistrationEmploymentTerminationForm extends React.Component {
             seniorExecutive,
             isShowLoadingModal
         } = this.state
-
         return (
             <div className='registration-section'>
             <LoadingModal show={isShowLoadingModal} />
-            <ToastContainer autoClose={2000} />
             <Progress max="100" color="success" value={this.state.loaded}>
                 {Math.round(this.state.loaded, 2)}%
             </Progress>
