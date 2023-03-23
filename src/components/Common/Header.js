@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useGuardStore } from '../../modules';
-import { Navbar, Form, InputGroup, Button, FormControl, Dropdown, Modal } from 'react-bootstrap';
+import { Navbar, Form, InputGroup, Button, FormControl, Dropdown, Modal, Image } from 'react-bootstrap';
 import { useTranslation } from "react-i18next";
 import { useApi, useFetcher } from "../../modules";
 import axios from 'axios'
@@ -9,6 +9,8 @@ import Constants from "../../commons/Constants"
 import { Animated } from "react-animated-css";
 import { useLocalizeStore } from '../../modules';
 import uploadAvatarIcon from '../../assets/img/icon/camera-sm.svg'
+import GuidelineNotification from '../../assets/img/ic-guideline-noti.svg';
+import GuidelineNotificationPermission from '../../assets/img/guide-noti-permission.png';
 import UploadAvatar from '../../containers/UploadAvatar'
 import { getRequestConfigurations } from "../../commons/Utils"
 
@@ -186,14 +188,26 @@ function Header(props) {
         }
     }
 
-    const userLogOut = () => {
+    const userLogOut = async () => {
+        await axios.post(
+          `${process.env.REACT_APP_REQUEST_URL}device/logoutToken`,
+          {
+            deviceToken: localStorage.getItem('firebaseToken') || '',
+            companyCode: localStorage.getItem('companyCode'),
+            orgLv3: localStorage.getItem('organizationLv3'),
+            orgLv4: localStorage.getItem('organizationLv4'),
+            orgLv5: localStorage.getItem('organizationLv5'),
+            platform: 'Web',
+          },
+          getRequestConfigurations()
+        );
         try {
-            guard.setLogOut();
-            window.location.href = process.env.REACT_APP_AWS_COGNITO_IDP_SIGNOUT_URL;
-            // Auth.signOut({ global: true });
+          guard.setLogOut();
+          window.location.href = process.env.REACT_APP_AWS_COGNITO_IDP_SIGNOUT_URL;
+          // Auth.signOut({ global: true });
         } catch {
-            guard.setLogOut();
-            window.location.reload();
+          guard.setLogOut();
+          window.location.reload();
         }
     }
 
@@ -284,6 +298,40 @@ function Header(props) {
                             <FormControl className="bg-light border-0" placeholder={t("SearchTextPlaceholder")} aria-label="Search" aria-describedby="basic-addon1" />
                         </InputGroup>
                     </Form>
+                    <Dropdown id="notifications-block" className="notification-guide">
+                        <Animated animationIn="lightSpeedIn" animationOutDuration={10}>
+                            <Dropdown.Toggle>
+                                <Image
+                                className="guide-icon"
+                                alt="guideline notification"
+                                src={GuidelineNotification}
+                                />
+                            </Dropdown.Toggle>
+                        </Animated>
+                        <Dropdown.Menu className="list-notification-popup">
+                            <div className="title-block text-center">
+                                {t('AnnouncementGuide')}
+                            </div>
+                            <div className="all-items">
+                                <img
+                                src={GuidelineNotificationPermission}
+                                className="guide-image"
+                                alt="guideline notification permission"
+                                />
+                                <a
+                                href={
+                                    activeLang === Constants.LANGUAGE_VI
+                                    ? 'https://vi.l3xa.com/how-allow-block-desktop-notifications-google-chrome'
+                                    : 'https://www.digitaltrends.com/computing/how-to-enable-and-disable-chrome-notifications/'
+                                }
+                                target="_blank"
+                                className="guide-link"
+                                >
+                                {t('ViewAnnouncementGuide')}
+                                </a>
+                            </div>
+                        </Dropdown.Menu>
+                    </Dropdown>
                     <Dropdown id="notifications-block" onToggle={(isOpen) => OnClickBellFn(isOpen)}>
                         <Animated animationIn="lightSpeedIn" isVisible={dataNotificationsUnRead != ""} animationOutDuration={10} >
                             <Dropdown.Toggle>

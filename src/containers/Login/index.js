@@ -41,7 +41,6 @@ const CustomOption = ({ children, ...props }) => {
 function LoginGuideModal(props) {
   const { t } = useTranslation();
 
-
   return (
     <Modal
       {...props}

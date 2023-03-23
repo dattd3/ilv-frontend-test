@@ -1,3 +1,28 @@
+.notification-guide {
+    margin-right: 5px !important;
+
+    .guide-icon {
+        margin-bottom: 4px;
+    }
+
+    .list-notification-popup {
+        right: -5px !important;
+        min-height: 300px;
+
+        .all-items {
+            text-align: center;
+            max-height: 500px !important;
+            .guide-image {
+                border: 1px solid rgba(0,0,0,0.3);
+            }
+            .guide-link {
+                display: block;
+                margin: 10px 0;
+            }
+        }
+    }
+}
+
 #notifications-block {
     display: inline-block;
     margin-left: 0;
