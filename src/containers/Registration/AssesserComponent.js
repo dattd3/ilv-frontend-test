@@ -38,7 +38,7 @@ class AssesserComponent extends React.Component {
         this.state = {
             appraiser: null,
             users: null,
-            typingTimeout: 0,
+            isSearching: false,
             appraiserTyping: "",
             isSearch: false
         }
@@ -104,7 +104,7 @@ class AssesserComponent extends React.Component {
         this.setState({isSearch: false})
         const { approver } = this.props
         if (value !== "") {
-            this.setState({isSearch: true})
+            this.setState({isSearch: true, isSearching: true})
             const config = getRequestConfigurations()
             const payload = {
                 account: value,
@@ -135,6 +135,9 @@ class AssesserComponent extends React.Component {
                         this.setState({ users: lst || []})
                     }
                 }).catch(error => { })
+                .finally(() => {
+                    this.setState({ isSearching: false })
+                })
         }
         else {
             if (Array.isArray(this.state.users) && this.state.users.length > 1) this.setState({isSearch: true})
@@ -167,7 +170,7 @@ class AssesserComponent extends React.Component {
             })
         }
         const { t, isEdit, errors, recentlyAppraiser, isShowDuplicateWarning = true } = this.props
-        const { appraiser, users, isSearch } = this.state
+        const { appraiser, users, isSearch, isSearching } = this.state
 
         return <div className="appraiser">
             <div className="box shadow">
@@ -195,7 +198,8 @@ class AssesserComponent extends React.Component {
                                 placeholder={t('Search') + '...'}
                                 key="appraiser"
                                 filterOption={this.filterOption}
-                                options={users ? users : recentlyAppraiser || []} />
+                                options={users ? users : recentlyAppraiser || []}
+                                isLoading={isSearching} />
                         </div>
                         {errors && errors['appraiser'] ? <p className="text-danger">{errors['appraiser']}</p> : null}
                     </div>
