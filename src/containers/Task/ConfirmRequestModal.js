@@ -102,7 +102,7 @@ class ConfirmRequestModal extends React.Component {
     approve = (id) => {
         const dataPrepareToSap = [];
         const { t, dataToSap } = this.props
-        const requestTypeIdsAllowedToReApproval = [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP, Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE]
+        const requestTypeIdsAllowedToReApproval = [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP, Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE, Constants.OT_REQUEST]
 
         dataToSap.forEach(element => {
             let taskObj = {};
