@@ -824,6 +824,10 @@ function EvaluationDetail(props) {
         payload.totalSeftPoint = Number(payload.totalSeftPoint).toFixed(2)
         payload.totalLeadReviewPoint = Number(payload.totalLeadReviewPoint).toFixed(2)
 
+        if (payload?.totalLeadReviewPoint) {
+          payload.evaluateRating = calculateRating(payload?.totalLeadReviewPoint)
+        }
+
         const isZeroLevel = payload?.reviewStreamCode === processStep.zeroLevel
         const response = await axios.post(`${process.env.REACT_APP_HRDX_PMS_URL}api/targetform/update`, { requestString: JSON.stringify(payload || {}) }, config)
         SetErrors({})
