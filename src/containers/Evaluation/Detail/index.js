@@ -435,41 +435,43 @@ function EvaluationDetail(props) {
 
     if (_.isNil(childIndex)) {
       evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex][stateName] = value
-
-      if (stateName === 'realResult') {
-          evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex]['seftPoint'] = calculateScore(
-          evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex]?.formulaCode, 
-          evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex]?.targetValue, 
-          evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex]?.weight, 
-          value)
-      }
-
-      if (stateName === 'leadRealResult') {
-          evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex]['leadReviewPoint'] = calculateScore(
-          evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex]?.formulaCode, 
-          evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex]?.targetValue, 
-          evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex]?.weight, 
-          value
-        )
+      if (isVinBus) {
+        if (stateName === 'realResult') {
+            evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex]['seftPoint'] = calculateScore(
+            evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex]?.formulaCode,
+            evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex]?.targetValue,
+            evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex]?.weight,
+            value
+          )
+        }
+        if (stateName === 'leadRealResult') {
+            evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex]['leadReviewPoint'] = calculateScore(
+            evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex]?.formulaCode,
+            evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex]?.targetValue,
+            evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex]?.weight,
+            value
+          )
+        } 
       }
     } else {
       evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex].listTarget[childIndex][stateName] = value
-
-      if (stateName === 'realResult') {
-          evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex].listTarget[childIndex]['seftPoint'] = calculateScore(
-          evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex]?.listTarget[childIndex]?.formulaCode, 
-          evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex]?.listTarget[childIndex]?.targetValue, 
-          evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex]?.listTarget[childIndex]?.weight, 
-          value)
-      }
-
-      if (stateName === 'leadRealResult') {
-          evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex].listTarget[childIndex]['leadReviewPoint'] = calculateScore(
-          evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex].listTarget[childIndex]?.formulaCode, 
-          evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex].listTarget[childIndex]?.targetValue, 
-          evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex].listTarget[childIndex]?.weight, 
-          value
-        )
+      if (isVinBus) {
+        if (stateName === 'realResult') {
+            evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex].listTarget[childIndex]['seftPoint'] = calculateScore(
+            evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex]?.listTarget[childIndex]?.formulaCode,
+            evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex]?.listTarget[childIndex]?.targetValue,
+            evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex]?.listTarget[childIndex]?.weight,
+            value
+          )
+        }
+        if (stateName === 'leadRealResult') {
+            evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex].listTarget[childIndex]['leadReviewPoint'] = calculateScore(
+            evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex].listTarget[childIndex]?.formulaCode,
+            evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex].listTarget[childIndex]?.targetValue,
+            evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex].listTarget[childIndex]?.weight,
+            value
+          )
+        }
       }
     }
 
@@ -526,14 +528,15 @@ function EvaluationDetail(props) {
     evaluationFormDetailTemp.totalSeftPoint = totalInfos?.self || 0
     evaluationFormDetailTemp.totalLeadReviewPoint = totalInfos?.manager || 0
 
-    // Bắt đầu tính rating khi Biểu mẫu 0Level hoặc đang đến bước của CBQL đánh giá
-    evaluationFormDetailTemp.evaluateRating = evaluationFormDetailTemp?.status == evaluationStatus.launch && evaluationFormDetailTemp?.evaluateRating
-    ? evaluationFormDetailTemp?.evaluateRating
-    : calculateRating(
-      evaluationFormDetail.reviewStreamCode === processStep.zeroLevel 
-      ? Number(totalInfos?.self || 0) 
-      : evaluationFormDetail?.status > evaluationStatus.launch ? Number(totalInfos?.manager || 0) : null
-    )
+    if (isVinBus) {
+      evaluationFormDetailTemp.evaluateRating = evaluationFormDetailTemp?.status == evaluationStatus.launch && evaluationFormDetailTemp?.evaluateRating
+      ? evaluationFormDetailTemp?.evaluateRating
+      : calculateRating(
+        evaluationFormDetail.reviewStreamCode === processStep.zeroLevel 
+        ? Number(totalInfos?.self || 0) 
+        : evaluationFormDetail?.status > evaluationStatus.launch ? Number(totalInfos?.manager || 0) : null
+      )
+    }
 
     SetEvaluationFormDetail(evaluationFormDetailTemp)
   }
@@ -737,24 +740,25 @@ function EvaluationDetail(props) {
     const maximumScore = 5;
     const minimumScore = 0;
     const listGroup = evaluationFormDetail?.listGroup || []
+    const isVinBus = isVinBusByCompanyCode(evaluationFormDetail?.companyCode)
 
     for (let groupIndex = 0; groupIndex < listGroup.length; groupIndex++) {
       let group = listGroup[groupIndex]
       for (let targetIndex = 0; targetIndex < group?.listTarget?.length; targetIndex++) {
         let target = group?.listTarget[targetIndex]
-        if (target?.seftPoint !== null && ((!isVinBusByCompanyCode(evaluationFormDetail?.companyCode) && Number(target?.seftPoint) > maximumScore) || isNaN(Number(target?.seftPoint)) || Number(target?.seftPoint) < minimumScore)) {
+        if (target?.seftPoint !== null && ((!isVinBus && Number(target?.seftPoint) > maximumScore) || isNaN(Number(target?.seftPoint)) || Number(target?.seftPoint) < minimumScore)) {
           return false
         }
-        if (target?.leadReviewPoint !== null && ((!isVinBusByCompanyCode(evaluationFormDetail?.companyCode) && Number(target?.leadReviewPoint) > maximumScore) || isNaN(Number(target?.leadReviewPoint)) || Number(target?.leadReviewPoint) < minimumScore)) {
+        if (target?.leadReviewPoint !== null && ((!isVinBus && Number(target?.leadReviewPoint) > maximumScore) || isNaN(Number(target?.leadReviewPoint)) || Number(target?.leadReviewPoint) < minimumScore)) {
           return false
         }
 
         for (let subTargetIndex = 0; subTargetIndex < target?.listTarget?.length; subTargetIndex++) {
           let subTarget = target?.listTarget[subTargetIndex]
-          if (subTarget?.seftPoint !== null && ((!isVinBusByCompanyCode(evaluationFormDetail?.companyCode) && Number(subTarget?.seftPoint) > maximumScore) || isNaN(Number(subTarget?.seftPoint)) || Number(subTarget?.seftPoint) < minimumScore)) {
+          if (subTarget?.seftPoint !== null && ((!isVinBus && Number(subTarget?.seftPoint) > maximumScore) || isNaN(Number(subTarget?.seftPoint)) || Number(subTarget?.seftPoint) < minimumScore)) {
             return false
           }
-          if (subTarget?.leadReviewPoint !== null && ((!isVinBusByCompanyCode(evaluationFormDetail?.companyCode) && Number(subTarget?.leadReviewPoint) > maximumScore) || isNaN(Number(subTarget?.leadReviewPoint)) || Number(subTarget?.leadReviewPoint) < minimumScore)) {
+          if (subTarget?.leadReviewPoint !== null && ((!isVinBus && Number(subTarget?.leadReviewPoint) > maximumScore) || isNaN(Number(subTarget?.leadReviewPoint)) || Number(subTarget?.leadReviewPoint) < minimumScore)) {
             return false
           }
         }
