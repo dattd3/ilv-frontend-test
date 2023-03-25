@@ -102,7 +102,7 @@ class ConfirmRequestModal extends React.Component {
     approve = (id) => {
         const dataPrepareToSap = [];
         const { t, dataToSap } = this.props
-        const requestTypeIdsAllowedToReApproval = [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP, Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE, Constants.OT_REQUEST]
+        const requestTypeIdsAllowedToReApproval = [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP, Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE, Constants.OT_REQUEST, Constants.UPDATE_PROFILE]
 
         dataToSap.forEach(element => {
             let taskObj = {};
@@ -113,7 +113,11 @@ class ConfirmRequestModal extends React.Component {
                 taskObj = {"id":element.salaryId ,"requestTypeId":element.requestTypeId,"sub":[]};
                 taskObj.sub.push({"id":element.salaryId,"processStatusId": Constants.STATUS_APPROVED})
             } else {
-                taskObj = {"id": element.requestTypeId == Constants.SUBSTITUTION || element.requestTypeId == Constants.IN_OUT_TIME_UPDATE || element.requestTypeId == Constants.CHANGE_DIVISON_SHIFT ? element.id : parseInt(element.id.split(".")[0]),"requestTypeId":element.requestTypeId,"sub":[]};
+                taskObj = {
+                    "id": element.requestTypeId == Constants.SUBSTITUTION || element.requestTypeId == Constants.IN_OUT_TIME_UPDATE || element.requestTypeId == Constants.CHANGE_DIVISON_SHIFT || element.requestTypeId == Constants.UPDATE_PROFILE ? element.id : parseInt(element.id.split(".")[0]),
+                    "requestTypeId": element.requestTypeId,
+                    "sub": []
+                };
                 // element.requestInfo.forEach(sub => {
                     if (element.processStatusId == Constants.STATUS_WAITING || (element.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && (requestTypeIdsAllowedToReApproval.includes(element.requestTypeId)))) {
                         taskObj.sub.push({"id": element.id, "processStatusId": Constants.STATUS_APPROVED})
