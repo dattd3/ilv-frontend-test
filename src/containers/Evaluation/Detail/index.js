@@ -127,12 +127,12 @@ function EvaluationOverall(props) {
             <td className='c-self-assessment text-center font-weight-bold'>{(evaluationFormDetail?.totalSeftPoint || 0).toFixed(2)}</td>
             {isDifferentZeroLevel && <td className='c-manager-assessment text-center font-weight-bold color-red'>{(evaluationFormDetail?.totalLeadReviewPoint || 0).toFixed(2)}</td>}
           </tr>
-          {
+          {/* {
             isVinBusByCompanyCode(evaluationFormDetail?.companyCode) &&
             <tr>
               <td colSpan={3} className='text-uppercase text-center'><div className="d-flex justify-content-center align-items-center">Xếp hạng đánh giá: <span style={{ fontWeight: 'bold', color: '#C11D2A', fontSize: 20, marginLeft: 3, marginTop: -1}}>{evaluationFormDetail?.evaluateRating || ''}</span></div></td>
             </tr>
-          }
+          } */}
         </tbody>
       </table>
     </div>
