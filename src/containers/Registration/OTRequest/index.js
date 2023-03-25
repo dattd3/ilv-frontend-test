@@ -99,7 +99,36 @@ export default function OTRequestComponent({ recentlyManagers }) {
       )
       .then((response) => setApprovalMatrixUrl(response.data?.data))
       .catch((err) => console.log(err));
+    loadDefaultAppraiser();
   }, []);
+
+  const loadDefaultAppraiser = async () => {
+    try {
+      const config = getMuleSoftHeaderConfigurations()
+      const response = await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/manager`, config)
+      if (response && response.data) {
+        const result = response.data.result
+        if (result && result.code == Constants.API_SUCCESS_CODE) {
+          const data = response.data?.data[0];
+          setAppraiser({
+            value: data?.userid?.toLowerCase() || "",
+            label: data?.fullname || "",
+            fullName: data?.fullname || "",
+            avatar: data?.avatar || "",
+            employeeLevel: data?.rank_title,
+            pnl: "",
+            orglv2Id: "",
+            account: data?.userid?.toLowerCase() || "",
+            current_position: data?.title || "",
+            department: data.division + (data.department ? '/' + data.department : '') + (data.part ? '/' + data.part : '')
+          })
+        }
+      }
+      return null
+    } catch (e) {
+      return null
+    }
+  }
 
   const getDayNameFromDate = (date) => {
     const days = [
@@ -465,7 +494,6 @@ export default function OTRequestComponent({ recentlyManagers }) {
       !isNullCustomize(timesheet.to_time2)
     );
   };
-
   return (
     <div className="ot-request-container">
       <ResultModal
@@ -876,7 +904,7 @@ export default function OTRequestComponent({ recentlyManagers }) {
             errors={errors}
             approver={budgetApprover}
             appraiser={appraiser}
-            recentlyAppraiser={recentlyManagers?.appraiser}
+            recentlyAppraiser={appraiser ? null : recentlyManagers?.appraiser}
             isShowDuplicateWarning={false}
             updateAppraiser={updateAppraiser}
           />
