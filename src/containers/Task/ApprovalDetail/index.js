@@ -335,8 +335,8 @@ class ApprovalDetail extends React.Component {
           : null
         }
         {
-          processStatusId == Constants.STATUS_WAITING ?
-          <div className="clearfix mb-5">
+          [Constants.STATUS_WAITING, Constants.STATUS_PARTIALLY_SUCCESSFUL].includes(processStatusId) ?
+          <div className="clearfix">
             <button type="button" className="btn btn-success float-right ml-3 shadow" onClick={this.approval}>
               <i className="fas fa-check" aria-hidden="true"></i> {t("Approval")}</button>
             <button type="button" className="btn btn-danger float-right shadow" onClick={this.disApproval}><i className="fa fa-close"></i> {t('Reject')}</button>
