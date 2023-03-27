@@ -33,6 +33,7 @@ class ApproverComponent extends React.Component {
     super();
     this.state = {
       approver: null,
+      isSearching: false,
       users: [],
       typingTimeout: 0,
       approverTyping: ""
@@ -137,6 +138,7 @@ class ApproverComponent extends React.Component {
   getApproverInfo = (value) => {
     const { appraiser } = this.props
     if (value !== "") {
+      this.setState({isSearching: true})
       const config = {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
@@ -167,9 +169,12 @@ class ApproverComponent extends React.Component {
                 department: res.division + (res.department ? '/' + res.department : '') + (res.part ? '/' + res.part : '')
               }
             })
-            this.setState({ users: appraiser ? users.filter(user => user.account !== appraiser.account) : users })
+            this.setState({ users: appraiser ? users.filter(user => user.account !== appraiser.account) : users, isSearching: false })
           }
-        }).catch(error => { })
+        }).catch(error => { 
+          console.log(error);
+          this.setState({isSearching: false})
+        })
     }
   }
 
@@ -191,6 +196,7 @@ class ApproverComponent extends React.Component {
       })
     }
     const { t, isEdit } = this.props;
+    const { isSearching} = this.state
     
     return <div className="approver">
       
@@ -199,6 +205,7 @@ class ApproverComponent extends React.Component {
            
             <div>
               <Select
+                isLoading={isSearching}
                 isClearable={true}
                 isDisabled={isEdit}
                 styles={customStyles}
