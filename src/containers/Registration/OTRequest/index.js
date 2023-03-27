@@ -42,8 +42,6 @@ const getHoursBetween2Times = (start, end) => {
     .toFixed(2);
 };
 
-const OTRequestType = 13;
-
 const checkOverlap = (timeSegments) => {
   if (timeSegments.length === 1) return false;
   timeSegments.sort((timeSegment1, timeSegment2) =>
@@ -62,13 +60,21 @@ const checkOverlap = (timeSegments) => {
   return false;
 };
 
+const OTRequestType = 13;
 const INIT_STATUS_MODAL_MANAGEMENT = {
   isShow: false,
   isSuccess: true,
   titleModal: "",
   messageModal: "",
 };
+const MAX_OT_HOURS = 4;
+const MAX_OT_HOURS_OFF_DAY = 12;
+
 const queryString = window.location.search;
+
+const checkIsHolidayOfCompany = (isHoliday, companyCode) => {
+  return companyCode != Constants.COMPANY_CODE_VINMEC && isHoliday == '1';
+};
 
 export default function OTRequestComponent({ recentlyManagers }) {
   const { t } = useTranslation();
@@ -405,8 +411,10 @@ export default function OTRequestComponent({ recentlyManagers }) {
         if (!item.endTime) _errors[`endTime_${index}`] = t("Required");
         if (!item.note) _errors[`note_${index}`] = t("Required");
         if (item.startTime && item.endTime) {
-          if (getHoursBetween2Times(item.startTime, item.endTime) > 4) {
-            _errors[`overtime_${index}`] = t("OverTimeOT");
+          if (item?.shift_id !== "OFF" && (getHoursBetween2Times(item.startTime, item.endTime) > MAX_OT_HOURS)) {
+            _errors[`overtime_${index}`] = t("OverTimeOT1");
+          } else if ((item?.shift_id?.toUpperCase() === "OFF" || checkIsHolidayOfCompany(item.is_holiday, localStorage.getItem("companyCode"))) && (getHoursBetween2Times(item.startTime, item.endTime) > MAX_OT_HOURS_OFF_DAY)) {
+            _errors[`overtime_${index}`] = t("OverTimeOT2");
           }
           if (getHoursBetween2Times(item.startTime, item.endTime) <= 0) {
             _errors[`invalidHour_${index}`] = t("InvalidHour");
