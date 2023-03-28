@@ -15,7 +15,6 @@ import 'react-datepicker/dist/react-datepicker.css'
 function ShiftUpdateModal(props) {
     const { t } = useTranslation()
     const brokenShiftCode = "02"
-    const shiftCodeOFF = 'OFF'
     const substitutionTypes = [
         { value: '01', label: t("Shiftchange") },
         { value: brokenShiftCode, label: t("IntermittenShift") },
@@ -72,7 +71,7 @@ function ShiftUpdateModal(props) {
     // const delayedQuery = useRef(_.debounce((i, q) => sendQuery(i, q), 800)).current
 
     const setShiftTimeFilter = shifts => {
-        const shiftsExcludeOff = shifts.filter(item => item.shift_id !== shiftCodeOFF)
+        const shiftsExcludeOff = shifts.filter(item => item.shift_id !== Constants.SHIFT_CODE_OFF)
         let startTimes = []
         let endTimes = []
 
@@ -102,7 +101,7 @@ function ShiftUpdateModal(props) {
                 if (result.code == Constants.API_SUCCESS_CODE) {
                     const data = responses.data?.data
                     const shifts = data.filter((shift, index, arr) => arr.findIndex(a => a.shift_id === shift.shift_id) === index)
-                    .sort((a,b) =>  a.shift_id.includes(shiftCodeOFF) ? -1 : 1 ).sort((a,b) => a.shift_id < b.shift_id ? (a.shift_id.includes(shiftCodeOFF) ? -1 : 0) : 1)
+                    .sort((a,b) =>  a.shift_id.includes(Constants.SHIFT_CODE_OFF) ? -1 : 1 ).sort((a,b) => a.shift_id < b.shift_id ? (a.shift_id.includes(Constants.SHIFT_CODE_OFF) ? -1 : 0) : 1)
                     return shifts
                 }
                 return []

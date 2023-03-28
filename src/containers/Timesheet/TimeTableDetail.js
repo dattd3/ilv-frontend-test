@@ -5,8 +5,14 @@ import moment from 'moment'
 import { useTranslation } from "react-i18next"
 import Constants from "../../commons/Constants"
 import map from '../../containers/map.config'
-import { formatStringByMuleValue, calculateBackDateByPnLVCodeAndFormatType, isEnableShiftChangeFunctionByPnLVCode, 
-  isEnableInOutTimeUpdateFunctionByPnLVCode, getRegistrationMinDateByConditions, isEnableOTFunctionByPnLVCode } from "../../commons/Utils"
+import { 
+  formatStringByMuleValue, 
+  calculateBackDateByPnLVCodeAndFormatType, 
+  isEnableShiftChangeFunctionByPnLVCode, 
+  isEnableInOutTimeUpdateFunctionByPnLVCode, 
+  getRegistrationMinDateByConditions,
+  isEnableOTFunctionByPnLVCode,
+  formatStringDateTimeByMuleValue } from "../../commons/Utils"
 
 const DATE_TYPE = {
   DATE_OFFSET: 0,
@@ -123,28 +129,31 @@ function RenderRow0(props) {
 }
 
 function RenderRow1(props) {
-  return <>
-    {
-      props.timesheets.map((item, index) => {
-        if (item.date_type == DATE_TYPE.DATE_OFF) {
-          return <td key = {index}>
-                    <RenderTooltip is_holiday = {item.is_holiday}>
-                      <div className="day-off">OFF</div>
-                    </RenderTooltip>
-                  </td>
-        } else if (item.date_type == DATE_TYPE.DATE_OFFSET) {
-          return <td key = {index} rowSpan={props.rowSpan}></td>
-        }
-        if (item.line1.type == EVENT_TYPE.NO_EVENT) {
-          return  <td style={{borderTop: 'none', borderBottom: 'none'}} key = {index}><div>&nbsp;</div></td>
-        } else if ( item.line1.type == EVENT_TYPE.EVENT_KEHOACH) {
-          return <td style={{borderTop: 'none', borderBottom: 'none'}} key = {index} colSpan={item.line1.count || 0} ><RenderItem item = {item} type = {item.line1.type}/></td>
-        } 
-        return null;
-      })
-    }
-    {/* <td style={{border:'none'}}></td> */}
-  </>
+  const { timesheets, totalRowToShow } = props
+
+  return (
+    <>
+      {
+        (timesheets || []).map((item, index) => {
+          if (item.date_type == DATE_TYPE.DATE_OFF) {
+            return <td key = {index}>
+                      <RenderTooltip is_holiday = {item.is_holiday}>
+                        <div className="day-off">OFF</div>
+                      </RenderTooltip>
+                    </td>
+          } else if (item.date_type == DATE_TYPE.DATE_OFFSET) {
+            return <td key = {index} rowSpan={totalRowToShow}></td>
+          }
+          if (item.line1.type == EVENT_TYPE.NO_EVENT) {
+            return  <td style={{borderTop: 'none', borderBottom: 'none'}} key={index}><div>&nbsp;</div></td>
+          } else if ( item.line1.type == EVENT_TYPE.EVENT_KEHOACH) {
+            return <td style={{borderTop: 'none', borderBottom: 'none'}} key={index} colSpan={item.line1.count || 0} ><RenderItem item={item} type={item.line1.type}/></td>
+          } 
+          return null;
+        })
+      }
+    </>
+  )
 }
 
 function RenderTooltip(props) {
@@ -360,7 +369,12 @@ function RenderItem(props) {
 }
 
 function RenderRow2(props) {
-  const { timesheets, rowSpan } = props
+  const { timesheets, totalRowToShow } = props
+  const isHideLine2 = (timesheets|| []).every(ts => ts?.date_type == EVENT_TYPE.NO_EVENT || ts.line2.type == EVENT_TYPE.NO_EVENT)
+
+  if (isHideLine2) {
+    return null
+  }
 
   return (timesheets || []).map((item, index) => {
     if (item.date_type == DATE_TYPE.DATE_OFFSET) {
@@ -368,12 +382,14 @@ function RenderRow2(props) {
     }
 
     if (item.line2.type == EVENT_TYPE.NO_EVENT) { // Ngày OFF
-      return <td className={`none-border-top ${rowSpan == timeSheetLinesAlwayShow ? 'border-bottom' : 'none-border-bottom'}`} key={index}><div>&nbsp;</div></td>
+      // return <td className={`none-border-top ${rowSpan == totalRowToShow ? 'border-bottom' : 'none-border-bottom'}`} key={index}><div>&nbsp;</div></td>
+      return <td className={`none-border-top border-bottom`} key={index}><div>&nbsp;</div></td>
     } else if (item.line2.type == EVENT_TYPE.EVENT_GIOTHUCTE) {
-      if (rowSpan == timeSheetLinesAlwayShow) {
-        return <td className="none-border-top" key={index}><RenderItem item={item} type={item.line2.type} rowSpan={rowSpan} /></td>
-      }
-      return <td className="none-border-top none-border-bottom" key={index}><RenderItem item={item} type={item.line2.type} rowSpan={rowSpan} /></td>
+      // if (rowSpan == timeSheetLinesAlwayShow) {
+      //   return <td className="none-border-top" key={index}><RenderItem item={item} type={item.line2.type} rowSpan={rowSpan} /></td>
+      // }
+      // return <td className="none-border-top none-border-bottom" key={index}><RenderItem item={item} type={item.line2.type} rowSpan={rowSpan} /></td>
+      return <td className="none-border-top none-border-bottom" key={index}><RenderItem item={item} type={item.line2.type} /></td>
     } else if (item.line2.type == EVENT_TYPE.EVENT_LOICONG) {
       return <td className="none-border-top none-border-bottom" key={index}><RenderItem item={item} type={item.line2.type} /></td>
     }
@@ -382,14 +398,14 @@ function RenderRow2(props) {
 }
 
 function RenderRow3(props) {
-  const { timesheets, rowSpan } = props
+  const { timesheets, totalRowToShow } = props
 
   return (timesheets || []).map((item, index) => {
     if (item.date_type == DATE_TYPE.DATE_OFFSET) {
         return null;
     }
     if (item.line3.type == EVENT_TYPE.NO_EVENT) {
-        return <td className={`none-border-top ${rowSpan == timeSheetLinesIgnoreOnceLine ? 'border-bottom' : 'none-border-bottom'}`} key={index}><div>&nbsp;</div></td>
+        return <td className={`none-border-top ${totalRowToShow == timeSheetLinesIgnoreOnceLine ? 'border-bottom' : 'none-border-bottom'}`} key={index}><div>&nbsp;</div></td>
     } else if (item.line3.type == EVENT_TYPE.EVENT_GIONGHI || item.line3.type == EVENT_TYPE.EVENT_CONGTAC || item.line3.type == EVENT_TYPE.EVENT_NGHI_CONGTAC) {
         return <td className="none-border-top none-border-bottom" key={index}><RenderItem item={item} type={item.line3.type} /></td>
     }
@@ -445,55 +461,82 @@ function Content(props) {
         <tbody>
           {
             chunk(props.timesheets, 7).map((timeSheet, index) => {
-              let timeSheetFiltered = (timeSheet || []).filter(item => item.date_type === DATE_TYPE.DATE_NORMAL)
+              let timeSheetNotOffset = (timeSheet || []).filter(item => item.date_type != DATE_TYPE.DATE_OFFSET)
+              let hasOT = (timeSheetNotOffset || [])
+              .some(item => (formatStringDateTimeByMuleValue(item?.line4?.ot_start_time1) && formatStringDateTimeByMuleValue(item?.line4?.ot_end_time1)) 
+              || (formatStringDateTimeByMuleValue(item?.line4?.ot_start_time2) && formatStringDateTimeByMuleValue(item?.line4?.ot_end_time2)) 
+              || (formatStringDateTimeByMuleValue(item?.line4?.ot_start_time3) && formatStringDateTimeByMuleValue(item?.line4?.ot_end_time3)))
 
-              let isShowLineOT = timeSheetFiltered
-              .some(item => (formatStringByMuleValue(item.line4?.ot_start_time1) && formatStringByMuleValue(item.line4?.ot_end_time1)) 
-              || (formatStringByMuleValue(item.line4?.ot_start_time2) && formatStringByMuleValue(item.line4?.ot_end_time2)) 
-              || (formatStringByMuleValue(item.line4?.ot_start_time3) && formatStringByMuleValue(item.line4?.ot_end_time3)))
+              let hasTrip = (timeSheetNotOffset || [])
+              .some(item => (formatStringDateTimeByMuleValue(item?.line3?.trip_start_time1) && formatStringDateTimeByMuleValue(item?.line3?.trip_end_time1))
+              || (formatStringDateTimeByMuleValue(item?.line3?.trip_start_time2) && formatStringDateTimeByMuleValue(item?.line3?.trip_end_time2)))
 
-              let hasTrip = timeSheetFiltered
-              .some(item => (formatStringByMuleValue(item.line3?.trip_start_time1) && formatStringByMuleValue(item.line3?.trip_end_time1))
-              || (formatStringByMuleValue(item.line3?.trip_start_time2) && formatStringByMuleValue(item.line3?.trip_end_time2)))
+              let hasLeave = (timeSheetNotOffset || [])
+              .some(item => (formatStringDateTimeByMuleValue(item?.line3?.leave_start_time1) && formatStringDateTimeByMuleValue(item?.line3?.leave_end_time1)) 
+              || (formatStringDateTimeByMuleValue(item?.line3?.leave_start_time2) && formatStringDateTimeByMuleValue(item?.line3?.leave_end_time2)))
 
-              let hasLeave = timeSheetFiltered
-              .some(item => (formatStringByMuleValue(item.line3?.leave_start_time1) && formatStringByMuleValue(item.line3?.leave_end_time1)) 
-              || (formatStringByMuleValue(item.line3?.leave_start_time2) && formatStringByMuleValue(item.line3?.leave_end_time2)))
+              let hasWorking = (timeSheetNotOffset || [])
+              .some(item => (
+                  formatStringDateTimeByMuleValue(item?.line1?.from_time1) 
+                  || formatStringDateTimeByMuleValue(item?.line1?.to_time1) 
+                  || formatStringDateTimeByMuleValue(item?.line1?.from_time2) 
+                  || formatStringDateTimeByMuleValue(item?.line1?.to_time2)
+                )
+                || item?.line1?.shift_id !== Constants.SHIFT_CODE_OFF
+                || (
+                  formatStringDateTimeByMuleValue(item?.line2?.start_time1_fact) 
+                  || formatStringDateTimeByMuleValue(item?.line2?.end_time1_fact) 
+                  || formatStringDateTimeByMuleValue(item?.line2?.start_time2_fact) 
+                  || formatStringDateTimeByMuleValue(item?.line2?.end_time2_fact)
+                  || formatStringDateTimeByMuleValue(item?.line2?.start_time3_fact) 
+                  || formatStringDateTimeByMuleValue(item?.line2?.end_time3_fact)
+                )
+              )
 
-              let isShowLine3 = (!hasTrip && !hasLeave) ? false: true
-              let rowSpan = totalTimeSheetLines
+              let totalRowToShow = 1 // Luôn luôn có 1 line thể hiện phân ca
+              if (hasOT) {
+                totalRowToShow += 1
+              }
 
-              if ((isShowLine3 && !isShowLineOT) || (!isShowLine3 && isShowLineOT)) {
-                rowSpan = timeSheetLinesIgnoreOnceLine
-              } else if (!isShowLine3 && !isShowLineOT) {
-                rowSpan = timeSheetLinesAlwayShow
+              if (hasLeave || hasTrip) {
+                totalRowToShow += 1
+              }
+
+              if (hasWorking) {
+                totalRowToShow += 1
               }
 
               return <React.Fragment key={index}>
                       <tr className="divide"></tr>
                       <tr>
+                        {/* Thể hiện thông tin ngày tháng */}
                         <RenderRow0 timesheets={timeSheet} />
                       </tr>
                       <tr className="divide sub"></tr>
                       <tr style={{background: '#F2F2F2'}} className="line1 border-top">
-                        <RenderRow1 timesheets={timeSheet} rowSpan={rowSpan} />
-                      </tr>
-                      <tr className="none-border-left" className="line2">
-                        <RenderRow2 timesheets={timeSheet} rowSpan={rowSpan} />
+                        {/* Thể hiện thông tin phân ca */}
+                        <RenderRow1 timesheets={timeSheet} totalRowToShow={totalRowToShow} />
                       </tr>
                       {
-                        isShowLine3 ?
-                        <tr className="none-border-left" className="line3">
-                          <RenderRow3 timesheets={timeSheet} rowSpan={rowSpan} />
+                        hasWorking &&
+                        <tr className="none-border-left line2">
+                          {/* Thể hiện thông tin thời gian check in, check out */}
+                          <RenderRow2 timesheets={timeSheet} totalRowToShow={totalRowToShow} />
                         </tr>
-                        : null
                       }
                       {
-                        isShowLineOT ? 
-                        <tr>
+                        (hasLeave || hasTrip) &&
+                        <tr className="none-border-left line3">
+                          {/* Thể hiện thông tin thời gian nghỉ, công tác đào tạo */}
+                          <RenderRow3 timesheets={timeSheet} totalRowToShow={totalRowToShow} />
+                        </tr>
+                      }
+                      {
+                        hasOT && 
+                        <tr className="line4">
+                          {/* Thể hiện thông tin thời gian OT */}
                           <RenderRow4 timesheets={timeSheet} />
                         </tr>
-                        : null
                       }
                       <tr className="divide"></tr>
               </React.Fragment>
@@ -524,7 +567,7 @@ function TimeTableDetail(props) {
   }, [props.isSearch])
 
   const isHoliday = (item) => {
-    return item.shift_id == 'OFF' || (item.is_holiday == 1 && currentUserPnLCode != Constants.pnlVCode.VinMec)
+    return item.shift_id == Constants.SHIFT_CODE_OFF || (item.is_holiday == 1 && currentUserPnLCode != Constants.pnlVCode.VinMec)
   }
 
   const getDayOffset = (currentDate, offset) => {
@@ -894,7 +937,13 @@ const processDataForTable = (data1, fromDateString, toDateString, reasonData) =>
   if(isSearch.current && props.timesheetData) {
     const {dataSorted, start, end, mem, reason} = props.timesheetData;
     if(!(start == startTime && end == endTime && mem == member)) {
-        const timesheets =  dataSorted && dataSorted.length > 0 ?  processDataForTable(dataSorted,start, end, reason) : []; 
+        const timesheets =  dataSorted && dataSorted.length > 0 ?  processDataForTable(dataSorted.map(it => ({
+          ...it,
+          // trip_start_time1: '083000', 
+          // trip_end_time1: '173000', 
+          // ot_start_time1: '083100', 
+          // ot_end_time1: '173100',
+        })),start, end, reason) : []; 
         setTimesheets(timesheets);
         setStartTime(start);
         setEndTime(end);

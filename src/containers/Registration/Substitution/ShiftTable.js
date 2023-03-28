@@ -4,10 +4,10 @@ import { Dropdown, Button } from 'react-bootstrap'
 import moment from 'moment'
 import { withTranslation  } from "react-i18next"
 import { formatStringByMuleValue } from "../../../commons/Utils"
+import Constants from 'commons/Constants'
 
 const TIME_FORMAT = 'HH:mm:00'
 const TIME_OF_SAP_FORMAT = 'HHmm00'
-const shiftCodeOFF = 'OFF'
 
 class ShiftTable extends React.Component {
     constructor(props) {
@@ -35,7 +35,7 @@ class ShiftTable extends React.Component {
     
     setShiftTimeFilter = () => {
         const { shifts } = this.props
-        const shiftsExcludeOff = shifts.filter(item => item.shift_id !== shiftCodeOFF)
+        const shiftsExcludeOff = shifts.filter(item => item.shift_id !== Constants.SHIFT_CODE_OFF)
         let startTimes = []
         let endTimes = []
 

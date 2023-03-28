@@ -306,7 +306,7 @@
           }
         }
         &:nth-child(3) {
-          border-left: none;
+          // border-left: none;
         }
         &:last-child {
           border-right: 1px solid #707070;
@@ -350,7 +350,7 @@
         &.line1 {
           td {
             &:nth-child(3) {
-              border-left: none;
+              // border-left: none;
             }
             &:last-child {
               border-right: 1px solid #707070;
