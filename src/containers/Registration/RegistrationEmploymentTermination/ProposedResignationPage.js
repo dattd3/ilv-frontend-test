@@ -51,18 +51,48 @@ class ProposedResignationPage extends React.Component {
         const reasonTypesEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/masterdata/resignation_reason`
         const userInfosEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/profile`
         const subordinateInfosEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/subordinate`;
+        const managerSuggestEndpoint = `${process.env.REACT_APP_REQUEST_URL}user/suggests`;
         const requestReasonTypes = axios.get(reasonTypesEndpoint, getMuleSoftHeaderConfigurations())
         const requestUserInfos = axios.get(userInfosEndpoint, getMuleSoftHeaderConfigurations())
         const subordinateInfos = axios.get(subordinateInfosEndpoint, getMuleSoftHeaderConfigurations());
+        const managerSuggest = axios.get(managerSuggestEndpoint, getRequestConfigs());
 
-        await axios.all([requestReasonTypes, requestUserInfos, subordinateInfos]).then(axios.spread((...responses) => {
+        await axios.all([requestReasonTypes, requestUserInfos, subordinateInfos, managerSuggest]).then(axios.spread((...responses) => {
             const reasonTypes = this.prepareReasonTypes(responses[0])
             const directManagerInfos = this.prepareDirectManagerInfos(responses[1])
             const subordinateInfos = this.prepareSubodinateInfos(responses[2]);
-            this.setState({reasonTypes: reasonTypes, directManager: directManagerInfos, subordinateInfos})
+            const seniorManager = this.prepareManagerSuggestion(responses[3]);
+            this.setState({reasonTypes: reasonTypes, directManager: directManagerInfos, seniorExecutive: seniorManager, subordinateInfos})
         })).catch(errors => {
             return null
         })
+    }
+
+    prepareManagerSuggestion = (response) => {
+        if (response && response.data) {
+            const result = response.data.result
+            if (result && result.code == Constants.API_SUCCESS_CODE) {
+              const data = response.data?.data
+              const { appraiserInfo, approverInfo } = data
+              const approver = approverInfo && _.size(approverInfo) > 0 
+              ?  [{
+                value: approverInfo?.account?.toLowerCase() || "",
+                label: approverInfo?.fullName || "",
+                fullName: approverInfo?.fullName || "",
+                avatar: approverInfo?.avatar || "",
+                employeeLevel: approverInfo?.employeeLevel || "",
+                pnl: approverInfo?.pnl || "",
+                orglv2Id: approverInfo?.orglv2Id || "",
+                account: approverInfo?.account?.toLowerCase() || "",
+                jobTitle: approverInfo?.current_position || "",
+                department: approverInfo?.department || "",
+              }]
+              : []
+    
+              if(approver?.length > 0) return approver[0];
+            }
+        }
+        return null;
     }
 
 

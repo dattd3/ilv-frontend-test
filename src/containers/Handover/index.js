@@ -11,7 +11,7 @@ import ResizableTextarea from '../Registration/TextareaComponent';
 import ApproverComponent from './SearchUserComponent'
 import Select from 'react-select'
 import Constants from '../../commons/Constants'
-import { getRequestConfigs } from '../../commons/commonFunctions'
+import { checkIsExactPnL, getRequestConfigs } from '../../commons/commonFunctions'
 import { withTranslation } from "react-i18next"
 import axios from 'axios'
 import Rating from 'react-rating';
@@ -93,6 +93,12 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
             status: null,
             note: ''
         },
+        taxi: {
+          user: {},
+          actionDate: '',
+          status: null,
+          note: ''
+        },
         associateCard: {
             user: {},
             status: null,
@@ -128,18 +134,33 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
             status: null,
             actionDate: '',
             note: ''
+        },
+        traning: {
+          user: {},
+          status: null,
+          actionDate: '',
+          note: ''
+        },
+        internal: {
+          user: {},
+          status: null,
+          actionDate: '',
+          note: ''
         }
       },
       canEditable: {
         employee: false,
         job: false,
         asset: false,
+        taxi: false,
         associateCard: false,
         uniform: false,
         finger: false,
         inout: false,
         tool: false,
         policy: false,
+        traning: false,
+        internal: false,
         canUpdate: false,
         currentActive: []
       },
@@ -182,12 +203,15 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
       remoteData.otherWork = data.job.otherWork;
       remoteData.handoverWork = data.job.user;
       remoteData.handoverAsset = data.asset.user;
+      remoteData.vehicleCard = data.taxi.user?.account ? data.taxi.user : null;
       remoteData.handoverSocial = data.associateCard.user;
       remoteData.handoverUniform = data.uniform.user;
       remoteData.handoverFingerprintEmail = data.finger.user;
       remoteData.handoverDebt = data.inout.user;
       remoteData.handoverSoftware = data.tool.user?.account ? data.tool.user : null ;
       remoteData.handoverConfirmation = data.policy.user?.account ? data.policy.user : null;
+      remoteData.trainingDebt = data.traning.user?.account ? data.traning.user : null;
+      remoteData.internalDebt = data.internal.user?.account ? data.internal.user : null;
     } else {
       this.state.canEditable.currentActive.map( (key) => {
         switch(key) {
@@ -200,6 +224,11 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
             remoteData.dateImplementationAsset = data.asset.actionDate;
             remoteData.statusAsset = data.asset.status;
             remoteData.noteAsset = data.asset.note;
+            break;
+          case 'taxi':
+            remoteData.vehicleCardDate = data.taxi.actionDate;
+            remoteData.vehicleCardStatus = data.taxi.status;
+            remoteData.vehicleCardNote = data.taxi.note;
             break;
           case 'associateCard':
             remoteData.dateHandoverSocial = data.associateCard.actionDate;
@@ -231,6 +260,17 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
             remoteData.statusConfirmation = data.policy.status;
             remoteData.noteConfirmation = data.policy.note;
             break;
+          case 'traning':
+            remoteData.trainingDebtDate = data.traning.actionDate;
+            remoteData.trainingDebtStatus = data.traning.status;
+            remoteData.trainingDebtNote = data.traning.note;
+            break;
+          case 'internal':
+            remoteData.internalDebtDate = data.internal.actionDate;
+            remoteData.internalDebtStatus = data.internal.status;
+            remoteData.internalDebtNote = data.internal.note;
+            break;
+
         }
       })
     }
@@ -266,6 +306,12 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
       actionDate: infos.dateImplementationAsset || '',
       status: infos.statusAsset,
       note: infos.noteAsset
+    }
+    candidateInfos.taxi = {
+      user: infos.vehicleCard || {},
+      actionDate: infos.vehicleCardDate || '',
+      status: infos.vehicleCardStatus,
+      note: infos.vehicleCardNote
     }
     candidateInfos.associateCard = {
         user: infos.handoverSocial || {},
@@ -303,6 +349,18 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         actionDate: infos.dateHandoverConfirmation || '',
         note: infos.noteConfirmation || ''
     }
+    candidateInfos.traning = {
+      user: infos.trainingDebt || {},
+      status: infos.trainingDebtStatus,
+      actionDate: infos.trainingDebtDate || '',
+      note: infos.trainingDebtNote || ''
+    }
+    candidateInfos.internal = {
+      user: infos.internalDebt || {},
+      status: infos.internalDebtStatus,
+      actionDate: infos.internalDebtDate || '',
+      note: infos.internalDebtNote || ''
+    }
     return {data: candidateInfos, remoteData: infos};
   }
 
@@ -310,10 +368,13 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     const errors = {};
     const data = this.state.data;
     const isEmployee = this.state.canEditable.currentActive.includes("employee");
-
+    let noRequireFields = ['employee', 'tool', 'policy', 'traning', 'internal'];
+    if(!checkIsExactPnL(Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading)) {
+      noRequireFields.push('taxi');
+    } 
     if(isEmployee) {
       for (const [key, value] of Object.entries(data)) {
-        errors[key] = (['employee', 'tool', 'policy'].includes(key)) || ( data[key] && data[key].user && data[key].user.account) ? null :  '(Bắt buộc)' ;
+        errors[key] = (noRequireFields.includes(key)) || ( data[key] && data[key].user && data[key].user.account) ? null :  '(Bắt buộc)' ;
       }
     } 
     // else {
@@ -523,31 +584,92 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
             <div className="title">
             {t('handover_2')}
             </div>
-            <div className="row">
-                <div className="sub-title" style={{marginTop: '16px'}}>{t('handover_2_1')}</div>
-            </div>
-            <div className="row">
-                <div className="col-4">
-                    {t('user_action')}
-                    <ApproverComponent isEdit={!disableComponent.employee} approver={data.asset.user}  updateApprover={(approver, isApprover) => this.updateApprover('asset', approver,isApprover )} errors={{approver: this.state.errors['asset']}}/>
+            {
+              checkIsExactPnL(Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading) ? 
+              <>
+                <div className="row">
+                    <div className="sub-title" style={{marginTop: '16px'}}>{t('handover_2_1a')}</div>
                 </div>
-                <div className="col-4">
-                    {t('handover_date')}
-                    <ResizableTextarea disabled={true} value={data.asset.actionDate ? moment(data.asset.actionDate).format("DD/MM/YYYY") : ''} onChange={(e) => this.handleTextInputChange(e, 'asset', 'actionDate')} className="mv-10"/>
+                <div className="row">
+                    <div className="col-4">
+                        {t('user_action')}
+                        <ApproverComponent isEdit={!disableComponent.employee} approver={data.asset.user}  updateApprover={(approver, isApprover) => this.updateApprover('asset', approver,isApprover )} errors={{approver: this.state.errors['asset']}}/>
+                    </div>
+                    <div className="col-4">
+                        {t('handover_date')}
+                        <ResizableTextarea disabled={true} value={data.asset.actionDate ? moment(data.asset.actionDate).format("DD/MM/YYYY") : ''} onChange={(e) => this.handleTextInputChange(e, 'asset', 'actionDate')} className="mv-10"/>
+                    </div>
+                    <div className="col-4">
+                        {t('handover_status')}
+                            <Select  placeholder={t('option')} options={this.resultOptions} isDisabled={!disableComponent.asset}  isClearable={true} 
+                        value={this.resultOptions.filter(d => data.asset.status != null && d.value == data.asset.status)}
+                        onChange={e => this.handleChangeSelectInputs(e,'asset', 'status')} className="input"
+                        styles={{menu: provided => ({ ...provided, zIndex: 2 })}}/>
+                        {this.state.errors && this.state.errors['asset_status'] ? <p className="text-danger">{this.state.errors['asset_status']}</p> : null}
+                    </div>
+                    <div className="col-12">
+                      {t('ghi_chu')}
+                        <ResizableTextarea placeholder={disableComponent.asset ? t('import') : ''} disabled={!disableComponent.asset} value={data.asset.note} onChange={(e) => this.handleTextInputChange(e, 'asset', 'note')} className="mv-10"/>
+                    </div>
                 </div>
-                <div className="col-4">
-                    {t('handover_status')}
-                        <Select  placeholder={t('option')} options={this.resultOptions} isDisabled={!disableComponent.asset}  isClearable={true} 
-                    value={this.resultOptions.filter(d => data.asset.status != null && d.value == data.asset.status)}
-                    onChange={e => this.handleChangeSelectInputs(e,'asset', 'status')} className="input"
-                    styles={{menu: provided => ({ ...provided, zIndex: 2 })}}/>
-                    {this.state.errors && this.state.errors['asset_status'] ? <p className="text-danger">{this.state.errors['asset_status']}</p> : null}
+                <div className="row">
+                    <div className="sub-title" style={{marginTop: '16px'}}>{t('handover_2_1b')}</div>
                 </div>
-                <div className="col-12">
-                  {t('ghi_chu')}
-                    <ResizableTextarea placeholder={disableComponent.asset ? t('import') : ''} disabled={!disableComponent.asset} value={data.asset.note} onChange={(e) => this.handleTextInputChange(e, 'asset', 'note')} className="mv-10"/>
+                <div className="row">
+                    <div className="col-4">
+                        {t('user_action')}
+                        <ApproverComponent isEdit={!disableComponent.employee} approver={data.taxi.user}  updateApprover={(approver, isApprover) => this.updateApprover('taxi', approver,isApprover )} errors={{approver: this.state.errors['taxi']}}/>
+                    </div>
+                    <div className="col-4">
+                        {t('handover_date')}
+                        <ResizableTextarea disabled={true} value={data.taxi.actionDate ? moment(data.taxi.actionDate).format("DD/MM/YYYY") : ''} onChange={(e) => this.handleTextInputChange(e, 'taxi', 'actionDate')} className="mv-10"/>
+                    </div>
+                    <div className="col-4">
+                        {t('handover_status')}
+                            <Select  placeholder={t('option')} options={this.resultOptions} isDisabled={!disableComponent.taxi}  isClearable={true} 
+                        value={this.resultOptions.filter(d => data.taxi.status != null && d.value == data.taxi.status)}
+                        onChange={e => this.handleChangeSelectInputs(e,'taxi', 'status')} className="input"
+                        styles={{menu: provided => ({ ...provided, zIndex: 2 })}}/>
+                        {this.state.errors && this.state.errors['taxi_status'] ? <p className="text-danger">{this.state.errors['taxi_status']}</p> : null}
+                    </div>
+                    <div className="col-12">
+                      {t('ghi_chu')}
+                        <ResizableTextarea placeholder={disableComponent.taxi ? t('import') : ''} disabled={!disableComponent.taxi} value={data.taxi.note} onChange={(e) => this.handleTextInputChange(e, 'taxi', 'note')} className="mv-10"/>
+                    </div>
                 </div>
-            </div>
+              </>
+              :
+              <>
+                <div className="row">
+                    <div className="sub-title" style={{marginTop: '16px'}}>{t('handover_2_1')}</div>
+                </div>
+                <div className="row">
+                    <div className="col-4">
+                        {t('user_action')}
+                        <ApproverComponent isEdit={!disableComponent.employee} approver={data.asset.user}  updateApprover={(approver, isApprover) => this.updateApprover('asset', approver,isApprover )} errors={{approver: this.state.errors['asset']}}/>
+                    </div>
+                    <div className="col-4">
+                        {t('handover_date')}
+                        <ResizableTextarea disabled={true} value={data.asset.actionDate ? moment(data.asset.actionDate).format("DD/MM/YYYY") : ''} onChange={(e) => this.handleTextInputChange(e, 'asset', 'actionDate')} className="mv-10"/>
+                    </div>
+                    <div className="col-4">
+                        {t('handover_status')}
+                            <Select  placeholder={t('option')} options={this.resultOptions} isDisabled={!disableComponent.asset}  isClearable={true} 
+                        value={this.resultOptions.filter(d => data.asset.status != null && d.value == data.asset.status)}
+                        onChange={e => this.handleChangeSelectInputs(e,'asset', 'status')} className="input"
+                        styles={{menu: provided => ({ ...provided, zIndex: 2 })}}/>
+                        {this.state.errors && this.state.errors['asset_status'] ? <p className="text-danger">{this.state.errors['asset_status']}</p> : null}
+                    </div>
+                    <div className="col-12">
+                      {t('ghi_chu')}
+                        <ResizableTextarea placeholder={disableComponent.asset ? t('import') : ''} disabled={!disableComponent.asset} value={data.asset.note} onChange={(e) => this.handleTextInputChange(e, 'asset', 'note')} className="mv-10"/>
+                    </div>
+                </div>
+              </>
+            }
+            
+
+
 
             <div className="row">
                 <div className="sub-title">{t('handover_2_2')}</div>
@@ -689,7 +811,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
                 </div>
                 <div className="col-4">
                 {t('handover_date')}
-                    <ResizableTextarea disabled={true} value={data.policy.actionDate ? moment(data.policy.actionDate).format("DD/MM/YYYY") : ''} onChange={(e) => this.handleTextInputChange(e, 'tool', 'actionDate')} className="mv-10"/>
+                    <ResizableTextarea disabled={true} value={data.policy.actionDate ? moment(data.policy.actionDate).format("DD/MM/YYYY") : ''} onChange={(e) => this.handleTextInputChange(e, 'policy', 'actionDate')} className="mv-10"/>
                 </div>
                 <div className="col-4">
                 {t('handover_status')}
@@ -704,6 +826,63 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
                     <ResizableTextarea placeholder={disableComponent.policy ? t('import') : ''}  disabled={!disableComponent.policy} value={data.policy.note} onChange={(e) => this.handleTextInputChange(e, 'policy', 'note')} className="mv-10"/>
                 </div>
             </div>
+
+            {
+              checkIsExactPnL(Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading) ?
+              <>
+                <div className="row">
+                    <div className="sub-title">{t('handover_2_8')}</div>
+                </div>
+                <div className="row">
+                    <div className="col-4">
+                    {t('user_action')}
+                        <ApproverComponent isEdit={!disableComponent.employee} approver={data.traning.user}  updateApprover={(approver, isApprover) => this.updateApprover('traning', approver,isApprover )} errors={{approver: this.state.errors['traning']}}/>
+                    </div>
+                    <div className="col-4">
+                    {t('handover_date')}
+                        <ResizableTextarea disabled={true} value={data.traning.actionDate ? moment(data.traning.actionDate).format("DD/MM/YYYY") : ''} onChange={(e) => this.handleTextInputChange(e, 'traning', 'actionDate')} className="mv-10"/>
+                    </div>
+                    <div className="col-4">
+                    {t('handover_status')}
+                        <Select  placeholder={t('option')} options={this.resultOptions} isDisabled={!disableComponent.traning}  isClearable={true} 
+                        value={this.resultOptions.filter(d => data.traning.status != null && d.value == data.traning.status)}
+                        onChange={e => this.handleChangeSelectInputs(e,'traning', 'status')} className="input"
+                        styles={{menu: provided => ({ ...provided, zIndex: 2 })}}/>
+                        {this.state.errors && this.state.errors['traning_status'] ? <p className="text-danger">{this.state.errors['traning_status']}</p> : null}
+                    </div>
+                    <div className="col-12">
+                    {t('ghi_chu')}
+                        <ResizableTextarea placeholder={disableComponent.traning ? t('import') : ''}  disabled={!disableComponent.traning} value={data.traning.note} onChange={(e) => this.handleTextInputChange(e, 'traning', 'note')} className="mv-10"/>
+                    </div>
+                </div>
+
+                <div className="row">
+                    <div className="sub-title">{t('handover_2_9')}</div>
+                </div>
+                <div className="row">
+                    <div className="col-4">
+                    {t('user_action')}
+                        <ApproverComponent isEdit={!disableComponent.employee} approver={data.internal.user}  updateApprover={(approver, isApprover) => this.updateApprover('internal', approver,isApprover )} errors={{approver: this.state.errors['internal']}}/>
+                    </div>
+                    <div className="col-4">
+                    {t('handover_date')}
+                        <ResizableTextarea disabled={true} value={data.internal.actionDate ? moment(data.internal.actionDate).format("DD/MM/YYYY") : ''} onChange={(e) => this.handleTextInputChange(e, 'internal', 'actionDate')} className="mv-10"/>
+                    </div>
+                    <div className="col-4">
+                    {t('handover_status')}
+                        <Select  placeholder={t('option')} options={this.resultOptions} isDisabled={!disableComponent.internal}  isClearable={true} 
+                        value={this.resultOptions.filter(d => data.internal.status != null && d.value == data.internal.status)}
+                        onChange={e => this.handleChangeSelectInputs(e,'internal', 'status')} className="input"
+                        styles={{menu: provided => ({ ...provided, zIndex: 2 })}}/>
+                        {this.state.errors && this.state.errors['internal_status'] ? <p className="text-danger">{this.state.errors['internal_status']}</p> : null}
+                    </div>
+                    <div className="col-12">
+                    {t('ghi_chu')}
+                        <ResizableTextarea placeholder={disableComponent.internal ? t('import') : ''}  disabled={!disableComponent.internal} value={data.internal.note} onChange={(e) => this.handleTextInputChange(e, 'internal', 'note')} className="mv-10"/>
+                    </div>
+                </div>
+              </> : null
+            }
 
         </div>
         

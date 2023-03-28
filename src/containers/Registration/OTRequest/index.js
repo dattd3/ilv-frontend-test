@@ -225,7 +225,8 @@ export default function OTRequestComponent({ recentlyManagers }) {
           ).format("YYYYMMDD")}`,
           config
         );
-        newRequestInfoData[index].totalHoursOtInMonth = response.data?.data;
+        newRequestInfoData[index].totalHoursOtInMonth = response.data?.data?.totalOtMonth;
+        newRequestInfoData[index].totalHoursOtInDay = response.data?.data?.totalOtDay;
       } catch (error) {}
     }
     setRequestInfoData(newRequestInfoData);

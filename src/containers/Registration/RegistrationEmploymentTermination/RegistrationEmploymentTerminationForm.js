@@ -15,7 +15,7 @@ import ReasonResignationComponent from '../TerminationComponents/ReasonResignati
 import AttachmentComponent from '../TerminationComponents/AttachmentComponent'
 import ResultModal from '../ResultModal'
 import LoadingModal from '../../../components/Common/LoadingModal'
-import { getMuleSoftHeaderConfigurations, getResignResonsMasterData } from '../../../commons/Utils'
+import { getMuleSoftHeaderConfigurations, getRequestConfigurations, getResignResonsMasterData } from '../../../commons/Utils'
 
 class RegistrationEmploymentTerminationForm extends React.Component {
     constructor(props) {
@@ -60,22 +60,25 @@ class RegistrationEmploymentTerminationForm extends React.Component {
         const userContractInfosEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/contract`
         const userContractMoreInfosEndpoint = `${process.env.REACT_APP_REQUEST_URL}ReasonType/getadditionalinfo`;
         const userDirectManagerEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/manager`;
+        const managerSuggestEndpoint = `${process.env.REACT_APP_REQUEST_URL}user/suggests`;
 
         const requestReasonTypes = axios.get(reasonTypesEndpoint, getMuleSoftHeaderConfigurations())
         const requestUserInfos = axios.get(userInfosEndpoint, getMuleSoftHeaderConfigurations())
         //const requestUserContractInfos = axios.get(userContractInfosEndpoint, getMuleSoftHeaderConfigurations())
         const requestUserMoreInfos = axios.post(userContractMoreInfosEndpoint, {"employeeCode": localStorage.getItem('employeeNo')}, config);
         const userDirectManager = axios.get(userDirectManagerEndpoint, getMuleSoftHeaderConfigurations());
+        const managerSuggest = axios.get(managerSuggestEndpoint, getRequestConfigurations());
 
-        await axios.all([requestReasonTypes, requestUserInfos, requestUserMoreInfos, userDirectManager]).then(axios.spread((...responses) => {
+        await axios.all([requestReasonTypes, requestUserInfos, requestUserMoreInfos, userDirectManager, managerSuggest]).then(axios.spread((...responses) => {
             const reasonTypes = this.prepareReasonTypes(responses[0])
             const userInfos = this.prepareUserInfos(responses[1], responses[2])
             const directManager = this.prepareDirectManagerInfos(responses[3]);
+            const seniorManager = this.prepareManagerSuggestion(responses[4]);
             const errors = {...this.state.errors};
             if(directManager) {
                 errors.directManager = null;
             }
-            this.setState({reasonTypes: reasonTypes, userInfos: userInfos, directManager: directManager, directManagerRaw: responses[3], errors});
+            this.setState({reasonTypes: reasonTypes, userInfos: userInfos, directManager: directManager, seniorExecutive: seniorManager, directManagerRaw: responses[3], errors});
         })).catch(errors => {
             console.log(errors);
             return null
@@ -98,11 +101,38 @@ class RegistrationEmploymentTerminationForm extends React.Component {
                     organizationLv2: '',
                     account: res?.username,
                     jobTitle: res?.title,
-                    department:  res.department
+                    department:  res.department || res.division
                 };
             }
         }
         return userInfoDetail;
+    }
+
+    prepareManagerSuggestion = (response) => {
+        if (response && response.data) {
+            const result = response.data.result
+            if (result && result.code == Constants.API_SUCCESS_CODE) {
+              const data = response.data?.data
+              const { appraiserInfo, approverInfo } = data
+              const approver = approverInfo && _.size(approverInfo) > 0 
+              ?  [{
+                value: approverInfo?.account?.toLowerCase() || "",
+                label: approverInfo?.fullName || "",
+                fullName: approverInfo?.fullName || "",
+                avatar: approverInfo?.avatar || "",
+                employeeLevel: approverInfo?.employeeLevel || "",
+                pnl: approverInfo?.pnl || "",
+                orglv2Id: approverInfo?.orglv2Id || "",
+                account: approverInfo?.account?.toLowerCase() || "",
+                jobTitle: approverInfo?.current_position || "",
+                department: approverInfo?.department || "",
+              }]
+              : []
+    
+              if(approver?.length > 0) return approver[0];
+            }
+        }
+        return null;
     }
 
     prepareUserInfos = (userResponses, contractResponses) => {
