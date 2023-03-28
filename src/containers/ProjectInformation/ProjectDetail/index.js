@@ -77,8 +77,8 @@ const getNoteInfos = (timeSheet, rsmLeaveTypeAndComment, source) => {
     let icon = IconInfoRed
     let notes = []
     const isUnusualShift = (
-        ((!fromTime1 || !toTime1) && timeSheet.shift_id !== 'OFF')
-        || ((startTime1Fact > fromTime1 || (endTime1Fact && endTime1Fact < toTime1)) && (timeSheet.shift_id !== 'OFF'))
+        ((!fromTime1 || !toTime1) && timeSheet.shift_id !== Constants.SHIFT_CODE_OFF)
+        || ((startTime1Fact > fromTime1 || (endTime1Fact && endTime1Fact < toTime1)) && (timeSheet.shift_id !== Constants.SHIFT_CODE_OFF))
     )
 
     const leaveData = (rsmLeaveTypeAndComment || []).filter(item => leaveCodes.includes(item?.baseTypeModel?.value) 
@@ -207,7 +207,7 @@ const ItemTimeSheetUser = React.memo(function ItemTimeSheetUser(props) {
         <div className="item">
             <div className="top">
                 {
-                    (timeSheet.shift_id === 'OFF' || timeSheet.is_holiday === 1 || timeSheet.is_holiday === '1')
+                    (timeSheet.shift_id === Constants.SHIFT_CODE_OFF || timeSheet.is_holiday === 1 || timeSheet.is_holiday === '1')
                     ? 
                         <>
                         <ReactTooltip id={`shift-infos-${tIndex}-user-index-${index}`} scrollHide isCapture globalEventOff="click" effect="solid" clickable place="top" type='light' border={true} arrowColor='#FFFFFF' borderColor="#e3e6f0" className="note-time-sheet">
@@ -244,12 +244,12 @@ const ItemTimeSheetUser = React.memo(function ItemTimeSheetUser(props) {
             </div>
             <div className="bottom">
                 {
-                    (timeSheet.shift_id === 'OFF' || timeSheet.is_holiday === 1 || timeSheet.is_holiday === '1' || !item?.rsmTimeSheet[timeSheet?.date])
+                    (timeSheet.shift_id === Constants.SHIFT_CODE_OFF || timeSheet.is_holiday === 1 || timeSheet.is_holiday === '1' || !item?.rsmTimeSheet[timeSheet?.date])
                     ? null
                     : timeSheet?.rsmStatus !== null && <span className={`status ${timeSheetStatusStyleMapping[timeSheet?.rsmStatus]?.className}`}>{timeSheetStatusStyleMapping[timeSheet?.rsmStatus]?.label}</span>
                 }
                 {
-                    (timeSheet.shift_id === 'OFF' || timeSheet.is_holiday === 1 || timeSheet.is_holiday === '1' || !item?.rsmTimeSheet[timeSheet?.date]) 
+                    (timeSheet.shift_id === Constants.SHIFT_CODE_OFF || timeSheet.is_holiday === 1 || timeSheet.is_holiday === '1' || !item?.rsmTimeSheet[timeSheet?.date]) 
                     ? null
                     : <div className="time">
                     {
