@@ -220,8 +220,8 @@ const Constants = {
     1: ["V040", "V005", "V079", "V041", "V030", "V077", "V070"],//TUYENDUNG + V061
     2: ["V040", "V005", "V061", "V077"],//DANHGIA_TAIKI
     3: [],//DEXUATLUONG
-    4: ["V040"],//NGHIVIEC
-    5: []//PHUCLOI
+    4: ["V040", "V077", "V070"],//NGHIVIEC
+    5: ["V077", "V070"]//PHUCLOI
   } :
   { //Development
     1: ["V040", "V005", "V079", "V041", "V030", "V077", "V070"],//TUYENDUNG + V061

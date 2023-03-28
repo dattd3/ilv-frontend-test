@@ -389,7 +389,7 @@ class SubmitQuestionModal extends React.Component {
                         </div>
                         <div className="clearfix edit-button action-buttons text-right">
                             <Button variant="secondary" className="pr-4 pl-4" onClick={this.props.onHide}>{t("Cancel")}</Button>{' '}
-                            <Button type="Submit" variant="primary" className="pr-4 pl-4">Gửi</Button>
+                            <Button type="Submit" variant="primary" className="pr-4 pl-4">{t('Send')}</Button>
                         </div>
                     </Form>
                 </Modal.Body>
