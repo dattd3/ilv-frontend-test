@@ -37,6 +37,10 @@ const formatStringByMuleValue = value => {
     return (value === null || value === undefined || value === "" || value === "#") ? "" : value.trim()
 }
 
+const formatStringDateTimeByMuleValue = value => {
+    return (value === null || value === undefined || value === "" || value === "#" || value === "000000") ? "" : value.trim()
+}
+
 const formatNumberInteger = value => {
     if (isNaN(value)) {
         return 0
@@ -529,5 +533,5 @@ const getResignResonsMasterData = () => {
 export {
     getRequestConfigurations, removeAccents, formatStringByMuleValue, formatNumberInteger, exportToPDF, isEnableFunctionByFunctionName, getValueParamByQueryString, getDateByRangeAndFormat,
     calculateBackDateByPnLVCodeAndFormatType, isEnableShiftChangeFunctionByPnLVCode, isEnableInOutTimeUpdateFunctionByPnLVCode, getRequestTypeIdsAllowedToReApproval, getMuleSoftHeaderConfigurations,
-    isAdjacentDateBy2Date, showRangeDateGroupByArrayDate, generateTaskCodeByCode, parsteStringToHtml, getRegistrationMinDateByConditions, isVinFast, isEnableOTFunctionByPnLVCode, getCurrentLanguage, getResignResonsMasterData
+    isAdjacentDateBy2Date, showRangeDateGroupByArrayDate, generateTaskCodeByCode, parsteStringToHtml, getRegistrationMinDateByConditions, isVinFast, isEnableOTFunctionByPnLVCode, getCurrentLanguage, getResignResonsMasterData, formatStringDateTimeByMuleValue
 }
