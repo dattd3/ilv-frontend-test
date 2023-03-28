@@ -42,7 +42,7 @@ const checkExist = (text) => {
 };
 
 const isHoliday = (item) => {
-    return item.shift_id == "OFF" || (item.is_holiday == 1 && currentUserPnLCode != Constants.pnlVCode.VinMec);
+    return item.shift_id == Constants.SHIFT_CODE_OFF || (item.is_holiday == 1 && currentUserPnLCode != Constants.pnlVCode.VinMec);
 };
 
 const getDatetimeForCheckFail = (startTime, endTime, currentDay, nextDay) => {
