@@ -1725,5 +1725,8 @@
   "resign_error_seniorExecutive": "Vui lòng chọn CBLĐ phê duyệt!",
   "resign_error_permission": "Danh sách nhân viên đề xuất cho nghỉ không thuộc thẩm quyền của QLTT",
   "select_to_export": "Vui lòng chọn yêu cầu cần xuất dữ liệu!",
-  "select_to_save": "Xin vui lòng tích chọn thông tin cần lưu!"
+  "select_to_save": "Xin vui lòng tích chọn thông tin cần lưu!",
+  "salary_keeped": "Giữ lương",
+  "salary_paid": "Đã trả",
+  "attachment": "File đính kèm"
 }
