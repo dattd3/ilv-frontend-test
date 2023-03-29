@@ -7,6 +7,7 @@ import Constants from "../../../commons/Constants"
 import AttachmentComponent from "../TerminationComponents/AttachmentComponent"
 import { t } from 'i18next'
 import { checkFilesMimeType } from '../../../utils/file'
+import { checkIsExactPnL } from 'commons/commonFunctions'
 
 class ResignationRequestsManagementActionButton extends React.PureComponent {
     
@@ -173,7 +174,7 @@ class ResignationRequestsManagementActionButton extends React.PureComponent {
             // {value: 6, label: 'Thỏa thuận chấm dứt hợp đồng'},
             // {value: 7, label: 'Quyết định chấm dứt hợp đồng'}
         ]
-        const taskLists = [
+        let taskLists = [
             {value: 'isHandoverWork', key: 'statusWork', label: t('work_status')},
             {value: 'isHandoverAsset', key: 'statusAsset', label: t('resource_status')},
             {value: 'isHandoverSocial', key: 'statusSocial', label: t('social_status')},
@@ -183,6 +184,22 @@ class ResignationRequestsManagementActionButton extends React.PureComponent {
             {value: 'isHandoverSoftware', key: 'statusSoftware', label: t('software_status')},
             {value: 'isHandoverConfirmation', key: 'statusConfirmation', label: t('policy_status')},
         ]
+        if(checkIsExactPnL(Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading)) {
+            taskLists = [
+                {value: 'isHandoverWork', key: 'statusWork', label: t('work_status')},
+                {value: 'isHandoverAsset', key: 'statusAsset', label: t('laptop_status')},
+                {value: 'isVehicleCard', key: 'vehicleCardStatus', label: t('taxi_status')},
+                {value: 'isHandoverSocial', key: 'statusSocial', label: t('social_status')},
+                {value: 'isHandoverUniform', key: 'statusUniform', label: t('uniform_status')},
+                {value: 'isHandoverFingerprintEmail', key: 'statusFingerprintEmail', label: t('email_status')},
+                {value: 'isHandoverDebt', key: 'statusDebt', label: t('timesheet_status')},
+                {value: 'isHandoverSoftware', key: 'statusSoftware', label: t('software_status')},
+                {value: 'isHandoverConfirmation', key: 'statusConfirmation', label: t('policy_status')},
+                {value: 'isHandoverConfirmation', key: 'statusConfirmation', label: t('policy_status')},
+                {value: 'isTrainingDebt', key: 'trainingDebtStatus', label: t('training_status')},
+                {value: 'isInternalDebt', key: 'internalDebtStatus', label: t('internal_status')},
+            ]
+        }
 
         return <div className="block resignation-requests-management-action-button">
                     <div className="row filter-action-block">
