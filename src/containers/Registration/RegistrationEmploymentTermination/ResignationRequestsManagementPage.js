@@ -226,7 +226,7 @@ class ResignationRequestsManagementPage extends React.Component {
         .map(item => item.key)
 
         const employeeNos = requestIdChecked.filter(item => {
-            return item && item.employeeNo
+            return item && item.value
         }).map(item => item.employeeNo);
         const fullTextSearch = searchingDataToFilter.fullTextSearch || ""
         const typeMethodMapping = {
