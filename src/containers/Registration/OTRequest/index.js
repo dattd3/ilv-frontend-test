@@ -237,9 +237,9 @@ export default function OTRequestComponent({ recentlyManagers }) {
           config
         );
         newRequestInfoData[index].totalHoursOtInMonth =
-          response.data?.data?.totalOtMonth;
+          response.data?.data?.totalOtMonth || 0;
         newRequestInfoData[index].totalHoursOtInDay =
-          response.data?.data?.totalOtDay;
+          response.data?.data?.totalOtDay || 0;
         newRequestInfoData[index].monthSalary =
           response.data?.data?.monthSalary;
       } catch (error) {}
@@ -315,13 +315,13 @@ export default function OTRequestComponent({ recentlyManagers }) {
           .reduce((acc, currValue) => acc + currValue.hoursOt * 1, 0);
 
         const isOverOt =
-          (item?.shift_id !== "OFF" && item.hoursOt > MAX_OT_HOURS) || // normal day
+          (item?.shift_id !== "OFF" && (item.hoursOt + item.totalHoursOtInDay) > MAX_OT_HOURS) || // normal day
           ((item?.shift_id?.toUpperCase() === "OFF" ||
             checkIsHolidayOfCompany(
               item.is_holiday,
               localStorage.getItem("companyCode")
             )) &&
-            item.hoursOt > MAX_OT_HOURS_OFF_DAY) || // day off - holiday
+            (item.hoursOt + item.totalHoursOtInDay) > MAX_OT_HOURS_OFF_DAY) || // day off - holiday
             totalRegisterInMonth + item.totalHoursOtInMonth > MAX_OT_HOURS_MONTH; // max 40hrs per month
         return isOverOt;
       });

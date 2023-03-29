@@ -1726,7 +1726,7 @@
   "resign_error_permission": "Danh sách nhân viên đề xuất cho nghỉ không thuộc thẩm quyền của QLTT",
   "select_to_export": "Vui lòng chọn yêu cầu cần xuất dữ liệu!",
   "select_to_save": "Xin vui lòng tích chọn thông tin cần lưu!",
-  "WarningOverOT": "Cảnh báo: Tổng số giờ đăng kí đang vượt quá 4 giờ/ngày, 12 giờ/ngày nghỉ hoặc 40 giờ/tháng. Bạn có muốn tiếp tục gửi yêu cầu?",
+  "WarningOverOT": "Cảnh báo: Tổng số giờ đăng kí đang vượt quá 4 giờ/ngày thường, 12 giờ/ngày nghỉ hoặc 40 giờ/tháng. Bạn có muốn tiếp tục gửi yêu cầu?",
   "salary_keeped": "Giữ lương",
   "salary_paid": "Đã trả",
   "attachment": "File đính kèm"
