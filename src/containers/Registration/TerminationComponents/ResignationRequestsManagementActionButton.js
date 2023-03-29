@@ -130,6 +130,11 @@ class ResignationRequestsManagementActionButton extends React.PureComponent {
         }
     }
 
+    updateAttachedFiles = (files) => {
+        this.setState({files: files})
+        this.props.updateAttachedFiles(files)
+    }
+
     render() {
         const customStyles = {
             option: (styles, state) => ({
@@ -269,7 +274,7 @@ class ResignationRequestsManagementActionButton extends React.PureComponent {
                     </div>
                     <div className="row">
                         <div className="col-12 text-right display-right">
-                            <AttachmentComponent files={files} />
+                            <AttachmentComponent files={files} updateFiles = {(files) => this.updateAttachedFiles(files)}/>
                         </div>
                     </div>
                 </div>
