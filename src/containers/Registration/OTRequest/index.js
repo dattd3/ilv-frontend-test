@@ -310,7 +310,7 @@ export default function OTRequestComponent({ recentlyManagers }) {
       .some((item) => {
         const totalRegisterInMonth = [...requestInfoData]
           .filter(
-            (_item) => _item.isEdited && _item.monthSalary === item.monthSalary
+            (_item) => _item.isEdited && item.monthSalary && _item.monthSalary === item.monthSalary
           )
           .reduce((acc, currValue) => acc + currValue.hoursOt * 1, 0);
 
