@@ -265,7 +265,7 @@ export default function OTRequestComponent({ recentlyManagers }) {
         newRequestInfoData[index].hoursOt = getHoursBetween2Times(
           newRequestInfoData[index].startTime,
           newRequestInfoData[index].endTime
-        );
+        ) * 1;
       }
     } else {
       newRequestInfoData[index] = {
