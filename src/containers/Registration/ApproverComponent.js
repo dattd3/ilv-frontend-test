@@ -121,11 +121,33 @@ class ApproverComponent extends React.Component {
       const currentUserLevel = localStorage.getItem('employeeLevel')
       this.setState({ [name]: value })
       const isApprover = this.isApprover(value.employeeLevel, value.orglv2Id, currentUserLevel, value.account)
-      this.props.updateApprover(value, isApprover)
+      const isException = this.isExceptionApprover(value)
+      this.props.updateApprover(value, isException ? true : isApprover)
     } else {
       this.setState({ [name]: value, users: [] })
       this.props.updateApprover(value, true)
     }
+  }
+
+  isExceptionApprover = (user) => { // Đối với Bộ máy TW thì cho phép 2 users là: HANGPV VÀ HUYENTT10 được phép phê duyệt
+    const exceptionApprover = {
+      accountFirst: {
+        ad: 'HUYENTT10',
+        uid: "323540",
+      },
+      accountSecond: {
+        ad: 'HANGPV',
+        uid: "906041",
+      },
+    }
+
+    if ((user?.account?.toUpperCase() === exceptionApprover.accountFirst.ad && user?.uid === exceptionApprover.accountFirst.uid) 
+      || (user?.account?.toUpperCase() === exceptionApprover.accountSecond.ad && user?.uid === exceptionApprover.accountSecond.uid)
+    ) {
+      return true
+    }
+
+    return false
   }
 
   isApprover = (levelApproverFilter, orglv2Id, currentUserLevel, account) => {
