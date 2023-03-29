@@ -177,7 +177,7 @@ class RegistrationEmploymentTermination extends React.Component {
                             {
                                 requestInfo?.appraiserComment != null && requestInfo?.appraiserComment != undefined && requestInfo?.appraiserComment != "" ?
                                     <div className="col-12">
-                                        <p className="title">Lý do từ chối</p>
+                                        <p className="title">{t('reason_reject')}</p>
                                         <div>
                                             <div className="detail">{requestInfo?.appraiserComment || ""}</div>
                                         </div>
@@ -215,7 +215,7 @@ class RegistrationEmploymentTermination extends React.Component {
                             {
                                 requestInfo?.approverComment != null && requestInfo?.approverComment != undefined && requestInfo?.approverComment != "" ?
                                     <div className="col-12">
-                                        <p className="title">Lý do từ chối</p>
+                                        <p className="title">{t('reason_reject')}</p>
                                         <div>
                                             <div className="detail">{requestInfo?.approverComment || ""}</div>
                                         </div>
