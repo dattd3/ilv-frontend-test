@@ -10,9 +10,10 @@ import { t } from 'i18next'
 import { getResignResonsMasterData } from 'commons/Utils'
 import { checkIsExactPnL } from 'commons/commonFunctions'
 
-const AttachmentOption = ({ children, ...props }) => (<components.ValueContainer {...props}>
-    <div>File đính kèm</div><div style={{visibility: 'hidden'}}>{children}</div>
-    </components.ValueContainer>);
+const AttachmentOption = ({ children, ...props }) => { 
+    return (<components.ValueContainer {...props}>
+    <div>{props?.selectProps?.no_data}</div><div style={{visibility: 'hidden'}}>{children}</div>
+    </components.ValueContainer>)};
 
 const Option = props => {
     return (
@@ -56,8 +57,8 @@ class ListStaffResignationComponent extends React.PureComponent {
             {value: 2, label: props.t('not_push_SAP')},
         ];
         this.PAYMENT_OPTIONS = [
-            {label: 'Giữ lương', value: 0},
-            {label: 'Đã trả', value: 1}
+            {label: props.t('salary_keeped'), value: 0},
+            {label: props.t('salary_paid'), value: 1}
         ];
     }
 
@@ -200,6 +201,7 @@ class ListStaffResignationComponent extends React.PureComponent {
                         backgroundColor: state.isSelected ? null : null,
                         })
                     }} disabled={'disabled'} readOnly={'readonly'}
+                    no_data = {this.props.t('attachment')}
                     isOptionDisabled={(option) => option.isdisabled}
                     onChange={e => this.handleDeleteAttachedFiles(index, e)}
                     menuPortalTarget={document.body}
