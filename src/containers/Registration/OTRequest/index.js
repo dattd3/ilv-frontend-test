@@ -20,6 +20,7 @@ import IconPlusCircle from "assets/img/icon/Icon-plus-circle.svg";
 import IconRemove from "assets/img/icon-delete.svg";
 import ResultModal from "../ResultModal";
 import map from "containers/map.config";
+import ConfirmModal from "components/Common/ConfirmModalNew";
 const config = getRequestConfigurations();
 
 registerLocale("vi", vi);
@@ -69,11 +70,12 @@ const INIT_STATUS_MODAL_MANAGEMENT = {
 };
 const MAX_OT_HOURS = 4;
 const MAX_OT_HOURS_OFF_DAY = 12;
+const MAX_OT_HOURS_MONTH = 40;
 
 const queryString = window.location.search;
 
 const checkIsHolidayOfCompany = (isHoliday, companyCode) => {
-  return companyCode != Constants.COMPANY_CODE_VINMEC && isHoliday == '1';
+  return companyCode != Constants.COMPANY_CODE_VINMEC && isHoliday == "1";
 };
 
 export default function OTRequestComponent({ recentlyManagers }) {
@@ -95,6 +97,9 @@ export default function OTRequestComponent({ recentlyManagers }) {
   const [statusModalManagement, setStatusModalManagement] = useState(
     INIT_STATUS_MODAL_MANAGEMENT
   );
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  // const [daysOverOT, setDaysOverOT] = useState([]);
+
   const lang = localStorage.getItem("locale");
 
   useEffect(() => {
@@ -110,10 +115,13 @@ export default function OTRequestComponent({ recentlyManagers }) {
 
   const loadDefaultAppraiser = async () => {
     try {
-      const config = getMuleSoftHeaderConfigurations()
-      const response = await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/manager`, config)
+      const config = getMuleSoftHeaderConfigurations();
+      const response = await axios.get(
+        `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/manager`,
+        config
+      );
       if (response && response.data) {
-        const result = response.data.result
+        const result = response.data.result;
         if (result && result.code == Constants.API_SUCCESS_CODE) {
           const data = response.data?.data[0];
           setAppraiser({
@@ -126,15 +134,18 @@ export default function OTRequestComponent({ recentlyManagers }) {
             orglv2Id: "",
             account: data?.userid?.toLowerCase() || "",
             current_position: data?.title || "",
-            department: data.division + (data.department ? '/' + data.department : '') + (data.part ? '/' + data.part : '')
-          })
+            department:
+              data.division +
+              (data.department ? "/" + data.department : "") +
+              (data.part ? "/" + data.part : ""),
+          });
         }
       }
-      return null
+      return null;
     } catch (e) {
-      return null
+      return null;
     }
-  }
+  };
 
   const getDayNameFromDate = (date) => {
     const days = [
@@ -225,8 +236,12 @@ export default function OTRequestComponent({ recentlyManagers }) {
           ).format("YYYYMMDD")}`,
           config
         );
-        newRequestInfoData[index].totalHoursOtInMonth = response.data?.data?.totalOtMonth;
-        newRequestInfoData[index].totalHoursOtInDay = response.data?.data?.totalOtDay;
+        newRequestInfoData[index].totalHoursOtInMonth =
+          response.data?.data?.totalOtMonth;
+        newRequestInfoData[index].totalHoursOtInDay =
+          response.data?.data?.totalOtDay;
+        newRequestInfoData[index].monthSalary =
+          response.data?.data?.monthSalary;
       } catch (error) {}
     }
     setRequestInfoData(newRequestInfoData);
@@ -240,6 +255,15 @@ export default function OTRequestComponent({ recentlyManagers }) {
         ...newRequestInfoData[index],
         [name]: moment(value).format("HH:mm"),
       };
+      if (
+        newRequestInfoData[index].startTime &&
+        newRequestInfoData[index].endTime
+      ) {
+        newRequestInfoData[index].hoursOt = getHoursBetween2Times(
+          newRequestInfoData[index].startTime,
+          newRequestInfoData[index].endTime
+        );
+      }
     } else {
       newRequestInfoData[index] = {
         ...newRequestInfoData[index],
@@ -277,10 +301,39 @@ export default function OTRequestComponent({ recentlyManagers }) {
     },
   ];
 
-  const handleSendRequests = async () => {
+  const handleSendButtonClick = () => {
     if (checkIsError()) {
       return;
     }
+    const haveDayOverOt = [...requestInfoData]
+      .filter((item) => item.isEdited)
+      .some((item) => {
+        const totalRegisterInMonth = [...requestInfoData]
+          .filter(
+            (_item) => _item.isEdited && item.monthSalary && _item.monthSalary === item.monthSalary
+          )
+          .reduce((acc, currValue) => acc + currValue.hoursOt * 1, 0);
+
+        const isOverOt =
+          (item?.shift_id !== "OFF" && item.hoursOt > MAX_OT_HOURS) || // normal day
+          ((item?.shift_id?.toUpperCase() === "OFF" ||
+            checkIsHolidayOfCompany(
+              item.is_holiday,
+              localStorage.getItem("companyCode")
+            )) &&
+            item.hoursOt > MAX_OT_HOURS_OFF_DAY) || // day off - holiday
+            totalRegisterInMonth + item.totalHoursOtInMonth > MAX_OT_HOURS_MONTH; // max 40hrs per month
+        return isOverOt;
+      });
+    if (haveDayOverOt) {
+      return setShowConfirmModal(true);
+    }
+    sendRequest();
+  };
+
+  const sendRequest = async () => {
+    setShowConfirmModal(false);
+    // setDaysOverOT([]);
     setIsSendingRequest(true);
     const timesheets = [...requestInfoData]
       .filter((item) => item.isEdited)
@@ -291,7 +344,6 @@ export default function OTRequestComponent({ recentlyManagers }) {
         startTime: moment(item.startTime, "HH:mm").format("HHmmss"),
         endTime: moment(item.endTime, "HH:mm").format("HHmmss"),
         overTimeType: "01",
-        hoursOt: getHoursBetween2Times(item.startTime, item.endTime),
       }));
 
     const approver = { ...budgetApprover };
@@ -412,12 +464,7 @@ export default function OTRequestComponent({ recentlyManagers }) {
         if (!item.endTime) _errors[`endTime_${index}`] = t("Required");
         if (!item.note) _errors[`note_${index}`] = t("Required");
         if (item.startTime && item.endTime) {
-          if (item?.shift_id !== "OFF" && (getHoursBetween2Times(item.startTime, item.endTime) > MAX_OT_HOURS)) {
-            _errors[`overtime_${index}`] = t("OverTimeOT1");
-          } else if ((item?.shift_id?.toUpperCase() === "OFF" || checkIsHolidayOfCompany(item.is_holiday, localStorage.getItem("companyCode"))) && (getHoursBetween2Times(item.startTime, item.endTime) > MAX_OT_HOURS_OFF_DAY)) {
-            _errors[`overtime_${index}`] = t("OverTimeOT2");
-          }
-          if (getHoursBetween2Times(item.startTime, item.endTime) <= 0) {
+          if (item.hoursOt <= 0) {
             _errors[`invalidHour_${index}`] = t("InvalidHour");
           }
           if (
@@ -429,10 +476,7 @@ export default function OTRequestComponent({ recentlyManagers }) {
                 moment(item.from_time1, "HHmmss").format("HH:mm"),
                 moment(item.to_time1, "HHmmss").format("HH:mm"),
               ],
-              [
-                item.startTime,
-                item.endTime,
-              ],
+              [item.startTime, item.endTime],
             ];
             if (checkOverlap(timeSegments)) {
               _errors[`overlapTime_${index}`] = t("OverlapTimeOTWorkshift");
@@ -447,10 +491,7 @@ export default function OTRequestComponent({ recentlyManagers }) {
                 moment(item.from_time2, "HHmmss").format("HH:mm"),
                 moment(item.to_time1, "HHmmss").format("HH:mm"),
               ],
-              [
-                item.startTime,
-                item.endTime,
-              ],
+              [item.startTime, item.endTime],
             ];
             if (checkOverlap(timeSegments)) {
               _errors[`overlapTime_${index}`] = t("OverlapTimeOTWorkshift");
@@ -503,6 +544,12 @@ export default function OTRequestComponent({ recentlyManagers }) {
       !isNullCustomize(timesheet.to_time2)
     );
   };
+
+  const hideConfirmModal = () => {
+    setShowConfirmModal(false);
+    // setDaysOverOT([]);
+  };
+
   return (
     <div className="ot-request-container">
       <ResultModal
@@ -511,6 +558,16 @@ export default function OTRequestComponent({ recentlyManagers }) {
         title={statusModalManagement.titleModal}
         message={statusModalManagement.messageModal}
         onHide={hideStatusModal}
+      />
+      <ConfirmModal
+        show={showConfirmModal}
+        confirmHeader={t("ConfirmSend")}
+        confirmContent={t("WarningOverOT")}
+        onHide={hideConfirmModal}
+        onCancelClick={hideConfirmModal}
+        onAcceptClick={sendRequest}
+        tempButtonLabel={t("Cancel")}
+        mainButtonLabel={t("Confirm")}
       />
       <div className="box shadow">
         <div className="row">
@@ -856,14 +913,8 @@ export default function OTRequestComponent({ recentlyManagers }) {
                             <div className="field-view  hour-picker-input">
                               {timesheet.startTime &&
                               timesheet.endTime &&
-                              getHoursBetween2Times(
-                                timesheet.startTime,
-                                timesheet.endTime
-                              ) > 0
-                                ? getHoursBetween2Times(
-                                    timesheet.startTime,
-                                    timesheet.endTime
-                                  )
+                              timesheet.hoursOt > 0
+                                ? timesheet.hoursOt
                                 : 0}
                               &nbsp;
                               {t("HourUnit")}
@@ -960,7 +1011,7 @@ export default function OTRequestComponent({ recentlyManagers }) {
               <button
                 type="button"
                 className="btn btn-primary ml-3 shadow"
-                onClick={handleSendRequests}
+                onClick={handleSendButtonClick}
                 disabled={isSendingRequest}
               >
                 <i className="fa fa-paper-plane" aria-hidden="true"></i>
