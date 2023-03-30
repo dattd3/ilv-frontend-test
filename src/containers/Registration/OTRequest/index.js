@@ -74,8 +74,11 @@ const MAX_OT_HOURS_MONTH = 40;
 
 const queryString = window.location.search;
 
-const checkIsHolidayOfCompany = (isHoliday, companyCode) => {
-  return companyCode != Constants.COMPANY_CODE_VINMEC && isHoliday == "1";
+const checkIsHolidayOrOffOfCompany = (shiftId, isHoliday, companyCode) => {
+  return (
+    shiftId.toUpperCase() === "OFF" ||
+    (companyCode != Constants.COMPANY_CODE_VINMEC && isHoliday == "1")
+  );
 };
 
 export default function OTRequestComponent({ recentlyManagers }) {
@@ -262,7 +265,7 @@ export default function OTRequestComponent({ recentlyManagers }) {
         newRequestInfoData[index].hoursOt = getHoursBetween2Times(
           newRequestInfoData[index].startTime,
           newRequestInfoData[index].endTime
-        );
+        ) * 1;
       }
     } else {
       newRequestInfoData[index] = {
@@ -310,20 +313,25 @@ export default function OTRequestComponent({ recentlyManagers }) {
       .some((item) => {
         const totalRegisterInMonth = [...requestInfoData]
           .filter(
-            (_item) => _item.isEdited && item.monthSalary && _item.monthSalary === item.monthSalary
+            (_item) =>
+              _item.isEdited &&
+              item.monthSalary &&
+              _item.monthSalary === item.monthSalary
           )
           .reduce((acc, currValue) => acc + currValue.hoursOt * 1, 0);
+        const isOverOTNormalDay =
+          item?.shift_id !== "OFF" &&
+          item.hoursOt + item.totalHoursOtInDay > MAX_OT_HOURS;
+        const isOverOTOffDay =
+          checkIsHolidayOrOffOfCompany(
+            item?.shift_id,
+            item.is_holiday,
+            localStorage.getItem("companyCode")
+          ) && item.hoursOt + item.totalHoursOtInDay > MAX_OT_HOURS_OFF_DAY;
+        const isOverOTInMonth =
+          totalRegisterInMonth + item.totalHoursOtInMonth > MAX_OT_HOURS_MONTH;
 
-        const isOverOt =
-          (item?.shift_id !== "OFF" && (item.hoursOt + item.totalHoursOtInDay) > MAX_OT_HOURS) || // normal day
-          ((item?.shift_id?.toUpperCase() === "OFF" ||
-            checkIsHolidayOfCompany(
-              item.is_holiday,
-              localStorage.getItem("companyCode")
-            )) &&
-            (item.hoursOt + item.totalHoursOtInDay) > MAX_OT_HOURS_OFF_DAY) || // day off - holiday
-            totalRegisterInMonth + item.totalHoursOtInMonth > MAX_OT_HOURS_MONTH; // max 40hrs per month
-        return isOverOt;
+        return isOverOTNormalDay || isOverOTOffDay || isOverOTInMonth;
       });
     if (haveDayOverOt) {
       return setShowConfirmModal(true);
