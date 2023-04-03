@@ -28,7 +28,7 @@ class ConfirmRequestModal extends React.Component {
             return;
         }
         if ((Constants.STATUS_USE_COMMENT.includes(this.props.type) && this.state.message == "")) {
-            this.setState({errorMessage: "Vui lòng nhập lý do"})
+            this.setState({errorMessage: this.props.t("ReasonRequired")})
             return;
         }
         this.setState({ disabledSubmitButton: true });
@@ -209,7 +209,7 @@ class ConfirmRequestModal extends React.Component {
             this.setState({ message: e.target.value, errorMessage: null })
         }
         else {
-            this.setState({ message: "", errorMessage: "Vui lòng nhập lý do" })
+            this.setState({ message: "", errorMessage: this.props.t("ReasonRequired") })
         }
     }
 
@@ -244,7 +244,7 @@ class ConfirmRequestModal extends React.Component {
                             this.props.type == Constants.STATUS_NOT_APPROVED ||  this.props.type == Constants.STATUS_NO_CONSENTED?
                                 <div className="message">
                                     <textarea className="form-control" id="note" rows="4" value={this.state.message} onChange={this.handleChangeMessage}></textarea>
-                                    <span className="text-danger">{this.state.errorMessage}</span>
+                                    <span className="text-danger" style={{marginTop: 5}}>{this.state.errorMessage}</span>
                                 </div>
                                 : null
                         }
