@@ -4,6 +4,7 @@ import { Modal } from 'react-bootstrap'
 import ResultDetailModal from './ResultDetailModal'
 import Constants from '../../commons/Constants'
 import map from "../map.config"
+import { getRequestTypeIdsAllowedToReApproval } from 'commons/Utils'
 import Spinner from 'react-bootstrap/Spinner'
 import { withTranslation  } from "react-i18next"
 
@@ -102,8 +103,8 @@ class ConfirmRequestModal extends React.Component {
     approve = (id) => {
         const dataPrepareToSap = [];
         const { t, dataToSap } = this.props
-        const requestTypeIdsAllowedToReApproval = [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP, Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE, Constants.OT_REQUEST, Constants.UPDATE_PROFILE]
-
+        const requestTypeIdsAllowedToReApproval = getRequestTypeIdsAllowedToReApproval()
+        
         dataToSap.forEach(element => {
             let taskObj = {};
             if(element.requestTypeId == Constants.ONBOARDING){
