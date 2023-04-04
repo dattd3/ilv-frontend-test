@@ -419,7 +419,7 @@ class LeaveOfAbsenceComponent extends React.Component {
     }
 
     calFullDay(timesheets) {
-        const hours = timesheets.filter(timesheet => timesheet.shift_id !== 'OFF').reduce((accumulator, currentValue) => {
+        const hours = timesheets.filter(timesheet => timesheet.shift_id !== Constants.SHIFT_CODE_OFF).reduce((accumulator, currentValue) => {
             return accumulator + parseFloat(currentValue.hours)
         }, 0)
 
