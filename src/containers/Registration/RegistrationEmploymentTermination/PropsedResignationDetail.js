@@ -5,6 +5,7 @@ import moment from 'moment'
 import DetailButtonComponent from '../DetailButtonComponent'
 import AttachmentComponent from '../TerminationComponents/AttachmentComponent'
 import Constants from '../.../../../../commons/Constants'
+import { getResignResonsMasterData } from 'commons/Utils'
 
 class RegistrationEmploymentTermination extends React.Component {
     constructor(props) {
@@ -59,6 +60,7 @@ class RegistrationEmploymentTermination extends React.Component {
                 fileUrl: item.fileUrl || ""
             }
         })
+        const reasonMasterData = getResignResonsMasterData();
 
         return (
             <div className="registration-section registration-employment-termination proposed-registration-employment-termination justify-content-between">
@@ -90,7 +92,7 @@ class RegistrationEmploymentTermination extends React.Component {
                 </div>
 
                 <div className="block staff-information-proposed-resignation-block">
-                    <h6 className="block-title">II. {`${t('proposed_employee_info')} ${t('cho_nghi')}`}</h6>
+                    <h6 className="block-title">{`${t('proposed_employee_info')} ${t('cho_nghi')}`}</h6>
                     <div className="box shadow">
                         <div className="row">
                             <div className="col-12">
@@ -152,7 +154,7 @@ class RegistrationEmploymentTermination extends React.Component {
                             <div className="col-4">
                                 <p className="title">{t('ReasonForContractTermination')}</p>
                                 <div>
-                                    <div className="detail">{requestInfo.absenceType ? requestInfo.absenceType.label : ''}</div>
+                                    <div className="detail">{requestInfo.absenceType ? reasonMasterData[requestInfo.absenceType.value] : ''}</div>
                                 </div>
                             </div>
                         </div>
@@ -165,7 +167,7 @@ class RegistrationEmploymentTermination extends React.Component {
                             </div>
                         </div>
                         {
-                            requestInfo?.processStatusId == Constants.STATUS_REVOCATION && requestInfo?.commentExtend != null && requestInfo?.commentExtend != "" && requestInfo?.commentExtend != undefined ?
+                            resignInfo?.processStatusId == Constants.STATUS_REVOCATION && requestInfo?.commentExtend != null && requestInfo?.commentExtend != "" && requestInfo?.commentExtend != undefined ?
                                 <div className="row">
                                     <div className="col-12">
                                         <p className="title">{t('reason_cancel')}</p>
@@ -222,9 +224,9 @@ class RegistrationEmploymentTermination extends React.Component {
                 <AttachmentComponent files={files} updateFiles={this.updateFiles} />
 
                 <div className="block-status">
-                    <span className={`status ${Constants.mappingStatusRequest[requestInfo.processStatusId].className}`}>{(this.props.action == "consent" && requestInfo.processStatusId == 5 && resignInfo.appraiser) ? t(Constants.mappingStatusRequest[6].label) : t(Constants.mappingStatusRequest[requestInfo.processStatusId].label)}</span>
+                    <span className={`status ${Constants.mappingStatusRequest[resignInfo.processStatusId].className}`}>{(this.props.action == "consent" && resignInfo.processStatusId == 5 && resignInfo.appraiser) ? t(Constants.mappingStatusRequest[20].label) : t(Constants.mappingStatusRequest[resignInfo.processStatusId].label)}</span>
                 </div>
-                {(requestInfo.processStatusId === 8 || (this.props.action != "consent" && requestInfo.processStatusId === 5) || requestInfo.processStatusId === 2) ?
+                {(requestInfo.processStatusId === 8 || (this.props.action != "consent" && resignInfo.processStatusId === 5) || resignInfo.processStatusId === 2) ?
                     <DetailButtonComponent
                         dataToSap={[{
                             "id": resignInfo.id,
@@ -237,9 +239,9 @@ class RegistrationEmploymentTermination extends React.Component {
                         }]}
                         isShowRevocationOfApproval={false}
                         //isShowRevocationOfApproval={requestInfo.processStatusId === Constants.STATUS_APPROVED && (requestInfo.actionType == "INS" || requestInfo.actionType == "MOD")
-                        isShowApproval={requestInfo.processStatusId === Constants.STATUS_WAITING}
-                        isShowConsent={requestInfo.processStatusId === Constants.STATUS_WAITING_CONSENTED}
-                        isShowRevocationOfConsent={requestInfo.processStatusId === Constants.STATUS_WAITING && resignInfo.appraiser}
+                        isShowApproval={resignInfo.processStatusId === Constants.STATUS_WAITING}
+                        isShowConsent={resignInfo.processStatusId === Constants.STATUS_WAITING_CONSENTED}
+                        isShowRevocationOfConsent={resignInfo.processStatusId === Constants.STATUS_WAITING && resignInfo.appraiser}
                         id={resignInfo.id}
                         urlName={'requestattendance'}
                         requestTypeId={requestTypeId}

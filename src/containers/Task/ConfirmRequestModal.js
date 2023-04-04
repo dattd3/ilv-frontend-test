@@ -4,6 +4,7 @@ import { Modal } from 'react-bootstrap'
 import ResultDetailModal from './ResultDetailModal'
 import Constants from '../../commons/Constants'
 import map from "../map.config"
+import { getRequestTypeIdsAllowedToReApproval } from 'commons/Utils'
 import Spinner from 'react-bootstrap/Spinner'
 import { withTranslation  } from "react-i18next"
 
@@ -28,7 +29,7 @@ class ConfirmRequestModal extends React.Component {
             return;
         }
         if ((Constants.STATUS_USE_COMMENT.includes(this.props.type) && this.state.message == "")) {
-            this.setState({errorMessage: "Vui lòng nhập lý do"})
+            this.setState({errorMessage: this.props.t("ReasonRequired")})
             return;
         }
         this.setState({ disabledSubmitButton: true });
@@ -102,7 +103,7 @@ class ConfirmRequestModal extends React.Component {
     approve = (id) => {
         const dataPrepareToSap = [];
         const { t, dataToSap } = this.props
-        const requestTypeIdsAllowedToReApproval = [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP, Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE]
+        const requestTypeIdsAllowedToReApproval = getRequestTypeIdsAllowedToReApproval()
 
         dataToSap.forEach(element => {
             let taskObj = {};
@@ -113,7 +114,11 @@ class ConfirmRequestModal extends React.Component {
                 taskObj = {"id":element.salaryId ,"requestTypeId":element.requestTypeId,"sub":[]};
                 taskObj.sub.push({"id":element.salaryId,"processStatusId": Constants.STATUS_APPROVED})
             } else {
-                taskObj = {"id": element.requestTypeId == Constants.SUBSTITUTION || element.requestTypeId == Constants.IN_OUT_TIME_UPDATE || element.requestTypeId == Constants.CHANGE_DIVISON_SHIFT ? element.id : parseInt(element.id.split(".")[0]),"requestTypeId":element.requestTypeId,"sub":[]};
+                taskObj = {
+                    "id": element.requestTypeId == Constants.SUBSTITUTION || element.requestTypeId == Constants.IN_OUT_TIME_UPDATE || element.requestTypeId == Constants.CHANGE_DIVISON_SHIFT || element.requestTypeId == Constants.UPDATE_PROFILE ? element.id : parseInt(element.id.split(".")[0]),
+                    "requestTypeId": element.requestTypeId,
+                    "sub": []
+                };
                 // element.requestInfo.forEach(sub => {
                     if (element.processStatusId == Constants.STATUS_WAITING || (element.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && (requestTypeIdsAllowedToReApproval.includes(element.requestTypeId)))) {
                         taskObj.sub.push({"id": element.id, "processStatusId": Constants.STATUS_APPROVED})
@@ -126,7 +131,7 @@ class ConfirmRequestModal extends React.Component {
 
         // let bodyFormData = new FormData()
         // bodyFormData.append('UserProfileInfoToSap', JSON.stringify(dataToSap))
-        this.changeRequest(dataPrepareToSap, `${process.env.REACT_APP_SALARY_URL}request/approve`, t("Trạng thái phê duyệt"))
+        this.changeRequest(dataPrepareToSap, `${process.env.REACT_APP_SALARY_URL}request/approve`, t("approval_status"))
     }
 
     disApprove = (formData, url, id) => {
@@ -149,7 +154,7 @@ class ConfirmRequestModal extends React.Component {
             }
             dataToSap.push(taskObj)
           });
-        this.changeRequest(dataToSap,`${process.env.REACT_APP_SALARY_URL}request/approve`,this.props.t("Trạng thái hủy phê duyệt"))
+        this.changeRequest(dataToSap,`${process.env.REACT_APP_SALARY_URL}request/approve`,this.props.t("disapproval_status"))
     }
 
     consent = () => {
@@ -172,7 +177,7 @@ class ConfirmRequestModal extends React.Component {
             }
             dataToSap.push(taskObj)
           });
-        this.changeRequest(dataToSap,`${process.env.REACT_APP_SALARY_URL}request/assess`,this.props.t("Trạng thái thẩm định"))
+        this.changeRequest(dataToSap,`${process.env.REACT_APP_SALARY_URL}request/assess`,this.props.t("appraisal_status"))
     }
 
     reject = () => {
@@ -197,7 +202,7 @@ class ConfirmRequestModal extends React.Component {
             dataToSap.push(taskObj)
           });
         
-        this.changeRequest(dataToSap,`${process.env.REACT_APP_SALARY_URL}request/assess`,this.props.t("Trạng thái hủy thẩm định"))
+        this.changeRequest(dataToSap,`${process.env.REACT_APP_SALARY_URL}request/assess`,this.props.t("disappraisal_status"))
     }
     
     handleChangeMessage = (e) => {
@@ -205,7 +210,7 @@ class ConfirmRequestModal extends React.Component {
             this.setState({ message: e.target.value, errorMessage: null })
         }
         else {
-            this.setState({ message: "", errorMessage: "Vui lòng nhập lý do" })
+            this.setState({ message: "", errorMessage: this.props.t("ReasonRequired") })
         }
     }
 
@@ -240,7 +245,7 @@ class ConfirmRequestModal extends React.Component {
                             this.props.type == Constants.STATUS_NOT_APPROVED ||  this.props.type == Constants.STATUS_NO_CONSENTED?
                                 <div className="message">
                                     <textarea className="form-control" id="note" rows="4" value={this.state.message} onChange={this.handleChangeMessage}></textarea>
-                                    <span className="text-danger">{this.state.errorMessage}</span>
+                                    <span className="text-danger" style={{marginTop: 5}}>{this.state.errorMessage}</span>
                                 </div>
                                 : null
                         }

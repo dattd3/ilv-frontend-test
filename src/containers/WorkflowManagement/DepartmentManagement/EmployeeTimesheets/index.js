@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import FilterData from "../../ShareComponents/FilterData";
 import axios from "axios";
-import moment from "moment";
+import Moment from "moment"
+import { extendMoment } from "moment-range"
 import _ from 'lodash'
 import { Spinner, Button } from 'react-bootstrap';
 import { withTranslation } from "react-i18next";
@@ -12,6 +13,7 @@ import Constants from "../../../../commons/Constants";
 import { formatStringByMuleValue, getMuleSoftHeaderConfigurations, getRequestConfigurations, getDateByRangeAndFormat } from "../../../../commons/Utils"
 import ResultDetailModal from './ResultDetailModal'
 import HOCComponent from '../../../../components/Common/HOCComponent'
+const moment = extendMoment(Moment)
 
 const DATE_TYPE = {
   DATE_OFFSET: 0,
@@ -79,6 +81,81 @@ class EmployeeTimesheets extends Component {
       (rv[x[key]] = rv[x[key]] || []).push(x);
       return rv;
     }, {});
+  }
+
+  fillUpDay = (listTimeSheet, range) => {
+    if (listTimeSheet?.length === 0) {
+      return []
+    }
+
+    const firstItem = listTimeSheet[0]
+    const listDateTimeSheet = listTimeSheet.map(item => item?.date)
+
+    const result = range.map(item => {
+      let date = moment(item).format('DD-MM-YYYY')
+      if (!listDateTimeSheet?.includes(date)) {
+        return {
+          ...firstItem,
+          break_from_time_1: '',
+          break_from_time_2: '',
+          break_from_time_3: '',
+          break_to_time1: '',
+          break_to_time2: '',
+          break_to_time3: '',
+          date: date,
+          end_time1_fact: '',
+          end_time2_fact: '',
+          end_time3_fact: '',
+          from_time1: '',
+          from_time2: '',
+          hours: '',
+          is_holiday: '0',
+          leave_end_time1: '',
+          leave_end_time2: '',
+          leave_id: '',
+          leave_start_time1: '',
+          leave_start_time2: '',
+          ot_end_time1: '',
+          ot_end_time2: '',
+          ot_end_time3: '',
+          ot_start_time1: '',
+          ot_start_time2: '',
+          ot_start_time3: '',
+          shift_id: '',
+          start_time1_fact: '',
+          start_time2_fact: '',
+          start_time3_fact: '',
+          to_time1: '',
+          to_time2: '',
+          trip_end_time1: '',
+          trip_end_time2: '',
+          trip_start_time1: '',
+          trip_start_time2: '',
+        }
+      }
+
+      return listTimeSheet.find(timeSheet => timeSheet?.date === date)
+    })
+
+    return result.sort((pre, next) => moment(pre.date, "DD-MM-YYYY") < moment(next.date, "DD-MM-YYYY") ? 1 : -1)
+  }
+
+  prepareUserTimeSheetMissingDate = (groups) => {
+    const { dayList } = this.state
+    const startDate = moment(dayList[0]).format('DD-MM-YYYY')
+    const endDate = moment(dayList[dayList?.length - 1]).format('DD-MM-YYYY')
+    const range = Array.from(moment.range(moment(startDate, 'DD-MM-YYYY'), moment(endDate, 'DD-MM-YYYY')).snapTo('day').by('days'))
+
+    const result = (groups || []).map((item) => {
+      if (item?.timesheets?.length !== range?.length) { // Bổ sung thêm những ngày còn thiếu
+        item.timesheets = this.fillUpDay(item.timesheets || [], range)
+        return item
+      }
+
+      return item
+    })
+
+    return result
   }
 
   search(startDate, endDate, members) {
@@ -189,7 +266,7 @@ class EmployeeTimesheets extends Component {
             }, {})
             group_to_values = {...group_to_values, ...memberNeedAdd}
 
-            const groups = Object.keys(group_to_values).map(function (key) {
+            let groups = Object.keys(group_to_values).map(function (key) {
               return {
                 per: key,
                 name: group_to_values[key][0]?.fullname,
@@ -197,6 +274,8 @@ class EmployeeTimesheets extends Component {
                 timesheets: group_to_values[key]
               };
             });
+
+            groups = this.prepareUserTimeSheetMissingDate(groups)
 
             const data = groups.map((q) => {
               let aip =  {...q, timesheets: this.processDataForTable(q.timesheets, start, end, responses[0].data.data)}
@@ -221,7 +300,7 @@ class EmployeeTimesheets extends Component {
   };
 
   isHoliday = (item) => {
-    return item.shift_id == 'OFF' || (item.is_holiday == 1 && localStorage.getItem("companyCode") != "V060");
+    return item.shift_id == Constants.SHIFT_CODE_OFF || (item.is_holiday == 1 && localStorage.getItem("companyCode") != "V060");
   };
 
   getDatetimeForCheckFail(startTime, endTime, currentDay, nextDay) {
@@ -738,9 +817,10 @@ class EmployeeTimesheets extends Component {
         item.isUpdating = true
       }
       for (let j = 0, lenTimesheets = item.timesheets?.length; j < lenTimesheets; j++) {
-        if (item.timesheets[j].date === dateChangedFormat && dataChangedForObject[per]) {
-          item.timesheets[j].from_time1 = dataChangedForObject[item.per].startTime || dataChangedForObject[item.per].shiftFilter.shiftSelected?.from_time || ""
-          item.timesheets[j].to_time1 = dataChangedForObject[item.per].endTime || dataChangedForObject[item.per].shiftFilter.shiftSelected?.to_time || ""
+         const shouldUpdate = moment(item.timesheets[j].date, 'DD/MM/YYYY').isBetween(moment(dataChangedForObject[item.per].startDate, 'YYYYMMDD'), moment(dataChangedForObject[item.per].endDate, 'YYYYMMDD'), null, '[]');
+        if (shouldUpdate && dataChangedForObject[per]) {
+          item.timesheets[j].from_time1 = dataChangedForObject[item.per].startTime ? moment(dataChangedForObject[item.per].startTime, 'YYYYMMDD HHmmss').format('HHmmss') : dataChangedForObject[item.per].shiftFilter.shiftSelected?.from_time || ""
+          item.timesheets[j].to_time1 = dataChangedForObject[item.per].endTime ? moment(dataChangedForObject[item.per].endTime, 'YYYYMMDD HHmmss').format('HHmmss') : dataChangedForObject[item.per].shiftFilter.shiftSelected?.to_time || ""
           item.timesheets[j].old_shift_id = item.timesheets[j].shift_id || ""
           item.timesheets[j].shift_id = dataChangedForObject[item.per].shiftFilter.shiftSelected?.shift_id || ""
         }
@@ -799,8 +879,8 @@ class EmployeeTimesheets extends Component {
           }
         ],
         substitutionType: dataChanged[per]?.shiftType?.value, // Loại phân ca - Required
-        startDate: dateChanged, // Required
-        endDate: dateChanged, // Required
+        startDate: dataChanged[per].startDate, // Required
+        endDate: dataChanged[per].endDate, // Required
         shift_Id: shiftUpdateType == Constants.SUBSTITUTION_SHIFT_CODE ? dataChanged[per].shiftFilter.shiftSelected.shift_id : "", // Mã ca thay đổi (Nhập mã ca thì không nhập (startTime, endTime, shiftHours) và ngược lại)
         startTime: shiftUpdateType == Constants.SUBSTITUTION_SHIFT_UPDATE ? moment(dataChanged[per].startTime, 'YYYYMMDD HHmmss').format('HHmmss') : "", // Giờ bắt đầu HHmmss
         endTime: shiftUpdateType == Constants.SUBSTITUTION_SHIFT_UPDATE ? moment(dataChanged[per].endTime, 'YYYYMMDD HHmmss').format('HHmmss') : "", // Giờ kết thúc HHmmss
@@ -855,10 +935,10 @@ class EmployeeTimesheets extends Component {
 
     return (
       <>
-      <ResultDetailModal show={isShowStatusModal} title="Trạng thái cập nhật phân ca" onHide={this.hideStatusModal} resultDetail={resultShiftUpdateDetail}/>
+      <ResultDetailModal show={isShowStatusModal} title={t('shift_change_status')} onHide={this.hideStatusModal} resultDetail={resultShiftUpdateDetail}/>
       <div className="timesheet-section department-timesheet">
-        <h1 className="content-page-header">{[Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl].includes(companyVCodeUserLogged) ? t("TimesheetDivision") : t("Timesheet")}</h1>
-        <FilterData clickSearch={this.searchTimesheetByDate.bind(this)} updateEmployees={this.updateEmployees} />
+        <h1 className="content-page-header">{[Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading].includes(companyVCodeUserLogged) ? t("TimesheetDivision") : t("Timesheet")}</h1>
+        <FilterData clickSearch={this.searchTimesheetByDate.bind(this)} isUserRequired={true} updateEmployees={this.updateEmployees} />
         {
           (isSearch && timeTables.length > 0)  ?
           <>
@@ -873,14 +953,14 @@ class EmployeeTimesheets extends Component {
                 <th rowSpan="2">{t("RoomPartGroup")}</th>
                 <th rowSpan="2"></th>
                 {
-                  dayList.map((item, i) => {
+                  (dayList || []).map((item, i) => {
                     return <th className="text-center text-uppercase font-weight-bold" key={i}>{moment(item).format("dddd").toLocaleUpperCase()}</th>
                   })
                 }
               </tr>
               <tr>
                 {
-                  dayList.map((item, i) => {
+                  (dayList || []).map((item, i) => {
                     return <th key={i}>{moment(item).format("DD/MM/YYYY")}</th>
                   })
                 }
@@ -888,7 +968,7 @@ class EmployeeTimesheets extends Component {
             </thead>
             <tbody>
               {
-                timeTables.map((item, i) => {
+                (timeTables || []).map((item, i) => {
                   return <React.Fragment key={i}>
                     <tr>
                       <td rowSpan="5">{item.name}</td>

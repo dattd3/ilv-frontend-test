@@ -339,6 +339,7 @@ function Content(props) {
     const [isShowShiftUpdateModal, SetIsShowShiftUpdateModal] = useState(false)
     const [dateInfo, SetDateInfo] = useState({})
     const [totalEmployeesUpdating, SetTotalEmployeesUpdating] = useState(0)
+    const currentUserPnL = localStorage.getItem("companyCode")
 
     const onChangePage = index => {
         setPageNumber(index)
@@ -350,10 +351,13 @@ function Content(props) {
 
     const handleShowModalShiftChange = (date, day) => {
         let isEnableChangeStaffShift = isEnableFunctionByFunctionName(Constants.listFunctionsForPnLACL.changeStaffShift)
-        const currentUserPnL = localStorage.getItem("companyCode")
-        if ([Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl].includes(currentUserPnL)) {
+        if ([Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading].includes(currentUserPnL)) {
             const currentUserRankTitle = localStorage.getItem("employeeLevel").toUpperCase() // Cấp bậc chức danh của user logged
-            const levelAccessFunction = ["P2", "P1", "T4", "T3", "T2", "T1", "T0"]
+            let levelAccessFunction = ["P2", "P1", "T4", "T3", "T2", "T1", "T0"]
+            //ILVG-679: VF sản xuất cho phép CBLĐ từ cấp C có thể phân ca bộ phận
+            if ([Constants.pnlVCode.VinFast].includes(currentUserPnL)) {
+                levelAccessFunction = [...levelAccessFunction, "C2", "C1","C"];
+            }
             if (!levelAccessFunction.includes(currentUserRankTitle)) {
                 isEnableChangeStaffShift = false
             }
@@ -375,6 +379,9 @@ function Content(props) {
         const minDate = getRegistrationMinDateByConditions()
         
         if (!minDate) {
+            if ([Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading].includes(currentUserPnL)) {
+                return true
+            }
             const backDateConfig = 1
             const duration = moment().diff(date, 'days')
             if (duration > backDateConfig) {
@@ -468,15 +475,15 @@ function Content(props) {
                                 <td rowSpan={isShowLineOT ? 4 : 3} className="fixed-col room-part-group"><span>{timeSheet.departmentPartGroup || ""}</span></td>
                                 <RenderRow1 member = {timeSheet} />
                             </tr>
-                            <tr className="no-border-left" className="line2">
+                            <tr className="no-border-left line2">
                                 <RenderRow2 member = {timeSheet} />
                             </tr>
-                            <tr className="no-border-left" className="line3">
+                            <tr className="no-border-left line3">
                                 <RenderRow3 member={timeSheet} isShowLineOT={isShowLineOT} />
                             </tr>
                             {
                                 isShowLineOT ? 
-                                <tr className="no-border-left" className="line4">
+                                <tr className="no-border-left line4">
                                     <RenderRow4 member={timeSheet} />
                                 </tr>
                                 : null
@@ -491,8 +498,8 @@ function Content(props) {
             {
                 totalEmployeesUpdating && totalEmployeesUpdating > 0 ?
                 <div className="report-employees-updating">
-                    <span className="message">Tổng số nhân viên thay đổi Giờ kế hoạch: <span className="total-employees-updating">{formatNumberInteger(totalEmployeesUpdating)}</span></span>
-                    <span className="detail" onClick={handleViewDetail}>{"Xem chi tiết"}<i className="fas fa-angle-double-right"></i></span>
+                    <span className="message">{t('AllMemeberChangeTimeShift')} <span className="total-employees-updating">{formatNumberInteger(totalEmployeesUpdating)}</span></span>
+                    <span className="detail" onClick={handleViewDetail}>{t('Details')}<i className="fas fa-angle-double-right"></i></span>
                 </div>
                 : null
             }

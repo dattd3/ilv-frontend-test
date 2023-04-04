@@ -6,7 +6,7 @@ import { Modal, Image } from 'react-bootstrap';
 function StatusModal(props) {
     return (
         <>
-        <Modal className={`info-modal-common ${props?.className ? props?.className: ''}`} centered show={props.show} onHide={props.onHide}>
+        <Modal className={`info-modal-common ${props?.className ? props?.className: ''}`} backdropClassName={props?.backdropClassName ? props?.backdropClassName : ''} centered show={props.show} onHide={props.onHide}>
             <Modal.Header closeButton></Modal.Header>
             <Modal.Body className='text-center'>
                 {props.content ? <p className='description'>{props.content}</p> : ''}

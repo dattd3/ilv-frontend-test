@@ -418,7 +418,7 @@ class LeaveOfAbsenceComponent extends React.Component {
     }
 
     calFullDay(timesheets) {
-        const hours = timesheets.filter(timesheet => timesheet.shift_id !== 'OFF').reduce((accumulator, currentValue) => {
+        const hours = timesheets.filter(timesheet => timesheet.shift_id !== Constants.SHIFT_CODE_OFF).reduce((accumulator, currentValue) => {
             return accumulator + parseFloat(currentValue.hours)
         }, 0)
 
@@ -854,7 +854,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                     </div>
                     <div className="col">
                         <div className="item">
-                            <div className="title">{t('AdvancecdAnnualLeave')}</div>
+                            <div className="title">{t('AdvancedAnnualLeave')}</div>
                             <div className="result text-danger">{annualLeaveSummary ? _.ceil(annualLeaveSummary.DAY_ADV_LEA, 2) : 0}</div>
                         </div>
                     </div>

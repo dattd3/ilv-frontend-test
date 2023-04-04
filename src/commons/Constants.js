@@ -16,7 +16,9 @@ const Constants = {
     NOTIFICATION_SHIFT_CHANGE: 10,
     NOTIFICATION_ADD_MEMBER_TO_PROJECT: 19,
     NOTIFICATION_MY_EVALUATION: 21,
-    NOTIFICATION_LEAD_EVALUATION: 22
+    NOTIFICATION_LEAD_EVALUATION: 22,
+    NOTIFICATION_MY_KPI_REGISTRATION_REQUEST: 23,
+    NOTIFICATION_MY_KPI_REGISTRATION_APPROVAL_REQUEST: 24,
   },
 
   //Tasks
@@ -53,6 +55,7 @@ const Constants = {
   ONBOARDING: 6,
   RESIGN_SELF: 7,
   SALARY_PROPOSE: 12,
+  OT_REQUEST: 13,
 
   //Status request
   STATUS_PENDING: 0,
@@ -126,7 +129,7 @@ const Constants = {
   BUSINESS_TRIP_DATE_FORMAT: 'DD/MM/YYYY',
   SUBSTITUTION_TPKLA_FULL_DAY: 1,
   SUBSTITUTION_TPKLA_HALF_DAY: 2,
-
+  SHIFT_CODE_OFF:  'OFF',
   // user level
   CONSENTER_LIST_LEVEL : ["C1", "P2", "P1", "T4", "T3", "T2", "T1", "T0"],
   APPROVER_LIST_LEVEL :  ["C1", "P2", "P1", "T4", "T3", "T2", "T1", "T0"],
@@ -150,7 +153,8 @@ const Constants = {
   },
   TYPE_REPORT: {
     DETAIL_REPORT: 0,
-    SUMARY_REPORT: 1
+    SUMARY_REPORT: 1,
+    TIMESHEET_REPORT: 2
   },
   pnlVCode: {
     VinHome: "V040",
@@ -169,6 +173,7 @@ const Constants = {
     VinUni: "V066",
     VinAI: "V099",
     VinBus: "V033",
+    VinES: "V079",
   },
   listFunctionsForPnLACL: {
     editProfile: 'EDIT_PROFILE',
@@ -216,19 +221,26 @@ const Constants = {
     NGHIVIEC:4,
     PHUCLOI: 5
   },
-  MODULE_COMPANY_AVAILABE: { //Development
-    1: ["V040", "V005", "V079", "V041", "V030"], //TUYENDUNG
+  MODULE_COMPANY_AVAILABE: process.env.REACT_APP_ENVIRONMENT === 'PRODUCTION' ?
+  { //production todo: add  "V077", "V070" to TUYENDUNG
+    1: ["V040", "V005", "V079", "V041", "V030", "V077", "V070"],//TUYENDUNG + V061
+    2: ["V040", "V005", "V061", "V077"],//DANHGIA_TAIKI
+    3: [],//DEXUATLUONG
+    4: ["V040", "V077", "V070"],//NGHIVIEC
+    5: ["V077", "V070"]//PHUCLOI
+  } :
+  { //Development
+    1: ["V040", "V005", "V079", "V041", "V030", "V077", "V070"],//TUYENDUNG + V061
     2: ["V061","V040", "V005", "V079", "V041", "V070", "V077"],//DANHGIA_TAIKI
-    3:["V061", "V040", "V005", "V079", "V041"],//DEXUATLUONG
-    4:["V040", "V005", "V079"],//NGHIVIEC
-    5: ["V061", "V040", "V005", "V079", "V041"]//PHUCLOI
-  }
-  // MODULE_COMPANY_AVAILABE: { //production
-  //   1: ["V040", "V005", "V079", "V041", "V030"],//TUYENDUNG + V061
-  //   2: ["V040", "V005", "V061", "V077"],//DANHGIA_TAIKI
-  //   3: [],//DEXUATLUONG
-  //   4: [],//NGHIVIEC
-  //   5: []//PHUCLOI
-  // }
+    3: ["V061", "V040", "V005", "V079", "V041"],//DEXUATLUONG "V061", "V040", "V005", "V079", "V041"
+    4:["V040", "V005", "V079", "V070", "V077"],//NGHIVIEC
+    5: ["V061", "V040", "V005", "V079", "V041", "V070", "V077"]//PHUCLOI
+  },
+  CURRENCY: {
+    VND: 'VNĐ',
+    USD: 'USD',
+  },
+  RESIGN_REASON_EMPLOYEE_INVALID: ["GI", "GL", "GM", "GN", "GO"],
+  VFSX_SHIFT_ID_VALID: ["7003", "7007", "7008", "7009", "7075", "OFF"]
 };
 export default Constants

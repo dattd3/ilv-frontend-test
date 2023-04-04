@@ -166,15 +166,18 @@ class AssesserComponent extends React.Component {
                 minHeight: 35
             })
         }
-        const { t, isEdit, errors, recentlyAppraiser } = this.props
+        const { t, isEdit, errors, recentlyAppraiser, isShowDuplicateWarning = true } = this.props
         const { appraiser, users, isSearch } = this.state
+        const displayAppraiser = appraiser || this.props.appraiser;
 
         return <div className="appraiser">
             <div className="box shadow">
                 <div className="row">
                     <div className="col-12 col-xl-12"> 
-                        <div className="box-bottom"><b className="text-uppercase black-color">{t('CONSENTER')} </b><i className="text-danger">
-                        ({t('AppraisalDuplicateApproval')})</i></div> 
+                        <div className="box-bottom"><b className="text-uppercase black-color">{t('CONSENTER')} </b>
+                        {isShowDuplicateWarning && <i className="text-danger">
+                        ({t('AppraisalDuplicateApproval')})</i>}
+                    </div> 
                     </div>
                 </div>
                 <div className="row">
@@ -189,7 +192,7 @@ class AssesserComponent extends React.Component {
                                 onInputChange={this.onInputChange.bind(this)}
                                 name="appraiser"
                                 onChange={appraiserItem => this.handleSelectChange('appraiser', appraiserItem)}
-                                value={appraiser}
+                                value={displayAppraiser}
                                 placeholder={t('Search') + '...'}
                                 key="appraiser"
                                 filterOption={this.filterOption}
@@ -200,13 +203,13 @@ class AssesserComponent extends React.Component {
                     <div className="col-12 col-xl-4">
                         <p className="title">{t('Position')}</p>
                         <div>
-                            <input type="text" className="form-control" value={appraiser?.current_position || ""} readOnly />
+                            <input type="text" className="form-control" value={displayAppraiser?.current_position || ""} readOnly />
                         </div>
                     </div>
                     <div className="col-12 col-xl-4">
                         <p className="title">{t('DepartmentManage')}</p>
                         <div>
-                            <input type="text" className="form-control" value={appraiser?.department || ""} readOnly />
+                            <input type="text" className="form-control" value={displayAppraiser?.department || ""} readOnly />
                         </div>
                     </div>
                 </div>
