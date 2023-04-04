@@ -33,6 +33,7 @@ class ApproverComponent extends React.Component {
     super();
     this.state = {
       approver: null,
+      isSearching: false,
       users: [],
       typingTimeout: 0,
       approverTyping: ""
@@ -55,28 +56,29 @@ class ApproverComponent extends React.Component {
     }
 
     const { approver } = this.props
-    const companiesUsing = ['V070','V077', 'V060']
-    if (companiesUsing.includes(localStorage.getItem("companyCode"))) {
-      axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/manager`, getMuleSoftHeaderConfigurations())
-        .then(res => {
-          if (res && res.data && res.data.data && res.data.data.length > 0) {
-            let manager = res.data.data[0]
-            let managerApproval = {
-              ...approverModel,
-              label: manager.fullName,
-              value: manager.userid.toLowerCase(),
-              fullName: manager.fullName,
-              account: manager.userid.toLowerCase(),
-              current_position: manager.title,
-              department: manager.department
-            }
-            this.setState({ approver: managerApproval })
-            this.props.updateApprover(managerApproval, true)
-          }
-        }).catch(error => {
+    // const companiesUsing = ['V070','V077', 'V060']
+    // if (companiesUsing.includes(localStorage.getItem("companyCode"))) {
+    //   axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/manager`, getMuleSoftHeaderConfigurations())
+    //     .then(res => {
+    //       if (res && res.data && res.data.data && res.data.data.length > 0) {
+    //         let manager = res.data.data[0]
+    //         let managerApproval = {
+    //           ...approverModel,
+    //           label: manager.fullName,
+    //           value: manager.userid.toLowerCase(),
+    //           fullName: manager.fullName,
+    //           account: manager.userid.toLowerCase(),
+    //           current_position: manager.title,
+    //           department: manager.department
+    //         }
+    //         this.setState({ approver: managerApproval })
+    //         this.props.updateApprover(managerApproval, true)
+    //       }
+    //     }).catch(error => {
 
-        });
-    }
+    //     });
+    // }
+
     if (approver) {
       this.setState({
         approver: {
@@ -90,10 +92,6 @@ class ApproverComponent extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     const { approver } = nextProps;
-    const companiesUsing = ['V070','V077', 'V060']
-    if (companiesUsing.includes(localStorage.getItem("companyCode"))) {
-      return;
-    }
     if (approver) {
       this.setState({
         approver: {
@@ -140,6 +138,7 @@ class ApproverComponent extends React.Component {
   getApproverInfo = (value) => {
     const { appraiser } = this.props
     if (value !== "") {
+      this.setState({isSearching: true})
       const config = {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
@@ -170,9 +169,12 @@ class ApproverComponent extends React.Component {
                 department: res.division + (res.department ? '/' + res.department : '') + (res.part ? '/' + res.part : '')
               }
             })
-            this.setState({ users: appraiser ? users.filter(user => user.account !== appraiser.account) : users })
+            this.setState({ users: appraiser ? users.filter(user => user.account !== appraiser.account) : users, isSearching: false })
           }
-        }).catch(error => { })
+        }).catch(error => { 
+          console.log(error);
+          this.setState({isSearching: false})
+        })
     }
   }
 
@@ -194,6 +196,8 @@ class ApproverComponent extends React.Component {
       })
     }
     const { t, isEdit } = this.props;
+    const { isSearching} = this.state
+    
     return <div className="approver">
       
         <div className="row">
@@ -201,6 +205,7 @@ class ApproverComponent extends React.Component {
            
             <div>
               <Select
+                isLoading={isSearching}
                 isClearable={true}
                 isDisabled={isEdit}
                 styles={customStyles}
@@ -208,8 +213,8 @@ class ApproverComponent extends React.Component {
                 onInputChange={this.onInputChange.bind(this)}
                 name="approver"
                 onChange={approver => this.handleSelectChange('approver', approver)}
-                value={this.state.approver && this.state.approver.label ?  this.state.approver :  {}}
-                placeholder={'Tìm kiếm theo mã AD'}
+                value={this.state.approver && this.state.approver.label ?  this.state.approver :  null}
+                placeholder={t('Search') + '...'}
                 key="approver"
                 options={this.state.users}
                />

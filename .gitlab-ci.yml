@@ -16,6 +16,7 @@ build_development:
   only:
     refs:
       - develop
+      - develop-deploy
 deploy_to_development_environment:
   stage: deploy
   tags:
@@ -29,6 +30,35 @@ deploy_to_development_environment:
   when: manual
   only:
       - develop
+      - develop-deploy
+
+build_uat:
+  stage: build
+  environment: uat
+  tags:
+    - hrms
+  before_script:
+    - echo "Prepare to build uat"
+    - pwd
+  script:
+    - python3 /home/gitlab-runner/deployment.py build web uat
+    - echo "Build successful"
+  only:
+    refs:
+      - uat
+deploy_to_uat_environment:
+  stage: deploy
+  tags:
+    - hrms
+  before_script:
+    - echo "Prepare to deploy uat"
+    - pwd
+  script:
+    - python3 /home/gitlab-runner/deployment.py deploy web uat
+    - echo "Deployed"
+  when: manual
+  only:
+      - uat
       
 build_production:
   stage: build

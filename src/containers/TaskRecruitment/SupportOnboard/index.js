@@ -340,6 +340,7 @@ class SupportOnboardComponent extends React.Component {
     window.location.reload();
   }
   handleSubmit = e => {
+    const { t } = this.props
     e.preventDefault()
     let result = (this.state.listCandidate && this.state.listCandidate.data || []).filter(item => item.isEdited);
     if (!result || result.length == 0)
@@ -359,7 +360,7 @@ class SupportOnboardComponent extends React.Component {
 
     axios.post(`${process.env.REACT_APP_HRDX_URL}api/managementPoints`, result, config)
       .then(response => {
-        let message = 'Lưu thông tin thành công.';
+        let message = t('save_information_success');
         this.setState({
           modal: {
             ...this.state.modal,

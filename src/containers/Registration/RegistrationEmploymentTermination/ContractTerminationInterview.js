@@ -53,6 +53,7 @@ class ContractTerminationInterview extends React.Component {
         const serveyInfos = this.prepareServeyInfos(responses)
         const userInfos = this.prepareUserInfos(responses)
         const serveyDetail = this.prepareServeyDetail(responses)
+        const questions = this.prepareAdditionData(responses);
 
         const resignationReasonOptionsChecked  = [];
         const comments = {};
@@ -74,7 +75,8 @@ class ContractTerminationInterview extends React.Component {
             timeJoinDefault: serveyDetail.worksHistoryMonths,
             timeInDefault: serveyDetail.positionCurrentsMonths,
             resignationReasonOptionsChecked: resignationReasonOptionsChecked,
-            comments: comments
+            comments: comments,
+            questions: questions
         })
     }
 
@@ -182,6 +184,23 @@ class ContractTerminationInterview extends React.Component {
         return {}
     }
 
+    prepareAdditionData = (serveyResponses) => {
+        const items = serveyResponses.data.data?.workOffServeyModel;
+        if(items && _.size(items) > 0) {
+            const additionalInfo = items.additionalInfo? JSON.parse(items.additionalInfo) : {};
+            return {
+                reason1: additionalInfo.text1 || '',
+                reason2: additionalInfo.text2 || '',
+                q1: additionalInfo.text5 || '',
+                q2: additionalInfo.text6 || '',
+                q3: additionalInfo.text7 || '',
+                q4: additionalInfo.text8 || '',
+                q5: additionalInfo.text9 || '' 
+            }
+        }
+        return {};
+    }
+
     prepareUserInfos = (serveyResponses) => {
         if (serveyResponses && serveyResponses.data) {
             const servey = serveyResponses.data.data
@@ -232,7 +251,8 @@ class ContractTerminationInterview extends React.Component {
             timeInDefault,
             resignationReasonOptionsChecked,
             userInfos,
-            comments
+            comments,
+            questions
         } = this.state
 
         const currentWorksServey = (resignationReasonOptionsChecked || [])
@@ -254,6 +274,18 @@ class ContractTerminationInterview extends React.Component {
         .filter(item => item && item.type == PERSONAL_REASONS && item.value)
         .map(item => item.key)
         const personalReasonServeyToSubmit = personalReasonServey.length === 0 ? null : personalReasonServey.join(",")
+
+        let additionalSurveyInfo = {
+            "text1":questions.reason1 || '',
+            "text2":questions.reason2 || '',
+            "text5":questions.q1 || '',
+            "text6":questions.q2 || '',
+            "text7":questions.q3 || '',
+            "text8":questions.q4 || '',
+            "text9":questions.q5 || '',
+            "hasAnotherReason":true,
+            "hasOtherQuestion":true
+        };
 
         // const err = this.verifyInput()
         this.setDisabledSubmitButton(true)
@@ -280,6 +312,9 @@ class ContractTerminationInterview extends React.Component {
         bodyFormData.append('salaryDescription', comments[SALARY_BONUS_REMUNERATION] || "")
         bodyFormData.append('personalReasonServey', personalReasonServeyToSubmit)
         bodyFormData.append('personalDescription', comments[PERSONAL_REASONS] || "")
+        bodyFormData.append('additionalSurveyInfo', JSON.stringify(additionalSurveyInfo));
+        bodyFormData.append('companyCode', localStorage.getItem('companyCode'));
+
 
         try {
             const responses = await axios.post(`${process.env.REACT_APP_REQUEST_URL}WorkOffServey/fetchworkoffservey`, bodyFormData, getRequestConfigs())
@@ -294,12 +329,12 @@ class ContractTerminationInterview extends React.Component {
                     this.setDisabledSubmitButton(false)
                 }
             } else {
-                this.showStatusModal(t("Notification"), "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
+                this.showStatusModal(t("Notification"), t("Error"), false)
                 this.setDisabledSubmitButton(false)
             }
 
         } catch (errors) {
-            this.showStatusModal(t("Notification"), "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
+            this.showStatusModal(t("Notification"), t("Error"), false)
             this.setDisabledSubmitButton(false)
         }
     }
@@ -316,7 +351,7 @@ class ContractTerminationInterview extends React.Component {
 
     render() {
         const { t } = this.props
-        const {userInfos, serveyInfos, disabledSubmitButton, isShowStatusModal, titleModal, isSuccess, messageModal, isViewOnly, serveyDetail} = this.state
+        const {userInfos, serveyInfos, disabledSubmitButton, isShowStatusModal, titleModal, isSuccess, messageModal, isViewOnly, serveyDetail, questions} = this.state
 
         return (
             <>
@@ -338,6 +373,7 @@ class ContractTerminationInterview extends React.Component {
                 timeInDefault={this.state.timeInDefault}
                 resignationReasonOptionsChecked={this.state.resignationReasonOptionsChecked}
                 comments={this.state.comments}
+                questions= {questions}
                 isViewOnly={isViewOnly} updateInterviewContents={this.updateInterviewContents} />
                 {
                     isViewOnly ? null : <ButtonComponent isEdit={true} updateFiles={this.updateFiles} submit={this.submit} disabledSubmitButton={disabledSubmitButton} />

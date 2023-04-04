@@ -1,0 +1,513 @@
+import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import moment from "moment";
+import axios from "axios";
+import Constants from "commons/Constants";
+import DetailButtonComponent from "../DetailButtonComponent";
+import { getRequestConfigurations } from "commons/Utils";
+import ExcelIcon from "assets/img/excel-icon.svg";
+
+const config = getRequestConfigurations();
+
+const isNullCustomize = (value) => {
+  return value == null ||
+    value == "null" ||
+    value == "" ||
+    value == undefined ||
+    value == "#"
+    ? true
+    : false;
+};
+const OTRequestType = 13;
+
+export default function OTRequestDetailComponent({ data, action }) {
+  const { t } = useTranslation();
+  const [approvalMatrixUrl, setApprovalMatrixUrl] = useState(null);
+  const lang = localStorage.getItem("locale");
+  const { requestInfo, user, approver, appraiser } = data;
+
+  useEffect(() => {
+    axios
+      .get(
+        `${process.env.REACT_APP_REQUEST_URL}user/file-suggests?type=${OTRequestType}`,
+        config
+      )
+      .then((response) => setApprovalMatrixUrl(response.data?.data))
+      .catch((err) => console.log(err));
+  }, []);
+
+  const getDayNameFromDate = (date) => {
+    const days = [
+      t("Sun"),
+      t("Mon"),
+      t("Tue"),
+      t("Wed"),
+      t("Thu"),
+      t("Fri"),
+      t("Sat"),
+    ];
+    const dayStr = moment(date, "YYYYMMDD").format("MM/DD/YYYY").toString();
+    const d = new Date(dayStr);
+    const dayName = days[d.getDay()];
+    return dayName;
+  };
+
+  const OTReasonOptions = [
+    {
+      value: "1",
+      label: t("OTReasonOption1"),
+    },
+    {
+      value: "2",
+      label: t("OTReasonOption2"),
+    },
+    {
+      value: "3",
+      label: t("OTReasonOption3"),
+    },
+    {
+      value: "4",
+      label: t("OTReasonOption4"),
+    },
+    {
+      value: "5",
+      label: t("OTReasonOption5"),
+    },
+    {
+      value: "Z",
+      label: t("OTReasonOption6"),
+    },
+  ];
+
+  const showStatus = (status, appraiser) => {
+    const pathName = window.location.pathname;
+    const pathNameArr = pathName.split("/");
+    const getTypeDetail = pathNameArr[pathNameArr.length - 1];
+    if (getTypeDetail == "request" && action == undefined) {
+      return Constants.mappingStatusRequest[status].label;
+    }
+    return action == "consent" && status == 5 && appraiser
+      ? Constants.mappingStatusRequest[20].label
+      : Constants.mappingStatusRequest[status].label;
+  };
+
+  const getMessageFromSap = () => {
+    let messageSAP = null;
+    if (data.processStatusId === Constants.STATUS_PARTIALLY_SUCCESSFUL) {
+      if (data.responseDataFromSAP && Array.isArray(data.responseDataFromSAP)) {
+        const _data = data.responseDataFromSAP.filter(
+          (val) => val.STATUS === "E"
+        );
+        if (_data) {
+          const temp = _data.map((val) => val?.MESSAGE);
+          messageSAP = temp.filter(function (item, pos) {
+            return temp.indexOf(item) === pos;
+          });
+        }
+      }
+    }
+    return messageSAP;
+  };
+
+  const isHasTime1 = (timesheet) => {
+    return (
+      !isNullCustomize(timesheet.from_time1) &&
+      !isNullCustomize(timesheet.to_time1)
+    );
+  };
+
+  const isHasTime2 = (timesheet) => {
+    return (
+      !isNullCustomize(timesheet.from_time2) &&
+      !isNullCustomize(timesheet.to_time2)
+    );
+  };
+
+  return (
+    <div className="ot-request-container">
+      <div className="ot-request-detail-container">
+        <div className="block-title">
+          {t("EmployeeInfomation").toUpperCase()}
+        </div>
+        <div className="box shadow mb-30">
+          <div className="row mb-20">
+            <div className="col-4">
+              <div className="form-item">
+                <div className="mb-12">{t("FullName")}</div>
+                <div className="field-view">{user.fullName}</div>
+              </div>
+            </div>
+            <div className="col-4">
+              <div className="form-item">
+                <div className="mb-12">{t("EmployeeNo")}</div>
+                <div className="field-view">{user.employeeNo}</div>
+              </div>
+            </div>
+            <div className="col-4">
+              <div className="form-item">
+                <div className="mb-12">{t("Position")}</div>
+                <div className="field-view">{user.jobTitle}</div>
+              </div>
+            </div>
+          </div>
+          <div className="mb-12">{t("DepartmentManage")}</div>
+          <div className="field-view">{user.department}</div>
+        </div>
+        <div className="block-title">{t("OTInformation").toUpperCase()}</div>
+        <div className="mb-30">
+          {requestInfo.map((timesheet, index) => (
+            <div className="box shadow mb-15" key={index}>
+              <p>
+                <i className="fa fa-clock-o"></i>{" "}
+                <b>
+                  {getDayNameFromDate(timesheet.date)}&nbsp;
+                  {lang === Constants.LANGUAGE_VI ? t("Day") : null}{" "}
+                  {moment(timesheet.date, "YYYYMMDD").format("DD/MM/YYYY")}
+                </b>
+              </p>
+              <div className="request-info-container">
+                <div className="row">
+                  <div className="col-4">
+                    <div className="request-info-card">
+                      <div className="title">{t("PlannedShift")}</div>
+                      <div className="row body">
+                        <div className="col-6">
+                          {isHasTime1(timesheet) && (
+                            <div className="mb-12">
+                              {t("StartTime")} 1:{" "}
+                              <b>
+                                {!isNullCustomize(timesheet.from_time1)
+                                  ? moment(
+                                      timesheet.from_time1,
+                                      "HHmmss"
+                                    ).format("HH:mm:ss")
+                                  : null}
+                              </b>
+                            </div>
+                          )}
+                          {isHasTime2(timesheet) && (
+                            <div>
+                              {t("StartTime")} 2:{" "}
+                              <b>
+                                {!isNullCustomize(timesheet.from_time2)
+                                  ? moment(
+                                      timesheet.from_time2,
+                                      "HHmmss"
+                                    ).format("HH:mm:ss")
+                                  : null}
+                              </b>
+                            </div>
+                          )}
+                        </div>
+                        <div className="col-6">
+                          {isHasTime1(timesheet) && (
+                            <div className="mb-12">
+                              {t("EndTime")} 1:{" "}
+                              <b>
+                                {!isNullCustomize(timesheet.to_time1)
+                                  ? moment(timesheet.to_time1, "HHmmss").format(
+                                      "HH:mm:ss"
+                                    )
+                                  : null}
+                              </b>
+                            </div>
+                          )}
+                          {isHasTime2(timesheet) && (
+                            <div>
+                              {t("EndTime")} 2:{" "}
+                              <b>
+                                {!isNullCustomize(timesheet.to_time2)
+                                  ? moment(timesheet.to_time2, "HHmmss").format(
+                                      "HH:mm:ss"
+                                    )
+                                  : null}
+                              </b>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="request-info-card">
+                      <div className="title">{t("ActualTime")}</div>
+                      <div className="row body">
+                        <div className="col-6">
+                          {isHasTime1(timesheet) && (
+                            <div className="mb-12">
+                              {t("StartTime")} 1:{" "}
+                              <b>
+                                {!isNullCustomize(timesheet.start_time1_fact)
+                                  ? moment(
+                                      timesheet.start_time1_fact,
+                                      "HHmmss"
+                                    ).format("HH:mm:ss")
+                                  : null}
+                              </b>
+                            </div>
+                          )}
+                          {isHasTime2(timesheet) && (
+                            <div>
+                              {t("StartTime")} 2:{" "}
+                              <b>
+                                {!isNullCustomize(timesheet.start_time2_fact)
+                                  ? moment(
+                                      timesheet.start_time2_fact,
+                                      "HHmmss"
+                                    ).format("HH:mm:ss")
+                                  : null}
+                              </b>
+                            </div>
+                          )}
+                        </div>
+                        <div className="col-6">
+                          {isHasTime1(timesheet) && (
+                            <div className="mb-12">
+                              {t("EndTime")} 1:{" "}
+                              <b>
+                                {!isNullCustomize(timesheet.end_time1_fact)
+                                  ? moment(
+                                      timesheet.end_time1_fact,
+                                      "HHmmss"
+                                    ).format("HH:mm:ss")
+                                  : null}
+                              </b>
+                            </div>
+                          )}
+                          {isHasTime2(timesheet) && (
+                            <div>
+                              {t("EndTime")} 2:{" "}
+                              <b>
+                                {!isNullCustomize(timesheet.end_time2_fact)
+                                  ? moment(
+                                      timesheet.end_time2_fact,
+                                      "HHmmss"
+                                    ).format("HH:mm:ss")
+                                  : null}
+                              </b>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="col-8">
+                    <div className="request-info-card">
+                      <div className="title">{t("OTRequest")}</div>
+                      <div className="ot-registration-body">
+                        <div className="row mb-15">
+                          <div className="col-5">
+                            <div className="form-item">
+                              <div className="mb-12">{t("OTReason")}</div>
+                              <div className="field-view">
+                                {
+                                  OTReasonOptions.find(
+                                    (item) => item.value == timesheet.reasonType
+                                  )?.label
+                                }
+                              </div>
+                            </div>
+                          </div>
+                          <div className="col-2">
+                            <div className="form-item">
+                              <div className="mb-12">{t("FromHour")}</div>
+                              <div className="field-view">
+                                {moment(timesheet.startTime, "HHmmss").format(
+                                  "HH:mm"
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                          <div className="col-2">
+                            <div className="form-item">
+                              <div className="mb-12">{t("ToHour")}</div>
+                              <div className="field-view">
+                                {moment(timesheet.endTime, "HHmmss").format(
+                                  "HH:mm"
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="row mb-15">
+                          <div className="col-5">
+                            <div className="form-item">
+                              <div className="mb-12">{t("OTType")}</div>
+                              <div className="field-view">{t("MoneyOT")}</div>
+                            </div>
+                          </div>
+                          <div className="col-2">
+                            <div className="form-item">
+                              <div className="mb-12 total-leave-time">
+                                {t("TotalLeaveTime")}
+                              </div>
+                              <div className="field-view">
+                                {timesheet.hoursOt}&nbsp;
+                                {t("HourUnit")}
+                              </div>
+                            </div>
+                          </div>
+                          <div className="col-5">
+                            <div className="form-item">
+                              <div className="mb-12 total-leave-time">
+                                {t("TotalTimePerMonth")}
+                              </div>
+                              <div className="field-view">
+                                {timesheet.totalHoursOtInMonth || 0}&nbsp;
+                                {t("HourUnit")}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="form-item">
+                          <div className="mb-12">{t("RegisterReason")}</div>
+                          <div className="field-view">{timesheet.note}</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="mb-30">
+          <div className="block-title">{t("CONSENTER").toUpperCase()}</div>
+          <div className="box shadow">
+            <div className="row">
+              <div className="col-4">
+                <div className="form-item">
+                  <div className="mb-12">{t("FullName")}</div>
+                  <div className="field-view">{appraiser.fullName}</div>
+                </div>
+              </div>
+              <div className="col-4">
+                <div className="form-item">
+                  <div className="mb-12">{t("Position")}</div>
+                  <div className="field-view">{appraiser.current_position}</div>
+                </div>
+              </div>
+              <div className="col-4">
+                <div className="form-item">
+                  <div className="mb-12">{t("DepartmentManage")}</div>
+                  <div className="field-view">{appraiser.department}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="mb-30">
+          <div className="block-title">{t("BudgetApprover").toUpperCase()}</div>
+          <div className="box shadow">
+            <div className="row">
+              <div className="col-4">
+                <div className="form-item">
+                  <div className="mb-12">{t("FullName")}</div>
+                  <div className="field-view">{approver.fullName}</div>
+                </div>
+              </div>
+              <div className="col-4">
+                <div className="form-item">
+                  <div className="mb-12">{t("Position")}</div>
+                  <div className="field-view">{approver.current_position}</div>
+                </div>
+              </div>
+              <div className="col-4">
+                <div className="form-item">
+                  <div className="mb-12">{t("DepartmentManage")}</div>
+                  <div className="field-view">{approver.department}</div>
+                </div>
+              </div>
+              <div className="col-12">
+                {approvalMatrixUrl && (
+                  <div className="row business-type">
+                    <span className="col-12 text-info smaller font-14">
+                      * {t("NoteSelectApprover")}{" "}
+                      <b>
+                        <a href={approvalMatrixUrl} target="_blank">
+                          {t("ApprovalMatrix")}
+                        </a>
+                      </b>
+                    </span>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {data.requestDocuments.length > 0 ? (
+        <>
+          <div className="block-title">{t("Evidence").toUpperCase()}</div>
+          <ul className="list-inline">
+            {data.requestDocuments.map((file, index) => {
+              return (
+                <li className="list-inline-item" key={index}>
+                  <a
+                    className="file-name"
+                    href={file.fileUrl}
+                    title={file.fileName}
+                    target="_blank"
+                    download={file.fileName}
+                  >
+                    {file.fileType == "xls" ? (
+                      <img
+                        src={ExcelIcon}
+                        className="mr-1 mb-1"
+                        alt="excel-icon"
+                      />
+                    ) : null}
+                    {file.fileName}
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+        </>
+      ) : null}
+      <div className="block-status">
+        <span
+          className={`status ${
+            Constants.mappingStatusRequest[data.processStatusId].className
+          }`}
+        >
+          {t(showStatus(data.processStatusId, data.appraiser))}
+        </span>
+        {getMessageFromSap() && (
+          <div className={`d-flex status fail`}>
+            <i className="fas fa-times pr-2 text-danger align-self-center"></i>
+            <div>
+              {getMessageFromSap().map((msg, index) => {
+                return <div key={index}>{msg}</div>;
+              })}
+            </div>
+          </div>
+        )}
+      </div>
+      <DetailButtonComponent
+        dataToSap={[
+          {
+            id: data.id,
+            requestTypeId: Constants.OT_REQUEST,
+            sub: [
+              {
+                id: data.id,
+              },
+            ],
+          },
+        ]} //this.dataToSap()
+        id={data.id}
+        isShowApproval={
+          data.processStatusId === Constants.STATUS_WAITING ||
+          data.processStatusId === Constants.STATUS_PARTIALLY_SUCCESSFUL
+        }
+        isShowRevocationOfApproval={false}
+        isShowConsent={
+          data.processStatusId === Constants.STATUS_WAITING_CONSENTED
+        }
+        isShowRevocationOfConsent={false}
+        urlName={"otrequest"}
+        requestTypeId={data.requestTypeId}
+        action={action}
+      />
+    </div>
+  );
+}

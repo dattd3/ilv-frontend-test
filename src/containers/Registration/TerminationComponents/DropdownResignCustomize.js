@@ -122,7 +122,7 @@ class DropdownResignCustomize extends React.Component {
         const ids = dataChecks.map(itm => itm.uid);
 
         if (this.props.index === null || this.props.index === undefined) {
-            this.props.onCloseTabEvent(ids);
+            this.props.onCloseTabEvent(dataChecks);
         } else {
             this.props.onCloseTabEvent(this.props.index, dataChecks);
         }

@@ -23,7 +23,7 @@ const config = {
 
 class RegistrationEmploymentTerminationForm extends React.Component {
     constructor(props) {
-        super();
+        super(props);
         this.state = {
             reasonTypes: [],
             userInfos: {},
@@ -38,10 +38,10 @@ class RegistrationEmploymentTerminationForm extends React.Component {
             disabledSubmitButton: false,
             loaded: 0,
             errors: {
-                lastWorkingDay: "Vui lòng nhập ngày làm việc cuối cùng!",
-                reason: "Vui lòng chọn lý do chấm dứt hợp đồng!",
-                directManager: "Vui lòng chọn CBQL trực tiếp!",
-                seniorExecutive: "Vui lòng chọn CBLĐ phê duyệt!"
+                lastWorkingDay: props.t('resign_error_lastWorkingDay'),
+                reason: props.t('resign_error_reason'),
+                directManager: props.t('resign_error_directManager'),
+                seniorExecutive: props.t('resign_error_seniorExecutive')
             }
         }
     }
@@ -81,7 +81,7 @@ class RegistrationEmploymentTerminationForm extends React.Component {
                     employeeNo: localStorage.getItem("employeeNo") || "",
                     fullName: infos.fullname || "",
                     jobTitle: infos.job_name || "",
-                    department: `${infos.division || ""}${infos.department ? `/${infos.department}` : ""}${infos.part ? `/${infos.part}` : ""}`,
+                    department: `${infos.division || ""}${infos.department ? `/${infos.department}` : ""}${infos.unit ? `/${infos.unit}` : ""}`,
                     dateStartWork: dateStartWork,
                     email: localStorage.getItem("email") || "",
                     rank: infos.rank_name || "",
@@ -205,12 +205,12 @@ class RegistrationEmploymentTerminationForm extends React.Component {
                     this.setDisabledSubmitButton(false)
                 }
             } else {
-                this.showStatusModal(t("Notification"), "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
+                this.showStatusModal(t("Notification"), t("Error"), false)
                 this.setDisabledSubmitButton(false)
             }
 
         } catch (errors) {
-            this.showStatusModal(t("Notification"), "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
+            this.showStatusModal(t("Notification"), t("Error"), false)
             this.setDisabledSubmitButton(false)
         }
     }
@@ -279,7 +279,7 @@ class RegistrationEmploymentTerminationForm extends React.Component {
                 <h5 className="page-title">{t('ProposalToTerminateContract')}</h5>
                 <StaffInfoComponent userInfos={userInfos} />
                 <StaffTerminationDetailComponent reasonTypes={reasonTypes} updateStaffTerminationDetail={this.updateStaffTerminationDetail} updateErrors={this.updateErrors} />
-                <DirectManagerInfoComponent directManager={directManager} updateApprovalInfos={this.updateApprovalInfos} updateErrors={this.updateErrors} />
+                <DirectManagerInfoComponent directManager={directManager} updateApprovalInfos={this.updateApprovalInfos} updateErrors={this.updateErrors}/>
                 <SeniorExecutiveInfoComponent seniorExecutive={seniorExecutive} updateApprovalInfos={this.updateApprovalInfos} updateErrors={this.updateErrors} />
                 <AttachmentComponent files={files} updateFiles={this.updateFiles} />
                 <ButtonComponent isEdit={isEdit} files={files} updateFiles={this.updateFiles} submit={this.submit} isUpdateFiles={this.getIsUpdateStatus} disabledSubmitButton={disabledSubmitButton} />

@@ -9,6 +9,8 @@ import DepartmentTimeSheetDetail from '../Registration/DepartmentTimeSheetDetail
 import PersonalDetailComponent from './ApprovalDetail'
 import ProposeTerminationDetailComponent from '../Registration/RegistrationEmploymentTermination/PropsedResignationDetail';
 import TerminationDetailComponent from '../Registration/RegistrationEmploymentTermination/RegistrationTerminationDetail';
+import OTRequestDetailComponent from '../Registration/OTRequest/OTRequestDetail';
+
 import axios from 'axios'
 import Constants from '../../commons/Constants'
 import map from "../map.config"
@@ -73,6 +75,7 @@ class TaskDetailModal extends React.Component {
                         {this.state.data && this.state.data.requestTypeId === Constants.UPDATE_PROFILE ? <PersonalDetailComponent id={this.props.taskId} data={this.state.data}/> : null}
                         {this.state.data && this.state.data.requestTypeId === Constants.CHANGE_DIVISON_SHIFT ? <ChangeDivisionShiftDetail action={this.props.action} substitution={this.state.data}/> : null}
                         {this.state.data && this.state.data.requestTypeId === Constants.DEPARTMENT_TIMESHEET ? <DepartmentTimeSheetDetail action={this.props.action} substitution={this.state.data}/> : null}
+                        {this.state.data && this.state.data.requestTypeId === Constants.OT_REQUEST ? <OTRequestDetailComponent action={this.props.action} data={this.state.data}/> : null}
                     </div>
                 </Modal.Body>
             </Modal>

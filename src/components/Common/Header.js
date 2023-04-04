@@ -10,7 +10,7 @@ import { Animated } from "react-animated-css";
 import { useLocalizeStore } from '../../modules';
 import uploadAvatarIcon from '../../assets/img/icon/camera-sm.svg'
 import UploadAvatar from '../../containers/UploadAvatar'
-import { getRequestConfigurations } from "../../commons/Utils"
+import { getCurrentLanguage, getRequestConfigurations } from "../../commons/Utils"
 
 const usePreload = (params) => {
     const api = useApi();
@@ -62,6 +62,17 @@ function Header(props) {
         return timePost;
     }
 
+    const getDateShiftChange = (title) => {
+        const validDates = title.match(/(\d{1,4}([.\//])\d{1,2}([.\//])\d{1,4})/g);
+        let param = '';
+        if(validDates?.length == 1) {
+            param = `?start=${moment(validDates[0], 'DD/MM/YYYY').format('DDMMYYYY')}`;
+        } else if (validDates?.length == 2) {
+            param = `?start=${moment(validDates[0], 'DD/MM/YYYY').format('DDMMYYYY')}&end=${moment(validDates[1], 'DD/MM/YYYY').format('DDMMYYYY')}`;
+        }
+        return param;
+    }
+
     const clickNotification = (id) => {
         var axios = require('axios');
         var data = '';
@@ -106,7 +117,7 @@ function Header(props) {
         }
     }
 
-    const result = usePreload([companyCode, lv3, lv4, lv5]);
+    const result = usePreload([companyCode, lv3, lv4, lv5, getCurrentLanguage()]);
     if (result && result.data && result.result) {
         const res = result.result;
         const data = result.data;
@@ -139,8 +150,8 @@ function Header(props) {
                                     case 15:
                                     case 11:
                                         return `/notifications/${item.id}`
-                                    case Constants.notificationType.NOTIFICATION_REGISTRATION:
-                                        if (item.title.indexOf("thẩm định") > 0 || item.title.indexOf('yêu cầu đánh giá') > 0)
+                                    case Constants.notificationType.NOTIFICATION_REGISTRATION: 
+                                        if (item.detailType == 'APPRAISAL')
                                             return `/tasks?tab=consent`
                                         else
                                             return `/tasks?tab=approval`
@@ -151,15 +162,20 @@ function Header(props) {
                                     case Constants.notificationType.NOTIFICATION_AUTO_JOB:
                                         return `/tasks?tab=approval`
                                     case Constants.notificationType.NOTIFICATION_SHIFT_CHANGE:
-                                        return `/timesheet`
+                                        const param = getDateShiftChange(item?.title || '');
+                                        return `/timesheet${param}`
                                     case 20:
                                          return '/personal-info?tab=document'
                                     case Constants.notificationType.NOTIFICATION_ADD_MEMBER_TO_PROJECT:
-                                        return `/my-projects/project/${item?.userProfileHistoryId}`
+                                        return `/my-projects/project/${item?.userProfileHistoryId}` 
                                     case Constants.notificationType.NOTIFICATION_MY_EVALUATION:
                                         return `/my-evaluation`
                                     case Constants.notificationType.NOTIFICATION_LEAD_EVALUATION:
                                         return `/evaluation-approval`
+                                    case Constants.notificationType.NOTIFICATION_MY_KPI_REGISTRATION_REQUEST:
+                                        return `/target-management?tab=OWNER&id=${item?.subRequestId || 0}`
+                                    case Constants.notificationType.NOTIFICATION_MY_KPI_REGISTRATION_APPROVAL_REQUEST:
+                                        return `/target-management?tab=REQUEST&id=${item?.subRequestId || 0}`
                                     default:
                                         return `${item.url}`
                                 }

@@ -37,6 +37,10 @@ const formatStringByMuleValue = value => {
     return (value === null || value === undefined || value === "" || value === "#") ? "" : value.trim()
 }
 
+const formatStringDateTimeByMuleValue = value => {
+    return (value === null || value === undefined || value === "" || value === "#" || value === "000000") ? "" : value.trim()
+}
+
 const formatNumberInteger = value => {
     if (isNaN(value)) {
         return 0
@@ -146,18 +150,18 @@ const isEnableFunctionByFunctionName = name => {
             break
         case Constants.listFunctionsForPnLACL.editProfile:
             listPnLAccepted = [Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinMec, Constants.pnlVCode.VinSmart, Constants.pnlVCode.VincomRetail, 
-                Constants.pnlVCode.VinITIS, Constants.pnlVCode.VinUni, Constants.pnlVCode.Vin3S, Constants.pnlVCode.VinAI]
+                Constants.pnlVCode.VinITIS, Constants.pnlVCode.VinUni, Constants.pnlVCode.Vin3S, Constants.pnlVCode.VinAI, Constants.pnlVCode.VinES]
             break
         case Constants.listFunctionsForPnLACL.editEducation:
             listPnLAccepted = [Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinMec, Constants.pnlVCode.VinSmart, Constants.pnlVCode.VincomRetail, 
-                Constants.pnlVCode.VinITIS, Constants.pnlVCode.VinUni, Constants.pnlVCode.Vin3S, Constants.pnlVCode.VinAI]
+                Constants.pnlVCode.VinITIS, Constants.pnlVCode.VinUni, Constants.pnlVCode.Vin3S, Constants.pnlVCode.VinAI, Constants.pnlVCode.VinES]
             break
         case Constants.listFunctionsForPnLACL.editRelationship:
             listPnLAccepted = [Constants.pnlVCode.VinSmart, Constants.pnlVCode.VincomRetail, Constants.pnlVCode.VinITIS, Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl,
-                Constants.pnlVCode.VinUni, Constants.pnlVCode.Vin3S, Constants.pnlVCode.VinAI]
+                Constants.pnlVCode.VinUni, Constants.pnlVCode.Vin3S, Constants.pnlVCode.VinAI, Constants.pnlVCode.VinES]
             break
         case Constants.listFunctionsForPnLACL.changeStaffShift:
-            listPnLAccepted = [Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl]
+            listPnLAccepted = [Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading]
             break
         case Constants.listFunctionsForPnLACL.selectWorkingShift24h:
             listPnLAccepted = [Constants.pnlVCode.VinMec]
@@ -170,8 +174,8 @@ const isEnableFunctionByFunctionName = name => {
 const getValueParamByQueryString = (queryString, key) => {
     // const queryString = window.location.search
     const params = new URLSearchParams(queryString)
-    const date = params.get(key)
-    return date
+    const value = params.get(key)
+    return value
 }
 
 const calculateBackDateByPnLVCodeAndFormatType = (pnlVCode, formatType) => {
@@ -199,8 +203,12 @@ const isEnableInOutTimeUpdateFunctionByPnLVCode = PnLVCode => {
     return ![Constants.pnlVCode.VinSchool, Constants.pnlVCode.VinAI].includes(PnLVCode) ? true : false
 }
 
+const isEnableOTFunctionByPnLVCode = PnLVCode => {
+  return [Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading].includes(PnLVCode);
+}
+
 const getRequestTypeIdsAllowedToReApproval = () => {
-    return [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP, Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE]
+    return [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP, Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE, Constants.OT_REQUEST, Constants.UPDATE_PROFILE, Constants.CHANGE_DIVISON_SHIFT]
 }
 
 const getRequestConfigurations = () => {
@@ -359,8 +367,171 @@ const getRegistrationMinDateByConditions = () => {
     return firstDay
 }
 
+const isVinFast = () => {
+    const companyCode = localStorage.getItem("companyCode")
+    return [Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading].includes(companyCode)
+}
+
+const getCurrentLanguage = () => {
+    const languageKeyMapping = {
+        [Constants.LANGUAGE_EN]: 'en',
+        [Constants.LANGUAGE_VI]: 'vi'
+    }
+    const locale = localStorage.getItem("locale") || 'vi-VN';
+    return languageKeyMapping[[locale]];
+}
+
+const getResignResonsMasterData = () => {
+    const masterData = [
+        {
+            "code01": "ZG",
+            "code02": "GA",
+            "text": "Do cá nhân/gia đình",
+            "text_en": "Personal/family matters"
+        },
+        {
+            "code01": "ZG",
+            "code02": "GB",
+            "text": "Do sức khỏe",
+            "text_en": "Health matters"
+        },
+        {
+            "code01": "ZG",
+            "code02": "GC",
+            "text": "Do thời gian làm việc",
+            "text_en": "Working schedule"
+        },
+        {
+            "code01": "ZG",
+            "code02": "GD",
+            "text": "Do thu nhập",
+            "text_en": "Income matters"
+        },
+        {
+            "code01": "ZG",
+            "code02": "GE",
+            "text": "Do có công việc khác",
+            "text_en": "Have other jobs"
+        },
+        {
+            "code01": "ZG",
+            "code02": "GF",
+            "text": "Do không phù hợp với công việc",
+            "text_en": "Jobs not suitable"
+        },
+        {
+            "code01": "ZG",
+            "code02": "GG",
+            "text": "Không phù hợp với môi trường",
+            "text_en": "Environments not suitable"
+        },
+        {
+            "code01": "ZG",
+            "code02": "GH",
+            "text": "Do không phù hợp với lãnh đạo",
+            "text_en": "Manager matters"
+        },
+        {
+            "code01": "ZG",
+            "code02": "GI",
+            "text": "Chấm dứt t.việc/h.việc-NV nghỉ",
+            "text_en": "Chấm dứt t.việc/h.việc-NV nghỉ"
+        },
+        {
+            "code01": "ZG",
+            "code02": "GJ",
+            "text": "Nghỉ hưu",
+            "text_en": "Retire"
+        },
+        {
+            "code01": "ZG",
+            "code02": "GK",
+            "text": "Hết hạn HĐLĐ-NV không gia hạn",
+            "text_en": "Contract expired - Employee don't want to renew contract"
+        },
+        {
+            "code01": "ZG",
+            "code02": "GL",
+            "text": "Nghỉ do đang nghỉ thai sản",
+            "text_en": "Nghỉ do đang nghỉ thai sản"
+        },
+        {
+            "code01": "ZG",
+            "code02": "GM",
+            "text": "Nghỉ do đang nghỉ ốm đau",
+            "text_en": "Nghỉ do đang nghỉ ốm đau"
+        },
+        {
+            "code01": "ZG",
+            "code02": "GN",
+            "text": "Nghỉ do đang nghỉ không lương",
+            "text_en": "Nghỉ do đang nghỉ không lương"
+        },
+        {
+            "code01": "ZG",
+            "code02": "GO",
+            "text": "Nghỉ do chết",
+            "text_en": "Nghỉ do chết"
+        },
+        {
+            "code01": "ZG",
+            "code02": "GP",
+            "text": "Đ.phương chấm dứt HĐLĐ trái PL",
+            "text_en": "Employee unilateral termination of the labor contract illegally"
+        },
+        {
+            "code01": "ZH",
+            "code02": "HA",
+            "text": "Không đạt HĐ thử việc/học việc",
+            "text_en": "Fail probationary/apprenticeship contract"
+        },
+        {
+            "code01": "ZH",
+            "code02": "HB",
+            "text": "Không gia hạn hợp đồng lao động",
+            "text_en": "Not extend contract"
+        },
+        {
+            "code01": "ZH",
+            "code02": "HC",
+            "text": "Sa thải",
+            "text_en": "Dismissal"
+        },
+        {
+            "code01": "ZH",
+            "code02": "HD",
+            "text": "Tái cơ cấu/Giải thể",
+            "text_en": "Restructuring/dissolution"
+        },
+        {
+            "code01": "ZH",
+            "code02": "HE",
+            "text": "Tự ý bỏ việc 5 ngày liên tục",
+            "text_en": "Off 5 days without permit"
+        },
+        {
+            "code01": "ZH",
+            "code02": "HF",
+            "text": "Người lao động thường xuyên không hoàn thành công việc",
+            "text_en": "Work performance"
+        },
+        {
+            "code01": "ZH",
+            "code02": "HG",
+            "text": "Khác",
+            "text_en": "Other"
+        }
+    ];
+    let result = {};
+    const locale = localStorage.getItem("locale") || 'vi-VN';
+    masterData.map(item => {
+        result[item.code02] = locale == Constants.LANGUAGE_VI ? item.text : item.text_en;
+    });
+    return result;
+}
+
 export {
     getRequestConfigurations, removeAccents, formatStringByMuleValue, formatNumberInteger, exportToPDF, isEnableFunctionByFunctionName, getValueParamByQueryString, getDateByRangeAndFormat,
     calculateBackDateByPnLVCodeAndFormatType, isEnableShiftChangeFunctionByPnLVCode, isEnableInOutTimeUpdateFunctionByPnLVCode, getRequestTypeIdsAllowedToReApproval, getMuleSoftHeaderConfigurations,
-    isAdjacentDateBy2Date, showRangeDateGroupByArrayDate, generateTaskCodeByCode, parsteStringToHtml, getRegistrationMinDateByConditions
+    isAdjacentDateBy2Date, showRangeDateGroupByArrayDate, generateTaskCodeByCode, parsteStringToHtml, getRegistrationMinDateByConditions, isVinFast, isEnableOTFunctionByPnLVCode, getCurrentLanguage, getResignResonsMasterData, formatStringDateTimeByMuleValue
 }

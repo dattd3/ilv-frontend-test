@@ -28,7 +28,7 @@ const WarningTokenModal = ({isShow, type, title, content, handleHideModal, handl
         <Modal
             show={isShow}
             onHide={() => handleHideModal(false)}
-            className='warning-token-expired-modal'
+            className='confirm-modal-new'
             backdrop="static" 
             keyboard={false}
         >
@@ -51,7 +51,14 @@ const WarningTokenModal = ({isShow, type, title, content, handleHideModal, handl
                 onClick={handleClickOkButton}
                 disabled={isDisableOkButton}
             >
-                <Image src={IconCheck} alt='Đồng ý' className='ic-status' />
+                <Image 
+                    src={IconCheck} 
+                    alt='Đồng ý' 
+                    className='ic-status'
+                    onError={(e) => {
+                        e.target.src = "/Icon_Check_White.svg"
+                        e.target.className = `ic-status`
+                    }} />
                 Đồng ý
             </Button>
             </div>

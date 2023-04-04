@@ -12,6 +12,7 @@ import ListStaffResignationComponent from '../TerminationComponents/ListStaffRes
 import ResultModal from '../ResultModal'
 import CustomPaging from '../../../components/Common/CustomPaging'
 import ReactSelect from 'react-select'
+import { getCurrentLanguage } from 'commons/Utils'
 
 const REPORT_RESIGNATION_REQUESTS = 1
 const HANDOVER_STATUS = 2
@@ -41,7 +42,8 @@ class ResignationRequestsManagementPage extends React.Component {
                 employeeNo: null,
                 department: null,
                 handoverStatus: null,
-                approvalStatus: null
+                approvalStatus: null,
+                'culture': getCurrentLanguage()
             },
             requestIdChecked: [],
             isCheckedAll: false,
@@ -199,7 +201,7 @@ class ResignationRequestsManagementPage extends React.Component {
             if (!isDataValid && (type == LIQUIDATION_AGREEMENT 
                 || type == CONTRACT_TERMINATION_AGREEMENT || type == DECISION_CONTRACT_TERMINATION)) {
                 this.setState({isShowLoadingModal: false})
-                toast.error("Vui lòng chọn yêu cầu cần xuất dữ liệu!")
+                toast.error(t('select_to_export'))
                 return
             }
 
@@ -207,7 +209,7 @@ class ResignationRequestsManagementPage extends React.Component {
             this.processResponses(type, responses)
         } catch (error) {
             this.setState({isShowLoadingModal: false})
-            toast.error("Có lỗi xảy ra trong quá trình xuất báo cáo!")
+            toast.error(t('HasErrorOccurred'))
             return
         }
     }
@@ -218,12 +220,14 @@ class ResignationRequestsManagementPage extends React.Component {
             return item && item.value
         })
         .map(item => item.key)
-
         const requestStatusProcessIds = requestIdChecked.filter(item => {
             return item && item.value
         })
         .map(item => item.key)
 
+        const employeeNos = requestIdChecked.filter(item => {
+            return item && item.value
+        }).map(item => item.employeeNo);
         const fullTextSearch = searchingDataToFilter.fullTextSearch || ""
         const typeMethodMapping = {
             [REPORT_RESIGNATION_REQUESTS]: "POST",
@@ -238,6 +242,9 @@ class ResignationRequestsManagementPage extends React.Component {
         let requestObj = {}
         let requestConfig = {}
         const data = this.prepareParamsToFilter();
+        if(employeeNos?.length > 0) {
+            data.employeeNo = employeeNos.join(',');
+        }
 
         switch (type) {
             case REPORT_RESIGNATION_REQUESTS:
@@ -294,7 +301,7 @@ class ResignationRequestsManagementPage extends React.Component {
                 if (responses && responses.data && responses.status === 200) {
                     this.handleDownloadFiles(responses.data, "Bao-cao-yeu-cau-nghi-viec.xlsx")
                 } else {
-                    toast.error("Có lỗi xảy ra trong quá trình xuất báo cáo!")
+                    toast.error(t('HasErrorOccurred'))
                     return
                 }
                 break
@@ -320,20 +327,21 @@ class ResignationRequestsManagementPage extends React.Component {
     }
 
     handleExportResponses = async (responses, fileName) => {
+        const { t } = this.props
         this.setState({isShowLoadingModal: false})
         if (responses && responses.data && responses.status === 200) {
             try {
                 let message = ''
                 const blobText = new Blob([responses.data], { type: "application/json" });
                 let dataerr = JSON.parse(await blobText.text());
-                message = dataerr?.result?.message || 'Có lỗi xảy ra trong quá trình xuất báo cáo!';
+                message = dataerr?.result?.message || t('HasErrorOccurred');
                 toast.error(message)
             } catch(err) {
                 this.handleDownloadFiles(responses.data, fileName)
             }
             
         } else {
-            toast.error("Có lỗi xảy ra trong quá trình xuất báo cáo!")
+            toast.error(t('HasErrorOccurred'))
         }
     }
 
@@ -361,6 +369,7 @@ class ResignationRequestsManagementPage extends React.Component {
     }
 
     validateAttachmentFile = () => {
+        const { t } = this.props
         const files = this.state.files
         const errors = {}
         const fileExtension = [
@@ -377,10 +386,10 @@ class ResignationRequestsManagementPage extends React.Component {
         for (let index = 0, lenFiles = files.length; index < lenFiles; index++) {
             const file = files[index]
             if (!fileExtension.includes(file.type)) {
-                errors.files = 'Tồn tại file đính kèm không đúng định dạng'
+                errors.files = t('Request_error_file_format')
                 break
             } else if (parseFloat(file.size / 1000000) > 2) {
-                errors.files = 'Dung lượng từng file đính kèm không được vượt quá 2MB'
+                errors.files = t('Request_error_file_size')
                 break
             } else {
                 errors.files = null
@@ -389,7 +398,7 @@ class ResignationRequestsManagementPage extends React.Component {
         }
     
         if (parseFloat(sizeTotal / 1000000) > 10) {
-            errors.files = 'Tổng dung lượng các file đính kèm không được vượt quá 10MB'
+            errors.files = t('Request_error_file_oversize')
         }
 
         return errors
@@ -400,7 +409,7 @@ class ResignationRequestsManagementPage extends React.Component {
         const {requestIdChecked, files} = this.state
         const isDataValid = this.isDataValid()
         if (!isDataValid) {
-            toast.error("Xin vui lòng tích chọn thông tin cần lưu!")
+            toast.error(t('select_to_save'))
             return
         } else {
             const itemsChecked = (requestIdChecked || []).filter(item => item?.value).filter(item => item?.item[type] == true).map(item => {
@@ -426,7 +435,7 @@ class ResignationRequestsManagementPage extends React.Component {
                             this.showStatusModal(t("Notification"), result.message, false)
                         }
                     } else {
-                        this.showStatusModal(t("Notification"), "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
+                        this.showStatusModal(t("Notification"), t("Error"), false)
                     }
                 } catch (error) {
                     this.setState({isShowLoadingModal: false, requestIdChecked: [], isCheckedAll: false})
@@ -443,7 +452,7 @@ class ResignationRequestsManagementPage extends React.Component {
         const isDataValid = this.isDataValid()
         const fileInfoValidation = this.validateAttachmentFile()
         if (!isDataValid) {
-            toast.error("Xin vui lòng tích chọn thông tin cần lưu!")
+            toast.error(t('select_to_save'))
             return
         } else if (_.size(fileInfoValidation) > 0 && fileInfoValidation.files) {
             toast.error(fileInfoValidation.files)
@@ -473,7 +482,7 @@ class ResignationRequestsManagementPage extends React.Component {
                             this.showStatusModal(t("Notification"), result.message, false)
                         }
                     } else {
-                        this.showStatusModal(t("Notification"), "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
+                        this.showStatusModal(t("Notification"), t("Error"), false)
                     }
                 } catch (error) {
                     this.setState({isShowLoadingModal: false, requestIdChecked: [], isCheckedAll: false})
@@ -544,7 +553,7 @@ class ResignationRequestsManagementPage extends React.Component {
             </div>
             <div className='row'>
                 <div className='col-sm d-flex flex-row align-items-center'>
-                Hiển thị: <div style={{width: '100px', marginLeft: '5px'}}>
+                {t('EvaluationShow')}: <div style={{width: '100px', marginLeft: '5px'}}>
                     <ReactSelect options={this.pagingSize} value = {this.pagingSize.filter(item => item.value == searchingDataToFilter.pageSize)} 
                         onChange={e => this.handlePageSizeChange(e)} isClearable={false}  />
                     </div>
