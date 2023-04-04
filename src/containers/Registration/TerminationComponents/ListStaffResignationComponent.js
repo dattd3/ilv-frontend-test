@@ -311,7 +311,9 @@ class ListStaffResignationComponent extends React.PureComponent {
                                             <th>{t('loai_hop_dong')}</th>
                                             <th>{t('CreatedBy')}</th>
                                             <th>{t('AttachFile')}</th>
-                                            {/* <th>{t('handover_status')}</th> */}
+                                            {
+                                              isViewAllHandoverCol && <th>{t('handover_status')}</th>
+                                            }
                                             {
                                               isShowJobHandoverCol && <th>{t('work_status')}</th>
                                             }
@@ -399,7 +401,9 @@ class ListStaffResignationComponent extends React.PureComponent {
                                                             <td className="contract-type-col"><div className="data contract-type">{userInfos?.contractName || ""}</div></td>
                                                             <td className="created-by-col"><div className="data created-by">{item?.createdBy?.fullName || ""}</div></td>
                                                             <td className="attachment-col"><div className="data attachment">{this.renderAttachmentView(attachments, index)}</div></td>
-                                                            {/* <td className="handover-status-col"><a className="data handover-status" href={`/handover/${item.contractTerminationInfoId}/request`} title={item?.statusDeliverString}>{item?.statusDeliverString}</a></td> */}
+                                                            {
+                                                              isViewAllHandoverCol && <td className="handover-status-col">{item?.statusDeliverString}</td>
+                                                            }
                                                             {
                                                               isShowJobHandoverCol && <td className="handover-job-col"><div className="data handover-job">{this.renderStatus(index, item.isHandoverWork, item.statusWork, "statusWork")}</div></td>
                                                             }
