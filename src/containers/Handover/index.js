@@ -365,7 +365,8 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         status: infos.statusFingerprintEmail,
         actionDate: infos.dateHandoverFingerEmail || '',
         note: infos.noteFingerprintEmail || '',
-        isShow: isViewAll || currentUserEmail === infos.handoverFingerprintEmailAccount?.toLowerCase()
+        // isShow: isViewAll || currentUserEmail === infos.handoverFingerprintEmailAccount?.toLowerCase()
+        isShow: false
     }
     candidateInfos.inout = {
         user: infos.handoverDebt || {},
@@ -732,7 +733,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
             }
 
             <div className="row">
-                <div className="sub-title">{t('handover_2_2')}</div>
+                <div className="sub-title" style={{ marginTop: data.asset.isShow ? 40 : 0 }} >{t('handover_2_2')}</div>
             </div>
             {
               data.associateCard.isShow && <div className="row">
@@ -760,7 +761,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
             }
 
             <div className="row">
-                <div className="sub-title">{t('handover_2_3')}</div>
+                <div className="sub-title" style={{ marginTop: data.associateCard.isShow ? 40 : 0 }}>{t('handover_2_3')}</div>
             </div>
             {
               data.uniform.isShow && <div className="row">
@@ -788,7 +789,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
             }
 
             <div className="row">
-                <div className="sub-title">{t('handover_2_4')}</div>
+                <div className="sub-title" style={{ marginTop: data.uniform.isShow ? 40 : 0 }}>{t('handover_2_4')}</div>
             </div>
             {
               data.finger.isShow && <div className="row">
@@ -816,7 +817,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
             }
 
             <div className="row">
-                <div className="sub-title">{t('handover_2_5')}</div>
+                <div className="sub-title" style={{ marginTop: data.finger.isShow ? 40 : 0 }}>{t('handover_2_5')}</div>
             </div>
             {
               data.inout.isShow && <div className="row">
@@ -844,7 +845,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
             }
 
             <div className="row">
-                <div className="sub-title">{t('handover_2_6')}</div>
+                <div className="sub-title" style={{ marginTop: data.inout.isShow ? 40 : 0 }}>{t('handover_2_6')}</div>
             </div>
             {
               data.tool.isShow && <div className="row">
@@ -872,7 +873,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
             }
 
             <div className="row">
-                <div className="sub-title">{t('handover_2_7')}</div>
+                <div className="sub-title" style={{ marginTop: data.tool.isShow ? 40 : 0 }}>{t('handover_2_7')}</div>
             </div>
             {
               data.policy.isShow && <div className="row">
@@ -903,7 +904,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
               checkIsExactPnL(Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading) ?
               <>
                 <div className="row">
-                    <div className="sub-title">{t('handover_2_8')}</div>
+                    <div className="sub-title" style={{ marginTop: data.policy.isShow ? 40 : 0 }}>{t('handover_2_8')}</div>
                 </div>
                 {
                   data.traning.isShow && <div className="row">
@@ -931,7 +932,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
                 }
 
                 <div className="row">
-                    <div className="sub-title">{t('handover_2_9')}</div>
+                    <div className="sub-title" style={{ marginTop: data.traning.isShow ? 40 : 0 }}>{t('handover_2_9')}</div>
                 </div>
                 {
                   data.internal.isShow && <div className="row">
