@@ -11,6 +11,7 @@ import StatusModal from '../../components/Common/StatusModal'
 import CommonQuestionComponent from './CommonQuestionComponent'
 import LoadingSpinner from '../../components/Forms/CustomForm/LoadingSpinner';
 import HOCComponent from '../../components/Common/HOCComponent'
+import { isVinFast } from 'commons/Utils'
 
 class MyComponent extends React.Component {
 
@@ -29,7 +30,8 @@ class MyComponent extends React.Component {
       commonTicketListFilter: {},
       categories: {},
       keySearch: "",
-      open: true
+      open: true,
+      staffHandbookLink: '',
     };
   }
 
@@ -58,6 +60,14 @@ class MyComponent extends React.Component {
       }).catch(error => {
 
       });
+    
+    const staffHandbookFileType = 20
+    axios.get(`${process.env.REACT_APP_REQUEST_URL}user/file-suggests?type=${staffHandbookFileType}`, config)
+    .then(res => {
+      if (res && res?.data && res?.data?.data) {
+        this.setState({ staffHandbookLink: res?.data?.data })
+      }
+    }).catch(error => {})
   }
 
   showSubmitModal(modalStatus, isEdit = false) {
@@ -119,7 +129,7 @@ class MyComponent extends React.Component {
 
   render() {
     const { t } = this.props;
-    const { categories, isEditQuestion, questionContent, isShowStatusModal, content, isSuccess, isShowSubmitQuestionModal, isShowHistoryModal, keySearch, commonTicketList, commonTicketListFilter } = this.state
+    const { categories, isEditQuestion, questionContent, isShowStatusModal, content, isSuccess, isShowSubmitQuestionModal, isShowHistoryModal, keySearch, commonTicketList, commonTicketListFilter, staffHandbookLink } = this.state
 
     const reload = () => {
       if (isShowStatusModal) {
@@ -142,6 +152,7 @@ class MyComponent extends React.Component {
         <div className="clearfix edit-button action-buttons mb-2">
           <button type="button" className="btn btn-light float-left shadow pl-4 pr-4 ml-0" onClick={() => this.showSubmitModal(true)}> {t("CreateQuestions")} </button>
           <button type="button" className="btn btn-light float-left shadow" onClick={() => this.showHistoryModal(true)}>{t("HistoryAnswer")}</button>
+          { isVinFast() && <a href={staffHandbookLink || '#'} target={staffHandbookLink ? '_blank' : '_self'} className="btn btn-light float-left shadow">{t("Sổ tay CBNV")}</a> }
         </div>
         <h1 className="content-page-header">{t("QuestionAndAnswer")}</h1>
         <Container fluid className="info-tab-content shadow mb-3">
