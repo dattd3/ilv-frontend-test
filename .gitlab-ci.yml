@@ -45,7 +45,7 @@ build_uat:
     - echo "Build successful"
   only:
     refs:
-      - uat-hrms-on-myvingroup
+      - uat
 deploy_to_uat_environment:
   stage: deploy
   tags:
@@ -58,7 +58,7 @@ deploy_to_uat_environment:
     - echo "Deployed"
   when: manual
   only:
-      - uat-hrms-on-myvingroup
+      - uat
       
 build_production:
   stage: build

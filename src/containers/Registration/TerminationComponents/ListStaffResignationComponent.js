@@ -8,10 +8,12 @@ import Constants from '../../../commons/Constants'
 import IconReset from '../../../assets/img/icon/ic-reset.svg'
 import { t } from 'i18next'
 import { getResignResonsMasterData } from 'commons/Utils'
+import { checkIsExactPnL } from 'commons/commonFunctions'
 
-const AttachmentOption = ({ children, ...props }) => (<components.ValueContainer {...props}>
-    <div>File đính kèm</div><div style={{visibility: 'hidden'}}>{children}</div>
-    </components.ValueContainer>);
+const AttachmentOption = ({ children, ...props }) => { 
+    return (<components.ValueContainer {...props}>
+    <div>{props?.selectProps?.no_data}</div><div style={{visibility: 'hidden'}}>{children}</div>
+    </components.ValueContainer>)};
 
 const Option = props => {
     return (
@@ -55,8 +57,8 @@ class ListStaffResignationComponent extends React.PureComponent {
             {value: 2, label: props.t('not_push_SAP')},
         ];
         this.PAYMENT_OPTIONS = [
-            {label: 'Giữ lương', value: 0},
-            {label: 'Đã trả', value: 1}
+            {label: props.t('salary_keeped'), value: 0},
+            {label: props.t('salary_paid'), value: 1}
         ];
     }
 
@@ -199,6 +201,7 @@ class ListStaffResignationComponent extends React.PureComponent {
                         backgroundColor: state.isSelected ? null : null,
                         })
                     }} disabled={'disabled'} readOnly={'readonly'}
+                    no_data = {this.props.t('attachment')}
                     isOptionDisabled={(option) => option.isdisabled}
                     onChange={e => this.handleDeleteAttachedFiles(index, e)}
                     menuPortalTarget={document.body}
@@ -296,13 +299,29 @@ class ListStaffResignationComponent extends React.PureComponent {
                                             <th>{t('AttachFile')}</th>
                                             <th>{t('handover_status')}</th>
                                             <th>{t('work_status')}</th>
-                                            <th>{t('resource_status')}</th>
+                                            {
+                                                checkIsExactPnL(Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading) ? 
+                                                <>
+                                                <th>{t('laptop_status')}</th>
+                                                <th>{t('taxi_status')}</th>
+                                                </>
+                                                :
+                                                <th>{t('resource_status')}</th>
+                                            }
                                             <th>{t('social_status')}</th>
                                             <th>{t('uniform_status')}</th>
                                             <th>{t('email_status')}</th>
                                             <th>{t('timesheet_status')}</th>
                                             <th className="handover-software-col">{t('software_status')}</th>
                                             <th>{t('policy_status')}</th>
+                                            {
+                                                checkIsExactPnL(Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading) ? 
+                                                <>
+                                                <th>{t('training_status')}</th>
+                                                <th>{t('internal_status')}</th>
+                                                </>
+                                                : null
+                                            }
                                             <th>{t('approval_status')}</th>
                                             <th>{t('insurance_status')}</th>
                                             <th>{t('salary_status')}</th>
@@ -339,13 +358,30 @@ class ListStaffResignationComponent extends React.PureComponent {
                                                             <td className="attachment-col"><div className="data attachment">{this.renderAttachmentView(attachments, index)}</div></td>
                                                             <td className="handover-status-col"><a className="data handover-status" href={`/handover/${item.contractTerminationInfoId}/request`} title={item?.statusDeliverString}>{item?.statusDeliverString}</a></td>
                                                             <td className="handover-job-col"><div className="data handover-job">{this.renderStatus(index, item.isHandoverWork, item.statusWork, "statusWork")}</div></td>
-                                                            <td className="asset-transfer-col"><div className="data asset-transfer">{this.renderStatus(index, item.isHandoverAsset, item.statusAsset, "statusAsset")}</div></td>
+                                                            
+                                                            {
+                                                                checkIsExactPnL(Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading) ? 
+                                                                <>
+                                                                <td className="asset-transfer-col"><div className="data asset-transfer">{this.renderStatus(index, item.isHandoverAsset, item.statusAsset, "statusAsset")}</div></td>
+                                                                <td className="asset-transfer-col"><div className="data asset-transfer">{this.renderStatus(index, item.isVehicleCard, item.vehicleCardStatus, "vehicleCardStatus")}</div></td>
+                                                                </>
+                                                                :
+                                                                <td className="asset-transfer-col"><div className="data asset-transfer">{this.renderStatus(index, item.isHandoverAsset, item.statusAsset, "statusAsset")}</div></td>
+                                                            }
                                                             <td className="handover-insurance-col"><div className="data handover-insurance">{this.renderStatus(index, item.isHandoverSocial, item.statusSocial, "statusSocial")}</div></td>
                                                             <td className="handover-uniforms-col"><div className="data handover-uniforms">{this.renderStatus(index, item.isHandoverUniform, item.statusUniform, "statusUniform")}</div></td>
                                                             <td className="handover-fingerprints-email-col"><div className="data handover-fingerprints-email">{this.renderStatus(index, item.isHandoverFingerprintEmail, item.statusFingerprintEmail, "statusFingerprintEmail")}</div></td>
                                                             <td className="handover-liabilities-col"><div className="data handover-liabilities">{this.renderStatus(index, item.isHandoverDebt, item.statusDebt, "statusDebt")}</div></td>
                                                             <td className="handover-software-col" style={{textAlign: 'center'}}><div className="data handover-software">{this.renderStatus(index, item.isHandoverSoftware, item.statusSoftware, "statusSoftware")}</div></td>
                                                             <td className="confirm-violation-records-col" style={{textAlign: 'center'}}><div className="data confirm-violation-records">{this.renderStatus(index, item.isHandoverConfirmation, item.statusConfirmation, "statusConfirmation")}</div></td>
+                                                            {
+                                                                checkIsExactPnL(Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading) ? 
+                                                                <>
+                                                                <td className="confirm-violation-records-col" style={{textAlign: 'center'}}><div className="data confirm-violation-records">{this.renderStatus(index, item.isTrainingDebt, item.trainingDebtStatus, "trainingDebtStatus")}</div></td>
+                                                                <td className="confirm-violation-records-col" style={{textAlign: 'center'}}><div className="data confirm-violation-records">{this.renderStatus(index, item.isInternalDebt, item.internalDebtStatus, "internalDebtStatus")}</div></td>
+                                                                </>
+                                                                : null
+                                                            }
                                                             <td className="approval-status-col" style={{textAlign: 'center'}}><div className="data approval-status">{item?.processStatusString || ""}</div></td>
                                                             <td className="social-insurance-book-status-col" style={{textAlign: 'center'}}><div className="data social-insurance-book-status">{item?.statusSocialClosing || ''}</div></td>
                                                             <td className="leave-salary-col" style={{textAlign: 'center'}}><div className="data leave-salary">{this.renderSalaryStatus(item?.statusLastPayment)}</div></td>

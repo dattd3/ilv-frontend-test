@@ -71,7 +71,7 @@ class SubstitutionComponent extends React.Component {
       .then(res => {
         if (res && res.data && res.data.data) {
           let shifts = res.data.data.filter((shift, index, arr) => arr.findIndex(a => a.shift_id === shift.shift_id) === index)
-          .sort((a,b) =>  a.shift_id.includes("OFF") ? -1 : 1 ).sort((a,b) => a.shift_id < b.shift_id ? (a.shift_id.includes("OFF") ? -1 : 0) : 1)
+          .sort((a,b) =>  a.shift_id.includes(Constants.SHIFT_CODE_OFF) ? -1 : 1 ).sort((a,b) => a.shift_id < b.shift_id ? (a.shift_id.includes(Constants.SHIFT_CODE_OFF) ? -1 : 0) : 1)
 
           if (this.isVin3S) {
             shifts = (shifts || []).filter(shift => shiftCodesAllowedToUpdateForVin3S.includes(shift?.shift_id))
