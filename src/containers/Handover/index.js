@@ -365,8 +365,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         status: infos.statusFingerprintEmail,
         actionDate: infos.dateHandoverFingerEmail || '',
         note: infos.noteFingerprintEmail || '',
-        // isShow: isViewAll || currentUserEmail === infos.handoverFingerprintEmailAccount?.toLowerCase()
-        isShow: false
+        isShow: isViewAll || currentUserEmail === infos.handoverFingerprintEmailAccount?.toLowerCase()
     }
     candidateInfos.inout = {
         user: infos.handoverDebt || {},
