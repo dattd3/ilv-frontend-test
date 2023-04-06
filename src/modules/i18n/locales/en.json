@@ -1709,8 +1709,10 @@
   "resign_error_permission": "Staffs not under your management",
   "select_to_export": "Please choose data record need to export",
   "select_to_save": "Please choose data record need to save",
+  "ApproverAndConsenterCannotBeIdentical": "Approver and Consenter cannot be identical.",
   "WarningOverOT": "Warning: Total OT hours for this request currently over 4 a day, 12 on day off or 40 this month. Do you want to send request?",
   "salary_keeped": "Salary on hold",
   "salary_paid": "Paid",
-  "attachment": "Attachment"
+  "attachment": "Attachment",
+  "ReasonRequired": "Please Enter Reason"
 }

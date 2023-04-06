@@ -78,6 +78,9 @@ class RegistrationEmploymentTerminationForm extends React.Component {
             if(directManager) {
                 errors.directManager = null;
             }
+            if(seniorManager) {
+                errors.seniorExecutive = null;
+            }
             this.setState({reasonTypes: reasonTypes, userInfos: userInfos, directManager: directManager, seniorExecutive: seniorManager, directManagerRaw: responses[3], errors});
         })).catch(errors => {
             console.log(errors);
@@ -124,11 +127,10 @@ class RegistrationEmploymentTerminationForm extends React.Component {
                 pnl: approverInfo?.pnl || "",
                 orglv2Id: approverInfo?.orglv2Id || "",
                 account: approverInfo?.account?.toLowerCase() || "",
-                jobTitle: approverInfo?.current_position || "",
+                jobTitle: approverInfo?.jobTitle || "",
                 department: approverInfo?.department || "",
               }]
               : []
-    
               if(approver?.length > 0) return approver[0];
             }
         }

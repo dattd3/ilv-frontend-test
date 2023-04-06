@@ -253,9 +253,15 @@ class TaskList extends React.Component {
         const { page } = this.props
         let tasks = this.props.tasks;
         const requestTypeIdsAllowedToReApproval = getRequestTypeIdsAllowedToReApproval()
+        const currentEmail = localStorage.getItem('email')?.toLowerCase()
 
         tasks.forEach((child) => {
-            if ((child.requestTypeId == Constants.SALARY_PROPOSE && child.isEdit == true) || (child.processStatusId == 8 && child.requestTypeId != Constants.SALARY_PROPOSE) || (child.processStatusId == 11 && child.supervisorId?.toLowerCase() == localStorage.getItem('email')?.toLowerCase()) || (child.processStatusId == 10 && child.appraiserId?.toLowerCase() == localStorage.getItem('email')?.toLowerCase()) || (page == "approval" && (child.processStatusId == 5  || child.processStatusId == 13 || (child.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && requestTypeIdsAllowedToReApproval.includes(child.requestTypeId))))) {
+            if ((child.requestTypeId == Constants.SALARY_PROPOSE && child.isEdit == true) 
+                || (child.processStatusId == Constants.STATUS_WAITING_CONSENTED && child.requestTypeId != Constants.SALARY_PROPOSE) 
+                || (child.processStatusId == Constants.STATUS_OB_SUPERVISOR_EVALUATION && child.supervisorId?.toLowerCase() == currentEmail) 
+                || (child.processStatusId == Constants.STATUS_OB_APPRAISER_EVALUATION && child.appraiserId?.toLowerCase() == currentEmail) 
+                || (page == "approval" && (child.processStatusId == Constants.STATUS_WAITING || child.processStatusId == Constants.STATUS_OB_APPROVER_EVALUATION || (child.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && requestTypeIdsAllowedToReApproval.includes(child.requestTypeId))))
+            ) {
                 child.isChecked = event.target.checked;
                 if (child.isChecked) {
                     // child.canChecked = true

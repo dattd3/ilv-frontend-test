@@ -62,7 +62,11 @@ class ProposedResignationPage extends React.Component {
             const directManagerInfos = this.prepareDirectManagerInfos(responses[1])
             const subordinateInfos = this.prepareSubodinateInfos(responses[2]);
             const seniorManager = this.prepareManagerSuggestion(responses[3]);
-            this.setState({reasonTypes: reasonTypes, directManager: directManagerInfos, seniorExecutive: seniorManager, subordinateInfos})
+            const _errors = {...this.state.errors};
+            if(seniorManager) {
+                _errors.seniorExecutive = null;
+            }
+            this.setState({reasonTypes: reasonTypes, directManager: directManagerInfos, seniorExecutive: seniorManager, subordinateInfos, errors: _errors})
         })).catch(errors => {
             return null
         })
@@ -84,11 +88,10 @@ class ProposedResignationPage extends React.Component {
                 pnl: approverInfo?.pnl || "",
                 orglv2Id: approverInfo?.orglv2Id || "",
                 account: approverInfo?.account?.toLowerCase() || "",
-                jobTitle: approverInfo?.current_position || "",
+                jobTitle: approverInfo?.jobTitle || "",
                 department: approverInfo?.department || "",
               }]
               : []
-    
               if(approver?.length > 0) return approver[0];
             }
         }
