@@ -62,6 +62,9 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
           canEditable['manager_' + key] = true;
           canEditable['canUpdate'] = true;
         }
+        if(this.state.isViewAll && data[key].status != true && employeeEmail.toLowerCase()  == currentEmployeeNo.toLowerCase()) {
+          canEditable['employee_' + key] = true;
+        }
       }
     }
     this.setState({
@@ -616,7 +619,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
               <div className="row">
                 <div className="col-4">
                     {t('user_action')}
-                    <ApproverComponent isEdit={!(disableComponent.employee || disableComponent.manager_job || disableComponent.hanover_job)} approver={data.job.user}  updateApprover={(approver, isApprover) => this.updateApprover('job', approver,isApprover )} errors={{approver: this.state.errors['job']}}/>
+                    <ApproverComponent isEdit={!(disableComponent.employee_job || disableComponent.manager_job || disableComponent.hanover_job)} approver={data.job.user}  updateApprover={(approver, isApprover) => this.updateApprover('job', approver,isApprover )} errors={{approver: this.state.errors['job']}}/>
                 </div>
                 <div className="col-4">
                     {t('handover_date')}
@@ -652,7 +655,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
                   data.asset.isShow && <div className="row">
                     <div className="col-4">
                         {t('user_action')}
-                        <ApproverComponent isEdit={!(disableComponent.employee || disableComponent.manager_asset || disableComponent.hanover_asset)} approver={data.asset.user}  updateApprover={(approver, isApprover) => this.updateApprover('asset', approver,isApprover )} errors={{approver: this.state.errors['asset']}}/>
+                        <ApproverComponent isEdit={!(disableComponent.employee_asset || disableComponent.manager_asset || disableComponent.hanover_asset)} approver={data.asset.user}  updateApprover={(approver, isApprover) => this.updateApprover('asset', approver,isApprover )} errors={{approver: this.state.errors['asset']}}/>
                     </div>
                     <div className="col-4">
                         {t('handover_date')}
@@ -679,7 +682,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
                   data.taxi.isShow && <div className="row">
                       <div className="col-4">
                           {t('user_action')}
-                          <ApproverComponent isEdit={!(disableComponent.employee || disableComponent.manager_taxi || disableComponent.hanover_taxi)} approver={data.taxi.user}  updateApprover={(approver, isApprover) => this.updateApprover('taxi', approver,isApprover )} errors={{approver: this.state.errors['taxi']}}/>
+                          <ApproverComponent isEdit={!(disableComponent.employee_taxi || disableComponent.manager_taxi || disableComponent.hanover_taxi)} approver={data.taxi.user}  updateApprover={(approver, isApprover) => this.updateApprover('taxi', approver,isApprover )} errors={{approver: this.state.errors['taxi']}}/>
                       </div>
                       <div className="col-4">
                           {t('handover_date')}
@@ -709,7 +712,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
                   data.asset.isShow && <div className="row">
                     <div className="col-4">
                         {t('user_action')}
-                        <ApproverComponent isEdit={!(disableComponent.employee|| disableComponent.manager_asset || disableComponent.hanover_asset)} approver={data.asset.user}  updateApprover={(approver, isApprover) => this.updateApprover('asset', approver,isApprover )} errors={{approver: this.state.errors['asset']}}/>
+                        <ApproverComponent isEdit={!(disableComponent.employee_asset || disableComponent.manager_asset || disableComponent.hanover_asset)} approver={data.asset.user}  updateApprover={(approver, isApprover) => this.updateApprover('asset', approver,isApprover )} errors={{approver: this.state.errors['asset']}}/>
                     </div>
                     <div className="col-4">
                         {t('handover_date')}
@@ -739,7 +742,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
               data.associateCard.isShow && <div className="row">
                 <div className="col-4">
                 {t('user_action')}
-                    <ApproverComponent isEdit={!(disableComponent.employee|| disableComponent.manager_associateCard || disableComponent.hanover_associateCard)} approver={data.associateCard.user}  updateApprover={(approver, isApprover) => this.updateApprover('associateCard', approver,isApprover )} errors={{approver: this.state.errors['associateCard']}}/>
+                    <ApproverComponent isEdit={!(disableComponent.employee_associateCard || disableComponent.manager_associateCard || disableComponent.hanover_associateCard)} approver={data.associateCard.user}  updateApprover={(approver, isApprover) => this.updateApprover('associateCard', approver,isApprover )} errors={{approver: this.state.errors['associateCard']}}/>
                 </div>
                 <div className="col-4">
                 {t('handover_date')}
@@ -767,7 +770,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
               data.uniform.isShow && <div className="row">
                 <div className="col-4">
                 {t('user_action')}
-                    <ApproverComponent isEdit={!(disableComponent.employee|| disableComponent.manager_uniform || disableComponent.hanover_uniform)} approver={data.uniform.user}  updateApprover={(approver, isApprover) => this.updateApprover('uniform', approver,isApprover )} errors={{approver: this.state.errors['uniform']}}/>
+                    <ApproverComponent isEdit={!(disableComponent.employee_uniform || disableComponent.manager_uniform || disableComponent.hanover_uniform)} approver={data.uniform.user}  updateApprover={(approver, isApprover) => this.updateApprover('uniform', approver,isApprover )} errors={{approver: this.state.errors['uniform']}}/>
                 </div>
                 <div className="col-4">
                 {t('handover_date')}
@@ -795,7 +798,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
               data.finger.isShow && <div className="row">
                 <div className="col-4">
                 {t('user_action')}
-                    <ApproverComponent isEdit={!(disableComponent.employee || disableComponent.manager_finger || disableComponent.hanover_finger)} approver={data.finger.user}  updateApprover={(approver, isApprover) => this.updateApprover('finger', approver,isApprover )} errors={{approver: this.state.errors['finger']}}/>
+                    <ApproverComponent isEdit={!(disableComponent.employee_finger || disableComponent.manager_finger || disableComponent.hanover_finger)} approver={data.finger.user}  updateApprover={(approver, isApprover) => this.updateApprover('finger', approver,isApprover )} errors={{approver: this.state.errors['finger']}}/>
                 </div>
                 <div className="col-4">
                 {t('handover_date')}
@@ -823,7 +826,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
               data.inout.isShow && <div className="row">
                 <div className="col-4">
                 {t('user_action')}
-                    <ApproverComponent isEdit={!(disableComponent.employee || disableComponent.manager_inout || disableComponent.hanover_inout) } approver={data.inout.user}  updateApprover={(approver, isApprover) => this.updateApprover('inout', approver,isApprover )} errors={{approver: this.state.errors['inout']}} />
+                    <ApproverComponent isEdit={!(disableComponent.employee_inout || disableComponent.manager_inout || disableComponent.hanover_inout) } approver={data.inout.user}  updateApprover={(approver, isApprover) => this.updateApprover('inout', approver,isApprover )} errors={{approver: this.state.errors['inout']}} />
                 </div>
                 <div className="col-4">
                 {t('handover_date')}
@@ -851,7 +854,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
               data.tool.isShow && <div className="row">
                 <div className="col-4">
                 {t('user_action')}
-                    <ApproverComponent isEdit={!(disableComponent.employee|| disableComponent.manager_tool || disableComponent.hanover_tool)} approver={data.tool.user}  updateApprover={(approver, isApprover) => this.updateApprover('tool', approver,isApprover )} errors={{approver: this.state.errors['tool']}}/>
+                    <ApproverComponent isEdit={!(disableComponent.employee_tool || disableComponent.manager_tool || disableComponent.hanover_tool)} approver={data.tool.user}  updateApprover={(approver, isApprover) => this.updateApprover('tool', approver,isApprover )} errors={{approver: this.state.errors['tool']}}/>
                 </div>
                 <div className="col-4">
                 {t('handover_date')}
@@ -879,7 +882,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
               data.policy.isShow && <div className="row">
                 <div className="col-4">
                 {t('user_action')}
-                    <ApproverComponent isEdit={!(disableComponent.employee|| disableComponent.manager_policy || disableComponent.hanover_policy)} approver={data.policy.user}  updateApprover={(approver, isApprover) => this.updateApprover('policy', approver,isApprover )} errors={{approver: this.state.errors['policy']}}/>
+                    <ApproverComponent isEdit={!(disableComponent.employee_policy || disableComponent.manager_policy || disableComponent.hanover_policy)} approver={data.policy.user}  updateApprover={(approver, isApprover) => this.updateApprover('policy', approver,isApprover )} errors={{approver: this.state.errors['policy']}}/>
                 </div>
                 <div className="col-4">
                 {t('handover_date')}
@@ -910,7 +913,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
                   data.traning.isShow && <div className="row">
                     <div className="col-4">
                     {t('user_action')}
-                        <ApproverComponent isEdit={!(disableComponent.employee|| disableComponent.manager_traning || disableComponent.hanover_traning)} approver={data.traning.user}  updateApprover={(approver, isApprover) => this.updateApprover('traning', approver,isApprover )} errors={{approver: this.state.errors['traning']}}/>
+                        <ApproverComponent isEdit={!(disableComponent.employee_traning || disableComponent.manager_traning || disableComponent.hanover_traning)} approver={data.traning.user}  updateApprover={(approver, isApprover) => this.updateApprover('traning', approver,isApprover )} errors={{approver: this.state.errors['traning']}}/>
                     </div>
                     <div className="col-4">
                     {t('handover_date')}
@@ -938,7 +941,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
                   data.internal.isShow && <div className="row">
                     <div className="col-4">
                     {t('user_action')}
-                        <ApproverComponent isEdit={!(disableComponent.employee|| disableComponent.manager_internal || disableComponent.hanover_internal)} approver={data.internal.user}  updateApprover={(approver, isApprover) => this.updateApprover('internal', approver,isApprover )} errors={{approver: this.state.errors['internal']}}/>
+                        <ApproverComponent isEdit={!(disableComponent.employee_internal || disableComponent.manager_internal || disableComponent.hanover_internal)} approver={data.internal.user}  updateApprover={(approver, isApprover) => this.updateApprover('internal', approver,isApprover )} errors={{approver: this.state.errors['internal']}}/>
                     </div>
                     <div className="col-4">
                     {t('handover_date')}

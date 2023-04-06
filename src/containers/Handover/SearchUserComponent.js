@@ -141,15 +141,14 @@ class ApproverComponent extends React.Component {
       this.setState({isSearching: true})
       const config = {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-          'client_id': process.env.REACT_APP_MULE_CLIENT_ID,
-          'client_secret': process.env.REACT_APP_MULE_CLIENT_SECRET
+          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
         }
       }
 
       const payload = {
         account: value,
-        status: 3
+        status: 3,
+        pnl_code: localStorage.getItem('companyCode')
       }
       axios.post(`${process.env.REACT_APP_REQUEST_URL}user/employee/search`, payload, config)
         .then(res => {
