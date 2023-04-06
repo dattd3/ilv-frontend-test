@@ -60,6 +60,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         }
         if(this.state.isViewAll && data[key].status != true && employeeEmail.toLowerCase()  != currentEmployeeNo.toLowerCase()) {
           canEditable['manager_' + key] = true;
+          canEditable['canUpdate'] = true;
         }
       }
     }
