@@ -115,7 +115,9 @@ class ConfirmRequestModal extends React.Component {
                 taskObj.sub.push({"id":element.salaryId,"processStatusId": Constants.STATUS_APPROVED})
             } else {
                 taskObj = {
-                    "id": element.requestTypeId == Constants.SUBSTITUTION || element.requestTypeId == Constants.IN_OUT_TIME_UPDATE || element.requestTypeId == Constants.CHANGE_DIVISON_SHIFT || element.requestTypeId == Constants.UPDATE_PROFILE ? element.id : parseInt(element.id.split(".")[0]),
+                    "id": element.requestTypeId == Constants.SUBSTITUTION || element.requestTypeId == Constants.IN_OUT_TIME_UPDATE || element.requestTypeId == Constants.CHANGE_DIVISON_SHIFT || element.requestTypeId == Constants.UPDATE_PROFILE || element.requestTypeId == Constants.DEPARTMENT_TIMESHEET
+                    ? element.id 
+                    : parseInt(element.id.split(".")[0]),
                     "requestTypeId": element.requestTypeId,
                     "sub": []
                 };

@@ -40,7 +40,8 @@ class ApproverComponent extends React.Component {
       users: null,
       typingTimeout: 0,
       approverTyping: "",
-      isSearch: false
+      isSearch: false,
+      isSearching: false,
     }
     this.onInputChange = debounce(this.getApproverInfo, 800);
   }
@@ -168,7 +169,7 @@ class ApproverComponent extends React.Component {
     this.setState({isSearch: false})
     const { appraiser } = this.props
     if (value !== "") {
-      this.setState({isSearch: true})
+      this.setState({isSearch: true, isSearching: true})
       const config = getRequestConfigurations()
       const payload = {
         account: value,
@@ -198,8 +199,12 @@ class ApproverComponent extends React.Component {
             this.setState({ users: lst || [] })
           }
         }).catch(error => { })
+        .finally(() => {
+          this.setState({ isSearching: false })
+        })
     }
     else {
+      this.setState({ isSearching: false })
       if (Array.isArray(this.state.users) && this.state.users.length > 1) this.setState({isSearch: true})
     }
   }
@@ -230,7 +235,7 @@ class ApproverComponent extends React.Component {
       })
     }
     const { t, isEdit, errors, recentlyApprover } = this.props;
-    const { isSearch, approver, users } = this.state
+    const { isSearch, approver, users, isSearching } = this.state
 
     return <div className="approver">
       <div className="box shadow">
@@ -256,6 +261,7 @@ class ApproverComponent extends React.Component {
                 key="approver"
                 filterOption={this.filterOption}
                 options={users ? users : recentlyApprover || []}
+                isLoading={isSearching}
                />
             </div>
             {errors && errors['approver'] ? <div className="text-danger validation-message">{errors['approver']}</div> : null}

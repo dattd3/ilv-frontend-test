@@ -141,7 +141,7 @@ class ApproverComponent extends React.Component {
       this.setState({isSearching: true})
       const config = {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
         }
       }
 
