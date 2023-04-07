@@ -141,7 +141,7 @@ class ApproverComponent extends React.Component {
       this.setState({isSearching: true})
       const config = {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
         }
       }
 
@@ -154,7 +154,11 @@ class ApproverComponent extends React.Component {
         .then(res => {
           if (res && res.data && res.data.data) {
             const data = res.data.data || []
-            const users = data.map(res => {
+
+            const users = data?.filter(res => {
+              console.log(res.uid, this.props.userEmployeeNo, (res.uid + '') != (this.props.userEmployeeNo + ''))
+              return (res.uid + '') != (this.props.userEmployeeNo + '')
+            }).map(res => {
               return {
                 label: res.fullname,
                 value: res.username,
