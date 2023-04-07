@@ -377,7 +377,7 @@ const getCurrentLanguage = () => {
         [Constants.LANGUAGE_EN]: 'en',
         [Constants.LANGUAGE_VI]: 'vi'
     }
-    const locale = localStorage.getItem("locale") || 'vi-VN';
+    const locale = localStorage.getItem("locale") || Constants.LANGUAGE_VI;
     return languageKeyMapping[[locale]];
 }
 
@@ -523,15 +523,35 @@ const getResignResonsMasterData = () => {
         }
     ];
     let result = {};
-    const locale = localStorage.getItem("locale") || 'vi-VN';
+    const locale = localStorage.getItem("locale") || Constants.LANGUAGE_VI;
     masterData.map(item => {
         result[item.code02] = locale == Constants.LANGUAGE_VI ? item.text : item.text_en;
     });
     return result;
 }
 
+const genderConfig = () => {
+    const locale = localStorage.getItem("locale") || Constants.LANGUAGE_VI
+    const isVietnamese = locale === Constants.LANGUAGE_VI
+    return {
+        male: isVietnamese ? 'Nam' : 'Male',
+        female: isVietnamese ? 'Nữ' : 'Female',
+    }
+}
+
+const marriageConfig = () => {
+    const locale = localStorage.getItem("locale") || Constants.LANGUAGE_VI
+    const isVietnamese = locale === Constants.LANGUAGE_VI
+    return {
+        single: isVietnamese ? 'Đ.thân' : 'Single',
+        married: isVietnamese ? 'K.hôn' : 'Married',
+        divorced: isVietnamese ? 'Ly hôn' : 'Divorced',
+    }
+}
+
 export {
     getRequestConfigurations, removeAccents, formatStringByMuleValue, formatNumberInteger, exportToPDF, isEnableFunctionByFunctionName, getValueParamByQueryString, getDateByRangeAndFormat,
     calculateBackDateByPnLVCodeAndFormatType, isEnableShiftChangeFunctionByPnLVCode, isEnableInOutTimeUpdateFunctionByPnLVCode, getRequestTypeIdsAllowedToReApproval, getMuleSoftHeaderConfigurations,
-    isAdjacentDateBy2Date, showRangeDateGroupByArrayDate, generateTaskCodeByCode, parsteStringToHtml, getRegistrationMinDateByConditions, isVinFast, isEnableOTFunctionByPnLVCode, getCurrentLanguage, getResignResonsMasterData, formatStringDateTimeByMuleValue
+    isAdjacentDateBy2Date, showRangeDateGroupByArrayDate, generateTaskCodeByCode, parsteStringToHtml, getRegistrationMinDateByConditions, isVinFast, isEnableOTFunctionByPnLVCode, getCurrentLanguage, 
+    getResignResonsMasterData, formatStringDateTimeByMuleValue, genderConfig, marriageConfig
 }
