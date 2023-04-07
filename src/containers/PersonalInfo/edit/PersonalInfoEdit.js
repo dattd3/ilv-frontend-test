@@ -8,10 +8,10 @@ import axios from 'axios'
 import _ from 'lodash'
 import moment from 'moment'
 import { withTranslation } from "react-i18next"
-import { t } from 'i18next'
 import { getMuleSoftHeaderConfigurations } from "../../../commons/Utils"
 import Constants from '../../../commons/Constants'
 import HOCComponent from '../../../components/Common/HOCComponent'
+import LoadingModal from 'components/Common/LoadingModal'
 import { checkFilesMimeType } from '../../../utils/file'
 
 const code = localStorage.getItem('employeeNo') || "";
@@ -74,7 +74,9 @@ class PersonalInfoEdit extends React.Component {
       modalMessage: "",
       confirmStatus: "",
       isSuccess: true,
-      errors: {}
+      errors: {},
+      isLoading: false,
+      needReload: true,
     }
     this.inputReference = React.createRef()
 
@@ -534,6 +536,8 @@ class PersonalInfoEdit extends React.Component {
       return
     }
 
+    this.setState({ isLoading: true })
+
     const updateFields = this.getFieldUpdates();
     const dataPostToSAP = this.getDataPostToSap(this.state.data);
 
@@ -574,22 +578,26 @@ class PersonalInfoEdit extends React.Component {
       data: bodyFormData,
       headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` }
     })
-      .then(response => {
-        this.setState({ isShowModalConfirm: false });
-        if (response && response.data && response.data.result) {
-          const code = response.data.result.code;
-          if (code != Constants.API_SUCCESS_CODE) {
-            this.handleShowResultModal(t("Notification"), response.data.result.message, false);
-          } else {
-            this.handleShowResultModal(t("Successful"), t("RequestSent"), true);
-            setTimeout(() => { window.location.href = "/personal-info"; }, 4000);
-
-          }
+    .then(response => {
+      this.setState({ isShowModalConfirm: false, isLoading: false })
+      if (response && response.data && response.data.result) {
+        const code = response.data.result.code;
+        if (code != Constants.API_SUCCESS_CODE) {
+          this.setState({ needReload: false })
+          this.handleShowResultModal(t("Notification"), response.data.result.message, false);
+        } else {
+          this.setState({ needReload: true })
+          this.handleShowResultModal(t("Successful"), t("RequestSent"), true);
         }
-      })
-      .catch(response => {
-        this.handleShowResultModal(t("Notification"), t("Error"), false);
-      });
+      }
+    })
+    .catch(response => {
+      this.setState({ needReload: false })
+      this.handleShowResultModal(t("Notification"), t("Error"), false);
+    })
+    .finally(res => {
+      this.setState({ isLoading: false })
+    })
   }
 
   resetValueInValid = value => {
@@ -1249,7 +1257,10 @@ class PersonalInfoEdit extends React.Component {
   }
 
   onHideResultModal = () => {
-    this.setState({ isShowResultConfirm: false });
+    this.setState({ isShowResultConfirm: false })
+    if (this.state.needReload) {
+      window.location.href = "/personal-info"
+    }
   }
 
   handleSendRequest = () => {
@@ -1284,10 +1295,11 @@ class PersonalInfoEdit extends React.Component {
   render() {
     const { t, isEnableEditEducation, isEnableEditMainInfo, birthCountry } = this.props
     const { isShowModalConfirm, modalTitle, typeRequest, modalMessage, confirmStatus, isShowResultConfirm, isSuccess, userDetail, userProfile, genders, races, marriages,
-      nations, banks, countries, religions, documentTypes, requestedUserProfile, isEdit, errors, userEducation, certificates, educationLevels, majors, schools, files } = this.state
+      nations, banks, countries, religions, documentTypes, requestedUserProfile, isEdit, errors, userEducation, certificates, educationLevels, majors, schools, files, isLoading } = this.state
 
     return (
       <div className="edit-personal">
+        <LoadingModal show={isLoading} />
         <ConfirmationModal show={isShowModalConfirm} title={modalTitle} type={typeRequest} message={modalMessage} confirmStatus={confirmStatus}
           sendData={this.getMessageFromModal} onHide={this.onHideModalConfirm} />
         <ResultModal show={isShowResultConfirm} title={modalTitle} message={modalMessage} isSuccess={isSuccess} onHide={this.onHideResultModal} />
