@@ -2697,6 +2697,11 @@ span.badge-notification[data-badge]::after {
     button.btn {
       font-size: inherit;
     }
+    a.btn {
+      &:last-child {
+        margin-left: 5px;
+      }
+    }
   }
   .form-qna-search {
     input {
