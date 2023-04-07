@@ -160,6 +160,7 @@ class AssesserComponent extends React.Component {
                 minHeight: 35
             })
         }
+
         const { t, isEdit, errors, isShowDuplicateWarning = true } = this.props
         const { appraiser, users, isSearching, isShowRecentManagerLabel } = this.state
         const displayAppraiser = appraiser || this.props.appraiser;
