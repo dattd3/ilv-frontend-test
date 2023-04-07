@@ -9,16 +9,18 @@ class ResultModal extends React.Component {
     }
 
     render () {
+        const { show, title, message, isSuccess, onHide } = this.props
+
         return (
             <>
-            <Modal className='info-modal-common position-apply-modal' centered show={this.props.show} onHide={this.props.onHide}>
+            <Modal className='info-modal-common position-apply-modal result-modal' centered show={show} onHide={onHide}>
                 <Modal.Header className='apply-position-modal' closeButton>
-                    <Modal.Title>{this.props.title}</Modal.Title>
+                    <Modal.Title>{title}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <div className="wrap-result">
-                        <p>{this.props.message}</p>
-                        {this.props.isSuccess ? <Image src={IconSuccess} alt="Success" className="ic-status" /> : <Image src={IconFailed} alt="Success" className="ic-status" />}
+                        <p className="text-center">{message}</p>
+                        {isSuccess ? <Image src={IconSuccess} alt="Success" className="ic-status" /> : <Image src={IconFailed} alt="Success" className="ic-status" />}
                     </div>
                 </Modal.Body>
             </Modal>

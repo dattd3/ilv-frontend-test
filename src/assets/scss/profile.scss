@@ -85,6 +85,10 @@
     .date-label {
         position: relative;
     }
+    .text-danger {
+        // margin-top: 5px;
+        font-size: 13px;
+    }
     .item-info {
         padding: 6px 0;
     }
@@ -154,6 +158,8 @@
                 background-color: #ececec;
                 display: flex;
                 align-items: center;
+                height: 38px;
+                min-height: auto;
             }
         }
         .new {
@@ -304,11 +310,11 @@
     }
     .input-container {
         position:relative;
-
         .input {
             margin:0;
             padding-right: 50px;
             width: 300px;
+            height: 38px;
         }
         .input-img {
             position: absolute;
@@ -340,6 +346,9 @@
                 font-size: 18px;
                 font-weight: 100;
             }
+        }
+        .input {
+            height: 38px;
         }
     }
     .block-action-buttons {
