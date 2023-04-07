@@ -237,7 +237,7 @@ class ConfirmRequestModal extends React.Component {
         return (
             <>
                 <ResultDetailModal show={this.state.isShowStatusModal} title={this.state.resultTitle} message={this.state.resultMessage} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} resultDetail={this.state.resultDetail} statusCodeAPIException={this.state.statusCodeAPIException} />
-                <Modal className='info-modal-common position-apply-modal' centered show={this.props.show} onHide={this.props.onHide}>
+                <Modal className='info-modal-common position-apply-modal request-confirm-modal' centered show={this.props.show} onHide={this.props.onHide}>
                     <Modal.Header className={`apply-position-modal ${backgroundColorMapping[this.props.type]}`} closeButton>
                         <Modal.Title>{this.props.title}</Modal.Title>
                     </Modal.Header>

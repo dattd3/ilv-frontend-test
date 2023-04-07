@@ -41,7 +41,7 @@ class PersonalComponent extends React.Component {
             case "PassportDate":
                 return t("PassportDateOfIssue");
             case "PassportPlace":
-                return t("PassporPlaceOfIssue");
+                return t("PassportPlaceOfIssue");
             case "Nationality":
                 return t("NationalityCode");
             case "NationalityText":
@@ -130,7 +130,7 @@ class PersonalComponent extends React.Component {
                             }
                             if (label && !label.includes("Mã")) {
                                 return <div className={`row ${addressClass}`} key={i}>
-                                    <div className="col-2">
+                                    <div className="col-2 d-flex align-items-center">
                                         <div className="label">{label}</div>
                                     </div>
                                     <div className="col-4 old">
