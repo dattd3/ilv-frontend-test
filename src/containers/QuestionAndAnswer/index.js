@@ -144,7 +144,7 @@ class MyComponent extends React.Component {
 
     if (officeExtensionFile.includes(extensionStaffHandbook)) {
       return (
-        <a href={`https://view.officeapps.live.com/op/view.aspx?src=https://github.com/poychang/blog.poychang.net/raw/master/assets/post-files/${staffHandbookLink}`} target='_blank' className="btn btn-light float-left shadow">{linkName}</a>
+        <a href={`https://view.officeapps.live.com/op/view.aspx?src=${staffHandbookLink}`} target='_blank' className="btn btn-light float-left shadow">{linkName}</a>
       )
     }
 
