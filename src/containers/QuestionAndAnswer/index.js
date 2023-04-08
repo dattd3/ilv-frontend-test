@@ -131,7 +131,7 @@ class MyComponent extends React.Component {
 
   showStaffHandbookLink = () => {
     const { staffHandbookLink } = this.state
-    const linkName = this.props.t("Sổ tay CBNV")
+    const linkName = this.props.t("EmployeeHandbook")
 
     if (!staffHandbookLink) {
       return (
