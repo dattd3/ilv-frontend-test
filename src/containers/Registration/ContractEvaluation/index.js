@@ -160,7 +160,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     const currentEmployeeNo = localStorage.getItem('email');
     const currentEmployeeCode = localStorage.getItem('employeeNo');
     const data = this.state.data;
-    const dateToCheck = data.contractType == 'VA' ? (checkVersionPnLSameAsVinhome(Constants.MODULE.DANHGIA_TAIKI) ? -75 : -45) : -7; 
+    const dateToCheck = data.contractType == 'VA' ? (checkVersionPnLSameAsVinhome(Constants.MODULE.DANHGIA_TAIKI) ? -75 : -45) : (checkIsExactPnL(Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading) ? -14 : -7); 
     const isAfterT_7 = data.employeeInfo && data.employeeInfo.startDate && moment(new Date()).diff(moment(data.employeeInfo.expireDate), 'days') > dateToCheck ? true : false;
     let shouldDisable = false;
     let isNguoidanhgia = false;
@@ -195,7 +195,11 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
       default:
         shouldDisable = true;
     }
-    if(this.state.type == 'edit' && data.processStatus == 9 && data.canAddJob && !isAfterT_7 ){
+    let canAddJob = !isAfterT_7; //data.canAddJob && !isAfterT_7
+    if(checkIsExactPnL(Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading)) {
+      canAddJob = true//data.canAddJob;
+    }
+    if(this.state.type == 'edit' && data.processStatus == 9 && canAddJob ){
       const subordinates = await this.getSubordinates()
       const directManagerValidation = this.validateDirectManager( data.employeeInfo.employeeNo, subordinates)
       shouldDisable = directManagerValidation ? false : true;
@@ -331,8 +335,9 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     }
   
     if(type === 'request'){
+      let _showComponent = {...this.employeeSetting.showComponent, JobEditing: checkIsExactPnL(Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading) ? false : this.employeeSetting.showComponent.JobEditing}
       this.setState({
-        showComponent: this.employeeSetting.showComponent,
+        showComponent: _showComponent,
         disableComponent: {...this.employeeSetting.disableComponent, disableAll: true},
         type: 'request',
         id: id,
