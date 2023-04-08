@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import axios from 'axios';
 import { withTranslation } from 'react-i18next';
-import { Container, Row, Col, Tabs, Tab, Form } from 'react-bootstrap';
-import moment from 'moment';
+import { Container } from 'react-bootstrap';
 import { Redirect } from 'react-router-dom';
-import map from '../map.config';
+import { last } from 'lodash'
 import SubmitQuestionModal from './SubmitQuestionModal'
 import HistoryModal from './HistoryModal'
 import StatusModal from '../../components/Common/StatusModal'
@@ -107,6 +106,7 @@ class MyComponent extends React.Component {
     }
     return filterCommonTickets
   }
+
   handleChange(event) {
     this.setState({ [event.target.name]: event.target.value });
   }
@@ -114,6 +114,7 @@ class MyComponent extends React.Component {
   search = (keySearch) => {
     this.setState({ commonTicketListFilter: this.filterCommonTicketByKeyword(keySearch) })
   }
+
   handleKeyPress = (event) => {
     if (event.key === 'Enter' && event.shiftKey) {
       return;
@@ -123,13 +124,40 @@ class MyComponent extends React.Component {
       this.search(this.state.keySearch)
     }
   }
+
   setOpen = (open) => {
     this.setState({ open: !open })
   }
 
+  showStaffHandbookLink = () => {
+    const { staffHandbookLink } = this.state
+    const linkName = this.props.t("EmployeeHandbook")
+
+    if (!staffHandbookLink) {
+      return (
+        <a href='#' target='_self' className="btn btn-light float-left shadow">{linkName}</a>
+      )
+    }
+
+    const extensionStaffHandbook = last(staffHandbookLink?.split('.'))
+    const officeExtensionFile = ['doc', 'docx', 'xls', 'xlsx']
+
+    if (officeExtensionFile.includes(extensionStaffHandbook)) {
+      return (
+        <a href={`https://view.officeapps.live.com/op/view.aspx?src=https://github.com/poychang/blog.poychang.net/raw/master/assets/post-files/${staffHandbookLink}`} target='_blank' className="btn btn-light float-left shadow">{linkName}</a>
+      )
+    }
+
+    return (
+      <a href={staffHandbookLink} target='_blank' className="btn btn-light float-left shadow">{linkName}</a>
+    )
+  }
+
   render() {
     const { t } = this.props;
-    const { categories, isEditQuestion, questionContent, isShowStatusModal, content, isSuccess, isShowSubmitQuestionModal, isShowHistoryModal, keySearch, commonTicketList, commonTicketListFilter, staffHandbookLink } = this.state
+    const { categories, isEditQuestion, questionContent, isShowStatusModal, content, isSuccess, isShowSubmitQuestionModal, isShowHistoryModal, keySearch, commonTicketList, commonTicketListFilter, staffHandbookLink } = this.state  
+    const extensionStaffHandbook = last(staffHandbookLink?.split('.'))
+    const officeExtensionFile = ['doc', 'docx', 'xls', 'xlsx']
 
     const reload = () => {
       if (isShowStatusModal) {
@@ -152,7 +180,7 @@ class MyComponent extends React.Component {
         <div className="clearfix edit-button action-buttons mb-2">
           <button type="button" className="btn btn-light float-left shadow pl-4 pr-4 ml-0" onClick={() => this.showSubmitModal(true)}> {t("CreateQuestions")} </button>
           <button type="button" className="btn btn-light float-left shadow" onClick={() => this.showHistoryModal(true)}>{t("HistoryAnswer")}</button>
-          { isVinFast() && <a href={staffHandbookLink || '#'} target={staffHandbookLink ? '_blank' : '_self'} className="btn btn-light float-left shadow">{t("Sổ tay CBNV")}</a> }
+          { isVinFast() && this.showStaffHandbookLink() }
         </div>
         <h1 className="content-page-header">{t("QuestionAndAnswer")}</h1>
         <Container fluid className="info-tab-content shadow mb-3">
