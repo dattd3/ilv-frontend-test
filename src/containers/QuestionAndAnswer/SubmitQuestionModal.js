@@ -175,12 +175,12 @@ class SubmitQuestionModal extends React.Component {
             "userdepartmentname": `${localStorage.getItem('department')}`,
             "userfullname": `${localStorage.getItem('fullName')}`,
             "useravatar": `${localStorage.getItem('avatar')}`,
-            "agentid": supervise.userid.toLowerCase() + "@vingroup.net",
-            "agentjobtitle": supervise.title,
+            "agentid": supervise?.userid?.toLowerCase() + "@vingroup.net",
+            "agentjobtitle": supervise?.title,
             "agentemployeeno": "",
-            "agentdepartmentname": supervise.department,
-            "agentfullname": supervise.fullname,
-            "agentavatar": supervise.avatar,
+            "agentdepartmentname": supervise?.department,
+            "agentfullname": supervise?.fullname,
+            "agentavatar": supervise?.avatar,
             "ticketcategoryid": categoryId,
             "solverId": this.state.solverid // 1: Manager, 2: resource, 3: tckt
         };
@@ -288,11 +288,16 @@ class SubmitQuestionModal extends React.Component {
                             </div>
                             <Form.Group controlId="QuestionContent">
                                 <Form.Label>{t("Question")}</Form.Label>
-                                <Form.Control type="text"
+                                <Form.Control 
+                                    as="textarea"
+                                    rows={4}
+                                    className="input-question-content"
+                                    name="questionContent"
                                     placeholder={t("Question")}
-                                    required name="questionContent"
-                                    value={this.state.questionContent}
-                                    onChange={this.handleChange.bind(this)} />
+                                    value={this.state.questionContent || ''}
+                                    onChange={this.handleChange.bind(this)}
+                                    required
+                                />
                                 <Form.Control.Feedback type="invalid">
                                     {t("EnterQuestion")}
                                 </Form.Control.Feedback>
