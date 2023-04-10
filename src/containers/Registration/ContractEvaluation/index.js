@@ -1526,7 +1526,7 @@ renderEvalution = (name, data, isDisable) => {
         <h5>{t('assessment_informations')}</h5>
         <div className="box shadow cbnv">
           <div className="row description">
-            <div className="col-3 title">
+            <div className="col-3">
              {t('assessment_scale')}
             </div>
             <div className="col-9">
@@ -1831,23 +1831,6 @@ renderEvalution = (name, data, isDisable) => {
               {this.state.errors && this.state.errors['nguoidanhgia'] ? <p className="text-danger">{this.state.errors['nguoidanhgia']}</p> : null}
             </div>
 
-            {
-              IS_VINFAST && <div className="box shadow cbnv">
-                <div className="row approve">
-                  <div className="col-12">
-                    <span className="title">{t('hr_review')}</span>
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="col-12">
-                  <div  style={{height: '2px', backgroundColor: '#F2F2F2', margin: '15px 0'}}></div>
-                  </div>
-                </div>
-                <ApproverComponent comment={this.checkShowHrAppraiserComment(data) && comment ? comment : null}  isEdit={disableComponent.disableAll || !disableComponent.employeeSide} approver={data.hrAppraiser}  updateApprover={(approver, isApprover) => this.updateApprover('hrAppraiser', approver,isApprover )} />
-                {this.state.errors && this.state.errors['hrAppraiser'] ? <p className="text-danger">{this.state.errors['hrAppraiser']}</p> : null}
-              </div>
-            }
-
             <div className="box shadow cbnv">
               <div className="row approve">
                 <div className="col-12">
@@ -1866,6 +1849,23 @@ renderEvalution = (name, data, isDisable) => {
               <ApproverComponent comment={this.checkShowQlttComment(data) && comment ? comment : null} isEdit={disableComponent.disableAll || !disableComponent.employeeSide} approver={data.qltt}  updateApprover={(approver, isApprover) => this.updateApprover('qltt', approver,isApprover )} />
               {this.state.errors && this.state.errors['qltt'] ? <p className="text-danger">{this.state.errors['qltt']}</p> : null}
             </div>
+
+            {
+              IS_VINFAST && <div className="box shadow cbnv">
+                <div className="row approve">
+                  <div className="col-12">
+                    <span className="title">{t('hr_review')}</span>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-12">
+                  <div  style={{height: '2px', backgroundColor: '#F2F2F2', margin: '15px 0'}}></div>
+                  </div>
+                </div>
+                <ApproverComponent comment={this.checkShowHrAppraiserComment(data) && comment ? comment : null}  isEdit={disableComponent.disableAll || !disableComponent.employeeSide} approver={data.hrAppraiser}  updateApprover={(approver, isApprover) => this.updateApprover('hrAppraiser', approver,isApprover )} />
+                {this.state.errors && this.state.errors['hrAppraiser'] ? <p className="text-danger">{this.state.errors['hrAppraiser']}</p> : null}
+              </div>
+            }
           </> : 
           this.state.isNguoidanhgia ? 
           <>
@@ -1965,6 +1965,22 @@ renderEvalution = (name, data, isDisable) => {
               <ApproverComponent comment={this.checkShowQlttComment(data) && comment ? comment : null} isEdit={disableComponent.disableAll || !disableComponent.employeeSide} approver={data.qltt}  updateApprover={(approver, isApprover) => this.updateApprover('qltt', approver,isApprover )} />
               {this.state.errors && this.state.errors['qltt'] ? <p className="text-danger">{this.state.errors['qltt']}</p> : null}
             </div>
+            {
+                IS_VINFAST && <div className="box shadow cbnv">
+                  <div className="row approve">
+                    <div className="col-12">
+                      <span className="title">{t('hr_review')}</span>
+                    </div>
+                  </div>
+                  <div className="row">
+                    <div className="col-12">
+                    <div  style={{height: '2px', backgroundColor: '#F2F2F2', margin: '15px 0'}}></div>
+                    </div>
+                  </div>
+                  <ApproverComponent comment={this.checkShowHrAppraiserComment(data) && comment ? comment : null}  isEdit={disableComponent.disableAll || !disableComponent.employeeSide} approver={data.hrAppraiser}  updateApprover={(approver, isApprover) => this.updateApprover('hrAppraiser', approver,isApprover )} />
+                  {this.state.errors && this.state.errors['hrAppraiser'] ? <p className="text-danger">{this.state.errors['hrAppraiser']}</p> : null}
+                </div>
+            }
             {
               checkVersionPnLSameAsVinhome(Constants.MODULE.DANHGIA_TAIKI) ?
               <div className="box shadow cbnv">
