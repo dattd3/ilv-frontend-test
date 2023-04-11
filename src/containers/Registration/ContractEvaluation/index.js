@@ -185,7 +185,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         }
         break;
       case 12:
-        if(IS_VINFAST && ((data.nguoipheduyet?.account?.toLowerCase()  + '@vingroup.net') != currentEmployeeNo.toLowerCase())){
+        if(IS_VINFAST){
           shouldDisable = true;
         }
         break;
@@ -395,7 +395,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         if (result.code != Constants.API_ERROR_CODE) {
           const responseData = this.saveStateInfos(res.data.data);
           this.setState({data : responseData}, () => {
-            if (IS_VINFAST && !responseData.nguoidanhgia?.account) {
+            if (IS_VINFAST && responseData.processStatusId == 9 && !responseData.nguoidanhgia?.account) {
               this.setDirectManagerAppraise();
             }
             this.getDataSalary();
