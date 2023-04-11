@@ -46,6 +46,7 @@ build_uat:
   only:
     refs:
       - uat
+      - pre-uat
 deploy_to_uat_environment:
   stage: deploy
   tags:
@@ -59,6 +60,7 @@ deploy_to_uat_environment:
   when: manual
   only:
       - uat
+      - pre-uat
       
 build_production:
   stage: build
