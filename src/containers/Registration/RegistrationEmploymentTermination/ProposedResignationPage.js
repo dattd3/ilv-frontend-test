@@ -51,22 +51,15 @@ class ProposedResignationPage extends React.Component {
         const reasonTypesEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/masterdata/resignation_reason`
         const userInfosEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/profile`
         const subordinateInfosEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/subordinate`;
-        const managerSuggestEndpoint = `${process.env.REACT_APP_REQUEST_URL}user/suggests`;
         const requestReasonTypes = axios.get(reasonTypesEndpoint, getMuleSoftHeaderConfigurations())
         const requestUserInfos = axios.get(userInfosEndpoint, getMuleSoftHeaderConfigurations())
         const subordinateInfos = axios.get(subordinateInfosEndpoint, getMuleSoftHeaderConfigurations());
-        const managerSuggest = axios.get(managerSuggestEndpoint, getRequestConfigs());
 
-        await axios.all([requestReasonTypes, requestUserInfos, subordinateInfos, managerSuggest]).then(axios.spread((...responses) => {
+        await axios.all([requestReasonTypes, requestUserInfos, subordinateInfos]).then(axios.spread((...responses) => {
             const reasonTypes = this.prepareReasonTypes(responses[0])
             const directManagerInfos = this.prepareDirectManagerInfos(responses[1])
             const subordinateInfos = this.prepareSubodinateInfos(responses[2]);
-            const seniorManager = this.prepareManagerSuggestion(responses[3]);
-            const _errors = {...this.state.errors};
-            if(seniorManager) {
-                _errors.seniorExecutive = null;
-            }
-            this.setState({reasonTypes: reasonTypes, directManager: directManagerInfos, seniorExecutive: seniorManager, subordinateInfos, errors: _errors})
+            this.setState({reasonTypes: reasonTypes, directManager: directManagerInfos, subordinateInfos})
         })).catch(errors => {
             return null
         })
