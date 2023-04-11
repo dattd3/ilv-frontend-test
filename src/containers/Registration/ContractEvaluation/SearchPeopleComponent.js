@@ -153,7 +153,7 @@ class ApproverComponent extends React.Component {
       const payload = {
         account: value,
         status: 3,
-        pnl_code: localStorage.getItem('companyCode')
+        //pnl_code: localStorage.getItem('companyCode')
       }
 
       axios.post(`${process.env.REACT_APP_REQUEST_URL}user/employee/search`, payload, config)
@@ -216,7 +216,7 @@ class ApproverComponent extends React.Component {
               onInputChange={this.onInputChange.bind(this)}
               name="approver"
               onChange={approver => this.handleSelectChange('approver', approver)}
-              value={this.state.approver && this.state.approver.label ? this.state.approver : {}}
+              value={this.state.approver && this.state.approver.label ? this.state.approver : null}
               placeholder={t('Search') + '...'}
               key="approver"
               options={this.state.users}
