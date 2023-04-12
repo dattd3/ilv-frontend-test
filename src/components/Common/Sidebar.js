@@ -44,7 +44,6 @@ class RouterLink extends React.Component {
           toggleSubMenu,
           children,
       } = this.props;
-  
       return (
         hasSubMenu || externalLink
         ? children[0].props.className.indexOf('has-tooltip') > 0 ? (
@@ -202,7 +201,6 @@ function SideBar(props) {
                 LinkComponent={withRouter(RouterLink)}
               />
     }, isUpdate);
-
     return (
         <>
             <div style={{position: 'fixed'}}>

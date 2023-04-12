@@ -1713,5 +1713,10 @@
   "salary_keeped": "Salary on hold",
   "salary_paid": "Paid",
   "attachment": "Attachment",
-  "ReasonRequired": "Please Enter Reason"
+  "ReasonRequired": "Please Enter Reason",
+  "timekeeping_history": "Timekeeping History",
+  "NotificationGuide1": "Instructions to receive Notification from",
+  "NotificationGuide2": "Click on",
+  "NotificationGuide3": "in address bar",
+  "NotificationGuide4": "On \"Notification\" click \"Allow\""
 }

@@ -1235,9 +1235,11 @@ span.badge-notification[data-badge]::after {
     padding: 0;
   }
   & > button {
-    padding: 5px 10px;
-    border-radius: 0;
-    font-size: 0.8rem;
+    height: 34px;
+    border-radius: 8px;
+    width: 34px;
+    border: 1px solid #707070;
+    padding: 0;
     &:hover {
       background-color: #347EF9;
       border-color: transparent;
@@ -4166,5 +4168,95 @@ span.badge-notification[data-badge]::after {
               }
           }
       }
+  }
+}
+
+.noti-guide-dialog-modal {
+  margin-top: 20px;
+  margin-left: 60px;
+}
+
+.noti-guide-modal {
+  // height: 153px;
+  // width: 370px;
+  text-align: center;
+  .modal-body {
+    border-radius: 4px;
+    padding-top: 12px;
+    padding-bottom: 0px;
+    max-width: 390px;
+    background: url("./assets/img/noti-guide-popup-background.png");
+    background-repeat: round;
+  }
+  .image-inline {
+    display: inline;
+  }
+  .close-icon {
+    cursor: pointer;
+    position: absolute;
+    right: -8px;
+    top: -10px;
+  }
+  .tile {
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 20px;
+    text-align: center;
+    margin-bottom: 15px;
+  }
+  .guide-text {
+    display: flex;
+    align-items: flex-start;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 17px;
+    margin-bottom: 20px;
+  }
+}
+
+.custom-notification-toast {
+  box-shadow: 0px 0px 4px 0px #00000040;
+  z-index: 999999;
+  .toast-header {
+    position: relative;
+    margin: 16px 20px;
+    padding: 0px;
+    padding-bottom: 16px;
+    text-transform: uppercase;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: #000000;
+    border-bottom: 1px solid #CED4DA;
+    .close {
+      cursor: pointer;
+      position: absolute;
+      top: -8px;
+      right: -8px;
+    }
+  }
+  .toast-body {
+    padding: 0px 20px 16px 20px;
+  }
+  .content-title {
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 17px;
+  }
+  .content {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 17px;
+    margin-bottom: 14px;
+  }
+  .details-link {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 17px;
+    color: #D13238;
+    cursor: pointer;
+  }
+  .details-link:hover {
+    text-decoration: none;
   }
 }
