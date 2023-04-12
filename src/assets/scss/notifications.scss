@@ -1,24 +1,41 @@
 .notification-guide {
-    margin-right: 5px !important;
+    // margin-right: 5px !important;
 
     .guide-icon {
         margin-bottom: 4px;
     }
 
     .list-notification-popup {
-        right: -5px !important;
-        min-height: 300px;
-
-        .all-items {
-            text-align: center;
-            max-height: 500px !important;
-            .guide-image {
-                border: 1px solid rgba(0,0,0,0.3);
-            }
-            .guide-link {
-                display: block;
-                margin: 10px 0;
-            }
+        right: -200px !important;
+        min-height: 233px;
+        padding: 20px !important;
+        position: absolute;
+        box-shadow: 0px 0px 4px 0px #00000040 !important;
+        .timekeeping-title-block {
+          padding-bottom: 16px;
+          // padding: 16px 0px;
+          // margin: 0px 20px;
+          border-bottom: 1px solid #CED4DA;
+          font-size: 16px;
+          font-weight: 700;
+          line-height: 20px;
+          position: relative;
+          .close-icon {
+            position: absolute;
+            cursor: pointer;
+            top: -12px;
+            right: -12px;
+          }
+        }
+        .details-link {
+          font-size: 14px;
+          font-weight: 400;
+          line-height: 17px;
+          color: #D13238;
+          cursor: pointer;
+        }
+        .details-link:hover {
+          text-decoration: none;
         }
     }
 }
@@ -27,7 +44,7 @@
     display: inline-block;
     margin-left: 0;
     position: relative;
-    margin-right: 20px;
+    // margin-right: 20px;
     .dropdown-toggle {
         background: none;
         border: none;

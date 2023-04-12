@@ -1,20 +1,36 @@
-import React, { Suspense } from "react";
+import React, { Suspense, useEffect } from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
-// import { CookiesProvider } from 'react-cookie';
-import { FirebaseMessageListener } from '../../commons/Firebase';
+import { FirebaseMessageListener } from "../../commons/Firebase";
+import { Image } from "react-bootstrap";
 import { GuardianRouter } from "../../modules";
 import routes, { RouteSettings } from "../routes.config";
-import Maintenance from "../Maintenance";
 import ContextProviders from "./providers";
-import '../../assets/scss/sb-admin-2.scss';
-import LoadingModal from '../../components/Common/LoadingModal';
-import {Toast} from 'react-bootstrap';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import "../../assets/scss/sb-admin-2.scss";
+import LoadingModal from "../../components/Common/LoadingModal";
+import { Toast } from "react-bootstrap";
+import "bootstrap/dist/css/bootstrap.min.css";
 import { ToastContainer } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
+import RedArrowIcon from "assets/img/icon/red-arrow-right.svg";
+import "react-toastify/dist/ReactToastify.css";
+import CloseIcon from "assets/img/icon/icon_x.svg";
+import Constants from "commons/Constants";
 
-const listUsersIgnoreMaintenanceMode = ['cuongnv56@vingroup.net', 'vuongvt2@vingroup.net', 'thuypx2@vingroup.net', 'chiennd4@vingroup.net', 'datth3@vingroup.net']
-const currentUserLogged = localStorage.getItem('email')
+const listUsersIgnoreMaintenanceMode = [
+  "cuongnv56@vingroup.net",
+  "vuongvt2@vingroup.net",
+  "thuypx2@vingroup.net",
+  "chiennd4@vingroup.net",
+  "datth3@vingroup.net",
+];
+const currentUserLogged = localStorage.getItem("email");
+
+const INIT_NOTIFICATION_STATE = {
+  isShow: false,
+  toastTitle: "",
+  title: "",
+  body: "",
+  redirectLink: "",
+};
 
 function Root() {
   // AWS SDK & AWS Amplity Configuration
@@ -35,17 +51,45 @@ function Root() {
   //   }
   // });
 
-  const [notification, setNotification] = React.useState({ isShow: false, title: 'Title click here title click here title click here', body: 'description click here description click here description click here description click here' });
+  const [notification, setNotification] = React.useState(
+    INIT_NOTIFICATION_STATE
+  );
+  const isVietnamese = localStorage.getItem("locale") === Constants.LANGUAGE_VI;
+
 
   FirebaseMessageListener()
     .then((payload) => {
-        setNotification({
+      let toastTitle = isVietnamese ? "Thông báo nội bộ" : "Announcement";
+      let redirectLink = "";
+      let title = ""
+      if (["IN", "OUT"].includes(payload.data?.detailType)) {
+        toastTitle = isVietnamese ? "Lịch sử chấm công" : "Timekeeping History";
+        title = payload.notification.title
+        redirectLink = "/timekeeping-history";
+      } else {
+        switch (payload.data?.detailType) {
+          case "REQUEST":
+            redirectLink = "/tasks";
+            break;
+          case "APPRAISAL":
+            redirectLink = "/tasks?tab=consent";
+            break;
+          case "APPROVAL":
+            redirectLink = "/tab=approval";
+            break;
+          default:
+            break;
+        }
+      }
+      setNotification({
         isShow: true,
-        title: payload.notification.title,
+        toastTitle,
+        title,
         body: payload.notification.body,
-      })
+        redirectLink,
+      });
     })
-    .catch((err) => console.log('receive message fail: ', err));
+    .catch((err) => console.log("receive message fail: ", err));
 
   return (
     <>
@@ -75,27 +119,43 @@ function Root() {
           </Switch>
           {/* } */}
         </BrowserRouter>
+        <Toast
+          onClose={() =>
+            setNotification(INIT_NOTIFICATION_STATE)
+          }
+          show={notification.isShow}
+          delay={5000}
+          autohide
+          animation
+          style={{
+            position: "absolute",
+            top: 50,
+            right: 25,
+            minWidth: 400,
+            background: "#fff",
+          }}
+          className="custom-notification-toast"
+        >
+          <div className="toast-header">
+            <span>{notification.toastTitle}</span>
+            <Image
+              onClick={() => setNotification(INIT_NOTIFICATION_STATE)}
+              className="close"
+              alt="details notification"
+              src={CloseIcon}
+            />
+          </div>
+          <Toast.Body>
+            <div className="content-title">{notification.title}</div>
+            <div className="content">{notification.body}</div>
+            <a href={notification.redirectLink} className="details-link">
+              {isVietnamese ? "Xem chi tiết" : "Details"} &nbsp;
+              <Image alt="details notification" src={RedArrowIcon} />
+            </a>
+          </Toast.Body>
+        </Toast>
+        <ToastContainer />
       </ContextProviders>
-
-      <Toast
-        onClose={() => setNotification({ ...notification, isShow: false })}
-        show={notification.isShow}
-        delay={3000}
-        autohide
-        animation
-        style={{
-          position: 'absolute',
-          bottom: 10,
-          right: 10,
-          minWidth: 300,
-        }}
-      >
-        <Toast.Header>
-          <strong className="mr-auto">{notification.title}</strong>
-        </Toast.Header>
-        <Toast.Body>{notification.body}</Toast.Body>
-      </Toast>
-      <ToastContainer />
     </>
   );
 }

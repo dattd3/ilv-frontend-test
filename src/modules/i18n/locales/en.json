@@ -204,8 +204,6 @@
   "Amountaward": "Amount",
   "Amountpenalty": "Amount",
   "Announcement": "Announcement",
-  "AnnouncementGuide": "Guideline to open announcement permission",
-  "ViewAnnouncementGuide": "View Guideline",
   "AnnouncementInternal": "Announcement",
   "AnnualLeaveYear": "Annual Leave",
   "AnnualLeaveDays": "Annual Leave (Days)",
@@ -1701,5 +1699,10 @@
   "resign_error_seniorExecutive": "Please select Senior executive!",
   "resign_error_permission": "Staffs not under your management",
   "select_to_export": "Please choose data record need to export",
-  "select_to_save": "Please choose data record need to save"
+  "select_to_save": "Please choose data record need to save",
+  "timekeeping_history": "Timekeeping History",
+  "NotificationGuide1": "Instructions to receive Notification from",
+  "NotificationGuide2": "Click on",
+  "NotificationGuide3": "in address bar",
+  "NotificationGuide4": "On \"Notification\" click \"Allow\""
 }
