@@ -29,6 +29,7 @@ import ContractEvaluationdetail from './detail'
 import HOCComponent from '../../../components/Common/HOCComponent'
 import SalaryModal from './SalaryModal'
 import ConfirmationModal from '../ConfirmationModal'
+import SearchHREvaluationComponent from './SearchHREvaluationComponent'
 
 const TIME_FORMAT = 'HH:mm'
 const DATE_FORMAT = 'DD/MM/YYYY'
@@ -37,6 +38,7 @@ const TIME_OF_SAP_FORMAT = 'HHmm00'
 const FULL_DAY = true
 const GROUP_EMAIL_EXTENSION = '@vingroup.net'
 
+const IS_VINFAST = checkIsExactPnL(Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading);
 class LeaveOfAbsenceDetailComponent extends React.Component {
 
   HD_THUVIEC = 2;
@@ -160,7 +162,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     const currentEmployeeNo = localStorage.getItem('email');
     const currentEmployeeCode = localStorage.getItem('employeeNo');
     const data = this.state.data;
-    const dateToCheck = data.contractType == 'VA' ? (checkVersionPnLSameAsVinhome(Constants.MODULE.DANHGIA_TAIKI) ? -75 : -45) : -7; 
+    const dateToCheck = data.contractType == 'VA' ? (checkVersionPnLSameAsVinhome(Constants.MODULE.DANHGIA_TAIKI) ? -75 : -45) : (checkIsExactPnL(Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading) ? -14 : -7); 
     const isAfterT_7 = data.employeeInfo && data.employeeInfo.startDate && moment(new Date()).diff(moment(data.employeeInfo.expireDate), 'days') > dateToCheck ? true : false;
     let shouldDisable = false;
     let isNguoidanhgia = false;
@@ -183,6 +185,11 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
           shouldDisable = true;
         }
         break;
+      case 12:
+        if(IS_VINFAST){
+          shouldDisable = true;
+        }
+        break;
       case 13: 
         if((this.state.type != 'approval') || (!data.nguoipheduyet || !data.nguoipheduyet.account || (data.nguoipheduyet.account.toLowerCase()  + '@vingroup.net') != currentEmployeeNo.toLowerCase())){
           shouldDisable = true;
@@ -195,7 +202,11 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
       default:
         shouldDisable = true;
     }
-    if(this.state.type == 'edit' && data.processStatus == 9 && data.canAddJob && !isAfterT_7 ){
+    let canAddJob = !isAfterT_7; //data.canAddJob && !isAfterT_7
+    if(checkIsExactPnL(Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading)) {
+      canAddJob = true//data.canAddJob;
+    }
+    if(this.state.type == 'edit' && data.processStatus == 9 && canAddJob ){
       const subordinates = await this.getSubordinates()
       const directManagerValidation = this.validateDirectManager( data.employeeInfo.employeeNo, subordinates)
       shouldDisable = directManagerValidation ? false : true;
@@ -268,6 +279,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         ],
         documentStatus: '',
         nguoidanhgia: {},
+        hrAppraiser: {},
         qltt: {},
         nguoipheduyet: {},
         qlttOpinion: {
@@ -331,8 +343,9 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     }
   
     if(type === 'request'){
+      let _showComponent = {...this.employeeSetting.showComponent, JobEditing: checkIsExactPnL(Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading) ? false : this.employeeSetting.showComponent.JobEditing}
       this.setState({
-        showComponent: this.employeeSetting.showComponent,
+        showComponent: _showComponent,
         disableComponent: {...this.employeeSetting.disableComponent, disableAll: true},
         type: 'request',
         id: id,
@@ -371,7 +384,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     }
     //http://localhost:5000/StaffContract/getManageEvaluation?idDisplay=117404.1
     //axios.get(`${process.env.REACT_APP_REQUEST_URL}StaffContract/infoevaluation?idDisplay=${id}&employeeCode=${localStorage.getItem('employeeNo')}&regionId=${localStorage.getItem('organizationLv4')}&rankId=${localStorage.getItem('employeeLevel')}&org=${localStorage.getItem('organizationLv3')}`, config)
-    let url = `${process.env.REACT_APP_REQUEST_URL}StaffContract/infoevaluation?idDisplay=${id}&employeeCode=${localStorage.getItem('employeeNo')}&regionId=${localStorage.getItem('organizationLv4')}&rankId=${localStorage.getItem('employeeLevel')}&org=${localStorage.getItem('organizationLv3')}&orgLv02=${localStorage.getItem('organizationLv2')}&orgLv05=${localStorage.getItem('organizationLv5') == '#' ? null : localStorage.getItem('organizationLv5')}`;
+    let url = `${process.env.REACT_APP_REQUEST_URL}StaffContract/infoevaluation?culture=${this.props.t('langCode')}&idDisplay=${id}&employeeCode=${localStorage.getItem('employeeNo')}&regionId=${localStorage.getItem('organizationLv4')}&rankId=${localStorage.getItem('employeeLevel')}&org=${localStorage.getItem('organizationLv3')}&orgLv02=${localStorage.getItem('organizationLv2')}&orgLv05=${localStorage.getItem('organizationLv5') == '#' ? null : localStorage.getItem('organizationLv5')}`;
     
     if(type == 'assess' || type == 'approval' || type == 'salary'){
       url = `${process.env.REACT_APP_REQUEST_URL}StaffContract/getManageEvaluation?idDisplay=${id}`
@@ -383,6 +396,9 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         if (result.code != Constants.API_ERROR_CODE) {
           const responseData = this.saveStateInfos(res.data.data);
           this.setState({data : responseData}, () => {
+            if (IS_VINFAST && responseData.processStatus == 9 && !responseData.nguoidanhgia?.account) {
+              this.setDirectManagerAppraise();
+            }
             this.getDataSalary();
             this.checkAuthorize();
           });
@@ -395,6 +411,35 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
       
     })
     
+  }
+
+  setDirectManagerAppraise = async () => {
+    try {
+      const config = getMuleSoftHeaderConfigurations();
+      const response = await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/manager`, config);
+      if (response && response.data) {
+        const result = response.data.result;
+        if (result && result.code == Constants.API_SUCCESS_CODE) {
+          const data = response.data?.data[0];
+          if (data) {
+            const appraiserOption =  {
+              value: data?.userid?.toLowerCase() || "",
+              label: data?.fullname || data?.fullName,
+              fullname: data?.fullname || data?.fullName,
+              avatar: null,
+              employeeLevel: data?.rank_title,
+              pnl: localStorage.getItem("company"),
+              orglv2Id: "",
+              account: data?.userid?.toLowerCase() || "",
+              current_position: data?.title || "",
+              department: data.division + (data.department ? '/' + data.department : '') + (data.part ? '/' + data.part : '')
+            }
+            this.updateApprover('nguoidanhgia', appraiserOption, true);
+          }
+        }
+      }
+    } catch (e) {
+    }
   }
 
   getDataSalary = async () => {
@@ -473,6 +518,8 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
       ...(remoteData.requestHistorys || {}),
       appraiserInfo: data.nguoidanhgia, //data.nguoipheduyet.account.toLowerCase()  + '@vingroup.net'
       appraiserId: data.nguoidanhgia?.account ? data.nguoidanhgia.account.toLowerCase()  + '@vingroup.net' : '',
+      hrAppraiserInfo: data.hrAppraiser,
+      hrAppraiserId: data.hrAppraiser?.account ? data.hrAppraiser.account.toLowerCase()  + '@vingroup.net' : '',
       supervisorInfo: data.qltt, 
       supervisorId: data.qltt?.account ? data.qltt.account.toLowerCase()  + '@vingroup.net' : '',
       approverInfo: data.nguoipheduyet,
@@ -628,6 +675,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
       candidateInfos.approvalDate = infos.requestHistorys.approvalDate && infos.requestHistorys.approvalDate != '0001-01-01T00:00:00' ? infos.requestHistorys.approvalDate : null;
       candidateInfos.processStatus = infos.requestHistorys.processStatusId;
       candidateInfos.nguoidanhgia = infos.requestHistorys.appraiserInfo && infos.requestHistorys.appraiserInfo.account ?  infos.requestHistorys.appraiserInfo : {};
+      candidateInfos.hrAppraiser = infos.requestHistorys.hrAppraiserInfo && infos.requestHistorys.hrAppraiserInfo.account ?  infos.requestHistorys.hrAppraiserInfo : {};
       candidateInfos.hasnguoidanhgia = infos.requestHistorys.appraiserInfo && infos.requestHistorys.appraiserInfo.account ? true : false;
       candidateInfos.qltt = infos.requestHistorys.supervisorInfo && infos.requestHistorys.supervisorInfo.account ?  infos.requestHistorys.supervisorInfo : {};
       candidateInfos.nguoipheduyet = infos.requestHistorys.approverInfo && infos.requestHistorys.approverInfo.account ? infos.requestHistorys.approverInfo : {}; 
@@ -702,6 +750,9 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
           errors['rating'] = t('require_fill_evaluation_content')
         } else if(isMissing)
           errors['rating'] = t('require_fill_self_evaluation')
+      }
+      if (IS_VINFAST && !this.state.data.hrAppraiser?.account) {
+        errors["hrAppraiser"] = t('Required');
       }
       if(checkVersionPnLSameAsVinhome(Constants.MODULE.DANHGIA_TAIKI)) {
         if(!this.state.data.nguoidanhgia || !this.state.data.nguoidanhgia.account) {
@@ -1312,11 +1363,18 @@ renderEvalution = (name, data, isDisable) => {
   }
 
   checkShowApprovalComment = (data) => {
+    if (IS_VINFAST) {
+      return data.processStatus == 12;
+    }
     if(checkVersionPnLSameAsVinhome(Constants.MODULE.DANHGIA_TAIKI)) {
       return data.processStatus == 11 || (data.processStatus == 10 && !data.qltt.account);
     } else {
       return data.processStatus == 11;
     }
+  }
+
+  checkShowHrAppraiserComment = (data) => {
+      return data.processStatus == 11 || (data.processStatus == 10 && !data.qltt.account);
   }
 
   onHideModalConfirm = () => {
@@ -1469,7 +1527,7 @@ renderEvalution = (name, data, isDisable) => {
         <h5>{t('assessment_informations')}</h5>
         <div className="box shadow cbnv">
           <div className="row description">
-            <div className="col-3 title">
+            <div className="col-3">
              {t('assessment_scale')}
             </div>
             <div className="col-9">
@@ -1792,6 +1850,23 @@ renderEvalution = (name, data, isDisable) => {
               <ApproverComponent comment={this.checkShowQlttComment(data) && comment ? comment : null} isEdit={disableComponent.disableAll || !disableComponent.employeeSide} approver={data.qltt}  updateApprover={(approver, isApprover) => this.updateApprover('qltt', approver,isApprover )} />
               {this.state.errors && this.state.errors['qltt'] ? <p className="text-danger">{this.state.errors['qltt']}</p> : null}
             </div>
+
+            {
+              IS_VINFAST && <div className="box shadow cbnv">
+                <div className="row approve">
+                  <div className="col-12">
+                    <span className="title">{t('hr_review')}</span>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-12">
+                  <div  style={{height: '2px', backgroundColor: '#F2F2F2', margin: '15px 0'}}></div>
+                  </div>
+                </div>
+                <SearchHREvaluationComponent comment={this.checkShowHrAppraiserComment(data) && comment ? comment : null}  isEdit={disableComponent.disableAll || !disableComponent.employeeSide} approver={data.hrAppraiser}  updateApprover={(approver, isApprover) => this.updateApprover('hrAppraiser', approver,isApprover )} />
+                {this.state.errors && this.state.errors['hrAppraiser'] ? <p className="text-danger">{this.state.errors['hrAppraiser']}</p> : null}
+              </div>
+            }
           </> : 
           this.state.isNguoidanhgia ? 
           <>
@@ -1891,7 +1966,22 @@ renderEvalution = (name, data, isDisable) => {
               <ApproverComponent comment={this.checkShowQlttComment(data) && comment ? comment : null} isEdit={disableComponent.disableAll || !disableComponent.employeeSide} approver={data.qltt}  updateApprover={(approver, isApprover) => this.updateApprover('qltt', approver,isApprover )} />
               {this.state.errors && this.state.errors['qltt'] ? <p className="text-danger">{this.state.errors['qltt']}</p> : null}
             </div>
-            
+            {
+                IS_VINFAST && <div className="box shadow cbnv">
+                  <div className="row approve">
+                    <div className="col-12">
+                      <span className="title">{t('hr_review')}</span>
+                    </div>
+                  </div>
+                  <div className="row">
+                    <div className="col-12">
+                    <div  style={{height: '2px', backgroundColor: '#F2F2F2', margin: '15px 0'}}></div>
+                    </div>
+                  </div>
+                  <SearchHREvaluationComponent comment={this.checkShowHrAppraiserComment(data) && comment ? comment : null}  isEdit={disableComponent.disableAll || !disableComponent.employeeSide} approver={data.hrAppraiser}  updateApprover={(approver, isApprover) => this.updateApprover('hrAppraiser', approver,isApprover )} />
+                  {this.state.errors && this.state.errors['hrAppraiser'] ? <p className="text-danger">{this.state.errors['hrAppraiser']}</p> : null}
+                </div>
+            }
             {
               checkVersionPnLSameAsVinhome(Constants.MODULE.DANHGIA_TAIKI) ?
               <div className="box shadow cbnv">
@@ -2025,6 +2115,23 @@ renderEvalution = (name, data, isDisable) => {
             {
               showComponent.bossSide ? 
               null :
+              <>
+              {
+                IS_VINFAST && <div className="box shadow cbnv">
+                  <div className="row approve">
+                    <div className="col-12">
+                      <span className="title">{t('hr_review')}</span>
+                    </div>
+                  </div>
+                  <div className="row">
+                    <div className="col-12">
+                    <div  style={{height: '2px', backgroundColor: '#F2F2F2', margin: '15px 0'}}></div>
+                    </div>
+                  </div>
+                  <SearchHREvaluationComponent comment={this.checkShowHrAppraiserComment(data) && comment ? comment : null}  isEdit={disableComponent.disableAll || !disableComponent.employeeSide} approver={data.hrAppraiser}  updateApprover={(approver, isApprover) => this.updateApprover('hrAppraiser', approver,isApprover )} />
+                  {this.state.errors && this.state.errors['hrAppraiser'] ? <p className="text-danger">{this.state.errors['hrAppraiser']}</p> : null}
+                </div>
+              }
               <div className="box shadow cbnv">
             
               <div className="row approve">
@@ -2040,6 +2147,7 @@ renderEvalution = (name, data, isDisable) => {
               <ApproverComponent approvalDate = {data.approvalDate && data.processStatus == 2 ? data.approvalDate : null} comment={this.checkShowApprovalComment(data) && comment ? comment : null} isEdit={disableComponent.disableAll || !disableComponent.qlttSide} approver={data.nguoipheduyet}  updateApprover={(approver, isApprover) => this.updateApprover('nguoipheduyet', approver,isApprover )} />
               {this.state.errors && this.state.errors['boss'] ? <p className="text-danger">{this.state.errors['boss']}</p> : null}
             </div>
+            </>
             }
             
           </>
