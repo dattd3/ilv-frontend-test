@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useGuardStore } from '../../modules';
-import { Navbar, Form, InputGroup, Button, FormControl, Dropdown, Modal } from 'react-bootstrap';
+import { Navbar, Form, InputGroup, Button, FormControl, Dropdown, Image } from 'react-bootstrap';
 import { useTranslation } from "react-i18next";
 import { useApi, useFetcher } from "../../modules";
 import axios from 'axios'
@@ -8,9 +8,12 @@ import moment from 'moment';
 import Constants from "../../commons/Constants"
 import { Animated } from "react-animated-css";
 import { useLocalizeStore } from '../../modules';
-import uploadAvatarIcon from '../../assets/img/icon/camera-sm.svg'
+import CheckinNotificationIcon from '../../assets/img/icon/ic-checkin-noti.svg';
 import UploadAvatar from '../../containers/UploadAvatar'
 import { getCurrentLanguage, getRequestConfigurations } from "../../commons/Utils"
+import TimeKeepingList from "containers/TimeKeepingHistory/TimeKeepingList";
+import RedArrowIcon from 'assets/img/icon/red-arrow-right.svg';
+import CloseIcon from 'assets/img/icon/icon_x.svg';
 
 const usePreload = (params) => {
     const api = useApi();
@@ -27,6 +30,8 @@ const getOrganizationLevelByRawLevel = level => {
 }
 
 const currentLocale = localStorage.getItem("locale")
+const timeKeepingHistoryEndpoint = `${process.env.REACT_APP_REQUEST_URL}notifications/in/out/list`;
+const APIConfig = getRequestConfigurations();
 
 function Header(props) {
     const localizeStore = useLocalizeStore();
@@ -37,8 +42,20 @@ function Header(props) {
     const [totalNotificationUnRead, setTotalNotificationUnRead] = useState("");
     const [totalNotificationCount, setTotalNotificationCount] = useState(0);
     const [isShowUploadAvatar, setIsShowUploadAvatar]= useState(false);
+    const [latestTimekeeping, setLatestTimeKeeping]= useState(null);
+    const [checkinOutNoti, setCheckinOutNoti] = useState(false);
+
+    useEffect(() => {
+      localizeStore.setLocale(activeLang || Constants.LANGUAGE_VI)
+    }, [activeLang, localizeStore]);
+
+    useEffect(() => {
+      fetchLatestTimeKeeping();
+    }, []);
+
     const guard = useGuardStore();
     const { t } = useTranslation();
+    const lang = localStorage.getItem("locale");
 
     let lastNotificationIdSeen = 0;
     let dataNotificationsUnRead = "";
@@ -202,14 +219,26 @@ function Header(props) {
         }
     }
 
-    const userLogOut = () => {
+    const userLogOut = async () => {
+        axios.post(
+          `${process.env.REACT_APP_REQUEST_URL}device/logoutToken`,
+          {
+            deviceToken: localStorage.getItem('firebaseToken') || '',
+            companyCode: localStorage.getItem('companyCode'),
+            orgLv3: localStorage.getItem('organizationLv3'),
+            orgLv4: localStorage.getItem('organizationLv4'),
+            orgLv5: localStorage.getItem('organizationLv5'),
+            platform: 'Web',
+          },
+          getRequestConfigurations()
+        );
         try {
-            guard.setLogOut();
-            window.location.href = process.env.REACT_APP_AWS_COGNITO_IDP_SIGNOUT_URL;
-            // Auth.signOut({ global: true });
+          guard.setLogOut();
+          window.location.href = process.env.REACT_APP_AWS_COGNITO_IDP_SIGNOUT_URL;
+          // Auth.signOut({ global: true });
         } catch {
-            guard.setLogOut();
-            window.location.reload();
+          guard.setLogOut();
+          window.location.reload();
         }
     }
 
@@ -269,17 +298,25 @@ function Header(props) {
         return false
     }
 
-    const openUploadAvatarPopup = () => {
-        setIsShowUploadAvatar(true);
-    }
-
     const onHideUploadAvatar = () => {
         setIsShowUploadAvatar(false);
     }
-
-    useEffect(() => {
-        localizeStore.setLocale(activeLang || Constants.LANGUAGE_VI)
-    }, [activeLang, localizeStore]);
+  
+    const fetchLatestTimeKeeping = async () => {
+      try {
+        const response = await axios.get(timeKeepingHistoryEndpoint, {
+          params: {
+            companyCode: localStorage.getItem("companyCode"),
+            culture: lang === "vi-VN" ? "vi" : "en",
+            page: 1,
+            pageSize: 1,
+          },
+          ...APIConfig,
+        });
+        setLatestTimeKeeping(response.data?.data?.notifications);
+      } catch (error) {}
+    };
+  
 
     return (
         isApp ? null :
@@ -295,26 +332,70 @@ function Header(props) {
                             <FormControl className="bg-light border-0" placeholder={t("SearchTextPlaceholder")} aria-label="Search" aria-describedby="basic-addon1" />
                         </InputGroup>
                     </Form>
-                    <Dropdown id="notifications-block" onToggle={(isOpen) => OnClickBellFn(isOpen)}>
-                        <Animated animationIn="lightSpeedIn" isVisible={dataNotificationsUnRead != ""} animationOutDuration={10} >
-                            <Dropdown.Toggle>
-                                <span className="notifications-block">
-                                    <i className="far fa-bell ic-customize"></i>
-                                    {totalNotificationUnRead != "" ? <span className="count">{totalNotificationUnRead}</span> : ""}
-                                </span>
-                            </Dropdown.Toggle>
-                        </Animated>
-                        {dataNotificationsUnRead != "" ?
-                            <Dropdown.Menu className="list-notification-popup">
-                                <div className="title-block text-center">{t("AnnouncementInternal")}</div>
-                                <div className="all-items">
-                                    {dataNotificationsUnRead}
-                                </div>
-                                {/* <a href="/notifications-unread" title="Xem tất cả" className="view-all">Xem tất cả</a> */}
-                            </Dropdown.Menu>
-                            : null
-                        }
-                    </Dropdown>
+                    <div>
+                      <Dropdown id="notifications-block" 
+                        className="notification-guide" 
+                        show={checkinOutNoti} 
+                        onToggle={() => setCheckinOutNoti(!checkinOutNoti)}
+                      >
+                          <Animated animationIn="lightSpeedIn" animationOutDuration={10}>
+                              <Dropdown.Toggle>
+                                  <Image
+                                  className="guide-icon"
+                                  alt="checkin notification"
+                                  src={CheckinNotificationIcon}
+                                  />
+                              </Dropdown.Toggle>
+                          </Animated>
+                          <Dropdown.Menu className="list-notification-popup">
+                              <div className="timekeeping-title-block">
+                                  {t('timekeeping_history')}
+                                  <Image
+                                    onClick={() => setCheckinOutNoti(false)}
+                                    className="close-icon"
+                                    alt="details notification"
+                                    src={CloseIcon}
+                                  />
+                              </div>
+                              <br />
+                              {
+                                latestTimekeeping?.length > 0 && <>
+                                  <TimeKeepingList apiResponseData={latestTimekeeping} />
+                                  <br />
+                                  <a href={"/timekeeping-history"} className="details-link">
+                                      {t("Details")} &nbsp;
+                                      <Image
+                                        // className="guide-icon"
+                                        alt="details notification"
+                                        src={RedArrowIcon}
+                                      />
+                                  </a>
+                                </>
+                              }
+                              
+                          </Dropdown.Menu>
+                      </Dropdown>
+                      <Dropdown id="notifications-block" onToggle={(isOpen) => OnClickBellFn(isOpen)}>
+                          <Animated animationIn="lightSpeedIn" isVisible={dataNotificationsUnRead != ""} animationOutDuration={10} >
+                              <Dropdown.Toggle>
+                                  <span className="notifications-block">
+                                      <i className="far fa-bell ic-customize"></i>
+                                      {totalNotificationUnRead != "" ? <span className="count">{totalNotificationUnRead}</span> : ""}
+                                  </span>
+                              </Dropdown.Toggle>
+                          </Animated>
+                          {dataNotificationsUnRead != "" ?
+                              <Dropdown.Menu className="list-notification-popup">
+                                  <div className="title-block text-center">{t("AnnouncementInternal")}</div>
+                                  <div className="all-items">
+                                      {dataNotificationsUnRead}
+                                  </div>
+                                  {/* <a href="/notifications-unread" title="Xem tất cả" className="view-all">Xem tất cả</a> */}
+                              </Dropdown.Menu>
+                              : null
+                          }
+                      </Dropdown>
+                    </div>
                     <Dropdown>
                         <div className='mr-2 small text-right username'>
                             <Dropdown.Toggle variant="light" className='text-right dropdown-menu-right user-infor-header user-info-margin'>

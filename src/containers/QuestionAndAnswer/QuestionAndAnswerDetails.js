@@ -1,15 +1,14 @@
-import React, { useState } from "react";
+import React from "react";
 import axios from 'axios'
 import Carousel from 'react-bootstrap/Carousel'
 import SubmitQuestionModal from './SubmitQuestionModal'
 import HistoryModal from './HistoryModal'
-import { Container, Row, Col, Tabs, Tab, Form, Button } from 'react-bootstrap';
+import { Container, Button } from 'react-bootstrap';
 import StatusModal from '../../components/Common/StatusModal'
 import FormControl from 'react-bootstrap/FormControl'
 import ConfirmModal from './ConfirmModal'
 import SelectSupporterModal from './SelectSupporterModal'
 import defaultAvartar from '../../components/Common/DefaultAvartar'
-import Constants from '../../commons/Constants';
 import { withTranslation } from 'react-i18next';
 import HOCComponent from '../../components/Common/HOCComponent'
 
@@ -29,7 +28,8 @@ class QuestionAndAnswerDetails extends React.Component {
       isEditQuestion: false,
       comment: "",
       isShowCommentEditor: false,
-      isShowSelectSupporterModal: false
+      isShowSelectSupporterModal: false,
+      categories: []
     }
     this.submitSelectSupporterModal = this.submitSelectSupporterModal.bind(this)
   }
@@ -54,7 +54,20 @@ class QuestionAndAnswerDetails extends React.Component {
   }
 
   componentDidMount() {
+    const config = {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+      }
+    }
+    
+    axios.get(`${process.env.REACT_APP_REQUEST_URL}ticket/categories/${localStorage.getItem("companyCode")}`, config)
+    .then(res => {
+      if (res && res?.data && res?.data?.data) {
+        this.setState({ categories: res?.data?.data || [] })
+      }
+    }).catch(error => {
 
+    })
   }
 
   showSubmitModal(modalStatus, isEdit = false) {
@@ -240,7 +253,7 @@ class QuestionAndAnswerDetails extends React.Component {
   render() {
     const { t } = this.props
     const { isShowStatusModal, question, isShowConfirmModal, isShowSelectSupporterModal, content, isSuccess, isEditQuestion, 
-            questionContent, isShowSubmitQuestionModal, isShowHistoryModal, isShowCommentEditor, comment } = this.state
+            questionContent, isShowSubmitQuestionModal, isShowHistoryModal, isShowCommentEditor, comment, categories } = this.state
     const comments = question.ticketComments
 
     const reload = () => {
@@ -271,6 +284,7 @@ class QuestionAndAnswerDetails extends React.Component {
           <SubmitQuestionModal
             isEdit={isEditQuestion}
             editQuestion={questionContent}
+            categories={categories}
             show={isShowSubmitQuestionModal} onHide={() => this.showSubmitModal(false)} showStatusModal={this.showStatusModal.bind(this)} />
           <HistoryModal show={isShowHistoryModal} onHide={() => this.showHistoryModal(false)} onExiting={this.reload}
             showStatusModal={this.showStatusModal.bind(this)}
@@ -278,18 +292,12 @@ class QuestionAndAnswerDetails extends React.Component {
           />
           <div className="personal-info qna-detail-page">
             <div className="clearfix edit-button action-buttons mb-2">
-              <button type="button" className="btn btn-light float-left shadow pl-4 pr-4 ml-0" onClick={() => this.showSubmitModal(true)}>{t("CreateQuestions")}</button>
-              <button type="button" className="btn btn-light float-left shadow" onClick={() => this.showHistoryModal(true)}>{t("HistoryAnswer")}</button>
+              <span type="button" className="btn btn-light float-left shadow pl-4 pr-4 ml-0" onClick={() => this.showSubmitModal(true)}>{t("CreateQuestions")}</span>
+              <span type="button" className="btn btn-light float-left shadow" onClick={() => this.showHistoryModal(true)}>{t("HistoryAnswer")}</span>
             </div>
-            <div className="mb-2 mt-1">
+            <div className="wrap-header">
               <h1 className="content-page-header">{t("QuestionAndAnswer")}</h1>
-              {
-                question && isShowCommentEditor ?
-                  <div className="col-6 pull-right text-right">
-                    <Button variant="outline-primary pl-5 pr-5" onClick={() => this.showSelectSupporterModal(true)} >{t("EscalateToManagerOrHr")}</Button>
-                  </div>
-                  : null
-              }
+              { question && isShowCommentEditor && <Button variant="outline-primary pl-5 pr-5" onClick={() => this.showSelectSupporterModal(true)}>{t("EscalateToManagerOrHr")}</Button> }
             </div>
             <Container fluid className="info-tab-content shadow mb-4">
               <Carousel
