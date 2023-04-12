@@ -29,6 +29,7 @@ import ContractEvaluationdetail from './detail'
 import HOCComponent from '../../../components/Common/HOCComponent'
 import SalaryModal from './SalaryModal'
 import ConfirmationModal from '../ConfirmationModal'
+import SearchHREvaluationComponent from './SearchHREvaluationComponent'
 
 const TIME_FORMAT = 'HH:mm'
 const DATE_FORMAT = 'DD/MM/YYYY'
@@ -1862,7 +1863,7 @@ renderEvalution = (name, data, isDisable) => {
                   <div  style={{height: '2px', backgroundColor: '#F2F2F2', margin: '15px 0'}}></div>
                   </div>
                 </div>
-                <ApproverComponent comment={this.checkShowHrAppraiserComment(data) && comment ? comment : null}  isEdit={disableComponent.disableAll || !disableComponent.employeeSide} approver={data.hrAppraiser}  updateApprover={(approver, isApprover) => this.updateApprover('hrAppraiser', approver,isApprover )} />
+                <SearchHREvaluationComponent comment={this.checkShowHrAppraiserComment(data) && comment ? comment : null}  isEdit={disableComponent.disableAll || !disableComponent.employeeSide} approver={data.hrAppraiser}  updateApprover={(approver, isApprover) => this.updateApprover('hrAppraiser', approver,isApprover )} />
                 {this.state.errors && this.state.errors['hrAppraiser'] ? <p className="text-danger">{this.state.errors['hrAppraiser']}</p> : null}
               </div>
             }
@@ -1977,7 +1978,7 @@ renderEvalution = (name, data, isDisable) => {
                     <div  style={{height: '2px', backgroundColor: '#F2F2F2', margin: '15px 0'}}></div>
                     </div>
                   </div>
-                  <ApproverComponent comment={this.checkShowHrAppraiserComment(data) && comment ? comment : null}  isEdit={disableComponent.disableAll || !disableComponent.employeeSide} approver={data.hrAppraiser}  updateApprover={(approver, isApprover) => this.updateApprover('hrAppraiser', approver,isApprover )} />
+                  <SearchHREvaluationComponent comment={this.checkShowHrAppraiserComment(data) && comment ? comment : null}  isEdit={disableComponent.disableAll || !disableComponent.employeeSide} approver={data.hrAppraiser}  updateApprover={(approver, isApprover) => this.updateApprover('hrAppraiser', approver,isApprover )} />
                   {this.state.errors && this.state.errors['hrAppraiser'] ? <p className="text-danger">{this.state.errors['hrAppraiser']}</p> : null}
                 </div>
             }
@@ -2127,7 +2128,7 @@ renderEvalution = (name, data, isDisable) => {
                     <div  style={{height: '2px', backgroundColor: '#F2F2F2', margin: '15px 0'}}></div>
                     </div>
                   </div>
-                  <ApproverComponent comment={this.checkShowHrAppraiserComment(data) && comment ? comment : null}  isEdit={disableComponent.disableAll || !disableComponent.employeeSide} approver={data.hrAppraiser}  updateApprover={(approver, isApprover) => this.updateApprover('hrAppraiser', approver,isApprover )} />
+                  <SearchHREvaluationComponent comment={this.checkShowHrAppraiserComment(data) && comment ? comment : null}  isEdit={disableComponent.disableAll || !disableComponent.employeeSide} approver={data.hrAppraiser}  updateApprover={(approver, isApprover) => this.updateApprover('hrAppraiser', approver,isApprover )} />
                   {this.state.errors && this.state.errors['hrAppraiser'] ? <p className="text-danger">{this.state.errors['hrAppraiser']}</p> : null}
                 </div>
               }
