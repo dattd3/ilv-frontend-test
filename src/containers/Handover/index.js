@@ -317,6 +317,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     if(infos.userInfo){
       candidateInfos.employee = {
         employeeNo: infos.userInfo.employeeNo,
+        ad: infos.userInfo.email?.replace('@vingroup.net', ''),
         fullName: infos.userInfo.fullName,
         positionName: infos.userInfo.jobTitle,
         departmentName: infos.userInfo.department,
@@ -577,6 +578,17 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
               <div className="detail">{data.employee.fullName || ""}</div>
             </div>
             <div className="col-4">
+              {t("EmployeeNo")}
+              <div className="detail">{data.employee.employeeNo || ""}</div>
+            </div>
+            <div className="col-4">
+              {t('ADCode')}
+              <div className="detail">{data.employee.ad || ""}</div>
+            </div>
+            
+          </div>
+          <div className='row'>
+          <div className="col-4">
               {t("Title")}
               <div className="detail">{data.employee.positionName || ""}</div>
             </div>
@@ -584,12 +596,13 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
               {t('DepartmentManage')}
               <div className="detail">{data.employee.departmentName || ""}</div>
             </div>
-          </div>
-          <div className="row">
             <div className="col-4">
               {t('ContractSignDate')}
               <div className="detail">{data.employee.startDate ? moment(data.employee.startDate).format("DD/MM/YYYY") : '' }</div>
             </div>
+          </div>
+          <div className="row">
+            
             <div className="col-4">
               {t('ngay_cham_dut_hdld')}
               <div className="detail">{data.employee.expireDate }</div>
