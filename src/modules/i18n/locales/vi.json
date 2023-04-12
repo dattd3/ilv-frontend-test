@@ -1739,5 +1739,6 @@
   "salary_paid": "Đã trả",
   "attachment": "File đính kèm",
   "ReasonRequired": "Vui lòng nhập lý do",
-  "EmployeeHandbook": "Sổ tay CBNV"
+  "EmployeeHandbook": "Sổ tay CBNV",
+  "ContractSignDate": "Ngày ký hợp đồng"
 }
