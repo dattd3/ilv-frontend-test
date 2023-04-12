@@ -218,8 +218,6 @@
   "action": "Thao tác",
   "Amountpenalty": "Số tiền kỷ luật",
   "Announcement": "Thông báo",
-  "AnnouncementGuide": "Hướng dẫn mở quyền nhận thông báo",
-  "ViewAnnouncementGuide": "Xem hướng dẫn",
   "AnnouncementInternal": "Thông báo nội bộ",
   "AnnualLeaveYear": "Nghỉ phép năm",
   "AnnualLeaveDays": "Phép năm (Ngày)",
@@ -1718,5 +1716,10 @@
   "resign_error_seniorExecutive": "Vui lòng chọn CBLĐ phê duyệt!",
   "resign_error_permission": "Danh sách nhân viên đề xuất cho nghỉ không thuộc thẩm quyền của QLTT",
   "select_to_export": "Vui lòng chọn yêu cầu cần xuất dữ liệu!",
-  "select_to_save": "Xin vui lòng tích chọn thông tin cần lưu!"
+  "select_to_save": "Xin vui lòng tích chọn thông tin cần lưu!",
+  "timekeeping_history": "Lịch sử chấm công",
+  "NotificationGuide1": "Hướng dẫn nhận Thông báo chấm công từ",
+  "NotificationGuide2": "Nhấn vào biểu tượng",
+  "NotificationGuide3": "trên thanh địa chỉ",
+  "NotificationGuide4": "Tại mục \"Notification\" chọn \"Cho phép\""
 }
