@@ -78,10 +78,10 @@ class HistoryTable extends React.Component {
                         question.userId === localStorage.getItem("email") ? (
                           <>
                             <OverlayTrigger
-                              key="edit-tooltip"
+                              key={`edit-tooltip-${index}`}
                               placement="bottom"
                               overlay={
-                                <Tooltip id="edit-tooltip">
+                                <Tooltip id={`edit-tooltip-${index}`}>
                                   {t("EditQuestion")}
                                 </Tooltip>
                               }
@@ -94,10 +94,10 @@ class HistoryTable extends React.Component {
                               </Button>
                             </OverlayTrigger>
                             <OverlayTrigger
-                              key="edit-tooltip"
+                              key={`recall-tooltip-${index}`}
                               placement="bottom"
                               overlay={
-                                <Tooltip id="edit-tooltip">
+                                <Tooltip id={`recall-tooltip-${index}`}>
                                   {t("Withdraw")}
                                 </Tooltip>
                               }
