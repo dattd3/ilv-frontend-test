@@ -104,7 +104,7 @@ class RegistrationEmploymentTermination extends React.Component {
                                             <th>{t('Title')}</th>
                                             <th>{t('DepartmentManage')}</th>
                                             <th>{t('ContractType')}</th>
-                                            <th>{t('DaysOnWorking')}</th>
+                                            <th>{t('ContractSignDate')}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
