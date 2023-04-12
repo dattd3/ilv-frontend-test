@@ -423,6 +423,14 @@ export const Navigation = [
     role: "U"
   },
   {
+    id: 28,
+    parentId: 10,
+    icon: "menu-bullet-lv2 icon-sub-menu-lv2",
+    label: "timekeeping_history",
+    to: map.TimeKeepingHistory,
+    role: "U"
+  },
+  {
     id: 23,
     parentId: 10,
     icon: "menu-bullet-lv2 icon-sub-menu-lv2",

@@ -30,6 +30,7 @@ a {
 // Main page wrapper
 #wrapper {
   display: flex;
+  height: 100vh;
   #content-wrapper {
     width: calc(100% - 300px);
     overflow-x: hidden;
