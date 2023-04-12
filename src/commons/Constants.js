@@ -128,7 +128,7 @@ const Constants = {
   BUSINESS_TRIP_DATE_FORMAT: 'DD/MM/YYYY',
   SUBSTITUTION_TPKLA_FULL_DAY: 1,
   SUBSTITUTION_TPKLA_HALF_DAY: 2,
-
+  SHIFT_CODE_OFF:  'OFF',
   // user level
   CONSENTER_LIST_LEVEL : ["C1", "P2", "P1", "T4", "T3", "T2", "T1", "T0"],
   APPROVER_LIST_LEVEL :  ["C1", "P2", "P1", "T4", "T3", "T2", "T1", "T0"],
@@ -220,8 +220,8 @@ const Constants = {
     1: ["V040", "V005", "V079", "V041", "V030", "V077", "V070"],//TUYENDUNG + V061
     2: ["V040", "V005", "V061", "V077"],//DANHGIA_TAIKI
     3: [],//DEXUATLUONG
-    4: ["V040"],//NGHIVIEC
-    5: []//PHUCLOI
+    4: ["V040", "V077", "V070"],//NGHIVIEC
+    5: ["V077", "V070"]//PHUCLOI
   } :
   { //Development
     1: ["V040", "V005", "V079", "V041", "V030", "V077", "V070"],//TUYENDUNG + V061

@@ -37,6 +37,10 @@ const formatStringByMuleValue = value => {
     return (value === null || value === undefined || value === "" || value === "#") ? "" : value.trim()
 }
 
+const formatStringDateTimeByMuleValue = value => {
+    return (value === null || value === undefined || value === "" || value === "#" || value === "000000") ? "" : value.trim()
+}
+
 const formatNumberInteger = value => {
     if (isNaN(value)) {
         return 0
@@ -146,15 +150,15 @@ const isEnableFunctionByFunctionName = name => {
             break
         case Constants.listFunctionsForPnLACL.editProfile:
             listPnLAccepted = [Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinMec, Constants.pnlVCode.VinSmart, Constants.pnlVCode.VincomRetail, 
-                Constants.pnlVCode.VinITIS, Constants.pnlVCode.VinUni, Constants.pnlVCode.Vin3S, Constants.pnlVCode.VinAI, Constants.pnlVCode.VinES]
+                Constants.pnlVCode.VinITIS, Constants.pnlVCode.VinUni, Constants.pnlVCode.Vin3S, Constants.pnlVCode.VinAI, Constants.pnlVCode.VinES, Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading]
             break
         case Constants.listFunctionsForPnLACL.editEducation:
             listPnLAccepted = [Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinMec, Constants.pnlVCode.VinSmart, Constants.pnlVCode.VincomRetail, 
-                Constants.pnlVCode.VinITIS, Constants.pnlVCode.VinUni, Constants.pnlVCode.Vin3S, Constants.pnlVCode.VinAI, Constants.pnlVCode.VinES]
+                Constants.pnlVCode.VinITIS, Constants.pnlVCode.VinUni, Constants.pnlVCode.Vin3S, Constants.pnlVCode.VinAI, Constants.pnlVCode.VinES, Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading]
             break
         case Constants.listFunctionsForPnLACL.editRelationship:
             listPnLAccepted = [Constants.pnlVCode.VinSmart, Constants.pnlVCode.VincomRetail, Constants.pnlVCode.VinITIS, Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl,
-                Constants.pnlVCode.VinUni, Constants.pnlVCode.Vin3S, Constants.pnlVCode.VinAI, Constants.pnlVCode.VinES]
+                Constants.pnlVCode.VinUni, Constants.pnlVCode.Vin3S, Constants.pnlVCode.VinAI, Constants.pnlVCode.VinES, Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading]
             break
         case Constants.listFunctionsForPnLACL.changeStaffShift:
             listPnLAccepted = [Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading]
@@ -204,7 +208,7 @@ const isEnableOTFunctionByPnLVCode = PnLVCode => {
 }
 
 const getRequestTypeIdsAllowedToReApproval = () => {
-    return [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP, Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE, Constants.OT_REQUEST]
+    return [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP, Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE, Constants.OT_REQUEST, Constants.UPDATE_PROFILE, Constants.CHANGE_DIVISON_SHIFT, Constants.DEPARTMENT_TIMESHEET]
 }
 
 const getRequestConfigurations = () => {
@@ -529,5 +533,5 @@ const getResignResonsMasterData = () => {
 export {
     getRequestConfigurations, removeAccents, formatStringByMuleValue, formatNumberInteger, exportToPDF, isEnableFunctionByFunctionName, getValueParamByQueryString, getDateByRangeAndFormat,
     calculateBackDateByPnLVCodeAndFormatType, isEnableShiftChangeFunctionByPnLVCode, isEnableInOutTimeUpdateFunctionByPnLVCode, getRequestTypeIdsAllowedToReApproval, getMuleSoftHeaderConfigurations,
-    isAdjacentDateBy2Date, showRangeDateGroupByArrayDate, generateTaskCodeByCode, parsteStringToHtml, getRegistrationMinDateByConditions, isVinFast, isEnableOTFunctionByPnLVCode, getCurrentLanguage, getResignResonsMasterData
+    isAdjacentDateBy2Date, showRangeDateGroupByArrayDate, generateTaskCodeByCode, parsteStringToHtml, getRegistrationMinDateByConditions, isVinFast, isEnableOTFunctionByPnLVCode, getCurrentLanguage, getResignResonsMasterData, formatStringDateTimeByMuleValue
 }
