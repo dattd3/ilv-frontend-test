@@ -12,6 +12,7 @@ import MemberOption from "../MemberOption"
 import Constants from '../../../../commons/Constants'
 import { saveAs } from 'file-saver'
 import { getMuleSoftHeaderConfigurations } from "../../../../commons/Utils"
+import { checkIsExactPnL } from "commons/commonFunctions";
 registerLocale("vi", vi);
 
 class FilterDataShirfReport extends React.Component {
@@ -249,8 +250,10 @@ class FilterDataShirfReport extends React.Component {
     const reportTypes = [
       { value: Constants.TYPE_REPORT.DETAIL_REPORT, label: t("DetailReport") },
       { value: Constants.TYPE_REPORT.SUMARY_REPORT, label: t("SumaryReport") },
-      { value: Constants.TYPE_REPORT.TIMESHEET_REPORT, label: t("TimesheetSumaryReport") }
     ];
+    if(checkIsExactPnL(Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading)) {
+      reportTypes.push({ value: Constants.TYPE_REPORT.TIMESHEET_REPORT, label: t("TimesheetSumaryReport") });
+    }
 
     const renderErrors = name => {
       return this.state.errors && this.state.errors[name] ? <div className="text-danger mt-3">{this.state.errors[name]}</div> : null

@@ -12,6 +12,7 @@ import ListStaffResignationComponent from '../TerminationComponents/ListStaffRes
 import ResultModal from '../ResultModal'
 import CustomPaging from '../../../components/Common/CustomPaging'
 import ReactSelect from 'react-select'
+import { getCurrentLanguage } from 'commons/Utils'
 
 const REPORT_RESIGNATION_REQUESTS = 1
 const HANDOVER_STATUS = 2
@@ -41,7 +42,8 @@ class ResignationRequestsManagementPage extends React.Component {
                 employeeNo: null,
                 department: null,
                 handoverStatus: null,
-                approvalStatus: null
+                approvalStatus: null,
+                'culture': getCurrentLanguage()
             },
             requestIdChecked: [],
             isCheckedAll: false,
@@ -218,12 +220,14 @@ class ResignationRequestsManagementPage extends React.Component {
             return item && item.value
         })
         .map(item => item.key)
-
         const requestStatusProcessIds = requestIdChecked.filter(item => {
             return item && item.value
         })
         .map(item => item.key)
 
+        const employeeNos = requestIdChecked.filter(item => {
+            return item && item.value
+        }).map(item => item.employeeNo);
         const fullTextSearch = searchingDataToFilter.fullTextSearch || ""
         const typeMethodMapping = {
             [REPORT_RESIGNATION_REQUESTS]: "POST",
@@ -238,6 +242,9 @@ class ResignationRequestsManagementPage extends React.Component {
         let requestObj = {}
         let requestConfig = {}
         const data = this.prepareParamsToFilter();
+        if(employeeNos?.length > 0) {
+            data.employeeNo = employeeNos.join(',');
+        }
 
         switch (type) {
             case REPORT_RESIGNATION_REQUESTS:
