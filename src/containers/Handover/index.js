@@ -587,7 +587,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
           </div>
           <div className="row">
             <div className="col-4">
-              {t('ngay_lam_viec')}
+              {t('ContractSignDate')}
               <div className="detail">{data.employee.startDate ? moment(data.employee.startDate).format("DD/MM/YYYY") : '' }</div>
             </div>
             <div className="col-4">
