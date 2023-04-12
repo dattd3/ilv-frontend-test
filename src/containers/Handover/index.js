@@ -233,7 +233,8 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
       remoteData.handoverConfirmation = data.policy.user?.account ? data.policy.user : null;
       remoteData.trainingDebt = data.traning.user?.account ? data.traning.user : null;
       remoteData.internalDebt = data.internal.user?.account ? data.internal.user : null;
-    } else {
+    }
+    
       this.state.canEditable.currentActive.map( (key) => {
         switch(key) {
           case 'job':
@@ -305,7 +306,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
 
         }
       })
-    }
+    
     return remoteData;
   }
 
