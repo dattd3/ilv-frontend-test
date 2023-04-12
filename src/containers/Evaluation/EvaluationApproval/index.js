@@ -1144,8 +1144,13 @@ function EvaluationApproval(props) {
                                         evaluationData?.data.map((item, index) => {
                                             return <tr key={index} role='button' onClick={() => handleShowEvaluationDetailPopup(item?.formCode, item?.checkPhaseFormId, item?.employeeCode)}>
                                                         <td className="c-form-code"><div className="form-code">{item?.formCode || ''}</div></td>
-                                                        <td className="c-form-sender"><div className="form-sender">{item?.poolUser?.fullname || ''} ({item?.poolUser?.username || ''})</div></td>
-                                                        <td className="c-form-name"><div className="form-name">{item?.checkPhaseFormName || ''}</div></td>
+                                                        <td className="c-form-sender">
+                                                            <div className="form-sender">{item?.poolUser?.fullname || ''}</div>
+                                                            { item?.poolUser?.username && <div className="ad">({item?.poolUser?.username || ''})</div> }
+                                                        </td>
+                                                        <td className="c-form-name">
+                                                            <div className="form-name">{item?.checkPhaseFormName || ''}</div>
+                                                        </td>
                                                         <td className="c-sent-date"><div className="sent-date">{item?.sendDateLv1 && moment(item?.sendDateLv1).format('DD/MM/YYYY')}</div></td>
                                                         <td className="c-status"><div className={`status ${item?.status == statusDone ? 'done' : 'in-progress'}`}>{item?.status == statusDone ? t("EvaluationDetailCompleted") : t("EvaluationInProgress")}</div></td>
                                                         <td className="c-current-step"><div className="current-step">{currentSteps.find(step => step?.value == item?.status)?.label}</div></td>
