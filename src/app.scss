@@ -2725,6 +2725,26 @@ span.badge-notification[data-badge]::after {
       font-size: inherit;
     }
   }
+  .wrap-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 10px 0 15px 0;
+    .content-page-header {
+      margin-bottom: 0;
+    }
+    .btn {
+      background: #FFFFFF;
+      &:active, &:focus {
+        box-shadow: none;
+      }
+      &:hover {
+        background: #4e73df;
+        color: #FFFFFF;
+        outline: none;
+      }
+    }
+  }
 }
 .kpi-page {
   font-size: 14px;
