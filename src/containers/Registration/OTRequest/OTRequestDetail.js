@@ -99,10 +99,15 @@ export default function OTRequestDetailComponent({ data, action }) {
           (val) => val.STATUS === "E"
         );
         if (_data) {
-          const temp = _data.map((val) => val?.MESSAGE);
-          messageSAP = temp.filter(function (item, pos) {
-            return temp.indexOf(item) === pos;
-          });
+          messageSAP = _data.map((val) => 
+          ({
+            date: moment(val?.DATA?.split("|")?.[1], "YYYYMMDD").format("DD/MM/YYYY"),
+            message: val?.MESSAGE
+          }));
+          // messageSAP = temp.filter(function (item, pos) {
+          //   console.log(item, pos, temp.indexOf(item));
+          //   return temp.indexOf(item) === pos;
+          // });
         }
       }
     }
@@ -475,8 +480,10 @@ export default function OTRequestDetailComponent({ data, action }) {
           <div className={`d-flex status fail`}>
             <i className="fas fa-times pr-2 text-danger align-self-center"></i>
             <div>
-              {getMessageFromSap().map((msg, index) => {
-                return <div key={index}>{msg}</div>;
+              {getMessageFromSap().map((item, index) => {
+                return <div key={index}>
+                  {item.date}: {item.message}
+                </div>;
               })}
             </div>
           </div>
