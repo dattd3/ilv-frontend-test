@@ -1740,5 +1740,6 @@
   "attachment": "File đính kèm",
   "ReasonRequired": "Vui lòng nhập lý do",
   "EmployeeHandbook": "Sổ tay CBNV",
-  "ContractSignDate": "Ngày ký hợp đồng"
+  "ContractSignDate": "Ngày ký hợp đồng",
+  "timekeeping_type": "Loại chấm công"
 }
