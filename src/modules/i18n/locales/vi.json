@@ -1735,5 +1735,8 @@
   "NotificationGuide1": "Hướng dẫn nhận Thông báo chấm công từ",
   "NotificationGuide2": "Nhấn vào biểu tượng",
   "NotificationGuide3": "trên thanh địa chỉ",
-  "NotificationGuide4": "Tại mục \"Notification\" chọn \"Cho phép\""
+  "NotificationGuide4": "Tại mục \"Notification\" chọn \"Cho phép\"",
+  "EmployeeHandbook": "Sổ tay CBNV",
+  "ContractSignDate": "Ngày ký hợp đồng",
+  "timekeeping_type": "Loại chấm công"
 }
