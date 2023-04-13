@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useGuardStore } from '../../modules';
 import { Navbar, Form, InputGroup, Button, FormControl, Dropdown, Image } from 'react-bootstrap';
 import { useTranslation } from "react-i18next";
@@ -10,20 +10,14 @@ import { Animated } from "react-animated-css";
 import { useLocalizeStore } from '../../modules';
 import CheckinNotificationIcon from '../../assets/img/icon/ic-checkin-noti.svg';
 import UploadAvatar from '../../containers/UploadAvatar'
-import { getCurrentLanguage, getRequestConfigurations } from "../../commons/Utils"
+import { getRequestConfigurations } from "../../commons/Utils"
 import TimeKeepingList from "containers/TimeKeepingHistory/TimeKeepingList";
 import RedArrowIcon from 'assets/img/icon/red-arrow-right.svg';
 import CloseIcon from 'assets/img/icon/icon_x.svg';
-
-const usePreload = (params) => {
-    const api = useApi();
-    const [data = [], err] = useFetcher({
-        api: api.fetchNotificationsUnReadLimitation,
-        autoRun: true,
-        params: params
-    });
-    return data;
-};
+import BellIcon from 'assets/img/icon/bell-icon.svg';
+import VingroupIcon from 'assets/img/icon/vingroup-icon.svg';
+import ArrowDownIcon from 'assets/img/icon/arrow-down.svg';
+import NewestNotificationContext from "modules/context/newest-notification-context";
 
 const getOrganizationLevelByRawLevel = level => {
     return (level == undefined || level == null || level == "" || level == "#") ? 0 : level
@@ -44,26 +38,40 @@ function Header(props) {
     const [isShowUploadAvatar, setIsShowUploadAvatar]= useState(false);
     const [latestTimekeeping, setLatestTimeKeeping]= useState(null);
     const [checkinOutNoti, setCheckinOutNoti] = useState(false);
+    const [lastNotificationIdSeen, setLastNotificationIdSeen] = useState(0);
+    const [dataNotificationsUnReadComponent, setDataNotificationsComponent] = useState("");
+    const newestNotification = useContext(NewestNotificationContext);
 
     useEffect(() => {
       localizeStore.setLocale(activeLang || Constants.LANGUAGE_VI)
     }, [activeLang, localizeStore]);
 
     useEffect(() => {
+      if (newestNotification) {
+        if (["IN", "OUT"].includes(newestNotification.data?.detailType)) {
+          fetchLatestTimeKeeping();
+        } else {
+          fetchNotification();
+        }
+      }
+    }, [newestNotification]);
+
+    useEffect(() => {
+      fetchNotification();
       fetchLatestTimeKeeping();
-    }, []);
+    }, [])
 
     const guard = useGuardStore();
     const { t } = useTranslation();
     const lang = localStorage.getItem("locale");
 
-    let lastNotificationIdSeen = 0;
-    let dataNotificationsUnRead = "";
+    // let lastNotificationIdSeen = 0;
+    // let dataNotificationsUnRead = "";
     const companyCode = localStorage.getItem('companyCode');
     const lv3 = localStorage.getItem('organizationLv3');
     const lv4 = getOrganizationLevelByRawLevel(localStorage.getItem('organizationLv4'))
     const lv5 = getOrganizationLevelByRawLevel(localStorage.getItem('organizationLv5'))
-
+    
     const getTimePost = (createdDateInput) => {
         let timePost = moment(createdDateInput).format("DD/MM/YYYY");
         const createdDate = moment(createdDateInput);
@@ -79,65 +87,20 @@ function Header(props) {
         return timePost;
     }
 
-    const getDateShiftChange = (title) => {
-        const validDates = title.match(/(\d{1,4}([.\//])\d{1,2}([.\//])\d{1,4})/g);
-        let param = '';
-        if(validDates?.length == 1) {
-            param = `?start=${moment(validDates[0], 'DD/MM/YYYY').format('DDMMYYYY')}`;
-        } else if (validDates?.length == 2) {
-            param = `?start=${moment(validDates[0], 'DD/MM/YYYY').format('DDMMYYYY')}&end=${moment(validDates[1], 'DD/MM/YYYY').format('DDMMYYYY')}`;
-        }
-        return param;
-    }
-
-    const clickNotification = (id) => {
-        var axios = require('axios');
-        var data = '';
-        var config = {
-            method: 'post',
-            url: `${process.env.REACT_APP_REQUEST_URL}notifications/readnotification/` + id,
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-                'Content-Type': 'application/json'
-            },
-            data: data
-        };
-        axios(config)
-            .then(function (response) {
-
-            })
-            .catch(function (error) {
-
-            });
-    }
-
-    const OnClickBellFn = (isOpen) => {
-        if (isOpen && lastNotificationIdSeen > 0 && totalNotificationUnRead) {
-            var axios = require('axios');
-            var data = '';
-            var config = {
-                method: 'post',
-                url: `${process.env.REACT_APP_REQUEST_URL}notifications/SetLastNotificationIdSeen/` + lastNotificationIdSeen,
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-                    'Content-Type': 'application/json'
-                },
-                data: data
-            };
-            axios(config)
-                .then(function (response) {
-                    setTotalNotificationUnRead("");
-                })
-                .catch(function (error) {
-                    setTotalNotificationUnRead("");
-                });
-        }
-    }
-
-    const result = usePreload([companyCode, lv3, lv4, lv5, getCurrentLanguage()]);
-    if (result && result.data && result.result) {
-        const res = result.result;
-        const data = result.data;
+    const fetchNotification = async () => {
+      const result = await axios.get(`${process.env.REACT_APP_REQUEST_URL}notifications-unread-limitation`, {
+        params: {     
+          companyCode: companyCode,     
+          level3: lv3,
+          level4: lv4,
+          level5: lv5,
+          culture: lang
+        },
+        ...APIConfig,
+      });
+      if (result.data?.data && result.data?.result) {
+        const res = result.data.result;
+        const data = result.data.data;
         if (res.code != 1) {
             if (data.notifications && data.notifications.length > 0) {
                 if (data.total > 99 && data.total !== totalNotificationCount) {
@@ -151,10 +114,10 @@ function Header(props) {
                     setTotalNotificationUnRead(data.total);
                 }
                 if (data.notifications[0]) {
-                    lastNotificationIdSeen = data.notifications[0].id;
+                    setLastNotificationIdSeen(data.notifications[0].id);
                 }
 
-                dataNotificationsUnRead = <>
+                const dataRender = <>
                     {
                         data.notifications.map((item, i) => {
                             const timePost = getTimePost(item.createdDate);
@@ -215,7 +178,64 @@ function Header(props) {
                         })
                     }
                 </>;
+                setDataNotificationsComponent(dataRender);
             }
+        }
+      }
+    }
+
+    const getDateShiftChange = (title) => {
+        const validDates = title.match(/(\d{1,4}([.\//])\d{1,2}([.\//])\d{1,4})/g);
+        let param = '';
+        if(validDates?.length == 1) {
+            param = `?start=${moment(validDates[0], 'DD/MM/YYYY').format('DDMMYYYY')}`;
+        } else if (validDates?.length == 2) {
+            param = `?start=${moment(validDates[0], 'DD/MM/YYYY').format('DDMMYYYY')}&end=${moment(validDates[1], 'DD/MM/YYYY').format('DDMMYYYY')}`;
+        }
+        return param;
+    }
+
+    const clickNotification = (id) => {
+        var axios = require('axios');
+        var data = '';
+        var config = {
+            method: 'post',
+            url: `${process.env.REACT_APP_REQUEST_URL}notifications/readnotification/` + id,
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+                'Content-Type': 'application/json'
+            },
+            data: data
+        };
+        axios(config)
+            .then(function (response) {
+
+            })
+            .catch(function (error) {
+
+            });
+    }
+
+    const OnClickBellFn = (isOpen) => {
+        if (isOpen && lastNotificationIdSeen > 0 && totalNotificationUnRead) {
+            var axios = require('axios');
+            var data = '';
+            var config = {
+                method: 'post',
+                url: `${process.env.REACT_APP_REQUEST_URL}notifications/SetLastNotificationIdSeen/` + lastNotificationIdSeen,
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+                    'Content-Type': 'application/json'
+                },
+                data: data
+            };
+            axios(config)
+                .then(function (response) {
+                    setTotalNotificationUnRead("");
+                })
+                .catch(function (error) {
+                    setTotalNotificationUnRead("");
+                });
         }
     }
 
@@ -332,7 +352,7 @@ function Header(props) {
                             <FormControl className="bg-light border-0" placeholder={t("SearchTextPlaceholder")} aria-label="Search" aria-describedby="basic-addon1" />
                         </InputGroup>
                     </Form>
-                    <div>
+                    <div className="notification-icons-block">
                       <Dropdown id="notifications-block" 
                         className="notification-guide" 
                         show={checkinOutNoti} 
@@ -376,19 +396,24 @@ function Header(props) {
                           </Dropdown.Menu>
                       </Dropdown>
                       <Dropdown id="notifications-block" onToggle={(isOpen) => OnClickBellFn(isOpen)}>
-                          <Animated animationIn="lightSpeedIn" isVisible={dataNotificationsUnRead != ""} animationOutDuration={10} >
+                          <Animated animationIn="lightSpeedIn" isVisible={dataNotificationsUnReadComponent != ""} animationOutDuration={10} >
                               <Dropdown.Toggle>
                                   <span className="notifications-block">
-                                      <i className="far fa-bell ic-customize"></i>
+                                      {/* <i className="far fa-bell ic-customize"></i> */}
+                                      <Image
+                                        // className="guide-icon"
+                                        alt="details notification"
+                                        src={BellIcon}
+                                      />
                                       {totalNotificationUnRead != "" ? <span className="count">{totalNotificationUnRead}</span> : ""}
                                   </span>
                               </Dropdown.Toggle>
                           </Animated>
-                          {dataNotificationsUnRead != "" ?
+                          {dataNotificationsUnReadComponent != "" ?
                               <Dropdown.Menu className="list-notification-popup">
                                   <div className="title-block text-center">{t("AnnouncementInternal")}</div>
                                   <div className="all-items">
-                                      {dataNotificationsUnRead}
+                                      {dataNotificationsUnReadComponent}
                                   </div>
                                   {/* <a href="/notifications-unread" title="Xem tất cả" className="view-all">Xem tất cả</a> */}
                               </Dropdown.Menu>
@@ -399,13 +424,21 @@ function Header(props) {
                     <Dropdown>
                         <div className='mr-2 small text-right username'>
                             <Dropdown.Toggle variant="light" className='text-right dropdown-menu-right user-infor-header user-info-margin'>
-                                <span className="text-gray-600 full-name">{fullName}</span>
                                 {
                                     (avatar != null && avatar !== '' && avatar !== 'null') ?
-                                        <img className="ml-2 img-profile rounded-circle" src={`data:image/png;base64, ${avatar}`} alt={fullName} />
+                                        <img className="img-profile rounded-circle" src={`data:image/png;base64, ${avatar}`} alt={fullName} />
                                         :
-                                        <span className="text-gray-600 ml-2 img-profile no-avt"><i className="fas fa-user-circle"></i></span>
+                                        <span className="text-gray-600 img-profile no-avt">
+                                          <Image src={VingroupIcon} alt="default-icon" />
+                                        </span>
                                 }
+                                &nbsp;&nbsp;
+                                <span className="full-name">{fullName}</span>
+                                &nbsp;&nbsp;
+                                <Image
+                                  alt="more"
+                                  src={ArrowDownIcon}
+                                />
                             </Dropdown.Toggle>
                         </div>
                         <Dropdown.Menu className='animated--grow-in'>
