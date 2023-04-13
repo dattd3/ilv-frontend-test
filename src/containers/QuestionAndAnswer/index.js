@@ -178,8 +178,8 @@ class MyComponent extends React.Component {
           showEditModal={this.showEditModal.bind(this)}
         />
         <div className="clearfix edit-button action-buttons mb-2">
-          <button type="button" className="btn btn-light float-left shadow pl-4 pr-4 ml-0" onClick={() => this.showSubmitModal(true)}> {t("CreateQuestions")} </button>
-          <button type="button" className="btn btn-light float-left shadow" onClick={() => this.showHistoryModal(true)}>{t("HistoryAnswer")}</button>
+          <span type="button" className="btn btn-light float-left shadow pl-4 pr-4 ml-0" onClick={() => this.showSubmitModal(true)}> {t("CreateQuestions")} </span>
+          <span type="button" className="btn btn-light float-left shadow" onClick={() => this.showHistoryModal(true)}>{t("HistoryAnswer")}</span>
           { isVinFast() && this.showStaffHandbookLink() }
         </div>
         <h1 className="content-page-header">{t("QuestionAndAnswer")}</h1>
