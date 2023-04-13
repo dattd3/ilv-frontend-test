@@ -369,7 +369,7 @@ function Header(props) {
                           </Animated>
                           <Dropdown.Menu className="list-notification-popup">
                               <div className="timekeeping-title-block">
-                                  {t('timekeeping_history')}
+                                  {t('timekeeping_history')?.toUpperCase()}
                                   <Image
                                     onClick={() => setCheckinOutNoti(false)}
                                     className="close-icon"
