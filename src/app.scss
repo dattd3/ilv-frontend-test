@@ -2701,6 +2701,12 @@ span.badge-notification[data-badge]::after {
       &:last-child {
         margin-left: 5px;
       }
+      &:active {
+        background: #FFFFFF;
+      }
+      &:focus {
+        background: #FFFFFF;
+      }
     }
   }
   .form-qna-search {
