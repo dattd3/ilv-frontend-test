@@ -92,14 +92,14 @@ export default function OTRequestDetailComponent({ data, action }) {
   };
 
   const getMessageFromSap = () => {
-    let messageSAP = null;
+    const mergedMessageObjArr = [];
     if (data.processStatusId === Constants.STATUS_PARTIALLY_SUCCESSFUL) {
       if (data.responseDataFromSAP && Array.isArray(data.responseDataFromSAP)) {
         const _data = data.responseDataFromSAP.filter(
           (val) => val.STATUS === "E"
         );
         if (_data) {
-          messageSAP = _data.map((val) => 
+          const messageSAPArr = _data.map((val) => 
           ({
             date: moment(val?.DATA?.split("|")?.[1], "YYYYMMDD").format("DD/MM/YYYY"),
             message: val?.MESSAGE
@@ -108,10 +108,23 @@ export default function OTRequestDetailComponent({ data, action }) {
           //   console.log(item, pos, temp.indexOf(item));
           //   return temp.indexOf(item) === pos;
           // });
+          const messageSetArr = Array.from(new Set(messageSAPArr.map(item => item.message)));
+          console.log(messageSetArr)
+          messageSetArr.forEach(item => {
+            console.log(messageSAPArr.filter(messObj => messObj.message === item))
+            const datesStr = messageSAPArr.filter(messObj => messObj.message === item)?.map(i => i.date)?.join(", ");
+            console.log(datesStr)
+            mergedMessageObjArr.push({
+              datesStr,
+              message: item
+            })
+            console.log(mergedMessageObjArr)
+          })
         }
       }
     }
-    return messageSAP;
+
+    return mergedMessageObjArr;
   };
 
   const isHasTime1 = (timesheet) => {
@@ -482,7 +495,7 @@ export default function OTRequestDetailComponent({ data, action }) {
             <div>
               {getMessageFromSap().map((item, index) => {
                 return <div key={index}>
-                  {item.date}: {item.message}
+                  {item.datesStr}: {item.message}
                 </div>;
               })}
             </div>
