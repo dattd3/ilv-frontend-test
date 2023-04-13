@@ -44,10 +44,9 @@ export default function TimeKeepingList({ apiResponseData }) {
       {timeKeepingData &&
         Object.keys(timeKeepingData)?.length > 0 &&
         Object.keys(timeKeepingData)
-          ?.reverse()
           ?.map((key, keyIndx) => (
-            <>
-              <div className="date-card" key={key}>
+            <div key={keyIndx}>
+              <div className="date-card">
                 <div className="date-card-header">
                   <i className="fa fa-clock-o" />
                   &nbsp;
@@ -86,7 +85,7 @@ export default function TimeKeepingList({ apiResponseData }) {
               {keyIndx !== Object.keys(timeKeepingData)?.length - 1 && (
                 <div className="divider margin-bt-20" />
               )}
-            </>
+            </div>
           ))}
     </div>
   );
