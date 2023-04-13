@@ -135,7 +135,9 @@ function Root() {
           className="custom-notification-toast"
         >
           <div className="toast-header">
-            <span>{notification.toastTitle}</span>
+            <span>
+              {notification.toastTitle?.toUpperCase()}
+            </span>
             <Image
               onClick={() => setNotification(INIT_NOTIFICATION_STATE)}
               className="close"
