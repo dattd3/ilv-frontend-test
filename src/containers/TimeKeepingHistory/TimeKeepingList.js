@@ -43,50 +43,52 @@ export default function TimeKeepingList({ apiResponseData }) {
     <div className="timekeeping-list-container">
       {timeKeepingData &&
         Object.keys(timeKeepingData)?.length > 0 &&
-        Object.keys(timeKeepingData)
-          ?.map((key, keyIndx) => (
-            <div key={keyIndx}>
-              <div className="date-card">
-                <div className="date-card-header">
-                  <i className="fa fa-clock-o" />
-                  &nbsp;
-                  {getDayNameFromDate(key)}
-                  &nbsp;
-                  {lang === Constants.LANGUAGE_VI ? t("Day") : null}{" "}
-                  {moment(key, "YYYY-MM-DD").format("DD/MM/YYYY")}
-                </div>
-                <div className="date-card-body-container">
-                  {timeKeepingData[key].map((item, index) => (
-                    <div className="date-card-body" key={item.id}>
-                      <div className="infor-block">
-                        <div>
-                          <span className="time-span">
-                            <span className="bull-symbol">&bull;</span>
-                            &nbsp;&nbsp;
-                            {item.subRequestId?.split(" ")?.[1]} &nbsp;&nbsp;
-                            <b>
-                              {lang === Constants.LANGUAGE_VI
-                                ? item.title
-                                : item.en_Title}
-                            </b>
-                          </span>
-                        </div>
+        Object.keys(timeKeepingData)?.map((key, keyIndx) => (
+          <div key={keyIndx}>
+            <div className="date-card">
+              <div className="date-card-header">
+                <i className="fa fa-clock-o" />
+                &nbsp;
+                {getDayNameFromDate(key)}
+                &nbsp;
+                {lang === Constants.LANGUAGE_VI ? t("Day") : null}{" "}
+                {moment(key, "YYYY-MM-DD").format("DD/MM/YYYY")}
+              </div>
+              <div className="date-card-body-container">
+                {timeKeepingData[key].map((item, index) => (
+                  <div className="date-card-body" key={item.id}>
+                    <div className="infor-block">
+                      <span className="time-span">
+                        <span className="bull-symbol">&bull;</span>
+                        &nbsp;&nbsp;
+                        {item.subRequestId?.split(" ")?.[1]}
+                        &nbsp;&nbsp;
+                      </span>
+                      <div className="infor-container">
+                        <b>
+                          {lang === Constants.LANGUAGE_VI
+                            ? item.title
+                            : item.en_Title}
+                        </b>
                         <div className="location-description">
-                          {JSON.parse(item.data).Device}
+                          {`${t("timekeeping_type")} ${
+                            JSON.parse(item.data).Method
+                          }`}
                         </div>
                       </div>
-                      {index !== timeKeepingData[key]?.length - 1 && (
-                        <div className="divider" />
-                      )}
                     </div>
-                  ))}
-                </div>
+                    {index !== timeKeepingData[key]?.length - 1 && (
+                      <div className="divider" />
+                    )}
+                  </div>
+                ))}
               </div>
-              {keyIndx !== Object.keys(timeKeepingData)?.length - 1 && (
-                <div className="divider margin-bt-20" />
-              )}
             </div>
-          ))}
+            {keyIndx !== Object.keys(timeKeepingData)?.length - 1 && (
+              <div className="divider margin-bt-20" />
+            )}
+          </div>
+        ))}
     </div>
   );
 }

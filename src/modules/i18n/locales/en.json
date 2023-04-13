@@ -1718,5 +1718,8 @@
   "NotificationGuide1": "Instructions to receive Notification from",
   "NotificationGuide2": "Click on",
   "NotificationGuide3": "in address bar",
-  "NotificationGuide4": "On \"Notification\" click \"Allow\""
+  "NotificationGuide4": "On \"Notification\" click \"Allow\"",
+  "EmployeeHandbook": "Employee handbook",
+  "ContractSignDate": "Contract signed date",
+  "timekeeping_type": "Type"
 }
