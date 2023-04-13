@@ -1,9 +1,4 @@
 .notification-guide {
-    // margin-right: 5px !important;
-
-    .guide-icon {
-        margin-bottom: 4px;
-    }
 
     .list-notification-popup {
         right: -200px !important;
@@ -44,7 +39,6 @@
     display: inline-block;
     margin-left: 0;
     position: relative;
-    // margin-right: 20px;
     .dropdown-toggle {
         background: none;
         border: none;
@@ -81,7 +75,7 @@
         right: 12px;
     }
     .list-notification-popup {
-        width: 400px;
+        width: 430px;
         right: -130px;
         left: unset;
         border-radius: 6px;

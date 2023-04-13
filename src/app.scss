@@ -1230,9 +1230,31 @@ span.badge-notification[data-badge]::after {
 .navigation-top-bar-custom {
   margin-top: 0px;
   margin-bottom: 0px;
-  padding: 0.5rem 0.5rem 0.5rem 25px;
+  padding: 20px;
+  .dropdown-menu {
+    min-width: 12rem;
+    left: 20px;
+    top: 120%;
+  }
+  .notification-icons-block {
+    margin-right: 10px;
+  }
   .user-infor-header {
     padding: 0;
+    padding-left: 20px;
+    border-radius: 0px;
+    &::before {
+      content : "";
+      position: absolute;
+      left    : 0px;
+      bottom  : 6px;
+      height  : 70%;
+      width   : 1px;  /* or 100px */
+      border-left :1px solid #707070;
+    }
+  }
+  .dropdown-toggle::after {
+    content: none;
   }
   & > button {
     height: 34px;
@@ -3335,6 +3357,9 @@ span.badge-notification[data-badge]::after {
   .username {
     .full-name {
       font-size: 15px;
+      font-weight: 300;
+      line-height: 18px;
+      color: #43425D;
     }
     .img-profile {
       object-fit: cover;
