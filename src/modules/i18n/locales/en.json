@@ -1727,5 +1727,6 @@
   "timekeeping_type": "Type",
   "CheckedIn": "Checked In",
   "CheckedOut": "Checked Out",
-  "at": "At"
+  "at": "At",
+  "MissingKPI": "Missing KPI"
 }

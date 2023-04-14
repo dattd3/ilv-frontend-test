@@ -1744,5 +1744,6 @@
   "timekeeping_type": "Loại chấm công",
   "CheckedIn": "Đã check-in",
   "CheckedOut": "Đã check-out",
-  "at": "tại"
+  "at": "tại",
+  "MissingKPI": "Chưa có nội dung đánh giá"
 }
