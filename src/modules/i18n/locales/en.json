@@ -1715,5 +1715,6 @@
   "salary_keeped": "Salary on hold",
   "salary_paid": "Paid",
   "attachment": "Attachment",
-  "ReasonRequired": "Please Enter Reason"
+  "ReasonRequired": "Please Enter Reason",
+  "MissingKPI": "Missing KPI"
 }
