@@ -1722,5 +1722,8 @@
   "ReasonRequired": "Please Enter Reason",
   "EmployeeHandbook": "Employee handbook",
   "ContractSignDate": "Contract signed date",
-  "timekeeping_type": "Type"
+  "timekeeping_type": "Type",
+  "CheckedIn": "Checked In",
+  "CheckedOut": "Checked Out",
+  "at": "At"
 }

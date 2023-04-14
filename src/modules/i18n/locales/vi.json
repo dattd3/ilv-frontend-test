@@ -1739,5 +1739,8 @@
   "ReasonRequired": "Vui lòng nhập lý do",
   "EmployeeHandbook": "Sổ tay CBNV",
   "ContractSignDate": "Ngày ký hợp đồng",
-  "timekeeping_type": "Loại chấm công"
+  "timekeeping_type": "Loại chấm công",
+  "CheckedIn": "Đã check-in",
+  "CheckedOut": "Đã check-out",
+  "at": "tại"
 }
