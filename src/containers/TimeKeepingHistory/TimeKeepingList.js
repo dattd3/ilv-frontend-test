@@ -39,6 +39,13 @@ export default function TimeKeepingList({ apiResponseData }) {
     ];
   };
 
+  const getCheckinoutTitleFromData = (data) => {
+    if (data) {
+      const dataObj = JSON.parse(data);
+      return `${dataObj.Type?.toUpperCase() === "IN" ? t("CheckedIn") : t("CheckedOut")} ${t("at")} ${dataObj.Device}`;
+    }
+  }
+
   return (
     <div className="timekeeping-list-container">
       {timeKeepingData &&
@@ -66,9 +73,7 @@ export default function TimeKeepingList({ apiResponseData }) {
                       </span>
                       <div className="infor-container">
                         <b>
-                          {lang === Constants.LANGUAGE_VI
-                            ? item.title
-                            : item.en_Title}
+                          {getCheckinoutTitleFromData(item.data)}
                         </b>
                         <div className="location-description">
                           {`${t("timekeeping_type")} ${
