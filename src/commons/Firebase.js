@@ -18,14 +18,27 @@ const firebaseConfig = {
 export const FirebaseUpdateToken = async () => {
   try {
     const permission = await Notification.requestPermission();
+    console.log(localStorage.getItem("firebaseToken"));
     if (
       (!localStorage.getItem("firebaseToken") ||
+        !localStorage.getItem("userFirebaseToken") ||
         localStorage.getItem("userFirebaseToken") !==
           localStorage.getItem("email")) &&
       permission === "granted"
     ) {
+      let serviceWorkerRegistration = null;
+      if (process.env.NODE_ENV === "production") {
+        serviceWorkerRegistration = await navigator.serviceWorker.register(
+          `${window.location.href}/firebase-messaging-sw.js`
+        );
+      } else {
+        serviceWorkerRegistration = await navigator.serviceWorker.register(
+          `${window.location.href}/firebase-messaging-sw-dev.js`
+        );
+      }
       const token = await getToken(messaging, {
         vapidKey: process.env.REACT_APP_FIREBASE_VAPID_KEY,
+        serviceWorkerRegistration,
       });
       if (!!token) {
         localStorage.setItem("firebaseToken", token);
