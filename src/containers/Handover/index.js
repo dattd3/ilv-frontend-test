@@ -504,7 +504,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         if (result.code != Constants.API_ERROR_CODE) {
           let url = res.data.data;
           if(url?.indexOf('.') != -1 && fileNeedEmbbed.includes(url.substr(url.lastIndexOf('.')).toUpperCase())) {
-            url = 'https://view.officeapps.live.com/op/embed.aspx?src=' + url.trim();
+            url = 'https://view.officeapps.live.com/op/view.aspx?src=' + url.trim();
           }
           
           const link = document.createElement('a');
