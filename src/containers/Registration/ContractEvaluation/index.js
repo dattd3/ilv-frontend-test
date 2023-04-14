@@ -1125,7 +1125,7 @@ renderEvalution = (name, data, isDisable) => {
       <td style={{width: '20%'}}>
         {
           item.isEditing ? 
-          <ResizableTextarea onChange={(e) => this.handleTextInputChangeForItem(e, name, item.id, 'TaskName')}  disabled={isDisable} value={item.TaskName}/> :
+          <ResizableTextarea maxLength={250} onChange={(e) => this.handleTextInputChangeForItem(e, name, item.id, 'TaskName')}  disabled={isDisable} value={item.TaskName}/> :
           item.TaskName
         }
       </td>
@@ -1182,7 +1182,7 @@ renderEvalution = (name, data, isDisable) => {
         <td style={{width: '20%'}}>
           {
             item.isEditing ? 
-            <ResizableTextarea onChange={(e) => this.handleTextInputChangeForEmployeeItem(e, name, item.editId, 'TaskName')}  disabled={isDisable} value={item.TaskName}/> :
+            <ResizableTextarea maxLength={250} onChange={(e) => this.handleTextInputChangeForEmployeeItem(e, name, item.editId, 'TaskName')}  disabled={isDisable} value={item.TaskName}/> :
             item.TaskName
           }
         </td>
@@ -1232,6 +1232,10 @@ renderEvalution = (name, data, isDisable) => {
         IsDeleted: item.isDeleted
       }
     })
+    if (!result?.length) {
+      this.setDisabledSubmitButton(false);
+      return this.showStatusModal(t('MissingKPI'), false)
+    }
     axios({
       method: 'POST',
       url: `${process.env.REACT_APP_REQUEST_URL}api/taskAssements/saveTaskAssement/${this.state.id}`,
@@ -1285,6 +1289,11 @@ renderEvalution = (name, data, isDisable) => {
     if (!err || Object.values(err).reduce((t, value) => t + (value ? 1 : 0) , 0) > 0) {
         this.setDisabledSubmitButton(false, actionType)
         return
+    }
+    const evalutions = [...this.state.data.evalution, ...this.state.data.newEvalution].filter(item => !item.isDeleted);
+    if (!evalutions?.length) {
+      this.setDisabledSubmitButton(false, actionType)
+      return this.showStatusModal(t('MissingKPI'), false)
     }
     let message = t('RequestSent');
     let url = `${process.env.REACT_APP_REQUEST_URL}StaffContract/updatevaluation`;
