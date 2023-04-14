@@ -1721,5 +1721,8 @@
   "NotificationGuide4": "On \"Notification\" click \"Allow\"",
   "EmployeeHandbook": "Employee handbook",
   "ContractSignDate": "Contract signed date",
-  "timekeeping_type": "Type"
+  "timekeeping_type": "Type",
+  "CheckedIn": "Checked In",
+  "CheckedOut": "Checked Out",
+  "at": "At"
 }
