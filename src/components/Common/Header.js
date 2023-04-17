@@ -144,6 +144,7 @@ function Header(props) {
                             let notificationLink = (type) => {
                                 switch (type) {
                                     case Constants.notificationType.NOTIFICATION_DEFAULT:
+                                    case Constants.notificationType.NOTIFICATION_OTHER:
                                     case 12:
                                     case 13:
                                     case 14:
