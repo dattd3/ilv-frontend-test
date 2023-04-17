@@ -8,6 +8,15 @@
 
 .registration-section {
     font: normal 14px Arial, Helvetica, sans-serif;
+    .nav-tabs {
+        padding: 0;
+        grid-gap: 14px 1.5rem !important;
+        a {
+            min-width: auto;
+            padding: 0;
+            width: calc((100% - 6rem) / 5) !important;
+        }
+    }
     .validation-message {
         font-size: 13px;
         margin: 6px 0;
