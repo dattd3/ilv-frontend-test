@@ -1714,5 +1714,7 @@
   "salary_keeped": "Salary on hold",
   "salary_paid": "Paid",
   "attachment": "Attachment",
-  "ReasonRequired": "Please Enter Reason"
+  "ReasonRequired": "Please Enter Reason",
+  "ForeignSickLeave": "Sick leave for expat",
+  "SickLeaveFundForExpat": "Sick leave fund for expat"
 }
