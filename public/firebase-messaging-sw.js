@@ -4,13 +4,14 @@ importScripts(
 );
 // Initialize the Firebase app in the service worker by passing the generated config
 const firebaseConfig = {
-  apiKey: "AIzaSyBMM56lyG-eU4gORGxcGzLUwPlvWUM4cxY",
-  authDomain: "myvinpearl-693c0.firebaseapp.com",
-  databaseURL: "https://myvinpearl-693c0.firebaseio.com",
-  projectId: "myvinpearl-693c0",
-  storageBucket: "myvinpearl-693c0.appspot.com",
-  messagingSenderId: "325470433070",
-  appId: "1:325470433070:web:25ac00e9e10da38fc8d4bf",
+  apiKey: "AIzaSyBRN3gA-GG54wn4FOfwAERZpkYKmGrkGm4",
+  authDomain: "myvinpearl.firebaseapp.com",
+  databaseURL: "https://myvinpearl.firebaseio.com",
+  projectId: "myvinpearl",
+  storageBucket: "myvinpearl.appspot.com",
+  messagingSenderId: "297571101596",
+  appId: "1:297571101596:web:03c41e5920c7c69ee23659",
+  measurementId: "G-G2X0LB6JD5"
 };
 
 firebase.initializeApp(firebaseConfig);
