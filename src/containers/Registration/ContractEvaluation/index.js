@@ -387,7 +387,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     let url = `${process.env.REACT_APP_REQUEST_URL}StaffContract/infoevaluation?culture=${this.props.t('langCode')}&idDisplay=${id}&employeeCode=${localStorage.getItem('employeeNo')}&regionId=${localStorage.getItem('organizationLv4')}&rankId=${localStorage.getItem('employeeLevel')}&org=${localStorage.getItem('organizationLv3')}&orgLv02=${localStorage.getItem('organizationLv2')}&orgLv05=${localStorage.getItem('organizationLv5') == '#' ? null : localStorage.getItem('organizationLv5')}`;
     
     if(type == 'assess' || type == 'approval' || type == 'salary'){
-      url = `${process.env.REACT_APP_REQUEST_URL}StaffContract/getManageEvaluation?idDisplay=${id}`
+      url = `${process.env.REACT_APP_REQUEST_URL}StaffContract/getManageEvaluation?idDisplay=${id}&culture=${this.props.t('langCode')}`
     }
     axios.get(url, config)
     .then(res => {
