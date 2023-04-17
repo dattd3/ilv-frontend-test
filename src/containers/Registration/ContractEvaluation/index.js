@@ -1125,7 +1125,7 @@ renderEvalution = (name, data, isDisable) => {
       <td style={{width: '20%'}}>
         {
           item.isEditing ? 
-          <ResizableTextarea maxLength={250} onChange={(e) => this.handleTextInputChangeForItem(e, name, item.id, 'TaskName')}  disabled={isDisable} value={item.TaskName}/> :
+          <ResizableTextarea maxLength={500} onChange={(e) => this.handleTextInputChangeForItem(e, name, item.id, 'TaskName')}  disabled={isDisable} value={item.TaskName}/> :
           item.TaskName
         }
       </td>
@@ -1182,7 +1182,7 @@ renderEvalution = (name, data, isDisable) => {
         <td style={{width: '20%'}}>
           {
             item.isEditing ? 
-            <ResizableTextarea maxLength={250} onChange={(e) => this.handleTextInputChangeForEmployeeItem(e, name, item.editId, 'TaskName')}  disabled={isDisable} value={item.TaskName}/> :
+            <ResizableTextarea maxLength={500} onChange={(e) => this.handleTextInputChangeForEmployeeItem(e, name, item.editId, 'TaskName')}  disabled={isDisable} value={item.TaskName}/> :
             item.TaskName
           }
         </td>
