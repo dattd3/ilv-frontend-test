@@ -1730,5 +1730,6 @@
   "at": "At",
   "MissingKPI": "Missing KPI",
   "ForeignSickLeave": "Sick leave for expat",
-  "SickLeaveFundForExpat": "Sick leave fund for expat"
+  "SickLeaveFundForExpat": "Sick leave fund for expat",
+  "PleaseEnter": "Please enter"
 }
