@@ -116,6 +116,7 @@ function Header(props) {
                 if (data.notifications[0]) {
                     setLastNotificationIdSeen(data.notifications[0].id);
                 }
+                const qnaDetailType = 'TICKET'
 
                 const dataRender = <>
                     {
@@ -124,12 +125,16 @@ function Header(props) {
                             let notificationLink = (type) => {
                                 switch (type) {
                                     case Constants.notificationType.NOTIFICATION_DEFAULT:
-                                    case Constants.notificationType.NOTIFICATION_OTHER:
                                     case 12:
                                     case 13:
                                     case 14:
                                     case 15:
                                     case 11:
+                                        return `/notifications/${item.id}`
+                                    case Constants.notificationType.NOTIFICATION_OTHER:
+                                        if (item?.detailType == qnaDetailType) {
+                                            return `${item.url}` 
+                                        }
                                         return `/notifications/${item.id}`
                                     case Constants.notificationType.NOTIFICATION_REGISTRATION: 
                                         if (item.detailType == 'APPRAISAL')
