@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Button, Tooltip, OverlayTrigger } from "react-bootstrap";
+import deleteButton from '../../assets/img/icon-delete.svg'
 import { withTranslation } from "react-i18next";
 class HistoryTable extends React.Component {
   constructor(props) {
@@ -98,7 +99,7 @@ class HistoryTable extends React.Component {
                               placement="bottom"
                               overlay={
                                 <Tooltip id={`recall-tooltip-${index}`}>
-                                  {t("Withdraw")}
+                                  {t("delete")}
                                 </Tooltip>
                               }
                             >
@@ -108,7 +109,7 @@ class HistoryTable extends React.Component {
                                   this.showConfirmModal(question.id)
                                 }
                               >
-                                <i className="icon icon-qa-undo align-self-center"></i>
+                                <img alt={t('delete')} src={deleteButton} className="align-self-center"/>
                               </Button>
                             </OverlayTrigger>
                           </>

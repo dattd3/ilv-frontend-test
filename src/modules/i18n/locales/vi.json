@@ -1731,5 +1731,9 @@
   "salary_keeped": "Giữ lương",
   "salary_paid": "Đã trả",
   "attachment": "File đính kèm",
-  "ReasonRequired": "Vui lòng nhập lý do"
+  "ReasonRequired": "Vui lòng nhập lý do",
+  "confirm_with_recovery": "XÁC NHẬN XOÁ",
+  "confirm_you_want_to_withdraw_this_content": "Bạn xác nhận muốn xoá nội dung này?",
+  "successful_withdrawal_of_questions": "Xóa câu hỏi thành công",
+  "sent_question_successfully": "Gửi câu hỏi thành công"
 }
