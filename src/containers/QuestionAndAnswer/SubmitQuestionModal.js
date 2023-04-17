@@ -71,11 +71,11 @@ class SubmitQuestionModal extends React.Component {
     }
 
     alertSuccess = () => {
-        this.props.showStatusModal('Gửi câu hỏi thành công!', true);
+        this.props.showStatusModal(this.props.t('sent_question_successfully'), true);
     }
 
     alertFail = () => {
-        this.props.showStatusModal('Không thành công. Xin vui lòng thử lại!', false)
+        this.props.showStatusModal( this.props.t('HasErrorOccurred'), false)
     }
 
     setCategory(category) {
@@ -314,7 +314,7 @@ class SubmitQuestionModal extends React.Component {
                                                 value={Constants.SOLVER_MANAGER}
                                                 name="solverid"
                                                 checked={solverid == Constants.SOLVER_MANAGER}
-                                                disabled={this.props.isEdit}
+                                                //disabled={this.props.isEdit}
                                                 onChange={this.handleChange.bind(this)} />
                                             {t("LineManager")}
                                         </label>
@@ -327,7 +327,7 @@ class SubmitQuestionModal extends React.Component {
                                                 value={Constants.SOLVER_RESOURCE}
                                                 name="solverid"
                                                 checked={solverid == Constants.SOLVER_RESOURCE}
-                                                disabled={this.props.isEdit}
+                                                //disabled={this.props.isEdit}
                                                 onChange={this.handleChange.bind(this)} />
                                             {t("Menu_HumanResource")}   
                                         </label>
@@ -340,7 +340,7 @@ class SubmitQuestionModal extends React.Component {
                                                 value={Constants.SOLVER_TCKT}
                                                 name="solverid"
                                                 checked={solverid == Constants.SOLVER_TCKT}
-                                                disabled={this.props.isEdit}
+                                                //disabled={this.props.isEdit}
                                                 onChange={this.handleChange.bind(this)} />
                                             {t("Tckt")}
                                         </label>
@@ -364,7 +364,7 @@ class SubmitQuestionModal extends React.Component {
                                                 placeholder={t("Select")}
                                                 components={{ Option: MyOption }}
                                                 options={hrProfileDisplay}
-                                                isDisabled={this.props.isEdit}
+                                                //isDisabled={this.props.isEdit}
                                                 value={hrProfileDisplay.filter((value) => value.userid === this.state.supervise.userid)}
                                                 onChange={this.setProfile.bind(this)} />
                                         }
