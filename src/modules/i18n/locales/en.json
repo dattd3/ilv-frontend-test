@@ -1718,5 +1718,6 @@
   "confirm_with_recovery": "CONFIRM WITH DELETE",
   "confirm_you_want_to_withdraw_this_content": "Confirm you want to delete this content?",
   "successful_withdrawal_of_questions": "Delete question successfully",
-  "sent_question_successfully": "Sent question successfully"
+  "sent_question_successfully": "Sent question successfully",
+  "PleaseEnter": "Please enter"
 }

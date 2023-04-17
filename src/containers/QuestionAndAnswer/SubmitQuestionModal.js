@@ -43,6 +43,7 @@ class SubmitQuestionModal extends React.Component {
             targetQuest: 0,
             superviseDefault: {},
             solverid: Constants.SOLVER_MANAGER,
+            isShowMissingSolverError: false,
             isLoading: false
         };
     }
@@ -142,7 +143,7 @@ class SubmitQuestionModal extends React.Component {
             default:
                 break;
         }
-        this.setState({ [event.target.name]: event.target.value, supervise: {} });
+        this.setState({ [event.target.name]: event.target.value, supervise: {}, isShowMissingSolverError: false });
     }
 
     handleChangeTargetQues(event) {
@@ -165,6 +166,11 @@ class SubmitQuestionModal extends React.Component {
     submitQuestion(questionId, categoryId, questionContent, alertSuccess, alertFail) {
         var axios = require('axios');
         var supervise = this.state.solverid == Constants.SOLVER_MANAGER ? this.state.superviseDefault : this.state.supervise;
+        if (!supervise?.userid) {
+          return this.setState({
+            isShowMissingSolverError: true
+          })
+        }
         var dataRequest = {
             "subject": questionContent,
             "content": questionContent,
@@ -294,7 +300,7 @@ class SubmitQuestionModal extends React.Component {
                                     className="input-question-content"
                                     name="questionContent"
                                     placeholder={t("Question")}
-                                    required name="questionContent"
+                                    required
                                     value={this.state.questionContent}
                                     onChange={this.handleChangeTargetQues.bind(this)} />
                                 <Form.Control.Feedback type="invalid">
@@ -313,7 +319,7 @@ class SubmitQuestionModal extends React.Component {
                                                 value={Constants.SOLVER_MANAGER}
                                                 name="solverid"
                                                 checked={solverid == Constants.SOLVER_MANAGER}
-                                                //disabled={this.props.isEdit}
+                                                // disabled={this.props.isEdit}
                                                 onChange={this.handleChange.bind(this)} />
                                             {t("LineManager")}
                                         </label>
@@ -326,7 +332,7 @@ class SubmitQuestionModal extends React.Component {
                                                 value={Constants.SOLVER_RESOURCE}
                                                 name="solverid"
                                                 checked={solverid == Constants.SOLVER_RESOURCE}
-                                                //disabled={this.props.isEdit}
+                                                // disabled={this.props.isEdit}
                                                 onChange={this.handleChange.bind(this)} />
                                             {t("Menu_HumanResource")}   
                                         </label>
@@ -339,7 +345,7 @@ class SubmitQuestionModal extends React.Component {
                                                 value={Constants.SOLVER_TCKT}
                                                 name="solverid"
                                                 checked={solverid == Constants.SOLVER_TCKT}
-                                                //disabled={this.props.isEdit}
+                                                // disabled={this.props.isEdit}
                                                 onChange={this.handleChange.bind(this)} />
                                             {t("Tckt")}
                                         </label>
@@ -363,9 +369,14 @@ class SubmitQuestionModal extends React.Component {
                                                 placeholder={t("Select")}
                                                 components={{ Option: MyOption }}
                                                 options={hrProfileDisplay}
-                                                //isDisabled={this.props.isEdit}
+                                                // isDisabled={this.props.isEdit}
                                                 value={hrProfileDisplay.filter((value) => value.userid === this.state.supervise.userid)}
                                                 onChange={this.setProfile.bind(this)} />
+                                        }
+                                        {
+                                          this.state.isShowMissingSolverError && <span className="text-danger text-xs text-center">
+                                            {`${t("PleaseEnter")} ${labelManagerTitle[solverid]}`}
+                                          </span>
                                         }
                                     </Form.Group>
                                 
