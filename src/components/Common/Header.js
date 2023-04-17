@@ -240,25 +240,29 @@ function Header(props) {
     }
 
     const userLogOut = async () => {
-        axios.post(
-          `${process.env.REACT_APP_REQUEST_URL}device/logoutToken`,
-          {
-            deviceToken: localStorage.getItem('firebaseToken') || '',
-            companyCode: localStorage.getItem('companyCode'),
-            orgLv3: localStorage.getItem('organizationLv3'),
-            orgLv4: localStorage.getItem('organizationLv4'),
-            orgLv5: localStorage.getItem('organizationLv5'),
-            platform: 'Web',
-          },
-          getRequestConfigurations()
-        );
         try {
-            guard.setLogOut();
-            window.location.href = process.env.REACT_APP_AWS_COGNITO_IDP_SIGNOUT_URL;
-            // Auth.signOut({ global: true });
+          await axios.post(
+            `${process.env.REACT_APP_REQUEST_URL}device/logoutToken`,
+            {
+              deviceToken: localStorage.getItem('firebaseToken') || '',
+              companyCode: localStorage.getItem('companyCode'),
+              orgLv3: localStorage.getItem('organizationLv3'),
+              orgLv4: localStorage.getItem('organizationLv4'),
+              orgLv5: localStorage.getItem('organizationLv5'),
+              platform: 'Web',
+            },
+            getRequestConfigurations()
+          );
+          localStorage.removeItem("firebaseToken");
+          localStorage.removeItem("userFirebaseToken");
+          guard.setLogOut();
+          window.location.href = process.env.REACT_APP_AWS_COGNITO_IDP_SIGNOUT_URL;
+          // Auth.signOut({ global: true });
         } catch {
-            guard.setLogOut();
-            window.location.reload();
+          localStorage.removeItem("firebaseToken");
+          localStorage.removeItem("userFirebaseToken");
+          guard.setLogOut();
+          window.location.reload();
         }
     }
 
