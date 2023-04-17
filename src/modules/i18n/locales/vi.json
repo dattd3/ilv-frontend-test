@@ -1731,5 +1731,7 @@
   "salary_keeped": "Giữ lương",
   "salary_paid": "Đã trả",
   "attachment": "File đính kèm",
-  "ReasonRequired": "Vui lòng nhập lý do"
+  "ReasonRequired": "Vui lòng nhập lý do",
+  "ForeignSickLeave": "Nghỉ ốm người nước ngoài",
+  "SickLeaveFundForExpat": "Quỹ nghỉ ốm"
 }
