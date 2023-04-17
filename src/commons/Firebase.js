@@ -14,11 +14,9 @@ const firebaseConfig = {
   },
   firebaseApp = initializeApp(firebaseConfig),
   messaging = getMessaging(firebaseApp);
-
 export const FirebaseUpdateToken = async () => {
   try {
     const permission = await Notification.requestPermission();
-    console.log(localStorage.getItem("firebaseToken"));
     if (
       (!localStorage.getItem("firebaseToken") ||
         !localStorage.getItem("userFirebaseToken") ||
@@ -27,7 +25,7 @@ export const FirebaseUpdateToken = async () => {
       permission === "granted"
     ) {
       let serviceWorkerRegistration = null;
-      if (process.env.NODE_ENV === "production") {
+      if (process.env.REACT_APP_ENVIRONMENT === 'PRODUCTION') {
         serviceWorkerRegistration = await navigator.serviceWorker.register(
           `${window.location.href}/firebase-messaging-sw.js`
         );
