@@ -996,7 +996,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                             req[0]?.absenceType?.value === FOREIGN_SICK_LEAVE && (
                                                 <>
                                                     <p className="title">{t("SickLeaveFundForExpat")}</p>
-                                                    <input type="text" className="form-control" style={{ height: 38, borderRadius: 4, padding: '0 15px' }} value={`${annualLeaveSummary.SICK_LEA_EXPAT || 0} ${t("Day")}`} disabled />
+                                                    <input type="text" className="form-control" style={{ height: 38, borderRadius: 4, padding: '0 15px' }} value={`${annualLeaveSummary?.SICK_LEA_EXPAT || 0} ${t("Day")}`} disabled />
                                                 </>
                                             )
                                         }
