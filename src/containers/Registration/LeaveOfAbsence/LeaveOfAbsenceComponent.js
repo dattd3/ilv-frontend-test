@@ -13,10 +13,10 @@ import _ from 'lodash'
 import map from '../../../../src/containers/map.config'
 import Constants from '../../../commons/Constants'
 import { withTranslation } from "react-i18next";
-import { getValueParamByQueryString, getMuleSoftHeaderConfigurations, getRequestConfigurations, getRegistrationMinDateByConditions } from "../../../commons/Utils"
+import { getValueParamByQueryString, getMuleSoftHeaderConfigurations, getRequestConfigurations, getRegistrationMinDateByConditions, isVinFast } from "../../../commons/Utils"
 import NoteModal from '../NoteModal'
 import { checkIsExactPnL } from '../../../commons/commonFunctions';
-import { absenceRequestTypes, PN03List, MATERNITY_LEAVE_KEY, MARRIAGE_FUNERAL_LEAVE_KEY, MOTHER_LEAVE_KEY } from "../../Task/Constants"
+import { absenceRequestTypes, PN03List, MATERNITY_LEAVE_KEY, MARRIAGE_FUNERAL_LEAVE_KEY, MOTHER_LEAVE_KEY, FOREIGN_SICK_LEAVE } from "../../Task/Constants"
 
 const FULL_DAY = 1
 const DURING_THE_DAY = 2
@@ -826,8 +826,14 @@ class LeaveOfAbsenceComponent extends React.Component {
     }
 
     render() {
-        const { t, leaveOfAbsence, recentlyManagers } = this.props;
-        const absenceRequestTypesPrepare = absenceRequestTypes.map(item => ({...item, label: t(item.label)}))
+        const { t, leaveOfAbsence, recentlyManagers } = this.props
+        const isEmployeeVinFast = isVinFast()
+        let absenceRequestTypesPrepare = absenceRequestTypes.map(item => ({...item, label: t(item.label)}))
+        
+        if (!isEmployeeVinFast) {
+            absenceRequestTypesPrepare = (absenceRequestTypesPrepare || []).filter(item => item?.value !== FOREIGN_SICK_LEAVE)
+        }
+
         const PN03ListPrepare = PN03List.map(item => ({...item, label: t(item.label)}))
         const {
             requestInfo,
@@ -987,11 +993,14 @@ class LeaveOfAbsenceComponent extends React.Component {
                                     </div>
                                     <div className="col-lg-4 col-xl-4">
                                         {
-                                            req[0].isShowHintLeaveForMother ?
-                                                <p className="message-danger"><i className="text-danger">* {t('AllowRegisterFor1Hour')}</i></p>
-                                                : ''
+                                            req[0]?.absenceType?.value === FOREIGN_SICK_LEAVE && (
+                                                <>
+                                                    <p className="title">{t("SickLeaveFundForExpat")}</p>
+                                                    <input type="text" className="form-control" style={{ height: 38, borderRadius: 4, padding: '0 15px' }} value={`${annualLeaveSummary.SICK_LEA_EXPAT || 0} ${t("Day")}`} disabled />
+                                                </>
+                                            )
                                         }
-
+                                        { req[0].isShowHintLeaveForMother && <p className="message-danger"><i className="text-danger">* {t('AllowRegisterFor1Hour')}</i></p> }
                                     </div>
                                 </div>
                                 <div className="row">

@@ -1728,5 +1728,7 @@
   "CheckedIn": "Checked In",
   "CheckedOut": "Checked Out",
   "at": "At",
-  "MissingKPI": "Missing KPI"
+  "MissingKPI": "Missing KPI",
+  "ForeignSickLeave": "Sick leave for expat",
+  "SickLeaveFundForExpat": "Sick leave fund for expat"
 }

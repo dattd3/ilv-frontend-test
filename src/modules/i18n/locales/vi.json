@@ -1745,5 +1745,7 @@
   "CheckedIn": "Đã check-in",
   "CheckedOut": "Đã check-out",
   "at": "tại",
-  "MissingKPI": "Chưa có nội dung đánh giá"
+  "MissingKPI": "Chưa có nội dung đánh giá",
+  "ForeignSickLeave": "Nghỉ ốm người nước ngoài",
+  "SickLeaveFundForExpat": "Quỹ nghỉ ốm"
 }
