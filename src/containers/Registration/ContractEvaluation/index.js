@@ -1980,7 +1980,7 @@ renderEvalution = (name, data, isDisable) => {
                 <div  style={{height: '2px', backgroundColor: '#F2F2F2', margin: '15px 0'}}></div>
                 </div>
               </div>
-              <ApproverComponent comment={this.checkShowQlttComment(data) && comment ? comment : null} isEdit={disableComponent.disableAll || !disableComponent.employeeSide} approver={data.qltt}  updateApprover={(approver, isApprover) => this.updateApprover('qltt', approver,isApprover )} />
+              <ApproverComponent comment={data.approverComment} isEdit={disableComponent.disableAll || !disableComponent.employeeSide} approver={data.qltt}  updateApprover={(approver, isApprover) => this.updateApprover('qltt', approver,isApprover )} />
               {this.state.errors && this.state.errors['qltt'] ? <p className="text-danger">{this.state.errors['qltt']}</p> : null}
             </div>
             {
