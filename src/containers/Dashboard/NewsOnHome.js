@@ -37,8 +37,9 @@ function NewsOnHome(props) {
     const listArticles = usePreload([1, 300])
 
     useEffect(() => {
-      if (Notification.permission !== "granted") {
+      if (Notification.permission !== "granted" && !sessionStorage.getItem("isCloseNotificationGuide")) {
         setIsShowNotiGuideModal(true);
+        sessionStorage.setItem("isCloseNotificationGuide", true);
       }
     }, [])
 
@@ -90,6 +91,10 @@ function NewsOnHome(props) {
             setIs_visible(false)
         }
             
+    }
+
+    const closeNotificationGuideModal = () => {
+      setIsShowNotiGuideModal(false);
     }
 
     const topOne = totalArticlesPerPage > 0 ? prepareNews(articles.listArticles[0]) : null
@@ -205,13 +210,13 @@ function NewsOnHome(props) {
             </div>
             {
               isShowNotiGuideModal && <div className="noti-guide-modal" >
-                <img className="close-icon" src={IconX} alt="icon-lock" onClick={() => setIsShowNotiGuideModal(false)} />
+                <img className="close-icon" src={IconX} alt="icon-lock" onClick={closeNotificationGuideModal} />
                   <div className="title">{t("NotificationGuide1")} <br /> ILoveVingroup</div>
                   <div className="guide-text">
-                  1. {t("NotificationGuide2")}&nbsp;<img className="image-inline" src={IconLock} alt="icon-lock" />&nbsp; {t("NotificationGuide3")}
+                  1. {t("NotificationGuide2")}&nbsp;<img className="image-inline lock-icon" src={IconLock} alt="icon-lock" />&nbsp; {t("NotificationGuide3")}
                   </div>
                   <div className="guide-text">
-                  2. {t("NotificationGuide4")}&nbsp;<img className="image-inline" src={IconSwitchPopup} alt="icon-switch" /> 
+                  2. {t("NotificationGuide4")}&nbsp;<img className="image-inline switch-icon" src={IconSwitchPopup} alt="icon-switch" /> 
                   </div>
               </div>
             }
