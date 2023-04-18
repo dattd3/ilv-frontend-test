@@ -1714,5 +1714,9 @@
   "salary_keeped": "Salary on hold",
   "salary_paid": "Paid",
   "attachment": "Attachment",
-  "ReasonRequired": "Please Enter Reason"
+  "ReasonRequired": "Please Enter Reason",
+  "TotalLeavesPendingRequestWaitingApproval": "Total Leaves pending request waiting for approval",
+  "TotalTOILPendingRequestWaitingApproval": "Total TOIL pending request waiting for approval",
+  "TotalLeavesPendingRequestWaitingForApproval": "Total Leaves pending request waiting for approval",
+  "TotalTOILHoursPendingRequestWaitingForApproval": "Total TOIL hours pending request waiting for approval"
 }

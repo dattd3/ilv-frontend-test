@@ -16,7 +16,7 @@ import { withTranslation } from "react-i18next";
 import { getValueParamByQueryString, getMuleSoftHeaderConfigurations, getRequestConfigurations, getRegistrationMinDateByConditions } from "../../../commons/Utils"
 import NoteModal from '../NoteModal'
 import { checkIsExactPnL } from '../../../commons/commonFunctions';
-import { absenceRequestTypes, PN03List, MATERNITY_LEAVE_KEY, MARRIAGE_FUNERAL_LEAVE_KEY, MOTHER_LEAVE_KEY } from "../../Task/Constants"
+import { absenceRequestTypes, PN03List, MATERNITY_LEAVE_KEY, MARRIAGE_FUNERAL_LEAVE_KEY, MOTHER_LEAVE_KEY, ANNUAL_LEAVE_KEY, ADVANCE_ABSENCE_LEAVE_KEY, COMPENSATORY_LEAVE_KEY } from "../../Task/Constants"
 
 const FULL_DAY = 1
 const DURING_THE_DAY = 2
@@ -63,7 +63,9 @@ class LeaveOfAbsenceComponent extends React.Component {
                 }
             ],
             errors: {},
-            needReload: true
+            needReload: true,
+            totalPendingLeaves: null,
+            totalPendingTOILs: null,
         }
     }
 
@@ -79,15 +81,15 @@ class LeaveOfAbsenceComponent extends React.Component {
     }
 
     componentDidMount() {
-        const config = getMuleSoftHeaderConfigurations()
-        config['params'] = {
+        const muleSoftConfig = getMuleSoftHeaderConfigurations()
+        muleSoftConfig['params'] = {
             date: moment().format('YYYYMMDD')
         }
 
         const { leaveOfAbsence, t } = this.props
         registerLocale("vi", t("locale") === "vi" ? vi : enUS)
 
-        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/currentabsence`, config)
+        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/currentabsence`, muleSoftConfig)
             .then(res => {
                 if (res && res.data) {
                     const annualLeaveSummary = res.data.data
@@ -134,6 +136,16 @@ class LeaveOfAbsenceComponent extends React.Component {
                 }) : [],
             })
         }
+
+        const config = getRequestConfigurations()
+        axios.get(`${process.env.REACT_APP_REQUEST_URL}request/pendings`, config)
+        .then(res => {
+            if (res && res?.data && res?.data?.data) {
+                const { totalPendingLeaves, totalPendingTOILs } = res?.data?.data
+                this.setState({ totalPendingLeaves, totalPendingTOILs })
+            }
+        }).catch(error => {
+        })
     }
 
     getStartDate() {
@@ -825,6 +837,41 @@ class LeaveOfAbsenceComponent extends React.Component {
         return copy
     }
 
+    showPendingTimeNote = (absenceTypeCode, isAllDay) => {
+        const { totalPendingLeaves, totalPendingTOILs } = this.state
+        const { t } = this.props
+        const labelNoteMapping = {
+            [ANNUAL_LEAVE_KEY]: t("TotalLeavesPendingRequestWaitingApproval"),
+            [ADVANCE_ABSENCE_LEAVE_KEY]: t("TotalLeavesPendingRequestWaitingApproval"),
+            [COMPENSATORY_LEAVE_KEY]: t("TotalTOILPendingRequestWaitingApproval"),
+        }
+
+        const showTimePending = () => {
+            if ([ANNUAL_LEAVE_KEY, ADVANCE_ABSENCE_LEAVE_KEY].includes(absenceTypeCode)) {
+                if (isAllDay) {
+                    return `${totalPendingLeaves?.day || 0} ${t("Day")}`
+                }
+
+                return `${totalPendingLeaves?.hour || 0} ${t("Hour")}`
+            }
+
+            if (isAllDay) {
+                return `${totalPendingTOILs?.day || 0} ${t("Day")}`
+            }
+
+            return `${totalPendingTOILs?.hour || 0} ${t("Hour")}`
+        }
+
+        return (
+            [ANNUAL_LEAVE_KEY, ADVANCE_ABSENCE_LEAVE_KEY, COMPENSATORY_LEAVE_KEY].includes(absenceTypeCode) && (
+                <>
+                    <p className="title">{labelNoteMapping[absenceTypeCode]}</p>
+                    <input type="text" className="form-control" style={{ height: 38, borderRadius: 4, padding: '0 15px' }} value={showTimePending()} disabled />
+                </>
+            )
+        )
+    }
+
     render() {
         const { t, leaveOfAbsence, recentlyManagers } = this.props;
         const absenceRequestTypesPrepare = absenceRequestTypes.map(item => ({...item, label: t(item.label)}))
@@ -947,6 +994,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                             totalTime += +(Math.round(r.totalTimes + "e+2") + "e-2");
                         }
                     })
+
                     return (
                         <div className="box shadow position-relative" key={index}>
                             { isEdit && <div className='text-uppercase font-weight-bold box-title'>Thông tin điều chỉnh đăng ký nghỉ</div> }
@@ -987,11 +1035,9 @@ class LeaveOfAbsenceComponent extends React.Component {
                                     </div>
                                     <div className="col-lg-4 col-xl-4">
                                         {
-                                            req[0].isShowHintLeaveForMother ?
-                                                <p className="message-danger"><i className="text-danger">* {t('AllowRegisterFor1Hour')}</i></p>
-                                                : ''
+                                            this.showPendingTimeNote(req[0]?.absenceType?.value, req[0]?.isAllDay)
                                         }
-
+                                        { req[0].isShowHintLeaveForMother && <p className="message-danger"><i className="text-danger">* {t('AllowRegisterFor1Hour')}</i></p> }
                                     </div>
                                 </div>
                                 <div className="row">
