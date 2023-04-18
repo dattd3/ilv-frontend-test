@@ -4196,47 +4196,42 @@ span.badge-notification[data-badge]::after {
   }
 }
 
-.noti-guide-dialog-modal {
-  margin-top: 20px;
-  margin-left: 60px;
-  color: #000;
-}
-
 .noti-guide-modal {
-  // height: 153px;
-  // width: 370px;
+  height: 127px;
+  width: 288px;
+  position: fixed;
+  top: 10px;
+  left: 15px;
+  z-index: 99999;
   text-align: center;
-  .modal-body {
-    border-radius: 4px;
-    padding-top: 12px;
-    padding-bottom: 0px;
-    max-width: 390px;
-    background: url("./assets/img/noti-guide-popup-background.png");
-    background-repeat: round;
-  }
+  border-radius: 8px;
+  padding: 12px;
+  max-width: 390px;
+  background: url("./assets/img/noti-guide-popup-background.png");
+  background-repeat: round;
   .image-inline {
     display: inline;
   }
   .close-icon {
     cursor: pointer;
     position: absolute;
-    right: -8px;
-    top: -10px;
+    right: 10px;
+    top: 10px;
   }
-  .tile {
-    font-size: 16px;
+  .title {
+    font-size: 13px;
     font-weight: 700;
-    line-height: 20px;
+    line-height: 15px;
     text-align: center;
-    margin-bottom: 15px;
+    margin-bottom: 12px;
   }
   .guide-text {
     display: flex;
     align-items: flex-start;
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 400;
-    line-height: 17px;
-    margin-bottom: 20px;
+    line-height: 14px;
+    margin-bottom: 14px;
   }
 }
 
