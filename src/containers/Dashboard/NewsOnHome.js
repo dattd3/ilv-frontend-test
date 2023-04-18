@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react"
-import { Image, Modal } from 'react-bootstrap'
+import { Image } from 'react-bootstrap'
 import { useTranslation } from "react-i18next"
 import moment from 'moment'
 import { useApi, useFetcher } from "../../modules"
@@ -13,7 +13,7 @@ import IconUser from '../../assets/img/icon/Icon-User.svg'
 import IconTime from '../../assets/img/icon/Icon-Time.svg'
 import IconLock from '../../assets/img/icon/icon-lock.svg'
 import IconSwitchPopup from '../../assets/img/icon/icon-switch-popup.svg'
-import IconClosePopup from '../../assets/img/icon/icon-close-popup.svg'
+import IconX from '../../assets/img/icon/icon_x.svg'
 
 const usePreload = (params) => {
     const api = useApi();
@@ -204,18 +204,16 @@ function NewsOnHome(props) {
 
             </div>
             {
-              isShowNotiGuideModal && <Modal show={true} dialogClassName="noti-guide-dialog-modal" className="noti-guide-modal">
-                <Modal.Body>
-                <img className="close-icon" src={IconClosePopup} alt="icon-lock" onClick={() => setIsShowNotiGuideModal(false)} />
-                  <div className="tile">{t("NotificationGuide1")} <br /> ILoveVingroup</div>
+              isShowNotiGuideModal && <div className="noti-guide-modal" >
+                <img className="close-icon" src={IconX} alt="icon-lock" onClick={() => setIsShowNotiGuideModal(false)} />
+                  <div className="title">{t("NotificationGuide1")} <br /> ILoveVingroup</div>
                   <div className="guide-text">
                   1. {t("NotificationGuide2")}&nbsp;<img className="image-inline" src={IconLock} alt="icon-lock" />&nbsp; {t("NotificationGuide3")}
                   </div>
                   <div className="guide-text">
                   2. {t("NotificationGuide4")}&nbsp;<img className="image-inline" src={IconSwitchPopup} alt="icon-switch" /> 
                   </div>
-                </Modal.Body>
-              </Modal>
+              </div>
             }
             {loaded &&
                 <div>
