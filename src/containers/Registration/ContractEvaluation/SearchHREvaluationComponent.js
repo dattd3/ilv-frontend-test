@@ -170,7 +170,9 @@ class SearchHRComponent extends React.Component {
                 orglv2Id: res.orglv2_id,
                 account: res.username,
                 current_position: res.position_name,
-                department: res.division + (res.department ? '/' + res.department : '') + (res.part ? '/' + res.part : '')
+                employeeNo: res.uid,
+                department: res.division + (res.department ? '/' + res.department : '') + (res.part ? '/' + res.part : ''),
+                company_email: res.company_email
               }
             })
             this.setState({ users: appraiser ? users.filter(user => user.account !== appraiser.account) : users, isSearching: false })
