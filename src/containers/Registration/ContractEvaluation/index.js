@@ -303,6 +303,10 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         SelfAssessmentScoreTotal: 0,
         ManagementScoreTotal: 0,
         childRequestHistoryId: null,
+        appraiserComment: null,
+        approverComment: null,
+        hrAppraiserComment: null,
+        supervisorComment: null
       },
       errors: {
         // rating: '(Bắt buộc)',
@@ -679,6 +683,10 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
       candidateInfos.hasnguoidanhgia = infos.requestHistorys.appraiserInfo && infos.requestHistorys.appraiserInfo.account ? true : false;
       candidateInfos.qltt = infos.requestHistorys.supervisorInfo && infos.requestHistorys.supervisorInfo.account ?  infos.requestHistorys.supervisorInfo : {};
       candidateInfos.nguoipheduyet = infos.requestHistorys.approverInfo && infos.requestHistorys.approverInfo.account ? infos.requestHistorys.approverInfo : {}; 
+      candidateInfos.appraiserComment = infos.requestHistorys.appraiserComment; 
+      candidateInfos.supervisorComment = infos.requestHistorys.supervisorComment; 
+      candidateInfos.hrAppraiserComment = infos.requestHistorys.hrAppraiserComment; 
+      candidateInfos.approverComment = infos.requestHistorys.approverComment; 
     }
     candidateInfos.documentStatus = infos.profileStatus;
     const cvs = this.prepareCVResponses(infos.staffProfileDocuments)
@@ -1351,40 +1359,40 @@ renderEvalution = (name, data, isDisable) => {
     this.props.history.push(`/salarypropse/${this.state.id}/create/request`)
   }
 
-  checkShowQlttComment = (data) => {
-  // CBLF tham dinh VSC -field qltt -- 11
-  if(checkVersionPnLSameAsVinhome(Constants.MODULE.DANHGIA_TAIKI)) {
-    return ((data.processStatus == 10 && data.qltt.account));
-   } else {
-     return(data.processStatus == 10 || (data.processStatus == 9 && !data.hasnguoidanhgia));
-   }
+  // checkShowQlttComment = (data) => {
+  // // CBLF tham dinh VSC -field qltt -- 11
+  // if(checkVersionPnLSameAsVinhome(Constants.MODULE.DANHGIA_TAIKI)) {
+  //   return ((data.processStatus == 10 && data.qltt.account));
+  //  } else {
+  //    return(data.processStatus == 10 || (data.processStatus == 9 && !data.hasnguoidanhgia));
+  //  }
 
-  }
+  // }
 
-  checkShownguoidanhgiaComment = (data) => {
-    // QLTT VSC - filed nguoidanhgia -- 10
+  // checkShownguoidanhgiaComment = (data) => {
+  //   // QLTT VSC - filed nguoidanhgia -- 10
 
-    if(checkVersionPnLSameAsVinhome(Constants.MODULE.DANHGIA_TAIKI)) {
-     return (data.processStatus == 9 && data.nguoidanhgia.account);
-    } else {
-      return (data.processStatus == 9 && !data.qltt.account);
-    }
-  }
+  //   if(checkVersionPnLSameAsVinhome(Constants.MODULE.DANHGIA_TAIKI)) {
+  //    return (data.processStatus == 9 && data.nguoidanhgia.account);
+  //   } else {
+  //     return (data.processStatus == 9 && !data.qltt.account);
+  //   }
+  // }
 
-  checkShowApprovalComment = (data) => {
-    if (IS_VINFAST) {
-      return data.processStatus == 12;
-    }
-    if(checkVersionPnLSameAsVinhome(Constants.MODULE.DANHGIA_TAIKI)) {
-      return data.processStatus == 11 || (data.processStatus == 10 && !data.qltt.account);
-    } else {
-      return data.processStatus == 11;
-    }
-  }
+  // checkShowApprovalComment = (data) => {
+  //   if (IS_VINFAST) {
+  //     return data.processStatus == 12;
+  //   }
+  //   if(checkVersionPnLSameAsVinhome(Constants.MODULE.DANHGIA_TAIKI)) {
+  //     return data.processStatus == 11 || (data.processStatus == 10 && !data.qltt.account);
+  //   } else {
+  //     return data.processStatus == 11;
+  //   }
+  // }
 
-  checkShowHrAppraiserComment = (data) => {
-      return data.processStatus == 11 || (data.processStatus == 10 && !data.qltt.account);
-  }
+  // checkShowHrAppraiserComment = (data) => {
+  //     return data.processStatus == 11 || (data.processStatus == 10 && !data.qltt.account);
+  // }
 
   onHideModalConfirm = () => {
     this.setState({
@@ -1837,7 +1845,7 @@ renderEvalution = (name, data, isDisable) => {
                 <div  style={{height: '2px', backgroundColor: '#F2F2F2', margin: '15px 0'}}></div>
                 </div>
               </div>
-              <ApproverComponent comment={this.checkShownguoidanhgiaComment(data) && comment ? comment : null}  isEdit={disableComponent.disableAll || !disableComponent.employeeSide} approver={data.nguoidanhgia}  updateApprover={(approver, isApprover) => this.updateApprover('nguoidanhgia', approver,isApprover )} />
+              <ApproverComponent comment={data.appraiserComment}  isEdit={disableComponent.disableAll || !disableComponent.employeeSide} approver={data.nguoidanhgia}  updateApprover={(approver, isApprover) => this.updateApprover('nguoidanhgia', approver,isApprover )} />
               {this.state.errors && this.state.errors['nguoidanhgia'] ? <p className="text-danger">{this.state.errors['nguoidanhgia']}</p> : null}
             </div>
 
@@ -1856,7 +1864,7 @@ renderEvalution = (name, data, isDisable) => {
                 <div  style={{height: '2px', backgroundColor: '#F2F2F2', margin: '15px 0'}}></div>
                 </div>
               </div>
-              <ApproverComponent comment={this.checkShowQlttComment(data) && comment ? comment : null} isEdit={disableComponent.disableAll || !disableComponent.employeeSide} approver={data.qltt}  updateApprover={(approver, isApprover) => this.updateApprover('qltt', approver,isApprover )} />
+              <ApproverComponent comment={data.supervisorComment} isEdit={disableComponent.disableAll || !disableComponent.employeeSide} approver={data.qltt}  updateApprover={(approver, isApprover) => this.updateApprover('qltt', approver,isApprover )} />
               {this.state.errors && this.state.errors['qltt'] ? <p className="text-danger">{this.state.errors['qltt']}</p> : null}
             </div>
 
@@ -1872,7 +1880,7 @@ renderEvalution = (name, data, isDisable) => {
                   <div  style={{height: '2px', backgroundColor: '#F2F2F2', margin: '15px 0'}}></div>
                   </div>
                 </div>
-                <SearchHREvaluationComponent comment={this.checkShowHrAppraiserComment(data) && comment ? comment : null}  isEdit={disableComponent.disableAll || !disableComponent.employeeSide} approver={data.hrAppraiser}  updateApprover={(approver, isApprover) => this.updateApprover('hrAppraiser', approver,isApprover )} />
+                <SearchHREvaluationComponent comment={data.hrAppraiserComment}  isEdit={disableComponent.disableAll || !disableComponent.employeeSide} approver={data.hrAppraiser}  updateApprover={(approver, isApprover) => this.updateApprover('hrAppraiser', approver,isApprover )} />
                 {this.state.errors && this.state.errors['hrAppraiser'] ? <p className="text-danger">{this.state.errors['hrAppraiser']}</p> : null}
               </div>
             }
@@ -1987,7 +1995,7 @@ renderEvalution = (name, data, isDisable) => {
                     <div  style={{height: '2px', backgroundColor: '#F2F2F2', margin: '15px 0'}}></div>
                     </div>
                   </div>
-                  <SearchHREvaluationComponent comment={this.checkShowHrAppraiserComment(data) && comment ? comment : null}  isEdit={disableComponent.disableAll || !disableComponent.employeeSide} approver={data.hrAppraiser}  updateApprover={(approver, isApprover) => this.updateApprover('hrAppraiser', approver,isApprover )} />
+                  <SearchHREvaluationComponent comment={data.hrAppraiserComment}  isEdit={disableComponent.disableAll || !disableComponent.employeeSide} approver={data.hrAppraiser}  updateApprover={(approver, isApprover) => this.updateApprover('hrAppraiser', approver,isApprover )} />
                   {this.state.errors && this.state.errors['hrAppraiser'] ? <p className="text-danger">{this.state.errors['hrAppraiser']}</p> : null}
                 </div>
             }
@@ -2004,7 +2012,7 @@ renderEvalution = (name, data, isDisable) => {
                   <div  style={{height: '2px', backgroundColor: '#F2F2F2', margin: '15px 0'}}></div>
                   </div>
                 </div>
-                <ApproverComponent approvalDate = {data.approvalDate && data.processStatus == 2 ? data.approvalDate : null} comment={this.checkShowApprovalComment(data) && comment ? comment : null} isEdit={disableComponent.disableAll || !disableComponent.qlttSide} approver={data.nguoipheduyet}  updateApprover={(approver, isApprover) => this.updateApprover('nguoipheduyet', approver,isApprover )} />
+                <ApproverComponent approvalDate = {data.approvalDate && data.processStatus == 2 ? data.approvalDate : null} comment={data.approverComment} isEdit={disableComponent.disableAll || !disableComponent.qlttSide} approver={data.nguoipheduyet}  updateApprover={(approver, isApprover) => this.updateApprover('nguoipheduyet', approver,isApprover )} />
                 {this.state.errors && this.state.errors['boss'] ? <p className="text-danger">{this.state.errors['boss']}</p> : null}
               </div> : null
             }
@@ -2137,7 +2145,7 @@ renderEvalution = (name, data, isDisable) => {
                     <div  style={{height: '2px', backgroundColor: '#F2F2F2', margin: '15px 0'}}></div>
                     </div>
                   </div>
-                  <SearchHREvaluationComponent comment={this.checkShowHrAppraiserComment(data) && comment ? comment : null}  isEdit={disableComponent.disableAll || !disableComponent.employeeSide} approver={data.hrAppraiser}  updateApprover={(approver, isApprover) => this.updateApprover('hrAppraiser', approver,isApprover )} />
+                  <SearchHREvaluationComponent comment={data.hrAppraiserComment}  isEdit={disableComponent.disableAll || !disableComponent.employeeSide} approver={data.hrAppraiser}  updateApprover={(approver, isApprover) => this.updateApprover('hrAppraiser', approver,isApprover )} />
                   {this.state.errors && this.state.errors['hrAppraiser'] ? <p className="text-danger">{this.state.errors['hrAppraiser']}</p> : null}
                 </div>
               }
@@ -2153,7 +2161,7 @@ renderEvalution = (name, data, isDisable) => {
                 <div  style={{height: '2px', backgroundColor: '#F2F2F2', margin: '15px 0'}}></div>
                 </div>
               </div>
-              <ApproverComponent approvalDate = {data.approvalDate && data.processStatus == 2 ? data.approvalDate : null} comment={this.checkShowApprovalComment(data) && comment ? comment : null} isEdit={disableComponent.disableAll || !disableComponent.qlttSide} approver={data.nguoipheduyet}  updateApprover={(approver, isApprover) => this.updateApprover('nguoipheduyet', approver,isApprover )} />
+              <ApproverComponent approvalDate = {data.approvalDate && data.processStatus == 2 ? data.approvalDate : null} comment={data.approverComment} isEdit={disableComponent.disableAll || !disableComponent.qlttSide} approver={data.nguoipheduyet}  updateApprover={(approver, isApprover) => this.updateApprover('nguoipheduyet', approver,isApprover )} />
               {this.state.errors && this.state.errors['boss'] ? <p className="text-danger">{this.state.errors['boss']}</p> : null}
             </div>
             </>
