@@ -714,21 +714,22 @@ class LeaveOfAbsenceComponent extends React.Component {
             headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
         })
         .then(response => {
-            if (response && response.data.data && response.data.result) {
+            const result = response?.data?.result
+            
+            if (result?.code === Constants.API_SUCCESS_CODE) {
                 this.showStatusModal(t("Successful"), t("RequestSent"), true)
-                this.setDisabledSubmitButton(false)
-            }
-            else {
-                this.showStatusModal(t("Notification"), response.data.result.message, false)
-                this.setDisabledSubmitButton(false)
+                this.setState({ needReload: true })
+            } else {
+                this.setState({ needReload: false })
+                this.showStatusModal(t("Notification"), response?.data?.result?.message, false)
             }
         })
         .catch(response => {
+            this.setState({ needReload: false })
             this.showStatusModal(t("Notification"), "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
-            this.setDisabledSubmitButton(false)
         })
         .finally(() => {
-            this.setState({ needReload: true })
+            this.setDisabledSubmitButton(false)
         })
     }
 
@@ -749,37 +750,55 @@ class LeaveOfAbsenceComponent extends React.Component {
     }
 
     hideStatusModal = () => {
-        const { isEdit, needReload } = this.state;
-        this.setState({ isShowStatusModal: false });
-        if (isEdit) {
-            window.location.replace("/tasks")
-        } else {
-            if (needReload) {
-                window.location.href = map.Registration;
+        const { isEdit, needReload } = this.state
+        this.setState({ isShowStatusModal: false })
+
+        if (needReload) {
+            if (isEdit) {
+                window.location.replace("/tasks")
+            } else {
+                window.location.href = map.Registration
             }
         }
     }
 
     updateLeaveType(isAllDay, groupId) {
-        const { requestInfo, dateRequest } = this.state
-        const newRequestInfo = requestInfo.filter(req => req.groupId !== groupId)
-        newRequestInfo.push({
-            groupItem: 1,
-            startDate: dateRequest,
-            startTime: null,
-            endDate: dateRequest,
-            endTime: null,
-            comment: null,
-            totalTimes: 0,
-            totalDays: dateRequest ? totalDaysForSameDay : 0,
-            absenceType: null,
-            isAllDay: isAllDay,
-            funeralWeddingInfo: null,
-            groupId: groupId,
-            errors: {},
-        })
+        const { dateRequest, isEdit } = this.state
+        const requestInfo = [...this.state.requestInfo]
 
-        this.setState({ requestInfo: newRequestInfo })
+        if (isEdit) {
+            const indexEditing = _.findIndex(requestInfo, ['groupId', groupId])
+            requestInfo[indexEditing].startDate = null
+            requestInfo[indexEditing].startTime = null
+            requestInfo[indexEditing].endDate = null
+            requestInfo[indexEditing].endTime = null
+            requestInfo[indexEditing].comment = ''
+            requestInfo[indexEditing].totalTimes = 0
+            requestInfo[indexEditing].totalDays = 0
+            requestInfo[indexEditing].absenceType = null
+            requestInfo[indexEditing].isAllDay = isAllDay
+            requestInfo[indexEditing].funeralWeddingInfo = null
+            requestInfo[indexEditing].errors = {}
+            this.setState({ requestInfo: requestInfo })
+        } else {
+            const newRequestInfo = requestInfo.filter(req => req.groupId !== groupId)
+            newRequestInfo.push({
+                groupItem: 1,
+                startDate: dateRequest,
+                startTime: null,
+                endDate: dateRequest,
+                endTime: null,
+                comment: null,
+                totalTimes: 0,
+                totalDays: dateRequest ? totalDaysForSameDay : 0,
+                absenceType: null,
+                isAllDay: isAllDay,
+                funeralWeddingInfo: null,
+                groupId: groupId,
+                errors: {},
+            })
+            this.setState({ requestInfo: newRequestInfo })
+        }
     }
 
     removeFile(index) {
@@ -908,32 +927,77 @@ class LeaveOfAbsenceComponent extends React.Component {
                                     let  totalTimeRegistered = ri?.isAllDay ? `${ri?.days || 0} ${t('DayUnit')}` : `${ri?.hours || 0} ${t('HourUnit')}`
                                     return (
                                         <div className='item' key={`old-request-info-${riIndex}`}>
-                                            <div className='d-flex main-info'>
-                                                <div className='main-info__item'>
-                                                    <label>{t('StartDateTime')}</label>
-                                                    <div className='d-flex align-items-center value'>
-                                                        {ri?.startDate && moment(ri?.startDate, 'YYYYMMDD').isValid() ? moment(ri?.startDate, 'YYYYMMDD').format('DD/MM/YYYY') : ''}
-                                                    </div>
-                                                </div>
-                                                <div className='main-info__item'>
-                                                    <label>{t('EndDateTime')}</label>
-                                                    <div className='d-flex align-items-center value'>
-                                                        {ri?.endDate && moment(ri?.endDate, 'YYYYMMDD').isValid() ? moment(ri?.endDate, 'YYYYMMDD').format('DD/MM/YYYY') : ''}
-                                                    </div>
-                                                </div>
-                                                <div className='main-info__item'>
-                                                    <label>{t('TotalLeaveTime')}</label>
-                                                    <div className='d-flex align-items-center value'>{totalTimeRegistered}</div>
-                                                </div>
-                                                <div className='main-info__item'>
-                                                    <label>{t('LeaveCategory')}</label>
-                                                    <div className='d-flex align-items-center value'>{ri?.absenceType?.label || ''}</div>
-                                                </div>
-                                            </div>
-                                            <div className='reason'>
-                                                <label>{t('ReasonRequestLeave')}</label>
-                                                <div className='d-flex align-items-center value'>{ri?.comment || ''}</div>
-                                            </div>
+                                            {
+                                                ri?.absenceType?.value === FOREIGN_SICK_LEAVE ? (
+                                                    <>
+                                                        <div className='row'>
+                                                            <div className='col-md-4'>
+                                                                <label>{t('StartDateTime')}</label>
+                                                                <div className='d-flex align-items-center value'>
+                                                                    {ri?.startDate && moment(ri?.startDate, 'YYYYMMDD').isValid() ? moment(ri?.startDate, 'YYYYMMDD').format('DD/MM/YYYY') : ''}
+                                                                </div>
+                                                            </div>
+                                                            <div className='col-md-4'>
+                                                                <label>{t('EndDateTime')}</label>
+                                                                <div className='d-flex align-items-center value'>
+                                                                    {ri?.endDate && moment(ri?.endDate, 'YYYYMMDD').isValid() ? moment(ri?.endDate, 'YYYYMMDD').format('DD/MM/YYYY') : ''}
+                                                                </div>
+                                                            </div>
+                                                            <div className='col-md-4'>
+                                                                <label>{t('TotalLeaveTime')}</label>
+                                                                <div className='d-flex align-items-center value'>{totalTimeRegistered}</div>
+                                                            </div>
+                                                        </div>
+                                                        <div className='row' style={{ marginTop: 15, marginBottom: 15 }}>
+                                                            <div className='col-md-8'>
+                                                                <label>{t('LeaveCategory')}</label>
+                                                                <div className='d-flex align-items-center value'>{ri?.absenceType?.label || ''}</div>
+                                                            </div>
+                                                            <div className='col-md-4'>
+                                                                <label>{t('SickLeaveFundForExpat')}</label>
+                                                                <div className='d-flex align-items-center value'>{`${annualLeaveSummary?.SICK_LEA_EXPAT || 0} ${t("Day")}` }</div>
+                                                            </div>
+                                                        </div>
+                                                        <div className='row'>
+                                                            <div className='col-md-12'>
+                                                                <label>{t('ReasonRequestLeave')}</label>
+                                                                <div className='d-flex align-items-center value'>{ri?.comment || ''}</div>
+                                                            </div>
+                                                        </div>
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <div className='row'>
+                                                            <div className='col-md-3'>
+                                                                <label>{t('StartDateTime')}</label>
+                                                                <div className='d-flex align-items-center value'>
+                                                                    {ri?.startDate && moment(ri?.startDate, 'YYYYMMDD').isValid() ? moment(ri?.startDate, 'YYYYMMDD').format('DD/MM/YYYY') : ''}
+                                                                </div>
+                                                            </div>
+                                                            <div className='col-md-3'>
+                                                                <label>{t('EndDateTime')}</label>
+                                                                <div className='d-flex align-items-center value'>
+                                                                    {ri?.endDate && moment(ri?.endDate, 'YYYYMMDD').isValid() ? moment(ri?.endDate, 'YYYYMMDD').format('DD/MM/YYYY') : ''}
+                                                                </div>
+                                                            </div>
+                                                            <div className='col-md-3'>
+                                                                <label>{t('TotalLeaveTime')}</label>
+                                                                <div className='d-flex align-items-center value'>{totalTimeRegistered}</div>
+                                                            </div>
+                                                            <div className='col-md-3'>
+                                                                <label>{t('LeaveCategory')}</label>
+                                                                <div className='d-flex align-items-center value'>{ri?.absenceType?.label || ''}</div>
+                                                            </div>
+                                                        </div>
+                                                        <div className='row' style={{ marginTop: 15 }}>
+                                                            <div className='col-md-12'>
+                                                                <label>{t('ReasonRequestLeave')}</label>
+                                                                <div className='d-flex align-items-center value'>{ri?.comment || ''}</div>
+                                                            </div>
+                                                        </div>
+                                                    </>
+                                                )
+                                            }
                                         </div>
                                     )
                                 })
