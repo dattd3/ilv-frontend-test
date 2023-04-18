@@ -4200,8 +4200,8 @@ span.badge-notification[data-badge]::after {
   height: 127px;
   width: 288px;
   position: fixed;
-  top: 10px;
-  left: 15px;
+  top: 3px;
+  left: 9px;
   z-index: 99999;
   text-align: center;
   border-radius: 8px;
@@ -4209,6 +4209,13 @@ span.badge-notification[data-badge]::after {
   max-width: 390px;
   background: url("./assets/img/noti-guide-popup-background.png");
   background-repeat: round;
+  color: #000;
+  .lock-icon {
+    width: 20px;
+  }
+  .switch-icon {
+    width: 30px;
+  }
   .image-inline {
     display: inline;
   }
@@ -4233,6 +4240,7 @@ span.badge-notification[data-badge]::after {
     line-height: 14px;
     margin-bottom: 14px;
   }
+
 }
 
 .custom-notification-toast {
