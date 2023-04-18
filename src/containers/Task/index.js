@@ -153,13 +153,14 @@ class Task extends React.Component {
                         </Tab>
                         : null
                     }
-                    {
+                    {/* Hủy bỏ tính năng Ủy quyền phê duyệt (17/04/2023). Requested by Vượng */}
+                    {/* {
                         Constants.APPROVAL_DELEGATION_LIST_LEVEL.includes(employeeLevel) ?
                         <Tab eventKey={tabKey.approvalDelegation} title={labelApprovalDelegationAction} tabClassName={approvalDelegationClass}>
                             <ApprovalDelegationList userApprovalDelegation={approvalDelegationModal.userApprovalDelegation} cancelApprovalDelegation={this.cancelApprovalDelegation} />
                         </Tab>
                         : null
-                    }
+                    } */}
                 </Tabs>
             </div>
             </>
