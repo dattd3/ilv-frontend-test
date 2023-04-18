@@ -1735,5 +1735,9 @@
   "MissingKPI": "Missing KPI",
   "ForeignSickLeave": "Sick leave for expat",
   "SickLeaveFundForExpat": "Sick leave fund for expat",
-  "PleaseEnter": "Please enter"
+  "PleaseEnter": "Please enter",
+  "TotalLeavesPendingRequestWaitingApproval": "Total Leaves pending request waiting for approval",
+  "TotalTOILPendingRequestWaitingApproval": "Total TOIL pending request waiting for approval",
+  "TotalLeavesPendingRequestWaitingForApproval": "Total Leaves pending request waiting for approval",
+  "TotalTOILHoursPendingRequestWaitingForApproval": "Total TOIL hours pending request waiting for approval"
 }
