@@ -1291,7 +1291,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                         )
                                                 }
 
-                                                {!indexDetail ?
+                                                {!indexDetail && !isEdit ?
                                                     <React.Fragment>
                                                         <button type="button" className="btn btn-add-multiple-in-out" onClick={() => this.addMultiDateTime(req[0].groupId, req, req[0].isAllDay, req[0].absenceType, req[0].comment, req[0].funeralWeddingInfo)}><i className="fas fa-plus"></i> {t("AddMore")}</button>
                                                         <button type="button" className="btn btn-add-multiple" onClick={() => this.setState({ isShowNoteModal: true })}><i className="fas fa-info"></i></button>
