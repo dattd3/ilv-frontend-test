@@ -76,8 +76,6 @@ class SubstitutionComponent extends React.Component {
           if (this.isVin3S) {
             shifts = (shifts || []).filter(shift => shiftCodesAllowedToUpdateForVin3S.includes(shift?.shift_id))
           }
-          //ILVG-643: VFXS chỉ phân ca trong 5 mã ca cố định
-          shifts = this.filterShiftByPnl(shifts);
 
           this.setState({ shifts: shifts })
         }
@@ -103,15 +101,6 @@ class SubstitutionComponent extends React.Component {
         }),
       })
     }
-  }
-
-  filterShiftByPnl(shifts) {
-    const currentUserPnL = localStorage.getItem("companyCode");
-    
-    if ([Constants.pnlVCode.VinFast].includes(currentUserPnL)) {
-        shifts = (shifts || []).filter(s => Constants.VFSX_SHIFT_ID_VALID.includes(s?.shift_id));
-    }
-    return shifts;
   }
 
   verifyInput() {
