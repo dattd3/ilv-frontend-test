@@ -89,7 +89,8 @@ export default function processingDataReq(dataRawFromApi, tab) {
                     } else {
                         e.id = element.id.toString()
                     }
-                    e.isEdit = listRequestTypeIdToGetSubId.includes(element.requestTypeId) ? e.isEdit : element.isEdit
+                    // e.isEdit = listRequestTypeIdToGetSubId.includes(element.requestTypeId) ? e.isEdit : element.isEdit
+                    e.isEdit = element?.isEdit // Confirm từ a Thủy và a Chiến Mobile lấy isEdit bên ngoài (không lấy bên trong) - 18/04/2023
                     taskList.push(e)
                 })
             }
