@@ -24,8 +24,10 @@ messaging.onBackgroundMessage(function (payload) {
     body: payload.notification.body,
     icon: payload.notification.image,
   };
+  const channel = new BroadcastChannel('notification-channel');
+  channel.postMessage({ payload });
 
-  window.registration.showNotification(notificationTitle, notificationOptions);
+  self.registration.showNotification(notificationTitle, notificationOptions);
 });
 
 // window.addEventListener('notificationclick', event => {
