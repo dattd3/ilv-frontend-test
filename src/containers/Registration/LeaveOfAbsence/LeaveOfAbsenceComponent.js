@@ -532,7 +532,7 @@ class LeaveOfAbsenceComponent extends React.Component {
         let { requestInfo, approver, appraiser, errors } = this.state;
         const { t } = this.props
 
-        if (approver?.account?.trim()?.toLowerCase() === appraiser?.account?.trim()?.toLowerCase()) {
+        if (approver?.account?.trim() && appraiser?.account?.trim() && approver?.account?.trim()?.toLowerCase() === appraiser?.account?.trim()?.toLowerCase()) {
             this.showStatusModal(t("Notification"), t("ApproverAndConsenterCannotBeIdentical"), false)
             this.setState({ needReload: false })
             return false
@@ -856,6 +856,16 @@ class LeaveOfAbsenceComponent extends React.Component {
         return copy
     }
 
+    formatDayUnitByValue = (val) => {
+        const { t } = this.props
+
+        if (Number(val) > 1) {
+            return t("DayMultiplicity")
+        }
+
+        return t("Day")
+    }
+
     showPendingTimeNote = (absenceTypeCode, isAllDay) => {
         const { totalPendingLeaves, totalPendingTOILs } = this.state
         const { t } = this.props
@@ -868,14 +878,14 @@ class LeaveOfAbsenceComponent extends React.Component {
         const showTimePending = () => {
             if ([ANNUAL_LEAVE_KEY, ADVANCE_ABSENCE_LEAVE_KEY].includes(absenceTypeCode)) {
                 if (isAllDay) {
-                    return `${totalPendingLeaves?.day || 0} ${t("Day")}`
+                    return `${totalPendingLeaves?.day || 0} ${this.formatDayUnitByValue(totalPendingLeaves?.day || 0)}`
                 }
 
                 return `${totalPendingLeaves?.hour || 0} ${t("Hour")}`
             }
 
             if (isAllDay) {
-                return `${totalPendingTOILs?.day || 0} ${t("Day")}`
+                return `${totalPendingTOILs?.day || 0} ${this.formatDayUnitByValue(totalPendingTOILs?.day || 0)}`
             }
 
             return `${totalPendingTOILs?.hour || 0} ${t("Hour")}`
@@ -1002,7 +1012,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                             </div>
                                                             <div className='col-md-4'>
                                                                 <label>{t('SickLeaveFundForExpat')}</label>
-                                                                <div className='d-flex align-items-center value'>{`${Number(annualLeaveSummary?.SICK_LEA_EXPAT || 0).toFixed(3)} ${t("Day")}` }</div>
+                                                                <div className='d-flex align-items-center value'>{`${Number(annualLeaveSummary?.SICK_LEA_EXPAT || 0).toFixed(3)} ${this.formatDayUnitByValue(annualLeaveSummary?.SICK_LEA_EXPAT || 0)}` }</div>
                                                             </div>
                                                         </div>
                                                         <div className='row'>
@@ -1109,7 +1119,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                             req[0]?.absenceType?.value === FOREIGN_SICK_LEAVE && (
                                                 <>
                                                     <p className="title">{t("SickLeaveFundForExpat")}</p>
-                                                    <input type="text" className="form-control" style={{ height: 38, borderRadius: 4, padding: '0 15px' }} value={`${Number(annualLeaveSummary?.SICK_LEA_EXPAT || 0).toFixed(3)} ${t("Day")}`} disabled />
+                                                    <input type="text" className="form-control" style={{ height: 38, borderRadius: 4, padding: '0 15px' }} value={`${Number(annualLeaveSummary?.SICK_LEA_EXPAT || 0).toFixed(3)} ${this.formatDayUnitByValue(annualLeaveSummary?.SICK_LEA_EXPAT || 0)}`} disabled />
                                                 </>
                                             )
                                         }
@@ -1347,7 +1357,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                         <button type="button" className="btn btn-add-multiple" onClick={() => this.setState({ isShowNoteModal: true })}><i className="fas fa-info"></i></button>
                                                     </React.Fragment>
                                                     :
-                                                    <button type="button" className="btn btn-danger btn-top-right-corner" onClick={() => this.onRemoveLeave(reqDetail.groupId, reqDetail.groupItem)}><i className="fas fa-times"></i> {t("Cancel")}</button>
+                                                    !isEdit && <button type="button" className="btn btn-danger btn-top-right-corner" onClick={() => this.onRemoveLeave(reqDetail.groupId, reqDetail.groupItem)}><i className="fas fa-times"></i> {t("Cancel")}</button>
                                                 }
                                                 {
                                                     reqDetail.errors.totalDaysOff ?
@@ -1366,7 +1376,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                     <div className="col-lg-4 col-xl-4">
                                         <p className="title">{t('TotalLeaveTime')}</p>
                                         <div className="text-lowercase">
-                                            <input type="text" className="form-control" value={req[0].isAllDay ? (totalDay ? totalDay + ` ${t("Day")}` : "") : (totalTime ? totalTime + ` ${t("Hour")}` : "")} readOnly />
+                                            <input type="text" className="form-control" value={req[0].isAllDay ? (totalDay ? totalDay + ` ${this.formatDayUnitByValue(totalDay || 0)}` : "") : (totalTime ? totalTime + ` ${t("Hour")}` : "")} readOnly />
                                         </div>
                                     </div>
                                 </div>

@@ -14,6 +14,14 @@ const TIME_FORMAT = 'HH:mm'
 
 const RegisteredLeaveInfo = ({ leaveOfAbsence, t, annualLeaveSummary }) => {
 
+  const formatDayUnitByValue = (val) => {
+    if (Number(val) > 1) {
+      return t("DayMultiplicity")
+    }
+
+    return t("Day")
+  }
+
   return (
     <div className='registered-leave-info'>
       <h5 className='content-page-header'>{'Thông tin đã đăng ký nghỉ'}</h5>
@@ -39,7 +47,7 @@ const RegisteredLeaveInfo = ({ leaveOfAbsence, t, annualLeaveSummary }) => {
                         <div className="col-xl-4">
                           {t("TotalLeaveTime")}
                           {/* <div className="detail">{ requestInfo && requestInfo.days && requestInfo.absenceType.value != "PQ02" ? requestInfo.days + ' ngày' : null } { requestInfo && requestInfo.hours  && requestInfo.absenceType.value == "PQ02" ? requestInfo.hours  + ' giờ' : null}</div> */}
-                          <div className="detail">{( info && info?.days >= 1) ? info?.days + ' ' + t("Day") : info?.hours + ' ' + t("Hour")}</div>
+                          <div className="detail">{( info && info?.days >= 1) ? info?.days + ' ' + formatDayUnitByValue(info?.days || 0) : info?.hours + ' ' + t("Hour")}</div>
                         </div>
                       </div>
                       <div className='row' style={{ marginTop: 15, marginBottom: 5 }}>
@@ -49,7 +57,7 @@ const RegisteredLeaveInfo = ({ leaveOfAbsence, t, annualLeaveSummary }) => {
                         </div>
                         <div className="col-xl-4">
                           {t("SickLeaveFundForExpat")}
-                          <div className="detail">{`${Number(annualLeaveSummary?.SICK_LEA_EXPAT || 0).toFixed(3)} ${t("Day")}`}</div>
+                          <div className="detail">{`${Number(annualLeaveSummary?.SICK_LEA_EXPAT || 0).toFixed(3)} ${formatDayUnitByValue(annualLeaveSummary?.SICK_LEA_EXPAT || 0)}`}</div>
                         </div>
                       </div>
                     </>
@@ -67,7 +75,7 @@ const RegisteredLeaveInfo = ({ leaveOfAbsence, t, annualLeaveSummary }) => {
                         <div className="col-xl-3">
                           {t("TotalLeaveTime")}
                           {/* <div className="detail">{ requestInfo && requestInfo.days && requestInfo.absenceType.value != "PQ02" ? requestInfo.days + ' ngày' : null } { requestInfo && requestInfo.hours  && requestInfo.absenceType.value == "PQ02" ? requestInfo.hours  + ' giờ' : null}</div> */}
-                          <div className="detail">{( info && info?.days >= 1) ? info?.days + ' ' + t("Day") : info?.hours + ' ' + t("Hour")}</div>
+                          <div className="detail">{( info && info?.days >= 1) ? info?.days + ' ' + formatDayUnitByValue(info?.days || 0) : info?.hours + ' ' + t("Hour")}</div>
                         </div>
                         <div className="col-xl-3">
                           {t("LeaveCategory")}
@@ -274,6 +282,16 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     return (this.props.action == "consent" && status == 5 && appraiser) ? Constants.mappingStatusRequest[20].label : Constants.mappingStatusRequest[status].label
   }
 
+  formatDayUnitByValue = (val) => {
+    const { t } = this.props
+    
+    if (Number(val) > 1) {
+      return t("DayMultiplicity")
+    }
+
+    return t("Day")
+  }
+
   render() {
     const { t, action, viewPopup, leaveOfAbsence } = this.props
     const userProfileInfo = leaveOfAbsence.user
@@ -311,7 +329,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
       initial.totalDays += current?.days || 0
       return initial
     }, {totalHours: 0, totalDays: 0})
-    const totalRequestedTime = requestInfo?.isAllDay ? `${requestedTime?.totalDays} ${t("Day")}`  : `${requestedTime?.totalHours} ${t("Hour")}`
+    const totalRequestedTime = requestInfo?.isAllDay ? `${requestedTime?.totalDays} ${this.formatDayUnitByValue(requestedTime?.totalDays || 0)}` : `${requestedTime?.totalHours} ${t("Hour")}`
 
     return (
       <div className="leave-of-absence">
