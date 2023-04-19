@@ -1,8 +1,9 @@
-import moment from "moment"
 import React from "react"
 import { Row, Col } from 'react-bootstrap'
 import { useTranslation } from "react-i18next"
-import { formatStringByMuleValue } from "../../commons/Utils"
+import moment from "moment"
+import Constants from "commons/Constants"
+import { formatStringByMuleValue, marriageConfig } from "commons/Utils"
 
 function MainInfoList(props) {
     const { t } = useTranslation()
@@ -21,6 +22,13 @@ function MainInfoList(props) {
         result = result.trim();
         if (result.length > 0) { result = result.substring(0, result.length - 1); }
         return result;
+    }
+
+    const marriageMapping = marriageConfig()
+    const marriageStatus = {
+        [Constants.MARRIAGE_STATUS.SINGLE]: marriageMapping.single,
+        [Constants.MARRIAGE_STATUS.MARRIED]: marriageMapping.married,
+        [Constants.MARRIAGE_STATUS.DIVORCED]: marriageMapping.divorced,
     }
 
     return (
@@ -116,7 +124,7 @@ function MainInfoList(props) {
                             </tr>
                             <tr>
                                 <td className="info-label">{t("MaritalStatus")}</td>
-                                <td className="info-value"><p>&nbsp;{userDetail.marital_status_code === "1" ? t("MaritalMarried") : (userDetail.marital_status_code === "2" ? "Ly hôn" : t("MaritalSingle"))}</p></td>
+                                <td className="info-value"><p>&nbsp;{marriageStatus[userDetail?.marital_status_code]}</p></td>
                             </tr>
                             <tr>
                                 <td className="info-label">{t("PersonalEmail")}</td>

@@ -234,6 +234,14 @@ export default [
           component: lazy(() => import("./Timesheet"))
         },
         {
+          key: "timekeeping-history",
+          routeProps: {
+            exact: true,
+            path: map.TimeKeepingHistory
+          },
+          component: lazy(() => import("./TimeKeepingHistory"))
+        },
+        {
           key: "leaveTime",
           routeProps: {
             exact: true,

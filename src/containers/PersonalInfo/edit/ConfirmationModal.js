@@ -167,10 +167,12 @@ class ConfirmationModal extends React.Component {
 
     render() {
         const { t } = this.props
+        const { isShowResultConfirm, resultTitle, resultMessage, isSuccess, disabledSubmitButton, message } = this.state
+
         return (
             <>
-                <ResultModal show={this.state.isShowResultConfirm} title={this.state.resultTitle} message={this.state.resultMessage} isSuccess={this.state.isSuccess} onHide={this.onHideResultModal} />
-                <Modal className='info-modal-common position-apply-modal' centered show={this.props.show} onHide={this.props.onHide}>
+                <ResultModal show={isShowResultConfirm} title={resultTitle} message={resultMessage} isSuccess={isSuccess} onHide={this.onHideResultModal} />
+                <Modal className='info-modal-common position-apply-modal request-confirm-modal' centered show={this.props.show} onHide={this.props.onHide}>
                     <Modal.Header className='apply-position-modal' closeButton>
                         <Modal.Title>{this.props.title}</Modal.Title>
                     </Modal.Header>
@@ -179,14 +181,14 @@ class ConfirmationModal extends React.Component {
                         {
                             this.props.type == Constants.STATUS_NOT_APPROVED || this.props.type == this.sendRequest ?
                                 <div className="message">
-                                    <textarea className="form-control" id="note" rows="4" value={this.state.message} onChange={this.handleChangeMessage}></textarea>
+                                    <textarea className="form-control" id="note" rows="4" value={message} onChange={this.handleChangeMessage}></textarea>
                                     {this.error('message')}
                                 </div>
                                 : null
                         }
 
                         <div className="clearfix">
-                            <button type="button" className="btn btn-primary w-25 float-right" data-type="yes" onClick={this.ok} disabled={this.state.disabledSubmitButton}>{!this.state.disabledSubmitButton ? t("Yes") :
+                            <button type="button" className="btn btn-primary w-25 float-right" data-type="yes" onClick={this.ok} disabled={disabledSubmitButton}>{!disabledSubmitButton ? t("Yes") :
                                 <Spinner
                                     as="span"
                                     animation="border"
