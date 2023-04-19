@@ -309,31 +309,79 @@ class RequestTaskList extends React.Component {
         return 30
     }
 
-    checkDateLessThanPayPeriod = (date) => {
-        const endOfMonth = this.getMaxDayOfMonth()
-        const convertedDate = moment(date, 'DD/MM/YYYY')
-        let minDate = null
-        const today = new Date()
-        const currentDay = today.getDate()
-        const year = today.getFullYear()
-        const month = today.getMonth()
-        
-        if (currentDay < endOfMonth && currentDay >= 26) { // Ngày sửa/thu hồi 26 đến trước ngày trả lương
-            if (month === 0) {
-                minDate = new Date(year - 1, 11, 26)
-            } else {
-                minDate = new Date(year, month - 1, 26)
+    checkDateLessThanPayPeriod = (startDate) => {
+        // debugger
+        // const endOfMonth = this.getMaxDayOfMonth()
+        // const convertedDate = moment(date, 'DD/MM/YYYY')
+        // let minDate = null
+        // const today = new Date()
+        // const currentDay = today.getDate()
+        // const year = today.getFullYear()
+        // const month = today.getMonth()
+
+        // if (currentDay < endOfMonth && currentDay >= 26) { // Ngày sửa/thu hồi 26 đến trước ngày trả lương
+        //     if (month === 0) {
+        //         minDate = new Date(year - 1, 11, 26)
+        //     } else {
+        //         minDate = new Date(year, month - 1, 26)
+        //     }
+        // } else if (currentDay === endOfMonth) { // Ngày sửa/thu hồi vào ngày trả lương
+        //     minDate = new Date(year, month, 26)
+        // } else { // Ngày sửa/thu hồi 1,..,25
+        //     if (month === 0) {
+        //         minDate = new Date(year - 1, 11, 26)
+        //     } else {
+        //         minDate = new Date(year, month - 1, 26)
+        //     }
+        // }
+
+        // console.log('convertedDate => ', moment(convertedDate).format('DD/MM/YYYY'))
+        // console.log('minDate => ', moment(minDate).format('DD/MM/YYYY'))
+
+        // const result = moment(convertedDate).isBefore(moment(minDate))
+
+        // return result ? false : true
+
+
+        if (startDate) {
+            const currentDate = new Date();
+            const currentYear = currentDate.getFullYear();
+            
+            //Tháng hiện tại
+            const currentMonthNumber = currentDate.getMonth() + 1; //Tháng hiện tại + 1 do bắt đầu tính từ 0
+            let currentMonth = currentMonthNumber + '';
+            if (currentMonthNumber < 10) {
+                currentMonth = `0${currentMonth}`; //nếu từ tháng 1 ~ 9 thì thêm số 0 đằng trước
             }
-        } else if (currentDay === endOfMonth) { // Ngày sửa/thu hồi vào ngày trả lương
-            minDate = new Date(year, month, 26)
-        } else { // Ngày sửa/thu hồi 1,..,25
-            if (month === 0) {
-                minDate = new Date(year - 1, 11, 26)
-            } else {
-                minDate = new Date(year, month - 1, 26)
+
+            //Tháng trước
+            const lastMonthNumber = currentMonthNumber - 1;
+            let lastMonth = lastMonthNumber + '';
+            if (lastMonthNumber < 10) {
+                lastMonth = `0${lastMonth}`;
+            }
+
+            //Khoảng thời gian so sánh nhỏ nhất
+            const minDate =
+                lastMonthNumber == 0
+                    ? `${currentYear - 1}1226`
+                    : `${currentYear}${lastMonth}26`;
+
+            //Khoảng thời gian so sánh lớn nhất
+            //val maxDate = "$currentYear${currentMonth}30"  //Format: 20211230
+
+            //So sánh thỏa mãn cho phép chỉnh sửa trong khoảng : 26/T-1 ~ 30/T không ?
+            /*if (startDate.toInt() >= minDate.toInt() && startDate.toInt() <= maxDate.toInt()) {
+                    return true
+                }*/
+
+            //Sửa logic bỏ so sánh trong tương lai
+            if (startDate >= minDate) {
+                return true;
             }
         }
-        return convertedDate < minDate ? false : true
+
+        return false
     }
 
     isShowEditButton = (status, appraiser, requestTypeId, startDate, isEditOnceTime) => {
@@ -731,10 +779,10 @@ class RequestTaskList extends React.Component {
                                                     </td>
                                                     <td className="status text-center">{this.showStatus(child.id, child.processStatusId, child.requestType.id, child.appraiserId, child.statusName)}</td>
                                                     <td className="tool">
-                                                        { (isShowEditButton && child?.absenceType?.value != MOTHER_LEAVE_KEY) && <a href={editLink} title={t("Edit")}><img alt="Sửa" src={editButton} /></a> }
-                                                        { isShowEvictionButton && child.absenceType?.value != MOTHER_LEAVE_KEY
-                                                            && <span title="Thu hồi hồ sơ" onClick={e => this.evictionRequest(child.requestTypeId, child)}><img alt="Thu hồi" src={evictionButton} /></span> }
-                                                        { isShowDeleteButton && <span title="Hủy" onClick={e => this.deleteRequest(child.requestTypeId, child)}><img alt="Hủy" src={deleteButton} /></span> }
+                                                        {(isShowEditButton && child?.absenceType?.value != MOTHER_LEAVE_KEY) && <a href={editLink} title={t("Edit")}><img alt="Sửa" src={editButton} /></a>}
+                                                        {isShowEvictionButton && child.absenceType?.value != MOTHER_LEAVE_KEY
+                                                            && <span title="Thu hồi" onClick={e => this.evictionRequest(child.requestTypeId, child)}><img alt="Thu hồi" src={evictionButton} /></span>}
+                                                        {isShowDeleteButton && <span title="Hủy" onClick={e => this.deleteRequest(child.requestTypeId, child)}><img alt="Hủy" src={deleteButton} /></span>}
                                                     </td>
                                                 </tr>
                                             )
