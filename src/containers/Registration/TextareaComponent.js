@@ -97,6 +97,7 @@ const ResizableNewTextarea = (props) => {
 	return (
 		<textarea
 			rows={state.rows}
+      maxLength={props.maxLength}
 			value={props.value}
 			placeholder={props.placeholder || ''}
 			className={'textarea ' + (props.className || '')}
