@@ -1104,6 +1104,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                         </div>
                                     </div>
                                     <div className="col-lg-4 col-xl-4">
+                                        { this.showPendingTimeNote(req[0]?.absenceType?.value, req[0]?.isAllDay) }
                                         {
                                             req[0]?.absenceType?.value === FOREIGN_SICK_LEAVE && (
                                                 <>
