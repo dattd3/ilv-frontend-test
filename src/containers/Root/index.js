@@ -87,6 +87,10 @@ function Root() {
     })
     .catch((err) => console.log("receive message fail: ", err));
 
+  new BroadcastChannel('notification-channel').addEventListener('message', event => {
+    setNotificationPayload(event.data.payload);
+  });
+    
   return (
     <>
       <ContextProviders>
