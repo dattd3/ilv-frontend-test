@@ -236,6 +236,15 @@ const Constants = {
     USD: 'USD',
   },
   RESIGN_REASON_EMPLOYEE_INVALID: ["GI", "GL", "GM", "GN", "GO"],
-  VFSX_SHIFT_ID_VALID: ["7003", "7007", "7008", "7009", "7075", "OFF"]
+  VFSX_SHIFT_ID_VALID: ["7003", "7007", "7008", "7009", "7075", "OFF"],
+  GENDER: {
+    MALE: '1',
+    FEMALE: '2',
+  },
+  MARRIAGE_STATUS: {
+    SINGLE: '0',
+    MARRIED: '1',
+    DIVORCED: '2',
+  }
 };
 export default Constants

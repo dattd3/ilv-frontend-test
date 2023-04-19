@@ -16,7 +16,7 @@ class ResultModal extends React.Component {
                 </Modal.Header>
                 <Modal.Body>
                     <div className="wrap-result">
-                        <p>{this.props.message}</p>
+                        <p className="text-center">{this.props.message}</p>
                         {this.props.isSuccess ? <Image src={IconSuccess} alt="Success" className="ic-status" /> : <Image src={IconFailed} alt="Success" className="ic-status" />}
                     </div>
                 </Modal.Body>

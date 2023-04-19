@@ -112,6 +112,8 @@ class Task extends React.Component {
         const companyCode = localStorage.getItem("companyCode")
         const employeeLevel = localStorage.getItem("employeeLevel")
         const smallNavClass = Constants.APPROVAL_DELEGATION_LIST_LEVEL.includes(employeeLevel) && this.state.isShowPrepareTab == true ? 'nav-tabs-small' : '';
+        const roleAssignment = localStorage.getItem("role_assigment")
+        const approvalAccountException = ["minhvb1@vingroup.net"]
 
         return (
             <>
@@ -140,19 +142,25 @@ class Task extends React.Component {
                     : null
                     }
                     {
-                        this.state.isShowApprovalTab == true && (Constants.APPROVER_LIST_LEVEL.includes(employeeLevel) || ["minhvb1@vingroup.net"].includes(localStorage.getItem("email")) || Constants.ROLE_ASSIGMENT_APPROVE.some(word => localStorage.getItem("role_assigment").toLowerCase().includes(localStorage.getItem("role_assigment").toLowerCase())))?
+                        this.state.isShowApprovalTab == true 
+                        && (Constants.APPROVER_LIST_LEVEL.includes(employeeLevel) 
+                            || approvalAccountException.includes(localStorage.getItem("email")) 
+                            || Constants.ROLE_ASSIGMENT_APPROVE.some(word => roleAssignment?.toLowerCase().includes(word?.toLowerCase()))
+                        )
+                        ?
                         <Tab eventKey={tabKey.approval} title={t("Approval")}>
                             <ApprovalComponent tasks={tasks} />
                         </Tab>
                         : null
                     }
-                    {
+                    {/* Hủy bỏ tính năng Ủy quyền phê duyệt (17/04/2023). Requested by Vượng */}
+                    {/* {
                         Constants.APPROVAL_DELEGATION_LIST_LEVEL.includes(employeeLevel) ?
                         <Tab eventKey={tabKey.approvalDelegation} title={labelApprovalDelegationAction} tabClassName={approvalDelegationClass}>
                             <ApprovalDelegationList userApprovalDelegation={approvalDelegationModal.userApprovalDelegation} cancelApprovalDelegation={this.cancelApprovalDelegation} />
                         </Tab>
                         : null
-                    }
+                    } */}
                 </Tabs>
             </div>
             </>
