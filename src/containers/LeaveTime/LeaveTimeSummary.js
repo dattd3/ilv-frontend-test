@@ -1,10 +1,10 @@
 import React from 'react'
-import { Doughnut } from 'react-chartjs-2'
+// import { Doughnut } from 'react-chartjs-2'
 import 'chart.piecelabel.js'
 import { useTranslation } from "react-i18next"
 
 function displayMeric(total) {
-    return total.toString().length == 1 ? '0' + total : total.toFixed(2)
+    return total?.toString()?.length == 1 ? '0' + total : total?.toFixed(2)
 }
 
 function LeaveTimeGraph(props) {
@@ -56,28 +56,31 @@ function LeaveTimeGraph(props) {
             </div>
         </div> */}
         <div className="description">
-            <div className="d-block clearfix"><span className="float-left"><i className="fas fa-square" style={{color: props.data.item1.color}}>&nbsp;</i>{props.data.item1.label}</span><span className="float-right" style={{color: props.data.item1.color}}><h5>{displayMeric(props.data.item1.total)}</h5></span></div>
-            <div className="d-block clearfix"><span className="float-left"><i className="fas fa-square" style={{color: props.data.item2.color}}>&nbsp;</i>{props.data.item2.label}</span><span className="float-right" style={{color: props.data.item2.color}}><h5>{displayMeric(props.data.item2.total)}</h5></span></div>
-            <div className="d-block clearfix"><span className="float-left"><i className="fas fa-square" style={{color: props.data.item3.color}}>&nbsp;</i>{props.data.item3.label}</span><span className="float-right text-success">{props.data.item3.expiredDate ? props.data.item3.expiredDate.replace(/-/g, '/'): ''}</span></div>
+            <div className="d-block clearfix item"><span className="float-left"><i className="fas fa-square" style={{color: props.data.item1.color}}>&nbsp;</i>{props.data.item1.label}</span><span className="float-right" style={{color: props.data.item1.color}}><span>{displayMeric(props.data.item1.total)}</span></span></div>
+            <div className="d-block clearfix item"><span className="float-left"><i className="fas fa-square" style={{color: props.data.item2.color}}>&nbsp;</i>{props.data.item2.label}</span><span className="float-right" style={{color: props.data.item2.color}}><span>{displayMeric(props.data.item2.total)}</span></span></div>
+            <div className="d-block clearfix item"><span className="float-left"><i className="fas fa-square" style={{color: props.data.item3.color}}>&nbsp;</i>{props.data.item3.label}</span><span className="float-right text-success">{props.data.item3.expiredDate ? props.data.item3.expiredDate.replace(/-/g, '/'): ''}</span></div>
         </div>
     </>
 }
 
 function LeaveTimeSummary(props) {
     const { t } = useTranslation()
+    const { pendingTimeInfo, data } = props
 
     const thisYear = new Date().getFullYear()
-    const usedAnnualLeaveOfThisYear = props.data.used_annual_leave ? props.data.used_annual_leave.find(a => a.year == thisYear) : undefined
-    const usedAnnualLeaveOfLastYear = props.data.used_annual_leave ? props.data.used_annual_leave.find(a => a.year == (thisYear - 1)) : undefined
+    const usedAnnualLeaveOfThisYear = data?.used_annual_leave ? data.used_annual_leave.find(a => a.year == thisYear) : undefined
+    const usedAnnualLeaveOfLastYear = data?.used_annual_leave ? data.used_annual_leave.find(a => a.year == (thisYear - 1)) : undefined
 
-    const unusedAnnualLeaveOfThisYear = props.data.unused_annual_leave ? props.data.unused_annual_leave.find(a => a.year == thisYear) : undefined
-    const unusedAnnualLeaveOfLastYear = props.data.unused_annual_leave ? props.data.unused_annual_leave.find(a => a.year == (thisYear-1)) : undefined
+    const unusedAnnualLeaveOfThisYear = data?.unused_annual_leave ? data.unused_annual_leave.find(a => a.year == thisYear) : undefined
+    const unusedAnnualLeaveOfLastYear = data?.unused_annual_leave ? props.data.unused_annual_leave.find(a => a.year == (thisYear-1)) : undefined
 
-    const usedCompensatoryLeaveOfThisYear = props.data.used_compensatory_leave ? props.data.used_compensatory_leave.find(a => a.year == thisYear) : undefined
-    const usedCompensatoryLeaveOfLastYear = props.data.used_compensatory_leave ? props.data.used_compensatory_leave.find(a => a.year == (thisYear-1)) : undefined
+    const usedCompensatoryLeaveOfThisYear = data?.used_compensatory_leave ? data.used_compensatory_leave.find(a => a.year == thisYear) : undefined
+    const usedCompensatoryLeaveOfLastYear = data?.used_compensatory_leave ? data.used_compensatory_leave.find(a => a.year == (thisYear-1)) : undefined
 
-    const unusedCompensatoryLeaveOfThisYear = props.data.unused_compensatory_leave ? props.data.unused_compensatory_leave.find(a => a.year == thisYear) : undefined
-    const unusedCompensatoryLeaveOfLastYear = props.data.unused_compensatory_leave ? props.data.unused_compensatory_leave.find(a => a.year == (thisYear-1)) : undefined
+    const unusedCompensatoryLeaveOfThisYear = data?.unused_compensatory_leave ? data?.unused_compensatory_leave.find(a => a.year == thisYear) : undefined
+    const unusedCompensatoryLeaveOfLastYear = data?.unused_compensatory_leave ? data?.unused_compensatory_leave.find(a => a.year == (thisYear-1)) : undefined
+
+    console.log('kakakaka => ', pendingTimeInfo)
 
     return (
         <div className="summary">
@@ -91,8 +94,8 @@ function LeaveTimeSummary(props) {
                                     {
                                         total:  (usedAnnualLeaveOfLastYear ? usedAnnualLeaveOfLastYear.days : 0) + (unusedAnnualLeaveOfLastYear ? unusedAnnualLeaveOfLastYear.days : 0),
                                         item1: {label: t("Used"), total: usedAnnualLeaveOfLastYear ? usedAnnualLeaveOfLastYear.days : 0, color: '#B9B8B8'},
-                                        item2: {label: t("Available"), total: unusedAnnualLeaveOfLastYear ? unusedAnnualLeaveOfLastYear.days : 0, color: '#f6c23e'},
-                                        item3: {label: t("ExpireDate"), expiredDate: unusedAnnualLeaveOfLastYear ? unusedAnnualLeaveOfLastYear.expire_date : '', color: '#28a745'},
+                                        item2: {label: t("Available"), total: unusedAnnualLeaveOfLastYear ? unusedAnnualLeaveOfLastYear.days : 0, color: '#FF7F00'},
+                                        item3: {label: t("ExpireDate"), expiredDate: unusedAnnualLeaveOfLastYear ? unusedAnnualLeaveOfLastYear.expire_date : '', color: '#05BD29'},
                                     }
                                 }
                             />
@@ -112,9 +115,9 @@ function LeaveTimeSummary(props) {
                                         item2: {
                                             label: t("Available"),
                                             total: unusedAnnualLeaveOfThisYear ? unusedAnnualLeaveOfThisYear.days : 0,
-                                            color: '#4e73df'
+                                            color: '#347EF9'
                                         },
-                                        item3: {label: t("ExpireDate"), expiredDate: unusedAnnualLeaveOfThisYear ? unusedAnnualLeaveOfThisYear.expire_date : '', color: '#28a745'},
+                                        item3: {label: t("ExpireDate"), expiredDate: unusedAnnualLeaveOfThisYear ? unusedAnnualLeaveOfThisYear.expire_date : '', color: '#05BD29'},
                                     }
                                 }
                             />
@@ -122,12 +125,16 @@ function LeaveTimeSummary(props) {
                         
                     </div>
                     <hr/>
-                    <div className="d-block text-center text-uppercase">
-                        <b>{t("TotalAvaiableLeaves")}</b>
+                    <div className="d-block text-center">
+                        <div>
+                            <span>* {t("TotalAvaiableLeaves")}: </span>
+                            <span className='font-weight-bold' style={{ color: '#FF7F00' }}>{displayMeric((unusedAnnualLeaveOfThisYear ? unusedAnnualLeaveOfThisYear.days : 0) + (unusedAnnualLeaveOfLastYear ? unusedAnnualLeaveOfLastYear.days : 0))}</span>
+                        </div>
+                        <div style={{ marginTop: 6 }}>
+                            <span>* {t("TotalLeavesPendingRequestWaitingForApproval")}: </span>
+                            <span className='font-weight-bold' style={{ color: '#05BD29' }}>{displayMeric(pendingTimeInfo?.totalPendingLeaves?.day || 0)}</span>
+                        </div>
                     </div>
-                    <div className="d-block text-center text-danger"><h3>
-                        {displayMeric((unusedAnnualLeaveOfThisYear ? unusedAnnualLeaveOfThisYear.days : 0) + (unusedAnnualLeaveOfLastYear ? unusedAnnualLeaveOfLastYear.days : 0))}
-                        </h3></div>
                 </div>
                 <div className="col box shadow">
                 <div className="row">
@@ -177,12 +184,16 @@ function LeaveTimeSummary(props) {
                         
                     </div>
                     <hr/>
-                    <div className="d-block text-center text-uppercase">
-                        <b>{t("TotalAvailableToilHours")}</b>
+                    <div className="d-block text-center">
+                        <div>
+                            <span>* {t("TotalAvailableToilHours")}: </span>
+                            <span className='font-weight-bold' style={{ color: '#FF7F00' }}>{displayMeric((unusedCompensatoryLeaveOfThisYear ? unusedCompensatoryLeaveOfThisYear.days : 0) + (unusedCompensatoryLeaveOfLastYear ? unusedCompensatoryLeaveOfLastYear.days : 0))}</span>
+                        </div>
+                        <div style={{ marginTop: 6 }}>
+                            <span>* {t("TotalTOILHoursPendingRequestWaitingForApproval")}: </span>
+                            <span className='font-weight-bold' style={{ color: '#05BD29' }}>{displayMeric(pendingTimeInfo?.totalPendingTOILs?.hour || 0)}</span>
+                        </div>
                     </div>
-                    <div className="d-block text-center text-danger"><h3>
-                        {displayMeric((unusedCompensatoryLeaveOfThisYear ? unusedCompensatoryLeaveOfThisYear.days : 0) + (unusedCompensatoryLeaveOfLastYear ? unusedCompensatoryLeaveOfLastYear.days : 0))}
-                        </h3></div>
                 </div>
             </div>
         </div>

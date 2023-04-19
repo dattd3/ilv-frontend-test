@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import axios from 'axios';
 import { withTranslation } from 'react-i18next';
-import { Container, Row, Col, Tabs, Tab, Form } from 'react-bootstrap';
-import moment from 'moment';
+import { Container } from 'react-bootstrap';
 import { Redirect } from 'react-router-dom';
-import map from '../map.config';
+import { last } from 'lodash'
 import SubmitQuestionModal from './SubmitQuestionModal'
 import HistoryModal from './HistoryModal'
 import StatusModal from '../../components/Common/StatusModal'
 import CommonQuestionComponent from './CommonQuestionComponent'
 import LoadingSpinner from '../../components/Forms/CustomForm/LoadingSpinner';
 import HOCComponent from '../../components/Common/HOCComponent'
+import { isVinFast } from 'commons/Utils'
 
 class MyComponent extends React.Component {
 
@@ -29,7 +29,8 @@ class MyComponent extends React.Component {
       commonTicketListFilter: {},
       categories: {},
       keySearch: "",
-      open: true
+      open: true,
+      staffHandbookLink: '',
     };
   }
 
@@ -58,6 +59,14 @@ class MyComponent extends React.Component {
       }).catch(error => {
 
       });
+    
+    const staffHandbookFileType = 20
+    axios.get(`${process.env.REACT_APP_REQUEST_URL}user/file-suggests?type=${staffHandbookFileType}`, config)
+    .then(res => {
+      if (res && res?.data && res?.data?.data) {
+        this.setState({ staffHandbookLink: res?.data?.data })
+      }
+    }).catch(error => {})
   }
 
   showSubmitModal(modalStatus, isEdit = false) {
@@ -97,6 +106,7 @@ class MyComponent extends React.Component {
     }
     return filterCommonTickets
   }
+
   handleChange(event) {
     this.setState({ [event.target.name]: event.target.value });
   }
@@ -104,6 +114,7 @@ class MyComponent extends React.Component {
   search = (keySearch) => {
     this.setState({ commonTicketListFilter: this.filterCommonTicketByKeyword(keySearch) })
   }
+
   handleKeyPress = (event) => {
     if (event.key === 'Enter' && event.shiftKey) {
       return;
@@ -113,13 +124,40 @@ class MyComponent extends React.Component {
       this.search(this.state.keySearch)
     }
   }
+
   setOpen = (open) => {
     this.setState({ open: !open })
   }
 
+  showStaffHandbookLink = () => {
+    const { staffHandbookLink } = this.state
+    const linkName = this.props.t("EmployeeHandbook")
+
+    if (!staffHandbookLink) {
+      return (
+        <a href='#' target='_self' className="btn btn-light float-left shadow">{linkName}</a>
+      )
+    }
+
+    const extensionStaffHandbook = last(staffHandbookLink?.split('.'))
+    const officeExtensionFile = ['doc', 'docx', 'xls', 'xlsx']
+
+    if (officeExtensionFile.includes(extensionStaffHandbook)) {
+      return (
+        <a href={`https://view.officeapps.live.com/op/view.aspx?src=${staffHandbookLink}`} target='_blank' className="btn btn-light float-left shadow">{linkName}</a>
+      )
+    }
+
+    return (
+      <a href={staffHandbookLink} target='_blank' className="btn btn-light float-left shadow">{linkName}</a>
+    )
+  }
+
   render() {
     const { t } = this.props;
-    const { categories, isEditQuestion, questionContent, isShowStatusModal, content, isSuccess, isShowSubmitQuestionModal, isShowHistoryModal, keySearch, commonTicketList, commonTicketListFilter } = this.state
+    const { categories, isEditQuestion, questionContent, isShowStatusModal, content, isSuccess, isShowSubmitQuestionModal, isShowHistoryModal, keySearch, commonTicketList, commonTicketListFilter, staffHandbookLink } = this.state  
+    const extensionStaffHandbook = last(staffHandbookLink?.split('.'))
+    const officeExtensionFile = ['doc', 'docx', 'xls', 'xlsx']
 
     const reload = () => {
       if (isShowStatusModal) {
@@ -146,6 +184,7 @@ class MyComponent extends React.Component {
         <div className="clearfix edit-button action-buttons mb-2">
           <span type="button" className="btn btn-light float-left shadow pl-4 pr-4 ml-0" onClick={() => this.showSubmitModal(true)}> {t("CreateQuestions")} </span>
           <span type="button" className="btn btn-light float-left shadow" onClick={() => this.showHistoryModal(true)}>{t("HistoryAnswer")}</span>
+          { isVinFast() && this.showStaffHandbookLink() }
         </div>
         <h1 className="content-page-header">{t("QuestionAndAnswer")}</h1>
         <Container fluid className="info-tab-content shadow mb-3">
