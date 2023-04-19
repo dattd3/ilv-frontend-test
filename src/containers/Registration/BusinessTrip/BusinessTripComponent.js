@@ -485,7 +485,7 @@ class BusinessTripComponent extends React.Component {
         const { t } = this.props
         const employeeLevel = localStorage.getItem("employeeLevel")
 
-        if (approver?.account?.trim()?.toLowerCase() === appraiser?.account?.trim()?.toLowerCase()) {
+        if (approver?.account?.trim() && appraiser?.account?.trim() && approver?.account?.trim()?.toLowerCase() === appraiser?.account?.trim()?.toLowerCase()) {
             this.showStatusModal(t("Notification"), t("ApproverAndConsenterCannotBeIdentical"), false)
             this.setState({ needReload: false })
             return false
