@@ -136,6 +136,7 @@ class ConfirmRequestModal extends React.Component {
         this.changeRequest(dataPrepareToSap, `${process.env.REACT_APP_REQUEST_URL}request/approve`, t("approval_status"))
     }
 
+    // Từ chối phê duyệt mass
     disApprove = (formData, url, id) => {
         const dataToSap = [];
         this.props.dataToSap.forEach(element => {
@@ -147,9 +148,13 @@ class ConfirmRequestModal extends React.Component {
                 taskObj = {"id":element.salaryId ,"requestTypeId":element.requestTypeId,"sub":[]};
                 taskObj.sub.push({"id":element.salaryId,"processStatusId": Constants.STATUS_NOT_APPROVED,"comment":this.state.message})
             } else {
-                taskObj = {"id": element.requestTypeId == Constants.SUBSTITUTION || element.requestTypeId == Constants.IN_OUT_TIME_UPDATE || element.requestTypeId == Constants.CHANGE_DIVISON_SHIFT ? element.id : parseInt(element.id.split(".")[0]),"requestTypeId":element.requestTypeId,"sub":[]};
+                taskObj = {
+                    "id": element.requestTypeId == Constants.SUBSTITUTION || element.requestTypeId == Constants.IN_OUT_TIME_UPDATE || element.requestTypeId == Constants.CHANGE_DIVISON_SHIFT ? element.id : parseInt(element.id.split(".")[0]),
+                    "requestTypeId": element.requestTypeId,
+                    "sub": []
+                };
             // element.requestInfo.forEach(sub => {
-                if(element.processStatusId == Constants.STATUS_WAITING){
+                if ([Constants.STATUS_WAITING, Constants.STATUS_PARTIALLY_SUCCESSFUL].includes(Number(element?.processStatusId))) {
                     taskObj.sub.push({"id":element.id,"processStatusId": Constants.STATUS_NOT_APPROVED,"comment":this.state.message})
                 }
             // });
@@ -179,7 +184,7 @@ class ConfirmRequestModal extends React.Component {
             }
             dataToSap.push(taskObj)
           });
-        this.changeRequest(dataToSap,`${process.env.REACT_APP_REQUEST_URL}request/assess`,this.props.t("appraisal_status"))
+        this.changeRequest(dataToSap,`${process.env.REACT_APP_REQUEST_URL}request/assess?culture=${this.props.t('langCode')}`,this.props.t("appraisal_status"))
     }
 
     reject = () => {
@@ -204,7 +209,7 @@ class ConfirmRequestModal extends React.Component {
             dataToSap.push(taskObj)
           });
         
-        this.changeRequest(dataToSap,`${process.env.REACT_APP_REQUEST_URL}request/assess`,this.props.t("disappraisal_status"))
+        this.changeRequest(dataToSap,`${process.env.REACT_APP_REQUEST_URL}request/assess?culture=${this.props.t('langCode')}`,this.props.t("disappraisal_status"))
     }
     
     handleChangeMessage = (e) => {
