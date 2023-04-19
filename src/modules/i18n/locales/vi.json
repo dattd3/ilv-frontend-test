@@ -1292,6 +1292,7 @@
   "reviewer": "NGƯỜI ĐÁNH GIÁ",
   "if_any": "Nếu có",
   "manager_review": "QUẢN LÝ TRỰC TIẾP ĐÁNH GIÁ",
+  "hr_review": "Nhân sự đánh giá",
   "manager_assessment": "CBLĐ THẨM ĐỊNH",
   "approver_assessment": "NGƯỜI PHÊ DUYỆT",
   "recommend_of_manager": "Ý KIẾN ĐỀ XUẤT CỦA CBQL TRỰC TIẾP",
@@ -1742,5 +1743,6 @@
   "timekeeping_type": "Loại chấm công",
   "CheckedIn": "Đã check-in",
   "CheckedOut": "Đã check-out",
-  "at": "tại"
+  "at": "tại",
+  "MissingKPI": "Chưa có nội dung đánh giá"
 }

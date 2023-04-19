@@ -1277,6 +1277,7 @@
   "reviewer": "REVIEWER",
   "if_any": "If any",
   "manager_review": "Manager-Assessment",
+  "hr_review": "HR Assessment",
   "manager_assessment": "Manager-Consentment",
   "approver_assessment": "Manager-Approval",
   "recommend_of_manager": "COMMENT OF MANAGER-ASSESSMENT",
@@ -1725,5 +1726,6 @@
   "timekeeping_type": "Type",
   "CheckedIn": "Checked In",
   "CheckedOut": "Checked Out",
-  "at": "At"
+  "at": "At",
+  "MissingKPI": "Missing KPI"
 }
