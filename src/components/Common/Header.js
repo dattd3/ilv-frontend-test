@@ -54,7 +54,7 @@ function Header(props) {
           fetchNotification();
         }
       }
-    }, [newestNotification]);
+    }, [JSON.stringify(newestNotification)]);
 
     useEffect(() => {
       fetchNotification();
