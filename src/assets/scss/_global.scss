@@ -30,6 +30,7 @@ a {
 // Main page wrapper
 #wrapper {
   display: flex;
+  height: 100vh;
   #content-wrapper {
     width: calc(100% - 300px);
     overflow-x: hidden;
@@ -436,6 +437,21 @@ a {
   }
   &.register-target-from-library-status-modal {
     z-index: 11001;
+    .modal-content {
+      box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
+    }
+  }
+  &.request-detail-modal {
+    .registration-section {
+
+    }
+  }
+  &.result-modal {
+    .modal-content {
+      box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
+    }
+  }
+  &.request-confirm-modal {
     .modal-content {
       box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
     }

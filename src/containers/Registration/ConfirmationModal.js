@@ -247,7 +247,7 @@ class ConfirmationModal extends React.Component {
     consent = (dataToSap) => {
         axios({
             method: 'POST',
-            url: `${process.env.REACT_APP_REQUEST_URL}request/assess`,
+            url: `${process.env.REACT_APP_REQUEST_URL}request/assess?culture=${this.props.t('langCode')}`,
             data: dataToSap,
             headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` }
         })
@@ -282,7 +282,7 @@ class ConfirmationModal extends React.Component {
     reject = (dataToSap) => {
         axios({
             method: 'POST',
-            url: `${process.env.REACT_APP_REQUEST_URL}request/assess`,
+            url: `${process.env.REACT_APP_REQUEST_URL}request/assess?culture=${this.props.t('langCode')}`,
             data: dataToSap,
             headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` }
         })
@@ -362,7 +362,7 @@ class ConfirmationModal extends React.Component {
                 <ResultModal show={this.state.isShowStatusModal} title={this.state.resultTitle} message={this.state.resultMessage} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
                 <ResultChangeShiftModal show={this.state.isShowStatusChangeShiftModal} title={this.state.resultTitle} result={this.state.resultMessage} onHide={this.hideStatusChangeShiftModal} />
                 
-                <Modal className='info-modal-common position-apply-modal' centered show={this.props.show} onHide={this.props.onHide}>
+                <Modal className='info-modal-common position-apply-modal request-confirm-modal' centered show={this.props.show} onHide={this.props.onHide}>
                     <Modal.Header className={`apply-position-modal ${backgroundColorMapping[this.props.type]}`} closeButton>
                         <Modal.Title>{t(this.props.title)}</Modal.Title>
                     </Modal.Header>

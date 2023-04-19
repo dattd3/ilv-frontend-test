@@ -287,7 +287,7 @@ class RequestDetail extends React.Component {
               status == Constants.STATUS_NOT_APPROVED &&
               <div className="row item-info">
                 <div className="col-12">
-                  <div className="label">Lý do không phê duyệt</div>
+                  <div className="label">{t("ReasonNotApprove")}</div>
                   <div className="detail">{hrComment}</div>
                 </div>
               </div>

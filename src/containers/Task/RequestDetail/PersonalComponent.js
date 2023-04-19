@@ -41,7 +41,7 @@ class PersonalComponent extends React.Component {
             case "PassportDate":
                 return t("PassportDateOfIssue");
             case "PassportPlace":
-                return t("PassporPlaceOfIssue");
+                return t("PassportPlaceOfIssue");
             case "Nationality":
                 return t("NationalityCode");
             case "NationalityText":

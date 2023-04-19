@@ -12,12 +12,12 @@ class ResultModal extends React.Component {
     render () {
         return (
             <>
-            <Modal className='info-modal-common position-apply-modal' centered show={this.props.show} onHide={this.props.onHide}>
+            <Modal className='info-modal-common position-apply-modal result-modal' centered show={this.props.show} onHide={this.props.onHide}>
                 <Modal.Header className='apply-position-modal' closeButton>
                     <Modal.Title>{this.props.title}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <p dangerouslySetInnerHTML={{
+                    <p className="text-center" dangerouslySetInnerHTML={{
                         __html: purify.sanitize(this.props?.message || ''),
                     }}></p>
                     <div className="wrap-result">

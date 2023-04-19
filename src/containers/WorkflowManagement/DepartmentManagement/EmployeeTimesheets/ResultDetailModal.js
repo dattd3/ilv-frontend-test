@@ -68,7 +68,7 @@ class ResultDetailModal extends React.Component {
                         </>
                         : 
                         <div className="wrap-result">
-                            <p>Đã có lỗi xảy ra</p>
+                            <p className="text-center">{this.props.t("AnErrorOccurred")}</p>
                             <Image src={IconFailed} alt="failed" className="ic-status" />
                         </div>
                     }
