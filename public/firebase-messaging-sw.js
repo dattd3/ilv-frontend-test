@@ -20,15 +20,8 @@ firebase.initializeApp(firebaseConfig);
 const messaging = firebase.messaging();
 
 messaging.onBackgroundMessage(function (payload) {
-  const notificationTitle = payload.notification.title;
-  const notificationOptions = {
-    body: payload.notification.body,
-    icon: payload.notification.image,
-  };
   const channel = new BroadcastChannel('notification-channel');
   channel.postMessage(payload);
-
-  self.registration.showNotification(notificationTitle, notificationOptions);
 });
 
 // window.addEventListener('notificationclick', event => {
