@@ -49,7 +49,7 @@ const RegisteredLeaveInfo = ({ leaveOfAbsence, t, annualLeaveSummary }) => {
                         </div>
                         <div className="col-xl-4">
                           {t("SickLeaveFundForExpat")}
-                          <div className="detail">{`${annualLeaveSummary?.SICK_LEA_EXPAT || 0} ${t("Day")}` }</div>
+                          <div className="detail">{`${Number(annualLeaveSummary?.SICK_LEA_EXPAT || 0).toFixed(3)} ${t("Day")}`}</div>
                         </div>
                       </div>
                     </>
