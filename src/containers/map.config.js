@@ -14,6 +14,7 @@ export default {
   PersonalInfo: "/personal-info",
   EditPersonalInfo: "/personal-info/edit",
   Timesheet: "/timesheet",
+  TimeKeepingHistory: "/timekeeping-history",
   LeaveTime: "/leaveTime",
   WorkingProcess: "/working-process",
   // Benefit: "/benefit",
