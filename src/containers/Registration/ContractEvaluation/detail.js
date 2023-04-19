@@ -11,6 +11,7 @@ import { vi, enUS } from 'date-fns/locale'
 import { withTranslation } from "react-i18next";
 import './styles.scss'
 
+const IS_VINFAST = checkIsExactPnL(Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading);
 const ContractEvaluationdetail = (props) => {
   const { data, id, type, idSalary, t } = props
   const dataSalary = props.dataSalary;
@@ -68,7 +69,7 @@ const ContractEvaluationdetail = (props) => {
           <h5>{t('assessment_informations')}</h5>
           <div className="box cbnv">
             <div className="row description">
-              <div className="col-3 title">
+              <div className="col-3">
                 {t('assessment_scale')}
               </div>
               <div className="col-9">
@@ -255,6 +256,39 @@ const ContractEvaluationdetail = (props) => {
               }) : null
           } */}
 
+          {/* quan li */}
+          <div className="box cbnv more-description">
+            <div className="title">{t('recommend_of_manager')}</div>
+            <div className="row">
+              <div className="col-3">
+              {t('result')}
+                <div className="detail">{data && data.qlttOpinion ? data.qlttOpinion.result?.label : ""}</div>
+              </div>
+              <div className="col-3">
+              {t('contract_type')}
+                <div className="detail">{data && data.qlttOpinion ? data.qlttOpinion.contract?.label : ""}</div>
+              </div>
+              <div className="col-3">
+              {t('contract_start_date')}
+                <div className="detail">{data && data.qlttOpinion ? data.qlttOpinion.startDate : ""}</div>
+              </div>
+              <div className="col-3">
+              {t('contract_end_date')}
+                <div className="detail">{data && data.qlttOpinion ? data.qlttOpinion.endDate : ""}</div>
+              </div>
+            </div>
+            <div className="row">
+              {/* <div className="col-4">
+                Điều chỉnh lương
+                <div className="detail">{requestInfo ? moment(requestInfo.startDate).format("DD/MM/YYYY") + (requestInfo.startTime ? ' ' + moment(requestInfo.startTime, TIME_FORMAT).lang('en-us').format('HH:mm') : '') : ""}</div>
+              </div> */}
+              <div className="col-12">
+              {t('other_suggestions')}
+                <div className="detail">{data && data.qlttOpinion ? data.qlttOpinion.otherOption : ""}</div>
+              </div>
+            </div>
+          </div>
+
           <div className="box cbnv">
             <div className="row approve">
               <div className="col-12">
@@ -298,38 +332,25 @@ const ContractEvaluationdetail = (props) => {
             </div>
           </div>
 
-          {/* quan li */}
-          <div className="box cbnv more-description">
-            <div className="title">{t('recommend_of_manager')}</div>
-            <div className="row">
-              <div className="col-3">
-              {t('result')}
-                <div className="detail">{data && data.qlttOpinion ? data.qlttOpinion.result?.label : ""}</div>
+          {
+              IS_VINFAST && <div className="box cbnv">
+                <div className="row approve">
+                  <div className="col-12">
+                    <span className="title">{t('hr_review')}</span>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-12">
+                    <div className="divider"></div>
+                    <div className="row">
+                      <div className="col-4"><div className="detail">{data.hrAppraiser ? data.hrAppraiser.fullname || "" : ""}</div></div>
+                      <div className="col-4"><div className="detail">{data.hrAppraiser ? data.hrAppraiser.current_position || "" : ""}</div></div>
+                      <div className="col-4"><div className="detail">{data.hrAppraiser ? data.hrAppraiser.department || "" : ""}</div></div>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div className="col-3">
-              {t('contract_type')}
-                <div className="detail">{data && data.qlttOpinion ? data.qlttOpinion.contract?.label : ""}</div>
-              </div>
-              <div className="col-3">
-              {t('contract_start_date')}
-                <div className="detail">{data && data.qlttOpinion ? data.qlttOpinion.startDate : ""}</div>
-              </div>
-              <div className="col-3">
-              {t('contract_end_date')}
-                <div className="detail">{data && data.qlttOpinion ? data.qlttOpinion.endDate : ""}</div>
-              </div>
-            </div>
-            <div className="row">
-              {/* <div className="col-4">
-                Điều chỉnh lương
-                <div className="detail">{requestInfo ? moment(requestInfo.startDate).format("DD/MM/YYYY") + (requestInfo.startTime ? ' ' + moment(requestInfo.startTime, TIME_FORMAT).lang('en-us').format('HH:mm') : '') : ""}</div>
-              </div> */}
-              <div className="col-12">
-              {t('other_suggestions')}
-                <div className="detail">{data && data.qlttOpinion ? data.qlttOpinion.otherOption : ""}</div>
-              </div>
-            </div>
-          </div>
+            }
 
           {
             // showComponent.HrOption ?

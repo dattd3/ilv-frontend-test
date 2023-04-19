@@ -16,13 +16,16 @@ class ReasonResignationComponent extends React.PureComponent {
     }
 
     handleSelectChange = e => {
-        let errorObj = {reason: this.props.t('resign_error_reason')}
+        let errorObj = {reason: this.props.t('resign_error_reason'), reasonDetailed: null}
         const infos = {...this.state.infos}
         infos.reason = null
 
         if (e) {
             infos.reason = {value: e.value, label: e.label}
-            errorObj = {reason: null}
+            errorObj = {...errorObj, reason: null}
+        }
+        if(infos.reason?.value == 'GA' && !infos.reasonDetailed) {
+            errorObj = {...errorObj, reasonDetailed: this.props.t('ReasonRequired')};
         }
 
         this.setState({infos: infos})
@@ -50,9 +53,14 @@ class ReasonResignationComponent extends React.PureComponent {
     handleInputChange = e => {
         if (e && e.target) {
             const infos = {...this.state.infos}
+            let errorObj = {reasonDetailed: null};
             infos.reasonDetailed = e.target.value || ""
+            if(infos.reason?.value == 'GA' && !infos.reasonDetailed) {
+                errorObj = {reasonDetailed: this.props.t('ReasonRequired')};
+            }
             this.setState({infos: infos})
             this.props.updateResignationReasons(infos)
+            this.props.updateErrors(errorObj)
         }
     }
 
@@ -112,7 +120,9 @@ class ReasonResignationComponent extends React.PureComponent {
                         </div>
                         <div className="row">
                             <div className="col-12">
-                                <p className="title">{t('DetailedReason')}</p>
+                                <p className="title">{t('DetailedReason')}
+                                    {infos?.reason?.value == 'GA' ? <span className="required">(*)</span>: null}
+                                </p>
                                 <div>
                                     <input type="text" className="form-control" value={infos.reasonDetailed || ""} onChange={this.handleInputChange} />
                                 </div>

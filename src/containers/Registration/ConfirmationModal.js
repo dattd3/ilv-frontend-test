@@ -247,7 +247,7 @@ class ConfirmationModal extends React.Component {
     consent = (dataToSap) => {
         axios({
             method: 'POST',
-            url: `${process.env.REACT_APP_REQUEST_URL}request/assess`,
+            url: `${process.env.REACT_APP_REQUEST_URL}request/assess?culture=${this.props.t('langCode')}`,
             data: dataToSap,
             headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` }
         })
@@ -282,7 +282,7 @@ class ConfirmationModal extends React.Component {
     reject = (dataToSap) => {
         axios({
             method: 'POST',
-            url: `${process.env.REACT_APP_REQUEST_URL}request/assess`,
+            url: `${process.env.REACT_APP_REQUEST_URL}request/assess?culture=${this.props.t('langCode')}`,
             data: dataToSap,
             headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` }
         })

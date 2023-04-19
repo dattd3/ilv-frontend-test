@@ -92,21 +92,36 @@ export default function OTRequestDetailComponent({ data, action }) {
   };
 
   const getMessageFromSap = () => {
-    let messageSAP = null;
+    const mergedMessageObjArr = [];
     if (data.processStatusId === Constants.STATUS_PARTIALLY_SUCCESSFUL) {
       if (data.responseDataFromSAP && Array.isArray(data.responseDataFromSAP)) {
         const _data = data.responseDataFromSAP.filter(
           (val) => val.STATUS === "E"
         );
         if (_data) {
-          const temp = _data.map((val) => val?.MESSAGE);
-          messageSAP = temp.filter(function (item, pos) {
-            return temp.indexOf(item) === pos;
-          });
+          const messageSAPArr = _data.map((val) => 
+          ({
+            date: moment(val?.DATA?.split("|")?.[1], "YYYYMMDD").format("DD/MM/YYYY"),
+            message: val?.MESSAGE
+          }));
+          // messageSAP = temp.filter(function (item, pos) {
+          //   console.log(item, pos, temp.indexOf(item));
+          //   return temp.indexOf(item) === pos;
+          // });
+          const messageSetArr = Array.from(new Set(messageSAPArr.map(item => item.message)));
+          messageSetArr.forEach(item => {
+            console.log(messageSAPArr.filter(messObj => messObj.message === item))
+            const datesStr = messageSAPArr.filter(messObj => messObj.message === item)?.map(i => i.date)?.join(", ");
+            mergedMessageObjArr.push({
+              datesStr,
+              message: item
+            })
+          })
         }
       }
     }
-    return messageSAP;
+
+    return mergedMessageObjArr;
   };
 
   const isHasTime1 = (timesheet) => {
@@ -475,8 +490,10 @@ export default function OTRequestDetailComponent({ data, action }) {
           <div className={`d-flex status fail`}>
             <i className="fas fa-times pr-2 text-danger align-self-center"></i>
             <div>
-              {getMessageFromSap().map((msg, index) => {
-                return <div key={index}>{msg}</div>;
+              {getMessageFromSap().map((item, index) => {
+                return <div key={index}>
+                  {item.datesStr}: {item.message}
+                </div>;
               })}
             </div>
           </div>
