@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Modal, Spinner } from 'react-bootstrap';
+import { useTranslation } from "react-i18next";
 import {
   ApiContext,
   useApiMemo,
@@ -122,6 +122,7 @@ const ComposeApiWithGuard = function ({ children }) {
 }
 
 export default function ({ children }) {
+  const { t } = useTranslation();
   return (
     <>
       <ApiProvider>

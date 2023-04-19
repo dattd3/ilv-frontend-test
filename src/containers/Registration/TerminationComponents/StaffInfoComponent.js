@@ -37,7 +37,7 @@ class StaffInfoComponent extends React.PureComponent {
                         </div>
                         <div className="row">
                             <div className="col-4">
-                                <p className="title">{t('DaysOnWorking')}</p>
+                                <p className="title">{t('ContractSignDate')}</p>
                                 <div>
                                     <input type="text" className="form-control" value={dateStartWork} readOnly />
                                 </div>
