@@ -955,7 +955,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                             </div>
                                                             <div className='col-md-4'>
                                                                 <label>{t('SickLeaveFundForExpat')}</label>
-                                                                <div className='d-flex align-items-center value'>{`${annualLeaveSummary?.SICK_LEA_EXPAT || 0} ${t("Day")}` }</div>
+                                                                <div className='d-flex align-items-center value'>{`${Number(annualLeaveSummary?.SICK_LEA_EXPAT || 0).toFixed(3)} ${t("Day")}` }</div>
                                                             </div>
                                                         </div>
                                                         <div className='row'>
@@ -1060,7 +1060,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                             req[0]?.absenceType?.value === FOREIGN_SICK_LEAVE && (
                                                 <>
                                                     <p className="title">{t("SickLeaveFundForExpat")}</p>
-                                                    <input type="text" className="form-control" style={{ height: 38, borderRadius: 4, padding: '0 15px' }} value={`${annualLeaveSummary?.SICK_LEA_EXPAT || 0} ${t("Day")}`} disabled />
+                                                    <input type="text" className="form-control" style={{ height: 38, borderRadius: 4, padding: '0 15px' }} value={`${Number(annualLeaveSummary?.SICK_LEA_EXPAT || 0).toFixed(3)} ${t("Day")}`} disabled />
                                                 </>
                                             )
                                         }
