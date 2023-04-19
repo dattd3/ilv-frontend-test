@@ -393,7 +393,7 @@ class RequestTaskList extends React.Component {
             if (status == Constants.STATUS_APPROVED && [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP].includes(requestTypeId)) {
                 if (status == Constants.STATUS_APPROVED) {
                     const firstStartDate = startDate?.length > 0 ? startDate[0] : null
-                    if (this.checkDateLessThanPayPeriod(firstStartDate)) {
+                    if (this.checkDateLessThanPayPeriod(moment(firstStartDate, 'DD/MM/YYYY')?.isValid() ? moment(firstStartDate, 'DD/MM/YYYY').format('YYYYMMDD') : null)) {
                         return true
                     }
                     return false
@@ -411,7 +411,9 @@ class RequestTaskList extends React.Component {
             return false
         } else {
             const firstStartDate = startDate?.length > 0 ? startDate[0] : null
-            if (status == Constants.STATUS_APPROVED && [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP].includes(requestTypeId) && this.checkDateLessThanPayPeriod(firstStartDate)) {
+            if (status == Constants.STATUS_APPROVED 
+                && [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP].includes(requestTypeId) 
+                && this.checkDateLessThanPayPeriod(moment(firstStartDate, 'DD/MM/YYYY')?.isValid() ? moment(firstStartDate, 'DD/MM/YYYY').format('YYYYMMDD') : null)) {
                 return true
             }
             return false
@@ -718,6 +720,7 @@ class RequestTaskList extends React.Component {
                                 <tbody>
                                     {
                                         tasks.map((child, index) => {
+                                            console.log(`index  => ${index}  ===  ${child.startDate}`)
                                             let isShowEditButton = this.isShowEditButton(child.processStatusId, child.appraiserId, child.requestTypeId, child.startDate, child.isEdit)
                                             let isShowEvictionButton = this.isShowEvictionButton(child.processStatusId, child.requestTypeId, child.startDate)
                                             let actionType = child?.actionType || null

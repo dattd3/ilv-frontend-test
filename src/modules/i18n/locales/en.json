@@ -55,6 +55,7 @@
   "Hour": "Hour",
   "Year": "year",
   "Day": "day",
+  "DayMultiplicity": "days",
   "Night": "night",
   "Quarter": "Quarter",
   "WaitNotice": "Please wait...",
