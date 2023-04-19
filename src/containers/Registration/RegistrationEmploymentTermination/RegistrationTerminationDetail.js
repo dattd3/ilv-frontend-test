@@ -84,7 +84,7 @@ class RegistrationEmploymentTermination extends React.Component {
                         </div>
                         <div className="row">
                             <div className="col-4">
-                                <p className="title">{t('DaysOnWorking')}</p>
+                                <p className="title">{t('ContractSignDate')}</p>
                                 <div>
                                     <div className="detail">{userInfos && userInfos.dateStartWork ? moment(userInfos.dateStartWork, "YYYY-MM-DD").format('DD/MM/YYYY') : ''}</div>
                                 </div>
