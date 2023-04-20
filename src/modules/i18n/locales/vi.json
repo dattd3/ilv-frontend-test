@@ -1757,5 +1757,6 @@
   "CheckedIn": "Đã check-in",
   "CheckedOut": "Đã check-out",
   "at": "tại",
-  "MissingKPI": "Chưa có nội dung đánh giá"
+  "MissingKPI": "Chưa có nội dung đánh giá",
+  "NumberOfSharesConverted": "Số Cổ phần quy đổi"
 }

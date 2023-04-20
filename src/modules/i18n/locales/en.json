@@ -1740,5 +1740,6 @@
   "CheckedIn": "Checked In",
   "CheckedOut": "Checked Out",
   "at": "At",
-  "MissingKPI": "Missing KPI"
+  "MissingKPI": "Missing KPI",
+  "NumberOfSharesConverted": "Number of shares converted"
 }
