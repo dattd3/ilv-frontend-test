@@ -1323,7 +1323,7 @@ renderEvalution = (name, data, isDisable) => {
         headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
     })
         .then(response => {
-          if(response.data.result && response.data.result.code == '000000'){ // tạm thời vinfast không được đề xuất lương : Constants.PnLCODE.VinFast, Constants.PnLCODE.VinFastTrading,
+          if(response.data.result && response.data.result.code == '000000'){ // tạm thời vinfast không được đề xuất lương : Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading,
             if(this.state.data.qlttOpinion?.result?.value != 5 && this.state.data?.childRequestHistoryId == null && this.state.type == 'assess' && actionType != 1 &&
               ((this.state.data.processStatus == 10 && checkVersionPnLSameAsVinhome(Constants.MODULE.DEXUATLUONG)))) {
                   this.showSalaryPropose(actionType, home);
