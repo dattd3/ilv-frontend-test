@@ -1426,7 +1426,9 @@ export const IncomeTablesConfig = t => {
                 ]
             }
         ],
-        VinBigData: [ // Tạo phiếu lương riêng cho VinBigData (ILVGR-846)
+        // Tạo phiếu lương riêng cho VinBigData (ILVGR-846)
+        // Lúc trước VinBigData thuộc phiếu lương chung. Nên update wage types mới cho phiếu lương chung thì cũng phải update cho VinBigData.
+        VinBigData: [
             {
                 index: 'I',
                 label: `${t("Allowance")} = Sum (I.1 : I.3)`,
@@ -1443,7 +1445,7 @@ export const IncomeTablesConfig = t => {
                                     { label: t("BaseSalary"), field: 'base_salary' },
                                     { label: t("BehaviorAndAttitudeBonus"), field: 'quality_of_work_bonus' },
                                     { label: t("BehaviorAndAttitudeBonusForQuarterlySettlement"), field: 'quality_of_work_quarterly_settlement_bonus' },
-                                    { label: t("ProficiencyBonus"), field: 'professional_bonus' },
+                                    { label: t("NumberOfSharesConverted"), field: 'number_of_shares_converted' },
                                     { label: t("ServiceCharge"), field: 'service_charge_bonus' }
                                 ]
                             },
