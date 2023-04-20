@@ -404,10 +404,10 @@ class RequestTaskList extends React.Component {
         }
     }
 
-    isShowEvictionButton = (status, requestTypeId, startDate) => {
+    isShowEvictionButton = (status, requestTypeId, startDate, isEditOnceTime) => {
         const { page } = this.props
 
-        if (page === "approval") {
+        if (page === "approval" || !isEditOnceTime) {
             return false
         } else {
             const firstStartDate = startDate?.length > 0 ? startDate[0] : null
@@ -721,8 +721,8 @@ class RequestTaskList extends React.Component {
                                     {
                                         tasks.map((child, index) => {
                                             console.log(`index  => ${index}  ===  ${child.startDate}`)
-                                            let isShowEditButton = this.isShowEditButton(child.processStatusId, child.appraiserId, child.requestTypeId, child.startDate, child.isEdit)
-                                            let isShowEvictionButton = this.isShowEvictionButton(child.processStatusId, child.requestTypeId, child.startDate)
+                                            let isShowEditButton = this.isShowEditButton(child?.processStatusId, child?.appraiserId, child?.requestTypeId, child?.startDate, child?.isEdit)
+                                            let isShowEvictionButton = this.isShowEvictionButton(child?.processStatusId, child?.requestTypeId, child?.startDate, child?.isEdit)
                                             let actionType = child?.actionType || null
                                             if (child?.requestTypeId == Constants.RESIGN_SELF) {
                                                 const requestItem = child.requestInfo ? child.requestInfo[0] : null // BE xác nhận chỉ có duy nhất 1 item trong requestInfo
