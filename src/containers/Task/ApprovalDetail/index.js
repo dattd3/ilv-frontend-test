@@ -322,7 +322,7 @@ class ApprovalDetail extends React.Component {
         }
         <div className="block-status">
           <span className={`status ${determineStatus[processStatusId]?.className}`}>{determineStatus[processStatusId]?.label}</span>
-          { getSAPResponsePartiallySuccess() }
+          { processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && getSAPResponsePartiallySuccess() }
         </div>
         { isShowDocumentComponent ? 
           <>
