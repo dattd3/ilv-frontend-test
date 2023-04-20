@@ -366,7 +366,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
 
         <div className="block-status">
           <span className={`status ${Constants.mappingStatusRequest[requestInfo.processStatusId].className}`}>{t(this.showStatus(requestInfo.processStatusId, appraiser))}</span>
-          {messageSAP && 
+          { requestInfo?.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && messageSAP && 
             <div className={`d-flex status fail`}>
               <i className="fas fa-times pr-2 text-danger align-self-center"></i>
               <div>
