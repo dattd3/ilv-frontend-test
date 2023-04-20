@@ -210,7 +210,7 @@ class LeaveOfAbsenceComponent extends React.Component {
     }
 
     onBlurStartTime(groupId, groupItem) {
-        const checkVinmec = checkIsExactPnL(Constants.PnLCODE.Vinmec);
+        const checkVinmec = checkIsExactPnL(Constants.pnlVCode.VinMec);
         if (checkVinmec === true) {
             let { requestInfo } = this.state
             const request = requestInfo.find(req => req.groupId === groupId && req.groupItem === groupItem)
@@ -246,13 +246,13 @@ class LeaveOfAbsenceComponent extends React.Component {
         requestInfo[indexReq].errors.startTime = null
         requestInfo[indexReq].errors.totalDaysOff = null
         this.setState({ requestInfo })
-        const checkVinmec = checkIsExactPnL(Constants.PnLCODE.Vinmec);
+        const checkVinmec = checkIsExactPnL(Constants.pnlVCode.VinMec);
         if (checkVinmec === false)
             this.calculateTotalTime(startDate, endDate, start, requestInfo[indexReq].endTime, indexReq)
     }
 
     onBlurEndTime(groupId, groupItem) {
-        const checkVinmec = checkIsExactPnL(Constants.PnLCODE.Vinmec);
+        const checkVinmec = checkIsExactPnL(Constants.pnlVCode.VinMec);
         if (checkVinmec === true) {
             let { requestInfo } = this.state
             const request = requestInfo.find(req => req.groupId === groupId && req.groupItem === groupItem)
@@ -295,7 +295,7 @@ class LeaveOfAbsenceComponent extends React.Component {
         requestInfo[indexReq].errors.endTime = null
         requestInfo[indexReq].errors.totalDaysOff = null
         this.setState({ requestInfo })
-        const checkVinmec = checkIsExactPnL(Constants.PnLCODE.Vinmec);
+        const checkVinmec = checkIsExactPnL(Constants.pnlVCode.VinMec);
         if (checkVinmec === false) // Trường hợp vinmec tính thời gian khi lost focus
             this.calculateTotalTime(startDate, endDate, requestInfo[indexReq].startTime, end, indexReq)
     }
@@ -928,7 +928,7 @@ class LeaveOfAbsenceComponent extends React.Component {
         } = this.state
         const sortRequestListByGroup = requestInfo.sort((reqPrev, reqNext) => reqPrev.groupId - reqNext.groupId)
         const requestInfoArr = _.valuesIn(_.groupBy(sortRequestListByGroup, (req) => req.groupId))
-        const checkVinmec = checkIsExactPnL(Constants.PnLCODE.Vinmec);
+        const checkVinmec = checkIsExactPnL(Constants.pnlVCode.VinMec);
         const minDate = getRegistrationMinDateByConditions()
         const registeredInformation = (leaveOfAbsence?.requestInfoOld || leaveOfAbsence?.requestInfoOld?.length > 0) ? leaveOfAbsence.requestInfoOld : leaveOfAbsence?.requestInfo
 

@@ -471,7 +471,7 @@ class MyComponent extends React.Component {
     let defaultTab = new URLSearchParams(this.props.location.search).get("tab");
     defaultTab = defaultTab && defaultTab == 'document' ? 'PersonalDocument' : 'PersonalInformation';
     const documents = this.state.userDocument.documents;
-    const checkVinfast = checkIsExactPnL(Constants.PnLCODE.VinFast, Constants.PnLCODE.VinFastPB, Constants.PnLCODE.VinFastTrading);
+    const checkVinfast = checkIsExactPnL(Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading);
 
     return (
       <>
