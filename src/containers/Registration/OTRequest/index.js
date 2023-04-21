@@ -486,7 +486,7 @@ export default function OTRequestComponent({ recentlyManagers }) {
               ],
               [item.startTime, item.endTime],
             ];
-            if (checkOverlap(timeSegments)) {
+            if (item.is_holiday != 1 && checkOverlap(timeSegments)) {
               _errors[`overlapTime_${index}`] = t("OverlapTimeOTWorkshift");
             }
           }
@@ -501,7 +501,7 @@ export default function OTRequestComponent({ recentlyManagers }) {
               ],
               [item.startTime, item.endTime],
             ];
-            if (checkOverlap(timeSegments)) {
+            if (item.is_holiday != 1 && checkOverlap(timeSegments)) {
               _errors[`overlapTime_${index}`] = t("OverlapTimeOTWorkshift");
             }
           }
