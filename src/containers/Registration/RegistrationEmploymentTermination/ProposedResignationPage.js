@@ -13,7 +13,7 @@ import ReasonResignationComponent from '../TerminationComponents/ReasonResignati
 import AttachmentComponent from '../TerminationComponents/AttachmentComponent'
 import ResultModal from '../ResultModal'
 import LoadingModal from '../../../components/Common/LoadingModal'
-import { getMuleSoftHeaderConfigurations } from '../../../commons/Utils'
+import { getMuleSoftHeaderConfigurations, getResignResonsMasterData } from '../../../commons/Utils'
 
 class ProposedResignationPage extends React.Component {
     constructor(props) {
@@ -35,10 +35,10 @@ class ProposedResignationPage extends React.Component {
             loaded: 0,
             isShowLoadingModal: false,
             errors: {
-                employees: "Vui lòng chọn nhân viên đề xuất cho nghỉ!",
-                lastWorkingDay: "Vui lòng nhập ngày làm việc cuối cùng!",
-                reason: "Vui lòng chọn lý do chấm dứt hợp đồng!",
-                seniorExecutive: "Vui lòng chọn CBLĐ phê duyệt!"
+                employees: props.t('require_choose_employee_resign'),
+                lastWorkingDay: props.t('resign_error_lastWorkingDay'),
+                reason: props.t('resign_error_reason'),
+                seniorExecutive: props.t('resign_error_seniorExecutive')
             }
         }
     }
@@ -63,6 +63,32 @@ class ProposedResignationPage extends React.Component {
         })).catch(errors => {
             return null
         })
+    }
+
+    prepareManagerSuggestion = (response) => {
+        if (response && response.data) {
+            const result = response.data.result
+            if (result && result.code == Constants.API_SUCCESS_CODE) {
+              const data = response.data?.data
+              const { appraiserInfo, approverInfo } = data
+              const approver = approverInfo && _.size(approverInfo) > 0 
+              ?  [{
+                value: approverInfo?.account?.toLowerCase() || "",
+                label: approverInfo?.fullName || "",
+                fullName: approverInfo?.fullName || "",
+                avatar: approverInfo?.avatar || "",
+                employeeLevel: approverInfo?.employeeLevel || "",
+                pnl: approverInfo?.pnl || "",
+                orglv2Id: approverInfo?.orglv2Id || "",
+                account: approverInfo?.account?.toLowerCase() || "",
+                jobTitle: approverInfo?.jobTitle || "",
+                department: approverInfo?.department || "",
+              }]
+              : []
+              if(approver?.length > 0) return approver[0];
+            }
+        }
+        return null;
     }
 
 
@@ -131,10 +157,11 @@ class ProposedResignationPage extends React.Component {
         if (responses && responses.data) {
             const reasonTypeCodeForManager = "ZH"
             const reasonTypes = responses.data.data
+            const reasonMasterData = getResignResonsMasterData();
             const results = (reasonTypes || [])
             .filter(item => item.code01 === reasonTypeCodeForManager)
             .map(item => {
-                return {value: item.code02, label: item.text}
+                return {value: item.code02, label: reasonMasterData[item.code02]}
             })
             return results
         }
@@ -263,19 +290,20 @@ class ProposedResignationPage extends React.Component {
                     this.setState({isShowLoadingModal: false})
                 }
             } else {
-                this.showStatusModal(t("Notification"), "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
+                this.showStatusModal(t("Notification"), t("Error"), false)
                 this.setDisabledSubmitButton(false)
                 this.setState({isShowLoadingModal: false})
             }
 
         } catch (errors) {
-            this.showStatusModal(t("Notification"), "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
+            this.showStatusModal(t("Notification"), t("Error"), false)
             this.setDisabledSubmitButton(false)
             this.setState({isShowLoadingModal: false})
         }
     }
 
     validateAttachmentFile = () => {
+        const { t } = this.props
         const files = this.state.files
         const errors = {}
         const fileExtension = [
@@ -292,10 +320,10 @@ class ProposedResignationPage extends React.Component {
         for (let index = 0, lenFiles = files.length; index < lenFiles; index++) {
             const file = files[index]
             if (!fileExtension.includes(file.type)) {
-                errors.files = 'Tồn tại file đính kèm không đúng định dạng'
+                errors.files = t('Request_error_file_format')
                 break
             } else if (parseFloat(file.size / 1000000) > 2) {
-                errors.files = 'Dung lượng từng file đính kèm không được vượt quá 2MB'
+                errors.files = t('Request_error_file_size')
                 break
             } else {
                 errors.files = null
@@ -304,7 +332,7 @@ class ProposedResignationPage extends React.Component {
         }
     
         if (parseFloat(sizeTotal / 1000000) > 10) {
-            errors.files = 'Tổng dung lượng các file đính kèm không được vượt quá 10MB'
+            errors.files = t('Request_error_file_oversize')
         }
 
         return errors
@@ -316,13 +344,13 @@ class ProposedResignationPage extends React.Component {
         if (!userInfos || userInfos.length === 0) {
             return {
                 isValid: false,
-                messages: "Vui lòng chọn nhân viên đề xuất cho nghỉ!"
+                messages: this.props.t('require_choose_employee_resign')
             }
         }
         if (!subordinates || subordinates.length === 0) {
             return {
                 isValid: false,
-                messages: "Danh sách nhân viên đề xuất cho nghỉ không thuộc thẩm quyền của QLTT"
+                messages: this.props.t('resign_error_permission')
             }
         }
 

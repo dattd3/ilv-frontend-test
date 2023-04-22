@@ -6,7 +6,7 @@ import Constants from '../../../commons/Constants';
 import SubmitQuestionModal from '../../QuestionAndAnswer/SubmitQuestionModal'
 import StatusModal from '../../../components/Common/StatusModal'
 import HOCComponent from '../../../components/Common/HOCComponent'
-import { isEnableFunctionByFunctionName } from "../../../commons/Utils"
+import { getCurrentLanguage, isEnableFunctionByFunctionName } from "../../../commons/Utils"
 
 class NotificationDetailComponent extends React.Component {
   constructor(props) {
@@ -17,7 +17,8 @@ class NotificationDetailComponent extends React.Component {
       isEditQuestion: false,
       isShowStatusModal: false,
       content: "",
-      isSuccess: false
+      isSuccess: false,
+      categories: [],
     }
   }
 
@@ -31,6 +32,9 @@ class NotificationDetailComponent extends React.Component {
     const config = {
       headers: {
         'Authorization': `${localStorage.getItem('accessToken')}`
+      },
+      params: {
+        'culture': getCurrentLanguage()
       }
     }
     axios.get(`${process.env.REACT_APP_REQUEST_URL}notifications/${this.getNotificationId()}`, config)
@@ -43,6 +47,15 @@ class NotificationDetailComponent extends React.Component {
         }
       }).catch(error => {
         this.setState({ notificationInfo: [] });
+      });
+
+    axios.get(`${process.env.REACT_APP_REQUEST_URL}ticket/categories/` + localStorage.getItem("companyCode"), config)
+      .then(res => {
+        if (res && res.data && res.data.data) {
+          this.setState({ categories: res.data.data })
+        }
+      }).catch(error => {
+
       });
   }
 
@@ -96,16 +109,20 @@ class NotificationDetailComponent extends React.Component {
 
   render() {
     const { t } = this.props
+    const { isEditQuestion, questionContent, categories, isShowSubmitQuestionModal } = this.state
     const isEnableQnA = isEnableFunctionByFunctionName(Constants.listFunctionsForPnLACL.qnA)
 
     return (
       <>
         <StatusModal show={this.state.isShowStatusModal} content={this.state.content} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
         <SubmitQuestionModal
-          isEdit={this.state.isEditQuestion}
-          editQuestion={this.state.questionContent}
-          show={this.state.isShowSubmitQuestionModal} onHide={() => this.showSubmitModal(false)} showStatusModal={this.showStatusModal.bind(this)} />
-        <div className="notifications-detail-section">
+          isEdit={isEditQuestion}
+          editQuestion={questionContent}
+          categories={categories}
+          show={isShowSubmitQuestionModal} 
+          onHide={() => this.showSubmitModal(false)} 
+          showStatusModal={this.showStatusModal.bind(this)} />
+        <div className="notifications-detail-section mt-5">
           <div className="row">
             <div className="col-md-8 display-inline">
               <h5 className="title-block">{this.state.notificationInfo.title != null ? this.state.notificationInfo.title : ""}</h5>

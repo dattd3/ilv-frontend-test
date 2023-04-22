@@ -1,24 +1,21 @@
-import React, { useState, useEffect, useRef } from "react"
-import Select from 'react-select'
+import React, { useState, useEffect } from "react"
 import { Image } from 'react-bootstrap'
 import { useTranslation } from "react-i18next"
 import { Doughnut } from 'react-chartjs-2'
-import { withRouter } from 'react-router-dom'
 import axios from 'axios'
-import purify from "dompurify"
 import _ from 'lodash'
-import moment from "moment/moment";
 import Constants from '../../../commons/Constants'
 import { getRequestConfigurations } from '../../../commons/Utils'
+import { calculateRating, isVinBusByCompanyCode, calculateScore, formatEvaluationNumber } from '../Utils'
 import { evaluationStatus, actionButton } from '../Constants'
 import { useGuardStore } from '../../../modules'
 import LoadingModal from '../../../components/Common/LoadingModal'
 import StatusModal from '../../../components/Common/StatusModal'
 import HOCComponent from '../../../components/Common/HOCComponent'
+import EvaluationVinBusTemplate from '../Templates/VinBus'
+import EvaluationVinGroupTemplate from '../Templates/Vingroup'
 import IconArrowRightWhite from '../../../assets/img/icon/pms/arrow-right-white.svg'
 import IconArrowRightGray from '../../../assets/img/icon/pms/arrow-right-gray.svg'
-import IconUp from '../../../assets/img/icon/pms/icon-up.svg'
-import IconDown from '../../../assets/img/icon/pms/icon-down.svg'
 import IconSave from '../../../assets/img/ic-save.svg'
 import IconSendRequest from '../../../assets/img/icon/Icon_send.svg'
 import IconReject from '../../../assets/img/icon/Icon_Cancel.svg'
@@ -29,11 +26,6 @@ const currentLocale = localStorage.getItem("locale")
 const languageCodeMapping = {
   [Constants.LANGUAGE_VI]: 'vi',
   [Constants.LANGUAGE_EN]: 'en',
-}
-
-const formType = {
-  MANAGER: 'LD',
-  EMPLOYEE: 'NV',
 }
 
 const processStep = {
@@ -66,13 +58,13 @@ function EvaluationOverall(props) {
     hover: { mode: null },
     cutoutPercentage: 75,
     plugins: {
-      report: `${(totalCompleted / evaluationFormDetail?.totalTarget * 100).toFixed(2)}%`
+      report: `${formatEvaluationNumber((totalCompleted / evaluationFormDetail?.totalTarget * 100))}%`
     }
   }
-
+  
   return <div className="block-overall">
     <div className="card shadow card-completed">
-      <h6 className="text-center chart-title">{t("EvaluationDetailAccomplished")}: {totalCompleted || 0}/{evaluationFormDetail?.totalTarget}</h6>
+      <h6 className="text-center text-uppercase chart-title">{t("EvaluationDetailAccomplished")}: <span className="font-weight-bold">{totalCompleted || 0}/{evaluationFormDetail?.totalTarget}</span></h6>
       <div className="chart">
         <div className="detail">
           <div className="result">
@@ -105,15 +97,15 @@ function EvaluationOverall(props) {
       </div>
     </div>
     <div className="card shadow card-overall">
-      <h6 className="text-center chart-title">{t("EvaluationDetailOverallScore")}</h6>
+      <h6 className="text-center text-uppercase font-weight-bold chart-title">{t("EvaluationDetailOverallScore")}</h6>
       <div className="chart">
-        <div className="detail">{(evaluationFormDetail?.status == evaluationStatus.launch || (evaluationFormDetail?.status == evaluationStatus.selfAssessment && !showByManager) || evaluationFormDetail?.reviewStreamCode === processStep.zeroLevel) ? evaluationFormDetail?.totalSeftPoint?.toFixed(2) || 0 : evaluationFormDetail?.totalLeadReviewPoint?.toFixed(2) || 0}</div>
+        <div className="detail">{(evaluationFormDetail?.status == evaluationStatus.launch || (evaluationFormDetail?.status == evaluationStatus.selfAssessment && !showByManager) || evaluationFormDetail?.reviewStreamCode === processStep.zeroLevel) ? formatEvaluationNumber(evaluationFormDetail?.totalSeftPoint) : formatEvaluationNumber(evaluationFormDetail?.totalLeadReviewPoint)}</div>
       </div>
     </div>
     <div className="card shadow card-detail">
       <table className='table-list-evaluation'>
         <thead>
-          <tr>
+          <tr className="highlight">
             <th className='c-criteria'><div className='criteria'>{t("EvaluationDetailCriteria")}</div></th>
             <th className='c-self-assessment text-center'><div className='self-assessment'>{t("EvaluationDetailSelfAssessment")}</div></th>
             {isDifferentZeroLevel && <th className='c-manager-assessment text-center'><div className='manager-assessment color-red'>{t("EvaluationDetailManagerAssessment")}</div></th>}
@@ -129,11 +121,18 @@ function EvaluationOverall(props) {
               </tr>
             })
           }
-          <tr>
+          {/* Row điểm tổng thể */}
+          <tr className="highlight">
             <td className='c-criteria'><div className='font-weight-bold text-uppercase criteria'>{t("EvaluationDetailOverallScore")}</div></td>
             <td className='c-self-assessment text-center font-weight-bold'>{(evaluationFormDetail?.totalSeftPoint || 0).toFixed(2)}</td>
             {isDifferentZeroLevel && <td className='c-manager-assessment text-center font-weight-bold color-red'>{(evaluationFormDetail?.totalLeadReviewPoint || 0).toFixed(2)}</td>}
           </tr>
+          {/* {
+            isVinBusByCompanyCode(evaluationFormDetail?.companyCode) &&
+            <tr>
+              <td colSpan={3} className='text-uppercase text-center'><div className="d-flex justify-content-center align-items-center">Xếp hạng đánh giá: <span style={{ fontWeight: 'bold', color: '#C11D2A', fontSize: 20, marginLeft: 3, marginTop: -1}}>{evaluationFormDetail?.evaluateRating || ''}</span></div></td>
+            </tr>
+          } */}
         </tbody>
       </table>
     </div>
@@ -143,21 +142,7 @@ function EvaluationOverall(props) {
 function EvaluationProcess(props) {
   const { evaluationFormDetail, showByManager, errors, updateData } = props
   const { t } = useTranslation();
-  const formatIndexText = index => {
-    const mapping = {
-      1: 'I',
-      2: 'II',
-      3: 'III',
-      4: 'IV',
-      5: 'V',
-      6: 'VI',
-      7: 'VII',
-      8: 'VIII',
-      9: 'IX',
-      10: 'X'
-    }
-    return mapping[index]
-  }
+
   const { checkPhaseFormEndDate, reviewStreamCode, status, isEdit } = evaluationFormDetail;
   const isDifferentZeroLevel = reviewStreamCode !== processStep.zeroLevel;
   let stepStatusMapping, stepEvaluationConfig;
@@ -267,249 +252,58 @@ function EvaluationProcess(props) {
     )
   }
 
-  const prepareScores = (listGroupConfig) => {
-    if (!listGroupConfig || listGroupConfig?.length === 0) {
-      return []
-    }
-    const scores = (listGroupConfig || []).map((item, index) => index + 1)
-    return scores
-  }
-
   const handleInputChange = (subIndex, parentIndex, stateName, element, childIndex) => {
     const val = element?.target?.value || ""
-    if (['seftPoint', 'leadReviewPoint'].includes(stateName) && (!(/^\d*$/.test(Number(val))) || val.includes('.'))) {
-      return
+
+    if (isVinBusByCompanyCode(evaluationFormDetail?.companyCode)) {
+      if (['realResult', 'leadRealResult'].includes(stateName) 
+        && (
+          !(/^[0-9][0-9,\.]*$/.test(Number(val))) 
+          || Number(val) > 100 
+          || (val?.split('.')[1] && val?.split('.')[1]?.length > 2) 
+          || (Number(val) === 0 && !val?.includes('.') && val?.length > 1)
+        )
+      ) {
+        return
+      }
+    } else {
+      if (['seftPoint', 'leadReviewPoint'].includes(stateName) && (!(/^\d*$/.test(Number(val))) || val.includes('.'))) {
+        return
+      }
     }
+
     updateData(subIndex, parentIndex, stateName, val, childIndex)
   }
 
-  const formatTargetText = str => str?.replace(/\n|\r/g, "")
-
-  const renderEvaluationItem = (item, index, scores, target, i, deviant, parentIndex, subGroupTargetIndex) => {
-    // index => index của từng phần (Tinh thần thái độ hoặc Kết quả công việc)
-    // i = 0 Nếu Biểu mẫu giành cho CBLĐ hoặc Nhân viên thuộc Vinmec. Ngược lại = index của item trong listTarget level 0 (ngang cấp Tinh thần thái độ hoặc Kết quả công việc)
-    // parentIndex = index của item trong listTarget level 0 (ngang cấp Tinh thần thái độ hoặc Kết quả công việc) nếu Biểu mẫu giành cho CBLĐ hoặc Nhân viên thuộc Vinmec. Ngược lại = null
-    // subGroupTargetIndex = index của item nằm trong listTarget sâu nhất nếu Biểu mẫu giành cho CBLĐ hoặc Nhân viên thuộc Vinmec. Ngược lại = null
-
-    // const isChild = !_.isNil(parentIndex);
-    const isChild = parentIndex !== null && parentIndex !== undefined && parentIndex !== ''
-    const isDisableEmployeeComment = isEdit ? (showByManager || evaluationFormDetail.status != evaluationStatus.launch) : true
-    const isDisableManagerComment = isEdit ? (!showByManager || (showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment))) : true
-
-    return <div className="evaluation-item" key={target.id}>
-      {
-        !isChild 
-        ? <div className="title">{`${i + 1}. ${JSON.parse(target?.targetName || '{}')[languageCodeMapping[currentLocale]]}`}</div> // 1 level
-        : <div className="sub-title">{`${parentIndex + 1}.${subGroupTargetIndex + 1} ${JSON.parse(target?.targetName || '{}')[languageCodeMapping[currentLocale]]}`}</div> // 2 level
-      }
-      {
-        item?.listGroupConfig && item?.listGroupConfig?.length > 0 ?
-          <div className="score-block">
-            <div className="self attitude-score">
-              <div className="item">
-                <span className="red label">{t("EvaluationDetailPartAttitudeSelfAssessment")}{!showByManager && <span className="required">(*)</span>}</span>
-                {
-                  !showByManager && evaluationFormDetail.status == evaluationStatus.launch && isEdit
-                    ?
-                    <select onChange={(e) => !_.isNil(subGroupTargetIndex) ? handleInputChange(parentIndex, index, 'seftPoint', e, subGroupTargetIndex) : handleInputChange(i, index, 'seftPoint', e)} value={target?.seftPoint || ''}>
-                      <option value=''>{t("EvaluationDetailPartSelectScore")}</option>
-                      {
-                        (scores || []).map((score, i) => {
-                          return <option value={score} key={i}>{score}</option>
-                        })
-                      }
-                    </select>
-                    : <input type="text" value={target?.seftPoint || ''} disabled />
-                }
-              </div>
-              {
-                !isChild
-                ? errors[`${index}_${i}_seftPoint`] && <div className="alert alert-danger invalid-message" role="alert">{errors[`${index}_${i}_seftPoint`]}</div>
-                : errors[`${index}_${parentIndex}_${subGroupTargetIndex}_seftPoint`] && <div className="alert alert-danger invalid-message" role="alert">{errors[`${index}_${parentIndex}_${subGroupTargetIndex}_seftPoint`]}</div>
-              }
-              {/* {errors[`${index}_${i}_seftPoint`] && <div className="alert alert-danger invalid-message" role="alert">{errors[`${index}_${i}_seftPoint`]}</div>} */}
-            </div>
-            <div className="qltt attitude-score">
-              <div className="item">
-                <span className="red label">{t("EvaluationDetailPartAttitudeManagerAssessment")}{showByManager && <span className="required">(*)</span>}</span>
-                {
-                  !(!showByManager || (showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment))) && isEdit
-                    ?
-                    <select onChange={(e) => !_.isNil(subGroupTargetIndex) ? handleInputChange(parentIndex, index, 'leadReviewPoint', e, subGroupTargetIndex) : handleInputChange(i, index, "leadReviewPoint", e)} value={target?.leadReviewPoint || ''}>
-                      <option value=''>{t("EvaluationDetailPartSelectScore")}</option>
-                      {
-                        (scores || []).map((score, i) => {
-                          return <option value={score} key={i}>{score}</option>
-                        })
-                      }
-                    </select>
-                    : <input type="text" value={target?.leadReviewPoint || ''} disabled />
-                }
-              </div>
-              {
-                !isChild
-                ? errors[`${index}_${i}_leadReviewPoint`] && <div className="alert alert-danger invalid-message" role="alert">{errors[`${index}_${i}_leadReviewPoint`]}</div>
-                : errors[`${index}_${parentIndex}_${subGroupTargetIndex}_leadReviewPoint`] && <div className="alert alert-danger invalid-message" role="alert">{errors[`${index}_${parentIndex}_${subGroupTargetIndex}_leadReviewPoint`]}</div>
-              }
-            </div>
-            <div className="deviant">
-              <span className="red label">{t("EvaluationDetailPartAttitudeDifferent")}</span>
-              <span className={`value ${
-                  deviant && deviant > 0
-                    ? 'up'
-                    : deviant && deviant < 0
-                    ? 'down'
-                    : ''
-                }`}
-              >
-                &nbsp;{`${deviant && deviant > 0 ? '+' : ''}${deviant}`}
-                {deviant && deviant != 0 ? (
-                  <Image
-                    alt="Note"
-                    src={
-                      deviant && deviant > 0
-                        ? IconUp
-                        : deviant && deviant < 0
-                        ? IconDown
-                        : ''
-                    }
-                  />
-                ) : (
-                  ''
-                )}
-              </span>
-            </div>
-          </div>
-          :
-          // Phần 2: Kết quả công việc
-          <div className="wrap-score-table">
-            <table>
-              <thead>
-                <tr>
-                  <th className="measurement"><span>{t("EvaluationDetailPartLevelOfPerformance")}<span className="note">({t("EvaluationDetailPartByScore")})</span></span></th>
-                  <th className="text-center proportion"><span>{t("EvaluationDetailPartWeight")} %</span></th>
-                  <th className="text-center target"><span>{t("EvaluationDetailPartTarget")}</span></th>
-                  <th className="text-center actual-results"><span>{t("EvaluationDetailPartActualResult")}</span>{!showByManager && <span className="required">(*)</span>}</th>
-                  <th className="text-center self-assessment"><span>{t("EvaluationDetailPartAttitudeSelfAssessment")}</span>{!showByManager && <span className="required">(*)</span>}</th>
-                  <th className="text-center qltt-assessment"><span>{t("EvaluationDetailPartAttitudeManagerAssessment")}</span>{showByManager && <span className="required">(*)</span>}</th>
-                  <th className="text-center deviant"><span>{t("EvaluationDetailPartAttitudeDifferent")}</span></th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td className="measurement">
-                    {
-                      target?.jobDetail && 
-                      <ul className="first">
-                        <li>{formatTargetText(target?.jobDetail)}</li>
-                      </ul>
-                    }
-                    <ul className="second">
-                      <li>{!target?.metric1 ? '--' : formatTargetText(target?.metric1)}</li>
-                      <li>{!target?.metric2 ? '--' : formatTargetText(target?.metric2)}</li>
-                      <li>{!target?.metric3 ? '--' : formatTargetText(target?.metric3)}</li>
-                      <li>{!target?.metric4 ? '--' : formatTargetText(target?.metric4)}</li>
-                      <li>{!target?.metric5 ? '--' : formatTargetText(target?.metric5)}</li>
-                    </ul>
-                  </td>
-                  <td className="text-center proportion"><span>{target?.weight}%</span></td>
-                  <td className="text-center target"><span>{target?.target}</span></td>
-                  <td className="actual-results">
-                    <div>
-                      {
-                        !showByManager && evaluationFormDetail.status == evaluationStatus.launch && isEdit
-                          ?
-                          <textarea rows={3} placeholder={t("EvaluationInput")} value={target?.realResult || ""} onChange={(e) => handleInputChange(i, index, 'realResult', e)} />
-                          :
-                          <span>{target?.realResult}</span>}
-                    </div>
-                    {errors[`${index}_${i}_realResult`] && <div className="alert alert-danger invalid-message" role="alert">{errors[`${index}_${i}_realResult`]}</div>}
-                  </td>
-                  <td className="text-center self-assessment">
-                    <div>
-                      {
-                        !showByManager && evaluationFormDetail.status == evaluationStatus.launch && isEdit
-                          // ? <input type="text" placeholder={t("EvaluationInput")} value={target?.seftPoint || ""} onChange={(e) => handleInputChange(i, index, 'seftPoint', e)} /> 
-                          ? <select onChange={(e) => handleInputChange(i, index, 'seftPoint', e)} value={target?.seftPoint || ''}>
-                            <option value=''>{t("EvaluationDetailPartSelectScore")}</option>
-                            {
-                              (scores || []).map((score, i) => {
-                                return <option value={score} key={i}>{score}</option>
-                              })
-                            }
-                          </select>
-                          : <span>{target?.seftPoint}</span>
-                      }
-                    </div>
-                    {errors[`${index}_${i}_seftPoint`] && <div className="alert alert-danger invalid-message" role="alert">{errors[`${index}_${i}_seftPoint`]}</div>}
-                  </td>
-                  <td className="text-center qltt-assessment">
-                    <div>
-                      {
-                        showByManager && evaluationFormDetail.status == evaluationStatus.selfAssessment && isEdit
-                          // ? <input type="text" placeholder={t("EvaluationInput")} value={target?.leadReviewPoint || ""} onChange={(e) => handleInputChange(i, index, 'leadReviewPoint', e)} />
-                          ? <select onChange={(e) => handleInputChange(i, index, 'leadReviewPoint', e)} value={target?.leadReviewPoint || ''}>
-                            <option value=''>{t("EvaluationDetailPartSelectScore")}</option>
-                            {
-                              (scores || []).map((score, i) => {
-                                return <option value={score} key={i}>{score}</option>
-                              })
-                            }
-                          </select>
-                          : <span>{target?.leadReviewPoint}</span>
-                      }
-                    </div>
-                    {errors[`${index}_${i}_leadReviewPoint`] && <div className="alert alert-danger invalid-message" role="alert">{errors[`${index}_${i}_leadReviewPoint`]}</div>}
-                  </td>
-                  <td className="text-center deviant">
-                    <span className={`value ${deviant && deviant > 0 ? 'up' : deviant && deviant < 0 ? 'down' : ''}`}>
-                      &nbsp;{`${deviant && deviant > 0 ? '+' : ''}${deviant}`}
-                      {deviant && deviant != 0
-                        ?
-                        <Image alt='Note' src={deviant && deviant > 0 ? IconUp : deviant && deviant < 0 ? IconDown : ''} />
-                        :
-                        ''
-                      }
-                    </span>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-      }
-      <div className="comment">
-        <div className="self">
-          <p>{t("EvaluationDetailPartAttitudeCommentOfEmployee")}</p>
-          {
-            isDisableEmployeeComment
-            ? <div className="comment-content" dangerouslySetInnerHTML={{
-                __html: purify.sanitize(target?.seftOpinion || ""),
-              }} />
-            : <textarea 
-                rows={3} 
-                placeholder={isEdit ? !(showByManager || evaluationFormDetail.status != evaluationStatus.launch) ? t("EvaluationDetailPartSelectScoreInput") : '' : ''} 
-                value={target?.seftOpinion || ""} 
-                onChange={(e) => !_.isNil(subGroupTargetIndex) ? handleInputChange(parentIndex, index, 'seftOpinion', e, subGroupTargetIndex) : handleInputChange(i, index, 'seftOpinion', e)} 
-                disabled={isDisableEmployeeComment} />
-          }
-        </div>
-        <div className="qltt">
-          <p>{t("EvaluationDetailPartAttitudeCommentOfManager")}</p>
-          {
-            isDisableManagerComment
-            ? <div className="comment-content" dangerouslySetInnerHTML={{
-                __html: purify.sanitize(target?.leaderReviewOpinion || ""),
-              }} />
-            : <textarea 
-                rows={3} 
-                placeholder={isEdit ? !(!showByManager || (showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment))) ? t("EvaluationDetailPartSelectScoreInput") : '' : ''} 
-                value={target?.leaderReviewOpinion || ""} 
-                onChange={(e) => !_.isNil(subGroupTargetIndex) ? handleInputChange(parentIndex, index, 'leaderReviewOpinion', e, subGroupTargetIndex) : handleInputChange(i, index, "leaderReviewOpinion", e)} 
-                disabled={isDisableManagerComment} />
-          }
-        </div>
-      </div>
-    </div>
+  const renderFormMainInfo = (code) => {
+    switch (code) {
+      case Constants.pnlVCode.VinBus:
+        return (
+          <EvaluationVinBusTemplate 
+            evaluationFormDetail={evaluationFormDetail} 
+            isEdit={isEdit} 
+            showByManager={showByManager}
+            evaluationStatus={evaluationStatus} 
+            currentLocale={currentLocale}
+            languageCodeMapping={languageCodeMapping}
+            errors={errors}
+            handleInputChange={handleInputChange}
+          />
+        )
+      default:
+        return (
+          <EvaluationVinGroupTemplate 
+            evaluationFormDetail={evaluationFormDetail}
+            isEdit={isEdit}
+            showByManager={showByManager} 
+            evaluationStatus={evaluationStatus}
+            currentLocale={currentLocale}
+            languageCodeMapping={languageCodeMapping}
+            errors={errors}
+            handleInputChange={handleInputChange}
+          />
+        )
+    }
   }
 
   return <div className="card shadow evaluation-process">
@@ -520,211 +314,7 @@ function EvaluationProcess(props) {
     <div className="employee-info-block">
       {renderEmployeeInfos()}
     </div>
-    {
-      (evaluationFormDetail?.listGroup || []).map((item, index) => {
-        let indexText = formatIndexText(index + 1)
-        // let scores = prepareScores(item?.listGroupConfig)
-        let scores = [1, 2, 3, 4, 5]
-        let isAttitudeBlock = item?.listGroupConfig && item?.listGroupConfig?.length > 0
-        const isDisableEmployeeComment = isEdit ? (showByManager || evaluationFormDetail.status != evaluationStatus.launch) : true
-        const isDisableManagerComment = isEdit ? (!showByManager || (showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment))) : true
-
-        return <div className={`part-block ${isAttitudeBlock ? 'attitude' : 'work-result'}`} key={index}>
-          <div className="title">{`${t("EvaluationDetailPart")} ${indexText} - ${JSON.parse(item?.groupName || '{}')[languageCodeMapping[currentLocale]]}`} <span className="red">({item?.groupWeight || 0}%)</span></div>
-          {
-            isAttitudeBlock &&
-            <div className="wrap-score-table">
-              <table>
-                <thead>
-                  <tr>
-                    <th className="red">{t("EvaluationDetailPartAttitudeScore")}</th>
-                    {
-                      item?.listGroupConfig?.map((sub, subIndex) => {
-                        return <th key={subIndex}><span className="milestones">{subIndex + 1}</span></th>
-                      })
-                    }
-                  </tr>
-                  <tr>
-                    <th>%</th>
-                    {
-                      item?.listGroupConfig?.map((sub, subIndex) => {
-                        return <th key={subIndex}><span>{sub?.weight}</span></th>
-                      })
-                    }
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td className="font-weight-bold">{t("EvaluationDetailPartAttitudeLevelExpression")}</td>
-                    {
-                      item?.listGroupConfig?.map((sub, subIndex) => {
-                        return <td key={subIndex}><div>{JSON.parse(sub?.description || '{}')[languageCodeMapping[currentLocale]]}</div></td>
-                      })
-                    }
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          }
-
-          <div className="list-evaluation">
-            {
-              (item?.listTarget || []).map((target, i) => {
-                let deviant = (target?.leadReviewPoint === '' || target?.leadReviewPoint === null || target?.seftPoint === '' || target?.seftPoint === null) ? '' : Number(target?.leadReviewPoint) - Number(target?.seftPoint)
-                const companyCodeForTemplate = evaluationFormDetail?.companyCode
-                if (evaluationFormDetail?.formType == formType.EMPLOYEE && companyCodeForTemplate != Constants.pnlVCode.VinMec) {
-                  // Biểu mẫu giành cho Nhân viên không thuộc Vinmec
-                  return renderEvaluationItem(item, index, scores, target, i, deviant)
-                }
-                if (evaluationFormDetail?.formType == formType.MANAGER || (companyCodeForTemplate == Constants.pnlVCode.VinMec && evaluationFormDetail?.formType == formType.EMPLOYEE)) {
-                  // Biểu mẫu giành cho CBLĐ hoặc Nhân viên thuộc Vinmec
-                  if (isAttitudeBlock) {
-                    return <div className="evaluation-sub-group" key={`sub-group-${i}`}>
-                      <div className='sub-group-name'>{`${i + 1}. ${JSON.parse(target?.groupName || '{}')[languageCodeMapping[currentLocale]]}`} <span className="red">({target.groupWeight}%)</span></div>
-                      <div className="sub-group-targets">
-                        {(target.listTarget || []).map((childTarget, childIndex) => {
-                          let deviant = (childTarget?.leadReviewPoint === '' || childTarget?.leadReviewPoint === null || childTarget?.seftPoint === '' || childTarget?.seftPoint === null) ? '' : Number(childTarget?.leadReviewPoint) - Number(childTarget?.seftPoint)
-                          return <React.Fragment key={childIndex}>
-                            {renderEvaluationItem(item, index, scores, childTarget, 0, deviant, i, childIndex)}
-                            <div className="divider" />
-                          </React.Fragment>
-                        })}
-                      </div>
-                    </div>
-                  } else {
-                    // Phần 2: Kết quả công việc
-                    return (
-                      <div className="evaluation-item" key={i}>
-                        <div className="title">{`${i + 1}. ${JSON.parse(target?.targetName || '{}')[languageCodeMapping[currentLocale]]}`}</div>
-                        <div className="wrap-score-table">
-                          <table>
-                            <thead>
-                              <tr>
-                                <th className="measurement"><span>{t("EvaluationDetailPartLevelOfPerformance")}<span className="note">({t("EvaluationDetailPartByScore")})</span></span></th>
-                                <th className="text-center proportion"><span>{t("EvaluationDetailPartWeight")} %</span></th>
-                                <th className="text-center target"><span>{t("EvaluationDetailPartTarget")}</span></th>
-                                <th className="text-center actual-results"><span>{t("EvaluationDetailPartActualResult")}</span>{!showByManager && <span className="required">(*)</span>}</th>
-                                <th className="text-center self-assessment"><span>{t("EvaluationDetailPartAttitudeSelfAssessment")}</span>{!showByManager && <span className="required">(*)</span>}</th>
-                                <th className="text-center qltt-assessment"><span>{t("EvaluationDetailPartAttitudeManagerAssessment")}</span>{showByManager && <span className="required">(*)</span>}</th>
-                                <th className="text-center deviant"><span>{t("EvaluationDetailPartAttitudeDifferent")}</span></th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              <tr>
-                                <td className="measurement">
-                                  {
-                                    target?.jobDetail && 
-                                    <ul className="first">
-                                      <li>{formatTargetText(target?.jobDetail)}</li>
-                                    </ul>
-                                  }
-                                  <ul className="second">
-                                    <li>{!target?.metric1 ? '--' : formatTargetText(target?.metric1)}</li>
-                                    <li>{!target?.metric2 ? '--' : formatTargetText(target?.metric2)}</li>
-                                    <li>{!target?.metric3 ? '--' : formatTargetText(target?.metric3)}</li>
-                                    <li>{!target?.metric4 ? '--' : formatTargetText(target?.metric4)}</li>
-                                    <li>{!target?.metric5 ? '--' : formatTargetText(target?.metric5)}</li>
-                                  </ul>
-                                </td>
-                                <td className="text-center proportion"><span>{target?.weight}%</span></td>
-                                <td className="text-center target"><span>{target?.target}</span></td>
-                                <td className="actual-results">
-                                  <div>
-                                    {
-                                    !showByManager && evaluationFormDetail.status == evaluationStatus.launch && isEdit
-                                      ?
-                                      <textarea rows={3} placeholder={t("EvaluationInput")} value={target?.realResult || ""} onChange={(e) => handleInputChange(i, index, 'realResult', e)} />
-                                      :
-                                      <span>{target?.realResult}</span>
-                                    }
-                                  </div>
-                                  {errors[`${index}_${i}_realResult`] && <div className="alert alert-danger invalid-message" role="alert">{errors[`${index}_${i}_realResult`]}</div>}
-                                </td>
-                                <td className="text-center self-assessment">
-                                  <div>
-                                    {
-                                      !showByManager && evaluationFormDetail.status == evaluationStatus.launch && isEdit
-                                        // ? <input type="text" placeholder={t("EvaluationInput")} value={target?.seftPoint || ""} onChange={(e) => handleInputChange(i, index, 'seftPoint', e)} /> 
-                                        ? <select onChange={(e) => handleInputChange(i, index, 'seftPoint', e)} value={target?.seftPoint || ''}>
-                                          <option value=''>{t("EvaluationDetailPartSelectScore")}</option>
-                                          {
-                                            (scores || []).map((score, i) => {
-                                              return <option value={score} key={i}>{score}</option>
-                                            })
-                                          }
-                                        </select>
-                                        : <span>{target?.seftPoint}</span>
-                                    }
-                                  </div>
-                                  {errors[`${index}_${i}_seftPoint`] && <div className="alert alert-danger invalid-message" role="alert">{errors[`${index}_${i}_seftPoint`]}</div>}
-                                </td>
-                                <td className="text-center qltt-assessment">
-                                  <div>
-                                    {
-                                      showByManager && evaluationFormDetail.status == evaluationStatus.selfAssessment && isEdit
-                                        // ? <input type="text" placeholder={t("EvaluationInput")} value={target?.leadReviewPoint || ""} onChange={(e) => handleInputChange(i, index, 'leadReviewPoint', e)} />
-                                        ? <select onChange={(e) => handleInputChange(i, index, 'leadReviewPoint', e)} value={target?.leadReviewPoint || ''}>
-                                          <option value=''>{t("EvaluationDetailPartSelectScore")}</option>
-                                          {
-                                            (scores || []).map((score, i) => {
-                                              return <option value={score} key={i}>{score}</option>
-                                            })
-                                          }
-                                        </select>
-                                        : <span>{target?.leadReviewPoint}</span>
-                                    }
-                                  </div>
-                                  {errors[`${index}_${i}_leadReviewPoint`] && <div className="alert alert-danger invalid-message" role="alert">{errors[`${index}_${i}_leadReviewPoint`]}</div>}
-                                </td>
-                                <td className="text-center deviant">
-                                  <span className={`value ${deviant && deviant > 0 ? 'up' : deviant && deviant < 0 ? 'down' : ''}`}>&nbsp;{`${deviant && deviant > 0 ? '+' : ''}${deviant}`}{deviant && deviant != 0 ? <Image alt='Note' src={deviant && deviant > 0 ? IconUp : deviant && deviant < 0 ? IconDown : ''} /> : ''}</span>
-                                </td>
-                              </tr>
-                            </tbody>
-                          </table>
-                        </div>
-                        <div className="comment">
-                          <div className="self">
-                            <p>{t("EvaluationDetailPartAttitudeCommentOfEmployee")}</p>
-                            {
-                              isDisableEmployeeComment
-                              ? <div className="comment-content" dangerouslySetInnerHTML={{
-                                  __html: purify.sanitize(target?.seftOpinion || ""),
-                                }} />
-                              : <textarea 
-                                  rows={3} 
-                                  placeholder={isEdit ? !(showByManager || evaluationFormDetail.status != evaluationStatus.launch) ? t("EvaluationDetailPartSelectScoreInput") : '' : ''} 
-                                  value={target?.seftOpinion || ""} 
-                                  onChange={(e) => handleInputChange(i, index, 'seftOpinion', e)} 
-                                  disabled={isDisableEmployeeComment} />
-                            }
-                          </div>
-                          <div className="qltt">
-                            <p>{t("EvaluationDetailPartAttitudeCommentOfManager")}</p>
-                            {
-                              isDisableManagerComment
-                              ? <div className="comment-content" dangerouslySetInnerHTML={{
-                                  __html: purify.sanitize(target?.leaderReviewOpinion || ""),
-                                }} />
-                              : <textarea 
-                                  rows={3} 
-                                  placeholder={isEdit ? !(!showByManager || (showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment))) ? t("EvaluationDetailPartSelectScoreInput") : '' : ''} 
-                                  value={target?.leaderReviewOpinion || ""} 
-                                  onChange={(e) => handleInputChange(i, index, "leaderReviewOpinion", e)} 
-                                  disabled={isDisableManagerComment} />
-                            }
-                          </div>
-                        </div>
-                      </div>
-                    )
-                  }
-                }
-              })
-            }
-          </div>
-        </div>
-      })
-    }
+    { renderFormMainInfo(evaluationFormDetail?.companyCode) }
   </div>
 }
 
@@ -808,15 +398,17 @@ function EvaluationDetail(props) {
     setBottom(bottom)
   };
 
+  // Tổng điểm của CBNV hoặc Tổng điểm của CBQL cho từng group mục tiêu (kpi)
   const calculateAssessment = (listTarget) => {
+    const isVinBus = isVinBusByCompanyCode(evaluationFormDetail?.companyCode)
     const assessmentScale = 5
     const assessment = (listTarget || []).reduce((initial, current) => {
-      initial.selfAssessment += Number(current?.seftPoint || 0) / assessmentScale * Number(current?.weight || 0)
-      initial.managerAssessment += Number(current?.leadReviewPoint || 0) / assessmentScale * Number(current?.weight || 0)
+      initial.selfAssessment += isVinBus ? Number(current?.seftPoint || 0) : Number(current?.seftPoint || 0) / assessmentScale * Number(current?.weight || 0)
+      initial.managerAssessment += isVinBus ? Number(current?.leadReviewPoint || 0) : Number(current?.leadReviewPoint || 0) / assessmentScale * Number(current?.weight || 0)
       if (current.listTarget?.length) {
         const sub = current.listTarget?.reduce((subInitial, item) => {
-          subInitial.selfAssessment += Number(item?.seftPoint || 0) / assessmentScale * Number(item?.weight || 0)
-          subInitial.managerAssessment += Number(item?.leadReviewPoint || 0) / assessmentScale * Number(item?.weight || 0)
+          subInitial.selfAssessment += isVinBus ? Number(item?.seftPoint || 0) : Number(item?.seftPoint || 0) / assessmentScale * Number(item?.weight || 0)
+          subInitial.managerAssessment += isVinBus ? Number(item?.leadReviewPoint || 0) : Number(item?.leadReviewPoint || 0) / assessmentScale * Number(item?.weight || 0)
           return subInitial
         }, { selfAssessment: 0, managerAssessment: 0 })
         initial.selfAssessment += sub.selfAssessment
@@ -839,19 +431,58 @@ function EvaluationDetail(props) {
 
   const updateData = (subIndex, parentIndex, stateName, value, childIndex) => {
     const evaluationFormDetailTemp = { ...evaluationFormDetail }
+    const isVinBus = isVinBusByCompanyCode(evaluationFormDetail?.companyCode)
+
     if (_.isNil(childIndex)) {
       evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex][stateName] = value
+      if (isVinBus) {
+        if (stateName === 'realResult') {
+            evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex]['seftPoint'] = calculateScore(
+            evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex]?.formulaCode,
+            evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex]?.targetValue,
+            evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex]?.weight,
+            value
+          )
+        }
+        if (stateName === 'leadRealResult') {
+            evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex]['leadReviewPoint'] = calculateScore(
+            evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex]?.formulaCode,
+            evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex]?.targetValue,
+            evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex]?.weight,
+            value
+          )
+        } 
+      }
     } else {
       evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex].listTarget[childIndex][stateName] = value
+      if (isVinBus) {
+        if (stateName === 'realResult') {
+            evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex].listTarget[childIndex]['seftPoint'] = calculateScore(
+            evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex]?.listTarget[childIndex]?.formulaCode,
+            evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex]?.listTarget[childIndex]?.targetValue,
+            evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex]?.listTarget[childIndex]?.weight,
+            value
+          )
+        }
+        if (stateName === 'leadRealResult') {
+            evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex].listTarget[childIndex]['leadReviewPoint'] = calculateScore(
+            evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex].listTarget[childIndex]?.formulaCode,
+            evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex].listTarget[childIndex]?.targetValue,
+            evaluationFormDetailTemp.listGroup[parentIndex].listTarget[subIndex].listTarget[childIndex]?.weight,
+            value
+          )
+        }
+      }
     }
+
     let totalQuestionsAnswered = 0
     if (showByManager) {
       totalQuestionsAnswered = (evaluationFormDetailTemp?.listGroup || []).reduce((initial, current) => {
         let questionsAnswered = (current?.listTarget || []).reduce((subInitial, subCurrent) => {
-          subInitial += subCurrent?.leadReviewPoint ? 1 : 0
+          subInitial += (subCurrent?.leadReviewPoint || (isVinBus && subCurrent?.leadRealResult)) ? 1 : 0
           if (subCurrent.listTarget?.length) {
             const subQuestionsAnswered = subCurrent.listTarget?.reduce((res, item) => {
-              res += item.leadReviewPoint ? 1 : 0
+              res += (item.leadReviewPoint || (isVinBus && subCurrent?.leadRealResult)) ? 1 : 0
               return res
             }, 0)
             subInitial += subQuestionsAnswered
@@ -864,10 +495,10 @@ function EvaluationDetail(props) {
     } else {
       totalQuestionsAnswered = (evaluationFormDetailTemp?.listGroup || []).reduce((initial, current) => {
         let questionsAnswered = (current?.listTarget || []).reduce((subInitial, subCurrent) => {
-          subInitial += subCurrent?.seftPoint ? 1 : 0
+          subInitial += (subCurrent?.seftPoint || (isVinBus && subCurrent?.realResult)) ? 1 : 0
           if (subCurrent.listTarget?.length) {
             const subQuestionsAnswered = subCurrent.listTarget?.reduce((res, item) => {
-              res += item.seftPoint ? 1 : 0
+              res += (item.seftPoint || (isVinBus && subCurrent?.realResult)) ? 1 : 0
               return res
             }, 0)
             subInitial += subQuestionsAnswered
@@ -883,17 +514,30 @@ function EvaluationDetail(props) {
       return {
         ...item,
         groupSeftPoint: calculateAssessment(item?.listTarget)?.selfAssessment || 0,
-        groupLeadReviewPoint: calculateAssessment(item?.listTarget)?.managerAssessment || 0
+        groupLeadReviewPoint: calculateAssessment(item?.listTarget)?.managerAssessment || 0,
       }
     })
     const totalInfos = getTotalInfoByListGroup(evaluationFormDetailTemp.listGroup)
+
     if (showByManager) {
       evaluationFormDetailTemp.leadReviewTotalComplete = totalQuestionsAnswered
     } else {
       evaluationFormDetailTemp.seftTotalComplete = totalQuestionsAnswered
     }
+
     evaluationFormDetailTemp.totalSeftPoint = totalInfos?.self || 0
     evaluationFormDetailTemp.totalLeadReviewPoint = totalInfos?.manager || 0
+
+    if (isVinBus) {
+      evaluationFormDetailTemp.evaluateRating = evaluationFormDetailTemp?.status == evaluationStatus.launch && evaluationFormDetailTemp?.evaluateRating
+      ? evaluationFormDetailTemp?.evaluateRating
+      : calculateRating(
+        evaluationFormDetail.reviewStreamCode === processStep.zeroLevel 
+        ? Number(totalInfos?.self || 0) 
+        : evaluationFormDetail?.status > evaluationStatus.launch ? Number(totalInfos?.manager || 0) : null
+      )
+    }
+
     SetEvaluationFormDetail(evaluationFormDetailTemp)
   }
 
@@ -993,43 +637,74 @@ function EvaluationDetail(props) {
   }
 
   const isDataValid = () => {
+    const isVinBus = isVinBusByCompanyCode(evaluationFormDetail?.companyCode)
     const errorResult = (evaluationFormDetail?.listGroup || []).reduce((initial, currentParent, indexParent) => {
       let targetErrors = {}
       if (currentParent?.listGroupConfig && currentParent?.listGroupConfig?.length > 0) { // Tinh thần thái độ
         targetErrors = (currentParent?.listTarget || []).reduce((subInitial, subCurrent, subIndex) => {
           let keyData = showByManager ? 'leadReviewPoint' : 'seftPoint'
-          subInitial[`${indexParent}_${subIndex}_${keyData}`] = null
-          if (!subCurrent.listTarget?.length) {
-            if (!Number(subCurrent[keyData])) {
-              subInitial[`${indexParent}_${subIndex}_${keyData}`] = t("Required")
+          if (isVinBus) {
+            keyData = showByManager ? 'leadRealResult' : 'realResult'
+            subInitial[`${indexParent}_${subIndex}_${keyData}`] = null
+            if (!subCurrent.listTarget?.length) {
+              if (subCurrent[keyData] === '') {
+                subInitial[`${indexParent}_${subIndex}_${keyData}`] = t("Required")
+              }
+            } else {
+              const childErrors = subCurrent.listTarget?.map((childTarget, childIndex) => {
+                subInitial[`${indexParent}_${subIndex}_${childIndex}_${keyData}`] = null
+                if (childTarget[keyData] === '') {
+                  subInitial[`${indexParent}_${subIndex}_${childIndex}_${keyData}`] = t("Required")
+                }
+              })
             }
           } else {
-            const childErrors = subCurrent.listTarget?.map((childTarget, childIndex) => {
-              subInitial[`${indexParent}_${subIndex}_${childIndex}_${keyData}`] = null
-              if (!Number(childTarget[keyData])) {
-                subInitial[`${indexParent}_${subIndex}_${childIndex}_${keyData}`] = t("Required")
+            subInitial[`${indexParent}_${subIndex}_${keyData}`] = null
+            if (!subCurrent.listTarget?.length) {
+              if (!Number(subCurrent[keyData])) {
+                subInitial[`${indexParent}_${subIndex}_${keyData}`] = t("Required")
               }
-            })
+            } else {
+              const childErrors = subCurrent.listTarget?.map((childTarget, childIndex) => {
+                subInitial[`${indexParent}_${subIndex}_${childIndex}_${keyData}`] = null
+                if (!Number(childTarget[keyData])) {
+                  subInitial[`${indexParent}_${subIndex}_${childIndex}_${keyData}`] = t("Required")
+                }
+              })
+            }
           }
-
           return subInitial
         }, {})
       } else { // Kết quả công việc
         targetErrors = (currentParent?.listTarget || []).reduce((subInitial, subCurrent, subIndex) => {
           if (showByManager) {
-            subInitial[`${indexParent}_${subIndex}_leadReviewPoint`] = null
-            if (!Number(subCurrent?.leadReviewPoint)) {
-              subInitial[`${indexParent}_${subIndex}_leadReviewPoint`] = t("Required")
+            if (isVinBus) {
+              subInitial[`${indexParent}_${subIndex}_leadRealResult`] = null
+              if (subCurrent?.leadRealResult === '') {
+                subInitial[`${indexParent}_${subIndex}_leadRealResult`] = t("Required")
+              }
+            } else {
+              subInitial[`${indexParent}_${subIndex}_leadReviewPoint`] = null
+              if (!Number(subCurrent?.leadReviewPoint)) {
+                subInitial[`${indexParent}_${subIndex}_leadReviewPoint`] = t("Required")
+              }
             }
             return subInitial
           } else {
-            subInitial[`${indexParent}_${subIndex}_seftPoint`] = null
-            subInitial[`${indexParent}_${subIndex}_realResult`] = null
-            if (!Number(subCurrent?.seftPoint)) {
-              subInitial[`${indexParent}_${subIndex}_seftPoint`] = t("Required")
-            }
-            if (!subCurrent?.realResult) {
-              subInitial[`${indexParent}_${subIndex}_realResult`] = t("Required")
+            if (isVinBus) {
+              subInitial[`${indexParent}_${subIndex}_realResult`] = null
+              if (subCurrent?.realResult === '') {
+                subInitial[`${indexParent}_${subIndex}_realResult`] = t("Required")
+              }
+            } else {
+              subInitial[`${indexParent}_${subIndex}_seftPoint`] = null
+              subInitial[`${indexParent}_${subIndex}_realResult`] = null
+              if (!Number(subCurrent?.seftPoint)) {
+                subInitial[`${indexParent}_${subIndex}_seftPoint`] = t("Required")
+              }
+              if (!subCurrent?.realResult) {
+                subInitial[`${indexParent}_${subIndex}_realResult`] = t("Required")
+              }
             }
             return subInitial
           }
@@ -1065,24 +740,25 @@ function EvaluationDetail(props) {
     const maximumScore = 5;
     const minimumScore = 0;
     const listGroup = evaluationFormDetail?.listGroup || []
+    const isVinBus = isVinBusByCompanyCode(evaluationFormDetail?.companyCode)
 
     for (let groupIndex = 0; groupIndex < listGroup.length; groupIndex++) {
       let group = listGroup[groupIndex]
       for (let targetIndex = 0; targetIndex < group?.listTarget?.length; targetIndex++) {
         let target = group?.listTarget[targetIndex]
-        if (target?.seftPoint !== null && (Number(target?.seftPoint) > maximumScore || isNaN(Number(target?.seftPoint)) || Number(target?.seftPoint) < minimumScore)) {
+        if (target?.seftPoint !== null && ((!isVinBus && Number(target?.seftPoint) > maximumScore) || isNaN(Number(target?.seftPoint)) || Number(target?.seftPoint) < minimumScore)) {
           return false
         }
-        if (target?.leadReviewPoint !== null && (Number(target?.leadReviewPoint) > maximumScore || isNaN(Number(target?.leadReviewPoint)) || Number(target?.leadReviewPoint) < minimumScore)) {
+        if (target?.leadReviewPoint !== null && ((!isVinBus && Number(target?.leadReviewPoint) > maximumScore) || isNaN(Number(target?.leadReviewPoint)) || Number(target?.leadReviewPoint) < minimumScore)) {
           return false
         }
 
         for (let subTargetIndex = 0; subTargetIndex < target?.listTarget?.length; subTargetIndex++) {
           let subTarget = target?.listTarget[subTargetIndex]
-          if (subTarget?.seftPoint !== null && (Number(subTarget?.seftPoint) > maximumScore || isNaN(Number(subTarget?.seftPoint)) || Number(subTarget?.seftPoint) < minimumScore)) {
+          if (subTarget?.seftPoint !== null && ((!isVinBus && Number(subTarget?.seftPoint) > maximumScore) || isNaN(Number(subTarget?.seftPoint)) || Number(subTarget?.seftPoint) < minimumScore)) {
             return false
           }
-          if (subTarget?.leadReviewPoint !== null && (Number(subTarget?.leadReviewPoint) > maximumScore || isNaN(Number(subTarget?.leadReviewPoint)) || Number(subTarget?.leadReviewPoint) < minimumScore)) {
+          if (subTarget?.leadReviewPoint !== null && ((!isVinBus && Number(subTarget?.leadReviewPoint) > maximumScore) || isNaN(Number(subTarget?.leadReviewPoint)) || Number(subTarget?.leadReviewPoint) < minimumScore)) {
             return false
           }
         }
@@ -1155,8 +831,13 @@ function EvaluationDetail(props) {
         payload.totalSeftPoint = Number(payload.totalSeftPoint).toFixed(2)
         payload.totalLeadReviewPoint = Number(payload.totalLeadReviewPoint).toFixed(2)
 
+        // if (payload?.totalLeadReviewPoint) {
+        //   payload.evaluateRating = calculateRating(payload?.totalLeadReviewPoint)
+        // }
+
         const isZeroLevel = payload?.reviewStreamCode === processStep.zeroLevel
         const response = await axios.post(`${process.env.REACT_APP_HRDX_PMS_URL}api/targetform/update`, { requestString: JSON.stringify(payload || {}) }, config)
+        SetErrors({})
         SetIsLoading(false)
         statusModalTemp.isShow = true
         statusModalTemp.needReload = actionCode == actionButton.approve

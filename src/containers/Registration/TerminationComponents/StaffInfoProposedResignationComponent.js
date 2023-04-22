@@ -75,6 +75,9 @@ class StaffInfoProposedResignationComponent extends React.PureComponent {
         const itemExist = (userInfos || []).filter(item => employeeCodeToSearchIds.includes(item.uid));
         const errorObj = {employees: t('employee_resign_existed')}
 
+        if(employeeCodeToSearchIds.length == 0) {
+            errorObj.employees = t('require_choose_employee_resign')
+        }
         if (!itemExist || itemExist.length === 0 && employeeCodeToSearchIds.length > 0) {
             errorObj.employees = t('require_choose_employee_resign')
             const contractInfo = await this.getMoreInfoContract(employeeCodeToSearchIds.join(','));
@@ -304,7 +307,7 @@ class StaffInfoProposedResignationComponent extends React.PureComponent {
                                             <th>{t('Title')}</th>
                                             <th>{t('DepartmentManage')}</th>
                                             <th>{t('ContractType')}</th>
-                                            <th>{t('DaysOnWorking')}</th>
+                                            <th>{t('ContractSignDate')}</th>
                                         </tr>
                                     </thead>
                                     <tbody>

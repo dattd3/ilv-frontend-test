@@ -234,6 +234,14 @@ export default [
           component: lazy(() => import("./Timesheet"))
         },
         {
+          key: "timekeeping-history",
+          routeProps: {
+            exact: true,
+            path: map.TimeKeepingHistory
+          },
+          component: lazy(() => import("./TimeKeepingHistory"))
+        },
+        {
           key: "leaveTime",
           routeProps: {
             exact: true,
@@ -489,7 +497,7 @@ export default [
             exact: true,
             path: map.EmployeeTimeSheets
           },
-          component: lazy(() => import("./WorkflowManagement/DepartmentManagement/EmployeeTimesheets"))
+          component: lazy(() => import("./WorkflowManagement/DepartmentManagement/EmployeeTimesheets/index"))
         },
         {
           key: "proposal-management",

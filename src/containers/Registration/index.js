@@ -8,8 +8,10 @@ import LeaveOfAbsence from './LeaveOfAbsence/LeaveOfAbsenceComponent'
 import BusinessTrip from './BusinessTrip/BusinessTripComponent'
 import SubstitutionComponent from './Substitution/SubstitutionComponent'
 import InOutTimeUpdate from './InOutTimeUpdate/InOutTimeUpdateComponent'
+import OTRequest from './OTRequest';
+
 import HOCComponent from '../../components/Common/HOCComponent'
-import { isEnableShiftChangeFunctionByPnLVCode, isEnableInOutTimeUpdateFunctionByPnLVCode, getRequestConfigurations } from "../../commons/Utils"
+import { isEnableShiftChangeFunctionByPnLVCode, isEnableInOutTimeUpdateFunctionByPnLVCode, getRequestConfigurations, isEnableOTFunctionByPnLVCode } from "../../commons/Utils"
 
 class RegistrationComponent extends React.Component {
   constructor(props) {
@@ -42,8 +44,8 @@ class RegistrationComponent extends React.Component {
           const appraiser = appraiserInfo && size(appraiserInfo) > 0 
           ?  [{
             value: appraiserInfo?.account?.toLowerCase() || "",
-            label: appraiserInfo?.fullName || "",
-            fullName: appraiserInfo?.fullName || "",
+            label: appraiserInfo?.fullname || appraiserInfo?.fullName,
+            fullName: appraiserInfo?.fullname || appraiserInfo?.fullName,
             avatar: appraiserInfo?.avatar || "",
             employeeLevel: appraiserInfo?.employeeLevel || "",
             pnl: appraiserInfo?.pnl || "",
@@ -57,8 +59,8 @@ class RegistrationComponent extends React.Component {
           const approver = approverInfo && size(approverInfo) > 0 
           ?  [{
             value: approverInfo?.account?.toLowerCase() || "",
-            label: approverInfo?.fullName || "",
-            fullName: approverInfo?.fullName || "",
+            label: approverInfo?.fullname || approverInfo?.fullName,
+            fullName: approverInfo?.fullname || approverInfo?.fullName,
             avatar: approverInfo?.avatar || "",
             employeeLevel: approverInfo?.employeeLevel || "",
             pnl: approverInfo?.pnl || "",
@@ -83,7 +85,7 @@ class RegistrationComponent extends React.Component {
     const PnLVCode = localStorage.getItem("companyCode")
     const isEnableShiftChangeFunction = isEnableShiftChangeFunctionByPnLVCode(PnLVCode)
     const isEnableInOutTimeUpdateFunction = isEnableInOutTimeUpdateFunctionByPnLVCode(PnLVCode)
-
+    const isEnableOTRequestFunction = isEnableOTFunctionByPnLVCode(PnLVCode);
     return (
       <div className="registration-section personal-info justify-content-between">
         <Tabs defaultActiveKey={this.state.tab} onSelect={(key) => this.updateTabLink(key)}>
@@ -103,6 +105,12 @@ class RegistrationComponent extends React.Component {
             isEnableInOutTimeUpdateFunction && 
             <Tab eventKey="InOutTimeUpdate" title={t('InOutChangeRequest')}>
               <InOutTimeUpdate recentlyManagers={recentlyManagers} />
+            </Tab>
+          }
+          {
+            isEnableOTRequestFunction && 
+            <Tab eventKey="OTRequest" title={t('OTRequest')}>
+              <OTRequest recentlyManagers={recentlyManagers} />
             </Tab>
           }
         </Tabs>

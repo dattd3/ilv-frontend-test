@@ -220,18 +220,18 @@ class ApprovalDetail extends React.Component {
         SAPMessages = responseDataFromSAP.reduce((initial, current) => {
           let { data } = current
           if (data === undefined || !data) {
-            if (current.STATUS === SAPFailedCode) {
+            if (current.STATUS === SAPFailedCode && current.MESSAGE) {
               initial = initial.concat(current.MESSAGE)
             }
           } else {
             for (const [key, value] of Object.entries(data)) {
               if (Array.isArray(value)) {
                 // Education, Work experience - array
-                let messages = value.filter(item => item.STATUS === SAPFailedCode).map(item => item.MESSAGE)
+                let messages = value.filter(item => item.STATUS === SAPFailedCode && item.MESSAGE).map(item => item.MESSAGE)
                 initial = initial.concat(messages)
               } else {
                 // Main information - object
-                if (value.STATUS === SAPFailedCode) {
+                if (value.STATUS === SAPFailedCode && value.MESSAGE) {
                   initial = initial.concat(value.MESSAGE)
                 }
               }
@@ -241,17 +241,14 @@ class ApprovalDetail extends React.Component {
           return initial
         }, [])
       }
-  
+      SAPMessages = _.uniq(SAPMessages)
+
       if (processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && SAPMessages && SAPMessages.length > 0) {
         return (
           <div className={`d-flex status fail`}>
             <i className="fas fa-times pr-2 text-danger align-self-center"></i>
-            {
-              (SAPMessages || []).map((item, i) => {
-                return <div key={i}>{item}</div>
-              })
-            }
-        </div>
+            <div>{SAPMessages.join('. ')}</div>
+          </div>
         )
       }
 
@@ -313,7 +310,7 @@ class ApprovalDetail extends React.Component {
               processStatusId == Constants.STATUS_NOT_APPROVED ?
               <div className="row item-info">
                 <div className="col-12">
-                  <div className="label">Lý do không phê duyệt</div>
+                  <div className="label">{t("ReasonNotApprove")}</div>
                   <div className="detail">{approverComment}</div>
                 </div>
               </div>
@@ -325,7 +322,7 @@ class ApprovalDetail extends React.Component {
         }
         <div className="block-status">
           <span className={`status ${determineStatus[processStatusId]?.className}`}>{determineStatus[processStatusId]?.label}</span>
-          { getSAPResponsePartiallySuccess() }
+          { processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && getSAPResponsePartiallySuccess() }
         </div>
         { isShowDocumentComponent ? 
           <>
@@ -335,8 +332,8 @@ class ApprovalDetail extends React.Component {
           : null
         }
         {
-          processStatusId == Constants.STATUS_WAITING ?
-          <div className="clearfix mb-5">
+          [Constants.STATUS_WAITING, Constants.STATUS_PARTIALLY_SUCCESSFUL].includes(processStatusId) ?
+          <div className="clearfix">
             <button type="button" className="btn btn-success float-right ml-3 shadow" onClick={this.approval}>
               <i className="fas fa-check" aria-hidden="true"></i> {t("Approval")}</button>
             <button type="button" className="btn btn-danger float-right shadow" onClick={this.disApproval}><i className="fa fa-close"></i> {t('Reject')}</button>

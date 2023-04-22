@@ -7,16 +7,27 @@ import vi from 'date-fns/locale/vi'
 registerLocale("vi", vi)
 
 class TimesheetSearch extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
+    //chọn chính xác ngày được phân ca khi mở từ thông báo
+    const startDate = props?.queryParams?.has('start') && moment(props.queryParams.get('start'), 'DD/MM/YYYYY').isValid() ? moment(props.queryParams.get('start'), 'DD/MM/YYYYY').toDate() : null;
+    const endDate = startDate && props.queryParams.has('end') && moment(props.queryParams.get('end'), 'DD/MM/YYYYY').isValid() ? moment(props.queryParams.get('end'), 'DD/MM/YYYY').toDate() : startDate
     this.state = {
-      startDate: moment(this.getClosingSalaryDatePreMonth(), "DD/MM/YYYY").toDate(),
-      endDate: new Date()
+      startDate: startDate || moment(this.getClosingSalaryDatePreMonth(), "DD/MM/YYYY").toDate(),
+      endDate: startDate ? endDate : new Date()
+      // startDate: moment('2023-02-26').toDate(),
+      // endDate: moment('2023-03-27').toDate()
     }
 
     this.setStartDate = this.setStartDate.bind(this)
     this.setEndDate = this.setEndDate.bind(this)
     this.search = this.search.bind(this)
+  }
+
+  componentDidMount() {
+    if(this.props?.queryParams?.has('start')) {
+      this.props.clickSearch(this.state.startDate, this.state.endDate)
+    }
   }
 
   getClosingSalaryDatePreMonth = () => {

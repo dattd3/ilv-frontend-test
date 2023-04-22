@@ -4,6 +4,7 @@ import moment from 'moment'
 import DetailButtonComponent from '../DetailButtonComponent'
 import AttachmentComponent from '../TerminationComponents/AttachmentComponent'
 import Constants from '../.../../../../commons/Constants'
+import { getResignResonsMasterData } from 'commons/Utils'
 
 class RegistrationEmploymentTermination extends React.Component {
     constructor(props) {
@@ -54,6 +55,7 @@ class RegistrationEmploymentTermination extends React.Component {
                 fileUrl: item.fileUrl || ""
             }
         })
+        const reasonMasterData = getResignResonsMasterData();
 
         return (
             <div className="registration-section registration-employment-termination justify-content-between">
@@ -82,7 +84,7 @@ class RegistrationEmploymentTermination extends React.Component {
                         </div>
                         <div className="row">
                             <div className="col-4">
-                                <p className="title">{t('DaysOnWorking')}</p>
+                                <p className="title">{t('ContractSignDate')}</p>
                                 <div>
                                     <div className="detail">{userInfos && userInfos.dateStartWork ? moment(userInfos.dateStartWork, "YYYY-MM-DD").format('DD/MM/YYYY') : ''}</div>
                                 </div>
@@ -117,7 +119,7 @@ class RegistrationEmploymentTermination extends React.Component {
                             <div className="col-4">
                                 <p className="title">{t('ReasonForContractTermination')}</p>
                                 <div>
-                                    <div className="detail">{requestInfo?.absenceType ? requestInfo.absenceType.label : ''}</div>
+                                    <div className="detail">{requestInfo?.absenceType ? reasonMasterData[requestInfo.absenceType.value] : ''}</div>
                                 </div>
                             </div>
                         </div>
@@ -175,7 +177,7 @@ class RegistrationEmploymentTermination extends React.Component {
                             {
                                 requestInfo?.appraiserComment != null && requestInfo?.appraiserComment != undefined && requestInfo?.appraiserComment != "" ?
                                     <div className="col-12">
-                                        <p className="title">Lý do từ chối</p>
+                                        <p className="title">{t('reason_reject')}</p>
                                         <div>
                                             <div className="detail">{requestInfo?.appraiserComment || ""}</div>
                                         </div>
@@ -213,7 +215,7 @@ class RegistrationEmploymentTermination extends React.Component {
                             {
                                 requestInfo?.approverComment != null && requestInfo?.approverComment != undefined && requestInfo?.approverComment != "" ?
                                     <div className="col-12">
-                                        <p className="title">Lý do từ chối</p>
+                                        <p className="title">{t('reason_reject')}</p>
                                         <div>
                                             <div className="detail">{requestInfo?.approverComment || ""}</div>
                                         </div>

@@ -4,9 +4,10 @@ import map from '../map.config';
 import LoadingModal from '../../components/Common/LoadingModal'
 import { useTranslation } from "react-i18next";
 import axios from 'axios';
-import { getMuleSoftHeaderConfigurations } from "../../commons/Utils"
+import { getMuleSoftHeaderConfigurations, getRequestConfigurations } from "../../commons/Utils"
 import Constants from "../../commons/Constants"
 import moment from 'moment';
+import { FirebaseUpdateToken } from '../../commons/Firebase';
 
 const ERROR_TYPE = {
     NETWORK: 1,
@@ -46,6 +47,7 @@ function Authorize(props) {
                         SetIsShowLoadingModal(false)
                     });
                     updateUser(userProfile,jwtToken)
+                    updateLanguageByCode(localStorage.getItem('locale') || 'vi-VN', jwtToken)
                 }
                 else {
                     SetIsError(true)
@@ -63,6 +65,34 @@ function Authorize(props) {
                 SetErrorType(ERROR_TYPE.NETWORK)
                 SetIsShowLoadingModal(false)
             });
+    }
+
+    const updateLanguageByCode = async (lang, jwtToken) => {
+        if (lang) {
+            try {
+                const languageKeyMapping = {
+                    [Constants.LANGUAGE_EN]: 'en',
+                    [Constants.LANGUAGE_VI]: 'vi'
+                }
+                const config = {
+                    headers: {
+                        'Authorization': `Bearer ${jwtToken}`
+                    }
+                }
+                const response = await axios.post(`${process.env.REACT_APP_REQUEST_URL}user/setlanguage?culture=${languageKeyMapping[[lang]]}`, null, config)
+                if (response && response.data) {
+                    const result = response.data.result
+                    if (result.code == Constants.API_SUCCESS_CODE) {
+                        return true
+                    }
+                    return false
+                }
+                return false
+            } catch (e) {
+                return false
+            }
+        }
+        return false
     }
 
     const hasPermissonShowPrepareTab = async (token, companyCode) => {
@@ -105,9 +135,9 @@ function Authorize(props) {
 
             var benefitTitle = "";
             if (user.benefit_level && user.benefit_level !== '#') {
-                benefitTitle = user.benefit_level;
+                benefitTitle = user.benefit_level.replace('PL', '');
             } else {
-                benefitTitle = user.rank_name;
+                benefitTitle = user.employee_level;
             }
             //check permission show prepare tab 
             const shouldShowPrepareOnboard = await hasPermissonShowPrepareTab(jwtToken, user.company_code);
@@ -131,7 +161,7 @@ function Authorize(props) {
                             fullName: user.fullname,
                             jobTitle: user.job_name,
                             jobId: user.job_id,
-                            benefitLevel: user.benefit_level || user.employee_level,
+                            benefitLevel: benefitTitle,
                             employeeLevel: formatMuleSoftValue(user?.rank_title) ? user?.rank_title : user?.employee_level, // Có Cấp bậc chức danh thì lấy Cấp bậc chức danh ngược lại lấy Cấp bậc thực tế
                             actualRank: formatMuleSoftValue(user?.employee_level) ? user?.employee_level : '', // Cấp bậc thực tế
                             benefitTitle: benefitTitle,
@@ -162,6 +192,7 @@ function Authorize(props) {
                             prepare: shouldShowPrepareOnboard,
                             jobCode: user?.job_code,
                         });
+                        FirebaseUpdateToken();
                     }
                 })
                 .catch(error => {
@@ -304,7 +335,6 @@ function Authorize(props) {
                 return window.location.replace(process.env.REACT_APP_AWS_COGNITO_IDP_SIGNOUT_URL)
             }
         }
-      
         processUserLogged()
     }, []);
 

@@ -5,6 +5,7 @@ import moment from 'moment'
 import DetailButtonComponent from '../DetailButtonComponent'
 import AttachmentComponent from '../TerminationComponents/AttachmentComponent'
 import Constants from '../.../../../../commons/Constants'
+import { getResignResonsMasterData } from 'commons/Utils'
 
 class RegistrationEmploymentTermination extends React.Component {
     constructor(props) {
@@ -59,6 +60,7 @@ class RegistrationEmploymentTermination extends React.Component {
                 fileUrl: item.fileUrl || ""
             }
         })
+        const reasonMasterData = getResignResonsMasterData();
 
         return (
             <div className="registration-section registration-employment-termination proposed-registration-employment-termination justify-content-between">
@@ -102,7 +104,7 @@ class RegistrationEmploymentTermination extends React.Component {
                                             <th>{t('Title')}</th>
                                             <th>{t('DepartmentManage')}</th>
                                             <th>{t('ContractType')}</th>
-                                            <th>{t('DaysOnWorking')}</th>
+                                            <th>{t('ContractSignDate')}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -152,7 +154,7 @@ class RegistrationEmploymentTermination extends React.Component {
                             <div className="col-4">
                                 <p className="title">{t('ReasonForContractTermination')}</p>
                                 <div>
-                                    <div className="detail">{requestInfo.absenceType ? requestInfo.absenceType.label : ''}</div>
+                                    <div className="detail">{requestInfo.absenceType ? reasonMasterData[requestInfo.absenceType.value] : ''}</div>
                                 </div>
                             </div>
                         </div>

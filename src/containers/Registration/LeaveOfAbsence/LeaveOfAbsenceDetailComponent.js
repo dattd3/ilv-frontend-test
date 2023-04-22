@@ -8,47 +8,93 @@ import DetailButtonComponent from '../DetailButtonComponent'
 import ApproverDetailComponent from '../ApproverDetailComponent'
 import StatusModal from '../../../components/Common/StatusModal'
 import Constants from '../.../../../../commons/Constants'
+import { FOREIGN_SICK_LEAVE } from 'containers/Task/Constants'
 
 const TIME_FORMAT = 'HH:mm'
-const DATE_FORMAT = 'DD/MM/YYYY'
-const DATE_OF_SAP_FORMAT = 'YYYYMMDD'
-const TIME_OF_SAP_FORMAT = 'HHmm00'
-const FULL_DAY = true
 
-const RegisteredLeaveInfo = ({ leaveOfAbsence, t }) => {
+const RegisteredLeaveInfo = ({ leaveOfAbsence, t, annualLeaveSummary }) => {
+
+  const formatDayUnitByValue = (val) => {
+    if (Number(val) > 1) {
+      return t("DayMultiplicity")
+    }
+
+    return t("Day")
+  }
+
   return (
     <div className='registered-leave-info'>
       <h5 className='content-page-header'>{'Thông tin đã đăng ký nghỉ'}</h5>
       <div className="box shadow">
         {
           (leaveOfAbsence?.requestInfoOld && leaveOfAbsence?.requestInfoOld?.length > 0 ? leaveOfAbsence?.requestInfoOld : leaveOfAbsence?.requestInfo).map((info, infoIndex) => {
+            let isForeignSickLeave = info?.absenceType?.value === FOREIGN_SICK_LEAVE
+
             return (
               <div className='item' key={`info-${infoIndex}`}>
+                {
+                  isForeignSickLeave ? (
+                    <>
+                      <div className="row">
+                        <div className="col-xl-4">
+                          {t("StartDateTime")}
+                          <div className="detail">{info ? moment(info?.startDate).format("DD/MM/YYYY") + (info?.startTime ? ' ' + moment(info?.startTime, TIME_FORMAT).locale('en-us').format('HH:mm') : '') : ""}</div>
+                        </div>
+                        <div className="col-xl-4">
+                          {t("EndDateTime")}
+                          <div className="detail">{info ? moment(info?.endDate).format("DD/MM/YYYY") + (info?.endTime ? ' ' + moment(info?.endTime, TIME_FORMAT).locale('en-us').format('HH:mm') : '') : ""}</div>
+                        </div>
+                        <div className="col-xl-4">
+                          {t("TotalLeaveTime")}
+                          {/* <div className="detail">{ requestInfo && requestInfo.days && requestInfo.absenceType.value != "PQ02" ? requestInfo.days + ' ngày' : null } { requestInfo && requestInfo.hours  && requestInfo.absenceType.value == "PQ02" ? requestInfo.hours  + ' giờ' : null}</div> */}
+                          <div className="detail">{( info && info?.days >= 1) ? info?.days + ' ' + formatDayUnitByValue(info?.days || 0) : info?.hours + ' ' + t("Hour")}</div>
+                        </div>
+                      </div>
+                      <div className='row' style={{ marginTop: 15, marginBottom: 5 }}>
+                        <div className="col-xl-8">
+                          {t("LeaveCategory")}
+                          <div className="detail">{info?.absenceType?.label || ""}</div>
+                        </div>
+                        <div className="col-xl-4">
+                          {t("SickLeaveFundForExpat")}
+                          <div className="detail">{`${Number(annualLeaveSummary?.SICK_LEA_EXPAT || 0).toFixed(3)} ${formatDayUnitByValue(annualLeaveSummary?.SICK_LEA_EXPAT || 0)}`}</div>
+                        </div>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="row">
+                        <div className="col-xl-3">
+                          {t("StartDateTime")}
+                          <div className="detail">{info ? moment(info?.startDate).format("DD/MM/YYYY") + (info?.startTime ? ' ' + moment(info?.startTime, TIME_FORMAT).locale('en-us').format('HH:mm') : '') : ""}</div>
+                        </div>
+                        <div className="col-xl-3">
+                          {t("EndDateTime")}
+                          <div className="detail">{info ? moment(info?.endDate).format("DD/MM/YYYY") + (info?.endTime ? ' ' + moment(info?.endTime, TIME_FORMAT).locale('en-us').format('HH:mm') : '') : ""}</div>
+                        </div>
+                        <div className="col-xl-3">
+                          {t("TotalLeaveTime")}
+                          {/* <div className="detail">{ requestInfo && requestInfo.days && requestInfo.absenceType.value != "PQ02" ? requestInfo.days + ' ngày' : null } { requestInfo && requestInfo.hours  && requestInfo.absenceType.value == "PQ02" ? requestInfo.hours  + ' giờ' : null}</div> */}
+                          <div className="detail">{( info && info?.days >= 1) ? info?.days + ' ' + formatDayUnitByValue(info?.days || 0) : info?.hours + ' ' + t("Hour")}</div>
+                        </div>
+                        <div className="col-xl-3">
+                          {t("LeaveCategory")}
+                          <div className="detail">{info && info?.absenceType ? info?.absenceType?.label : ""}</div>
+                        </div>
+                      </div>
+                    </>
+                  )
+                }
+
+                {(info && info?.absenceType && info?.absenceType?.value === 'PN03') && 
                 <div className="row">
-                  <div className="col-xl-3">
-                    {t("StartDateTime")}
-                    <div className="detail">{info ? moment(info?.startDate).format("DD/MM/YYYY") + (info?.startTime ? ' ' + moment(info?.startTime, TIME_FORMAT).locale('en-us').format('HH:mm') : '') : ""}</div>
-                  </div>
-                  <div className="col-xl-3">
-                    {t("EndDateTime")}
-                    <div className="detail">{info ? moment(info?.endDate).format("DD/MM/YYYY") + (info?.endTime ? ' ' + moment(info?.endTime, TIME_FORMAT).locale('en-us').format('HH:mm') : '') : ""}</div>
-                  </div>
-                  <div className="col-xl-3">
-                    {t("TotalLeaveTime")}
-                    {/* <div className="detail">{ requestInfo && requestInfo.days && requestInfo.absenceType.value != "PQ02" ? requestInfo.days + ' ngày' : null } { requestInfo && requestInfo.hours  && requestInfo.absenceType.value == "PQ02" ? requestInfo.hours  + ' giờ' : null}</div> */}
-                    <div className="detail">{( info && info?.days >= 1) ? info?.days + ' ' + t("Day") : info?.hours + ' ' + t("Hour")}</div>
-                  </div>
-                  <div className="col-xl-3">
-                    {t("LeaveCategory")}
-                    <div className="detail">{info && info?.absenceType ? info?.absenceType?.label : ""}</div>
-                  </div>
-                </div>
-                {(info && info?.absenceType && info?.absenceType?.value === 'PN03') ? <div className="row">
                   <div className="col">
                     {t("MarriageFuneral")}
                     <div className="detail">{info?.absenceType?.label}</div>
                   </div>
-                </div> : null}
+                </div>
+                }
+
                 <div className="row">
                   <div className="col" style={{marginTop: 10}}>
                     {t(Constants.mappingActionType[info.actionType]?.ReasonRequestLeave)}
@@ -146,7 +192,7 @@ const LeaveUserInfo = ({ userProfileInfo, annualLeaveSummary, viewPopup, t }) =>
           <div className="detail">{annualLeaveSummary && annualLeaveSummary.DAY_LEA ? _.ceil(annualLeaveSummary.DAY_LEA, 2) : null}</div>
         </div>
         <div className="col-xl-3">
-          {t("AdvancecdAnnualLeave")}
+          {t("AdvancedAnnualLeave")}
           <div className="detail">{annualLeaveSummary && annualLeaveSummary.DAY_ADV_LEA ? _.ceil(annualLeaveSummary.DAY_ADV_LEA, 2) : null}</div>
         </div>
         <div className="col-xl-4">
@@ -236,6 +282,16 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     return (this.props.action == "consent" && status == 5 && appraiser) ? Constants.mappingStatusRequest[20].label : Constants.mappingStatusRequest[status].label
   }
 
+  formatDayUnitByValue = (val) => {
+    const { t } = this.props
+    
+    if (Number(val) > 1) {
+      return t("DayMultiplicity")
+    }
+
+    return t("Day")
+  }
+
   render() {
     const { t, action, viewPopup, leaveOfAbsence } = this.props
     const userProfileInfo = leaveOfAbsence.user
@@ -273,7 +329,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
       initial.totalDays += current?.days || 0
       return initial
     }, {totalHours: 0, totalDays: 0})
-    const totalRequestedTime = requestInfo?.isAllDay ? `${requestedTime?.totalDays} ${t("Day")}`  : `${requestedTime?.totalHours} ${t("Hour")}`
+    const totalRequestedTime = requestInfo?.isAllDay ? `${requestedTime?.totalDays} ${this.formatDayUnitByValue(requestedTime?.totalDays || 0)}` : `${requestedTime?.totalHours} ${t("Hour")}`
 
     return (
       <div className="leave-of-absence">
@@ -282,11 +338,11 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         { leaveOfAbsence?.requestInfoOld && leaveOfAbsence?.requestInfoOld?.length > 0 
           ? 
           <>
-            <RegisteredLeaveInfo leaveOfAbsence={leaveOfAbsence} t={t} />
+            <RegisteredLeaveInfo leaveOfAbsence={leaveOfAbsence} t={t} annualLeaveSummary={annualLeaveSummary} />
             <h5 className='content-page-header'>{t(Constants.mappingActionType[requestInfo.actionType].TitleLeave)}</h5>
-            <AdjustmentLeaveInfo requestInfoToShow={requestInfoToShow} requestInfo={requestInfo} totalRequestedTime={totalRequestedTime} t={t} />
+            <AdjustmentLeaveInfo requestInfoToShow={requestInfoToShow} requestInfo={requestInfo} totalRequestedTime={totalRequestedTime} t={t} annualLeaveSummary={annualLeaveSummary} />
           </>
-          : <RegisteredLeaveInfo leaveOfAbsence={leaveOfAbsence} t={t} />
+          : <RegisteredLeaveInfo leaveOfAbsence={leaveOfAbsence} t={t} annualLeaveSummary={annualLeaveSummary} />
         }
 
         {
@@ -310,7 +366,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
 
         <div className="block-status">
           <span className={`status ${Constants.mappingStatusRequest[requestInfo.processStatusId].className}`}>{t(this.showStatus(requestInfo.processStatusId, appraiser))}</span>
-          {messageSAP && 
+          { requestInfo?.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && messageSAP && 
             <div className={`d-flex status fail`}>
               <i className="fas fa-times pr-2 text-danger align-self-center"></i>
               <div>

@@ -40,7 +40,8 @@ class ApproverComponent extends React.Component {
       users: null,
       typingTimeout: 0,
       approverTyping: "",
-      isSearch: false
+      isSearch: false,
+      isSearching: false,
     }
     this.onInputChange = debounce(this.getApproverInfo, 800);
   }
@@ -61,17 +62,18 @@ class ApproverComponent extends React.Component {
     const companiesUsing = [Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading, Constants.pnlVCode.VinMec]
     if (companiesUsing.includes(currentUserPnLVCodeLogged)) {
       const managerApproval = await this.loadApproverForPnL()
-      this.setState({approver: managerApproval} , () => {
-        if (approver) {
-          this.setState({
-            approver: {
-              ...approver,
-              label: approver.fullName,
-              value: approver.account
-            }
-          })
-        }
-      })
+      // this.setState({approver: managerApproval} , () => {
+      //   if (approver) {
+      //     this.setState({
+      //       approver: {
+      //         ...approver,
+      //         label: approver.fullName,
+      //         value: approver.account
+      //       }
+      //     })
+      //   }
+      // })
+      this.setState({approver: managerApproval})
       this.props.updateApprover(managerApproval, true)
     } else {
       // const recentlyApprover = await this.loadRecentlyApprover()
@@ -93,20 +95,21 @@ class ApproverComponent extends React.Component {
         const result = response.data.result
         if (result && result.code == Constants.API_SUCCESS_CODE) {
           const data = response.data?.data[0]
-          return {
-            value: data?.userid?.toLowerCase() || "",
-            label: data?.fullname || "",
-            fullName: data?.fullname || "",
-            avatar: data?.avatar || "",
-            employeeLevel: data?.rank_title,
-            pnl: "",
-            orglv2Id: "",
-            account: data?.userid?.toLowerCase() || "",
-            current_position: data?.title || "",
-            department: data?.department || ""
+          if (data) {
+            return {
+              value: data?.userid?.toLowerCase() || "",
+              label: data?.fullname || "",
+              fullName: data?.fullname || "",
+              avatar: data?.avatar || "",
+              employeeLevel: data?.rank_title,
+              pnl: "",
+              orglv2Id: "",
+              account: data?.userid?.toLowerCase() || "",
+              current_position: data?.title || "",
+              department: data?.department || ""
+            }
           }
         }
-        return null
       }
       return null
     } catch (e) {
@@ -119,11 +122,33 @@ class ApproverComponent extends React.Component {
       const currentUserLevel = localStorage.getItem('employeeLevel')
       this.setState({ [name]: value })
       const isApprover = this.isApprover(value.employeeLevel, value.orglv2Id, currentUserLevel, value.account)
-      this.props.updateApprover(value, isApprover)
+      const isException = this.isExceptionApprover(value)
+      this.props.updateApprover(value, isException ? true : isApprover)
     } else {
       this.setState({ [name]: value, users: [] })
       this.props.updateApprover(value, true)
     }
+  }
+
+  isExceptionApprover = (user) => { // Đối với Bộ máy TW thì cho phép 2 users là: HANGPV VÀ HUYENTT10 được phép phê duyệt
+    const exceptionApprover = {
+      accountFirst: {
+        ad: 'HUYENTT10',
+        uid: "323540",
+      },
+      accountSecond: {
+        ad: 'HANGPV',
+        uid: "906041",
+      },
+    }
+
+    if ((user?.account?.toUpperCase() === exceptionApprover.accountFirst.ad && user?.uid === exceptionApprover.accountFirst.uid) 
+      || (user?.account?.toUpperCase() === exceptionApprover.accountSecond.ad && user?.uid === exceptionApprover.accountSecond.uid)
+    ) {
+      return true
+    }
+
+    return false
   }
 
   isApprover = (levelApproverFilter, orglv2Id, currentUserLevel, account) => {
@@ -144,7 +169,7 @@ class ApproverComponent extends React.Component {
     this.setState({isSearch: false})
     const { appraiser } = this.props
     if (value !== "") {
-      this.setState({isSearch: true})
+      this.setState({isSearch: true, isSearching: true})
       const config = getRequestConfigurations()
       const payload = {
         account: value,
@@ -174,8 +199,12 @@ class ApproverComponent extends React.Component {
             this.setState({ users: lst || [] })
           }
         }).catch(error => { })
+        .finally(() => {
+          this.setState({ isSearching: false })
+        })
     }
     else {
+      this.setState({ isSearching: false })
       if (Array.isArray(this.state.users) && this.state.users.length > 1) this.setState({isSearch: true})
     }
   }
@@ -206,7 +235,7 @@ class ApproverComponent extends React.Component {
       })
     }
     const { t, isEdit, errors, recentlyApprover } = this.props;
-    const { isSearch, approver, users } = this.state
+    const { isSearch, approver, users, isSearching } = this.state
 
     return <div className="approver">
       <div className="box shadow">
@@ -232,6 +261,7 @@ class ApproverComponent extends React.Component {
                 key="approver"
                 filterOption={this.filterOption}
                 options={users ? users : recentlyApprover || []}
+                isLoading={isSearching}
                />
             </div>
             {errors && errors['approver'] ? <div className="text-danger validation-message">{errors['approver']}</div> : null}

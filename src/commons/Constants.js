@@ -55,7 +55,8 @@ const Constants = {
   ONBOARDING: 6,
   RESIGN_SELF: 7,
   SALARY_PROPOSE: 12,
-
+  OT_REQUEST: 13,
+  
   //Status request
   STATUS_PENDING: 0,
   STATUS_NOT_APPROVED: 1, // từ chối phê duyệt
@@ -127,7 +128,7 @@ const Constants = {
   BUSINESS_TRIP_DATE_FORMAT: 'DD/MM/YYYY',
   SUBSTITUTION_TPKLA_FULL_DAY: 1,
   SUBSTITUTION_TPKLA_HALF_DAY: 2,
-
+  SHIFT_CODE_OFF:  'OFF',
   // user level
   CONSENTER_LIST_LEVEL : ["C1", "P2", "P1", "T4", "T3", "T2", "T1", "T0"],
   APPROVER_LIST_LEVEL :  ["C1", "P2", "P1", "T4", "T3", "T2", "T1", "T0"],
@@ -151,7 +152,8 @@ const Constants = {
   },
   TYPE_REPORT: {
     DETAIL_REPORT: 0,
-    SUMARY_REPORT: 1
+    SUMARY_REPORT: 1,
+    TIMESHEET_REPORT: 2
   },
   pnlVCode: {
     VinHome: "V040",
@@ -171,6 +173,8 @@ const Constants = {
     VinAI: "V099",
     VinBus: "V033",
     VinES: "V079",
+    VinBigData: "V098",
+    VinCon: "V041",
   },
   listFunctionsForPnLACL: {
     editProfile: 'EDIT_PROFILE',
@@ -180,21 +184,21 @@ const Constants = {
     changeStaffShift: 'CHANGE_STAFF_SHIFT',
     selectWorkingShift24h: 'SELECT_WORKING_SHIFT_24H'
   },
-  PnLCODE: {
-    Vinhome: "V040",
-    Vinbrain: "V095",
-    Vinpearl: "V030",
-    MeliaVinpearl: "V035",
-    Vinmec: "V060",
-    VinSchool: "V061",
-    VinFast: "V070",
-    VinFastTrading: "V077",
-    VinFastPB: "V070",
-    Vin3S: "V005",
-    VinES: "V079",
-    Vincon: "V041",
-    VinBus: "V033",
-  },
+  // PnLCODE: {
+  //   Vinhome: "V040",
+  //   Vinbrain: "V095",
+  //   Vinpearl: "V030",
+  //   MeliaVinpearl: "V035",
+  //   Vinmec: "V060",
+  //   VinSchool: "V061",
+  //   VinFast: "V070",
+  //   VinFastTrading: "V077",
+  //   VinFastPB: "V070",
+  //   Vin3S: "V005",
+  //   VinES: "V079",
+  //   Vincon: "V041",
+  //   VinBus: "V033",
+  // },
   LOGIN_INSTRUCTION_PATH: "https://myvinpearl.s3.ap-southeast-1.amazonaws.com/shared/templates/ILOVEVINGROUP-HDDang+nhap-LoginInstruction.pdf",
   statusUserActiveMulesoft: 3,
   PAGE_INDEX_DEFAULT: 1,
@@ -218,20 +222,30 @@ const Constants = {
     1: ["V040", "V005", "V079", "V041", "V030", "V077", "V070"],//TUYENDUNG + V061
     2: ["V040", "V005", "V061", "V077"],//DANHGIA_TAIKI
     3: [],//DEXUATLUONG
-    4: ["V040"],//NGHIVIEC
-    5: []//PHUCLOI
+    4: ["V040", "V077", "V070"],//NGHIVIEC
+    5: ["V077", "V070"]//PHUCLOI
   } :
   { //Development
     1: ["V040", "V005", "V079", "V041", "V030", "V077", "V070"],//TUYENDUNG + V061
     2: ["V061","V040", "V005", "V079", "V041", "V070", "V077"],//DANHGIA_TAIKI
-    3:[],//DEXUATLUONG "V061", "V040", "V005", "V079", "V041"
-    4:["V040", "V005", "V079"],//NGHIVIEC
-    5: ["V061", "V040", "V005", "V079", "V041"]//PHUCLOI
+    3: [],//DEXUATLUONG "V061", "V040", "V005", "V079", "V041"
+    4:["V040", "V005", "V079", "V070", "V077"],//NGHIVIEC
+    5: ["V061", "V040", "V005", "V079", "V041", "V070", "V077"]//PHUCLOI
   },
   CURRENCY: {
     VND: 'VNĐ',
     USD: 'USD',
   },
-  RESIGN_REASON_EMPLOYEE_INVALID: ["GI", "GL", "GM", "GN", "GO"]
+  RESIGN_REASON_EMPLOYEE_INVALID: ["GI", "GL", "GM", "GN", "GO"],
+  VFSX_SHIFT_ID_VALID: ["7003", "7007", "7008", "7009", "7075", "OFF"],
+  GENDER: {
+    MALE: '1',
+    FEMALE: '2',
+  },
+  MARRIAGE_STATUS: {
+    SINGLE: '0',
+    MARRIED: '1',
+    DIVORCED: '2',
+  }
 };
 export default Constants

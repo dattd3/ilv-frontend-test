@@ -153,7 +153,7 @@ class ApproverComponent extends React.Component {
       const payload = {
         account: value,
         status: 3,
-        pnl_code: localStorage.getItem('companyCode')
+        //pnl_code: localStorage.getItem('companyCode')
       }
 
       axios.post(`${process.env.REACT_APP_REQUEST_URL}user/employee/search`, payload, config)
@@ -172,7 +172,9 @@ class ApproverComponent extends React.Component {
                 orglv2Id: res.orglv2_id,
                 account: res.username,
                 current_position: res.position_name,
-                department: res.division + (res.department ? '/' + res.department : '') + (res.part ? '/' + res.part : '')
+                employeeNo: res.uid,
+                department: res.division + (res.department ? '/' + res.department : '') + (res.part ? '/' + res.part : ''),
+                company_email: res.company_email
               }
             })
             this.setState({ users: appraiser ? users.filter(user => user.account !== appraiser.account) : users, isSearching: false })
@@ -216,8 +218,8 @@ class ApproverComponent extends React.Component {
               onInputChange={this.onInputChange.bind(this)}
               name="approver"
               onChange={approver => this.handleSelectChange('approver', approver)}
-              value={this.state.approver && this.state.approver.label ? this.state.approver : {}}
-              placeholder={'Nhập tìm kiếm ...'}
+              value={this.state.approver && this.state.approver.label ? this.state.approver : null}
+              placeholder={t('Search') + '...'}
               key="approver"
               options={this.state.users}
             />

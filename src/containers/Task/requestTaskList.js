@@ -273,7 +273,7 @@ class RequestTaskList extends React.Component {
     }
 
     getRequestEditLink = (id, requestTypeId, processStatusId) => {
-        if ([Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE, Constants.UPDATE_PROFILE, Constants.CHANGE_DIVISON_SHIFT, Constants.DEPARTMENT_TIMESHEET].includes(requestTypeId)) {
+        if ([Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE, Constants.UPDATE_PROFILE, Constants.CHANGE_DIVISON_SHIFT, Constants.DEPARTMENT_TIMESHEET, Constants.OT_REQUEST].includes(requestTypeId)) {
             return null
         } else {
             const idLengthWrapSub = 2
@@ -307,31 +307,79 @@ class RequestTaskList extends React.Component {
         return 30
     }
 
-    checkDateLessThanPayPeriod = (date) => {
-        const endOfMonth = this.getMaxDayOfMonth()
-        const convertedDate = moment(date, 'DD/MM/YYYY')
-        let minDate = null
-        const today = new Date()
-        const currentDay = today.getDate()
-        const year = today.getFullYear()
-        const month = today.getMonth()
-        
-        if (currentDay < endOfMonth && currentDay >= 26) { // Ngày sửa/thu hồi 26 đến trước ngày trả lương
-            if (month === 0) {
-                minDate = new Date(year - 1, 11, 26)
-            } else {
-                minDate = new Date(year, month - 1, 26)
+    checkDateLessThanPayPeriod = (startDate) => {
+        // debugger
+        // const endOfMonth = this.getMaxDayOfMonth()
+        // const convertedDate = moment(date, 'DD/MM/YYYY')
+        // let minDate = null
+        // const today = new Date()
+        // const currentDay = today.getDate()
+        // const year = today.getFullYear()
+        // const month = today.getMonth()
+
+        // if (currentDay < endOfMonth && currentDay >= 26) { // Ngày sửa/thu hồi 26 đến trước ngày trả lương
+        //     if (month === 0) {
+        //         minDate = new Date(year - 1, 11, 26)
+        //     } else {
+        //         minDate = new Date(year, month - 1, 26)
+        //     }
+        // } else if (currentDay === endOfMonth) { // Ngày sửa/thu hồi vào ngày trả lương
+        //     minDate = new Date(year, month, 26)
+        // } else { // Ngày sửa/thu hồi 1,..,25
+        //     if (month === 0) {
+        //         minDate = new Date(year - 1, 11, 26)
+        //     } else {
+        //         minDate = new Date(year, month - 1, 26)
+        //     }
+        // }
+
+        // console.log('convertedDate => ', moment(convertedDate).format('DD/MM/YYYY'))
+        // console.log('minDate => ', moment(minDate).format('DD/MM/YYYY'))
+
+        // const result = moment(convertedDate).isBefore(moment(minDate))
+
+        // return result ? false : true
+
+
+        if (startDate) {
+            const currentDate = new Date();
+            const currentYear = currentDate.getFullYear();
+            
+            //Tháng hiện tại
+            const currentMonthNumber = currentDate.getMonth() + 1; //Tháng hiện tại + 1 do bắt đầu tính từ 0
+            let currentMonth = currentMonthNumber + '';
+            if (currentMonthNumber < 10) {
+                currentMonth = `0${currentMonth}`; //nếu từ tháng 1 ~ 9 thì thêm số 0 đằng trước
             }
-        } else if (currentDay === endOfMonth) { // Ngày sửa/thu hồi vào ngày trả lương
-            minDate = new Date(year, month, 26)
-        } else { // Ngày sửa/thu hồi 1,..,25
-            if (month === 0) {
-                minDate = new Date(year - 1, 11, 26)
-            } else {
-                minDate = new Date(year, month - 1, 26)
+
+            //Tháng trước
+            const lastMonthNumber = currentMonthNumber - 1;
+            let lastMonth = lastMonthNumber + '';
+            if (lastMonthNumber < 10) {
+                lastMonth = `0${lastMonth}`;
+            }
+
+            //Khoảng thời gian so sánh nhỏ nhất
+            const minDate =
+                lastMonthNumber == 0
+                    ? `${currentYear - 1}1226`
+                    : `${currentYear}${lastMonth}26`;
+
+            //Khoảng thời gian so sánh lớn nhất
+            //val maxDate = "$currentYear${currentMonth}30"  //Format: 20211230
+
+            //So sánh thỏa mãn cho phép chỉnh sửa trong khoảng : 26/T-1 ~ 30/T không ?
+            /*if (startDate.toInt() >= minDate.toInt() && startDate.toInt() <= maxDate.toInt()) {
+                    return true
+                }*/
+
+            //Sửa logic bỏ so sánh trong tương lai
+            if (startDate >= minDate) {
+                return true;
             }
         }
-        return convertedDate < minDate ? false : true
+
+        return false
     }
 
     isShowEditButton = (status, appraiser, requestTypeId, startDate, isEditOnceTime) => {
@@ -343,7 +391,7 @@ class RequestTaskList extends React.Component {
             if (status == Constants.STATUS_APPROVED && [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP].includes(requestTypeId)) {
                 if (status == Constants.STATUS_APPROVED) {
                     const firstStartDate = startDate?.length > 0 ? startDate[0] : null
-                    if (this.checkDateLessThanPayPeriod(firstStartDate)) {
+                    if (this.checkDateLessThanPayPeriod(moment(firstStartDate, 'DD/MM/YYYY')?.isValid() ? moment(firstStartDate, 'DD/MM/YYYY').format('YYYYMMDD') : null)) {
                         return true
                     }
                     return false
@@ -354,14 +402,16 @@ class RequestTaskList extends React.Component {
         }
     }
 
-    isShowEvictionButton = (status, requestTypeId, startDate) => {
+    isShowEvictionButton = (status, requestTypeId, startDate, isEditOnceTime) => {
         const { page } = this.props
 
-        if (page === "approval") {
+        if (page === "approval" || !isEditOnceTime) {
             return false
         } else {
             const firstStartDate = startDate?.length > 0 ? startDate[0] : null
-            if (status == Constants.STATUS_APPROVED && [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP].includes(requestTypeId) && this.checkDateLessThanPayPeriod(firstStartDate)) {
+            if (status == Constants.STATUS_APPROVED 
+                && [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP].includes(requestTypeId) 
+                && this.checkDateLessThanPayPeriod(moment(firstStartDate, 'DD/MM/YYYY')?.isValid() ? moment(firstStartDate, 'DD/MM/YYYY').format('YYYYMMDD') : null)) {
                 return true
             }
             return false
@@ -376,7 +426,7 @@ class RequestTaskList extends React.Component {
         } else {
             if ([Constants.STATUS_WAITING_CONSENTED, Constants.STATUS_WAITING, Constants.STATUS_PARTIALLY_SUCCESSFUL].includes(status)) {
                 if (((status == Constants.STATUS_WAITING_CONSENTED && actionType !== 'DEL') || (status == Constants.STATUS_WAITING && appraiser && _.size(appraiser) > 0 && actionType !== 'DEL'))  
-                    && [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP, Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE, Constants.CHANGE_DIVISON_SHIFT, Constants.DEPARTMENT_TIMESHEET].includes(requestTypeId)) {
+                    && [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP, Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE, Constants.CHANGE_DIVISON_SHIFT, Constants.DEPARTMENT_TIMESHEET, Constants.OT_REQUEST].includes(requestTypeId)) {
                     return true
                 }
                 if (status == Constants.STATUS_WAITING && (!appraiser || _.size(appraiser) === 0) && actionType !== 'DEL'
@@ -679,8 +729,9 @@ class RequestTaskList extends React.Component {
                                 <tbody>
                                     {
                                         tasks.map((child, index) => {
-                                            let isShowEditButton = this.isShowEditButton(child.processStatusId, child.appraiserId, child.requestTypeId, child.startDate, child.isEdit)
-                                            let isShowEvictionButton = this.isShowEvictionButton(child.processStatusId, child.requestTypeId, child.startDate)
+                                            console.log(`index  => ${index}  ===  ${child.startDate}`)
+                                            let isShowEditButton = this.isShowEditButton(child?.processStatusId, child?.appraiserId, child?.requestTypeId, child?.startDate, child?.isEdit)
+                                            let isShowEvictionButton = this.isShowEvictionButton(child?.processStatusId, child?.requestTypeId, child?.startDate, child?.isEdit)
                                             let actionType = child?.actionType || null
                                             if (child?.requestTypeId == Constants.RESIGN_SELF) {
                                                 const requestItem = child.requestInfo ? child.requestInfo[0] : null // BE xác nhận chỉ có duy nhất 1 item trong requestInfo
@@ -691,12 +742,17 @@ class RequestTaskList extends React.Component {
 
                                             if ([Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP].includes(child.requestTypeId)) {
                                                 totalTime = child.days >= fullDay ? `${child.days} ${t('DayUnit')}` : `${child.hours} ${t('HourUnit')}`
+                                            } else if ([Constants.OT_REQUEST].includes(child.requestTypeId)) {
+                                              totalTime = `${child.totalTime} ${t('HourUnit')}`
                                             }
 
                                             let editLink = this.getRequestEditLink(child.id, child.requestTypeId, child.processStatusId)
                                             let detailLink = child.requestTypeId == Constants.SALARY_PROPOSE ? this.getSalaryProposeLink(child) : this.getRequestDetailLink(child.id, child.requestTypeId)
                                             let dateChanged = showRangeDateGroupByArrayDate(child.startDate)
 
+                                            if ([Constants.OT_REQUEST].includes(child.requestTypeId)) {
+                                              dateChanged = child.dateRange;
+                                            }
                                             return (
                                                 <tr key={index}>
                                                     <td className="code"><a href={detailLink} title={child.requestType.name} className="task-title">{generateTaskCodeByCode(child.id)}</a></td>
@@ -710,7 +766,7 @@ class RequestTaskList extends React.Component {
                                                                 let subDateChanged = ''
                                                                 if ([Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP].includes(child.requestTypeId)) {
                                                                     subDateChanged = showRangeDateGroupByArrayDate([moment(item?.startDate, 'YYYYMMDD').format('DD/MM/YYYY'), moment(item?.endDate, 'YYYYMMDD').format('DD/MM/YYYY')])
-                                                                }
+                                                                } 
                                                                 return (
                                                                     <div key={`sub-date-${itemIndex}`} dangerouslySetInnerHTML={{
                                                                         __html: purify.sanitize(subDateChanged || ''),
@@ -735,10 +791,10 @@ class RequestTaskList extends React.Component {
                                                     </td>
                                                     <td className="status text-center">{this.showStatus(child.id, child.processStatusId, child.requestType.id, child.appraiserId, child.statusName)}</td>
                                                     <td className="tool">
-                                                        { (isShowEditButton && child?.absenceType?.value != MOTHER_LEAVE_KEY) && <a href={editLink} title={t("Edit")}><img alt="Sửa" src={editButton} /></a> }
-                                                        { isShowEvictionButton && child.absenceType?.value != MOTHER_LEAVE_KEY
-                                                            && <span title="Thu hồi hồ sơ" onClick={e => this.evictionRequest(child.requestTypeId, child)}><img alt="Thu hồi" src={evictionButton} /></span> }
-                                                        { isShowDeleteButton && <span title="Hủy" onClick={e => this.deleteRequest(child.requestTypeId, child)}><img alt="Hủy" src={deleteButton} /></span> }
+                                                        {(isShowEditButton && child?.absenceType?.value != MOTHER_LEAVE_KEY) && <a href={editLink} title={t("Edit")}><img alt="Sửa" src={editButton} /></a>}
+                                                        {isShowEvictionButton && child.absenceType?.value != MOTHER_LEAVE_KEY
+                                                            && <span title="Thu hồi" onClick={e => this.evictionRequest(child.requestTypeId, child)}><img alt="Thu hồi" src={evictionButton} /></span>}
+                                                        {isShowDeleteButton && <span title="Hủy" onClick={e => this.deleteRequest(child.requestTypeId, child)}><img alt="Hủy" src={deleteButton} /></span>}
                                                     </td>
                                                 </tr>
                                             )
