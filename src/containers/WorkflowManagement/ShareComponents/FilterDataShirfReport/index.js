@@ -107,8 +107,10 @@ class FilterDataShirfReport extends React.Component {
     const { t } = this.props;
 
     axios.post(`${process.env.REACT_APP_REQUEST_URL}report/shift`, JSON.stringify(data), config)
-      .then(responses => {
-        if (responses && responses.data !== null && responses.data.size !== 123 && responses.data.size !== 147) {
+      .then(async (responses) => {
+        const responseDataJSON = JSON.parse(await responses?.data?.text());
+
+        if (responseDataJSON?.data) {
           this.resetErrors();
           if (responses.status === 200) {
             const blob = new Blob([responses.data], { type: "text/plain;charset=utf-8" })
