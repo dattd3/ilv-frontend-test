@@ -838,18 +838,18 @@ const processDataForTable = (data1, fromDateString, toDateString, reasonData) =>
       let isValid1 = true;
       let isValid2 = true;
       let isShift1 = true;
-      let minStart = 0, maxEnd = 0, minStart2 = null, maxEnd2 = null;  
+      let minStart = 0, maxEnd = 0, minStart2 = null, maxEnd2 = null, start2Index = 9999;  
       const kehoach1 =  getDatetimeForCheckFail(item.from_time1, item.to_time1, currentDay, nextDay)
       const kehoach2 =  getKehoach2DatetimeForCheckFail(item.from_time2, item.to_time2, item.to_time1, currentDay, nextDay);
       
       if(timeSteps && timeSteps.length > 0) {
         minStart = timeStepsSorted[0].start;
         maxEnd = timeStepsSorted[0].end
-        minStart2 = timeStepsSorted[0].start;
-        maxEnd2 = timeStepsSorted[0].end;
+        minStart2 = '99999999999999';
+        maxEnd2 = '00000000000000';
         for(let i = 0, j = 1; j < timeStepsSorted.length; i++, j++) {
           minStart = isShift1 && timeStepsSorted[i].start < minStart ? timeStepsSorted[i].start : minStart;
-          minStart2 = (timeStepsSorted[i].start < minStart2) ? timeStepsSorted[i].start : minStart2;
+          minStart2 = (timeStepsSorted[i].start < minStart2 && timeStepsSorted[i].start > kehoach1.end) ? timeStepsSorted[i].start : minStart2;
 
           if(timeStepsSorted[j].start > kehoach1.end) {
             isShift1 = false;
@@ -862,18 +862,30 @@ const processDataForTable = (data1, fromDateString, toDateString, reasonData) =>
               maxEnd = timeStepsSorted[i].end;
               minStart2 = timeStepsSorted[j].start;
               maxEnd2 = timeStepsSorted[j].end;
+              start2Index = j;
             } else {
-              minStart2 = timeStepsSorted[j].start;
-              maxEnd2 = timeStepsSorted[j].end;
+              if(j > start2Index) {
+                minStart2 = timeStepsSorted[j].start <= minStart2 ? timeStepsSorted[j].start : minStart2;
+                maxEnd2 = timeStepsSorted[j].end >= maxEnd2 ? timeStepsSorted[j].end : maxEnd2;
+                //khi 2 giờ ca 2 lệch nhau
+                if(timeStepsSorted[j].start > timeStepsSorted[i].end) {
+                  isValid2 = false;
+                }
+              }
               if(timeStepsSorted[i].end < kehoach1.end) {
                 isValid1 = false;
               }
-             
-              if(timeStepsSorted[j].start > kehoach2.start) {
+              
+              if(minStart2 > kehoach2.start) {
                 isValid2 = false;
               }
             }
             
+          } else {
+            // khi 2 giờ ca 1 lệch nhau 
+            if(timeStepsSorted[j].start < kehoach1.end && timeStepsSorted[j].start > timeStepsSorted[i].end) {
+              isValid1 = false;
+            }
           }
         }
         

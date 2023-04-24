@@ -42,7 +42,7 @@ class PaySlipsComponent extends React.Component {
       headers: {
         'Authorization': `${localStorage.getItem('accessToken')}`,
         'Content-Type':'multipart/form-data',
-        "Accept-Language": "vi-VN,vi;"
+        "Accept-Language": "en-US,en;"
       }
     }
 
