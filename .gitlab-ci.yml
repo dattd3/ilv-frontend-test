@@ -17,6 +17,7 @@ build_development:
     refs:
       - develop
       - develop-deploy
+      - timekeeping-master
 deploy_to_development_environment:
   stage: deploy
   tags:
@@ -31,6 +32,7 @@ deploy_to_development_environment:
   only:
       - develop
       - develop-deploy
+      - timekeeping-master
 
 build_uat:
   stage: build
