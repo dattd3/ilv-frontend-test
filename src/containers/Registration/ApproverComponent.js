@@ -40,7 +40,12 @@ class ApproverComponent extends React.Component {
       users: [],
       isSearching: false,
       approverTyping: "",
+<<<<<<< HEAD
       isShowRecentManagerLabel: true,
+=======
+      isSearch: false,
+      isSearching: false,
+>>>>>>> master
     }
     this.onInputChange = debounce(this.getApproverInfo, 800);
   }
@@ -163,7 +168,11 @@ class ApproverComponent extends React.Component {
 
   getApproverInfo = (value) => {
     if (value !== "") {
+<<<<<<< HEAD
       this.setState({isSearching: true, isShowRecentManagerLabel: false})
+=======
+      this.setState({isSearch: true, isSearching: true})
+>>>>>>> master
       const config = getRequestConfigurations()
       const payload = {
         account: value,
@@ -195,8 +204,15 @@ class ApproverComponent extends React.Component {
         .finally(() => {
           this.setState({ isSearching: false })
         })
+<<<<<<< HEAD
     } else {
       this.setState({ isSearching: false })
+=======
+    }
+    else {
+      this.setState({ isSearching: false })
+      if (Array.isArray(this.state.users) && this.state.users.length > 1) this.setState({isSearch: true})
+>>>>>>> master
     }
   }
 
@@ -226,7 +242,11 @@ class ApproverComponent extends React.Component {
       })
     }
     const { t, isEdit, errors, recentlyApprover } = this.props;
+<<<<<<< HEAD
     const { approver, users, isSearching, isShowRecentManagerLabel } = this.state
+=======
+    const { isSearch, approver, users, isSearching } = this.state
+>>>>>>> master
 
     return <div className="approver">
       <div className="box shadow">
@@ -251,7 +271,11 @@ class ApproverComponent extends React.Component {
                 placeholder={t('Search') + '...'}
                 key="approver"
                 filterOption={this.filterOption}
+<<<<<<< HEAD
                 options={users}
+=======
+                options={users ? users : recentlyApprover || []}
+>>>>>>> master
                 isLoading={isSearching}
                />
             </div>

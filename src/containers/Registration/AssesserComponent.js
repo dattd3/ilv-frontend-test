@@ -40,7 +40,7 @@ class AssesserComponent extends React.Component {
             users: [],
             isSearching: false,
             appraiserTyping: "",
-            isShowRecentManagerLabel: true,
+            isSearch: false,
         }
         this.onInputChange = debounce(this.getAppraiser, 800);
     }
@@ -96,7 +96,7 @@ class AssesserComponent extends React.Component {
     getAppraiser = (value) => {
         const { approver } = this.props
         if (value !== "") {
-            this.setState({isSearching: true, isShowRecentManagerLabel: false})
+            this.setState({isSearch: true, isSearching: true})
             const config = getRequestConfigurations()
             const payload = {
                 account: value,
@@ -130,8 +130,10 @@ class AssesserComponent extends React.Component {
                 .finally(() => {
                     this.setState({ isSearching: false })
                 })
-        } else {
+        }
+        else {
             this.setState({ isSearching: false })
+            if (Array.isArray(this.state.users) && this.state.users.length > 1) this.setState({isSearch: true})
         }
     }
 
@@ -160,8 +162,8 @@ class AssesserComponent extends React.Component {
                 minHeight: 35
             })
         }
-        const { t, isEdit, errors, isShowDuplicateWarning = true } = this.props
-        const { appraiser, users, isSearching, isShowRecentManagerLabel } = this.state
+        const { t, isEdit, errors, recentlyAppraiser, isShowDuplicateWarning = true } = this.props
+        const { appraiser, users, isSearch, isSearching } = this.state
         const displayAppraiser = appraiser || this.props.appraiser;
 
         return <div className="appraiser">
@@ -189,7 +191,7 @@ class AssesserComponent extends React.Component {
                                 placeholder={t('Search') + '...'}
                                 key="appraiser"
                                 filterOption={this.filterOption}
-                                options={users}
+                                options={users ? users : recentlyAppraiser || []} 
                                 isLoading={isSearching} />
                         </div>
                         {errors && errors['appraiser'] ? <p className="text-danger">{errors['appraiser']}</p> : null}
