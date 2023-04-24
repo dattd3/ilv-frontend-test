@@ -34,7 +34,7 @@ class CommonQuestionComponent extends React.Component {
               this.props.questions && this.props.questions.length > 0 ?
                 this.props.questions.map((question, index) => {
                   return <div key={index}>
-                    <Container fluid className="info-tab-content shadow pl-3 pr-3 mb-2">
+                    <Container fluid className="info-tab-content shadow pl-3 pr-3">
                       <div className="mb-1 multiline">
                         <span className="icon-Icon-Question mr-1"><span className="path1"></span><span className="path2"></span><span className="path3"></span></span>
                         <span>

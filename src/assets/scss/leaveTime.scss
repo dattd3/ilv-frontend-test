@@ -1,6 +1,5 @@
 .leave-time-page {
     font: normal 14px Arial, Helvetica, sans-serif;
-    margin-top: 10px;
     color: #000000;
     .searchTitle {
         font-weight: bold;
@@ -8,7 +7,7 @@
         text-transform: uppercase;
     }
     .summary {
-        margin: 0 10px 30px 10px;
+        margin: 0 15px 20px 15px;
         .box {
             background-color: #fff;
             border-radius: 4px;
@@ -96,6 +95,7 @@
             width: 100%;
             font-size: inherit;
             border-radius: 4px;
+            color: #FFFFFF;
         }
         .note {
             display: block;

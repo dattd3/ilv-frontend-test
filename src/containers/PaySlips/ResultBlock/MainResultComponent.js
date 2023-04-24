@@ -11,7 +11,7 @@ function MainResultComponent(props) {
             <div className="block-title">
                 <div className="block-label">
                     <h4 className="title bold special">{t("PaySlipMonth")}</h4>
-                    <h4 className="title" style={{marginTop: '5px'}}>{`${t("PeriodMonth")} ${personalInformation.month}/${personalInformation.year}`}</h4>
+                    <h4 className="title" style={{margin: '10px 0 0 0'}}>{`${t("PeriodMonth")} ${personalInformation.month}/${personalInformation.year}`}</h4>
                 </div>
             </div>
             <Row>

@@ -122,7 +122,7 @@ class NotificationDetailComponent extends React.Component {
           show={isShowSubmitQuestionModal} 
           onHide={() => this.showSubmitModal(false)} 
           showStatusModal={this.showStatusModal.bind(this)} />
-        <div className="notifications-detail-section mt-5">
+        <div className="notifications-detail-section">
           <div className="row">
             <div className="col-md-8 display-inline">
               <h5 className="title-block">{this.state.notificationInfo.title != null ? this.state.notificationInfo.title : ""}</h5>

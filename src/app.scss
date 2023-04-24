@@ -1258,7 +1258,7 @@ span.badge-notification[data-badge]::after {
   }
   & > button {
     height: 34px;
-    border-radius: 8px;
+    border-radius: 4px;
     width: 34px;
     border: 1px solid #707070;
     padding: 0;
@@ -1530,7 +1530,7 @@ span.badge-notification[data-badge]::after {
 
 .personal-info {
   font-size: inherit;
-  padding: 10px 0 1em 0;
+  padding: 0;
   font-size: 14px;
   .edit-button {
     font-size: inherit;
@@ -1907,7 +1907,7 @@ span.badge-notification[data-badge]::after {
         background-color: #ececec;
         color: #353535;
         padding: 0.8em;
-        border-radius: 0.3em;
+        border-radius: 4px;
       }
     }
   }
@@ -1961,13 +1961,15 @@ span.badge-notification[data-badge]::after {
     border: none;
     padding: 0 0 20px 0;
     margin: 0 auto;
-    gap: 24px 32px;
+    // gap: 24px 32px;
+    gap: 24px 20px;
     .nav-link {
       border: none;
     }
     .nav-item {
       border: 1px solid #dee2e6;
       border-radius: 4px;
+      min-width: 180px;
       height: 40px;
       background-color: #fff;
       color: #293281;
@@ -2081,6 +2083,11 @@ span.badge-notification[data-badge]::after {
         border-radius: 4px;
         height: 38px;
       }
+    }
+  }
+  &.working-process {
+    .not-found {
+      margin-right: 15px;
     }
   }
 }
@@ -2760,8 +2767,18 @@ span.badge-notification[data-badge]::after {
       }
     }
   }
+  .form-qna-search {
+    margin-bottom: 0;
+    .row {
+      margin-bottom: 0;
+    }
+  }
+  .card-body {
+    padding: 1rem;
+  }
   .card-header {
     cursor: pointer;
+    background: #f8f9fc;
   }
   .form-qna-search {
     input {
@@ -2775,6 +2792,17 @@ span.badge-notification[data-badge]::after {
       height: 38px;
       display: inline-flex;
       align-items: center;
+      color: #FFFFFF;
+    }
+  }
+  .card-body {
+    & > div {
+      .info-tab-content {
+        margin-bottom: 0.5rem !important;
+        // &:last-child {
+        //   margin-bottom: 0!important;
+        // }
+      }
     }
   }
 }
@@ -2819,7 +2847,6 @@ span.badge-notification[data-badge]::after {
 }
 .kpi-page {
   font-size: 14px;
-  margin-top: 10px;
   .kpi-staff-info {
     margin-bottom: 15px;
     .title-group {
@@ -2912,7 +2939,7 @@ span.badge-notification[data-badge]::after {
     font-size: 18px !important;
     font-weight: bold;
     overflow: hidden;
-    padding: 5px 0;
+    padding: 10px 0;
   }
   .success-factor-link-icon {
     width: 13px;
@@ -3461,14 +3488,11 @@ span.badge-notification[data-badge]::after {
   text-transform: uppercase !important;
   font-size: 18px !important;
   font-weight: bold;
+  margin-bottom: 10px;
 }
 
 .vaccine-info-page {
-  padding-top: 10px;
   font-size: 14px;
-  .content-page-header {
-    margin-bottom: 0;
-  }
   .card {
     border-radius: 4px;
   }
@@ -3618,7 +3642,6 @@ span.badge-notification[data-badge]::after {
 
 .user-manual-page {
   font-size: 14px;
-  margin-top: 10px;
   color: #000000;
   .item {
     .btn {

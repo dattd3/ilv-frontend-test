@@ -3,12 +3,11 @@
   border-right-color: #6cb5f9 !important;
 }
 .timesheet-section {
-  margin-top: 10px;
   margin-bottom: 30px;
   font-size: 14px;
-  .content-page-header {
-    margin-bottom: 0;
-  }
+  // .content-page-header {
+  //   margin-bottom: 0;
+  // }
   .btn-block {
     font-size: 14px;
     margin-top: 1.5rem;
@@ -83,6 +82,7 @@
       font-size: inherit;
       border-radius: 4px;
       height: 38px;
+      color: #FFFFFF;
     }
     .box-input {
       i {
@@ -1322,6 +1322,9 @@
       }
     }
   }
+  &.search-box {
+    padding: 0 15px;
+  }
 }
 
 .timekeeping-list-container {
@@ -1368,7 +1371,7 @@
 }
 
 .time-keeping-page {
-  margin-top: 24px;
+  // margin-top: 24px;
   color: #000;
   .page-title {
     font-size: 16px;

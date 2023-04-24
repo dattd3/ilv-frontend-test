@@ -189,7 +189,7 @@ class MyComponent extends React.Component {
         <h1 className="content-page-header">{t("QuestionAndAnswer")}</h1>
         <Container fluid className="info-tab-content shadow mb-3">
           <div className="form-group form-qna-search">
-            <label htmlFor="exampleInputEmail1">{t("SearchKeywords")}</label>
+            <label>{t("SearchKeywords")}</label>
             <div className="form-group row">
               <div className="col-sm-12 col-md-9 mb-2">
                 <input type="text" className="form-control" placeholder={t("Search")} id="txt-search" name="keySearch" aria-describedby="emailHelp" onKeyPress={this.handleKeyPress.bind(this)} onChange={this.handleChange.bind(this)} />

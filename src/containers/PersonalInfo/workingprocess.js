@@ -166,7 +166,7 @@ class MyComponent extends React.Component {
         const { userChangeWorkingAppointments } = this.state
 
         return (
-            <div className="personal-info">
+            <div className="personal-info working-process">
                 <h1 className="content-page-header">{t("WorkingProcess")}</h1>
                 <Tabs defaultActiveKey="LaborContract" id="uncontrolled-tab-example">
                     <Tab eventKey="LaborContract" title={t("LaborContract")}>
@@ -216,7 +216,7 @@ class MyComponent extends React.Component {
                     <Tab eventKey="BonusAndPenalty" title={t("BonusAndPenalty")}>
                         <Row>
                             <Container fluid className="p-0">
-                                <div className="timesheet-section p-0 search-box">
+                                <div className="timesheet-section search-box">
                                     <WorkingProcessSearch clickSearch={this.search.bind(this)} />
                                 </div>
                             </Container>
@@ -262,7 +262,7 @@ class MyComponent extends React.Component {
                                         </div>
                                         </form>
                                     </Container>;
-                                }) : t("NoDataFound")
+                                }) : <span className='not-found'>{ t("NoDataFound") }</span>
                             }
                         </Row>
                         <Row>
@@ -327,7 +327,7 @@ class MyComponent extends React.Component {
                                                 </div>
                                             </form>
                                         </Container>
-                                    }) : t("NoDataFound")
+                                    }) : <span className='not-found'>{ t("NoDataFound") }</span>
                                 }
                             </>
                         </Row>

@@ -449,8 +449,47 @@ a {
     }
   }
   &.request-detail-modal {
+    .modal-content {
+      .modal-header {
+        border-top-left-radius: 4px;
+        border-top-right-radius: 4px;
+      }
+      .modal-body {
+        padding: 1.5rem;
+      }
+    }
     .registration-section {
-
+      .content-page-header {
+        margin-bottom: 0;
+      }
+      .edit-personal {
+        .box {
+          padding: 15px 20px;
+        }
+        .item-info {
+          margin-bottom: 0;
+          padding: 0;
+        }
+      }
+      .info {
+        .row {
+          margin-bottom: 0;
+        }
+        .box {
+          hr {
+            margin: 10px;
+            border: none;
+          }
+        }
+      }
+      .box {
+        ul li {
+          margin: 0 20px;
+          &:first-child {
+            margin-left: 0;
+          }
+        }
+      }
     }
   }
   &.result-modal {
