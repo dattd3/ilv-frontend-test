@@ -16,9 +16,22 @@ import CloseIcon from "assets/img/icon/icon_x.svg";
 import Constants from "commons/Constants";
 import NewestNotificationContext from "modules/context/newest-notification-context";
 
-const listUsersIgnoreMaintenanceMode = ['cuongnv56@vingroup.net', 'vuongvt2@vingroup.net', 'thuypx2@vingroup.net', 'chiennd4@vingroup.net', 'datth3@vingroup.net', 
-'minhkv1@vingroup.net', 'sonlt5@vingroup.net', 'tammt9@vingroup.net', 'hoalp2@vingroup.net', 'hieunm25@vingroup.net', 'dattd3@vingroup.net', 'loint8@vingroup.net']
-const currentUserLogged = localStorage.getItem('email')
+const listUsersIgnoreMaintenanceMode = [
+  "cuongnv56@vingroup.net",
+  "vuongvt2@vingroup.net",
+  "thuypx2@vingroup.net",
+  "chiennd4@vingroup.net",
+  "datth3@vingroup.net",
+  'minhkv1@vingroup.net',
+  'sonlt5@vingroup.net',
+  'tammt9@vingroup.net',
+  'hoalp2@vingroup.net',
+  'hieunm25@vingroup.net',
+  'dattd3@vingroup.net',
+  'loint8@vingroup.net'
+];
+const currentUserLogged = localStorage.getItem("email");
+
 const INIT_NOTIFICATION_STATE = {
   isShow: false,
   toastTitle: "",

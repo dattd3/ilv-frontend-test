@@ -33,9 +33,15 @@ export default function TimeKeepingHistory() {
   return (
     <div className="time-keeping-page">
       <div className="page-title">{t("timekeeping_history").toUpperCase()}</div>
-      <div className="container-card">
-        <TimeKeepingList apiResponseData={timeKeepingData} />
-      </div>
+      {timeKeepingData?.length > 0 ? (
+        <div className="container-card">
+          <TimeKeepingList apiResponseData={timeKeepingData} />
+        </div>
+      ) : (
+        <div className="text-danger mt-3">
+          {t("NodataExport")}
+        </div>
+      )}
     </div>
   );
 }
