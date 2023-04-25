@@ -36,12 +36,12 @@ function NewsOnHome(props) {
     const [isShowNotiGuideModal, setIsShowNotiGuideModal] = useState(false);
     const listArticles = usePreload([1, 300])
 
-    useEffect(() => {
-      if (Notification.permission !== "granted" && !sessionStorage.getItem("isCloseNotificationGuide")) {
-        setIsShowNotiGuideModal(true);
-        sessionStorage.setItem("isCloseNotificationGuide", true);
-      }
-    }, [])
+    // useEffect(() => {
+    //   if (Notification.permission !== "granted" && !sessionStorage.getItem("isCloseNotificationGuide")) {
+    //     setIsShowNotiGuideModal(true);
+    //     sessionStorage.setItem("isCloseNotificationGuide", true);
+    //   }
+    // }, [])
 
     const articles = listArticles?.data || []
     const loaded = listArticles?.data ? true : false;
