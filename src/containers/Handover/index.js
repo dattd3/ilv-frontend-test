@@ -505,7 +505,6 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
   }
 
   handleChangeSelectInputs = (e, name, subName) => {
-    console.log(e, name, subName)
     const candidateInfos = {...this.state.data}
     const errors = {...this.state.errors};
     candidateInfos[name][subName] = e != null ? e.value: null;
