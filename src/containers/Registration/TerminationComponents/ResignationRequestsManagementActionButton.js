@@ -7,7 +7,7 @@ import Constants from "../../../commons/Constants"
 import AttachmentComponent from "../TerminationComponents/AttachmentComponent"
 import { t } from 'i18next'
 import { checkFilesMimeType } from '../../../utils/file'
-import { checkIsExactPnL } from 'commons/commonFunctions'
+import { IS_VINFAST } from 'commons/commonFunctions'
 
 class ResignationRequestsManagementActionButton extends React.PureComponent {
     
@@ -184,7 +184,7 @@ class ResignationRequestsManagementActionButton extends React.PureComponent {
             {value: 'isHandoverSoftware', key: 'statusSoftware', label: t('software_status')},
             {value: 'isHandoverConfirmation', key: 'statusConfirmation', label: t('policy_status')},
         ]
-        if(checkIsExactPnL(Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading)) {
+        if(IS_VINFAST) {
             taskLists = [
                 {value: 'isHandoverWork', key: 'statusWork', label: t('work_status')},
                 {value: 'isHandoverAsset', key: 'statusAsset', label: t('laptop_status')},
