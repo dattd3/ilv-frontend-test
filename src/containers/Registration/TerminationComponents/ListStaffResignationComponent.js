@@ -8,7 +8,7 @@ import Constants from '../../../commons/Constants'
 import IconReset from '../../../assets/img/icon/ic-reset.svg'
 import { t } from 'i18next'
 import { getResignResonsMasterData } from 'commons/Utils'
-import { checkIsExactPnL } from 'commons/commonFunctions'
+import { IS_VINFAST } from 'commons/commonFunctions'
 
 const currentUserEmail = localStorage.getItem("email")?.toLowerCase();
 
@@ -285,6 +285,8 @@ class ListStaffResignationComponent extends React.PureComponent {
         const isShowPolicyHandoverCol = isViewAllHandoverCol || listUserTerminations.some(item => currentUserEmail === item.handoverConfirmationAccount?.toLowerCase());
         const isShowTrainingHandoverCol = isViewAllHandoverCol || listUserTerminations.some(item => currentUserEmail === item.trainingDebtAccount?.toLowerCase());
         const isShowInternalHandoverCol = isViewAllHandoverCol || listUserTerminations.some(item => currentUserEmail === item.internalDebtAccount?.toLowerCase());
+        const isShowADBlockCol = isViewAllHandoverCol || listUserTerminations.some(item => currentUserEmail === item.adBlockApproverAccount?.toLowerCase());
+        const isShowFaceIdCol = isViewAllHandoverCol || listUserTerminations.some(item => currentUserEmail === item.faceIdAccount?.toLowerCase());
 
         return <div className="block staff-information-proposed-resignation-block">
                     <div className="row">
@@ -318,7 +320,7 @@ class ListStaffResignationComponent extends React.PureComponent {
                                               isShowJobHandoverCol && <th>{t('work_status')}</th>
                                             }
                                             {
-                                                checkIsExactPnL(Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading) ? 
+                                                IS_VINFAST ? 
                                                 <>
                                                 {
                                                   isShowAssetHandoverCol && <th>{t('laptop_status')}</th>
@@ -341,7 +343,26 @@ class ListStaffResignationComponent extends React.PureComponent {
                                               isShowUniformHandoverCol && <th>{t('uniform_status')}</th>
                                             }
                                             {
-                                              isShowFingerHandoverCol && <th>{t('email_status')}</th>
+                                              IS_VINFAST ? <>
+                                              {
+                                                isShowFingerHandoverCol && <th>
+                                                {t("BlockFingerprint")}
+                                                </th>
+                                              }
+                                              {
+                                                isShowFaceIdCol && <th>
+                                                {t("BlockFaceID")}
+                                              </th>
+                                              }
+                                              {
+                                                isShowADBlockCol && <th>
+                                                {t("BlockEmailAdAccount")}
+                                              </th>
+                                              }
+                                              </> : <>{isShowFingerHandoverCol && <th>
+                                                {t('email_status')}
+                                              </th>
+                                              }</>
                                             }
                                             {
                                               isShowInoutHandoverCol && <th>{t('timesheet_status')}</th>
@@ -354,7 +375,7 @@ class ListStaffResignationComponent extends React.PureComponent {
                                             }
                                             
                                             {
-                                                checkIsExactPnL(Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading) ? 
+                                                IS_VINFAST ? 
                                                 <>
                                                 {
                                                   isShowTrainingHandoverCol && <th>{t('training_status')}</th>
@@ -409,7 +430,7 @@ class ListStaffResignationComponent extends React.PureComponent {
                                                             }
                                                             
                                                             {
-                                                                checkIsExactPnL(Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading) ? 
+                                                                IS_VINFAST ? 
                                                                 <>
                                                                 {
                                                                   isShowAssetHandoverCol && <td className="asset-transfer-col"><div className="data asset-transfer">{this.renderStatus(index, item.isHandoverAsset, item.statusAsset, "statusAsset")}</div></td>
@@ -432,7 +453,29 @@ class ListStaffResignationComponent extends React.PureComponent {
                                                               isShowUniformHandoverCol && <td className="handover-uniforms-col"><div className="data handover-uniforms">{this.renderStatus(index, item.isHandoverUniform, item.statusUniform, "statusUniform")}</div></td>
                                                             }
                                                             {
-                                                              isShowFingerHandoverCol && <td className="handover-fingerprints-email-col"><div className="data handover-fingerprints-email">{this.renderStatus(index, item.isHandoverFingerprintEmail, item.statusFingerprintEmail, "statusFingerprintEmail")}</div></td>
+                                                              IS_VINFAST ? <>
+                                                                
+                                                                {
+                                                                  isShowFingerHandoverCol && <td className="handover-fingerprints-email-col">
+                                                                    <div className="data handover-fingerprints-email">{this.renderStatus(index, item.isHandoverFingerprintEmail, item.statusFingerprintEmail, "statusFingerprintEmail")}</div>
+                                                                  </td>
+                                                                }
+                                                                {
+                                                                  isShowFaceIdCol && <td className="handover-fingerprints-email-col">
+                                                                  <div className="data handover-fingerprints-email">{this.renderStatus(index, item.isHandOverFaceId, item.statusFaceId, "statusFaceId")}</div>
+                                                                </td>
+                                                                }
+                                                                {
+                                                                  isShowADBlockCol && <td className="handover-fingerprints-email-col">
+                                                                  <div className="data handover-fingerprints-email">{this.renderStatus(index, item.isHandOverADBlock, item.statusADBlock, "statusADBlock")}</div>
+                                                                </td>
+                                                                }
+                                                              </> : <>{
+                                                                isShowFingerHandoverCol && <td>
+                                                                <div className="data handover-fingerprints-email">{this.renderStatus(index, item.isHandoverFingerprintEmail, item.statusFingerprintEmail, "statusFingerprintEmail")}</div>
+                                                              </td>
+                                                              }
+                                                              </>
                                                             }
                                                             {
                                                               isShowInoutHandoverCol && <td className="handover-liabilities-col"><div className="data handover-liabilities">{this.renderStatus(index, item.isHandoverDebt, item.statusDebt, "statusDebt")}</div></td>
@@ -444,7 +487,7 @@ class ListStaffResignationComponent extends React.PureComponent {
                                                               isShowPolicyHandoverCol && <td className="confirm-violation-records-col" style={{textAlign: 'center'}}><div className="data confirm-violation-records">{this.renderStatus(index, item.isHandoverConfirmation, item.statusConfirmation, "statusConfirmation")}</div></td>
                                                             }
                                                             {
-                                                                checkIsExactPnL(Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading) ? 
+                                                                IS_VINFAST ? 
                                                                 <>
                                                                 {
                                                                   isShowTrainingHandoverCol && <td className="confirm-violation-records-col" style={{textAlign: 'center'}}><div className="data confirm-violation-records">{this.renderStatus(index, item.isTrainingDebt, item.trainingDebtStatus, "trainingDebtStatus")}</div></td>

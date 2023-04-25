@@ -6,7 +6,7 @@ import moment from 'moment';
 import { withRouter } from 'react-router-dom';
 import Constants from "../../commons/Constants"
 import { isEnableFunctionByFunctionName, getMuleSoftHeaderConfigurations, getRequestConfigurations, formatStringByMuleValue } from "../../commons/Utils"
-import { checkIsExactPnL, checkVersionPnLSameAsVinhome } from '../../commons/commonFunctions';
+import { IS_VINFAST, checkVersionPnLSameAsVinhome } from '../../commons/commonFunctions';
 import RelationshipList from "./RelationshipList"
 import MainInfoList from "./MainInfoList"
 import EducationList from "./EducationList"
@@ -471,7 +471,6 @@ class MyComponent extends React.Component {
     let defaultTab = new URLSearchParams(this.props.location.search).get("tab");
     defaultTab = defaultTab && defaultTab == 'document' ? 'PersonalDocument' : 'PersonalInformation';
     const documents = this.state.userDocument.documents;
-    const checkVinfast = checkIsExactPnL(Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading);
 
     return (
       <>
@@ -540,7 +539,7 @@ class MyComponent extends React.Component {
 
           {
            checkVersionPnLSameAsVinhome(Constants.MODULE.DANHGIA_TAIKI) ? // open for golive1106
-           /*  checkIsExactPnL(Constants.pnlVCode.VinPearl) || checkIsExactPnL(Constants.pnlVCode.MeliaVinpearl) || checkVinfast  ?  */
+           /*  checkIsExactPnL(Constants.pnlVCode.VinPearl) || checkIsExactPnL(Constants.pnlVCode.MeliaVinpearl) || IS_VINFAST  ?  */
             // (checkIsExactPnL(Constants.pnlVCode.VinPearl) || checkIsExactPnL(Constants.pnlVCode.MeliaVinpearl)) ? // open for golive1106
               <Tab eventKey="PersonalDocument" title={t("PersonalDocuments")}>
                 <Row >
@@ -554,7 +553,7 @@ class MyComponent extends React.Component {
                               <th style={{ width: '2%' }}>STT</th>
                               <th style={{ width: '66%' }}>Danh mục hồ sơ CBNV</th>
                               <th style={{ width: '2%' }}>SL</th>
-                              {!checkVinfast && <th style={{ width: '11%' }}>Thời hạn nộp</th>}
+                              {!IS_VINFAST && <th style={{ width: '11%' }}>Thời hạn nộp</th>}
                               <th style={{ width: '8%' }}>Tình trạng</th>
                             </tr>
                           </thead>
@@ -571,7 +570,7 @@ class MyComponent extends React.Component {
                                       <td>{item.index}</td>
                                       <td className="name">{item.name}</td>
                                       <td>{item.number}</td>
-                                      {!checkVinfast && <td rowSpan={obj.documentList.length}>{item.timExpire}</td>}
+                                      {!IS_VINFAST && <td rowSpan={obj.documentList.length}>{item.timExpire}</td>}
                                       <td><input type="checkbox" checked={item.status} readOnly /></td>
                                     </tr>
                                   } else {
