@@ -33,15 +33,15 @@ function NewsOnHome(props) {
     const totalTopArticles = 5
 
     const [is_visible, setIs_visible] = useState(false);
-    const [isShowNotiGuideModal, setIsShowNotiGuideModal] = useState(false);
+    // const [isShowNotiGuideModal, setIsShowNotiGuideModal] = useState(false);
     const listArticles = usePreload([1, 300])
 
-    useEffect(() => {
-      if (Notification.permission !== "granted" && !sessionStorage.getItem("isCloseNotificationGuide")) {
-        setIsShowNotiGuideModal(true);
-        sessionStorage.setItem("isCloseNotificationGuide", true);
-      }
-    }, [])
+    // useEffect(() => {
+    //   if (Notification.permission !== "granted" && !sessionStorage.getItem("isCloseNotificationGuide")) {
+    //     setIsShowNotiGuideModal(true);
+    //     sessionStorage.setItem("isCloseNotificationGuide", true);
+    //   }
+    // }, [])
 
     const articles = listArticles?.data || []
     const loaded = listArticles?.data ? true : false;
@@ -93,9 +93,9 @@ function NewsOnHome(props) {
             
     }
 
-    const closeNotificationGuideModal = () => {
-      setIsShowNotiGuideModal(false);
-    }
+    // const closeNotificationGuideModal = () => {
+    //   setIsShowNotiGuideModal(false);
+    // }
 
     const topOne = totalArticlesPerPage > 0 ? prepareNews(articles.listArticles[0]) : null
     const timePublishedTopOne = getTimeByRawTime(topOne?.publishedDate)
@@ -208,7 +208,7 @@ function NewsOnHome(props) {
                 }
 
             </div>
-            {
+            {/* {
               isShowNotiGuideModal && <div className="noti-guide-modal" >
                 <img className="close-icon" src={IconX} alt="icon-lock" onClick={closeNotificationGuideModal} />
                   <div className="title">{t("NotificationGuide1")} <br /> ILoveVingroup</div>
@@ -219,7 +219,7 @@ function NewsOnHome(props) {
                   2. {t("NotificationGuide4")}&nbsp;<img className="image-inline switch-icon" src={IconSwitchPopup} alt="icon-switch" /> 
                   </div>
               </div>
-            }
+            } */}
             {loaded &&
                 <div>
                     <Footer />
