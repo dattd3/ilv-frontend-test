@@ -1595,6 +1595,9 @@
   "handover_2_2": "II.2.2 Sổ BHXH và BHSK",
   "handover_2_3": "II.2.3 Đồng phục",
   "handover_2_4": "II.2.4 Vân tay, Email",
+  "handover_2_4a": "II.2.4.a Vân tay",
+  "handover_2_4b": "II.2.4.b FaceID",
+  "handover_2_4c": "II.2.4.c Email/Tài khoản AD",
   "handover_2_5": "II.2.5 Công nợ (Tài chính Kế toán) người nhận",
   "handover_2_6": "II.2.6 Các phần mềm phục vụ công việc (nếu có)",
   "handover_2_7": "II.2.7 Xác nhận về biên bản vi phạm đang xử lý (nếu có)",
@@ -1758,5 +1761,8 @@
   "CheckedOut": "Đã check-out",
   "at": "tại",
   "MissingKPI": "Chưa có nội dung đánh giá",
-  "NumberOfSharesConverted": "Số Cổ phần quy đổi"
+  "NumberOfSharesConverted": "Số Cổ phần quy đổi",
+  "BlockFingerprint": "Khóa Vân tay",
+  "BlockFaceID": "Khóa Face ID",
+  "BlockEmailAdAccount": "Khóa Email/ tài khoản AD"
 }
