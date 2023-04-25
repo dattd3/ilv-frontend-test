@@ -24,7 +24,7 @@ import { vi, enUS } from 'date-fns/locale'
 import { getMuleSoftHeaderConfigurations } from '../../../commons/Utils'
 import LoadingSpinner from '../../../components/Forms/CustomForm/LoadingSpinner'
 import LoadingModal from '../../../components/Common/LoadingModal'
-import { checkIsExactPnL, checkVersionPnLSameAsVinhome } from '../../../commons/commonFunctions'
+import { checkVersionPnLSameAsVinhome, IS_VINFAST } from '../../../commons/commonFunctions'
 import ContractEvaluationdetail from './detail'
 import HOCComponent from '../../../components/Common/HOCComponent'
 import SalaryModal from './SalaryModal'
@@ -38,7 +38,6 @@ const TIME_OF_SAP_FORMAT = 'HHmm00'
 const FULL_DAY = true
 const GROUP_EMAIL_EXTENSION = '@vingroup.net'
 
-const IS_VINFAST = checkIsExactPnL(Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading);
 class LeaveOfAbsenceDetailComponent extends React.Component {
 
   HD_THUVIEC = 2;
@@ -162,7 +161,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     const currentEmployeeNo = localStorage.getItem('email');
     const currentEmployeeCode = localStorage.getItem('employeeNo');
     const data = this.state.data;
-    const dateToCheck = data.contractType == 'VA' ? (checkVersionPnLSameAsVinhome(Constants.MODULE.DANHGIA_TAIKI) ? -75 : -45) : (checkIsExactPnL(Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading) ? -14 : -7); 
+    const dateToCheck = data.contractType == 'VA' ? (checkVersionPnLSameAsVinhome(Constants.MODULE.DANHGIA_TAIKI) ? -75 : -45) : (IS_VINFAST ? -14 : -7); 
     const isAfterT_7 = data.employeeInfo && data.employeeInfo.startDate && moment(new Date()).diff(moment(data.employeeInfo.expireDate), 'days') > dateToCheck ? true : false;
     let shouldDisable = false;
     let isNguoidanhgia = false;
@@ -203,7 +202,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         shouldDisable = true;
     }
     let canAddJob = !isAfterT_7; //data.canAddJob && !isAfterT_7
-    if(checkIsExactPnL(Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading)) {
+    if(IS_VINFAST) {
       canAddJob = true//data.canAddJob;
     }
     if(this.state.type == 'edit' && data.processStatus == 9 && canAddJob ){
@@ -347,7 +346,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     }
   
     if(type === 'request'){
-      let _showComponent = {...this.employeeSetting.showComponent, JobEditing: checkIsExactPnL(Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading) ? false : this.employeeSetting.showComponent.JobEditing}
+      let _showComponent = {...this.employeeSetting.showComponent, JobEditing: IS_VINFAST ? false : this.employeeSetting.showComponent.JobEditing}
       this.setState({
         showComponent: _showComponent,
         disableComponent: {...this.employeeSetting.disableComponent, disableAll: true},

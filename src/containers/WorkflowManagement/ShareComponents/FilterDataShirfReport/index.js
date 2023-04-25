@@ -12,7 +12,7 @@ import MemberOption from "../MemberOption"
 import Constants from '../../../../commons/Constants'
 import { saveAs } from 'file-saver'
 import { getMuleSoftHeaderConfigurations } from "../../../../commons/Utils"
-import { checkIsExactPnL } from "commons/commonFunctions";
+import { IS_VINFAST } from "commons/commonFunctions";
 registerLocale("vi", vi);
 
 class FilterDataShirfReport extends React.Component {
@@ -253,7 +253,7 @@ class FilterDataShirfReport extends React.Component {
       { value: Constants.TYPE_REPORT.DETAIL_REPORT, label: t("DetailReport") },
       { value: Constants.TYPE_REPORT.SUMARY_REPORT, label: t("SumaryReport") },
     ];
-    if(checkIsExactPnL(Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading)) {
+    if(IS_VINFAST) {
       reportTypes.push({ value: Constants.TYPE_REPORT.TIMESHEET_REPORT, label: t("TimesheetSumaryReport") });
     }
 

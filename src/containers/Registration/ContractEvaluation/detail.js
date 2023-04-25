@@ -5,13 +5,12 @@ import Rating from 'react-rating'
 import _ from 'lodash'
 import { Image } from 'react-bootstrap'
 import Constants from '../.../../../../commons/Constants'
-import { checkIsExactPnL, checkVersionPnLSameAsVinhome } from '../../../commons/commonFunctions'
+import { checkVersionPnLSameAsVinhome, IS_VINFAST } from '../../../commons/commonFunctions'
 import 'react-datepicker/dist/react-datepicker.css'
 import { vi, enUS } from 'date-fns/locale'
 import { withTranslation } from "react-i18next";
 import './styles.scss'
 
-const IS_VINFAST = checkIsExactPnL(Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading);
 const ContractEvaluationdetail = (props) => {
   const { data, id, type, idSalary, t } = props
   const dataSalary = props.dataSalary;
