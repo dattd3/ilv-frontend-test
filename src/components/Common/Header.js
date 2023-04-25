@@ -133,7 +133,7 @@ function Header(props) {
                                         return `/notifications/${item.id}`
                                     case Constants.notificationType.NOTIFICATION_OTHER:
                                         if (item?.detailType == qnaDetailType) {
-                                            return `${item.url}` 
+                                            return `${item.url}`
                                         }
                                         return `/notifications/${item.id}`
                                     case Constants.notificationType.NOTIFICATION_REGISTRATION: 
@@ -389,7 +389,7 @@ function Header(props) {
                               </div>
                               <br />
                               {
-                                latestTimekeeping?.length > 0 && <>
+                                latestTimekeeping?.length > 0 ? <>
                                   <TimeKeepingList apiResponseData={latestTimekeeping} />
                                   <br />
                                   <a href={"/timekeeping-history"} className="details-link">
@@ -400,9 +400,10 @@ function Header(props) {
                                         src={RedArrowIcon}
                                       />
                                   </a>
-                                </>
+                                </> : <div className="text-danger no-data-div">
+                                    {t("NodataExport")}
+                                  </div>
                               }
-                              
                           </Dropdown.Menu>
                       </Dropdown>
                       <Dropdown id="notifications-block" onToggle={(isOpen) => OnClickBellFn(isOpen)}>
