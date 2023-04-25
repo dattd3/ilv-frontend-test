@@ -7,6 +7,7 @@ import axios from 'axios';
 import { getMuleSoftHeaderConfigurations, getRequestConfigurations } from "../../commons/Utils"
 import Constants from "../../commons/Constants"
 import moment from 'moment';
+import { FirebaseUpdateToken } from '../../commons/Firebase';
 
 const ERROR_TYPE = {
     NETWORK: 1,
@@ -191,6 +192,7 @@ function Authorize(props) {
                             prepare: shouldShowPrepareOnboard,
                             jobCode: user?.job_code,
                         });
+                        // FirebaseUpdateToken();
                     }
                 })
                 .catch(error => {
@@ -333,7 +335,6 @@ function Authorize(props) {
                 return window.location.replace(process.env.REACT_APP_AWS_COGNITO_IDP_SIGNOUT_URL)
             }
         }
-      
         processUserLogged()
     }, []);
 
