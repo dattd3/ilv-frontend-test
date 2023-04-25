@@ -192,6 +192,8 @@ class ResignationRequestsManagementActionButton extends React.PureComponent {
                 {value: 'isHandoverSocial', key: 'statusSocial', label: t('social_status')},
                 {value: 'isHandoverUniform', key: 'statusUniform', label: t('uniform_status')},
                 {value: 'isHandoverFingerprintEmail', key: 'statusFingerprintEmail', label: t('email_status')},
+                {value: 'isHandOverFaceId', key: 'statusFaceId', label: t('BlockFaceID')},
+                {value: 'isHandOverADBlock', key: 'statusADBlock', label: t('BlockEmailAdAccount')},
                 {value: 'isHandoverDebt', key: 'statusDebt', label: t('timesheet_status')},
                 {value: 'isHandoverSoftware', key: 'statusSoftware', label: t('software_status')},
                 {value: 'isHandoverConfirmation', key: 'statusConfirmation', label: t('policy_status')},
