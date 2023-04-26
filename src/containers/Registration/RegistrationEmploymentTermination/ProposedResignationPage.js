@@ -112,6 +112,7 @@ class ProposedResignationPage extends React.Component {
                         job_name: res.position_name,
                         company_email: res.username,
                         department: res.division + (res.department ? '/' + res.department : '') + (res.unit ? '/' + res.unit : ''),
+                        departmentName: res.division || '',
                         date_start_work: null,
                         contract_type: null, // need update
                         contract_name: null, // need update
