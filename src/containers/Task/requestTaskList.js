@@ -2,6 +2,7 @@ import React from 'react'
 import editButton from '../../assets/img/icon/Icon-edit.svg'
 import deleteButton from '../../assets/img/icon-delete.svg'
 import evictionButton from '../../assets/img/eviction.svg'
+import IconSync from '../../assets/img/icon/Icon_Sync.svg'
 import CustomPaging from '../../components/Common/CustomPaging'
 import TableUtil from '../../components/Common/table'
 import { OverlayTrigger, Tooltip } from 'react-bootstrap'
@@ -169,6 +170,10 @@ class RequestTaskList extends React.Component {
             typeRequest: Constants.STATUS_REVOCATION,
             dataToUpdate: prepareDataForCancel
         });
+    }
+
+    syncRequest = (requestTypeId, child) => {
+
     }
 
     onHideModalConfirm = () => {
@@ -720,7 +725,6 @@ class RequestTaskList extends React.Component {
                                 <tbody>
                                     {
                                         tasks.map((child, index) => {
-                                            console.log(`index  => ${index}  ===  ${child.startDate}`)
                                             let isShowEditButton = this.isShowEditButton(child?.processStatusId, child?.appraiserId, child?.requestTypeId, child?.startDate, child?.isEdit)
                                             let isShowEvictionButton = this.isShowEvictionButton(child?.processStatusId, child?.requestTypeId, child?.startDate, child?.isEdit)
                                             let actionType = child?.actionType || null
@@ -744,6 +748,8 @@ class RequestTaskList extends React.Component {
                                             if ([Constants.OT_REQUEST].includes(child.requestTypeId)) {
                                               dateChanged = child.dateRange;
                                             }
+                                            let isShowSyncRequest = child?.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL
+
                                             return (
                                                 <tr key={index}>
                                                     <td className="code"><a href={detailLink} title={child.requestType.name} className="task-title">{generateTaskCodeByCode(child.id)}</a></td>
@@ -786,6 +792,7 @@ class RequestTaskList extends React.Component {
                                                         {isShowEvictionButton && child.absenceType?.value != MOTHER_LEAVE_KEY
                                                             && <span title="Thu hồi" onClick={e => this.evictionRequest(child.requestTypeId, child)}><img alt="Thu hồi" src={evictionButton} /></span>}
                                                         {isShowDeleteButton && <span title="Hủy" onClick={e => this.deleteRequest(child.requestTypeId, child)}><img alt="Hủy" src={deleteButton} /></span>}
+                                                        {isShowSyncRequest && <span title="Đồng bộ" onClick={e => this.syncRequest(child.requestTypeId, child)}><img alt="Đồng bộ" src={IconSync} /></span>}
                                                     </td>
                                                 </tr>
                                             )
