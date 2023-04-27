@@ -1715,7 +1715,7 @@
   "resign_error_permission": "Staffs not under your management",
   "select_to_export": "Please choose data record need to export",
   "select_to_save": "Please choose data record need to save",
-  "timekeeping_history": "Timekeeping History",
+  "timekeeping_history": "Checkin-out History",
   "NotificationGuide1": "Instructions to receive Notification from",
   "NotificationGuide2": "Click on",
   "NotificationGuide3": "in address bar",
