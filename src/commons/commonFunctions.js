@@ -1,17 +1,6 @@
 import _ from 'lodash'
 import Constants from '../commons/Constants'
 
-
-// const logout = () => {
-//     try {
-//         Auth.signOut({ global: true })
-//         localStorage.clear()
-//         window.location.reload()
-//     } catch  {
-//         window.location.reload()
-//     }
-// }
-
 const getRequestConfigs = () => {
     return {
         headers: {            
@@ -51,4 +40,6 @@ const checkVersionPnLSameAsVinhome = (moduleType = 1, ...otherPnl) => {
     return checkIsExactPnL(...pnlAvaiable);
 }
 
-export { getRequestConfigs, checkIsExactPnL, getStateRedirect, checkVersionPnLSameAsVinhome }
+const IS_VINFAST = checkIsExactPnL(Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading);
+
+export { getRequestConfigs, checkIsExactPnL, getStateRedirect, checkVersionPnLSameAsVinhome, IS_VINFAST }

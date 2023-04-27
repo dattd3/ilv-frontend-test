@@ -73,24 +73,27 @@ function IncomeComponent(props) {
         case Constants.pnlVCode.MeliaVinpearl:
             incomeTables = IncomeTablesConfig(t).Vinpearl
             break;
-        case 'V096':
+        case Constants.pnlVCode.VinSoftware:
             incomeTables = IncomeTablesConfig(t).Vinsoftware
             break
-        case 'V070':
-        case 'V077':
+        case Constants.pnlVCode.VinFast:
+        case Constants.pnlVCode.VinFastTrading:
             incomeTables = IncomeTablesConfig(t).VinFast
             break
-        case 'V060':
+        case Constants.pnlVCode.VinMec:
             incomeTables = IncomeTablesConfig(t).Vinmec
             break
-        case 'V073':
+        case Constants.pnlVCode.VinSmart:
             incomeTables = IncomeTablesConfig(t).VinSmart
             break
-        case 'V040':
+        case Constants.pnlVCode.VinHome:
             incomeTables = IncomeTablesConfig(t).VinHome
             break
-        case 'V061':
+        case Constants.pnlVCode.VinSchool:
             incomeTables = IncomeTablesConfig(t).VinSchool
+            break
+        case Constants.pnlVCode.VinBigData:
+            incomeTables = IncomeTablesConfig(t).VinBigData
             break
         default:
             incomeTables = IncomeTablesConfig(t).VinGroup
