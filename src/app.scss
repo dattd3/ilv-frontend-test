@@ -1763,6 +1763,266 @@ span.badge-notification[data-badge]::after {
         }
       }
     }
+    &.work-outside-group {
+      padding: 0;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none !important;
+      .work-outside-group-list {
+        color: #000000 !important;
+        font-size: inherit;
+        .work-outside-group-item {
+          border-radius: 4px;
+          background: #FFFFFF;
+          padding: 15px;
+          box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+          margin-bottom: 15px;
+          .group {
+            border-radius: 4px;
+            border: 1px solid #DEE2E6;
+            .group-header {
+              background: #F2F2F2;
+              height: 30px;
+              display: flex;
+              border-top-right-radius: 4px;
+              border-top-left-radius: 4px;
+              h5 {
+                font-weight: bold;
+                font-size: inherit;
+                flex: 1 1;
+                margin-bottom: 0;
+                height: 100%;
+                display: flex;
+                align-items: center;
+                margin-left: 15px;
+              }
+              .btn-cancel {
+                display: inline-flex;
+                padding: 0 10px;
+                font-size: 12px;
+                color: #FFFFFF;
+                background: #C74141;
+                align-items: center;
+                height: 22px;
+                border-bottom-left-radius: 4px;
+                border-top-right-radius: 4px;
+                margin-top: -1px;
+                margin-right: -1px;
+                cursor: pointer;
+                img {
+                  width: 9px;
+                }
+                span {
+                  margin-left: 6px;
+                }
+              }
+            }
+            .content {
+              padding: 15px;
+            }
+          }
+          .company-info {           
+            .content {
+              .group-name {
+                display: flex;
+                flex-direction: column;
+                .second {
+                  margin-top: 15px;
+                }
+                input {
+                  border: 1px solid #DEE2E6;
+                  height: 38px;
+                  padding: 0 10px;
+                  outline: none;
+                  border-radius: 4px;
+                }
+              }
+              .group-date {
+                .label {
+                  margin-top: 10px;
+                }
+                .input-date {
+                  position: relative;
+                  .input-img {
+                    position: absolute;
+                    right: 12px;
+                    top: 7px;
+                  }
+                  input {
+                    height: 38px;
+                    padding: 0 10px;
+                    outline: none;
+                  }
+                  img {
+                    height: 14px;
+                  }
+                }
+              }
+            }
+          }
+          .process {
+            margin-top: 15px;
+            border: none;
+            .item {
+              margin-bottom: 15px;
+              border: 1px solid #DEE2E6;
+              border-radius: 4px;
+              &:last-child {
+                margin-bottom: 0;
+              }
+              .group-input {
+                display: flex;
+                flex-direction: column;
+                input {
+                  height: 38px;
+                  border-radius: 4px;
+                  padding: 0 10px;
+                  outline: none;
+                  border: 1px solid #DEE2E6;
+                }
+                .input-date {
+                  position: relative;
+                  margin-bottom: 0;
+                  .input-img {
+                    position: absolute;
+                    top: 7px;
+                    right: 12px;
+                  }
+                  img {
+                    height: 14px;
+                  }
+                  &.second {
+                    margin-top: 15px;
+                  }
+                }
+                .second {
+                  margin-top: 15px;
+                }
+                textarea {
+                  width: 100%;
+                  border-radius: 4px;
+                  padding: 10px;
+                  outline: none;
+                  border: 1px solid #DEE2E6;
+                  &.second {
+                    margin-top: 15px;
+                  }
+                }
+                &.role {
+                  margin-top: 15px;
+                }
+              }
+              .salary {
+                margin-top: 15px;
+              }
+            }
+            .block-btn-add-process {
+              button {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                background: #FFFFFF;
+                cursor: pointer;
+                color: #44A257;
+                border: 1px solid #44A257;
+                border-radius: 4px;
+                outline: none;
+                height: 38px;
+                padding: 0 15px;
+                img {
+                  height: 12px;
+                }
+                span {
+                  margin: 0 0 0 5px;
+                }
+              }
+            }
+          }
+        }
+        .block-btn-add-company {
+          button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: #44A257;
+            border: none;
+            cursor: pointer;
+            color: #FFFFFF;
+            border-radius: 4px;
+            outline: none;
+            height: 38px;
+            padding: 0 15px;
+            img {
+              height: 12px;
+            }
+            span {
+              margin: 0 0 0 6px;
+            }
+          }
+        }
+        .list-files {
+          display: flex;
+          align-items: center;
+          flex-wrap: wrap;
+          grid-gap: 15px;
+          margin: 15px 0;
+          .item {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: #FFFFFF;
+            border-radius: 4px;
+            height: 36px;
+            padding: 0 10px;
+            .file-name {
+              color: #4E73DF;
+              font-weight: bold;
+            }
+            .btn-remove {
+              margin-left: 10px;
+              cursor: pointer;
+            }
+          }
+        }
+        .block-button-actions {
+          .block-buttons {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            .btn-attachment {
+              display: inline-flex;
+              .custom-file-upload {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                background: #FFFFFF;
+                border: 1px solid #B3B3B3;
+                margin-bottom: 0;
+                height: 38px;
+                width: 140px;
+                border-radius: 4px;
+                i {
+                  margin-right: 5px;
+                  font-size: 12px;
+                }
+              }
+              input {
+                display: none;
+              }
+            }
+            .btn-primary {
+              font-size: inherit;
+              height: 38px;
+              width: 140px;
+              img {
+                margin-right: 5px;
+              }
+            }
+          }
+        }        
+      }
+    }
   }
   .tab-education, .tab-main-info {
     color: #000000;
@@ -1844,11 +2104,29 @@ span.badge-notification[data-badge]::after {
       }
       button {
         font-size: inherit;
+        img {
+          margin-right: 5px;
+        }
+      }
+    }
+    .top-button-actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      margin-bottom: 20px;
+      font-size: inherit;
+      .btn {
+        font-size: inherit;
         i {
           font-size: 12px;
           margin-right: 5px;
         }
       }
+    }
+  }
+  .tab-work-outside-group {
+    .content-page-header {
+      color: #000000 !important;
     }
     .top-button-actions {
       display: flex;
