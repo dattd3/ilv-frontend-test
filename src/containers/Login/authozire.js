@@ -192,7 +192,7 @@ function Authorize(props) {
                             prepare: shouldShowPrepareOnboard,
                             jobCode: user?.job_code,
                         });
-                        // FirebaseUpdateToken();
+                        FirebaseUpdateToken();
                     }
                 })
                 .catch(error => {
