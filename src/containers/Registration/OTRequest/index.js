@@ -21,6 +21,7 @@ import IconRemove from "assets/img/icon-delete.svg";
 import ResultModal from "../ResultModal";
 import map from "containers/map.config";
 import ConfirmModal from "components/Common/ConfirmModalNew";
+import LoadingModal from "components/Common/LoadingModal";
 const config = getRequestConfigurations();
 
 registerLocale("vi", vi);
@@ -486,7 +487,7 @@ export default function OTRequestComponent({ recentlyManagers }) {
               ],
               [item.startTime, item.endTime],
             ];
-            if (checkOverlap(timeSegments)) {
+            if (item.is_holiday != 1 && checkOverlap(timeSegments)) {
               _errors[`overlapTime_${index}`] = t("OverlapTimeOTWorkshift");
             }
           }
@@ -501,7 +502,7 @@ export default function OTRequestComponent({ recentlyManagers }) {
               ],
               [item.startTime, item.endTime],
             ];
-            if (checkOverlap(timeSegments)) {
+            if (item.is_holiday != 1 && checkOverlap(timeSegments)) {
               _errors[`overlapTime_${index}`] = t("OverlapTimeOTWorkshift");
             }
           }
@@ -577,6 +578,7 @@ export default function OTRequestComponent({ recentlyManagers }) {
         tempButtonLabel={t("Cancel")}
         mainButtonLabel={t("Confirm")}
       />
+      <LoadingModal show={isSendingRequest} />
       <div className="box shadow">
         <div className="row">
           <div className="col-4">

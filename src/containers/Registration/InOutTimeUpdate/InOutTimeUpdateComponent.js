@@ -36,7 +36,8 @@ class InOutTimeUpdateComponent extends React.Component {
       isShowStatusModal: false,
       titleModal: "",
       messageModal: "",
-      disabledSubmitButton: false
+      disabledSubmitButton: false,
+      needReload: true,
     }
   }
 
@@ -148,7 +149,7 @@ class InOutTimeUpdateComponent extends React.Component {
 
   verifyInput() {  
     const { t } = this.props
-    const { timesheets, approver, files } = this.state
+    const { timesheets, appraiser, approver, files } = this.state
 
     let errors = {}
     timesheets.forEach((timesheet, index) => {
@@ -205,6 +206,14 @@ class InOutTimeUpdateComponent extends React.Component {
       }
 		}
     errors['files'] = errorsFile
+
+    errors['approverAppraiser'] = null
+    if (approver?.account?.trim() && appraiser?.account?.trim() && approver?.account?.trim()?.toLowerCase() === appraiser?.account?.trim()?.toLowerCase()) {
+      errors['approverAppraiser'] = t("ApproverAndConsenterCannotBeIdentical")
+      this.showStatusModal(t("Notification"), t("ApproverAndConsenterCannotBeIdentical"), false)
+      this.setState({ needReload: false })
+    }
+
     this.setState({ errors: errors })
     return errors
   }
@@ -286,16 +295,19 @@ class InOutTimeUpdateComponent extends React.Component {
       data: bodyFormData,
       headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` }
     })
-      .then(response => {
-        if (response && response.data && response.data.result) {
-          this.showStatusModal(this.props.t("Successful"), this.props.t("RequestSent"), true)
-          this.setDisabledSubmitButton(false)
-        }
-      })
-      .catch(response => {
-        this.showStatusModal(this.props.t("Notification"), this.props.t("Error"), false)
+    .then(response => {
+      if (response && response.data && response.data.result) {
+        this.showStatusModal(this.props.t("Successful"), this.props.t("RequestSent"), true)
         this.setDisabledSubmitButton(false)
-      })
+      }
+    })
+    .catch(response => {
+      this.showStatusModal(this.props.t("Notification"), this.props.t("Error"), false)
+      this.setDisabledSubmitButton(false)
+    })
+    .finally(() => {
+      this.setState({ needReload: true })
+    })
   }
 
   error = (index, name) => {
@@ -355,7 +367,9 @@ class InOutTimeUpdateComponent extends React.Component {
 
   hideStatusModal = () => {
     this.setState({ isShowStatusModal: false });
-    window.location.href = `${map.Registration}?tab=InOutTimeUpdate`
+    if (this.state.needReload) {
+      window.location.href = `${map.Registration}?tab=InOutTimeUpdate`
+    }
   }
 
   removeFile(index) {
@@ -397,14 +411,14 @@ class InOutTimeUpdateComponent extends React.Component {
   }
 
   render() {
-    const { startDate, endDate, timesheets, errors, files, disabledSubmitButton } = this.state
+    const { startDate, endDate, timesheets, errors, files, disabledSubmitButton, isShowStatusModal, titleModal, messageModal, isSuccess } = this.state
     const { t, recentlyManagers } = this.props;
     const lang = localStorage.getItem("locale")
     const isShowSelectWorkingShift24h = isEnableFunctionByFunctionName(Constants.listFunctionsForPnLACL.selectWorkingShift24h)
 
     return (
       <div className="in-out-time-update">
-        <ResultModal show={this.state.isShowStatusModal} title={this.state.titleModal} message={this.state.messageModal} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
+        <ResultModal show={isShowStatusModal} title={titleModal} message={messageModal} isSuccess={isSuccess} onHide={this.hideStatusModal} />
         <div className="box shadow">
           <div className="row">
             <div className="col-4">
