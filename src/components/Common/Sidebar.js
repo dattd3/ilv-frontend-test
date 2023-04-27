@@ -44,7 +44,6 @@ class RouterLink extends React.Component {
           toggleSubMenu,
           children,
       } = this.props;
-  
       return (
         hasSubMenu || externalLink
         ? children[0].props.className.indexOf('has-tooltip') > 0 ? (
@@ -135,7 +134,16 @@ function SideBar(props) {
     const { show } = props;
 
     const getNavigation = (role) => {
-        let allNav = Navigation.filter(x => (x.role === 'A' || x.role === 'U' || x.role.includes(role) || x.role.indexOf(user.companyCode) >= 0));
+        let _navigation = [...Navigation];
+        if([Constants.pnlVCode.VinHome].includes(user.companyCode)) {
+          _navigation = _navigation.map(nav => {
+            if(nav.id == 1008) {
+              nav.role.push(...["C2", "C1","C"]);
+            }
+            return nav;
+          })
+        }
+        let allNav = _navigation.filter(x => (x.role === 'A' || x.role === 'U' || x.role.includes(role) || x.role.indexOf(user.companyCode) >= 0));
         return getSubNav(allNav, 0);
     }
 
@@ -202,7 +210,6 @@ function SideBar(props) {
                 LinkComponent={withRouter(RouterLink)}
               />
     }, isUpdate);
-
     return (
         <>
             <div style={{position: 'fixed'}}>

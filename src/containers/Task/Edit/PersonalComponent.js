@@ -1,5 +1,4 @@
 import React from 'react'
-import axios from 'axios'
 import AddressModal from '../../PersonalInfo/edit/AddressModal'
 import Select from 'react-select'
 import DatePicker, { registerLocale } from 'react-datepicker'
@@ -9,6 +8,8 @@ import vi from 'date-fns/locale/vi'
 import { connect } from 'react-redux'
 import * as actions from '../../../actions'
 import { withTranslation } from "react-i18next"
+import Constants from 'commons/Constants'
+import { genderConfig } from 'commons/Utils'
 
 registerLocale("vi", vi)
 
@@ -23,13 +24,6 @@ class PersonalComponent extends React.Component {
             provinces: []
         }
     }
-
-    async componentDidMount() {
-
-    }
-
-    //#region ======== private function  ================
-
 
     isNotNull(input) {
         if (input !== undefined && input !== null && input !== 'null' && input !== '#' && input !== '') {
@@ -144,9 +138,10 @@ class PersonalComponent extends React.Component {
     }
     //#endregion
     render() {
+        const genderMapping = genderConfig()
         const { t } = this.props
         const userDetail = this.props.userDetail
-        const genders = this.props.genders.map(gender => { return { value: gender.ID, label: gender.TEXT } })
+        const genders = this.props.genders.map(gender => { return { value: gender.ID, label: gender.ID == Constants.GENDER.MALE ? genderMapping.male : genderMapping.female } })
         const races = this.props.races.map(race => { return { value: race.ID, label: race.TEXT } })
         const marriages = this.props.marriages.map(marriage => { return { value: marriage.ID, label: marriage.TEXT } })
         const nations = this.props.nations.map(nation => { return { value: nation.ID, label: nation.TEXT } })
@@ -156,6 +151,7 @@ class PersonalComponent extends React.Component {
         const provinces = this.props.provinces.map(province => { return { value: province.ID, label: province.TEXT } })
         const religions = this.props.religions.map(r => { return { value: r.ID, label: r.TEXT } })
         const documentTypes = this.props.documentTypes.map(d => { return { value: d.ID, label: d.TEXT } })
+
         return (
             <div className="info">
                 <h4 className="title text-uppercase">{t("PersonalInformation")}</h4>
@@ -222,7 +218,7 @@ class PersonalComponent extends React.Component {
                             <div className="label">{t("Gender")}</div>
                         </div>
                         <div className="col-4 old">
-                            <div className="detail">{(userDetail.gender !== undefined && userDetail.gender !== '2') ? 'Nam' : 'Nữ'}</div>
+                            <div className="detail">{userDetail?.gender == Constants.GENDER.MALE ? genderMapping.male : genderMapping.female}</div>
                         </div>
                         <div className="col-6">
                             <Select name="Gender" placeholder={t("SelectGender")} key="gender" options={genders} value={genders.filter(g => g.value == this.props.userDetailEdited.gender)}

@@ -71,7 +71,7 @@ class ResultDetailModal extends React.Component {
                             <p><span className="text-success">{t("Successful")}: </span><strong>{sucessReqs}/{total}</strong></p>
                         </>
                         : <div className="wrap-result">
-                            <p>{statusCodeAPIException === 504 ? "Yêu cầu đang được xử lý." : "Đã có lỗi xảy ra"}</p>
+                            <p>{statusCodeAPIException === 504 ? "Yêu cầu đang được xử lý." : this.props.t("AnErrorOccurred") }</p>
                             { statusCodeAPIException === 504 ? <Image src={IconSuccess} alt="success" className="ic-status" /> : <Image src={IconFailed} alt="failed" className="ic-status" /> }
                           </div>   
                     }

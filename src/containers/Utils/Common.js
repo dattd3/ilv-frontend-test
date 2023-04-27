@@ -40,7 +40,7 @@ export default function processingDataReq(dataRawFromApi, tab) {
             if (element.requestTypeId == Constants.OT_REQUEST) {
               element.id = element.id.toString();
               element.user = element.userInfo;
-              element.totalTime = element.requestInfo?.reduce((accumulator, currentValue) => accumulator += (currentValue.hoursOt) * 1, 0);
+              element.totalTime = element.requestInfo?.reduce((accumulator, currentValue) => accumulator += (currentValue.hoursOt) * 1, 0)?.toFixed(2);
               const dateRanges = element.requestInfo?.reduce((accumulator, currentValue) => [...accumulator, moment(currentValue.date, "YYYYMMDD").format("DD/MM/YYYY")], [])
               element.dateRange = dateRanges.join(", ");
             }
@@ -89,7 +89,8 @@ export default function processingDataReq(dataRawFromApi, tab) {
                     } else {
                         e.id = element.id.toString()
                     }
-                    e.isEdit = listRequestTypeIdToGetSubId.includes(element.requestTypeId) ? e.isEdit : element.isEdit
+                    // e.isEdit = listRequestTypeIdToGetSubId.includes(element.requestTypeId) ? e.isEdit : element.isEdit
+                    e.isEdit = element?.isEdit // Confirm từ a Thủy và a Chiến Mobile lấy isEdit bên ngoài (không lấy bên trong) - 18/04/2023
                     taskList.push(e)
                 })
             }
