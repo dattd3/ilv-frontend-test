@@ -1,5 +1,6 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
+import ClockIcon from "assets/img/icon/ic_clock.svg"
 import Constants from "commons/Constants";
 import moment from "moment";
 
@@ -54,7 +55,7 @@ export default function TimeKeepingList({ apiResponseData }) {
           <div key={keyIndx}>
             <div className="date-card">
               <div className="date-card-header">
-                <i className="fa fa-clock-o" />
+                <img src={ClockIcon} alt="icon" />
                 &nbsp;
                 {getDayNameFromDate(key)}
                 &nbsp;
