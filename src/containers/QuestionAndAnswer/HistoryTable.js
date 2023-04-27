@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Button, Tooltip, OverlayTrigger } from "react-bootstrap";
+import deleteButton from '../../assets/img/icon-delete.svg'
 import { withTranslation } from "react-i18next";
 class HistoryTable extends React.Component {
   constructor(props) {
@@ -78,10 +79,10 @@ class HistoryTable extends React.Component {
                         question.userId === localStorage.getItem("email") ? (
                           <>
                             <OverlayTrigger
-                              key="edit-tooltip"
+                              key={`edit-tooltip-${index}`}
                               placement="bottom"
                               overlay={
-                                <Tooltip id="edit-tooltip">
+                                <Tooltip id={`edit-tooltip-${index}`}>
                                   {t("EditQuestion")}
                                 </Tooltip>
                               }
@@ -94,11 +95,11 @@ class HistoryTable extends React.Component {
                               </Button>
                             </OverlayTrigger>
                             <OverlayTrigger
-                              key="edit-tooltip"
+                              key={`recall-tooltip-${index}`}
                               placement="bottom"
                               overlay={
-                                <Tooltip id="edit-tooltip">
-                                  {t("Withdraw")}
+                                <Tooltip id={`recall-tooltip-${index}`}>
+                                  {t("delete")}
                                 </Tooltip>
                               }
                             >
@@ -108,7 +109,7 @@ class HistoryTable extends React.Component {
                                   this.showConfirmModal(question.id)
                                 }
                               >
-                                <i className="icon icon-qa-undo align-self-center"></i>
+                                <img alt={t('delete')} src={deleteButton} className="align-self-center"/>
                               </Button>
                             </OverlayTrigger>
                           </>

@@ -6,10 +6,9 @@ import axios from 'axios'
 import moment from 'moment'
 import { withTranslation } from "react-i18next"
 import HOCComponent from '../../components/Common/HOCComponent'
-import { getMuleSoftHeaderConfigurations } from "../../commons/Utils"
+import { getMuleSoftHeaderConfigurations, getRequestConfigurations } from "../../commons/Utils"
 
 class LeaveTimePage extends React.Component {
-
     constructor() {
         super();
         this.state = {
@@ -18,23 +17,34 @@ class LeaveTimePage extends React.Component {
           compensatoryLeaves: [],
           RosteredDayOffs : [],
           isSearch: false,
-          errorMessage: ''
+          errorMessage: '',
+          pendingTimeInfo: {},
         }
     }
-    componentWillMount() {
-        const config = getMuleSoftHeaderConfigurations()
-        const thisYear = new Date().getFullYear()
 
-        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/leaveofabsence?current_year=${thisYear}`, config)
-        .then(res => {
-          if (res && res.data && res.data.data) {
-            const annualLeaveSummary = res.data.data
-            this.setState({ annualLeaveSummary: annualLeaveSummary})
-          }
-        }).catch(error => {
-            // localStorage.clear();
-            // window.location.href = map.Login;
-        })
+    componentDidMount() {
+      const muleSoftConfig = getMuleSoftHeaderConfigurations()
+      const thisYear = new Date().getFullYear()
+
+      axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/leaveofabsence?current_year=${thisYear}`, muleSoftConfig)
+      .then(res => {
+        if (res && res.data && res.data.data) {
+          const annualLeaveSummary = res.data.data
+          this.setState({ annualLeaveSummary: annualLeaveSummary})
+        }
+      }).catch(error => {
+          // localStorage.clear();
+          // window.location.href = map.Login;
+      })
+
+      const config = getRequestConfigurations()
+      axios.get(`${process.env.REACT_APP_REQUEST_URL}request/pendings`, config)
+      .then(res => {
+        if (res && res?.data && res?.data?.data) {
+          this.setState({ pendingTimeInfo: res?.data?.data })
+        }
+      }).catch(error => {
+      })
     }
 
     getMonths(data) {
@@ -102,24 +112,26 @@ class LeaveTimePage extends React.Component {
 
     render() {
       const { t } = this.props
-        return <div className="leave-time-page">
-            <LeaveTimeSummary data={this.state.annualLeaveSummary}/>
-            <LeaveTimeSearch clickSearch={this.searchTimesheetByDate.bind(this)} errorMessage={this.state.errorMessage}/>
-            {this.state.isSearch ? 
-            <><LeaveTimeDetail 
-                bg="primary" 
-                headerTitle={t("LeavesYear")}
-                headers={{month: t("Month"), annualLeaveOfArising: t("NewUsableLeaves"), usedAnnualLeave: t("UsedLeaves"), daysOfAnnualLeave: t("DateOfLeaves")}}
-                data={this.state.annualLeaves} 
-            />
-            <LeaveTimeDetail 
-                bg="success" 
-                headerTitle={t("ToilDay")}
-                headers={{month: t("Month"), annualLeaveOfArising: t("NewUsableToil"), usedAnnualLeave: t("UsedToil"), daysOfAnnualLeave: t("DateOfLeaves")}}
-                data={this.state.compensatoryLeaves} 
-            />
-            </> : null}
-        </div>
+      const { annualLeaveSummary, isSearch, errorMessage, annualLeaves, compensatoryLeaves, pendingTimeInfo } = this.state
+
+      return <div className="leave-time-page">
+          <LeaveTimeSummary data={annualLeaveSummary} pendingTimeInfo={pendingTimeInfo} />
+          <LeaveTimeSearch clickSearch={this.searchTimesheetByDate.bind(this)} errorMessage={errorMessage}/>
+          {isSearch ? 
+          <><LeaveTimeDetail 
+              bg="primary" 
+              headerTitle={t("LeavesYear")}
+              headers={{month: t("Month"), annualLeaveOfArising: t("NewUsableLeaves"), usedAnnualLeave: t("UsedLeaves"), daysOfAnnualLeave: t("DateOfLeaves")}}
+              data={annualLeaves} 
+          />
+          <LeaveTimeDetail 
+              bg="success" 
+              headerTitle={t("ToilDay")}
+              headers={{month: t("Month"), annualLeaveOfArising: t("NewUsableToil"), usedAnnualLeave: t("UsedToil"), daysOfAnnualLeave: t("DateOfLeaves")}}
+              data={compensatoryLeaves} 
+          />
+          </> : null}
+      </div>
     }
 
 }

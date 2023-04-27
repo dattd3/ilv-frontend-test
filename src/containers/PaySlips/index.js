@@ -41,7 +41,8 @@ class PaySlipsComponent extends React.Component {
     const config = {
       headers: {
         'Authorization': `${localStorage.getItem('accessToken')}`,
-        'Content-Type':'multipart/form-data'
+        'Content-Type':'multipart/form-data',
+        // "Accept-Language": "en-US,en;"
       }
     }
 
