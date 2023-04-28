@@ -1656,6 +1656,37 @@
       margin-top: 0px;
     }
   }
+  .add-time-block-btn {
+    margin-top: 29px;
+    border: 1px solid #44A257;
+    height: 40px;
+    width: 104px;
+    border-radius: 4px;
+    text-align: center;
+    vertical-align: middle;
+    color:#44A257;
+    line-height: 40px;
+    background-color: #fff;
+    img {
+      margin-top: -4px;
+    }
+  }
+  .add-time-block-btn:focus {
+    border: 1px solid #44A257;
+    outline: none;
+  }
+  .action-time-range-btn {
+    width: 42px;
+    height: 42px;
+    border: 1px solid #DEE2E6;
+    text-align: center;
+  }
+  .action-time-range-btn:focus {
+    outline: none;
+  }
+  .cancel-time-range-btn {
+    margin-right: 20px;
+  }
   .field-view {
     background: #F2F2F2;
     border-radius: 4px;
