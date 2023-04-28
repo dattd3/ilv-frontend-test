@@ -8,6 +8,15 @@
 
 .registration-section {
     font: normal 14px Arial, Helvetica, sans-serif;
+    .nav-tabs {
+        padding: 0;
+        grid-gap: 14px 1.5rem !important;
+        a {
+            min-width: auto;
+            padding: 0;
+            width: calc((100% - 6rem) / 5) !important;
+        }
+    }
     .validation-message {
         font-size: 13px;
         margin: 6px 0;
@@ -100,6 +109,8 @@
                         justify-content: center;
                         font-weight: bold;
                         background: #F2F2F2;
+                        margin-left: 0;
+                        margin-right: 0;
                     }
                     &:first-child {
                         .title {
@@ -124,6 +135,9 @@
                                         height: 28px;
                                         font-size: 13px;
                                         color: inherit;
+                                    }
+                                    .react-datepicker-wrapper [class$=-container] {
+                                        margin: 0;
                                     }
                                 }
                             }
@@ -505,7 +519,7 @@
                 padding: 7px 7px;
                 text-align: center;
                 color: #000000;
-
+                word-break: break-word;
                 input{
                     width: 100%;
                     margin: 6px 0px;
@@ -565,7 +579,7 @@
     .box {
         border: 1px solid #ddd;
         border-radius: 10px;
-        padding: 20px;
+        padding: 25px 20px;
         background-color: #fff;
         margin: 15px 0;
 
@@ -1758,5 +1772,8 @@
     .form-item {
       margin-right: 0px !important;
     }
+  }
+  .fail {
+    max-width: 350px;
   }
 }

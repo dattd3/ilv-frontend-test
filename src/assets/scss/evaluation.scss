@@ -98,7 +98,7 @@
         .card {
             padding: 15px;
             .chart-title {
-                margin: 10px 0 0 0;
+                margin: 10px 0;
             }
         }
         .card-completed {
@@ -123,7 +123,7 @@
             width: 25%;
             margin: 0 15px;
             .chart-title {
-                margin: 10px 0 0 0;
+                margin: 10px 0;
             }
             .chart {
                 height: 100%;
@@ -152,6 +152,7 @@
                 border: 1px solid #DEE2E6;
                 border-collapse: collapse;
                 border-spacing: 0px;
+                height: 100%;
                 .highlight {
                     th, td {
                         background: #F9F9F9;
@@ -2677,7 +2678,7 @@
                     color: #000000;
                     table-layout: fixed;
                     border-spacing: 0;
-                    white-space: nowrap;
+                    // white-space: nowrap;
                     thead {
                         th {
                             padding: 15px 0;
@@ -2694,16 +2695,19 @@
                     }
                     .c-form-sender {
                         // width: 18%;
-                        width: 235px;
+                        width: 215px;
                         padding-right: 10px;
                         .form-sender {
 
                         }
+                        .ad {
+                            font-style: italic;
+                        }
                     }
                     .c-form-name {
                         // width: 25%;
-                        width: 250px;
-                        padding-right: 10px;
+                        width: 265px;
+                        padding-right: 25px;
                         .form-name {
                             // width: 200px;
                         }
@@ -2733,7 +2737,7 @@
                         tr {
                             border-top: 1px solid #DEE2E6;
                             td {
-                                padding: 15px 0;
+                                padding: 8px 0;
                             }
                             .done {
                                 color: #05BD29;

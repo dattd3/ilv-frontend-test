@@ -146,19 +146,19 @@ const isEnableFunctionByFunctionName = name => {
     switch (name) {
         case Constants.listFunctionsForPnLACL.qnA:
             listPnLAccepted = [Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinSoftware, Constants.pnlVCode.VinMec, Constants.pnlVCode.VinFast, 
-                Constants.pnlVCode.VinFastTrading, Constants.pnlVCode.VinSmart, Constants.pnlVCode.VincomRetail, Constants.pnlVCode.VinAI]
+                Constants.pnlVCode.VinFastTrading, Constants.pnlVCode.VinSmart, Constants.pnlVCode.VincomRetail, Constants.pnlVCode.VinAI, Constants.pnlVCode.VinHome]
             break
         case Constants.listFunctionsForPnLACL.editProfile:
             listPnLAccepted = [Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinMec, Constants.pnlVCode.VinSmart, Constants.pnlVCode.VincomRetail, 
-                Constants.pnlVCode.VinITIS, Constants.pnlVCode.VinUni, Constants.pnlVCode.Vin3S, Constants.pnlVCode.VinAI, Constants.pnlVCode.VinES]
+                Constants.pnlVCode.VinITIS, Constants.pnlVCode.VinUni, Constants.pnlVCode.Vin3S, Constants.pnlVCode.VinAI, Constants.pnlVCode.VinES, Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading]
             break
         case Constants.listFunctionsForPnLACL.editEducation:
             listPnLAccepted = [Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinMec, Constants.pnlVCode.VinSmart, Constants.pnlVCode.VincomRetail, 
-                Constants.pnlVCode.VinITIS, Constants.pnlVCode.VinUni, Constants.pnlVCode.Vin3S, Constants.pnlVCode.VinAI, Constants.pnlVCode.VinES]
+                Constants.pnlVCode.VinITIS, Constants.pnlVCode.VinUni, Constants.pnlVCode.Vin3S, Constants.pnlVCode.VinAI, Constants.pnlVCode.VinES, Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading]
             break
         case Constants.listFunctionsForPnLACL.editRelationship:
             listPnLAccepted = [Constants.pnlVCode.VinSmart, Constants.pnlVCode.VincomRetail, Constants.pnlVCode.VinITIS, Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl,
-                Constants.pnlVCode.VinUni, Constants.pnlVCode.Vin3S, Constants.pnlVCode.VinAI, Constants.pnlVCode.VinES]
+                Constants.pnlVCode.VinUni, Constants.pnlVCode.Vin3S, Constants.pnlVCode.VinAI, Constants.pnlVCode.VinES, Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading]
             break
         case Constants.listFunctionsForPnLACL.changeStaffShift:
             listPnLAccepted = [Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading]
@@ -208,7 +208,7 @@ const isEnableOTFunctionByPnLVCode = PnLVCode => {
 }
 
 const getRequestTypeIdsAllowedToReApproval = () => {
-    return [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP, Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE, Constants.OT_REQUEST, Constants.UPDATE_PROFILE, Constants.CHANGE_DIVISON_SHIFT]
+    return [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP, Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE, Constants.OT_REQUEST, Constants.UPDATE_PROFILE, Constants.CHANGE_DIVISON_SHIFT, Constants.DEPARTMENT_TIMESHEET]
 }
 
 const getRequestConfigurations = () => {
@@ -377,7 +377,7 @@ const getCurrentLanguage = () => {
         [Constants.LANGUAGE_EN]: 'en',
         [Constants.LANGUAGE_VI]: 'vi'
     }
-    const locale = localStorage.getItem("locale") || 'vi-VN';
+    const locale = localStorage.getItem("locale") || Constants.LANGUAGE_VI;
     return languageKeyMapping[[locale]];
 }
 
@@ -523,15 +523,35 @@ const getResignResonsMasterData = () => {
         }
     ];
     let result = {};
-    const locale = localStorage.getItem("locale") || 'vi-VN';
+    const locale = localStorage.getItem("locale") || Constants.LANGUAGE_VI;
     masterData.map(item => {
         result[item.code02] = locale == Constants.LANGUAGE_VI ? item.text : item.text_en;
     });
     return result;
 }
 
+const genderConfig = () => {
+    const locale = localStorage.getItem("locale") || Constants.LANGUAGE_VI
+    const isVietnamese = locale === Constants.LANGUAGE_VI
+    return {
+        male: isVietnamese ? 'Nam' : 'Male',
+        female: isVietnamese ? 'Nữ' : 'Female',
+    }
+}
+
+const marriageConfig = () => {
+    const locale = localStorage.getItem("locale") || Constants.LANGUAGE_VI
+    const isVietnamese = locale === Constants.LANGUAGE_VI
+    return {
+        single: isVietnamese ? 'Đ.thân' : 'Single',
+        married: isVietnamese ? 'K.hôn' : 'Married',
+        divorced: isVietnamese ? 'Ly hôn' : 'Divorced',
+    }
+}
+
 export {
     getRequestConfigurations, removeAccents, formatStringByMuleValue, formatNumberInteger, exportToPDF, isEnableFunctionByFunctionName, getValueParamByQueryString, getDateByRangeAndFormat,
     calculateBackDateByPnLVCodeAndFormatType, isEnableShiftChangeFunctionByPnLVCode, isEnableInOutTimeUpdateFunctionByPnLVCode, getRequestTypeIdsAllowedToReApproval, getMuleSoftHeaderConfigurations,
-    isAdjacentDateBy2Date, showRangeDateGroupByArrayDate, generateTaskCodeByCode, parsteStringToHtml, getRegistrationMinDateByConditions, isVinFast, isEnableOTFunctionByPnLVCode, getCurrentLanguage, getResignResonsMasterData, formatStringDateTimeByMuleValue
+    isAdjacentDateBy2Date, showRangeDateGroupByArrayDate, generateTaskCodeByCode, parsteStringToHtml, getRegistrationMinDateByConditions, isVinFast, isEnableOTFunctionByPnLVCode, getCurrentLanguage, 
+    getResignResonsMasterData, formatStringDateTimeByMuleValue, genderConfig, marriageConfig
 }

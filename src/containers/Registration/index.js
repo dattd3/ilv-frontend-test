@@ -44,8 +44,8 @@ class RegistrationComponent extends React.Component {
           const appraiser = appraiserInfo && size(appraiserInfo) > 0 
           ?  [{
             value: appraiserInfo?.account?.toLowerCase() || "",
-            label: appraiserInfo?.fullName || "",
-            fullName: appraiserInfo?.fullName || "",
+            label: appraiserInfo?.fullname || appraiserInfo?.fullName,
+            fullName: appraiserInfo?.fullname || appraiserInfo?.fullName,
             avatar: appraiserInfo?.avatar || "",
             employeeLevel: appraiserInfo?.employeeLevel || "",
             pnl: appraiserInfo?.pnl || "",
@@ -59,8 +59,8 @@ class RegistrationComponent extends React.Component {
           const approver = approverInfo && size(approverInfo) > 0 
           ?  [{
             value: approverInfo?.account?.toLowerCase() || "",
-            label: approverInfo?.fullName || "",
-            fullName: approverInfo?.fullName || "",
+            label: approverInfo?.fullname || approverInfo?.fullName,
+            fullName: approverInfo?.fullname || approverInfo?.fullName,
             avatar: approverInfo?.avatar || "",
             employeeLevel: approverInfo?.employeeLevel || "",
             pnl: approverInfo?.pnl || "",

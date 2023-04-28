@@ -174,6 +174,8 @@ const Constants = {
     VinAI: "V099",
     VinBus: "V033",
     VinES: "V079",
+    VinBigData: "V098",
+    VinCon: "V041",
   },
   listFunctionsForPnLACL: {
     editProfile: 'EDIT_PROFILE',
@@ -183,21 +185,21 @@ const Constants = {
     changeStaffShift: 'CHANGE_STAFF_SHIFT',
     selectWorkingShift24h: 'SELECT_WORKING_SHIFT_24H'
   },
-  PnLCODE: {
-    Vinhome: "V040",
-    Vinbrain: "V095",
-    Vinpearl: "V030",
-    MeliaVinpearl: "V035",
-    Vinmec: "V060",
-    VinSchool: "V061",
-    VinFast: "V070",
-    VinFastTrading: "V077",
-    VinFastPB: "V070",
-    Vin3S: "V005",
-    VinES: "V079",
-    Vincon: "V041",
-    VinBus: "V033",
-  },
+  // PnLCODE: {
+  //   Vinhome: "V040",
+  //   Vinbrain: "V095",
+  //   Vinpearl: "V030",
+  //   MeliaVinpearl: "V035",
+  //   Vinmec: "V060",
+  //   VinSchool: "V061",
+  //   VinFast: "V070",
+  //   VinFastTrading: "V077",
+  //   VinFastPB: "V070",
+  //   Vin3S: "V005",
+  //   VinES: "V079",
+  //   Vincon: "V041",
+  //   VinBus: "V033",
+  // },
   LOGIN_INSTRUCTION_PATH: "https://myvinpearl.s3.ap-southeast-1.amazonaws.com/shared/templates/ILOVEVINGROUP-HDDang+nhap-LoginInstruction.pdf",
   statusUserActiveMulesoft: 3,
   PAGE_INDEX_DEFAULT: 1,
@@ -241,6 +243,15 @@ const Constants = {
     USD: 'USD',
   },
   RESIGN_REASON_EMPLOYEE_INVALID: ["GI", "GL", "GM", "GN", "GO"],
-  VFSX_SHIFT_ID_VALID: ["7003", "7007", "7008", "7009", "7075", "OFF"]
+  VFSX_SHIFT_ID_VALID: ["7003", "7007", "7008", "7009", "7075", "OFF"],
+  GENDER: {
+    MALE: '1',
+    FEMALE: '2',
+  },
+  MARRIAGE_STATUS: {
+    SINGLE: '0',
+    MARRIED: '1',
+    DIVORCED: '2',
+  }
 };
 export default Constants

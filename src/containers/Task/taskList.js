@@ -173,13 +173,15 @@ class TaskList extends React.Component {
         ]
 
         //check status for ONBOARDING
-        if([10, 11, 13].indexOf(statusOriginal) != -1) {
+        if([10, 11, 12, 13].indexOf(statusOriginal) != -1) {
             if((child.processStatusId == 11 && child.supervisorId?.toLowerCase() == localStorage.getItem('email')?.toLowerCase()) ||
             (child.processStatusId == 10 && child.appraiserId?.toLowerCase() == localStorage.getItem('email')?.toLowerCase())) {
                 statusOriginal = 8;
             } else if (child.processStatusId == 13) {
                 statusOriginal = 5;
             } else if (child.processStatusId == 11) {
+                statusOriginal = 5;
+            } else if (child.processStatusId == 12) {
                 statusOriginal = 5;
             }
         }
