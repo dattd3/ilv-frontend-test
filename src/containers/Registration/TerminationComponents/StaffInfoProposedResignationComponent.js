@@ -91,6 +91,7 @@ class StaffInfoProposedResignationComponent extends React.PureComponent {
                     fullName: employee.fullname,
                     jobTitle: employee.job_title,
                     department: employee.department,
+                    departmentName: employee.departmentName,
                     dateStartWork: contractInfo[employee.employee_no]?.dateStartWork || '',
                     contractType: contractInfo[employee.employee_no]?.lastestContractType || '',
                     contractName:contractInfo[employee.employee_no]?.lastestContractName || '',
@@ -307,7 +308,7 @@ class StaffInfoProposedResignationComponent extends React.PureComponent {
                                             <th>{t('Title')}</th>
                                             <th>{t('DepartmentManage')}</th>
                                             <th>{t('ContractType')}</th>
-                                            <th>{t('DaysOnWorking')}</th>
+                                            <th>{t('ContractSignDate')}</th>
                                         </tr>
                                     </thead>
                                     <tbody>

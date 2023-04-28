@@ -115,7 +115,9 @@ class ConfirmRequestModal extends React.Component {
                 taskObj.sub.push({"id":element.salaryId,"processStatusId": Constants.STATUS_APPROVED})
             } else {
                 taskObj = {
-                    "id": element.requestTypeId == Constants.SUBSTITUTION || element.requestTypeId == Constants.IN_OUT_TIME_UPDATE || element.requestTypeId == Constants.CHANGE_DIVISON_SHIFT || element.requestTypeId == Constants.UPDATE_PROFILE ? element.id : parseInt(element.id.split(".")[0]),
+                    "id": element.requestTypeId == Constants.SUBSTITUTION || element.requestTypeId == Constants.IN_OUT_TIME_UPDATE || element.requestTypeId == Constants.CHANGE_DIVISON_SHIFT || element.requestTypeId == Constants.UPDATE_PROFILE || element.requestTypeId == Constants.DEPARTMENT_TIMESHEET
+                    ? element.id 
+                    : parseInt(element.id.split(".")[0]),
                     "requestTypeId": element.requestTypeId,
                     "sub": []
                 };
@@ -134,6 +136,7 @@ class ConfirmRequestModal extends React.Component {
         this.changeRequest(dataPrepareToSap, `${process.env.REACT_APP_SALARY_URL}request/approve`, t("approval_status"))
     }
 
+    // Từ chối phê duyệt mass
     disApprove = (formData, url, id) => {
         const dataToSap = [];
         this.props.dataToSap.forEach(element => {
@@ -145,9 +148,13 @@ class ConfirmRequestModal extends React.Component {
                 taskObj = {"id":element.salaryId ,"requestTypeId":element.requestTypeId,"sub":[]};
                 taskObj.sub.push({"id":element.salaryId,"processStatusId": Constants.STATUS_NOT_APPROVED,"comment":this.state.message})
             } else {
-                taskObj = {"id": element.requestTypeId == Constants.SUBSTITUTION || element.requestTypeId == Constants.IN_OUT_TIME_UPDATE || element.requestTypeId == Constants.CHANGE_DIVISON_SHIFT ? element.id : parseInt(element.id.split(".")[0]),"requestTypeId":element.requestTypeId,"sub":[]};
+                taskObj = {
+                    "id": element.requestTypeId == Constants.SUBSTITUTION || element.requestTypeId == Constants.IN_OUT_TIME_UPDATE || element.requestTypeId == Constants.CHANGE_DIVISON_SHIFT ? element.id : parseInt(element.id.split(".")[0]),
+                    "requestTypeId": element.requestTypeId,
+                    "sub": []
+                };
             // element.requestInfo.forEach(sub => {
-                if(element.processStatusId == Constants.STATUS_WAITING){
+                if ([Constants.STATUS_WAITING, Constants.STATUS_PARTIALLY_SUCCESSFUL].includes(Number(element?.processStatusId))) {
                     taskObj.sub.push({"id":element.id,"processStatusId": Constants.STATUS_NOT_APPROVED,"comment":this.state.message})
                 }
             // });
@@ -235,7 +242,7 @@ class ConfirmRequestModal extends React.Component {
         return (
             <>
                 <ResultDetailModal show={this.state.isShowStatusModal} title={this.state.resultTitle} message={this.state.resultMessage} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} resultDetail={this.state.resultDetail} statusCodeAPIException={this.state.statusCodeAPIException} />
-                <Modal className='info-modal-common position-apply-modal' centered show={this.props.show} onHide={this.props.onHide}>
+                <Modal className='info-modal-common position-apply-modal request-confirm-modal' centered show={this.props.show} onHide={this.props.onHide}>
                     <Modal.Header className={`apply-position-modal ${backgroundColorMapping[this.props.type]}`} closeButton>
                         <Modal.Title>{this.props.title}</Modal.Title>
                     </Modal.Header>

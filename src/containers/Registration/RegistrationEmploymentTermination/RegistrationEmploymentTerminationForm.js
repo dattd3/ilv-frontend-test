@@ -60,28 +60,23 @@ class RegistrationEmploymentTerminationForm extends React.Component {
         const userContractInfosEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/contract`
         const userContractMoreInfosEndpoint = `${process.env.REACT_APP_REQUEST_URL}ReasonType/getadditionalinfo`;
         const userDirectManagerEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/manager`;
-        const managerSuggestEndpoint = `${process.env.REACT_APP_REQUEST_URL}user/suggests`;
 
         const requestReasonTypes = axios.get(reasonTypesEndpoint, getMuleSoftHeaderConfigurations())
         const requestUserInfos = axios.get(userInfosEndpoint, getMuleSoftHeaderConfigurations())
         //const requestUserContractInfos = axios.get(userContractInfosEndpoint, getMuleSoftHeaderConfigurations())
         const requestUserMoreInfos = axios.post(userContractMoreInfosEndpoint, {"employeeCode": localStorage.getItem('employeeNo')}, config);
         const userDirectManager = axios.get(userDirectManagerEndpoint, getMuleSoftHeaderConfigurations());
-        const managerSuggest = axios.get(managerSuggestEndpoint, getRequestConfigurations());
 
-        await axios.all([requestReasonTypes, requestUserInfos, requestUserMoreInfos, userDirectManager, managerSuggest]).then(axios.spread((...responses) => {
+        await axios.all([requestReasonTypes, requestUserInfos, requestUserMoreInfos, userDirectManager]).then(axios.spread((...responses) => {
             const reasonTypes = this.prepareReasonTypes(responses[0])
             const userInfos = this.prepareUserInfos(responses[1], responses[2])
             const directManager = this.prepareDirectManagerInfos(responses[3]);
-            const seniorManager = this.prepareManagerSuggestion(responses[4]);
             const errors = {...this.state.errors};
             if(directManager) {
                 errors.directManager = null;
             }
-            if(seniorManager) {
-                errors.seniorExecutive = null;
-            }
-            this.setState({reasonTypes: reasonTypes, userInfos: userInfos, directManager: directManager, seniorExecutive: seniorManager, directManagerRaw: responses[3], errors});
+            
+            this.setState({reasonTypes: reasonTypes, userInfos: userInfos, directManager: directManager, directManagerRaw: responses[3], errors});
         })).catch(errors => {
             console.log(errors);
             return null
@@ -150,6 +145,7 @@ class RegistrationEmploymentTerminationForm extends React.Component {
                     fullName: infos.fullname || "",
                     jobTitle: infos.job_name || "",
                     department: `${infos.division || ""}${infos.department ? `/${infos.department}` : ""}${infos.unit ? `/${infos.unit}` : ""}`,
+                    departmentName: infos.division || "",
                     dateStartWork: dateStartWork,
                     email: localStorage.getItem("email") || "",
                     rank: infos.rank_name || "",
