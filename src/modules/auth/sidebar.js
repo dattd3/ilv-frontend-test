@@ -396,7 +396,7 @@ export const Navigation = [
     icon: "menu-bullet-lv2 icon-sub-menu-lv2",
     label: "JobDescription",
     to: map.Job,
-    role: [Constants.pnlVCode.VinSmart, Constants.pnlVCode.VinMec, Constants.pnlVCode.VinSoftware, Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl]
+    role: [Constants.pnlVCode.VinSmart, Constants.pnlVCode.VinMec, Constants.pnlVCode.VinSoftware, Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading]
   },
   {
     id: 20,
@@ -462,7 +462,7 @@ export const Navigation = [
     label: "QuestionAndAnswer",
     to: map.QuestionAndAnswer,
     role: [Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinSoftware, Constants.pnlVCode.VinMec, Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading,
-      Constants.pnlVCode.VinSmart, Constants.pnlVCode.VincomRetail, Constants.pnlVCode.VinAI, Constants.PnLCODE.Vin3S]
+      Constants.pnlVCode.VinSmart, Constants.pnlVCode.VincomRetail, Constants.pnlVCode.VinAI, Constants.pnlVCode.Vin3S, Constants.pnlVCode.VinHome]
   },
   {
     id: 99999,

@@ -66,7 +66,7 @@ class DetailButtonComponent extends React.Component {
     }
 
     render() {
-        const {t, action} = this.props
+        const {t, action, requestTypeId} = this.props
         const actionProcessing = action ? action : this.getAction()
 
         return <div className="bottom">
@@ -95,9 +95,9 @@ class DetailButtonComponent extends React.Component {
                     : null
                 }
                 {
-                    this.props.isShowRevocationOfApproval && !this.props.hiddenRevocationOfApprovalButton ?
-                    <button type="button" className="btn btn-danger float-right shadow" onClick={this.revocationApproval.bind(this)}><i className='fas fa-undo-alt'></i> {t("ApproralRecall")}</button>
-                    : null
+                    (this.props.isShowRevocationOfApproval && !this.props.hiddenRevocationOfApprovalButton && [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP].includes(Number(requestTypeId || 0))) && (
+                        <button type="button" className="btn btn-danger float-right shadow" onClick={this.revocationApproval.bind(this)}><i className='fas fa-undo-alt'></i> {t("ApproralRecall")}</button>
+                    )
                 }
             </div>
             : null

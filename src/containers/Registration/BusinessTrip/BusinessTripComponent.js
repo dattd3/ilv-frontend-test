@@ -168,7 +168,7 @@ class BusinessTripComponent extends React.Component {
     }
 
     onBlurStartTime(groupId, groupItem) {
-        const checkVinmec = checkIsExactPnL(Constants.PnLCODE.Vinmec);
+        const checkVinmec = checkIsExactPnL(Constants.pnlVCode.VinMec);
         if (checkVinmec === true) {
             let { requestInfo } = this.state
             const request = requestInfo.find(req => req.groupId === groupId && req.groupItem === groupItem)
@@ -204,13 +204,13 @@ class BusinessTripComponent extends React.Component {
         requestInfo[indexReq].errors.startTime = null
         requestInfo[indexReq].errors.overlapDateTime = null
         this.setState({ requestInfo })
-        const checkVinmec = checkIsExactPnL(Constants.PnLCODE.Vinmec);
+        const checkVinmec = checkIsExactPnL(Constants.pnlVCode.VinMec);
         if (checkVinmec === false)
             this.calculateTotalTime(startDate, endDate, start, requestInfo[indexReq].endTime, indexReq)
     }
 
     onBlurEndTime(groupId, groupItem) {
-        const checkVinmec = checkIsExactPnL(Constants.PnLCODE.Vinmec);
+        const checkVinmec = checkIsExactPnL(Constants.pnlVCode.VinMec);
         if (checkVinmec === true) {
             let { requestInfo } = this.state
             const request = requestInfo.find(req => req.groupId === groupId && req.groupItem === groupItem)
@@ -253,7 +253,7 @@ class BusinessTripComponent extends React.Component {
         requestInfo[indexReq].errors.endTime = null
         requestInfo[indexReq].errors.overlapDateTime = null
         this.setState({ requestInfo })
-        const checkVinmec = checkIsExactPnL(Constants.PnLCODE.Vinmec);
+        const checkVinmec = checkIsExactPnL(Constants.pnlVCode.VinMec);
         if (checkVinmec === false)
             this.calculateTotalTime(startDate, endDate, requestInfo[indexReq].startTime, end, indexReq)
     }
@@ -485,7 +485,7 @@ class BusinessTripComponent extends React.Component {
         const { t } = this.props
         const employeeLevel = localStorage.getItem("employeeLevel")
 
-        if (approver?.account?.trim()?.toLowerCase() === appraiser?.account?.trim()?.toLowerCase()) {
+        if (approver?.account?.trim() && appraiser?.account?.trim() && approver?.account?.trim()?.toLowerCase() === appraiser?.account?.trim()?.toLowerCase()) {
             this.showStatusModal(t("Notification"), t("ApproverAndConsenterCannotBeIdentical"), false)
             this.setState({ needReload: false })
             return false
@@ -803,7 +803,7 @@ class BusinessTripComponent extends React.Component {
                 { value: 'WFH2', label: t('WFHNoPerDiemNoMeals') },
             ]
         }
-        const checkVinmec = checkIsExactPnL(Constants.PnLCODE.Vinmec);
+        const checkVinmec = checkIsExactPnL(Constants.pnlVCode.VinMec);
         const minDate = getRegistrationMinDateByConditions()
         const registeredInformation = (businessTrip?.requestInfoOld || businessTrip?.requestInfoOld?.length > 0) ? businessTrip.requestInfoOld : businessTrip?.requestInfo
         

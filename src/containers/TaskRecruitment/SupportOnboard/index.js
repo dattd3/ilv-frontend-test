@@ -113,7 +113,7 @@ class SupportOnboardComponent extends React.Component {
   }
 
   prepareDatatoSubmit = (data) => {
-    const isVinbrain = checkIsExactPnL(Constants.PnLCODE.Vinbrain);
+    const isVinbrain = checkIsExactPnL(Constants.pnlVCode.VinBrain);
     return data.map(item => {
       let itemStatus
       let supportSearch = item.item1.status ? 'Đã xong' : 'Chưa xong';
@@ -425,7 +425,7 @@ class SupportOnboardComponent extends React.Component {
                       <th scope="col" className="col-deadline text-center">{t('work_start_date')}</th>
                       <th scope="col" className="col-deadline text-center">{t('completed_dealine')}</th>
                       {
-                        checkIsExactPnL(Constants.PnLCODE.Vinbrain) ?
+                        checkIsExactPnL(Constants.pnlVCode.VinBrain) ?
                           <>
                             <th scope="col" className="col-devices text-center">{t("title_render_actionview_1")}</th>
                             <th scope="col" className="col-devices text-center">{t('title_render_actionview_2')}</th>
@@ -436,7 +436,7 @@ class SupportOnboardComponent extends React.Component {
                             <th scope="col" className="col-devices text-center">{t('title_render_actionview_7')}</th>
                             <th scope="col" className="col-devices text-center">{t('title_render_actionview_8')}</th>
                           </>
-                          : checkVersionPnLSameAsVinhome(Constants.MODULE.TUYENDUNG, Constants.PnLCODE.VinSchool) ?
+                          : checkVersionPnLSameAsVinhome(Constants.MODULE.TUYENDUNG, Constants.pnlVCode.VinSchool) ?
                             <>
                               <th scope="col" className="col-devices text-center">{t('title_render_actionview_9')}</th>
                               <th scope="col" className="col-devices text-center">{t('title_render_actionview_10')}</th>
@@ -473,7 +473,7 @@ class SupportOnboardComponent extends React.Component {
                           <td className="col-deadline text-center">{item.startWork ? moment(item.startWork).format("DD/MM/YYYY") : ''}</td>
                           <td className="col-deadline text-center">{item.timeExpire ? moment(item.timeExpire).format("DD/MM/YYYY") : ''}</td>
                           {
-                            checkIsExactPnL(Constants.PnLCODE.Vinbrain) ?
+                            checkIsExactPnL(Constants.pnlVCode.VinBrain) ?
                               <>
                                 {this.renderActionView(true, item.employeeNo, item.item1, 'item1')}
                                 {this.renderActionView(true, item.employeeNo, item.item2, 'item2')}

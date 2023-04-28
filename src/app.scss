@@ -2500,6 +2500,9 @@ span.badge-notification[data-badge]::after {
             .handover-software {
               overflow: initial;
             }
+            &.handover-fingerprints-email-col {
+              min-width: 170px;
+            }
           }
         }
         .full-name-col {
@@ -2721,6 +2724,17 @@ span.badge-notification[data-badge]::after {
     button.btn {
       font-size: inherit;
     }
+    a.btn {
+      &:last-child {
+        margin-left: 5px;
+      }
+      &:active {
+        background: #FFFFFF;
+      }
+      &:focus {
+        background: #FFFFFF;
+      }
+    }
   }
   .form-qna-search {
     input {
@@ -2747,6 +2761,26 @@ span.badge-notification[data-badge]::after {
     }
     .btn-search {
       font-size: inherit;
+    }
+  }
+  .wrap-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 10px 0 15px 0;
+    .content-page-header {
+      margin-bottom: 0;
+    }
+    .btn {
+      background: #FFFFFF;
+      &:active, &:focus {
+        box-shadow: none;
+      }
+      &:hover {
+        background: #4e73df;
+        color: #FFFFFF;
+        outline: none;
+      }
     }
   }
 }

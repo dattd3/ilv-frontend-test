@@ -109,21 +109,17 @@ export default function OTRequestDetailComponent({ data, action }) {
           //   return temp.indexOf(item) === pos;
           // });
           const messageSetArr = Array.from(new Set(messageSAPArr.map(item => item.message)));
-          console.log(messageSetArr)
           messageSetArr.forEach(item => {
             console.log(messageSAPArr.filter(messObj => messObj.message === item))
             const datesStr = messageSAPArr.filter(messObj => messObj.message === item)?.map(i => i.date)?.join(", ");
-            console.log(datesStr)
             mergedMessageObjArr.push({
               datesStr,
               message: item
             })
-            console.log(mergedMessageObjArr)
           })
         }
       }
     }
-
     return mergedMessageObjArr;
   };
 
@@ -489,7 +485,7 @@ export default function OTRequestDetailComponent({ data, action }) {
         >
           {t(showStatus(data.processStatusId, data.appraiser))}
         </span>
-        {getMessageFromSap() && (
+        {getMessageFromSap().length > 0 && (
           <div className={`d-flex status fail`}>
             <i className="fas fa-times pr-2 text-danger align-self-center"></i>
             <div>

@@ -93,9 +93,9 @@ function NewsOnHome(props) {
             
     }
 
-    const closeNotificationGuideModal = () => {
-      setIsShowNotiGuideModal(false);
-    }
+    // const closeNotificationGuideModal = () => {
+    //   setIsShowNotiGuideModal(false);
+    // }
 
     const topOne = totalArticlesPerPage > 0 ? prepareNews(articles.listArticles[0]) : null
     const timePublishedTopOne = getTimeByRawTime(topOne?.publishedDate)
@@ -210,7 +210,7 @@ function NewsOnHome(props) {
             </div>
             {
               isShowNotiGuideModal && <div className="noti-guide-modal" >
-                <img className="close-icon" src={IconX} alt="icon-lock" onClick={closeNotificationGuideModal} />
+                <img className="close-icon" src={IconX} alt="icon-lock" onClick={() => setIsShowNotiGuideModal(false)} />
                   <div className="title">{t("NotificationGuide1")} <br /> ILoveVingroup</div>
                   <div className="guide-text">
                   1. {t("NotificationGuide2")}&nbsp;<img className="image-inline lock-icon" src={IconLock} alt="icon-lock" />&nbsp; {t("NotificationGuide3")}

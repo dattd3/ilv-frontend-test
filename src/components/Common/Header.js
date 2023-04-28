@@ -116,6 +116,7 @@ function Header(props) {
                 if (data.notifications[0]) {
                     setLastNotificationIdSeen(data.notifications[0].id);
                 }
+                const qnaDetailType = 'TICKET'
 
                 const dataRender = <>
                     {
@@ -129,6 +130,11 @@ function Header(props) {
                                     case 14:
                                     case 15:
                                     case 11:
+                                        return `/notifications/${item.id}`
+                                    case Constants.notificationType.NOTIFICATION_OTHER:
+                                        if (item?.detailType == qnaDetailType) {
+                                            return `${item.url}`
+                                        }
                                         return `/notifications/${item.id}`
                                     case Constants.notificationType.NOTIFICATION_REGISTRATION: 
                                         if (item.detailType == 'APPRAISAL')
@@ -259,8 +265,8 @@ function Header(props) {
           window.location.href = process.env.REACT_APP_AWS_COGNITO_IDP_SIGNOUT_URL;
           // Auth.signOut({ global: true });
         } catch {
-          localStorage.removeItem("firebaseToken");
-          localStorage.removeItem("userFirebaseToken");
+          // localStorage.removeItem("firebaseToken");
+          // localStorage.removeItem("userFirebaseToken");
           guard.setLogOut();
           window.location.reload();
         }
@@ -383,7 +389,7 @@ function Header(props) {
                               </div>
                               <br />
                               {
-                                latestTimekeeping?.length > 0 && <>
+                                latestTimekeeping?.length > 0 ? <>
                                   <TimeKeepingList apiResponseData={latestTimekeeping} />
                                   <br />
                                   <a href={"/timekeeping-history"} className="details-link">
@@ -394,9 +400,10 @@ function Header(props) {
                                         src={RedArrowIcon}
                                       />
                                   </a>
-                                </>
+                                </> : <div className="text-danger no-data-div">
+                                    {t("NodataExport")}
+                                  </div>
                               }
-                              
                           </Dropdown.Menu>
                       </Dropdown>
                       <Dropdown id="notifications-block" onToggle={(isOpen) => OnClickBellFn(isOpen)}>
