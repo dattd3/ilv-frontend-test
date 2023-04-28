@@ -33,15 +33,15 @@ function NewsOnHome(props) {
     const totalTopArticles = 5
 
     const [is_visible, setIs_visible] = useState(false);
-    // const [isShowNotiGuideModal, setIsShowNotiGuideModal] = useState(false);
+    const [isShowNotiGuideModal, setIsShowNotiGuideModal] = useState(false);
     const listArticles = usePreload([1, 300])
 
-    // useEffect(() => {
-    //   if (Notification.permission !== "granted" && !sessionStorage.getItem("isCloseNotificationGuide")) {
-    //     setIsShowNotiGuideModal(true);
-    //     sessionStorage.setItem("isCloseNotificationGuide", true);
-    //   }
-    // }, [])
+    useEffect(() => {
+      if (Notification.permission !== "granted" && !sessionStorage.getItem("isCloseNotificationGuide")) {
+        setIsShowNotiGuideModal(true);
+        sessionStorage.setItem("isCloseNotificationGuide", true);
+      }
+    }, [])
 
     const articles = listArticles?.data || []
     const loaded = listArticles?.data ? true : false;
@@ -208,9 +208,9 @@ function NewsOnHome(props) {
                 }
 
             </div>
-            {/* {
+            {
               isShowNotiGuideModal && <div className="noti-guide-modal" >
-                <img className="close-icon" src={IconX} alt="icon-lock" onClick={closeNotificationGuideModal} />
+                <img className="close-icon" src={IconX} alt="icon-lock" onClick={() => setIsShowNotiGuideModal(false)} />
                   <div className="title">{t("NotificationGuide1")} <br /> ILoveVingroup</div>
                   <div className="guide-text">
                   1. {t("NotificationGuide2")}&nbsp;<img className="image-inline lock-icon" src={IconLock} alt="icon-lock" />&nbsp; {t("NotificationGuide3")}
@@ -219,7 +219,7 @@ function NewsOnHome(props) {
                   2. {t("NotificationGuide4")}&nbsp;<img className="image-inline switch-icon" src={IconSwitchPopup} alt="icon-switch" /> 
                   </div>
               </div>
-            } */}
+            }
             {loaded &&
                 <div>
                     <Footer />
