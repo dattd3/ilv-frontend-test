@@ -883,9 +883,9 @@ const processDataForTable = (data1, fromDateString, toDateString, reasonData) =>
             
           } else {
             // khi 2 giờ ca 1 lệch nhau 
-            if(timeStepsSorted[j].start < kehoach1.end && timeStepsSorted[j].start > timeStepsSorted[i].end) {
-              isValid1 = false;
-            }
+            // if(timeStepsSorted[j].start < kehoach1.end && timeStepsSorted[j].start > timeStepsSorted[i].end) {
+            //   isValid1 = false;
+            // }
           }
         }
         
