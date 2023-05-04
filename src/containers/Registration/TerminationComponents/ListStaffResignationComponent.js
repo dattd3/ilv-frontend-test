@@ -302,6 +302,7 @@ class ListStaffResignationComponent extends React.PureComponent {
                                                 </div>
                                             </th>
                                             <th className="sticky-col employee-code-col">{t('EmployeeNo')}</th>
+                                            <th className="sticky-col employee-code-col">Master Code</th>
                                             <th>{t('Title')}</th>
                                             <th>{t('DepartmentManage')}</th>
                                             <th>{t('Grade')}</th>
@@ -411,6 +412,7 @@ class ListStaffResignationComponent extends React.PureComponent {
                                                                 </div>
                                                             </td>
                                                             <td className="sticky-col employee-code-col"><div className="data employee-code">{userInfos?.employeeNo || ""}</div></td>
+                                                            <td className="sticky-col employee-code-col"><div className="data employee-code">{userInfos?.master_code || ""}</div></td>
                                                             <td className="job-title-col"><div className="data job-title">{userInfos?.jobTitle || ""}</div></td>
                                                             <td className="block-department-part-col"><div className="data block-department-part" title={userInfos?.department || ''}>{userInfos?.department || ""}</div></td>
                                                             <td className="rank-col"><div className="data rank text-center">{userInfos?.rank || ""}</div></td>
