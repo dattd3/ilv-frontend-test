@@ -202,6 +202,7 @@ function RenderTooltip(props) {
 
 function RenderItem(props) {
   const {item, type, rowSpan} = props;
+  const isHoliday = item?.is_holiday == 1 // [ILVGR-1009] Nếu isHoliday thì bỏ qua việc check thời gian thực tế (không báo đỏ)
   
   switch(type) {
     case EVENT_TYPE.EVENT_KEHOACH: 
@@ -303,7 +304,7 @@ function RenderItem(props) {
               <RenderTooltip timeExpand = {item.line2.subtype =='11' ? `${item.line2.start_time1_fact != '#' ? moment(item.line2.start_time1_fact, 'HHmmss').format('HH:mm:ss') : ''} - ${item.line2.end_time1_fact != '#' ? moment(item.line2.end_time1_fact, 'HHmmss').format('HH:mm:ss') : ''}` : null}>
                   <div className={`${EVENT_STYLE.EVENT_GIOTHUCTE} ${rowSpan == timeSheetLinesAlwayShow ? 'none-border-bottom' : ''}`}>{`${item.line2.start_time1_fact != '#' ? moment(item.line2.start_time1_fact, 'HHmmss').format('HH:mm:ss') : ''} - ${item.line2.end_time1_fact != '#' ? moment(item.line2.end_time1_fact, 'HHmmss').format('HH:mm:ss') : ''}`  }</div>
               </RenderTooltip> 
-              : item.line2.type1[0] == EVENT_TYPE.EVENT_LOICONG ? <div className={EVENT_STYLE.EVENT_LOICONG}>{`${item.line2.start_time1_fact != '#' ? moment(item.line2.start_time1_fact, 'HHmmss').format('HH:mm:ss') : ''} - ${item.line2.end_time1_fact != '#' ? moment(item.line2.end_time1_fact, 'HHmmss').format('HH:mm:ss') : ''}` }</div> 
+              : item.line2.type1[0] == EVENT_TYPE.EVENT_LOICONG ? <div className={isHoliday ? EVENT_STYLE.EVENT_GIOTHUCTE : EVENT_STYLE.EVENT_LOICONG}>{`${item.line2.start_time1_fact != '#' ? moment(item.line2.start_time1_fact, 'HHmmss').format('HH:mm:ss') : ''} - ${item.line2.end_time1_fact != '#' ? moment(item.line2.end_time1_fact, 'HHmmss').format('HH:mm:ss') : ''}` }</div> 
               : <div className={EVENT_STYLE.NO_EVENT}>&nbsp;</div> 
           : null
         }
@@ -313,7 +314,7 @@ function RenderItem(props) {
               <RenderTooltip timeExpand = {item.line2.subtype =='11' ? `${item.line2.start_time2_fact != '#' ? moment(item.line2.start_time2_fact, 'HHmmss').format('HH:mm:ss') : ''} - ${item.line2.end_time2_fact != '#' ? moment(item.line2.end_time2_fact, 'HHmmss').format('HH:mm:ss') : ''}` : null}>
                   <div className={EVENT_STYLE.EVENT_GIOTHUCTE} style={{borderLeft: '1px solid #707070'}} >{`${item.line2.start_time2_fact != '#' ? moment(item.line2.start_time2_fact, 'HHmmss').format('HH:mm:ss') : ''} - ${item.line2.end_time2_fact != '#' ? moment(item.line2.end_time2_fact, 'HHmmss').format('HH:mm:ss') : ''}` }</div>
               </RenderTooltip>
-              :  item.line2.type1[1] == EVENT_TYPE.EVENT_LOICONG ? <div className={EVENT_STYLE.EVENT_LOICONG} style={{borderLeft: '1px solid #707070'}} >{`${item.line2.start_time2_fact != '#' ? moment(item.line2.start_time2_fact, 'HHmmss').format('HH:mm:ss') : ''} - ${item.line2.end_time2_fact != '#' ? moment(item.line2.end_time2_fact, 'HHmmss').format('HH:mm:ss') : ''}` }</div>
+              :  item.line2.type1[1] == EVENT_TYPE.EVENT_LOICONG ? <div className={isHoliday ? EVENT_STYLE.EVENT_GIOTHUCTE : EVENT_STYLE.EVENT_LOICONG} style={{borderLeft: '1px solid #707070'}} >{`${item.line2.start_time2_fact != '#' ? moment(item.line2.start_time2_fact, 'HHmmss').format('HH:mm:ss') : ''} - ${item.line2.end_time2_fact != '#' ? moment(item.line2.end_time2_fact, 'HHmmss').format('HH:mm:ss') : ''}` }</div>
               : <div style={{borderLeft: '1px solid #707070'}} className={EVENT_STYLE.NO_EVENT}>&nbsp;</div>
           : null
         }
@@ -567,7 +568,12 @@ function TimeTableDetail(props) {
   }, [props.isSearch])
 
   const isHoliday = (item) => {
-    return item.shift_id == Constants.SHIFT_CODE_OFF || (item.is_holiday == 1 && currentUserPnLCode != Constants.pnlVCode.VinMec)
+    // [ILVGR-1009] Update logic hiển thị OFF
+    return (item.shift_id == Constants.SHIFT_CODE_OFF || (item.is_holiday == 1 && currentUserPnLCode != Constants.pnlVCode.VinMec)) 
+    && (
+      !formatStringDateTimeByMuleValue(item?.from_time1) && !formatStringDateTimeByMuleValue(item?.from_time2)
+      && !formatStringDateTimeByMuleValue(item?.to_time1) && !formatStringDateTimeByMuleValue(item?.to_time2)
+    )
   }
 
   const getDayOffset = (currentDate, offset) => {
