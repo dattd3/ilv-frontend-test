@@ -22,13 +22,19 @@
             border: none;
             padding: 0 0 5px 0;
             margin: 0 auto;
+            margin-bottom: 20px;
             .nav-item {
                 border: 1px solid #ccc;
-                border-radius: 0.5em;
-                padding: 0.5em 5em;
+                border-radius: 4px;
+                // padding: 0.5em 5em;
+                width: 180px;
+                height: 40px;
                 margin-right: 2em;
                 background-color: #fff;
                 color: #858796;
+                display: flex;
+                align-items: center;
+                justify-content: center;
             }
             .active {
                 background-color: #347ef9;
@@ -124,12 +130,89 @@
                 &:focus {
                     box-shadow: none;
                 }
+                padding-left: 28px;
+                height: 40px;
             }
             .input-group {
                 height: 38px;
                 input {
                     height: inherit;
                 }
+            }
+            .flex-1 {
+              flex: 1;
+              margin-left: 15px;
+              max-width: 476px;
+            }
+            .icon-prefix-select {
+              position: absolute;
+              top: 10px;
+              left: 8px;
+              z-index: 999;
+            }
+            .w-250px {
+              width: 250px;
+              margin-left: 15px;
+            }
+            .request-category-tooltip {
+              position: absolute;
+              top: 10px;
+              left: 8px;
+              // cursor: pointer;
+              z-index: 999;
+            }
+
+            .request-category-tooltip-content {
+              visibility: hidden;
+              background-color: #fff;
+              color: #0D1B3C;
+              border-radius: 6px;
+              padding: 15px;
+              position: absolute;
+              z-index: 1;
+              top: 40px;
+              left: -10px;
+              width: 200px;
+              box-shadow: 0px 0px 4px 0px #00000040;
+              .category-title {
+                padding-bottom: 12px;
+                border-bottom: 1px solid #CED4DA;
+                margin-bottom: 12px;
+              }
+              .category-item {
+                margin-bottom: 4px;
+                display: block;
+              }
+            }
+            
+            .request-category-tooltip-content::after {
+              content: " ";
+              position: absolute;
+              bottom: 100%;  /* At the top of the tooltip */
+              left: 8%;
+              margin-left: -5px;
+              border-width: 5px;
+              border-style: solid;
+              border-color: transparent transparent white transparent;
+            }
+            
+            .request-category-tooltip:hover {
+              .request-category-tooltip-content {
+                visibility: visible;
+              }
+            }
+            .filter-select__control {
+              height: 40px;
+            }
+            .filter-select__value-container {
+              padding-left: 28px;
+            }
+            .btn-warning {
+              color: #fff;
+              font-size: 14px;
+              font-weight: 400;
+              line-height: 17px;
+              height: 40px;
             }
         }
         .block-title {

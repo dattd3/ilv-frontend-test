@@ -1766,5 +1766,7 @@
   "NumberOfSharesConverted": "Số Cổ phần quy đổi",
   "BlockFingerprint": "Khóa Vân tay",
   "BlockFaceID": "Khóa Face ID",
-  "BlockEmailAdAccount": "Khóa Email/ tài khoản AD"
+  "BlockEmailAdAccount": "Khóa Email/ tài khoản AD",
+  "Type": "Loại",
+  "EditPersonalInformation": "Sửa thông tin cá nhân"
 }

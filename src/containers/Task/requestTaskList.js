@@ -3,9 +3,7 @@ import editButton from '../../assets/img/icon/Icon-edit.svg'
 import deleteButton from '../../assets/img/icon-delete.svg'
 import evictionButton from '../../assets/img/eviction.svg'
 import CustomPaging from '../../components/Common/CustomPaging'
-import TableUtil from '../../components/Common/table'
-import { OverlayTrigger, Tooltip } from 'react-bootstrap'
-import Popover from 'react-bootstrap/Popover'
+
 import Select from 'react-select'
 import moment from 'moment'
 import purify from "dompurify"
@@ -18,11 +16,19 @@ import { withTranslation } from "react-i18next"
 import { showRangeDateGroupByArrayDate, generateTaskCodeByCode } from "../../commons/Utils"
 import { absenceRequestTypes, requestTypes } from "../Task/Constants"
 import { MOTHER_LEAVE_KEY } from "./Constants"
+import IconInformation from "assets/img/icon/icon-blue-information.svg"
+import IconFilter from "assets/img/icon/icon-filter.svg"
+import IconSearch from "assets/img/icon/icon-search.svg"
 
 const TIME_FORMAT = 'HH:mm:ss'
 const DATE_FORMAT = 'DD-MM-YYYY'
 const DATE_OF_SAP_FORMAT = 'YYYYMMDD'
 const TIME_OF_SAP_FORMAT = 'HHmm00'
+
+const REQUEST_CATEGORIES = {
+  CATEGORY_1: 1,
+  CATEGORY_2: 2
+}
 
 class RequestTaskList extends React.Component {
     constructor(props) {
@@ -43,6 +49,7 @@ class RequestTaskList extends React.Component {
             isShowModalRegistrationConfirm: false,
             statusSelected: null,
             query: null,
+            requestCategory: REQUEST_CATEGORIES.CATEGORY_1,
             dataForSearch: {
                 pageIndex: Constants.TASK_PAGE_INDEX_DEFAULT,
                 pageSize: Constants.TASK_PAGE_SIZE_DEFAULT,
@@ -595,6 +602,12 @@ class RequestTaskList extends React.Component {
 
     }
 
+    handleCategorySelectChange(opt) {
+        this.setState({
+          requestCategory: opt.value
+        })
+    }
+
     //re code
     handleInputChange = (event) => {
         this.setState({
@@ -622,13 +635,20 @@ class RequestTaskList extends React.Component {
                 needRefresh: needRefresh
             }
         })
-        this.props.requestRemoteData(params);
+        this.props.requestRemoteData(params, this.state.requestCategory);
     }
 
     render() {
         const { t, total, tasks } = this.props
         const { pageNumber } = this.state
         const dataToSap = this.getDataToSAP(this.state.requestTypeId, this.state.dataToPrepareToSAP)
+        const REQUEST_CATEGORY_OPTIONS = [{
+          label: `${t("Type")} I`,
+          value: REQUEST_CATEGORIES.CATEGORY_1
+        }, {
+          label: `${t("Type")} II`,
+          value: REQUEST_CATEGORIES.CATEGORY_2
+        }]
         const fullDay = 1
 
         const getRequestTypeLabel = (requestType, absenceTypeValue) => {
@@ -657,46 +677,94 @@ class RequestTaskList extends React.Component {
                 <RegistrationConfirmationModal show={this.state.isShowModalRegistrationConfirm} id={this.state.taskId} title={this.state.modalTitle} message={this.state.modalMessage}
                     type={this.state.typeRequest} urlName={this.state.requestUrl} dataToSap={dataToSap} onHide={this.onHideModalRegistrationConfirm} />
                 <div className="row w-100 mt-2 mb-3 search-block">
-                    <div className="col-xl-4">
-                        <InputGroup className="d-flex">
-                            <InputGroup.Prepend className="">
-                                <InputGroup.Text id="basic-addon1"><i className="fas fa-filter"></i></InputGroup.Text>
-                            </InputGroup.Prepend>
-                            <Select name="absenceType"
-                                className="w-75"
-                                // defaultValue={this.props.filterdata[0]}
-                                value={this.state.absenceType || ""}
-                                isClearable={false}
-                                onChange={absenceType => this.handleSelectChange('absenceType', absenceType)}
-                                placeholder={t('SortByStatus')} key="absenceType" options={this.props.filterdata}
-                                styles={{
-                                    menu: provided => ({ ...provided, zIndex: 2 })
-                                }}
-                                theme={theme => ({
-                                    ...theme,
-                                    colors: {
-                                        ...theme.colors,
-                                        primary25: '#F9C20A',
-                                        primary: '#F9C20A',
-                                    },
-                                })} />
-                        </InputGroup>
+                    <div className="w-250px position-relative">
+                      <div className="request-category-tooltip">
+                        <img src={IconInformation} alt="" />
+                        <div
+                          className="request-category-tooltip-content"
+                        >
+                          <div className="category-title">
+                            <b>
+                              {t("TypeOfRequest")}
+                            </b>
+                          </div>
+                          <b className="category-item">{t("Type")} I</b>
+                          <i className="category-item">
+                            - {t("LeaveRequest")}  
+                          </i>
+                          <i className="category-item">
+                            - {t("BizTrip_TrainingRequest")}
+                          </i>
+                          <i className="category-item">
+                            - {t("InOutChangeRequest")}
+                          </i>
+                          <i className="category-item">
+                            - {t("ShiftChange")}
+                          </i>
+                          <i className="category-item">
+                            - {t("EditPersonalInformation")}
+                          </i>
+                          <b className="category-item">{t("Type")} II</b>
+                          <i className="category-item">
+                            - {t("SalaryType")}
+                          </i>
+                        </div>
+                      </div>
+                      <Select name="requestCategory"
+                          className="w-100"
+                          // defaultValue={this.props.filterdata[0]}
+                          value={REQUEST_CATEGORY_OPTIONS.find(opt => opt.value === this.state.requestCategory)}
+                          isClearable={false}
+                          onChange={option => this.handleCategorySelectChange(option)}
+                          placeholder={t("TypeOfRequest")} 
+                          key="requestCategory"
+                          classNamePrefix="filter-select"
+                          options={REQUEST_CATEGORY_OPTIONS}
+                          styles={{
+                              menu: provided => ({ ...provided, zIndex: 2 }),
+                          }
+                        }
+                          theme={theme => ({
+                              ...theme,
+                              colors: {
+                                  ...theme.colors,
+                                  primary25: '#F9C20A',
+                                  primary: '#F9C20A',
+                              },
+                          })} />
                     </div>
-                    <div className="col-xl-4">
-                        <InputGroup>
-                            <InputGroup.Prepend>
-                                <InputGroup.Text id="basic-addon2"><i className="fas fa-search"></i></InputGroup.Text>
-                            </InputGroup.Prepend>
-                            <FormControl
-                                placeholder={t('SearchRequester')}
-                                aria-label="SearchRequester"
-                                aria-describedby="basic-addon2"
-                                className="request-user"
-                                onChange={this.handleInputChange}
-                            />
-                        </InputGroup>
+                    <div className="w-250px position-relative">
+                        <img src={IconFilter} alt="" className="icon-prefix-select" />
+                        <Select name="absenceType"
+                            // defaultValue={this.props.filterdata[0]}
+                            value={this.state.absenceType || ""}
+                            isClearable={false}
+                            onChange={absenceType => this.handleSelectChange('absenceType', absenceType)}
+                            placeholder={t('Status')} key="absenceType" options={this.props.filterdata}
+                            styles={{
+                                menu: provided => ({ ...provided, zIndex: 2 })
+                            }}
+                            classNamePrefix="filter-select"
+                            theme={theme => ({
+                                ...theme,
+                                colors: {
+                                    ...theme.colors,
+                                    primary25: '#F9C20A',
+                                    primary: '#F9C20A',
+                                },
+                            })} />
                     </div>
-                    <div className="col-4">
+                    <div className="flex-1 position-relative">
+                        <img src={IconSearch} alt="" className="icon-prefix-select" />
+                        <FormControl
+                            placeholder={t('SearchRequester')}
+                            aria-label="SearchRequester"
+                            aria-describedby="basic-addon2"
+                            className="request-user"
+                            onChange={this.handleInputChange}
+                        />
+                    </div>
+                    <div className="col-2">
                         <button type="button" onClick={() => this.searchRemoteData(true)} className="btn btn-warning w-100">{t("Search")}</button>
                     </div>
                 </div>
@@ -720,7 +788,6 @@ class RequestTaskList extends React.Component {
                                 <tbody>
                                     {
                                         tasks.map((child, index) => {
-                                            console.log(`index  => ${index}  ===  ${child.startDate}`)
                                             let isShowEditButton = this.isShowEditButton(child?.processStatusId, child?.appraiserId, child?.requestTypeId, child?.startDate, child?.isEdit)
                                             let isShowEvictionButton = this.isShowEvictionButton(child?.processStatusId, child?.requestTypeId, child?.startDate, child?.isEdit)
                                             let actionType = child?.actionType || null

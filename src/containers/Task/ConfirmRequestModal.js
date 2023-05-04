@@ -66,11 +66,23 @@ class ConfirmRequestModal extends React.Component {
         return result
     }
 
+    getCurrentLanguage = () => {
+      const languageKeyMapping = {
+          [Constants.LANGUAGE_EN]: 'en',
+          [Constants.LANGUAGE_VI]: 'vi'
+      }
+      const locale = localStorage.getItem("locale") || Constants.LANGUAGE_VI;
+      return languageKeyMapping[[locale]];
+  }
+
     changeRequest = async (data, url, titleModalRes) => {
          return await axios({
             method: 'POST',
             url: url,
             data: data,
+            params: {
+              culture: this.getCurrentLanguage()
+            },
             headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` }
         })
             .then(res => {
