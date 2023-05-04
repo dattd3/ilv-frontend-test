@@ -193,7 +193,7 @@ function Authorize(props) {
                             jobCode: user?.job_code,
                             master_code: user.master_code || ''
                         });
-                        // FirebaseUpdateToken();
+                        FirebaseUpdateToken();
                     }
                 })
                 .catch(error => {

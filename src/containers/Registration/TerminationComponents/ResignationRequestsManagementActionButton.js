@@ -197,7 +197,6 @@ class ResignationRequestsManagementActionButton extends React.PureComponent {
                 {value: 'isHandoverDebt', key: 'statusDebt', label: t('timesheet_status')},
                 {value: 'isHandoverSoftware', key: 'statusSoftware', label: t('software_status')},
                 {value: 'isHandoverConfirmation', key: 'statusConfirmation', label: t('policy_status')},
-                {value: 'isHandoverConfirmation', key: 'statusConfirmation', label: t('policy_status')},
                 {value: 'isTrainingDebt', key: 'trainingDebtStatus', label: t('training_status')},
                 {value: 'isInternalDebt', key: 'internalDebtStatus', label: t('internal_status')},
             ]
