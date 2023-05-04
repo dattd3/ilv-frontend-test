@@ -424,12 +424,12 @@ export default function OTRequestComponent({ recentlyManagers }) {
         : ""
     );
     bodyFormData.append("appraiser", JSON.stringify({
-      avatar: "",
-      ...appraiser
+      ...appraiser,
+      avatar: ""
     }));
     bodyFormData.append("approver", JSON.stringify({
-      avatar: "",
-      ...approver
+      ...approver,
+      avatar: ""
     }));
     bodyFormData.append("user", JSON.stringify(user));
     bodyFormData.append("companyCode", localStorage.getItem("companyCode"));
