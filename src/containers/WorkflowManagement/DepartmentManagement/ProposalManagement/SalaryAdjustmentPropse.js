@@ -29,6 +29,7 @@ import vi from "date-fns/locale/vi";
 import { Button, Image } from "react-bootstrap";
 import { checkFilesMimeType } from "../../../../utils/file";
 import LoadingModal from "../../../../components/Common/LoadingModal";
+import { getCulture } from "commons/Utils";
 
 registerLocale("vi", vi);
 
@@ -846,6 +847,9 @@ const SalaryAdjustmentPropse = (props) => {
           method: "PUT",
           url: `${process.env.REACT_APP_REQUEST_SERVICE_URL}salaryadjustment`,
           data: bodyFormData,
+          params: {
+            culture: getCulture()
+          },
           headers: {
             "Content-Type": "multipart/form-data",
             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -855,6 +859,9 @@ const SalaryAdjustmentPropse = (props) => {
         axios({ // Tạo mới yêu cầu đề xuất
         method: "POST",
         url: `${process.env.REACT_APP_REQUEST_SERVICE_URL}request`,
+        params: {
+          culture: getCulture()
+        },
         data: bodyFormData,
         headers: {
           "Content-Type": "multipart/form-data",
@@ -908,6 +915,9 @@ const SalaryAdjustmentPropse = (props) => {
           axios({
             method: "POST",
             url: `${process.env.REACT_APP_REQUEST_SERVICE_URL}salaryadjustment/submitsalary`,
+            params: {
+              culture: getCulture()
+            },
             data: dataSend,
             headers: {
               "Content-Type": "application/json",
@@ -1151,6 +1161,9 @@ const SalaryAdjustmentPropse = (props) => {
     axios({
       method: "POST",
       url: `${process.env.REACT_APP_REQUEST_SERVICE_URL}salaryadjustment/getsalarystaff`,
+      params: {
+        culture: getCulture()
+      },
       data: dataSend,
       headers: {
         "Content-Type": "application/json",
@@ -1651,7 +1664,7 @@ const SalaryAdjustmentPropse = (props) => {
               }}
               onClick={(e) => onActionChangeAll(true)}
             >
-              <i className="fas fa-times fa-lg"></i>
+              <i className="fas fa-check fa-lg"></i>
               {t("accept")}
             </button>
             <button
@@ -1664,7 +1677,7 @@ const SalaryAdjustmentPropse = (props) => {
               }}
               onClick={(e) => onActionChangeAll(false)}
             >
-              <i className="fas fa-check fa-lg"></i>
+              <i className="fas fa-times fa-lg"></i>
               {t("RejectQuestionButtonLabel")}
             </button>
           </div>

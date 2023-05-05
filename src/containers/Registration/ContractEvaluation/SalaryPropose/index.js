@@ -21,6 +21,7 @@ import Spinner from "react-bootstrap/Spinner";
 import { Button, Image } from "react-bootstrap";
 import { checkFilesMimeType } from "../../../../utils/file";
 import LoadingModal from "../../../../components/Common/LoadingModal";
+import { getCulture } from "commons/Utils";
 
 function SalaryPropse(props) {
   const { t } = useTranslation();
@@ -634,6 +635,9 @@ function SalaryPropse(props) {
           method: "PUT",
           url: `${process.env.REACT_APP_REQUEST_SERVICE_URL}salaryadjustment`,
           data: bodyFormData,
+          params: {
+            culture: getCulture()
+          },
           headers: {
             "Content-Type": "multipart/form-data",
             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -643,6 +647,9 @@ function SalaryPropse(props) {
         axios({ // Tạo mới yêu cầu đề xuất
         method: "POST",
         url: `${process.env.REACT_APP_REQUEST_SERVICE_URL}request`,
+        params: {
+          culture: getCulture()
+        },
         data: bodyFormData,
         headers: {
           "Content-Type": "multipart/form-data",
@@ -698,6 +705,9 @@ function SalaryPropse(props) {
           axios({
             method: "POST",
             url: `${process.env.REACT_APP_REQUEST_SERVICE_URL}salaryadjustment/submitsalary`,
+            params: {
+              culture: getCulture()
+            },
             data: dataSend,
             headers: {
               "Content-Type": "application/json",
@@ -906,6 +916,9 @@ function SalaryPropse(props) {
     axios({
       method: "POST",
       url: `${process.env.REACT_APP_REQUEST_SERVICE_URL}salaryadjustment/getsalarystaff`,
+      params: {
+        culture: getCulture()
+      },
       data: dataSend,
       headers: {
         "Content-Type": "application/json",

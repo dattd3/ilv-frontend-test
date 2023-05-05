@@ -555,9 +555,14 @@ function setURLSearchParam(key, value) {
   window.history.pushState({ path: url.href }, '', url.href);
 }
 
+const getCulture = () => {
+  const locale = localStorage.getItem("locale") || Constants.LANGUAGE_VI
+  return locale === Constants.LANGUAGE_VI ? "vi" : "en"
+}
+
 export {
     getRequestConfigurations, removeAccents, formatStringByMuleValue, formatNumberInteger, exportToPDF, isEnableFunctionByFunctionName, getValueParamByQueryString, getDateByRangeAndFormat,
     calculateBackDateByPnLVCodeAndFormatType, isEnableShiftChangeFunctionByPnLVCode, isEnableInOutTimeUpdateFunctionByPnLVCode, getRequestTypeIdsAllowedToReApproval, getMuleSoftHeaderConfigurations,
     isAdjacentDateBy2Date, showRangeDateGroupByArrayDate, generateTaskCodeByCode, parsteStringToHtml, getRegistrationMinDateByConditions, isVinFast, isEnableOTFunctionByPnLVCode, getCurrentLanguage, 
-    getResignResonsMasterData, formatStringDateTimeByMuleValue, genderConfig, marriageConfig, setURLSearchParam
+    getResignResonsMasterData, formatStringDateTimeByMuleValue, genderConfig, marriageConfig, setURLSearchParam, getCulture
 }
