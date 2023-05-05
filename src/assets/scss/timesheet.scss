@@ -241,7 +241,7 @@
     width: 100% !important;
   }
   .employee-time-sheets {
-    border-collapse: separate;
+    border-collapse: collapse;
     border-spacing: 0;
     table-layout: fixed;
     .fixed-col {
@@ -256,8 +256,7 @@
     }
     td {
       text-align: center;
-      border: 0.5px solid #707070;
-      border-right: none;
+      border: 1px solid #707070;
       text-transform: capitalize;
       color: #000000;
       font-size: 14px;
@@ -283,8 +282,8 @@
           text-align: left;
           padding-left: 5px;
           background: #FFFFFF;
-          border: 0.5px solid #707070;
-          border-right: none;
+          // border: 0.5px solid #707070;
+          // border-right: none;
           position: sticky;
           left: 0;
           z-index: 1;
@@ -296,7 +295,7 @@
         &.room-part-group {
           left: 165.8px;
           background: #FFFFFF;
-          border: 0.5px solid #707070;
+          // border: 0.5px solid #707070;
           position: sticky;
           left: 166px;
           z-index: 1;
@@ -309,7 +308,7 @@
           // border-left: none;
         }
         &:last-child {
-          border-right: 1px solid #707070;
+          // border-right: 1px solid #707070;
         }
       }
     }
@@ -323,8 +322,8 @@
             padding-left: 5px;
             left: 0;
             background: #FFFFFF;
-            border: 0.5px solid #707070;
-            border-right: none;
+            // border: 0.5px solid #707070;
+            // border-right: none;
             font-weight: normal;
             span {
               display: inline-block;
@@ -339,7 +338,7 @@
             padding-left: 5px;
             left: 165.8px;
             background: #FFFFFF;
-            border: 0.5px solid #707070;
+            // border: 0.5px solid #707070;
             font-weight: normal;
             span {
               display: inline-block;
@@ -353,7 +352,7 @@
               // border-left: none;
             }
             &:last-child {
-              border-right: 1px solid #707070;
+              // border-right: 1px solid #707070;
             }
           }
         }
@@ -362,30 +361,30 @@
             // padding: 5px 0;
             padding: 0;
             &:first-child {
-              border-left: none;
+              // border-left: none;
             }
             &:last-child {
-              border-right: 1px solid #707070;
+              // border-right: 1px solid #707070;
             }
           }
         }
         &.line3 {
           td {
             &:first-child {
-              border-left: none;
+              // border-left: none;
             }
             &:last-child {
-              border-right: 1px solid #707070;
+              // border-right: 1px solid #707070;
             }
           }
         }
         &.line4 {
           td {
             &:first-child {
-              border-left: none;
+              // border-left: none;
             }
             &:last-child {
-              border-right: 1px solid #707070;
+              // border-right: 1px solid #707070;
             }
           }
         }
@@ -395,7 +394,7 @@
       padding: 4px 0;
       background-color: #00b3ff;
       color: #ffffff;
-      border-bottom: none;
+      // border-bottom: none;
       white-space: nowrap;
       text-align: center;
       flex: 1;
@@ -406,15 +405,15 @@
       padding: 4px 0;
       background-color: #00b3ff;
       color: #ffffff;
-      border-bottom: none;
+      // border-bottom: none;
       text-align: center;
     }
     .thuc_te {
       padding: 4px 0;
       background-color: #FFFFFF;
       color: #000000;
-      border-top: 1px solid #707070;
-      border-bottom: 1px solid #707070;
+      // border-top: 1px solid #707070;
+      // border-bottom: 1px solid #707070;
       white-space: nowrap;
       text-align: center;
       flex: 1;
@@ -425,8 +424,8 @@
       padding: 4px 0;
       background-color: #e44235;
       color: #ffffff;
-      border-top: none;
-      border-bottom: none;
+      // border-top: none;
+      // border-bottom: none;
       white-space: nowrap;
       text-align: center;
       flex: 1;
@@ -436,8 +435,8 @@
     .no-event {
       padding: 4px 0;
       color: #ffffff;
-      border-top: none;
-      border-bottom: none;
+      // border-top: none;
+      // border-bottom: none;
       white-space: nowrap;
       text-align: center;
       flex: 1;
@@ -448,8 +447,8 @@
       padding: 4px 0;
       background-color: #f7931e;
       color: #ffffff;
-      border-top: none;
-      border-bottom: none;
+      // border-top: none;
+      // border-bottom: none;
       white-space: nowrap;
       text-align: center;
       flex: 1;
@@ -460,8 +459,8 @@
       padding: 4px 0;
       background-color: #93278f;
       color: #ffffff;
-      border-top: none;
-      border-bottom: none;
+      // border-top: none;
+      // border-bottom: none;
       white-space: nowrap;
       text-align: center;
       flex: 1;
@@ -472,7 +471,7 @@
       padding: 4px 0;
       background-color: #808000;
       color: #ffffff;
-      border-top: none;
+      // border-top: none;
       white-space: nowrap;
       text-align: center;
       flex: 1;
@@ -593,7 +592,8 @@
     }
     .timesheet-table {
       border-spacing: 0;
-      border-collapse: separate;
+      // border-collapse: separate;
+      border-collapse: collapse;
       table-layout: fixed;
       padding: 0;
       width: 100%;
@@ -601,13 +601,16 @@
         border-left-color: #6CB5F9 !important;
         border-right-color: #6CB5F9 !important;
       }
+      td, th {
+        border: 1px solid #707070;
+      }
       thead {
         td, th {
           padding: 5px 0;
           text-align: left;
           max-width: 50px;
           text-align: center;
-          border: none;
+          // border: none;
           color: #000000;
           background-color: #F2F2F2;
           text-transform: uppercase;
@@ -619,8 +622,8 @@
           td {
             font-weight: bold;
             color: #FFFFFF;
-            border: 0.5px solid #707070;
-            border-right: none;
+            // border: 0.5px solid #707070;
+            // border-right: none;
             min-width: 150px;
             text-align: center;
             font-size: 12px;
@@ -635,7 +638,7 @@
                 }
               }
               &:last-child {
-                border-right: 1px solid #707070;
+                // border-right: 1px solid #707070;
               }
               .item-tooltip {
                 opacity: 1 !important;
@@ -653,7 +656,7 @@
           &.line1 {
             td {
               &:last-child {
-                border-right: 1px solid #707070;
+                // border-right: 1px solid #707070;
               }
             }
           }
@@ -663,43 +666,43 @@
               &:first-child {
                 &:nth-child(1) {
                   .thuc_te  {
-                    border-left: 1px solid #707070;
+                    // border-left: 1px solid #707070;
                   }
                 }
               }
               &:last-child {
                 &:nth-child(7) {
-                  border-right: 1px solid #707070;
+                  // border-right: 1px solid #707070;
                 }
               }
             }
           }
         }
       }
-      .border-top {
-        border-top: 1px solid #707070 !important;
-      }
-      .border-bottom {
-        border-bottom: 1px solid #707070 !important;
-      }
-      .border-left {
-        border-left: 1px solid #707070 !important;
-      }
-      .border-right {
-        border-right: 1px solid #707070 !important;
-      }
-      .none-border-top {
-        border-top: none !important;
-      }
-      .none-border-bottom {
-        border-bottom: none !important;
-      }
-      .none-border-left {
-        border-left: none !important;
-      }
-      .none-border-right {
-        border-right: none !important;
-      }
+      // .border-top {
+      //   border-top: 1px solid #707070 !important;
+      // }
+      // .border-bottom {
+      //   border-bottom: 1px solid #707070 !important;
+      // }
+      // .border-left {
+      //   border-left: 1px solid #707070 !important;
+      // }
+      // .border-right {
+      //   border-right: 1px solid #707070 !important;
+      // }
+      // .none-border-top {
+      //   border-top: none !important;
+      // }
+      // .none-border-bottom {
+      //   border-bottom: none !important;
+      // }
+      // .none-border-left {
+      //   border-left: none !important;
+      // }
+      // .none-border-right {
+      //   border-right: none !important;
+      // }
       .divide {
         border: none;
         height: 10px;
@@ -713,7 +716,7 @@
       }
       .ke_hoach {
         background-color: #00B3FF;
-        border-bottom: none;
+        // border-bottom: none;
         white-space: nowrap;
         text-align: center;
         flex: 1;
@@ -723,7 +726,7 @@
       }
       .ke_hoach_dai {
         background-color: #00B3FF;
-        border-bottom: none;
+        // border-bottom: none;
         text-align: center;
         padding: 4px;
       }
@@ -736,12 +739,12 @@
         text-overflow: ellipsis;
         overflow: hidden;
         padding: 4px;
-        border-bottom: 1px solid #707070;
+        // border-bottom: 1px solid #707070;
       }
       .loi_cong {
         background-color: #E44235;
-        border-top: none;
-        border-bottom: none !important;
+        // border-top: none;
+        // border-bottom: none !important;
         white-space: nowrap;
         text-align: center;
         flex: 1;
@@ -750,8 +753,8 @@
         padding: 4px;
       }
       .no-event {
-        border-top: none;
-        border-bottom: none;
+        // border-top: none;
+        // border-bottom: none;
         white-space: nowrap;
         text-align: center;
         flex: 1;
@@ -761,8 +764,8 @@
       }
       .gio_nghi {
         background-color: #F7931E;
-        border-top: none;
-        border-bottom: none;
+        // border-top: none;
+        // border-bottom: none;
         white-space: nowrap;
         text-align: center;
         flex: 1;
@@ -772,8 +775,8 @@
       }
       .cong_tac {
         background-color: #93278F;
-        border-top: none;
-        border-bottom: none;
+        // border-top: none;
+        // border-bottom: none;
         white-space: nowrap;
         text-align: center;
         flex: 1;
@@ -783,7 +786,7 @@
       }
       .ot {
         background-color: #808000;
-        border-top: none;
+        // border-top: none;
         white-space: nowrap;
         text-align: center;
         flex: 1;
@@ -897,7 +900,7 @@
     }
     .timesheet-table {
       border-spacing: 0;
-      border-collapse: separate;
+      border-collapse: collapse;
       table-layout: fixed;
       padding: 0;
       width: 100%;
@@ -905,13 +908,16 @@
         border-left-color: #6CB5F9 !important;
         border-right-color: #6CB5F9 !important;
       }
+      th, td {
+        border: 1px solid #707070;
+      }
       thead {
         td, th {
           padding: 5px 0;
           text-align: left;
           max-width: 50px;
           text-align: center;
-          border: none;
+          // border: none;
           color: #000000;
           background-color: #F2F2F2;
           text-transform: uppercase;
@@ -923,8 +929,8 @@
           td {
             font-weight: bold;
             color: #FFFFFF;
-            border: 0.5px solid #707070;
-            border-right: none;
+            // border: 0.5px solid #707070;
+            // border-right: none;
             min-width: 150px;
             text-align: center;
             font-size: 12px;
@@ -939,7 +945,7 @@
                 }
               }
               &:last-child {
-                border-right: 1px solid #707070;
+                // border-right: 1px solid #707070;
               }
               .item-tooltip {
                 opacity: 1 !important;
@@ -957,7 +963,7 @@
           &.line1 {
             td {
               &:last-child {
-                border-right: 1px solid #707070;
+                // border-right: 1px solid #707070;
               }
             }
           }
@@ -967,43 +973,43 @@
               &:first-child {
                 &:nth-child(1) {
                   .thuc_te  {
-                    border-left: 1px solid #707070;
+                    // border-left: 1px solid #707070;
                   }
                 }
               }
               &:last-child {
                 &:nth-child(7) {
-                  border-right: 1px solid #707070;
+                  // border-right: 1px solid #707070;
                 }
               }
             }
           }
         }
       }
-      .border-top {
-        border-top: 1px solid #707070 !important;
-      }
-      .border-bottom {
-        border-bottom: 1px solid #707070 !important;
-      }
-      .border-left {
-        border-left: 1px solid #707070 !important;
-      }
-      .border-right {
-        border-right: 1px solid #707070 !important;
-      }
-      .none-border-top {
-        border-top: none !important;
-      }
-      .none-border-bottom {
-        border-bottom: none !important;
-      }
-      .none-border-left {
-        border-left: none !important;
-      }
-      .none-border-right {
-        border-right: none !important;
-      }
+      // .border-top {
+      //   border-top: 1px solid #707070 !important;
+      // }
+      // .border-bottom {
+      //   border-bottom: 1px solid #707070 !important;
+      // }
+      // .border-left {
+      //   border-left: 1px solid #707070 !important;
+      // }
+      // .border-right {
+      //   border-right: 1px solid #707070 !important;
+      // }
+      // .none-border-top {
+      //   border-top: none !important;
+      // }
+      // .none-border-bottom {
+      //   border-bottom: none !important;
+      // }
+      // .none-border-left {
+      //   border-left: none !important;
+      // }
+      // .none-border-right {
+      //   border-right: none !important;
+      // }
       .divide {
         border: none;
         height: 10px;
@@ -1017,7 +1023,7 @@
       }
       .ke_hoach {
         background-color: #00B3FF;
-        border-bottom: none;
+        // border-bottom: none;
         white-space: nowrap;
         text-align: center;
         flex: 1;
@@ -1027,7 +1033,7 @@
       }
       .ke_hoach_dai {
         background-color: #00B3FF;
-        border-bottom: none;
+        // border-bottom: none;
         text-align: center;
         padding: 4px;
       }
@@ -1040,12 +1046,12 @@
         text-overflow: ellipsis;
         overflow: hidden;
         padding: 4px;
-        border-bottom: 1px solid #707070;
+        // border-bottom: 1px solid #707070;
       }
       .loi_cong {
         background-color: #E44235;
-        border-top: none;
-        border-bottom: none !important;
+        // border-top: none;
+        // border-bottom: none !important;
         white-space: nowrap;
         text-align: center;
         flex: 1;
@@ -1054,8 +1060,8 @@
         padding: 4px;
       }
       .no-event {
-        border-top: none;
-        border-bottom: none;
+        // border-top: none;
+        // border-bottom: none;
         white-space: nowrap;
         text-align: center;
         flex: 1;
@@ -1065,8 +1071,8 @@
       }
       .gio_nghi {
         background-color: #F7931E;
-        border-top: none;
-        border-bottom: none;
+        // border-top: none;
+        // border-bottom: none;
         white-space: nowrap;
         text-align: center;
         flex: 1;
@@ -1076,8 +1082,8 @@
       }
       .cong_tac {
         background-color: #93278F;
-        border-top: none;
-        border-bottom: none;
+        // border-top: none;
+        // border-bottom: none;
         white-space: nowrap;
         text-align: center;
         flex: 1;
@@ -1087,7 +1093,7 @@
       }
       .ot {
         background-color: #808000;
-        border-top: none;
+        // border-top: none;
         white-space: nowrap;
         text-align: center;
         flex: 1;
