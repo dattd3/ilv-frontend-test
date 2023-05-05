@@ -38,7 +38,7 @@ class ConfirmationModal extends React.Component {
                     this.props.dataToSap[0].sub[0].processStatusId = Constants.STATUS_NOT_APPROVED;
                 }
                 this.props.dataToSap[0].sub[0].comment = this.state.message;
-                this.disApprove(this.props.dataToSap, `${process.env.REACT_APP_SALARY_URL}request/approve`, id)
+                this.disApprove(this.props.dataToSap, `${process.env.REACT_APP_REQUEST_SERVICE_URL}request/approve`, id)
                 break;
             case Constants.STATUS_APPROVED: // phê duyệt
                 this.props.dataToSap[0].sub[0].processStatusId = Constants.STATUS_APPROVED;
@@ -171,7 +171,7 @@ class ConfirmationModal extends React.Component {
     approve = (dataToSap,id) => {
         axios({
             method: 'POST',
-            url: `${process.env.REACT_APP_SALARY_URL}request/approve`,
+            url: `${process.env.REACT_APP_REQUEST_SERVICE_URL}request/approve`,
             data: dataToSap,
             headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` }
         })
@@ -247,7 +247,7 @@ class ConfirmationModal extends React.Component {
     consent = (dataToSap) => {
         axios({
             method: 'POST',
-            url: `${process.env.REACT_APP_SALARY_URL}request/assess`,
+            url: `${process.env.REACT_APP_REQUEST_SERVICE_URL}request/assess`,
             data: dataToSap,
             headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` }
         })
@@ -282,7 +282,7 @@ class ConfirmationModal extends React.Component {
     reject = (dataToSap) => {
         axios({
             method: 'POST',
-            url: `${process.env.REACT_APP_SALARY_URL}request/assess`,
+            url: `${process.env.REACT_APP_REQUEST_SERVICE_URL}request/assess`,
             data: dataToSap,
             headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` }
         })

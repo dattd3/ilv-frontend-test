@@ -429,7 +429,7 @@ class TaskList extends React.Component {
                 <TaskDetailModal key= {this.state.taskId+'.'+this.state.subId} show={this.state.isShowTaskDetailModal} onHide={this.onHideisShowTaskDetailModal} taskId = {this.state.taskId} subId = {this.state.subId} action={this.state.action}/>
                 <div className="d-flex justify-content-between w-100 mt-2 mb-3 search-block">
                     <div className="row w-100">
-                      <div className="w-250px position-relative">
+                      <div className="w-180px position-relative">
                         <div className="request-category-tooltip">
                           <img src={IconInformation} alt="" />
                           <div
@@ -476,16 +476,9 @@ class TaskList extends React.Component {
                                 menu: provided => ({ ...provided, zIndex: 2 }),
                             }
                           }
-                            theme={theme => ({
-                                ...theme,
-                                colors: {
-                                    ...theme.colors,
-                                    primary25: '#F9C20A',
-                                    primary: '#F9C20A',
-                                },
-                            })} />
+                          />
                         </div>
-                        <div className="w-250px position-relative">
+                        <div className="w-180px position-relative">
                           <img src={IconFilter} alt="" className="icon-prefix-select" />
                           <Select name="absenceType"
                             // defaultValue={this.props.filterdata[0]}
@@ -497,14 +490,7 @@ class TaskList extends React.Component {
                                 menu: provided => ({ ...provided, zIndex: 2 })
                             }}
                             classNamePrefix="filter-select"
-                            theme={theme => ({
-                                ...theme,
-                                colors: {
-                                    ...theme.colors,
-                                    primary25: '#F9C20A',
-                                    primary: '#F9C20A',
-                                },
-                            })} />
+                          />
                         </div> 
                         <div className="flex-1 position-relative">
                             <img src={IconSearch} alt="" className="icon-prefix-select" />
