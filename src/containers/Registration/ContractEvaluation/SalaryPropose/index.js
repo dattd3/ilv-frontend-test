@@ -632,7 +632,7 @@ function SalaryPropse(props) {
       (isUpdate ? //update yêu cầu salaryadjustment
         axios({
           method: "PUT",
-          url: `${process.env.REACT_APP_SALARY_URL}salaryadjustment`,
+          url: `${process.env.REACT_APP_REQUEST_SERVICE_URL}salaryadjustment`,
           data: bodyFormData,
           headers: {
             "Content-Type": "multipart/form-data",
@@ -642,7 +642,7 @@ function SalaryPropse(props) {
         : 
         axios({ // Tạo mới yêu cầu đề xuất
         method: "POST",
-        url: `${process.env.REACT_APP_SALARY_URL}request`,
+        url: `${process.env.REACT_APP_REQUEST_SERVICE_URL}request`,
         data: bodyFormData,
         headers: {
           "Content-Type": "multipart/form-data",
@@ -697,7 +697,7 @@ function SalaryPropse(props) {
           setIsLoading(true);
           axios({
             method: "POST",
-            url: `${process.env.REACT_APP_SALARY_URL}salaryadjustment/submitsalary`,
+            url: `${process.env.REACT_APP_REQUEST_SERVICE_URL}salaryadjustment/submitsalary`,
             data: dataSend,
             headers: {
               "Content-Type": "application/json",
@@ -905,7 +905,7 @@ function SalaryPropse(props) {
     setIsLoading(true);
     axios({
       method: "POST",
-      url: `${process.env.REACT_APP_SALARY_URL}salaryadjustment/getsalarystaff`,
+      url: `${process.env.REACT_APP_REQUEST_SERVICE_URL}salaryadjustment/getsalarystaff`,
       data: dataSend,
       headers: {
         "Content-Type": "application/json",

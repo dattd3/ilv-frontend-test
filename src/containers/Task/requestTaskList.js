@@ -677,7 +677,7 @@ class RequestTaskList extends React.Component {
                 <RegistrationConfirmationModal show={this.state.isShowModalRegistrationConfirm} id={this.state.taskId} title={this.state.modalTitle} message={this.state.modalMessage}
                     type={this.state.typeRequest} urlName={this.state.requestUrl} dataToSap={dataToSap} onHide={this.onHideModalRegistrationConfirm} />
                 <div className="row w-100 mt-2 mb-3 search-block">
-                    <div className="w-250px position-relative">
+                    <div className="w-180px position-relative">
                       <div className="request-category-tooltip">
                         <img src={IconInformation} alt="" />
                         <div
@@ -724,16 +724,17 @@ class RequestTaskList extends React.Component {
                               menu: provided => ({ ...provided, zIndex: 2 }),
                           }
                         }
-                          theme={theme => ({
-                              ...theme,
-                              colors: {
-                                  ...theme.colors,
-                                  primary25: '#F9C20A',
-                                  primary: '#F9C20A',
-                              },
-                          })} />
+                          // theme={theme => ({
+                          //     ...theme,
+                          //     colors: {
+                          //         ...theme.colors,
+                          //         primary25: '#F9C20A',
+                          //         primary: '#F9C20A',
+                          //     },
+                          // })} 
+                        />
                     </div>
-                    <div className="w-250px position-relative">
+                    <div className="w-180px position-relative">
                         <img src={IconFilter} alt="" className="icon-prefix-select" />
                         <Select name="absenceType"
                             // defaultValue={this.props.filterdata[0]}
@@ -745,14 +746,15 @@ class RequestTaskList extends React.Component {
                                 menu: provided => ({ ...provided, zIndex: 2 })
                             }}
                             classNamePrefix="filter-select"
-                            theme={theme => ({
-                                ...theme,
-                                colors: {
-                                    ...theme.colors,
-                                    primary25: '#F9C20A',
-                                    primary: '#F9C20A',
-                                },
-                            })} />
+                            // theme={theme => ({
+                            //     ...theme,
+                            //     colors: {
+                            //         ...theme.colors,
+                            //         primary25: '#F9C20A',
+                            //         primary: '#F9C20A',
+                            //     },
+                            // })} 
+                          />
                     </div>
                     <div className="flex-1 position-relative">
                         <img src={IconSearch} alt="" className="icon-prefix-select" />

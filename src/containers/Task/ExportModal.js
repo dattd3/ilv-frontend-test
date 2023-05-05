@@ -59,7 +59,7 @@ class ExportModal extends React.Component {
         }
       }
       this.setState({ disabledDownloadBtn: true });
-      const HOST = this.props.requestCategory === 1 ? process.env.REACT_APP_REQUEST_URL : process.env.REACT_APP_SALARY_URL;
+      const HOST = this.props.requestCategory === 1 ? process.env.REACT_APP_REQUEST_URL : process.env.REACT_APP_REQUEST_SERVICE_URL;
       axios.get(`${HOST}Request/ExportExcel`, config)
       .then(res => {
         var blob = new Blob([res.data], { type: "application/octetstream" });

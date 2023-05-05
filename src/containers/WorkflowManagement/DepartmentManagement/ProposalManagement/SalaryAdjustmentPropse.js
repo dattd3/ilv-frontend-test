@@ -92,7 +92,7 @@ const SalaryAdjustmentPropse = (props) => {
   const [supervisors, setSupervisors] = useState([null]);
   const [appraiser, setAppraiser] = useState(null); // HR thẩm định quyền điều chỉnh lương
   const [approver, setApprover] = useState(null); // CBLĐ phê duyệt
-  const [callSalary, setCalledSalary] = useState(false);
+  const [isCallSalary, setIsCallSalary] = useState(false);
   const [isOpenDatepick, setIsOpenDatepick] = useState(false);
   const [viewSetting, setViewSetting] = useState({
     showComponent: {
@@ -166,7 +166,7 @@ const SalaryAdjustmentPropse = (props) => {
   }, []);
 
   useEffect(() => {
-    if (selectedMembers?.length > 0 && callSalary == false && accessToken) {
+    if (selectedMembers?.length > 0 && isCallSalary == false && accessToken) {
       getSalary(accessToken);
     }
   }, [selectedMembers]);
@@ -651,7 +651,7 @@ const SalaryAdjustmentPropse = (props) => {
   };
 
   const handleShowCurrentSalary = () => {
-    if (callSalary) {
+    if (isCallSalary) {
       setViewSetting({
         ...viewSetting,
         disableComponent: {
@@ -668,13 +668,13 @@ const SalaryAdjustmentPropse = (props) => {
     }
   };
 
-  const handleShowSuggestedSalary = () => {
-    if (!accessToken) {
-      setModalConfirmPassword(true);
-    } else if (!viewSetting.disableComponent.showSuggestedSalary) {
-      getSalary(accessToken);
-    }
-  };
+  // const handleShowSuggestedSalary = () => {
+  //   if (!accessToken) {
+  //     setModalConfirmPassword(true);
+  //   } else if (!viewSetting.disableComponent.showSuggestedSalary) {
+  //     getSalary(accessToken);
+  //   }
+  // };
 
   // Từ chối
   const handleRefuse = () => {
@@ -844,7 +844,7 @@ const SalaryAdjustmentPropse = (props) => {
       (isUpdate ? //update yêu cầu salaryadjustment
         axios({
           method: "PUT",
-          url: `${process.env.REACT_APP_SALARY_URL}salaryadjustment`,
+          url: `${process.env.REACT_APP_REQUEST_SERVICE_URL}salaryadjustment`,
           data: bodyFormData,
           headers: {
             "Content-Type": "multipart/form-data",
@@ -854,7 +854,7 @@ const SalaryAdjustmentPropse = (props) => {
         : 
         axios({ // Tạo mới yêu cầu đề xuất
         method: "POST",
-        url: `${process.env.REACT_APP_SALARY_URL}request`,
+        url: `${process.env.REACT_APP_REQUEST_SERVICE_URL}request`,
         data: bodyFormData,
         headers: {
           "Content-Type": "multipart/form-data",
@@ -907,7 +907,7 @@ const SalaryAdjustmentPropse = (props) => {
           };
           axios({
             method: "POST",
-            url: `${process.env.REACT_APP_SALARY_URL}salaryadjustment/submitsalary`,
+            url: `${process.env.REACT_APP_REQUEST_SERVICE_URL}salaryadjustment/submitsalary`,
             data: dataSend,
             headers: {
               "Content-Type": "application/json",
@@ -1150,7 +1150,7 @@ const SalaryAdjustmentPropse = (props) => {
     setIsLoading(true);
     axios({
       method: "POST",
-      url: `${process.env.REACT_APP_SALARY_URL}salaryadjustment/getsalarystaff`,
+      url: `${process.env.REACT_APP_REQUEST_SERVICE_URL}salaryadjustment/getsalarystaff`,
       data: dataSend,
       headers: {
         "Content-Type": "application/json",
@@ -1186,7 +1186,7 @@ const SalaryAdjustmentPropse = (props) => {
       })
       .finally(() => {
         setIsLoading(false);
-        setCalledSalary(true);
+        setIsCallSalary(true);
       });
   };
 
@@ -1280,7 +1280,7 @@ const SalaryAdjustmentPropse = (props) => {
                     {viewSetting.disableComponent.showEye && (
                       <div
                         style={{ width: "10%", cursor: "pointer" }}
-                        onClick={() => handleShowCurrentSalary()}
+                        onClick={handleShowCurrentSalary}
                       >
                         <img
                           src={
@@ -1344,7 +1344,7 @@ const SalaryAdjustmentPropse = (props) => {
                         {viewSetting.disableComponent.showEye && (
                           <div
                             style={{ width: "10%", cursor: "pointer" }}
-                            onClick={() => handleShowSuggestedSalary()}
+                            onClick={handleShowCurrentSalary}
                           >
                             <img
                               src={

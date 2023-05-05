@@ -44,7 +44,7 @@ class ApprovalComponent extends React.Component {
   // 1: other requests
   // 2: salary
   requestRemoteData = (params, category = 1) => {
-    const HOST = category === 1 ? process.env.REACT_APP_REQUEST_URL : process.env.REACT_APP_SALARY_URL;
+    const HOST = category === 1 ? process.env.REACT_APP_REQUEST_URL : process.env.REACT_APP_REQUEST_SERVICE_URL;
     const config = {
       headers: {
         'Authorization': `${localStorage.getItem('accessToken')}`

@@ -38,7 +38,7 @@ class ConfirmRequestModal extends React.Component {
         let formData = new FormData()
         switch (this.props.type) {
             case Constants.STATUS_NOT_APPROVED: // không phê duyệt
-                this.disApprove(this.props.dataToSap, `${process.env.REACT_APP_SALARY_URL}request/approve`, id)
+                this.disApprove(this.props.dataToSap, `${process.env.REACT_APP_REQUEST_SERVICE_URL}request/approve`, id)
                 break;
             case Constants.STATUS_APPROVED: // phê duyệt
                 this.approve(this.props.dataToSap,id)
@@ -145,7 +145,7 @@ class ConfirmRequestModal extends React.Component {
 
         // let bodyFormData = new FormData()
         // bodyFormData.append('UserProfileInfoToSap', JSON.stringify(dataToSap))
-        this.changeRequest(dataPrepareToSap, `${process.env.REACT_APP_SALARY_URL}request/approve`, t("approval_status"))
+        this.changeRequest(dataPrepareToSap, `${process.env.REACT_APP_REQUEST_SERVICE_URL}request/approve`, t("approval_status"))
     }
 
     // Từ chối phê duyệt mass
@@ -173,7 +173,7 @@ class ConfirmRequestModal extends React.Component {
             }
             dataToSap.push(taskObj)
           });
-        this.changeRequest(dataToSap,`${process.env.REACT_APP_SALARY_URL}request/approve`,this.props.t("disapproval_status"))
+        this.changeRequest(dataToSap,`${process.env.REACT_APP_REQUEST_SERVICE_URL}request/approve`,this.props.t("disapproval_status"))
     }
 
     consent = () => {
@@ -196,7 +196,7 @@ class ConfirmRequestModal extends React.Component {
             }
             dataToSap.push(taskObj)
           });
-        this.changeRequest(dataToSap,`${process.env.REACT_APP_SALARY_URL}request/assess`,this.props.t("appraisal_status"))
+        this.changeRequest(dataToSap,`${process.env.REACT_APP_REQUEST_SERVICE_URL}request/assess`,this.props.t("appraisal_status"))
     }
 
     reject = () => {
@@ -221,7 +221,7 @@ class ConfirmRequestModal extends React.Component {
             dataToSap.push(taskObj)
           });
         
-        this.changeRequest(dataToSap,`${process.env.REACT_APP_SALARY_URL}request/assess`,this.props.t("disappraisal_status"))
+        this.changeRequest(dataToSap,`${process.env.REACT_APP_REQUEST_SERVICE_URL}request/assess`,this.props.t("disappraisal_status"))
     }
     
     handleChangeMessage = (e) => {
