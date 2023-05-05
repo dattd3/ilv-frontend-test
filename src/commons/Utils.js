@@ -38,7 +38,7 @@ const formatStringByMuleValue = value => {
 }
 
 const formatStringDateTimeByMuleValue = value => {
-    return (value === null || value === undefined || value === "" || value === "#" || value === "000000") ? "" : value.trim()
+    return (value === null || value === undefined || value === "" || value === "#" || value === "000000" || value === "00000000") ? "" : value.trim()
 }
 
 const formatNumberInteger = value => {
