@@ -4,6 +4,7 @@ import _ from 'lodash'
 import { withTranslation } from "react-i18next"
 import DetailButtonComponent from '../DetailButtonComponent'
 import ApproverDetailComponent from '../ApproverDetailComponent'
+import RequestProcessing from '../RequestProcessing'
 import StatusModal from '../../../components/Common/StatusModal'
 import Constants from '../.../../../../commons/Constants'
 import { getRequestTypeIdsAllowedToReApproval } from "../../../commons/Utils"
@@ -208,6 +209,12 @@ class SubstitutionDetailComponent extends React.Component {
             <ApproverDetailComponent title={t("Approver")} approver={substitution.approver} status={substitution.processStatusId} hrComment={substitution.approverComment} />
           </> : null
         }
+
+        <RequestProcessing 
+          createDate={substitution?.createDate} 
+          deletedDate={substitution?.deletedDate}
+          assessedDate={substitution?.assessedDate} 
+          approvedDate={substitution?.approvedDate} />
 
         {
           substitution.requestDocuments.length > 0 ?

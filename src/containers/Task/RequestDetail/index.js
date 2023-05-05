@@ -3,6 +3,7 @@ import PersonalComponent from './PersonalComponent'
 import EducationComponent from './EducationComponent'
 import FamilyComponent from './FamilyComponent'
 import DocumentComponent from './DocumentComponent'
+import RequestProcessing from 'containers/Registration/RequestProcessing'
 import axios from 'axios'
 import Constants from '../../../commons/Constants'
 import ConfirmationModal from '../../PersonalInfo/edit/ConfirmationModal'
@@ -213,7 +214,7 @@ class RequestDetail extends React.Component {
   }
 
   render() {
-    const { t } = this.props
+    const { t, details } = this.props
     const { isShowModalConfirm, modalTitle, typeRequest, modalMessage, userInfo, isShowPersonalComponent, isShowEducationComponent, isShowFamilyComponent, userMainInfo, 
       userEducationUpdate, userEducationCreate, userFamilyUpdate, userFamilyCreate, status, hrComment, isShowDocumentComponent, documents, requestTypeId, responseDataFromSAP } = this.state
 
@@ -297,6 +298,12 @@ class RequestDetail extends React.Component {
           : null
         }
         
+        <RequestProcessing 
+          createDate={details?.createDate} 
+          deletedDate={details?.deletedDate}
+          assessedDate={details?.assessedDate} 
+          approvedDate={details?.approvedDate} />
+
         <div className="block-status">
           <span className={`status ${statusOptions[status].className}`}>{statusOptions[status].label}</span>
           { (status == Constants.STATUS_PARTIALLY_SUCCESSFUL && responseDataFromSAP) && 

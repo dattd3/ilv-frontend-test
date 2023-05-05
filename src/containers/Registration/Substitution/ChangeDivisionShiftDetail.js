@@ -4,6 +4,7 @@ import _ from 'lodash'
 import { withTranslation } from "react-i18next"
 import DetailButtonComponent from '../DetailButtonComponent'
 import ApproverDetailComponent from '../ApproverDetailComponent'
+import RequestProcessing from '../RequestProcessing'
 import StatusModal from '../../../components/Common/StatusModal'
 import Constants from '../.../../../../commons/Constants'
 import TableUtil from '../../../components/Common/table'
@@ -210,6 +211,12 @@ class ChangeDivisionShiftDetail extends React.Component {
             <ApproverDetailComponent title={t("Approver")} approver={this.props.substitution.approver} status={this.props.substitution.processStatusId} hrComment={this.props.substitution.approverComment} />
           </> : null
         }
+
+        <RequestProcessing 
+          createDate={this.props.substitution?.createDate} 
+          deletedDate={this.props.substitution?.deletedDate}
+          assessedDate={this.props.substitution?.assessedDate} 
+          approvedDate={this.props.substitution?.approvedDate} />
 
         {
           this.props.substitution.requestDocuments.length > 0 ?

@@ -4324,3 +4324,9 @@ span.badge-notification[data-badge]::after {
     text-decoration: none;
   }
 }
+
+.request-processing {
+  .detail {
+    margin-bottom: 0;
+  }
+}
