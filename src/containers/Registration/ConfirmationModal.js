@@ -7,6 +7,7 @@ import Constants from '../../commons/Constants'
 import map from "../map.config"
 import Spinner from 'react-bootstrap/Spinner'
 import { withTranslation  } from "react-i18next"
+import { getCulture } from "commons/Utils"
 
 class ConfirmationModal extends React.Component {
     constructor(props) {
@@ -173,7 +174,10 @@ class ConfirmationModal extends React.Component {
             method: 'POST',
             url: `${process.env.REACT_APP_REQUEST_SERVICE_URL}request/approve`,
             data: dataToSap,
-            headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` }
+            headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` },
+            params: {
+              culture: getCulture()
+            }
         })
             .then(res => {
                 if (res && res.data) {
@@ -213,7 +217,10 @@ class ConfirmationModal extends React.Component {
 
     disApprove = (formData, url, id) => {
         axios.post(url, formData, {
-            headers: { Authorization: localStorage.getItem('accessToken') }
+            headers: { Authorization: localStorage.getItem('accessToken') },
+            params: {
+              culture: getCulture()
+            }
         }).then(res => {
                 if (res && res.data) {
                     const data = res.data
@@ -249,7 +256,10 @@ class ConfirmationModal extends React.Component {
             method: 'POST',
             url: `${process.env.REACT_APP_REQUEST_SERVICE_URL}request/assess`,
             data: dataToSap,
-            headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` }
+            headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` },
+            params: {
+              culture: getCulture()
+            }
         })
             .then(res => {
                 if (res && res.data) {
@@ -284,7 +294,10 @@ class ConfirmationModal extends React.Component {
             method: 'POST',
             url: `${process.env.REACT_APP_REQUEST_SERVICE_URL}request/assess`,
             data: dataToSap,
-            headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` }
+            headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` },
+            params: {
+              culture: getCulture()
+            }
         })
             .then(res => {
                 if (res && res.data) {
