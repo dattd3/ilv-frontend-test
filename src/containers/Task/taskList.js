@@ -15,9 +15,11 @@ import TaskDetailModal from './TaskDetailModal'
 import ExportModal from './ExportModal'
 import ChangeReqBtnComponent from './ChangeReqBtnComponent'
 import Constants from '../../commons/Constants'
-import { getRequestTypeIdsAllowedToReApproval, showRangeDateGroupByArrayDate, generateTaskCodeByCode } from "../../commons/Utils"
-import { absenceRequestTypes, requestTypes } from "../Task/Constants"
-import { checkIsExactPnL } from '../../commons/commonFunctions'
+import { getRequestTypeIdsAllowedToReApproval, showRangeDateGroupByArrayDate, generateTaskCodeByCode, getValueParamByQueryString } from "../../commons/Utils"
+import { REQUEST_CATEGORIES, absenceRequestTypes, requestTypes } from "../Task/Constants"
+import IconInformation from "assets/img/icon/icon-blue-information.svg"
+import IconFilter from "assets/img/icon/icon-filter.svg"
+import IconSearch from "assets/img/icon/icon-search.svg"
 
 class TaskList extends React.Component {
     constructor() {
@@ -40,6 +42,7 @@ class TaskList extends React.Component {
             query: "",
             statusSelected: null,
             checkedAll:false,
+            requestCategory: getValueParamByQueryString(window.location.search, "requestCategory") || REQUEST_CATEGORIES.CATEGORY_1,
             dataForSearch: {
                 pageIndex: Constants.TASK_PAGE_INDEX_DEFAULT,
                 pageSize: Constants.TASK_PAGE_SIZE_DEFAULT,
@@ -208,7 +211,7 @@ class TaskList extends React.Component {
 
     getSalaryProposeLink = (request) => {
         let url = '';
-        const typeRequest = this.props.page === "approval" ? "approval" : "access"
+        const typeRequest = this.props.page === "approval" ? "approval" : "assess"
         if(request.parentRequestHistoryId) {
             //xu ly mot nguoi
             url = `salarypropse/${request.parentRequestHistoryId}/${request.salaryId}/${typeRequest}`
@@ -341,6 +344,12 @@ class TaskList extends React.Component {
             pageIndex: 1
         }});
     }
+
+    handleCategorySelectChange(opt) {
+      this.setState({
+        requestCategory: opt.value
+      })
+    }
     
     handleInputChange = (event) => {
         this.setState({  query: event.target.value, dataForSearch: {
@@ -377,7 +386,7 @@ class TaskList extends React.Component {
             needRefresh: needRefresh
         }})
         this.enableBtn([]);
-        this.props.requestRemoteData(params);
+        this.props.requestRemoteData(params, this.state.requestCategory);
     }
 
     render() {
@@ -390,6 +399,14 @@ class TaskList extends React.Component {
             5: t("LineManagerSResponse")
         }
         const requestTypeIdsAllowedToReApproval = getRequestTypeIdsAllowedToReApproval()
+        const REQUEST_CATEGORY_OPTIONS = [{
+          label: `${t("Type")} I`,
+          value: REQUEST_CATEGORIES.CATEGORY_1
+        }, {
+          label: `${t("Type")} II`,
+          value: REQUEST_CATEGORIES.CATEGORY_2
+        }]
+
         const fullDay = 1
 
         const getRequestTypeLabel = (requestType, absenceTypeValue) => {
@@ -403,42 +420,74 @@ class TaskList extends React.Component {
         }
         return (
             <>
-                <ExportModal show={this.state.isShowExportModal} onHide={this.onHideisShowExportModal} statusOptions={this.props.filterdata} exportType={this.props.page}/>
+                <ExportModal requestCategory={this.state.requestCategory} show={this.state.isShowExportModal} onHide={this.onHideisShowExportModal} statusOptions={this.props.filterdata} exportType={this.props.page}/>
                 <TaskDetailModal key= {this.state.taskId+'.'+this.state.subId} show={this.state.isShowTaskDetailModal} onHide={this.onHideisShowTaskDetailModal} taskId = {this.state.taskId} subId = {this.state.subId} action={this.state.action}/>
                 <div className="d-flex justify-content-between w-100 mt-2 mb-3 search-block">
                     <div className="row w-100">
-                        <div className="col-xl-4">
-                            <InputGroup className="d-flex">
-                            <InputGroup.Prepend className="">
-                                <InputGroup.Text id="basic-addon1"><i className="fas fa-filter"></i></InputGroup.Text>
-                            </InputGroup.Prepend>
-                            <Select name="absenceType"
-                                    className="w-75"
-                                    // defaultValue={this.props.filterdata[0]}
-                                    value={this.state.absenceType || { label: t("Waiting"), value: this.props.page == 'consent' ? Constants.STATUS_WAITING_CONSENTED : Constants.STATUS_WAITING }}
-                                    isClearable={false}
-                                    onChange={absenceType => this.handleSelectChange('absenceType', absenceType)}
-                                    // selectedValue={{ label: t("All"), value: 0 }}
-                                    placeholder={t('SortByStatus')}
-                                    key="absenceType" options={this.props.filterdata}
-                                    styles={{
-                                        menu: provided => ({ ...provided, zIndex: 2 })
-                                    }}
-                                    theme={theme => ({
-                                    ...theme,
-                                    colors: {
-                                        ...theme.colors,
-                                        primary25: '#F9C20A',
-                                        primary: '#F9C20A',
-                                    },
-                                    })}/>
-                            </InputGroup>
+                      <div className="w-180px position-relative">
+                        <div className="request-category-tooltip">
+                          <img src={IconInformation} alt="" />
+                          <div
+                            className="request-category-tooltip-content"
+                          >
+                            <div className="category-title">
+                              <b>
+                                {t("TypeOfRequest")}
+                              </b>
+                            </div>
+                            <b className="category-item">{t("Type")} I</b>
+                            <i className="category-item">
+                              - {t("LeaveRequest")}  
+                            </i>
+                            <i className="category-item">
+                              - {t("BizTrip_TrainingRequest")}
+                            </i>
+                            <i className="category-item">
+                              - {t("InOutChangeRequest")}
+                            </i>
+                            <i className="category-item">
+                              - {t("ShiftChange")}
+                            </i>
+                            <i className="category-item">
+                              - {t("EditPersonalInformation")}
+                            </i>
+                            <b className="category-item">{t("Type")} II</b>
+                            <i className="category-item">
+                              - {t("SalaryType")}
+                            </i>
+                          </div>
                         </div>
-                        <div className="col-xl-4">
-                            <InputGroup className="">
-                            <InputGroup.Prepend>
-                            <InputGroup.Text id="basic-addon2"><i className="fas fa-search"></i></InputGroup.Text>
-                            </InputGroup.Prepend>
+                        <Select name="requestCategory"
+                            className="w-100"
+                            value={REQUEST_CATEGORY_OPTIONS.find(opt => opt.value * 1 === this.state.requestCategory * 1)}
+                            isClearable={false}
+                            onChange={option => this.handleCategorySelectChange(option)}
+                            placeholder={t("TypeOfRequest")} 
+                            key="requestCategory"
+                            classNamePrefix="filter-select"
+                            options={REQUEST_CATEGORY_OPTIONS}
+                            styles={{
+                                menu: provided => ({ ...provided, zIndex: 2 }),
+                            }
+                          }
+                          />
+                        </div>
+                        <div className="w-180px position-relative">
+                          <img src={IconFilter} alt="" className="icon-prefix-select" />
+                          <Select name="absenceType"
+                            // defaultValue={this.props.filterdata[0]}
+                            value={this.state.absenceType || ""}
+                            isClearable={false}
+                            onChange={absenceType => this.handleSelectChange('absenceType', absenceType)}
+                            placeholder={t('Status')} key="absenceType" options={this.props.filterdata}
+                            styles={{
+                                menu: provided => ({ ...provided, zIndex: 2 })
+                            }}
+                            classNamePrefix="filter-select"
+                          />
+                        </div> 
+                        <div className="flex-1 position-relative">
+                            <img src={IconSearch} alt="" className="icon-prefix-select" />
                             <FormControl
                                 placeholder={t('SearchRequester')}
                                 aria-label="SearchRequester"
@@ -446,9 +495,8 @@ class TaskList extends React.Component {
                                 className="request-user"
                                 onChange={this.handleInputChange}
                             />
-                        </InputGroup>
                         </div>
-                        <div className="col-4">
+                        <div className="col-2">
                             <button type="button" onClick={() => this.searchRemoteData(true)} className="btn btn-warning w-100">{t("Search")}</button>
                         </div>
                     </div>

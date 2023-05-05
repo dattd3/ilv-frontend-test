@@ -1264,6 +1264,7 @@
   "SalaryAdjustmentPropse": "Đề xuất điều chỉnh tăng lương",
   "SalaryPropse": "Đề xuất điều chỉnh thu nhập",
   "HumanForReviewSalaryValidate": "Vui lòng nhập nhân sự hỗ trợ quyền xem lương!",
+  "HumanForChangeSalaryValidate": "Vui lòng nhập nhân sự thẩm định quyền xem lương!",
   "ProposedEmployeeValidate": "CBNV được đề xuất chưa được chọn!",
   "InformationRequired": "Yêu cầu nhập thông tin",
   "CurrentSalaryValidate": "Vui lòng lấy về mức lương hiện tại!",
@@ -1743,6 +1744,7 @@
   "salary_paid": "Đã trả",
   "attachment": "File đính kèm",
   "ReasonRequired": "Vui lòng nhập lý do",
+  "AppraiserExisted" : "CBLĐ thẩm định đã tồn tại!",
   "confirm_with_recovery": "XÁC NHẬN XOÁ",
   "confirm_you_want_to_withdraw_this_content": "Bạn xác nhận muốn xoá nội dung này?",
   "successful_withdrawal_of_questions": "Xóa câu hỏi thành công",
@@ -1764,5 +1766,7 @@
   "NumberOfSharesConverted": "Số Cổ phần quy đổi",
   "BlockFingerprint": "Khóa Vân tay",
   "BlockFaceID": "Khóa Face ID",
-  "BlockEmailAdAccount": "Khóa Email/ tài khoản AD"
+  "BlockEmailAdAccount": "Khóa Email/ tài khoản AD",
+  "Type": "Loại",
+  "EditPersonalInformation": "Sửa thông tin cá nhân"
 }

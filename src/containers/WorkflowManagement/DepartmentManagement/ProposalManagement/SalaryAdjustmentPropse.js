@@ -1,65 +1,64 @@
 /* eslint-disable react/jsx-no-target-blank */
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useHistory } from 'react-router';
+import { useHistory } from "react-router";
 import moment from "moment";
-import { forEach } from 'lodash';
-import Select from 'react-select';
-import Spinner from 'react-bootstrap/Spinner';
+import { forEach } from "lodash";
+import Select from "react-select";
+import Spinner from "react-bootstrap/Spinner";
 import { withTranslation } from "react-i18next";
 import "react-toastify/dist/ReactToastify.css";
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import FilterMember from "../../ShareComponents/FilterMember";
-import ConfirmationModal from '../../../Registration/ConfirmationModal';
+import ConfirmationModal from "../../../Registration/ConfirmationModal";
 import ResultModal from "./ResultModal";
 import HumanForReviewSalaryComponent from "../../../Registration/HumanForReviewSalaryComponent";
-import ConfirmPasswordModal from '../../../Registration/ContractEvaluation/SalaryPropose/ConfirmPasswordModal';
-import StatusModal from '../../../../components/Common/StatusModal'
-import ResizableTextarea from '../../../Registration/TextareaComponent';
-import Constants from '../.../../../../../commons/Constants';
-import CurrencyInput from 'react-currency-input-field';
-import IconDelete from '../../../../assets/img/icon/Icon_Cancel.svg';
-import IconEye from '../../../../assets/img/icon/eye.svg';
-import IconNotEye from '../../../../assets/img/icon/not-eye.svg';
-import IconRemove from '../../../../assets/img/ic-remove.svg';
-import IconAdd from '../../../../assets/img/ic-add-green.svg';
-import { useApi } from '../../../../modules/api';
-import vi from 'date-fns/locale/vi'
+import ConfirmPasswordModal from "../../../Registration/ContractEvaluation/SalaryPropose/ConfirmPasswordModal";
+import StatusModal from "../../../../components/Common/StatusModal";
+import ResizableTextarea from "../../../Registration/TextareaComponent";
+import Constants from "../.../../../../../commons/Constants";
+import CurrencyInput from "react-currency-input-field";
+import IconDelete from "../../../../assets/img/icon/Icon_Cancel.svg";
+import IconEye from "../../../../assets/img/icon/eye.svg";
+import IconNotEye from "../../../../assets/img/icon/not-eye.svg";
+import IconRemove from "../../../../assets/img/ic-remove.svg";
+import IconAdd from "../../../../assets/img/ic-add-green.svg";
+import { useApi } from "../../../../modules/api";
+import vi from "date-fns/locale/vi";
 import { Button, Image } from "react-bootstrap";
 import { checkFilesMimeType } from "../../../../utils/file";
+import LoadingModal from "../../../../components/Common/LoadingModal";
 
-registerLocale("vi", vi)
+registerLocale("vi", vi);
 
 const ListTypeContract = [
-  { value: 'VA', label: 'HĐLĐ XĐ thời hạn' },
-  { value: 'VB', label: 'HĐLĐ KXĐ thời hạn' },
-  { value: 'VC', label: 'HĐLĐ theo mùa vụ' },
-  { value: 'VD', label: 'Hợp đồng tập nghề' },
-  { value: 'VE', label: 'Hợp đồng thử việc' },
-  { value: 'VF', label: 'HĐDV theo tháng' },
-  { value: 'VG', label: 'HĐDV theo giờ' },
-  { value: 'VH', label: 'HĐDV khoán' }
-]
+  { value: "VA", label: "HĐLĐ XĐ thời hạn" },
+  { value: "VB", label: "HĐLĐ KXĐ thời hạn" },
+  { value: "VC", label: "HĐLĐ theo mùa vụ" },
+  { value: "VD", label: "Hợp đồng tập nghề" },
+  { value: "VE", label: "Hợp đồng thử việc" },
+  { value: "VF", label: "HĐDV theo tháng" },
+  { value: "VG", label: "HĐDV theo giờ" },
+  { value: "VH", label: "HĐDV khoán" },
+];
 
 const SalaryAdjustmentPropse = (props) => {
   const { t } = props;
   const api = useApi();
   const history = useHistory();
-  const InsuranceOptions = [
-    { value: 1, label: t('SalaryPropse') },
-  ];
+  const InsuranceOptions = [{ value: 1, label: t("SalaryPropse") }];
   const [resultModal, setResultModal] = useState({
     show: false,
-    title: '',
-    message: '',
+    title: "",
+    message: "",
     isSuccess: false,
   });
   const [modalStatus, setModalStatus] = useState({
     isShowStatusModal: false,
-    content: '',
+    content: "",
     isSuccess: true,
-    url: '',
+    url: "",
   });
 
   const [confirmModal, setConfirmModal] = useState({
@@ -67,29 +66,34 @@ const SalaryAdjustmentPropse = (props) => {
     modalTitle: "",
     typeRequest: "",
     modalMessage: "",
-    confirmStatus: ""
+    confirmStatus: "",
   });
 
   const [isCreateMode, setIsCreateMode] = useState(false);
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false);
   const [modalConfirmPassword, setModalConfirmPassword] = useState(false);
-  const [accessToken, setAccessToken] = useState(new URLSearchParams(props.history.location.search).get('accesstoken') || null);
+  const [accessToken, setAccessToken] = useState(
+    new URLSearchParams(props.history.location.search).get("accesstoken") ||
+      null
+  );
   const [type, setType] = useState(InsuranceOptions[0]);
   const [listFiles, setListFiles] = useState([]);
+  const[listFileDeleted, setListFileDeleted] = useState([]);
   const [selectMembers, setSelectMembers] = useState([]);
   const [selectedMembers, setSelectedMembers] = useState([]);
   const [checkedMemberIds, setCheckedMemberIds] = useState({});
   const [selectedAll, setSelectedAll] = useState(false);
   const [canSelectedll, setCanSelectedAll] = useState(true);
   const [dataSalary, setDataSalary] = useState(undefined);
-  const [currencySalary, setCurrencySalary] = useState('VND');
+  const [currencySalary, setCurrencySalary] = useState("VND");
 
   const [coordinator, setCoordinator] = useState(null); // Nhân sự hỗ trợ xin quyền xem lương
   const [supervisor, setSupervisor] = useState(null); // CBQL cấp cơ sở
   const [supervisors, setSupervisors] = useState([null]);
   const [appraiser, setAppraiser] = useState(null); // HR thẩm định quyền điều chỉnh lương
   const [approver, setApprover] = useState(null); // CBLĐ phê duyệt
-  const [callSalary, setCalledSalary] = useState(false);
+  const [isCallSalary, setIsCallSalary] = useState(false);
+  const [isOpenDatepick, setIsOpenDatepick] = useState(false);
   const [viewSetting, setViewSetting] = useState({
     showComponent: {
       stateProcess: false, // Button trang thai
@@ -110,35 +114,35 @@ const SalaryAdjustmentPropse = (props) => {
       editSubjectApply: false, // Cho phép xem, sửa thông tin đối tượng
       selectHrSupportViewSalary: false, // Cho phep chon Nhân sự hỗ trợ quyền xem lương
       showCurrentSalary: false, // Change type text & password lương hiện tại
-      showSuggestedSalary: false, // Change type text & password lương đề xuất 
+      showSuggestedSalary: false, // Change type text & password lương đề xuất
       showEye: false, // Hiển thị mắt xem lương
       disableAll: false,
     },
     proposedStaff: {
-      avatar: '',
-      account: '',
-      email: '',
-      employeeNo: '',
-      employeeLevel: '',
-      orglv2Id: '',
-      fullName: '',
-      jobTitle: '',
-      department: '',
-      orgLv2Id: '',
-      orgLv3Id: '',
-      orgLv4Id: '',
-      orgLv5Id: '',
-      orgLv2Text: '',
-      orgLv3Text: '',
-      orgLv4Text: '',
-      orgLv5Text: '',
-      companyCode: '',
+      avatar: "",
+      account: "",
+      email: "",
+      employeeNo: "",
+      employeeLevel: "",
+      orglv2Id: "",
+      fullName: "",
+      jobTitle: "",
+      department: "",
+      orgLv2Id: "",
+      orgLv3Id: "",
+      orgLv4Id: "",
+      orgLv5Id: "",
+      orgLv2Text: "",
+      orgLv3Text: "",
+      orgLv4Text: "",
+      orgLv5Text: "",
+      companyCode: "",
     },
   });
 
   useEffect(() => {
     if (props.match.params.id) {
-      if (props.match.params.id !== 'create') {
+      if (props.match.params.id !== "create") {
         // Review mode
         setIsCreateMode(false);
         getDataSalary();
@@ -148,34 +152,38 @@ const SalaryAdjustmentPropse = (props) => {
         checkViewCreate();
       }
     } else {
-      props.history.push('proposal-management')
+      props.history.push("proposal-management");
     }
 
-    const queryParams = new URLSearchParams(props.history.location.search)
-    if (queryParams.has('accesstoken')) {
-      queryParams.delete('accesstoken')
+    const queryParams = new URLSearchParams(props.history.location.search);
+    if (queryParams.has("accesstoken")) {
+      queryParams.delete("accesstoken");
       props.history.replace({
         search: queryParams.toString(),
-      })
+      });
     }
     // eslint-disable-next-line
   }, []);
-  
+
   useEffect(() => {
-    if(selectedMembers?.length > 0 && callSalary == false && accessToken) {
-      getSalary(accessToken)
+    if (selectedMembers?.length > 0 && isCallSalary == false && accessToken) {
+      getSalary(accessToken);
     }
   }, [selectedMembers]);
 
   const getDataSalary = async () => {
     try {
+      setIsLoading(true);
       const { data: { data: response } } = await api.fetchSalaryPropose(props.match.params.id);
-      await setDataSalary(response)
+      //const response = dataDetailSalaryPropose;
+      await setDataSalary(response);
       await checkAuthorize(response);
     } catch (error) {
       console.log(error);
+    }finally {
+      setIsLoading(false);
     }
-  }
+  };
 
   const checkViewCreate = () => {
     let viewSettingTmp = { ...viewSetting };
@@ -186,51 +194,125 @@ const SalaryAdjustmentPropse = (props) => {
     viewSettingTmp.disableComponent.editSubjectApply = true;
     viewSettingTmp.disableComponent.selectHrSupportViewSalary = true;
 
-    viewSettingTmp.proposedStaff.avatar = localStorage.getItem('avatar') || ""
-    viewSettingTmp.proposedStaff.account = localStorage.getItem('email').split('@')[0] || ""
-    viewSettingTmp.proposedStaff.email = localStorage.getItem('email') || ""
-    viewSettingTmp.proposedStaff.company_email = localStorage.getItem('plEmail') || ""
-    viewSettingTmp.proposedStaff.employeeNo = localStorage.getItem('employeeNo') || ""
-    viewSettingTmp.proposedStaff.employeeLevel = localStorage.getItem('employeeLevel') || ""
-    viewSettingTmp.proposedStaff.fullName = localStorage.getItem('fullName') || ""
-    viewSettingTmp.proposedStaff.jobTitle = localStorage.getItem('jobTitle') || ""
-    viewSettingTmp.proposedStaff.department = localStorage.getItem('department') || ""
-    viewSettingTmp.proposedStaff.orgLv2Id = localStorage.getItem('organizationLv2') || ""
-    viewSettingTmp.proposedStaff.orgLv3Id = localStorage.getItem('organizationLv3') || ""
-    viewSettingTmp.proposedStaff.orgLv4Id = localStorage.getItem('organizationLv4') || ""
-    viewSettingTmp.proposedStaff.orgLv5Id = localStorage.getItem('organizationLv5') || ""
-    viewSettingTmp.proposedStaff.orgLv6Id = localStorage.getItem('organizationLv6') || ""
-    viewSettingTmp.proposedStaff.orgLv2Text = localStorage.getItem('company') || ""
-    viewSettingTmp.proposedStaff.orgLv3Text = localStorage.getItem('division') || ""
-    viewSettingTmp.proposedStaff.orgLv4Text = localStorage.getItem('region') || ""
-    viewSettingTmp.proposedStaff.orgLv5Text = localStorage.getItem('unit') || ""
-    viewSettingTmp.proposedStaff.orgLv6Text = localStorage.getItem('part') || ""
-    viewSettingTmp.proposedStaff.companyCode = localStorage.getItem('companyCode') || ""
-    setViewSetting(viewSettingTmp)
-  }
+    viewSettingTmp.proposedStaff.avatar = localStorage.getItem("avatar") || "";
+    viewSettingTmp.proposedStaff.account =
+      localStorage.getItem("email").split("@")[0] || "";
+    viewSettingTmp.proposedStaff.email = localStorage.getItem("email") || "";
+    viewSettingTmp.proposedStaff.company_email =
+      localStorage.getItem("plEmail") || "";
+    viewSettingTmp.proposedStaff.employeeNo =
+      localStorage.getItem("employeeNo") || "";
+    viewSettingTmp.proposedStaff.employeeLevel =
+      localStorage.getItem("employeeLevel") || "";
+    viewSettingTmp.proposedStaff.fullName =
+      localStorage.getItem("fullName") || "";
+    viewSettingTmp.proposedStaff.jobTitle =
+      localStorage.getItem("jobTitle") || "";
+    viewSettingTmp.proposedStaff.department =
+      localStorage.getItem("department") || "";
+    viewSettingTmp.proposedStaff.orgLv2Id =
+      localStorage.getItem("organizationLv2") || "";
+    viewSettingTmp.proposedStaff.orgLv3Id =
+      localStorage.getItem("organizationLv3") || "";
+    viewSettingTmp.proposedStaff.orgLv4Id =
+      localStorage.getItem("organizationLv4") || "";
+    viewSettingTmp.proposedStaff.orgLv5Id =
+      localStorage.getItem("organizationLv5") || "";
+    viewSettingTmp.proposedStaff.orgLv6Id =
+      localStorage.getItem("organizationLv6") || "";
+    viewSettingTmp.proposedStaff.orgLv2Text =
+      localStorage.getItem("company") || "";
+    viewSettingTmp.proposedStaff.orgLv3Text =
+      localStorage.getItem("division") || "";
+    viewSettingTmp.proposedStaff.orgLv4Text =
+      localStorage.getItem("region") || "";
+    viewSettingTmp.proposedStaff.orgLv5Text =
+      localStorage.getItem("unit") || "";
+    viewSettingTmp.proposedStaff.orgLv6Text =
+      localStorage.getItem("part") || "";
+    viewSettingTmp.proposedStaff.companyCode =
+      localStorage.getItem("companyCode") || "";
+    setViewSetting(viewSettingTmp);
+  };
 
   const checkAuthorize = (dataSalaryInfo) => {
-    const currentEmail = localStorage.getItem('email');
+    
+    const currentEmail = localStorage.getItem("email");
     let viewSettingTmp = { ...viewSetting };
+    viewSettingTmp.showComponent.stateProcess = true;
+    let currentStatus = dataSalaryInfo?.processStatusId;
     switch (dataSalaryInfo?.processStatusId) {
+      //Nhân sự điều phối gửi lại yêu cầu
+      case 20:
+        setIsCreateMode(true);
+        viewSettingTmp.showComponent.stateProcess = false;
+        viewSettingTmp.showComponent.btnAttachFile = true;
+        viewSettingTmp.showComponent.btnSendRequest = true;
+        viewSettingTmp.showComponent.showHrSupportViewSalary = true;
+        viewSettingTmp.showComponent.showRemoveFile = true;
+        viewSettingTmp.disableComponent.editSubjectApply = true;
+        viewSettingTmp.disableComponent.selectHrSupportViewSalary = true;
+        viewSettingTmp.proposedStaff.avatar = localStorage.getItem("avatar") || "";
+        viewSettingTmp.proposedStaff.account =
+          localStorage.getItem("email").split("@")[0] || "";
+        viewSettingTmp.proposedStaff.email = localStorage.getItem("email") || "";
+        viewSettingTmp.proposedStaff.company_email =
+          localStorage.getItem("plEmail") || "";
+        viewSettingTmp.proposedStaff.employeeNo =
+          localStorage.getItem("employeeNo") || "";
+        viewSettingTmp.proposedStaff.employeeLevel =
+          localStorage.getItem("employeeLevel") || "";
+        viewSettingTmp.proposedStaff.fullName =
+          localStorage.getItem("fullName") || "";
+        viewSettingTmp.proposedStaff.jobTitle =
+          localStorage.getItem("jobTitle") || "";
+        viewSettingTmp.proposedStaff.department =
+          localStorage.getItem("department") || "";
+        viewSettingTmp.proposedStaff.orgLv2Id =
+          localStorage.getItem("organizationLv2") || "";
+        viewSettingTmp.proposedStaff.orgLv3Id =
+          localStorage.getItem("organizationLv3") || "";
+        viewSettingTmp.proposedStaff.orgLv4Id =
+          localStorage.getItem("organizationLv4") || "";
+        viewSettingTmp.proposedStaff.orgLv5Id =
+          localStorage.getItem("organizationLv5") || "";
+        viewSettingTmp.proposedStaff.orgLv6Id =
+          localStorage.getItem("organizationLv6") || "";
+        viewSettingTmp.proposedStaff.orgLv2Text =
+          localStorage.getItem("company") || "";
+        viewSettingTmp.proposedStaff.orgLv3Text =
+          localStorage.getItem("division") || "";
+        viewSettingTmp.proposedStaff.orgLv4Text =
+          localStorage.getItem("region") || "";
+        viewSettingTmp.proposedStaff.orgLv5Text =
+          localStorage.getItem("unit") || "";
+        viewSettingTmp.proposedStaff.orgLv6Text =
+          localStorage.getItem("part") || "";
+        viewSettingTmp.proposedStaff.companyCode =
+          localStorage.getItem("companyCode") || "";
+        currentStatus = 0; 
+        break;
       // Đang chờ nhân sự điều phối & Đang chờ nhân sự thẩm định người xem lương
       case 21:
-      case 22:
         viewSettingTmp.showComponent.showHrSupportViewSalary = true;
         if (accessToken) {
           viewSettingTmp.disableComponent.showCurrentSalary = true;
           viewSettingTmp.disableComponent.showSuggestedSalary = true;
         }
+        currentStatus = 0
         break;
       // Đang chờ QLTT nhập lương đề xuất, xem lương hiện tại
-      case 23:
+      case 22:
         viewSettingTmp.showComponent.showHrSupportViewSalary = true;
         viewSettingTmp.showComponent.showCBQL = true;
         viewSettingTmp.showComponent.showHrAssessment = true;
         viewSettingTmp.showComponent.showOfficerApproved = true;
         viewSettingTmp.disableComponent.showEye = true;
-        if (currentEmail.toLowerCase() === dataSalaryInfo?.userId?.toLowerCase()
-          && props.match.params.type === 'request') {
+        if (
+          currentEmail.toLowerCase() ===
+            dataSalaryInfo?.userId?.toLowerCase() &&
+          props.match.params.type === "request"
+        ) {
           viewSettingTmp.showComponent.btnCancel = true;
           viewSettingTmp.showComponent.btnSendRequest = true;
           viewSettingTmp.disableComponent.editSubjectApply = true;
@@ -241,6 +323,7 @@ const SalaryAdjustmentPropse = (props) => {
           viewSettingTmp.disableComponent.showSuggestedSalary = true;
           viewSettingTmp.disableComponent.showEye = true;
         }
+        currentStatus = 0;
         break;
       // Đang chờ CBQL Cấp cơ sở thẩm định
       case 8:
@@ -249,12 +332,18 @@ const SalaryAdjustmentPropse = (props) => {
         viewSettingTmp.showComponent.showHrAssessment = true;
         viewSettingTmp.showComponent.showOfficerApproved = true;
         viewSettingTmp.disableComponent.showEye = true;
-        if (currentEmail.toLowerCase() === dataSalaryInfo?.appraiserId?.toLowerCase()
-          && props.match.params.type === 'access'
+        let currentAppraiserIndex = dataSalaryInfo?.requestAppraisers?.findIndex(app => app.status == Constants.SALARY_APPRAISER_STATUS.WAITING);
+        if (
+          currentAppraiserIndex != -1 &&
+          currentEmail.toLowerCase() ===
+          dataSalaryInfo?.requestAppraisers[currentAppraiserIndex].appraiserId?.toLowerCase() &&
+          props.match.params.type === "assess"
         ) {
           viewSettingTmp.showComponent.btnRefuse = true;
           viewSettingTmp.showComponent.btnExpertise = true;
           viewSettingTmp.disableComponent.showEye = true;
+        } else if(props.match.params.type != "request") {
+            currentStatus = 20;
         }
         if (accessToken) {
           viewSettingTmp.disableComponent.showCurrentSalary = true;
@@ -269,8 +358,10 @@ const SalaryAdjustmentPropse = (props) => {
         viewSettingTmp.showComponent.showHrAssessment = true;
         viewSettingTmp.showComponent.showOfficerApproved = true;
         viewSettingTmp.disableComponent.showEye = true;
-        if (currentEmail.toLowerCase() === dataSalaryInfo?.supervisorId?.toLowerCase()
-          && props.match.params.type === 'access'
+        if (
+          currentEmail.toLowerCase() ===
+            dataSalaryInfo?.supervisorId?.toLowerCase() &&
+          props.match.params.type === "assess"
         ) {
           viewSettingTmp.showComponent.btnRefuse = true;
           viewSettingTmp.showComponent.btnExpertise = true;
@@ -282,15 +373,17 @@ const SalaryAdjustmentPropse = (props) => {
           viewSettingTmp.disableComponent.showEye = true;
         }
         break;
-      // Đang chờ CBLĐ phê duyệt 
+      // Đang chờ CBLĐ phê duyệt
       case 5:
         viewSettingTmp.showComponent.showHrSupportViewSalary = true;
         viewSettingTmp.showComponent.showCBQL = true;
         viewSettingTmp.showComponent.showHrAssessment = true;
         viewSettingTmp.showComponent.showOfficerApproved = true;
         viewSettingTmp.disableComponent.showEye = true;
-        if (currentEmail.toLowerCase() === dataSalaryInfo?.approverId?.toLowerCase()
-          && props.match.params.type === 'approval'
+        if (
+          currentEmail.toLowerCase() ===
+            dataSalaryInfo?.approverId?.toLowerCase() &&
+          props.match.params.type === "approval"
         ) {
           viewSettingTmp.showComponent.btnNotApprove = true;
           viewSettingTmp.showComponent.btnApprove = true;
@@ -319,248 +412,269 @@ const SalaryAdjustmentPropse = (props) => {
       default:
         break;
     }
-    viewSettingTmp.proposedStaff.fullName = dataSalaryInfo?.user?.fullName
-    viewSettingTmp.proposedStaff.jobTitle = dataSalaryInfo?.user?.jobTitle
-    viewSettingTmp.proposedStaff.department = dataSalaryInfo?.user?.department
+    // viewSettingTmp.proposedStaff.fullName = dataSalaryInfo?.user?.fullName;
+    // viewSettingTmp.proposedStaff.jobTitle = dataSalaryInfo?.user?.jobTitle;
+    // viewSettingTmp.proposedStaff.department = dataSalaryInfo?.user?.department;
+    viewSettingTmp.currentStatus = currentStatus; 
+    const requestInfo = dataSalaryInfo;
 
-    if (dataSalaryInfo?.requestInfo.length !== 0) {
-      const requestInfo = dataSalaryInfo?.requestInfo[0];
-      // Nhân sự điều phối
-      if (requestInfo?.coordinatorInfo)
-        setCoordinator({
-          fullName: JSON.parse(requestInfo?.coordinatorInfo)?.fullName,
-          account: JSON.parse(requestInfo?.coordinatorInfo)?.account,
-          current_position: JSON.parse(requestInfo?.coordinatorInfo)?.current_position,
-          department: JSON.parse(requestInfo?.coordinatorInfo)?.department
-        })
-      // Thong tin CBNV
-	 	const memberCheck = {};
-		let canCheckAll = false;
-      const employeeLists = dataSalaryInfo?.requestInfo.map(u => {
-		u.accepted = u.accept != false ? true : false;
-        const requestTmp = JSON.parse(u?.employeeInfo)
-		memberCheck[requestTmp?.employeeNo] = {uid: requestTmp?.employeeNo, checked: false, canChangeAction: u?.accepted == true}
-		canCheckAll = canCheckAll || u?.accepted == true;
-        return {
-          id: u?.id,
-          uid: requestTmp?.employeeNo,
-          employeeNo: requestTmp?.employeeNo,
-          account: requestTmp?.account,
-          fullName: requestTmp?.fullName,
-          fullname: requestTmp?.fullName,
-          jobTitle: requestTmp?.jobTitle,
-          startDate: requestTmp?.startDate,
-          expireDate: requestTmp?.expireDate,
-          contractName: requestTmp?.contractName,
-          contractType: requestTmp?.contractType,
-          department: requestTmp?.department,
-          currentSalary: "0",
-          suggestedSalary: "0",
-          effectiveTime: u?.startDate ? moment(u?.startDate).format(Constants.LEAVE_DATE_FORMAT) : "",
-          strength: u?.staffStrengths,
-          weakness: u?.staffWknesses,
-		  canChangeAction: u?.accepted == true,
-		  accepted: u?.accepted
-        }
-      })
-	  setCanSelectedAll(canCheckAll);
-	  setCheckedMemberIds(memberCheck);
-      setSelectedMembers(employeeLists)
+    //QLTT
+    if(requestInfo.requestInfo && dataSalaryInfo?.processStatusId != 20) {
+      const userInfo = JSON.parse(requestInfo.userInfo);
+      viewSettingTmp.proposedStaff = {...userInfo};
     }
+    // Nhân sự điều phối
+    if (requestInfo?.coordinatorInfo)
+      setCoordinator({
+        ...JSON.parse(requestInfo?.coordinatorInfo)
+      });
+    // Thong tin CBNV
+    const memberCheck = {};
+    let canCheckAll = false;
+    const employeeLists = dataSalaryInfo?.salaryAdjustments?.map((u) => {
+      u.accepted = u.status ? true : false;
+      const requestTmp = JSON.parse(u?.employeeInfo);
+      memberCheck[requestTmp?.employeeNo] = {
+        uid: requestTmp?.employeeNo,
+        checked: false,
+        canChangeAction: u?.accepted == true,
+      };
+      canCheckAll = canCheckAll || u?.accepted == true;
+      return {
+        id: u?.id,
+        uid: requestTmp?.employeeNo,
+        employeeNo: requestTmp?.employeeNo,
+        account: requestTmp?.account,
+        fullName: requestTmp?.fullName,
+        fullname: requestTmp?.fullName,
+        jobTitle: requestTmp?.jobTitle,
+        startDate: requestTmp?.startDate,
+        expireDate: requestTmp?.expireDate,
+        contractName: requestTmp?.contractName,
+        contractType: requestTmp?.contractType,
+        department: requestTmp?.department,
+        currentSalary: "0",
+        suggestedSalary: "0",
+        effectiveTime: u?.startDate
+          ? moment(u?.startDate).format(Constants.LEAVE_DATE_FORMAT)
+          : "",
+        strength: u?.staffStrengths,
+        weakness: u?.staffWknesses,
+        canChangeAction: u?.accepted == true,
+        accepted: u?.accepted,
+        comment: u.comment
+      };
+    });
+   
+    setCanSelectedAll(canCheckAll);
+    setCheckedMemberIds(memberCheck);
+    setSelectedMembers(employeeLists);
+    //console.log(memberCheck);
 
     // CBQL cấp cơ sở
-    if (dataSalaryInfo?.supervisorInfo) {
-      setSupervisor({
-        fullName: JSON.parse(dataSalaryInfo?.supervisorInfo)?.fullName,
-        account: JSON.parse(dataSalaryInfo?.supervisorInfo)?.account,
-        current_position: JSON.parse(dataSalaryInfo?.supervisorInfo)?.current_position,
-        department: JSON.parse(dataSalaryInfo?.supervisorInfo)?.department
+    if (dataSalaryInfo?.requestAppraisers?.length > 0) {
+      const _supervisors = [];
+      dataSalaryInfo.requestAppraisers.map(item => {
+        const _itemInfo = JSON.parse(item.appraiserInfo);
+        if(_itemInfo.type) { // HR thẩm định quyền điều chỉnh lương
+          setAppraiser({
+            ..._itemInfo,
+            uid: _itemInfo?.employeeNo,
+            employeeNo: _itemInfo?.employeeNo,
+            requestHistoryId: item.requestHistoryId
+          });
+        } else {
+          _supervisors.push({
+            ..._itemInfo,
+            uid: _itemInfo?.employeeNo,
+            employeeNo: _itemInfo?.employeeNo,
+            requestHistoryId: item.requestHistoryId
+          })
+        }
       })
-	  setSupervisors([
-		{
-			fullName: JSON.parse(dataSalaryInfo?.supervisorInfo)?.fullName,
-			account: JSON.parse(dataSalaryInfo?.supervisorInfo)?.account,
-			current_position: JSON.parse(dataSalaryInfo?.supervisorInfo)?.current_position,
-			department: JSON.parse(dataSalaryInfo?.supervisorInfo)?.department
-		}
-	  ])
-	}
-    // HR thẩm định quyền điều chỉnh lương
-    if (dataSalaryInfo?.appraiserInfo)
-      setAppraiser({
-        fullName: JSON.parse(dataSalaryInfo?.appraiserInfo)?.fullName,
-        account: JSON.parse(dataSalaryInfo?.appraiserInfo)?.account,
-        current_position: JSON.parse(dataSalaryInfo?.appraiserInfo)?.current_position,
-        department: JSON.parse(dataSalaryInfo?.appraiserInfo)?.department
-      })
+      setSupervisors(_supervisors);
+    }
     // CBLĐ phê duyệt
-    if (dataSalaryInfo?.approverInfo)
+    if (dataSalaryInfo?.approverInfo) {
+      const approvalData = JSON.parse(requestInfo?.approverInfo);
       setApprover({
-        fullName: JSON.parse(dataSalaryInfo?.approverInfo)?.fullName,
-        account: JSON.parse(dataSalaryInfo?.approverInfo)?.account,
-        current_position: JSON.parse(dataSalaryInfo?.approverInfo)?.current_position,
-        department: JSON.parse(dataSalaryInfo?.approverInfo)?.department
-      })
-
-    const requestDocuments = dataSalaryInfo?.requestDocuments.map(u => ({ id: u.id, name: u.fileName, link: u.fileUrl }))
-    setListFiles(requestDocuments)
-    setViewSetting(viewSettingTmp)
-  }
+        ...approvalData,
+        uid: approvalData?.employeeNo,
+        employeeNo: approvalData?.employeeNo,
+      });
+    }
+    const requestDocuments = (dataSalaryInfo?.userProfileDocuments || []).map((u) => ({
+      id: u.id,
+      name: u.fileName,
+      link: u.fileUrl,
+    })) || [];
+    setListFiles(requestDocuments);
+    setViewSetting(viewSettingTmp);
+  };
 
   const handleSelectMembers = (members) => {
-	const memberCheck = {};
-	members.map(u => {
-		memberCheck[u.uid] = {uid: u.uid, checked: false, canChangeAction: u?.accepted == true}
-	});
-    const membersMapping = members.map(u => ({
+    const memberCheck = {};
+    members.map((u) => {
+      memberCheck[u.uid] = {
+        uid: u.uid,
+        checked: false,
+        canChangeAction: u?.accepted == true,
+      };
+    });
+    const membersMapping = members.map((u) => ({
       uid: u?.uid,
       employeeNo: u?.uid,
       account: u?.username.toLowerCase(),
+      username: u?.username.toLowerCase(),
       fullName: u?.fullname,
       jobTitle: u?.title,
-      startDate: '',
-      expireDate: '',
+      startDate: "",
+      expireDate: "",
       contractName: u?.contractName,
       contractType: u?.contractType,
       department: u?.department,
-      currentSalary: '',
-      suggestedSalary: '',
-      effectiveTime: '',
-      strength: '',
-      weakness: '',
-	  accepted: true
-    }))
-	setCheckedMemberIds(memberCheck);
-    setSelectMembers(membersMapping)
-  }
+      currentSalary: "",
+      suggestedSalary: "",
+      effectiveTime: "",
+      strength: "",
+      weakness: "",
+      accepted: true,
+    }));
+    setCheckedMemberIds(memberCheck);
+    setSelectMembers(membersMapping);
+  };
 
-  const handleSelectedMembers = (members) => { 
-	const memberCheck = {};
-	members.map(u => {
-		memberCheck[u.uid] = {uid: u.uid, checked: false, canChangeAction: u?.accepted == true}
-	});
-    const membersMapping = members.map(u => ({
+  const handleSelectedMembers = (members) => {
+    const memberCheck = {};
+    members.map((u) => {
+      memberCheck[u.uid] = {
+        uid: u.uid,
+        checked: false,
+        canChangeAction: u?.accepted == true,
+      };
+    });
+    const membersMapping = members.map((u) => ({
       uid: u?.uid,
       employeeNo: u?.uid,
       account: u?.username.toLowerCase(),
       fullName: u?.fullname,
       jobTitle: u?.job_name,
-      startDate: '',
-      expireDate: '',
+      startDate: "",
+      expireDate: "",
       contractName: u?.contractName,
       contractType: u?.contractType,
       department: u?.department,
-      currentSalary: '',
-      suggestedSalary: '',
-      effectiveTime: '',
-      strength: '',
-      weakness: '',
-	  accepted: true
-    }))
-	setCheckedMemberIds(memberCheck);
-    setSelectedMembers(membersMapping)
-  }
+      currentSalary: "",
+      suggestedSalary: "",
+      effectiveTime: "",
+      strength: "",
+      weakness: "",
+      accepted: true,
+    }));
+    setCheckedMemberIds(memberCheck);
+    setSelectedMembers(membersMapping);
+  };
 
   const onSelectAll = (e) => {
-	const value = e.target.checked;
-	const newCheckedMemeberIds = {};
-	Object.values(checkedMemberIds).map(item => {
-		if(item.canChangeAction) {
-			newCheckedMemeberIds[item.uid] = {...item, checked: value};
-		} else {
-			newCheckedMemeberIds[item.uid] = item;
-		}
-	});
-	setCheckedMemberIds(newCheckedMemeberIds);
-	setSelectedAll(value);
-  }
+    const value = e.target.checked;
+    const newCheckedMemeberIds = {};
+    Object.values(checkedMemberIds).map((item) => {
+      if (item.canChangeAction) {
+        newCheckedMemeberIds[item.uid] = { ...item, checked: value };
+      } else {
+        newCheckedMemeberIds[item.uid] = item;
+      }
+    });
+    setCheckedMemberIds(newCheckedMemeberIds);
+    setSelectedAll(value);
+  };
 
   const onCheckboxSelectChange = (e, uid) => {
-	const value = e.target.checked;
-	let checkall = true;
-	const newCheckedMemeberIds = {};
-	Object.values(checkedMemberIds).map(item => {
-		if(item.uid == uid) {
-			newCheckedMemeberIds[item.uid] = {...item, checked: value};
-		} else {
-			newCheckedMemeberIds[item.uid] = item;
-		}
-		checkall = checkall && newCheckedMemeberIds[item.uid].checked;
-	});
-	setCheckedMemberIds(newCheckedMemeberIds);
-	setSelectedAll(checkall);
-  }
+    const value = e.target.checked;
+    let checkall = true;
+    const newCheckedMemeberIds = {};
+    Object.values(checkedMemberIds).map((item) => {
+      if (item.uid == uid) {
+        newCheckedMemeberIds[item.uid] = { ...item, checked: value };
+      } else {
+        newCheckedMemeberIds[item.uid] = item;
+      }
+      checkall = checkall && (newCheckedMemeberIds[item.uid].checked || item.canChangeAction == false);
+    });
+    setCheckedMemberIds(newCheckedMemeberIds);
+    setSelectedAll(checkall);
+  };
 
   const onActionChangeAll = (accepted = true) => {
-	const _selectedMembers = selectedMembers.map(item => {
-		if(checkedMemberIds[item.uid]?.checked == true) {
-			return {...item, accepted: accepted};
-		}
-		return item;
-	});
-	setSelectedMembers(_selectedMembers);
-  }
+    const _selectedMembers = selectedMembers.map((item) => {
+      if (checkedMemberIds[item.uid]?.checked == true) {
+        return { ...item, accepted: accepted };
+      }
+      return item;
+    });
+    setSelectedMembers(_selectedMembers);
+  };
 
   const onActionChange = (uid, accepted = true) => {
-	const _selectedMembers = selectedMembers.map(item => {
-		if(item.uid == uid) {
-			return {...item, accepted: accepted};
-		}
-		return item;
-	});
-	setSelectedMembers(_selectedMembers);
-  }
+    const _selectedMembers = selectedMembers.map((item) => {
+      if (item.uid == uid) {
+        return { ...item, accepted: accepted };
+      }
+      return item;
+    });
+    setSelectedMembers(_selectedMembers);
+  };
 
   const handleTextInputChange = (value, uid, objName) => {
     const selectedMembersTmp = [...selectedMembers];
-    selectedMembersTmp.forEach(item => {
+    selectedMembersTmp.forEach((item) => {
       if (item.uid === uid) {
-        item[objName] = value
+        item[objName] = value;
       }
-    })
-    setSelectedMembers(selectedMembersTmp)
-  }
+    });
+    setSelectedMembers(selectedMembersTmp);
+  };
 
   const handleDatePickerInputChange = (value, uid, objName) => {
     const selectedMembersTmp = [...selectedMembers];
-    selectedMembersTmp.forEach(item => {
+    selectedMembersTmp.forEach((item) => {
       if (item.uid === uid) {
-        if (moment(value, 'DD-MM-YYYY').isValid()) {
+        if (moment(value, "DD-MM-YYYY").isValid()) {
           const date = moment(value, Constants.LEAVE_DATE_FORMAT);
           item[objName] = date;
         } else {
-          item[objName] = '';
+          item[objName] = "";
         }
       }
-    })
-    setSelectedMembers(selectedMembersTmp)
-  }
+    });
+    setSelectedMembers(selectedMembersTmp);
+  };
 
   const handleShowCurrentSalary = () => {
-    if(callSalary) {
+    if (isCallSalary) {
       setViewSetting({
         ...viewSetting,
         disableComponent: {
           ...viewSetting.disableComponent,
-          showCurrentSalary: !viewSetting.disableComponent.showCurrentSalary
-        }
+          showCurrentSalary: !viewSetting.disableComponent.showCurrentSalary,
+        },
       });
       return;
     }
     if (!accessToken) {
-      setModalConfirmPassword(true)
+      setModalConfirmPassword(true);
     } else if (!viewSetting.disableComponent.showCurrentSalary) {
-      getSalary(accessToken)
+      getSalary(accessToken);
     }
-  }
+  };
 
-  const handleShowSuggestedSalary = () => {
-    if (!accessToken) {
-      setModalConfirmPassword(true)
-    } else if (!viewSetting.disableComponent.showSuggestedSalary) {
-      getSalary(accessToken)
-    }
-  }
+  // const handleShowSuggestedSalary = () => {
+  //   if (!accessToken) {
+  //     setModalConfirmPassword(true);
+  //   } else if (!viewSetting.disableComponent.showSuggestedSalary) {
+  //     getSalary(accessToken);
+  //   }
+  // };
 
   // Từ chối
   const handleRefuse = () => {
@@ -580,12 +694,12 @@ const SalaryAdjustmentPropse = (props) => {
               processStatusId: 7,
               comment: "",
               status: "",
-            }
+            },
           ],
-        }
+        },
       ],
-    })
-  }
+    });
+  };
 
   // Không phê duyệt
   const handleReject = () => {
@@ -605,36 +719,47 @@ const SalaryAdjustmentPropse = (props) => {
               processStatusId: 1,
               comment: "",
               status: "",
-            }
+            },
           ],
-        }
+        },
       ],
-    })
-  }
+    });
+  };
 
   // Hủy
   const handleCancel = () => {
-    history.push('/tasks');
-  }
+    history.push("/tasks");
+  };
 
   // Attach file
   const handleAttachFile = (e) => {
-    const files = Object.values(e.target.files)
+    const files = Object.values(e.target.files);
     if (checkFilesMimeType(e, files)) {
       const listFilesTmp = [...listFiles, ...files];
-      setListFiles(listFilesTmp)
+      setListFiles(listFilesTmp);
     }
-  }
+  };
 
   const removeFiles = (id, index) => {
     // Todo: handle remove file
-    const listFilesTmp = [...listFiles].filter((item, i) => i !== index)
-    setListFiles(listFilesTmp)
-  }
+    let listFilesTmp = [...listFiles].filter((item, i) => i !== index);
+    if(id) {
+      setListFileDeleted([...listFileDeleted, id]);
+    }
+    setListFiles(listFilesTmp);
+  };
 
   // Thẩm định
   const handleConsent = () => {
     // const processStatusId = appraiser ? 24 : 5
+    let staffRequestStatusList = selectedMembers?.map(item => {
+      return {
+        employeeNo: item.uid,
+        salaryAdjustmentId: item.id,
+        status: item.accepted ? 1 : 0,
+        comment: item.comment || ''
+      }
+    })
     setConfirmModal({
       isShowModalConfirm: true,
       modalTitle: t("ConsentConfirmation"),
@@ -651,15 +776,24 @@ const SalaryAdjustmentPropse = (props) => {
               processStatusId: 5,
               comment: "",
               status: "",
-            }
+              staffRequestStatusList: staffRequestStatusList
+            },
           ],
-        }
+        },
       ],
-    })
-  }
+    });
+  };
 
   // Phê duyệt
   const handleApprove = () => {
+    let staffRequestStatusList = selectedMembers?.map(item => {
+      return {
+        employeeNo: item.uid,
+        salaryAdjustmentId: item.id,
+        status: item.accepted ? 1 : 0,
+        comment: item.comment || ''
+      }
+    })
     setConfirmModal({
       isShowModalConfirm: true,
       modalTitle: t("ApproveRequest"),
@@ -676,48 +810,73 @@ const SalaryAdjustmentPropse = (props) => {
               processStatusId: 2,
               comment: "",
               status: "",
-            }
+              staffRequestStatusList: staffRequestStatusList
+            },
           ],
-        }
+        },
       ],
-    })
-  }
+    });
+  };
 
   // Gửi yêu cầu
   const handleSendForm = () => {
     // Create
     if (isCreateMode) {
-      if (selectMembers.length === 0) {
-        showStatusModal(t("ProposedEmployeeValidate"), false)
+      if (selectMembers.length === 0 && selectedMembers.length == 0) {
+        showStatusModal(t("ProposedEmployeeValidate"), false);
         return;
       }
       if (!coordinator) {
-        showStatusModal(t("HumanForReviewSalaryValidate"), false)
+        showStatusModal(t("HumanForReviewSalaryValidate"), false);
         return;
       }
-      setIsLoading(true)
-      const bodyFormData = prepareDataToSubmit()
-      axios({
-        method: 'POST',
-        url: `${process.env.REACT_APP_REQUEST_URL}salaryAdjustment/create`,
+      if (!appraiser) {
+        showStatusModal(t("HumanForChangeSalaryValidate"), false);
+        return;
+      }
+      if (!approver) {
+        showStatusModal(t("PleaseInputApprover"), false);
+        return;
+      }
+      const isUpdate = props.match.params.id !== "create";
+      setIsLoading(true);
+      const bodyFormData = prepareDataToSubmit(isUpdate ? props.match.params.id : null);
+      (isUpdate ? //update yêu cầu salaryadjustment
+        axios({
+          method: "PUT",
+          url: `${process.env.REACT_APP_REQUEST_SERVICE_URL}salaryadjustment`,
+          data: bodyFormData,
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        })
+        : 
+        axios({ // Tạo mới yêu cầu đề xuất
+        method: "POST",
+        url: `${process.env.REACT_APP_REQUEST_SERVICE_URL}request`,
         data: bodyFormData,
-        headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
-      })
-        .then(response => {
-          if (response.data.result && response.data.result.code === '000000') {
-            showStatusModal(t("RequestSent"), true, '/tasks')
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+      }))
+        .then((response) => {
+          if (response.data.result && response.data.result.code === "000000") {
+            showStatusModal(t("RequestSent"), true, "/tasks");
             return;
           }
-          showStatusModal(response.data.result.message || t("Error"), false)
+          showStatusModal(response.data.result.message || t("Error"), false);
         })
-        .catch(response => {
-          showStatusModal(t("Error"), false)
-        }).finally(() => {
-          setIsLoading(false)
+        .catch((response) => {
+          showStatusModal(t("Error"), false);
         })
+        .finally(() => {
+          setIsLoading(false);
+        });
     } else {
       // Review
-      if (dataSalary?.processStatusId === 23) {
+      if (dataSalary?.processStatusId === 22) {
         const listErrors = validation();
         if (listErrors.length !== 0) {
           setResultModal({
@@ -725,14 +884,14 @@ const SalaryAdjustmentPropse = (props) => {
             title: t("InformationRequired"),
             message: listErrors[0],
             isSuccess: false,
-          })
+          });
           return;
         } else {
-          setIsLoading(true)
+          setIsLoading(true);
           const dataSend = {
             requestHistoryId: props.match.params.id,
-            companyCode: localStorage.getItem('companyCode') || "",
-            staffSalaryUpdate: selectedMembers.map(u => ({
+            companyCode: localStorage.getItem("companyCode") || "",
+            staffSalaryUpdate: selectedMembers.map((u) => ({
               salaryAdjustmentId: u?.id,
               employeeNo: u?.employeeNo,
               currentSalary: u?.currentSalary,
@@ -740,39 +899,52 @@ const SalaryAdjustmentPropse = (props) => {
               contractType: u?.contractType,
               staffStrengths: u?.strength,
               staffWknesses: u?.weakness,
-              startDate: moment(u?.effectiveTime, Constants.LEAVE_DATE_FORMAT).format('YYYY-MM-DD')
-            }))
-          }
+              startDate: moment(
+                u?.effectiveTime,
+                Constants.LEAVE_DATE_FORMAT
+              ).format("YYYY-MM-DD"),
+            })),
+          };
           axios({
-            method: 'POST',
-            url: `${process.env.REACT_APP_REQUEST_URL}SalaryAdjustment/submitsalary`,
+            method: "POST",
+            url: `${process.env.REACT_APP_REQUEST_SERVICE_URL}salaryadjustment/submitsalary`,
             data: dataSend,
-            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            },
           })
-            .then(response => {
-              if (response.data.result && response.data.result.code === '000000') {
-                showStatusModal(t("RequestSent"), true, '/tasks')
+            .then((response) => {
+              if (
+                response.data.result &&
+                response.data.result.code === "000000"
+              ) {
+                showStatusModal(t("RequestSent"), true, "/tasks");
                 return;
               }
-              showStatusModal(response.data.result.message || t("Error"), false)
+              showStatusModal(
+                response.data.result.message || t("Error"),
+                false
+              );
             })
-            .catch(response => {
-              showStatusModal(t("Error"), false)
+            .catch((response) => {
+              showStatusModal(t("Error"), false);
             })
             .finally(() => {
-              setIsLoading(false)
-            })
+              setIsLoading(false);
+            });
         }
       }
     }
   };
 
-  const prepareDataToSubmit = () => {
+  const prepareDataToSubmit = (id) => {
     if (isCreateMode) {
       let bodyFormData = new FormData();
-      const employeeInfoLst = selectMembers.map(u => ({
+      const employeeInfoLst = (id ?selectedMembers : selectMembers).map((u) => ({
         employeeNo: u?.employeeNo,
-        account: u?.account.toLowerCase() + "@vingroup.net",
+        username: u?.account.toLowerCase(),
+        account: u?.account.toLowerCase().includes('@vingroup.net') ? u?.account.toLowerCase() : u?.account.toLowerCase() + "@vingroup.net",
         fullName: u?.fullName,
         jobTitle: u?.jobTitle,
         department: u?.department,
@@ -780,53 +952,129 @@ const SalaryAdjustmentPropse = (props) => {
         expireDate: u?.expireDate,
         contractName: u?.contractName,
         contractType: u?.contractType,
-      }))
-      bodyFormData.append('userId', viewSetting.proposedStaff.email);
-      bodyFormData.append('userInfo', JSON.stringify({
-        employeeNo: viewSetting.proposedStaff.employeeNo,
-        avatar: viewSetting.proposedStaff.avatar,
-        account: viewSetting.proposedStaff.account.toLowerCase() + "@vingroup.net",
-        fullName: viewSetting.proposedStaff.fullName,
-        employeeLevel: viewSetting.proposedStaff.employeeLevel,
-        orglv2Id: viewSetting.proposedStaff.orgLv2Id,
-        jobTitle: viewSetting.proposedStaff.jobTitle,
-        department: viewSetting.proposedStaff.department,
-        company_email: viewSetting.proposedStaff.company_email,
       }));
-      bodyFormData.append('coordinatorId', coordinator?.account.toLowerCase() + "@vingroup.net");
-      bodyFormData.append('coordinatorInfo', JSON.stringify({
-        avatar: coordinator?.avatar,
-        account: coordinator?.account.toLowerCase() + "@vingroup.net",
-        fullName: coordinator?.fullName,
-        employeeLevel: coordinator?.employeeLevel,
-        pnl: coordinator?.pnl,
-        orglv2Id: coordinator?.orglv2Id,
-        current_position: coordinator?.current_position,
-        department: coordinator?.department,
-        company_email: coordinator?.company_email.toLowerCase(),
-      }));
-      bodyFormData.append('employeeInfoLst', JSON.stringify(employeeInfoLst));
-      bodyFormData.append('orgLv2Id', viewSetting.proposedStaff.orgLv2Id);
-      bodyFormData.append('orgLv3Id', viewSetting.proposedStaff.orgLv3Id);
-      bodyFormData.append('orgLv4Id', viewSetting.proposedStaff.orgLv4Id);
-      bodyFormData.append('orgLv5Id', viewSetting.proposedStaff.orgLv5Id);
-      bodyFormData.append('orgLv6Id', viewSetting.proposedStaff.orgLv6Id);
-      bodyFormData.append('orgLv2Text', viewSetting.proposedStaff.orgLv2Text);
-      bodyFormData.append('orgLv3Text', viewSetting.proposedStaff.orgLv3Text);
-      bodyFormData.append('orgLv4Text', viewSetting.proposedStaff.orgLv4Text);
-      bodyFormData.append('orgLv5Text', viewSetting.proposedStaff.orgLv5Text);
-      bodyFormData.append('orgLv6Text', viewSetting.proposedStaff.orgLv6Text);
-      bodyFormData.append('companyCode', viewSetting.proposedStaff.companyCode);
-
-      if (listFiles.length > 0) {
-        listFiles.forEach(file => {
-          bodyFormData.append('attachedFiles', file)
-        })
+      const appraiserInfoLst = supervisors
+        .filter((item) => item != null)
+        .map((item, index) => {
+          return {
+            avatar: "",
+            account: item?.username.toLowerCase() + "@vingroup.net",
+            fullName: item?.fullName,
+            employeeLevel: item?.employeeLevel,
+            pnl: item?.pnl,
+            orglv2Id: item?.orglv2Id,
+            current_position: item?.current_position,
+            department: item?.department,
+            order: index + 1,
+            company_email: item?.company_email?.toLowerCase(),
+            type: 0,
+            employeeNo: item?.uid || item?.employeeNo,
+            username: item?.username.toLowerCase(),
+          };
+        });
+      if (appraiser) {
+        appraiserInfoLst.push({
+          avatar: "",
+          account: appraiser?.username?.toLowerCase() + "@vingroup.net",
+          fullName: appraiser?.fullName,
+          employeeLevel: appraiser?.employeeLevel,
+          pnl: appraiser?.pnl,
+          orglv2Id: appraiser?.orglv2Id,
+          current_position: appraiser?.current_position,
+          department: appraiser?.department,
+          order: appraiserInfoLst.length + 1,
+          company_email: appraiser?.company_email?.toLowerCase(),
+          type: 1,
+          employeeNo: appraiser?.uid || appraiser?.employeeNo,
+          username: appraiser?.username?.toLowerCase(),
+        });
       }
 
-      return bodyFormData
+      bodyFormData.append("userId", viewSetting.proposedStaff.email);
+      bodyFormData.append(
+        "userInfo",
+        JSON.stringify({
+          employeeNo: viewSetting.proposedStaff.employeeNo,
+          avatar: viewSetting.proposedStaff.avatar,
+          account:
+            viewSetting.proposedStaff.account?.toLowerCase() + "@vingroup.net",
+          fullName: viewSetting.proposedStaff.fullName,
+          employeeLevel: viewSetting.proposedStaff.employeeLevel,
+          orglv2Id: viewSetting.proposedStaff.orgLv2Id,
+          jobTitle: viewSetting.proposedStaff.jobTitle,
+          department: viewSetting.proposedStaff.department,
+          company_email: viewSetting.proposedStaff.company_email,
+        })
+      );
+      bodyFormData.append(
+        "coordinatorId",
+        coordinator?.username.toLowerCase() + "@vingroup.net"
+      );
+      bodyFormData.append(
+        "coordinatorInfo",
+        JSON.stringify({
+          avatar: "",
+          account: coordinator?.username.toLowerCase() + "@vingroup.net",
+          fullName: coordinator?.fullName,
+          employeeLevel: coordinator?.employeeLevel,
+          pnl: coordinator?.pnl,
+          orglv2Id: coordinator?.orglv2Id,
+          current_position: coordinator?.current_position,
+          department: coordinator?.department,
+          company_email: coordinator?.company_email?.toLowerCase(),
+          employeeNo: coordinator?.uid || coordinator?.employeeNo,
+          username: coordinator?.username?.toLowerCase(),
+        })
+      );
+      bodyFormData.append("employeeInfoLst", JSON.stringify(employeeInfoLst));
+      bodyFormData.append("appraiserInfoLst", JSON.stringify(appraiserInfoLst));
+      bodyFormData.append(
+        "approverId",
+        approver?.username.toLowerCase() + "@vingroup.net"
+      );
+      bodyFormData.append(
+        "approverInfo",
+        JSON.stringify({
+          avatar: "",
+          account: approver?.username?.toLowerCase() + "@vingroup.net",
+          fullName: approver?.fullName,
+          employeeLevel: approver?.employeeLevel,
+          pnl: approver?.pnl,
+          orglv2Id: approver?.orglv2Id,
+          current_position: approver?.current_position,
+          department: approver?.department,
+          company_email: approver?.company_email?.toLowerCase(),
+          employeeNo: approver?.uid || approver?.employeeNo,
+          username: approver?.username?.toLowerCase(),
+        })
+      );
+
+      bodyFormData.append("orgLv2Id", viewSetting.proposedStaff.orgLv2Id);
+      bodyFormData.append("orgLv3Id", viewSetting.proposedStaff.orgLv3Id);
+      bodyFormData.append("orgLv4Id", viewSetting.proposedStaff.orgLv4Id);
+      bodyFormData.append("orgLv5Id", viewSetting.proposedStaff.orgLv5Id);
+      bodyFormData.append("orgLv6Id", viewSetting.proposedStaff.orgLv6Id);
+      bodyFormData.append("orgLv2Text", viewSetting.proposedStaff.orgLv2Text);
+      bodyFormData.append("orgLv3Text", viewSetting.proposedStaff.orgLv3Text);
+      bodyFormData.append("orgLv4Text", viewSetting.proposedStaff.orgLv4Text);
+      bodyFormData.append("orgLv5Text", viewSetting.proposedStaff.orgLv5Text);
+      bodyFormData.append("orgLv6Text", viewSetting.proposedStaff.orgLv6Text);
+      bodyFormData.append("companyCode", viewSetting.proposedStaff.companyCode);
+
+      if(id) {
+        bodyFormData.append("id", id);
+      }
+
+      if (listFiles.filter(item=> item.id == undefined).length > 0) {
+        listFiles.filter(item=> item.id == undefined).forEach((file) => {
+          bodyFormData.append("attachedFiles", file);
+        });
+      }
+      bodyFormData.append('deletedDocumentIds', listFileDeleted.join(','));
+
+      return bodyFormData;
     }
-  }
+  };
 
   const showStatusModal = (message, isSuccess = false, url = null) => {
     setModalStatus({
@@ -834,326 +1082,459 @@ const SalaryAdjustmentPropse = (props) => {
       content: message,
       isSuccess: isSuccess,
       url: url,
-    })
-  }
+    });
+  };
 
   const hideStatusModal = () => {
     setModalStatus({
       ...modalStatus,
       isShowStatusModal: false,
-    })
+    });
     if (modalStatus.url) {
       window.location.href = modalStatus.url;
     }
-  }
+  };
 
   const handleUpdateCoordinator = (approver, isApprover) => {
-    setCoordinator(approver)
-  }
+    setCoordinator(approver);
+  };
 
   const removeSupervisorItem = (index) => {
-	const newData = supervisors.splice(index, 1);
-	setSupervisor(newData);
-  }
+    const newData = [...supervisors];
+    newData.splice(index, 1);
+    setSupervisors(newData);
+  };
   const handleUpdateSupervisors = (approver, index) => {
-	const newData = [...supervisors];
-	newData[index] = approver;
-	setSupervisors(newData);
-  }
+    let userExist = supervisors.findIndex(
+      (item) => approver?.uid && item?.uid == approver?.uid
+    );
+    if (userExist != -1) {
+      showStatusModal(t("AppraiserExisted"), false);
+      return;
+    }
+    const newData = [...supervisors];
+    newData[index] = approver;
+    setSupervisors(newData);
+  };
+
+  const handleUpdateHrChangeSalary = (approver) => {
+    setAppraiser(approver);
+  };
+
+  const handleUpdateApprovalSalary = (approver) => {
+    setApprover(approver);
+  };
 
   const validation = () => {
     const selectedMembersTmp = [...selectedMembers];
     let errors = [];
-    selectedMembersTmp.forEach(u => {
-      if (!u.currentSalary) errors.push(t("CurrentSalaryValidate"))
-      if (!u.suggestedSalary) errors.push(t("SuggestedSalaryValidate"))
-      if (!u.effectiveTime) errors.push(t("SelecTimePeriodValidate"))
-    })
+    selectedMembersTmp.forEach((u) => {
+      if (!u.currentSalary) errors.push(t("CurrentSalaryValidate"));
+      if (!u.suggestedSalary) errors.push(t("SuggestedSalaryValidate"));
+      if (!u.effectiveTime) errors.push(t("SelecTimePeriodValidate"));
+    });
     return errors;
-  }
+  };
 
   const handleChangeModalConfirmPassword = (token) => {
-    setAccessToken(token)
-    setModalConfirmPassword(false)
-    getSalary(token)
-  }
+    setAccessToken(token);
+    setModalConfirmPassword(false);
+    getSalary(token);
+  };
 
   const getSalary = (token) => {
     const dataSend = {
       requestHistoryId: props.match.params.id,
       token: token,
-    }
+    };
     setIsLoading(true);
     axios({
-      method: 'POST',
-      url: `${process.env.REACT_APP_REQUEST_URL}SalaryAdjustment/getsalarystaff`,
+      method: "POST",
+      url: `${process.env.REACT_APP_REQUEST_SERVICE_URL}salaryadjustment/getsalarystaff`,
       data: dataSend,
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
     })
       .then((response) => {
-        if (response.data.result && response.data.result.code === '000000') {
-          const selectedMembersTmp = [...selectedMembers]
-          let currencySalaryTmp = 'VND'
+        if (response.data.result && response.data.result.code === "000000") {
+          const selectedMembersTmp = [...selectedMembers];
+          let currencySalaryTmp = "VND";
           forEach(response.data.data, (value, key) => {
-            selectedMembersTmp.forEach(u => {
+            selectedMembersTmp.forEach((u) => {
               if (u.id == key) {
-                u.currentSalary = value?.currentSalary || ""
-                u.suggestedSalary = value?.suggestedSalary || ""
-                currencySalaryTmp = value?.currentCurrency || 'VND'
+                u.currentSalary = value?.currentSalary || "";
+                u.suggestedSalary = value?.suggestedSalary || "";
+                currencySalaryTmp = value?.currentCurrency || "VND";
               }
-            })
+            });
           });
-          setSelectedMembers(selectedMembersTmp)
-          setCurrencySalary(currencySalaryTmp)
+          setSelectedMembers(selectedMembersTmp);
+          setCurrencySalary(currencySalaryTmp);
 
           let viewSettingTmp = { ...viewSetting };
           viewSettingTmp.disableComponent.showSuggestedSalary = true;
           viewSettingTmp.disableComponent.showCurrentSalary = true;
-          setViewSetting(viewSettingTmp)
+          setViewSetting(viewSettingTmp);
           return;
         }
-        showStatusModal(response.data.result.message || t("Error"), false)
+        showStatusModal(response.data.result.message || t("Error"), false);
       })
-      .catch(response => {
-        showStatusModal(t("Error"), false)
+      .catch((response) => {
+        showStatusModal(t("Error"), false);
       })
       .finally(() => {
         setIsLoading(false);
-        setCalledSalary(true);
+        setIsCallSalary(true);
       });
-  }
+  };
 
   const hideResultModal = () => {
     setResultModal({
       show: false,
-      title: '',
-      message: '',
+      title: "",
+      message: "",
       isSuccess: false,
-    })
-  }
+    });
+  };
 
   const onHideModalConfirm = () => {
     setConfirmModal({
       ...confirmModal,
-      isShowModalConfirm: false
-    })
-  }
+      isShowModalConfirm: false,
+    });
+  };
 
   function renderCurrency() {
-    let currencySalaryTmp = {}
-    if (currencySalary === 'VND') {
-      currencySalaryTmp = { locale: 'vi-VN', currency: 'VND' }
+    let currencySalaryTmp = {};
+    if (currencySalary === "VND") {
+      currencySalaryTmp = { locale: "vi-VN", currency: "VND" };
     } else {
-      currencySalaryTmp = { locale: 'en-US', currency: 'USD' }
+      currencySalaryTmp = { locale: "en-US", currency: "USD" };
     }
-    return currencySalaryTmp
+    return currencySalaryTmp;
   }
 
   const renderListMember = (members) => {
-    return (
-      members.map((item, index) => {
-		const account = item?.account?.indexOf('@') ? item.account.split('@')[0] : item.account;
-        return <React.Fragment key={index}>
-        <tr style={{border:'none', height: '10px'}}/>
-        <tr key={index}>
-          <td colSpan={3}>
-			<div className="d-flex">
-				<input type="checkbox" style={{alignSelf: 'flex-start', margin: '5px', display: viewSetting.showComponent.btnExpertise || viewSetting.showComponent.btnApprove ? 'inline' : 'none'}}
-					checked={checkedMemberIds[item.uid].checked}
-					disabled={!item.canChangeAction}
-					onChange={e => onCheckboxSelectChange(e, item.uid)}/>
-				<div>
-					<p className="mb-7px font-weight-bold">
-						{item?.fullName} <span className="font-weight-normal">({account})</span>
-					</p>
-					<p className="mb-7px">
-						{item?.jobTitle}
-					</p>
-					<p style={{marginBottom: 0}}>
-						{item?.department}
-					</p>
-				</div>
-			</div>
-				
-			</td>
-          <td colSpan={2} className="text-center">
-            <span className="same-width">
-              {!isCreateMode ?
-                <div className="d-flex w-100">
-                  <div style={{ width: viewSetting.disableComponent.showEye ? '90%' : '100%' }}>
-                    {viewSetting.disableComponent.showCurrentSalary && accessToken ?
-                      <CurrencyInput
-                        disabled={true}
-                        intlConfig={renderCurrency()}
-                        className="no-vborder"
-                        value={item?.currentSalary}
-                        placeholder="Nhập"
-                        style={{ width: '100%', background: '#fff' }}
-                      />
-                      : <span>{'**********'}</span>
-                    }
-                  </div>
-                  {viewSetting.disableComponent.showEye &&
-                    <div
-                      style={{ width: '10%', cursor: 'pointer' }}
-                      onClick={() => handleShowCurrentSalary()}
-                    >
-                      <img src={viewSetting.disableComponent.showCurrentSalary ? IconEye : IconNotEye} alt='eye' />
-                    </div>
-                  }
+    return members.map((item, index) => {
+      const account = item?.account?.indexOf("@")
+        ? item.account.split("@")[0]
+        : item.account;
+      return (
+        <React.Fragment key={index}>
+          <tr style={{ border: "none", height: "10px" }} />
+          <tr key={index}>
+            <td colSpan={3}>
+              <div className="d-flex">
+                <input
+                  type="checkbox"
+                  style={{
+                    alignSelf: "flex-start",
+                    margin: "5px",
+                    display:
+                      viewSetting.showComponent.btnExpertise ||
+                      viewSetting.showComponent.btnApprove
+                        ? "inline"
+                        : "none",
+                  }}
+                  checked={checkedMemberIds[item.uid].checked}
+                  disabled={!item.canChangeAction}
+                  onChange={(e) => onCheckboxSelectChange(e, item.uid)}
+                />
+                <div>
+                  <p className="mb-7px font-weight-bold">
+                    {item?.fullName}{" "}
+                    <span className="font-weight-normal">({account})</span>
+                  </p>
+                  <p className="mb-7px">{item?.jobTitle}</p>
+                  <p style={{ marginBottom: 0 }}>{item?.department}</p>
                 </div>
-                : <></>
-              }
-            </span>
-          </td>
-          <td colSpan={2} className="text-center">
-            <span className="same-width">
-              {viewSetting.disableComponent.editSubjectApply && !isCreateMode ?
-                <CurrencyInput
-                  disabled={false}
-                  intlConfig={renderCurrency()}
-                  className="form-control"
-                  value={item?.suggestedSalary}
-                  onValueChange={(value) => { handleTextInputChange(value, item?.uid, 'suggestedSalary') }}
-                  placeholder="Nhập"
-                />
-                :
-                <>
-                  {!isCreateMode && item?.suggestedSalary &&
-                    <div className="d-flex w-100">
-                      <div style={{ width: viewSetting.disableComponent.showEye ? '90%' : '100%' }}>
-                        {accessToken && viewSetting.disableComponent.showCurrentSalary ?
-                          <CurrencyInput
-                            disabled={true}
-                            intlConfig={renderCurrency()}
-                            className="no-vborder"
-                            value={item?.suggestedSalary}
-                            placeholder="Nhập"
-                            style={{ width: '100%', background: '#fff' }}
-                          />
-                          : '**********'
-                        }
-                      </div>
-                      {viewSetting.disableComponent.showEye &&
-                        <div
-                          style={{ width: '10%', cursor: 'pointer' }}
-                          onClick={() => handleShowSuggestedSalary()}
-                        >
-                          <img src={viewSetting.disableComponent.showCurrentSalary ? IconEye : IconNotEye} alt='eye' />
-                        </div>
-                      }
+              </div>
+            </td>
+            <td colSpan={2} className="text-center">
+              <span className="same-width">
+                {!isCreateMode ? (
+                  <div className="d-flex w-100">
+                    <div
+                      style={{
+                        width: viewSetting.disableComponent.showEye
+                          ? "90%"
+                          : "100%",
+                      }}
+                    >
+                      {viewSetting.disableComponent.showCurrentSalary &&
+                      accessToken ? (
+                        <CurrencyInput
+                          disabled={true}
+                          intlConfig={renderCurrency()}
+                          className="no-vborder"
+                          value={item?.currentSalary}
+                          placeholder="Nhập"
+                          style={{ width: "100%", background: "#fff" }}
+                        />
+                      ) : (
+                        <span>{"**********"}</span>
+                      )}
                     </div>
-                  }
-                </>
-              }
-            </span>
-          </td>
-          <td colSpan={2} className="same-width text-center">
-            <span className="same-width">
-              {viewSetting.disableComponent.editSubjectApply && !isCreateMode ?
-                <DatePicker
-                  name="startDate"
-                  autoComplete="off"
-                  selected={
-                    item?.effectiveTime
-                      ? moment(item?.effectiveTime, Constants.LEAVE_DATE_FORMAT).toDate()
-                      : null
-                  }
-                  onChange={(date) => handleDatePickerInputChange(date, item?.uid, "effectiveTime")}
-                  dateFormat="dd/MM/yyyy"
-                  placeholderText={t("Select")}
-                  locale={t("locale")}
-                  className="form-control input"
-                  styles={{ width: "100%" }}
-				  getPopupContainer={(trigger) => trigger.parentElement}
-                />
-                : <>{item?.effectiveTime}</>
-              }
-            </span>
-          </td>
-          <td colSpan={1} className="same-width ">
-            <div className="d-flex flex-column action">
-              {(viewSetting.showComponent.btnExpertise || viewSetting.showComponent.btnApprove) && !isCreateMode && item.canChangeAction ?
-                <>
-					<span>
-						<input type="radio" id="action_accept" name="action" checked={item.accepted == true} onChange={e => onActionChange(item.uid, true)}/>
-						<label htmlFor="action_accept">{t('accept')}</label>
-					</span>
-					<span>
-					<input type="radio" id="action_reject" name="action" checked={item.accepted != true} onChange={e => onActionChange(item.uid, false)}/>
-					<label htmlFor="action_reject">{t('RejectQuestionButtonLabel')}</label>
-					</span>
-				</>
-                : 
-				<>
-					<span>
-						<input type="radio" id="action_accept" value="accept"  checked={item.accepted == true} disabled={true}/>
-						<label htmlFor="action_accept">{t('accept')}</label>
-					</span>
-					<span>
-					<input type="radio" id="action_reject" value="reject" checked={item.accepted != true} disabled={true}/>
-					<label htmlFor="action_reject">{t('RejectQuestionButtonLabel')}</label>
-					</span>
-				</>
-              }
-            </div>
-          </td>
-          <td colSpan={2} >
-		  	{(viewSetting.showComponent.btnExpertise || viewSetting.showComponent.btnApprove) && !isCreateMode && item.canChangeAction ?
+                    {viewSetting.disableComponent.showEye && (
+                      <div
+                        style={{ width: "10%", cursor: "pointer" }}
+                        onClick={handleShowCurrentSalary}
+                      >
+                        <img
+                          src={
+                            viewSetting.disableComponent.showCurrentSalary
+                              ? IconEye
+                              : IconNotEye
+                          }
+                          alt="eye"
+                        />
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <></>
+                )}
+              </span>
+            </td>
+            <td colSpan={2} className="text-center">
+              <span className="same-width">
+                {viewSetting.disableComponent.editSubjectApply &&
+                !isCreateMode ? (
+                  <CurrencyInput
+                    disabled={false}
+                    intlConfig={renderCurrency()}
+                    className="form-control"
+                    value={item?.suggestedSalary}
+                    onValueChange={(value) => {
+                      handleTextInputChange(
+                        value,
+                        item?.uid,
+                        "suggestedSalary"
+                      );
+                    }}
+                    placeholder="Nhập"
+                  />
+                ) : (
+                  <>
+                    {!isCreateMode && item?.suggestedSalary && (
+                      <div className="d-flex w-100">
+                        <div
+                          style={{
+                            width: viewSetting.disableComponent.showEye
+                              ? "90%"
+                              : "100%",
+                          }}
+                        >
+                          {accessToken &&
+                          viewSetting.disableComponent.showCurrentSalary ? (
+                            <CurrencyInput
+                              disabled={true}
+                              intlConfig={renderCurrency()}
+                              className="no-vborder"
+                              value={item?.suggestedSalary}
+                              placeholder="Nhập"
+                              style={{ width: "100%", background: "#fff" }}
+                            />
+                          ) : (
+                            "**********"
+                          )}
+                        </div>
+                        {viewSetting.disableComponent.showEye && (
+                          <div
+                            style={{ width: "10%", cursor: "pointer" }}
+                            onClick={handleShowCurrentSalary}
+                          >
+                            <img
+                              src={
+                                viewSetting.disableComponent.showCurrentSalary
+                                  ? IconEye
+                                  : IconNotEye
+                              }
+                              alt="eye"
+                            />
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </>
+                )}
+              </span>
+            </td>
+            <td colSpan={2} className="same-width text-center">
+              <span className="same-width">
+                {viewSetting.disableComponent.editSubjectApply &&
+                !isCreateMode ? (
+                  <DatePicker
+                    name="startDate"
+                    autoComplete="off"
+                    selected={
+                      item?.effectiveTime
+                        ? moment(
+                            item?.effectiveTime,
+                            Constants.LEAVE_DATE_FORMAT
+                          ).toDate()
+                        : null
+                    }
+                    onChange={(date) =>
+                      handleDatePickerInputChange(
+                        date,
+                        item?.uid,
+                        "effectiveTime"
+                      )
+                    }
+                    onChangeRaw={() => {setIsOpenDatepick(false)}}
+                    onFocus={() => {setIsOpenDatepick(true)}}
+                    onBlur={() => {setIsOpenDatepick(false)}}
+                    dateFormat="dd/MM/yyyy"
+                    placeholderText={t("Select")}
+                    locale={t("locale")}
+                    className="form-control input"
+                    styles={{ width: "100%" }}
+                    getPopupContainer={(trigger) => trigger.parentElement}
+                  />
+                ) : (
+                  <>{item?.effectiveTime}</>
+                )}
+              </span>
+            </td>
+            <td colSpan={1} className="same-width ">
+              <div className="d-flex flex-column action">
+                {(viewSetting.showComponent.btnExpertise ||
+                  viewSetting.showComponent.btnApprove) &&
+                !isCreateMode &&
+                item.canChangeAction ? (
+                  <>
+                    <span>
+                      <input
+                        type="radio"
+                        id={"action_accept" + item.uid}
+                        name={"action" + item.uid}
+                        checked={item.accepted == true}
+                        onChange={(e) => onActionChange(item.uid, true)}
+                      />
+                      <label htmlFor={"action_accept" + item.uid}>{t("accept")}</label>
+                    </span>
+                    <span>
+                      <input
+                        type="radio"
+                        id={"action_reject" + item.uid}
+                        name={"action" + item.uid}
+                        checked={item.accepted != true}
+                        onChange={(e) => onActionChange(item.uid, false)}
+                      />
+                      <label htmlFor={"action_reject" + item.uid}>
+                        {t("RejectQuestionButtonLabel")}
+                      </label>
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    <span>
+                      <input
+                        type="radio"
+                        id="action_accept"
+                        value="accept"
+                        checked={item.accepted == true}
+                        disabled={true}
+                      />
+                      <label htmlFor="action_accept">{t("accept")}</label>
+                    </span>
+                    <span>
+                      <input
+                        type="radio"
+                        id="action_reject"
+                        value="reject"
+                        checked={item.accepted != true}
+                        disabled={true}
+                      />
+                      <label htmlFor="action_reject">
+                        {t("RejectQuestionButtonLabel")}
+                      </label>
+                    </span>
+                  </>
+                )}
+              </div>
+            </td>
+            <td colSpan={2}>
+              {(viewSetting.showComponent.btnExpertise ||
+                viewSetting.showComponent.btnApprove) &&
+              !isCreateMode &&
+              item.canChangeAction ? (
                 <ResizableTextarea
                   placeholder={"Nhập"}
                   value={item?.comment}
-                  onChange={(e) => handleTextInputChange(e.target.value, item?.uid, "comment")}
+                  onChange={(e) =>
+                    handleTextInputChange(e.target.value, item?.uid, "comment")
+                  }
                   className="form-control input mv-10 w-100"
                 />
-                : <>{item?.comment}</>
-              }
-          </td>
-        </tr>
-        <tr>
-          <td colSpan="12">
-			<div className="skill">
-				<span className="title">{t('strength')}:</span>
-				<span className="input">
-				{viewSetting.disableComponent.editSubjectApply && !isCreateMode ?
-					<ResizableTextarea
-					placeholder={"Nhập"}
-					value={item?.strength}
-					onChange={(e) => handleTextInputChange(e.target.value, item?.uid, "strength")}
-					className="form-control input mv-10 w-100"
-					/>
-					: <>{item?.strength}</>
-				}
-				</span>
-			</div>
-			
-          </td>
-        </tr>
-        <tr>
-          <td colSpan="12">
-		  <div className="skill">
-		  	<span className="title">{t('weakness')}:</span>
-			<span className="input">
-				{viewSetting.disableComponent.editSubjectApply && !isCreateMode ?
-					<ResizableTextarea
-					placeholder={"Nhập"}
-					value={item?.weakness}
-					onChange={(e) => handleTextInputChange(e.target.value, item?.uid, "weakness")}
-					className="form-control input mv-10 w-100"
-					/>
-					: <>{item?.weakness}</>
-				}
-				</span>
-			</div>
-          </td>
-        </tr>
+              ) : (
+                <>{item?.comment}</>
+              )}
+            </td>
+          </tr>
+          <tr>
+            <td colSpan="12">
+              <div className="skill">
+                <span className="title">{t("strength")}:</span>
+                <span className="input">
+                  {viewSetting.disableComponent.editSubjectApply &&
+                  !isCreateMode ? (
+                    <ResizableTextarea
+                      placeholder={"Nhập"}
+                      value={item?.strength}
+                      onChange={(e) =>
+                        handleTextInputChange(
+                          e.target.value,
+                          item?.uid,
+                          "strength"
+                        )
+                      }
+                      className="form-control input mv-10 w-100"
+                    />
+                  ) : (
+                    <>{item?.strength}</>
+                  )}
+                </span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td colSpan="12">
+              <div className="skill">
+                <span className="title">{t("weakness")}:</span>
+                <span className="input">
+                  {viewSetting.disableComponent.editSubjectApply &&
+                  !isCreateMode ? (
+                    <ResizableTextarea
+                      placeholder={"Nhập"}
+                      value={item?.weakness}
+                      onChange={(e) =>
+                        handleTextInputChange(
+                          e.target.value,
+                          item?.uid,
+                          "weakness"
+                        )
+                      }
+                      className="form-control input mv-10 w-100"
+                    />
+                  ) : (
+                    <>{item?.weakness}</>
+                  )}
+                </span>
+              </div>
+            </td>
+          </tr>
         </React.Fragment>
-      })
-    )
-  }
+      );
+    });
+  };
   const salaryState = `salaryadjustment_${props.match.params?.id}_${props.match.params?.type}`;
   return (
-    <div className="timesheet-section proposal-management">
+    <div className="timesheet-section proposal-management status-contain">
+      <LoadingModal show={isLoading} isloading />
       <ConfirmPasswordModal
         state={salaryState}
         show={modalConfirmPassword}
@@ -1195,233 +1576,403 @@ const SalaryAdjustmentPropse = (props) => {
               isClearable={false}
               value={type}
               isDisabled={true}
-              onChange={e => setType(e)} className="input mv-10"
-              styles={{ menu: provided => ({ ...provided, zIndex: 2 }) }} />
+              onChange={(e) => setType(e)}
+              className="input mv-10"
+              styles={{ menu: (provided) => ({ ...provided, zIndex: 2 }) }}
+            />
           </div>
         </div>
       </div>
       {/* I. THÔNG TIN CÁN BỘ ĐỀ XUẤT */}
-      <h5 className="content-page-header">{t('info_proposed_staff')}</h5>
+      <h5 className="content-page-header">{t("info_proposed_staff")}</h5>
       <div className="timesheet-box1 shadow">
         <div className="row">
-          <div className="col-4">{t("FullName")}
+          <div className="col-4">
+            {t("FullName")}
             <div className="detail">{viewSetting.proposedStaff.fullName}</div>
           </div>
-          <div className="col-4">{t("Title")}
+          <div className="col-4">
+            {t("Title")}
             <div className="detail">{viewSetting.proposedStaff.jobTitle}</div>
           </div>
-          <div className="col-4">{t("DepartmentManage")}
+          <div className="col-4">
+            {t("DepartmentManage")}
             <div className="detail">{viewSetting.proposedStaff.department}</div>
           </div>
         </div>
       </div>
       {/* II. THÔNG TIN CBNV ĐƯỢC ĐỀ XUẤT */}
-      <h5 className="content-page-header">{t('proposed_employee_info')}</h5>
-      {isCreateMode &&
+      <h5 className="content-page-header">{t("proposed_employee_info")}</h5>
+      {isCreateMode && (
         <>
           <div className="timesheet-box1 timesheet-box shadow">
             <div className="row">
               <div className="col-12">
-                {isCreateMode ?
+                {props.match.params.id == "create" ? (
                   <FilterMember
                     {...props}
                     isEdit={true}
-                    selectedMembers={[]}
+                    selectedMembers={selectedMembers}
                     handleSelectMembers={handleSelectMembers}
                   />
-                  :
+                ) : (
                   <FilterMember
                     {...props}
-                    isEdit={false}
+                    isEdit={true}
                     selectedMembers={selectedMembers}
                     handleSelectMembers={handleSelectedMembers}
                   />
-                }
+                )}
               </div>
             </div>
           </div>
           <br />
         </>
-      }
+      )}
       <div className="timesheet-box1 shadow">
-		<div className="user_header">
-			<span className="title">{t('employee_selected')}</span>
-			<div className="action" style={viewSetting.showComponent.btnExpertise || viewSetting.showComponent.btnApprove ? {} : {visibility: 'hidden'}}>
-			<button className="btn btn-outline-success btn-lg d-flex align-items-center" style={{gap: '7px', paddingLeft: '24px', paddingRight: '24px', fontSize: '14px'}} onClick={(e) => onActionChangeAll(true)}>
-					<i className='fas fa-times fa-lg'></i>
-					{t('accept')}
-			</button> 
-			<button className="btn btn-outline-danger btn-lg d-flex align-items-center" style={{gap: '7px', paddingLeft: '24px', paddingRight: '24px', fontSize: '14px'}} onClick={(e) => onActionChangeAll(false)}>
-        <i className='fas fa-check fa-lg'></i> 
-        {t('RejectQuestionButtonLabel')}
-      </button> 
-			</div>
-		</div>
-        <div className="result-wrap-table">
-          <table className="result-table" style={{ width: '100%' }}>
+        <div className="user_header">
+          <span className="title">{t("employee_selected")}</span>
+          <div
+            className="action"
+            style={
+              viewSetting.showComponent.btnExpertise ||
+              viewSetting.showComponent.btnApprove
+                ? {}
+                : { visibility: "hidden" }
+            }
+          >
+            <button
+              className="btn btn-outline-success btn-lg d-flex align-items-center"
+              style={{
+                gap: "7px",
+                paddingLeft: "24px",
+                paddingRight: "24px",
+                fontSize: "14px",
+              }}
+              onClick={(e) => onActionChangeAll(true)}
+            >
+              <i className="fas fa-times fa-lg"></i>
+              {t("accept")}
+            </button>
+            <button
+              className="btn btn-outline-danger btn-lg d-flex align-items-center"
+              style={{
+                gap: "7px",
+                paddingLeft: "24px",
+                paddingRight: "24px",
+                fontSize: "14px",
+              }}
+              onClick={(e) => onActionChangeAll(false)}
+            >
+              <i className="fas fa-check fa-lg"></i>
+              {t("RejectQuestionButtonLabel")}
+            </button>
+          </div>
+        </div>
+        <div className="result-wrap-table" style={{overflowY: isOpenDatepick ? 'unset' : 'auto'}}>
+          <table className="result-table" style={{ width: "100%" }}>
             <thead>
               <tr>
                 <td colSpan={3} className="min-width font-weight-bold">
-					<div className="d-flex">
-						<input type="checkbox" style={{alignSelf: 'flex-start', margin: '5px', display: viewSetting.showComponent.btnExpertise || viewSetting.showComponent.btnApprove ? 'inline' : 'none'}}
-							checked={selectedAll}
-							disabled={!canSelectedll}
-							onChange={(e) => onSelectAll(e)}
-						/>
-						<p className="mb-0">{t('FullName')}</p>
-					</div>
-				</td>
+                  <div className="d-flex">
+                    <input
+                      type="checkbox"
+                      style={{
+                        alignSelf: "flex-start",
+                        margin: "5px",
+                        display:
+                          viewSetting.showComponent.btnExpertise ||
+                          viewSetting.showComponent.btnApprove
+                            ? "inline"
+                            : "none",
+                      }}
+                      checked={selectedAll}
+                      disabled={!canSelectedll}
+                      onChange={(e) => onSelectAll(e)}
+                    />
+                    <p className="mb-0">{t("FullName")}</p>
+                  </div>
+                </td>
                 {/* <td rowSpan="2" className="min-width text-center font-weight-bold">Chức danh</td>
                 <td rowSpan="2" className="min-width text-center font-weight-bold">Khối/Phòng/Bộ phận</td> */}
                 {/* <td rowSpan="2" className="min-width text-center font-weight-bold">Loại HĐ hiện tại</td> */}
-                <td colSpan={2} className="min-width1 text-center"><strong>{t('current_income_gross')}</strong></td>
-                <td colSpan={2} className="min-width1 text-center"><strong>{t('suggested_salary_gross')}</strong></td>
-                <td colSpan={2} className="min-width text-center font-weight-bold">{t('effective_time')}</td>
-                <td colSpan={1} className="min-width text-center font-weight-bold">{t('Action')}</td>
-                <th colSpan={2} scope="colgroup" className="min-width text-center font-weight-bold">{t('reason_reject')}</th>
+                <td colSpan={2} className="min-width1 text-center">
+                  <strong>{t("current_income_gross")}</strong>
+                </td>
+                <td colSpan={2} className="min-width1 text-center">
+                  <strong>{t("suggested_salary_gross")}</strong>
+                </td>
+                <td
+                  colSpan={2}
+                  className="min-width text-center font-weight-bold"
+                >
+                  {t("effective_time")}
+                </td>
+                <td
+                  colSpan={1}
+                  className="min-width text-center font-weight-bold"
+                >
+                  {t("Action")}
+                </td>
+                <th
+                  colSpan={2}
+                  scope="colgroup"
+                  className="min-width text-center font-weight-bold"
+                >
+                  {t("reason_reject")}
+                </th>
               </tr>
-             
             </thead>
             <tbody>
-              {props.match.params.id !== 'create' ?
+              {props.match.params.id !== "create" ? (
                 <>{renderListMember(selectedMembers)}</>
-                : <>{renderListMember(selectMembers)}</>
-              }
+              ) : (
+                <>{renderListMember(selectMembers)}</>
+              )}
             </tbody>
           </table>
         </div>
       </div>
       {/* Nhân sự hỗ trợ quyền xem lương */}
-      {viewSetting.showComponent.showHrSupportViewSalary &&
+      {viewSetting.showComponent.showHrSupportViewSalary && (
         <>
-          <h5 className="content-page-header">{t('support_human_respone_view_salary')}</h5>
+          <h5 className="content-page-header">
+            {t("support_human_respone_view_salary")}
+          </h5>
           <div className="timesheet-box1 timesheet-box shadow">
             <HumanForReviewSalaryComponent
               isEdit={!viewSetting.disableComponent.selectHrSupportViewSalary}
               approver={coordinator}
-              updateApprover={(approver, isApprover) => handleUpdateCoordinator(approver, isApprover)}
+              isHR={true}
+              updateApprover={(approver, isApprover) =>
+                handleUpdateCoordinator(approver, isApprover)
+              }
             />
           </div>
         </>
-      }
+      )}
       {/* CBQL CẤP CƠ SỞ */}
-      {viewSetting.showComponent.showCBQL &&
+      {viewSetting.showComponent.showCBQL && (
         <>
-          <h5 className="content-page-header">{t('Consenter')}<span className="font-weight-normal ml-1 text-lowercase">({t('if_any')})</span></h5>
+          <h5 className="content-page-header">
+            {t("Consenter")}
+            <span className="font-weight-normal ml-1 text-lowercase">
+              ({t("if_any")})
+            </span>
+          </h5>
           <div className="timesheet-box1 timesheet-box shadow">
-			{
-				supervisors.map((item, key) => {
-					return <div key={key} className="appraiser d-flex flex-column position-relative" style={key > 0 ? {marginTop: '20px'} : {}}>
-						{
-							isCreateMode && key > 0 ? <button className="btn btn-outline-danger position-absolute d-flex align-items-center btn-sm" style={{gap: '4px', top: 0, right: 0}} onClick={() => removeSupervisorItem(key)}><Image src={IconRemove}/>{t('delete')}</button> : null
-						}
-						<HumanForReviewSalaryComponent isEdit={!viewSetting.disableComponent.selectHrSupportViewSalary}  approver={item} updateApprover={(sup) => handleUpdateSupervisors(sup, key)} />
-					</div>
-				})
-			}
-			{
-				isCreateMode ?
-				<button className="btn btn-outline-success btn-lg w-fit-content mt-3 d-flex align-items-center" style={{gap: '4px', fontSize: '14px'}} onClick={() => setSupervisors([...supervisors, null])}><Image src={IconAdd}/>{t('Add')}</button> 
-				: null
-			}
+            {supervisors.map((item, key) => {
+              return (
+                <div
+                  key={key}
+                  className="appraiser d-flex flex-column position-relative"
+                  style={key > 0 ? { marginTop: "20px" } : {}}
+                >
+                  {isCreateMode && key > 0 ? (
+                    <button
+                      className="btn btn-outline-danger position-absolute d-flex align-items-center btn-sm"
+                      style={{ gap: "4px", top: 0, right: 0 }}
+                      onClick={() => removeSupervisorItem(key)}
+                    >
+                      <Image src={IconRemove} />
+                      {t("delete")}
+                    </button>
+                  ) : null}
+                  <HumanForReviewSalaryComponent
+                    isEdit={
+                      !viewSetting.disableComponent.selectHrSupportViewSalary
+                    }
+                    approver={item}
+                    updateApprover={(sup) => handleUpdateSupervisors(sup, key)}
+                  />
+                </div>
+              );
+            })}
+            {isCreateMode ? (
+              <button
+                className="btn btn-outline-success btn-lg w-fit-content mt-3 d-flex align-items-center"
+                style={{ gap: "4px", fontSize: "14px" }}
+                onClick={() => setSupervisors([...supervisors, null])}
+              >
+                <Image src={IconAdd} />
+                {t("Add")}
+              </button>
+            ) : null}
           </div>
         </>
-      }
+      )}
       {/* Nhân sự thẩm định quyền điều chỉnh lương */}
-      {viewSetting.showComponent.showHrAssessment &&
+      {viewSetting.showComponent.showHrAssessment && (
         <>
-          <h5 className="content-page-header">{t('HumanResourceChangeSalary')}</h5>
+          <h5 className="content-page-header">
+            {t("HumanResourceChangeSalary")}
+          </h5>
           <div className="timesheet-box1 timesheet-box shadow">
-            <HumanForReviewSalaryComponent isEdit={!viewSetting.disableComponent.selectHrSupportViewSalary} approver={appraiser} />
+            <HumanForReviewSalaryComponent
+              isEdit={!viewSetting.disableComponent.selectHrSupportViewSalary}
+              approver={appraiser}
+              isHR={true}
+              updateApprover={(sup) => handleUpdateHrChangeSalary(sup)}
+            />
           </div>
         </>
-      }
+      )}
       {/* CBLĐ PHÊ DUYỆT */}
-      {viewSetting.showComponent.showOfficerApproved &&
+      {viewSetting.showComponent.showOfficerApproved && (
         <>
-          <h5 className="content-page-header">{t('BossApproved')}</h5>
+          <h5 className="content-page-header">{t("BossApproved")}</h5>
           <div className="timesheet-box1 timesheet-box shadow">
-            <HumanForReviewSalaryComponent isEdit={!viewSetting.disableComponent.selectHrSupportViewSalary} approver={approver} />
+            <HumanForReviewSalaryComponent
+              isEdit={!viewSetting.disableComponent.selectHrSupportViewSalary}
+              approver={approver}
+              updateApprover={(sup) => handleUpdateApprovalSalary(sup)}
+            />
           </div>
         </>
-      }
+      )}
       <br />
       {/* List file */}
       <ul className="list-inline">
         {listFiles.map((file, index) => {
-          return <li className="list-inline-item" key={index}>
-            <span className="file-name">
-              <a title={file.name} href={file.link} download={file.name} target="_blank" style={{ color: '#858796' }}>{file.name}</a>
-              {viewSetting.showComponent.showRemoveFile ?
-                <i className="fa fa-times remove" aria-hidden="true" onClick={e => removeFiles(file.id, index)}></i>
-                : null}
-            </span>
-          </li>
+          return (
+            <li className="list-inline-item" key={index}>
+              <span className="file-name">
+                <a
+                  title={file.name}
+                  href={file.link}
+                  download={file.name}
+                  target="_blank"
+                  style={{ color: "#858796" }}
+                >
+                  {file.name}
+                </a>
+                {viewSetting.showComponent.showRemoveFile ? (
+                  <i
+                    className="fa fa-times remove"
+                    aria-hidden="true"
+                    onClick={(e) => removeFiles(file.id, index)}
+                  ></i>
+                ) : null}
+              </span>
+            </li>
+          );
         })}
       </ul>
       {/* Show status */}
-      {viewSetting.showComponent.stateProcess &&
+      {viewSetting.showComponent.stateProcess && (
         <div className="block-status">
-          <span className={`status ${Constants.mappingStatusRequest[dataSalary?.processStatusId].className}`}>
-            {t(Constants.mappingStatusRequest[dataSalary?.processStatusId].label)}
+          <span
+            className={`request-status ${
+              Constants.mappingStatusRequest[viewSetting?.currentStatus]
+                ?.className
+            }`}
+          >
+            {t(
+              Constants.mappingStatusRequest[viewSetting?.currentStatus]?.label
+            )}
           </span>
         </div>
-      }
-      <div className='d-flex justify-content-end mb-5'>
+      )}
+      <div className="d-flex justify-content-end mb-5">
         {/* Đính kèm tệp */}
-        {viewSetting.showComponent.btnAttachFile &&
+        {viewSetting.showComponent.btnAttachFile && (
           <>
-            <input type="file" hidden id="i_files" name="i_files" onChange={(e) => handleAttachFile(e)} accept=".xls, .xlsx, .doc, .docx, .jpg, .png, .pdf" multiple />
-            <label htmlFor="i_files" className="btn btn-light float-right shadow" style={{ marginBottom: '0px' }}>
-              <i className="fas fa-paperclip"></i> {t('AttachmentFile')}
+            <input
+              type="file"
+              hidden
+              id="i_files"
+              name="i_files"
+              onChange={(e) => handleAttachFile(e)}
+              accept=".xls, .xlsx, .doc, .docx, .jpg, .png, .pdf"
+              multiple
+            />
+            <label
+              htmlFor="i_files"
+              className="btn btn-light float-right shadow"
+              style={{ marginBottom: "0px" }}
+            >
+              <i className="fas fa-paperclip"></i> {t("AttachmentFile")}
             </label>
           </>
-        }
+        )}
         {/* Hủy */}
-        {viewSetting.showComponent.btnCancel &&
-          <button type='button' className='btn btn-secondary ml-3 shadow' onClick={() => handleCancel()}  >
-            <img src={IconDelete} className='mr-1' alt="cancel" /> {t('CancelSearch')}
+        {viewSetting.showComponent.btnCancel && (
+          <button
+            type="button"
+            className="btn btn-secondary ml-3 shadow"
+            onClick={() => handleCancel()}
+          >
+            <img src={IconDelete} className="mr-1" alt="cancel" />{" "}
+            {t("CancelSearch")}
           </button>
-        }
+        )}
 
         {/* Gửi yêu cầu */}
-        {viewSetting.showComponent.btnSendRequest &&
-          <button type='button' className='btn btn-primary ml-3 shadow' disabled={isLoading} onClick={() => handleSendForm()} >
-            {isLoading ?
-              <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
-              :
-              <i className='fa fa-paper-plane mr-1' aria-hidden='true'></i>
-            }
-            {" "}{t('Send')}
+        {viewSetting.showComponent.btnSendRequest && (
+          <button
+            type="button"
+            className="btn btn-primary ml-3 shadow"
+            disabled={isLoading}
+            onClick={() => handleSendForm()}
+          >
+            {isLoading ? (
+              <Spinner
+                as="span"
+                animation="border"
+                size="sm"
+                role="status"
+                aria-hidden="true"
+              />
+            ) : (
+              <i className="fa fa-paper-plane mr-1" aria-hidden="true"></i>
+            )}{" "}
+            {t("Send")}
           </button>
-        }
+        )}
         {/* Từ chối */}
-        {viewSetting.showComponent.btnRefuse &&
-          <button type='button' className='btn btn-danger' onClick={() => handleRefuse()}   >
-            <img src={IconDelete} className='mr-1' alt="delete" /> {t('RejectQuestionButtonLabel')}
+        {viewSetting.showComponent.btnRefuse && (
+          <button
+            type="button"
+            className="btn btn-danger"
+            onClick={() => handleRefuse()}
+          >
+            <img src={IconDelete} className="mr-1" alt="delete" />{" "}
+            {t("RejectQuestionButtonLabel")}
           </button>
-        }
+        )}
         {/* Thẩm định */}
-        {viewSetting.showComponent.btnExpertise &&
-          <button type='button' className='btn btn-primary float-right ml-3 shadow' onClick={() => handleConsent()} >
-            <i className='fas fa-check' aria-hidden='true'></i> {t('Consent')}
+        {viewSetting.showComponent.btnExpertise && (
+          <button
+            type="button"
+            className="btn btn-primary float-right ml-3 shadow"
+            onClick={() => handleConsent()}
+          >
+            <i className="fas fa-check" aria-hidden="true"></i> {t("Consent")}
           </button>
-        }
+        )}
         {/* Không phê duyệt */}
-        {viewSetting.showComponent.btnNotApprove &&
-          <button type='button' className='btn btn-danger' onClick={() => handleReject()} >
-            <img src={IconDelete} className='mr-1' alt="delete" /> {t('Reject')}
+        {viewSetting.showComponent.btnNotApprove && (
+          <button
+            type="button"
+            className="btn btn-danger"
+            onClick={() => handleReject()}
+          >
+            <img src={IconDelete} className="mr-1" alt="delete" /> {t("Reject")}
           </button>
-        }
+        )}
         {/* Phê duyệt */}
-        {viewSetting.showComponent.btnApprove &&
-          <button type='button' className='btn btn-success float-right ml-3 shadow' onClick={() => handleApprove()} >
-            <i className='fas fa-check' aria-hidden='true'></i> {t('Approval')}
+        {viewSetting.showComponent.btnApprove && (
+          <button
+            type="button"
+            className="btn btn-success float-right ml-3 shadow"
+            onClick={() => handleApprove()}
+          >
+            <i className="fas fa-check" aria-hidden="true"></i> {t("Approval")}
           </button>
-        }
+        )}
       </div>
     </div>
   );
-}
+};
 
 export default withTranslation()(SalaryAdjustmentPropse);
