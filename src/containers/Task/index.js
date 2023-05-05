@@ -143,9 +143,9 @@ class Task extends React.Component {
                     </Tab>
 
                     <Tab eventKey={tabKey.approval} title={t("Approval")}>
-                        {
-                            this.state.tabActive === tabKey.approval && <ApprovalComponent tasks={tasks} />
-                        }
+                      {
+                        this.state.tabActive === tabKey.approval && <ApprovalComponent tasks={tasks} />
+                      }
                     </Tab>
 
                     {/* Hủy bỏ tính năng Ủy quyền phê duyệt (17/04/2023). Requested by Vượng */}
