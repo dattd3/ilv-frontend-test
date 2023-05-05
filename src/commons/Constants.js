@@ -56,7 +56,7 @@ const Constants = {
   RESIGN_SELF: 7,
   SALARY_PROPOSE: 12,
   OT_REQUEST: 13,
-  
+
   //Status request
   STATUS_PENDING: 0,
   STATUS_NOT_APPROVED: 1, // từ chối phê duyệt
@@ -87,7 +87,8 @@ const Constants = {
     6: { label: "PartiallySuccessful", className: 'warning' },
     7: { label: "Rejected", className: 'fail' },
     8: { label: "PendingConsent", className: '' },
-    20:{ label: "Consented", className: '' }
+    20:{ label: "Consented", className: '' },
+    0: {label: "Waiting", className: ''}
   },
   //
   mappingActionType : {
@@ -210,6 +211,11 @@ const Constants = {
   timeoutForSpecificApis: 180000,
   LANGUAGE_VI: 'vi-VN',
   LANGUAGE_EN: 'en-US',
+  SALARY_APPRAISER_STATUS: {
+    NO_AVAILABE: 0,
+    APPRAISED: 1,
+    WAITING: 2
+  },
   MODULE: {
     TUYENDUNG: 1,
     DANHGIA_TAIKI: 2,
@@ -217,7 +223,7 @@ const Constants = {
     NGHIVIEC:4,
     PHUCLOI: 5
   },
-  MODULE_COMPANY_AVAILABE: process.env.REACT_APP_ENVIRONMENT === 'PRODUCTION' ? 
+  MODULE_COMPANY_AVAILABE: process.env.REACT_APP_ENVIRONMENT === 'PRODUCTION' ?
   { //production todo: add  "V077", "V070" to TUYENDUNG
     1: ["V040", "V005", "V079", "V041", "V030", "V077", "V070"],//TUYENDUNG + V061
     2: ["V040", "V005", "V061", "V077"],//DANHGIA_TAIKI
@@ -228,7 +234,7 @@ const Constants = {
   { //Development
     1: ["V040", "V005", "V079", "V041", "V030", "V077", "V070", "V099"],//TUYENDUNG + V061
     2: ["V061","V040", "V005", "V079", "V041", "V070", "V077", "V099"],//DANHGIA_TAIKI
-    3: [],//DEXUATLUONG "V061", "V040", "V005", "V079", "V041"
+    3: ["V061", "V040", "V005", "V079", "V041"],//DEXUATLUONG "V061", "V040", "V005", "V079", "V041"
     4:["V040", "V005", "V079", "V070", "V077"],//NGHIVIEC
     5: ["V061", "V040", "V005", "V079", "V041", "V070", "V077"]//PHUCLOI
   },

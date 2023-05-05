@@ -131,15 +131,21 @@ class Task extends React.Component {
             <div className="task-page">
                 <Tabs defaultActiveKey={this.state.tabActive} className={`task-tabs ${smallNavClass}`} onSelect={(key) => this.updateTabLink(key)}>
                     <Tab eventKey={tabKey.request} title={t("Request")}>
-                        <RequestComponent />
+                        {
+                          this.state.tabActive === tabKey.request && <RequestComponent />
+                        }
                     </Tab>
 
                     <Tab eventKey={tabKey.consent} title={t("Consent")}>
-                        <ConsentComponent />
+                        {
+                          this.state.tabActive === tabKey.consent && <ConsentComponent />
+                        }
                     </Tab>
 
                     <Tab eventKey={tabKey.approval} title={t("Approval")}>
-                        <ApprovalComponent tasks={tasks} />
+                        {
+                            this.state.tabActive === tabKey.approval && <ApprovalComponent tasks={tasks} />
+                        }
                     </Tab>
 
                     {/* Hủy bỏ tính năng Ủy quyền phê duyệt (17/04/2023). Requested by Vượng */}

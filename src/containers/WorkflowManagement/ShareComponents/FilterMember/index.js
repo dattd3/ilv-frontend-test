@@ -13,6 +13,7 @@ const FilterMember = (props) => {
   const [checkedMemberIds, setCheckedMemberIds] = useState([]);
   const [selectedMembers, setSelectedMembers] = useState([]);
   const [showMemberOption, setShowMemberOption] = useState(false);
+  const [inited, setInited] = useState(false);
 
   useEffect(() => {
     if (props.isEdit) {
@@ -24,23 +25,40 @@ const FilterMember = (props) => {
   }, [props.isEdit]);
 
   useEffect(() => {
-    if (!props.isEdit) {
+    if(users?.length > 0 && props.selectedMembers?.length > 0 && inited == false) {
+      setInited(true);
+      const memberIdsSelected = [...props.selectedMembers].map(m => m.uid);
+      const _users = [...users].map(item => {
+        return {
+          ...item,
+          checked: memberIdsSelected.includes(item.uid)
+        }
+      });
+      setUsers([..._users])
       setSelectedMembers(props.selectedMembers)
+      setCheckedMemberIds([..._users].filter(a => a.checked).map(m => m.uid))
     }
-    // eslint-disable-next-line
-  }, [props.selectedMembers]);
+  }, [users]);
+
+  // useEffect(() => {
+  //   //if (!props.isEdit) {
+  //     if(inited == true)
+  //     setSelectedMembers(props.selectedMembers)
+  //     //console.log('aa >>>', props.selectedMembers)
+  //     //setCheckedMemberIds([...props.selectedMembers].map(m => m.uid))
+  //   //}
+  //   // eslint-disable-next-line
+  // }, [props.selectedMembers]);
 
   const getApproverInfo = () => {
     const config = getMuleSoftHeaderConfigurations()
     axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/subordinate?depth=2`, config)
       .then((res) => {
         if (res && res.data && res.data.data) {
-          const users = res.data.data || [];
+          const users = (res.data.data || []);
           setUsers([...users])
           setLoading(false)
           setShowMemberOption(false)
-          setSelectedMembers([...users].filter(a => a.checked))
-          setCheckedMemberIds([...users].filter(a => a.checked).map(m => m.uid))
           props.updateEmployees(users, 'employeesForFilter')
         }
       })

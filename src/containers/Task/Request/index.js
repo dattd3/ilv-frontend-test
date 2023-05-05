@@ -6,6 +6,8 @@ import processingDataReq from "../../Utils/Common"
 import LoadingSpinner from "../../../components/Forms/CustomForm/LoadingSpinner";
 import RequestTaskList from '../requestTaskList';
 import HOCComponent from '../../../components/Common/HOCComponent'
+import { getValueParamByQueryString, setURLSearchParam } from 'commons/Utils'
+import { REQUEST_CATEGORIES } from '../Constants'
 
 class RequestComponent extends React.Component {
   constructor(props) {
@@ -18,8 +20,10 @@ class RequestComponent extends React.Component {
   }
 
   componentDidMount() {
-    let params = `pageIndex=${Constants.TASK_PAGE_INDEX_DEFAULT}&pageSize=${Constants.TASK_PAGE_SIZE_DEFAULT}&`;
-    this.requestRemoteData(params);
+    const params = `pageIndex=${Constants.TASK_PAGE_INDEX_DEFAULT}&pageSize=${Constants.TASK_PAGE_SIZE_DEFAULT}&`;
+    const currentRequestCategory = getValueParamByQueryString(window.location.search, "requestCategory") || REQUEST_CATEGORIES.CATEGORY_1;
+
+    this.requestRemoteData(params, currentRequestCategory);
   }
 
   exportToExcel = () => {
@@ -39,15 +43,18 @@ class RequestComponent extends React.Component {
 
     });
   }
- 
-  requestRemoteData = (params) => {
+
+  // 1: other requests
+  // 2: salary
+  requestRemoteData = (params, category = 1) => {
+    const HOST = category === 1 ? process.env.REACT_APP_REQUEST_URL : process.env.REACT_APP_REQUEST_SERVICE_URL;
     const config = {
       headers: {
         'Authorization': `${localStorage.getItem('accessToken')}`
       }
     }
     config.timeout = Constants.timeoutForSpecificApis
-    axios.get(`${process.env.REACT_APP_REQUEST_URL}request/list?${params}companyCode=`+localStorage.getItem("companyCode") , config)
+    axios.get(`${HOST}request/list?${params}companyCode=`+localStorage.getItem("companyCode") , config)
     .then(res => {
       if (res && res.data && res.data.data && res.data.result) {
         const result = res.data.result;
@@ -61,6 +68,8 @@ class RequestComponent extends React.Component {
       console.log(error);
       this.setState({tasks : [], totalRecord: 0});
     });
+    console.log(category)
+    setURLSearchParam("requestCategory", category)
   }
 
   render() {

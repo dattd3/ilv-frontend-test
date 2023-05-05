@@ -549,9 +549,15 @@ const marriageConfig = () => {
     }
 }
 
+function setURLSearchParam(key, value) {
+  const url = new URL(window.location.href);
+  url.searchParams.set(key, value);
+  window.history.pushState({ path: url.href }, '', url.href);
+}
+
 export {
     getRequestConfigurations, removeAccents, formatStringByMuleValue, formatNumberInteger, exportToPDF, isEnableFunctionByFunctionName, getValueParamByQueryString, getDateByRangeAndFormat,
     calculateBackDateByPnLVCodeAndFormatType, isEnableShiftChangeFunctionByPnLVCode, isEnableInOutTimeUpdateFunctionByPnLVCode, getRequestTypeIdsAllowedToReApproval, getMuleSoftHeaderConfigurations,
     isAdjacentDateBy2Date, showRangeDateGroupByArrayDate, generateTaskCodeByCode, parsteStringToHtml, getRegistrationMinDateByConditions, isVinFast, isEnableOTFunctionByPnLVCode, getCurrentLanguage, 
-    getResignResonsMasterData, formatStringDateTimeByMuleValue, genderConfig, marriageConfig
+    getResignResonsMasterData, formatStringDateTimeByMuleValue, genderConfig, marriageConfig, setURLSearchParam
 }
