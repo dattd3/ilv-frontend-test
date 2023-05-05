@@ -1123,6 +1123,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                 </>
                                             )
                                         }
+                                        { this.showPendingTimeNote(req[0]?.absenceType?.value, req[0]?.isAllDay) }
                                         { req[0].isShowHintLeaveForMother && <p className="message-danger"><i className="text-danger">* {t('AllowRegisterFor1Hour')}</i></p> }
                                     </div>
                                 </div>
