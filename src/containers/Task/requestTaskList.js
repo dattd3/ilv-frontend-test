@@ -11,12 +11,12 @@ import _ from 'lodash'
 import ConfirmationModal from '../../containers/Registration/ConfirmationModal'
 import Constants from '../../commons/Constants'
 import RegistrationConfirmationModal from '../Registration/ConfirmationModal'
-import { InputGroup, FormControl } from 'react-bootstrap'
+import { FormControl, Form, Button } from 'react-bootstrap'
 import { withTranslation } from "react-i18next"
 import { showRangeDateGroupByArrayDate, generateTaskCodeByCode, getValueParamByQueryString } from "../../commons/Utils"
-import { REQUEST_CATEGORIES, absenceRequestTypes, requestTypes } from "../Task/Constants"
+import { REQUEST_CATEGORIES, REQUEST_CATEGORY_1_LIST, REQUEST_CATEGORY_2_LIST, absenceRequestTypes, requestTypes } from "../Task/Constants"
 import { MOTHER_LEAVE_KEY } from "./Constants"
-import IconInformation from "assets/img/icon/icon-blue-information.svg"
+// import IconInformation from "assets/img/icon/icon-blue-information.svg"
 import IconFilter from "assets/img/icon/icon-filter.svg"
 import IconSearch from "assets/img/icon/icon-search.svg"
 
@@ -44,8 +44,9 @@ class RequestTaskList extends React.Component {
             isShowModalRegistrationConfirm: false,
             statusSelected: null,
             query: null,
-            requestCategory: getValueParamByQueryString(window.location.search, "requestCategory") || REQUEST_CATEGORIES.CATEGORY_1,
-            dataForSearch: {
+            requestCategorySelect: getValueParamByQueryString(window.location.search, "requestCategory") || REQUEST_CATEGORIES.CATEGORY_1,
+            tmpRequestCategorySelect: getValueParamByQueryString(window.location.search, "requestCategory") || REQUEST_CATEGORIES.CATEGORY_1,
+            isShowRequestCategorySelect: false,            dataForSearch: {
                 pageIndex: Constants.TASK_PAGE_INDEX_DEFAULT,
                 pageSize: Constants.TASK_PAGE_SIZE_DEFAULT,
                 id: '',
@@ -630,7 +631,37 @@ class RequestTaskList extends React.Component {
                 needRefresh: needRefresh
             }
         })
-        this.props.requestRemoteData(params, this.state.requestCategory);
+        this.props.requestRemoteData(params, this.state.requestCategorySelect);
+    }
+  
+    handleRequestCategorySelect = (val) => {
+      this.setState({
+        tmpRequestCategorySelect: val,
+      })
+    }
+
+    cancelRequestCategorySelect = () => {
+      this.setState({
+        isShowRequestCategorySelect: false,
+        tmpRequestCategorySelect: this.state.requestCategorySelect
+      })
+    }
+
+    applyRequestCategorySelect = () => {
+      this.setState({
+        requestCategorySelect: this.state.tmpRequestCategorySelect
+      }, () => {
+        this.searchRemoteData(true);
+        this.setState({
+          isShowRequestCategorySelect: false,
+        })
+      })
+    }
+
+    showRequestCategorySelect = () => {
+      this.setState({
+        isShowRequestCategorySelect: true,
+      })
     }
 
     render() {
@@ -673,62 +704,65 @@ class RequestTaskList extends React.Component {
                     type={this.state.typeRequest} urlName={this.state.requestUrl} dataToSap={dataToSap} onHide={this.onHideModalRegistrationConfirm} />
                 <div className="row w-100 mt-2 mb-3 search-block">
                     <div className="w-180px position-relative">
-                      <div className="request-category-tooltip">
-                        <img src={IconInformation} alt="" />
-                        <div
-                          className="request-category-tooltip-content"
-                        >
-                          <div className="category-title">
-                            <b>
-                              {t("TypeOfRequest")}
-                            </b>
+                          <img src={IconFilter} alt="" className="icon-prefix-select" />
+                          <div onClick={this.showRequestCategorySelect}>
+                            <Select name="requestCategory"
+                              className="w-100"
+                              placeholder={t("TypeOfRequest")} 
+                              key="requestCategory"
+                              classNamePrefix="filter-select"
+                              inputValue={this.state.requestCategorySelect === REQUEST_CATEGORIES.CATEGORY_1 ? `${t("Type")} I` : `${t("Type")} II`}
+                              noOptionsMessage={() => null}
+                            />
                           </div>
-                          <b className="category-item">{t("Type")} I</b>
-                          <i className="category-item">
-                            - {t("LeaveRequest")}  
-                          </i>
-                          <i className="category-item">
-                            - {t("BizTrip_TrainingRequest")}
-                          </i>
-                          <i className="category-item">
-                            - {t("InOutChangeRequest")}
-                          </i>
-                          <i className="category-item">
-                            - {t("ShiftChange")}
-                          </i>
-                          <i className="category-item">
-                            - {t("EditPersonalInformation")}
-                          </i>
-                          <b className="category-item">{t("Type")} II</b>
-                          <i className="category-item">
-                            - {t("SalaryType")}
-                          </i>
-                        </div>
-                      </div>
-                      <Select name="requestCategory"
-                          className="w-100"
-                          // defaultValue={this.props.filterdata[0]}
-                          value={REQUEST_CATEGORY_OPTIONS.find(opt => opt.value * 1 === this.state.requestCategory * 1)}
-                          isClearable={false}
-                          onChange={option => this.handleCategorySelectChange(option)}
-                          placeholder={t("TypeOfRequest")} 
-                          key="requestCategory"
-                          classNamePrefix="filter-select"
-                          options={REQUEST_CATEGORY_OPTIONS}
-                          styles={{
-                              menu: provided => ({ ...provided, zIndex: 2 }),
+                          {
+                            this.state.isShowRequestCategorySelect && <div className="request-category-guide-container">
+                              <div className="request-category-guide-body">
+                                <div className="category-title">
+                                  <b>
+                                    {t("TypeOfRequest")}
+                                  </b>
+                                </div>
+                                <Form.Check
+                                  label={`${t("Type")} I`}
+                                  id={`type-1-radio`}
+                                  name="category-radio-group"
+                                  type="radio"
+                                  onClick={() => this.handleRequestCategorySelect(REQUEST_CATEGORIES.CATEGORY_1)}
+                                  checked={this.state.tmpRequestCategorySelect == REQUEST_CATEGORIES.CATEGORY_1}
+                                />
+                                <ul className="type-list-ul">
+                                  {REQUEST_CATEGORY_1_LIST.map(item => <li className="category-item" key={item}>
+                                    {t(item)}
+                                  </li>)}
+                                </ul>
+                                <Form.Check
+                                  label={`${t("Type")} II`}
+                                  id={`type-2-radio`}
+                                  name="category-radio-group"
+                                  type="radio"
+                                  onClick={() => this.handleRequestCategorySelect(REQUEST_CATEGORIES.CATEGORY_2)}
+                                  checked={this.state.tmpRequestCategorySelect == REQUEST_CATEGORIES.CATEGORY_2}
+                                />
+                                <ul className="type-list-ul">
+                                  {REQUEST_CATEGORY_2_LIST.map(item => <li className="category-item" key={item}>
+                                    {t(item)}
+                                  </li>)}
+                                </ul>
+                              </div>
+                              <div className="request-category-guide-footer">
+                                <Button className="cancel-btn" onClick={this.cancelRequestCategorySelect}>
+                                  <i className="fas fa-times mr-2"></i>
+                                  {t('Cancel')}
+                                </Button>
+                                <Button className="apply-btn"  onClick={this.applyRequestCategorySelect}>
+                                  <i className="fas fa-check mr-2"></i>
+                                  {t('ApplySearch')}
+                                </Button>
+                              </div>
+                            </div>
                           }
-                        }
-                          // theme={theme => ({
-                          //     ...theme,
-                          //     colors: {
-                          //         ...theme.colors,
-                          //         primary25: '#F9C20A',
-                          //         primary: '#F9C20A',
-                          //     },
-                          // })} 
-                        />
-                    </div>
+                        </div>
                     <div className="w-180px position-relative">
                         <img src={IconFilter} alt="" className="icon-prefix-select" />
                         <Select name="absenceType"

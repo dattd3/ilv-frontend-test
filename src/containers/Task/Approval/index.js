@@ -7,11 +7,13 @@ import processingDataReq from "../../Utils/Common"
 import HOCComponent from '../../../components/Common/HOCComponent'
 import { getValueParamByQueryString, setURLSearchParam } from 'commons/Utils'
 import { REQUEST_CATEGORIES } from '../Constants'
+import LoadingModal from 'components/Common/LoadingModal'
 
 class ApprovalComponent extends React.Component {
   constructor(props) {
     super();
     this.state = {
+      isLoading: false,
       tasks: [],
       dataToSap: [],
       totalRecord: 0
@@ -45,6 +47,9 @@ class ApprovalComponent extends React.Component {
   // 1: other requests
   // 2: salary
   requestRemoteData = (params, category = REQUEST_CATEGORIES.CATEGORY_1) => {
+    this.setState({
+      isLoading: true
+    })
     const HOST = category === REQUEST_CATEGORIES.CATEGORY_1 ? process.env.REACT_APP_REQUEST_URL : process.env.REACT_APP_REQUEST_SERVICE_URL;
     const config = {
       headers: {
@@ -64,6 +69,10 @@ class ApprovalComponent extends React.Component {
           }
     }).catch(error => {
       this.setState({tasks : [], totalRecord: 0});
+    }).finally(() => {
+      this.setState({
+        isLoading: false
+      })
     })
     setURLSearchParam("requestCategory", category)
   }
@@ -85,6 +94,7 @@ class ApprovalComponent extends React.Component {
     ]
     return (
       <>
+        <LoadingModal show={this.state.isLoading} />
         <div className="task-section">
           <TaskList tasks={this.state.tasks} requestRemoteData ={this.requestRemoteData} total ={this.state.totalRecord} filterdata={statusFiler} page="approval" title={t("ApprovalManagement")}/>
         </div>

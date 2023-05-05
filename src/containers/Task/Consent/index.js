@@ -7,12 +7,14 @@ import LoadingSpinner from "../../../components/Forms/CustomForm/LoadingSpinner"
 import processingDataReq from "../../Utils/Common"
 import { getValueParamByQueryString, setURLSearchParam } from 'commons/Utils'
 import { REQUEST_CATEGORIES } from '../Constants'
+import LoadingModal from 'components/Common/LoadingModal'
 
 
 class ConsentComponent extends React.Component {
   constructor(props) {
     super();
     this.state = {
+      isLoading: false,
       tasks: [],
       taskCheckeds: [],
       dataResponse: {},
@@ -37,6 +39,9 @@ class ConsentComponent extends React.Component {
       }
     }
     config.timeout = Constants.timeoutForSpecificApis
+    this.setState({
+      isLoading: true
+    })
     axios.get(`${HOST}request/assessing?${params}companyCode=`+localStorage.getItem("companyCode"), config)
     .then(res => {
       if (res && res.data && res.data.data && res.data.result) {
@@ -49,6 +54,10 @@ class ConsentComponent extends React.Component {
       }
     }).catch(error => {
       this.setState({tasks : [], totalRecord: 0});
+    }).finally(() => {
+      this.setState({
+        isLoading: false
+      })
     });
     setURLSearchParam("requestCategory", category)
   }
@@ -68,6 +77,7 @@ class ConsentComponent extends React.Component {
     return (
       this.state.dataResponse ?
       <>
+        <LoadingModal show={this.state.isLoading} />
         <div className="task-section">
           <TaskList tasks={this.state.tasks} filterdata={statusFiler} requestRemoteData ={this.requestRemoteData} total ={this.state.totalRecord} page="consent" title={t("ConsentManagement")}/>
         </div>
