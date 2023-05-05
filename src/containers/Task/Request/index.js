@@ -8,11 +8,13 @@ import RequestTaskList from '../requestTaskList';
 import HOCComponent from '../../../components/Common/HOCComponent'
 import { getValueParamByQueryString, setURLSearchParam } from 'commons/Utils'
 import { REQUEST_CATEGORIES } from '../Constants'
+import LoadingModal from 'components/Common/LoadingModal'
 
 class RequestComponent extends React.Component {
   constructor(props) {
     super();
     this.state = {
+      isLoading: false,
       tasks: [],
       totalRecord: 0,
       dataResponse: {}
@@ -32,7 +34,6 @@ class RequestComponent extends React.Component {
         'Authorization': `${localStorage.getItem('accessToken')}`
       },
     }
-
     axios.post(`${process.env.REACT_APP_REQUEST_URL}user-profile-histories/export-to-excel?tabs=request`, null, config)
     .then(res => {
       const fileUrl = res.data
@@ -53,6 +54,9 @@ class RequestComponent extends React.Component {
         'Authorization': `${localStorage.getItem('accessToken')}`
       }
     }
+    this.setState({
+      isLoading: true
+    })
     config.timeout = Constants.timeoutForSpecificApis
     axios.get(`${HOST}request/list?${params}companyCode=`+localStorage.getItem("companyCode") , config)
     .then(res => {
@@ -67,6 +71,10 @@ class RequestComponent extends React.Component {
     }).catch(error => { 
       console.log(error);
       this.setState({tasks : [], totalRecord: 0});
+    }).finally(() => {
+      this.setState({
+        isLoading: false
+      })
     });
     console.log(category)
     setURLSearchParam("requestCategory", category)
@@ -85,12 +93,14 @@ class RequestComponent extends React.Component {
       // { value: Constants.STATUS_EVICTION , label: t("Recalled") },
       { value: Constants.STATUS_REVOCATION , label: t("Canceled") }
     ]
-    return (
-      this.state.dataResponse ?
+    return (<>
+      <LoadingModal show={this.state.isLoading} />
+      {this.state.dataResponse ?
       <div className="task-section">
         <RequestTaskList tasks={this.state.tasks} requestRemoteData ={this.requestRemoteData} total ={this.state.totalRecord} filterdata={statusFiler} title={t("RequestManagement")} page="request"/>         
       </div> : 
-      <LoadingSpinner />
+      <LoadingSpinner />}
+      </>
     )
   }
 }
