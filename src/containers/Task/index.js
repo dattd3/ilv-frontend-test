@@ -132,12 +132,16 @@ class Task extends React.Component {
             <div className="task-page">
                 <Tabs defaultActiveKey={this.state.tabActive} className={`task-tabs ${smallNavClass}`} onSelect={(key) => this.updateTabLink(key)}>
                     <Tab eventKey={tabKey.request} title={t("Request")}>
-                        <RequestComponent />
+                        {
+                          this.state.tabActive === tabKey.request && <RequestComponent />
+                        }
                     </Tab>
                     {
                     Constants.CONSENTER_LIST_LEVEL.includes(employeeLevel) || (companyCode == "V073" && Constants.CONSENTER_LIST_LEVEL_V073.includes(employeeLevel)) ?
                     <Tab eventKey={tabKey.consent} title={t("Consent")}>
-                        <ConsentComponent />
+                        {
+                          this.state.tabActive === tabKey.consent && <ConsentComponent />
+                        }
                     </Tab>
                     : null
                     }
@@ -149,7 +153,9 @@ class Task extends React.Component {
                         )
                         ?
                         <Tab eventKey={tabKey.approval} title={t("Approval")}>
-                            <ApprovalComponent tasks={tasks} />
+                            {
+                              this.state.tabActive === tabKey.approval && <ApprovalComponent tasks={tasks} />
+                            }
                         </Tab>
                         : null
                     }

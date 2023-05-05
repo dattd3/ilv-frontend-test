@@ -6,6 +6,8 @@ import processingDataReq from "../../Utils/Common"
 import LoadingSpinner from "../../../components/Forms/CustomForm/LoadingSpinner";
 import RequestTaskList from '../requestTaskList';
 import HOCComponent from '../../../components/Common/HOCComponent'
+import { getValueParamByQueryString, setURLSearchParam } from 'commons/Utils'
+import { REQUEST_CATEGORIES } from '../Constants'
 
 class RequestComponent extends React.Component {
   constructor(props) {
@@ -18,8 +20,10 @@ class RequestComponent extends React.Component {
   }
 
   componentDidMount() {
-    let params = `pageIndex=${Constants.TASK_PAGE_INDEX_DEFAULT}&pageSize=${Constants.TASK_PAGE_SIZE_DEFAULT}&`;
-    this.requestRemoteData(params, 1);
+    const params = `pageIndex=${Constants.TASK_PAGE_INDEX_DEFAULT}&pageSize=${Constants.TASK_PAGE_SIZE_DEFAULT}&`;
+    const currentRequestCategory = getValueParamByQueryString(window.location.search, "requestCategory") || REQUEST_CATEGORIES.CATEGORY_1;
+
+    this.requestRemoteData(params, currentRequestCategory);
   }
 
   exportToExcel = () => {
@@ -64,6 +68,8 @@ class RequestComponent extends React.Component {
       console.log(error);
       this.setState({tasks : [], totalRecord: 0});
     });
+    console.log(category)
+    setURLSearchParam("requestCategory", category)
   }
 
   render() {

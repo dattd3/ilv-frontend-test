@@ -5,7 +5,8 @@ import Constants from '../../../commons/Constants'
 import TaskList from '../taskList'
 import LoadingSpinner from "../../../components/Forms/CustomForm/LoadingSpinner";
 import processingDataReq from "../../Utils/Common"
-import { checkIsExactPnL } from '../../../commons/commonFunctions'
+import { getValueParamByQueryString, setURLSearchParam } from 'commons/Utils'
+import { REQUEST_CATEGORIES } from '../Constants'
 
 
 class ConsentComponent extends React.Component {
@@ -20,8 +21,10 @@ class ConsentComponent extends React.Component {
   }
 
   componentDidMount() {
-    let params = `pageIndex=${Constants.TASK_PAGE_INDEX_DEFAULT}&pageSize=${Constants.TASK_PAGE_SIZE_DEFAULT}&status=${Constants.STATUS_WAITING_CONSENTED}&`;
-    this.requestRemoteData(params, 1);
+    const params = `pageIndex=${Constants.TASK_PAGE_INDEX_DEFAULT}&pageSize=${Constants.TASK_PAGE_SIZE_DEFAULT}&status=${Constants.STATUS_WAITING_CONSENTED}&`;
+    const currentRequestCategory = getValueParamByQueryString(window.location.search, "requestCategory") || REQUEST_CATEGORIES.CATEGORY_1;
+
+    this.requestRemoteData(params, currentRequestCategory);
   }
 
   // 1: other requests
@@ -47,6 +50,7 @@ class ConsentComponent extends React.Component {
     }).catch(error => {
       this.setState({tasks : [], totalRecord: 0});
     });
+    setURLSearchParam("requestCategory", category)
   }
 
   render() {

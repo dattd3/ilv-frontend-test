@@ -13,8 +13,8 @@ import Constants from '../../commons/Constants'
 import RegistrationConfirmationModal from '../Registration/ConfirmationModal'
 import { InputGroup, FormControl } from 'react-bootstrap'
 import { withTranslation } from "react-i18next"
-import { showRangeDateGroupByArrayDate, generateTaskCodeByCode } from "../../commons/Utils"
-import { absenceRequestTypes, requestTypes } from "../Task/Constants"
+import { showRangeDateGroupByArrayDate, generateTaskCodeByCode, getValueParamByQueryString } from "../../commons/Utils"
+import { REQUEST_CATEGORIES, absenceRequestTypes, requestTypes } from "../Task/Constants"
 import { MOTHER_LEAVE_KEY } from "./Constants"
 import IconInformation from "assets/img/icon/icon-blue-information.svg"
 import IconFilter from "assets/img/icon/icon-filter.svg"
@@ -24,11 +24,6 @@ const TIME_FORMAT = 'HH:mm:ss'
 const DATE_FORMAT = 'DD-MM-YYYY'
 const DATE_OF_SAP_FORMAT = 'YYYYMMDD'
 const TIME_OF_SAP_FORMAT = 'HHmm00'
-
-const REQUEST_CATEGORIES = {
-  CATEGORY_1: 1,
-  CATEGORY_2: 2
-}
 
 class RequestTaskList extends React.Component {
     constructor(props) {
@@ -49,7 +44,7 @@ class RequestTaskList extends React.Component {
             isShowModalRegistrationConfirm: false,
             statusSelected: null,
             query: null,
-            requestCategory: REQUEST_CATEGORIES.CATEGORY_1,
+            requestCategory: getValueParamByQueryString(window.location.search, "requestCategory") || REQUEST_CATEGORIES.CATEGORY_1,
             dataForSearch: {
                 pageIndex: Constants.TASK_PAGE_INDEX_DEFAULT,
                 pageSize: Constants.TASK_PAGE_SIZE_DEFAULT,
@@ -713,7 +708,7 @@ class RequestTaskList extends React.Component {
                       <Select name="requestCategory"
                           className="w-100"
                           // defaultValue={this.props.filterdata[0]}
-                          value={REQUEST_CATEGORY_OPTIONS.find(opt => opt.value === this.state.requestCategory)}
+                          value={REQUEST_CATEGORY_OPTIONS.find(opt => opt.value * 1 === this.state.requestCategory * 1)}
                           isClearable={false}
                           onChange={option => this.handleCategorySelectChange(option)}
                           placeholder={t("TypeOfRequest")} 
