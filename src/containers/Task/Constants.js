@@ -50,4 +50,10 @@ const REQUEST_CATEGORIES = {
   CATEGORY_2: 2
 }
 
-export { absenceRequestTypes, PN03List, requestTypes, MATERNITY_LEAVE_KEY, MARRIAGE_FUNERAL_LEAVE_KEY, MOTHER_LEAVE_KEY, FOREIGN_SICK_LEAVE, ANNUAL_LEAVE_KEY, ADVANCE_ABSENCE_LEAVE_KEY, COMPENSATORY_LEAVE_KEY, REQUEST_CATEGORIES }
+const REQUEST_CATEGORY_1_LIST = ["EditBasicProfile", "LeaveRequest", "BizTrip_TrainingRequest", "ShiftChange", "InOutChangeRequest", 
+  "ContractEvaluationType", "ResignationType", "AdminUploadShiftChange", "DepartmentTimesheet", "EditPersonalInformation", "OTRequest"]
+
+  const REQUEST_CATEGORY_2_LIST = ["SalaryType"]
+
+export { absenceRequestTypes, PN03List, requestTypes, MATERNITY_LEAVE_KEY, MARRIAGE_FUNERAL_LEAVE_KEY, MOTHER_LEAVE_KEY, 
+  FOREIGN_SICK_LEAVE, ANNUAL_LEAVE_KEY, ADVANCE_ABSENCE_LEAVE_KEY, COMPENSATORY_LEAVE_KEY, REQUEST_CATEGORIES, REQUEST_CATEGORY_1_LIST, REQUEST_CATEGORY_2_LIST }
