@@ -292,7 +292,7 @@
   "DateOfIssueRequiredIdCard": "Date of Issue Required",
   "DateOfIssueRequiredPassport": "Date of Issue Required",
   "DateOfLeaves": "Date of Leaves",
-  "DateOfRequest": "Date of Request",
+  "DateOfRequest": "Request Date",
   "DateOfStudy": "Date of Study",
   "DecisionNo": "Decision No.",
   "Deduction": "Deduction",
@@ -1756,5 +1756,6 @@
   "TimeToSendRequest": "Create date",
   "ConsentDate": "Consent Date",
   "ApprovalDate": "Approval Date",
-  "CancelDate": "Cancel Date"
+  "CancelDate": "Cancel Date",
+  "SupervisorApprovedDate": "Suppervisor Approved Date"
 }

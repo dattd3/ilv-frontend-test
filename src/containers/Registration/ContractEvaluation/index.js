@@ -305,7 +305,12 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         appraiserComment: null,
         approverComment: null,
         hrAppraiserComment: null,
-        supervisorComment: null
+        supervisorComment: null,
+        createdDate: null,
+        assessedDate: null,
+        supervisorDate: null,
+        approvalDate: null,
+        deletedDate: null
       },
       errors: {
         // rating: '(Bắt buộc)',
@@ -686,6 +691,10 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
       candidateInfos.supervisorComment = infos.requestHistorys.supervisorComment; 
       candidateInfos.hrAppraiserComment = infos.requestHistorys.hrAppraiserComment; 
       candidateInfos.approverComment = infos.requestHistorys.approverComment; 
+      candidateInfos.createdDate = infos.requestHistorys.createdDate;
+      candidateInfos.assessedDate = infos.requestHistorys.assessedDate;
+      candidateInfos.supervisorDate = infos.requestHistorys.supervisorDate;
+      candidateInfos.deletedDate = infos.requestHistorys.deletedDate;
     }
     candidateInfos.documentStatus = infos.profileStatus;
     const cvs = this.prepareCVResponses(infos.staffProfileDocuments)
@@ -1353,7 +1362,6 @@ renderEvalution = (name, data, isDisable) => {
   }
 
   createFormSalary = () => {
-    console.log('create form salary');
     this.setState({ isShowSalaryPropose: false });
     this.props.history.push(`/salarypropse/${this.state.id}/create/request`)
   }
