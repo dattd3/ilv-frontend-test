@@ -11,6 +11,12 @@ import { vi, enUS } from 'date-fns/locale'
 import { withTranslation } from "react-i18next";
 import './styles.scss'
 
+const formatProcessTime = (time) => {
+  console.log(time)
+  if (time === "0001-01-01T00:00:00" || !time) return ""
+  return `${moment(time).format("DD/MM/YYYY")} | ${moment(time).format("HH:mm:ss")}`
+}
+
 const ContractEvaluationdetail = (props) => {
   const { data, id, type, idSalary, t } = props
   const dataSalary = props.dataSalary;
@@ -412,14 +418,14 @@ const ContractEvaluationdetail = (props) => {
                   </div>
                   : null
               }
-              {
+              {/* {
                 data.nguoipheduyet && data.approvalDate ?
                   <div className="col-12">
                     {t('approval_date')}
                     <div className="detail">{moment(data.approvalDate).format('DD/MM/YYYY')}</div>
                   </div>
                   : null
-              }
+              } */}
             </div>
           </div>
 
@@ -443,6 +449,53 @@ const ContractEvaluationdetail = (props) => {
               </div>
             </>
           }
+
+          <div className="box cbnv">
+            <div className="row approve">
+              <div className="col-12">
+                <span className="title">{t('RequestProcessTime').toUpperCase()}</span>
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-12">
+                <div className="divider"></div>
+              </div>
+              <div className="col-12">
+                <div className="row">
+                  <div className="col-4">
+                    {t("DateOfRequest")}
+                    <div className="detail">
+                      {formatProcessTime(data.createdDate)}
+                    </div>
+                  </div>
+                  <div className="col-4">
+                    {t("DateOfSupervisorApproved")}
+                    <div className="detail">
+                      {formatProcessTime(data.assessedDate)}
+                    </div>
+                  </div>
+                  <div className="col-4">
+                    {t("DateOfAppraise")}
+                    <div className="detail">
+                      {formatProcessTime(data.supervisorDate)}
+                    </div>
+                  </div>
+                  <div className="col-4">
+                    {t("DateOfApproval")}
+                    <div className="detail">
+                      {formatProcessTime(data.approvalDate)}
+                    </div>
+                  </div>
+                  <div className="col-4">
+                    {t("DateOfCancelRequest")}
+                    <div className="detail">
+                      {formatProcessTime(data.deletedDate)}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
 
           <ul className="list-inline">
             {data.cvs.map((file, index) => {
