@@ -1764,5 +1764,9 @@
   "NumberOfSharesConverted": "Số Cổ phần quy đổi",
   "BlockFingerprint": "Khóa Vân tay",
   "BlockFaceID": "Khóa Face ID",
-  "BlockEmailAdAccount": "Khóa Email/ tài khoản AD"
+  "BlockEmailAdAccount": "Khóa Email/ tài khoản AD",
+  "RequestProcessTime": "Quá trình xử lý yêu cầu",
+  "DateOfAppraise": "Thời gian thẩm định",
+  "DateOfCancelRequest": "Thời gian xoá yêu cầu",
+  "DateOfSupervisorApproved": "Thời gian QLTT phê duyệt"
 }

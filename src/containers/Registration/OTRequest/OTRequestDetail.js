@@ -20,11 +20,16 @@ const isNullCustomize = (value) => {
 };
 const OTRequestType = 13;
 
+const formatProcessTime = (time) => {
+  if (time === "0001-01-01T00:00:00" || !time) return ""
+  return `${moment(time).format("DD/MM/YYYY")} | ${moment(time).format("HH:mm:ss")}`
+}
+
 export default function OTRequestDetailComponent({ data, action }) {
   const { t } = useTranslation();
   const [approvalMatrixUrl, setApprovalMatrixUrl] = useState(null);
   const lang = localStorage.getItem("locale");
-  const { requestInfo, user, approver, appraiser } = data;
+  const { requestInfo, user, approver, appraiser, createDate, assessedDate, approvedDate, deletedDate } = data;
 
   useEffect(() => {
     axios
@@ -443,6 +448,37 @@ export default function OTRequestDetailComponent({ data, action }) {
                     </span>
                   </div>
                 )}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="mb-30">
+          <div className="block-title">{t("RequestProcessTime").toUpperCase()}</div>
+          <div className="box shadow">
+            <div className="row">
+              <div className="col-4">
+                <div className="form-item">
+                  <div className="mb-12">{t("DateOfRequest")}</div>
+                  <div className="field-view">{formatProcessTime(createDate)}</div>
+                </div>
+              </div>
+              <div className="col-4">
+                <div className="form-item">
+                  <div className="mb-12">{t("DateOfAppraise")}</div>
+                  <div className="field-view">{formatProcessTime(assessedDate)}</div>
+                </div>
+              </div>
+              <div className="col-4">
+                <div className="form-item">
+                  <div className="mb-12">{t("DateOfApproval")}</div>
+                  <div className="field-view">{formatProcessTime(approvedDate)}</div>
+                </div>
+              </div>
+              <div className="col-4 mt-20">
+                <div className="form-item">
+                  <div className="mb-12">{t("DateOfCancelRequest")}</div>
+                  <div className="field-view">{formatProcessTime(deletedDate)}</div>
+                </div>
               </div>
             </div>
           </div>
