@@ -1765,8 +1765,12 @@
   "BlockFingerprint": "Khóa Vân tay",
   "BlockFaceID": "Khóa Face ID",
   "BlockEmailAdAccount": "Khóa Email/ tài khoản AD",
-  "RequestProcessTime": "Quá trình xử lý yêu cầu",
-  "DateOfAppraise": "Thời gian thẩm định",
-  "DateOfCancelRequest": "Thời gian xoá yêu cầu",
-  "DateOfSupervisorApproved": "Thời gian QLTT phê duyệt"
+  "Type": "Loại",
+  "EditPersonalInformation": "Sửa thông tin cá nhân",
+  "RequestHistory": "Quá trình xử lý yêu cầu",
+  "TimeToSendRequest": "Thời gian gửi yêu cầu",
+  "ConsentDate": "Thời gian thẩm định",
+  "ApprovalDate": "Thời gian phê duyệt",
+  "CancelDate": "Thời gian hủy yêu cầu",
+  "SupervisorApprovedDate": "Thời gian QLTT phê duyệt"
 }

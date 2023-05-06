@@ -449,7 +449,7 @@ const ContractEvaluationdetail = (props) => {
           <div className="box cbnv">
             <div className="row approve">
               <div className="col-12">
-                <span className="title">{t('RequestProcessTime').toUpperCase()}</span>
+                <span className="title">{t('RequestHistory').toUpperCase()}</span>
               </div>
             </div>
             <div className="row">
@@ -459,19 +459,19 @@ const ContractEvaluationdetail = (props) => {
               <div className="col-12">
                 <div className="row">
                   <div className="col-4">
-                    {t("DateOfRequest")}
+                    {t("TimeToSendRequest")}
                     <div className="detail">
                       {formatProcessTime(data.createdDate)}
                     </div>
                   </div>
                   <div className="col-4">
-                    {t("DateOfSupervisorApproved")}
+                    {t("SupervisorApprovedDate")}
                     <div className="detail">
                       {formatProcessTime(data.assessedDate)}
                     </div>
                   </div>
                   <div className="col-4">
-                    {t("DateOfAppraise")}
+                    {t("ConsentDate")}
                     <div className="detail">
                       {formatProcessTime(data.supervisorDate)}
                     </div>
@@ -483,7 +483,7 @@ const ContractEvaluationdetail = (props) => {
                     </div>
                   </div>
                   <div className="col-4">
-                    {t("DateOfCancelRequest")}
+                    {t("CancelDate")}
                     <div className="detail">
                       {formatProcessTime(data.deletedDate)}
                     </div>

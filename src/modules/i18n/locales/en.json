@@ -1748,8 +1748,12 @@
   "BlockFingerprint": "Fingerprint lock",
   "BlockFaceID": "Face ID lock",
   "BlockEmailAdAccount": "Email/ AD lock",
-  "RequestProcessTime": "Request History",
-  "DateOfAppraise": "Consent Date",
-  "DateOfCancelRequest": "Cancel Date",
-  "DateOfSupervisorApproved": "Suppervisor Approved Date"
+  "Type": "Type",
+  "EditPersonalInformation": "Edit persional information",
+  "RequestHistory": "Request History",
+  "TimeToSendRequest": "Create date",
+  "ConsentDate": "Consent Date",
+  "ApprovalDate": "Approval Date",
+  "CancelDate": "Cancel Date",
+  "SupervisorApprovedDate": "Suppervisor Approved Date"
 }
