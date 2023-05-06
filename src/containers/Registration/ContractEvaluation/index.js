@@ -1362,7 +1362,6 @@ renderEvalution = (name, data, isDisable) => {
   }
 
   createFormSalary = () => {
-    console.log('create form salary');
     this.setState({ isShowSalaryPropose: false });
     this.props.history.push(`/salarypropse/${this.state.id}/create/request`)
   }

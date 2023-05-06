@@ -1,18 +1,14 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { withRouter } from 'react-router-dom'
 import moment from 'moment'
 import Rating from 'react-rating'
-import _ from 'lodash'
-import { Image } from 'react-bootstrap'
 import Constants from '../.../../../../commons/Constants'
 import { checkVersionPnLSameAsVinhome, IS_VINFAST } from '../../../commons/commonFunctions'
 import 'react-datepicker/dist/react-datepicker.css'
-import { vi, enUS } from 'date-fns/locale'
 import { withTranslation } from "react-i18next";
 import './styles.scss'
 
 const formatProcessTime = (time) => {
-  console.log(time)
   if (time === "0001-01-01T00:00:00" || !time) return ""
   return `${moment(time).format("DD/MM/YYYY")} | ${moment(time).format("HH:mm:ss")}`
 }
