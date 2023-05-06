@@ -14,8 +14,8 @@ export default function ProcessHistoryComponent(props) {
   const { createdDate, coordinatorDate, requestAppraisers, approvedDate } =
     props;
   
-  const consenters =  requestAppraisers?.filter(item => item.type === 0);
-  const HRconsenters =  requestAppraisers?.filter(item => item.type === 1);
+  const lastConsenter =  requestAppraisers?.filter(item => item.type === 0)?.toReversed()?.find(item => !!formatProcessTime(item.appraisalDate))
+  const HRconsenter =  requestAppraisers?.filter(item => item.type === 1)?.[0];
 
   return (
     <div className="row" style={{ rowGap: 18 }}>
@@ -28,16 +28,16 @@ export default function ProcessHistoryComponent(props) {
         <input type="text" className="form-control" value={formatProcessTime(coordinatorDate)} readOnly />
       </div>
       {
-        consenters?.map((item, index) => <div className="col-4" key={item.appraiserId}>
-          <p className="title2">{`${t("ConsentDate")} ${index + 1}`}</p>
-          <input type="text" className="form-control" value={formatProcessTime(item.appraisalDate)} readOnly />
-        </div>)
+        lastConsenter && <div className="col-4" key={lastConsenter.appraiserId}>
+          <p className="title2">{`${t("ConsentDate")}`}</p>
+          <input type="text" className="form-control" value={formatProcessTime(lastConsenter.appraisalDate)} readOnly />
+        </div>
       }
       {
-        HRconsenters?.map((item, index) => <div className="col-4" key={item.appraiserId}>
+        HRconsenter && <div className="col-4">
         <p className="title2">{`${t("HRAppraiseDate")}`}</p>
-        <input type="text" className="form-control" value={formatProcessTime(item.appraisalDate)} readOnly />
-      </div>)
+        <input type="text" className="form-control" value={formatProcessTime(HRconsenter.appraisalDate)} readOnly />
+      </div>
       }
       <div className="col-4">
         <p className="title2">{t("ApprovalDate")}</p>
