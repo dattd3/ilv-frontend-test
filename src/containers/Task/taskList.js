@@ -504,7 +504,7 @@ class TaskList extends React.Component {
                           <img src={IconFilter} alt="" className="icon-prefix-select" />
                           <Select name="absenceType"
                             // defaultValue={this.props.filterdata[0]}
-                            value={this.state.absenceType || ""}
+                            value={this.state.absenceType || { label: t("Waiting"), value: this.props.page == 'consent' ? Constants.STATUS_WAITING_CONSENTED : Constants.STATUS_WAITING }}
                             isClearable={false}
                             onChange={absenceType => this.handleSelectChange('absenceType', absenceType)}
                             placeholder={t('Status')} key="absenceType" options={this.props.filterdata}
