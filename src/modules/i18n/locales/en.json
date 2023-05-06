@@ -1747,5 +1747,10 @@
   "NumberOfSharesConverted": "Number of shares converted",
   "BlockFingerprint": "Fingerprint lock",
   "BlockFaceID": "Face ID lock",
-  "BlockEmailAdAccount": "Email/ AD lock"
+  "BlockEmailAdAccount": "Email/ AD lock",
+  "RequestHistory": "Request History",
+  "TimeToSendRequest": "Create date",
+  "ConsentDate": "Consent Date",
+  "ApprovalDate": "Approval Date",
+  "CancelDate": "Cancel Date"
 }
