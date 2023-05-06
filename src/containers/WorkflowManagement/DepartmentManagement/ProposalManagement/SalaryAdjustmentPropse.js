@@ -30,6 +30,7 @@ import { Button, Image } from "react-bootstrap";
 import { checkFilesMimeType } from "../../../../utils/file";
 import LoadingModal from "../../../../components/Common/LoadingModal";
 import { getCulture } from "commons/Utils";
+import ProcessHistoryComponent from "./ProcessHistoryComponent";
 
 registerLocale("vi", vi);
 
@@ -1843,6 +1844,24 @@ const SalaryAdjustmentPropse = (props) => {
           </div>
         </>
       )}
+      {/* Proccess History */}
+      {
+        !isCreateMode && (
+          <>
+            <h5 className="content-page-header">
+              {t("RequestProcessTime").toUpperCase()}
+            </h5>
+            <div className="timesheet-box1 timesheet-box shadow">
+              <ProcessHistoryComponent
+                createdDate={dataSalary?.createdDate}
+                coordinatorDate={dataSalary?.coordinatorDate}
+                requestAppraisers={dataSalary?.requestAppraisers}
+                approvedDate={dataSalary?.approvedDate}
+              />
+            </div>
+          </>
+        )
+      }
       <br />
       {/* List file */}
       <ul className="list-inline">

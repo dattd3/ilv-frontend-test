@@ -1768,5 +1768,11 @@
   "BlockFaceID": "Khóa Face ID",
   "BlockEmailAdAccount": "Khóa Email/ tài khoản AD",
   "Type": "Loại",
-  "EditPersonalInformation": "Sửa thông tin cá nhân"
+  "EditPersonalInformation": "Sửa thông tin cá nhân",
+  "RequestProcessTime": "Quá trình xử lý yêu cầu",
+  "DateOfAppraise": "Thời gian thẩm định",
+  "DateOfCancelRequest": "Thời gian xoá yêu cầu",
+  "DateOfSupervisorApproved": "Thời gian QLTT phê duyệt",
+  "DateOfSupportHRViewedSalary": "Thời gian HR hỗ trợ xem lương",
+  "DateOfHRAppraise": "Thời gian HR phê duyệt"
 }

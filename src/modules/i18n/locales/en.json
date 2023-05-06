@@ -1751,5 +1751,11 @@
   "BlockFaceID": "Face ID lock",
   "BlockEmailAdAccount": "Email/ AD lock",
   "Type": "Type",
-  "EditPersonalInformation": "Edit persional information"
+  "EditPersonalInformation": "Edit persional information",
+  "RequestProcessTime": "Request History",
+  "DateOfAppraise": "Consent Date",
+  "DateOfCancelRequest": "Cancel Date",
+  "DateOfSupervisorApproved": "Suppervisor Approved Date",
+  "DateOfSupportHRViewedSalary": "Support HR Viewed Salary Date",
+  "DateOfHRAppraise": "HR Consent Date"
 }
