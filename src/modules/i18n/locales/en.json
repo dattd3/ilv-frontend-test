@@ -1751,5 +1751,10 @@
   "BlockFaceID": "Face ID lock",
   "BlockEmailAdAccount": "Email/ AD lock",
   "Type": "Type",
-  "EditPersonalInformation": "Edit persional information"
+  "EditPersonalInformation": "Edit persional information",
+  "RequestHistory": "Request History",
+  "TimeToSendRequest": "Create date",
+  "ConsentDate": "Consent Date",
+  "ApprovalDate": "Approval Date",
+  "CancelDate": "Cancel Date"
 }

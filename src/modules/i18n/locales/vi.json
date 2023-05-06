@@ -1768,5 +1768,10 @@
   "BlockFaceID": "Khóa Face ID",
   "BlockEmailAdAccount": "Khóa Email/ tài khoản AD",
   "Type": "Loại",
-  "EditPersonalInformation": "Sửa thông tin cá nhân"
+  "EditPersonalInformation": "Sửa thông tin cá nhân",
+  "RequestHistory": "Quá trình xử lý yêu cầu",
+  "TimeToSendRequest": "Thời gian gửi yêu cầu",
+  "ConsentDate": "Thời gian thẩm định",
+  "ApprovalDate": "Thời gian phê duyệt",
+  "CancelDate": "Thời gian hủy yêu cầu"
 }

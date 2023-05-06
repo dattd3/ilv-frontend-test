@@ -304,8 +304,19 @@
     }
     .list-inline {
         margin-bottom: 0;
+        display: flex;
+        flex-wrap: wrap;
+        grid-gap: 20px;
         .list-inline-item {
-            margin-bottom: 30px;
+            margin: 0;
+            display: inline-flex;
+            align-items: center;
+            background: #F5F5F5;
+            padding-right: 10px;
+            border-radius: 4px;
+            .size {
+                margin-left: -5px;
+            }
         }
     }
     .input-container {
@@ -363,12 +374,13 @@
 }
 .document-block {
     .document-item {
-        display: block;
-        padding: 10px 15px;
-        border: 1px solid #dad6d6;
-        border-radius: 8px;
-        background: #FFFFFF;
+        display: inline-flex;
+        align-items: center;
+        padding: 10px;
+        border-radius: 4px;
+        background: #F5F5F5;
         text-decoration: none;
-        color: #858796;
+        font-weight: bold;
+        color: #4E73DF;
     }
 }
