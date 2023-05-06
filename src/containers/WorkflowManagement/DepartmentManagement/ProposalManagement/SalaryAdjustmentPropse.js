@@ -1849,7 +1849,7 @@ const SalaryAdjustmentPropse = (props) => {
         !isCreateMode && (
           <>
             <h5 className="content-page-header">
-              {t("RequestProcessTime").toUpperCase()}
+              {t("RequestHistory").toUpperCase()}
             </h5>
             <div className="timesheet-box1 timesheet-box shadow">
               <ProcessHistoryComponent
