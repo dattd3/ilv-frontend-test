@@ -1774,5 +1774,7 @@
   "ConsentDate": "Thời gian thẩm định",
   "ApprovalDate": "Thời gian phê duyệt",
   "CancelDate": "Thời gian hủy yêu cầu",
-  "SupervisorApprovedDate": "Thời gian QLTT phê duyệt"
+  "SupervisorApprovedDate": "Thời gian QLTT phê duyệt",
+  "SupportHRViewedSalaryDate": "Thời gian HR hỗ trợ xem lương",
+  "HRAppraiseDate": "Thời gian HR phê duyệt"
 }

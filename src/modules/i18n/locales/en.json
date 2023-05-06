@@ -1757,5 +1757,7 @@
   "ConsentDate": "Consent Date",
   "ApprovalDate": "Approval Date",
   "CancelDate": "Cancel Date",
-  "SupervisorApprovedDate": "Suppervisor Approved Date"
+  "SupervisorApprovedDate": "Suppervisor Approved Date",
+  "SupportHRViewedSalaryDate": "Support HR Viewed Salary Date",
+  "HRAppraiseDate": "HR Consent Date"
 }
