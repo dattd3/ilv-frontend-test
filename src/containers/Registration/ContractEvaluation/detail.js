@@ -6,12 +6,8 @@ import Constants from '../.../../../../commons/Constants'
 import { checkVersionPnLSameAsVinhome, IS_VINFAST } from '../../../commons/commonFunctions'
 import 'react-datepicker/dist/react-datepicker.css'
 import { withTranslation } from "react-i18next";
-import './styles.scss'
-
-const formatProcessTime = (time) => {
-  if (time === "0001-01-01T00:00:00" || !time) return ""
-  return `${moment(time).format("DD/MM/YYYY")} | ${moment(time).format("HH:mm:ss")}`
-}
+import './styles.scss';
+import { formatProcessTime } from 'commons/Utils'
 
 const ContractEvaluationdetail = (props) => {
   const { data, id, type, idSalary, t } = props
@@ -477,7 +473,7 @@ const ContractEvaluationdetail = (props) => {
                     </div>
                   </div>
                   <div className="col-4">
-                    {t("DateOfApproval")}
+                    {t("ApprovalDate")}
                     <div className="detail">
                       {formatProcessTime(data.approvalDate)}
                     </div>
