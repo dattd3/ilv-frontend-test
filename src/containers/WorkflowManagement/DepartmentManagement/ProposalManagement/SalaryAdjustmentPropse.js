@@ -13,6 +13,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import FilterMember from "../../ShareComponents/FilterMember";
 import ConfirmationModal from "../../../Registration/ConfirmationModal";
 import ResultModal from "./ResultModal";
+import ProposalModal from "./ProposalModal";
 import HumanForReviewSalaryComponent from "../../../Registration/HumanForReviewSalaryComponent";
 import ConfirmPasswordModal from "../../../Registration/ContractEvaluation/SalaryPropose/ConfirmPasswordModal";
 import StatusModal from "../../../../components/Common/StatusModal";
@@ -41,19 +42,24 @@ const ListTypeContract = [
   { value: "VF", label: "HĐDV theo tháng" },
   { value: "VG", label: "HĐDV theo giờ" },
   { value: "VH", label: "HĐDV khoán" },
-];
+],
+isTransferAppointProposal = window.location.href.includes('transfer-appoint/create/request');
 
 const SalaryAdjustmentPropse = (props) => {
   const { t } = props;
   const api = useApi();
   const history = useHistory();
-  const InsuranceOptions = [{ value: 1, label: t("SalaryPropse") }];
+  const InsuranceOptions = [
+    { value: 1, label: t("SalaryPropse") },
+    { value: 2, label: t("ProposalTransfer") },
+  ];
   const [resultModal, setResultModal] = useState({
     show: false,
     title: "",
     message: "",
     isSuccess: false,
   });
+  const [proposalModal, setProposalModal] = useState({ show: false, index: -1 });
   const [modalStatus, setModalStatus] = useState({
     isShowStatusModal: false,
     content: "",
@@ -76,7 +82,7 @@ const SalaryAdjustmentPropse = (props) => {
     new URLSearchParams(props.history.location.search).get("accesstoken") ||
       null
   );
-  const [type, setType] = useState(InsuranceOptions[0]);
+  const [type, setType] = useState(InsuranceOptions[isTransferAppointProposal ? 1 : 0]);
   const [listFiles, setListFiles] = useState([]);
   const[listFileDeleted, setListFileDeleted] = useState([]);
   const [selectMembers, setSelectMembers] = useState([]);
@@ -1199,6 +1205,23 @@ const SalaryAdjustmentPropse = (props) => {
     });
   };
 
+  const handleClickProposal = (index) => {
+    setProposalModal({ show: true, index });
+  }
+
+  const hideProposalModal = () => {
+    setProposalModal({ show: false });
+  };
+
+  const handleAcceptProposal = ({proposal, org}) => {
+    const { index } = proposalModal;
+    selectMembers[index].proposalTitle = proposal;
+    selectMembers[index].org = org;
+
+    setSelectMembers(selectMembers);
+    setProposalModal({ show: false })
+  }
+
   const onHideModalConfirm = () => {
     setConfirmModal({
       ...confirmModal,
@@ -1476,9 +1499,27 @@ const SalaryAdjustmentPropse = (props) => {
             </td>
           </tr>
           <tr>
+            {isTransferAppointProposal && (
+              <td colSpan="12">
+                <div className="skill">
+                  <span className="title font-weight-bold">* {t("proposal_title")}:</span>
+                  <span className="w-100 proposal-title" onClick={() => handleClickProposal(index)}>
+                    <select className="form-control w-100 bg-white" disabled>
+                      <option>{item?.proposalTitle || t("Select")}</option>
+                    </select>
+                  </span>
+                </div>
+                <div className="skill mt-2">
+                  <span className="title font-weight-bold">* {t("proposal_org")}:</span>
+                  <span className="input form-control mv-10 w-100 disabled" >{item?.org}</span>
+                </div>
+              </td>
+            )}
+          </tr>
+          <tr>
             <td colSpan="12">
               <div className="skill">
-                <span className="title">{t("strength")}:</span>
+                <span className="title font-weight-bold">* {t("strength")}:</span>
                 <span className="input">
                   {viewSetting.disableComponent.editSubjectApply &&
                   !isCreateMode ? (
@@ -1492,7 +1533,7 @@ const SalaryAdjustmentPropse = (props) => {
                           "strength"
                         )
                       }
-                      className="form-control input mv-10 w-100"
+                      className="form-control mv-10 w-100"
                     />
                   ) : (
                     <>{item?.strength}</>
@@ -1504,7 +1545,7 @@ const SalaryAdjustmentPropse = (props) => {
           <tr>
             <td colSpan="12">
               <div className="skill">
-                <span className="title">{t("weakness")}:</span>
+                <span className="title font-weight-bold">* {t("weakness")}:</span>
                 <span className="input">
                   {viewSetting.disableComponent.editSubjectApply &&
                   !isCreateMode ? (
@@ -1518,7 +1559,7 @@ const SalaryAdjustmentPropse = (props) => {
                           "weakness"
                         )
                       }
-                      className="form-control input mv-10 w-100"
+                      className="form-control mv-10 w-100"
                     />
                   ) : (
                     <>{item?.weakness}</>
@@ -1548,6 +1589,11 @@ const SalaryAdjustmentPropse = (props) => {
         isSuccess={resultModal.resultModal}
         onHide={hideResultModal}
       />
+      <ProposalModal
+        modal={proposalModal}
+        onHide={hideProposalModal}
+        onAccept={handleAcceptProposal}
+      />
       <StatusModal
         show={modalStatus.isShowStatusModal}
         content={modalStatus.content}
@@ -1563,9 +1609,9 @@ const SalaryAdjustmentPropse = (props) => {
         dataToSap={confirmModal.dataToUpdate}
         onHide={onHideModalConfirm}
       />
-      <div className="eval-heading">{t("SalaryPropse")}</div>
+      <div className="eval-heading">{isTransferAppointProposal ? t("ProposalTransfer") : t("SalaryPropse")}</div>
       {/* ĐỀ XUẤT ĐIỀU CHỈNH LƯƠNG */}
-      <h5 className="content-page-header">{t("SalaryAdjustmentPropse")}</h5>
+      <h5 className="content-page-header">{isTransferAppointProposal ? t("MenuProposalManagement") : t("SalaryAdjustmentPropse")}</h5>
       <div className="timesheet-box1 shadow">
         <div className="row">
           <div className="col-12">
@@ -1882,7 +1928,7 @@ const SalaryAdjustmentPropse = (props) => {
               hidden
               id="i_files"
               name="i_files"
-              onChange={(e) => handleAttachFile(e)}
+              onChange={handleAttachFile}
               accept=".xls, .xlsx, .doc, .docx, .jpg, .png, .pdf"
               multiple
             />
@@ -1900,7 +1946,7 @@ const SalaryAdjustmentPropse = (props) => {
           <button
             type="button"
             className="btn btn-secondary ml-3 shadow"
-            onClick={() => handleCancel()}
+            onClick={handleCancel}
           >
             <img src={IconDelete} className="mr-1" alt="cancel" />{" "}
             {t("CancelSearch")}
@@ -1913,7 +1959,7 @@ const SalaryAdjustmentPropse = (props) => {
             type="button"
             className="btn btn-primary ml-3 shadow"
             disabled={isLoading}
-            onClick={() => handleSendForm()}
+            onClick={handleSendForm}
           >
             {isLoading ? (
               <Spinner
@@ -1934,7 +1980,7 @@ const SalaryAdjustmentPropse = (props) => {
           <button
             type="button"
             className="btn btn-danger"
-            onClick={() => handleRefuse()}
+            onClick={handleRefuse}
           >
             <img src={IconDelete} className="mr-1" alt="delete" />{" "}
             {t("RejectQuestionButtonLabel")}
@@ -1945,7 +1991,7 @@ const SalaryAdjustmentPropse = (props) => {
           <button
             type="button"
             className="btn btn-primary float-right ml-3 shadow"
-            onClick={() => handleConsent()}
+            onClick={handleConsent}
           >
             <i className="fas fa-check" aria-hidden="true"></i> {t("Consent")}
           </button>
@@ -1955,7 +2001,7 @@ const SalaryAdjustmentPropse = (props) => {
           <button
             type="button"
             className="btn btn-danger"
-            onClick={() => handleReject()}
+            onClick={handleReject}
           >
             <img src={IconDelete} className="mr-1" alt="delete" /> {t("Reject")}
           </button>
@@ -1965,7 +2011,7 @@ const SalaryAdjustmentPropse = (props) => {
           <button
             type="button"
             className="btn btn-success float-right ml-3 shadow"
-            onClick={() => handleApprove()}
+            onClick={handleApprove}
           >
             <i className="fas fa-check" aria-hidden="true"></i> {t("Approval")}
           </button>
