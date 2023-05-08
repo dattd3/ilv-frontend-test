@@ -1,7 +1,5 @@
 import React from 'react'
-// import editButton from '../../assets/img/Icon-edit.png'
-import TableUtil from '../../components/Common/table'
-import { OverlayTrigger, Tooltip, Popover, InputGroup, FormControl } from 'react-bootstrap'
+import { OverlayTrigger, Popover, FormControl, Form, Button } from 'react-bootstrap'
 import Select from 'react-select'
 import moment from 'moment'
 import _ from 'lodash'
@@ -15,9 +13,10 @@ import TaskDetailModal from './TaskDetailModal'
 import ExportModal from './ExportModal'
 import ChangeReqBtnComponent from './ChangeReqBtnComponent'
 import Constants from '../../commons/Constants'
-import { getRequestTypeIdsAllowedToReApproval, showRangeDateGroupByArrayDate, generateTaskCodeByCode } from "../../commons/Utils"
-import { absenceRequestTypes, requestTypes } from "../Task/Constants"
-import { checkIsExactPnL } from '../../commons/commonFunctions'
+import { getRequestTypeIdsAllowedToReApproval, showRangeDateGroupByArrayDate, generateTaskCodeByCode, getValueParamByQueryString } from "../../commons/Utils"
+import { REQUEST_CATEGORIES, REQUEST_CATEGORY_1_LIST, REQUEST_CATEGORY_2_LIST, absenceRequestTypes, requestTypes } from "../Task/Constants"
+import IconFilter from "assets/img/icon/icon-filter.svg"
+import IconSearch from "assets/img/icon/icon-search.svg"
 
 class TaskList extends React.Component {
     constructor() {
@@ -40,6 +39,9 @@ class TaskList extends React.Component {
             query: "",
             statusSelected: null,
             checkedAll:false,
+            requestCategorySelect: getValueParamByQueryString(window.location.search, "requestCategory") || REQUEST_CATEGORIES.CATEGORY_1,
+            tmpRequestCategorySelect: getValueParamByQueryString(window.location.search, "requestCategory") || REQUEST_CATEGORIES.CATEGORY_1,
+            isShowRequestCategorySelect: false,
             dataForSearch: {
                 pageIndex: Constants.TASK_PAGE_INDEX_DEFAULT,
                 pageSize: Constants.TASK_PAGE_SIZE_DEFAULT,
@@ -377,7 +379,37 @@ class TaskList extends React.Component {
             needRefresh: needRefresh
         }})
         this.enableBtn([]);
-        this.props.requestRemoteData(params);
+        this.props.requestRemoteData(params, this.state.requestCategorySelect);
+    }
+
+    handleRequestCategorySelect = (val) => {
+      this.setState({
+        tmpRequestCategorySelect: val,
+      })
+    }
+
+    cancelRequestCategorySelect = () => {
+      this.setState({
+        isShowRequestCategorySelect: false,
+        tmpRequestCategorySelect: this.state.requestCategorySelect
+      })
+    }
+
+    applyRequestCategorySelect = () => {
+      this.setState({
+        requestCategorySelect: this.state.tmpRequestCategorySelect
+      }, () => {
+        this.searchRemoteData(true);
+        this.setState({
+          isShowRequestCategorySelect: false,
+        })
+      })
+    }
+
+    showRequestCategorySelect = () => {
+      this.setState({
+        isShowRequestCategorySelect: true,
+      })
     }
 
     render() {
@@ -390,6 +422,7 @@ class TaskList extends React.Component {
             5: t("LineManagerSResponse")
         }
         const requestTypeIdsAllowedToReApproval = getRequestTypeIdsAllowedToReApproval()
+
         const fullDay = 1
 
         const getRequestTypeLabel = (requestType, absenceTypeValue) => {
@@ -403,42 +436,86 @@ class TaskList extends React.Component {
         }
         return (
             <>
-                <ExportModal show={this.state.isShowExportModal} onHide={this.onHideisShowExportModal} statusOptions={this.props.filterdata} exportType={this.props.page}/>
+                <ExportModal requestCategory={this.state.requestCategory} show={this.state.isShowExportModal} onHide={this.onHideisShowExportModal} statusOptions={this.props.filterdata} exportType={this.props.page}/>
                 <TaskDetailModal key= {this.state.taskId+'.'+this.state.subId} show={this.state.isShowTaskDetailModal} onHide={this.onHideisShowTaskDetailModal} taskId = {this.state.taskId} subId = {this.state.subId} action={this.state.action}/>
                 <div className="d-flex justify-content-between w-100 mt-2 mb-3 search-block">
                     <div className="row w-100">
-                        <div className="col-xl-4">
-                            <InputGroup className="d-flex">
-                            <InputGroup.Prepend className="">
-                                <InputGroup.Text id="basic-addon1"><i className="fas fa-filter"></i></InputGroup.Text>
-                            </InputGroup.Prepend>
-                            <Select name="absenceType"
-                                    className="w-75"
-                                    // defaultValue={this.props.filterdata[0]}
-                                    value={this.state.absenceType || { label: t("Waiting"), value: this.props.page == 'consent' ? Constants.STATUS_WAITING_CONSENTED : Constants.STATUS_WAITING }}
-                                    isClearable={false}
-                                    onChange={absenceType => this.handleSelectChange('absenceType', absenceType)}
-                                    // selectedValue={{ label: t("All"), value: 0 }}
-                                    placeholder={t('SortByStatus')}
-                                    key="absenceType" options={this.props.filterdata}
-                                    styles={{
-                                        menu: provided => ({ ...provided, zIndex: 2 })
-                                    }}
-                                    theme={theme => ({
-                                    ...theme,
-                                    colors: {
-                                        ...theme.colors,
-                                        primary25: '#F9C20A',
-                                        primary: '#F9C20A',
-                                    },
-                                    })}/>
-                            </InputGroup>
+                      <div className="w-180px position-relative">
+                          <img src={IconFilter} alt="" className="icon-prefix-select" />
+                          <div onClick={this.showRequestCategorySelect}>
+                            <Select name="requestCategory"
+                              className="w-100"
+                              placeholder={t("TypeOfRequest")} 
+                              key="requestCategory"
+                              classNamePrefix="filter-select"
+                              inputValue={this.state.requestCategorySelect === REQUEST_CATEGORIES.CATEGORY_1 ? `${t("Type")} I` : `${t("Type")} II`}
+                              noOptionsMessage={() => null}
+                            />
+                          </div>
+                          {
+                            this.state.isShowRequestCategorySelect && <div className="request-category-guide-container">
+                              <div className="request-category-guide-body">
+                                <div className="category-title">
+                                  <b>
+                                    {t("TypeOfRequest")}
+                                  </b>
+                                </div>
+                                <Form.Check
+                                  label={`${t("Type")} I`}
+                                  id={`type-1-radio`}
+                                  name="category-radio-group"
+                                  type="radio"
+                                  onClick={() => this.handleRequestCategorySelect(REQUEST_CATEGORIES.CATEGORY_1)}
+                                  checked={this.state.tmpRequestCategorySelect == REQUEST_CATEGORIES.CATEGORY_1}
+                                />
+                                <ul className="type-list-ul">
+                                  {REQUEST_CATEGORY_1_LIST.map(item => <li className="category-item" key={item}>
+                                    {t(item)}
+                                  </li>)}
+                                </ul>
+                                <Form.Check
+                                  label={`${t("Type")} II`}
+                                  id={`type-2-radio`}
+                                  name="category-radio-group"
+                                  type="radio"
+                                  onClick={() => this.handleRequestCategorySelect(REQUEST_CATEGORIES.CATEGORY_2)}
+                                  checked={this.state.tmpRequestCategorySelect == REQUEST_CATEGORIES.CATEGORY_2}
+                                />
+                                <ul className="type-list-ul">
+                                  {REQUEST_CATEGORY_2_LIST.map(item => <li className="category-item" key={item}>
+                                    {t(item)}
+                                  </li>)}
+                                </ul>
+                              </div>
+                              <div className="request-category-guide-footer">
+                                <Button className="cancel-btn" onClick={this.cancelRequestCategorySelect}>
+                                  <i className="fas fa-times mr-2"></i>
+                                  {t('Cancel')}
+                                </Button>
+                                <Button className="apply-btn"  onClick={this.applyRequestCategorySelect}>
+                                  <i className="fas fa-check mr-2"></i>
+                                  {t('ApplySearch')}
+                                </Button>
+                              </div>
+                            </div>
+                          }
                         </div>
-                        <div className="col-xl-4">
-                            <InputGroup className="">
-                            <InputGroup.Prepend>
-                            <InputGroup.Text id="basic-addon2"><i className="fas fa-search"></i></InputGroup.Text>
-                            </InputGroup.Prepend>
+                        <div className="w-180px position-relative">
+                          <img src={IconFilter} alt="" className="icon-prefix-select" />
+                          <Select name="absenceType"
+                            // defaultValue={this.props.filterdata[0]}
+                            value={this.state.absenceType || { label: t("Waiting"), value: this.props.page == 'consent' ? Constants.STATUS_WAITING_CONSENTED : Constants.STATUS_WAITING }}
+                            isClearable={false}
+                            onChange={absenceType => this.handleSelectChange('absenceType', absenceType)}
+                            placeholder={t('Status')} key="absenceType" options={this.props.filterdata}
+                            styles={{
+                                menu: provided => ({ ...provided, zIndex: 2 })
+                            }}
+                            classNamePrefix="filter-select"
+                          />
+                        </div> 
+                        <div className="flex-1 position-relative">
+                            <img src={IconSearch} alt="" className="icon-prefix-select" />
                             <FormControl
                                 placeholder={t('SearchRequester')}
                                 aria-label="SearchRequester"
@@ -446,9 +523,8 @@ class TaskList extends React.Component {
                                 className="request-user"
                                 onChange={this.handleInputChange}
                             />
-                        </InputGroup>
                         </div>
-                        <div className="col-4">
+                        <div className="col-2">
                             <button type="button" onClick={() => this.searchRemoteData(true)} className="btn btn-warning w-100">{t("Search")}</button>
                         </div>
                     </div>

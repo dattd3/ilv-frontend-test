@@ -38,7 +38,7 @@ const formatStringByMuleValue = value => {
 }
 
 const formatStringDateTimeByMuleValue = value => {
-    return (value === null || value === undefined || value === "" || value === "#" || value === "000000") ? "" : value.trim()
+    return (value === null || value === undefined || value === "" || value === "#" || value === "000000" || value === "00000000") ? "" : value.trim()
 }
 
 const formatNumberInteger = value => {
@@ -549,9 +549,20 @@ const marriageConfig = () => {
     }
 }
 
+function setURLSearchParam(key, value) {
+  const url = new URL(window.location.href);
+  url.searchParams.set(key, value);
+  window.history.pushState({ path: url.href }, '', url.href);
+}
+
+const getCulture = () => {
+  const locale = localStorage.getItem("locale") || Constants.LANGUAGE_VI
+  return locale === Constants.LANGUAGE_VI ? "vi" : "en"
+}
+
 export {
     getRequestConfigurations, removeAccents, formatStringByMuleValue, formatNumberInteger, exportToPDF, isEnableFunctionByFunctionName, getValueParamByQueryString, getDateByRangeAndFormat,
     calculateBackDateByPnLVCodeAndFormatType, isEnableShiftChangeFunctionByPnLVCode, isEnableInOutTimeUpdateFunctionByPnLVCode, getRequestTypeIdsAllowedToReApproval, getMuleSoftHeaderConfigurations,
     isAdjacentDateBy2Date, showRangeDateGroupByArrayDate, generateTaskCodeByCode, parsteStringToHtml, getRegistrationMinDateByConditions, isVinFast, isEnableOTFunctionByPnLVCode, getCurrentLanguage, 
-    getResignResonsMasterData, formatStringDateTimeByMuleValue, genderConfig, marriageConfig
+    getResignResonsMasterData, formatStringDateTimeByMuleValue, genderConfig, marriageConfig, setURLSearchParam, getCulture
 }

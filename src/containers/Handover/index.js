@@ -43,7 +43,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         for (const [key_d, value_d] of Object.entries(data)) {
           filled = (key_d == 'employee') || ( data[key_d] && data[key_d].user && data[key_d].user.account) ? filled :  '(Bắt buộc)' ;
         }
-        if(filled && value && value.employeeEmail && value.employeeEmail.toLowerCase()  == currentEmployeeNo.toLowerCase()){
+        if(value && value.employeeEmail && value.employeeEmail.toLowerCase()  == currentEmployeeNo.toLowerCase()){
           canEditable[key] = true;
           canEditable['canUpdate'] = true;
           canEditable['currentActive'] = ['employee'];

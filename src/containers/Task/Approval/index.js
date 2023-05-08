@@ -1,18 +1,19 @@
 import React from 'react'
 import axios from 'axios'
-import {InputGroup, FormControl} from 'react-bootstrap'
-import Select from 'react-select'
 import { withTranslation } from "react-i18next"
 import TaskList from '../taskList'
-import ConfirmRequestModal from '../ConfirmRequestModal'
 import Constants from '../../../commons/Constants'
 import processingDataReq from "../../Utils/Common"
 import HOCComponent from '../../../components/Common/HOCComponent'
+import { getValueParamByQueryString, setURLSearchParam } from 'commons/Utils'
+import { REQUEST_CATEGORIES } from '../Constants'
+import LoadingModal from 'components/Common/LoadingModal'
 
 class ApprovalComponent extends React.Component {
   constructor(props) {
     super();
     this.state = {
+      isLoading: false,
       tasks: [],
       dataToSap: [],
       totalRecord: 0
@@ -20,8 +21,10 @@ class ApprovalComponent extends React.Component {
   }
 
   componentDidMount() {
-    let params = `pageIndex=${Constants.TASK_PAGE_INDEX_DEFAULT}&pageSize=${Constants.TASK_PAGE_SIZE_DEFAULT}&status=${Constants.STATUS_WAITING}&`;
-    this.requestRemoteData(params);
+    const params = `pageIndex=${Constants.TASK_PAGE_INDEX_DEFAULT}&pageSize=${Constants.TASK_PAGE_SIZE_DEFAULT}&status=${Constants.STATUS_WAITING}&`;
+    const currentRequestCategory = getValueParamByQueryString(window.location.search, "requestCategory") || REQUEST_CATEGORIES.CATEGORY_1;
+
+    this.requestRemoteData(params, currentRequestCategory);
   }
   
   exportToExcel = () => {
@@ -41,15 +44,20 @@ class ApprovalComponent extends React.Component {
 
     });
   }
-
-  requestRemoteData = (params) => {
+  // 1: other requests
+  // 2: salary
+  requestRemoteData = (params, category = REQUEST_CATEGORIES.CATEGORY_1) => {
+    this.setState({
+      isLoading: true
+    })
+    const HOST = category === REQUEST_CATEGORIES.CATEGORY_1 ? process.env.REACT_APP_REQUEST_URL : process.env.REACT_APP_REQUEST_SERVICE_URL;
     const config = {
       headers: {
         'Authorization': `${localStorage.getItem('accessToken')}`
       }
     }
     config.timeout = Constants.timeoutForSpecificApis
-    axios.get(`${process.env.REACT_APP_SALARY_URL}request/approval?${params}companyCode=`+localStorage.getItem("companyCode"), config)
+    axios.get(`${HOST}request/approval?${params}companyCode=`+localStorage.getItem("companyCode"), config)
         .then(res => {
           if (res && res.data && res.data.data && res.data.result) {
             const result = res.data.result;
@@ -61,7 +69,12 @@ class ApprovalComponent extends React.Component {
           }
     }).catch(error => {
       this.setState({tasks : [], totalRecord: 0});
+    }).finally(() => {
+      this.setState({
+        isLoading: false
+      })
     })
+    setURLSearchParam("requestCategory", category)
   }
 
   handleSelectChange(name, value) {
@@ -81,6 +94,7 @@ class ApprovalComponent extends React.Component {
     ]
     return (
       <>
+        <LoadingModal show={this.state.isLoading} />
         <div className="task-section">
           <TaskList tasks={this.state.tasks} requestRemoteData ={this.requestRemoteData} total ={this.state.totalRecord} filterdata={statusFiler} page="approval" title={t("ApprovalManagement")}/>
         </div>

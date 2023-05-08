@@ -23,7 +23,6 @@ class Task extends React.Component {
     constructor(props) {
         super();
         this.state = {
-            isShowApprovalTab: true,
             isShowPrepareTab: false,
             isShowJobEvalutionTab: false,
             tabActive: new URLSearchParams(props?.history?.location?.search).get('tab') || "request",
@@ -132,27 +131,23 @@ class Task extends React.Component {
             <div className="task-page">
                 <Tabs defaultActiveKey={this.state.tabActive} className={`task-tabs ${smallNavClass}`} onSelect={(key) => this.updateTabLink(key)}>
                     <Tab eventKey={tabKey.request} title={t("Request")}>
-                        <RequestComponent />
+                        {
+                          this.state.tabActive === tabKey.request && <RequestComponent />
+                        }
                     </Tab>
-                    {
-                    Constants.CONSENTER_LIST_LEVEL.includes(employeeLevel) || (companyCode == "V073" && Constants.CONSENTER_LIST_LEVEL_V073.includes(employeeLevel)) ?
+
                     <Tab eventKey={tabKey.consent} title={t("Consent")}>
-                        <ConsentComponent />
+                        {
+                          this.state.tabActive === tabKey.consent && <ConsentComponent />
+                        }
                     </Tab>
-                    : null
-                    }
-                    {
-                        this.state.isShowApprovalTab == true 
-                        && (Constants.APPROVER_LIST_LEVEL.includes(employeeLevel) 
-                            || approvalAccountException.includes(localStorage.getItem("email")) 
-                            || Constants.ROLE_ASSIGMENT_APPROVE.some(word => roleAssignment?.toLowerCase().includes(word?.toLowerCase()))
-                        )
-                        ?
-                        <Tab eventKey={tabKey.approval} title={t("Approval")}>
-                            <ApprovalComponent tasks={tasks} />
-                        </Tab>
-                        : null
-                    }
+
+                    <Tab eventKey={tabKey.approval} title={t("Approval")}>
+                      {
+                        this.state.tabActive === tabKey.approval && <ApprovalComponent tasks={tasks} />
+                      }
+                    </Tab>
+
                     {/* Hủy bỏ tính năng Ủy quyền phê duyệt (17/04/2023). Requested by Vượng */}
                     {/* {
                         Constants.APPROVAL_DELEGATION_LIST_LEVEL.includes(employeeLevel) ?

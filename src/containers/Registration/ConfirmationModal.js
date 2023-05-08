@@ -7,6 +7,7 @@ import Constants from '../../commons/Constants'
 import map from "../map.config"
 import Spinner from 'react-bootstrap/Spinner'
 import { withTranslation  } from "react-i18next"
+import { getCulture } from "commons/Utils"
 
 class ConfirmationModal extends React.Component {
     constructor(props) {
@@ -38,7 +39,7 @@ class ConfirmationModal extends React.Component {
                     this.props.dataToSap[0].sub[0].processStatusId = Constants.STATUS_NOT_APPROVED;
                 }
                 this.props.dataToSap[0].sub[0].comment = this.state.message;
-                this.disApprove(this.props.dataToSap, `${process.env.REACT_APP_SALARY_URL}request/approve`, id)
+                this.disApprove(this.props.dataToSap, `${process.env.REACT_APP_REQUEST_SERVICE_URL}request/approve`, id)
                 break;
             case Constants.STATUS_APPROVED: // phê duyệt
                 this.props.dataToSap[0].sub[0].processStatusId = Constants.STATUS_APPROVED;
@@ -171,9 +172,12 @@ class ConfirmationModal extends React.Component {
     approve = (dataToSap,id) => {
         axios({
             method: 'POST',
-            url: `${process.env.REACT_APP_SALARY_URL}request/approve`,
+            url: `${process.env.REACT_APP_REQUEST_SERVICE_URL}request/approve`,
             data: dataToSap,
-            headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` }
+            headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` },
+            params: {
+              culture: getCulture()
+            }
         })
             .then(res => {
                 if (res && res.data) {
@@ -213,7 +217,10 @@ class ConfirmationModal extends React.Component {
 
     disApprove = (formData, url, id) => {
         axios.post(url, formData, {
-            headers: { Authorization: localStorage.getItem('accessToken') }
+            headers: { Authorization: localStorage.getItem('accessToken') },
+            params: {
+              culture: getCulture()
+            }
         }).then(res => {
                 if (res && res.data) {
                     const data = res.data
@@ -247,9 +254,12 @@ class ConfirmationModal extends React.Component {
     consent = (dataToSap) => {
         axios({
             method: 'POST',
-            url: `${process.env.REACT_APP_SALARY_URL}request/assess`,
+            url: `${process.env.REACT_APP_REQUEST_SERVICE_URL}request/assess`,
             data: dataToSap,
-            headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` }
+            headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` },
+            params: {
+              culture: getCulture()
+            }
         })
             .then(res => {
                 if (res && res.data) {
@@ -282,9 +292,12 @@ class ConfirmationModal extends React.Component {
     reject = (dataToSap) => {
         axios({
             method: 'POST',
-            url: `${process.env.REACT_APP_SALARY_URL}request/assess`,
+            url: `${process.env.REACT_APP_REQUEST_SERVICE_URL}request/assess`,
             data: dataToSap,
-            headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` }
+            headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` },
+            params: {
+              culture: getCulture()
+            }
         })
             .then(res => {
                 if (res && res.data) {
