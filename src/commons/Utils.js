@@ -560,9 +560,14 @@ const getCulture = () => {
   return locale === Constants.LANGUAGE_VI ? "vi" : "en"
 }
 
+const formatProcessTime = (time) => {
+  if (time === "0001-01-01T00:00:00" || !time) return ""
+  return `${moment(time).format("DD/MM/YYYY")} | ${moment(time).format("HH:mm:ss")}`
+}
+
 export {
     getRequestConfigurations, removeAccents, formatStringByMuleValue, formatNumberInteger, exportToPDF, isEnableFunctionByFunctionName, getValueParamByQueryString, getDateByRangeAndFormat,
     calculateBackDateByPnLVCodeAndFormatType, isEnableShiftChangeFunctionByPnLVCode, isEnableInOutTimeUpdateFunctionByPnLVCode, getRequestTypeIdsAllowedToReApproval, getMuleSoftHeaderConfigurations,
     isAdjacentDateBy2Date, showRangeDateGroupByArrayDate, generateTaskCodeByCode, parsteStringToHtml, getRegistrationMinDateByConditions, isVinFast, isEnableOTFunctionByPnLVCode, getCurrentLanguage, 
-    getResignResonsMasterData, formatStringDateTimeByMuleValue, genderConfig, marriageConfig, setURLSearchParam, getCulture
+    getResignResonsMasterData, formatStringDateTimeByMuleValue, genderConfig, marriageConfig, setURLSearchParam, getCulture, formatProcessTime
 }

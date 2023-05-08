@@ -4,7 +4,7 @@ import moment from 'moment'
 import DetailButtonComponent from '../DetailButtonComponent'
 import AttachmentComponent from '../TerminationComponents/AttachmentComponent'
 import Constants from '../.../../../../commons/Constants'
-import { getResignResonsMasterData } from 'commons/Utils'
+import { formatProcessTime, getResignResonsMasterData } from 'commons/Utils'
 
 class RegistrationEmploymentTermination extends React.Component {
     constructor(props) {
@@ -222,6 +222,38 @@ class RegistrationEmploymentTermination extends React.Component {
                                     </div>
                                     : null
                             }
+                        </div>
+                    </div>
+                </div>
+
+                <div className="block senior-executive">
+                    <div className="box shadow">
+                        <h6 className="block-title has-border-bottom">{t('RequestHistory')}</h6>
+                        <div className="row">
+                            <div className="col-4">
+                                <p className="title">{t('TimeToSendRequest')}</p>
+                                <div>
+                                    <div className="detail">{formatProcessTime(resignInfo?.createDate)}</div>
+                                </div>
+                            </div>
+                            <div className="col-4">
+                                <p className="title">{t('ConsentDate')}</p>
+                                <div>
+                                    <div className="detail">{formatProcessTime(resignInfo?.assessedDate)}</div>
+                                </div>
+                            </div>
+                            <div className="col-4">
+                                <p className="title">{t('ApprovalDate')}</p>
+                                <div>
+                                    <div className="detail">{formatProcessTime(resignInfo?.approvedDate)}</div>
+                                </div>
+                            </div>
+                            <div className="col-4">
+                                <p className="title">{t('CancelDate')}</p>
+                                <div>
+                                    <div className="detail">{formatProcessTime(resignInfo?.deletedDate)}</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
