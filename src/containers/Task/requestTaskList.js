@@ -3,9 +3,7 @@ import editButton from '../../assets/img/icon/Icon-edit.svg'
 import deleteButton from '../../assets/img/icon-delete.svg'
 import evictionButton from '../../assets/img/eviction.svg'
 import CustomPaging from '../../components/Common/CustomPaging'
-import TableUtil from '../../components/Common/table'
-import { OverlayTrigger, Tooltip } from 'react-bootstrap'
-import Popover from 'react-bootstrap/Popover'
+
 import Select from 'react-select'
 import moment from 'moment'
 import purify from "dompurify"
@@ -13,11 +11,14 @@ import _ from 'lodash'
 import ConfirmationModal from '../../containers/Registration/ConfirmationModal'
 import Constants from '../../commons/Constants'
 import RegistrationConfirmationModal from '../Registration/ConfirmationModal'
-import { InputGroup, FormControl } from 'react-bootstrap'
+import { FormControl, Form, Button } from 'react-bootstrap'
 import { withTranslation } from "react-i18next"
-import { showRangeDateGroupByArrayDate, generateTaskCodeByCode } from "../../commons/Utils"
-import { absenceRequestTypes, requestTypes } from "../Task/Constants"
+import { showRangeDateGroupByArrayDate, generateTaskCodeByCode, getValueParamByQueryString } from "../../commons/Utils"
+import { REQUEST_CATEGORIES, REQUEST_CATEGORY_1_LIST, REQUEST_CATEGORY_2_LIST, absenceRequestTypes, requestTypes } from "../Task/Constants"
 import { MOTHER_LEAVE_KEY } from "./Constants"
+// import IconInformation from "assets/img/icon/icon-blue-information.svg"
+import IconFilter from "assets/img/icon/icon-filter.svg"
+import IconSearch from "assets/img/icon/icon-search.svg"
 
 const TIME_FORMAT = 'HH:mm:ss'
 const DATE_FORMAT = 'DD-MM-YYYY'
@@ -43,7 +44,9 @@ class RequestTaskList extends React.Component {
             isShowModalRegistrationConfirm: false,
             statusSelected: null,
             query: null,
-            dataForSearch: {
+            requestCategorySelect: getValueParamByQueryString(window.location.search, "requestCategory") || REQUEST_CATEGORIES.CATEGORY_1,
+            tmpRequestCategorySelect: getValueParamByQueryString(window.location.search, "requestCategory") || REQUEST_CATEGORIES.CATEGORY_1,
+            isShowRequestCategorySelect: false,            dataForSearch: {
                 pageIndex: Constants.TASK_PAGE_INDEX_DEFAULT,
                 pageSize: Constants.TASK_PAGE_SIZE_DEFAULT,
                 id: '',
@@ -595,6 +598,12 @@ class RequestTaskList extends React.Component {
 
     }
 
+    handleCategorySelectChange(opt) {
+        this.setState({
+          requestCategory: opt.value
+        })
+    }
+
     //re code
     handleInputChange = (event) => {
         this.setState({
@@ -622,13 +631,50 @@ class RequestTaskList extends React.Component {
                 needRefresh: needRefresh
             }
         })
-        this.props.requestRemoteData(params);
+        this.props.requestRemoteData(params, this.state.requestCategorySelect);
+    }
+  
+    handleRequestCategorySelect = (val) => {
+      this.setState({
+        tmpRequestCategorySelect: val,
+      })
+    }
+
+    cancelRequestCategorySelect = () => {
+      this.setState({
+        isShowRequestCategorySelect: false,
+        tmpRequestCategorySelect: this.state.requestCategorySelect
+      })
+    }
+
+    applyRequestCategorySelect = () => {
+      this.setState({
+        requestCategorySelect: this.state.tmpRequestCategorySelect
+      }, () => {
+        this.searchRemoteData(true);
+        this.setState({
+          isShowRequestCategorySelect: false,
+        })
+      })
+    }
+
+    showRequestCategorySelect = () => {
+      this.setState({
+        isShowRequestCategorySelect: true,
+      })
     }
 
     render() {
         const { t, total, tasks } = this.props
         const { pageNumber } = this.state
         const dataToSap = this.getDataToSAP(this.state.requestTypeId, this.state.dataToPrepareToSAP)
+        const REQUEST_CATEGORY_OPTIONS = [{
+          label: `${t("Type")} I`,
+          value: REQUEST_CATEGORIES.CATEGORY_1
+        }, {
+          label: `${t("Type")} II`,
+          value: REQUEST_CATEGORIES.CATEGORY_2
+        }]
         const fullDay = 1
 
         const getRequestTypeLabel = (requestType, absenceTypeValue) => {
@@ -657,46 +703,99 @@ class RequestTaskList extends React.Component {
                 <RegistrationConfirmationModal show={this.state.isShowModalRegistrationConfirm} id={this.state.taskId} title={this.state.modalTitle} message={this.state.modalMessage}
                     type={this.state.typeRequest} urlName={this.state.requestUrl} dataToSap={dataToSap} onHide={this.onHideModalRegistrationConfirm} />
                 <div className="row w-100 mt-2 mb-3 search-block">
-                    <div className="col-xl-4">
-                        <InputGroup className="d-flex">
-                            <InputGroup.Prepend className="">
-                                <InputGroup.Text id="basic-addon1"><i className="fas fa-filter"></i></InputGroup.Text>
-                            </InputGroup.Prepend>
-                            <Select name="absenceType"
-                                className="w-75"
-                                // defaultValue={this.props.filterdata[0]}
-                                value={this.state.absenceType || ""}
-                                isClearable={false}
-                                onChange={absenceType => this.handleSelectChange('absenceType', absenceType)}
-                                placeholder={t('SortByStatus')} key="absenceType" options={this.props.filterdata}
-                                styles={{
-                                    menu: provided => ({ ...provided, zIndex: 2 })
-                                }}
-                                theme={theme => ({
-                                    ...theme,
-                                    colors: {
-                                        ...theme.colors,
-                                        primary25: '#F9C20A',
-                                        primary: '#F9C20A',
-                                    },
-                                })} />
-                        </InputGroup>
-                    </div>
-                    <div className="col-xl-4">
-                        <InputGroup>
-                            <InputGroup.Prepend>
-                                <InputGroup.Text id="basic-addon2"><i className="fas fa-search"></i></InputGroup.Text>
-                            </InputGroup.Prepend>
-                            <FormControl
-                                placeholder={t('SearchRequester')}
-                                aria-label="SearchRequester"
-                                aria-describedby="basic-addon2"
-                                className="request-user"
-                                onChange={this.handleInputChange}
+                    <div className="w-180px position-relative">
+                          <img src={IconFilter} alt="" className="icon-prefix-select" />
+                          <div onClick={this.showRequestCategorySelect}>
+                            <Select name="requestCategory"
+                              className="w-100"
+                              placeholder={t("TypeOfRequest")} 
+                              key="requestCategory"
+                              classNamePrefix="filter-select"
+                              inputValue={this.state.requestCategorySelect === REQUEST_CATEGORIES.CATEGORY_1 ? `${t("Type")} I` : `${t("Type")} II`}
+                              noOptionsMessage={() => null}
                             />
-                        </InputGroup>
+                          </div>
+                          {
+                            this.state.isShowRequestCategorySelect && <div className="request-category-guide-container">
+                              <div className="request-category-guide-body">
+                                <div className="category-title">
+                                  <b>
+                                    {t("TypeOfRequest")}
+                                  </b>
+                                </div>
+                                <Form.Check
+                                  label={`${t("Type")} I`}
+                                  id={`type-1-radio`}
+                                  name="category-radio-group"
+                                  type="radio"
+                                  onClick={() => this.handleRequestCategorySelect(REQUEST_CATEGORIES.CATEGORY_1)}
+                                  checked={this.state.tmpRequestCategorySelect == REQUEST_CATEGORIES.CATEGORY_1}
+                                />
+                                <ul className="type-list-ul">
+                                  {REQUEST_CATEGORY_1_LIST.map(item => <li className="category-item" key={item}>
+                                    {t(item)}
+                                  </li>)}
+                                </ul>
+                                <Form.Check
+                                  label={`${t("Type")} II`}
+                                  id={`type-2-radio`}
+                                  name="category-radio-group"
+                                  type="radio"
+                                  onClick={() => this.handleRequestCategorySelect(REQUEST_CATEGORIES.CATEGORY_2)}
+                                  checked={this.state.tmpRequestCategorySelect == REQUEST_CATEGORIES.CATEGORY_2}
+                                />
+                                <ul className="type-list-ul">
+                                  {REQUEST_CATEGORY_2_LIST.map(item => <li className="category-item" key={item}>
+                                    {t(item)}
+                                  </li>)}
+                                </ul>
+                              </div>
+                              <div className="request-category-guide-footer">
+                                <Button className="cancel-btn" onClick={this.cancelRequestCategorySelect}>
+                                  <i className="fas fa-times mr-2"></i>
+                                  {t('Cancel')}
+                                </Button>
+                                <Button className="apply-btn"  onClick={this.applyRequestCategorySelect}>
+                                  <i className="fas fa-check mr-2"></i>
+                                  {t('ApplySearch')}
+                                </Button>
+                              </div>
+                            </div>
+                          }
+                        </div>
+                    <div className="w-180px position-relative">
+                        <img src={IconFilter} alt="" className="icon-prefix-select" />
+                        <Select name="absenceType"
+                            // defaultValue={this.props.filterdata[0]}
+                            value={this.state.absenceType || ""}
+                            isClearable={false}
+                            onChange={absenceType => this.handleSelectChange('absenceType', absenceType)}
+                            placeholder={t('Status')} key="absenceType" options={this.props.filterdata}
+                            styles={{
+                                menu: provided => ({ ...provided, zIndex: 2 })
+                            }}
+                            classNamePrefix="filter-select"
+                            // theme={theme => ({
+                            //     ...theme,
+                            //     colors: {
+                            //         ...theme.colors,
+                            //         primary25: '#F9C20A',
+                            //         primary: '#F9C20A',
+                            //     },
+                            // })} 
+                          />
                     </div>
-                    <div className="col-4">
+                    <div className="flex-1 position-relative">
+                        <img src={IconSearch} alt="" className="icon-prefix-select" />
+                        <FormControl
+                            placeholder={t('SearchRequester')}
+                            aria-label="SearchRequester"
+                            aria-describedby="basic-addon2"
+                            className="request-user"
+                            onChange={this.handleInputChange}
+                        />
+                    </div>
+                    <div className="col-2">
                         <button type="button" onClick={() => this.searchRemoteData(true)} className="btn btn-warning w-100">{t("Search")}</button>
                     </div>
                 </div>
@@ -720,7 +819,6 @@ class RequestTaskList extends React.Component {
                                 <tbody>
                                     {
                                         tasks.map((child, index) => {
-                                            console.log(`index  => ${index}  ===  ${child.startDate}`)
                                             let isShowEditButton = this.isShowEditButton(child?.processStatusId, child?.appraiserId, child?.requestTypeId, child?.startDate, child?.isEdit)
                                             let isShowEvictionButton = this.isShowEvictionButton(child?.processStatusId, child?.requestTypeId, child?.startDate, child?.isEdit)
                                             let actionType = child?.actionType || null

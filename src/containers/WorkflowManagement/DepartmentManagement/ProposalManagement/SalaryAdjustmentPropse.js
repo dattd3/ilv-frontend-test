@@ -30,6 +30,8 @@ import vi from "date-fns/locale/vi";
 import { Button, Image } from "react-bootstrap";
 import { checkFilesMimeType } from "../../../../utils/file";
 import LoadingModal from "../../../../components/Common/LoadingModal";
+import { getCulture } from "commons/Utils";
+import ProcessHistoryComponent from "./ProcessHistoryComponent";
 
 registerLocale("vi", vi);
 
@@ -98,7 +100,7 @@ const SalaryAdjustmentPropse = (props) => {
   const [supervisors, setSupervisors] = useState([null]);
   const [appraiser, setAppraiser] = useState(null); // HR thẩm định quyền điều chỉnh lương
   const [approver, setApprover] = useState(null); // CBLĐ phê duyệt
-  const [callSalary, setCalledSalary] = useState(false);
+  const [isCallSalary, setIsCallSalary] = useState(false);
   const [isOpenDatepick, setIsOpenDatepick] = useState(false);
   const [viewSetting, setViewSetting] = useState({
     showComponent: {
@@ -172,7 +174,7 @@ const SalaryAdjustmentPropse = (props) => {
   }, []);
 
   useEffect(() => {
-    if (selectedMembers?.length > 0 && callSalary == false && accessToken) {
+    if (selectedMembers?.length > 0 && isCallSalary == false && accessToken) {
       getSalary(accessToken);
     }
   }, [selectedMembers]);
@@ -657,7 +659,7 @@ const SalaryAdjustmentPropse = (props) => {
   };
 
   const handleShowCurrentSalary = () => {
-    if (callSalary) {
+    if (isCallSalary) {
       setViewSetting({
         ...viewSetting,
         disableComponent: {
@@ -674,13 +676,13 @@ const SalaryAdjustmentPropse = (props) => {
     }
   };
 
-  const handleShowSuggestedSalary = () => {
-    if (!accessToken) {
-      setModalConfirmPassword(true);
-    } else if (!viewSetting.disableComponent.showSuggestedSalary) {
-      getSalary(accessToken);
-    }
-  };
+  // const handleShowSuggestedSalary = () => {
+  //   if (!accessToken) {
+  //     setModalConfirmPassword(true);
+  //   } else if (!viewSetting.disableComponent.showSuggestedSalary) {
+  //     getSalary(accessToken);
+  //   }
+  // };
 
   // Từ chối
   const handleRefuse = () => {
@@ -850,8 +852,11 @@ const SalaryAdjustmentPropse = (props) => {
       (isUpdate ? //update yêu cầu salaryadjustment
         axios({
           method: "PUT",
-          url: `${process.env.REACT_APP_SALARY_URL}salaryadjustment`,
+          url: `${process.env.REACT_APP_REQUEST_SERVICE_URL}salaryadjustment`,
           data: bodyFormData,
+          params: {
+            culture: getCulture()
+          },
           headers: {
             "Content-Type": "multipart/form-data",
             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -860,7 +865,10 @@ const SalaryAdjustmentPropse = (props) => {
         : 
         axios({ // Tạo mới yêu cầu đề xuất
         method: "POST",
-        url: `${process.env.REACT_APP_SALARY_URL}request`,
+        url: `${process.env.REACT_APP_REQUEST_SERVICE_URL}request`,
+        params: {
+          culture: getCulture()
+        },
         data: bodyFormData,
         headers: {
           "Content-Type": "multipart/form-data",
@@ -913,7 +921,10 @@ const SalaryAdjustmentPropse = (props) => {
           };
           axios({
             method: "POST",
-            url: `${process.env.REACT_APP_SALARY_URL}salaryadjustment/submitsalary`,
+            url: `${process.env.REACT_APP_REQUEST_SERVICE_URL}salaryadjustment/submitsalary`,
+            params: {
+              culture: getCulture()
+            },
             data: dataSend,
             headers: {
               "Content-Type": "application/json",
@@ -1156,7 +1167,10 @@ const SalaryAdjustmentPropse = (props) => {
     setIsLoading(true);
     axios({
       method: "POST",
-      url: `${process.env.REACT_APP_SALARY_URL}salaryadjustment/getsalarystaff`,
+      url: `${process.env.REACT_APP_REQUEST_SERVICE_URL}salaryadjustment/getsalarystaff`,
+      params: {
+        culture: getCulture()
+      },
       data: dataSend,
       headers: {
         "Content-Type": "application/json",
@@ -1192,7 +1206,7 @@ const SalaryAdjustmentPropse = (props) => {
       })
       .finally(() => {
         setIsLoading(false);
-        setCalledSalary(true);
+        setIsCallSalary(true);
       });
   };
 
@@ -1303,7 +1317,7 @@ const SalaryAdjustmentPropse = (props) => {
                     {viewSetting.disableComponent.showEye && (
                       <div
                         style={{ width: "10%", cursor: "pointer" }}
-                        onClick={() => handleShowCurrentSalary()}
+                        onClick={handleShowCurrentSalary}
                       >
                         <img
                           src={
@@ -1367,7 +1381,7 @@ const SalaryAdjustmentPropse = (props) => {
                         {viewSetting.disableComponent.showEye && (
                           <div
                             style={{ width: "10%", cursor: "pointer" }}
-                            onClick={() => handleShowSuggestedSalary()}
+                            onClick={handleShowCurrentSalary}
                           >
                             <img
                               src={
@@ -1697,7 +1711,7 @@ const SalaryAdjustmentPropse = (props) => {
               }}
               onClick={(e) => onActionChangeAll(true)}
             >
-              <i className="fas fa-times fa-lg"></i>
+              <i className="fas fa-check fa-lg"></i>
               {t("accept")}
             </button>
             <button
@@ -1710,7 +1724,7 @@ const SalaryAdjustmentPropse = (props) => {
               }}
               onClick={(e) => onActionChangeAll(false)}
             >
-              <i className="fas fa-check fa-lg"></i>
+              <i className="fas fa-times fa-lg"></i>
               {t("RejectQuestionButtonLabel")}
             </button>
           </div>
@@ -1876,6 +1890,24 @@ const SalaryAdjustmentPropse = (props) => {
           </div>
         </>
       )}
+      {/* Proccess History */}
+      {
+        !isCreateMode && (
+          <>
+            <h5 className="content-page-header">
+              {t("RequestHistory").toUpperCase()}
+            </h5>
+            <div className="timesheet-box1 timesheet-box shadow">
+              <ProcessHistoryComponent
+                createdDate={dataSalary?.createdDate}
+                coordinatorDate={dataSalary?.coordinatorDate}
+                requestAppraisers={dataSalary?.requestAppraisers}
+                approvedDate={dataSalary?.approvedDate}
+              />
+            </div>
+          </>
+        )
+      }
       <br />
       {/* List file */}
       <ul className="list-inline">
