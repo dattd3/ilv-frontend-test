@@ -446,8 +446,14 @@ export default function OTRequestComponent({ recentlyManagers }) {
         ? localStorage.getItem("part")
         : ""
     );
-    bodyFormData.append("appraiser", JSON.stringify(appraiser));
-    bodyFormData.append("approver", JSON.stringify(approver));
+    bodyFormData.append("appraiser", JSON.stringify({
+      ...appraiser,
+      avatar: ""
+    }));
+    bodyFormData.append("approver", JSON.stringify({
+      ...approver,
+      avatar: ""
+    }));
     bodyFormData.append("user", JSON.stringify(user));
     bodyFormData.append("companyCode", localStorage.getItem("companyCode"));
     files.forEach((file) => {
