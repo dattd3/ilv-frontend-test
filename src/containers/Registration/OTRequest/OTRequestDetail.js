@@ -4,7 +4,7 @@ import moment from "moment";
 import axios from "axios";
 import Constants from "commons/Constants";
 import DetailButtonComponent from "../DetailButtonComponent";
-import { getRequestConfigurations } from "commons/Utils";
+import { formatProcessTime, getRequestConfigurations } from "commons/Utils";
 import ExcelIcon from "assets/img/excel-icon.svg";
 
 const config = getRequestConfigurations();
@@ -19,11 +19,6 @@ const isNullCustomize = (value) => {
     : false;
 };
 const OTRequestType = 13;
-
-const formatProcessTime = (time) => {
-  if (time === "0001-01-01T00:00:00" || !time) return ""
-  return `${moment(time).format("DD/MM/YYYY")} | ${moment(time).format("HH:mm:ss")}`
-}
 
 export default function OTRequestDetailComponent({ data, action }) {
   const { t } = useTranslation();
@@ -470,7 +465,7 @@ export default function OTRequestDetailComponent({ data, action }) {
               </div>
               <div className="col-4">
                 <div className="form-item">
-                  <div className="mb-12">{t("DateOfApproval")}</div>
+                  <div className="mb-12">{t("ApprovalDate")}</div>
                   <div className="field-view">{formatProcessTime(approvedDate)}</div>
                 </div>
               </div>
