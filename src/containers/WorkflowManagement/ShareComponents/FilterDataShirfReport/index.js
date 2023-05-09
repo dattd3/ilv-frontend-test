@@ -13,6 +13,7 @@ import Constants from '../../../../commons/Constants'
 import { saveAs } from 'file-saver'
 import { getMuleSoftHeaderConfigurations } from "../../../../commons/Utils"
 import { IS_VINFAST } from "commons/commonFunctions";
+import LoadingModal from "components/Common/LoadingModal";
 registerLocale("vi", vi);
 
 class FilterDataShirfReport extends React.Component {
@@ -30,7 +31,8 @@ class FilterDataShirfReport extends React.Component {
       selectedMembers: [],
       showMemberOption: false,
       reportType: -1,
-      errors: {}
+      errors: {},
+      isLoading: false
     };
 
     this.setStartDate = this.setStartDate.bind(this);
@@ -83,6 +85,9 @@ class FilterDataShirfReport extends React.Component {
   }
 
   download() {
+    this.setState({
+      isLoading: true
+    })
     const isValidData = this.isValidDataToCreate()
     if (!isValidData) {
       return;
@@ -136,9 +141,12 @@ class FilterDataShirfReport extends React.Component {
           }
           this.setState({ errors: errNew });
         }
-
       }).catch(error => {
         console.log(error);
+      }).finally(() => {
+        this.setState({
+          isLoading: false
+        })
       })
   }
 
@@ -258,6 +266,7 @@ class FilterDataShirfReport extends React.Component {
 
     return (
       <>
+        <LoadingModal show={this.state.isLoading} />
         <div className="timesheet-box shadow">
           <div className="row">
             <div className="col-lg-2">
