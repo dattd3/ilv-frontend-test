@@ -5,6 +5,7 @@ import { withTranslation } from "react-i18next"
 import DetailButtonComponent from '../DetailButtonComponent'
 import RequesterDetailComponent from '../RequesterDetailComponent'
 import ApproverDetailComponent from '../ApproverDetailComponent'
+import RequestProcessing from '../RequestProcessing'
 import StatusModal from '../../../components/Common/StatusModal'
 import Constants from '../.../../../../commons/Constants'
 import { getRequestTypeIdsAllowedToReApproval } from "../../../commons/Utils"
@@ -242,6 +243,12 @@ class BusinessTripDetailComponent extends React.Component {
             <ApproverDetailComponent title={t("Approver")} approver={businessTrip.approver} status={requestInfo.processStatusId} hrComment={requestInfo.approverComment} />
           </> : null
         }
+
+        <RequestProcessing 
+          createDate={businessTrip?.createDate} 
+          deletedDate={businessTrip?.deletedDate}
+          assessedDate={businessTrip?.assessedDate} 
+          approvedDate={businessTrip?.approvedDate} />
 
         { businessTrip?.requestDocuments?.length > 0 && <Attachment requestDocuments={businessTrip?.requestDocuments || []} t={t} /> }
 

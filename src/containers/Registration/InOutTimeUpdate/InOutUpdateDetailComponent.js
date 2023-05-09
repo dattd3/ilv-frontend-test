@@ -3,6 +3,7 @@ import moment from 'moment'
 import { withTranslation } from "react-i18next"
 import DetailButtonComponent from '../DetailButtonComponent'
 import ApproverDetailComponent from '../ApproverDetailComponent'
+import RequestProcessing from '../RequestProcessing'
 import Constants from '../.../../../../commons/Constants'
 import { getRequestTypeIdsAllowedToReApproval } from "../../../commons/Utils"
 
@@ -213,6 +214,12 @@ class InOutUpdateDetailComponent extends React.Component {
             //   }
             // </div>
         }
+
+        <RequestProcessing 
+          createDate={inOutTimeUpdate?.createDate} 
+          deletedDate={inOutTimeUpdate?.deletedDate}
+          assessedDate={inOutTimeUpdate?.assessedDate} 
+          approvedDate={inOutTimeUpdate?.approvedDate} />
 
         {
           inOutTimeUpdate.requestDocuments.length > 0 ?

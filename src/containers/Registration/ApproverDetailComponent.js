@@ -20,7 +20,7 @@ function ApproverDetailComponent(props) {
       </div>
       {
       props.status == Constants.STATUS_NOT_APPROVED || props.status == Constants.STATUS_NO_CONSENTED || props.status == Constants.STATUS_EVICTION ?
-      <div className="col-xl-4">
+      <div className="col-xl-4" style={{ marginTop: 10 }}>
         {t('ReasonReject')}
         <div className="detail">
           <span className="hr-comments">{props.hrComment ? props.hrComment : ""}</span>
