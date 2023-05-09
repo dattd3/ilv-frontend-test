@@ -422,7 +422,6 @@ class TaskList extends React.Component {
             5: t("LineManagerSResponse")
         }
         const requestTypeIdsAllowedToReApproval = getRequestTypeIdsAllowedToReApproval()
-
         const fullDay = 1
 
         const getRequestTypeLabel = (requestType, absenceTypeValue) => {
