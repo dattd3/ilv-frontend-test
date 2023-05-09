@@ -971,9 +971,9 @@ export default function OTRequestComponent({ recentlyManagers }) {
                                   className="form-control input hour-picker-input"
                                   placeholderText="hh:mm"
                                 />
-                                {/* <p className="text-danger">
-                                {errors[`startTime_${index}`]}
-                              </p> */}
+                                <p className="text-danger">
+                                  {errors[`startTime_${index}`]}
+                                </p>
                               </div>
                               <div className="form-item  end-time-container">
                                 {rangeIndex === 0 && (
@@ -1006,11 +1006,11 @@ export default function OTRequestComponent({ recentlyManagers }) {
                                   className="form-control input hour-picker-input"
                                   placeholderText="hh:mm"
                                 />
-                                {/* <p className="text-danger">
-                                {errors[`endTime_${index}`]}
-                              </p> */}
+                                <p className="text-danger">
+                                  {errors[`endTime_${index}`]}
+                                </p>
                               </div>
-                              {timeRegisterRanges?.length === 1 ? (
+                              {/* {timeRegisterRanges?.length === 1 ? (
                                 <button
                                   className="add-time-block-btn"
                                   onClick={addTimeRange}
@@ -1054,7 +1054,7 @@ export default function OTRequestComponent({ recentlyManagers }) {
                                 </div>
                               )}
                               <div className="line-break" />
-                              <p className="text-danger">{range.error}</p>
+                              <p className="text-danger">{range.error}</p> */}
                             </div>
                           </div>
                         ))}
