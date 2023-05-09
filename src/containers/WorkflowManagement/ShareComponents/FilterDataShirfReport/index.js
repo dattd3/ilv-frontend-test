@@ -13,7 +13,8 @@ import Constants from '../../../../commons/Constants'
 import { saveAs } from 'file-saver'
 import { getMuleSoftHeaderConfigurations } from "../../../../commons/Utils"
 import { IS_VINFAST } from "commons/commonFunctions";
-import LoadingModal from "components/Common/LoadingModal";
+import Spinner from 'react-bootstrap/Spinner';
+
 registerLocale("vi", vi);
 
 class FilterDataShirfReport extends React.Component {
@@ -85,9 +86,6 @@ class FilterDataShirfReport extends React.Component {
   }
 
   download() {
-    this.setState({
-      isLoading: true
-    })
     const isValidData = this.isValidDataToCreate()
     if (!isValidData) {
       return;
@@ -110,7 +108,9 @@ class FilterDataShirfReport extends React.Component {
       endDate: moment(this.state.endDate).format("YYYY-MM-DD[T]23:59:59.999")
     }
     const { t } = this.props;
-
+    this.setState({
+      isLoading: true
+    })
     axios.post(`${process.env.REACT_APP_REQUEST_URL}report/shift`, JSON.stringify(data), config)
       .then(async (responses) => {
 
@@ -266,7 +266,7 @@ class FilterDataShirfReport extends React.Component {
 
     return (
       <>
-        <LoadingModal show={this.state.isLoading} />
+        {/* <LoadingModal show={this.state.isLoading} /> */}
         <div className="timesheet-box shadow">
           <div className="row">
             <div className="col-lg-2">
@@ -345,9 +345,14 @@ class FilterDataShirfReport extends React.Component {
                   type="button"
                   className="btn btn-primary"
                   onClick={this.download}
+                  disabled={this.state.isLoading}
                 >
-                  <i className="fas fa-download mr-1"></i>
-                  {t("LabelDownloadReport")}
+                  {
+                    this.state.isLoading ? <Spinner animation="border" size="sm" /> : <>
+                      <i className="fas fa-download mr-1"></i>
+                      {t("LabelDownloadReport")}
+                    </>
+                  }
                 </button>
               </div>
             </div>
