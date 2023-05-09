@@ -120,7 +120,8 @@ class HumanForReviewSalaryComponent extends React.Component {
       let payload = {
         account: value,
         depth: "3",
-        employeeNo: localStorage.getItem('employeeNo')
+        employeeNo: localStorage.getItem('employeeNo'),
+        pnl_code: localStorage.getItem('companyCode')
       }
       let url = `${process.env.REACT_APP_REQUEST_URL}user/employee/managers`;
       if(isHR) {
