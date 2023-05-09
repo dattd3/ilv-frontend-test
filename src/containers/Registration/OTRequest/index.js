@@ -41,6 +41,7 @@ const isNullCustomize = (value) => {
 };
 
 const getHoursBetween2Times = (start, end) => {
+  if (!start || !end) return 0;
   return moment
     .duration(moment(end, "HH:mm").diff(moment(start, "HH:mm")))
     .asHours()
@@ -87,13 +88,31 @@ const checkIsHolidayOrOffOfCompany = (shiftId, isHoliday, companyCode) => {
 
 const CONFIRM_TYPES = {
   OVER_OT: "WarningOverOT",
-  OVER_OT_FUNDS: "WarningOverOTFunds"
-}
+  OVER_OT_FUNDS: "WarningOverOTFunds",
+};
 
 const DEFAULT_CONFIRM_MODAL = {
   show: false,
-  message: null
-}
+  message: null,
+};
+
+const DEFAULT_TIME_REGISTER_RANGE = {
+  startTime: null,
+  endTime: null,
+};
+
+const getTotalHoursOtInRanges = (ranges = []) => {
+  return ranges
+    .reduce(
+      (accumulator, currentValue) =>
+        accumulator * 1 +
+        getHoursBetween2Times(currentValue.startTime, currentValue.endTime) * 1,
+      0
+    )
+    ?.toFixed(2);
+};
+
+const VFSX_LV3_ORG = 45005034;
 
 export default function OTRequestComponent({ recentlyManagers }) {
   const { t } = useTranslation();
@@ -115,14 +134,6 @@ export default function OTRequestComponent({ recentlyManagers }) {
     INIT_STATUS_MODAL_MANAGEMENT
   );
   const [confirmModal, setConfirmModal] = useState(DEFAULT_CONFIRM_MODAL);
-  const [timeRegisterRanges, setTimeRegisterRanges] = useState([
-    {
-      startTime: null,
-      endTime: null,
-      error:
-        "* Vui lòng nhập tối thiểu 30 phút cho Khối sản xuất, 60 phút cho các khối khác",
-    },
-  ]);
 
   const lang = localStorage.getItem("locale");
 
@@ -187,19 +198,61 @@ export default function OTRequestComponent({ recentlyManagers }) {
     return dayName;
   };
 
-  const addTimeRange = () => {
-    setTimeRegisterRanges([
-      ...timeRegisterRanges,
-      {
-        startTime: null,
-        endTime: null,
-        error: "",
-      },
-    ]);
+  const addTimeRange = (dayIndex) => {
+    setRequestInfoData(
+      requestInfoData.map((item, index) => {
+        return index === dayIndex
+          ? {
+              ...item,
+              timeRanges: [...item.timeRanges, DEFAULT_TIME_REGISTER_RANGE],
+            }
+          : item;
+      })
+    );
   };
 
-  const deleteTimeRange = (index) => {
-    setTimeRegisterRanges(timeRegisterRanges.filter((_, i) => index !== i));
+  const deleteTimeRange = (dayIndex, rangeIndex) => {
+    if (requestInfoData?.[dayIndex]) {
+      setRequestInfoData(
+        requestInfoData.map((item, index) => {
+          return index === dayIndex
+            ? {
+                ...item,
+                timeRanges: item.timeRanges.filter((_, i) => i !== rangeIndex),
+              }
+            : item;
+        })
+      );
+    }
+  };
+
+  const handleChangeTimeValue = (
+    dayIndex,
+    rangeIndex,
+    value,
+    field = "startTime"
+  ) => {
+    if (requestInfoData?.[dayIndex]) {
+      const newRanges = requestInfoData?.[dayIndex].timeRanges?.map((item, i) =>
+        i === rangeIndex
+          ? {
+              ...requestInfoData?.[dayIndex]?.timeRanges?.[rangeIndex],
+              [field]: value,
+            }
+          : item
+      );
+      setRequestInfoData(
+        requestInfoData.map((item, index) => {
+          return index === dayIndex
+            ? {
+                ...item,
+                hoursOt: getTotalHoursOtInRanges(newRanges),
+                timeRanges: newRanges,
+              }
+            : item;
+        })
+      );
+    }
   };
 
   const searchData = async () => {
@@ -236,6 +289,7 @@ export default function OTRequestComponent({ recentlyManagers }) {
             setRequestInfoData(
               dataSorted.map((item) => ({
                 ...item,
+                timeRanges: [DEFAULT_TIME_REGISTER_RANGE],
                 isEdited: false,
               }))
             );
@@ -288,28 +342,10 @@ export default function OTRequestComponent({ recentlyManagers }) {
 
   const handleChangeRequestInfoData = (name, value, index) => {
     const newRequestInfoData = [...requestInfoData];
-
-    if (["startTime", "endTime"].includes(name)) {
-      newRequestInfoData[index] = {
-        ...newRequestInfoData[index],
-        [name]: moment(value).format("HH:mm"),
-      };
-      if (
-        newRequestInfoData[index].startTime &&
-        newRequestInfoData[index].endTime
-      ) {
-        newRequestInfoData[index].hoursOt =
-          getHoursBetween2Times(
-            newRequestInfoData[index].startTime,
-            newRequestInfoData[index].endTime
-          ) * 1;
-      }
-    } else {
-      newRequestInfoData[index] = {
-        ...newRequestInfoData[index],
-        [name]: value,
-      };
-    }
+    newRequestInfoData[index] = {
+      ...newRequestInfoData[index],
+      [name]: value,
+    };
 
     setRequestInfoData(newRequestInfoData);
   };
@@ -373,7 +409,7 @@ export default function OTRequestComponent({ recentlyManagers }) {
     if (haveDayOverOt) {
       return setConfirmModal({
         show: true,
-        message: CONFIRM_TYPES.OVER_OT
+        message: CONFIRM_TYPES.OVER_OT,
       });
     }
     sendRequest();
@@ -391,15 +427,20 @@ export default function OTRequestComponent({ recentlyManagers }) {
             ...config,
             params: {
               orgLvId: localStorage.getItem("organizationLvId"),
-              rank: localStorage.getItem("actualRank")
-            }
+              rank: localStorage.getItem("actualRank"),
+            },
           }
         );
         const otFunds = otFundResponse?.data?.data;
-  
+
         requestData = requestData.map((item) => {
-          if (item.isEdited) {          
-            const otFund = otFunds.find(fundItem => fundItem.monthSalary * 1 === item.monthSalary.substring(4, 6) * 1 && fundItem.yearsSalary === item.monthSalary.substring(0, 4));
+          if (item.isEdited) {
+            const otFund = otFunds.find(
+              (fundItem) =>
+                fundItem.monthSalary * 1 ===
+                  item.monthSalary.substring(4, 6) * 1 &&
+                fundItem.yearsSalary === item.monthSalary.substring(0, 4)
+            );
             if (otFund?.hours) {
               const totalRegisterInMonth = [...requestInfoData]
                 .filter(
@@ -411,19 +452,21 @@ export default function OTRequestComponent({ recentlyManagers }) {
                 .reduce((acc, currValue) => acc + currValue.hoursOt * 1, 0);
               return {
                 ...item,
-                isOverOTFund: totalRegisterInMonth + item.totalHoursOtInMonth > otFund.hours
-              }
+                isOverOTFund:
+                  totalRegisterInMonth + item.totalHoursOtInMonth >
+                  otFund.hours,
+              };
             }
           }
           return item;
         });
 
-        if (requestData.some(item => item.isOverOTFund)) {
+        if (requestData.some((item) => item.isOverOTFund)) {
           setIsSendingRequest(false);
-          setRequestInfoData(requestData)
+          setRequestInfoData(requestData);
           return setConfirmModal({
             show: true,
-            message: CONFIRM_TYPES.OVER_OT_FUNDS
+            message: CONFIRM_TYPES.OVER_OT_FUNDS,
           });
         }
       } catch (error) {}
@@ -433,10 +476,11 @@ export default function OTRequestComponent({ recentlyManagers }) {
       .filter((item) => item.isEdited)
       .map((item) => ({
         ...item,
+        timeRanges: undefined,
         hours: item.hours ? parseFloat(item.hours) : null,
         date: moment(item.date, "DD-MM-YYYY").format("YYYYMMDD").toString(),
-        startTime: moment(item.startTime, "HH:mm").format("HHmmss"),
-        endTime: moment(item.endTime, "HH:mm").format("HHmmss"),
+        startTime: item.timeRanges?.map(range => moment(range.startTime).format("HHmmss"))?.join(","),
+        endTime: item.timeRanges?.map(range => moment(range.endTime).format("HHmmss"))?.join(","),
         overTimeType: "01",
       }));
 
@@ -563,15 +607,43 @@ export default function OTRequestComponent({ recentlyManagers }) {
     const _errors = {};
     requestInfoData.forEach((item, index) => {
       if (item.isEdited) {
+        const currOrgLv3 = localStorage.getItem("organizationLv3");
         if (!item.reasonType) _errors[`reasonType_${index}`] = t("Required");
         // if (!item.overTimeType)
         //   _errors[`overTimeType_${index}`] = t("Required");
-        if (!item.startTime) _errors[`startTime_${index}`] = t("Required");
-        if (!item.endTime) _errors[`endTime_${index}`] = t("Required");
         if (!item.note) _errors[`note_${index}`] = t("Required");
-        if (item.startTime && item.endTime) {
-          if (item.hoursOt <= 0) {
-            _errors[`invalidHour_${index}`] = t("InvalidHour");
+        if (item.hoursOt <= 0) {
+          _errors[`invalidHour_${index}`] = t("InvalidHour");
+        }
+        if (!appraiser) _errors["appraiser"] = t("Required");
+        if (!budgetApprover) _errors["budgetApprover"] = t("Required");
+        // eslint-disable-next-line no-unused-expressions
+        item.timeRanges?.forEach((range, rangeIndex) => {
+          const { startTime, endTime } = range;
+          if (!startTime)
+            _errors[`range_startTime_${index}_${rangeIndex}`] = t("Required");
+          if (!endTime)
+            _errors[`range_endTime_${index}_${rangeIndex}`] = t("Required");
+          if (startTime && endTime) {
+            if (
+              currOrgLv3 === VFSX_LV3_ORG &&
+              getHoursBetween2Times(startTime, endTime) < 0.5
+            ) {
+              _errors[`range_minimum_hours_${index}_${rangeIndex}`] =
+                t("OTMinimumHours");
+            } else if (getHoursBetween2Times(startTime, endTime) < 1) {
+              _errors[`range_minimum_hours_${index}_${rangeIndex}`] =
+                t("OTMinimumHours");
+            }
+            if (
+              rangeIndex > 0 &&
+              getHoursBetween2Times(item.timeRanges?.[rangeIndex - 1]?.endTime, startTime) <
+                1
+            ) {
+              _errors[`range_space_hours_${index}_${rangeIndex}`] = t(
+                "OTInvalidSpaceHours"
+              );
+            }
           }
           if (
             !isNullCustomize(item.from_time1) &&
@@ -582,32 +654,40 @@ export default function OTRequestComponent({ recentlyManagers }) {
                 moment(item.from_time1, "HHmmss").format("HH:mm"),
                 moment(item.to_time1, "HHmmss").format("HH:mm"),
               ],
-              [item.startTime, item.endTime],
+              [
+                moment(startTime).format("HH:mm"),
+                moment(endTime).format("HH:mm"),
+              ],
             ];
             if (item.is_holiday != 1 && checkOverlap(timeSegments)) {
-              _errors[`overlapTime_${index}`] = t("OverlapTimeOTWorkshift");
+              _errors[`range_overlapTime_${index}_${rangeIndex}`] = t(
+                "OverlapTimeOTWorkshift"
+              );
             }
           }
           if (
             !isNullCustomize(item.from_time2) &&
-            !isNullCustomize(item.to_time1)
+            !isNullCustomize(item.to_time2)
           ) {
             const timeSegments = [
               [
                 moment(item.from_time2, "HHmmss").format("HH:mm"),
-                moment(item.to_time1, "HHmmss").format("HH:mm"),
+                moment(item.to_time2, "HHmmss").format("HH:mm"),
               ],
-              [item.startTime, item.endTime],
+              [
+                moment(startTime).format("HH:mm"),
+                moment(endTime).format("HH:mm"),
+              ],
             ];
             if (item.is_holiday != 1 && checkOverlap(timeSegments)) {
-              _errors[`overlapTime_${index}`] = t("OverlapTimeOTWorkshift");
+              _errors[`range_overlapTime_${index}_${rangeIndex}`] = t(
+                "OverlapTimeOTWorkshift"
+              );
             }
           }
-        }
+        });
       }
     });
-    if (!appraiser) _errors["appraiser"] = t("Required");
-    if (!budgetApprover) _errors["budgetApprover"] = t("Required");
     setErrors(_errors);
     return !!Object.keys(_errors).length;
   };
@@ -671,7 +751,9 @@ export default function OTRequestComponent({ recentlyManagers }) {
         confirmContent={t(confirmModal?.message)}
         onHide={hideConfirmModal}
         onCancelClick={hideConfirmModal}
-        onAcceptClick={() => sendRequest(confirmModal?.message === CONFIRM_TYPES.OVER_OT_FUNDS)}
+        onAcceptClick={() =>
+          sendRequest(confirmModal?.message === CONFIRM_TYPES.OVER_OT_FUNDS)
+        }
         tempButtonLabel={t("Cancel")}
         mainButtonLabel={t("Confirm")}
       />
@@ -910,8 +992,8 @@ export default function OTRequestComponent({ recentlyManagers }) {
                       <div className="title">{t("OTRequest")}</div>
                       <div className="ot-registration-body">
                         <div className="ot-note">{t("OTNote")}</div>
-                        {timeRegisterRanges.map((range, rangeIndex) => (
-                          <div className="row mb-15" index={rangeIndex}>
+                        {timesheet?.timeRanges?.map((range, rangeIndex) => (
+                          <div className="row mb-15" key={rangeIndex}>
                             <div className="col-5 mr-12">
                               {rangeIndex === 0 && (
                                 <>
@@ -945,18 +1027,19 @@ export default function OTRequestComponent({ recentlyManagers }) {
                                 )}
                                 <DatePicker
                                   selected={
-                                    !isNullCustomize(timesheet.startTime)
+                                    !isNullCustomize(range.startTime)
                                       ? moment(
-                                          timesheet.startTime,
+                                          range.startTime,
                                           "HH:mm"
                                         ).toDate()
                                       : null
                                   }
                                   onChange={(val) =>
-                                    handleChangeRequestInfoData(
-                                      "startTime",
+                                    handleChangeTimeValue(
+                                      index,
+                                      rangeIndex,
                                       val,
-                                      index
+                                      "startTime"
                                     )
                                   }
                                   autoComplete="off"
@@ -972,7 +1055,11 @@ export default function OTRequestComponent({ recentlyManagers }) {
                                   placeholderText="hh:mm"
                                 />
                                 <p className="text-danger">
-                                  {errors[`startTime_${index}`]}
+                                  {
+                                    errors[
+                                      `range_startTime_${index}_${rangeIndex}`
+                                    ]
+                                  }
                                 </p>
                               </div>
                               <div className="form-item  end-time-container">
@@ -981,18 +1068,16 @@ export default function OTRequestComponent({ recentlyManagers }) {
                                 )}
                                 <DatePicker
                                   selected={
-                                    !isNullCustomize(timesheet.endTime)
-                                      ? moment(
-                                          timesheet.endTime,
-                                          "HH:mm"
-                                        ).toDate()
+                                    !isNullCustomize(range.endTime)
+                                      ? moment(range.endTime, "HH:mm").toDate()
                                       : null
                                   }
                                   onChange={(val) =>
-                                    handleChangeRequestInfoData(
-                                      "endTime",
+                                    handleChangeTimeValue(
+                                      index,
+                                      rangeIndex,
                                       val,
-                                      index
+                                      "endTime"
                                     )
                                   }
                                   autoComplete="off"
@@ -1007,13 +1092,17 @@ export default function OTRequestComponent({ recentlyManagers }) {
                                   placeholderText="hh:mm"
                                 />
                                 <p className="text-danger">
-                                  {errors[`endTime_${index}`]}
+                                  {
+                                    errors[
+                                      `range_endTime_${index}_${rangeIndex}`
+                                    ]
+                                  }
                                 </p>
                               </div>
-                              {/* {timeRegisterRanges?.length === 1 ? (
+                              {timesheet?.timeRanges?.length === 1 ? (
                                 <button
                                   className="add-time-block-btn"
-                                  onClick={addTimeRange}
+                                  onClick={() => addTimeRange(index)}
                                 >
                                   <img alt="addMore" src={IconPlus} />
                                   &nbsp;
@@ -1027,7 +1116,9 @@ export default function OTRequestComponent({ recentlyManagers }) {
                                 >
                                   <button
                                     className="action-time-range-btn cancel-time-range-btn"
-                                    onClick={() => deleteTimeRange(rangeIndex)}
+                                    onClick={() =>
+                                      deleteTimeRange(index, rangeIndex)
+                                    }
                                   >
                                     <img alt="addMore" src={IconCancel} />
                                   </button>
@@ -1035,9 +1126,9 @@ export default function OTRequestComponent({ recentlyManagers }) {
                                     className="action-time-range-btn"
                                     disabled={
                                       rangeIndex !==
-                                      timeRegisterRanges.length - 1
+                                      timesheet?.timeRanges?.length - 1
                                     }
-                                    onClick={addTimeRange}
+                                    onClick={() => addTimeRange(index)}
                                   >
                                     <img
                                       alt="addMore"
@@ -1045,7 +1136,7 @@ export default function OTRequestComponent({ recentlyManagers }) {
                                       style={{
                                         opacity:
                                           rangeIndex ===
-                                          timeRegisterRanges.length - 1
+                                          timesheet?.timeRanges?.length - 1
                                             ? 1
                                             : 0.2,
                                       }}
@@ -1054,18 +1145,44 @@ export default function OTRequestComponent({ recentlyManagers }) {
                                 </div>
                               )}
                               <div className="line-break" />
-                              <p className="text-danger">{range.error}</p> */}
+                              {errors[
+                                `range_overlapTime_${index}_${rangeIndex}`
+                              ] && (
+                                <p className="text-danger">
+                                  {
+                                    errors[
+                                      `range_overlapTime_${index}_${rangeIndex}`
+                                    ]
+                                  }
+                                </p>
+                              )}
+                              {errors[
+                                `range_minimum_hours_${index}_${rangeIndex}`
+                              ] && (
+                                <p className="text-danger">
+                                  {
+                                    errors[
+                                      `range_minimum_hours_${index}_${rangeIndex}`
+                                    ]
+                                  }
+                                </p>
+                              )}
+                              {errors[
+                                `range_space_hours_${index}_${rangeIndex}`
+                              ] && (
+                                <p className="text-danger">
+                                  {
+                                    errors[
+                                      `range_space_hours_${index}_${rangeIndex}`
+                                    ]
+                                  }
+                                </p>
+                              )}
                             </div>
                           </div>
                         ))}
                         <p className="text-danger">
-                          {errors[`overtime_${index}`]}
-                        </p>
-                        <p className="text-danger">
                           {errors[`invalidHour_${index}`]}
-                        </p>
-                        <p className="text-danger">
-                          {errors[`overlapTime_${index}`]}
                         </p>
                         <div className="row mb-15">
                           <div className="col-5 mr-12">
@@ -1079,11 +1196,7 @@ export default function OTRequestComponent({ recentlyManagers }) {
                               {t("TotalLeaveTime")}
                             </div>
                             <div className="field-view  hour-picker-input">
-                              {timesheet.startTime &&
-                              timesheet.endTime &&
-                              timesheet.hoursOt > 0
-                                ? timesheet.hoursOt
-                                : 0}
+                              {timesheet.hoursOt > 0 ? timesheet.hoursOt : 0}
                               &nbsp;
                               {t("HourUnit")}
                             </div>

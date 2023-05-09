@@ -1750,5 +1750,7 @@
   "BlockEmailAdAccount": "Email/ AD lock",
   "WarningOverOTFunds": "OT hours for this request exceeded the department's funds for the month. Do you want to send request?",
   "WarningOverOTFundsConsent": "OT hours for this request exceeded the department's funds for the month (at time of registration). Please check/report to HR to replenish funds. Confirm continued consent?",
-  "WarningOverOTFundsApproval": "OT hours for this request exceeded the department's funds for the month (at time of registration). Please check/report to HR to replenish funds. Confirm continued approve?"
+  "WarningOverOTFundsApproval": "OT hours for this request exceeded the department's funds for the month (at time of registration). Please check/report to HR to replenish funds. Confirm continued approve?",
+  "OTMinimumHours": "* Minimum OT is 30m for Production department, 60m for other department",
+  "OTInvalidSpaceHours": "* Minimum break time is 1h"
 }
