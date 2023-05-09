@@ -1104,7 +1104,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                     {req[0].absenceType && req[0].absenceType.value === MARRIAGE_FUNERAL_LEAVE_KEY ? <p className="title">{t("MarriageFuneral")}</p> : null}
                                                     {req[0].absenceType && req[0].absenceType.value === MARRIAGE_FUNERAL_LEAVE_KEY ?
                                                         <div>
-                                                            <Select name="PN03" value={req[0].funeralWeddingInfo} onChange={funeralWeddingInfo => this.handleSelectChange('funeralWeddingInfo', funeralWeddingInfo, req[0].groupId)} placeholder={t('Select')} key="absenceType" options={PN03ListPrepare} />
+                                                            <Select value={req[0].funeralWeddingInfo} onChange={funeralWeddingInfo => this.handleSelectChange('funeralWeddingInfo', funeralWeddingInfo, req[0].groupId)} placeholder={t('Select')} key="absenceType" options={PN03ListPrepare} />
                                                         </div>
                                                         :
                                                         null}

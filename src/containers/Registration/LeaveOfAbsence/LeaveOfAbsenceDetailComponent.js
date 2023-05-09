@@ -6,9 +6,10 @@ import _ from 'lodash'
 import { getRequestTypeIdsAllowedToReApproval, getRequestConfigurations } from "../../../commons/Utils"
 import DetailButtonComponent from '../DetailButtonComponent'
 import ApproverDetailComponent from '../ApproverDetailComponent'
+import RequestProcessing from '../RequestProcessing'
 import StatusModal from '../../../components/Common/StatusModal'
 import Constants from '../.../../../../commons/Constants'
-import { FOREIGN_SICK_LEAVE } from 'containers/Task/Constants'
+import { FOREIGN_SICK_LEAVE, MARRIAGE_FUNERAL_LEAVE_KEY } from 'containers/Task/Constants'
 
 const TIME_FORMAT = 'HH:mm'
 
@@ -46,9 +47,12 @@ const RegisteredLeaveInfo = ({ leaveOfAbsence, t, annualLeaveSummary }) => {
                         </div>
                         <div className="col-xl-4">
                           {t("TotalLeaveTime")}
-                          {/* <div className="detail">{ requestInfo && requestInfo.days && requestInfo.absenceType.value != "PQ02" ? requestInfo.days + ' ngày' : null } { requestInfo && requestInfo.hours  && requestInfo.absenceType.value == "PQ02" ? requestInfo.hours  + ' giờ' : null}</div> */}
                           <div className="detail">{( info && info?.days >= 1) ? info?.days + ' ' + formatDayUnitByValue(info?.days || 0) : info?.hours + ' ' + t("Hour")}</div>
                         </div>
+                        {/* <div className="col-xl-4">
+                          {t("Thời gian gửi yêu cầu")}
+                          <div className="detail">{ leaveOfAbsence?.createDate && moment(leaveOfAbsence?.createDate, 'MM/DD/YYYY HH:mm').isValid() ? moment(leaveOfAbsence?.createDate, 'MM/DD/YYYY HH:mm').format('DD/MM/YYYY | HH:mm:ss') : '' }</div>
+                        </div> */}
                       </div>
                       <div className='row' style={{ marginTop: 15, marginBottom: 5 }}>
                         <div className="col-xl-8">
@@ -81,12 +85,16 @@ const RegisteredLeaveInfo = ({ leaveOfAbsence, t, annualLeaveSummary }) => {
                           {t("LeaveCategory")}
                           <div className="detail">{info && info?.absenceType ? info?.absenceType?.label : ""}</div>
                         </div>
+                        {/* <div className="col-xl-4">
+                          {t("Thời gian gửi yêu cầu")}
+                          <div className="detail">{ leaveOfAbsence?.createDate && moment(leaveOfAbsence?.createDate, 'MM/DD/YYYY HH:mm').isValid() ? moment(leaveOfAbsence?.createDate, 'MM/DD/YYYY HH:mm').format('DD/MM/YYYY | HH:mm:ss') : '' }</div>
+                        </div> */}
                       </div>
                     </>
                   )
                 }
 
-                {(info && info?.absenceType && info?.absenceType?.value === 'PN03') && 
+                {(info && info?.absenceType && info?.absenceType?.value === MARRIAGE_FUNERAL_LEAVE_KEY) && 
                 <div className="row">
                   <div className="col">
                     {t("MarriageFuneral")}
@@ -142,7 +150,7 @@ const AdjustmentLeaveInfo = ({ requestInfoToShow, requestInfo, totalRequestedTim
       <div className='other-info'>
         <div className='row'>
           <div className="col-md-6">
-            <label>{(requestInfo && requestInfo.absenceType && requestInfo.absenceType.value === 'PN03') ? t("MarriageFuneral") : t("LeaveCategory")}</label>
+            <label>{(requestInfo && requestInfo.absenceType && requestInfo.absenceType.value === MARRIAGE_FUNERAL_LEAVE_KEY) ? t("MarriageFuneral") : t("LeaveCategory")}</label>
             <div className="detail adjustment">{requestInfo && requestInfo?.absenceType ? requestInfo.absenceType?.label : ""}</div>
           </div>
           <div className="col-md-6">
@@ -361,6 +369,12 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
               <ApproverDetailComponent title={t("Approver")} approver={leaveOfAbsence.approver} status={requestInfo ? requestInfo.processStatusId : ""} hrComment={requestInfo.approverComment} />
             </> : null
         }
+
+        <RequestProcessing 
+          createDate={leaveOfAbsence?.createDate} 
+          deletedDate={leaveOfAbsence?.deletedDate}
+          assessedDate={leaveOfAbsence?.assessedDate} 
+          approvedDate={leaveOfAbsence?.approvedDate} />
 
         { leaveOfAbsence.requestDocuments.length > 0 && <Attachment leaveOfAbsence={leaveOfAbsence} t={t} /> }
 
