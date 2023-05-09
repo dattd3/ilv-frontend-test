@@ -138,15 +138,15 @@ function Header(props) {
                                         return `/notifications/${item.id}`
                                     case Constants.notificationType.NOTIFICATION_REGISTRATION: 
                                         if (item.detailType == 'APPRAISAL')
-                                            return `/tasks?tab=consent`
+                                            return `/tasks?tab=consent&${item.requestTypeId == Constants.SALARY_PROPOSE ? 'requestCategory=2' : ''}`
                                         else
-                                            return `/tasks?tab=approval`
+                                            return `/tasks?tab=approval&${item.requestTypeId == Constants.SALARY_PROPOSE ? 'requestCategory=2' : ''}`
                                     case 6:
                                         return '/personal-info?tab=document'
                                     case Constants.notificationType.NOTIFICATION_REJECT:
-                                        return `/tasks`
+                                        return `/tasks?${item.requestTypeId == Constants.SALARY_PROPOSE ? 'requestCategory=2' : ''}`
                                     case Constants.notificationType.NOTIFICATION_AUTO_JOB:
-                                        return `/tasks?tab=approval`
+                                        return `/tasks?tab=approval&${item.requestTypeId == Constants.SALARY_PROPOSE ? 'requestCategory=2' : ''}`
                                     case Constants.notificationType.NOTIFICATION_SHIFT_CHANGE:
                                         const param = getDateShiftChange(item?.title || '');
                                         return `/timesheet${param}`
