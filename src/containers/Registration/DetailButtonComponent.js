@@ -17,13 +17,17 @@ class DetailButtonComponent extends React.Component {
             2: "LeaveRequest",
             3: "BizTrip_TrainingRequest",
             4: "ShiftChange",
-            5: "ModifyInOut"
+            5: "ModifyInOut",
+            13: "OTRequest"
         }
     }
 
-    approval = () => {
-        const { t } = this.props
-        this.setState({ isConfirmShow: true, modalTitle:"ApproveRequest", modalMessage:t("ConfirmApproveRequestHolder",{name: t(this.requestRegistraion[this.props.requestTypeId])}) , typeRequest: Constants.STATUS_APPROVED })
+    approval = async () => {
+      const { t, requestTypeId, haveOverOTFund } = this.props
+      if (requestTypeId === Constants.OT_REQUEST && haveOverOTFund) {
+          return this.setState({ isConfirmShow: true, modalTitle: t("ApproveRequest"), modalMessage: t("WarningOverOTFundsApproval", {name: t(this.requestRegistraion[this.props.requestTypeId])}), typeRequest: Constants.STATUS_CONSENTED })
+      }
+      this.setState({ isConfirmShow: true, modalTitle: t("ApproveRequest"), modalMessage:t("ConfirmApproveRequestHolder",{name: t(this.requestRegistraion[this.props.requestTypeId])}) , typeRequest: Constants.STATUS_APPROVED })
     }
 
     disApproval = () => {
@@ -38,8 +42,11 @@ class DetailButtonComponent extends React.Component {
         const { t } = this.props
         this.setState({ isConfirmShow: true, modalTitle: t("ConfirmRequestRecall"), modalMessage: t("SureRequestRecall") + t(this.requestRegistraion[this.props.requestTypeId]) + " này ?", typeRequest: 0 })
     }
-    consent = () => {
-        const { t } = this.props
+    consent = async () => {
+      const { t, requestTypeId, haveOverOTFund } = this.props
+      if (requestTypeId === Constants.OT_REQUEST && haveOverOTFund) {
+          return this.setState({ isConfirmShow: true, modalTitle: t("ConsentConfirmation"), modalMessage: t("WarningOverOTFundsConsent", {name: t(this.requestRegistraion[this.props.requestTypeId])}), typeRequest: Constants.STATUS_CONSENTED })
+      }
         this.setState({ isConfirmShow: true, modalTitle: t("ConsentConfirmation"), modalMessage: t("ConfirmConsentRequestHolder", {name: t(this.requestRegistraion[this.props.requestTypeId])}), typeRequest: Constants.STATUS_CONSENTED })
     }
     rejected = () => {

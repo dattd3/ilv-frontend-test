@@ -1602,7 +1602,19 @@
         padding: 10px 12px;
       }
       .ot-registration-body {
-        padding: 14px
+        padding: 14px;
+        .time-registration-container {
+          flex: 1;
+          flex-wrap: wrap;
+          display: flex;
+          .line-break {
+            width: 100%;
+          }
+          .text-danger {
+            margin-bottom: 0px;
+            padding-right: 40px;
+          }
+        }
       }
       .flex {
         display: flex;
@@ -1640,6 +1652,9 @@
       padding-right: 10px;
     }
     .ot-note {
+      padding-bottom: 15px;
+      border-bottom: 1px solid #DEE2E6;
+      margin-bottom: 20px;
       color: #36B9CC;
     }
   }

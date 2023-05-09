@@ -523,6 +523,7 @@ export default function OTRequestDetailComponent({ data, action }) {
         urlName={"otrequest"}
         requestTypeId={data.requestTypeId}
         action={action}
+        haveOverOTFund={data?.requestInfo?.some(item => item.isOverOTFund)}
       />
     </div>
   );
