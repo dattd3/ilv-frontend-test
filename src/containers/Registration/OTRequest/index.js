@@ -22,6 +22,9 @@ import ResultModal from "../ResultModal";
 import map from "containers/map.config";
 import ConfirmModal from "components/Common/ConfirmModalNew";
 import LoadingModal from "components/Common/LoadingModal";
+import IconPlus from "assets/img/ic-add-green.svg";
+import IconCancel from "assets/img/icon/ic_x_red.svg";
+
 const config = getRequestConfigurations();
 
 registerLocale("vi", vi);
@@ -82,6 +85,16 @@ const checkIsHolidayOrOffOfCompany = (shiftId, isHoliday, companyCode) => {
   );
 };
 
+const CONFIRM_TYPES = {
+  OVER_OT: "WarningOverOT",
+  OVER_OT_FUNDS: "WarningOverOTFunds"
+}
+
+const DEFAULT_CONFIRM_MODAL = {
+  show: false,
+  message: null
+}
+
 export default function OTRequestComponent({ recentlyManagers }) {
   const { t } = useTranslation();
   const [startDate, setStartDate] = useState(
@@ -101,8 +114,15 @@ export default function OTRequestComponent({ recentlyManagers }) {
   const [statusModalManagement, setStatusModalManagement] = useState(
     INIT_STATUS_MODAL_MANAGEMENT
   );
-  const [showConfirmModal, setShowConfirmModal] = useState(false);
-  // const [daysOverOT, setDaysOverOT] = useState([]);
+  const [confirmModal, setConfirmModal] = useState(DEFAULT_CONFIRM_MODAL);
+  const [timeRegisterRanges, setTimeRegisterRanges] = useState([
+    {
+      startTime: null,
+      endTime: null,
+      error:
+        "* Vui lòng nhập tối thiểu 30 phút cho Khối sản xuất, 60 phút cho các khối khác",
+    },
+  ]);
 
   const lang = localStorage.getItem("locale");
 
@@ -167,6 +187,21 @@ export default function OTRequestComponent({ recentlyManagers }) {
     return dayName;
   };
 
+  const addTimeRange = () => {
+    setTimeRegisterRanges([
+      ...timeRegisterRanges,
+      {
+        startTime: null,
+        endTime: null,
+        error: "",
+      },
+    ]);
+  };
+
+  const deleteTimeRange = (index) => {
+    setTimeRegisterRanges(timeRegisterRanges.filter((_, i) => index !== i));
+  };
+
   const searchData = async () => {
     if (startDate && endDate) {
       const muleSoftConfig = getMuleSoftHeaderConfigurations();
@@ -179,7 +214,7 @@ export default function OTRequestComponent({ recentlyManagers }) {
       try {
         const response = await axios.get(timeOverviewEndpoint, muleSoftConfig);
         if (response?.data?.data) {
-          let dataSorted = response.data.data.sort((a, b) =>
+          const dataSorted = response.data.data.sort((a, b) =>
             moment(a.date, "DD-MM-YYYY").format("YYYYMMDD") <
             moment(b.date, "DD-MM-YYYY").format("YYYYMMDD")
               ? 1
@@ -263,10 +298,11 @@ export default function OTRequestComponent({ recentlyManagers }) {
         newRequestInfoData[index].startTime &&
         newRequestInfoData[index].endTime
       ) {
-        newRequestInfoData[index].hoursOt = getHoursBetween2Times(
-          newRequestInfoData[index].startTime,
-          newRequestInfoData[index].endTime
-        ) * 1;
+        newRequestInfoData[index].hoursOt =
+          getHoursBetween2Times(
+            newRequestInfoData[index].startTime,
+            newRequestInfoData[index].endTime
+          ) * 1;
       }
     } else {
       newRequestInfoData[index] = {
@@ -335,15 +371,64 @@ export default function OTRequestComponent({ recentlyManagers }) {
         return isOverOTNormalDay || isOverOTOffDay || isOverOTInMonth;
       });
     if (haveDayOverOt) {
-      return setShowConfirmModal(true);
+      return setConfirmModal({
+        show: true,
+        message: CONFIRM_TYPES.OVER_OT
+      });
     }
     sendRequest();
   };
 
-  const sendRequest = async () => {
-    setShowConfirmModal(false);
+  const sendRequest = async (ignoreCheckOTFund = false) => {
     // setDaysOverOT([]);
     setIsSendingRequest(true);
+    let requestData = [...requestInfoData];
+    if (!ignoreCheckOTFund) {
+      try {
+        const otFundResponse = await axios.get(
+          `${process.env.REACT_APP_REQUEST_URL}otuploads/funds/list`,
+          {
+            ...config,
+            params: {
+              orgLvId: localStorage.getItem("organizationLvId"),
+              rank: localStorage.getItem("actualRank")
+            }
+          }
+        );
+        const otFunds = otFundResponse?.data?.data;
+  
+        requestData = requestData.map((item) => {
+          if (item.isEdited) {          
+            const otFund = otFunds.find(fundItem => fundItem.monthSalary * 1 === item.monthSalary.substring(4, 6) * 1 && fundItem.yearsSalary === item.monthSalary.substring(0, 4));
+            if (otFund?.hours) {
+              const totalRegisterInMonth = [...requestInfoData]
+                .filter(
+                  (_item) =>
+                    _item.isEdited &&
+                    item.monthSalary &&
+                    _item.monthSalary === item.monthSalary
+                )
+                .reduce((acc, currValue) => acc + currValue.hoursOt * 1, 0);
+              return {
+                ...item,
+                isOverOTFund: totalRegisterInMonth + item.totalHoursOtInMonth > otFund.hours
+              }
+            }
+          }
+          return item;
+        });
+
+        if (requestData.some(item => item.isOverOTFund)) {
+          setIsSendingRequest(false);
+          setRequestInfoData(requestData)
+          return setConfirmModal({
+            show: true,
+            message: CONFIRM_TYPES.OVER_OT_FUNDS
+          });
+        }
+      } catch (error) {}
+    }
+    setConfirmModal(DEFAULT_CONFIRM_MODAL);
     const timesheets = [...requestInfoData]
       .filter((item) => item.isEdited)
       .map((item) => ({
@@ -423,14 +508,20 @@ export default function OTRequestComponent({ recentlyManagers }) {
         ? localStorage.getItem("part")
         : ""
     );
-    bodyFormData.append("appraiser", JSON.stringify({
-      ...appraiser,
-      avatar: ""
-    }));
-    bodyFormData.append("approver", JSON.stringify({
-      ...approver,
-      avatar: ""
-    }));
+    bodyFormData.append(
+      "appraiser",
+      JSON.stringify({
+        ...appraiser,
+        avatar: "",
+      })
+    );
+    bodyFormData.append(
+      "approver",
+      JSON.stringify({
+        ...approver,
+        avatar: "",
+      })
+    );
     bodyFormData.append("user", JSON.stringify(user));
     bodyFormData.append("companyCode", localStorage.getItem("companyCode"));
     files.forEach((file) => {
@@ -561,7 +652,7 @@ export default function OTRequestComponent({ recentlyManagers }) {
   };
 
   const hideConfirmModal = () => {
-    setShowConfirmModal(false);
+    setConfirmModal(DEFAULT_CONFIRM_MODAL);
     // setDaysOverOT([]);
   };
 
@@ -575,12 +666,12 @@ export default function OTRequestComponent({ recentlyManagers }) {
         onHide={hideStatusModal}
       />
       <ConfirmModal
-        show={showConfirmModal}
+        show={confirmModal?.show}
         confirmHeader={t("ConfirmSend")}
-        confirmContent={t("WarningOverOT")}
+        confirmContent={t(confirmModal?.message)}
         onHide={hideConfirmModal}
         onCancelClick={hideConfirmModal}
-        onAcceptClick={sendRequest}
+        onAcceptClick={() => sendRequest(confirmModal?.message === CONFIRM_TYPES.OVER_OT_FUNDS)}
         tempButtonLabel={t("Cancel")}
         mainButtonLabel={t("Confirm")}
       />
@@ -818,93 +909,155 @@ export default function OTRequestComponent({ recentlyManagers }) {
                     <div className="request-info-card">
                       <div className="title">{t("OTRequest")}</div>
                       <div className="ot-registration-body">
-                        <div className="row mb-15">
-                          <div className="col-5 mr-12">
-                            <div className="mb-12">{t("OTReason")}</div>
-                            <Select
-                              classNamePrefix="ot-reason-select"
-                              options={OTReasonOptions}
-                              value={OTReasonOptions.find(
-                                (item) => item.value === timesheet?.reasonType
+                        <div className="ot-note">{t("OTNote")}</div>
+                        {timeRegisterRanges.map((range, rangeIndex) => (
+                          <div className="row mb-15" index={rangeIndex}>
+                            <div className="col-5 mr-12">
+                              {rangeIndex === 0 && (
+                                <>
+                                  <div className="mb-12">{t("OTReason")}</div>
+                                  <Select
+                                    classNamePrefix="ot-reason-select"
+                                    options={OTReasonOptions}
+                                    value={OTReasonOptions.find(
+                                      (item) =>
+                                        item.value === timesheet?.reasonType
+                                    )}
+                                    onChange={(option) =>
+                                      handleChangeRequestInfoData(
+                                        "reasonType",
+                                        option.value,
+                                        index
+                                      )
+                                    }
+                                    placeholder={t("Select")}
+                                  />
+                                  <p className="text-danger">
+                                    {errors[`reasonType_${index}`]}
+                                  </p>
+                                </>
                               )}
-                              onChange={(option) =>
-                                handleChangeRequestInfoData(
-                                  "reasonType",
-                                  option.value,
-                                  index
-                                )
-                              }
-                              placeholder={t("Select")}
-                            />
-                            <p className="text-danger">
-                              {errors[`reasonType_${index}`]}
-                            </p>
+                            </div>
+                            <div className="time-registration-container">
+                              <div className="form-item">
+                                {rangeIndex === 0 && (
+                                  <div className="mb-12">{t("FromHour")}</div>
+                                )}
+                                <DatePicker
+                                  selected={
+                                    !isNullCustomize(timesheet.startTime)
+                                      ? moment(
+                                          timesheet.startTime,
+                                          "HH:mm"
+                                        ).toDate()
+                                      : null
+                                  }
+                                  onChange={(val) =>
+                                    handleChangeRequestInfoData(
+                                      "startTime",
+                                      val,
+                                      index
+                                    )
+                                  }
+                                  autoComplete="off"
+                                  showTimeSelect
+                                  showTimeSelectOnly
+                                  timeIntervals={15}
+                                  timeCaption={t("Hour")}
+                                  dateFormat="HH:mm"
+                                  timeFormat="HH:mm"
+                                  format="HH:mm"
+                                  name="startTime"
+                                  className="form-control input hour-picker-input"
+                                  placeholderText="hh:mm"
+                                />
+                                <p className="text-danger">
+                                  {errors[`startTime_${index}`]}
+                                </p>
+                              </div>
+                              <div className="form-item  end-time-container">
+                                {rangeIndex === 0 && (
+                                  <div className="mb-12">{t("ToHour")}</div>
+                                )}
+                                <DatePicker
+                                  selected={
+                                    !isNullCustomize(timesheet.endTime)
+                                      ? moment(
+                                          timesheet.endTime,
+                                          "HH:mm"
+                                        ).toDate()
+                                      : null
+                                  }
+                                  onChange={(val) =>
+                                    handleChangeRequestInfoData(
+                                      "endTime",
+                                      val,
+                                      index
+                                    )
+                                  }
+                                  autoComplete="off"
+                                  showTimeSelect
+                                  showTimeSelectOnly
+                                  timeIntervals={15}
+                                  timeCaption={t("Hour")}
+                                  dateFormat="HH:mm"
+                                  timeFormat="HH:mm"
+                                  name="endTime"
+                                  className="form-control input hour-picker-input"
+                                  placeholderText="hh:mm"
+                                />
+                                <p className="text-danger">
+                                  {errors[`endTime_${index}`]}
+                                </p>
+                              </div>
+                              {/* {timeRegisterRanges?.length === 1 ? (
+                                <button
+                                  className="add-time-block-btn"
+                                  onClick={addTimeRange}
+                                >
+                                  <img alt="addMore" src={IconPlus} />
+                                  &nbsp;
+                                  {t("AddMore")}
+                                </button>
+                              ) : (
+                                <div
+                                  style={{
+                                    marginTop: rangeIndex === 0 ? 29 : 0,
+                                  }}
+                                >
+                                  <button
+                                    className="action-time-range-btn cancel-time-range-btn"
+                                    onClick={() => deleteTimeRange(rangeIndex)}
+                                  >
+                                    <img alt="addMore" src={IconCancel} />
+                                  </button>
+                                  <button
+                                    className="action-time-range-btn"
+                                    disabled={
+                                      rangeIndex !==
+                                      timeRegisterRanges.length - 1
+                                    }
+                                    onClick={addTimeRange}
+                                  >
+                                    <img
+                                      alt="addMore"
+                                      src={IconPlus}
+                                      style={{
+                                        opacity:
+                                          rangeIndex ===
+                                          timeRegisterRanges.length - 1
+                                            ? 1
+                                            : 0.2,
+                                      }}
+                                    />
+                                  </button>
+                                </div>
+                              )}
+                              <div className="line-break" />
+                              <p className="text-danger">{range.error}</p> */}
+                            </div>
                           </div>
-                          <div className="form-item">
-                            <div className="mb-12">{t("FromHour")}</div>
-                            <DatePicker
-                              selected={
-                                !isNullCustomize(timesheet.startTime)
-                                  ? moment(
-                                      timesheet.startTime,
-                                      "HH:mm"
-                                    ).toDate()
-                                  : null
-                              }
-                              onChange={(val) =>
-                                handleChangeRequestInfoData(
-                                  "startTime",
-                                  val,
-                                  index
-                                )
-                              }
-                              autoComplete="off"
-                              showTimeSelect
-                              showTimeSelectOnly
-                              timeIntervals={15}
-                              timeCaption={t("Hour")}
-                              dateFormat="HH:mm"
-                              timeFormat="HH:mm"
-                              format="HH:mm"
-                              name="startTime"
-                              className="form-control input hour-picker-input"
-                              placeholderText="hh:mm"
-                            />
-                            <p className="text-danger">
-                              {errors[`startTime_${index}`]}
-                            </p>
-                          </div>
-                          <div className="form-item  end-time-container">
-                            <div className="mb-12">{t("ToHour")}</div>
-                            <DatePicker
-                              selected={
-                                !isNullCustomize(timesheet.endTime)
-                                  ? moment(timesheet.endTime, "HH:mm").toDate()
-                                  : null
-                              }
-                              onChange={(val) =>
-                                handleChangeRequestInfoData(
-                                  "endTime",
-                                  val,
-                                  index
-                                )
-                              }
-                              autoComplete="off"
-                              showTimeSelect
-                              showTimeSelectOnly
-                              timeIntervals={15}
-                              timeCaption={t("Hour")}
-                              dateFormat="HH:mm"
-                              timeFormat="HH:mm"
-                              name="endTime"
-                              className="form-control input hour-picker-input"
-                              placeholderText="hh:mm"
-                            />
-                            <p className="text-danger">
-                              {errors[`endTime_${index}`]}
-                            </p>
-                          </div>
-                        </div>
+                        ))}
                         <p className="text-danger">
                           {errors[`overtime_${index}`]}
                         </p>
@@ -914,7 +1067,6 @@ export default function OTRequestComponent({ recentlyManagers }) {
                         <p className="text-danger">
                           {errors[`overlapTime_${index}`]}
                         </p>
-                        <div className="ot-note mb-15">{t("OTNote")}</div>
                         <div className="row mb-15">
                           <div className="col-5 mr-12">
                             <div className="form-item">
