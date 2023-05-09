@@ -668,15 +668,7 @@ class RequestTaskList extends React.Component {
         const { t, total, tasks } = this.props
         const { pageNumber } = this.state
         const dataToSap = this.getDataToSAP(this.state.requestTypeId, this.state.dataToPrepareToSAP)
-        const REQUEST_CATEGORY_OPTIONS = [{
-          label: `${t("Type")} I`,
-          value: REQUEST_CATEGORIES.CATEGORY_1
-        }, {
-          label: `${t("Type")} II`,
-          value: REQUEST_CATEGORIES.CATEGORY_2
-        }]
         const fullDay = 1
-
         const getRequestTypeLabel = (requestType, absenceTypeValue) => {
             if (requestType.id == Constants.LEAVE_OF_ABSENCE) {
                 const absenceType = absenceRequestTypes.find(item => item.value == absenceTypeValue)
@@ -711,7 +703,7 @@ class RequestTaskList extends React.Component {
                               placeholder={t("TypeOfRequest")} 
                               key="requestCategory"
                               classNamePrefix="filter-select"
-                              inputValue={this.state.requestCategorySelect === REQUEST_CATEGORIES.CATEGORY_1 ? `${t("Type")} I` : `${t("Type")} II`}
+                              inputValue={this.state.requestCategorySelect == REQUEST_CATEGORIES.CATEGORY_1 ? `${t("Type")} I` : `${t("Type")} II`}
                               noOptionsMessage={() => null}
                             />
                           </div>
