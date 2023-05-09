@@ -108,31 +108,26 @@ class FilterDataShirfReport extends React.Component {
 
     axios.post(`${process.env.REACT_APP_REQUEST_URL}report/shift`, JSON.stringify(data), config)
       .then(async (responses) => {
-        const responseDataJSON = JSON.parse(await responses?.data?.text());
 
-        if (responseDataJSON?.data) {
+        if (responses.status === 200 && responses.headers['content-type'] === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
           this.resetErrors();
-          if (responses.status === 200) {
-            const blob = new Blob([responses.data], { type: "text/plain;charset=utf-8" })
-            let fileName = "";
-            switch (this.state.reportType) {
-              case 0:
-                fileName = "ReportDetail"
-                break;
-              case 1:
-                fileName = "ReportSummary"
-                break;
-              case 2:
-                fileName = 'ReportTimesheetSummary';
-                break;
-              default:
-                fileName = "Report"
-                break;
-            }
-            saveAs(blob, `${fileName}_${moment(new Date(), 'MM-DD-YYYY_HHmmss').format('MM-DD-YYYY_HHmmss')}.xlsx`)
-          } else {
-            console.log('error');
+          const blob = new Blob([responses.data], { type: "text/plain;charset=utf-8" })
+          let fileName = "";
+          switch (this.state.reportType) {
+            case 0:
+              fileName = "ReportDetail"
+              break;
+            case 1:
+              fileName = "ReportSummary"
+              break;
+            case 2:
+              fileName = 'ReportTimesheetSummary';
+              break;
+            default:
+              fileName = "Report"
+              break;
           }
+          saveAs(blob, `${fileName}_${moment(new Date(), 'MM-DD-YYYY_HHmmss').format('MM-DD-YYYY_HHmmss')}.xlsx`)
         } else {
           const err = this.state.errors;
           const errNew = {
