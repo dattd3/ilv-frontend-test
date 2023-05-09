@@ -110,7 +110,6 @@ export default function OTRequestDetailComponent({ data, action }) {
           // });
           const messageSetArr = Array.from(new Set(messageSAPArr.map(item => item.message)));
           messageSetArr.forEach(item => {
-            console.log(messageSAPArr.filter(messObj => messObj.message === item))
             const datesStr = messageSAPArr.filter(messObj => messObj.message === item)?.map(i => i.date)?.join(", ");
             mergedMessageObjArr.push({
               datesStr,
