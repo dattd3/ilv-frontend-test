@@ -128,7 +128,8 @@ class HumanForReviewSalaryComponent extends React.Component {
         url = `${process.env.REACT_APP_REQUEST_URL}user/employee/hr_officer`;
         payload = {
           account: value,
-          employeeNo: localStorage.getItem('employeeNo')
+          employeeNo: localStorage.getItem('employeeNo'),
+          pnl_code: localStorage.getItem('companyCode')
         }
       }
       axios.post(url, payload, config)
