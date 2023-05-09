@@ -7,7 +7,7 @@ import Select from 'react-select'
 import axios from 'axios';
 // import _ from 'lodash'
 import { withTranslation } from 'react-i18next';
-import { getMuleSoftHeaderConfigurations, getRequestConfigurations } from "../../commons/Utils"
+import { getMuleSoftHeaderConfigurations, isVinFast } from "../../commons/Utils"
 
 const MyOption = props => {
     const { innerProps, innerRef } = props;
@@ -268,7 +268,7 @@ class SubmitQuestionModal extends React.Component {
         const labelManagerTitle = {
             [Constants.SOLVER_MANAGER]: t("LineManager"),
             [Constants.SOLVER_RESOURCE]: t("HrPIC"),
-            [Constants.SOLVER_TCKT]: t("FinanceAccountingPIC")
+            [Constants.SOLVER_TCKT]: isVinFast() ? t("AdministrativePIC") : t("FinanceAccountingPIC")
         }
         
         return (
@@ -347,7 +347,7 @@ class SubmitQuestionModal extends React.Component {
                                                 checked={solverid == Constants.SOLVER_TCKT}
                                                 // disabled={this.props.isEdit}
                                                 onChange={this.handleChange.bind(this)} />
-                                            {t("Tckt")}
+                                            { isVinFast() ? t("Administrative") : t("Tckt") }
                                         </label>
                                     </div>
                                 </div>
