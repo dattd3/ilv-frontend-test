@@ -56,7 +56,7 @@ function JobDescVinFast(props) {
         DirectUnit: localStorage.getItem('company'),
       },
       {
-        Grade: localStorage.getItem('actualRank'),
+        Grade: localStorage.getItem('employeeLevel'),
         Division: localStorage.getItem('division'),
       },
       {
@@ -69,7 +69,7 @@ function JobDescVinFast(props) {
     ],
     jdReport = [
       [data?.academicTitle, data?.academic],
-      [data?.experienceTitle, data?.wxperience],
+      [data?.experienceTitle, data?.experience],
       [data?.workAttitudeTitle, data?.workAttitude],
       [data?.softSkillTitle, data?.softSkill],
       [data?.knowleageTitle, data?.knowleage],
@@ -259,7 +259,12 @@ function JobDescriptionPage() {
         />
       </div>
     )
-  ) : null;
+  ) : (
+    <div className="jd-page pt-4" id="id-jd-page">
+      <h5 className="font-weight-bold text-uppercase">{t('JobDescription')}</h5>
+      <div className="jd-container mt-4 mb-4">{t('NodataExport')}</div>
+    </div>
+  );
 }
 
 export default HOCComponent(withTranslation()(JobDescriptionPage));
