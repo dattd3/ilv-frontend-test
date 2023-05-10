@@ -232,9 +232,10 @@ export default class Api {
   };
 
   fetchJobDescription = async (params, isVinFast) => {
-    const { jobId, employeeLevel } = params, url = isVinFast
-      ? `${process.env.REACT_APP_REQUEST_URL}basicinfo/jobdetail?jobId=${jobId}&employeeLevel=${employeeLevel}`
-      : `${process.env.REACT_APP_REQUEST_URL}basicinfo/job/${jobId}`;
+    const { jobId, employeeLevel } = params,
+      url = isVinFast
+        ? `${process.env.REACT_APP_REQUEST_URL}basicinfo/jobdetail?jobId=${jobId}&employeeLevel=${employeeLevel}`
+        : `${process.env.REACT_APP_REQUEST_URL}basicinfo/job/${jobId}`;
     return await this.request.get(url, { params: {} });
   };
 
