@@ -213,6 +213,15 @@ class BusinessTripDetailComponent extends React.Component {
     }, {totalHours: 0, totalDays: 0})
     const totalRequestedTime = requestInfo?.isAllDay ? `${requestedTime?.totalDays} ${t("Day")}`  : `${requestedTime?.totalHours} ${t("Hour")}`
 
+    // BE confirm với loại yêu cầu Đăng ký nghỉ hoặc Công tác đào tạo thì lấy trong requestInfo (trừ ngày tạo)
+    const timeProcessing = {
+      createDate: businessTrip?.createDate,
+      assessedDate: requestInfo?.assessedDate,
+      approvedDate: requestInfo?.approvedDate,
+      updatedDate: requestInfo?.updatedDate,
+      deletedDate: requestInfo?.deletedDate,
+    }
+
     return (
       <div className="business-trip">
         <h5 className='content-page-header'>{t("EmployeeInfomation")}</h5>
@@ -244,11 +253,7 @@ class BusinessTripDetailComponent extends React.Component {
           </> : null
         }
 
-        <RequestProcessing 
-          createDate={businessTrip?.createDate} 
-          deletedDate={businessTrip?.deletedDate}
-          assessedDate={businessTrip?.assessedDate} 
-          approvedDate={businessTrip?.approvedDate} />
+        <RequestProcessing {...timeProcessing} />
 
         { businessTrip?.requestDocuments?.length > 0 && <Attachment requestDocuments={businessTrip?.requestDocuments || []} t={t} /> }
 

@@ -97,6 +97,14 @@ class SubstitutionDetailComponent extends React.Component {
       isShowAppraisalInfo = true
     }
 
+    const timeProcessing = {
+      createDate: substitution?.createDate,
+      assessedDate: substitution?.assessedDate,
+      approvedDate: substitution?.approvedDate,
+      updatedDate: substitution?.updatedDate,
+      deletedDate: substitution?.deletedDate,
+    }
+
     return (
       <div className="leave-of-absence shift-change-section">
         <h5>{t("EmployeeInfomation")}</h5>
@@ -210,11 +218,7 @@ class SubstitutionDetailComponent extends React.Component {
           </> : null
         }
 
-        <RequestProcessing 
-          createDate={substitution?.createDate} 
-          deletedDate={substitution?.deletedDate}
-          assessedDate={substitution?.assessedDate} 
-          approvedDate={substitution?.approvedDate} />
+        <RequestProcessing {...timeProcessing} />
 
         {
           substitution.requestDocuments.length > 0 ?

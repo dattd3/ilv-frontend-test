@@ -4326,7 +4326,10 @@ span.badge-notification[data-badge]::after {
 }
 
 .request-processing {
-  .detail {
-    margin-bottom: 0;
+  .group {
+    grid-row-gap: 15px;
+    .detail {
+      margin-bottom: 0;
+    }
   }
 }
