@@ -461,7 +461,7 @@ const ContractEvaluationdetail = (props) => {
                     </div>
                   </div>
                   <div className="col-4">
-                    {t("SupervisorApprovedDate")}
+                    {t("SupervisorAssetDate")}
                     <div className="detail">
                       {formatProcessTime(data.assessedDate)}
                     </div>
@@ -478,12 +478,12 @@ const ContractEvaluationdetail = (props) => {
                       {formatProcessTime(data.approvalDate)}
                     </div>
                   </div>
-                  <div className="col-4">
+                  {/* <div className="col-4">
                     {t("CancelDate")}
                     <div className="detail">
                       {formatProcessTime(data.deletedDate)}
                     </div>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </div>

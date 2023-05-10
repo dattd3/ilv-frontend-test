@@ -1772,5 +1772,5 @@
   "ConsentDate": "Thời gian thẩm định",
   "ApprovalDate": "Thời gian phê duyệt",
   "CancelDate": "Thời gian hủy yêu cầu",
-  "SupervisorApprovedDate": "Thời gian QLTT phê duyệt"
+  "SupervisorAssetDate": "Thời gian QLTT đánh giá"
 }
