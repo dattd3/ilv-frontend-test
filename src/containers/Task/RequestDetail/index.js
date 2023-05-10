@@ -230,6 +230,14 @@ class RequestDetail extends React.Component {
       20:{ label: "Consented", className: 'waiting' }
     }
 
+    const timeProcessing = {
+      createDate: details?.createDate,
+      assessedDate: details?.assessedDate,
+      approvedDate: details?.approvedDate,
+      updatedDate: details?.updatedDate,
+      deletedDate: details?.deletedDate,
+    }
+
     return (
       <>
       <ConfirmationModal show={isShowModalConfirm} title={modalTitle} type={typeRequest} message={modalMessage} 
@@ -298,11 +306,7 @@ class RequestDetail extends React.Component {
           : null
         }
         
-        <RequestProcessing 
-          createDate={details?.createDate} 
-          deletedDate={details?.deletedDate}
-          assessedDate={details?.assessedDate} 
-          approvedDate={details?.approvedDate} />
+        <RequestProcessing {...timeProcessing} />
 
         <div className="block-status">
           <span className={`status ${statusOptions[status].className}`}>{statusOptions[status].label}</span>

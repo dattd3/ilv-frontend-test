@@ -1769,5 +1769,6 @@
   "TimeToSendRequest": "Thời gian gửi yêu cầu",
   "ConsentDate": "Thời gian thẩm định",
   "ApprovalDate": "Thời gian phê duyệt",
-  "CancelDate": "Thời gian hủy yêu cầu"
+  "CancelDate": "Thời gian hủy yêu cầu",
+  "EditDate": "Thời gian sửa yêu cầu"
 }

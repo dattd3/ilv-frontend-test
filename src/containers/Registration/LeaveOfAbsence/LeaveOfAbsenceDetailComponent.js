@@ -339,6 +339,15 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     }, {totalHours: 0, totalDays: 0})
     const totalRequestedTime = requestInfo?.isAllDay ? `${requestedTime?.totalDays} ${this.formatDayUnitByValue(requestedTime?.totalDays || 0)}` : `${requestedTime?.totalHours} ${t("Hour")}`
 
+    // BE confirm với loại yêu cầu Đăng ký nghỉ hoặc Công tác đào tạo thì lấy trong requestInfo (trừ ngày tạo)
+    const timeProcessing = {
+      createDate: leaveOfAbsence?.createDate,
+      assessedDate: requestInfo?.assessedDate,
+      approvedDate: requestInfo?.approvedDate,
+      updatedDate: requestInfo?.updatedDate,
+      deletedDate: requestInfo?.deletedDate,
+    }
+
     return (
       <div className="leave-of-absence">
         <LeaveUserInfo userProfileInfo={userProfileInfo} annualLeaveSummary={annualLeaveSummary} t={t} viewPopup={viewPopup} />
@@ -370,11 +379,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
             </> : null
         }
 
-        <RequestProcessing 
-          createDate={leaveOfAbsence?.createDate} 
-          deletedDate={leaveOfAbsence?.deletedDate}
-          assessedDate={leaveOfAbsence?.assessedDate} 
-          approvedDate={leaveOfAbsence?.approvedDate} />
+        <RequestProcessing {...timeProcessing} />
 
         { leaveOfAbsence.requestDocuments.length > 0 && <Attachment leaveOfAbsence={leaveOfAbsence} t={t} /> }
 

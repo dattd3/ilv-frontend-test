@@ -1752,5 +1752,6 @@
   "TimeToSendRequest": "Create date",
   "ConsentDate": "Consent Date",
   "ApprovalDate": "Approval Date",
-  "CancelDate": "Cancel Date"
+  "CancelDate": "Cancel Date",
+  "EditDate": "Edit Date"
 }

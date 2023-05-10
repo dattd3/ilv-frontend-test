@@ -98,10 +98,19 @@ class ChangeDivisionShiftDetail extends React.Component {
 
     });
   }
+
   render() {
     const { t } = this.props
     const requestTypeId = this.props.substitution.requestTypeId
     const listChangeShift = TableUtil.updateData(this.props.substitution.requestInfo, this.state.pageNumber - 1, 10)
+    const timeProcessing = {
+      createDate: this.props.substitution?.createDate,
+      assessedDate: this.props.substitution?.assessedDate,
+      approvedDate: this.props.substitution?.approvedDate,
+      updatedDate: this.props.substitution?.updatedDate,
+      deletedDate: this.props.substitution?.deletedDate,
+    }
+
     return (
       <div className="leave-of-absence">
         <h5>{t("AdminInformation")}</h5>
@@ -212,11 +221,7 @@ class ChangeDivisionShiftDetail extends React.Component {
           </> : null
         }
 
-        <RequestProcessing 
-          createDate={this.props.substitution?.createDate} 
-          deletedDate={this.props.substitution?.deletedDate}
-          assessedDate={this.props.substitution?.assessedDate} 
-          approvedDate={this.props.substitution?.approvedDate} />
+        <RequestProcessing {...timeProcessing} />
 
         {
           this.props.substitution.requestDocuments.length > 0 ?
