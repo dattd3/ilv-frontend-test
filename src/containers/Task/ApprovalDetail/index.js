@@ -1,12 +1,13 @@
 import React from 'react'
+import { withTranslation } from "react-i18next"
+import _ from 'lodash'
 import PersonalComponent from './PersonalComponent'
 import EducationComponent from './EducationComponent'
 import FamilyComponent from './FamilyComponent'
 import DocumentComponent from './DocumentComponent'
 import Constants from '../../../commons/Constants'
 import ConfirmationModal from '../../PersonalInfo/edit/ConfirmationModal'
-import { withTranslation } from "react-i18next"
-import _ from 'lodash'
+import RequestProcessing from 'containers/Registration/RequestProcessing'
 import HOCComponent from '../../../components/Common/HOCComponent'
 
 class ApprovalDetail extends React.Component {
@@ -255,6 +256,14 @@ class ApprovalDetail extends React.Component {
       return null
     }
 
+    const timeProcessing = {
+      createDate: data?.createDate,
+      assessedDate: data?.assessedDate,
+      approvedDate: data?.approvedDate,
+      updatedDate: data?.updatedDate,
+      deletedDate: data?.deletedDate,
+    }
+
     return (
       <>
       <ConfirmationModal data={data} show={isShowModalConfirm} manager={this.manager} title={modalTitle} type={typeRequest} message={modalMessage} 
@@ -320,6 +329,9 @@ class ApprovalDetail extends React.Component {
           </>
           : null
         }
+
+        <RequestProcessing {...timeProcessing} />
+
         <div className="block-status">
           <span className={`status ${determineStatus[processStatusId]?.className}`}>{determineStatus[processStatusId]?.label}</span>
           { processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && getSAPResponsePartiallySuccess() }
