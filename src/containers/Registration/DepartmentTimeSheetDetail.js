@@ -178,11 +178,11 @@ class DepartmentTimeSheetDetail extends React.Component {
             </> : null
         }
 
-        <RequestProcessing 
+        {/* <RequestProcessing 
           createDate={this.props.substitution?.createDate} 
           deletedDate={this.props.substitution?.deletedDate}
           assessedDate={this.props.substitution?.assessedDate} 
-          approvedDate={this.props.substitution?.approvedDate} />
+          approvedDate={this.props.substitution?.approvedDate} /> */}
 
         {
           this.props.substitution.requestDocuments.length > 0 ?

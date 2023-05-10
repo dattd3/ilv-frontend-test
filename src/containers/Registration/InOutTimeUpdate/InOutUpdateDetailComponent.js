@@ -112,7 +112,15 @@ class InOutUpdateDetailComponent extends React.Component {
     if (inOutTimeUpdate && inOutTimeUpdate.appraiser && Object.values(inOutTimeUpdate.appraiser).some(item => item !== null && item !== '')) {
       isShowAppraisalInfo = true
     }
-    
+
+    const timeProcessing = {
+      createDate: inOutTimeUpdate?.createDate,
+      assessedDate: inOutTimeUpdate?.assessedDate,
+      approvedDate: inOutTimeUpdate?.approvedDate,
+      updatedDate: inOutTimeUpdate?.updatedDate,
+      deletedDate: inOutTimeUpdate?.deletedDate,
+    }
+
     return (
       <div className="leave-of-absence">
         <h5>{t("EmployeeInfomation")}</h5>
@@ -215,11 +223,7 @@ class InOutUpdateDetailComponent extends React.Component {
             // </div>
         }
 
-        <RequestProcessing 
-          createDate={inOutTimeUpdate?.createDate} 
-          deletedDate={inOutTimeUpdate?.deletedDate}
-          assessedDate={inOutTimeUpdate?.assessedDate} 
-          approvedDate={inOutTimeUpdate?.approvedDate} />
+        <RequestProcessing {...timeProcessing} />
 
         {
           inOutTimeUpdate.requestDocuments.length > 0 ?
