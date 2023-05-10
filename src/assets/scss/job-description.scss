@@ -18,3 +18,132 @@
         display: block;
     }
 }
+
+.jd-wrap-btn {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    height: 0;
+
+    .btn-download-pdf {
+        color: #FF2116;
+        border-radius: 4px;
+        border: 1px solid #FF2116;
+        font-size: 13px;
+        padding: 8px 30px;
+        outline: none;
+        display: flex;
+        align-items: center;
+        background-color: #fff;
+        position: relative;
+        bottom: -35px;
+    }
+}
+
+.jd-page {
+    .jd-container {
+        padding: 16px 20px;
+        border: 1px solid #d1d3e2;
+        background-color: #fff;
+        box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
+        -webkit-box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
+        -moz-box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
+
+        .jd-general-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            .jd-general-right {
+                display: flex;
+                align-items: flex-start;
+                flex: 1;
+                color: #000;
+                font-size: 14px;
+                font-weight: 400;
+
+                .jd-general-label {
+                    font-weight: 700;
+                    min-width: 120px;
+                }
+
+                .jd-general-value {}
+            }
+
+            .jd-general-left {
+                max-width: 35%;
+                min-width: 400px;
+            }
+        }
+    }
+
+    table {
+        width: 100%;
+
+        &,
+        tr,
+        td {
+            border: 1px solid #d1d3e2;
+            border-collapse: collapse;
+        }
+
+        td {
+            padding: 10px 15px;
+        }
+    }
+
+    .jd-report {
+        .jd-report-item {
+            color: #000;
+            font-size: 14px;
+            font-weight: 400;
+
+            .jd-report-label {
+                width: 190px;
+                font-weight: 700;
+            }
+
+            .jd-report-value {}
+        }
+    }
+
+    .jd-desc {
+        .jd-desc-item {
+            color: #000;
+            font-size: 14px;
+            font-weight: 400;
+
+            .jd-desc-label {
+                width: 190px;
+                font-weight: 700;
+            }
+
+            .jd-desc-value {}
+        }
+    }
+
+    .jd-approver {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        .jd-approver-item {
+            width: 33.33%;
+
+            .jd-approver-content {
+                color: #000;
+                font-size: 14px;
+                font-weight: 400;
+                display: inline-block;
+                text-align: center;
+
+                .jd-approver-label {
+                    font-weight: 700;
+                    margin-bottom: 5px;
+                }
+
+                .jd-approver-value {}
+            }
+        }
+    }
+}

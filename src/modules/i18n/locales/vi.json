@@ -158,7 +158,7 @@
   "BenefitUpload": "Cập nhật phúc lợi",
   "SpecificOperatingWork": "Mô tả công việc vận hành đặc thù",
   "GeneralManagement": "Mô tả quản trị chung",
-  "JobDescription": "Yêu cầu của vị trí",
+  "JobDescription": "Mô tả công việc",
   "MyJob": "Công việc của tôi",
   "vaccination": "Thông tin tiêm Vaccine COVID-19",
   "vaccination_injections_mumber": "Mũi số",
@@ -1764,5 +1764,11 @@
   "NumberOfSharesConverted": "Số Cổ phần quy đổi",
   "BlockFingerprint": "Khóa Vân tay",
   "BlockFaceID": "Khóa Face ID",
-  "BlockEmailAdAccount": "Khóa Email/ tài khoản AD"
+  "BlockEmailAdAccount": "Khóa Email/ tài khoản AD",
+  "DirectUnit":"Đơn vị trực tiếp",
+  "EmployeeNumber":"Mã NV",
+  "ReportFor":"Báo cáo cho",
+  "drafter": "Người soạn thảo",
+  "appraiser": "Người thẩm định",
+  "approver": "Người phê duyệt"
 }
