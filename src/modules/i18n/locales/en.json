@@ -1759,10 +1759,10 @@
   "ConsentDate": "Consent Date",
   "ApprovalDate": "Approval Date",
   "CancelDate": "Cancel Date",
-  "SupervisorApprovedDate": "Suppervisor Approved Date",
   "SupportHRViewedSalaryDate": "HR approve view salary date",
   "HRAppraiseDate": "HR Consent Date",
   "WarningOverOTFunds": "OT hours for this request exceeded the department's funds for the month. Do you want to send request?",
   "WarningOverOTFundsConsent": "OT hours for this request exceeded the department's funds for the month (at time of registration). Please check/report to HR to replenish funds. Confirm continued consent?",
-  "WarningOverOTFundsApproval": "OT hours for this request exceeded the department's funds for the month (at time of registration). Please check/report to HR to replenish funds. Confirm continued approve?"
+  "WarningOverOTFundsApproval": "OT hours for this request exceeded the department's funds for the month (at time of registration). Please check/report to HR to replenish funds. Confirm continued approve?",
+  "SupervisorAssetDate": "Suppervisor Asset Date"
 }
