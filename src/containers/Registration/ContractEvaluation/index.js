@@ -21,7 +21,7 @@ import _, { debounce } from 'lodash'
 import DatePicker, { registerLocale } from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import { vi, enUS } from 'date-fns/locale'
-import { getMuleSoftHeaderConfigurations } from '../../../commons/Utils'
+import { formatProcessTime, getMuleSoftHeaderConfigurations } from '../../../commons/Utils'
 import LoadingSpinner from '../../../components/Forms/CustomForm/LoadingSpinner'
 import LoadingModal from '../../../components/Common/LoadingModal'
 import { checkVersionPnLSameAsVinhome, IS_VINFAST } from '../../../commons/commonFunctions'
@@ -2206,6 +2206,60 @@ renderEvalution = (name, data, isDisable) => {
         </div>
         </> : null
         } */}
+        {
+          data.processStatus !== Constants.STATUS_OB_SELF_EVALUATION &&         
+            <div className="box shadow cbnv">
+              <div className="row approve">
+                <div className="col-12">
+                  <span className="title">{t('RequestHistory').toUpperCase()}</span>
+                </div>
+              </div>
+              <div className="row">
+                <div className="col-12">
+                  <div  style={{height: '2px', backgroundColor: '#F2F2F2', margin: '15px 0'}}></div>
+                </div>
+              </div>
+              <div className="row">
+                <div className="col-12">
+                  <div className="divider"></div>
+                </div>
+                <div className="col-12">
+                  <div className="row">
+                    <div className="col-4">
+                      {t("TimeToSendRequest")}
+                      <div className="detail">
+                        {formatProcessTime(data.createdDate)}
+                      </div>
+                    </div>
+                    <div className="col-4">
+                      {t("SupervisorAssetDate")}
+                      <div className="detail">
+                        {formatProcessTime(data.assessedDate)}
+                      </div>
+                    </div>
+                    <div className="col-4">
+                      {t("ConsentDate")}
+                      <div className="detail">
+                        {formatProcessTime(data.supervisorDate)}
+                      </div>
+                    </div>
+                    <div className="col-4 mt-20">
+                      {t("ApprovalDate")}
+                      <div className="detail">
+                        {formatProcessTime(data.approvalDate)}
+                      </div>
+                    </div>
+                    {/* <div className="col-4">
+                      {t("CancelDate")}
+                      <div className="detail">
+                        {formatProcessTime(data.deletedDate)}
+                      </div>
+                    </div> */}
+                  </div>
+                </div>
+              </div>
+            </div>
+        }
 
           {dataSalary?.childRequestHistoryId &&
             <>
