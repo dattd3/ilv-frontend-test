@@ -1751,8 +1751,8 @@
   "GeneralInfo": "General info",
   "Requirement": "Requirement",
   "DirectUnit":"Company",
-  "EmployeeNumber":"Mã NV",
+  "EmployeeNumber":"Employee ID",
   "ReportFor":"Reporting for",
   "Drafter": "Create by",
-  "Appraiser": "Người thẩm định"
+  "Appraiser": "Consenter"
 }
