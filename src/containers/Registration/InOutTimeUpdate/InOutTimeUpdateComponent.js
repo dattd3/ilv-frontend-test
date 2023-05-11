@@ -151,7 +151,7 @@ class InOutTimeUpdateComponent extends React.Component {
     const { t } = this.props
     const { timesheets, appraiser, approver, files } = this.state
 
-    let errors = {}
+    const errors = { ...this.state.errors }
     timesheets.forEach((timesheet, index) => {
       if (timesheet.isEdited) {
         if (this.isNullCustomize(timesheet.start_time1_fact_update) && this.isNullCustomize(timesheet.end_time1_fact_update)) {
