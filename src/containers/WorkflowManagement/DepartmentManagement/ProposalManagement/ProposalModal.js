@@ -312,7 +312,7 @@ class ProposalModal extends React.Component {
                 {this.renderErrors('department')}
               </div>
               <div className="col-6">
-                <label className="form-label">Tổ</label>
+                <label className="form-label">{t('TeamSalaryProposal')}</label>
                 <Select
                   options={crews}
                   value={crew}
@@ -329,7 +329,7 @@ class ProposalModal extends React.Component {
 
             <div className="row form-group">
               <div className="col-6">
-                <label className="form-label">Đội</label>
+                <label className="form-label">{t('Group')}</label>
                 <Select
                   options={teams}
                   value={team}
@@ -343,7 +343,7 @@ class ProposalModal extends React.Component {
                 {this.renderErrors('team')}
               </div>
               <div className="col-6">
-                <label className="form-label">Nhóm</label>
+                <label className="form-label">{t('Crew')}</label>
                 <Select
                   options={groups}
                   value={group}
@@ -387,7 +387,7 @@ class ProposalModal extends React.Component {
                       <Image src={IconSearch} alt="search" className="mr-2" />
                       <input
                         type="text"
-                        placeholder="Nhập chức danh tìm kiếm"
+                        placeholder={t('SearchNewPosition')}
                         name="search proposal"
                         value={proposalSearch}
                         onChange={this.handleProposalSearch}
@@ -395,7 +395,7 @@ class ProposalModal extends React.Component {
                     </div>
                     <div className="title-block">
                       <div className="title-item header">
-                        <div className="label">Tên chức danh</div>
+                        <div className="label">{t('TitleSalaryProposal')}</div>
                         <div className="value">Position ID</div>
                       </div>
                       <div className="title-content">

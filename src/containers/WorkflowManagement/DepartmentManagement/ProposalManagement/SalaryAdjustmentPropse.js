@@ -44,8 +44,7 @@ const ListTypeContract = [
   { value: "VF", label: "HĐDV theo tháng" },
   { value: "VG", label: "HĐDV theo giờ" },
   { value: "VH", label: "HĐDV khoán" },
-],
-isTransferAppointProposal = window.location.href.includes('transfer-appoint/create/request');
+];
 
 const SalaryAdjustmentPropse = (props) => {
   const { t } = props;
@@ -54,7 +53,8 @@ const SalaryAdjustmentPropse = (props) => {
   const InsuranceOptions = [
     { value: 1, label: t("SalaryPropse") },
     { value: 2, label: t("ProposalTransfer") },
-  ];
+  ],
+  isTransferAppointProposal = window.location.href.includes('transfer-appoint/create/request');
   const [resultModal, setResultModal] = useState({
     show: false,
     title: "",
@@ -1587,6 +1587,7 @@ const SalaryAdjustmentPropse = (props) => {
     });
   };
   const salaryState = `salaryadjustment_${props.match.params?.id}_${props.match.params?.type}`;
+
   return (
     <div className="timesheet-section proposal-management status-contain">
       <LoadingModal show={isLoading} isloading />
