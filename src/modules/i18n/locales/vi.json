@@ -1765,10 +1765,11 @@
   "BlockFingerprint": "Khóa Vân tay",
   "BlockFaceID": "Khóa Face ID",
   "BlockEmailAdAccount": "Khóa Email/ tài khoản AD",
+  "GeneralInfo": "Thông tin chung",
+  "Requirement": "Các yêu cầu",
   "DirectUnit":"Đơn vị trực tiếp",
   "EmployeeNumber":"Mã NV",
   "ReportFor":"Báo cáo cho",
-  "drafter": "Người soạn thảo",
-  "appraiser": "Người thẩm định",
-  "approver": "Người phê duyệt"
+  "Drafter": "Người soạn thảo",
+  "Appraiser": "Người thẩm định"
 }
