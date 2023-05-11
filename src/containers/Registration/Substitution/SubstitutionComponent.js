@@ -106,7 +106,7 @@ class SubstitutionComponent extends React.Component {
   verifyInput() {
     const { t } = this.props
     const { timesheets, approver, appraiser } = this.state
-    let errors = {}
+    const errors = { ...this.state.errors }
 
     timesheets.forEach((timesheet, index) => {
       if (!timesheet.isEdited) return
