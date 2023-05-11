@@ -122,7 +122,7 @@ function RenderRow0(props) {
           </ReactTooltip>
           : null
         }
-        <div className="date">{moment(item.day, "DD/MM/YYYY").format("DD/MM")}</div>
+        <div className="date">{moment(item.day, "DD/MM/YYYY").format("DD/MM")}{item?.is_holiday == 1 ? ` (${t('Holiday')})` : ""}</div>
       </td>
     </Fragment>
   })
