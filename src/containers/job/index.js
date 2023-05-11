@@ -60,7 +60,7 @@ function JobDescVinFast(props) {
         Division: localStorage.getItem('division'),
       },
       {
-        EmployeeNo: localStorage.getItem('employeeNo'),
+        EmployeeNumber: localStorage.getItem('employeeNo'),
         ReportFor: data?.reportTo,
       },
       {
@@ -97,7 +97,7 @@ function JobDescVinFast(props) {
         </button>
       </div>
       <div className="jd-page pt-4" id="id-jd-page">
-        <h5 className="font-weight-bold">I. THÔNG TIN CHUNG</h5>
+        <h5 className="font-weight-bold text-uppercase">I. {t('GeneralInfo')}</h5>
         <div className="jd-container mt-4 mb-4">
           {jdGeneral.map((ele, i) => {
             const keys = Object.keys(ele);
@@ -127,7 +127,7 @@ function JobDescVinFast(props) {
           })}
         </div>
 
-        <h5 className="font-weight-bold">II. CÁC YÊU CẦU</h5>
+        <h5 className="font-weight-bold text-uppercase">II. {t('Requirement')}</h5>
         <div className="jd-container mt-2 mb-4">
           <table className="jd-report">
             <tbody>
@@ -155,7 +155,7 @@ function JobDescVinFast(props) {
           </table>
         </div>
 
-        <h5 className="font-weight-bold">III. MÔ TẢ CÔNG VIỆC</h5>
+        <h5 className="font-weight-bold text-uppercase">III. {t('JobDescription')}</h5>
         <div className="jd-container mt-2 mb-4">
           <table className="jd-desc">
             <tbody>
@@ -187,19 +187,19 @@ function JobDescVinFast(props) {
           <div className="jd-approver">
             <div className="jd-approver-item">
               <div className="jd-approver-content">
-                <div className="jd-approver-label">{t('drafter')}</div>
+                <div className="jd-approver-label">{t('Drafter')}</div>
                 <div className="jd-approver-value">{data?.author}</div>
               </div>
             </div>
             <div className="jd-approver-item text-center">
               <div className="jd-approver-content">
-                <div className="jd-approver-label">{t('appraiser')}</div>
+                <div className="jd-approver-label">{t('Appraiser')}</div>
                 <div className="jd-approver-value">{data?.appraiser}</div>
               </div>
             </div>
             <div className="jd-approver-item text-right">
               <div className="jd-approver-content">
-                <div className="jd-approver-label">{t('approver')}</div>
+                <div className="jd-approver-label">{t('Approver')}</div>
                 <div className="jd-approver-value">{data?.approver}</div>
               </div>
             </div>

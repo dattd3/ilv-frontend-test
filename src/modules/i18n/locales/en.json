@@ -1747,5 +1747,12 @@
   "NumberOfSharesConverted": "Number of shares converted",
   "BlockFingerprint": "Fingerprint lock",
   "BlockFaceID": "Face ID lock",
-  "BlockEmailAdAccount": "Email/ AD lock"
+  "BlockEmailAdAccount": "Email/ AD lock",
+  "GeneralInfo": "General info",
+  "Requirement": "Requirement",
+  "DirectUnit":"Company",
+  "EmployeeNumber":"Mã NV",
+  "ReportFor":"Reporting for",
+  "Drafter": "Create by",
+  "Appraiser": "Người thẩm định"
 }
