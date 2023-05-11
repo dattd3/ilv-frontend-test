@@ -58,11 +58,18 @@ class TaskList extends React.Component {
             department: localStorage.getItem('department') || ""
         };
         // this.handleButtonChangeSingle = this.handleButtonChange.bind(this, false);
+        this.categorySelectRef = React.createRef();
+        this.handleClickOutsideCategorySelect = this.handleClickOutsideCategorySelect.bind(this);
 
     }
     componentDidMount()
     {
+        document.addEventListener("mousedown", this.handleClickOutsideCategorySelect);
         this.setState({tasks: this.props.tasks})
+    }
+
+    componentWillUnmount() {
+      document.removeEventListener("mousedown", this.handleClickOutsideCategorySelect);
     }
     
     componentWillReceiveProps(nextProps)
@@ -269,7 +276,6 @@ class TaskList extends React.Component {
                 child.isChecked = event.target.checked;
                 if (child.isChecked) {
                     // child.canChecked = true
-                    // console.log(this.state.taskChecked.findIndex(x => x.id == child.id))
                     if (this.state.taskChecked.findIndex(x => x.id == child.id) == -1) {
                         this.state.taskChecked.push(child);
                     }
@@ -412,6 +418,18 @@ class TaskList extends React.Component {
       })
     }
 
+    handleClickOutsideCategorySelect = (event) => {
+      if (this.categorySelectRef && this.categorySelectRef.current 
+        && !this.categorySelectRef.current.contains(event.target) 
+        && this.state.isShowRequestCategorySelect
+      ) {
+        this.setState({
+          isShowRequestCategorySelect: false,
+          tmpRequestCategorySelect: this.state.requestCategorySelect
+        })
+      }
+    }
+
     render() {
         const { t, tasks, total, page} = this.props
         const typeFeedbackMapping = {
@@ -452,7 +470,7 @@ class TaskList extends React.Component {
                             />
                           </div>
                           {
-                            this.state.isShowRequestCategorySelect && <div className="request-category-guide-container">
+                            this.state.isShowRequestCategorySelect && <div className="request-category-guide-container" ref={this.categorySelectRef}>
                               <div className="request-category-guide-body">
                                 <div className="category-title">
                                   <b>

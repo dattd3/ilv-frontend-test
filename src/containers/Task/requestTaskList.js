@@ -76,6 +76,18 @@ class RequestTaskList extends React.Component {
             4: "Phản hồi của CBLĐ",
             5: "Phản hồi của CBLĐ"
         }
+        this.categorySelectRef = React.createRef();
+        this.handleClickOutsideCategorySelect = this.handleClickOutsideCategorySelect.bind(this);
+    }
+
+    componentDidMount()
+    {
+        document.addEventListener("mousedown", this.handleClickOutsideCategorySelect);
+        this.setState({tasks: this.props.tasks})
+    }
+
+    componentWillUnmount() {
+      document.removeEventListener("mousedown", this.handleClickOutsideCategorySelect);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -664,6 +676,18 @@ class RequestTaskList extends React.Component {
       })
     }
 
+    handleClickOutsideCategorySelect = (event) => {
+      if (this.categorySelectRef && this.categorySelectRef.current 
+        && !this.categorySelectRef.current.contains(event.target) 
+        && this.state.isShowRequestCategorySelect
+      ) {
+        this.setState({
+          isShowRequestCategorySelect: false,
+          tmpRequestCategorySelect: this.state.requestCategorySelect
+        })
+      }
+    }
+
     render() {
         const { t, total, tasks } = this.props
         const { pageNumber } = this.state
@@ -708,7 +732,7 @@ class RequestTaskList extends React.Component {
                             />
                           </div>
                           {
-                            this.state.isShowRequestCategorySelect && <div className="request-category-guide-container">
+                            this.state.isShowRequestCategorySelect && <div className="request-category-guide-container" ref={this.categorySelectRef}>
                               <div className="request-category-guide-body">
                                 <div className="category-title">
                                   <b>
