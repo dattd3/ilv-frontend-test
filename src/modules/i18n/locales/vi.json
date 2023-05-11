@@ -1779,5 +1779,11 @@
   "CancelDate": "Thời gian hủy yêu cầu",
   "SupervisorApprovedDate": "Thời gian QLTT phê duyệt",
   "SupportHRViewedSalaryDate": "Thời gian HR PD quyền xem lương",
-  "HRAppraiseDate": "Thời gian HR thẩm định"
+  "HRAppraiseDate": "Thời gian HR thẩm định",
+  "UnitSalaryProposal": "Phòng/Bộ phận/Nhóm",
+  "TeamSalaryProposal": "Tổ",
+  "Group": "Đội",
+  "Crew": "Nhóm",
+  "SearchNewPosition": "Nhập chức danh tìm kiếm",
+  "TitleSalaryProposal": "Tên chức danh"
 }
