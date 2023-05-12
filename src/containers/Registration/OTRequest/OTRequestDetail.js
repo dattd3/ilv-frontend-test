@@ -24,7 +24,7 @@ export default function OTRequestDetailComponent({ data, action }) {
   const { t } = useTranslation();
   const [approvalMatrixUrl, setApprovalMatrixUrl] = useState(null);
   const lang = localStorage.getItem("locale");
-  const { requestInfo, user, approver, appraiser } = data;
+  const { requestInfo, user, approver, appraiser, appraiserComment, approverComment } = data;
 
   useEffect(() => {
     axios
@@ -405,6 +405,15 @@ export default function OTRequestDetailComponent({ data, action }) {
                   <div className="field-view">{appraiser.department}</div>
                 </div>
               </div>
+              {
+                appraiserComment && data.processStatusId == Constants.STATUS_NO_CONSENTED && 
+                  <div className="col-12">
+                      <p className="title">{t('reason_reject')}</p>
+                      <div>
+                          <div className="detail">{appraiserComment}</div>
+                      </div>
+                  </div>
+              }
             </div>
           </div>
         </div>
@@ -430,6 +439,15 @@ export default function OTRequestDetailComponent({ data, action }) {
                   <div className="field-view">{approver.department}</div>
                 </div>
               </div>
+              {
+                approverComment && data.processStatusId == Constants.STATUS_NOT_APPROVED &&
+                  <div className="col-12">
+                      <p className="title">{t('reason_reject')}</p>
+                      <div>
+                          <div className="detail">{approverComment}</div>
+                      </div>
+                  </div>
+              }
               <div className="col-12">
                 {approvalMatrixUrl && (
                   <div className="row business-type">
