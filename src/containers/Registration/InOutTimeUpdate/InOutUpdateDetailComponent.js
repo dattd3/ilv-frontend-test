@@ -204,23 +204,26 @@ class InOutUpdateDetailComponent extends React.Component {
           isShowAppraisalInfo &&
           <>
             <h5>{t("ConsenterInformation")}</h5>
-            <ApproverDetailComponent title={t("Consenter")} approver={inOutTimeUpdate.appraiser} status={inOutTimeUpdate.requestInfo ? inOutTimeUpdate.processStatusId : ""} hrComment={inOutTimeUpdate.appraiserComment} />
+            <ApproverDetailComponent
+              title={t("Consenter")}
+              manager={inOutTimeUpdate.appraiser}
+              status={inOutTimeUpdate.requestInfo ? inOutTimeUpdate.processStatusId : ""}
+              hrComment={inOutTimeUpdate.appraiserComment}
+              isApprover={false} />
           </>
         }
         
         {
-          inOutTimeUpdate && (Constants.STATUS_TO_SHOW_APPROVER.includes(inOutTimeUpdate.processStatusId )) ?
+          inOutTimeUpdate && (Constants.STATUS_TO_SHOW_APPROVER.includes(inOutTimeUpdate.processStatusId )) &&
             <>
               <h5>{t("ApproverInformation")}</h5>
-              <ApproverDetailComponent title={t("Approver")} approver={inOutTimeUpdate.approver} status={inOutTimeUpdate.processStatusId} hrComment={inOutTimeUpdate.approverComment} />
-            </> : null
-            // <div className="block-status">
-            //   <span className={`status ${Constants.mappingStatusRequest[this.props.inOutTimeUpdate.processStatusId].className}`}>{t(Constants.mappingStatusRequest[this.props.inOutTimeUpdate.processStatusId].label)}</span>
-            //   {
-            //     this.props.inOutTimeUpdate.requestInfo.processStatusId == Constants.STATUS_NOT_APPROVED ?
-            //       <span className="hr-comments-block">Lý do không duyệt: <span className="hr-comments">{this.props.inOutTimeUpdate.hrComment || ""}</span></span> : null
-            //   }
-            // </div>
+              <ApproverDetailComponent
+                title={t("Approver")}
+                manager={inOutTimeUpdate.approver}
+                status={inOutTimeUpdate.processStatusId}
+                hrComment={inOutTimeUpdate.approverComment}
+                isApprover={true} />
+            </>
         }
 
         <RequestProcessing {...timeProcessing} />

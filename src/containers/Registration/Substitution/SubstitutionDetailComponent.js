@@ -206,16 +206,26 @@ class SubstitutionDetailComponent extends React.Component {
           isShowAppraisalInfo && 
           <>
             <h5>{t("ConsenterInformation")}</h5>
-            <ApproverDetailComponent title={t("Consenter")} approver={substitution.appraiser} status={substitution.requestInfo ? substitution.processStatusId : ""} hrComment={substitution.appraiserComment} />
+            <ApproverDetailComponent
+              title={t("Consenter")}
+              manager={substitution.appraiser}
+              status={substitution.requestInfo ? substitution.processStatusId : ""}
+              hrComment={substitution.appraiserComment}
+              isApprover={false} />
           </>
         }
         
         {
-          substitution && (Constants.STATUS_TO_SHOW_APPROVER.includes(substitution.processStatusId )) ?
+          substitution && (Constants.STATUS_TO_SHOW_APPROVER.includes(substitution.processStatusId )) &&
           <>
             <h5>{t("ApproverInformation")}</h5>
-            <ApproverDetailComponent title={t("Approver")} approver={substitution.approver} status={substitution.processStatusId} hrComment={substitution.approverComment} />
-          </> : null
+            <ApproverDetailComponent
+              title={t("Approver")}
+              manager={substitution.approver}
+              status={substitution.processStatusId}
+              hrComment={substitution.approverComment}
+              isApprover={true} />
+          </>
         }
 
         <RequestProcessing {...timeProcessing} />
