@@ -1764,5 +1764,9 @@
   "NumberOfSharesConverted": "Số Cổ phần quy đổi",
   "BlockFingerprint": "Khóa Vân tay",
   "BlockFaceID": "Khóa Face ID",
-  "BlockEmailAdAccount": "Khóa Email/ tài khoản AD"
+  "BlockEmailAdAccount": "Khóa Email/ tài khoản AD",
+  "IncorrectPersonalIdentifyNumber": "CMTND/CCCD yêu cầu 9 hoặc 12 số",
+  "IncorrectMobileNoLength": "Số điện thoại phải chứa 10 ký tự",
+  "IncorrectPersonalIdentifyPlace": "Số lượng ký tự tối đa là 30",
+  "InvalidWorkingAge": "Input data invalid working age, do you still want to approve this request?"
 }
