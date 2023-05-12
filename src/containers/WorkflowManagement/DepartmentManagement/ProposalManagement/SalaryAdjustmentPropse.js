@@ -400,9 +400,11 @@ const SalaryAdjustmentPropse = (props) => {
       // View phe duyet thanh cong
       case 2:
         viewSettingTmp.disableComponent.showEye = true;
+        break;
       // Case từ chối
       case 7:
         viewSettingTmp.disableComponent.showEye = true;
+        break;
       // Case không phê duyệt
       case 1:
         viewSettingTmp.showComponent.stateProcess = true;
@@ -410,6 +412,7 @@ const SalaryAdjustmentPropse = (props) => {
         viewSettingTmp.showComponent.showCBQL = true;
         viewSettingTmp.showComponent.showHrAssessment = true;
         viewSettingTmp.showComponent.showOfficerApproved = true;
+        viewSettingTmp.disableComponent.showEye = true;
         break;
       default:
         break;
@@ -1229,6 +1232,7 @@ const SalaryAdjustmentPropse = (props) => {
     }
     return currencySalaryTmp;
   }
+  console.log(viewSetting.disableComponent)
 
   const renderListMember = (members) => {
     return members.map((item, index) => {
