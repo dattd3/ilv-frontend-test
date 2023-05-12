@@ -154,7 +154,7 @@ class RegistrationEmploymentTermination extends React.Component {
 
                 <div className="block senior-executive">
                     <div className="box shadow">
-                        <h6 className="block-title has-border-bottom">{t('SeniorExecutive')}11</h6>
+                        <h6 className="block-title has-border-bottom">{t('SeniorExecutive')}</h6>
                         <div className="row">
                             <div className="col-4">
                                 <p className="title">{t('FullName')}</p>
