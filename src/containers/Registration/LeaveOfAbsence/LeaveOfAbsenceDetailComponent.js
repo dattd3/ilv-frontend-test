@@ -366,17 +366,26 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
           isShowAppraisalInfo && 
           <>
             <h5 className='content-page-header'>{t("ConsenterInformation")}</h5>
-            <ApproverDetailComponent title={t("Consenter")} approver={leaveOfAbsence.appraiser} status={requestInfo ? requestInfo.processStatusId : ""} hrComment={requestInfo.appraiserComment} />
+            <ApproverDetailComponent 
+              title={t("Consenter")}
+              manager={leaveOfAbsence.appraiser}
+              status={requestInfo ? requestInfo.processStatusId : ""}
+              hrComment={requestInfo.appraiserComment}
+              isApprover={false} />
           </>
         }
 
         {
-          // this.getTypeDetail() === "request" ?
-          requestInfo && (Constants.STATUS_TO_SHOW_APPROVER.includes(requestInfo.processStatusId )) ?
+          requestInfo && (Constants.STATUS_TO_SHOW_APPROVER.includes(requestInfo.processStatusId )) &&
             <>
               <h5 className='content-page-header'>{t("ApproverInformation")}</h5>
-              <ApproverDetailComponent title={t("Approver")} approver={leaveOfAbsence.approver} status={requestInfo ? requestInfo.processStatusId : ""} hrComment={requestInfo.approverComment} />
-            </> : null
+              <ApproverDetailComponent
+                title={t("Approver")}
+                manager={leaveOfAbsence.approver}
+                status={requestInfo ? requestInfo.processStatusId : ""}
+                hrComment={requestInfo.approverComment}
+                isApprover={true} />
+            </>
         }
 
         <RequestProcessing {...timeProcessing} />

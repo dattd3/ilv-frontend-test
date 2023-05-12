@@ -241,16 +241,26 @@ class BusinessTripDetailComponent extends React.Component {
           isShowAppraisalInfo && 
           <>
             <h5 className='content-page-header'>{t("ConsenterInformation")}</h5>
-            <ApproverDetailComponent title={t("Consenter")} approver={businessTrip.appraiser} status={requestInfo ? requestInfo.processStatusId : ""} hrComment={requestInfo.appraiserComment} />
+            <ApproverDetailComponent
+              title={t("Consenter")}
+              manager={businessTrip.appraiser}
+              status={requestInfo ? requestInfo.processStatusId : ""}
+              hrComment={requestInfo.appraiserComment}
+              isApprover={false} />
           </>
         }
 
         {
-          this.getTypeDetail() === "request" || Constants.STATUS_TO_SHOW_APPROVER.includes(requestInfo.processStatusId)?
+          this.getTypeDetail() === "request" || Constants.STATUS_TO_SHOW_APPROVER.includes(requestInfo.processStatusId) &&
           <>
             <h5 className='content-page-header'>{t("ApproverInformation")}</h5>
-            <ApproverDetailComponent title={t("Approver")} approver={businessTrip.approver} status={requestInfo.processStatusId} hrComment={requestInfo.approverComment} />
-          </> : null
+            <ApproverDetailComponent
+              title={t("Approver")}
+              manager={businessTrip.approver}
+              status={requestInfo.processStatusId}
+              hrComment={requestInfo.approverComment}
+              isApprover={true} />
+          </>
         }
 
         <RequestProcessing {...timeProcessing} />
