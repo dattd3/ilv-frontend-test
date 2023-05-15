@@ -147,6 +147,7 @@ class ApprovalDetail extends React.Component {
       age = moment().year() - moment(birthdayInfoUpdating?.Birthday[0][1], 'DD-MM-YYYY').year()
       const rangeMaleAge = [15, 60]
       const rangeFemaleAge = [15, 55]
+
       if (
         (data?.requestInfo?.update?.userProfileHistoryMainInfo?.UserGender == Constants.GENDER.MALE && (age < rangeMaleAge[0] || age > rangeMaleAge[1]))
         || (data?.requestInfo?.update?.userProfileHistoryMainInfo?.UserGender == Constants.GENDER.FEMALE && (age < rangeFemaleAge[0] || age > rangeFemaleAge[1]))
