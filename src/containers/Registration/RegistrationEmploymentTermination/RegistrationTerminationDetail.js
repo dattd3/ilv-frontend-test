@@ -240,7 +240,7 @@ class RegistrationEmploymentTermination extends React.Component {
                             }
                             {
                                 formatProcessTime(resignInfo?.assessedDate) && <div className="col-4">
-                                    <p className="title">{t('ApprovalDate')}</p>
+                                    <p className="title">{t('ConsentDate')}</p>
                                     <div>
                                         <div className="detail">{formatProcessTime(resignInfo?.assessedDate)}</div>
                                     </div>
