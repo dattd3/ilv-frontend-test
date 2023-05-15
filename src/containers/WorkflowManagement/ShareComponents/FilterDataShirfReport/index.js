@@ -13,6 +13,8 @@ import Constants from '../../../../commons/Constants'
 import { saveAs } from 'file-saver'
 import { getMuleSoftHeaderConfigurations } from "../../../../commons/Utils"
 import { IS_VINFAST } from "commons/commonFunctions";
+import Spinner from 'react-bootstrap/Spinner';
+
 registerLocale("vi", vi);
 
 class FilterDataShirfReport extends React.Component {
@@ -30,7 +32,8 @@ class FilterDataShirfReport extends React.Component {
       selectedMembers: [],
       showMemberOption: false,
       reportType: -1,
-      errors: {}
+      errors: {},
+      isLoading: false
     };
 
     this.setStartDate = this.setStartDate.bind(this);
@@ -105,7 +108,9 @@ class FilterDataShirfReport extends React.Component {
       endDate: moment(this.state.endDate).format("YYYY-MM-DD[T]23:59:59.999")
     }
     const { t } = this.props;
-
+    this.setState({
+      isLoading: true
+    })
     axios.post(`${process.env.REACT_APP_REQUEST_URL}report/shift`, JSON.stringify(data), config)
       .then(async (responses) => {
 
@@ -136,9 +141,12 @@ class FilterDataShirfReport extends React.Component {
           }
           this.setState({ errors: errNew });
         }
-
       }).catch(error => {
         console.log(error);
+      }).finally(() => {
+        this.setState({
+          isLoading: false
+        })
       })
   }
 
@@ -258,6 +266,7 @@ class FilterDataShirfReport extends React.Component {
 
     return (
       <>
+        {/* <LoadingModal show={this.state.isLoading} /> */}
         <div className="timesheet-box shadow">
           <div className="row">
             <div className="col-lg-2">
@@ -336,9 +345,14 @@ class FilterDataShirfReport extends React.Component {
                   type="button"
                   className="btn btn-primary"
                   onClick={this.download}
+                  disabled={this.state.isLoading}
                 >
-                  <i className="fas fa-download mr-1"></i>
-                  {t("LabelDownloadReport")}
+                  {
+                    this.state.isLoading ? <Spinner animation="border" size="sm" /> : <>
+                      <i className="fas fa-download mr-1"></i>
+                      {t("LabelDownloadReport")}
+                    </>
+                  }
                 </button>
               </div>
             </div>
