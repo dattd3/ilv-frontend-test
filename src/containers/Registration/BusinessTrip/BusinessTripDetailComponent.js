@@ -251,7 +251,7 @@ class BusinessTripDetailComponent extends React.Component {
         }
 
         {
-          this.getTypeDetail() === "request" || Constants.STATUS_TO_SHOW_APPROVER.includes(requestInfo.processStatusId) &&
+          (this.getTypeDetail() === "request" || Constants.STATUS_TO_SHOW_APPROVER.includes(requestInfo.processStatusId)) &&
           <>
             <h5 className='content-page-header'>{t("ApproverInformation")}</h5>
             <ApproverDetailComponent
