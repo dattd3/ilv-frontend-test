@@ -196,30 +196,30 @@ class RegistrationEmploymentTermination extends React.Component {
                     <div className="box shadow">
                         <h6 className="block-title has-border-bottom">{t('RequestHistory')}</h6>
                         <div className="row">
-                            <div className="col-4">
-                                <p className="title">{t('TimeToSendRequest')}</p>
-                                <div>
-                                    <div className="detail">{formatProcessTime(resignInfo?.createDate)}</div>
+                            {
+                                formatProcessTime(resignInfo?.createDate) && <div className="col-4">
+                                    <p className="title">{t('TimeToSendRequest')}</p>
+                                    <div>
+                                        <div className="detail">{formatProcessTime(resignInfo?.createDate)}</div>
+                                    </div>
                                 </div>
-                            </div>
-                            {/* <div className="col-4">
-                                <p className="title">{t('ConsentDate')}</p>
-                                <div>
-                                    <div className="detail">{formatProcessTime(resignInfo?.assessedDate)}</div>
+                            }
+                            {
+                                formatProcessTime(resignInfo?.approvedDate) && <div className="col-4">
+                                    <p className="title">{t('ApprovalDate')}</p>
+                                    <div>
+                                        <div className="detail">{formatProcessTime(resignInfo?.approvedDate)}</div>
+                                    </div>
                                 </div>
-                            </div> */}
-                            <div className="col-4">
-                                <p className="title">{t('ApprovalDate')}</p>
-                                <div>
-                                    <div className="detail">{formatProcessTime(resignInfo?.approvedDate)}</div>
+                            }
+                            {
+                                formatProcessTime(resignInfo?.deletedDate) && <div className="col-4">
+                                    <p className="title">{t('CancelDate')}</p>
+                                    <div>
+                                        <div className="detail">{formatProcessTime()}</div>
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="col-4">
-                                <p className="title">{t('CancelDate')}</p>
-                                <div>
-                                    <div className="detail">{formatProcessTime(resignInfo?.deletedDate)}</div>
-                                </div>
-                            </div>
+                            }
                         </div>
                     </div>
                 </div>

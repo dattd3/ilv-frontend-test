@@ -454,36 +454,39 @@ const ContractEvaluationdetail = (props) => {
               </div>
               <div className="col-12">
                 <div className="row">
-                  <div className="col-4">
+                  {
+                    formatProcessTime(data.createdDate) && <div className="col-4">
                     {t("TimeToSendRequest")}
                     <div className="detail">
                       {formatProcessTime(data.createdDate)}
                     </div>
                   </div>
-                  <div className="col-4">
-                    {t("SupervisorAssetDate")}
-                    <div className="detail">
-                      {formatProcessTime(data.assessedDate)}
+                  }
+                  {
+                    formatProcessTime(data.assessedDate) && <div className="col-4">
+                      {t("SupervisorAssetDate")}
+                      <div className="detail">
+                        {formatProcessTime(data.assessedDate)}
+                      </div>
                     </div>
-                  </div>
-                  <div className="col-4">
-                    {t("ConsentDate")}
-                    <div className="detail">
-                      {formatProcessTime(data.supervisorDate)}
+                  }
+                  {
+                    formatProcessTime(data.supervisorDate) && <div className="col-4">
+                      {t("ConsentDate")}
+                      <div className="detail">
+                        {formatProcessTime(data.supervisorDate)}
+                      </div>
                     </div>
-                  </div>
-                  <div className="col-4">
-                    {t("ApprovalDate")}
-                    <div className="detail">
-                      {formatProcessTime(data.approvalDate)}
+                  }
+                  {
+                    formatProcessTime(data.approvalDate) && <div className="col-4">
+                      {t("ApprovalDate")}
+                      <div className="detail">
+                        {formatProcessTime(data.approvalDate)}
+                      </div>
                     </div>
-                  </div>
-                  {/* <div className="col-4">
-                    {t("CancelDate")}
-                    <div className="detail">
-                      {formatProcessTime(data.deletedDate)}
-                    </div>
-                  </div> */}
+                  }
+                  
                 </div>
               </div>
             </div>
