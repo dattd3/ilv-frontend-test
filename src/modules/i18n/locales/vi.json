@@ -1768,5 +1768,5 @@
   "IncorrectPersonalIdentifyNumber": "CMTND/CCCD yêu cầu 9 hoặc 12 số",
   "IncorrectMobileNoLength": "Số điện thoại phải chứa 10 ký tự",
   "IncorrectPersonalIdentifyPlace": "Số lượng ký tự tối đa là 30",
-  "InvalidWorkingAge": "Input data invalid working age, do you still want to approve this request?"
+  "InvalidWorkingAge": "CBNV chưa đến hoặc quá tuổi lao động. Bạn có muốn tiếp tục phê duyệt yêu cầu này không?"
 }
