@@ -2225,7 +2225,6 @@ renderEvalution = (name, data, isDisable) => {
                 </div>
                 <div className="col-12">
                   <div className="row">
-                  <div className="row">
                   {
                     formatProcessTime(data.createdDate) && <div className="col-4">
                     {t("TimeToSendRequest")}
@@ -2258,7 +2257,6 @@ renderEvalution = (name, data, isDisable) => {
                       </div>
                     </div>
                   }
-                </div>
                   </div>
                 </div>
               </div>
