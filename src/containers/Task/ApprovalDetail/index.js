@@ -9,6 +9,7 @@ import Constants from '../../../commons/Constants'
 import ConfirmationModal from '../../PersonalInfo/edit/ConfirmationModal'
 import RequestProcessing from 'containers/Registration/RequestProcessing'
 import HOCComponent from '../../../components/Common/HOCComponent'
+import moment from '../../../../node_modules/moment/moment'
 
 class ApprovalDetail extends React.Component {
   constructor() {
@@ -136,12 +137,32 @@ class ApprovalDetail extends React.Component {
   }
 
   approval = () => {
-    const {t} = this.props;
+    const { userMainInfo } = this.state
+    const { t, data } = this.props
+
+    let age = 0
+    let modalMessage = t("ConfirmApproveChangeRequest")
+    const birthdayInfoUpdating = (userMainInfo || []).find(item => item?.Birthday)
+
+    if (birthdayInfoUpdating) {
+      age = moment().year() - moment(birthdayInfoUpdating?.Birthday[0][1], 'DD-MM-YYYY').year()
+      const rangeMaleAge = [15, 60]
+      const rangeFemaleAge = [15, 55]
+
+      if (
+        (data?.requestInfo?.update?.userProfileHistoryMainInfo?.UserGender == Constants.GENDER.MALE && (age < rangeMaleAge[0] || age > rangeMaleAge[1]))
+        || (data?.requestInfo?.update?.userProfileHistoryMainInfo?.UserGender == Constants.GENDER.FEMALE && (age < rangeFemaleAge[0] || age > rangeFemaleAge[1]))
+      ) {
+        modalMessage = t("InvalidWorkingAge")
+      }
+    }
+
     this.setState({
       modalTitle: t("ApproveRequest"),
-      modalMessage: t("ConfirmApproveChangeRequest"),
+      modalMessage: modalMessage,
       typeRequest: 2
     });
+
     this.onShowModalConfirm();
   }
 
