@@ -1765,5 +1765,9 @@
   "WarningOverOTFundsConsent": "OT hours for this request exceeded the department's funds for the month (at time of registration). Please check/report to HR to replenish funds. Confirm continued consent?",
   "WarningOverOTFundsApproval": "OT hours for this request exceeded the department's funds for the month (at time of registration). Please check/report to HR to replenish funds. Confirm continued approve?",
   "SupervisorAssetDate": "Suppervisor Asset Date",
-  "EditDate": "Edit Date"
+  "EditDate": "Edit Date",
+  "IncorrectPersonalIdentifyNumber": "ID No requires 9 or 12 numbers",
+  "IncorrectMobileNoLength": "Phone number requires 10 characters",
+  "IncorrectPersonalIdentifyPlace": "Please enter up to 30 characters",
+  "InvalidWorkingAge": "Input data invalid working age, do you still want to approve this request?"
 }
