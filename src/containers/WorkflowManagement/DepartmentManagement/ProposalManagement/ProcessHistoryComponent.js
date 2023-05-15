@@ -23,26 +23,30 @@ export default function ProcessHistoryComponent(props) {
         <p className="title2">{t("TimeToSendRequest")}</p>
         <input type="text" className="form-control" value={formatProcessTime(createdDate)} readOnly />
       </div>
-      <div className="col-4">
+      {
+        formatProcessTime(coordinatorDate) && <div className="col-4">
         <p className="title2">{t("SupportHRViewedSalaryDate")}</p>
         <input type="text" className="form-control" value={formatProcessTime(coordinatorDate)} readOnly />
       </div>
+      }
       {
-        lastConsenter && <div className="col-4" key={lastConsenter.appraiserId}>
+        lastConsenter && formatProcessTime(lastConsenter.appraisalDate) && <div className="col-4" key={lastConsenter.appraiserId}>
           <p className="title2">{`${t("ConsentDate")}`}</p>
           <input type="text" className="form-control" value={formatProcessTime(lastConsenter.appraisalDate)} readOnly />
         </div>
       }
       {
-        HRconsenter && <div className="col-4">
+        HRconsenter && formatProcessTime(HRconsenter.appraisalDate) && <div className="col-4">
         <p className="title2">{`${t("HRAppraiseDate")}`}</p>
         <input type="text" className="form-control" value={formatProcessTime(HRconsenter.appraisalDate)} readOnly />
       </div>
       }
-      <div className="col-4">
+      {
+        formatProcessTime(approvedDate) && <div className="col-4">
         <p className="title2">{t("ApprovalDate")}</p>
         <input type="text" className="form-control" value={formatProcessTime(approvedDate)} readOnly />
       </div>
+      }
     </div>
   );
 }

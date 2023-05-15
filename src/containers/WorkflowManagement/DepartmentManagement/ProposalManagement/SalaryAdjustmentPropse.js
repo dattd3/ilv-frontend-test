@@ -96,6 +96,7 @@ const SalaryAdjustmentPropse = (props) => {
   const [approver, setApprover] = useState(null); // CBLĐ phê duyệt
   const [isCallSalary, setIsCallSalary] = useState(false);
   const [isOpenDatepick, setIsOpenDatepick] = useState(false);
+  const [showCommentRequiredError, setShowCommentRequiredError] = useState(false)
   const [viewSetting, setViewSetting] = useState({
     showComponent: {
       stateProcess: false, // Button trang thai
@@ -399,12 +400,12 @@ const SalaryAdjustmentPropse = (props) => {
         break;
       // View phe duyet thanh cong
       case 2:
-        viewSettingTmp.disableComponent.showEye = true;
-        break;
+        // viewSettingTmp.disableComponent.showEye = true;
+        // break;
       // Case từ chối
       case 7:
-        viewSettingTmp.disableComponent.showEye = true;
-        break;
+        // viewSettingTmp.disableComponent.showEye = true;
+        // break;
       // Case không phê duyệt
       case 1:
         viewSettingTmp.showComponent.stateProcess = true;
@@ -474,7 +475,6 @@ const SalaryAdjustmentPropse = (props) => {
     setCanSelectedAll(canCheckAll);
     setCheckedMemberIds(memberCheck);
     setSelectedMembers(employeeLists);
-    //console.log(memberCheck);
 
     // CBQL cấp cơ sở
     if (dataSalaryInfo?.requestAppraisers?.length > 0) {
@@ -757,6 +757,10 @@ const SalaryAdjustmentPropse = (props) => {
   // Thẩm định
   const handleConsent = () => {
     // const processStatusId = appraiser ? 24 : 5
+    if (selectedMembers.some(item => item.canChangeAction && !item.accepted && !item.comment)) {
+      setShowCommentRequiredError(true);
+      return;
+    }
     let staffRequestStatusList = selectedMembers?.map(item => {
       return {
         employeeNo: item.uid,
@@ -1232,7 +1236,6 @@ const SalaryAdjustmentPropse = (props) => {
     }
     return currencySalaryTmp;
   }
-  console.log(viewSetting.disableComponent)
 
   const renderListMember = (members) => {
     return members.map((item, index) => {
@@ -1480,6 +1483,7 @@ const SalaryAdjustmentPropse = (props) => {
                 viewSetting.showComponent.btnApprove) &&
               !isCreateMode &&
               item.canChangeAction ? (
+                <>
                 <ResizableTextarea
                   placeholder={"Nhập"}
                   value={item?.comment}
@@ -1488,6 +1492,13 @@ const SalaryAdjustmentPropse = (props) => {
                   }
                   className="form-control input mv-10 w-100"
                 />
+                {
+                  showCommentRequiredError && item.canChangeAction && !item.accepted && !item.comment && 
+                  <div className="text-danger">
+                    {t("Required")}
+                  </div>
+                }
+                </>
               ) : (
                 <>{item?.comment}</>
               )}
