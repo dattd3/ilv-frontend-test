@@ -90,7 +90,6 @@ const SalaryAdjustmentPropse = (props) => {
   const [currencySalary, setCurrencySalary] = useState("VND");
 
   const [coordinator, setCoordinator] = useState(null); // Nhân sự hỗ trợ xin quyền xem lương
-  const [supervisor, setSupervisor] = useState(null); // CBQL cấp cơ sở
   const [supervisors, setSupervisors] = useState([null]);
   const [appraiser, setAppraiser] = useState(null); // HR thẩm định quyền điều chỉnh lương
   const [approver, setApprover] = useState(null); // CBLĐ phê duyệt
@@ -1293,6 +1292,7 @@ const SalaryAdjustmentPropse = (props) => {
                           value={item?.currentSalary}
                           placeholder="Nhập"
                           style={{ width: "100%", background: "#fff" }}
+                          maxLength={11}
                         />
                       ) : (
                         <span>{"**********"}</span>
@@ -1336,6 +1336,7 @@ const SalaryAdjustmentPropse = (props) => {
                       );
                     }}
                     placeholder="Nhập"
+                    maxLength={11}
                   />
                 ) : (
                   <>
@@ -1357,6 +1358,7 @@ const SalaryAdjustmentPropse = (props) => {
                               value={item?.suggestedSalary}
                               placeholder="Nhập"
                               style={{ width: "100%", background: "#fff" }}
+                              maxLength={11}
                             />
                           ) : (
                             "**********"
@@ -1776,6 +1778,7 @@ const SalaryAdjustmentPropse = (props) => {
               updateApprover={(approver, isApprover) =>
                 handleUpdateCoordinator(approver, isApprover)
               }
+              comment={dataSalary.coordinatorComment}
             />
           </div>
         </>
@@ -1813,6 +1816,7 @@ const SalaryAdjustmentPropse = (props) => {
                     }
                     approver={item}
                     updateApprover={(sup) => handleUpdateSupervisors(sup, key)}
+                    comment={dataSalary?.requestAppraisers?.find((_, index) => index === key)?.appraiserComment}
                   />
                 </div>
               );
@@ -1842,6 +1846,7 @@ const SalaryAdjustmentPropse = (props) => {
               approver={appraiser}
               isHR={true}
               updateApprover={(sup) => handleUpdateHrChangeSalary(sup)}
+              comment={dataSalary?.requestAppraisers?.[dataSalary?.requestAppraisers?.length - 1]?.appraiserComment}
             />
           </div>
         </>
@@ -1855,6 +1860,7 @@ const SalaryAdjustmentPropse = (props) => {
               isEdit={!viewSetting.disableComponent.selectHrSupportViewSalary}
               approver={approver}
               updateApprover={(sup) => handleUpdateApprovalSalary(sup)}
+              comment={dataSalary?.approverComment}
             />
           </div>
         </>
