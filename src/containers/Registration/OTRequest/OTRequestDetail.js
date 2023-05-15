@@ -468,31 +468,39 @@ export default function OTRequestDetailComponent({ data, action }) {
           <div className="block-title">{t("RequestHistory").toUpperCase()}</div>
           <div className="box shadow">
             <div className="row">
-              <div className="col-4">
-                <div className="form-item">
-                  <div className="mb-12">{t("TimeToSendRequest")}</div>
-                  <div className="field-view">{formatProcessTime(createDate)}</div>
+              {
+                formatProcessTime(createDate) && <div className="col-4">
+                  <div className="form-item">
+                    <div className="mb-12">{t("TimeToSendRequest")}</div>
+                    <div className="field-view">{formatProcessTime(createDate)}</div>
+                  </div>
                 </div>
-              </div>
-              <div className="col-4">
-                <div className="form-item">
-                  <div className="mb-12">{t("ConsentDate")}</div>
-                  <div className="field-view">{formatProcessTime(assessedDate)}</div>
+              }
+              {
+                formatProcessTime(assessedDate) && <div className="col-4">
+                  <div className="form-item">
+                    <div className="mb-12">{t("ConsentDate")}</div>
+                    <div className="field-view">{formatProcessTime(assessedDate)}</div>
+                  </div>
                 </div>
-              </div>
-              <div className="col-4">
-                <div className="form-item">
-                  <div className="mb-12">{t("ApprovalDate")}</div>
-                  <div className="field-view">{formatProcessTime(approvedDate)}</div>
+              }
+              {
+                formatProcessTime(approvedDate) && <div className="col-4">
+                  <div className="form-item">
+                    <div className="mb-12">{t("ApprovalDate")}</div>
+                    <div className="field-view">{formatProcessTime(approvedDate)}</div>
+                  </div>
                 </div>
-              </div>
-              <div className="col-4 mt-20">
-                <div className="form-item">
-                  <div className="mb-12">{t("CancelDate")}</div>
-                  <div className="field-view">{formatProcessTime(deletedDate)}</div>
+              }
+              {
+                formatProcessTime(deletedDate) && <div className="col-4 mt-20">
+                  <div className="form-item">
+                    <div className="mb-12">{t("CancelDate")}</div>
+                    <div className="field-view">{formatProcessTime(deletedDate)}</div>
+                  </div>
                 </div>
+              }
               </div>
-            </div>
           </div>
         </div>
       </div>
