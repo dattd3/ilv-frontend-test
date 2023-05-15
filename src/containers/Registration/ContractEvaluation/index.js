@@ -2225,36 +2225,40 @@ renderEvalution = (name, data, isDisable) => {
                 </div>
                 <div className="col-12">
                   <div className="row">
-                    <div className="col-4">
-                      {t("TimeToSendRequest")}
-                      <div className="detail">
-                        {formatProcessTime(data.createdDate)}
-                      </div>
+                  <div className="row">
+                  {
+                    formatProcessTime(data.createdDate) && <div className="col-4">
+                    {t("TimeToSendRequest")}
+                    <div className="detail">
+                      {formatProcessTime(data.createdDate)}
                     </div>
-                    <div className="col-4">
+                  </div>
+                  }
+                  {
+                    formatProcessTime(data.assessedDate) && <div className="col-4">
                       {t("SupervisorAssetDate")}
                       <div className="detail">
                         {formatProcessTime(data.assessedDate)}
                       </div>
                     </div>
-                    <div className="col-4">
+                  }
+                  {
+                    formatProcessTime(data.supervisorDate) && <div className="col-4">
                       {t("ConsentDate")}
                       <div className="detail">
                         {formatProcessTime(data.supervisorDate)}
                       </div>
                     </div>
-                    <div className="col-4 mt-20">
+                  }
+                  {
+                    formatProcessTime(data.approvalDate) && <div className="col-4">
                       {t("ApprovalDate")}
                       <div className="detail">
                         {formatProcessTime(data.approvalDate)}
                       </div>
                     </div>
-                    {/* <div className="col-4">
-                      {t("CancelDate")}
-                      <div className="detail">
-                        {formatProcessTime(data.deletedDate)}
-                      </div>
-                    </div> */}
+                  }
+                </div>
                   </div>
                 </div>
               </div>
