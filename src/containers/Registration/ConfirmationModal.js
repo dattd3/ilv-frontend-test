@@ -1,12 +1,13 @@
 import React from "react"
 import axios from 'axios'
 import { Modal } from 'react-bootstrap'
+import Spinner from 'react-bootstrap/Spinner'
+import { withTranslation  } from "react-i18next"
+import { uniq } from 'lodash'
 import ResultModal from './ResultModal'
 import ResultChangeShiftModal from './ResultChangeShiftModal'
 import Constants from '../../commons/Constants'
 import map from "../map.config"
-import Spinner from 'react-bootstrap/Spinner'
-import { withTranslation  } from "react-i18next"
 import { getCulture } from "commons/Utils"
 
 class ConfirmationModal extends React.Component {
@@ -24,56 +25,111 @@ class ConfirmationModal extends React.Component {
     }
 
     ok = (e) => {
-        if (this.state.disabledSubmitButton) {
+        const { disabledSubmitButton, message } = this.state
+        const { t, type, id, dataToSap, isSyncFromEmployee } = this.props
+
+        if (disabledSubmitButton) {
             return;
         }
-        if ((Constants.STATUS_USE_COMMENT.includes(this.props.type) && this.state.message == "")) {
-            this.setState({errorMessage: this.props.t("ReasonRequired")})
+
+        if (isSyncFromEmployee) {
+            this.sync()
+            return
+        }
+
+        if ((Constants.STATUS_USE_COMMENT.includes(type) && message == "")) {
+            this.setState({errorMessage: t("ReasonRequired")})
             return;
         }
+
         this.setState({ disabledSubmitButton: true });
-        const id = this.props.id
-        switch (this.props.type) {
+
+        switch (type) {
             case Constants.STATUS_NOT_APPROVED: // không phê duyệt
-                if(this.props.dataToSap[0].requestTypeId != Constants.ONBOARDING) {
-                    this.props.dataToSap[0].sub[0].processStatusId = Constants.STATUS_NOT_APPROVED;
+                if(dataToSap[0].requestTypeId != Constants.ONBOARDING) {
+                    dataToSap[0].sub[0].processStatusId = Constants.STATUS_NOT_APPROVED;
                 }
-                this.props.dataToSap[0].sub[0].comment = this.state.message;
-                this.disApprove(this.props.dataToSap, `${process.env.REACT_APP_REQUEST_SERVICE_URL}request/approve`, id)
+                // this.props.dataToSap[0].sub[0].comment = this.state.message;
+                // this.disApprove(this.props.dataToSap, `${process.env.REACT_APP_REQUEST_SERVICE_URL}request/approve`, id)
+
+                dataToSap[0].sub[0].comment = message;
+                this.disApprove(dataToSap, `${process.env.REACT_APP_REQUEST_SERVICE_URL}request/approve`, id)
                 break;
             case Constants.STATUS_APPROVED: // phê duyệt
-                this.props.dataToSap[0].sub[0].processStatusId = Constants.STATUS_APPROVED;
-                this.approve(this.props.dataToSap,id)
+                dataToSap[0].sub[0].processStatusId = Constants.STATUS_APPROVED;
+                this.approve(dataToSap, id)
                 break;
             case Constants.STATUS_CONSENTED: // thẩm định
-                this.props.dataToSap[0].sub[0].processStatusId = Constants.STATUS_WAITING;
-                this.consent(this.props.dataToSap);
+                dataToSap[0].sub[0].processStatusId = Constants.STATUS_WAITING;
+                this.consent(dataToSap);
                 break;
             case Constants.STATUS_NO_CONSENTED: // từ chối thẩm định
-                if(this.props.dataToSap[0].requestTypeId != Constants.ONBOARDING) {
-                    this.props.dataToSap[0].sub[0].processStatusId = Constants.STATUS_NO_CONSENTED;
+                if(dataToSap[0].requestTypeId != Constants.ONBOARDING) {
+                    dataToSap[0].sub[0].processStatusId = Constants.STATUS_NO_CONSENTED;
                 }
-                this.props.dataToSap[0].sub[0].comment = this.state.message;
-                this.reject(this.props.dataToSap);
+                dataToSap[0].sub[0].comment = message;
+                this.reject(dataToSap);
                 break;
             case Constants.STATUS_REVOCATION: // hủy
-                this.props.dataToSap.sub[0].processStatusId = Constants.STATUS_REVOCATION;
-                this.props.dataToSap.sub[0].comment = this.state.message;
-                this.cancel(this.props.dataToSap);
+                dataToSap.sub[0].processStatusId = Constants.STATUS_REVOCATION;
+                dataToSap.sub[0].comment = message;
+                this.cancel(dataToSap);
                 break;
             case Constants.STATUS_EVICTION: // thu hồi
-                this.props.dataToSap.sub[0].processStatusId = Constants.STATUS_EVICTION;
-                this.props.dataToSap.sub[0].comment = this.state.message;
-                this.revocation(this.props.dataToSap);
+                dataToSap.sub[0].processStatusId = Constants.STATUS_EVICTION;
+                dataToSap.sub[0].comment = message;
+                this.revocation(dataToSap);
                 break;
             case 0: //cán bộ phê duyệt thu hồi
-                this.props.dataToSap[0].sub[0].processStatusId = Constants.STATUS_EVICTION;
-                this.props.dataToSap[0].sub[0].comment = this.state.message;
-                this.revocationApproval(this.props.dataToSap);
+                dataToSap[0].sub[0].processStatusId = Constants.STATUS_EVICTION;
+                dataToSap[0].sub[0].comment = message;
+                this.revocationApproval(dataToSap);
                 break;
             default:
                 break;
         }
+    }
+
+    sync = () => {
+        const { dataToSap, t } = this.props
+
+        axios({
+            method: 'POST',
+            url: `${process.env.REACT_APP_REQUEST_URL}request/user-approve`,
+            data: [dataToSap],
+            headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` }
+        })
+        .then(res => {
+            let titleModal = t("Notification")
+            let messageModal = ''
+            let isSuccess = false
+
+            if (res && res?.data) {
+                const data = res.data?.data
+                const result = res.data?.result
+                messageModal = result?.message
+                const code = result?.code
+                if (code == Constants.API_SUCCESS_CODE) {
+                    if (data && data[0] && data[0]?.sub?.length > 0) {
+                        if (!(data[0]?.sub || []).every(item => item?.status === 'E')) {
+                            titleModal = t("Successful")
+                            isSuccess = true
+                            messageModal = t("SyncApprovalSuccess")
+                        } else {
+                            messageModal = uniq(data[0].sub.filter(item => item?.status === 'E').map(item => item?.message))?.join(', ')
+                        }
+                    }
+                }
+            }
+
+            this.showStatusModal(titleModal, messageModal, isSuccess)
+        })
+        .catch(response => {
+            this.showStatusModal(this.props.t("Notification"), "Có lỗi xảy ra! Xin vui lòng liên hệ IT để hỗ trợ", false)
+        })
+        .finally(res => {
+            this.props.onHide()
+        })
     }
 
     cancel = (dataToSap) => {
@@ -369,19 +425,21 @@ class ConfirmationModal extends React.Component {
             [Constants.STATUS_REVOCATION]: "bg-not-approved",
             [Constants.STATUS_APPROVED]: "bg-approved",
         }
-        const {t} = this.props
+        const { t, isSyncFromEmployee } = this.props
+        
         return (
             <>
                 <ResultModal show={this.state.isShowStatusModal} title={this.state.resultTitle} message={this.state.resultMessage} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
                 <ResultChangeShiftModal show={this.state.isShowStatusChangeShiftModal} title={this.state.resultTitle} result={this.state.resultMessage} onHide={this.hideStatusChangeShiftModal} />
                 
                 <Modal className='info-modal-common position-apply-modal request-confirm-modal' centered show={this.props.show} onHide={this.props.onHide}>
-                    <Modal.Header className={`apply-position-modal ${backgroundColorMapping[this.props.type]}`} closeButton>
+                    <Modal.Header className={`apply-position-modal ${ isSyncFromEmployee ? 'bg-approved' : backgroundColorMapping[this.props.type] }`} closeButton>
                         <Modal.Title>{t(this.props.title)}</Modal.Title>
                     </Modal.Header>
-                    <Modal.Body>
+                    <Modal.Body style={{ padding: '16px' }}>
                         <p>{t(this.props.message)}</p>
                         {
+                            !isSyncFromEmployee &&
                             Constants.STATUS_USE_COMMENT.includes(this.props.type) ?
                                 <div className="message">
                                     <textarea className="form-control" id="note" rows="4" value={this.state.message} onChange={this.handleChangeMessage}></textarea>
@@ -390,7 +448,7 @@ class ConfirmationModal extends React.Component {
                                 : null
                         }
                         <div className="clearfix">
-                            <button type="button" className={`btn btn-primary w-25 float-right ${backgroundColorMapping[this.props.type]}`} data-type="yes" disabled={this.state.disabledSubmitButton} onClick={this.ok.bind(this)}>
+                            <button type="button" className={`btn btn-primary w-25 float-right ${ isSyncFromEmployee ? 'bg-approved' : backgroundColorMapping[this.props.type] }`} data-type="yes" disabled={this.state.disabledSubmitButton} onClick={this.ok.bind(this)}>
                                 {!this.state.disabledSubmitButton ? t("Yes") :
                                     <Spinner
                                         as="span"

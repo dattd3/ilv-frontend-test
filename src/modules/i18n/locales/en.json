@@ -1769,5 +1769,9 @@
   "IncorrectPersonalIdentifyNumber": "ID No requires 9 or 12 numbers",
   "IncorrectMobileNoLength": "Phone number requires 10 characters",
   "IncorrectPersonalIdentifyPlace": "Please enter up to 30 characters",
-  "InvalidWorkingAge": "Input data invalid working age, do you still want to approve this request?"
+  "InvalidWorkingAge": "Input data invalid working age, do you still want to approve this request?",
+  "Sync": "Sync",
+  "RemindSync": "Remind: This feature only work after HR has reopen timelock at SAP",
+  "SyncApprovalSuccess": "Sync request is successful!",
+  "SyncRequestConfirmation": "Sync request confirmation"
 }

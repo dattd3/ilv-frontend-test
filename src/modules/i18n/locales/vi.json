@@ -1792,5 +1792,9 @@
   "IncorrectPersonalIdentifyNumber": "CMTND/CCCD yêu cầu 9 hoặc 12 số",
   "IncorrectMobileNoLength": "Số điện thoại phải chứa 10 ký tự",
   "IncorrectPersonalIdentifyPlace": "Số lượng ký tự tối đa là 30",
-  "InvalidWorkingAge": "CBNV chưa đến hoặc quá tuổi lao động. Bạn có muốn tiếp tục phê duyệt yêu cầu này không?"
+  "InvalidWorkingAge": "CBNV chưa đến hoặc quá tuổi lao động. Bạn có muốn tiếp tục phê duyệt yêu cầu này không?",
+  "Sync": "Đồng bộ",
+  "RemindSync": "Nhắc nhở: Tính năng này chỉ hỗ trợ khi HR đã mở khóa công",
+  "SyncApprovalSuccess": "Đồng bộ yêu cầu thành công!",
+  "SyncRequestConfirmation": "Xác nhận đồng bộ yêu cầu"
 }

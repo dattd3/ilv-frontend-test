@@ -2,6 +2,7 @@ import React from 'react'
 import editButton from '../../assets/img/icon/Icon-edit.svg'
 import deleteButton from '../../assets/img/icon-delete.svg'
 import evictionButton from '../../assets/img/eviction.svg'
+import IconSync from '../../assets/img/icon/Icon_Sync.svg'
 import CustomPaging from '../../components/Common/CustomPaging'
 
 import Select from 'react-select'
@@ -184,6 +185,32 @@ class RequestTaskList extends React.Component {
             typeRequest: Constants.STATUS_REVOCATION,
             dataToUpdate: prepareDataForCancel
         });
+    }
+
+    syncRequest = (requestTypeId, child) => {
+        const { t } = this.props
+
+        const prepareDataToSync =
+        {
+            id: parseInt(child.id.split(".")[0]),
+            requestTypeId: requestTypeId,
+            sub: [
+                {
+                    id: child?.id,
+                    processStatusId: Constants.STATUS_APPROVED,
+                    comment: 'Synchronized approval',
+                }
+            ]
+        }
+
+        this.setState({
+            modalTitle: t("SyncRequestConfirmation"),
+            modalMessage: t("RemindSync"),
+            isShowModalConfirm: true,
+            typeRequest: Constants.STATUS_REVOCATION,
+            dataToUpdate: prepareDataToSync,
+            isSyncFromEmployee: true
+        })
     }
 
     onHideModalConfirm = () => {
@@ -690,7 +717,7 @@ class RequestTaskList extends React.Component {
 
     render() {
         const { t, total, tasks } = this.props
-        const { pageNumber } = this.state
+        const { pageNumber, isSyncFromEmployee } = this.state
         const dataToSap = this.getDataToSAP(this.state.requestTypeId, this.state.dataToPrepareToSAP)
         const fullDay = 1
         const getRequestTypeLabel = (requestType, absenceTypeValue) => {
@@ -714,6 +741,7 @@ class RequestTaskList extends React.Component {
                     title={this.state.modalTitle}
                     type={this.state.typeRequest}
                     message={this.state.modalMessage}
+                    isSyncFromEmployee={isSyncFromEmployee}
                     onHide={this.onHideModalConfirm.bind(this)}
                 />
                 <RegistrationConfirmationModal show={this.state.isShowModalRegistrationConfirm} id={this.state.taskId} title={this.state.modalTitle} message={this.state.modalMessage}
@@ -858,6 +886,9 @@ class RequestTaskList extends React.Component {
                                             if ([Constants.OT_REQUEST].includes(child.requestTypeId)) {
                                               dateChanged = child.dateRange;
                                             }
+                                            let isShowSyncRequest = child?.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL 
+                                            && [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP, Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE, Constants.OT_REQUEST].includes(child?.requestTypeId)
+
                                             return (
                                                 <tr key={index}>
                                                     <td className="code"><a href={detailLink} title={child.requestType.name} className="task-title">{generateTaskCodeByCode(child.id)}</a></td>
@@ -900,6 +931,7 @@ class RequestTaskList extends React.Component {
                                                         {isShowEvictionButton && child.absenceType?.value != MOTHER_LEAVE_KEY
                                                             && <span title="Thu hồi" onClick={e => this.evictionRequest(child.requestTypeId, child)}><img alt="Thu hồi" src={evictionButton} /></span>}
                                                         {isShowDeleteButton && <span title="Hủy" onClick={e => this.deleteRequest(child.requestTypeId, child)}><img alt="Hủy" src={deleteButton} /></span>}
+                                                        {isShowSyncRequest && <span title={t("Sync")} onClick={e => this.syncRequest(child.requestTypeId, child)}><img alt={t("Sync")} src={IconSync} /></span>}
                                                     </td>
                                                 </tr>
                                             )
