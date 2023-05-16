@@ -1741,5 +1741,9 @@
   "CheckedOut": "Checked Out",
   "at": "At",
   "MissingKPI": "Missing KPI",
-  "NumberOfSharesConverted": "Number of shares converted"
+  "NumberOfSharesConverted": "Number of shares converted",
+  "Sync": "Sync",
+  "RemindSync": "Remind: This feature only work after HR has reopen timelock at SAP",
+  "SyncApprovalSuccess": "Sync request is successful!",
+  "SyncRequestConfirmation": "Sync request confirmation"
 }
