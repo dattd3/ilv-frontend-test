@@ -106,7 +106,8 @@ class StaffInfoProposedResignationComponent extends React.PureComponent {
                     departmentId: employee.orglv3_id,
                     unitId: employee.orglv5_id,
                     rankId: employee.rank_id,
-                    costCenter: employee.costCenter
+                    costCenter: employee.costCenter,
+                    master_code: employee.master_code
                 };
             })
     
