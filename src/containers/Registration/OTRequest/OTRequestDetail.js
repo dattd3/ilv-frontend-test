@@ -450,7 +450,7 @@ export default function OTRequestDetailComponent({ data, action }) {
         <div className="mb-30">
           <div className="block-title">{t("RequestHistory").toUpperCase()}</div>
           <div className="box shadow">
-            <div className="row">
+            <div className="row" style={{ rowGap: 20 }}>
               {
                 formatProcessTime(createDate) && <div className="col-4">
                   <div className="form-item">
@@ -476,7 +476,7 @@ export default function OTRequestDetailComponent({ data, action }) {
                 </div>
               }
               {
-                formatProcessTime(deletedDate) && <div className="col-4 mt-20">
+                formatProcessTime(deletedDate) && <div className="col-4">
                   <div className="form-item">
                     <div className="mb-12">{t("CancelDate")}</div>
                     <div className="field-view">{formatProcessTime(deletedDate)}</div>
