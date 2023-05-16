@@ -1758,5 +1758,9 @@
   "CheckedOut": "Đã check-out",
   "at": "tại",
   "MissingKPI": "Chưa có nội dung đánh giá",
-  "NumberOfSharesConverted": "Số Cổ phần quy đổi"
+  "NumberOfSharesConverted": "Số Cổ phần quy đổi",
+  "Sync": "Đồng bộ",
+  "RemindSync": "Nhắc nhở: Tính năng này chỉ hỗ trợ khi HR đã mở khóa công",
+  "SyncApprovalSuccess": "Đồng bộ yêu cầu thành công!",
+  "SyncRequestConfirmation": "Xác nhận đồng bộ yêu cầu"
 }
