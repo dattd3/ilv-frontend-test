@@ -61,7 +61,7 @@ const SalaryAdjustmentPropse = (props) => {
     message: "",
     isSuccess: false,
   });
-  const [proposalModal, setProposalModal] = useState({ show: false, index: -1 });
+  const [proposalModal, setProposalModal] = useState({ show: false, index: -1, data: null });
   const [modalStatus, setModalStatus] = useState({
     isShowStatusModal: false,
     content: "",
@@ -1220,17 +1220,18 @@ const SalaryAdjustmentPropse = (props) => {
   };
 
   const handleClickProposal = (index) => {
-    setProposalModal({ show: true, index });
+    setProposalModal({ show: true, index, data: selectMembers[index] });
   }
 
   const hideProposalModal = () => {
     setProposalModal({ show: false });
   };
 
-  const handleAcceptProposal = ({proposal, org}) => {
+  const handleAcceptProposal = ({proposal, orgTtl, orgValue}) => {
     const { index } = proposalModal;
     selectMembers[index].proposalTitle = proposal;
-    selectMembers[index].org = org;
+    selectMembers[index].orgTtl = orgTtl;
+    selectMembers[index].orgValue = orgValue;
 
     setSelectMembers(selectMembers);
     setProposalModal({ show: false })
@@ -1519,13 +1520,15 @@ const SalaryAdjustmentPropse = (props) => {
                   <span className="title font-weight-bold">* {t("proposal_title")}:</span>
                   <span className="w-100 proposal-title" onClick={() => handleClickProposal(index)}>
                     <select className="form-control w-100 bg-white" disabled>
-                      <option>{item?.proposalTitle || t("Select")}</option>
+                      <option dangerouslySetInnerHTML={{
+                      __html: `${item?.proposalTitle || t("Select")}`,
+                    }}/>
                     </select>
                   </span>
                 </div>
                 <div className="skill mt-2">
                   <span className="title font-weight-bold">* {t("proposal_org")}:</span>
-                  <span className="input form-control mv-10 w-100 disabled" >{item?.org}</span>
+                  <span className="input form-control mv-10 w-100 disabled" >{item?.orgTtl}</span>
                 </div>
               </td>
             )}
