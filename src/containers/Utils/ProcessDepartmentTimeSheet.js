@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import moment from 'moment'
-// import { formatStringByMuleValue } from "../../commons/Utils"
+import { formatStringDateTimeByMuleValue } from "../../commons/Utils"
 import Constants from "../../commons/Constants";
 
 const DATE_TYPE = {
@@ -42,7 +42,11 @@ const checkExist = (text) => {
 };
 
 const isHoliday = (item) => {
-    return item.shift_id == Constants.SHIFT_CODE_OFF || (item.is_holiday == 1 && currentUserPnLCode != Constants.pnlVCode.VinMec);
+    return (item.shift_id == Constants.SHIFT_CODE_OFF || (item.is_holiday == 1 && currentUserPnLCode != Constants.pnlVCode.VinMec)) 
+    && (
+      !formatStringDateTimeByMuleValue(item?.from_time1) && !formatStringDateTimeByMuleValue(item?.from_time2)
+      && !formatStringDateTimeByMuleValue(item?.to_time1) && !formatStringDateTimeByMuleValue(item?.to_time2)
+    )
 };
 
 const getDatetimeForCheckFail = (startTime, endTime, currentDay, nextDay) => {
