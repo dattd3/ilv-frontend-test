@@ -1778,7 +1778,7 @@ const SalaryAdjustmentPropse = (props) => {
               updateApprover={(approver, isApprover) =>
                 handleUpdateCoordinator(approver, isApprover)
               }
-              comment={dataSalary.coordinatorComment}
+              comment={dataSalary?.coordinatorComment}
             />
           </div>
         </>
