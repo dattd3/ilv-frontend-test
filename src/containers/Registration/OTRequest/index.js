@@ -115,14 +115,6 @@ export default function OTRequestComponent({ recentlyManagers }) {
     INIT_STATUS_MODAL_MANAGEMENT
   );
   const [confirmModal, setConfirmModal] = useState(DEFAULT_CONFIRM_MODAL);
-  const [timeRegisterRanges, setTimeRegisterRanges] = useState([
-    {
-      startTime: null,
-      endTime: null,
-      error:
-        "* Vui lòng nhập tối thiểu 30 phút cho Khối sản xuất, 60 phút cho các khối khác",
-    },
-  ]);
 
   const lang = localStorage.getItem("locale");
 
@@ -185,21 +177,6 @@ export default function OTRequestComponent({ recentlyManagers }) {
     const d = new Date(dayStr);
     const dayName = days[d.getDay()];
     return dayName;
-  };
-
-  const addTimeRange = () => {
-    setTimeRegisterRanges([
-      ...timeRegisterRanges,
-      {
-        startTime: null,
-        endTime: null,
-        error: "",
-      },
-    ]);
-  };
-
-  const deleteTimeRange = (index) => {
-    setTimeRegisterRanges(timeRegisterRanges.filter((_, i) => index !== i));
   };
 
   const searchData = async () => {
@@ -411,16 +388,16 @@ export default function OTRequestComponent({ recentlyManagers }) {
                 .reduce((acc, currValue) => acc + currValue.hoursOt * 1, 0);
               return {
                 ...item,
-                isOverOTFund: totalRegisterInMonth + item.totalHoursOtInMonth > otFund.hours
+                isOverOTFund: totalRegisterInMonth + item.totalHoursOtInMonth > otFund.hours * 1
               }
             }
           }
           return item;
         });
+        setRequestInfoData(requestData)
 
         if (requestData.some(item => item.isOverOTFund)) {
           setIsSendingRequest(false);
-          setRequestInfoData(requestData)
           return setConfirmModal({
             show: true,
             message: CONFIRM_TYPES.OVER_OT_FUNDS
@@ -429,7 +406,7 @@ export default function OTRequestComponent({ recentlyManagers }) {
       } catch (error) {}
     }
     setConfirmModal(DEFAULT_CONFIRM_MODAL);
-    const timesheets = [...requestInfoData]
+    const timesheets = [...requestData]
       .filter((item) => item.isEdited)
       .map((item) => ({
         ...item,
@@ -910,11 +887,8 @@ export default function OTRequestComponent({ recentlyManagers }) {
                       <div className="title">{t("OTRequest")}</div>
                       <div className="ot-registration-body">
                         <div className="ot-note">{t("OTNote")}</div>
-                        {timeRegisterRanges.map((range, rangeIndex) => (
-                          <div className="row mb-15" index={rangeIndex}>
+                          <div className="row mb-15">
                             <div className="col-5 mr-12">
-                              {rangeIndex === 0 && (
-                                <>
                                   <div className="mb-12">{t("OTReason")}</div>
                                   <Select
                                     classNamePrefix="ot-reason-select"
@@ -935,14 +909,10 @@ export default function OTRequestComponent({ recentlyManagers }) {
                                   <p className="text-danger">
                                     {errors[`reasonType_${index}`]}
                                   </p>
-                                </>
-                              )}
                             </div>
                             <div className="time-registration-container">
                               <div className="form-item">
-                                {rangeIndex === 0 && (
                                   <div className="mb-12">{t("FromHour")}</div>
-                                )}
                                 <DatePicker
                                   selected={
                                     !isNullCustomize(timesheet.startTime)
@@ -976,9 +946,7 @@ export default function OTRequestComponent({ recentlyManagers }) {
                                 </p>
                               </div>
                               <div className="form-item  end-time-container">
-                                {rangeIndex === 0 && (
                                   <div className="mb-12">{t("ToHour")}</div>
-                                )}
                                 <DatePicker
                                   selected={
                                     !isNullCustomize(timesheet.endTime)
@@ -1010,54 +978,8 @@ export default function OTRequestComponent({ recentlyManagers }) {
                                   {errors[`endTime_${index}`]}
                                 </p>
                               </div>
-                              {/* {timeRegisterRanges?.length === 1 ? (
-                                <button
-                                  className="add-time-block-btn"
-                                  onClick={addTimeRange}
-                                >
-                                  <img alt="addMore" src={IconPlus} />
-                                  &nbsp;
-                                  {t("AddMore")}
-                                </button>
-                              ) : (
-                                <div
-                                  style={{
-                                    marginTop: rangeIndex === 0 ? 29 : 0,
-                                  }}
-                                >
-                                  <button
-                                    className="action-time-range-btn cancel-time-range-btn"
-                                    onClick={() => deleteTimeRange(rangeIndex)}
-                                  >
-                                    <img alt="addMore" src={IconCancel} />
-                                  </button>
-                                  <button
-                                    className="action-time-range-btn"
-                                    disabled={
-                                      rangeIndex !==
-                                      timeRegisterRanges.length - 1
-                                    }
-                                    onClick={addTimeRange}
-                                  >
-                                    <img
-                                      alt="addMore"
-                                      src={IconPlus}
-                                      style={{
-                                        opacity:
-                                          rangeIndex ===
-                                          timeRegisterRanges.length - 1
-                                            ? 1
-                                            : 0.2,
-                                      }}
-                                    />
-                                  </button>
-                                </div>
-                              )}
-                              <div className="line-break" />
-                              <p className="text-danger">{range.error}</p> */}
                             </div>
                           </div>
-                        ))}
                         <p className="text-danger">
                           {errors[`overtime_${index}`]}
                         </p>
