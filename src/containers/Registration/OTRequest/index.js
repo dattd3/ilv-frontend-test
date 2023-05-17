@@ -427,15 +427,9 @@ export default function OTRequestComponent({ recentlyManagers }) {
       employeeNo: localStorage.getItem("employeeNo"),
     };
 
-    const comments = timesheets
-      .filter((item) => item.note)
-      .map((item) => item.note)
-      .join(" - ");
-
-    let bodyFormData = new FormData();
+    const bodyFormData = new FormData();
     bodyFormData.append("Name", t("OTRequest"));
     bodyFormData.append("RequestTypeId", OTRequestType);
-    bodyFormData.append("Comment", comments);
     bodyFormData.append("requestInfo", JSON.stringify(timesheets));
     bodyFormData.append(
       "divisionId",
