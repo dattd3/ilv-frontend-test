@@ -52,7 +52,8 @@ const formatNumberInteger = value => {
     return number.toString()
 }
 
-const checkOffset = (canvas, canvasWidth, canvasHeight, heightLeft,) => {
+const checkOffset = (canvas, canvasWidth, canvasHeight, heightLeft, needOffset) => {
+    if(!needOffset) return 0;
     var image1 = new Image();
     var context = canvas.getContext('2d');
     context.drawImage(image1, 0, 0);
@@ -85,7 +86,7 @@ const checkOffset = (canvas, canvasWidth, canvasHeight, heightLeft,) => {
 
 }
 
-const exportToPDF = (elementViewById, fileName) => {
+const exportToPDF = (elementViewById, fileName, needOffset = true) => {
     // const elementView = document.getElementById('frame-for-export')
     // const ratio = elementViewById.clientHeight / elementViewById.clientWidth
     const totalEdgeDistance = 14
@@ -118,7 +119,7 @@ const exportToPDF = (elementViewById, fileName) => {
 
         const marginX = totalEdgeDistance / 2
         const marginY = (pageHeight - canvasHeight) / 2
-        let offset = checkOffset(canvas, canvasWidth, canvasHeight, heightLeft - pageHeight);
+        let offset = checkOffset(canvas, canvasWidth, canvasHeight, heightLeft - pageHeight, needOffset);
         doc.addImage(image, 'JPEG', marginX, position + offset, canvasWidth, canvasHeight)
         heightLeft -= pageHeight;
         heightLeft += offset;
@@ -129,7 +130,7 @@ const exportToPDF = (elementViewById, fileName) => {
             if (heightLeft < pageHeight) {
                 offset = 0;
             } else {
-                offset = checkOffset(canvas, canvasWidth, canvasHeight, heightLeft - pageHeight);
+                offset = checkOffset(canvas, canvasWidth, canvasHeight, heightLeft - pageHeight, needOffset);
             }
             doc.addImage(image, 'JPEG', marginX, position + offset, canvasWidth, canvasHeight)
             heightLeft -= pageHeight;
