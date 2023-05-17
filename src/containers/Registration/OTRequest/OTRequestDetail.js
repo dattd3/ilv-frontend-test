@@ -541,6 +541,13 @@ export default function OTRequestDetailComponent({ data, action }) {
         >
           {t(showStatus(data.processStatusId, data.appraiser))}
         </span>
+        {
+          data.processStatusId == Constants.STATUS_REVOCATION && data.comment && <span
+            className="status"
+          >
+            {data.comment}
+          </span>
+        }
         {getMessageFromSap().length > 0 && (
           <div className={`d-flex status fail`}>
             <i className="fas fa-times pr-2 text-danger align-self-center"></i>
