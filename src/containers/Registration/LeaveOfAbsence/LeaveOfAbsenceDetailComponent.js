@@ -402,7 +402,9 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
                   return <div key={index}>{msg}</div>
                 })}
               </div>
-            </div>}
+            </div>
+          }
+          { leaveOfAbsence?.comment && <span className='cancellation-reason'>{ leaveOfAbsence?.comment }</span> } {/* comment -> lý do hủy từ api */}
         </div>
 
         {

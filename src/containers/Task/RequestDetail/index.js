@@ -316,6 +316,7 @@ class RequestDetail extends React.Component {
               <div>{responseDataFromSAP}</div>
             </div>
           }
+          { details?.comment && <span className='cancellation-reason'>{ details?.comment }</span> } {/* comment -> lý do hủy từ api */}
         </div>
         { isShowDocumentComponent ? 
           <>
