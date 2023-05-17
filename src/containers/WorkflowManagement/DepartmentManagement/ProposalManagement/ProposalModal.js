@@ -128,8 +128,6 @@ class ProposalModal extends React.Component {
       } = this.state,
       orgsOrigin = { ...ORG_DATA, pnls: this.state.orgsOrigin.pnls };
 
-    config.headers.api_key = 'eOF4S9HnLS29ALev';
-
     if (!!data?.pnl?.value) {
       const res = await axios.get(
         `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/masterdata/organization/structure/descendants?page_no=1&page_size=200&level=2&ancestor_id=${data?.pnl?.value}`,
