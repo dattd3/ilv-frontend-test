@@ -64,7 +64,7 @@ function JobDescVinFast(props) {
         ReportFor: data?.reportTo,
       },
       {
-        jobId: localStorage.getItem('jobId'),
+        JobId: localStorage.getItem('jobId'),
       },
     ],
     jdReport = [
