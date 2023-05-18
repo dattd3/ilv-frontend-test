@@ -16,6 +16,7 @@ import ResultModal from './edit/ResultModal'
 import ConfirmationModal from './edit/ConfirmationModal'
 import PersonalInfoEdit from "../PersonalInfo/edit/PersonalInfoEdit"
 import HOCComponent from '../../components/Common/HOCComponent'
+import LoadingModal from 'components/Common/LoadingModal';
 import map from '../../containers/map.config'
 
 const actionType = {
@@ -60,7 +61,8 @@ class MyComponent extends React.Component {
         message: "",
         actionType: actionType.createRequests
       },
-      errors: null
+      errors: null,
+      isLoading: false
     };
   }
 
@@ -250,6 +252,7 @@ class MyComponent extends React.Component {
   }
 
   sendRequests = async (message) => {
+    this.setState({ isLoading: true })
     const { t } = this.props
     const { relationshipInformation, resultModal } = this.state
     try {
@@ -312,6 +315,8 @@ class MyComponent extends React.Component {
       resultModal.isSuccess = false
       resultModal.message = t("AnErrorOccurred")
       this.setState({resultModal: resultModal})
+    } finally {
+      this.setState({ isLoading: false })
     }
   }
 
@@ -474,6 +479,7 @@ class MyComponent extends React.Component {
 
     return (
       <>
+      <LoadingModal show={this.state.isLoading} />
       <ConfirmationModal show={confirmationModal.isShow} title={confirmationModal.title} type={confirmationModal.actionType} message={confirmationModal.message} 
         sendData={this.updateMessageFromModal} onHide={this.onHideModalConfirm} />
       <ResultModal show={resultModal.isShow} title={resultModal.title} message={resultModal.message} isSuccess={resultModal.isSuccess} onHide={this.onHideResultModal} />

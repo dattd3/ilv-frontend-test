@@ -135,14 +135,6 @@ function SideBar(props) {
 
     const getNavigation = (role) => {
         let _navigation = [...Navigation];
-        if([Constants.pnlVCode.VinHome].includes(user.companyCode)) {
-          _navigation = _navigation.map(nav => {
-            if(nav.id == 1008) {
-              nav.role.push(...["C2", "C1","C"]);
-            }
-            return nav;
-          })
-        }
         let allNav = _navigation.filter(x => (x.role === 'A' || x.role === 'U' || x.role.includes(role) || x.role.indexOf(user.companyCode) >= 0));
         return getSubNav(allNav, 0);
     }
