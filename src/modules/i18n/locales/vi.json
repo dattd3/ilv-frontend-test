@@ -1797,5 +1797,6 @@
   "EmployeeNumber":"Mã NV",
   "ReportFor":"Báo cáo cho",
   "Drafter": "Người soạn thảo",
-  "Appraiser": "Người thẩm định"
+  "Appraiser": "Người thẩm định",
+  "HRAssetDate": "Thời gian nhân sự đánh giá"
 }

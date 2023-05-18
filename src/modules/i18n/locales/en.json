@@ -1780,5 +1780,6 @@
   "EmployeeNumber":"Employee ID",
   "ReportFor":"Reporting for",
   "Drafter": "Create by",
-  "Appraiser": "Consenter"
+  "Appraiser": "Consenter",
+  "HRAssetDate": "HR Asset Date"
 }
