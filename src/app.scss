@@ -2500,6 +2500,9 @@ span.badge-notification[data-badge]::after {
             .handover-software {
               overflow: initial;
             }
+            &.handover-fingerprints-email-col {
+              min-width: 170px;
+            }
           }
         }
         .full-name-col {
@@ -4319,5 +4322,14 @@ span.badge-notification[data-badge]::after {
   }
   .details-link:hover {
     text-decoration: none;
+  }
+}
+
+.request-processing {
+  .group {
+    grid-row-gap: 15px;
+    .detail {
+      margin-bottom: 0;
+    }
   }
 }

@@ -1,13 +1,15 @@
 import React from 'react'
+import { withTranslation } from "react-i18next"
+import _ from 'lodash'
 import PersonalComponent from './PersonalComponent'
 import EducationComponent from './EducationComponent'
 import FamilyComponent from './FamilyComponent'
 import DocumentComponent from './DocumentComponent'
 import Constants from '../../../commons/Constants'
 import ConfirmationModal from '../../PersonalInfo/edit/ConfirmationModal'
-import { withTranslation } from "react-i18next"
-import _ from 'lodash'
+import RequestProcessing from 'containers/Registration/RequestProcessing'
 import HOCComponent from '../../../components/Common/HOCComponent'
+import moment from '../../../../node_modules/moment/moment'
 
 class ApprovalDetail extends React.Component {
   constructor() {
@@ -135,12 +137,32 @@ class ApprovalDetail extends React.Component {
   }
 
   approval = () => {
-    const {t} = this.props;
+    const { userMainInfo } = this.state
+    const { t, data } = this.props
+
+    let age = 0
+    let modalMessage = t("ConfirmApproveChangeRequest")
+    const birthdayInfoUpdating = (userMainInfo || []).find(item => item?.Birthday)
+
+    if (birthdayInfoUpdating) {
+      age = moment().year() - moment(birthdayInfoUpdating?.Birthday[0][1], 'DD-MM-YYYY').year() + 1 // Hiện tại năm 2000, sửa năm sinh thành năm 2000 => số tuổi = 1
+      const rangeMaleAge = [15, 60]
+      const rangeFemaleAge = [15, 55]
+
+      if (
+        (data?.requestInfo?.update?.userProfileHistoryMainInfo?.UserGender == Constants.GENDER.MALE && (age < rangeMaleAge[0] || age > rangeMaleAge[1]))
+        || (data?.requestInfo?.update?.userProfileHistoryMainInfo?.UserGender == Constants.GENDER.FEMALE && (age < rangeFemaleAge[0] || age > rangeFemaleAge[1]))
+      ) {
+        modalMessage = t("InvalidWorkingAge")
+      }
+    }
+
     this.setState({
       modalTitle: t("ApproveRequest"),
-      modalMessage: t("ConfirmApproveChangeRequest"),
+      modalMessage: modalMessage,
       typeRequest: 2
     });
+
     this.onShowModalConfirm();
   }
 
@@ -255,6 +277,14 @@ class ApprovalDetail extends React.Component {
       return null
     }
 
+    const timeProcessing = {
+      createDate: data?.createDate,
+      assessedDate: data?.assessedDate,
+      approvedDate: data?.approvedDate,
+      updatedDate: data?.updatedDate,
+      deletedDate: data?.deletedDate,
+    }
+
     return (
       <>
       <ConfirmationModal data={data} show={isShowModalConfirm} manager={this.manager} title={modalTitle} type={typeRequest} message={modalMessage} 
@@ -320,6 +350,9 @@ class ApprovalDetail extends React.Component {
           </>
           : null
         }
+
+        <RequestProcessing {...timeProcessing} />
+
         <div className="block-status">
           <span className={`status ${determineStatus[processStatusId]?.className}`}>{determineStatus[processStatusId]?.label}</span>
           { processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && getSAPResponsePartiallySuccess() }

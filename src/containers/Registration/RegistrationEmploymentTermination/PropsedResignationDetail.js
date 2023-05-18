@@ -5,25 +5,9 @@ import moment from 'moment'
 import DetailButtonComponent from '../DetailButtonComponent'
 import AttachmentComponent from '../TerminationComponents/AttachmentComponent'
 import Constants from '../.../../../../commons/Constants'
-import { getResignResonsMasterData } from 'commons/Utils'
+import { getResignResonsMasterData, formatProcessTime } from 'commons/Utils'
 
 class RegistrationEmploymentTermination extends React.Component {
-    constructor(props) {
-        super()
-        this.state = {
-            reasonTypes: [],
-            userInfos: [],
-            infos: {},
-            staffTerminationDetail: {},
-            directManager: null,
-            seniorExecutive: null,
-            files: [],
-            isUpdateFiles: false,
-            isEdit: false,
-            dateStartWork: ''
-        }
-    }
-
     updateTabLink = key => {
         this.props.history.push('?tab=' + key)
         this.setState({ tab: key })
@@ -31,19 +15,6 @@ class RegistrationEmploymentTermination extends React.Component {
 
     render() {
         const { t, resignInfo } = this.props
-        const {
-            isEdit,
-            titleModal,
-            messageModal,
-            disabledSubmitButton,
-            isShowStatusModal,
-            isSuccess,
-            reasonTypes,
-            infos,
-            directManager,
-            seniorExecutive,
-            dateStartWork
-        } = this.state
 
         if (!resignInfo.requestInfo) {
             return null;
@@ -218,6 +189,38 @@ class RegistrationEmploymentTermination extends React.Component {
                                 </div>
                                 : null
                         }
+                    </div>
+                </div>
+
+                <div className="block senior-executive">
+                    <div className="box shadow">
+                        <h6 className="block-title has-border-bottom">{t('RequestHistory')}</h6>
+                        <div className="row">
+                            {
+                                formatProcessTime(resignInfo?.createDate) && <div className="col-4">
+                                    <p className="title">{t('TimeToSendRequest')}</p>
+                                    <div>
+                                        <div className="detail">{formatProcessTime(resignInfo?.createDate)}</div>
+                                    </div>
+                                </div>
+                            }
+                            {
+                                formatProcessTime(resignInfo?.approvedDate) && <div className="col-4">
+                                    <p className="title">{t('ApprovalDate')}</p>
+                                    <div>
+                                        <div className="detail">{formatProcessTime(resignInfo?.approvedDate)}</div>
+                                    </div>
+                                </div>
+                            }
+                            {
+                                formatProcessTime(resignInfo?.deletedDate) && <div className="col-4">
+                                    <p className="title">{t('CancelDate')}</p>
+                                    <div>
+                                        <div className="detail">{formatProcessTime()}</div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
                     </div>
                 </div>
 

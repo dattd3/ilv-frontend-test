@@ -134,7 +134,8 @@ function SideBar(props) {
     const { show } = props;
 
     const getNavigation = (role) => {
-        let allNav = Navigation.filter(x => (x.role === 'A' || x.role === 'U' || x.role.includes(role) || x.role.indexOf(user.companyCode) >= 0));
+        let _navigation = [...Navigation];
+        let allNav = _navigation.filter(x => (x.role === 'A' || x.role === 'U' || x.role.includes(role) || x.role.indexOf(user.companyCode) >= 0));
         return getSubNav(allNav, 0);
     }
 

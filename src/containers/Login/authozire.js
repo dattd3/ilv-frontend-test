@@ -170,6 +170,7 @@ function Authorize(props) {
                             employeeNo: user.uid,
                             jobType: user.rank_name,
                             department: `${user.division} / ${user.department} / ${user.unit}`,
+                            organizationLvId: user.organization_id,
                             organizationLv1: user.organization_lv1,
                             organizationLv2: user.organization_lv2,
                             organizationLv3: user.organization_lv3,
@@ -191,8 +192,9 @@ function Authorize(props) {
                             role_assigment: user.role_assigment,
                             prepare: shouldShowPrepareOnboard,
                             jobCode: user?.job_code,
+                            master_code: user.master_code || ''
                         });
-                        // FirebaseUpdateToken();
+                        FirebaseUpdateToken();
                     }
                 })
                 .catch(error => {
@@ -235,6 +237,7 @@ function Authorize(props) {
                         role_assigment: user.role_assigment,
                         prepare: shouldShowPrepareOnboard,
                         jobCode: user?.job_code,
+                        master_code: ''
                     });
                 })
                 .finally(result => {
@@ -263,6 +266,7 @@ function Authorize(props) {
             companyCode: userProfile.company_code,
             departmentName: userProfile.department,
             culture: localStorage.getItem('locale').split("-")[0],
+            orgLvId: userProfile.organization_id,
             orgLv2Id: userProfile.organization_lv2,
             orgLv3Id: userProfile.organization_lv3,
             orgLv4Id: userProfile.organization_lv4,

@@ -21,10 +21,10 @@ import _, { debounce } from 'lodash'
 import DatePicker, { registerLocale } from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import { vi, enUS } from 'date-fns/locale'
-import { getMuleSoftHeaderConfigurations } from '../../../commons/Utils'
+import { formatProcessTime, getMuleSoftHeaderConfigurations } from '../../../commons/Utils'
 import LoadingSpinner from '../../../components/Forms/CustomForm/LoadingSpinner'
 import LoadingModal from '../../../components/Common/LoadingModal'
-import { checkIsExactPnL, checkVersionPnLSameAsVinhome } from '../../../commons/commonFunctions'
+import { checkVersionPnLSameAsVinhome, IS_VINFAST } from '../../../commons/commonFunctions'
 import ContractEvaluationdetail from './detail'
 import HOCComponent from '../../../components/Common/HOCComponent'
 import SalaryModal from './SalaryModal'
@@ -38,7 +38,6 @@ const TIME_OF_SAP_FORMAT = 'HHmm00'
 const FULL_DAY = true
 const GROUP_EMAIL_EXTENSION = '@vingroup.net'
 
-const IS_VINFAST = checkIsExactPnL(Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading);
 class LeaveOfAbsenceDetailComponent extends React.Component {
 
   HD_THUVIEC = 2;
@@ -162,7 +161,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     const currentEmployeeNo = localStorage.getItem('email');
     const currentEmployeeCode = localStorage.getItem('employeeNo');
     const data = this.state.data;
-    const dateToCheck = data.contractType == 'VA' ? (checkVersionPnLSameAsVinhome(Constants.MODULE.DANHGIA_TAIKI) ? -75 : -45) : (checkIsExactPnL(Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading) ? -14 : -7); 
+    const dateToCheck = data.contractType == 'VA' ? (checkVersionPnLSameAsVinhome(Constants.MODULE.DANHGIA_TAIKI) ? -75 : -45) : (IS_VINFAST ? -14 : -7); 
     const isAfterT_7 = data.employeeInfo && data.employeeInfo.startDate && moment(new Date()).diff(moment(data.employeeInfo.expireDate), 'days') > dateToCheck ? true : false;
     let shouldDisable = false;
     let isNguoidanhgia = false;
@@ -203,7 +202,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         shouldDisable = true;
     }
     let canAddJob = !isAfterT_7; //data.canAddJob && !isAfterT_7
-    if(checkIsExactPnL(Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading)) {
+    if(IS_VINFAST) {
       canAddJob = true//data.canAddJob;
     }
     if(this.state.type == 'edit' && data.processStatus == 9 && canAddJob ){
@@ -306,7 +305,12 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         appraiserComment: null,
         approverComment: null,
         hrAppraiserComment: null,
-        supervisorComment: null
+        supervisorComment: null,
+        createdDate: null,
+        assessedDate: null,
+        supervisorDate: null,
+        approvalDate: null,
+        deletedDate: null
       },
       errors: {
         // rating: '(Bắt buộc)',
@@ -347,7 +351,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     }
   
     if(type === 'request'){
-      let _showComponent = {...this.employeeSetting.showComponent, JobEditing: checkIsExactPnL(Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading) ? false : this.employeeSetting.showComponent.JobEditing}
+      let _showComponent = {...this.employeeSetting.showComponent, JobEditing: IS_VINFAST ? false : this.employeeSetting.showComponent.JobEditing}
       this.setState({
         showComponent: _showComponent,
         disableComponent: {...this.employeeSetting.disableComponent, disableAll: true},
@@ -687,6 +691,11 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
       candidateInfos.supervisorComment = infos.requestHistorys.supervisorComment; 
       candidateInfos.hrAppraiserComment = infos.requestHistorys.hrAppraiserComment; 
       candidateInfos.approverComment = infos.requestHistorys.approverComment; 
+      candidateInfos.createdDate = infos.requestHistorys.createdDate;
+      candidateInfos.assessedDate = infos.requestHistorys.assessedDate;
+      candidateInfos.supervisorDate = infos.requestHistorys.supervisorDate;
+      candidateInfos.deletedDate = infos.requestHistorys.deletedDate;
+      candidateInfos.hrAppraiserDate = infos.requestHistorys.hrAppraiserDate;
     }
     candidateInfos.documentStatus = infos.profileStatus;
     const cvs = this.prepareCVResponses(infos.staffProfileDocuments)
@@ -1354,7 +1363,6 @@ renderEvalution = (name, data, isDisable) => {
   }
 
   createFormSalary = () => {
-    console.log('create form salary');
     this.setState({ isShowSalaryPropose: false });
     this.props.history.push(`/salarypropse/${this.state.id}/create/request`)
   }
@@ -1864,7 +1872,7 @@ renderEvalution = (name, data, isDisable) => {
                 <div  style={{height: '2px', backgroundColor: '#F2F2F2', margin: '15px 0'}}></div>
                 </div>
               </div>
-              <ApproverComponent comment={data.supervisorComment} isEdit={disableComponent.disableAll || !disableComponent.employeeSide} approver={data.qltt}  updateApprover={(approver, isApprover) => this.updateApprover('qltt', approver,isApprover )} />
+              <ApproverComponent employeeType="APPRAISER" comment={data.supervisorComment} isEdit={disableComponent.disableAll || !disableComponent.employeeSide} approver={data.qltt}  updateApprover={(approver, isApprover) => this.updateApprover('qltt', approver,isApprover )} />
               {this.state.errors && this.state.errors['qltt'] ? <p className="text-danger">{this.state.errors['qltt']}</p> : null}
             </div>
 
@@ -1980,7 +1988,7 @@ renderEvalution = (name, data, isDisable) => {
                 <div  style={{height: '2px', backgroundColor: '#F2F2F2', margin: '15px 0'}}></div>
                 </div>
               </div>
-              <ApproverComponent comment={data.approverComment} isEdit={disableComponent.disableAll || !disableComponent.employeeSide} approver={data.qltt}  updateApprover={(approver, isApprover) => this.updateApprover('qltt', approver,isApprover )} />
+              <ApproverComponent employeeType="APPRAISER" comment={data.appraiserComment} isEdit={disableComponent.disableAll || !disableComponent.employeeSide} approver={data.qltt}  updateApprover={(approver, isApprover) => this.updateApprover('qltt', approver,isApprover )} />
               {this.state.errors && this.state.errors['qltt'] ? <p className="text-danger">{this.state.errors['qltt']}</p> : null}
             </div>
             {
@@ -2012,7 +2020,7 @@ renderEvalution = (name, data, isDisable) => {
                   <div  style={{height: '2px', backgroundColor: '#F2F2F2', margin: '15px 0'}}></div>
                   </div>
                 </div>
-                <ApproverComponent approvalDate = {data.approvalDate && data.processStatus == 2 ? data.approvalDate : null} comment={data.approverComment} isEdit={disableComponent.disableAll || !disableComponent.qlttSide} approver={data.nguoipheduyet}  updateApprover={(approver, isApprover) => this.updateApprover('nguoipheduyet', approver,isApprover )} />
+                <ApproverComponent employeeType="APPROVER" approvalDate = {data.approvalDate && data.processStatus == 2 ? data.approvalDate : null} comment={data.approverComment} isEdit={disableComponent.disableAll || !disableComponent.qlttSide} approver={data.nguoipheduyet}  updateApprover={(approver, isApprover) => this.updateApprover('nguoipheduyet', approver,isApprover )} />
                 {this.state.errors && this.state.errors['boss'] ? <p className="text-danger">{this.state.errors['boss']}</p> : null}
               </div> : null
             }
@@ -2161,7 +2169,7 @@ renderEvalution = (name, data, isDisable) => {
                 <div  style={{height: '2px', backgroundColor: '#F2F2F2', margin: '15px 0'}}></div>
                 </div>
               </div>
-              <ApproverComponent approvalDate = {data.approvalDate && data.processStatus == 2 ? data.approvalDate : null} comment={data.approverComment} isEdit={disableComponent.disableAll || !disableComponent.qlttSide} approver={data.nguoipheduyet}  updateApprover={(approver, isApprover) => this.updateApprover('nguoipheduyet', approver,isApprover )} />
+              <ApproverComponent employeeType="APPROVER" approvalDate = {data.approvalDate && data.processStatus == 2 ? data.approvalDate : null} comment={data.approverComment} isEdit={disableComponent.disableAll || !disableComponent.qlttSide} approver={data.nguoipheduyet}  updateApprover={(approver, isApprover) => this.updateApprover('nguoipheduyet', approver,isApprover )} />
               {this.state.errors && this.state.errors['boss'] ? <p className="text-danger">{this.state.errors['boss']}</p> : null}
             </div>
             </>
@@ -2199,6 +2207,70 @@ renderEvalution = (name, data, isDisable) => {
         </div>
         </> : null
         } */}
+        {
+          data.processStatus !== Constants.STATUS_OB_SELF_EVALUATION &&         
+            <div className="box shadow cbnv">
+              <div className="row approve">
+                <div className="col-12">
+                  <span className="title">{t('RequestHistory').toUpperCase()}</span>
+                </div>
+              </div>
+              <div className="row">
+                <div className="col-12">
+                  <div  style={{height: '2px', backgroundColor: '#F2F2F2', margin: '15px 0'}}></div>
+                </div>
+              </div>
+              <div className="row">
+                <div className="col-12">
+                  <div className="divider"></div>
+                </div>
+                <div className="col-12">
+                  <div className="row">
+                  {
+                    formatProcessTime(data.createdDate) && <div className="col-4">
+                    {t("TimeToSendRequest")}
+                    <div className="detail">
+                      {formatProcessTime(data.createdDate)}
+                    </div>
+                  </div>
+                  }
+                  {
+                    formatProcessTime(data.assessedDate) && <div className="col-4">
+                      {t("SupervisorAssetDate")}
+                      <div className="detail">
+                        {formatProcessTime(data.assessedDate)}
+                      </div>
+                    </div>
+                  }
+                  {
+                    formatProcessTime(data.supervisorDate) && <div className="col-4">
+                      {t("ConsentDate")}
+                      <div className="detail">
+                        {formatProcessTime(data.supervisorDate)}
+                      </div>
+                    </div>
+                  }
+                  {
+                    formatProcessTime(data.hrAppraiserDate) && <div className="col-4">
+                      {t("HRAssetDate")}
+                      <div className="detail">
+                        {formatProcessTime(data.hrAppraiserDate)}
+                      </div>
+                    </div>
+                  }
+                  {
+                    formatProcessTime(data.approvalDate) && <div className="col-4">
+                      {t("ApprovalDate")}
+                      <div className="detail">
+                        {formatProcessTime(data.approvalDate)}
+                      </div>
+                    </div>
+                  }
+                  </div>
+                </div>
+              </div>
+            </div>
+        }
 
           {dataSalary?.childRequestHistoryId &&
             <>
