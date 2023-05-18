@@ -152,7 +152,8 @@ class SearchHRComponent extends React.Component {
       this.setState({isSearching: true})
       const payload = {
         account: value,
-        employeeNo: localStorage.getItem('employeeNo')
+        employeeNo: localStorage.getItem('employeeNo'),
+        pnl_code: localStorage.getItem('companyCode')
       }
       axios.post(`${process.env.REACT_APP_REQUEST_URL}user/employee/hr_officer`, payload, config)
         .then(res => {
