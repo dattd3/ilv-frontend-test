@@ -105,7 +105,8 @@ class DirectManagerInfoComponent extends Component {
 
       const payload = {
         account: value,
-        status: 3
+        status: 3,
+        employee_type: "APPRAISER"
       }
       axios.post(`${process.env.REACT_APP_REQUEST_URL}user/employee/search`, payload, config)
       .then(res => {

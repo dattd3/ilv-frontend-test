@@ -112,6 +112,7 @@ class ProposedResignationPage extends React.Component {
                         job_name: res.position_name,
                         company_email: res.username,
                         department: res.division + (res.department ? '/' + res.department : '') + (res.unit ? '/' + res.unit : ''),
+                        departmentName: res.division || '',
                         date_start_work: null,
                         contract_type: null, // need update
                         contract_name: null, // need update
@@ -125,7 +126,8 @@ class ProposedResignationPage extends React.Component {
                         orglv6_id: res.organization_lv6, // need update
                         rank_id: res.rank, // need update
                         rank_name: res.rank_title && res.rank_title != '#' ? res.rank_title : res.rank,// need update
-                        costCenter: res.cost_center || ''
+                        costCenter: res.cost_center || '',
+                        master_code: res.master_code
                     }
                 })
             }

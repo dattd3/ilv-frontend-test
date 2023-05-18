@@ -4,6 +4,7 @@ import _ from 'lodash'
 import { withTranslation } from "react-i18next"
 import DetailButtonComponent from '../DetailButtonComponent'
 import ApproverDetailComponent from '../ApproverDetailComponent'
+import RequestProcessing from '../RequestProcessing'
 import StatusModal from '../../../components/Common/StatusModal'
 import Constants from '../.../../../../commons/Constants'
 import { getRequestTypeIdsAllowedToReApproval } from "../../../commons/Utils"
@@ -94,6 +95,14 @@ class SubstitutionDetailComponent extends React.Component {
     if (substitution && Object.values(substitution.appraiser).some(item => item !== null && item !== '')
       && Constants.STATUS_TO_SHOW_CONSENTER.includes(substitution.processStatusId)) {
       isShowAppraisalInfo = true
+    }
+
+    const timeProcessing = {
+      createDate: substitution?.createDate,
+      assessedDate: substitution?.assessedDate,
+      approvedDate: substitution?.approvedDate,
+      updatedDate: substitution?.updatedDate,
+      deletedDate: substitution?.deletedDate,
     }
 
     return (
@@ -197,17 +206,29 @@ class SubstitutionDetailComponent extends React.Component {
           isShowAppraisalInfo && 
           <>
             <h5>{t("ConsenterInformation")}</h5>
-            <ApproverDetailComponent title={t("Consenter")} approver={substitution.appraiser} status={substitution.requestInfo ? substitution.processStatusId : ""} hrComment={substitution.appraiserComment} />
+            <ApproverDetailComponent
+              title={t("Consenter")}
+              manager={substitution.appraiser}
+              status={substitution.requestInfo ? substitution.processStatusId : ""}
+              hrComment={substitution.appraiserComment}
+              isApprover={false} />
           </>
         }
         
         {
-          substitution && (Constants.STATUS_TO_SHOW_APPROVER.includes(substitution.processStatusId )) ?
+          substitution && (Constants.STATUS_TO_SHOW_APPROVER.includes(substitution.processStatusId )) &&
           <>
             <h5>{t("ApproverInformation")}</h5>
-            <ApproverDetailComponent title={t("Approver")} approver={substitution.approver} status={substitution.processStatusId} hrComment={substitution.approverComment} />
-          </> : null
+            <ApproverDetailComponent
+              title={t("Approver")}
+              manager={substitution.approver}
+              status={substitution.processStatusId}
+              hrComment={substitution.approverComment}
+              isApprover={true} />
+          </>
         }
+
+        <RequestProcessing {...timeProcessing} />
 
         {
           substitution.requestDocuments.length > 0 ?
@@ -233,7 +254,9 @@ class SubstitutionDetailComponent extends React.Component {
                   return <div key={index}>{msg}</div>
                 })}
               </div>
-            </div>}
+            </div>
+          }
+          { substitution?.comment && <span className='cancellation-reason'>{ substitution?.comment }</span> } {/* comment -> lý do hủy từ api */}
         </div>
         {
           substitution 

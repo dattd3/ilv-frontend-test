@@ -265,8 +265,8 @@ function Header(props) {
           window.location.href = process.env.REACT_APP_AWS_COGNITO_IDP_SIGNOUT_URL;
           // Auth.signOut({ global: true });
         } catch {
-          localStorage.removeItem("firebaseToken");
-          localStorage.removeItem("userFirebaseToken");
+          // localStorage.removeItem("firebaseToken");
+          // localStorage.removeItem("userFirebaseToken");
           guard.setLogOut();
           window.location.reload();
         }

@@ -12,7 +12,9 @@ import MemberOption from "../MemberOption"
 import Constants from '../../../../commons/Constants'
 import { saveAs } from 'file-saver'
 import { getMuleSoftHeaderConfigurations } from "../../../../commons/Utils"
-import { checkIsExactPnL } from "commons/commonFunctions";
+import { IS_VINFAST } from "commons/commonFunctions";
+import Spinner from 'react-bootstrap/Spinner';
+
 registerLocale("vi", vi);
 
 class FilterDataShirfReport extends React.Component {
@@ -30,7 +32,8 @@ class FilterDataShirfReport extends React.Component {
       selectedMembers: [],
       showMemberOption: false,
       reportType: -1,
-      errors: {}
+      errors: {},
+      isLoading: false
     };
 
     this.setStartDate = this.setStartDate.bind(this);
@@ -105,34 +108,31 @@ class FilterDataShirfReport extends React.Component {
       endDate: moment(this.state.endDate).format("YYYY-MM-DD[T]23:59:59.999")
     }
     const { t } = this.props;
-
+    this.setState({
+      isLoading: true
+    })
     axios.post(`${process.env.REACT_APP_REQUEST_URL}report/shift`, JSON.stringify(data), config)
       .then(async (responses) => {
-        const responseDataJSON = JSON.parse(await responses?.data?.text());
 
-        if (responseDataJSON?.data) {
+        if (responses.status === 200 && responses.headers['content-type'] === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
           this.resetErrors();
-          if (responses.status === 200) {
-            const blob = new Blob([responses.data], { type: "text/plain;charset=utf-8" })
-            let fileName = "";
-            switch (this.state.reportType) {
-              case 0:
-                fileName = "ReportDetail"
-                break;
-              case 1:
-                fileName = "ReportSummary"
-                break;
-              case 2:
-                fileName = 'ReportTimesheetSummary';
-                break;
-              default:
-                fileName = "Report"
-                break;
-            }
-            saveAs(blob, `${fileName}_${moment(new Date(), 'MM-DD-YYYY_HHmmss').format('MM-DD-YYYY_HHmmss')}.xlsx`)
-          } else {
-            console.log('error');
+          const blob = new Blob([responses.data], { type: "text/plain;charset=utf-8" })
+          let fileName = "";
+          switch (this.state.reportType) {
+            case 0:
+              fileName = "ReportDetail"
+              break;
+            case 1:
+              fileName = "ReportSummary"
+              break;
+            case 2:
+              fileName = 'ReportTimesheetSummary';
+              break;
+            default:
+              fileName = "Report"
+              break;
           }
+          saveAs(blob, `${fileName}_${moment(new Date(), 'MM-DD-YYYY_HHmmss').format('MM-DD-YYYY_HHmmss')}.xlsx`)
         } else {
           const err = this.state.errors;
           const errNew = {
@@ -141,9 +141,12 @@ class FilterDataShirfReport extends React.Component {
           }
           this.setState({ errors: errNew });
         }
-
       }).catch(error => {
         console.log(error);
+      }).finally(() => {
+        this.setState({
+          isLoading: false
+        })
       })
   }
 
@@ -253,7 +256,7 @@ class FilterDataShirfReport extends React.Component {
       { value: Constants.TYPE_REPORT.DETAIL_REPORT, label: t("DetailReport") },
       { value: Constants.TYPE_REPORT.SUMARY_REPORT, label: t("SumaryReport") },
     ];
-    if(checkIsExactPnL(Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading)) {
+    if(IS_VINFAST) {
       reportTypes.push({ value: Constants.TYPE_REPORT.TIMESHEET_REPORT, label: t("TimesheetSumaryReport") });
     }
 
@@ -263,6 +266,7 @@ class FilterDataShirfReport extends React.Component {
 
     return (
       <>
+        {/* <LoadingModal show={this.state.isLoading} /> */}
         <div className="timesheet-box shadow">
           <div className="row">
             <div className="col-lg-2">
@@ -341,9 +345,14 @@ class FilterDataShirfReport extends React.Component {
                   type="button"
                   className="btn btn-primary"
                   onClick={this.download}
+                  disabled={this.state.isLoading}
                 >
-                  <i className="fas fa-download mr-1"></i>
-                  {t("LabelDownloadReport")}
+                  {
+                    this.state.isLoading ? <Spinner animation="border" size="sm" /> : <>
+                      <i className="fas fa-download mr-1"></i>
+                      {t("LabelDownloadReport")}
+                    </>
+                  }
                 </button>
               </div>
             </div>

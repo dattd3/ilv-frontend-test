@@ -15,6 +15,7 @@ import "react-toastify/dist/ReactToastify.css";
 import CloseIcon from "assets/img/icon/icon_x.svg";
 import Constants from "commons/Constants";
 import NewestNotificationContext from "modules/context/newest-notification-context";
+import Maintenance from "containers/Maintenance";
 
 const listUsersIgnoreMaintenanceMode = [
   "cuongnv56@vingroup.net",
