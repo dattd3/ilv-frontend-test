@@ -1755,5 +1755,6 @@
   "ConsentDate": "Consent Date",
   "ApprovalDate": "Approval Date",
   "CancelDate": "Cancel Date",
-  "SupervisorAssetDate": "Suppervisor Asset Date"
+  "SupervisorAssetDate": "Suppervisor Asset Date",
+  "HRAssetDate": "HR Asset Date"
 }
