@@ -521,6 +521,9 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         _canEditable[name] = true;
       }
     }
+    if(approver) {
+      approver.avatar = '';
+    }
     this.setState({
       canEditable: _canEditable,
       data: {
