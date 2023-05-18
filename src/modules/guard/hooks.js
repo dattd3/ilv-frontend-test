@@ -60,6 +60,7 @@ const Storage = {
     localStorage.setItem('department', currentAuthUser.department);
     localStorage.setItem('avatar', currentAuthUser.avatar);
     localStorage.setItem('benefitTitle', currentAuthUser.benefitTitle);
+    localStorage.setItem('organizationLvId', currentAuthUser.organizationLvId);
     localStorage.setItem('organizationLv1', currentAuthUser.organizationLv1);
     localStorage.setItem('organizationLv2', currentAuthUser.organizationLv2);
     localStorage.setItem('organizationLv3', currentAuthUser.organizationLv3);
@@ -80,6 +81,7 @@ const Storage = {
     localStorage.setItem('role_assigment', currentAuthUser.role_assigment);
     localStorage.setItem('prepare', currentAuthUser.prepare);
     localStorage.setItem('jobCode', currentAuthUser.jobCode);
+    localStorage.setItem('master_code', currentAuthUser.master_code);
   },
   load() {
     const accessToken = localStorage.getItem('accessToken');
@@ -104,6 +106,7 @@ const Storage = {
       avatar: localStorage.getItem('avatar'),
       employeeNo: localStorage.getItem('employeeNo'),
       benefitTitle: localStorage.getItem('benefitTitle'),
+      organizationLvId: localStorage.getItem('organizationLvId'),
       organizationLv1: localStorage.getItem('organizationLv1'),
       organizationLv2: localStorage.getItem('organizationLv2'),
       organizationLv3: localStorage.getItem('organizationLv3'),
@@ -124,6 +127,7 @@ const Storage = {
       role_assigment: localStorage.getItem('role_assigment'),
       prepare: localStorage.getItem('prepare'),
       jobCode: localStorage.getItem('jobCode'),
+      master_code: localStorage.getItem('master_code')
     }
   },
   reset() {
@@ -147,6 +151,7 @@ const Storage = {
     localStorage.removeItem('jobType');
     localStorage.removeItem('avatar');
     localStorage.removeItem('benefitTitle');
+    localStorage.removeItem('organizationLvId');
     localStorage.removeItem('organizationLv1');
     localStorage.removeItem('organizationLv2');
     localStorage.removeItem('organizationLv3');
@@ -167,6 +172,7 @@ const Storage = {
     localStorage.removeItem('role_assigment');
     localStorage.removeItem('prepare');
     localStorage.removeItem('jobCode');
+    localStorage.removeItem('master_code');
   }
 }
 
@@ -190,6 +196,7 @@ const deserialize = (currentAuthUser) => ({
   avatar: currentAuthUser.avatar,
   employeeNo: currentAuthUser.employeeNo,
   benefitTitle: currentAuthUser.benefitTitle,
+  organizationLvId: currentAuthUser.organizationLvId,
   organizationLv1: currentAuthUser.organizationLv1,
   organizationLv2: currentAuthUser.organizationLv2,
   organizationLv3: currentAuthUser.organizationLv3,
@@ -210,4 +217,5 @@ const deserialize = (currentAuthUser) => ({
   role_assigment: currentAuthUser.role_assigment,
   prepare: currentAuthUser.prepare,
   jobCode: currentAuthUser.jobCode,
+  master_code: currentAuthUser.master_code
 })

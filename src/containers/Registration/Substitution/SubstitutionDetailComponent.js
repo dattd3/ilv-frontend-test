@@ -233,7 +233,9 @@ class SubstitutionDetailComponent extends React.Component {
                   return <div key={index}>{msg}</div>
                 })}
               </div>
-            </div>}
+            </div>
+          }
+          { substitution?.comment && <span className='cancellation-reason'>{ substitution?.comment }</span> } {/* comment -> lý do hủy từ api */}
         </div>
         {
           substitution 

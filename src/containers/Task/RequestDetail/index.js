@@ -213,7 +213,7 @@ class RequestDetail extends React.Component {
   }
 
   render() {
-    const { t } = this.props
+    const { t, details } = this.props
     const { isShowModalConfirm, modalTitle, typeRequest, modalMessage, userInfo, isShowPersonalComponent, isShowEducationComponent, isShowFamilyComponent, userMainInfo, 
       userEducationUpdate, userEducationCreate, userFamilyUpdate, userFamilyCreate, status, hrComment, isShowDocumentComponent, documents, requestTypeId, responseDataFromSAP } = this.state
 
@@ -305,6 +305,7 @@ class RequestDetail extends React.Component {
               <div>{responseDataFromSAP}</div>
             </div>
           }
+          { details?.comment && <span className='cancellation-reason'>{ details?.comment }</span> } {/* comment -> lý do hủy từ api */}
         </div>
         { isShowDocumentComponent ? 
           <>
