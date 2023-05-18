@@ -153,6 +153,7 @@ class ApproverComponent extends React.Component {
       const payload = {
         account: value,
         status: 3,
+        employee_type: this.props.employeeType
         //pnl_code: localStorage.getItem('companyCode')
       }
 
