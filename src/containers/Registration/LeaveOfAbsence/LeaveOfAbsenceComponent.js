@@ -529,7 +529,8 @@ class LeaveOfAbsenceComponent extends React.Component {
     }
 
     verifyInput() {
-        let { requestInfo, approver, appraiser, errors } = this.state;
+        let { requestInfo, approver, appraiser } = this.state;
+        const errors = { ...this.state.errors }
         const { t } = this.props
 
         if (approver?.account?.trim() && appraiser?.account?.trim() && approver?.account?.trim()?.toLowerCase() === appraiser?.account?.trim()?.toLowerCase()) {
@@ -565,20 +566,19 @@ class LeaveOfAbsenceComponent extends React.Component {
             }
             req.errors['pn03'] = (req.absenceType && req.absenceType?.value === MARRIAGE_FUNERAL_LEAVE_KEY && _.isNull(req['pn03'])) ? this.props.t('Required') : null
         })
-        const employeeLevel = localStorage.getItem("employeeLevel")
+
+        errors.approver = !approver ? this.props.t('Required') : errors.approver
 
         this.setState({
             requestInfo,
-            errors: {
-                approver: !approver ? this.props.t('Required') : errors.approver,
-                // appraiser: !appraiser && employeeLevel === "N0" ? this.props.t('Required') : errors.appraiser
-            }
+            errors: errors,
         })
 
         const listError = requestInfo.map(req => _.compact(_.valuesIn(req.errors))).flat()
-        if (listError.length > 0 || errors.approver) { //|| (errors.appraiser && employeeLevel === "N0")
+        if (listError.length > 0 || errors?.approver || errors?.appraiser) {
             return false
         }
+
         return true
     }
 

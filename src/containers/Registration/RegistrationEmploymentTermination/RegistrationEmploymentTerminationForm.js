@@ -157,6 +157,7 @@ class RegistrationEmploymentTerminationForm extends React.Component {
                     departmentId: localStorage.getItem("organizationLv3"),
                     unitId: localStorage.getItem("organizationLv5"),
                     rankId: localStorage.getItem("employeeLevel"),
+                    master_code: localStorage.getItem("master_code"),
                     costCenter: infos.cost_center || ''
                 }
             }
