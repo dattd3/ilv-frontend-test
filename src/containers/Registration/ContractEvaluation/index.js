@@ -695,6 +695,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
       candidateInfos.assessedDate = infos.requestHistorys.assessedDate;
       candidateInfos.supervisorDate = infos.requestHistorys.supervisorDate;
       candidateInfos.deletedDate = infos.requestHistorys.deletedDate;
+      candidateInfos.hrAppraiserDate = infos.requestHistorys.hrAppraiserDate;
     }
     candidateInfos.documentStatus = infos.profileStatus;
     const cvs = this.prepareCVResponses(infos.staffProfileDocuments)
@@ -2246,6 +2247,14 @@ renderEvalution = (name, data, isDisable) => {
                       {t("ConsentDate")}
                       <div className="detail">
                         {formatProcessTime(data.supervisorDate)}
+                      </div>
+                    </div>
+                  }
+                  {
+                    formatProcessTime(data.hrAppraiserDate) && <div className="col-4">
+                      {t("HRAssetDate")}
+                      <div className="detail">
+                        {formatProcessTime(data.hrAppraiserDate)}
                       </div>
                     </div>
                   }

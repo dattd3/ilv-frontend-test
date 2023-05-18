@@ -29,6 +29,7 @@ const ContractEvaluationdetail = (props) => {
     }
     props.history.push(`/salarypropse/${id}/${idSalary}/${typeRequest}`)
   }
+  console.log(data)
 
   return (
     <div className="font-size-14 contract-evaluation-result-detail-page">
@@ -475,6 +476,14 @@ const ContractEvaluationdetail = (props) => {
                       {t("ConsentDate")}
                       <div className="detail">
                         {formatProcessTime(data.supervisorDate)}
+                      </div>
+                    </div>
+                  }
+                  {
+                    formatProcessTime(data.hrAppraiserDate) && <div className="col-4">
+                      {t("HRAssetDate")}
+                      <div className="detail">
+                        {formatProcessTime(data.hrAppraiserDate)}
                       </div>
                     </div>
                   }
