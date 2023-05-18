@@ -212,7 +212,6 @@ const MemberOption = (props, onChange) => {
             </InputGroup.Prepend>
             <FormControl
               placeholder={t('EnterKeywords')}
-              aria-label="SearchRequester"
               aria-describedby="basic-addon2"
               onChange={onSearch} />
           </InputGroup>

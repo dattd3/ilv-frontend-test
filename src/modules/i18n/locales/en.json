@@ -763,7 +763,7 @@
   "Experience": "Experience",
   "DegreeRequirement":"Degree Requirement",
   "TotalIncomeTaxInclude": "Total Income Tax Include",
-  "SearchRequester": "Search requester",
+  "SearchRequester": "Search by Requester, Request ID",
   "SortByStatus":"Sort by status",
   "Reject": "Reject",
   "Consent" : "Consent",
