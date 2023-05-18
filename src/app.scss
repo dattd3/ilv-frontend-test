@@ -4324,3 +4324,12 @@ span.badge-notification[data-badge]::after {
     text-decoration: none;
   }
 }
+
+.request-processing {
+  .group {
+    grid-row-gap: 15px;
+    .detail {
+      margin-bottom: 0;
+    }
+  }
+}

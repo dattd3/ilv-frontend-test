@@ -52,7 +52,6 @@ class BusinessTripComponent extends React.Component {
             errors: {},
             titleModal: "",
             messageModal: "",
-            isShowAddressAndVehicle: true,
             disabledSubmitButton: false,
             dateRequest: getValueParamByQueryString(queryString, 'date'),
             requestInfo: [
@@ -457,12 +456,6 @@ class BusinessTripComponent extends React.Component {
 
     handleSelectChange(name, value, groupId) {
         const { requestInfo } = this.state
-
-        if (name === "attendanceQuotaType" && value.value === TRAINING_OPTION_VALUE) {
-            this.setState({ isShowAddressAndVehicle: false })
-        } else {
-            this.setState({ isShowAddressAndVehicle: true })
-        }
         const newRequestInfo = requestInfo.map(req => {
             const errors = {
                 ...req.errors,
@@ -472,7 +465,8 @@ class BusinessTripComponent extends React.Component {
                 return {
                     ...req,
                     [name]: value,
-                    errors
+                    errors,
+                    ...((name === "attendanceQuotaType" && value.value === TRAINING_OPTION_VALUE) && {isHiddenAddressAndVehicle: true})
                 }
             }
             return { ...req }
@@ -482,8 +476,8 @@ class BusinessTripComponent extends React.Component {
 
     verifyInput() {
         let { requestInfo, approver, appraiser } = this.state
+        const errors = { ...this.state.errors }
         const { t } = this.props
-        const employeeLevel = localStorage.getItem("employeeLevel")
 
         if (approver?.account?.trim() && appraiser?.account?.trim() && approver?.account?.trim()?.toLowerCase() === appraiser?.account?.trim()?.toLowerCase()) {
             this.showStatusModal(t("Notification"), t("ApproverAndConsenterCannotBeIdentical"), false)
@@ -504,17 +498,18 @@ class BusinessTripComponent extends React.Component {
             }
             requestInfo[indexReq].errors.comment = !comment ? this.props.t('Required') : null
         })
+
+        errors.approver = !approver ? this.props.t('Required') : null
+
         this.setState({
             requestInfo,
-            errors: {
-                approver: !approver ? this.props.t('Required') : null,
-                // appraiser: !appraiser && employeeLevel === "N0" ? this.props.t('Required') : null
-            }
+            errors: errors
         })
         const listError = requestInfo.map(req => _.compact(_.valuesIn(req.errors))).flat()
-        if (listError.length > 0 || !approver) { //|| (!appraiser && employeeLevel === "N0")
+        if (listError.length > 0 || errors?.approver || errors?.appraiser) {
             return false
         }
+
         return true
     }
 
@@ -524,7 +519,7 @@ class BusinessTripComponent extends React.Component {
 
     submit() {
         const { t, businessTrip } = this.props
-        const { requestInfo, files, isEdit, isShowAddressAndVehicle } = this.state
+        const { requestInfo, files, isEdit } = this.state
         this.setDisabledSubmitButton(true)
         const err = this.verifyInput()
         this.setDisabledSubmitButton(true)
@@ -532,6 +527,7 @@ class BusinessTripComponent extends React.Component {
             this.setDisabledSubmitButton(false)
             return
         }
+
         const dataRequestInfo = requestInfo.map(req => {
             let reqItem = {
                 startDate: moment(req.startDate, "DD/MM/YYYY").format('YYYYMMDD').toString(),
@@ -542,8 +538,8 @@ class BusinessTripComponent extends React.Component {
                 hours: req.totalTimes,
                 days: req.totalDays,
                 attendanceType: req.attendanceQuotaType,
-                vehicle: isShowAddressAndVehicle ? req.vehicle : null,
-                location: isShowAddressAndVehicle ? req.place : null,
+                vehicle: req?.isHiddenAddressAndVehicle ? null : req.vehicle,
+                location: req?.isHiddenAddressAndVehicle ? null : req.place,
                 isAllDay: req.isAllDay,
                 groupId: req.groupId,
             }

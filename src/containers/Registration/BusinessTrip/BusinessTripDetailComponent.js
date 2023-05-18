@@ -5,6 +5,7 @@ import { withTranslation } from "react-i18next"
 import DetailButtonComponent from '../DetailButtonComponent'
 import RequesterDetailComponent from '../RequesterDetailComponent'
 import ApproverDetailComponent from '../ApproverDetailComponent'
+import RequestProcessing from '../RequestProcessing'
 import StatusModal from '../../../components/Common/StatusModal'
 import Constants from '../.../../../../commons/Constants'
 import { getRequestTypeIdsAllowedToReApproval } from "../../../commons/Utils"
@@ -212,6 +213,15 @@ class BusinessTripDetailComponent extends React.Component {
     }, {totalHours: 0, totalDays: 0})
     const totalRequestedTime = requestInfo?.isAllDay ? `${requestedTime?.totalDays} ${t("Day")}`  : `${requestedTime?.totalHours} ${t("Hour")}`
 
+    // BE confirm với loại yêu cầu Đăng ký nghỉ hoặc Công tác đào tạo thì lấy trong requestInfo (trừ ngày tạo)
+    const timeProcessing = {
+      createDate: businessTrip?.createDate,
+      assessedDate: requestInfo?.assessedDate,
+      approvedDate: requestInfo?.approvedDate,
+      updatedDate: requestInfo?.updatedDate,
+      deletedDate: requestInfo?.deletedDate,
+    }
+
     return (
       <div className="business-trip">
         <h5 className='content-page-header'>{t("EmployeeInfomation")}</h5>
@@ -241,7 +251,7 @@ class BusinessTripDetailComponent extends React.Component {
         }
 
         {
-          this.getTypeDetail() === "request" || Constants.STATUS_TO_SHOW_APPROVER.includes(requestInfo.processStatusId) &&
+          (this.getTypeDetail() === "request" || Constants.STATUS_TO_SHOW_APPROVER.includes(requestInfo.processStatusId)) &&
           <>
             <h5 className='content-page-header'>{t("ApproverInformation")}</h5>
             <ApproverDetailComponent
@@ -252,6 +262,8 @@ class BusinessTripDetailComponent extends React.Component {
               isApprover={true} />
           </>
         }
+
+        <RequestProcessing {...timeProcessing} />
 
         { businessTrip?.requestDocuments?.length > 0 && <Attachment requestDocuments={businessTrip?.requestDocuments || []} t={t} /> }
 
@@ -265,7 +277,9 @@ class BusinessTripDetailComponent extends React.Component {
                   return <div key={index}>{msg}</div>
                 })}
               </div>
-            </div>}
+            </div>
+          }
+          { businessTrip?.comment && <span className='cancellation-reason'>{ businessTrip?.comment }</span> } {/* comment -> lý do hủy từ api */}
         </div>
         {
           requestInfo

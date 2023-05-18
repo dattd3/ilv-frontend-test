@@ -3,6 +3,7 @@ import moment from 'moment'
 import { withTranslation } from "react-i18next"
 import DetailButtonComponent from '../DetailButtonComponent'
 import ApproverDetailComponent from '../ApproverDetailComponent'
+import RequestProcessing from '../RequestProcessing'
 import Constants from '../.../../../../commons/Constants'
 import { getRequestTypeIdsAllowedToReApproval } from "../../../commons/Utils"
 
@@ -111,7 +112,15 @@ class InOutUpdateDetailComponent extends React.Component {
     if (inOutTimeUpdate && inOutTimeUpdate.appraiser && Object.values(inOutTimeUpdate.appraiser).some(item => item !== null && item !== '')) {
       isShowAppraisalInfo = true
     }
-    
+
+    const timeProcessing = {
+      createDate: inOutTimeUpdate?.createDate,
+      assessedDate: inOutTimeUpdate?.assessedDate,
+      approvedDate: inOutTimeUpdate?.approvedDate,
+      updatedDate: inOutTimeUpdate?.updatedDate,
+      deletedDate: inOutTimeUpdate?.deletedDate,
+    }
+
     return (
       <div className="leave-of-absence">
         <h5>{t("EmployeeInfomation")}</h5>
@@ -217,6 +226,8 @@ class InOutUpdateDetailComponent extends React.Component {
             </>
         }
 
+        <RequestProcessing {...timeProcessing} />
+
         {
           inOutTimeUpdate.requestDocuments.length > 0 ?
             <>
@@ -241,7 +252,9 @@ class InOutUpdateDetailComponent extends React.Component {
                   return <div key={index}>{msg}</div>
                 })}
               </div>
-            </div>}
+            </div>
+          }
+          { inOutTimeUpdate?.comment && <span className='cancellation-reason'>{ inOutTimeUpdate?.comment }</span> } {/* comment -> lý do hủy từ api */}
         </div>
         {
           inOutTimeUpdate 

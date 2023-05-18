@@ -604,7 +604,7 @@ class PersonalInfoEdit extends React.Component {
     const { t } = this.props;
     let bodyFormData = new FormData();
     bodyFormData.append('Name', this.getNameFromData(this.state.data));
-    bodyFormData.append('Comment', "Tôi muốn update thông tin Họ tên");
+    bodyFormData.append('Comment', "");
     bodyFormData.append('UserProfileInfo', JSON.stringify(this.state.data));
     let sapData = "";
     if (updateFields && Array.isArray(updateFields.UpdateField) && updateFields.UpdateField.length > 0) {
