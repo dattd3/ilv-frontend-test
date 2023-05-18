@@ -126,7 +126,8 @@ class ProposedResignationPage extends React.Component {
                         orglv6_id: res.organization_lv6, // need update
                         rank_id: res.rank, // need update
                         rank_name: res.rank_title && res.rank_title != '#' ? res.rank_title : res.rank,// need update
-                        costCenter: res.cost_center || ''
+                        costCenter: res.cost_center || '',
+                        master_code: res.master_code
                     }
                 })
             }

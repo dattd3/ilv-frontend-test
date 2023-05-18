@@ -4,6 +4,7 @@ import _ from 'lodash'
 import { withTranslation } from "react-i18next"
 import DetailButtonComponent from '../DetailButtonComponent'
 import ApproverDetailComponent from '../ApproverDetailComponent'
+import RequestProcessing from '../RequestProcessing'
 import StatusModal from '../../../components/Common/StatusModal'
 import Constants from '../.../../../../commons/Constants'
 import { getRequestTypeIdsAllowedToReApproval } from "../../../commons/Utils"
@@ -94,6 +95,14 @@ class SubstitutionDetailComponent extends React.Component {
     if (substitution && Object.values(substitution.appraiser).some(item => item !== null && item !== '')
       && Constants.STATUS_TO_SHOW_CONSENTER.includes(substitution.processStatusId)) {
       isShowAppraisalInfo = true
+    }
+
+    const timeProcessing = {
+      createDate: substitution?.createDate,
+      assessedDate: substitution?.assessedDate,
+      approvedDate: substitution?.approvedDate,
+      updatedDate: substitution?.updatedDate,
+      deletedDate: substitution?.deletedDate,
     }
 
     return (
@@ -219,6 +228,8 @@ class SubstitutionDetailComponent extends React.Component {
           </>
         }
 
+        <RequestProcessing {...timeProcessing} />
+
         {
           substitution.requestDocuments.length > 0 ?
           <>
@@ -243,7 +254,9 @@ class SubstitutionDetailComponent extends React.Component {
                   return <div key={index}>{msg}</div>
                 })}
               </div>
-            </div>}
+            </div>
+          }
+          { substitution?.comment && <span className='cancellation-reason'>{ substitution?.comment }</span> } {/* comment -> lý do hủy từ api */}
         </div>
         {
           substitution 
