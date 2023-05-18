@@ -4,7 +4,7 @@ import moment from "moment";
 import axios from "axios";
 import Constants from "commons/Constants";
 import DetailButtonComponent from "../DetailButtonComponent";
-import { getRequestConfigurations } from "commons/Utils";
+import { formatProcessTime, getRequestConfigurations } from "commons/Utils";
 import ExcelIcon from "assets/img/excel-icon.svg";
 
 const config = getRequestConfigurations();
@@ -24,7 +24,7 @@ export default function OTRequestDetailComponent({ data, action }) {
   const { t } = useTranslation();
   const [approvalMatrixUrl, setApprovalMatrixUrl] = useState(null);
   const lang = localStorage.getItem("locale");
-  const { requestInfo, user, approver, appraiser } = data;
+  const { requestInfo, user, approver, appraiser, createDate, assessedDate, approvedDate, deletedDate } = data;
 
   useEffect(() => {
     axios
@@ -445,6 +445,45 @@ export default function OTRequestDetailComponent({ data, action }) {
                 )}
               </div>
             </div>
+          </div>
+        </div>
+        <div className="mb-30">
+          <div className="block-title">{t("RequestHistory").toUpperCase()}</div>
+          <div className="box shadow">
+            <div className="row" style={{ rowGap: 20 }}>
+              {
+                formatProcessTime(createDate) && <div className="col-4">
+                  <div className="form-item">
+                    <div className="mb-12">{t("TimeToSendRequest")}</div>
+                    <div className="field-view">{formatProcessTime(createDate)}</div>
+                  </div>
+                </div>
+              }
+              {
+                formatProcessTime(assessedDate) && <div className="col-4">
+                  <div className="form-item">
+                    <div className="mb-12">{t("ConsentDate")}</div>
+                    <div className="field-view">{formatProcessTime(assessedDate)}</div>
+                  </div>
+                </div>
+              }
+              {
+                formatProcessTime(approvedDate) && <div className="col-4">
+                  <div className="form-item">
+                    <div className="mb-12">{t("ApprovalDate")}</div>
+                    <div className="field-view">{formatProcessTime(approvedDate)}</div>
+                  </div>
+                </div>
+              }
+              {
+                formatProcessTime(deletedDate) && <div className="col-4">
+                  <div className="form-item">
+                    <div className="mb-12">{t("CancelDate")}</div>
+                    <div className="field-view">{formatProcessTime(deletedDate)}</div>
+                  </div>
+                </div>
+              }
+              </div>
           </div>
         </div>
       </div>

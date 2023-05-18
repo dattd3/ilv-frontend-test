@@ -293,7 +293,7 @@
   "DateOfIssueRequiredIdCard": "Date of Issue Required",
   "DateOfIssueRequiredPassport": "Date of Issue Required",
   "DateOfLeaves": "Date of Leaves",
-  "DateOfRequest": "Date of Request",
+  "DateOfRequest": "Request Date",
   "DateOfStudy": "Date of Study",
   "DecisionNo": "Decision No.",
   "Deduction": "Deduction",
@@ -1749,5 +1749,14 @@
   "NumberOfSharesConverted": "Number of shares converted",
   "BlockFingerprint": "Fingerprint lock",
   "BlockFaceID": "Face ID lock",
-  "BlockEmailAdAccount": "Email/ AD lock"
+  "BlockEmailAdAccount": "Email/ AD lock",
+  "Type": "Type",
+  "EditPersonalInformation": "Edit persional information",
+  "RequestHistory": "Request History",
+  "TimeToSendRequest": "Create date",
+  "ConsentDate": "Consent Date",
+  "ApprovalDate": "Approval Date",
+  "CancelDate": "Cancel Date",
+  "SupervisorAssetDate": "Suppervisor Asset Date",
+  "HRAssetDate": "HR Asset Date"
 }
