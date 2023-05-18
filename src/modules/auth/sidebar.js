@@ -229,7 +229,7 @@ export const Navigation = [
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     to: map.ProposalManagement,
     label: 'MenuProposalManagement',
-    role: ["P","T","P2", "P1", "T4", "T3", "T2", "T1"]
+    role: ["C2", "C1","C", "P2", "P1", "P","T","P2", "P1", "T4", "T3", "T2", "T1"]
   },
   {
     id: 4,
