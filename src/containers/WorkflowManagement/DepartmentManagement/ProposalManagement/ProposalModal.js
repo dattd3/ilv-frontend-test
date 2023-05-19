@@ -88,13 +88,13 @@ class ProposalModal extends React.Component {
     const { modal } = this.props,
       {
         proposedPositionCode,
-        ProposedDepartmentCode,
+        proposedDepartmentCode,
       } = modal.data || {},
       { currentPnl, orgsOrigin } = this.state;
 
     if (prevStates.currentPnl !== currentPnl) this.fetchOrg();
-    if (!!ProposedDepartmentCode && modal !== prevProps.modal) {
-      const orgIds = ProposedDepartmentCode.split('\\'),
+    if (!!proposedDepartmentCode && modal !== prevProps.modal) {
+      const orgIds = proposedDepartmentCode.split('\\'),
         pnl = orgsOrigin.pnls.filter(
           (ele) => ele.value === orgIds[0]
         )[0];
@@ -304,7 +304,7 @@ class ProposalModal extends React.Component {
       }${!!crew ? `\\${crew?.label}` : ''}${!!team ? `\\${team?.label}` : ''}${
         !!group ? `\\${group?.label}` : ''
       }`,
-      ProposedDepartmentCode = `${pnl?.value}${
+      proposedDepartmentCode = `${pnl?.value}${
         !!block ? `\\${block?.value}` : ''
       }${!!region ? `\\${region?.value}` : ''}${
         !!unit ? `\\${unit?.value}` : ''
@@ -324,7 +324,7 @@ class ProposalModal extends React.Component {
       proposedPosition: proposal?.label,
       proposedPositionCode: proposal?.value,
       proposedDepartment,
-      ProposedDepartmentCode,
+      proposedDepartmentCode,
     });
     this.setState({ data: {}, errors: {}, titles: [] });
   };

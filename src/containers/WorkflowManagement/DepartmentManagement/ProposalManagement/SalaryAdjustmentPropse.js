@@ -956,7 +956,7 @@ const SalaryAdjustmentPropse = (props) => {
           proposedPositionCode: u?.proposedPositionCode,
           proposedPosition: u?.proposedPosition,
           proposedDepartment: u?.proposedDepartment,
-          ProposedDepartmentCode: u?.ProposedDepartmentCode,
+          proposedDepartmentCode: u?.proposedDepartmentCode,
         } : {})
       })),
       appraiserInfoLst = supervisors
@@ -1218,13 +1218,13 @@ const SalaryAdjustmentPropse = (props) => {
     proposedPosition,
     proposedPositionCode,
     proposedDepartment,
-    ProposedDepartmentCode,
+    proposedDepartmentCode,
   }) => {
     const { index } = proposalModal;
     selectMembers[index].proposedPosition = proposedPosition;
     selectMembers[index].proposedPositionCode = proposedPositionCode;
     selectMembers[index].proposedDepartment = proposedDepartment;
-    selectMembers[index].ProposedDepartmentCode = ProposedDepartmentCode;
+    selectMembers[index].proposedDepartmentCode = proposedDepartmentCode;
 
     setSelectMembers(selectMembers);
     setProposalModal({ show: false });
