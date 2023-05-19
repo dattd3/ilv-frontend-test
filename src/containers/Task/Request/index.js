@@ -72,8 +72,6 @@ class RequestComponent extends React.Component {
     }).finally(() => {
       this.setState({ isLoading: false });
     });
-
-    console.log(category)
     setURLSearchParam("requestCategory", category)
   }
 

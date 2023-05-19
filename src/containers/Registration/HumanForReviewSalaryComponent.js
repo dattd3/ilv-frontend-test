@@ -120,14 +120,16 @@ class HumanForReviewSalaryComponent extends React.Component {
       let payload = {
         account: value,
         depth: "3",
-        employeeNo: localStorage.getItem('employeeNo')
+        employeeNo: localStorage.getItem('employeeNo'),
+        pnl_code: localStorage.getItem('companyCode')
       }
       let url = `${process.env.REACT_APP_REQUEST_URL}user/employee/managers`;
       if(isHR) {
         url = `${process.env.REACT_APP_REQUEST_URL}user/employee/hr_officer`;
         payload = {
           account: value,
-          employeeNo: localStorage.getItem('employeeNo')
+          employeeNo: localStorage.getItem('employeeNo'),
+          pnl_code: localStorage.getItem('companyCode')
         }
       }
       axios.post(url, payload, config)
@@ -186,7 +188,7 @@ class HumanForReviewSalaryComponent extends React.Component {
         minHeight: 35
       })
     }
-    const { t, isEdit, errors } = this.props;
+    const { t, isEdit, errors, comment } = this.props;
     const { isSearch, approver, users } = this.state
     return <div className="approver">
       <div>
@@ -226,6 +228,14 @@ class HumanForReviewSalaryComponent extends React.Component {
               <input type="text" className="form-control" value={approver?.department || ""} readOnly />
             </div>
           </div>
+          {
+            comment && <div className="col-12" style={{ marginTop: 12 }}>
+              <p className="title2">{t('reason_reject')}</p>
+              <div>
+                <input type="text" className="form-control" value={comment} readOnly />
+              </div>
+            </div>
+          }
         </div>
         {
           currentUserPnLVCodeLogged === Constants.pnlVCode.VinMec ? <div className="row business-type"><span className="col-12 text-info smaller">* {t("NoteSelectApprover")} <b><a href="https://camnangtt.vingroup.net/sites/vmec/default.aspx#/tracuucnpq" target="_blank" >{t("ApprovalMatrix")}</a></b></span></div> : null
