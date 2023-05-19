@@ -2206,71 +2206,68 @@ renderEvalution = (name, data, isDisable) => {
           
         </div>
         </> : null
-        } */}
-        {
-          data.processStatus !== Constants.STATUS_OB_SELF_EVALUATION &&         
-            <div className="box shadow cbnv">
-              <div className="row approve">
-                <div className="col-12">
-                  <span className="title">{t('RequestHistory').toUpperCase()}</span>
-                </div>
+        } */}     
+          <div className="box shadow cbnv">
+            <div className="row approve">
+              <div className="col-12">
+                <span className="title">{t('RequestHistory').toUpperCase()}</span>
               </div>
-              <div className="row">
-                <div className="col-12">
-                  <div  style={{height: '2px', backgroundColor: '#F2F2F2', margin: '15px 0'}}></div>
-                </div>
+            </div>
+            <div className="row">
+              <div className="col-12">
+                <div  style={{height: '2px', backgroundColor: '#F2F2F2', margin: '15px 0'}}></div>
               </div>
-              <div className="row">
-                <div className="col-12">
-                  <div className="divider"></div>
+            </div>
+            <div className="row">
+              <div className="col-12">
+                <div className="divider"></div>
+              </div>
+              <div className="col-12">
+                <div className="row">
+                {
+                  formatProcessTime(data.createdDate) && <div className="col-4">
+                  {t("TimeToSendRequest")}
+                  <div className="detail">
+                    {formatProcessTime(data.createdDate)}
+                  </div>
                 </div>
-                <div className="col-12">
-                  <div className="row">
-                  {
-                    formatProcessTime(data.createdDate) && <div className="col-4">
-                    {t("TimeToSendRequest")}
+                }
+                {
+                  formatProcessTime(data.assessedDate) && <div className="col-4">
+                    {t("SupervisorAssetDate")}
                     <div className="detail">
-                      {formatProcessTime(data.createdDate)}
+                      {formatProcessTime(data.assessedDate)}
                     </div>
                   </div>
-                  }
-                  {
-                    formatProcessTime(data.assessedDate) && <div className="col-4">
-                      {t("SupervisorAssetDate")}
-                      <div className="detail">
-                        {formatProcessTime(data.assessedDate)}
-                      </div>
+                }
+                {
+                  formatProcessTime(data.supervisorDate) && <div className="col-4">
+                    {t("ConsentDate")}
+                    <div className="detail">
+                      {formatProcessTime(data.supervisorDate)}
                     </div>
-                  }
-                  {
-                    formatProcessTime(data.supervisorDate) && <div className="col-4">
-                      {t("ConsentDate")}
-                      <div className="detail">
-                        {formatProcessTime(data.supervisorDate)}
-                      </div>
-                    </div>
-                  }
-                  {
-                    formatProcessTime(data.hrAppraiserDate) && <div className="col-4">
-                      {t("HRAssetDate")}
-                      <div className="detail">
-                        {formatProcessTime(data.hrAppraiserDate)}
-                      </div>
-                    </div>
-                  }
-                  {
-                    formatProcessTime(data.approvalDate) && <div className="col-4">
-                      {t("ApprovalDate")}
-                      <div className="detail">
-                        {formatProcessTime(data.approvalDate)}
-                      </div>
-                    </div>
-                  }
                   </div>
+                }
+                {
+                  formatProcessTime(data.hrAppraiserDate) && <div className="col-4">
+                    {t("HRAssetDate")}
+                    <div className="detail">
+                      {formatProcessTime(data.hrAppraiserDate)}
+                    </div>
+                  </div>
+                }
+                {
+                  formatProcessTime(data.approvalDate) && <div className="col-4">
+                    {t("ApprovalDate")}
+                    <div className="detail">
+                      {formatProcessTime(data.approvalDate)}
+                    </div>
+                  </div>
+                }
                 </div>
               </div>
             </div>
-        }
+          </div>
 
           {dataSalary?.childRequestHistoryId &&
             <>
