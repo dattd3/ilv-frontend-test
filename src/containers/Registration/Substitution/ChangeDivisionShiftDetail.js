@@ -4,6 +4,7 @@ import _ from 'lodash'
 import { withTranslation } from "react-i18next"
 import DetailButtonComponent from '../DetailButtonComponent'
 import ApproverDetailComponent from '../ApproverDetailComponent'
+import RequestProcessing from '../RequestProcessing'
 import StatusModal from '../../../components/Common/StatusModal'
 import Constants from '../.../../../../commons/Constants'
 import TableUtil from '../../../components/Common/table'
@@ -97,10 +98,19 @@ class ChangeDivisionShiftDetail extends React.Component {
 
     });
   }
+
   render() {
     const { t } = this.props
     const requestTypeId = this.props.substitution.requestTypeId
     const listChangeShift = TableUtil.updateData(this.props.substitution.requestInfo, this.state.pageNumber - 1, 10)
+    const timeProcessing = {
+      createDate: this.props.substitution?.createDate,
+      assessedDate: this.props.substitution?.assessedDate,
+      approvedDate: this.props.substitution?.approvedDate,
+      updatedDate: this.props.substitution?.updatedDate,
+      deletedDate: this.props.substitution?.deletedDate,
+    }
+
     return (
       <div className="leave-of-absence">
         <h5>{t("AdminInformation")}</h5>
@@ -202,14 +212,26 @@ class ChangeDivisionShiftDetail extends React.Component {
         </div>
         
         <h5>{t("ConsenterInformation")}</h5>
-        <ApproverDetailComponent title={t("Consenter")} approver={this.props.substitution.appraiser} status={this.props.substitution.requestInfo ? this.props.substitution.processStatusId : ""} hrComment={this.props.substitution.appraiserComment} />
+        <ApproverDetailComponent
+          title={t("Consenter")}
+          manager={this.props.substitution.appraiser}
+          status={this.props.substitution.requestInfo ? this.props.substitution.processStatusId : ""}
+          hrComment={this.props.substitution.appraiserComment}
+          isApprover={false} />
         {
-          this.props.substitution && (Constants.STATUS_TO_SHOW_APPROVER.includes(this.props.substitution.processStatusId )) ?
+          this.props.substitution && (Constants.STATUS_TO_SHOW_APPROVER.includes(this.props.substitution.processStatusId )) &&
           <>
             <h5>{t("ApproverInformation")}</h5>
-            <ApproverDetailComponent title={t("Approver")} approver={this.props.substitution.approver} status={this.props.substitution.processStatusId} hrComment={this.props.substitution.approverComment} />
-          </> : null
+            <ApproverDetailComponent
+              title={t("Approver")}
+              manager={this.props.substitution.approver}
+              status={this.props.substitution.processStatusId}
+              hrComment={this.props.substitution.approverComment}
+              isApprover={true} />
+          </>
         }
+
+        <RequestProcessing {...timeProcessing} />
 
         {
           this.props.substitution.requestDocuments.length > 0 ?

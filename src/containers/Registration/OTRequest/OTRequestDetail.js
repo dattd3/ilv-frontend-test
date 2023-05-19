@@ -4,7 +4,7 @@ import moment from "moment";
 import axios from "axios";
 import Constants from "commons/Constants";
 import DetailButtonComponent from "../DetailButtonComponent";
-import { getRequestConfigurations } from "commons/Utils";
+import { formatProcessTime, getRequestConfigurations } from "commons/Utils";
 import ExcelIcon from "assets/img/excel-icon.svg";
 
 const config = getRequestConfigurations();
@@ -24,7 +24,7 @@ export default function OTRequestDetailComponent({ data, action }) {
   const { t } = useTranslation();
   const [approvalMatrixUrl, setApprovalMatrixUrl] = useState(null);
   const lang = localStorage.getItem("locale");
-  const { requestInfo, user, approver, appraiser } = data;
+  const { requestInfo, user, approver, appraiser, createDate, assessedDate, approvedDate, deletedDate, appraiserComment, approverComment } = data;
 
   useEffect(() => {
     axios
@@ -405,6 +405,15 @@ export default function OTRequestDetailComponent({ data, action }) {
                   <div className="field-view">{appraiser.department}</div>
                 </div>
               </div>
+              {
+                appraiserComment && data.processStatusId == Constants.STATUS_NO_CONSENTED && 
+                  <div className="col-12">
+                      <p className="title">{t('reason_reject')}</p>
+                      <div>
+                          <div className="detail">{appraiserComment}</div>
+                      </div>
+                  </div>
+              }
             </div>
           </div>
         </div>
@@ -430,6 +439,15 @@ export default function OTRequestDetailComponent({ data, action }) {
                   <div className="field-view">{approver.department}</div>
                 </div>
               </div>
+              {
+                approverComment && data.processStatusId == Constants.STATUS_NOT_APPROVED &&
+                  <div className="col-12">
+                      <p className="title">{t('reason_reject')}</p>
+                      <div>
+                          <div className="detail">{approverComment}</div>
+                      </div>
+                  </div>
+              }
               <div className="col-12">
                 {approvalMatrixUrl && (
                   <div className="row business-type">
@@ -445,6 +463,45 @@ export default function OTRequestDetailComponent({ data, action }) {
                 )}
               </div>
             </div>
+          </div>
+        </div>
+        <div className="mb-30">
+          <div className="block-title">{t("RequestHistory").toUpperCase()}</div>
+          <div className="box shadow">
+            <div className="row" style={{ rowGap: 20 }}>
+              {
+                formatProcessTime(createDate) && <div className="col-4">
+                  <div className="form-item">
+                    <div className="mb-12">{t("TimeToSendRequest")}</div>
+                    <div className="field-view">{formatProcessTime(createDate)}</div>
+                  </div>
+                </div>
+              }
+              {
+                formatProcessTime(assessedDate) && <div className="col-4">
+                  <div className="form-item">
+                    <div className="mb-12">{t("ConsentDate")}</div>
+                    <div className="field-view">{formatProcessTime(assessedDate)}</div>
+                  </div>
+                </div>
+              }
+              {
+                formatProcessTime(approvedDate) && <div className="col-4">
+                  <div className="form-item">
+                    <div className="mb-12">{t("ApprovalDate")}</div>
+                    <div className="field-view">{formatProcessTime(approvedDate)}</div>
+                  </div>
+                </div>
+              }
+              {
+                formatProcessTime(deletedDate) && <div className="col-4">
+                  <div className="form-item">
+                    <div className="mb-12">{t("CancelDate")}</div>
+                    <div className="field-view">{formatProcessTime(deletedDate)}</div>
+                  </div>
+                </div>
+              }
+              </div>
           </div>
         </div>
       </div>
@@ -485,6 +542,13 @@ export default function OTRequestDetailComponent({ data, action }) {
         >
           {t(showStatus(data.processStatusId, data.appraiser))}
         </span>
+        {
+          data.processStatusId == Constants.STATUS_REVOCATION && data.comment && <span
+            className="status"
+          >
+            {data.comment}
+          </span>
+        }
         {getMessageFromSap().length > 0 && (
           <div className={`d-flex status fail`}>
             <i className="fas fa-times pr-2 text-danger align-self-center"></i>
@@ -523,6 +587,7 @@ export default function OTRequestDetailComponent({ data, action }) {
         urlName={"otrequest"}
         requestTypeId={data.requestTypeId}
         action={action}
+        haveOverOTFund={data?.requestInfo?.some(item => item.isOverOTFund)}
       />
     </div>
   );

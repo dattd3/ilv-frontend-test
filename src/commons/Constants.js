@@ -227,12 +227,11 @@ const Constants = {
   },
   MODULE_COMPANY_AVAILABE: process.env.REACT_APP_ENVIRONMENT === 'PRODUCTION' ?
   { //production todo: add  "V077", "V070" to TUYENDUNG
-    1: ["V040", "V005", "V079", "V041", "V030", "V077", "V070"], //TUYENDUNG + V061
-    2: ["V040", "V005", "V061", "V077"], //DANHGIA_TAIKI
-    3: [], //DEXUATLUONG
-    4: ["V040", "V077", "V070"], //NGHIVIEC
-    5: ["V077", "V070"], //PHUCLOI
-    6: [], //DIEUCHUYEN
+    1: ["V040", "V005", "V079", "V041", "V030", "V077", "V070", "V099"],//TUYENDUNG + V061
+    2: ["V040", "V005", "V061", "V077"],//DANHGIA_TAIKI
+    3: [],//DEXUATLUONG
+    4: ["V040", "V077", "V070"],//NGHIVIEC
+    5: ["V077", "V070"]//PHUCLOI
   } :
   { //Development
     1: ["V040", "V005", "V079", "V041", "V030", "V077", "V070", "V099"],//TUYENDUNG + V061
