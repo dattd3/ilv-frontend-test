@@ -279,7 +279,7 @@ class BusinessTripDetailComponent extends React.Component {
               </div>
             </div>
           }
-          { businessTrip?.comment && <span className='cancellation-reason'>{ businessTrip?.comment }</span> } {/* comment -> lý do hủy từ api */}
+          {/* businessTrip?.comment && <span className='cancellation-reason'>{ businessTrip?.comment }</span> */} {/* comment -> lý do hủy từ api */}
         </div>
         {
           requestInfo

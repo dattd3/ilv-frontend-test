@@ -85,7 +85,7 @@ function JobDescVinFast(props) {
 
   const downloadPDF = () => {
     const elementView = document.getElementById('id-jd-page');
-    exportToPDF(elementView, 'jobDescription');
+    exportToPDF(elementView, 'jobDescription', false);
   };
 
   return (

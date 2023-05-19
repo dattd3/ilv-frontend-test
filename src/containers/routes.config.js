@@ -516,6 +516,14 @@ export default [
           component: lazy(() => import("./WorkflowManagement/DepartmentManagement/ProposalManagement/SalaryAdjustmentPropse"))
         },
         {
+          key: "transfer-appoint",
+          routeProps: {
+            exact: true,
+            path: map.transferAppointProposal
+          },
+          component: lazy(() => import("./WorkflowManagement/DepartmentManagement/ProposalManagement/SalaryAdjustmentPropse"))
+        },
+        {
           key: "vaccination",
           routeProps: {
             exact: true,
