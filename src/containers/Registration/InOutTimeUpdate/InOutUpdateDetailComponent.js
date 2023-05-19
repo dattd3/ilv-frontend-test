@@ -3,6 +3,7 @@ import moment from 'moment'
 import { withTranslation } from "react-i18next"
 import DetailButtonComponent from '../DetailButtonComponent'
 import ApproverDetailComponent from '../ApproverDetailComponent'
+import RequestProcessing from '../RequestProcessing'
 import Constants from '../.../../../../commons/Constants'
 import { getRequestTypeIdsAllowedToReApproval } from "../../../commons/Utils"
 
@@ -111,7 +112,15 @@ class InOutUpdateDetailComponent extends React.Component {
     if (inOutTimeUpdate && inOutTimeUpdate.appraiser && Object.values(inOutTimeUpdate.appraiser).some(item => item !== null && item !== '')) {
       isShowAppraisalInfo = true
     }
-    
+
+    const timeProcessing = {
+      createDate: inOutTimeUpdate?.createDate,
+      assessedDate: inOutTimeUpdate?.assessedDate,
+      approvedDate: inOutTimeUpdate?.approvedDate,
+      updatedDate: inOutTimeUpdate?.updatedDate,
+      deletedDate: inOutTimeUpdate?.deletedDate,
+    }
+
     return (
       <div className="leave-of-absence">
         <h5>{t("EmployeeInfomation")}</h5>
@@ -195,24 +204,29 @@ class InOutUpdateDetailComponent extends React.Component {
           isShowAppraisalInfo &&
           <>
             <h5>{t("ConsenterInformation")}</h5>
-            <ApproverDetailComponent title={t("Consenter")} approver={inOutTimeUpdate.appraiser} status={inOutTimeUpdate.requestInfo ? inOutTimeUpdate.processStatusId : ""} hrComment={inOutTimeUpdate.appraiserComment} />
+            <ApproverDetailComponent
+              title={t("Consenter")}
+              manager={inOutTimeUpdate.appraiser}
+              status={inOutTimeUpdate.requestInfo ? inOutTimeUpdate.processStatusId : ""}
+              hrComment={inOutTimeUpdate.appraiserComment}
+              isApprover={false} />
           </>
         }
         
         {
-          inOutTimeUpdate && (Constants.STATUS_TO_SHOW_APPROVER.includes(inOutTimeUpdate.processStatusId )) ?
+          inOutTimeUpdate && (Constants.STATUS_TO_SHOW_APPROVER.includes(inOutTimeUpdate.processStatusId )) &&
             <>
               <h5>{t("ApproverInformation")}</h5>
-              <ApproverDetailComponent title={t("Approver")} approver={inOutTimeUpdate.approver} status={inOutTimeUpdate.processStatusId} hrComment={inOutTimeUpdate.approverComment} />
-            </> : null
-            // <div className="block-status">
-            //   <span className={`status ${Constants.mappingStatusRequest[this.props.inOutTimeUpdate.processStatusId].className}`}>{t(Constants.mappingStatusRequest[this.props.inOutTimeUpdate.processStatusId].label)}</span>
-            //   {
-            //     this.props.inOutTimeUpdate.requestInfo.processStatusId == Constants.STATUS_NOT_APPROVED ?
-            //       <span className="hr-comments-block">Lý do không duyệt: <span className="hr-comments">{this.props.inOutTimeUpdate.hrComment || ""}</span></span> : null
-            //   }
-            // </div>
+              <ApproverDetailComponent
+                title={t("Approver")}
+                manager={inOutTimeUpdate.approver}
+                status={inOutTimeUpdate.processStatusId}
+                hrComment={inOutTimeUpdate.approverComment}
+                isApprover={true} />
+            </>
         }
+
+        <RequestProcessing {...timeProcessing} />
 
         {
           inOutTimeUpdate.requestDocuments.length > 0 ?
@@ -238,7 +252,9 @@ class InOutUpdateDetailComponent extends React.Component {
                   return <div key={index}>{msg}</div>
                 })}
               </div>
-            </div>}
+            </div>
+          }
+          {/* inOutTimeUpdate?.comment && <span className='cancellation-reason'>{ inOutTimeUpdate?.comment }</span> */} {/* comment -> lý do hủy từ api */}
         </div>
         {
           inOutTimeUpdate 
