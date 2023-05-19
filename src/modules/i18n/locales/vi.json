@@ -1809,5 +1809,7 @@
   "Crew": "Nhóm",
   "SearchNewPosition": "Nhập chức danh tìm kiếm",
   "TitleSalaryProposal": "Tên chức danh",
-  "HRAssetDate": "Thời gian nhân sự đánh giá"
+  "HRAssetDate": "Thời gian nhân sự đánh giá",
+  "OTMinimumHours": "(*) Vui lòng nhập tối thiểu 30 phút cho Khối sản xuất, 60 phút cho các khối khác",
+  "OTInvalidSpaceHours": "(*) Khoảng nghỉ tối thiểu là 1h"
 }
