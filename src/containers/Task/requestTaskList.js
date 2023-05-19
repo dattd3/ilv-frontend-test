@@ -184,56 +184,73 @@ class RequestTaskList extends React.Component {
 
     showStatus = (taskId, statusOriginal, request, taskData, statusName) => {
         const customStylesStatus = {
-            control: base => ({
-                ...base,
-                width: 160,
-                height: 35,
-                minHeight: 35
-            }),
-            option: (styles, { data, isDisabled, isFocused, isSelected }) => {
-                return {
-                    ...styles
-                };
+          control: (base) => ({
+            ...base,
+            width: 160,
+            height: 35,
+            minHeight: 35,
+          }),
+          option: (styles, { data, isDisabled, isFocused, isSelected }) => {
+            return {
+              ...styles,
+            };
+          },
+        };
+
+        const { t, page } = this.props,
+            status = {
+                1: { label: t('Rejected'), className: 'request-status fail' },
+                2: { label: t('Approved'), className: 'request-status success' },
+                3: { label: t('Canceled'), className: 'request-status' },
+                4: { label: t('Canceled'), className: 'request-status' },
+                5: { label: t("PendingApproval"), className: 'request-status' },
+                6: { label: t("PartiallySuccessful"), className: 'request-status warning' },
+                7: { label: t("Rejected"), className: 'request-status fail' },
+                8: { label: t("PendingConsent"), className: 'request-status' },
+                20: { label: t("Consented"), className: 'request-status' },
+                100: { label: t("Waiting"), className: 'request-status' }
             },
-        }
+            options = [
+                { value: 0, label: 'Đang chờ xử lý' },
+                { value: 1, label: 'Từ chối' },
+                { value: 2, label: 'Phê duyệt' }
+            ];
 
-        const status = {
-            1: { label: this.props.t('Rejected'), className: 'request-status fail' },
-            2: { label: this.props.t('Approved'), className: 'request-status success' },
-            3: { label: this.props.t('Canceled'), className: 'request-status' },
-            4: { label: this.props.t('Canceled'), className: 'request-status' },
-            5: { label: this.props.t("PendingApproval"), className: 'request-status' },
-            6: { label: this.props.t("PartiallySuccessful"), className: 'request-status warning' },
-            7: { label: this.props.t("Rejected"), className: 'request-status fail' },
-            8: { label: this.props.t("PendingConsent"), className: 'request-status' },
-            20: { label: this.props.t("Consented"), className: 'request-status' },
-            100: { label: this.props.t("Waiting"), className: 'request-status' }
-        }
-
-        const options = [
-            { value: 0, label: 'Đang chờ xử lý' },
-            { value: 1, label: 'Từ chối' },
-            { value: 2, label: 'Phê duyệt' }
-        ]
-
-        if(request == Constants.SALARY_PROPOSE) {
+        if([Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER].includes(request)) {
             if(statusName) {
-                let statusLabel = this.props.t(statusName);
-                let tmp = Object.keys(status).filter(key => status[key].label == statusLabel );
+                let statusLabel = t(statusName),
+                    tmp = Object.keys(status).filter(key => status[key].label == statusLabel );
                 statusOriginal = tmp?.length > 0 ? tmp[0] : statusOriginal;
             } else {
                 statusOriginal = statusOriginal == 21 || statusOriginal == 22 ? 100 : statusOriginal;
             }
         }
 
-        if (this.props.page === "approval") {
+        if (page === "approval") {
             if (statusOriginal == 0) {
-                return <Select defaultValue={options[0]} options={options} isSearchable={false} onChange={value => this.onChangeStatus(value, taskId, request, value, taskData, statusOriginal)} styles={customStylesStatus} />
+                return (
+                  <Select
+                    defaultValue={options[0]}
+                    options={options}
+                    isSearchable={false}
+                    onChange={(value) =>
+                      this.onChangeStatus(
+                        value,
+                        taskId,
+                        request,
+                        value,
+                        taskData,
+                        statusOriginal
+                      )
+                    }
+                    styles={customStylesStatus}
+                  />
+                );
             }
             return <span className={status[statusOriginal].className}>{status[statusOriginal].label}</span>
         }
         
-        if(taskData?.account != null && statusOriginal == 5) {
+        if(taskData?.account !== null && statusOriginal === 5) {
             statusOriginal = 6;
         }
         
@@ -249,18 +266,18 @@ class RequestTaskList extends React.Component {
     }
 
     getRequestDetailLink = (id, requestTypeId) => {
-        const { page } = this.props
-        const idLengthWrapSub = 2
-        let mainId = id
-        let subId = 1 // subId default
-        const ids = id.split(".")
-        if (ids && ids.length == idLengthWrapSub) {
+        const { page } = this.props,
+            idLengthWrapSub = 2,
+            ids = id.split(".");
+        let mainId = id, subId = 1; // subId default
+
+        if (ids && ids.length === idLengthWrapSub) {
             mainId = ids[0] // is first item
             subId = ids[1] // is second item
         }
 
         if (page === 'approval') {
-            return requestTypeId == Constants.UPDATE_PROFILE ? `/registration/${mainId}/${subId}/approval` : `/registration/${mainId}/${subId}`
+            return requestTypeId === Constants.UPDATE_PROFILE ? `/registration/${mainId}/${subId}/approval` : `/registration/${mainId}/${subId}`
         }
         return `/registration/${mainId}/${subId}/request`
     }
@@ -269,22 +286,21 @@ class RequestTaskList extends React.Component {
         let url = '';
         if(request.parentRequestHistoryId) {
             //xu ly mot nguoi
-            url = `salarypropse/${request.parentRequestHistoryId}/${request.salaryId}/request`
+            url = `salarypropse/${request.parentRequestHistoryId}/${request.salaryId}/request`;
         } else {
             //xu ly nhieu nguoi
-            url = `salaryadjustment/${request.salaryId}/request`
+            url = `salaryadjustment/${request.salaryId}/request`;
         }
         return url;
     }
 
     getRequestEditLink = (id, requestTypeId, processStatusId) => {
         if ([Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE, Constants.UPDATE_PROFILE, Constants.CHANGE_DIVISON_SHIFT, Constants.DEPARTMENT_TIMESHEET, Constants.OT_REQUEST].includes(requestTypeId)) {
-            return null
+            return null;
         } else {
-            const idLengthWrapSub = 2
-            let mainId = id
-            let subId = 1 // subId default
-            const ids = id.split(".")
+            const idLengthWrapSub = 2, ids = id.split(".");
+            let mainId = id, subId = 1; // subId default
+
             if (ids && ids.length == idLengthWrapSub) {
                 mainId = ids[0] // is first item
                 subId = ids[1] // is second item
@@ -294,22 +310,22 @@ class RequestTaskList extends React.Component {
     }
 
     getMaxDayOfMonth = () => {
-        const today = moment()
-        const year = today.year()
-        const month = today.month() + 1 // Need + 1 because issue January is 0 and December is 11
-        const isLeapYear = year % 4 === 0 && year % 100 !== 0
+      const today = moment(),
+        year = today.year(),
+        month = today.month() + 1; // Need + 1 because issue January is 0 and December is 11
+      const isLeapYear = year % 4 === 0 && year % 100 !== 0,
+        month31Days = [1, 3, 5, 7, 8, 10, 12],
+        month30Days = [4, 6, 9, 11];
 
-        const month31Days = [1, 3, 5, 7, 8, 10, 12]
-        const month30Days = [4, 6, 9, 11]
-        if (month31Days.includes(month)) return 31
-        if (month30Days.includes(month)) return 30
-        if (month === 2) {
-            if (isLeapYear) {
-                return 29
-            }
-            return 28
+      if (month31Days.includes(month)) return 31;
+      if (month30Days.includes(month)) return 30;
+      if (month === 2) {
+        if (isLeapYear) {
+          return 29;
         }
-        return 30
+        return 28;
+      }
+      return 30;
     }
 
     checkDateLessThanPayPeriod = (startDate) => {
@@ -836,7 +852,7 @@ class RequestTaskList extends React.Component {
                                             }
 
                                             let editLink = this.getRequestEditLink(child.id, child.requestTypeId, child.processStatusId)
-                                            let detailLink = child.requestTypeId == Constants.SALARY_PROPOSE ? this.getSalaryProposeLink(child) : this.getRequestDetailLink(child.id, child.requestTypeId)
+                                            let detailLink = [Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER].includes(child.requestTypeId) ? this.getSalaryProposeLink(child) : this.getRequestDetailLink(child.id, child.requestTypeId)
                                             let dateChanged = showRangeDateGroupByArrayDate(child.startDate)
 
                                             if ([Constants.OT_REQUEST].includes(child.requestTypeId)) {
