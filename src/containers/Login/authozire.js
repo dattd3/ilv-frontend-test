@@ -192,6 +192,7 @@ function Authorize(props) {
                             role_assigment: user.role_assigment,
                             prepare: shouldShowPrepareOnboard,
                             jobCode: user?.job_code,
+                            master_code: user.master_code || ''
                         });
                         FirebaseUpdateToken();
                     }
@@ -236,6 +237,7 @@ function Authorize(props) {
                         role_assigment: user.role_assigment,
                         prepare: shouldShowPrepareOnboard,
                         jobCode: user?.job_code,
+                        master_code: ''
                     });
                 })
                 .finally(result => {

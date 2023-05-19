@@ -452,18 +452,16 @@ export default function OTRequestComponent({ recentlyManagers }) {
                 .reduce((acc, currValue) => acc + currValue.hoursOt * 1, 0);
               return {
                 ...item,
-                isOverOTFund:
-                  totalRegisterInMonth + item.totalHoursOtInMonth >
-                  otFund.hours,
-              };
+                isOverOTFund: totalRegisterInMonth + item.totalHoursOtInMonth > otFund.hours * 1
+              }
             }
           }
           return item;
         });
+        setRequestInfoData(requestData)
 
         if (requestData.some((item) => item.isOverOTFund)) {
           setIsSendingRequest(false);
-          setRequestInfoData(requestData);
           return setConfirmModal({
             show: true,
             message: CONFIRM_TYPES.OVER_OT_FUNDS,
@@ -472,7 +470,7 @@ export default function OTRequestComponent({ recentlyManagers }) {
       } catch (error) {}
     }
     setConfirmModal(DEFAULT_CONFIRM_MODAL);
-    const timesheets = [...requestInfoData]
+    const timesheets = [...requestData]
       .filter((item) => item.isEdited)
       .map((item) => ({
         ...item,
@@ -494,15 +492,9 @@ export default function OTRequestComponent({ recentlyManagers }) {
       employeeNo: localStorage.getItem("employeeNo"),
     };
 
-    const comments = timesheets
-      .filter((item) => item.note)
-      .map((item) => item.note)
-      .join(" - ");
-
-    let bodyFormData = new FormData();
+    const bodyFormData = new FormData();
     bodyFormData.append("Name", t("OTRequest"));
     bodyFormData.append("RequestTypeId", OTRequestType);
-    bodyFormData.append("Comment", comments);
     bodyFormData.append("requestInfo", JSON.stringify(timesheets));
     bodyFormData.append(
       "divisionId",
