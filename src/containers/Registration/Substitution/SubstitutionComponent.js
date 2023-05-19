@@ -106,7 +106,7 @@ class SubstitutionComponent extends React.Component {
   verifyInput() {
     const { t } = this.props
     const { timesheets, approver, appraiser } = this.state
-    let errors = {}
+    const errors = { ...this.state.errors }
 
     timesheets.forEach((timesheet, index) => {
       if (!timesheet.isEdited) return
@@ -270,14 +270,14 @@ class SubstitutionComponent extends React.Component {
       department: localStorage.getItem('department'),
       employeeNo: currentUserNo
     }
-    const comments = timeSheetsToSubmit
-      .filter(item => (item.note))
-      .map(item => item.note).join(" - ")
+    // const comments = timeSheetsToSubmit
+    //   .filter(item => (item.note))
+    //   .map(item => item.note).join(" - ")
 
     let bodyFormData = new FormData();
     bodyFormData.append('Name', 'Thay đổi phân ca')
     bodyFormData.append('RequestTypeId', Constants.SUBSTITUTION)
-    bodyFormData.append('Comment', comments)
+    bodyFormData.append('Comment', '')
     bodyFormData.append('requestInfo', JSON.stringify(timeSheetsToSubmit))
     bodyFormData.append("divisionId", !this.isNullCustomize(localStorage.getItem('divisionId')) ? localStorage.getItem('divisionId') : "")
     bodyFormData.append("division", !this.isNullCustomize(localStorage.getItem('division')) ? localStorage.getItem('division') : "")

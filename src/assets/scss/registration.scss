@@ -226,6 +226,9 @@
             }
         }
     }
+    .mt-20 {
+      margin-top: 20px;
+    }
     .shift-table {
         thead th {
             position: sticky;
@@ -579,7 +582,7 @@
     .box {
         border: 1px solid #ddd;
         border-radius: 10px;
-        padding: 25px 20px;
+        padding: 20px;
         background-color: #fff;
         margin: 15px 0;
 
