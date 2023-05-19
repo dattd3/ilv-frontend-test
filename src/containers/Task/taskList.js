@@ -58,11 +58,18 @@ class TaskList extends React.Component {
             department: localStorage.getItem('department') || ""
         };
         // this.handleButtonChangeSingle = this.handleButtonChange.bind(this, false);
+        this.categorySelectRef = React.createRef();
+        this.handleClickOutsideCategorySelect = this.handleClickOutsideCategorySelect.bind(this);
 
     }
     componentDidMount()
     {
+        document.addEventListener("mousedown", this.handleClickOutsideCategorySelect);
         this.setState({tasks: this.props.tasks})
+    }
+
+    componentWillUnmount() {
+      document.removeEventListener("mousedown", this.handleClickOutsideCategorySelect);
     }
     
     componentWillReceiveProps(nextProps)
@@ -269,7 +276,6 @@ class TaskList extends React.Component {
                 child.isChecked = event.target.checked;
                 if (child.isChecked) {
                     // child.canChecked = true
-                    // console.log(this.state.taskChecked.findIndex(x => x.id == child.id))
                     if (this.state.taskChecked.findIndex(x => x.id == child.id) == -1) {
                         this.state.taskChecked.push(child);
                     }
@@ -412,6 +418,18 @@ class TaskList extends React.Component {
       })
     }
 
+    handleClickOutsideCategorySelect = (event) => {
+      if (this.categorySelectRef && this.categorySelectRef.current 
+        && !this.categorySelectRef.current.contains(event.target) 
+        && this.state.isShowRequestCategorySelect
+      ) {
+        this.setState({
+          isShowRequestCategorySelect: false,
+          tmpRequestCategorySelect: this.state.requestCategorySelect
+        })
+      }
+    }
+
     render() {
         const { t, tasks, total, page} = this.props
         const typeFeedbackMapping = {
@@ -422,7 +440,6 @@ class TaskList extends React.Component {
             5: t("LineManagerSResponse")
         }
         const requestTypeIdsAllowedToReApproval = getRequestTypeIdsAllowedToReApproval()
-
         const fullDay = 1
 
         const getRequestTypeLabel = (requestType, absenceTypeValue) => {
@@ -436,7 +453,7 @@ class TaskList extends React.Component {
         }
         return (
             <>
-                <ExportModal requestCategory={this.state.requestCategory} show={this.state.isShowExportModal} onHide={this.onHideisShowExportModal} statusOptions={this.props.filterdata} exportType={this.props.page}/>
+                <ExportModal requestCategory={this.state.requestCategorySelect} show={this.state.isShowExportModal} onHide={this.onHideisShowExportModal} statusOptions={this.props.filterdata} exportType={this.props.page}/>
                 <TaskDetailModal key= {this.state.taskId+'.'+this.state.subId} show={this.state.isShowTaskDetailModal} onHide={this.onHideisShowTaskDetailModal} taskId = {this.state.taskId} subId = {this.state.subId} action={this.state.action}/>
                 <div className="d-flex justify-content-between w-100 mt-2 mb-3 search-block">
                     <div className="row w-100">
@@ -448,12 +465,12 @@ class TaskList extends React.Component {
                               placeholder={t("TypeOfRequest")} 
                               key="requestCategory"
                               classNamePrefix="filter-select"
-                              inputValue={this.state.requestCategorySelect === REQUEST_CATEGORIES.CATEGORY_1 ? `${t("Type")} I` : `${t("Type")} II`}
+                              inputValue={this.state.requestCategorySelect == REQUEST_CATEGORIES.CATEGORY_1 ? `${t("Type")} I` : `${t("Type")} II`}
                               noOptionsMessage={() => null}
                             />
                           </div>
                           {
-                            this.state.isShowRequestCategorySelect && <div className="request-category-guide-container">
+                            this.state.isShowRequestCategorySelect && <div className="request-category-guide-container" ref={this.categorySelectRef}>
                               <div className="request-category-guide-body">
                                 <div className="category-title">
                                   <b>

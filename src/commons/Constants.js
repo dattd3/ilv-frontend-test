@@ -225,7 +225,7 @@ const Constants = {
     PHUCLOI: 5,
     DIEUCHUYEN: 6,
   },
-  MODULE_COMPANY_AVAILABE: process.env.REACT_APP_ENVIRONMENT === 'PRODUCTION' ?
+  MODULE_COMPANY_AVAILABE: process.env.REACT_APP_ENVIRONMENT === 'PRODUCTION' ? 
   { //production todo: add  "V077", "V070" to TUYENDUNG
     1: ["V040", "V005", "V079", "V041", "V030", "V077", "V070", "V099"],//TUYENDUNG + V061
     2: ["V040", "V005", "V061", "V077"],//DANHGIA_TAIKI
@@ -236,9 +236,9 @@ const Constants = {
   { //Development
     1: ["V040", "V005", "V079", "V041", "V030", "V077", "V070", "V099"],//TUYENDUNG + V061
     2: ["V061","V040", "V005", "V079", "V041", "V070", "V077", "V099"],//DANHGIA_TAIKI
-    3: ["V040"],//DEXUATLUONG "V061", "V040", "V005", "V079", "V041"
-    4: ["V040", "V005", "V079", "V070", "V077"],//NGHIVIEC
-    5: ["V061", "V040", "V005", "V079", "V041", "V070", "V077"], //PHUCLOI
+    3: ["V061", "V040", "V005", "V079", "V041"],//DEXUATLUONG "V061", "V040", "V005", "V079", "V041"
+    4:  ["V040", "V005", "V079", "V070", "V077"],//NGHIVIEC
+    5: ["V061", "V040", "V005", "V079", "V041", "V070", "V077"],//PHUCLOI
     6: ["V040"], //DIEUCHUYEN
   },
   CURRENCY: {

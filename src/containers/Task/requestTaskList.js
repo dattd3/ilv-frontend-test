@@ -77,6 +77,18 @@ class RequestTaskList extends React.Component {
             4: "Phản hồi của CBLĐ",
             5: "Phản hồi của CBLĐ"
         }
+        this.categorySelectRef = React.createRef();
+        this.handleClickOutsideCategorySelect = this.handleClickOutsideCategorySelect.bind(this);
+    }
+
+    componentDidMount()
+    {
+        document.addEventListener("mousedown", this.handleClickOutsideCategorySelect);
+        this.setState({tasks: this.props.tasks})
+    }
+
+    componentWillUnmount() {
+      document.removeEventListener("mousedown", this.handleClickOutsideCategorySelect);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -707,19 +719,23 @@ class RequestTaskList extends React.Component {
       })
     }
 
+    handleClickOutsideCategorySelect = (event) => {
+      if (this.categorySelectRef && this.categorySelectRef.current 
+        && !this.categorySelectRef.current.contains(event.target) 
+        && this.state.isShowRequestCategorySelect
+      ) {
+        this.setState({
+          isShowRequestCategorySelect: false,
+          tmpRequestCategorySelect: this.state.requestCategorySelect
+        })
+      }
+    }
+
     render() {
         const { t, total, tasks } = this.props
         const { pageNumber, isSyncFromEmployee } = this.state
         const dataToSap = this.getDataToSAP(this.state.requestTypeId, this.state.dataToPrepareToSAP)
-        const REQUEST_CATEGORY_OPTIONS = [{
-          label: `${t("Type")} I`,
-          value: REQUEST_CATEGORIES.CATEGORY_1
-        }, {
-          label: `${t("Type")} II`,
-          value: REQUEST_CATEGORIES.CATEGORY_2
-        }]
         const fullDay = 1
-
         const getRequestTypeLabel = (requestType, absenceTypeValue) => {
             if (requestType.id == Constants.LEAVE_OF_ABSENCE) {
                 const absenceType = absenceRequestTypes.find(item => item.value == absenceTypeValue)
@@ -755,12 +771,12 @@ class RequestTaskList extends React.Component {
                               placeholder={t("TypeOfRequest")} 
                               key="requestCategory"
                               classNamePrefix="filter-select"
-                              inputValue={this.state.requestCategorySelect === REQUEST_CATEGORIES.CATEGORY_1 ? `${t("Type")} I` : `${t("Type")} II`}
+                              inputValue={this.state.requestCategorySelect == REQUEST_CATEGORIES.CATEGORY_1 ? `${t("Type")} I` : `${t("Type")} II`}
                               noOptionsMessage={() => null}
                             />
                           </div>
                           {
-                            this.state.isShowRequestCategorySelect && <div className="request-category-guide-container">
+                            this.state.isShowRequestCategorySelect && <div className="request-category-guide-container" ref={this.categorySelectRef}>
                               <div className="request-category-guide-body">
                                 <div className="category-title">
                                   <b>

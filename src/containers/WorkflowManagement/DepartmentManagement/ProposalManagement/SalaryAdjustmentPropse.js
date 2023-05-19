@@ -96,12 +96,12 @@ const SalaryAdjustmentPropse = (props) => {
   const [currencySalary, setCurrencySalary] = useState("VND");
 
   const [coordinator, setCoordinator] = useState(null); // Nhân sự hỗ trợ xin quyền xem lương
-  const [supervisor, setSupervisor] = useState(null); // CBQL cấp cơ sở
   const [supervisors, setSupervisors] = useState([null]);
   const [appraiser, setAppraiser] = useState(null); // HR thẩm định quyền điều chỉnh lương
   const [approver, setApprover] = useState(null); // CBLĐ phê duyệt
   const [isCallSalary, setIsCallSalary] = useState(false);
   const [isOpenDatepick, setIsOpenDatepick] = useState(false);
+  const [showCommentRequiredError, setShowCommentRequiredError] = useState(false)
   const [viewSetting, setViewSetting] = useState({
     showComponent: {
       stateProcess: false, // Button trang thai
@@ -405,10 +405,12 @@ const SalaryAdjustmentPropse = (props) => {
         break;
       // View phe duyet thanh cong
       case 2:
-        viewSettingTmp.disableComponent.showEye = true;
+        // viewSettingTmp.disableComponent.showEye = true;
+        // break;
       // Case từ chối
       case 7:
-        viewSettingTmp.disableComponent.showEye = true;
+        // viewSettingTmp.disableComponent.showEye = true;
+        // break;
       // Case không phê duyệt
       case 1:
         viewSettingTmp.showComponent.stateProcess = true;
@@ -416,6 +418,7 @@ const SalaryAdjustmentPropse = (props) => {
         viewSettingTmp.showComponent.showCBQL = true;
         viewSettingTmp.showComponent.showHrAssessment = true;
         viewSettingTmp.showComponent.showOfficerApproved = true;
+        viewSettingTmp.disableComponent.showEye = true;
         break;
       default:
         break;
@@ -477,7 +480,6 @@ const SalaryAdjustmentPropse = (props) => {
     setCanSelectedAll(canCheckAll);
     setCheckedMemberIds(memberCheck);
     setSelectedMembers(employeeLists);
-    //console.log(memberCheck);
 
     // CBQL cấp cơ sở
     if (dataSalaryInfo?.requestAppraisers?.length > 0) {
@@ -760,6 +762,10 @@ const SalaryAdjustmentPropse = (props) => {
   // Thẩm định
   const handleConsent = () => {
     // const processStatusId = appraiser ? 24 : 5
+    if (selectedMembers.some(item => item.canChangeAction && !item.accepted && !item.comment)) {
+      setShowCommentRequiredError(true);
+      return;
+    }
     let staffRequestStatusList = selectedMembers?.map(item => {
       return {
         employeeNo: item.uid,
@@ -1307,7 +1313,8 @@ const SalaryAdjustmentPropse = (props) => {
                           className="no-vborder"
                           value={item?.currentSalary}
                           placeholder="Nhập"
-                          style={{ width: '100%', background: '#fff' }}
+                          style={{ width: "100%", background: "#fff" }}
+                          maxLength={11}
                         />
                       ) : (
                         <span>{'**********'}</span>
@@ -1351,6 +1358,7 @@ const SalaryAdjustmentPropse = (props) => {
                       );
                     }}
                     placeholder="Nhập"
+                    maxLength={11}
                   />
                 ) : (
                   <>
@@ -1371,7 +1379,8 @@ const SalaryAdjustmentPropse = (props) => {
                               className="no-vborder"
                               value={item?.suggestedSalary}
                               placeholder="Nhập"
-                              style={{ width: '100%', background: '#fff' }}
+                              style={{ width: "100%", background: "#fff" }}
+                              maxLength={11}
                             />
                           ) : (
                             '**********'
@@ -1506,6 +1515,7 @@ const SalaryAdjustmentPropse = (props) => {
                 viewSetting.showComponent.btnApprove) &&
               !isCreateMode &&
               item.canChangeAction ? (
+                <>
                 <ResizableTextarea
                   placeholder={'Nhập'}
                   value={item?.comment}
@@ -1514,6 +1524,13 @@ const SalaryAdjustmentPropse = (props) => {
                   }
                   className="form-control input mv-10 w-100"
                 />
+                {
+                  showCommentRequiredError && item.canChangeAction && !item.accepted && !item.comment && 
+                  <div className="text-danger">
+                    {t("Required")}
+                  </div>
+                }
+                </>
               ) : (
                 <>{item?.comment}</>
               )}
@@ -1834,6 +1851,7 @@ const SalaryAdjustmentPropse = (props) => {
               updateApprover={(approver, isApprover) =>
                 handleUpdateCoordinator(approver, isApprover)
               }
+              comment={dataSalary?.coordinatorComment}
             />
           </div>
         </>
@@ -1871,6 +1889,7 @@ const SalaryAdjustmentPropse = (props) => {
                     }
                     approver={item}
                     updateApprover={(sup) => handleUpdateSupervisors(sup, key)}
+                    comment={dataSalary?.requestAppraisers?.find((_, index) => index === key)?.appraiserComment}
                   />
                 </div>
               );
@@ -1900,6 +1919,7 @@ const SalaryAdjustmentPropse = (props) => {
               approver={appraiser}
               isHR={true}
               updateApprover={(sup) => handleUpdateHrChangeSalary(sup)}
+              comment={dataSalary?.requestAppraisers?.[dataSalary?.requestAppraisers?.length - 1]?.appraiserComment}
             />
           </div>
         </>
@@ -1913,6 +1933,7 @@ const SalaryAdjustmentPropse = (props) => {
               isEdit={!viewSetting.disableComponent.selectHrSupportViewSalary}
               approver={approver}
               updateApprover={(sup) => handleUpdateApprovalSalary(sup)}
+              comment={dataSalary?.approverComment}
             />
           </div>
         </>
