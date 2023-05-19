@@ -8,6 +8,7 @@ import ResultModal from './ResultModal'
 import ResultChangeShiftModal from './ResultChangeShiftModal'
 import Constants from '../../commons/Constants'
 import map from "../map.config"
+import { getCulture } from "commons/Utils"
 
 class ConfirmationModal extends React.Component {
     constructor(props) {
