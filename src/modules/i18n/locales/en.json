@@ -1781,5 +1781,7 @@
   "ReportFor":"Reporting for",
   "Drafter": "Create by",
   "Appraiser": "Consenter",
-  "HRAssetDate": "HR Asset Date"
+  "HRAssetDate": "HR Asset Date",
+  "OTMinimumHours": "(*) Minimum OT is 30m for Production department, 60m for other department",
+  "OTInvalidSpaceHours": "(*) Minimum break time is 1h"
 }
