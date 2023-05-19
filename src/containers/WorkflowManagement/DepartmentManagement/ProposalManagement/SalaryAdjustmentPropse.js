@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useHistory } from "react-router";
 import moment from "moment";
-import { forEach } from "lodash";
+import { forEach, isEmpty } from "lodash";
 import Select from "react-select";
 import Spinner from "react-bootstrap/Spinner";
 import { withTranslation } from "react-i18next";
@@ -831,7 +831,7 @@ const SalaryAdjustmentPropse = (props) => {
     // Create
     if (isCreateMode) {
       if (selectMembers.length === 0 && selectedMembers.length == 0) {
-        return showStatusModal(t("ProposedEmployeeValidate"), false);;
+        return showStatusModal(t("ProposedEmployeeValidate"), false);
       }
       if (!coordinator) {
         return showStatusModal(t("HumanForReviewSalaryValidate"), false);
@@ -841,6 +841,11 @@ const SalaryAdjustmentPropse = (props) => {
       }
       if (!approver) {
         return showStatusModal(t("PleaseInputApprover"), false);
+      }
+      
+      if(isTransferAppointProposal) {
+        const isEmptyProposalMembers = selectMembers.every(ele => isEmpty(ele.proposedPositionCode) || isEmpty(ele.proposedDepartmentCode));
+        if(isEmptyProposalMembers) return showStatusModal(t("ProposedEmployeeEmpty"), false);
       }
       setIsLoading(true);
 

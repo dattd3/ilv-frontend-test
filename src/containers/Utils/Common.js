@@ -18,30 +18,31 @@ const getDateByRange = (startDate, endDate) => {
 
 export default function processingDataReq(dataRawFromApi, tab) {
     let taskList = [];
-    const listRequestTypeIdToShowTime = [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP, Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE, Constants.OT_REQUEST]
-    const listRequestTypeIdToGetSubId = [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP]
+    const listRequestTypeIdToShowTime = [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP, Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE, Constants.OT_REQUEST],
+        listRequestTypeIdToGetSubId = [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP];
+
     dataRawFromApi.forEach(element => {
-        if([Constants.ONBOARDING, Constants.RESIGN_SELF, Constants.SALARY_PROPOSE, Constants.OT_REQUEST].includes(element.requestTypeId)) {
+        if([Constants.ONBOARDING, Constants.RESIGN_SELF, Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER, Constants.OT_REQUEST].includes(element.requestTypeId)) {
         // if(element.requestTypeId == Constants.ONBOARDING || element.requestTypeId == Constants.RESIGN_SELF || element.requestTypeId == Constants.SALARY_PROPOSE) {
-            if(element.requestTypeId == Constants.RESIGN_SELF) {
+            if(element.requestTypeId === Constants.RESIGN_SELF) {
                 element.id = element.id + '.1';
-                element.appraiser = element.appraiserInfo ? element.appraiserInfo : {}
-                element.startDate = ""
+                element.appraiser = element.appraiserInfo ? element.appraiserInfo : {};
+                element.startDate = "";
             }
 
-            if(element.requestTypeId == Constants.SALARY_PROPOSE) {
+            if([Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER].includes(element.requestTypeId)) {
                 element.salaryId = element.id;
                 element.id = element.id + '.1';
                 element.appraiser = {};
                 element.user = element.userInfo;
-                element.startDate = ""
+                element.startDate = "";
             }
 
-            if (element.requestTypeId == Constants.OT_REQUEST) {
+            if (element.requestTypeId === Constants.OT_REQUEST) {
               element.id = element.id.toString();
               element.user = element.userInfo;
               element.totalTime = element.requestInfo?.reduce((accumulator, currentValue) => accumulator += (currentValue.hoursOt) * 1, 0)?.toFixed(2);
-              const dateRanges = element.requestInfo?.reduce((accumulator, currentValue) => [...accumulator, moment(currentValue.date, "YYYYMMDD").format("DD/MM/YYYY")], [])
+              const dateRanges = element.requestInfo?.reduce((accumulator, currentValue) => [...accumulator, moment(currentValue.date, "YYYYMMDD").format("DD/MM/YYYY")], []);
               element.dateRange = dateRanges.join(", ");
             }
             taskList.push(element);
@@ -102,29 +103,29 @@ export default function processingDataReq(dataRawFromApi, tab) {
     });
 
     taskList = taskList.filter(function (e, index, taskListOriginal) {
-        let listRequestIdOriginals = taskListOriginal.map(item => item.id)
+        let listRequestIdOriginals = taskListOriginal.map(item => item.id);
 
         if (listRequestIdOriginals.includes(e.id, index + 1)) {
             let indexPosition = listRequestIdOriginals.indexOf(e.id, index + 1);
             // taskListOriginal[indexPosition].startDate = (e.startDate + ",\r" + taskListOriginal[indexPosition].startDate);
             taskListOriginal[indexPosition].startDate = taskListOriginal[indexPosition].startDate?.concat(e.startDate)
         } else if (e.absenceType && e.absenceType.value == MOTHER_LEAVE_KEY) {
-            let startDate = moment(e.startDate, "DD/MM/YYYY")
-            let endDate = moment(e.endDate, "YYYYMMDD")
-            let now = startDate, dates = []
+            let startDate = moment(e.startDate, "DD/MM/YYYY"),
+                endDate = moment(e.endDate, "YYYYMMDD"),
+                now = startDate, dates = [];
 
             while (now.isBefore(endDate) || now.isSame(endDate)) {
                 dates.push(now.format('DD/MM/YYYY'));
                 now.add(1, 'days')
             }
-            e.startDate = dates
-            return e
+            e.startDate = dates;
+            return e;
         } else {
-            e.startDate = e.startDate
-            return e
+            e.startDate = e.startDate;
+            return e;
         }
     })
-    return taskList
+    return taskList;
 }
 
 export const replaceAll = (str, find, replace) => {

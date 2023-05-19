@@ -1267,6 +1267,7 @@
   "HumanForReviewSalaryValidate": "Vui lòng nhập nhân sự hỗ trợ quyền xem lương!",
   "HumanForChangeSalaryValidate": "Vui lòng nhập nhân sự thẩm định quyền xem lương!",
   "ProposedEmployeeValidate": "CBNV được đề xuất chưa được chọn!",
+  "ProposedEmployeeEmpty": "CBNV được đề xuất chưa chọn chức danh đề xuất!",
   "InformationRequired": "Yêu cầu nhập thông tin",
   "CurrentSalaryValidate": "Vui lòng lấy về mức lương hiện tại!",
   "SuggestedSalaryValidate": "Vui lòng nhập mức lương đề xuất!",

@@ -56,6 +56,7 @@ const Constants = {
   RESIGN_SELF: 7,
   SALARY_PROPOSE: 12,
   OT_REQUEST: 13,
+  PROPOSAL_TRANSFER: 14,
 
   //Status request
   STATUS_PENDING: 0,
@@ -111,6 +112,7 @@ const Constants = {
       ReasonRequestLeave: 'ReasonCancelLeaveRequest'
     }
   },
+
   //DateTime
   DATE_OF_SAP_FORMAT: 'YYYYMMDD',
   TIME_OF_SAP_FORMAT: 'HHmm00',
@@ -140,7 +142,6 @@ const Constants = {
   QAAlreadyExist: "QAAlreadyExist",
 
   // Ticket
-
   SOLVER_MANAGER: 1,
   SOLVER_RESOURCE: 2,
   SOLVER_TCKT: 3,

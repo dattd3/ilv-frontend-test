@@ -37,6 +37,7 @@ const requestTypes = [
   { value: [Constants.RESIGN_SELF], label: 'ResignationType'},
   { value: [Constants.SALARY_PROPOSE], label: 'SalaryType' },
   { value: [Constants.OT_REQUEST], label: 'MoneyOT' },
+  { value: [Constants.PROPOSAL_TRANSFER], label: 'ProposalTransfer' },
 ]
 
 const PN03List = [
@@ -53,7 +54,7 @@ const REQUEST_CATEGORIES = {
 const REQUEST_CATEGORY_1_LIST = ["EditBasicProfile", "LeaveRequest", "BizTrip_TrainingRequest", "ShiftChange", "InOutChangeRequest", 
   "ContractEvaluationType", "ResignationType", "AdminUploadShiftChange", "DepartmentTimesheet", "EditPersonalInformation", "OTRequest"]
 
-  const REQUEST_CATEGORY_2_LIST = ["SalaryType"]
+const REQUEST_CATEGORY_2_LIST = ["SalaryType", "ProposalTransfer"]
 
 export { absenceRequestTypes, PN03List, requestTypes, MATERNITY_LEAVE_KEY, MARRIAGE_FUNERAL_LEAVE_KEY, MOTHER_LEAVE_KEY, 
   FOREIGN_SICK_LEAVE, ANNUAL_LEAVE_KEY, ADVANCE_ABSENCE_LEAVE_KEY, COMPENSATORY_LEAVE_KEY, REQUEST_CATEGORIES, REQUEST_CATEGORY_1_LIST, REQUEST_CATEGORY_2_LIST }
