@@ -507,9 +507,7 @@ export default function OTRequestDetailComponent({ data, action }) {
           data.processStatusId == Constants.STATUS_REVOCATION && data.comment && <span
             className="status"
           >
-            {
-              `${t("Reason")}: ${data.comment}`
-            }
+            {data.comment}
           </span>
         }
         {getMessageFromSap().length > 0 && (
