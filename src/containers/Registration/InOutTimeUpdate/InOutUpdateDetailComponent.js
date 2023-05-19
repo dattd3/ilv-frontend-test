@@ -254,7 +254,7 @@ class InOutUpdateDetailComponent extends React.Component {
               </div>
             </div>
           }
-          { inOutTimeUpdate?.comment && <span className='cancellation-reason'>{ inOutTimeUpdate?.comment }</span> } {/* comment -> lý do hủy từ api */}
+          {/* inOutTimeUpdate?.comment && <span className='cancellation-reason'>{ inOutTimeUpdate?.comment }</span> */} {/* comment -> lý do hủy từ api */}
         </div>
         {
           inOutTimeUpdate 

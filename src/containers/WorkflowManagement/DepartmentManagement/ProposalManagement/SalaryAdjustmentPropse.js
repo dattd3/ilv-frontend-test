@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useHistory } from "react-router";
 import moment from "moment";
-import { forEach } from "lodash";
+import { forEach, isEmpty } from "lodash";
 import Select from "react-select";
 import Spinner from "react-bootstrap/Spinner";
 import { withTranslation } from "react-i18next";
@@ -13,6 +13,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import FilterMember from "../../ShareComponents/FilterMember";
 import ConfirmationModal from "../../../Registration/ConfirmationModal";
 import ResultModal from "./ResultModal";
+import ProposalModal from "./ProposalModal";
 import HumanForReviewSalaryComponent from "../../../Registration/HumanForReviewSalaryComponent";
 import ConfirmPasswordModal from "../../../Registration/ContractEvaluation/SalaryPropose/ConfirmPasswordModal";
 import StatusModal from "../../../../components/Common/StatusModal";
@@ -49,13 +50,18 @@ const SalaryAdjustmentPropse = (props) => {
   const { t } = props;
   const api = useApi();
   const history = useHistory();
-  const InsuranceOptions = [{ value: 1, label: t("SalaryPropse") }];
+  const InsuranceOptions = [
+    { value: 1, label: t("SalaryPropse") },
+    { value: 2, label: t("ProposalTransfer") },
+  ],
+  isTransferAppointProposal = window.location.href.includes('transfer-appoint/create/request');
   const [resultModal, setResultModal] = useState({
     show: false,
     title: "",
     message: "",
     isSuccess: false,
   });
+  const [proposalModal, setProposalModal] = useState({ show: false, index: -1, data: null });
   const [modalStatus, setModalStatus] = useState({
     isShowStatusModal: false,
     content: "",
@@ -78,7 +84,7 @@ const SalaryAdjustmentPropse = (props) => {
     new URLSearchParams(props.history.location.search).get("accesstoken") ||
       null
   );
-  const [type, setType] = useState(InsuranceOptions[0]);
+  const [type, setType] = useState(InsuranceOptions[isTransferAppointProposal ? 1 : 0]);
   const [listFiles, setListFiles] = useState([]);
   const[listFileDeleted, setListFileDeleted] = useState([]);
   const [selectMembers, setSelectMembers] = useState([]);
@@ -831,75 +837,68 @@ const SalaryAdjustmentPropse = (props) => {
     // Create
     if (isCreateMode) {
       if (selectMembers.length === 0 && selectedMembers.length == 0) {
-        showStatusModal(t("ProposedEmployeeValidate"), false);
-        return;
+        return showStatusModal(t("ProposedEmployeeValidate"), false);
       }
       if (!coordinator) {
-        showStatusModal(t("HumanForReviewSalaryValidate"), false);
-        return;
+        return showStatusModal(t("HumanForReviewSalaryValidate"), false);
       }
       if (!appraiser) {
-        showStatusModal(t("HumanForChangeSalaryValidate"), false);
-        return;
+        return showStatusModal(t("HumanForChangeSalaryValidate"), false);
       }
       if (!approver) {
-        showStatusModal(t("PleaseInputApprover"), false);
-        return;
+        return showStatusModal(t("PleaseInputApprover"), false);
       }
-      const isUpdate = props.match.params.id !== "create";
+      
+      if(isTransferAppointProposal) {
+        const isEmptyProposalMembers = selectMembers.every(ele => isEmpty(ele.proposedPositionCode) || isEmpty(ele.proposedDepartmentCode));
+        if(isEmptyProposalMembers) return showStatusModal(t("ProposedEmployeeEmpty"), false);
+      }
       setIsLoading(true);
-      const bodyFormData = prepareDataToSubmit(isUpdate ? props.match.params.id : null);
+
+      const isUpdate = props.match.params.id !== "create",
+        bodyFormData = prepareDataToSubmit(
+          isUpdate ? props.match.params.id : null
+        ),
+        params = {
+          data: bodyFormData,
+          params: { culture: getCulture() },
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+          },
+        };
+
       (isUpdate ? //update yêu cầu salaryadjustment
         axios({
           method: "PUT",
           url: `${process.env.REACT_APP_REQUEST_SERVICE_URL}salaryadjustment`,
-          data: bodyFormData,
-          params: {
-            culture: getCulture()
-          },
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-          },
+          ...params,
         })
         : 
-        axios({ // Tạo mới yêu cầu đề xuất
+        axios({ // Tạo mới yêu cầu isTransferAppointProposal ? đề xuất điều chuyển : đề xuất lương
         method: "POST",
-        url: `${process.env.REACT_APP_REQUEST_SERVICE_URL}request`,
-        params: {
-          culture: getCulture()
-        },
-        data: bodyFormData,
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-        },
+        url: `${process.env.REACT_APP_REQUEST_SERVICE_URL}${isTransferAppointProposal ? 'appointment' : 'request'}`,
+        ...params,
       }))
         .then((response) => {
           if (response.data.result && response.data.result.code === "000000") {
-            showStatusModal(t("RequestSent"), true, "/tasks");
-            return;
+            return showStatusModal(t("RequestSent"), true, "/tasks");
           }
           showStatusModal(response.data.result.message || t("Error"), false);
         })
-        .catch((response) => {
-          showStatusModal(t("Error"), false);
-        })
-        .finally(() => {
-          setIsLoading(false);
-        });
+        .catch((response) => showStatusModal(t("Error"), false))
+        .finally(() => setIsLoading(false));
     } else {
       // Review
       if (dataSalary?.processStatusId === 22) {
         const listErrors = validation();
         if (listErrors.length !== 0) {
-          setResultModal({
+          return setResultModal({
             show: true,
             title: t("InformationRequired"),
             message: listErrors[0],
             isSuccess: false,
           });
-          return;
         } else {
           setIsLoading(true);
           const dataSend = {
@@ -936,20 +935,15 @@ const SalaryAdjustmentPropse = (props) => {
                 response.data.result &&
                 response.data.result.code === "000000"
               ) {
-                showStatusModal(t("RequestSent"), true, "/tasks");
-                return;
+                return showStatusModal(t("RequestSent"), true, "/tasks");
               }
               showStatusModal(
                 response.data.result.message || t("Error"),
                 false
               );
             })
-            .catch((response) => {
-              showStatusModal(t("Error"), false);
-            })
-            .finally(() => {
-              setIsLoading(false);
-            });
+            .catch((response) => showStatusModal(t("Error"), false))
+            .finally(() => setIsLoading(false));
         }
       }
     }
@@ -969,26 +963,30 @@ const SalaryAdjustmentPropse = (props) => {
         expireDate: u?.expireDate,
         contractName: u?.contractName,
         contractType: u?.contractType,
-      }));
-      const appraiserInfoLst = supervisors
+        ...(isTransferAppointProposal ? {
+          proposedPositionCode: u?.proposedPositionCode,
+          proposedPosition: u?.proposedPosition,
+          proposedDepartment: u?.proposedDepartment,
+          proposedDepartmentCode: u?.proposedDepartmentCode,
+        } : {})
+      })),
+      appraiserInfoLst = supervisors
         .filter((item) => item != null)
-        .map((item, index) => {
-          return {
-            avatar: "",
-            account: item?.username.toLowerCase() + "@vingroup.net",
-            fullName: item?.fullName,
-            employeeLevel: item?.employeeLevel,
-            pnl: item?.pnl,
-            orglv2Id: item?.orglv2Id,
-            current_position: item?.current_position,
-            department: item?.department,
-            order: index + 1,
-            company_email: item?.company_email?.toLowerCase(),
-            type: 0,
-            employeeNo: item?.uid || item?.employeeNo,
-            username: item?.username.toLowerCase(),
-          };
-        });
+        .map((item, index) => ({
+          avatar: "",
+          account: item?.username.toLowerCase() + "@vingroup.net",
+          fullName: item?.fullName,
+          employeeLevel: item?.employeeLevel,
+          pnl: item?.pnl,
+          orglv2Id: item?.orglv2Id,
+          current_position: item?.current_position,
+          department: item?.department,
+          order: index + 1,
+          company_email: item?.company_email?.toLowerCase(),
+          type: 0,
+          employeeNo: item?.uid || item?.employeeNo,
+          username: item?.username.toLowerCase(),
+        }));
       if (appraiser) {
         appraiserInfoLst.push({
           avatar: "",
@@ -1219,6 +1217,30 @@ const SalaryAdjustmentPropse = (props) => {
     });
   };
 
+  const handleClickProposal = (index) => {
+    setProposalModal({ show: true, index, data: selectMembers[index] });
+  }
+
+  const hideProposalModal = () => {
+    setProposalModal({ show: false });
+  };
+
+  const handleAcceptProposal = ({
+    proposedPosition,
+    proposedPositionCode,
+    proposedDepartment,
+    proposedDepartmentCode,
+  }) => {
+    const { index } = proposalModal;
+    selectMembers[index].proposedPosition = proposedPosition;
+    selectMembers[index].proposedPositionCode = proposedPositionCode;
+    selectMembers[index].proposedDepartment = proposedDepartment;
+    selectMembers[index].proposedDepartmentCode = proposedDepartmentCode;
+
+    setSelectMembers(selectMembers);
+    setProposalModal({ show: false });
+  };
+
   const onHideModalConfirm = () => {
     setConfirmModal({
       ...confirmModal,
@@ -1243,20 +1265,20 @@ const SalaryAdjustmentPropse = (props) => {
         : item.account;
       return (
         <React.Fragment key={index}>
-          <tr style={{ border: "none", height: "10px" }} />
+          <tr style={{ border: 'none', height: '10px' }} />
           <tr key={index}>
             <td colSpan={3}>
               <div className="d-flex">
                 <input
                   type="checkbox"
                   style={{
-                    alignSelf: "flex-start",
-                    margin: "5px",
+                    alignSelf: 'flex-start',
+                    margin: '5px',
                     display:
                       viewSetting.showComponent.btnExpertise ||
                       viewSetting.showComponent.btnApprove
-                        ? "inline"
-                        : "none",
+                        ? 'inline'
+                        : 'none',
                   }}
                   checked={checkedMemberIds[item.uid].checked}
                   disabled={!item.canChangeAction}
@@ -1264,7 +1286,7 @@ const SalaryAdjustmentPropse = (props) => {
                 />
                 <div>
                   <p className="mb-7px font-weight-bold">
-                    {item?.fullName}{" "}
+                    {item?.fullName}{' '}
                     <span className="font-weight-normal">({account})</span>
                   </p>
                   <p className="mb-7px">{item?.jobTitle}</p>
@@ -1279,8 +1301,8 @@ const SalaryAdjustmentPropse = (props) => {
                     <div
                       style={{
                         width: viewSetting.disableComponent.showEye
-                          ? "90%"
-                          : "100%",
+                          ? '90%'
+                          : '100%',
                       }}
                     >
                       {viewSetting.disableComponent.showCurrentSalary &&
@@ -1295,12 +1317,12 @@ const SalaryAdjustmentPropse = (props) => {
                           maxLength={11}
                         />
                       ) : (
-                        <span>{"**********"}</span>
+                        <span>{'**********'}</span>
                       )}
                     </div>
                     {viewSetting.disableComponent.showEye && (
                       <div
-                        style={{ width: "10%", cursor: "pointer" }}
+                        style={{ width: '10%', cursor: 'pointer' }}
                         onClick={handleShowCurrentSalary}
                       >
                         <img
@@ -1332,7 +1354,7 @@ const SalaryAdjustmentPropse = (props) => {
                       handleTextInputChange(
                         value,
                         item?.uid,
-                        "suggestedSalary"
+                        'suggestedSalary'
                       );
                     }}
                     placeholder="Nhập"
@@ -1345,8 +1367,8 @@ const SalaryAdjustmentPropse = (props) => {
                         <div
                           style={{
                             width: viewSetting.disableComponent.showEye
-                              ? "90%"
-                              : "100%",
+                              ? '90%'
+                              : '100%',
                           }}
                         >
                           {accessToken &&
@@ -1361,12 +1383,12 @@ const SalaryAdjustmentPropse = (props) => {
                               maxLength={11}
                             />
                           ) : (
-                            "**********"
+                            '**********'
                           )}
                         </div>
                         {viewSetting.disableComponent.showEye && (
                           <div
-                            style={{ width: "10%", cursor: "pointer" }}
+                            style={{ width: '10%', cursor: 'pointer' }}
                             onClick={handleShowCurrentSalary}
                           >
                             <img
@@ -1404,17 +1426,23 @@ const SalaryAdjustmentPropse = (props) => {
                       handleDatePickerInputChange(
                         date,
                         item?.uid,
-                        "effectiveTime"
+                        'effectiveTime'
                       )
                     }
-                    onChangeRaw={() => {setIsOpenDatepick(false)}}
-                    onFocus={() => {setIsOpenDatepick(true)}}
-                    onBlur={() => {setIsOpenDatepick(false)}}
+                    onChangeRaw={() => {
+                      setIsOpenDatepick(false);
+                    }}
+                    onFocus={() => {
+                      setIsOpenDatepick(true);
+                    }}
+                    onBlur={() => {
+                      setIsOpenDatepick(false);
+                    }}
                     dateFormat="dd/MM/yyyy"
-                    placeholderText={t("Select")}
-                    locale={t("locale")}
+                    placeholderText={t('Select')}
+                    locale={t('locale')}
                     className="form-control input"
-                    styles={{ width: "100%" }}
+                    styles={{ width: '100%' }}
                     getPopupContainer={(trigger) => trigger.parentElement}
                   />
                 ) : (
@@ -1432,23 +1460,25 @@ const SalaryAdjustmentPropse = (props) => {
                     <span>
                       <input
                         type="radio"
-                        id={"action_accept" + item.uid}
-                        name={"action" + item.uid}
+                        id={'action_accept' + item.uid}
+                        name={'action' + item.uid}
                         checked={item.accepted == true}
                         onChange={(e) => onActionChange(item.uid, true)}
                       />
-                      <label htmlFor={"action_accept" + item.uid}>{t("accept")}</label>
+                      <label htmlFor={'action_accept' + item.uid}>
+                        {t('accept')}
+                      </label>
                     </span>
                     <span>
                       <input
                         type="radio"
-                        id={"action_reject" + item.uid}
-                        name={"action" + item.uid}
+                        id={'action_reject' + item.uid}
+                        name={'action' + item.uid}
                         checked={item.accepted != true}
                         onChange={(e) => onActionChange(item.uid, false)}
                       />
-                      <label htmlFor={"action_reject" + item.uid}>
-                        {t("RejectQuestionButtonLabel")}
+                      <label htmlFor={'action_reject' + item.uid}>
+                        {t('RejectQuestionButtonLabel')}
                       </label>
                     </span>
                   </>
@@ -1462,7 +1492,7 @@ const SalaryAdjustmentPropse = (props) => {
                         checked={item.accepted == true}
                         disabled={true}
                       />
-                      <label htmlFor="action_accept">{t("accept")}</label>
+                      <label htmlFor="action_accept">{t('accept')}</label>
                     </span>
                     <span>
                       <input
@@ -1473,7 +1503,7 @@ const SalaryAdjustmentPropse = (props) => {
                         disabled={true}
                       />
                       <label htmlFor="action_reject">
-                        {t("RejectQuestionButtonLabel")}
+                        {t('RejectQuestionButtonLabel')}
                       </label>
                     </span>
                   </>
@@ -1487,10 +1517,10 @@ const SalaryAdjustmentPropse = (props) => {
               item.canChangeAction ? (
                 <>
                 <ResizableTextarea
-                  placeholder={"Nhập"}
+                  placeholder={'Nhập'}
                   value={item?.comment}
                   onChange={(e) =>
-                    handleTextInputChange(e.target.value, item?.uid, "comment")
+                    handleTextInputChange(e.target.value, item?.uid, 'comment')
                   }
                   className="form-control input mv-10 w-100"
                 />
@@ -1507,23 +1537,58 @@ const SalaryAdjustmentPropse = (props) => {
             </td>
           </tr>
           <tr>
+            {isTransferAppointProposal && (
+              <td colSpan="12">
+                <div className="skill">
+                  <span className="title font-weight-bold">
+                    * {t('proposal_title')}:
+                  </span>
+                  <span
+                    className="w-100 proposal-title"
+                    onClick={() => handleClickProposal(index)}
+                  >
+                    <select className="form-control w-100 bg-white" disabled>
+                      <option
+                        dangerouslySetInnerHTML={{
+                          __html: !!item.proposedPosition
+                            ? `${item?.proposedPosition} (${item.proposedPositionCode})`
+                            : t('Select'),
+                        }}
+                      />
+                    </select>
+                  </span>
+                </div>
+                <div className="skill mt-2">
+                  <span className="title font-weight-bold">
+                    * {t('proposal_org')}:
+                  </span>
+                  <span className="input form-control mv-10 w-100 disabled">
+                    {item?.proposedDepartment}
+                  </span>
+                </div>
+              </td>
+            )}
+          </tr>
+          <tr>
             <td colSpan="12">
               <div className="skill">
-                <span className="title">{t("strength")}:</span>
+                <span className="title font-weight-bold">
+                  * {t('strength')}:
+                </span>
                 <span className="input">
                   {viewSetting.disableComponent.editSubjectApply &&
                   !isCreateMode ? (
                     <ResizableTextarea
-                      placeholder={"Nhập"}
+                      placeholder={'Nhập'}
                       value={item?.strength}
                       onChange={(e) =>
                         handleTextInputChange(
                           e.target.value,
                           item?.uid,
-                          "strength"
+                          'strength'
                         )
                       }
-                      className="form-control input mv-10 w-100"
+                      className="form-control mv-10 w-100"
                     />
                   ) : (
                     <>{item?.strength}</>
@@ -1535,21 +1600,23 @@ const SalaryAdjustmentPropse = (props) => {
           <tr>
             <td colSpan="12">
               <div className="skill">
-                <span className="title">{t("weakness")}:</span>
+                <span className="title font-weight-bold">
+                  * {t('weakness')}:
+                </span>
                 <span className="input">
                   {viewSetting.disableComponent.editSubjectApply &&
                   !isCreateMode ? (
                     <ResizableTextarea
-                      placeholder={"Nhập"}
+                      placeholder={'Nhập'}
                       value={item?.weakness}
                       onChange={(e) =>
                         handleTextInputChange(
                           e.target.value,
                           item?.uid,
-                          "weakness"
+                          'weakness'
                         )
                       }
-                      className="form-control input mv-10 w-100"
+                      className="form-control mv-10 w-100"
                     />
                   ) : (
                     <>{item?.weakness}</>
@@ -1563,6 +1630,7 @@ const SalaryAdjustmentPropse = (props) => {
     });
   };
   const salaryState = `salaryadjustment_${props.match.params?.id}_${props.match.params?.type}`;
+
   return (
     <div className="timesheet-section proposal-management status-contain">
       <LoadingModal show={isLoading} isloading />
@@ -1579,6 +1647,11 @@ const SalaryAdjustmentPropse = (props) => {
         isSuccess={resultModal.resultModal}
         onHide={hideResultModal}
       />
+      <ProposalModal
+        modal={proposalModal}
+        onHide={hideProposalModal}
+        onAccept={handleAcceptProposal}
+      />
       <StatusModal
         show={modalStatus.isShowStatusModal}
         content={modalStatus.content}
@@ -1594,9 +1667,9 @@ const SalaryAdjustmentPropse = (props) => {
         dataToSap={confirmModal.dataToUpdate}
         onHide={onHideModalConfirm}
       />
-      <div className="eval-heading">{t("SalaryPropse")}</div>
+      <div className="eval-heading">{isTransferAppointProposal ? t("ProposalTransfer") : t("SalaryPropse")}</div>
       {/* ĐỀ XUẤT ĐIỀU CHỈNH LƯƠNG */}
-      <h5 className="content-page-header">{t("SalaryAdjustmentPropse")}</h5>
+      <h5 className="content-page-header">{isTransferAppointProposal ? t("MenuProposalManagement") : t("SalaryAdjustmentPropse")}</h5>
       <div className="timesheet-box1 shadow">
         <div className="row">
           <div className="col-12">
@@ -1935,7 +2008,7 @@ const SalaryAdjustmentPropse = (props) => {
               hidden
               id="i_files"
               name="i_files"
-              onChange={(e) => handleAttachFile(e)}
+              onChange={handleAttachFile}
               accept=".xls, .xlsx, .doc, .docx, .jpg, .png, .pdf"
               multiple
             />
@@ -1953,7 +2026,7 @@ const SalaryAdjustmentPropse = (props) => {
           <button
             type="button"
             className="btn btn-secondary ml-3 shadow"
-            onClick={() => handleCancel()}
+            onClick={handleCancel}
           >
             <img src={IconDelete} className="mr-1" alt="cancel" />{" "}
             {t("CancelSearch")}
@@ -1966,7 +2039,7 @@ const SalaryAdjustmentPropse = (props) => {
             type="button"
             className="btn btn-primary ml-3 shadow"
             disabled={isLoading}
-            onClick={() => handleSendForm()}
+            onClick={handleSendForm}
           >
             {isLoading ? (
               <Spinner
@@ -1987,7 +2060,7 @@ const SalaryAdjustmentPropse = (props) => {
           <button
             type="button"
             className="btn btn-danger"
-            onClick={() => handleRefuse()}
+            onClick={handleRefuse}
           >
             <img src={IconDelete} className="mr-1" alt="delete" />{" "}
             {t("RejectQuestionButtonLabel")}
@@ -1998,7 +2071,7 @@ const SalaryAdjustmentPropse = (props) => {
           <button
             type="button"
             className="btn btn-primary float-right ml-3 shadow"
-            onClick={() => handleConsent()}
+            onClick={handleConsent}
           >
             <i className="fas fa-check" aria-hidden="true"></i> {t("Consent")}
           </button>
@@ -2008,7 +2081,7 @@ const SalaryAdjustmentPropse = (props) => {
           <button
             type="button"
             className="btn btn-danger"
-            onClick={() => handleReject()}
+            onClick={handleReject}
           >
             <img src={IconDelete} className="mr-1" alt="delete" /> {t("Reject")}
           </button>
@@ -2018,7 +2091,7 @@ const SalaryAdjustmentPropse = (props) => {
           <button
             type="button"
             className="btn btn-success float-right ml-3 shadow"
-            onClick={() => handleApprove()}
+            onClick={handleApprove}
           >
             <i className="fas fa-check" aria-hidden="true"></i> {t("Approval")}
           </button>

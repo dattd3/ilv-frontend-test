@@ -52,7 +52,8 @@ const formatNumberInteger = value => {
     return number.toString()
 }
 
-const checkOffset = (canvas, canvasWidth, canvasHeight, heightLeft,) => {
+const checkOffset = (canvas, canvasWidth, canvasHeight, heightLeft, needOffset) => {
+    if(!needOffset) return 0;
     var image1 = new Image();
     var context = canvas.getContext('2d');
     context.drawImage(image1, 0, 0);
@@ -85,7 +86,7 @@ const checkOffset = (canvas, canvasWidth, canvasHeight, heightLeft,) => {
 
 }
 
-const exportToPDF = (elementViewById, fileName) => {
+const exportToPDF = (elementViewById, fileName, needOffset = true) => {
     // const elementView = document.getElementById('frame-for-export')
     // const ratio = elementViewById.clientHeight / elementViewById.clientWidth
     const totalEdgeDistance = 14
@@ -118,7 +119,7 @@ const exportToPDF = (elementViewById, fileName) => {
 
         const marginX = totalEdgeDistance / 2
         const marginY = (pageHeight - canvasHeight) / 2
-        let offset = checkOffset(canvas, canvasWidth, canvasHeight, heightLeft - pageHeight);
+        let offset = checkOffset(canvas, canvasWidth, canvasHeight, heightLeft - pageHeight, needOffset);
         doc.addImage(image, 'JPEG', marginX, position + offset, canvasWidth, canvasHeight)
         heightLeft -= pageHeight;
         heightLeft += offset;
@@ -129,7 +130,7 @@ const exportToPDF = (elementViewById, fileName) => {
             if (heightLeft < pageHeight) {
                 offset = 0;
             } else {
-                offset = checkOffset(canvas, canvasWidth, canvasHeight, heightLeft - pageHeight);
+                offset = checkOffset(canvas, canvasWidth, canvasHeight, heightLeft - pageHeight, needOffset);
             }
             doc.addImage(image, 'JPEG', marginX, position + offset, canvasWidth, canvasHeight)
             heightLeft -= pageHeight;
@@ -550,15 +551,15 @@ const marriageConfig = () => {
 }
 
 function setURLSearchParam(key, value) {
-  const url = new URL(window.location.href);
-  url.searchParams.set(key, value);
-  window.history.pushState({ path: url.href }, '', url.href);
+    const url = new URL(window.location.href);
+    url.searchParams.set(key, value);
+    window.history.pushState({ path: url.href }, '', url.href);
 }
 
 const getCulture = () => {
-  const locale = localStorage.getItem("locale") || Constants.LANGUAGE_VI
-  return locale === Constants.LANGUAGE_VI ? "vi" : "en"
-}
+    const locale = localStorage.getItem("locale") || Constants.LANGUAGE_VI
+    return locale === Constants.LANGUAGE_VI ? "vi" : "en";
+}  
 
 const formatProcessTime = (time) => {
   if (time === "0001-01-01T00:00:00" || !time) return ""
@@ -569,5 +570,5 @@ export {
     getRequestConfigurations, removeAccents, formatStringByMuleValue, formatNumberInteger, exportToPDF, isEnableFunctionByFunctionName, getValueParamByQueryString, getDateByRangeAndFormat,
     calculateBackDateByPnLVCodeAndFormatType, isEnableShiftChangeFunctionByPnLVCode, isEnableInOutTimeUpdateFunctionByPnLVCode, getRequestTypeIdsAllowedToReApproval, getMuleSoftHeaderConfigurations,
     isAdjacentDateBy2Date, showRangeDateGroupByArrayDate, generateTaskCodeByCode, parsteStringToHtml, getRegistrationMinDateByConditions, isVinFast, isEnableOTFunctionByPnLVCode, getCurrentLanguage, 
-    getResignResonsMasterData, formatStringDateTimeByMuleValue, genderConfig, marriageConfig, setURLSearchParam, getCulture, formatProcessTime
+    getResignResonsMasterData, formatStringDateTimeByMuleValue, genderConfig, marriageConfig, formatProcessTime, setURLSearchParam, getCulture
 }

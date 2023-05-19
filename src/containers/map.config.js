@@ -90,6 +90,7 @@ export default {
   PersonalDetails: "/personal-detail-management",
   ProposalManagement: "/proposal-management",
   SalaryAdjustmentPropse: "/salaryadjustment/:id/:type",
+  transferAppointProposal: "/transfer-appoint/:id/:type",
 
   //Vaccine
   VaccineList: "/vaccination",

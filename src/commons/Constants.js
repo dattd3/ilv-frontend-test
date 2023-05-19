@@ -56,6 +56,7 @@ const Constants = {
   RESIGN_SELF: 7,
   SALARY_PROPOSE: 12,
   OT_REQUEST: 13,
+  PROPOSAL_TRANSFER: 14,
 
   //Status request
   STATUS_PENDING: 0,
@@ -111,6 +112,7 @@ const Constants = {
       ReasonRequestLeave: 'ReasonCancelLeaveRequest'
     }
   },
+
   //DateTime
   DATE_OF_SAP_FORMAT: 'YYYYMMDD',
   TIME_OF_SAP_FORMAT: 'HHmm00',
@@ -140,7 +142,6 @@ const Constants = {
   QAAlreadyExist: "QAAlreadyExist",
 
   // Ticket
-
   SOLVER_MANAGER: 1,
   SOLVER_RESOURCE: 2,
   SOLVER_TCKT: 3,
@@ -221,9 +222,10 @@ const Constants = {
     DANHGIA_TAIKI: 2,
     DEXUATLUONG:3,
     NGHIVIEC:4,
-    PHUCLOI: 5
+    PHUCLOI: 5,
+    DIEUCHUYEN: 6,
   },
-  MODULE_COMPANY_AVAILABE: process.env.REACT_APP_ENVIRONMENT === 'PRODUCTION' ?
+  MODULE_COMPANY_AVAILABE: process.env.REACT_APP_ENVIRONMENT === 'PRODUCTION' ? 
   { //production todo: add  "V077", "V070" to TUYENDUNG
     1: ["V040", "V005", "V079", "V041", "V030", "V077", "V070", "V099"],//TUYENDUNG + V061
     2: ["V040", "V005", "V061", "V077"],//DANHGIA_TAIKI
@@ -235,8 +237,9 @@ const Constants = {
     1: ["V040", "V005", "V079", "V041", "V030", "V077", "V070", "V099"],//TUYENDUNG + V061
     2: ["V061","V040", "V005", "V079", "V041", "V070", "V077", "V099"],//DANHGIA_TAIKI
     3: ["V061", "V040", "V005", "V079", "V041"],//DEXUATLUONG "V061", "V040", "V005", "V079", "V041"
-    4:["V040", "V005", "V079", "V070", "V077"],//NGHIVIEC
-    5: ["V061", "V040", "V005", "V079", "V041", "V070", "V077"]//PHUCLOI
+    4: ["V040", "V005", "V079", "V070", "V077"],//NGHIVIEC
+    5: ["V061", "V040", "V005", "V079", "V041", "V070", "V077"],//PHUCLOI
+    6: ["V040"], //DIEUCHUYEN
   },
   CURRENCY: {
     VND: 'VNĐ',

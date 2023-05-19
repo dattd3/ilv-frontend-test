@@ -510,7 +510,7 @@ class PersonalComponent extends React.Component {
                         </div>
                         <div className="col-6">
                             <input className="form-control input" name="PersonalIdentifyPlace" type="text" onChange={this.handleTextInputChange.bind(this)}
-                                value={this.state.userDetail.pid_place_of_issue || ""} />sáasasas
+                                value={this.state.userDetail.pid_place_of_issue || ""} />
                             {
                                 validationMessagesFromParent?.personalIdentifyPlace && <p className="text-danger">{validationMessagesFromParent?.personalIdentifyPlace}</p>
                             }

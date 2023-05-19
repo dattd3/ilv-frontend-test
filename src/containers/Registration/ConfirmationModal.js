@@ -49,11 +49,8 @@ class ConfirmationModal extends React.Component {
                 if(dataToSap[0].requestTypeId != Constants.ONBOARDING) {
                     dataToSap[0].sub[0].processStatusId = Constants.STATUS_NOT_APPROVED;
                 }
-                // this.props.dataToSap[0].sub[0].comment = this.state.message;
-                // this.disApprove(this.props.dataToSap, `${process.env.REACT_APP_REQUEST_SERVICE_URL}request/approve`, id)
-
                 dataToSap[0].sub[0].comment = message;
-                this.disApprove(dataToSap, `${process.env.REACT_APP_REQUEST_SERVICE_URL}request/approve`, id)
+                this.disApprove(dataToSap, `${process.env.REACT_APP_REQUEST_URL}request/approve`, id)
                 break;
             case Constants.STATUS_APPROVED: // phê duyệt
                 dataToSap[0].sub[0].processStatusId = Constants.STATUS_APPROVED;
