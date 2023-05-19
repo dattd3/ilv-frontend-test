@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import moment from "moment";
 import axios from "axios";
@@ -99,23 +99,25 @@ export default function OTRequestDetailComponent({ data, action }) {
           (val) => val.STATUS === "E"
         );
         if (_data) {
-          const messageSAPArr = _data.map((val) => 
-          ({
-            date: moment(val?.DATA?.split("|")?.[1], "YYYYMMDD").format("DD/MM/YYYY"),
-            message: val?.MESSAGE
+          const messageSAPArr = _data.map((val) => ({
+            date: moment(val?.DATA?.split("|")?.[1], "YYYYMMDD").format(
+              "DD/MM/YYYY"
+            ),
+            message: val?.MESSAGE,
           }));
-          // messageSAP = temp.filter(function (item, pos) {
-          //   console.log(item, pos, temp.indexOf(item));
-          //   return temp.indexOf(item) === pos;
-          // });
-          const messageSetArr = Array.from(new Set(messageSAPArr.map(item => item.message)));
-          messageSetArr.forEach(item => {
-            const datesStr = messageSAPArr.filter(messObj => messObj.message === item)?.map(i => i.date)?.join(", ");
+          const messageSetArr = Array.from(
+            new Set(messageSAPArr.map((item) => item.message))
+          );
+          messageSetArr.forEach((item) => {
+            const datesStr = messageSAPArr
+              .filter((messObj) => messObj.message === item)
+              ?.map((i) => i.date)
+              ?.join(", ");
             mergedMessageObjArr.push({
               datesStr,
-              message: item
-            })
-          })
+              message: item,
+            });
+          });
         }
       }
     }
@@ -307,38 +309,50 @@ export default function OTRequestDetailComponent({ data, action }) {
                       <div className="title">{t("OTRequest")}</div>
                       <div className="ot-registration-body">
                         <div className="row mb-15">
-                          <div className="col-5">
-                            <div className="form-item">
-                              <div className="mb-12">{t("OTReason")}</div>
-                              <div className="field-view">
-                                {
-                                  OTReasonOptions.find(
-                                    (item) => item.value == timesheet.reasonType
-                                  )?.label
-                                }
-                              </div>
-                            </div>
-                          </div>
-                          <div className="col-2">
-                            <div className="form-item">
-                              <div className="mb-12">{t("FromHour")}</div>
-                              <div className="field-view">
-                                {moment(timesheet.startTime, "HHmmss").format(
-                                  "HH:mm"
-                                )}
-                              </div>
-                            </div>
-                          </div>
-                          <div className="col-2">
-                            <div className="form-item">
-                              <div className="mb-12">{t("ToHour")}</div>
-                              <div className="field-view">
-                                {moment(timesheet.endTime, "HHmmss").format(
-                                  "HH:mm"
-                                )}
-                              </div>
-                            </div>
-                          </div>
+                          {timesheet?.startTime
+                            ?.split(",")
+                            ?.map((time, timeIndex) => (
+                              <React.Fragment key={timeIndex}>
+                                <div className="col-5 mb-12">
+                                  {timeIndex === 0 && (
+                                    <div className="form-item">
+                                      <div className="mb-12">
+                                        {t("OTReason")}
+                                      </div>
+                                      <div className="field-view">
+                                        {
+                                          OTReasonOptions.find(
+                                            (item) =>
+                                              item.value == timesheet.reasonType
+                                          )?.label
+                                        }
+                                      </div>
+                                    </div>
+                                  )}
+                                </div>
+                                <div className="col-2">
+                                  <div className="form-item">
+                                    <div className="mb-12">{t("FromHour")}</div>
+                                    <div className="field-view">
+                                      {moment(time, "HHmmss").format("HH:mm")}
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className="col-2">
+                                  <div className="form-item">
+                                    <div className="mb-12">{t("ToHour")}</div>
+                                    <div className="field-view">
+                                      {moment(
+                                        timesheet?.endTime?.split(",")[
+                                          timeIndex
+                                        ],
+                                        "HHmmss"
+                                      ).format("HH:mm")}
+                                    </div>
+                                  </div>
+                                </div>
+                              </React.Fragment>
+                            ))}
                         </div>
                         <div className="row mb-15">
                           <div className="col-5">
@@ -553,9 +567,11 @@ export default function OTRequestDetailComponent({ data, action }) {
             <i className="fas fa-times pr-2 text-danger align-self-center"></i>
             <div>
               {getMessageFromSap().map((item, index) => {
-                return <div key={index}>
-                  {item.datesStr}: {item.message}
-                </div>;
+                return (
+                  <div key={index}>
+                    {item.datesStr}: {item.message}
+                  </div>
+                );
               })}
             </div>
           </div>
@@ -586,7 +602,7 @@ export default function OTRequestDetailComponent({ data, action }) {
         urlName={"otrequest"}
         requestTypeId={data.requestTypeId}
         action={action}
-        haveOverOTFund={data?.requestInfo?.some(item => item.isOverOTFund)}
+        haveOverOTFund={data?.requestInfo?.some((item) => item.isOverOTFund)}
       />
     </div>
   );
