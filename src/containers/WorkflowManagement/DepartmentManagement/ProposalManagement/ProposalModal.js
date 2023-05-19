@@ -35,7 +35,8 @@ const ORG_KEY = [
     crews: [],
     teams: [],
     groups: [],
-  };
+  },
+  companyCode = localStorage.getItem('companyCode');
 
 class ProposalModal extends React.Component {
   constructor(props) {
@@ -45,25 +46,8 @@ class ProposalModal extends React.Component {
       org: { ...ORG_DATA },
       data: {},
       errors: {},
-      titles: [
-        { label: 'PTGD Khối hỗ trợ', value: '25254625' },
-        { label: 'Trưởng phòng dich vụ', value: '25254626' },
-        { label: 'Senior digital solutions manager', value: '25254627' },
-        { label: 'Trưởng phòng dịch vụ xe điện', value: '25254628' },
-        { label: 'PTGD Khối hỗ trợ', value: '25254629' },
-        { label: 'Trưởng phòng dich vụ', value: '252546210' },
-        { label: 'Senior digital solutions manager', value: '25254631' },
-        { label: 'Trưởng phòng dịch vụ xe điện', value: '25254632' },
-        { label: 'PTGD Khối hỗ trợ', value: '25254633' },
-        { label: 'Trưởng phòng dich vụ', value: '25254634' },
-        { label: 'Senior digital solutions manager', value: '25254635' },
-        { label: 'Trưởng phòng dịch vụ xe điện', value: '25254636' },
-        { label: 'PTGD Khối hỗ trợ', value: '25254637' },
-        { label: 'Trưởng phòng dich vụ', value: '25254638' },
-        { label: 'Senior digital solutions manager', value: '25254639' },
-        { label: 'Trưởng phòng dịch vụ xe điện', value: '25254640' },
-      ],
-      isFetchOrg: true,
+      titles: [],
+      currentPnl: '',
       proposalSearch: '',
       proposalLoading: false,
     };
@@ -100,32 +84,38 @@ class ProposalModal extends React.Component {
     this.fetchData();
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps, prevStates) {
     const { modal } = this.props,
-      { orgValue, proposalTitle } = modal.data || {},
-      { isFetchOrg, orgsOrigin } = this.state;
+      {
+        proposedPositionCode,
+        ProposedDepartmentCode,
+      } = modal.data || {},
+      { currentPnl, orgsOrigin } = this.state;
 
-    if (isFetchOrg) this.fetchOrg();
-    if (!!orgValue && modal !== prevProps.modal) {
-      const proposalId = proposalTitle.match(/<em>\(.*\)<\/em>$/gim)[0].replace(/<em>\(/g, '').replace(/\)<\/em>/g, ''),
-      orgIds = orgValue.split('\\');
+    if (prevStates.currentPnl !== currentPnl) this.fetchOrg();
+    if (!!ProposedDepartmentCode && modal !== prevProps.modal) {
+      const orgIds = ProposedDepartmentCode.split('\\'),
+        pnl = orgsOrigin.pnls.filter(
+          (ele) => ele.value === orgIds[0]
+        )[0];
       if (!!orgIds[0]) {
-        this.setState({
-          data: {
-            ...this.state,
-            pnl: orgsOrigin.pnls.filter((ele) => ele.value === orgIds[0])[0],
+        this.setState(
+          {
+            data: {
+              ...this.state.data,
+              pnl,
+            },            
+            currentPnl: pnl?.value,
           },
-        }, () => this.fetchOrg(orgIds));
+          () => this.fetchOrg(orgIds)
+        );
       }
     }
   }
 
   fetchOrg = async (orgIds) => {
     let config = getMuleSoftHeaderConfigurations(),
-      {
-        data,
-        org,
-      } = this.state,
+      { data, org } = this.state,
       orgsOrigin = { ...ORG_DATA, pnls: this.state.orgsOrigin.pnls };
 
     if (!!data?.pnl?.value) {
@@ -159,19 +149,23 @@ class ProposalModal extends React.Component {
           }
         });
 
-        if(!!orgIds) {
+        if (!!orgIds) {
           // parse value from detail to modal
-          console.log('orgIds: ', orgIds);
           for (let i = 1; i < orgIds.length; i++) {
-            org[`${ORG_KEY[i]}s`] = orgsOrigin[`${ORG_KEY[i]}s`].filter(ele => ele.parentId === data[ORG_KEY[i-1]].value);
-            data[ORG_KEY[i]] = org[`${ORG_KEY[i]}s`].filter(ele => ele.value === orgIds[i])[0];
+            org[`${ORG_KEY[i]}s`] = orgsOrigin[`${ORG_KEY[i]}s`].filter(
+              (ele) => ele.parentId === data[ORG_KEY[i - 1]].value
+            );
+            data[ORG_KEY[i]] = org[`${ORG_KEY[i]}s`].filter(
+              (ele) => ele.value === orgIds[i]
+            )[0];
           }
+          // get data and search in here
+          this.handleSearch()
         }
-      
+
         this.setState({
           data,
           orgsOrigin,
-          isFetchOrg: false,
           org: Object.assign(org, { blocks: orgsOrigin.blocks }),
         });
       }
@@ -207,7 +201,7 @@ class ProposalModal extends React.Component {
       }
     }
 
-    if(ORG_KEY.includes(key)) {
+    if (ORG_KEY.includes(key)) {
       for (let i = ORG_KEY.length - 1; i >= 0; i--) {
         if (ORG_KEY[i] === key) index = i;
         if (index < i) data[ORG_KEY[i]] = null;
@@ -215,8 +209,8 @@ class ProposalModal extends React.Component {
     }
 
     this.setState(
-      // { data, org, titles: [], isFetchOrg: key === 'pnl' },
-      { data, org, isFetchOrg: key === 'pnl' },
+      // { data, org, titles: [], currentPnl: key === 'pnl' },
+      { data, org, currentPnl: key === 'pnl' ? data?.pnl?.value : '' },
       this.validateSearch
     );
   };
@@ -237,8 +231,37 @@ class ProposalModal extends React.Component {
   };
 
   handleSearch = async () => {
-    if (this.validateSearch()) return;
+    const config = getMuleSoftHeaderConfigurations(),
+      { modal } = this.props,
+      { proposedPositionCode } = modal.data;
+    let { data } = this.state;
+    config.headers.api_key = 'HrMsdkLSIF3L8sAb';
+
+    if (_.isEmpty(data.pnl)) return;
     // handle call api get data set to titles
+
+    const res = await axios.get(
+        // `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/masterdata/jobname?pnl_code=${companyCode}`,
+        `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/masterdata/jobname?pnl_code=V040`,
+        config
+      ),
+      resData = res?.data?.data, titles = resData.map((ele) => ({
+        label: ele?.job_name,
+        value: ele?.job_id?.toString(),
+      }));
+
+    if (!!resData) {
+      if (!!proposedPositionCode) {
+        data.proposal = titles.filter(
+          (ele) => ele.value === proposedPositionCode
+        )?.[0];
+      }
+
+      this.setState({
+        titles,
+        data
+      });
+    }
   };
 
   handleProposalSearch = (ev) => {
@@ -274,18 +297,20 @@ class ProposalModal extends React.Component {
     const { data, errors } = this.state,
       { pnl, block, region, unit, department, crew, team, group, proposal } =
         data,
-      orgTtl = `${pnl?.label}${!!block ? `\\${block?.label}` : ''}${
+      proposedDepartment = `${pnl?.label}${!!block ? `\\${block?.label}` : ''}${
         !!region ? `\\${region?.label}` : ''
       }${!!unit ? `\\${unit?.label}` : ''}${
         !!department ? `\\${department?.label}` : ''
       }${!!crew ? `\\${crew?.label}` : ''}${!!team ? `\\${team?.label}` : ''}${
         !!group ? `\\${group?.label}` : ''
       }`,
-      orgValue = `${pnl?.value}${!!block ? `\\${block?.value}` : ''}${
-        !!region ? `\\${region?.value}` : ''
-      }${!!unit ? `\\${unit?.value}` : ''}${
-        !!department ? `\\${department?.value}` : ''
-      }${!!crew ? `\\${crew?.value}` : ''}${!!team ? `\\${team?.value}` : ''}${
+      ProposedDepartmentCode = `${pnl?.value}${
+        !!block ? `\\${block?.value}` : ''
+      }${!!region ? `\\${region?.value}` : ''}${
+        !!unit ? `\\${unit?.value}` : ''
+      }${!!department ? `\\${department?.value}` : ''}${
+        !!crew ? `\\${crew?.value}` : ''
+      }${!!team ? `\\${team?.value}` : ''}${
         !!group ? `\\${group?.value}` : ''
       }`;
     let errorsTemp = { ...errors };
@@ -296,18 +321,19 @@ class ProposalModal extends React.Component {
     }
 
     onAccept({
-      proposal: `${proposal?.label} <em>(${proposal?.value})</em>`,
-      orgTtl,
-      orgValue,
+      proposedPosition: proposal?.label,
+      proposedPositionCode: proposal?.value,
+      proposedDepartment,
+      ProposedDepartmentCode,
     });
-    this.setState({ data: {}, errors: {} });
+    this.setState({ data: {}, errors: {}, titles: [] });
   };
 
   handleHideSHow = () => {
     const { onHide } = this.props;
     onHide();
-    this.setState({ data: {}, errors: {} });
-  }
+    this.setState({ data: {}, errors: {}, titles: [] });
+  };
 
   renderErrors = (name) => {
     return this.state.errors?.[name] ? (
@@ -557,22 +583,24 @@ class ProposalModal extends React.Component {
             )}
           </div>
 
-          <div className="text-right form-button-group">
-            <Button
-              className="button-cancel d-inline-flex align-items-center justify-content-center"
-              onClick={this.handleHideSHow}
-            >
-              <Image src={IconReject} alt="Không" className="ic-status" />
-              {t('CancelSearch')}
-            </Button>
-            <Button
-              className="button-approve d-inline-flex align-items-center justify-content-center"
-              onClick={this.handleAccept}
-            >
-              <Image src={IconCheck} alt="Đồng ý" className="ic-status" />
-              {t('accept')}
-            </Button>
-          </div>
+          {titles.length > 0 && (
+            <div className="text-right form-button-group">
+              <Button
+                className="button-cancel d-inline-flex align-items-center justify-content-center"
+                onClick={this.handleHideSHow}
+              >
+                <Image src={IconReject} alt="Không" className="ic-status" />
+                {t('CancelSearch')}
+              </Button>
+              <Button
+                className="button-approve d-inline-flex align-items-center justify-content-center"
+                onClick={this.handleAccept}
+              >
+                <Image src={IconCheck} alt="Đồng ý" className="ic-status" />
+                {t('accept')}
+              </Button>
+            </div>
+          )}
         </Modal.Body>
       </Modal>
     );
