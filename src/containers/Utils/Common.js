@@ -27,6 +27,7 @@ export default function processingDataReq(dataRawFromApi, tab) {
             if(element.requestTypeId === Constants.RESIGN_SELF) {
                 element.id = element.id + '.1';
                 element.appraiser = element.appraiserInfo ? element.appraiserInfo : {};
+                element.approver = element.approver ? element.approver : {};
                 element.startDate = "";
             }
 
@@ -34,6 +35,7 @@ export default function processingDataReq(dataRawFromApi, tab) {
                 element.salaryId = element.id;
                 element.id = element.id + '.1';
                 element.appraiser = {};
+                element.approver = element.approverInfo ? element.approverInfo : {};
                 element.user = element.userInfo;
                 element.startDate = "";
             }
@@ -41,6 +43,7 @@ export default function processingDataReq(dataRawFromApi, tab) {
             if (element.requestTypeId === Constants.OT_REQUEST) {
               element.id = element.id.toString();
               element.user = element.userInfo;
+              element.approver = element.approver ? element.approver : {};
               element.totalTime = element.requestInfo?.reduce((accumulator, currentValue) => accumulator += (currentValue.hoursOt) * 1, 0)?.toFixed(2);
               const dateRanges = element.requestInfo?.reduce((accumulator, currentValue) => [...accumulator, moment(currentValue.date, "YYYYMMDD").format("DD/MM/YYYY")], []);
               element.dateRange = dateRanges.join(", ");
@@ -54,6 +57,7 @@ export default function processingDataReq(dataRawFromApi, tab) {
                     e.appraiserId = element.appraiserId
                     e.requestType = element.requestType
                     e.requestTypeId = element.requestTypeId
+                    e.approver = element.approver ? element.approver : {};
 
                     if (element.requestTypeId == Constants.UPDATE_PROFILE) {
                         e.processStatusId = element.processStatusId

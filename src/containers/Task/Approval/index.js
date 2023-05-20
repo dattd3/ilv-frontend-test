@@ -50,7 +50,7 @@ class ApprovalComponent extends React.Component {
     this.setState({
       isLoading: true
     })
-    const HOST = category == REQUEST_CATEGORIES.CATEGORY_1 ? process.env.REACT_APP_REQUEST_URL : process.env.REACT_APP_REQUEST_SERVICE_URL;
+    const HOST = category * 1 === REQUEST_CATEGORIES.CATEGORY_1 ? process.env.REACT_APP_REQUEST_URL : process.env.REACT_APP_REQUEST_SERVICE_URL;
     const config = {
       headers: {
         'Authorization': `${localStorage.getItem('accessToken')}`
