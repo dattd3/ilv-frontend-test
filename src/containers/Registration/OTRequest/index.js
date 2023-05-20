@@ -224,6 +224,20 @@ export default function OTRequestComponent({ recentlyManagers }) {
         })
       );
     }
+    if (Object.keys(errors).length) {
+      const newErrorKeys = Object.keys(errors).filter((key) => {
+        const keyArr = key.split("_");
+        return !(
+          keyArr.length > 1 &&
+          key.startsWith("range_") &&
+          keyArr[keyArr.length - 1] * 1 === rangeIndex &&
+          keyArr[keyArr.length - 2] * 1 === dayIndex
+        );
+      });
+      const newErrors = {};
+      newErrorKeys.forEach((k) => (newErrors[k] = errors[k]));
+      setErrors(newErrors);
+    }
   };
 
   const handleChangeTimeValue = (
@@ -452,13 +466,15 @@ export default function OTRequestComponent({ recentlyManagers }) {
                 .reduce((acc, currValue) => acc + currValue.hoursOt * 1, 0);
               return {
                 ...item,
-                isOverOTFund: totalRegisterInMonth + item.totalHoursOtInMonth > otFund.hours * 1
-              }
+                isOverOTFund:
+                  totalRegisterInMonth + item.totalHoursOtInMonth >
+                  otFund.hours * 1,
+              };
             }
           }
           return item;
         });
-        setRequestInfoData(requestData)
+        setRequestInfoData(requestData);
 
         if (requestData.some((item) => item.isOverOTFund)) {
           setIsSendingRequest(false);
@@ -477,8 +493,12 @@ export default function OTRequestComponent({ recentlyManagers }) {
         timeRanges: undefined,
         hours: item.hours ? parseFloat(item.hours) : null,
         date: moment(item.date, "DD-MM-YYYY").format("YYYYMMDD").toString(),
-        startTime: item.timeRanges?.map(range => moment(range.startTime).format("HHmmss"))?.join(","),
-        endTime: item.timeRanges?.map(range => moment(range.endTime).format("HHmmss"))?.join(","),
+        startTime: item.timeRanges
+          ?.map((range) => moment(range.startTime).format("HHmmss"))
+          ?.join(","),
+        endTime: item.timeRanges
+          ?.map((range) => moment(range.endTime).format("HHmmss"))
+          ?.join(","),
         overTimeType: "01",
       }));
 
@@ -627,14 +647,45 @@ export default function OTRequestComponent({ recentlyManagers }) {
               _errors[`range_minimum_hours_${index}_${rangeIndex}`] =
                 t("OTMinimumHours");
             }
-            if (
-              rangeIndex > 0 &&
-              getHoursBetween2Times(item.timeRanges?.[rangeIndex - 1]?.endTime, startTime) <
-                1
-            ) {
-              _errors[`range_space_hours_${index}_${rangeIndex}`] = t(
-                "OTInvalidSpaceHours"
-              );
+            // Check not overlap 1h each other item range
+            for (let i = rangeIndex + 1; i < item.timeRanges?.length; i++) {
+              const nextTime = item.timeRanges[i];
+
+              if (
+                i === item.timeRanges ||
+                !nextTime.startTime ||
+                !nextTime.endTime
+              )
+                break;
+              const nextTimeIsAfter = moment(
+                item.timeRanges[i].startTime
+              ).isAfter(range.endTime);
+
+              if (
+                Math.abs(getHoursBetween2Times(
+                  nextTimeIsAfter ? range.endTime : range.startTime,
+                  nextTimeIsAfter ? nextTime.startTime : nextTime.endTime
+                )) < 1
+              ) {
+                _errors[`range_space_hours_${index}_${i}`] = t(
+                  "OTInvalidSpaceHours"
+                );
+              }
+
+              const timeSegments = [
+                [
+                  moment(startTime).format("HH:mm"),
+                  moment(endTime).format("HH:mm"),
+                ],
+                [
+                  moment(item.timeRanges[i]?.startTime).format("HH:mm"),
+                  moment(item.timeRanges[i]?.endTime).format("HH:mm"),
+                ],
+              ];
+              if (checkOverlap(timeSegments)) {
+                _errors[`range_overlapTime_${index}_${i}`] =
+                  t("OTOverlapEachOther");
+              }
             }
           }
           if (
