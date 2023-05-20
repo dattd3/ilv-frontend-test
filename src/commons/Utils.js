@@ -38,7 +38,7 @@ const formatStringByMuleValue = value => {
 }
 
 const formatStringDateTimeByMuleValue = value => {
-    return (value === null || value === undefined || value === "" || value === "#" || value === "000000") ? "" : value.trim()
+    return (value === null || value === undefined || value === "" || value === "#" || value === "000000" || value === "00000000") ? "" : value.trim()
 }
 
 const formatNumberInteger = value => {
@@ -146,7 +146,7 @@ const isEnableFunctionByFunctionName = name => {
     switch (name) {
         case Constants.listFunctionsForPnLACL.qnA:
             listPnLAccepted = [Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinSoftware, Constants.pnlVCode.VinMec, Constants.pnlVCode.VinFast, 
-                Constants.pnlVCode.VinFastTrading, Constants.pnlVCode.VinSmart, Constants.pnlVCode.VincomRetail, Constants.pnlVCode.VinAI]
+                Constants.pnlVCode.VinFastTrading, Constants.pnlVCode.VinSmart, Constants.pnlVCode.VincomRetail, Constants.pnlVCode.VinAI, Constants.pnlVCode.VinHome]
             break
         case Constants.listFunctionsForPnLACL.editProfile:
             listPnLAccepted = [Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinMec, Constants.pnlVCode.VinSmart, Constants.pnlVCode.VincomRetail, 

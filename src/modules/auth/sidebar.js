@@ -229,7 +229,7 @@ export const Navigation = [
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     to: map.ProposalManagement,
     label: 'MenuProposalManagement',
-    role: ["P","T","P2", "P1", "T4", "T3", "T2", "T1"]
+    role: ["C2", "C1","C", "P2", "P1", "P","T","P2", "P1", "T4", "T3", "T2", "T1"]
   },
   {
     id: 4,
@@ -462,7 +462,7 @@ export const Navigation = [
     label: "QuestionAndAnswer",
     to: map.QuestionAndAnswer,
     role: [Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinSoftware, Constants.pnlVCode.VinMec, Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading,
-      Constants.pnlVCode.VinSmart, Constants.pnlVCode.VincomRetail, Constants.pnlVCode.VinAI, Constants.pnlVCode.Vin3S]
+      Constants.pnlVCode.VinSmart, Constants.pnlVCode.VincomRetail, Constants.pnlVCode.VinAI, Constants.pnlVCode.Vin3S, Constants.pnlVCode.VinHome]
   },
   {
     id: 99999,

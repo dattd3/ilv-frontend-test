@@ -4,13 +4,15 @@ import { withTranslation } from 'react-i18next';
 import { Container } from 'react-bootstrap';
 import { Redirect } from 'react-router-dom';
 import { last } from 'lodash'
+import Constants from 'commons/Constants'
 import SubmitQuestionModal from './SubmitQuestionModal'
 import HistoryModal from './HistoryModal'
 import StatusModal from '../../components/Common/StatusModal'
 import CommonQuestionComponent from './CommonQuestionComponent'
 import LoadingSpinner from '../../components/Forms/CustomForm/LoadingSpinner';
 import HOCComponent from '../../components/Common/HOCComponent'
-import { isVinFast } from 'commons/Utils'
+
+const currentCompanyCode = localStorage.getItem("companyCode")
 
 class MyComponent extends React.Component {
 
@@ -40,7 +42,7 @@ class MyComponent extends React.Component {
         'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
       }
     }
-    axios.get(`${process.env.REACT_APP_REQUEST_URL}ticket/Common/` + localStorage.getItem("companyCode"), config)
+    axios.get(`${process.env.REACT_APP_REQUEST_URL}ticket/Common/` + currentCompanyCode, config)
       .then(res => {
         if (res && res.data && res.data.data) {
           let commonTicketListRs = res.data.data.sort((a, b) => {
@@ -51,7 +53,7 @@ class MyComponent extends React.Component {
       }).catch(error => {
       });
 
-    axios.get(`${process.env.REACT_APP_REQUEST_URL}ticket/categories/` + localStorage.getItem("companyCode"), config)
+    axios.get(`${process.env.REACT_APP_REQUEST_URL}ticket/categories/` + currentCompanyCode, config)
       .then(res => {
         if (res && res.data && res.data.data) {
           this.setState({ categories: res.data.data })
@@ -156,8 +158,7 @@ class MyComponent extends React.Component {
   render() {
     const { t } = this.props;
     const { categories, isEditQuestion, questionContent, isShowStatusModal, content, isSuccess, isShowSubmitQuestionModal, isShowHistoryModal, keySearch, commonTicketList, commonTicketListFilter, staffHandbookLink } = this.state  
-    const extensionStaffHandbook = last(staffHandbookLink?.split('.'))
-    const officeExtensionFile = ['doc', 'docx', 'xls', 'xlsx']
+    const isShowStaffHandbookLink = [Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading, Constants.pnlVCode.VinHome].includes(currentCompanyCode)
 
     const reload = () => {
       if (isShowStatusModal) {
@@ -184,7 +185,7 @@ class MyComponent extends React.Component {
         <div className="clearfix edit-button action-buttons mb-2">
           <span type="button" className="btn btn-light float-left shadow pl-4 pr-4 ml-0" onClick={() => this.showSubmitModal(true)}> {t("CreateQuestions")} </span>
           <span type="button" className="btn btn-light float-left shadow" onClick={() => this.showHistoryModal(true)}>{t("HistoryAnswer")}</span>
-          { isVinFast() && this.showStaffHandbookLink() }
+          { isShowStaffHandbookLink && this.showStaffHandbookLink() }
         </div>
         <h1 className="content-page-header">{t("QuestionAndAnswer")}</h1>
         <Container fluid className="info-tab-content shadow mb-3">

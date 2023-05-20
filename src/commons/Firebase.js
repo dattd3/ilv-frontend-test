@@ -27,11 +27,11 @@ export const FirebaseUpdateToken = async () => {
       let serviceWorkerRegistration = null;
       if (process.env.REACT_APP_ENVIRONMENT === 'PRODUCTION') {
         serviceWorkerRegistration = await navigator.serviceWorker.register(
-          `${window.location.href}/firebase-messaging-sw.js`
+          `${window.location.href}firebase-messaging-sw.js`
         );
       } else {
         serviceWorkerRegistration = await navigator.serviceWorker.register(
-          `${window.location.href}/firebase-messaging-sw-dev.js`
+          `${window.location.href}firebase-messaging-sw-dev.js`
         );
       }
       const token = await getToken(messaging, {

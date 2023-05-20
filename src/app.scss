@@ -2532,6 +2532,9 @@ span.badge-notification[data-badge]::after {
             .handover-software {
               overflow: initial;
             }
+            &.handover-fingerprints-email-col {
+              min-width: 170px;
+            }
           }
         }
         .full-name-col {
