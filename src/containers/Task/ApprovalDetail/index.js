@@ -145,7 +145,7 @@ class ApprovalDetail extends React.Component {
     const birthdayInfoUpdating = (userMainInfo || []).find(item => item?.Birthday)
 
     if (birthdayInfoUpdating) {
-      age = moment().year() - moment(birthdayInfoUpdating?.Birthday[0][1], 'DD-MM-YYYY').year() + 1 // Hiện tại năm 2000, sửa năm sinh thành năm 2000 => số tuổi = 1
+      age = moment().year() - moment(birthdayInfoUpdating?.Birthday[0][1], 'DD-MM-YYYY').year()
       const rangeMaleAge = [15, 60]
       const rangeFemaleAge = [15, 55]
 
