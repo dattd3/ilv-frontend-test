@@ -469,6 +469,11 @@ const SalaryAdjustmentPropse = (props) => {
         effectiveTime: u?.startDate
           ? moment(u?.startDate).format(Constants.LEAVE_DATE_FORMAT)
           : "",
+        requestTypeId: u?.requestTypeId,
+        proposedPosition: requestTmp?.proposedPosition,
+        proposedPositionCode: requestTmp?.proposedPositionCode,
+        proposedDepartment: requestTmp?.proposedDepartment,
+        proposedDepartmentCode: requestTmp?.proposedDepartmentCode,
         strength: u?.staffStrengths,
         weakness: u?.staffWknesses,
         canChangeAction: u?.accepted == true,
@@ -1260,9 +1265,11 @@ const SalaryAdjustmentPropse = (props) => {
 
   const renderListMember = (members) => {
     return members.map((item, index) => {
-      const account = item?.account?.indexOf("@")
-        ? item.account.split("@")[0]
-        : item.account;
+      const account = item?.account?.indexOf('@')
+          ? item.account.split('@')[0]
+          : item.account,
+        isProposalTransfer = item.requestTypeId === Constants.PROPOSAL_TRANSFER;
+
       return (
         <React.Fragment key={index}>
           <tr style={{ border: 'none', height: '10px' }} />
@@ -1313,7 +1320,7 @@ const SalaryAdjustmentPropse = (props) => {
                           className="no-vborder"
                           value={item?.currentSalary}
                           placeholder="Nhập"
-                          style={{ width: "100%", background: "#fff" }}
+                          style={{ width: '100%', background: '#fff' }}
                           maxLength={11}
                         />
                       ) : (
@@ -1379,7 +1386,7 @@ const SalaryAdjustmentPropse = (props) => {
                               className="no-vborder"
                               value={item?.suggestedSalary}
                               placeholder="Nhập"
-                              style={{ width: "100%", background: "#fff" }}
+                              style={{ width: '100%', background: '#fff' }}
                               maxLength={11}
                             />
                           ) : (
@@ -1516,20 +1523,24 @@ const SalaryAdjustmentPropse = (props) => {
               !isCreateMode &&
               item.canChangeAction ? (
                 <>
-                <ResizableTextarea
-                  placeholder={'Nhập'}
-                  value={item?.comment}
-                  onChange={(e) =>
-                    handleTextInputChange(e.target.value, item?.uid, 'comment')
-                  }
-                  className="form-control input mv-10 w-100"
-                />
-                {
-                  showCommentRequiredError && item.canChangeAction && !item.accepted && !item.comment && 
-                  <div className="text-danger">
-                    {t("Required")}
-                  </div>
-                }
+                  <ResizableTextarea
+                    placeholder={'Nhập'}
+                    value={item?.comment}
+                    onChange={(e) =>
+                      handleTextInputChange(
+                        e.target.value,
+                        item?.uid,
+                        'comment'
+                      )
+                    }
+                    className="form-control input mv-10 w-100"
+                  />
+                  {showCommentRequiredError &&
+                    item.canChangeAction &&
+                    !item.accepted &&
+                    !item.comment && (
+                      <div className="text-danger">{t('Required')}</div>
+                    )}
                 </>
               ) : (
                 <>{item?.comment}</>
@@ -1537,7 +1548,7 @@ const SalaryAdjustmentPropse = (props) => {
             </td>
           </tr>
           <tr>
-            {isTransferAppointProposal && (
+            {(isTransferAppointProposal || isProposalTransfer) && (
               <td colSpan="12">
                 <div className="skill">
                   <span className="title font-weight-bold">
@@ -1545,9 +1556,16 @@ const SalaryAdjustmentPropse = (props) => {
                   </span>
                   <span
                     className="w-100 proposal-title"
-                    onClick={() => handleClickProposal(index)}
+                    onClick={() =>
+                      isProposalTransfer ? {} : handleClickProposal(index)
+                    }
                   >
-                    <select className="form-control w-100 bg-white" disabled>
+                    <select
+                      className={`form-control w-100 bg-white ${
+                        isProposalTransfer ? 'disabled' : ''
+                      }`}
+                      disabled
+                    >
                       <option
                         dangerouslySetInnerHTML={{
                           __html: !!item.proposedPosition
