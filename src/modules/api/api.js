@@ -233,7 +233,7 @@ export default class Api {
 
   fetchJobDescription = async (params) => {
     const { jobId, employeeLevel } = params;
-    return await this.request.get(`${process.env.REACT_APP_REQUEST_URL}basicinfo/jobdetail?jobId=${jobId}&employeeLevel=${employeeLevel}`);
+    return await this.request.get(`${process.env.REACT_APP_REQUEST_URL}basicinfo/jobdetail?jobId=${jobId}&employeeCode=${employeeLevel}`);
   };
 
   fetchJobRequirement = async (params) => {
