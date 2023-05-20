@@ -1081,8 +1081,10 @@ const SalaryAdjustmentPropse = (props) => {
       bodyFormData.append("orgLv6Text", viewSetting.proposedStaff.orgLv6Text);
       bodyFormData.append("companyCode", viewSetting.proposedStaff.companyCode);
 
-      if(id) {
+      if(!!id) {
         bodyFormData.append("id", id);
+      } else {
+        bodyFormData.append("isSalaryAdjustment", !isTransferAppointProposal);
       }
 
       if (listFiles.filter(item=> item.id == undefined).length > 0) {

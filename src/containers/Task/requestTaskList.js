@@ -255,7 +255,7 @@ class RequestTaskList extends React.Component {
             //     { value: 2, label: 'Phê duyệt' }
             // ];
             
-        if(request == Constants.SALARY_PROPOSE) {
+        if([Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER].includes(request)) {
             if(statusName) {
                 let statusLabel = t(statusName),
                     tmp = Object.keys(status).filter(key => status[key].label == statusLabel );
