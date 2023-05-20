@@ -221,22 +221,22 @@ class RequestTaskList extends React.Component {
         this.setState({ isShowModalRegistrationConfirm: false });
     }
 
-    showStatus = (taskId, statusOriginal, request, taskData, statusName) => {
-        const customStylesStatus = {
-          control: (base) => ({
-            ...base,
-            width: 160,
-            height: 35,
-            minHeight: 35,
-          }),
-          option: (styles, { data, isDisabled, isFocused, isSelected }) => {
-            return {
-              ...styles,
-            };
-          },
-        };
+    showStatus = (statusOriginal, request, approverData, statusName) => {
+        // const customStylesStatus = {
+        //   control: (base) => ({
+        //     ...base,
+        //     width: 160,
+        //     height: 35,
+        //     minHeight: 35,
+        //   }),
+        //   option: (styles, { data, isDisabled, isFocused, isSelected }) => {
+        //     return {
+        //       ...styles,
+        //     };
+        //   },
+        // };
 
-        const { t, page } = this.props,
+        const { t } = this.props,
             status = {
                 1: { label: t('Rejected'), className: 'request-status fail' },
                 2: { label: t('Approved'), className: 'request-status success' },
@@ -248,14 +248,14 @@ class RequestTaskList extends React.Component {
                 8: { label: t("PendingConsent"), className: 'request-status' },
                 20: { label: t("Consented"), className: 'request-status' },
                 100: { label: t("Waiting"), className: 'request-status' }
-            },
-            options = [
-                { value: 0, label: 'Đang chờ xử lý' },
-                { value: 1, label: 'Từ chối' },
-                { value: 2, label: 'Phê duyệt' }
-            ];
-
-        if([Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER].includes(request)) {
+            }
+            // options = [
+            //     { value: 0, label: 'Đang chờ xử lý' },
+            //     { value: 1, label: 'Từ chối' },
+            //     { value: 2, label: 'Phê duyệt' }
+            // ];
+            
+        if(request == Constants.SALARY_PROPOSE) {
             if(statusName) {
                 let statusLabel = t(statusName),
                     tmp = Object.keys(status).filter(key => status[key].label == statusLabel );
@@ -265,31 +265,31 @@ class RequestTaskList extends React.Component {
             }
         }
 
-        if (page === "approval") {
-            if (statusOriginal == 0) {
-                return (
-                  <Select
-                    defaultValue={options[0]}
-                    options={options}
-                    isSearchable={false}
-                    onChange={(value) =>
-                      this.onChangeStatus(
-                        value,
-                        taskId,
-                        request,
-                        value,
-                        taskData,
-                        statusOriginal
-                      )
-                    }
-                    styles={customStylesStatus}
-                  />
-                );
-            }
-            return <span className={status[statusOriginal].className}>{status[statusOriginal].label}</span>
-        }
+        // if (page === "approval") {
+        //     if (statusOriginal == 0) {
+        //         return (
+        //           <Select
+        //             defaultValue={options[0]}
+        //             options={options}
+        //             isSearchable={false}
+        //             onChange={(value) =>
+        //               this.onChangeStatus(
+        //                 value,
+        //                 taskId,
+        //                 request,
+        //                 value,
+        //                 taskData,
+        //                 statusOriginal
+        //               )
+        //             }
+        //             styles={customStylesStatus}
+        //           />
+        //         );
+        //     }
+        //     return <span className={status[statusOriginal].className}>{status[statusOriginal].label}</span>
+        // }
         
-        if(taskData?.account !== null && statusOriginal === 5) {
+        if(!approverData?.account && statusOriginal === 5) {
             statusOriginal = 6;
         }
         
@@ -941,7 +941,7 @@ class RequestTaskList extends React.Component {
                                                             })
                                                         }
                                                     </td>
-                                                    <td className="status text-center">{this.showStatus(child.id, child.processStatusId, child.requestType.id, child.appraiserId, child.statusName)}</td>
+                                                    <td className="status text-center">{this.showStatus(child.processStatusId, child.requestType.id, child.approver, child.statusName)}</td>
                                                     <td className="tool">
                                                         {(isShowEditButton && child?.absenceType?.value != MOTHER_LEAVE_KEY) && <a href={editLink} title={t("Edit")}><img alt="Sửa" src={editButton} /></a>}
                                                         {isShowEvictionButton && child.absenceType?.value != MOTHER_LEAVE_KEY
