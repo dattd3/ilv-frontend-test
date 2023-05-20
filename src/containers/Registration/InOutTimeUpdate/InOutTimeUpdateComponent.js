@@ -262,12 +262,12 @@ class InOutTimeUpdateComponent extends React.Component {
         });
     })
     
-    // const comments = timesheets.filter(item => (item.note)).map(item => item.note).join(" - ")
+    const comments = timesheets.filter(item => (item.note)).map(item => item.note).join(" - ")
 
     let bodyFormData = new FormData();
     bodyFormData.append('Name', t("ModifyInOut"))
     bodyFormData.append('RequestTypeId', '5')
-    bodyFormData.append('Comment', '')
+    bodyFormData.append('Comment', comments)
     bodyFormData.append('requestInfo', JSON.stringify(timesheets))
     // bodyFormData.append('UpdateField', {})
     bodyFormData.append("divisionId", !this.isNullCustomize(localStorage.getItem('divisionId')) ? localStorage.getItem('divisionId') : "")
