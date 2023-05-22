@@ -122,7 +122,7 @@ class ConfirmRequestModal extends React.Component {
             if(element.requestTypeId == Constants.ONBOARDING){
                 taskObj = {"id":element.id ,"requestTypeId":element.requestTypeId,"sub":[]};
                 taskObj.sub.push({"id":element.id,"processStatusId": element.processStatusId, 'status': '1'})
-            }else if(element.requestTypeId == Constants.SALARY_PROPOSE && element.isEdit == true) {
+            } else if([Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER].includes(element.requestTypeId) && element.isEdit == true) {
                 taskObj = {"id":element.salaryId ,"requestTypeId":element.requestTypeId,"sub":[]};
                 taskObj.sub.push({"id":element.salaryId,"processStatusId": Constants.STATUS_APPROVED})
             } else {
@@ -156,7 +156,7 @@ class ConfirmRequestModal extends React.Component {
             if(element.requestTypeId == Constants.ONBOARDING){
                 taskObj = {"id":element.id ,"requestTypeId":element.requestTypeId,"sub":[]};
                 taskObj.sub.push({"id":element.id,"processStatusId":element.processStatusId, 'status': '0' ,"comment":this.state.message, 'status': '0'})
-            }else if(element.requestTypeId == Constants.SALARY_PROPOSE && element.isEdit == true) {
+            } else if([Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER].includes(element.requestTypeId) && element.isEdit == true) {
                 taskObj = {"id":element.salaryId ,"requestTypeId":element.requestTypeId,"sub":[]};
                 taskObj.sub.push({"id":element.salaryId,"processStatusId": Constants.STATUS_NOT_APPROVED,"comment":this.state.message})
             } else {
@@ -183,7 +183,7 @@ class ConfirmRequestModal extends React.Component {
             if(element.requestTypeId == Constants.ONBOARDING){
                 taskObj = {"id":element.id ,"requestTypeId":element.requestTypeId,"sub":[]};
                 taskObj.sub.push({"id":element.id,"processStatusId": element.processStatusId, 'status': '1'})
-            } else if(element.requestTypeId == Constants.SALARY_PROPOSE && element.isEdit == true) {
+            } else if([Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER].includes(element.requestTypeId) && element.isEdit == true) {
                 taskObj = {"id":element.salaryId ,"requestTypeId":element.requestTypeId,"sub":[]};
                 taskObj.sub.push({"id":element.salaryId,"processStatusId": Constants.STATUS_WAITING})
             } else {
@@ -206,7 +206,7 @@ class ConfirmRequestModal extends React.Component {
             if(element.requestTypeId == Constants.ONBOARDING){
                 taskObj = {"id":element.id ,"requestTypeId":element.requestTypeId,"sub":[]};
                 taskObj.sub.push({"id":element.id,"processStatusId": element.processStatusId, 'status': '0' ,"comment":this.state.message})
-            } else if(element.requestTypeId == Constants.SALARY_PROPOSE && element.isEdit == true) {
+            } else if([Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER].includes(element.requestTypeId) && element.isEdit == true) {
                 taskObj = {"id":element.salaryId ,"requestTypeId":element.requestTypeId,"sub":[]};
                 taskObj.sub.push({"id":element.salaryId,"processStatusId": Constants.STATUS_NO_CONSENTED,"comment":this.state.message})
             } else{
