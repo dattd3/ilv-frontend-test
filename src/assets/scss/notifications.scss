@@ -148,6 +148,22 @@
             padding: 0 15px 10px 15px;
             color: #FF0000;
         }
+        .timekeeping-list-container.show-scroll {
+            max-height: 400px;
+            overflow-y: auto;
+            &::-webkit-scrollbar {
+                width: 6px;
+                background-color: #F5F5F5;
+            }
+            &::-webkit-scrollbar-thumb {
+                background-color: #C1C1C1;
+            }
+            &::-webkit-scrollbar-track {
+                box-shadow: inset 0 0 6px #F1F1F1;
+                -webkit-box-shadow: inset 0 0 6px #F1F1F1;
+                background-color: #F1F1F1;
+            }
+        }
     }
 }
 
