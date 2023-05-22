@@ -1988,7 +1988,7 @@ renderEvalution = (name, data, isDisable) => {
                 <div  style={{height: '2px', backgroundColor: '#F2F2F2', margin: '15px 0'}}></div>
                 </div>
               </div>
-              <ApproverComponent employeeType="APPRAISER" comment={data.appraiserComment} isEdit={disableComponent.disableAll || !disableComponent.employeeSide} approver={data.qltt}  updateApprover={(approver, isApprover) => this.updateApprover('qltt', approver,isApprover )} />
+              <ApproverComponent employeeType="APPRAISER" comment={data.supervisorComment} isEdit={disableComponent.disableAll || !disableComponent.employeeSide} approver={data.qltt}  updateApprover={(approver, isApprover) => this.updateApprover('qltt', approver,isApprover )} />
               {this.state.errors && this.state.errors['qltt'] ? <p className="text-danger">{this.state.errors['qltt']}</p> : null}
             </div>
             {
@@ -2223,7 +2223,7 @@ renderEvalution = (name, data, isDisable) => {
                 <div className="divider"></div>
               </div>
               <div className="col-12">
-                <div className="row">
+                <div className="row" style={{ rowGap: 20 }}>
                 {
                   formatProcessTime(data.createdDate) && <div className="col-4">
                   {t("TimeToSendRequest")}
