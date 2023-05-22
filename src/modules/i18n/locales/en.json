@@ -1794,5 +1794,6 @@
   "TitleSalaryProposal": "Title",
   "HRAssetDate": "HR Asset Date",
   "OTMinimumHours": "(*) Minimum OT is 30m for Production department, 60m for other department",
-  "OTInvalidSpaceHours": "(*) Minimum break time is 1h"
+  "OTInvalidSpaceHours": "(*) Minimum break time is 1h",
+  "IncludeSalaryAdjustment": "Include salary adjustment"
 }
