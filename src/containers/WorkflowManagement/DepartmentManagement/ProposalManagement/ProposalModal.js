@@ -36,7 +36,8 @@ const ORG_KEY = [
     teams: [],
     groups: [],
   },
-  companyCode = localStorage.getItem('companyCode');
+  companyCode = localStorage.getItem('companyCode'),
+  organizationLv2 = localStorage.getItem('organizationLv2');
 
 class ProposalModal extends React.Component {
   constructor(props) {
@@ -59,7 +60,7 @@ class ProposalModal extends React.Component {
 
   fetchData = async () => {
     const config = getMuleSoftHeaderConfigurations();
-    let orgsOrigin = {};
+    let orgsOrigin = {}, pnl = {};
 
     const res = await axios.get(
       `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/masterdata/organization/structure/levels?page_no=1&page_size=10000&parent_id=45000000&level=2`,
@@ -73,11 +74,13 @@ class ProposalModal extends React.Component {
       label: val.organization_name,
       value: val.organization_lv2,
     }));
+    pnl = orgsOrigin.pnls.find(val => val.value === organizationLv2);
 
     this.setState({
       orgsOrigin: Object.assign(this.state.orgsOrigin, orgsOrigin),
       org: Object.assign(this.state.org, { pnls: orgsOrigin.pnls }),
-    });
+      data: Object.assign(this.state.org, { pnl }),
+    }, this.fetchOrg);
   };
 
   componentDidMount() {
@@ -120,7 +123,7 @@ class ProposalModal extends React.Component {
 
     if (!!data?.pnl?.value) {
       const res = await axios.get(
-        `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/masterdata/organization/structure/descendants?page_no=1&page_size=200&level=2&ancestor_id=${data?.pnl?.value}`,
+        `${process.env.REACT_APP_REQUEST_URL}masterdata/get-org-structure?page_no=1&page_size=200&level=2&ancestor_id=${data?.pnl?.value}`,
         config
       );
       if (res?.data && res?.data?.result?.code === Constants.API_SUCCESS_CODE) {
@@ -209,7 +212,7 @@ class ProposalModal extends React.Component {
     }
 
     this.setState(
-      // { data, org, titles: [], currentPnl: key === 'pnl' },
+      // { data, org, titles: [], currentPnl: key === 'pnl' ? data?.pnl?.value : ''  },
       { data, org, currentPnl: key === 'pnl' ? data?.pnl?.value : '' },
       this.validateSearch
     );
@@ -235,14 +238,13 @@ class ProposalModal extends React.Component {
       { modal } = this.props,
       { proposedPositionCode } = modal.data;
     let { data } = this.state;
-    config.headers.api_key = 'HrMsdkLSIF3L8sAb';
 
     if (_.isEmpty(data.pnl)) return;
     // handle call api get data set to titles
 
     const res = await axios.get(
-        // `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/masterdata/jobname?pnl_code=${companyCode}`,
-        `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/masterdata/jobname?pnl_code=V040`,
+        // `${process.env.REACT_APP_REQUEST_URL}masterdata/get-jobname?companyCode=${companyCode}`,
+        `${process.env.REACT_APP_REQUEST_URL}masterdata/get-jobname?companyCode=V040`,
         config
       ),
       resData = res?.data?.data, titles = resData.map((ele) => ({
@@ -375,6 +377,7 @@ class ProposalModal extends React.Component {
                 <Select
                   options={pnls}
                   value={pnl}
+                  isDisabled={true}
                   onChange={(e, { action }) =>
                     this.handleChangeSelect(e, 'pnl', action)
                   }

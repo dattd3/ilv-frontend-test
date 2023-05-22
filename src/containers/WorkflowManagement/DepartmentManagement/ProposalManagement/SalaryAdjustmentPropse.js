@@ -27,7 +27,7 @@ import IconRemove from "../../../../assets/img/ic-remove.svg";
 import IconAdd from "../../../../assets/img/ic-add-green.svg";
 import { useApi } from "../../../../modules/api";
 import vi from "date-fns/locale/vi";
-import { Button, Image } from "react-bootstrap";
+import { Image } from "react-bootstrap";
 import { checkFilesMimeType } from "../../../../utils/file";
 import LoadingModal from "../../../../components/Common/LoadingModal";
 import { getCulture } from "commons/Utils";
@@ -48,9 +48,9 @@ const ListTypeContract = [
 
 const SalaryAdjustmentPropse = (props) => {
   const { t } = props;
-  const api = useApi();
-  const history = useHistory();
-  const InsuranceOptions = [
+  const api = useApi(),
+    history = useHistory(),
+    InsuranceOptions = [
     { value: 1, label: t("SalaryPropse") },
     { value: 2, label: t("ProposalTransfer") },
   ],
@@ -86,7 +86,7 @@ const SalaryAdjustmentPropse = (props) => {
   );
   const [type, setType] = useState(InsuranceOptions[isTransferAppointProposal ? 1 : 0]);
   const [listFiles, setListFiles] = useState([]);
-  const[listFileDeleted, setListFileDeleted] = useState([]);
+  const [listFileDeleted, setListFileDeleted] = useState([]);
   const [selectMembers, setSelectMembers] = useState([]);
   const [selectedMembers, setSelectedMembers] = useState([]);
   const [checkedMemberIds, setCheckedMemberIds] = useState({});
@@ -101,7 +101,7 @@ const SalaryAdjustmentPropse = (props) => {
   const [approver, setApprover] = useState(null); // CBLĐ phê duyệt
   const [isCallSalary, setIsCallSalary] = useState(false);
   const [isOpenDatepick, setIsOpenDatepick] = useState(false);
-  const [showCommentRequiredError, setShowCommentRequiredError] = useState(false)
+  const [showCommentRequiredError, setShowCommentRequiredError] = useState(false);
   const [viewSetting, setViewSetting] = useState({
     showComponent: {
       stateProcess: false, // Button trang thai
@@ -147,6 +147,7 @@ const SalaryAdjustmentPropse = (props) => {
       companyCode: "",
     },
   });
+  const [isSalaryAdjustment, setIsSalaryAdjustment] = useState(!isTransferAppointProposal);
 
   useEffect(() => {
     if (props.match.params.id) {
@@ -166,9 +167,7 @@ const SalaryAdjustmentPropse = (props) => {
     const queryParams = new URLSearchParams(props.history.location.search);
     if (queryParams.has("accesstoken")) {
       queryParams.delete("accesstoken");
-      props.history.replace({
-        search: queryParams.toString(),
-      });
+      props.history.replace({ search: queryParams.toString() });
     }
     // eslint-disable-next-line
   }, []);
@@ -183,7 +182,6 @@ const SalaryAdjustmentPropse = (props) => {
     try {
       setIsLoading(true);
       const { data: { data: response } } = await api.fetchSalaryPropose(props.match.params.id);
-      //const response = dataDetailSalaryPropose;
       await setDataSalary(response);
       await checkAuthorize(response);
     } catch (error) {
@@ -244,11 +242,12 @@ const SalaryAdjustmentPropse = (props) => {
   };
 
   const checkAuthorize = (dataSalaryInfo) => {
-    
     const currentEmail = localStorage.getItem("email");
-    let viewSettingTmp = { ...viewSetting };
+    let viewSettingTmp = { ...viewSetting },
+      currentStatus = dataSalaryInfo?.processStatusId;
+
     viewSettingTmp.showComponent.stateProcess = true;
-    let currentStatus = dataSalaryInfo?.processStatusId;
+
     switch (dataSalaryInfo?.processStatusId) {
       //Nhân sự điều phối gửi lại yêu cầu
       case 20:
@@ -523,6 +522,8 @@ const SalaryAdjustmentPropse = (props) => {
       name: u.fileName,
       link: u.fileUrl,
     })) || [];
+
+    setIsSalaryAdjustment(dataSalaryInfo?.isSalaryAdjustment || false);
     setListFiles(requestDocuments);
     setViewSetting(viewSettingTmp);
   };
@@ -771,14 +772,12 @@ const SalaryAdjustmentPropse = (props) => {
       setShowCommentRequiredError(true);
       return;
     }
-    let staffRequestStatusList = selectedMembers?.map(item => {
-      return {
-        employeeNo: item.uid,
-        salaryAdjustmentId: item.id,
-        status: item.accepted ? 1 : 0,
-        comment: item.comment || ''
-      }
-    })
+    let staffRequestStatusList = selectedMembers?.map(item => ({
+      employeeNo: item.uid,
+      salaryAdjustmentId: item.id,
+      status: item.accepted ? 1 : 0,
+      comment: item.comment || ''
+    }))
     setConfirmModal({
       isShowModalConfirm: true,
       modalTitle: t("ConsentConfirmation"),
@@ -805,14 +804,12 @@ const SalaryAdjustmentPropse = (props) => {
 
   // Phê duyệt
   const handleApprove = () => {
-    let staffRequestStatusList = selectedMembers?.map(item => {
-      return {
-        employeeNo: item.uid,
-        salaryAdjustmentId: item.id,
-        status: item.accepted ? 1 : 0,
-        comment: item.comment || ''
-      }
-    })
+    let staffRequestStatusList = selectedMembers?.map(item => ({
+      employeeNo: item.uid,
+      salaryAdjustmentId: item.id,
+      status: item.accepted ? 1 : 0,
+      comment: item.comment || ''
+    }))
     setConfirmModal({
       isShowModalConfirm: true,
       modalTitle: t("ApproveRequest"),
@@ -844,7 +841,7 @@ const SalaryAdjustmentPropse = (props) => {
       if (selectMembers.length === 0 && selectedMembers.length == 0) {
         return showStatusModal(t("ProposedEmployeeValidate"), false);
       }
-      if (!coordinator) {
+      if (!coordinator && isSalaryAdjustment) {
         return showStatusModal(t("HumanForReviewSalaryValidate"), false);
       }
       if (!appraiser) {
@@ -1026,26 +1023,28 @@ const SalaryAdjustmentPropse = (props) => {
           company_email: viewSetting.proposedStaff.company_email,
         })
       );
-      bodyFormData.append(
-        "coordinatorId",
-        coordinator?.username.toLowerCase() + "@vingroup.net"
-      );
-      bodyFormData.append(
-        "coordinatorInfo",
-        JSON.stringify({
-          avatar: "",
-          account: coordinator?.username.toLowerCase() + "@vingroup.net",
-          fullName: coordinator?.fullName,
-          employeeLevel: coordinator?.employeeLevel,
-          pnl: coordinator?.pnl,
-          orglv2Id: coordinator?.orglv2Id,
-          current_position: coordinator?.current_position,
-          department: coordinator?.department,
-          company_email: coordinator?.company_email?.toLowerCase(),
-          employeeNo: coordinator?.uid || coordinator?.employeeNo,
-          username: coordinator?.username?.toLowerCase(),
-        })
-      );
+      if(isSalaryAdjustment) {
+        bodyFormData.append(
+          "coordinatorId",
+          coordinator?.username.toLowerCase() + "@vingroup.net"
+        );
+        bodyFormData.append(
+          "coordinatorInfo",
+          JSON.stringify({
+            avatar: "",
+            account: coordinator?.username.toLowerCase() + "@vingroup.net",
+            fullName: coordinator?.fullName,
+            employeeLevel: coordinator?.employeeLevel,
+            pnl: coordinator?.pnl,
+            orglv2Id: coordinator?.orglv2Id,
+            current_position: coordinator?.current_position,
+            department: coordinator?.department,
+            company_email: coordinator?.company_email?.toLowerCase(),
+            employeeNo: coordinator?.uid || coordinator?.employeeNo,
+            username: coordinator?.username?.toLowerCase(),
+          })
+        );
+      }
       bodyFormData.append("employeeInfoLst", JSON.stringify(employeeInfoLst));
       bodyFormData.append("appraiserInfoLst", JSON.stringify(appraiserInfoLst));
       bodyFormData.append(
@@ -1084,7 +1083,7 @@ const SalaryAdjustmentPropse = (props) => {
       if(!!id) {
         bodyFormData.append("id", id);
       } else {
-        bodyFormData.append("isSalaryAdjustment", !isTransferAppointProposal);
+        bodyFormData.append("isSalaryAdjustment", isSalaryAdjustment);
       }
 
       if (listFiles.filter(item=> item.id == undefined).length > 0) {
@@ -1131,8 +1130,7 @@ const SalaryAdjustmentPropse = (props) => {
       (item) => approver?.uid && item?.uid == approver?.uid
     );
     if (userExist != -1) {
-      showStatusModal(t("AppraiserExisted"), false);
-      return;
+      return showStatusModal(t("AppraiserExisted"), false);
     }
     const newData = [...supervisors];
     newData[index] = approver;
@@ -1206,9 +1204,7 @@ const SalaryAdjustmentPropse = (props) => {
         }
         showStatusModal(response.data.result.message || t("Error"), false);
       })
-      .catch((response) => {
-        showStatusModal(t("Error"), false);
-      })
+      .catch((response) => showStatusModal(t("Error"), false))
       .finally(() => {
         setIsLoading(false);
         setIsCallSalary(true);
@@ -1256,12 +1252,11 @@ const SalaryAdjustmentPropse = (props) => {
   };
 
   function renderCurrency() {
-    let currencySalaryTmp = {};
-    if (currencySalary === "VND") {
-      currencySalaryTmp = { locale: "vi-VN", currency: "VND" };
-    } else {
-      currencySalaryTmp = { locale: "en-US", currency: "USD" };
-    }
+    let currencySalaryTmp =
+      currencySalary === 'VND'
+        ? { locale: 'vi-VN', currency: 'VND' }
+        : { locale: 'en-US', currency: 'USD' };
+
     return currencySalaryTmp;
   }
 
@@ -1275,6 +1270,57 @@ const SalaryAdjustmentPropse = (props) => {
       return (
         <React.Fragment key={index}>
           <tr style={{ border: 'none', height: '10px' }} />
+          <tr className="table-header">
+            <td colSpan={3} className="min-width font-weight-bold">
+              <div className="d-flex">
+                <input
+                  type="checkbox"
+                  style={{
+                    alignSelf: 'flex-start',
+                    margin: '5px',
+                    display:
+                      viewSetting.showComponent.btnExpertise ||
+                      viewSetting.showComponent.btnApprove
+                        ? 'inline'
+                        : 'none',
+                  }}
+                  checked={selectedAll}
+                  disabled={!canSelectedll}
+                  onChange={(e) => onSelectAll(e)}
+                />
+                <p className="mb-0">{t('FullName')}</p>
+              </div>
+            </td>
+            {/* <td rowSpan="2" className="min-width text-center font-weight-bold">Chức danh</td>
+            <td rowSpan="2" className="min-width text-center font-weight-bold">Khối/Phòng/Bộ phận</td> */}
+            {/* <td rowSpan="2" className="min-width text-center font-weight-bold">Loại HĐ hiện tại</td> */}
+            {isSalaryAdjustment && (
+              <>
+                <td colSpan={2} className="min-width1 text-center">
+                  <strong>{t('current_income_gross')}</strong>
+                </td>
+                <td colSpan={2} className="min-width1 text-center">
+                  <strong>{t('suggested_salary_gross')}</strong>
+                </td>
+                <td
+                  colSpan={2}
+                  className="min-width text-center font-weight-bold"
+                >
+                  {t('effective_time')}
+                </td>
+              </>
+            )}
+            <td colSpan={1} className="min-width text-center font-weight-bold">
+              {t('Action')}
+            </td>
+            <th
+              colSpan={2}
+              scope="colgroup"
+              className="min-width text-center font-weight-bold"
+            >
+              {t('reason_reject')}
+            </th>
+          </tr>
           <tr key={index}>
             <td colSpan={3}>
               <div className="d-flex">
@@ -1303,75 +1349,11 @@ const SalaryAdjustmentPropse = (props) => {
                 </div>
               </div>
             </td>
-            <td colSpan={2} className="text-center">
-              <span className="same-width">
-                {!isCreateMode ? (
-                  <div className="d-flex w-100">
-                    <div
-                      style={{
-                        width: viewSetting.disableComponent.showEye
-                          ? '90%'
-                          : '100%',
-                      }}
-                    >
-                      {viewSetting.disableComponent.showCurrentSalary &&
-                      accessToken ? (
-                        <CurrencyInput
-                          disabled={true}
-                          intlConfig={renderCurrency()}
-                          className="no-vborder"
-                          value={item?.currentSalary}
-                          placeholder="Nhập"
-                          style={{ width: '100%', background: '#fff' }}
-                          maxLength={11}
-                        />
-                      ) : (
-                        <span>{'**********'}</span>
-                      )}
-                    </div>
-                    {viewSetting.disableComponent.showEye && (
-                      <div
-                        style={{ width: '10%', cursor: 'pointer' }}
-                        onClick={handleShowCurrentSalary}
-                      >
-                        <img
-                          src={
-                            viewSetting.disableComponent.showCurrentSalary
-                              ? IconEye
-                              : IconNotEye
-                          }
-                          alt="eye"
-                        />
-                      </div>
-                    )}
-                  </div>
-                ) : (
-                  <></>
-                )}
-              </span>
-            </td>
-            <td colSpan={2} className="text-center">
-              <span className="same-width">
-                {viewSetting.disableComponent.editSubjectApply &&
-                !isCreateMode ? (
-                  <CurrencyInput
-                    disabled={false}
-                    intlConfig={renderCurrency()}
-                    className="form-control"
-                    value={item?.suggestedSalary}
-                    onValueChange={(value) => {
-                      handleTextInputChange(
-                        value,
-                        item?.uid,
-                        'suggestedSalary'
-                      );
-                    }}
-                    placeholder="Nhập"
-                    maxLength={11}
-                  />
-                ) : (
-                  <>
-                    {!isCreateMode && item?.suggestedSalary && (
+            {isSalaryAdjustment && (
+              <>
+                <td colSpan={2} className="text-center">
+                  <span className="same-width">
+                    {!isCreateMode ? (
                       <div className="d-flex w-100">
                         <div
                           style={{
@@ -1380,19 +1362,19 @@ const SalaryAdjustmentPropse = (props) => {
                               : '100%',
                           }}
                         >
-                          {accessToken &&
-                          viewSetting.disableComponent.showCurrentSalary ? (
+                          {viewSetting.disableComponent.showCurrentSalary &&
+                          accessToken ? (
                             <CurrencyInput
                               disabled={true}
                               intlConfig={renderCurrency()}
                               className="no-vborder"
-                              value={item?.suggestedSalary}
+                              value={item?.currentSalary}
                               placeholder="Nhập"
                               style={{ width: '100%', background: '#fff' }}
                               maxLength={11}
                             />
                           ) : (
-                            '**********'
+                            <span>{'**********'}</span>
                           )}
                         </div>
                         {viewSetting.disableComponent.showEye && (
@@ -1411,54 +1393,117 @@ const SalaryAdjustmentPropse = (props) => {
                           </div>
                         )}
                       </div>
+                    ) : (
+                      <></>
                     )}
-                  </>
-                )}
-              </span>
-            </td>
-            <td colSpan={2} className="same-width text-center">
-              <span className="same-width">
-                {viewSetting.disableComponent.editSubjectApply &&
-                !isCreateMode ? (
-                  <DatePicker
-                    name="startDate"
-                    autoComplete="off"
-                    selected={
-                      item?.effectiveTime
-                        ? moment(
-                            item?.effectiveTime,
-                            Constants.LEAVE_DATE_FORMAT
-                          ).toDate()
-                        : null
-                    }
-                    onChange={(date) =>
-                      handleDatePickerInputChange(
-                        date,
-                        item?.uid,
-                        'effectiveTime'
-                      )
-                    }
-                    onChangeRaw={() => {
-                      setIsOpenDatepick(false);
-                    }}
-                    onFocus={() => {
-                      setIsOpenDatepick(true);
-                    }}
-                    onBlur={() => {
-                      setIsOpenDatepick(false);
-                    }}
-                    dateFormat="dd/MM/yyyy"
-                    placeholderText={t('Select')}
-                    locale={t('locale')}
-                    className="form-control input"
-                    styles={{ width: '100%' }}
-                    getPopupContainer={(trigger) => trigger.parentElement}
-                  />
-                ) : (
-                  <>{item?.effectiveTime}</>
-                )}
-              </span>
-            </td>
+                  </span>
+                </td>
+                <td colSpan={2} className="text-center">
+                  <span className="same-width">
+                    {viewSetting.disableComponent.editSubjectApply &&
+                    !isCreateMode ? (
+                      <CurrencyInput
+                        disabled={false}
+                        intlConfig={renderCurrency()}
+                        className="form-control"
+                        value={item?.suggestedSalary}
+                        onValueChange={(value) => {
+                          handleTextInputChange(
+                            value,
+                            item?.uid,
+                            'suggestedSalary'
+                          );
+                        }}
+                        placeholder="Nhập"
+                        maxLength={11}
+                      />
+                    ) : (
+                      <>
+                        {!isCreateMode && item?.suggestedSalary && (
+                          <div className="d-flex w-100">
+                            <div
+                              style={{
+                                width: viewSetting.disableComponent.showEye
+                                  ? '90%'
+                                  : '100%',
+                              }}
+                            >
+                              {accessToken &&
+                              viewSetting.disableComponent.showCurrentSalary ? (
+                                <CurrencyInput
+                                  disabled={true}
+                                  intlConfig={renderCurrency()}
+                                  className="no-vborder"
+                                  value={item?.suggestedSalary}
+                                  placeholder="Nhập"
+                                  style={{ width: '100%', background: '#fff' }}
+                                  maxLength={11}
+                                />
+                              ) : (
+                                '**********'
+                              )}
+                            </div>
+                            {viewSetting.disableComponent.showEye && (
+                              <div
+                                style={{ width: '10%', cursor: 'pointer' }}
+                                onClick={handleShowCurrentSalary}
+                              >
+                                <img
+                                  src={
+                                    viewSetting.disableComponent
+                                      .showCurrentSalary
+                                      ? IconEye
+                                      : IconNotEye
+                                  }
+                                  alt="eye"
+                                />
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </>
+                    )}
+                  </span>
+                </td>
+                <td colSpan={2} className="same-width text-center">
+                  <span className="same-width">
+                    {viewSetting.disableComponent.editSubjectApply &&
+                    !isCreateMode ? (
+                      <DatePicker
+                        name="startDate"
+                        autoComplete="off"
+                        selected={
+                          item?.effectiveTime
+                            ? moment(
+                                item?.effectiveTime,
+                                Constants.LEAVE_DATE_FORMAT
+                              ).toDate()
+                            : null
+                        }
+                        onChange={(date) =>
+                          handleDatePickerInputChange(
+                            date,
+                            item?.uid,
+                            'effectiveTime'
+                          )
+                        }
+                        onChangeRaw={() => setIsOpenDatepick(false)}
+                        onFocus={() => setIsOpenDatepick(true)}
+                        onBlur={() => setIsOpenDatepick(false)}
+                        dateFormat="dd/MM/yyyy"
+                        placeholderText={t('Select')}
+                        locale={t('locale')}
+                        className="form-control input"
+                        styles={{ width: '100%' }}
+                        getPopupContainer={(trigger) => trigger.parentElement}
+                      />
+                    ) : (
+                      <>{item?.effectiveTime}</>
+                    )}
+                  </span>
+                </td>
+              </>
+            )}
             <td colSpan={1} className="same-width ">
               <div className="d-flex flex-column action">
                 {(viewSetting.showComponent.btnExpertise ||
@@ -1551,7 +1596,7 @@ const SalaryAdjustmentPropse = (props) => {
           </tr>
           <tr>
             {(isTransferAppointProposal || isProposalTransfer) && (
-              <td colSpan="12">
+              <td colSpan={isSalaryAdjustment ? "12" : "6"}>
                 <div className="skill">
                   <span className="title font-weight-bold">
                     * {t('proposal_title')}:
@@ -1590,14 +1635,13 @@ const SalaryAdjustmentPropse = (props) => {
             )}
           </tr>
           <tr>
-            <td colSpan="12">
+            <td colSpan={isSalaryAdjustment ? "12" : "6"}>
               <div className="skill">
                 <span className="title font-weight-bold">
                   * {t('strength')}:
                 </span>
                 <span className="input">
-                  {viewSetting.disableComponent.editSubjectApply &&
-                  !isCreateMode ? (
+                  {viewSetting.disableComponent.editSubjectApply ? (
                     <ResizableTextarea
                       placeholder={'Nhập'}
                       value={item?.strength}
@@ -1618,14 +1662,13 @@ const SalaryAdjustmentPropse = (props) => {
             </td>
           </tr>
           <tr>
-            <td colSpan="12">
+            <td colSpan={isSalaryAdjustment ? "12" : "6"}>
               <div className="skill">
                 <span className="title font-weight-bold">
                   * {t('weakness')}:
                 </span>
                 <span className="input">
-                  {viewSetting.disableComponent.editSubjectApply &&
-                  !isCreateMode ? (
+                  {viewSetting.disableComponent.editSubjectApply ? (
                     <ResizableTextarea
                       placeholder={'Nhập'}
                       value={item?.weakness}
@@ -1738,6 +1781,8 @@ const SalaryAdjustmentPropse = (props) => {
                     isEdit={true}
                     selectedMembers={selectedMembers}
                     handleSelectMembers={handleSelectMembers}
+                    isSalaryAdjustment={isSalaryAdjustment}
+                    onChangeSalaryAdjustment={(val) => setIsSalaryAdjustment(val)}
                   />
                 ) : (
                   <FilterMember
@@ -1745,6 +1790,8 @@ const SalaryAdjustmentPropse = (props) => {
                     isEdit={true}
                     selectedMembers={selectedMembers}
                     handleSelectMembers={handleSelectedMembers}
+                    isSalaryAdjustment={isSalaryAdjustment}
+                    onChangeSalaryAdjustment={(val) => setIsSalaryAdjustment(val)}
                   />
                 )}
               </div>
@@ -1795,58 +1842,6 @@ const SalaryAdjustmentPropse = (props) => {
         </div>
         <div className="result-wrap-table" style={{overflowY: isOpenDatepick ? 'unset' : 'auto'}}>
           <table className="result-table" style={{ width: "100%" }}>
-            <thead>
-              <tr>
-                <td colSpan={3} className="min-width font-weight-bold">
-                  <div className="d-flex">
-                    <input
-                      type="checkbox"
-                      style={{
-                        alignSelf: "flex-start",
-                        margin: "5px",
-                        display:
-                          viewSetting.showComponent.btnExpertise ||
-                          viewSetting.showComponent.btnApprove
-                            ? "inline"
-                            : "none",
-                      }}
-                      checked={selectedAll}
-                      disabled={!canSelectedll}
-                      onChange={(e) => onSelectAll(e)}
-                    />
-                    <p className="mb-0">{t("FullName")}</p>
-                  </div>
-                </td>
-                {/* <td rowSpan="2" className="min-width text-center font-weight-bold">Chức danh</td>
-                <td rowSpan="2" className="min-width text-center font-weight-bold">Khối/Phòng/Bộ phận</td> */}
-                {/* <td rowSpan="2" className="min-width text-center font-weight-bold">Loại HĐ hiện tại</td> */}
-                <td colSpan={2} className="min-width1 text-center">
-                  <strong>{t("current_income_gross")}</strong>
-                </td>
-                <td colSpan={2} className="min-width1 text-center">
-                  <strong>{t("suggested_salary_gross")}</strong>
-                </td>
-                <td
-                  colSpan={2}
-                  className="min-width text-center font-weight-bold"
-                >
-                  {t("effective_time")}
-                </td>
-                <td
-                  colSpan={1}
-                  className="min-width text-center font-weight-bold"
-                >
-                  {t("Action")}
-                </td>
-                <th
-                  colSpan={2}
-                  scope="colgroup"
-                  className="min-width text-center font-weight-bold"
-                >
-                  {t("reason_reject")}
-                </th>
-              </tr>
-            </thead>
             <tbody>
               {props.match.params.id !== "create" ? (
                 <>{renderListMember(selectedMembers)}</>
@@ -1858,7 +1853,7 @@ const SalaryAdjustmentPropse = (props) => {
         </div>
       </div>
       {/* Nhân sự hỗ trợ quyền xem lương */}
-      {viewSetting.showComponent.showHrSupportViewSalary && (
+      {viewSetting.showComponent.showHrSupportViewSalary && isSalaryAdjustment && (
         <>
           <h5 className="content-page-header">
             {t("support_human_respone_view_salary")}
@@ -1979,30 +1974,28 @@ const SalaryAdjustmentPropse = (props) => {
       <br />
       {/* List file */}
       <ul className="list-inline">
-        {listFiles.map((file, index) => {
-          return (
-            <li className="list-inline-item" key={index}>
-              <span className="file-name">
-                <a
-                  title={file.name}
-                  href={file.link}
-                  download={file.name}
-                  target="_blank"
-                  style={{ color: "#858796" }}
-                >
-                  {file.name}
-                </a>
-                {viewSetting.showComponent.showRemoveFile ? (
-                  <i
-                    className="fa fa-times remove"
-                    aria-hidden="true"
-                    onClick={(e) => removeFiles(file.id, index)}
-                  ></i>
-                ) : null}
-              </span>
-            </li>
-          );
-        })}
+        {listFiles.map((file, index) => (
+          <li className="list-inline-item" key={index}>
+            <span className="file-name">
+              <a
+                title={file.name}
+                href={file.link}
+                download={file.name}
+                target="_blank"
+                style={{ color: "#858796" }}
+              >
+                {file.name}
+              </a>
+              {viewSetting.showComponent.showRemoveFile ? (
+                <i
+                  className="fa fa-times remove"
+                  aria-hidden="true"
+                  onClick={(e) => removeFiles(file.id, index)}
+                ></i>
+              ) : null}
+            </span>
+          </li>
+        ))}
       </ul>
       {/* Show status */}
       {viewSetting.showComponent.stateProcess && (
