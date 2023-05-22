@@ -936,6 +936,7 @@
   "successfulCreateVaccination": "Báo cáo thông tin tiêm vaccine thành công!",
   "successfulUpdateVaccination": "Cập nhật thông tin tiêm vaccine thành công!",
   "successfulCancelReq": "Hủy yêu cầu thành công!",
+  "SuccessfulRejectRequest": "Từ chối phê duyệt yêu cầu thành công!",
   "successfulApprvalReq": "Phê duyệt yêu cầu thành công!",
   "successfulDisApprovalReq": "Từ chối phê duyệt yêu cầu thành công!",
   "successfulConsentReq": "Thẩm định yêu cầu thành công!",

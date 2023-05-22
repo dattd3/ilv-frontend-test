@@ -913,6 +913,7 @@
   "langCode": "en",
   "successfulRecallReq": "Successfully submitted recall request",
   "successfulCancelReq": "Successfully cancel request",
+  "SuccessfulRejectRequest": "Successfully reject request",
   "successfulApprvalReq": "Successfully approve request",
   "successfulDisApprovalReq": "Successfully disapprove request",
   "successfulConsentReq": "Successfully consent request",
