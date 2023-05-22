@@ -28,14 +28,16 @@ class ConfirmRequestModal extends React.Component {
         if (this.state.disabledSubmitButton) {
             return;
         }
+
         if ((Constants.STATUS_USE_COMMENT.includes(this.props.type) && this.state.message == "")) {
             this.setState({errorMessage: this.props.t("ReasonRequired")})
             return;
         }
+
+        this.props.updateButtonStatus(true)
         this.setState({ disabledSubmitButton: true });
-        const url = window.location.pathname
+
         const id = this.props.id
-        let formData = new FormData()
         switch (this.props.type) {
             case Constants.STATUS_NOT_APPROVED: // không phê duyệt
                 this.disApprove(this.props.dataToSap, `${process.env.REACT_APP_REQUEST_SERVICE_URL}request/approve`, id)
@@ -109,6 +111,7 @@ class ConfirmRequestModal extends React.Component {
         })
         .finally(res => {
             this.props.onHide()
+            this.props.updateButtonStatus(false)
         })
     }
     
@@ -279,7 +282,7 @@ class ConfirmRequestModal extends React.Component {
                                         aria-hidden="true"
                                     />}
                             </button>
-                            <button type="button" className="btn btn-secondary mr-2 w-25 float-right" disabled = {this.state.disabledSubmitButton} onClick={this.props.onHide} data-type="no">{t("No")}</button>
+                            <button type="button" className="btn btn-secondary mr-2 w-25 float-right" onClick={this.props.onHide} data-type="no">{t("No")}</button>
                         </div>
                     </Modal.Body>
                 </Modal>
