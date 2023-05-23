@@ -18,7 +18,7 @@ const convertDataNotiToObj = (data) => {
   return response;
 };
 
-export default function TimeKeepingList({ apiResponseData }) {
+export default function TimeKeepingList({ apiResponseData, fromPage }) {
   const { t } = useTranslation();
   const timeKeepingData = convertDataNotiToObj(apiResponseData);
   const lang = localStorage.getItem("locale");
@@ -48,7 +48,7 @@ export default function TimeKeepingList({ apiResponseData }) {
   }
 
   return (
-    <div className="timekeeping-list-container">
+    <div className={`timekeeping-list-container ${fromPage ? '' : 'show-scroll'}`}>
       {timeKeepingData &&
         Object.keys(timeKeepingData)?.length > 0 &&
         Object.keys(timeKeepingData)?.map((key, keyIndx) => (
