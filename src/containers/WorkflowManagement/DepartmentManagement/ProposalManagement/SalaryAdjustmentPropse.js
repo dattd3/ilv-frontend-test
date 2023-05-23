@@ -642,13 +642,22 @@ const SalaryAdjustmentPropse = (props) => {
   };
 
   const handleTextInputChange = (value, uid, objName) => {
-    const selectedMembersTmp = [...selectedMembers];
-    selectedMembersTmp.forEach((item) => {
-      if (item.uid === uid) {
-        item[objName] = value;
-      }
-    });
-    setSelectedMembers(selectedMembersTmp);
+    const { match } = props,
+      isCreateMode = match.params.id === 'create';
+
+    if (isCreateMode) {
+      const selectMembersTmp = [...selectMembers];
+      selectMembersTmp.forEach((item) => {
+        if (item.uid === uid) item[objName] = value;
+      });
+      setSelectMembers(selectMembersTmp);
+    } else {
+      const selectedMembersTmp = [...selectedMembers];
+      selectedMembersTmp.forEach((item) => {
+        if (item.uid === uid) item[objName] = value;
+      });
+      setSelectedMembers(selectedMembersTmp);
+    }
   };
 
   const handleDatePickerInputChange = (value, uid, objName) => {
