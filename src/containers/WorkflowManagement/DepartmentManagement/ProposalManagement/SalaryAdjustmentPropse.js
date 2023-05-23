@@ -979,7 +979,9 @@ const SalaryAdjustmentPropse = (props) => {
           proposedPosition: u?.proposedPosition,
           proposedDepartment: u?.proposedDepartment,
           proposedDepartmentCode: u?.proposedDepartmentCode,
-        } : {})
+        } : {}),
+        strength: u?.strength,
+        weakness: u?.strength,
       })),
       appraiserInfoLst = supervisors
         .filter((item) => item != null)
