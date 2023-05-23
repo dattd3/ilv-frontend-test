@@ -112,7 +112,7 @@ const getTotalHoursOtInRanges = (ranges = []) => {
     ?.toFixed(2);
 };
 
-const VFSX_LV3_ORG = 45005034;
+const VFSX_LV3_ORG = "45005034";
 
 export default function OTRequestComponent({ recentlyManagers }) {
   const { t } = useTranslation();
