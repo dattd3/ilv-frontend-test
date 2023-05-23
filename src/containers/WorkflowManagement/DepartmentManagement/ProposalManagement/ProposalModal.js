@@ -1,10 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import Select from 'react-select';
-import {
-  getMuleSoftHeaderConfigurations,
-  getRequestConfigurations,
-} from 'commons/Utils';
+import { getMuleSoftHeaderConfigurations, removeAccents } from 'commons/Utils';
 import { withTranslation } from 'react-i18next';
 import { Modal, Button, Image, Spinner } from 'react-bootstrap';
 
@@ -12,7 +9,6 @@ import IconReject from '../../../../assets/img/icon/Icon_Cancel.svg';
 import IconCheck from '../../../../assets/img/icon/Icon_Check_White.svg';
 import IconSearchWhite from '../../../../assets/img/icon/Icon_Loop.svg';
 import IconSearch from '../../../../assets/img/icon/ic_search.svg';
-import debounce from 'lodash/debounce';
 import Constants from 'commons/Constants';
 import _ from 'lodash';
 
@@ -48,19 +44,17 @@ class ProposalModal extends React.Component {
       data: {},
       errors: {},
       titles: [],
+      titlesOrigin: [],
       currentPnl: '',
       proposalSearch: '',
       proposalLoading: false,
     };
-    this.debounceProposalSearch = debounce(
-      this.debounceProposalSearch.bind(this),
-      800
-    );
   }
 
   fetchData = async () => {
     const config = getMuleSoftHeaderConfigurations();
-    let orgsOrigin = {}, pnl = {};
+    let orgsOrigin = {},
+      pnl = {};
 
     const res = await axios.get(
       `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/masterdata/organization/structure/levels?page_no=1&page_size=10000&parent_id=45000000&level=2`,
@@ -74,13 +68,16 @@ class ProposalModal extends React.Component {
       label: val.organization_name,
       value: val.organization_lv2,
     }));
-    pnl = orgsOrigin.pnls.find(val => val.value === organizationLv2);
+    pnl = orgsOrigin.pnls.find((val) => val.value === organizationLv2);
 
-    this.setState({
-      orgsOrigin: Object.assign(this.state.orgsOrigin, orgsOrigin),
-      org: Object.assign(this.state.org, { pnls: orgsOrigin.pnls }),
-      data: Object.assign(this.state.org, { pnl }),
-    }, this.fetchOrg);
+    this.setState(
+      {
+        orgsOrigin: Object.assign(this.state.orgsOrigin, orgsOrigin),
+        org: Object.assign(this.state.org, { pnls: orgsOrigin.pnls }),
+        data: Object.assign(this.state.data, { pnl }),
+      },
+      this.fetchOrg
+    );
   };
 
   componentDidMount() {
@@ -89,43 +86,39 @@ class ProposalModal extends React.Component {
 
   componentDidUpdate(prevProps, prevStates) {
     const { modal } = this.props,
-      {
-        proposedPositionCode,
-        proposedDepartmentCode,
-      } = modal.data || {},
-      {  orgsOrigin, org } = this.state;
+      { proposedPositionCode, proposedDepartmentCode } = modal.data || {},
+      { orgsOrigin, data } = this.state;
 
     if (modal !== prevProps.modal && modal.show) {
       if (!!proposedDepartmentCode) {
-        const orgIds = proposedDepartmentCode.split('\\'),
-          pnl = orgsOrigin.pnls.filter(
-            (ele) => ele.value === orgIds[0]
-          )[0];
+        const orgIds = proposedDepartmentCode.split('/'),
+          pnl = orgsOrigin.pnls.filter((ele) => ele.value === orgIds[0])[0];
         if (!!orgIds[0]) {
           this.setState(
             {
               data: {
-                ...this.state.data,
+                ...data,
                 pnl,
-              },            
-              currentPnl: pnl?.value,
+              },
             },
             () => this.fetchOrg(orgIds)
           );
         }
       } else {
-        const pnl = orgsOrigin.pnls.find(val => val.value === organizationLv2);
-        this.setState({ data: Object.assign(org, { pnl }) }, this.fetchOrg );
+        const pnl = orgsOrigin.pnls.find(
+          (val) => val.value === organizationLv2
+        );
+        this.setState({ data: Object.assign(data, { pnl }) }, this.fetchOrg);
       }
     }
   }
 
   fetchOrg = async (orgIds) => {
     let config = getMuleSoftHeaderConfigurations(),
-      { data, org } = this.state,
+      { data, org, currentPnl } = this.state,
       orgsOrigin = { ...ORG_DATA, pnls: this.state.orgsOrigin.pnls };
 
-    if (!!data?.pnl?.value) {
+    if (!!data?.pnl?.value && (data?.pnl?.value !== currentPnl || !!orgIds)) {
       const res = await axios.get(
         `${process.env.REACT_APP_REQUEST_URL}masterdata/get-org-structure?orgId=${data?.pnl?.value}&level=2`,
         config
@@ -167,13 +160,14 @@ class ProposalModal extends React.Component {
             )[0];
           }
           // get data and search in here
-          this.handleSearch()
+          this.handleSearch();
         }
 
         this.setState({
           data,
           orgsOrigin,
           org: Object.assign(org, { blocks: orgsOrigin.blocks }),
+          currentPnl: data?.pnl?.value,
         });
       }
     }
@@ -216,7 +210,7 @@ class ProposalModal extends React.Component {
     }
 
     this.setState(
-      // { data, org, titles: [] },
+      // { data, org, titles: [], titlesOrigin: [] },
       { data, org },
       this.validateSearch
     );
@@ -224,14 +218,14 @@ class ProposalModal extends React.Component {
 
   validateSearch = () => {
     const { t } = this.props,
-      { data, titles } = this.state;
+      { data, titlesOrigin } = this.state;
     let required = ['pnl', 'proposal'],
       errors = {};
 
     required.forEach((ele) => {
       if (_.isEmpty(data[ele])) errors[ele] = t('Selectvalue');
     });
-    if (titles.length <= 0) delete errors.proposal;
+    if (titlesOrigin.length <= 0) delete errors.proposal;
     this.setState({ errors });
 
     return Object.keys(errors).length > 0;
@@ -251,8 +245,10 @@ class ProposalModal extends React.Component {
         `${process.env.REACT_APP_REQUEST_URL}masterdata/get-jobname?companyCode=V040`,
         config
       ),
-      resData = res?.data?.data, titles = resData.map((ele) => ({
+      resData = res?.data?.data,
+      titles = resData.map((ele) => ({
         label: ele?.job_name,
+        labelEn: removeAccents(ele?.job_name.toLowerCase() || ''),
         value: ele?.job_id?.toString(),
       }));
 
@@ -265,37 +261,22 @@ class ProposalModal extends React.Component {
 
       this.setState({
         titles,
-        data
+        titlesOrigin: titles,
+        data,
       });
     }
   };
 
   handleProposalSearch = (ev) => {
     const proposalSearch = ev?.target?.value;
-    this.setState({ proposalSearch }, () =>
-      this.debounceProposalSearch(proposalSearch)
-    );
-  };
+    let { titlesOrigin } = this.state,
+      titles;
 
-  debounceProposalSearch = (val) => {
-    if (val) {
-      const payload = {
-        account: val,
-        employee_type: 'EMPLOYEE',
-        status: Constants.statusUserActiveMulesoft,
-      };
-      this.setState({ proposalLoading: true });
-      axios
-        .post(
-          `${process.env.REACT_APP_REQUEST_URL}user/employee/search`,
-          payload,
-          getRequestConfigurations()
-        )
-        .then((res) => {
-          this.setState({ titles: [] });
-        })
-        .then(() => this.setState({ proposalLoading: false }));
-    }
+    titles = titlesOrigin.filter((ele) =>
+      ele.labelEn.includes(removeAccents(proposalSearch.toLowerCase()))
+    );
+
+    this.setState({ proposalSearch, titles });
   };
 
   handleAccept = () => {
@@ -303,22 +284,20 @@ class ProposalModal extends React.Component {
     const { data, errors } = this.state,
       { pnl, block, region, unit, department, crew, team, group, proposal } =
         data,
-      proposedDepartment = `${pnl?.label}${!!block ? `\\${block?.label}` : ''}${
-        !!region ? `\\${region?.label}` : ''
-      }${!!unit ? `\\${unit?.label}` : ''}${
-        !!department ? `\\${department?.label}` : ''
-      }${!!crew ? `\\${crew?.label}` : ''}${!!team ? `\\${team?.label}` : ''}${
-        !!group ? `\\${group?.label}` : ''
+      proposedDepartment = `${pnl?.label}${!!block ? `/${block?.label}` : ''}${
+        !!region ? `/${region?.label}` : ''
+      }${!!unit ? `/${unit?.label}` : ''}${
+        !!department ? `/${department?.label}` : ''
+      }${!!crew ? `/${crew?.label}` : ''}${!!team ? `/${team?.label}` : ''}${
+        !!group ? `/${group?.label}` : ''
       }`,
       proposedDepartmentCode = `${pnl?.value}${
-        !!block ? `\\${block?.value}` : ''
-      }${!!region ? `\\${region?.value}` : ''}${
-        !!unit ? `\\${unit?.value}` : ''
-      }${!!department ? `\\${department?.value}` : ''}${
-        !!crew ? `\\${crew?.value}` : ''
-      }${!!team ? `\\${team?.value}` : ''}${
-        !!group ? `\\${group?.value}` : ''
-      }`;
+        !!block ? `/${block?.value}` : ''
+      }${!!region ? `/${region?.value}` : ''}${
+        !!unit ? `/${unit?.value}` : ''
+      }${!!department ? `/${department?.value}` : ''}${
+        !!crew ? `/${crew?.value}` : ''
+      }${!!team ? `/${team?.value}` : ''}${!!group ? `/${group?.value}` : ''}`;
     let errorsTemp = { ...errors };
 
     if (!proposal) {
@@ -332,13 +311,15 @@ class ProposalModal extends React.Component {
       proposedDepartment,
       proposedDepartmentCode,
     });
-    this.setState({ data: {}, errors: {}, titles: [] });
+    this.setState({ data: {}, errors: {}, titles: [], titlesOrigin: [] });
   };
 
   handleHideSHow = () => {
     const { onHide } = this.props;
-    onHide();
-    this.setState({ data: {}, errors: {}, titles: [] });
+    this.setState(
+      { data: {}, errors: {}, titles: [], titlesOrigin: [] },
+      onHide
+    );
   };
 
   renderErrors = (name) => {
@@ -352,7 +333,8 @@ class ProposalModal extends React.Component {
       modal: { show },
       t,
     } = this.props;
-    const { org, data, titles, proposalSearch, proposalLoading } = this.state,
+    const { org, data, titles, titlesOrigin, proposalSearch, proposalLoading } =
+        this.state,
       { pnls, blocks, regions, units, departments, crews, teams, groups } = org,
       { pnl, block, region, unit, department, crew, team, group, proposal } =
         data;
@@ -510,7 +492,7 @@ class ProposalModal extends React.Component {
               </Button>
             </div>
 
-            {titles.length > 0 ? (
+            {titlesOrigin.length > 0 ? (
               <div className="row form-group">
                 <div className="col-12">
                   <label className="form-label">{t('proposal_title')}</label>
@@ -590,7 +572,7 @@ class ProposalModal extends React.Component {
             )}
           </div>
 
-          {titles.length > 0 && (
+          {titlesOrigin.length > 0 && (
             <div className="text-right form-button-group">
               <Button
                 className="button-cancel d-inline-flex align-items-center justify-content-center"
