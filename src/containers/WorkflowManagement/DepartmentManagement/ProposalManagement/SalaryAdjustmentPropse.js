@@ -450,6 +450,7 @@ const SalaryAdjustmentPropse = (props) => {
         canChangeAction: u?.accepted == true,
       };
       canCheckAll = canCheckAll || u?.accepted == true;
+
       return {
         id: u?.id,
         uid: requestTmp?.employeeNo,
@@ -473,8 +474,8 @@ const SalaryAdjustmentPropse = (props) => {
         proposedPositionCode: requestTmp?.proposedPositionCode,
         proposedDepartment: requestTmp?.proposedDepartment,
         proposedDepartmentCode: requestTmp?.proposedDepartmentCode,
-        strength: u?.staffStrengths,
-        weakness: u?.staffWknesses,
+        strength: u?.staffStrengths || requestTmp?.staffStrengths,
+        weakness: u?.staffWknesses || requestTmp?.staffWknesses,
         canChangeAction: u?.accepted == true,
         accepted: u?.accepted,
         comment: u.comment
@@ -980,8 +981,8 @@ const SalaryAdjustmentPropse = (props) => {
           proposedDepartment: u?.proposedDepartment,
           proposedDepartmentCode: u?.proposedDepartmentCode,
         } : {}),
-        strength: u?.strength,
-        weakness: u?.strength,
+        staffStrengths: u?.strength,
+        staffWknesses: u?.strength,
       })),
       appraiserInfoLst = supervisors
         .filter((item) => item != null)
