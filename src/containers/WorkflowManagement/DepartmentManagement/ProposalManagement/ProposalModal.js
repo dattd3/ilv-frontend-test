@@ -93,25 +93,29 @@ class ProposalModal extends React.Component {
         proposedPositionCode,
         proposedDepartmentCode,
       } = modal.data || {},
-      { currentPnl, orgsOrigin } = this.state;
+      {  orgsOrigin, org } = this.state;
 
-    if (prevStates.currentPnl !== currentPnl) this.fetchOrg();
-    if (!!proposedDepartmentCode && modal !== prevProps.modal) {
-      const orgIds = proposedDepartmentCode.split('\\'),
-        pnl = orgsOrigin.pnls.filter(
-          (ele) => ele.value === orgIds[0]
-        )[0];
-      if (!!orgIds[0]) {
-        this.setState(
-          {
-            data: {
-              ...this.state.data,
-              pnl,
-            },            
-            currentPnl: pnl?.value,
-          },
-          () => this.fetchOrg(orgIds)
-        );
+    if (modal !== prevProps.modal && modal.show) {
+      if (!!proposedDepartmentCode) {
+        const orgIds = proposedDepartmentCode.split('\\'),
+          pnl = orgsOrigin.pnls.filter(
+            (ele) => ele.value === orgIds[0]
+          )[0];
+        if (!!orgIds[0]) {
+          this.setState(
+            {
+              data: {
+                ...this.state.data,
+                pnl,
+              },            
+              currentPnl: pnl?.value,
+            },
+            () => this.fetchOrg(orgIds)
+          );
+        }
+      } else {
+        const pnl = orgsOrigin.pnls.find(val => val.value === organizationLv2);
+        this.setState({ data: Object.assign(org, { pnl }) }, this.fetchOrg );
       }
     }
   }
@@ -123,7 +127,7 @@ class ProposalModal extends React.Component {
 
     if (!!data?.pnl?.value) {
       const res = await axios.get(
-        `${process.env.REACT_APP_REQUEST_URL}masterdata/get-org-structure?page_no=1&page_size=200&level=2&ancestor_id=${data?.pnl?.value}`,
+        `${process.env.REACT_APP_REQUEST_URL}masterdata/get-org-structure?orgId=${data?.pnl?.value}&level=2`,
         config
       );
       if (res?.data && res?.data?.result?.code === Constants.API_SUCCESS_CODE) {
@@ -212,8 +216,8 @@ class ProposalModal extends React.Component {
     }
 
     this.setState(
-      // { data, org, titles: [], currentPnl: key === 'pnl' ? data?.pnl?.value : ''  },
-      { data, org, currentPnl: key === 'pnl' ? data?.pnl?.value : '' },
+      // { data, org, titles: [] },
+      { data, org },
       this.validateSearch
     );
   };
