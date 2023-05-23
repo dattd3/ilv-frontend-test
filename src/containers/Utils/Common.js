@@ -37,6 +37,7 @@ export default function processingDataReq(dataRawFromApi, tab) {
                 element.appraiser = {};
                 element.approver = element.approverInfo ? element.approverInfo : {};
                 element.user = element.userInfo;
+                element.isEdit = false; // không cho phép thẩm định hàng loạt ngoài màn danh sách
                 element.startDate = "";
             }
 
