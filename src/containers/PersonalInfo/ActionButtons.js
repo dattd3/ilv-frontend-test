@@ -12,7 +12,7 @@ function ActionButtons(props) {
             const filesSelected = Object.values(e.target.files)
             let fileStates = [...files]
             fileStates = fileStates.concat(filesSelected)
-            if (validateTotalFileSize(fileStates, t)) {
+            if (validateTotalFileSize(e, fileStates, t)) {
               SetFiles(fileStates)
               props.updateFilesToParent(fileStates)
             }
