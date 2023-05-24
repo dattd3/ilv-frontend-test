@@ -1781,5 +1781,5 @@
   "IncludeSalaryAdjustment": "Include salary adjustment",
   "SearchByDate": "Search by date",
   "InvalidMimeType": " is invalid type! Please select again!",
-  "ExceedMaxFileSize": "The total file size must not exceed 10MB"
+  "ExceedMaxFileSize": "The total file size must not exceed 8MB"
 }

@@ -1798,6 +1798,6 @@
   "IncludeSalaryAdjustment": "Có điều chỉnh lương",
   "SearchByDate": "Tìm kiếm theo ngày",
   "InvalidMimeType": " không đúng định dạng! Xin vui lòng chọn lại",
-  "ExceedMaxFileSize": "Tổng dung lượng file vượt quá 10MB! Xin vui lòng chọn lại"
+  "ExceedMaxFileSize": "Tổng dung lượng file vượt quá 8MB! Xin vui lòng chọn lại"
 
 }
