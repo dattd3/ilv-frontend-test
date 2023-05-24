@@ -1277,7 +1277,8 @@ const SalaryAdjustmentPropse = (props) => {
       const account = item?.account?.indexOf('@')
           ? item.account.split('@')[0]
           : item.account,
-        isProposalTransfer = item.requestTypeId === Constants.PROPOSAL_TRANSFER;
+        isProposalTransfer = item.requestTypeId === Constants.PROPOSAL_TRANSFER,
+        isSalaryPropose = item.requestTypeId === Constants.SALARY_PROPOSE || isSalaryAdjustment;
 
       return (
         <React.Fragment key={index}>
@@ -1306,7 +1307,7 @@ const SalaryAdjustmentPropse = (props) => {
             {/* <td rowSpan="2" className="min-width text-center font-weight-bold">Chức danh</td>
             <td rowSpan="2" className="min-width text-center font-weight-bold">Khối/Phòng/Bộ phận</td> */}
             {/* <td rowSpan="2" className="min-width text-center font-weight-bold">Loại HĐ hiện tại</td> */}
-            {isSalaryAdjustment && (
+            {isSalaryPropose && (
               <>
                 <td colSpan={2} className="min-width1 text-center">
                   <strong>{t('current_income_gross')}</strong>
@@ -1361,7 +1362,7 @@ const SalaryAdjustmentPropse = (props) => {
                 </div>
               </div>
             </td>
-            {isSalaryAdjustment && (
+            {isSalaryPropose && (
               <>
                 <td colSpan={2} className="text-center">
                   <span className="same-width">
@@ -1608,7 +1609,7 @@ const SalaryAdjustmentPropse = (props) => {
           </tr>
           <tr>
             {(isTransferAppointProposal || isProposalTransfer) && (
-              <td colSpan={isSalaryAdjustment ? "12" : "6"}>
+              <td colSpan={isSalaryPropose ? "12" : "6"}>
                 <div className="skill">
                   <span className="title font-weight-bold">
                     * {t('proposal_title')}:
@@ -1647,7 +1648,7 @@ const SalaryAdjustmentPropse = (props) => {
             )}
           </tr>
           <tr>
-            <td colSpan={isSalaryAdjustment ? "12" : "6"}>
+            <td colSpan={isSalaryPropose ? "12" : "6"}>
               <div className="skill">
                 <span className="title font-weight-bold">
                   * {t('strength')}:
@@ -1674,7 +1675,7 @@ const SalaryAdjustmentPropse = (props) => {
             </td>
           </tr>
           <tr>
-            <td colSpan={isSalaryAdjustment ? "12" : "6"}>
+            <td colSpan={isSalaryPropose ? "12" : "6"}>
               <div className="skill">
                 <span className="title font-weight-bold">
                   * {t('weakness')}:
