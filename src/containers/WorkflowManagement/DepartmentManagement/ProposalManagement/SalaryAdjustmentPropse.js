@@ -9,7 +9,6 @@ import Spinner from "react-bootstrap/Spinner";
 import { withTranslation } from "react-i18next";
 import "react-toastify/dist/ReactToastify.css";
 import DatePicker, { registerLocale } from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 import FilterMember from "../../ShareComponents/FilterMember";
 import ConfirmationModal from "../../../Registration/ConfirmationModal";
 import ResultModal from "./ResultModal";
@@ -28,7 +27,7 @@ import IconAdd from "../../../../assets/img/ic-add-green.svg";
 import { useApi } from "../../../../modules/api";
 import vi from "date-fns/locale/vi";
 import { Image } from "react-bootstrap";
-import { checkFilesMimeType } from "../../../../utils/file";
+import { validateFileMimeType, validateTotalFileSize } from "../../../../utils/file";
 import LoadingModal from "../../../../components/Common/LoadingModal";
 import { getCulture } from "commons/Utils";
 import ProcessHistoryComponent from "./ProcessHistoryComponent";
@@ -763,9 +762,11 @@ const SalaryAdjustmentPropse = (props) => {
   // Attach file
   const handleAttachFile = (e) => {
     const files = Object.values(e.target.files);
-    if (checkFilesMimeType(e, files)) {
+    if (validateFileMimeType(e, t, files)) {
       const listFilesTmp = [...listFiles, ...files];
-      setListFiles(listFilesTmp);
+      if (validateTotalFileSize(listFilesTmp, t)) {
+        setListFiles(listFilesTmp);
+      }
     }
   };
 

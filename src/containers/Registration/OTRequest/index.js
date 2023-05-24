@@ -15,7 +15,7 @@ import {
 } from "commons/Utils";
 import AssesserComponent from "../AssesserComponent";
 import SearchUserComponent from "containers/SearchUserBox/index";
-import { checkFilesMimeType } from "utils/file";
+import { validateFileMimeType, validateTotalFileSize } from "utils/file";
 import IconPlusCircle from "assets/img/icon/Icon-plus-circle.svg";
 import IconRemove from "assets/img/icon-delete.svg";
 import ResultModal from "../ResultModal";
@@ -746,10 +746,12 @@ export default function OTRequestComponent({ recentlyManagers }) {
   };
 
   const handleChangeFilesInput = (e) => {
-    if (checkFilesMimeType(e, e.target.files)) {
+    if (validateFileMimeType(e, t, e.target.files)) {
       const filesSelected = Object.values(e.target.files);
       const fileStates = [...files, ...filesSelected];
-      setFiles(fileStates);
+      if (validateTotalFileSize(fileStates, t)) {
+        setFiles(fileStates);
+      }
     }
   };
 

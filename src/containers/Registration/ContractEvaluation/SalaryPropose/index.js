@@ -18,8 +18,8 @@ import ConfirmPasswordModal from "./ConfirmPasswordModal";
 import Constants from "../.../../../../../commons/Constants";
 import StatusModal from "../../../../components/Common/StatusModal";
 import Spinner from "react-bootstrap/Spinner";
-import { Button, Image } from "react-bootstrap";
-import { checkFilesMimeType } from "../../../../utils/file";
+import { Image } from "react-bootstrap";
+import { validateFileMimeType, validateTotalFileSize } from "../../../../utils/file";
 import LoadingModal from "../../../../components/Common/LoadingModal";
 import { getCulture } from "commons/Utils";
 
@@ -546,9 +546,11 @@ function SalaryPropse(props) {
   // Attach file
   const handleAttachFile = (e) => {
     const files = Object.values(e.target.files);
-    if (checkFilesMimeType(e, files)) {
+    if (validateFileMimeType(e, t, files)) {
       const listFilesTmp = [...listFiles, ...files];
-      setListFiles(listFilesTmp);
+      if (validateTotalFileSize(listFilesTmp, t)) {
+        setListFiles(listFilesTmp);
+      }
     }
   };
 

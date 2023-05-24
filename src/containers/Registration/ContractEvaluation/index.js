@@ -780,42 +780,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
           errors['qltt'] = t('Required');
         }
       }
-
-      const fileExtension = [
-        'application/msword', // doc
-        'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // docx
-        'application/vnd.ms-excel', // xls
-        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // xlsx
-        'application/pdf', // pdf,
-        'image/png', // png
-        'image/jpeg' // jpg and jpeg
-      ]
-
-      const cvs = this.state.data.cvs
-
-      let sizeTotal = 0
-      for (let index = 0, lenFiles = cvs.length; index < lenFiles; index++) {
-          const file = cvs[index];
-          if (file.id) {
-              continue
-          }
-
-          if (!fileExtension.includes(file.type)) {
-              errors.cvs = t('Request_error_file_format')
-              break
-          } else if (parseFloat(file.size / 1000000) > 2) {
-              errors.cvs = t('Request_error_file_size')
-              break
-          } else {
-              errors.cvs = null
-          }
-          sizeTotal += parseInt(file.size)
-      }
-
-      if (parseFloat(sizeTotal / 1000000) > 10) {
-          errors.cvs = t('Request_error_file_oversize')
-      }
-    }else if(type === 'assess'){
+    } else if(type === 'assess'){
       if(evalutions && evalutions.length > 0){
         let isMissing = false;
         for(let i = 0; i < evalutions.length ; i++){
