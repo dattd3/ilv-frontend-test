@@ -749,7 +749,7 @@ export default function OTRequestComponent({ recentlyManagers }) {
     if (validateFileMimeType(e, t, e.target.files)) {
       const filesSelected = Object.values(e.target.files);
       const fileStates = [...files, ...filesSelected];
-      if (validateTotalFileSize(fileStates, t)) {
+      if (validateTotalFileSize(e, fileStates, t)) {
         setFiles(fileStates);
       }
     }
