@@ -271,7 +271,7 @@ class TaskList extends React.Component {
                 || (child.processStatusId == Constants.STATUS_WAITING_CONSENTED && ![Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER].includes(child.requestTypeId)) 
                 || (child.processStatusId == Constants.STATUS_OB_SUPERVISOR_EVALUATION && child.supervisorId?.toLowerCase() == currentEmail) 
                 || (child.processStatusId == Constants.STATUS_OB_APPRAISER_EVALUATION && child.appraiserId?.toLowerCase() == currentEmail) 
-                || (page == "approval" && (child.processStatusId == Constants.STATUS_WAITING || child.processStatusId == Constants.STATUS_OB_APPROVER_EVALUATION || (child.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && requestTypeIdsAllowedToReApproval.includes(child.requestTypeId))))
+                || (page == "approval" && ((child.processStatusId == Constants.STATUS_WAITING && ![Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER].includes(child.requestTypeId)) || child.processStatusId == Constants.STATUS_OB_APPROVER_EVALUATION || (child.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && requestTypeIdsAllowedToReApproval.includes(child.requestTypeId))))
             ) {
                 child.isChecked = event.target.checked;
                 if (child.isChecked) {
@@ -609,7 +609,7 @@ class TaskList extends React.Component {
                                                         (
                                                             (
                                                                 (
-                                                                    (child.processStatusId == 5 || child.processStatusId == 13 || (child.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && requestTypeIdsAllowedToReApproval.includes(child.requestTypeId)))
+                                                                    ((child.processStatusId == 5 && ![Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER].includes(child.requestTypeId)) || child.processStatusId == 13 || (child.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && requestTypeIdsAllowedToReApproval.includes(child.requestTypeId)))
                                                                     && this.props.page == "approval"
                                                                 )
                                                                 || (child.processStatusId == 8 && ![Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER].includes(child.requestTypeId) ) 
