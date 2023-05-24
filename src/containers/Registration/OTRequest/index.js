@@ -637,7 +637,6 @@ export default function OTRequestComponent({ recentlyManagers }) {
           if (!endTime)
             _errors[`range_endTime_${index}_${rangeIndex}`] = t("Required");
           if (startTime && endTime) {
-            console.log(currOrgLv3)
             if (
               currOrgLv3 === VFSX_LV3_ORG &&
               getHoursBetween2Times(startTime, endTime) < 0.5
