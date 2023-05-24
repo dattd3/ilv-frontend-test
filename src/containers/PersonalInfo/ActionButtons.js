@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { useTranslation } from "react-i18next"
-import { checkFilesMimeType } from "../../utils/file"
+import { validateFileMimeType, validateTotalFileSize } from "../../utils/file"
 
 function ActionButtons(props) {
     const { t } = useTranslation()
@@ -8,12 +8,14 @@ function ActionButtons(props) {
     const [files, SetFiles] = useState([])
 
     const handleChangeFileInput = e => {
-        if (checkFilesMimeType(e, e.target.files)) {
+        if (validateFileMimeType(e, t, e.target.files)) {
             const filesSelected = Object.values(e.target.files)
             let fileStates = [...files]
             fileStates = fileStates.concat(filesSelected)
-            SetFiles(fileStates)
-            props.updateFilesToParent(fileStates)
+            if (validateTotalFileSize(fileStates, t)) {
+              SetFiles(fileStates)
+              props.updateFilesToParent(fileStates)
+            }
         }
     }
 
