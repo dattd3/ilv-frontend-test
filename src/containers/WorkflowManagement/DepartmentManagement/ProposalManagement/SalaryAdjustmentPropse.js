@@ -14,6 +14,7 @@ import FilterMember from "../../ShareComponents/FilterMember";
 import ConfirmationModal from '../../../Registration/ConfirmationModal';
 import ResultModal from "./ResultModal";
 import HumanForReviewSalaryComponent from "../../../Registration/HumanForReviewSalaryComponent";
+<<<<<<< Updated upstream
 import ConfirmPasswordModal from '../../../Registration/ContractEvaluation/SalaryPropose/ConfirmPasswordModal';
 import StatusModal from '../../../../components/Common/StatusModal'
 import ResizableTextarea from '../../../Registration/TextareaComponent';
@@ -28,6 +29,25 @@ import { useApi } from '../../../../modules/api';
 import vi from 'date-fns/locale/vi'
 import { Button, Image } from "react-bootstrap";
 import { checkFilesMimeType } from "../../../../utils/file";
+=======
+import ConfirmPasswordModal from "../../../Registration/ContractEvaluation/SalaryPropose/ConfirmPasswordModal";
+import StatusModal from "../../../../components/Common/StatusModal";
+import ResizableTextarea from "../../../Registration/TextareaComponent";
+import Constants from "../.../../../../../commons/Constants";
+import CurrencyInput from "react-currency-input-field";
+import IconDelete from "../../../../assets/img/icon/Icon_Cancel.svg";
+import IconEye from "../../../../assets/img/icon/eye.svg";
+import IconNotEye from "../../../../assets/img/icon/not-eye.svg";
+import IconRemove from "../../../../assets/img/ic-remove.svg";
+import IconAdd from "../../../../assets/img/ic-add-green.svg";
+import { useApi } from "../../../../modules/api";
+import vi from "date-fns/locale/vi";
+import { Image } from "react-bootstrap";
+import { validateFileMimeType, validateTotalFileSize } from "../../../../utils/file";
+import LoadingModal from "../../../../components/Common/LoadingModal";
+import { getCulture } from "commons/Utils";
+import ProcessHistoryComponent from "./ProcessHistoryComponent";
+>>>>>>> Stashed changes
 
 registerLocale("vi", vi)
 
@@ -619,10 +639,12 @@ const SalaryAdjustmentPropse = (props) => {
 
   // Attach file
   const handleAttachFile = (e) => {
-    const files = Object.values(e.target.files)
-    if (checkFilesMimeType(e, files)) {
+    const files = Object.values(e.target.files);
+    if (validateFileMimeType(e, t, files)) {
       const listFilesTmp = [...listFiles, ...files];
-      setListFiles(listFilesTmp)
+      if (validateTotalFileSize(listFilesTmp, t)) {
+        setListFiles(listFilesTmp);
+      }
     }
   }
 
