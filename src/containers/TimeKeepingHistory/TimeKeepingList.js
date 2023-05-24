@@ -68,7 +68,6 @@ export default function TimeKeepingList({ apiResponseData, fromPage }) {
                     <div className="infor-block">
                       <span className="time-span">
                         <span className="bull-symbol">&bull;</span>
-                        &nbsp;&nbsp;
                         {item.subRequestId?.split(" ")?.[1]}
                         &nbsp;&nbsp;
                       </span>
