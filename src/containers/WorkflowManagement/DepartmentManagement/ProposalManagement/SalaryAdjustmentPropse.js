@@ -148,6 +148,9 @@ const SalaryAdjustmentPropse = (props) => {
     },
   });
   const [isSalaryAdjustment, setIsSalaryAdjustment] = useState(!isTransferAppointProposal);
+  const isSalaryPropose =
+      dataSalary?.requestTypeId === Constants.SALARY_PROPOSE ||
+      isSalaryAdjustment
 
   useEffect(() => {
     if (props.match.params.id) {
@@ -1035,7 +1038,7 @@ const SalaryAdjustmentPropse = (props) => {
           company_email: viewSetting.proposedStaff.company_email,
         })
       );
-      if(isSalaryAdjustment) {
+      if(isSalaryPropose) {
         bodyFormData.append(
           "coordinatorId",
           coordinator?.username.toLowerCase() + "@vingroup.net"
@@ -1277,8 +1280,7 @@ const SalaryAdjustmentPropse = (props) => {
       const account = item?.account?.indexOf('@')
           ? item.account.split('@')[0]
           : item.account,
-        isProposalTransfer = item.requestTypeId === Constants.PROPOSAL_TRANSFER,
-        isSalaryPropose = item.requestTypeId === Constants.SALARY_PROPOSE || isSalaryAdjustment;
+        isProposalTransfer = item.requestTypeId === Constants.PROPOSAL_TRANSFER;
 
       return (
         <React.Fragment key={index}>
@@ -1705,6 +1707,7 @@ const SalaryAdjustmentPropse = (props) => {
       );
     });
   };
+
   const salaryState = `salaryadjustment_${props.match.params?.id}_${props.match.params?.type}`;
 
   return (
@@ -1866,7 +1869,7 @@ const SalaryAdjustmentPropse = (props) => {
         </div>
       </div>
       {/* Nhân sự hỗ trợ quyền xem lương */}
-      {viewSetting.showComponent.showHrSupportViewSalary && isSalaryAdjustment && (
+      {viewSetting.showComponent.showHrSupportViewSalary && isSalaryPropose && (
         <>
           <h5 className="content-page-header">
             {t("support_human_respone_view_salary")}
