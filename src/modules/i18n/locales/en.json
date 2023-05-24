@@ -1713,9 +1713,6 @@
   "export_report": "Export",
   "handover_supporter": "To view offboarding handover contacts",
   "view_here": "click here",
-  "Request_error_file_format": "The file is not in the correct format",
-  "Request_error_file_oversize": "Total file capacity can not exceed 10MB",
-  "Request_error_file_size": "Each file capacity can not exceed 2MB",
   "resign_error_lastWorkingDay": "Please input Last working day!",
   "resign_error_reason": "Please input Reason for contract termination!",
   "resign_error_directManager": "Please select Direct manager!",
@@ -1798,5 +1795,7 @@
   "OTInvalidSpaceHours": "(*) Minimum break time is 1h",
   "OTOverlapEachOther": "(*) OT time segment is overlap",
   "IncludeSalaryAdjustment": "Include salary adjustment",
-  "SearchByDate": "Search by date"
+  "SearchByDate": "Search by date",
+  "InvalidMimeType": " is invalid type! Please select again!",
+  "ExceedMaxFileSize": "The total file size must not exceed 10MB"
 }

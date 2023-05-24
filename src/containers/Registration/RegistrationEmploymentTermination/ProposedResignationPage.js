@@ -213,15 +213,10 @@ class ProposedResignationPage extends React.Component {
         } = this.state
         this.setDisabledSubmitButton(true)
         const isValid = this.isValidData()
-        const fileInfoValidation = this.validateAttachmentFile()
 
         if (!isValid) {
             const message = this.getMessageValidation()
             toast.error(message)
-            this.setDisabledSubmitButton(false)
-            return
-        } else if (_.size(fileInfoValidation) > 0 && fileInfoValidation.files) {
-            toast.error(fileInfoValidation.files)
             this.setDisabledSubmitButton(false)
             return
         } else {
@@ -302,42 +297,6 @@ class ProposedResignationPage extends React.Component {
             this.setDisabledSubmitButton(false)
             this.setState({isShowLoadingModal: false})
         }
-    }
-
-    validateAttachmentFile = () => {
-        const { t } = this.props
-        const files = this.state.files
-        const errors = {}
-        const fileExtension = [
-            'application/msword',
-            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-            'application/vnd.ms-excel',
-            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            'application/pdf',
-            'image/png',
-            'image/jpeg'
-        ]
-    
-        let sizeTotal = 0
-        for (let index = 0, lenFiles = files.length; index < lenFiles; index++) {
-            const file = files[index]
-            if (!fileExtension.includes(file.type)) {
-                errors.files = t('Request_error_file_format')
-                break
-            } else if (parseFloat(file.size / 1000000) > 2) {
-                errors.files = t('Request_error_file_size')
-                break
-            } else {
-                errors.files = null
-            }
-            sizeTotal += parseInt(file.size)
-        }
-    
-        if (parseFloat(sizeTotal / 1000000) > 10) {
-            errors.files = t('Request_error_file_oversize')
-        }
-
-        return errors
     }
 
     validateDirectManager = (subordinates) => {

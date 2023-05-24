@@ -15,12 +15,14 @@ export const whiteListImageExtension = [
   'image/jpeg'
 ]
 
-export const checkFilesMimeType = (event, files = [], mimeTypesAllow = whilteListFileExtension) => {
+const MAX_TOTAL_FILE_ATTACH_SIZE = 1024 * 1024 * 8;
+
+export const validateFileMimeType = (event, t, files, mimeTypesAllow = whilteListFileExtension) => {
   const err = [];
   const filesArr = Array.from(files);
   filesArr.forEach((file) => {
     if (!mimeTypesAllow.includes(file.type)) {
-      err.push(file.type + " không đúng định dạng! Vui lòng thử lại!\n");
+      err.push(`File ${file.name} ${t("InvalidMimeType")}\n`);
     }
   })
   if (err.length > 0) {
@@ -28,6 +30,16 @@ export const checkFilesMimeType = (event, files = [], mimeTypesAllow = whilteLis
       toast.error(e);
     })
     event.target.value = null;
+    return false;
+  }
+  return true;
+}
+
+export const validateTotalFileSize = (files, t) => {
+  const filesArr = Array.from(files);
+  const totalSize = filesArr.reduce((accumulator, currentValue) => accumulator + currentValue.size, 0);
+  if (totalSize > MAX_TOTAL_FILE_ATTACH_SIZE) {
+    toast.error(t("ExceedMaxFileSize"))
     return false;
   }
   return true;
