@@ -746,7 +746,7 @@ export default function OTRequestComponent({ recentlyManagers }) {
   };
 
   const handleChangeFilesInput = (e) => {
-    if (validateFileMimeType(e, t, e.target.files)) {
+    if (validateFileMimeType(e, e.target.files, t)) {
       const filesSelected = Object.values(e.target.files);
       const fileStates = [...files, ...filesSelected];
       if (validateTotalFileSize(e, fileStates, t)) {

@@ -1,6 +1,6 @@
 import { toast } from "react-toastify";
 
-const whilteListFileExtension = [
+const whiteListFileExtension = [
   'application/msword', // doc
   'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // docx
   'application/vnd.ms-excel', // xls
@@ -17,7 +17,7 @@ export const whiteListImageExtension = [
 
 const MAX_TOTAL_FILE_ATTACH_SIZE = 1024 * 1024 * 8;
 
-export const validateFileMimeType = (event, t, files, mimeTypesAllow = whilteListFileExtension) => {
+export const validateFileMimeType = (event, files, t, mimeTypesAllow = whiteListFileExtension) => {
   const err = [];
   const filesArr = Array.from(files);
   filesArr.forEach((file) => {

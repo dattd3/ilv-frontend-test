@@ -27,7 +27,7 @@ class ButtonComponent extends React.PureComponent {
 
     fileUploadInputChange = (e) => {
         const files = Object.keys(this.inputReference.current.files).map((key) => this.inputReference.current.files[key])
-        if (validateFileMimeType(e, this.props.t, files)) {
+        if (validateFileMimeType(e, files, this.props.t)) {
             const updateFiles = this.state.files.concat(files)
             if (validateTotalFileSize(e, updateFiles, this.props.t)) {
               this.setState({ files: updateFiles })
