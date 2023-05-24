@@ -1,4 +1,3 @@
-<<<<<<< Updated upstream
 import React, { useState, useEffect } from 'react';
 import axios from 'axios'
 import { useHistory } from 'react-router';
@@ -17,33 +16,7 @@ import ConfirmPasswordModal from './ConfirmPasswordModal';
 import Constants from '../.../../../../../commons/Constants';
 import StatusModal from '../../../../components/Common/StatusModal';
 import Spinner from 'react-bootstrap/Spinner';
-import { checkFilesMimeType } from '../../../../utils/file';
-=======
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import { useHistory } from "react-router";
-import "./styles.scss";
-import { useTranslation } from "react-i18next";
-import { forEach } from "lodash";
-import CurrencyInput from "react-currency-input-field";
-import IconEye from "../../../../assets/img/icon/eye.svg";
-import IconNotEye from "../../../../assets/img/icon/not-eye.svg";
-import IconRemove from "../../../../assets/img/ic-remove.svg";
-import IconAdd from "../../../../assets/img/ic-add-green.svg";
-import { useApi } from "../../../../modules/api";
-import IconDelete from "../../../../assets/img/icon/Icon_Cancel.svg";
-import ConfirmationModal from "../../ConfirmationModal";
-import moment from "moment";
-import HumanForReviewSalaryComponent from "../../HumanForReviewSalaryComponent";
-import ConfirmPasswordModal from "./ConfirmPasswordModal";
-import Constants from "../.../../../../../commons/Constants";
-import StatusModal from "../../../../components/Common/StatusModal";
-import Spinner from "react-bootstrap/Spinner";
-import { Button, Image } from "react-bootstrap";
 import { validateFileMimeType, validateTotalFileSize } from "../../../../utils/file";
-import LoadingModal from "../../../../components/Common/LoadingModal";
-import { getCulture } from "commons/Utils";
->>>>>>> Stashed changes
 
 function SalaryPropse(props) {
   const { t } = useTranslation();
