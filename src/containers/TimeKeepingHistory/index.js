@@ -3,6 +3,7 @@ import DatePicker, {registerLocale } from 'react-datepicker'
 import axios from "axios";
 import { useTranslation } from "react-i18next";
 import { getRequestConfigs } from "commons/commonFunctions";
+import { getCurrentLanguage } from "commons/Utils";
 import TimeKeepingList from "./TimeKeepingList";
 import LoadingModal from "components/Common/LoadingModal";
 import IconDatePicker from 'assets/img/icon/Icon_DatePicker.svg'
@@ -68,7 +69,7 @@ export default function TimeKeepingHistory() {
                 maxDate={new Date()}
                 onChange={handleDateInputChange}
                 dateFormat="dd/MM/yyyy"
-                locale="vi"
+                locale={getCurrentLanguage()}
                 className="form-control input" />
                 <span className="input-group-addon input-img"><img src={IconDatePicker} alt='IconDatePicker' /></span>
               </label> 
