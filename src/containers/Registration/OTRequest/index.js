@@ -643,7 +643,7 @@ export default function OTRequestComponent({ recentlyManagers }) {
             ) {
               _errors[`range_minimum_hours_${index}_${rangeIndex}`] =
                 t("OTMinimumHours");
-            } else if (getHoursBetween2Times(startTime, endTime) < 1) {
+            } else if (currOrgLv3 !== VFSX_LV3_ORG && getHoursBetween2Times(startTime, endTime) < 1) {
               _errors[`range_minimum_hours_${index}_${rangeIndex}`] =
                 t("OTMinimumHours");
             }
