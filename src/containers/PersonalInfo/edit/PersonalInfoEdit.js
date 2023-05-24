@@ -243,7 +243,7 @@ class PersonalInfoEdit extends React.Component {
 
   fileUploadInputChange(e) {
     const files = Object.keys(this.inputReference.current.files).map((key) => this.inputReference.current.files[key])
-    if (validateFileMimeType(e, this.props.t, files) && validateTotalFileSize(e, this.state.files.concat(files), this.props.t)) {
+    if (validateFileMimeType(e, files, this.props.t) && validateTotalFileSize(e, this.state.files.concat(files), this.props.t)) {
       this.setState({ files: this.state.files.concat(files) })
       let dataClone = this.removeItemForValueNull({ ...this.state.data })
       const errors = this.verifyInput(dataClone, this.state.files.concat(files))
