@@ -548,7 +548,7 @@ function SalaryPropse(props) {
     const files = Object.values(e.target.files);
     if (validateFileMimeType(e, t, files)) {
       const listFilesTmp = [...listFiles, ...files];
-      if (validateTotalFileSize(listFilesTmp, t)) {
+      if (validateTotalFileSize(e, listFilesTmp, t)) {
         setListFiles(listFilesTmp);
       }
     }

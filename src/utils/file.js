@@ -35,11 +35,12 @@ export const validateFileMimeType = (event, t, files, mimeTypesAllow = whilteLis
   return true;
 }
 
-export const validateTotalFileSize = (files, t) => {
+export const validateTotalFileSize = (event, files, t) => {
   const filesArr = Array.from(files);
   const totalSize = filesArr.reduce((accumulator, currentValue) => accumulator + currentValue.size, 0);
-  if (totalSize > MAX_TOTAL_FILE_ATTACH_SIZE) {
-    toast.error(t("ExceedMaxFileSize"))
+  if (totalSize >= MAX_TOTAL_FILE_ATTACH_SIZE) {
+    toast.error(t("ExceedMaxFileSize"));
+    event.target.value = null;
     return false;
   }
   return true;

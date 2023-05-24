@@ -29,7 +29,7 @@ class ButtonComponent extends React.PureComponent {
         const files = Object.keys(this.inputReference.current.files).map((key) => this.inputReference.current.files[key])
         if (validateFileMimeType(e, this.props.t, files)) {
             const updateFiles = this.state.files.concat(files)
-            if (validateTotalFileSize(updateFiles, this.props.t)) {
+            if (validateTotalFileSize(e, updateFiles, this.props.t)) {
               this.setState({ files: updateFiles })
               this.props.updateFiles(updateFiles)
               this.props.isUpdateFiles(true)
