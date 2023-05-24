@@ -762,7 +762,7 @@ const SalaryAdjustmentPropse = (props) => {
   // Attach file
   const handleAttachFile = (e) => {
     const files = Object.values(e.target.files);
-    if (validateFileMimeType(e, t, files)) {
+    if (validateFileMimeType(e, files, t)) {
       const listFilesTmp = [...listFiles, ...files];
       if (validateTotalFileSize(e, listFilesTmp, t)) {
         setListFiles(listFilesTmp);
