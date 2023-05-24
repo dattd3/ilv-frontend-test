@@ -177,36 +177,6 @@ class InOutTimeUpdateComponent extends React.Component {
       errors['approver'] = this.props.t("Required")
     }
 
-    let errorsFile = null
-    errorsFile = ((_.isNull(files) || files.length === 0) && !['V070', 'V077', 'V073', "V001", "V079", "V002"].includes(currentUserPnLCode)) ? t("AttachmentRequired") : null
-
-    if (files && files?.length > 0) {
-      const maximumFileSize = 4 // Unit MB
-      let sizeTotal = 0
-      const fileExtensionAccepting = [
-        'application/msword', // doc
-        'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // docx
-        'application/vnd.ms-excel', // xls
-        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // xlsx
-        'application/pdf', // pdf,
-        'image/png', // png
-        'image/jpeg' // jpg and jpeg
-      ]
-      for (let index = 0, lenFiles = files.length; index < lenFiles; index++) {
-        let file = files[index]
-        if (!fileExtensionAccepting.includes(file.type)) {
-          errorsFile = 'Tồn tại tệp đính kèm không đúng định dạng.'
-          break
-        }
-        sizeTotal += parseInt(file.size)
-      }
-
-      if (parseFloat(sizeTotal / 1000000) > maximumFileSize) {
-        errorsFile = `Tổng dung lượng các file đính kèm không được vượt quá ${maximumFileSize}MB`
-      }
-		}
-    errors['files'] = errorsFile
-
     errors['approverAppraiser'] = null
     if (approver?.account?.trim() && appraiser?.account?.trim() && approver?.account?.trim()?.toLowerCase() === appraiser?.account?.trim()?.toLowerCase()) {
       errors['approverAppraiser'] = t("ApproverAndConsenterCannotBeIdentical")
