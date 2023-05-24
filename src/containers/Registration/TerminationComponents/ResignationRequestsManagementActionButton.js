@@ -125,7 +125,7 @@ class ResignationRequestsManagementActionButton extends React.PureComponent {
 
     handleChangeFileInput = e => {
         const files = Object.values(e.target.files)
-        if (validateFileMimeType(e, this.props.t, files) && validateTotalFileSize(files, this.props.t)) {
+        if (validateFileMimeType(e, this.props.t, files) && validateTotalFileSize(e, files, this.props.t)) {
             this.setState({files: files})
             this.props.updateAttachedFiles(files)
         }
