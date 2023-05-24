@@ -272,8 +272,13 @@ class ProposalModal extends React.Component {
     let { titlesOrigin } = this.state,
       titles;
 
-    titles = titlesOrigin.filter((ele) =>
-      ele.labelEn.includes(removeAccents(proposalSearch.toLowerCase()))
+    titles = titlesOrigin.filter(
+      (ele) => {
+        return (
+          ele.labelEn.includes(removeAccents(proposalSearch.toLowerCase())) ||
+          ele.value.includes(proposalSearch)
+        );
+      }
     );
 
     this.setState({ proposalSearch, titles });
