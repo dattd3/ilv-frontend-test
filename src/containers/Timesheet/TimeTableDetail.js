@@ -66,7 +66,11 @@ const chunk = (arr, size) => arr.reduce((acc, e, i) => (i % size ? acc[acc.lengt
 function RenderRow0(props) {
   const { t } = useTranslation()
   // const backDate = calculateBackDateByPnLVCodeAndFormatType(currentUserPnLCode, 'YYYYMMDD')
-  const backDate = getRegistrationMinDateByConditions()
+  let backDate = getRegistrationMinDateByConditions()
+  if (backDate) {
+    backDate = moment(backDate).format("DD/MM/YYYY")
+  }
+
   const isEnableShiftChangeFunction = isEnableShiftChangeFunctionByPnLVCode(currentUserPnLCode)
   const isEnableInOutTimeUpdateFunction = isEnableInOutTimeUpdateFunctionByPnLVCode(currentUserPnLCode)
   const isEnableOTFunction = isEnableOTFunctionByPnLVCode(currentUserPnLCode)
@@ -81,7 +85,7 @@ function RenderRow0(props) {
       isBlockActions = true
     } else {
       if (backDate) {
-        isBlockActions = moment(item.day, "DD/MM/YYYY").isBefore(backDate?.toDate())
+        isBlockActions = moment(item.day, "DD/MM/YYYY").isBefore(moment(backDate, "DD/MM/YYYY"))
       } else {
         const backDateOldLogic = calculateBackDateByPnLVCodeAndFormatType(currentUserPnLCode, 'YYYYMMDD')
         isBlockActions = moment(item.day, "DD/MM/YYYY").isBefore(moment(backDateOldLogic, "YYYYMMDD"))
