@@ -11,7 +11,7 @@ import map from '../../../../src/containers/map.config'
 import vi from 'date-fns/locale/vi'
 import _ from 'lodash'
 import { withTranslation } from "react-i18next";
-import { getValueParamByQueryString, getMuleSoftHeaderConfigurations, isEnableFunctionByFunctionName } from "../../../commons/Utils"
+import { getValueParamByQueryString, getMuleSoftHeaderConfigurations, isEnableFunctionByFunctionName, getRegistrationMinDateByConditions } from "../../../commons/Utils"
 import Constants from '../../../commons/Constants'
 registerLocale("vi", vi)
 
@@ -23,9 +23,8 @@ class InOutTimeUpdateComponent extends React.Component {
   constructor(props) {
     super();
     this.state = {
-      // startDate: getValueParamByQueryString(queryString, 'date') || moment(this.getClosingSalaryDatePreMonth(), "DD/MM/YYYY").toDate(),
-      // endDate: getValueParamByQueryString(queryString, 'date') || new Date(),
-      startDate: getValueParamByQueryString(queryString, 'date') || moment(this.getClosingSalaryDatePreMonth(), "DD/MM/YYYY").format("DD/MM/YYYY"),
+      // startDate: getValueParamByQueryString(queryString, 'date') || moment(this.getClosingSalaryDatePreMonth(), "DD/MM/YYYY").format("DD/MM/YYYY"),
+      startDate: getValueParamByQueryString(queryString, 'date') || (getRegistrationMinDateByConditions() ? moment(getRegistrationMinDateByConditions()).format("DD/MM/YYYY") : moment(this.getClosingSalaryDatePreMonth(), "DD/MM/YYYY").format("DD/MM/YYYY")),
       endDate: getValueParamByQueryString(queryString, 'date') || moment().format("DD/MM/YYYY"),
       timesheets: [],
       approver: null,
@@ -415,6 +414,7 @@ class InOutTimeUpdateComponent extends React.Component {
     const { t, recentlyManagers } = this.props;
     const lang = localStorage.getItem("locale")
     const isShowSelectWorkingShift24h = isEnableFunctionByFunctionName(Constants.listFunctionsForPnLACL.selectWorkingShift24h)
+    const minDate = getRegistrationMinDateByConditions()
 
     return (
       <div className="in-out-time-update">
@@ -431,7 +431,7 @@ class InOutTimeUpdateComponent extends React.Component {
                     autoComplete="off"
                     selected={startDate ? moment(startDate, 'DD/MM/YYYY').toDate() : null}
                     maxDate={endDate ? moment(endDate, 'DD/MM/YYYY').toDate() : null}
-                    // maxDate={this.state.endDate}
+                    minDate={minDate ? moment(minDate).toDate() : null}
                     onChange={this.setStartDate.bind(this)}
                     showDisabledMonthNavigation
                     dateFormat="dd/MM/yyyy"
