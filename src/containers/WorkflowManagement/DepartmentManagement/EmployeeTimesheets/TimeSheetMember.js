@@ -383,7 +383,7 @@ function Content(props) {
     }
 
     const isShiftUpdatable = (date) => {
-        const minDate = getRegistrationMinDateByConditions()
+        let minDate = getRegistrationMinDateByConditions()
         
         if (!minDate) {
             if ([Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading].includes(currentUserPnL)) {
@@ -397,7 +397,8 @@ function Content(props) {
             return true
         }
 
-        return moment(minDate).isSameOrBefore(moment(date, 'YYYYMMDD'))
+        minDate = moment(minDate).format("YYYYMMDD")
+        return moment(minDate, "YYYYMMDD").isSameOrBefore(moment(date, 'YYYYMMDD'))
     }
 
     const onHideShiftUpdateModal = () => {
