@@ -11,7 +11,7 @@ import map from '../../../../src/containers/map.config'
 import vi from 'date-fns/locale/vi'
 import _ from 'lodash'
 import { withTranslation } from "react-i18next";
-import { getValueParamByQueryString, getMuleSoftHeaderConfigurations, isEnableFunctionByFunctionName, getRegistrationMinDateByConditions } from "../../../commons/Utils"
+import { getValueParamByQueryString, getMuleSoftHeaderConfigurations, isEnableFunctionByFunctionName, getRegistrationMinDateByConditions, isValidDateRequest } from "../../../commons/Utils"
 import Constants from '../../../commons/Constants'
 registerLocale("vi", vi)
 
@@ -234,8 +234,16 @@ class InOutTimeUpdateComponent extends React.Component {
       this.setDisabledSubmitButton(false)
       return
     }
-    
+
     const timesheets = [...this.state.timesheets].filter(item => item.isEdited)
+
+    const hasNotErrorBackDate = (timesheets || []).every(item => isValidDateRequest(moment(item?.date, 'DD-MM-YYYY').format('DD/MM/YYYY')))
+    if (!hasNotErrorBackDate) {
+      this.showStatusModal(t("Notification"), t("ErrorBackDateRequestVinpearl"), false)
+      this.setState({ needReload: false })
+      return
+    }
+
     const approver = { ...this.state.approver }
     const appraiser = this.state.appraiser ? this.state.appraiser  : null
      
@@ -365,7 +373,7 @@ class InOutTimeUpdateComponent extends React.Component {
   };
 
   hideStatusModal = () => {
-    this.setState({ isShowStatusModal: false });
+    this.setState({ isShowStatusModal: false, disabledSubmitButton: false });
     if (this.state.needReload) {
       window.location.href = `${map.Registration}?tab=InOutTimeUpdate`
     }

@@ -15,7 +15,7 @@ import ShiftForm from './ShiftForm'
 import ResultModal from '../ResultModal'
 import Constants from '../.../../../../commons/Constants'
 import map from '../../../../src/containers/map.config'
-import { getValueParamByQueryString, getMuleSoftHeaderConfigurations, formatStringByMuleValue, getRegistrationMinDateByConditions, isVinFast } from "../../../commons/Utils"
+import { getValueParamByQueryString, getMuleSoftHeaderConfigurations, formatStringByMuleValue, getRegistrationMinDateByConditions, isVinFast, isValidDateRequest } from "../../../commons/Utils"
 import EditIcon from '../../../assets/img/icon/Icon-edit.svg'
 import 'react-datepicker/dist/react-datepicker.css'
 import vi from 'date-fns/locale/vi'
@@ -236,7 +236,15 @@ class SubstitutionComponent extends React.Component {
     }
 
     const currentUserNo = localStorage.getItem('employeeNo')
+    const { t } = this.props
     const { timesheets, startDate, endDate, approver, appraiser, isEdited, id } = this.state
+
+    const hasNotErrorBackDate = (timesheets || []).every(item => isValidDateRequest(moment(item?.date, 'DD-MM-YYYY').format('DD/MM/YYYY')))
+    if (!hasNotErrorBackDate) {
+      this.showResultModal(t("Notification"), t("ErrorBackDateRequestVinpearl"), false)
+      this.setState({ needReload: false })
+      return
+    }
 
     let timeSheetsToSubmit = (timesheets || []).map(item => {
       return {
@@ -485,7 +493,7 @@ class SubstitutionComponent extends React.Component {
   }
 
   hideResultModal = () => {
-    this.setState({ isShowResultModal: false });
+    this.setState({ isShowResultModal: false, disabledSubmitButton: false });
     if (this.state.needReload) {
       window.location.href = `${map.Registration}?tab=SubstitutionRegistration`
     }
