@@ -354,6 +354,28 @@ function parsteStringToHtml(arrHtml) {
     }
 }
 
+const isValidDateRequest = date => {
+    const userLoggedCompanyCode = localStorage.getItem('companyCode')
+    if ([Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl].includes(userLoggedCompanyCode)) {
+        const timeline = 17
+        const currentTime = moment().hour()
+        const currentDate = moment().format("DD/MM/YYYY")
+        const range = moment(currentDate, 'DD/MM/YYYY').diff(moment(date, 'DD/MM/YYYY'), 'days')
+        console.log('backDate => ', range)
+        if (currentTime < timeline) {
+            if (range > 1) {
+                return false
+            }
+        } else {
+            if (range > 0) {
+                return false
+            }
+        }
+    }
+
+    return true
+}
+
 const getRegistrationMinDateByConditions = () => {
     const userLoggedCompanyCode = localStorage.getItem('companyCode')
     let firstDay = null
@@ -568,5 +590,5 @@ export {
     getRequestConfigurations, removeAccents, formatStringByMuleValue, formatNumberInteger, exportToPDF, isEnableFunctionByFunctionName, getValueParamByQueryString, getDateByRangeAndFormat,
     calculateBackDateByPnLVCodeAndFormatType, isEnableShiftChangeFunctionByPnLVCode, isEnableInOutTimeUpdateFunctionByPnLVCode, getRequestTypeIdsAllowedToReApproval, getMuleSoftHeaderConfigurations,
     isAdjacentDateBy2Date, showRangeDateGroupByArrayDate, generateTaskCodeByCode, parsteStringToHtml, getRegistrationMinDateByConditions, isVinFast, isEnableOTFunctionByPnLVCode, getCurrentLanguage, 
-    getResignResonsMasterData, formatStringDateTimeByMuleValue, genderConfig, marriageConfig, formatProcessTime
+    getResignResonsMasterData, formatStringDateTimeByMuleValue, genderConfig, marriageConfig, formatProcessTime, isValidDateRequest
 }

@@ -1777,5 +1777,6 @@
   "HRAssetDate": "HR Asset Date",
   "WarningOverOTFunds": "OT hours for this request exceeded the department's funds for the month. Do you want to send request?",
   "WarningOverOTFundsConsent": "OT hours for this request exceeded the department's funds for the month (at time of registration). Please check/report to HR to replenish funds. Confirm continued consent?",
-  "WarningOverOTFundsApproval": "OT hours for this request exceeded the department's funds for the month (at time of registration). Please check/report to HR to replenish funds. Confirm continued approve?"
+  "WarningOverOTFundsApproval": "OT hours for this request exceeded the department's funds for the month (at time of registration). Please check/report to HR to replenish funds. Confirm continued approve?",
+  "ErrorBackDateRequestVinpearl": "Request creation failed - Time out"
 }
