@@ -1252,7 +1252,7 @@
   "ProposeInfo":"Thông tin người được đề xuất",
   "AssetmentInfo":"Thông tin đánh giá",
   "HumanForReviewSalary":"Nhân sự hỗ trợ xin quyền xem lương",
-  "HumanResourceChangeSalary": "Nhân sự thẩm định thông tin điều chỉnh lương",
+  "HumanResourceChangeSalary": "Nhân sự thẩm định",
   "ManagerApproved": "CBQL cấp cơ sở",
   "BossApproved": "CBLĐ phê duyệt",
   "ViewDetail":"Xem chi tiết",
@@ -1812,5 +1812,6 @@
   "HRAssetDate": "Thời gian nhân sự đánh giá",
   "OTMinimumHours": "(*) Vui lòng nhập tối thiểu 30 phút cho Khối sản xuất, 60 phút cho các khối khác",
   "OTInvalidSpaceHours": "(*) Khoảng nghỉ tối thiểu là 1h",
-  "IncludeSalaryAdjustment": "Có điều chỉnh lương"
+  "IncludeSalaryAdjustment": "Có điều chỉnh lương",
+  "Opinion": "Ý kiến"
 }

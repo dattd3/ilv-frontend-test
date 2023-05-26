@@ -141,7 +141,7 @@ const FilterMember = (props) => {
         onCloseAll={onCloseAllEvent}
       />          
       {isTransferAppointProposal && (
-        <div className="change-proposal d-flex mt-2 mb-2">
+        <div className="change-proposal d-none mt-2 mb-2">
           <input
             type="checkbox"
             checked={isSalaryAdjustment}
