@@ -54,7 +54,7 @@ const SalaryAdjustmentPropse = (props) => {
     { value: 1, label: t("SalaryPropse") },
     { value: 2, label: t("ProposalTransfer") },
   ],
-  isTransferAppointProposal = window.location.href.includes('transfer-appoint/create/request');
+  isTransferAppointProposal = window.location.href.includes('/transfer-appoint/');
   const [resultModal, setResultModal] = useState({
     show: false,
     title: "",
@@ -150,7 +150,7 @@ const SalaryAdjustmentPropse = (props) => {
   const [isSalaryAdjustment, setIsSalaryAdjustment] = useState(!isTransferAppointProposal);
   const isSalaryPropose =
       dataSalary?.requestTypeId === Constants.SALARY_PROPOSE ||
-      isSalaryAdjustment
+      isSalaryAdjustment;
 
   useEffect(() => {
     if (props.match.params.id) {
@@ -925,6 +925,12 @@ const SalaryAdjustmentPropse = (props) => {
               currentSalary: u?.currentSalary,
               suggestedSalary: u?.suggestedSalary,
               contractType: u?.contractType,
+              ...(isTransferAppointProposal ? {
+                proposedPositionCode: u?.proposedPositionCode,
+                proposedPosition: u?.proposedPosition,
+                proposedDepartment: u?.proposedDepartment,
+                proposedDepartmentCode: u?.proposedDepartmentCode,
+              } : {}),
               staffStrengths: u?.strength,
               staffWknesses: u?.weakness,
               startDate: moment(
@@ -1333,7 +1339,7 @@ const SalaryAdjustmentPropse = (props) => {
               scope="colgroup"
               className="min-width text-center font-weight-bold"
             >
-              {t('reason_reject')}
+              {t('Opinion')}
             </th>
           </tr>
           <tr key={index}>
@@ -1587,7 +1593,7 @@ const SalaryAdjustmentPropse = (props) => {
                 <>
                   <ResizableTextarea
                     placeholder={'Nhập'}
-                    value={item?.comment}
+                    value={item?.comment || ""}
                     onChange={(e) =>
                       handleTextInputChange(
                         e.target.value,
@@ -1659,7 +1665,7 @@ const SalaryAdjustmentPropse = (props) => {
                   {viewSetting.disableComponent.editSubjectApply ? (
                     <ResizableTextarea
                       placeholder={'Nhập'}
-                      value={item?.strength}
+                      value={item?.strength || ""}
                       onChange={(e) =>
                         handleTextInputChange(
                           e.target.value,
@@ -1686,7 +1692,7 @@ const SalaryAdjustmentPropse = (props) => {
                   {viewSetting.disableComponent.editSubjectApply ? (
                     <ResizableTextarea
                       placeholder={'Nhập'}
-                      value={item?.weakness}
+                      value={item?.weakness || ""}
                       onChange={(e) =>
                         handleTextInputChange(
                           e.target.value,
