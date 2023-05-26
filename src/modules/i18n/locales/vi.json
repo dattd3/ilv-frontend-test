@@ -1766,5 +1766,6 @@
   "NumberOfSharesConverted": "Số Cổ phần quy đổi",
   "BlockFingerprint": "Khóa Vân tay",
   "BlockFaceID": "Khóa Face ID",
-  "BlockEmailAdAccount": "Khóa Email/ tài khoản AD"
+  "BlockEmailAdAccount": "Khóa Email/ tài khoản AD",
+  "ErrorBackDateRequestVinpearl": "Gửi yêu cầu thất bại - thao tác quá thời gian quy định"
 }
