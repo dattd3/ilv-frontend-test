@@ -26,11 +26,9 @@ import IconRemove from "../../../../assets/img/ic-remove.svg";
 import IconAdd from "../../../../assets/img/ic-add-green.svg";
 import { useApi } from "../../../../modules/api";
 import vi from "date-fns/locale/vi";
-import { Image } from "react-bootstrap";
-import { validateFileMimeType, validateTotalFileSize } from "../../../../utils/file";
-import LoadingModal from "../../../../components/Common/LoadingModal";
 import { getCulture } from "commons/Utils";
 import { checkFilesMimeType } from "../../../../utils/file";
+import { validateFileMimeType, validateTotalFileSize } from "../../../../utils/file";
 import ProcessHistoryComponent from "./ProcessHistoryComponent";
 import LoadingModal from "../../../../components/Common/LoadingModal";
 
