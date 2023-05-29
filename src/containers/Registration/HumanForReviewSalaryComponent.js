@@ -184,8 +184,9 @@ class HumanForReviewSalaryComponent extends React.Component {
         minHeight: 35
       })
     }
-    const { t, isEdit, errors, comment } = this.props;
+    const { t, isEdit, errors, comment, isAppraiserNote } = this.props;
     const { isSearch, approver, users } = this.state;
+
     return <div className="approver">
       <div>
         <div className="row">
@@ -238,6 +239,21 @@ class HumanForReviewSalaryComponent extends React.Component {
             <span className="col-12 text-info smaller">* {t("NoteSelectApprover")} <b><a href="https://camnangtt.vingroup.net/sites/vmec/default.aspx#/tracuucnpq" target="_blank" >{t("ApprovalMatrix")}</a></b>
             </span>
           </div>
+        )}
+        {isAppraiserNote && (
+          <div className="row business-type">
+          <span className="col-12 text-info smaller">
+            * {t('NoteSelectApproverAppraiser')}{' '}
+            <b>
+              <a
+                href="https://camnangtt.vingroup.net/sites/vmec/default.aspx#/tracuucnpq"
+                target="_blank"
+              >
+                {t('ApprovalMatrix')}
+              </a>
+            </b>
+          </span>
+        </div>
         )}
       </div>
     </div>
