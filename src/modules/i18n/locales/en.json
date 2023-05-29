@@ -1795,6 +1795,8 @@
   "OTInvalidSpaceHours": "(*) Minimum break time is 1h",
   "OTOverlapEachOther": "(*) OT time segment is overlap",
   "IncludeSalaryAdjustment": "Include salary adjustment",
+  "Opinion": "Comment",
+  "ConsenterStaffConfirm": "Consenter/ staff confirm",
   "SearchByDate": "Search by date",
   "InvalidMimeType": " is invalid type! Please select again!",
   "ExceedMaxFileSize": "The total file size must not exceed 8MB",
