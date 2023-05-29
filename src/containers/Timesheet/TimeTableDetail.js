@@ -864,6 +864,16 @@ const processDataForTable = (data1, fromDateString, toDateString, reasonData) =>
           if(timeStepsSorted[j].start > kehoach1.end) {
             isShift1 = false;
           }
+          if(timeStepsSorted[i].end < timeStepsSorted[j].start && timeStepsSorted[i].end < timeStepsSorted[j].end) {
+            //check loi ca 1
+            if(timeStepsSorted[i].start <= kehoach1.end && timeStepsSorted[i].end >= kehoach1.start && timeStepsSorted[j].start <= kehoach1.end) {
+              isValid1 = false;
+            }
+            //check loi ca 2
+            if(timeStepsSorted[i].start <= kehoach2.end && timeStepsSorted[i].end >= kehoach2.start && timeStepsSorted[j].start <= kehoach2.end) {
+              isValid2 = false; 
+            }
+          }
           maxEnd = isShift1 && timeStepsSorted[j].end >  maxEnd ? timeStepsSorted[j].end : maxEnd; 
           maxEnd2 =  (timeStepsSorted[j].end > maxEnd2) ? timeStepsSorted[j].end : maxEnd2;
           if(maxEnd < timeStepsSorted[j].start) {
