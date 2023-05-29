@@ -5,9 +5,9 @@ import { useHistory } from "react-router";
 import moment from "moment";
 import { forEach, isEmpty } from "lodash";
 import Select from "react-select";
-import Spinner from "react-bootstrap/Spinner";
 import { withTranslation } from "react-i18next";
 import "react-toastify/dist/ReactToastify.css";
+import { Image, Spinner } from "react-bootstrap";
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import FilterMember from "../../ShareComponents/FilterMember";
@@ -27,11 +27,10 @@ import IconRemove from "../../../../assets/img/ic-remove.svg";
 import IconAdd from "../../../../assets/img/ic-add-green.svg";
 import { useApi } from "../../../../modules/api";
 import vi from "date-fns/locale/vi";
-import { Image } from "react-bootstrap";
-import { checkFilesMimeType } from "../../../../utils/file";
-import LoadingModal from "../../../../components/Common/LoadingModal";
 import { getCulture } from "commons/Utils";
+import { checkFilesMimeType } from "../../../../utils/file";
 import ProcessHistoryComponent from "./ProcessHistoryComponent";
+import LoadingModal from "../../../../components/Common/LoadingModal";
 
 registerLocale("vi", vi);
 
@@ -99,6 +98,7 @@ const SalaryAdjustmentPropse = (props) => {
   const [supervisors, setSupervisors] = useState([null]);
   const [appraiser, setAppraiser] = useState(null); // HR thẩm định quyền điều chỉnh lương
   const [approver, setApprover] = useState(null); // CBLĐ phê duyệt
+  const [approverArrive, setApproverArrive] = useState(null); // CBLĐ phê duyệt
   const [isCallSalary, setIsCallSalary] = useState(false);
   const [isOpenDatepick, setIsOpenDatepick] = useState(false);
   const [showCommentRequiredError, setShowCommentRequiredError] = useState(false);
@@ -114,7 +114,7 @@ const SalaryAdjustmentPropse = (props) => {
       btnApprove: false, // Button phê duyệt
       showHrSupportViewSalary: false, // Hien thi Nhân sự hỗ trợ quyền xem lương
       showCBQL: true, // Hien thi CBQL CẤP CƠ SỞ
-      showHrAssessment: true, // Hien thi Nhân sự thẩm định quyền điều chỉnh lương
+      showHrAssessment: true, // Hien thi Nhân sự thẩm định
       showOfficerApproved: true, // Hien thi CBLĐ PHÊ DUYỆT
       showRemoveFile: false, // Hien thi icon remove file
     },
@@ -150,16 +150,16 @@ const SalaryAdjustmentPropse = (props) => {
   const [isSalaryAdjustment, setIsSalaryAdjustment] = useState(!isTransferAppointProposal);
   const isSalaryPropose =
       dataSalary?.requestTypeId === Constants.SALARY_PROPOSE ||
-      isSalaryAdjustment;
+      isSalaryAdjustment,
+      id = props?.match?.params?.id,
+      isCreate = id === "create";
 
   useEffect(() => {
-    if (props.match.params.id) {
-      if (props.match.params.id !== "create") {
-        // Review mode
+    if (id) {
+      if (!isCreate) { // Review mode
         setIsCreateMode(false);
         getDataSalary();
-      } else {
-        // Create mode
+      } else { // Create mode
         setIsCreateMode(true);
         checkViewCreate();
       }
@@ -184,7 +184,7 @@ const SalaryAdjustmentPropse = (props) => {
   const getDataSalary = async () => {
     try {
       setIsLoading(true);
-      const { data: { data: response } } = await api.fetchSalaryPropose(props.match.params.id);
+      const { data: { data: response } } = await api.fetchSalaryPropose(id);
       await setDataSalary(response);
       await checkAuthorize(response);
     } catch (error) {
@@ -534,63 +534,65 @@ const SalaryAdjustmentPropse = (props) => {
 
   const handleSelectMembers = (members) => {
     const memberCheck = {};
-    members.map((u) => {
+    const membersMapping = members.map((u) => {
       memberCheck[u.uid] = {
         uid: u.uid,
         checked: false,
         canChangeAction: u?.accepted == true,
       };
+
+      return {
+        uid: u?.uid,
+        employeeNo: u?.uid,
+        account: u?.username.toLowerCase(),
+        username: u?.username.toLowerCase(),
+        fullName: u?.fullname,
+        jobTitle: u?.title,
+        startDate: "",
+        expireDate: "",
+        contractName: u?.contractName,
+        contractType: u?.contractType,
+        department: u?.department,
+        currentSalary: "",
+        suggestedSalary: "",
+        effectiveTime: "",
+        strength: "",
+        weakness: "",
+        accepted: true,
+      }
     });
-    const membersMapping = members.map((u) => ({
-      uid: u?.uid,
-      employeeNo: u?.uid,
-      account: u?.username.toLowerCase(),
-      username: u?.username.toLowerCase(),
-      fullName: u?.fullname,
-      jobTitle: u?.title,
-      startDate: "",
-      expireDate: "",
-      contractName: u?.contractName,
-      contractType: u?.contractType,
-      department: u?.department,
-      currentSalary: "",
-      suggestedSalary: "",
-      effectiveTime: "",
-      strength: "",
-      weakness: "",
-      accepted: true,
-    }));
     setCheckedMemberIds(memberCheck);
     setSelectMembers(membersMapping);
   };
 
   const handleSelectedMembers = (members) => {
     const memberCheck = {};
-    members.map((u) => {
+    const membersMapping = members.map((u) => {
       memberCheck[u.uid] = {
         uid: u.uid,
         checked: false,
         canChangeAction: u?.accepted == true,
       };
+
+      return {
+        uid: u?.uid,
+        employeeNo: u?.uid,
+        account: u?.username.toLowerCase(),
+        fullName: u?.fullname,
+        jobTitle: u?.job_name,
+        startDate: "",
+        expireDate: "",
+        contractName: u?.contractName,
+        contractType: u?.contractType,
+        department: u?.department,
+        currentSalary: "",
+        suggestedSalary: "",
+        effectiveTime: "",
+        strength: "",
+        weakness: "",
+        accepted: true,
+      }
     });
-    const membersMapping = members.map((u) => ({
-      uid: u?.uid,
-      employeeNo: u?.uid,
-      account: u?.username.toLowerCase(),
-      fullName: u?.fullname,
-      jobTitle: u?.job_name,
-      startDate: "",
-      expireDate: "",
-      contractName: u?.contractName,
-      contractType: u?.contractType,
-      department: u?.department,
-      currentSalary: "",
-      suggestedSalary: "",
-      effectiveTime: "",
-      strength: "",
-      weakness: "",
-      accepted: true,
-    }));
     setCheckedMemberIds(memberCheck);
     setSelectedMembers(membersMapping);
   };
@@ -646,10 +648,7 @@ const SalaryAdjustmentPropse = (props) => {
   };
 
   const handleTextInputChange = (value, uid, objName) => {
-    const { match } = props,
-      isCreateMode = match.params.id === 'create';
-
-    if (isCreateMode) {
+    if (isCreate) {
       const selectMembersTmp = [...selectMembers];
       selectMembersTmp.forEach((item) => {
         if (item.uid === uid) item[objName] = value;
@@ -715,11 +714,11 @@ const SalaryAdjustmentPropse = (props) => {
       confirmStatus: "",
       dataToUpdate: [
         {
-          id: props.match.params.id,
+          id: id,
           requestTypeId: 12,
           sub: [
             {
-              id: props.match.params.id,
+              id: id,
               processStatusId: 7,
               comment: "",
               status: "",
@@ -740,11 +739,11 @@ const SalaryAdjustmentPropse = (props) => {
       confirmStatus: "",
       dataToUpdate: [
         {
-          id: props.match.params.id,
+          id: id,
           requestTypeId: 12,
           sub: [
             {
-              id: props.match.params.id,
+              id: id,
               processStatusId: 1,
               comment: "",
               status: "",
@@ -756,9 +755,7 @@ const SalaryAdjustmentPropse = (props) => {
   };
 
   // Hủy
-  const handleCancel = () => {
-    history.push("/tasks");
-  };
+  const handleCancel = () => history.push("/tasks");
 
   // Attach file
   const handleAttachFile = (e) => {
@@ -799,11 +796,11 @@ const SalaryAdjustmentPropse = (props) => {
       confirmStatus: "",
       dataToUpdate: [
         {
-          id: props.match.params.id,
+          id: id,
           requestTypeId: 12,
           sub: [
             {
-              id: props.match.params.id,
+              id: id,
               processStatusId: 5,
               comment: "",
               status: "",
@@ -831,11 +828,11 @@ const SalaryAdjustmentPropse = (props) => {
       confirmStatus: "",
       dataToUpdate: [
         {
-          id: props.match.params.id,
+          id: id,
           requestTypeId: 12,
           sub: [
             {
-              id: props.match.params.id,
+              id: id,
               processStatusId: 2,
               comment: "",
               status: "",
@@ -870,10 +867,7 @@ const SalaryAdjustmentPropse = (props) => {
       }
       setIsLoading(true);
 
-      const isUpdate = props.match.params.id !== "create",
-        bodyFormData = prepareDataToSubmit(
-          isUpdate ? props.match.params.id : null
-        ),
+      const bodyFormData = prepareDataToSubmit( isCreate ? null : id ),
         params = {
           data: bodyFormData,
           params: { culture: getCulture() },
@@ -883,18 +877,19 @@ const SalaryAdjustmentPropse = (props) => {
           },
         };
 
-      (isUpdate ? //update yêu cầu salaryadjustment
-        axios({
+      (isCreate ? 
+        axios({ // Tạo mới yêu cầu isTransferAppointProposal ? đề xuất điều chuyển : đề xuất lương
+          method: "POST",
+          url: `${process.env.REACT_APP_REQUEST_SERVICE_URL}${isTransferAppointProposal ? 'appointment' : 'request'}`,
+          ...params,
+        })
+        :
+        axios({ //update yêu cầu salaryadjustment
           method: "PUT",
           url: `${process.env.REACT_APP_REQUEST_SERVICE_URL}salaryadjustment`,
           ...params,
         })
-        : 
-        axios({ // Tạo mới yêu cầu isTransferAppointProposal ? đề xuất điều chuyển : đề xuất lương
-        method: "POST",
-        url: `${process.env.REACT_APP_REQUEST_SERVICE_URL}${isTransferAppointProposal ? 'appointment' : 'request'}`,
-        ...params,
-      }))
+      )
         .then((response) => {
           if (response.data.result && response.data.result.code === "000000") {
             return showStatusModal(t("RequestSent"), true, "/tasks");
@@ -917,7 +912,7 @@ const SalaryAdjustmentPropse = (props) => {
         } else {
           setIsLoading(true);
           const dataSend = {
-            requestHistoryId: props.match.params.id,
+            requestHistoryId: id,
             companyCode: localStorage.getItem("companyCode") || "",
             staffSalaryUpdate: selectedMembers.map((u) => ({
               salaryAdjustmentId: u?.id,
@@ -993,6 +988,23 @@ const SalaryAdjustmentPropse = (props) => {
         staffStrengths: u?.strength,
         staffWknesses: u?.strength,
       })),
+      staffInfoLst = (id ? selectedMembers : selectMembers).map((u, i) => {
+        return {
+          avatar: u?.avatar,
+          account: `${u?.account}@vingroup.net`,
+          fullName: u?.fullName,
+          employeeLevel: u?.employeeLevel,
+          pnl: u?.pnl,
+          orglv2Id: u?.orglv2Id,
+          current_position: u?.currentPosition, // jobTitle
+          department: u?.department,
+          order: i+1,
+          company_email: u?.companyEmail,
+          type: 0,
+          employeeNo: u?.uid || u?.employeeNo,
+          username: u?.username,
+        };
+      }),
       appraiserInfoLst = supervisors
         .filter((item) => item != null)
         .map((item, index) => ({
@@ -1004,9 +1016,9 @@ const SalaryAdjustmentPropse = (props) => {
           orglv2Id: item?.orglv2Id,
           current_position: item?.current_position,
           department: item?.department,
-          order: index + 1,
+          order: staffInfoLst[staffInfoLst.length-1]?.order + index + 1,
           company_email: item?.company_email?.toLowerCase(),
-          type: 0,
+          type: 1,
           employeeNo: item?.uid || item?.employeeNo,
           username: item?.username.toLowerCase(),
         }));
@@ -1020,13 +1032,29 @@ const SalaryAdjustmentPropse = (props) => {
           orglv2Id: appraiser?.orglv2Id,
           current_position: appraiser?.current_position,
           department: appraiser?.department,
-          order: appraiserInfoLst.length + 1,
+          order: (appraiserInfoLst[appraiserInfoLst.length - 1] || staffInfoLst[staffInfoLst.length-1])?.order + 1,
           company_email: appraiser?.company_email?.toLowerCase(),
-          type: 1,
+          type: 2,
           employeeNo: appraiser?.uid || appraiser?.employeeNo,
           username: appraiser?.username?.toLowerCase(),
         });
       }
+
+      const approverInfoLst = [approver, approverArrive].map((ele, i) => ({
+        avatar: "",
+        account: ele?.username?.toLowerCase() + "@vingroup.net",
+        fullName: ele?.fullName,
+        employeeLevel: ele?.employeeLevel,
+        pnl: ele?.pnl,
+        orglv2Id: ele?.orglv2Id,
+        current_position: ele?.current_position,
+        department: ele?.department,
+        order: appraiserInfoLst[appraiserInfoLst.length - 1]?.order + i + 1,
+        company_email: ele?.company_email?.toLowerCase(),
+        type: 3,
+        employeeNo: ele?.uid || ele?.employeeNo,
+        username: ele?.username?.toLowerCase(),
+      }))
 
       bodyFormData.append("userId", viewSetting.proposedStaff.email);
       bodyFormData.append(
@@ -1068,27 +1096,6 @@ const SalaryAdjustmentPropse = (props) => {
       }
       bodyFormData.append("employeeInfoLst", JSON.stringify(employeeInfoLst));
       bodyFormData.append("appraiserInfoLst", JSON.stringify(appraiserInfoLst));
-      bodyFormData.append(
-        "approverId",
-        approver?.username.toLowerCase() + "@vingroup.net"
-      );
-      bodyFormData.append(
-        "approverInfo",
-        JSON.stringify({
-          avatar: "",
-          account: approver?.username?.toLowerCase() + "@vingroup.net",
-          fullName: approver?.fullName,
-          employeeLevel: approver?.employeeLevel,
-          pnl: approver?.pnl,
-          orglv2Id: approver?.orglv2Id,
-          current_position: approver?.current_position,
-          department: approver?.department,
-          company_email: approver?.company_email?.toLowerCase(),
-          employeeNo: approver?.uid || approver?.employeeNo,
-          username: approver?.username?.toLowerCase(),
-        })
-      );
-
       bodyFormData.append("orgLv2Id", viewSetting.proposedStaff.orgLv2Id);
       bodyFormData.append("orgLv3Id", viewSetting.proposedStaff.orgLv3Id);
       bodyFormData.append("orgLv4Id", viewSetting.proposedStaff.orgLv4Id);
@@ -1100,6 +1107,8 @@ const SalaryAdjustmentPropse = (props) => {
       bodyFormData.append("orgLv5Text", viewSetting.proposedStaff.orgLv5Text);
       bodyFormData.append("orgLv6Text", viewSetting.proposedStaff.orgLv6Text);
       bodyFormData.append("companyCode", viewSetting.proposedStaff.companyCode);
+      bodyFormData.append("staffInfoLst", JSON.stringify(staffInfoLst));
+      bodyFormData.append("approverInfoLst", JSON.stringify(approverInfoLst));
 
       if(!!id) {
         bodyFormData.append("id", id);
@@ -1141,11 +1150,20 @@ const SalaryAdjustmentPropse = (props) => {
     setCoordinator(approver);
   };
 
+  const removeMembers = (uid) => {
+    if(isCreate) {
+      setSelectMembers(selectMembers.filter(ele => ele.uid !== uid));
+    } else {
+      setSelectedMembers(selectedMembers.filter(ele => ele.uid !== uid));
+    }
+  }
+
   const removeSupervisorItem = (index) => {
     const newData = [...supervisors];
     newData.splice(index, 1);
     setSupervisors(newData);
   };
+
   const handleUpdateSupervisors = (approver, index) => {
     let userExist = supervisors.findIndex(
       (item) => approver?.uid && item?.uid == approver?.uid
@@ -1158,13 +1176,11 @@ const SalaryAdjustmentPropse = (props) => {
     setSupervisors(newData);
   };
 
-  const handleUpdateHrChangeSalary = (approver) => {
-    setAppraiser(approver);
-  };
+  const handleUpdateHrChangeSalary = (approver) => setAppraiser(approver);
 
-  const handleUpdateApprovalSalary = (approver) => {
-    setApprover(approver);
-  };
+  const handleUpdateApprovalSalary = (approver) => setApprover(approver);
+
+  const handleUpdateApprovalArriveSalary = (approver) => setApproverArrive(approver);
 
   const validation = () => {
     const selectedMembersTmp = [...selectedMembers];
@@ -1185,7 +1201,7 @@ const SalaryAdjustmentPropse = (props) => {
 
   const getSalary = (token) => {
     const dataSend = {
-      requestHistoryId: props.match.params.id,
+      requestHistoryId: id,
       token: token,
     };
     setIsLoading(true);
@@ -1374,7 +1390,7 @@ const SalaryAdjustmentPropse = (props) => {
               <>
                 <td colSpan={2} className="text-center">
                   <span className="same-width">
-                    {!isCreateMode ? (
+                    {!isCreateMode && (
                       <div className="d-flex w-100">
                         <div
                           style={{
@@ -1414,8 +1430,6 @@ const SalaryAdjustmentPropse = (props) => {
                           </div>
                         )}
                       </div>
-                    ) : (
-                      <></>
                     )}
                   </span>
                 </td>
@@ -1714,7 +1728,7 @@ const SalaryAdjustmentPropse = (props) => {
     });
   };
 
-  const salaryState = `salaryadjustment_${props.match.params?.id}_${props.match.params?.type}`;
+  const salaryState = `salaryadjustment_${id}_${props.match.params?.type}`;
 
   return (
     <div className="timesheet-section proposal-management status-contain">
@@ -1797,7 +1811,7 @@ const SalaryAdjustmentPropse = (props) => {
           <div className="timesheet-box1 timesheet-box shadow">
             <div className="row">
               <div className="col-12">
-                {props.match.params.id == "create" ? (
+                {isCreate ? (
                   <FilterMember
                     {...props}
                     isEdit={true}
@@ -1865,11 +1879,11 @@ const SalaryAdjustmentPropse = (props) => {
         <div className="result-wrap-table" style={{overflowY: isOpenDatepick ? 'unset' : 'auto'}}>
           <table className="result-table" style={{ width: "100%" }}>
             <tbody>
-              {props.match.params.id !== "create" ? (
-                <>{renderListMember(selectedMembers)}</>
-              ) : (
-                <>{renderListMember(selectMembers)}</>
-              )}
+              <>
+                {isCreate
+                  ? renderListMember(selectMembers)
+                  : renderListMember(selectedMembers)}
+              </>
             </tbody>
           </table>
         </div>
@@ -1893,45 +1907,68 @@ const SalaryAdjustmentPropse = (props) => {
           </div>
         </>
       )}
-      {/* CBQL CẤP CƠ SỞ */}
+      {/* CBQL THẨM ĐỊNH/ NLĐ XÁC NHẬN */}
       {viewSetting.showComponent.showCBQL && (
         <>
           <h5 className="content-page-header">
-            {t("Consenter")}
+            {t("ConsenterStaffConfirm")}
             <span className="font-weight-normal ml-1 text-lowercase">
               ({t("if_any")})
             </span>
           </h5>
           <div className="timesheet-box1 timesheet-box shadow">
-            {supervisors.map((item, key) => {
-              return (
-                <div
-                  key={key}
-                  className="appraiser d-flex flex-column position-relative"
-                  style={key > 0 ? { marginTop: "20px" } : {}}
-                >
-                  {isCreateMode && key > 0 ? (
-                    <button
-                      className="btn btn-outline-danger position-absolute d-flex align-items-center btn-sm"
-                      style={{ gap: "4px", top: 0, right: 0 }}
-                      onClick={() => removeSupervisorItem(key)}
-                    >
-                      <Image src={IconRemove} />
-                      {t("delete")}
-                    </button>
-                  ) : null}
-                  <HumanForReviewSalaryComponent
-                    isEdit={
-                      !viewSetting.disableComponent.selectHrSupportViewSalary
-                    }
-                    approver={item}
-                    updateApprover={(sup) => handleUpdateSupervisors(sup, key)}
-                    comment={dataSalary?.requestAppraisers?.find((_, index) => index === key)?.appraiserComment}
-                  />
-                </div>
-              );
-            })}
-            {isCreateMode ? (
+            {(isCreate ? selectMembers : selectedMembers).map((item, key) => (
+              <div
+                key={`selectMembers-${key}`}
+                className="appraiser d-flex flex-column position-relative"
+                style={key > 0 ? { marginTop: "20px" } : {}}
+              >
+                {isCreateMode && (
+                  <button
+                    className="btn btn-outline-danger position-absolute d-flex align-items-center btn-sm"
+                    style={{ gap: "4px", top: 0, right: 0 }}
+                    onClick={() => removeMembers(item?.uid)}
+                  >
+                    <Image src={IconRemove} />
+                    {t("delete")}
+                  </button>
+                )}
+                <HumanForReviewSalaryComponent
+                  isEdit={true}
+                  isAppraiser={true}
+                  approver={item}
+                  updateApprover={(sup) => {}}
+                  // comment={dataSalary?.requestAppraisers?.find((_, index) => index === key)?.appraiserComment}
+                  comment=""
+                />
+              </div>
+            ))}
+            {supervisors.map((item, key) => (
+              <div
+                key={`supervisors-${key}`}
+                className="appraiser d-flex flex-column position-relative"
+                style={(key > 0 || selectedMembers.length > 0 || selectMembers.length > 0) ? { marginTop: "20px" } : {}}
+              >
+                {isCreateMode && key > 0 && (
+                  <button
+                    className="btn btn-outline-danger position-absolute d-flex align-items-center btn-sm"
+                    style={{ gap: "4px", top: 0, right: 0 }}
+                    onClick={() => removeSupervisorItem(key)}
+                  >
+                    <Image src={IconRemove} />
+                    {t("delete")}
+                  </button>
+                )}
+                <HumanForReviewSalaryComponent
+                  isEdit={!viewSetting.disableComponent.selectHrSupportViewSalary}
+                  isAppraiser={true}
+                  approver={item}
+                  updateApprover={(sup) => handleUpdateSupervisors(sup, key)}
+                  comment={dataSalary?.requestAppraisers?.find((_, index) => index === key)?.appraiserComment}
+                />
+              </div>
+            ))}
+            {isCreateMode && (
               <button
                 className="btn btn-outline-success btn-lg w-fit-content mt-3 d-flex align-items-center"
                 style={{ gap: "4px", fontSize: "14px" }}
@@ -1940,11 +1977,11 @@ const SalaryAdjustmentPropse = (props) => {
                 <Image src={IconAdd} />
                 {t("Add")}
               </button>
-            ) : null}
+            )}
           </div>
         </>
       )}
-      {/* Nhân sự thẩm định quyền điều chỉnh lương */}
+      {/* Nhân sự thẩm định */}
       {viewSetting.showComponent.showHrAssessment && (
         <>
           <h5 className="content-page-header">
@@ -1964,35 +2001,42 @@ const SalaryAdjustmentPropse = (props) => {
       {/* CBLĐ PHÊ DUYỆT */}
       {viewSetting.showComponent.showOfficerApproved && (
         <>
-          <h5 className="content-page-header">{t("BossApproved")}</h5>
+          <h5 className="content-page-header">{`${t("BossApproved")} (${t("Sent")})`}</h5>
           <div className="timesheet-box1 timesheet-box shadow">
             <HumanForReviewSalaryComponent
               isEdit={!viewSetting.disableComponent.selectHrSupportViewSalary}
               approver={approver}
-              updateApprover={(sup) => handleUpdateApprovalSalary(sup)}
+              updateApprover={handleUpdateApprovalSalary}
+              comment={dataSalary?.approverComment}
+            />
+          </div>
+          <h5 className="content-page-header">{`${t("BossApproved")} (${t("Arrive")})`}</h5>
+          <div className="timesheet-box1 timesheet-box shadow">
+            <HumanForReviewSalaryComponent
+              isEdit={!viewSetting.disableComponent.selectHrSupportViewSalary}
+              approver={approverArrive}
+              updateApprover={handleUpdateApprovalArriveSalary}
               comment={dataSalary?.approverComment}
             />
           </div>
         </>
       )}
       {/* Proccess History */}
-      {
-        !isCreateMode && (
-          <>
-            <h5 className="content-page-header">
-              {t("RequestHistory").toUpperCase()}
-            </h5>
-            <div className="timesheet-box1 timesheet-box shadow">
-              <ProcessHistoryComponent
-                createdDate={dataSalary?.createdDate}
-                coordinatorDate={dataSalary?.coordinatorDate}
-                requestAppraisers={dataSalary?.requestAppraisers}
-                approvedDate={dataSalary?.approvedDate}
-              />
-            </div>
-          </>
-        )
-      }
+      {!isCreateMode && (
+        <>
+          <h5 className="content-page-header">
+            {t("RequestHistory").toUpperCase()}
+          </h5>
+          <div className="timesheet-box1 timesheet-box shadow">
+            <ProcessHistoryComponent
+              createdDate={dataSalary?.createdDate}
+              coordinatorDate={dataSalary?.coordinatorDate}
+              requestAppraisers={dataSalary?.requestAppraisers}
+              approvedDate={dataSalary?.approvedDate}
+            />
+          </div>
+        </>
+      )}
       <br />
       {/* List file */}
       <ul className="list-inline">
@@ -2008,13 +2052,13 @@ const SalaryAdjustmentPropse = (props) => {
               >
                 {file.name}
               </a>
-              {viewSetting.showComponent.showRemoveFile ? (
+              {viewSetting.showComponent.showRemoveFile && (
                 <i
                   className="fa fa-times remove"
                   aria-hidden="true"
                   onClick={(e) => removeFiles(file.id, index)}
                 ></i>
-              ) : null}
+              )}
             </span>
           </li>
         ))}

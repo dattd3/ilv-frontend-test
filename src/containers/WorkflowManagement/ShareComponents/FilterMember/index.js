@@ -103,8 +103,15 @@ const FilterMember = (props) => {
     let hrProfileDisplay = [];
     if (users && users.length > 0) {
       hrProfileDisplay = users.map((profile) => ({
+        avatar: profile.avatar,
         uid: profile.uid,
         fullname: profile.fullname,
+        employeeLevel: profile.employee_level,
+        pnl: profile.pnl,
+        orglv2Id: profile.organization_lv2,
+        companyEmail: profile.company_email,
+        currentPosition: profile.position_name,
+        username: profile.username,
         job_name: profile.position_name,
         title: profile.title,
         part: profile.part || "",

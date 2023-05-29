@@ -57,11 +57,8 @@ class HumanForReviewSalaryComponent extends React.Component {
           }
         })
       } else {
-        return this.setState({
-          approver: null
-        })
+        return this.setState({ approver: null })
       }
-      
     }
   }
 
@@ -77,34 +74,33 @@ class HumanForReviewSalaryComponent extends React.Component {
           }
         })
       } else {
-        return this.setState({
-          approver: null
-        })
+        return this.setState({ approver: null })
       }
     //}
-    
   };
 
   handleSelectChange(name, value) {
+    const { updateApprover } = this.props;
     if (value) {
       const currentUserLevel = localStorage.getItem('employeeLevel')
       this.setState({ [name]: value })
       const isApprover = this.isApprover(value.employeeLevel, value.orglv2Id, currentUserLevel, value.account)
-      this.props.updateApprover(value, isApprover)
+      updateApprover(value, isApprover)
     } else {
       this.setState({ [name]: value, users: [] })
-      this.props.updateApprover(value, true)
+      updateApprover(value, true)
     }
   }
 
   isApprover = (levelApproverFilter, orglv2Id, currentUserLevel, account) => {
-    if(this.props.isHR) {
-      return true;
-    }
-    let listLevelsApprover = Constants.APPROVER_LIST_LEVEL
-    const indexCurrentUserLevel = _.findIndex(listLevelsApprover, function (item) { return item == currentUserLevel });
-    const indexApproverFilterLevel = _.findIndex(listLevelsApprover, function (item) { return item == levelApproverFilter });
-    if ((currentUserPnLVCodeLogged !== Constants.pnlVCode.Vin3S && (indexApproverFilterLevel === -1 || indexCurrentUserLevel > indexApproverFilterLevel || !listLevelsApprover.includes(levelApproverFilter)))
+    if(this.props.isHR) return true;
+
+    let listLevelsApprover = Constants.APPROVER_LIST_LEVEL;
+    const indexCurrentUserLevel = _.findIndex(listLevelsApprover, function (item) { return item == currentUserLevel }),
+      indexApproverFilterLevel = _.findIndex(listLevelsApprover, function (item) { return item == levelApproverFilter });
+    if ((
+      currentUserPnLVCodeLogged !== Constants.pnlVCode.Vin3S &&
+      (indexApproverFilterLevel === -1 || indexCurrentUserLevel > indexApproverFilterLevel || !listLevelsApprover.includes(levelApproverFilter)))
       || account?.toLowerCase() === currentUserEmailLogged?.split("@")[0]?.toLowerCase()) {
       return false
     }
@@ -113,17 +109,16 @@ class HumanForReviewSalaryComponent extends React.Component {
 
   getApproverInfo = (value) => {
     this.setState({ isSearch: false })
-    const { appraiser, isHR } = this.props
+    const { appraiser, isHR, isAppraiser } = this.props;
     if (value !== "") {
       this.setState({ isSearch: true })
       const config = getRequestConfigurations()
       let payload = {
         account: value,
-        depth: "3",
-        employeeNo: localStorage.getItem('employeeNo'),
-        pnl_code: localStorage.getItem('companyCode')
-      }
-      let url = `${process.env.REACT_APP_REQUEST_URL}user/employee/managers`;
+        status: 3,
+        empoyee_type: isAppraiser ? "APPRAISER" : "APPROVER",
+      },
+      url = `${process.env.REACT_APP_REQUEST_URL}user/employee/search`;
       if(isHR) {
         url = `${process.env.REACT_APP_REQUEST_URL}user/employee/hr_officer`;
         payload = {
@@ -135,7 +130,7 @@ class HumanForReviewSalaryComponent extends React.Component {
       axios.post(url, payload, config)
         .then(res => {
           if (res && res.data && res.data.data) {
-            const data = res.data.data || []
+            const data = res.data.data || [];
             const users = data.map(res => {
               return {
                 value: res.username,
@@ -156,23 +151,24 @@ class HumanForReviewSalaryComponent extends React.Component {
             const lst = appraiser ? users.filter(user => user.account !== appraiser.account) : users;
             this.setState({ users: lst, isSearch: false })
           }
-        }).catch(error => { console.log(error); this.setState({ isSearch: false })})
-    }
-    else {
-      if (Array.isArray(this.state.users) && this.state.users.length > 1) this.setState({ isSearch: true })
+        }).catch(error => {
+          console.log(error);
+          this.setState({ isSearch: false });
+        })
+    } else {
+      if (Array.isArray(this.state.users) && this.state.users.length > 1)
+        this.setState({ isSearch: true });
     }
   }
 
   onInputChange = value => {
-    this.setState({ approverTyping: value }, () => {
-      this.onInputChange(value)
-    })
+    this.setState({ approverTyping: value }, () => this.onInputChange(value))
   }
 
   filterOption = (option, inputValue) => {
-    const { users } = this.state
-    const options = (users || []).filter(opt => (opt.label?.includes(inputValue) || opt.value?.includes(inputValue) || opt.uid?.includes(inputValue)))
-    return options
+    const { users } = this.state;
+    const options = (users || []).filter(opt => (opt.label?.includes(inputValue) || opt.value?.includes(inputValue) || opt.uid?.includes(inputValue)));
+    return options;
   }
 
   render() {
@@ -189,7 +185,7 @@ class HumanForReviewSalaryComponent extends React.Component {
       })
     }
     const { t, isEdit, errors, comment } = this.props;
-    const { isSearch, approver, users } = this.state
+    const { isSearch, approver, users } = this.state;
     return <div className="approver">
       <div>
         <div className="row">
@@ -214,12 +210,12 @@ class HumanForReviewSalaryComponent extends React.Component {
                 options={users}
               />
             </div>
-            {errors && errors['approver'] ? <div className="text-danger validation-message">{errors['approver']}</div> : null}
+            {errors && errors['approver'] && <div className="text-danger validation-message">{errors['approver']}</div>}
           </div>
           <div className="col-4">
             <p className="title2">{t('Position')}</p>
             <div>
-              <input type="text" className="form-control" value={approver?.current_position || ""} readOnly />
+              <input type="text" className="form-control" value={approver?.current_position || approver?.jobTitle|| ""} readOnly />
             </div>
           </div>
           <div className="col-4">
@@ -228,18 +224,21 @@ class HumanForReviewSalaryComponent extends React.Component {
               <input type="text" className="form-control" value={approver?.department || ""} readOnly />
             </div>
           </div>
-          {
-            comment && <div className="col-12" style={{ marginTop: 12 }}>
+          {comment && (
+            <div className="col-12" style={{ marginTop: 12 }}>
               <p className="title2">{t('reason_reject')}</p>
               <div>
                 <input type="text" className="form-control" value={comment} readOnly />
               </div>
             </div>
-          }
+          )}
         </div>
-        {
-          currentUserPnLVCodeLogged === Constants.pnlVCode.VinMec ? <div className="row business-type"><span className="col-12 text-info smaller">* {t("NoteSelectApprover")} <b><a href="https://camnangtt.vingroup.net/sites/vmec/default.aspx#/tracuucnpq" target="_blank" >{t("ApprovalMatrix")}</a></b></span></div> : null
-        }
+        {currentUserPnLVCodeLogged === Constants.pnlVCode.VinMec && (
+          <div className="row business-type">
+            <span className="col-12 text-info smaller">* {t("NoteSelectApprover")} <b><a href="https://camnangtt.vingroup.net/sites/vmec/default.aspx#/tracuucnpq" target="_blank" >{t("ApprovalMatrix")}</a></b>
+            </span>
+          </div>
+        )}
       </div>
     </div>
   }
