@@ -328,7 +328,7 @@ class RequestTaskList extends React.Component {
             url = `salarypropse/${request.parentRequestHistoryId}/${request.salaryId}/request`;
         } else {
             //xu ly nhieu nguoi
-            url = `salaryadjustment/${request.salaryId}/request`;
+            url = `${request?.requestTypeId === 14 ? 'transfer-appoint' : 'salaryadjustment'}/${request.salaryId}/request`;
         }
         return url;
     }
@@ -788,6 +788,7 @@ class RequestTaskList extends React.Component {
                                   id={`type-1-radio`}
                                   name="category-radio-group"
                                   type="radio"
+                                  onChange={e => {}}
                                   onClick={() => this.handleRequestCategorySelect(REQUEST_CATEGORIES.CATEGORY_1)}
                                   checked={this.state.tmpRequestCategorySelect == REQUEST_CATEGORIES.CATEGORY_1}
                                 />
@@ -801,6 +802,7 @@ class RequestTaskList extends React.Component {
                                   id={`type-2-radio`}
                                   name="category-radio-group"
                                   type="radio"
+                                  onChange={e => {}}
                                   onClick={() => this.handleRequestCategorySelect(REQUEST_CATEGORIES.CATEGORY_2)}
                                   checked={this.state.tmpRequestCategorySelect == REQUEST_CATEGORIES.CATEGORY_2}
                                 />

@@ -103,8 +103,15 @@ const FilterMember = (props) => {
     let hrProfileDisplay = [];
     if (users && users.length > 0) {
       hrProfileDisplay = users.map((profile) => ({
+        avatar: profile.avatar,
         uid: profile.uid,
         fullname: profile.fullname,
+        employeeLevel: profile.employee_level,
+        pnl: profile.pnl,
+        orglv2Id: profile.organization_lv2,
+        companyEmail: profile.company_email,
+        currentPosition: profile.position_name,
+        username: profile.username,
         job_name: profile.position_name,
         title: profile.title,
         part: profile.part || "",
@@ -141,7 +148,7 @@ const FilterMember = (props) => {
         onCloseAll={onCloseAllEvent}
       />          
       {isTransferAppointProposal && (
-        <div className="change-proposal d-flex mt-2 mb-2">
+        <div className="change-proposal d-none mt-2 mb-2">
           <input
             type="checkbox"
             checked={isSalaryAdjustment}
