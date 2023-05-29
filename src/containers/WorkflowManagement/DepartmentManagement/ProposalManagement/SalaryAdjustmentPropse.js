@@ -860,6 +860,9 @@ const SalaryAdjustmentPropse = (props) => {
       if (!approver) {
         return showStatusModal(t("PleaseInputApprover"), false);
       }
+      if (!approverArrive) { // backend chưa cập nhật 2 người phê duyệt đi và đến =================
+        return showStatusModal(t("PleaseInputApprover"), false);
+      }
       
       if(isTransferAppointProposal) {
         const isEmptyProposalMembers = selectMembers.every(ele => isEmpty(ele.proposedPositionCode) || isEmpty(ele.proposedDepartmentCode));
@@ -986,7 +989,7 @@ const SalaryAdjustmentPropse = (props) => {
           proposedDepartmentCode: u?.proposedDepartmentCode,
         } : {}),
         staffStrengths: u?.strength,
-        staffWknesses: u?.strength,
+        staffWknesses: u?.weakness,
       })),
       staffInfoLst = (id ? selectedMembers : selectMembers).map((u, i) => {
         return {
