@@ -1306,7 +1306,7 @@ const SalaryAdjustmentPropse = (props) => {
 
       return (
         <React.Fragment key={index}>
-          <tr style={{ border: 'none', height: '10px' }} />
+          {!!index && <tr style={{ border: 'none', height: '20px' }} />}
           <tr className="table-header">
             <td colSpan={3} className="min-width font-weight-bold">
               <div className="d-flex">
@@ -1339,14 +1339,14 @@ const SalaryAdjustmentPropse = (props) => {
                 <td colSpan={2} className="min-width1 text-center">
                   <strong>{t('suggested_salary_gross')}</strong>
                 </td>
-                <td
-                  colSpan={2}
-                  className="min-width text-center font-weight-bold"
-                >
-                  {t('effective_time')}
-                </td>
               </>
             )}
+            <td
+              colSpan={2}
+              className="min-width text-center font-weight-bold"
+            >
+              {t('effective_time')}
+            </td>
             <td colSpan={1} className="min-width text-center font-weight-bold">
               {t('Action')}
             </td>
@@ -1500,45 +1500,45 @@ const SalaryAdjustmentPropse = (props) => {
                     )}
                   </span>
                 </td>
-                <td colSpan={2} className="same-width text-center">
-                  <span className="same-width">
-                    {viewSetting.disableComponent.editSubjectApply &&
-                    !isCreateMode ? (
-                      <DatePicker
-                        name="startDate"
-                        autoComplete="off"
-                        selected={
-                          item?.effectiveTime
-                            ? moment(
-                                item?.effectiveTime,
-                                Constants.LEAVE_DATE_FORMAT
-                              ).toDate()
-                            : null
-                        }
-                        onChange={(date) =>
-                          handleDatePickerInputChange(
-                            date,
-                            item?.uid,
-                            'effectiveTime'
-                          )
-                        }
-                        onChangeRaw={() => setIsOpenDatepick(false)}
-                        onFocus={() => setIsOpenDatepick(true)}
-                        onBlur={() => setIsOpenDatepick(false)}
-                        dateFormat="dd/MM/yyyy"
-                        placeholderText={t('Select')}
-                        locale={t('locale')}
-                        className="form-control input"
-                        styles={{ width: '100%' }}
-                        getPopupContainer={(trigger) => trigger.parentElement}
-                      />
-                    ) : (
-                      <>{item?.effectiveTime}</>
-                    )}
-                  </span>
-                </td>
               </>
             )}
+            <td colSpan={2} className="same-width text-center">
+              <span className="same-width">
+                {viewSetting.disableComponent.editSubjectApply &&
+                !isCreateMode ? (
+                  <DatePicker
+                    name="startDate"
+                    autoComplete="off"
+                    selected={
+                      item?.effectiveTime
+                        ? moment(
+                            item?.effectiveTime,
+                            Constants.LEAVE_DATE_FORMAT
+                          ).toDate()
+                        : null
+                    }
+                    onChange={(date) =>
+                      handleDatePickerInputChange(
+                        date,
+                        item?.uid,
+                        'effectiveTime'
+                      )
+                    }
+                    onChangeRaw={() => setIsOpenDatepick(false)}
+                    onFocus={() => setIsOpenDatepick(true)}
+                    onBlur={() => setIsOpenDatepick(false)}
+                    dateFormat="dd/MM/yyyy"
+                    placeholderText={t('Select')}
+                    locale={t('locale')}
+                    className="form-control input"
+                    styles={{ width: '100%' }}
+                    getPopupContainer={(trigger) => trigger.parentElement}
+                  />
+                ) : (
+                  <>{item?.effectiveTime}</>
+                )}
+              </span>
+            </td>
             <td colSpan={1} className="same-width ">
               <div className="d-flex flex-column action">
                 {(viewSetting.showComponent.btnExpertise ||
@@ -1631,7 +1631,7 @@ const SalaryAdjustmentPropse = (props) => {
           </tr>
           <tr>
             {(isTransferAppointProposal || isProposalTransfer) && (
-              <td colSpan={isSalaryPropose ? "12" : "6"}>
+              <td colSpan={isSalaryPropose ? "12" : "8"}>
                 <div className="skill">
                   <span className="title font-weight-bold">
                     * {t('proposal_title')}:
@@ -1670,7 +1670,7 @@ const SalaryAdjustmentPropse = (props) => {
             )}
           </tr>
           <tr>
-            <td colSpan={isSalaryPropose ? "12" : "6"}>
+            <td colSpan={isSalaryPropose ? "12" : "8"}>
               <div className="skill">
                 <span className="title font-weight-bold">
                   * {t('strength')}:
@@ -1697,7 +1697,7 @@ const SalaryAdjustmentPropse = (props) => {
             </td>
           </tr>
           <tr>
-            <td colSpan={isSalaryPropose ? "12" : "6"}>
+            <td colSpan={isSalaryPropose ? "12" : "8"}>
               <div className="skill">
                 <span className="title font-weight-bold">
                   * {t('weakness')}:
@@ -2017,6 +2017,7 @@ const SalaryAdjustmentPropse = (props) => {
               approver={approverArrive}
               updateApprover={handleUpdateApprovalArriveSalary}
               comment={dataSalary?.approverComment}
+              isAppraiserNote={true}
             />
           </div>
         </>

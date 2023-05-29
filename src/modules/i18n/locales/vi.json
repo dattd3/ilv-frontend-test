@@ -917,6 +917,7 @@
   "WarningTotalBreakTime": "(Tổng số thời gian nghỉ phải lớn hơn hoặc bằng 2h)",
   "WarningRequiredBreakTime": "(Thời gian bắt đầu nghỉ ca/Thời gian kết thúc nghỉ ca là bắt buộc)",
   "NoteSelectApprover": "Lưu ý: Lựa chọn người phê duyệt theo đúng",
+  "NoteSelectApproverAppraiser": "Lưu ý: Lựa chọn người thẩm định/ phê duyệt theo đúng",
   "ApprovalMatrix": "Cẩm Nang Phân Quyền",
   "ApproralRecall": "Thu hồi phê duyệt",
   "MarriageForSelf": "Bản thân Kết hôn",
