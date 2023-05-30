@@ -807,20 +807,29 @@ const SalaryAdjustmentPropse = (props) => {
 
   // luồng từ chối/ thẩm định cho NLD xac nhan
   const handleConfirmEmployee = (isConsent) => {
+    let indexCurrentAppraiser = undefined;
     const { currentAppraiserEmail } = viewSetting?.proposedStaff,
-      staffRequestStatusList = selectedMembers?.map(item => ({
-        employeeNo: item.uid,
-        salaryAdjustmentId: item.id,
-        status: (item.accepted || currentAppraiserEmail === item.email) ? 1 : 0,
-        comment: item.comment || ''
-      }));
+      staffRequestStatusList = selectedMembers?.map((item, index) =>{
+        if (currentAppraiserEmail === item.account) {
+          indexCurrentAppraiser = index;
+          item.accepted = isConsent;
+        }
+
+        return {
+          employeeNo: item.uid,
+          salaryAdjustmentId: item.id,
+          status: item.accepted ? 1 : 0,
+          comment: item.comment || ''
+        };
+      });
 
     setConfirmModal({
       isShowModalConfirm: true,
       modalTitle: isConsent ? t("ConsentConfirmation") : t("RejectConsenterRequest"),
       modalMessage: isConsent ? t("ConfirmConsentRequest") : t("ReasonRejectRequest"),
-      typeRequest: isConsent ? Constants.STATUS_CONSENTED : Constants.STATUS_NO_CONSENTED,
+      typeRequest: isConsent ? Constants.STATUS_TRANSFER : Constants.STATUS_TRANSFER_REFUSE,
       confirmStatus: "",
+      indexCurrentAppraiser,
       dataToUpdate: [
         {
           id: id,
@@ -828,7 +837,7 @@ const SalaryAdjustmentPropse = (props) => {
           sub: [
             {
               id: id,
-              processStatusId: isConsent ? 5 : 7,
+              processStatusId: 5,
               comment: "",
               status: "",
               staffRequestStatusList,
@@ -1794,7 +1803,7 @@ const SalaryAdjustmentPropse = (props) => {
         confirmStatus={confirmModal.confirmStatus}
         dataToSap={confirmModal.dataToUpdate}
         onHide={onHideModalConfirm}
-        currentAppraiserEmail={viewSetting.proposedStaff.currentAppraiserEmail}
+        indexCurrentAppraiser={confirmModal.indexCurrentAppraiser}
       />
       <div className="eval-heading">{isTransferAppointProposal ? t("ProposalTransfer") : t("SalaryPropse")}</div>
       {/* ĐỀ XUẤT ĐIỀU CHỈNH LƯƠNG */}

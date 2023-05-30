@@ -69,6 +69,8 @@ const Constants = {
   STATUS_NO_CONSENTED: 7, // từ chối thẩm định
   STATUS_WAITING_CONSENTED: 8, // chờ thẩm định
   STATUS_CONSENTED: 20,// thẩm định
+  STATUS_TRANSFER_REFUSE: 9998,
+  STATUS_TRANSFER: 9999,
   STATUS_OB_SELF_EVALUATION: 9,
   STATUS_OB_APPRAISER_EVALUATION: 10,
   STATUS_OB_SUPERVISOR_EVALUATION: 11,
@@ -77,7 +79,7 @@ const Constants = {
 
   STATUS_TO_SHOW_CONSENTER: [1,2,3,4,5,6,7,8],
   STATUS_TO_SHOW_APPROVER: [1,2,3,4,5,6,8],
-  STATUS_USE_COMMENT: [0,1,3,4,7],
+  STATUS_USE_COMMENT: [0,1,3,4,7, 9998],
 
   mappingStatusRequest: {
     1: { label: 'Rejected', className: 'fail' },
