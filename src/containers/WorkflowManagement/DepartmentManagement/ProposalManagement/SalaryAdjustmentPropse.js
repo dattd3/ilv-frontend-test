@@ -43,7 +43,8 @@ const ListTypeContract = [
   { value: "VF", label: "HĐDV theo tháng" },
   { value: "VG", label: "HĐDV theo giờ" },
   { value: "VH", label: "HĐDV khoán" },
-];
+],
+getStorage = (key) => localStorage.getItem(key) || "";
 
 const SalaryAdjustmentPropse = (props) => {
   const { t } = props;
@@ -117,6 +118,7 @@ const SalaryAdjustmentPropse = (props) => {
       showHrAssessment: true, // Hien thi Nhân sự thẩm định
       showOfficerApproved: true, // Hien thi CBLĐ PHÊ DUYỆT
       showRemoveFile: false, // Hien thi icon remove file
+      showWorkersConfirm: false // Hien thị NLD xac nhan
     },
     disableComponent: {
       editSubjectApply: false, // Cho phép xem, sửa thông tin đối tượng
@@ -145,14 +147,15 @@ const SalaryAdjustmentPropse = (props) => {
       orgLv4Text: "",
       orgLv5Text: "",
       companyCode: "",
+      currentAppraiserEmail: "",
     },
   });
   const [isSalaryAdjustment, setIsSalaryAdjustment] = useState(!isTransferAppointProposal);
   const isSalaryPropose =
       dataSalary?.requestTypeId === Constants.SALARY_PROPOSE ||
       isSalaryAdjustment,
-      id = props?.match?.params?.id,
-      isCreate = id === "create";
+    id = props?.match?.params?.id,
+    isCreate = id === "create";
 
   useEffect(() => {
     if (id) {
@@ -203,55 +206,41 @@ const SalaryAdjustmentPropse = (props) => {
     viewSettingTmp.disableComponent.editSubjectApply = true;
     viewSettingTmp.disableComponent.selectHrSupportViewSalary = true;
 
-    viewSettingTmp.proposedStaff.avatar = localStorage.getItem("avatar") || "";
-    viewSettingTmp.proposedStaff.account =
-      localStorage.getItem("email").split("@")[0] || "";
-    viewSettingTmp.proposedStaff.email = localStorage.getItem("email") || "";
-    viewSettingTmp.proposedStaff.company_email =
-      localStorage.getItem("plEmail") || "";
-    viewSettingTmp.proposedStaff.employeeNo =
-      localStorage.getItem("employeeNo") || "";
-    viewSettingTmp.proposedStaff.employeeLevel =
-      localStorage.getItem("employeeLevel") || "";
-    viewSettingTmp.proposedStaff.fullName =
-      localStorage.getItem("fullName") || "";
-    viewSettingTmp.proposedStaff.jobTitle =
-      localStorage.getItem("jobTitle") || "";
-    viewSettingTmp.proposedStaff.department =
-      localStorage.getItem("department") || "";
-    viewSettingTmp.proposedStaff.orgLv2Id =
-      localStorage.getItem("organizationLv2") || "";
-    viewSettingTmp.proposedStaff.orgLv3Id =
-      localStorage.getItem("organizationLv3") || "";
-    viewSettingTmp.proposedStaff.orgLv4Id =
-      localStorage.getItem("organizationLv4") || "";
-    viewSettingTmp.proposedStaff.orgLv5Id =
-      localStorage.getItem("organizationLv5") || "";
-    viewSettingTmp.proposedStaff.orgLv6Id =
-      localStorage.getItem("organizationLv6") || "";
-    viewSettingTmp.proposedStaff.orgLv2Text =
-      localStorage.getItem("company") || "";
-    viewSettingTmp.proposedStaff.orgLv3Text =
-      localStorage.getItem("division") || "";
-    viewSettingTmp.proposedStaff.orgLv4Text =
-      localStorage.getItem("region") || "";
-    viewSettingTmp.proposedStaff.orgLv5Text =
-      localStorage.getItem("unit") || "";
-    viewSettingTmp.proposedStaff.orgLv6Text =
-      localStorage.getItem("part") || "";
-    viewSettingTmp.proposedStaff.companyCode =
-      localStorage.getItem("companyCode") || "";
+    viewSettingTmp.proposedStaff.avatar = getStorage("avatar");
+    viewSettingTmp.proposedStaff.account = getStorage("email").split("@")[0] || "";
+    viewSettingTmp.proposedStaff.email = getStorage("email");
+    viewSettingTmp.proposedStaff.company_email = getStorage("plEmail");
+    viewSettingTmp.proposedStaff.employeeNo = getStorage("employeeNo");
+    viewSettingTmp.proposedStaff.employeeLevel = getStorage("employeeLevel");
+    viewSettingTmp.proposedStaff.fullName = getStorage("fullName");
+    viewSettingTmp.proposedStaff.jobTitle = getStorage("jobTitle");
+    viewSettingTmp.proposedStaff.department = getStorage("department");
+    viewSettingTmp.proposedStaff.orgLv2Id = getStorage("organizationLv2");
+    viewSettingTmp.proposedStaff.orgLv3Id = getStorage("organizationLv3");
+    viewSettingTmp.proposedStaff.orgLv4Id = getStorage("organizationLv4");
+    viewSettingTmp.proposedStaff.orgLv5Id = getStorage("organizationLv5");
+    viewSettingTmp.proposedStaff.orgLv6Id = getStorage("organizationLv6");
+    viewSettingTmp.proposedStaff.orgLv2Text = getStorage("company");
+    viewSettingTmp.proposedStaff.orgLv3Text = getStorage("division");
+    viewSettingTmp.proposedStaff.orgLv4Text = getStorage("region");
+    viewSettingTmp.proposedStaff.orgLv5Text = getStorage("unit");
+    viewSettingTmp.proposedStaff.orgLv6Text = getStorage("part");
+    viewSettingTmp.proposedStaff.companyCode = getStorage("companyCode");
     setViewSetting(viewSettingTmp);
   };
 
   const checkAuthorize = (dataSalaryInfo) => {
-    const currentEmail = localStorage.getItem("email");
-    let viewSettingTmp = { ...viewSetting },
-      currentStatus = dataSalaryInfo?.processStatusId;
+    const currentEmail = getStorage("email"),
+      { requestAppraisers, processStatusId, userId, supervisorId, salaryAdjustments, userProfileDocuments } = dataSalaryInfo,
+      indexAppraiser = requestAppraisers?.findIndex(app => app.status === Constants.SALARY_APPRAISER_STATUS.WAITING),
+      isCurrentAppraiser = indexAppraiser !== -1 && currentEmail.toLowerCase() === requestAppraisers[indexAppraiser].appraiserId?.toLowerCase(),
+      typeAppraise = indexAppraiser !== -1 && requestAppraisers[indexAppraiser].type;
+
+    let viewSettingTmp = { ...viewSetting }, currentStatus = processStatusId;
 
     viewSettingTmp.showComponent.stateProcess = true;
 
-    switch (dataSalaryInfo?.processStatusId) {
+    switch (processStatusId) {
       //Nhân sự điều phối gửi lại yêu cầu
       case 20:
         setIsCreateMode(true);
@@ -262,44 +251,26 @@ const SalaryAdjustmentPropse = (props) => {
         viewSettingTmp.showComponent.showRemoveFile = true;
         viewSettingTmp.disableComponent.editSubjectApply = true;
         viewSettingTmp.disableComponent.selectHrSupportViewSalary = true;
-        viewSettingTmp.proposedStaff.avatar = localStorage.getItem("avatar") || "";
-        viewSettingTmp.proposedStaff.account =
-          localStorage.getItem("email").split("@")[0] || "";
-        viewSettingTmp.proposedStaff.email = localStorage.getItem("email") || "";
-        viewSettingTmp.proposedStaff.company_email =
-          localStorage.getItem("plEmail") || "";
-        viewSettingTmp.proposedStaff.employeeNo =
-          localStorage.getItem("employeeNo") || "";
-        viewSettingTmp.proposedStaff.employeeLevel =
-          localStorage.getItem("employeeLevel") || "";
-        viewSettingTmp.proposedStaff.fullName =
-          localStorage.getItem("fullName") || "";
-        viewSettingTmp.proposedStaff.jobTitle =
-          localStorage.getItem("jobTitle") || "";
-        viewSettingTmp.proposedStaff.department =
-          localStorage.getItem("department") || "";
-        viewSettingTmp.proposedStaff.orgLv2Id =
-          localStorage.getItem("organizationLv2") || "";
-        viewSettingTmp.proposedStaff.orgLv3Id =
-          localStorage.getItem("organizationLv3") || "";
-        viewSettingTmp.proposedStaff.orgLv4Id =
-          localStorage.getItem("organizationLv4") || "";
-        viewSettingTmp.proposedStaff.orgLv5Id =
-          localStorage.getItem("organizationLv5") || "";
-        viewSettingTmp.proposedStaff.orgLv6Id =
-          localStorage.getItem("organizationLv6") || "";
-        viewSettingTmp.proposedStaff.orgLv2Text =
-          localStorage.getItem("company") || "";
-        viewSettingTmp.proposedStaff.orgLv3Text =
-          localStorage.getItem("division") || "";
-        viewSettingTmp.proposedStaff.orgLv4Text =
-          localStorage.getItem("region") || "";
-        viewSettingTmp.proposedStaff.orgLv5Text =
-          localStorage.getItem("unit") || "";
-        viewSettingTmp.proposedStaff.orgLv6Text =
-          localStorage.getItem("part") || "";
-        viewSettingTmp.proposedStaff.companyCode =
-          localStorage.getItem("companyCode") || "";
+        viewSettingTmp.proposedStaff.avatar = getStorage("avatar");
+        viewSettingTmp.proposedStaff.account = getStorage("email").split("@")[0] || "";
+        viewSettingTmp.proposedStaff.email = getStorage("email");
+        viewSettingTmp.proposedStaff.company_email = getStorage("plEmail");
+        viewSettingTmp.proposedStaff.employeeNo = getStorage("employeeNo");
+        viewSettingTmp.proposedStaff.employeeLevel = getStorage("employeeLevel");
+        viewSettingTmp.proposedStaff.fullName = getStorage("fullName");
+        viewSettingTmp.proposedStaff.jobTitle = getStorage("jobTitle");
+        viewSettingTmp.proposedStaff.department = getStorage("department");
+        viewSettingTmp.proposedStaff.orgLv2Id = getStorage("organizationLv2");
+        viewSettingTmp.proposedStaff.orgLv3Id = getStorage("organizationLv3");
+        viewSettingTmp.proposedStaff.orgLv4Id = getStorage("organizationLv4");
+        viewSettingTmp.proposedStaff.orgLv5Id = getStorage("organizationLv5");
+        viewSettingTmp.proposedStaff.orgLv6Id = getStorage("organizationLv6");
+        viewSettingTmp.proposedStaff.orgLv2Text = getStorage("company");
+        viewSettingTmp.proposedStaff.orgLv3Text = getStorage("division");
+        viewSettingTmp.proposedStaff.orgLv4Text = getStorage("region");
+        viewSettingTmp.proposedStaff.orgLv5Text = getStorage("unit");
+        viewSettingTmp.proposedStaff.orgLv6Text = getStorage("part");
+        viewSettingTmp.proposedStaff.companyCode = getStorage("companyCode");
         currentStatus = 0; 
         break;
       // Đang chờ nhân sự điều phối & Đang chờ nhân sự thẩm định người xem lương
@@ -319,8 +290,7 @@ const SalaryAdjustmentPropse = (props) => {
         viewSettingTmp.showComponent.showOfficerApproved = true;
         viewSettingTmp.disableComponent.showEye = true;
         if (
-          currentEmail.toLowerCase() ===
-            dataSalaryInfo?.userId?.toLowerCase() &&
+          currentEmail.toLowerCase() === userId?.toLowerCase() &&
           props.match.params.type === "request"
         ) {
           viewSettingTmp.showComponent.btnCancel = true;
@@ -342,16 +312,17 @@ const SalaryAdjustmentPropse = (props) => {
         viewSettingTmp.showComponent.showHrAssessment = true;
         viewSettingTmp.showComponent.showOfficerApproved = true;
         viewSettingTmp.disableComponent.showEye = true;
-        let currentAppraiserIndex = dataSalaryInfo?.requestAppraisers?.findIndex(app => app.status == Constants.SALARY_APPRAISER_STATUS.WAITING);
         if (
-          currentAppraiserIndex != -1 &&
-          currentEmail.toLowerCase() ===
-          dataSalaryInfo?.requestAppraisers[currentAppraiserIndex].appraiserId?.toLowerCase() &&
-          props.match.params.type === "assess"
+          isCurrentAppraiser && props.match.params.type === "assess"
         ) {
-          viewSettingTmp.showComponent.btnRefuse = true;
-          viewSettingTmp.showComponent.btnExpertise = true;
-          viewSettingTmp.disableComponent.showEye = true;
+          if( typeAppraise === 0 ) { // nhan vien tham dinh
+            viewSettingTmp.showComponent.showWorkersConfirm = true;
+            viewSettingTmp.proposedStaff.currentAppraiserEmail = requestAppraisers[indexAppraiser].appraiserId?.toLowerCase();
+          } else { // CBLD tham dinh
+            viewSettingTmp.showComponent.btnRefuse = true;
+            viewSettingTmp.showComponent.btnExpertise = true;
+            viewSettingTmp.disableComponent.showEye = true;
+          }
         } else if(props.match.params.type != "request") {
             currentStatus = 20;
         }
@@ -369,8 +340,7 @@ const SalaryAdjustmentPropse = (props) => {
         viewSettingTmp.showComponent.showOfficerApproved = true;
         viewSettingTmp.disableComponent.showEye = true;
         if (
-          currentEmail.toLowerCase() ===
-            dataSalaryInfo?.supervisorId?.toLowerCase() &&
+          currentEmail.toLowerCase() === supervisorId?.toLowerCase() &&
           props.match.params.type === "assess"
         ) {
           viewSettingTmp.showComponent.btnRefuse = true;
@@ -391,9 +361,7 @@ const SalaryAdjustmentPropse = (props) => {
         viewSettingTmp.showComponent.showOfficerApproved = true;
         viewSettingTmp.disableComponent.showEye = true;
         if (
-          currentEmail.toLowerCase() ===
-            dataSalaryInfo?.approverId?.toLowerCase() &&
-          props.match.params.type === "approval"
+          isCurrentAppraiser && props.match.params.type === "approval"
         ) {
           viewSettingTmp.showComponent.btnNotApprove = true;
           viewSettingTmp.showComponent.btnApprove = true;
@@ -432,9 +400,9 @@ const SalaryAdjustmentPropse = (props) => {
     const requestInfo = dataSalaryInfo;
 
     //QLTT
-    if(requestInfo.requestInfo && dataSalaryInfo?.processStatusId != 20) {
+    if(requestInfo.requestInfo && processStatusId != 20) {
       const userInfo = JSON.parse(requestInfo.userInfo);
-      viewSettingTmp.proposedStaff = {...userInfo};
+      viewSettingTmp.proposedStaff = Object.assign(viewSettingTmp.proposedStaff,userInfo);
     }
     // Nhân sự điều phối
     if (requestInfo?.coordinatorInfo)
@@ -444,7 +412,7 @@ const SalaryAdjustmentPropse = (props) => {
     // Thong tin CBNV
     const memberCheck = {};
     let canCheckAll = false;
-    const employeeLists = dataSalaryInfo?.salaryAdjustments?.map((u) => {
+    const employeeLists = salaryAdjustments?.map((u) => {
       u.accepted = u.status ? true : false;
       const requestTmp = JSON.parse(u?.employeeInfo);
       memberCheck[requestTmp?.employeeNo] = {
@@ -490,9 +458,9 @@ const SalaryAdjustmentPropse = (props) => {
     setSelectedMembers(employeeLists);
 
     // CBQL cấp cơ sở
-    if (dataSalaryInfo?.requestAppraisers?.length > 0) {
+    if (requestAppraisers?.length > 0) {
       const _supervisors = [];
-      dataSalaryInfo.requestAppraisers.map(item => {
+      requestAppraisers.map(item => {
         const _itemInfo = JSON.parse(item.appraiserInfo);
         if(_itemInfo.type) { // HR thẩm định quyền điều chỉnh lương
           setAppraiser({
@@ -513,15 +481,23 @@ const SalaryAdjustmentPropse = (props) => {
       setSupervisors(_supervisors);
     }
     // CBLĐ phê duyệt
-    if (dataSalaryInfo?.approverInfo) {
-      const approvalData = JSON.parse(requestInfo?.approverInfo);
+    if (requestAppraisers?.length > 0) {
+      const [approverRes, approverArriveRes] = requestAppraisers.filter((ele) => ele.type === 3);
+      const approvalData = JSON.parse(approverRes?.appraiserInfo || "{}"),
+        approverArriveData = JSON.parse(approverArriveRes?.appraiserInfo || "{}");
+
       setApprover({
         ...approvalData,
         uid: approvalData?.employeeNo,
         employeeNo: approvalData?.employeeNo,
       });
+      setApproverArrive({
+        ...approverArriveData,
+        uid: approverArriveData?.employeeNo,
+        employeeNo: approverArriveData?.employeeNo,
+      });
     }
-    const requestDocuments = (dataSalaryInfo?.userProfileDocuments || []).map((u) => ({
+    const requestDocuments = (userProfileDocuments || []).map((u) => ({
       id: u.id,
       name: u.fileName,
       link: u.fileUrl,
@@ -777,7 +753,7 @@ const SalaryAdjustmentPropse = (props) => {
 
   // Thẩm định
   const handleConsent = () => {
-    // const processStatusId = appraiser ? 24 : 5
+    // const processStatusId = appraiser ? 24 : 5;
     if (selectedMembers.some(item => item.canChangeAction && !item.accepted && !item.comment)) {
       setShowCommentRequiredError(true);
       return;
@@ -811,6 +787,40 @@ const SalaryAdjustmentPropse = (props) => {
       ],
     });
   };
+
+  // luồng từ chối/ thẩm định cho NLD xac nhan
+  const handleConfirmEmployee = (isConsent) => {
+    const { currentAppraiserEmail } = viewSetting?.proposedStaff,
+      staffRequestStatusList = selectedMembers?.map(item => ({
+        employeeNo: item.uid,
+        salaryAdjustmentId: item.id,
+        status: (item.accepted || currentAppraiserEmail === item.email) ? 1 : 0,
+        comment: item.comment || ''
+      }));
+
+    setConfirmModal({
+      isShowModalConfirm: true,
+      modalTitle: isConsent ? t("ConsentConfirmation") : t("RejectConsenterRequest"),
+      modalMessage: isConsent ? t("ConfirmConsentRequest") : t("ReasonRejectRequest"),
+      typeRequest: isConsent ? Constants.STATUS_CONSENTED : Constants.STATUS_NO_CONSENTED,
+      confirmStatus: "",
+      dataToUpdate: [
+        {
+          id: id,
+          requestTypeId: 12,
+          sub: [
+            {
+              id: id,
+              processStatusId: isConsent ? 5 : 7,
+              comment: "",
+              status: "",
+              staffRequestStatusList,
+            },
+          ],
+        },
+      ],
+    });
+  }
 
   // Phê duyệt
   const handleApprove = () => {
@@ -858,10 +868,10 @@ const SalaryAdjustmentPropse = (props) => {
         return showStatusModal(t("HumanForChangeSalaryValidate"), false);
       }
       if (!approver) {
-        return showStatusModal(t("PleaseInputApprover"), false);
+        return showStatusModal(`${t("PleaseInputApprover")} (${t("Sent")})`, false);
       }
-      if (!approverArrive) { // backend chưa cập nhật 2 người phê duyệt đi và đến =================
-        return showStatusModal(t("PleaseInputApprover"), false);
+      if (!approverArrive) {
+        return showStatusModal(`${t("PleaseInputApprover")} (${t("Arrive")})`, false);
       }
       
       if(isTransferAppointProposal) {
@@ -876,7 +886,7 @@ const SalaryAdjustmentPropse = (props) => {
           params: { culture: getCulture() },
           headers: {
             'Content-Type': 'multipart/form-data',
-            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+            Authorization: `Bearer ${getStorage('accessToken')}`,
           },
         };
 
@@ -916,7 +926,7 @@ const SalaryAdjustmentPropse = (props) => {
           setIsLoading(true);
           const dataSend = {
             requestHistoryId: id,
-            companyCode: localStorage.getItem("companyCode") || "",
+            companyCode: getStorage("companyCode"),
             staffSalaryUpdate: selectedMembers.map((u) => ({
               salaryAdjustmentId: u?.id,
               employeeNo: u?.employeeNo,
@@ -946,7 +956,7 @@ const SalaryAdjustmentPropse = (props) => {
             data: dataSend,
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+              Authorization: `Bearer ${getStorage("accessToken")}`,
             },
           })
             .then((response) => {
@@ -1217,7 +1227,7 @@ const SalaryAdjustmentPropse = (props) => {
       data: dataSend,
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        Authorization: `Bearer ${getStorage("accessToken")}`,
       },
     })
       .then((response) => {
@@ -1309,7 +1319,7 @@ const SalaryAdjustmentPropse = (props) => {
 
       return (
         <React.Fragment key={index}>
-          {!!index && <tr style={{ border: 'none', height: '20px' }} />}
+          <tr style={{ border: 'none', height: '20px' }} />
           <tr className="table-header">
             <td colSpan={3} className="min-width font-weight-bold">
               <div className="d-flex">
@@ -1768,6 +1778,7 @@ const SalaryAdjustmentPropse = (props) => {
         confirmStatus={confirmModal.confirmStatus}
         dataToSap={confirmModal.dataToUpdate}
         onHide={onHideModalConfirm}
+        currentAppraiserEmail={viewSetting.proposedStaff.currentAppraiserEmail}
       />
       <div className="eval-heading">{isTransferAppointProposal ? t("ProposalTransfer") : t("SalaryPropse")}</div>
       {/* ĐỀ XUẤT ĐIỀU CHỈNH LƯƠNG */}
@@ -1848,7 +1859,7 @@ const SalaryAdjustmentPropse = (props) => {
               viewSetting.showComponent.btnExpertise ||
               viewSetting.showComponent.btnApprove
                 ? {}
-                : { visibility: "hidden" }
+                : { display: "none" }
             }
           >
             <button
@@ -2026,7 +2037,7 @@ const SalaryAdjustmentPropse = (props) => {
         </>
       )}
       {/* Proccess History */}
-      {!isCreateMode && (
+      {/* {!isCreateMode && (
         <>
           <h5 className="content-page-header">
             {t("RequestHistory").toUpperCase()}
@@ -2040,7 +2051,7 @@ const SalaryAdjustmentPropse = (props) => {
             />
           </div>
         </>
-      )}
+      )} */}
       <br />
       {/* List file */}
       <ul className="list-inline">
@@ -2137,6 +2148,26 @@ const SalaryAdjustmentPropse = (props) => {
             )}{" "}
             {t("Send")}
           </button>
+        )}
+        {/* Từ chối và xác nhận cho luồng NLĐ xác nhận */}
+        {viewSetting.showComponent.showWorkersConfirm && (
+          <>
+            <button
+              type="button"
+              className="btn btn-danger"
+              onClick={() => handleConfirmEmployee(false)}
+            >
+              <img src={IconDelete} className="mr-1" alt="delete" />{" "}
+              {t("RejectQuestionButtonLabel")}
+            </button>
+            <button
+              type="button"
+              className="btn btn-primary float-right ml-3 shadow"
+              onClick={() => handleConfirmEmployee(true)}
+            >
+              <i className="fas fa-check" aria-hidden="true"></i> {t("Confirm")}
+            </button>
+          </>
         )}
         {/* Từ chối */}
         {viewSetting.showComponent.btnRefuse && (
