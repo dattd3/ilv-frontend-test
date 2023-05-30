@@ -257,6 +257,12 @@ const Constants = {
     SINGLE: '0',
     MARRIED: '1',
     DIVORCED: '2',
+  },
+  STATUS_PROPOSAL: {
+    EMPLOYEE: 0,
+    LEADER_APPRAISER: 1,
+    EMPLOYEE_APPRAISER: 2,
+    CONSENTER: 3,
   }
 };
 export default Constants

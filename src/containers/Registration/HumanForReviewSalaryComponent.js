@@ -234,26 +234,35 @@ class HumanForReviewSalaryComponent extends React.Component {
             </div>
           )}
         </div>
-        {currentUserPnLVCodeLogged === Constants.pnlVCode.VinMec && (
+        {/* {currentUserPnLVCodeLogged === Constants.pnlVCode.VinMec && (
           <div className="row business-type">
-            <span className="col-12 text-info smaller">* {t("NoteSelectApprover")} <b><a href="https://camnangtt.vingroup.net/sites/vmec/default.aspx#/tracuucnpq" target="_blank" >{t("ApprovalMatrix")}</a></b>
+            <span className="col-12 text-info smaller">
+              * {t('NoteSelectApproverAppraiser')}{' '}
+              <b>
+                <a
+                  href="https://camnangtt.vingroup.net/sites/vmec/default.aspx#/tracuucnpq"
+                  target="_blank"
+                >
+                  {t('ApprovalMatrix')}
+                </a>
+              </b>
             </span>
           </div>
-        )}
+        )} */}
         {isAppraiserNote && (
           <div className="row business-type">
-          <span className="col-12 text-info smaller">
-            * {t('NoteSelectApproverAppraiser')}{' '}
-            <b>
-              <a
-                href="https://camnangtt.vingroup.net/sites/vmec/default.aspx#/tracuucnpq"
-                target="_blank"
-              >
-                {t('ApprovalMatrix')}
-              </a>
-            </b>
-          </span>
-        </div>
+            <span className="col-12 text-info smaller">
+              * {t('NoteSelectApproverAppraiser')}{' '}
+              <b>
+                <a
+                  href="https://camnangtt.vingroup.net/sites/vmec/default.aspx#/tracuucnpq"
+                  target="_blank"
+                >
+                  {t('ApprovalMatrix')}
+                </a>
+              </b>
+            </span>
+          </div>
         )}
       </div>
     </div>
