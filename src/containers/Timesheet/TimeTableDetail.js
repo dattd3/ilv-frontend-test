@@ -845,6 +845,16 @@ const processDataForTable = (data1, fromDateString, toDateString, reasonData) =>
      
      //check betwwen step time
       let timeStepsSorted = timeSteps.sort((a, b) => a.start > b.start ? 1 : -1);
+      //bỏ những giờ bị lồng nhau
+      for(let i = 0; i < timeStepsSorted.length - 1; i++) {
+        for(let j = i + 1; j < timeStepsSorted.length ; j++) {
+          if(!timeStepsSorted[i].isInside && timeStepsSorted[i].end >= timeStepsSorted[j].end) {
+            timeStepsSorted[j].isInside = true;
+          }
+        }
+      }
+      timeStepsSorted = timeStepsSorted.filter(a => !a.isInside);
+      
       let isValid1 = true;
       let isValid2 = true;
       let isShift1 = true;
