@@ -1339,6 +1339,7 @@ function SalaryPropse(props) {
               isEdit={!viewSetting.disableComponent.selectHrSupportViewSalary}
               approver={approver}
               updateApprover={(sup) => handleUpdateApprovalSalary(sup)}
+              isAppraiserNote={true}
             />
           </div>
         </div>
