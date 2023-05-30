@@ -640,18 +640,33 @@ const SalaryAdjustmentPropse = (props) => {
   };
 
   const handleDatePickerInputChange = (value, uid, objName) => {
-    const selectedMembersTmp = [...selectedMembers];
-    selectedMembersTmp.forEach((item) => {
-      if (item.uid === uid) {
-        if (moment(value, "DD-MM-YYYY").isValid()) {
-          const date = moment(value, Constants.LEAVE_DATE_FORMAT);
-          item[objName] = date;
-        } else {
-          item[objName] = "";
+    if (isCreate) {
+      const selectMembersTmp = [...selectMembers];
+      selectMembersTmp.forEach((item) => {
+        if (item.uid === uid) {
+          if (moment(value, "DD-MM-YYYY").isValid()) {
+            const date = moment(value, Constants.LEAVE_DATE_FORMAT);
+            item[objName] = date;
+          } else {
+            item[objName] = "";
+          }
         }
-      }
-    });
-    setSelectedMembers(selectedMembersTmp);
+      });
+      setSelectMembers(selectMembersTmp);
+    } else {
+      const selectedMembersTmp = [...selectedMembers];
+      selectedMembersTmp.forEach((item) => {
+        if (item.uid === uid) {
+          if (moment(value, "DD-MM-YYYY").isValid()) {
+            const date = moment(value, Constants.LEAVE_DATE_FORMAT);
+            item[objName] = date;
+          } else {
+            item[objName] = "";
+          }
+        }
+      });
+      setSelectedMembers(selectedMembersTmp);
+    }
   };
 
   const handleShowCurrentSalary = () => {
@@ -981,14 +996,14 @@ const SalaryAdjustmentPropse = (props) => {
   const prepareDataToSubmit = (id) => {
     if (isCreateMode) {
       let bodyFormData = new FormData();
-      const employeeInfoLst = (id ?selectedMembers : selectMembers).map((u) => ({
+      const employeeInfoLst = (id ? selectedMembers : selectMembers).map((u) => ({
         employeeNo: u?.employeeNo,
         username: u?.account.toLowerCase(),
         account: u?.account.toLowerCase().includes('@vingroup.net') ? u?.account.toLowerCase() : u?.account.toLowerCase() + "@vingroup.net",
         fullName: u?.fullName,
         jobTitle: u?.jobTitle,
         department: u?.department,
-        startDate: u?.startDate,
+        startDate: u?.startDate || moment(u?.effectiveTime, Constants.LEAVE_DATE_FORMAT).format("YYYY-MM-DD") || "",
         expireDate: u?.expireDate,
         contractName: u?.contractName,
         contractType: u?.contractType,
@@ -1517,8 +1532,7 @@ const SalaryAdjustmentPropse = (props) => {
             )}
             <td colSpan={2} className="same-width text-center">
               <span className="same-width">
-                {viewSetting.disableComponent.editSubjectApply &&
-                !isCreateMode ? (
+                {viewSetting.disableComponent.editSubjectApply ? (
                   <DatePicker
                     name="startDate"
                     autoComplete="off"
