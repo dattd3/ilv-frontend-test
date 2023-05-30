@@ -26,7 +26,7 @@ class ConfirmationModal extends React.Component {
 
     ok = (e) => {
         const { disabledSubmitButton, message } = this.state
-        const { t, type, id, dataToSap, isSyncFromEmployee, currentAppraiserEmail } = this.props
+        const { t, type, id, dataToSap, isSyncFromEmployee, indexCurrentAppraiser } = this.props
 
         if (disabledSubmitButton) {
             return;
@@ -64,16 +64,7 @@ class ConfirmationModal extends React.Component {
                 if (dataToSap[0].requestTypeId != Constants.ONBOARDING) {
                     dataToSap[0].sub[0].processStatusId = Constants.STATUS_NO_CONSENTED;
                 }
-                if (!!currentAppraiserEmail) { // từ chối thẩm định cho luồng NLĐ xác nhận
-                    const currentAppraiser = dataToSap[0].sub[0].staffRequestStatusList.find(ele => ele.email === currentAppraiserEmail);
-                    console.log('========================================');
-                    console.log('currentAppraiser: ', currentAppraiser, dataToSap[0].sub[0].staffRequestStatusList);
-                    console.log('========================================');
-                    // currentAppraiser.comment = message;
-                } else { // từ chối thẩm định cho luồng CBQL thẩm định
-                    dataToSap[0].sub[0].comment = message;
-                }
-                return;
+                dataToSap[0].sub[0].comment = message;
                 this.reject(dataToSap);
                 break;
             case Constants.STATUS_REVOCATION: // hủy
@@ -90,6 +81,16 @@ class ConfirmationModal extends React.Component {
                 dataToSap[0].sub[0].processStatusId = Constants.STATUS_EVICTION;
                 dataToSap[0].sub[0].comment = message;
                 this.revocationApproval(dataToSap);
+                break;
+            case Constants.STATUS_TRANSFER: // thẩm định NLĐ xác nhận
+                dataToSap[0].sub[0].processStatusId = Constants.STATUS_WAITING;
+                this.consent(dataToSap);
+                break;
+            case Constants.STATUS_TRANSFER_REFUSE: // thẩm định NLĐ từ chối
+                if (indexCurrentAppraiser !== undefined) {
+                    dataToSap[0].sub[0].staffRequestStatusList[indexCurrentAppraiser].comment = message;
+                    this.consent(dataToSap);
+                }
                 break;
             default:
                 break;
@@ -318,12 +319,7 @@ class ConfirmationModal extends React.Component {
     }
 
     consent = (dataToSap) => {
-        const { t, onHide } = this.props;
-        console.log('========================================');
-        console.log('dataToSap: ', dataToSap);
-        console.log('========================================');
-
-        return ;
+        const { t, onHide, type } = this.props;
 
         axios({
             method: 'POST',
@@ -342,7 +338,15 @@ class ConfirmationModal extends React.Component {
                         if (res.data.data[0].sub[0].status == "E") {
                             this.showStatusModal(t("Notification"), res.data.data[0].sub[0].message, false)
                         } else {
-                            this.showStatusModal(t("Successful"), t("successfulConsentReq"), true)
+                            this.showStatusModal(
+                              t('Successful'),
+                              t(
+                                type === Constants.STATUS_TRANSFER_REFUSE
+                                  ? 'successfulRejectConsentReq'
+                                  : 'successfulConsentReq'
+                              ),
+                              true
+                            );
                         }
                         // setTimeout(() => { this.hideStatusModal() }, 2000);
                     } else if (code == Constants.API_ERROR_NOT_FOUND_CODE) {
@@ -362,12 +366,6 @@ class ConfirmationModal extends React.Component {
 
     reject = (dataToSap) => {
         const { t, onHide } = this.props;
-
-        console.log('========================================');
-        console.log('dataToSap: ', dataToSap);
-        console.log('========================================');
-
-        return ;
 
         axios({
             method: 'POST',
@@ -450,6 +448,7 @@ class ConfirmationModal extends React.Component {
             [Constants.STATUS_NO_CONSENTED]: "bg-not-approved",
             [0]: "bg-not-approved",
             [Constants.STATUS_REVOCATION]: "bg-not-approved",
+            [Constants.STATUS_TRANSFER_REFUSE]: "bg-not-approved",
             [Constants.STATUS_APPROVED]: "bg-approved",
         },
             { isShowStatusModal, resultTitle, resultMessage, isSuccess, isShowStatusChangeShiftModal } = this.state,
