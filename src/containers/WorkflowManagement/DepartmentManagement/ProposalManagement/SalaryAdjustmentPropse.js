@@ -462,14 +462,14 @@ const SalaryAdjustmentPropse = (props) => {
       const _supervisors = [];
       requestAppraisers.map(item => {
         const _itemInfo = JSON.parse(item.appraiserInfo);
-        if(_itemInfo.type) { // HR thẩm định quyền điều chỉnh lương
+        if(_itemInfo.type === Constants.STATUS_PROPOSAL.EMPLOYEE_APPRAISER) { // HR thẩm định quyền điều chỉnh lương
           setAppraiser({
             ..._itemInfo,
             uid: _itemInfo?.employeeNo,
             employeeNo: _itemInfo?.employeeNo,
             requestHistoryId: item.requestHistoryId
           });
-        } else {
+        } else if(_itemInfo.type === Constants.STATUS_PROPOSAL.LEADER_APPRAISER) {
           _supervisors.push({
             ..._itemInfo,
             uid: _itemInfo?.employeeNo,
@@ -482,7 +482,7 @@ const SalaryAdjustmentPropse = (props) => {
     }
     // CBLĐ phê duyệt
     if (requestAppraisers?.length > 0) {
-      const [approverRes, approverArriveRes] = requestAppraisers.filter((ele) => ele.type === 3);
+      const [approverRes, approverArriveRes] = requestAppraisers.filter((ele) => ele.type === Constants.STATUS_PROPOSAL.CONSENTER);
       const approvalData = JSON.parse(approverRes?.appraiserInfo || "{}"),
         approverArriveData = JSON.parse(approverArriveRes?.appraiserInfo || "{}");
 
@@ -1039,7 +1039,7 @@ const SalaryAdjustmentPropse = (props) => {
           department: u?.department,
           order: i+1,
           company_email: u?.companyEmail,
-          type: 0,
+          type: Constants.STATUS_PROPOSAL.EMPLOYEE,
           employeeNo: u?.uid || u?.employeeNo,
           username: u?.username,
         };
@@ -1057,7 +1057,7 @@ const SalaryAdjustmentPropse = (props) => {
           department: item?.department,
           order: staffInfoLst[staffInfoLst.length-1]?.order + index + 1,
           company_email: item?.company_email?.toLowerCase(),
-          type: 1,
+          type: Constants.STATUS_PROPOSAL.LEADER_APPRAISER,
           employeeNo: item?.uid || item?.employeeNo,
           username: item?.username.toLowerCase(),
         }));
@@ -1073,7 +1073,7 @@ const SalaryAdjustmentPropse = (props) => {
           department: appraiser?.department,
           order: (appraiserInfoLst[appraiserInfoLst.length - 1] || staffInfoLst[staffInfoLst.length-1])?.order + 1,
           company_email: appraiser?.company_email?.toLowerCase(),
-          type: 2,
+          type: Constants.STATUS_PROPOSAL.EMPLOYEE_APPRAISER,
           employeeNo: appraiser?.uid || appraiser?.employeeNo,
           username: appraiser?.username?.toLowerCase(),
         });
@@ -1090,7 +1090,7 @@ const SalaryAdjustmentPropse = (props) => {
         department: ele?.department,
         order: appraiserInfoLst[appraiserInfoLst.length - 1]?.order + i + 1,
         company_email: ele?.company_email?.toLowerCase(),
-        type: 3,
+        type: Constants.STATUS_PROPOSAL.CONSENTER,
         employeeNo: ele?.uid || ele?.employeeNo,
         username: ele?.username?.toLowerCase(),
       }))
