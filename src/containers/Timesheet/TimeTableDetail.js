@@ -866,11 +866,11 @@ const processDataForTable = (data1, fromDateString, toDateString, reasonData) =>
           }
           if(timeStepsSorted[i].end < timeStepsSorted[j].start && timeStepsSorted[i].end < timeStepsSorted[j].end) {
             //check loi ca 1
-            if(timeStepsSorted[i].start <= kehoach1.end && timeStepsSorted[i].end >= kehoach1.start && timeStepsSorted[j].start <= kehoach1.end) {
+            if(timeStepsSorted[i].start <= kehoach1.end && timeStepsSorted[i].end >= kehoach1.start && timeStepsSorted[j].start <= kehoach1.end && (minStart > kehoach1.start || maxEnd < kehoach1.end)) {
               isValid1 = false;
             }
             //check loi ca 2
-            if(timeStepsSorted[i].start <= kehoach2.end && timeStepsSorted[i].end >= kehoach2.start && timeStepsSorted[j].start <= kehoach2.end) {
+            if(line1.subtype == '11' && timeStepsSorted[i].start <= kehoach2.end && timeStepsSorted[i].end >= kehoach2.start && timeStepsSorted[j].start <= kehoach2.end && (minStart2 > kehoach2.start || maxEnd2 < kehoach2.end)) {
               isValid2 = false; 
             }
           }
