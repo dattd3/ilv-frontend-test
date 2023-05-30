@@ -583,6 +583,16 @@ class EmployeeTimesheets extends Component {
       //check loi
       //check betwwen step time
       let timeStepsSorted = timeSteps.sort((a, b) => a.start > b.start ? 1 : -1);
+      //bỏ những giờ bị lồng nhau
+      for(let i = 0; i < timeStepsSorted.length - 1; i++) {
+        for(let j = i + 1; j < timeStepsSorted.length ; j++) {
+          if(!timeStepsSorted[i].isInside && timeStepsSorted[i].end >= timeStepsSorted[j].end) {
+            timeStepsSorted[j].isInside = true;
+          }
+        }
+      }
+      timeStepsSorted = timeStepsSorted.filter(a => !a.isInside);
+
       let isValid1 = true;
       let isValid2 = true;
       let isShift1 = true;
@@ -613,6 +623,16 @@ class EmployeeTimesheets extends Component {
 
           if (timeStepsSorted[j].start > kehoach1.end) {
             isShift1 = false;
+          }
+          if(timeStepsSorted[i].end < timeStepsSorted[j].start && timeStepsSorted[i].end < timeStepsSorted[j].end) {
+            //check loi ca 1
+            if(timeStepsSorted[i].start <= kehoach1.end && timeStepsSorted[i].end >= kehoach1.start && timeStepsSorted[j].start <= kehoach1.end && (minStart > kehoach1.start || maxEnd < kehoach1.end)) {
+              isValid1 = false;
+            }
+            //check loi ca 2
+            if(line1.subtype == '11' && timeStepsSorted[i].start <= kehoach2.end && timeStepsSorted[i].end >= kehoach2.start && timeStepsSorted[j].start <= kehoach2.end && (minStart2 > kehoach2.start || maxEnd2 < kehoach2.end)) {
+              isValid2 = false; 
+            }
           }
           maxEnd = isShift1 && timeStepsSorted[j].end > maxEnd ? timeStepsSorted[j].end : maxEnd;
           maxEnd2 = timeStepsSorted[j].end > maxEnd2 ? timeStepsSorted[j].end : maxEnd2;
