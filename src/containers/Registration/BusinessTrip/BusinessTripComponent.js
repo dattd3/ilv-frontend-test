@@ -13,7 +13,7 @@ import _ from 'lodash'
 import moment from 'moment'
 import map from '../../../../src/containers/map.config'
 import { withTranslation } from "react-i18next";
-import { getValueParamByQueryString, getRegistrationMinDateByConditions } from "../../../commons/Utils"
+import { getValueParamByQueryString, getRegistrationMinDateByConditions, isValidDateRequest } from "../../../commons/Utils"
 import { checkIsExactPnL } from '../../../commons/commonFunctions';
 
 registerLocale("vi", vi)
@@ -528,6 +528,13 @@ class BusinessTripComponent extends React.Component {
             return
         }
 
+        const hasNotErrorBackDate = (requestInfo || []).every(item => isValidDateRequest(item?.startDate))
+        if (!hasNotErrorBackDate) {
+            this.showStatusModal(t("Notification"), t("ErrorBackDateRequestVinpearl"), false)
+            this.setState({ needReload: false })
+            return
+        }
+
         const dataRequestInfo = requestInfo.map(req => {
             let reqItem = {
                 startDate: moment(req.startDate, "DD/MM/YYYY").format('YYYYMMDD').toString(),
@@ -606,8 +613,12 @@ class BusinessTripComponent extends React.Component {
                 this.setDisabledSubmitButton(false)
             }
         })
-        .catch(response => {
-            this.showStatusModal(this.props.t("Notification"), "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
+        .catch(error => {
+            let message = t("Error")
+            if (error?.response?.data?.result?.code == Constants.API_ERROR_CODE) {
+              message = error?.response?.data?.result?.message
+            }
+            this.showStatusModal(this.props.t("Notification"), message, false)
             this.setDisabledSubmitButton(false)
         })
         .finally(() => {
@@ -637,7 +648,7 @@ class BusinessTripComponent extends React.Component {
 
     hideStatusModal = () => {
         const { isEdit, needReload } = this.state;
-        this.setState({ isShowStatusModal: false });
+        this.setState({ isShowStatusModal: false, disabledSubmitButton: false });
         if (isEdit) {
             window.location.replace("/tasks")
         } else {

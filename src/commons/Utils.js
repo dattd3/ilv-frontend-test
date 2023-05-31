@@ -354,17 +354,48 @@ function parsteStringToHtml(arrHtml) {
     }
 }
 
+const isValidDateRequest = date => {
+    const userLoggedCompanyCode = localStorage.getItem('companyCode')
+    if ([Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl].includes(userLoggedCompanyCode)) {
+        const timeline = 17
+        const currentTime = moment().hour()
+        const currentDate = moment().format("DD/MM/YYYY")
+        const range = moment(currentDate, 'DD/MM/YYYY').diff(moment(date, 'DD/MM/YYYY'), 'days')
+        console.log('backDate => ', range)
+        if (currentTime < timeline) {
+            if (range > 1) {
+                return false
+            }
+        } else {
+            if (range > 0) {
+                return false
+            }
+        }
+    }
+
+    return true
+}
+
 const getRegistrationMinDateByConditions = () => {
     const userLoggedCompanyCode = localStorage.getItem('companyCode')
     let firstDay = null
     if ([Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl].includes(userLoggedCompanyCode)) {
-        let indexWednesdayInWeek = 3
-        let indexCurrentDayInWeek = moment().day()
-        firstDay = moment().startOf('week').isoWeekday(1) // Từ thứ 4 trở đi của tuần hiện tại đến cuối tuần hiện tại thì sẽ lấy ngày đầu tiên của tuần hiện tại 
-        if (indexCurrentDayInWeek <= indexWednesdayInWeek) { // Từ thứ 4 trở về trước thì sẽ lấy ngày đầu tiên của tuần trước đó
-            firstDay = moment().subtract(1, 'weeks').startOf('week').isoWeekday(1)
+        // let indexWednesdayInWeek = 3
+        // let indexCurrentDayInWeek = moment().day()
+        // firstDay = moment().startOf('week').isoWeekday(1) // Từ thứ 4 trở đi của tuần hiện tại đến cuối tuần hiện tại thì sẽ lấy ngày đầu tiên của tuần hiện tại 
+        // if (indexCurrentDayInWeek <= indexWednesdayInWeek) { // Từ thứ 4 trở về trước thì sẽ lấy ngày đầu tiên của tuần trước đó
+        //     firstDay = moment().subtract(1, 'weeks').startOf('week').isoWeekday(1)
+        // }
+
+        const timeline = 17
+        const currentTime = moment().hour()
+        if (currentTime < timeline) {
+            firstDay = moment().subtract(1, "days")
+        } else {
+            firstDay = moment()
         }
     }
+
     return firstDay
 }
 
@@ -559,5 +590,5 @@ export {
     getRequestConfigurations, removeAccents, formatStringByMuleValue, formatNumberInteger, exportToPDF, isEnableFunctionByFunctionName, getValueParamByQueryString, getDateByRangeAndFormat,
     calculateBackDateByPnLVCodeAndFormatType, isEnableShiftChangeFunctionByPnLVCode, isEnableInOutTimeUpdateFunctionByPnLVCode, getRequestTypeIdsAllowedToReApproval, getMuleSoftHeaderConfigurations,
     isAdjacentDateBy2Date, showRangeDateGroupByArrayDate, generateTaskCodeByCode, parsteStringToHtml, getRegistrationMinDateByConditions, isVinFast, isEnableOTFunctionByPnLVCode, getCurrentLanguage, 
-    getResignResonsMasterData, formatStringDateTimeByMuleValue, genderConfig, marriageConfig, formatProcessTime
+    getResignResonsMasterData, formatStringDateTimeByMuleValue, genderConfig, marriageConfig, formatProcessTime, isValidDateRequest
 }

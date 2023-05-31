@@ -26,8 +26,8 @@ import IconRemove from '../../../../assets/img/ic-remove.svg';
 import IconAdd from '../../../../assets/img/ic-add-green.svg';
 import { useApi } from '../../../../modules/api';
 import vi from 'date-fns/locale/vi'
-import { Button, Image } from "react-bootstrap";
-import { checkFilesMimeType } from "../../../../utils/file";
+import { Image } from "react-bootstrap";
+import { validateFileMimeType, validateTotalFileSize } from "../../../../utils/file";
 
 registerLocale("vi", vi)
 
@@ -619,10 +619,12 @@ const SalaryAdjustmentPropse = (props) => {
 
   // Attach file
   const handleAttachFile = (e) => {
-    const files = Object.values(e.target.files)
-    if (checkFilesMimeType(e, files)) {
+    const files = Object.values(e.target.files);
+    if (validateFileMimeType(e, files, t)) {
       const listFilesTmp = [...listFiles, ...files];
-      setListFiles(listFilesTmp)
+      if (validateTotalFileSize(e, listFilesTmp, t)) {
+        setListFiles(listFilesTmp);
+      }
     }
   }
 

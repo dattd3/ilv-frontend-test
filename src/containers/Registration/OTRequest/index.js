@@ -15,7 +15,7 @@ import {
 } from "commons/Utils";
 import AssesserComponent from "../AssesserComponent";
 import SearchUserComponent from "containers/SearchUserBox/index";
-import { checkFilesMimeType } from "utils/file";
+import { validateFileMimeType, validateTotalFileSize } from "utils/file";
 import IconPlusCircle from "assets/img/icon/Icon-plus-circle.svg";
 import IconRemove from "assets/img/icon-delete.svg";
 import ResultModal from "../ResultModal";
@@ -112,7 +112,7 @@ const getTotalHoursOtInRanges = (ranges = []) => {
     ?.toFixed(2);
 };
 
-const VFSX_LV3_ORG = 45005034;
+const VFSX_LV3_ORG = "45005034";
 
 export default function OTRequestComponent({ recentlyManagers }) {
   const { t } = useTranslation();
@@ -643,7 +643,7 @@ export default function OTRequestComponent({ recentlyManagers }) {
             ) {
               _errors[`range_minimum_hours_${index}_${rangeIndex}`] =
                 t("OTMinimumHours");
-            } else if (getHoursBetween2Times(startTime, endTime) < 1) {
+            } else if (currOrgLv3 !== VFSX_LV3_ORG && getHoursBetween2Times(startTime, endTime) < 1) {
               _errors[`range_minimum_hours_${index}_${rangeIndex}`] =
                 t("OTMinimumHours");
             }
@@ -746,10 +746,12 @@ export default function OTRequestComponent({ recentlyManagers }) {
   };
 
   const handleChangeFilesInput = (e) => {
-    if (checkFilesMimeType(e, e.target.files)) {
+    if (validateFileMimeType(e, e.target.files, t)) {
       const filesSelected = Object.values(e.target.files);
       const fileStates = [...files, ...filesSelected];
-      setFiles(fileStates);
+      if (validateTotalFileSize(e, fileStates, t)) {
+        setFiles(fileStates);
+      }
     }
   };
 
