@@ -278,8 +278,12 @@ class InOutTimeUpdateComponent extends React.Component {
         this.setDisabledSubmitButton(false)
       }
     })
-    .catch(response => {
-      this.showStatusModal(this.props.t("Notification"), this.props.t("Error"), false)
+    .catch(error => {
+      let message = t("Error")
+      if (error?.response?.data?.result?.code == Constants.API_ERROR_CODE) {
+        message = error?.response?.data?.result?.message
+      }
+      this.showStatusModal(this.props.t("Notification"), message, false)
       this.setDisabledSubmitButton(false)
     })
     .finally(() => {
