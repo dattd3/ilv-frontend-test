@@ -509,13 +509,19 @@ const SalaryAdjustmentPropse = (props) => {
   };
 
   const handleSelectMembers = (members) => {
-    const memberCheck = {};
+    const memberCheck = {},
+      orgsNames = ['division', 'department', 'unit', 'part'];
     const membersMapping = members.map((u) => {
       memberCheck[u.uid] = {
         uid: u.uid,
         checked: false,
         canChangeAction: u?.accepted == true,
       };
+
+      let departmentName = u['pnl'];
+       orgsNames.map((key) => {
+         if (u[key] && u[key] != '#') departmentName += '/' + u[key];
+       });
 
       return {
         uid: u?.uid,
@@ -529,6 +535,7 @@ const SalaryAdjustmentPropse = (props) => {
         contractName: u?.contractName,
         contractType: u?.contractType,
         department: u?.department,
+        departmentName,
         currentSalary: "",
         suggestedSalary: "",
         effectiveTime: "",
@@ -1151,6 +1158,7 @@ const SalaryAdjustmentPropse = (props) => {
         bodyFormData.append("id", id);
       } else {
         bodyFormData.append("isSalaryAdjustment", isSalaryAdjustment);
+        bodyFormData.append("formType", 2);
       }
 
       if (listFiles.filter(item=> item.id == undefined).length > 0) {
@@ -1413,13 +1421,18 @@ const SalaryAdjustmentPropse = (props) => {
                   disabled={!item.canChangeAction}
                   onChange={(e) => onCheckboxSelectChange(e, item.uid)}
                 />
-                <div>
+                <div style={{ whiteSpace: "nowrap", overflow: "hidden" }}>
                   <p className="mb-7px font-weight-bold">
                     {item?.fullName}{' '}
                     <span className="font-weight-normal">({account})</span>
                   </p>
                   <p className="mb-7px">{item?.jobTitle}</p>
-                  <p style={{ marginBottom: 0 }}>{item?.department}</p>
+                  <p style={{
+                    marginBottom: 0,
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    }} title={item?.departmentName}>{item?.departmentName}</p>
                 </div>
               </div>
             </td>
