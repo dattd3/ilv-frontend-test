@@ -529,7 +529,7 @@ class BusinessTripComponent extends React.Component {
         }
 
         const hasNotErrorBackDate = (requestInfo || []).every(item => isValidDateRequest(item?.startDate))
-        if (!hasNotErrorBackDate) {
+        if ((!this.props?.isEdit && !hasNotErrorBackDate) || (this.props?.isEdit && !isValidDateRequest(moment(businessTrip?.requestInfo[0]?.startDate, 'YYYYMMDD').format('DD/MM/YYYY')))) {
             this.showStatusModal(t("Notification"), t("ErrorBackDateRequestVinpearl"), false)
             this.setState({ needReload: false })
             return

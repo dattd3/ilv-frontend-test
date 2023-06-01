@@ -649,7 +649,7 @@ class LeaveOfAbsenceComponent extends React.Component {
     }
 
     submit() {
-        const { t } = this.props
+        const { t, leaveOfAbsence } = this.props
         const { files, isEdit, requestInfo } = this.state
         const err = this.verifyInput()
 
@@ -660,7 +660,7 @@ class LeaveOfAbsenceComponent extends React.Component {
         }
 
         const hasNotErrorBackDate = (requestInfo || []).every(item => isValidDateRequest(item?.startDate))
-        if (!hasNotErrorBackDate) {
+        if ((!this.props?.isEdit && !hasNotErrorBackDate) || (this.props?.isEdit && !isValidDateRequest(moment(leaveOfAbsence?.requestInfo[0]?.startDate, 'YYYYMMDD').format('DD/MM/YYYY')))) {
             this.showStatusModal(t("Notification"), t("ErrorBackDateRequestVinpearl"), false)
             this.setState({ needReload: false })
             return
@@ -717,7 +717,7 @@ class LeaveOfAbsenceComponent extends React.Component {
         }))
         bodyFormData.append('requestInfo', JSON.stringify(dataRequestInfo))
         if (isEdit) {
-            bodyFormData.append('id', this.props.leaveOfAbsence.id)
+            bodyFormData.append('id', leaveOfAbsence.id)
         }
 
         if (!isEdit) {
