@@ -55,7 +55,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "react-scripts --openssl-legacy-provider build",
     "build:staging": "rename .env.staging .env.production.local & npm run-script build & rename .env.production.local .env.staging",
     "build:uat": "env-cmd -f .env.uat npm run build",
     "build:staging:linux": "env-cmd -f .env.staging npm run build",
