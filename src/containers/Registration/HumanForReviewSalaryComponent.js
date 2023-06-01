@@ -171,6 +171,29 @@ class HumanForReviewSalaryComponent extends React.Component {
     return options;
   }
 
+  downloadApprovalMatrix = () => {
+    const config = getRequestConfigurations();
+      axios
+        .get(
+          `${process.env.REACT_APP_REQUEST_URL}user/file-suggests?type=14`,
+          config
+        )
+        .then((res) => {
+          if (res && res.data && res.data.data) {
+            const fileArr = res.data?.data.split('/'),
+              name = fileArr[fileArr.length - 1],
+              link = document.createElement('a');
+            link.href = res.data?.data;
+            link.setAttribute("download", name?.replace(/%20/gim, " "));
+            link.setAttribute("target", "_blank");
+            document.body.appendChild(link);
+            link.click();
+            link.parentNode.removeChild(link);
+          }
+        })
+        .catch((error) => {});
+  }
+
   render() {
     const customStyles = {
       option: (styles, state) => ({
@@ -254,12 +277,12 @@ class HumanForReviewSalaryComponent extends React.Component {
             <span className="col-12 text-info smaller">
               * {t('NoteSelectApproverAppraiser')}{' '}
               <b>
-                <a
-                  href="https://camnangtt.vingroup.net/sites/vmec/default.aspx#/tracuucnpq"
-                  target="_blank"
+                <span
+                  onClick={this.downloadApprovalMatrix}
+                  style={{ color: '#007bff' }}
                 >
                   {t('ApprovalMatrix')}
-                </a>
+                </span>
               </b>
             </span>
           </div>
