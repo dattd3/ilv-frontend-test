@@ -41,7 +41,7 @@
     "react-rating": "^2.0.5",
     "react-redux": "^7.2.1",
     "react-router-dom": "^5.0.1",
-    "react-scripts": "3.1.1",
+    "react-scripts": "5.0.0",
     "react-select": "^3.1.0",
     "react-toastify": "^4.4.2",
     "react-tooltip": "^4.2.21",
@@ -82,6 +82,8 @@
     "gulp": "^4.0.2",
     "gulp-concat": "^2.6.1",
     "gulp-react": "^4.0.0",
-    "gulp-uglify": "^3.0.2"
+    "gulp-uglify": "^3.0.2",
+    "eslint-plugin-only-warn": "^1.1.0",
+    "eslint-plugin-react": "^7.32.2"
   }
 }
