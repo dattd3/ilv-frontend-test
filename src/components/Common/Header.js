@@ -137,6 +137,12 @@ function Header(props) {
                                         }
                                         return `/notifications/${item.id}`
                                     case Constants.notificationType.NOTIFICATION_REGISTRATION: 
+                                        if(item.requestTypeId == Constants.PROPOSAL_TRANSFER) {
+                                            let subId = item.subRequestId?.includes('.') ? item.subRequestId.split('.')[1] : item.subRequestId;
+                                            let suffix = item.detailType == 'APPRAISAL' ? 'assess' : item.detailType == 'APPROVAL' ? 'approval' : 'request';
+                                            return `/transfer-appoint/${subId}/${suffix}`;
+                                        }
+                                        
                                         if (item.detailType == 'APPRAISAL')
                                             return `/tasks?tab=consent${item.groupId ? `&requestCategory=${item.groupId}` : ''}`
                                         else
