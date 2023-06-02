@@ -87,6 +87,7 @@ class ConfirmationModal extends React.Component {
                 this.consent(dataToSap);
                 break;
             case Constants.STATUS_TRANSFER_REFUSE: // thẩm định NLĐ từ chối
+                dataToSap[0].sub[0].processStatusId = Constants.STATUS_NO_CONSENTED;
                 if (indexCurrentAppraiser !== undefined) {
                     dataToSap[0].sub[0].staffRequestStatusList[indexCurrentAppraiser].comment = message;
                     this.consent(dataToSap);

@@ -104,6 +104,7 @@ const SalaryAdjustmentPropse = (props) => {
   const [isCallSalary, setIsCallSalary] = useState(false);
   const [isOpenDatepick, setIsOpenDatepick] = useState(false);
   const [showCommentRequiredError, setShowCommentRequiredError] = useState(false);
+  const [enableSubmit, setEnableSubmit] = useState(true);
   const [viewSetting, setViewSetting] = useState({
     showComponent: {
       stateProcess: false, // Button trang thai
@@ -633,23 +634,31 @@ const SalaryAdjustmentPropse = (props) => {
   };
 
   const onActionChangeAll = (accepted = true) => {
+    let _enableSubmit = true;
     const _selectedMembers = selectedMembers.map((item) => {
       if (checkedMemberIds[item.uid]?.checked == true) {
+        _enableSubmit = _enableSubmit && accepted;
         return { ...item, accepted: accepted };
       }
+      _enableSubmit = _enableSubmit & item.accepted;
       return item;
     });
     setSelectedMembers(_selectedMembers);
+    setEnableSubmit(_enableSubmit);
   };
 
   const onActionChange = (uid, accepted = true) => {
+    let _enableSubmit = true;
     const _selectedMembers = selectedMembers.map((item) => {
       if (item.uid == uid) {
+        _enableSubmit = _enableSubmit && accepted;
         return { ...item, accepted: accepted };
       }
+      _enableSubmit = _enableSubmit & item.accepted;
       return item;
     });
     setSelectedMembers(_selectedMembers);
+    setEnableSubmit(_enableSubmit);
   };
 
   const handleTextInputChange = (value, uid, objName) => {
@@ -865,7 +874,7 @@ const SalaryAdjustmentPropse = (props) => {
           sub: [
             {
               id: id,
-              processStatusId: 5,
+              processStatusId: isConsent ? 5 : 7,
               comment: "",
               status: "",
               staffRequestStatusList,
@@ -929,8 +938,10 @@ const SalaryAdjustmentPropse = (props) => {
       }
       
       if(isTransferAppointProposal) {
-        const isEmptyProposalMembers = selectMembers.every(ele => isEmpty(ele.proposedPositionCode) || isEmpty(ele.proposedDepartmentCode));
-        if(isEmptyProposalMembers) return showStatusModal(t("ProposedEmployeeEmpty"), false);
+        const listErrors = validateAppoitment();
+        if (listErrors.length !== 0) {
+          return showStatusModal(listErrors[0], false);
+        }
       }
       setIsLoading(true);
 
@@ -1257,6 +1268,16 @@ const SalaryAdjustmentPropse = (props) => {
     });
     return errors;
   };
+
+  const validateAppoitment = () => {
+    const selectedMembersTmp = [...selectMembers];
+    let errors = [];
+    selectedMembersTmp.forEach((u) => {
+      if (!u.proposedPositionCode) errors.push(t("ProposedEmployeeEmpty"));
+      if (!u.effectiveTime) errors.push(t("SelecTimePeriodValidate"));
+    });
+    return errors;
+  }
 
   const handleChangeModalConfirmPassword = (token) => {
     setAccessToken(token);
@@ -1719,12 +1740,14 @@ const SalaryAdjustmentPropse = (props) => {
                       disabled
                     >
                       <option
-                        dangerouslySetInnerHTML={{
-                          __html: !!item.proposedPosition
-                            ? `${item?.proposedPosition} (${item.proposedPositionCode})`
-                            : t('Select'),
-                        }}
-                      />
+                      style={{fontSize: '14px'}}
+                      >
+                        {
+                          !!item.proposedPosition
+                          ? `${item?.proposedPosition} (${item.proposedPositionCode})`
+                          : t('Select')
+                        }
+                      </option>
                     </select>
                   </span>
                 </div>
@@ -1732,7 +1755,7 @@ const SalaryAdjustmentPropse = (props) => {
                   <span className="title font-weight-bold">
                     * {t('proposal_org')}:
                   </span>
-                  <span className="input form-control mv-10 w-100 disabled">
+                  <span className="input form-control mv-10 w-100 disabled" style={{fontSize: '14px'}}>
                     {item?.proposedDepartment}
                   </span>
                 </div>
@@ -2242,7 +2265,9 @@ const SalaryAdjustmentPropse = (props) => {
           <button
             type="button"
             className="btn btn-primary float-right ml-3 shadow"
+            style={enableSubmit ? {} : {opacity: 0.2}}
             onClick={handleConsent}
+            disabled={enableSubmit ? false : true}
           >
             <i className="fas fa-check" aria-hidden="true"></i> {t("Consent")}
           </button>
@@ -2262,6 +2287,8 @@ const SalaryAdjustmentPropse = (props) => {
           <button
             type="button"
             className="btn btn-success float-right ml-3 shadow"
+            disabled={enableSubmit ? false : true}
+            style={enableSubmit ? {} : {opacity: 0.2}}
             onClick={handleApprove}
           >
             <i className="fas fa-check" aria-hidden="true"></i> {t("Approval")}

@@ -1253,7 +1253,7 @@
   "SalaryAdjustmentPropse": "Proposed Income Adjustment",
   "SalaryPropse": "Proposed Income Adjustment",
   "HumanForReviewSalaryValidate": "Please enter support personnel to view salary!",
-  "HumanForChangeSalaryValidate": "Please enter personnel to consent the right to adjust salary!",
+  "HumanForChangeSalaryValidate": "Please enter personnel to consent the right to adjust!",
   "ProposedEmployeeValidate": "The proposed employee has not been selected!",
   "ProposedEmployeeEmpty": "The proposed employee missing new position!",
   "InformationRequired": "Please input information",
