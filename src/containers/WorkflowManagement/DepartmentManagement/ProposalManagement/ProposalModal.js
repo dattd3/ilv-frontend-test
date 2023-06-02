@@ -160,7 +160,7 @@ class ProposalModal extends React.Component {
             )[0];
           }
           // get data and search in here
-          this.handleSearch();
+          this.handleSearch(true);
         }
 
         this.setState({
@@ -188,7 +188,7 @@ class ProposalModal extends React.Component {
   }
 
   handleChangeSelect = (e, key, action) => {
-    const { data, orgsOrigin, org } = this.state;
+    let { data, orgsOrigin, org, titles, titlesOrigin, proposal } = this.state;
     let index = 0;
 
     data[key] = !!e ? e : null;
@@ -209,9 +209,15 @@ class ProposalModal extends React.Component {
       }
     }
 
+    if(key != 'proposal') {
+      data.proposal = null;
+      titles = [];
+      titlesOrigin = []
+    }
+
     this.setState(
       // { data, org, titles: [], titlesOrigin: [] },
-      { data, org },
+      { data, org, titles, titlesOrigin },
       this.validateSearch
     );
   };
@@ -231,7 +237,7 @@ class ProposalModal extends React.Component {
     return Object.keys(errors).length > 0;
   };
 
-  handleSearch = async () => {
+  handleSearch = async (shouldUpdateProposedCode = false) => {
     const config = getMuleSoftHeaderConfigurations(),
       { modal } = this.props,
       { proposedPositionCode } = modal.data;
@@ -253,7 +259,7 @@ class ProposalModal extends React.Component {
       }));
 
     if (!!resData) {
-      if (!!proposedPositionCode) {
+      if (!!proposedPositionCode && shouldUpdateProposedCode == true) {
         data.proposal = titles.filter(
           (ele) => ele.value === proposedPositionCode
         )?.[0];
@@ -343,7 +349,6 @@ class ProposalModal extends React.Component {
       { pnls, blocks, regions, units, departments, crews, teams, groups } = org,
       { pnl, block, region, unit, department, crew, team, group, proposal } =
         data;
-
     return (
       <Modal
         centered
