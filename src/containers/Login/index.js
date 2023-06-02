@@ -11,6 +11,7 @@ import qrAndroid from '../../assets/img/qr_android.svg';
 import icVietnam from '../../assets/img/icon/ic_vietnam.svg';
 import icEnglish from '../../assets/img/icon/ic_english.svg';
 import qrIos from '../../assets/img/qr_ios.svg';
+import Banner from 'assets/img/banner.svg'
 import { useLocalizeStore } from '../../modules';
 import Constants from "../../commons/Constants";
 import Select, { components } from 'react-select'
@@ -121,7 +122,7 @@ function Login() {
     <Container className="login-page">
       <Row className="justify-content-center">
         <Col className="col-xl-12 col-lg-12 col-md-12">
-          <div className="card o-hidden border-0 shadow-lg my-5">
+          <div className="card o-hidden border-0 shadow-lg">
             <div className="card-body p-0">
               <div className="row" >
 
@@ -173,8 +174,8 @@ function Login() {
                     </div>
                   </div>
                 </div>
-                <div className="col-lg-7">
-                  <Carousel nextIcon={null} prevIcon={null}>
+                <div className="col-lg-7 d-flex flex-column">
+                  {/* <Carousel nextIcon={null} prevIcon={null}>
                     <Carousel.Item interval={1000}>
                       <div className="detail-contain">
                         <div className="version-contain">
@@ -246,7 +247,14 @@ function Login() {
 
                     </Carousel.Item>
 
-                  </Carousel>
+                  </Carousel> */}
+                  <div className="banner-block">
+                    <div className="text-center banner-title">Welcome to <span className="font-weight-bold">ILOVEVINGROUP!</span></div>
+                    <div className="text-center banner-img-block">
+                      <img src={Banner} alt="Banner" />
+                    </div>
+                    <div className="text-center banner-footer">Quét mã QR Code để cài đặt ứng dụng</div>
+                  </div>
                   <div className="bottom-link">
                     <span>Website: https://myvingroup.vingroup.net</span>
                   </div>
