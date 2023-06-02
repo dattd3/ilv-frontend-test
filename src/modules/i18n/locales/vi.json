@@ -397,8 +397,8 @@
   "IntermittenShiftSupport": "Hỗ trợ ca gãy",
   "InternalRecruitment": "Tuyển dụng nội bộ",
   "InvalidApprover": "Người phê duyệt không có thẩm quyền!",
-  "InvalidDate": "Ngày nhập không hợp lệ ",
-  "InvalidHour": "Giờ nhập không hợp lệ",
+  "InvalidDate": "(*) Ngày nhập không hợp lệ ",
+  "InvalidHour": "(*) Giờ nhập không hợp lệ",
   "Invalid.PleaseChooseAgain": "Tổng thời gian nghỉ không hợp lệ, vui lòng chọn lại",
   "IslandSupport": "Hỗ trợ làm việc trên đảo tại Nha Trang",
   "Items": "Tên mục",
@@ -1800,5 +1800,7 @@
   "SearchByDate": "Tìm kiếm theo ngày",
   "InvalidMimeType": " không đúng định dạng! Xin vui lòng chọn lại",
   "ExceedMaxFileSize": "Tổng dung lượng file vượt quá 8MB! Xin vui lòng chọn lại",
-  "ErrorBackDateRequestVinpearl": "Gửi yêu cầu thất bại - thao tác quá thời gian quy định"
+  "ErrorBackDateRequestVinpearl": "Gửi yêu cầu thất bại - thao tác quá thời gian quy định",
+  "IsOvernight": "Qua đêm"
+
 }

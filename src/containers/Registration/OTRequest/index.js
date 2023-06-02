@@ -40,10 +40,11 @@ const isNullCustomize = (value) => {
     : false;
 };
 
-const getHoursBetween2Times = (start, end) => {
+const getHoursBetween2Times = (start, end, isOverNight) => {
   if (!start || !end) return 0;
+  const endTime = isOverNight ? moment(end).add(1, "day") : end;
   return moment
-    .duration(moment(end, "HH:mm").diff(moment(start, "HH:mm")))
+    .duration(moment(endTime, "HH:mm").diff(moment(start, "HH:mm")))
     .asHours()
     .toFixed(2);
 };
@@ -106,7 +107,7 @@ const getTotalHoursOtInRanges = (ranges = []) => {
     .reduce(
       (accumulator, currentValue) =>
         accumulator * 1 +
-        getHoursBetween2Times(currentValue.startTime, currentValue.endTime) * 1,
+        getHoursBetween2Times(currentValue.startTime, currentValue.endTime, currentValue.isOverNight) * 1,
       0
     )
     ?.toFixed(2);
@@ -252,6 +253,30 @@ export default function OTRequestComponent({ recentlyManagers }) {
           ? {
               ...requestInfoData?.[dayIndex]?.timeRanges?.[rangeIndex],
               [field]: value,
+            }
+          : item
+      );
+      setRequestInfoData(
+        requestInfoData.map((item, index) => {
+          return index === dayIndex
+            ? {
+                ...item,
+                hoursOt: getTotalHoursOtInRanges(newRanges),
+                timeRanges: newRanges,
+              }
+            : item;
+        })
+      );
+    }
+  };
+
+  const handleChangeIsOvernight = (dayIndex, rangeIndex, value) => {
+    if (requestInfoData?.[dayIndex]) {
+      const newRanges = requestInfoData?.[dayIndex].timeRanges?.map((item, i) =>
+        i === rangeIndex
+          ? {
+              ...requestInfoData?.[dayIndex]?.timeRanges?.[rangeIndex],
+              isOverNight: value,
             }
           : item
       );
@@ -621,8 +646,6 @@ export default function OTRequestComponent({ recentlyManagers }) {
       if (item.isEdited) {
         const currOrgLv3 = localStorage.getItem("organizationLv3");
         if (!item.reasonType) _errors[`reasonType_${index}`] = t("Required");
-        // if (!item.overTimeType)
-        //   _errors[`overTimeType_${index}`] = t("Required");
         if (!item.note) _errors[`note_${index}`] = t("Required");
         if (item.hoursOt <= 0) {
           _errors[`invalidHour_${index}`] = t("InvalidHour");
@@ -631,19 +654,26 @@ export default function OTRequestComponent({ recentlyManagers }) {
         if (!budgetApprover) _errors["budgetApprover"] = t("Required");
         // eslint-disable-next-line no-unused-expressions
         item.timeRanges?.forEach((range, rangeIndex) => {
-          const { startTime, endTime } = range;
+          const { startTime, endTime, isOverNight } = range;
           if (!startTime)
             _errors[`range_startTime_${index}_${rangeIndex}`] = t("Required");
           if (!endTime)
             _errors[`range_endTime_${index}_${rangeIndex}`] = t("Required");
           if (startTime && endTime) {
+            if (getHoursBetween2Times(startTime, endTime, isOverNight) <= 0) {
+              _errors[`invalidHour_${index}_${rangeIndex}`] =
+                t("InvalidHour");
+            }
             if (
               currOrgLv3 === VFSX_LV3_ORG &&
-              getHoursBetween2Times(startTime, endTime) < 0.5
+              getHoursBetween2Times(startTime, endTime, isOverNight) < 0.5
             ) {
               _errors[`range_minimum_hours_${index}_${rangeIndex}`] =
                 t("OTMinimumHours");
-            } else if (currOrgLv3 !== VFSX_LV3_ORG && getHoursBetween2Times(startTime, endTime) < 1) {
+            } else if (
+              currOrgLv3 !== VFSX_LV3_ORG &&
+              getHoursBetween2Times(startTime, endTime, isOverNight) < 1
+            ) {
               _errors[`range_minimum_hours_${index}_${rangeIndex}`] =
                 t("OTMinimumHours");
             }
@@ -662,10 +692,13 @@ export default function OTRequestComponent({ recentlyManagers }) {
               ).isAfter(range.endTime);
 
               if (
-                Math.abs(getHoursBetween2Times(
-                  nextTimeIsAfter ? range.endTime : range.startTime,
-                  nextTimeIsAfter ? nextTime.startTime : nextTime.endTime
-                )) < 1
+                Math.abs(
+                  getHoursBetween2Times(
+                    nextTimeIsAfter ? range.endTime : range.startTime,
+                    nextTimeIsAfter ? nextTime.startTime : nextTime.endTime,
+                    false
+                  )
+                ) < 1
               ) {
                 _errors[`range_space_hours_${index}_${i}`] = t(
                   "OTInvalidSpaceHours"
@@ -1039,7 +1072,7 @@ export default function OTRequestComponent({ recentlyManagers }) {
                         <div className="ot-note">{t("OTNote")}</div>
                         {timesheet?.timeRanges?.map((range, rangeIndex) => (
                           <div className="row mb-15" key={rangeIndex}>
-                            <div className="col-5 mr-12">
+                            <div className="col-5">
                               {rangeIndex === 0 && (
                                 <>
                                   <div className="mb-12">{t("OTReason")}</div>
@@ -1144,6 +1177,30 @@ export default function OTRequestComponent({ recentlyManagers }) {
                                   }
                                 </p>
                               </div>
+                              <div className="form-item end-time-container">
+                                {rangeIndex === 0 && (
+                                  <div
+                                    className="mb-12"
+                                    style={{ textAlign: "center" }}
+                                  >
+                                    {t("IsOvernight")}
+                                  </div>
+                                )}
+                                <div className="is-overnight-container">
+                                  <input
+                                    name="isOvernight"
+                                    type="checkbox"
+                                    checked={range?.isOverNight || false}
+                                    onChange={(event) =>
+                                      handleChangeIsOvernight(
+                                        index,
+                                        rangeIndex,
+                                        event.target.checked
+                                      )
+                                    }
+                                  />
+                                </div>
+                              </div>
                               {timesheet?.timeRanges?.length === 1 ? (
                                 <button
                                   className="add-time-block-btn"
@@ -1190,6 +1247,17 @@ export default function OTRequestComponent({ recentlyManagers }) {
                                 </div>
                               )}
                               <div className="line-break" />
+                              {errors[
+                                `invalidHour_${index}_${rangeIndex}`
+                              ] && (
+                                <p className="text-danger">
+                                  {
+                                    errors[
+                                      `invalidHour_${index}_${rangeIndex}`
+                                    ]
+                                  }
+                                </p>
+                              )}
                               {errors[
                                 `range_overlapTime_${index}_${rangeIndex}`
                               ] && (

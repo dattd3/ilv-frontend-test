@@ -385,8 +385,8 @@
   "IntermittenShiftSupport": "Intermitten Shift Support",
   "InternalRecruitment": "Internal Recruitment",
   "InvalidApprover": "Invalid Approver",
-  "InvalidDate": "Invalid Date",
-  "InvalidHour": "Invalid Hour",
+  "InvalidDate": "(*) Invalid Date",
+  "InvalidHour": "(*) Invalid Hour",
   "Invalid.PleaseChooseAgain": "Invalid. Please choose again.",
   "IslandSupport": "Island Support",
   "Items": "Items",
@@ -1783,5 +1783,7 @@
   "SearchByDate": "Search by date",
   "InvalidMimeType": " is invalid type! Please select again!",
   "ExceedMaxFileSize": "The total file size must not exceed 8MB",
-  "ErrorBackDateRequestVinpearl": "Request creation failed - Time out"
+  "ErrorBackDateRequestVinpearl": "Request creation failed - Time out",
+  "IsOvernight": "Overnight"
+
 }
