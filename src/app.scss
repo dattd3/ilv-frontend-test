@@ -390,7 +390,7 @@
   color: yellow;
 }
 .login-page {
-
+  margin: auto;
   .detail-contain {
     display: flex;
     flex-direction: column;
@@ -481,7 +481,7 @@
     align-items: center;
     color: white;
     padding: 7px 0;
-
+    margin-top: auto;
     span:before {
       margin-right: 5px;
       content: "\e907";
@@ -586,6 +586,15 @@
       &:focus {
         box-shadow: none;
       }
+    }
+  }
+  .banner-block {
+    .banner-title {
+      margin: 20px 0;
+      color: #D13238;
+    }
+    .banner-footer {
+      margin: 15px 0 30px 0;
     }
   }
 }
