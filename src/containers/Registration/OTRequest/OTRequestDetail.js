@@ -351,6 +351,24 @@ export default function OTRequestDetailComponent({ data, action }) {
                                     </div>
                                   </div>
                                 </div>
+                                {/* <div className="col-2">
+                                    <div className="form-item">
+                                    <div
+                                      className="mb-12"
+                                      style={{ textAlign: "center" }}
+                                    >
+                                      {t("IsOvernight")}
+                                    </div>
+                                    <div className="is-overnight-container">
+                                      <input
+                                        name="isOvernight"
+                                        type="checkbox"
+                                        disabled={true}
+                                        checked={timesheet?.isOverNight || false}
+                                      />
+                                    </div>
+                                  </div>
+                                </div> */}
                               </React.Fragment>
                             ))}
                         </div>

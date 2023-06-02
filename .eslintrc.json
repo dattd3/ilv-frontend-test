@@ -3,8 +3,8 @@
       "ecmaVersion": "latest",
       "sourceType": "module"
   },
-  "plugins": ["react", "only-warn"],
   "env": {
-      "es6": true
-  }
+    "es6": true
+  },
+  "plugins": ["react", "only-warn"],
 }
