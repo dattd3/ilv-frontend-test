@@ -97,6 +97,7 @@ const SalaryAdjustmentPropse = (props) => {
 
   const [coordinator, setCoordinator] = useState(null); // Nhân sự hỗ trợ xin quyền xem lương
   const [supervisors, setSupervisors] = useState([null]);
+  const [employeAppraisers, setEmployeeAppraisers] = useState([]);
   const [appraiser, setAppraiser] = useState(null); // HR thẩm định quyền điều chỉnh lương
   const [approver, setApprover] = useState(null); // CBLĐ phê duyệt
   const [approverArrive, setApproverArrive] = useState(null); // CBLĐ phê duyệt
@@ -412,7 +413,8 @@ const SalaryAdjustmentPropse = (props) => {
     // Thong tin CBNV
     const memberCheck = {};
     let canCheckAll = false;
-    const employeeLists = salaryAdjustments?.map((u) => {
+    let userLoginNo = getStorage("employeeNo"), isEmployeeLogin = false;
+    let employeeLists = salaryAdjustments?.map((u) => {
       u.accepted = u.status ? true : false;
       const requestTmp = JSON.parse(u?.employeeInfo);
       memberCheck[requestTmp?.employeeNo] = {
@@ -421,7 +423,9 @@ const SalaryAdjustmentPropse = (props) => {
         canChangeAction: u?.accepted == true,
       };
       canCheckAll = canCheckAll || u?.accepted == true;
-
+      if(userLoginNo == requestTmp?.employeeNo) {
+        isEmployeeLogin = true;
+      }
       return {
         id: u?.id,
         uid: requestTmp?.employeeNo,
@@ -435,6 +439,7 @@ const SalaryAdjustmentPropse = (props) => {
         contractName: requestTmp?.contractName,
         contractType: requestTmp?.contractType,
         department: requestTmp?.department,
+        departmentName: requestTmp?.departmentName,
         currentSalary: "0",
         suggestedSalary: "0",
         effectiveTime: u?.startDate
@@ -452,6 +457,15 @@ const SalaryAdjustmentPropse = (props) => {
         comment: u.comment
       };
     });
+    if(isEmployeeLogin) {
+      employeeLists = employeeLists.map(u => {
+        const shouldHide = userLoginNo != u?.employeeNo;
+        return {
+          ...u,
+          shouldHide: shouldHide
+        }
+      })
+    }
    
     setCanSelectedAll(canCheckAll);
     setCheckedMemberIds(memberCheck);
@@ -460,6 +474,7 @@ const SalaryAdjustmentPropse = (props) => {
     // CBQL cấp cơ sở
     if (requestAppraisers?.length > 0) {
       const _supervisors = [];
+      const _employeeAppraiser = [];
       requestAppraisers.map(item => {
         const _itemInfo = JSON.parse(item.appraiserInfo);
         if(_itemInfo.type === Constants.STATUS_PROPOSAL.EMPLOYEE_APPRAISER) { // HR thẩm định quyền điều chỉnh lương
@@ -476,9 +491,15 @@ const SalaryAdjustmentPropse = (props) => {
             employeeNo: _itemInfo?.employeeNo,
             requestHistoryId: item.requestHistoryId
           })
+        } else if (_itemInfo.type == Constants.STATUS_PROPOSAL.EMPLOYEE) {
+          const _employeeInfo = employeeLists.find((ele) => ele.uid == _itemInfo.employeeNo);
+          if(_employeeInfo) {
+            _employeeAppraiser.push(_employeeInfo)
+          }
         }
       })
       setSupervisors(_supervisors);
+      setEmployeeAppraisers(_employeeAppraiser);
     }
     // CBLĐ phê duyệt
     if (requestAppraisers?.length > 0) {
@@ -534,7 +555,7 @@ const SalaryAdjustmentPropse = (props) => {
         expireDate: "",
         contractName: u?.contractName,
         contractType: u?.contractType,
-        department: u?.department,
+        department: departmentName,
         departmentName,
         currentSalary: "",
         suggestedSalary: "",
@@ -546,6 +567,7 @@ const SalaryAdjustmentPropse = (props) => {
     });
     setCheckedMemberIds(memberCheck);
     setSelectMembers(membersMapping);
+    setEmployeeAppraisers(membersMapping);
   };
 
   const handleSelectedMembers = (members) => {
@@ -713,7 +735,7 @@ const SalaryAdjustmentPropse = (props) => {
       dataToUpdate: [
         {
           id: id,
-          requestTypeId: 12,
+          requestTypeId: isTransferAppointProposal ? 14 : 12,
           sub: [
             {
               id: id,
@@ -738,7 +760,7 @@ const SalaryAdjustmentPropse = (props) => {
       dataToUpdate: [
         {
           id: id,
-          requestTypeId: 12,
+          requestTypeId: isTransferAppointProposal ? 14 : 12,
           sub: [
             {
               id: id,
@@ -795,7 +817,7 @@ const SalaryAdjustmentPropse = (props) => {
       dataToUpdate: [
         {
           id: id,
-          requestTypeId: 12,
+          requestTypeId: isTransferAppointProposal ? 14 : 12,
           sub: [
             {
               id: id,
@@ -827,7 +849,6 @@ const SalaryAdjustmentPropse = (props) => {
           comment: item.comment || ''
         };
       });
-
     setConfirmModal({
       isShowModalConfirm: true,
       modalTitle: isConsent ? t("ConsentConfirmation") : t("RejectConsenterRequest"),
@@ -838,7 +859,7 @@ const SalaryAdjustmentPropse = (props) => {
       dataToUpdate: [
         {
           id: id,
-          requestTypeId: 12,
+          requestTypeId: isTransferAppointProposal ? 14 : 12,
           sub: [
             {
               id: id,
@@ -870,7 +891,7 @@ const SalaryAdjustmentPropse = (props) => {
       dataToUpdate: [
         {
           id: id,
-          requestTypeId: 12,
+          requestTypeId: isTransferAppointProposal ? 14 : 12,
           sub: [
             {
               id: id,
@@ -1019,6 +1040,7 @@ const SalaryAdjustmentPropse = (props) => {
         fullName: u?.fullName,
         jobTitle: u?.jobTitle,
         department: u?.department,
+        departmentName: u?.departmentName,
         startDate: u?.startDate || moment(u?.effectiveTime, Constants.LEAVE_DATE_FORMAT).format("YYYY-MM-DD") || "",
         expireDate: u?.expireDate,
         contractName: u?.contractName,
@@ -1032,9 +1054,9 @@ const SalaryAdjustmentPropse = (props) => {
         staffStrengths: u?.strength,
         staffWknesses: u?.weakness,
       })),
-      staffInfoLst = (id ? selectedMembers : selectMembers).map((u, i) => {
+      staffInfoLst = (employeAppraisers).map((u, i) => {
         return {
-          avatar: u?.avatar,
+          avatar: '',
           account: `${u?.account}@vingroup.net`,
           fullName: u?.fullName,
           employeeLevel: u?.employeeLevel,
@@ -1196,11 +1218,7 @@ const SalaryAdjustmentPropse = (props) => {
   };
 
   const removeMembers = (uid) => {
-    if(isCreate) {
-      setSelectMembers(selectMembers.filter(ele => ele.uid !== uid));
-    } else {
-      setSelectedMembers(selectedMembers.filter(ele => ele.uid !== uid));
-    }
+    setEmployeeAppraisers(employeAppraisers.filter(ele => ele.uid !== uid));
   }
 
   const removeSupervisorItem = (index) => {
@@ -1210,7 +1228,7 @@ const SalaryAdjustmentPropse = (props) => {
   };
 
   const handleUpdateSupervisors = (approver, index) => {
-    let userExist = supervisors.findIndex(
+    let userExist = [ ...employeAppraisers,...supervisors].findIndex(
       (item) => approver?.uid && item?.uid == approver?.uid
     );
     if (userExist != -1) {
@@ -1344,6 +1362,7 @@ const SalaryAdjustmentPropse = (props) => {
 
   const renderListMember = (members) => {
     return members.map((item, index) => {
+      if(item.shouldHide == true) return null;
       const account = item?.account?.indexOf('@')
           ? item.account.split('@')[0]
           : item.account,
@@ -1432,7 +1451,7 @@ const SalaryAdjustmentPropse = (props) => {
                     whiteSpace: "nowrap",
                     overflow: "hidden",
                     textOverflow: "ellipsis",
-                    }} title={item?.departmentName}>{item?.departmentName}</p>
+                    }} title={item?.department}>{item?.department}</p>
                 </div>
               </div>
             </td>
@@ -1967,7 +1986,7 @@ const SalaryAdjustmentPropse = (props) => {
             </span>
           </h5>
           <div className="timesheet-box1 timesheet-box shadow">
-            {(isCreate ? selectMembers : selectedMembers).map((item, key) => (
+            {(employeAppraisers).map((item, key) => (
               <div
                 key={`selectMembers-${key}`}
                 className="appraiser d-flex flex-column position-relative"
