@@ -144,7 +144,7 @@ class HumanForReviewSalaryComponent extends React.Component {
                 account: res.username,
                 username: res.username,
                 current_position: res.position_name,
-                department: res.division + (res.department ? '/' + res.department : '') + (res.part ? '/' + res.part : ''),
+                department: res.division + (res.department ? '/' + res.department : '') + (res.unit ? '/' + res.unit : ''),
                 company_email: res?.company_email
               }
             })
@@ -274,7 +274,7 @@ class HumanForReviewSalaryComponent extends React.Component {
         )} */}
         {isAppraiserNote && (
           <div className="row business-type">
-            <span className="col-12 text-info smaller">
+            <span className="col-12 text-info smaller" style={{cursor: 'pointer'}}>
               * {t('NoteSelectApproverAppraiser')}{' '}
               <b>
                 <span
