@@ -96,7 +96,7 @@ const SalaryAdjustmentPropse = (props) => {
   const [currencySalary, setCurrencySalary] = useState("VND");
 
   const [coordinator, setCoordinator] = useState(null); // Nhân sự hỗ trợ xin quyền xem lương
-  const [supervisors, setSupervisors] = useState([null]);
+  const [supervisors, setSupervisors] = useState([]);
   const [employeAppraisers, setEmployeeAppraisers] = useState([]);
   const [appraiser, setAppraiser] = useState(null); // HR thẩm định quyền điều chỉnh lương
   const [approver, setApprover] = useState(null); // CBLĐ phê duyệt
@@ -440,7 +440,7 @@ const SalaryAdjustmentPropse = (props) => {
         contractName: requestTmp?.contractName,
         contractType: requestTmp?.contractType,
         department: requestTmp?.department,
-        departmentName: requestTmp?.departmentName,
+        organizationList: requestTmp?.organizationList,
         currentSalary: "0",
         suggestedSalary: "0",
         effectiveTime: u?.startDate
@@ -533,6 +533,7 @@ const SalaryAdjustmentPropse = (props) => {
   const handleSelectMembers = (members) => {
     const memberCheck = {},
       orgsNames = ['division', 'department', 'unit', 'part'];
+    let memberIds = [];
     const membersMapping = members.map((u) => {
       memberCheck[u.uid] = {
         uid: u.uid,
@@ -540,11 +541,11 @@ const SalaryAdjustmentPropse = (props) => {
         canChangeAction: u?.accepted == true,
       };
 
-      let departmentName = u['pnl'];
+      let organizationList = u['pnl'];
        orgsNames.map((key) => {
-         if (u[key] && u[key] != '#') departmentName += '/' + u[key];
+         if (u[key] && u[key] != '#') organizationList += '/' + u[key];
        });
-
+      memberIds.push(u?.uid + '');
       return {
         uid: u?.uid,
         employeeNo: u?.uid,
@@ -556,8 +557,10 @@ const SalaryAdjustmentPropse = (props) => {
         expireDate: "",
         contractName: u?.contractName,
         contractType: u?.contractType,
-        department: departmentName,
-        departmentName,
+        department: u?.department,
+        division: u?.division,
+        unit: u?.unit,
+        organizationList,
         currentSalary: "",
         suggestedSalary: "",
         effectiveTime: "",
@@ -568,7 +571,12 @@ const SalaryAdjustmentPropse = (props) => {
     });
     setCheckedMemberIds(memberCheck);
     setSelectMembers(membersMapping);
-    setEmployeeAppraisers(membersMapping);
+    setEmployeeAppraisers(membersMapping.map(res => {
+      res.department = res.division + (res.department ? '/' + res.department : '') + (res.unit ? '/' + res.unit : '');
+      return res;
+    }));
+    let _supervisors = supervisors.filter(sup => !memberIds.includes(sup?.uid));
+    setSupervisors(_supervisors);
   };
 
   const handleSelectedMembers = (members) => {
@@ -1044,6 +1052,7 @@ const SalaryAdjustmentPropse = (props) => {
   const prepareDataToSubmit = (id) => {
     if (isCreateMode) {
       let bodyFormData = new FormData();
+      let appIndex = 1;
       const employeeInfoLst = (id ? selectedMembers : selectMembers).map((u) => ({
         employeeNo: u?.employeeNo,
         username: u?.account.toLowerCase(),
@@ -1051,7 +1060,7 @@ const SalaryAdjustmentPropse = (props) => {
         fullName: u?.fullName,
         jobTitle: u?.jobTitle,
         department: u?.department,
-        departmentName: u?.departmentName,
+        organizationList: u?.organizationList,
         startDate: u?.startDate || moment(u?.effectiveTime, Constants.LEAVE_DATE_FORMAT).format("YYYY-MM-DD") || "",
         expireDate: u?.expireDate,
         contractName: u?.contractName,
@@ -1075,7 +1084,7 @@ const SalaryAdjustmentPropse = (props) => {
           orglv2Id: u?.orglv2Id,
           current_position: u?.currentPosition, // jobTitle
           department: u?.department,
-          order: i+1,
+          order: appIndex++,
           company_email: u?.companyEmail,
           type: Constants.STATUS_PROPOSAL.EMPLOYEE,
           employeeNo: u?.uid || u?.employeeNo,
@@ -1093,7 +1102,7 @@ const SalaryAdjustmentPropse = (props) => {
           orglv2Id: item?.orglv2Id,
           current_position: item?.current_position,
           department: item?.department,
-          order: staffInfoLst[staffInfoLst.length-1]?.order + index + 1,
+          order: appIndex++,
           company_email: item?.company_email?.toLowerCase(),
           type: Constants.STATUS_PROPOSAL.LEADER_APPRAISER,
           employeeNo: item?.uid || item?.employeeNo,
@@ -1109,7 +1118,7 @@ const SalaryAdjustmentPropse = (props) => {
           orglv2Id: appraiser?.orglv2Id,
           current_position: appraiser?.current_position,
           department: appraiser?.department,
-          order: (appraiserInfoLst[appraiserInfoLst.length - 1] || staffInfoLst[staffInfoLst.length-1])?.order + 1,
+          order: appIndex++,
           company_email: appraiser?.company_email?.toLowerCase(),
           type: Constants.STATUS_PROPOSAL.EMPLOYEE_APPRAISER,
           employeeNo: appraiser?.uid || appraiser?.employeeNo,
@@ -1126,7 +1135,7 @@ const SalaryAdjustmentPropse = (props) => {
         orglv2Id: ele?.orglv2Id,
         current_position: ele?.current_position,
         department: ele?.department,
-        order: appraiserInfoLst[appraiserInfoLst.length - 1]?.order + i + 1,
+        order: appIndex++,
         company_email: ele?.company_email?.toLowerCase(),
         type: Constants.STATUS_PROPOSAL.CONSENTER,
         employeeNo: ele?.uid || ele?.employeeNo,
@@ -1472,7 +1481,7 @@ const SalaryAdjustmentPropse = (props) => {
                     whiteSpace: "nowrap",
                     overflow: "hidden",
                     textOverflow: "ellipsis",
-                    }} title={item?.department}>{item?.department}</p>
+                    }} title={item?.organizationList}>{item?.organizationList}</p>
                 </div>
               </div>
             </td>
@@ -1613,6 +1622,7 @@ const SalaryAdjustmentPropse = (props) => {
                         'effectiveTime'
                       )
                     }
+                    minDate={moment().add(1, 'day').toDate()}
                     onChangeRaw={() => setIsOpenDatepick(false)}
                     onFocus={() => setIsOpenDatepick(true)}
                     onBlur={() => setIsOpenDatepick(false)}
@@ -2041,7 +2051,7 @@ const SalaryAdjustmentPropse = (props) => {
                 className="appraiser d-flex flex-column position-relative"
                 style={(key > 0 || selectedMembers.length > 0 || selectMembers.length > 0) ? { marginTop: "20px" } : {}}
               >
-                {isCreateMode && key > 0 && (
+                {isCreateMode && (
                   <button
                     className="btn btn-outline-danger position-absolute d-flex align-items-center btn-sm"
                     style={{ gap: "4px", top: 0, right: 0 }}
