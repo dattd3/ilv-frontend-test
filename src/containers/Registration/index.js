@@ -12,17 +12,20 @@ import OTRequest from './OTRequest';
 
 import HOCComponent from '../../components/Common/HOCComponent'
 import { isEnableShiftChangeFunctionByPnLVCode, isEnableInOutTimeUpdateFunctionByPnLVCode, getRequestConfigurations, isEnableOTFunctionByPnLVCode } from "../../commons/Utils"
+import LoadingModal from 'components/Common/LoadingModal'
 
 class RegistrationComponent extends React.Component {
   constructor(props) {
     super();
     this.state = {
       tab: new URLSearchParams(props?.history?.location?.search).get('tab') || "LeaveOfAbsenceRegistration",
-      recentlyManagers: {}
+      recentlyManagers: {},
+      isLoading: false
     }
   }
 
   componentDidMount() {
+    this.setState({ isLoading: true })
     this.loadRecentlyAppraiser()
   }
 
@@ -32,17 +35,17 @@ class RegistrationComponent extends React.Component {
   }
 
   loadRecentlyAppraiser = async () => {
-    try {
-      const config = getRequestConfigurations()
-      const response = await axios.get(`${process.env.REACT_APP_REQUEST_URL}user/suggests`, config)
-      if (response && response.data) {
-        const result = response.data.result
-        if (result && result.code == Constants.API_SUCCESS_CODE) {
-          const data = response.data?.data
-          const { appraiserInfo, approverInfo } = data
+    const config = getRequestConfigurations()
+    const response = await axios.get(`${process.env.REACT_APP_REQUEST_URL}user/suggests`, config)
+    if (response && response?.data) {
+      const result = response.data?.result
+      if (result && result?.code == Constants.API_SUCCESS_CODE) {
+        const data = response.data?.data
+        const { appraiserInfo, approverInfo } = data
 
-          const appraiser = appraiserInfo && size(appraiserInfo) > 0 
-          ?  [{
+        let appraiser = []
+        if (appraiserInfo) {
+          appraiser = [{
             value: appraiserInfo?.account?.toLowerCase() || "",
             label: appraiserInfo?.fullname || appraiserInfo?.fullName,
             fullName: appraiserInfo?.fullname || appraiserInfo?.fullName,
@@ -54,10 +57,42 @@ class RegistrationComponent extends React.Component {
             current_position: appraiserInfo?.current_position || "",
             department: appraiserInfo?.department || "",
           }]
-          : []
 
-          const approver = approverInfo && size(approverInfo) > 0 
-          ?  [{
+          try {
+            if (!this.state.isLoading) {
+              this.setState({ isLoading: true })
+            }
+            const payload = {
+              account: approverInfo?.account?.trim(),
+              employee_type: "APPRAISER",
+              status: Constants.statusUserActiveMulesoft
+            }
+            const res = await axios.post(`${process.env.REACT_APP_REQUEST_URL}user/employee/search`, payload, config)
+            if (res?.data?.data && res?.data?.data[0]) {
+              const newInfo = res?.data?.data[0]
+              appraiser = [{
+                value: newInfo?.username?.toLowerCase() || "",
+                label: newInfo?.fullname,
+                fullName: newInfo?.fullname,
+                avatar: newInfo?.avatar || "",
+                employeeLevel: newInfo?.rank_title || newInfo?.rank,
+                pnl: newInfo?.pnl || "",
+                orglv2Id: newInfo?.organization_lv2 || "",
+                account: newInfo?.username?.toLowerCase() || "",
+                current_position: newInfo?.position_name || '',
+                department: newInfo?.division + (newInfo?.department ? '/' + newInfo?.department : '') + (newInfo?.part ? '/' + newInfo?.part : '')
+              }]
+            } else {
+              appraiser = []
+            }
+          } finally {
+            this.setState({ isLoading: false })
+          }
+        }
+
+        let approver = []
+        if (approverInfo) {
+          approver = [{
             value: approverInfo?.account?.toLowerCase() || "",
             label: approverInfo?.fullname || approverInfo?.fullName,
             fullName: approverInfo?.fullname || approverInfo?.fullName,
@@ -69,25 +104,53 @@ class RegistrationComponent extends React.Component {
             current_position: approverInfo?.current_position || "",
             department: approverInfo?.department || "",
           }]
-          : []
 
-          this.setState({recentlyManagers: {appraiser: appraiser, approver: approver}})
+          try {
+            if (!this.state.isLoading) {
+              this.setState({ isLoading: true })
+            }
+            const payload = {
+              account: approverInfo?.account?.trim(),
+              employee_type: "APPROVER",
+              status: Constants.statusUserActiveMulesoft
+            }
+            const res = await axios.post(`${process.env.REACT_APP_REQUEST_URL}user/employee/search`, payload, config)
+            if (res?.data?.data && res?.data?.data[0]) {
+              const newInfo = res?.data?.data[0]
+              approver = [{
+                value: newInfo?.username?.toLowerCase() || "",
+                label: newInfo?.fullname,
+                fullName: newInfo?.fullname,
+                avatar: newInfo?.avatar || "",
+                employeeLevel: newInfo?.rank_title || newInfo?.rank,
+                pnl: newInfo?.pnl || "",
+                orglv2Id: newInfo?.organization_lv2 || "",
+                account: newInfo?.username?.toLowerCase() || "",
+                current_position: newInfo?.position_name || '',
+                department: newInfo?.division + (newInfo?.department ? '/' + newInfo?.department : '') + (newInfo?.part ? '/' + newInfo?.part : '')
+              }]
+            } else {
+              approver = []
+            }
+          } finally {
+            this.setState({ isLoading: false })
+          }
         }
+        this.setState({recentlyManagers: {appraiser: appraiser, approver: approver}})
       }
-    } catch (e) {
-
     }
   }
 
   render() {
     const { t } = this.props
-    const { recentlyManagers } = this.state
+    const { recentlyManagers, isloading } = this.state
     const PnLVCode = localStorage.getItem("companyCode")
     const isEnableShiftChangeFunction = isEnableShiftChangeFunctionByPnLVCode(PnLVCode)
     const isEnableInOutTimeUpdateFunction = isEnableInOutTimeUpdateFunctionByPnLVCode(PnLVCode)
     const isEnableOTRequestFunction = isEnableOTFunctionByPnLVCode(PnLVCode);
     return (
       <div className="registration-section personal-info justify-content-between">
+        <LoadingModal isloading={isloading} />
         <Tabs defaultActiveKey={this.state.tab} onSelect={(key) => this.updateTabLink(key)}>
           <Tab eventKey="LeaveOfAbsenceRegistration" title={t('LeaveRequest')}>
             <LeaveOfAbsence recentlyManagers={recentlyManagers} />
