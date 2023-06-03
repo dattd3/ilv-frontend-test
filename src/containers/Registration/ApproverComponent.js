@@ -43,7 +43,7 @@ class ApproverComponent extends React.Component {
       isSearch: false,
       isSearching: false,
     }
-    this.onInputChange = debounce(this.getApproverInfo, 800);
+    this.onInputChange = debounce(this.getApproverInfo, 1000);
   }
 
   async componentDidMount() {
@@ -62,22 +62,8 @@ class ApproverComponent extends React.Component {
     const companiesUsing = [Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading, Constants.pnlVCode.VinMec]
     if (companiesUsing.includes(currentUserPnLVCodeLogged)) {
       const managerApproval = await this.loadApproverForPnL()
-      // this.setState({approver: managerApproval} , () => {
-      //   if (approver) {
-      //     this.setState({
-      //       approver: {
-      //         ...approver,
-      //         label: approver.fullName,
-      //         value: approver.account
-      //       }
-      //     })
-      //   }
-      // })
       this.setState({approver: managerApproval})
       this.props.updateApprover(managerApproval, true)
-    } else {
-      // const recentlyApprover = await this.loadRecentlyApprover()
-      // this.setState({ users: recentlyApprover })
     }
   }
 
@@ -170,43 +156,46 @@ class ApproverComponent extends React.Component {
     const { appraiser } = this.props
     if (value !== "") {
       this.setState({isSearch: true, isSearching: true})
-      const config = getRequestConfigurations()
-      const payload = {
-        account: value,
-        employee_type: "APPROVER",
-        status: Constants.statusUserActiveMulesoft
-      }
-      axios.post(`${process.env.REACT_APP_REQUEST_URL}user/employee/search`, payload, config)
-        .then(res => {
-          if (res && res.data && res.data.data) {
-            const data = res.data.data || []
-            const users = data.map(res => {
-              return {
-                value: res.username,
-                label: res.fullname,
-                uid: res.uid,
-                fullName: res.fullname,
-                avatar: res.avatar,
-                employeeLevel: res.rank_title || res.rank, // Cấp bậc chức danh để phân quyền
-                pnl: res.pnl,
-                orglv2Id: res.organization_lv2,
-                account: res.username,
-                current_position: res.position_name,
-                department: res.division + (res.department ? '/' + res.department : '') + (res.part ? '/' + res.part : '')
-              }
-            })
-            const lst = appraiser ? users.filter(user => user.account !== appraiser.account) : users;
-            this.setState({ users: lst || [] })
-          }
-        }).catch(error => { })
-        .finally(() => {
-          this.setState({ isSearching: false })
-        })
+      this.searchApprover(value).then(res => {
+        if (res && res.data) {
+          const data = res.data.data || []
+          const users = data.map(res => {
+            return {
+              value: res.username,
+              label: res.fullname,
+              uid: res.uid,
+              fullName: res.fullname,
+              avatar: res.avatar,
+              employeeLevel: res.rank_title || res.rank, // Cấp bậc chức danh để phân quyền
+              pnl: res.pnl,
+              orglv2Id: res.organization_lv2,
+              account: res.username,
+              current_position: res.position_name,
+              department: res.division + (res.department ? '/' + res.department : '') + (res.part ? '/' + res.part : '')
+            }
+          })
+          const lst = appraiser ? users.filter(user => user.account !== appraiser.account) : users;
+          this.setState({ users: lst || [] })
+        }
+      })
+      .finally(() => {
+        this.setState({ isSearching: false })
+      })
     }
     else {
       this.setState({ isSearching: false })
       if (Array.isArray(this.state.users) && this.state.users.length > 1) this.setState({isSearch: true})
     }
+  }
+
+  searchApprover = (keyword) => {
+    const config = getRequestConfigurations()
+    const payload = {
+      account: keyword,
+      employee_type: "APPROVER",
+      status: Constants.statusUserActiveMulesoft
+    }
+    return axios.post(`${process.env.REACT_APP_REQUEST_URL}user/employee/search`, payload, config)
   }
 
   onInputChange = value => {
