@@ -1798,5 +1798,11 @@
   "OTInvalidSpaceHours": "(*) Minimum break time is 1h",
   "IncludeSalaryAdjustment": "Include salary adjustment",
   "Opinion": "Comment",
-  "ConsenterStaffConfirm": "Consenter/ staff confirm"
+  "ConsenterStaffConfirm": "Consenter/ staff confirm",
+  "action2": "Action",
+  "operation": "Operation",
+  "operationType.ins": "Add new",
+  "operationType.mod": "Edit",
+  "operationType.del": "Eviction",
+  "operationType.waitingdelapprove": "Awaiting recall approval"
 }
