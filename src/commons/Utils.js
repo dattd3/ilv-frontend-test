@@ -167,6 +167,9 @@ const isEnableFunctionByFunctionName = name => {
         case Constants.listFunctionsForPnLACL.selectWorkingShift24h:
             listPnLAccepted = [Constants.pnlVCode.VinMec]
             break
+        case Constants.listFunctionsForPnLACL.foreignSickLeave:
+            listPnLAccepted = [Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading, Constants.pnlVCode.VinES]
+            break
     }
 
     return listPnLAccepted.includes(companyCode)
