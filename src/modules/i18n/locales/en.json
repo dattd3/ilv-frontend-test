@@ -1801,5 +1801,11 @@
   "SearchByDate": "Search by date",
   "InvalidMimeType": " is invalid type! Please select again!",
   "ExceedMaxFileSize": "The total file size must not exceed 8MB",
-  "ErrorBackDateRequestVinpearl": "Request creation failed - Time out"
+  "ErrorBackDateRequestVinpearl": "Request creation failed - Time out",
+  "action2": "Action",
+  "operation": "Operation",
+  "operationType.ins": "Add new",
+  "operationType.mod": "Edit",
+  "operationType.del": "Eviction",
+  "operationType.waitingdelapprove": "Awaiting recall approval"
 }
