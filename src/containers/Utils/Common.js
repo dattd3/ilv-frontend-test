@@ -48,6 +48,10 @@ export default function processingDataReq(dataRawFromApi, tab) {
               element.totalTime = element.requestInfo?.reduce((accumulator, currentValue) => accumulator += (currentValue.hoursOt) * 1, 0)?.toFixed(2);
               const dateRanges = element.requestInfo?.reduce((accumulator, currentValue) => [...accumulator, moment(currentValue.date, "YYYYMMDD").format("DD/MM/YYYY")], []);
               element.dateRange = dateRanges.join(", ");
+              element.operationType = element.updateField;
+            }
+            if (!element.operationType) {
+              element.operationType = Constants.OPERATION_TYPES.INS
             }
             taskList.push(element);
         } else {
@@ -97,6 +101,15 @@ export default function processingDataReq(dataRawFromApi, tab) {
                     }
                     // e.isEdit = listRequestTypeIdToGetSubId.includes(element.requestTypeId) ? e.isEdit : element.isEdit
                     e.isEdit = element?.isEdit // Confirm từ a Thủy và a Chiến Mobile lấy isEdit bên ngoài (không lấy bên trong) - 18/04/2023
+                    if ([Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP].includes(element.requestTypeId)) {
+                      if (e.actionType == Constants.OPERATION_TYPES.DEL && e.processStatusId == 5) {
+                        e.operationType = Constants.OPERATION_TYPES.WAITING_DEL_APPROVE;
+                      } else {
+                        e.operationType = e.actionType;
+                      }
+                    } else {
+                      e.operationType = Constants.OPERATION_TYPES.INS
+                    }
                     taskList.push(e)
                 })
             }

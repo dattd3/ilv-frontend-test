@@ -1817,5 +1817,11 @@
   "Opinion": "Ý kiến",
   "ConsenterStaffConfirm": "CBQL thẩm định/ NLĐ xác nhận",
   "Sent": "đi",
-  "Arrive": "đến"
+  "Arrive": "đến",
+  "action2": "Hành động",
+  "operation": "Thao tác",
+  "operationType.ins": "Thêm mới",
+  "operationType.mod": "Chỉnh sửa",
+  "operationType.del": "Thu hồi",
+  "operationType.waitingdelapprove": "Đang chờ PD thu hồi"
 }

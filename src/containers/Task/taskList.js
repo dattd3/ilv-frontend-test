@@ -5,6 +5,8 @@ import moment from 'moment'
 import _ from 'lodash'
 import purify from "dompurify"
 import { withTranslation } from "react-i18next"
+import DatePicker from 'react-datepicker'
+import 'react-datepicker/dist/react-datepicker.css'
 import noteButton from '../../assets/img/icon-note.png'
 import excelButton from '../../assets/img/excel-icon.svg'
 import commentButton from '../../assets/img/Icon-comment.png'
@@ -17,6 +19,7 @@ import { getRequestTypeIdsAllowedToReApproval, showRangeDateGroupByArrayDate, ge
 import { REQUEST_CATEGORIES, REQUEST_CATEGORY_1_LIST, REQUEST_CATEGORY_2_LIST, absenceRequestTypes, requestTypes } from "../Task/Constants"
 import IconFilter from "assets/img/icon/icon-filter.svg"
 import IconSearch from "assets/img/icon/icon-search.svg"
+import IconCalender from "assets/img/icon/icon-calender.svg"
 
 class TaskList extends React.Component {
     constructor() {
@@ -47,7 +50,9 @@ class TaskList extends React.Component {
                 pageSize: Constants.TASK_PAGE_SIZE_DEFAULT,
                 sender: '',
                 status: 0,
-                needRefresh: false
+                needRefresh: false,
+                fromDate: moment().subtract(7, "days").format("DDMMYYYY"),
+                toDate: moment().format("DDMMYYYY"),
             }
         }
 
@@ -374,6 +379,9 @@ class TaskList extends React.Component {
         }else{
             params += dataForSearch.status && dataForSearch.status.value ? `status=${dataForSearch.status.value}&` : '';
         }
+        console.log(dataForSearch)
+        params += dataForSearch.fromDate ? `fromDate=${dataForSearch.fromDate}&` : '';
+        params += dataForSearch.toDate ? `toDate=${dataForSearch.toDate}&` : '';
         this.setState({
             approveTasks: [],
             tasks: [],
@@ -430,8 +438,37 @@ class TaskList extends React.Component {
       }
     }
 
+    handleChangeDateFilter = (date, type = "fromDate") => {
+      const { dataForSearch } = this.state;
+      if ( type === "fromDate") {
+        date ? this.setState({
+          dataForSearch: {
+            ...dataForSearch,
+            fromDate: moment(date).format("DDMMYYYY")
+          }
+        }) : this.setState({dataForSearch: {
+          ...dataForSearch,
+          fromDate: null
+        }});
+      } else {
+        date ? this.setState({
+          dataForSearch: {
+            ...dataForSearch,
+            toDate: moment(date).format("DDMMYYYY")
+          }
+        }) : this.setState({
+          dataForSearch: {
+            ...dataForSearch,
+            toDate: null
+          }
+        });
+      }
+    }
+
     render() {
         const { t, tasks, total, page} = this.props
+        console.log(tasks)
+        const { dataForSearch } = this.state;
         const typeFeedbackMapping = {
             1: t("HrSResponse"),
             2: t("LineManagerSResponse"),
@@ -542,8 +579,50 @@ class TaskList extends React.Component {
                                 className="request-user"
                                 onChange={this.handleInputChange}
                             />
+                        </div> 
+                        <div className="w-120px position-relative date-picker-container">
+                            <DatePicker 
+                              name="fromDate"
+                              selectsStart
+                              autoComplete="off"
+                              selected={
+                                dataForSearch.fromDate ? moment( dataForSearch.fromDate, "DDMMYYYY").toDate() : null
+                              }
+                              maxDate={
+                                dataForSearch.toDate ? moment(dataForSearch.toDate, "DDMMYYYY").toDate() : null
+                              }
+                              onChange={(date) => this.handleChangeDateFilter(date, "fromDate")}
+                              showDisabledMonthNavigation
+                              dateFormat="dd/MM/yyyy"
+                              placeholderText={t("From")}
+                              locale={"vi"}
+                              shouldCloseOnSelect={true}
+                              className="form-control input"
+                            />
+                            <img src={IconCalender} alt="" className="calender-icon" />
                         </div>
-                        <div className="col-2">
+                        <div className="w-120px position-relative date-picker-container">
+                            <DatePicker 
+                              name="endDate"
+                              selectsEnd
+                              autoComplete="off"
+                              selected={
+                                dataForSearch.toDate ? moment(dataForSearch.toDate, "DDMMYYYY").toDate() : null
+                              }
+                              minDate={
+                                dataForSearch.fromDate ? moment(dataForSearch.fromDate, "DDMMYYYY").toDate() : null
+                              }
+                              onChange={(date) => this.handleChangeDateFilter(date, "toDate")}
+                              showDisabledMonthNavigation
+                              dateFormat="dd/MM/yyyy"
+                              placeholderText={t("To")}
+                              locale={"vi"}
+                              shouldCloseOnSelect={true}
+                              className="form-control input"
+                            />
+                            <img src={IconCalender} alt="" className="calender-icon" />
+                        </div>
+                        <div className="w-120px">
                             <button type="button" onClick={() => this.searchRemoteData(true)} className="btn btn-warning w-100">{t("Search")}</button>
                         </div>
                     </div>
@@ -580,6 +659,7 @@ class TaskList extends React.Component {
                                                 <th scope="col" className="appraiser">{t("Consenter")}</th>
                                             : null
                                         }
+                                        <th scope="col" className="status">{t("operation")}</th>
                                         <th scope="col" className="status text-center">{t("Status")}</th>
                                         {
                                             this.props.page != "consent" ?
@@ -692,6 +772,7 @@ class TaskList extends React.Component {
                                                         ? <td className="appraiser text-center">{child.appraiser?.fullName}</td>
                                                         : null
                                                     }
+                                                    <td className="status">{t(`operationType.${child.operationType?.toLowerCase()}`)}</td>
                                                     <td className="status text-center">{this.showStatus(child.id, child.processStatusId, child.requestType.id, child.appraiser, child.statusName, child)}</td>
                                                     {
                                                         this.props.page != "consent" ?
