@@ -525,7 +525,6 @@
 
   .logo-login {
     max-width: 60%;
-    padding: 5vh 0;
   }
   .language-selector {
     padding: 10px;
@@ -593,8 +592,29 @@
       margin: 20px 0;
       color: #D13238;
     }
+    .banner-img-block {
+      img {
+        height: 380px;
+      }
+    }
     .banner-footer {
       margin: 15px 0 30px 0;
+    }
+  }
+  .wrap-left {
+    height: 100%;
+    .language-selector {
+      position: absolute;
+      top: 0;
+      right: 0;
+    }
+    .left-main-content {
+      padding: 0 3rem;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
     }
   }
 }
