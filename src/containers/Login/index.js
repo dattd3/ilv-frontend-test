@@ -127,8 +127,8 @@ function Login() {
               <div className="row" >
 
                 <div className="col-lg-5 bg-white-trasparent">
-                  <div className="opacity-1">
-                    <div className="float-right language-selector">
+                  <div className="opacity-1 wrap-left">
+                    <div className="language-selector">
                       {/* <Button className={langCode === Constants.LANGUAGE_VI ? "lang-active" : ""} variant="link" onClick={(e) => setLangCode(Constants.LANGUAGE_VI)}>{t("LangViet")}</Button>|
                     <Button className={langCode === Constants.LANGUAGE_EN ? "lang-active" : ""} variant="link" onClick={(e) => setLangCode(Constants.LANGUAGE_EN)}>{t("LangEng")}</Button> */}
 
@@ -137,9 +137,9 @@ function Login() {
                         styles={customStyles}
                         components={{ ValueContainer: CustomOption, IndicatorSeparator: () => null }} />
                     </div>
-                    <div className="p-5">
-                      <div className="text-center w-100 d-flex justify-content-center">
-                        <img src={logo} className="logo-login" alt='' />
+                    <div className="left-main-content">
+                      <div className="text-center w-100 d-flex justify-content-center" style={{ marginBottom: 40 }}>
+                        <img src={logo} className="logo-login" alt='Logo' />
                       </div>
                       <Button className="btn-user btn-block btn-login" variant="primary" onClick={handleLoginClick}> {t("Login")}</Button>
                       <Button className="btn-user btn-block btn-help-login" variant="primary" onClick={() => setModalShow(true)}> {t("HelpToLogin")}</Button>
