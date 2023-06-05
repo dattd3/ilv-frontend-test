@@ -244,7 +244,7 @@ class ConfirmationModal extends React.Component {
 
         axios({
             method: 'POST',
-            url: `${process.env.REACT_APP_REQUEST_SERVICE_URL}request/approve`,
+            url: `${process.env.REACT_APP_REQUEST_URL}request/approve`,
             data: dataToSap,
             headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` },
             params: {
@@ -324,7 +324,7 @@ class ConfirmationModal extends React.Component {
 
         axios({
             method: 'POST',
-            url: `${process.env.REACT_APP_REQUEST_SERVICE_URL}request/assess`,
+            url: `${process.env.REACT_APP_REQUEST_URL}request/assess`,
             data: dataToSap,
             headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` },
             params: {
@@ -367,10 +367,9 @@ class ConfirmationModal extends React.Component {
 
     reject = (dataToSap) => {
         const { t, onHide } = this.props;
-
         axios({
             method: 'POST',
-            url: `${process.env.REACT_APP_REQUEST_SERVICE_URL}request/assess`,
+            url: `${process.env.REACT_APP_REQUEST_URL}request/assess`,
             data: dataToSap,
             headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` },
             params: {
