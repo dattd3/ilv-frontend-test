@@ -1777,6 +1777,13 @@ span.badge-notification[data-badge]::after {
           padding: 15px;
           box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
           margin-bottom: 15px;
+          .value {
+            height: 38px;
+            background: #F2F2F2;
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+          }
           .group {
             border-radius: 4px;
             border: 1px solid #DEE2E6;
@@ -1843,6 +1850,7 @@ span.badge-notification[data-badge]::after {
                 }
                 .input-date {
                   position: relative;
+                  margin-bottom: 0;
                   .input-img {
                     position: absolute;
                     right: 12px;
