@@ -361,7 +361,6 @@ const isValidDateRequest = date => {
         const currentTime = moment().hour()
         const currentDate = moment().format("DD/MM/YYYY")
         const range = moment(currentDate, 'DD/MM/YYYY').diff(moment(date, 'DD/MM/YYYY'), 'days')
-        console.log('backDate => ', range)
         if (currentTime < timeline) {
             if (range > 1) {
                 return false
