@@ -29,7 +29,6 @@ const ContractEvaluationdetail = (props) => {
     }
     props.history.push(`/salarypropse/${id}/${idSalary}/${typeRequest}`)
   }
-  console.log(data)
 
   return (
     <div className="font-size-14 contract-evaluation-result-detail-page">
