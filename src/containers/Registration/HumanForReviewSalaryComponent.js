@@ -274,12 +274,12 @@ class HumanForReviewSalaryComponent extends React.Component {
         )} */}
         {isAppraiserNote && (
           <div className="row business-type">
-            <span className="col-12 text-info smaller" style={{cursor: 'pointer'}}>
+            <span className="col-12 text-info smaller" >
               * {t('NoteSelectApproverAppraiser')}{' '}
               <b>
                 <span
                   onClick={this.downloadApprovalMatrix}
-                  style={{ color: '#007bff' }}
+                  style={{ color: '#007bff', cursor: 'pointer' }}
                 >
                   {t('ApprovalMatrix')}
                 </span>
