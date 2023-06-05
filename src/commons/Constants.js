@@ -45,18 +45,18 @@ const Constants = {
   KEY_PHONES_SUPPORT_LOCAL_STORAGE: 'phonesSupport',
 
   //Type request
-  UPDATE_PROFILE: 1,
-  LEAVE_OF_ABSENCE: 2,
-  BUSINESS_TRIP: 3,
-  SUBSTITUTION: 4,
-  IN_OUT_TIME_UPDATE: 5,
-  CHANGE_DIVISON_SHIFT: 8,
-  DEPARTMENT_TIMESHEET: 9,
-  ONBOARDING: 6,
-  RESIGN_SELF: 7,
-  SALARY_PROPOSE: 12,
-  OT_REQUEST: 13,
-  PROPOSAL_TRANSFER: 14,
+  UPDATE_PROFILE: 1, // Cap nhat thong tin ca nhan
+  LEAVE_OF_ABSENCE: 2,  // Dang ky nghi
+  BUSINESS_TRIP: 3, // CTDT
+  SUBSTITUTION: 4, // Phan ca
+  IN_OUT_TIME_UPDATE: 5, // In out 
+  CHANGE_DIVISON_SHIFT: 8, // Thay doi phan ca bo phan
+  DEPARTMENT_TIMESHEET: 9, // Bang cham cong bo phan
+  ONBOARDING: 6, // Danh gia hop dong
+  RESIGN_SELF: 7, // De nghi cham dut hop dong
+  SALARY_PROPOSE: 12, // De xuat luong
+  OT_REQUEST: 13, // OT
+  PROPOSAL_TRANSFER: 14, // Dieu chuyen bo nhiem
 
   //Status request
   STATUS_PENDING: 0,
@@ -263,6 +263,12 @@ const Constants = {
     LEADER_APPRAISER: 1,
     EMPLOYEE_APPRAISER: 2,
     CONSENTER: 3,
+  },
+  OPERATION_TYPES: {
+    INS: "INS",
+    MOD: "MOD",
+    DEL: "DEL",
+    WAITING_DEL_APPROVE: "WAITINGDELAPPROVE"
   }
 };
 export default Constants

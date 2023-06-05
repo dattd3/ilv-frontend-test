@@ -4,6 +4,8 @@ import deleteButton from '../../assets/img/icon-delete.svg'
 import evictionButton from '../../assets/img/eviction.svg'
 import IconSync from '../../assets/img/icon/Icon_Sync.svg'
 import CustomPaging from '../../components/Common/CustomPaging'
+import DatePicker from 'react-datepicker'
+import 'react-datepicker/dist/react-datepicker.css'
 
 import Select from 'react-select'
 import moment from 'moment'
@@ -20,6 +22,7 @@ import { MOTHER_LEAVE_KEY } from "./Constants"
 // import IconInformation from "assets/img/icon/icon-blue-information.svg"
 import IconFilter from "assets/img/icon/icon-filter.svg"
 import IconSearch from "assets/img/icon/icon-search.svg"
+import IconCalender from "assets/img/icon/icon-calender.svg"
 
 const TIME_FORMAT = 'HH:mm:ss'
 const DATE_FORMAT = 'DD-MM-YYYY'
@@ -47,12 +50,15 @@ class RequestTaskList extends React.Component {
             query: null,
             requestCategorySelect: getValueParamByQueryString(window.location.search, "requestCategory") || REQUEST_CATEGORIES.CATEGORY_1,
             tmpRequestCategorySelect: getValueParamByQueryString(window.location.search, "requestCategory") || REQUEST_CATEGORIES.CATEGORY_1,
-            isShowRequestCategorySelect: false,            dataForSearch: {
+            isShowRequestCategorySelect: false,            
+            dataForSearch: {
                 pageIndex: Constants.TASK_PAGE_INDEX_DEFAULT,
                 pageSize: Constants.TASK_PAGE_SIZE_DEFAULT,
                 id: '',
                 status: 0,
-                needRefresh: false
+                needRefresh: false,
+                fromDate: moment().subtract(7, "days").format("DDMMYYYY"),
+                toDate: moment().format("DDMMYYYY"),
             }
         }
 
@@ -680,6 +686,8 @@ class RequestTaskList extends React.Component {
         let params = `pageIndex=${dataForSearch.pageIndex}&pageSize=${dataForSearch.pageSize}&`;
         params += dataForSearch.id ? `id=${dataForSearch.id}&` : '';
         params += dataForSearch.status && dataForSearch.status.value ? `status=${dataForSearch.status.value}&` : '';
+        params += dataForSearch.fromDate ? `fromDate=${dataForSearch.fromDate}&` : '';
+        params += dataForSearch.toDate ? `toDate=${dataForSearch.toDate}&` : '';
         this.setState({
             dataForSearch: {
                 ...dataForSearch,
@@ -731,9 +739,36 @@ class RequestTaskList extends React.Component {
       }
     }
 
+    handleChangeDateFilter = (date, type = "fromDate") => {
+      const { dataForSearch } = this.state;
+      if ( type === "fromDate") {
+        date ? this.setState({
+          dataForSearch: {
+            ...dataForSearch,
+            fromDate: moment(date).format("DDMMYYYY")
+          }
+        }) : this.setState({dataForSearch: {
+          ...dataForSearch,
+          fromDate: null
+        }});
+      } else {
+        date ? this.setState({
+          dataForSearch: {
+            ...dataForSearch,
+            toDate: moment(date).format("DDMMYYYY")
+          }
+        }) : this.setState({
+          dataForSearch: {
+            ...dataForSearch,
+            toDate: null
+          }
+        });
+      }
+    }
+
     render() {
         const { t, total, tasks } = this.props
-        const { pageNumber, isSyncFromEmployee } = this.state
+        const { pageNumber, isSyncFromEmployee, dataForSearch } = this.state
         const dataToSap = this.getDataToSAP(this.state.requestTypeId, this.state.dataToPrepareToSAP)
         const fullDay = 1
         const getRequestTypeLabel = (requestType, absenceTypeValue) => {
@@ -837,14 +872,6 @@ class RequestTaskList extends React.Component {
                                 menu: provided => ({ ...provided, zIndex: 2 })
                             }}
                             classNamePrefix="filter-select"
-                            // theme={theme => ({
-                            //     ...theme,
-                            //     colors: {
-                            //         ...theme.colors,
-                            //         primary25: '#F9C20A',
-                            //         primary: '#F9C20A',
-                            //     },
-                            // })} 
                           />
                     </div>
                     <div className="flex-1 position-relative">
@@ -857,7 +884,49 @@ class RequestTaskList extends React.Component {
                             onChange={this.handleInputChange}
                         />
                     </div>
-                    <div className="col-2">
+                    <div className="w-120px position-relative date-picker-container">
+                        <DatePicker 
+                          name="fromDate"
+                          selectsStart
+                          autoComplete="off"
+                          selected={
+                            dataForSearch.fromDate ? moment( dataForSearch.fromDate, "DDMMYYYY").toDate() : null
+                          }
+                          maxDate={
+                            dataForSearch.toDate ? moment(dataForSearch.toDate, "DDMMYYYY").toDate() : null
+                          }
+                          onChange={(date) => this.handleChangeDateFilter(date, "fromDate")}
+                          showDisabledMonthNavigation
+                          dateFormat="dd/MM/yyyy"
+                          placeholderText={t("From")}
+                          locale={"vi"}
+                          shouldCloseOnSelect={true}
+                          className="form-control input"
+                        />
+                        <img src={IconCalender} alt="" className="calender-icon" />
+                    </div>
+                    <div className="w-120px position-relative date-picker-container">
+                        <DatePicker 
+                          name="endDate"
+                          selectsEnd
+                          autoComplete="off"
+                          selected={
+                            dataForSearch.toDate ? moment(dataForSearch.toDate, "DDMMYYYY").toDate() : null
+                          }
+                          minDate={
+                            dataForSearch.fromDate ? moment(dataForSearch.fromDate, "DDMMYYYY").toDate() : null
+                          }
+                          onChange={(date) => this.handleChangeDateFilter(date, "toDate")}
+                          showDisabledMonthNavigation
+                          dateFormat="dd/MM/yyyy"
+                          placeholderText={t("To")}
+                          locale={"vi"}
+                          shouldCloseOnSelect={true}
+                          className="form-control input"
+                        />
+                        <img src={IconCalender} alt="" className="calender-icon" />
+                    </div>
+                    <div className="w-120px">
                         <button type="button" onClick={() => this.searchRemoteData(true)} className="btn btn-warning w-100">{t("Search")}</button>
                     </div>
                 </div>
@@ -874,8 +943,9 @@ class RequestTaskList extends React.Component {
                                         <th scope="col" className="request-type">{t("TypeOfRequest")}</th>
                                         <th scope="col" className="day-off">{t("Times")}</th>
                                         <th scope="col" className="break-time text-center">{t("TotalLeaveTime")}</th>
+                                        <th scope="col" className="status">{t("operation")}</th>
                                         <th scope="col" className="status text-center">{t("Status")}</th>
-                                        <th scope="col" className="tool text-center">{t("action")}</th>
+                                        <th scope="col" className="tool text-center">{t("action2")}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -943,6 +1013,7 @@ class RequestTaskList extends React.Component {
                                                             })
                                                         }
                                                     </td>
+                                                    <td className="status">{t(`operationType.${child.operationType?.toLowerCase()}`)}</td>
                                                     <td className="status text-center">{this.showStatus(child.processStatusId, child.requestType.id, child.approver, child.statusName)}</td>
                                                     <td className="tool">
                                                         {(isShowEditButton && child?.absenceType?.value != MOTHER_LEAVE_KEY) && <a href={editLink} title={t("Edit")}><img alt="Sửa" src={editButton} /></a>}
