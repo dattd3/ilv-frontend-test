@@ -379,7 +379,6 @@ class TaskList extends React.Component {
         }else{
             params += dataForSearch.status && dataForSearch.status.value ? `status=${dataForSearch.status.value}&` : '';
         }
-        console.log(dataForSearch)
         params += dataForSearch.fromDate ? `fromDate=${dataForSearch.fromDate}&` : '';
         params += dataForSearch.toDate ? `toDate=${dataForSearch.toDate}&` : '';
         this.setState({
@@ -467,7 +466,6 @@ class TaskList extends React.Component {
 
     render() {
         const { t, tasks, total, page} = this.props
-        console.log(tasks)
         const { dataForSearch } = this.state;
         const typeFeedbackMapping = {
             1: t("HrSResponse"),

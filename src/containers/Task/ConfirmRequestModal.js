@@ -199,7 +199,7 @@ class ConfirmRequestModal extends React.Component {
             }
             dataToSap.push(taskObj)
           });
-        this.changeRequest(dataToSap,`${process.env.REACT_APP_REQUEST_SERVICE_URL}request/assess`,this.props.t("appraisal_status"))
+        this.changeRequest(dataToSap,`${process.env.REACT_APP_REQUEST_URL}request/assess`,this.props.t("appraisal_status"))
     }
 
     reject = () => {
@@ -224,7 +224,7 @@ class ConfirmRequestModal extends React.Component {
             dataToSap.push(taskObj)
           });
         
-        this.changeRequest(dataToSap,`${process.env.REACT_APP_REQUEST_SERVICE_URL}request/assess`,this.props.t("disappraisal_status"))
+        this.changeRequest(dataToSap,`${process.env.REACT_APP_REQUEST_URL}request/assess`,this.props.t("disappraisal_status"))
     }
     
     handleChangeMessage = (e) => {
