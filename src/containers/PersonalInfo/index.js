@@ -10,7 +10,7 @@ import { checkIsExactPnL, checkVersionPnLSameAsVinhome } from '../../commons/com
 import RelationshipList from "./RelationshipList"
 import MainInfoList from "./MainInfoList"
 import EducationList from "./EducationList"
-import WorkOutSideGroupList from './WorkOutSideGroupList';
+import WorkOutSideGroup from './WorkOutSideGroup';
 import RelationshipListEdit from "./RelationshipListEdit"
 import ActionButtons from "./ActionButtons"
 import ResultModal from './edit/ResultModal'
@@ -61,7 +61,8 @@ class MyComponent extends React.Component {
         message: "",
         actionType: actionType.createRequests
       },
-      errors: null
+      errors: null,
+      tab: new URLSearchParams(props?.history?.location?.search).get('tab') || "PersonalInformation",
     };
   }
 
@@ -462,13 +463,18 @@ class MyComponent extends React.Component {
     await this.sendRequests(message)
   }
 
+  updateTabLink = key => {
+    this.props.history.push('?tab=' + key);
+    this.setState({ tab: key })
+  }
+
   render() {   
     const { t } = this.props
     const { userFamily, userDetail, userHealth, userProfile, userEducation, relationshipInformation, mainInformation, educationInformation, resultModal, confirmationModal, errors } = this.state
     const isEnableEditProfiles = isEnableFunctionByFunctionName(Constants.listFunctionsForPnLACL.editProfile)
     const isEnableEditEducations = isEnableFunctionByFunctionName(Constants.listFunctionsForPnLACL.editEducation)
     const isEnableEditRelationships = isEnableFunctionByFunctionName(Constants.listFunctionsForPnLACL.editRelationship)
-    const isEnableEditWorkOutsideGroup = true
+    const isEnableWorkOutsideGroup = true
 
     let defaultTab = new URLSearchParams(this.props.location.search).get("tab");
     defaultTab = defaultTab && defaultTab == 'document' ? 'PersonalDocument' : 'PersonalInformation';
@@ -482,7 +488,7 @@ class MyComponent extends React.Component {
       <ResultModal show={resultModal.isShow} title={resultModal.title} message={resultModal.message} isSuccess={resultModal.isSuccess} onHide={this.onHideResultModal} />
       <div className="personal-info">
         <h1 className="content-page-header">{t("PersonalInformation")}</h1>
-        <Tabs defaultActiveKey={defaultTab} id="uncontrolled-tab-example">
+        <Tabs defaultActiveKey={defaultTab} onSelect={(key) => this.updateTabLink(key)}>
           <Tab eventKey="PersonalInformation" title={t("PersonalInformation")} className="tab-main-info">
             <div className="top-button-actions">
               <a href="/tasks" className="btn btn-info shadow"><i className="far fa-address-card"></i> {t("History")}</a>
@@ -539,28 +545,13 @@ class MyComponent extends React.Component {
             </Container>
             { relationshipInformation.isEditing && <ActionButtons errors={errors} sendRequests={this.handleSendRequests} updateFilesToParent={this.updateFilesToParent} /> }
           </Tab>
-
-          <Tab eventKey="WorkOutsideGroup" title={t("Công tác ngoài Tập đoàn")} className="tab-work-outside-group">
-            <div className="top-button-actions">
-              <a href="/tasks" className="btn btn-info shadow"><i className="far fa-address-card"></i> {t("History")}</a>
-              {
-                isEnableEditWorkOutsideGroup ? <span className="btn btn-primary shadow ml-3" onClick={() => this.handleEditInfo("relationshipInformation")}><i className="fas fa-user-edit"></i>{t("Edit")}</span> : null
-              }
-            </div>
-            <h5 className="content-page-header">{t("QUÁ TRÌNH CÔNG TÁC NGOÀI TẬP ĐOÀN")}</h5>
-            <Container fluid className="info-tab-content shadow work-outside-group">
-            {
-              !isEnableEditWorkOutsideGroup ? 
-              <>
-              <RelationshipListEdit relationships={userFamily} propsRelationshipDataToCreate={relationshipInformation.relationshipDataToCreate} updateDataToParent={this.updateDataToParent} errors={errors} />
-              <div className="block-button-add">
-                <button type="button" className="btn btn-primary add" onClick={this.handleAddNewRelationships}><i className="fas fa-plus"></i>{t("Add")}</button>
-              </div>
-              </>
-              : <WorkOutSideGroupList />
-            }
-            </Container>
-          </Tab>
+          {
+            isEnableWorkOutsideGroup && (
+              <Tab eventKey="WorkOutsideGroup" title={t("Công tác ngoài Tập đoàn")} className="tab-work-outside-group">
+                <WorkOutSideGroup />
+              </Tab>
+            )
+          }
           {
            checkVersionPnLSameAsVinhome(Constants.MODULE.DANHGIA_TAIKI) ? // open for golive1106
            /*  checkIsExactPnL(Constants.pnlVCode.VinPearl) || checkIsExactPnL(Constants.pnlVCode.MeliaVinpearl) || checkVinfast  ?  */
