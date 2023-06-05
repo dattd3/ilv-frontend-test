@@ -142,7 +142,7 @@
             .flex-1 {
               flex: 1;
               margin-left: 15px;
-              max-width: 476px;
+              // max-width: 476px;
             }
             .icon-prefix-select {
               position: absolute;
@@ -153,6 +153,21 @@
             .w-180px {
               width: 180px;
               margin-left: 15px;
+            }
+            .w-120px {
+              width: 120px;
+              margin-left: 15px;
+            }
+            .date-picker-container {
+              .form-control {
+                height: 40px;
+                font-size: 14px;
+              }
+              .calender-icon {
+                position: absolute;
+                top: 12px;
+                right: 8px;
+              }
             }
             .request-category-guide-container {
               position: absolute;
