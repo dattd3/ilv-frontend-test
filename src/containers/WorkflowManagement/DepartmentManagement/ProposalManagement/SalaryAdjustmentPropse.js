@@ -28,10 +28,10 @@ import IconAdd from "../../../../assets/img/ic-add-green.svg";
 import { useApi } from "../../../../modules/api";
 import vi from "date-fns/locale/vi";
 import { getCulture, getMuleSoftHeaderConfigurations } from "commons/Utils";
-import { checkFilesMimeType } from "../../../../utils/file";
 import ProcessHistoryComponent from "./ProcessHistoryComponent";
 import LoadingModal from "../../../../components/Common/LoadingModal";
 import { Portal } from 'react-overlays';
+import { validateFileMimeType, validateTotalFileSize } from "../../../../utils/file";
 
 registerLocale("vi", vi);
 
@@ -821,9 +821,11 @@ const SalaryAdjustmentPropse = (props) => {
   // Attach file
   const handleAttachFile = (e) => {
     const files = Object.values(e.target.files);
-    if (checkFilesMimeType(e, files)) {
+    if (validateFileMimeType(e, files, t)) {
       const listFilesTmp = [...listFiles, ...files];
-      setListFiles(listFilesTmp);
+      if (validateTotalFileSize(e, listFilesTmp, t)) {
+        setListFiles(listFilesTmp);
+      }
     }
   };
 
