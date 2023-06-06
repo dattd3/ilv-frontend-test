@@ -16,6 +16,27 @@ const getDateByRange = (startDate, endDate) => {
     return []
 }
 
+const getOperationType = (requestTypeId, actionType, processStatusId) => {
+  if ([Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP].includes(requestTypeId)) {
+    if (actionType == Constants.OPERATION_TYPES.DEL && processStatusId == 5) {
+      return Constants.OPERATION_TYPES.WAITING_DEL_APPROVE;
+    } else if (actionType == Constants.OPERATION_TYPES.DEL && processStatusId == 8) {
+      return Constants.OPERATION_TYPES.WAITING_DEL_APPRAISE;
+    } else {
+      return actionType || Constants.OPERATION_TYPES.INS;
+    }
+  } else if (requestTypeId == Constants.OT_REQUEST) {
+    if (actionType == Constants.OPERATION_TYPES.DEL && processStatusId == 5) {
+      return Constants.OPERATION_TYPES.WAITING_DEL_APPROVE;
+    } else if (actionType == Constants.OPERATION_TYPES.DEL && processStatusId == 8) {
+      return Constants.OPERATION_TYPES.WAITING_DEL_APPRAISE;
+    } else {
+      return actionType || Constants.OPERATION_TYPES.INS;
+    }
+  }
+  return Constants.OPERATION_TYPES.INS
+}
+
 export default function processingDataReq(dataRawFromApi, tab) {
     let taskList = [];
     const listRequestTypeIdToShowTime = [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP, Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE, Constants.OT_REQUEST],
@@ -48,11 +69,8 @@ export default function processingDataReq(dataRawFromApi, tab) {
               element.totalTime = element.requestInfo?.reduce((accumulator, currentValue) => accumulator += (currentValue.hoursOt) * 1, 0)?.toFixed(2);
               const dateRanges = element.requestInfo?.reduce((accumulator, currentValue) => [...accumulator, moment(currentValue.date, "YYYYMMDD").format("DD/MM/YYYY")], []);
               element.dateRange = dateRanges.join(", ");
-              element.operationType = element.updateField;
             }
-            if (!element.operationType) {
-              element.operationType = Constants.OPERATION_TYPES.INS
-            }
+            element.operationType = getOperationType(element.requestTypeId, element.updateField, element.processStatusId)
             taskList.push(element);
         } else {
             if (element.requestInfo) {
@@ -101,20 +119,14 @@ export default function processingDataReq(dataRawFromApi, tab) {
                     }
                     // e.isEdit = listRequestTypeIdToGetSubId.includes(element.requestTypeId) ? e.isEdit : element.isEdit
                     e.isEdit = element?.isEdit // Confirm từ a Thủy và a Chiến Mobile lấy isEdit bên ngoài (không lấy bên trong) - 18/04/2023
-                    if ([Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP].includes(element.requestTypeId)) {
-                      if (e.actionType == Constants.OPERATION_TYPES.DEL && e.processStatusId == 5) {
-                        e.operationType = Constants.OPERATION_TYPES.WAITING_DEL_APPROVE;
-                      } else {
-                        e.operationType = e.actionType;
-                      }
-                    } else {
-                      e.operationType = Constants.OPERATION_TYPES.INS
-                    }
+                    e.operationType = getOperationType(element.requestTypeId, e.actionType, e.processStatusId);
                     taskList.push(e)
                 })
             }
-            if (element.requestTypeId == Constants.CHANGE_DIVISON_SHIFT || element.requestTypeId == Constants.DEPARTMENT_TIMESHEET || element.requestTypeId == Constants.OT_REQUEST) {
+            if (element.requestTypeId == Constants.CHANGE_DIVISON_SHIFT || element.requestTypeId == Constants.DEPARTMENT_TIMESHEET) {
                 element.id = element.id.toString()
+                element.operationType = Constants.OPERATION_TYPES.INS
+                element.operationType = getOperationType(element.requestTypeId, element.updateField, element.processStatusId);
                 taskList.push(element);
             }
         }

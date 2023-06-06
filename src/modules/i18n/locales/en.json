@@ -1804,5 +1804,6 @@
   "operationType.ins": "Add new",
   "operationType.mod": "Edit",
   "operationType.del": "Eviction",
-  "operationType.waitingdelapprove": "Awaiting recall approval"
+  "operationType.waitingdelapprove": "Awaiting recall approval",
+  "operationType.waitingdelappraise": "Awaiting recall appraise"
 }
