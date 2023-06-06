@@ -780,42 +780,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
           errors['qltt'] = t('Required');
         }
       }
-
-      const fileExtension = [
-        'application/msword', // doc
-        'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // docx
-        'application/vnd.ms-excel', // xls
-        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // xlsx
-        'application/pdf', // pdf,
-        'image/png', // png
-        'image/jpeg' // jpg and jpeg
-      ]
-
-      const cvs = this.state.data.cvs
-
-      let sizeTotal = 0
-      for (let index = 0, lenFiles = cvs.length; index < lenFiles; index++) {
-          const file = cvs[index];
-          if (file.id) {
-              continue
-          }
-
-          if (!fileExtension.includes(file.type)) {
-              errors.cvs = t('Request_error_file_format')
-              break
-          } else if (parseFloat(file.size / 1000000) > 2) {
-              errors.cvs = t('Request_error_file_size')
-              break
-          } else {
-              errors.cvs = null
-          }
-          sizeTotal += parseInt(file.size)
-      }
-
-      if (parseFloat(sizeTotal / 1000000) > 10) {
-          errors.cvs = t('Request_error_file_oversize')
-      }
-    }else if(type === 'assess'){
+    } else if(type === 'assess'){
       if(evalutions && evalutions.length > 0){
         let isMissing = false;
         for(let i = 0; i < evalutions.length ; i++){
@@ -1988,7 +1953,7 @@ renderEvalution = (name, data, isDisable) => {
                 <div  style={{height: '2px', backgroundColor: '#F2F2F2', margin: '15px 0'}}></div>
                 </div>
               </div>
-              <ApproverComponent employeeType="APPRAISER" comment={data.appraiserComment} isEdit={disableComponent.disableAll || !disableComponent.employeeSide} approver={data.qltt}  updateApprover={(approver, isApprover) => this.updateApprover('qltt', approver,isApprover )} />
+              <ApproverComponent employeeType="APPRAISER" comment={data.supervisorComment} isEdit={disableComponent.disableAll || !disableComponent.employeeSide} approver={data.qltt}  updateApprover={(approver, isApprover) => this.updateApprover('qltt', approver,isApprover )} />
               {this.state.errors && this.state.errors['qltt'] ? <p className="text-danger">{this.state.errors['qltt']}</p> : null}
             </div>
             {
@@ -2223,7 +2188,7 @@ renderEvalution = (name, data, isDisable) => {
                 <div className="divider"></div>
               </div>
               <div className="col-12">
-                <div className="row">
+                <div className="row" style={{ rowGap: 20 }}>
                 {
                   formatProcessTime(data.createdDate) && <div className="col-4">
                   {t("TimeToSendRequest")}

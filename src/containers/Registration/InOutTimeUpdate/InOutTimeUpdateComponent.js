@@ -11,7 +11,7 @@ import map from '../../../../src/containers/map.config'
 import vi from 'date-fns/locale/vi'
 import _ from 'lodash'
 import { withTranslation } from "react-i18next";
-import { getValueParamByQueryString, getMuleSoftHeaderConfigurations, isEnableFunctionByFunctionName } from "../../../commons/Utils"
+import { getValueParamByQueryString, getMuleSoftHeaderConfigurations, isEnableFunctionByFunctionName, getRegistrationMinDateByConditions, isValidDateRequest } from "../../../commons/Utils"
 import Constants from '../../../commons/Constants'
 registerLocale("vi", vi)
 
@@ -23,9 +23,8 @@ class InOutTimeUpdateComponent extends React.Component {
   constructor(props) {
     super();
     this.state = {
-      // startDate: getValueParamByQueryString(queryString, 'date') || moment(this.getClosingSalaryDatePreMonth(), "DD/MM/YYYY").toDate(),
-      // endDate: getValueParamByQueryString(queryString, 'date') || new Date(),
-      startDate: getValueParamByQueryString(queryString, 'date') || moment(this.getClosingSalaryDatePreMonth(), "DD/MM/YYYY").format("DD/MM/YYYY"),
+      // startDate: getValueParamByQueryString(queryString, 'date') || moment(this.getClosingSalaryDatePreMonth(), "DD/MM/YYYY").format("DD/MM/YYYY"),
+      startDate: getValueParamByQueryString(queryString, 'date') || (getRegistrationMinDateByConditions() ? moment(getRegistrationMinDateByConditions()).format("DD/MM/YYYY") : moment(this.getClosingSalaryDatePreMonth(), "DD/MM/YYYY").format("DD/MM/YYYY")),
       endDate: getValueParamByQueryString(queryString, 'date') || moment().format("DD/MM/YYYY"),
       timesheets: [],
       approver: null,
@@ -177,36 +176,6 @@ class InOutTimeUpdateComponent extends React.Component {
       errors['approver'] = this.props.t("Required")
     }
 
-    let errorsFile = null
-    errorsFile = ((_.isNull(files) || files.length === 0) && !['V070', 'V077', 'V073', "V001", "V079", "V002"].includes(currentUserPnLCode)) ? t("AttachmentRequired") : null
-
-    if (files && files?.length > 0) {
-      const maximumFileSize = 4 // Unit MB
-      let sizeTotal = 0
-      const fileExtensionAccepting = [
-        'application/msword', // doc
-        'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // docx
-        'application/vnd.ms-excel', // xls
-        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // xlsx
-        'application/pdf', // pdf,
-        'image/png', // png
-        'image/jpeg' // jpg and jpeg
-      ]
-      for (let index = 0, lenFiles = files.length; index < lenFiles; index++) {
-        let file = files[index]
-        if (!fileExtensionAccepting.includes(file.type)) {
-          errorsFile = 'Tồn tại tệp đính kèm không đúng định dạng.'
-          break
-        }
-        sizeTotal += parseInt(file.size)
-      }
-
-      if (parseFloat(sizeTotal / 1000000) > maximumFileSize) {
-        errorsFile = `Tổng dung lượng các file đính kèm không được vượt quá ${maximumFileSize}MB`
-      }
-		}
-    errors['files'] = errorsFile
-
     errors['approverAppraiser'] = null
     if (approver?.account?.trim() && appraiser?.account?.trim() && approver?.account?.trim()?.toLowerCase() === appraiser?.account?.trim()?.toLowerCase()) {
       errors['approverAppraiser'] = t("ApproverAndConsenterCannotBeIdentical")
@@ -235,8 +204,16 @@ class InOutTimeUpdateComponent extends React.Component {
       this.setDisabledSubmitButton(false)
       return
     }
-    
+
     const timesheets = [...this.state.timesheets].filter(item => item.isEdited)
+
+    const hasNotErrorBackDate = (timesheets || []).every(item => isValidDateRequest(moment(item?.date, 'DD-MM-YYYY').format('DD/MM/YYYY')))
+    if (!hasNotErrorBackDate) {
+      this.showStatusModal(t("Notification"), t("ErrorBackDateRequestVinpearl"), false)
+      this.setState({ needReload: false })
+      return
+    }
+
     const approver = { ...this.state.approver }
     const appraiser = this.state.appraiser ? this.state.appraiser  : null
      
@@ -301,8 +278,12 @@ class InOutTimeUpdateComponent extends React.Component {
         this.setDisabledSubmitButton(false)
       }
     })
-    .catch(response => {
-      this.showStatusModal(this.props.t("Notification"), this.props.t("Error"), false)
+    .catch(error => {
+      let message = t("Error")
+      if (error?.response?.data?.result?.code == Constants.API_ERROR_CODE) {
+        message = error?.response?.data?.result?.message
+      }
+      this.showStatusModal(this.props.t("Notification"), message, false)
       this.setDisabledSubmitButton(false)
     })
     .finally(() => {
@@ -366,7 +347,7 @@ class InOutTimeUpdateComponent extends React.Component {
   };
 
   hideStatusModal = () => {
-    this.setState({ isShowStatusModal: false });
+    this.setState({ isShowStatusModal: false, disabledSubmitButton: false });
     if (this.state.needReload) {
       window.location.href = `${map.Registration}?tab=InOutTimeUpdate`
     }
@@ -415,6 +396,7 @@ class InOutTimeUpdateComponent extends React.Component {
     const { t, recentlyManagers } = this.props;
     const lang = localStorage.getItem("locale")
     const isShowSelectWorkingShift24h = isEnableFunctionByFunctionName(Constants.listFunctionsForPnLACL.selectWorkingShift24h)
+    const minDate = getRegistrationMinDateByConditions()
 
     return (
       <div className="in-out-time-update">
@@ -431,7 +413,7 @@ class InOutTimeUpdateComponent extends React.Component {
                     autoComplete="off"
                     selected={startDate ? moment(startDate, 'DD/MM/YYYY').toDate() : null}
                     maxDate={endDate ? moment(endDate, 'DD/MM/YYYY').toDate() : null}
-                    // maxDate={this.state.endDate}
+                    minDate={minDate ? moment(minDate).toDate() : null}
                     onChange={this.setStartDate.bind(this)}
                     showDisabledMonthNavigation
                     dateFormat="dd/MM/yyyy"
