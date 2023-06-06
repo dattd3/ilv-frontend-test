@@ -40,9 +40,9 @@ const isNullCustomize = (value) => {
     : false;
 };
 
-const getHoursBetween2Times = (start, end, isOverNight) => {
+const getHoursBetween2Times = (start, end, isOvernight) => {
   if (!start || !end) return 0;
-  const endTime = isOverNight ? moment(end).add(1, "day") : end;
+  const endTime = isOvernight ? moment(end).add(1, "day") : end;
   return moment
     .duration(moment(endTime, "HH:mm").diff(moment(start, "HH:mm")))
     .asHours()
@@ -107,7 +107,7 @@ const getTotalHoursOtInRanges = (ranges = []) => {
     .reduce(
       (accumulator, currentValue) =>
         accumulator * 1 +
-        getHoursBetween2Times(currentValue.startTime, currentValue.endTime, currentValue.isOverNight) * 1,
+        getHoursBetween2Times(currentValue.startTime, currentValue.endTime, currentValue.isOvernight) * 1,
       0
     )
     ?.toFixed(2);
@@ -270,13 +270,13 @@ export default function OTRequestComponent({ recentlyManagers }) {
     }
   };
 
-  const handleChangeIsOvernight = (dayIndex, rangeIndex, value) => {
+  const handleChangeisOvernight = (dayIndex, rangeIndex, value) => {
     if (requestInfoData?.[dayIndex]) {
       const newRanges = requestInfoData?.[dayIndex].timeRanges?.map((item, i) =>
         i === rangeIndex
           ? {
               ...requestInfoData?.[dayIndex]?.timeRanges?.[rangeIndex],
-              isOverNight: value,
+              isOvernight: value,
             }
           : item
       );
@@ -524,8 +524,8 @@ export default function OTRequestComponent({ recentlyManagers }) {
         endTime: item.timeRanges
           ?.map((range) => moment(range.endTime).format("HHmmss"))
           ?.join(","),
-        isOverNight: item.timeRanges
-          ?.map((range) => range.isOverNight || false)
+        isOvernight: item.timeRanges
+          ?.map((range) => range.isOvernight || false)
           ?.join(","),
         overTimeType: "01",
       }));
@@ -657,25 +657,25 @@ export default function OTRequestComponent({ recentlyManagers }) {
         if (!budgetApprover) _errors["budgetApprover"] = t("Required");
         // eslint-disable-next-line no-unused-expressions
         item.timeRanges?.forEach((range, rangeIndex) => {
-          const { startTime, endTime, isOverNight } = range;
+          const { startTime, endTime, isOvernight } = range;
           if (!startTime)
             _errors[`range_startTime_${index}_${rangeIndex}`] = t("Required");
           if (!endTime)
             _errors[`range_endTime_${index}_${rangeIndex}`] = t("Required");
           if (startTime && endTime) {
-            if (getHoursBetween2Times(startTime, endTime, isOverNight) <= 0) {
+            if (getHoursBetween2Times(startTime, endTime, isOvernight) <= 0) {
               _errors[`invalidHour_${index}_${rangeIndex}`] =
                 t("InvalidHour");
             }
             if (
               currOrgLv3 === VFSX_LV3_ORG &&
-              getHoursBetween2Times(startTime, endTime, isOverNight) < 0.5
+              getHoursBetween2Times(startTime, endTime, isOvernight) < 0.5
             ) {
               _errors[`range_minimum_hours_${index}_${rangeIndex}`] =
                 t("OTMinimumHours");
             } else if (
               currOrgLv3 !== VFSX_LV3_ORG &&
-              getHoursBetween2Times(startTime, endTime, isOverNight) < 1
+              getHoursBetween2Times(startTime, endTime, isOvernight) < 1
             ) {
               _errors[`range_minimum_hours_${index}_${rangeIndex}`] =
                 t("OTMinimumHours");
@@ -1186,16 +1186,16 @@ export default function OTRequestComponent({ recentlyManagers }) {
                                     className="mb-12"
                                     style={{ textAlign: "center" }}
                                   >
-                                    {t("IsOvernight")}
+                                    {t("isOvernight")}
                                   </div>
                                 )}
                                 <div className="is-overnight-container">
                                   <input
                                     name="isOvernight"
                                     type="checkbox"
-                                    checked={range?.isOverNight || false}
+                                    checked={range?.isOvernight || false}
                                     onChange={(event) =>
-                                      handleChangeIsOvernight(
+                                      handleChangeisOvernight(
                                         index,
                                         rangeIndex,
                                         event.target.checked

@@ -1775,7 +1775,7 @@
   "InvalidMimeType": " is invalid type! Please select again!",
   "ExceedMaxFileSize": "The total file size must not exceed 8MB",
   "ErrorBackDateRequestVinpearl": "Request creation failed - Time out",
-  "IsOvernight": "Overnight",
+  "isOvernight": "Overnight",
   "SupervisorAssetDate": "Suppervisor Asset Date",
   "EditDate": "Edit Date",
   "IncorrectPersonalIdentifyNumber": "ID No requires 9 or 12 numbers",
