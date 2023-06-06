@@ -59,9 +59,6 @@ class RegistrationComponent extends React.Component {
           }]
 
           try {
-            if (!this.state.isLoading) {
-              this.setState({ isLoading: true })
-            }
             const payload = {
               account: approverInfo?.account?.trim(),
               employee_type: "APPRAISER",
@@ -80,7 +77,7 @@ class RegistrationComponent extends React.Component {
                 orglv2Id: newInfo?.organization_lv2 || "",
                 account: newInfo?.username?.toLowerCase() || "",
                 current_position: newInfo?.position_name || '',
-                department: newInfo?.division + (newInfo?.department ? '/' + newInfo?.department : '') + (newInfo?.part ? '/' + newInfo?.part : '')
+                department: (newInfo?.division ? newInfo?.division : '') + (newInfo?.department ? '/' + newInfo?.department : '') + (newInfo?.part ? '/' + newInfo?.part : '')
               }]
             } else {
               appraiser = []
@@ -106,9 +103,6 @@ class RegistrationComponent extends React.Component {
           }]
 
           try {
-            if (!this.state.isLoading) {
-              this.setState({ isLoading: true })
-            }
             const payload = {
               account: approverInfo?.account?.trim(),
               employee_type: "APPROVER",
@@ -127,7 +121,7 @@ class RegistrationComponent extends React.Component {
                 orglv2Id: newInfo?.organization_lv2 || "",
                 account: newInfo?.username?.toLowerCase() || "",
                 current_position: newInfo?.position_name || '',
-                department: newInfo?.division + (newInfo?.department ? '/' + newInfo?.department : '') + (newInfo?.part ? '/' + newInfo?.part : '')
+                department: (newInfo?.division ? newInfo?.division : '') + (newInfo?.department ? '/' + newInfo?.department : '') + (newInfo?.part ? '/' + newInfo?.part : '')
               }]
             } else {
               approver = []
