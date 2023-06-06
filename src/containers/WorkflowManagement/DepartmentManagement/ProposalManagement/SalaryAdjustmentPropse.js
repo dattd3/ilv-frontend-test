@@ -31,6 +31,7 @@ import { getCulture } from "commons/Utils";
 import { checkFilesMimeType } from "../../../../utils/file";
 import ProcessHistoryComponent from "./ProcessHistoryComponent";
 import LoadingModal from "../../../../components/Common/LoadingModal";
+import { validateFileMimeType, validateTotalFileSize } from "../../../../utils/file";
 
 registerLocale("vi", vi);
 
@@ -797,9 +798,11 @@ const SalaryAdjustmentPropse = (props) => {
   // Attach file
   const handleAttachFile = (e) => {
     const files = Object.values(e.target.files);
-    if (checkFilesMimeType(e, files)) {
+    if (validateFileMimeType(e, files, t)) {
       const listFilesTmp = [...listFiles, ...files];
-      setListFiles(listFilesTmp);
+      if (validateTotalFileSize(e, listFilesTmp, t)) {
+        setListFiles(listFilesTmp);
+      }
     }
   };
 

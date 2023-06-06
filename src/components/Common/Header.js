@@ -24,7 +24,7 @@ const getOrganizationLevelByRawLevel = level => {
 }
 
 const currentLocale = localStorage.getItem("locale")
-const timeKeepingHistoryEndpoint = `${process.env.REACT_APP_REQUEST_URL}notifications/in/out/list`;
+const timeKeepingHistoryEndpoint = `${process.env.REACT_APP_REQUEST_URL}notifications/in/out/listbydate`;
 const APIConfig = getRequestConfigurations();
 
 function Header(props) {
@@ -340,12 +340,12 @@ function Header(props) {
   
     const fetchLatestTimeKeeping = async () => {
       try {
+        const currentDate = moment().format('YYYY-MM-DD')
         const response = await axios.get(timeKeepingHistoryEndpoint, {
           params: {
             companyCode: localStorage.getItem("companyCode"),
             culture: lang === "vi-VN" ? "vi" : "en",
-            page: 1,
-            pageSize: 1,
+            date: currentDate,
           },
           ...APIConfig,
         });
