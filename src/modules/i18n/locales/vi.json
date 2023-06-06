@@ -1826,5 +1826,7 @@
   "operationType.ins": "Thêm mới",
   "operationType.mod": "Chỉnh sửa",
   "operationType.del": "Thu hồi",
-  "operationType.waitingdelapprove": "Đang chờ PD thu hồi"
+  "operationType.waitingdelapprove": "Đang chờ PD thu hồi",
+  "VinUniSickLeave": "Nghỉ ốm VinUni",
+  "SickLeaveFundForVinUni": "Quỹ Nghỉ ốm VinUni"
 }
