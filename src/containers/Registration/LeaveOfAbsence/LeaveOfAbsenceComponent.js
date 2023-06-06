@@ -1026,12 +1026,14 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                                 <label>{t('StartDateTime')}</label>
                                                                 <div className='d-flex align-items-center value'>
                                                                     {ri?.startDate && moment(ri?.startDate, 'YYYYMMDD').isValid() ? moment(ri?.startDate, 'YYYYMMDD').format('DD/MM/YYYY') : ''}
+                                                                    {ri?.startTime ? ' ' + moment(ri?.startTime, 'HH:mm').locale('en-us').format('HH:mm') : ''}
                                                                 </div>
                                                             </div>
                                                             <div className='col-md-4'>
                                                                 <label>{t('EndDateTime')}</label>
                                                                 <div className='d-flex align-items-center value'>
                                                                     {ri?.endDate && moment(ri?.endDate, 'YYYYMMDD').isValid() ? moment(ri?.endDate, 'YYYYMMDD').format('DD/MM/YYYY') : ''}
+                                                                    {ri?.endTime ? ' ' + moment(ri?.endTime, 'HH:mm').locale('en-us').format('HH:mm') : ''}
                                                                 </div>
                                                             </div>
                                                             <div className='col-md-4'>
