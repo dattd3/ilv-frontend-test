@@ -50,7 +50,7 @@ class ConfirmationModal extends React.Component {
                     dataToSap[0].sub[0].processStatusId = Constants.STATUS_NOT_APPROVED;
                 }
                 dataToSap[0].sub[0].comment = message;
-                this.disApprove(dataToSap, `${process.env.REACT_APP_REQUEST_URL}request/approve`, id)
+                this.disApprove(dataToSap, 'request/approve', id)
                 break;
             case Constants.STATUS_APPROVED: // phê duyệt
                 dataToSap[0].sub[0].processStatusId = Constants.STATUS_APPROVED;
@@ -98,6 +98,14 @@ class ConfirmationModal extends React.Component {
         }
     }
 
+    getHostByRequestTypeId = (dataToSap) => {
+        const requestTypeId = dataToSap?.[0]?.requestTypeId || dataToSap?.requestTypeId || "";
+
+        return !!requestTypeId && [12, 14].includes(requestTypeId)
+          ? process.env.REACT_APP_REQUEST_SERVICE_URL
+          : process.env.REACT_APP_REQUEST_URL;
+    }
+
     sync = () => {
         const { dataToSap, t, onHide } = this.props;
 
@@ -141,11 +149,11 @@ class ConfirmationModal extends React.Component {
     }
 
     cancel = (dataToSap) => {
-        const { t, onHide } = this.props;
+        const { t, onHide } = this.props, host = this.getHostByRequestTypeId(dataToSap);
 
         axios({
             method: 'POST',
-            url: `${process.env.REACT_APP_REQUEST_URL}request/cancel`,
+            url: `${host}request/cancel`,
             data: dataToSap,
             headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` }
         })
@@ -172,11 +180,11 @@ class ConfirmationModal extends React.Component {
     }
 
     revocation = (dataToSap) => {
-        const { t, onHide } = this.props;
+        const { t, onHide } = this.props, host = this.getHostByRequestTypeId(dataToSap);
 
         axios({
             method: 'POST',
-            url: `${process.env.REACT_APP_REQUEST_URL}request/cancel`,
+            url: `${host}request/cancel`,
             data: dataToSap,
             headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` }
         })
@@ -203,11 +211,11 @@ class ConfirmationModal extends React.Component {
     }
 
     revocationApproval = (dataToSap) => {
-        const { t, onHide } = this.props;
+        const { t, onHide } = this.props, host = this.getHostByRequestTypeId(dataToSap);
 
         axios({
             method: 'POST',
-            url: `${process.env.REACT_APP_REQUEST_URL}request/approved/cancel`,
+            url: `${host}request/approved/cancel`,
             data: dataToSap[0],
             headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` }
         })
@@ -240,11 +248,11 @@ class ConfirmationModal extends React.Component {
     }
 
     approve = (dataToSap, id) => {
-        const { t, onHide, updateTask } = this.props;
+        const { t, onHide, updateTask } = this.props, host = this.getHostByRequestTypeId(dataToSap);
 
         axios({
             method: 'POST',
-            url: `${process.env.REACT_APP_REQUEST_URL}request/approve`,
+            url: `${host}request/approve`,
             data: dataToSap,
             headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` },
             params: {
@@ -284,10 +292,10 @@ class ConfirmationModal extends React.Component {
             })
     }
 
-    disApprove = (formData, url, id) => {
-        const { t, onHide } = this.props;
+    disApprove = (dataToSap, endPoint, id) => {
+        const { t, onHide } = this.props, host = this.getHostByRequestTypeId(dataToSap);;
 
-        axios.post(url, formData, {
+        axios.post(`${host}${endPoint}`, dataToSap, {
             headers: { Authorization: localStorage.getItem('accessToken') },
             params: {
               culture: getCulture()
@@ -320,11 +328,11 @@ class ConfirmationModal extends React.Component {
     }
 
     consent = (dataToSap) => {
-        const { t, onHide, type } = this.props;
+        const { t, onHide, type } = this.props, host = this.getHostByRequestTypeId(dataToSap);
 
         axios({
             method: 'POST',
-            url: `${process.env.REACT_APP_REQUEST_URL}request/assess`,
+            url: `${host}request/assess`,
             data: dataToSap,
             headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` },
             params: {
@@ -366,10 +374,10 @@ class ConfirmationModal extends React.Component {
     }
 
     reject = (dataToSap) => {
-        const { t, onHide } = this.props;
+        const { t, onHide } = this.props, host = this.getHostByRequestTypeId(dataToSap);
         axios({
             method: 'POST',
-            url: `${process.env.REACT_APP_REQUEST_URL}request/assess`,
+            url: `${host}request/assess`,
             data: dataToSap,
             headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` },
             params: {
