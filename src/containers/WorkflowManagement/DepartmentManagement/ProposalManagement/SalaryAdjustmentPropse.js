@@ -15,22 +15,21 @@ import ConfirmationModal from "../../../Registration/ConfirmationModal";
 import ResultModal from "./ResultModal";
 import ProposalModal from "./ProposalModal";
 import HumanForReviewSalaryComponent from "../../../Registration/HumanForReviewSalaryComponent";
-import ConfirmPasswordModal from "../../../Registration/ContractEvaluation/SalaryPropose/ConfirmPasswordModal";
-import StatusModal from "../../../../components/Common/StatusModal";
-import ResizableTextarea from "../../../Registration/TextareaComponent";
-import Constants from "../.../../../../../commons/Constants";
-import CurrencyInput from "react-currency-input-field";
-import IconDelete from "../../../../assets/img/icon/Icon_Cancel.svg";
-import IconEye from "../../../../assets/img/icon/eye.svg";
-import IconNotEye from "../../../../assets/img/icon/not-eye.svg";
-import IconRemove from "../../../../assets/img/ic-remove.svg";
-import IconAdd from "../../../../assets/img/ic-add-green.svg";
-import { useApi } from "../../../../modules/api";
-import vi from "date-fns/locale/vi";
+import ConfirmPasswordModal from '../../../Registration/ContractEvaluation/SalaryPropose/ConfirmPasswordModal';
+import StatusModal from '../../../../components/Common/StatusModal'
+import ResizableTextarea from '../../../Registration/TextareaComponent';
+import Constants from '../.../../../../../commons/Constants';
+import CurrencyInput from 'react-currency-input-field';
+import IconDelete from '../../../../assets/img/icon/Icon_Cancel.svg';
+import IconEye from '../../../../assets/img/icon/eye.svg';
+import IconNotEye from '../../../../assets/img/icon/not-eye.svg';
+import IconRemove from '../../../../assets/img/ic-remove.svg';
+import IconAdd from '../../../../assets/img/ic-add-green.svg';
+import { useApi } from '../../../../modules/api';
+import vi from 'date-fns/locale/vi'
+import { validateFileMimeType, validateTotalFileSize } from "../../../../utils/file";
 import { getCulture } from "commons/Utils";
-import { checkFilesMimeType } from "../../../../utils/file";
-import ProcessHistoryComponent from "./ProcessHistoryComponent";
-import LoadingModal from "../../../../components/Common/LoadingModal";
+import LoadingModal from "components/Common/LoadingModal";
 
 registerLocale("vi", vi);
 
@@ -797,9 +796,11 @@ const SalaryAdjustmentPropse = (props) => {
   // Attach file
   const handleAttachFile = (e) => {
     const files = Object.values(e.target.files);
-    if (checkFilesMimeType(e, files)) {
+    if (validateFileMimeType(e, files, t)) {
       const listFilesTmp = [...listFiles, ...files];
-      setListFiles(listFilesTmp);
+      if (validateTotalFileSize(e, listFilesTmp, t)) {
+        setListFiles(listFilesTmp);
+      }
     }
   };
 

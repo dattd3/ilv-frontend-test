@@ -24,7 +24,7 @@
     // Accordion
     .collapse {
       position: absolute;
-      left: calc(#{$sidebar-collapsed-width} + #{$grid-gutter-width} / 2);
+      left: calc(#{$sidebar-collapsed-width} + calc(#{$grid-gutter-width} / 2));
       z-index: 1;
       top: 2px;
       // Grow In Animation
@@ -208,7 +208,7 @@
         // Accordion
         .collapse {
           position: absolute;
-          left: calc(#{$sidebar-collapsed-width} + #{$grid-gutter-width} / 2);
+          left: calc(#{$sidebar-collapsed-width} + calc(#{$grid-gutter-width} / 2));
           z-index: 1;
           top: 2px;
           // Grow In Animation for Toggled State
