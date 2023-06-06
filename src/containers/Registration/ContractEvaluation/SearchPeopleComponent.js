@@ -4,7 +4,7 @@ import axios from 'axios'
 import _, { debounce } from 'lodash'
 import { withTranslation } from "react-i18next";
 import APPROVER_LIST_LEVEL from "../../../commons/Constants"
-import { getMuleSoftHeaderConfigurations, getRequestConfigurations } from '../../../commons/Utils';
+import { getMuleSoftHeaderConfigurations, getRequestConfigurations, prepareOrganization } from '../../../commons/Utils';
 import moment from 'moment';
 
 const MyOption = props => {
@@ -174,7 +174,7 @@ class ApproverComponent extends React.Component {
                 account: res.username,
                 current_position: res.position_name,
                 employeeNo: res.uid,
-                department: res.division + (res.department ? '/' + res.department : '') + (res.part ? '/' + res.part : ''),
+                department: prepareOrganization(res?.division, res?.department, res?.unit, res?.part),
                 company_email: res.company_email
               }
             })

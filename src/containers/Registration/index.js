@@ -11,7 +11,7 @@ import InOutTimeUpdate from './InOutTimeUpdate/InOutTimeUpdateComponent'
 import OTRequest from './OTRequest';
 
 import HOCComponent from '../../components/Common/HOCComponent'
-import { isEnableShiftChangeFunctionByPnLVCode, isEnableInOutTimeUpdateFunctionByPnLVCode, getRequestConfigurations, isEnableOTFunctionByPnLVCode } from "../../commons/Utils"
+import { isEnableShiftChangeFunctionByPnLVCode, isEnableInOutTimeUpdateFunctionByPnLVCode, getRequestConfigurations, isEnableOTFunctionByPnLVCode, prepareOrganization } from "../../commons/Utils"
 import LoadingModal from 'components/Common/LoadingModal'
 
 class RegistrationComponent extends React.Component {
@@ -77,7 +77,7 @@ class RegistrationComponent extends React.Component {
                 orglv2Id: newInfo?.organization_lv2 || "",
                 account: newInfo?.username?.toLowerCase() || "",
                 current_position: newInfo?.position_name || '',
-                department: (newInfo?.division ? newInfo?.division : '') + (newInfo?.department ? '/' + newInfo?.department : '') + (newInfo?.part ? '/' + newInfo?.part : '')
+                department: prepareOrganization(newInfo?.division, newInfo?.department, newInfo?.unit, newInfo?.part)
               }]
             } else {
               appraiser = []
@@ -121,7 +121,7 @@ class RegistrationComponent extends React.Component {
                 orglv2Id: newInfo?.organization_lv2 || "",
                 account: newInfo?.username?.toLowerCase() || "",
                 current_position: newInfo?.position_name || '',
-                department: (newInfo?.division ? newInfo?.division : '') + (newInfo?.department ? '/' + newInfo?.department : '') + (newInfo?.part ? '/' + newInfo?.part : '')
+                department: prepareOrganization(newInfo?.division, newInfo?.department, newInfo?.unit, newInfo?.part)
               }]
             } else {
               approver = []
