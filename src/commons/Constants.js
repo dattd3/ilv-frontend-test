@@ -45,18 +45,19 @@ const Constants = {
   KEY_PHONES_SUPPORT_LOCAL_STORAGE: 'phonesSupport',
 
   //Type request
-  UPDATE_PROFILE: 1,
-  LEAVE_OF_ABSENCE: 2,
-  BUSINESS_TRIP: 3,
-  SUBSTITUTION: 4,
-  IN_OUT_TIME_UPDATE: 5,
-  CHANGE_DIVISON_SHIFT: 8,
-  DEPARTMENT_TIMESHEET: 9,
-  ONBOARDING: 6,
-  RESIGN_SELF: 7,
-  SALARY_PROPOSE: 12,
-  OT_REQUEST: 13,
-  
+  UPDATE_PROFILE: 1, // Cap nhat thong tin ca nhan
+  LEAVE_OF_ABSENCE: 2,  // Dang ky nghi
+  BUSINESS_TRIP: 3, // CTDT
+  SUBSTITUTION: 4, // Phan ca
+  IN_OUT_TIME_UPDATE: 5, // In out 
+  CHANGE_DIVISON_SHIFT: 8, // Thay doi phan ca bo phan
+  DEPARTMENT_TIMESHEET: 9, // Bang cham cong bo phan
+  ONBOARDING: 6, // Danh gia hop dong
+  RESIGN_SELF: 7, // De nghi cham dut hop dong
+  SALARY_PROPOSE: 12, // De xuat luong
+  OT_REQUEST: 13, // OT
+  PROPOSAL_TRANSFER: 14, // Dieu chuyen bo nhiem
+
   //Status request
   STATUS_PENDING: 0,
   STATUS_NOT_APPROVED: 1, // từ chối phê duyệt
@@ -68,6 +69,8 @@ const Constants = {
   STATUS_NO_CONSENTED: 7, // từ chối thẩm định
   STATUS_WAITING_CONSENTED: 8, // chờ thẩm định
   STATUS_CONSENTED: 20,// thẩm định
+  STATUS_TRANSFER_REFUSE: 9998,
+  STATUS_TRANSFER: 9999,
   STATUS_OB_SELF_EVALUATION: 9,
   STATUS_OB_APPRAISER_EVALUATION: 10,
   STATUS_OB_SUPERVISOR_EVALUATION: 11,
@@ -76,7 +79,7 @@ const Constants = {
 
   STATUS_TO_SHOW_CONSENTER: [1,2,3,4,5,6,7,8],
   STATUS_TO_SHOW_APPROVER: [1,2,3,4,5,6,8],
-  STATUS_USE_COMMENT: [0,1,3,4,7],
+  STATUS_USE_COMMENT: [0,1,3,4,7, 9998],
 
   mappingStatusRequest: {
     1: { label: 'Rejected', className: 'fail' },
@@ -87,7 +90,8 @@ const Constants = {
     6: { label: "PartiallySuccessful", className: 'warning' },
     7: { label: "Rejected", className: 'fail' },
     8: { label: "PendingConsent", className: '' },
-    20:{ label: "Consented", className: '' }
+    20:{ label: "Consented", className: '' },
+    0: {label: "Waiting", className: ''}
   },
   //
   mappingActionType : {
@@ -110,6 +114,7 @@ const Constants = {
       ReasonRequestLeave: 'ReasonCancelLeaveRequest'
     }
   },
+
   //DateTime
   DATE_OF_SAP_FORMAT: 'YYYYMMDD',
   TIME_OF_SAP_FORMAT: 'HHmm00',
@@ -139,7 +144,6 @@ const Constants = {
   QAAlreadyExist: "QAAlreadyExist",
 
   // Ticket
-
   SOLVER_MANAGER: 1,
   SOLVER_RESOURCE: 2,
   SOLVER_TCKT: 3,
@@ -210,12 +214,18 @@ const Constants = {
   timeoutForSpecificApis: 180000,
   LANGUAGE_VI: 'vi-VN',
   LANGUAGE_EN: 'en-US',
+  SALARY_APPRAISER_STATUS: {
+    NO_AVAILABE: 0,
+    APPRAISED: 1,
+    WAITING: 2
+  },
   MODULE: {
     TUYENDUNG: 1,
     DANHGIA_TAIKI: 2,
     DEXUATLUONG:3,
     NGHIVIEC:4,
-    PHUCLOI: 5
+    PHUCLOI: 5,
+    DIEUCHUYEN: 6,
   },
   MODULE_COMPANY_AVAILABE: process.env.REACT_APP_ENVIRONMENT === 'PRODUCTION' ? 
   { //production todo: add  "V077", "V070" to TUYENDUNG
@@ -228,9 +238,10 @@ const Constants = {
   { //Development
     1: ["V040", "V005", "V079", "V041", "V030", "V077", "V070", "V099"],//TUYENDUNG + V061
     2: ["V061","V040", "V005", "V079", "V041", "V070", "V077", "V099"],//DANHGIA_TAIKI
-    3: [],//DEXUATLUONG "V061", "V040", "V005", "V079", "V041"
-    4:["V040", "V005", "V079", "V070", "V077"],//NGHIVIEC
-    5: ["V061", "V040", "V005", "V079", "V041", "V070", "V077"]//PHUCLOI
+    3: ["V061", "V040", "V005", "V079", "V041", "V070", "V077"],//DEXUATLUONG "V061", "V040", "V005", "V079", "V041"
+    4:  ["V040", "V005", "V079", "V070", "V077"],//NGHIVIEC
+    5: ["V061", "V040", "V005", "V079", "V041", "V070", "V077"],//PHUCLOI
+    6: ["V040", "V070", "V077"], //DIEUCHUYEN
   },
   CURRENCY: {
     VND: 'VNĐ',
@@ -246,6 +257,18 @@ const Constants = {
     SINGLE: '0',
     MARRIED: '1',
     DIVORCED: '2',
+  },
+  STATUS_PROPOSAL: {
+    EMPLOYEE: 0,
+    LEADER_APPRAISER: 1,
+    EMPLOYEE_APPRAISER: 2,
+    CONSENTER: 3,
+  },
+  OPERATION_TYPES: {
+    INS: "INS",
+    MOD: "MOD",
+    DEL: "DEL",
+    WAITING_DEL_APPROVE: "WAITINGDELAPPROVE"
   }
 };
 export default Constants
