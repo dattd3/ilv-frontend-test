@@ -48,7 +48,13 @@ export default function processingDataReq(dataRawFromApi, tab) {
               element.totalTime = element.requestInfo?.reduce((accumulator, currentValue) => accumulator += (currentValue.hoursOt) * 1, 0)?.toFixed(2);
               const dateRanges = element.requestInfo?.reduce((accumulator, currentValue) => [...accumulator, moment(currentValue.date, "YYYYMMDD").format("DD/MM/YYYY")], []);
               element.dateRange = dateRanges.join(", ");
-              element.operationType = element.updateField;
+              if (element.actionType == Constants.OPERATION_TYPES.DEL && element.processStatusId == 5) {
+                element.operationType = Constants.OPERATION_TYPES.WAITING_DEL_APPROVE;
+              } else if (element.actionType == Constants.OPERATION_TYPES.DEL && element.processStatusId == 5) {
+                element.operationType = Constants.OPERATION_TYPES.WAITING_DEL_APPRAISE;
+              } else {
+                element.operationType = element.updateField;
+              }
             }
             if (!element.operationType) {
               element.operationType = Constants.OPERATION_TYPES.INS
@@ -104,6 +110,8 @@ export default function processingDataReq(dataRawFromApi, tab) {
                     if ([Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP].includes(element.requestTypeId)) {
                       if (e.actionType == Constants.OPERATION_TYPES.DEL && e.processStatusId == 5) {
                         e.operationType = Constants.OPERATION_TYPES.WAITING_DEL_APPROVE;
+                      } else if (e.actionType == Constants.OPERATION_TYPES.DEL && e.processStatusId == 5) {
+                        e.operationType = Constants.OPERATION_TYPES.WAITING_DEL_APPRAISE;
                       } else {
                         e.operationType = e.actionType;
                       }
