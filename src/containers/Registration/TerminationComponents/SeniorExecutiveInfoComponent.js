@@ -4,7 +4,7 @@ import axios from 'axios'
 import { getRequestConfigs } from '../../../commons/commonFunctions'
 import _, { debounce } from 'lodash'
 import { withTranslation } from "react-i18next"
-import { getMuleSoftHeaderConfigurations } from '../../../commons/Utils'
+import { getMuleSoftHeaderConfigurations, prepareOrganization } from '../../../commons/Utils'
 
 const MyOption = props => {
     const { innerProps, innerRef } = props;
@@ -119,7 +119,7 @@ class SeniorExecutiveInfoComponent extends React.PureComponent {
               organizationLv2: res?.orglv2_id,
               account: res?.username,
               jobTitle:  res.position_name,
-              department: res.division + (res.department ? '/' + res.department : '') + (res.unit ? '/' + res.unit : '')
+              department: prepareOrganization(res?.division, res?.department, res?.unit, res?.part)
             }
           })
           this.setState({ users: users, isSearching: false })
