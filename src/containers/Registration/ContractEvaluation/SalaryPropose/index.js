@@ -22,6 +22,8 @@ import { Button, Image } from "react-bootstrap";
 import { checkFilesMimeType } from "../../../../utils/file";
 import LoadingModal from "../../../../components/Common/LoadingModal";
 import { getCulture } from "commons/Utils";
+import { validateFileMimeType, validateTotalFileSize } from "../../../../utils/file";
+
 
 function SalaryPropse(props) {
   const { t } = useTranslation();
@@ -546,9 +548,11 @@ function SalaryPropse(props) {
   // Attach file
   const handleAttachFile = (e) => {
     const files = Object.values(e.target.files);
-    if (checkFilesMimeType(e, files)) {
+    if (validateFileMimeType(e, files, t)) {
       const listFilesTmp = [...listFiles, ...files];
-      setListFiles(listFilesTmp);
+      if (validateTotalFileSize(e, listFilesTmp, t)) {
+        setListFiles(listFilesTmp);
+      }
     }
   };
 

@@ -270,7 +270,7 @@
   "City": "City",
   "ClassName": "Class Name",
   "Cohort": "Cohort",
-  "CollectionOnBehalfOfQuyThienTam": "Collection on behalf of Quy Thien Tam",
+  "CollectionOnBehalfOfQuyThienTam": "Deduction for on-behalf payments",
   "Comment": "Comment",
   "CompensatedAmount": "Compensated Amount",
   "Completed": "Completed",
@@ -914,6 +914,7 @@
   "langCode": "en",
   "successfulRecallReq": "Successfully submitted recall request",
   "successfulCancelReq": "Successfully cancel request",
+  "SuccessfulRejectRequest": "Successfully reject request",
   "successfulApprvalReq": "Successfully approve request",
   "successfulDisApprovalReq": "Successfully disapprove request",
   "successfulConsentReq": "Successfully consent request",
@@ -1713,9 +1714,6 @@
   "export_report": "Export",
   "handover_supporter": "To view offboarding handover contacts",
   "view_here": "click here",
-  "Request_error_file_format": "The file is not in the correct format",
-  "Request_error_file_oversize": "Total file capacity can not exceed 10MB",
-  "Request_error_file_size": "Each file capacity can not exceed 2MB",
   "resign_error_lastWorkingDay": "Please input Last working day!",
   "resign_error_reason": "Please input Reason for contract termination!",
   "resign_error_directManager": "Please select Direct manager!",
@@ -1805,5 +1803,10 @@
   "operationType.mod": "Edit",
   "operationType.del": "Eviction",
   "operationType.waitingdelapprove": "Awaiting recall approval",
-  "operationType.waitingdelappraise": "Awaiting recall appraise"
+  "operationType.waitingdelappraise": "Awaiting recall appraise",
+  "OTOverlapEachOther": "(*) OT time segment is overlap",
+  "SearchByDate": "Search by date",
+  "InvalidMimeType": " is invalid type! Please select again!",
+  "ExceedMaxFileSize": "The total file size must not exceed 8MB",
+  "ErrorBackDateRequestVinpearl": "Request creation failed - Time out"
 }
