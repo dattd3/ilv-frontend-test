@@ -385,8 +385,8 @@
   "IntermittenShiftSupport": "Intermitten Shift Support",
   "InternalRecruitment": "Internal Recruitment",
   "InvalidApprover": "Invalid Approver",
-  "InvalidDate": "Invalid Date",
-  "InvalidHour": "Invalid Hour",
+  "InvalidDate": "(*) Invalid Date",
+  "InvalidHour": "(*) Invalid Hour",
   "Invalid.PleaseChooseAgain": "Invalid. Please choose again.",
   "IslandSupport": "Island Support",
   "Items": "Items",
@@ -1767,6 +1767,7 @@
   "WarningOverOTFunds": "OT hours for this request exceeded the department's funds for the month. Do you want to send request?",
   "WarningOverOTFundsConsent": "OT hours for this request exceeded the department's funds for the month (at time of registration). Please check/report to HR to replenish funds. Confirm continued consent?",
   "WarningOverOTFundsApproval": "OT hours for this request exceeded the department's funds for the month (at time of registration). Please check/report to HR to replenish funds. Confirm continued approve?",
+  "IsOvernight": "Overnight",
   "SupervisorAssetDate": "Suppervisor Asset Date",
   "EditDate": "Edit Date",
   "IncorrectPersonalIdentifyNumber": "ID No requires 9 or 12 numbers",
@@ -1809,5 +1810,6 @@
   "operationType.del": "Eviction",
   "operationType.waitingdelapprove": "Awaiting recall approval",
   "VinUniSickLeave": "Sick leave for VinUni",
-  "SickLeaveFundForVinUni": "Sick leave fund for VinUni"
+  "SickLeaveFundForVinUni": "Sick leave fund for VinUni",
+  "operationType.waitingdelappraise": "Awaiting recall appraise"
 }
