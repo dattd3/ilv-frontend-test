@@ -27,9 +27,7 @@ import IconAdd from "../../../../assets/img/ic-add-green.svg";
 import { useApi } from "../../../../modules/api";
 import vi from "date-fns/locale/vi";
 import { getCulture } from "commons/Utils";
-import { checkFilesMimeType } from "../../../../utils/file";
 import { validateFileMimeType, validateTotalFileSize } from "../../../../utils/file";
-import ProcessHistoryComponent from "./ProcessHistoryComponent";
 import LoadingModal from "../../../../components/Common/LoadingModal";
 
 registerLocale("vi", vi);

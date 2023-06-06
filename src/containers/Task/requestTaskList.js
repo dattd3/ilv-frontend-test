@@ -295,7 +295,7 @@ class RequestTaskList extends React.Component {
         //     return <span className={status[statusOriginal].className}>{status[statusOriginal].label}</span>
         // }
         
-        if(!approverData?.account && statusOriginal === 5) {
+        if(!approverData?.account && statusOriginal === 5 && request !== Constants.UPDATE_PROFILE) {
             statusOriginal = 6;
         }
         
@@ -470,17 +470,22 @@ class RequestTaskList extends React.Component {
 
     isShowEvictionButton = (status, requestTypeId, startDate, isEditOnceTime) => {
         const { page } = this.props
-
         if (page === "approval" || !isEditOnceTime) {
             return false
         } else {
-            const firstStartDate = startDate?.length > 0 ? startDate[0] : null
-            if (status == Constants.STATUS_APPROVED 
-                && [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP].includes(requestTypeId) 
-                && this.checkDateLessThanPayPeriod(moment(firstStartDate, 'DD/MM/YYYY')?.isValid() ? moment(firstStartDate, 'DD/MM/YYYY').format('YYYYMMDD') : null)) {
-                return true
-            }
-            return false
+          const firstStartDate = startDate?.length > 0 ? startDate[0] : null
+          if (status == Constants.STATUS_APPROVED 
+              && [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP].includes(requestTypeId) 
+              && this.checkDateLessThanPayPeriod(moment(firstStartDate, 'DD/MM/YYYY')?.isValid() ? moment(firstStartDate, 'DD/MM/YYYY').format('YYYYMMDD') : null)) {
+              return true
+          } else if (status == Constants.STATUS_APPROVED 
+            && requestTypeId === Constants.OT_REQUEST 
+            && startDate?.split(", ")?.every(item => this.checkDateLessThanPayPeriod(moment(item, 'DD/MM/YYYY')?.isValid() ? moment(firstStartDate, 'DD/MM/YYYY').format('YYYYMMDD') : null))
+          ) {
+            // OT: check every item should be less than pay period
+            return true;
+          }
+          return false
         }
     }
 
@@ -955,7 +960,11 @@ class RequestTaskList extends React.Component {
                                     {
                                         tasks.map((child, index) => {
                                             let isShowEditButton = this.isShowEditButton(child?.processStatusId, child?.appraiserId, child?.requestTypeId, child?.startDate, child?.isEdit)
-                                            let isShowEvictionButton = this.isShowEvictionButton(child?.processStatusId, child?.requestTypeId, child?.startDate, child?.isEdit)
+                                            const isShowEvictionButton = this.isShowEvictionButton(child?.processStatusId, 
+                                              child?.requestTypeId, 
+                                              child?.requestTypeId === Constants.OT_REQUEST ? child?.dateRange : child?.startDate, 
+                                              child?.isEdit
+                                            );
                                             let actionType = child?.actionType || null
                                             if (child?.requestTypeId == Constants.RESIGN_SELF) {
                                                 const requestItem = child.requestInfo ? child.requestInfo[0] : null // BE xác nhận chỉ có duy nhất 1 item trong requestInfo
