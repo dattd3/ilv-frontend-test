@@ -1395,10 +1395,7 @@ const SalaryAdjustmentPropse = (props) => {
   const renderListMember = (members) => {
     return members.map((item, index) => {
       if(item.shouldHide == true) return null;
-      const account = item?.account?.indexOf('@')
-          ? item.account.split('@')[0]
-          : item.account,
-        isProposalTransfer = item.requestTypeId === Constants.PROPOSAL_TRANSFER;
+      const isProposalTransfer = item.requestTypeId === Constants.PROPOSAL_TRANSFER;
 
       return (
         <React.Fragment key={index}>
@@ -1475,7 +1472,7 @@ const SalaryAdjustmentPropse = (props) => {
                 <div style={{ whiteSpace: "nowrap", overflow: "hidden" }}>
                   <p className="mb-7px font-weight-bold">
                     {item?.fullName}{' '}
-                    <span className="font-weight-normal">({account})</span>
+                    <span className="font-weight-normal">{!!item?.employeeNo ? `(${item?.employeeNo})` : ""}</span>
                   </p>
                   <p className="mb-7px">{item?.jobTitle}</p>
                   <p style={{
