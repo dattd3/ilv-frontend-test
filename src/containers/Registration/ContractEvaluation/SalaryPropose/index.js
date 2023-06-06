@@ -19,9 +19,10 @@ import Constants from "../.../../../../../commons/Constants";
 import StatusModal from "../../../../components/Common/StatusModal";
 import Spinner from "react-bootstrap/Spinner";
 import { Image } from "react-bootstrap";
-import { validateFileMimeType, validateTotalFileSize } from "../../../../utils/file";
 import LoadingModal from "../../../../components/Common/LoadingModal";
 import { getCulture } from "commons/Utils";
+import { validateFileMimeType, validateTotalFileSize } from "../../../../utils/file";
+
 
 function SalaryPropse(props) {
   const { t } = useTranslation();

@@ -26,9 +26,11 @@ import IconRemove from "../../../../assets/img/ic-remove.svg";
 import IconAdd from "../../../../assets/img/ic-add-green.svg";
 import { useApi } from "../../../../modules/api";
 import vi from "date-fns/locale/vi";
-import { getCulture } from "commons/Utils";
-import { validateFileMimeType, validateTotalFileSize } from "../../../../utils/file";
+import { getCulture, getMuleSoftHeaderConfigurations } from "commons/Utils";
+import ProcessHistoryComponent from "./ProcessHistoryComponent";
 import LoadingModal from "../../../../components/Common/LoadingModal";
+import { Portal } from 'react-overlays';
+import { validateFileMimeType, validateTotalFileSize } from "../../../../utils/file";
 
 registerLocale("vi", vi);
 
@@ -43,6 +45,16 @@ const ListTypeContract = [
   { value: "VH", label: "HĐDV khoán" },
 ],
 getStorage = (key) => localStorage.getItem(key) || "";
+
+const CalendarContainer = ({children}) => {
+  const el = document.getElementById('calendar-portal')
+
+  return (
+    <Portal container={el}>
+      {children}
+    </Portal>
+  )
+}
 
 const SalaryAdjustmentPropse = (props) => {
   const { t } = props;
@@ -99,8 +111,8 @@ const SalaryAdjustmentPropse = (props) => {
   const [appraiser, setAppraiser] = useState(null); // HR thẩm định quyền điều chỉnh lương
   const [approver, setApprover] = useState(null); // CBLĐ phê duyệt
   const [approverArrive, setApproverArrive] = useState(null); // CBLĐ phê duyệt
+  const [subordinates, setSubordinates] = useState([]); // các cấp dưới
   const [isCallSalary, setIsCallSalary] = useState(false);
-  const [isOpenDatepick, setIsOpenDatepick] = useState(false);
   const [showCommentRequiredError, setShowCommentRequiredError] = useState(false);
   const [enableSubmit, setEnableSubmit] = useState(true);
   const [viewSetting, setViewSetting] = useState({
@@ -162,6 +174,7 @@ const SalaryAdjustmentPropse = (props) => {
       if (!isCreate) { // Review mode
         setIsCreateMode(false);
         getDataSalary();
+        getSubordinate();
       } else { // Create mode
         setIsCreateMode(true);
         checkViewCreate();
@@ -183,6 +196,18 @@ const SalaryAdjustmentPropse = (props) => {
       getSalary(accessToken);
     }
   }, [selectedMembers]);
+
+  const getSubordinate = () => {
+    const config = getMuleSoftHeaderConfigurations();
+    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/subordinate?depth=2`, config)
+      .then((res) => {
+        if (res && res.data && res.data.data) {
+          const users = (res.data.data || []);
+          setSubordinates(users);
+        }
+      })
+      .catch((err) => {});
+  };
 
   const getDataSalary = async () => {
     try {
@@ -1237,7 +1262,7 @@ const SalaryAdjustmentPropse = (props) => {
     setCoordinator(approver);
   };
 
-  const removeMembers = (uid) => {
+  const removeEmployeAppraisers = (uid) => {
     setEmployeeAppraisers(employeAppraisers.filter(ele => ele.uid !== uid));
   }
 
@@ -1390,8 +1415,25 @@ const SalaryAdjustmentPropse = (props) => {
     return currencySalaryTmp;
   }
 
-  const renderListMember = (members) => {
-    return members.map((item, index) => {
+  const renderListMember = () => {
+    const appraisersEmail = supervisors.map((ele) => ele?.account?.toLowerCase())
+          .concat([
+            viewSetting?.proposedStaff?.company_email?.toLowerCase(),
+            coordinator?.account?.toLowerCase(),
+            appraiser?.account?.toLowerCase(),
+            approver?.account?.toLowerCase(),
+            approverArrive?.account?.toLowerCase(),
+          ]),
+        email = getStorage('email'),
+        isAppraisersContainAccount = appraisersEmail.includes(email),
+        subordinatesEmails = subordinates.map(ele => ele?.company_email?.toLowerCase());
+    let members = isCreate
+        ? selectMembers
+        : isAppraisersContainAccount
+        ? selectedMembers
+        : selectedMembers.filter((ele) => subordinatesEmails.includes(ele.account));
+
+    return selectedMembers.map((item, index) => {
       if(item.shouldHide == true) return null;
       const isProposalTransfer = item.requestTypeId === Constants.PROPOSAL_TRANSFER;
 
@@ -1620,15 +1662,13 @@ const SalaryAdjustmentPropse = (props) => {
                       )
                     }
                     minDate={moment().add(1, 'day').toDate()}
-                    onChangeRaw={() => setIsOpenDatepick(false)}
-                    onFocus={() => setIsOpenDatepick(true)}
-                    onBlur={() => setIsOpenDatepick(false)}
                     dateFormat="dd/MM/yyyy"
                     placeholderText={t('Select')}
                     locale={t('locale')}
                     className="form-control input"
                     styles={{ width: '100%' }}
                     getPopupContainer={(trigger) => trigger.parentElement}
+                    popperContainer={CalendarContainer}
                   />
                 ) : (
                   <>{item?.effectiveTime}</>
@@ -1975,14 +2015,10 @@ const SalaryAdjustmentPropse = (props) => {
             </button>
           </div>
         </div>
-        <div className="result-wrap-table" style={{overflowY: isOpenDatepick ? 'unset' : 'auto'}}>
+        <div className="result-wrap-table">
           <table className="result-table" style={{ width: "100%" }}>
             <tbody>
-              <>
-                {isCreate
-                  ? renderListMember(selectMembers)
-                  : renderListMember(selectedMembers)}
-              </>
+              {renderListMember()}
             </tbody>
           </table>
         </div>
@@ -2026,7 +2062,7 @@ const SalaryAdjustmentPropse = (props) => {
                   <button
                     className="btn btn-outline-danger position-absolute d-flex align-items-center btn-sm"
                     style={{ gap: "4px", top: 0, right: 0 }}
-                    onClick={() => removeMembers(item?.uid)}
+                    onClick={() => removeEmployeAppraisers(item?.uid)}
                   >
                     <Image src={IconRemove} />
                     {t("delete")}

@@ -1795,14 +1795,9 @@
   "HRAssetDate": "HR Asset Date",
   "OTMinimumHours": "(*) Minimum OT is 30m for Production department, 60m for other department",
   "OTInvalidSpaceHours": "(*) Minimum break time is 1h",
-  "OTOverlapEachOther": "(*) OT time segment is overlap",
   "IncludeSalaryAdjustment": "Include salary adjustment",
   "Opinion": "Comment",
   "ConsenterStaffConfirm": "Consenter/ staff confirm",
-  "SearchByDate": "Search by date",
-  "InvalidMimeType": " is invalid type! Please select again!",
-  "ExceedMaxFileSize": "The total file size must not exceed 8MB",
-  "ErrorBackDateRequestVinpearl": "Request creation failed - Time out",
   "action2": "Action",
   "operation": "Operation",
   "operationType.ins": "Add new",
@@ -1811,5 +1806,10 @@
   "operationType.waitingdelapprove": "Awaiting recall approval",
   "VinUniSickLeave": "Sick leave for VinUni",
   "SickLeaveFundForVinUni": "Sick leave fund for VinUni",
-  "operationType.waitingdelappraise": "Awaiting recall appraise"
+  "operationType.waitingdelappraise": "Awaiting recall appraise",
+  "OTOverlapEachOther": "(*) OT time segment is overlap",
+  "SearchByDate": "Search by date",
+  "InvalidMimeType": " is invalid type! Please select again!",
+  "ExceedMaxFileSize": "The total file size must not exceed 8MB",
+  "ErrorBackDateRequestVinpearl": "Request creation failed - Time out"
 }
