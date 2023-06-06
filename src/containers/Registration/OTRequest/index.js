@@ -524,6 +524,9 @@ export default function OTRequestComponent({ recentlyManagers }) {
         endTime: item.timeRanges
           ?.map((range) => moment(range.endTime).format("HHmmss"))
           ?.join(","),
+        isOverNight: item.timeRanges
+          ?.map((range) => range.isOverNight || false)
+          ?.join(","),
         overTimeType: "01",
       }));
 
