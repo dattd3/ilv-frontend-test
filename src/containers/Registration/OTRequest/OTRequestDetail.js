@@ -357,16 +357,16 @@ export default function OTRequestDetailComponent({ data, action }) {
                                       className="mb-12"
                                       style={{ textAlign: "center" }}
                                     >
-                                      {t("IsOvernight")}
+                                      {t("isOvernight")}
                                     </div>
                                     <div className="is-overnight-container">
                                       <input
                                         name="isOvernight"
                                         type="checkbox"
                                         disabled={true}
-                                        checked={timesheet.isOverNight?.split(",")[
+                                        checked={timesheet.isOvernight?.split(",")[
                                           timeIndex
-                                        ] || false}
+                                        ] === "true"}
                                       />
                                     </div>
                                   </div>
