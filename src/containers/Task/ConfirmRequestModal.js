@@ -38,7 +38,7 @@ class ConfirmRequestModal extends React.Component {
         let formData = new FormData()
         switch (this.props.type) {
             case Constants.STATUS_NOT_APPROVED: // không phê duyệt
-                this.disApprove(this.props.dataToSap, `${process.env.REACT_APP_REQUEST_URL}request/approve`, id)
+                this.disApprove(this.props.dataToSap, `${process.env.REACT_APP_REQUEST_SERVICE_URL}request/approve`, id)
                 break;
             case Constants.STATUS_APPROVED: // phê duyệt
                 this.approve(this.props.dataToSap,id)
@@ -66,11 +66,23 @@ class ConfirmRequestModal extends React.Component {
         return result
     }
 
+    getCurrentLanguage = () => {
+      const languageKeyMapping = {
+          [Constants.LANGUAGE_EN]: 'en',
+          [Constants.LANGUAGE_VI]: 'vi'
+      }
+      const locale = localStorage.getItem("locale") || Constants.LANGUAGE_VI;
+      return languageKeyMapping[[locale]];
+  }
+
     changeRequest = async (data, url, titleModalRes) => {
          return await axios({
             method: 'POST',
             url: url,
             data: data,
+            params: {
+              culture: this.getCurrentLanguage()
+            },
             headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` }
         })
             .then(res => {
@@ -104,13 +116,13 @@ class ConfirmRequestModal extends React.Component {
         const dataPrepareToSap = [];
         const { t, dataToSap } = this.props
         const requestTypeIdsAllowedToReApproval = getRequestTypeIdsAllowedToReApproval()
-        
+
         dataToSap.forEach(element => {
             let taskObj = {};
             if(element.requestTypeId == Constants.ONBOARDING){
                 taskObj = {"id":element.id ,"requestTypeId":element.requestTypeId,"sub":[]};
                 taskObj.sub.push({"id":element.id,"processStatusId": element.processStatusId, 'status': '1'})
-            }else if(element.requestTypeId == Constants.SALARY_PROPOSE && element.isEdit == true) {
+            } else if([Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER].includes(element.requestTypeId) && element.isEdit == true) {
                 taskObj = {"id":element.salaryId ,"requestTypeId":element.requestTypeId,"sub":[]};
                 taskObj.sub.push({"id":element.salaryId,"processStatusId": Constants.STATUS_APPROVED})
             } else {
@@ -133,7 +145,7 @@ class ConfirmRequestModal extends React.Component {
 
         // let bodyFormData = new FormData()
         // bodyFormData.append('UserProfileInfoToSap', JSON.stringify(dataToSap))
-        this.changeRequest(dataPrepareToSap, `${process.env.REACT_APP_REQUEST_URL}request/approve`, t("approval_status"))
+        this.changeRequest(dataPrepareToSap, `${process.env.REACT_APP_REQUEST_SERVICE_URL}request/approve`, t("approval_status"))
     }
 
     // Từ chối phê duyệt mass
@@ -144,7 +156,7 @@ class ConfirmRequestModal extends React.Component {
             if(element.requestTypeId == Constants.ONBOARDING){
                 taskObj = {"id":element.id ,"requestTypeId":element.requestTypeId,"sub":[]};
                 taskObj.sub.push({"id":element.id,"processStatusId":element.processStatusId, 'status': '0' ,"comment":this.state.message, 'status': '0'})
-            }else if(element.requestTypeId == Constants.SALARY_PROPOSE && element.isEdit == true) {
+            } else if([Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER].includes(element.requestTypeId) && element.isEdit == true) {
                 taskObj = {"id":element.salaryId ,"requestTypeId":element.requestTypeId,"sub":[]};
                 taskObj.sub.push({"id":element.salaryId,"processStatusId": Constants.STATUS_NOT_APPROVED,"comment":this.state.message})
             } else {
@@ -161,7 +173,7 @@ class ConfirmRequestModal extends React.Component {
             }
             dataToSap.push(taskObj)
           });
-        this.changeRequest(dataToSap,`${process.env.REACT_APP_REQUEST_URL}request/approve`,this.props.t("disapproval_status"))
+        this.changeRequest(dataToSap,`${process.env.REACT_APP_REQUEST_SERVICE_URL}request/approve`,this.props.t("disapproval_status"))
     }
 
     consent = () => {
@@ -171,7 +183,7 @@ class ConfirmRequestModal extends React.Component {
             if(element.requestTypeId == Constants.ONBOARDING){
                 taskObj = {"id":element.id ,"requestTypeId":element.requestTypeId,"sub":[]};
                 taskObj.sub.push({"id":element.id,"processStatusId": element.processStatusId, 'status': '1'})
-            } else if(element.requestTypeId == Constants.SALARY_PROPOSE && element.isEdit == true) {
+            } else if([Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER].includes(element.requestTypeId) && element.isEdit == true) {
                 taskObj = {"id":element.salaryId ,"requestTypeId":element.requestTypeId,"sub":[]};
                 taskObj.sub.push({"id":element.salaryId,"processStatusId": Constants.STATUS_WAITING})
             } else {
@@ -184,7 +196,7 @@ class ConfirmRequestModal extends React.Component {
             }
             dataToSap.push(taskObj)
           });
-        this.changeRequest(dataToSap,`${process.env.REACT_APP_REQUEST_URL}request/assess?culture=${this.props.t('langCode')}`,this.props.t("appraisal_status"))
+        this.changeRequest(dataToSap,`${process.env.REACT_APP_REQUEST_URL}request/assess`,this.props.t("appraisal_status"))
     }
 
     reject = () => {
@@ -194,7 +206,7 @@ class ConfirmRequestModal extends React.Component {
             if(element.requestTypeId == Constants.ONBOARDING){
                 taskObj = {"id":element.id ,"requestTypeId":element.requestTypeId,"sub":[]};
                 taskObj.sub.push({"id":element.id,"processStatusId": element.processStatusId, 'status': '0' ,"comment":this.state.message})
-            } else if(element.requestTypeId == Constants.SALARY_PROPOSE && element.isEdit == true) {
+            } else if([Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER].includes(element.requestTypeId) && element.isEdit == true) {
                 taskObj = {"id":element.salaryId ,"requestTypeId":element.requestTypeId,"sub":[]};
                 taskObj.sub.push({"id":element.salaryId,"processStatusId": Constants.STATUS_NO_CONSENTED,"comment":this.state.message})
             } else{
@@ -209,7 +221,7 @@ class ConfirmRequestModal extends React.Component {
             dataToSap.push(taskObj)
           });
         
-        this.changeRequest(dataToSap,`${process.env.REACT_APP_REQUEST_URL}request/assess?culture=${this.props.t('langCode')}`,this.props.t("disappraisal_status"))
+        this.changeRequest(dataToSap,`${process.env.REACT_APP_REQUEST_URL}request/assess`,this.props.t("disappraisal_status"))
     }
     
     handleChangeMessage = (e) => {
