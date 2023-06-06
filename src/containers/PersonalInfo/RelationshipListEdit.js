@@ -23,7 +23,7 @@ function RelationshipListEdit(props) {
         {value: genderOptions.male, label: t("Male")},
         {value: genderOptions.female, label: t("Female")}
     ]
-
+    const isReducedText = 'X'
     const getGenderByRelationshipTypes = relationshipTypes => {
         const relationshipTypesGendersMapping = {
             V001: [genderOptions.male],
@@ -196,60 +196,65 @@ function RelationshipListEdit(props) {
                     </div>
                     {
                         (relationshipData || []).map((item, i) => {
+                            let isReduced = formatStringByMuleValue(item?.is_reduced) !== '' && item?.is_reduced === isReducedText
                             return <Fragment key={i}>
                                 <div className="info-value">
                                     <div className="col-item full-name">{formatStringByMuleValue(item.full_name)}</div>
                                     <div className="col-item relationship">{formatStringByMuleValue(item.relation)}</div>
                                     <div className="col-item birthday">{formatStringByMuleValue(item.dob) ? moment(item.dob, 'DD-MM-YYYY').format('DD/MM/YYYY') : ""}</div>
                                     <div className="col-item tax-no">{formatStringByMuleValue(item.tax_number)}</div>
-                                    <div className="col-item allowances"><input type="checkbox" className="check-box" defaultChecked={formatStringByMuleValue(item.is_reduced) ? true : false} value={formatStringByMuleValue(item.is_reduced)} disabled={true} /></div>
+                                    <div className="col-item allowances"><input type="checkbox" className="check-box" defaultChecked={isReduced} value={formatStringByMuleValue(item.is_reduced)} disabled={true} /></div>
                                     <div className="col-item allowances-date">{formatStringByMuleValue(item.is_reduced) ? (moment(item.from_date, 'DD-MM-YYYY').format('DD/MM/YYYY') + ` - ` + moment(item.to_date, 'DD-MM-YYYY').format('DD/MM/YYYY')) : ""}</div>
                                 </div>
-                                <div className="edit-value">
-                                    <div className="col-item first-name">
-                                        <label>{t("FamilyLastName")}<span className="text-danger required">(*)</span></label>
-                                        <input type="text" className="text-box" value={item.new_lastname || ""} onChange={e => handleInputTextChange(e, i, 'new_lastname', true)} />
-                                        {error(i, 'update', 'new_lastname')}
-                                    </div>
-                                    <div className="col-item last-name">
-                                        <label>{t("FamilyFirstName")}<span className="text-danger required">(*)</span></label>
-                                        <input type="text" className="text-box" value={item.new_firstname || ""} onChange={e => handleInputTextChange(e, i, 'new_firstname', true)} />
-                                        {error(i, 'update', 'new_firstname')}
-                                    </div>
-                                    <div className="col-item relationship">
-                                        <label>{t("Relationship")}<span className="text-danger required">(*)</span></label>
-                                        <Select 
-                                            options={relationshipTypes} 
-                                            placeholder={`${t("Select")}`} 
-                                            onChange={e => handleSelectInputChange(e, i, 'new_relation', true)} 
-                                            value={item.new_relation} 
-                                            styles={customStyles} />
-                                        {error(i, 'update', 'new_relation')}
-                                    </div>
-                                    <div className="col-item gender">
-                                        <label>{t("Gender")}<span className="text-danger required">(*)</span></label>
-                                        <Select 
-                                            options={item.new_gender_options} 
-                                            placeholder={`${t("Select")}`} 
-                                            onChange={e => handleSelectInputChange(e, i, 'new_gender', true)} 
-                                            value={item.new_gender} 
-                                            styles={customStyles} />
-                                        {error(i, 'update', 'new_gender')}
-                                    </div>
-                                    <div className="col-item birthday">
-                                        <label>{t("DateOfBirth")}<span className="text-danger required">(*)</span></label>
-                                        <DatePicker
-                                            maxDate={new Date()}
-                                            selected={item.new_dob ? moment(item.new_dob, 'DD-MM-YYYY').toDate() : null}
-                                            onChange={birthday => handleDatePickerInputChange(birthday, i, "new_dob", true)}
-                                            dateFormat="dd/MM/yyyy"
-                                            showMonthDropdown={true}
-                                            showYearDropdown={true}
-                                            locale="vi"
-                                            className="form-control input" />
-                                        {error(i, 'update', 'new_dob')}
-                                    </div>
-                                </div>
+                                {
+                                    !isReduced && (
+                                        <div className="edit-value">
+                                            <div className="col-item first-name">
+                                                <label>{t("FamilyLastName")}<span className="text-danger required">(*)</span></label>
+                                                <input type="text" className="text-box" value={item.new_lastname || ""} onChange={e => handleInputTextChange(e, i, 'new_lastname', true)} />
+                                                {error(i, 'update', 'new_lastname')}
+                                            </div>
+                                            <div className="col-item last-name">
+                                                <label>{t("FamilyFirstName")}<span className="text-danger required">(*)</span></label>
+                                                <input type="text" className="text-box" value={item.new_firstname || ""} onChange={e => handleInputTextChange(e, i, 'new_firstname', true)} />
+                                                {error(i, 'update', 'new_firstname')}
+                                            </div>
+                                            <div className="col-item relationship">
+                                                <label>{t("Relationship")}<span className="text-danger required">(*)</span></label>
+                                                <Select 
+                                                    options={relationshipTypes} 
+                                                    placeholder={`${t("Select")}`} 
+                                                    onChange={e => handleSelectInputChange(e, i, 'new_relation', true)} 
+                                                    value={item.new_relation} 
+                                                    styles={customStyles} />
+                                                {error(i, 'update', 'new_relation')}
+                                            </div>
+                                            <div className="col-item gender">
+                                                <label>{t("Gender")}<span className="text-danger required">(*)</span></label>
+                                                <Select 
+                                                    options={item.new_gender_options} 
+                                                    placeholder={`${t("Select")}`} 
+                                                    onChange={e => handleSelectInputChange(e, i, 'new_gender', true)} 
+                                                    value={item.new_gender} 
+                                                    styles={customStyles} />
+                                                {error(i, 'update', 'new_gender')}
+                                            </div>
+                                            <div className="col-item birthday">
+                                                <label>{t("DateOfBirth")}<span className="text-danger required">(*)</span></label>
+                                                <DatePicker
+                                                    maxDate={new Date()}
+                                                    selected={item.new_dob ? moment(item.new_dob, 'DD-MM-YYYY').toDate() : null}
+                                                    onChange={birthday => handleDatePickerInputChange(birthday, i, "new_dob", true)}
+                                                    dateFormat="dd/MM/yyyy"
+                                                    showMonthDropdown={true}
+                                                    showYearDropdown={true}
+                                                    locale="vi"
+                                                    className="form-control input" />
+                                                {error(i, 'update', 'new_dob')}
+                                            </div>
+                                        </div>
+                                    )
+                                }
                             </Fragment>
                         })
                     }
