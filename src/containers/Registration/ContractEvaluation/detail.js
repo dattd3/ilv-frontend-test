@@ -403,7 +403,7 @@ const ContractEvaluationdetail = (props) => {
                 </div>
               </div>
               {
-                data.nguoipheduyet && data.comment ?
+                data.nguoipheduyet && data.nguoipheduyet.comment ?
                   <div className="col-12">
                     {t('reason_not_approve')}
                     <div className="detail">{data.nguoipheduyet.comment}</div>

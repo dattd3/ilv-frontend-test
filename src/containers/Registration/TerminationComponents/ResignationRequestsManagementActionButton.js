@@ -6,7 +6,7 @@ import { withTranslation } from "react-i18next"
 import Constants from "../../../commons/Constants"
 import AttachmentComponent from "../TerminationComponents/AttachmentComponent"
 import { t } from 'i18next'
-import { checkFilesMimeType } from '../../../utils/file'
+import { validateFileMimeType, validateTotalFileSize } from '../../../utils/file'
 import { IS_VINFAST } from 'commons/commonFunctions'
 
 class ResignationRequestsManagementActionButton extends React.PureComponent {
@@ -125,7 +125,7 @@ class ResignationRequestsManagementActionButton extends React.PureComponent {
 
     handleChangeFileInput = e => {
         const files = Object.values(e.target.files)
-        if (checkFilesMimeType(e, files)) {
+        if (validateFileMimeType(e, files, this.props.t) && validateTotalFileSize(e, files, this.props.t)) {
             this.setState({files: files})
             this.props.updateAttachedFiles(files)
         }

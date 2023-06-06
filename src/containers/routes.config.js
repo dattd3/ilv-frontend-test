@@ -274,6 +274,14 @@ export default [
           component: lazy(() => import("./job")),
         },
         {
+          key: "job-description",
+          routeProps: {
+            exact: true,
+            path: map.JobDescription,
+          },
+          component: lazy(() => import("./JobDescription")),
+        },
+        {
           key: "job-upload",
           routeProps: {
             exact: true,
