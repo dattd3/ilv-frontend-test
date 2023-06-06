@@ -351,7 +351,7 @@ export default function OTRequestDetailComponent({ data, action }) {
                                     </div>
                                   </div>
                                 </div>
-                                {/* <div className="col-2">
+                                <div className="col-2">
                                     <div className="form-item">
                                     <div
                                       className="mb-12"
@@ -364,11 +364,13 @@ export default function OTRequestDetailComponent({ data, action }) {
                                         name="isOvernight"
                                         type="checkbox"
                                         disabled={true}
-                                        checked={timesheet?.isOverNight || false}
+                                        checked={timesheet.isOverNight?.split(",")[
+                                          timeIndex
+                                        ] || false}
                                       />
                                     </div>
                                   </div>
-                                </div> */}
+                                </div>
                               </React.Fragment>
                             ))}
                         </div>
