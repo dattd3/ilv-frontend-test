@@ -1433,7 +1433,7 @@ const SalaryAdjustmentPropse = (props) => {
         ? selectedMembers
         : selectedMembers.filter((ele) => subordinatesEmails.includes(ele.account));
 
-    return selectedMembers.map((item, index) => {
+    return members.map((item, index) => {
       if(item.shouldHide == true) return null;
       const isProposalTransfer = item.requestTypeId === Constants.PROPOSAL_TRANSFER;
 
