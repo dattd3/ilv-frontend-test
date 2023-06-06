@@ -92,7 +92,7 @@ class ApproverComponent extends React.Component {
               orglv2Id: "",
               account: data?.userid?.toLowerCase() || "",
               current_position: data?.title || "",
-              department: data?.department || ""
+              department: prepareOrganization(data?.division, data?.department, data?.unit, data?.part)
             }
           }
         }
