@@ -6,6 +6,7 @@ import { Collapse, Form, Button } from "react-bootstrap";
 import {
   getMuleSoftHeaderConfigurations,
   getRequestConfigurations,
+  prepareOrganization
 } from "commons/Utils";
 import {
   STATUS_EDITABLE_APPROVE_TAB,
@@ -37,7 +38,7 @@ const mapApproverOption = (approver) => ({
   employeeLevel: approver.rank_title,
   EmployeeNo: approver.uid,
   current_position: approver.title,
-  department: approver.department,
+  department: prepareOrganization(approver?.division, approver?.department, approver?.unit, approver?.part),
   jobCode: approver.jobCode || null,
   organizationLv1: approver.organization_lv1 || null,
   organizationLv2: approver.organization_lv2 || null,

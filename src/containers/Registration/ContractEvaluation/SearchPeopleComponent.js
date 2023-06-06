@@ -69,7 +69,7 @@ class ApproverComponent extends React.Component {
               fullname: manager.fullName,
               account: manager.userid.toLowerCase(),
               current_position: manager.title,
-              department: manager.department
+              department: prepareOrganization(manager?.division, manager?.department, manager?.unit, manager?.part)
             }
             this.setState({ approver: managerApproval })
             this.props.updateApprover(managerApproval, true)
