@@ -589,6 +589,9 @@ class TaskList extends React.Component {
                               maxDate={
                                 dataForSearch.toDate ? moment(dataForSearch.toDate, "DDMMYYYY").toDate() : null
                               }
+                              minDate={
+                                moment().subtract(6, "months").toDate()
+                              }
                               onChange={(date) => this.handleChangeDateFilter(date, "fromDate")}
                               showDisabledMonthNavigation
                               dateFormat="dd/MM/yyyy"
@@ -608,7 +611,7 @@ class TaskList extends React.Component {
                                 dataForSearch.toDate ? moment(dataForSearch.toDate, "DDMMYYYY").toDate() : null
                               }
                               minDate={
-                                dataForSearch.fromDate ? moment(dataForSearch.fromDate, "DDMMYYYY").toDate() : null
+                                dataForSearch.fromDate ? moment(dataForSearch.fromDate, "DDMMYYYY").toDate() : moment().subtract(6, "months").toDate()
                               }
                               onChange={(date) => this.handleChangeDateFilter(date, "toDate")}
                               showDisabledMonthNavigation

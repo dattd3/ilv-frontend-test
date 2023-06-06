@@ -274,7 +274,7 @@ class HumanForReviewSalaryComponent extends React.Component {
         )} */}
         {isAppraiserNote && (
           <div className="row business-type">
-            <span className="col-12 text-info smaller" >
+            <span className="col-12 text-info smaller">
               * {t('NoteSelectApproverAppraiser')}{' '}
               <b>
                 <span
