@@ -603,13 +603,13 @@ const prepareOrganization = (level3Text = '', level4Text = '', level5Text = '', 
     let result = ''
     switch (true) {
         case formatStringByMuleValue(level3Text) !== '' && formatStringByMuleValue(level4Text) !== '' && formatStringByMuleValue(level5Text) !== '' && formatStringByMuleValue(level6Text) !== '':
-            result = `${formatStringByMuleValue(level4Text)}/${formatStringByMuleValue(level3Text)}/${formatStringByMuleValue(level5Text)}/${formatStringByMuleValue(level6Text)}`
+            result = `${formatStringByMuleValue(level3Text)}/${formatStringByMuleValue(level4Text)}/${formatStringByMuleValue(level5Text)}/${formatStringByMuleValue(level6Text)}`
             break;
         case formatStringByMuleValue(level3Text) !== '' && formatStringByMuleValue(level4Text) !== '' && formatStringByMuleValue(level5Text) !== '':
-            result = `${formatStringByMuleValue(level4Text)}/${formatStringByMuleValue(level3Text)}/${formatStringByMuleValue(level5Text)}`
+            result = `${formatStringByMuleValue(level3Text)}/${formatStringByMuleValue(level4Text)}/${formatStringByMuleValue(level5Text)}`
             break;
         case formatStringByMuleValue(level3Text) !== '' && formatStringByMuleValue(level4Text) !== '':
-            result = `${formatStringByMuleValue(level4Text)}/${formatStringByMuleValue(level3Text)}`
+            result = `${formatStringByMuleValue(level3Text)}/${formatStringByMuleValue(level4Text)}`
             break;
     }
     return result
