@@ -65,6 +65,7 @@ class LeaveOfAbsenceComponent extends React.Component {
             needReload: true,
             totalPendingLeaves: null,
             totalPendingTOILs: null,
+            validating: false,
         }
     }
 
@@ -386,7 +387,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                 }
             })
         }
-
+        this.setState({ validating: true })
         axios.post(`${process.env.REACT_APP_REQUEST_URL}request/validate`, {perno: currentEmployeeNo, ...(isEdit && { requestId: this.props.taskId }), times: times}, config)
             .then(res => {
                 if (res && res.data && res.data.data && res.data.data.times.length > 0) {
@@ -445,7 +446,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                     })
                     this.setState({ newRequestInfo })
                 }
-            })
+            }).finally(() => this.setState({ validating: false }))
     }
 
     calFullDay(timesheets) {
@@ -957,7 +958,8 @@ class LeaveOfAbsenceComponent extends React.Component {
             isSuccess,
             isShowNoteModal,
             appraiser,
-            approver
+            approver,
+            validating,
         } = this.state
         const sortRequestListByGroup = requestInfo.sort((reqPrev, reqNext) => reqPrev.groupId - reqNext.groupId)
         const requestInfoArr = _.valuesIn(_.groupBy(sortRequestListByGroup, (req) => req.groupId))
@@ -1491,7 +1493,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                         </li>
                     })}
                 </ul>
-                <ButtonComponent isEdit={isEdit} files={files} updateFiles={this.updateFiles.bind(this)} submit={this.submit.bind(this)} isUpdateFiles={this.getIsUpdateStatus} disabledSubmitButton={disabledSubmitButton} />
+                <ButtonComponent isEdit={isEdit} files={files} updateFiles={this.updateFiles.bind(this)} submit={this.submit.bind(this)} isUpdateFiles={this.getIsUpdateStatus} disabledSubmitButton={disabledSubmitButton} validating={validating} />
             </div>
         )
     }
