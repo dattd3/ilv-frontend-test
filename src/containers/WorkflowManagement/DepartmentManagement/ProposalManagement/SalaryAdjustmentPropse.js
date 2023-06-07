@@ -669,10 +669,9 @@ const SalaryAdjustmentPropse = (props) => {
     let _enableSubmit = true;
     const _selectedMembers = selectedMembers.map((item) => {
       if (checkedMemberIds[item.uid]?.checked == true) {
-        _enableSubmit = _enableSubmit && accepted;
+        _enableSubmit = accepted;
         return { ...item, accepted: accepted };
       }
-      _enableSubmit = _enableSubmit & item.accepted;
       return item;
     });
     setSelectedMembers(_selectedMembers);
@@ -683,10 +682,16 @@ const SalaryAdjustmentPropse = (props) => {
     let _enableSubmit = true;
     const _selectedMembers = selectedMembers.map((item) => {
       if (item.uid == uid) {
-        _enableSubmit = _enableSubmit && accepted;
         return { ...item, accepted: accepted };
       }
-      _enableSubmit = _enableSubmit & item.accepted;
+      if (
+        (viewSetting.showComponent.btnExpertise ||
+          viewSetting.showComponent.btnApprove) &&
+        !isCreateMode &&
+        item.canChangeAction && !item.accepted
+      ) {
+        _enableSubmit = false;
+      }
       return item;
     });
     setSelectedMembers(_selectedMembers);
@@ -1235,6 +1240,7 @@ const SalaryAdjustmentPropse = (props) => {
         });
       }
       bodyFormData.append('deletedDocumentIds', listFileDeleted.join(','));
+      bodyFormData.append('culture', getCulture());
 
       return bodyFormData;
     }
@@ -1431,8 +1437,8 @@ const SalaryAdjustmentPropse = (props) => {
     let members = isCreate
         ? selectMembers
         : isAppraisersContainAccount
-        ? selectedMembers
-        : selectedMembers.filter((ele) => subordinatesEmails.includes(ele.account));
+        ? selectedMembers.filter((ele) => subordinatesEmails.includes(ele.account))
+        : selectedMembers.filter((ele) => email === ele.account);
 
     return members.map((item, index) => {
       if(item.shouldHide == true) return null;
