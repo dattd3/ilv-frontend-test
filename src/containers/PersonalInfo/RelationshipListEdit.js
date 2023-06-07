@@ -3,7 +3,7 @@ import Select from 'react-select'
 import DatePicker, { registerLocale } from 'react-datepicker'
 import { useTranslation } from "react-i18next"
 import moment from 'moment'
-import { formatStringByMuleValue } from "../../commons/Utils"
+import { formatStringByMuleValue, isVinFast } from "../../commons/Utils"
 
 import 'react-datepicker/dist/react-datepicker.css'
 import vi from 'date-fns/locale/vi'
@@ -172,6 +172,8 @@ function RelationshipListEdit(props) {
         return errors[[validationKey]] ? <div className="text-danger validation-message">{errors[[validationKey]]}</div> : null
     }
 
+    const isVinFastUsers = isVinFast()
+
     return (
         <div className="editing-section">
             <div className="old-new-flag">
@@ -196,7 +198,8 @@ function RelationshipListEdit(props) {
                     </div>
                     {
                         (relationshipData || []).map((item, i) => {
-                            let isReduced = formatStringByMuleValue(item?.is_reduced) !== '' && item?.is_reduced === isReducedText
+                            let isReduced = item?.is_reduced?.toUpperCase() === isReducedText
+                            let isEnableEditRow = !isVinFastUsers || (isVinFastUsers && !isReduced)
                             return <Fragment key={i}>
                                 <div className="info-value">
                                     <div className="col-item full-name">{formatStringByMuleValue(item.full_name)}</div>
@@ -207,7 +210,7 @@ function RelationshipListEdit(props) {
                                     <div className="col-item allowances-date">{formatStringByMuleValue(item.is_reduced) ? (moment(item.from_date, 'DD-MM-YYYY').format('DD/MM/YYYY') + ` - ` + moment(item.to_date, 'DD-MM-YYYY').format('DD/MM/YYYY')) : ""}</div>
                                 </div>
                                 {
-                                    !isReduced && (
+                                    isEnableEditRow && (
                                         <div className="edit-value">
                                             <div className="col-item first-name">
                                                 <label>{t("FamilyLastName")}<span className="text-danger required">(*)</span></label>

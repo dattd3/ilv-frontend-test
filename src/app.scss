@@ -1669,7 +1669,7 @@ span.badge-notification[data-badge]::after {
               width: 15px;
               height: 15px;
               background: #FFFFFF;
-              border: 1px solid #707070;
+              border: 1px solid #DEE2E6;
               margin-right: 6px;
             }
             &.old {
@@ -1682,7 +1682,7 @@ span.badge-notification[data-badge]::after {
         .detail-info {
           margin-top: 16px;
           .relationship-item, .relationship-item-create {
-            border: 1px solid #707070;
+            border: 1px solid #DEE2E6;
             padding: 15px;
             .info-label {
               margin-bottom: 10px;
@@ -1706,7 +1706,7 @@ span.badge-notification[data-badge]::after {
             .edit-value {
               display: flex;
               align-items: flex-start;
-              border-top: 1px solid #707070;
+              border-top: 1px solid #DEE2E6;
               padding-top: 5px;
               margin-top: 10px;
               margin-bottom: 20px;
@@ -1764,7 +1764,7 @@ span.badge-notification[data-badge]::after {
             .edit-value {
               position: relative;
               padding: 15px;
-              border: 1px solid #707070;
+              border: 1px solid #DEE2E6;
               margin-bottom: 20px;
               .btn-remove-relationship-item {
                 cursor: pointer;
