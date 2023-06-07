@@ -352,6 +352,7 @@ export default function OTRequestComponent({ recentlyManagers }) {
     if (timesheet.isEdited) {
       newRequestInfoData[index] = {
         ...timeOverviewData[index],
+        timeRanges: [DEFAULT_TIME_REGISTER_RANGE],
         isEdited: false,
       };
     } else {
