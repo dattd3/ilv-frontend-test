@@ -35,8 +35,9 @@ const processStep = {
 }
 
 function EvaluationOverall(props) {
-  const { t } = useTranslation()
-  const { evaluationFormDetail, showByManager } = props
+  const { t } = useTranslation();
+  const { evaluationFormDetail, showByManager } = props;
+  const isOffLineType = evaluationFormDetail?.formType === 'OFF';
   const totalCompleted = showByManager ? evaluationFormDetail?.leadReviewTotalComplete || 0 : evaluationFormDetail?.seftTotalComplete || 0;
   const isDifferentZeroLevel = evaluationFormDetail.reviewStreamCode !== processStep.zeroLevel;
 
@@ -63,7 +64,7 @@ function EvaluationOverall(props) {
   }
   
   return <div className="block-overall">
-    <div className="card shadow card-completed">
+    <div className="card shadow card-completed" style={isOffLineType ? { display: 'none' } : {}} >
       <h6 className="text-center text-uppercase chart-title">{t("EvaluationDetailAccomplished")}: <span className="font-weight-bold">{totalCompleted || 0}/{evaluationFormDetail?.totalTarget}</span></h6>
       <div className="chart">
         <div className="detail">
@@ -140,10 +141,11 @@ function EvaluationOverall(props) {
 }
 
 function EvaluationProcess(props) {
-  const { evaluationFormDetail, showByManager, errors, updateData } = props
   const { t } = useTranslation();
+  const { evaluationFormDetail, showByManager, errors, updateData } = props;
 
-  const { checkPhaseFormEndDate, reviewStreamCode, status, isEdit } = evaluationFormDetail;
+  const isOffLineType = evaluationFormDetail?.formType === 'OFF';
+  const { reviewStreamCode, isEdit } = evaluationFormDetail;
   const isDifferentZeroLevel = reviewStreamCode !== processStep.zeroLevel;
   let stepStatusMapping, stepEvaluationConfig;
 
@@ -180,7 +182,7 @@ function EvaluationProcess(props) {
 
   const renderEvaluationStep = () => {
       return stepEvaluationConfig.map((item, index) => {
-        let activeClass = index === stepStatusMapping[evaluationFormDetail?.status] ? 'active' : ''
+        let activeClass = index === stepStatusMapping[evaluationFormDetail?.status] ? 'active' : '';
         return (
           <div className="wrap-item" key={index}>
             <div className="line"><hr /></div>
@@ -306,7 +308,7 @@ function EvaluationProcess(props) {
     }
   }
 
-  return <div className="card shadow evaluation-process">
+  return <div className="card shadow evaluation-process" style={isOffLineType ? { display: 'none' } : {}} >
     <div className="title">{t("EvaluationDetailASSESSMENTPROCESS")}</div>
     <div className="step-block">
       {renderEvaluationStep()}
@@ -319,18 +321,19 @@ function EvaluationProcess(props) {
 }
 
 function EvaluationDetail(props) {
-  const { t } = useTranslation()
-  const [evaluationFormDetail, SetEvaluationFormDetail] = useState(null)
-  const [isLoading, SetIsLoading] = useState(false)
-  const [statusModal, SetStatusModal] = useState({ isShow: false, isSuccess: true, content: "", needReload: true })
-  const [errors, SetErrors] = useState({})
-  const { showByManager, updateParent } = props
-  const guard = useGuardStore()
-  const user = guard.getCurentUser()
-  const evaluationFormId = showByManager ? props?.evaluationFormId : props.match.params.id
-  const formCode = showByManager ? props?.formCode : props.match.params.formCode
-  const [bottom, setBottom] = useState(false)
-  const [dataLoaded, setDataLoaded] = useState(false)
+  const { t } = useTranslation();
+  const [errors, SetErrors] = useState({});
+  const [bottom, setBottom] = useState(false);
+  const [isLoading, SetIsLoading] = useState(false);
+  const [dataLoaded, setDataLoaded] = useState(false);
+  const [evaluationFormDetail, SetEvaluationFormDetail] = useState(null);
+  const [statusModal, SetStatusModal] = useState({ isShow: false, isSuccess: true, content: "", needReload: true });
+  const guard = useGuardStore();
+  const user = guard.getCurentUser();
+  const isOffLineType = evaluationFormDetail?.formType === 'OFF';
+  const { showByManager, updateParent } = props;
+  const formCode = showByManager ? props?.formCode : props.match.params.formCode;
+  const evaluationFormId = showByManager ? props?.evaluationFormId : props.match.params.id;
 
   useEffect(() => {
     const processEvaluationFormDetailData = response => {
@@ -896,11 +899,11 @@ function EvaluationDetail(props) {
               <div>
                 <EvaluationOverall evaluationFormDetail={evaluationFormDetail} showByManager={showByManager} />
                 <EvaluationProcess evaluationFormDetail={evaluationFormDetail} showByManager={showByManager} errors={errors} updateData={updateData} />
-                <div className="button-block">
+                <div className="button-block" style={isOffLineType ? { display: 'none' } : {}} >
                   {renderButtonBlock()}
                 </div>
               </div>
-              {!bottom &&
+              {!bottom && !isOffLineType &&
                 (evaluationFormDetail?.status == evaluationStatus.launch ||
                   (evaluationFormDetail?.status == evaluationStatus.selfAssessment && localStorage.getItem('employeeNo') == JSON.parse(evaluationFormDetail?.reviewer || '{}')?.uid)) && evaluationFormDetail?.isEdit && (
                     <div className="scroll-to-save" style={{ color: localStorage.getItem("companyThemeColor"), zIndex: '10' }}>

@@ -1798,6 +1798,8 @@
   "IncludeSalaryAdjustment": "Include salary adjustment",
   "Opinion": "Comment",
   "ConsenterStaffConfirm": "Consenter/ staff confirm",
+  "Sent": "đi",
+  "Arrive": "nhận",
   "action2": "Action",
   "operation": "Operation",
   "operationType.ins": "Add new",
@@ -1812,6 +1814,10 @@
   "InvalidMimeType": " is invalid type! Please select again!",
   "ExceedMaxFileSize": "The total file size must not exceed 8MB",
   "ErrorBackDateRequestVinpearl": "Request creation failed - Time out",
-  "WorkingTimeChange": "Working time change"
-
+  "WorkingTimeChange": "Working time change",
+  "RequestCreate": "ESS",
+  "RequestContractTermination": "Contract termination request",
+  "RequestTransfer": "Transfer request",
+  "RequestSalary": "Salary request",
+  "CreateProposal": "MSS"
 }

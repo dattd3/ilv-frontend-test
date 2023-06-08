@@ -116,7 +116,7 @@ class HumanForReviewSalaryComponent extends React.Component {
       let payload = {
         account: value,
         status: 3,
-        empoyee_type: isAppraiser ? "APPRAISER" : "APPROVER",
+        employee_type: isAppraiser ? "APPRAISER" : "APPROVER",
       },
       url = `${process.env.REACT_APP_REQUEST_URL}user/employee/search`;
       if(isHR) {

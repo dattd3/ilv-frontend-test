@@ -1,0 +1,61 @@
+import React, { useState } from 'react';
+import Select from 'react-select';
+import { withTranslation } from 'react-i18next';
+import Constants from '../../../commons/Constants';
+import { checkVersionPnLSameAsVinhome } from '../../../commons/commonFunctions';
+
+const RegistrationManagement = (props) => {
+  const { t } = props,
+    InsuranceOptions = [
+      // ...(checkVersionPnLSameAsVinhome(Constants.MODULE.DEXUATLUONG)
+      //   ? [{ value: 1, label: t('SalaryAdjustmentPropse') }]
+      //   : []),
+      ...(checkVersionPnLSameAsVinhome(Constants.MODULE.DIEUCHUYEN)
+        ? [{ value: 2, label: t('RequestTransfer') }]
+        : []),
+      ...(checkVersionPnLSameAsVinhome(Constants.MODULE.NGHIVIEC)
+        ? [{ value: 3, label: t('RequestContractTermination') }]
+        : []),
+    ];
+  const [type, setType] = useState(null);
+
+  const handleChangeType = (e) => {
+    setType(e);
+    switch (e.value) {
+      case 1:
+      default:
+        props.history.push(`/registration-salary-adjustment/create/request`);
+        break;
+      case 2:
+        props.history.push(`/registration-transfer-appoint/create/request`);
+        break;
+      case 3:
+        props.history.push(`/registration-employment-termination`);
+        break;
+    }
+  };
+
+  return (
+    <div className="timesheet-section proposal-management">
+      <h1 className="content-page-header">{t('Menu_RequestManage')}</h1>
+      <div className="timesheet-box shadow">
+        <div className="row">
+          <div className="col-12">
+            <div className="title">{t('TypeOfRequest')}</div>
+            <Select
+              placeholder={t('Select')}
+              options={InsuranceOptions}
+              isClearable={false}
+              value={type}
+              onChange={handleChangeType}
+              className="input mv-10"
+              styles={{ menu: (provided) => ({ ...provided, zIndex: 2 }) }}
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default withTranslation()(RegistrationManagement);
