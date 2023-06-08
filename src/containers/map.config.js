@@ -70,7 +70,13 @@ export default {
   RegistrationDetailRequest: "/registration/:id/:childId/request",
   RegistrationDetailApproval: "/registration/:id/:childId/approval",
   RegistrationDetailConsent: "/registration/:id/:childId/consent",
+
+  // Registration Management for employee proposal
+  RegistrationManagement: "/registration-management",
+  RegistrationSalaryAdjustment: "/registration-salary-adjustment/:id/:type",
+  RegistrationTransferAppoint: "/registration-transfer-appoint/:id/:type",
   RegistrationEmploymentTermination: "/registration-employment-termination",
+
   ProposedResignation: "/proposed-resignation",
   ResignationRequestsManagement: "/management-resignation-requests",
   ContractTerminationInterview: "/contract-termination-interview/:id",
@@ -91,7 +97,7 @@ export default {
   PersonalDetails: "/personal-detail-management",
   ProposalManagement: "/proposal-management",
   SalaryAdjustmentPropse: "/salaryadjustment/:id/:type",
-  transferAppointProposal: "/transfer-appoint/:id/:type",
+  TransferAppointProposal: "/transfer-appoint/:id/:type",
 
   //Vaccine
   VaccineList: "/vaccination",

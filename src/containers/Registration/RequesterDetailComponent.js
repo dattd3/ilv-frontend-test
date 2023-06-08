@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next"
 
 function RequesterDetailComponent(props) {
     const {t} = useTranslation();
-    const { fullName, employeeNo, jobTitle, department } = props?.user;
+    const { fullName, employeeNo, jobTitle, department } = props?.user || {};
 
     return <div className="box shadow cbnv">
     <div className="row group">
