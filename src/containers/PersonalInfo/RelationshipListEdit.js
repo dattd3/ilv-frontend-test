@@ -76,7 +76,7 @@ function RelationshipListEdit(props) {
                     new_lastname: item.lastname,
                     new_dob: item.dob,
                     new_relation: {value: item.relation_code, label: item.relation, genders: getGenderByRelationshipTypes(item.relation_code)},
-                    new_gender: {value: gender.value, label: gender?.label},
+                    new_gender: {value: gender?.value, label: gender?.label},
                     new_gender_options: newGenderOptions
                 }
             })
