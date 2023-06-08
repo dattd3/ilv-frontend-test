@@ -199,7 +199,7 @@ function RelationshipListEdit(props) {
                     {
                         (relationshipData || []).map((item, i) => {
                             let isReduced = item?.is_reduced?.toUpperCase() === isReducedText
-                            let isEnableEditRow = !isVinFastUsers || (isVinFastUsers && !isReduced)
+                            // let isEnableEditRow = !isVinFastUsers || (isVinFastUsers && !isReduced)
                             return <Fragment key={i}>
                                 <div className="info-value">
                                     <div className="col-item full-name">{formatStringByMuleValue(item.full_name)}</div>
@@ -210,7 +210,7 @@ function RelationshipListEdit(props) {
                                     <div className="col-item allowances-date">{formatStringByMuleValue(item.is_reduced) ? (moment(item.from_date, 'DD-MM-YYYY').format('DD/MM/YYYY') + ` - ` + moment(item.to_date, 'DD-MM-YYYY').format('DD/MM/YYYY')) : ""}</div>
                                 </div>
                                 {
-                                    isEnableEditRow && (
+                                    !isReduced && (
                                         <div className="edit-value">
                                             <div className="col-item first-name">
                                                 <label>{t("FamilyLastName")}<span className="text-danger required">(*)</span></label>
