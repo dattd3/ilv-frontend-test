@@ -35,13 +35,7 @@ class ConfirmRequestModal extends React.Component {
         this.setState({ disabledSubmitButton: true });
         const url = window.location.pathname
         const id = this.props.id
-<<<<<<< Updated upstream
-        let formData = new FormData()
-=======
         const host = this.getHostByRequestTypeId(this.props.dataToSap);
-        console.log(this.props.type)
-        return
->>>>>>> Stashed changes
         switch (this.props.type) {
             case Constants.STATUS_NOT_APPROVED: // không phê duyệt
                 this.disApprove(this.props.dataToSap, `${host}request/approve`, id)
