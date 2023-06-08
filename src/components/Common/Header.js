@@ -29,7 +29,7 @@ const APIConfig = getRequestConfigurations();
 
 function Header(props) {
     const localizeStore = useLocalizeStore();
-    const { fullName, email, avatar } = props?.user;
+    const { fullName, email, avatar } = props?.user || {};
     const { setShow, isApp } = props;
     const [isShow, SetIsShow] = useState(false);
     const [activeLang, setActiveLang] = useState(currentLocale);

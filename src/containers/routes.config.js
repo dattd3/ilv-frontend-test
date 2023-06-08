@@ -527,7 +527,7 @@ export default [
           key: "transfer-appoint",
           routeProps: {
             exact: true,
-            path: map.transferAppointProposal
+            path: map.TransferAppointProposal
           },
           component: lazy(() => import("./WorkflowManagement/DepartmentManagement/ProposalManagement/SalaryAdjustmentPropse"))
         },
@@ -651,6 +651,30 @@ export default [
             path: map.EvaluationManager
           },
           component: lazy(() => import("./TaskRecruitment/Evalution"))
+        },
+        {
+          key: "registration-management",
+          routeProps: {
+            exact: true,
+            path: map.RegistrationManagement
+          },
+          component: lazy(() => import("./Registration/RegistrationManagement/index"))
+        },
+        {
+          key: "registration-salary-adjustment",
+          routeProps: {
+            exact: true,
+            path: map.RegistrationSalaryAdjustment
+          },
+          component: lazy(() => import("./Registration/RegistrationManagement/SalaryAdjustmentPropose"))
+        },
+        {
+          key: "registration-transfer-appoint",
+          routeProps: {
+            exact: true,
+            path: map.RegistrationTransferAppoint
+          },
+          component: lazy(() => import("./Registration/RegistrationManagement/SalaryAdjustmentPropose"))
         },
         {
           key: "registration-employment-termination",

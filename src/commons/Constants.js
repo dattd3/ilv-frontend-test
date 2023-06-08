@@ -234,13 +234,14 @@ const Constants = {
     2: ["V040", "V005", "V061", "V077"],//DANHGIA_TAIKI
     3: [],//DEXUATLUONG
     4: ["V040", "V077", "V070"],//NGHIVIEC
-    5: ["V077", "V070"]//PHUCLOI
+    5: ["V077", "V070"],//PHUCLOI
+    6: [], //DIEUCHUYEN
   } :
   { //Development
     1: ["V040", "V005", "V079", "V041", "V030", "V077", "V070", "V099"],//TUYENDUNG + V061
     2: ["V061","V040", "V005", "V079", "V041", "V070", "V077", "V099"],//DANHGIA_TAIKI
     3: ["V061", "V040", "V005", "V079", "V041", "V070", "V077"],//DEXUATLUONG "V061", "V040", "V005", "V079", "V041"
-    4:  ["V040", "V005", "V079", "V070", "V077"],//NGHIVIEC
+    4: ["V040", "V005", "V079", "V070", "V077"],//NGHIVIEC
     5: ["V061", "V040", "V005", "V079", "V041", "V070", "V077"],//PHUCLOI
     6: ["V040", "V070", "V077"], //DIEUCHUYEN
   },

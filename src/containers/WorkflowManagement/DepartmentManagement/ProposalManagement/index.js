@@ -33,7 +33,7 @@ const ProposalManagement = (props) => {
 
   return (
     <div className="timesheet-section proposal-management">
-      <h1 className="content-page-header">{t("MenuProposalManagement")}</h1>
+      <h1 className="content-page-header">{t("CreateProposal")}</h1>
       <div className="timesheet-box shadow">
         <div className="row">
           <div className="col-12">
