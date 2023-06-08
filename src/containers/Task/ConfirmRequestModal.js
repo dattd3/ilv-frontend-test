@@ -38,9 +38,10 @@ class ConfirmRequestModal extends React.Component {
         this.setState({ disabledSubmitButton: true });
 
         const id = this.props.id
+        const host = this.getHostByRequestTypeId(this.props.dataToSap);
         switch (this.props.type) {
             case Constants.STATUS_NOT_APPROVED: // không phê duyệt
-                this.disApprove(this.props.dataToSap, `${process.env.REACT_APP_REQUEST_SERVICE_URL}request/approve`, id)
+                this.disApprove(this.props.dataToSap, `${host}request/approve`, id)
                 break;
             case Constants.STATUS_APPROVED: // phê duyệt
                 this.approve(this.props.dataToSap,id)
@@ -60,6 +61,13 @@ class ConfirmRequestModal extends React.Component {
             default:
                 break;
         }
+    }
+
+    getHostByRequestTypeId = (dataToSap) => {
+      const requestTypeId = dataToSap?.[0]?.requestTypeId || dataToSap?.requestTypeId || "";
+      return !!requestTypeId && [12, 14].includes(requestTypeId)
+        ? process.env.REACT_APP_REQUEST_SERVICE_URL
+        : process.env.REACT_APP_REQUEST_URL;
     }
 
     prepareDataForRevocation = () => {
@@ -148,7 +156,8 @@ class ConfirmRequestModal extends React.Component {
 
         // let bodyFormData = new FormData()
         // bodyFormData.append('UserProfileInfoToSap', JSON.stringify(dataToSap))
-        this.changeRequest(dataPrepareToSap, `${process.env.REACT_APP_REQUEST_SERVICE_URL}request/approve`, t("approval_status"))
+        const host = this.getHostByRequestTypeId(dataToSap);
+        this.changeRequest(dataPrepareToSap, `${host}request/approve`, t("approval_status"))
     }
 
     // Từ chối phê duyệt mass
@@ -176,7 +185,8 @@ class ConfirmRequestModal extends React.Component {
             }
             dataToSap.push(taskObj)
           });
-        this.changeRequest(dataToSap,`${process.env.REACT_APP_REQUEST_SERVICE_URL}request/approve`,this.props.t("disapproval_status"))
+        const host = this.getHostByRequestTypeId(dataToSap);
+        this.changeRequest(dataToSap,`${host}request/approve`,this.props.t("disapproval_status"))
     }
 
     consent = () => {
@@ -199,7 +209,8 @@ class ConfirmRequestModal extends React.Component {
             }
             dataToSap.push(taskObj)
           });
-        this.changeRequest(dataToSap,`${process.env.REACT_APP_REQUEST_URL}request/assess`,this.props.t("appraisal_status"))
+        const host = this.getHostByRequestTypeId(dataToSap);
+        this.changeRequest(dataToSap,`${host}request/assess`,this.props.t("appraisal_status"))
     }
 
     reject = () => {
@@ -223,8 +234,8 @@ class ConfirmRequestModal extends React.Component {
 
             dataToSap.push(taskObj)
           });
-        
-        this.changeRequest(dataToSap,`${process.env.REACT_APP_REQUEST_URL}request/assess`,this.props.t("disappraisal_status"))
+        const host = this.getHostByRequestTypeId(dataToSap);
+        this.changeRequest(dataToSap,`${host}request/assess`,this.props.t("disappraisal_status"))
     }
     
     handleChangeMessage = (e) => {
