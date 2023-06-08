@@ -9,6 +9,7 @@ import RequestProcessing from '../RequestProcessing'
 import StatusModal from '../../../components/Common/StatusModal'
 import Constants from '../.../../../../commons/Constants'
 import { getRequestTypeIdsAllowedToReApproval } from "../../../commons/Utils"
+import { getOperationType } from 'containers/Utils/Common'
 
 const TIME_FORMAT = 'HH:mm'
 const DATE_FORMAT = 'DD/MM/YYYY'
@@ -221,6 +222,7 @@ class BusinessTripDetailComponent extends React.Component {
       updatedDate: requestInfo?.updatedDate,
       deletedDate: requestInfo?.deletedDate,
     }
+    const operationType = getOperationType(businessTrip.requestType?.id, requestInfo.actionType, businessTrip.processStatusId)
 
     return (
       <div className="business-trip">
@@ -263,7 +265,7 @@ class BusinessTripDetailComponent extends React.Component {
           </>
         }
 
-        <RequestProcessing {...timeProcessing} />
+        <RequestProcessing {...timeProcessing} operationType={operationType} />
 
         { businessTrip?.requestDocuments?.length > 0 && <Attachment requestDocuments={businessTrip?.requestDocuments || []} t={t} /> }
 

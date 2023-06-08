@@ -16,7 +16,7 @@ const getDateByRange = (startDate, endDate) => {
     return []
 }
 
-const getOperationType = (requestTypeId, actionType, processStatusId) => {
+export const getOperationType = (requestTypeId, actionType, processStatusId) => {
   if ([Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP].includes(requestTypeId)) {
     if (actionType == Constants.OPERATION_TYPES.DEL && processStatusId == 5) {
       return Constants.OPERATION_TYPES.WAITING_DEL_APPROVE;
