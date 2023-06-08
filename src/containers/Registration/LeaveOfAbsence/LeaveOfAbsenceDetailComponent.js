@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 import moment from 'moment'
 import { withTranslation } from "react-i18next"
 import axios from 'axios'
@@ -10,6 +10,7 @@ import RequestProcessing from '../RequestProcessing'
 import StatusModal from '../../../components/Common/StatusModal'
 import Constants from '../.../../../../commons/Constants'
 import { FOREIGN_SICK_LEAVE, MARRIAGE_FUNERAL_LEAVE_KEY, VIN_UNI_SICK_LEAVE } from 'containers/Task/Constants'
+import { getOperationType } from 'containers/Utils/Common'
 
 const TIME_FORMAT = 'HH:mm'
 
@@ -22,16 +23,15 @@ const RegisteredLeaveInfo = ({ leaveOfAbsence, t, annualLeaveSummary }) => {
 
     return t("Day")
   }
-
   return (
     <div className='registered-leave-info'>
       <h5 className='content-page-header'>{'Thông tin đã đăng ký nghỉ'}</h5>
       <div className="box shadow">
         {
           (leaveOfAbsence?.requestInfoOld && leaveOfAbsence?.requestInfoOld?.length > 0 ? leaveOfAbsence?.requestInfoOld : leaveOfAbsence?.requestInfo).map((info, infoIndex) => {
-            let isForeignSickLeave = info?.absenceType?.value === FOREIGN_SICK_LEAVE
             let isVinUniSickLeave = info?.absenceType?.value === VIN_UNI_SICK_LEAVE
 
+            const isForeignSickLeave = info?.absenceType?.value === FOREIGN_SICK_LEAVE
             return (
               <div className='item' key={`info-${infoIndex}`}>
                 {
@@ -50,10 +50,6 @@ const RegisteredLeaveInfo = ({ leaveOfAbsence, t, annualLeaveSummary }) => {
                           {t("TotalLeaveTime")}
                           <div className="detail">{( info && info?.days >= 1) ? info?.days + ' ' + formatDayUnitByValue(info?.days || 0) : info?.hours + ' ' + t("Hour")}</div>
                         </div>
-                        {/* <div className="col-xl-4">
-                          {t("Thời gian gửi yêu cầu")}
-                          <div className="detail">{ leaveOfAbsence?.createDate && moment(leaveOfAbsence?.createDate, 'MM/DD/YYYY HH:mm').isValid() ? moment(leaveOfAbsence?.createDate, 'MM/DD/YYYY HH:mm').format('DD/MM/YYYY | HH:mm:ss') : '' }</div>
-                        </div> */}
                       </div>
                       <div className='row' style={{ marginTop: 15, marginBottom: 5 }}>
                         <div className="col-xl-8">
@@ -97,10 +93,6 @@ const RegisteredLeaveInfo = ({ leaveOfAbsence, t, annualLeaveSummary }) => {
                           {t("LeaveCategory")}
                           <div className="detail">{info && info?.absenceType ? info?.absenceType?.label : ""}</div>
                         </div>
-                        {/* <div className="col-xl-4">
-                          {t("Thời gian gửi yêu cầu")}
-                          <div className="detail">{ leaveOfAbsence?.createDate && moment(leaveOfAbsence?.createDate, 'MM/DD/YYYY HH:mm').isValid() ? moment(leaveOfAbsence?.createDate, 'MM/DD/YYYY HH:mm').format('DD/MM/YYYY | HH:mm:ss') : '' }</div>
-                        </div> */}
                       </div>
                     </>
                   )
@@ -359,6 +351,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
       updatedDate: requestInfo?.updatedDate,
       deletedDate: requestInfo?.deletedDate,
     }
+    const operationType = getOperationType(requestTypeId, requestInfo.actionType, leaveOfAbsence.processStatusId)
 
     return (
       <div className="leave-of-absence">
@@ -400,7 +393,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
             </>
         }
 
-        <RequestProcessing {...timeProcessing} />
+        <RequestProcessing {...timeProcessing} operationType={operationType} />
 
         { leaveOfAbsence.requestDocuments.length > 0 && <Attachment leaveOfAbsence={leaveOfAbsence} t={t} /> }
 

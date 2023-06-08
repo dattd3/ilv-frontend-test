@@ -8,6 +8,7 @@ import RequestProcessing from '../RequestProcessing'
 import StatusModal from '../../../components/Common/StatusModal'
 import Constants from '../.../../../../commons/Constants'
 import { getRequestTypeIdsAllowedToReApproval } from "../../../commons/Utils"
+import { getOperationType } from 'containers/Utils/Common'
 
 const TIME_FORMAT = 'HH:mm:00'
 const TIME_OF_SAP_FORMAT = 'HHmm00'
@@ -104,6 +105,7 @@ class SubstitutionDetailComponent extends React.Component {
       updatedDate: substitution?.updatedDate,
       deletedDate: substitution?.deletedDate,
     }
+    const operationType = getOperationType(requestTypeId, substitution.actionType, substitution.processStatusId)
 
     return (
       <div className="leave-of-absence shift-change-section">
@@ -188,7 +190,7 @@ class SubstitutionDetailComponent extends React.Component {
                 <div className="detail">{timesheet.shiftId}</div>
               </div>
               <div className="col">
-                <p>Giờ làm việc thay đổi</p>
+                <p>{t("WorkingTimeChange")}</p>
                 <div className="detail">{timesheet.shiftHours}</div>
               </div>
             </div> : null}
@@ -228,7 +230,7 @@ class SubstitutionDetailComponent extends React.Component {
           </>
         }
 
-        <RequestProcessing {...timeProcessing} />
+        <RequestProcessing {...timeProcessing} operationType={operationType} />
 
         {
           substitution.requestDocuments.length > 0 ?

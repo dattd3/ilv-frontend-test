@@ -1811,5 +1811,7 @@
   "SearchByDate": "Search by date",
   "InvalidMimeType": " is invalid type! Please select again!",
   "ExceedMaxFileSize": "The total file size must not exceed 8MB",
-  "ErrorBackDateRequestVinpearl": "Request creation failed - Time out"
+  "ErrorBackDateRequestVinpearl": "Request creation failed - Time out",
+  "WorkingTimeChange": "Working time change"
+
 }
