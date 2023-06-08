@@ -1830,5 +1830,6 @@
   "SearchByDate": "Tìm kiếm theo ngày",
   "InvalidMimeType": " không đúng định dạng! Xin vui lòng chọn lại",
   "ExceedMaxFileSize": "Tổng dung lượng file vượt quá 8MB! Xin vui lòng chọn lại",
-  "ErrorBackDateRequestVinpearl": "Gửi yêu cầu thất bại - thao tác quá thời gian quy định"
+  "ErrorBackDateRequestVinpearl": "Gửi yêu cầu thất bại - thao tác quá thời gian quy định",
+  "WorkingTimeChange": "Giờ làm việc thay đổi"
 }

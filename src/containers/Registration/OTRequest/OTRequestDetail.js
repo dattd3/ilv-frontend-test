@@ -6,6 +6,7 @@ import Constants from "commons/Constants";
 import DetailButtonComponent from "../DetailButtonComponent";
 import { formatProcessTime, getRequestConfigurations } from "commons/Utils";
 import ExcelIcon from "assets/img/excel-icon.svg";
+import { getOperationType } from "containers/Utils/Common";
 
 const config = getRequestConfigurations();
 
@@ -137,6 +138,7 @@ export default function OTRequestDetailComponent({ data, action }) {
       !isNullCustomize(timesheet.to_time2)
     );
   };
+  const operationType = getOperationType(data.processStatusId, data.updateField, data.processStatusId)
 
   return (
     <div className="ot-request-container">
@@ -502,6 +504,12 @@ export default function OTRequestDetailComponent({ data, action }) {
           <div className="block-title">{t("RequestHistory").toUpperCase()}</div>
           <div className="box shadow">
             <div className="row" style={{ rowGap: 20 }}>
+              <div className="col-4">
+                <div className="form-item">
+                  <div className="mb-12">{t("operation")}</div>
+                  <div className="field-view">{t(`operationType.${operationType?.toLowerCase()}`)}</div>
+                </div>
+              </div>
               {
                 formatProcessTime(createDate) && <div className="col-4">
                   <div className="form-item">

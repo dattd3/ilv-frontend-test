@@ -6,6 +6,7 @@ import ApproverDetailComponent from '../ApproverDetailComponent'
 import RequestProcessing from '../RequestProcessing'
 import Constants from '../.../../../../commons/Constants'
 import { getRequestTypeIdsAllowedToReApproval } from "../../../commons/Utils"
+import { getOperationType } from 'containers/Utils/Common'
 
 const TIME_FORMAT = 'HH:mm:ss'
 const DATE_FORMAT = 'DD-MM-YYYY'
@@ -93,7 +94,7 @@ class InOutUpdateDetailComponent extends React.Component {
     const { t, action, inOutTimeUpdate } = this.props
     const requestTypeIdsAllowedToReApproval = getRequestTypeIdsAllowedToReApproval()
     const isShowApproval = (inOutTimeUpdate.processStatusId === Constants.STATUS_WAITING) || (action === "approval" && inOutTimeUpdate.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && requestTypeIdsAllowedToReApproval.includes(inOutTimeUpdate.requestTypeId))
-  
+    console.log(inOutTimeUpdate)
     let messageSAP = null;
     if (inOutTimeUpdate.processStatusId === Constants.STATUS_PARTIALLY_SUCCESSFUL)
     {
@@ -120,6 +121,8 @@ class InOutUpdateDetailComponent extends React.Component {
       updatedDate: inOutTimeUpdate?.updatedDate,
       deletedDate: inOutTimeUpdate?.deletedDate,
     }
+    // Operation type for in/out always is INS right now
+    const operationType = getOperationType(inOutTimeUpdate.processStatusId, inOutTimeUpdate.updateField, inOutTimeUpdate.processStatusId)
 
     return (
       <div className="leave-of-absence">
@@ -226,7 +229,7 @@ class InOutUpdateDetailComponent extends React.Component {
             </>
         }
 
-        <RequestProcessing {...timeProcessing} />
+        <RequestProcessing {...timeProcessing} operationType={operationType} />
 
         {
           inOutTimeUpdate.requestDocuments.length > 0 ?
