@@ -254,6 +254,9 @@ export default function OTRequestComponent({ recentlyManagers }) {
             }
           : item
       );
+      if(newRanges[rangeIndex]?.startTime && newRanges[rangeIndex]?.endTime) {
+        newRanges[rangeIndex].isOvernight = newRanges[rangeIndex]?.endTime?.getTime() < newRanges[rangeIndex]?.startTime?.getTime();
+      }
       setRequestInfoData(
         requestInfoData.map((item, index) => {
           return index === dayIndex
@@ -268,29 +271,29 @@ export default function OTRequestComponent({ recentlyManagers }) {
     }
   };
 
-  const handleChangeisOvernight = (dayIndex, rangeIndex, value) => {
-    if (requestInfoData?.[dayIndex]) {
-      const newRanges = requestInfoData?.[dayIndex].timeRanges?.map((item, i) =>
-        i === rangeIndex
-          ? {
-              ...requestInfoData?.[dayIndex]?.timeRanges?.[rangeIndex],
-              isOvernight: value,
-            }
-          : item
-      );
-      setRequestInfoData(
-        requestInfoData.map((item, index) => {
-          return index === dayIndex
-            ? {
-                ...item,
-                hoursOt: getTotalHoursOtInRanges(newRanges),
-                timeRanges: newRanges,
-              }
-            : item;
-        })
-      );
-    }
-  };
+  // const handleChangeisOvernight = (dayIndex, rangeIndex, value) => {
+  //   if (requestInfoData?.[dayIndex]) {
+  //     const newRanges = requestInfoData?.[dayIndex].timeRanges?.map((item, i) =>
+  //       i === rangeIndex
+  //         ? {
+  //             ...requestInfoData?.[dayIndex]?.timeRanges?.[rangeIndex],
+  //             isOvernight: value,
+  //           }
+  //         : item
+  //     );
+  //     setRequestInfoData(
+  //       requestInfoData.map((item, index) => {
+  //         return index === dayIndex
+  //           ? {
+  //               ...item,
+  //               hoursOt: getTotalHoursOtInRanges(newRanges),
+  //               timeRanges: newRanges,
+  //             }
+  //           : item;
+  //       })
+  //     );
+  //   }
+  // };
 
   const searchData = async () => {
     if (startDate && endDate) {
@@ -377,6 +380,7 @@ export default function OTRequestComponent({ recentlyManagers }) {
     }
     setRequestInfoData(newRequestInfoData);
   };
+  console.log(requestInfoData)
 
   const handleChangeRequestInfoData = (name, value, index) => {
     const newRequestInfoData = [...requestInfoData];
@@ -522,9 +526,6 @@ export default function OTRequestComponent({ recentlyManagers }) {
           ?.join(","),
         endTime: item.timeRanges
           ?.map((range) => moment(range.endTime).format("HHmmss"))
-          ?.join(","),
-        isOvernight: item.timeRanges
-          ?.map((range) => range.isOvernight || false)
           ?.join(","),
         overTimeType: "01",
       }));
@@ -1074,7 +1075,7 @@ export default function OTRequestComponent({ recentlyManagers }) {
                         <div className="ot-note">{t("OTNote")}</div>
                         {timesheet?.timeRanges?.map((range, rangeIndex) => (
                           <div className="row mb-15" key={rangeIndex}>
-                            <div className="col-5">
+                            <div className="col-5 mr-12">
                               {rangeIndex === 0 && (
                                 <>
                                   <div className="mb-12">{t("OTReason")}</div>
@@ -1101,7 +1102,7 @@ export default function OTRequestComponent({ recentlyManagers }) {
                               )}
                             </div>
                             <div className="time-registration-container">
-                              <div className="form-item">
+                              <div className="form-item mr-12">
                                 {rangeIndex === 0 && (
                                   <div className="mb-12">{t("FromHour")}</div>
                                 )}
@@ -1142,7 +1143,7 @@ export default function OTRequestComponent({ recentlyManagers }) {
                                   }
                                 </p>
                               </div>
-                              <div className="form-item  end-time-container">
+                              <div className="form-item end-time-container  mr-12">
                                 {rangeIndex === 0 && (
                                   <div className="mb-12">{t("ToHour")}</div>
                                 )}
@@ -1179,7 +1180,7 @@ export default function OTRequestComponent({ recentlyManagers }) {
                                   }
                                 </p>
                               </div>
-                              <div className="form-item end-time-container">
+                              {/* <div className="form-item end-time-container">
                                 {rangeIndex === 0 && (
                                   <div
                                     className="mb-12"
@@ -1202,7 +1203,7 @@ export default function OTRequestComponent({ recentlyManagers }) {
                                     }
                                   />
                                 </div>
-                              </div>
+                              </div> */}
                               {timesheet?.timeRanges?.length === 1 ? (
                                 <button
                                   className="add-time-block-btn"
