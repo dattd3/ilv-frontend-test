@@ -222,7 +222,7 @@ class BusinessTripDetailComponent extends React.Component {
       updatedDate: requestInfo?.updatedDate,
       deletedDate: requestInfo?.deletedDate,
     }
-    const operationType = getOperationType(businessTrip.requestType?.id, requestInfo.actionType, businessTrip.processStatusId)
+    const operationType = getOperationType(businessTrip.requestTypeId, requestInfo.actionType, businessTrip.processStatusId)
 
     return (
       <div className="business-trip">

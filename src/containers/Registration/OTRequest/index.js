@@ -382,7 +382,6 @@ export default function OTRequestComponent({ recentlyManagers }) {
     }
     setRequestInfoData(newRequestInfoData);
   };
-  console.log(requestInfoData)
 
   const handleChangeRequestInfoData = (name, value, index) => {
     const newRequestInfoData = [...requestInfoData];
