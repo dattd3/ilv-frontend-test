@@ -667,21 +667,24 @@ const SalaryAdjustmentPropse = (props) => {
   const onActionChange = (uid, accepted = true) => {
     let _enableSubmit = true;
     const _selectedMembers = selectedMembers.map((item) => {
-      if (item.uid == uid) {
-        return { ...item, accepted: accepted };
-      }
       if (
         (viewSetting.showComponent.btnExpertise ||
           viewSetting.showComponent.btnApprove) &&
         !isCreateMode &&
-        item.canChangeAction && !item.accepted
+        item.canChangeAction && !accepted
       ) {
         _enableSubmit = false;
       }
+
+      if (item.uid == uid) {
+        return { ...item, accepted };
+      }
+
       return item;
     });
-    setSelectedMembers(_selectedMembers);
+
     setEnableSubmit(_enableSubmit);
+    setSelectedMembers(_selectedMembers);
   };
 
   const handleTextInputChange = (value, uid, objName) => {
@@ -1760,10 +1763,10 @@ const SalaryAdjustmentPropse = (props) => {
                       className={`form-control w-100 bg-white ${
                         isProposalTransfer ? 'disabled' : ''
                       }`}
+                      style={{ fontSize: '14px', paddingLeft: '8px' }}
                       disabled
                     >
                       <option
-                      style={{fontSize: '14px'}}
                       >
                         {
                           !!item.proposedPosition
