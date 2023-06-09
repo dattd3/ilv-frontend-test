@@ -122,7 +122,7 @@ class InOutUpdateDetailComponent extends React.Component {
       deletedDate: inOutTimeUpdate?.deletedDate,
     }
     // Operation type for in/out always is INS right now
-    const operationType = getOperationType(inOutTimeUpdate.processStatusId, inOutTimeUpdate.updateField, inOutTimeUpdate.processStatusId)
+    const operationType = getOperationType(inOutTimeUpdate.requestTypeId, inOutTimeUpdate.updateField, inOutTimeUpdate.processStatusId)
 
     return (
       <div className="leave-of-absence">
