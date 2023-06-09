@@ -221,14 +221,18 @@ class TaskList extends React.Component {
     }
 
     getSalaryProposeLink = (request) => {
-        let url = '';
+        let url = '',
+        transferAppoints = {
+          1: 'registration-transfer-appoint',
+          2: 'transfer-appoint',
+        };
         const typeRequest = this.props.page === "approval" ? "approval" : "assess"
         if(request.parentRequestHistoryId) {
             //xu ly mot nguoi
             url = `salarypropse/${request.parentRequestHistoryId}/${request.salaryId}/${typeRequest}`
         } else {
             //xu ly nhieu nguoi
-            url = `${request?.requestTypeId === 14 ? 'transfer-appoint' : 'salaryadjustment'}/${request.salaryId}/${typeRequest}`
+            url = `${request?.requestTypeId === 14 ? transferAppoints[request?.formType] : 'salaryadjustment'}/${request.salaryId}/${typeRequest}`
         }
         return url;
     }

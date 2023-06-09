@@ -238,24 +238,24 @@ class ProposalModal extends React.Component {
   };
 
   handleSearch = async (shouldUpdateProposedCode = false) => {
+    let { data } = this.state;
     const config = getMuleSoftHeaderConfigurations(),
       { modal } = this.props,
-      { proposedPositionCode } = modal.data;
-    let { data } = this.state;
+      { proposedPositionCode } = modal.data,
+      { pnl, block, region, unit, department, crew, team, group } = data,
+      lastOrg = group || team || crew || department || unit || region || block || pnl;
 
-    if (_.isEmpty(data.pnl)) return;
-    // handle call api get data set to titles
+    if (_.isEmpty(data.pnl) || !lastOrg) return;
 
     const res = await axios.get(
-        // `${process.env.REACT_APP_REQUEST_URL}masterdata/get-jobname?companyCode=${companyCode}`,
-        `${process.env.REACT_APP_REQUEST_URL}masterdata/get-jobname?companyCode=V040`,
+        `${process.env.REACT_APP_REQUEST_URL}masterdata/unuse_position?orgId=${lastOrg.value}`,
         config
       ),
       resData = res?.data?.data,
       titles = resData.map((ele) => ({
-        label: ele?.job_name,
-        labelEn: removeAccents(ele?.job_name.toLowerCase() || ''),
-        value: ele?.job_id?.toString(),
+        label: ele?.STEXT,
+        labelEn: removeAccents(ele?.STEXT?.toLowerCase() || ''),
+        value: ele?.SOBID?.toString(),
       }));
 
     if (!!resData) {
