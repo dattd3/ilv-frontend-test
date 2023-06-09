@@ -34,17 +34,29 @@ import { validateFileMimeType, validateTotalFileSize } from "../../../../utils/f
 
 registerLocale("vi", vi);
 
-const ListTypeContract = [
-  { value: "VA", label: "HĐLĐ XĐ thời hạn" },
-  { value: "VB", label: "HĐLĐ KXĐ thời hạn" },
-  { value: "VC", label: "HĐLĐ theo mùa vụ" },
-  { value: "VD", label: "Hợp đồng tập nghề" },
-  { value: "VE", label: "Hợp đồng thử việc" },
-  { value: "VF", label: "HĐDV theo tháng" },
-  { value: "VG", label: "HĐDV theo giờ" },
-  { value: "VH", label: "HĐDV khoán" },
-],
-getStorage = (key) => localStorage.getItem(key) || "";
+const getStorage = (key) => localStorage.getItem(key) || '',
+  EMPLOYEE_GROUP_OPTIONS = [
+    { value: 'I', label: 'I - CBLĐ cấp cao' },
+    { value: 'J', label: 'J - CBLĐ cấp trung' },
+    { value: 'K', label: 'K - CBLĐ cấp cơ sở' },
+    { value: 'L', label: 'L - Chuyên gia' },
+    { value: 'M', label: 'M - Chuyên viên' },
+    { value: 'N', label: 'N - Nhân viên' },
+  ],
+  EMPLOYEE_SUB_GROUP_OPTIONS = [
+    { value: 'T0', label: 'Cao cấp', parentId: 'I' },
+    { value: 'T1', label: 'T1', parentId: 'I' },
+    { value: 'T2', label: 'T2', parentId: 'I' },
+    { value: 'T3', label: 'T3', parentId: 'J' },
+    { value: 'T4', label: 'T4', parentId: 'J' },
+    { value: 'C1', label: 'C', parentId: 'K' },
+    { value: 'P1', label: 'P1', parentId: 'K' },
+    { value: 'P2', label: 'P2', parentId: 'K' },
+    { value: 'L4', label: 'CG trong nước', parentId: 'L' },
+    { value: 'L5', label: 'CG nước ngoài', parentId: 'L' },
+    { value: 'M0', label: 'Chuyên viên', parentId: 'M' },
+    { value: 'N0', label: 'Nhân viên', parentId: 'N' },
+  ];
 
 const CalendarContainer = ({children}) => {
   const el = document.getElementById('calendar-portal')
@@ -666,21 +678,24 @@ const SalaryAdjustmentPropse = (props) => {
   const onActionChange = (uid, accepted = true) => {
     let _enableSubmit = true;
     const _selectedMembers = selectedMembers.map((item) => {
-      if (item.uid == uid) {
-        return { ...item, accepted: accepted };
-      }
       if (
         (viewSetting.showComponent.btnExpertise ||
           viewSetting.showComponent.btnApprove) &&
         !isCreateMode &&
-        item.canChangeAction && !item.accepted
+        item.canChangeAction && !accepted
       ) {
         _enableSubmit = false;
       }
+
+      if (item.uid == uid) {
+        return { ...item, accepted };
+      }
+
       return item;
     });
-    setSelectedMembers(_selectedMembers);
+
     setEnableSubmit(_enableSubmit);
+    setSelectedMembers(_selectedMembers);
   };
 
   const handleTextInputChange = (value, uid, objName) => {
@@ -1759,10 +1774,10 @@ const SalaryAdjustmentPropse = (props) => {
                       className={`form-control w-100 bg-white ${
                         isProposalTransfer ? 'disabled' : ''
                       }`}
+                      style={{ fontSize: '14px', paddingLeft: '8px' }}
                       disabled
                     >
                       <option
-                      style={{fontSize: '14px'}}
                       >
                         {
                           !!item.proposedPosition
