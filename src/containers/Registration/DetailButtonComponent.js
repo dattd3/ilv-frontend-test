@@ -75,7 +75,6 @@ class DetailButtonComponent extends React.Component {
     render() {
         const {t, action, requestTypeId, operationType} = this.props
         const actionProcessing = action ? action : this.getAction()
-
         return <div className="bottom">
             <ConfirmationModal
                 urlName={this.props.urlName}

@@ -138,7 +138,7 @@ export default function OTRequestDetailComponent({ data, action }) {
       !isNullCustomize(timesheet.to_time2)
     );
   };
-  const operationType = getOperationType(data.processStatusId, data.updateField, data.processStatusId)
+  const operationType = getOperationType(data.requestTypeId, data.updateField, data.processStatusId)
 
   return (
     <div className="ot-request-container">
