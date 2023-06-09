@@ -23,6 +23,7 @@ import { validateFileMimeType, validateTotalFileSize } from "../../../../utils/f
 import LoadingModal from "../../../../components/Common/LoadingModal";
 import { getCulture } from "commons/Utils";
 
+
 function SalaryPropse(props) {
   const { t } = useTranslation();
   const api = useApi();
