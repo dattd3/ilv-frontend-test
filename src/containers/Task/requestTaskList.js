@@ -328,13 +328,17 @@ class RequestTaskList extends React.Component {
     }
 
     getSalaryProposeLink = (request) => {
-        let url = '';
-        if(request.parentRequestHistoryId) {
-            //xu ly mot nguoi
-            url = `salarypropse/${request.parentRequestHistoryId}/${request.salaryId}/request`;
+        let url = '',
+          transferAppoints = {
+            1: 'registration-transfer-appoint',
+            2: 'transfer-appoint',
+          };
+        if (request.parentRequestHistoryId) {
+          //xu ly mot nguoi
+          url = `salarypropse/${request.parentRequestHistoryId}/${request.salaryId}/request`;
         } else {
-            //xu ly nhieu nguoi
-            url = `${request?.requestTypeId === 14 ? 'transfer-appoint' : 'salaryadjustment'}/${request.salaryId}/request`;
+          //xu ly nhieu nguoi
+          url = `${request?.requestTypeId === 14 ? transferAppoints[request?.formType] : 'salaryadjustment'}/${request.salaryId}/request`;
         }
         return url;
     }
