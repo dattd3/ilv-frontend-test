@@ -1772,11 +1772,6 @@ span.badge-notification[data-badge]::after {
         color: #000000 !important;
         font-size: inherit;
         .work-outside-group-item {
-          border-radius: 4px;
-          background: #FFFFFF;
-          padding: 15px;
-          box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
-          margin-bottom: 15px;
           .value {
             height: 38px;
             background: #F2F2F2;
@@ -1784,12 +1779,14 @@ span.badge-notification[data-badge]::after {
             display: flex;
             align-items: center;
           }
-          .group {
+          .company-info {
             border-radius: 4px;
             border: 1px solid #DEE2E6;
+            background: #FFFFFF;
+            margin-bottom: 15px;
             .group-header {
-              background: #F2F2F2;
-              height: 30px;
+              background: #E2E2E2;
+              height: 34px;
               display: flex;
               border-top-right-radius: 4px;
               border-top-left-radius: 4px;
@@ -1824,12 +1821,19 @@ span.badge-notification[data-badge]::after {
                 }
               }
             }
-            .content {
-              padding: 15px;
-            }
           }
-          .company-info {           
-            .content {
+          .company {
+            margin-bottom: 15px;
+            padding: 15px 15px 0 15px;
+            .company-item {
+              padding-left: 15px;
+              padding-right: 15px;
+              & > .row {
+                border-radius: 4px;
+                padding-top: 10px;
+                padding-bottom: 15px;
+                box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+              }
               .group-name {
                 display: flex;
                 flex-direction: column;
@@ -1867,16 +1871,25 @@ span.badge-notification[data-badge]::after {
                 }
               }
             }
+            .collapse-expand-block {
+              margin-top: 15px;
+              span {
+                cursor: pointer;
+              }
+            }
           }
           .process {
             margin-top: 15px;
             border: none;
-            .item {
+            .process-item {
               margin-bottom: 15px;
               border: 1px solid #DEE2E6;
               border-radius: 4px;
               &:last-child {
                 margin-bottom: 0;
+              }
+              .content {
+                padding: 10px 15px 15px 15px;
               }
               .group-input {
                 display: flex;

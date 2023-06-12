@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { useTranslation } from "react-i18next"
 import moment from 'moment'
-import { last } from "lodash"
+import { last, omit } from "lodash"
 import WorkOutSideGroupItem from './WorkOutSideGroupItem'
 import ActionButtons from "./ActionButtons"
 import IconAddWhite from "../../assets/img/icon/ic_btn_add_white.svg"
@@ -53,12 +53,45 @@ function WorkOutSideGroup(props) {
                             netSalary: "",
                             grossSalary: ""
                         },
-                        currency: ""
+                        currency: "",
                     }
                 }
             }
         }
         SetExperiences({...experiences, ...newExperience})
+    }
+
+    const handleRemoveCompany = (companyIndex) => {
+        SetExperiences(omit(experiences, companyIndex))
+    }
+
+    const handleRemoveProcess = (companyIndex, processIndex) => {
+        const experiencesClone = {...experiences}
+        delete experiencesClone[companyIndex].listWorking[processIndex]
+        SetExperiences(experiencesClone)
+    }
+
+    const handleAddProcess = (companyIndex) => {
+        const experiencesClone = {...experiences}
+        const lastProcessIndex = Number(Object.keys(experiencesClone[companyIndex]?.listWorking || {}).pop() || 0)
+        experiencesClone[companyIndex].listWorking[lastProcessIndex + 1] = {
+            startDate: null,
+            endDate: null,
+            positionName: "",
+            roleName: "",
+            salary: {
+                netSalary: "",
+                grossSalary: ""
+            },
+            currency: "",
+        }
+        SetExperiences(experiencesClone)
+    }
+
+    const handleToggleProcess = (companyIndex) => {
+        const experiencesClone = {...experiences}
+        experiencesClone[companyIndex].isCollapse = !experiencesClone[companyIndex].isCollapse
+        SetExperiences(experiencesClone)
     }
 
     const handleCanUpdate = () => {
@@ -77,7 +110,15 @@ function WorkOutSideGroup(props) {
                 <div className="work-outside-group-list">
                     {
                         (Object.entries(experiences) || []).map(item => (
-                            <WorkOutSideGroupItem key={item[0]} index={item[0]} item={item[1]} canUpdate={canUpdate} />
+                            <WorkOutSideGroupItem 
+                                key={item[0]} 
+                                index={item[0]} 
+                                item={item[1]} 
+                                canUpdate={canUpdate}
+                                handleRemoveCompany={handleRemoveCompany}
+                                handleRemoveProcess={handleRemoveProcess}
+                                handleAddProcess={handleAddProcess}
+                                handleToggleProcess={handleToggleProcess} />
                         ))
                     }
                     {
