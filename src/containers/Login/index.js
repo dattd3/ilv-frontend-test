@@ -124,7 +124,7 @@ function Login() {
         <Col className="col-xl-12 col-lg-12 col-md-12">
           <div className="card o-hidden border-0 shadow-lg">
             <div className="card-body p-0">
-              <div className="row" >
+              <div className="row" style={{ height: 545 }}>
 
                 <div className="col-lg-5 bg-white-trasparent">
                   <div className="opacity-1 wrap-left">
@@ -174,7 +174,7 @@ function Login() {
                     </div>
                   </div>
                 </div>
-                <div className="col-lg-7 d-flex flex-column">
+                <div className="col-lg-7 d-flex flex-column" style={{ background: '#F9F9F9' }}>
                   {/* <Carousel nextIcon={null} prevIcon={null}>
                     <Carousel.Item interval={1000}>
                       <div className="detail-contain">
@@ -249,7 +249,7 @@ function Login() {
 
                   </Carousel> */}
                   <div className="banner-block">
-                    <div className="text-center banner-title">Welcome to <span className="font-weight-bold">ILOVEVINGROUP!</span></div>
+                    <div className="text-center banner-title">Welcome to&nbsp;<span className="font-weight-bold">ILOVEVINGROUP!</span></div>
                     <div className="text-center banner-img-block">
                       <img src={Banner} alt="Banner" />
                     </div>
