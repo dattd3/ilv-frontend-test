@@ -274,8 +274,6 @@ const Constants = {
     INS: "INS",
     MOD: "MOD",
     DEL: "DEL",
-    WAITING_DEL_APPROVE: "WAITINGDELAPPROVE",
-    WAITING_DEL_APPRAISE: "WAITINGDELAPPRAISE"
   }
 };
 export default Constants
