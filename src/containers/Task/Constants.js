@@ -8,6 +8,7 @@ const MATERNITY_LEAVE_KEY = "IN02"
 const MARRIAGE_FUNERAL_LEAVE_KEY = "PN03"
 const MOTHER_LEAVE_KEY = 'PN02'
 const FOREIGN_SICK_LEAVE = 'PQ06'
+const VIN_UNI_SICK_LEAVE = 'PQ07'
 
 const absenceRequestTypes = [
   { value: 'IN01', label: 'SickLeave' },
@@ -23,6 +24,7 @@ const absenceRequestTypes = [
   // { value: ADVANCE_COMPENSATORY_LEAVE_KEY, label: 'AdvancedTOIL' },
   { value: 'UN01', label: 'UnpaidLeave' },
   { value: FOREIGN_SICK_LEAVE, label: 'ForeignSickLeave' },
+  { value: VIN_UNI_SICK_LEAVE, label: 'VinUniSickLeave' },
 ]
 
 const requestTypes = [
@@ -37,6 +39,8 @@ const requestTypes = [
   { value: [Constants.RESIGN_SELF], label: 'ResignationType'},
   { value: [Constants.SALARY_PROPOSE], label: 'SalaryType' },
   { value: [Constants.OT_REQUEST], label: 'MoneyOT' },
+  { value: [Constants.PROPOSAL_TRANSFER], label: 'ProposalTransfer' },
+  { value: [Constants.PROPOSAL_APPOINTMENT], label: 'ProposalAppointment' },
 ]
 
 const PN03List = [
@@ -45,4 +49,15 @@ const PN03List = [
   { value: '3', label: 'DeceaseOfParents' },
 ];
 
-export { absenceRequestTypes, PN03List, requestTypes, MATERNITY_LEAVE_KEY, MARRIAGE_FUNERAL_LEAVE_KEY, MOTHER_LEAVE_KEY, FOREIGN_SICK_LEAVE, ANNUAL_LEAVE_KEY, ADVANCE_ABSENCE_LEAVE_KEY, COMPENSATORY_LEAVE_KEY }
+const REQUEST_CATEGORIES = {
+  CATEGORY_1: 1,
+  CATEGORY_2: 2
+}
+
+const REQUEST_CATEGORY_1_LIST = ["EditBasicProfile", "LeaveRequest", "BizTrip_TrainingRequest", "ShiftChange", "InOutChangeRequest", 
+  "ContractEvaluationType", "ResignationType", "AdminUploadShiftChange", "DepartmentTimesheet", "EditPersonalInformation", "OTRequest"]
+
+const REQUEST_CATEGORY_2_LIST = ["SalaryType", "ProposalTransfer"]
+
+export { absenceRequestTypes, PN03List, requestTypes, MATERNITY_LEAVE_KEY, MARRIAGE_FUNERAL_LEAVE_KEY, MOTHER_LEAVE_KEY, 
+  FOREIGN_SICK_LEAVE, ANNUAL_LEAVE_KEY, ADVANCE_ABSENCE_LEAVE_KEY, COMPENSATORY_LEAVE_KEY, REQUEST_CATEGORIES, REQUEST_CATEGORY_1_LIST, REQUEST_CATEGORY_2_LIST, VIN_UNI_SICK_LEAVE }

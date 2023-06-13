@@ -37,6 +37,7 @@
     "react-list": "^0.8.16",
     "react-metismenu": "^1.4.0",
     "react-moment": "^0.9.7",
+    "react-overlays": "^5.2.1",
     "react-paginate": "^6.3.2",
     "react-rating": "^2.0.5",
     "react-redux": "^7.2.1",
@@ -56,10 +57,11 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "build:staging": "rename .env.staging .env.production.local & npm run-script build & rename .env.production.local .env.staging",
+    "build:staging": "env-cmd -f .env.staging npm run build",
+    "build:dev": "env-cmd -f .env.staging npm run build",
     "build:uat": "env-cmd -f .env.uat npm run build",
-    "build:staging:linux": "env-cmd -f .env.staging npm run build",
-    "build:production": "rename .env.production .env.production.local & npm run-script build & rename .env.production.local .env.production",
+    "build:staging:linux": "env-cmd -f .env.staging yarn build",
+    "build:production": "env-cmd -f .env.production yarn build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

@@ -16,34 +16,61 @@ const getDateByRange = (startDate, endDate) => {
     return []
 }
 
+export const getOperationType = (requestTypeId, actionType, processStatusId) => {
+  if ([Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP].includes(requestTypeId)) {
+    if (actionType == Constants.OPERATION_TYPES.DEL && processStatusId == 5) {
+      return Constants.OPERATION_TYPES.WAITING_DEL_APPROVE;
+    } else if (actionType == Constants.OPERATION_TYPES.DEL && processStatusId == 8) {
+      return Constants.OPERATION_TYPES.WAITING_DEL_APPRAISE;
+    } else {
+      return actionType || Constants.OPERATION_TYPES.INS;
+    }
+  } else if (requestTypeId == Constants.OT_REQUEST) {
+    if (actionType == Constants.OPERATION_TYPES.DEL && processStatusId == 5) {
+      return Constants.OPERATION_TYPES.WAITING_DEL_APPROVE;
+    } else if (actionType == Constants.OPERATION_TYPES.DEL && processStatusId == 8) {
+      return Constants.OPERATION_TYPES.WAITING_DEL_APPRAISE;
+    } else {
+      return actionType || Constants.OPERATION_TYPES.INS;
+    }
+  }
+  return Constants.OPERATION_TYPES.INS
+}
+
 export default function processingDataReq(dataRawFromApi, tab) {
     let taskList = [];
-    const listRequestTypeIdToShowTime = [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP, Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE, Constants.OT_REQUEST]
-    const listRequestTypeIdToGetSubId = [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP]
+    const listRequestTypeIdToShowTime = [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP, Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE, Constants.OT_REQUEST],
+        listRequestTypeIdToGetSubId = [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP];
+
     dataRawFromApi.forEach(element => {
-        if([Constants.ONBOARDING, Constants.RESIGN_SELF, Constants.SALARY_PROPOSE, Constants.OT_REQUEST].includes(element.requestTypeId)) {
+        if([Constants.ONBOARDING, Constants.RESIGN_SELF, Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER, Constants.OT_REQUEST].includes(element.requestTypeId)) {
         // if(element.requestTypeId == Constants.ONBOARDING || element.requestTypeId == Constants.RESIGN_SELF || element.requestTypeId == Constants.SALARY_PROPOSE) {
-            if(element.requestTypeId == Constants.RESIGN_SELF) {
+            if(element.requestTypeId === Constants.RESIGN_SELF) {
                 element.id = element.id + '.1';
-                element.appraiser = element.appraiserInfo ? element.appraiserInfo : {}
-                element.startDate = ""
+                element.appraiser = element.appraiserInfo ? element.appraiserInfo : {};
+                element.approver = element.approver ? element.approver : {};
+                element.startDate = "";
             }
 
-            if(element.requestTypeId == Constants.SALARY_PROPOSE) {
+            if([Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER].includes(element.requestTypeId)) {
                 element.salaryId = element.id;
                 element.id = element.id + '.1';
                 element.appraiser = {};
+                element.approver = element.approverInfo ? element.approverInfo : {};
                 element.user = element.userInfo;
-                element.startDate = ""
+                element.isEdit = false; // không cho phép thẩm định hàng loạt ngoài màn danh sách
+                element.startDate = "";
             }
 
-            if (element.requestTypeId == Constants.OT_REQUEST) {
+            if (element.requestTypeId === Constants.OT_REQUEST) {
               element.id = element.id.toString();
               element.user = element.userInfo;
+              element.approver = element.approver ? element.approver : {};
               element.totalTime = element.requestInfo?.reduce((accumulator, currentValue) => accumulator += (currentValue.hoursOt) * 1, 0)?.toFixed(2);
-              const dateRanges = element.requestInfo?.reduce((accumulator, currentValue) => [...accumulator, moment(currentValue.date, "YYYYMMDD").format("DD/MM/YYYY")], [])
+              const dateRanges = element.requestInfo?.reduce((accumulator, currentValue) => [...accumulator, moment(currentValue.date, "YYYYMMDD").format("DD/MM/YYYY")], []);
               element.dateRange = dateRanges.join(", ");
             }
+            element.operationType = getOperationType(element.requestTypeId, element.updateField, element.processStatusId)
             taskList.push(element);
         } else {
             if (element.requestInfo) {
@@ -53,6 +80,7 @@ export default function processingDataReq(dataRawFromApi, tab) {
                     e.appraiserId = element.appraiserId
                     e.requestType = element.requestType
                     e.requestTypeId = element.requestTypeId
+                    e.approver = element.approver ? element.approver : {};
 
                     if (element.requestTypeId == Constants.UPDATE_PROFILE) {
                         e.processStatusId = element.processStatusId
@@ -91,40 +119,43 @@ export default function processingDataReq(dataRawFromApi, tab) {
                     }
                     // e.isEdit = listRequestTypeIdToGetSubId.includes(element.requestTypeId) ? e.isEdit : element.isEdit
                     e.isEdit = element?.isEdit // Confirm từ a Thủy và a Chiến Mobile lấy isEdit bên ngoài (không lấy bên trong) - 18/04/2023
+                    e.operationType = getOperationType(element.requestTypeId, e.actionType, e.processStatusId);
                     taskList.push(e)
                 })
             }
-            if (element.requestTypeId == Constants.CHANGE_DIVISON_SHIFT || element.requestTypeId == Constants.DEPARTMENT_TIMESHEET || element.requestTypeId == Constants.OT_REQUEST) {
+            if (element.requestTypeId == Constants.CHANGE_DIVISON_SHIFT || element.requestTypeId == Constants.DEPARTMENT_TIMESHEET) {
                 element.id = element.id.toString()
+                element.operationType = Constants.OPERATION_TYPES.INS
+                element.operationType = getOperationType(element.requestTypeId, element.updateField, element.processStatusId);
                 taskList.push(element);
             }
         }
     });
 
     taskList = taskList.filter(function (e, index, taskListOriginal) {
-        let listRequestIdOriginals = taskListOriginal.map(item => item.id)
+        let listRequestIdOriginals = taskListOriginal.map(item => item.id);
 
         if (listRequestIdOriginals.includes(e.id, index + 1)) {
             let indexPosition = listRequestIdOriginals.indexOf(e.id, index + 1);
             // taskListOriginal[indexPosition].startDate = (e.startDate + ",\r" + taskListOriginal[indexPosition].startDate);
             taskListOriginal[indexPosition].startDate = taskListOriginal[indexPosition].startDate?.concat(e.startDate)
         } else if (e.absenceType && e.absenceType.value == MOTHER_LEAVE_KEY) {
-            let startDate = moment(e.startDate, "DD/MM/YYYY")
-            let endDate = moment(e.endDate, "YYYYMMDD")
-            let now = startDate, dates = []
+            let startDate = moment(e.startDate, "DD/MM/YYYY"),
+                endDate = moment(e.endDate, "YYYYMMDD"),
+                now = startDate, dates = [];
 
             while (now.isBefore(endDate) || now.isSame(endDate)) {
                 dates.push(now.format('DD/MM/YYYY'));
                 now.add(1, 'days')
             }
-            e.startDate = dates
-            return e
+            e.startDate = dates;
+            return e;
         } else {
-            e.startDate = e.startDate
-            return e
+            e.startDate = e.startDate;
+            return e;
         }
     })
-    return taskList
+    return taskList;
 }
 
 export const replaceAll = (str, find, replace) => {
