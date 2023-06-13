@@ -6,7 +6,7 @@ import 'react-datepicker/dist/react-datepicker.css'
 class StaffInfoForContractTerminationInterviewComponent extends React.PureComponent {
 
     render() {
-        const { t, userInfos, isCreate, changeDateTermination } = this.props
+        const { t, userInfos } = this.props
         const dateTermination = userInfos && userInfos.dateTermination ? moment(userInfos.dateTermination, "YYYY-MM-DD").format("DD/MM/YYYY") : ""
 
         return <div className="block staff-information-block">
@@ -47,7 +47,7 @@ class StaffInfoForContractTerminationInterviewComponent extends React.PureCompon
                             </div>
                             <div className="col-4 date-picker-container">
                               <p className="title">{t('ngay_cham_dut_hdld')}</p>
-                                {
+                                {/* {
                                   isCreate ? <>
                                     <DatePicker
                                       name="terminationDate"
@@ -62,7 +62,8 @@ class StaffInfoForContractTerminationInterviewComponent extends React.PureCompon
                                       minDate={moment().add(1, "d").toDate()}
                                     />
                                   </> : <input type="text" className="form-control" style={{backgroundColor: '#F2F2F2'}} value={dateTermination} readOnly />
-                                }
+                                } */}
+                                <input type="text" className="form-control" style={{backgroundColor: '#F2F2F2'}} value={dateTermination} readOnly />
                             </div>
                         </div>
                     </div>
