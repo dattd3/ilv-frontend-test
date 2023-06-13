@@ -38,7 +38,7 @@ const formatStringByMuleValue = value => {
 }
 
 const formatStringDateTimeByMuleValue = value => {
-    return (value === null || value === undefined || value === "" || value === "#" || value === "000000") ? "" : value.trim()
+    return (value === null || value === undefined || value === "" || value === "#" || value === "000000" || value === "00000000") ? "" : value.trim()
 }
 
 const formatNumberInteger = value => {
@@ -52,7 +52,8 @@ const formatNumberInteger = value => {
     return number.toString()
 }
 
-const checkOffset = (canvas, canvasWidth, canvasHeight, heightLeft,) => {
+const checkOffset = (canvas, canvasWidth, canvasHeight, heightLeft, needOffset) => {
+    if(!needOffset) return 0;
     var image1 = new Image();
     var context = canvas.getContext('2d');
     context.drawImage(image1, 0, 0);
@@ -85,7 +86,7 @@ const checkOffset = (canvas, canvasWidth, canvasHeight, heightLeft,) => {
 
 }
 
-const exportToPDF = (elementViewById, fileName) => {
+const exportToPDF = (elementViewById, fileName, needOffset = true) => {
     // const elementView = document.getElementById('frame-for-export')
     // const ratio = elementViewById.clientHeight / elementViewById.clientWidth
     const totalEdgeDistance = 14
@@ -118,7 +119,7 @@ const exportToPDF = (elementViewById, fileName) => {
 
         const marginX = totalEdgeDistance / 2
         const marginY = (pageHeight - canvasHeight) / 2
-        let offset = checkOffset(canvas, canvasWidth, canvasHeight, heightLeft - pageHeight);
+        let offset = checkOffset(canvas, canvasWidth, canvasHeight, heightLeft - pageHeight, needOffset);
         doc.addImage(image, 'JPEG', marginX, position + offset, canvasWidth, canvasHeight)
         heightLeft -= pageHeight;
         heightLeft += offset;
@@ -129,7 +130,7 @@ const exportToPDF = (elementViewById, fileName) => {
             if (heightLeft < pageHeight) {
                 offset = 0;
             } else {
-                offset = checkOffset(canvas, canvasWidth, canvasHeight, heightLeft - pageHeight);
+                offset = checkOffset(canvas, canvasWidth, canvasHeight, heightLeft - pageHeight, needOffset);
             }
             doc.addImage(image, 'JPEG', marginX, position + offset, canvasWidth, canvasHeight)
             heightLeft -= pageHeight;
@@ -353,17 +354,47 @@ function parsteStringToHtml(arrHtml) {
     }
 }
 
+const isValidDateRequest = date => {
+    const userLoggedCompanyCode = localStorage.getItem('companyCode')
+    if ([Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl].includes(userLoggedCompanyCode)) {
+        const timeline = 17
+        const currentTime = moment().hour()
+        const currentDate = moment().format("DD/MM/YYYY")
+        const range = moment(currentDate, 'DD/MM/YYYY').diff(moment(date, 'DD/MM/YYYY'), 'days')
+        if (currentTime < timeline) {
+            if (range > 1) {
+                return false
+            }
+        } else {
+            if (range > 0) {
+                return false
+            }
+        }
+    }
+
+    return true
+}
+
 const getRegistrationMinDateByConditions = () => {
     const userLoggedCompanyCode = localStorage.getItem('companyCode')
     let firstDay = null
     if ([Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl].includes(userLoggedCompanyCode)) {
-        let indexWednesdayInWeek = 3
-        let indexCurrentDayInWeek = moment().day()
-        firstDay = moment().startOf('week').isoWeekday(1) // Từ thứ 4 trở đi của tuần hiện tại đến cuối tuần hiện tại thì sẽ lấy ngày đầu tiên của tuần hiện tại 
-        if (indexCurrentDayInWeek <= indexWednesdayInWeek) { // Từ thứ 4 trở về trước thì sẽ lấy ngày đầu tiên của tuần trước đó
-            firstDay = moment().subtract(1, 'weeks').startOf('week').isoWeekday(1)
+        // let indexWednesdayInWeek = 3
+        // let indexCurrentDayInWeek = moment().day()
+        // firstDay = moment().startOf('week').isoWeekday(1) // Từ thứ 4 trở đi của tuần hiện tại đến cuối tuần hiện tại thì sẽ lấy ngày đầu tiên của tuần hiện tại 
+        // if (indexCurrentDayInWeek <= indexWednesdayInWeek) { // Từ thứ 4 trở về trước thì sẽ lấy ngày đầu tiên của tuần trước đó
+        //     firstDay = moment().subtract(1, 'weeks').startOf('week').isoWeekday(1)
+        // }
+
+        const timeline = 17
+        const currentTime = moment().hour()
+        if (currentTime < timeline) {
+            firstDay = moment().subtract(1, "days")
+        } else {
+            firstDay = moment()
         }
     }
+
     return firstDay
 }
 
@@ -549,9 +580,14 @@ const marriageConfig = () => {
     }
 }
 
+const formatProcessTime = (time) => {
+  if (time === "0001-01-01T00:00:00" || !time) return ""
+  return `${moment(time).format("DD/MM/YYYY")} | ${moment(time).format("HH:mm:ss")}`
+}
+
 export {
     getRequestConfigurations, removeAccents, formatStringByMuleValue, formatNumberInteger, exportToPDF, isEnableFunctionByFunctionName, getValueParamByQueryString, getDateByRangeAndFormat,
     calculateBackDateByPnLVCodeAndFormatType, isEnableShiftChangeFunctionByPnLVCode, isEnableInOutTimeUpdateFunctionByPnLVCode, getRequestTypeIdsAllowedToReApproval, getMuleSoftHeaderConfigurations,
     isAdjacentDateBy2Date, showRangeDateGroupByArrayDate, generateTaskCodeByCode, parsteStringToHtml, getRegistrationMinDateByConditions, isVinFast, isEnableOTFunctionByPnLVCode, getCurrentLanguage, 
-    getResignResonsMasterData, formatStringDateTimeByMuleValue, genderConfig, marriageConfig
+    getResignResonsMasterData, formatStringDateTimeByMuleValue, genderConfig, marriageConfig, formatProcessTime, isValidDateRequest
 }

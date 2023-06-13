@@ -231,13 +231,14 @@ export default class Api {
     );
   };
 
-  fetchJobDescription = async (jobCode) => {
-    return await this.request.get(
-      `${process.env.REACT_APP_REQUEST_URL}basicinfo/job/${jobCode}`,
-      {
-        params: {},
-      }
-    );
+  fetchJobDescription = async (params) => {
+    const { jobId, employeeLevel } = params;
+    return await this.request.get(`${process.env.REACT_APP_REQUEST_URL}basicinfo/jobdetail?jobId=${jobId}&employeeCode=${employeeLevel}`);
+  };
+
+  fetchJobRequirement = async (params) => {
+    const { jobId } = params;
+    return await this.request.get(`${process.env.REACT_APP_REQUEST_URL}basicinfo/job/${jobId}`);
   };
 
   fetchJobDescriptionByJobType = async (jobtype) => {
