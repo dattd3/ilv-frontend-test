@@ -17,21 +17,13 @@ const getDateByRange = (startDate, endDate) => {
 }
 
 export const getOperationType = (requestTypeId, actionType, processStatusId) => {
-  if ([Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP].includes(requestTypeId)) {
+  if ([Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP, Constants.OT_REQUEST].includes(requestTypeId)) {
     if (actionType == Constants.OPERATION_TYPES.DEL && processStatusId == 5) {
       return Constants.OPERATION_TYPES.WAITING_DEL_APPROVE;
     } else if (actionType == Constants.OPERATION_TYPES.DEL && processStatusId == 8) {
       return Constants.OPERATION_TYPES.WAITING_DEL_APPRAISE;
-    } else {
-      return actionType || Constants.OPERATION_TYPES.INS;
-    }
-  } else if (requestTypeId == Constants.OT_REQUEST) {
-    if (actionType == Constants.OPERATION_TYPES.DEL && processStatusId == 5) {
-      return Constants.OPERATION_TYPES.WAITING_DEL_APPROVE;
-    } else if (actionType == Constants.OPERATION_TYPES.DEL && processStatusId == 8) {
-      return Constants.OPERATION_TYPES.WAITING_DEL_APPRAISE;
-    } else {
-      return actionType || Constants.OPERATION_TYPES.INS;
+    } else if (actionType == Constants.OPERATION_TYPES.DEL) {
+      return Constants.OPERATION_TYPES.INS;
     }
   }
   return Constants.OPERATION_TYPES.INS
