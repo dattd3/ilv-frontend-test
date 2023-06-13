@@ -607,6 +607,7 @@ export default function OTRequestDetailComponent({ data, action }) {
           data.processStatusId === Constants.STATUS_WAITING_CONSENTED
         }
         isShowRevocationOfConsent={false}
+        isShowReject={operationType !== Constants.OPERATION_TYPES.DEL}
         urlName={"otrequest"}
         requestTypeId={data.requestTypeId}
         action={action}

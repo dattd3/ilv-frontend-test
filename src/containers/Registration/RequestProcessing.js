@@ -11,7 +11,7 @@ const RequestProcessing = ({ createDate, assessedDate, approvedDate, updatedDate
             <div className="box shadow request-processing">
                 <div className="row group">
                     {
-                      operationType && <div className="col-xl-3">
+                      operationType && <div className="col-xl-4">
                         {t("operation")}
                         <div className="detail">
                           {t(`operationType.${operationType ? operationType?.toLowerCase() : "ins"}`)}
