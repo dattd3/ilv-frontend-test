@@ -16,18 +16,29 @@ const ProposalManagement = (props) => {
   if(checkVersionPnLSameAsVinhome(Constants.MODULE.DIEUCHUYEN)) {
     InsuranceOptions.push({ value: 2, label: t('ProposalTransfer') });
   }
+  if(checkVersionPnLSameAsVinhome(Constants.MODULE.BONHIEM)) {
+    InsuranceOptions.push({ value: 3, label: t('ProposalAppointment') });
+  }
   if(checkVersionPnLSameAsVinhome(Constants.MODULE.NGHIVIEC)) {
-    InsuranceOptions.push({ value: 3, label: t('ProposeForEmployeesResignation') });
+    InsuranceOptions.push({ value: 4, label: t('ProposeForEmployeesResignation') });
   }
 
   const handleChangeType = (e) => {
     setType(e)
-    if (e.value === 1) {
-      props.history.push(`/salaryadjustment/create/request`)
-    } else if(e.value === 2) {
-      props.history.push(`/transfer-appoint/create/request`)
-    } else if(e.value === 3) {
-      props.history.push(`/proposed-resignation`)
+    switch (e.value) {
+      case 1:
+      default:
+        props.history.push(`/salaryadjustment/create/request`);
+        break;
+      case 2:
+        props.history.push(`/proposed-transfer/create/request`);
+        break;
+      case 3:
+        props.history.push(`/proposed-appointment/create/request`);
+        break;
+      case 4:
+        props.history.push(`/proposed-resignation`);
+        break;
     }
   }
 

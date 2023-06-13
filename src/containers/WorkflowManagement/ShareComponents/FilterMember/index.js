@@ -7,8 +7,7 @@ import SelectTab from "../SelectTab"
 import { getMuleSoftHeaderConfigurations } from "../../../../commons/Utils"
 
 const FilterMember = (props) => {
-  const { t, isSalaryAdjustment, onChangeSalaryAdjustment } = props,
-    isTransferAppointProposal = window.location.href.includes('transfer-appoint/create/request');
+  const { t, isSalaryAdjustment, onChangeSalaryAdjustment } = props;
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [checkedMemberIds, setCheckedMemberIds] = useState([]);
@@ -112,6 +111,7 @@ const FilterMember = (props) => {
         companyEmail: profile.company_email,
         currentPosition: profile.position_name,
         username: profile.username,
+        employeeLevel: profile.employee_level,
         job_name: profile.position_name,
         title: profile.title,
         part: profile.part || "",
@@ -147,7 +147,7 @@ const FilterMember = (props) => {
         onCloseTab={onCloseTabEvent}
         onCloseAll={onCloseAllEvent}
       />          
-      {isTransferAppointProposal && (
+      {false && ( // tao dieu chuyen + dieu chinh luong <= tam an
         <div className="change-proposal d-none mt-2 mb-2">
           <input
             type="checkbox"

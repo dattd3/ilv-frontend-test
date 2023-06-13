@@ -330,15 +330,17 @@ class RequestTaskList extends React.Component {
     getSalaryProposeLink = (request) => {
         let url = '',
           transferAppoints = {
-            1: 'registration-transfer-appoint',
-            2: 'transfer-appoint',
+            '14-1': 'registration-transfer',
+            '15-1': 'registration-transfer',
+            '14-2': 'proposed-transfer',
+            '15-2': 'proposed-appointment',
           };
         if (request.parentRequestHistoryId) {
           //xu ly mot nguoi
           url = `salarypropse/${request.parentRequestHistoryId}/${request.salaryId}/request`;
         } else {
           //xu ly nhieu nguoi
-          url = `${request?.requestTypeId === 14 ? transferAppoints[request?.formType] : 'salaryadjustment'}/${request.salaryId}/request`;
+          url = `${[14, 15].includes(request?.requestTypeId) ? transferAppoints[`${request?.requestTypeId}-${request?.formType}`] : 'salaryadjustment'}/${request.salaryId}/request`;
         }
         return url;
     }
