@@ -29,7 +29,7 @@ const APIConfig = getRequestConfigurations();
 
 function Header(props) {
     const localizeStore = useLocalizeStore();
-    const { fullName, email, avatar } = props.user;
+    const { fullName, email, avatar } = props?.user || {};
     const { setShow, isApp } = props;
     const [isShow, SetIsShow] = useState(false);
     const [activeLang, setActiveLang] = useState(currentLocale);
@@ -137,16 +137,26 @@ function Header(props) {
                                         }
                                         return `/notifications/${item.id}`
                                     case Constants.notificationType.NOTIFICATION_REGISTRATION: 
+                                        if([Constants.PROPOSAL_TRANSFER, Constants.PROPOSAL_APPOINTMENT].includes(item.requestTypeId)) {
+                                            let subId = item.subRequestId?.includes('.') ? item.subRequestId.split('.')[1] : item.subRequestId;
+                                            let suffix = item.detailType == 'APPRAISAL' ? 'assess' : item.detailType == 'APPROVAL' ? 'approval' : 'request';
+                                            let urls = {
+                                                [Constants.PROPOSAL_TRANSFER]: 'proposed-transfer',
+                                                [Constants.PROPOSAL_APPOINTMENT]: 'proposed-appointment'
+                                            };
+                                            return `/${urls[item.requestTypeId]}/${subId}/${suffix}`;
+                                        }
+                                        
                                         if (item.detailType == 'APPRAISAL')
-                                            return `/tasks?tab=consent`
+                                            return `/tasks?tab=consent${item.groupId ? `&requestCategory=${item.groupId}` : ''}`
                                         else
-                                            return `/tasks?tab=approval`
+                                            return `/tasks?tab=approval${item.groupId ? `&requestCategory=${item.groupId}` : ''}`
                                     case 6:
                                         return '/personal-info?tab=document'
                                     case Constants.notificationType.NOTIFICATION_REJECT:
-                                        return `/tasks`
+                                        return `/tasks?${item.groupId ? `requestCategory=${item.groupId}` : ''}`
                                     case Constants.notificationType.NOTIFICATION_AUTO_JOB:
-                                        return `/tasks?tab=approval`
+                                        return `/tasks?tab=approval${item.groupId ? `&requestCategory=${item.groupId}` : ''}`
                                     case Constants.notificationType.NOTIFICATION_SHIFT_CHANGE:
                                         const param = getDateShiftChange(item?.title || '');
                                         return `/timesheet${param}`
