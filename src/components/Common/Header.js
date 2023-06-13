@@ -137,10 +137,14 @@ function Header(props) {
                                         }
                                         return `/notifications/${item.id}`
                                     case Constants.notificationType.NOTIFICATION_REGISTRATION: 
-                                        if(item.requestTypeId == Constants.PROPOSAL_TRANSFER) {
+                                        if([Constants.PROPOSAL_TRANSFER, Constants.PROPOSAL_APPOINTMENT].includes(item.requestTypeId)) {
                                             let subId = item.subRequestId?.includes('.') ? item.subRequestId.split('.')[1] : item.subRequestId;
                                             let suffix = item.detailType == 'APPRAISAL' ? 'assess' : item.detailType == 'APPROVAL' ? 'approval' : 'request';
-                                            return `/transfer-appoint/${subId}/${suffix}`;
+                                            let urls = {
+                                                [Constants.PROPOSAL_TRANSFER]: 'proposed-transfer',
+                                                [Constants.PROPOSAL_APPOINTMENT]: 'proposed-appointment'
+                                            };
+                                            return `/${urls[item.requestTypeId]}/${subId}/${suffix}`;
                                         }
                                         
                                         if (item.detailType == 'APPRAISAL')

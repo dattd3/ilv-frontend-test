@@ -223,8 +223,10 @@ class TaskList extends React.Component {
     getSalaryProposeLink = (request) => {
         let url = '',
         transferAppoints = {
-          1: 'registration-transfer-appoint',
-          2: 'transfer-appoint',
+          '14-1': 'registration-transfer',
+          '15-1': 'registration-transfer',
+          '14-2': 'proposed-transfer',
+          '15-2': 'proposed-appointment',
         };
         const typeRequest = this.props.page === "approval" ? "approval" : "assess"
         if(request.parentRequestHistoryId) {
@@ -232,7 +234,7 @@ class TaskList extends React.Component {
             url = `salarypropse/${request.parentRequestHistoryId}/${request.salaryId}/${typeRequest}`
         } else {
             //xu ly nhieu nguoi
-            url = `${request?.requestTypeId === 14 ? transferAppoints[request?.formType] : 'salaryadjustment'}/${request.salaryId}/${typeRequest}`
+            url = `${[14, 15].includes(request?.requestTypeId) ? transferAppoints[`${request?.requestTypeId}-${request?.formType}`] : 'salaryadjustment'}/${request.salaryId}/${typeRequest}`
         }
         return url;
     }

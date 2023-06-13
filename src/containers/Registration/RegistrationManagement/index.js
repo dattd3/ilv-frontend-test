@@ -27,7 +27,7 @@ const RegistrationManagement = (props) => {
         props.history.push(`/registration-salary-adjustment/create/request`);
         break;
       case 2:
-        props.history.push(`/registration-transfer-appoint/create/request`);
+        props.history.push(`/registration-transfer/create/request`);
         break;
       case 3:
         props.history.push(`/registration-employment-termination`);
