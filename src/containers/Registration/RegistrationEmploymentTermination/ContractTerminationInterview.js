@@ -59,7 +59,7 @@ class ContractTerminationInterview extends React.Component {
         const id = this.props.match.params.id
         if (id) {
           const responses = await axios.get(`${process.env.REACT_APP_REQUEST_URL}WorkOffServey/getworkoffserveyinfo?requestStatusProcessId=${id}`, getRequestConfigs())
-          const serveyInfos = this.prepareServeyInfos(responses)
+          const serveyInfos = this.prepareServeyInfos(responses.data?.data?.workOffServeyItemModel)
           const userInfos = this.prepareUserInfos(responses)
           const serveyDetail = this.prepareServeyDetail(responses)
           const questions = this.prepareAdditionData(responses);
@@ -104,9 +104,9 @@ class ContractTerminationInterview extends React.Component {
               }
             })
           })
-          this.getWorkOffReasonItems().then(workSurveyItems => {
+          this.getWorkOffReasonItems().then(res => {
             this.setState({
-              serveyInfos: this.prepareServeyInfos(workSurveyItems?.workOffServeyItems)
+              serveyInfos: this.prepareServeyInfos(res?.workOffServeyItems)
             })
           })
         }
