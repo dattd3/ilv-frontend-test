@@ -6,6 +6,7 @@ on:
         branches: ["test-cicd"]
 jobs:
     deploy:
+        runs-on: ubuntu-latest
         steps:
          - name: Trigger AWS CodePipeline
            uses: rexsateesh/aws-codepipeline-action@v1.0
