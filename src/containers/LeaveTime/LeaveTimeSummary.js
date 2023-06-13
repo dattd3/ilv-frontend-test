@@ -80,8 +80,6 @@ function LeaveTimeSummary(props) {
     const unusedCompensatoryLeaveOfThisYear = data?.unused_compensatory_leave ? data?.unused_compensatory_leave.find(a => a.year == thisYear) : undefined
     const unusedCompensatoryLeaveOfLastYear = data?.unused_compensatory_leave ? data?.unused_compensatory_leave.find(a => a.year == (thisYear-1)) : undefined
 
-    console.log('kakakaka => ', pendingTimeInfo)
-
     return (
         <div className="summary">
             <div className="row">
