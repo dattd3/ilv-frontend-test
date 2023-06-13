@@ -524,10 +524,18 @@ export default [
           component: lazy(() => import("./WorkflowManagement/DepartmentManagement/ProposalManagement/SalaryAdjustmentPropse"))
         },
         {
-          key: "transfer-appoint",
+          key: "proposed-transfer",
           routeProps: {
             exact: true,
-            path: map.TransferAppointProposal
+            path: map.TransferProposal
+          },
+          component: lazy(() => import("./WorkflowManagement/DepartmentManagement/ProposalManagement/SalaryAdjustmentPropse"))
+        },
+        {
+          key: "proposed-appointment",
+          routeProps: {
+            exact: true,
+            path: map.AppointProposal
           },
           component: lazy(() => import("./WorkflowManagement/DepartmentManagement/ProposalManagement/SalaryAdjustmentPropse"))
         },
@@ -669,7 +677,7 @@ export default [
           component: lazy(() => import("./Registration/RegistrationManagement/SalaryAdjustmentPropose"))
         },
         {
-          key: "registration-transfer-appoint",
+          key: "registration-transfer",
           routeProps: {
             exact: true,
             path: map.RegistrationTransferAppoint
