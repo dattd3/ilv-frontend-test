@@ -74,7 +74,7 @@ export default {
   // Registration Management for employee proposal
   RegistrationManagement: "/registration-management",
   RegistrationSalaryAdjustment: "/registration-salary-adjustment/:id/:type",
-  RegistrationTransferAppoint: "/registration-transfer-appoint/:id/:type",
+  RegistrationTransferAppoint: "/registration-transfer/:id/:type",
   RegistrationEmploymentTermination: "/registration-employment-termination",
 
   ProposedResignation: "/proposed-resignation",
@@ -97,7 +97,8 @@ export default {
   PersonalDetails: "/personal-detail-management",
   ProposalManagement: "/proposal-management",
   SalaryAdjustmentPropse: "/salaryadjustment/:id/:type",
-  TransferAppointProposal: "/transfer-appoint/:id/:type",
+  TransferProposal: "/proposed-transfer/:id/:type",
+  AppointProposal: "/proposed-appointment/:id/:type",
 
   //Vaccine
   VaccineList: "/vaccination",
