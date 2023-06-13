@@ -18,10 +18,10 @@ const getStateRedirect = (url, environment) => {
     let mapping = [
         { ConfigureId: "351a4f7b-e724-43c4-923f-527002a3a18c", Url: "http://localhost:3000/auth"},
         { ConfigureId: "401a4f7b-e724-43c4-923f-534002a3a18c", Url: "https://onboarding.cloudvst.net/auth"},
-        { ConfigureId: "451a4f7b-e724-43c4-923f-534002a3a18c", Url: "https://hrms-myvp.cloudvst.net/auth"},
+        { ConfigureId: "451a4f7b-e724-43c4-923f-534002a3a18c", Url: "https://myvingroup-uat.cloudvst.net/auth"},
         { ConfigureId: "501a4f7b-e724-43c4-923f-534002a3a18c", Url: "https://hrdx.cloudvst.net/auth"},
         { ConfigureId: "551a4f7b-e724-43c4-923f-534002a3a18c", Url: "https://hrdx2.cloudvst.net/auth"},
-        { ConfigureId: "601a4f7b-e724-43c4-923f-534002a3a18c", Url: "https://myvp.cloudvst.net/auth"},
+        { ConfigureId: "601a4f7b-e724-43c4-923f-534002a3a18c", Url: "https://myvingroup.cloudvst.net/auth"},
     ]
 
     if (environment === 'PRODUCTION') {

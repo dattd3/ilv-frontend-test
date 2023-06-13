@@ -72,7 +72,8 @@ class BusinessTripComponent extends React.Component {
                     errors: {},
                 }
             ],
-            needReload: true
+            needReload: true,
+            validating: false,
         }
     }
 
@@ -308,7 +309,7 @@ class BusinessTripComponent extends React.Component {
         })
 
         if (times.length === 0) return
-
+        this.setState({ validating: true })
         axios.post(`${process.env.REACT_APP_REQUEST_URL}request/validate`, {
             perno: localStorage.getItem('employeeNo'),
             ...(this.state.isEdit && { requestId: this.props.taskId }),
@@ -363,7 +364,7 @@ class BusinessTripComponent extends React.Component {
                     })
                     this.setState({ newRequestInfo })
                 }
-            })
+            }).finally(() => this.setState({ validating: false }))
     }
 
     isOverlapDateTime(startDateTime, endDateTime) {
@@ -776,7 +777,7 @@ class BusinessTripComponent extends React.Component {
 
     render() {
         const { t, businessTrip, recentlyManagers } = this.props;
-        const { requestInfo, errors, approver, appraiser, isEdit } = this.state
+        const { requestInfo, errors, approver, appraiser, isEdit, validating } = this.state
         const sortRequestListByGroup = requestInfo.sort((reqPrev, reqNext) => reqPrev.groupId - reqNext.groupId)
         const requestInfoArr = _.valuesIn(_.groupBy(sortRequestListByGroup, (req) => req.groupId))
         const vehicles = [
@@ -1131,7 +1132,7 @@ class BusinessTripComponent extends React.Component {
                         </li>
                     })}
                 </ul>
-                <ButtonComponent isEdit={isEdit} files={this.state.files} updateFiles={this.updateFiles.bind(this)} submit={this.submit.bind(this)} isUpdateFiles={this.getIsUpdateStatus} disabledSubmitButton={this.state.disabledSubmitButton} />
+                <ButtonComponent isEdit={isEdit} files={this.state.files} updateFiles={this.updateFiles.bind(this)} submit={this.submit.bind(this)} isUpdateFiles={this.getIsUpdateStatus} disabledSubmitButton={this.state.disabledSubmitButton} validating={validating} />
             </div>
         )
     }

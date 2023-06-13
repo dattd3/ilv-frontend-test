@@ -6,7 +6,7 @@ import Select from 'react-select'
 import axios from 'axios'
 import { withTranslation } from "react-i18next"
 import defaultAvartar from '../../components/Common/DefaultAvartar'
-import { getRequestConfigurations } from "../../commons/Utils"
+import { getRequestConfigurations, prepareOrganization } from "../../commons/Utils"
 import Constants from "../../commons/Constants"
 
 const MyOption = props => {
@@ -71,7 +71,7 @@ class SelectSupporterModal extends React.Component {
                 userAccount: res.username,
                 part: res.part,
                 current_position: res.position_name,
-                department: res.division + (res.department ? '/' + res.department : '') + (res.part ? '/' + res.part : '')
+                department: prepareOrganization(res?.division, res?.department, res?.unit, res?.part)
               }
             })
             this.setState({ users: users })
