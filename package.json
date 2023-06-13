@@ -58,6 +58,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "build:staging": "env-cmd -f .env.staging npm run build",
+    "build:dev": "env-cmd -f .env.staging npm run build",
     "build:uat": "env-cmd -f .env.uat npm run build",
     "build:staging:linux": "env-cmd -f .env.staging yarn build",
     "build:production": "env-cmd -f .env.production yarn build",
