@@ -38,6 +38,7 @@ const requestTypes = [
   { value: [Constants.SALARY_PROPOSE], label: 'SalaryType' },
   { value: [Constants.OT_REQUEST], label: 'MoneyOT' },
   { value: [Constants.PROPOSAL_TRANSFER], label: 'ProposalTransfer' },
+  { value: [Constants.PROPOSAL_APPOINTMENT], label: 'ProposalAppointment' },
 ]
 
 const PN03List = [
