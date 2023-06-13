@@ -135,8 +135,8 @@ class InterviewContentFormComponent extends React.PureComponent {
                                     {
                                         (serveyInfos || []).map((item, index) => {
                                             const options = item.data
-                                            const optionSelected = item.responseKeyOptionSelects ? serveyDetail[item.responseKeyOptionSelects] : ""
-                                            const optionSelectedToArray = optionSelected ? optionSelected.split(",") : []
+                                            // const optionSelected = item.responseKeyOptionSelects ? serveyDetail[item.responseKeyOptionSelects] : ""
+                                            // const optionSelectedToArray = optionSelected ? optionSelected.split(",") : []
                                             return <tr key={index}>
                                                         <td className="categories">
                                                             <div className="item">{item.category || ""}</div>

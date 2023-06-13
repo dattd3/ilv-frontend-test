@@ -2643,6 +2643,7 @@ span.badge-notification[data-badge]::after {
     }
     .react-datepicker-wrapper {
       cursor: pointer;
+      width: 100%;
       [class$="-container"] {
         margin-top: 0;
       }

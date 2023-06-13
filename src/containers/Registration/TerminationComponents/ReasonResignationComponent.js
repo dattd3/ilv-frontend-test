@@ -3,9 +3,11 @@ import Select from 'react-select'
 import DatePicker from 'react-datepicker'
 import moment from 'moment'
 import { withTranslation } from "react-i18next"
+import axios from "axios"
 import 'react-datepicker/dist/react-datepicker.css'
-import { vi, enUS } from 'date-fns/locale'
 import _ from 'lodash';
+import { withRouter } from 'react-router-dom';
+import { getRequestConfigs } from 'commons/commonFunctions'
 
 class ReasonResignationComponent extends React.PureComponent {
     constructor(props) {
@@ -13,6 +15,18 @@ class ReasonResignationComponent extends React.PureComponent {
         this.state = {
             infos: {}
         }
+    }
+
+    componentDidMount() {
+      const { isEmployee, history } = this.props
+      if (isEmployee) {
+        const config = getRequestConfigs()
+        axios.get(`${process.env.REACT_APP_REQUEST_URL}WorkOffServey/get-severance-survey?employeeCode=${localStorage.getItem("employeeNo")}`, config).then(response => {
+          if (!response.data.data?.severanceSurvey) {
+            history.push('/contract-termination-interview?redirectURL=/registration-employment-termination')
+          }
+        })
+      }
     }
 
     handleSelectChange = e => {
@@ -89,7 +103,7 @@ class ReasonResignationComponent extends React.PureComponent {
                     <div className="box shadow">
                     <div className="row">
                             <div className="col-4">
-                                <p className="title">{t('ngay_lam_viec_cuoi_cung')}<span className="required">(*)</span></p>
+                                <p className="title">{t('LastWorkingDay')}<span className="required">(*)</span></p>
                                 <div className="content input-container">
                                     <label>
                                         <DatePicker
@@ -100,7 +114,9 @@ class ReasonResignationComponent extends React.PureComponent {
                                             dateFormat="dd/MM/yyyy"
                                             placeholderText={t('Select')}
                                             locale={t("locale")}
-                                            className="form-control input" />
+                                            className="form-control input"
+                                            minDate={moment().add(1, "day").toDate()}
+                                          />
                                         <span className="input-group-addon input-img" style={{top: '12px'}}><i className="fas fa-calendar-alt text-info"></i></span>
                                     </label>
                                 </div>
@@ -133,4 +149,4 @@ class ReasonResignationComponent extends React.PureComponent {
     }
 }
 
-export default withTranslation()(ReasonResignationComponent)
+export default withTranslation()(withRouter(ReasonResignationComponent))
