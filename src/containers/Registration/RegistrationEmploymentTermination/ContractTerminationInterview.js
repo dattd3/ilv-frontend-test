@@ -136,21 +136,12 @@ class ContractTerminationInterview extends React.Component {
 
   getWorkOffReasonItems = async () => {
     try {
-        const res = await axios.get(`${process.env.REACT_APP_REQUEST_URL}controller/getworkOffServeryItemAll`, config)
+        const res = await axios.get(`${process.env.REACT_APP_REQUEST_URL}WorkOffServeyItem/getworkOffServeryItemAll`, config)
         return res?.data?.data;
     } catch(err) {
         console.log(err);
         return {}
     }
-}
-
-  changeDateTermination = (date) => {
-    this.setState({
-      userInfos: {
-        ...this.state.userInfos,
-        dateTermination: moment(date).format("YYYY-MM-DD")
-      }
-    })
   }
 
     prepareServeyInfos = items => {
@@ -446,7 +437,7 @@ class ContractTerminationInterview extends React.Component {
                     <Image src={VinpearlLogo} alt="Vinpearl" className="logo" />
                 </div>
                 <h5 className="page-title">{t('bieu_mau_phong_van_thoi_viec')}</h5>
-                <StaffInfoForContractTerminationInterviewComponent isCreate={isCreate} userInfos={userInfos} changeDateTermination={this.changeDateTermination} />
+                <StaffInfoForContractTerminationInterviewComponent isCreate={isCreate} userInfos={userInfos} />
                 <InterviewContentFormComponent serveyInfos={serveyInfos} serveyDetail={serveyDetail} timeJoinDefault={this.state.timeJoinDefault} 
                 timeInDefault={this.state.timeInDefault}
                 resignationReasonOptionsChecked={this.state.resignationReasonOptionsChecked}
