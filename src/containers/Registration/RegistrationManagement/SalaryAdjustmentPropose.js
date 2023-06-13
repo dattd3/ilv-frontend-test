@@ -52,9 +52,10 @@ const SalaryAdjustmentPropose = (props) => {
     InsuranceOptions = [
       { value: 1, label: t('RequestSalary') },
       { value: 2, label: t('RequestTransfer') },
+      { value: 3, label: t('ProposalAppointment') },
     ],
-    isTransferAppointProposal = window.location.href.includes(
-      '/registration-transfer-appoint/'
+    isTransferProposal = window.location.href.includes(
+      '/registration-transfer/'
     ),
     queryParams = new URLSearchParams(props.history.location.search);
 
@@ -90,7 +91,7 @@ const SalaryAdjustmentPropose = (props) => {
     queryParams.get('accesstoken') || null
   );
   const [requestType, setRequestType] = useState(
-    InsuranceOptions[isTransferAppointProposal ? 1 : 0]
+    InsuranceOptions[isTransferProposal ? 1 : 0]
   );
   const [listFiles, setListFiles] = useState([]);
   const [selectMembers, setSelectMembers] = useState([]);
@@ -101,7 +102,7 @@ const SalaryAdjustmentPropose = (props) => {
   const [canSelectedAll, setCanSelectedAll] = useState(true);
   const [currencySalary, setCurrencySalary] = useState('VND');
   const [isSalaryAdjustment, setIsSalaryAdjustment] = useState(
-    !isTransferAppointProposal
+    !isTransferProposal
   );
 
   const [coordinator, setCoordinator] = useState(null); // Nhân sự hỗ trợ xin quyền xem lương
@@ -585,9 +586,9 @@ const SalaryAdjustmentPropose = (props) => {
         link: u.fileUrl,
       })) || [];
 
-      setListFiles(requestDocuments);
-      setViewSetting(viewSettingTmp);
-      setIsSalaryAdjustment(dataSalaryInfo?.isSalaryAdjustment || false);
+    setListFiles(requestDocuments);
+    setViewSetting(viewSettingTmp);
+    setIsSalaryAdjustment(dataSalaryInfo?.isSalaryAdjustment || false);
   };
 
   const onSelectAll = (e) => {
@@ -641,7 +642,8 @@ const SalaryAdjustmentPropose = (props) => {
         (viewSetting.showComponent.btnExpertise ||
           viewSetting.showComponent.btnApprove) &&
         !isCreateMode &&
-        item.canChangeAction && !accepted
+        item.canChangeAction &&
+        !accepted
       ) {
         _enableSubmit = false;
       }
@@ -707,7 +709,7 @@ const SalaryAdjustmentPropose = (props) => {
       dataToUpdate: [
         {
           id: id,
-          requestTypeId: isTransferAppointProposal ? 14 : 12,
+          requestTypeId: isTransferProposal ? 14 : 12,
           sub: [
             {
               id: id,
@@ -732,7 +734,7 @@ const SalaryAdjustmentPropose = (props) => {
       dataToUpdate: [
         {
           id: id,
-          requestTypeId: isTransferAppointProposal ? 14 : 12,
+          requestTypeId: isTransferProposal ? 14 : 12,
           sub: [
             {
               id: id,
@@ -793,7 +795,7 @@ const SalaryAdjustmentPropose = (props) => {
       dataToUpdate: [
         {
           id: id,
-          requestTypeId: isTransferAppointProposal ? 14 : 12,
+          requestTypeId: isTransferProposal ? 14 : 12,
           sub: [
             {
               id: id,
@@ -842,7 +844,7 @@ const SalaryAdjustmentPropose = (props) => {
       dataToUpdate: [
         {
           id: id,
-          requestTypeId: isTransferAppointProposal ? 14 : 12,
+          requestTypeId: isTransferProposal ? 14 : 12,
           sub: [
             {
               id: id,
@@ -875,7 +877,7 @@ const SalaryAdjustmentPropose = (props) => {
       dataToUpdate: [
         {
           id: id,
-          requestTypeId: isTransferAppointProposal ? 14 : 12,
+          requestTypeId: isTransferProposal ? 14 : 12,
           sub: [
             {
               id: id,
@@ -916,7 +918,7 @@ const SalaryAdjustmentPropose = (props) => {
         );
       }
 
-      if (isTransferAppointProposal) {
+      if (isTransferProposal) {
         const listErrors = validateAppoitment();
         if (listErrors.length !== 0) {
           return showStatusModal(listErrors[0], false);
@@ -936,10 +938,10 @@ const SalaryAdjustmentPropose = (props) => {
 
       (isCreate
         ? axios({
-            // Tạo mới yêu cầu isTransferAppointProposal ? đề xuất điều chuyển : đề xuất lương
+            // Tạo mới yêu cầu isTransferProposal ? đề xuất điều chuyển : đề xuất lương
             method: 'POST',
             url: `${process.env.REACT_APP_REQUEST_SERVICE_URL}${
-              isTransferAppointProposal ? 'appointment' : 'request'
+              isTransferProposal ? 'appointment' : 'request'
             }`,
             ...params,
           })
@@ -981,7 +983,7 @@ const SalaryAdjustmentPropose = (props) => {
               currentSalary: u?.currentSalary,
               suggestedSalary: u?.suggestedSalary,
               contractType: u?.contractType,
-              ...(isTransferAppointProposal
+              ...(isTransferProposal
                 ? {
                     proposedPositionCode: u?.proposedPositionCode,
                     proposedPosition: u?.proposedPosition,
@@ -1049,7 +1051,7 @@ const SalaryAdjustmentPropose = (props) => {
           expireDate: u?.expireDate,
           contractName: u?.contractName,
           contractType: u?.contractType,
-          ...(isTransferAppointProposal
+          ...(isTransferProposal
             ? {
                 proposedPositionCode: u?.proposedPositionCode,
                 proposedPosition: u?.proposedPosition,
@@ -1672,7 +1674,7 @@ const SalaryAdjustmentPropose = (props) => {
             </td>
           </tr>
           <tr>
-            {(isTransferAppointProposal || isProposalTransfer) && (
+            {(isTransferProposal || isProposalTransfer) && (
               <td colSpan={isSalaryPropose ? '12' : '8'}>
                 <div className="skill">
                   <span className="title font-weight-bold">
@@ -1813,14 +1815,12 @@ const SalaryAdjustmentPropose = (props) => {
         indexCurrentAppraiser={confirmModal.indexCurrentAppraiser}
       />
       <div className="eval-heading">
-        {t(isTransferAppointProposal ? 'RequestTransfer' : 'RequestSalary')}
+        {t(isTransferProposal ? 'RequestTransfer' : 'RequestSalary')}
       </div>
       {/* ĐỀ XUẤT ĐIỀU CHỈNH LƯƠNG */}
       <h5 className="content-page-header">
         {t(
-          isTransferAppointProposal
-            ? 'Menu_RequestManage'
-            : 'SalaryAdjustmentPropse'
+          isTransferProposal ? 'Menu_RequestManage' : 'SalaryAdjustmentPropse'
         )}
       </h5>
       <div className="timesheet-box1 shadow">
