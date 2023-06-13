@@ -229,7 +229,7 @@ export const Navigation = [
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     to: map.ProposalManagement,
     label: 'MenuProposalManagement',
-    role: ["P","T","P2", "P1", "T4", "T3", "T2", "T1"]
+    role: ["C2", "C1","C", "P2", "P1", "P","T","P2", "P1", "T4", "T3", "T2", "T1"]
   },
   {
     id: 4,
@@ -394,9 +394,17 @@ export const Navigation = [
     id: 19,
     parentId: 18,
     icon: "menu-bullet-lv2 icon-sub-menu-lv2",
-    label: "JobDescription",
+    label: "JobRequirements",
     to: map.Job,
     role: [Constants.pnlVCode.VinSmart, Constants.pnlVCode.VinMec, Constants.pnlVCode.VinSoftware, Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading]
+  },
+  {
+    id: 181,
+    parentId: 18,
+    icon: "menu-bullet-lv2 icon-sub-menu-lv2",
+    label: "JobDescription",
+    to: map.JobDescription,
+    role: [Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading]
   },
   {
     id: 20,

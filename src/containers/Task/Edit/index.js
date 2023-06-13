@@ -16,7 +16,7 @@ import { getMuleSoftHeaderConfigurations, getRequestConfigurations } from "../..
 import moment from 'moment'
 import * as actions from '../../../actions'
 import { t } from 'i18next'
-import { checkFilesMimeType } from '../../../utils/file'
+import { validateFileMimeType, validateTotalFileSize } from '../../../utils/file'
 
 class PersonalInfoEdit extends React.Component {
   constructor() {
@@ -604,7 +604,7 @@ class PersonalInfoEdit extends React.Component {
     const { t } = this.props;
     let bodyFormData = new FormData();
     bodyFormData.append('Name', this.getNameFromData(this.state.data));
-    bodyFormData.append('Comment', "Tôi muốn update thông tin Họ tên");
+    bodyFormData.append('Comment', "");
     bodyFormData.append('UserProfileInfo', JSON.stringify(this.state.data));
     let sapData = "";
     if (updateFields && Array.isArray(updateFields.UpdateField) && updateFields.UpdateField.length > 0) {
@@ -641,7 +641,7 @@ class PersonalInfoEdit extends React.Component {
 
   fileUploadInputChange = (e) => {
     const files = Object.keys(this.inputReference.current.files).map((key) => this.inputReference.current.files[key])
-    if (checkFilesMimeType(e, files)) {
+    if (validateFileMimeType(e, files, t) && validateTotalFileSize(e, this.state.files.concat(files), t)) {
       this.setState({ files: this.state.files.concat(files) })
     }
   }

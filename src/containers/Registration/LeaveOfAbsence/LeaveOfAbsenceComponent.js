@@ -13,7 +13,7 @@ import _ from 'lodash'
 import map from '../../../../src/containers/map.config'
 import Constants from '../../../commons/Constants'
 import { withTranslation } from "react-i18next";
-import { getValueParamByQueryString, getMuleSoftHeaderConfigurations, getRequestConfigurations, getRegistrationMinDateByConditions, isVinFast } from "../../../commons/Utils"
+import { getValueParamByQueryString, getMuleSoftHeaderConfigurations, getRequestConfigurations, getRegistrationMinDateByConditions, isVinFast, isValidDateRequest } from "../../../commons/Utils"
 import NoteModal from '../NoteModal'
 import { checkIsExactPnL } from '../../../commons/commonFunctions';
 import { absenceRequestTypes, PN03List, MATERNITY_LEAVE_KEY, MARRIAGE_FUNERAL_LEAVE_KEY, MOTHER_LEAVE_KEY, FOREIGN_SICK_LEAVE, ANNUAL_LEAVE_KEY, ADVANCE_ABSENCE_LEAVE_KEY, COMPENSATORY_LEAVE_KEY } from "../../Task/Constants"
@@ -529,7 +529,8 @@ class LeaveOfAbsenceComponent extends React.Component {
     }
 
     verifyInput() {
-        let { requestInfo, approver, appraiser, errors } = this.state;
+        let { requestInfo, approver, appraiser } = this.state;
+        const errors = { ...this.state.errors }
         const { t } = this.props
 
         if (approver?.account?.trim() && appraiser?.account?.trim() && approver?.account?.trim()?.toLowerCase() === appraiser?.account?.trim()?.toLowerCase()) {
@@ -565,20 +566,19 @@ class LeaveOfAbsenceComponent extends React.Component {
             }
             req.errors['pn03'] = (req.absenceType && req.absenceType?.value === MARRIAGE_FUNERAL_LEAVE_KEY && _.isNull(req['pn03'])) ? this.props.t('Required') : null
         })
-        const employeeLevel = localStorage.getItem("employeeLevel")
+
+        errors.approver = !approver ? this.props.t('Required') : errors.approver
 
         this.setState({
             requestInfo,
-            errors: {
-                approver: !approver ? this.props.t('Required') : errors.approver,
-                // appraiser: !appraiser && employeeLevel === "N0" ? this.props.t('Required') : errors.appraiser
-            }
+            errors: errors,
         })
 
         const listError = requestInfo.map(req => _.compact(_.valuesIn(req.errors))).flat()
-        if (listError.length > 0 || errors.approver) { //|| (errors.appraiser && employeeLevel === "N0")
+        if (listError.length > 0 || errors?.approver || errors?.appraiser) {
             return false
         }
+
         return true
     }
 
@@ -649,13 +649,20 @@ class LeaveOfAbsenceComponent extends React.Component {
     }
 
     submit() {
-        const { t } = this.props
+        const { t, leaveOfAbsence } = this.props
         const { files, isEdit, requestInfo } = this.state
         const err = this.verifyInput()
 
         this.setDisabledSubmitButton(true)
         if (!err) {
             this.setDisabledSubmitButton(false)
+            return
+        }
+
+        const hasNotErrorBackDate = (requestInfo || []).every(item => isValidDateRequest(item?.startDate))
+        if ((!this.props?.isEdit && !hasNotErrorBackDate) || (this.props?.isEdit && !isValidDateRequest(moment(leaveOfAbsence?.requestInfo[0]?.startDate, 'YYYYMMDD').format('DD/MM/YYYY')))) {
+            this.showStatusModal(t("Notification"), t("ErrorBackDateRequestVinpearl"), false)
+            this.setState({ needReload: false })
             return
         }
 
@@ -710,7 +717,7 @@ class LeaveOfAbsenceComponent extends React.Component {
         }))
         bodyFormData.append('requestInfo', JSON.stringify(dataRequestInfo))
         if (isEdit) {
-            bodyFormData.append('id', this.props.leaveOfAbsence.id)
+            bodyFormData.append('id', leaveOfAbsence.id)
         }
 
         if (!isEdit) {
@@ -736,9 +743,13 @@ class LeaveOfAbsenceComponent extends React.Component {
                 this.showStatusModal(t("Notification"), response?.data?.result?.message, false)
             }
         })
-        .catch(response => {
+        .catch(error => {
+            let message = t("Error")
+            if (error?.response?.data?.result?.code == Constants.API_ERROR_CODE) {
+              message = error?.response?.data?.result?.message
+            }
             this.setState({ needReload: false })
-            this.showStatusModal(t("Notification"), "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
+            this.showStatusModal(t("Notification"), message, false)
         })
         .finally(() => {
             this.setDisabledSubmitButton(false)
@@ -763,7 +774,7 @@ class LeaveOfAbsenceComponent extends React.Component {
 
     hideStatusModal = () => {
         const { isEdit, needReload } = this.state
-        this.setState({ isShowStatusModal: false })
+        this.setState({ isShowStatusModal: false, disabledSubmitButton: false })
 
         if (needReload) {
             if (isEdit) {
@@ -1104,7 +1115,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                     {req[0].absenceType && req[0].absenceType.value === MARRIAGE_FUNERAL_LEAVE_KEY ? <p className="title">{t("MarriageFuneral")}</p> : null}
                                                     {req[0].absenceType && req[0].absenceType.value === MARRIAGE_FUNERAL_LEAVE_KEY ?
                                                         <div>
-                                                            <Select name="PN03" value={req[0].funeralWeddingInfo} onChange={funeralWeddingInfo => this.handleSelectChange('funeralWeddingInfo', funeralWeddingInfo, req[0].groupId)} placeholder={t('Select')} key="absenceType" options={PN03ListPrepare} />
+                                                            <Select value={req[0].funeralWeddingInfo} onChange={funeralWeddingInfo => this.handleSelectChange('funeralWeddingInfo', funeralWeddingInfo, req[0].groupId)} placeholder={t('Select')} key="absenceType" options={PN03ListPrepare} />
                                                         </div>
                                                         :
                                                         null}

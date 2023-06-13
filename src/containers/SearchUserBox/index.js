@@ -135,7 +135,10 @@ export default function SearchUserComponent({
             setUsers(lst);
           }
         })
-        .catch((error) => {});
+        .catch((error) => {})
+        .finally(() => {
+          setIsSearching(false);
+        });
     } else {
       if (Array.isArray(users) && users.length > 1) setIsSearching(true);
     }
@@ -171,7 +174,7 @@ export default function SearchUserComponent({
                 isClearable={true}
                 styles={customStyles}
                 components={{
-                  Option: (e) => MyOption({ ...e, isSearch: isSearching }),
+                  Option: (e) => MyOption({ ...e }),
                 }}
                 onInputChange={handleInputChange}
                 name="user"
@@ -181,6 +184,7 @@ export default function SearchUserComponent({
                 key="user"
                 filterOption={filterOption}
                 options={users ? users : recentlyUser || []}
+                isLoading={isSearching}
               />
             </div>
             {errorText && <p className="text-danger">{errorText}</p>}

@@ -100,7 +100,8 @@ class SeniorExecutiveInfoComponent extends React.PureComponent {
 
       const payload = {
         account: value,
-        status: 3
+        status: 3,
+        empoyee_type: "APPROVER"
       }
 
       axios.post(`${process.env.REACT_APP_REQUEST_URL}user/employee/search`, payload, config)
