@@ -34,7 +34,7 @@ class RegistrationEmploymentTermination extends React.Component {
         const reasonMasterData = getResignResonsMasterData();
         // VA - HĐLĐ XĐ thời hạn - 30d
         // VB - HĐLĐ KXĐ thời hạn - 45d
-        const isNotEnoughTime = userInfos.some(item => 
+        const isNotEnoughTime = userInfos?.some(item => 
           (item.contractType === "VA" && moment(requestInfo.dateTermination, "YYYY-MM-DD").diff(moment(), "days") < 30) ||
           (item.contractType === "VB" && moment(requestInfo.dateTermination, "YYYY-MM-DD").diff(moment(), "days") < 45)
         )
