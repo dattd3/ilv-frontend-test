@@ -261,7 +261,7 @@ class RequestTaskList extends React.Component {
             //     { value: 2, label: 'Phê duyệt' }
             // ];
             
-        if([Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER].includes(request)) {
+        if([Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER, Constants.PROPOSAL_APPOINTMENT].includes(request)) {
             if(statusName) {
                 let statusLabel = t(statusName),
                     tmp = Object.keys(status).filter(key => status[key].label == statusLabel );
@@ -977,7 +977,7 @@ class RequestTaskList extends React.Component {
                                             }
 
                                             let editLink = this.getRequestEditLink(child.id, child.requestTypeId, child.processStatusId)
-                                            let detailLink = [Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER].includes(child.requestTypeId) ? this.getSalaryProposeLink(child) : this.getRequestDetailLink(child.id, child.requestTypeId)
+                                            let detailLink = [Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER, Constants.PROPOSAL_APPOINTMENT].includes(child.requestTypeId) ? this.getSalaryProposeLink(child) : this.getRequestDetailLink(child.id, child.requestTypeId)
                                             let dateChanged = showRangeDateGroupByArrayDate(child.startDate)
 
                                             if ([Constants.OT_REQUEST].includes(child.requestTypeId)) {

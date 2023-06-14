@@ -50,13 +50,14 @@ const SalaryAdjustmentPropose = (props) => {
     api = useApi(),
     history = useHistory(),
     InsuranceOptions = [
-      { value: 1, label: t('RequestSalary') },
-      { value: 2, label: t('RequestTransfer') },
-      { value: 3, label: t('ProposalAppointment') },
+      { value: 12, label: t('RequestSalary'), requestLabel: t("SalaryAdjustmentPropse") },
+      { value: 14, label: t('RequestTransfer'), requestLabel: t("Menu_RequestManage") },
+      { value: 15, label: t('ProposalAppointment'), requestLabel: t("Menu_RequestManage") },
     ],
     isTransferProposal = window.location.href.includes(
       '/registration-transfer/'
     ),
+    currentRequestTypeId = isTransferProposal ? 14 : 12,
     queryParams = new URLSearchParams(props.history.location.search);
 
   const [resultModal, setResultModal] = useState({
@@ -91,7 +92,7 @@ const SalaryAdjustmentPropose = (props) => {
     queryParams.get('accesstoken') || null
   );
   const [requestType, setRequestType] = useState(
-    InsuranceOptions[isTransferProposal ? 1 : 0]
+    InsuranceOptions.find(ele => ele.value === currentRequestTypeId)
   );
   const [listFiles, setListFiles] = useState([]);
   const [selectMembers, setSelectMembers] = useState([]);
@@ -709,7 +710,7 @@ const SalaryAdjustmentPropose = (props) => {
       dataToUpdate: [
         {
           id: id,
-          requestTypeId: isTransferProposal ? 14 : 12,
+          requestTypeId: currentRequestTypeId,
           sub: [
             {
               id: id,
@@ -734,7 +735,7 @@ const SalaryAdjustmentPropose = (props) => {
       dataToUpdate: [
         {
           id: id,
-          requestTypeId: isTransferProposal ? 14 : 12,
+          requestTypeId: currentRequestTypeId,
           sub: [
             {
               id: id,
@@ -795,7 +796,7 @@ const SalaryAdjustmentPropose = (props) => {
       dataToUpdate: [
         {
           id: id,
-          requestTypeId: isTransferProposal ? 14 : 12,
+          requestTypeId: currentRequestTypeId,
           sub: [
             {
               id: id,
@@ -844,7 +845,7 @@ const SalaryAdjustmentPropose = (props) => {
       dataToUpdate: [
         {
           id: id,
-          requestTypeId: isTransferProposal ? 14 : 12,
+          requestTypeId: currentRequestTypeId,
           sub: [
             {
               id: id,
@@ -877,7 +878,7 @@ const SalaryAdjustmentPropose = (props) => {
       dataToUpdate: [
         {
           id: id,
-          requestTypeId: isTransferProposal ? 14 : 12,
+          requestTypeId: currentRequestTypeId,
           sub: [
             {
               id: id,
@@ -1774,6 +1775,39 @@ const SalaryAdjustmentPropose = (props) => {
     });
   };
 
+  const renderStatusDetail = () => {
+    let { processStatusId, requestTypeId, statusName } = dataSalary;
+    const currentStatus = Constants.mappingStatusRequest[viewSetting?.currentStatus],
+      STATUS_VALUES = {
+        1: { label: t('Rejected'), className: 'fail' },
+        2: { label: t('Approved'), className: 'success' },
+        3: { label: t('Canceled'), className: '' },
+        4: { label: t('Canceled'), className: '' },
+        5: { label: t("PendingApproval"), className: '' },
+        6: { label: t("PartiallySuccessful"), className: 'warning' },
+        7: { label: t("Rejected"), className: 'fail' },
+        8: { label: t("PendingConsent"), className: '' },
+        20: { label: t("Consented"), className: '' },
+        100: { label: t("Waiting"), className: '' }
+      };
+
+    if([Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER, Constants.PROPOSAL_APPOINTMENT].includes(requestTypeId)) {
+      if(statusName) {
+        let statusLabel = t(statusName),
+          tmp = Object.keys(STATUS_VALUES).filter(key => STATUS_VALUES[key].label == statusLabel );
+        processStatusId = tmp?.length > 0 ? tmp[0] : processStatusId;
+      } else {
+        processStatusId = processStatusId == 21 || processStatusId == 22 ? 100 : processStatusId;
+      }
+    }
+
+    return !!processStatusId ? (
+      <span className={`request-status ${STATUS_VALUES[processStatusId]?.className}`} >{STATUS_VALUES[processStatusId]?.label}</span>
+    ) : (
+      <span className={`request-status ${currentStatus?.className}`} >{t(currentStatus?.label)}</span>
+    )
+  }
+
   const salaryState = `salaryadjustment_${id}_${type}`,
     { showComponent, proposedStaff, disableComponent } = viewSetting;
 
@@ -1814,15 +1848,9 @@ const SalaryAdjustmentPropose = (props) => {
         onHide={onHideModalConfirm}
         indexCurrentAppraiser={confirmModal.indexCurrentAppraiser}
       />
-      <div className="eval-heading">
-        {t(isTransferProposal ? 'RequestTransfer' : 'RequestSalary')}
-      </div>
+      <div className="eval-heading">{InsuranceOptions.find(ele => ele.value === currentRequestTypeId)?.label}</div>
       {/* ĐỀ XUẤT ĐIỀU CHỈNH LƯƠNG */}
-      <h5 className="content-page-header">
-        {t(
-          isTransferProposal ? 'Menu_RequestManage' : 'SalaryAdjustmentPropse'
-        )}
-      </h5>
+      <h5 className="content-page-header">{InsuranceOptions.find(ele => ele.value === currentRequestTypeId)?.requestLabel}</h5>
       <div className="timesheet-box1 shadow">
         <div className="row">
           <div className="col-12">
@@ -2069,18 +2097,7 @@ const SalaryAdjustmentPropose = (props) => {
       </ul>
       {/* Show status */}
       {showComponent.stateProcess && (
-        <div className="block-status">
-          <span
-            className={`request-status ${
-              Constants.mappingStatusRequest[viewSetting?.currentStatus]
-                ?.className
-            }`}
-          >
-            {t(
-              Constants.mappingStatusRequest[viewSetting?.currentStatus]?.label
-            )}
-          </span>
-        </div>
+        <div className="block-status">{renderStatusDetail()}</div>
       )}
       <div className="d-flex justify-content-end mb-5">
         {/* Đính kèm tệp */}
