@@ -479,6 +479,8 @@ const SalaryAdjustmentPropse = (props) => {
         proposedPositionCode: requestTmp?.proposedPositionCode,
         proposedDepartment: requestTmp?.proposedDepartment,
         proposedDepartmentCode: requestTmp?.proposedDepartmentCode,
+        proposedLevel: EMPLOYEE_SUB_GROUP_OPTIONS.find(ele => ele.value === requestTmp?.proposedRank) || {},
+        proposedLevelGroup: EMPLOYEE_GROUP_OPTIONS.find(ele => ele.value === requestTmp?.proposedRankGroupId) || {},
         strength: u?.staffStrengths || requestTmp?.staffStrengths,
         weakness: u?.staffWknesses || requestTmp?.staffWknesses,
         canChangeAction: u?.accepted == true,
@@ -1776,9 +1778,7 @@ const SalaryAdjustmentPropse = (props) => {
             {(isTransferAppointProposal || isProposalTransfer) && (
               <td colSpan={isSalaryPropose ? "12" : "8"}>
                 <div className="skill">
-                  <span className="title font-weight-bold">
-                    * {t('proposal_title')}:
-                  </span>
+                  <span className="title font-weight-bold">{t('proposal_title')}:</span>
                   <span
                     className="w-100 proposal-title"
                     onClick={() =>
@@ -1804,40 +1804,42 @@ const SalaryAdjustmentPropse = (props) => {
                   </span>
                 </div>
                 <div className="skill mt-2">
-                  <span className="title font-weight-bold">
-                    * {t('proposal_org')}:
-                  </span>
+                  <span className="title font-weight-bold">{t('proposal_org')}:</span>
                   <span className="input form-control mv-10 w-100 disabled" style={{fontSize: '14px'}}>
                     {item?.proposedDepartment}
                   </span>
                 </div>
                 <div className="skill mt-2">
                   <div className="col-6 d-flex align-items-center pl-0">
-                    <span className="title font-weight-bold">
-                      * {t('proposal_level_group')}:
-                    </span>
+                    <span className="title font-weight-bold">{t('proposal_level_group')}:</span>
                     <Select
                       value={item?.proposedLevelGroup}
                       options={EMPLOYEE_GROUP_OPTIONS}
                       onChange={(e) => handleProposeLevel(index, e, 'proposedLevelGroup')}
                       isClearable={false}
+                      isDisabled={isProposalTransfer}
                       className="input mv-10"
                       placeholder={t("Select")}
-                      styles={{ menu: (provided) => ({ ...provided, zIndex: 2, fontSize: '14px' }) }}
+                      styles={{ 
+                        menu: (provided) => ({ ...provided, zIndex: 2, fontSize: '14px' }),
+                        control: (styles) => ({ ...styles, borderColor: "#ced4da" })
+                      }}
                     />
                   </div>
                   <div className="col-6 d-flex align-items-center pr-0">
-                    <span className="title font-weight-bold">
-                      * {t('proposal_level')}:
-                    </span>
+                    <span className="title font-weight-bold">{t('proposal_level')}:</span>
                     <Select
                       value={item?.proposedLevel}
                       options={EMPLOYEE_SUB_GROUP_OPTIONS.filter(ele => ele.parentId === item?.proposedLevelGroup?.value)}
                       onChange={(e) => handleProposeLevel(index, e, 'proposedLevel')}
                       isClearable={false}
+                      isDisabled={isProposalTransfer}
                       className="input mv-10"
                       placeholder={t("Select")}
-                      styles={{ menu: (provided) => ({ ...provided, zIndex: 2, fontSize: '14px' }) }}
+                      styles={{
+                        menu: (provided) => ({ ...provided, zIndex: 2, fontSize: '14px' }),
+                        control: (styles) => ({ ...styles, borderColor: "#ced4da" })
+                      }}
                     />
                   </div>
                 </div>
@@ -1847,9 +1849,7 @@ const SalaryAdjustmentPropse = (props) => {
           <tr>
             <td colSpan={isSalaryPropose ? "12" : "8"}>
               <div className="skill">
-                <span className="title font-weight-bold">
-                  * {t('strength')}:
-                </span>
+                <span className="title font-weight-bold">{t('strength')}:</span>
                 <span className="input">
                   {viewSetting.disableComponent.editSubjectApply ? (
                     <ResizableTextarea
@@ -1874,9 +1874,7 @@ const SalaryAdjustmentPropse = (props) => {
           <tr>
             <td colSpan={isSalaryPropose ? "12" : "8"}>
               <div className="skill">
-                <span className="title font-weight-bold">
-                  * {t('weakness')}:
-                </span>
+                <span className="title font-weight-bold">{t('weakness')}:</span>
                 <span className="input">
                   {viewSetting.disableComponent.editSubjectApply ? (
                     <ResizableTextarea

@@ -1211,7 +1211,7 @@
           align-items: center;
           .title {
             min-width: 210px;
-            margin-bottom: 0;
+            margin: 0;
           }
           .input {
             flex: 1;
@@ -1224,6 +1224,7 @@
             background-color: #f2f2f2 !important;
             height: auto;
             min-height: calc(1.5em + 0.75rem + 2px);
+            color: #999;
           }
         }
         .action {
