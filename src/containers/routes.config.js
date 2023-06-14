@@ -524,6 +524,22 @@ export default [
           component: lazy(() => import("./WorkflowManagement/DepartmentManagement/ProposalManagement/SalaryAdjustmentPropse"))
         },
         {
+          key: "proposed-transfer",
+          routeProps: {
+            exact: true,
+            path: map.TransferProposal
+          },
+          component: lazy(() => import("./WorkflowManagement/DepartmentManagement/ProposalManagement/SalaryAdjustmentPropse"))
+        },
+        {
+          key: "proposed-appointment",
+          routeProps: {
+            exact: true,
+            path: map.AppointProposal
+          },
+          component: lazy(() => import("./WorkflowManagement/DepartmentManagement/ProposalManagement/SalaryAdjustmentPropse"))
+        },
+        {
           key: "vaccination",
           routeProps: {
             exact: true,
@@ -643,6 +659,30 @@ export default [
             path: map.EvaluationManager
           },
           component: lazy(() => import("./TaskRecruitment/Evalution"))
+        },
+        {
+          key: "registration-management",
+          routeProps: {
+            exact: true,
+            path: map.RegistrationManagement
+          },
+          component: lazy(() => import("./Registration/RegistrationManagement/index"))
+        },
+        {
+          key: "registration-salary-adjustment",
+          routeProps: {
+            exact: true,
+            path: map.RegistrationSalaryAdjustment
+          },
+          component: lazy(() => import("./Registration/RegistrationManagement/SalaryAdjustmentPropose"))
+        },
+        {
+          key: "registration-transfer",
+          routeProps: {
+            exact: true,
+            path: map.RegistrationTransferAppoint
+          },
+          component: lazy(() => import("./Registration/RegistrationManagement/SalaryAdjustmentPropose"))
         },
         {
           key: "registration-employment-termination",

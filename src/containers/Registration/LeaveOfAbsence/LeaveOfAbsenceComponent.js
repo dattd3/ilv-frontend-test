@@ -13,13 +13,11 @@ import _ from 'lodash'
 import map from '../../../../src/containers/map.config'
 import Constants from '../../../commons/Constants'
 import { withTranslation } from "react-i18next";
-import { getValueParamByQueryString, getMuleSoftHeaderConfigurations, getRequestConfigurations, getRegistrationMinDateByConditions, isVinFast, isValidDateRequest } from "../../../commons/Utils"
+import { getValueParamByQueryString, getMuleSoftHeaderConfigurations, getRequestConfigurations, getRegistrationMinDateByConditions, isValidDateRequest, isEnableFunctionByFunctionName } from "../../../commons/Utils"
 import NoteModal from '../NoteModal'
 import { checkIsExactPnL } from '../../../commons/commonFunctions';
-import { absenceRequestTypes, PN03List, MATERNITY_LEAVE_KEY, MARRIAGE_FUNERAL_LEAVE_KEY, MOTHER_LEAVE_KEY, FOREIGN_SICK_LEAVE, ANNUAL_LEAVE_KEY, ADVANCE_ABSENCE_LEAVE_KEY, COMPENSATORY_LEAVE_KEY } from "../../Task/Constants"
+import { absenceRequestTypes, PN03List, MATERNITY_LEAVE_KEY, MARRIAGE_FUNERAL_LEAVE_KEY, MOTHER_LEAVE_KEY, FOREIGN_SICK_LEAVE, ANNUAL_LEAVE_KEY, ADVANCE_ABSENCE_LEAVE_KEY, COMPENSATORY_LEAVE_KEY, VIN_UNI_SICK_LEAVE } from "../../Task/Constants"
 
-const FULL_DAY = 1
-const DURING_THE_DAY = 2
 const absenceTypesAndDaysOffMapping = {
     1: { day: 3, time: 24 },
     2: { day: 1, time: 8 },
@@ -28,6 +26,7 @@ const absenceTypesAndDaysOffMapping = {
 const totalDaysForSameDay = 1
 const queryString = window.location.search
 const currentEmployeeNo = localStorage.getItem('employeeNo')
+const currentCompanyCode = localStorage.getItem("companyCode")
 
 class LeaveOfAbsenceComponent extends React.Component {
     constructor(props) {
@@ -47,7 +46,7 @@ class LeaveOfAbsenceComponent extends React.Component {
             requestInfo: [
                 {
                     isShowHintLeaveForMother: false,
-                    groupItem: 1,
+                    groupItem: 1, // index group con bên trong
                     startDate: getValueParamByQueryString(queryString, 'date'),
                     startTime: null,
                     endDate: getValueParamByQueryString(queryString, 'date'),
@@ -58,7 +57,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                     absenceType: null,
                     isAllDay: true,
                     funeralWeddingInfo: null,
-                    groupId: 1,
+                    groupId: 1, // index group to bên ngoài
                     errors: {},
                 }
             ],
@@ -66,6 +65,7 @@ class LeaveOfAbsenceComponent extends React.Component {
             needReload: true,
             totalPendingLeaves: null,
             totalPendingTOILs: null,
+            validating: false,
         }
     }
 
@@ -80,23 +80,26 @@ class LeaveOfAbsenceComponent extends React.Component {
         return prevState
     }
 
-    componentDidMount() {
+    initialData = () => {
         const muleSoftConfig = getMuleSoftHeaderConfigurations()
         muleSoftConfig['params'] = {
             date: moment().format('YYYYMMDD')
         }
+        const config = getRequestConfigurations()
+        const annualLeaveSummaryApiEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/currentabsence`
+        const pendingInfoEndpoint = `${process.env.REACT_APP_REQUEST_URL}request/pendings`
+        const requestAnnualLeaveSummary = axios.get(annualLeaveSummaryApiEndpoint, muleSoftConfig)
+        const requestPendingInfo = axios.get(pendingInfoEndpoint, config)
+    
+        Promise.allSettled([requestAnnualLeaveSummary, requestPendingInfo]).then(responses => {
+          this.processAnnualLeaveSummary(responses[0])
+          this.processPendingInfo(responses[1])
+        }).finally (() => {
+        })
+
 
         const { leaveOfAbsence, t } = this.props
         registerLocale("vi", t("locale") === "vi" ? vi : enUS)
-
-        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/currentabsence`, muleSoftConfig)
-            .then(res => {
-                if (res && res.data) {
-                    const annualLeaveSummary = res.data.data
-                    this.setState({ annualLeaveSummary: annualLeaveSummary })
-                }
-            }).catch(error => {
-            })
 
         if (leaveOfAbsence && leaveOfAbsence && leaveOfAbsence.requestInfo) {
             const { groupID, days, id, startDate, startTime, processStatusId, endDate, endTime, hours, absenceType, leaveType, isAllDay, comment } = leaveOfAbsence.requestInfo[0]
@@ -136,16 +139,32 @@ class LeaveOfAbsenceComponent extends React.Component {
                 }) : [],
             })
         }
+    }
+    
+    processAnnualLeaveSummary = response => {
+        const annualLeaveSummary = this.processData(response)
+        this.setState({ annualLeaveSummary: annualLeaveSummary })
+    }
 
-        const config = getRequestConfigurations()
-        axios.get(`${process.env.REACT_APP_REQUEST_URL}request/pendings`, config)
-        .then(res => {
-            if (res && res?.data && res?.data?.data) {
-                const { totalPendingLeaves, totalPendingTOILs } = res?.data?.data
-                this.setState({ totalPendingLeaves, totalPendingTOILs })
+    processPendingInfo = response => {
+        const data = this.processData(response)
+        const { totalPendingLeaves, totalPendingTOILs } = data
+        this.setState({ totalPendingLeaves, totalPendingTOILs })
+    }
+
+    processData = response => {
+        let data = null
+        if (response?.status === "fulfilled" && response?.value?.data) {
+            const result = response.value.data?.result
+            if (result && result?.code == Constants.API_SUCCESS_CODE) {
+                data = response.value.data?.data
             }
-        }).catch(error => {
-        })
+        }
+        return data
+    }
+
+    componentDidMount() {
+        this.initialData()
     }
 
     getStartDate() {
@@ -300,17 +319,25 @@ class LeaveOfAbsenceComponent extends React.Component {
             this.calculateTotalTime(startDate, endDate, requestInfo[indexReq].startTime, end, indexReq)
     }
 
-    isOverlapDateTime(startDateTime, endDateTime, indexReq) {
-        let { requestInfo } = this.state
+    isOverlapDateTime(startDateTimeInput, endDateTimeInput, indexReq) {
+        if (!startDateTimeInput || !endDateTimeInput) {
+            return false
+        }
 
-        const hasOverlap = requestInfo.flat().filter(req => {
-            const start = moment(`${req.startDate} ${req.startTime || "00:00"}`, 'DD/MM/YYYY hh:mm').format('x')
-            const end = moment(`${req.endDate} ${req.endTime || "23:59"}`, 'DD/MM/YYYY hh:mm').format('x')
-            if ((startDateTime >= start && startDateTime < end) || (endDateTime > start && endDateTime <= end) || (startDateTime <= start && endDateTime >= end) && start < end) {
-                return req
-            }
+        const { requestInfo } = this.state
+        const startDateTime = startDateTimeInput ? moment(startDateTimeInput, 'DD/MM/YYYY hh:mm') : null
+        const endDateTime = endDateTimeInput ? moment(endDateTimeInput, 'DD/MM/YYYY hh:mm') : null
+        const hasOverlap = requestInfo.filter((item, i) => i != indexReq).some(req => {
+            const start = !req?.startDate ? null : moment(`${req?.startDate} ${req?.startTime || "00:00"}`, 'DD/MM/YYYY hh:mm') 
+            const end = !req?.endDate ? null : moment(`${req?.endDate} ${req?.endTime || "23:59"}`, 'DD/MM/YYYY hh:mm')
+            return start && end && (
+                (startDateTime?.isSameOrBefore(start) && endDateTime?.isSameOrAfter(end)) 
+                || (startDateTime?.isSameOrAfter(start) && startDateTime?.isSameOrBefore(end))
+                || (endDateTime?.isSameOrAfter(start) && endDateTime?.isSameOrBefore(end))
+            )
         })
-        return Boolean(hasOverlap.length > 1)
+
+        return hasOverlap
     }
 
     calculateTotalTime(startDate, endDate, startTime, endTime, indexReq) {
@@ -319,14 +346,18 @@ class LeaveOfAbsenceComponent extends React.Component {
         if (isAllDay && isAllDayCheckbox && (!startDate || !endDate)) return
         if (!isAllDay && !isAllDayCheckbox && (!startDate || !endDate || !startTime || !endTime)) return
 
-        const startDateTime = moment(`${startDate} ${startTime || "00:00"}`, 'DD/MM/YYYY hh:mm').format('x')
-        const endDateTime = moment(`${endDate} ${endTime || "23:59"}`, 'DD/MM/YYYY hh:mm').format('x')
+        const startDateTime = !startDate ? null : `${startDate} ${startTime || "00:00"}`
+        const endDateTime = !endDate ? null : `${endDate} ${endTime || "23:59"}`
         const isOverlapDateTime = this.isOverlapDateTime(startDateTime, endDateTime, indexReq)
         if (isOverlapDateTime) {
             requestInfo[indexReq].errors.totalDaysOff = "Trùng với thời gian nghỉ đã chọn trước đó. Vui lòng chọn lại thời gian!"
             return this.setState({ requestInfo })
         }
         
+        if (!startDate || !endDate) {
+            return
+        }
+
         this.validateTimeRequest(requestInfo, indexReq)
     }
 
@@ -351,7 +382,7 @@ class LeaveOfAbsenceComponent extends React.Component {
             }
         })
 
-        if (times.length === 0) return
+        if (times.length === 0 || (times || []).some(item => (!item?.from_date || !item?.to_date))) return
 
         const { isEdit } = this.state
 
@@ -368,7 +399,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                 }
             })
         }
-
+        this.setState({ validating: true })
         axios.post(`${process.env.REACT_APP_REQUEST_URL}request/validate`, {perno: currentEmployeeNo, ...(isEdit && { requestId: this.props.taskId }), times: times}, config)
             .then(res => {
                 if (res && res.data && res.data.data && res.data.data.times.length > 0) {
@@ -402,32 +433,36 @@ class LeaveOfAbsenceComponent extends React.Component {
                     this.setState({ requestInfo: newRequestInfo })
                 }
                 else {
-                    const newRequestInfo = requestInfo.map(req => {
-                        const errors = req.errors
-                        errors.totalDaysOff = res.data.result.message
-                        return {
-                            ...req,
-                            errors,
-                        }
-                    })
-                    this.setState({ newRequestInfo })
+                    this.setState({ needReload: false })
+                    this.showStatusModal(this.props.t("Notification"), res?.data?.result?.message, false)
+                    // const newRequestInfo = requestInfo.map(req => {
+                    //     const errors = req.errors
+                    //     errors.totalDaysOff = res.data.result.message
+                    //     return {
+                    //         ...req,
+                    //         errors,
+                    //     }
+                    // })
+                    // this.setState({ newRequestInfo })
                 }
             }).catch(error => {
                 if (error.response?.status == 401) {
                     window.location.reload();
+                } else {
+                    this.setState({ needReload: false })
+                    this.showStatusModal(this.props.t("Notification"), "Có lỗi xảy ra trong quá trình xác thực dữ liệu. Xin vui lòng nhập lại thông tin ngày/giờ nghỉ!", false)
+                    
+                    // const newRequestInfo = requestInfo.map(req => {
+                    //     const errors = req.errors
+                    //     errors.totalDaysOff = "Có lỗi xảy ra trong quá trình xác thực dữ liệu. Xin vui lòng nhập lại thông tin ngày/giờ nghỉ!"
+                    //     return {
+                    //         ...req,
+                    //         errors,
+                    //     }
+                    // })
+                    // this.setState({ newRequestInfo })
                 }
-                else {
-                    const newRequestInfo = requestInfo.map(req => {
-                        const errors = req.errors
-                        errors.totalDaysOff = "Có lỗi xảy ra trong quá trình xác thực dữ liệu. Xin vui lòng nhập lại thông tin ngày/giờ nghỉ!"
-                        return {
-                            ...req,
-                            errors,
-                        }
-                    })
-                    this.setState({ newRequestInfo })
-                }
-            })
+            }).finally(() => this.setState({ validating: false }))
     }
 
     calFullDay(timesheets) {
@@ -486,12 +521,6 @@ class LeaveOfAbsenceComponent extends React.Component {
     handleSelectChange(name, value, groupId) {
         const requestInfo = [...this.state.requestInfo]
         const index = groupId - 1 // groupId bắt đầu từ 1. Cần trừ đi 1 để đúng với index của mảng
-
-        // console.log("==============================")
-        // console.log(requestInfo)
-        // console.log(name)
-        // console.log(value)
-        // console.log(groupId)
 
         let newRequestInfo = []
         if (name === "absenceType") {
@@ -696,7 +725,7 @@ class LeaveOfAbsenceComponent extends React.Component {
         delete appraiser.avatar
 
         let bodyFormData = new FormData();
-        bodyFormData.append('companyCode', localStorage.getItem("companyCode"))
+        bodyFormData.append('companyCode', currentCompanyCode)
         bodyFormData.append('fullName', localStorage.getItem('fullName'))
         bodyFormData.append('jobTitle', localStorage.getItem('jobTitle'))
         bodyFormData.append('department', localStorage.getItem('department'))
@@ -914,11 +943,15 @@ class LeaveOfAbsenceComponent extends React.Component {
 
     render() {
         const { t, leaveOfAbsence, recentlyManagers } = this.props
-        const isEmployeeVinFast = isVinFast()
+        const isEnableForeignSickLeave = isEnableFunctionByFunctionName(Constants.listFunctionsForPnLACL.foreignSickLeave)
         let absenceRequestTypesPrepare = absenceRequestTypes.map(item => ({...item, label: t(item.label)}))
         
-        if (!isEmployeeVinFast) {
+        if (!isEnableForeignSickLeave) {
             absenceRequestTypesPrepare = (absenceRequestTypesPrepare || []).filter(item => item?.value !== FOREIGN_SICK_LEAVE)
+        }
+
+        if (currentCompanyCode !== Constants.pnlVCode.VinUni) {
+            absenceRequestTypesPrepare = (absenceRequestTypesPrepare || []).filter(item => item?.value !== VIN_UNI_SICK_LEAVE)
         }
 
         const PN03ListPrepare = PN03List.map(item => ({...item, label: t(item.label)}))
@@ -935,7 +968,8 @@ class LeaveOfAbsenceComponent extends React.Component {
             isSuccess,
             isShowNoteModal,
             appraiser,
-            approver
+            approver,
+            validating,
         } = this.state
         const sortRequestListByGroup = requestInfo.sort((reqPrev, reqNext) => reqPrev.groupId - reqNext.groupId)
         const requestInfoArr = _.valuesIn(_.groupBy(sortRequestListByGroup, (req) => req.groupId))
@@ -993,22 +1027,25 @@ class LeaveOfAbsenceComponent extends React.Component {
                             {
                                 (registeredInformation || []).map((ri, riIndex) => {
                                     let  totalTimeRegistered = ri?.isAllDay ? `${ri?.days || 0} ${t('DayUnit')}` : `${ri?.hours || 0} ${t('HourUnit')}`
+                                    let isForeignSickLeave = ri?.absenceType?.value === FOREIGN_SICK_LEAVE
                                     return (
                                         <div className='item' key={`old-request-info-${riIndex}`}>
                                             {
-                                                ri?.absenceType?.value === FOREIGN_SICK_LEAVE ? (
+                                                (isForeignSickLeave || ri?.absenceType?.value === VIN_UNI_SICK_LEAVE) ? (
                                                     <>
                                                         <div className='row'>
                                                             <div className='col-md-4'>
                                                                 <label>{t('StartDateTime')}</label>
                                                                 <div className='d-flex align-items-center value'>
                                                                     {ri?.startDate && moment(ri?.startDate, 'YYYYMMDD').isValid() ? moment(ri?.startDate, 'YYYYMMDD').format('DD/MM/YYYY') : ''}
+                                                                    {ri?.startTime ? ' ' + moment(ri?.startTime, 'HH:mm').locale('en-us').format('HH:mm') : ''}
                                                                 </div>
                                                             </div>
                                                             <div className='col-md-4'>
                                                                 <label>{t('EndDateTime')}</label>
                                                                 <div className='d-flex align-items-center value'>
                                                                     {ri?.endDate && moment(ri?.endDate, 'YYYYMMDD').isValid() ? moment(ri?.endDate, 'YYYYMMDD').format('DD/MM/YYYY') : ''}
+                                                                    {ri?.endTime ? ' ' + moment(ri?.endTime, 'HH:mm').locale('en-us').format('HH:mm') : ''}
                                                                 </div>
                                                             </div>
                                                             <div className='col-md-4'>
@@ -1021,10 +1058,21 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                                 <label>{t('LeaveCategory')}</label>
                                                                 <div className='d-flex align-items-center value'>{ri?.absenceType?.label || ''}</div>
                                                             </div>
-                                                            <div className='col-md-4'>
-                                                                <label>{t('SickLeaveFundForExpat')}</label>
-                                                                <div className='d-flex align-items-center value'>{`${Number(annualLeaveSummary?.SICK_LEA_EXPAT || 0).toFixed(3)} ${this.formatDayUnitByValue(annualLeaveSummary?.SICK_LEA_EXPAT || 0)}` }</div>
-                                                            </div>
+                                                            {
+                                                                isForeignSickLeave
+                                                                ? (
+                                                                    <div className='col-md-4'>
+                                                                        <label>{t('SickLeaveFundForExpat')}</label>
+                                                                        <div className='d-flex align-items-center value'>{`${Number(annualLeaveSummary?.SICK_LEA_EXPAT || 0).toFixed(3)} ${this.formatDayUnitByValue(annualLeaveSummary?.SICK_LEA_EXPAT || 0)}` }</div>
+                                                                    </div>
+                                                                )
+                                                                : (
+                                                                    <div className='col-md-4'>
+                                                                        <label>{t('SickLeaveFundForVinUni')}</label>
+                                                                        <div className='d-flex align-items-center value'>{`${Number(annualLeaveSummary?.SICK_LEA_VUNI || 0).toFixed(3)} ${this.formatDayUnitByValue(annualLeaveSummary?.SICK_LEA_VUNI || 0)}` }</div>
+                                                                    </div>
+                                                                )
+                                                            }
                                                         </div>
                                                         <div className='row'>
                                                             <div className='col-md-12'>
@@ -1131,6 +1179,14 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                 <>
                                                     <p className="title">{t("SickLeaveFundForExpat")}</p>
                                                     <input type="text" className="form-control" style={{ height: 38, borderRadius: 4, padding: '0 15px' }} value={`${Number(annualLeaveSummary?.SICK_LEA_EXPAT || 0).toFixed(3)} ${this.formatDayUnitByValue(annualLeaveSummary?.SICK_LEA_EXPAT || 0)}`} disabled />
+                                                </>
+                                            )
+                                        }
+                                        {
+                                            req[0]?.absenceType?.value === VIN_UNI_SICK_LEAVE && (
+                                                <>
+                                                    <p className="title">{t("SickLeaveFundForVinUni")}</p>
+                                                    <input type="text" className="form-control" style={{ height: 38, borderRadius: 4, padding: '0 15px' }} value={`${Number(annualLeaveSummary?.SICK_LEA_VUNI || 0).toFixed(3)} ${this.formatDayUnitByValue(annualLeaveSummary?.SICK_LEA_VUNI || 0)}`} disabled />
                                                 </>
                                             )
                                         }
@@ -1447,7 +1503,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                         </li>
                     })}
                 </ul>
-                <ButtonComponent isEdit={isEdit} files={files} updateFiles={this.updateFiles.bind(this)} submit={this.submit.bind(this)} isUpdateFiles={this.getIsUpdateStatus} disabledSubmitButton={disabledSubmitButton} />
+                <ButtonComponent isEdit={isEdit} files={files} updateFiles={this.updateFiles.bind(this)} submit={this.submit.bind(this)} isUpdateFiles={this.getIsUpdateStatus} disabledSubmitButton={disabledSubmitButton} validating={validating} />
             </div>
         )
     }
