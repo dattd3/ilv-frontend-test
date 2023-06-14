@@ -273,29 +273,28 @@ export default function OTRequestComponent({ recentlyManagers }) {
     }
   };
 
-  // const handleChangeisOvernight = (dayIndex, rangeIndex, value) => {
-  //   if (requestInfoData?.[dayIndex]) {
-  //     const newRanges = requestInfoData?.[dayIndex].timeRanges?.map((item, i) =>
-  //       i === rangeIndex
-  //         ? {
-  //             ...requestInfoData?.[dayIndex]?.timeRanges?.[rangeIndex],
-  //             isOvernight: value,
-  //           }
-  //         : item
-  //     );
-  //     setRequestInfoData(
-  //       requestInfoData.map((item, index) => {
-  //         return index === dayIndex
-  //           ? {
-  //               ...item,
-  //               hoursOt: getTotalHoursOtInRanges(newRanges),
-  //               timeRanges: newRanges,
-  //             }
-  //           : item;
-  //       })
-  //     );
-  //   }
-  // };
+  const handleChangeIsPrevDayIndicatorCheckbox = (dayIndex, rangeIndex, value) => {
+    if (requestInfoData?.[dayIndex]) {
+      const newRanges = requestInfoData?.[dayIndex].timeRanges?.map((item, i) =>
+        i === rangeIndex
+          ? {
+              ...requestInfoData?.[dayIndex]?.timeRanges?.[rangeIndex],
+              isPrevDayIndicator: value,
+            }
+          : item
+      );
+      setRequestInfoData(
+        requestInfoData.map((item, index) => {
+          return index === dayIndex
+            ? {
+                ...item,
+                timeRanges: newRanges,
+              }
+            : item;
+        })
+      );
+    }
+  };
 
   const searchData = async () => {
     if (startDate && endDate) {
@@ -528,6 +527,9 @@ export default function OTRequestComponent({ recentlyManagers }) {
         endTime: item.timeRanges
           ?.map((range) => moment(range.endTime).format("HHmmss"))
           ?.join(","),
+        VtKen: item.timeRanges
+          ?.map((range) => range.isPrevDayIndicator ? "X" : "")
+          ?.join(","),
         overTimeType: "01",
       }));
 
@@ -658,7 +660,7 @@ export default function OTRequestComponent({ recentlyManagers }) {
         if (!budgetApprover) _errors["budgetApprover"] = t("Required");
         // eslint-disable-next-line no-unused-expressions
         item.timeRanges?.forEach((range, rangeIndex) => {
-          const { startTime, endTime, isOvernight } = range;
+          const { startTime, endTime, isOvernight, isPrevDayIndicator } = range;
           if (!startTime)
             _errors[`range_startTime_${index}_${rangeIndex}`] = t("Required");
           if (!endTime)
@@ -684,50 +686,51 @@ export default function OTRequestComponent({ recentlyManagers }) {
             // Check not overlap 1h each other item range
             for (let i = rangeIndex + 1; i < item.timeRanges?.length; i++) {
               const nextTime = item.timeRanges[i];
-
-              if (
-                i === item.timeRanges ||
-                !nextTime.startTime ||
-                !nextTime.endTime
-              )
-                break;
-              const nextTimeIsAfter = moment(
-                item.timeRanges[i].startTime
-              ).isAfter(range.endTime);
-
-              if (
-                Math.abs(
-                  getHoursBetween2Times(
-                    nextTimeIsAfter ? range.endTime : range.startTime,
-                    nextTimeIsAfter ? nextTime.startTime : nextTime.endTime,
-                    false
-                  )
-                ) < 1
-              ) {
-                _errors[`range_space_hours_${index}_${i}`] = t(
-                  "OTInvalidSpaceHours"
-                );
-              }
-
-              const timeSegments = [
-                [
-                  moment(startTime).format("HH:mm"),
-                  moment(endTime).format("HH:mm"),
-                ],
-                [
-                  moment(item.timeRanges[i]?.startTime).format("HH:mm"),
-                  moment(item.timeRanges[i]?.endTime).format("HH:mm"),
-                ],
-              ];
-              if (checkOverlap(timeSegments)) {
-                _errors[`range_overlapTime_${index}_${i}`] =
-                  t("OTOverlapEachOther");
+              if (!isPrevDayIndicator && !nextTime.isPrevDayIndicator) {
+                if (
+                  i === item.timeRanges ||
+                  !nextTime.startTime ||
+                  !nextTime.endTime
+                )
+                  break;
+                const nextTimeIsAfter = moment(
+                  item.timeRanges[i].startTime
+                ).isAfter(range.endTime);
+  
+                if (
+                  Math.abs(
+                    getHoursBetween2Times(
+                      nextTimeIsAfter ? range.endTime : range.startTime,
+                      nextTimeIsAfter ? nextTime.startTime : nextTime.endTime,
+                      false
+                    )
+                  ) < 1
+                ) {
+                  _errors[`range_space_hours_${index}_${i}`] = t(
+                    "OTInvalidSpaceHours"
+                  );
+                }
+  
+                const timeSegments = [
+                  [
+                    moment(startTime).format("HH:mm"),
+                    moment(endTime).format("HH:mm"),
+                  ],
+                  [
+                    moment(item.timeRanges[i]?.startTime).format("HH:mm"),
+                    moment(item.timeRanges[i]?.endTime).format("HH:mm"),
+                  ],
+                ];
+                if (checkOverlap(timeSegments)) {
+                  _errors[`range_overlapTime_${index}_${i}`] =
+                    t("OTOverlapEachOther");
+                }
               }
             }
           }
           if (
             !isNullCustomize(item.from_time1) &&
-            !isNullCustomize(item.to_time1)
+            !isNullCustomize(item.to_time1) && !isPrevDayIndicator
           ) {
             const timeSegments = [
               [
@@ -747,7 +750,7 @@ export default function OTRequestComponent({ recentlyManagers }) {
           }
           if (
             !isNullCustomize(item.from_time2) &&
-            !isNullCustomize(item.to_time2)
+            !isNullCustomize(item.to_time2)  && !isPrevDayIndicator
           ) {
             const timeSegments = [
               [
@@ -1076,7 +1079,7 @@ export default function OTRequestComponent({ recentlyManagers }) {
                         <div className="ot-note">{t("OTNote")}</div>
                         {timesheet?.timeRanges?.map((range, rangeIndex) => (
                           <div className="row mb-15" key={rangeIndex}>
-                            <div className="col-5 mr-12">
+                            <div className="col-5">
                               {rangeIndex === 0 && (
                                 <>
                                   <div className="mb-12">{t("OTReason")}</div>
@@ -1181,30 +1184,24 @@ export default function OTRequestComponent({ recentlyManagers }) {
                                   }
                                 </p>
                               </div>
-                              {/* <div className="form-item end-time-container">
+                              <div className="form-item prev-day-container">
                                 {rangeIndex === 0 && (
                                   <div
                                     className="mb-12"
                                     style={{ textAlign: "center" }}
                                   >
-                                    {t("isOvernight")}
+                                    {t("PrevDay")}
                                   </div>
                                 )}
                                 <div className="is-overnight-container">
                                   <input
-                                    name="isOvernight"
+                                    name="prevDay"
                                     type="checkbox"
-                                    checked={range?.isOvernight || false}
-                                    onChange={(event) =>
-                                      handleChangeisOvernight(
-                                        index,
-                                        rangeIndex,
-                                        event.target.checked
-                                      )
-                                    }
+                                    checked={range?.isPrevDayIndicator || false}
+                                    onChange={(event) => handleChangeIsPrevDayIndicatorCheckbox(index, rangeIndex, event.target?.checked)}
                                   />
                                 </div>
-                              </div> */}
+                              </div>
                               {timesheet?.timeRanges?.length === 1 ? (
                                 <button
                                   className="add-time-block-btn"
@@ -1302,7 +1299,7 @@ export default function OTRequestComponent({ recentlyManagers }) {
                           {errors[`invalidHour_${index}`]}
                         </p>
                         <div className="row mb-15">
-                          <div className="col-5 mr-12">
+                          <div className="col-5">
                             <div className="form-item">
                               <div className="mb-12">{t("OTType")}</div>
                               <div className="field-view">{t("MoneyOT")}</div>
