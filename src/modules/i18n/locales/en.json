@@ -1782,5 +1782,6 @@
   "InvalidMimeType": " is invalid type! Please select again!",
   "ExceedMaxFileSize": "The total file size must not exceed 8MB",
   "ErrorBackDateRequestVinpearl": "Request creation failed - Time out",
-  "PleaseFillAllField": "Please fill all the fields"
+  "PleaseFillAllField": "Please fill all the fields",
+  "WarningNotEnoughTimeResign": "• No severance pay. <br/>• The employer must compensate the employer for half a month's salary according to the labor contract and an amount corresponding to the salary under the labor contract for unannounced days.<br/>• Training expenses specified in Article 62 of this Code must be refunded to the employer.<br/>Confirm that  you agree to this content?<br />"
 }
