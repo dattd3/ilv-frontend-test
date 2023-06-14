@@ -12,7 +12,7 @@ class ChangeReqBtnComponent extends React.Component {
             resultTitle: "",
             resultMessage: "",
             isShowStatusModal: false,
-
+            isDisabledButtons: false,
             dataToSap: [],
             isConfirmShow: false,
             modalTitle: "",
@@ -71,48 +71,51 @@ class ChangeReqBtnComponent extends React.Component {
     showConfirmModal = (modalStatus) =>{
         this.setState({ isShowNotiModal: modalStatus });
     }
+
+    updateButtonStatus = status => {
+        this.setState({ isDisabledButtons: status })
+    }
     
     render() {
-        const action = this.props.action
-        const {t} = this.props
+        const { t, disabled, dataToSap, action } = this.props
+        const { isConfirmShow, modalTitle, modalMessage, typeRequest, isDisabledButtons } = this.state
 
         return <>
             <ConfirmRequestModal
                     urlName={'requestabsence'}
-                    dataToSap={this.props.dataToSap}
+                    dataToSap={dataToSap}
                     id="total"
-                    show={this.state.isConfirmShow}
-                    title={this.state.modalTitle}
-                    type={this.state.typeRequest}
+                    show={isConfirmShow}
+                    title={modalTitle}
+                    type={typeRequest}
                     updateData={this.updateData.bind(this)}
-                    message={this.state.modalMessage}
+                    message={modalMessage}
                     onHide={this.onHideModalConfirm.bind(this)}
-                    updateTask = {this.updateTaskStatus}
+                    updateTask={this.updateTaskStatus}
+                    updateButtonStatus={this.updateButtonStatus}
             />
             <div className="bg-white d-flex justify-content-center mt-2 action-btn">
                 {
-                    action === "approval" ?
-                        <>
+                    action === "approval" &&
+                    <>
                         {
                             <>
-                             <button type="button" className="btn btn-danger mr-3" onClick={this.disApproval.bind(this)} disabled={this.props.disabled}><i className='fas fa-times mr-2'></i>{t("Reject")}</button>
-                            <button type="button" className="btn btn-success"  onClick={this.approval.bind(this)} disabled={this.props.disabled}><i className='fas fa-check mr-2'></i>{t("Approval")}</button>
+                            <button type="button" className="btn btn-danger mr-3" onClick={this.disApproval.bind(this)} disabled={ disabled || isDisabledButtons }><i className='fas fa-times mr-2'></i>{t("Reject")}</button>
+                            <button type="button" className="btn btn-success"  onClick={this.approval.bind(this)} disabled={ disabled || isDisabledButtons }><i className='fas fa-check mr-2'></i>{t("Approval")}</button>
                             </>
                         }
-                        </>
-                    : null
+                    </>
                 }
                 {
-                    action === "consent" ?
-                        <>
+                    action === "consent" &&
+                    <>
                         {
                             <>
-                                <button type="button" className="btn btn-danger mr-3" onClick={this.reject.bind(this)} disabled={this.props.disabled}><i className='fas fa-times mr-2'></i>{t("Rejected")}</button>
-                                <button type="button" className="btn btn-warning" onClick={this.consent.bind(this)} disabled={this.props.disabled}><i className='fas fa-check mr-2'></i>{t("Consent")}</button>
+                                <button type="button" className="btn btn-danger mr-3" onClick={this.reject.bind(this)} disabled={ disabled || isDisabledButtons }><i className='fas fa-times mr-2'></i>{t("Rejected")}</button>
+                                <button type="button" className="btn btn-warning" onClick={this.consent.bind(this)} disabled={ disabled || isDisabledButtons }><i className='fas fa-check mr-2'></i>{t("Consent")}</button>
                             </>
                         }
-                        </>
-                    : null
+                    </>
                 }
             </div>
         </>
