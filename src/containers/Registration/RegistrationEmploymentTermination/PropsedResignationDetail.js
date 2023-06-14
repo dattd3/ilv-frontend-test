@@ -32,7 +32,12 @@ class RegistrationEmploymentTermination extends React.Component {
             }
         })
         const reasonMasterData = getResignResonsMasterData();
-
+        // VA - HĐLĐ XĐ thời hạn - 30d
+        // VB - HĐLĐ KXĐ thời hạn - 45d
+        const isNotEnoughTime = userInfos.some(item => 
+          (item.contractType === "VA" && moment(requestInfo.dateTermination, "YYYY-MM-DD").diff(moment(), "days") < 30) ||
+          (item.contractType === "VB" && moment(requestInfo.dateTermination, "YYYY-MM-DD").diff(moment(), "days") < 45)
+        )
         return (
             <div className="registration-section registration-employment-termination proposed-registration-employment-termination justify-content-between">
                 <div className="block staff-information-block">
@@ -249,6 +254,7 @@ class RegistrationEmploymentTermination extends React.Component {
                         urlName={'requestattendance'}
                         requestTypeId={requestTypeId}
                         action={this.props.action}
+                        isNotEnoughTimeResign={isNotEnoughTime}
                     /> : null}
 
             </div>

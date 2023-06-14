@@ -421,7 +421,8 @@ class ConfirmationModal extends React.Component {
                         <Modal.Title>{t(this.props.title)}</Modal.Title>
                     </Modal.Header>
                     <Modal.Body style={{ padding: '16px' }}>
-                        <p>{t(this.props.message)}</p>
+                        <div dangerouslySetInnerHTML={{__html: t(this.props.message)}} />
+                        <br />
                         {
                             !isSyncFromEmployee &&
                             Constants.STATUS_USE_COMMENT.includes(this.props.type) ?
