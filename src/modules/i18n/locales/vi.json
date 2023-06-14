@@ -1834,6 +1834,7 @@
   "ExceedMaxFileSize": "Tổng dung lượng file vượt quá 8MB! Xin vui lòng chọn lại",
   "ErrorBackDateRequestVinpearl": "Gửi yêu cầu thất bại - thao tác quá thời gian quy định",
   "PleaseFillAllField": "Vui lòng điền đủ các trường",
+  "WarningNotEnoughTimeResign": "• Không được trợ cấp thôi việc.<br/>• Phải bồi thường cho người sử dụng lao động nửa tháng tiền lương theo hợp đồng lao động và một khoản tiền tương ứng với tiền lương theo hợp đồng lao động trong những ngày không báo trước.<br/>• Phải hoàn trả cho người sử dụng lao động chi phí đào tạo quy định tại Điều 62 của Bộ luật này.<br/>Anh, Chị có xác nhận đồng ý nội dung này không?<br />",
   "WorkingTimeChange": "Giờ làm việc thay đổi",
   "RequestCreate": "Tạo yêu cầu",
   "RequestContractTermination": "Yêu cầu chấm dứt HĐLĐ",
