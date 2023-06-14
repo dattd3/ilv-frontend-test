@@ -334,7 +334,9 @@ export default function OTRequestDetailComponent({ data, action }) {
                                 </div>
                                 <div className="col-2">
                                   <div className="form-item">
-                                    <div className="mb-12">{t("FromHour")}</div>
+                                    {
+                                      timeIndex === 0 &&  <div className="mb-12">{t("FromHour")}</div>
+                                    }
                                     <div className="field-view">
                                       {moment(time, "HHmmss").format("HH:mm")}
                                     </div>
@@ -342,7 +344,9 @@ export default function OTRequestDetailComponent({ data, action }) {
                                 </div>
                                 <div className="col-2">
                                   <div className="form-item">
-                                    <div className="mb-12">{t("ToHour")}</div>
+                                    {
+                                      timeIndex === 0 &&  <div className="mb-12">{t("ToHour")}</div>
+                                    }
                                     <div className="field-view">
                                       {moment(
                                         timesheet?.endTime?.split(",")[
@@ -350,6 +354,23 @@ export default function OTRequestDetailComponent({ data, action }) {
                                         ],
                                         "HHmmss"
                                       ).format("HH:mm")}
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className="col-2">
+                                  <div className="form-item">
+                                    {
+                                      timeIndex === 0 &&  <div className="mb-12">{t("PrevDay")}</div>
+                                    }
+                                    <div className="is-overnight-container">
+                                        <input
+                                          name="prevDay"
+                                          type="checkbox"
+                                          checked={timesheet?.VtKen?.split(",")[
+                                            timeIndex
+                                          ]}
+                                          disabled
+                                      />
                                     </div>
                                   </div>
                                 </div>
