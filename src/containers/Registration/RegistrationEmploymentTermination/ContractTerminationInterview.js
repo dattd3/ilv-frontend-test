@@ -316,7 +316,7 @@ class ContractTerminationInterview extends React.Component {
             questions,
             isCreate
         } = this.state
-        if (!timeInDefault || !timeJoinDefault || !resignationReasonOptionsChecked.length || !Object.keys(comments).length || !questions) {
+        if (!timeInDefault || !timeJoinDefault || !resignationReasonOptionsChecked.length || !questions) {
           toast.error(t("PleaseFillAllField"));
           return
         }
