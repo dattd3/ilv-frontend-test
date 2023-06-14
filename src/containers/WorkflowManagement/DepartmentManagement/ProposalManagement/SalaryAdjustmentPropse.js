@@ -1929,7 +1929,7 @@ const SalaryAdjustmentPropse = (props) => {
       }
     }
 
-    return !!processStatusId ? (
+    return !!statusName ? (
       <span className={`request-status ${STATUS_VALUES[processStatusId]?.className}`} >{STATUS_VALUES[processStatusId]?.label}</span>
     ) : (
       <span className={`request-status ${currentStatus?.className}`} >{t(currentStatus?.label)}</span>
