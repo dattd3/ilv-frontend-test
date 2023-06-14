@@ -1678,9 +1678,7 @@ const SalaryAdjustmentPropose = (props) => {
             {(isTransferProposal || isProposalTransfer) && (
               <td colSpan={isSalaryPropose ? '12' : '8'}>
                 <div className="skill">
-                  <span className="title font-weight-bold">
-                    * {t('proposal_title')}:
-                  </span>
+                  <span className="title font-weight-bold">{t('proposal_title')}:</span>
                   <span
                     className="w-100 proposal-title"
                     onClick={() =>
@@ -1703,9 +1701,7 @@ const SalaryAdjustmentPropose = (props) => {
                   </span>
                 </div>
                 <div className="skill mt-2">
-                  <span className="title font-weight-bold">
-                    * {t('proposal_org')}:
-                  </span>
+                  <span className="title font-weight-bold">{t('proposal_org')}:</span>
                   <span
                     className="input form-control mv-10 w-100 disabled"
                     style={{ fontSize: '14px' }}
@@ -1719,9 +1715,7 @@ const SalaryAdjustmentPropose = (props) => {
           <tr>
             <td colSpan={isSalaryPropose ? '12' : '8'}>
               <div className="skill">
-                <span className="title font-weight-bold">
-                  * {t('strength')}:
-                </span>
+                <span className="title font-weight-bold">{t('strength')}:</span>
                 <span className="input">
                   {disableComponent.editSubjectApply ? (
                     <ResizableTextarea
@@ -1746,9 +1740,7 @@ const SalaryAdjustmentPropose = (props) => {
           <tr>
             <td colSpan={isSalaryPropose ? '12' : '8'}>
               <div className="skill">
-                <span className="title font-weight-bold">
-                  * {t('weakness')}:
-                </span>
+                <span className="title font-weight-bold">{t('weakness')}:</span>
                 <span className="input">
                   {disableComponent.editSubjectApply ? (
                     <ResizableTextarea
