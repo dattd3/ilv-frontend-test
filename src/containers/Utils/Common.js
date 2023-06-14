@@ -18,7 +18,7 @@ const getDateByRange = (startDate, endDate) => {
 
 export const getOperationType = (requestTypeId, actionType, processStatusId) => {
   if ([Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP, Constants.OT_REQUEST].includes(requestTypeId)) {
-    if (actionType == Constants.OPERATION_TYPES.DEL && [Constants.STATUS_NOT_APPROVED ,Constants.STATUS_EVICTION, Constants.STATUS_WAITING, Constants.STATUS_WAITING_CONSENTED].includes(processStatusId)) {
+    if (actionType == Constants.OPERATION_TYPES.DEL && [Constants.STATUS_NO_CONSENTED, Constants.STATUS_NOT_APPROVED, Constants.STATUS_EVICTION, Constants.STATUS_WAITING, Constants.STATUS_WAITING_CONSENTED].includes(processStatusId)) {
       return Constants.OPERATION_TYPES.DEL;
     } else if (actionType == Constants.OPERATION_TYPES.DEL) {
       return Constants.OPERATION_TYPES.INS;
