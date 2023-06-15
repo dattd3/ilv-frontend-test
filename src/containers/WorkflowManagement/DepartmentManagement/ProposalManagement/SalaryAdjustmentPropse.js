@@ -1315,21 +1315,21 @@ const SalaryAdjustmentPropse = (props) => {
 
   const validateAppoitment = () => {
     const selectedMembersTmp = [...selectMembers],
-      proposedPositionCodes = selectedMembersTmp.map(ele => ele?.proposedPositionCode);
+      proposedPositionCodes = selectedMembersTmp.map(ele => ele?.proposedPositionCode).filter(ele => ele !== undefined);
     let errors = [];
     selectedMembersTmp.forEach((u) => {
       if(isTransferAppointProposal) {
         if(isTransferProposal) {
-          if (!u.proposedPositionCode) {
-            errors.push(t("ProposedEmployeeEmpty"));
-          } else if (proposedPositionCodes.filter(ele => ele === u?.proposedPositionCode).length > 1) {
-            errors.push(t("ProposedPositionCodeDuplicate"));
-          }
+          if (!u.proposedPositionCode) errors.push(t("ProposedEmployeeEmpty"));
         } else {
           if(!u.proposedLevelGroup || !u.proposedLevel) errors.push(t("ProposedEmployeeLevelEmpty"));
         }
       }
+
       if (!u.effectiveTime) errors.push(t("SelecTimePeriodValidate"));
+      if (!!u?.proposedPositionCode && proposedPositionCodes.filter(ele => ele === u?.proposedPositionCode).length > 1) {
+        errors.push(t("ProposedPositionCodeDuplicate"));
+      }
     });
     return errors;
   }

@@ -1243,17 +1243,16 @@ const SalaryAdjustmentPropose = (props) => {
   };
 
   const validateAppoitment = () => {
-    const proposedPositionCodes = selectMembers.map(ele => ele?.proposedPositionCode)
+    const proposedPositionCodes = selectMembers.map(ele => ele?.proposedPositionCode).filter(ele => ele !== undefined);
     let errors = [];
 
     selectMembers.forEach((u) => {
-      if (!u.proposedPositionCode) {
-        errors.push(t("ProposedEmployeeEmpty"));
-      } else if (proposedPositionCodes.filter(ele => ele === u?.proposedPositionCode).length > 1) {
-        errors.push(t("ProposedPositionCodeDuplicate"));
-      }
+      if (!u.proposedPositionCode) errors.push(t("ProposedEmployeeEmpty"));
 
       if (!u.effectiveTime) errors.push(t('SelecTimePeriodValidate'));
+      if (!!u.proposedPositionCode && proposedPositionCodes.filter(ele => ele === u?.proposedPositionCode).length > 1) {
+        errors.push(t("ProposedPositionCodeDuplicate"));
+      }
     });
     return errors;
   };
