@@ -241,7 +241,7 @@ class ProposalModal extends React.Component {
     let { data } = this.state;
     const config = getMuleSoftHeaderConfigurations(),
       { modal } = this.props,
-      { proposedPositionCode } = modal.data,
+      { proposedPositionCode } = modal?.data || {},
       { pnl, block, region, unit, department, crew, team, group } = data,
       lastOrg = group || team || crew || department || unit || region || block || pnl;
 
