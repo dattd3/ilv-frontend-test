@@ -1811,6 +1811,8 @@
   "VinUniSickLeave": "Sick leave for VinUni",
   "SickLeaveFundForVinUni": "Sick leave fund for VinUni",
   "operationType.del": "Recall",
+  "operationType.waitingdelapprove": "Recall waiting for approval",
+  "operationType.waitingdelappraise": "Recall waiting for consent",
   "OTOverlapEachOther": "(*) OT time segment is overlap",
   "SearchByDate": "Search by date",
   "InvalidMimeType": " is invalid type! Please select again!",
