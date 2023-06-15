@@ -1314,12 +1314,17 @@ const SalaryAdjustmentPropse = (props) => {
   };
 
   const validateAppoitment = () => {
-    const selectedMembersTmp = [...selectMembers];
+    const selectedMembersTmp = [...selectMembers],
+      proposedPositionCodes = selectedMembersTmp.map(ele => ele?.proposedPositionCode);
     let errors = [];
     selectedMembersTmp.forEach((u) => {
       if(isTransferAppointProposal) {
         if(isTransferProposal) {
-          if (!u.proposedPositionCode) errors.push(t("ProposedEmployeeEmpty"));
+          if (!u.proposedPositionCode) {
+            errors.push(t("ProposedEmployeeEmpty"));
+          } else if (proposedPositionCodes.filter(ele => ele === u?.proposedPositionCode).length > 1) {
+            errors.push(t("ProposedPositionCodeDuplicate"));
+          }
         } else {
           if(!u.proposedLevelGroup || !u.proposedLevel) errors.push(t("ProposedEmployeeLevelEmpty"));
         }
@@ -1420,6 +1425,8 @@ const SalaryAdjustmentPropse = (props) => {
   const handleProposeLevel = (index, val, key) => {
     const selectMembersTmp = [...selectMembers];
     selectMembersTmp[index][key] = val;
+    if (key === 'proposedLevelGroup') selectMembersTmp[index]['proposedLevel'] = null;
+
     setSelectMembers(selectMembersTmp);
   }
 
@@ -1824,6 +1831,8 @@ const SalaryAdjustmentPropse = (props) => {
                         menu: (provided) => ({ ...provided, zIndex: 2, fontSize: '14px' }),
                         control: (styles) => ({ ...styles, borderColor: "#ced4da" })
                       }}
+                      menuShouldBlockScroll={true}
+                      menuPortalTarget={document.getElementById('wrapper')}
                     />
                   </div>
                   <div className="col-6 d-flex align-items-center pr-0">
@@ -1840,6 +1849,8 @@ const SalaryAdjustmentPropse = (props) => {
                         menu: (provided) => ({ ...provided, zIndex: 2, fontSize: '14px' }),
                         control: (styles) => ({ ...styles, borderColor: "#ced4da" })
                       }}
+                      menuShouldBlockScroll={true}
+                      menuPortalTarget={document.getElementById('wrapper')}
                     />
                   </div>
                 </div>

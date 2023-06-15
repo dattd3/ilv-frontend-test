@@ -1273,6 +1273,7 @@
   "HumanForChangeSalaryValidate": "Vui lòng nhập nhân sự thẩm định thông tin điều chỉnh!",
   "ProposedEmployeeValidate": "CBNV được đề xuất chưa được chọn!",
   "ProposedEmployeeEmpty": "CBNV được đề xuất chưa chọn chức danh đề xuất!",
+  "ProposedPositionCodeDuplicate": "Danh sách CBNV đang bị trùng chức danh đề xuất",
   "ProposedEmployeeLevelEmpty": "CBNV được đề xuất chưa chọn Nhóm cấp bậc đề xuất, Cấp bậc đề xuất!",
   "InformationRequired": "Yêu cầu nhập thông tin",
   "CurrentSalaryValidate": "Vui lòng lấy về mức lương hiện tại!",
