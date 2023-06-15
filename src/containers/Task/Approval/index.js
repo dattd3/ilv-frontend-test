@@ -22,7 +22,7 @@ class ApprovalComponent extends React.Component {
   }
 
   componentDidMount() {
-    const params = `pageIndex=${Constants.TASK_PAGE_INDEX_DEFAULT}&pageSize=${Constants.TASK_PAGE_SIZE_DEFAULT}&status=${Constants.STATUS_WAITING}&fromDate=${moment().subtract(7, "days").format("DDMMYYYY")}&endDate=${moment().format("DDMMYYYY")}&`;
+    const params = `pageIndex=${Constants.TASK_PAGE_INDEX_DEFAULT}&pageSize=${Constants.TASK_PAGE_SIZE_DEFAULT}&status=${Constants.STATUS_WAITING}&fromDate=${moment().subtract(7, "days").format("DDMMYYYY")}&toDate=${moment().format("DDMMYYYY")}&`;
     const currentRequestCategory = getValueParamByQueryString(window.location.search, "requestCategory") || REQUEST_CATEGORIES.CATEGORY_1;
 
     this.requestRemoteData(params, currentRequestCategory);
