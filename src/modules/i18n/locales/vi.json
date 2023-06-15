@@ -1826,8 +1826,6 @@
   "operationType.ins": "Thêm mới",
   "operationType.mod": "Chỉnh sửa",
   "operationType.del": "Thu hồi",
-  "operationType.waitingdelapprove": "Đang chờ PD thu hồi",
-  "operationType.waitingdelappraise": "Đang chờ TD thu hồi",
   "OTOverlapEachOther": "(*) Các khoảng thời gian trùng nhau",
   "SearchByDate": "Tìm kiếm theo ngày",
   "InvalidMimeType": " không đúng định dạng! Xin vui lòng chọn lại",
