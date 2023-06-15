@@ -1808,6 +1808,8 @@
   "operation": "Operation",
   "operationType.ins": "Create",
   "operationType.mod": "Edit",
+  "VinUniSickLeave": "Sick leave for VinUni",
+  "SickLeaveFundForVinUni": "Sick leave fund for VinUni",
   "operationType.del": "Recall",
   "operationType.waitingdelapprove": "Recall waiting for approval",
   "operationType.waitingdelappraise": "Recall waiting for consent",
