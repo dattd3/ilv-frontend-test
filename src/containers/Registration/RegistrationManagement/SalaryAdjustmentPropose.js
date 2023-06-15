@@ -50,12 +50,14 @@ const SalaryAdjustmentPropose = (props) => {
     api = useApi(),
     history = useHistory(),
     InsuranceOptions = [
-      { value: 1, label: t('RequestSalary') },
-      { value: 2, label: t('RequestTransfer') },
+      { value: 12, label: t('RequestSalary'), requestLabel: t("SalaryAdjustmentPropse") },
+      { value: 14, label: t('RequestTransfer'), requestLabel: t("Menu_RequestManage") },
+      { value: 15, label: t('ProposalAppointment'), requestLabel: t("Menu_RequestManage") },
     ],
-    isTransferAppointProposal = window.location.href.includes(
-      '/registration-transfer-appoint/'
+    isTransferProposal = window.location.href.includes(
+      '/registration-transfer/'
     ),
+    currentRequestTypeId = isTransferProposal ? 14 : 12,
     queryParams = new URLSearchParams(props.history.location.search);
 
   const [resultModal, setResultModal] = useState({
@@ -90,7 +92,7 @@ const SalaryAdjustmentPropose = (props) => {
     queryParams.get('accesstoken') || null
   );
   const [requestType, setRequestType] = useState(
-    InsuranceOptions[isTransferAppointProposal ? 1 : 0]
+    InsuranceOptions.find(ele => ele.value === currentRequestTypeId)
   );
   const [listFiles, setListFiles] = useState([]);
   const [selectMembers, setSelectMembers] = useState([]);
@@ -101,7 +103,7 @@ const SalaryAdjustmentPropose = (props) => {
   const [canSelectedAll, setCanSelectedAll] = useState(true);
   const [currencySalary, setCurrencySalary] = useState('VND');
   const [isSalaryAdjustment, setIsSalaryAdjustment] = useState(
-    !isTransferAppointProposal
+    !isTransferProposal
   );
 
   const [coordinator, setCoordinator] = useState(null); // Nhân sự hỗ trợ xin quyền xem lương
@@ -585,9 +587,9 @@ const SalaryAdjustmentPropose = (props) => {
         link: u.fileUrl,
       })) || [];
 
-      setListFiles(requestDocuments);
-      setViewSetting(viewSettingTmp);
-      setIsSalaryAdjustment(dataSalaryInfo?.isSalaryAdjustment || false);
+    setListFiles(requestDocuments);
+    setViewSetting(viewSettingTmp);
+    setIsSalaryAdjustment(dataSalaryInfo?.isSalaryAdjustment || false);
   };
 
   const onSelectAll = (e) => {
@@ -641,7 +643,8 @@ const SalaryAdjustmentPropose = (props) => {
         (viewSetting.showComponent.btnExpertise ||
           viewSetting.showComponent.btnApprove) &&
         !isCreateMode &&
-        item.canChangeAction && !accepted
+        item.canChangeAction &&
+        !accepted
       ) {
         _enableSubmit = false;
       }
@@ -707,7 +710,7 @@ const SalaryAdjustmentPropose = (props) => {
       dataToUpdate: [
         {
           id: id,
-          requestTypeId: isTransferAppointProposal ? 14 : 12,
+          requestTypeId: currentRequestTypeId,
           sub: [
             {
               id: id,
@@ -732,7 +735,7 @@ const SalaryAdjustmentPropose = (props) => {
       dataToUpdate: [
         {
           id: id,
-          requestTypeId: isTransferAppointProposal ? 14 : 12,
+          requestTypeId: currentRequestTypeId,
           sub: [
             {
               id: id,
@@ -793,7 +796,7 @@ const SalaryAdjustmentPropose = (props) => {
       dataToUpdate: [
         {
           id: id,
-          requestTypeId: isTransferAppointProposal ? 14 : 12,
+          requestTypeId: currentRequestTypeId,
           sub: [
             {
               id: id,
@@ -842,7 +845,7 @@ const SalaryAdjustmentPropose = (props) => {
       dataToUpdate: [
         {
           id: id,
-          requestTypeId: isTransferAppointProposal ? 14 : 12,
+          requestTypeId: currentRequestTypeId,
           sub: [
             {
               id: id,
@@ -875,7 +878,7 @@ const SalaryAdjustmentPropose = (props) => {
       dataToUpdate: [
         {
           id: id,
-          requestTypeId: isTransferAppointProposal ? 14 : 12,
+          requestTypeId: currentRequestTypeId,
           sub: [
             {
               id: id,
@@ -916,7 +919,7 @@ const SalaryAdjustmentPropose = (props) => {
         );
       }
 
-      if (isTransferAppointProposal) {
+      if (isTransferProposal) {
         const listErrors = validateAppoitment();
         if (listErrors.length !== 0) {
           return showStatusModal(listErrors[0], false);
@@ -936,10 +939,10 @@ const SalaryAdjustmentPropose = (props) => {
 
       (isCreate
         ? axios({
-            // Tạo mới yêu cầu isTransferAppointProposal ? đề xuất điều chuyển : đề xuất lương
+            // Tạo mới yêu cầu isTransferProposal ? đề xuất điều chuyển : đề xuất lương
             method: 'POST',
             url: `${process.env.REACT_APP_REQUEST_SERVICE_URL}${
-              isTransferAppointProposal ? 'appointment' : 'request'
+              isTransferProposal ? 'appointment' : 'request'
             }`,
             ...params,
           })
@@ -981,7 +984,7 @@ const SalaryAdjustmentPropose = (props) => {
               currentSalary: u?.currentSalary,
               suggestedSalary: u?.suggestedSalary,
               contractType: u?.contractType,
-              ...(isTransferAppointProposal
+              ...(isTransferProposal
                 ? {
                     proposedPositionCode: u?.proposedPositionCode,
                     proposedPosition: u?.proposedPosition,
@@ -1049,7 +1052,7 @@ const SalaryAdjustmentPropose = (props) => {
           expireDate: u?.expireDate,
           contractName: u?.contractName,
           contractType: u?.contractType,
-          ...(isTransferAppointProposal
+          ...(isTransferProposal
             ? {
                 proposedPositionCode: u?.proposedPositionCode,
                 proposedPosition: u?.proposedPosition,
@@ -1672,12 +1675,10 @@ const SalaryAdjustmentPropose = (props) => {
             </td>
           </tr>
           <tr>
-            {(isTransferAppointProposal || isProposalTransfer) && (
+            {(isTransferProposal || isProposalTransfer) && (
               <td colSpan={isSalaryPropose ? '12' : '8'}>
                 <div className="skill">
-                  <span className="title font-weight-bold">
-                    * {t('proposal_title')}:
-                  </span>
+                  <span className="title font-weight-bold">{t('proposal_title')}:</span>
                   <span
                     className="w-100 proposal-title"
                     onClick={() =>
@@ -1700,9 +1701,7 @@ const SalaryAdjustmentPropose = (props) => {
                   </span>
                 </div>
                 <div className="skill mt-2">
-                  <span className="title font-weight-bold">
-                    * {t('proposal_org')}:
-                  </span>
+                  <span className="title font-weight-bold">{t('proposal_org')}:</span>
                   <span
                     className="input form-control mv-10 w-100 disabled"
                     style={{ fontSize: '14px' }}
@@ -1716,9 +1715,7 @@ const SalaryAdjustmentPropose = (props) => {
           <tr>
             <td colSpan={isSalaryPropose ? '12' : '8'}>
               <div className="skill">
-                <span className="title font-weight-bold">
-                  * {t('strength')}:
-                </span>
+                <span className="title font-weight-bold">{t('strength')}:</span>
                 <span className="input">
                   {disableComponent.editSubjectApply ? (
                     <ResizableTextarea
@@ -1743,9 +1740,7 @@ const SalaryAdjustmentPropose = (props) => {
           <tr>
             <td colSpan={isSalaryPropose ? '12' : '8'}>
               <div className="skill">
-                <span className="title font-weight-bold">
-                  * {t('weakness')}:
-                </span>
+                <span className="title font-weight-bold">{t('weakness')}:</span>
                 <span className="input">
                   {disableComponent.editSubjectApply ? (
                     <ResizableTextarea
@@ -1771,6 +1766,39 @@ const SalaryAdjustmentPropose = (props) => {
       );
     });
   };
+
+  const renderStatusDetail = () => {
+    let { processStatusId, requestTypeId, statusName } = dataSalary;
+    const currentStatus = Constants.mappingStatusRequest[viewSetting?.currentStatus],
+      STATUS_VALUES = {
+        1: { label: t('Rejected'), className: 'fail' },
+        2: { label: t('Approved'), className: 'success' },
+        3: { label: t('Canceled'), className: '' },
+        4: { label: t('Canceled'), className: '' },
+        5: { label: t("PendingApproval"), className: '' },
+        6: { label: t("PartiallySuccessful"), className: 'warning' },
+        7: { label: t("Rejected"), className: 'fail' },
+        8: { label: t("PendingConsent"), className: '' },
+        20: { label: t("Consented"), className: '' },
+        100: { label: t("Waiting"), className: '' }
+      };
+
+    if([Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER, Constants.PROPOSAL_APPOINTMENT].includes(requestTypeId)) {
+      if(statusName) {
+        let statusLabel = t(statusName),
+          tmp = Object.keys(STATUS_VALUES).filter(key => STATUS_VALUES[key].label == statusLabel );
+        processStatusId = tmp?.length > 0 ? tmp[0] : processStatusId;
+      } else {
+        processStatusId = processStatusId == 21 || processStatusId == 22 ? 100 : processStatusId;
+      }
+    }
+
+    return !!statusName ? (
+      <span className={`request-status ${STATUS_VALUES[processStatusId]?.className}`} >{STATUS_VALUES[processStatusId]?.label}</span>
+    ) : (
+      <span className={`request-status ${currentStatus?.className}`} >{t(currentStatus?.label)}</span>
+    )
+  }
 
   const salaryState = `salaryadjustment_${id}_${type}`,
     { showComponent, proposedStaff, disableComponent } = viewSetting;
@@ -1812,17 +1840,9 @@ const SalaryAdjustmentPropose = (props) => {
         onHide={onHideModalConfirm}
         indexCurrentAppraiser={confirmModal.indexCurrentAppraiser}
       />
-      <div className="eval-heading">
-        {t(isTransferAppointProposal ? 'RequestTransfer' : 'RequestSalary')}
-      </div>
+      <div className="eval-heading">{InsuranceOptions.find(ele => ele.value === currentRequestTypeId)?.label}</div>
       {/* ĐỀ XUẤT ĐIỀU CHỈNH LƯƠNG */}
-      <h5 className="content-page-header">
-        {t(
-          isTransferAppointProposal
-            ? 'Menu_RequestManage'
-            : 'SalaryAdjustmentPropse'
-        )}
-      </h5>
+      <h5 className="content-page-header">{InsuranceOptions.find(ele => ele.value === currentRequestTypeId)?.requestLabel}</h5>
       <div className="timesheet-box1 shadow">
         <div className="row">
           <div className="col-12">
@@ -2069,18 +2089,7 @@ const SalaryAdjustmentPropose = (props) => {
       </ul>
       {/* Show status */}
       {showComponent.stateProcess && (
-        <div className="block-status">
-          <span
-            className={`request-status ${
-              Constants.mappingStatusRequest[viewSetting?.currentStatus]
-                ?.className
-            }`}
-          >
-            {t(
-              Constants.mappingStatusRequest[viewSetting?.currentStatus]?.label
-            )}
-          </span>
-        </div>
+        <div className="block-status">{renderStatusDetail()}</div>
       )}
       <div className="d-flex justify-content-end mb-5">
         {/* Đính kèm tệp */}

@@ -100,7 +100,19 @@ function EvaluationOverall(props) {
     <div className="card shadow card-overall">
       <h6 className="text-center text-uppercase font-weight-bold chart-title">{t("EvaluationDetailOverallScore")}</h6>
       <div className="chart">
-        <div className="detail">{(evaluationFormDetail?.status == evaluationStatus.launch || (evaluationFormDetail?.status == evaluationStatus.selfAssessment && !showByManager) || evaluationFormDetail?.reviewStreamCode === processStep.zeroLevel) ? formatEvaluationNumber(evaluationFormDetail?.totalSeftPoint) : formatEvaluationNumber(evaluationFormDetail?.totalLeadReviewPoint)}</div>
+        <div className="detail">
+          {(evaluationFormDetail?.status == evaluationStatus.launch ||
+            (evaluationFormDetail?.status ==
+              evaluationStatus.selfAssessment &&
+              !showByManager) ||
+            evaluationFormDetail?.reviewStreamCode ===
+              processStep.zeroLevel) &&
+          !isOffLineType
+            ? formatEvaluationNumber(evaluationFormDetail?.totalSeftPoint)
+            : formatEvaluationNumber(
+                evaluationFormDetail?.totalLeadReviewPoint
+              )}
+        </div>
       </div>
     </div>
     <div className="card shadow card-detail">

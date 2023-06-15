@@ -56,7 +56,8 @@ const Constants = {
   RESIGN_SELF: 7, // De nghi cham dut hop dong
   SALARY_PROPOSE: 12, // De xuat luong
   OT_REQUEST: 13, // OT
-  PROPOSAL_TRANSFER: 14, // Dieu chuyen bo nhiem
+  PROPOSAL_TRANSFER: 14, // Dieu chuyen
+  PROPOSAL_APPOINTMENT: 15, // Bo nhiem, mien nhiem
 
   //Status request
   STATUS_PENDING: 0,
@@ -226,6 +227,7 @@ const Constants = {
     NGHIVIEC:4,
     PHUCLOI: 5,
     DIEUCHUYEN: 6,
+    BONHIEM: 7,
   },
   MODULE_COMPANY_AVAILABE: process.env.REACT_APP_ENVIRONMENT === 'PRODUCTION' ? 
   { //production todo: add  "V077", "V070" to TUYENDUNG
@@ -235,6 +237,7 @@ const Constants = {
     4: ["V040", "V077", "V070"],//NGHIVIEC
     5: ["V077", "V070"],//PHUCLOI
     6: [], //DIEUCHUYEN
+    7: [], //BONHIEM
   } :
   { //Development
     1: ["V040", "V005", "V079", "V041", "V030", "V077", "V070", "V099"],//TUYENDUNG + V061
@@ -243,6 +246,7 @@ const Constants = {
     4: ["V040", "V005", "V079", "V070", "V077"],//NGHIVIEC
     5: ["V061", "V040", "V005", "V079", "V041", "V070", "V077"],//PHUCLOI
     6: ["V040", "V070", "V077"], //DIEUCHUYEN
+    7: ["V040", "V070", "V077"], //BONHIEM
   },
   CURRENCY: {
     VND: 'VNĐ',
