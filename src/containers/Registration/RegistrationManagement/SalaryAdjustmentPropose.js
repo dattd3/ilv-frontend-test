@@ -1358,7 +1358,7 @@ const SalaryAdjustmentPropose = (props) => {
 
       return (
         <React.Fragment key={index}>
-          <tr style={{ border: 'none', height: '20px' }} />
+          <tr style={{ border: 'none', height: index > 0 ? '20px' : '0px' }} />
           <tr className="table-header">
             <td colSpan={3} className="min-width font-weight-bold">
               <div className="d-flex">
@@ -1887,7 +1887,6 @@ const SalaryAdjustmentPropose = (props) => {
       <h5 className="content-page-header">{t('proposed_employee_info')}</h5>
       <div className="timesheet-box1 shadow">
         <div className="user_header">
-          <span className="title">{t('employee_selected')}</span>
           <div
             className="action"
             style={
