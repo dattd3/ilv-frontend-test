@@ -1724,7 +1724,7 @@ const SalaryAdjustmentPropose = (props) => {
                 <span className="input">
                   {disableComponent.editSubjectApply ? (
                     <ResizableTextarea
-                      placeholder={'Nhập'}
+                      placeholder={t('EvaluationInput')}
                       value={item?.strength || ''}
                       onChange={(e) =>
                         handleTextInputChange(
@@ -1749,7 +1749,7 @@ const SalaryAdjustmentPropose = (props) => {
                 <span className="input">
                   {disableComponent.editSubjectApply ? (
                     <ResizableTextarea
-                      placeholder={'Nhập'}
+                      placeholder={t('EvaluationInput')}
                       value={item?.weakness || ''}
                       onChange={(e) =>
                         handleTextInputChange(
