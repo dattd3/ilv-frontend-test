@@ -1,42 +1,62 @@
-import React from "react"
+import React, {useEffect} from "react"
 import { useTranslation } from "react-i18next"
 import DatePicker, {registerLocale } from 'react-datepicker'
-import { Collapse, Button } from "react-bootstrap"
+import { Collapse } from "react-bootstrap"
 import moment from 'moment'
-import { size } from "lodash"
-import { formatStringByMuleValue } from "../../commons/Utils"
+import { prefixUpdating } from "./WorkOutSideGroup"
+import WorkOutSideGroupProcessItem from "./WorkOutSideGroupProcessItem"
 import IconCancel from "assets/img/icon/Icon_Cancel_White.svg"
 import IconDatePicker from "assets/img/icon/Icon_DatePicker.svg"
 import IconAddGreen from "assets/img/ic-add-green.svg"
-import IconEyeClosed from "assets/img/icon/not-eye.svg"
-import IconEyeOpened from "assets/img/icon/eye.svg"
 import IconCollapse from "assets/img/icon/pms/icon-collapse.svg"
 import IconExpand from "assets/img/icon/pms/icon-expand.svg"
 import vi from 'date-fns/locale/vi'
 import 'react-datepicker/dist/react-datepicker.css'
 registerLocale("vi", vi)
 
-function WorkOutSideGroupItem({ index, item, canUpdate, handleRemoveCompany, handleRemoveProcess, handleAddProcess, handleToggleProcess }) {
+function WorkOutSideGroupItem({ index, item, canUpdate, hiddenViewSalary, handleRemoveCompany, handleToggleProcess, handleToggleViewSalary, handleInputChangeOnParent }) {
     const { t } = useTranslation()
 
-    console.log('vvvvvvvvvvvvv', index)
-    console.log('vvvvvvvvvvvvv', item)
-    const a = null
-
-    const handleInputChange = e => {
-
+    const handleInputChange = (key, value) => {
+        handleInputChangeOnParent(index, key, value)
     }
-    
+
+    let listWorking = []
+    for (let i = 1; i < 6; i++) {
+        listWorking = [...listWorking, {
+            [`BEG${i}`]: item[`BEG${i}`],
+            [`END${i}`]: item[`END${i}`],
+            [`PLAN${i}`]: item[`PLAN${i}`],
+            [`DUT${i}`]: item[`DUT${i}`],
+            [`NET${i}`]: item[`NET${i}`],
+            [`GROSS${i}`]: item[`GROSS${i}`],
+            [`WAERS${i}`]: item[`WAERS${i}`],
+            ...(item?.isAddNew !== undefined && { isAddNew: item?.isAddNew }),
+            ...(item[`BEG${i}_${prefixUpdating}`] !== undefined && { [`BEG${i}_${prefixUpdating}`]: item[`BEG${i}_${prefixUpdating}`] }),
+            ...(item[`END${i}_${prefixUpdating}`] !== undefined && { [`END${i}_${prefixUpdating}`]: item[`END${i}_${prefixUpdating}`] }),
+            ...(item[`PLAN${i}_${prefixUpdating}`] !== undefined && { [`PLAN${i}_${prefixUpdating}`]: item[`PLAN${i}_${prefixUpdating}`] }),
+            ...(item[`DUT${i}_${prefixUpdating}`] !== undefined && { [`DUT${i}_${prefixUpdating}`]: item[`DUT${i}_${prefixUpdating}`] }),
+            ...(item[`NET${i}_${prefixUpdating}`] !== undefined && { [`NET${i}_${prefixUpdating}`]: item[`NET${i}_${prefixUpdating}`] }),
+            ...(item[`GROSS${i}_${prefixUpdating}`] !== undefined && { [`GROSS${i}_${prefixUpdating}`]: item[`GROSS${i}_${prefixUpdating}`] }),
+            ...(item[`WAERS${i}_${prefixUpdating}`] !== undefined && { [`WAERS${i}_${prefixUpdating}`]: item[`WAERS${i}_${prefixUpdating}`] }),
+        }]
+    }
+    item.listWorking = listWorking
+
+    // useEffect(() => {
+
+    // }, [item])
+
     return (
         <div className="work-outside-group-item">
             <div className="company-info">
                 <div className="group-header">
-                    <h5>Thông tin Công ty</h5>
+                    <h5>{t("CompanyInfo")}</h5>
                     {
                         canUpdate && (
                             <span className="btn-cancel" onClick={() => handleRemoveCompany(index)}>
                                 <img src={IconCancel} alt="Cancel" />
-                                <span>Hủy</span>
+                                <span>{t("Cancel2")}</span>
                             </span>
                         )
                     }
@@ -46,56 +66,60 @@ function WorkOutSideGroupItem({ index, item, canUpdate, handleRemoveCompany, han
                         <div className="row">
                             <div className="col-md-8">
                                 <div className="group-name">
-                                    <label>Tên công ty</label>
+                                    <label>{t("CompanyName")}</label>
                                     {
                                         canUpdate
                                         ? (
                                             <>
-                                                <input type="text" placeholder="Nhập" value={item?.companyName || ''} className="first" />
-                                                { item?.updating && (<input type="text" placeholder="Nhập" value={item?.newCompanyName || ''} className="second" />) }
+                                                {
+                                                    item?.isAddNew
+                                                    ? (<input type="text" placeholder={t("import")} value={item?.ORGEH || ''} onChange={e => handleInputChange('ORGEH', e?.target?.value || '')} className="first" />)
+                                                    : (<div className="value">{item?.ORGEH || ''}</div>)
+                                                }
+                                                {!item?.isAddNew && (<input type="text" placeholder={t("import")} value={item[`ORGEH_${prefixUpdating}`] || ''} onChange={e => handleInputChange(`ORGEH_${prefixUpdating}`, e?.target?.value || '')} className="second" />)}
                                             </>
                                         )
-                                        : (<div className="value">{ item?.companyName || '' }</div>)
+                                        : (<div className="value">{item?.ORGEH || ''}</div>)
                                     }
                                 </div>
                             </div>
                             <div className="col-md-2">
                                 <div className="group-date">
-                                    <label>Bắt đầu</label>
+                                    <label>{t("Start")}</label>
                                     {
-                                        canUpdate
+                                        canUpdate && item?.isAddNew
                                         ? (
                                             <label className="input-date">
                                                 <DatePicker
-                                                    selected={ item?.startDate }
-                                                    onChange={handleInputChange}
+                                                    selected={item?.BEGDA ? moment(item?.BEGDA, 'YYYYMMDD').toDate() : null}
+                                                    onChange={dateInput => handleInputChange('BEGDA', !dateInput ? null : moment(dateInput).format('YYYYMMDD'))}
                                                     dateFormat="dd/MM/yyyy"
                                                     locale="vi"
                                                     className="form-control form-control-lg input"/>
                                                     <span className="input-img"><img src={IconDatePicker} alt='Date' /></span>
                                             </label>
                                         )
-                                        : (<div className="value">{ item?.startDate || '' }</div>)
+                                        : (<div className="value">{ item?.BEGDA && moment(item?.BEGDA, 'YYYYMMDD').format('DD/MM/YYYY') }</div>)
                                     }
                                 </div>
                             </div>
                             <div className="col-md-2">
                                 <div className="group-date">
-                                    <label>Kết thúc</label>
+                                    <label>{t("End")}</label>
                                     {
-                                        canUpdate
+                                        canUpdate && item?.isAddNew
                                         ? (
                                             <label className="input-date">
                                                 <DatePicker
-                                                    selected={a}
-                                                    onChange={a}
+                                                    selected={item?.ENDDA ? moment(item?.ENDDA, 'YYYYMMDD').toDate() : null}
+                                                    onChange={dateInput => handleInputChange('ENDDA', !dateInput ? null : moment(dateInput).format('YYYYMMDD'))}
                                                     dateFormat="dd/MM/yyyy"
                                                     locale="vi"
                                                     className="form-control form-control-lg input"/>
                                                     <span className="input-img"><img src={IconDatePicker} alt='Date' /></span>
                                             </label>
                                         )
-                                        : (<div className="value">{ item?.endDate || '' }</div>)
+                                        : (<div className="value">{item?.ENDDA && moment(item?.ENDDA, 'YYYYMMDD').format('DD/MM/YYYY')}</div>)
                                     }
                                 </div>
                             </div>
@@ -106,189 +130,33 @@ function WorkOutSideGroupItem({ index, item, canUpdate, handleRemoveCompany, han
                         {/* Quá trình */}
                         <div className="process">
                         {
-                            (Object.entries(item?.listWorking) || []).map((sub, subIndex) => {
+                            (item?.listWorking || []).map((sub, subIndex) => {
                                 return (
-                                    <div className="process-item" key={sub[0]}>
-                                        <div className="group-header">
-                                            <h5>Quá trình {subIndex + 1}</h5>
-                                            {
-                                                canUpdate && size(item?.listWorking || {}) > 1 && (
-                                                    <span className="btn-cancel" onClick={() => handleRemoveProcess(index, sub[0])}>
-                                                        <img src={IconCancel} alt="Cancel" />
-                                                    </span>
-                                                )
-                                            }
-                                        </div>
-                                        <div className="content">
-                                            <div className="row">
-                                                <div className="col-md-2">
-                                                    <div className="group-input">
-                                                        <label>Bắt đầu</label>
-                                                        {
-                                                            canUpdate
-                                                            ? (
-                                                                <>
-                                                                <label className="input-date">
-                                                                    <DatePicker
-                                                                        selected={sub[1]?.startDate}
-                                                                        onChange={handleInputChange}
-                                                                        dateFormat="dd/MM/yyyy"
-                                                                        locale="vi"
-                                                                        className="form-control form-control-lg input"/>
-                                                                        <span className="input-img"><img src={IconDatePicker} alt='Date' /></span>
-                                                                </label>
-                                                                {
-                                                                    sub[1]?.isUpdating && (
-                                                                        <label className="input-date second">
-                                                                            <DatePicker
-                                                                                selected={a}
-                                                                                onChange={handleInputChange}
-                                                                                dateFormat="dd/MM/yyyy"
-                                                                                locale="vi"
-                                                                                className="form-control form-control-lg input"/>
-                                                                                <span className="input-img"><img src={IconDatePicker} alt='Date' /></span>
-                                                                        </label>
-                                                                    )
-                                                                }
-                                                                </>
-                                                            )
-                                                            : (<div className="value">{ sub[1]?.startDate || '' }</div>)
-                                                        }
-                                                    </div>
-                                                </div>
-                                                <div className="col-md-2">
-                                                    <div className="group-input">
-                                                        <label>Kết thúc</label>
-                                                        {
-                                                            canUpdate
-                                                            ? (
-                                                                <>
-                                                                <label className="input-date">
-                                                                    <DatePicker
-                                                                        selected={sub[1]?.endDate}
-                                                                        onChange={handleInputChange}
-                                                                        dateFormat="dd/MM/yyyy"
-                                                                        locale="vi"
-                                                                        className="form-control form-control-lg input"/>
-                                                                        <span className="input-img"><img src={IconDatePicker} alt='Date' /></span>
-                                                                </label>
-                                                                {
-                                                                    sub[1]?.isUpdating && (
-                                                                        <label className="input-date second">
-                                                                            <DatePicker
-                                                                                selected={a}
-                                                                                onChange={handleInputChange}
-                                                                                dateFormat="dd/MM/yyyy"
-                                                                                locale="vi"
-                                                                                className="form-control form-control-lg input"/>
-                                                                                <span className="input-img"><img src={IconDatePicker} alt='Date' /></span>
-                                                                        </label>
-                                                                    )
-                                                                }
-                                                                </>
-                                                            )
-                                                            : (<div className="value">{ sub[1]?.endDate || '' }</div>)
-                                                        }
-                                                    </div>
-                                                </div>
-                                                <div className="col-md-8">
-                                                    <div className="group-input">
-                                                        <label>Chức vụ</label>
-                                                        {
-                                                            canUpdate
-                                                            ? (
-                                                                <>
-                                                                    <input type="text" placeholder="Nhập" value={ sub[1]?.positionName || "" } className="first" />
-                                                                    { sub[1]?.isUpdating && (<input type="text" placeholder="Nhập" value={""} className="second" />) }       
-                                                                </>
-                                                            )
-                                                            : (<div className="value">{ sub[1]?.positionName || '' }</div>)
-                                                        }
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className="row">
-                                                <div className="col-md-12">
-                                                    <div className="group-input role">
-                                                        <label>Vai trò chính</label>
-                                                        {
-                                                            canUpdate
-                                                            ? (
-                                                                <>
-                                                                    <textarea rows="4">{ sub[1]?.roleName || "" }</textarea>
-                                                                    { sub[1]?.isUpdating && (<textarea rows="4" className="second">At w3schools.com you will learn how to make a website. They offer free tutorials in all web development technologies.</textarea>) }       
-                                                                </>
-                                                            )
-                                                            : (<div className="value">{ sub[1]?.roleName || '' }</div>)
-                                                        }
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className="row salary">
-                                                <div className="col-md-2">
-                                                    <div className="group-input">
-                                                        <label>Lương Net</label>
-                                                        {
-                                                            canUpdate
-                                                            ? (
-                                                                <>
-                                                                    <input type="text" placeholder="Nhập" value={ sub[1]?.salary?.netSalary || '' } className="first" />
-                                                                    { sub[1]?.isUpdating && (<input type="text" placeholder="Nhập" value={""} className="second" />) }       
-                                                                </>
-                                                            )
-                                                            : (<div className="value"><span>{ sub[1]?.salary?.netSalary || '' }</span><img src={IconEyeClosed} alt='EyeClosed' /></div>)
-                                                        }
-                                                    </div>
-                                                </div>
-                                                <div className="col-md-2">
-                                                    <div className="group-input">
-                                                        <label>Lương Gross</label>
-                                                        {
-                                                            canUpdate
-                                                            ? (
-                                                                <>
-                                                                    <input type="text" placeholder="Nhập" value={ sub[1]?.salary?.grossSalary || '' } className="first" />
-                                                                    { sub[1]?.isUpdating && (<input type="text" placeholder="Nhập" value={""} className="second" />) }       
-                                                                </>
-                                                            )
-                                                            : (<div className="value"><span>{ sub[1]?.salary?.grossSalary || '' }</span><img src={IconEyeClosed} alt='EyeClosed' /></div>)
-                                                        }
-                                                    </div>
-                                                </div>
-                                                <div className="col-md-8">
-                                                    <div className="group-input">
-                                                        <label>Tiền tệ</label>
-                                                        {
-                                                            canUpdate
-                                                            ? (
-                                                                <>
-                                                                    <input type="text" placeholder="Nhập" value={ sub[1]?.currency || '' } className="first" />
-                                                                    { sub[1]?.isUpdating && (<input type="text" placeholder="Nhập" value={""} className="second" />) }       
-                                                                </>
-                                                            )
-                                                            : (<div className="value">{ sub[1]?.currency || '' }</div>)
-                                                        }
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <WorkOutSideGroupProcessItem 
+                                        key={`${index}-${subIndex}`}
+                                        index={subIndex}
+                                        item={sub}
+                                        canUpdate={canUpdate}
+                                        hiddenViewSalary={hiddenViewSalary}
+                                        handleToggleViewSalary={handleToggleViewSalary}
+                                        handleInputChange={handleInputChange}
+                                    />
                                 )
                             })
                         }
-                        {
+                        {/* {
                             canUpdate && (
                                 <div className="block-btn-add-process">
-                                    <button onClick={() => handleAddProcess(index)}><img src={IconAddGreen} alt="Add" /><span>Thêm quá trình</span></button>
+                                    <button onClick={() => handleAddProcess(index)}><img src={IconAddGreen} alt="Add" /><span>{t("AddProcess")}</span></button>
                                 </div>
                             )
-                        }
+                        } */}
                         </div>
                     </Collapse>
                     <div className="collapse-expand-block">
                         <span onClick={() => handleToggleProcess(index)}>
-                            <img src={IconCollapse} alt="Collapse" />
-                            <span>Rút gọn</span>
+                            <img src={item?.isCollapse ? IconExpand : IconCollapse} alt={item?.isCollapse ? 'Expand' : 'Collapse'} />
+                            <span>{item?.isCollapse ? t("ExpandAll") : t("Collapse")}</span>
                         </span>
                     </div>
                 </div>

@@ -547,7 +547,7 @@ class MyComponent extends React.Component {
           </Tab>
           {
             isEnableWorkOutsideGroup && (
-              <Tab eventKey="WorkOutsideGroup" title={t("Công tác ngoài Tập đoàn")} className="tab-work-outside-group">
+              <Tab eventKey="WorkOutsideGroup" title={t("WorkingOutSideGroup")} className="tab-work-outside-group">
                 <WorkOutSideGroup />
               </Tab>
             )

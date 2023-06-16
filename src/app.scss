@@ -1778,6 +1778,10 @@ span.badge-notification[data-badge]::after {
             border-radius: 3px;
             display: flex;
             align-items: center;
+            padding: 0 12px;
+            .eye {
+              cursor: pointer;
+            }
           }
           .company-info {
             border-radius: 4px;
@@ -1853,14 +1857,19 @@ span.badge-notification[data-badge]::after {
                   margin-top: 10px;
                 }
                 .input-date {
+                  display: block;
                   position: relative;
                   margin-bottom: 0;
+                  .react-datepicker-wrapper {
+                    width: 100%;
+                  }
                   .input-img {
                     position: absolute;
                     right: 12px;
                     top: 7px;
                   }
                   input {
+                    font-size: inherit;
                     height: 38px;
                     padding: 0 10px;
                     outline: none;
@@ -1868,13 +1877,21 @@ span.badge-notification[data-badge]::after {
                   img {
                     height: 14px;
                   }
+                  .react-datepicker-wrapper {
+                    width: 100%;
+                  }
                 }
               }
             }
             .collapse-expand-block {
               margin-top: 15px;
-              span {
+              & > span {
+                display: inline-flex;
+                align-items: center;
                 cursor: pointer;
+                span {
+                  margin-left: 5px;
+                }
               }
             }
           }
@@ -1895,6 +1912,7 @@ span.badge-notification[data-badge]::after {
                 display: flex;
                 flex-direction: column;
                 input {
+                  font-size: inherit;
                   height: 38px;
                   border-radius: 4px;
                   padding: 0 10px;
@@ -1902,6 +1920,7 @@ span.badge-notification[data-badge]::after {
                   border: 1px solid #DEE2E6;
                 }
                 .input-date {
+                  display: block;
                   position: relative;
                   margin-bottom: 0;
                   .input-img {
@@ -1914,6 +1933,9 @@ span.badge-notification[data-badge]::after {
                   }
                   &.second {
                     margin-top: 15px;
+                    .react-datepicker-wrapper {
+                      width: 100%;
+                    }
                   }
                 }
                 .second {
