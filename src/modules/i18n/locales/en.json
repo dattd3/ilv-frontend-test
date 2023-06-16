@@ -1741,5 +1741,17 @@
   "CheckedOut": "Checked Out",
   "at": "At",
   "MissingKPI": "Missing KPI",
-  "NumberOfSharesConverted": "Number of shares converted"
+  "NumberOfSharesConverted": "Number of shares converted",
+  "WorkingProcessOutSideGroup": "Previous Employers",
+  "WorkingOutSideGroup": "Previous Employers",
+  "CompanyInfo": "Company Info",
+  "CompanyName": "Company Name",
+  "WorkProcess": "Work Process",
+  "MainRole": "Job description",
+  "NetSalary": "Net Salary ",
+  "GrossSalary": "Gross Salary",
+  "AddProcess": "Add process",
+  "AddCompany": "Add company",
+  "ExpandAll": "Expand all",
+  "Cancel2": "Cancel"
 }

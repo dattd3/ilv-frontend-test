@@ -1758,5 +1758,17 @@
   "CheckedOut": "Đã check-out",
   "at": "tại",
   "MissingKPI": "Chưa có nội dung đánh giá",
-  "NumberOfSharesConverted": "Số Cổ phần quy đổi"
+  "NumberOfSharesConverted": "Số Cổ phần quy đổi",
+  "WorkingProcessOutSideGroup": "Quá trình công tác ngoài tập đoàn",
+  "WorkingOutSideGroup": "Công tác ngoài tập đoàn",
+  "CompanyInfo": "Thông tin công ty",
+  "CompanyName": "Tên công ty",
+  "WorkProcess": "Quá trình",
+  "MainRole": "Vai trò chính",
+  "NetSalary": "Lương Net",
+  "GrossSalary": "Lương Gross",
+  "AddProcess": "Thêm quá trình",
+  "AddCompany": "Thêm công ty",
+  "ExpandAll": "Xem tất cả",
+  "Cancel2": "Hủy"
 }
