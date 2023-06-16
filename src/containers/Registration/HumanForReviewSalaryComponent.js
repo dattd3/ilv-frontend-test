@@ -157,9 +157,6 @@ class HumanForReviewSalaryComponent extends React.Component {
                   currentUserEmailLogged?.split('@')[0]?.toLowerCase();
 
             const lst = users.filter(filterAppraiser);
-            console.log('========================================');
-            console.log('lst: ', lst);
-            console.log('========================================');
             this.setState({ users: lst, isSearch: false })
           }
         }).catch(error => {
