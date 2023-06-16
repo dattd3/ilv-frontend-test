@@ -1887,11 +1887,12 @@ const SalaryAdjustmentPropose = (props) => {
       <h5 className="content-page-header">{t('proposed_employee_info')}</h5>
       <div className="timesheet-box1 shadow">
         <div className="user_header">
+          <span className="title" />
           <div
             className="action"
             style={
               showComponent.btnExpertise || showComponent.btnApprove
-                ? {}
+                ? { marginBottom: '15px' }
                 : { display: 'none' }
             }
           >
