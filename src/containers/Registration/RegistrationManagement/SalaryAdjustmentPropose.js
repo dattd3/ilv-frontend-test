@@ -1940,7 +1940,7 @@ const SalaryAdjustmentPropose = (props) => {
             <HumanForReviewSalaryComponent
               isEdit={!disableComponent.selectHrSupportViewSalary}
               approver={coordinator}
-              appraiser={{ account: getStorage('email')?.split('@')[0] }}
+              isRemoveCurrentAccount={true}
               isHR={true}
               updateApprover={(approver, isApprover) =>
                 handleUpdateCoordinator(approver)
@@ -1980,7 +1980,7 @@ const SalaryAdjustmentPropose = (props) => {
                   isEdit={!disableComponent.selectHrSupportViewSalary}
                   isAppraiser={true}
                   approver={item}
-                  appraiser={{ account: getStorage('email')?.split('@')[0] }}
+                  isRemoveCurrentAccount={true}
                   updateApprover={(sup) => handleUpdateSupervisors(sup, key)}
                   comment={
                     dataSalary?.requestAppraisers?.find(
@@ -2013,7 +2013,7 @@ const SalaryAdjustmentPropose = (props) => {
             <HumanForReviewSalaryComponent
               isEdit={!disableComponent.selectHrSupportViewSalary}
               approver={appraiser}
-              appraiser={{ account: getStorage('email')?.split('@')[0] }}
+              isRemoveCurrentAccount={true}
               isHR={true}
               updateApprover={(sup) => handleUpdateHrChangeSalary(sup)}
               comment={
@@ -2035,7 +2035,7 @@ const SalaryAdjustmentPropose = (props) => {
             <HumanForReviewSalaryComponent
               isEdit={!disableComponent.selectHrSupportViewSalary}
               approver={approver}
-              appraiser={{ account: getStorage('email')?.split('@')[0] }}
+              isRemoveCurrentAccount={true}
               updateApprover={handleUpdateApprovalSalary}
               comment={dataSalary?.approverComment}
             />
@@ -2047,7 +2047,7 @@ const SalaryAdjustmentPropose = (props) => {
             <HumanForReviewSalaryComponent
               isEdit={!disableComponent.selectHrSupportViewSalary}
               approver={approverArrive}
-              appraiser={{ account: getStorage('email')?.split('@')[0] }}
+              isRemoveCurrentAccount={true}
               updateApprover={handleUpdateApprovalArriveSalary}
               comment={dataSalary?.approverComment}
               isAppraiserNote={true}
