@@ -399,9 +399,10 @@ class ContractTerminationInterview extends React.Component {
                 this.setDisabledSubmitButton(false)
             }
             const redirectURL = getValueParamByQueryString(window.location.search, "redirectURL")
-            console.log(redirectURL)
             if (redirectURL) {
-              history.push(redirectURL)
+              history.push(redirectURL, {
+                isSubmitInterview: true
+              })
             }
         } catch (errors) {
             this.showStatusModal(t("Notification"), t("Error"), false)
