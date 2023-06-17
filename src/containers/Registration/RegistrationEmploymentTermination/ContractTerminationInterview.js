@@ -382,7 +382,7 @@ class ContractTerminationInterview extends React.Component {
 
 
         try {
-            const url = isCreate ? `${process.env.REACT_APP_REQUEST_URL}WorkOffServey/create-severance-survey` : `${process.env.REACT_APP_REQUEST_URL}WorkOffServey/fetchworkoffservey`
+            const url = isCreate ? `${process.env.REACT_APP_REQUEST_URL}WorkOffServey/createSeveranceSurvey` : `${process.env.REACT_APP_REQUEST_URL}WorkOffServey/fetchworkoffservey`
             const responses = await axios.post(url, bodyFormData, config)
 
             if (responses && responses.data && responses.data.result) {
