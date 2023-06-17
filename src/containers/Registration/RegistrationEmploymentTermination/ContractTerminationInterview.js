@@ -400,7 +400,7 @@ class ContractTerminationInterview extends React.Component {
             }
             const redirectURL = getValueParamByQueryString(window.location.search, "redirectURL")
             if (redirectURL) {
-              history.push(redirectURL, {
+              history.replace(redirectURL, {
                 isSubmittedInterview: true
               })
             }
