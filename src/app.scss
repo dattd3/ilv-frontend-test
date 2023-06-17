@@ -803,6 +803,7 @@
 .metismenu {
   background: #ffffff !important;
   position: unset !important;
+  overflow: unset !important;
   &::after {
     box-shadow: none !important;
   }

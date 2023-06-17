@@ -1087,6 +1087,7 @@ const SalaryAdjustmentPropse = (props) => {
         account: u?.account.toLowerCase().includes('@vingroup.net') ? u?.account.toLowerCase() : u?.account.toLowerCase() + "@vingroup.net",
         fullName: u?.fullName,
         jobTitle: u?.jobTitle,
+        employeeLevel: u?.employeeLevel,
         department: u?.department,
         organizationList: u?.organizationList,
         startDate: u?.startDate || moment(u?.effectiveTime, Constants.LEAVE_DATE_FORMAT).format("YYYY-MM-DD") || "",
