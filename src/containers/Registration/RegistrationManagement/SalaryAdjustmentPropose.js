@@ -1940,6 +1940,7 @@ const SalaryAdjustmentPropose = (props) => {
             <HumanForReviewSalaryComponent
               isEdit={!disableComponent.selectHrSupportViewSalary}
               approver={coordinator}
+              isRemoveCurrentAccount={true}
               isHR={true}
               updateApprover={(approver, isApprover) =>
                 handleUpdateCoordinator(approver)
@@ -1979,6 +1980,7 @@ const SalaryAdjustmentPropose = (props) => {
                   isEdit={!disableComponent.selectHrSupportViewSalary}
                   isAppraiser={true}
                   approver={item}
+                  isRemoveCurrentAccount={true}
                   updateApprover={(sup) => handleUpdateSupervisors(sup, key)}
                   comment={
                     dataSalary?.requestAppraisers?.find(
@@ -2011,6 +2013,7 @@ const SalaryAdjustmentPropose = (props) => {
             <HumanForReviewSalaryComponent
               isEdit={!disableComponent.selectHrSupportViewSalary}
               approver={appraiser}
+              isRemoveCurrentAccount={true}
               isHR={true}
               updateApprover={(sup) => handleUpdateHrChangeSalary(sup)}
               comment={
@@ -2032,6 +2035,7 @@ const SalaryAdjustmentPropose = (props) => {
             <HumanForReviewSalaryComponent
               isEdit={!disableComponent.selectHrSupportViewSalary}
               approver={approver}
+              isRemoveCurrentAccount={true}
               updateApprover={handleUpdateApprovalSalary}
               comment={dataSalary?.approverComment}
             />
@@ -2043,6 +2047,7 @@ const SalaryAdjustmentPropose = (props) => {
             <HumanForReviewSalaryComponent
               isEdit={!disableComponent.selectHrSupportViewSalary}
               approver={approverArrive}
+              isRemoveCurrentAccount={true}
               updateApprover={handleUpdateApprovalArriveSalary}
               comment={dataSalary?.approverComment}
               isAppraiserNote={true}
