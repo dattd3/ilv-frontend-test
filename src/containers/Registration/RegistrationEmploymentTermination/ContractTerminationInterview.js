@@ -382,7 +382,7 @@ class ContractTerminationInterview extends React.Component {
 
 
         try {
-            const url = isCreate ? `${process.env.REACT_APP_REQUEST_URL}WorkOffServey/create-severance-survey` : `${process.env.REACT_APP_REQUEST_URL}WorkOffServey/fetchworkoffservey`
+            const url = isCreate ? `${process.env.REACT_APP_REQUEST_URL}WorkOffServey/createSeveranceSurvey` : `${process.env.REACT_APP_REQUEST_URL}WorkOffServey/fetchworkoffservey`
             const responses = await axios.post(url, bodyFormData, config)
 
             if (responses && responses.data && responses.data.result) {
@@ -399,9 +399,10 @@ class ContractTerminationInterview extends React.Component {
                 this.setDisabledSubmitButton(false)
             }
             const redirectURL = getValueParamByQueryString(window.location.search, "redirectURL")
-            console.log(redirectURL)
             if (redirectURL) {
-              history.push(redirectURL)
+              history.replace(redirectURL, {
+                isSubmittedInterview: true
+              })
             }
         } catch (errors) {
             this.showStatusModal(t("Notification"), t("Error"), false)
