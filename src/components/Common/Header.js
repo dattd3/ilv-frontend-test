@@ -141,10 +141,12 @@ function Header(props) {
                                             let subId = item.subRequestId?.includes('.') ? item.subRequestId.split('.')[1] : item.subRequestId;
                                             let suffix = item.detailType == 'APPRAISAL' ? 'assess' : item.detailType == 'APPROVAL' ? 'approval' : 'request';
                                             let urls = {
-                                                [Constants.PROPOSAL_TRANSFER]: 'proposed-transfer',
-                                                [Constants.PROPOSAL_APPOINTMENT]: 'proposed-appointment'
+                                                '14-1': 'registration-transfer',
+                                                '15-1': 'registration-transfer',
+                                                '14-2': 'proposed-transfer',
+                                                '15-2': 'proposed-appointment',
                                             };
-                                            return `/${urls[item.requestTypeId]}/${subId}/${suffix}`;
+                                            return `/${urls[`${item.requestTypeId}-${item.formType}`]}/${subId}/${suffix}`;
                                         }
                                         
                                         if (item.detailType == 'APPRAISAL')
