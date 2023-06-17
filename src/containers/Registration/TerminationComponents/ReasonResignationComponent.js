@@ -3,11 +3,9 @@ import Select from 'react-select'
 import DatePicker from 'react-datepicker'
 import moment from 'moment'
 import { withTranslation } from "react-i18next"
-import axios from "axios"
 import 'react-datepicker/dist/react-datepicker.css'
 import _ from 'lodash';
 import { withRouter } from 'react-router-dom';
-import { getRequestConfigs } from 'commons/commonFunctions'
 
 class ReasonResignationComponent extends React.PureComponent {
     constructor(props) {
@@ -19,13 +17,9 @@ class ReasonResignationComponent extends React.PureComponent {
 
     componentDidMount() {
       const { isEmployee, history } = this.props
-      if (isEmployee) {
-        const config = getRequestConfigs()
-        axios.get(`${process.env.REACT_APP_REQUEST_URL}WorkOffServey/get-severance-survey?employeeCode=${localStorage.getItem("employeeNo")}`, config).then(response => {
-          if (!response.data.data?.severanceSurvey) {
-            history.push('/contract-termination-interview?redirectURL=/registration-employment-termination')
-          }
-        })
+      console.log(history, history.state)
+      if (isEmployee && !history.location?.state?.isSubmitInterview) {
+        history.push('/contract-termination-interview')
       }
     }
 
