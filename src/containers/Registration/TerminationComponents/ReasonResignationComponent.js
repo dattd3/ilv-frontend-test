@@ -17,7 +17,7 @@ class ReasonResignationComponent extends React.PureComponent {
 
     componentDidMount() {
       const { isEmployee, history } = this.props
-      if (isEmployee && !history.location?.state?.isSubmitInterview) {
+      if (isEmployee && !history.location?.state?.isSubmittedInterview) {
         history.push('/contract-termination-interview')
       }
     }
