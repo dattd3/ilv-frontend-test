@@ -1041,6 +1041,7 @@ const SalaryAdjustmentPropose = (props) => {
             : u?.account.toLowerCase() + '@vingroup.net',
           fullName: u?.fullName,
           jobTitle: u?.jobTitle,
+          employeeLevel: u?.employeeLevel,
           department: u?.department,
           organizationList: u?.organizationList,
           startDate:
