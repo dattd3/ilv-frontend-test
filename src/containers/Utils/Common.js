@@ -23,7 +23,7 @@ export const getOperationType = (requestTypeId, actionType, processStatusId) => 
     } else if (actionType == Constants.OPERATION_TYPES.DEL) {
       return Constants.OPERATION_TYPES.INS;
     } else {
-      return actionType;
+      return actionType || Constants.OPERATION_TYPES.INS;
     }
   }
   return Constants.OPERATION_TYPES.INS
