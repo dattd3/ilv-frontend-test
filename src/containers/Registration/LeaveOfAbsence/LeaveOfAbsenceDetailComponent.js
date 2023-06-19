@@ -9,8 +9,8 @@ import ApproverDetailComponent from '../ApproverDetailComponent'
 import RequestProcessing from '../RequestProcessing'
 import StatusModal from '../../../components/Common/StatusModal'
 import Constants from '../.../../../../commons/Constants'
-import { FOREIGN_SICK_LEAVE, MARRIAGE_FUNERAL_LEAVE_KEY } from 'containers/Task/Constants'
 import { getOperationType } from 'containers/Utils/Common'
+import { FOREIGN_SICK_LEAVE, MARRIAGE_FUNERAL_LEAVE_KEY, VIN_UNI_SICK_LEAVE } from 'containers/Task/Constants'
 
 const TIME_FORMAT = 'HH:mm'
 
@@ -29,11 +29,13 @@ const RegisteredLeaveInfo = ({ leaveOfAbsence, t, annualLeaveSummary }) => {
       <div className="box shadow">
         {
           (leaveOfAbsence?.requestInfoOld && leaveOfAbsence?.requestInfoOld?.length > 0 ? leaveOfAbsence?.requestInfoOld : leaveOfAbsence?.requestInfo).map((info, infoIndex) => {
-            const isForeignSickLeave = info?.absenceType?.value === FOREIGN_SICK_LEAVE
+            let isForeignSickLeave = info?.absenceType?.value === FOREIGN_SICK_LEAVE
+            let isVinUniSickLeave = info?.absenceType?.value === VIN_UNI_SICK_LEAVE
+
             return (
               <div className='item' key={`info-${infoIndex}`}>
                 {
-                  isForeignSickLeave ? (
+                  (isForeignSickLeave || isVinUniSickLeave) ? (
                     <>
                       <div className="row">
                         <div className="col-xl-4">
@@ -54,10 +56,21 @@ const RegisteredLeaveInfo = ({ leaveOfAbsence, t, annualLeaveSummary }) => {
                           {t("LeaveCategory")}
                           <div className="detail">{info?.absenceType?.label || ""}</div>
                         </div>
-                        <div className="col-xl-4">
-                          {t("SickLeaveFundForExpat")}
-                          <div className="detail">{`${Number(annualLeaveSummary?.SICK_LEA_EXPAT || 0).toFixed(3)} ${formatDayUnitByValue(annualLeaveSummary?.SICK_LEA_EXPAT || 0)}`}</div>
-                        </div>
+                        {
+                          isForeignSickLeave
+                          ? (
+                            <div className="col-xl-4">
+                              {t("SickLeaveFundForExpat")}
+                              <div className="detail">{`${Number(annualLeaveSummary?.SICK_LEA_EXPAT || 0).toFixed(3)} ${formatDayUnitByValue(annualLeaveSummary?.SICK_LEA_EXPAT || 0)}`}</div>
+                            </div>
+                          )
+                          : (
+                            <div className="col-xl-4">
+                              {t("SickLeaveFundForVinUni")}
+                              <div className="detail">{`${Number(annualLeaveSummary?.SICK_LEA_VUNI || 0).toFixed(3)} ${formatDayUnitByValue(annualLeaveSummary?.SICK_LEA_VUNI || 0)}`}</div>
+                            </div>
+                          )
+                        }
                       </div>
                     </>
                   ) : (
