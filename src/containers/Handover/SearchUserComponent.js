@@ -155,7 +155,6 @@ class ApproverComponent extends React.Component {
             const data = res.data.data || []
 
             const users = data?.filter(res => {
-              console.log(res.uid, this.props.userEmployeeNo, (res.uid + '') != (this.props.userEmployeeNo + ''))
               return (res.uid + '') != (this.props.userEmployeeNo + '')
             }).map(res => {
               return {
