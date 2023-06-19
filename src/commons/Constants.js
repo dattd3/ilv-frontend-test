@@ -54,7 +54,7 @@ const Constants = {
   DEPARTMENT_TIMESHEET: 9, // Bang cham cong bo phan
   ONBOARDING: 6, // Danh gia hop dong
   RESIGN_SELF: 7, // De nghi cham dut hop dong
-  // SALARY_PROPOSE: 12, // De xuat luong
+  SALARY_PROPOSE: 12, // De xuat luong
   OT_REQUEST: 13, // OT
   PROPOSAL_TRANSFER: 14, // Dieu chuyen
   PROPOSAL_APPOINTMENT: 15, // Bo nhiem, mien nhiem
