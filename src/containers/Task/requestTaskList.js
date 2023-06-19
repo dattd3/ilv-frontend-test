@@ -827,7 +827,7 @@ class RequestTaskList extends React.Component {
                             />
                           </div>
                           {
-                            this.state.isShowRequestTypesSelect && <div className="request-category-guide-container" ref={this.categorySelectRef}>
+                            this.state.isShowRequestTypesSelect && <div className="request-category-guide-container" ref={this.requestTypesSelectRef}>
                               <div className="request-category-guide-body">
                                 <div className="category-title">
                                   <b>
