@@ -1258,6 +1258,7 @@
   "ProposedEmployeeEmpty": "The proposed employee missing new position!",
   "ProposedPositionCodeDuplicate": "Proposed employees have same new titles",
   "ProposedEmployeeLevelEmpty": "New levels are required!",
+  "ProposedEmployeeLevelRequired": "Please choose new propose level!",
   "InformationRequired": "Please input information",
   "CurrentSalaryValidate": "Vui lòng lấy về mức lương hiện tại!",
   "PerformanceBonusVinfastGrossup": "Performance Bonus (Gross up)",

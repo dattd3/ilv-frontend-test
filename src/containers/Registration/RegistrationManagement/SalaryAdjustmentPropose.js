@@ -547,6 +547,7 @@ const SalaryAdjustmentPropose = (props) => {
             uid: _itemInfo?.employeeNo,
             employeeNo: _itemInfo?.employeeNo,
             requestHistoryId: item.requestHistoryId,
+            appraiserComment: item?.appraiserComment,
           });
         } else if (
           _itemInfo.type === Constants.STATUS_PROPOSAL.LEADER_APPRAISER
@@ -556,6 +557,7 @@ const SalaryAdjustmentPropose = (props) => {
             uid: _itemInfo?.employeeNo,
             employeeNo: _itemInfo?.employeeNo,
             requestHistoryId: item.requestHistoryId,
+            appraiserComment: item?.appraiserComment,
           });
         }
       });
@@ -576,11 +578,13 @@ const SalaryAdjustmentPropose = (props) => {
         ...approvalData,
         uid: approvalData?.employeeNo,
         employeeNo: approvalData?.employeeNo,
+        appraiserComment: approverRes?.appraiserComment,
       });
       setApproverArrive({
         ...approverArriveData,
         uid: approverArriveData?.employeeNo,
         employeeNo: approverArriveData?.employeeNo,
+        appraiserComment: approverArriveRes?.appraiserComment,
       });
     }
     const requestDocuments =
@@ -1980,11 +1984,7 @@ const SalaryAdjustmentPropose = (props) => {
                   approver={item}
                   isRemoveCurrentAccount={true}
                   updateApprover={(sup) => handleUpdateSupervisors(sup, key)}
-                  comment={
-                    dataSalary?.requestAppraisers?.find(
-                      (_, index) => index === key
-                    )?.appraiserComment
-                  }
+                  comment={item?.appraiserComment}
                 />
               </div>
             ))}
@@ -2014,11 +2014,7 @@ const SalaryAdjustmentPropose = (props) => {
               isRemoveCurrentAccount={true}
               isHR={true}
               updateApprover={(sup) => handleUpdateHrChangeSalary(sup)}
-              comment={
-                dataSalary?.requestAppraisers?.[
-                  dataSalary?.requestAppraisers?.length - 1
-                ]?.appraiserComment
-              }
+              comment={appraiser?.appraiserComment}
             />
           </div>
         </>
@@ -2035,7 +2031,7 @@ const SalaryAdjustmentPropose = (props) => {
               approver={approver}
               isRemoveCurrentAccount={true}
               updateApprover={handleUpdateApprovalSalary}
-              comment={dataSalary?.approverComment}
+              comment={approver?.appraiserComment}
             />
           </div>
           <h5 className="content-page-header">{`${t('BossApproved')} (${t(
@@ -2047,7 +2043,7 @@ const SalaryAdjustmentPropose = (props) => {
               approver={approverArrive}
               isRemoveCurrentAccount={true}
               updateApprover={handleUpdateApprovalArriveSalary}
-              comment={dataSalary?.approverComment}
+              comment={approverArrive?.appraiserComment}
               isAppraiserNote={true}
             />
           </div>
