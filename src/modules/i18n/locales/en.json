@@ -1784,5 +1784,7 @@
   "InvalidMimeType": " is invalid type! Please select again!",
   "ExceedMaxFileSize": "The total file size must not exceed 8MB",
   "ErrorBackDateRequestVinpearl": "Request creation failed - Time out",
-  "RelationshipNote": "Note: In case you need to adjust the information of a PIT dependent, please submit a hard copy to the Human Resources Department for adjustment!"
+  "RelationshipNote": "Note: In case you need to adjust the information of a PIT dependent, please submit a hard copy to the Human Resources Department for adjustment!",
+  "VinUniSickLeave": "Sick leave for VinUni",
+  "SickLeaveFundForVinUni": "Sick leave fund for VinUni"
 }

@@ -1801,5 +1801,7 @@
   "InvalidMimeType": " không đúng định dạng! Xin vui lòng chọn lại",
   "ExceedMaxFileSize": "Tổng dung lượng file vượt quá 8MB! Xin vui lòng chọn lại",
   "ErrorBackDateRequestVinpearl": "Gửi yêu cầu thất bại - thao tác quá thời gian quy định",
-  "RelationshipNote": "Lưu ý: Trường hợp cần điều chỉnh thông tin của Người phụ thuộc, Anh/Chị vui lòng nộp hồ sơ bản cứng đến Phòng Nhân sự để điều chỉnh!"
+  "RelationshipNote": "Lưu ý: Trường hợp cần điều chỉnh thông tin của Người phụ thuộc, Anh/Chị vui lòng nộp hồ sơ bản cứng đến Phòng Nhân sự để điều chỉnh!",
+  "VinUniSickLeave": "Nghỉ ốm VinUni",
+  "SickLeaveFundForVinUni": "Quỹ Nghỉ ốm VinUni"
 }
