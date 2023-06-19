@@ -640,24 +640,18 @@ const SalaryAdjustmentPropose = (props) => {
   };
 
   const onActionChange = (uid, accepted = true) => {
-    let _enableSubmit = true;
-    const _selectMembers = selectMembers.map((item) => {
-      if (
-        (viewSetting.showComponent.btnExpertise ||
-          viewSetting.showComponent.btnApprove) &&
-        !isCreateMode &&
-        item.canChangeAction &&
-        !accepted
-      ) {
-        _enableSubmit = false;
-      }
-
-      if (item.uid == uid) {
-        return { ...item, accepted };
-      }
-
-      return item;
-    });
+    const _selectMembers = selectMembers.map((item) =>
+        item.uid == uid ? { ...item, accepted } : item
+      ),
+      _enableSubmit = _selectMembers.some((item) => {
+        return (
+          (viewSetting.showComponent.btnExpertise ||
+            viewSetting.showComponent.btnApprove) &&
+          !isCreateMode &&
+          item.canChangeAction &&
+          item?.accepted
+        );
+      });
 
     setEnableSubmit(_enableSubmit);
     setSelectMembers(_selectMembers);
