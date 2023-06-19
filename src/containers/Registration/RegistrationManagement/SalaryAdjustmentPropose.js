@@ -248,6 +248,7 @@ const SalaryAdjustmentPropose = (props) => {
       email = getStorage('email'),
       fullName = getStorage('fullName'),
       jobTitle = getStorage('jobTitle'),
+      employeeLevel = getStorage('employeeLevel'),
       department = getStorage('department'),
       company = getStorage('company'),
       division = getStorage('division'),
@@ -281,6 +282,7 @@ const SalaryAdjustmentPropose = (props) => {
                 username: email.split('@')[0],
                 fullName: fullName,
                 jobTitle: jobTitle,
+                employeeLevel: employeeLevel,
                 startDate: '',
                 expireDate: '',
                 contractName: item.lastestContractName,
@@ -497,6 +499,7 @@ const SalaryAdjustmentPropose = (props) => {
           fullName: requestTmp?.fullName,
           fullname: requestTmp?.fullName,
           jobTitle: requestTmp?.jobTitle,
+          employeeLevel: requestTmp?.employeeLevel,
           startDate: requestTmp?.startDate,
           expireDate: requestTmp?.expireDate,
           contractName: requestTmp?.contractName,
@@ -1431,7 +1434,7 @@ const SalaryAdjustmentPropose = (props) => {
                       {!!item?.employeeNo ? `(${item?.employeeNo})` : ''}
                     </span>
                   </p>
-                  <p className="mb-7px">{item?.jobTitle}</p>
+                  <p className="mb-7px">{item?.jobTitle} ({item?.employeeLevel})</p>
                   <p
                     style={{
                       marginBottom: 0,
