@@ -528,6 +528,7 @@ class MyComponent extends React.Component {
               }
             </div>
             <h5 className="content-page-header">{t("PersonalRelations")}</h5>
+            <div className='relationship-note'>{t("RelationshipNote")}</div>
             <Container fluid className="info-tab-content shadow relationship">
             {
               relationshipInformation.isEditing ? 

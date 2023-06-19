@@ -1827,5 +1827,8 @@
   "operationType.ins": "Thêm mới",
   "operationType.mod": "Chỉnh sửa",
   "operationType.del": "Thu hồi",
-  "WorkingTimeChange": "Giờ làm việc thay đổi"
+  "WorkingTimeChange": "Giờ làm việc thay đổi",
+  "RelationshipNote": "Lưu ý: Trường hợp cần điều chỉnh thông tin của Người phụ thuộc, Anh/Chị vui lòng nộp hồ sơ bản cứng đến Phòng Nhân sự để điều chỉnh!",
+  "VinUniSickLeave": "Nghỉ ốm VinUni",
+  "SickLeaveFundForVinUni": "Quỹ Nghỉ ốm VinUni"
 }

@@ -390,7 +390,7 @@
   color: yellow;
 }
 .login-page {
-
+  margin: auto;
   .detail-contain {
     display: flex;
     flex-direction: column;
@@ -481,7 +481,7 @@
     align-items: center;
     color: white;
     padding: 7px 0;
-
+    margin-top: auto;
     span:before {
       margin-right: 5px;
       content: "\e907";
@@ -525,7 +525,6 @@
 
   .logo-login {
     max-width: 60%;
-    padding: 5vh 0;
   }
   .language-selector {
     padding: 10px;
@@ -586,6 +585,44 @@
       &:focus {
         box-shadow: none;
       }
+    }
+  }
+  .banner-block {
+    .banner-title {
+      height: 58px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #D13238;
+    }
+    .banner-img-block {
+      margin-top: 30px;
+      img {
+        height: 340px;
+      }
+    }
+    .banner-footer {
+      // margin: 15px 0 30px 0;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+  .wrap-left {
+    height: 100%;
+    .language-selector {
+      position: absolute;
+      top: 0;
+      right: 0;
+    }
+    .left-main-content {
+      padding: 0 3rem;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
     }
   }
 }
@@ -1640,7 +1677,7 @@ span.badge-notification[data-badge]::after {
               width: 15px;
               height: 15px;
               background: #FFFFFF;
-              border: 1px solid #707070;
+              border: 1px solid #DEE2E6;
               margin-right: 6px;
             }
             &.old {
@@ -1653,7 +1690,7 @@ span.badge-notification[data-badge]::after {
         .detail-info {
           margin-top: 16px;
           .relationship-item, .relationship-item-create {
-            border: 1px solid #707070;
+            border: 1px solid #DEE2E6;
             padding: 15px;
             .info-label {
               margin-bottom: 10px;
@@ -1677,7 +1714,7 @@ span.badge-notification[data-badge]::after {
             .edit-value {
               display: flex;
               align-items: flex-start;
-              border-top: 1px solid #707070;
+              border-top: 1px solid #DEE2E6;
               padding-top: 5px;
               margin-top: 10px;
               margin-bottom: 20px;
@@ -1735,7 +1772,7 @@ span.badge-notification[data-badge]::after {
             .edit-value {
               position: relative;
               padding: 15px;
-              border: 1px solid #707070;
+              border: 1px solid #DEE2E6;
               margin-bottom: 20px;
               .btn-remove-relationship-item {
                 cursor: pointer;
@@ -1798,6 +1835,16 @@ span.badge-notification[data-badge]::after {
   }
   .tab-relationship {
     font-size: inherit;
+    .relationship-note {
+      color: #FF0000;
+      font-style: italic;
+      padding: 15px 20px;
+      background: #FFFFFF;
+      border-radius: 4px;
+      box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
+      margin-bottom: 20px;
+      margin-top: 12px;
+    }
     .list-files {
       display: inline-flex;
       align-items: center;
