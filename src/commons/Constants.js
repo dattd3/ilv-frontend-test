@@ -54,7 +54,7 @@ const Constants = {
   DEPARTMENT_TIMESHEET: 9, // Bang cham cong bo phan
   ONBOARDING: 6, // Danh gia hop dong
   RESIGN_SELF: 7, // De nghi cham dut hop dong
-  SALARY_PROPOSE: 12, // De xuat luong
+  // SALARY_PROPOSE: 12, // De xuat luong
   OT_REQUEST: 13, // OT
   PROPOSAL_TRANSFER: 14, // Dieu chuyen
   PROPOSAL_APPOINTMENT: 15, // Bo nhiem, mien nhiem
@@ -276,4 +276,23 @@ const Constants = {
     DEL: "DEL",
   }
 };
+
+Constants.REQUEST_CATEGORY_1_LIST = {
+  [Constants.LEAVE_OF_ABSENCE]: "LeaveRequest",
+  [Constants.BUSINESS_TRIP]: "BizTrip_TrainingRequest",
+  [Constants.SUBSTITUTION]: "ShiftChange",
+  [Constants.IN_OUT_TIME_UPDATE]: "InOutChangeRequest",
+  [Constants.UPDATE_PROFILE]: "EditBasicProfile",
+  [Constants.ONBOARDING]: "ContractEvaluationType",
+  [Constants.RESIGN_SELF]: "ResignationType",
+  [Constants.OT_REQUEST]: "OTRequest",
+  [Constants.CHANGE_DIVISON_SHIFT]: "AdminUploadShiftChange",
+  [Constants.DEPARTMENT_TIMESHEET]: "DepartmentTimesheet",
+}
+
+Constants.REQUEST_CATEGORY_2_LIST = {
+  [Constants.PROPOSAL_TRANSFER]: "ProposalTransfer",
+  [Constants.PROPOSAL_APPOINTMENT]: "ProposalAppointment"
+}
+
 export default Constants
