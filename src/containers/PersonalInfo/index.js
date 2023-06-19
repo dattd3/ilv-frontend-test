@@ -5,7 +5,7 @@ import { Container, Row, Col, Tabs, Tab, Form } from 'react-bootstrap';
 import moment from 'moment';
 import { withRouter } from 'react-router-dom';
 import Constants from "../../commons/Constants"
-import { isEnableFunctionByFunctionName, getMuleSoftHeaderConfigurations, getRequestConfigurations, formatStringByMuleValue } from "../../commons/Utils"
+import { isEnableFunctionByFunctionName, getMuleSoftHeaderConfigurations, getRequestConfigurations, formatStringByMuleValue, getValueParamByQueryString } from "../../commons/Utils"
 import { checkIsExactPnL, checkVersionPnLSameAsVinhome } from '../../commons/commonFunctions';
 import RelationshipList from "./RelationshipList"
 import MainInfoList from "./MainInfoList"
@@ -475,9 +475,8 @@ class MyComponent extends React.Component {
     const isEnableEditEducations = isEnableFunctionByFunctionName(Constants.listFunctionsForPnLACL.editEducation)
     const isEnableEditRelationships = isEnableFunctionByFunctionName(Constants.listFunctionsForPnLACL.editRelationship)
     const isEnableWorkOutsideGroup = true
+    let defaultTab = getValueParamByQueryString(window.location.search, 'tab') || 'PersonalInformation' 
 
-    let defaultTab = new URLSearchParams(this.props.location.search).get("tab");
-    defaultTab = defaultTab && defaultTab == 'document' ? 'PersonalDocument' : 'PersonalInformation';
     const documents = this.state.userDocument.documents;
     const checkVinfast = checkIsExactPnL(Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading);
 

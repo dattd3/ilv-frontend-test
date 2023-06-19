@@ -1768,6 +1768,9 @@ span.badge-notification[data-badge]::after {
       border-radius: 0;
       background: transparent;
       box-shadow: none !important;
+      .react-datepicker-wrapper {
+        width: 100%;
+      }
       .work-outside-group-list {
         color: #000000 !important;
         font-size: inherit;
@@ -1781,6 +1784,9 @@ span.badge-notification[data-badge]::after {
             padding: 0 12px;
             .eye {
               cursor: pointer;
+            }
+            &.salary-view {
+              justify-content: space-between;
             }
           }
           .company-info {
@@ -1940,6 +1946,10 @@ span.badge-notification[data-badge]::after {
                 }
                 .second {
                   margin-top: 15px;
+                  // &.salary {
+                  //   background: #F2F2F2;
+                  //   border: none;
+                  // }
                 }
                 textarea {
                   width: 100%;
