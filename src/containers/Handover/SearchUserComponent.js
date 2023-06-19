@@ -5,7 +5,7 @@ import _, { debounce } from 'lodash'
 import { withTranslation  } from "react-i18next";
 import APPROVER_LIST_LEVEL from "../../commons/Constants"
 import { getRequestConfigs } from '../../commons/commonFunctions'
-import { getMuleSoftHeaderConfigurations } from '../../commons/Utils';
+import { getMuleSoftHeaderConfigurations, prepareOrganization } from '../../commons/Utils';
 
 const MyOption = props => {
   const { innerProps, innerRef } = props;
@@ -168,7 +168,7 @@ class ApproverComponent extends React.Component {
                 orglv2Id: res.orglv2_id,
                 account: res.username,
                 current_position: res.position_name,
-                department: res.division + (res.department ? '/' + res.department : '') + (res.part ? '/' + res.part : '')
+                department: prepareOrganization(res?.division, res?.department, res?.unit, res?.part)
               }
             })
             this.setState({ users: appraiser ? users.filter(user => user.account !== appraiser.account) : users, isSearching: false })
