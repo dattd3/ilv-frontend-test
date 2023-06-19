@@ -13,7 +13,7 @@ import _ from 'lodash'
 import map from '../../../../src/containers/map.config'
 import Constants from '../../../commons/Constants'
 import { withTranslation } from "react-i18next";
-import { getValueParamByQueryString, getMuleSoftHeaderConfigurations, getRequestConfigurations, getRegistrationMinDateByConditions, isVinFast, isValidDateRequest } from "../../../commons/Utils"
+import { getValueParamByQueryString, getMuleSoftHeaderConfigurations, getRequestConfigurations, getRegistrationMinDateByConditions, isValidDateRequest, isEnableFunctionByFunctionName } from "../../../commons/Utils"
 import NoteModal from '../NoteModal'
 import { checkIsExactPnL } from '../../../commons/commonFunctions';
 import { absenceRequestTypes, PN03List, MATERNITY_LEAVE_KEY, MARRIAGE_FUNERAL_LEAVE_KEY, MOTHER_LEAVE_KEY, FOREIGN_SICK_LEAVE, ANNUAL_LEAVE_KEY, ADVANCE_ABSENCE_LEAVE_KEY, COMPENSATORY_LEAVE_KEY, VIN_UNI_SICK_LEAVE } from "../../Task/Constants"
@@ -915,10 +915,10 @@ class LeaveOfAbsenceComponent extends React.Component {
 
     render() {
         const { t, leaveOfAbsence, recentlyManagers } = this.props
-        const isEmployeeVinFast = isVinFast()
+        const isEnableForeignSickLeave = isEnableFunctionByFunctionName(Constants.listFunctionsForPnLACL.foreignSickLeave)
         let absenceRequestTypesPrepare = absenceRequestTypes.map(item => ({...item, label: t(item.label)}))
         
-        if (!isEmployeeVinFast) {
+        if (!isEnableForeignSickLeave) {
             absenceRequestTypesPrepare = (absenceRequestTypesPrepare || []).filter(item => item?.value !== FOREIGN_SICK_LEAVE)
         }
 
