@@ -21,7 +21,7 @@ import _, { debounce } from 'lodash'
 import DatePicker, { registerLocale } from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import { vi, enUS } from 'date-fns/locale'
-import { formatProcessTime, getMuleSoftHeaderConfigurations } from '../../../commons/Utils'
+import { formatProcessTime, getMuleSoftHeaderConfigurations, prepareOrganization } from '../../../commons/Utils'
 import LoadingSpinner from '../../../components/Forms/CustomForm/LoadingSpinner'
 import LoadingModal from '../../../components/Common/LoadingModal'
 import { checkVersionPnLSameAsVinhome, IS_VINFAST } from '../../../commons/commonFunctions'
@@ -440,7 +440,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
               orglv2Id: "",
               account: data?.userid?.toLowerCase() || "",
               current_position: data?.title || "",
-              department: data.division + (data.department ? '/' + data.department : '') + (data.part ? '/' + data.part : '')
+              department: prepareOrganization(data?.division, data?.department, data?.unit, data?.part)
             }
             this.updateApprover('nguoidanhgia', appraiserOption, true);
           }
