@@ -12,6 +12,7 @@ import {
   getMuleSoftHeaderConfigurations,
   getRequestConfigurations,
   getValueParamByQueryString,
+  prepareOrganization
 } from "commons/Utils";
 import AssesserComponent from "../AssesserComponent";
 import SearchUserComponent from "containers/SearchUserBox/index";
@@ -169,10 +170,7 @@ export default function OTRequestComponent({ recentlyManagers }) {
             orglv2Id: "",
             account: data?.userid?.toLowerCase() || "",
             current_position: data?.title || "",
-            department:
-              data.division +
-              (data.department ? "/" + data.department : "") +
-              (data.part ? "/" + data.part : ""),
+            department: prepareOrganization(data?.division, data?.department, data?.unit, data?.part)
           });
         }
       }

@@ -18,8 +18,6 @@ import NoteModal from '../NoteModal'
 import { checkIsExactPnL } from '../../../commons/commonFunctions';
 import { absenceRequestTypes, PN03List, MATERNITY_LEAVE_KEY, MARRIAGE_FUNERAL_LEAVE_KEY, MOTHER_LEAVE_KEY, FOREIGN_SICK_LEAVE, ANNUAL_LEAVE_KEY, ADVANCE_ABSENCE_LEAVE_KEY, COMPENSATORY_LEAVE_KEY, VIN_UNI_SICK_LEAVE } from "../../Task/Constants"
 
-const FULL_DAY = 1
-const DURING_THE_DAY = 2
 const absenceTypesAndDaysOffMapping = {
     1: { day: 3, time: 24 },
     2: { day: 1, time: 8 },
@@ -81,23 +79,26 @@ class LeaveOfAbsenceComponent extends React.Component {
         return prevState
     }
 
-    componentDidMount() {
+    initialData = () => {
         const muleSoftConfig = getMuleSoftHeaderConfigurations()
         muleSoftConfig['params'] = {
             date: moment().format('YYYYMMDD')
         }
+        const config = getRequestConfigurations()
+        const annualLeaveSummaryApiEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/currentabsence`
+        const pendingInfoEndpoint = `${process.env.REACT_APP_REQUEST_URL}request/pendings`
+        const requestAnnualLeaveSummary = axios.get(annualLeaveSummaryApiEndpoint, muleSoftConfig)
+        const requestPendingInfo = axios.get(pendingInfoEndpoint, config)
+    
+        Promise.allSettled([requestAnnualLeaveSummary, requestPendingInfo]).then(responses => {
+          this.processAnnualLeaveSummary(responses[0])
+          this.processPendingInfo(responses[1])
+        }).finally (() => {
+        })
+
 
         const { leaveOfAbsence, t } = this.props
         registerLocale("vi", t("locale") === "vi" ? vi : enUS)
-
-        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/currentabsence`, muleSoftConfig)
-            .then(res => {
-                if (res && res.data) {
-                    const annualLeaveSummary = res.data.data
-                    this.setState({ annualLeaveSummary: annualLeaveSummary })
-                }
-            }).catch(error => {
-            })
 
         if (leaveOfAbsence && leaveOfAbsence && leaveOfAbsence.requestInfo) {
             const { groupID, days, id, startDate, startTime, processStatusId, endDate, endTime, hours, absenceType, leaveType, isAllDay, comment } = leaveOfAbsence.requestInfo[0]
@@ -137,16 +138,32 @@ class LeaveOfAbsenceComponent extends React.Component {
                 }) : [],
             })
         }
+    }
+    
+    processAnnualLeaveSummary = response => {
+        const annualLeaveSummary = this.processData(response)
+        this.setState({ annualLeaveSummary: annualLeaveSummary })
+    }
 
-        const config = getRequestConfigurations()
-        axios.get(`${process.env.REACT_APP_REQUEST_URL}request/pendings`, config)
-        .then(res => {
-            if (res && res?.data && res?.data?.data) {
-                const { totalPendingLeaves, totalPendingTOILs } = res?.data?.data
-                this.setState({ totalPendingLeaves, totalPendingTOILs })
+    processPendingInfo = response => {
+        const data = this.processData(response)
+        const { totalPendingLeaves, totalPendingTOILs } = data
+        this.setState({ totalPendingLeaves, totalPendingTOILs })
+    }
+
+    processData = response => {
+        let data = null
+        if (response?.status === "fulfilled" && response?.value?.data) {
+            const result = response.value.data?.result
+            if (result && result?.code == Constants.API_SUCCESS_CODE) {
+                data = response.value.data?.data
             }
-        }).catch(error => {
-        })
+        }
+        return data
+    }
+
+    componentDidMount() {
+        this.initialData()
     }
 
     getStartDate() {
