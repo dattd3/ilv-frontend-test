@@ -16,8 +16,8 @@ import Constants from '../../commons/Constants'
 import RegistrationConfirmationModal from '../Registration/ConfirmationModal'
 import { FormControl, Form, Button } from 'react-bootstrap'
 import { withTranslation } from "react-i18next"
-import { showRangeDateGroupByArrayDate, generateTaskCodeByCode, getValueParamByQueryString } from "../../commons/Utils"
-import { REQUEST_CATEGORIES, REQUEST_CATEGORY_1_LIST, REQUEST_CATEGORY_2_LIST, absenceRequestTypes, requestTypes } from "../Task/Constants"
+import { showRangeDateGroupByArrayDate, generateTaskCodeByCode, getValueParamByQueryString, setURLSearchParam } from "../../commons/Utils"
+import { REQUEST_CATEGORIES, absenceRequestTypes, requestTypes } from "../Task/Constants"
 import { MOTHER_LEAVE_KEY } from "./Constants"
 // import IconInformation from "assets/img/icon/icon-blue-information.svg"
 import IconFilter from "assets/img/icon/icon-filter.svg"
@@ -48,9 +48,8 @@ class RequestTaskList extends React.Component {
             isShowModalRegistrationConfirm: false,
             statusSelected: null,
             query: null,
-            requestCategorySelect: getValueParamByQueryString(window.location.search, "requestCategory") || REQUEST_CATEGORIES.CATEGORY_1,
-            tmpRequestCategorySelect: getValueParamByQueryString(window.location.search, "requestCategory") || REQUEST_CATEGORIES.CATEGORY_1,
-            isShowRequestCategorySelect: false,            
+            tmpRequestTypesSelect: getValueParamByQueryString(window.location.search, "requestTypes")?.split(","),
+            isShowRequestTypesSelect: false,            
             dataForSearch: {
                 pageIndex: Constants.TASK_PAGE_INDEX_DEFAULT,
                 pageSize: Constants.TASK_PAGE_SIZE_DEFAULT,
@@ -83,18 +82,17 @@ class RequestTaskList extends React.Component {
             4: "Phản hồi của CBLĐ",
             5: "Phản hồi của CBLĐ"
         }
-        this.categorySelectRef = React.createRef();
-        this.handleClickOutsideCategorySelect = this.handleClickOutsideCategorySelect.bind(this);
+        this.requestTypesSelectRef = React.createRef();
+        this.handleClickOutsideRequestTypesSelect = this.handleClickOutsideRequestTypesSelect.bind(this);
     }
 
-    componentDidMount()
-    {
-        document.addEventListener("mousedown", this.handleClickOutsideCategorySelect);
+    componentDidMount() {
+        document.addEventListener("mousedown", this.handleClickOutsideRequestTypesSelect);
         this.setState({tasks: this.props.tasks})
     }
 
     componentWillUnmount() {
-      document.removeEventListener("mousedown", this.handleClickOutsideCategorySelect);
+      document.removeEventListener("mousedown", this.handleClickOutsideRequestTypesSelect);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -673,12 +671,6 @@ class RequestTaskList extends React.Component {
 
     }
 
-    handleCategorySelectChange(opt) {
-        this.setState({
-          requestCategory: opt.value
-        })
-    }
-
     //re code
     handleInputChange = (event) => {
         this.setState({
@@ -708,47 +700,56 @@ class RequestTaskList extends React.Component {
                 needRefresh: needRefresh
             }
         })
-        this.props.requestRemoteData(params, this.state.requestCategorySelect);
+        this.props.requestRemoteData(params);
     }
   
-    handleRequestCategorySelect = (val) => {
+    handleRequestTypesChange = (type, checked) => {
+      let newTypesSelect = [...this.state.tmpRequestTypesSelect];
+      if (checked && !newTypesSelect.includes(type)) {
+        newTypesSelect.push(type)
+      } else if (!checked && newTypesSelect.includes(type)) {
+        newTypesSelect = newTypesSelect.filter(item => item !== type)
+      }
       this.setState({
-        tmpRequestCategorySelect: val,
+        tmpRequestTypesSelect: newTypesSelect,
       })
     }
 
-    cancelRequestCategorySelect = () => {
+    cancelRequestTypesSelect = () => {
       this.setState({
-        isShowRequestCategorySelect: false,
-        tmpRequestCategorySelect: this.state.requestCategorySelect
+        isShowRequestTypesSelect: false,
+        tmpRequestTypesSelect: getValueParamByQueryString(window.location.search, "requestTypes")?.split(",")
       })
     }
 
-    applyRequestCategorySelect = () => {
+    applyRequestTypesSelect = () => {
+      setURLSearchParam("requestTypes", this.state.tmpRequestTypesSelect?.join(","))
+      this.searchRemoteData(true);
       this.setState({
-        requestCategorySelect: this.state.tmpRequestCategorySelect
-      }, () => {
-        this.searchRemoteData(true);
-        this.setState({
-          isShowRequestCategorySelect: false,
-        })
+        isShowRequestTypesSelect: false,
       })
     }
 
-    showRequestCategorySelect = () => {
+    showRequestTypesSelect = () => {
       this.setState({
-        isShowRequestCategorySelect: true,
+        isShowRequestTypesSelect: true,
       })
     }
 
-    handleClickOutsideCategorySelect = (event) => {
-      if (this.categorySelectRef && this.categorySelectRef.current 
-        && !this.categorySelectRef.current.contains(event.target) 
-        && this.state.isShowRequestCategorySelect
+    handleClickOutsideRequestTypesSelect = (event) => {
+      if (this.requestTypesSelectRef && this.requestTypesSelectRef.current 
+        && !this.requestTypesSelectRef.current.contains(event.target) 
+        && this.state.isShowRequestTypesSelect
       ) {
+        this.cancelRequestTypesSelect()
+      }
+    }
+
+    handleRequestCategorySelect = (category, requestCategorySelected) => {
+      if (category !== requestCategorySelected) {
+        const newRequestTypesSelect = category === REQUEST_CATEGORIES.CATEGORY_1 ? Object.keys(Constants.REQUEST_CATEGORY_1_LIST) : Object.keys(Constants.REQUEST_CATEGORY_2_LIST)
         this.setState({
-          isShowRequestCategorySelect: false,
-          tmpRequestCategorySelect: this.state.requestCategorySelect
+          tmpRequestTypesSelect: newRequestTypesSelect
         })
       }
     }
@@ -785,6 +786,7 @@ class RequestTaskList extends React.Component {
         const { pageNumber, isSyncFromEmployee, dataForSearch } = this.state
         const dataToSap = this.getDataToSAP(this.state.requestTypeId, this.state.dataToPrepareToSAP)
         const fullDay = 1
+        const requestCategorySelected = Constants.REQUEST_CATEGORY_2_LIST[this.state.tmpRequestTypesSelect?.[0]*1] ? 2 : 1
         const getRequestTypeLabel = (requestType, absenceTypeValue) => {
             if (requestType.id == Constants.LEAVE_OF_ABSENCE) {
                 const absenceType = absenceRequestTypes.find(item => item.value == absenceTypeValue)
@@ -814,18 +816,18 @@ class RequestTaskList extends React.Component {
                 <div className="row w-100 mt-2 mb-3 search-block">
                     <div className="w-180px position-relative">
                           <img src={IconFilter} alt="" className="icon-prefix-select" />
-                          <div onClick={this.showRequestCategorySelect}>
+                          <div onClick={this.showRequestTypesSelect}>
                             <Select name="requestCategory"
                               className="w-100"
                               placeholder={t("TypeOfRequest")} 
                               key="requestCategory"
                               classNamePrefix="filter-select"
-                              inputValue={this.state.requestCategorySelect == REQUEST_CATEGORIES.CATEGORY_1 ? `${t("Type")} I` : `${t("Type")} II`}
+                              inputValue={requestCategorySelected === REQUEST_CATEGORIES.CATEGORY_1 ? `${t("Type")} I` : `${t("Type")} II`}
                               noOptionsMessage={() => null}
                             />
                           </div>
                           {
-                            this.state.isShowRequestCategorySelect && <div className="request-category-guide-container" ref={this.categorySelectRef}>
+                            this.state.isShowRequestTypesSelect && <div className="request-category-guide-container" ref={this.categorySelectRef}>
                               <div className="request-category-guide-body">
                                 <div className="category-title">
                                   <b>
@@ -838,13 +840,19 @@ class RequestTaskList extends React.Component {
                                   name="category-radio-group"
                                   type="radio"
                                   onChange={e => {}}
-                                  onClick={() => this.handleRequestCategorySelect(REQUEST_CATEGORIES.CATEGORY_1)}
-                                  checked={this.state.tmpRequestCategorySelect == REQUEST_CATEGORIES.CATEGORY_1}
+                                  onClick={() => this.handleRequestCategorySelect(REQUEST_CATEGORIES.CATEGORY_1, requestCategorySelected)}
+                                  checked={requestCategorySelected === REQUEST_CATEGORIES.CATEGORY_1}
                                 />
                                 <ul className="type-list-ul">
-                                  {REQUEST_CATEGORY_1_LIST.map(item => <li className="category-item" key={item}>
-                                    {t(item)}
-                                  </li>)}
+                                  {Object.keys(Constants.REQUEST_CATEGORY_1_LIST)?.map(key => <div className="category-item" key={key}>
+                                    <input 
+                                      type="checkbox" 
+                                      onChange={(e) => this.handleRequestTypesChange(key, e.currentTarget.checked)} 
+                                      checked={this.state.tmpRequestTypesSelect.includes(key)}
+                                      disabled={requestCategorySelected !== REQUEST_CATEGORIES.CATEGORY_1}  
+                                    /> 
+                                    {t(Constants.REQUEST_CATEGORY_1_LIST[key])}
+                                  </div>)}
                                 </ul>
                                 <Form.Check
                                   label={`${t("Type")} II`}
@@ -852,21 +860,27 @@ class RequestTaskList extends React.Component {
                                   name="category-radio-group"
                                   type="radio"
                                   onChange={e => {}}
-                                  onClick={() => this.handleRequestCategorySelect(REQUEST_CATEGORIES.CATEGORY_2)}
-                                  checked={this.state.tmpRequestCategorySelect == REQUEST_CATEGORIES.CATEGORY_2}
+                                  onClick={() => this.handleRequestCategorySelect(REQUEST_CATEGORIES.CATEGORY_2, requestCategorySelected)}
+                                  checked={requestCategorySelected === REQUEST_CATEGORIES.CATEGORY_2}
                                 />
                                 <ul className="type-list-ul">
-                                  {REQUEST_CATEGORY_2_LIST.map(item => <li className="category-item" key={item}>
-                                    {t(item)}
-                                  </li>)}
+                                  {Object.keys(Constants.REQUEST_CATEGORY_2_LIST)?.map(key => <div className="category-item" key={key}>
+                                    <input 
+                                      type="checkbox" 
+                                      onChange={(e) => this.handleRequestTypesChange(key, e.currentTarget.checked)}
+                                      checked={this.state.tmpRequestTypesSelect.includes(key)}
+                                      disabled={requestCategorySelected !== REQUEST_CATEGORIES.CATEGORY_2}  
+                                    /> 
+                                    {t(Constants.REQUEST_CATEGORY_2_LIST[key])}
+                                  </div>)}
                                 </ul>
                               </div>
                               <div className="request-category-guide-footer">
-                                <Button className="cancel-btn" onClick={this.cancelRequestCategorySelect}>
+                                <Button className="cancel-btn" onClick={this.cancelRequestTypesSelect}>
                                   <i className="fas fa-times mr-2"></i>
                                   {t('Cancel')}
                                 </Button>
-                                <Button className="apply-btn"  onClick={this.applyRequestCategorySelect}>
+                                <Button className="apply-btn"  onClick={this.applyRequestTypesSelect}>
                                   <i className="fas fa-check mr-2"></i>
                                   {t('ApplySearch')}
                                 </Button>
