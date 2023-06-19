@@ -513,18 +513,21 @@ const SalaryAdjustmentPropse = (props) => {
             ..._itemInfo,
             uid: _itemInfo?.employeeNo,
             employeeNo: _itemInfo?.employeeNo,
-            requestHistoryId: item.requestHistoryId
+            requestHistoryId: item.requestHistoryId,
+            appraiserComment: item?.appraiserComment,
           });
         } else if(_itemInfo.type === Constants.STATUS_PROPOSAL.LEADER_APPRAISER) {
           _supervisors.push({
             ..._itemInfo,
             uid: _itemInfo?.employeeNo,
             employeeNo: _itemInfo?.employeeNo,
-            requestHistoryId: item.requestHistoryId
+            requestHistoryId: item.requestHistoryId,
+            appraiserComment: item?.appraiserComment,
           })
         } else if (_itemInfo.type == Constants.STATUS_PROPOSAL.EMPLOYEE) {
           const _employeeInfo = employeeLists.find((ele) => ele.uid == _itemInfo.employeeNo);
           if(_employeeInfo) {
+            _employeeInfo.appraiserComment = item?.appraiserComment;
             _employeeAppraiser.push(_employeeInfo)
           }
         }
@@ -542,11 +545,13 @@ const SalaryAdjustmentPropse = (props) => {
         ...approvalData,
         uid: approvalData?.employeeNo,
         employeeNo: approvalData?.employeeNo,
+        appraiserComment: approverRes?.appraiserComment,
       });
       setApproverArrive({
         ...approverArriveData,
         uid: approverArriveData?.employeeNo,
         employeeNo: approverArriveData?.employeeNo,
+        appraiserComment: approverArriveRes?.appraiserComment,
       });
     }
     const requestDocuments = (userProfileDocuments || []).map((u) => ({
@@ -1317,8 +1322,9 @@ const SalaryAdjustmentPropse = (props) => {
       if(isTransferAppointProposal) {
         if(isTransferProposal) {
           if (!u.proposedPositionCode) errors.push(t("ProposedEmployeeEmpty"));
+          if (!!u.proposedLevelGroup && !u.proposedLevel) errors.push(t("ProposedEmployeeLevelRequired"));
         } else {
-          if(!u.proposedLevelGroup || !u.proposedLevel) errors.push(t("ProposedEmployeeLevelEmpty"));
+          if (!u.proposedLevelGroup || !u.proposedLevel) errors.push(t("ProposedEmployeeLevelEmpty"));
         }
       }
 
@@ -2137,8 +2143,7 @@ const SalaryAdjustmentPropse = (props) => {
                   isAppraiser={true}
                   approver={item}
                   updateApprover={(sup) => {}}
-                  // comment={dataSalary?.requestAppraisers?.find((_, index) => index === key)?.appraiserComment}
-                  comment=""
+                  comment={item?.appraiserComment}
                 />
               </div>
             ))}
@@ -2163,7 +2168,7 @@ const SalaryAdjustmentPropse = (props) => {
                   isAppraiser={true}
                   approver={item}
                   updateApprover={(sup) => handleUpdateSupervisors(sup, key)}
-                  comment={dataSalary?.requestAppraisers?.find((_, index) => index === key)?.appraiserComment}
+                  comment={item?.appraiserComment}
                 />
               </div>
             ))}
@@ -2192,7 +2197,7 @@ const SalaryAdjustmentPropse = (props) => {
               approver={appraiser}
               isHR={true}
               updateApprover={(sup) => handleUpdateHrChangeSalary(sup)}
-              comment={dataSalary?.requestAppraisers?.[dataSalary?.requestAppraisers?.length - 1]?.appraiserComment}
+              comment={appraiser?.appraiserComment}
             />
           </div>
         </>
@@ -2209,7 +2214,7 @@ const SalaryAdjustmentPropse = (props) => {
                 isEdit={!viewSetting.disableComponent.selectHrSupportViewSalary}
                 approver={approver}
                 updateApprover={handleUpdateApprovalSalary}
-                comment={dataSalary?.approverComment}
+                comment={approver?.appraiserComment}
               />
             </div>
             <h5 className="content-page-header">{`${t('BossApproved')} (${t(
@@ -2220,7 +2225,7 @@ const SalaryAdjustmentPropse = (props) => {
                 isEdit={!viewSetting.disableComponent.selectHrSupportViewSalary}
                 approver={approverArrive}
                 updateApprover={handleUpdateApprovalArriveSalary}
-                comment={dataSalary?.approverComment}
+                comment={approverArrive?.appraiserComment}
                 isAppraiserNote={true}
               />
             </div>
@@ -2233,7 +2238,7 @@ const SalaryAdjustmentPropse = (props) => {
                 isEdit={!viewSetting.disableComponent.selectHrSupportViewSalary}
                 approver={approver}
                 updateApprover={handleUpdateApprovalSalary}
-                comment={dataSalary?.approverComment}
+                comment={approver?.appraiserComment}
                 isAppraiserNote={true}
               />
             </div>
