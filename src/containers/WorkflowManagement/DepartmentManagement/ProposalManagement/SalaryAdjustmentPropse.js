@@ -513,18 +513,21 @@ const SalaryAdjustmentPropse = (props) => {
             ..._itemInfo,
             uid: _itemInfo?.employeeNo,
             employeeNo: _itemInfo?.employeeNo,
-            requestHistoryId: item.requestHistoryId
+            requestHistoryId: item.requestHistoryId,
+            appraiserComment: item?.appraiserComment,
           });
         } else if(_itemInfo.type === Constants.STATUS_PROPOSAL.LEADER_APPRAISER) {
           _supervisors.push({
             ..._itemInfo,
             uid: _itemInfo?.employeeNo,
             employeeNo: _itemInfo?.employeeNo,
-            requestHistoryId: item.requestHistoryId
+            requestHistoryId: item.requestHistoryId,
+            appraiserComment: item?.appraiserComment,
           })
         } else if (_itemInfo.type == Constants.STATUS_PROPOSAL.EMPLOYEE) {
           const _employeeInfo = employeeLists.find((ele) => ele.uid == _itemInfo.employeeNo);
           if(_employeeInfo) {
+            _employeeInfo.appraiserComment = item?.appraiserComment;
             _employeeAppraiser.push(_employeeInfo)
           }
         }
@@ -542,11 +545,13 @@ const SalaryAdjustmentPropse = (props) => {
         ...approvalData,
         uid: approvalData?.employeeNo,
         employeeNo: approvalData?.employeeNo,
+        appraiserComment: approverRes?.appraiserComment,
       });
       setApproverArrive({
         ...approverArriveData,
         uid: approverArriveData?.employeeNo,
         employeeNo: approverArriveData?.employeeNo,
+        appraiserComment: approverArriveRes?.appraiserComment,
       });
     }
     const requestDocuments = (userProfileDocuments || []).map((u) => ({
