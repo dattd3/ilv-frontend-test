@@ -4075,11 +4075,16 @@ span.badge-notification[data-badge]::after {
   z-index: 99999999;
   .modal-dialog {
     max-width: 600px;
-    margin: 0 auto!important;
+    margin: 0 auto !important;
     height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
+    &.mw-800 {
+      max-width: 800px;
+      margin: 25px auto !important;
+      height: auto;
+    }
     .modal-content {
       .modal-header {
         padding: 16px 20px;

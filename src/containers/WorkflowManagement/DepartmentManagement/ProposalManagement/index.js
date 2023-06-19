@@ -13,15 +13,20 @@ const ProposalManagement = (props) => {
   if(checkVersionPnLSameAsVinhome(Constants.MODULE.DEXUATLUONG)) {
     InsuranceOptions.push({ value: 1, label: t('SalaryAdjustmentPropse')});
   }
+  if(checkVersionPnLSameAsVinhome(Constants.MODULE.DIEUCHUYEN)) {
+    InsuranceOptions.push({ value: 2, label: t('ProposalTransfer') });
+  }
   if(checkVersionPnLSameAsVinhome(Constants.MODULE.NGHIVIEC)) {
-    InsuranceOptions.push({ value: 2, label: t('ProposeForEmployeesResignation') });
+    InsuranceOptions.push({ value: 3, label: t('ProposeForEmployeesResignation') });
   }
 
   const handleChangeType = (e) => {
     setType(e)
-    if (e.value == 1) {
+    if (e.value === 1) {
       props.history.push(`/salaryadjustment/create/request`)
-    } else if(e.value == 2) {
+    } else if(e.value === 2) {
+      props.history.push(`/transfer-appoint/create/request`)
+    } else if(e.value === 3) {
       props.history.push(`/proposed-resignation`)
     }
   }

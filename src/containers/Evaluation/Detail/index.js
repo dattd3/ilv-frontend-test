@@ -738,7 +738,7 @@ function EvaluationDetail(props) {
 
   const isValidScoreFunc = () => {
     const maximumScore = 5;
-    const minimumScore = 0;
+    const minimumScore = 1;
     const listGroup = evaluationFormDetail?.listGroup || []
     const isVinBus = isVinBusByCompanyCode(evaluationFormDetail?.companyCode)
 

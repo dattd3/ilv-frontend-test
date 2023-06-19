@@ -4,9 +4,9 @@ import deleteButton from '../../assets/img/icon-delete.svg'
 import evictionButton from '../../assets/img/eviction.svg'
 import IconSync from '../../assets/img/icon/Icon_Sync.svg'
 import CustomPaging from '../../components/Common/CustomPaging'
-import TableUtil from '../../components/Common/table'
-import { OverlayTrigger, Tooltip } from 'react-bootstrap'
-import Popover from 'react-bootstrap/Popover'
+import DatePicker from 'react-datepicker'
+import 'react-datepicker/dist/react-datepicker.css'
+
 import Select from 'react-select'
 import moment from 'moment'
 import purify from "dompurify"
@@ -14,11 +14,15 @@ import _ from 'lodash'
 import ConfirmationModal from '../../containers/Registration/ConfirmationModal'
 import Constants from '../../commons/Constants'
 import RegistrationConfirmationModal from '../Registration/ConfirmationModal'
-import { InputGroup, FormControl } from 'react-bootstrap'
+import { FormControl, Form, Button } from 'react-bootstrap'
 import { withTranslation } from "react-i18next"
-import { showRangeDateGroupByArrayDate, generateTaskCodeByCode } from "../../commons/Utils"
-import { absenceRequestTypes, requestTypes } from "../Task/Constants"
+import { showRangeDateGroupByArrayDate, generateTaskCodeByCode, getValueParamByQueryString } from "../../commons/Utils"
+import { REQUEST_CATEGORIES, REQUEST_CATEGORY_1_LIST, REQUEST_CATEGORY_2_LIST, absenceRequestTypes, requestTypes } from "../Task/Constants"
 import { MOTHER_LEAVE_KEY } from "./Constants"
+// import IconInformation from "assets/img/icon/icon-blue-information.svg"
+import IconFilter from "assets/img/icon/icon-filter.svg"
+import IconSearch from "assets/img/icon/icon-search.svg"
+import IconCalender from "assets/img/icon/icon-calender.svg"
 
 const TIME_FORMAT = 'HH:mm:ss'
 const DATE_FORMAT = 'DD-MM-YYYY'
@@ -44,12 +48,17 @@ class RequestTaskList extends React.Component {
             isShowModalRegistrationConfirm: false,
             statusSelected: null,
             query: null,
+            requestCategorySelect: getValueParamByQueryString(window.location.search, "requestCategory") || REQUEST_CATEGORIES.CATEGORY_1,
+            tmpRequestCategorySelect: getValueParamByQueryString(window.location.search, "requestCategory") || REQUEST_CATEGORIES.CATEGORY_1,
+            isShowRequestCategorySelect: false,            
             dataForSearch: {
                 pageIndex: Constants.TASK_PAGE_INDEX_DEFAULT,
                 pageSize: Constants.TASK_PAGE_SIZE_DEFAULT,
                 id: '',
                 status: 0,
-                needRefresh: false
+                needRefresh: false,
+                fromDate: moment().subtract(7, "days").format("DDMMYYYY"),
+                toDate: moment().format("DDMMYYYY"),
             }
         }
 
@@ -74,6 +83,18 @@ class RequestTaskList extends React.Component {
             4: "Phản hồi của CBLĐ",
             5: "Phản hồi của CBLĐ"
         }
+        this.categorySelectRef = React.createRef();
+        this.handleClickOutsideCategorySelect = this.handleClickOutsideCategorySelect.bind(this);
+    }
+
+    componentDidMount()
+    {
+        document.addEventListener("mousedown", this.handleClickOutsideCategorySelect);
+        this.setState({tasks: this.props.tasks})
+    }
+
+    componentWillUnmount() {
+      document.removeEventListener("mousedown", this.handleClickOutsideCategorySelect);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -206,58 +227,75 @@ class RequestTaskList extends React.Component {
         this.setState({ isShowModalRegistrationConfirm: false });
     }
 
-    showStatus = (taskId, statusOriginal, request, taskData, statusName) => {
-        const customStylesStatus = {
-            control: base => ({
-                ...base,
-                width: 160,
-                height: 35,
-                minHeight: 35
-            }),
-            option: (styles, { data, isDisabled, isFocused, isSelected }) => {
-                return {
-                    ...styles
-                };
-            },
-        }
+    showStatus = (statusOriginal, request, approverData, statusName) => {
+        // const customStylesStatus = {
+        //   control: (base) => ({
+        //     ...base,
+        //     width: 160,
+        //     height: 35,
+        //     minHeight: 35,
+        //   }),
+        //   option: (styles, { data, isDisabled, isFocused, isSelected }) => {
+        //     return {
+        //       ...styles,
+        //     };
+        //   },
+        // };
 
-        const status = {
-            1: { label: this.props.t('Rejected'), className: 'request-status fail' },
-            2: { label: this.props.t('Approved'), className: 'request-status success' },
-            3: { label: this.props.t('Canceled'), className: 'request-status' },
-            4: { label: this.props.t('Canceled'), className: 'request-status' },
-            5: { label: this.props.t("PendingApproval"), className: 'request-status' },
-            6: { label: this.props.t("PartiallySuccessful"), className: 'request-status warning' },
-            7: { label: this.props.t("Rejected"), className: 'request-status fail' },
-            8: { label: this.props.t("PendingConsent"), className: 'request-status' },
-            20: { label: this.props.t("Consented"), className: 'request-status' },
-            100: { label: this.props.t("Waiting"), className: 'request-status' }
-        }
-
-        const options = [
-            { value: 0, label: 'Đang chờ xử lý' },
-            { value: 1, label: 'Từ chối' },
-            { value: 2, label: 'Phê duyệt' }
-        ]
-
-        if(request == Constants.SALARY_PROPOSE) {
+        const { t } = this.props,
+            status = {
+                1: { label: t('Rejected'), className: 'request-status fail' },
+                2: { label: t('Approved'), className: 'request-status success' },
+                3: { label: t('Canceled'), className: 'request-status' },
+                4: { label: t('Canceled'), className: 'request-status' },
+                5: { label: t("PendingApproval"), className: 'request-status' },
+                6: { label: t("PartiallySuccessful"), className: 'request-status warning' },
+                7: { label: t("Rejected"), className: 'request-status fail' },
+                8: { label: t("PendingConsent"), className: 'request-status' },
+                20: { label: t("Consented"), className: 'request-status' },
+                100: { label: t("Waiting"), className: 'request-status' }
+            }
+            // options = [
+            //     { value: 0, label: 'Đang chờ xử lý' },
+            //     { value: 1, label: 'Từ chối' },
+            //     { value: 2, label: 'Phê duyệt' }
+            // ];
+            
+        if([Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER].includes(request)) {
             if(statusName) {
-                let statusLabel = this.props.t(statusName);
-                let tmp = Object.keys(status).filter(key => status[key].label == statusLabel );
+                let statusLabel = t(statusName),
+                    tmp = Object.keys(status).filter(key => status[key].label == statusLabel );
                 statusOriginal = tmp?.length > 0 ? tmp[0] : statusOriginal;
             } else {
                 statusOriginal = statusOriginal == 21 || statusOriginal == 22 ? 100 : statusOriginal;
             }
         }
 
-        if (this.props.page === "approval") {
-            if (statusOriginal == 0) {
-                return <Select defaultValue={options[0]} options={options} isSearchable={false} onChange={value => this.onChangeStatus(value, taskId, request, value, taskData, statusOriginal)} styles={customStylesStatus} />
-            }
-            return <span className={status[statusOriginal].className}>{status[statusOriginal].label}</span>
-        }
+        // if (page === "approval") {
+        //     if (statusOriginal == 0) {
+        //         return (
+        //           <Select
+        //             defaultValue={options[0]}
+        //             options={options}
+        //             isSearchable={false}
+        //             onChange={(value) =>
+        //               this.onChangeStatus(
+        //                 value,
+        //                 taskId,
+        //                 request,
+        //                 value,
+        //                 taskData,
+        //                 statusOriginal
+        //               )
+        //             }
+        //             styles={customStylesStatus}
+        //           />
+        //         );
+        //     }
+        //     return <span className={status[statusOriginal].className}>{status[statusOriginal].label}</span>
+        // }
         
-        if(taskData?.account != null && statusOriginal == 5) {
+        if(!approverData?.account && statusOriginal === 5 && request !== Constants.UPDATE_PROFILE) {
             statusOriginal = 6;
         }
         
@@ -273,18 +311,18 @@ class RequestTaskList extends React.Component {
     }
 
     getRequestDetailLink = (id, requestTypeId) => {
-        const { page } = this.props
-        const idLengthWrapSub = 2
-        let mainId = id
-        let subId = 1 // subId default
-        const ids = id.split(".")
-        if (ids && ids.length == idLengthWrapSub) {
+        const { page } = this.props,
+            idLengthWrapSub = 2,
+            ids = id.split(".");
+        let mainId = id, subId = 1; // subId default
+
+        if (ids && ids.length === idLengthWrapSub) {
             mainId = ids[0] // is first item
             subId = ids[1] // is second item
         }
 
         if (page === 'approval') {
-            return requestTypeId == Constants.UPDATE_PROFILE ? `/registration/${mainId}/${subId}/approval` : `/registration/${mainId}/${subId}`
+            return requestTypeId === Constants.UPDATE_PROFILE ? `/registration/${mainId}/${subId}/approval` : `/registration/${mainId}/${subId}`
         }
         return `/registration/${mainId}/${subId}/request`
     }
@@ -293,22 +331,21 @@ class RequestTaskList extends React.Component {
         let url = '';
         if(request.parentRequestHistoryId) {
             //xu ly mot nguoi
-            url = `salarypropse/${request.parentRequestHistoryId}/${request.salaryId}/request`
+            url = `salarypropse/${request.parentRequestHistoryId}/${request.salaryId}/request`;
         } else {
             //xu ly nhieu nguoi
-            url = `salaryadjustment/${request.salaryId}/request`
+            url = `${request?.requestTypeId === 14 ? 'transfer-appoint' : 'salaryadjustment'}/${request.salaryId}/request`;
         }
         return url;
     }
 
     getRequestEditLink = (id, requestTypeId, processStatusId) => {
         if ([Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE, Constants.UPDATE_PROFILE, Constants.CHANGE_DIVISON_SHIFT, Constants.DEPARTMENT_TIMESHEET, Constants.OT_REQUEST].includes(requestTypeId)) {
-            return null
+            return null;
         } else {
-            const idLengthWrapSub = 2
-            let mainId = id
-            let subId = 1 // subId default
-            const ids = id.split(".")
+            const idLengthWrapSub = 2, ids = id.split(".");
+            let mainId = id, subId = 1; // subId default
+
             if (ids && ids.length == idLengthWrapSub) {
                 mainId = ids[0] // is first item
                 subId = ids[1] // is second item
@@ -318,22 +355,22 @@ class RequestTaskList extends React.Component {
     }
 
     getMaxDayOfMonth = () => {
-        const today = moment()
-        const year = today.year()
-        const month = today.month() + 1 // Need + 1 because issue January is 0 and December is 11
-        const isLeapYear = year % 4 === 0 && year % 100 !== 0
+      const today = moment(),
+        year = today.year(),
+        month = today.month() + 1; // Need + 1 because issue January is 0 and December is 11
+      const isLeapYear = year % 4 === 0 && year % 100 !== 0,
+        month31Days = [1, 3, 5, 7, 8, 10, 12],
+        month30Days = [4, 6, 9, 11];
 
-        const month31Days = [1, 3, 5, 7, 8, 10, 12]
-        const month30Days = [4, 6, 9, 11]
-        if (month31Days.includes(month)) return 31
-        if (month30Days.includes(month)) return 30
-        if (month === 2) {
-            if (isLeapYear) {
-                return 29
-            }
-            return 28
+      if (month31Days.includes(month)) return 31;
+      if (month30Days.includes(month)) return 30;
+      if (month === 2) {
+        if (isLeapYear) {
+          return 29;
         }
-        return 30
+        return 28;
+      }
+      return 30;
     }
 
     checkDateLessThanPayPeriod = (startDate) => {
@@ -433,17 +470,22 @@ class RequestTaskList extends React.Component {
 
     isShowEvictionButton = (status, requestTypeId, startDate, isEditOnceTime) => {
         const { page } = this.props
-
         if (page === "approval" || !isEditOnceTime) {
             return false
         } else {
-            const firstStartDate = startDate?.length > 0 ? startDate[0] : null
-            if (status == Constants.STATUS_APPROVED 
-                && [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP].includes(requestTypeId) 
-                && this.checkDateLessThanPayPeriod(moment(firstStartDate, 'DD/MM/YYYY')?.isValid() ? moment(firstStartDate, 'DD/MM/YYYY').format('YYYYMMDD') : null)) {
-                return true
-            }
-            return false
+          const firstStartDate = startDate?.length > 0 ? startDate[0] : null
+          if (status == Constants.STATUS_APPROVED 
+              && [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP].includes(requestTypeId) 
+              && this.checkDateLessThanPayPeriod(moment(firstStartDate, 'DD/MM/YYYY')?.isValid() ? moment(firstStartDate, 'DD/MM/YYYY').format('YYYYMMDD') : null)) {
+              return true
+          } else if (status == Constants.STATUS_APPROVED 
+            && requestTypeId === Constants.OT_REQUEST 
+            && startDate?.split(", ")?.every(item => this.checkDateLessThanPayPeriod(moment(item, 'DD/MM/YYYY')?.isValid() ? moment(firstStartDate, 'DD/MM/YYYY').format('YYYYMMDD') : null))
+          ) {
+            // OT: check every item should be less than pay period
+            return true;
+          }
+          return false
         }
     }
 
@@ -622,6 +664,12 @@ class RequestTaskList extends React.Component {
 
     }
 
+    handleCategorySelectChange(opt) {
+        this.setState({
+          requestCategory: opt.value
+        })
+    }
+
     //re code
     handleInputChange = (event) => {
         this.setState({
@@ -643,21 +691,91 @@ class RequestTaskList extends React.Component {
         let params = `pageIndex=${dataForSearch.pageIndex}&pageSize=${dataForSearch.pageSize}&`;
         params += dataForSearch.id ? `id=${dataForSearch.id}&` : '';
         params += dataForSearch.status && dataForSearch.status.value ? `status=${dataForSearch.status.value}&` : '';
+        params += dataForSearch.fromDate ? `fromDate=${dataForSearch.fromDate}&` : '';
+        params += dataForSearch.toDate ? `toDate=${dataForSearch.toDate}&` : '';
         this.setState({
             dataForSearch: {
                 ...dataForSearch,
                 needRefresh: needRefresh
             }
         })
-        this.props.requestRemoteData(params);
+        this.props.requestRemoteData(params, this.state.requestCategorySelect);
+    }
+  
+    handleRequestCategorySelect = (val) => {
+      this.setState({
+        tmpRequestCategorySelect: val,
+      })
+    }
+
+    cancelRequestCategorySelect = () => {
+      this.setState({
+        isShowRequestCategorySelect: false,
+        tmpRequestCategorySelect: this.state.requestCategorySelect
+      })
+    }
+
+    applyRequestCategorySelect = () => {
+      this.setState({
+        requestCategorySelect: this.state.tmpRequestCategorySelect
+      }, () => {
+        this.searchRemoteData(true);
+        this.setState({
+          isShowRequestCategorySelect: false,
+        })
+      })
+    }
+
+    showRequestCategorySelect = () => {
+      this.setState({
+        isShowRequestCategorySelect: true,
+      })
+    }
+
+    handleClickOutsideCategorySelect = (event) => {
+      if (this.categorySelectRef && this.categorySelectRef.current 
+        && !this.categorySelectRef.current.contains(event.target) 
+        && this.state.isShowRequestCategorySelect
+      ) {
+        this.setState({
+          isShowRequestCategorySelect: false,
+          tmpRequestCategorySelect: this.state.requestCategorySelect
+        })
+      }
+    }
+
+    handleChangeDateFilter = (date, type = "fromDate") => {
+      const { dataForSearch } = this.state;
+      if ( type === "fromDate") {
+        date ? this.setState({
+          dataForSearch: {
+            ...dataForSearch,
+            fromDate: moment(date).format("DDMMYYYY")
+          }
+        }) : this.setState({dataForSearch: {
+          ...dataForSearch,
+          fromDate: null
+        }});
+      } else {
+        date ? this.setState({
+          dataForSearch: {
+            ...dataForSearch,
+            toDate: moment(date).format("DDMMYYYY")
+          }
+        }) : this.setState({
+          dataForSearch: {
+            ...dataForSearch,
+            toDate: null
+          }
+        });
+      }
     }
 
     render() {
         const { t, total, tasks } = this.props
-        const { pageNumber, isSyncFromEmployee } = this.state
+        const { pageNumber, isSyncFromEmployee, dataForSearch } = this.state
         const dataToSap = this.getDataToSAP(this.state.requestTypeId, this.state.dataToPrepareToSAP)
         const fullDay = 1
-
         const getRequestTypeLabel = (requestType, absenceTypeValue) => {
             if (requestType.id == Constants.LEAVE_OF_ABSENCE) {
                 const absenceType = absenceRequestTypes.find(item => item.value == absenceTypeValue)
@@ -685,46 +803,138 @@ class RequestTaskList extends React.Component {
                 <RegistrationConfirmationModal show={this.state.isShowModalRegistrationConfirm} id={this.state.taskId} title={this.state.modalTitle} message={this.state.modalMessage}
                     type={this.state.typeRequest} urlName={this.state.requestUrl} dataToSap={dataToSap} onHide={this.onHideModalRegistrationConfirm} />
                 <div className="row w-100 mt-2 mb-3 search-block">
-                    <div className="col-xl-4">
-                        <InputGroup className="d-flex">
-                            <InputGroup.Prepend className="">
-                                <InputGroup.Text id="basic-addon1"><i className="fas fa-filter"></i></InputGroup.Text>
-                            </InputGroup.Prepend>
-                            <Select name="absenceType"
-                                className="w-75"
-                                // defaultValue={this.props.filterdata[0]}
-                                value={this.state.absenceType || ""}
-                                isClearable={false}
-                                onChange={absenceType => this.handleSelectChange('absenceType', absenceType)}
-                                placeholder={t('SortByStatus')} key="absenceType" options={this.props.filterdata}
-                                styles={{
-                                    menu: provided => ({ ...provided, zIndex: 2 })
-                                }}
-                                theme={theme => ({
-                                    ...theme,
-                                    colors: {
-                                        ...theme.colors,
-                                        primary25: '#F9C20A',
-                                        primary: '#F9C20A',
-                                    },
-                                })} />
-                        </InputGroup>
-                    </div>
-                    <div className="col-xl-4">
-                        <InputGroup>
-                            <InputGroup.Prepend>
-                                <InputGroup.Text id="basic-addon2"><i className="fas fa-search"></i></InputGroup.Text>
-                            </InputGroup.Prepend>
-                            <FormControl
-                                placeholder={t('SearchRequester')}
-                                aria-label="SearchRequester"
-                                aria-describedby="basic-addon2"
-                                className="request-user"
-                                onChange={this.handleInputChange}
+                    <div className="w-180px position-relative">
+                          <img src={IconFilter} alt="" className="icon-prefix-select" />
+                          <div onClick={this.showRequestCategorySelect}>
+                            <Select name="requestCategory"
+                              className="w-100"
+                              placeholder={t("TypeOfRequest")} 
+                              key="requestCategory"
+                              classNamePrefix="filter-select"
+                              inputValue={this.state.requestCategorySelect == REQUEST_CATEGORIES.CATEGORY_1 ? `${t("Type")} I` : `${t("Type")} II`}
+                              noOptionsMessage={() => null}
                             />
-                        </InputGroup>
+                          </div>
+                          {
+                            this.state.isShowRequestCategorySelect && <div className="request-category-guide-container" ref={this.categorySelectRef}>
+                              <div className="request-category-guide-body">
+                                <div className="category-title">
+                                  <b>
+                                    {t("TypeOfRequest")}
+                                  </b>
+                                </div>
+                                <Form.Check
+                                  label={`${t("Type")} I`}
+                                  id={`type-1-radio`}
+                                  name="category-radio-group"
+                                  type="radio"
+                                  onChange={e => {}}
+                                  onClick={() => this.handleRequestCategorySelect(REQUEST_CATEGORIES.CATEGORY_1)}
+                                  checked={this.state.tmpRequestCategorySelect == REQUEST_CATEGORIES.CATEGORY_1}
+                                />
+                                <ul className="type-list-ul">
+                                  {REQUEST_CATEGORY_1_LIST.map(item => <li className="category-item" key={item}>
+                                    {t(item)}
+                                  </li>)}
+                                </ul>
+                                <Form.Check
+                                  label={`${t("Type")} II`}
+                                  id={`type-2-radio`}
+                                  name="category-radio-group"
+                                  type="radio"
+                                  onChange={e => {}}
+                                  onClick={() => this.handleRequestCategorySelect(REQUEST_CATEGORIES.CATEGORY_2)}
+                                  checked={this.state.tmpRequestCategorySelect == REQUEST_CATEGORIES.CATEGORY_2}
+                                />
+                                <ul className="type-list-ul">
+                                  {REQUEST_CATEGORY_2_LIST.map(item => <li className="category-item" key={item}>
+                                    {t(item)}
+                                  </li>)}
+                                </ul>
+                              </div>
+                              <div className="request-category-guide-footer">
+                                <Button className="cancel-btn" onClick={this.cancelRequestCategorySelect}>
+                                  <i className="fas fa-times mr-2"></i>
+                                  {t('Cancel')}
+                                </Button>
+                                <Button className="apply-btn"  onClick={this.applyRequestCategorySelect}>
+                                  <i className="fas fa-check mr-2"></i>
+                                  {t('ApplySearch')}
+                                </Button>
+                              </div>
+                            </div>
+                          }
+                        </div>
+                    <div className="w-180px position-relative">
+                        <img src={IconFilter} alt="" className="icon-prefix-select" />
+                        <Select name="absenceType"
+                            // defaultValue={this.props.filterdata[0]}
+                            value={this.state.absenceType || ""}
+                            isClearable={false}
+                            onChange={absenceType => this.handleSelectChange('absenceType', absenceType)}
+                            placeholder={t('Status')} key="absenceType" options={this.props.filterdata}
+                            styles={{
+                                menu: provided => ({ ...provided, zIndex: 2 })
+                            }}
+                            classNamePrefix="filter-select"
+                          />
                     </div>
-                    <div className="col-4">
+                    <div className="flex-1 position-relative">
+                        <img src={IconSearch} alt="" className="icon-prefix-select" />
+                        <FormControl
+                            placeholder={t('SearchRequester')}
+                            aria-label="SearchRequester"
+                            aria-describedby="basic-addon2"
+                            className="request-user"
+                            onChange={this.handleInputChange}
+                        />
+                    </div>
+                    <div className="w-120px position-relative date-picker-container">
+                        <DatePicker 
+                          name="fromDate"
+                          selectsStart
+                          autoComplete="off"
+                          selected={
+                            dataForSearch.fromDate ? moment( dataForSearch.fromDate, "DDMMYYYY").toDate() : null
+                          }
+                          maxDate={
+                            dataForSearch.toDate ? moment(dataForSearch.toDate, "DDMMYYYY").toDate() : null
+                          }
+                          minDate={
+                            moment().subtract(6, "months").toDate()
+                          }
+                          onChange={(date) => this.handleChangeDateFilter(date, "fromDate")}
+                          showDisabledMonthNavigation
+                          dateFormat="dd/MM/yyyy"
+                          placeholderText={t("From")}
+                          locale={"vi"}
+                          shouldCloseOnSelect={true}
+                          className="form-control input"
+                        />
+                        <img src={IconCalender} alt="" className="calender-icon" />
+                    </div>
+                    <div className="w-120px position-relative date-picker-container">
+                        <DatePicker 
+                          name="endDate"
+                          selectsEnd
+                          autoComplete="off"
+                          selected={
+                            dataForSearch.toDate ? moment(dataForSearch.toDate, "DDMMYYYY").toDate() : null
+                          }
+                          minDate={
+                            dataForSearch.fromDate ? moment(dataForSearch.fromDate, "DDMMYYYY").toDate() : moment().subtract(6, "months").toDate()
+                          }
+                          onChange={(date) => this.handleChangeDateFilter(date, "toDate")}
+                          showDisabledMonthNavigation
+                          dateFormat="dd/MM/yyyy"
+                          placeholderText={t("To")}
+                          locale={"vi"}
+                          shouldCloseOnSelect={true}
+                          className="form-control input"
+                        />
+                        <img src={IconCalender} alt="" className="calender-icon" />
+                    </div>
+                    <div className="w-120px">
                         <button type="button" onClick={() => this.searchRemoteData(true)} className="btn btn-warning w-100">{t("Search")}</button>
                     </div>
                 </div>
@@ -741,15 +951,20 @@ class RequestTaskList extends React.Component {
                                         <th scope="col" className="request-type">{t("TypeOfRequest")}</th>
                                         <th scope="col" className="day-off">{t("Times")}</th>
                                         <th scope="col" className="break-time text-center">{t("TotalLeaveTime")}</th>
+                                        <th scope="col" className="status">{t("operation")}</th>
                                         <th scope="col" className="status text-center">{t("Status")}</th>
-                                        <th scope="col" className="tool text-center">{t("action")}</th>
+                                        <th scope="col" className="tool text-center">{t("action2")}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {
                                         tasks.map((child, index) => {
                                             let isShowEditButton = this.isShowEditButton(child?.processStatusId, child?.appraiserId, child?.requestTypeId, child?.startDate, child?.isEdit)
-                                            let isShowEvictionButton = this.isShowEvictionButton(child?.processStatusId, child?.requestTypeId, child?.startDate, child?.isEdit)
+                                            const isShowEvictionButton = this.isShowEvictionButton(child?.processStatusId, 
+                                              child?.requestTypeId, 
+                                              child?.requestTypeId === Constants.OT_REQUEST ? child?.dateRange : child?.startDate, 
+                                              child?.isEdit
+                                            );
                                             let actionType = child?.actionType || null
                                             if (child?.requestTypeId == Constants.RESIGN_SELF) {
                                                 const requestItem = child.requestInfo ? child.requestInfo[0] : null // BE xác nhận chỉ có duy nhất 1 item trong requestInfo
@@ -765,7 +980,7 @@ class RequestTaskList extends React.Component {
                                             }
 
                                             let editLink = this.getRequestEditLink(child.id, child.requestTypeId, child.processStatusId)
-                                            let detailLink = child.requestTypeId == Constants.SALARY_PROPOSE ? this.getSalaryProposeLink(child) : this.getRequestDetailLink(child.id, child.requestTypeId)
+                                            let detailLink = [Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER].includes(child.requestTypeId) ? this.getSalaryProposeLink(child) : this.getRequestDetailLink(child.id, child.requestTypeId)
                                             let dateChanged = showRangeDateGroupByArrayDate(child.startDate)
 
                                             if ([Constants.OT_REQUEST].includes(child.requestTypeId)) {
@@ -810,7 +1025,8 @@ class RequestTaskList extends React.Component {
                                                             })
                                                         }
                                                     </td>
-                                                    <td className="status text-center">{this.showStatus(child.id, child.processStatusId, child.requestType.id, child.appraiserId, child.statusName)}</td>
+                                                    <td className="status">{t(`operationType.${child.operationType?.toLowerCase()}`)}</td>
+                                                    <td className="status text-center">{this.showStatus(child.processStatusId, child.requestType.id, child.approver, child.statusName)}</td>
                                                     <td className="tool">
                                                         {(isShowEditButton && child?.absenceType?.value != MOTHER_LEAVE_KEY) && <a href={editLink} title={t("Edit")}><img alt="Sửa" src={editButton} /></a>}
                                                         {isShowEvictionButton && child.absenceType?.value != MOTHER_LEAVE_KEY

@@ -23,7 +23,6 @@ const MyOption = props => {
           <img className="avatar" src={`data:image/png;base64,${props.data.avatar}`} onError={addDefaultSrc} alt="avatar" />
         </div>
         <div className="float-left text-wrap w-75">
-          {props.isSearch === false && <div className="title font-weight-bold text-dark">{t('ApproverRecently')}</div>}
           <div className="title">{props.data.fullName}</div>
           <div className="comment"><i>({props.data.account}) {props.data.current_position}</i></div>
         </div>
@@ -49,131 +48,59 @@ class HumanForReviewSalaryComponent extends React.Component {
     const { approver, isEdit } = this.props
 
     if (isEdit) {
-      return this.setState({
-        approver: {
-          ...approver,
-          label: approver?.fullName,
-          value: approver?.account
-        }
-      })
+      if(approver) {
+        return this.setState({
+          approver: {
+            ...approver,
+            label: approver?.fullName,
+            value: approver?.account
+          }
+        })
+      } else {
+        return this.setState({ approver: null })
+      }
     }
-
-    // const companiesUsing = [Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading, Constants.pnlVCode.VinMec]
-    // if (companiesUsing.includes(currentUserPnLVCodeLogged)) {
-    //   const managerApproval = await this.loadApproverForPnL()
-    //   this.setState({approver: managerApproval} , () => {
-    //     if (approver) {
-    //       this.setState({
-    //         approver: {
-    //           ...approver,
-    //           label: approver.fullName,
-    //           value: approver.account
-    //         }
-    //       })
-    //     }
-    //   })
-    //   this.props.updateApprover(managerApproval, true)
-    // } else {
-    //   const recentlyApprover = await this.loadRecentlyApprover()
-    //   this.setState({ users: recentlyApprover })
-    // }
   }
 
   UNSAFE_componentWillReceiveProps(newProps) {
     const { approver, isEdit } = newProps
-    if (isEdit) {
-      return this.setState({
-        approver: {
-          ...approver,
-          label: approver?.fullName,
-          value: approver?.account
-        }
-      })
-    }
+    //if (isEdit) {
+      if(approver) {
+        return this.setState({
+          approver: {
+            ...approver,
+            label: approver?.fullName,
+            value: approver?.account
+          }
+        })
+      } else {
+        return this.setState({ approver: null })
+      }
+    //}
   };
 
-  // loadApproverForPnL = async () => {
-  //   try {
-  //     const config = getMuleSoftHeaderConfigurations()
-  //     const response = await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/manager`, config)
-  //     if (response && response.data) {
-  //       const result = response.data.result
-  //       if (result && result.code == Constants.API_SUCCESS_CODE) {
-  //         const data = response.data?.data[0]
-  //         return {
-  //           value: data?.userid?.toLowerCase() || "",
-  //           label: data?.fullname || "",
-  //           fullName: data?.fullname || "",
-  //           avatar: data?.avatar || "",
-  //           employeeLevel: data?.rank_title,
-  //           pnl: "",
-  //           orglv2Id: "",
-  //           account: data?.userid?.toLowerCase() || "",
-  //           current_position: data?.title || "",
-  //           department: data?.department || ""
-  //         }
-  //       }
-  //       return null
-  //     }
-  //     return null
-  //   } catch (e) {
-  //     return null
-  //   }
-  // }
-
-  // loadRecentlyApprover = async () => {
-  //   try {
-  //     const config = getRequestConfigurations()
-  //     const response = await axios.get(`${process.env.REACT_APP_REQUEST_URL}user/suggests`, config)
-  //     if (response && response.data) {
-  //       const result = response.data.result
-  //       if (result && result.code == Constants.API_SUCCESS_CODE) {
-  //         const data = response.data?.data
-  //         const approverInfo = data.approverInfo
-  //         if (approverInfo) {
-  //           return [{
-  //             value: approverInfo?.account?.toLowerCase() || "",
-  //             label: approverInfo?.fullName || "",
-  //             fullName: approverInfo?.fullName || "",
-  //             avatar: approverInfo?.avatar || "",
-  //             employeeLevel: approverInfo?.employeeLevel || "",
-  //             pnl: approverInfo?.pnl || "",
-  //             orglv2Id: approverInfo?.orglv2Id || "",
-  //             account: approverInfo?.account?.toLowerCase() || "",
-  //             current_position: approverInfo?.current_position || "",
-  //             department: approverInfo?.department || ""
-  //           }]
-  //         }
-  //         return []
-  //       }
-  //       return []
-  //     }
-  //     return []
-  //   } catch (e) {
-  //     return []
-  //   }
-  // }
-
   handleSelectChange(name, value) {
+    const { updateApprover } = this.props;
     if (value) {
       const currentUserLevel = localStorage.getItem('employeeLevel')
       this.setState({ [name]: value })
       const isApprover = this.isApprover(value.employeeLevel, value.orglv2Id, currentUserLevel, value.account)
-      this.props.updateApprover(value, isApprover)
+      updateApprover(value, isApprover)
     } else {
       this.setState({ [name]: value, users: [] })
-      this.props.updateApprover(value, true)
+      updateApprover(value, true)
     }
   }
 
   isApprover = (levelApproverFilter, orglv2Id, currentUserLevel, account) => {
-    let listLevelsApprover = Constants.APPROVER_LIST_LEVEL
-    if (![Constants.pnlVCode.VinHome, Constants.pnlVCode.VincomRetail, Constants.pnlVCode.VinSchool, Constants.pnlVCode.VinMec, Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading].includes(currentUserPnLVCodeLogged)) {
-      listLevelsApprover = Constants.APPROVER_LIST_LEVEL.filter((item, index) => index !== 0)
-    }
-    const indexCurrentUserLevel = _.findIndex(listLevelsApprover, function (item) { return item == currentUserLevel });
-    const indexApproverFilterLevel = _.findIndex(listLevelsApprover, function (item) { return item == levelApproverFilter });
-    if ((currentUserPnLVCodeLogged !== Constants.pnlVCode.Vin3S && (indexApproverFilterLevel === -1 || indexCurrentUserLevel > indexApproverFilterLevel || !listLevelsApprover.includes(levelApproverFilter)))
+    if(this.props.isHR) return true;
+
+    let listLevelsApprover = Constants.APPROVER_LIST_LEVEL;
+    const indexCurrentUserLevel = _.findIndex(listLevelsApprover, function (item) { return item == currentUserLevel }),
+      indexApproverFilterLevel = _.findIndex(listLevelsApprover, function (item) { return item == levelApproverFilter });
+    if ((
+      currentUserPnLVCodeLogged !== Constants.pnlVCode.Vin3S &&
+      (indexApproverFilterLevel === -1 || indexCurrentUserLevel > indexApproverFilterLevel || !listLevelsApprover.includes(levelApproverFilter)))
       || account?.toLowerCase() === currentUserEmailLogged?.split("@")[0]?.toLowerCase()) {
       return false
     }
@@ -182,18 +109,28 @@ class HumanForReviewSalaryComponent extends React.Component {
 
   getApproverInfo = (value) => {
     this.setState({ isSearch: false })
-    const { appraiser } = this.props
+    const { appraiser, isHR, isAppraiser } = this.props;
     if (value !== "") {
       this.setState({ isSearch: true })
       const config = getRequestConfigurations()
-      const payload = {
+      let payload = {
         account: value,
-        employeeNo: localStorage.getItem('employeeNo')
+        status: 3,
+        empoyee_type: isAppraiser ? "APPRAISER" : "APPROVER",
+      },
+      url = `${process.env.REACT_APP_REQUEST_URL}user/employee/search`;
+      if(isHR) {
+        url = `${process.env.REACT_APP_REQUEST_URL}user/employee/hr_officer`;
+        payload = {
+          account: value,
+          employeeNo: localStorage.getItem('employeeNo'),
+          pnl_code: localStorage.getItem('companyCode')
+        }
       }
-      axios.post(`${process.env.REACT_APP_REQUEST_URL}user/employee/hr_officer`, payload, config)
+      axios.post(url, payload, config)
         .then(res => {
           if (res && res.data && res.data.data) {
-            const data = res.data.data || []
+            const data = res.data.data || [];
             const users = data.map(res => {
               return {
                 value: res.username,
@@ -205,31 +142,56 @@ class HumanForReviewSalaryComponent extends React.Component {
                 pnl: res.pnl,
                 orglv2Id: res.organization_lv2,
                 account: res.username,
+                username: res.username,
                 current_position: res.position_name,
-                department: res.division + (res.department ? '/' + res.department : '') + (res.part ? '/' + res.part : ''),
+                department: res.division + (res.department ? '/' + res.department : '') + (res.unit ? '/' + res.unit : ''),
                 company_email: res?.company_email
               }
             })
             const lst = appraiser ? users.filter(user => user.account !== appraiser.account) : users;
-            this.setState({ users: lst })
+            this.setState({ users: lst, isSearch: false })
           }
-        }).catch(error => { })
-    }
-    else {
-      if (Array.isArray(this.state.users) && this.state.users.length > 1) this.setState({ isSearch: true })
+        }).catch(error => {
+          console.log(error);
+          this.setState({ isSearch: false });
+        })
+    } else {
+      if (Array.isArray(this.state.users) && this.state.users.length > 1)
+        this.setState({ isSearch: true });
     }
   }
 
   onInputChange = value => {
-    this.setState({ approverTyping: value }, () => {
-      this.onInputChange(value)
-    })
+    this.setState({ approverTyping: value }, () => this.onInputChange(value))
   }
 
   filterOption = (option, inputValue) => {
-    const { users } = this.state
-    const options = (users || []).filter(opt => (opt.label?.includes(inputValue) || opt.value?.includes(inputValue) || opt.uid?.includes(inputValue)))
-    return options
+    const { users } = this.state;
+    const options = (users || []).filter(opt => (opt.label?.includes(inputValue) || opt.value?.includes(inputValue) || opt.uid?.includes(inputValue)));
+    return options;
+  }
+
+  downloadApprovalMatrix = () => {
+    const config = getRequestConfigurations();
+      axios
+        .get(
+          `${process.env.REACT_APP_REQUEST_URL}user/file-suggests?type=14`,
+          config
+        )
+        .then((res) => {
+          if (res && res.data && res.data.data) {
+            const fileArr = res.data?.data.split('/'),
+              name = fileArr[fileArr.length - 1],
+              link = document.createElement('a');
+            link.href = res.data?.data;
+            link.setAttribute("download", name?.replace(/%20/gim, " "));
+            link.setAttribute("target", "_blank");
+            document.body.appendChild(link);
+            link.click();
+            link.parentNode.removeChild(link);
+          }
+        })
+        .catch((error) => {});
   }
 
   render() {
@@ -245,8 +207,8 @@ class HumanForReviewSalaryComponent extends React.Component {
         minHeight: 35
       })
     }
-    const { t, isEdit, errors } = this.props;
-    const { isSearch, approver, users } = this.state
+    const { t, isEdit, errors, comment, isAppraiserNote } = this.props;
+    const { isSearch, approver, users } = this.state;
 
     return <div className="approver">
       <div>
@@ -260,6 +222,7 @@ class HumanForReviewSalaryComponent extends React.Component {
                 isClearable={true}
                 isDisabled={isEdit}
                 styles={customStyles}
+                isLoading={isSearch}
                 components={{ Option: e => MyOption({ ...e, isSearch: isSearch }) }}
                 onInputChange={this.onInputChange.bind(this)}
                 name="approver"
@@ -271,12 +234,12 @@ class HumanForReviewSalaryComponent extends React.Component {
                 options={users}
               />
             </div>
-            {errors && errors['approver'] ? <div className="text-danger validation-message">{errors['approver']}</div> : null}
+            {errors && errors['approver'] && <div className="text-danger validation-message">{errors['approver']}</div>}
           </div>
           <div className="col-4">
             <p className="title2">{t('Position')}</p>
             <div>
-              <input type="text" className="form-control" value={approver?.current_position || ""} readOnly />
+              <input type="text" className="form-control" value={approver?.current_position || approver?.jobTitle|| ""} readOnly />
             </div>
           </div>
           <div className="col-4">
@@ -285,10 +248,45 @@ class HumanForReviewSalaryComponent extends React.Component {
               <input type="text" className="form-control" value={approver?.department || ""} readOnly />
             </div>
           </div>
+          {comment && (
+            <div className="col-12" style={{ marginTop: 12 }}>
+              <p className="title2">{t('reason_reject')}</p>
+              <div>
+                <input type="text" className="form-control" value={comment} readOnly />
+              </div>
+            </div>
+          )}
         </div>
-        {
-          currentUserPnLVCodeLogged === Constants.pnlVCode.VinMec ? <div className="row business-type"><span className="col-12 text-info smaller">* {t("NoteSelectApprover")} <b><a href="https://camnangtt.vingroup.net/sites/vmec/default.aspx#/tracuucnpq" target="_blank" >{t("ApprovalMatrix")}</a></b></span></div> : null
-        }
+        {/* {currentUserPnLVCodeLogged === Constants.pnlVCode.VinMec && (
+          <div className="row business-type">
+            <span className="col-12 text-info smaller">
+              * {t('NoteSelectApproverAppraiser')}{' '}
+              <b>
+                <a
+                  href="https://camnangtt.vingroup.net/sites/vmec/default.aspx#/tracuucnpq"
+                  target="_blank"
+                >
+                  {t('ApprovalMatrix')}
+                </a>
+              </b>
+            </span>
+          </div>
+        )} */}
+        {isAppraiserNote && (
+          <div className="row business-type">
+            <span className="col-12 text-info smaller">
+              * {t('NoteSelectApproverAppraiser')}{' '}
+              <b>
+                <span
+                  onClick={this.downloadApprovalMatrix}
+                  style={{ color: '#007bff', cursor: 'pointer' }}
+                >
+                  {t('ApprovalMatrix')}
+                </span>
+              </b>
+            </span>
+          </div>
+        )}
       </div>
     </div>
   }

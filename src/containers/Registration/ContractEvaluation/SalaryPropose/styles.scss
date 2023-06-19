@@ -160,6 +160,37 @@
       margin-bottom: 20px;
     }
   }
+  .timesheet-box1 {
+    display: block;
+    background-color: #fff;
+    width: 100%;
+    margin: 0px;
+    padding: 20px;
+    border-radius: 10px;
+    color: #000;
+    .appraiser {
+      border: 1px solid #DEE2E6;
+      padding: 17px 20px;
+      border-radius: 4px;
+    }
+    .user_header {
+      display: flex;
+      justify-content: space-between;
+      flex-direction: row;
+      align-items: center;
+      margin-bottom: 20px;
+      .title {
+        margin-bottom: 0;
+        font-size: 16px;
+        color: #000;
+        font-weight: bold;
+      }
+      .action {
+        display: flex;
+        gap: 24px;
+      }
+    }
+  }
 }
 
 .modal-consent {

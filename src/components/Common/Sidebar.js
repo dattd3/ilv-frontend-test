@@ -130,7 +130,7 @@ function SideBar(props) {
     const guard = useGuardStore();
     const { t } = useTranslation();
     const user = guard.getCurentUser();
-    const { companyLogoUrl } = props.user;
+    const { companyLogoUrl } = props?.user;
     const { show } = props;
 
     const getNavigation = (role) => {
