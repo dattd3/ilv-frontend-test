@@ -1144,7 +1144,7 @@
   "ProposedResignationForStaff": "Đề xuất cho nhân viên nghỉ",
   "ProposedForResignation": "Đề xuất cho nghỉ",
   "ProposeForEmployeesResignation": "Đề xuất cho nhân viên nghỉ",
-  "ProposalTransfer": "Đề xuất Điều chuyển, Bổ nhiệm, Miễn nhiệm",
+  "ProposalTransfer": "Đề xuất Điều chuyển",
   "ResignationRequestsManagement": "Quản lý yêu cầu nghỉ việc",
   "Welfare": "Phúc lợi",
   "WelfareLevel": "Cấp bậc phúc lợi",
@@ -1830,5 +1830,6 @@
   "WorkingTimeChange": "Giờ làm việc thay đổi",
   "RelationshipNote": "Lưu ý: Trường hợp cần điều chỉnh thông tin của Người phụ thuộc, Anh/Chị vui lòng nộp hồ sơ bản cứng đến Phòng Nhân sự để điều chỉnh!",
   "VinUniSickLeave": "Nghỉ ốm VinUni",
-  "SickLeaveFundForVinUni": "Quỹ Nghỉ ốm VinUni"
+  "SickLeaveFundForVinUni": "Quỹ Nghỉ ốm VinUni",
+  "AppointmentDismissalRequest": "Đề xuất Bổ nhiệm, Miễn nhiệm"
 }

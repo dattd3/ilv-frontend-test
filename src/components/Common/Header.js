@@ -144,15 +144,15 @@ function Header(props) {
                                         }
                                         
                                         if (item.detailType == 'APPRAISAL')
-                                            return `/tasks?tab=consent${item.groupId ? `&requestCategory=${item.groupId}` : ''}`
+                                            return `/tasks?tab=consent${item.groupId ? `&requestTypes=${Object.keys(item.groupId == 1 ? Constants.REQUEST_CATEGORY_1_LIST : Constants.REQUEST_CATEGORY_2_LIST)?.join(",")}` : ''}`
                                         else
-                                            return `/tasks?tab=approval${item.groupId ? `&requestCategory=${item.groupId}` : ''}`
+                                            return `/tasks?tab=approval${item.groupId ? `&requestTypes=${Object.keys(item.groupId == 1 ? Constants.REQUEST_CATEGORY_1_LIST : Constants.REQUEST_CATEGORY_2_LIST)?.join(",")}` : ''}`
                                     case 6:
                                         return '/personal-info?tab=document'
                                     case Constants.notificationType.NOTIFICATION_REJECT:
-                                        return `/tasks?${item.groupId ? `requestCategory=${item.groupId}` : ''}`
+                                        return `/tasks?${item.groupId ? `&requestTypes=${Object.keys(item.groupId == 1 ? Constants.REQUEST_CATEGORY_1_LIST : Constants.REQUEST_CATEGORY_2_LIST)?.join(",")}` : ''}`
                                     case Constants.notificationType.NOTIFICATION_AUTO_JOB:
-                                        return `/tasks?tab=approval${item.groupId ? `&requestCategory=${item.groupId}` : ''}`
+                                        return `/tasks?tab=approval${item.groupId ? `&requestTypes=${Object.keys(item.groupId == 1 ? Constants.REQUEST_CATEGORY_1_LIST : Constants.REQUEST_CATEGORY_2_LIST)?.join(",")}` : ''}`
                                     case Constants.notificationType.NOTIFICATION_SHIFT_CHANGE:
                                         const param = getDateShiftChange(item?.title || '');
                                         return `/timesheet${param}`

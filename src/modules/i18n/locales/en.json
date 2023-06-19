@@ -1128,7 +1128,7 @@
   "ProposedResignationForStaff": "Proposed resignation for staff",
   "ProposedForResignation": "Proposed for resignation",
   "ProposeForEmployeesResignation": "Propose for employees resignation",
-  "ProposalTransfer": "Transfer, Appointment, Dismissal request",
+  "ProposalTransfer": "Transfer request",
   "ResignationRequestsManagement": "Resignation requests management",
   "Welfare": "Welfare",
   "WelfareLevel": "Welfare level",
@@ -1811,5 +1811,6 @@
   "WorkingTimeChange": "Working time change",
   "RelationshipNote": "Note: In case you need to adjust the information of a PIT dependent, please submit a hard copy to the Human Resources Department for adjustment!",
   "VinUniSickLeave": "Sick leave for VinUni",
-  "SickLeaveFundForVinUni": "Sick leave fund for VinUni"
+  "SickLeaveFundForVinUni": "Sick leave fund for VinUni",
+  "AppointmentDismissalRequest": "Appointment, Dismissal Request"
 }
