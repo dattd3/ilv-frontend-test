@@ -80,6 +80,7 @@ const Storage = {
     localStorage.setItem('role_assigment', currentAuthUser.role_assigment);
     localStorage.setItem('prepare', currentAuthUser.prepare);
     localStorage.setItem('jobCode', currentAuthUser.jobCode);
+    localStorage.setItem('actualDepartment', currentAuthUser.actualDepartment);
   },
   load() {
     const accessToken = localStorage.getItem('accessToken');
@@ -124,6 +125,7 @@ const Storage = {
       role_assigment: localStorage.getItem('role_assigment'),
       prepare: localStorage.getItem('prepare'),
       jobCode: localStorage.getItem('jobCode'),
+      actualDepartment: localStorage.getItem('actualDepartment'),
     }
   },
   reset() {
@@ -167,6 +169,7 @@ const Storage = {
     localStorage.removeItem('role_assigment');
     localStorage.removeItem('prepare');
     localStorage.removeItem('jobCode');
+    localStorage.removeItem('actualDepartment');
   }
 }
 
@@ -210,4 +213,5 @@ const deserialize = (currentAuthUser) => ({
   role_assigment: currentAuthUser.role_assigment,
   prepare: currentAuthUser.prepare,
   jobCode: currentAuthUser.jobCode,
+  actualDepartment: currentAuthUser.actualDepartment,
 })

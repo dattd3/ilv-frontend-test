@@ -1,7 +1,6 @@
 import React from "react"
 import { useTranslation } from "react-i18next"
 import DatePicker, {registerLocale } from 'react-datepicker'
-import { Collapse, Button } from "react-bootstrap"
 import moment from 'moment'
 import { size } from "lodash"
 import { prefixUpdating } from "./WorkOutSideGroup"
@@ -176,13 +175,13 @@ function WorkOutSideGroupProcessItem({ index, item, canUpdate, hiddenViewSalary,
                                     <>
                                         {
                                             item?.isAddNew
-                                            ? (<input type="text" placeholder={t("import")} value={item[`NET${itemNo}`] || ''} onChange={e => handleInputChange(`NET${itemNo}`, e?.target?.value || '')} className="first" />)
-                                            : (<div className="value"><span>{getSalaryByValue(item[`NET${itemNo}`])}</span><img src={hiddenViewSalary ? IconEyeClosed : IconEyeOpened} alt='Eye' className="eye" onClick={handleToggleViewSalary} /></div>)
+                                            ? (<input type="text" placeholder={t("import")} value={item[`DE_NET${itemNo}`] || ''} onChange={e => handleInputChange(`DE_NET${itemNo}`, e?.target?.value || '')} className="first" />)
+                                            : (<div className="value salary-view"><span>{getSalaryByValue(item[`DE_NET${itemNo}`])}</span><img src={hiddenViewSalary ? IconEyeClosed : IconEyeOpened} alt='Eye' className="eye" onClick={handleToggleViewSalary} /></div>)
                                         }
-                                        {!item?.isAddNew && (<input type="text" placeholder={t("import")} value={item[`NET${itemNo}_${prefixUpdating}`] || ''} onChange={e => handleInputChange(`NET${itemNo}_${prefixUpdating}`, e?.target?.value || '')} className="second" />)}
+                                        {!item?.isAddNew && (<input type="text" placeholder={t("import")} value={item[`DE_NET${itemNo}_${prefixUpdating}`] || ''} onChange={e => handleInputChange(`DE_NET${itemNo}_${prefixUpdating}`, e?.target?.value || '')} className="second salary" /* readOnly={!item?.isAddNew && hiddenViewSalary} */ />)}
                                     </>
                                 )
-                                : (<div className="value"><span>{getSalaryByValue(item[`NET${itemNo}`])}</span><img src={hiddenViewSalary ? IconEyeClosed : IconEyeOpened} alt='Eye' className="eye" onClick={handleToggleViewSalary} /></div>)
+                                : (<div className="value salary-view"><span>{getSalaryByValue(item[`DE_NET${itemNo}`])}</span><img src={hiddenViewSalary ? IconEyeClosed : IconEyeOpened} alt='Eye' className="eye" onClick={handleToggleViewSalary} /></div>)
                             }
                         </div>
                     </div>
@@ -195,13 +194,13 @@ function WorkOutSideGroupProcessItem({ index, item, canUpdate, hiddenViewSalary,
                                     <>
                                         {
                                             item?.isAddNew
-                                            ? (<input type="text" placeholder={t("import")} value={item[`GROSS${itemNo}`] || ''} onChange={e => handleInputChange(`GROSS${itemNo}`, e?.target?.value || '')} className="first" />)
-                                            : (<div className="value"><span>{getSalaryByValue(item[`GROSS${itemNo}`])}</span><img src={hiddenViewSalary ? IconEyeClosed : IconEyeOpened} alt='Eye' className="eye" onClick={handleToggleViewSalary} /></div>)
+                                            ? (<input type="text" placeholder={t("import")} value={item[`DE_GROSS${itemNo}`] || ''} onChange={e => handleInputChange(`DE_GROSS${itemNo}`, e?.target?.value || '')} className="first" />)
+                                            : (<div className="value salary-view"><span>{getSalaryByValue(item[`DE_GROSS${itemNo}`])}</span><img src={hiddenViewSalary ? IconEyeClosed : IconEyeOpened} alt='Eye' className="eye" onClick={handleToggleViewSalary} /></div>)
                                         }
-                                        {!item?.isAddNew && (<input type="text" placeholder={t("import")} value={item[`GROSS${itemNo}_${prefixUpdating}`] || ''} onChange={e => handleInputChange(`GROSS${itemNo}_${prefixUpdating}`, e?.target?.value || '')} className="second" />)}
+                                        {!item?.isAddNew && (<input type="text" placeholder={t("import")} value={item[`DE_GROSS${itemNo}_${prefixUpdating}`] || ''} onChange={e => handleInputChange(`DE_GROSS${itemNo}_${prefixUpdating}`, e?.target?.value || '')} className="second salary" /* readOnly={!item?.isAddNew && hiddenViewSalary} */ />)}
                                     </>
                                 )
-                                : (<div className="value"><span>{getSalaryByValue(item[`GROSS${itemNo}`])}</span><img src={hiddenViewSalary ? IconEyeClosed : IconEyeOpened} alt='Eye' className="eye" onClick={handleToggleViewSalary} /></div>)
+                                : (<div className="value salary-view"><span>{getSalaryByValue(item[`DE_GROSS${itemNo}`])}</span><img src={hiddenViewSalary ? IconEyeClosed : IconEyeOpened} alt='Eye' className="eye" onClick={handleToggleViewSalary} /></div>)
                             }
                         </div>
                     </div>

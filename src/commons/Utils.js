@@ -34,7 +34,7 @@ const removeAccents = value => {
 }
 
 const formatStringByMuleValue = value => {
-    return (value === null || value === undefined || value === "" || value === "#") ? "" : value.trim()
+    return (value === null || value === undefined || value === "" || value === "#" || value === "null") ? "" : value.trim()
 }
 
 const formatStringDateTimeByMuleValue = value => {
