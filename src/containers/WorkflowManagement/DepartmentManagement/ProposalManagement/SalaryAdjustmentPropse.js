@@ -679,23 +679,18 @@ const SalaryAdjustmentPropse = (props) => {
   };
 
   const onActionChange = (uid, accepted = true) => {
-    let _enableSubmit = true;
-    const _selectedMembers = selectedMembers.map((item) => {
-      if (
-        (viewSetting.showComponent.btnExpertise ||
-          viewSetting.showComponent.btnApprove) &&
-        !isCreateMode &&
-        item.canChangeAction && !accepted
-      ) {
-        _enableSubmit = false;
-      }
-
-      if (item.uid == uid) {
-        return { ...item, accepted };
-      }
-
-      return item;
-    });
+    const _selectedMembers = selectedMembers.map((item) =>
+        item.uid == uid ? { ...item, accepted } : item
+      ),
+      _enableSubmit = _selectedMembers.some((item) => {
+        return (
+          (viewSetting.showComponent.btnExpertise ||
+            viewSetting.showComponent.btnApprove) &&
+          !isCreateMode &&
+          item.canChangeAction &&
+          item?.accepted
+        );
+      });
 
     setEnableSubmit(_enableSubmit);
     setSelectedMembers(_selectedMembers);
@@ -1079,8 +1074,8 @@ const SalaryAdjustmentPropse = (props) => {
 
   const prepareDataToSubmit = (id) => {
     if (isCreateMode) {
-      let bodyFormData = new FormData();
-      let appIndex = 1;
+      let bodyFormData = new FormData(),
+        appIndex = 1;
       const employeeInfoLst = (id ? selectedMembers : selectMembers).map((u) => ({
         employeeNo: u?.employeeNo,
         username: u?.account.toLowerCase(),
@@ -1115,7 +1110,7 @@ const SalaryAdjustmentPropse = (props) => {
           employeeLevel: u?.employeeLevel,
           pnl: u?.pnl,
           orglv2Id: u?.orglv2Id,
-          current_position: u?.currentPosition, // jobTitle
+          current_position: u?.currentPosition || u?.jobTitle,
           department: u?.department,
           order: appIndex++,
           company_email: u?.companyEmail,
