@@ -20,13 +20,14 @@ class RequestComponent extends React.Component {
       totalRecord: 0,
       dataResponse: {}
     }
+    if (!getValueParamByQueryString(window.location.search, "requestTypes")) {
+      setURLSearchParam("requestTypes", Object.keys(Constants.REQUEST_CATEGORY_1_LIST)?.join(","))
+    }
   }
 
   componentDidMount() {
     const params = `pageIndex=${Constants.TASK_PAGE_INDEX_DEFAULT}&pageSize=${Constants.TASK_PAGE_SIZE_DEFAULT}&fromDate=${moment().subtract(7, "days").format("DDMMYYYY")}&toDate=${moment().format("DDMMYYYY")}&`;
-    const currentRequestCategory = getValueParamByQueryString(window.location.search, "requestCategory") || REQUEST_CATEGORIES.CATEGORY_1;
-
-    this.requestRemoteData(params, currentRequestCategory);
+    this.requestRemoteData(params);
   }
 
   exportToExcel = () => {
@@ -46,8 +47,10 @@ class RequestComponent extends React.Component {
 
   // 1: other requests
   // 2: salary
-  requestRemoteData = (params, category = 1) => {
-    const HOST = category * 1 === 1 ? process.env.REACT_APP_REQUEST_URL : process.env.REACT_APP_REQUEST_SERVICE_URL;
+  requestRemoteData = (params) => {
+    const requestTypes = getValueParamByQueryString(window.location.search, "requestTypes")?.split(",")
+    const category = Constants.REQUEST_CATEGORY_2_LIST[requestTypes?.[0]*1] ? REQUEST_CATEGORIES.CATEGORY_2 : REQUEST_CATEGORIES.CATEGORY_1
+    const HOST = category === 1 ? process.env.REACT_APP_REQUEST_URL : process.env.REACT_APP_REQUEST_SERVICE_URL
     const config = {
       headers: {
         'Authorization': `${localStorage.getItem('accessToken')}`
@@ -58,7 +61,7 @@ class RequestComponent extends React.Component {
     })
     config.timeout = Constants.timeoutForSpecificApis
 
-    axios.get(`${HOST}request/list?${params}companyCode=`+localStorage.getItem("companyCode") , config)
+    axios.get(`${HOST}request/list?${params}companyCode=${localStorage.getItem("companyCode")}&requestTypes=${getValueParamByQueryString(window.location.search, "requestTypes")}` , config)
     .then(res => {
       if (res && res.data && res.data.data && res.data.result) {
         const result = res.data.result;
@@ -74,7 +77,6 @@ class RequestComponent extends React.Component {
     }).finally(() => {
       this.setState({ isLoading: false });
     });
-    setURLSearchParam("requestCategory", category)
   }
 
   render() {
