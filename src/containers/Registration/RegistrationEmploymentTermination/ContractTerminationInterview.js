@@ -341,13 +341,13 @@ class ContractTerminationInterview extends React.Component {
         const personalReasonServeyToSubmit = personalReasonServey.length === 0 ? null : personalReasonServey.join(",")
 
         const additionalSurveyInfo = {
-            "text1":questions.reason1 || '',
-            "text2":questions.reason2 || '',
-            "text5":questions.q1 || '',
-            "text6":questions.q2 || '',
-            "text7":questions.q3 || '',
-            "text8":questions.q4 || '',
-            "text9":questions.q5 || '',
+            "text1":questions?.reason1 || '',
+            "text2":questions?.reason2 || '',
+            "text5":questions?.q1 || '',
+            "text6":questions?.q2 || '',
+            "text7":questions?.q3 || '',
+            "text8":questions?.q4 || '',
+            "text9":questions?.q5 || '',
             "hasAnotherReason":true,
             "hasOtherQuestion":true
         };
