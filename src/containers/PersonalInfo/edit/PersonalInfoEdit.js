@@ -837,10 +837,11 @@ class PersonalInfoEdit extends React.Component {
           let listObj = [];
           if (newMainInfo.District || newMainInfo.Province || newMainInfo.Wards || newMainInfo.StreetName || newMainInfo.Country) {
             let obj = { ...this.objectToSap };
-            obj.actio = "MOD";
-            if (![Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl].includes(currentCompanyCode)) {
-              obj.actio = "INS";
-            }
+            // obj.actio = "MOD";
+            // if (![Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl].includes(currentCompanyCode)) {
+            //   obj.actio = "INS";
+            // }
+            obj.actio = "INS";
             obj.anssa = "1";
             obj.land1 = newMainInfo.Country ? newMainInfo.Country : userDetail.country_id;
             obj.state = newMainInfo.Province ? newMainInfo.Province : userDetail.province_id;
