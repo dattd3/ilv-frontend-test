@@ -261,7 +261,7 @@ class RequestTaskList extends React.Component {
             //     { value: 2, label: 'Phê duyệt' }
             // ];
             
-        if([Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER].includes(request)) {
+        if([Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER, Constants.PROPOSAL_APPOINTMENT].includes(request)) {
             if(statusName) {
                 let statusLabel = t(statusName),
                     tmp = Object.keys(status).filter(key => status[key].label == statusLabel );
@@ -313,7 +313,7 @@ class RequestTaskList extends React.Component {
     getRequestDetailLink = (id, requestTypeId) => {
         const { page } = this.props,
             idLengthWrapSub = 2,
-            ids = id.split(".");
+            ids = id.toString()?.split(".");
         let mainId = id, subId = 1; // subId default
 
         if (ids && ids.length === idLengthWrapSub) {
@@ -328,13 +328,19 @@ class RequestTaskList extends React.Component {
     }
 
     getSalaryProposeLink = (request) => {
-        let url = '';
-        if(request.parentRequestHistoryId) {
-            //xu ly mot nguoi
-            url = `salarypropse/${request.parentRequestHistoryId}/${request.salaryId}/request`;
+        let url = '',
+          transferAppoints = {
+            '14-1': 'registration-transfer',
+            '15-1': 'registration-transfer',
+            '14-2': 'proposed-transfer',
+            '15-2': 'proposed-appointment',
+          };
+        if (request.parentRequestHistoryId) {
+          //xu ly mot nguoi
+          url = `salarypropse/${request.parentRequestHistoryId}/${request.salaryId}/request`;
         } else {
-            //xu ly nhieu nguoi
-            url = `${request?.requestTypeId === 14 ? 'transfer-appoint' : 'salaryadjustment'}/${request.salaryId}/request`;
+          //xu ly nhieu nguoi
+          url = `${[14, 15].includes(request?.requestTypeId) ? transferAppoints[`${request?.requestTypeId}-${request?.formType}`] : 'salaryadjustment'}/${request.salaryId}/request`;
         }
         return url;
     }
@@ -343,7 +349,7 @@ class RequestTaskList extends React.Component {
         if ([Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE, Constants.UPDATE_PROFILE, Constants.CHANGE_DIVISON_SHIFT, Constants.DEPARTMENT_TIMESHEET, Constants.OT_REQUEST].includes(requestTypeId)) {
             return null;
         } else {
-            const idLengthWrapSub = 2, ids = id.split(".");
+            const idLengthWrapSub = 2, ids = id.toString()?.split(".");
             let mainId = id, subId = 1; // subId default
 
             if (ids && ids.length == idLengthWrapSub) {
@@ -980,7 +986,7 @@ class RequestTaskList extends React.Component {
                                             }
 
                                             let editLink = this.getRequestEditLink(child.id, child.requestTypeId, child.processStatusId)
-                                            let detailLink = [Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER].includes(child.requestTypeId) ? this.getSalaryProposeLink(child) : this.getRequestDetailLink(child.id, child.requestTypeId)
+                                            let detailLink = [Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER, Constants.PROPOSAL_APPOINTMENT].includes(child.requestTypeId) ? this.getSalaryProposeLink(child) : this.getRequestDetailLink(child.id, child.requestTypeId)
                                             let dateChanged = showRangeDateGroupByArrayDate(child.startDate)
 
                                             if ([Constants.OT_REQUEST].includes(child.requestTypeId)) {
