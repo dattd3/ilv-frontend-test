@@ -7,12 +7,13 @@ import SelectTab from "../SelectTab"
 import { getMuleSoftHeaderConfigurations } from "../../../../commons/Utils"
 
 const FilterMember = (props) => {
-  const { t } = props;
+  const { t, isSalaryAdjustment, onChangeSalaryAdjustment } = props;
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [checkedMemberIds, setCheckedMemberIds] = useState([]);
   const [selectedMembers, setSelectedMembers] = useState([]);
   const [showMemberOption, setShowMemberOption] = useState(false);
+  const [init, setInit] = useState(false);
 
   useEffect(() => {
     if (props.isEdit) {
@@ -24,30 +25,44 @@ const FilterMember = (props) => {
   }, [props.isEdit]);
 
   useEffect(() => {
-    if (!props.isEdit) {
+    if(users?.length > 0 && props.selectedMembers?.length > 0 && init == false) {
+      setInit(true);
+      const memberIdsSelected = [...props.selectedMembers].map(m => m.uid);
+      const _users = [...users].map(item => ({
+        ...item,
+        checked: memberIdsSelected.includes(item.uid)
+      }));
+      setUsers([..._users])
       setSelectedMembers(props.selectedMembers)
+      setCheckedMemberIds([..._users].filter(a => a.checked).map(m => m.uid))
     }
-    // eslint-disable-next-line
-  }, [props.selectedMembers]);
+  }, [users]);
+
+  // useEffect(() => {
+  //   // if (!props.isEdit) {
+  //   //   if(init == true) setSelectedMembers(props.selectedMembers)
+  //   //   console.log('aa >>>', props.selectedMembers)
+  //   //   setCheckedMemberIds([...props.selectedMembers].map(m => m.uid))
+  //   // }
+  //   // eslint-disable-next-line
+  // }, [props.selectedMembers]);
 
   const getApproverInfo = () => {
     const config = getMuleSoftHeaderConfigurations()
     axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/subordinate?depth=2`, config)
       .then((res) => {
         if (res && res.data && res.data.data) {
-          const users = res.data.data || [];
+          const users = (res.data.data || []);
           setUsers([...users])
           setLoading(false)
           setShowMemberOption(false)
-          setSelectedMembers([...users].filter(a => a.checked))
-          setCheckedMemberIds([...users].filter(a => a.checked).map(m => m.uid))
           props.updateEmployees(users, 'employeesForFilter')
         }
       })
       .catch((error) => { setLoading(false) });
   };
 
-  const getSelecteMembers = (data) => {
+  const getSelectedMembers = (data) => {
     setUsers(data)
     setShowMemberOption(false)
     setSelectedMembers(data.filter(a => a.checked))
@@ -58,8 +73,8 @@ const FilterMember = (props) => {
   const onHideMembers = () => { setShowMemberOption(false) }
 
   const resetSelectedMember = () => {
-    const resetedMember = [...users]
-    setUsers(resetedMember.map(member => { return { ...member, checked: false } }))
+    const resetMember = [...users]
+    setUsers(resetMember.map(member => { return { ...member, checked: false } }))
     setShowMemberOption(false)
     setSelectedMembers([])
     setCheckedMemberIds([])
@@ -75,7 +90,7 @@ const FilterMember = (props) => {
       const members = [...users];
       const closeMember = members.find(val => val.uid === uid);
       closeMember.checked = false;
-      getSelecteMembers(members);
+      getSelectedMembers(members);
     }
   }
 
@@ -86,53 +101,74 @@ const FilterMember = (props) => {
   const hrProfileDisplay = () => {
     let hrProfileDisplay = [];
     if (users && users.length > 0) {
-      hrProfileDisplay = users.map((profile) => {
-        return {
-          uid: profile.uid,
-          fullname: profile.fullname,
-          job_name: profile.position_name,
-          title: profile.title,
-          part: profile.part || "",
-          division: profile.division || "",
-          department: profile.department || "",
-          unit: profile.unit || "",
-          companyCode: profile.organization_lv2,
-          orgLv3Text: profile.orgLv3Text,
-          username: profile.username,
-          manager: profile.manager,
-          company_email: profile.company_email.includes("@") ? profile.company_email.split("@")[0] : profile.company_email,
-          checked: profile.checked || false,
-          isExpand: profile.isExpand || false,
-          contractName: profile.contract_type_name || profile.contractName || "",
-          contractType: profile.contract_type_code || profile.contractType || "",
-          startDate: profile.startDate || "",
-          expireDate: profile.expireDate || "",
-        };
-      });
+      hrProfileDisplay = users.map((profile) => ({
+        avatar: profile.avatar,
+        uid: profile.uid,
+        fullname: profile.fullname,
+        employeeLevel: profile.employee_level || profile.employeeLevel,
+        pnl: profile.pnl,
+        orglv2Id: profile.organization_lv2,
+        companyEmail: profile.company_email,
+        currentPosition: profile.position_name,
+        username: profile.username,
+        job_name: profile.position_name,
+        title: profile.title,
+        part: profile.part || "",
+        division: profile.division || "",
+        department: profile.department || "",
+        unit: profile.unit || "",
+        companyCode: profile.organization_lv2,
+        orgLv3Text: profile.orgLv3Text,
+        username: profile.username,
+        manager: profile.manager,
+        company_email: profile.company_email.includes("@") ? profile.company_email.split("@")[0] : profile.company_email,
+        checked: profile.checked || false,
+        isExpand: profile.isExpand || false,
+        contractName: profile.contract_type_name || profile.contractName || "",
+        contractType: profile.contract_type_code || profile.contractType || "",
+        startDate: profile.startDate || "",
+        expireDate: profile.expireDate || "",
+      }));
     }
     return hrProfileDisplay
   }
 
+  const handleCheckbox = (e) => onChangeSalaryAdjustment(e.target.checked);
+
   return (
     <>
-      <div className="title">{t("ApplyFor")}</div>
-      <SelectTab className="content input-container"
+      <div className="title">{t('ApplyFor')}</div>
+      <SelectTab
+        className="content input-container"
         isDisabled={!props.isEdit || false}
         selectedMembers={selectedMembers}
         onClick={onClickSelectTab}
         onCloseTab={onCloseTabEvent}
         onCloseAll={onCloseAllEvent}
-      />
-      {showMemberOption ? (
+      />          
+      {false && ( // tao dieu chuyen + dieu chinh luong <= tam an
+        <div className="change-proposal d-none mt-2 mb-2">
+          <input
+            type="checkbox"
+            checked={isSalaryAdjustment}
+            onChange={handleCheckbox}
+          />
+          <p className="inline-layout text-dark mb-0 ml-2">
+            {t("IncludeSalaryAdjustment")}
+          </p>
+        </div>
+      )}
+
+      {showMemberOption && (
         <MemberOption
           loading={loading}
           data={hrProfileDisplay}
           hideMembers={onHideMembers}
           resetSelectedMember={resetSelectedMember}
-          saveSelectedMember={getSelecteMembers}
+          saveSelectedMember={getSelectedMembers}
           type={props.type}
         />
-      ) : null}
+      )}
     </>
   )
 }

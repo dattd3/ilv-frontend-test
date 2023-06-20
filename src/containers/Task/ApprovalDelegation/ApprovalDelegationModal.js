@@ -4,7 +4,7 @@ import _ from 'lodash'
 import Select from 'react-select'
 import { useTranslation } from "react-i18next"
 import { Modal, Button, Form } from 'react-bootstrap'
-import { formatStringByMuleValue, getRequestConfigurations } from "../../../commons/Utils"
+import { formatStringByMuleValue, getRequestConfigurations, prepareOrganization } from "../../../commons/Utils"
 import './ApprovalDelegationModal.scss'
 import defaultAvartar from '../../../components/Common/DefaultAvartar'
 import { actionApprovalDelegation } from "./Constant"
@@ -62,7 +62,7 @@ function ApprovalDelegationModal(props) {
                             userAccount: res.username,
                             part: res.part,
                             current_position: res.position_name,
-                            department: res.division + (res.department ? '/' + res.department : '') + (res.part ? '/' + res.part : '')
+                            department: prepareOrganization(res?.division, res?.department, res?.unit, res?.part)
                         }
                     })
                     SetUsers(users)
