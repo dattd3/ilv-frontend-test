@@ -451,7 +451,14 @@ const SalaryAdjustmentPropse = (props) => {
         canChangeAction: u?.accepted == true,
       };
       canCheckAll = canCheckAll || u?.accepted == true;
-      if(userLoginNo == requestTmp?.employeeNo) {
+      if (
+        userLoginNo == requestTmp?.employeeNo &&
+        !(
+          processStatusId === 8 &&
+          isCurrentAppraiser &&
+          props.match.params.type === 'assess'
+        )
+      ) {
         isEmployeeLogin = true;
       }
       return {
