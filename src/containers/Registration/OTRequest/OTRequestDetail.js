@@ -6,6 +6,7 @@ import Constants from "commons/Constants";
 import DetailButtonComponent from "../DetailButtonComponent";
 import { formatProcessTime, getRequestConfigurations } from "commons/Utils";
 import ExcelIcon from "assets/img/excel-icon.svg";
+import { getOperationType } from "containers/Utils/Common";
 
 const config = getRequestConfigurations();
 
@@ -137,6 +138,7 @@ export default function OTRequestDetailComponent({ data, action }) {
       !isNullCustomize(timesheet.to_time2)
     );
   };
+  const operationType = getOperationType(data.requestTypeId, data.updateField, data.processStatusId)
 
   return (
     <div className="ot-request-container">
@@ -332,7 +334,9 @@ export default function OTRequestDetailComponent({ data, action }) {
                                 </div>
                                 <div className="col-2">
                                   <div className="form-item">
-                                    <div className="mb-12">{t("FromHour")}</div>
+                                    {
+                                      timeIndex === 0 &&  <div className="mb-12">{t("FromHour")}</div>
+                                    }
                                     <div className="field-view">
                                       {moment(time, "HHmmss").format("HH:mm")}
                                     </div>
@@ -340,7 +344,9 @@ export default function OTRequestDetailComponent({ data, action }) {
                                 </div>
                                 <div className="col-2">
                                   <div className="form-item">
-                                    <div className="mb-12">{t("ToHour")}</div>
+                                    {
+                                      timeIndex === 0 &&  <div className="mb-12">{t("ToHour")}</div>
+                                    }
                                     <div className="field-view">
                                       {moment(
                                         timesheet?.endTime?.split(",")[
@@ -348,6 +354,23 @@ export default function OTRequestDetailComponent({ data, action }) {
                                         ],
                                         "HHmmss"
                                       ).format("HH:mm")}
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className="col-2">
+                                  <div className="form-item">
+                                    {
+                                      timeIndex === 0 &&  <div className="mb-12">{t("PrevDay")}</div>
+                                    }
+                                    <div className="is-overnight-container">
+                                        <input
+                                          name="prevDay"
+                                          type="checkbox"
+                                          checked={timesheet?.VtKen?.split(",")[
+                                            timeIndex
+                                          ]}
+                                          disabled
+                                      />
                                     </div>
                                   </div>
                                 </div>
@@ -482,6 +505,12 @@ export default function OTRequestDetailComponent({ data, action }) {
           <div className="block-title">{t("RequestHistory").toUpperCase()}</div>
           <div className="box shadow">
             <div className="row" style={{ rowGap: 20 }}>
+              <div className="col-4">
+                <div className="form-item">
+                  <div className="mb-12">{t("operation")}</div>
+                  <div className="field-view">{t(`operationType.${operationType?.toLowerCase()}`)}</div>
+                </div>
+              </div>
               {
                 formatProcessTime(createDate) && <div className="col-4">
                   <div className="form-item">
@@ -599,10 +628,12 @@ export default function OTRequestDetailComponent({ data, action }) {
           data.processStatusId === Constants.STATUS_WAITING_CONSENTED
         }
         isShowRevocationOfConsent={false}
+        isShowReject={operationType !== Constants.OPERATION_TYPES.DEL}
         urlName={"otrequest"}
         requestTypeId={data.requestTypeId}
         action={action}
         haveOverOTFund={data?.requestInfo?.some((item) => item.isOverOTFund)}
+        operationType={operationType}
       />
     </div>
   );

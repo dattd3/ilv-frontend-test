@@ -187,7 +187,8 @@ const Constants = {
     editRelationship: 'EDIT_RELATIONSHIP',
     qnA: 'QnA',
     changeStaffShift: 'CHANGE_STAFF_SHIFT',
-    selectWorkingShift24h: 'SELECT_WORKING_SHIFT_24H'
+    selectWorkingShift24h: 'SELECT_WORKING_SHIFT_24H',
+    foreignSickLeave: "FOREIGN_SICK_LEAVE"
   },
   // PnLCODE: {
   //   Vinhome: "V040",
@@ -273,8 +274,6 @@ const Constants = {
     INS: "INS",
     MOD: "MOD",
     DEL: "DEL",
-    WAITING_DEL_APPROVE: "WAITINGDELAPPROVE",
-    WAITING_DEL_APPRAISE: "WAITINGDELAPPRAISE"
   }
 };
 export default Constants

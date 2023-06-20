@@ -4,7 +4,7 @@ import axios from "axios";
 import _, { debounce } from "lodash";
 import { useTranslation } from "react-i18next";
 import Constants from "../../commons/Constants";
-import { getRequestConfigurations } from "../../commons/Utils";
+import { getRequestConfigurations, prepareOrganization } from "../../commons/Utils";
 
 const MyOption = (props) => {
   const { innerProps, innerRef } = props;
@@ -122,10 +122,7 @@ export default function SearchUserComponent({
                 orglv2Id: res.organization_lv2,
                 account: res.username,
                 current_position: res.position_name,
-                department:
-                  res.division +
-                  (res.department ? "/" + res.department : "") +
-                  (res.part ? "/" + res.part : ""),
+                department: prepareOrganization(res?.division, res?.department, res?.unit, res?.part)
               };
             });
             const lst =
