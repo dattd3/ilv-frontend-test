@@ -34,7 +34,6 @@ class RegistrationEmploymentTermination extends React.Component {
 
     render() {
         const { t, resignInfo } = this.props
-
         if (!resignInfo.requestInfo) {
             return null;
         }
@@ -44,7 +43,6 @@ class RegistrationEmploymentTermination extends React.Component {
         if (resignInfo?.requestInfo?.formResignation == Constants.REGISTER_CONTRACT_TERMINATION_CODE && resignInfo?.requestInfo.terminationUserInfo && resignInfo?.requestInfo.terminationUserInfo.length == 1) {
             userInfos = resignInfo?.requestInfo.terminationUserInfo[0]
         }
-
         const requestInfo = resignInfo.requestInfo
         const requestTypeId = resignInfo.requestTypeId
         const approvalInfo = resignInfo.approver || {}
@@ -56,7 +54,10 @@ class RegistrationEmploymentTermination extends React.Component {
             }
         })
         const reasonMasterData = getResignResonsMasterData();
-
+        // VA - HĐLĐ XĐ thời hạn - 30d
+        // VB - HĐLĐ KXĐ thời hạn - 45d
+        const isNotEnoughTime = (userInfos.contractType === "VA" && moment(requestInfo.dateTermination, "YYYY-MM-DD").diff(moment(), "days") < 30) ||
+          (userInfos.contractType === "VB" && moment(requestInfo.dateTermination, "YYYY-MM-DD").diff(moment(), "days") < 45)
         return (
             <div className="registration-section registration-employment-termination justify-content-between">
                 <div className="block staff-information-block">
@@ -258,7 +259,7 @@ class RegistrationEmploymentTermination extends React.Component {
                                 formatProcessTime(resignInfo?.deletedDate) && <div className="col-4">
                                     <p className="title">{t('CancelDate')}</p>
                                     <div>
-                                        <div className="detail">{formatProcessTime()}</div>
+                                        <div className="detail">{formatProcessTime(resignInfo?.deletedDate)}</div>
                                     </div>
                                 </div>
                             }
@@ -291,6 +292,7 @@ class RegistrationEmploymentTermination extends React.Component {
                         urlName={'requestattendance'}
                         requestTypeId={requestTypeId}
                         action={this.props.action}
+                        isNotEnoughTimeResign={isNotEnoughTime}
                     /> : null}
 
             </div>

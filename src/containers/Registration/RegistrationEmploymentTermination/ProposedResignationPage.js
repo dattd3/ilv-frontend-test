@@ -140,6 +140,7 @@ class ProposedResignationPage extends React.Component {
             if (userInfos && userInfos.length > 0) {
                 const infos = userInfos[0]
                 return {
+                    employeeNo: infos?.uid,
                     account: infos?.username?.toUpperCase() || "",
                     avatar: "",
                     jobTitle: infos?.current_position || "",
