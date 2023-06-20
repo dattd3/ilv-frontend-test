@@ -82,7 +82,7 @@ class InterviewContentFormComponent extends React.PureComponent {
                     <div className="box">
                         <div className="row">
                             <div className="col-12">
-                                <p className="question">{t('ban_gia_nhap_cong_ty_cach_day_bao_lau')}</p>
+                                <p className="question">{t('ban_gia_nhap_cong_ty_cach_day_bao_lau')}&nbsp;<span className='red-color'>(*)</span></p>
                                 <div className="answer">
                                     {
                                         (timeJoinSurveyOptions || []).map((item, index) => {
@@ -103,7 +103,7 @@ class InterviewContentFormComponent extends React.PureComponent {
                         </div>
                         <div className="row">
                             <div className="col-12">
-                                <p className="question">{t('ban_o_vi_tri_hien_tai_duoc_bao_lau')}</p>
+                                <p className="question">{t('ban_o_vi_tri_hien_tai_duoc_bao_lau')}&nbsp;<span className='red-color'>(*)</span></p>
                                 <div className="answer">
                                     {
                                         (timeInSurveyOptions || []).map((item, index) => {
@@ -135,11 +135,11 @@ class InterviewContentFormComponent extends React.PureComponent {
                                     {
                                         (serveyInfos || []).map((item, index) => {
                                             const options = item.data
-                                            const optionSelected = item.responseKeyOptionSelects ? serveyDetail[item.responseKeyOptionSelects] : ""
-                                            const optionSelectedToArray = optionSelected ? optionSelected.split(",") : []
+                                            // const optionSelected = item.responseKeyOptionSelects ? serveyDetail[item.responseKeyOptionSelects] : ""
+                                            // const optionSelectedToArray = optionSelected ? optionSelected.split(",") : []
                                             return <tr key={index}>
                                                         <td className="categories">
-                                                            <div className="item">{item.category || ""}</div>
+                                                            <div className="item">{item.category || ""}&nbsp;<span className='red-color'>(*)</span></div>
                                                         </td>
                                                         <td className="selection">
                                                             <div className="item">
