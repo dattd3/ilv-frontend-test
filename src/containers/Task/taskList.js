@@ -50,8 +50,8 @@ class TaskList extends React.Component {
                 sender: '',
                 status: 0,
                 needRefresh: false,
-                fromDate: moment().subtract(7, "days").format("DDMMYYYY"),
-                toDate: moment().format("DDMMYYYY"),
+                fromDate: moment().subtract(7, "days").format("YYYYMMDD"),
+                toDate: moment().format("YYYYMMDD"),
             }
         }
 
@@ -448,7 +448,7 @@ class TaskList extends React.Component {
         date ? this.setState({
           dataForSearch: {
             ...dataForSearch,
-            fromDate: moment(date).format("DDMMYYYY")
+            fromDate: moment(date).format("YYYYMMDD")
           }
         }) : this.setState({dataForSearch: {
           ...dataForSearch,
@@ -458,7 +458,7 @@ class TaskList extends React.Component {
         date ? this.setState({
           dataForSearch: {
             ...dataForSearch,
-            toDate: moment(date).format("DDMMYYYY")
+            toDate: moment(date).format("YYYYMMDD")
           }
         }) : this.setState({
           dataForSearch: {
@@ -602,10 +602,10 @@ class TaskList extends React.Component {
                               selectsStart
                               autoComplete="off"
                               selected={
-                                dataForSearch.fromDate ? moment( dataForSearch.fromDate, "DDMMYYYY").toDate() : null
+                                dataForSearch.fromDate ? moment( dataForSearch.fromDate, "YYYYMMDD").toDate() : null
                               }
                               maxDate={
-                                dataForSearch.toDate ? moment(dataForSearch.toDate, "DDMMYYYY").toDate() : null
+                                dataForSearch.toDate ? moment(dataForSearch.toDate, "YYYYMMDD").toDate() : null
                               }
                               minDate={
                                 moment().subtract(6, "months").toDate()
@@ -626,10 +626,10 @@ class TaskList extends React.Component {
                               selectsEnd
                               autoComplete="off"
                               selected={
-                                dataForSearch.toDate ? moment(dataForSearch.toDate, "DDMMYYYY").toDate() : null
+                                dataForSearch.toDate ? moment(dataForSearch.toDate, "YYYYMMDD").toDate() : null
                               }
                               minDate={
-                                dataForSearch.fromDate ? moment(dataForSearch.fromDate, "DDMMYYYY").toDate() : moment().subtract(6, "months").toDate()
+                                dataForSearch.fromDate ? moment(dataForSearch.fromDate, "YYYYMMDD").toDate() : moment().subtract(6, "months").toDate()
                               }
                               onChange={(date) => this.handleChangeDateFilter(date, "toDate")}
                               showDisabledMonthNavigation

@@ -25,7 +25,7 @@ class ApprovalComponent extends React.Component {
   }
 
   componentDidMount() {
-    const params = `pageIndex=${Constants.TASK_PAGE_INDEX_DEFAULT}&pageSize=${Constants.TASK_PAGE_SIZE_DEFAULT}&status=${Constants.STATUS_WAITING}&fromDate=${moment().subtract(7, "days").format("DDMMYYYY")}&toDate=${moment().format("DDMMYYYY")}&`;
+    const params = `pageIndex=${Constants.TASK_PAGE_INDEX_DEFAULT}&pageSize=${Constants.TASK_PAGE_SIZE_DEFAULT}&status=${Constants.STATUS_WAITING}&fromDate=${moment().subtract(7, "days").format("YYYYMMDD")}&toDate=${moment().format("YYYYMMDD")}&`;
     this.requestRemoteData(params);
   }
   
