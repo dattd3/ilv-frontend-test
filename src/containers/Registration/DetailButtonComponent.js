@@ -73,9 +73,8 @@ class DetailButtonComponent extends React.Component {
     }
 
     render() {
-        const {t, action, requestTypeId} = this.props
+        const {t, action, requestTypeId, isShowReject = true} = this.props
         const actionProcessing = action ? action : this.getAction()
-
         return <div className="bottom">
             <ConfirmationModal
                 urlName={this.props.urlName}
@@ -97,7 +96,9 @@ class DetailButtonComponent extends React.Component {
                     <>
                     <button type="button" className="btn btn-success float-right ml-3 shadow" onClick={this.approval.bind(this)}>
                         <i className="fas fa-check" aria-hidden="true"></i> {t("Approval")}</button>
-                    <button type="button" className="btn btn-danger float-right shadow" onClick={this.disApproval.bind(this)}><i className="fa fa-close"></i> {t("Reject")}</button>
+                    {
+                      isShowReject && <button type="button" className="btn btn-danger float-right shadow" onClick={this.disApproval.bind(this)}><i className="fa fa-close"></i> {t("Reject")}</button>
+                    }
                     </>
                     : null
                 }
@@ -117,7 +118,9 @@ class DetailButtonComponent extends React.Component {
                     <>
                     <button type="button" className="btn btn-warning float-right ml-3 shadow" onClick={this.consent.bind(this)}>
                         <i className="fas fa-check" aria-hidden="true"></i> {t("Consent")}</button>
-                    <button type="button" className="btn btn-danger float-right shadow" onClick={this.rejected.bind(this)}><i className="fa fa-close"></i> {t("Rejected")}</button>
+                    {
+                      isShowReject && <button type="button" className="btn btn-danger float-right shadow" onClick={this.rejected.bind(this)}><i className="fa fa-close"></i> {t("Rejected")}</button>
+                    }
                     </>
                     : null
                 }

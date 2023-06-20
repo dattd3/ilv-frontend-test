@@ -16,20 +16,12 @@ const getDateByRange = (startDate, endDate) => {
     return []
 }
 
-const getOperationType = (requestTypeId, actionType, processStatusId) => {
-  if ([Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP].includes(requestTypeId)) {
-    if (actionType == Constants.OPERATION_TYPES.DEL && processStatusId == 5) {
-      return Constants.OPERATION_TYPES.WAITING_DEL_APPROVE;
-    } else if (actionType == Constants.OPERATION_TYPES.DEL && processStatusId == 8) {
-      return Constants.OPERATION_TYPES.WAITING_DEL_APPRAISE;
-    } else {
-      return actionType || Constants.OPERATION_TYPES.INS;
-    }
-  } else if (requestTypeId == Constants.OT_REQUEST) {
-    if (actionType == Constants.OPERATION_TYPES.DEL && processStatusId == 5) {
-      return Constants.OPERATION_TYPES.WAITING_DEL_APPROVE;
-    } else if (actionType == Constants.OPERATION_TYPES.DEL && processStatusId == 8) {
-      return Constants.OPERATION_TYPES.WAITING_DEL_APPRAISE;
+export const getOperationType = (requestTypeId, actionType, processStatusId) => {
+  if ([Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP, Constants.OT_REQUEST].includes(requestTypeId)) {
+    if (actionType == Constants.OPERATION_TYPES.DEL && [Constants.STATUS_NO_CONSENTED, Constants.STATUS_NOT_APPROVED, Constants.STATUS_EVICTION, Constants.STATUS_WAITING, Constants.STATUS_WAITING_CONSENTED].includes(processStatusId)) {
+      return Constants.OPERATION_TYPES.DEL;
+    } else if (actionType == Constants.OPERATION_TYPES.DEL) {
+      return Constants.OPERATION_TYPES.INS;
     } else {
       return actionType || Constants.OPERATION_TYPES.INS;
     }
