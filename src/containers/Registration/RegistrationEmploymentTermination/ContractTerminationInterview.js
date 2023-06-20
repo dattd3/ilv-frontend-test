@@ -316,7 +316,7 @@ class ContractTerminationInterview extends React.Component {
             questions,
             isCreate
         } = this.state
-        if (!timeInDefault || !timeJoinDefault || !resignationReasonOptionsChecked.length || !questions) {
+        if (!timeInDefault || !timeJoinDefault || !resignationReasonOptionsChecked.length) {
           toast.error(t("PleaseFillAllField"));
           return
         }
@@ -341,13 +341,13 @@ class ContractTerminationInterview extends React.Component {
         const personalReasonServeyToSubmit = personalReasonServey.length === 0 ? null : personalReasonServey.join(",")
 
         const additionalSurveyInfo = {
-            "text1":questions.reason1 || '',
-            "text2":questions.reason2 || '',
-            "text5":questions.q1 || '',
-            "text6":questions.q2 || '',
-            "text7":questions.q3 || '',
-            "text8":questions.q4 || '',
-            "text9":questions.q5 || '',
+            "text1":questions?.reason1 || '',
+            "text2":questions?.reason2 || '',
+            "text5":questions?.q1 || '',
+            "text6":questions?.q2 || '',
+            "text7":questions?.q3 || '',
+            "text8":questions?.q4 || '',
+            "text9":questions?.q5 || '',
             "hasAnotherReason":true,
             "hasOtherQuestion":true
         };
@@ -382,7 +382,7 @@ class ContractTerminationInterview extends React.Component {
 
 
         try {
-            const url = isCreate ? `${process.env.REACT_APP_REQUEST_URL}WorkOffServey/create-severance-survey` : `${process.env.REACT_APP_REQUEST_URL}WorkOffServey/fetchworkoffservey`
+            const url = isCreate ? `${process.env.REACT_APP_REQUEST_URL}WorkOffServey/createSeveranceSurvey` : `${process.env.REACT_APP_REQUEST_URL}WorkOffServey/fetchworkoffservey`
             const responses = await axios.post(url, bodyFormData, config)
 
             if (responses && responses.data && responses.data.result) {
@@ -399,9 +399,10 @@ class ContractTerminationInterview extends React.Component {
                 this.setDisabledSubmitButton(false)
             }
             const redirectURL = getValueParamByQueryString(window.location.search, "redirectURL")
-            console.log(redirectURL)
             if (redirectURL) {
-              history.push(redirectURL)
+              history.replace(redirectURL, {
+                isSubmittedInterview: true
+              })
             }
         } catch (errors) {
             this.showStatusModal(t("Notification"), t("Error"), false)
