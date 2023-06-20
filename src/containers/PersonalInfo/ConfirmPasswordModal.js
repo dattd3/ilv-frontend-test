@@ -2,8 +2,9 @@ import React from "react"
 import axios from 'axios'
 import { Form, Button, Col, Modal } from 'react-bootstrap'
 import Spinner from 'react-bootstrap/Spinner'
-import { withTranslation } from "react-i18next";
-import IconX from 'assets/img/icon/icon_x.svg';
+import { withTranslation } from "react-i18next"
+import IconX from 'assets/img/icon/icon_x.svg'
+import IconAccept from 'assets/img/icon/Icon_Check_White.svg'
 import './styles.scss';
 
 class ConfirmPasswordModal extends React.Component {
@@ -97,14 +98,16 @@ class ConfirmPasswordModal extends React.Component {
                                 <Col xs={9}><Form.Control type="password" onKeyPress={this.keyPress.bind(this)} onChange={this.setPassword.bind(this)} /></Col>
                                 <Col xs={3}>
                                     <Button type="button" className="mb-3 btn-submit" onClick={this.checkPassword.bind(this)} disabled={disabledSubmitButton}>
-                                        {!disabledSubmitButton ? t("Confirm") :
+                                        {/* {!disabledSubmitButton ? t("Confirm") :
                                             <Spinner
                                                 as="span"
                                                 animation="border"
                                                 size="sm"
                                                 role="status"
                                                 aria-hidden="true"
-                                            />}
+                                            />} */}
+                                            <img src={IconAccept} alt="Check" />
+                                            { t("Confirm") }
                                     </Button>
                                 </Col>
                             </Form.Row>

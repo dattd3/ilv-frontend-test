@@ -81,6 +81,7 @@ const Storage = {
     localStorage.setItem('prepare', currentAuthUser.prepare);
     localStorage.setItem('jobCode', currentAuthUser.jobCode);
     localStorage.setItem('actualDepartment', currentAuthUser.actualDepartment);
+    localStorage.setItem('ad', currentAuthUser.ad);
   },
   load() {
     const accessToken = localStorage.getItem('accessToken');
@@ -126,6 +127,7 @@ const Storage = {
       prepare: localStorage.getItem('prepare'),
       jobCode: localStorage.getItem('jobCode'),
       actualDepartment: localStorage.getItem('actualDepartment'),
+      ad: localStorage.getItem('ad'),
     }
   },
   reset() {
@@ -170,6 +172,7 @@ const Storage = {
     localStorage.removeItem('prepare');
     localStorage.removeItem('jobCode');
     localStorage.removeItem('actualDepartment');
+    localStorage.removeItem('ad');
   }
 }
 
@@ -214,4 +217,5 @@ const deserialize = (currentAuthUser) => ({
   prepare: currentAuthUser.prepare,
   jobCode: currentAuthUser.jobCode,
   actualDepartment: currentAuthUser.actualDepartment,
+  ad: currentAuthUser.ad,
 })
