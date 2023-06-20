@@ -23,7 +23,7 @@ import IconExpandGreen from '../../../assets/img/icon/ic_expand_green.svg'
 import IconCollapse from '../../../assets/img/icon/pms/icon-collapse.svg'
 import IconExpand from '../../../assets/img/icon/pms/icon-expand.svg'
 import IconRemoveRed from '../../../assets/img/icon/ic_remove_red.svg'
-import { getRequestConfigurations, getMuleSoftHeaderConfigurations, formatStringByMuleValue } from '../../../commons/Utils'
+import { getRequestConfigurations, getMuleSoftHeaderConfigurations, formatStringByMuleValue, prepareOrganization } from '../../../commons/Utils'
 import {
     MODAL_TYPES,
     CREATE_TARGET_REGISTER,
@@ -586,7 +586,7 @@ function RegisterTargetFromLibraryModal(props) {
                     organizationLv6: null,
                     EmployeeNo: approver?.uid?.toString(),
                     current_position: approver?.title || "",
-                    department: approver?.department || "",
+                    department: prepareOrganization(approver?.division, approver?.department, approver?.unit, approver?.part),
                     jobCode: null,
                     value: approver?.uid?.toString(), // Mã NV
                     label: approver?.fullname || "",

@@ -8,6 +8,7 @@ import ResultModal from './ResultModal'
 import ResultChangeShiftModal from './ResultChangeShiftModal'
 import Constants from '../../commons/Constants'
 import map from "../map.config"
+import { getCulture } from "commons/Utils"
 
 class ConfirmationModal extends React.Component {
     constructor(props) {
@@ -25,7 +26,7 @@ class ConfirmationModal extends React.Component {
 
     ok = (e) => {
         const { disabledSubmitButton, message } = this.state
-        const { t, type, id, dataToSap, isSyncFromEmployee } = this.props
+        const { t, type, id, dataToSap, isSyncFromEmployee, indexCurrentAppraiser } = this.props
 
         if (disabledSubmitButton) {
             return;
@@ -37,7 +38,7 @@ class ConfirmationModal extends React.Component {
         }
 
         if ((Constants.STATUS_USE_COMMENT.includes(type) && message == "")) {
-            this.setState({errorMessage: t("ReasonRequired")})
+            this.setState({ errorMessage: t("ReasonRequired") });
             return;
         }
 
@@ -45,11 +46,11 @@ class ConfirmationModal extends React.Component {
 
         switch (type) {
             case Constants.STATUS_NOT_APPROVED: // không phê duyệt
-                if(dataToSap[0].requestTypeId != Constants.ONBOARDING) {
+                if (dataToSap[0].requestTypeId != Constants.ONBOARDING) {
                     dataToSap[0].sub[0].processStatusId = Constants.STATUS_NOT_APPROVED;
                 }
                 dataToSap[0].sub[0].comment = message;
-                this.disApprove(dataToSap, `${process.env.REACT_APP_REQUEST_URL}request/approve`, id)
+                this.disApprove(dataToSap, 'request/approve', id)
                 break;
             case Constants.STATUS_APPROVED: // phê duyệt
                 dataToSap[0].sub[0].processStatusId = Constants.STATUS_APPROVED;
@@ -60,7 +61,7 @@ class ConfirmationModal extends React.Component {
                 this.consent(dataToSap);
                 break;
             case Constants.STATUS_NO_CONSENTED: // từ chối thẩm định
-                if(dataToSap[0].requestTypeId != Constants.ONBOARDING) {
+                if (dataToSap[0].requestTypeId != Constants.ONBOARDING) {
                     dataToSap[0].sub[0].processStatusId = Constants.STATUS_NO_CONSENTED;
                 }
                 dataToSap[0].sub[0].comment = message;
@@ -81,13 +82,32 @@ class ConfirmationModal extends React.Component {
                 dataToSap[0].sub[0].comment = message;
                 this.revocationApproval(dataToSap);
                 break;
+            case Constants.STATUS_TRANSFER: // thẩm định NLĐ xác nhận
+                dataToSap[0].sub[0].processStatusId = Constants.STATUS_WAITING;
+                this.consent(dataToSap);
+                break;
+            case Constants.STATUS_TRANSFER_REFUSE: // thẩm định NLĐ từ chối
+                dataToSap[0].sub[0].processStatusId = Constants.STATUS_NO_CONSENTED;
+                if (indexCurrentAppraiser !== undefined) {
+                    dataToSap[0].sub[0].staffRequestStatusList[indexCurrentAppraiser].comment = message;
+                    this.consent(dataToSap);
+                }
+                break;
             default:
                 break;
         }
     }
 
+    getHostByRequestTypeId = (dataToSap) => {
+        const requestTypeId = dataToSap?.[0]?.requestTypeId || dataToSap?.requestTypeId || "";
+
+        return !!requestTypeId && [12, 14, 15].includes(requestTypeId)
+          ? process.env.REACT_APP_REQUEST_SERVICE_URL
+          : process.env.REACT_APP_REQUEST_URL;
+    }
+
     sync = () => {
-        const { dataToSap, t } = this.props
+        const { dataToSap, t, onHide } = this.props;
 
         axios({
             method: 'POST',
@@ -121,17 +141,19 @@ class ConfirmationModal extends React.Component {
             this.showStatusModal(titleModal, messageModal, isSuccess)
         })
         .catch(response => {
-            this.showStatusModal(this.props.t("Notification"), "Có lỗi xảy ra! Xin vui lòng liên hệ IT để hỗ trợ", false)
+            this.showStatusModal(t("Notification"), "Có lỗi xảy ra! Xin vui lòng liên hệ IT để hỗ trợ", false)
         })
         .finally(res => {
-            this.props.onHide()
+            onHide()
         })
     }
 
     cancel = (dataToSap) => {
+        const { t, onHide } = this.props, host = this.getHostByRequestTypeId(dataToSap);
+
         axios({
             method: 'POST',
-            url: `${process.env.REACT_APP_REQUEST_URL}request/cancel`,
+            url: `${host}request/cancel`,
             data: dataToSap,
             headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` }
         })
@@ -140,27 +162,29 @@ class ConfirmationModal extends React.Component {
                     const result = res.data.result
                     const code = result.code
                     if (code == Constants.API_SUCCESS_CODE) {
-                        this.showStatusModal(this.props.t("Successful"), this.props.t("successfulCancelReq"), true)
+                        this.showStatusModal(t("Successful"), t("successfulCancelReq"), true)
                         // setTimeout(() => { this.hideStatusModal() }, 3000);
                     } else if (code == Constants.API_ERROR_NOT_FOUND_CODE) {
                         return window.location.href = map.NotFound
                     } else {
-                        this.showStatusModal(this.props.t("Notification"), result.message, false)
+                        this.showStatusModal(t("Notification"), result.message, false)
                     }
                 }
             })
             .finally(res => {
-                this.props.onHide()
+                onHide()
             })
             .catch(response => {
-                this.showStatusModal(this.props.t("Notification"), "Có lỗi xảy ra! Xin vui lòng liên hệ IT để hỗ trợ", false)
+                this.showStatusModal(t("Notification"), "Có lỗi xảy ra! Xin vui lòng liên hệ IT để hỗ trợ", false)
             })
     }
 
     revocation = (dataToSap) => {
+        const { t, onHide } = this.props, host = this.getHostByRequestTypeId(dataToSap);
+
         axios({
             method: 'POST',
-            url: `${process.env.REACT_APP_REQUEST_URL}request/cancel`,
+            url: `${host}request/cancel`,
             data: dataToSap,
             headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` }
         })
@@ -169,27 +193,29 @@ class ConfirmationModal extends React.Component {
                     const result = res.data.result
                     const code = result.code
                     if (code == Constants.API_SUCCESS_CODE) {
-                        this.showStatusModal(this.props.t("Successful"), this.props.t("successfulRecallReq"), true)
+                        this.showStatusModal(t("Successful"), t("successfulRecallReq"), true)
                         // setTimeout(() => { this.hideStatusModal() }, 3000);
                     } else if (code == Constants.API_ERROR_NOT_FOUND_CODE) {
                         return window.location.href = map.NotFound
                     } else {
-                        this.showStatusModal(this.props.t("Notification"), result.message, false)
+                        this.showStatusModal(t("Notification"), result.message, false)
                     }
                 }
             })
             .finally(res => {
-                this.props.onHide()
+                onHide()
             })
             .catch(response => {
-                this.showStatusModal(this.props.t("Notification"), "Có lỗi xảy ra! Xin vui lòng liên hệ IT để hỗ trợ", false)
+                this.showStatusModal(t("Notification"), "Có lỗi xảy ra! Xin vui lòng liên hệ IT để hỗ trợ", false)
             })
     }
 
     revocationApproval = (dataToSap) => {
+        const { t, onHide } = this.props, host = this.getHostByRequestTypeId(dataToSap);
+
         axios({
             method: 'POST',
-            url: `${process.env.REACT_APP_REQUEST_URL}request/approved/cancel`,
+            url: `${host}request/approved/cancel`,
             data: dataToSap[0],
             headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` }
         })
@@ -198,35 +224,40 @@ class ConfirmationModal extends React.Component {
                     const result = res.data.result
                     const code = result.code
                     if (code == Constants.API_SUCCESS_CODE) {
-                        this.showStatusModal(this.props.t("Successful"), this.props.t("successfulRevocationApproval"), true)
+                        this.showStatusModal(t("Successful"), t("successfulRevocationApproval"), true)
                         // setTimeout(() => { this.hideStatusModal() }, 3000);
                     } else if (code == Constants.API_ERROR_NOT_FOUND_CODE) {
                         return window.location.href = map.NotFound
                     } else {
-                        this.showStatusModal(this.props.t("Notification"), result.message, false)
+                        this.showStatusModal(t("Notification"), result.message, false)
                     }
                 }
             })
             .finally(res => {
-                this.props.onHide()
+                onHide()
             })
             .catch(response => {
-                this.showStatusModal(this.props.t("Notification"), "Có lỗi xảy ra! Xin vui lòng liên hệ IT để hỗ trợ", false)
+                this.showStatusModal(t("Notification"), "Có lỗi xảy ra! Xin vui lòng liên hệ IT để hỗ trợ", false)
             })
     }
 
     prepareDataForRevocation = () => {
-        const dataToSap = [...this.props.dataToSap]
-        const result = dataToSap.map(item => ({ ...item, ACTIO: 'DEL' }))
-        return result
+        const { dataToSap } = this.props;
+
+        return dataToSap.map(item => ({ ...item, ACTIO: 'DEL' }));
     }
 
-    approve = (dataToSap,id) => {
+    approve = (dataToSap, id) => {
+        const { t, onHide, updateTask } = this.props, host = this.getHostByRequestTypeId(dataToSap);
+
         axios({
             method: 'POST',
-            url: `${process.env.REACT_APP_REQUEST_URL}request/approve`,
+            url: `${host}request/approve`,
             data: dataToSap,
-            headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` }
+            headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` },
+            params: {
+              culture: getCulture()
+            }
         })
             .then(res => {
                 if (res && res.data) {
@@ -234,39 +265,41 @@ class ConfirmationModal extends React.Component {
                     const code = result.code
                     if (code == Constants.API_SUCCESS_CODE) {
                         if (res.data.data[0].requestTypeId == Constants.CHANGE_DIVISON_SHIFT) {
-                            this.showStatusChangeShiftModal(this.props.t("ApprovalResults"), res.data.data[0])
-                        }
-                        else {
-                            if(res.data.data[0].sub[0].status == "E")
-                            {
-                                this.showStatusModal(this.props.t("Notification"), res.data.data[0].sub[0].message, false)
-                            }
-                            else{
-                                this.showStatusModal(this.props.t("Successful"), this.props.t("successfulApprvalReq"), true)
+                            this.showStatusChangeShiftModal(t("ApprovalResults"), res.data.data[0])
+                        } else {
+                            if (res.data.data[0].sub[0].status == "E") {
+                                this.showStatusModal(t("Notification"), res.data.data[0].sub[0].message, false)
+                            } else {
+                                this.showStatusModal(t("Successful"), t("successfulApprvalReq"), true)
                             }
                         }
                         // setTimeout(() => { this.hideStatusModal() }, 2000);
                     } else if (code == Constants.API_ERROR_NOT_FOUND_CODE) {
                         return window.location.href = map.NotFound
                     } else {
-                        this.showStatusModal(this.props.t("Notification"), result.message, false)
-                        // this.props.updateTask(id,0)
+                        this.showStatusModal(t("Notification"), result.message, false)
+                        // updateTask(id,0)
                     }
                 }
             })
             .catch(error => {
                 const errorCode = error?.response?.status
-                this.showStatusModal(this.props.t("Notification"), errorCode === 504 ? "Yêu cầu đang được xử lý." : "Có lỗi xảy ra! Xin vui lòng liên hệ IT để hỗ trợ", errorCode === 504 ? true : false)
-                // this.props.updateTask(id,0)
+                this.showStatusModal(t("Notification"), errorCode === 504 ? "Yêu cầu đang được xử lý." : "Có lỗi xảy ra! Xin vui lòng liên hệ IT để hỗ trợ", errorCode === 504 ? true : false)
+                // updateTask(id,0)
             })
             .finally(res => {
-                this.props.onHide()
+                onHide()
             })
     }
 
-    disApprove = (formData, url, id) => {
-        axios.post(url, formData, {
-            headers: { Authorization: localStorage.getItem('accessToken') }
+    disApprove = (dataToSap, endPoint, id) => {
+        const { t, onHide } = this.props, host = this.getHostByRequestTypeId(dataToSap);;
+
+        axios.post(`${host}${endPoint}`, dataToSap, {
+            headers: { Authorization: localStorage.getItem('accessToken') },
+            params: {
+              culture: getCulture()
+            }
         }).then(res => {
                 if (res && res.data) {
                     const data = res.data
@@ -274,117 +307,133 @@ class ConfirmationModal extends React.Component {
                     if (data.result && data.result.code == Constants.API_ERROR_NOT_FOUND_CODE) {
                         return window.location.href = map.NotFound
                     } 
-                    else if(data.result && data.result.code == Constants.API_ERROR_CODE){
-                        this.showStatusModal(this.props.t("Notification"), data.result.message, false)
-                    }
-                    else {
-                        if( res.data.data[0].sub[0].status == "E")
-                        {
-                            this.showStatusModal(this.props.t("Notification"), res.data.data[0].sub[0].message, false)
-                        }
-                        else{
-                            this.showStatusModal(this.props.t("Successful"), this.props.t("successfulDisApprovalReq"), true)
+                    else if (data.result && data.result.code == Constants.API_ERROR_CODE) {
+                        this.showStatusModal(t("Notification"), data.result.message, false)
+                    } else {
+                        if ( res.data.data[0].sub[0].status == "E") {
+                            this.showStatusModal(t("Notification"), res.data.data[0].sub[0].message, false)
+                        } else {
+                            this.showStatusModal(t("Successful"), t("successfulDisApprovalReq"), true)
                         }
                         setTimeout(() => { this.redirectApprovalTab() }, 2000);
                     }
                 }
             })
             .finally(res => {
-                this.props.onHide();
+                onHide();
             })
             .catch(response => {
-                this.showStatusModal(this.props.t("Notification"), "Có lỗi xảy ra! Xin vui lòng liên hệ IT để hỗ trợ", false)
+                this.showStatusModal(t("Notification"), "Có lỗi xảy ra! Xin vui lòng liên hệ IT để hỗ trợ", false)
             })
     }
 
     consent = (dataToSap) => {
+        const { t, onHide, type } = this.props, host = this.getHostByRequestTypeId(dataToSap);
+
         axios({
             method: 'POST',
-            url: `${process.env.REACT_APP_REQUEST_URL}request/assess?culture=${this.props.t('langCode')}`,
+            url: `${host}request/assess`,
             data: dataToSap,
-            headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` }
+            headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` },
+            params: {
+              culture: getCulture()
+            }
         })
             .then(res => {
                 if (res && res.data) {
                     const result = res.data.result
                     const code = result.code
                     if (code == Constants.API_SUCCESS_CODE) {
-                        if(res.data.data[0].sub[0].status == "E")
-                        {
-                            this.showStatusModal(this.props.t("Notification"), res.data.data[0].sub[0].message, false)
-                        }
-                        else{
-                            this.showStatusModal(this.props.t("Successful"), this.props.t("successfulConsentReq"), true)
+                        if (res.data.data[0].sub[0].status == "E") {
+                            this.showStatusModal(t("Notification"), res.data.data[0].sub[0].message, false)
+                        } else {
+                            this.showStatusModal(
+                              t('Successful'),
+                              t(
+                                type === Constants.STATUS_TRANSFER_REFUSE
+                                  ? 'successfulRejectConsentReq'
+                                  : 'successfulConsentReq'
+                              ),
+                              true
+                            );
                         }
                         // setTimeout(() => { this.hideStatusModal() }, 2000);
                     } else if (code == Constants.API_ERROR_NOT_FOUND_CODE) {
                         return window.location.href = map.NotFound
                     } else {
-                        this.showStatusModal(this.props.t("Notification"), result.message, false)
+                        this.showStatusModal(t("Notification"), result.message, false)
                     }
                 }
             })
             .finally(res => {
-                this.props.onHide()
+                onHide()
             })
             .catch(response => {
-                this.showStatusModal(this.props.t("Notification"), "Có lỗi xảy ra! Xin vui lòng liên hệ IT để hỗ trợ", false)
+                this.showStatusModal(t("Notification"), "Có lỗi xảy ra! Xin vui lòng liên hệ IT để hỗ trợ", false)
             })
     }
 
     reject = (dataToSap) => {
+        const { t, onHide } = this.props, host = this.getHostByRequestTypeId(dataToSap);
         axios({
             method: 'POST',
-            url: `${process.env.REACT_APP_REQUEST_URL}request/assess?culture=${this.props.t('langCode')}`,
+            url: `${host}request/assess`,
             data: dataToSap,
-            headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` }
+            headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` },
+            params: {
+              culture: getCulture()
+            }
         })
             .then(res => {
                 if (res && res.data) {
                     const result = res.data.result
                     const code = result.code
                     if (code == Constants.API_SUCCESS_CODE) {
-                        if(res.data.data[0].sub[0].status == "E")
-                        {
-                            this.showStatusModal(this.props.t("Notification"), res.data.data[0].sub[0].message, false)
-                        }
-                        else{
-                            this.showStatusModal(this.props.t("Successful"), this.props.t("successfulRejectConsentReq"), true)
+                        if (res.data.data[0].sub[0].status == "E") {
+                            this.showStatusModal(t("Notification"), res.data.data[0].sub[0].message, false)
+                        } else {
+                            this.showStatusModal(t("Successful"), t("successfulRejectConsentReq"), true)
                         }
                        
                         // setTimeout(() => { this.hideStatusModal() }, 2000);
                     } else if (code == Constants.API_ERROR_NOT_FOUND_CODE) {
                         return window.location.href = map.NotFound
                     } else {
-                        this.showStatusModal(this.props.t("Notification"), result.message, false)
+                        this.showStatusModal(t("Notification"), result.message, false)
                     }
                 }
             })
             .finally(res => {
-                this.props.onHide()
+                onHide()
             })
             .catch(response => {
-                this.showStatusModal(this.props.t("Notification"), "Có lỗi xảy ra! Xin vui lòng liên hệ IT để hỗ trợ", false)
+                this.showStatusModal(t("Notification"), "Có lỗi xảy ra! Xin vui lòng liên hệ IT để hỗ trợ", false)
             })
     }
 
     handleChangeMessage = (e) => {
-        if(e.target.value) {
-            this.setState({ message: e.target.value, errorMessage: null })
-        }
-        else {
-            this.setState({ message: "", errorMessage: this.props.t("ReasonRequired") })
-        }
+        const { t } = this.props, val = e.target.value;
+
+        this.setState({ message: val || "", errorMessage: !!val ? null : t("ReasonRequired")  });
     }
 
     showStatusModal = (title, message, isSuccess = false) => {
-        this.setState({ isShowStatusModal: true, resultTitle: title, resultMessage: message, isSuccess: isSuccess })
-        this.setState({ disabledSubmitButton: false });
+        this.setState({
+            isShowStatusModal: true,
+            resultTitle: title,
+            resultMessage: message,
+            isSuccess: isSuccess,
+            disabledSubmitButton: false,
+        });
     }
 
     showStatusChangeShiftModal = (title, result) => {
-        this.setState({ isShowStatusChangeShiftModal: true, resultTitle: title, resultMessage: result })
-        this.setState({ disabledSubmitButton: false });
+        this.setState({
+            isShowStatusChangeShiftModal: true,
+            resultTitle: title,
+            resultMessage: result,
+            disabledSubmitButton: false,
+        });
     }
 
     hideStatusModal = () => {
@@ -407,33 +456,37 @@ class ConfirmationModal extends React.Component {
             [Constants.STATUS_NO_CONSENTED]: "bg-not-approved",
             [0]: "bg-not-approved",
             [Constants.STATUS_REVOCATION]: "bg-not-approved",
+            [Constants.STATUS_TRANSFER_REFUSE]: "bg-not-approved",
             [Constants.STATUS_APPROVED]: "bg-approved",
-        }
-        const { t, isSyncFromEmployee } = this.props
+        },
+            { isShowStatusModal, resultTitle, resultMessage, isSuccess, isShowStatusChangeShiftModal } = this.state,
+            { message, errorMessage, disabledSubmitButton } = this.state,
+            { t, isSyncFromEmployee, show, onHide, type, title } = this.props;
         
         return (
             <>
-                <ResultModal show={this.state.isShowStatusModal} title={this.state.resultTitle} message={this.state.resultMessage} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
-                <ResultChangeShiftModal show={this.state.isShowStatusChangeShiftModal} title={this.state.resultTitle} result={this.state.resultMessage} onHide={this.hideStatusChangeShiftModal} />
+                <ResultModal show={isShowStatusModal} title={resultTitle} message={resultMessage} isSuccess={isSuccess} onHide={this.hideStatusModal} />
+                <ResultChangeShiftModal show={isShowStatusChangeShiftModal} title={resultTitle} result={resultMessage} onHide={this.hideStatusChangeShiftModal} />
                 
-                <Modal className='info-modal-common position-apply-modal request-confirm-modal' centered show={this.props.show} onHide={this.props.onHide}>
-                    <Modal.Header className={`apply-position-modal ${ isSyncFromEmployee ? 'bg-approved' : backgroundColorMapping[this.props.type] }`} closeButton>
-                        <Modal.Title>{t(this.props.title)}</Modal.Title>
+                <Modal className='info-modal-common position-apply-modal request-confirm-modal' centered show={show} onHide={onHide}>
+                    <Modal.Header className={`apply-position-modal ${ isSyncFromEmployee ? 'bg-approved' : backgroundColorMapping[type] }`} closeButton>
+                        <Modal.Title>{t(title)}</Modal.Title>
                     </Modal.Header>
                     <Modal.Body style={{ padding: '16px' }}>
                         <p>{t(this.props.message)}</p>
                         {
                             !isSyncFromEmployee &&
-                            Constants.STATUS_USE_COMMENT.includes(this.props.type) ?
+                            Constants.STATUS_USE_COMMENT.includes(type) ?
                                 <div className="message">
-                                    <textarea className="form-control" id="note" rows="4" value={this.state.message} onChange={this.handleChangeMessage}></textarea>
-                                    <span className="text-danger" style={{marginTop: 5}}>{this.state.errorMessage}</span>
+                                    <textarea className="form-control" id="note" rows="4" value={message} onChange={this.handleChangeMessage}></textarea>
+                                    <span className="text-danger" style={{marginTop: 5}}>{errorMessage}</span>
                                 </div>
                                 : null
                         }
                         <div className="clearfix">
-                            <button type="button" className={`btn btn-primary w-25 float-right ${ isSyncFromEmployee ? 'bg-approved' : backgroundColorMapping[this.props.type] }`} data-type="yes" disabled={this.state.disabledSubmitButton} onClick={this.ok.bind(this)}>
-                                {!this.state.disabledSubmitButton ? t("Yes") :
+                            <button type="button" data-type="yes" disabled={disabledSubmitButton} onClick={this.ok.bind(this)}
+                                className={`btn btn-primary w-25 float-right ${ isSyncFromEmployee ? 'bg-approved' : backgroundColorMapping[type] }`}>
+                                {!disabledSubmitButton ? t("Yes") :
                                     <Spinner
                                         as="span"
                                         animation="border"
@@ -442,7 +495,8 @@ class ConfirmationModal extends React.Component {
                                         aria-hidden="true"
                                     />}
                             </button>
-                            <button type="button" className="btn btn-secondary mr-2 w-25 float-right" disabled = {this.state.disabledSubmitButton} onClick={this.props.onHide} data-type="no">{t("No")}</button>
+                            <button type="button" className="btn btn-secondary mr-2 w-25 float-right"
+                                disabled = {disabledSubmitButton} onClick={onHide} data-type="no">{t("No")}</button>
                         </div>
                     </Modal.Body>
                 </Modal>
