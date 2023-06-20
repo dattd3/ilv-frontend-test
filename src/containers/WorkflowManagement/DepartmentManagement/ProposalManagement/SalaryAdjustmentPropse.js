@@ -456,7 +456,8 @@ const SalaryAdjustmentPropse = (props) => {
         !(
           processStatusId === 8 &&
           isCurrentAppraiser &&
-          props.match.params.type === 'assess'
+          props.match.params.type === 'assess' &&
+          [2,3].includes(typeAppraise)
         )
       ) {
         isEmployeeLogin = true;
