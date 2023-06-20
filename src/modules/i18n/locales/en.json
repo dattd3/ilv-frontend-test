@@ -1813,6 +1813,11 @@
   "operation": "Operation",
   "operationType.ins": "Create",
   "operationType.mod": "Edit",
+  "operationType.del": "Eviction",
+  "WorkingTimeChange": "Working time change",
+  "RelationshipNote": "Note: In case you need to adjust the information of a PIT dependent, please submit a hard copy to the Human Resources Department for adjustment!",
+  "VinUniSickLeave": "Sick leave for VinUni",
+  "SickLeaveFundForVinUni": "Sick leave fund for VinUni",
   "PleaseFillAllField": "Please fill all the fields",
   "WarningNotEnoughTimeResign": "• No severance pay. <br/>• The employer must compensate the employer for half a month's salary according to the labor contract and an amount corresponding to the salary under the labor contract for unannounced days.<br/>• Training expenses specified in Article 62 of this Code must be refunded to the employer.<br/>Confirm that  you agree to this content?<br />",
   "RequestCreate": "ESS",
@@ -1825,10 +1830,5 @@
   "BaseLevelManager": "Base level manager",
   "SeniorSpecialist": "Senior Specialist",
   "Specialist": "Specialist",
-  "Staff": "Staff",
-  "operationType.del": "Eviction",
-  "WorkingTimeChange": "Working time change",
-  "RelationshipNote": "Note: In case you need to adjust the information of a PIT dependent, please submit a hard copy to the Human Resources Department for adjustment!",
-  "VinUniSickLeave": "Sick leave for VinUni",
-  "SickLeaveFundForVinUni": "Sick leave fund for VinUni"
+  "Staff": "Staff"
 }

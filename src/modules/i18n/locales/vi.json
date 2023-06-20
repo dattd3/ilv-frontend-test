@@ -1831,11 +1831,12 @@
   "operationType.ins": "Thêm mới",
   "operationType.mod": "Chỉnh sửa",
   "operationType.del": "Thu hồi",
+  "WorkingTimeChange": "Giờ làm việc thay đổi",
+  "RelationshipNote": "Lưu ý: Trường hợp cần điều chỉnh thông tin của Người phụ thuộc, Anh/Chị vui lòng nộp hồ sơ bản cứng đến Phòng Nhân sự để điều chỉnh!",
   "VinUniSickLeave": "Nghỉ ốm VinUni",
   "SickLeaveFundForVinUni": "Quỹ Nghỉ ốm VinUni",
   "PleaseFillAllField": "Vui lòng điền đủ các trường",
   "WarningNotEnoughTimeResign": "• Không được trợ cấp thôi việc.<br/>• Phải bồi thường cho người sử dụng lao động nửa tháng tiền lương theo hợp đồng lao động và một khoản tiền tương ứng với tiền lương theo hợp đồng lao động trong những ngày không báo trước.<br/>• Phải hoàn trả cho người sử dụng lao động chi phí đào tạo quy định tại Điều 62 của Bộ luật này.<br/>Anh, Chị có xác nhận đồng ý nội dung này không?<br />",
-  "WorkingTimeChange": "Giờ làm việc thay đổi",
   "RequestCreate": "Tạo yêu cầu",
   "RequestContractTermination": "Yêu cầu chấm dứt HĐLĐ",
   "RequestTransfer": "Yêu cầu Điều chuyển",
@@ -1846,6 +1847,5 @@
   "BaseLevelManager": "CBLĐ cấp cơ sở",
   "SeniorSpecialist": "Chuyên gia",
   "Specialist": "Chuyên viên",
-  "Staff": "Nhân viên",
-  "RelationshipNote": "Lưu ý: Trường hợp cần điều chỉnh thông tin của Người phụ thuộc, Anh/Chị vui lòng nộp hồ sơ bản cứng đến Phòng Nhân sự để điều chỉnh!"
+  "Staff": "Nhân viên"
 }
