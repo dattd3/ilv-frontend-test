@@ -311,7 +311,7 @@ class RequestTaskList extends React.Component {
     getRequestDetailLink = (id, requestTypeId) => {
         const { page } = this.props,
             idLengthWrapSub = 2,
-            ids = id?.toString()?.split(".");
+            ids = id.toString()?.split(".");
         let mainId = id, subId = 1; // subId default
 
         if (ids && ids.length === idLengthWrapSub) {
@@ -341,7 +341,7 @@ class RequestTaskList extends React.Component {
         if ([Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE, Constants.UPDATE_PROFILE, Constants.CHANGE_DIVISON_SHIFT, Constants.DEPARTMENT_TIMESHEET, Constants.OT_REQUEST].includes(requestTypeId)) {
             return null;
         } else {
-            const idLengthWrapSub = 2, ids = id?.toString()?.split(".");
+            const idLengthWrapSub = 2, ids = id.toString()?.split(".");
             let mainId = id, subId = 1; // subId default
 
             if (ids && ids.length == idLengthWrapSub) {
