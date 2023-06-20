@@ -745,13 +745,10 @@ class RequestTaskList extends React.Component {
       }
     }
 
-    handleRequestCategorySelect = (category, requestCategorySelected) => {
-      if (category !== requestCategorySelected) {
-        const newRequestTypesSelect = category === REQUEST_CATEGORIES.CATEGORY_1 ? Object.keys(Constants.REQUEST_CATEGORY_1_LIST) : Object.keys(Constants.REQUEST_CATEGORY_2_LIST)
-        this.setState({
-          tmpRequestTypesSelect: newRequestTypesSelect
-        })
-      }
+    handleRequestCategorySelect = (category) => {
+      this.setState({
+        tmpRequestTypesSelect: category === REQUEST_CATEGORIES.CATEGORY_1 ? Object.keys(Constants.REQUEST_CATEGORY_1_LIST) : Object.keys(Constants.REQUEST_CATEGORY_2_LIST)
+      })
     }
 
     handleChangeDateFilter = (date, type = "fromDate") => {
@@ -786,7 +783,8 @@ class RequestTaskList extends React.Component {
         const { pageNumber, isSyncFromEmployee, dataForSearch } = this.state
         const dataToSap = this.getDataToSAP(this.state.requestTypeId, this.state.dataToPrepareToSAP)
         const fullDay = 1
-        const requestCategorySelected = Constants.REQUEST_CATEGORY_2_LIST[this.state.tmpRequestTypesSelect?.[0]*1] ? 2 : 1
+        const requestTypesSelected = getValueParamByQueryString(window.location.search, "requestTypes")?.split(",")
+        const requestCategorySelected = Constants.REQUEST_CATEGORY_2_LIST[this.state.tmpRequestTypesSelect?.[0]*1 || requestTypesSelected?.[0]*1] ? 2 : 1
         const getRequestTypeLabel = (requestType, absenceTypeValue) => {
             if (requestType.id == Constants.LEAVE_OF_ABSENCE) {
                 const absenceType = absenceRequestTypes.find(item => item.value == absenceTypeValue)
@@ -840,11 +838,11 @@ class RequestTaskList extends React.Component {
                                   name="category-radio-group"
                                   type="radio"
                                   onChange={e => {}}
-                                  onClick={() => this.handleRequestCategorySelect(REQUEST_CATEGORIES.CATEGORY_1, requestCategorySelected)}
+                                  onClick={() => this.handleRequestCategorySelect(REQUEST_CATEGORIES.CATEGORY_1)}
                                   checked={requestCategorySelected === REQUEST_CATEGORIES.CATEGORY_1}
                                 />
                                 <ul className="type-list-ul">
-                                  {Object.keys(Constants.REQUEST_CATEGORY_1_LIST)?.map(key => <div className="category-item" key={key}>
+                                  {Object.keys(Constants.REQUEST_CATEGORY_1_LIST)?.filter(item => item !== Constants.ONBOARDING)?.map(key => <div className="category-item" key={key}>
                                     <input 
                                       type="checkbox" 
                                       onChange={(e) => this.handleRequestTypesChange(key, e.currentTarget.checked)} 
@@ -861,7 +859,7 @@ class RequestTaskList extends React.Component {
                                   name="category-radio-group"
                                   type="radio"
                                   onChange={e => {}}
-                                  onClick={() => this.handleRequestCategorySelect(REQUEST_CATEGORIES.CATEGORY_2, requestCategorySelected)}
+                                  onClick={() => this.handleRequestCategorySelect(REQUEST_CATEGORIES.CATEGORY_2)}
                                   checked={requestCategorySelected === REQUEST_CATEGORIES.CATEGORY_2}
                                 />
                                 <ul className="type-list-ul">
