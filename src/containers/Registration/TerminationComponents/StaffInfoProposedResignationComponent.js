@@ -257,7 +257,6 @@ class StaffInfoProposedResignationComponent extends React.PureComponent {
     }
 
     updateParent = data => {
-        console.log('updateParent', data);
         this.setState({
           filter: {
             ...this.state.filter,
