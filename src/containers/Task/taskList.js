@@ -498,7 +498,6 @@ class TaskList extends React.Component {
                 return requestTypeObj ? t(requestTypeObj.label) : ""
             }
         }
-        console.log(this.state.tmpRequestTypesSelect)
         return (
             <>
                 <ExportModal requestCategory={requestCategorySelected} show={this.state.isShowExportModal} onHide={this.onHideisShowExportModal} statusOptions={this.props.filterdata} exportType={this.props.page}/>
