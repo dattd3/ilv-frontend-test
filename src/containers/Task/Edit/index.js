@@ -258,13 +258,14 @@ class PersonalInfoEdit extends React.Component {
     if (shouldUpdateAddress || shouldUpdateAddressTemp) {
       sapData.address = [];
       if (shouldUpdateAddress) {
-        let actio = 'MOD';
-        if (!st.userDetail.country_id && !st.userDetail.province_id && !st.userDetail.street_name && !st.userDetail.district_id && !st.userDetail.ward_id) {
-          actio = 'INS';
-        }
-        if (![Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl].includes(currentCompanyCode)) {
-          actio = 'INS';
-        }
+        // let actio = 'MOD';
+        // if (!st.userDetail.country_id && !st.userDetail.province_id && !st.userDetail.street_name && !st.userDetail.district_id && !st.userDetail.ward_id) {
+        //   actio = 'INS';
+        // }
+        // if (![Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl].includes(currentCompanyCode)) {
+        //   actio = 'INS';
+        // }
+        let actio = 'INS';
         sapData.address.push({
           actio: actio,
           anssa: 1,
@@ -281,13 +282,14 @@ class PersonalInfoEdit extends React.Component {
       }
 
       if (shouldUpdateAddressTemp) {
-        let actio = 'MOD';
-        if (!st.userDetail.tmp_province_id && !st.userDetail.tmp_street_name && !st.userDetail.temp_district_id && !st.userDetail.tmp_ward_id) {
-          actio = 'INS';
-        }
-        if (![Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl].includes(currentCompanyCode)) {
-          actio = 'INS';
-        }
+        // let actio = 'MOD';
+        // if (!st.userDetail.tmp_province_id && !st.userDetail.tmp_street_name && !st.userDetail.temp_district_id && !st.userDetail.tmp_ward_id) {
+        //   actio = 'INS';
+        // }
+        // if (![Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl].includes(currentCompanyCode)) {
+        //   actio = 'INS';
+        // }
+        let actio = 'INS';
         sapData.address.push({
           actio: actio,
           anssa: 2,
