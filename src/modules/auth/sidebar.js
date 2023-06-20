@@ -228,7 +228,7 @@ export const Navigation = [
     parentId: 1001,
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     to: map.ProposalManagement,
-    label: 'MenuProposalManagement',
+    label: 'CreateProposal',
     role: ["C2", "C1","C", "P2", "P1", "P","T","P2", "P1", "T4", "T3", "T2", "T1"]
   },
   {
@@ -493,9 +493,9 @@ export const Navigation = [
     id: 119999,
     parentId: 10,
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
-    label: "RegistrationEmploymentTermination",
-    to: map.RegistrationEmploymentTermination,
-    role: [...Constants.MODULE_COMPANY_AVAILABE[Constants.MODULE.NGHIVIEC]]
+    label: "RequestCreate",
+    to: map.RegistrationManagement,
+    role: [...Constants.MODULE_COMPANY_AVAILABE[Constants.MODULE.NGHIVIEC], ...Constants.MODULE_COMPANY_AVAILABE[Constants.MODULE.DIEUCHUYEN], ...Constants.MODULE_COMPANY_AVAILABE[Constants.MODULE.BONHIEM]]
     //role: 'NA'
   },
   // {
