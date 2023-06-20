@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { useTranslation } from "react-i18next"
+import { useLocation, useHistory } from "react-router-dom"
 import axios from "axios"
 import moment from 'moment'
 import { last, omit, size, groupBy } from "lodash"
@@ -17,13 +18,16 @@ const prefixUpdating = 'UPDATING'
 
 function WorkOutSideGroup(props) {
     const { t } = useTranslation()
+    const history = useHistory()
+    const location = useLocation()
     const guard = useGuardStore()
     const user = guard.getCurentUser()
     const [canUpdate, SetCanUpdate] = useState(false)
     const [errors, SetErrors] = useState({})
     const [experiences, SetExperiences] = useState(null)
     const [experienceOriginal, SetExperienceOriginal] = useState(null)
-    const [accessToken, SetAccessToken] = useState(null)
+    const [accessToken, SetAccessToken] = useState(new URLSearchParams(location.search).get('accesstoken') || null)
+    const [isSeenSalaryAtLeastOnce, SetIsSeenSalaryAtLeastOnce] = useState(false)
     const [hiddenViewSalary, SetHiddenViewSalary] = useState(true)
     const [isShowConfirmPasswordModal, SetIsShowConfirmPasswordModal] = useState(false)
     const [isShowLoading, SetIsShowLoading] = useState(false)
@@ -34,14 +38,6 @@ function WorkOutSideGroup(props) {
     const tabActive = getValueParamByQueryString(window.location.search, 'tab')
     const currentCompanyCode = localStorage.getItem('companyCode')
     const currentEmployeeNo = localStorage.getItem('employeeNo')
-
-    // const [experienceInformation, SetExperienceInformation] = useState({
-    //     isEditing: false,
-    //     experiences: [],
-    //     experienceDataToUpdate : [],
-    //     experienceDataToCreate : [],
-    //     files: [],
-    // })
 
     const fakeInitData = () => {
         let result = []
@@ -148,7 +144,17 @@ function WorkOutSideGroup(props) {
         }
 
         if (tabActive === 'WorkOutsideGroup') {
-            fetchData()
+            const queryParams = new URLSearchParams(location.search)
+            queryParams.delete("accesstoken")
+            history.replace({
+                search: queryParams.toString(),
+            })
+
+            if (accessToken) {
+                updateToken(accessToken)
+            } else {
+                fetchData()   
+            }
         }
     }, [tabActive])
 
@@ -157,7 +163,6 @@ function WorkOutSideGroup(props) {
         
         // Validate data
 
-        
         SetIsShowConfirmSendRequestModal(true)
     }
 
@@ -236,18 +241,20 @@ function WorkOutSideGroup(props) {
     }
 
     const handleCanUpdate = () => {
-        const experienceOriginalClone = [...experienceOriginal].map(item => {
-            for (const key in item) {
-                if (key.endsWith(`_${prefixUpdating}`)) {
-                    delete item[key]
-                }
-            }
-            return item
-        })
-        const isUpdating = (experiences || []).some(item => item.isAddNew || item?.isUpdating)
-        if (isUpdating) {
-            SetExperiences(experienceOriginalClone)
-        }
+        // const experienceOriginalClone = [...experienceOriginal].map(item => {
+        //     for (const key in item) {
+        //         if (key.endsWith(`_${prefixUpdating}`)) {
+        //             delete item[key]
+        //         }
+        //     }
+        //     return item
+        // })
+
+        // const isUpdating = (experiences || []).some(item => item.isAddNew || item?.isUpdating)
+        // if (isUpdating) {
+        //     SetExperiences(experienceOriginalClone)
+        // }
+
         SetCanUpdate(!canUpdate)
     }
 
@@ -257,33 +264,16 @@ function WorkOutSideGroup(props) {
             const config = getRequestConfigurations()
             config.headers['content-type'] = 'multipart/form-data'
             let formData = new FormData()
-            formData.append('token', `Bearer ${token}`)
+            if (accessToken) {
+                formData.append('token', `Bearer ${token}`)   
+            }
             const response = await axios.post(`${process.env.REACT_APP_REQUEST_URL}user-profile-histories/getsalary`, formData, config)
             if (response && response?.data) {
                 const result = response?.data?.result
                 if (result?.code == Constants.API_SUCCESS_CODE) {
-                    // const experiencesToSave = (response?.data?.data || []).map(item => {
-                    //     return {
-                    //         ...item,
-                    //         ...(canUpdate && { 
-                    //             [`DE_GROSS1_${prefixUpdating}`]: item?.DE_GROSS1,
-                    //             [`DE_GROSS2_${prefixUpdating}`]: item?.DE_GROSS2,
-                    //             [`DE_GROSS3_${prefixUpdating}`]: item?.DE_GROSS3,
-                    //             [`DE_GROSS4_${prefixUpdating}`]: item?.DE_GROSS4,
-                    //             [`DE_GROSS5_${prefixUpdating}`]: item?.DE_GROSS5,
-                    //             [`DE_NET1_${prefixUpdating}`]: item?.DE_NET1,
-                    //             [`DE_NET2_${prefixUpdating}`]: item?.DE_NET2,
-                    //             [`DE_NET3_${prefixUpdating}`]: item?.DE_NET3,
-                    //             [`DE_NET4_${prefixUpdating}`]: item?.DE_NET4,
-                    //             [`DE_NET5_${prefixUpdating}`]: item?.DE_NET5,
-                    //         }),
-                    //     }
-                    // })
-                    // SetExperiences(experiencesToSave)
-
                     const fake = fakeDecodeData()
-
                     SetExperiences(fake)
+
                     // SetExperiences(response?.data?.data || [])
                     SetHiddenViewSalary(false)
                 }
@@ -332,6 +322,10 @@ function WorkOutSideGroup(props) {
     //     return (val !== undefined && (val === '' || val === null)) || val === undefined
     // }
 
+    const isNotEmpty = val => {
+        return val !== undefined && val !== null && val?.trim() !== ''
+    }
+
     const getValueByCondition = (oldValue, newValue) => {
         let result = newValue
         if (newValue === undefined) {
@@ -345,6 +339,70 @@ function WorkOutSideGroup(props) {
         return result
     }
 
+    const prepareItemToSAP = item => {
+        const result = {
+            ...item,
+            ...( item?.isAddNew ? { needEncrypt: true } : { needEncrypt: accessToken ? true : false }),
+            MYVP_ID: null,
+            USER_NAME: user?.ad,
+            KDATE: null,
+            ACTIO: 'INS',
+            ORGEH: item?.isAddNew ? item?.ORGEH : getValueByCondition(item?.ORGEH, item[`ORGEH_${prefixUpdating}`]),
+            BEGDA: item?.isAddNew ? item?.BEGDA : getValueByCondition(item?.BEGDA, item[`BEGDA_${prefixUpdating}`]),
+            ENDDA: item?.isAddNew ? item?.ENDDA : getValueByCondition(item?.ENDDA, item[`ENDDA_${prefixUpdating}`]),
+        }
+        let lstKeyToDelete = []
+        
+        for (let i = 1; i < 6; i++) {
+            result[`DE_GROSS${i}`] = item?.isAddNew ? item[`DE_GROSS${i}`] : getValueByCondition(item[`DE_GROSS${i}`], item[`DE_GROSS${i}_${prefixUpdating}`])
+            result[`DE_NET${i}`] = item?.isAddNew ? item[`DE_NET${i}`] : getValueByCondition(item[`DE_NET${i}`], item[`DE_NET${i}_${prefixUpdating}`])
+            result[`BEG${i}`] = item?.isAddNew ? item[`BEG${i}`] : getValueByCondition(item[`BEG${i}`], item[`BEG${i}_${prefixUpdating}`])
+            result[`END${i}`] = item?.isAddNew ? item[`END${i}`] : getValueByCondition(item[`END${i}`], item[`END${i}_${prefixUpdating}`])
+            result[`WAERS${i}`] = item?.isAddNew ? item[`WAERS${i}`] : getValueByCondition(item[`WAERS${i}`], item[`WAERS${i}_${prefixUpdating}`])
+            result[`DUT${i}`] = item?.isAddNew ? item[`DUT${i}`] : getValueByCondition(item[`DUT${i}`], item[`DUT${i}_${prefixUpdating}`])
+            result[`PLAN${i}`] = item?.isAddNew ? item[`PLAN${i}`] : getValueByCondition(item[`PLAN${i}`], item[`PLAN${i}_${prefixUpdating}`])
+            lstKeyToDelete = [...lstKeyToDelete, `DE_GROSS${i}_${prefixUpdating}`, `DE_NET${i}_${prefixUpdating}`, `WAERS${i}_${prefixUpdating}`, `PLAN${i}_${prefixUpdating}`, `END${i}_${prefixUpdating}`, `DUT${i}_${prefixUpdating}`, `BEG${i}_${prefixUpdating}`]
+        }
+
+        return omit(result, ['isAddNew', 'listWorking', 'ID', 'ORGEH_UPDATING', 'BEGDA_UPDATING', 'ENDDA_UPDATING', ...lstKeyToDelete])
+    }
+
+    const prepareUpdatingItemInfo = item => {
+        if (!item) {
+            return null
+        }
+        item.needEncrypt = accessToken ? true : false
+
+        const oldItem = {...item}
+        for (const key in oldItem) {
+            if (key.endsWith(`_${prefixUpdating}`)) {
+                delete oldItem[key]
+            }
+        }
+        delete oldItem.listWorking
+
+        let newItem = {
+            ...item,
+            ORGEH: getValueByCondition(item?.ORGEH, item[`ORGEH_${prefixUpdating}`]),
+            BEGDA: getValueByCondition(item?.BEGDA, item[`BEGDA_${prefixUpdating}`]),
+            ENDDA: getValueByCondition(item?.ENDDA, item[`ENDDA_${prefixUpdating}`]),
+        }
+        let lstKeyToDelete = []
+        for (let i = 1; i < 6; i++) {
+            newItem[`DE_GROSS${i}`] = getValueByCondition(newItem[`DE_GROSS${i}`], newItem[`DE_GROSS${i}_${prefixUpdating}`])
+            newItem[`DE_NET${i}`] = getValueByCondition(newItem[`DE_NET${i}`], newItem[`DE_NET${i}_${prefixUpdating}`])
+            newItem[`BEG${i}`] = getValueByCondition(newItem[`BEG${i}`], newItem[`BEG${i}_${prefixUpdating}`])
+            newItem[`END${i}`] = getValueByCondition(newItem[`END${i}`], newItem[`END${i}_${prefixUpdating}`])
+            newItem[`WAERS${i}`] = getValueByCondition(newItem[`WAERS${i}`], newItem[`WAERS${i}_${prefixUpdating}`])
+            newItem[`DUT${i}`] = getValueByCondition(newItem[`DUT${i}`], newItem[`DUT${i}_${prefixUpdating}`])
+            newItem[`PLAN${i}`] = getValueByCondition(newItem[`PLAN${i}`], newItem[`PLAN${i}_${prefixUpdating}`])
+            lstKeyToDelete = [...lstKeyToDelete, `DE_GROSS${i}_${prefixUpdating}`, `DE_NET${i}_${prefixUpdating}`, `WAERS${i}_${prefixUpdating}`, `PLAN${i}_${prefixUpdating}`, `END${i}_${prefixUpdating}`, `DUT${i}_${prefixUpdating}`, `BEG${i}_${prefixUpdating}`]
+        }
+        newItem = omit(newItem, ['listWorking', 'ORGEH_UPDATING', 'BEGDA_UPDATING', 'ENDDA_UPDATING', ...lstKeyToDelete])
+
+        return { oldItem, newItem }
+    }
+
     const sendRequest = async (note = '') => {
         console.log('submitting ....', experiences)
 
@@ -356,26 +414,44 @@ function WorkOutSideGroup(props) {
                 jobTitle: user?.jobTitle,
                 department: prepareOrganization(user?.division, user?.actualDepartment, user?.unit, user?.part),
             }
-            const userProfileInfo = {
 
+            const create = {
+                experiences: (experiences || [])
+                .filter(item => item?.isAddNew)
+                .map(item => {
+                    let itemClone = {...item}
+                    delete itemClone.isAddNew
+                    delete itemClone.listWorking
+                    return itemClone
+                })
             }
+            
+            const experienceUpdating = (experiences || []).filter(item => isNotEmpty(item[`DE_GROSS1_${prefixUpdating}`]) || isNotEmpty(item[`DE_GROSS2_${prefixUpdating}`]) 
+            || isNotEmpty(item[`DE_GROSS3_${prefixUpdating}`]) || isNotEmpty(item[`DE_GROSS4_${prefixUpdating}`]) || isNotEmpty(item[`DE_GROSS5_${prefixUpdating}`]) 
+            || isNotEmpty(item[`DE_NET1_${prefixUpdating}`]) || isNotEmpty(item[`DE_NET2_${prefixUpdating}`]) || isNotEmpty(item[`DE_NET3_${prefixUpdating}`]) 
+            || isNotEmpty(item[`DE_NET4_${prefixUpdating}`]) || isNotEmpty(item[`DE_NET5_${prefixUpdating}`]) || isNotEmpty(item[`ORGEH_${prefixUpdating}`]) 
+            || isNotEmpty(item[`BEGDA_${prefixUpdating}`]) || isNotEmpty(item[`ENDDA_${prefixUpdating}`])
+            )
+
+            const update = {
+                userProfileHistoryExperiences: (experienceUpdating || []).map(item => {
+                    let itemInfo = prepareUpdatingItemInfo(item)
+                    return {
+                        OldExperience: itemInfo?.oldItem,
+                        NewExperience: itemInfo?.newItem,
+                    }
+                })
+            }
+
+            const userProfileInfo = {
+                create,
+                update,
+            }
+
+            console.log('Profile info to save ==== ', userProfileInfo)
+
             const userProfileInfoToSap = (experiences || []).map(item => {
-                let itemClone = {
-                    ...item,
-                    ...( item?.isAddNew ? { needEncrypt: true } : { needEncrypt: accessToken ? true : false }),
-                    DE_GROSS1: item?.isAddNew ? item?.DE_GROSS1 : getValueByCondition(item?.DE_GROSS1, item[`DE_GROSS1_${prefixUpdating}`]),
-                    DE_GROSS2: item?.isAddNew ? item?.DE_GROSS2 : getValueByCondition(item?.DE_GROSS2, item[`DE_GROSS2_${prefixUpdating}`]),
-                    DE_GROSS3: item?.isAddNew ? item?.DE_GROSS3 : getValueByCondition(item?.DE_GROSS3, item[`DE_GROSS3_${prefixUpdating}`]),
-                    DE_GROSS4: item?.isAddNew ? item?.DE_GROSS4 : getValueByCondition(item?.DE_GROSS4, item[`DE_GROSS4_${prefixUpdating}`]),
-                    DE_GROSS5: item?.isAddNew ? item?.DE_GROSS5 : getValueByCondition(item?.DE_GROSS5, item[`DE_GROSS5_${prefixUpdating}`]),
-                    DE_NET1: item?.isAddNew ? item?.DE_NET1 : getValueByCondition(item?.DE_NET1, item[`DE_NET1_${prefixUpdating}`]),
-                    DE_NET2: item?.isAddNew ? item?.DE_NET2 : getValueByCondition(item?.DE_NET2, item[`DE_NET2_${prefixUpdating}`]),
-                    DE_NET3: item?.isAddNew ? item?.DE_NET3 : getValueByCondition(item?.DE_NET3, item[`DE_NET3_${prefixUpdating}`]),
-                    DE_NET4: item?.isAddNew ? item?.DE_NET4 : getValueByCondition(item?.DE_NET4, item[`DE_NET4_${prefixUpdating}`]),
-                    DE_NET5: item?.isAddNew ? item?.DE_NET5 : getValueByCondition(item?.DE_NET5, item[`DE_NET5_${prefixUpdating}`]),
-                }
-                return omit(itemClone, ['isAddNew', 'listWorking', `DE_GROSS1_${prefixUpdating}`, `DE_GROSS2_${prefixUpdating}`, `DE_GROSS3_${prefixUpdating}`, `DE_GROSS4_${prefixUpdating}`, 
-                `DE_GROSS5_${prefixUpdating}`, `DE_NET1_${prefixUpdating}`, `DE_NET2_${prefixUpdating}`, `DE_NET3_${prefixUpdating}`, `DE_NET4_${prefixUpdating}`, `DE_NET5_${prefixUpdating}`])
+                return prepareItemToSAP(item)
             })
 
             console.log('DATA to SAP => ', userProfileInfoToSap)
@@ -417,7 +493,7 @@ function WorkOutSideGroup(props) {
                 }
             }
         } catch (error) {
-
+            console.log(error)
         } finally {
             SetIsShowLoading(false)
         }

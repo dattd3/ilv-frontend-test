@@ -1886,6 +1886,9 @@ span.badge-notification[data-badge]::after {
                   .react-datepicker-wrapper {
                     width: 100%;
                   }
+                  &.second {
+                    margin-top: 15px;
+                  }
                 }
               }
             }

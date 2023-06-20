@@ -43,10 +43,6 @@ function WorkOutSideGroupItem({ index, item, canUpdate, hiddenViewSalary, handle
     }
     item.listWorking = listWorking
 
-    // useEffect(() => {
-
-    // }, [item])
-
     return (
         <div className="work-outside-group-item">
             <div className="company-info">
@@ -87,19 +83,52 @@ function WorkOutSideGroupItem({ index, item, canUpdate, hiddenViewSalary, handle
                                 <div className="group-date">
                                     <label>{t("Start")}</label>
                                     {
-                                        canUpdate && item?.isAddNew
+                                        // canUpdate && item?.isAddNew
+                                        // ? (
+                                        //     <label className="input-date">
+                                        //         <DatePicker
+                                        //             selected={item?.BEGDA ? moment(item?.BEGDA, 'YYYYMMDD').toDate() : null}
+                                        //             onChange={dateInput => handleInputChange('BEGDA', !dateInput ? null : moment(dateInput).format('YYYYMMDD'))}
+                                        //             dateFormat="dd/MM/yyyy"
+                                        //             locale="vi"
+                                        //             className="form-control form-control-lg input"/>
+                                        //             <span className="input-img"><img src={IconDatePicker} alt='Date' /></span>
+                                        //     </label>
+                                        // )
+                                        // : (<div className="value">{ item?.BEGDA && moment(item?.BEGDA, 'YYYYMMDD').format('DD/MM/YYYY') }</div>)
+
+                                        canUpdate
                                         ? (
-                                            <label className="input-date">
-                                                <DatePicker
-                                                    selected={item?.BEGDA ? moment(item?.BEGDA, 'YYYYMMDD').toDate() : null}
-                                                    onChange={dateInput => handleInputChange('BEGDA', !dateInput ? null : moment(dateInput).format('YYYYMMDD'))}
-                                                    dateFormat="dd/MM/yyyy"
-                                                    locale="vi"
-                                                    className="form-control form-control-lg input"/>
-                                                    <span className="input-img"><img src={IconDatePicker} alt='Date' /></span>
-                                            </label>
+                                            <>
+                                                {
+                                                    item?.isAddNew
+                                                    ? (
+                                                        <label className="input-date">
+                                                            <DatePicker
+                                                                selected={item?.BEGDA ? moment(item?.BEGDA, 'YYYYMMDD').toDate() : null}
+                                                                onChange={dateInput => handleInputChange('BEGDA', !dateInput ? null : moment(dateInput).format('YYYYMMDD'))}
+                                                                dateFormat="dd/MM/yyyy"
+                                                                locale="vi"
+                                                                className="form-control form-control-lg input"/>
+                                                                <span className="input-img"><img src={IconDatePicker} alt='Date' /></span>
+                                                        </label>
+                                                    )
+                                                    : (<div className="value">{item?.BEGDA && moment(item?.BEGDA, 'YYYYMMDD').format('DD/MM/YYYY')}</div>)
+                                                }
+                                                {!item?.isAddNew && (
+                                                    <label className="input-date second">
+                                                        <DatePicker
+                                                            selected={item[`BEGDA_${prefixUpdating}`] ? moment(item[`BEGDA_${prefixUpdating}`], 'YYYYMMDD').toDate() : null}
+                                                            onChange={dateInput => handleInputChange(`BEGDA_${prefixUpdating}`, !dateInput ? null : moment(dateInput).format('YYYYMMDD'))}
+                                                            dateFormat="dd/MM/yyyy"
+                                                            locale="vi"
+                                                            className="form-control form-control-lg input"/>
+                                                            <span className="input-img"><img src={IconDatePicker} alt='Date' /></span>
+                                                    </label>
+                                                )}
+                                            </>
                                         )
-                                        : (<div className="value">{ item?.BEGDA && moment(item?.BEGDA, 'YYYYMMDD').format('DD/MM/YYYY') }</div>)
+                                        : (<div className="value">{item?.BEGDA && moment(item?.BEGDA, 'YYYYMMDD').format('DD/MM/YYYY')}</div>)
                                     }
                                 </div>
                             </div>
@@ -107,17 +136,50 @@ function WorkOutSideGroupItem({ index, item, canUpdate, hiddenViewSalary, handle
                                 <div className="group-date">
                                     <label>{t("End")}</label>
                                     {
-                                        canUpdate && item?.isAddNew
+                                        // canUpdate && item?.isAddNew
+                                        // ? (
+                                        //     <label className="input-date">
+                                        //         <DatePicker
+                                        //             selected={item?.ENDDA ? moment(item?.ENDDA, 'YYYYMMDD').toDate() : null}
+                                        //             onChange={dateInput => handleInputChange('ENDDA', !dateInput ? null : moment(dateInput).format('YYYYMMDD'))}
+                                        //             dateFormat="dd/MM/yyyy"
+                                        //             locale="vi"
+                                        //             className="form-control form-control-lg input"/>
+                                        //             <span className="input-img"><img src={IconDatePicker} alt='Date' /></span>
+                                        //     </label>
+                                        // )
+                                        // : (<div className="value">{item?.ENDDA && moment(item?.ENDDA, 'YYYYMMDD').format('DD/MM/YYYY')}</div>)
+
+                                        canUpdate
                                         ? (
-                                            <label className="input-date">
-                                                <DatePicker
-                                                    selected={item?.ENDDA ? moment(item?.ENDDA, 'YYYYMMDD').toDate() : null}
-                                                    onChange={dateInput => handleInputChange('ENDDA', !dateInput ? null : moment(dateInput).format('YYYYMMDD'))}
-                                                    dateFormat="dd/MM/yyyy"
-                                                    locale="vi"
-                                                    className="form-control form-control-lg input"/>
-                                                    <span className="input-img"><img src={IconDatePicker} alt='Date' /></span>
-                                            </label>
+                                            <>
+                                                {
+                                                    item?.isAddNew
+                                                    ? (
+                                                        <label className="input-date">
+                                                            <DatePicker
+                                                                selected={item?.ENDDA ? moment(item?.ENDDA, 'YYYYMMDD').toDate() : null}
+                                                                onChange={dateInput => handleInputChange('ENDDA', !dateInput ? null : moment(dateInput).format('YYYYMMDD'))}
+                                                                dateFormat="dd/MM/yyyy"
+                                                                locale="vi"
+                                                                className="form-control form-control-lg input"/>
+                                                                <span className="input-img"><img src={IconDatePicker} alt='Date' /></span>
+                                                        </label>
+                                                    )
+                                                    : (<div className="value">{item?.ENDDA && moment(item?.ENDDA, 'YYYYMMDD').format('DD/MM/YYYY')}</div>)
+                                                }
+                                                {!item?.isAddNew && (
+                                                    <label className="input-date second">
+                                                        <DatePicker
+                                                            selected={item[`ENDDA_${prefixUpdating}`] ? moment(item[`ENDDA_${prefixUpdating}`], 'YYYYMMDD').toDate() : null}
+                                                            onChange={dateInput => handleInputChange(`ENDDA_${prefixUpdating}`, !dateInput ? null : moment(dateInput).format('YYYYMMDD'))}
+                                                            dateFormat="dd/MM/yyyy"
+                                                            locale="vi"
+                                                            className="form-control form-control-lg input"/>
+                                                            <span className="input-img"><img src={IconDatePicker} alt='Date' /></span>
+                                                    </label>
+                                                )}
+                                            </>
                                         )
                                         : (<div className="value">{item?.ENDDA && moment(item?.ENDDA, 'YYYYMMDD').format('DD/MM/YYYY')}</div>)
                                     }
