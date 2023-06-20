@@ -433,13 +433,10 @@ class TaskList extends React.Component {
       }
     }
 
-    handleRequestCategorySelect = (category, requestCategorySelected) => {
-      if (category !== requestCategorySelected) {
-        const newRequestTypesSelect = category === REQUEST_CATEGORIES.CATEGORY_1 ? Object.keys(Constants.REQUEST_CATEGORY_1_LIST) : Object.keys(Constants.REQUEST_CATEGORY_2_LIST)
-        this.setState({
-          tmpRequestTypesSelect: newRequestTypesSelect
-        })
-      }
+    handleRequestCategorySelect = (category) => {
+      this.setState({
+        tmpRequestTypesSelect: category === REQUEST_CATEGORIES.CATEGORY_1 ? Object.keys(Constants.REQUEST_CATEGORY_1_LIST) : Object.keys(Constants.REQUEST_CATEGORY_2_LIST)
+      })
     }
 
     handleChangeDateFilter = (date, type = "fromDate") => {
@@ -481,7 +478,8 @@ class TaskList extends React.Component {
         }
         const requestTypeIdsAllowedToReApproval = getRequestTypeIdsAllowedToReApproval()
         const fullDay = 1
-        const requestCategorySelected = Constants.REQUEST_CATEGORY_2_LIST[this.state.tmpRequestTypesSelect?.[0]*1] ? 2 : 1
+        const requestTypesSelected = getValueParamByQueryString(window.location.search, "requestTypes")?.split(",")
+        const requestCategorySelected = Constants.REQUEST_CATEGORY_2_LIST[this.state.tmpRequestTypesSelect?.[0]*1 || requestTypesSelected?.[0]*1] ? 2 : 1
 
         const getRequestTypeLabel = (requestType, absenceTypeValue) => {
             if (requestType.id == Constants.LEAVE_OF_ABSENCE) {
@@ -524,7 +522,7 @@ class TaskList extends React.Component {
                                   name="category-radio-group"
                                   type="radio"
                                   onChange={e => {}}
-                                  onClick={() => this.handleRequestCategorySelect(REQUEST_CATEGORIES.CATEGORY_1, requestCategorySelected)}
+                                  onClick={() => this.handleRequestCategorySelect(REQUEST_CATEGORIES.CATEGORY_1)}
                                   checked={requestCategorySelected === REQUEST_CATEGORIES.CATEGORY_1}
                                 />
                                 <ul className="type-list-ul">
@@ -533,9 +531,10 @@ class TaskList extends React.Component {
                                       type="checkbox" 
                                       onChange={(e) => this.handleRequestTypesChange(key, e.currentTarget.checked)} 
                                       checked={this.state.tmpRequestTypesSelect?.includes(key)}
-                                      disabled={requestCategorySelected !== REQUEST_CATEGORIES.CATEGORY_1}  
+                                      disabled={requestCategorySelected !== REQUEST_CATEGORIES.CATEGORY_1}
+                                      id={key}  
                                     /> 
-                                    {t(Constants.REQUEST_CATEGORY_1_LIST[key])}
+                                    <label htmlFor={key}>{t(Constants.REQUEST_CATEGORY_1_LIST[key])}</label>
                                   </div>)}
                                 </ul>
                                 <Form.Check
@@ -544,7 +543,7 @@ class TaskList extends React.Component {
                                   name="category-radio-group"
                                   type="radio"
                                   onChange={e => {}}
-                                  onClick={() => this.handleRequestCategorySelect(REQUEST_CATEGORIES.CATEGORY_2, requestCategorySelected)}
+                                  onClick={() => this.handleRequestCategorySelect(REQUEST_CATEGORIES.CATEGORY_2)}
                                   checked={requestCategorySelected === REQUEST_CATEGORIES.CATEGORY_2}
                                 />
                                 <ul className="type-list-ul">
@@ -553,9 +552,10 @@ class TaskList extends React.Component {
                                       type="checkbox" 
                                       onChange={(e) => this.handleRequestTypesChange(key, e.currentTarget.checked)}
                                       checked={this.state.tmpRequestTypesSelect?.includes(key)}
-                                      disabled={requestCategorySelected !== REQUEST_CATEGORIES.CATEGORY_2}  
+                                      disabled={requestCategorySelected !== REQUEST_CATEGORIES.CATEGORY_2}
+                                      id={key} 
                                     /> 
-                                    {t(Constants.REQUEST_CATEGORY_2_LIST[key])}
+                                    <label htmlFor={key}>{t(Constants.REQUEST_CATEGORY_2_LIST[key])}</label>
                                   </div>)}
                                 </ul>
                               </div>
