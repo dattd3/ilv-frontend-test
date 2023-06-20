@@ -56,8 +56,8 @@ class RequestTaskList extends React.Component {
                 id: '',
                 status: 0,
                 needRefresh: false,
-                fromDate: moment().subtract(7, "days").format("DDMMYYYY"),
-                toDate: moment().format("DDMMYYYY"),
+                fromDate: moment().subtract(7, "days").format("YYYYMMDD"),
+                toDate: moment().format("YYYYMMDD"),
             }
         }
 
@@ -311,7 +311,7 @@ class RequestTaskList extends React.Component {
     getRequestDetailLink = (id, requestTypeId) => {
         const { page } = this.props,
             idLengthWrapSub = 2,
-            ids = id.split(".");
+            ids = id?.toString()?.split(".");
         let mainId = id, subId = 1; // subId default
 
         if (ids && ids.length === idLengthWrapSub) {
@@ -341,7 +341,7 @@ class RequestTaskList extends React.Component {
         if ([Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE, Constants.UPDATE_PROFILE, Constants.CHANGE_DIVISON_SHIFT, Constants.DEPARTMENT_TIMESHEET, Constants.OT_REQUEST].includes(requestTypeId)) {
             return null;
         } else {
-            const idLengthWrapSub = 2, ids = id.split(".");
+            const idLengthWrapSub = 2, ids = id?.toString()?.split(".");
             let mainId = id, subId = 1; // subId default
 
             if (ids && ids.length == idLengthWrapSub) {
@@ -751,7 +751,7 @@ class RequestTaskList extends React.Component {
         date ? this.setState({
           dataForSearch: {
             ...dataForSearch,
-            fromDate: moment(date).format("DDMMYYYY")
+            fromDate: moment(date).format("YYYYMMDD")
           }
         }) : this.setState({dataForSearch: {
           ...dataForSearch,
@@ -761,7 +761,7 @@ class RequestTaskList extends React.Component {
         date ? this.setState({
           dataForSearch: {
             ...dataForSearch,
-            toDate: moment(date).format("DDMMYYYY")
+            toDate: moment(date).format("YYYYMMDD")
           }
         }) : this.setState({
           dataForSearch: {
@@ -840,9 +840,10 @@ class RequestTaskList extends React.Component {
                                       type="checkbox" 
                                       onChange={(e) => this.handleRequestTypesChange(key, e.currentTarget.checked)} 
                                       checked={this.state.tmpRequestTypesSelect.includes(key)}
-                                      disabled={requestCategorySelected !== REQUEST_CATEGORIES.CATEGORY_1}  
-                                    /> 
-                                    {t(Constants.REQUEST_CATEGORY_1_LIST[key])}
+                                      disabled={requestCategorySelected !== REQUEST_CATEGORIES.CATEGORY_1}
+                                      id={key}
+                                    />
+                                    <label htmlFor={key}>{t(Constants.REQUEST_CATEGORY_1_LIST[key])}</label>
                                   </div>)}
                                 </ul>
                                 <Form.Check
@@ -860,9 +861,10 @@ class RequestTaskList extends React.Component {
                                       type="checkbox" 
                                       onChange={(e) => this.handleRequestTypesChange(key, e.currentTarget.checked)}
                                       checked={this.state.tmpRequestTypesSelect.includes(key)}
-                                      disabled={requestCategorySelected !== REQUEST_CATEGORIES.CATEGORY_2}  
-                                    /> 
-                                    {t(Constants.REQUEST_CATEGORY_2_LIST[key])}
+                                      disabled={requestCategorySelected !== REQUEST_CATEGORIES.CATEGORY_2}
+                                      id={key}
+                                    />
+                                    <label htmlFor={key}>{t(Constants.REQUEST_CATEGORY_2_LIST[key])}</label>
                                   </div>)}
                                 </ul>
                               </div>
@@ -909,10 +911,10 @@ class RequestTaskList extends React.Component {
                           selectsStart
                           autoComplete="off"
                           selected={
-                            dataForSearch.fromDate ? moment( dataForSearch.fromDate, "DDMMYYYY").toDate() : null
+                            dataForSearch.fromDate ? moment( dataForSearch.fromDate, "YYYYMMDD").toDate() : null
                           }
                           maxDate={
-                            dataForSearch.toDate ? moment(dataForSearch.toDate, "DDMMYYYY").toDate() : null
+                            dataForSearch.toDate ? moment(dataForSearch.toDate, "YYYYMMDD").toDate() : null
                           }
                           minDate={
                             moment().subtract(6, "months").toDate()
@@ -933,10 +935,10 @@ class RequestTaskList extends React.Component {
                           selectsEnd
                           autoComplete="off"
                           selected={
-                            dataForSearch.toDate ? moment(dataForSearch.toDate, "DDMMYYYY").toDate() : null
+                            dataForSearch.toDate ? moment(dataForSearch.toDate, "YYYYMMDD").toDate() : null
                           }
                           minDate={
-                            dataForSearch.fromDate ? moment(dataForSearch.fromDate, "DDMMYYYY").toDate() : moment().subtract(6, "months").toDate()
+                            dataForSearch.fromDate ? moment(dataForSearch.fromDate, "YYYYMMDD").toDate() : moment().subtract(6, "months").toDate()
                           }
                           onChange={(date) => this.handleChangeDateFilter(date, "toDate")}
                           showDisabledMonthNavigation
