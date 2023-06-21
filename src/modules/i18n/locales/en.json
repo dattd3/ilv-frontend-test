@@ -1821,6 +1821,7 @@
   "operationType.waitingdelapprove": "Recall waiting for approval",
   "operationType.waitingdelappraise": "Recall waiting for consent",
   "RelationshipNote": "Note: In case you need to adjust the information of a PIT dependent, please submit a hard copy to the Human Resources Department for adjustment!",
+  "WorkingTimeChange": "Working time change",
   "RequestCreate": "ESS",
   "RequestContractTermination": "Contract termination request",
   "RequestTransfer": "Transfer request",

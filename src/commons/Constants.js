@@ -237,13 +237,13 @@ const Constants = {
     3: [],//DEXUATLUONG
     4: ["V040", "V077", "V070"],//NGHIVIEC
     5: ["V077", "V070"],//PHUCLOI
-    6: [], //DIEUCHUYEN
-    7: [], //BONHIEM
+    6: ["V077", "V070"], //DIEUCHUYEN
+    7: ["V077", "V070"], //BONHIEM
   } :
   { //Development
     1: ["V040", "V005", "V079", "V041", "V030", "V077", "V070", "V099"],//TUYENDUNG + V061
     2: ["V061","V040", "V005", "V079", "V041", "V070", "V077", "V099"],//DANHGIA_TAIKI
-    3: ["V061", "V040", "V005", "V079", "V041", "V070", "V077"],//DEXUATLUONG "V061", "V040", "V005", "V079", "V041"
+    3: [],//DEXUATLUONG "V061", "V040", "V005", "V079", "V041", "V070", "V077"
     4: ["V040", "V005", "V079", "V070", "V077"],//NGHIVIEC
     5: ["V061", "V040", "V005", "V079", "V041", "V070", "V077"],//PHUCLOI
     6: ["V040", "V070", "V077"], //DIEUCHUYEN
@@ -276,4 +276,23 @@ const Constants = {
     DEL: "DEL",
   }
 };
+
+Constants.REQUEST_CATEGORY_1_LIST = {
+  [Constants.LEAVE_OF_ABSENCE]: "LeaveRequest",
+  [Constants.BUSINESS_TRIP]: "BizTrip_TrainingRequest",
+  [Constants.SUBSTITUTION]: "ShiftChange",
+  [Constants.IN_OUT_TIME_UPDATE]: "InOutChangeRequest",
+  [Constants.UPDATE_PROFILE]: "EditBasicProfile",
+  [Constants.ONBOARDING]: "ContractEvaluationType",
+  [Constants.RESIGN_SELF]: "ResignationType",
+  [Constants.OT_REQUEST]: "OTRequest",
+  [Constants.CHANGE_DIVISON_SHIFT]: "AdminUploadShiftChange",
+  [Constants.DEPARTMENT_TIMESHEET]: "DepartmentTimesheet",
+}
+
+Constants.REQUEST_CATEGORY_2_LIST = {
+  [Constants.PROPOSAL_TRANSFER]: "ProposalTransfer",
+  [Constants.PROPOSAL_APPOINTMENT]: "ProposalAppointment"
+}
+
 export default Constants

@@ -19,13 +19,14 @@ class ApprovalComponent extends React.Component {
       dataToSap: [],
       totalRecord: 0
     }
+    if (!getValueParamByQueryString(window.location.search, "requestTypes")) {
+      setURLSearchParam("requestTypes", Object.keys(Constants.REQUEST_CATEGORY_1_LIST)?.join(","))
+    }
   }
 
   componentDidMount() {
-    const params = `pageIndex=${Constants.TASK_PAGE_INDEX_DEFAULT}&pageSize=${Constants.TASK_PAGE_SIZE_DEFAULT}&status=${Constants.STATUS_WAITING}&fromDate=${moment().subtract(7, "days").format("DDMMYYYY")}&toDate=${moment().format("DDMMYYYY")}&`;
-    const currentRequestCategory = getValueParamByQueryString(window.location.search, "requestCategory") || REQUEST_CATEGORIES.CATEGORY_1;
-
-    this.requestRemoteData(params, currentRequestCategory);
+    const params = `pageIndex=${Constants.TASK_PAGE_INDEX_DEFAULT}&pageSize=${Constants.TASK_PAGE_SIZE_DEFAULT}&status=${Constants.STATUS_WAITING}&fromDate=${moment().subtract(7, "days").format("YYYYMMDD")}&toDate=${moment().format("YYYYMMDD")}&`;
+    this.requestRemoteData(params);
   }
   
   exportToExcel = () => {
@@ -47,18 +48,20 @@ class ApprovalComponent extends React.Component {
   }
   // 1: other requests
   // 2: salary
-  requestRemoteData = (params, category = REQUEST_CATEGORIES.CATEGORY_1) => {
+  requestRemoteData = (params) => {
+    const requestTypes = getValueParamByQueryString(window.location.search, "requestTypes")?.split(",")
+    const category = Constants.REQUEST_CATEGORY_2_LIST[requestTypes?.[0]*1] ? REQUEST_CATEGORIES.CATEGORY_2 : REQUEST_CATEGORIES.CATEGORY_1
+    const HOST = category === 1 ? process.env.REACT_APP_REQUEST_URL : process.env.REACT_APP_REQUEST_SERVICE_URL
     this.setState({
       isLoading: true
     })
-    const HOST = category * 1 === REQUEST_CATEGORIES.CATEGORY_1 ? process.env.REACT_APP_REQUEST_URL : process.env.REACT_APP_REQUEST_SERVICE_URL;
     const config = {
       headers: {
         'Authorization': `${localStorage.getItem('accessToken')}`
       }
     }
     config.timeout = Constants.timeoutForSpecificApis
-    axios.get(`${HOST}request/approval?${params}companyCode=`+localStorage.getItem("companyCode"), config)
+    axios.get(`${HOST}request/approval?${params}companyCode=${localStorage.getItem("companyCode")}&requestTypes=${getValueParamByQueryString(window.location.search, "requestTypes")}`, config)
         .then(res => {
           if (res && res.data && res.data.data && res.data.result) {
             const result = res.data.result;
@@ -75,7 +78,6 @@ class ApprovalComponent extends React.Component {
         isLoading: false
       })
     })
-    setURLSearchParam("requestCategory", category)
   }
 
   handleSelectChange(name, value) {
