@@ -57,7 +57,7 @@ const Constants = {
   SALARY_PROPOSE: 12, // De xuat luong
   OT_REQUEST: 13, // OT
   PROPOSAL_TRANSFER: 14, // Dieu chuyen
-  APPOINTMENT_DISMISSAL_TRANSFER: 15, // Bo nhiem, mien nhiem
+  PROPOSAL_APPOINTMENT: 15, // Bo nhiem, mien nhiem
 
   //Status request
   STATUS_PENDING: 0,
@@ -228,6 +228,7 @@ const Constants = {
     NGHIVIEC:4,
     PHUCLOI: 5,
     DIEUCHUYEN: 6,
+    BONHIEM: 7,
   },
   MODULE_COMPANY_AVAILABE: process.env.REACT_APP_ENVIRONMENT === 'PRODUCTION' ? 
   { //production todo: add  "V077", "V070" to TUYENDUNG
@@ -235,15 +236,18 @@ const Constants = {
     2: ["V040", "V005", "V061", "V077"],//DANHGIA_TAIKI
     3: [],//DEXUATLUONG
     4: ["V040", "V077", "V070"],//NGHIVIEC
-    5: ["V077", "V070"]//PHUCLOI
+    5: ["V077", "V070"],//PHUCLOI
+    6: [], //DIEUCHUYEN
+    7: [], //BONHIEM
   } :
   { //Development
     1: ["V040", "V005", "V079", "V041", "V030", "V077", "V070", "V099"],//TUYENDUNG + V061
     2: ["V061","V040", "V005", "V079", "V041", "V070", "V077", "V099"],//DANHGIA_TAIKI
     3: ["V061", "V040", "V005", "V079", "V041", "V070", "V077"],//DEXUATLUONG "V061", "V040", "V005", "V079", "V041"
-    4:  ["V040", "V005", "V079", "V070", "V077"],//NGHIVIEC
+    4: ["V040", "V005", "V079", "V070", "V077"],//NGHIVIEC
     5: ["V061", "V040", "V005", "V079", "V041", "V070", "V077"],//PHUCLOI
     6: ["V040", "V070", "V077"], //DIEUCHUYEN
+    7: ["V040", "V070", "V077"], //BONHIEM
   },
   CURRENCY: {
     VND: 'VNĐ',
@@ -289,7 +293,7 @@ Constants.REQUEST_CATEGORY_1_LIST = {
 Constants.REQUEST_CATEGORY_2_LIST = {
   // [Constants.SALARY_PROPOSE]: "SalaryType",
   [Constants.PROPOSAL_TRANSFER]: "ProposalTransfer",
-  [Constants.APPOINTMENT_DISMISSAL_TRANSFER]: "AppointmentDismissalRequest"
+  [Constants.PROPOSAL_APPOINTMENT]: "AppointmentDismissalRequest"
 }
 
 export default Constants

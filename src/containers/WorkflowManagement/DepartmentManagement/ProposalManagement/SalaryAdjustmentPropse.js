@@ -1,71 +1,88 @@
 /* eslint-disable react/jsx-no-target-blank */
-import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useHistory } from "react-router";
 import moment from "moment";
-import { forEach, isEmpty } from "lodash";
+import { forEach } from "lodash";
 import Select from "react-select";
+import { useHistory } from "react-router";
 import { withTranslation } from "react-i18next";
-import "react-toastify/dist/ReactToastify.css";
 import { Image, Spinner } from "react-bootstrap";
-import DatePicker, { registerLocale } from "react-datepicker";
+import React, { useEffect, useState } from "react";
+import vi from "date-fns/locale/vi";
 import "react-datepicker/dist/react-datepicker.css";
-import FilterMember from "../../ShareComponents/FilterMember";
-import ConfirmationModal from "../../../Registration/ConfirmationModal";
+import DatePicker, { registerLocale } from "react-datepicker";
 import ResultModal from "./ResultModal";
 import ProposalModal from "./ProposalModal";
+import ResizableTextarea from "../../../Registration/TextareaComponent";
+import ConfirmationModal from "../../../Registration/ConfirmationModal";
 import HumanForReviewSalaryComponent from "../../../Registration/HumanForReviewSalaryComponent";
 import ConfirmPasswordModal from "../../../Registration/ContractEvaluation/SalaryPropose/ConfirmPasswordModal";
-import StatusModal from "../../../../components/Common/StatusModal";
-import ResizableTextarea from "../../../Registration/TextareaComponent";
-import Constants from "../.../../../../../commons/Constants";
+import { getCulture } from "commons/Utils";
+import { useApi } from "../../../../modules/api";
 import CurrencyInput from "react-currency-input-field";
+import Constants from "../.../../../../../commons/Constants";
+// import ProcessHistoryComponent from "./ProcessHistoryComponent";
+import FilterMember from "../../ShareComponents/FilterMember";
+import StatusModal from "../../../../components/Common/StatusModal";
+import LoadingModal from "../../../../components/Common/LoadingModal";
+import { Portal } from 'react-overlays';
+import { validateFileMimeType, validateTotalFileSize } from "../../../../utils/file";
+
 import IconDelete from "../../../../assets/img/icon/Icon_Cancel.svg";
 import IconEye from "../../../../assets/img/icon/eye.svg";
 import IconNotEye from "../../../../assets/img/icon/not-eye.svg";
 import IconRemove from "../../../../assets/img/ic-remove.svg";
 import IconAdd from "../../../../assets/img/ic-add-green.svg";
-import { useApi } from "../../../../modules/api";
-import vi from "date-fns/locale/vi";
-import { getCulture, getMuleSoftHeaderConfigurations } from "commons/Utils";
-import ProcessHistoryComponent from "./ProcessHistoryComponent";
-import LoadingModal from "../../../../components/Common/LoadingModal";
-import { Portal } from 'react-overlays';
-import { validateFileMimeType, validateTotalFileSize } from "../../../../utils/file";
 
 registerLocale("vi", vi);
 
-const ListTypeContract = [
-  { value: "VA", label: "HĐLĐ XĐ thời hạn" },
-  { value: "VB", label: "HĐLĐ KXĐ thời hạn" },
-  { value: "VC", label: "HĐLĐ theo mùa vụ" },
-  { value: "VD", label: "Hợp đồng tập nghề" },
-  { value: "VE", label: "Hợp đồng thử việc" },
-  { value: "VF", label: "HĐDV theo tháng" },
-  { value: "VG", label: "HĐDV theo giờ" },
-  { value: "VH", label: "HĐDV khoán" },
-],
-getStorage = (key) => localStorage.getItem(key) || "";
-
-const CalendarContainer = ({children}) => {
-  const el = document.getElementById('calendar-portal')
-
-  return (
-    <Portal container={el}>
+const getStorage = (key) => localStorage.getItem(key) || '',
+  EMPLOYEE_SUB_GROUP_OPTIONS = [
+    { value: 'T0', label: 'T0', parentId: 'I' },
+    { value: 'T1', label: 'T1', parentId: 'I' },
+    { value: 'T2', label: 'T2', parentId: 'I' },
+    { value: 'T3', label: 'T3', parentId: 'J' },
+    { value: 'T4', label: 'T4', parentId: 'J' },
+    { value: 'C1', label: 'C1', parentId: 'K' },
+    { value: 'P1', label: 'P1', parentId: 'K' },
+    { value: 'P2', label: 'P2', parentId: 'K' },
+    { value: 'L4', label: 'L4', parentId: 'L' },
+    { value: 'L5', label: 'L5', parentId: 'L' },
+    { value: 'M0', label: 'M0', parentId: 'M' },
+    { value: 'N0', label: 'N0', parentId: 'N' },
+  ],
+  CalendarContainer = ({ children }) => (
+    <Portal container={document.getElementById('calendar-portal')}>
       {children}
     </Portal>
-  )
-}
+  );
 
 const SalaryAdjustmentPropse = (props) => {
   const { t } = props;
   const api = useApi(),
     history = useHistory(),
+    EMPLOYEE_GROUP_OPTIONS = [
+      { value: 'I', label: `I - ${t('HighLevelManager')}` },
+      { value: 'J', label: `J - ${t('MidLevelManager')}` },
+      { value: 'K', label: `K - ${t('BaseLevelManager')}` },
+      { value: 'L', label: `L - ${t('SeniorSpecialist')}` },
+      { value: 'M', label: `M - ${t('Specialist')}` },
+      { value: 'N', label: `N - ${t('Staff')}` },
+    ],
     InsuranceOptions = [
-    { value: 1, label: t("SalaryPropse") },
-    { value: 2, label: t("ProposalTransfer") },
-  ],
-  isTransferAppointProposal = window.location.href.includes('/transfer-appoint/');
+      { value: 12, label: t('SalaryPropse'), requestLabel : t("SalaryAdjustmentPropse") },
+      { value: 14, label: t('ProposalTransfer'), requestLabel : t("MenuProposalManagement") },
+      { value: 15, label: t('ProposalAppointment'), requestLabel: t("MenuProposalManagement") },
+    ],
+    currentLink = window.location.href,
+    isTransferProposal = currentLink.includes('/proposed-transfer/'),
+    isTransferAppointProposal =
+      currentLink.includes('/proposed-transfer/') ||
+      currentLink.includes('/proposed-appointment/'),
+    currentRequestTypeId = isTransferAppointProposal
+      ? isTransferProposal
+        ? 14
+        : 15
+      : 12;
   const [resultModal, setResultModal] = useState({
     show: false,
     title: "",
@@ -95,7 +112,7 @@ const SalaryAdjustmentPropse = (props) => {
     new URLSearchParams(props.history.location.search).get("accesstoken") ||
       null
   );
-  const [type, setType] = useState(InsuranceOptions[isTransferAppointProposal ? 1 : 0]);
+  const [type, setType] = useState(InsuranceOptions.find(ele => ele.value === currentRequestTypeId));
   const [listFiles, setListFiles] = useState([]);
   const [listFileDeleted, setListFileDeleted] = useState([]);
   const [selectMembers, setSelectMembers] = useState([]);
@@ -112,7 +129,6 @@ const SalaryAdjustmentPropse = (props) => {
   const [appraiser, setAppraiser] = useState(null); // HR thẩm định quyền điều chỉnh lương
   const [approver, setApprover] = useState(null); // CBLĐ phê duyệt
   const [approverArrive, setApproverArrive] = useState(null); // CBLĐ phê duyệt
-  const [subordinates, setSubordinates] = useState([]); // các cấp dưới
   const [isCallSalary, setIsCallSalary] = useState(false);
   const [showCommentRequiredError, setShowCommentRequiredError] = useState(false);
   const [enableSubmit, setEnableSubmit] = useState(true);
@@ -175,7 +191,6 @@ const SalaryAdjustmentPropse = (props) => {
       if (!isCreate) { // Review mode
         setIsCreateMode(false);
         getDataSalary();
-        getSubordinate();
       } else { // Create mode
         setIsCreateMode(true);
         checkViewCreate();
@@ -197,18 +212,6 @@ const SalaryAdjustmentPropse = (props) => {
       getSalary(accessToken);
     }
   }, [selectedMembers]);
-
-  const getSubordinate = () => {
-    const config = getMuleSoftHeaderConfigurations();
-    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/subordinate?depth=2`, config)
-      .then((res) => {
-        if (res && res.data && res.data.data) {
-          const users = (res.data.data || []);
-          setSubordinates(users);
-        }
-      })
-      .catch((err) => {});
-  };
 
   const getDataSalary = async () => {
     try {
@@ -455,6 +458,7 @@ const SalaryAdjustmentPropse = (props) => {
         id: u?.id,
         uid: requestTmp?.employeeNo,
         employeeNo: requestTmp?.employeeNo,
+        employeeLevel: requestTmp?.employeeLevel,
         account: requestTmp?.account,
         fullName: requestTmp?.fullName,
         fullname: requestTmp?.fullName,
@@ -475,6 +479,8 @@ const SalaryAdjustmentPropse = (props) => {
         proposedPositionCode: requestTmp?.proposedPositionCode,
         proposedDepartment: requestTmp?.proposedDepartment,
         proposedDepartmentCode: requestTmp?.proposedDepartmentCode,
+        proposedLevel: EMPLOYEE_SUB_GROUP_OPTIONS.find(ele => ele.value === requestTmp?.proposedRank) || {},
+        proposedLevelGroup: EMPLOYEE_GROUP_OPTIONS.find(ele => ele.value === requestTmp?.proposedRankGroupId) || {},
         strength: u?.staffStrengths || requestTmp?.staffStrengths,
         weakness: u?.staffWknesses || requestTmp?.staffWknesses,
         canChangeAction: u?.accepted == true,
@@ -507,18 +513,21 @@ const SalaryAdjustmentPropse = (props) => {
             ..._itemInfo,
             uid: _itemInfo?.employeeNo,
             employeeNo: _itemInfo?.employeeNo,
-            requestHistoryId: item.requestHistoryId
+            requestHistoryId: item.requestHistoryId,
+            appraiserComment: item?.appraiserComment,
           });
         } else if(_itemInfo.type === Constants.STATUS_PROPOSAL.LEADER_APPRAISER) {
           _supervisors.push({
             ..._itemInfo,
             uid: _itemInfo?.employeeNo,
             employeeNo: _itemInfo?.employeeNo,
-            requestHistoryId: item.requestHistoryId
+            requestHistoryId: item.requestHistoryId,
+            appraiserComment: item?.appraiserComment,
           })
         } else if (_itemInfo.type == Constants.STATUS_PROPOSAL.EMPLOYEE) {
           const _employeeInfo = employeeLists.find((ele) => ele.uid == _itemInfo.employeeNo);
           if(_employeeInfo) {
+            _employeeInfo.appraiserComment = item?.appraiserComment;
             _employeeAppraiser.push(_employeeInfo)
           }
         }
@@ -536,11 +545,13 @@ const SalaryAdjustmentPropse = (props) => {
         ...approvalData,
         uid: approvalData?.employeeNo,
         employeeNo: approvalData?.employeeNo,
+        appraiserComment: approverRes?.appraiserComment,
       });
       setApproverArrive({
         ...approverArriveData,
         uid: approverArriveData?.employeeNo,
         employeeNo: approverArriveData?.employeeNo,
+        appraiserComment: approverArriveRes?.appraiserComment,
       });
     }
     const requestDocuments = (userProfileDocuments || []).map((u) => ({
@@ -573,6 +584,7 @@ const SalaryAdjustmentPropse = (props) => {
       return {
         uid: u?.uid,
         employeeNo: u?.uid,
+        employeeLevel: u?.employeeLevel,
         account: u?.username.toLowerCase(),
         username: u?.username.toLowerCase(),
         fullName: u?.fullname,
@@ -615,6 +627,7 @@ const SalaryAdjustmentPropse = (props) => {
       return {
         uid: u?.uid,
         employeeNo: u?.uid,
+        employeeLevel: u?.employeeLevel,
         account: u?.username.toLowerCase(),
         fullName: u?.fullname,
         jobTitle: u?.job_name,
@@ -639,11 +652,7 @@ const SalaryAdjustmentPropse = (props) => {
     const value = e.target.checked;
     const newCheckedMemeberIds = {};
     Object.values(checkedMemberIds).map((item) => {
-      if (item.canChangeAction) {
-        newCheckedMemeberIds[item.uid] = { ...item, checked: value };
-      } else {
-        newCheckedMemeberIds[item.uid] = item;
-      }
+      newCheckedMemeberIds[item.uid] = item.canChangeAction ? { ...item, checked: value } : item;
     });
     setCheckedMemberIds(newCheckedMemeberIds);
     setSelectedAll(value);
@@ -654,11 +663,7 @@ const SalaryAdjustmentPropse = (props) => {
     let checkall = true;
     const newCheckedMemeberIds = {};
     Object.values(checkedMemberIds).map((item) => {
-      if (item.uid == uid) {
-        newCheckedMemeberIds[item.uid] = { ...item, checked: value };
-      } else {
-        newCheckedMemeberIds[item.uid] = item;
-      }
+      newCheckedMemeberIds[item.uid] = item.uid == uid ? { ...item, checked: value } : item;
       checkall = checkall && (newCheckedMemeberIds[item.uid].checked || item.canChangeAction == false);
     });
     setCheckedMemberIds(newCheckedMemeberIds);
@@ -670,7 +675,7 @@ const SalaryAdjustmentPropse = (props) => {
     const _selectedMembers = selectedMembers.map((item) => {
       if (checkedMemberIds[item.uid]?.checked == true) {
         _enableSubmit = accepted;
-        return { ...item, accepted: accepted };
+        return { ...item, accepted };
       }
       return item;
     });
@@ -679,23 +684,21 @@ const SalaryAdjustmentPropse = (props) => {
   };
 
   const onActionChange = (uid, accepted = true) => {
-    let _enableSubmit = true;
-    const _selectedMembers = selectedMembers.map((item) => {
-      if (item.uid == uid) {
-        return { ...item, accepted: accepted };
-      }
-      if (
-        (viewSetting.showComponent.btnExpertise ||
-          viewSetting.showComponent.btnApprove) &&
-        !isCreateMode &&
-        item.canChangeAction && !item.accepted
-      ) {
-        _enableSubmit = false;
-      }
-      return item;
-    });
-    setSelectedMembers(_selectedMembers);
+    const _selectedMembers = selectedMembers.map((item) =>
+        item.uid == uid ? { ...item, accepted } : item
+      ),
+      _enableSubmit = _selectedMembers.some((item) => {
+        return (
+          (viewSetting.showComponent.btnExpertise ||
+            viewSetting.showComponent.btnApprove) &&
+          !isCreateMode &&
+          item.canChangeAction &&
+          item?.accepted
+        );
+      });
+
     setEnableSubmit(_enableSubmit);
+    setSelectedMembers(_selectedMembers);
   };
 
   const handleTextInputChange = (value, uid, objName) => {
@@ -719,12 +722,7 @@ const SalaryAdjustmentPropse = (props) => {
       const selectMembersTmp = [...selectMembers];
       selectMembersTmp.forEach((item) => {
         if (item.uid === uid) {
-          if (moment(value, "DD-MM-YYYY").isValid()) {
-            const date = moment(value, Constants.LEAVE_DATE_FORMAT);
-            item[objName] = date;
-          } else {
-            item[objName] = "";
-          }
+          item[objName] = moment(value, "DD-MM-YYYY").isValid() ? moment(value, Constants.LEAVE_DATE_FORMAT) : "";
         }
       });
       setSelectMembers(selectMembersTmp);
@@ -732,12 +730,7 @@ const SalaryAdjustmentPropse = (props) => {
       const selectedMembersTmp = [...selectedMembers];
       selectedMembersTmp.forEach((item) => {
         if (item.uid === uid) {
-          if (moment(value, "DD-MM-YYYY").isValid()) {
-            const date = moment(value, Constants.LEAVE_DATE_FORMAT);
-            item[objName] = date;
-          } else {
-            item[objName] = "";
-          }
+          item[objName] = moment(value, "DD-MM-YYYY").isValid() ? moment(value, Constants.LEAVE_DATE_FORMAT) : "";
         }
       });
       setSelectedMembers(selectedMembersTmp);
@@ -781,7 +774,7 @@ const SalaryAdjustmentPropse = (props) => {
       dataToUpdate: [
         {
           id: id,
-          requestTypeId: isTransferAppointProposal ? 14 : 12,
+          requestTypeId: currentRequestTypeId,
           sub: [
             {
               id: id,
@@ -806,7 +799,7 @@ const SalaryAdjustmentPropse = (props) => {
       dataToUpdate: [
         {
           id: id,
-          requestTypeId: isTransferAppointProposal ? 14 : 12,
+          requestTypeId: currentRequestTypeId,
           sub: [
             {
               id: id,
@@ -865,14 +858,14 @@ const SalaryAdjustmentPropse = (props) => {
       dataToUpdate: [
         {
           id: id,
-          requestTypeId: isTransferAppointProposal ? 14 : 12,
+          requestTypeId: currentRequestTypeId,
           sub: [
             {
               id: id,
               processStatusId: 5,
               comment: "",
               status: "",
-              staffRequestStatusList: staffRequestStatusList
+              staffRequestStatusList,
             },
           ],
         },
@@ -907,7 +900,7 @@ const SalaryAdjustmentPropse = (props) => {
       dataToUpdate: [
         {
           id: id,
-          requestTypeId: isTransferAppointProposal ? 14 : 12,
+          requestTypeId: currentRequestTypeId,
           sub: [
             {
               id: id,
@@ -939,14 +932,14 @@ const SalaryAdjustmentPropse = (props) => {
       dataToUpdate: [
         {
           id: id,
-          requestTypeId: isTransferAppointProposal ? 14 : 12,
+          requestTypeId: currentRequestTypeId,
           sub: [
             {
               id: id,
               processStatusId: 2,
               comment: "",
               status: "",
-              staffRequestStatusList: staffRequestStatusList
+              staffRequestStatusList,
             },
           ],
         },
@@ -968,9 +961,9 @@ const SalaryAdjustmentPropse = (props) => {
         return showStatusModal(t("HumanForChangeSalaryValidate"), false);
       }
       if (!approver) {
-        return showStatusModal(`${t("PleaseInputApprover")} (${t("Sent")})`, false);
+        return showStatusModal(isTransferProposal ? `${t("PleaseInputApprover")} (${t("Sent")})` : t("PleaseInputApprover"), false);
       }
-      if (!approverArrive) {
+      if (!approverArrive && isTransferProposal) {
         return showStatusModal(`${t("PleaseInputApprover")} (${t("Arrive")})`, false);
       }
       
@@ -1040,6 +1033,10 @@ const SalaryAdjustmentPropse = (props) => {
                 proposedPosition: u?.proposedPosition,
                 proposedDepartment: u?.proposedDepartment,
                 proposedDepartmentCode: u?.proposedDepartmentCode,
+                proposedRank: u?.proposedLevel?.value || "",
+                proposedRankGroupId: u?.proposedLevelGroup?.value || "",
+                proposedRankGroupName: u?.proposedLevelGroup?.label || "",
+                current_position: u?.employeeLevel,
               } : {}),
               staffStrengths: u?.strength,
               staffWknesses: u?.weakness,
@@ -1082,14 +1079,15 @@ const SalaryAdjustmentPropse = (props) => {
 
   const prepareDataToSubmit = (id) => {
     if (isCreateMode) {
-      let bodyFormData = new FormData();
-      let appIndex = 1;
+      let bodyFormData = new FormData(),
+        appIndex = 1;
       const employeeInfoLst = (id ? selectedMembers : selectMembers).map((u) => ({
         employeeNo: u?.employeeNo,
         username: u?.account.toLowerCase(),
         account: u?.account.toLowerCase().includes('@vingroup.net') ? u?.account.toLowerCase() : u?.account.toLowerCase() + "@vingroup.net",
         fullName: u?.fullName,
         jobTitle: u?.jobTitle,
+        employeeLevel: u?.employeeLevel,
         department: u?.department,
         organizationList: u?.organizationList,
         startDate: u?.startDate || moment(u?.effectiveTime, Constants.LEAVE_DATE_FORMAT).format("YYYY-MM-DD") || "",
@@ -1101,6 +1099,10 @@ const SalaryAdjustmentPropse = (props) => {
           proposedPosition: u?.proposedPosition,
           proposedDepartment: u?.proposedDepartment,
           proposedDepartmentCode: u?.proposedDepartmentCode,
+          proposedRank: u?.proposedLevel?.value || "",
+          proposedRankGroupId: u?.proposedLevelGroup?.value || "",
+          proposedRankGroupName: u?.proposedLevelGroup?.label || "",
+          current_position: u?.employeeLevel,
         } : {}),
         staffStrengths: u?.strength,
         staffWknesses: u?.weakness,
@@ -1113,7 +1115,7 @@ const SalaryAdjustmentPropse = (props) => {
           employeeLevel: u?.employeeLevel,
           pnl: u?.pnl,
           orglv2Id: u?.orglv2Id,
-          current_position: u?.currentPosition, // jobTitle
+          current_position: u?.currentPosition || u?.jobTitle,
           department: u?.department,
           order: appIndex++,
           company_email: u?.companyEmail,
@@ -1157,7 +1159,10 @@ const SalaryAdjustmentPropse = (props) => {
         });
       }
 
-      const approverInfoLst = [approver, approverArrive].map((ele, i) => ({
+      const approverInfoLst = [
+        approver,
+        ...(!!approverArrive ? [approverArrive] : []),
+      ].map((ele, i) => ({
         avatar: "",
         account: ele?.username?.toLowerCase() + "@vingroup.net",
         fullName: ele?.fullName,
@@ -1226,6 +1231,7 @@ const SalaryAdjustmentPropse = (props) => {
       bodyFormData.append("companyCode", viewSetting.proposedStaff.companyCode);
       bodyFormData.append("staffInfoLst", JSON.stringify(staffInfoLst));
       bodyFormData.append("approverInfoLst", JSON.stringify(approverInfoLst));
+      bodyFormData.append("requestTypeId", currentRequestTypeId)
 
       if(!!id) {
         bodyFormData.append("id", id);
@@ -1309,11 +1315,23 @@ const SalaryAdjustmentPropse = (props) => {
   };
 
   const validateAppoitment = () => {
-    const selectedMembersTmp = [...selectMembers];
+    const selectedMembersTmp = [...selectMembers],
+      proposedPositionCodes = selectedMembersTmp.map(ele => ele?.proposedPositionCode).filter(ele => ele !== undefined);
     let errors = [];
     selectedMembersTmp.forEach((u) => {
-      if (!u.proposedPositionCode) errors.push(t("ProposedEmployeeEmpty"));
+      if(isTransferAppointProposal) {
+        if(isTransferProposal) {
+          if (!u.proposedPositionCode) errors.push(t("ProposedEmployeeEmpty"));
+          if (!!u.proposedLevelGroup && !u.proposedLevel) errors.push(t("ProposedEmployeeLevelRequired"));
+        } else {
+          if (!u.proposedLevelGroup || !u.proposedLevel) errors.push(t("ProposedEmployeeLevelEmpty"));
+        }
+      }
+
       if (!u.effectiveTime) errors.push(t("SelecTimePeriodValidate"));
+      if (!!u?.proposedPositionCode && proposedPositionCodes.filter(ele => ele === u?.proposedPositionCode).length > 1) {
+        errors.push(t("ProposedPositionCodeDuplicate"));
+      }
     });
     return errors;
   }
@@ -1406,6 +1424,14 @@ const SalaryAdjustmentPropse = (props) => {
     setProposalModal({ show: false });
   };
 
+  const handleProposeLevel = (index, val, key) => {
+    const selectMembersTmp = [...selectMembers];
+    selectMembersTmp[index][key] = val;
+    if (key === 'proposedLevelGroup') selectMembersTmp[index]['proposedLevel'] = null;
+
+    setSelectMembers(selectMembersTmp);
+  }
+
   const onHideModalConfirm = () => {
     setConfirmModal({
       ...confirmModal,
@@ -1423,26 +1449,11 @@ const SalaryAdjustmentPropse = (props) => {
   }
 
   const renderListMember = () => {
-    const appraisersEmail = supervisors.map((ele) => ele?.account?.toLowerCase())
-          .concat([
-            viewSetting?.proposedStaff?.company_email?.toLowerCase(),
-            coordinator?.account?.toLowerCase(),
-            appraiser?.account?.toLowerCase(),
-            approver?.account?.toLowerCase(),
-            approverArrive?.account?.toLowerCase(),
-          ]),
-        email = getStorage('email'),
-        isAppraisersContainAccount = appraisersEmail.includes(email),
-        subordinatesEmails = subordinates.map(ele => ele?.company_email?.toLowerCase());
-    let members = isCreate
-        ? selectMembers
-        : isAppraisersContainAccount
-        ? selectedMembers.filter((ele) => subordinatesEmails.includes(ele.account))
-        : selectedMembers.filter((ele) => email === ele.account);
+    let members = isCreate ? selectMembers : selectedMembers;
 
     return members.map((item, index) => {
       if(item.shouldHide == true) return null;
-      const isProposalTransfer = item.requestTypeId === Constants.PROPOSAL_TRANSFER;
+      const isProposalTransfer = [Constants.PROPOSAL_TRANSFER, Constants.PROPOSAL_APPOINTMENT].includes(item.requestTypeId);
 
       return (
         <React.Fragment key={index}>
@@ -1521,7 +1532,7 @@ const SalaryAdjustmentPropse = (props) => {
                     {item?.fullName}{' '}
                     <span className="font-weight-normal">{!!item?.employeeNo ? `(${item?.employeeNo})` : ""}</span>
                   </p>
-                  <p className="mb-7px">{item?.jobTitle}</p>
+                  <p className="mb-7px">{item?.jobTitle} ({item?.employeeLevel})</p>
                   <p style={{
                     marginBottom: 0,
                     whiteSpace: "nowrap",
@@ -1542,7 +1553,7 @@ const SalaryAdjustmentPropse = (props) => {
                             width: viewSetting.disableComponent.showEye
                               ? '90%'
                               : '100%',
-                          }}
+                          }}                             
                         >
                           {viewSetting.disableComponent.showCurrentSalary &&
                           accessToken ? (
@@ -1776,9 +1787,7 @@ const SalaryAdjustmentPropse = (props) => {
             {(isTransferAppointProposal || isProposalTransfer) && (
               <td colSpan={isSalaryPropose ? "12" : "8"}>
                 <div className="skill">
-                  <span className="title font-weight-bold">
-                    * {t('proposal_title')}:
-                  </span>
+                  <span className="title font-weight-bold">{t('proposal_title')}:</span>
                   <span
                     className="w-100 proposal-title"
                     onClick={() =>
@@ -1789,10 +1798,10 @@ const SalaryAdjustmentPropse = (props) => {
                       className={`form-control w-100 bg-white ${
                         isProposalTransfer ? 'disabled' : ''
                       }`}
+                      style={{ fontSize: '14px', paddingLeft: '8px' }}
                       disabled
                     >
                       <option
-                      style={{fontSize: '14px'}}
                       >
                         {
                           !!item.proposedPosition
@@ -1804,12 +1813,48 @@ const SalaryAdjustmentPropse = (props) => {
                   </span>
                 </div>
                 <div className="skill mt-2">
-                  <span className="title font-weight-bold">
-                    * {t('proposal_org')}:
-                  </span>
+                  <span className="title font-weight-bold">{t('proposal_org')}:</span>
                   <span className="input form-control mv-10 w-100 disabled" style={{fontSize: '14px'}}>
                     {item?.proposedDepartment}
                   </span>
+                </div>
+                <div className="skill mt-2">
+                  <div className="col-6 d-flex align-items-center pl-0">
+                    <span className="title font-weight-bold">{t('proposal_level_group')}:</span>
+                    <Select
+                      value={item?.proposedLevelGroup}
+                      options={EMPLOYEE_GROUP_OPTIONS}
+                      onChange={(e) => handleProposeLevel(index, e, 'proposedLevelGroup')}
+                      isClearable={false}
+                      isDisabled={isProposalTransfer}
+                      className="input mv-10"
+                      placeholder={t("Select")}
+                      styles={{ 
+                        menu: (provided) => ({ ...provided, zIndex: 2, fontSize: '14px' }),
+                        control: (styles) => ({ ...styles, borderColor: "#ced4da" })
+                      }}
+                      menuShouldBlockScroll={true}
+                      menuPortalTarget={document.getElementById('wrapper')}
+                    />
+                  </div>
+                  <div className="col-6 d-flex align-items-center pr-0">
+                    <span className="title font-weight-bold">{t('proposal_level')}:</span>
+                    <Select
+                      value={item?.proposedLevel}
+                      options={EMPLOYEE_SUB_GROUP_OPTIONS.filter(ele => ele.parentId === item?.proposedLevelGroup?.value)}
+                      onChange={(e) => handleProposeLevel(index, e, 'proposedLevel')}
+                      isClearable={false}
+                      isDisabled={isProposalTransfer}
+                      className="input mv-10"
+                      placeholder={t("Select")}
+                      styles={{
+                        menu: (provided) => ({ ...provided, zIndex: 2, fontSize: '14px' }),
+                        control: (styles) => ({ ...styles, borderColor: "#ced4da" })
+                      }}
+                      menuShouldBlockScroll={true}
+                      menuPortalTarget={document.getElementById('wrapper')}
+                    />
+                  </div>
                 </div>
               </td>
             )}
@@ -1817,9 +1862,7 @@ const SalaryAdjustmentPropse = (props) => {
           <tr>
             <td colSpan={isSalaryPropose ? "12" : "8"}>
               <div className="skill">
-                <span className="title font-weight-bold">
-                  * {t('strength')}:
-                </span>
+                <span className="title font-weight-bold">{t('strength')}:</span>
                 <span className="input">
                   {viewSetting.disableComponent.editSubjectApply ? (
                     <ResizableTextarea
@@ -1844,9 +1887,7 @@ const SalaryAdjustmentPropse = (props) => {
           <tr>
             <td colSpan={isSalaryPropose ? "12" : "8"}>
               <div className="skill">
-                <span className="title font-weight-bold">
-                  * {t('weakness')}:
-                </span>
+                <span className="title font-weight-bold">{t('weakness')}:</span>
                 <span className="input">
                   {viewSetting.disableComponent.editSubjectApply ? (
                     <ResizableTextarea
@@ -1872,6 +1913,39 @@ const SalaryAdjustmentPropse = (props) => {
       );
     });
   };
+
+  const renderStatusDetail = () => {
+    let { processStatusId, requestTypeId, statusName } = dataSalary;
+    const currentStatus = Constants.mappingStatusRequest[viewSetting?.currentStatus],
+      STATUS_VALUES = {
+        1: { label: t('Rejected'), className: 'fail' },
+        2: { label: t('Approved'), className: 'success' },
+        3: { label: t('Canceled'), className: '' },
+        4: { label: t('Canceled'), className: '' },
+        5: { label: t("PendingApproval"), className: '' },
+        6: { label: t("PartiallySuccessful"), className: 'warning' },
+        7: { label: t("Rejected"), className: 'fail' },
+        8: { label: t("PendingConsent"), className: '' },
+        20: { label: t("Consented"), className: '' },
+        100: { label: t("Waiting"), className: '' }
+      };
+
+    if([Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER, Constants.PROPOSAL_APPOINTMENT].includes(requestTypeId)) {
+      if(statusName) {
+        let statusLabel = t(statusName),
+          tmp = Object.keys(STATUS_VALUES).filter(key => STATUS_VALUES[key].label == statusLabel );
+        processStatusId = tmp?.length > 0 ? tmp[0] : processStatusId;
+      } else {
+        processStatusId = processStatusId == 21 || processStatusId == 22 ? 100 : processStatusId;
+      }
+    }
+
+    return !!statusName ? (
+      <span className={`request-status ${STATUS_VALUES[processStatusId]?.className}`} >{STATUS_VALUES[processStatusId]?.label}</span>
+    ) : (
+      <span className={`request-status ${currentStatus?.className}`} >{t(currentStatus?.label)}</span>
+    )
+  }
 
   const salaryState = `salaryadjustment_${id}_${props.match.params?.type}`;
 
@@ -1912,9 +1986,9 @@ const SalaryAdjustmentPropse = (props) => {
         onHide={onHideModalConfirm}
         indexCurrentAppraiser={confirmModal.indexCurrentAppraiser}
       />
-      <div className="eval-heading">{isTransferAppointProposal ? t("ProposalTransfer") : t("SalaryPropse")}</div>
+      <div className="eval-heading">{InsuranceOptions.find(ele => ele.value === currentRequestTypeId)?.label}</div>
       {/* ĐỀ XUẤT ĐIỀU CHỈNH LƯƠNG */}
-      <h5 className="content-page-header">{isTransferAppointProposal ? t("MenuProposalManagement") : t("SalaryAdjustmentPropse")}</h5>
+      <h5 className="content-page-header">{InsuranceOptions.find(ele => ele.value === currentRequestTypeId)?.requestLabel}</h5>
       <div className="timesheet-box1 shadow">
         <div className="row">
           <div className="col-12">
@@ -1957,25 +2031,14 @@ const SalaryAdjustmentPropse = (props) => {
           <div className="timesheet-box1 timesheet-box shadow">
             <div className="row">
               <div className="col-12">
-                {isCreate ? (
-                  <FilterMember
-                    {...props}
-                    isEdit={true}
-                    selectedMembers={selectedMembers}
-                    handleSelectMembers={handleSelectMembers}
-                    isSalaryAdjustment={isSalaryAdjustment}
-                    onChangeSalaryAdjustment={(val) => setIsSalaryAdjustment(val)}
-                  />
-                ) : (
-                  <FilterMember
-                    {...props}
-                    isEdit={true}
-                    selectedMembers={selectedMembers}
-                    handleSelectMembers={handleSelectedMembers}
-                    isSalaryAdjustment={isSalaryAdjustment}
-                    onChangeSalaryAdjustment={(val) => setIsSalaryAdjustment(val)}
-                  />
-                )}
+                <FilterMember
+                  {...props}
+                  isEdit={true}
+                  selectedMembers={selectedMembers}
+                  handleSelectMembers={isCreate ? handleSelectMembers : handleSelectedMembers}
+                  isSalaryAdjustment={isSalaryAdjustment}
+                  onChangeSalaryAdjustment={setIsSalaryAdjustment}
+                />
               </div>
             </div>
           </div>
@@ -2080,8 +2143,7 @@ const SalaryAdjustmentPropse = (props) => {
                   isAppraiser={true}
                   approver={item}
                   updateApprover={(sup) => {}}
-                  // comment={dataSalary?.requestAppraisers?.find((_, index) => index === key)?.appraiserComment}
-                  comment=""
+                  comment={item?.appraiserComment}
                 />
               </div>
             ))}
@@ -2089,7 +2151,7 @@ const SalaryAdjustmentPropse = (props) => {
               <div
                 key={`supervisors-${key}`}
                 className="appraiser d-flex flex-column position-relative"
-                style={(key > 0 || selectedMembers.length > 0 || selectMembers.length > 0) ? { marginTop: "20px" } : {}}
+                style={(key > 0 || employeAppraisers.length > 0) ? { marginTop: "20px" } : {}}
               >
                 {isCreateMode && (
                   <button
@@ -2106,7 +2168,7 @@ const SalaryAdjustmentPropse = (props) => {
                   isAppraiser={true}
                   approver={item}
                   updateApprover={(sup) => handleUpdateSupervisors(sup, key)}
-                  comment={dataSalary?.requestAppraisers?.find((_, index) => index === key)?.appraiserComment}
+                  comment={item?.appraiserComment}
                 />
               </div>
             ))}
@@ -2135,35 +2197,53 @@ const SalaryAdjustmentPropse = (props) => {
               approver={appraiser}
               isHR={true}
               updateApprover={(sup) => handleUpdateHrChangeSalary(sup)}
-              comment={dataSalary?.requestAppraisers?.[dataSalary?.requestAppraisers?.length - 1]?.appraiserComment}
+              comment={appraiser?.appraiserComment}
             />
           </div>
         </>
       )}
       {/* CBLĐ PHÊ DUYỆT */}
-      {viewSetting.showComponent.showOfficerApproved && (
-        <>
-          <h5 className="content-page-header">{`${t("BossApproved")} (${t("Sent")})`}</h5>
-          <div className="timesheet-box1 timesheet-box shadow">
-            <HumanForReviewSalaryComponent
-              isEdit={!viewSetting.disableComponent.selectHrSupportViewSalary}
-              approver={approver}
-              updateApprover={handleUpdateApprovalSalary}
-              comment={dataSalary?.approverComment}
-            />
-          </div>
-          <h5 className="content-page-header">{`${t("BossApproved")} (${t("Arrive")})`}</h5>
-          <div className="timesheet-box1 timesheet-box shadow">
-            <HumanForReviewSalaryComponent
-              isEdit={!viewSetting.disableComponent.selectHrSupportViewSalary}
-              approver={approverArrive}
-              updateApprover={handleUpdateApprovalArriveSalary}
-              comment={dataSalary?.approverComment}
-              isAppraiserNote={true}
-            />
-          </div>
-        </>
-      )}
+      {viewSetting.showComponent.showOfficerApproved &&
+        (isTransferProposal ? (
+          <>
+            <h5 className="content-page-header">{`${t('BossApproved')} (${t(
+              'Sent'
+            )})`}</h5>
+            <div className="timesheet-box1 timesheet-box shadow">
+              <HumanForReviewSalaryComponent
+                isEdit={!viewSetting.disableComponent.selectHrSupportViewSalary}
+                approver={approver}
+                updateApprover={handleUpdateApprovalSalary}
+                comment={approver?.appraiserComment}
+              />
+            </div>
+            <h5 className="content-page-header">{`${t('BossApproved')} (${t(
+              'Arrive'
+            )})`}</h5>
+            <div className="timesheet-box1 timesheet-box shadow">
+              <HumanForReviewSalaryComponent
+                isEdit={!viewSetting.disableComponent.selectHrSupportViewSalary}
+                approver={approverArrive}
+                updateApprover={handleUpdateApprovalArriveSalary}
+                comment={approverArrive?.appraiserComment}
+                isAppraiserNote={true}
+              />
+            </div>
+          </>
+        ) : (
+          <>
+            <h5 className="content-page-header">{t('BossApproved')}</h5>
+            <div className="timesheet-box1 timesheet-box shadow">
+              <HumanForReviewSalaryComponent
+                isEdit={!viewSetting.disableComponent.selectHrSupportViewSalary}
+                approver={approver}
+                updateApprover={handleUpdateApprovalSalary}
+                comment={approver?.appraiserComment}
+                isAppraiserNote={true}
+              />
+            </div>
+          </>
+        ))}
       {/* Proccess History */}
       {/* {!isCreateMode && (
         <>
@@ -2208,18 +2288,7 @@ const SalaryAdjustmentPropse = (props) => {
       </ul>
       {/* Show status */}
       {viewSetting.showComponent.stateProcess && (
-        <div className="block-status">
-          <span
-            className={`request-status ${
-              Constants.mappingStatusRequest[viewSetting?.currentStatus]
-                ?.className
-            }`}
-          >
-            {t(
-              Constants.mappingStatusRequest[viewSetting?.currentStatus]?.label
-            )}
-          </span>
-        </div>
+        <div className="block-status">{renderStatusDetail()}</div>
       )}
       <div className="d-flex justify-content-end mb-5">
         {/* Đính kèm tệp */}

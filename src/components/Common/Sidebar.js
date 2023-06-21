@@ -130,7 +130,7 @@ function SideBar(props) {
     const guard = useGuardStore();
     const { t } = useTranslation();
     const user = guard.getCurentUser();
-    const { companyLogoUrl } = props?.user;
+    const { companyLogoUrl } = props?.user || {};
     const { show } = props;
 
     const getNavigation = (role) => {
@@ -161,8 +161,13 @@ function SideBar(props) {
         if (![Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl].includes(user.companyCode)) {
             rootNav = rootNav.filter(x => x.label !== 'Menu_Training')
         }
-        if(![...Constants.MODULE_COMPANY_AVAILABE[Constants.MODULE.DEXUATLUONG], ...Constants.MODULE_COMPANY_AVAILABE[Constants.MODULE.NGHIVIEC]].includes(user.companyCode)) {
-          rootNav = rootNav.filter(x => x.label !== 'MenuProposalManagement')
+        if(![
+          ...Constants.MODULE_COMPANY_AVAILABE[Constants.MODULE.DEXUATLUONG],
+          ...Constants.MODULE_COMPANY_AVAILABE[Constants.MODULE.NGHIVIEC],
+          ...Constants.MODULE_COMPANY_AVAILABE[Constants.MODULE.DIEUCHUYEN],
+          ...Constants.MODULE_COMPANY_AVAILABE[Constants.MODULE.BONHIEM]
+        ].includes(user.companyCode)) {
+          rootNav = rootNav.filter(x => x.label !== 'CreateProposal')
         }
         if(user.prepare != 'true') {
             rootNav = rootNav.filter(x => x.id != 1006)
