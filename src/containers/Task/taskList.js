@@ -159,19 +159,19 @@ class TaskList extends React.Component {
         }
 
         const status = {
-            1: { label: this.props.t('Rejected'), className: 'request-status fail' },
-            2: { label: this.props.t('Approved'), className: 'request-status success' },
-            3: { label: this.props.t('Canceled'), className: 'request-status' },
-            4: { label: this.props.t('Canceled'), className: 'request-status' },
-            5: { label: this.props.t("Waiting"), className: 'request-status' },
-            6: { label: this.props.t("PartiallySuccessful"), className: 'request-status warning' },
-            7: { label: this.props.t("Rejected"), className: 'request-status fail' },
-            8: { label: this.props.t("Waiting"), className: 'request-status' },
-            20: { label: this.props.t("Consented"), className: 'request-status' },
+            1: { label: t('Rejected'), className: 'request-status fail' },
+            2: { label: t('Approved'), className: 'request-status success' },
+            3: { label: t('Canceled'), className: 'request-status' },
+            4: { label: t('Canceled'), className: 'request-status' },
+            5: { label: t("Waiting"), className: 'request-status' },
+            6: { label: t("PartiallySuccessful"), className: 'request-status warning' },
+            7: { label: t("Rejected"), className: 'request-status fail' },
+            8: { label: t("Waiting"), className: 'request-status' },
+            20: { label: t("Consented"), className: 'request-status' },
         }
 
-        if([Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER].includes(request) && statusName) {
-            let statusLabel = this.props.t(statusName);
+        if([Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER, Constants.PROPOSAL_APPOINTMENT].includes(request) && statusName) {
+            let statusLabel = t(statusName);
             let tmp = Object.keys(status).filter(key => status[key].label == statusLabel );
             statusOriginal = tmp?.length > 0 ? tmp[tmp.length - 1] : statusOriginal;
         }
@@ -217,14 +217,20 @@ class TaskList extends React.Component {
     }
 
     getSalaryProposeLink = (request) => {
-        let url = '';
+        let url = '',
+        transferAppoints = {
+          '14-1': 'registration-transfer',
+          '15-1': 'registration-transfer',
+          '14-2': 'proposed-transfer',
+          '15-2': 'proposed-appointment',
+        };
         const typeRequest = this.props.page === "approval" ? "approval" : "assess"
         if(request.parentRequestHistoryId) {
             //xu ly mot nguoi
             url = `salarypropse/${request.parentRequestHistoryId}/${request.salaryId}/${typeRequest}`
         } else {
             //xu ly nhieu nguoi
-            url = `${request?.requestTypeId === 14 ? 'transfer-appoint' : 'salaryadjustment'}/${request.salaryId}/${typeRequest}`
+            url = `${[14, 15].includes(request?.requestTypeId) ? transferAppoints[`${request?.requestTypeId}-${request?.formType}`] : 'salaryadjustment'}/${request.salaryId}/${typeRequest}`
         }
         return url;
     }
@@ -268,11 +274,11 @@ class TaskList extends React.Component {
         const currentEmail = localStorage.getItem('email')?.toLowerCase()
 
         tasks.forEach((child) => {
-            if (([Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER].includes(child.requestTypeId) && child.isEdit == true) 
-                || (child.processStatusId == Constants.STATUS_WAITING_CONSENTED && ![Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER].includes(child.requestTypeId)) 
+            if (([Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER, Constants.PROPOSAL_APPOINTMENT].includes(child.requestTypeId) && child.isEdit == true) 
+                || (child.processStatusId == Constants.STATUS_WAITING_CONSENTED && ![Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER, Constants.PROPOSAL_APPOINTMENT].includes(child.requestTypeId)) 
                 || (child.processStatusId == Constants.STATUS_OB_SUPERVISOR_EVALUATION && child.supervisorId?.toLowerCase() == currentEmail) 
                 || (child.processStatusId == Constants.STATUS_OB_APPRAISER_EVALUATION && child.appraiserId?.toLowerCase() == currentEmail) 
-                || (page == "approval" && ((child.processStatusId == Constants.STATUS_WAITING && ![Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER].includes(child.requestTypeId)) || child.processStatusId == Constants.STATUS_OB_APPROVER_EVALUATION || (child.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && requestTypeIdsAllowedToReApproval.includes(child.requestTypeId))))
+                || (page == "approval" && ((child.processStatusId == Constants.STATUS_WAITING && ![Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER, Constants.PROPOSAL_APPOINTMENT].includes(child.requestTypeId)) || child.processStatusId == Constants.STATUS_OB_APPROVER_EVALUATION || (child.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && requestTypeIdsAllowedToReApproval.includes(child.requestTypeId))))
             ) {
                 child.isChecked = event.target.checked;
                 if (child.isChecked) {
@@ -710,13 +716,13 @@ class TaskList extends React.Component {
                                                         (
                                                             (
                                                                 (
-                                                                    ((child.processStatusId == 5 && ![Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER].includes(child.requestTypeId)) || child.processStatusId == 13 || (child.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && requestTypeIdsAllowedToReApproval.includes(child.requestTypeId)))
+                                                                    ((child.processStatusId == 5 && ![Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER, Constants.PROPOSAL_APPOINTMENT].includes(child.requestTypeId)) || child.processStatusId == 13 || (child.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && requestTypeIdsAllowedToReApproval.includes(child.requestTypeId)))
                                                                     && this.props.page == "approval"
                                                                 )
-                                                                || (child.processStatusId == 8 && ![Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER].includes(child.requestTypeId) ) 
+                                                                || (child.processStatusId == 8 && ![Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER, Constants.PROPOSAL_APPOINTMENT].includes(child.requestTypeId) ) 
                                                                 || (child.processStatusId == 11 && child.supervisorId?.toLowerCase() == localStorage.getItem('email')?.toLowerCase()) 
                                                                 || (child.processStatusId == 10 && child.appraiserId?.toLowerCase() == localStorage.getItem('email')?.toLowerCase()) 
-                                                                || ([Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER].includes(child.requestTypeId) && child.isEdit == true)
+                                                                || ([Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER, Constants.PROPOSAL_APPOINTMENT].includes(child.requestTypeId) && child.isEdit == true)
                                                             )
                                                             && child.requestTypeId != Constants.UPDATE_PROFILE
                                                         ) ?
@@ -733,7 +739,7 @@ class TaskList extends React.Component {
                                                                  {generateTaskCodeByCode(child.id)}
                                                             </a>
                                                         </td>
-                                                        : [Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER].includes(child.requestType?.id) ?
+                                                        : [Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER, Constants.PROPOSAL_APPOINTMENT].includes(child.requestType?.id) ?
                                                         <td className="code sticky-col">
                                                             <a href={this.getSalaryProposeLink(child)}
                                                              title={child.id} className="task-title">
