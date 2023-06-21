@@ -213,8 +213,11 @@
                 border-bottom: 1px solid #CED4DA
               }
               .form-check {
+                display: flex;
                 margin-bottom: 12px;
                 .form-check-input {
+                  width: 13px;
+                  height: 13px;
                   margin-top: 0.12rem
                 }
                 .form-check-label {
@@ -222,9 +225,16 @@
                 }
               }
               .type-list-ul {
+                padding-left: 20px;
                 margin-bottom: 18px;
                 .category-item {
-                  margin-bottom: 8px;
+                  display: flex;
+                  input {
+                    width: 15px;
+                    height: 15px;
+                    margin-right: 8px;
+                  }
+                  margin-bottom: 12px;
                 }
               }
             }
