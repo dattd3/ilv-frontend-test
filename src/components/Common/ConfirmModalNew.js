@@ -1,6 +1,7 @@
 import React from "react";
 import { Modal, Button, Image } from "react-bootstrap";
 import clsx from "clsx";
+import purify from "dompurify"
 import IconReject from "../../assets/img/icon/Icon_Cancel.svg";
 import IconCheck from "../../assets/img/icon/Icon_Check_White.svg";
 
@@ -27,7 +28,9 @@ export default function ConfirmModal(props) {
         <div className="modal-title">{confirmHeader}</div>
       </Modal.Header>
       <Modal.Body>
-        <div className="content">{confirmContent}</div>
+        <div className="content" dangerouslySetInnerHTML={{
+          __html: purify.sanitize(confirmContent),
+        }} />
         <div className="text-right form-button-group">
           {tempButtonLabel && (
             <Button
