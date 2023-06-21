@@ -16,6 +16,7 @@ import AttachmentComponent from '../TerminationComponents/AttachmentComponent'
 import ResultModal from '../ResultModal'
 import LoadingModal from '../../../components/Common/LoadingModal'
 import { getMuleSoftHeaderConfigurations, getRequestConfigurations, getResignResonsMasterData } from '../../../commons/Utils'
+import ConfirmModal from 'components/Common/ConfirmModalNew'
 
 class RegistrationEmploymentTerminationForm extends React.Component {
     constructor(props) {
@@ -34,6 +35,7 @@ class RegistrationEmploymentTerminationForm extends React.Component {
             disabledSubmitButton: false,
             loaded: 0,
             isShowLoadingModal: false,
+            isShowWarningModal: false,
             errors: {
                 lastWorkingDay: props.t('resign_error_lastWorkingDay'),
                 reason: props.t('resign_error_reason'),
@@ -250,7 +252,7 @@ class RegistrationEmploymentTerminationForm extends React.Component {
         return []
     }
 
-    submit = async () => {
+    submit = async (ignoreCheckEnoughDay = false) => {
         const { t } = this.props
         const {
             userInfos,
@@ -281,6 +283,16 @@ class RegistrationEmploymentTerminationForm extends React.Component {
         // }
         //this.setState({isShowLoadingModal: true})
         
+        if (!ignoreCheckEnoughDay) {
+          const isNotEnoughTime = (userInfos.contractType === "VA" && moment(staffTerminationDetail.dateTermination, "YYYY-MM-DD").diff(moment(), "days") < 30) ||
+            (userInfos.contractType === "VB" && moment(staffTerminationDetail.dateTermination, "YYYY-MM-DD").diff(moment(), "days") < 45)
+          if (isNotEnoughTime) {
+            this.setDisabledSubmitButton(false)
+            return this.setState({
+              isShowWarningModal: true
+            })
+          }
+        }
 
         const userInfoToSubmit = !_.isNull(userInfos) && _.size(userInfos) > 0 ? [userInfos] : []
         const reasonToSubmit = !_.isNull(staffTerminationDetail) && !_.isNull(staffTerminationDetail.reason) ? staffTerminationDetail.reason : {}
@@ -357,6 +369,13 @@ class RegistrationEmploymentTerminationForm extends React.Component {
             this.setDisabledSubmitButton(false)
             this.setState({isShowLoadingModal: false})
         }
+        this.closeWarningModal()
+    }
+
+    closeWarningModal = () => {
+      this.setState({
+        isShowWarningModal: false
+      })
     }
     
     showStatusModal = (title, message, isSuccess = false) => {
@@ -412,11 +431,23 @@ class RegistrationEmploymentTerminationForm extends React.Component {
             userInfos,
             directManager,
             seniorExecutive,
-            isShowLoadingModal
+            isShowLoadingModal,
+            isShowWarningModal
         } = this.state
         return (
             <div className='registration-section'>
             <LoadingModal show={isShowLoadingModal} />
+            <ConfirmModal
+              show={isShowWarningModal}
+              confirmHeader={t("ConfirmSend")}
+              confirmContent={t("WarningNotEnoughTimeResign")}
+              onHide={this.closeWarningModal}
+              onCancelClick={this.closeWarningModal}
+              onAcceptClick={() => this.submit(true)}
+              tempButtonLabel={t("Cancel")}
+              mainButtonLabel={t("Confirm")}
+              // modalClassName,
+            />
             <Progress max="100" color="success" value={this.state.loaded}>
                 {Math.round(this.state.loaded, 2)}%
             </Progress>
