@@ -791,7 +791,6 @@ class RequestTaskList extends React.Component {
                 return requestTypeObj ? t(requestTypeObj.label) : ""
             }
         }
-
         return (
             <>
                 {/* <ConfirmationModal show={this.state.isShowModalConfirm} manager={this.manager} title={this.state.modalTitle} type={this.state.typeRequest} message={this.state.modalMessage}
@@ -839,7 +838,7 @@ class RequestTaskList extends React.Component {
                                   checked={requestCategorySelected === REQUEST_CATEGORIES.CATEGORY_1}
                                 />
                                 <ul className="type-list-ul">
-                                  {Object.keys(Constants.REQUEST_CATEGORY_1_LIST)?.filter(item => item !== Constants.ONBOARDING)?.map(key => <div className="category-item" key={key}>
+                                  {Object.keys(Constants.REQUEST_CATEGORY_1_LIST)?.filter(item => item != Constants.ONBOARDING)?.map(key => <div className="category-item" key={key}>
                                     <input 
                                       type="checkbox" 
                                       onChange={(e) => this.handleRequestTypesChange(key, e.currentTarget.checked)} 
