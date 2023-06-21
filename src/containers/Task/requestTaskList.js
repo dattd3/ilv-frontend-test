@@ -16,7 +16,7 @@ import Constants from '../../commons/Constants'
 import RegistrationConfirmationModal from '../Registration/ConfirmationModal'
 import { FormControl, Form, Button } from 'react-bootstrap'
 import { withTranslation } from "react-i18next"
-import { showRangeDateGroupByArrayDate, generateTaskCodeByCode, getValueParamByQueryString, setURLSearchParam } from "../../commons/Utils"
+import { showRangeDateGroupByArrayDate, generateTaskCodeByCode, getValueParamByQueryString, setURLSearchParam, getRequestTypesList } from "../../commons/Utils"
 import { REQUEST_CATEGORIES, absenceRequestTypes, requestTypes } from "../Task/Constants"
 import { MOTHER_LEAVE_KEY } from "./Constants"
 // import IconInformation from "assets/img/icon/icon-blue-information.svg"
@@ -744,7 +744,7 @@ class RequestTaskList extends React.Component {
 
     handleRequestCategorySelect = (category) => {
       this.setState({
-        tmpRequestTypesSelect: category === REQUEST_CATEGORIES.CATEGORY_1 ? Object.keys(Constants.REQUEST_CATEGORY_1_LIST) : Object.keys(Constants.REQUEST_CATEGORY_2_LIST)
+        tmpRequestTypesSelect: getRequestTypesList(category, true)
       })
     }
 
@@ -838,7 +838,7 @@ class RequestTaskList extends React.Component {
                                   checked={requestCategorySelected === REQUEST_CATEGORIES.CATEGORY_1}
                                 />
                                 <ul className="type-list-ul">
-                                  {Object.keys(Constants.REQUEST_CATEGORY_1_LIST)?.filter(item => item != Constants.ONBOARDING)?.map(key => <div className="category-item" key={key}>
+                                  {getRequestTypesList(REQUEST_CATEGORIES.CATEGORY_1, true)?.map(key => <div className="category-item" key={key}>
                                     <input 
                                       type="checkbox" 
                                       onChange={(e) => this.handleRequestTypesChange(key, e.currentTarget.checked)} 
@@ -859,7 +859,7 @@ class RequestTaskList extends React.Component {
                                   checked={requestCategorySelected === REQUEST_CATEGORIES.CATEGORY_2}
                                 />
                                 <ul className="type-list-ul">
-                                  {Object.keys(Constants.REQUEST_CATEGORY_2_LIST)?.map(key => <div className="category-item" key={key}>
+                                  {getRequestTypesList(REQUEST_CATEGORIES.CATEGORY_2, true).map(key => <div className="category-item" key={key}>
                                     <input 
                                       type="checkbox" 
                                       onChange={(e) => this.handleRequestTypesChange(key, e.currentTarget.checked)}
