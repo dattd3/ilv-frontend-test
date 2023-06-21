@@ -7,7 +7,7 @@ import processingDataReq from "../../Utils/Common"
 import LoadingSpinner from "../../../components/Forms/CustomForm/LoadingSpinner";
 import RequestTaskList from '../requestTaskList';
 import HOCComponent from '../../../components/Common/HOCComponent'
-import { getValueParamByQueryString, setURLSearchParam } from 'commons/Utils'
+import { getRequestTypesList, getValueParamByQueryString, setURLSearchParam } from 'commons/Utils'
 import { REQUEST_CATEGORIES } from '../Constants'
 import LoadingModal from 'components/Common/LoadingModal'
 
@@ -21,7 +21,7 @@ class RequestComponent extends React.Component {
       dataResponse: {}
     }
     if (!getValueParamByQueryString(window.location.search, "requestTypes")) {
-      setURLSearchParam("requestTypes", Object.keys(Constants.REQUEST_CATEGORY_1_LIST)?.join(","))
+      setURLSearchParam("requestTypes", getRequestTypesList(REQUEST_CATEGORIES.CATEGORY_1, true)?.join(","))
     }
   }
 
