@@ -495,7 +495,7 @@ export const Navigation = [
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     label: "RequestCreate",
     to: map.RegistrationManagement,
-    role: ["C2", "C1", "C", "P2", "P1", "P", "T", "T4", "T3", "T2", "T1", "T0"]
+    role: [...Constants.MODULE_COMPANY_AVAILABE[Constants.MODULE.NGHIVIEC], ...Constants.MODULE_COMPANY_AVAILABE[Constants.MODULE.DIEUCHUYEN], ...Constants.MODULE_COMPANY_AVAILABE[Constants.MODULE.BONHIEM]]
     //role: 'NA'
   },
   // {
