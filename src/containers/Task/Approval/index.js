@@ -6,7 +6,7 @@ import TaskList from '../taskList'
 import Constants from '../../../commons/Constants'
 import processingDataReq from "../../Utils/Common"
 import HOCComponent from '../../../components/Common/HOCComponent'
-import { getValueParamByQueryString, setURLSearchParam } from 'commons/Utils'
+import { getRequestTypesList, getValueParamByQueryString, setURLSearchParam } from 'commons/Utils'
 import { REQUEST_CATEGORIES } from '../Constants'
 import LoadingModal from 'components/Common/LoadingModal'
 
@@ -20,7 +20,7 @@ class ApprovalComponent extends React.Component {
       totalRecord: 0
     }
     if (!getValueParamByQueryString(window.location.search, "requestTypes")) {
-      setURLSearchParam("requestTypes", Object.keys(Constants.REQUEST_CATEGORY_1_LIST)?.join(","))
+      setURLSearchParam("requestTypes", getRequestTypesList(REQUEST_CATEGORIES.CATEGORY_1, false)?.join(","))
     }
   }
 

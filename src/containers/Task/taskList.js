@@ -15,7 +15,7 @@ import TaskDetailModal from './TaskDetailModal'
 import ExportModal from './ExportModal'
 import ChangeReqBtnComponent from './ChangeReqBtnComponent'
 import Constants from '../../commons/Constants'
-import { getRequestTypeIdsAllowedToReApproval, showRangeDateGroupByArrayDate, generateTaskCodeByCode, getValueParamByQueryString, setURLSearchParam } from "../../commons/Utils"
+import { getRequestTypeIdsAllowedToReApproval, showRangeDateGroupByArrayDate, generateTaskCodeByCode, getValueParamByQueryString, setURLSearchParam, getRequestTypesList } from "../../commons/Utils"
 import { REQUEST_CATEGORIES, absenceRequestTypes, requestTypes } from "../Task/Constants"
 import IconFilter from "assets/img/icon/icon-filter.svg"
 import IconSearch from "assets/img/icon/icon-search.svg"
@@ -441,7 +441,7 @@ class TaskList extends React.Component {
 
     handleRequestCategorySelect = (category) => {
       this.setState({
-        tmpRequestTypesSelect: category === REQUEST_CATEGORIES.CATEGORY_1 ? Object.keys(Constants.REQUEST_CATEGORY_1_LIST) : Object.keys(Constants.REQUEST_CATEGORY_2_LIST)
+        tmpRequestTypesSelect: getRequestTypesList(category)
       })
     }
 
@@ -532,7 +532,7 @@ class TaskList extends React.Component {
                                   checked={requestCategorySelected === REQUEST_CATEGORIES.CATEGORY_1}
                                 />
                                 <ul className="type-list-ul">
-                                  {Object.keys(Constants.REQUEST_CATEGORY_1_LIST)?.map(key => <div className="category-item" key={key}>
+                                  {getRequestTypesList(REQUEST_CATEGORIES.CATEGORY_1, false)?.map(key => <div className="category-item" key={key}>
                                     <input 
                                       type="checkbox" 
                                       onChange={(e) => this.handleRequestTypesChange(key, e.currentTarget.checked)} 
@@ -553,7 +553,7 @@ class TaskList extends React.Component {
                                   checked={requestCategorySelected === REQUEST_CATEGORIES.CATEGORY_2}
                                 />
                                 <ul className="type-list-ul">
-                                  {Object.keys(Constants.REQUEST_CATEGORY_2_LIST)?.map(key => <div className="category-item" key={key}>
+                                  {getRequestTypesList(REQUEST_CATEGORIES.CATEGORY_2, false)?.map(key => <div className="category-item" key={key}>
                                     <input 
                                       type="checkbox" 
                                       onChange={(e) => this.handleRequestTypesChange(key, e.currentTarget.checked)}
