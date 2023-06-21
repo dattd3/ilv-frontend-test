@@ -264,7 +264,7 @@ const SalaryAdjustmentPropse = (props) => {
       indexAppraiser = requestAppraisers?.findIndex(app => app.status === Constants.SALARY_APPRAISER_STATUS.WAITING),
       isCurrentAppraiser = indexAppraiser !== -1 && currentEmail.toLowerCase() === requestAppraisers[indexAppraiser].appraiserId?.toLowerCase(),
       typeAppraise = indexAppraiser !== -1 && requestAppraisers[indexAppraiser].type,
-      currentUserAppraiser = requestAppraisers?.find((ele) => ele.appraiserId?.toLowerCase() === currentEmail.toLowerCase());
+      currentUserAppraiser = requestAppraisers?.find((ele) => ele.appraiserId?.toLowerCase() === currentEmail.toLowerCase() && [2, 3].includes(ele?.type));
 
     let viewSettingTmp = { ...viewSetting }, currentStatus = processStatusId;
 
