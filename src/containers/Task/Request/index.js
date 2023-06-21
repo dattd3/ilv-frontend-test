@@ -48,7 +48,7 @@ class RequestComponent extends React.Component {
   // 1: other requests
   // 2: salary
   requestRemoteData = (params) => {
-    const requestTypes = getValueParamByQueryString(window.location.search, "requestTypes")?.split(",")
+    const requestTypes = getValueParamByQueryString(window.location.search, "requestTypes")?.split(",")?.filter(key => key != Constants.ONBOARDING)
     const category = Constants.REQUEST_CATEGORY_2_LIST[requestTypes?.[0]*1] ? REQUEST_CATEGORIES.CATEGORY_2 : REQUEST_CATEGORIES.CATEGORY_1
     const HOST = category === 1 ? process.env.REACT_APP_REQUEST_URL : process.env.REACT_APP_REQUEST_SERVICE_URL
     const config = {
@@ -61,7 +61,7 @@ class RequestComponent extends React.Component {
     })
     config.timeout = Constants.timeoutForSpecificApis
 
-    axios.get(`${HOST}request/list?${params}companyCode=${localStorage.getItem("companyCode")}&requestTypes=${getValueParamByQueryString(window.location.search, "requestTypes")}` , config)
+    axios.get(`${HOST}request/list?${params}companyCode=${localStorage.getItem("companyCode")}&requestTypes=${requestTypes?.join(",")}` , config)
     .then(res => {
       if (res && res.data && res.data.data && res.data.result) {
         const result = res.data.result;
