@@ -16,6 +16,7 @@ import {
 } from '../../../utils/file';
 import { Portal } from 'react-overlays';
 import { useApi } from '../../../modules/api';
+import ConfirmationModal from '../ConfirmationModal';
 import ResizableTextarea from '../TextareaComponent';
 import CurrencyInput from 'react-currency-input-field';
 import Constants from '../../../commons/Constants';
@@ -24,7 +25,6 @@ import LoadingModal from '../../../components/Common/LoadingModal';
 import { getCulture, getRequestConfigurations } from 'commons/Utils';
 import '../../WorkflowManagement/ShareComponents/SelectTab/select-tab.scss';
 import HumanForReviewSalaryComponent from '../HumanForReviewSalaryComponent';
-import ConfirmationModal from 'containers/PersonalInfo/edit/ConfirmationModal';
 import ConfirmPasswordModal from '../ContractEvaluation/SalaryPropose/ConfirmPasswordModal';
 import ResultModal from 'containers/WorkflowManagement/DepartmentManagement/ProposalManagement/ResultModal';
 import ProposalModal from 'containers/WorkflowManagement/DepartmentManagement/ProposalManagement/ProposalModal';
@@ -248,6 +248,7 @@ const SalaryAdjustmentPropose = (props) => {
       email = getStorage('email'),
       fullName = getStorage('fullName'),
       jobTitle = getStorage('jobTitle'),
+      employeeLevel = getStorage('employeeLevel'),
       department = getStorage('department'),
       company = getStorage('company'),
       division = getStorage('division'),
@@ -281,6 +282,7 @@ const SalaryAdjustmentPropose = (props) => {
                 username: email.split('@')[0],
                 fullName: fullName,
                 jobTitle: jobTitle,
+                employeeLevel: employeeLevel,
                 startDate: '',
                 expireDate: '',
                 contractName: item.lastestContractName,
@@ -497,6 +499,7 @@ const SalaryAdjustmentPropose = (props) => {
           fullName: requestTmp?.fullName,
           fullname: requestTmp?.fullName,
           jobTitle: requestTmp?.jobTitle,
+          employeeLevel: requestTmp?.employeeLevel,
           startDate: requestTmp?.startDate,
           expireDate: requestTmp?.expireDate,
           contractName: requestTmp?.contractName,
@@ -544,6 +547,7 @@ const SalaryAdjustmentPropose = (props) => {
             uid: _itemInfo?.employeeNo,
             employeeNo: _itemInfo?.employeeNo,
             requestHistoryId: item.requestHistoryId,
+            appraiserComment: item?.appraiserComment,
           });
         } else if (
           _itemInfo.type === Constants.STATUS_PROPOSAL.LEADER_APPRAISER
@@ -553,6 +557,7 @@ const SalaryAdjustmentPropose = (props) => {
             uid: _itemInfo?.employeeNo,
             employeeNo: _itemInfo?.employeeNo,
             requestHistoryId: item.requestHistoryId,
+            appraiserComment: item?.appraiserComment,
           });
         }
       });
@@ -573,11 +578,13 @@ const SalaryAdjustmentPropose = (props) => {
         ...approvalData,
         uid: approvalData?.employeeNo,
         employeeNo: approvalData?.employeeNo,
+        appraiserComment: approverRes?.appraiserComment,
       });
       setApproverArrive({
         ...approverArriveData,
         uid: approverArriveData?.employeeNo,
         employeeNo: approverArriveData?.employeeNo,
+        appraiserComment: approverArriveRes?.appraiserComment,
       });
     }
     const requestDocuments =
@@ -637,24 +644,18 @@ const SalaryAdjustmentPropose = (props) => {
   };
 
   const onActionChange = (uid, accepted = true) => {
-    let _enableSubmit = true;
-    const _selectMembers = selectMembers.map((item) => {
-      if (
-        (viewSetting.showComponent.btnExpertise ||
-          viewSetting.showComponent.btnApprove) &&
-        !isCreateMode &&
-        item.canChangeAction &&
-        !accepted
-      ) {
-        _enableSubmit = false;
-      }
-
-      if (item.uid == uid) {
-        return { ...item, accepted };
-      }
-
-      return item;
-    });
+    const _selectMembers = selectMembers.map((item) =>
+        item.uid == uid ? { ...item, accepted } : item
+      ),
+      _enableSubmit = _selectMembers.some((item) => {
+        return (
+          (viewSetting.showComponent.btnExpertise ||
+            viewSetting.showComponent.btnApprove) &&
+          !isCreateMode &&
+          item.canChangeAction &&
+          item?.accepted
+        );
+      });
 
     setEnableSubmit(_enableSubmit);
     setSelectMembers(_selectMembers);
@@ -1041,6 +1042,7 @@ const SalaryAdjustmentPropose = (props) => {
             : u?.account.toLowerCase() + '@vingroup.net',
           fullName: u?.fullName,
           jobTitle: u?.jobTitle,
+          employeeLevel: u?.employeeLevel,
           department: u?.department,
           organizationList: u?.organizationList,
           startDate:
@@ -1243,11 +1245,16 @@ const SalaryAdjustmentPropose = (props) => {
   };
 
   const validateAppoitment = () => {
+    const proposedPositionCodes = selectMembers.map(ele => ele?.proposedPositionCode).filter(ele => ele !== undefined);
     let errors = [];
 
     selectMembers.forEach((u) => {
-      if (!u.proposedPositionCode) errors.push(t('ProposedEmployeeEmpty'));
+      if (!u.proposedPositionCode) errors.push(t("ProposedEmployeeEmpty"));
+
       if (!u.effectiveTime) errors.push(t('SelecTimePeriodValidate'));
+      if (!!u.proposedPositionCode && proposedPositionCodes.filter(ele => ele === u?.proposedPositionCode).length > 1) {
+        errors.push(t("ProposedPositionCodeDuplicate"));
+      }
     });
     return errors;
   };
@@ -1353,7 +1360,7 @@ const SalaryAdjustmentPropose = (props) => {
 
       return (
         <React.Fragment key={index}>
-          <tr style={{ border: 'none', height: '20px' }} />
+          <tr style={{ border: 'none', height: index > 0 ? '20px' : '0px' }} />
           <tr className="table-header">
             <td colSpan={3} className="min-width font-weight-bold">
               <div className="d-flex">
@@ -1425,7 +1432,7 @@ const SalaryAdjustmentPropose = (props) => {
                       {!!item?.employeeNo ? `(${item?.employeeNo})` : ''}
                     </span>
                   </p>
-                  <p className="mb-7px">{item?.jobTitle}</p>
+                  <p className="mb-7px">{item?.jobTitle} ({item?.employeeLevel})</p>
                   <p
                     style={{
                       marginBottom: 0,
@@ -1719,7 +1726,7 @@ const SalaryAdjustmentPropose = (props) => {
                 <span className="input">
                   {disableComponent.editSubjectApply ? (
                     <ResizableTextarea
-                      placeholder={'Nhập'}
+                      placeholder={t('EvaluationInput')}
                       value={item?.strength || ''}
                       onChange={(e) =>
                         handleTextInputChange(
@@ -1744,7 +1751,7 @@ const SalaryAdjustmentPropose = (props) => {
                 <span className="input">
                   {disableComponent.editSubjectApply ? (
                     <ResizableTextarea
-                      placeholder={'Nhập'}
+                      placeholder={t('EvaluationInput')}
                       value={item?.weakness || ''}
                       onChange={(e) =>
                         handleTextInputChange(
@@ -1882,12 +1889,12 @@ const SalaryAdjustmentPropose = (props) => {
       <h5 className="content-page-header">{t('proposed_employee_info')}</h5>
       <div className="timesheet-box1 shadow">
         <div className="user_header">
-          <span className="title">{t('employee_selected')}</span>
+          <span className="title" />
           <div
             className="action"
             style={
               showComponent.btnExpertise || showComponent.btnApprove
-                ? {}
+                ? { marginBottom: '15px' }
                 : { display: 'none' }
             }
           >
@@ -1935,6 +1942,7 @@ const SalaryAdjustmentPropose = (props) => {
             <HumanForReviewSalaryComponent
               isEdit={!disableComponent.selectHrSupportViewSalary}
               approver={coordinator}
+              isRemoveCurrentAccount={true}
               isHR={true}
               updateApprover={(approver, isApprover) =>
                 handleUpdateCoordinator(approver)
@@ -1974,12 +1982,9 @@ const SalaryAdjustmentPropose = (props) => {
                   isEdit={!disableComponent.selectHrSupportViewSalary}
                   isAppraiser={true}
                   approver={item}
+                  isRemoveCurrentAccount={true}
                   updateApprover={(sup) => handleUpdateSupervisors(sup, key)}
-                  comment={
-                    dataSalary?.requestAppraisers?.find(
-                      (_, index) => index === key
-                    )?.appraiserComment
-                  }
+                  comment={item?.appraiserComment}
                 />
               </div>
             ))}
@@ -2006,13 +2011,10 @@ const SalaryAdjustmentPropose = (props) => {
             <HumanForReviewSalaryComponent
               isEdit={!disableComponent.selectHrSupportViewSalary}
               approver={appraiser}
+              isRemoveCurrentAccount={true}
               isHR={true}
               updateApprover={(sup) => handleUpdateHrChangeSalary(sup)}
-              comment={
-                dataSalary?.requestAppraisers?.[
-                  dataSalary?.requestAppraisers?.length - 1
-                ]?.appraiserComment
-              }
+              comment={appraiser?.appraiserComment}
             />
           </div>
         </>
@@ -2027,8 +2029,9 @@ const SalaryAdjustmentPropose = (props) => {
             <HumanForReviewSalaryComponent
               isEdit={!disableComponent.selectHrSupportViewSalary}
               approver={approver}
+              isRemoveCurrentAccount={true}
               updateApprover={handleUpdateApprovalSalary}
-              comment={dataSalary?.approverComment}
+              comment={approver?.appraiserComment}
             />
           </div>
           <h5 className="content-page-header">{`${t('BossApproved')} (${t(
@@ -2038,8 +2041,9 @@ const SalaryAdjustmentPropose = (props) => {
             <HumanForReviewSalaryComponent
               isEdit={!disableComponent.selectHrSupportViewSalary}
               approver={approverArrive}
+              isRemoveCurrentAccount={true}
               updateApprover={handleUpdateApprovalArriveSalary}
-              comment={dataSalary?.approverComment}
+              comment={approverArrive?.appraiserComment}
               isAppraiserNote={true}
             />
           </div>

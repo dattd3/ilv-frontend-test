@@ -9,8 +9,8 @@ import ApproverDetailComponent from '../ApproverDetailComponent'
 import RequestProcessing from '../RequestProcessing'
 import StatusModal from '../../../components/Common/StatusModal'
 import Constants from '../.../../../../commons/Constants'
-import { FOREIGN_SICK_LEAVE, MARRIAGE_FUNERAL_LEAVE_KEY, VIN_UNI_SICK_LEAVE } from 'containers/Task/Constants'
 import { getOperationType } from 'containers/Utils/Common'
+import { FOREIGN_SICK_LEAVE, MARRIAGE_FUNERAL_LEAVE_KEY, VIN_UNI_SICK_LEAVE } from 'containers/Task/Constants'
 
 const TIME_FORMAT = 'HH:mm'
 
@@ -29,9 +29,9 @@ const RegisteredLeaveInfo = ({ leaveOfAbsence, t, annualLeaveSummary }) => {
       <div className="box shadow">
         {
           (leaveOfAbsence?.requestInfoOld && leaveOfAbsence?.requestInfoOld?.length > 0 ? leaveOfAbsence?.requestInfoOld : leaveOfAbsence?.requestInfo).map((info, infoIndex) => {
+            let isForeignSickLeave = info?.absenceType?.value === FOREIGN_SICK_LEAVE
             let isVinUniSickLeave = info?.absenceType?.value === VIN_UNI_SICK_LEAVE
 
-            const isForeignSickLeave = info?.absenceType?.value === FOREIGN_SICK_LEAVE
             return (
               <div className='item' key={`info-${infoIndex}`}>
                 {

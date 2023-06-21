@@ -513,18 +513,21 @@ const SalaryAdjustmentPropse = (props) => {
             ..._itemInfo,
             uid: _itemInfo?.employeeNo,
             employeeNo: _itemInfo?.employeeNo,
-            requestHistoryId: item.requestHistoryId
+            requestHistoryId: item.requestHistoryId,
+            appraiserComment: item?.appraiserComment,
           });
         } else if(_itemInfo.type === Constants.STATUS_PROPOSAL.LEADER_APPRAISER) {
           _supervisors.push({
             ..._itemInfo,
             uid: _itemInfo?.employeeNo,
             employeeNo: _itemInfo?.employeeNo,
-            requestHistoryId: item.requestHistoryId
+            requestHistoryId: item.requestHistoryId,
+            appraiserComment: item?.appraiserComment,
           })
         } else if (_itemInfo.type == Constants.STATUS_PROPOSAL.EMPLOYEE) {
           const _employeeInfo = employeeLists.find((ele) => ele.uid == _itemInfo.employeeNo);
           if(_employeeInfo) {
+            _employeeInfo.appraiserComment = item?.appraiserComment;
             _employeeAppraiser.push(_employeeInfo)
           }
         }
@@ -542,11 +545,13 @@ const SalaryAdjustmentPropse = (props) => {
         ...approvalData,
         uid: approvalData?.employeeNo,
         employeeNo: approvalData?.employeeNo,
+        appraiserComment: approverRes?.appraiserComment,
       });
       setApproverArrive({
         ...approverArriveData,
         uid: approverArriveData?.employeeNo,
         employeeNo: approverArriveData?.employeeNo,
+        appraiserComment: approverArriveRes?.appraiserComment,
       });
     }
     const requestDocuments = (userProfileDocuments || []).map((u) => ({
@@ -679,23 +684,18 @@ const SalaryAdjustmentPropse = (props) => {
   };
 
   const onActionChange = (uid, accepted = true) => {
-    let _enableSubmit = true;
-    const _selectedMembers = selectedMembers.map((item) => {
-      if (
-        (viewSetting.showComponent.btnExpertise ||
-          viewSetting.showComponent.btnApprove) &&
-        !isCreateMode &&
-        item.canChangeAction && !accepted
-      ) {
-        _enableSubmit = false;
-      }
-
-      if (item.uid == uid) {
-        return { ...item, accepted };
-      }
-
-      return item;
-    });
+    const _selectedMembers = selectedMembers.map((item) =>
+        item.uid == uid ? { ...item, accepted } : item
+      ),
+      _enableSubmit = _selectedMembers.some((item) => {
+        return (
+          (viewSetting.showComponent.btnExpertise ||
+            viewSetting.showComponent.btnApprove) &&
+          !isCreateMode &&
+          item.canChangeAction &&
+          item?.accepted
+        );
+      });
 
     setEnableSubmit(_enableSubmit);
     setSelectedMembers(_selectedMembers);
@@ -1079,14 +1079,15 @@ const SalaryAdjustmentPropse = (props) => {
 
   const prepareDataToSubmit = (id) => {
     if (isCreateMode) {
-      let bodyFormData = new FormData();
-      let appIndex = 1;
+      let bodyFormData = new FormData(),
+        appIndex = 1;
       const employeeInfoLst = (id ? selectedMembers : selectMembers).map((u) => ({
         employeeNo: u?.employeeNo,
         username: u?.account.toLowerCase(),
         account: u?.account.toLowerCase().includes('@vingroup.net') ? u?.account.toLowerCase() : u?.account.toLowerCase() + "@vingroup.net",
         fullName: u?.fullName,
         jobTitle: u?.jobTitle,
+        employeeLevel: u?.employeeLevel,
         department: u?.department,
         organizationList: u?.organizationList,
         startDate: u?.startDate || moment(u?.effectiveTime, Constants.LEAVE_DATE_FORMAT).format("YYYY-MM-DD") || "",
@@ -1114,7 +1115,7 @@ const SalaryAdjustmentPropse = (props) => {
           employeeLevel: u?.employeeLevel,
           pnl: u?.pnl,
           orglv2Id: u?.orglv2Id,
-          current_position: u?.currentPosition, // jobTitle
+          current_position: u?.currentPosition || u?.jobTitle,
           department: u?.department,
           order: appIndex++,
           company_email: u?.companyEmail,
@@ -1314,17 +1315,23 @@ const SalaryAdjustmentPropse = (props) => {
   };
 
   const validateAppoitment = () => {
-    const selectedMembersTmp = [...selectMembers];
+    const selectedMembersTmp = [...selectMembers],
+      proposedPositionCodes = selectedMembersTmp.map(ele => ele?.proposedPositionCode).filter(ele => ele !== undefined);
     let errors = [];
     selectedMembersTmp.forEach((u) => {
       if(isTransferAppointProposal) {
         if(isTransferProposal) {
           if (!u.proposedPositionCode) errors.push(t("ProposedEmployeeEmpty"));
+          if (!!u.proposedLevelGroup && !u.proposedLevel) errors.push(t("ProposedEmployeeLevelRequired"));
         } else {
-          if(!u.proposedLevelGroup || !u.proposedLevel) errors.push(t("ProposedEmployeeLevelEmpty"));
+          if (!u.proposedLevelGroup || !u.proposedLevel) errors.push(t("ProposedEmployeeLevelEmpty"));
         }
       }
+
       if (!u.effectiveTime) errors.push(t("SelecTimePeriodValidate"));
+      if (!!u?.proposedPositionCode && proposedPositionCodes.filter(ele => ele === u?.proposedPositionCode).length > 1) {
+        errors.push(t("ProposedPositionCodeDuplicate"));
+      }
     });
     return errors;
   }
@@ -1420,6 +1427,8 @@ const SalaryAdjustmentPropse = (props) => {
   const handleProposeLevel = (index, val, key) => {
     const selectMembersTmp = [...selectMembers];
     selectMembersTmp[index][key] = val;
+    if (key === 'proposedLevelGroup') selectMembersTmp[index]['proposedLevel'] = null;
+
     setSelectMembers(selectMembersTmp);
   }
 
@@ -1824,6 +1833,8 @@ const SalaryAdjustmentPropse = (props) => {
                         menu: (provided) => ({ ...provided, zIndex: 2, fontSize: '14px' }),
                         control: (styles) => ({ ...styles, borderColor: "#ced4da" })
                       }}
+                      menuShouldBlockScroll={true}
+                      menuPortalTarget={document.getElementById('wrapper')}
                     />
                   </div>
                   <div className="col-6 d-flex align-items-center pr-0">
@@ -1840,6 +1851,8 @@ const SalaryAdjustmentPropse = (props) => {
                         menu: (provided) => ({ ...provided, zIndex: 2, fontSize: '14px' }),
                         control: (styles) => ({ ...styles, borderColor: "#ced4da" })
                       }}
+                      menuShouldBlockScroll={true}
+                      menuPortalTarget={document.getElementById('wrapper')}
                     />
                   </div>
                 </div>
@@ -2130,8 +2143,7 @@ const SalaryAdjustmentPropse = (props) => {
                   isAppraiser={true}
                   approver={item}
                   updateApprover={(sup) => {}}
-                  // comment={dataSalary?.requestAppraisers?.find((_, index) => index === key)?.appraiserComment}
-                  comment=""
+                  comment={item?.appraiserComment}
                 />
               </div>
             ))}
@@ -2156,7 +2168,7 @@ const SalaryAdjustmentPropse = (props) => {
                   isAppraiser={true}
                   approver={item}
                   updateApprover={(sup) => handleUpdateSupervisors(sup, key)}
-                  comment={dataSalary?.requestAppraisers?.find((_, index) => index === key)?.appraiserComment}
+                  comment={item?.appraiserComment}
                 />
               </div>
             ))}
@@ -2185,7 +2197,7 @@ const SalaryAdjustmentPropse = (props) => {
               approver={appraiser}
               isHR={true}
               updateApprover={(sup) => handleUpdateHrChangeSalary(sup)}
-              comment={dataSalary?.requestAppraisers?.[dataSalary?.requestAppraisers?.length - 1]?.appraiserComment}
+              comment={appraiser?.appraiserComment}
             />
           </div>
         </>
@@ -2202,7 +2214,7 @@ const SalaryAdjustmentPropse = (props) => {
                 isEdit={!viewSetting.disableComponent.selectHrSupportViewSalary}
                 approver={approver}
                 updateApprover={handleUpdateApprovalSalary}
-                comment={dataSalary?.approverComment}
+                comment={approver?.appraiserComment}
               />
             </div>
             <h5 className="content-page-header">{`${t('BossApproved')} (${t(
@@ -2213,7 +2225,7 @@ const SalaryAdjustmentPropse = (props) => {
                 isEdit={!viewSetting.disableComponent.selectHrSupportViewSalary}
                 approver={approverArrive}
                 updateApprover={handleUpdateApprovalArriveSalary}
-                comment={dataSalary?.approverComment}
+                comment={approverArrive?.appraiserComment}
                 isAppraiserNote={true}
               />
             </div>
@@ -2226,7 +2238,7 @@ const SalaryAdjustmentPropse = (props) => {
                 isEdit={!viewSetting.disableComponent.selectHrSupportViewSalary}
                 approver={approver}
                 updateApprover={handleUpdateApprovalSalary}
-                comment={dataSalary?.approverComment}
+                comment={approver?.appraiserComment}
                 isAppraiserNote={true}
               />
             </div>
