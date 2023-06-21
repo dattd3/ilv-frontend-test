@@ -704,7 +704,7 @@ class RequestTaskList extends React.Component {
       let newTypesSelect = [...this.state.tmpRequestTypesSelect];
       if (checked && !newTypesSelect.includes(type)) {
         newTypesSelect.push(type)
-      } else if (!checked && newTypesSelect.includes(type)) {
+      } else if (!checked && newTypesSelect.includes(type) && newTypesSelect.length > 1) {
         newTypesSelect = newTypesSelect.filter(item => item !== type)
       }
       this.setState({
