@@ -1589,6 +1589,10 @@
   }
   .request-info-container {
     padding: 12px 0px;
+    .reason-container {
+      width: 283px;
+      padding: 0px 15px;
+    }
     .request-info-card {
       border: 1px solid #DEE2E6;
       margin-bottom: 10px;
@@ -1670,20 +1674,16 @@
       max-width: 41.67%;
       padding-right: 24px;
     }
-    .end-time-container {
-      margin-left: 12px;
-      margin-top: 0px;
-    }
   }
   .prev-day-container {
-    min-width: 90px;
+    min-width: 120px;
   }
   .is-overnight-container {
     display: flex;
     align-items: center;
     justify-content: center;
     height: 42px;
-    width: 72px;
+    // width: 72px;
     input {
       width: 14px;
       height: 14px;
