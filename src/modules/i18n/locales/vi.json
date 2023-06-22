@@ -1838,6 +1838,8 @@
   "WorkingTimeChange": "Giờ làm việc thay đổi",
   "RelationshipNote": "Lưu ý: Trường hợp cần điều chỉnh thông tin của Người phụ thuộc, Anh/Chị vui lòng nộp hồ sơ bản cứng đến Phòng Nhân sự để điều chỉnh!",
   "AppointmentDismissalRequest": "Đề xuất Bổ nhiệm, Miễn nhiệm",
+  "operationType.waitingdelapprove": "Đang chờ PD thu hồi",
+  "operationType.waitingdelappraise": "Đang chờ TD thu hồi",
   "RequestCreate": "Tạo yêu cầu",
   "RequestContractTermination": "Yêu cầu chấm dứt HĐLĐ",
   "RequestTransfer": "Yêu cầu Điều chuyển",
