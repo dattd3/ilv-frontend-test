@@ -493,9 +493,8 @@ class RequestTaskList extends React.Component {
         }
     }
 
-    isShowDeleteButton = (status, appraiser, requestTypeId, actionType) => {
+    isShowDeleteButton = (status, appraiser, requestTypeId, actionType, updateField = 0) => {
         const { page } = this.props
-
         if (page === "approval") {
             return false
         } else {
@@ -510,6 +509,10 @@ class RequestTaskList extends React.Component {
                 }
                 if (status == Constants.STATUS_PARTIALLY_SUCCESSFUL && ![Constants.CHANGE_DIVISON_SHIFT, Constants.SUBSTITUTION].includes(requestTypeId)) {
                     return true
+                }
+                // Case Self Resign
+                if (((status == Constants.STATUS_WAITING_CONSENTED && actionType !== 'DEL') || (status == Constants.STATUS_WAITING && appraiser && _.size(appraiser) > 0 && actionType !== 'DEL')) && requestTypeId == Constants.RESIGN_SELF && updateField == 1) {
+                  return true
                 }
                 return false
             }
@@ -989,7 +992,7 @@ class RequestTaskList extends React.Component {
                                                 const requestItem = child.requestInfo ? child.requestInfo[0] : null // BE xác nhận chỉ có duy nhất 1 item trong requestInfo
                                                 actionType = requestItem ? requestItem.actionType : null
                                             }
-                                            let isShowDeleteButton = this.isShowDeleteButton(child.processStatusId, child.appraiserId, child.requestTypeId, actionType)
+                                            let isShowDeleteButton = this.isShowDeleteButton(child.processStatusId, child.appraiserId, child.requestTypeId, actionType, child.createField)
                                             let totalTime = null
 
                                             if ([Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP].includes(child.requestTypeId)) {
