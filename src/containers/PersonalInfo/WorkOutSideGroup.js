@@ -25,6 +25,7 @@ function WorkOutSideGroup(props) {
     const [canUpdate, SetCanUpdate] = useState(false)
     const [errors, SetErrors] = useState({})
     const [experiences, SetExperiences] = useState(null)
+    const [experienceDeleted, SetExperienceDeleted] = useState([])
     const [experienceOriginal, SetExperienceOriginal] = useState(null)
     const [accessToken, SetAccessToken] = useState(new URLSearchParams(location.search).get('accesstoken') || null)
     const [isSeenSalaryAtLeastOnce, SetIsSeenSalaryAtLeastOnce] = useState(false)
@@ -102,7 +103,7 @@ function WorkOutSideGroup(props) {
                 let data = response?.data?.data || []
 
                 // Fake data
-                data = fakeInitData()
+                // data = fakeInitData()
 
                 SetExperiences(data)
                 SetExperienceOriginal(data)
@@ -196,6 +197,21 @@ function WorkOutSideGroup(props) {
 
     const handleRemoveCompany = (companyIndex) => {
         const experienceToSave = [...experiences].filter((item, index) => index !== companyIndex)
+        if (!experiences[companyIndex]?.isAddNew) {
+            let experienceDeletedClone = [...experienceDeleted]
+            const companyDeleted = experiences[companyIndex]
+
+            for (const key in companyDeleted) {
+                if (key.endsWith(`_${prefixUpdating}`)) {
+                    delete companyDeleted[key]
+                }
+            }
+            companyDeleted.isDeleted = true
+            delete companyDeleted.listWorking
+
+            experienceDeletedClone = [...experienceDeletedClone, companyDeleted]
+            SetExperienceDeleted(experienceDeletedClone)
+        }
         SetExperiences(experienceToSave)
     }
 
@@ -271,10 +287,10 @@ function WorkOutSideGroup(props) {
             if (response && response?.data) {
                 const result = response?.data?.result
                 if (result?.code == Constants.API_SUCCESS_CODE) {
-                    const fake = fakeDecodeData()
-                    SetExperiences(fake)
+                    // const fake = fakeDecodeData()
+                    // SetExperiences(fake)
 
-                    // SetExperiences(response?.data?.data || [])
+                    SetExperiences(response?.data?.data || [])
                     SetHiddenViewSalary(false)
                 }
             }
@@ -443,6 +459,15 @@ function WorkOutSideGroup(props) {
                 })
             }
 
+            if (experienceDeleted?.length > 0) {
+                update.userProfileHistoryExperiences = update.userProfileHistoryExperiences.concat(experienceDeleted.map(item => {
+                    return {
+                        OldExperience: item,
+                        NewExperience: item
+                    }
+                }))
+            }
+
             const userProfileInfo = {
                 create,
                 update,
@@ -456,7 +481,7 @@ function WorkOutSideGroup(props) {
 
             console.log('DATA to SAP => ', userProfileInfoToSap)
 
-            return
+            // return
 
             const config = getRequestConfigurations()
             config.headers['content-type'] = 'multipart/form-data'
