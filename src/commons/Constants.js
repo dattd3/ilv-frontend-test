@@ -295,4 +295,7 @@ Constants.REQUEST_CATEGORY_2_LIST = {
   [Constants.PROPOSAL_APPOINTMENT]: "AppointmentDismissalRequest"
 }
 
+Constants.REQUEST_CATEGORY_1_LIST_ORDER = [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP, Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE, Constants.UPDATE_PROFILE,
+  Constants.ONBOARDING, Constants.RESIGN_SELF, Constants.OT_REQUEST, Constants.CHANGE_DIVISON_SHIFT, Constants.DEPARTMENT_TIMESHEET]
+
 export default Constants
