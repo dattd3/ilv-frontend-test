@@ -263,7 +263,8 @@ const SalaryAdjustmentPropse = (props) => {
       { requestAppraisers, processStatusId, userId, supervisorId, salaryAdjustments, userProfileDocuments } = dataSalaryInfo,
       indexAppraiser = requestAppraisers?.findIndex(app => app.status === Constants.SALARY_APPRAISER_STATUS.WAITING),
       isCurrentAppraiser = indexAppraiser !== -1 && currentEmail.toLowerCase() === requestAppraisers[indexAppraiser].appraiserId?.toLowerCase(),
-      typeAppraise = indexAppraiser !== -1 && requestAppraisers[indexAppraiser].type;
+      typeAppraise = indexAppraiser !== -1 && requestAppraisers[indexAppraiser].type,
+      currentUserAppraiser = requestAppraisers?.find((ele) => ele.appraiserId?.toLowerCase() === currentEmail.toLowerCase() && [2, 3].includes(ele?.type));
 
     let viewSettingTmp = { ...viewSetting }, currentStatus = processStatusId;
 
@@ -451,7 +452,10 @@ const SalaryAdjustmentPropse = (props) => {
         canChangeAction: u?.accepted == true,
       };
       canCheckAll = canCheckAll || u?.accepted == true;
-      if(userLoginNo == requestTmp?.employeeNo) {
+      if (
+        userLoginNo == requestTmp?.employeeNo &&
+        !([2, 3].includes(currentUserAppraiser?.type))
+      ) {
         isEmployeeLogin = true;
       }
       return {
