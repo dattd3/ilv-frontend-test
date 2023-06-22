@@ -10,7 +10,7 @@ import { Animated } from "react-animated-css";
 import { useLocalizeStore } from '../../modules';
 import CheckinNotificationIcon from '../../assets/img/icon/ic-checkin-noti.svg';
 import UploadAvatar from '../../containers/UploadAvatar'
-import { getRequestConfigurations } from "../../commons/Utils"
+import { getRequestConfigurations, getRequestTypesList } from "../../commons/Utils"
 import TimeKeepingList from "containers/TimeKeepingHistory/TimeKeepingList";
 import RedArrowIcon from 'assets/img/icon/red-arrow-right.svg';
 import CloseIcon from 'assets/img/icon/icon_x.svg';
@@ -150,15 +150,15 @@ function Header(props) {
                                         }
                                         
                                         if (item.detailType == 'APPRAISAL')
-                                            return `/tasks?tab=consent${item.groupId ? `&requestTypes=${Object.keys(item.groupId == 1 ? Constants.REQUEST_CATEGORY_1_LIST : Constants.REQUEST_CATEGORY_2_LIST)?.join(",")}` : ''}`
+                                            return `/tasks?tab=consent${item.groupId ? `&requestTypes=${getRequestTypesList(item.groupId, false).join(",")}` : ''}`
                                         else
-                                            return `/tasks?tab=approval${item.groupId ? `&requestTypes=${Object.keys(item.groupId == 1 ? Constants.REQUEST_CATEGORY_1_LIST : Constants.REQUEST_CATEGORY_2_LIST)?.join(",")}` : ''}`
+                                            return `/tasks?tab=approval${item.groupId ? `&requestTypes=${getRequestTypesList(item.groupId, false).join(",")}` : ''}`
                                     case 6:
                                         return '/personal-info?tab=document'
                                     case Constants.notificationType.NOTIFICATION_REJECT:
-                                        return `/tasks?${item.groupId ? `&requestTypes=${Object.keys(item.groupId == 1 ? Constants.REQUEST_CATEGORY_1_LIST : Constants.REQUEST_CATEGORY_2_LIST)?.join(",")}` : ''}`
+                                        return `/tasks?${item.groupId ? `&requestTypes=${getRequestTypesList(item.groupId, true).join(",")}` : ''}`
                                     case Constants.notificationType.NOTIFICATION_AUTO_JOB:
-                                        return `/tasks?tab=approval${item.groupId ? `&requestTypes=${Object.keys(item.groupId == 1 ? Constants.REQUEST_CATEGORY_1_LIST : Constants.REQUEST_CATEGORY_2_LIST)?.join(",")}` : ''}`
+                                        return `/tasks?tab=approval${item.groupId ? `&requestTypes=${getRequestTypesList(item.groupId, false).join(",")}` : ''}`
                                     case Constants.notificationType.NOTIFICATION_SHIFT_CHANGE:
                                         const param = getDateShiftChange(item?.title || '');
                                         return `/timesheet${param}`

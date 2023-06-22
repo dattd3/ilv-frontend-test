@@ -6,7 +6,7 @@ import TaskList from '../taskList'
 import Constants from '../../../commons/Constants'
 import processingDataReq from "../../Utils/Common"
 import HOCComponent from '../../../components/Common/HOCComponent'
-import { getValueParamByQueryString, setURLSearchParam } from 'commons/Utils'
+import { getRequestTypesList, getValueParamByQueryString, setURLSearchParam } from 'commons/Utils'
 import { REQUEST_CATEGORIES } from '../Constants'
 import LoadingModal from 'components/Common/LoadingModal'
 
@@ -20,12 +20,12 @@ class ApprovalComponent extends React.Component {
       totalRecord: 0
     }
     if (!getValueParamByQueryString(window.location.search, "requestTypes")) {
-      setURLSearchParam("requestTypes", Object.keys(Constants.REQUEST_CATEGORY_1_LIST)?.join(","))
+      setURLSearchParam("requestTypes", getRequestTypesList(REQUEST_CATEGORIES.CATEGORY_1, false)?.join(","))
     }
   }
 
   componentDidMount() {
-    const params = `pageIndex=${Constants.TASK_PAGE_INDEX_DEFAULT}&pageSize=${Constants.TASK_PAGE_SIZE_DEFAULT}&status=${Constants.STATUS_WAITING}&fromDate=${moment().subtract(7, "days").format("DDMMYYYY")}&toDate=${moment().format("DDMMYYYY")}&`;
+    const params = `pageIndex=${Constants.TASK_PAGE_INDEX_DEFAULT}&pageSize=${Constants.TASK_PAGE_SIZE_DEFAULT}&status=${Constants.STATUS_WAITING}&fromDate=${moment().subtract(7, "days").format("YYYYMMDD")}&toDate=${moment().format("YYYYMMDD")}&`;
     this.requestRemoteData(params);
   }
   
