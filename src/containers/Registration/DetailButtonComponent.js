@@ -23,9 +23,12 @@ class DetailButtonComponent extends React.Component {
     }
 
     approval = async () => {
-      const { t, requestTypeId, haveOverOTFund } = this.props
+      const { t, requestTypeId, haveOverOTFund, isNotEnoughTimeResign } = this.props
       if (requestTypeId === Constants.OT_REQUEST && haveOverOTFund) {
-          return this.setState({ isConfirmShow: true, modalTitle: t("ApproveRequest"), modalMessage: t("WarningOverOTFundsApproval", {name: t(this.requestRegistraion[this.props.requestTypeId])}), typeRequest: Constants.STATUS_CONSENTED })
+          return this.setState({ isConfirmShow: true, modalTitle: t("ApproveRequest"), modalMessage: t("WarningOverOTFundsApproval"), typeRequest: Constants.STATUS_APPROVED })
+      }
+      if (requestTypeId === Constants.RESIGN_SELF && isNotEnoughTimeResign) {
+        return this.setState({ isConfirmShow: true, modalTitle: t("ApproveRequest"), modalMessage: t("WarningNotEnoughTimeResign"), typeRequest: Constants.STATUS_APPROVED })
       }
       this.setState({ isConfirmShow: true, modalTitle: t("ApproveRequest"), modalMessage:t("ConfirmApproveRequestHolder",{name: t(this.requestRegistraion[this.props.requestTypeId])}) , typeRequest: Constants.STATUS_APPROVED })
     }
@@ -43,11 +46,14 @@ class DetailButtonComponent extends React.Component {
         this.setState({ isConfirmShow: true, modalTitle: t("ConfirmRequestRecall"), modalMessage: t("SureRequestRecall") + t(this.requestRegistraion[this.props.requestTypeId]) + " này ?", typeRequest: 0 })
     }
     consent = async () => {
-      const { t, requestTypeId, haveOverOTFund } = this.props
+      const { t, requestTypeId, haveOverOTFund, isNotEnoughTimeResign } = this.props
       if (requestTypeId === Constants.OT_REQUEST && haveOverOTFund) {
-          return this.setState({ isConfirmShow: true, modalTitle: t("ConsentConfirmation"), modalMessage: t("WarningOverOTFundsConsent", {name: t(this.requestRegistraion[this.props.requestTypeId])}), typeRequest: Constants.STATUS_CONSENTED })
+          return this.setState({ isConfirmShow: true, modalTitle: t("ConsentConfirmation"), modalMessage: t("WarningOverOTFundsConsent"), typeRequest: Constants.STATUS_CONSENTED })
       }
-        this.setState({ isConfirmShow: true, modalTitle: t("ConsentConfirmation"), modalMessage: t("ConfirmConsentRequestHolder", {name: t(this.requestRegistraion[this.props.requestTypeId])}), typeRequest: Constants.STATUS_CONSENTED })
+      if (requestTypeId === Constants.RESIGN_SELF && isNotEnoughTimeResign) {
+        return this.setState({ isConfirmShow: true, modalTitle: t("ConsentConfirmation"), modalMessage: t("WarningNotEnoughTimeResign"), typeRequest: Constants.STATUS_CONSENTED })
+      }
+      this.setState({ isConfirmShow: true, modalTitle: t("ConsentConfirmation"), modalMessage: t("ConfirmConsentRequestHolder", {name: t(this.requestRegistraion[this.props.requestTypeId])}), typeRequest: Constants.STATUS_CONSENTED })
     }
     rejected = () => {
         this.setState({ isConfirmShow: true, modalTitle: "RejectConsenterRequest", modalMessage: "ReasonRejectRequest", typeRequest: Constants.STATUS_NO_CONSENTED })
