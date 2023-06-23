@@ -49,7 +49,7 @@ class ExportModal extends React.Component {
         },
         params: {
           type: type,
-          processStatusId: this.state.status ? this.state.status.value : 0,
+          status: this.state.status ? this.state.status.value : 0,
           companyCode: localStorage.getItem("companyCode"),
           fromDate: moment(this.state.fromDate, "DD/MM/YYYY").format('YYYYMMDD').toString(),
           toDate: moment(this.state.toDate, "DD/MM/YYYY").format('YYYYMMDD').toString(),
@@ -106,7 +106,7 @@ class ExportModal extends React.Component {
                 onHide={this.props.onHide}
             >
                 <Modal.Header className="apply-position-modal bg-approved" closeButton>
-                    <Modal.Title>Tải về báo cáo</Modal.Title>
+                    <Modal.Title>{t("LabelDownloadReport")}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                 <div className="time-area row">

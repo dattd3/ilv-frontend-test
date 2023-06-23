@@ -32,7 +32,6 @@ class RegistrationEmploymentTermination extends React.Component {
             }
         })
         const reasonMasterData = getResignResonsMasterData();
-
         return (
             <div className="registration-section registration-employment-termination proposed-registration-employment-termination justify-content-between">
                 <div className="block staff-information-block">
