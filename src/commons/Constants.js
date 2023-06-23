@@ -276,4 +276,24 @@ const Constants = {
     DEL: "DEL",
   }
 };
+
+Constants.REQUEST_CATEGORY_1_LIST = {
+  [Constants.LEAVE_OF_ABSENCE]: "LeaveRequest",
+  [Constants.BUSINESS_TRIP]: "BizTrip_TrainingRequest",
+  [Constants.SUBSTITUTION]: "ShiftChange",
+  [Constants.IN_OUT_TIME_UPDATE]: "InOutChangeRequest",
+  [Constants.UPDATE_PROFILE]: "EditBasicProfile",
+  [Constants.ONBOARDING]: "ContractEvaluationType",
+  [Constants.RESIGN_SELF]: "ResignationType",
+  [Constants.OT_REQUEST]: "OTRequest",
+  [Constants.CHANGE_DIVISON_SHIFT]: "AdminUploadShiftChange",
+  [Constants.DEPARTMENT_TIMESHEET]: "DepartmentTimesheet",
+}
+
+Constants.REQUEST_CATEGORY_2_LIST = {
+  // [Constants.SALARY_PROPOSE]: "SalaryType",
+  [Constants.PROPOSAL_TRANSFER]: "ProposalTransfer",
+  [Constants.PROPOSAL_APPOINTMENT]: "AppointmentDismissalRequest"
+}
+
 export default Constants
