@@ -169,7 +169,7 @@ const MemberOption = (props, onChange) => {
               <div className="float-left text-left text-wrap w-100">
                 <div className="text-truncate full-name">{item.fullname}</div>
                 <div className="text-xs text-truncate account-job">
-                  <span>({item.company_email}) {item.job_name}</span>
+                  <span>({item.username}) {item.currentPosition}</span>
                 </div>
               </div>
             </label>
