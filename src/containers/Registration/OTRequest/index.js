@@ -271,7 +271,7 @@ export default function OTRequestComponent({ recentlyManagers }) {
     }
   };
 
-  const handleChangeIsPrevDayIndicatorCheckbox = (dayIndex, rangeIndex, value) => {
+  const handleChangeIsPrevDayIndicator = (dayIndex, rangeIndex, value) => {    
     if (requestInfoData?.[dayIndex]) {
       const newRanges = requestInfoData?.[dayIndex].timeRanges?.map((item, i) =>
         i === rangeIndex
@@ -416,6 +416,14 @@ export default function OTRequestComponent({ recentlyManagers }) {
       label: t("OTReasonOption6"),
     },
   ];
+
+  const isPrevDayOptions = [{
+    value: false,
+    label: t("No")
+  }, {
+    value: true,
+    label: t("Yes")
+  }]
 
   const handleSendButtonClick = () => {
     if (checkIsError()) {
@@ -1077,7 +1085,7 @@ export default function OTRequestComponent({ recentlyManagers }) {
                         <div className="ot-note">{t("OTNote")}</div>
                         {timesheet?.timeRanges?.map((range, rangeIndex) => (
                           <div className="row mb-15" key={rangeIndex}>
-                            <div className="col-5">
+                            <div className="reason-container">
                               {rangeIndex === 0 && (
                                 <>
                                   <div className="mb-12">{t("OTReason")}</div>
@@ -1186,17 +1194,29 @@ export default function OTRequestComponent({ recentlyManagers }) {
                                 {rangeIndex === 0 && (
                                   <div
                                     className="mb-12"
-                                    style={{ textAlign: "center" }}
                                   >
                                     {t("PrevDay")}
                                   </div>
                                 )}
                                 <div className="is-overnight-container">
-                                  <input
-                                    name="prevDay"
-                                    type="checkbox"
-                                    checked={range?.isPrevDayIndicator || false}
-                                    onChange={(event) => handleChangeIsPrevDayIndicatorCheckbox(index, rangeIndex, event.target?.checked)}
+                                  <Select styles={{
+                                    container: (baseStyles) => ({
+                                        ...baseStyles,
+                                        width: "100%",
+                                        marginRight: 10,
+                                        height: 42
+                                      }),
+                                    control: (baseStyles) => ({
+                                      ...baseStyles,
+                                      height: 42
+                                    })
+                                  }}
+                                  value={isPrevDayOptions.find(
+                                    (item) =>
+                                      item.value === (range.isPrevDayIndicator || false)
+                                  )}
+                                  options={isPrevDayOptions}
+                                  onChange={(e) => handleChangeIsPrevDayIndicator(index, rangeIndex, e.value)}
                                   />
                                 </div>
                               </div>
@@ -1297,7 +1317,7 @@ export default function OTRequestComponent({ recentlyManagers }) {
                           {errors[`invalidHour_${index}`]}
                         </p>
                         <div className="row mb-15">
-                          <div className="col-5">
+                        <div className="reason-container">
                             <div className="form-item">
                               <div className="mb-12">{t("OTType")}</div>
                               <div className="field-view">{t("MoneyOT")}</div>

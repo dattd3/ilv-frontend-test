@@ -362,15 +362,10 @@ export default function OTRequestDetailComponent({ data, action }) {
                                     {
                                       timeIndex === 0 &&  <div className="mb-12">{t("PrevDay")}</div>
                                     }
-                                    <div className="is-overnight-container">
-                                        <input
-                                          name="prevDay"
-                                          type="checkbox"
-                                          checked={timesheet?.VtKen?.split(",")[
-                                            timeIndex
-                                          ]}
-                                          disabled
-                                      />
+                                    <div className="field-view">
+                                      {timesheet?.VtKen?.split(",")[
+                                          timeIndex
+                                      ] ? t("Yes") : t("No")}
                                     </div>
                                   </div>
                                 </div>
