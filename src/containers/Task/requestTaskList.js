@@ -841,7 +841,7 @@ class RequestTaskList extends React.Component {
                                   checked={requestCategorySelected === REQUEST_CATEGORIES.CATEGORY_1}
                                 />
                                 <ul className="type-list-ul">
-                                  {getRequestTypesList(REQUEST_CATEGORIES.CATEGORY_1, true)?.map(key => <div className="category-item" key={key}>
+                                  {getRequestTypesList(REQUEST_CATEGORIES.CATEGORY_1, true)?.sort((a,b) => Constants.REQUEST_CATEGORY_1_LIST_ORDER.indexOf(a * 1) - Constants.REQUEST_CATEGORY_1_LIST_ORDER.indexOf(b * 1) )?.map(key => <div className="category-item" key={key}>
                                     <input 
                                       type="checkbox" 
                                       onChange={(e) => this.handleRequestTypesChange(key, e.currentTarget.checked)} 
