@@ -292,7 +292,7 @@ Constants.REQUEST_CATEGORY_1_LIST = {
 
 Constants.REQUEST_CATEGORY_2_LIST = {
   [Constants.PROPOSAL_TRANSFER]: "ProposalTransfer",
-  [Constants.PROPOSAL_APPOINTMENT]: "ProposalAppointment"
+  [Constants.PROPOSAL_APPOINTMENT]: "AppointmentDismissalRequest"
 }
 
 export default Constants
