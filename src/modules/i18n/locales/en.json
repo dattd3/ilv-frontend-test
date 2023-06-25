@@ -1753,5 +1753,6 @@
   "AddProcess": "Add process",
   "AddCompany": "Add company",
   "ExpandAll": "Expand all",
-  "Cancel2": "Cancel"
+  "Cancel2": "Cancel",
+  "RemovedInfo": "Removed Information"
 }

@@ -14,6 +14,7 @@ import Constants from "commons/Constants"
 import LoadingModal from "components/Common/LoadingModal"
 import ConfirmSendRequestModal from "./ConfirmSendRequestModal"
 import WorkOutSideGroupItemDetail from "./WorkOutSideGroupItemDetail"
+import DocumentComponent from "containers/Task/ApprovalDetail/DocumentComponent"
 
 const prefixUpdating = 'UPDATING'
 
@@ -61,8 +62,22 @@ const WorkOutSideGroupDetail = ({ details }) => {
 
     const userProfileHistoryExperiences = details?.requestInfo?.update?.userProfileHistoryExperiences
     const experienceCreateNew = details?.requestInfo?.create?.experiences || []
+    const userInfo = details?.user
+    const status = details?.processStatusId
+    const responseDataFromSAP = details?.responseDataFromSAP
+    const documents = details?.requestDocuments
 
-    console.log('userProfileHistoryExperiences ======== ', userProfileHistoryExperiences)
+    const statusOptions = {
+        [Constants.STATUS_NOT_APPROVED]: { label: t("Reject"), className: 'fail' },
+        [Constants.STATUS_APPROVED]: { label: t("Approved"), className: 'success' },
+        [Constants.STATUS_EVICTION]: { label: t("Recalled"), className: 'fail' },
+        [Constants.STATUS_REVOCATION]: { label: t("Canceled"), className: 'fail' },
+        [Constants.STATUS_WAITING]: { label: t("Waiting"), className: 'waiting' },
+        [Constants.STATUS_PARTIALLY_SUCCESSFUL]: { label: t("Unsuccessful"), className: 'warning' },
+        [Constants.STATUS_NO_CONSENTED]: { label: "Rejected", className: 'fail' },
+        [Constants.STATUS_WAITING_CONSENTED]: { label: "PendingConsent", className: 'waiting' },
+        [Constants.STATUS_CONSENTED]: { label: "Consented", className: 'waiting' }
+    }
 
     return (
         <>
@@ -70,8 +85,37 @@ const WorkOutSideGroupDetail = ({ details }) => {
         <ConfirmPasswordModal show={isShowConfirmPasswordModal} state={state} onUpdateToken={updateToken} onHide={onHideConfirmPasswordModal} />
         {/* <ConfirmSendRequestModal isShow={isShowConfirmSendRequestModal} sendRequest={sendRequest} onHide={onHideConfirmSendRequestModal} /> */}
         <div className="work-outside-group-detail">
-            <h5 className="content-page-header text-uppercase">{t("WorkingProcessOutSideGroup")}</h5>
-            <div className="info-tab-content shadow work-outside-group">
+            <h5 className="content-page-header text-uppercase">{t("EmployeeInfomation")}</h5>
+            <div className="registration-employee-information">
+                <div className="row">
+                    <div className="col-md-4">
+                        <div className="label">{t("FullName")}</div>
+                        <div className="value">{userInfo?.fullName || ''}</div>
+                    </div>
+                    <div className="col-md-4">
+                        <div className="label">{t("EmployeeNo")}</div>
+                        <div className="value">{userInfo?.employeeNo || ''}</div>
+                    </div>
+                    <div className="col-md-4">
+                        <div className="label">{t("Title")}</div>
+                        <div className="value">{userInfo?.jobTitle || ''}</div>
+                    </div>
+                    <div className="col-md-12" style={{ marginTop: 15 }}>
+                        <div className="label">{t("DepartmentManage")}</div>
+                        <div className="value">{userInfo?.department || ''}</div>
+                    </div>
+                </div>
+            </div>
+            <h5 className="content-page-header text-uppercase">{t("RegistrationUpdateInformation")}</h5>
+            <div className="edit-registration-information">
+                <ul className="d-flex">
+                    <li className="d-flex align-items-center"><span className="box-color old"></span><span>{t("Record")}</span></li>
+                    <li className="d-flex align-items-center"><span className="box-color adjusted"></span><span>{t("UpdateInformation")}</span></li>
+                    <li className="d-flex align-items-center"><span className="box-color new"></span><span>{t("NewInformation")}</span></li>
+                    <li className="d-flex align-items-center"><span className="box-color removed"></span><span>{t("RemovedInfo")}</span></li>
+                </ul>
+            </div>
+            <div className="info-tab-content work-outside-group">
                 <div className="work-outside-group-list">
                     {
                         userProfileHistoryExperiences && userProfileHistoryExperiences?.length === 0
@@ -104,6 +148,7 @@ const WorkOutSideGroupDetail = ({ details }) => {
                                             key={`created-${index}`}
                                             index={index}
                                             item={item}
+                                            isAddNew={true}
                                             hiddenViewSalary={hiddenViewSalary}
                                             handleToggleProcess={handleToggleProcess}
                                             handleToggleViewSalary={handleToggleViewSalary} />
@@ -114,6 +159,45 @@ const WorkOutSideGroupDetail = ({ details }) => {
                     }
                 </div>
             </div>
+            {/* {
+                status == Constants.STATUS_NOT_APPROVED && (
+                    <div className="">
+                        <div className="row item-info">
+                            <div className="col-12">
+                                <div className="label">{t("ReasonNotApprove")}</div>
+                                <div className="value">{hrComment}</div>
+                            </div>
+                        </div>
+                    </div>
+                )
+            } */}
+                
+            <div className="block-status">
+                <span className={`status ${statusOptions[status].className}`}>{statusOptions[status].label}</span>
+                {
+                    (status == Constants.STATUS_PARTIALLY_SUCCESSFUL && responseDataFromSAP) && 
+                    <div className={`d-flex status fail`}>
+                        <i className="fas fa-times pr-2 text-danger align-self-center"></i>
+                        <div>{responseDataFromSAP}</div>
+                    </div>
+                }
+            </div>
+            { 
+                documents?.length == 0 && (
+                    <div className="documents-block">
+                        <h5 className="content-page-header text-uppercase">{t("RegistrationAttachmentInformation")}</h5>
+                        <DocumentComponent documents={documents} />
+                    </div>
+                )
+            }
+            {
+                status == Constants.STATUS_PENDING && (
+                    <div className="clearfix mb-5">
+                        <span className="btn btn-primary float-right ml-3 shadow btn-eviction-task" title="Thu hồi yêu cầu" onClick={e => this.evictionRequest(this.getUserProfileHistoryId())}>
+                        <i className="fas fa-undo-alt" aria-hidden="true"></i>  Thu hồi</span>
+                    </div>
+                )
+            }
         </div>
         </>
     )

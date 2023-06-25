@@ -1108,6 +1108,71 @@
         box-shadow: none !important;
         .content-page-header {
             color: #000000 !important;
+            font-size: 16px !important;
+        }
+        .registration-employee-information {
+            background: #FFFFFF;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+            padding: 15px;
+            .value {
+                height: 38px;
+                border: none;
+                border-radius: 4px;
+                background: #F2F2F2;
+                padding: 0 12px;
+                display: flex;
+                align-items: center;
+                margin-top: 0.5rem;
+            }
+        }
+        .block-status {
+            font-size: 12px;
+            margin-bottom: 0;
+            .status {
+                padding: 5px 20px;
+            }
+        }
+        .documents-block {
+            margin-top: 15px;
+        }
+        .edit-registration-information {
+            padding: 15px;
+            background: #FFFFFF;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+            ul {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+                li {
+                    margin-left: 30px;
+                    &:first-child {
+                        margin-left: 0;
+                    }
+                    .box-color {
+                        display: inline-block;
+                        width: 18px;
+                        height: 18px;
+                        border-radius: 4px;
+                        margin-right: 5px;
+                        &.old {
+                            background: #F2F2F2;
+                        }
+                        &.adjusted {
+                            background: #CCCEE2;
+                        }
+                        &.new {
+                            background: #FEE7D0;
+                        }
+                        &.removed {
+                            background: #F5E3E4;
+                        }
+                    }
+                }
+            }
         }
         .work-outside-group-list {
             color: #000000 !important;
@@ -1164,6 +1229,11 @@
                     &.deleted {
                         .value {
                             background: #F5E3E4 !important;
+                        }
+                    }
+                    &.add-new {
+                        .value {
+                            background: #FEE7D0 !important;
                         }
                     }
                     .company-item {
@@ -1275,6 +1345,7 @@
                         }
                         .salary {
                             margin-top: 15px;
+                            padding: 0 !important;
                         }
                     }
                 }

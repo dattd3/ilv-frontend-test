@@ -15,6 +15,10 @@ import LoadingModal from "components/Common/LoadingModal"
 import ConfirmSendRequestModal from "./ConfirmSendRequestModal"
 
 const prefixUpdating = 'UPDATING'
+const typeViewSalary = {
+    OWN: 'OWN',
+    OTHER: 'OTHER',
+}
 
 function WorkOutSideGroup(props) {
     const { t } = useTranslation()
@@ -280,8 +284,11 @@ function WorkOutSideGroup(props) {
             const config = getRequestConfigurations()
             config.headers['content-type'] = 'multipart/form-data'
             let formData = new FormData()
+            formData.append('id', null)
+            formData.append('subid', null)
+            formData.append('type', typeViewSalary.OWN)
             if (accessToken) {
-                formData.append('token', `Bearer ${token}`)   
+                formData.append('token', `Bearer ${token}`)
             }
             const response = await axios.post(`${process.env.REACT_APP_REQUEST_URL}user-profile-histories/getsalary`, formData, config)
             if (response && response?.data) {

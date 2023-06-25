@@ -15,12 +15,14 @@ import Constants from '../../commons/Constants'
 import map from "../map.config"
 import UpdateProfileDetailComponent from '../Task/RequestDetail'
 import HOCComponent from '../../components/Common/HOCComponent'
+import LoadingModal from 'components/Common/LoadingModal'
 
 class RegistrationDetailComponent extends React.Component {
   constructor(props) {
       super();
       this.state = {
-        data: {}
+        data: {},
+        isLoading: false,
       }
   }
 
@@ -36,7 +38,7 @@ class RegistrationDetailComponent extends React.Component {
         subid: subId
       }
     }
-  
+    this.setState({ isLoading: true })
     axios.get(`${process.env.REACT_APP_REQUEST_URL}request/detail`, config)
     .then(res => {
       if (res && res.data) {
@@ -49,17 +51,20 @@ class RegistrationDetailComponent extends React.Component {
       }
     }).catch(error => {
       console.log(error)
-    });
+    }).finally(() => {
+      this.setState({ isLoading: false })
+    })
   }
 
   render() {
-    const { data, isShowModalRegistrationConfirm, taskId, modalTitle, modalMessage, typeRequest, requestUrl } = this.state
+    const { data, isShowModalRegistrationConfirm, taskId, modalTitle, modalMessage, typeRequest, requestUrl, isLoading } = this.state
     const { action } = this.props
     const updateField = JSON.parse(data?.updateField || '{}')
     const isWorkOutSide = updateField?.UpdateField?.length === 1 && updateField?.UpdateField[0] === 'WorkOutside'
 
     return (
       <>
+      <LoadingModal show={isLoading} />
       <RegistrationConfirmationModal show={isShowModalRegistrationConfirm} id={taskId} title={modalTitle} message={modalMessage}
         type={typeRequest} urlName={requestUrl} onHide={this.onHideModalRegistrationConfirm} />
       <div className="registration-section">
