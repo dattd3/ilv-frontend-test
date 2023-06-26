@@ -9,64 +9,120 @@ import { getValueParamByQueryString, getMuleSoftHeaderConfigurations, getRequest
 import WorkOutSideGroupItem from './WorkOutSideGroupItem'
 import ActionButtons from "./ActionButtons"
 import ConfirmPasswordModal from "./ConfirmPasswordModal"
-import IconAddWhite from "assets/img/icon/ic_btn_add_white.svg"
 import Constants from "commons/Constants"
 import LoadingModal from "components/Common/LoadingModal"
 import ConfirmSendRequestModal from "./ConfirmSendRequestModal"
 import WorkOutSideGroupItemDetail from "./WorkOutSideGroupItemDetail"
-import DocumentComponent from "containers/Task/ApprovalDetail/DocumentComponent"
-
-const prefixUpdating = 'UPDATING'
+import DocumentComponent from "containers/Task/RequestDetail/DocumentComponent"
+import { typeViewSalary } from "./WorkOutSideGroup"
 
 const WorkOutSideGroupDetail = ({ details }) => {
     const { t } = useTranslation()
-    // const history = useHistory()
-    // const location = useLocation()
+    const [detail, SetDetail] = useState(null)
+
+    const history = useHistory()
+    const location = useLocation()
     // const guard = useGuardStore()
     // const user = guard.getCurentUser()
-    // const [canUpdate, SetCanUpdate] = useState(false)
     // const [errors, SetErrors] = useState({})
-    // const [experiences, SetExperiences] = useState(null)
-    // const [experienceDeleted, SetExperienceDeleted] = useState([])
-    // const [experienceOriginal, SetExperienceOriginal] = useState(null)
-    // const [accessToken, SetAccessToken] = useState(new URLSearchParams(location.search).get('accesstoken') || null)
-    // const [isSeenSalaryAtLeastOnce, SetIsSeenSalaryAtLeastOnce] = useState(false)
+    const [accessToken, SetAccessToken] = useState(new URLSearchParams(location.search).get('accesstoken') || null)
+    const [id, SetId] = useState(new URLSearchParams(location.search).get('id') || 0)
     const [hiddenViewSalary, SetHiddenViewSalary] = useState(true)
     const [isShowConfirmPasswordModal, SetIsShowConfirmPasswordModal] = useState(false)
     const [isShowLoading, SetIsShowLoading] = useState(false)
     // const [isShowConfirmSendRequestModal, SetIsShowConfirmSendRequestModal] = useState(false)
-    // const [files, SetFiles] = useState([])
-    const state = 'personal_info_tab_WorkOutsideGroup'
-    // const isEnableEditWorkOutsideGroup = true
+    const state = `workoutside${location.pathname.replaceAll('/', '_')}`
     // const tabActive = getValueParamByQueryString(window.location.search, 'tab')
     // const currentCompanyCode = localStorage.getItem('companyCode')
     // const currentEmployeeNo = localStorage.getItem('employeeNo')
+
+    alert(state)
+
+    useEffect(() => {
+        console.log('RRRRRRRRRRRRR  ', location.pathname)
+
+        // queryParams.delete("id")
+        // queryParams.delete("accesstoken")
+        // history.replace({
+        //     search: queryParams.toString(),
+        // })
+
+        if (accessToken) {
+            updateToken(accessToken)
+        }
+
+        if (id) {
+            // TODO get detail request
+        }
+    }, [])
+
+    useEffect(() => {
+        SetDetail(details)
+    }, [details])
 
     const onHideConfirmPasswordModal = () => {
 
     }
 
-    const handleToggleProcess = () => {
-
+    const handleToggleProcess = (companyIndex, isAddNew = false) => {
+        const detailClone = {...detail}
+        if (isAddNew) {
+            detailClone.requestInfo.create.experiences[companyIndex].isCollapse = !detailClone?.requestInfo?.create?.experiences[companyIndex]?.isCollapse
+        } else {
+            detailClone.requestInfo.update.userProfileHistoryExperiences[companyIndex].isCollapse = !detailClone?.requestInfo?.update?.userProfileHistoryExperiences[companyIndex]?.isCollapse
+        }
+        SetDetail(detailClone)
     }
 
     const handleToggleViewSalary = () => {
+        if (accessToken) {
+            SetHiddenViewSalary(!hiddenViewSalary)
+        }
+
+        let isShow = false
+        if (!accessToken) {
+            isShow = true
+        }
+        SetIsShowConfirmPasswordModal(isShow)
+    }
+
+    const updateToken = async (token) => {
+        SetAccessToken(token)
+        try {
+            const config = getRequestConfigurations()
+            config.headers['content-type'] = 'multipart/form-data'
+            let formData = new FormData()
+            formData.append('id', detail?.id)
+            formData.append('subid', 1)
+            formData.append('type', typeViewSalary.OTHER)
+            if (accessToken) {
+                formData.append('token', `Bearer ${token}`)
+            }
+            const response = await axios.post(`${process.env.REACT_APP_REQUEST_URL}user-profile-histories/getsalary`, formData, config)
+            if (response && response?.data) {
+                const result = response?.data?.result
+                if (result?.code == Constants.API_SUCCESS_CODE) {
+                    SetDetail(response?.data?.data)
+                    SetHiddenViewSalary(false)
+                }
+            }
+        } catch (error) {
+
+        } finally {
+
+        }
+    }
+
+    const evictionRequest = () => {
 
     }
 
-    const updateToken = () => {
-
-    }
-
-    console.log('details ======== ', details)
-
-    const userProfileHistoryExperiences = details?.requestInfo?.update?.userProfileHistoryExperiences
-    const experienceCreateNew = details?.requestInfo?.create?.experiences || []
-    const userInfo = details?.user
-    const status = details?.processStatusId
-    const responseDataFromSAP = details?.responseDataFromSAP
-    const documents = details?.requestDocuments
-
+    const userProfileHistoryExperiences = detail?.requestInfo?.update?.userProfileHistoryExperiences
+    const experienceCreateNew = detail?.requestInfo?.create?.experiences || []
+    const userInfo = detail?.user
+    const status = detail?.processStatusId
+    const responseDataFromSAP = detail?.responseDataFromSAP
+    const documents = detail?.requestDocuments
     const statusOptions = {
         [Constants.STATUS_NOT_APPROVED]: { label: t("Reject"), className: 'fail' },
         [Constants.STATUS_APPROVED]: { label: t("Approved"), className: 'success' },
@@ -173,7 +229,7 @@ const WorkOutSideGroupDetail = ({ details }) => {
             } */}
                 
             <div className="block-status">
-                <span className={`status ${statusOptions[status].className}`}>{statusOptions[status].label}</span>
+                <span className={`status ${statusOptions[status]?.className}`}>{statusOptions[status]?.label}</span>
                 {
                     (status == Constants.STATUS_PARTIALLY_SUCCESSFUL && responseDataFromSAP) && 
                     <div className={`d-flex status fail`}>
@@ -183,7 +239,7 @@ const WorkOutSideGroupDetail = ({ details }) => {
                 }
             </div>
             { 
-                documents?.length == 0 && (
+                documents?.length > 0 && (
                     <div className="documents-block">
                         <h5 className="content-page-header text-uppercase">{t("RegistrationAttachmentInformation")}</h5>
                         <DocumentComponent documents={documents} />
@@ -192,9 +248,9 @@ const WorkOutSideGroupDetail = ({ details }) => {
             }
             {
                 status == Constants.STATUS_PENDING && (
-                    <div className="clearfix mb-5">
-                        <span className="btn btn-primary float-right ml-3 shadow btn-eviction-task" title="Thu hồi yêu cầu" onClick={e => this.evictionRequest(this.getUserProfileHistoryId())}>
-                        <i className="fas fa-undo-alt" aria-hidden="true"></i>  Thu hồi</span>
+                    <div className="action-block">
+                        <span className="btn btn-primary ml-3 shadow btn-eviction-task" title="Thu hồi yêu cầu" onClick={evictionRequest}>
+                        <i className="fas fa-undo-alt" aria-hidden="true"></i>Thu hồi</span>
                     </div>
                 )
             }

@@ -13,7 +13,7 @@ import vi from 'date-fns/locale/vi'
 import 'react-datepicker/dist/react-datepicker.css'
 registerLocale("vi", vi)
 
-function WorkOutSideGroupProcessItem({ index, item, canUpdate, hiddenViewSalary, handleToggleViewSalary, handleInputChange }) {
+function WorkOutSideGroupProcessItem({ index, item, canUpdate, viewSalaryAtLeastOnceTime, hiddenViewSalary, handleToggleViewSalary, handleInputChange }) {
     const { t } = useTranslation()
     const itemNo = index + 1
 
@@ -178,7 +178,7 @@ function WorkOutSideGroupProcessItem({ index, item, canUpdate, hiddenViewSalary,
                                             ? (<input type="text" placeholder={t("import")} value={item[`DE_NET${itemNo}`] || ''} onChange={e => handleInputChange(`DE_NET${itemNo}`, e?.target?.value || '')} className="first" />)
                                             : (<div className="value salary-view"><span>{getSalaryByValue(item[`DE_NET${itemNo}`])}</span><img src={hiddenViewSalary ? IconEyeClosed : IconEyeOpened} alt='Eye' className="eye" onClick={handleToggleViewSalary} /></div>)
                                         }
-                                        {!item?.isAddNew && (<input type="text" placeholder={t("import")} value={item[`DE_NET${itemNo}_${prefixUpdating}`] || ''} onChange={e => handleInputChange(`DE_NET${itemNo}_${prefixUpdating}`, e?.target?.value || '')} className="second salary" /* readOnly={!item?.isAddNew && hiddenViewSalary} */ />)}
+                                        {!item?.isAddNew && (<input type="text" placeholder={t("import")} value={item[`DE_NET${itemNo}_${prefixUpdating}`] || ''} onChange={e => handleInputChange(`DE_NET${itemNo}_${prefixUpdating}`, e?.target?.value || '')} className="second salary" disabled={!viewSalaryAtLeastOnceTime} />)}
                                     </>
                                 )
                                 : (<div className="value salary-view"><span>{getSalaryByValue(item[`DE_NET${itemNo}`])}</span><img src={hiddenViewSalary ? IconEyeClosed : IconEyeOpened} alt='Eye' className="eye" onClick={handleToggleViewSalary} /></div>)
@@ -197,7 +197,7 @@ function WorkOutSideGroupProcessItem({ index, item, canUpdate, hiddenViewSalary,
                                             ? (<input type="text" placeholder={t("import")} value={item[`DE_GROSS${itemNo}`] || ''} onChange={e => handleInputChange(`DE_GROSS${itemNo}`, e?.target?.value || '')} className="first" />)
                                             : (<div className="value salary-view"><span>{getSalaryByValue(item[`DE_GROSS${itemNo}`])}</span><img src={hiddenViewSalary ? IconEyeClosed : IconEyeOpened} alt='Eye' className="eye" onClick={handleToggleViewSalary} /></div>)
                                         }
-                                        {!item?.isAddNew && (<input type="text" placeholder={t("import")} value={item[`DE_GROSS${itemNo}_${prefixUpdating}`] || ''} onChange={e => handleInputChange(`DE_GROSS${itemNo}_${prefixUpdating}`, e?.target?.value || '')} className="second salary" /* readOnly={!item?.isAddNew && hiddenViewSalary} */ />)}
+                                        {!item?.isAddNew && (<input type="text" placeholder={t("import")} value={item[`DE_GROSS${itemNo}_${prefixUpdating}`] || ''} onChange={e => handleInputChange(`DE_GROSS${itemNo}_${prefixUpdating}`, e?.target?.value || '')} className="second salary" disabled={!viewSalaryAtLeastOnceTime} />)}
                                     </>
                                 )
                                 : (<div className="value salary-view"><span>{getSalaryByValue(item[`DE_GROSS${itemNo}`])}</span><img src={hiddenViewSalary ? IconEyeClosed : IconEyeOpened} alt='Eye' className="eye" onClick={handleToggleViewSalary} /></div>)
