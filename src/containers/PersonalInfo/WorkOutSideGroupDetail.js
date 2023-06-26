@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { useTranslation } from "react-i18next"
-import { useLocation, useHistory } from "react-router-dom"
+import { useLocation, useHistory, withRouter } from "react-router-dom"
 import axios from "axios"
 import moment from 'moment'
 import { last, omit, size, groupBy } from "lodash"
@@ -16,43 +16,32 @@ import WorkOutSideGroupItemDetail from "./WorkOutSideGroupItemDetail"
 import DocumentComponent from "containers/Task/RequestDetail/DocumentComponent"
 import { typeViewSalary } from "./WorkOutSideGroup"
 
-const WorkOutSideGroupDetail = ({ details }) => {
+const WorkOutSideGroupDetail = (props) => {
+    const { details, viewPopup } = props
+    const id = props?.match?.params?.id
     const { t } = useTranslation()
-    const [detail, SetDetail] = useState(null)
-
     const history = useHistory()
     const location = useLocation()
     // const guard = useGuardStore()
     // const user = guard.getCurentUser()
     // const [errors, SetErrors] = useState({})
+    const [detail, SetDetail] = useState(null)
     const [accessToken, SetAccessToken] = useState(new URLSearchParams(location.search).get('accesstoken') || null)
-    const [id, SetId] = useState(new URLSearchParams(location.search).get('id') || 0)
     const [hiddenViewSalary, SetHiddenViewSalary] = useState(true)
     const [isShowConfirmPasswordModal, SetIsShowConfirmPasswordModal] = useState(false)
     const [isShowLoading, SetIsShowLoading] = useState(false)
     // const [isShowConfirmSendRequestModal, SetIsShowConfirmSendRequestModal] = useState(false)
-    const state = `workoutside${location.pathname.replaceAll('/', '_')}`
-    // const tabActive = getValueParamByQueryString(window.location.search, 'tab')
-    // const currentCompanyCode = localStorage.getItem('companyCode')
-    // const currentEmployeeNo = localStorage.getItem('employeeNo')
-
-    alert(state)
+    const state = viewPopup ? `workoutside_tasks_tab_approval_${id ?? details?.id}` : `workoutside${location.pathname.replaceAll('/', '_')}`
 
     useEffect(() => {
-        console.log('RRRRRRRRRRRRR  ', location.pathname)
-
-        // queryParams.delete("id")
-        // queryParams.delete("accesstoken")
-        // history.replace({
-        //     search: queryParams.toString(),
-        // })
+        const queryParams = new URLSearchParams(location.search);
+        queryParams.delete("accesstoken");
+        history.replace({
+          search: queryParams.toString(),
+        });
 
         if (accessToken) {
             updateToken(accessToken)
-        }
-
-        if (id) {
-            // TODO get detail request
         }
     }, [])
 
@@ -61,7 +50,7 @@ const WorkOutSideGroupDetail = ({ details }) => {
     }, [details])
 
     const onHideConfirmPasswordModal = () => {
-
+        SetIsShowConfirmPasswordModal(false)
     }
 
     const handleToggleProcess = (companyIndex, isAddNew = false) => {
@@ -92,7 +81,7 @@ const WorkOutSideGroupDetail = ({ details }) => {
             const config = getRequestConfigurations()
             config.headers['content-type'] = 'multipart/form-data'
             let formData = new FormData()
-            formData.append('id', detail?.id)
+            formData.append('id', id)
             formData.append('subid', 1)
             formData.append('type', typeViewSalary.OTHER)
             if (accessToken) {
@@ -259,4 +248,4 @@ const WorkOutSideGroupDetail = ({ details }) => {
     )
 }
 
-export default WorkOutSideGroupDetail
+export default withRouter(WorkOutSideGroupDetail)

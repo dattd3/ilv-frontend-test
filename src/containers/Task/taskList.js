@@ -3,6 +3,7 @@ import React from 'react'
 import TableUtil from '../../components/Common/table'
 import { OverlayTrigger, Tooltip, Popover, InputGroup, FormControl } from 'react-bootstrap'
 import Select from 'react-select'
+import { withRouter } from 'react-router-dom'
 import moment from 'moment'
 import _ from 'lodash'
 import purify from "dompurify"
@@ -20,7 +21,7 @@ import { absenceRequestTypes, requestTypes } from "../Task/Constants"
 import { checkIsExactPnL } from '../../commons/commonFunctions'
 
 class TaskList extends React.Component {
-    constructor() {
+    constructor(props) {
         super();
         this.state = {
             approveTasks: [],
@@ -30,7 +31,7 @@ class TaskList extends React.Component {
             isShowExportModal: false,
             messageModalConfirm: "",
             pageNumber: 1,
-            taskId: null,
+            taskId: new URLSearchParams(props?.history?.location?.search).get('id') || null,
             subId: null,
             requestUrl: "",
             requestTypeId: null,
@@ -46,7 +47,8 @@ class TaskList extends React.Component {
                 sender: '',
                 status: 0,
                 needRefresh: false
-            }
+            },
+            isAutoShowDetailModal: new URLSearchParams(props?.history?.location?.search).has('id') // Chỉ dùng cho Công tác ngoài Tập đoàn
         }
 
         this.manager = {
@@ -58,13 +60,20 @@ class TaskList extends React.Component {
         // this.handleButtonChangeSingle = this.handleButtonChange.bind(this, false);
 
     }
-    componentDidMount()
-    {
+
+    componentDidMount() {
         this.setState({tasks: this.props.tasks})
+        const queryParams = new URLSearchParams(this.props?.history?.location?.search)
+        if (queryParams.has('id')) {
+            queryParams.delete('id')
+            this.props.history.replace({
+                search: queryParams.toString(),
+            })
+            this.setState({ isShowTaskDetailModal: true })
+        }
     }
     
-    componentWillReceiveProps(nextProps)
-    {
+    componentWillReceiveProps(nextProps) {
         this.setState({tasks: nextProps.tasks, taskFiltered: nextProps.tasks})
     }
 
@@ -125,7 +134,7 @@ class TaskList extends React.Component {
         this.setState({ isShowModalRegistrationConfirm: false });
     }
 
-    onHideisShowTaskDetailModal= () => {
+    onHideTaskDetailModal= () => {
         if(this.state.statusSelected){
             this.setState({ tasks:  this.props.tasks.filter(req => req.processStatusId == this.state.statusSelected)});
         }
@@ -404,7 +413,14 @@ class TaskList extends React.Component {
         return (
             <>
                 <ExportModal show={this.state.isShowExportModal} onHide={this.onHideisShowExportModal} statusOptions={this.props.filterdata} exportType={this.props.page}/>
-                <TaskDetailModal key= {this.state.taskId+'.'+this.state.subId} show={this.state.isShowTaskDetailModal} onHide={this.onHideisShowTaskDetailModal} taskId = {this.state.taskId} subId = {this.state.subId} action={this.state.action}/>
+                <TaskDetailModal 
+                    key={this.state.taskId+'.'+this.state.subId} 
+                    show={this.state.isShowTaskDetailModal} 
+                    taskId={this.state.taskId} 
+                    subId={this.state.subId} 
+                    action={this.state.action}
+                    isAutoShowDetailModal={this.state.isAutoShowDetailModal}
+                    onHide={this.onHideTaskDetailModal} />
                 <div className="d-flex justify-content-between w-100 mt-2 mb-3 search-block">
                     <div className="row w-100">
                         <div className="col-xl-4">
@@ -641,4 +657,4 @@ class TaskList extends React.Component {
     }
 }
 
-export default withTranslation()(TaskList)
+export default withTranslation()(withRouter(TaskList))

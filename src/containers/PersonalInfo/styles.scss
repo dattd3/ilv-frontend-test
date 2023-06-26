@@ -28,6 +28,9 @@
     color: #000;
     margin-bottom: 12px;
   }
+  .modal-content {
+    box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+  }
   &__body {
     padding: 0 20px 1.2rem 20px !important;
     border-bottom-left-radius: 4px !important;
@@ -40,6 +43,10 @@
         height: 38px;
         margin-bottom: 0 !important;
         font-size: 14px;
+        img {
+          height: 12px;
+          margin-right: 5px;
+        }
       }
     }
   }
