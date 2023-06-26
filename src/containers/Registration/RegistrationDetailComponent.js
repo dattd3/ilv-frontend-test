@@ -1,4 +1,5 @@
 import React from 'react'
+import { withRouter } from 'react-router-dom'
 import LeaveOfAbsenceDetailComponent from './LeaveOfAbsence/LeaveOfAbsenceDetailComponent'
 import BusinessTripDetailComponent from './BusinessTrip/BusinessTripDetailComponent'
 import InOutUpdateDetailComponent from './InOutTimeUpdate/InOutUpdateDetailComponent'
@@ -96,4 +97,4 @@ class RegistrationDetailComponent extends React.Component {
   }
 }
 
-export default HOCComponent(RegistrationDetailComponent)
+export default HOCComponent(withRouter(RegistrationDetailComponent))
