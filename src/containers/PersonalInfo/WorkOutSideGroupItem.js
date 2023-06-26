@@ -14,7 +14,7 @@ import vi from 'date-fns/locale/vi'
 import 'react-datepicker/dist/react-datepicker.css'
 registerLocale("vi", vi)
 
-function WorkOutSideGroupItem({ index, item, canUpdate, hiddenViewSalary, handleRemoveCompany, handleToggleProcess, handleToggleViewSalary, handleInputChangeOnParent }) {
+function WorkOutSideGroupItem({ index, item, canUpdate, viewSalaryAtLeastOnceTime, hiddenViewSalary, handleRemoveCompany, handleToggleProcess, handleToggleViewSalary, handleInputChangeOnParent }) {
     const { t } = useTranslation()
 
     const handleInputChange = (key, value) => {
@@ -199,6 +199,7 @@ function WorkOutSideGroupItem({ index, item, canUpdate, hiddenViewSalary, handle
                                         index={subIndex}
                                         item={sub}
                                         canUpdate={canUpdate}
+                                        viewSalaryAtLeastOnceTime={viewSalaryAtLeastOnceTime}
                                         hiddenViewSalary={hiddenViewSalary}
                                         handleToggleViewSalary={handleToggleViewSalary}
                                         handleInputChange={handleInputChange}

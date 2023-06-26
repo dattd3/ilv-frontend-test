@@ -143,7 +143,7 @@ function WorkOutSideGroupItemDetail({ index, item, isAddNew, hiddenViewSalary, h
                         </div>
                     </Collapse>
                     <div className="collapse-expand-block">
-                        <span onClick={() => handleToggleProcess(index)}>
+                        <span onClick={() => handleToggleProcess(index, isAddNew)}>
                             <img src={item?.isCollapse ? IconExpand : IconCollapse} alt={item?.isCollapse ? 'Expand' : 'Collapse'} />
                             <span>{item?.isCollapse ? t("ExpandAll") : t("Collapse")}</span>
                         </span>

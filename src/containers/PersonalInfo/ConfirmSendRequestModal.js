@@ -3,6 +3,8 @@ import { Form, Button, Col, Modal } from 'react-bootstrap'
 import Spinner from 'react-bootstrap/Spinner'
 import { useTranslation } from "react-i18next"
 import IconX from 'assets/img/icon/icon_x.svg';
+import IconCheck from 'assets/img/icon/Icon_Check_White.svg'
+import IconCancel from 'assets/img/icon/Icon_Cancel.svg'
 import './styles.scss';
 
 const ConfirmSendRequestModal = ({ isShow, sendRequest, onHide }) => {
@@ -52,10 +54,12 @@ const ConfirmSendRequestModal = ({ isShow, sendRequest, onHide }) => {
                              <Col xs={12} style={{ marginTop: 15 }}>
                                 <div className="btn-block d-flex justify-content-end">
                                     <Button type="button" className="btn btn-cancel" onClick={handleCancel} disabled={disabledSubmitButton}>
-                                    { t("Hủy") }
+                                        <img src={IconCancel} alt="Cancel" />
+                                        { t("Cancel2") }
                                     </Button>
                                     <Button type="submit" className="btn btn-submit" disabled={disabledSubmitButton}>
-                                    { t("accept") }
+                                        <img src={IconCheck} alt="Check" />
+                                        { t("accept") }
                                     </Button>
                                 </div>
                             </Col>

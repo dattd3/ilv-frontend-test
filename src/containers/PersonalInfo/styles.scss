@@ -84,7 +84,22 @@
       border-top: 1px solid #ced4da;
       .btn-block {
         .btn {
-          width: 120px;
+          width: 110px;
+          font-size: 14px;
+          border-radius: 4px;
+          img {
+            height: 12px;
+            margin-right: 5px;
+          }
+          &.btn-cancel {
+            background: #CED4DA;
+            border: none;
+            outline: none;
+            box-shadow: none;
+            &:active {
+              box-shadow: none;
+            }
+          }
           &.btn-submit {
             margin-left: 15px;
           }

@@ -9,6 +9,7 @@ import { getValueParamByQueryString, getMuleSoftHeaderConfigurations, getRequest
 import WorkOutSideGroupItem from './WorkOutSideGroupItem'
 import ActionButtons from "./ActionButtons"
 import ConfirmPasswordModal from "./ConfirmPasswordModal"
+import StatusModal from "components/Common/StatusModal"
 import IconAddWhite from "assets/img/icon/ic_btn_add_white.svg"
 import Constants from "commons/Constants"
 import LoadingModal from "components/Common/LoadingModal"
@@ -32,11 +33,16 @@ function WorkOutSideGroup(props) {
     const [experienceDeleted, SetExperienceDeleted] = useState([])
     const [experienceOriginal, SetExperienceOriginal] = useState(null)
     const [accessToken, SetAccessToken] = useState(new URLSearchParams(location.search).get('accesstoken') || null)
-    const [isSeenSalaryAtLeastOnce, SetIsSeenSalaryAtLeastOnce] = useState(false)
     const [hiddenViewSalary, SetHiddenViewSalary] = useState(true)
     const [isShowConfirmPasswordModal, SetIsShowConfirmPasswordModal] = useState(false)
     const [isShowLoading, SetIsShowLoading] = useState(false)
     const [isShowConfirmSendRequestModal, SetIsShowConfirmSendRequestModal] = useState(false)
+    const [statusModal, SetStatusModal] = useState({
+        isShow: false,
+        isSuccess: true,
+        content: '',
+    })
+    const [needReload, SetNeedReload] = useState(true)
     const [files, SetFiles] = useState([])
     const state = 'personal_info_tab_WorkOutsideGroup'
     const isEnableEditWorkOutsideGroup = true
@@ -44,71 +50,13 @@ function WorkOutSideGroup(props) {
     const currentCompanyCode = localStorage.getItem('companyCode')
     const currentEmployeeNo = localStorage.getItem('employeeNo')
 
-    const fakeInitData = () => {
-        let result = []
-        for (let index = 0; index < 1; index++) {
-          let temp = {
-            ORGEH: `Công ty A ${index}`,
-            BEGDA: 20230101,
-            ENDDA: 20230202,
-            PERNR: currentEmployeeNo,
-            KOKRS: currentCompanyCode,
-            ID: index,
-          }
-
-          for (let i = 1; i < 6; i++) {
-            temp[`BEG${i}`] = 20230101
-            temp[`END${i}`] = 20230101
-            temp[`WAERS${i}`] = 'USD'
-            temp[`DE_NET${i}`] = 'xxxxxxxxxx'
-            temp[`DE_GROSS${i}`] = 'xxxxxxxxxx'
-            temp[`DUT${i}`] = null
-            temp[`PLAN${i}`] = null
-          }
-
-          result = [...result, temp]
-        }
-        return result
-    }
-
-    const fakeDecodeData = () => {
-        let result = []
-        for (let index = 0; index < 1; index++) {
-          let temp = {
-            ORGEH: `Công ty A ${index}`,
-            BEGDA: 20230101,
-            ENDDA: 20230202,
-            PERNR: currentEmployeeNo,
-            KOKRS: currentCompanyCode,
-            ID: index,
-          }
-
-          for (let i = 1; i < 6; i++) {
-            temp[`BEG${i}`] = 20230101
-            temp[`END${i}`] = 20230101
-            temp[`WAERS${i}`] = 'USD'
-            temp[`DE_NET${i}`] = 12000000
-            temp[`DE_GROSS${i}`] = 16000000
-            temp[`DUT${i}`] = null
-            temp[`PLAN${i}`] = null
-          }
-          result = [...result, temp]
-        }
-
-        return result
-    }
-
     useEffect(() => {
         const fetchData = async () => {
             SetIsShowLoading(true)
             const config = getMuleSoftHeaderConfigurations()
             try {
                 const response = await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/workprocess/outside`, config)
-                let data = response?.data?.data || []
-
-                // Fake data
-                // data = fakeInitData()
-
+                const data = response?.data?.data || []
                 SetExperiences(data)
                 SetExperienceOriginal(data)
                 // if (response && response?.data) {
@@ -294,9 +242,6 @@ function WorkOutSideGroup(props) {
             if (response && response?.data) {
                 const result = response?.data?.result
                 if (result?.code == Constants.API_SUCCESS_CODE) {
-                    // const fake = fakeDecodeData()
-                    // SetExperiences(fake)
-
                     SetExperiences(response?.data?.data || [])
                     SetHiddenViewSalary(false)
                 }
@@ -426,9 +371,20 @@ function WorkOutSideGroup(props) {
         return { oldItem, newItem }
     }
 
-    const sendRequest = async (note = '') => {
-        console.log('submitting ....', experiences)
+    const onHideStatusModal = () => {
+        SetStatusModal({
+            ...statusModal,
+            isShow: false,
+            isSuccess: true,
+            content: "",
+        })
+        if (needReload) {
+            window.location.reload()
+        }
+    }
 
+    const sendRequest = async (note = '') => {
+        const statusModalClone = {...statusModal}
         SetIsShowLoading(true)
         try {
             const userObj = {
@@ -474,21 +430,13 @@ function WorkOutSideGroup(props) {
                     }
                 }))
             }
-
             const userProfileInfo = {
                 create,
                 update,
             }
-
-            console.log('Profile info to save ==== ', userProfileInfo)
-
             const userProfileInfoToSap = (experiences || []).map(item => {
                 return prepareItemToSAP(item)
             })
-
-            console.log('DATA to SAP => ', userProfileInfoToSap)
-
-            // return
 
             const config = getRequestConfigurations()
             config.headers['content-type'] = 'multipart/form-data'
@@ -511,31 +459,67 @@ function WorkOutSideGroup(props) {
             formData.append('Unit', formatStringByMuleValue(user?.unit))
             formData.append('PartId', user?.partId)
             formData.append('Part', formatStringByMuleValue(user?.part))
-
             for (let key in files) {
                 formData.append('Files', files[key])
             }
-
+            SetIsShowConfirmSendRequestModal(false)
             const response = await axios.post(`${process.env.REACT_APP_REQUEST_URL}user-profile-histories/experience`, formData, config)
+            statusModalClone.isShow = true
+            let content = "Gửi yêu cầu thất bại. Xin vui lòng thử lại!"
+            let isSuccess = false
             if (response && response?.data) {
                 const result = response?.data?.result
                 if (result?.code == Constants.API_SUCCESS_CODE) {
+                    content = t("RequestSent")
+                    isSuccess = true
                     SetExperiences(response?.data?.data || [])
                     SetHiddenViewSalary(false)
+                    SetNeedReload(true)
+                } else {
+                    content = result?.message
+                    SetNeedReload(false)
                 }
+            } else {
+                SetNeedReload(false)
             }
+            statusModalClone.isSuccess = isSuccess
+            statusModalClone.content = content
+            SetStatusModal(statusModalClone)
         } catch (error) {
-            console.log(error)
+            SetNeedReload(false)
+            SetStatusModal({
+                ...statusModal,
+                isShow: true,
+                isSuccess: false,
+                content: t("AnErrorOccurred"),
+            })
         } finally {
             SetIsShowLoading(false)
         }
     }
 
+    console.log('TING TING',accessToken)
+
     return (
         <>
         <LoadingModal show={isShowLoading} />
-        <ConfirmPasswordModal show={isShowConfirmPasswordModal} state={state} onUpdateToken={updateToken} onHide={onHideConfirmPasswordModal} />
-        <ConfirmSendRequestModal isShow={isShowConfirmSendRequestModal} sendRequest={sendRequest} onHide={onHideConfirmSendRequestModal} />
+        <ConfirmPasswordModal
+            show={isShowConfirmPasswordModal}
+            state={state}
+            onUpdateToken={updateToken}
+            onHide={onHideConfirmPasswordModal} />
+        <ConfirmSendRequestModal
+            isShow={isShowConfirmSendRequestModal}
+            sendRequest={sendRequest}
+            onHide={onHideConfirmSendRequestModal} />
+        <StatusModal
+            show={statusModal?.isShow || false}
+            isSuccess={statusModal?.isSuccess}
+            content={statusModal?.content}
+            className="work-out-side-group-status-modal"
+            backdropClassName="backdrop-work-out-side-group-status-modal"
+            onHide={onHideStatusModal}
+        />
         <div className="work-outside-group">
             <div className="top-button-actions">
                 <a href="/tasks" className="btn btn-info shadow"><i className="far fa-address-card"></i> {t("History")}</a>
@@ -562,6 +546,7 @@ function WorkOutSideGroup(props) {
                                 index={index}
                                 item={item}
                                 canUpdate={canUpdate}
+                                viewSalaryAtLeastOnceTime={accessToken ? true : false}
                                 hiddenViewSalary={hiddenViewSalary}
                                 handleRemoveCompany={handleRemoveCompany}
                                 // handleRemoveProcess={handleRemoveProcess}
@@ -589,4 +574,4 @@ function WorkOutSideGroup(props) {
 }
 
 export default WorkOutSideGroup
-export { prefixUpdating }
+export { prefixUpdating, typeViewSalary }
