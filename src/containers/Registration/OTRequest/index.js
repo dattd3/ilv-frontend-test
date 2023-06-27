@@ -25,6 +25,8 @@ import ConfirmModal from "components/Common/ConfirmModalNew";
 import LoadingModal from "components/Common/LoadingModal";
 import IconPlus from "assets/img/ic-add-green.svg";
 import IconCancel from "assets/img/icon/ic_x_red.svg";
+import { Button } from "react-bootstrap";
+import NoteModal from "./NoteModal";
 
 const config = getRequestConfigurations();
 
@@ -136,6 +138,7 @@ export default function OTRequestComponent({ recentlyManagers }) {
     INIT_STATUS_MODAL_MANAGEMENT
   );
   const [confirmModal, setConfirmModal] = useState(DEFAULT_CONFIRM_MODAL);
+  const [showNoteModal, setShowNoteModal] = useState(false);
 
   const lang = localStorage.getItem("locale");
 
@@ -416,14 +419,6 @@ export default function OTRequestComponent({ recentlyManagers }) {
       label: t("OTReasonOption6"),
     },
   ];
-
-  const isPrevDayOptions = [{
-    value: false,
-    label: t("No")
-  }, {
-    value: true,
-    label: t("Yes")
-  }]
 
   const handleSendButtonClick = () => {
     if (checkIsError()) {
@@ -848,6 +843,7 @@ export default function OTRequestComponent({ recentlyManagers }) {
         tempButtonLabel={t("Cancel")}
         mainButtonLabel={t("Confirm")}
       />
+      <NoteModal show={showNoteModal} onHide={() => setShowNoteModal(false)} />
       <LoadingModal show={isSendingRequest} />
       <div className="box shadow">
         <div className="row">
@@ -1084,8 +1080,8 @@ export default function OTRequestComponent({ recentlyManagers }) {
                       <div className="ot-registration-body">
                         <div className="ot-note">{t("OTNote")}</div>
                         {timesheet?.timeRanges?.map((range, rangeIndex) => (
-                          <div className="row mb-15" key={rangeIndex}>
-                            <div className="reason-container">
+                          <div className="row mb-30" key={rangeIndex}>
+                            <div className="col-6">
                               {rangeIndex === 0 && (
                                 <>
                                   <div className="mb-12">{t("OTReason")}</div>
@@ -1111,8 +1107,8 @@ export default function OTRequestComponent({ recentlyManagers }) {
                                 </>
                               )}
                             </div>
-                            <div className="time-registration-container">
-                              <div className="form-item mr-12">
+                            {/* <div className="time-registration-container"> */}
+                              <div className="col-2 form-item padding-left-0">
                                 {rangeIndex === 0 && (
                                   <div className="mb-12">{t("FromHour")}</div>
                                 )}
@@ -1153,7 +1149,7 @@ export default function OTRequestComponent({ recentlyManagers }) {
                                   }
                                 </p>
                               </div>
-                              <div className="form-item end-time-container  mr-12">
+                              <div className="col-2 form-item padding-left-0">
                                 {rangeIndex === 0 && (
                                   <div className="mb-12">{t("ToHour")}</div>
                                 )}
@@ -1190,36 +1186,7 @@ export default function OTRequestComponent({ recentlyManagers }) {
                                   }
                                 </p>
                               </div>
-                              <div className="form-item prev-day-container">
-                                {rangeIndex === 0 && (
-                                  <div
-                                    className="mb-12"
-                                  >
-                                    {t("PrevDay")}
-                                  </div>
-                                )}
-                                <div className="is-overnight-container">
-                                  <Select styles={{
-                                    container: (baseStyles) => ({
-                                        ...baseStyles,
-                                        width: "100%",
-                                        marginRight: 10,
-                                        height: 42
-                                      }),
-                                    control: (baseStyles) => ({
-                                      ...baseStyles,
-                                      height: 42
-                                    })
-                                  }}
-                                  value={isPrevDayOptions.find(
-                                    (item) =>
-                                      item.value === (range.isPrevDayIndicator || false)
-                                  )}
-                                  options={isPrevDayOptions}
-                                  onChange={(e) => handleChangeIsPrevDayIndicator(index, rangeIndex, e.value)}
-                                  />
-                                </div>
-                              </div>
+                              <div className="col-2 padding-left-0">
                               {timesheet?.timeRanges?.length === 1 ? (
                                 <button
                                   className="add-time-block-btn"
@@ -1311,19 +1278,31 @@ export default function OTRequestComponent({ recentlyManagers }) {
                                 </p>
                               )}
                             </div>
+                            <div className="col-6" />
+                            <div className="col-6 padding-left-0">
+                              <div className="prev-day-container">
+                                <input type="checkbox" id={`prevDayCheckbox_${index}_${rangeIndex}`} />&nbsp;
+                                <label for={`prevDayCheckbox_${index}_${rangeIndex}`}>{t("PrevDay")}</label> &nbsp;
+                                {
+                                  rangeIndex === 0 && <Button className="information-btn" onClick={() => setShowNoteModal(true)}>
+                                    <i className="fas fa-info" />
+                                  </Button>
+                                }
+                              </div>
+                            </div>
                           </div>
                         ))}
                         <p className="text-danger">
                           {errors[`invalidHour_${index}`]}
                         </p>
-                        <div className="row mb-15">
-                        <div className="reason-container">
+                        <div className="row mb-20">
+                          <div className="col-6">
                             <div className="form-item">
                               <div className="mb-12">{t("OTType")}</div>
                               <div className="field-view">{t("MoneyOT")}</div>
                             </div>
                           </div>
-                          <div className="form-item">
+                          <div className="col-2 form-item padding-left-0">
                             <div className="mb-12 total-leave-time">
                               {t("TotalLeaveTime")}
                             </div>
@@ -1333,7 +1312,7 @@ export default function OTRequestComponent({ recentlyManagers }) {
                               {t("HourUnit")}
                             </div>
                           </div>
-                          <div className="total-in-month-container">
+                          <div className="col-4 total-in-month-container  padding-left-0">
                             <div className="form-item">
                               <div className="mb-12">
                                 {t("TotalTimePerMonth")}

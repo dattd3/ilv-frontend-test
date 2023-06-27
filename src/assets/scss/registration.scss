@@ -1589,10 +1589,6 @@
   }
   .request-info-container {
     padding: 12px 0px;
-    .reason-container {
-      width: 283px;
-      padding: 0px 15px;
-    }
     .request-info-card {
       border: 1px solid #DEE2E6;
       margin-bottom: 10px;
@@ -1610,6 +1606,9 @@
       }
       .ot-registration-body {
         padding: 14px;
+        .padding-left-0 {
+          padding-left: 0;
+        }
         .time-registration-container {
           flex: 1;
           flex-wrap: wrap;
@@ -1628,10 +1627,10 @@
         display: flex;
       }
       .form-item {
-        margin-right: 0px;
+        // margin-right: 0px;
         .hour-picker-input {
           height: 42px;
-          width: 110px;
+          width: 100%;
           border-radius: 4px;
           margin-right: 8px;
         }
@@ -1676,7 +1675,18 @@
     }
   }
   .prev-day-container {
-    min-width: 120px;
+    // z-index: 10000;
+    display: flex;
+    align-items: center;
+    input {
+      width: 15px;
+      height: 15px;
+    }
+    label {
+      white-space: nowrap;
+      margin-bottom: 0px;
+      cursor: pointer;
+    }
   }
   .is-overnight-container {
     display: flex;
@@ -1694,7 +1704,7 @@
     margin-top: 29px;
     border: 1px solid #44A257;
     height: 40px;
-    width: 104px;
+    width: 100%;
     border-radius: 4px;
     text-align: center;
     vertical-align: middle;
@@ -1710,8 +1720,9 @@
     outline: none;
   }
   .action-time-range-btn {
-    width: 42px;
-    height: 42px;
+    width: 46%;
+    max-width: 42px;
+    height: 40px;
     border: 1px solid #DEE2E6;
     text-align: center;
   }
@@ -1719,7 +1730,7 @@
     outline: none;
   }
   .cancel-time-range-btn {
-    margin-right: 20px;
+    margin-right: 8%;
   }
   .field-view {
     background: #F2F2F2;
@@ -1746,6 +1757,21 @@
     img {
       width: 20px;
       height: 20px;
+    }
+  }
+  .information-btn {
+    border-radius: 50%;
+    background: #347EF9;
+    color: #fff;
+    border-color: #fff;
+    width: 16px;
+    height: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 6px;
+    i {
+      font-size: 8px;
     }
   }
   .mb-12 {
