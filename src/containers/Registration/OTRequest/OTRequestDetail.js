@@ -362,10 +362,10 @@ export default function OTRequestDetailComponent({ data, action }) {
                                     {
                                       timeIndex === 0 &&  <div className="mb-12">{t("PrevDay")}</div>
                                     }
-                                    <div className="field-view">
-                                      {timesheet?.VtKen?.split(",")[
+                                    <div style={{marginTop: timeIndex === 0 ? 25 : 15, textAlign: "center"}}>
+                                      <input type="checkbox" disabled value={!!timesheet?.VtKen?.split(",")[
                                           timeIndex
-                                      ] ? t("Yes") : t("No")}
+                                      ]} />
                                     </div>
                                   </div>
                                 </div>
