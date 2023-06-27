@@ -1709,7 +1709,7 @@
   "ToHour": "Đến giờ",
   "OTNote": "* CBNV lưu ý tổng thời gian xin OT không quá 4 giờ/ngày (12h giờ ca OFF) và không quá 40 giờ/tháng",
   "MoneyOT": "OT quy ra tiền",
-  "TotalTimePerMonth": "Tổng thời gian đã đăng ký theo tháng",
+  "TotalTimePerMonth": "Đã đăng ký theo tháng",
   "RegisterReason": "Lý do đăng ký",
   "BudgetApprover": "CBPT NGÂN SÁCH",
   "OTReasonOption1": "Tăng cường ngày Lễ",
@@ -1848,5 +1848,6 @@
   "BaseLevelManager": "CBLĐ cấp cơ sở",
   "SeniorSpecialist": "Chuyên gia",
   "Specialist": "Chuyên viên",
-  "Staff": "Nhân viên"
+  "Staff": "Nhân viên",
+  "NotePrevDayOT": "Chỉ chọn khi bạn đăng kí OT cho phân ca xuyên đêm cần kéo giờ in/out của ngày trước đó."
 }
