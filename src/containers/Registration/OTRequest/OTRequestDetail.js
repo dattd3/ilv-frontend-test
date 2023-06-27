@@ -360,7 +360,7 @@ export default function OTRequestDetailComponent({ data, action }) {
                                 <div className="col-2">
                                   <div className="form-item">
                                     {
-                                      timeIndex === 0 &&  <div className="mb-12">{t("PrevDay")}</div>
+                                      timeIndex === 0 &&  <div className="mb-12" style={{textAlign: "center"}}>{t("PrevDay")}</div>
                                     }
                                     <div style={{marginTop: timeIndex === 0 ? 25 : 15, textAlign: "center"}}>
                                       <input type="checkbox" disabled value={!!timesheet?.VtKen?.split(",")[
