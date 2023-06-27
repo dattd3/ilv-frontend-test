@@ -12,7 +12,7 @@ import InterviewContentFormComponent from '../TerminationComponents/InterviewCon
 import ResultModal from '../ResultModal'
 import HOCComponent from '../../../components/Common/HOCComponent'
 import VinpearlLogo from '../../../assets/img/LogoVingroup.svg'//assets/img/logo-vp-vt.png
-import { exportToPDF, getValueParamByQueryString } from '../../../commons/Utils';
+import { exportToPDF, getCulture, getValueParamByQueryString } from '../../../commons/Utils';
 import moment from 'moment'
 import { toast } from "react-toastify";
 import { getUserInfo } from 'containers/Evaluation/TargetManagement/Constant';
@@ -136,7 +136,7 @@ class ContractTerminationInterview extends React.Component {
 
   getWorkOffReasonItems = async () => {
     try {
-        const res = await axios.get(`${process.env.REACT_APP_REQUEST_URL}WorkOffServeyItem/getworkOffServeryItemAll`, config)
+        const res = await axios.get(`${process.env.REACT_APP_REQUEST_URL}WorkOffServeyItem/getworkOffServeryItemAll?culture=${getCulture()}`, config)
         return res?.data?.data;
     } catch(err) {
         console.log(err);
