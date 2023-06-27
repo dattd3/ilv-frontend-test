@@ -12,7 +12,7 @@ import {
   getMuleSoftHeaderConfigurations,
   getRequestConfigurations,
   getValueParamByQueryString,
-  prepareOrganization
+  prepareOrganization,
 } from "commons/Utils";
 import AssesserComponent from "../AssesserComponent";
 import SearchUserComponent from "containers/SearchUserBox/index";
@@ -110,7 +110,12 @@ const getTotalHoursOtInRanges = (ranges = []) => {
     .reduce(
       (accumulator, currentValue) =>
         accumulator * 1 +
-        getHoursBetween2Times(currentValue.startTime, currentValue.endTime, currentValue.isOvernight) * 1,
+        getHoursBetween2Times(
+          currentValue.startTime,
+          currentValue.endTime,
+          currentValue.isOvernight
+        ) *
+          1,
       0
     )
     ?.toFixed(2);
@@ -174,7 +179,12 @@ export default function OTRequestComponent({ recentlyManagers }) {
             orglv2Id: "",
             account: data?.userid?.toLowerCase() || "",
             current_position: data?.title || "",
-            department: prepareOrganization(data?.division, data?.department, data?.unit, data?.part)
+            department: prepareOrganization(
+              data?.division,
+              data?.department,
+              data?.unit,
+              data?.part
+            ),
           });
         }
       }
@@ -257,8 +267,10 @@ export default function OTRequestComponent({ recentlyManagers }) {
             }
           : item
       );
-      if(newRanges[rangeIndex]?.startTime && newRanges[rangeIndex]?.endTime) {
-        newRanges[rangeIndex].isOvernight = newRanges[rangeIndex]?.endTime?.getTime() < newRanges[rangeIndex]?.startTime?.getTime();
+      if (newRanges[rangeIndex]?.startTime && newRanges[rangeIndex]?.endTime) {
+        newRanges[rangeIndex].isOvernight =
+          newRanges[rangeIndex]?.endTime?.getTime() <
+          newRanges[rangeIndex]?.startTime?.getTime();
       }
       setRequestInfoData(
         requestInfoData.map((item, index) => {
@@ -274,7 +286,7 @@ export default function OTRequestComponent({ recentlyManagers }) {
     }
   };
 
-  const handleChangeIsPrevDayIndicator = (dayIndex, rangeIndex, value) => {    
+  const handleChangeIsPrevDayIndicator = (dayIndex, rangeIndex, value) => {
     if (requestInfoData?.[dayIndex]) {
       const newRanges = requestInfoData?.[dayIndex].timeRanges?.map((item, i) =>
         i === rangeIndex
@@ -529,7 +541,7 @@ export default function OTRequestComponent({ recentlyManagers }) {
           ?.map((range) => moment(range.endTime).format("HHmmss"))
           ?.join(","),
         VtKen: item.timeRanges
-          ?.map((range) => range.isPrevDayIndicator ? "X" : "")
+          ?.map((range) => (range.isPrevDayIndicator ? "X" : ""))
           ?.join(","),
         overTimeType: "01",
       }));
@@ -668,8 +680,7 @@ export default function OTRequestComponent({ recentlyManagers }) {
             _errors[`range_endTime_${index}_${rangeIndex}`] = t("Required");
           if (startTime && endTime) {
             if (getHoursBetween2Times(startTime, endTime, isOvernight) <= 0) {
-              _errors[`invalidHour_${index}_${rangeIndex}`] =
-                t("InvalidHour");
+              _errors[`invalidHour_${index}_${rangeIndex}`] = t("InvalidHour");
             }
             if (
               currOrgLv3 === VFSX_LV3_ORG &&
@@ -697,7 +708,7 @@ export default function OTRequestComponent({ recentlyManagers }) {
                 const nextTimeIsAfter = moment(
                   item.timeRanges[i].startTime
                 ).isAfter(range.endTime);
-  
+
                 if (
                   Math.abs(
                     getHoursBetween2Times(
@@ -711,7 +722,7 @@ export default function OTRequestComponent({ recentlyManagers }) {
                     "OTInvalidSpaceHours"
                   );
                 }
-  
+
                 const timeSegments = [
                   [
                     moment(startTime).format("HH:mm"),
@@ -731,7 +742,8 @@ export default function OTRequestComponent({ recentlyManagers }) {
           }
           if (
             !isNullCustomize(item.from_time1) &&
-            !isNullCustomize(item.to_time1) && !isPrevDayIndicator
+            !isNullCustomize(item.to_time1) &&
+            !isPrevDayIndicator
           ) {
             const timeSegments = [
               [
@@ -751,7 +763,8 @@ export default function OTRequestComponent({ recentlyManagers }) {
           }
           if (
             !isNullCustomize(item.from_time2) &&
-            !isNullCustomize(item.to_time2)  && !isPrevDayIndicator
+            !isNullCustomize(item.to_time2) &&
+            !isPrevDayIndicator
           ) {
             const timeSegments = [
               [
@@ -1108,39 +1121,39 @@ export default function OTRequestComponent({ recentlyManagers }) {
                               )}
                             </div>
                             {/* <div className="time-registration-container"> */}
-                              <div className="col-2 form-item padding-left-0">
-                                {rangeIndex === 0 && (
-                                  <div className="mb-12">{t("FromHour")}</div>
-                                )}
-                                <DatePicker
-                                  selected={
-                                    !isNullCustomize(range.startTime)
-                                      ? moment(
-                                          range.startTime,
-                                          "HH:mm"
-                                        ).toDate()
-                                      : null
-                                  }
-                                  onChange={(val) =>
-                                    handleChangeTimeValue(
-                                      index,
-                                      rangeIndex,
-                                      val,
-                                      "startTime"
-                                    )
-                                  }
-                                  autoComplete="off"
-                                  showTimeSelect
-                                  showTimeSelectOnly
-                                  timeIntervals={15}
-                                  timeCaption={t("Hour")}
-                                  dateFormat="HH:mm"
-                                  timeFormat="HH:mm"
-                                  format="HH:mm"
-                                  name="startTime"
-                                  className="form-control input hour-picker-input"
-                                  placeholderText="hh:mm"
-                                />
+                            <div className="col-2 form-item padding-left-0">
+                              {rangeIndex === 0 && (
+                                <div className="mb-12">{t("FromHour")}</div>
+                              )}
+                              <DatePicker
+                                selected={
+                                  !isNullCustomize(range.startTime)
+                                    ? moment(range.startTime, "HH:mm").toDate()
+                                    : null
+                                }
+                                onChange={(val) =>
+                                  handleChangeTimeValue(
+                                    index,
+                                    rangeIndex,
+                                    val,
+                                    "startTime"
+                                  )
+                                }
+                                autoComplete="off"
+                                showTimeSelect
+                                showTimeSelectOnly
+                                timeIntervals={15}
+                                timeCaption={t("Hour")}
+                                dateFormat="HH:mm"
+                                timeFormat="HH:mm"
+                                format="HH:mm"
+                                name="startTime"
+                                className="form-control input hour-picker-input"
+                                placeholderText="hh:mm"
+                              />
+                              {errors[
+                                `range_startTime_${index}_${rangeIndex}`
+                              ] && (
                                 <p className="text-danger">
                                   {
                                     errors[
@@ -1148,36 +1161,40 @@ export default function OTRequestComponent({ recentlyManagers }) {
                                     ]
                                   }
                                 </p>
-                              </div>
-                              <div className="col-2 form-item padding-left-0">
-                                {rangeIndex === 0 && (
-                                  <div className="mb-12">{t("ToHour")}</div>
-                                )}
-                                <DatePicker
-                                  selected={
-                                    !isNullCustomize(range.endTime)
-                                      ? moment(range.endTime, "HH:mm").toDate()
-                                      : null
-                                  }
-                                  onChange={(val) =>
-                                    handleChangeTimeValue(
-                                      index,
-                                      rangeIndex,
-                                      val,
-                                      "endTime"
-                                    )
-                                  }
-                                  autoComplete="off"
-                                  showTimeSelect
-                                  showTimeSelectOnly
-                                  timeIntervals={15}
-                                  timeCaption={t("Hour")}
-                                  dateFormat="HH:mm"
-                                  timeFormat="HH:mm"
-                                  name="endTime"
-                                  className="form-control input hour-picker-input"
-                                  placeholderText="hh:mm"
-                                />
+                              )}
+                            </div>
+                            <div className="col-2 form-item padding-left-0">
+                              {rangeIndex === 0 && (
+                                <div className="mb-12">{t("ToHour")}</div>
+                              )}
+                              <DatePicker
+                                selected={
+                                  !isNullCustomize(range.endTime)
+                                    ? moment(range.endTime, "HH:mm").toDate()
+                                    : null
+                                }
+                                onChange={(val) =>
+                                  handleChangeTimeValue(
+                                    index,
+                                    rangeIndex,
+                                    val,
+                                    "endTime"
+                                  )
+                                }
+                                autoComplete="off"
+                                showTimeSelect
+                                showTimeSelectOnly
+                                timeIntervals={15}
+                                timeCaption={t("Hour")}
+                                dateFormat="HH:mm"
+                                timeFormat="HH:mm"
+                                name="endTime"
+                                className="form-control input hour-picker-input"
+                                placeholderText="hh:mm"
+                              />
+                              {errors[
+                                `range_endTime_${index}_${rangeIndex}`
+                              ] && (
                                 <p className="text-danger">
                                   {
                                     errors[
@@ -1185,8 +1202,9 @@ export default function OTRequestComponent({ recentlyManagers }) {
                                     ]
                                   }
                                 </p>
-                              </div>
-                              <div className="col-2 padding-left-0">
+                              )}
+                            </div>
+                            <div className="col-2 padding-left-0">
                               {timesheet?.timeRanges?.length === 1 ? (
                                 <button
                                   className="add-time-block-btn"
@@ -1232,16 +1250,38 @@ export default function OTRequestComponent({ recentlyManagers }) {
                                   </button>
                                 </div>
                               )}
-                              <div className="line-break" />
-                              {errors[
-                                `invalidHour_${index}_${rangeIndex}`
-                              ] && (
+                            </div>
+                            <div className="col-6" />
+                            <div className="col-6 padding-left-0" style={{ marginTop: rangeIndex === 0 ? 0 : 15}}>
+                              <div className="prev-day-container">
+                                <input
+                                  type="checkbox"
+                                  id={`prevDayCheckbox_${index}_${rangeIndex}`}
+                                  onChange={(e) => handleChangeIsPrevDayIndicator(index, rangeIndex, e.target.checked)}
+                                  value={range.isPrevDayIndicator}
+                                />
+                                &nbsp;
+                                <label
+                                  for={`prevDayCheckbox_${index}_${rangeIndex}`}
+                                >
+                                  {t("PrevDay")}
+                                </label>{" "}
+                                &nbsp;
+                                {rangeIndex === 0 && (
+                                  <Button
+                                    className="information-btn"
+                                    onClick={() => setShowNoteModal(true)}
+                                  >
+                                    <i className="fas fa-info" />
+                                  </Button>
+                                )}
+                              </div>
+                            </div>
+                            <div className="col-6" />
+                            <div className="col-6 padding-left-0 line-break">
+                              {errors[`invalidHour_${index}_${rangeIndex}`] && (
                                 <p className="text-danger">
-                                  {
-                                    errors[
-                                      `invalidHour_${index}_${rangeIndex}`
-                                    ]
-                                  }
+                                  {errors[`invalidHour_${index}_${rangeIndex}`]}
                                 </p>
                               )}
                               {errors[
@@ -1277,18 +1317,6 @@ export default function OTRequestComponent({ recentlyManagers }) {
                                   }
                                 </p>
                               )}
-                            </div>
-                            <div className="col-6" />
-                            <div className="col-6 padding-left-0">
-                              <div className="prev-day-container">
-                                <input type="checkbox" id={`prevDayCheckbox_${index}_${rangeIndex}`} />&nbsp;
-                                <label for={`prevDayCheckbox_${index}_${rangeIndex}`}>{t("PrevDay")}</label> &nbsp;
-                                {
-                                  rangeIndex === 0 && <Button className="information-btn" onClick={() => setShowNoteModal(true)}>
-                                    <i className="fas fa-info" />
-                                  </Button>
-                                }
-                              </div>
                             </div>
                           </div>
                         ))}
