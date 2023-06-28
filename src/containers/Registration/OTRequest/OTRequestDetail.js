@@ -139,7 +139,7 @@ export default function OTRequestDetailComponent({ data, action }) {
     );
   };
   const operationType = getOperationType(data.requestTypeId, data.updateField, data.processStatusId)
-  console.log(requestInfo)
+
   return (
     <div className="ot-request-container">
       <div className="ot-request-detail-container">
