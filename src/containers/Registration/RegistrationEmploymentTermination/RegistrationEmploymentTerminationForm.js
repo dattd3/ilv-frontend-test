@@ -6,7 +6,7 @@ import { Progress } from "reactstrap"
 import { toast } from "react-toastify"
 import { withTranslation } from "react-i18next"
 import Constants from '../../../commons/Constants'
-import { getRequestConfigs } from '../../../commons/commonFunctions'
+import { checkIsExactPnL, getRequestConfigs } from '../../../commons/commonFunctions'
 import ButtonComponent from '../TerminationComponents/ButtonComponent'
 import DirectManagerInfoComponent from '../TerminationComponents/DirectManagerInfoComponent'
 import SeniorExecutiveInfoComponent from '../TerminationComponents/SeniorExecutiveInfoComponent'
@@ -284,8 +284,8 @@ class RegistrationEmploymentTerminationForm extends React.Component {
         //this.setState({isShowLoadingModal: true})
         
         if (!ignoreCheckEnoughDay) {
-          const isNotEnoughTime = (userInfos.contractType === "VA" && moment(staffTerminationDetail.dateTermination, "YYYY-MM-DD").diff(moment(), "days") < 30) ||
-            (userInfos.contractType === "VB" && moment(staffTerminationDetail.dateTermination, "YYYY-MM-DD").diff(moment(), "days") < 45)
+          const isNotEnoughTime = ((userInfos.contractType === "VA" && moment(staffTerminationDetail.dateTermination, "YYYY-MM-DD").diff(moment(), "days") < 30) ||
+            (userInfos.contractType === "VB" && moment(staffTerminationDetail.dateTermination, "YYYY-MM-DD").diff(moment(), "days") < 45)) && !checkIsExactPnL(Constants.pnlVCode.VinHome)
           if (isNotEnoughTime) {
             this.setDisabledSubmitButton(false)
             return this.setState({
