@@ -11,7 +11,7 @@ const prepareClassByConditions = (isDeleted = false, oldValue, newValue) => {
         return 'deleted'
     }
 
-    return oldValue !== newValue ? 'updated' : ''
+    return newValue === null ? '' : 'updated'
 }
 
 function WorkOutSideGroupItemDetail({ index, item, isAddNew, hiddenViewSalary, handleToggleProcess, handleToggleViewSalary }) {
@@ -71,12 +71,13 @@ function WorkOutSideGroupItemDetail({ index, item, isAddNew, hiddenViewSalary, h
     }
     item.listWorking = listWorking
 
-    const isDifference = (oldValue, newValue) => {
-        return oldValue !== newValue
-    }
+    const isOnlyUpdated = (() => {
+        return !isAddNew && !isDeleted
+    })()
 
-    const isShowLine2 = (() => {
-        return !isAddNew && !isDeleted && isDifference(item?.OldExperience?.ORGEH, item?.NewExperience?.ORGEH)
+    const isOnlyUpdateCompanyInfo = (() => {
+        return !isAddNew && !isDeleted 
+        && (item?.NewExperience?.ORGEH !== null || item?.NewExperience?.BEGDA !== null || item?.NewExperience?.ENDDA !== null)
     })()
 
     return (
@@ -93,7 +94,7 @@ function WorkOutSideGroupItemDetail({ index, item, isAddNew, hiddenViewSalary, h
                                     <label>{t("CompanyName")}</label>
                                     <div className="value">{ORGEH}</div>
                                     {
-                                        isShowLine2 && (
+                                        isOnlyUpdateCompanyInfo && (
                                             <div className={`value second ${prepareClassByConditions(item?.NewExperience?.isDeleted, item?.OldExperience?.ORGEH, item?.NewExperience?.ORGEH)}`}>{item?.NewExperience?.ORGEH || ''}</div>
                                         )
                                     }
@@ -104,7 +105,7 @@ function WorkOutSideGroupItemDetail({ index, item, isAddNew, hiddenViewSalary, h
                                     <label>{t("Start")}</label>
                                     <div className="value">{BEGDA && moment(BEGDA, 'YYYYMMDD').format('DD/MM/YYYY')}</div>
                                     {
-                                        isShowLine2 && (
+                                        isOnlyUpdateCompanyInfo && (
                                             <div className={`value second ${prepareClassByConditions(item?.NewExperience?.isDeleted, item?.OldExperience?.BEGDA, item?.NewExperience?.BEGDA)}`}>{item?.NewExperience?.BEGDA && moment(item?.NewExperience?.BEGDA, 'YYYYMMDD').format('DD/MM/YYYY')}</div>
                                         )
                                     }
@@ -115,7 +116,7 @@ function WorkOutSideGroupItemDetail({ index, item, isAddNew, hiddenViewSalary, h
                                     <label>{t("End")}</label>
                                     <div className="value">{ENDDA && moment(ENDDA, 'YYYYMMDD').format('DD/MM/YYYY')}</div>
                                     {
-                                        isShowLine2 && (
+                                        isOnlyUpdateCompanyInfo && (
                                             <div className={`value second ${prepareClassByConditions(item?.NewExperience?.isDeleted, item?.OldExperience?.ENDDA, item?.NewExperience?.ENDDA)}`}>{item?.NewExperience?.ENDDA && moment(item?.NewExperience?.ENDDA, 'YYYYMMDD').format('DD/MM/YYYY')}</div>
                                         )
                                     }
@@ -133,7 +134,7 @@ function WorkOutSideGroupItemDetail({ index, item, isAddNew, hiddenViewSalary, h
                                         index={subIndex}
                                         item={sub}
                                         isAddNew={isAddNew}
-                                        isShowLine2={isShowLine2}
+                                        isOnlyUpdated={isOnlyUpdated}
                                         hiddenViewSalary={hiddenViewSalary}
                                         handleToggleViewSalary={handleToggleViewSalary}
                                     />

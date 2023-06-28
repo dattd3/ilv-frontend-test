@@ -6,12 +6,11 @@ import moment from 'moment'
 import { last, omit, size, groupBy } from "lodash"
 import { useGuardStore } from 'modules/index'
 import { getValueParamByQueryString, getMuleSoftHeaderConfigurations, getRequestConfigurations, formatStringByMuleValue } from "commons/Utils"
-import WorkOutSideGroupItem from './WorkOutSideGroupItem'
 import ActionButtons from "./ActionButtons"
 import ConfirmPasswordModal from "./ConfirmPasswordModal"
 import Constants from "commons/Constants"
 import LoadingModal from "components/Common/LoadingModal"
-import ConfirmSendRequestModal from "./ConfirmSendRequestModal"
+import ConfirmationModal from "./edit/ConfirmationModal"
 import WorkOutSideGroupItemDetail from "./WorkOutSideGroupItemDetail"
 import DocumentComponent from "containers/Task/RequestDetail/DocumentComponent"
 import { typeViewSalary } from "./WorkOutSideGroup"
@@ -30,8 +29,13 @@ const WorkOutSideGroupDetail = (props) => {
     const [hiddenViewSalary, SetHiddenViewSalary] = useState(true)
     const [isShowConfirmPasswordModal, SetIsShowConfirmPasswordModal] = useState(false)
     const [isShowLoading, SetIsShowLoading] = useState(false)
-    // const [isShowConfirmSendRequestModal, SetIsShowConfirmSendRequestModal] = useState(false)
-    const state = viewPopup ? `workoutside_tasks_tab_approval_${id ?? details?.id}` : `workoutside${location.pathname.replaceAll('/', '_')}`
+    const [confirmationModal, SetConfirmationModal] = useState({
+        isShow: false,
+        title: '',
+        message: '',
+        status: null,
+    })
+    const state = viewPopup ? `workoutside_tasks_tab_approval_${id ? id : details?.id}` : `workoutside${location.pathname.replaceAll('/', '_')}`
 
     useEffect(() => {
         const queryParams = new URLSearchParams(location.search);
@@ -51,6 +55,15 @@ const WorkOutSideGroupDetail = (props) => {
 
     const onHideConfirmPasswordModal = () => {
         SetIsShowConfirmPasswordModal(false)
+    }
+
+    const onHideConfirmationModal = () => {
+        SetConfirmationModal({
+            isShow: false,
+            title: '',
+            message: '',
+            status: null,
+        })
     }
 
     const handleToggleProcess = (companyIndex, isAddNew = false) => {
@@ -81,7 +94,7 @@ const WorkOutSideGroupDetail = (props) => {
             const config = getRequestConfigurations()
             config.headers['content-type'] = 'multipart/form-data'
             let formData = new FormData()
-            formData.append('id', id)
+            formData.append('id', id || details?.id)
             formData.append('subid', 1)
             formData.append('type', typeViewSalary.OTHER)
             if (accessToken) {
@@ -102,8 +115,26 @@ const WorkOutSideGroupDetail = (props) => {
         }
     }
 
-    const evictionRequest = () => {
+    const recall = () => {
 
+    }
+
+    const reject = () => {
+        SetConfirmationModal({
+            isShow: true,
+            title: t("RejectApproveRequest"),
+            message: t("ReasonRejectingRequest"),
+            status: Constants.STATUS_NOT_APPROVED,
+        })
+    }
+
+    const approve = () => {
+        SetConfirmationModal({
+            isShow: true,
+            title: t("ApproveRequest"),
+            message: t("ConfirmApproveChangeRequest"),
+            status: Constants.STATUS_APPROVED,
+        })
     }
 
     const userProfileHistoryExperiences = detail?.requestInfo?.update?.userProfileHistoryExperiences
@@ -123,12 +154,27 @@ const WorkOutSideGroupDetail = (props) => {
         [Constants.STATUS_WAITING_CONSENTED]: { label: "PendingConsent", className: 'waiting' },
         [Constants.STATUS_CONSENTED]: { label: "Consented", className: 'waiting' }
     }
+    const manager = {
+        code: localStorage.getItem('employeeNo') || "",
+        fullName: localStorage.getItem('fullName') || "",
+        title: localStorage.getItem('jobTitle') || "",
+        department: localStorage.getItem('department') || "",
+    }
 
     return (
         <>
         <LoadingModal show={isShowLoading} />
         <ConfirmPasswordModal show={isShowConfirmPasswordModal} state={state} onUpdateToken={updateToken} onHide={onHideConfirmPasswordModal} />
-        {/* <ConfirmSendRequestModal isShow={isShowConfirmSendRequestModal} sendRequest={sendRequest} onHide={onHideConfirmSendRequestModal} /> */}
+        <ConfirmationModal 
+            data={{id: detail?.id}} 
+            show={confirmationModal.isShow} 
+            manager={manager} 
+            title={confirmationModal.title} 
+            type={confirmationModal.status} 
+            message={confirmationModal.message} 
+            taskId={detail?.id} 
+            onHide={onHideConfirmationModal} 
+        />
         <div className="work-outside-group-detail">
             <h5 className="content-page-header text-uppercase">{t("EmployeeInfomation")}</h5>
             <div className="registration-employee-information">
@@ -204,19 +250,14 @@ const WorkOutSideGroupDetail = (props) => {
                     }
                 </div>
             </div>
-            {/* {
+            {
                 status == Constants.STATUS_NOT_APPROVED && (
-                    <div className="">
-                        <div className="row item-info">
-                            <div className="col-12">
-                                <div className="label">{t("ReasonNotApprove")}</div>
-                                <div className="value">{hrComment}</div>
-                            </div>
-                        </div>
+                    <div className="approver-comment">
+                        <div className="label">{t("ReasonNotApprove")}</div>
+                        <div className="value">{detail?.approverComment || ''}</div>
                     </div>
                 )
-            } */}
-                
+            }
             <div className="block-status">
                 <span className={`status ${statusOptions[status]?.className}`}>{statusOptions[status]?.label}</span>
                 {
@@ -235,14 +276,27 @@ const WorkOutSideGroupDetail = (props) => {
                     </div>
                 )
             }
-            {
-                status == Constants.STATUS_PENDING && (
-                    <div className="action-block">
-                        <span className="btn btn-primary ml-3 shadow btn-eviction-task" title="Thu hồi yêu cầu" onClick={evictionRequest}>
-                        <i className="fas fa-undo-alt" aria-hidden="true"></i>Thu hồi</span>
-                    </div>
-                )
-            }
+            <div className="action-block">
+                {
+                    !viewPopup && status == Constants.STATUS_PENDING && (
+                        <button className="btn eviction" title={t("Recall")} onClick={recall}>
+                            <i className="fas fa-undo-alt" aria-hidden="true"></i>{t("Recall")}
+                        </button>
+                    )
+                }
+                {
+                    viewPopup && [Constants.STATUS_WAITING, Constants.STATUS_PARTIALLY_SUCCESSFUL].includes(status) && (
+                        <>
+                            <button className="btn reject" title={t("Reject")} onClick={reject}>
+                                <i className="fa fa-close"></i>{t("Reject")}
+                            </button>
+                            <button className="btn approve" title={t("Approve")} onClick={approve}>
+                                <i className="fas fa-check" aria-hidden="true"></i>{t("Approve")}
+                            </button>       
+                        </>
+                    )
+                }
+            </div>
         </div>
         </>
     )

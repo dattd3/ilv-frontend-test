@@ -1127,6 +1127,19 @@
                 margin-top: 0.5rem;
             }
         }
+        .approver-comment {
+            box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+            background: #FFFFFF;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            padding: 15px;
+            .value {
+                margin-top: 0.5rem;
+                padding: 12px 15px;
+                background: #F2F2F2;
+                border-radius: 4px;
+            }
+        }
         .block-status {
             font-size: 12px;
             margin-bottom: 0;
@@ -1158,8 +1171,23 @@
                 font-size: 14px;
                 display: inline-flex;
                 align-items: center;
+                justify-content: center;
+                color: #fff;
                 i {
                     margin-right: 5px;
+                }
+                &.eviction {
+                    background-color: #dc3545;
+                    border-color: #dc3545;
+                }
+                &.reject {
+                    background-color: #dc3545;
+                    border-color: #dc3545;
+                }
+                &.approve {
+                    margin-left: 15px;
+                    background-color: #28a745;
+                    border-color: #28a745;
                 }
             }
         }
