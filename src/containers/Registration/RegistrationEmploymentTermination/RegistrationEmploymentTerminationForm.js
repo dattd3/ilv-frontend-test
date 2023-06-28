@@ -262,6 +262,7 @@ class RegistrationEmploymentTerminationForm extends React.Component {
             files
         } = this.state
         this.setDisabledSubmitButton(true)
+        this.closeWarningModal()
         const isValid = this.isValidData()
         // const fileInfoValidation = this.validateAttachmentFile()
         //const isDirectManagerValid = await this.isDirectManagerValid()
@@ -369,7 +370,6 @@ class RegistrationEmploymentTerminationForm extends React.Component {
             this.setDisabledSubmitButton(false)
             this.setState({isShowLoadingModal: false})
         }
-        this.closeWarningModal()
     }
 
     closeWarningModal = () => {
