@@ -5,6 +5,7 @@ import DetailButtonComponent from '../DetailButtonComponent'
 import AttachmentComponent from '../TerminationComponents/AttachmentComponent'
 import Constants from '../.../../../../commons/Constants'
 import { formatProcessTime, getResignResonsMasterData } from 'commons/Utils'
+import { checkIsExactPnL } from 'commons/commonFunctions'
 
 class RegistrationEmploymentTermination extends React.Component {
     constructor(props) {
@@ -56,8 +57,8 @@ class RegistrationEmploymentTermination extends React.Component {
         const reasonMasterData = getResignResonsMasterData();
         // VA - HĐLĐ XĐ thời hạn - 30d
         // VB - HĐLĐ KXĐ thời hạn - 45d
-        const isNotEnoughTime = (userInfos.contractType === "VA" && moment(requestInfo.dateTermination, "YYYY-MM-DD").diff(moment(), "days") < 30) ||
-          (userInfos.contractType === "VB" && moment(requestInfo.dateTermination, "YYYY-MM-DD").diff(moment(), "days") < 45)
+        const isNotEnoughTime = ((userInfos.contractType === "VA" && moment(requestInfo.dateTermination, "YYYY-MM-DD").diff(moment(), "days") < 30) ||
+          (userInfos.contractType === "VB" && moment(requestInfo.dateTermination, "YYYY-MM-DD").diff(moment(), "days") < 45)) && !checkIsExactPnL(Constants.pnlVCode.VinHome)
         return (
             <div className="registration-section registration-employment-termination justify-content-between">
                 <div className="block staff-information-block">
