@@ -139,7 +139,7 @@ export default function OTRequestDetailComponent({ data, action }) {
     );
   };
   const operationType = getOperationType(data.requestTypeId, data.updateField, data.processStatusId)
-
+  console.log(requestInfo)
   return (
     <div className="ot-request-container">
       <div className="ot-request-detail-container">
@@ -357,13 +357,13 @@ export default function OTRequestDetailComponent({ data, action }) {
                                     </div>
                                   </div>
                                 </div>
-                                <div className="col-2">
+                                <div className="col-3">
                                   <div className="form-item">
                                     {
                                       timeIndex === 0 &&  <div className="mb-12" style={{textAlign: "center"}}>{t("PrevDay")}</div>
                                     }
                                     <div style={{marginTop: timeIndex === 0 ? 25 : 15, textAlign: "center"}}>
-                                      <input type="checkbox" disabled value={!!timesheet?.VtKen?.split(",")[
+                                      <input type="checkbox" disabled checked={!!timesheet?.VtKen?.split(",")[
                                           timeIndex
                                       ]} />
                                     </div>
