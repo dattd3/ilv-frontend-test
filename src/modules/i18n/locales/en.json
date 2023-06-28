@@ -1754,5 +1754,7 @@
   "AddCompany": "Add company",
   "ExpandAll": "Expand all",
   "Cancel2": "Cancel",
-  "RemovedInfo": "Removed Information"
+  "RemovedInfo": "Removed Information",
+  "Approve": "Approve",
+  "Recall": "Recall"
 }

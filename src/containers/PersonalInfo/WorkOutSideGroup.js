@@ -2,8 +2,7 @@ import React, { useState, useEffect } from "react"
 import { useTranslation } from "react-i18next"
 import { useLocation, useHistory } from "react-router-dom"
 import axios from "axios"
-import moment from 'moment'
-import { last, omit, size, groupBy } from "lodash"
+import { omit } from "lodash"
 import { useGuardStore } from 'modules/index'
 import { getValueParamByQueryString, getMuleSoftHeaderConfigurations, getRequestConfigurations, formatStringByMuleValue } from "commons/Utils"
 import WorkOutSideGroupItem from './WorkOutSideGroupItem'
@@ -111,11 +110,54 @@ function WorkOutSideGroup(props) {
         }
     }, [tabActive])
 
-    const handleSendRequest = () => {
-        // Xử lý submit yêu cầu
-        
-        // Validate data
+    const isDataValid = () => {
+        const itemCreateNew = (experiences || []).filter(item => item?.isAddNew)
+        const experienceUpdating = (experiences || []).filter(item => isNotEmpty(item[`DE_GROSS1_${prefixUpdating}`]) || isNotEmpty(item[`DE_GROSS2_${prefixUpdating}`]) 
+        || isNotEmpty(item[`DE_GROSS3_${prefixUpdating}`]) || isNotEmpty(item[`DE_GROSS4_${prefixUpdating}`]) || isNotEmpty(item[`DE_GROSS5_${prefixUpdating}`]) 
+        || isNotEmpty(item[`DE_NET1_${prefixUpdating}`]) || isNotEmpty(item[`DE_NET2_${prefixUpdating}`]) || isNotEmpty(item[`DE_NET3_${prefixUpdating}`]) 
+        || isNotEmpty(item[`DE_NET4_${prefixUpdating}`]) || isNotEmpty(item[`DE_NET5_${prefixUpdating}`]) || isNotEmpty(item[`ORGEH_${prefixUpdating}`]) 
+        || isNotEmpty(item[`BEGDA_${prefixUpdating}`]) || isNotEmpty(item[`ENDDA_${prefixUpdating}`])
+        )
 
+        if (itemCreateNew?.length === 0 && experienceUpdating?.length === 0 && experienceDeleted?.length === 0) {
+            SetNeedReload(false)
+            SetStatusModal({
+                isShow: true,
+                isSuccess: false,
+                content: t("PersonalInfoNoChange"),
+            })
+            return false
+        }
+
+        const experienceClone = ([...experiences] || []).map(item => {
+            return {
+                ...item,
+                ...(
+                    item?.isAddNew && (item?.ORGEH?.trim() == '' ? { errorCompanyName: t("Required") } : { errorCompanyName: null })
+                )
+            }
+        })
+
+        SetExperiences(experienceClone)
+        const isInValid = (experienceClone || []).some(item => item?.errorCompanyName || item?.errorCompanyDate)
+
+        if (isInValid) {
+            SetNeedReload(false)
+            SetStatusModal({
+                isShow: true,
+                isSuccess: false,
+                content: 'Dữ liệu không hợp lệ. Vui lòng kiểm tra lại!'
+            })
+        }
+
+        return !isInValid
+    }
+
+    const handleSendRequest = () => {       
+        const isValid = isDataValid()
+        if (!isValid) {
+            return
+        }
         SetIsShowConfirmSendRequestModal(true)
     }
 
@@ -126,7 +168,7 @@ function WorkOutSideGroup(props) {
     const handleAddCompanies = () => {
         const companyModel = {
             isAddNew: true,
-            ORGEH: "",
+            ORGEH: null,
             BEGDA: null,
             ENDDA: null,
             PERNR: currentEmployeeNo,
@@ -351,19 +393,19 @@ function WorkOutSideGroup(props) {
 
         let newItem = {
             ...item,
-            ORGEH: getValueByCondition(item?.ORGEH, item[`ORGEH_${prefixUpdating}`]),
-            BEGDA: getValueByCondition(item?.BEGDA, item[`BEGDA_${prefixUpdating}`]),
-            ENDDA: getValueByCondition(item?.ENDDA, item[`ENDDA_${prefixUpdating}`]),
+            ORGEH: item[`ORGEH_${prefixUpdating}`] || null,
+            BEGDA: item[`BEGDA_${prefixUpdating}`] || null,
+            ENDDA: item[`ENDDA_${prefixUpdating}`] || null,
         }
         let lstKeyToDelete = []
         for (let i = 1; i < 6; i++) {
-            newItem[`DE_GROSS${i}`] = getValueByCondition(newItem[`DE_GROSS${i}`], newItem[`DE_GROSS${i}_${prefixUpdating}`])
-            newItem[`DE_NET${i}`] = getValueByCondition(newItem[`DE_NET${i}`], newItem[`DE_NET${i}_${prefixUpdating}`])
-            newItem[`BEG${i}`] = getValueByCondition(newItem[`BEG${i}`], newItem[`BEG${i}_${prefixUpdating}`])
-            newItem[`END${i}`] = getValueByCondition(newItem[`END${i}`], newItem[`END${i}_${prefixUpdating}`])
-            newItem[`WAERS${i}`] = getValueByCondition(newItem[`WAERS${i}`], newItem[`WAERS${i}_${prefixUpdating}`])
-            newItem[`DUT${i}`] = getValueByCondition(newItem[`DUT${i}`], newItem[`DUT${i}_${prefixUpdating}`])
-            newItem[`PLAN${i}`] = getValueByCondition(newItem[`PLAN${i}`], newItem[`PLAN${i}_${prefixUpdating}`])
+            newItem[`DE_GROSS${i}`] = newItem[`DE_GROSS${i}_${prefixUpdating}`] || null
+            newItem[`DE_NET${i}`] = newItem[`DE_NET${i}_${prefixUpdating}`] || null
+            newItem[`BEG${i}`] = newItem[`BEG${i}_${prefixUpdating}`] || null
+            newItem[`END${i}`] = newItem[`END${i}_${prefixUpdating}`] || null
+            newItem[`WAERS${i}`] = newItem[`WAERS${i}_${prefixUpdating}`] || null
+            newItem[`DUT${i}`] = newItem[`DUT${i}_${prefixUpdating}`] || null
+            newItem[`PLAN${i}`] = newItem[`PLAN${i}_${prefixUpdating}`] || null
             lstKeyToDelete = [...lstKeyToDelete, `DE_GROSS${i}_${prefixUpdating}`, `DE_NET${i}_${prefixUpdating}`, `WAERS${i}_${prefixUpdating}`, `PLAN${i}_${prefixUpdating}`, `END${i}_${prefixUpdating}`, `DUT${i}_${prefixUpdating}`, `BEG${i}_${prefixUpdating}`]
         }
         newItem = omit(newItem, ['listWorking', 'ORGEH_UPDATING', 'BEGDA_UPDATING', 'ENDDA_UPDATING', ...lstKeyToDelete])
@@ -438,6 +480,10 @@ function WorkOutSideGroup(props) {
                 return prepareItemToSAP(item)
             })
 
+            // console.log('DATA TO SAP ==> ', userProfileInfoToSap)
+
+            // return
+
             const config = getRequestConfigurations()
             config.headers['content-type'] = 'multipart/form-data'
             let formData = new FormData()
@@ -472,7 +518,6 @@ function WorkOutSideGroup(props) {
                 if (result?.code == Constants.API_SUCCESS_CODE) {
                     content = t("RequestSent")
                     isSuccess = true
-                    SetExperiences(response?.data?.data || [])
                     SetHiddenViewSalary(false)
                     SetNeedReload(true)
                 } else {
@@ -497,8 +542,6 @@ function WorkOutSideGroup(props) {
             SetIsShowLoading(false)
         }
     }
-
-    console.log('TING TING',accessToken)
 
     return (
         <>
@@ -529,32 +572,37 @@ function WorkOutSideGroup(props) {
             <div className="container-fluid info-tab-content shadow work-outside-group">
                 <div className="work-outside-group-list">
                     {
-                        experiences && experiences?.length === 0
-                        ? (
-                            <div className="work-outside-group-item">
-                                <div className="company-info">
-                                    <div className="group-header">
-                                        <h5>{t("CompanyInfo")}</h5>
+                        <>
+                        {
+                            experiences && experiences?.length === 0 && (
+                                <div className="work-outside-group-item">
+                                    <div className="company-info">
+                                        <div className="group-header">
+                                            <h5>{t("CompanyInfo")}</h5>
+                                        </div>
+                                        <div style={{ margin: 15 }}>{t("NoDataFound")}</div>
                                     </div>
-                                    <div style={{ margin: 15 }}>{t("NoDataFound")}</div>
                                 </div>
-                            </div>
-                        )
-                        : experiences && (experiences || []).map((item, index) => (
-                            <WorkOutSideGroupItem 
-                                key={index}
-                                index={index}
-                                item={item}
-                                canUpdate={canUpdate}
-                                viewSalaryAtLeastOnceTime={accessToken ? true : false}
-                                hiddenViewSalary={hiddenViewSalary}
-                                handleRemoveCompany={handleRemoveCompany}
-                                // handleRemoveProcess={handleRemoveProcess}
-                                // handleAddProcess={handleAddProcess}
-                                handleToggleProcess={handleToggleProcess}
-                                handleToggleViewSalary={handleToggleViewSalary}
-                                handleInputChangeOnParent={handleInputChangeOnParent} />
-                        ))
+                            )
+                        }
+                        {
+                            (experiences || []).map((item, index) => (
+                                <WorkOutSideGroupItem 
+                                    key={index}
+                                    index={index}
+                                    item={item}
+                                    canUpdate={canUpdate}
+                                    viewSalaryAtLeastOnceTime={accessToken ? true : false}
+                                    hiddenViewSalary={hiddenViewSalary}
+                                    handleRemoveCompany={handleRemoveCompany}
+                                    // handleRemoveProcess={handleRemoveProcess}
+                                    // handleAddProcess={handleAddProcess}
+                                    handleToggleProcess={handleToggleProcess}
+                                    handleToggleViewSalary={handleToggleViewSalary}
+                                    handleInputChangeOnParent={handleInputChangeOnParent} />
+                            ))
+                        }
+                        </>
                     }
                     {
                         canUpdate && (

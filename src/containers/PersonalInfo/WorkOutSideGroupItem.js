@@ -1,4 +1,4 @@
-import React, {useEffect} from "react"
+import React from "react"
 import { useTranslation } from "react-i18next"
 import DatePicker, {registerLocale } from 'react-datepicker'
 import { Collapse } from "react-bootstrap"
@@ -7,7 +7,6 @@ import { prefixUpdating } from "./WorkOutSideGroup"
 import WorkOutSideGroupProcessItem from "./WorkOutSideGroupProcessItem"
 import IconCancel from "assets/img/icon/Icon_Cancel_White.svg"
 import IconDatePicker from "assets/img/icon/Icon_DatePicker.svg"
-import IconAddGreen from "assets/img/ic-add-green.svg"
 import IconCollapse from "assets/img/icon/pms/icon-collapse.svg"
 import IconExpand from "assets/img/icon/pms/icon-expand.svg"
 import vi from 'date-fns/locale/vi'
@@ -78,6 +77,9 @@ function WorkOutSideGroupItem({ index, item, canUpdate, viewSalaryAtLeastOnceTim
                                         : (<div className="value">{item?.ORGEH || ''}</div>)
                                     }
                                 </div>
+                                {
+                                    item?.errorCompanyName && (<div className="message-in-valid">{item?.errorCompanyName}</div>)
+                                }
                             </div>
                             <div className="col-md-2">
                                 <div className="group-date">
@@ -106,6 +108,7 @@ function WorkOutSideGroupItem({ index, item, canUpdate, viewSalaryAtLeastOnceTim
                                                         <label className="input-date">
                                                             <DatePicker
                                                                 selected={item?.BEGDA ? moment(item?.BEGDA, 'YYYYMMDD').toDate() : null}
+                                                                maxDate={item?.ENDDA ? moment(item?.ENDDA, 'YYYYMMDD').toDate() : null}
                                                                 onChange={dateInput => handleInputChange('BEGDA', !dateInput ? null : moment(dateInput).format('YYYYMMDD'))}
                                                                 dateFormat="dd/MM/yyyy"
                                                                 locale="vi"
@@ -159,6 +162,7 @@ function WorkOutSideGroupItem({ index, item, canUpdate, viewSalaryAtLeastOnceTim
                                                         <label className="input-date">
                                                             <DatePicker
                                                                 selected={item?.ENDDA ? moment(item?.ENDDA, 'YYYYMMDD').toDate() : null}
+                                                                minDate={item?.BEGDA ? moment(item?.BEGDA, 'YYYYMMDD').toDate() : null}
                                                                 onChange={dateInput => handleInputChange('ENDDA', !dateInput ? null : moment(dateInput).format('YYYYMMDD'))}
                                                                 dateFormat="dd/MM/yyyy"
                                                                 locale="vi"
@@ -172,6 +176,7 @@ function WorkOutSideGroupItem({ index, item, canUpdate, viewSalaryAtLeastOnceTim
                                                     <label className="input-date second">
                                                         <DatePicker
                                                             selected={item[`ENDDA_${prefixUpdating}`] ? moment(item[`ENDDA_${prefixUpdating}`], 'YYYYMMDD').toDate() : null}
+                                                            // minDate={item?.BEGDA ? moment(item?.BEGDA, 'YYYYMMDD').toDate() : null}
                                                             onChange={dateInput => handleInputChange(`ENDDA_${prefixUpdating}`, !dateInput ? null : moment(dateInput).format('YYYYMMDD'))}
                                                             dateFormat="dd/MM/yyyy"
                                                             locale="vi"

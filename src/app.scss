@@ -1858,6 +1858,11 @@ span.badge-notification[data-badge]::after {
                   border-radius: 4px;
                 }
               }
+              .message-in-valid {
+                margin-top: 5px;
+                color: #e52c08;
+                font-size: 13px;
+              }
               .group-date {
                 .label {
                   margin-top: 10px;
