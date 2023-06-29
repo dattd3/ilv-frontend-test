@@ -124,8 +124,8 @@ const WorkOutSideGroupDetail = (props) => {
             formData.append('id', id || details?.id)
             formData.append('subid', 1)
             formData.append('type', typeViewSalary.OTHER)
-            if (accessToken) {
-                formData.append('token', `Bearer ${token}`)
+            if (accessToken || token) {
+                formData.append('token', `Bearer ${token ?? accessToken}`)
             }
             const response = await axios.post(`${process.env.REACT_APP_REQUEST_URL}user-profile-histories/getsalary`, formData, config)
             if (response && response?.data) {
@@ -188,6 +188,19 @@ const WorkOutSideGroupDetail = (props) => {
         department: localStorage.getItem('department') || "",
     }
 
+    let messageSAP = null
+    if (status === Constants.STATUS_PARTIALLY_SUCCESSFUL) {
+      if (responseDataFromSAP && Array.isArray(responseDataFromSAP)) {
+        const data = responseDataFromSAP.filter(val => val?.STATUS === 'E')
+        if (data) {
+          const temp = data.map(val => val?.MESSAGE);
+          messageSAP = temp.filter(function(item, pos) {
+            return temp.indexOf(item) === pos;
+          })
+        }
+      }
+    }
+
     return (
         <>
         <LoadingModal show={isShowLoading} />
@@ -236,7 +249,7 @@ const WorkOutSideGroupDetail = (props) => {
             <div className="info-tab-content work-outside-group">
                 <div className="work-outside-group-list">
                     {
-                        userProfileHistoryExperiences && userProfileHistoryExperiences?.length === 0
+                        userProfileHistoryExperiences && userProfileHistoryExperiences?.length === 0 && experienceCreateNew && experienceCreateNew?.length === 0
                         ? (
                             <div className="work-outside-group-item">
                                 <div className="company-info">
@@ -288,10 +301,16 @@ const WorkOutSideGroupDetail = (props) => {
             <div className="block-status">
                 <span className={`status ${statusOptions[status]?.className}`}>{statusOptions[status]?.label}</span>
                 {
-                    (status == Constants.STATUS_PARTIALLY_SUCCESSFUL && responseDataFromSAP) && 
+                    status == Constants.STATUS_PARTIALLY_SUCCESSFUL && messageSAP && 
                     <div className={`d-flex status fail`}>
                         <i className="fas fa-times pr-2 text-danger align-self-center"></i>
-                        <div>{responseDataFromSAP}</div>
+                        <div>
+                            {
+                                messageSAP.map((msg, msgIndex) => {
+                                    return <div key={msgIndex}>{msg}</div>
+                                })
+                            }
+                        </div>
                     </div>
                 }
             </div>
