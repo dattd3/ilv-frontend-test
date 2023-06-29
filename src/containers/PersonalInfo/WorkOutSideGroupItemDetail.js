@@ -5,27 +5,20 @@ import moment from 'moment'
 import IconCollapse from "assets/img/icon/pms/icon-collapse.svg"
 import IconExpand from "assets/img/icon/pms/icon-expand.svg"
 import WorkOutSideGroupProcessItemDetail from "./WorkOutSideGroupProcessItemDetail"
-
-const prepareClassByConditions = (isDeleted = false, oldValue, newValue) => {
-    if (isDeleted) {
-        return 'deleted'
-    }
-
-    return newValue === null ? '' : 'updated'
-}
+import { valueType, isEmptyByValue, formatValue } from "./WorkOutSideGroupDetail"
 
 function WorkOutSideGroupItemDetail({ index, item, isAddNew, hiddenViewSalary, handleToggleProcess, handleToggleViewSalary }) {
     const { t } = useTranslation()
 
     let listWorking = []
     let isDeleted = false
-    let ORGEH = ''
+    let ORGEH = null
     let BEGDA = null
     let ENDDA = null
     if (isAddNew) {
-        ORGEH = item?.ORGEH || ''
-        BEGDA = item?.BEGDA || ''
-        ENDDA = item?.BEGDA || ''
+        ORGEH = item?.ORGEH || null
+        BEGDA = item?.BEGDA || null
+        ENDDA = item?.BEGDA || null
         for (let i = 1; i < 6; i++) {
             listWorking = [...listWorking, {
                 [`BEG${i}`]: item[`BEG${i}`],
@@ -39,9 +32,9 @@ function WorkOutSideGroupItemDetail({ index, item, isAddNew, hiddenViewSalary, h
         }
     } else {
         isDeleted = item?.NewExperience?.isDeleted
-        ORGEH = item?.OldExperience?.ORGEH || ''
-        BEGDA = item?.OldExperience?.BEGDA || ''
-        ENDDA = item?.OldExperience?.BEGDA || ''
+        ORGEH = item?.OldExperience?.ORGEH || null
+        BEGDA = item?.OldExperience?.BEGDA || null
+        ENDDA = item?.OldExperience?.BEGDA || null
 
         let { NewExperience, OldExperience } = item
         for (let i = 1; i < 6; i++) {
@@ -71,13 +64,24 @@ function WorkOutSideGroupItemDetail({ index, item, isAddNew, hiddenViewSalary, h
     }
     item.listWorking = listWorking
 
+    const prepareClassByConditions = (isDeleted = false, newValue, valType = valueType.other) => {
+        if (isDeleted) {
+            return 'deleted'
+        }
+        return isEmptyByValue(newValue, valType) ? '' : 'updated'
+    }
+
     const isOnlyUpdated = (() => {
         return !isAddNew && !isDeleted
     })()
 
     const isOnlyUpdateCompanyInfo = (() => {
         return !isAddNew && !isDeleted 
-        && (item?.NewExperience?.ORGEH !== null || item?.NewExperience?.BEGDA !== null || item?.NewExperience?.ENDDA !== null)
+        && (
+            !isEmptyByValue(item?.NewExperience?.ORGEH, valueType.other) 
+            || !isEmptyByValue(item?.NewExperience?.BEGDA, valueType.date) 
+            || !isEmptyByValue(item?.NewExperience?.ENDDA, valueType.date)
+        )
     })()
 
     return (
@@ -92,10 +96,10 @@ function WorkOutSideGroupItemDetail({ index, item, isAddNew, hiddenViewSalary, h
                             <div className="col-md-8">
                                 <div className="group-name">
                                     <label>{t("CompanyName")}</label>
-                                    <div className="value">{ORGEH}</div>
+                                    <div className="value">{formatValue(ORGEH, valueType.other)}</div>
                                     {
                                         isOnlyUpdateCompanyInfo && (
-                                            <div className={`value second ${prepareClassByConditions(item?.NewExperience?.isDeleted, item?.OldExperience?.ORGEH, item?.NewExperience?.ORGEH)}`}>{item?.NewExperience?.ORGEH || ''}</div>
+                                            <div className={`value second ${prepareClassByConditions(item?.NewExperience?.isDeleted, item?.NewExperience?.ORGEH, valueType.other)}`}>{formatValue(item?.NewExperience?.ORGEH, valueType.other)}</div>
                                         )
                                     }
                                 </div>
@@ -103,10 +107,10 @@ function WorkOutSideGroupItemDetail({ index, item, isAddNew, hiddenViewSalary, h
                             <div className="col-md-2">
                                 <div className="group-date">
                                     <label>{t("Start")}</label>
-                                    <div className="value">{BEGDA && moment(BEGDA, 'YYYYMMDD').format('DD/MM/YYYY')}</div>
+                                    <div className="value">{BEGDA && moment(BEGDA, 'YYYYMMDD').isValid() ? moment(BEGDA, 'YYYYMMDD').format('DD/MM/YYYY') : ''}</div>
                                     {
                                         isOnlyUpdateCompanyInfo && (
-                                            <div className={`value second ${prepareClassByConditions(item?.NewExperience?.isDeleted, item?.OldExperience?.BEGDA, item?.NewExperience?.BEGDA)}`}>{item?.NewExperience?.BEGDA && moment(item?.NewExperience?.BEGDA, 'YYYYMMDD').format('DD/MM/YYYY')}</div>
+                                            <div className={`value second ${prepareClassByConditions(item?.NewExperience?.isDeleted, item?.NewExperience?.BEGDA, valueType.date)}`}>{item?.NewExperience?.BEGDA && moment(item?.NewExperience?.BEGDA, 'YYYYMMDD').format('DD/MM/YYYY')}</div>
                                         )
                                     }
                                 </div>
@@ -114,10 +118,10 @@ function WorkOutSideGroupItemDetail({ index, item, isAddNew, hiddenViewSalary, h
                             <div className="col-md-2">
                                 <div className="group-date">
                                     <label>{t("End")}</label>
-                                    <div className="value">{ENDDA && moment(ENDDA, 'YYYYMMDD').format('DD/MM/YYYY')}</div>
+                                    <div className="value">{ENDDA && moment(ENDDA, 'YYYYMMDD').isValid() ? moment(ENDDA, 'YYYYMMDD').format('DD/MM/YYYY') : ''}</div>
                                     {
                                         isOnlyUpdateCompanyInfo && (
-                                            <div className={`value second ${prepareClassByConditions(item?.NewExperience?.isDeleted, item?.OldExperience?.ENDDA, item?.NewExperience?.ENDDA)}`}>{item?.NewExperience?.ENDDA && moment(item?.NewExperience?.ENDDA, 'YYYYMMDD').format('DD/MM/YYYY')}</div>
+                                            <div className={`value second ${prepareClassByConditions(item?.NewExperience?.isDeleted, item?.NewExperience?.ENDDA, valueType.date)}`}>{item?.NewExperience?.ENDDA && moment(item?.NewExperience?.ENDDA, 'YYYYMMDD').format('DD/MM/YYYY')}</div>
                                         )
                                     }
                                 </div>
@@ -155,5 +159,4 @@ function WorkOutSideGroupItemDetail({ index, item, isAddNew, hiddenViewSalary, h
     )
 }
 
-export { prepareClassByConditions }
 export default WorkOutSideGroupItemDetail

@@ -13,7 +13,7 @@ import vi from 'date-fns/locale/vi'
 import 'react-datepicker/dist/react-datepicker.css'
 registerLocale("vi", vi)
 
-function WorkOutSideGroupProcessItem({ index, item, canUpdate, viewSalaryAtLeastOnceTime, hiddenViewSalary, handleToggleViewSalary, handleInputChange }) {
+function WorkOutSideGroupProcessItem({ index, item, maxEndDate, canUpdate, viewSalaryAtLeastOnceTime, hiddenViewSalary, handleToggleViewSalary, handleInputChange }) {
     const { t } = useTranslation()
     const itemNo = index + 1
 
@@ -55,6 +55,7 @@ function WorkOutSideGroupProcessItem({ index, item, canUpdate, viewSalaryAtLeast
                                             <label className="input-date">
                                                 <DatePicker
                                                     selected={item[`BEG${itemNo}`] ? moment(item[`BEG${itemNo}`], 'YYYYMMDD').toDate() : null}
+                                                    maxDate={item[`END${itemNo}`] ? moment(item[`END${itemNo}`], 'YYYYMMDD').toDate() : maxEndDate ? moment(maxEndDate, 'YYYYMMDD').toDate() : null}
                                                     onChange={dateInput => handleInputChange(`BEG${itemNo}`, !dateInput ? null : moment(dateInput).format('YYYYMMDD'))}
                                                     dateFormat="dd/MM/yyyy"
                                                     locale="vi"
@@ -69,6 +70,7 @@ function WorkOutSideGroupProcessItem({ index, item, canUpdate, viewSalaryAtLeast
                                             <label className="input-date second">
                                                 <DatePicker
                                                     selected={item[`BEG${itemNo}_${prefixUpdating}`] ? moment(item[`BEG${itemNo}_${prefixUpdating}`], 'YYYYMMDD').toDate() : null}
+                                                    maxDate={item[`END${itemNo}_${prefixUpdating}`] ? moment(item[`END${itemNo}_${prefixUpdating}`], 'YYYYMMDD').toDate() : maxEndDate ? moment(maxEndDate, 'YYYYMMDD').toDate() : null}
                                                     onChange={dateInput => handleInputChange(`BEG${itemNo}_${prefixUpdating}`, !dateInput ? null : moment(dateInput).format('YYYYMMDD'))}
                                                     dateFormat="dd/MM/yyyy"
                                                     locale="vi"
@@ -96,6 +98,7 @@ function WorkOutSideGroupProcessItem({ index, item, canUpdate, viewSalaryAtLeast
                                             <label className="input-date">
                                                 <DatePicker
                                                     selected={item[`END${itemNo}`] ? moment(item[`END${itemNo}`], 'YYYYMMDD').toDate() : null}
+                                                    maxDate={maxEndDate ? moment(maxEndDate, 'YYYYMMDD').toDate() : null}
                                                     onChange={dateInput => handleInputChange(`END${itemNo}`, !dateInput ? null : moment(dateInput).format('YYYYMMDD'))}
                                                     dateFormat="dd/MM/yyyy"
                                                     locale="vi"
@@ -110,6 +113,7 @@ function WorkOutSideGroupProcessItem({ index, item, canUpdate, viewSalaryAtLeast
                                             <label className="input-date second">
                                                 <DatePicker
                                                     selected={item[`END${itemNo}_${prefixUpdating}`] ? moment(item[`END${itemNo}_${prefixUpdating}`], 'YYYYMMDD').toDate() : null}
+                                                    maxDate={maxEndDate ? moment(maxEndDate, 'YYYYMMDD').toDate() : null}
                                                     onChange={dateInput => handleInputChange(`END${itemNo}_${prefixUpdating}`, !dateInput ? null : moment(dateInput).format('YYYYMMDD'))}
                                                     dateFormat="dd/MM/yyyy"
                                                     locale="vi"

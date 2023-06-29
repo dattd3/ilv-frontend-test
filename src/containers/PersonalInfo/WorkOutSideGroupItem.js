@@ -122,6 +122,7 @@ function WorkOutSideGroupItem({ index, item, canUpdate, viewSalaryAtLeastOnceTim
                                                     <label className="input-date second">
                                                         <DatePicker
                                                             selected={item[`BEGDA_${prefixUpdating}`] ? moment(item[`BEGDA_${prefixUpdating}`], 'YYYYMMDD').toDate() : null}
+                                                            maxDate={item[`ENDDA_${prefixUpdating}`] ? moment(item[`ENDDA_${prefixUpdating}`], 'YYYYMMDD').toDate() : item?.ENDDA ? moment(item?.ENDDA, 'YYYYMMDD').toDate() : null}
                                                             onChange={dateInput => handleInputChange(`BEGDA_${prefixUpdating}`, !dateInput ? null : moment(dateInput).format('YYYYMMDD'))}
                                                             dateFormat="dd/MM/yyyy"
                                                             locale="vi"
@@ -176,7 +177,8 @@ function WorkOutSideGroupItem({ index, item, canUpdate, viewSalaryAtLeastOnceTim
                                                     <label className="input-date second">
                                                         <DatePicker
                                                             selected={item[`ENDDA_${prefixUpdating}`] ? moment(item[`ENDDA_${prefixUpdating}`], 'YYYYMMDD').toDate() : null}
-                                                            // minDate={item?.BEGDA ? moment(item?.BEGDA, 'YYYYMMDD').toDate() : null}
+                                                            minDate={item[`BEGDA_${prefixUpdating}`] ? moment(item[`BEGDA_${prefixUpdating}`], 'YYYYMMDD').toDate() : item?.BEGDA ? moment(item?.BEGDA, 'YYYYMMDD').toDate() : null}
+                                                            maxDate={item?.ENDDA ? moment(item?.ENDDA, 'YYYYMMDD').toDate() : null}
                                                             onChange={dateInput => handleInputChange(`ENDDA_${prefixUpdating}`, !dateInput ? null : moment(dateInput).format('YYYYMMDD'))}
                                                             dateFormat="dd/MM/yyyy"
                                                             locale="vi"
@@ -203,6 +205,7 @@ function WorkOutSideGroupItem({ index, item, canUpdate, viewSalaryAtLeastOnceTim
                                         key={`${index}-${subIndex}`}
                                         index={subIndex}
                                         item={sub}
+                                        maxEndDate={item?.isAddNew ? item?.ENDDA : item[`ENDDA_${prefixUpdating}`] ? item[`ENDDA_${prefixUpdating}`] : item?.ENDDA}
                                         canUpdate={canUpdate}
                                         viewSalaryAtLeastOnceTime={viewSalaryAtLeastOnceTime}
                                         hiddenViewSalary={hiddenViewSalary}

@@ -13,6 +13,7 @@ import IconAddWhite from "assets/img/icon/ic_btn_add_white.svg"
 import Constants from "commons/Constants"
 import LoadingModal from "components/Common/LoadingModal"
 import ConfirmSendRequestModal from "./ConfirmSendRequestModal"
+import { valueType, isEmptyByValue } from "./WorkOutSideGroupDetail"
 
 const prefixUpdating = 'UPDATING'
 const typeViewSalary = {
@@ -111,6 +112,7 @@ function WorkOutSideGroup(props) {
     }, [tabActive])
 
     const isDataValid = () => {
+        debugger
         const itemCreateNew = (experiences || []).filter(item => item?.isAddNew)
         const experienceUpdating = (experiences || []).filter(item => isNotEmpty(item[`DE_GROSS1_${prefixUpdating}`]) || isNotEmpty(item[`DE_GROSS2_${prefixUpdating}`]) 
         || isNotEmpty(item[`DE_GROSS3_${prefixUpdating}`]) || isNotEmpty(item[`DE_GROSS4_${prefixUpdating}`]) || isNotEmpty(item[`DE_GROSS5_${prefixUpdating}`]) 
@@ -133,7 +135,7 @@ function WorkOutSideGroup(props) {
             return {
                 ...item,
                 ...(
-                    item?.isAddNew && (item?.ORGEH?.trim() == '' ? { errorCompanyName: t("Required") } : { errorCompanyName: null })
+                    item?.isAddNew && (isEmptyByValue(item?.ORGEH, valueType.other) ? { errorCompanyName: t("Required") } : { errorCompanyName: null })
                 )
             }
         })
@@ -479,10 +481,6 @@ function WorkOutSideGroup(props) {
             const userProfileInfoToSap = (experiences || []).map(item => {
                 return prepareItemToSAP(item)
             })
-
-            // console.log('DATA TO SAP ==> ', userProfileInfoToSap)
-
-            // return
 
             const config = getRequestConfigurations()
             config.headers['content-type'] = 'multipart/form-data'
