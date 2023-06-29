@@ -11,7 +11,7 @@ class NoteModal extends React.Component {
         const { t } = this.props
         return (
             <Modal className="text-dark" centered show={this.props.show} onHide={this.props.onHide}>
-                <Modal.Body className="rounded position-relative">
+                <Modal.Body className="rounded position-relative ot-info-modal-body">
                     <div className="text-center font-weight-bold pb-2">
                         <div className="text-center">
                             <span className="icon-box-note position-absolute">
