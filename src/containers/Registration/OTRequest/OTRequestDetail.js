@@ -7,6 +7,8 @@ import DetailButtonComponent from "../DetailButtonComponent";
 import { formatProcessTime, getRequestConfigurations } from "commons/Utils";
 import ExcelIcon from "assets/img/excel-icon.svg";
 import { getOperationType } from "containers/Utils/Common";
+import { Button } from "react-bootstrap";
+import NoteModal from "./NoteModal";
 
 const config = getRequestConfigurations();
 
@@ -24,6 +26,8 @@ const OTRequestType = 13;
 export default function OTRequestDetailComponent({ data, action }) {
   const { t } = useTranslation();
   const [approvalMatrixUrl, setApprovalMatrixUrl] = useState(null);
+  const [showNoteModal, setShowNoteModal] = useState(false);
+
   const lang = localStorage.getItem("locale");
   const { requestInfo, user, approver, appraiser, createDate, assessedDate, approvedDate, deletedDate, appraiserComment, approverComment } = data;
 
@@ -142,6 +146,7 @@ export default function OTRequestDetailComponent({ data, action }) {
 
   return (
     <div className="ot-request-container">
+      <NoteModal show={showNoteModal} onHide={() => setShowNoteModal(false)} />
       <div className="ot-request-detail-container">
         <div className="block-title">
           {t("EmployeeInfomation").toUpperCase()}
@@ -332,7 +337,7 @@ export default function OTRequestDetailComponent({ data, action }) {
                                     </div>
                                   )}
                                 </div>
-                                <div className="col-2">
+                                <div className="col-2 mb-12">
                                   <div className="form-item">
                                     {
                                       timeIndex === 0 &&  <div className="mb-12">{t("FromHour")}</div>
@@ -342,7 +347,7 @@ export default function OTRequestDetailComponent({ data, action }) {
                                     </div>
                                   </div>
                                 </div>
-                                <div className="col-2">
+                                <div className="col-2 mb-12">
                                   <div className="form-item">
                                     {
                                       timeIndex === 0 &&  <div className="mb-12">{t("ToHour")}</div>
@@ -357,7 +362,30 @@ export default function OTRequestDetailComponent({ data, action }) {
                                     </div>
                                   </div>
                                 </div>
-                                <div className="col-3">
+                                <div className="col-5 mb-12" />
+                                  <div className="col-6  mb-12">
+                                    <div className="prev-day-container">
+                                      <input
+                                        type="checkbox"
+                                        disabled checked={!!timesheet?.VtKen?.split(",")[
+                                          timeIndex
+                                      ]}
+                                      />
+                                      &nbsp;
+                                      <label>
+                                        {t("PrevDay")}
+                                      </label>{" "}
+                                      {timeIndex === 0 && (
+                                        <Button
+                                          className="information-btn"
+                                          onClick={() => setShowNoteModal(true)}
+                                        >
+                                          <i className="fas fa-info" />
+                                        </Button>
+                                      )}
+                                    </div>
+                                  </div>
+                                {/* <div className="col-3">
                                   <div className="form-item">
                                     {
                                       timeIndex === 0 &&  <div className="mb-12" style={{textAlign: "center"}}>{t("PrevDay")}</div>
@@ -368,7 +396,7 @@ export default function OTRequestDetailComponent({ data, action }) {
                                       ]} />
                                     </div>
                                   </div>
-                                </div>
+                                </div> */}
                               </React.Fragment>
                             ))}
                         </div>
