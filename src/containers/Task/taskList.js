@@ -498,15 +498,20 @@ class TaskList extends React.Component {
         const requestTypesSelected = getValueParamByQueryString(window.location.search, "requestTypes")?.split(",")
         const requestCategorySelected = Constants.REQUEST_CATEGORY_2_LIST[this.state.tmpRequestTypesSelect?.[0]*1 || requestTypesSelected?.[0]*1] ? 2 : 1
 
-        const getRequestTypeLabel = (requestType, absenceTypeValue) => {
+        const getRequestTypeLabel = (requestType, absenceTypeValue, isWorkOutSideGroup = false) => {
+            if (isWorkOutSideGroup) {
+                return t("WorkingOutSideGroup")
+            }
+
             if (requestType.id == Constants.LEAVE_OF_ABSENCE) {
                 const absenceType = absenceRequestTypes.find(item => item.value == absenceTypeValue)
                 return absenceType ? t(absenceType.label) : ""
-            } else {
-                const requestTypeObj = requestTypes.find(item => item.value == requestType.id)
-                return requestTypeObj ? t(requestTypeObj.label) : ""
             }
+
+            const requestTypeObj = requestTypes.find(item => item.value == requestType.id)
+            return requestTypeObj ? t(requestTypeObj.label) : ""
         }
+
         return (
             <>
                 <TaskDetailModal 
@@ -727,6 +732,12 @@ class TaskList extends React.Component {
                                             if ([Constants.OT_REQUEST].includes(child.requestTypeId)) {
                                               dateChanged = child.dateRange;
                                             }
+
+                                            let isWorkOutSideGroup = false
+                                            if ([Constants.UPDATE_PROFILE].includes(child?.requestTypeId)) {
+                                                const updateField = JSON.parse(child?.updateField || '{}')
+                                                isWorkOutSideGroup = updateField?.UpdateField?.length === 1 && updateField?.UpdateField[0] === 'WorkOutside'
+                                            }
                                             
                                             return (
                                                 <tr key={index}>
@@ -775,7 +786,7 @@ class TaskList extends React.Component {
                                                     <td className="user-title">{child.user?.jobTitle || ''}</td>
 
                                                     {
-                                                        <td className="request-type">{getRequestTypeLabel(child.requestType, child.absenceType?.value)}</td>
+                                                        <td className="request-type">{getRequestTypeLabel(child.requestType, child.absenceType?.value, isWorkOutSideGroup)}</td>
                                                     }
 
                                                     <td className="day-off">

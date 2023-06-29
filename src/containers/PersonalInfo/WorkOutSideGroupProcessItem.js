@@ -64,7 +64,7 @@ function WorkOutSideGroupProcessItem({ index, item, maxEndDate, canUpdate, viewS
                                                 <span className="input-img"><img src={IconDatePicker} alt='Date' /></span>
                                             </label>
                                         )
-                                        : (<div className="value">{item[`BEG${itemNo}`] && moment(item[`BEG${itemNo}`], 'YYYYMMDD').format('DD/MM/YYYY')}</div>)
+                                        : (<div className="value">{item[`BEG${itemNo}`] && moment(item[`BEG${itemNo}`], 'YYYYMMDD').isValid() && moment(item[`BEG${itemNo}`], 'YYYYMMDD').format('DD/MM/YYYY')}</div>)
                                     }
                                     {
                                         !item?.isAddNew && (
@@ -83,7 +83,7 @@ function WorkOutSideGroupProcessItem({ index, item, maxEndDate, canUpdate, viewS
                                     }
                                     </>
                                 )
-                                : (<div className="value">{item[`BEG${itemNo}`] && moment(item[`BEG${itemNo}`], 'YYYYMMDD').format('DD/MM/YYYY')}</div>)
+                                : (<div className="value">{item[`BEG${itemNo}`] && moment(item[`BEG${itemNo}`], 'YYYYMMDD').isValid() && moment(item[`BEG${itemNo}`], 'YYYYMMDD').format('DD/MM/YYYY')}</div>)
                             }
                         </div>
                     </div>
@@ -109,7 +109,7 @@ function WorkOutSideGroupProcessItem({ index, item, maxEndDate, canUpdate, viewS
                                                 <span className="input-img"><img src={IconDatePicker} alt='Date' /></span>
                                             </label>
                                         )
-                                        : (<div className="value">{item[`END${itemNo}`] && moment(item[`END${itemNo}`], 'YYYYMMDD').format('DD/MM/YYYY')}</div>)
+                                        : (<div className="value">{item[`END${itemNo}`] && moment(item[`END${itemNo}`], 'YYYYMMDD').isValid() && moment(item[`END${itemNo}`], 'YYYYMMDD').format('DD/MM/YYYY')}</div>)
                                     }
                                     {
                                         !item?.isAddNew && (
@@ -128,7 +128,7 @@ function WorkOutSideGroupProcessItem({ index, item, maxEndDate, canUpdate, viewS
                                     }
                                     </>
                                 )
-                                : (<div className="value">{item[`END${itemNo}`] && moment(item[`END${itemNo}`], 'YYYYMMDD').format('DD/MM/YYYY')}</div>)
+                                : (<div className="value">{item[`END${itemNo}`] && moment(item[`END${itemNo}`], 'YYYYMMDD').isValid() && moment(item[`END${itemNo}`], 'YYYYMMDD').format('DD/MM/YYYY')}</div>)
                             }
                         </div>
                     </div>
@@ -183,10 +183,10 @@ function WorkOutSideGroupProcessItem({ index, item, maxEndDate, canUpdate, viewS
                                     <>
                                         {
                                             item?.isAddNew
-                                            ? (<input type="text" placeholder={t("import")} value={item[`DE_NET${itemNo}`] || ''} onChange={e => handleInputChange(`DE_NET${itemNo}`, e?.target?.value || '')} className="first" />)
+                                            ? (<input type="text" placeholder={t("import")} value={item[`DE_NET${itemNo}`] || ''} onChange={e => handleInputChange(`DE_NET${itemNo}`, e?.target?.value || '')} className="first" maxLength={11} />)
                                             : (<div className="value salary-view"><span>{getSalaryByValue(item[`DE_NET${itemNo}`])}</span><img src={hiddenViewSalary ? IconEyeClosed : IconEyeOpened} alt='Eye' className="eye" onClick={handleToggleViewSalary} /></div>)
                                         }
-                                        {!item?.isAddNew && (<input type="text" placeholder={t("import")} value={item[`DE_NET${itemNo}_${prefixUpdating}`] || ''} onChange={e => handleInputChange(`DE_NET${itemNo}_${prefixUpdating}`, e?.target?.value || '')} className="second salary" disabled={!viewSalaryAtLeastOnceTime} />)}
+                                        {!item?.isAddNew && (<input type="text" placeholder={t("import")} value={item[`DE_NET${itemNo}_${prefixUpdating}`] || ''} onChange={e => handleInputChange(`DE_NET${itemNo}_${prefixUpdating}`, e?.target?.value || '')} className="second salary" maxLength={11} disabled={!viewSalaryAtLeastOnceTime} />)}
                                     </>
                                 )
                                 : (<div className="value salary-view"><span>{getSalaryByValue(item[`DE_NET${itemNo}`])}</span><img src={hiddenViewSalary ? IconEyeClosed : IconEyeOpened} alt='Eye' className="eye" onClick={handleToggleViewSalary} /></div>)
@@ -202,10 +202,10 @@ function WorkOutSideGroupProcessItem({ index, item, maxEndDate, canUpdate, viewS
                                     <>
                                         {
                                             item?.isAddNew
-                                            ? (<input type="text" placeholder={t("import")} value={item[`DE_GROSS${itemNo}`] || ''} onChange={e => handleInputChange(`DE_GROSS${itemNo}`, e?.target?.value || '')} className="first" />)
+                                            ? (<input type="text" placeholder={t("import")} value={item[`DE_GROSS${itemNo}`] || ''} onChange={e => handleInputChange(`DE_GROSS${itemNo}`, e?.target?.value || '')} className="first" maxLength={11} />)
                                             : (<div className="value salary-view"><span>{getSalaryByValue(item[`DE_GROSS${itemNo}`])}</span><img src={hiddenViewSalary ? IconEyeClosed : IconEyeOpened} alt='Eye' className="eye" onClick={handleToggleViewSalary} /></div>)
                                         }
-                                        {!item?.isAddNew && (<input type="text" placeholder={t("import")} value={item[`DE_GROSS${itemNo}_${prefixUpdating}`] || ''} onChange={e => handleInputChange(`DE_GROSS${itemNo}_${prefixUpdating}`, e?.target?.value || '')} className="second salary" disabled={!viewSalaryAtLeastOnceTime} />)}
+                                        {!item?.isAddNew && (<input type="text" placeholder={t("import")} value={item[`DE_GROSS${itemNo}_${prefixUpdating}`] || ''} onChange={e => handleInputChange(`DE_GROSS${itemNo}_${prefixUpdating}`, e?.target?.value || '')} className="second salary" maxLength={11} disabled={!viewSalaryAtLeastOnceTime} />)}
                                     </>
                                 )
                                 : (<div className="value salary-view"><span>{getSalaryByValue(item[`DE_GROSS${itemNo}`])}</span><img src={hiddenViewSalary ? IconEyeClosed : IconEyeOpened} alt='Eye' className="eye" onClick={handleToggleViewSalary} /></div>)
