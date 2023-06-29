@@ -36,7 +36,7 @@ const ConfirmSendRequestModal = ({ isShow, sendRequest, onHide }) => {
     return (
         <Modal className='modal-confirm-send-request' centered show={isShow} onHide={onHide}>
             <Modal.Header className='modal-confirm-send-request__header'>
-                <p className='modal-confirm-send-request__title font-weight-bold text-uppercase'>{t("Xác nhận gửi yêu cầu")}</p>
+                <p className='modal-confirm-send-request__title font-weight-bold text-uppercase'>{t("ConfirmSend")}</p>
                 <img
                     src={IconX}
                     className='mr-1 cursor-pointer icon-delete'
@@ -47,10 +47,10 @@ const ConfirmSendRequestModal = ({ isShow, sendRequest, onHide }) => {
                 <div className="content">
                     <Form onSubmit={e => triggerSendRequest(e)}>
                         <Form.Row>
-                            <Col xs={12}><Form.Label className="modal-confirm-send-request__textlabel">{t("Thêm ghi chú")}</Form.Label></Col>
+                            <Col xs={12}><Form.Label className="modal-confirm-send-request__textlabel">{t("Note")}</Form.Label></Col>
                         </Form.Row>
                         <Form.Row>
-                            <Col xs={12}><Form.Control as="textarea" placeholder="Nhập" rows={3} value={note || ''} onChange={handleInputChange} /></Col>
+                            <Col xs={12}><Form.Control as="textarea" placeholder={t("import")} rows={3} value={note || ''} onChange={handleInputChange} /></Col>
                              <Col xs={12} style={{ marginTop: 15 }}>
                                 <div className="btn-block d-flex justify-content-end">
                                     <Button type="button" className="btn btn-cancel" onClick={handleCancel} disabled={disabledSubmitButton}>
