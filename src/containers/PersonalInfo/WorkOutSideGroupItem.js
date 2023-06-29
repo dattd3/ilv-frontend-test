@@ -107,6 +107,7 @@ function WorkOutSideGroupItem({ index, item, canUpdate, viewSalaryAtLeastOnceTim
                                                     ? (
                                                         <label className="input-date">
                                                             <DatePicker
+                                                                placeholderText={t("choose")}
                                                                 selected={item?.BEGDA ? moment(item?.BEGDA, 'YYYYMMDD').toDate() : null}
                                                                 maxDate={item?.ENDDA ? moment(item?.ENDDA, 'YYYYMMDD').toDate() : null}
                                                                 onChange={dateInput => handleInputChange('BEGDA', !dateInput ? null : moment(dateInput).format('YYYYMMDD'))}
@@ -121,6 +122,7 @@ function WorkOutSideGroupItem({ index, item, canUpdate, viewSalaryAtLeastOnceTim
                                                 {!item?.isAddNew && (
                                                     <label className="input-date second">
                                                         <DatePicker
+                                                            placeholderText={t("choose")}
                                                             selected={item[`BEGDA_${prefixUpdating}`] ? moment(item[`BEGDA_${prefixUpdating}`], 'YYYYMMDD').toDate() : null}
                                                             maxDate={item[`ENDDA_${prefixUpdating}`] ? moment(item[`ENDDA_${prefixUpdating}`], 'YYYYMMDD').toDate() : item?.ENDDA ? moment(item?.ENDDA, 'YYYYMMDD').toDate() : null}
                                                             onChange={dateInput => handleInputChange(`BEGDA_${prefixUpdating}`, !dateInput ? null : moment(dateInput).format('YYYYMMDD'))}
@@ -162,11 +164,13 @@ function WorkOutSideGroupItem({ index, item, canUpdate, viewSalaryAtLeastOnceTim
                                                     ? (
                                                         <label className="input-date">
                                                             <DatePicker
+                                                                placeholderText={t("choose")}
                                                                 selected={item?.ENDDA ? moment(item?.ENDDA, 'YYYYMMDD').toDate() : null}
                                                                 minDate={item?.BEGDA ? moment(item?.BEGDA, 'YYYYMMDD').toDate() : null}
                                                                 onChange={dateInput => handleInputChange('ENDDA', !dateInput ? null : moment(dateInput).format('YYYYMMDD'))}
                                                                 dateFormat="dd/MM/yyyy"
                                                                 locale="vi"
+                                                                popperPlacement="left"
                                                                 className="form-control form-control-lg input"/>
                                                                 <span className="input-img"><img src={IconDatePicker} alt='Date' /></span>
                                                         </label>
@@ -176,12 +180,14 @@ function WorkOutSideGroupItem({ index, item, canUpdate, viewSalaryAtLeastOnceTim
                                                 {!item?.isAddNew && (
                                                     <label className="input-date second">
                                                         <DatePicker
+                                                            placeholderText={t("choose")}
                                                             selected={item[`ENDDA_${prefixUpdating}`] ? moment(item[`ENDDA_${prefixUpdating}`], 'YYYYMMDD').toDate() : null}
                                                             minDate={item[`BEGDA_${prefixUpdating}`] ? moment(item[`BEGDA_${prefixUpdating}`], 'YYYYMMDD').toDate() : item?.BEGDA ? moment(item?.BEGDA, 'YYYYMMDD').toDate() : null}
                                                             maxDate={item?.ENDDA ? moment(item?.ENDDA, 'YYYYMMDD').toDate() : null}
                                                             onChange={dateInput => handleInputChange(`ENDDA_${prefixUpdating}`, !dateInput ? null : moment(dateInput).format('YYYYMMDD'))}
                                                             dateFormat="dd/MM/yyyy"
                                                             locale="vi"
+                                                            popperPlacement="left"
                                                             className="form-control form-control-lg input"/>
                                                             <span className="input-img"><img src={IconDatePicker} alt='Date' /></span>
                                                     </label>

@@ -112,7 +112,6 @@ function WorkOutSideGroup(props) {
     }, [tabActive])
 
     const isDataValid = () => {
-        debugger
         const itemCreateNew = (experiences || []).filter(item => item?.isAddNew)
         const experienceUpdating = (experiences || []).filter(item => isNotEmpty(item[`DE_GROSS1_${prefixUpdating}`]) || isNotEmpty(item[`DE_GROSS2_${prefixUpdating}`]) 
         || isNotEmpty(item[`DE_GROSS3_${prefixUpdating}`]) || isNotEmpty(item[`DE_GROSS4_${prefixUpdating}`]) || isNotEmpty(item[`DE_GROSS5_${prefixUpdating}`]) 
@@ -155,7 +154,7 @@ function WorkOutSideGroup(props) {
         return !isInValid
     }
 
-    const handleSendRequest = () => {       
+    const handleSendRequest = () => {
         const isValid = isDataValid()
         if (!isValid) {
             return
@@ -373,7 +372,7 @@ function WorkOutSideGroup(props) {
             result[`WAERS${i}`] = item?.isAddNew ? item[`WAERS${i}`] : getValueByCondition(item[`WAERS${i}`], item[`WAERS${i}_${prefixUpdating}`])
             result[`DUT${i}`] = item?.isAddNew ? item[`DUT${i}`] : getValueByCondition(item[`DUT${i}`], item[`DUT${i}_${prefixUpdating}`])
             result[`PLAN${i}`] = item?.isAddNew ? item[`PLAN${i}`] : getValueByCondition(item[`PLAN${i}`], item[`PLAN${i}_${prefixUpdating}`])
-            lstKeyToDelete = [...lstKeyToDelete, `DE_GROSS${i}_${prefixUpdating}`, `DE_NET${i}_${prefixUpdating}`, `WAERS${i}_${prefixUpdating}`, `PLAN${i}_${prefixUpdating}`, `END${i}_${prefixUpdating}`, `DUT${i}_${prefixUpdating}`, `BEG${i}_${prefixUpdating}`]
+            lstKeyToDelete = [...lstKeyToDelete, `DE_GROSS${i}_${prefixUpdating}`, `DE_NET${i}_${prefixUpdating}`, `WAERS${i}_${prefixUpdating}`, `PLAN${i}_${prefixUpdating}`, `END${i}_${prefixUpdating}`, `DUT${i}_${prefixUpdating}`, `BEG${i}_${prefixUpdating}`, 'errorCompanyName']
         }
 
         return omit(result, ['isAddNew', 'listWorking', 'ID', 'ORGEH_UPDATING', 'BEGDA_UPDATING', 'ENDDA_UPDATING', ...lstKeyToDelete])
@@ -392,6 +391,7 @@ function WorkOutSideGroup(props) {
             }
         }
         delete oldItem.listWorking
+        delete oldItem.errorCompanyName
 
         let newItem = {
             ...item,
@@ -445,6 +445,8 @@ function WorkOutSideGroup(props) {
                     let itemClone = {...item}
                     delete itemClone.isAddNew
                     delete itemClone.listWorking
+                    delete itemClone.errorCompanyName
+                    itemClone.needEncrypt = true
                     return itemClone
                 })
             }
