@@ -6,7 +6,7 @@ import { Progress } from "reactstrap"
 import { toast } from "react-toastify"
 import { withTranslation } from "react-i18next"
 import Constants from '../../../commons/Constants'
-import { getRequestConfigs } from '../../../commons/commonFunctions'
+import { checkIsExactPnL, getRequestConfigs } from '../../../commons/commonFunctions'
 import ButtonComponent from '../TerminationComponents/ButtonComponent'
 import DirectManagerInfoComponent from '../TerminationComponents/DirectManagerInfoComponent'
 import SeniorExecutiveInfoComponent from '../TerminationComponents/SeniorExecutiveInfoComponent'
@@ -16,6 +16,7 @@ import AttachmentComponent from '../TerminationComponents/AttachmentComponent'
 import ResultModal from '../ResultModal'
 import LoadingModal from '../../../components/Common/LoadingModal'
 import { getMuleSoftHeaderConfigurations, getRequestConfigurations, getResignResonsMasterData } from '../../../commons/Utils'
+import ConfirmModal from 'components/Common/ConfirmModalNew'
 
 class RegistrationEmploymentTerminationForm extends React.Component {
     constructor(props) {
@@ -34,6 +35,7 @@ class RegistrationEmploymentTerminationForm extends React.Component {
             disabledSubmitButton: false,
             loaded: 0,
             isShowLoadingModal: false,
+            isShowWarningModal: false,
             errors: {
                 lastWorkingDay: props.t('resign_error_lastWorkingDay'),
                 reason: props.t('resign_error_reason'),
@@ -145,6 +147,7 @@ class RegistrationEmploymentTerminationForm extends React.Component {
                     fullName: infos.fullname || "",
                     jobTitle: infos.job_name || "",
                     department: `${infos.division || ""}${infos.department ? `/${infos.department}` : ""}${infos.unit ? `/${infos.unit}` : ""}`,
+                    departmentName: infos.division || "",
                     dateStartWork: dateStartWork,
                     email: localStorage.getItem("email") || "",
                     rank: infos.rank_name || "",
@@ -156,6 +159,7 @@ class RegistrationEmploymentTerminationForm extends React.Component {
                     departmentId: localStorage.getItem("organizationLv3"),
                     unitId: localStorage.getItem("organizationLv5"),
                     rankId: localStorage.getItem("employeeLevel"),
+                    master_code: localStorage.getItem("master_code"),
                     costCenter: infos.cost_center || ''
                 }
             }
@@ -248,7 +252,7 @@ class RegistrationEmploymentTerminationForm extends React.Component {
         return []
     }
 
-    submit = async () => {
+    submit = async (ignoreCheckEnoughDay = false) => {
         const { t } = this.props
         const {
             userInfos,
@@ -258,8 +262,9 @@ class RegistrationEmploymentTerminationForm extends React.Component {
             files
         } = this.state
         this.setDisabledSubmitButton(true)
+        this.closeWarningModal()
         const isValid = this.isValidData()
-        const fileInfoValidation = this.validateAttachmentFile()
+        // const fileInfoValidation = this.validateAttachmentFile()
         //const isDirectManagerValid = await this.isDirectManagerValid()
 
         if (!isValid) {
@@ -271,13 +276,24 @@ class RegistrationEmploymentTerminationForm extends React.Component {
         //     toast.error("Cán bộ QLTT không có thẩm quyền")
         //     this.setDisabledSubmitButton(false)
         //     return
-        } else if (_.size(fileInfoValidation) > 0 && fileInfoValidation.files) {
-            toast.error(fileInfoValidation.files)
-            this.setDisabledSubmitButton(false)
-            return
-        }
+        } 
+        // else if (_.size(fileInfoValidation) > 0 && fileInfoValidation.files) {
+        //     toast.error(fileInfoValidation.files)
+        //     this.setDisabledSubmitButton(false)
+        //     return
+        // }
         //this.setState({isShowLoadingModal: true})
         
+        if (!ignoreCheckEnoughDay) {
+          const isNotEnoughTime = ((userInfos.contractType === "VA" && moment(staffTerminationDetail.dateTermination, "YYYY-MM-DD").diff(moment(), "days") < 30) ||
+            (userInfos.contractType === "VB" && moment(staffTerminationDetail.dateTermination, "YYYY-MM-DD").diff(moment(), "days") < 45)) && !checkIsExactPnL(Constants.pnlVCode.VinHome)
+          if (isNotEnoughTime) {
+            this.setDisabledSubmitButton(false)
+            return this.setState({
+              isShowWarningModal: true
+            })
+          }
+        }
 
         const userInfoToSubmit = !_.isNull(userInfos) && _.size(userInfos) > 0 ? [userInfos] : []
         const reasonToSubmit = !_.isNull(staffTerminationDetail) && !_.isNull(staffTerminationDetail.reason) ? staffTerminationDetail.reason : {}
@@ -356,42 +372,12 @@ class RegistrationEmploymentTerminationForm extends React.Component {
         }
     }
 
-    validateAttachmentFile = () => {
-        const { t } = this.props
-        const files = this.state.files
-        const errors = {}
-        const fileExtension = [
-            'application/msword',
-            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-            'application/vnd.ms-excel',
-            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            'application/pdf',
-            'image/png',
-            'image/jpeg'
-        ]
-    
-        let sizeTotal = 0
-        for (let index = 0, lenFiles = files.length; index < lenFiles; index++) {
-            const file = files[index]
-            if (!fileExtension.includes(file.type)) {
-                errors.files = t('Request_error_file_format')
-                break
-            } else if (parseFloat(file.size / 1000000) > 2) {
-                errors.files =  t('Request_error_file_size')
-                break
-            } else {
-                errors.files = null
-            }
-            sizeTotal += parseInt(file.size)
-        }
-    
-        if (parseFloat(sizeTotal / 1000000) > 10) {
-            errors.files =  t('Request_error_file_oversize')
-        }
-
-        return errors
+    closeWarningModal = () => {
+      this.setState({
+        isShowWarningModal: false
+      })
     }
-
+    
     showStatusModal = (title, message, isSuccess = false) => {
         this.setState({ isShowStatusModal: true, titleModal: title, messageModal: message, isSuccess: isSuccess });
     }
@@ -445,11 +431,23 @@ class RegistrationEmploymentTerminationForm extends React.Component {
             userInfos,
             directManager,
             seniorExecutive,
-            isShowLoadingModal
+            isShowLoadingModal,
+            isShowWarningModal
         } = this.state
         return (
             <div className='registration-section'>
             <LoadingModal show={isShowLoadingModal} />
+            <ConfirmModal
+              show={isShowWarningModal}
+              confirmHeader={t("ConfirmSend")}
+              confirmContent={t("WarningNotEnoughTimeResign")}
+              onHide={this.closeWarningModal}
+              onCancelClick={this.closeWarningModal}
+              onAcceptClick={() => this.submit(true)}
+              tempButtonLabel={t("Cancel")}
+              mainButtonLabel={t("Confirm")}
+              // modalClassName,
+            />
             <Progress max="100" color="success" value={this.state.loaded}>
                 {Math.round(this.state.loaded, 2)}%
             </Progress>

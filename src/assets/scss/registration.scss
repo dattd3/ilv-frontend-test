@@ -226,6 +226,9 @@
             }
         }
     }
+    .mt-20 {
+      margin-top: 20px;
+    }
     .shift-table {
         thead th {
             position: sticky;
@@ -579,7 +582,7 @@
     .box {
         border: 1px solid #ddd;
         border-radius: 10px;
-        padding: 25px 20px;
+        padding: 20px;
         background-color: #fff;
         margin: 15px 0;
 
@@ -1968,18 +1971,34 @@
         padding: 10px 12px;
       }
       .ot-registration-body {
-        padding: 14px
+        padding: 14px;
+        .padding-left-0 {
+          padding-left: 0;
+        }
+        .time-registration-container {
+          flex: 1;
+          flex-wrap: wrap;
+          display: flex;
+          .line-break {
+            width: 100%;
+          }
+          .text-danger {
+            margin-top: 6px;
+            margin-bottom: 0px;
+            padding-right: 40px;
+          }
+        }
       }
       .flex {
         display: flex;
       }
       .form-item {
-        margin-right: 0px;
+        // margin-right: 0px;
         .hour-picker-input {
           height: 42px;
-          width: 110px;
+          width: 100%;
           border-radius: 4px;
-          margin-right: 24px;
+          margin-right: 8px;
         }
         .react-datepicker__input-container {
           margin: 0px;
@@ -2006,6 +2025,9 @@
       padding-right: 10px;
     }
     .ot-note {
+      padding-bottom: 15px;
+      border-bottom: 1px solid #DEE2E6;
+      margin-bottom: 20px;
       color: #36B9CC;
     }
   }
@@ -2017,10 +2039,64 @@
       max-width: 41.67%;
       padding-right: 24px;
     }
-    .end-time-container {
-      margin-left: 12px;
-      margin-top: 0px;
+  }
+  .prev-day-container {
+    // z-index: 10000;
+    display: flex;
+    align-items: center;
+    input {
+      width: 15px;
+      height: 15px;
     }
+    label {
+      white-space: nowrap;
+      margin-bottom: 0px;
+      cursor: pointer;
+    }
+  }
+  .is-overnight-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 42px;
+    // width: 72px;
+    input {
+      width: 14px;
+      height: 14px;
+      cursor: pointer;
+    }
+  }
+  .add-time-block-btn {
+    margin-top: 29px;
+    border: 1px solid #44A257;
+    height: 40px;
+    width: 100%;
+    border-radius: 4px;
+    text-align: center;
+    vertical-align: middle;
+    color:#44A257;
+    line-height: 40px;
+    background-color: #fff;
+    img {
+      margin-top: -4px;
+    }
+  }
+  .add-time-block-btn:focus {
+    border: 1px solid #44A257;
+    outline: none;
+  }
+  .action-time-range-btn {
+    width: 46%;
+    max-width: 42px;
+    height: 40px;
+    border: 1px solid #DEE2E6;
+    text-align: center;
+  }
+  .action-time-range-btn:focus {
+    outline: none;
+  }
+  .cancel-time-range-btn {
+    margin-right: 8%;
   }
   .field-view {
     background: #F2F2F2;
@@ -2047,6 +2123,21 @@
     img {
       width: 20px;
       height: 20px;
+    }
+  }
+  .information-btn {
+    border-radius: 50%;
+    background: #347EF9;
+    color: #fff;
+    border-color: #fff;
+    width: 16px;
+    height: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 6px;
+    i {
+      font-size: 8px;
     }
   }
   .mb-12 {

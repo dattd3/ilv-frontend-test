@@ -4,7 +4,7 @@ import axios from "axios";
 import _, { debounce } from "lodash";
 import { useTranslation } from "react-i18next";
 import Constants from "../../commons/Constants";
-import { getRequestConfigurations } from "../../commons/Utils";
+import { getRequestConfigurations, prepareOrganization } from "../../commons/Utils";
 
 const MyOption = (props) => {
   const { innerProps, innerRef } = props;
@@ -122,10 +122,7 @@ export default function SearchUserComponent({
                 orglv2Id: res.organization_lv2,
                 account: res.username,
                 current_position: res.position_name,
-                department:
-                  res.division +
-                  (res.department ? "/" + res.department : "") +
-                  (res.part ? "/" + res.part : ""),
+                department: prepareOrganization(res?.division, res?.department, res?.unit, res?.part)
               };
             });
             const lst =
@@ -135,7 +132,10 @@ export default function SearchUserComponent({
             setUsers(lst);
           }
         })
-        .catch((error) => {});
+        .catch((error) => {})
+        .finally(() => {
+          setIsSearching(false);
+        });
     } else {
       if (Array.isArray(users) && users.length > 1) setIsSearching(true);
     }
@@ -171,7 +171,7 @@ export default function SearchUserComponent({
                 isClearable={true}
                 styles={customStyles}
                 components={{
-                  Option: (e) => MyOption({ ...e, isSearch: isSearching }),
+                  Option: (e) => MyOption({ ...e }),
                 }}
                 onInputChange={handleInputChange}
                 name="user"
@@ -181,6 +181,7 @@ export default function SearchUserComponent({
                 key="user"
                 filterOption={filterOption}
                 options={users ? users : recentlyUser || []}
+                isLoading={isSearching}
               />
             </div>
             {errorText && <p className="text-danger">{errorText}</p>}

@@ -44,11 +44,12 @@ class MyComponent extends React.Component {
     }
     axios.get(`${process.env.REACT_APP_REQUEST_URL}ticket/Common/` + currentCompanyCode, config)
       .then(res => {
-        if (res && res.data && res.data.data) {
+        if (res && res?.data && res?.data?.data) {
+          const data = [...res?.data?.data || []]
           let commonTicketListRs = res.data.data.sort((a, b) => {
             return a.subject[0].toLowerCase().localeCompare(b.subject[0].toLowerCase(), "pl");
           });;
-          this.setState({ commonTicketList: commonTicketListRs, commonTicketListFilter: commonTicketListRs });
+          this.setState({ commonTicketList: commonTicketListRs, commonTicketListFilter: data || [] });
         }
       }).catch(error => {
       });

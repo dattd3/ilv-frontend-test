@@ -1,5 +1,6 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
+import ClockIcon from "assets/img/icon/ic_clock.svg"
 import Constants from "commons/Constants";
 import moment from "moment";
 
@@ -17,7 +18,7 @@ const convertDataNotiToObj = (data) => {
   return response;
 };
 
-export default function TimeKeepingList({ apiResponseData }) {
+export default function TimeKeepingList({ apiResponseData, fromPage }) {
   const { t } = useTranslation();
   const timeKeepingData = convertDataNotiToObj(apiResponseData);
   const lang = localStorage.getItem("locale");
@@ -47,14 +48,14 @@ export default function TimeKeepingList({ apiResponseData }) {
   }
 
   return (
-    <div className="timekeeping-list-container">
+    <div className={`timekeeping-list-container ${fromPage ? '' : 'show-scroll'}`}>
       {timeKeepingData &&
         Object.keys(timeKeepingData)?.length > 0 &&
         Object.keys(timeKeepingData)?.map((key, keyIndx) => (
           <div key={keyIndx}>
             <div className="date-card">
               <div className="date-card-header">
-                <i className="fa fa-clock-o" />
+                <img src={ClockIcon} alt="icon" />
                 &nbsp;
                 {getDayNameFromDate(key)}
                 &nbsp;
@@ -67,7 +68,6 @@ export default function TimeKeepingList({ apiResponseData }) {
                     <div className="infor-block">
                       <span className="time-span">
                         <span className="bull-symbol">&bull;</span>
-                        &nbsp;&nbsp;
                         {item.subRequestId?.split(" ")?.[1]}
                         &nbsp;&nbsp;
                       </span>

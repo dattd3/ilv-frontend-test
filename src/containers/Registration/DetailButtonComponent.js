@@ -17,13 +17,20 @@ class DetailButtonComponent extends React.Component {
             2: "LeaveRequest",
             3: "BizTrip_TrainingRequest",
             4: "ShiftChange",
-            5: "ModifyInOut"
+            5: "ModifyInOut",
+            13: "OTRequest"
         }
     }
 
-    approval = () => {
-        const { t } = this.props
-        this.setState({ isConfirmShow: true, modalTitle:"ApproveRequest", modalMessage:t("ConfirmApproveRequestHolder",{name: t(this.requestRegistraion[this.props.requestTypeId])}) , typeRequest: Constants.STATUS_APPROVED })
+    approval = async () => {
+      const { t, requestTypeId, haveOverOTFund, isNotEnoughTimeResign } = this.props
+      if (requestTypeId === Constants.OT_REQUEST && haveOverOTFund) {
+          return this.setState({ isConfirmShow: true, modalTitle: t("ApproveRequest"), modalMessage: t("WarningOverOTFundsApproval"), typeRequest: Constants.STATUS_APPROVED })
+      }
+      if (requestTypeId === Constants.RESIGN_SELF && isNotEnoughTimeResign) {
+        return this.setState({ isConfirmShow: true, modalTitle: t("ApproveRequest"), modalMessage: t("WarningNotEnoughTimeResign"), typeRequest: Constants.STATUS_APPROVED })
+      }
+      this.setState({ isConfirmShow: true, modalTitle: t("ApproveRequest"), modalMessage:t("ConfirmApproveRequestHolder",{name: t(this.requestRegistraion[this.props.requestTypeId])}) , typeRequest: Constants.STATUS_APPROVED })
     }
 
     disApproval = () => {
@@ -38,9 +45,15 @@ class DetailButtonComponent extends React.Component {
         const { t } = this.props
         this.setState({ isConfirmShow: true, modalTitle: t("ConfirmRequestRecall"), modalMessage: t("SureRequestRecall") + t(this.requestRegistraion[this.props.requestTypeId]) + " này ?", typeRequest: 0 })
     }
-    consent = () => {
-        const { t } = this.props
-        this.setState({ isConfirmShow: true, modalTitle: t("ConsentConfirmation"), modalMessage: t("ConfirmConsentRequestHolder", {name: t(this.requestRegistraion[this.props.requestTypeId])}), typeRequest: Constants.STATUS_CONSENTED })
+    consent = async () => {
+      const { t, requestTypeId, haveOverOTFund, isNotEnoughTimeResign } = this.props
+      if (requestTypeId === Constants.OT_REQUEST && haveOverOTFund) {
+          return this.setState({ isConfirmShow: true, modalTitle: t("ConsentConfirmation"), modalMessage: t("WarningOverOTFundsConsent"), typeRequest: Constants.STATUS_CONSENTED })
+      }
+      if (requestTypeId === Constants.RESIGN_SELF && isNotEnoughTimeResign) {
+        return this.setState({ isConfirmShow: true, modalTitle: t("ConsentConfirmation"), modalMessage: t("WarningNotEnoughTimeResign"), typeRequest: Constants.STATUS_CONSENTED })
+      }
+      this.setState({ isConfirmShow: true, modalTitle: t("ConsentConfirmation"), modalMessage: t("ConfirmConsentRequestHolder", {name: t(this.requestRegistraion[this.props.requestTypeId])}), typeRequest: Constants.STATUS_CONSENTED })
     }
     rejected = () => {
         this.setState({ isConfirmShow: true, modalTitle: "RejectConsenterRequest", modalMessage: "ReasonRejectRequest", typeRequest: Constants.STATUS_NO_CONSENTED })
@@ -66,9 +79,8 @@ class DetailButtonComponent extends React.Component {
     }
 
     render() {
-        const {t, action, requestTypeId} = this.props
+        const {t, action, requestTypeId, isShowReject = true} = this.props
         const actionProcessing = action ? action : this.getAction()
-
         return <div className="bottom">
             <ConfirmationModal
                 urlName={this.props.urlName}
@@ -90,7 +102,9 @@ class DetailButtonComponent extends React.Component {
                     <>
                     <button type="button" className="btn btn-success float-right ml-3 shadow" onClick={this.approval.bind(this)}>
                         <i className="fas fa-check" aria-hidden="true"></i> {t("Approval")}</button>
-                    <button type="button" className="btn btn-danger float-right shadow" onClick={this.disApproval.bind(this)}><i className="fa fa-close"></i> {t("Reject")}</button>
+                    {
+                      isShowReject && <button type="button" className="btn btn-danger float-right shadow" onClick={this.disApproval.bind(this)}><i className="fa fa-close"></i> {t("Reject")}</button>
+                    }
                     </>
                     : null
                 }
@@ -110,7 +124,9 @@ class DetailButtonComponent extends React.Component {
                     <>
                     <button type="button" className="btn btn-warning float-right ml-3 shadow" onClick={this.consent.bind(this)}>
                         <i className="fas fa-check" aria-hidden="true"></i> {t("Consent")}</button>
-                    <button type="button" className="btn btn-danger float-right shadow" onClick={this.rejected.bind(this)}><i className="fa fa-close"></i> {t("Rejected")}</button>
+                    {
+                      isShowReject && <button type="button" className="btn btn-danger float-right shadow" onClick={this.rejected.bind(this)}><i className="fa fa-close"></i> {t("Rejected")}</button>
+                    }
                     </>
                     : null
                 }

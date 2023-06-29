@@ -5,7 +5,7 @@ import _, { debounce } from 'lodash'
 import { withTranslation  } from "react-i18next";
 import APPROVER_LIST_LEVEL from "../../commons/Constants"
 import { getRequestConfigs } from '../../commons/commonFunctions'
-import { getMuleSoftHeaderConfigurations } from '../../commons/Utils';
+import { getMuleSoftHeaderConfigurations, prepareOrganization } from '../../commons/Utils';
 
 const MyOption = props => {
   const { innerProps, innerRef } = props;
@@ -147,8 +147,7 @@ class ApproverComponent extends React.Component {
 
       const payload = {
         account: value,
-        status: 3,
-        pnl_code: localStorage.getItem('companyCode')
+        status: 3
       }
       axios.post(`${process.env.REACT_APP_REQUEST_URL}user/employee/search`, payload, config)
         .then(res => {
@@ -156,7 +155,6 @@ class ApproverComponent extends React.Component {
             const data = res.data.data || []
 
             const users = data?.filter(res => {
-              console.log(res.uid, this.props.userEmployeeNo, (res.uid + '') != (this.props.userEmployeeNo + ''))
               return (res.uid + '') != (this.props.userEmployeeNo + '')
             }).map(res => {
               return {
@@ -169,7 +167,7 @@ class ApproverComponent extends React.Component {
                 orglv2Id: res.orglv2_id,
                 account: res.username,
                 current_position: res.position_name,
-                department: res.division + (res.department ? '/' + res.department : '') + (res.part ? '/' + res.part : '')
+                department: prepareOrganization(res?.division, res?.department, res?.unit, res?.part)
               }
             })
             this.setState({ users: appraiser ? users.filter(user => user.account !== appraiser.account) : users, isSearching: false })

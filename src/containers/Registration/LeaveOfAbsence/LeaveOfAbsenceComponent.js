@@ -13,13 +13,11 @@ import _ from 'lodash'
 import map from '../../../../src/containers/map.config'
 import Constants from '../../../commons/Constants'
 import { withTranslation } from "react-i18next";
-import { getValueParamByQueryString, getMuleSoftHeaderConfigurations, getRequestConfigurations, getRegistrationMinDateByConditions, isVinFast } from "../../../commons/Utils"
+import { getValueParamByQueryString, getMuleSoftHeaderConfigurations, getRequestConfigurations, getRegistrationMinDateByConditions, isValidDateRequest, isEnableFunctionByFunctionName } from "../../../commons/Utils"
 import NoteModal from '../NoteModal'
 import { checkIsExactPnL } from '../../../commons/commonFunctions';
-import { absenceRequestTypes, PN03List, MATERNITY_LEAVE_KEY, MARRIAGE_FUNERAL_LEAVE_KEY, MOTHER_LEAVE_KEY, FOREIGN_SICK_LEAVE, ANNUAL_LEAVE_KEY, ADVANCE_ABSENCE_LEAVE_KEY, COMPENSATORY_LEAVE_KEY } from "../../Task/Constants"
+import { absenceRequestTypes, PN03List, MATERNITY_LEAVE_KEY, MARRIAGE_FUNERAL_LEAVE_KEY, MOTHER_LEAVE_KEY, FOREIGN_SICK_LEAVE, ANNUAL_LEAVE_KEY, ADVANCE_ABSENCE_LEAVE_KEY, COMPENSATORY_LEAVE_KEY, VIN_UNI_SICK_LEAVE } from "../../Task/Constants"
 
-const FULL_DAY = 1
-const DURING_THE_DAY = 2
 const absenceTypesAndDaysOffMapping = {
     1: { day: 3, time: 24 },
     2: { day: 1, time: 8 },
@@ -28,6 +26,7 @@ const absenceTypesAndDaysOffMapping = {
 const totalDaysForSameDay = 1
 const queryString = window.location.search
 const currentEmployeeNo = localStorage.getItem('employeeNo')
+const currentCompanyCode = localStorage.getItem("companyCode")
 
 class LeaveOfAbsenceComponent extends React.Component {
     constructor(props) {
@@ -80,23 +79,26 @@ class LeaveOfAbsenceComponent extends React.Component {
         return prevState
     }
 
-    componentDidMount() {
+    initialData = () => {
         const muleSoftConfig = getMuleSoftHeaderConfigurations()
         muleSoftConfig['params'] = {
             date: moment().format('YYYYMMDD')
         }
+        const config = getRequestConfigurations()
+        const annualLeaveSummaryApiEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/currentabsence`
+        const pendingInfoEndpoint = `${process.env.REACT_APP_REQUEST_URL}request/pendings`
+        const requestAnnualLeaveSummary = axios.get(annualLeaveSummaryApiEndpoint, muleSoftConfig)
+        const requestPendingInfo = axios.get(pendingInfoEndpoint, config)
+    
+        Promise.allSettled([requestAnnualLeaveSummary, requestPendingInfo]).then(responses => {
+          this.processAnnualLeaveSummary(responses[0])
+          this.processPendingInfo(responses[1])
+        }).finally (() => {
+        })
+
 
         const { leaveOfAbsence, t } = this.props
         registerLocale("vi", t("locale") === "vi" ? vi : enUS)
-
-        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/currentabsence`, muleSoftConfig)
-            .then(res => {
-                if (res && res.data) {
-                    const annualLeaveSummary = res.data.data
-                    this.setState({ annualLeaveSummary: annualLeaveSummary })
-                }
-            }).catch(error => {
-            })
 
         if (leaveOfAbsence && leaveOfAbsence && leaveOfAbsence.requestInfo) {
             const { groupID, days, id, startDate, startTime, processStatusId, endDate, endTime, hours, absenceType, leaveType, isAllDay, comment } = leaveOfAbsence.requestInfo[0]
@@ -136,16 +138,32 @@ class LeaveOfAbsenceComponent extends React.Component {
                 }) : [],
             })
         }
+    }
+    
+    processAnnualLeaveSummary = response => {
+        const annualLeaveSummary = this.processData(response)
+        this.setState({ annualLeaveSummary: annualLeaveSummary })
+    }
 
-        const config = getRequestConfigurations()
-        axios.get(`${process.env.REACT_APP_REQUEST_URL}request/pendings`, config)
-        .then(res => {
-            if (res && res?.data && res?.data?.data) {
-                const { totalPendingLeaves, totalPendingTOILs } = res?.data?.data
-                this.setState({ totalPendingLeaves, totalPendingTOILs })
+    processPendingInfo = response => {
+        const data = this.processData(response)
+        const { totalPendingLeaves, totalPendingTOILs } = data
+        this.setState({ totalPendingLeaves, totalPendingTOILs })
+    }
+
+    processData = response => {
+        let data = null
+        if (response?.status === "fulfilled" && response?.value?.data) {
+            const result = response.value.data?.result
+            if (result && result?.code == Constants.API_SUCCESS_CODE) {
+                data = response.value.data?.data
             }
-        }).catch(error => {
-        })
+        }
+        return data
+    }
+
+    componentDidMount() {
+        this.initialData()
     }
 
     getStartDate() {
@@ -529,7 +547,8 @@ class LeaveOfAbsenceComponent extends React.Component {
     }
 
     verifyInput() {
-        let { requestInfo, approver, appraiser, errors } = this.state;
+        let { requestInfo, approver, appraiser } = this.state;
+        const errors = { ...this.state.errors }
         const { t } = this.props
 
         if (approver?.account?.trim() && appraiser?.account?.trim() && approver?.account?.trim()?.toLowerCase() === appraiser?.account?.trim()?.toLowerCase()) {
@@ -565,20 +584,19 @@ class LeaveOfAbsenceComponent extends React.Component {
             }
             req.errors['pn03'] = (req.absenceType && req.absenceType?.value === MARRIAGE_FUNERAL_LEAVE_KEY && _.isNull(req['pn03'])) ? this.props.t('Required') : null
         })
-        const employeeLevel = localStorage.getItem("employeeLevel")
+
+        errors.approver = !approver ? this.props.t('Required') : errors.approver
 
         this.setState({
             requestInfo,
-            errors: {
-                approver: !approver ? this.props.t('Required') : errors.approver,
-                // appraiser: !appraiser && employeeLevel === "N0" ? this.props.t('Required') : errors.appraiser
-            }
+            errors: errors,
         })
 
         const listError = requestInfo.map(req => _.compact(_.valuesIn(req.errors))).flat()
-        if (listError.length > 0 || errors.approver) { //|| (errors.appraiser && employeeLevel === "N0")
+        if (listError.length > 0 || errors?.approver || errors?.appraiser) {
             return false
         }
+
         return true
     }
 
@@ -649,13 +667,20 @@ class LeaveOfAbsenceComponent extends React.Component {
     }
 
     submit() {
-        const { t } = this.props
+        const { t, leaveOfAbsence } = this.props
         const { files, isEdit, requestInfo } = this.state
         const err = this.verifyInput()
 
         this.setDisabledSubmitButton(true)
         if (!err) {
             this.setDisabledSubmitButton(false)
+            return
+        }
+
+        const hasNotErrorBackDate = (requestInfo || []).every(item => isValidDateRequest(item?.startDate))
+        if ((!this.props?.isEdit && !hasNotErrorBackDate) || (this.props?.isEdit && !isValidDateRequest(moment(leaveOfAbsence?.requestInfo[0]?.startDate, 'YYYYMMDD').format('DD/MM/YYYY')))) {
+            this.showStatusModal(t("Notification"), t("ErrorBackDateRequestVinpearl"), false)
+            this.setState({ needReload: false })
             return
         }
 
@@ -689,7 +714,7 @@ class LeaveOfAbsenceComponent extends React.Component {
         delete appraiser.avatar
 
         let bodyFormData = new FormData();
-        bodyFormData.append('companyCode', localStorage.getItem("companyCode"))
+        bodyFormData.append('companyCode', currentCompanyCode)
         bodyFormData.append('fullName', localStorage.getItem('fullName'))
         bodyFormData.append('jobTitle', localStorage.getItem('jobTitle'))
         bodyFormData.append('department', localStorage.getItem('department'))
@@ -710,7 +735,7 @@ class LeaveOfAbsenceComponent extends React.Component {
         }))
         bodyFormData.append('requestInfo', JSON.stringify(dataRequestInfo))
         if (isEdit) {
-            bodyFormData.append('id', this.props.leaveOfAbsence.id)
+            bodyFormData.append('id', leaveOfAbsence.id)
         }
 
         if (!isEdit) {
@@ -736,9 +761,13 @@ class LeaveOfAbsenceComponent extends React.Component {
                 this.showStatusModal(t("Notification"), response?.data?.result?.message, false)
             }
         })
-        .catch(response => {
+        .catch(error => {
+            let message = t("Error")
+            if (error?.response?.data?.result?.code == Constants.API_ERROR_CODE) {
+              message = error?.response?.data?.result?.message
+            }
             this.setState({ needReload: false })
-            this.showStatusModal(t("Notification"), "Có lỗi xảy ra trong quá trình cập nhật thông tin!", false)
+            this.showStatusModal(t("Notification"), message, false)
         })
         .finally(() => {
             this.setDisabledSubmitButton(false)
@@ -763,7 +792,7 @@ class LeaveOfAbsenceComponent extends React.Component {
 
     hideStatusModal = () => {
         const { isEdit, needReload } = this.state
-        this.setState({ isShowStatusModal: false })
+        this.setState({ isShowStatusModal: false, disabledSubmitButton: false })
 
         if (needReload) {
             if (isEdit) {
@@ -903,11 +932,15 @@ class LeaveOfAbsenceComponent extends React.Component {
 
     render() {
         const { t, leaveOfAbsence, recentlyManagers } = this.props
-        const isEmployeeVinFast = isVinFast()
+        const isEnableForeignSickLeave = isEnableFunctionByFunctionName(Constants.listFunctionsForPnLACL.foreignSickLeave)
         let absenceRequestTypesPrepare = absenceRequestTypes.map(item => ({...item, label: t(item.label)}))
         
-        if (!isEmployeeVinFast) {
+        if (!isEnableForeignSickLeave) {
             absenceRequestTypesPrepare = (absenceRequestTypesPrepare || []).filter(item => item?.value !== FOREIGN_SICK_LEAVE)
+        }
+
+        if (currentCompanyCode !== Constants.pnlVCode.VinUni) {
+            absenceRequestTypesPrepare = (absenceRequestTypesPrepare || []).filter(item => item?.value !== VIN_UNI_SICK_LEAVE)
         }
 
         const PN03ListPrepare = PN03List.map(item => ({...item, label: t(item.label)}))
@@ -982,10 +1015,11 @@ class LeaveOfAbsenceComponent extends React.Component {
                             {
                                 (registeredInformation || []).map((ri, riIndex) => {
                                     let  totalTimeRegistered = ri?.isAllDay ? `${ri?.days || 0} ${t('DayUnit')}` : `${ri?.hours || 0} ${t('HourUnit')}`
+                                    let isForeignSickLeave = ri?.absenceType?.value === FOREIGN_SICK_LEAVE
                                     return (
                                         <div className='item' key={`old-request-info-${riIndex}`}>
                                             {
-                                                ri?.absenceType?.value === FOREIGN_SICK_LEAVE ? (
+                                                (isForeignSickLeave || ri?.absenceType?.value === VIN_UNI_SICK_LEAVE) ? (
                                                     <>
                                                         <div className='row'>
                                                             <div className='col-md-4'>
@@ -1010,10 +1044,21 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                                 <label>{t('LeaveCategory')}</label>
                                                                 <div className='d-flex align-items-center value'>{ri?.absenceType?.label || ''}</div>
                                                             </div>
-                                                            <div className='col-md-4'>
-                                                                <label>{t('SickLeaveFundForExpat')}</label>
-                                                                <div className='d-flex align-items-center value'>{`${Number(annualLeaveSummary?.SICK_LEA_EXPAT || 0).toFixed(3)} ${this.formatDayUnitByValue(annualLeaveSummary?.SICK_LEA_EXPAT || 0)}` }</div>
-                                                            </div>
+                                                            {
+                                                                isForeignSickLeave
+                                                                ? (
+                                                                    <div className='col-md-4'>
+                                                                        <label>{t('SickLeaveFundForExpat')}</label>
+                                                                        <div className='d-flex align-items-center value'>{`${Number(annualLeaveSummary?.SICK_LEA_EXPAT || 0).toFixed(3)} ${this.formatDayUnitByValue(annualLeaveSummary?.SICK_LEA_EXPAT || 0)}` }</div>
+                                                                    </div>
+                                                                )
+                                                                : (
+                                                                    <div className='col-md-4'>
+                                                                        <label>{t('SickLeaveFundForVinUni')}</label>
+                                                                        <div className='d-flex align-items-center value'>{`${Number(annualLeaveSummary?.SICK_LEA_VUNI || 0).toFixed(3)} ${this.formatDayUnitByValue(annualLeaveSummary?.SICK_LEA_VUNI || 0)}` }</div>
+                                                                    </div>
+                                                                )
+                                                            }
                                                         </div>
                                                         <div className='row'>
                                                             <div className='col-md-12'>
@@ -1104,7 +1149,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                     {req[0].absenceType && req[0].absenceType.value === MARRIAGE_FUNERAL_LEAVE_KEY ? <p className="title">{t("MarriageFuneral")}</p> : null}
                                                     {req[0].absenceType && req[0].absenceType.value === MARRIAGE_FUNERAL_LEAVE_KEY ?
                                                         <div>
-                                                            <Select name="PN03" value={req[0].funeralWeddingInfo} onChange={funeralWeddingInfo => this.handleSelectChange('funeralWeddingInfo', funeralWeddingInfo, req[0].groupId)} placeholder={t('Select')} key="absenceType" options={PN03ListPrepare} />
+                                                            <Select value={req[0].funeralWeddingInfo} onChange={funeralWeddingInfo => this.handleSelectChange('funeralWeddingInfo', funeralWeddingInfo, req[0].groupId)} placeholder={t('Select')} key="absenceType" options={PN03ListPrepare} />
                                                         </div>
                                                         :
                                                         null}
@@ -1120,6 +1165,14 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                 <>
                                                     <p className="title">{t("SickLeaveFundForExpat")}</p>
                                                     <input type="text" className="form-control" style={{ height: 38, borderRadius: 4, padding: '0 15px' }} value={`${Number(annualLeaveSummary?.SICK_LEA_EXPAT || 0).toFixed(3)} ${this.formatDayUnitByValue(annualLeaveSummary?.SICK_LEA_EXPAT || 0)}`} disabled />
+                                                </>
+                                            )
+                                        }
+                                        {
+                                            req[0]?.absenceType?.value === VIN_UNI_SICK_LEAVE && (
+                                                <>
+                                                    <p className="title">{t("SickLeaveFundForVinUni")}</p>
+                                                    <input type="text" className="form-control" style={{ height: 38, borderRadius: 4, padding: '0 15px' }} value={`${Number(annualLeaveSummary?.SICK_LEA_VUNI || 0).toFixed(3)} ${this.formatDayUnitByValue(annualLeaveSummary?.SICK_LEA_VUNI || 0)}`} disabled />
                                                 </>
                                             )
                                         }

@@ -6,7 +6,7 @@ import moment from 'moment';
 import { withRouter } from 'react-router-dom';
 import Constants from "../../commons/Constants"
 import { isEnableFunctionByFunctionName, getMuleSoftHeaderConfigurations, getRequestConfigurations, formatStringByMuleValue, getValueParamByQueryString } from "../../commons/Utils"
-import { checkIsExactPnL, checkVersionPnLSameAsVinhome } from '../../commons/commonFunctions';
+import { IS_VINFAST, checkVersionPnLSameAsVinhome } from '../../commons/commonFunctions';
 import RelationshipList from "./RelationshipList"
 import MainInfoList from "./MainInfoList"
 import EducationList from "./EducationList"
@@ -17,6 +17,7 @@ import ResultModal from './edit/ResultModal'
 import ConfirmationModal from './edit/ConfirmationModal'
 import PersonalInfoEdit from "../PersonalInfo/edit/PersonalInfoEdit"
 import HOCComponent from '../../components/Common/HOCComponent'
+import LoadingModal from 'components/Common/LoadingModal';
 import map from '../../containers/map.config'
 
 const actionType = {
@@ -63,6 +64,7 @@ class MyComponent extends React.Component {
       },
       errors: null,
       tab: new URLSearchParams(props?.history?.location?.search).get('tab') || "PersonalInformation",
+      isLoading: false
     };
   }
 
@@ -252,6 +254,7 @@ class MyComponent extends React.Component {
   }
 
   sendRequests = async (message) => {
+    this.setState({ isLoading: true })
     const { t } = this.props
     const { relationshipInformation, resultModal } = this.state
     try {
@@ -314,6 +317,8 @@ class MyComponent extends React.Component {
       resultModal.isSuccess = false
       resultModal.message = t("AnErrorOccurred")
       this.setState({resultModal: resultModal})
+    } finally {
+      this.setState({ isLoading: false })
     }
   }
 
@@ -478,10 +483,10 @@ class MyComponent extends React.Component {
     let defaultTab = getValueParamByQueryString(window.location.search, 'tab') || 'PersonalInformation' 
 
     const documents = this.state.userDocument.documents;
-    const checkVinfast = checkIsExactPnL(Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading);
 
     return (
       <>
+      <LoadingModal show={this.state.isLoading} />
       <ConfirmationModal show={confirmationModal.isShow} title={confirmationModal.title} type={confirmationModal.actionType} message={confirmationModal.message} 
         sendData={this.updateMessageFromModal} onHide={this.onHideModalConfirm} />
       <ResultModal show={resultModal.isShow} title={resultModal.title} message={resultModal.message} isSuccess={resultModal.isSuccess} onHide={this.onHideResultModal} />
@@ -530,6 +535,7 @@ class MyComponent extends React.Component {
               }
             </div>
             <h5 className="content-page-header">{t("PersonalRelations")}</h5>
+            <div className='relationship-note'>{t("RelationshipNote")}</div>
             <Container fluid className="info-tab-content shadow relationship">
             {
               relationshipInformation.isEditing ? 
@@ -553,7 +559,7 @@ class MyComponent extends React.Component {
           }
           {
            checkVersionPnLSameAsVinhome(Constants.MODULE.DANHGIA_TAIKI) ? // open for golive1106
-           /*  checkIsExactPnL(Constants.pnlVCode.VinPearl) || checkIsExactPnL(Constants.pnlVCode.MeliaVinpearl) || checkVinfast  ?  */
+           /*  checkIsExactPnL(Constants.pnlVCode.VinPearl) || checkIsExactPnL(Constants.pnlVCode.MeliaVinpearl) || IS_VINFAST  ?  */
             // (checkIsExactPnL(Constants.pnlVCode.VinPearl) || checkIsExactPnL(Constants.pnlVCode.MeliaVinpearl)) ? // open for golive1106
               <Tab eventKey="PersonalDocument" title={t("PersonalDocuments")}>
                 <Row >
@@ -567,7 +573,7 @@ class MyComponent extends React.Component {
                               <th style={{ width: '2%' }}>STT</th>
                               <th style={{ width: '66%' }}>Danh mục hồ sơ CBNV</th>
                               <th style={{ width: '2%' }}>SL</th>
-                              {!checkVinfast && <th style={{ width: '11%' }}>Thời hạn nộp</th>}
+                              {!IS_VINFAST && <th style={{ width: '11%' }}>Thời hạn nộp</th>}
                               <th style={{ width: '8%' }}>Tình trạng</th>
                             </tr>
                           </thead>
@@ -584,7 +590,7 @@ class MyComponent extends React.Component {
                                       <td>{item.index}</td>
                                       <td className="name">{item.name}</td>
                                       <td>{item.number}</td>
-                                      {!checkVinfast && <td rowSpan={obj.documentList.length}>{item.timExpire}</td>}
+                                      {!IS_VINFAST && <td rowSpan={obj.documentList.length}>{item.timExpire}</td>}
                                       <td><input type="checkbox" checked={item.status} readOnly /></td>
                                     </tr>
                                   } else {

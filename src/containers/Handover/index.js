@@ -11,7 +11,7 @@ import ResizableTextarea from '../Registration/TextareaComponent';
 import ApproverComponent from './SearchUserComponent'
 import Select from 'react-select'
 import Constants from '../../commons/Constants'
-import { checkIsExactPnL, getRequestConfigs } from '../../commons/commonFunctions'
+import { IS_VINFAST, getRequestConfigs } from '../../commons/commonFunctions'
 import { withTranslation } from "react-i18next"
 import axios from 'axios'
 import Rating from 'react-rating';
@@ -43,7 +43,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         for (const [key_d, value_d] of Object.entries(data)) {
           filled = (key_d == 'employee') || ( data[key_d] && data[key_d].user && data[key_d].user.account) ? filled :  '(Bắt buộc)' ;
         }
-        if(filled && value && value.employeeEmail && value.employeeEmail.toLowerCase()  == currentEmployeeNo.toLowerCase()){
+        if(value && value.employeeEmail && value.employeeEmail.toLowerCase()  == currentEmployeeNo.toLowerCase()){
           canEditable[key] = true;
           canEditable['canUpdate'] = true;
           canEditable['currentActive'] = ['employee'];
@@ -132,6 +132,20 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
             note: '',
             isShow: false,
         },
+        faceId: {
+          user: {},
+          status: null,
+          actionDate: '',
+          note: '',
+          isShow: false,
+        },
+        adBlock: {
+          user: {},
+          status: null,
+          actionDate: '',
+          note: '',
+          isShow: false,
+        },
         inout: {
             user: {},
             status: null,
@@ -181,6 +195,8 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         policy: false,
         traning: false,
         internal: false,
+        faceId: false,
+        adBlock: false,
         canUpdate: false,
         currentActive: []
       },
@@ -233,6 +249,10 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
       remoteData.handoverConfirmation = data.policy.user?.account ? data.policy.user : null;
       remoteData.trainingDebt = data.traning.user?.account ? data.traning.user : null;
       remoteData.internalDebt = data.internal.user?.account ? data.internal.user : null;
+      if (IS_VINFAST) {
+        remoteData.faceIdApprover = data.faceId.user;
+        remoteData.adBlockApprover = data.adBlock.user;
+      }
     }
     
       this.state.canEditable.currentActive.map( (key) => {
@@ -303,7 +323,20 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
             remoteData.internalDebtNote = data.internal.note;
             remoteData.internalDebt = data.internal.user?.account ? data.internal.user : null;
             break;
-
+          case 'faceId':
+            remoteData.dateFaceId = data.faceId.actionDate;
+            remoteData.statusFaceId = data.faceId.status ? 1 : 0;
+            remoteData.noteFaceId = data.faceId.note;
+            remoteData.faceIdApprover = data.faceId.user;
+            break;
+          case 'adBlock':
+            remoteData.dateADBlock = data.adBlock.actionDate;
+            remoteData.statusADBlock = data.adBlock.status ? 1 : 0;
+            remoteData.noteADBlock = data.adBlock.note;
+            remoteData.adBlockApprover = data.adBlock.user;
+            break;
+          default:
+            break;
         }
       })
     
@@ -408,6 +441,22 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
       note: infos.internalDebtNote || '',
       isShow: isViewAll || currentUserEmail === infos.internalDebtAccount?.toLowerCase()
     }
+    if (IS_VINFAST) {
+      candidateInfos.faceId = {
+        user: infos.faceIdApprover || {},
+        status: infos.statusFaceId,
+        actionDate: infos.dateFaceId || '',
+        note: infos.noteFaceId || '',
+        isShow: isViewAll || currentUserEmail === infos.faceIdAccount?.toLowerCase()
+      }
+      candidateInfos.adBlock = {
+        user: infos.adBlockApprover || {},
+        status: infos.statusADBlock,
+        actionDate: infos.dateADBlock || '',
+        note: infos.noteADBlock || '',
+        isShow: isViewAll || currentUserEmail === infos.adBlockApproverAccount?.toLowerCase()
+      }
+    }
     return {data: candidateInfos, remoteData: infos, userEmployeeNo: infos?.userInfo?.employeeNo};
   }
 
@@ -415,9 +464,9 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     const errors = {};
     const data = this.state.data;
     const isEmployee = true//this.state.canEditable.currentActive.includes("employee");
-    let noRequireFields = ['employee', 'tool', 'policy', 'traning', 'internal'];
-    if(!checkIsExactPnL(Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading)) {
-      noRequireFields.push('taxi');
+    const noRequireFields = ['employee', 'tool', 'policy', 'traning', 'internal'];
+    if(!IS_VINFAST) {
+      noRequireFields.push(...["taxi", "faceId", "adBlock"]);
     } 
     if(isEmployee) {
       for (const [key, value] of Object.entries(data)) {
@@ -471,6 +520,9 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
       } else {
         _canEditable[name] = true;
       }
+    }
+    if(approver) {
+      approver.avatar = '';
     }
     this.setState({
       canEditable: _canEditable,
@@ -665,7 +717,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
             {t('handover_2')}
             </div>
             {
-              checkIsExactPnL(Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading) ? 
+              IS_VINFAST ? 
               <>
                 <div className="row">
                     <div className="sub-title" style={{marginTop: '16px'}}>{t('handover_2_1a')}</div>
@@ -810,32 +862,118 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
               </div>
             }
 
-            <div className="row">
-                <div className="sub-title" style={{ marginTop: data.uniform.isShow ? 40 : 0 }}>{t('handover_2_4')}</div>
-            </div>
             {
-              data.finger.isShow && <div className="row">
-                <div className="col-4">
-                {t('user_action')}
-                    <ApproverComponent isEdit={!(disableComponent.employee_finger || disableComponent.manager_finger || disableComponent.hanover_finger)} userEmployeeNo={this.state.userEmployeeNo} approver={data.finger.user}  updateApprover={(approver, isApprover) => this.updateApprover('finger', approver,isApprover )} errors={{approver: this.state.errors['finger']}}/>
-                </div>
-                <div className="col-4">
-                {t('handover_date')}
-                    <ResizableTextarea disabled={true} value={data.finger.actionDate ? moment(data.finger.actionDate).format("DD/MM/YYYY") : ''} onChange={(e) => this.handleTextInputChange(e, 'finger', 'actionDate')} className="mv-10"/>
-                </div>
-                <div className="col-4">
-                {t('handover_status')}
-                    <Select  placeholder={t('option')} options={this.resultOptions} isDisabled={!disableComponent.finger}  isClearable={true} 
-                    value={this.resultOptions.filter(d => data.finger.status != null && d.value == data.finger.status)}
-                    onChange={e => this.handleChangeSelectInputs(e,'finger', 'status')} className="input"
-                    styles={{menu: provided => ({ ...provided, zIndex: 2 })}}/>
-                    {this.state.errors && this.state.errors['finger_status'] ? <p className="text-danger">{this.state.errors['finger_status']}</p> : null}
-                </div>
-                <div className="col-12">
-                {t('ghi_chu')}
-                    <ResizableTextarea placeholder={disableComponent.finger ? t('import') : ''} disabled={!disableComponent.finger} value={data.finger.note} onChange={(e) => this.handleTextInputChange(e, 'finger', 'note')} className="mv-10"/>
-                </div>
+              IS_VINFAST ? <>
+              <div className="row">
+                <div className="sub-title" style={{ marginTop: data.uniform.isShow ? 40 : 0 }}>{t('handover_2_4a')}</div>
               </div>
+              {
+                data.finger.isShow && <div className="row">
+                  <div className="col-4">
+                  {t('user_action')}
+                      <ApproverComponent isEdit={!(disableComponent.employee_finger || disableComponent.manager_finger || disableComponent.hanover_finger)} userEmployeeNo={this.state.userEmployeeNo} approver={data.finger.user}  updateApprover={(approver, isApprover) => this.updateApprover('finger', approver,isApprover )} errors={{approver: this.state.errors['finger']}}/>
+                  </div>
+                  <div className="col-4">
+                  {t('handover_date')}
+                      <ResizableTextarea disabled={true} value={data.finger.actionDate ? moment(data.finger.actionDate).format("DD/MM/YYYY") : ''} onChange={(e) => this.handleTextInputChange(e, 'finger', 'actionDate')} className="mv-10"/>
+                  </div>
+                  <div className="col-4">
+                  {t('handover_status')}
+                      <Select  placeholder={t('option')} options={this.resultOptions} isDisabled={!disableComponent.finger}  isClearable={true} 
+                      value={this.resultOptions.filter(d => data.finger.status != null && d.value == data.finger.status)}
+                      onChange={e => this.handleChangeSelectInputs(e,'finger', 'status')} className="input"
+                      styles={{menu: provided => ({ ...provided, zIndex: 2 })}}/>
+                      {this.state.errors && this.state.errors['finger_status'] ? <p className="text-danger">{this.state.errors['finger_status']}</p> : null}
+                  </div>
+                  <div className="col-12">
+                  {t('ghi_chu')}
+                      <ResizableTextarea placeholder={disableComponent.finger ? t('import') : ''} disabled={!disableComponent.finger} value={data.finger.note} onChange={(e) => this.handleTextInputChange(e, 'finger', 'note')} className="mv-10"/>
+                  </div>
+                </div>
+              }
+              <div className="row">
+                <div className="sub-title" style={{ marginTop: data.finger.isShow ? 40 : 0 }}>{t('handover_2_4b')}</div>
+              </div>
+              {
+                data.faceId.isShow && <div className="row">
+                  <div className="col-4">
+                  {t('user_action')}
+                      <ApproverComponent isEdit={!(disableComponent.employee_faceId || disableComponent.manager_faceId || disableComponent.hanover_faceId)} userEmployeeNo={this.state.userEmployeeNo} approver={data.faceId.user}  updateApprover={(approver, isApprover) => this.updateApprover('faceId', approver,isApprover )} errors={{approver: this.state.errors['faceId']}}/>
+                  </div>
+                  <div className="col-4">
+                  {t('handover_date')}
+                      <ResizableTextarea disabled={true} value={data.faceId.actionDate ? moment(data.faceId.actionDate).format("DD/MM/YYYY") : ''} onChange={(e) => this.handleTextInputChange(e, 'faceId', 'actionDate')} className="mv-10"/>
+                  </div>
+                  <div className="col-4">
+                  {t('handover_status')}
+                      <Select  placeholder={t('option')} options={this.resultOptions} isDisabled={!disableComponent.faceId}  isClearable={true} 
+                      value={this.resultOptions.filter(d => data.faceId.status != null && d.value == data.faceId.status)}
+                      onChange={e => this.handleChangeSelectInputs(e,'faceId', 'status')} className="input"
+                      styles={{menu: provided => ({ ...provided, zIndex: 2 })}}/>
+                      {this.state.errors && this.state.errors['faceId_status'] ? <p className="text-danger">{this.state.errors['faceId_status']}</p> : null}
+                  </div>
+                  <div className="col-12">
+                  {t('ghi_chu')}
+                      <ResizableTextarea placeholder={disableComponent.faceId ? t('import') : ''} disabled={!disableComponent.faceId} value={data.faceId.note} onChange={(e) => this.handleTextInputChange(e, 'faceId', 'note')} className="mv-10"/>
+                  </div>
+                </div>
+              }
+              <div className="row">
+                <div className="sub-title" style={{ marginTop: data.faceId.isShow ? 40 : 0 }}>{t('handover_2_4c')}</div>
+              </div>
+              {
+                data.adBlock.isShow && <div className="row">
+                  <div className="col-4">
+                  {t('user_action')}
+                      <ApproverComponent isEdit={!(disableComponent.employee_adBlock || disableComponent.manager_adBlock || disableComponent.hanover_adBlock)} userEmployeeNo={this.state.userEmployeeNo} approver={data.adBlock.user}  updateApprover={(approver, isApprover) => this.updateApprover('adBlock', approver,isApprover )} errors={{approver: this.state.errors['adBlock']}}/>
+                  </div>
+                  <div className="col-4">
+                  {t('handover_date')}
+                      <ResizableTextarea disabled={true} value={data.adBlock.actionDate ? moment(data.adBlock.actionDate).format("DD/MM/YYYY") : ''} onChange={(e) => this.handleTextInputChange(e, 'adBlock', 'actionDate')} className="mv-10"/>
+                  </div>
+                  <div className="col-4">
+                  {t('handover_status')}
+                      <Select  placeholder={t('option')} options={this.resultOptions} isDisabled={!disableComponent.adBlock}  isClearable={true} 
+                      value={this.resultOptions.filter(d => data.adBlock.status != null && d.value == data.adBlock.status)}
+                      onChange={e => this.handleChangeSelectInputs(e,'adBlock', 'status')} className="input"
+                      styles={{menu: provided => ({ ...provided, zIndex: 2 })}}/>
+                      {this.state.errors && this.state.errors['adBlock_status'] ? <p className="text-danger">{this.state.errors['adBlock_status']}</p> : null}
+                  </div>
+                  <div className="col-12">
+                  {t('ghi_chu')}
+                      <ResizableTextarea placeholder={disableComponent.adBlock ? t('import') : ''} disabled={!disableComponent.adBlock} value={data.adBlock.note} onChange={(e) => this.handleTextInputChange(e, 'adBlock', 'note')} className="mv-10"/>
+                  </div>
+                </div>
+              }
+              </> : <>
+              <div className="row">
+                <div className="sub-title" style={{ marginTop: data.uniform.isShow ? 40 : 0 }}>{t('handover_2_4')}</div>
+              </div>
+              {
+                data.finger.isShow && <div className="row">
+                  <div className="col-4">
+                  {t('user_action')}
+                      <ApproverComponent isEdit={!(disableComponent.employee_finger || disableComponent.manager_finger || disableComponent.hanover_finger)} userEmployeeNo={this.state.userEmployeeNo} approver={data.finger.user}  updateApprover={(approver, isApprover) => this.updateApprover('finger', approver,isApprover )} errors={{approver: this.state.errors['finger']}}/>
+                  </div>
+                  <div className="col-4">
+                  {t('handover_date')}
+                      <ResizableTextarea disabled={true} value={data.finger.actionDate ? moment(data.finger.actionDate).format("DD/MM/YYYY") : ''} onChange={(e) => this.handleTextInputChange(e, 'finger', 'actionDate')} className="mv-10"/>
+                  </div>
+                  <div className="col-4">
+                  {t('handover_status')}
+                      <Select  placeholder={t('option')} options={this.resultOptions} isDisabled={!disableComponent.finger}  isClearable={true} 
+                      value={this.resultOptions.filter(d => data.finger.status != null && d.value == data.finger.status)}
+                      onChange={e => this.handleChangeSelectInputs(e,'finger', 'status')} className="input"
+                      styles={{menu: provided => ({ ...provided, zIndex: 2 })}}/>
+                      {this.state.errors && this.state.errors['finger_status'] ? <p className="text-danger">{this.state.errors['finger_status']}</p> : null}
+                  </div>
+                  <div className="col-12">
+                  {t('ghi_chu')}
+                      <ResizableTextarea placeholder={disableComponent.finger ? t('import') : ''} disabled={!disableComponent.finger} value={data.finger.note} onChange={(e) => this.handleTextInputChange(e, 'finger', 'note')} className="mv-10"/>
+                  </div>
+                </div>
+              }
+              </>
             }
 
             <div className="row">
@@ -923,7 +1061,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
             }
 
             {
-              checkIsExactPnL(Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading) ?
+              IS_VINFAST ?
               <>
                 <div className="row">
                     <div className="sub-title" style={{ marginTop: data.policy.isShow ? 40 : 0 }}>{t('handover_2_8')}</div>

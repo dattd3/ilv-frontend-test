@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 import moment from 'moment'
 import { withTranslation } from "react-i18next"
 import axios from 'axios'
@@ -6,9 +6,11 @@ import _ from 'lodash'
 import { getRequestTypeIdsAllowedToReApproval, getRequestConfigurations } from "../../../commons/Utils"
 import DetailButtonComponent from '../DetailButtonComponent'
 import ApproverDetailComponent from '../ApproverDetailComponent'
+import RequestProcessing from '../RequestProcessing'
 import StatusModal from '../../../components/Common/StatusModal'
 import Constants from '../.../../../../commons/Constants'
-import { FOREIGN_SICK_LEAVE } from 'containers/Task/Constants'
+import { getOperationType } from 'containers/Utils/Common'
+import { FOREIGN_SICK_LEAVE, MARRIAGE_FUNERAL_LEAVE_KEY, VIN_UNI_SICK_LEAVE } from 'containers/Task/Constants'
 
 const TIME_FORMAT = 'HH:mm'
 
@@ -21,7 +23,6 @@ const RegisteredLeaveInfo = ({ leaveOfAbsence, t, annualLeaveSummary }) => {
 
     return t("Day")
   }
-
   return (
     <div className='registered-leave-info'>
       <h5 className='content-page-header'>{'Thông tin đã đăng ký nghỉ'}</h5>
@@ -29,11 +30,12 @@ const RegisteredLeaveInfo = ({ leaveOfAbsence, t, annualLeaveSummary }) => {
         {
           (leaveOfAbsence?.requestInfoOld && leaveOfAbsence?.requestInfoOld?.length > 0 ? leaveOfAbsence?.requestInfoOld : leaveOfAbsence?.requestInfo).map((info, infoIndex) => {
             let isForeignSickLeave = info?.absenceType?.value === FOREIGN_SICK_LEAVE
+            let isVinUniSickLeave = info?.absenceType?.value === VIN_UNI_SICK_LEAVE
 
             return (
               <div className='item' key={`info-${infoIndex}`}>
                 {
-                  isForeignSickLeave ? (
+                  (isForeignSickLeave || isVinUniSickLeave) ? (
                     <>
                       <div className="row">
                         <div className="col-xl-4">
@@ -46,7 +48,6 @@ const RegisteredLeaveInfo = ({ leaveOfAbsence, t, annualLeaveSummary }) => {
                         </div>
                         <div className="col-xl-4">
                           {t("TotalLeaveTime")}
-                          {/* <div className="detail">{ requestInfo && requestInfo.days && requestInfo.absenceType.value != "PQ02" ? requestInfo.days + ' ngày' : null } { requestInfo && requestInfo.hours  && requestInfo.absenceType.value == "PQ02" ? requestInfo.hours  + ' giờ' : null}</div> */}
                           <div className="detail">{( info && info?.days >= 1) ? info?.days + ' ' + formatDayUnitByValue(info?.days || 0) : info?.hours + ' ' + t("Hour")}</div>
                         </div>
                       </div>
@@ -55,10 +56,21 @@ const RegisteredLeaveInfo = ({ leaveOfAbsence, t, annualLeaveSummary }) => {
                           {t("LeaveCategory")}
                           <div className="detail">{info?.absenceType?.label || ""}</div>
                         </div>
-                        <div className="col-xl-4">
-                          {t("SickLeaveFundForExpat")}
-                          <div className="detail">{`${Number(annualLeaveSummary?.SICK_LEA_EXPAT || 0).toFixed(3)} ${formatDayUnitByValue(annualLeaveSummary?.SICK_LEA_EXPAT || 0)}`}</div>
-                        </div>
+                        {
+                          isForeignSickLeave
+                          ? (
+                            <div className="col-xl-4">
+                              {t("SickLeaveFundForExpat")}
+                              <div className="detail">{`${Number(annualLeaveSummary?.SICK_LEA_EXPAT || 0).toFixed(3)} ${formatDayUnitByValue(annualLeaveSummary?.SICK_LEA_EXPAT || 0)}`}</div>
+                            </div>
+                          )
+                          : (
+                            <div className="col-xl-4">
+                              {t("SickLeaveFundForVinUni")}
+                              <div className="detail">{`${Number(annualLeaveSummary?.SICK_LEA_VUNI || 0).toFixed(3)} ${formatDayUnitByValue(annualLeaveSummary?.SICK_LEA_VUNI || 0)}`}</div>
+                            </div>
+                          )
+                        }
                       </div>
                     </>
                   ) : (
@@ -86,7 +98,7 @@ const RegisteredLeaveInfo = ({ leaveOfAbsence, t, annualLeaveSummary }) => {
                   )
                 }
 
-                {(info && info?.absenceType && info?.absenceType?.value === 'PN03') && 
+                {(info && info?.absenceType && info?.absenceType?.value === MARRIAGE_FUNERAL_LEAVE_KEY) && 
                 <div className="row">
                   <div className="col">
                     {t("MarriageFuneral")}
@@ -142,7 +154,7 @@ const AdjustmentLeaveInfo = ({ requestInfoToShow, requestInfo, totalRequestedTim
       <div className='other-info'>
         <div className='row'>
           <div className="col-md-6">
-            <label>{(requestInfo && requestInfo.absenceType && requestInfo.absenceType.value === 'PN03') ? t("MarriageFuneral") : t("LeaveCategory")}</label>
+            <label>{(requestInfo && requestInfo.absenceType && requestInfo.absenceType.value === MARRIAGE_FUNERAL_LEAVE_KEY) ? t("MarriageFuneral") : t("LeaveCategory")}</label>
             <div className="detail adjustment">{requestInfo && requestInfo?.absenceType ? requestInfo.absenceType?.label : ""}</div>
           </div>
           <div className="col-md-6">
@@ -331,6 +343,16 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     }, {totalHours: 0, totalDays: 0})
     const totalRequestedTime = requestInfo?.isAllDay ? `${requestedTime?.totalDays} ${this.formatDayUnitByValue(requestedTime?.totalDays || 0)}` : `${requestedTime?.totalHours} ${t("Hour")}`
 
+    // BE confirm với loại yêu cầu Đăng ký nghỉ hoặc Công tác đào tạo thì lấy trong requestInfo (trừ ngày tạo)
+    const timeProcessing = {
+      createDate: leaveOfAbsence?.createDate,
+      assessedDate: requestInfo?.assessedDate,
+      approvedDate: requestInfo?.approvedDate,
+      updatedDate: requestInfo?.updatedDate,
+      deletedDate: requestInfo?.deletedDate,
+    }
+    const operationType = getOperationType(requestTypeId, requestInfo.actionType, leaveOfAbsence.processStatusId)
+
     return (
       <div className="leave-of-absence">
         <LeaveUserInfo userProfileInfo={userProfileInfo} annualLeaveSummary={annualLeaveSummary} t={t} viewPopup={viewPopup} />
@@ -349,18 +371,29 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
           isShowAppraisalInfo && 
           <>
             <h5 className='content-page-header'>{t("ConsenterInformation")}</h5>
-            <ApproverDetailComponent title={t("Consenter")} approver={leaveOfAbsence.appraiser} status={requestInfo ? requestInfo.processStatusId : ""} hrComment={requestInfo.appraiserComment} />
+            <ApproverDetailComponent 
+              title={t("Consenter")}
+              manager={leaveOfAbsence.appraiser}
+              status={requestInfo ? requestInfo.processStatusId : ""}
+              hrComment={requestInfo.appraiserComment}
+              isApprover={false} />
           </>
         }
 
         {
-          // this.getTypeDetail() === "request" ?
-          requestInfo && (Constants.STATUS_TO_SHOW_APPROVER.includes(requestInfo.processStatusId )) ?
+          requestInfo && (Constants.STATUS_TO_SHOW_APPROVER.includes(requestInfo.processStatusId )) &&
             <>
               <h5 className='content-page-header'>{t("ApproverInformation")}</h5>
-              <ApproverDetailComponent title={t("Approver")} approver={leaveOfAbsence.approver} status={requestInfo ? requestInfo.processStatusId : ""} hrComment={requestInfo.approverComment} />
-            </> : null
+              <ApproverDetailComponent
+                title={t("Approver")}
+                manager={leaveOfAbsence.approver}
+                status={requestInfo ? requestInfo.processStatusId : ""}
+                hrComment={requestInfo.approverComment}
+                isApprover={true} />
+            </>
         }
+
+        <RequestProcessing {...timeProcessing} operationType={operationType} />
 
         { leaveOfAbsence.requestDocuments.length > 0 && <Attachment leaveOfAbsence={leaveOfAbsence} t={t} /> }
 
@@ -374,7 +407,9 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
                   return <div key={index}>{msg}</div>
                 })}
               </div>
-            </div>}
+            </div>
+          }
+          {/* leaveOfAbsence?.comment && <span className='cancellation-reason'>{ leaveOfAbsence?.comment }</span> */} {/* comment -> lý do hủy từ api */}
         </div>
 
         {

@@ -23,7 +23,7 @@ class ConfirmationModal extends React.Component {
         this.sendRequest = 4;
     }
 
-    showResultModal = (res) => {
+    showResultModal = (res, type) => {
         const { t } = this.props;
         this.setState({ isShowResultConfirm: true });
         if (res && res.data) {
@@ -32,7 +32,7 @@ class ConfirmationModal extends React.Component {
             if (code === Constants.API_SUCCESS_CODE && res.data?.data[0]?.sub[0]?.status === "S") {
                 this.setState({
                     resultTitle: t("Successful"),
-                    resultMessage: t("successfulApprvalReq"),
+                    resultMessage: type == Constants.STATUS_NOT_APPROVED ? t("SuccessfulRejectRequest") : t("successfulApprvalReq"),
                     isSuccess: true
                 });
             } else {
@@ -44,7 +44,7 @@ class ConfirmationModal extends React.Component {
             }
         } else {
             this.setState({
-                resultTitle: "Thông Báo",
+                resultTitle: t("Notification"),
                 resultMessage: "Có lỗi ngoại lệ xảy ra, liên hệ IT",
                 isSuccess: false
             });
@@ -72,7 +72,7 @@ class ConfirmationModal extends React.Component {
             }
         } else {
             if (type === "yes") {
-                if (this.props.type == Constants.STATUS_NOT_APPROVED) {
+                if (this.props.type == Constants.STATUS_NOT_APPROVED) { // Từ chối
                     const errors = this.verifyInput()
                     const message = this.state.message
 
@@ -94,8 +94,15 @@ class ConfirmationModal extends React.Component {
                     axios.post(`${process.env.REACT_APP_REQUEST_URL}request/approve`, data, {
                         headers: { Authorization: localStorage.getItem('accessToken') }
                     })
+                    .then(response => {
+                        this.showResultModal(response, this.props.type);
+                    })
+                    .catch(error => {
+                        this.showResultModal(error);
+                    })
                     .finally(() => {
-                        window.location.href = "/tasks?tab=approval";
+                        this.props.onHide()
+                        // window.location.href = "/tasks?tab=approval";
                     })
                 } else if (this.props.type == Constants.STATUS_APPROVED) {
                     let data = [{
@@ -112,7 +119,7 @@ class ConfirmationModal extends React.Component {
                         headers: { Authorization: localStorage.getItem('accessToken') }
                     })
                     .then(response => {
-                        this.showResultModal(response);
+                        this.showResultModal(response, this.props.type);
                     })
                     .finally(res => {
                         this.props.onHide()

@@ -4,7 +4,7 @@ import axios from 'axios'
 import _, { debounce } from 'lodash'
 import { withTranslation } from "react-i18next";
 import APPROVER_LIST_LEVEL from "../../../commons/Constants"
-import { getMuleSoftHeaderConfigurations, getRequestConfigurations } from '../../../commons/Utils';
+import { getMuleSoftHeaderConfigurations, getRequestConfigurations, prepareOrganization } from '../../../commons/Utils';
 import moment from 'moment';
 
 const MyOption = props => {
@@ -69,7 +69,7 @@ class SearchHRComponent extends React.Component {
               fullname: manager.fullName,
               account: manager.userid.toLowerCase(),
               current_position: manager.title,
-              department: manager.department
+              department: prepareOrganization(manager?.division, manager?.department, manager?.unit, manager?.part)
             }
             this.setState({ approver: managerApproval })
             this.props.updateApprover(managerApproval, true)
@@ -152,7 +152,8 @@ class SearchHRComponent extends React.Component {
       this.setState({isSearching: true})
       const payload = {
         account: value,
-        employeeNo: localStorage.getItem('employeeNo')
+        employeeNo: localStorage.getItem('employeeNo'),
+        pnl_code: localStorage.getItem('companyCode')
       }
       axios.post(`${process.env.REACT_APP_REQUEST_URL}user/employee/hr_officer`, payload, config)
         .then(res => {

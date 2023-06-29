@@ -1,17 +1,14 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { withRouter } from 'react-router-dom'
 import moment from 'moment'
 import Rating from 'react-rating'
-import _ from 'lodash'
-import { Image } from 'react-bootstrap'
 import Constants from '../.../../../../commons/Constants'
-import { checkIsExactPnL, checkVersionPnLSameAsVinhome } from '../../../commons/commonFunctions'
+import { checkVersionPnLSameAsVinhome, IS_VINFAST } from '../../../commons/commonFunctions'
 import 'react-datepicker/dist/react-datepicker.css'
-import { vi, enUS } from 'date-fns/locale'
 import { withTranslation } from "react-i18next";
-import './styles.scss'
+import './styles.scss';
+import { formatProcessTime } from 'commons/Utils'
 
-const IS_VINFAST = checkIsExactPnL(Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading);
 const ContractEvaluationdetail = (props) => {
   const { data, id, type, idSalary, t } = props
   const dataSalary = props.dataSalary;
@@ -406,21 +403,21 @@ const ContractEvaluationdetail = (props) => {
                 </div>
               </div>
               {
-                data.nguoipheduyet && data.comment ?
+                data.nguoipheduyet && data.nguoipheduyet.comment ?
                   <div className="col-12">
                     {t('reason_not_approve')}
                     <div className="detail">{data.nguoipheduyet.comment}</div>
                   </div>
                   : null
               }
-              {
+              {/* {
                 data.nguoipheduyet && data.approvalDate ?
                   <div className="col-12">
                     {t('approval_date')}
                     <div className="detail">{moment(data.approvalDate).format('DD/MM/YYYY')}</div>
                   </div>
                   : null
-              }
+              } */}
             </div>
           </div>
 
@@ -444,6 +441,64 @@ const ContractEvaluationdetail = (props) => {
               </div>
             </>
           }
+
+          <div className="box cbnv">
+            <div className="row approve">
+              <div className="col-12">
+                <span className="title">{t('RequestHistory').toUpperCase()}</span>
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-12">
+                <div className="divider"></div>
+              </div>
+              <div className="col-12">
+                <div className="row">
+                  {
+                    formatProcessTime(data.createdDate) && <div className="col-4">
+                    {t("TimeToSendRequest")}
+                    <div className="detail">
+                      {formatProcessTime(data.createdDate)}
+                    </div>
+                  </div>
+                  }
+                  {
+                    formatProcessTime(data.assessedDate) && <div className="col-4">
+                      {t("SupervisorAssetDate")}
+                      <div className="detail">
+                        {formatProcessTime(data.assessedDate)}
+                      </div>
+                    </div>
+                  }
+                  {
+                    formatProcessTime(data.supervisorDate) && <div className="col-4">
+                      {t("ConsentDate")}
+                      <div className="detail">
+                        {formatProcessTime(data.supervisorDate)}
+                      </div>
+                    </div>
+                  }
+                  {
+                    formatProcessTime(data.hrAppraiserDate) && <div className="col-4">
+                      {t("HRAssetDate")}
+                      <div className="detail">
+                        {formatProcessTime(data.hrAppraiserDate)}
+                      </div>
+                    </div>
+                  }
+                  {
+                    formatProcessTime(data.approvalDate) && <div className="col-4">
+                      {t("ApprovalDate")}
+                      <div className="detail">
+                        {formatProcessTime(data.approvalDate)}
+                      </div>
+                    </div>
+                  }
+                  
+                </div>
+              </div>
+            </div>
+          </div>
 
           <ul className="list-inline">
             {data.cvs.map((file, index) => {
