@@ -459,24 +459,23 @@ class RequestTaskList extends React.Component {
 
         if (page === "approval" || !isEditOnceTime) {
             return false
-        } else {
-            if (status == Constants.STATUS_APPROVED && [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP].includes(requestTypeId)) {
-                if (status == Constants.STATUS_APPROVED) {
-                    const firstStartDate = startDate?.length > 0 ? startDate[0] : null
-                    if (this.checkDateLessThanPayPeriod(moment(firstStartDate, 'DD/MM/YYYY')?.isValid() ? moment(firstStartDate, 'DD/MM/YYYY').format('YYYYMMDD') : null)) {
-                        return true
-                    }
-                    return false
-                }
-                return true
-            }
-            return false
         }
+        if (status == Constants.STATUS_APPROVED && [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP].includes(requestTypeId)) {
+            if (status == Constants.STATUS_APPROVED) {
+                const firstStartDate = startDate?.length > 0 ? startDate[0] : null
+                if (this.checkDateLessThanPayPeriod(moment(firstStartDate, 'DD/MM/YYYY')?.isValid() ? moment(firstStartDate, 'DD/MM/YYYY').format('YYYYMMDD') : null)) {
+                    return true
+                }
+                return false
+            }
+            return true
+        }
+        return false
     }
 
-    isShowEvictionButton = (status, requestTypeId, startDate, isEditOnceTime) => {
+    isShowEvictionButton = (status, requestTypeId, startDate) => {
         const { page } = this.props
-        if (page === "approval" || !isEditOnceTime) {
+        if (page === "approval") {
             return false
         } else {
           const firstStartDate = startDate?.length > 0 ? startDate[0] : null
@@ -993,7 +992,6 @@ class RequestTaskList extends React.Component {
                                             const isShowEvictionButton = this.isShowEvictionButton(child?.processStatusId, 
                                               child?.requestTypeId, 
                                               child?.requestTypeId === Constants.OT_REQUEST ? child?.dateRange : child?.startDate, 
-                                              child?.isEdit
                                             );
                                             let actionType = child?.actionType || null
                                             if (child?.requestTypeId == Constants.RESIGN_SELF) {
