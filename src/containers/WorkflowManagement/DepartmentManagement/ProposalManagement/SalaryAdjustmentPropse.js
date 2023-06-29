@@ -1500,7 +1500,7 @@ const SalaryAdjustmentPropse = (props) => {
               colSpan={2}
               className="min-width text-center font-weight-bold"
             >
-              {t('effective_time')}
+              {t('EffectiveDate')}
             </td>
             <td colSpan={1} className="min-width text-center font-weight-bold">
               {t('Action')}
@@ -1566,7 +1566,7 @@ const SalaryAdjustmentPropse = (props) => {
                               intlConfig={renderCurrency()}
                               className="no-vborder"
                               value={item?.currentSalary}
-                              placeholder="Nhập"
+                              placeholder={t('EvaluationInput')}
                               style={{ width: '100%', background: '#fff' }}
                               maxLength={11}
                             />
@@ -1609,7 +1609,7 @@ const SalaryAdjustmentPropse = (props) => {
                             'suggestedSalary'
                           );
                         }}
-                        placeholder="Nhập"
+                        placeholder={t('EvaluationInput')}
                         maxLength={11}
                       />
                     ) : (
@@ -1630,7 +1630,7 @@ const SalaryAdjustmentPropse = (props) => {
                                   intlConfig={renderCurrency()}
                                   className="no-vborder"
                                   value={item?.suggestedSalary}
-                                  placeholder="Nhập"
+                                  placeholder={t('EvaluationInput')}
                                   style={{ width: '100%', background: '#fff' }}
                                   maxLength={11}
                                 />
@@ -1764,7 +1764,7 @@ const SalaryAdjustmentPropse = (props) => {
               item.canChangeAction ? (
                 <>
                   <ResizableTextarea
-                    placeholder={'Nhập'}
+                    placeholder={t('EvaluationInput')}
                     value={item?.comment || ""}
                     onChange={(e) =>
                       handleTextInputChange(
@@ -1870,7 +1870,7 @@ const SalaryAdjustmentPropse = (props) => {
                 <span className="input">
                   {viewSetting.disableComponent.editSubjectApply ? (
                     <ResizableTextarea
-                      placeholder={'Nhập'}
+                      placeholder={t('EvaluationInput')}
                       value={item?.strength || ""}
                       onChange={(e) =>
                         handleTextInputChange(
@@ -1895,7 +1895,7 @@ const SalaryAdjustmentPropse = (props) => {
                 <span className="input">
                   {viewSetting.disableComponent.editSubjectApply ? (
                     <ResizableTextarea
-                      placeholder={'Nhập'}
+                      placeholder={t('EvaluationInput')}
                       value={item?.weakness || ""}
                       onChange={(e) =>
                         handleTextInputChange(
