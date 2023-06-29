@@ -15,6 +15,33 @@ import WorkOutSideGroupItemDetail from "./WorkOutSideGroupItemDetail"
 import DocumentComponent from "containers/Task/RequestDetail/DocumentComponent"
 import { typeViewSalary } from "./WorkOutSideGroup"
 
+const valueType = {
+    date: 'date',
+    salary: 'salary',
+    other: 'other',
+}
+
+const isEmptyByValue = (val, type = valueType.other) => {
+    if (type === valueType.date) {
+        if (val === null || val === undefined || val === '00000000' || val?.trim() === '') {
+            return true
+        }
+        return false
+    }
+
+    return val === null || val === undefined || val?.trim() === ''
+}
+
+const formatValue = (val, type = valueType.other) => {
+    if (
+        (type === valueType.date && (val === null || val === undefined || val?.trim() === '00000000' || val?.trim() === '')) 
+        || (type === valueType.other && (val === null || val === undefined || val?.trim() === ''))
+    ) {
+        return ''
+    }
+    return val
+}
+
 const WorkOutSideGroupDetail = (props) => {
     const { details, viewPopup } = props
     const id = props?.match?.params?.id
@@ -302,4 +329,5 @@ const WorkOutSideGroupDetail = (props) => {
     )
 }
 
+export { valueType, isEmptyByValue, formatValue }
 export default withRouter(WorkOutSideGroupDetail)
