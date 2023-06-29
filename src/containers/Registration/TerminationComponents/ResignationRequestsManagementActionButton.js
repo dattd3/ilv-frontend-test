@@ -6,8 +6,8 @@ import { withTranslation } from "react-i18next"
 import Constants from "../../../commons/Constants"
 import AttachmentComponent from "../TerminationComponents/AttachmentComponent"
 import { t } from 'i18next'
-import { checkFilesMimeType } from '../../../utils/file'
-import { checkIsExactPnL } from 'commons/commonFunctions'
+import { validateFileMimeType, validateTotalFileSize } from '../../../utils/file'
+import { IS_VINFAST } from 'commons/commonFunctions'
 
 class ResignationRequestsManagementActionButton extends React.PureComponent {
     
@@ -125,7 +125,7 @@ class ResignationRequestsManagementActionButton extends React.PureComponent {
 
     handleChangeFileInput = e => {
         const files = Object.values(e.target.files)
-        if (checkFilesMimeType(e, files)) {
+        if (validateFileMimeType(e, files, this.props.t) && validateTotalFileSize(e, files, this.props.t)) {
             this.setState({files: files})
             this.props.updateAttachedFiles(files)
         }
@@ -184,17 +184,18 @@ class ResignationRequestsManagementActionButton extends React.PureComponent {
             {value: 'isHandoverSoftware', key: 'statusSoftware', label: t('software_status')},
             {value: 'isHandoverConfirmation', key: 'statusConfirmation', label: t('policy_status')},
         ]
-        if(checkIsExactPnL(Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading)) {
+        if(IS_VINFAST) {
             taskLists = [
                 {value: 'isHandoverWork', key: 'statusWork', label: t('work_status')},
                 {value: 'isHandoverAsset', key: 'statusAsset', label: t('laptop_status')},
                 {value: 'isVehicleCard', key: 'vehicleCardStatus', label: t('taxi_status')},
                 {value: 'isHandoverSocial', key: 'statusSocial', label: t('social_status')},
                 {value: 'isHandoverUniform', key: 'statusUniform', label: t('uniform_status')},
-                {value: 'isHandoverFingerprintEmail', key: 'statusFingerprintEmail', label: t('email_status')},
+                {value: 'isHandoverFingerprintEmail', key: 'statusFingerprintEmail', label: IS_VINFAST ? t('BlockFingerprint') : t('email_status')},
+                {value: 'isHandOverFaceId', key: 'statusFaceId', label: t('BlockFaceID')},
+                {value: 'isHandOverADBlock', key: 'statusADBlock', label: t('BlockEmailAdAccount')},
                 {value: 'isHandoverDebt', key: 'statusDebt', label: t('timesheet_status')},
                 {value: 'isHandoverSoftware', key: 'statusSoftware', label: t('software_status')},
-                {value: 'isHandoverConfirmation', key: 'statusConfirmation', label: t('policy_status')},
                 {value: 'isHandoverConfirmation', key: 'statusConfirmation', label: t('policy_status')},
                 {value: 'isTrainingDebt', key: 'trainingDebtStatus', label: t('training_status')},
                 {value: 'isInternalDebt', key: 'internalDebtStatus', label: t('internal_status')},

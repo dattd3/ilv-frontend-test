@@ -4,7 +4,8 @@ import moment from 'moment'
 import DetailButtonComponent from '../DetailButtonComponent'
 import AttachmentComponent from '../TerminationComponents/AttachmentComponent'
 import Constants from '../.../../../../commons/Constants'
-import { getResignResonsMasterData } from 'commons/Utils'
+import { formatProcessTime, getResignResonsMasterData } from 'commons/Utils'
+import { checkIsExactPnL } from 'commons/commonFunctions'
 
 class RegistrationEmploymentTermination extends React.Component {
     constructor(props) {
@@ -34,7 +35,6 @@ class RegistrationEmploymentTermination extends React.Component {
 
     render() {
         const { t, resignInfo } = this.props
-
         if (!resignInfo.requestInfo) {
             return null;
         }
@@ -44,7 +44,6 @@ class RegistrationEmploymentTermination extends React.Component {
         if (resignInfo?.requestInfo?.formResignation == Constants.REGISTER_CONTRACT_TERMINATION_CODE && resignInfo?.requestInfo.terminationUserInfo && resignInfo?.requestInfo.terminationUserInfo.length == 1) {
             userInfos = resignInfo?.requestInfo.terminationUserInfo[0]
         }
-
         const requestInfo = resignInfo.requestInfo
         const requestTypeId = resignInfo.requestTypeId
         const approvalInfo = resignInfo.approver || {}
@@ -56,7 +55,10 @@ class RegistrationEmploymentTermination extends React.Component {
             }
         })
         const reasonMasterData = getResignResonsMasterData();
-
+        // VA - HĐLĐ XĐ thời hạn - 30d
+        // VB - HĐLĐ KXĐ thời hạn - 45d
+        const isNotEnoughTime = ((userInfos.contractType === "VA" && moment(requestInfo.dateTermination, "YYYY-MM-DD").diff(moment(), "days") < 30) ||
+          (userInfos.contractType === "VB" && moment(requestInfo.dateTermination, "YYYY-MM-DD").diff(moment(), "days") < 45)) && !checkIsExactPnL(Constants.pnlVCode.VinHome)
         return (
             <div className="registration-section registration-employment-termination justify-content-between">
                 <div className="block staff-information-block">
@@ -226,6 +228,46 @@ class RegistrationEmploymentTermination extends React.Component {
                     </div>
                 </div>
 
+                <div className="block senior-executive">
+                    <div className="box shadow">
+                        <h6 className="block-title has-border-bottom">{t('RequestHistory')}</h6>
+                        <div className="row">
+                            {
+                                formatProcessTime(resignInfo?.createDate) && <div className="col-4">
+                                    <p className="title">{t('TimeToSendRequest')}</p>
+                                    <div>
+                                        <div className="detail">{formatProcessTime(resignInfo?.createDate)}</div>
+                                    </div>
+                                </div>
+                            }
+                            {
+                                formatProcessTime(resignInfo?.assessedDate) && <div className="col-4">
+                                    <p className="title">{t('ConsentDate')}</p>
+                                    <div>
+                                        <div className="detail">{formatProcessTime(resignInfo?.assessedDate)}</div>
+                                    </div>
+                                </div>
+                            }
+                            {
+                                formatProcessTime(resignInfo?.approvedDate) && <div className="col-4">
+                                    <p className="title">{t('ApprovalDate')}</p>
+                                    <div>
+                                        <div className="detail">{formatProcessTime(resignInfo?.approvedDate)}</div>
+                                    </div>
+                                </div>
+                            }
+                            {
+                                formatProcessTime(resignInfo?.deletedDate) && <div className="col-4">
+                                    <p className="title">{t('CancelDate')}</p>
+                                    <div>
+                                        <div className="detail">{formatProcessTime(resignInfo?.deletedDate)}</div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+
                 <AttachmentComponent files={files} updateFiles={this.updateFiles} />
 
                 <div className="block-status">
@@ -251,6 +293,7 @@ class RegistrationEmploymentTermination extends React.Component {
                         urlName={'requestattendance'}
                         requestTypeId={requestTypeId}
                         action={this.props.action}
+                        isNotEnoughTimeResign={isNotEnoughTime}
                     /> : null}
 
             </div>

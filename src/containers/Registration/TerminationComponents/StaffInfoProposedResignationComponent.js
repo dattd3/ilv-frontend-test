@@ -91,6 +91,7 @@ class StaffInfoProposedResignationComponent extends React.PureComponent {
                     fullName: employee.fullname,
                     jobTitle: employee.job_title,
                     department: employee.department,
+                    departmentName: employee.departmentName,
                     dateStartWork: contractInfo[employee.employee_no]?.dateStartWork || '',
                     contractType: contractInfo[employee.employee_no]?.lastestContractType || '',
                     contractName:contractInfo[employee.employee_no]?.lastestContractName || '',
@@ -105,7 +106,8 @@ class StaffInfoProposedResignationComponent extends React.PureComponent {
                     departmentId: employee.orglv3_id,
                     unitId: employee.orglv5_id,
                     rankId: employee.rank_id,
-                    costCenter: employee.costCenter
+                    costCenter: employee.costCenter,
+                    master_code: employee.master_code
                 };
             })
     
@@ -255,7 +257,6 @@ class StaffInfoProposedResignationComponent extends React.PureComponent {
     }
 
     updateParent = data => {
-        console.log('updateParent', data);
         this.setState({
           filter: {
             ...this.state.filter,

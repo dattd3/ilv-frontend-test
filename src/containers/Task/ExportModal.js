@@ -49,7 +49,7 @@ class ExportModal extends React.Component {
         },
         params: {
           type: type,
-          processStatusId: this.state.status ? this.state.status.value : 0,
+          status: this.state.status ? this.state.status.value : 0,
           companyCode: localStorage.getItem("companyCode"),
           fromDate: moment(this.state.fromDate, "DD/MM/YYYY").format('YYYYMMDD').toString(),
           toDate: moment(this.state.toDate, "DD/MM/YYYY").format('YYYYMMDD').toString(),
@@ -59,7 +59,8 @@ class ExportModal extends React.Component {
         }
       }
       this.setState({ disabledDownloadBtn: true });
-      axios.get(`${process.env.REACT_APP_REQUEST_URL}Request/ExportExcel`, config)
+      const HOST = this.props.requestCategory == 1 ? process.env.REACT_APP_REQUEST_URL : process.env.REACT_APP_REQUEST_SERVICE_URL;
+      axios.get(`${HOST}Request/ExportExcel`, config)
       .then(res => {
         var blob = new Blob([res.data], { type: "application/octetstream" });
  
@@ -105,7 +106,7 @@ class ExportModal extends React.Component {
                 onHide={this.props.onHide}
             >
                 <Modal.Header className="apply-position-modal bg-approved" closeButton>
-                    <Modal.Title>Tải về báo cáo</Modal.Title>
+                    <Modal.Title>{t("LabelDownloadReport")}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                 <div className="time-area row">

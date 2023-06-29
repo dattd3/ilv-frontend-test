@@ -41,7 +41,8 @@ export default {
   AccessDenied: "/access-denied",
   // BenefitUpload: "/benefit/upload",
   JobUpload: "/job/upload",
-  Job: "/job",  
+  Job: "/job",
+  JobDescription: '/job-description',
   Kpi: "/kpi",
   KpiDetail: "/kpi/:id",
   PositionRecruiting: "/position-recruiting",
@@ -69,9 +70,16 @@ export default {
   RegistrationDetailRequest: "/registration/:id/:childId/request",
   RegistrationDetailApproval: "/registration/:id/:childId/approval",
   RegistrationDetailConsent: "/registration/:id/:childId/consent",
+
+  // Registration Management for employee proposal
+  RegistrationManagement: "/registration-management",
+  RegistrationSalaryAdjustment: "/registration-salary-adjustment/:id/:type",
+  RegistrationTransferAppoint: "/registration-transfer/:id/:type",
   RegistrationEmploymentTermination: "/registration-employment-termination",
+
   ProposedResignation: "/proposed-resignation",
   ResignationRequestsManagement: "/management-resignation-requests",
+  CreateContractTerminationInterview: "/contract-termination-interview",
   ContractTerminationInterview: "/contract-termination-interview/:id",
   ContractTerminationInterviewExport: "/contract-termination-interview/:id/:type",
   //Evalution
@@ -90,6 +98,8 @@ export default {
   PersonalDetails: "/personal-detail-management",
   ProposalManagement: "/proposal-management",
   SalaryAdjustmentPropse: "/salaryadjustment/:id/:type",
+  TransferProposal: "/proposed-transfer/:id/:type",
+  AppointProposal: "/proposed-appointment/:id/:type",
 
   //Vaccine
   VaccineList: "/vaccination",

@@ -10,8 +10,9 @@ class DocumentComponent extends React.Component {
                 (documents || []).map((item, i) => {
                     return <li className="list-inline-item document-block" key={i}>
                         <a className="document-item" key={i} href={item.fileUrl} target="_blank" title={item.fileName}>
-                            <span>{item.fileName} {`(${item.fileSize} KB)`}</span>
+                            <span>{item.fileName}</span>
                         </a>
+                        <span className='size'>{`(${item?.fileSize}KB)`}</span>
                     </li>
                 })
             }

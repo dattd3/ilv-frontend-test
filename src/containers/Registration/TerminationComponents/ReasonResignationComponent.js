@@ -4,8 +4,8 @@ import DatePicker from 'react-datepicker'
 import moment from 'moment'
 import { withTranslation } from "react-i18next"
 import 'react-datepicker/dist/react-datepicker.css'
-import { vi, enUS } from 'date-fns/locale'
 import _ from 'lodash';
+import { withRouter } from 'react-router-dom';
 
 class ReasonResignationComponent extends React.PureComponent {
     constructor(props) {
@@ -13,6 +13,13 @@ class ReasonResignationComponent extends React.PureComponent {
         this.state = {
             infos: {}
         }
+    }
+
+    componentDidMount() {
+      const { isEmployee, history } = this.props
+      if (isEmployee && !history.location?.state?.isSubmittedInterview) {
+        history.replace('/contract-termination-interview?redirectURL=/registration-employment-termination')
+      }
     }
 
     handleSelectChange = e => {
@@ -89,7 +96,7 @@ class ReasonResignationComponent extends React.PureComponent {
                     <div className="box shadow">
                     <div className="row">
                             <div className="col-4">
-                                <p className="title">{t('ngay_lam_viec_cuoi_cung')}<span className="required">(*)</span></p>
+                                <p className="title">{t('LastWorkingDay')}<span className="required">(*)</span></p>
                                 <div className="content input-container">
                                     <label>
                                         <DatePicker
@@ -100,7 +107,10 @@ class ReasonResignationComponent extends React.PureComponent {
                                             dateFormat="dd/MM/yyyy"
                                             placeholderText={t('Select')}
                                             locale={t("locale")}
-                                            className="form-control input" />
+                                            className="form-control input"
+                                            minDate={moment().toDate()}
+                                            maxDate={new Date(9999, 1, 1)}
+                                          />
                                         <span className="input-group-addon input-img" style={{top: '12px'}}><i className="fas fa-calendar-alt text-info"></i></span>
                                     </label>
                                 </div>
@@ -133,4 +143,4 @@ class ReasonResignationComponent extends React.PureComponent {
     }
 }
 
-export default withTranslation()(ReasonResignationComponent)
+export default withTranslation()(withRouter(ReasonResignationComponent))

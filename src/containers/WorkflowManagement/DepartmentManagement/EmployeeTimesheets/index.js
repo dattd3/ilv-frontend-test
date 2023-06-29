@@ -10,7 +10,7 @@ import * as FileSaver from 'file-saver'
 import * as XLSX from 'xlsx-js-style'
 import TimeSheetMember from './TimeSheetMember'
 import Constants from "../../../../commons/Constants";
-import { formatStringByMuleValue, getMuleSoftHeaderConfigurations, getRequestConfigurations, getDateByRangeAndFormat } from "../../../../commons/Utils"
+import { formatStringByMuleValue, getMuleSoftHeaderConfigurations, getRequestConfigurations, getDateByRangeAndFormat, formatStringDateTimeByMuleValue } from "../../../../commons/Utils"
 import ResultDetailModal from './ResultDetailModal'
 import HOCComponent from '../../../../components/Common/HOCComponent'
 const moment = extendMoment(Moment)
@@ -31,6 +31,8 @@ const EVENT_TYPE = {
   EVENT_NGHI_CONGTAC: 30,
   EVENT_OT: 7,
 };
+
+const currentUserPnLCode = localStorage.getItem("companyCode")
 
 class EmployeeTimesheets extends Component {
   constructor() {
@@ -300,8 +302,42 @@ class EmployeeTimesheets extends Component {
   };
 
   isHoliday = (item) => {
-    return item.shift_id == Constants.SHIFT_CODE_OFF || (item.is_holiday == 1 && localStorage.getItem("companyCode") != "V060");
+    return (item.shift_id == Constants.SHIFT_CODE_OFF || (item.is_holiday == 1 && currentUserPnLCode != Constants.pnlVCode.VinMec)) 
+    && (
+      !formatStringDateTimeByMuleValue(item?.from_time1) && !formatStringDateTimeByMuleValue(item?.from_time2)
+      && !formatStringDateTimeByMuleValue(item?.to_time1) && !formatStringDateTimeByMuleValue(item?.to_time2)
+    )
   };
+
+  getRealDatetimeForCheckFail = (startTime, endTime, currentDay, nextDay, startAssignment, endAssignment) => {
+    let start = currentDay + startTime;
+    let end = startTime < endTime ? currentDay + endTime : nextDay + endTime;
+    if(startAssignment == '-' || startAssignment == '<') {
+      start = nextDay + startTime;
+    };
+    if(endAssignment == '-' || endAssignment == '<') {
+      end = nextDay + endTime;
+    }
+    return {
+      start:start,
+      end: end
+    };
+  }
+
+  getKehoach2DatetimeForCheckFail = (startTime, endTime, endtime1, currentDay, nextDay) => {
+    let start = currentDay + startTime;
+    let end = startTime < endTime ? currentDay + endTime : nextDay + endTime;
+
+    //check case ca 2 nam het o ngay moi 
+    if(startTime < endtime1) {
+      start = nextDay + startTime;
+      end = nextDay + endTime;
+    }
+    return {
+      start: start,
+      end: end
+    };
+  }
 
   getDatetimeForCheckFail(startTime, endTime, currentDay, nextDay) {
     return {
@@ -356,9 +392,7 @@ class EmployeeTimesheets extends Component {
     for (let index = 0; index < data.length; index++) {
       const item = data[index];
       const currentDay = moment(item.date, "DD-MM-YYYY").format("YYYYMMDD");
-      const nextDay = moment(
-        this.getDayOffset(moment(item.date, "DD-MM-YYYY").toDate(), 1)
-      ).format("YYYYMMDD");
+      const nextDay = moment(this.getDayOffset(moment(item.date, "DD-MM-YYYY").toDate(), 1)).format("YYYYMMDD");
 
       const timeSteps = [];
       //gio ke hoach  type( 0:khong co event , 1:  co 1 event, 2: event dang tiep tu,), subtype (0, khong co, 1 : etime 1, 2 time 2, 3 ca 2 time)
@@ -432,11 +466,12 @@ class EmployeeTimesheets extends Component {
           line2.type1 = EVENT_TYPE.EVENT_GIOTHUCTE + line2.type1[1];
           line2.subtype = 1 + line2.subtype[1];
           timeSteps.push(
-            this.getDatetimeForCheckFail(
+            this.getRealDatetimeForCheckFail(
               item.start_time1_fact,
               item.end_time1_fact,
               currentDay,
-              nextDay
+              nextDay,
+              item.day_assignment_in1, item.day_assignment_out1
             )
           );
         } else {
@@ -454,11 +489,13 @@ class EmployeeTimesheets extends Component {
           line2.type1 = line2.type1[0] + EVENT_TYPE.EVENT_GIOTHUCTE;
           line2.subtype = line2.subtype[0] + 1;
           timeSteps.push(
-            this.getDatetimeForCheckFail(
+            this.getRealDatetimeForCheckFail(
               item.start_time2_fact,
               item.end_time2_fact,
               currentDay,
-              nextDay
+              nextDay,
+              item.day_assignment_in2, 
+              item.day_assignment_out2
             )
           );
         } else {
@@ -545,25 +582,32 @@ class EmployeeTimesheets extends Component {
 
       //check loi
       //check betwwen step time
-      let timeStepsSorted = timeSteps.sort((a, b) =>
-        a.start > b.start ? 1 : -1
-      );
+      let timeStepsSorted = timeSteps.sort((a, b) => a.start > b.start ? 1 : -1);
+      //bỏ những giờ bị lồng nhau
+      for(let i = 0; i < timeStepsSorted.length - 1; i++) {
+        for(let j = i + 1; j < timeStepsSorted.length ; j++) {
+          if(!timeStepsSorted[i].isInside && timeStepsSorted[i].end >= timeStepsSorted[j].end) {
+            timeStepsSorted[j].isInside = true;
+          }
+        }
+      }
+      timeStepsSorted = timeStepsSorted.filter(a => !a.isInside);
+
       let isValid1 = true;
       let isValid2 = true;
       let isShift1 = true;
-      let minStart = 0,
-        maxEnd = 0,
-        minStart2 = null,
-        maxEnd2 = null;
+
+      let minStart = 0, maxEnd = 0, minStart2 = null, maxEnd2 = null, start2Index = 9999;
       const kehoach1 = this.getDatetimeForCheckFail(
         item.from_time1,
         item.to_time1,
         currentDay,
         nextDay
       );
-      const kehoach2 = this.getDatetimeForCheckFail(
+      const kehoach2 = this.getKehoach2DatetimeForCheckFail(
         item.from_time2,
         item.to_time2,
+        item.to_time1,
         currentDay,
         nextDay
       );
@@ -571,29 +615,29 @@ class EmployeeTimesheets extends Component {
       if (timeSteps && timeSteps.length > 0) {
         minStart = timeStepsSorted[0].start;
         maxEnd = timeStepsSorted[0].end;
-        minStart2 = timeStepsSorted[0].start;
-        maxEnd2 = timeStepsSorted[0].end;
+        minStart2 = '99999999999999';
+        maxEnd2 = '00000000000000';
         for (let i = 0, j = 1; j < timeStepsSorted.length; i++, j++) {
-          minStart =
-            isShift1 && timeStepsSorted[i].start < minStart
-              ? timeStepsSorted[i].start
-              : minStart;
-          minStart2 =
-            timeStepsSorted[i].start < minStart2
-              ? timeStepsSorted[i].start
-              : minStart2;
+          minStart = isShift1 && timeStepsSorted[i].start < minStart ? timeStepsSorted[i].start : minStart;
+          minStart2 = (timeStepsSorted[i].start < minStart2 && timeStepsSorted[i].start > kehoach1.end) ? timeStepsSorted[i].start : minStart2;
 
           if (timeStepsSorted[j].start > kehoach1.end) {
             isShift1 = false;
           }
-          maxEnd =
-            isShift1 && timeStepsSorted[j].end > maxEnd
-              ? timeStepsSorted[j].end
-              : maxEnd;
-          maxEnd2 =
-            timeStepsSorted[j].end > maxEnd2 ? timeStepsSorted[j].end : maxEnd2;
+          if(timeStepsSorted[i].end < timeStepsSorted[j].start && timeStepsSorted[i].end < timeStepsSorted[j].end) {
+            //check loi ca 1
+            if(timeStepsSorted[i].start <= kehoach1.end && timeStepsSorted[i].end >= kehoach1.start && timeStepsSorted[j].start <= kehoach1.end && (minStart > kehoach1.start || maxEnd < kehoach1.end)) {
+              isValid1 = false;
+            }
+            //check loi ca 2
+            if(line1.subtype == '11' && timeStepsSorted[i].start <= kehoach2.end && timeStepsSorted[i].end >= kehoach2.start && timeStepsSorted[j].start <= kehoach2.end && (minStart2 > kehoach2.start || maxEnd2 < kehoach2.end)) {
+              isValid2 = false; 
+            }
+          }
+          maxEnd = isShift1 && timeStepsSorted[j].end > maxEnd ? timeStepsSorted[j].end : maxEnd;
+          maxEnd2 = timeStepsSorted[j].end > maxEnd2 ? timeStepsSorted[j].end : maxEnd2;
 
-          if (timeStepsSorted[i].end < timeStepsSorted[j].start) {
+          if (maxEnd < timeStepsSorted[j].start) {
             if (
               line1.subtype == "11" &&
               timeStepsSorted[i].end >= kehoach1.end &&
@@ -603,36 +647,39 @@ class EmployeeTimesheets extends Component {
               maxEnd = timeStepsSorted[i].end;
               minStart2 = timeStepsSorted[j].start;
               maxEnd2 = timeStepsSorted[j].end;
+              start2Index = j;
             } else {
-              minStart2 = timeStepsSorted[j].start;
-              maxEnd2 = timeStepsSorted[j].end;
-              if (timeStepsSorted[i].end < kehoach1.end) {
+              if(j > start2Index) {
+                minStart2 = timeStepsSorted[j].start <= minStart2 ? timeStepsSorted[j].start : minStart2;
+                maxEnd2 = timeStepsSorted[j].end >= maxEnd2 ? timeStepsSorted[j].end : maxEnd2;
+                //khi 2 giờ ca 2 lệch nhau
+                if(timeStepsSorted[j].start > timeStepsSorted[i].end) {
+                  isValid2 = false;
+                }
+              }
+              if(timeStepsSorted[i].end < kehoach1.end) {
                 isValid1 = false;
               }
-
-              if (timeStepsSorted[j].start > kehoach2.start) {
+              
+              if(minStart2 > kehoach2.start) {
                 isValid2 = false;
               }
             }
+          } else {
+            // khi 2 giờ ca 1 lệch nhau 
+            // if(timeStepsSorted[j].start < kehoach1.end && timeStepsSorted[j].start > timeStepsSorted[i].end) {
+            //   isValid1 = false;
+            // }
           }
         }
       }
 
       //check with propose time
       if (this.checkExist(item.from_time1) && !this.isHoliday(item)) {
-        isValid1 =
-          minStart <= kehoach1.start && maxEnd >= kehoach1.end && isValid1
-            ? true
-            : false;
+        isValid1 = minStart <= kehoach1.start && maxEnd >= kehoach1.end && isValid1 ? true : false;
 
-        line2.type1 =
-          isValid1 == false && currentDay <= today
-            ? EVENT_TYPE.EVENT_LOICONG + line2.type1[1]
-            : line2.type1;
-        line2.type1 =
-          isValid1 == true && line2.type1[0] == EVENT_TYPE.EVENT_LOICONG
-            ? EVENT_TYPE.EVENT_GIOTHUCTE + line2.type1[1]
-            : line2.type1;
+        line2.type1 = isValid1 == false && currentDay <= today ? EVENT_TYPE.EVENT_LOICONG + line2.type1[1] : line2.type1;
+        line2.type1 = isValid1 == true && line2.type1[0] == EVENT_TYPE.EVENT_LOICONG ? EVENT_TYPE.EVENT_GIOTHUCTE + line2.type1[1] : line2.type1;
         if (line2.type1[0] == EVENT_TYPE.EVENT_LOICONG) {
           line2.type = EVENT_TYPE.EVENT_GIOTHUCTE;
           line2.subtype = "1" + line2.subtype[1];
@@ -643,18 +690,9 @@ class EmployeeTimesheets extends Component {
       }
 
       if (this.checkExist(item.from_time2) && !this.isHoliday(item)) {
-        isValid2 =
-          minStart2 <= kehoach2.start && maxEnd2 >= kehoach2.end && isValid2
-            ? true
-            : false;
-        line2.type1 =
-          isValid2 == false && currentDay <= today
-            ? line2.type1[0] + EVENT_TYPE.EVENT_LOICONG
-            : line2.type1;
-        line2.type1 =
-          isValid2 == true && line2.type1[1] == EVENT_TYPE.EVENT_LOICONG
-            ? line2.type1[0] + EVENT_TYPE.EVENT_GIOTHUCTE
-            : line2.type1;
+        isValid2 = minStart2 <= kehoach2.start && maxEnd2 >= kehoach2.end && isValid2 ? true : false;
+        line2.type1 = isValid2 == false && currentDay <= today ? line2.type1[0] + EVENT_TYPE.EVENT_LOICONG : line2.type1;
+        line2.type1 = isValid2 == true && line2.type1[1] == EVENT_TYPE.EVENT_LOICONG ? line2.type1[0] + EVENT_TYPE.EVENT_GIOTHUCTE : line2.type1;
         if (line2.type1[1] == EVENT_TYPE.EVENT_LOICONG) {
           line2.type = EVENT_TYPE.EVENT_GIOTHUCTE;
           line2.subtype = line2.subtype[0] + "1";
@@ -665,12 +703,7 @@ class EmployeeTimesheets extends Component {
       }
       //get Comment
 
-      line3 = this.getComment(
-        moment(item.date, "DD-MM-YYYY").format("YYYYMMDD"),
-        line1,
-        line3,
-        reasonData
-      );
+      line3 = this.getComment(moment(item.date, "DD-MM-YYYY").format("YYYYMMDD"), line1, line3, reasonData);
 
       data[index] = {
         // pernr:item.pernr,

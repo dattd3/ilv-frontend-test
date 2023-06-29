@@ -12,7 +12,7 @@ import { getMuleSoftHeaderConfigurations } from "../../../commons/Utils"
 import Constants from '../../../commons/Constants'
 import HOCComponent from '../../../components/Common/HOCComponent'
 import LoadingModal from 'components/Common/LoadingModal'
-import { checkFilesMimeType } from '../../../utils/file'
+import { validateFileMimeType, validateTotalFileSize } from '../../../utils/file'
 
 const code = localStorage.getItem('employeeNo') || "";
 const fullName = localStorage.getItem('fullName') || "";
@@ -243,7 +243,7 @@ class PersonalInfoEdit extends React.Component {
 
   fileUploadInputChange(e) {
     const files = Object.keys(this.inputReference.current.files).map((key) => this.inputReference.current.files[key])
-    if (checkFilesMimeType(e, files)) {
+    if (validateFileMimeType(e, files, this.props.t) && validateTotalFileSize(e, this.state.files.concat(files), this.props.t)) {
       this.setState({ files: this.state.files.concat(files) })
       let dataClone = this.removeItemForValueNull({ ...this.state.data })
       const errors = this.verifyInput(dataClone, this.state.files.concat(files))
@@ -266,6 +266,13 @@ class PersonalInfoEdit extends React.Component {
     return (errors && errors[name]) ? <p className="text-danger">{errors[name]}</p> : null
   }
 
+  isOnlyListKeysInData = (listKeys = [], data = {}) => {
+    if (listKeys?.length > 0 && listKeys?.length === Object.keys(data)?.length && listKeys.sort().toString() === Object.keys(data).sort().toString()) {
+      return true
+    }
+    return false
+  }
+
   isValidFileUpload = (data, files) => {
     const dataPostToSAP = this.getDataPostToSap(data);
     let count = 0
@@ -280,8 +287,12 @@ class PersonalInfoEdit extends React.Component {
 
     if (count === 0) {
       return true
-    }
-    else {
+    } else {
+      const isOnlyListKeys = this.isOnlyListKeysInData(['Religion', 'ReligionText'], data?.update?.userProfileHistoryMainInfo?.NewMainInfo)
+      if (isOnlyListKeys) {
+        return true
+      }
+
       files = files ? files : this.state.files
       if (_.size(files) === 0) {
         return false
@@ -308,6 +319,8 @@ class PersonalInfoEdit extends React.Component {
   verifyInput = (data, files = null, listIndexChanged) => {
     let errors = {}
     let newMainInfo = {}
+    const lengthPhoneValid = 10
+    const maxLengthPersonalIdentifyPlace = 30
     const { t } = this.props;
     const isValidFileUpload = this.isValidFileUpload(data, files)
 
@@ -316,7 +329,7 @@ class PersonalInfoEdit extends React.Component {
       errors.notChange = `(${t("NoInformationUpdated")})`
     }
 
-    if (!isValidFileUpload && !['V073'].includes(currentCompanyCode)) {
+    if (!isValidFileUpload && ![Constants.pnlVCode.VinSmart].includes(currentCompanyCode)) {
       errors.fileUpload = t("AttachmentRequired")
     }
 
@@ -330,8 +343,14 @@ class PersonalInfoEdit extends React.Component {
         if (newMainInfo.CellPhoneNo && !this.isValidPhoneNumber(newMainInfo.CellPhoneNo)) {
           errors.cellPhoneNo = t("IncorrectMobileNo")
         }
+        if (newMainInfo?.CellPhoneNo && newMainInfo?.CellPhoneNo?.length !== lengthPhoneValid) {
+          errors.cellPhoneNo = t("IncorrectMobileNoLength")
+        }
         if (newMainInfo.UrgentContactNo && !this.isValidPhoneNumber(newMainInfo.UrgentContactNo)) {
           errors.urgentContactNo = t("IncorrectEmergencyNo")
+        }
+        if (newMainInfo?.UrgentContactNo && newMainInfo?.UrgentContactNo?.length !== lengthPhoneValid) {
+          errors.urgentContactNo = t("IncorrectMobileNoLength")
         }
         if (newMainInfo.BirthCountry && !newMainInfo.BirthProvince) {
           errors.birthProvince = t("PlaceOfBirthRequired")
@@ -361,13 +380,14 @@ class PersonalInfoEdit extends React.Component {
         if ((newMainInfo.PersonalIdentifyDate || newMainInfo.PersonalIdentifyPlace) && !newMainInfo.PersonalIdentifyNumber) {
           errors.personalIdentifyNumber = t("IdRequired")
         }
-        if (currentCompanyCode === "V073") {
-          if (newMainInfo.PersonalIdentifyNumber && !this.isValidIdentifyNumber(newMainInfo.PersonalIdentifyNumber)) {
-            errors.personalIdentifyNumber = '(' + t("Invalid format (9 or 12 digits)") + ')'
-          }
+        if (newMainInfo.PersonalIdentifyNumber && !this.isValidIdentifyNumber(newMainInfo.PersonalIdentifyNumber)) {
+          errors.personalIdentifyNumber = '(' + t("IncorrectPersonalIdentifyNumber") + ')'
         }
         if ((newMainInfo.PersonalIdentifyDate || newMainInfo.PersonalIdentifyNumber) && !newMainInfo.PersonalIdentifyPlace) {
           errors.personalIdentifyPlace = t("PlaceOfIssueRequiredIdCard")
+        }
+        if (newMainInfo?.PersonalIdentifyPlace?.length > maxLengthPersonalIdentifyPlace) {
+          errors.personalIdentifyPlace = t("IncorrectPersonalIdentifyPlace")
         }
       }
       
@@ -526,7 +546,9 @@ class PersonalInfoEdit extends React.Component {
 
   submitRequest = (comment) => {
     const { t } = this.props;
-    let dataClone = this.removeItemForValueNull({ ...this.state.data })
+    const { data, files, isEdit, userDetail } = this.state
+
+    let dataClone = this.removeItemForValueNull({ ...data })
     const errors = this.verifyInput(dataClone)
 
     if (!this.isEmptyCustomize(errors)) {
@@ -538,8 +560,14 @@ class PersonalInfoEdit extends React.Component {
 
     this.setState({ isLoading: true })
 
+    let userProfileInfoToSave = {...data}
+    userProfileInfoToSave.update.userProfileHistoryMainInfo.UserGender = 
+    (data?.update?.userProfileHistoryMainInfo?.NewMainInfo?.Gender !== null && data?.update?.userProfileHistoryMainInfo?.NewMainInfo?.Gender !== undefined)
+    ? data?.update?.userProfileHistoryMainInfo?.NewMainInfo?.Gender
+    : userDetail?.gender
+    
     const updateFields = this.getFieldUpdates();
-    const dataPostToSAP = this.getDataPostToSap(this.state.data);
+    const dataPostToSAP = this.getDataPostToSap(data);
 
     let userInfo = {
       employeeNo: localStorage.getItem('employeeNo'),
@@ -548,9 +576,9 @@ class PersonalInfoEdit extends React.Component {
       department: localStorage.getItem('department')
     };
     let bodyFormData = new FormData();
-    bodyFormData.append('Name', this.getNameFromData(this.state.data));
+    bodyFormData.append('Name', this.getNameFromData(data));
     bodyFormData.append('Comment', comment);
-    bodyFormData.append('UserProfileInfo', JSON.stringify(this.state.data));
+    bodyFormData.append('UserProfileInfo', JSON.stringify(userProfileInfoToSave));
     bodyFormData.append('UpdateField', JSON.stringify(updateFields));
     bodyFormData.append('Region', localStorage.getItem('region'));
     bodyFormData.append('OrgLv2Id', this.hasValue(localStorage.getItem('organizationLv2')) ? localStorage.getItem('organizationLv2') : '');
@@ -566,11 +594,11 @@ class PersonalInfoEdit extends React.Component {
     bodyFormData.append('CompanyCode', localStorage.getItem('companyCode'));
     bodyFormData.append('UserProfileInfoToSap', JSON.stringify(dataPostToSAP));
     bodyFormData.append('User', JSON.stringify(userInfo));
-    const fileSelected = this.state.files;
-    for (let key in fileSelected) {
-      bodyFormData.append('Files', fileSelected[key]);
+
+    for (let key in files) {
+      bodyFormData.append('Files', files[key]);
     }
-    const urlSubmit = this.state.isEdit ? `${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${this.state.id}/update` : `${process.env.REACT_APP_REQUEST_URL}user-profile-histories`;
+    const urlSubmit = isEdit ? `${process.env.REACT_APP_REQUEST_URL}user-profile-histories/${this.state.id}/update` : `${process.env.REACT_APP_REQUEST_URL}user-profile-histories`;
 
     axios({
       method: 'POST',
@@ -580,11 +608,11 @@ class PersonalInfoEdit extends React.Component {
     })
     .then(response => {
       this.setState({ isShowModalConfirm: false, isLoading: false })
-      if (response && response.data && response.data.result) {
-        const code = response.data.result.code;
+      if (response && response?.data && response?.data?.result) {
+        const code = response.data.result?.code;
         if (code != Constants.API_SUCCESS_CODE) {
           this.setState({ needReload: false })
-          this.handleShowResultModal(t("Notification"), response.data.result.message, false);
+          this.handleShowResultModal(t("Notification"), response.data.result?.message, false);
         } else {
           this.setState({ needReload: true })
           this.handleShowResultModal(t("Successful"), t("RequestSent"), true);
@@ -809,10 +837,11 @@ class PersonalInfoEdit extends React.Component {
           let listObj = [];
           if (newMainInfo.District || newMainInfo.Province || newMainInfo.Wards || newMainInfo.StreetName || newMainInfo.Country) {
             let obj = { ...this.objectToSap };
-            obj.actio = "MOD";
-            if (![Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl].includes(currentCompanyCode)) {
-              obj.actio = "INS";
-            }
+            // obj.actio = "MOD";
+            // if (![Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl].includes(currentCompanyCode)) {
+            //   obj.actio = "INS";
+            // }
+            obj.actio = "INS";
             obj.anssa = "1";
             obj.land1 = newMainInfo.Country ? newMainInfo.Country : userDetail.country_id;
             obj.state = newMainInfo.Province ? newMainInfo.Province : userDetail.province_id;

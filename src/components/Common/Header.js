@@ -10,7 +10,7 @@ import { Animated } from "react-animated-css";
 import { useLocalizeStore } from '../../modules';
 import CheckinNotificationIcon from '../../assets/img/icon/ic-checkin-noti.svg';
 import UploadAvatar from '../../containers/UploadAvatar'
-import { getRequestConfigurations } from "../../commons/Utils"
+import { getRequestConfigurations, getRequestTypesList } from "../../commons/Utils"
 import TimeKeepingList from "containers/TimeKeepingHistory/TimeKeepingList";
 import RedArrowIcon from 'assets/img/icon/red-arrow-right.svg';
 import CloseIcon from 'assets/img/icon/icon_x.svg';
@@ -24,12 +24,12 @@ const getOrganizationLevelByRawLevel = level => {
 }
 
 const currentLocale = localStorage.getItem("locale")
-const timeKeepingHistoryEndpoint = `${process.env.REACT_APP_REQUEST_URL}notifications/in/out/list`;
+const timeKeepingHistoryEndpoint = `${process.env.REACT_APP_REQUEST_URL}notifications/in/out/listbydate`;
 const APIConfig = getRequestConfigurations();
 
 function Header(props) {
     const localizeStore = useLocalizeStore();
-    const { fullName, email, avatar } = props.user;
+    const { fullName, email, avatar } = props?.user || {};
     const { setShow, isApp } = props;
     const [isShow, SetIsShow] = useState(false);
     const [activeLang, setActiveLang] = useState(currentLocale);
@@ -137,16 +137,28 @@ function Header(props) {
                                         }
                                         return `/notifications/${item.id}`
                                     case Constants.notificationType.NOTIFICATION_REGISTRATION: 
+                                        if([Constants.PROPOSAL_TRANSFER, Constants.PROPOSAL_APPOINTMENT].includes(item.requestTypeId)) {
+                                            let subId = item.subRequestId?.includes('.') ? item.subRequestId.split('.')[1] : item.subRequestId;
+                                            let suffix = item.detailType == 'APPRAISAL' ? 'assess' : item.detailType == 'APPROVAL' ? 'approval' : 'request';
+                                            let urls = {
+                                                '14-1': 'registration-transfer',
+                                                '15-1': 'registration-transfer',
+                                                '14-2': 'proposed-transfer',
+                                                '15-2': 'proposed-appointment',
+                                            };
+                                            return `/${urls[`${item.requestTypeId}-${item.formType}`]}/${subId}/${suffix}`;
+                                        }
+                                        
                                         if (item.detailType == 'APPRAISAL')
-                                            return `/tasks?tab=consent`
+                                            return `/tasks?tab=consent${item.groupId ? `&requestTypes=${getRequestTypesList(item.groupId, false).join(",")}` : ''}`
                                         else
-                                            return `/tasks?tab=approval`
+                                            return `/tasks?tab=approval${item.groupId ? `&requestTypes=${getRequestTypesList(item.groupId, false).join(",")}` : ''}`
                                     case 6:
                                         return '/personal-info?tab=document'
                                     case Constants.notificationType.NOTIFICATION_REJECT:
-                                        return `/tasks`
+                                        return `/tasks?${item.groupId ? `&requestTypes=${getRequestTypesList(item.groupId, true).join(",")}` : ''}`
                                     case Constants.notificationType.NOTIFICATION_AUTO_JOB:
-                                        return `/tasks?tab=approval`
+                                        return `/tasks?tab=approval${item.groupId ? `&requestTypes=${getRequestTypesList(item.groupId, false).join(",")}` : ''}`
                                     case Constants.notificationType.NOTIFICATION_SHIFT_CHANGE:
                                         const param = getDateShiftChange(item?.title || '');
                                         return `/timesheet${param}`
@@ -265,8 +277,8 @@ function Header(props) {
           window.location.href = process.env.REACT_APP_AWS_COGNITO_IDP_SIGNOUT_URL;
           // Auth.signOut({ global: true });
         } catch {
-          localStorage.removeItem("firebaseToken");
-          localStorage.removeItem("userFirebaseToken");
+          // localStorage.removeItem("firebaseToken");
+          // localStorage.removeItem("userFirebaseToken");
           guard.setLogOut();
           window.location.reload();
         }
@@ -334,12 +346,12 @@ function Header(props) {
   
     const fetchLatestTimeKeeping = async () => {
       try {
+        const currentDate = moment().format('YYYY-MM-DD')
         const response = await axios.get(timeKeepingHistoryEndpoint, {
           params: {
             companyCode: localStorage.getItem("companyCode"),
             culture: lang === "vi-VN" ? "vi" : "en",
-            page: 1,
-            pageSize: 1,
+            date: currentDate,
           },
           ...APIConfig,
         });
