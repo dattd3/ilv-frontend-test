@@ -10,6 +10,7 @@ import PersonalDetailComponent from './ApprovalDetail'
 import ProposeTerminationDetailComponent from '../Registration/RegistrationEmploymentTermination/PropsedResignationDetail';
 import TerminationDetailComponent from '../Registration/RegistrationEmploymentTermination/RegistrationTerminationDetail';
 import OTRequestDetailComponent from '../Registration/OTRequest/OTRequestDetail';
+import WorkOutSideGroupDetail from 'containers/PersonalInfo/WorkOutSideGroupDetail'
 
 import axios from 'axios'
 import Constants from '../../commons/Constants'
@@ -52,8 +53,11 @@ class TaskDetailModal extends React.Component {
     }
 
     render() {
-        const { t, action, taskId, show, onHide } = this.props
+        const { t, action, taskId, show, onHide, isAutoShowDetailModal } = this.props // isAutoShowDetailModal chỉ sử dụng cho Quá trình công tác ngoài Tập đoàn
         const data = this.state.data;
+        let { requestTypeId, updateField } = data
+        updateField = JSON.parse(updateField || '{}')
+        const isWorkOutSideGroup = requestTypeId == Constants.UPDATE_PROFILE && updateField?.UpdateField?.length === 1 && updateField?.UpdateField[0] === 'WorkOutside'
 
         if(!data) {
           return null;
@@ -63,7 +67,7 @@ class TaskDetailModal extends React.Component {
             <Modal backdrop="static" 
                 keyboard={false}
                 size="xl"
-                className='info-modal-common position-apply-modal request-detail-modal'
+                className={`info-modal-common position-apply-modal request-detail-modal ${isWorkOutSideGroup ? 'work-out-side-group' : ''}`}
                 centered show={show}
                 onHide={onHide}
             >
@@ -76,7 +80,13 @@ class TaskDetailModal extends React.Component {
                         {data && data?.requestTypeId === Constants.BUSINESS_TRIP ? <BusinessTripDetailComponent action={action} businessTrip={data} viewPopup={true} /> : null}
                         {data && data?.requestTypeId === Constants.IN_OUT_TIME_UPDATE ? <InOutUpdateDetailComponent action={action} inOutTimeUpdate={data}/> : null}
                         {data && data?.requestTypeId === Constants.SUBSTITUTION ? <SubstitutionDetailComponent action={action} substitution={data}/> : null}
-                        {data && data?.requestTypeId === Constants.UPDATE_PROFILE ? <PersonalDetailComponent id={taskId} data={data}/> : null}
+                        {
+                          data && data?.requestTypeId === Constants.UPDATE_PROFILE 
+                          ? (isAutoShowDetailModal || isWorkOutSideGroup)
+                            ? (<WorkOutSideGroupDetail details={data} viewPopup={true} />)
+                            : (<PersonalDetailComponent id={taskId} data={data} />)
+                          : null
+                        }
                         {data && data?.requestTypeId === Constants.CHANGE_DIVISON_SHIFT ? <ChangeDivisionShiftDetail action={action} substitution={data}/> : null}
                         {data && data?.requestTypeId === Constants.DEPARTMENT_TIMESHEET ? <DepartmentTimeSheetDetail action={action} substitution={data}/> : null}
                         {data && data?.requestTypeId === Constants.OT_REQUEST ? <OTRequestDetailComponent action={action} data={data}/> : null}
