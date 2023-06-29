@@ -279,8 +279,8 @@ function WorkOutSideGroup(props) {
             formData.append('id', null)
             formData.append('subid', null)
             formData.append('type', typeViewSalary.OWN)
-            if (accessToken) {
-                formData.append('token', `Bearer ${token}`)
+            if (accessToken || token) {
+                formData.append('token', `Bearer ${token ?? accessToken}`)
             }
             const response = await axios.post(`${process.env.REACT_APP_REQUEST_URL}user-profile-histories/getsalary`, formData, config)
             if (response && response?.data) {

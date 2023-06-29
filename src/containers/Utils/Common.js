@@ -114,6 +114,7 @@ export default function processingDataReq(dataRawFromApi, tab) {
                     // e.isEdit = listRequestTypeIdToGetSubId.includes(element.requestTypeId) ? e.isEdit : element.isEdit
                     e.isEdit = element?.isEdit // Confirm từ a Thủy và a Chiến Mobile lấy isEdit bên ngoài (không lấy bên trong) - 18/04/2023
                     e.operationType = getOperationType(element.requestTypeId, e.actionType, e.processStatusId);
+                    e.updateField = element?.updateField
                     taskList.push(e)
                 })
             }

@@ -60,8 +60,12 @@ class RegistrationDetailComponent extends React.Component {
   render() {
     const { data, isShowModalRegistrationConfirm, taskId, modalTitle, modalMessage, typeRequest, requestUrl, isLoading } = this.state
     const { action } = this.props
-    const updateField = JSON.parse(data?.updateField || '{}')
-    const isWorkOutSide = updateField?.UpdateField?.length === 1 && updateField?.UpdateField[0] === 'WorkOutside'
+    
+    let isWorkOutSide = false
+    if (data && data?.requestTypeId == Constants.UPDATE_PROFILE) {
+      const updateField = JSON.parse(data?.updateField || '{}')
+      isWorkOutSide = updateField?.UpdateField?.length === 1 && updateField?.UpdateField[0] === 'WorkOutside'
+    }
 
     return (
       <>
