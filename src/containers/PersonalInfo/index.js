@@ -27,6 +27,8 @@ const actionType = {
   createRequests: 4
 }
 
+const currentCompanyCode = localStorage.getItem('companyCode')
+
 class MyComponent extends React.Component {
   constructor(props) {
     super(props);
@@ -277,7 +279,7 @@ class MyComponent extends React.Component {
       bodyFormData.append('UserProfileInfo', userProfileInfo) 
       bodyFormData.append('UpdateField', JSON.stringify({UpdateField: ["FamilyInfo"]}))
       bodyFormData.append('RequestTypeId', Constants.UPDATE_PROFILE)
-      bodyFormData.append('CompanyCode', formatStringByMuleValue(localStorage.getItem('companyCode')))
+      bodyFormData.append('CompanyCode', formatStringByMuleValue(currentCompanyCode))
       bodyFormData.append('UserProfileInfoToSap', userProfileInfoToSap)
       bodyFormData.append('User', userInfo)
       bodyFormData.append('OrgLv2Id', formatStringByMuleValue(localStorage.getItem('organizationLv2')))
@@ -479,7 +481,7 @@ class MyComponent extends React.Component {
     const isEnableEditProfiles = isEnableFunctionByFunctionName(Constants.listFunctionsForPnLACL.editProfile)
     const isEnableEditEducations = isEnableFunctionByFunctionName(Constants.listFunctionsForPnLACL.editEducation)
     const isEnableEditRelationships = isEnableFunctionByFunctionName(Constants.listFunctionsForPnLACL.editRelationship)
-    const isEnableWorkOutsideGroup = true
+    const isEnableWorkOutsideGroup = currentCompanyCode === Constants.pnlVCode.VinES
     let defaultTab = getValueParamByQueryString(window.location.search, 'tab') || 'PersonalInformation' 
 
     const documents = this.state.userDocument.documents;
