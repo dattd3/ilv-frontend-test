@@ -54,6 +54,7 @@ function WorkOutSideGroupProcessItem({ index, item, maxEndDate, canUpdate, viewS
                                         ? (
                                             <label className="input-date">
                                                 <DatePicker
+                                                    placeholderText={t("choose")}
                                                     selected={item[`BEG${itemNo}`] ? moment(item[`BEG${itemNo}`], 'YYYYMMDD').toDate() : null}
                                                     maxDate={item[`END${itemNo}`] ? moment(item[`END${itemNo}`], 'YYYYMMDD').toDate() : maxEndDate ? moment(maxEndDate, 'YYYYMMDD').toDate() : null}
                                                     onChange={dateInput => handleInputChange(`BEG${itemNo}`, !dateInput ? null : moment(dateInput).format('YYYYMMDD'))}
@@ -69,6 +70,7 @@ function WorkOutSideGroupProcessItem({ index, item, maxEndDate, canUpdate, viewS
                                         !item?.isAddNew && (
                                             <label className="input-date second">
                                                 <DatePicker
+                                                    placeholderText={t("choose")}
                                                     selected={item[`BEG${itemNo}_${prefixUpdating}`] ? moment(item[`BEG${itemNo}_${prefixUpdating}`], 'YYYYMMDD').toDate() : null}
                                                     maxDate={item[`END${itemNo}_${prefixUpdating}`] ? moment(item[`END${itemNo}_${prefixUpdating}`], 'YYYYMMDD').toDate() : maxEndDate ? moment(maxEndDate, 'YYYYMMDD').toDate() : null}
                                                     onChange={dateInput => handleInputChange(`BEG${itemNo}_${prefixUpdating}`, !dateInput ? null : moment(dateInput).format('YYYYMMDD'))}
@@ -97,6 +99,7 @@ function WorkOutSideGroupProcessItem({ index, item, maxEndDate, canUpdate, viewS
                                         ? (
                                             <label className="input-date">
                                                 <DatePicker
+                                                    placeholderText={t("choose")}
                                                     selected={item[`END${itemNo}`] ? moment(item[`END${itemNo}`], 'YYYYMMDD').toDate() : null}
                                                     maxDate={maxEndDate ? moment(maxEndDate, 'YYYYMMDD').toDate() : null}
                                                     onChange={dateInput => handleInputChange(`END${itemNo}`, !dateInput ? null : moment(dateInput).format('YYYYMMDD'))}
@@ -112,6 +115,7 @@ function WorkOutSideGroupProcessItem({ index, item, maxEndDate, canUpdate, viewS
                                         !item?.isAddNew && (
                                             <label className="input-date second">
                                                 <DatePicker
+                                                    placeholderText={t("choose")}
                                                     selected={item[`END${itemNo}_${prefixUpdating}`] ? moment(item[`END${itemNo}_${prefixUpdating}`], 'YYYYMMDD').toDate() : null}
                                                     maxDate={maxEndDate ? moment(maxEndDate, 'YYYYMMDD').toDate() : null}
                                                     onChange={dateInput => handleInputChange(`END${itemNo}_${prefixUpdating}`, !dateInput ? null : moment(dateInput).format('YYYYMMDD'))}
