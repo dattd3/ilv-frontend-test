@@ -788,11 +788,7 @@ class RequestTaskList extends React.Component {
         const requestTypesSelected = getValueParamByQueryString(window.location.search, "requestTypes")?.split(",")
         const requestCategorySelected = Constants.REQUEST_CATEGORY_2_LIST[this.state.tmpRequestTypesSelect?.[0]*1 || requestTypesSelected?.[0]*1] ? 2 : 1
 
-        const getRequestTypeLabel = (requestType, absenceTypeValue, isWorkOutSideGroup = false) => {
-            if (isWorkOutSideGroup) {
-                return t("WorkingOutSideGroup")
-            }
-
+        const getRequestTypeLabel = (requestType, absenceTypeValue) => {
             if (requestType.id == Constants.LEAVE_OF_ABSENCE) {
                 const absenceType = absenceRequestTypes.find(item => item.value == absenceTypeValue)
                 return absenceType ? t(absenceType.label) : ""
@@ -1019,16 +1015,16 @@ class RequestTaskList extends React.Component {
                                             let isShowSyncRequest = child?.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL 
                                             && [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP, Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE, Constants.OT_REQUEST].includes(child?.requestTypeId)
 
-                                            let isWorkOutSideGroup = false
-                                            if ([Constants.UPDATE_PROFILE].includes(child?.requestTypeId)) {
-                                                const updateField = JSON.parse(child?.updateField || '{}')
-                                                isWorkOutSideGroup = updateField?.UpdateField?.length === 1 && updateField?.UpdateField[0] === 'WorkOutside'
-                                            }
+                                            // let isWorkOutSideGroup = false
+                                            // if ([Constants.UPDATE_PROFILE].includes(child?.requestTypeId)) {
+                                            //     const updateField = JSON.parse(child?.updateField || '{}')
+                                            //     isWorkOutSideGroup = updateField?.UpdateField?.length === 1 && updateField?.UpdateField[0] === 'WorkOutside'
+                                            // }
 
                                             return (
                                                 <tr key={index}>
                                                     <td className="code"><a href={detailLink} title={child.requestType.name} className="task-title">{generateTaskCodeByCode(child.id)}</a></td>
-                                                    <td className="request-type">{getRequestTypeLabel(child.requestType, child.absenceType?.value, isWorkOutSideGroup)}</td>
+                                                    <td className="request-type">{getRequestTypeLabel(child.requestType, child.absenceType?.value)}</td>
                                                     <td className="day-off">
                                                         <div dangerouslySetInnerHTML={{
                                                             __html: purify.sanitize(dateChanged || ''),

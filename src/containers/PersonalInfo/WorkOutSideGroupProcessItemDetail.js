@@ -120,17 +120,13 @@ function WorkOutSideGroupProcessItemDetail({ index, item, isAddNew, isOnlyUpdate
                             <label>{t("NetSalary")}</label>
                             <div className="value salary-view">
                                 <span>{DE_NET_Line1}</span>
-                                {
-                                    DE_NET_Line1 && (<img src={hiddenViewSalary ? IconEyeClosed : IconEyeOpened} alt='Eye' className="eye" onClick={handleToggleViewSalary} />)
-                                }
+                                <img src={hiddenViewSalary ? IconEyeClosed : IconEyeOpened} alt='Eye' className="eye" onClick={handleToggleViewSalary} />
                             </div>
                             {
                                 isShowRow3 && (
                                     <div className={`value second salary-view ${!isEmptyByValue(DE_NET_Line2) ? 'updated' : ''}`}>
                                         <span>{DE_NET_Line2}</span>
-                                        {
-                                            DE_NET_Line2 && (<img src={hiddenViewSalary ? IconEyeClosed : IconEyeOpened} alt='Eye' className="eye" onClick={handleToggleViewSalary} />)
-                                        }
+                                        <img src={hiddenViewSalary ? IconEyeClosed : IconEyeOpened} alt='Eye' className="eye" onClick={handleToggleViewSalary} />
                                     </div>
                                 )
                             }
@@ -141,17 +137,13 @@ function WorkOutSideGroupProcessItemDetail({ index, item, isAddNew, isOnlyUpdate
                             <label>{t("GrossSalary")}</label>
                             <div className="value salary-view">
                                 <span>{DE_GROSS_Line1}</span>
-                                {
-                                    DE_GROSS_Line1 && (<img src={hiddenViewSalary ? IconEyeClosed : IconEyeOpened} alt='Eye' className="eye" onClick={handleToggleViewSalary} />)
-                                }
+                                <img src={hiddenViewSalary ? IconEyeClosed : IconEyeOpened} alt='Eye' className="eye" onClick={handleToggleViewSalary} />
                             </div>
                             {
                                 isShowRow3 && (
                                     <div className={`value second salary-view ${!isEmptyByValue(DE_GROSS_Line2) ? 'updated' : ''}`}>
                                         <span>{DE_GROSS_Line2}</span>
-                                        {
-                                            DE_GROSS_Line2 && (<img src={hiddenViewSalary ? IconEyeClosed : IconEyeOpened} alt='Eye' className="eye" onClick={handleToggleViewSalary} />)
-                                        }
+                                        <img src={hiddenViewSalary ? IconEyeClosed : IconEyeOpened} alt='Eye' className="eye" onClick={handleToggleViewSalary} />
                                     </div>
                                 )
                             }
