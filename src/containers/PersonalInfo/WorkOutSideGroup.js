@@ -112,15 +112,10 @@ function WorkOutSideGroup(props) {
     }, [tabActive])
 
     const isDataValid = () => {
-        const itemCreateNew = (experiences || []).filter(item => item?.isAddNew)
-        const experienceUpdating = (experiences || []).filter(item => isNotEmpty(item[`DE_GROSS1_${prefixUpdating}`]) || isNotEmpty(item[`DE_GROSS2_${prefixUpdating}`]) 
-        || isNotEmpty(item[`DE_GROSS3_${prefixUpdating}`]) || isNotEmpty(item[`DE_GROSS4_${prefixUpdating}`]) || isNotEmpty(item[`DE_GROSS5_${prefixUpdating}`]) 
-        || isNotEmpty(item[`DE_NET1_${prefixUpdating}`]) || isNotEmpty(item[`DE_NET2_${prefixUpdating}`]) || isNotEmpty(item[`DE_NET3_${prefixUpdating}`]) 
-        || isNotEmpty(item[`DE_NET4_${prefixUpdating}`]) || isNotEmpty(item[`DE_NET5_${prefixUpdating}`]) || isNotEmpty(item[`ORGEH_${prefixUpdating}`]) 
-        || isNotEmpty(item[`BEGDA_${prefixUpdating}`]) || isNotEmpty(item[`ENDDA_${prefixUpdating}`])
-        )
+        const hasCreateNew = (experiences || []).some(item => item?.isAddNew)
+        const hasOnlyUpdating = (experiences || []).some(item => Object.entries(item).some(sub => sub[0].endsWith(`_${prefixUpdating}`) && isNotEmpty(sub[1])))
 
-        if (itemCreateNew?.length === 0 && experienceUpdating?.length === 0 && experienceDeleted?.length === 0) {
+        if (!hasCreateNew && !hasOnlyUpdating && experienceDeleted?.length === 0) {
             SetNeedReload(false)
             SetStatusModal({
                 isShow: true,
@@ -297,6 +292,17 @@ function WorkOutSideGroup(props) {
     }
 
     const handleInputChangeOnParent = (index, key, value) => {
+        // (!(/^\d*$/.test(Number(val))) || val.includes('.'))
+        // !(/^[0-9][0-9,\.]*$/.test(Number(val))) 
+        const lisKeyNumberType = [1, 2, 3, 4, 5].reduce((res, item) => {
+            res = [...res, `DE_NET${item}`, `DE_GROSS${item}`, `DE_NET${item}_${prefixUpdating}`, `DE_GROSS${item}_${prefixUpdating}`]
+            return res
+        }, [])
+
+        if (lisKeyNumberType.includes(key) && !(/^[0-9][0-9,\.]*$/.test(Number(value)))) {
+            return
+        }
+
         const experienceToSave = [...experiences]
         experienceToSave[index][key] = value
         SetExperiences(experienceToSave)
@@ -437,7 +443,6 @@ function WorkOutSideGroup(props) {
                 jobTitle: user?.jobTitle,
                 department: prepareOrganization(user?.division, user?.actualDepartment, user?.unit, user?.part),
             }
-
             const create = {
                 experiences: (experiences || [])
                 .filter(item => item?.isAddNew)
@@ -450,14 +455,7 @@ function WorkOutSideGroup(props) {
                     return itemClone
                 })
             }
-            
-            const experienceUpdating = (experiences || []).filter(item => isNotEmpty(item[`DE_GROSS1_${prefixUpdating}`]) || isNotEmpty(item[`DE_GROSS2_${prefixUpdating}`]) 
-            || isNotEmpty(item[`DE_GROSS3_${prefixUpdating}`]) || isNotEmpty(item[`DE_GROSS4_${prefixUpdating}`]) || isNotEmpty(item[`DE_GROSS5_${prefixUpdating}`]) 
-            || isNotEmpty(item[`DE_NET1_${prefixUpdating}`]) || isNotEmpty(item[`DE_NET2_${prefixUpdating}`]) || isNotEmpty(item[`DE_NET3_${prefixUpdating}`]) 
-            || isNotEmpty(item[`DE_NET4_${prefixUpdating}`]) || isNotEmpty(item[`DE_NET5_${prefixUpdating}`]) || isNotEmpty(item[`ORGEH_${prefixUpdating}`]) 
-            || isNotEmpty(item[`BEGDA_${prefixUpdating}`]) || isNotEmpty(item[`ENDDA_${prefixUpdating}`])
-            )
-
+            const experienceUpdating = (experiences || []).filter(item => Object.entries(item).some(sub => sub[0].endsWith(`_${prefixUpdating}`) && isNotEmpty(sub[1])))
             const update = {
                 userProfileHistoryExperiences: (experienceUpdating || []).map(item => {
                     let itemInfo = prepareUpdatingItemInfo(item)
@@ -467,7 +465,6 @@ function WorkOutSideGroup(props) {
                     }
                 })
             }
-
             if (experienceDeleted?.length > 0) {
                 update.userProfileHistoryExperiences = update.userProfileHistoryExperiences.concat(experienceDeleted.map(item => {
                     return {

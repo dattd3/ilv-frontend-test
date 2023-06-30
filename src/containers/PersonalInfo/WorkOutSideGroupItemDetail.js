@@ -18,7 +18,7 @@ function WorkOutSideGroupItemDetail({ index, item, isAddNew, hiddenViewSalary, h
     if (isAddNew) {
         ORGEH = item?.ORGEH || null
         BEGDA = item?.BEGDA || null
-        ENDDA = item?.BEGDA || null
+        ENDDA = item?.ENDDA || null
         for (let i = 1; i < 6; i++) {
             listWorking = [...listWorking, {
                 [`BEG${i}`]: item[`BEG${i}`],
@@ -34,7 +34,7 @@ function WorkOutSideGroupItemDetail({ index, item, isAddNew, hiddenViewSalary, h
         isDeleted = item?.NewExperience?.isDeleted
         ORGEH = item?.OldExperience?.ORGEH || null
         BEGDA = item?.OldExperience?.BEGDA || null
-        ENDDA = item?.OldExperience?.BEGDA || null
+        ENDDA = item?.OldExperience?.ENDDA || null
 
         let { NewExperience, OldExperience } = item
         for (let i = 1; i < 6; i++) {
