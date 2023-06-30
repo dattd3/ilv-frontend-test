@@ -842,17 +842,15 @@ const SalaryAdjustmentPropse = (props) => {
 
   // Thẩm định
   const handleConsent = () => {
-    // const processStatusId = appraiser ? 24 : 5;
     if (selectedMembers.some(item => item.canChangeAction && !item.accepted && !item.comment)) {
-      setShowCommentRequiredError(true);
-      return;
+      return setShowCommentRequiredError(true);
     }
     let staffRequestStatusList = selectedMembers?.map(item => ({
       employeeNo: item.uid,
       salaryAdjustmentId: item.id,
       status: item.accepted ? 1 : 0,
       comment: item.comment || ''
-    }))
+    }));
     setConfirmModal({
       isShowModalConfirm: true,
       modalTitle: t("ConsentConfirmation"),
@@ -921,6 +919,9 @@ const SalaryAdjustmentPropse = (props) => {
 
   // Phê duyệt
   const handleApprove = () => {
+    if (selectedMembers.some(item => item.canChangeAction && !item.accepted && !item.comment)) {
+      return setShowCommentRequiredError(true);
+    }
     let staffRequestStatusList = selectedMembers?.map(item => ({
       employeeNo: item.uid,
       salaryAdjustmentId: item.id,
