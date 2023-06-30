@@ -773,11 +773,8 @@ const SalaryAdjustmentPropose = (props) => {
 
   // Thẩm định
   const handleConsent = () => {
-    // const processStatusId = appraiser ? 24 : 5;
     if (
-      selectMembers.some(
-        (item) => item.canChangeAction && !item.accepted && !item.comment
-      )
+      selectMembers.some(item => item.canChangeAction && !item.accepted && !item.comment)
     ) {
       return setShowCommentError(true);
     }
@@ -863,6 +860,11 @@ const SalaryAdjustmentPropose = (props) => {
 
   // Phê duyệt
   const handleApprove = () => {
+    if (
+      selectMembers.some(item => item.canChangeAction && !item.accepted && !item.comment)
+    ) {
+      return setShowCommentError(true);
+    }
     let staffRequestStatusList = selectMembers?.map((item) => ({
       employeeNo: item.uid,
       salaryAdjustmentId: item.id,
