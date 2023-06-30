@@ -1395,7 +1395,7 @@ const SalaryAdjustmentPropose = (props) => {
               </>
             )}
             <td colSpan={2} className="min-width text-center font-weight-bold">
-              {t('effective_time')}
+              {t('EffectiveDate')}
             </td>
             <td colSpan={1} className="min-width text-center font-weight-bold">
               {t('Action')}
@@ -1464,7 +1464,7 @@ const SalaryAdjustmentPropose = (props) => {
                               intlConfig={renderCurrency()}
                               className="no-vborder"
                               value={item?.currentSalary}
-                              placeholder="Nhập"
+                              placeholder={t('EvaluationInput')}
                               style={{ width: '100%', background: '#fff' }}
                               maxLength={11}
                             />
@@ -1506,7 +1506,7 @@ const SalaryAdjustmentPropose = (props) => {
                             'suggestedSalary'
                           );
                         }}
-                        placeholder="Nhập"
+                        placeholder={t('EvaluationInput')}
                         maxLength={11}
                       />
                     ) : (
@@ -1527,7 +1527,7 @@ const SalaryAdjustmentPropose = (props) => {
                                   intlConfig={renderCurrency()}
                                   className="no-vborder"
                                   value={item?.suggestedSalary}
-                                  placeholder="Nhập"
+                                  placeholder={t('EvaluationInput')}
                                   style={{ width: '100%', background: '#fff' }}
                                   maxLength={11}
                                 />
@@ -1658,7 +1658,7 @@ const SalaryAdjustmentPropose = (props) => {
               item.canChangeAction ? (
                 <>
                   <ResizableTextarea
-                    placeholder={'Nhập'}
+                    placeholder={t('EvaluationInput')}
                     value={item?.comment || ''}
                     onChange={(e) =>
                       handleTextInputChange(
