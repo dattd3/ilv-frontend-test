@@ -1865,5 +1865,7 @@
   "SeniorSpecialist": "Chuyên gia",
   "Specialist": "Chuyên viên",
   "Staff": "Nhân viên",
+  "NotePrevDayOT": "Chỉ chọn khi bạn đăng kí OT cho phân ca xuyên đêm cần kéo giờ in/out của ngày trước đó.",
+  "CompanyTimeNotOverlap": "Thời gian bắt đầu và thời gian kết thúc của các công ty không được trùng nhau!",
   "NotePrevDayOT": "Chỉ chọn khi bạn đăng ký OT cho phân ca xuyên đêm cần kéo giờ in/out của ngày trước đó."
 }

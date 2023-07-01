@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react"
 import { useTranslation } from "react-i18next"
 import { useLocation, useHistory } from "react-router-dom"
 import axios from "axios"
+import Moment from "moment"
+import { extendMoment } from "moment-range"
 import { omit } from "lodash"
 import { useGuardStore } from 'modules/index'
 import { getValueParamByQueryString, getMuleSoftHeaderConfigurations, getRequestConfigurations, formatStringByMuleValue } from "commons/Utils"
@@ -14,6 +16,7 @@ import Constants from "commons/Constants"
 import LoadingModal from "components/Common/LoadingModal"
 import ConfirmSendRequestModal from "./ConfirmSendRequestModal"
 import { valueType, isEmptyByValue } from "./WorkOutSideGroupDetail"
+const moment = extendMoment(Moment)
 
 const prefixUpdating = 'UPDATING'
 const typeViewSalary = {
@@ -125,11 +128,24 @@ function WorkOutSideGroup(props) {
             return false
         }
 
-        const experienceClone = ([...experiences] || []).map(item => {
+        const experienceClone = ([...experiences] || []).map((item, i, original) => {
+            let isOverlap = (original || [])
+            .filter((sub, subIndex) => i !== subIndex)
+            .some(sub => moment.range(
+                moment(item[`BEGDA_${prefixUpdating}`] ? item[`BEGDA_${prefixUpdating}`] : item?.BEGDA, 'YYYYMMDD'),
+                moment(item[`ENDDA_${prefixUpdating}`] ? item[`ENDDA_${prefixUpdating}`] : item?.ENDDA, 'YYYYMMDD')
+            ).overlaps(moment.range(
+                moment(sub[`BEGDA_${prefixUpdating}`] ? sub[`BEGDA_${prefixUpdating}`] : sub?.BEGDA, 'YYYYMMDD'),
+                moment(sub[`ENDDA_${prefixUpdating}`] ? sub[`ENDDA_${prefixUpdating}`] : sub?.ENDDA, 'YYYYMMDD')
+            ), { adjacent: true }))
+
             return {
                 ...item,
                 ...(
                     item?.isAddNew && (isEmptyByValue(item?.ORGEH, valueType.other) ? { errorCompanyName: t("Required") } : { errorCompanyName: null })
+                ),
+                ...(
+                    isOverlap ? { errorCompanyDate: t("CompanyTimeNotOverlap") } : { errorCompanyDate: null }
                 )
             }
         })
@@ -378,7 +394,7 @@ function WorkOutSideGroup(props) {
             result[`WAERS${i}`] = item?.isAddNew ? item[`WAERS${i}`] : getValueByCondition(item[`WAERS${i}`], item[`WAERS${i}_${prefixUpdating}`])
             result[`DUT${i}`] = item?.isAddNew ? item[`DUT${i}`] : getValueByCondition(item[`DUT${i}`], item[`DUT${i}_${prefixUpdating}`])
             result[`PLAN${i}`] = item?.isAddNew ? item[`PLAN${i}`] : getValueByCondition(item[`PLAN${i}`], item[`PLAN${i}_${prefixUpdating}`])
-            lstKeyToDelete = [...lstKeyToDelete, `DE_GROSS${i}_${prefixUpdating}`, `DE_NET${i}_${prefixUpdating}`, `WAERS${i}_${prefixUpdating}`, `PLAN${i}_${prefixUpdating}`, `END${i}_${prefixUpdating}`, `DUT${i}_${prefixUpdating}`, `BEG${i}_${prefixUpdating}`, 'errorCompanyName']
+            lstKeyToDelete = [...lstKeyToDelete, `DE_GROSS${i}_${prefixUpdating}`, `DE_NET${i}_${prefixUpdating}`, `WAERS${i}_${prefixUpdating}`, `PLAN${i}_${prefixUpdating}`, `END${i}_${prefixUpdating}`, `DUT${i}_${prefixUpdating}`, `BEG${i}_${prefixUpdating}`, 'errorCompanyName', 'errorCompanyDate']
         }
 
         return omit(result, ['isAddNew', 'listWorking', 'ID', 'ORGEH_UPDATING', 'BEGDA_UPDATING', 'ENDDA_UPDATING', ...lstKeyToDelete])
@@ -398,6 +414,7 @@ function WorkOutSideGroup(props) {
         }
         delete oldItem.listWorking
         delete oldItem.errorCompanyName
+        delete oldItem.errorCompanyDate
 
         let newItem = {
             ...item,
@@ -451,6 +468,7 @@ function WorkOutSideGroup(props) {
                     delete itemClone.isAddNew
                     delete itemClone.listWorking
                     delete itemClone.errorCompanyName
+                    delete itemClone.errorCompanyDate
                     itemClone.needEncrypt = true
                     return itemClone
                 })

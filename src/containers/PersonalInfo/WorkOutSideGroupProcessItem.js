@@ -117,6 +117,7 @@ function WorkOutSideGroupProcessItem({ index, item, maxEndDate, canUpdate, viewS
                                                 <DatePicker
                                                     placeholderText={t("choose")}
                                                     selected={item[`END${itemNo}_${prefixUpdating}`] ? moment(item[`END${itemNo}_${prefixUpdating}`], 'YYYYMMDD').toDate() : null}
+                                                    minDate={item[`BEG${itemNo}_${prefixUpdating}`] ? moment(item[`BEG${itemNo}_${prefixUpdating}`], 'YYYYMMDD').toDate() : null}
                                                     maxDate={maxEndDate ? moment(maxEndDate, 'YYYYMMDD').toDate() : null}
                                                     onChange={dateInput => handleInputChange(`END${itemNo}_${prefixUpdating}`, !dateInput ? null : moment(dateInput).format('YYYYMMDD'))}
                                                     dateFormat="dd/MM/yyyy"
