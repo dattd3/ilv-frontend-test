@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import Select from 'react-select';
-import { getMuleSoftHeaderConfigurations, removeAccents } from 'commons/Utils';
+import { getRequestConfigurations, removeAccents } from 'commons/Utils';
 import { withTranslation } from 'react-i18next';
 import { Modal, Button, Image, Spinner } from 'react-bootstrap';
 
@@ -52,7 +52,7 @@ class ProposalModal extends React.Component {
   }
 
   fetchData = async () => {
-    const config = getMuleSoftHeaderConfigurations();
+    const config = getRequestConfigurations();
     let orgsOrigin = {},
       pnl = {};
 
@@ -114,7 +114,7 @@ class ProposalModal extends React.Component {
   }
 
   fetchOrg = async (orgIds) => {
-    let config = getMuleSoftHeaderConfigurations(),
+    let config = getRequestConfigurations(),
       { data, org, currentPnl } = this.state,
       orgsOrigin = { ...ORG_DATA, pnls: this.state.orgsOrigin.pnls };
 
@@ -239,7 +239,7 @@ class ProposalModal extends React.Component {
 
   handleSearch = async (shouldUpdateProposedCode = false) => {
     let { data } = this.state;
-    const config = getMuleSoftHeaderConfigurations(),
+    const config = getRequestConfigurations(),
       { modal } = this.props,
       { proposedPositionCode } = modal?.data || {},
       { pnl, block, region, unit, department, crew, team, group } = data,
