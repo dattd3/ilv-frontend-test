@@ -300,9 +300,9 @@ class SubmitQuestionModal extends React.Component {
                                     className="input-question-content"
                                     name="questionContent"
                                     placeholder={t("Question")}
-                                    required
-                                    value={this.state.questionContent}
-                                    onChange={this.handleChangeTargetQues.bind(this)} />
+                                    value={this.state.questionContent || ''}
+                                    onChange={this.handleChangeTargetQues.bind(this)}
+                                    required />
                                 <Form.Control.Feedback type="invalid">
                                     {t("EnterQuestion")}
                                 </Form.Control.Feedback>
