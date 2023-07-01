@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import Select from 'react-select';
-import { getRequestConfigurations, removeAccents } from 'commons/Utils';
+import { getMuleSoftHeaderConfigurations, getRequestConfigurations, removeAccents } from 'commons/Utils';
 import { withTranslation } from 'react-i18next';
 import { Modal, Button, Image, Spinner } from 'react-bootstrap';
 
@@ -52,7 +52,7 @@ class ProposalModal extends React.Component {
   }
 
   fetchData = async () => {
-    const config = getRequestConfigurations();
+    const config = getMuleSoftHeaderConfigurations();
     let orgsOrigin = {},
       pnl = {};
 
