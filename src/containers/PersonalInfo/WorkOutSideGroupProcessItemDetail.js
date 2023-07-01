@@ -10,13 +10,7 @@ function WorkOutSideGroupProcessItemDetail({ index, item, isAddNew, isOnlyUpdate
     const itemNo = index + 1
 
     const getSalaryByValue = (val) => {
-        if (val !== null && val !== '') {
-            if (hiddenViewSalary) {
-                return '**********'
-            }
-            return val
-        }
-        return null
+        return hiddenViewSalary ? '**********' : val
     }
 
     const showValueByConditions = (key, lineNumber = 1, valType = valueType.other) => {
