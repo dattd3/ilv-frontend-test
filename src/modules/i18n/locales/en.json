@@ -1849,6 +1849,8 @@
   "Specialist": "Specialist",
   "Staff": "Staff",
   "NotePrevDayOT": "Only choose when you request OT for overnight shift that need pull in/out of previous day.",
+  "CompanyTimeNotOverlap": "The start time and end time of the companies must not overlap!",
+  "StartDateEndDateRequired": "(*) Please select Start date and End date!",
   "PreviousDay": "Previous Day",
   "CompanyTimeNotOverlap": "The start time and end time of the companies must not overlap!"
 }
