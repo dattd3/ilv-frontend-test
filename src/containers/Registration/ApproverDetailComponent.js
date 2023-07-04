@@ -26,7 +26,7 @@ function ApproverDetailComponent(props) {
           (isApprover && status == Constants.STATUS_NOT_APPROVED)
           || (!isApprover && status == Constants.STATUS_NO_CONSENTED)
         ) && (
-          <div className="col-xl-4">
+          <div className="col-xl-4" style={{ marginTop: 10 }}>
             {t('ReasonReject')}
             <div className="detail">
               <span className="hr-comments">{ hrComment || "" }</span>

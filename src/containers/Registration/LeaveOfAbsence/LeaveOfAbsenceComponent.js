@@ -46,7 +46,7 @@ class LeaveOfAbsenceComponent extends React.Component {
             requestInfo: [
                 {
                     isShowHintLeaveForMother: false,
-                    groupItem: 1,
+                    groupItem: 1, // index group con bên trong
                     startDate: getValueParamByQueryString(queryString, 'date'),
                     startTime: null,
                     endDate: getValueParamByQueryString(queryString, 'date'),
@@ -57,7 +57,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                     absenceType: null,
                     isAllDay: true,
                     funeralWeddingInfo: null,
-                    groupId: 1,
+                    groupId: 1, // index group to bên ngoài
                     errors: {},
                 }
             ],
@@ -65,6 +65,7 @@ class LeaveOfAbsenceComponent extends React.Component {
             needReload: true,
             totalPendingLeaves: null,
             totalPendingTOILs: null,
+            validating: false,
         }
     }
 
@@ -318,17 +319,25 @@ class LeaveOfAbsenceComponent extends React.Component {
             this.calculateTotalTime(startDate, endDate, requestInfo[indexReq].startTime, end, indexReq)
     }
 
-    isOverlapDateTime(startDateTime, endDateTime, indexReq) {
-        let { requestInfo } = this.state
+    isOverlapDateTime(startDateTimeInput, endDateTimeInput, indexReq) {
+        if (!startDateTimeInput || !endDateTimeInput) {
+            return false
+        }
 
-        const hasOverlap = requestInfo.flat().filter(req => {
-            const start = moment(`${req.startDate} ${req.startTime || "00:00"}`, 'DD/MM/YYYY hh:mm').format('x')
-            const end = moment(`${req.endDate} ${req.endTime || "23:59"}`, 'DD/MM/YYYY hh:mm').format('x')
-            if ((startDateTime >= start && startDateTime < end) || (endDateTime > start && endDateTime <= end) || (startDateTime <= start && endDateTime >= end) && start < end) {
-                return req
-            }
+        const { requestInfo } = this.state
+        const startDateTime = startDateTimeInput ? moment(startDateTimeInput, 'DD/MM/YYYY hh:mm') : null
+        const endDateTime = endDateTimeInput ? moment(endDateTimeInput, 'DD/MM/YYYY hh:mm') : null
+        const hasOverlap = requestInfo.filter((item, i) => i != indexReq).some(req => {
+            const start = !req?.startDate ? null : moment(`${req?.startDate} ${req?.startTime || "00:00"}`, 'DD/MM/YYYY hh:mm') 
+            const end = !req?.endDate ? null : moment(`${req?.endDate} ${req?.endTime || "23:59"}`, 'DD/MM/YYYY hh:mm')
+            return start && end && (
+                (startDateTime?.isSameOrBefore(start) && endDateTime?.isSameOrAfter(end)) 
+                || (startDateTime?.isSameOrAfter(start) && startDateTime?.isSameOrBefore(end))
+                || (endDateTime?.isSameOrAfter(start) && endDateTime?.isSameOrBefore(end))
+            )
         })
-        return Boolean(hasOverlap.length > 1)
+
+        return hasOverlap
     }
 
     calculateTotalTime(startDate, endDate, startTime, endTime, indexReq) {
@@ -337,14 +346,18 @@ class LeaveOfAbsenceComponent extends React.Component {
         if (isAllDay && isAllDayCheckbox && (!startDate || !endDate)) return
         if (!isAllDay && !isAllDayCheckbox && (!startDate || !endDate || !startTime || !endTime)) return
 
-        const startDateTime = moment(`${startDate} ${startTime || "00:00"}`, 'DD/MM/YYYY hh:mm').format('x')
-        const endDateTime = moment(`${endDate} ${endTime || "23:59"}`, 'DD/MM/YYYY hh:mm').format('x')
+        const startDateTime = !startDate ? null : `${startDate} ${startTime || "00:00"}`
+        const endDateTime = !endDate ? null : `${endDate} ${endTime || "23:59"}`
         const isOverlapDateTime = this.isOverlapDateTime(startDateTime, endDateTime, indexReq)
         if (isOverlapDateTime) {
             requestInfo[indexReq].errors.totalDaysOff = "Trùng với thời gian nghỉ đã chọn trước đó. Vui lòng chọn lại thời gian!"
             return this.setState({ requestInfo })
         }
         
+        if (!startDate || !endDate) {
+            return
+        }
+
         this.validateTimeRequest(requestInfo, indexReq)
     }
 
@@ -369,7 +382,7 @@ class LeaveOfAbsenceComponent extends React.Component {
             }
         })
 
-        if (times.length === 0) return
+        if (times.length === 0 || (times || []).some(item => (!item?.from_date || !item?.to_date))) return
 
         const { isEdit } = this.state
 
@@ -386,7 +399,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                 }
             })
         }
-
+        this.setState({ validating: true })
         axios.post(`${process.env.REACT_APP_REQUEST_URL}request/validate`, {perno: currentEmployeeNo, ...(isEdit && { requestId: this.props.taskId }), times: times}, config)
             .then(res => {
                 if (res && res.data && res.data.data && res.data.data.times.length > 0) {
@@ -420,32 +433,36 @@ class LeaveOfAbsenceComponent extends React.Component {
                     this.setState({ requestInfo: newRequestInfo })
                 }
                 else {
-                    const newRequestInfo = requestInfo.map(req => {
-                        const errors = req.errors
-                        errors.totalDaysOff = res.data.result.message
-                        return {
-                            ...req,
-                            errors,
-                        }
-                    })
-                    this.setState({ newRequestInfo })
+                    this.setState({ needReload: false })
+                    this.showStatusModal(this.props.t("Notification"), res?.data?.result?.message, false)
+                    // const newRequestInfo = requestInfo.map(req => {
+                    //     const errors = req.errors
+                    //     errors.totalDaysOff = res.data.result.message
+                    //     return {
+                    //         ...req,
+                    //         errors,
+                    //     }
+                    // })
+                    // this.setState({ newRequestInfo })
                 }
             }).catch(error => {
                 if (error.response?.status == 401) {
                     window.location.reload();
+                } else {
+                    this.setState({ needReload: false })
+                    this.showStatusModal(this.props.t("Notification"), "Có lỗi xảy ra trong quá trình xác thực dữ liệu. Xin vui lòng nhập lại thông tin ngày/giờ nghỉ!", false)
+                    
+                    // const newRequestInfo = requestInfo.map(req => {
+                    //     const errors = req.errors
+                    //     errors.totalDaysOff = "Có lỗi xảy ra trong quá trình xác thực dữ liệu. Xin vui lòng nhập lại thông tin ngày/giờ nghỉ!"
+                    //     return {
+                    //         ...req,
+                    //         errors,
+                    //     }
+                    // })
+                    // this.setState({ newRequestInfo })
                 }
-                else {
-                    const newRequestInfo = requestInfo.map(req => {
-                        const errors = req.errors
-                        errors.totalDaysOff = "Có lỗi xảy ra trong quá trình xác thực dữ liệu. Xin vui lòng nhập lại thông tin ngày/giờ nghỉ!"
-                        return {
-                            ...req,
-                            errors,
-                        }
-                    })
-                    this.setState({ newRequestInfo })
-                }
-            })
+            }).finally(() => this.setState({ validating: false }))
     }
 
     calFullDay(timesheets) {
@@ -504,12 +521,6 @@ class LeaveOfAbsenceComponent extends React.Component {
     handleSelectChange(name, value, groupId) {
         const requestInfo = [...this.state.requestInfo]
         const index = groupId - 1 // groupId bắt đầu từ 1. Cần trừ đi 1 để đúng với index của mảng
-
-        // console.log("==============================")
-        // console.log(requestInfo)
-        // console.log(name)
-        // console.log(value)
-        // console.log(groupId)
 
         let newRequestInfo = []
         if (name === "absenceType") {
@@ -957,7 +968,8 @@ class LeaveOfAbsenceComponent extends React.Component {
             isSuccess,
             isShowNoteModal,
             appraiser,
-            approver
+            approver,
+            validating,
         } = this.state
         const sortRequestListByGroup = requestInfo.sort((reqPrev, reqNext) => reqPrev.groupId - reqNext.groupId)
         const requestInfoArr = _.valuesIn(_.groupBy(sortRequestListByGroup, (req) => req.groupId))
@@ -1026,12 +1038,14 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                                 <label>{t('StartDateTime')}</label>
                                                                 <div className='d-flex align-items-center value'>
                                                                     {ri?.startDate && moment(ri?.startDate, 'YYYYMMDD').isValid() ? moment(ri?.startDate, 'YYYYMMDD').format('DD/MM/YYYY') : ''}
+                                                                    {ri?.startTime ? ' ' + moment(ri?.startTime, 'HH:mm').locale('en-us').format('HH:mm') : ''}
                                                                 </div>
                                                             </div>
                                                             <div className='col-md-4'>
                                                                 <label>{t('EndDateTime')}</label>
                                                                 <div className='d-flex align-items-center value'>
                                                                     {ri?.endDate && moment(ri?.endDate, 'YYYYMMDD').isValid() ? moment(ri?.endDate, 'YYYYMMDD').format('DD/MM/YYYY') : ''}
+                                                                    {ri?.endTime ? ' ' + moment(ri?.endTime, 'HH:mm').locale('en-us').format('HH:mm') : ''}
                                                                 </div>
                                                             </div>
                                                             <div className='col-md-4'>
@@ -1489,7 +1503,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                         </li>
                     })}
                 </ul>
-                <ButtonComponent isEdit={isEdit} files={files} updateFiles={this.updateFiles.bind(this)} submit={this.submit.bind(this)} isUpdateFiles={this.getIsUpdateStatus} disabledSubmitButton={disabledSubmitButton} />
+                <ButtonComponent isEdit={isEdit} files={files} updateFiles={this.updateFiles.bind(this)} submit={this.submit.bind(this)} isUpdateFiles={this.getIsUpdateStatus} disabledSubmitButton={disabledSubmitButton} validating={validating} />
             </div>
         )
     }
