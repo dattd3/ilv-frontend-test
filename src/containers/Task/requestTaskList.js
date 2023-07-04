@@ -379,96 +379,29 @@ class RequestTaskList extends React.Component {
       return 30;
     }
 
-    checkDateLessThanPayPeriod = (startDate) => {
-        // debugger
-        // const endOfMonth = this.getMaxDayOfMonth()
-        // const convertedDate = moment(date, 'DD/MM/YYYY')
-        // let minDate = null
-        // const today = new Date()
-        // const currentDay = today.getDate()
-        // const year = today.getFullYear()
-        // const month = today.getMonth()
-
-        // if (currentDay < endOfMonth && currentDay >= 26) { // Ngày sửa/thu hồi 26 đến trước ngày trả lương
-        //     if (month === 0) {
-        //         minDate = new Date(year - 1, 11, 26)
-        //     } else {
-        //         minDate = new Date(year, month - 1, 26)
-        //     }
-        // } else if (currentDay === endOfMonth) { // Ngày sửa/thu hồi vào ngày trả lương
-        //     minDate = new Date(year, month, 26)
-        // } else { // Ngày sửa/thu hồi 1,..,25
-        //     if (month === 0) {
-        //         minDate = new Date(year - 1, 11, 26)
-        //     } else {
-        //         minDate = new Date(year, month - 1, 26)
-        //     }
-        // }
-
-        // console.log('convertedDate => ', moment(convertedDate).format('DD/MM/YYYY'))
-        // console.log('minDate => ', moment(minDate).format('DD/MM/YYYY'))
-
-        // const result = moment(convertedDate).isBefore(moment(minDate))
-
-        // return result ? false : true
-
-
-        if (startDate) {
-            const currentDate = new Date();
-            const currentYear = currentDate.getFullYear();
-            
-            //Tháng hiện tại
-            const currentMonthNumber = currentDate.getMonth() + 1; //Tháng hiện tại + 1 do bắt đầu tính từ 0
-            let currentMonth = currentMonthNumber + '';
-            if (currentMonthNumber < 10) {
-                currentMonth = `0${currentMonth}`; //nếu từ tháng 1 ~ 9 thì thêm số 0 đằng trước
+    isDateValidForUpdateAndRecall = (startDate) => { // startDate phải có định dạng là YYYYMMDD
+        try {
+            const currentDate = moment()
+            let minDate = moment().set('date', 26)
+            if (currentDate.date() < 29) {
+              minDate = minDate.subtract(1, 'month')
             }
-
-            //Tháng trước
-            const lastMonthNumber = currentMonthNumber - 1;
-            let lastMonth = lastMonthNumber + '';
-            if (lastMonthNumber < 10) {
-                lastMonth = `0${lastMonth}`;
-            }
-
-            //Khoảng thời gian so sánh nhỏ nhất
-            const minDate =
-                lastMonthNumber == 0
-                    ? `${currentYear - 1}1226`
-                    : `${currentYear}${lastMonth}26`;
-
-            //Khoảng thời gian so sánh lớn nhất
-            //val maxDate = "$currentYear${currentMonth}30"  //Format: 20211230
-
-            //So sánh thỏa mãn cho phép chỉnh sửa trong khoảng : 26/T-1 ~ 30/T không ?
-            /*if (startDate.toInt() >= minDate.toInt() && startDate.toInt() <= maxDate.toInt()) {
-                    return true
-                }*/
-
-            //Sửa logic bỏ so sánh trong tương lai
-            if (startDate >= minDate) {
-                return true;
-            }
+            return startDate >= minDate.format('YYYYMMDD')
+        } catch {
+            return false
         }
-
-        return false
     }
 
-    isShowEditButton = (status, appraiser, requestTypeId, startDate, isEditOnceTime) => {
+    isShowEditButton = (status, requestTypeId, startDate, isEditOnceTime) => {
         const { page } = this.props
-
         if (page === "approval" || !isEditOnceTime) {
             return false
         }
         if (status == Constants.STATUS_APPROVED && [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP].includes(requestTypeId)) {
-            if (status == Constants.STATUS_APPROVED) {
-                const firstStartDate = startDate?.length > 0 ? startDate[0] : null
-                if (this.checkDateLessThanPayPeriod(moment(firstStartDate, 'DD/MM/YYYY')?.isValid() ? moment(firstStartDate, 'DD/MM/YYYY').format('YYYYMMDD') : null)) {
-                    return true
-                }
-                return false
+            const firstStartDate = startDate?.length > 0 ? startDate[0] : null
+            if (this.isDateValidForUpdateAndRecall(moment(firstStartDate, 'DD/MM/YYYY')?.isValid() ? moment(firstStartDate, 'DD/MM/YYYY').format('YYYYMMDD') : null)) {
+                return true
             }
-            return true
         }
         return false
     }
@@ -477,21 +410,17 @@ class RequestTaskList extends React.Component {
         const { page } = this.props
         if (page === "approval") {
             return false
-        } else {
-          const firstStartDate = startDate?.length > 0 ? startDate[0] : null
-          if (status == Constants.STATUS_APPROVED 
-              && [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP].includes(requestTypeId) 
-              && this.checkDateLessThanPayPeriod(moment(firstStartDate, 'DD/MM/YYYY')?.isValid() ? moment(firstStartDate, 'DD/MM/YYYY').format('YYYYMMDD') : null)) {
-              return true
-          } else if (status == Constants.STATUS_APPROVED 
-            && requestTypeId === Constants.OT_REQUEST 
-            && startDate?.split(", ")?.every(item => this.checkDateLessThanPayPeriod(moment(item, 'DD/MM/YYYY')?.isValid() ? moment(firstStartDate, 'DD/MM/YYYY').format('YYYYMMDD') : null))
-          ) {
-            // OT: check every item should be less than pay period
-            return true;
-          }
-          return false
         }
+        const firstStartDate = startDate?.length > 0 ? startDate[0] : null
+        if (status == Constants.STATUS_APPROVED) {
+            if ([Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP].includes(requestTypeId) && this.isDateValidForUpdateAndRecall(moment(firstStartDate, 'DD/MM/YYYY')?.isValid() ? moment(firstStartDate, 'DD/MM/YYYY').format('YYYYMMDD') : null)) {
+                return true
+            }
+            if (requestTypeId === Constants.OT_REQUEST && startDate?.split(", ")?.every(item => this.checkDateLessThanPayPeriod(moment(item, 'DD/MM/YYYY')?.isValid() ? moment(firstStartDate, 'DD/MM/YYYY').format('YYYYMMDD') : null))) {
+                return true
+            }
+        }
+        return false
     }
 
     isShowDeleteButton = (status, appraiser, requestTypeId, actionType, updateField = 0) => {
@@ -984,7 +913,7 @@ class RequestTaskList extends React.Component {
                                 <tbody>
                                     {
                                         tasks.map((child, index) => {
-                                            let isShowEditButton = this.isShowEditButton(child?.processStatusId, child?.appraiserId, child?.requestTypeId, child?.startDate, child?.isEdit)
+                                            let isShowEditButton = this.isShowEditButton(child?.processStatusId, child?.requestTypeId, child?.startDate, child?.isEdit)
                                             const isShowEvictionButton = this.isShowEvictionButton(child?.processStatusId, 
                                               child?.requestTypeId, 
                                               child?.requestTypeId === Constants.OT_REQUEST ? child?.dateRange : child?.startDate, 

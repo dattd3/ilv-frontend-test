@@ -130,15 +130,15 @@ const VinGroup = ({ evaluationFormDetail, isEdit, showByManager, evaluationStatu
                                     {   
                                     target?.jobDetail && 
                                     <ul className="first">
-                                        <li>{formatTargetText(target?.jobDetail)}</li>
+                                        <li>{target?.jobDetail}</li>
                                     </ul>
                                     }
                                     <ul className="second">
-                                    <li>{!target?.metric1 ? '--' : formatTargetText(target?.metric1)}</li>
-                                    <li>{!target?.metric2 ? '--' : formatTargetText(target?.metric2)}</li>
-                                    <li>{!target?.metric3 ? '--' : formatTargetText(target?.metric3)}</li>
-                                    <li>{!target?.metric4 ? '--' : formatTargetText(target?.metric4)}</li>
-                                    <li>{!target?.metric5 ? '--' : formatTargetText(target?.metric5)}</li>
+                                    <li>{!target?.metric1 ? '--' : target?.metric1}</li>
+                                    <li>{!target?.metric2 ? '--' : target?.metric2}</li>
+                                    <li>{!target?.metric3 ? '--' : target?.metric3}</li>
+                                    <li>{!target?.metric4 ? '--' : target?.metric4}</li>
+                                    <li>{!target?.metric5 ? '--' : target?.metric5}</li>
                                     </ul>
                                 </td>
                                 <td className="text-center proportion"><span>{target?.weight}%</span></td>
@@ -338,15 +338,15 @@ const VinGroup = ({ evaluationFormDetail, isEdit, showByManager, evaluationStatu
                                         {
                                             target?.jobDetail && 
                                             <ul className="first">
-                                            <li>{formatTargetText(target?.jobDetail)}</li>
+                                            <li>{target?.jobDetail}</li>
                                             </ul>
                                         }
                                         <ul className="second">
-                                            <li>{!target?.metric1 ? '--' : formatTargetText(target?.metric1)}</li>
-                                            <li>{!target?.metric2 ? '--' : formatTargetText(target?.metric2)}</li>
-                                            <li>{!target?.metric3 ? '--' : formatTargetText(target?.metric3)}</li>
-                                            <li>{!target?.metric4 ? '--' : formatTargetText(target?.metric4)}</li>
-                                            <li>{!target?.metric5 ? '--' : formatTargetText(target?.metric5)}</li>
+                                            <li>{!target?.metric1 ? '--' : target?.metric1}</li>
+                                            <li>{!target?.metric2 ? '--' : target?.metric2}</li>
+                                            <li>{!target?.metric3 ? '--' : target?.metric3}</li>
+                                            <li>{!target?.metric4 ? '--' : target?.metric4}</li>
+                                            <li>{!target?.metric5 ? '--' : target?.metric5}</li>
                                         </ul>
                                         </td>
                                         <td className="text-center proportion"><span>{target?.weight}%</span></td>
