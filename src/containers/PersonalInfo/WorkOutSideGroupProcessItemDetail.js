@@ -35,6 +35,13 @@ function WorkOutSideGroupProcessItemDetail({ index, item, isAddNew, isOnlyUpdate
         }
     }
 
+    const showSalaryValueOriginalByConditions = (key, lineNumber = 1) => {
+        const currentDefaultValue = item[key]
+        return lineNumber === 1 
+        ? isAddNew ? currentDefaultValue : item?.OldExperience[key]
+        : isAddNew ? currentDefaultValue : item?.NewExperience[key]
+    }
+
     const BEG_Line1 = showValueByConditions(`BEG${itemNo}`, 1, valueType.date)
     const BEG_Line2 = showValueByConditions(`BEG${itemNo}`, 2, valueType.date)
     const END_Line1 = showValueByConditions(`END${itemNo}`, 1, valueType.date)
@@ -49,10 +56,13 @@ function WorkOutSideGroupProcessItemDetail({ index, item, isAddNew, isOnlyUpdate
     const DE_GROSS_Line2 = showValueByConditions(`DE_GROSS${itemNo}`, 2, valueType.salary)
     const WAERS_Line1 = showValueByConditions(`WAERS${itemNo}`, 1, valueType.other)
     const WAERS_Line2 = showValueByConditions(`WAERS${itemNo}`, 2, valueType.other)
-
     const isShowRow1 = isOnlyUpdated && (!isEmptyByValue(BEG_Line2, valueType.date) || !isEmptyByValue(END_Line2, valueType.date) || !isEmptyByValue(PLAN_Line2))
     const isShowRow2 = isOnlyUpdated && !isEmptyByValue(DUT_Line2)
-    const isShowRow3 = isOnlyUpdated && (!isEmptyByValue(DE_NET_Line2) || !isEmptyByValue(DE_GROSS_Line2) || !isEmptyByValue(WAERS_Line2))
+    const isShowRow3 = isOnlyUpdated && (
+        !isEmptyByValue(showSalaryValueOriginalByConditions(`DE_NET${itemNo}`, 2, valueType.salary)) 
+        || !isEmptyByValue(showSalaryValueOriginalByConditions(`DE_GROSS${itemNo}`, 2, valueType.salary)) 
+        || !isEmptyByValue(WAERS_Line2)
+    )
 
     return (
         <div className="process-item">

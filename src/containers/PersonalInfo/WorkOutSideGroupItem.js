@@ -13,7 +13,7 @@ import vi from 'date-fns/locale/vi'
 import 'react-datepicker/dist/react-datepicker.css'
 registerLocale("vi", vi)
 
-function WorkOutSideGroupItem({ index, item, canUpdate, viewSalaryAtLeastOnceTime, hiddenViewSalary, handleRemoveCompany, handleToggleProcess, handleToggleViewSalary, handleInputChangeOnParent }) {
+function WorkOutSideGroupItem({ index, item, canUpdate, totalItem, viewSalaryAtLeastOnceTime, hiddenViewSalary, handleRemoveCompany, handleToggleProcess, handleToggleViewSalary, handleInputChangeOnParent }) {
     const { t } = useTranslation()
 
     const handleInputChange = (key, value) => {
@@ -48,7 +48,7 @@ function WorkOutSideGroupItem({ index, item, canUpdate, viewSalaryAtLeastOnceTim
                 <div className="group-header">
                     <h5>{t("CompanyInfo")}</h5>
                     {
-                        canUpdate && (
+                        canUpdate && totalItem > 1 && (
                             <span className="btn-cancel" onClick={() => handleRemoveCompany(index)}>
                                 <img src={IconCancel} alt="Cancel" />
                                 <span>{t("Cancel2")}</span>
