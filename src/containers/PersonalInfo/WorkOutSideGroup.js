@@ -138,18 +138,19 @@ function WorkOutSideGroup(props) {
                 moment(sub[`BEGDA_${prefixUpdating}`] ? sub[`BEGDA_${prefixUpdating}`] : sub?.BEGDA, 'YYYYMMDD'),
                 moment(sub[`ENDDA_${prefixUpdating}`] ? sub[`ENDDA_${prefixUpdating}`] : sub?.ENDDA, 'YYYYMMDD')
             ), { adjacent: true }))
+            let dateMessageInValid = null
+            if (item?.isAddNew && (isEmptyByValue(item?.BEGDA, valueType.date) || isEmptyByValue(item?.ENDDA, valueType.date))) {
+                dateMessageInValid = t("StartDateEndDateRequired")
+            } else if (isOverlap) {
+                dateMessageInValid = t("CompanyTimeNotOverlap")
+            }
 
             return {
                 ...item,
                 ...(
                     item?.isAddNew && (isEmptyByValue(item?.ORGEH, valueType.other) ? { errorCompanyName: t("Required") } : { errorCompanyName: null })
                 ),
-                ...(
-                    isOverlap ? { errorCompanyDate: t("CompanyTimeNotOverlap") } : { errorCompanyDate: null }
-                ),
-                ...(
-                    item?.isAddNew && ((isEmptyByValue(item?.BEGDA, valueType.date) || isEmptyByValue(item?.ENDDA, valueType.date)) ? { errorCompanyDate: t("Required") } : { errorCompanyDate: null })
-                )
+                errorCompanyDate: dateMessageInValid
             }
         })
 
