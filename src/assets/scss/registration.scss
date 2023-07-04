@@ -1286,11 +1286,19 @@
                     &.deleted {
                         .value {
                             background: #F5E3E4 !important;
+                            min-height: 38px;
+                            height: auto;
+                            padding-top: 8px;
+                            padding-bottom: 8px;
                         }
                     }
                     &.add-new {
                         .value {
                             background: #FEE7D0 !important;
+                            min-height: 38px;
+                            height: auto;
+                            padding-top: 8px;
+                            padding-bottom: 8px;
                         }
                     }
                     .company-item {
