@@ -174,7 +174,7 @@ function Login() {
                     </div>
                   </div>
                 </div>
-                <div className="col-lg-7 d-flex flex-column" style={{ background: '#F9F9F9' }}>
+                <div className="col-lg-7 d-flex flex-column banner-region">
                   {/* <Carousel nextIcon={null} prevIcon={null}>
                     <Carousel.Item interval={1000}>
                       <div className="detail-contain">
