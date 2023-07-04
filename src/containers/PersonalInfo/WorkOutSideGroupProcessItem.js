@@ -163,10 +163,10 @@ function WorkOutSideGroupProcessItem({ index, item, maxEndDate, canUpdate, viewS
                                     <>
                                         {
                                             item?.isAddNew
-                                            ? (<textarea rows="2" value={item[`DUT${itemNo}`] || ""} onChange={e => handleInputChange(`DUT${itemNo}`, e?.target?.value || '')} />)
+                                            ? (<textarea rows="2" value={item[`DUT${itemNo}`] || ""} onChange={e => handleInputChange(`DUT${itemNo}`, e?.target?.value || '')} placeholder={t("import")} />)
                                             : (<div className="value">{item[`DUT${itemNo}`] || ''}</div>)
                                         }
-                                        {!item?.isAddNew && (<textarea rows="2" value={item[`DUT${itemNo}_${prefixUpdating}`] || ""} onChange={e => handleInputChange(`DUT${itemNo}_${prefixUpdating}`, e?.target?.value || '')} className="second" />)}       
+                                        {!item?.isAddNew && (<textarea rows="2" value={item[`DUT${itemNo}_${prefixUpdating}`] || ""} onChange={e => handleInputChange(`DUT${itemNo}_${prefixUpdating}`, e?.target?.value || '')} className="second" placeholder={t("import")} />)}       
                                     </>
                                 )
                                 : (<div className="value">{item[`DUT${itemNo}`] || ''}</div>)
