@@ -146,6 +146,9 @@ function WorkOutSideGroup(props) {
                 ),
                 ...(
                     isOverlap ? { errorCompanyDate: t("CompanyTimeNotOverlap") } : { errorCompanyDate: null }
+                ),
+                ...(
+                    item?.isAddNew && ((isEmptyByValue(item?.BEGDA, valueType.date) || isEmptyByValue(item?.ENDDA, valueType.date)) ? { errorCompanyDate: t("Required") } : { errorCompanyDate: null })
                 )
             }
         })
@@ -607,6 +610,7 @@ function WorkOutSideGroup(props) {
                                     index={index}
                                     item={item}
                                     canUpdate={canUpdate}
+                                    totalItem={experiences?.length || 0}
                                     viewSalaryAtLeastOnceTime={accessToken ? true : false}
                                     hiddenViewSalary={hiddenViewSalary}
                                     handleRemoveCompany={handleRemoveCompany}
