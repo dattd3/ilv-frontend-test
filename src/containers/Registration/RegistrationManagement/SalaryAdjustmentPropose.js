@@ -773,11 +773,8 @@ const SalaryAdjustmentPropose = (props) => {
 
   // Thẩm định
   const handleConsent = () => {
-    // const processStatusId = appraiser ? 24 : 5;
     if (
-      selectMembers.some(
-        (item) => item.canChangeAction && !item.accepted && !item.comment
-      )
+      selectMembers.some(item => item.canChangeAction && !item.accepted && !item.comment)
     ) {
       return setShowCommentError(true);
     }
@@ -863,6 +860,11 @@ const SalaryAdjustmentPropose = (props) => {
 
   // Phê duyệt
   const handleApprove = () => {
+    if (
+      selectMembers.some(item => item.canChangeAction && !item.accepted && !item.comment)
+    ) {
+      return setShowCommentError(true);
+    }
     let staffRequestStatusList = selectMembers?.map((item) => ({
       employeeNo: item.uid,
       salaryAdjustmentId: item.id,
@@ -1395,7 +1397,7 @@ const SalaryAdjustmentPropose = (props) => {
               </>
             )}
             <td colSpan={2} className="min-width text-center font-weight-bold">
-              {t('effective_time')}
+              {t('EffectiveDate')}
             </td>
             <td colSpan={1} className="min-width text-center font-weight-bold">
               {t('Action')}
@@ -1464,7 +1466,7 @@ const SalaryAdjustmentPropose = (props) => {
                               intlConfig={renderCurrency()}
                               className="no-vborder"
                               value={item?.currentSalary}
-                              placeholder="Nhập"
+                              placeholder={t('EvaluationInput')}
                               style={{ width: '100%', background: '#fff' }}
                               maxLength={11}
                             />
@@ -1506,7 +1508,7 @@ const SalaryAdjustmentPropose = (props) => {
                             'suggestedSalary'
                           );
                         }}
-                        placeholder="Nhập"
+                        placeholder={t('EvaluationInput')}
                         maxLength={11}
                       />
                     ) : (
@@ -1527,7 +1529,7 @@ const SalaryAdjustmentPropose = (props) => {
                                   intlConfig={renderCurrency()}
                                   className="no-vborder"
                                   value={item?.suggestedSalary}
-                                  placeholder="Nhập"
+                                  placeholder={t('EvaluationInput')}
                                   style={{ width: '100%', background: '#fff' }}
                                   maxLength={11}
                                 />
@@ -1658,7 +1660,7 @@ const SalaryAdjustmentPropose = (props) => {
               item.canChangeAction ? (
                 <>
                   <ResizableTextarea
-                    placeholder={'Nhập'}
+                    placeholder={t('EvaluationInput')}
                     value={item?.comment || ''}
                     onChange={(e) =>
                       handleTextInputChange(

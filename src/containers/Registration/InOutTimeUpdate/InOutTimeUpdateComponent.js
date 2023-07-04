@@ -13,6 +13,7 @@ import _ from 'lodash'
 import { withTranslation } from "react-i18next";
 import { getValueParamByQueryString, getMuleSoftHeaderConfigurations, isEnableFunctionByFunctionName, getRegistrationMinDateByConditions, isValidDateRequest } from "../../../commons/Utils"
 import Constants from '../../../commons/Constants'
+import LoadingModal from 'components/Common/LoadingModal'
 registerLocale("vi", vi)
 
 const CLOSING_SALARY_DATE_PRE_MONTH = 26
@@ -37,6 +38,7 @@ class InOutTimeUpdateComponent extends React.Component {
       messageModal: "",
       disabledSubmitButton: false,
       needReload: true,
+      isLoading: false,
     }
   }
 
@@ -306,6 +308,7 @@ class InOutTimeUpdateComponent extends React.Component {
   }
 
   search() {
+    this.setState({ isLoading: true })
     const { startDate, endDate } = this.state
     const start = moment(startDate, "DD/MM/YYYY").format('YYYYMMDD')
     const end = moment(endDate, "DD/MM/YYYY").format('YYYYMMDD')
@@ -331,7 +334,8 @@ class InOutTimeUpdateComponent extends React.Component {
               start_time2_fact_update: null,
               end_time1_fact_update: null,
               end_time2_fact_update: null,
-              isNextDay: false
+              isNextDay: false,
+              isPrevDay: false
             }, ts)
           })
           this.setState({ timesheets: timesheets })
@@ -339,6 +343,8 @@ class InOutTimeUpdateComponent extends React.Component {
       }).catch(error => {
         // localStorage.clear();
         // window.location.href = map.Login;
+      }).finally(() => {
+        this.setState({ isLoading: false })
       })
   }
 
@@ -392,7 +398,7 @@ class InOutTimeUpdateComponent extends React.Component {
   }
 
   render() {
-    const { startDate, endDate, timesheets, errors, files, disabledSubmitButton, isShowStatusModal, titleModal, messageModal, isSuccess } = this.state
+    const { startDate, endDate, timesheets, errors, files, disabledSubmitButton, isShowStatusModal, titleModal, messageModal, isSuccess, isLoading } = this.state
     const { t, recentlyManagers } = this.props;
     const lang = localStorage.getItem("locale")
     const isShowSelectWorkingShift24h = isEnableFunctionByFunctionName(Constants.listFunctionsForPnLACL.selectWorkingShift24h)
@@ -400,6 +406,7 @@ class InOutTimeUpdateComponent extends React.Component {
 
     return (
       <div className="in-out-time-update">
+        <LoadingModal show={isLoading} />
         <ResultModal show={isShowStatusModal} title={titleModal} message={messageModal} isSuccess={isSuccess} onHide={this.hideStatusModal} />
         <div className="box shadow">
           <div className="row">
@@ -612,6 +619,10 @@ class InOutTimeUpdateComponent extends React.Component {
                             {this.error(index, 'end_time2_fact_update')}
                           </span>
                         </div>
+                      </div>
+                      <div className='previous-day-selection'>
+                        <input type="checkbox" id={`previous-day-selection-${index}`} name={`previous-day-selection-${index}`} checked={timesheet.isPrevDay || false} onChange={e => this.handleCheckboxChange(index, 'isPrevDay', e)} />
+                        <label htmlFor={`previous-day-selection-${index}`}>{t("PreviousDay")}</label>
                       </div>
                       {
                         isShowSelectWorkingShift24h && 
