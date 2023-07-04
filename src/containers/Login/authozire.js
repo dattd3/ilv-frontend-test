@@ -170,6 +170,7 @@ function Authorize(props) {
                             employeeNo: user.uid,
                             jobType: user.rank_name,
                             department: `${user.division} / ${user.department} / ${user.unit}`,
+                            actualDepartment: user?.department,
                             organizationLvId: user.organization_id,
                             organizationLv1: user.organization_lv1,
                             organizationLv2: user.organization_lv2,
@@ -192,6 +193,7 @@ function Authorize(props) {
                             role_assigment: user.role_assigment,
                             prepare: shouldShowPrepareOnboard,
                             jobCode: user?.job_code,
+                            ad: user?.username,
                             master_code: user.master_code || ''
                         });
                         FirebaseUpdateToken();
@@ -218,6 +220,7 @@ function Authorize(props) {
                         employeeNo: user.uid,
                         jobType: user.rank_name,
                         department: `${user.division} / ${user.department} / ${user.unit}`,
+                        actualDepartment: user?.department,
                         organizationLv1: user.organization_lv1,
                         organizationLv2: user.organization_lv2,
                         organizationLv3: user.organization_lv3,
@@ -237,6 +240,7 @@ function Authorize(props) {
                         role_assigment: user.role_assigment,
                         prepare: shouldShowPrepareOnboard,
                         jobCode: user?.job_code,
+                        ad: user?.username,
                         master_code: ''
                     });
                 })

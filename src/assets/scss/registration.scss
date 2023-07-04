@@ -1112,7 +1112,381 @@
             cursor: pointer;
           }
         }
-      }
+    }
+    .work-outside-group-detail {
+        padding: 0;
+        border-radius: 0;
+        background: transparent;
+        box-shadow: none !important;
+        .content-page-header {
+            color: #000000 !important;
+            font-size: 16px !important;
+        }
+        .registration-employee-information {
+            background: #FFFFFF;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+            padding: 15px;
+            .value {
+                height: 38px;
+                border: none;
+                border-radius: 4px;
+                background: #F2F2F2;
+                padding: 0 12px;
+                display: flex;
+                align-items: center;
+                margin-top: 0.5rem;
+            }
+        }
+        .approver-comment {
+            box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+            background: #FFFFFF;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            padding: 15px;
+            .value {
+                margin-top: 0.5rem;
+                padding: 12px 15px;
+                background: #F2F2F2;
+                border-radius: 4px;
+            }
+        }
+        .block-status {
+            font-size: 12px;
+            margin-bottom: 0;
+            .status {
+                padding: 5px 20px;
+            }
+        }
+        .documents-block {
+            margin-top: 15px;
+            & > .box {
+                border: none;
+                border-radius: 4px;
+                margin: 0;
+                padding: 20px;
+                ul {
+                    margin-bottom: 0;
+                    .list-inline-item {
+                        margin: 0 15px 0 0;
+                    }
+                }
+            }
+        }
+        .action-block {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 15px;
+            .btn {
+                height: 38px;
+                font-size: 14px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                color: #fff;
+                i {
+                    margin-right: 5px;
+                }
+                &.eviction {
+                    background-color: #dc3545;
+                    border-color: #dc3545;
+                }
+                &.reject {
+                    background-color: #dc3545;
+                    border-color: #dc3545;
+                }
+                &.approve {
+                    margin-left: 15px;
+                    background-color: #28a745;
+                    border-color: #28a745;
+                }
+            }
+        }
+        .edit-registration-information {
+            padding: 15px;
+            background: #FFFFFF;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+            ul {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+                li {
+                    margin-left: 30px;
+                    &:first-child {
+                        margin-left: 0;
+                    }
+                    .box-color {
+                        display: inline-block;
+                        width: 18px;
+                        height: 18px;
+                        border-radius: 4px;
+                        margin-right: 5px;
+                        &.old {
+                            background: #F2F2F2;
+                        }
+                        &.adjusted {
+                            background: #CCCEE2;
+                        }
+                        &.new {
+                            background: #FEE7D0;
+                        }
+                        &.removed {
+                            background: #F5E3E4;
+                        }
+                    }
+                }
+            }
+        }
+        .work-outside-group-list {
+            color: #000000 !important;
+            font-size: inherit;
+            .work-outside-group-item {
+                .updated {
+                    background: #CCCEE2 !important;
+                }
+                .value {
+                    height: 38px;
+                    background: #F2F2F2;
+                    border-radius: 3px;
+                    display: flex;
+                    align-items: center;
+                    padding: 0 12px;
+                    .eye {
+                        cursor: pointer;
+                    }
+                    &.salary-view {
+                        justify-content: space-between;
+                    }
+                    &.second {
+                        margin-top: 15px;
+                    }
+                }
+                .company-info {
+                    border-radius: 4px;
+                    border: 1px solid #DEE2E6;
+                    background: #FFFFFF;
+                    margin-bottom: 15px;
+                    .group-header {
+                        background: #E2E2E2;
+                        height: 34px;
+                        display: flex;
+                        border-top-right-radius: 3px;
+                        border-top-left-radius: 3px;
+                        h5 {
+                            color: #000000 !important;
+                            font-weight: bold;
+                            font-size: inherit;
+                            flex: 1 1;
+                            margin-bottom: 0;
+                            height: 100%;
+                            display: flex;
+                            text-transform: initial;
+                            align-items: center;
+                            margin-left: 15px;
+                        }
+                    }
+                }
+                .company {
+                    margin-bottom: 15px;
+                    padding: 15px 15px 0 15px;
+                    &.deleted {
+                        .value {
+                            background: #F5E3E4 !important;
+                            min-height: 38px;
+                            height: auto;
+                            padding-top: 8px;
+                            padding-bottom: 8px;
+                        }
+                    }
+                    &.add-new {
+                        .value {
+                            background: #FEE7D0 !important;
+                            min-height: 38px;
+                            height: auto;
+                            padding-top: 8px;
+                            padding-bottom: 8px;
+                        }
+                    }
+                    .company-item {
+                        padding-left: 15px;
+                        padding-right: 15px;
+                        & > .row {
+                            border-radius: 4px;
+                            padding-top: 10px;
+                            padding-bottom: 15px;
+                            box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+                        }
+                        .group-name {
+                            display: flex;
+                            flex-direction: column;
+                            .second {
+                                margin-top: 15px;
+                            }
+                            input {
+                            border: 1px solid #DEE2E6;
+                            height: 38px;
+                            padding: 0 10px;
+                            outline: none;
+                            border-radius: 4px;
+                            }
+                        }
+                        .group-date {
+                            .label {
+                                margin-top: 10px;
+                            }
+                            .input-date {
+                                display: block;
+                                position: relative;
+                                margin-bottom: 0;
+                                .input-img {
+                                    position: absolute;
+                                    right: 12px;
+                                    top: 7px;
+                                }
+                                img {
+                                    height: 14px;
+                                }
+                                &.second {
+                                    margin-top: 15px;
+                                }
+                            }
+                        }
+                    }
+                    .collapse-expand-block {
+                        margin-top: 15px;
+                        & > span {
+                            display: inline-flex;
+                            align-items: center;
+                            cursor: pointer;
+                            span {
+                            margin-left: 5px;
+                            }
+                        }
+                    }
+                }
+                .process {
+                    margin-top: 15px;
+                    border: none;
+                    .process-item {
+                        margin-bottom: 15px;
+                        border: 1px solid #DEE2E6;
+                        border-radius: 4px;
+                        &:last-child {
+                            margin-bottom: 0;
+                        }
+                        .content {
+                            padding: 10px 15px 15px 15px;
+                        }
+                        .group-input {
+                            display: flex;
+                            flex-direction: column;
+                            input {
+                                font-size: inherit;
+                                height: 38px;
+                                border-radius: 4px;
+                                padding: 0 10px;
+                                outline: none;
+                                border: 1px solid #DEE2E6;
+                            }
+                            .input-date {
+                                display: block;
+                                position: relative;
+                                margin-bottom: 0;
+                                .input-img {
+                                    position: absolute;
+                                    top: 7px;
+                                    right: 12px;
+                                }
+                                img {
+                                    height: 14px;
+                                }
+                                &.second {
+                                    margin-top: 15px;
+                                    .react-datepicker-wrapper {
+                                        width: 100%;
+                                    }
+                                }
+                            }
+                            .second {
+                                margin-top: 15px;
+                            }
+                            &.role {
+                                margin-top: 15px;
+                            }
+                        }
+                        .salary {
+                            margin-top: 15px;
+                            padding: 0 !important;
+                        }
+                    }
+                }
+            }
+            .list-files {
+                display: flex;
+                align-items: center;
+                flex-wrap: wrap;
+                grid-gap: 15px;
+                margin: 15px 0;
+                .item {
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    background: #FFFFFF;
+                    border-radius: 4px;
+                    height: 36px;
+                    padding: 0 10px;
+                    .file-name {
+                        color: #4E73DF;
+                        font-weight: bold;
+                    }
+                    .btn-remove {
+                        margin-left: 10px;
+                        cursor: pointer;
+                    }
+                }
+            }
+            .block-button-actions {
+                .block-buttons {
+                    display: flex;
+                    align-items: center;
+                    justify-content: flex-end;
+                    .btn-attachment {
+                        display: inline-flex;
+                        .custom-file-upload {
+                            display: inline-flex;
+                            align-items: center;
+                            justify-content: center;
+                            cursor: pointer;
+                            background: #FFFFFF;
+                            border: 1px solid #B3B3B3;
+                            margin-bottom: 0;
+                            height: 38px;
+                            width: 140px;
+                            border-radius: 4px;
+                            i {
+                                margin-right: 5px;
+                                font-size: 12px;
+                            }
+                        }
+                        input {
+                            display: none;
+                        }
+                    }
+                    .btn-primary {
+                        font-size: inherit;
+                        height: 38px;
+                        width: 140px;
+                        img {
+                            margin-right: 5px;
+                        }
+                    }
+                }
+            }        
+        }
+    }
 }
 
 .handover-section {
@@ -1851,8 +2225,7 @@
     button {
       height: 42px;
       font-size: inherit;
-      i {
-        font-size: 12px;
+      img {
         margin-right: 5px;
       }
     }
