@@ -124,7 +124,7 @@ class InOutUpdateDetailComponent extends React.Component {
     const operationType = getOperationType(inOutTimeUpdate.requestTypeId, inOutTimeUpdate.updateField, inOutTimeUpdate.processStatusId)
 
     return (
-      <div className="leave-of-absence">
+      <div className="leave-of-absence in-out-update-detail">
         <h5>{t("EmployeeInfomation")}</h5>
         <div className="box shadow cbnv">
           <div className="row group">
@@ -190,6 +190,10 @@ class InOutUpdateDetailComponent extends React.Component {
                     <div className="col-6 text-right">
                       {t("End")} 2: <b>{this.printTimeFormat(timesheet.end_time2_fact_update)}</b>
                     </div>
+                  </div>
+                  <div className='previous-day-selection'>
+                    <input type="checkbox" checked={timesheet?.isPrevDay || false} readOnly />
+                    <label>{t("PreviousDay")}</label>
                   </div>
                 </div>
               </div>

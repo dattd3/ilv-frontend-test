@@ -1490,6 +1490,17 @@
             }        
         }
     }
+    .in-out-update-detail {
+        .previous-day-selection {
+            display: flex;
+            align-items: center;
+            margin: 10px 0 10px 0;
+            label {
+                margin-bottom: 0;
+                margin-left: 6px;
+            }
+        }
+    }
 }
 
 .handover-section {
