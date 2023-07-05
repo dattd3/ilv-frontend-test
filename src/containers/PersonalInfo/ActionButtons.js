@@ -1,5 +1,6 @@
 import React, { useState } from "react"
 import { useTranslation } from "react-i18next"
+import IconSend from 'assets/img/icon/pms/icon-send.svg'
 import { validateFileMimeType, validateTotalFileSize } from "../../utils/file"
 
 function ActionButtons(props) {
@@ -49,7 +50,7 @@ function ActionButtons(props) {
                     <label htmlFor="i_files" className="custom-file-upload"><i className="fas fa-paperclip"></i>{t("AttachFile")}</label>
                     <input id="i_files" type="file" name="i_files" onChange={handleChangeFileInput} accept=".xls, .xlsx, .doc, .docx, .jpg, .png, .pdf" multiple />
                 </span>
-                <button type="button" className="btn btn-primary ml-3 shadow" onClick={handleSendRequests}><i className="fa fa-paper-plane" aria-hidden="true"></i>{t("Send")}</button>
+                <button type="button" className="btn btn-primary ml-3 shadow" onClick={handleSendRequests}><img src={IconSend} alt="Send" />{t("Send")}</button>
             </div>
         </div>
         </>
