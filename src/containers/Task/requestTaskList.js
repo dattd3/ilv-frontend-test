@@ -17,6 +17,7 @@ import RegistrationConfirmationModal from '../Registration/ConfirmationModal'
 import { FormControl, Form, Button } from 'react-bootstrap'
 import { withTranslation } from "react-i18next"
 import { showRangeDateGroupByArrayDate, generateTaskCodeByCode, getValueParamByQueryString, setURLSearchParam, getRequestTypesList } from "../../commons/Utils"
+import { getRequestTypeByConditions } from './index'
 import { REQUEST_CATEGORIES, absenceRequestTypes, requestTypes } from "../Task/Constants"
 import { MOTHER_LEAVE_KEY } from "./Constants"
 // import IconInformation from "assets/img/icon/icon-blue-information.svg"
@@ -29,6 +30,7 @@ const DATE_FORMAT = 'DD-MM-YYYY'
 const DATE_OF_SAP_FORMAT = 'YYYYMMDD'
 const TIME_OF_SAP_FORMAT = 'HHmm00'
 
+// Tab yêu cầu
 class RequestTaskList extends React.Component {
     constructor(props) {
         super(props);
@@ -713,15 +715,17 @@ class RequestTaskList extends React.Component {
         const fullDay = 1
         const requestTypesSelected = getValueParamByQueryString(window.location.search, "requestTypes")?.split(",")
         const requestCategorySelected = Constants.REQUEST_CATEGORY_2_LIST[this.state.tmpRequestTypesSelect?.[0]*1 || requestTypesSelected?.[0]*1] ? 2 : 1
+
         const getRequestTypeLabel = (requestType, absenceTypeValue) => {
             if (requestType.id == Constants.LEAVE_OF_ABSENCE) {
                 const absenceType = absenceRequestTypes.find(item => item.value == absenceTypeValue)
                 return absenceType ? t(absenceType.label) : ""
-            } else {
-                const requestTypeObj = requestTypes.find(item => item.value == requestType.id)
-                return requestTypeObj ? t(requestTypeObj.label) : ""
             }
+
+            const requestTypeObj = requestTypes.find(item => item.value == requestType.id)
+            return requestTypeObj ? t(requestTypeObj.label) : ""
         }
+
         return (
             <>
                 {/* <ConfirmationModal show={this.state.isShowModalConfirm} manager={this.manager} title={this.state.modalTitle} type={this.state.typeRequest} message={this.state.modalMessage}
@@ -937,6 +941,12 @@ class RequestTaskList extends React.Component {
                                             }
                                             let isShowSyncRequest = child?.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL 
                                             && [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP, Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE, Constants.OT_REQUEST].includes(child?.requestTypeId)
+
+                                            // let isWorkOutSideGroup = false
+                                            // if ([Constants.UPDATE_PROFILE].includes(child?.requestTypeId)) {
+                                            //     const updateField = JSON.parse(child?.updateField || '{}')
+                                            //     isWorkOutSideGroup = updateField?.UpdateField?.length === 1 && updateField?.UpdateField[0] === 'WorkOutside'
+                                            // }
 
                                             return (
                                                 <tr key={index}>

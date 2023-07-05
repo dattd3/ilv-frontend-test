@@ -113,6 +113,7 @@ export default function processingDataReq(dataRawFromApi, tab) {
                     }
                     e.isEdit = listRequestTypeIdToGetSubId.includes(element?.requestTypeId) ? e.isEdit : element.isEdit // ILVGR-1211
                     e.operationType = getOperationType(element.requestTypeId, e.actionType, e.processStatusId);
+                    e.updateField = element?.updateField
                     taskList.push(e)
                 })
             }
