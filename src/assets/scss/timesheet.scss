@@ -491,6 +491,35 @@
         }
       }
     }
+    .content-page-header {
+      margin-bottom: 0!important;
+    }
+    .timesheet-box {
+      margin: 16px 0;
+      box-shadow: 0 0 4px 0 rgba(0,0,0,.251);
+      border-radius: 4px;
+      padding: 20px;
+      .title {
+        margin: 0 0 0.5rem 0;
+      }
+      .input-container {
+        .input {
+          width: inherit;
+        }
+        .input-img {
+          left: unset;
+          right: 5px;
+          top: 8px;
+          bottom: unset;
+        }
+      }
+      .btn-search {
+        color: #FFFFFF;
+      }
+    }
+    .summary .card {
+      box-shadow: 0 0 4px 0 rgba(0,0,0,.251) !important;
+    }
     .detail {
       .card {
         .card-header {

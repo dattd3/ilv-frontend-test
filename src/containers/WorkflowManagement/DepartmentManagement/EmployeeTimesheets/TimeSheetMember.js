@@ -433,8 +433,6 @@ function Content(props) {
         const { dayList, dateChanged } = props
         const timeSheetFirstMember = memberTimeData[0] // Lấy timeSheet nhân viên đầu tiên
 
-        console.log('ggffgdaafggasdfasdfg', memberTimeData)
-
         return (
             <thead>
                 <tr>
