@@ -60,7 +60,7 @@ class RegistrationComponent extends React.Component {
 
           try {
             const payload = {
-              account: approverInfo?.account?.trim(),
+              account: appraiserInfo?.account?.trim(),
               employee_type: "APPRAISER",
               status: Constants.statusUserActiveMulesoft
             }
