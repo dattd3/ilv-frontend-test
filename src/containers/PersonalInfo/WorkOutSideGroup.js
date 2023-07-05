@@ -162,7 +162,7 @@ function WorkOutSideGroup(props) {
             SetStatusModal({
                 isShow: true,
                 isSuccess: false,
-                content: 'Dữ liệu không hợp lệ. Vui lòng kiểm tra lại!'
+                content: t("InvalidDataPleaseCheckAgain")
             })
         }
 
