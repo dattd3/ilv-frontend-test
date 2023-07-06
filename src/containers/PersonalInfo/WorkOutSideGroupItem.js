@@ -68,10 +68,10 @@ function WorkOutSideGroupItem({ index, item, canUpdate, totalItem, viewSalaryAtL
                                             <>
                                                 {
                                                     item?.isAddNew
-                                                    ? (<input type="text" placeholder={t("import")} value={item?.ORGEH || ''} onChange={e => handleInputChange('ORGEH', e?.target?.value || '')} className="first" />)
+                                                    ? (<input type="text" placeholder={t("import")} value={item?.ORGEH || ''} onChange={e => handleInputChange('ORGEH', e?.target?.value || '')} className="first" maxLength={100} />)
                                                     : (<div className="value">{item?.ORGEH || ''}</div>)
                                                 }
-                                                {!item?.isAddNew && (<input type="text" placeholder={t("import")} value={item[`ORGEH_${prefixUpdating}`] || ''} onChange={e => handleInputChange(`ORGEH_${prefixUpdating}`, e?.target?.value || '')} className="second" />)}
+                                                {!item?.isAddNew && (<input type="text" placeholder={t("import")} value={item[`ORGEH_${prefixUpdating}`] || ''} onChange={e => handleInputChange(`ORGEH_${prefixUpdating}`, e?.target?.value || '')} className="second" maxLength={100} />)}
                                             </>
                                         )
                                         : (<div className="value">{item?.ORGEH || ''}</div>)
