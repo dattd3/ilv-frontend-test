@@ -139,10 +139,10 @@ function WorkOutSideGroupProcessItem({ index, item, maxEndDate, canUpdate, viewS
                                     <>
                                         {
                                             item?.isAddNew
-                                            ? (<input type="text" placeholder={t("import")} value={item[`PLAN${itemNo}`] || ""} onChange={e => handleInputChange(`PLAN${itemNo}`, e?.target?.value || '')} className="first" />)
+                                            ? (<input type="text" placeholder={t("import")} value={item[`PLAN${itemNo}`] || ""} onChange={e => handleInputChange(`PLAN${itemNo}`, e?.target?.value || '')} className="first" maxLength={50} />)
                                             : (<div className="value">{item[`PLAN${itemNo}`] || ''}</div>)
                                         }
-                                        {!item?.isAddNew && (<input type="text" placeholder={t("import")} value={item[`PLAN${itemNo}_${prefixUpdating}`] || ""} onChange={e => handleInputChange(`PLAN${itemNo}_${prefixUpdating}`, e?.target?.value || '')} className="second" />)}
+                                        {!item?.isAddNew && (<input type="text" placeholder={t("import")} value={item[`PLAN${itemNo}_${prefixUpdating}`] || ""} onChange={e => handleInputChange(`PLAN${itemNo}_${prefixUpdating}`, e?.target?.value || '')} className="second" maxLength={50} />)}
                                     </>
                                 )
                                 : (<div className="value">{item[`PLAN${itemNo}`] || ''}</div>)
@@ -160,10 +160,10 @@ function WorkOutSideGroupProcessItem({ index, item, maxEndDate, canUpdate, viewS
                                     <>
                                         {
                                             item?.isAddNew
-                                            ? (<textarea rows="2" value={item[`DUT${itemNo}`] || ""} onChange={e => handleInputChange(`DUT${itemNo}`, e?.target?.value || '')} placeholder={t("import")} />)
+                                            ? (<textarea rows="2" value={item[`DUT${itemNo}`] || ""} onChange={e => handleInputChange(`DUT${itemNo}`, e?.target?.value || '')} placeholder={t("import")} maxLength={100} />)
                                             : (<div className="value">{item[`DUT${itemNo}`] || ''}</div>)
                                         }
-                                        {!item?.isAddNew && (<textarea rows="2" value={item[`DUT${itemNo}_${prefixUpdating}`] || ""} onChange={e => handleInputChange(`DUT${itemNo}_${prefixUpdating}`, e?.target?.value || '')} className="second" placeholder={t("import")} />)}       
+                                        {!item?.isAddNew && (<textarea rows="2" value={item[`DUT${itemNo}_${prefixUpdating}`] || ""} onChange={e => handleInputChange(`DUT${itemNo}_${prefixUpdating}`, e?.target?.value || '')} className="second" placeholder={t("import")} maxLength={100} />)}
                                     </>
                                 )
                                 : (<div className="value">{item[`DUT${itemNo}`] || ''}</div>)
@@ -181,10 +181,10 @@ function WorkOutSideGroupProcessItem({ index, item, maxEndDate, canUpdate, viewS
                                     <>
                                         {
                                             item?.isAddNew
-                                            ? (<input type="text" placeholder={t("import")} value={item[`DE_NET${itemNo}`] || ''} onChange={e => handleInputChange(`DE_NET${itemNo}`, e?.target?.value || '')} className="first" maxLength={11} />)
+                                            ? (<input type="text" placeholder={t("import")} value={item[`DE_NET${itemNo}`] || ''} onChange={e => handleInputChange(`DE_NET${itemNo}`, e?.target?.value || '')} className="first" maxLength={13} />)
                                             : (<div className="value salary-view"><span>{getSalaryByValue(item[`DE_NET${itemNo}`])}</span><img src={hiddenViewSalary ? IconEyeClosed : IconEyeOpened} alt='Eye' className="eye" onClick={handleToggleViewSalary} /></div>)
                                         }
-                                        {!item?.isAddNew && (<input type="text" placeholder={t("import")} value={item[`DE_NET${itemNo}_${prefixUpdating}`] || ''} onChange={e => handleInputChange(`DE_NET${itemNo}_${prefixUpdating}`, e?.target?.value || '')} className="second salary" maxLength={11} disabled={!viewSalaryAtLeastOnceTime} />)}
+                                        {!item?.isAddNew && (<input type="text" placeholder={t("import")} value={item[`DE_NET${itemNo}_${prefixUpdating}`] || ''} onChange={e => handleInputChange(`DE_NET${itemNo}_${prefixUpdating}`, e?.target?.value || '')} className="second salary" maxLength={13} disabled={!viewSalaryAtLeastOnceTime} />)}
                                     </>
                                 )
                                 : (<div className="value salary-view"><span>{getSalaryByValue(item[`DE_NET${itemNo}`])}</span><img src={hiddenViewSalary ? IconEyeClosed : IconEyeOpened} alt='Eye' className="eye" onClick={handleToggleViewSalary} /></div>)
@@ -200,10 +200,10 @@ function WorkOutSideGroupProcessItem({ index, item, maxEndDate, canUpdate, viewS
                                     <>
                                         {
                                             item?.isAddNew
-                                            ? (<input type="text" placeholder={t("import")} value={item[`DE_GROSS${itemNo}`] || ''} onChange={e => handleInputChange(`DE_GROSS${itemNo}`, e?.target?.value || '')} className="first" maxLength={11} />)
+                                            ? (<input type="text" placeholder={t("import")} value={item[`DE_GROSS${itemNo}`] || ''} onChange={e => handleInputChange(`DE_GROSS${itemNo}`, e?.target?.value || '')} className="first" maxLength={13} />)
                                             : (<div className="value salary-view"><span>{getSalaryByValue(item[`DE_GROSS${itemNo}`])}</span><img src={hiddenViewSalary ? IconEyeClosed : IconEyeOpened} alt='Eye' className="eye" onClick={handleToggleViewSalary} /></div>)
                                         }
-                                        {!item?.isAddNew && (<input type="text" placeholder={t("import")} value={item[`DE_GROSS${itemNo}_${prefixUpdating}`] || ''} onChange={e => handleInputChange(`DE_GROSS${itemNo}_${prefixUpdating}`, e?.target?.value || '')} className="second salary" maxLength={11} disabled={!viewSalaryAtLeastOnceTime} />)}
+                                        {!item?.isAddNew && (<input type="text" placeholder={t("import")} value={item[`DE_GROSS${itemNo}_${prefixUpdating}`] || ''} onChange={e => handleInputChange(`DE_GROSS${itemNo}_${prefixUpdating}`, e?.target?.value || '')} className="second salary" maxLength={13} disabled={!viewSalaryAtLeastOnceTime} />)}
                                     </>
                                 )
                                 : (<div className="value salary-view"><span>{getSalaryByValue(item[`DE_GROSS${itemNo}`])}</span><img src={hiddenViewSalary ? IconEyeClosed : IconEyeOpened} alt='Eye' className="eye" onClick={handleToggleViewSalary} /></div>)
