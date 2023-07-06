@@ -1829,7 +1829,9 @@
   "operation": "Operation",
   "operationType.ins": "Create",
   "operationType.mod": "Edit",
-  "operationType.del": "Eviction",
+  "operationType.del": "Recall",
+  "operationType.waitingdelapprove": "Recall waiting for approval",
+  "operationType.waitingdelappraise": "Recall waiting for consent",
   "WorkingTimeChange": "Working time change",
   "RelationshipNote": "Note: In case you need to adjust the information of a PIT dependent, please submit a hard copy to the Human Resources Department for adjustment!",
   "VinUniSickLeave": "Sick leave for VinUni",
@@ -1847,7 +1849,8 @@
   "Specialist": "Specialist",
   "Staff": "Staff",
   "NotePrevDayOT": "Only choose when you request OT for overnight shift that need pull in/out of previous day.",
-  "CompanyTimeNotOverlap": "The start time and end time of the companies must not overlap!",
+  "CompanyTimeNotOverlap": "The Start date and End date of the companies must not overlap!",
   "StartDateEndDateRequired": "(*) Please select Start date and End date!",
-  "InvalidDataPleaseCheckAgain": "Invalid data, please check again!"
+  "InvalidDataPleaseCheckAgain": "Invalid data, please check again!",
+  "PreviousDay": "Previous Day"
 }
