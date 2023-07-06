@@ -97,6 +97,23 @@ function WorkOutSideGroup(props) {
         }
     }, [tabActive])
 
+    const isValidPeriod = (experience) => {
+        const companyEndDate = experience?.isAddNew ? experience?.ENDDA : experience[`ENDDA_${prefixUpdating}`]
+        if (!companyEndDate && !moment(companyEndDate, 'YYYYMMDD').isValid()) {
+            return true
+        }
+
+        let lstPeriodEndDate = []
+        for (let i = 1; i < 6; i++) {
+            if (experience[`END${i}`] && moment(experience[`END${i}`], 'YYYYMMDD').isValid()) {
+                lstPeriodEndDate.push(experience[`END${i}`])
+            }
+        }
+        (lstPeriodEndDate || []).sort((a, b) => b - a)
+        const maxPeriodEndDate = lstPeriodEndDate?.length > 0 ? lstPeriodEndDate[0] : null
+        return companyEndDate >= maxPeriodEndDate
+    }
+
     const isDataValid = () => {
         const hasCreateNew = (experiences || []).some(item => item?.isAddNew)
         const hasOnlyUpdating = (experiences || []).some(item => Object.entries(item).some(sub => sub[0].endsWith(`_${prefixUpdating}`) && isNotEmpty(sub[1])))
@@ -121,9 +138,12 @@ function WorkOutSideGroup(props) {
                 moment(sub[`BEGDA_${prefixUpdating}`] ? sub[`BEGDA_${prefixUpdating}`] : sub?.BEGDA, 'YYYYMMDD'),
                 moment(sub[`ENDDA_${prefixUpdating}`] ? sub[`ENDDA_${prefixUpdating}`] : sub?.ENDDA, 'YYYYMMDD')
             ), { adjacent: true }))
+            let isPeriodValid = isValidPeriod(item)
             let dateMessageInValid = null
             if (item?.isAddNew && (isEmptyByValue(item?.BEGDA, valueType.date) || isEmptyByValue(item?.ENDDA, valueType.date))) {
                 dateMessageInValid = t("StartDateEndDateRequired")
+            } else if (!isPeriodValid) {
+                dateMessageInValid = t("InvalidDatePeriod")
             } else if (isOverlap) {
                 dateMessageInValid = t("CompanyTimeNotOverlap")
             }
@@ -371,7 +391,7 @@ function WorkOutSideGroup(props) {
             result[`WAERS${i}`] = item?.isAddNew ? item[`WAERS${i}`] : getValueByCondition(item[`WAERS${i}`], item[`WAERS${i}_${prefixUpdating}`])
             result[`DUT${i}`] = item?.isAddNew ? item[`DUT${i}`] : getValueByCondition(item[`DUT${i}`], item[`DUT${i}_${prefixUpdating}`])
             result[`PLAN${i}`] = item?.isAddNew ? item[`PLAN${i}`] : getValueByCondition(item[`PLAN${i}`], item[`PLAN${i}_${prefixUpdating}`])
-            lstKeyToDelete = [...lstKeyToDelete, `DE_GROSS${i}_${prefixUpdating}`, `DE_NET${i}_${prefixUpdating}`, `WAERS${i}_${prefixUpdating}`, `PLAN${i}_${prefixUpdating}`, `END${i}_${prefixUpdating}`, `DUT${i}_${prefixUpdating}`, `BEG${i}_${prefixUpdating}`, 'errorCompanyName', 'errorCompanyDate']
+            lstKeyToDelete = [...lstKeyToDelete, `DE_GROSS${i}_${prefixUpdating}`, `DE_NET${i}_${prefixUpdating}`, `WAERS${i}_${prefixUpdating}`, `PLAN${i}_${prefixUpdating}`, `END${i}_${prefixUpdating}`, `DUT${i}_${prefixUpdating}`, `BEG${i}_${prefixUpdating}`, 'errorCompanyName', 'errorCompanyDate', 'isCollapse']
         }
 
         return omit(result, ['isAddNew', 'listWorking', 'ID', 'ORGEH_UPDATING', 'BEGDA_UPDATING', 'ENDDA_UPDATING', ...lstKeyToDelete])
@@ -392,6 +412,7 @@ function WorkOutSideGroup(props) {
         delete oldItem.listWorking
         delete oldItem.errorCompanyName
         delete oldItem.errorCompanyDate
+        delete oldItem?.isCollapse
 
         let newItem = {
             ...item,
@@ -446,6 +467,7 @@ function WorkOutSideGroup(props) {
                     delete itemClone.listWorking
                     delete itemClone.errorCompanyName
                     delete itemClone.errorCompanyDate
+                    delete itemClone?.isCollapse
                     itemClone.needEncrypt = true
                     return itemClone
                 })
