@@ -34,8 +34,8 @@ const isEmptyByValue = (val, type = valueType.other) => {
 
 const formatValue = (val, type = valueType.other) => {
     if (
-        (type === valueType.date && (val === null || val === undefined || val?.trim() === '00000000' || val?.trim() === '')) 
-        || (type === valueType.other && (val === null || val === undefined || val?.trim() === ''))
+        (type === valueType.date && (val === null || val === undefined || val?.trim() === '00000000' || val === '#' || val?.trim() === '')) 
+        || ((type === valueType.other || type === valueType.salary) && (val === null || val === undefined || val === '#' || val?.trim() === ''))
     ) {
         return ''
     }
