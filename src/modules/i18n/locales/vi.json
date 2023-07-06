@@ -1847,6 +1847,8 @@
   "operationType.ins": "Thêm mới",
   "operationType.mod": "Chỉnh sửa",
   "operationType.del": "Thu hồi",
+  "operationType.waitingdelapprove": "Đang chờ PD thu hồi",
+  "operationType.waitingdelappraise": "Đang chờ TD thu hồi",
   "WorkingTimeChange": "Giờ làm việc thay đổi",
   "RelationshipNote": "Lưu ý: Trường hợp cần điều chỉnh thông tin của Người phụ thuộc, Anh/Chị vui lòng nộp hồ sơ bản cứng đến Phòng Nhân sự để điều chỉnh!",
   "VinUniSickLeave": "Nghỉ ốm VinUni",
@@ -1866,5 +1868,6 @@
   "NotePrevDayOT": "Chỉ chọn khi bạn đăng ký OT cho phân ca xuyên đêm cần kéo giờ in/out của ngày trước đó.",
   "CompanyTimeNotOverlap": "Ngày bắt đầu và Ngày kết thúc của các Công ty không được trùng nhau!",
   "StartDateEndDateRequired": "(*) Vui lòng nhập Ngày bắt đầu và Ngày kết thúc!",
-  "InvalidDataPleaseCheckAgain": "Dữ liệu không hợp lệ. Vui lòng kiểm tra lại!"
+  "InvalidDataPleaseCheckAgain": "Dữ liệu không hợp lệ. Vui lòng kiểm tra lại!",
+  "PreviousDay": "Ngày trước đó"
 }

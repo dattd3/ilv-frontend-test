@@ -388,7 +388,7 @@ const getRegistrationMinDateByConditions = () => {
     if ([Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl].includes(userLoggedCompanyCode)) {
         // let indexWednesdayInWeek = 3
         // let indexCurrentDayInWeek = moment().day()
-        // firstDay = moment().startOf('week').isoWeekday(1) // Từ thứ 4 trở đi của tuần hiện tại đến cuối tuần hiện tại thì sẽ lấy ngày đầu tiên của tuần hiện tại 
+        // firstDay = moment().startOf('week').isoWeekday(1) // Từ thứ 4 trở đi của tuần hiện tại đến cuối tuần hiện tại thì sẽ lấy ngày đầu tiên của tuần hiện tại
         // if (indexCurrentDayInWeek <= indexWednesdayInWeek) { // Từ thứ 4 trở về trước thì sẽ lấy ngày đầu tiên của tuần trước đó
         //     firstDay = moment().subtract(1, 'weeks').startOf('week').isoWeekday(1)
         // }
@@ -596,7 +596,7 @@ function setURLSearchParam(key, value) {
 const getCulture = () => {
     const locale = localStorage.getItem("locale") || Constants.LANGUAGE_VI
     return locale === Constants.LANGUAGE_VI ? "vi" : "en";
-}  
+}
 
 const formatProcessTime = (time) => {
   if (time === "0001-01-01T00:00:00" || !time) return ""
