@@ -1869,5 +1869,6 @@
   "CompanyTimeNotOverlap": "Ngày bắt đầu và Ngày kết thúc của các Công ty không được trùng nhau!",
   "StartDateEndDateRequired": "(*) Vui lòng nhập Ngày bắt đầu và Ngày kết thúc!",
   "InvalidDataPleaseCheckAgain": "Dữ liệu không hợp lệ. Vui lòng kiểm tra lại!",
-  "PreviousDay": "Ngày trước đó"
+  "PreviousDay": "Ngày trước đó",
+  "InvalidDatePeriod": "Ngày kết thúc của Công ty không được nhỏ hơn Ngày kết thúc của các quá trình!"
 }

@@ -1852,5 +1852,6 @@
   "CompanyTimeNotOverlap": "The Start date and End date of the companies must not overlap!",
   "StartDateEndDateRequired": "(*) Please select Start date and End date!",
   "InvalidDataPleaseCheckAgain": "Invalid data, please check again!",
-  "PreviousDay": "Previous Day"
+  "PreviousDay": "Previous Day",
+  "InvalidDatePeriod": "The End Date of the Company should not be less than the End Date of the processes!"
 }
