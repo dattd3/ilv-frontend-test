@@ -2,10 +2,7 @@ import React from "react"
 import { useTranslation } from "react-i18next"
 import DatePicker, {registerLocale } from 'react-datepicker'
 import moment from 'moment'
-import { size } from "lodash"
 import { prefixUpdating } from "./WorkOutSideGroup"
-import { formatStringByMuleValue } from "../../commons/Utils"
-import IconCancel from "assets/img/icon/Icon_Cancel_White.svg"
 import IconDatePicker from "assets/img/icon/Icon_DatePicker.svg"
 import IconEyeClosed from "assets/img/icon/not-eye.svg"
 import IconEyeOpened from "assets/img/icon/eye.svg"

@@ -15,7 +15,7 @@ import IconAddWhite from "assets/img/icon/ic_btn_add_white.svg"
 import Constants from "commons/Constants"
 import LoadingModal from "components/Common/LoadingModal"
 import ConfirmSendRequestModal from "./ConfirmSendRequestModal"
-import { valueType, isEmptyByValue } from "./WorkOutSideGroupDetail"
+import { valueType, isEmptyByValue, formatValue } from "./WorkOutSideGroupDetail"
 const moment = extendMoment(Moment)
 
 const prefixUpdating = 'UPDATING'
@@ -59,38 +59,21 @@ function WorkOutSideGroup(props) {
             const config = getMuleSoftHeaderConfigurations()
             try {
                 const response = await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/workprocess/outside`, config)
-                const data = response?.data?.data || []
+                const data = (response?.data?.data || []).map(item => {
+                    for (const key in item) {
+                        if (['ID', 'PERNR'].includes(key)) {
+                            item[key] = item[key]
+                        } else {
+                            item[key] = formatValue(item[key], valueType.other)
+                            if (key.startsWith('BEG') || key.startsWith('END')) {
+                                item[key] = formatValue(item[key], valueType.date)
+                            }
+                        }
+                    }
+                    return item
+                })
                 SetExperiences(data)
                 SetExperienceOriginal(data)
-                // if (response && response?.data) {
-                //     // let data = response?.data?.data || []
-                //     // const experienceToSave = (data || []).reduce((res, currentItem, currentIndex) => {
-                //     //     res[currentIndex] = {
-                //     //         username: currentUserEmail?.split('@')[0],
-                //     //         uid: employeeNo,
-                //     //         companyName: currentItem[0] || '',
-                //     //         startDate: currentItem[1][0]?.from_time || null,
-                //     //         endDate: currentItem[1][0]?.to_time || null,
-                //     //         listWorking: (currentItem[1] || []).reduce((resSub, subItem, subIndex) => {
-                //     //             resSub[subIndex] = {
-                //     //                 startDate: subItem?.BEG || null,
-                //     //                 endDate: subItem?.END || null,
-                //     //                 positionName: subItem?.title || '', // Chức danh
-                //     //                 roleName: subItem?.rank || '', // Vai trò chính
-                //     //                 salary: {
-                //     //                     netSalary: subItem?.salary_net || null,
-                //     //                     grossSalary: subItem?.salary_gross || null,
-                //     //                 },
-                //     //                 currency: subItem?.currency || null,
-                //     //             }
-                //     //             return resSub
-                //     //         }, {})
-                //     //     }
-                //     //     return res
-                //     // }, {})
-
-                //     SetExperiences(response?.data?.data || [])
-                // }
             } catch (e) {
                 SetExperiences([])
                 SetExperienceOriginal([])
@@ -225,29 +208,6 @@ function WorkOutSideGroup(props) {
         SetExperiences(experienceToSave)
     }
 
-    // const handleRemoveProcess = (companyIndex, processIndex) => {
-    //     const experiencesClone = {...experiences}
-    //     delete experiencesClone[companyIndex].listWorking[processIndex]
-    //     SetExperiences(experiencesClone)
-    // }
-
-    // const handleAddProcess = (companyIndex) => {
-    //     const experiencesClone = {...experiences}
-    //     const lastProcessIndex = Number(Object.keys(experiencesClone[companyIndex]?.listWorking || {}).pop() || 0)
-    //     experiencesClone[companyIndex].listWorking[lastProcessIndex + 1] = {
-    //         startDate: null,
-    //         endDate: null,
-    //         positionName: "",
-    //         roleName: "",
-    //         salary: {
-    //             netSalary: "",
-    //             grossSalary: ""
-    //         },
-    //         currency: "",
-    //     }
-    //     SetExperiences(experiencesClone)
-    // }
-
     const handleToggleProcess = (companyIndex) => {
         const experiencesClone = [...experiences]
         experiencesClone[companyIndex].isCollapse = !experiencesClone[companyIndex].isCollapse
@@ -300,7 +260,20 @@ function WorkOutSideGroup(props) {
             if (response && response?.data) {
                 const result = response?.data?.result
                 if (result?.code == Constants.API_SUCCESS_CODE) {
-                    SetExperiences(response?.data?.data || [])
+                    const data = (response?.data?.data || []).map(item => {
+                        for (const key in item) {
+                            if (['ID', 'PERNR'].includes(key)) {
+                                item[key] = item[key]
+                            } else {
+                                item[key] = formatValue(item[key], valueType.other)
+                                if (key.startsWith('BEG') || key.startsWith('END')) {
+                                    item[key] = formatValue(item[key], valueType.date)
+                                }
+                            }
+                        }
+                        return item
+                    })
+                    SetExperiences(data)
                     SetHiddenViewSalary(false)
                 }
             }
