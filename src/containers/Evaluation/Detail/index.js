@@ -761,19 +761,28 @@ function EvaluationDetail(props) {
       let group = listGroup[groupIndex]
       for (let targetIndex = 0; targetIndex < group?.listTarget?.length; targetIndex++) {
         let target = group?.listTarget[targetIndex]
-        if (target?.seftPoint !== null && ((!isVinBus && Number(target?.seftPoint) > maximumScore) || isNaN(Number(target?.seftPoint)) || Number(target?.seftPoint) < minimumScore)) {
+        if (
+          target?.seftPoint !== null 
+          && ((!isVinBus && Number(target?.seftPoint) > maximumScore) || isNaN(Number(target?.seftPoint)) || (!isVinBus && Number(target?.seftPoint) < minimumScore))
+        ) {
           return false
         }
-        if (target?.leadReviewPoint !== null && ((!isVinBus && Number(target?.leadReviewPoint) > maximumScore) || isNaN(Number(target?.leadReviewPoint)) || Number(target?.leadReviewPoint) < minimumScore)) {
+        if (target?.leadReviewPoint !== null 
+          && ((!isVinBus && Number(target?.leadReviewPoint) > maximumScore) || isNaN(Number(target?.leadReviewPoint)) || (!isVinBus && Number(target?.leadReviewPoint) < minimumScore))
+        ) {
           return false
         }
 
         for (let subTargetIndex = 0; subTargetIndex < target?.listTarget?.length; subTargetIndex++) {
           let subTarget = target?.listTarget[subTargetIndex]
-          if (subTarget?.seftPoint !== null && ((!isVinBus && Number(subTarget?.seftPoint) > maximumScore) || isNaN(Number(subTarget?.seftPoint)) || Number(subTarget?.seftPoint) < minimumScore)) {
+          if (subTarget?.seftPoint !== null 
+            && ((!isVinBus && Number(subTarget?.seftPoint) > maximumScore) || isNaN(Number(subTarget?.seftPoint)) || (!isVinBus && Number(subTarget?.seftPoint) < minimumScore))
+          ) {
             return false
           }
-          if (subTarget?.leadReviewPoint !== null && ((!isVinBus && Number(subTarget?.leadReviewPoint) > maximumScore) || isNaN(Number(subTarget?.leadReviewPoint)) || Number(subTarget?.leadReviewPoint) < minimumScore)) {
+          if (subTarget?.leadReviewPoint !== null 
+            && ((!isVinBus && Number(subTarget?.leadReviewPoint) > maximumScore) || isNaN(Number(subTarget?.leadReviewPoint)) || (!isVinBus && Number(subTarget?.leadReviewPoint) < minimumScore))
+          ) {
             return false
           }
         }
