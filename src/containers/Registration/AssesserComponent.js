@@ -43,7 +43,7 @@ class AssesserComponent extends React.Component {
             isSearch: false,
             isSearching: false,
         }
-        this.onInputChange = debounce(this.getAppraiser, 600);
+        this.onInputChange = debounce(this.getAppraiser, Constants.TIME_DEBOUNCE_FOR_SEARCH);
     }
 
     async componentDidMount() {

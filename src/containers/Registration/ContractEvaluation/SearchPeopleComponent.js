@@ -4,6 +4,7 @@ import axios from 'axios'
 import _, { debounce } from 'lodash'
 import { withTranslation } from "react-i18next";
 import APPROVER_LIST_LEVEL from "../../../commons/Constants"
+import Constants from '../../../commons/Constants'
 import { getMuleSoftHeaderConfigurations, getRequestConfigurations, prepareOrganization } from '../../../commons/Utils';
 import moment from 'moment';
 
@@ -38,7 +39,7 @@ class ApproverComponent extends React.Component {
       typingTimeout: 0,
       approverTyping: ""
     }
-    this.onInputChange = debounce(this.getApproverInfo, 600);
+    this.onInputChange = debounce(this.getApproverInfo, Constants.TIME_DEBOUNCE_FOR_SEARCH);
   }
 
   componentDidMount() {

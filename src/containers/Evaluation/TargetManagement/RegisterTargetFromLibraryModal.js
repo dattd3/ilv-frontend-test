@@ -467,7 +467,7 @@ const ApprovalManager = ({ t, approverInfo, approvers, setApprovers, setApprover
 
     const onInputChange = debounce(query => {      
         SetKeyword(query || '')
-    }, 800)
+    }, Constants.TIME_DEBOUNCE_FOR_SEARCH)
     
     return (
         <div className="approval-manager-block">

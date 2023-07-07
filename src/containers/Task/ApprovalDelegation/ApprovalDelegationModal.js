@@ -79,7 +79,7 @@ function ApprovalDelegationModal(props) {
         SetKeyword(query)
     }
     
-    const delayedQuery = useRef(_.debounce(q => sendQuery(q), 1000)).current;
+    const delayedQuery = useRef(_.debounce(q => sendQuery(q), Constants.TIME_DEBOUNCE_FOR_SEARCH)).current;
 
     const onChangeTextSearch = val => {
         SetTextSearch(val)

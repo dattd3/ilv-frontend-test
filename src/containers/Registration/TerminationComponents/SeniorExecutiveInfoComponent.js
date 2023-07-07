@@ -5,6 +5,7 @@ import { getRequestConfigs } from '../../../commons/commonFunctions'
 import _, { debounce } from 'lodash'
 import { withTranslation } from "react-i18next"
 import { getMuleSoftHeaderConfigurations, prepareOrganization } from '../../../commons/Utils'
+import Constants from 'commons/Constants'
 
 const MyOption = props => {
     const { innerProps, innerRef } = props;
@@ -37,7 +38,7 @@ class SeniorExecutiveInfoComponent extends React.PureComponent {
         typingTimeout: 0,
         seniorExecutiveTyping: ""
     }
-    this.onInputChange = debounce(this.getApproverInfo, 1000)
+    this.onInputChange = debounce(this.getApproverInfo, Constants.TIME_DEBOUNCE_FOR_SEARCH)
   }
 
   componentWillReceiveProps(nextProps) {

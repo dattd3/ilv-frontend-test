@@ -28,7 +28,7 @@ const MyOption = props => {
 class SelectSupporterModal extends React.Component {
   constructor(props) {
     super(props);
-    this.onInputChange = debounce(this.getSupporterInfo, 1000);
+    this.onInputChange = debounce(this.getSupporterInfo, Constants.TIME_DEBOUNCE_FOR_SEARCH);
     this.state = {
       supporterTyping: "",
       users: [],
