@@ -37,7 +37,7 @@ class SearchUser extends React.Component {
             userTyping: "",
             isSearching: false
         }
-        this.onInputChange = debounce(this.searchUserInfos, 800)
+        this.onInputChange = debounce(this.searchUserInfos, Constants.TIME_DEBOUNCE_FOR_SEARCH)
     }
 
     handleSelectChange = (name, value) => {

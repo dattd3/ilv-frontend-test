@@ -274,7 +274,7 @@ class MyComponent extends React.Component {
       const userProfileInfoToSap = JSON.stringify([...userProfileInfoUpdateToSap, ...userProfileInfoCreateToSap])
 
       let bodyFormData = new FormData()
-      bodyFormData.append('Name', "Quan hệ nhân thân")
+      bodyFormData.append('Name', t("Family"))
       bodyFormData.append('Comment', message || "")
       bodyFormData.append('UserProfileInfo', userProfileInfo) 
       bodyFormData.append('UpdateField', JSON.stringify({UpdateField: ["FamilyInfo"]}))

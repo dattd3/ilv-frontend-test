@@ -40,7 +40,7 @@ class HumanForReviewSalaryComponent extends React.Component {
       approverTyping: "",
       isSearch: false
     }
-    this.onInputChange = debounce(this.getApproverInfo, 800);
+    this.onInputChange = debounce(this.getApproverInfo, Constants.TIME_DEBOUNCE_FOR_SEARCH);
   }
 
   async componentDidMount() {
