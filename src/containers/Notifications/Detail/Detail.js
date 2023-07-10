@@ -8,6 +8,14 @@ import StatusModal from '../../../components/Common/StatusModal'
 import HOCComponent from '../../../components/Common/HOCComponent'
 import { getCurrentLanguage, isEnableFunctionByFunctionName } from "../../../commons/Utils"
 
+purify.addHook('afterSanitizeAttributes', function (node) {
+  if ('target' in node) {
+    if (node?.target === '_blank') {
+      node.setAttribute('rel', 'noreferrer noopener')
+    }
+  }
+})
+
 class NotificationDetailComponent extends React.Component {
   constructor(props) {
     super(props);
