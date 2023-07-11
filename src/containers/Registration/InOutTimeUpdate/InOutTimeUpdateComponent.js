@@ -14,6 +14,7 @@ import { withTranslation } from "react-i18next";
 import { getValueParamByQueryString, getMuleSoftHeaderConfigurations, isEnableFunctionByFunctionName, getRegistrationMinDateByConditions, isValidDateRequest } from "../../../commons/Utils"
 import Constants from '../../../commons/Constants'
 import LoadingModal from 'components/Common/LoadingModal'
+import IconDatePicker from 'assets/img/icon/Icon_DatePicker.svg'
 registerLocale("vi", vi)
 
 const CLOSING_SALARY_DATE_PRE_MONTH = 26
@@ -428,7 +429,7 @@ class InOutTimeUpdateComponent extends React.Component {
                     locale="vi"
                     shouldCloseOnSelect={true}
                     className="form-control input" />
-                  <span className="input-group-addon input-img"><i className="fas fa-calendar-alt text-info"></i></span>
+                  <span className="input-group-addon input-img"><img src={IconDatePicker} alt="Date" /></span>
                 </label>
               </div>
               {this.error('startDate')}
@@ -453,7 +454,7 @@ class InOutTimeUpdateComponent extends React.Component {
                     placeholderText={t('Select')}
                     locale="vi"
                     className="form-control input" />
-                  <span className="input-group-addon input-img text-info"><i className="fas fa-calendar-alt"></i></span>
+                  <span className="input-group-addon input-img"><img src={IconDatePicker} alt="Date" /></span>
                 </label>
               </div>
               {this.error('endDate')}

@@ -438,7 +438,7 @@ function Content(props) {
   {title: t('Leave'), color: '#F7931E'}, {title: t('Biztrip'), color: '#93278F'}, {title: 'OT', color: '#808000'}];
 
   return (
-    <div className="row pr-2 pl-2 pb-4">
+    <div className="row pr-2 pl-2 pb-4 time-sheet-table-content">
       <div className="col-md-12 col-xl-12 describer">
         {
           filterType.map( (item, index) => {
@@ -997,7 +997,7 @@ const processDataForTable = (data1, fromDateString, toDateString, reasonData) =>
 
   return (
     <div className="detail mb-2">
-      <div className="card shadow">
+      <div className="card shadow time-sheet-table">
         <div className="card-header card-header-text" onClick={() => setOpen(!open)}>
           <div className="text-uppercase">{t("WorkingDaysDetail")}</div>
           {

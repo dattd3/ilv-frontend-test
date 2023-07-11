@@ -15,6 +15,7 @@ import map from '../../../../src/containers/map.config'
 import { withTranslation } from "react-i18next";
 import { getValueParamByQueryString, getRegistrationMinDateByConditions, isValidDateRequest } from "../../../commons/Utils"
 import { checkIsExactPnL } from '../../../commons/commonFunctions';
+import IconDatePicker from 'assets/img/icon/Icon_DatePicker.svg'
 
 registerLocale("vi", vi)
 
@@ -933,7 +934,7 @@ class BusinessTripComponent extends React.Component {
                                                                             placeholderText={t('Select')}
                                                                             locale="vi"
                                                                             className="form-control input" />
-                                                                        <span className="input-group-addon input-img"><i className="fas fa-calendar-alt text-info"></i></span>
+                                                                        <span className="input-group-addon input-img"><img src={IconDatePicker} alt="Date" /></span>
                                                                     </label>
                                                                 </div>
                                                                 {reqDetail.errors.startDate ? this.error('startDate', reqDetail.groupId, reqDetail.groupItem) : null}
@@ -980,7 +981,7 @@ class BusinessTripComponent extends React.Component {
                                                                             placeholderText={t('Select')}
                                                                             locale="vi"
                                                                             className="form-control input" />
-                                                                        <span className="input-group-addon input-img"><i className="fas fa-calendar-alt text-info"></i></span>
+                                                                        <span className="input-group-addon input-img"><img src={IconDatePicker} alt="Date" /></span>
                                                                     </label>
                                                                 </div>
                                                                 {reqDetail.errors.endDate ? this.error('endDate', reqDetail.groupId, reqDetail.groupItem) : null}
