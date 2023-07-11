@@ -5,6 +5,14 @@ const companyVCodeUserLogged = localStorage.getItem('companyCode')
 
 export const Navigation = [
   {
+    id: 123456789,
+    parentId: 0,
+    icon: "c-home",
+    label: "Sử ký Vin30",
+    to: map.HistoryVingroup,
+    role: "U",
+  },
+  {
     id: 1,
     parentId: 0,
     icon: "c-home",
