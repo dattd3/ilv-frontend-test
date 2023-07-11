@@ -1795,6 +1795,7 @@
   "ErrorBackDateRequestVinpearl": "Request creation failed - Time out",
   "PleaseFillAllField": "Please fill all the fields",
   "WarningNotEnoughTimeResign": "• No severance pay. <br/>• The employer must compensate the employer for half a month's salary according to the labor contract and an amount corresponding to the salary under the labor contract for unannounced days.<br/>• Training expenses specified in Article 62 of this Code must be refunded to the employer.<br/>Confirm that  you agree to this content?<br />",
+  "WarningNotEnoughTimeResignApprover": "Staff already confirmed these terms:<br />• No severance pay. <br/>• The employer must compensate the employer for half a month's salary according to the labor contract and an amount corresponding to the salary under the labor contract for unannounced days.<br/>• Training expenses specified in Article 62 of this Code must be refunded to the employer.<br/>Confirm that  you agree to this content?<br />",
   "PrevDay": "Previous Day",
   "SupervisorAssetDate": "Suppervisor Asset Date",
   "EditDate": "Edit Date",
