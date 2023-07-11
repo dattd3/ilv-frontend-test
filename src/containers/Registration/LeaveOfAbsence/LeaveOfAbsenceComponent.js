@@ -17,6 +17,7 @@ import { getValueParamByQueryString, getMuleSoftHeaderConfigurations, getRequest
 import NoteModal from '../NoteModal'
 import { checkIsExactPnL } from '../../../commons/commonFunctions';
 import { absenceRequestTypes, PN03List, MATERNITY_LEAVE_KEY, MARRIAGE_FUNERAL_LEAVE_KEY, MOTHER_LEAVE_KEY, FOREIGN_SICK_LEAVE, ANNUAL_LEAVE_KEY, ADVANCE_ABSENCE_LEAVE_KEY, COMPENSATORY_LEAVE_KEY, VIN_UNI_SICK_LEAVE } from "../../Task/Constants"
+import IconDatePicker from 'assets/img/icon/Icon_DatePicker.svg'
 
 const absenceTypesAndDaysOffMapping = {
     1: { day: 3, time: 24 },
@@ -1282,7 +1283,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                                                         placeholderText={t('Select')}
                                                                                         locale={t("locale")}
                                                                                         className="form-control input" />
-                                                                                    <span className="input-group-addon input-img"><i className="fas fa-calendar-alt text-info"></i></span>
+                                                                                    <span className="input-group-addon input-img"><img src={IconDatePicker} alt="Date" /></span>
                                                                                 </label>
                                                                             </div>
                                                                             {reqDetail.errors.startDate ? this.error('startDate', reqDetail.groupId, reqDetail.groupItem) : null}
@@ -1305,7 +1306,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                                                         placeholderText={t('Select')}
                                                                                         locale={t("locale")}
                                                                                         className="form-control input" />
-                                                                                    <span className="input-group-addon input-img"><i className="fas fa-calendar-alt text-info"></i></span>
+                                                                                    <span className="input-group-addon input-img"><img src={IconDatePicker} alt="Date" /></span>
                                                                                 </label>
                                                                             </div>
                                                                             {reqDetail.errors.endDate ? this.error('endDate', reqDetail.groupId, reqDetail.groupItem) : null}
@@ -1336,7 +1337,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                                                         placeholderText={t('Select')}
                                                                                         locale={t("locale")}
                                                                                         className="form-control input" />
-                                                                                    <span className="input-group-addon input-img"><i className="fas fa-calendar-alt text-info"></i></span>
+                                                                                    <span className="input-group-addon input-img"><img src={IconDatePicker} alt="Date" /></span>
                                                                                 </label>
                                                                             </div>
                                                                             {reqDetail.errors.startDate ? this.error('startDate', reqDetail.groupId, reqDetail.groupItem) : null}
@@ -1384,7 +1385,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                                                         placeholderText={t('Select')}
                                                                                         locale={t("locale")}
                                                                                         className="form-control input" />
-                                                                                    <span className="input-group-addon input-img"><i className="fas fa-calendar-alt text-info"></i></span>
+                                                                                    <span className="input-group-addon input-img"><img src={IconDatePicker} alt="Date" /></span>
                                                                                 </label>
                                                                             </div>
                                                                             {reqDetail.errors.endDate ? this.error('endDate', reqDetail.groupId, reqDetail.groupItem) : null}

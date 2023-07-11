@@ -167,8 +167,8 @@ class AssesserComponent extends React.Component {
             control: (styles) => ({
                 ...styles,
                 cursor: 'pointer',
-                height: 35,
-                minHeight: 35
+                height: 38,
+                minHeight: 38
             })
         }
         const { t, isEdit, errors, recentlyAppraiser, isShowDuplicateWarning = true } = this.props

@@ -3808,10 +3808,11 @@ span.badge-notification[data-badge]::after {
   }
 }
 .content-page-header {
-  color: #283280 !important;
+  color: #000000 !important;
   text-transform: uppercase !important;
-  font-size: 18px !important;
+  font-size: 16px !important;
   font-weight: bold;
+  margin-top: 24px;
 }
 
 .vaccine-info-page {
