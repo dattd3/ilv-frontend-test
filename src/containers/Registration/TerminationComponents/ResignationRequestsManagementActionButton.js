@@ -29,7 +29,7 @@ class ResignationRequestsManagementActionButton extends React.PureComponent {
             showAdvanced: false
         }
         this.searchForm = React.createRef(null);
-        this.onInputChange = debounce(this.updateKeywordsToFilter, 800)
+        this.onInputChange = debounce(this.updateKeywordsToFilter, Constants.TIME_DEBOUNCE_FOR_SEARCH)
         this.statusOptions = [
             {value: 0, label: props.t('unfinished')},
             {value: 1, label: props.t('accomplished')}

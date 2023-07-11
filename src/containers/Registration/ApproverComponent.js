@@ -43,7 +43,7 @@ class ApproverComponent extends React.Component {
       isSearch: false,
       isSearching: false,
     }
-    this.onInputChange = debounce(this.getApproverInfo, 1000);
+    this.onInputChange = debounce(this.getApproverInfo, Constants.TIME_DEBOUNCE_FOR_SEARCH);
   }
 
   async componentDidMount() {

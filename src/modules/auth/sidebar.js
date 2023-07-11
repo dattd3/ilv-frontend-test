@@ -340,7 +340,7 @@ export const Navigation = [
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     label: "InsuranceRegime",
     to: map.InsuranceRegime,
-    role: 'U'
+    role: 'NA'
   },
   {
     id: 30,

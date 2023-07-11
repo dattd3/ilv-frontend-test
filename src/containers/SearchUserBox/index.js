@@ -139,7 +139,7 @@ export default function SearchUserComponent({
     } else {
       if (Array.isArray(users) && users.length > 1) setIsSearching(true);
     }
-  }, 600);
+  }, Constants.TIME_DEBOUNCE_FOR_SEARCH);
 
   const filterOption = (option, inputValue) => {
     const options = (users || []).filter(

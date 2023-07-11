@@ -96,7 +96,7 @@ function WorkOutSideGroupProcessItemDetail({ index, item, isAddNew, isOnlyUpdate
                     <div className="col-md-8">
                         <div className="group-input">
                             <label>{t("Title")}</label>
-                            <div className="value">{PLAN_Line1}</div>
+                            <div className="value">{formatValue(PLAN_Line1, valueType.other)}</div>
                             {
                                 isShowRow1 && (
                                     <div className={`value second ${!isEmptyByValue(PLAN_Line2) ? 'updated' : ''}`}>{PLAN_Line2}</div>
@@ -109,7 +109,7 @@ function WorkOutSideGroupProcessItemDetail({ index, item, isAddNew, isOnlyUpdate
                     <div className="col-md-12">
                         <div className="group-input role">
                             <label>{t("MainRole")}</label>
-                            <div className="value">{DUT_Line1}</div>
+                            <div className="value">{formatValue(DUT_Line1, valueType.other)}</div>
                             {
                                 isShowRow2 && (
                                     <div className={`value second ${!isEmptyByValue(DUT_Line2) ? 'updated' : ''}`}>{DUT_Line2}</div>
@@ -123,7 +123,7 @@ function WorkOutSideGroupProcessItemDetail({ index, item, isAddNew, isOnlyUpdate
                         <div className="group-input">
                             <label>{t("NetSalary")}</label>
                             <div className="value salary-view">
-                                <span>{DE_NET_Line1}</span>
+                                <span>{formatValue(DE_NET_Line1, valueType.salary)}</span>
                                 <img src={hiddenViewSalary ? IconEyeClosed : IconEyeOpened} alt='Eye' className="eye" onClick={handleToggleViewSalary} />
                             </div>
                             {
@@ -140,7 +140,7 @@ function WorkOutSideGroupProcessItemDetail({ index, item, isAddNew, isOnlyUpdate
                         <div className="group-input">
                             <label>{t("GrossSalary")}</label>
                             <div className="value salary-view">
-                                <span>{DE_GROSS_Line1}</span>
+                                <span>{formatValue(DE_GROSS_Line1, valueType.salary)}</span>
                                 <img src={hiddenViewSalary ? IconEyeClosed : IconEyeOpened} alt='Eye' className="eye" onClick={handleToggleViewSalary} />
                             </div>
                             {
@@ -156,7 +156,7 @@ function WorkOutSideGroupProcessItemDetail({ index, item, isAddNew, isOnlyUpdate
                     <div className="col-md-8">
                         <div className="group-input">
                             <label>{t("Currency")}</label>
-                            <div className="value">{WAERS_Line1}</div>
+                            <div className="value">{formatValue(WAERS_Line1, valueType.other)}</div>
                             {
                                 isShowRow3 && (
                                     <div className={`value second ${!isEmptyByValue(WAERS_Line2) ? 'updated' : ''}`}>{WAERS_Line2}</div>

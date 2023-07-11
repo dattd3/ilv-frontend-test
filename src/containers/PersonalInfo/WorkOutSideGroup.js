@@ -15,7 +15,7 @@ import IconAddWhite from "assets/img/icon/ic_btn_add_white.svg"
 import Constants from "commons/Constants"
 import LoadingModal from "components/Common/LoadingModal"
 import ConfirmSendRequestModal from "./ConfirmSendRequestModal"
-import { valueType, isEmptyByValue } from "./WorkOutSideGroupDetail"
+import { valueType, isEmptyByValue, formatValue } from "./WorkOutSideGroupDetail"
 const moment = extendMoment(Moment)
 
 const prefixUpdating = 'UPDATING'
@@ -59,38 +59,21 @@ function WorkOutSideGroup(props) {
             const config = getMuleSoftHeaderConfigurations()
             try {
                 const response = await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/workprocess/outside`, config)
-                const data = response?.data?.data || []
+                const data = (response?.data?.data || []).map(item => {
+                    for (const key in item) {
+                        if (['ID', 'PERNR'].includes(key)) {
+                            item[key] = item[key]
+                        } else {
+                            item[key] = formatValue(item[key], valueType.other)
+                            if (key.startsWith('BEG') || key.startsWith('END')) {
+                                item[key] = formatValue(item[key], valueType.date)
+                            }
+                        }
+                    }
+                    return item
+                })
                 SetExperiences(data)
                 SetExperienceOriginal(data)
-                // if (response && response?.data) {
-                //     // let data = response?.data?.data || []
-                //     // const experienceToSave = (data || []).reduce((res, currentItem, currentIndex) => {
-                //     //     res[currentIndex] = {
-                //     //         username: currentUserEmail?.split('@')[0],
-                //     //         uid: employeeNo,
-                //     //         companyName: currentItem[0] || '',
-                //     //         startDate: currentItem[1][0]?.from_time || null,
-                //     //         endDate: currentItem[1][0]?.to_time || null,
-                //     //         listWorking: (currentItem[1] || []).reduce((resSub, subItem, subIndex) => {
-                //     //             resSub[subIndex] = {
-                //     //                 startDate: subItem?.BEG || null,
-                //     //                 endDate: subItem?.END || null,
-                //     //                 positionName: subItem?.title || '', // Chức danh
-                //     //                 roleName: subItem?.rank || '', // Vai trò chính
-                //     //                 salary: {
-                //     //                     netSalary: subItem?.salary_net || null,
-                //     //                     grossSalary: subItem?.salary_gross || null,
-                //     //                 },
-                //     //                 currency: subItem?.currency || null,
-                //     //             }
-                //     //             return resSub
-                //     //         }, {})
-                //     //     }
-                //     //     return res
-                //     // }, {})
-
-                //     SetExperiences(response?.data?.data || [])
-                // }
             } catch (e) {
                 SetExperiences([])
                 SetExperienceOriginal([])
@@ -113,6 +96,23 @@ function WorkOutSideGroup(props) {
             }
         }
     }, [tabActive])
+
+    const isValidPeriod = (experience) => {
+        const companyEndDate = experience?.isAddNew ? experience?.ENDDA : experience[`ENDDA_${prefixUpdating}`]
+        if (!companyEndDate && !moment(companyEndDate, 'YYYYMMDD').isValid()) {
+            return true
+        }
+
+        let lstPeriodEndDate = []
+        for (let i = 1; i < 6; i++) {
+            if (experience[`END${i}`] && moment(experience[`END${i}`], 'YYYYMMDD').isValid()) {
+                lstPeriodEndDate.push(experience[`END${i}`])
+            }
+        }
+        (lstPeriodEndDate || []).sort((a, b) => b - a)
+        const maxPeriodEndDate = lstPeriodEndDate?.length > 0 ? lstPeriodEndDate[0] : null
+        return companyEndDate >= maxPeriodEndDate
+    }
 
     const isDataValid = () => {
         const hasCreateNew = (experiences || []).some(item => item?.isAddNew)
@@ -138,9 +138,12 @@ function WorkOutSideGroup(props) {
                 moment(sub[`BEGDA_${prefixUpdating}`] ? sub[`BEGDA_${prefixUpdating}`] : sub?.BEGDA, 'YYYYMMDD'),
                 moment(sub[`ENDDA_${prefixUpdating}`] ? sub[`ENDDA_${prefixUpdating}`] : sub?.ENDDA, 'YYYYMMDD')
             ), { adjacent: true }))
+            let isPeriodValid = isValidPeriod(item)
             let dateMessageInValid = null
             if (item?.isAddNew && (isEmptyByValue(item?.BEGDA, valueType.date) || isEmptyByValue(item?.ENDDA, valueType.date))) {
                 dateMessageInValid = t("StartDateEndDateRequired")
+            } else if (!isPeriodValid) {
+                dateMessageInValid = t("InvalidDatePeriod")
             } else if (isOverlap) {
                 dateMessageInValid = t("CompanyTimeNotOverlap")
             }
@@ -162,7 +165,7 @@ function WorkOutSideGroup(props) {
             SetStatusModal({
                 isShow: true,
                 isSuccess: false,
-                content: 'Dữ liệu không hợp lệ. Vui lòng kiểm tra lại!'
+                content: t("InvalidDataPleaseCheckAgain")
             })
         }
 
@@ -225,29 +228,6 @@ function WorkOutSideGroup(props) {
         SetExperiences(experienceToSave)
     }
 
-    // const handleRemoveProcess = (companyIndex, processIndex) => {
-    //     const experiencesClone = {...experiences}
-    //     delete experiencesClone[companyIndex].listWorking[processIndex]
-    //     SetExperiences(experiencesClone)
-    // }
-
-    // const handleAddProcess = (companyIndex) => {
-    //     const experiencesClone = {...experiences}
-    //     const lastProcessIndex = Number(Object.keys(experiencesClone[companyIndex]?.listWorking || {}).pop() || 0)
-    //     experiencesClone[companyIndex].listWorking[lastProcessIndex + 1] = {
-    //         startDate: null,
-    //         endDate: null,
-    //         positionName: "",
-    //         roleName: "",
-    //         salary: {
-    //             netSalary: "",
-    //             grossSalary: ""
-    //         },
-    //         currency: "",
-    //     }
-    //     SetExperiences(experiencesClone)
-    // }
-
     const handleToggleProcess = (companyIndex) => {
         const experiencesClone = [...experiences]
         experiencesClone[companyIndex].isCollapse = !experiencesClone[companyIndex].isCollapse
@@ -300,7 +280,20 @@ function WorkOutSideGroup(props) {
             if (response && response?.data) {
                 const result = response?.data?.result
                 if (result?.code == Constants.API_SUCCESS_CODE) {
-                    SetExperiences(response?.data?.data || [])
+                    const data = (response?.data?.data || []).map(item => {
+                        for (const key in item) {
+                            if (['ID', 'PERNR'].includes(key)) {
+                                item[key] = item[key]
+                            } else {
+                                item[key] = formatValue(item[key], valueType.other)
+                                if (key.startsWith('BEG') || key.startsWith('END')) {
+                                    item[key] = formatValue(item[key], valueType.date)
+                                }
+                            }
+                        }
+                        return item
+                    })
+                    SetExperiences(data)
                     SetHiddenViewSalary(false)
                 }
             }
@@ -398,7 +391,7 @@ function WorkOutSideGroup(props) {
             result[`WAERS${i}`] = item?.isAddNew ? item[`WAERS${i}`] : getValueByCondition(item[`WAERS${i}`], item[`WAERS${i}_${prefixUpdating}`])
             result[`DUT${i}`] = item?.isAddNew ? item[`DUT${i}`] : getValueByCondition(item[`DUT${i}`], item[`DUT${i}_${prefixUpdating}`])
             result[`PLAN${i}`] = item?.isAddNew ? item[`PLAN${i}`] : getValueByCondition(item[`PLAN${i}`], item[`PLAN${i}_${prefixUpdating}`])
-            lstKeyToDelete = [...lstKeyToDelete, `DE_GROSS${i}_${prefixUpdating}`, `DE_NET${i}_${prefixUpdating}`, `WAERS${i}_${prefixUpdating}`, `PLAN${i}_${prefixUpdating}`, `END${i}_${prefixUpdating}`, `DUT${i}_${prefixUpdating}`, `BEG${i}_${prefixUpdating}`, 'errorCompanyName', 'errorCompanyDate']
+            lstKeyToDelete = [...lstKeyToDelete, `DE_GROSS${i}_${prefixUpdating}`, `DE_NET${i}_${prefixUpdating}`, `WAERS${i}_${prefixUpdating}`, `PLAN${i}_${prefixUpdating}`, `END${i}_${prefixUpdating}`, `DUT${i}_${prefixUpdating}`, `BEG${i}_${prefixUpdating}`, 'errorCompanyName', 'errorCompanyDate', 'isCollapse']
         }
 
         return omit(result, ['isAddNew', 'listWorking', 'ID', 'ORGEH_UPDATING', 'BEGDA_UPDATING', 'ENDDA_UPDATING', ...lstKeyToDelete])
@@ -419,6 +412,7 @@ function WorkOutSideGroup(props) {
         delete oldItem.listWorking
         delete oldItem.errorCompanyName
         delete oldItem.errorCompanyDate
+        delete oldItem?.isCollapse
 
         let newItem = {
             ...item,
@@ -473,6 +467,7 @@ function WorkOutSideGroup(props) {
                     delete itemClone.listWorking
                     delete itemClone.errorCompanyName
                     delete itemClone.errorCompanyDate
+                    delete itemClone?.isCollapse
                     itemClone.needEncrypt = true
                     return itemClone
                 })

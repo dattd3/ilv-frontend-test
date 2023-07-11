@@ -998,7 +998,7 @@ const CreateInsuranceHealth = ({ t }) => {
             <div className="row mv-10">
               <div className="col-12">
                 <div>
-                {t("Bank")} <span className="required">(*)</span>
+                {t("bank")} <span className="required">(*)</span>
                 </div>
                 <input
                   value={data.bankName}
@@ -1098,7 +1098,7 @@ const CreateInsuranceHealth = ({ t }) => {
 
         <div className="row mv-10">
           <div className="col-6 sign-contain">
-            <div className="sign-title">{t("Confirm")}</div>
+            <div className="sign-title">{t("confirm")}</div>
             <div className="sign-subtitle">
               ({t("welfare_heath_insurance_title_note4")})
             </div>
