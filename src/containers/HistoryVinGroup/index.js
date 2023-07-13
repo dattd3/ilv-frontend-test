@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react"
-import $ from 'jquery'
 import { useTranslation } from "react-i18next"
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -55,7 +54,6 @@ function HistoryVinGroup(props) {
             <div className="history-vingroup-page" id="history-vingroup-page">
                 <iframe src="https://online.flippingbook.com/view/211567232/1/" allowFullScreen={true} id="ifrm"></iframe>
             </div>
-            {/* <button className="hide-coppy-right">Hide</button> */}
         </>
     )
 }
