@@ -17,6 +17,7 @@ import Constants from '../.../../../../commons/Constants'
 import map from '../../../../src/containers/map.config'
 import { getValueParamByQueryString, getMuleSoftHeaderConfigurations, formatStringByMuleValue, getRegistrationMinDateByConditions, isVinFast, isValidDateRequest } from "../../../commons/Utils"
 import EditIcon from '../../../assets/img/icon/Icon-edit.svg'
+import IconDatePicker from 'assets/img/icon/Icon_DatePicker.svg'
 import 'react-datepicker/dist/react-datepicker.css'
 import vi from 'date-fns/locale/vi'
 registerLocale("vi", vi)
@@ -728,7 +729,7 @@ class SubstitutionComponent extends React.Component {
                     placeholderText={t("Select")}
                     locale="vi"
                     className="form-control input" />
-                  <span className="input-group-addon input-img"><i className="fas fa-calendar-alt text-info"></i></span>
+                  <span className="input-group-addon input-img"><img src={IconDatePicker} alt="Date" /></span>
                 </label>
               </div>
               {this.errorWithoutItem('startDate')}
@@ -751,7 +752,7 @@ class SubstitutionComponent extends React.Component {
                     placeholderText={t("Select")}
                     locale="vi"
                     className="form-control input" />
-                  <span className="input-group-addon input-img text-info"><i className="fas fa-calendar-alt"></i></span>
+                  <span className="input-group-addon input-img"><img src={IconDatePicker} alt="Date" /></span>
                 </label>
               </div>
               {this.errorWithoutItem('endDate')}

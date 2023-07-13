@@ -494,6 +494,12 @@
     .content-page-header {
       margin-bottom: 0!important;
     }
+    .time-sheet-table {
+      box-shadow: 0 0 4px 0 rgba(0,0,0,.251) !important;
+      .time-sheet-table-content {
+        padding-bottom: 0 !important;
+      }
+    }
     .timesheet-box {
       margin: 16px 0;
       box-shadow: 0 0 4px 0 rgba(0,0,0,.251);
@@ -505,6 +511,8 @@
       .input-container {
         .input {
           width: inherit;
+          padding-left: 10px;
+          padding-right: 40px;
         }
         .input-img {
           left: unset;
@@ -1381,7 +1389,7 @@
       img {
         position: absolute;
         right: 10px;
-        top: 10px;
+        top: 11px;
       }
       .react-datepicker-wrapper {
         width: 100%;

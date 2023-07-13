@@ -98,15 +98,16 @@ function WorkOutSideGroup(props) {
     }, [tabActive])
 
     const isValidPeriod = (experience) => {
-        const companyEndDate = experience?.isAddNew ? experience?.ENDDA : experience[`ENDDA_${prefixUpdating}`]
+        const companyEndDate = experience?.isAddNew ? experience?.ENDDA : experience[`ENDDA_${prefixUpdating}`] ? experience[`ENDDA_${prefixUpdating}`] : experience?.ENDDA
         if (!companyEndDate && !moment(companyEndDate, 'YYYYMMDD').isValid()) {
             return true
         }
 
         let lstPeriodEndDate = []
         for (let i = 1; i < 6; i++) {
-            if (experience[`END${i}`] && moment(experience[`END${i}`], 'YYYYMMDD').isValid()) {
-                lstPeriodEndDate.push(experience[`END${i}`])
+            let periodEndDate = experience?.isAddNew ? experience[`END${i}`] : experience[`END${i}_${prefixUpdating}`] ? experience[`END${i}_${prefixUpdating}`] : experience[`END${i}`]
+            if (periodEndDate && moment(periodEndDate, 'YYYYMMDD').isValid()) {
+                lstPeriodEndDate.push(periodEndDate)
             }
         }
         (lstPeriodEndDate || []).sort((a, b) => b - a)

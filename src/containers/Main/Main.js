@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 import NestedRoute from "./NestedRoute";
 import { observer } from "mobx-react-lite";
 import Header from '../../components/Common/Header';
@@ -8,17 +10,12 @@ import { useGuardStore } from '../../modules';
 import ScrollToTop from '../../components/Common/ScrollToTop';
 import map from "../map.config";
 import Constants from '../../commons/Constants'
+import { handleFullScreen } from "actions/index"
 
 function MainLayout(props) {
   const guard = useGuardStore();
   const user = guard.getCurentUser();
-  const { history } = props;
-  const [show, SetShow] = useState(true);
-  const [isHideSidebar, SetIsHideSidebar] = useState(false);
-
-  const setShow = (show) => {
-    SetShow(show);
-  }
+  const { history, isFullScreen } = props;
 
   const searchParams = new URLSearchParams(props.location.search);
   const isApp = searchParams.get('isApp') || false;
@@ -30,18 +27,14 @@ function MainLayout(props) {
 
   const isDashBoard = props.location.pathname === '/';
 
-  const updateLayout = (isHideSidebar) => {
-    SetIsHideSidebar(isHideSidebar)
-  }
-
   return (
     <>
-      <SideBar show={show} user={user} />
-      <div id="content-wrapper" className={`d-flex flex-column ${isHideSidebar ? 'w-100' : ''}`}>
+      <SideBar show={!isFullScreen} user={user} />
+      <div id="content-wrapper" className={`d-flex flex-column ${props?.isFullScreen ? 'w-100' : ''}`}>
         <div id="content">
-          <Header user={user} setShow={setShow} isApp={isApp} updateLayout={updateLayout} />
+          <Header user={user} isApp={isApp} />
           <div className={`${isDashBoard === true ? "" : "container-fluid"}`} id='main-content'>
-            <NestedRoute routes={props.routes} show={show} />
+            <NestedRoute routes={props.routes} show={!isFullScreen} />
           </div>
           <ScrollToTop />
         </div>
@@ -55,4 +48,17 @@ function MainLayout(props) {
   );
 }
 
-export default observer(MainLayout);
+const mapStateToProps = (state, ownProps) => {
+  return {
+    isFullScreen: state?.globalStatuses?.isFullScreen,
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    handleFullScreen: bindActionCreators(handleFullScreen, dispatch)
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(observer(MainLayout))
+// export default observer(MainLayout);

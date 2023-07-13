@@ -626,10 +626,15 @@ const getRequestTypesList = (category = 1, isRequestTab = false) => {
   return Object.keys(category == 1 ? Constants.REQUEST_CATEGORY_1_LIST : Constants.REQUEST_CATEGORY_2_LIST)
 }
 
+const isOnVinGroupHistoryPage = () => {
+    const pathname = window.location.pathname
+    console.log(pathname)
+}
+
 export {
     getRequestConfigurations, removeAccents, formatStringByMuleValue, formatNumberInteger, exportToPDF, isEnableFunctionByFunctionName, getValueParamByQueryString, getDateByRangeAndFormat,
     calculateBackDateByPnLVCodeAndFormatType, isEnableShiftChangeFunctionByPnLVCode, isEnableInOutTimeUpdateFunctionByPnLVCode, getRequestTypeIdsAllowedToReApproval, getMuleSoftHeaderConfigurations,
     isAdjacentDateBy2Date, showRangeDateGroupByArrayDate, generateTaskCodeByCode, parsteStringToHtml, getRegistrationMinDateByConditions, isVinFast, isEnableOTFunctionByPnLVCode, getCurrentLanguage, 
     getResignResonsMasterData, formatStringDateTimeByMuleValue, genderConfig, marriageConfig, formatProcessTime, setURLSearchParam, getCulture, isValidDateRequest, prepareOrganization, getRequestTypesList,
-    formatStringDateByMuleValue
+    formatStringDateByMuleValue, isOnVinGroupHistoryPage
 }
