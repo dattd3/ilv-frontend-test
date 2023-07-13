@@ -281,7 +281,13 @@ const VinGroup = ({ evaluationFormDetail, isEdit, showByManager, evaluationStatu
                             <td className="font-weight-bold">{t("EvaluationDetailPartAttitudeLevelExpression")}</td>
                             {
                             item?.listGroupConfig?.map((sub, subIndex) => {
-                                return <td key={subIndex}><div>{JSON.parse(sub?.description || '{}')[languageCodeMapping[currentLocale]]}</div></td>
+                                return (
+                                    <td key={subIndex}>
+                                        <div className="content" dangerouslySetInnerHTML={{
+                                            __html: purify.sanitize(JSON.parse(sub?.description || '{}')[languageCodeMapping[currentLocale]]),
+                                        }} />
+                                    </td>
+                                )
                             })
                             }
                         </tr>
