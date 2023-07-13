@@ -416,7 +416,7 @@ class RequestTaskList extends React.Component {
             if ([Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP].includes(requestTypeId) && this.isDateValidForUpdateAndRecall(moment(firstStartDate, 'DD/MM/YYYY')?.isValid() ? moment(firstStartDate, 'DD/MM/YYYY').format('YYYYMMDD') : null)) {
                 return true
             }
-            if (requestTypeId === Constants.OT_REQUEST && startDate?.split(", ")?.every(item => this.checkDateLessThanPayPeriod(moment(item, 'DD/MM/YYYY')?.isValid() ? moment(firstStartDate, 'DD/MM/YYYY').format('YYYYMMDD') : null))) {
+            if (requestTypeId === Constants.OT_REQUEST && startDate?.split(", ")?.every(item => this.isDateValidForUpdateAndRecall(moment(item, 'DD/MM/YYYY')?.isValid() ? moment(firstStartDate, 'DD/MM/YYYY').format('YYYYMMDD') : null))) {
                 return true
             }
         }
