@@ -64,6 +64,17 @@ function WorkOutSideGroupProcessItemDetail({ index, item, isAddNew, isOnlyUpdate
         || !isEmptyByValue(WAERS_Line2)
     )
 
+    const formatNumberSpecialCase = (val = '') => {
+        if (val === '' || val === null || val === undefined) {
+            return ''
+        }
+
+        const temp = val?.replaceAll(" ", "")
+        return temp.replace(/./g, (c, i, a) => {
+            return i > 0 && c !== "." && (a.length - i) % 3 === 0 ? " " + c : c;
+        })
+    }
+
     return (
         <div className="process-item">
             <div className="group-header">
@@ -123,13 +134,13 @@ function WorkOutSideGroupProcessItemDetail({ index, item, isAddNew, isOnlyUpdate
                         <div className="group-input">
                             <label>{t("NetSalary")}</label>
                             <div className="value salary-view">
-                                <span>{formatValue(DE_NET_Line1, valueType.salary)}</span>
+                                <span>{hiddenViewSalary ? formatValue(DE_NET_Line1, valueType.salary) : formatNumberSpecialCase(formatValue(DE_NET_Line1, valueType.salary))}</span>
                                 <img src={hiddenViewSalary ? IconEyeClosed : IconEyeOpened} alt='Eye' className="eye" onClick={handleToggleViewSalary} />
                             </div>
                             {
                                 isShowRow3 && (
                                     <div className={`value second salary-view ${!isEmptyByValue(DE_NET_Line2) ? 'updated' : ''}`}>
-                                        <span>{DE_NET_Line2}</span>
+                                        <span>{hiddenViewSalary ? DE_NET_Line2 : formatNumberSpecialCase(DE_NET_Line2)}</span>
                                         <img src={hiddenViewSalary ? IconEyeClosed : IconEyeOpened} alt='Eye' className="eye" onClick={handleToggleViewSalary} />
                                     </div>
                                 )
@@ -140,13 +151,13 @@ function WorkOutSideGroupProcessItemDetail({ index, item, isAddNew, isOnlyUpdate
                         <div className="group-input">
                             <label>{t("GrossSalary")}</label>
                             <div className="value salary-view">
-                                <span>{formatValue(DE_GROSS_Line1, valueType.salary)}</span>
+                                <span>{hiddenViewSalary ? formatValue(DE_GROSS_Line1, valueType.salary) : formatNumberSpecialCase(formatValue(DE_GROSS_Line1, valueType.salary))}</span>
                                 <img src={hiddenViewSalary ? IconEyeClosed : IconEyeOpened} alt='Eye' className="eye" onClick={handleToggleViewSalary} />
                             </div>
                             {
                                 isShowRow3 && (
                                     <div className={`value second salary-view ${!isEmptyByValue(DE_GROSS_Line2) ? 'updated' : ''}`}>
-                                        <span>{DE_GROSS_Line2}</span>
+                                        <span>{hiddenViewSalary ? DE_GROSS_Line2 : formatNumberSpecialCase(DE_GROSS_Line2)}</span>
                                         <img src={hiddenViewSalary ? IconEyeClosed : IconEyeOpened} alt='Eye' className="eye" onClick={handleToggleViewSalary} />
                                     </div>
                                 )
