@@ -451,7 +451,11 @@
                 }
             }
             &.attitude {
+                .title {
+                    border-radius: 4px;
+                }
                 .wrap-score-table {
+                    margin-top: 15px;
                     .invalid-message {
                         display: inline-block;
                         width: 60%;
@@ -464,6 +468,42 @@
                         border-spacing: 0;
                         table-layout: fixed;
                         width: 100%;
+                        thead {
+                            tr {
+                                th {
+                                    text-align: center;
+                                }
+                                &:first-child {
+                                    th {
+                                        background: #FFEAEB;
+                                        &:first-child {
+                                            border-top-left-radius: 4px;
+                                        }
+                                        &:last-child {
+                                            border-top-right-radius: 4px;
+                                        }
+                                    }
+                                }
+                                &:last-child {
+                                    color: #2C72C6;
+                                    font-weight: bold;
+                                }
+                            }
+                        }
+                        tbody {
+                            tr {
+                                &:last-child {
+                                    td {
+                                        &:first-child {
+                                            border-bottom-left-radius: 4px;
+                                        }
+                                        &:last-child {
+                                            border-bottom-right-radius: 4px;
+                                        }
+                                    }
+                                }
+                            }
+                        }
                         th, td {
                             width: 15.3333333333%;
                             padding: 5px;
@@ -528,6 +568,7 @@
                         td {
                             border-top: none;
                             border-radius: 0;
+                            vertical-align: top;
                             input {
                                 border: 1px solid #DEE2E6;
                                 font-size: 13px;
