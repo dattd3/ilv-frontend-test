@@ -28,3 +28,8 @@ build-web
 
 yarn.lock
 package-lock.json
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
