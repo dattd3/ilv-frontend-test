@@ -368,7 +368,7 @@ class ProposalModal extends React.Component {
             <div className="row form-group">
               <div className="col-6">
                 <label className="form-label">
-                  P&L <span className="required">(*)</span>
+                  {t('proposal_company')}<span className="required">(*)</span>
                 </label>
                 <Select
                   options={pnls}
@@ -383,7 +383,7 @@ class ProposalModal extends React.Component {
                 {this.renderErrors('pnl')}
               </div>
               <div className="col-6">
-                <label className="form-label">{t('DivisionName')}</label>
+                <label className="form-label">{t('proposal_department')}</label>
                 <Select
                   options={blocks}
                   value={block}
@@ -400,7 +400,7 @@ class ProposalModal extends React.Component {
 
             <div className="row form-group">
               <div className="col-6">
-                <label className="form-label">{t('RoomAreaRegion')}</label>
+                <label className="form-label">{t('proposal_division')}</label>
                 <Select
                   options={regions}
                   value={region}
@@ -414,7 +414,7 @@ class ProposalModal extends React.Component {
                 {this.renderErrors('region')}
               </div>
               <div className="col-6">
-                <label className="form-label">{t('MemberUnits')}</label>
+                <label className="form-label">{t('proposal_unit')}</label>
                 <Select
                   options={units}
                   value={unit}
@@ -431,7 +431,7 @@ class ProposalModal extends React.Component {
 
             <div className="row form-group">
               <div className="col-6">
-                <label className="form-label">{t('EvaluationTeam')}</label>
+                <label className="form-label">{t('proposal_team')}</label>
                 <Select
                   options={departments}
                   value={department}
@@ -445,7 +445,7 @@ class ProposalModal extends React.Component {
                 {this.renderErrors('department')}
               </div>
               <div className="col-6">
-                <label className="form-label">{t('TeamSalaryProposal')}</label>
+                <label className="form-label">{t('proposal_group')}</label>
                 <Select
                   options={crews}
                   value={crew}
@@ -462,7 +462,7 @@ class ProposalModal extends React.Component {
 
             <div className="row form-group">
               <div className="col-6">
-                <label className="form-label">{t('Group')}</label>
+                <label className="form-label">{t('proposal_squad')}</label>
                 <Select
                   options={teams}
                   value={team}
@@ -476,7 +476,7 @@ class ProposalModal extends React.Component {
                 {this.renderErrors('team')}
               </div>
               <div className="col-6">
-                <label className="form-label">{t('Crew')}</label>
+                <label className="form-label">{t('proposal_crew')}</label>
                 <Select
                   options={groups}
                   value={group}
