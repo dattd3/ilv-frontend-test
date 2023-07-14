@@ -27,4 +27,6 @@ build-web.zip
 build-web
 
 yarn.lock
+/yarn.lock
 package-lock.json
+/package-lock.json
