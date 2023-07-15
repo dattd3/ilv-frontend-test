@@ -742,7 +742,7 @@
                                 border-right: 0.5px solid #DEE2E6;
                             }
                             &.measurement {
-                                width: 32%;
+                                width: 28%;
                                 text-align: left;
                                 ul {
                                     padding: 0;
@@ -760,16 +760,16 @@
                                 }
                             }
                             &.proportion {
-                                width: 9%;
+                                width: 10%;
                             }
                             &.target {
-                                width: 15%;
+                                width: 16%;
                             }
                             &.qltt-assessment, &.self-assessment, &.actual-results {
-                                width: 11%;
+                                width: 11.5%;
                             }
                             &.deviant {
-                                width: 11%;
+                                width: 11.5%;
                                 .value {
                                     display: inline-flex;
                                     align-items: center;
