@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, Fragment } from "react"
 import Select from 'react-select'
 import { Image, Tabs, Tab, Form, Button, Modal, Row, Col, Collapse } from 'react-bootstrap'
 import DatePicker, { registerLocale } from 'react-datepicker'
+import { useHistory } from "react-router"
 import { useTranslation } from "react-i18next"
 import moment from 'moment'
 import axios from 'axios'
@@ -621,6 +622,7 @@ const usePrevious = (value) => {
 
 function EvaluationApproval(props) {
     const { t } = useTranslation()
+    const history = useHistory()
     const [isLoading, SetIsLoading] = useState(false)
     const [isSelectedAll, SetIsSelectedAll] = useState(false)
     const [evaluationDetailPopup, SetEvaluationDetailPopup] = useState({
@@ -941,14 +943,15 @@ function EvaluationApproval(props) {
         }
     }
 
-    const handleShowEvaluationDetailPopup = (formCode, checkPhaseFormId, employeeCode) => {
-        SetEvaluationDetailPopup({
-            ...evaluationDetailPopup,
-            isShow: true,
-            evaluationFormId: checkPhaseFormId,
-            formCode: formCode,
-            employeeCode: employeeCode
-        })
+    const handleShowEvaluationDetail = (formCode, checkPhaseFormId, employeeCode) => {
+        // SetEvaluationDetailPopup({
+        //     ...evaluationDetailPopup,
+        //     isShow: true,
+        //     evaluationFormId: checkPhaseFormId,
+        //     formCode: formCode,
+        //     employeeCode: employeeCode 
+        // })
+        history.push(`/evaluations/${checkPhaseFormId}/${formCode}`)
     }
 
     const onHideEvaluationDetailModal = (statusModalFromChild, keepPopupEvaluationDetail = false) => {
@@ -1142,7 +1145,7 @@ function EvaluationApproval(props) {
                                 <tbody>
                                     {
                                         evaluationData?.data.map((item, index) => {
-                                            return <tr key={index} role='button' onClick={() => handleShowEvaluationDetailPopup(item?.formCode, item?.checkPhaseFormId, item?.employeeCode)}>
+                                            return <tr key={index} role='button' onClick={() => handleShowEvaluationDetail(item?.formCode, item?.checkPhaseFormId, item?.employeeCode)}>
                                                         <td className="c-form-code"><div className="form-code">{item?.formCode || ''}</div></td>
                                                         <td className="c-form-sender">
                                                             <div className="form-sender">{item?.poolUser?.fullname || ''}</div>

@@ -14,7 +14,6 @@ import StatusModal from '../../../components/Common/StatusModal'
 import HOCComponent from '../../../components/Common/HOCComponent'
 import EvaluationVinBusTemplate from '../Templates/VinBus'
 import EvaluationVinGroupTemplate from '../Templates/Vingroup'
-import Evaluation360 from "./Evaluation360"
 import IconArrowRightWhite from '../../../assets/img/icon/pms/arrow-right-white.svg'
 import IconArrowRightGray from '../../../assets/img/icon/pms/arrow-right-gray.svg'
 import IconSave from '../../../assets/img/ic-save.svg'
@@ -33,7 +32,6 @@ const processStep = {
   zeroLevel: '0NF',
   oneLevel: '1NF',
   twoLevels: '2NF',
-  level360: '360NF',
 }
 
 function EvaluationOverall(props) {
@@ -334,7 +332,7 @@ function EvaluationProcess(props) {
   </div>
 }
 
-function EvaluationDetail(props) {
+function Evaluation360(props) {
   const { t } = useTranslation();
   const [errors, SetErrors] = useState({});
   const [bottom, setBottom] = useState(false);
@@ -904,59 +902,22 @@ function EvaluationDetail(props) {
   return (
     <>
       <LoadingModal show={isLoading} />
-      {
-        dataLoaded && (
-          <>
-            <StatusModal 
-              show={statusModal.isShow} 
-              isSuccess={statusModal.isSuccess} 
-              content={statusModal.content} 
-              className="evaluation-status-modal"
-              onHide={onHideStatusModal} />
-            <div className="evaluation-detail-page">
-            {
-              (!evaluationFormDetail || _.size(evaluationFormDetail) === 0 || (!evaluationFormDetail?.companyCode && evaluationFormDetail?.reviewStreamCode !== processStep.level360))
-              ? (<h6 className="alert alert-danger" role="alert">{t("NoDataFound")}</h6>)
-              : (
-                <>
-                {
-                  evaluationFormDetail?.reviewStreamCode !== processStep.level360 ? (
-                    <Evaluation360 />
-                  )
-                  : (
-                    <>
-                      <h1 className="content-page-header">{`${evaluationFormDetail?.checkPhaseFormName} ${t("of")} ${evaluationFormDetail?.fullName}`}</h1>
-                      <div>
-                        <EvaluationOverall evaluationFormDetail={evaluationFormDetail} showByManager={showByManager} />
-                        <EvaluationProcess evaluationFormDetail={evaluationFormDetail} showByManager={showByManager} errors={errors} updateData={updateData} />
-                        <div className="button-block" style={isOffLineType ? { display: 'none' } : {}} >
-                          {renderButtonBlock()}
-                        </div>
-                      </div>
-                      {
-                        !bottom && !isOffLineType &&
-                        (evaluationFormDetail?.status == evaluationStatus.launch || (evaluationFormDetail?.status == evaluationStatus.selfAssessment && localStorage.getItem('employeeNo') == JSON.parse(evaluationFormDetail?.reviewer || '{}')?.uid))
-                        && evaluationFormDetail?.isEdit && (
-                          <div className="scroll-to-save" style={{ color: localStorage.getItem("companyThemeColor"), zIndex: '10' }}>
-                            <div>
-                              <button className="btn-action save mr-3" onClick={() => handleSubmit(actionButton.save, null, true)}><Image src={IconSave} alt="Save" />{t("EvaluationDetailPartSave")}</button>
-                            </div>
-                          </div>
-                        )
-                      }
-                    </>
-                  )
-                }
-                </>
-              )
-            }
-            </div>
-          </>
-        )
-      }
+      <StatusModal 
+        show={statusModal.isShow} 
+        isSuccess={statusModal.isSuccess} 
+        content={statusModal.content} 
+        className="evaluation-status-modal"
+        onHide={onHideStatusModal} />
+      <div className="evaluation-360">
+        <div className="header-block">
+          <h1 className="content-page-header">AAAAAAAAAAAAA</h1>
+          <button className="btn-export">
+            <img />
+          </button>
+        </div>
+      </div>
     </>
   )
 }
 
-export { processStep }
-export default HOCComponent(EvaluationDetail)
+export default HOCComponent(Evaluation360)
