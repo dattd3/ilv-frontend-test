@@ -45,7 +45,7 @@ class StaffInfoProposedResignationComponent extends React.PureComponent {
             employeeTyping: "",
             employeeIdChecked: [],
         }
-        this.onInputChange = debounce(this.getEmployeeInfos, 1000)
+        this.onInputChange = debounce(this.getEmployeeInfos, Constants.TIME_DEBOUNCE_FOR_SEARCH)
     }
 
     componentWillReceiveProps(nextProps) {

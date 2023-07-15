@@ -15,6 +15,7 @@ import map from '../../../../src/containers/map.config'
 import { withTranslation } from "react-i18next";
 import { getValueParamByQueryString, getRegistrationMinDateByConditions, isValidDateRequest } from "../../../commons/Utils"
 import { checkIsExactPnL } from '../../../commons/commonFunctions';
+import IconDatePicker from 'assets/img/icon/Icon_DatePicker.svg'
 
 registerLocale("vi", vi)
 
@@ -72,7 +73,8 @@ class BusinessTripComponent extends React.Component {
                     errors: {},
                 }
             ],
-            needReload: true
+            needReload: true,
+            validating: false,
         }
     }
 
@@ -308,7 +310,7 @@ class BusinessTripComponent extends React.Component {
         })
 
         if (times.length === 0) return
-
+        this.setState({ validating: true })
         axios.post(`${process.env.REACT_APP_REQUEST_URL}request/validate`, {
             perno: localStorage.getItem('employeeNo'),
             ...(this.state.isEdit && { requestId: this.props.taskId }),
@@ -363,7 +365,7 @@ class BusinessTripComponent extends React.Component {
                     })
                     this.setState({ newRequestInfo })
                 }
-            })
+            }).finally(() => this.setState({ validating: false }))
     }
 
     isOverlapDateTime(startDateTime, endDateTime) {
@@ -776,7 +778,7 @@ class BusinessTripComponent extends React.Component {
 
     render() {
         const { t, businessTrip, recentlyManagers } = this.props;
-        const { requestInfo, errors, approver, appraiser, isEdit } = this.state
+        const { requestInfo, errors, approver, appraiser, isEdit, validating } = this.state
         const sortRequestListByGroup = requestInfo.sort((reqPrev, reqNext) => reqPrev.groupId - reqNext.groupId)
         const requestInfoArr = _.valuesIn(_.groupBy(sortRequestListByGroup, (req) => req.groupId))
         const vehicles = [
@@ -932,7 +934,7 @@ class BusinessTripComponent extends React.Component {
                                                                             placeholderText={t('Select')}
                                                                             locale="vi"
                                                                             className="form-control input" />
-                                                                        <span className="input-group-addon input-img"><i className="fas fa-calendar-alt text-info"></i></span>
+                                                                        <span className="input-group-addon input-img"><img src={IconDatePicker} alt="Date" /></span>
                                                                     </label>
                                                                 </div>
                                                                 {reqDetail.errors.startDate ? this.error('startDate', reqDetail.groupId, reqDetail.groupItem) : null}
@@ -979,7 +981,7 @@ class BusinessTripComponent extends React.Component {
                                                                             placeholderText={t('Select')}
                                                                             locale="vi"
                                                                             className="form-control input" />
-                                                                        <span className="input-group-addon input-img"><i className="fas fa-calendar-alt text-info"></i></span>
+                                                                        <span className="input-group-addon input-img"><img src={IconDatePicker} alt="Date" /></span>
                                                                     </label>
                                                                 </div>
                                                                 {reqDetail.errors.endDate ? this.error('endDate', reqDetail.groupId, reqDetail.groupItem) : null}
@@ -1131,7 +1133,7 @@ class BusinessTripComponent extends React.Component {
                         </li>
                     })}
                 </ul>
-                <ButtonComponent isEdit={isEdit} files={this.state.files} updateFiles={this.updateFiles.bind(this)} submit={this.submit.bind(this)} isUpdateFiles={this.getIsUpdateStatus} disabledSubmitButton={this.state.disabledSubmitButton} />
+                <ButtonComponent isEdit={isEdit} files={this.state.files} updateFiles={this.updateFiles.bind(this)} submit={this.submit.bind(this)} isUpdateFiles={this.getIsUpdateStatus} disabledSubmitButton={this.state.disabledSubmitButton} validating={validating} />
             </div>
         )
     }

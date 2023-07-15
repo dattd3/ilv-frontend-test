@@ -28,7 +28,7 @@ class DetailButtonComponent extends React.Component {
           return this.setState({ isConfirmShow: true, modalTitle: t("ApproveRequest"), modalMessage: t("WarningOverOTFundsApproval"), typeRequest: Constants.STATUS_APPROVED })
       }
       if (requestTypeId === Constants.RESIGN_SELF && isNotEnoughTimeResign) {
-        return this.setState({ isConfirmShow: true, modalTitle: t("ApproveRequest"), modalMessage: t("WarningNotEnoughTimeResign"), typeRequest: Constants.STATUS_APPROVED })
+        return this.setState({ isConfirmShow: true, modalTitle: t("ApproveRequest"), modalMessage: t("WarningNotEnoughTimeResignApprover"), typeRequest: Constants.STATUS_APPROVED })
       }
       this.setState({ isConfirmShow: true, modalTitle: t("ApproveRequest"), modalMessage:t("ConfirmApproveRequestHolder",{name: t(this.requestRegistraion[this.props.requestTypeId])}) , typeRequest: Constants.STATUS_APPROVED })
     }
@@ -51,7 +51,7 @@ class DetailButtonComponent extends React.Component {
           return this.setState({ isConfirmShow: true, modalTitle: t("ConsentConfirmation"), modalMessage: t("WarningOverOTFundsConsent"), typeRequest: Constants.STATUS_CONSENTED })
       }
       if (requestTypeId === Constants.RESIGN_SELF && isNotEnoughTimeResign) {
-        return this.setState({ isConfirmShow: true, modalTitle: t("ConsentConfirmation"), modalMessage: t("WarningNotEnoughTimeResign"), typeRequest: Constants.STATUS_CONSENTED })
+        return this.setState({ isConfirmShow: true, modalTitle: t("ConsentConfirmation"), modalMessage: t("WarningNotEnoughTimeResignApprover"), typeRequest: Constants.STATUS_CONSENTED })
       }
       this.setState({ isConfirmShow: true, modalTitle: t("ConsentConfirmation"), modalMessage: t("ConfirmConsentRequestHolder", {name: t(this.requestRegistraion[this.props.requestTypeId])}), typeRequest: Constants.STATUS_CONSENTED })
     }

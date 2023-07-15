@@ -42,25 +42,28 @@ class ButtonComponent extends React.Component {
     }
 
     render() {
-        const {t} = this.props;
+        const { t, validating, disabledSubmitButton } = this.props;
+
         return <div className="bottom">
             <div className="clearfix mt-5 mb-5">
-                <button type="button" className="btn btn-primary float-right ml-3 shadow" onClick={this.submit.bind(this)} disabled={this.props.disabledSubmitButton}>
-                    {!this.props.disabledSubmitButton ?
-                        <>
-                            <i className="fa fa-paper-plane mr-2" aria-hidden="true">
-                            </i>
-                        
-                        </> :
-                        <Spinner
-                            as="span"
-                            animation="border"
-                            size="sm"
-                            role="status"
-                            aria-hidden="true"
-                            className="mr-2"
-                        />}
-                        {t('Send')}
+                <button type="button" className="btn btn-primary float-right ml-3 shadow" onClick={this.submit.bind(this)} disabled={disabledSubmitButton || validating}>
+                    {
+                        !disabledSubmitButton ? (
+                            <i className="fa fa-paper-plane mr-2" aria-hidden="true"></i>
+                        )
+                        :
+                        !validating && (
+                            <Spinner
+                                as="span"
+                                animation="border"
+                                size="sm"
+                                role="status"
+                                aria-hidden="true"
+                                className="mr-2"
+                            />
+                        )
+                    }
+                    {t('Send')}
                 </button>
                 {
                     !this.props.isEdit ?

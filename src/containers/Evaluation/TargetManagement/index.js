@@ -267,7 +267,7 @@ function TargetManagement() {
           setEmployeeSearchLoading(false);
         });
     }
-  }, 1000);
+  }, Constants.TIME_DEBOUNCE_FOR_SEARCH);
 
   const handleRegistrationAction = (
     optionCode = MODAL_TYPES.REGISTER_MANUAL

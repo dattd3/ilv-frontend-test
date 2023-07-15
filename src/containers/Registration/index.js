@@ -143,7 +143,7 @@ class RegistrationComponent extends React.Component {
     const isEnableInOutTimeUpdateFunction = isEnableInOutTimeUpdateFunctionByPnLVCode(PnLVCode)
     const isEnableOTRequestFunction = isEnableOTFunctionByPnLVCode(PnLVCode);
     return (
-      <div className="registration-section personal-info justify-content-between">
+      <div className="registration-section personal-info request-registration justify-content-between">
         <LoadingModal isloading={isloading} />
         <Tabs defaultActiveKey={this.state.tab} onSelect={(key) => this.updateTabLink(key)}>
           <Tab eventKey="LeaveOfAbsenceRegistration" title={t('LeaveRequest')}>

@@ -1,6 +1,7 @@
 import React from 'react'
 import { OverlayTrigger, Popover, FormControl, Form, Button } from 'react-bootstrap'
 import Select from 'react-select'
+import { withRouter } from 'react-router-dom'
 import moment from 'moment'
 import _ from 'lodash'
 import purify from "dompurify"
@@ -22,7 +23,7 @@ import IconSearch from "assets/img/icon/icon-search.svg"
 import IconCalender from "assets/img/icon/icon-calender.svg"
 
 class TaskList extends React.Component {
-    constructor() {
+    constructor(props) {
         super();
         this.state = {
             approveTasks: [],
@@ -32,7 +33,7 @@ class TaskList extends React.Component {
             isShowExportModal: false,
             messageModalConfirm: "",
             pageNumber: 1,
-            taskId: null,
+            taskId: new URLSearchParams(props?.history?.location?.search).get('id') || null,
             subId: null,
             requestUrl: "",
             requestTypeId: null,
@@ -52,7 +53,8 @@ class TaskList extends React.Component {
                 needRefresh: false,
                 fromDate: moment().subtract(7, "days").format("YYYYMMDD"),
                 toDate: moment().format("YYYYMMDD"),
-            }
+            },
+            isAutoShowDetailModal: new URLSearchParams(props?.history?.location?.search).has('id') // Chỉ dùng cho Công tác ngoài Tập đoàn
         }
 
         this.manager = {
@@ -66,8 +68,17 @@ class TaskList extends React.Component {
     }
 
     componentDidMount() {
-      document.addEventListener("mousedown", this.handleClickOutsideRequestTypesSelect);
-      this.setState({tasks: this.props.tasks})
+        document.addEventListener("mousedown", this.handleClickOutsideRequestTypesSelect);
+        this.setState({tasks: this.props.tasks})
+
+        const queryParams = new URLSearchParams(this.props?.history?.location?.search)
+        if (queryParams.has('id')) {
+            queryParams.delete('id')
+            this.props.history.replace({
+                search: queryParams.toString(),
+            })
+            this.setState({ isShowTaskDetailModal: true })
+        }
     }
 
     componentWillUnmount() {
@@ -123,7 +134,7 @@ class TaskList extends React.Component {
         this.setState({isShowExportModal: true})
     }
 
-    onHideisShowExportModal = () => {
+    onHideIsShowExportModal = () => {
         this.setState({ isShowExportModal: false });
     }
 
@@ -135,7 +146,7 @@ class TaskList extends React.Component {
         this.setState({ isShowModalRegistrationConfirm: false });
     }
 
-    onHideisShowTaskDetailModal= () => {
+    onHideTaskDetailModal= () => {
         if(this.state.statusSelected){
             this.setState({ tasks:  this.props.tasks.filter(req => req.processStatusId == this.state.statusSelected)});
         }
@@ -491,15 +502,23 @@ class TaskList extends React.Component {
             if (requestType.id == Constants.LEAVE_OF_ABSENCE) {
                 const absenceType = absenceRequestTypes.find(item => item.value == absenceTypeValue)
                 return absenceType ? t(absenceType.label) : ""
-            } else {
-                const requestTypeObj = requestTypes.find(item => item.value == requestType.id)
-                return requestTypeObj ? t(requestTypeObj.label) : ""
             }
+
+            const requestTypeObj = requestTypes.find(item => item.value == requestType.id)
+            return requestTypeObj ? t(requestTypeObj.label) : ""
         }
+
         return (
             <>
-                <ExportModal requestCategory={requestCategorySelected} show={this.state.isShowExportModal} onHide={this.onHideisShowExportModal} statusOptions={this.props.filterdata} exportType={this.props.page}/>
-                <TaskDetailModal key= {this.state.taskId+'.'+this.state.subId} show={this.state.isShowTaskDetailModal} onHide={this.onHideisShowTaskDetailModal} taskId = {this.state.taskId} subId = {this.state.subId} action={this.state.action}/>
+                <TaskDetailModal 
+                    key={this.state.taskId+'.'+this.state.subId} 
+                    show={this.state.isShowTaskDetailModal} 
+                    taskId={this.state.taskId} 
+                    subId={this.state.subId} 
+                    action={this.state.action}
+                    isAutoShowDetailModal={this.state.isAutoShowDetailModal}
+                    onHide={this.onHideTaskDetailModal} />
+                <ExportModal requestCategory={requestCategorySelected} show={this.state.isShowExportModal} onHide={this.onHideIsShowExportModal} statusOptions={this.props.filterdata} exportType={this.props.page}/>
                 <div className="d-flex justify-content-between w-100 mt-2 mb-3 search-block">
                     <div className="row w-100">
                       <div className="w-180px position-relative">
@@ -709,6 +728,12 @@ class TaskList extends React.Component {
                                             if ([Constants.OT_REQUEST].includes(child.requestTypeId)) {
                                               dateChanged = child.dateRange;
                                             }
+
+                                            // let isWorkOutSideGroup = false
+                                            // if ([Constants.UPDATE_PROFILE].includes(child?.requestTypeId)) {
+                                            //     const updateField = JSON.parse(child?.updateField || '{}')
+                                            //     isWorkOutSideGroup = updateField?.UpdateField?.length === 1 && updateField?.UpdateField[0] === 'WorkOutside'
+                                            // }
                                             
                                             return (
                                                 <tr key={index}>
@@ -853,4 +878,4 @@ class TaskList extends React.Component {
     }
 }
 
-export default withTranslation()(TaskList)
+export default withTranslation()(withRouter(TaskList))
