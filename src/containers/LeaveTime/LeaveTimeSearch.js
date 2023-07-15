@@ -5,6 +5,7 @@ import moment from 'moment'
 import vi from 'date-fns/locale/vi'
 import { withTranslation } from "react-i18next"
 import { t } from 'i18next'
+import IconDatePicker from 'assets/img/icon/Icon_DatePicker.svg'
 registerLocale("vi", vi)
 
 class LeaveTimeSearch extends React.Component {
@@ -57,7 +58,7 @@ class LeaveTimeSearch extends React.Component {
                 dateFormat="dd/MM/yyyy"
                 locale="vi"
                 className="form-control form-control-lg input"/>
-                <span className="input-group-addon input-img"><i className="fas fa-calendar-alt"></i></span>
+              <span className="input-group-addon input-img"><img src={IconDatePicker} alt="Date" /></span>
               </label> 
           </div>
         </div>
@@ -76,7 +77,7 @@ class LeaveTimeSearch extends React.Component {
               dateFormat="dd/MM/yyyy"
               locale="vi"
               className="form-control form-control-lg input"/>
-            <span className="input-group-addon input-img"><i className="fas fa-calendar-alt"></i></span>
+            <span className="input-group-addon input-img"><img src={IconDatePicker} alt="Date" /></span>
             </label>
           </div>
         </div>

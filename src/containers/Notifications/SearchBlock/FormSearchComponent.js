@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
 import _ from 'lodash';
 import { useTranslation } from "react-i18next";
+import Constants from "commons/Constants";
 
 function FormSearchComponent(props) {
     const {t} = useTranslation();
@@ -8,7 +9,7 @@ function FormSearchComponent(props) {
         props.handler(query);
     }
   
-    const delayedQuery = useRef(_.debounce(q => sendQuery(q), 1000)).current;
+    const delayedQuery = useRef(_.debounce(q => sendQuery(q), Constants.TIME_DEBOUNCE_FOR_SEARCH)).current;
 
     const onChangeTextSearch = (e) => {
         delayedQuery(e.target.value);

@@ -176,24 +176,24 @@ class ApprovalDetail extends React.Component {
 
   processUserInfo = response => {
     if (response && response.data && response.data.requestInfo) {
-      const info = response.data.requestInfo;
-      const staff = info.staff;
-      const manager = info.manager;
+      const info = response?.data?.requestInfo;
+      const staff = info?.staff;
+      const manager = info?.manager;
       let managerToShow = null;
       if (manager) {
         managerToShow = {
-          code: manager.code,
-          fullName: manager.fullName,
-          title: manager.title,
-          department: manager.department
+          code: manager?.code,
+          fullName: manager?.fullName,
+          title: manager?.title,
+          department: manager?.department
         }
       }
       let userInfo = {
         staff: {
-          code: staff.code,
-          fullName: staff.fullName,
-          title: staff.title,
-          department: staff.department
+          code: staff?.code,
+          fullName: staff?.fullName,
+          title: staff?.title,
+          department: staff?.department
         },
         manager: managerToShow
       }

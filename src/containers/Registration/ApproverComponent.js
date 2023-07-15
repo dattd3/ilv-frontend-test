@@ -43,7 +43,7 @@ class ApproverComponent extends React.Component {
       isSearch: false,
       isSearching: false,
     }
-    this.onInputChange = debounce(this.getApproverInfo, 1000);
+    this.onInputChange = debounce(this.getApproverInfo, Constants.TIME_DEBOUNCE_FOR_SEARCH);
   }
 
   async componentDidMount() {
@@ -219,8 +219,8 @@ class ApproverComponent extends React.Component {
       control: (styles) => ({
         ...styles,
         cursor: 'pointer',
-        height: 35,
-        minHeight: 35
+        height: 38,
+        minHeight: 38
       })
     }
     const { t, isEdit, errors, recentlyApprover } = this.props;

@@ -68,7 +68,7 @@ function ShiftUpdateModal(props) {
     const [errors, SetErrors] = useState({})
 
     const sendQuery = (index, query, t) => {}
-    // const delayedQuery = useRef(_.debounce((i, q) => sendQuery(i, q), 800)).current
+    // const delayedQuery = useRef(_.debounce((i, q) => sendQuery(i, q), Constants.TIME_DEBOUNCE_FOR_SEARCH)).current
 
     const setShiftTimeFilter = shifts => {
         const shiftsExcludeOff = shifts.filter(item => item.shift_id !== Constants.SHIFT_CODE_OFF)

@@ -43,7 +43,7 @@ class AssesserComponent extends React.Component {
             isSearch: false,
             isSearching: false,
         }
-        this.onInputChange = debounce(this.getAppraiser, 600);
+        this.onInputChange = debounce(this.getAppraiser, Constants.TIME_DEBOUNCE_FOR_SEARCH);
     }
 
     async componentDidMount() {
@@ -167,8 +167,8 @@ class AssesserComponent extends React.Component {
             control: (styles) => ({
                 ...styles,
                 cursor: 'pointer',
-                height: 35,
-                minHeight: 35
+                height: 38,
+                minHeight: 38
             })
         }
         const { t, isEdit, errors, recentlyAppraiser, isShowDuplicateWarning = true } = this.props

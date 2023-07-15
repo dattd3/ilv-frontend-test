@@ -1,8 +1,9 @@
 import React from 'react'
 import DatePicker, {registerLocale} from 'react-datepicker'
 import { withTranslation } from "react-i18next"
-import 'react-datepicker/dist/react-datepicker.css'
 import moment from 'moment'
+import IconDatePicker from 'assets/img/icon/Icon_DatePicker.svg'
+import 'react-datepicker/dist/react-datepicker.css'
 import vi from 'date-fns/locale/vi'
 registerLocale("vi", vi)
 
@@ -59,7 +60,7 @@ class TimesheetSearch extends React.Component {
     const { t } = this.props;
     return <>
     <h5 className="content-page-header">{t("SelectTimesheetPeriod")}</h5>
-    <div className="timesheet-box shadow">
+    <div className="timesheet-box">
       <div className="row">
         <div className="col">
           <div className="title">{t("From")}</div>
@@ -75,7 +76,7 @@ class TimesheetSearch extends React.Component {
                 dateFormat="dd/MM/yyyy"
                 locale="vi"
                 className="form-control form-control-lg input"/>
-                <span className="input-group-addon input-img"><i className="fas fa-calendar-alt"></i></span>
+                <span className="input-group-addon input-img"><img src={IconDatePicker} alt="Date" /></span>
             </label>
           </div>
         </div>
@@ -94,7 +95,7 @@ class TimesheetSearch extends React.Component {
                 dateFormat="dd/MM/yyyy"
                 locale="vi"
                 className="form-control form-control-lg input"/>
-              <span className="input-group-addon input-img"><i className="fas fa-calendar-alt"></i></span>
+              <span className="input-group-addon input-img"><img src={IconDatePicker} alt="Date" /></span>
             </label>
           </div>
         </div>
