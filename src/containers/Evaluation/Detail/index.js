@@ -920,8 +920,8 @@ function EvaluationDetail(props) {
               : (
                 <>
                 {
-                  evaluationFormDetail?.reviewStreamCode !== processStep.level360 ? (
-                    <Evaluation360 />
+                  evaluationFormDetail?.reviewStreamCode === processStep.level360 ? (
+                    <Evaluation360 evaluationFormDetail={evaluationFormDetail} />
                   )
                   : (
                     <>
