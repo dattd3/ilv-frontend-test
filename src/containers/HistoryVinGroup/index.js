@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react"
-import $ from 'jquery'
+// import $ from 'jquery'
+import axios from 'axios'
 import { useTranslation } from "react-i18next"
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -13,6 +14,7 @@ function HistoryVinGroup(props) {
     const guard = useGuardStore()
     const user = guard.getCurentUser()
     const [isLoading, SetIsLoading] = useState(true)
+    const [htmlPdfView, setHtmlPdfView] = useState(null)
 
     useEffect(() => {
         setTimeout(() => { SetIsLoading(false) }, 800)
@@ -46,6 +48,7 @@ function HistoryVinGroup(props) {
         body.scrollIntoView({
             behavior: 'smooth'
         }, 800)
+        fetchData()
 
         // let curWin = window.top.document.getElementsByClassName('top-one')[0]
 
@@ -101,14 +104,20 @@ function HistoryVinGroup(props) {
         // innerDoc.getElementsByClassName("home-page")[0].remove()
         // innerDoc.getElementById("main-content").remove()
     }
+    const fetchData = async() => {
+      try {
+        const viewData = await axios.get(`https://online.flippingbook.com/view/211567232/1/`);
+        setHtmlPdfView(viewData.data?.replace("</head>", "<style>.logo-container{display:none!important;}</style></head>"))
+      } catch (error) {}
+    }
 
     return (
         <>
             <LoadingModal show={isLoading} />
             <div className="history-vingroup-page" id="history-vingroup-page">
-                <div className="hide-logo"></div>
-                <iframe id="myIframe" src="https://online.flippingbook.com/view/211567232/1/" allowFullScreen={true} className="myIframe"></iframe>
-                {/* <iframe id="myIframe" allowFullScreen={true} src="http://localhost:3000/" className="myIframe" onLoad={handelIframe}></iframe> */}
+                {/* <div className="hide-logo"></div> */}
+                {/* <iframe id="myIframe" src="https://online.flippingbook.com/view/211567232/1/" allowFullScreen={true} className="myIframe" onLoad={iFrameLoaded}></iframe> */}
+                <iframe id="myIframe" srcDoc={htmlPdfView} allowFullScreen={true} className="myIframe"></iframe>
             </div>
         </>
     )
