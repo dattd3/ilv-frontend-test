@@ -4756,6 +4756,23 @@ span.badge-notification[data-badge]::after {
 }
 
 .history-vingroup-page {
+  position: relative;
+  .hide-logo {
+    width: 119px;
+    height: 30px;
+    position: absolute;
+    bottom: 15px;
+    right: 10px;
+    background: url("./assets/img/bg-hide-logo-flippingbook.svg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    z-index: 99999999999;
+    @media all and (display-mode: fullscreen) {
+      bottom: 0px;
+      right: 0px;
+      position: fixed;
+    }
+  }
   iframe {
     border: none;
     width: 100%;
