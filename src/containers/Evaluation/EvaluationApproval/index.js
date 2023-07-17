@@ -21,6 +21,7 @@ import IconCollapse from '../../../assets/img/icon/pms/icon-collapse.svg'
 import IconSearch from '../../../assets/img/icon/Icon_Loop.svg'
 import IconReject from '../../../assets/img/icon/Icon_Cancel.svg'
 import IconApprove from '../../../assets/img/icon/Icon_Check.svg'
+import { processStep } from "../Detail/index"
 import 'react-datepicker/dist/react-datepicker.css'
 import vi from 'date-fns/locale/vi'
 registerLocale("vi", vi)
@@ -629,7 +630,8 @@ function EvaluationApproval(props) {
         isShow: false,
         evaluationFormId: null,
         formCode: null,
-        employeeCode: null
+        employeeCode: null,
+        isEvaluation360: false,
     })
     const [statusModal, SetStatusModal] = useState({isShow: false, isSuccess: true, content: "", needReload: true})
     const [paging, SetPaging] = useState({
@@ -943,15 +945,15 @@ function EvaluationApproval(props) {
         }
     }
 
-    const handleShowEvaluationDetail = (formCode, checkPhaseFormId, employeeCode) => {
-        // SetEvaluationDetailPopup({
-        //     ...evaluationDetailPopup,
-        //     isShow: true,
-        //     evaluationFormId: checkPhaseFormId,
-        //     formCode: formCode,
-        //     employeeCode: employeeCode 
-        // })
-        history.push(`/evaluations/${checkPhaseFormId}/${formCode}`)
+    const handleShowEvaluationDetail = (formCode, checkPhaseFormId, employeeCode, reviewStreamCode) => {
+        SetEvaluationDetailPopup({
+            ...evaluationDetailPopup,
+            isShow: true,
+            evaluationFormId: checkPhaseFormId,
+            formCode: formCode,
+            employeeCode: employeeCode,
+            isEvaluation360: reviewStreamCode === processStep.level360
+        })
     }
 
     const onHideEvaluationDetailModal = (statusModalFromChild, keepPopupEvaluationDetail = false) => {
@@ -961,7 +963,8 @@ function EvaluationApproval(props) {
                 isShow: false,
                 evaluationFormId: null,
                 formCode: null,
-                employeeCode: null
+                employeeCode: null,
+                isEvaluation360: false,
             })
         }
 
@@ -1099,6 +1102,7 @@ function EvaluationApproval(props) {
             evaluationFormId={evaluationDetailPopup.evaluationFormId} 
             formCode={evaluationDetailPopup.formCode} 
             employeeCode={evaluationDetailPopup.employeeCode} 
+            isEvaluation360={evaluationDetailPopup?.isEvaluation360}
             onHide={onHideEvaluationDetailModal} />
         <div className="evaluation-approval-page">
             <h1 className="content-page-header">{t("EvaluationLabel")}</h1>
@@ -1145,7 +1149,7 @@ function EvaluationApproval(props) {
                                 <tbody>
                                     {
                                         evaluationData?.data.map((item, index) => {
-                                            return <tr key={index} role='button' onClick={() => handleShowEvaluationDetail(item?.formCode, item?.checkPhaseFormId, item?.employeeCode)}>
+                                            return <tr key={index} role='button' onClick={() => handleShowEvaluationDetail(item?.formCode, item?.checkPhaseFormId, item?.employeeCode, item?.reviewStreamCode)}>
                                                         <td className="c-form-code"><div className="form-code">{item?.formCode || ''}</div></td>
                                                         <td className="c-form-sender">
                                                             <div className="form-sender">{item?.poolUser?.fullname || ''}</div>

@@ -34,124 +34,6 @@ const processStep = {
   twoLevels: '2NF',
 }
 
-function EvaluationOverall(props) {
-  const { t } = useTranslation();
-  const { evaluationFormDetail, showByManager } = props;
-  const isOffLineType = evaluationFormDetail?.formType === 'OFF';
-  const totalCompleted = showByManager ? evaluationFormDetail?.leadReviewTotalComplete || 0 : evaluationFormDetail?.seftTotalComplete || 0;
-  const isDifferentZeroLevel = evaluationFormDetail.reviewStreamCode !== processStep.zeroLevel;
-
-  const overallData = {
-    datasets: [
-      {
-        data: [evaluationFormDetail?.totalTarget - totalCompleted, totalCompleted],
-        backgroundColor: ["#DEE2E6", "#7AD731"],
-        hoverBackgroundColor: ["#DEE2E6", "#7AD731"],
-        borderWidth: 0
-      }
-    ]
-  }
-
-  const chartOption = {
-    responsive: true,
-    aspectRatio: 1,
-    tooltips: { enabled: false },
-    hover: { mode: null },
-    cutoutPercentage: 75,
-    plugins: {
-      report: `${formatEvaluationNumber((totalCompleted / evaluationFormDetail?.totalTarget * 100))}%`
-    }
-  }
-  
-  return <div className="block-overall">
-    <div className="card shadow card-completed" style={isOffLineType ? { display: 'none' } : {}} >
-      <h6 className="text-center text-uppercase chart-title">{t("EvaluationDetailAccomplished")}: <span className="font-weight-bold">{totalCompleted || 0}/{evaluationFormDetail?.totalTarget}</span></h6>
-      <div className="chart">
-        <div className="detail">
-          <div className="result">
-            <Doughnut
-              data={overallData}
-              options={chartOption}
-              width={138}
-              height={138}
-              plugins={
-                [{
-                  beforeDraw: function (chart, args, options) {
-                    const width = chart.width,
-                      height = chart.height,
-                      ctx = chart.ctx;
-                    ctx.restore()
-                    // const fontSize = (height / 160).toFixed(2)
-                    ctx.font = `normal normal bold 1.2em arial`
-                    ctx.textBaseline = "top"
-                    const text = chart?.options?.plugins?.report,
-                      textX = Math.round((width - ctx.measureText(text).width) / 2),
-                      textY = height / 2;
-                    ctx.fillText(text, textX, textY)
-                    ctx.save()
-                  }
-                }]
-              }
-            />
-          </div>
-        </div>
-      </div>
-    </div>
-    <div className="card shadow card-overall">
-      <h6 className="text-center text-uppercase font-weight-bold chart-title">{t("EvaluationDetailOverallScore")}</h6>
-      <div className="chart">
-        <div className="detail">
-          {(evaluationFormDetail?.status == evaluationStatus.launch ||
-            (evaluationFormDetail?.status ==
-              evaluationStatus.selfAssessment &&
-              !showByManager) ||
-            evaluationFormDetail?.reviewStreamCode ===
-              processStep.zeroLevel) &&
-          !isOffLineType
-            ? formatEvaluationNumber(evaluationFormDetail?.totalSeftPoint)
-            : formatEvaluationNumber(
-                evaluationFormDetail?.totalLeadReviewPoint
-              )}
-        </div>
-      </div>
-    </div>
-    <div className="card shadow card-detail">
-      <table className='table-list-evaluation'>
-        <thead>
-          <tr className="highlight">
-            <th className='c-criteria'><div className='criteria'>{t("EvaluationDetailCriteria")}</div></th>
-            <th className='c-self-assessment text-center'><div className='self-assessment'>{t("EvaluationDetailSelfAssessment")}</div></th>
-            {isDifferentZeroLevel && <th className='c-manager-assessment text-center'><div className='manager-assessment color-red'>{t("EvaluationDetailManagerAssessment")}</div></th>}
-          </tr>
-        </thead>
-        <tbody>
-          {
-            (evaluationFormDetail?.listGroup || []).map((item, i) => {
-              return <tr key={i}>
-                <td className='c-criteria'><div className='criteria'>{JSON.parse(item?.groupName || '{}')[languageCodeMapping[currentLocale]]}</div></td>
-                <td className='c-self-assessment text-center'>{(item?.groupSeftPoint || 0).toFixed(2)}</td>
-                {isDifferentZeroLevel && <td className='c-manager-assessment text-center color-red'>{(item?.groupLeadReviewPoint || 0).toFixed(2)}</td>}
-              </tr>
-            })
-          }
-          {/* Row điểm tổng thể */}
-          <tr className="highlight">
-            <td className='c-criteria'><div className='font-weight-bold text-uppercase criteria'>{t("EvaluationDetailOverallScore")}</div></td>
-            <td className='c-self-assessment text-center font-weight-bold'>{(evaluationFormDetail?.totalSeftPoint || 0).toFixed(2)}</td>
-            {isDifferentZeroLevel && <td className='c-manager-assessment text-center font-weight-bold color-red'>{(evaluationFormDetail?.totalLeadReviewPoint || 0).toFixed(2)}</td>}
-          </tr>
-          {/* {
-            isVinBusByCompanyCode(evaluationFormDetail?.companyCode) &&
-            <tr>
-              <td colSpan={3} className='text-uppercase text-center'><div className="d-flex justify-content-center align-items-center">Xếp hạng đánh giá: <span style={{ fontWeight: 'bold', color: '#C11D2A', fontSize: 20, marginLeft: 3, marginTop: -1}}>{evaluationFormDetail?.evaluateRating || ''}</span></div></td>
-            </tr>
-          } */}
-        </tbody>
-      </table>
-    </div>
-  </div>
-}
-
 function EvaluationProcess(props) {
   const { t } = useTranslation();
   const { evaluationFormDetail, showByManager, errors, updateData } = props;
@@ -332,7 +214,7 @@ function EvaluationProcess(props) {
   </div>
 }
 
-function Evaluation360(props) {
+const Evaluation360 = (props) => {
   const { t } = useTranslation();
   const [errors, SetErrors] = useState({});
   const [bottom, setBottom] = useState(false);
@@ -343,9 +225,7 @@ function Evaluation360(props) {
   const guard = useGuardStore();
   const user = guard.getCurentUser();
   const isOffLineType = evaluationFormDetail?.formType === 'OFF';
-  const { showByManager, updateParent } = props;
-  const formCode = showByManager ? props?.formCode : props.match.params.formCode;
-  const evaluationFormId = showByManager ? props?.evaluationFormId : props.match.params.id;
+  const { showByManager, evaluationFormId, formCode, employeeCode, isEvaluation360, updateParent } = props
 
   useEffect(() => {
     const processEvaluationFormDetailData = response => {
@@ -356,18 +236,7 @@ function Evaluation360(props) {
           if (evaluationFormDetailTemp.listGroup) {
             evaluationFormDetailTemp.listGroup = ([...evaluationFormDetailTemp?.listGroup] || []).sort((pre, next) => pre?.groupOrder - next?.groupOrder)
           }
-
-          // const totalQuestionsAnswered = (evaluationFormDetailTemp?.listGroup || []).reduce((initial, current) => {
-          //     let questionsAnswered = (current?.listTarget || []).reduce((subInitial, subCurrent) => {
-          //         subInitial += subCurrent?.seftPoint ? 1 : 0
-          //         return subInitial
-          //     }, 0)
-          //     initial += questionsAnswered
-          //     return initial
-          // }, 0)
-          // evaluationFormDetailTemp.totalComplete = totalQuestionsAnswered
           SetEvaluationFormDetail(evaluationFormDetailTemp)
-          // SetEvaluationFormDetail(testEvaluationData)
           setDataLoaded(true)
         }
       }
@@ -380,7 +249,8 @@ function Evaluation360(props) {
         config.params = {
           checkPhaseFormId: evaluationFormId,
           EmployeeCode: showByManager ? props.employeeCode : user?.employeeNo,
-          FormCode: formCode
+          FormCode: formCode,
+          UserName: user?.ad,
         }
         const response = await axios.get(`${process.env.REACT_APP_HRDX_PMS_URL}api/targetform/formbyuser`, config)
         processEvaluationFormDetailData(response)
