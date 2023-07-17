@@ -16,7 +16,7 @@ export const Navigation = [
     id: 123456789,
     parentId: 0,
     icon: "c-vingroup-history",
-    label: "Sử ký VIN30",
+    label: "Vin30Chronicles",
     to: map.HistoryVingroup,
     role: "U",
   },
