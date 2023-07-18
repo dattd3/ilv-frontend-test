@@ -5,22 +5,24 @@ const evaluationStatus = {
     qlttAssessment: 4,
     cbldApproved: 5,
 }
+const evaluation360Status = {
+    waitingEvaluation: 3,
+    evaluated: 4,
+    completed: 5,
+}
 const actionButton = {
     save: 1,
     approve: 2,
     reject: 3
 }
-
 const formType = {
     MANAGER: 'LD',
     EMPLOYEE: 'NV',
 }
-
 const groupConfig = {
     ATTITUDE: 'G1',
     WORKING_PERFORMANCE_RESULT: 'G2',
 }
-
 const formulaConfig = {
     CT1: 'VINBUS_CT1',
     CT2: 'VINBUS_CT2',
@@ -28,4 +30,4 @@ const formulaConfig = {
     CT4: 'VINBUS_CT4',
 }
 
-export { evaluationStatus, actionButton, formType, groupConfig, formulaConfig }
+export { evaluationStatus, evaluation360Status, actionButton, formType, groupConfig, formulaConfig }
