@@ -1879,5 +1879,8 @@
   "StartDateEndDateRequired": "(*) Vui lòng nhập Ngày bắt đầu và Ngày kết thúc!",
   "InvalidDataPleaseCheckAgain": "Dữ liệu không hợp lệ. Vui lòng kiểm tra lại!",
   "PreviousDay": "Ngày trước đó",
-  "InvalidDatePeriod": "Ngày kết thúc của Công ty không được nhỏ hơn Ngày kết thúc của các quá trình!"
+  "InvalidDatePeriod": "Ngày kết thúc của Công ty không được nhỏ hơn Ngày kết thúc của các quá trình!",
+  "WaitingForEvaluation": "Chờ đánh giá",
+  "Evaluated": "Đã đánh giá",
+  "EmployeeInformationIsEvaluated": "Thông tin nhân viên được đánh giá"
 }
