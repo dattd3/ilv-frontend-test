@@ -251,24 +251,25 @@ const VinGroup = ({ evaluationFormDetail, isEdit, showByManager, evaluationStatu
                 let isAttitudeBlock = item?.listGroupConfig && item?.listGroupConfig?.length > 0
                 const isDisableEmployeeComment = isEdit ? (showByManager || evaluationFormDetail.status != evaluationStatus.launch) : true
                 const isDisableManagerComment = isEdit ? (!showByManager || (showByManager && Number(evaluationFormDetail.status) >= Number(evaluationStatus.qlttAssessment))) : true
+                const isVinBus = evaluationFormDetail?.companyCode === Constants.pnlVCode.VinBus
 
                 return <div className={`part-block ${isAttitudeBlock ? 'attitude' : 'work-result'}`} key={index}>
                 <div className="title">{`${t("EvaluationDetailPart")} ${indexText} - ${JSON.parse(item?.groupName || '{}')[languageCodeMapping[currentLocale]]}`} <span className="red">({item?.groupWeight || 0}%)</span></div>
                 {
                     isAttitudeBlock &&
                     <div className="wrap-score-table">
-                    <table>
+                    <table className={isVinBus ? 'vin-bus' : 'vin-group'}>
                         <thead>
                         <tr>
-                            <th className="red">{t("EvaluationDetailPartAttitudeScore")}</th>
+                            <th className="red first">{t("EvaluationDetailPartAttitudeScore")}</th>
                             {
                             item?.listGroupConfig?.map((sub, subIndex) => {
-                                return <th key={subIndex}><span className="milestones">{subIndex + 1}</span></th>
+                                return <th key={subIndex}><span className="milestones"><span>{subIndex + 1}</span></span></th>
                             })
                             }
                         </tr>
                         <tr>
-                            <th>%</th>
+                            <th className="first">%</th>
                             {
                             item?.listGroupConfig?.map((sub, subIndex) => {
                                 return <th key={subIndex}><span>{sub?.weight}</span></th>
@@ -278,10 +279,16 @@ const VinGroup = ({ evaluationFormDetail, isEdit, showByManager, evaluationStatu
                         </thead>
                         <tbody>
                         <tr>
-                            <td className="font-weight-bold">{t("EvaluationDetailPartAttitudeLevelExpression")}</td>
+                            <td className="font-weight-bold text-center align-middle first">{t("EvaluationDetailPartAttitudeLevelExpression")}</td>
                             {
                             item?.listGroupConfig?.map((sub, subIndex) => {
-                                return <td key={subIndex}><div>{JSON.parse(sub?.description || '{}')[languageCodeMapping[currentLocale]]}</div></td>
+                                return (
+                                    <td key={subIndex}>
+                                        <div className="content" dangerouslySetInnerHTML={{
+                                            __html: purify.sanitize(JSON.parse(sub?.description || '{}')[languageCodeMapping[currentLocale]]),
+                                        }} />
+                                    </td>
+                                )
                             })
                             }
                         </tr>
