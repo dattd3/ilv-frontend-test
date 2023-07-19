@@ -1873,5 +1873,6 @@
   "RelationSelf": "Self",
   "YourRelationshipWithEvaluatee": "Your relationship with Evaluatee",
   "RequiredYourRelationshipWithEvaluatee": "Please select your relationship with Evaluatee!",
-  "RequiredEvaluationScore": "Please enter evaluation score!"
+  "RequiredEvaluationScore": "Please enter evaluation score!",
+  "Evaluation360ButtonSend": "Send"
 }

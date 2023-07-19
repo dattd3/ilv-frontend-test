@@ -1890,5 +1890,6 @@
   "RelationSelf": "Bản thân",
   "YourRelationshipWithEvaluatee": "Quan hệ của bạn với Người được đánh giá",
   "RequiredYourRelationshipWithEvaluatee": "Vui lòng chọn Quan hệ của bạn với Người được đánh giá!",
-  "RequiredEvaluationScore": "Vui lòng nhập điểm đánh giá!"
+  "RequiredEvaluationScore": "Vui lòng nhập điểm đánh giá!",
+  "Evaluation360ButtonSend": "Gửi"
 }

@@ -967,13 +967,15 @@ function EvaluationApproval(props) {
             })
         }
 
-        SetStatusModal({
-            ...statusModal,
-            isShow: statusModalFromChild?.isShow,
-            isSuccess: statusModalFromChild?.isSuccess,
-            content: statusModalFromChild?.content,
-            needReload: keepPopupEvaluationDetail ? false : true
-        })
+        if (statusModalFromChild) {
+            SetStatusModal({
+                ...statusModal,
+                isShow: statusModalFromChild?.isShow,
+                isSuccess: statusModalFromChild?.isSuccess,
+                content: statusModalFromChild?.content,
+                needReload: keepPopupEvaluationDetail ? false : true
+            })
+        }
     }
 
     const isAllEvaluationFormSelected = (data) => {
