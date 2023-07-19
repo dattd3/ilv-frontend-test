@@ -1,6 +1,6 @@
 import React from "react";
 import { Modal } from 'react-bootstrap'
-import EvaluationDetail from './Detail'
+import EvaluationDetail from './Detail/index'
 import Evaluation360 from "./Detail/Evaluation360"
 
 function EvaluationDetailModal(props) {

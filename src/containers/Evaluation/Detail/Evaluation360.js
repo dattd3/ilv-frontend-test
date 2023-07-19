@@ -5,7 +5,7 @@ import Select from 'react-select'
 import axios from 'axios'
 import _ from 'lodash'
 import Constants from '../../../commons/Constants'
-import { getRequestConfigurations } from '../../../commons/Utils'
+import { getRequestConfigurations, exportToPDF } from '../../../commons/Utils'
 import { evaluation360Status, stepEvaluation360Config } from '../Constants'
 import { useGuardStore } from '../../../modules'
 import LoadingModal from '../../../components/Common/LoadingModal'
@@ -15,7 +15,7 @@ import Evaluation360VinGroupTemplate from '../Templates/Template360/Vingroup'
 import IconArrowRightWhite from '../../../assets/img/icon/pms/arrow-right-white.svg'
 import IconArrowRightGray from '../../../assets/img/icon/pms/arrow-right-gray.svg'
 import IconDownload from '../../../assets/img/icon/Icon_download_red.svg'
-import IconApprove from '../../../assets/img/icon/Icon_Check.svg'
+import IconSend from '../../../assets/img/icon/Icon_send.svg'
 
 const currentLocale = localStorage.getItem("locale")
 const companyThemeColor = localStorage.getItem("companyThemeColor")
@@ -228,6 +228,10 @@ const Evaluation360 = ({ evaluationFormId, formCode, employeeCode }) => {
   }
 
   const renderEmployeeInfos = () => {
+    const isCompleted = evaluationFormDetail?.status == evaluation360Status.completed
+    const isDisableInput = !evaluationFormDetail?.isEdit || isCompleted
+    const relationOption = relations.find(item => item.value === evaluationFormDetail?.relation)
+
     return (
       <div className="employee-info">
         <div className="title">{t("EmployeeInformationIsEvaluated")}</div>
@@ -264,21 +268,36 @@ const Evaluation360 = ({ evaluationFormId, formCode, employeeCode }) => {
         <div className="detail align-items-start">
           <div className="left" style={{ paddingTop: 10 }}>{t("YourRelationshipWithEvaluatee")} :</div>
           <div className="right">
-            <Select
-              value={relations.find(item => item.value === evaluationFormDetail?.relation)}
-              onChange={relation => handleInputChange(null, 'relation', relation)}
-              isClearable={true} 
-              placeholder={t('Select')} 
-              options={relations}
-              styles={{
-                menu: provided => ({ ...provided, zIndex: 2 })
-              }}
-              isDisabled={!evaluationFormDetail?.isEdit || evaluationFormDetail?.status == evaluation360Status.completed}
-            />
+            {
+              isCompleted
+              ? (<div className="relation-label">{relationOption?.label}</div>)
+              : (
+                <Select
+                  value={relationOption}
+                  onChange={relation => handleInputChange(null, 'relation', relation)}
+                  isClearable={true} 
+                  placeholder={t('Select')} 
+                  options={relations}
+                  styles={{
+                    menu: provided => ({ ...provided, zIndex: 2 })
+                  }}
+                  isDisabled={isDisableInput}
+                />
+              )
+            }
           </div>
         </div>
       </div>
     )
+  }
+
+  const exportToPdfFile = () => {
+    document.getElementById('btn-export').style.visibility = 'hidden'
+    document.getElementById('button-block').style.visibility = 'hidden'
+    const elementView = document.getElementById('evaluation-360')
+    exportToPDF(elementView, evaluationFormDetail?.checkPhaseFormName)
+    document.getElementById('btn-export').style.visibility = 'visible'
+    document.getElementById('button-block').style.visibility = 'visible'
   }
 
   return (
@@ -290,10 +309,10 @@ const Evaluation360 = ({ evaluationFormId, formCode, employeeCode }) => {
         content={statusModal.content} 
         className="evaluation-status-modal"
         onHide={onHideStatusModal} />
-      <div className="evaluation-360">
+      <div className="evaluation-360" id="evaluation-360">
         <div className="header-block">
           <h1 className="content-page-header">{evaluationFormDetail?.checkPhaseFormName}</h1>
-          <button className="btn-export">
+          <button className="btn-export" onClick={exportToPdfFile} id="btn-export">
             <img src={IconDownload} alt="Download" />
             <span>{t("DownloadPDF")}</span>
           </button>
@@ -316,8 +335,8 @@ const Evaluation360 = ({ evaluationFormId, formCode, employeeCode }) => {
         </div>
         {
           evaluationFormDetail?.status != evaluation360Status.completed && evaluationFormDetail?.isEdit && (
-            <div className="button-block">
-              <button className="btn-action confirm" onClick={handleSubmit}><Image src={IconApprove} alt="Confirm" />{t("EvaluationDetailPartConfirm")}</button>
+            <div className="button-block" id="button-block">
+              <button className="btn-action confirm" onClick={handleSubmit}><Image src={IconSend} alt="Send" />{t("Evaluation360ButtonSend")}</button>
             </div>
           )
         }
@@ -326,7 +345,7 @@ const Evaluation360 = ({ evaluationFormId, formCode, employeeCode }) => {
         !bottom && evaluationFormDetail?.status != evaluation360Status.completed && evaluationFormDetail?.isEdit && (
           <div className="scroll-to-save" style={{ color: companyThemeColor, zIndex: '10' }}>
             <div>
-              <button className="btn-action save" onClick={handleSubmit}><Image src={IconApprove} alt="Save" />{t("EvaluationDetailPartSave")}</button>
+              <button className="btn-action save" onClick={handleSubmit}><Image src={IconSend} alt="Send" />{t("Evaluation360ButtonSend")}</button>
             </div>
           </div>
         )
