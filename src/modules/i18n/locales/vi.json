@@ -1880,5 +1880,15 @@
   "InvalidDataPleaseCheckAgain": "Dữ liệu không hợp lệ. Vui lòng kiểm tra lại!",
   "PreviousDay": "Ngày trước đó",
   "InvalidDatePeriod": "Ngày kết thúc của Công ty không được nhỏ hơn Ngày kết thúc của các quá trình!",
-  "Vin30Chronicles": "Sử ký VIN30"
+  "Vin30Chronicles": "Sử ký VIN30",
+  "WaitingForEvaluation": "Chờ đánh giá",
+  "Evaluated": "Đã đánh giá",
+  "EmployeeInformationIsEvaluated": "Thông tin nhân viên được đánh giá",
+  "RelationManager": "CBLĐ cấp trên",
+  "RelationPeer": "Đồng nghiệp",
+  "RelationStaff": "Cán bộ cấp dưới",
+  "RelationSelf": "Bản thân",
+  "YourRelationshipWithEvaluatee": "Quan hệ của bạn với Người được đánh giá",
+  "RequiredYourRelationshipWithEvaluatee": "Vui lòng chọn Quan hệ của bạn với Người được đánh giá!",
+  "RequiredEvaluationScore": "Vui lòng nhập điểm đánh giá!"
 }

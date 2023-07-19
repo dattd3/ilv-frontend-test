@@ -2,11 +2,12 @@ import React, { useState, useEffect, useRef, Fragment } from "react"
 import Select from 'react-select'
 import { Image, Tabs, Tab, Form, Button, Modal, Row, Col, Collapse } from 'react-bootstrap'
 import DatePicker, { registerLocale } from 'react-datepicker'
+import { useHistory } from "react-router"
 import { useTranslation } from "react-i18next"
 import moment from 'moment'
 import axios from 'axios'
 import _ from 'lodash'
-import { evaluationStatus, actionButton } from '../Constants'
+import { evaluationStatus, actionButton, processStep, stepEvaluation360Config } from '../Constants'
 import Constants from '../../../commons/Constants'
 import { getRequestConfigurations, getMuleSoftHeaderConfigurations } from '../../../commons/Utils'
 import LoadingModal from '../../../components/Common/LoadingModal'
@@ -621,13 +622,15 @@ const usePrevious = (value) => {
 
 function EvaluationApproval(props) {
     const { t } = useTranslation()
+    const history = useHistory()
     const [isLoading, SetIsLoading] = useState(false)
     const [isSelectedAll, SetIsSelectedAll] = useState(false)
     const [evaluationDetailPopup, SetEvaluationDetailPopup] = useState({
         isShow: false,
         evaluationFormId: null,
         formCode: null,
-        employeeCode: null
+        employeeCode: null,
+        isEvaluation360: false,
     })
     const [statusModal, SetStatusModal] = useState({isShow: false, isSuccess: true, content: "", needReload: true})
     const [paging, SetPaging] = useState({
@@ -941,13 +944,14 @@ function EvaluationApproval(props) {
         }
     }
 
-    const handleShowEvaluationDetailPopup = (formCode, checkPhaseFormId, employeeCode) => {
+    const handleShowEvaluationDetail = (formCode, checkPhaseFormId, employeeCode, reviewStreamCode) => {
         SetEvaluationDetailPopup({
             ...evaluationDetailPopup,
             isShow: true,
             evaluationFormId: checkPhaseFormId,
             formCode: formCode,
-            employeeCode: employeeCode
+            employeeCode: employeeCode,
+            isEvaluation360: reviewStreamCode === processStep.level360
         })
     }
 
@@ -958,7 +962,8 @@ function EvaluationApproval(props) {
                 isShow: false,
                 evaluationFormId: null,
                 formCode: null,
-                employeeCode: null
+                employeeCode: null,
+                isEvaluation360: false,
             })
         }
 
@@ -1087,6 +1092,13 @@ function EvaluationApproval(props) {
         SetPaging(pagingTemp)
     }
 
+    const stepEvaluation360 = stepEvaluation360Config.map(item => {
+        return {
+          ...item,
+          label: t(item?.label)
+        }
+    })
+
     return (
         <>
         <LoadingModal show={isLoading} />
@@ -1096,6 +1108,7 @@ function EvaluationApproval(props) {
             evaluationFormId={evaluationDetailPopup.evaluationFormId} 
             formCode={evaluationDetailPopup.formCode} 
             employeeCode={evaluationDetailPopup.employeeCode} 
+            isEvaluation360={evaluationDetailPopup?.isEvaluation360}
             onHide={onHideEvaluationDetailModal} />
         <div className="evaluation-approval-page">
             <h1 className="content-page-header">{t("EvaluationLabel")}</h1>
@@ -1142,7 +1155,13 @@ function EvaluationApproval(props) {
                                 <tbody>
                                     {
                                         evaluationData?.data.map((item, index) => {
-                                            return <tr key={index} role='button' onClick={() => handleShowEvaluationDetailPopup(item?.formCode, item?.checkPhaseFormId, item?.employeeCode)}>
+                                            let isEvaluation360 = item?.reviewStreamCode === processStep.level360
+                                            let currentStep = isEvaluation360
+                                            ? stepEvaluation360.find(se => se.value == item?.status)?.label
+                                            : currentSteps.find(step => step?.value == item?.status)?.label
+                                            let sendDate = isEvaluation360 ? (item?.runFormDate && moment(item?.runFormDate).format('DD/MM/YYYY')) : (item?.sendDateLv1 && moment(item?.sendDateLv1).format('DD/MM/YYYY'))
+
+                                            return <tr key={index} role='button' onClick={() => handleShowEvaluationDetail(item?.formCode, item?.checkPhaseFormId, item?.employeeCode, item?.reviewStreamCode)}>
                                                         <td className="c-form-code"><div className="form-code">{item?.formCode || ''}</div></td>
                                                         <td className="c-form-sender">
                                                             <div className="form-sender">{item?.poolUser?.fullname || ''}</div>
@@ -1151,9 +1170,9 @@ function EvaluationApproval(props) {
                                                         <td className="c-form-name">
                                                             <div className="form-name">{item?.checkPhaseFormName || ''}</div>
                                                         </td>
-                                                        <td className="c-sent-date"><div className="sent-date">{item?.sendDateLv1 && moment(item?.sendDateLv1).format('DD/MM/YYYY')}</div></td>
+                                                        <td className="c-sent-date"><div className="sent-date">{sendDate}</div></td>
                                                         <td className="c-status"><div className={`status ${item?.status == statusDone ? 'done' : 'in-progress'}`}>{item?.status == statusDone ? t("EvaluationDetailCompleted") : t("EvaluationInProgress")}</div></td>
-                                                        <td className="c-current-step"><div className="current-step">{currentSteps.find(step => step?.value == item?.status)?.label}</div></td>
+                                                        <td className="c-current-step"><div className="current-step">{currentStep}</div></td>
                                                     </tr>
                                         })
                                     }

@@ -344,7 +344,7 @@
                         text-transform: unset;
                         background: none;
                         padding-left: 0;
-                        white-space: pre;
+                        white-space: pre-line;
                     }
                     .sub-title {
                       font-weight: 500;
@@ -2648,6 +2648,295 @@
                     margin-top: 10px;
                     .button-block {
                         margin: 10px 0 0 0;
+                    }
+                }
+                .evaluation-360 {
+                    // .button-block {
+                    //     margin: 10px 0 0 0;
+                    // }
+                    font-size: 14px;
+                    color: #000000;
+                    margin-top: 15px;
+                    .header-block {
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-between;
+                        .content-page-header {
+                            margin: 0;
+                        }
+                        .btn-export {
+                            background: #FFFFFF;
+                            color: #FF2116;
+                            border: 1px solid #FF2116;
+                            border-radius: 4px ;
+                            padding: 5px 20px;
+                            display: inline-flex;
+                            align-items: center;
+                            span {
+                                margin-left: 5px;
+                            }
+                        }
+                    }
+                    .evaluation-process {
+                        margin: 15px 0;
+                        padding: 15px;
+                        .red {
+                            color: #C11D2A;
+                        }
+                        .title {
+                            font-weight: bold;
+                            text-transform: uppercase;
+                        }
+                        .step-block {
+                            display: flex;
+                            align-items: center;
+                            padding: 10px 0 0 0;
+                            border-bottom: 1px solid #DEE2E6;
+                            .wrap-item {
+                                display: flex;
+                                align-items: center;
+                                .line {
+                                    width: 25px;
+                                    padding-bottom: 10px;
+                                    & > hr {
+                                        height: 1px;
+                                        border: none;
+                                        border-bottom: 1px solid #A7A7A7;
+                                    }
+                                }
+                                &:first-child {
+                                    .line {
+                                        display: none;
+                                    }
+                                }
+                                .info {
+                                    padding-bottom: 10px;
+                                    .item {
+                                        background: #F2F2F2;
+                                        color: #414141;
+                                        padding: 8px 10px;
+                                        display: flex;
+                                        align-items: center;
+                                        border-radius: 5px;
+                                        .no {
+                                            border: 1px solid #A7A7A7;
+                                            color: #A7A7A7 ;
+                                            display: inline-flex;
+                                            width: 20px;
+                                            height: 20px;
+                                            align-items: center;
+                                            justify-content: center;
+                                            border-radius: 4px;
+                                            transform: rotate(45deg);
+                                            & > span {
+                                                transform: rotate(-45deg);
+                                            }
+                                        }
+                                        .name {
+                                            margin: 0 15px;
+                                        }
+                                        .next {
+                                            height: 18px;
+                                        }
+                                    }
+                                    &.active {
+                                        border-bottom: 1px solid #347EF9;
+                                        .item {
+                                            background: #347EF9;
+                                            color: #FFFFFF;
+                                            .no {
+                                                background: #FFFFFF;
+                                                border: 1px solid #FFFFFF;
+                                                color: #347EF9;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        .employee-info-block {
+                            padding: 15px 0 5px 0;
+                            .employee-info {
+                                border: 1px solid #DEE2E6;
+                                border-radius: 4px;
+                                .title {
+                                    border-bottom: 1px solid #DEE2E6;
+                                    height: 30px;
+                                    display: flex;
+                                    align-items: center;
+                                    padding: 0 10px;
+                                    margin-left: 0;
+                                    margin-right: 0;
+                                    background: #F3F3F3;
+                                    border-top-left-radius: 4px;
+                                    border-top-right-radius: 4px;
+                                }
+                                .detail {
+                                    display: flex;
+                                    align-items: center;
+                                    padding: 10px 10px;
+                                    .info-item {
+                                        display: flex;
+                                        align-items: center;
+                                        padding: 4px 0;
+                                        .label {
+                                            flex: 0 0 130px;
+                                            display: flex;
+                                            align-items: center;
+                                            justify-content: space-between;
+                                        }
+                                        .value {
+                                            flex: 1 1;
+                                            padding: 0 0 0 10px;
+                                        }
+                                    }
+                                    .left {
+                                        flex: 0 0 40%;
+                                    }
+                                    .right {
+                                        flex: 1 1;
+                                    }
+                                }
+                            }
+                        }
+                        .part-block {
+                            margin: 10px 0 0 0;
+                            border: 1px solid #DEE2E6;
+                            border-radius: 4px;
+                            .title {
+                                display: flex;
+                                align-items: center;
+                                padding: 5px 10px;
+                                background: #F3F3F3;
+                                margin-left: 0;
+                                margin-right: 0;
+                                border-top-left-radius: 4px;
+                                border-top-right-radius: 4px;
+                                & > span {
+                                    margin-left: 5px;
+                                }
+                            }
+                            .invalid-message {
+                                margin: 8px 0 0 0;
+                                padding: 3px 6px;
+                                font-size: 12px;
+                                border-radius: 4px;
+                                font-style: italic;
+                            }
+                            .list-evaluation {
+                                padding: 0 15px;
+                                .evaluation-item {
+                                    padding: 15px 0;
+                                    border-top: 1px solid #DEE2E6;
+                                    &:first-child {
+                                        border: none;
+                                    }
+                                    .title {
+                                        text-transform: unset;
+                                        background: none;
+                                        padding-left: 0;
+                                        white-space: pre-line;
+                                        padding: 0;
+                                    }
+                                    .matrix-info {
+                                        margin-bottom: 15px;
+                                        white-space: pre-line;
+                                    }
+                                    .sub-title {
+                                        font-weight: 500;
+                                        margin-bottom: 10px;
+                                    }
+                                    .score {
+                                        padding: 15px 0;
+                                        .item {
+                                            display: flex;
+                                            align-items: center;
+                                            span.label {
+                                                margin-right: 20px;
+                                                color: #C11D2A;
+                                            }
+                                            select {
+                                                border: 1px solid #DEE2E6;
+                                                border-radius: 5px;
+                                                cursor: pointer;
+                                                height: 35px;
+                                                width: 110px;
+                                                padding: 5px;
+                                                option {
+                                                    padding: 8px 5px;
+                                                }
+                                                &:focus-visible {
+                                                    outline: none;
+                                                    border: 1px solid #DEE2E6;
+                                                }
+                                            }
+                                        }
+                                    }
+                                    .comment {
+                                        margin-left: 0;
+                                        margin-right: 0;
+                                        font-style: normal;
+                                        p {
+                                            margin-bottom: 8px;
+                                        }
+                                        .comment-content {
+                                            width: 100%;
+                                            border: 1px solid #dee2e6;
+                                            padding: 5px 10px;
+                                            border-radius: 4px;
+                                            background: #f2f2f2;
+                                            min-height: 33px;
+                                        }
+                                        textarea {
+                                            width: 100%;
+                                            border: 1px solid #DEE2E6;
+                                            padding: 5px 10px;
+                                            border-radius: 5px;
+                                            &:focus-visible {
+                                                outline: none;
+                                                border: 1px solid #DEE2E6;
+                                            }
+                                            &:disabled {
+                                                background: #F2F2F2;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    .button-block {
+                        display: flex;
+                        align-items: center;
+                        justify-content: flex-end;
+                        margin: 15px 0 0 0;
+                        .btn-action {
+                            display: inline-flex;
+                            align-items: center;
+                            justify-content: center;
+                            border-radius: 4px;
+                            color: #FFFFFF;
+                            border-color: transparent;
+                            height: 35px;
+                            width: 90px;
+                            font-weight: normal;
+                            img {
+                                height: 12px;
+                                margin-right: 6px;
+                            }
+                            &:active {
+                                outline: none;
+                            }
+                            &:focus {
+                                outline: none;
+                            }
+                            &.confirm {
+                                width: 200px;
+                                background: #347EF9;
+                                margin-left: 15px;
+                                width: 110px;
+                            }
+                        }
                     }
                 }
             }
