@@ -1162,9 +1162,10 @@ function EvaluationApproval(props) {
                                             ? stepEvaluation360.find(se => se.value == item?.status)?.label
                                             : currentSteps.find(step => step?.value == item?.status)?.label
                                             let sendDate = isEvaluation360 ? (item?.runFormDate && moment(item?.runFormDate).format('DD/MM/YYYY')) : (item?.sendDateLv1 && moment(item?.sendDateLv1).format('DD/MM/YYYY'))
+                                            let formCode = isEvaluation360 ? (item?.reviewFor || '') : (item?.formCode || '')
 
                                             return <tr key={index} role='button' onClick={() => handleShowEvaluationDetail(item?.formCode, item?.checkPhaseFormId, item?.employeeCode, item?.reviewStreamCode)}>
-                                                        <td className="c-form-code"><div className="form-code">{item?.formCode || ''}</div></td>
+                                                        <td className="c-form-code"><div className="form-code">{formCode}</div></td>
                                                         <td className="c-form-sender">
                                                             <div className="form-sender">{item?.poolUser?.fullname || ''}</div>
                                                             { item?.poolUser?.username && <div className="ad">({item?.poolUser?.username || ''})</div> }
