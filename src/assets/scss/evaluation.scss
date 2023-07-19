@@ -2577,12 +2577,9 @@
                     }
                 }
                 .evaluation-360 {
-                    // .button-block {
-                    //     margin: 10px 0 0 0;
-                    // }
                     font-size: 14px;
                     color: #000000;
-                    margin-top: 15px;
+                    padding-top: 15px;
                     .header-block {
                         display: flex;
                         align-items: center;
@@ -2721,6 +2718,14 @@
                                     }
                                     .right {
                                         flex: 1 1;
+                                        .relation-label {
+                                            padding: 5px 15px;
+                                            border-radius: 4px;
+                                            background: #f2f2f2;
+                                            display: flex;
+                                            align-items: center;
+                                            min-height: 38px;
+                                        }
                                     }
                                 }
                             }
@@ -2781,6 +2786,16 @@
                                                 margin-right: 20px;
                                                 color: #C11D2A;
                                             }
+                                            .score-label {
+                                                width: 110px;
+                                                padding: 5px 15px;
+                                                border-radius: 4px;
+                                                background: #f2f2f2;
+                                                display: inline-flex;
+                                                align-items: center;
+                                                justify-content: center;
+                                                min-height: 38px;
+                                            }
                                             select {
                                                 border: 1px solid #DEE2E6;
                                                 border-radius: 5px;
@@ -2807,11 +2822,12 @@
                                         }
                                         .comment-content {
                                             width: 100%;
-                                            border: 1px solid #dee2e6;
-                                            padding: 5px 10px;
+                                            padding: 5px 15px;
                                             border-radius: 4px;
                                             background: #f2f2f2;
-                                            min-height: 33px;
+                                            display: flex;
+                                            align-items: center;
+                                            min-height: 38px;
                                         }
                                         textarea {
                                             width: 100%;

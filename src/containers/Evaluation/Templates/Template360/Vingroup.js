@@ -15,7 +15,8 @@ const VinGroup = ({ evaluationFormDetail, isEdit, currentLocale, errors, handleI
             <div className="list-evaluation">
             {
                 (listEvaluation?.listTarget || []).map((target, i) => {
-                    const isDisableInput = !isEdit || evaluationFormDetail.status == evaluation360Status.completed
+                    const isCompleted = evaluationFormDetail.status == evaluation360Status.completed
+                    const isDisableInput = !isEdit || isCompleted
                     return (
                         <div className="evaluation-item" key={i}>
                             <div dangerouslySetInnerHTML={{
@@ -31,21 +32,27 @@ const VinGroup = ({ evaluationFormDetail, isEdit, currentLocale, errors, handleI
                             <div className="score">
                                 <div className="item">
                                     <span className="label">Điểm đánh giá</span>
-                                    <select onChange={(e) => handleInputChange(i, 'seftPoint', e)} value={target?.seftPoint || ''} disabled={isDisableInput}>
-                                        <option value=''>{t("EvaluationDetailPartSelectScore")}</option>
-                                        {
-                                        (scores || []).map((score, i) => {
-                                            return <option value={score} key={i}>{score}</option>
-                                        })
-                                        }
-                                        </select>
+                                    {
+                                        isCompleted
+                                        ? (<div className="score-label">{target?.seftPoint || ''}</div>)
+                                        : (
+                                            <select onChange={(e) => handleInputChange(i, 'seftPoint', e)} value={target?.seftPoint || ''} disabled={isDisableInput}>
+                                                <option value=''>{t("EvaluationDetailPartSelectScore")}</option>
+                                                {
+                                                    (scores || []).map((score, i) => {
+                                                        return <option value={score} key={i}>{score}</option>
+                                                    })
+                                                }
+                                            </select>
+                                        )
+                                    }
                                 </div>
                             </div>
                             <div className="comment">
                                 <div className="self">
                                     <p>{t("EvaluationDetailPartAttitudeCommentOfEmployee")}</p>
                                     {
-                                    isDisableInput
+                                    isCompleted
                                     ? <div className="comment-content" dangerouslySetInnerHTML={{
                                         __html: purify.sanitize(target?.seftOpinion || ""),
                                         }} />
