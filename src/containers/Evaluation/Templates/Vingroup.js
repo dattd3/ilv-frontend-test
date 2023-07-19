@@ -4,12 +4,12 @@ import { useTranslation } from "react-i18next"
 import _ from 'lodash'
 import purify from "dompurify"
 import { formatIndexText, formatTargetText } from '../Utils'
-import { formType } from '../Constants'
+import { formType, languageCodeMapping } from '../Constants'
 import Constants from '../../../commons/Constants'
 import IconUp from '../../../assets/img/icon/pms/icon-up.svg'
 import IconDown from '../../../assets/img/icon/pms/icon-down.svg'
 
-const VinGroup = ({ evaluationFormDetail, isEdit, showByManager, evaluationStatus, currentLocale, languageCodeMapping, errors, handleInputChange }) => {
+const VinGroup = ({ evaluationFormDetail, isEdit, showByManager, evaluationStatus, currentLocale, errors, handleInputChange }) => {
     const { t } = useTranslation()
 
     // Hiển thị thông tin chính của form đánh giá

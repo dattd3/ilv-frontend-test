@@ -26,12 +26,9 @@ function EvaluationDetailModal(props) {
                     isEvaluation360 
                     ? (
                         <Evaluation360 
-                            showByManager={true} 
                             evaluationFormId={evaluationFormId} 
                             formCode={formCode} 
-                            employeeCode={employeeCode}
-                            isEvaluation360={isEvaluation360}
-                            updateParent={updateParent} />
+                            employeeCode={employeeCode} />
                     )
                     : (
                         <EvaluationDetail 

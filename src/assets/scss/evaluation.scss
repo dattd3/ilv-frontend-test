@@ -344,7 +344,7 @@
                         text-transform: unset;
                         background: none;
                         padding-left: 0;
-                        white-space: pre;
+                        white-space: pre-line;
                     }
                     .sub-title {
                       font-weight: 500;
@@ -2761,11 +2761,12 @@
                                         text-transform: unset;
                                         background: none;
                                         padding-left: 0;
-                                        white-space: pre;
+                                        white-space: pre-line;
                                         padding: 0;
                                     }
                                     .matrix-info {
                                         margin-bottom: 15px;
+                                        white-space: pre-line;
                                     }
                                     .sub-title {
                                         font-weight: 500;

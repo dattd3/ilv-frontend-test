@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next"
 import moment from 'moment'
 import axios from 'axios'
 import _ from 'lodash'
-import { evaluationStatus, actionButton } from '../Constants'
+import { evaluationStatus, actionButton, processStep, stepEvaluation360Config } from '../Constants'
 import Constants from '../../../commons/Constants'
 import { getRequestConfigurations, getMuleSoftHeaderConfigurations } from '../../../commons/Utils'
 import LoadingModal from '../../../components/Common/LoadingModal'
@@ -21,7 +21,6 @@ import IconCollapse from '../../../assets/img/icon/pms/icon-collapse.svg'
 import IconSearch from '../../../assets/img/icon/Icon_Loop.svg'
 import IconReject from '../../../assets/img/icon/Icon_Cancel.svg'
 import IconApprove from '../../../assets/img/icon/Icon_Check.svg'
-import { processStep } from "../Detail/index"
 import 'react-datepicker/dist/react-datepicker.css'
 import vi from 'date-fns/locale/vi'
 registerLocale("vi", vi)
@@ -1093,6 +1092,13 @@ function EvaluationApproval(props) {
         SetPaging(pagingTemp)
     }
 
+    const stepEvaluation360 = stepEvaluation360Config.map(item => {
+        return {
+          ...item,
+          label: t(item?.label)
+        }
+    })
+
     return (
         <>
         <LoadingModal show={isLoading} />
@@ -1149,6 +1155,12 @@ function EvaluationApproval(props) {
                                 <tbody>
                                     {
                                         evaluationData?.data.map((item, index) => {
+                                            let isEvaluation360 = item?.reviewStreamCode === processStep.level360
+                                            let currentStep = isEvaluation360
+                                            ? stepEvaluation360.find(se => se.value == item?.status)?.label
+                                            : currentSteps.find(step => step?.value == item?.status)?.label
+                                            let sendDate = isEvaluation360 ? (item?.runFormDate && moment(item?.runFormDate).format('DD/MM/YYYY')) : (item?.sendDateLv1 && moment(item?.sendDateLv1).format('DD/MM/YYYY'))
+
                                             return <tr key={index} role='button' onClick={() => handleShowEvaluationDetail(item?.formCode, item?.checkPhaseFormId, item?.employeeCode, item?.reviewStreamCode)}>
                                                         <td className="c-form-code"><div className="form-code">{item?.formCode || ''}</div></td>
                                                         <td className="c-form-sender">
@@ -1158,9 +1170,9 @@ function EvaluationApproval(props) {
                                                         <td className="c-form-name">
                                                             <div className="form-name">{item?.checkPhaseFormName || ''}</div>
                                                         </td>
-                                                        <td className="c-sent-date"><div className="sent-date">{item?.sendDateLv1 && moment(item?.sendDateLv1).format('DD/MM/YYYY')}</div></td>
+                                                        <td className="c-sent-date"><div className="sent-date">{sendDate}</div></td>
                                                         <td className="c-status"><div className={`status ${item?.status == statusDone ? 'done' : 'in-progress'}`}>{item?.status == statusDone ? t("EvaluationDetailCompleted") : t("EvaluationInProgress")}</div></td>
-                                                        <td className="c-current-step"><div className="current-step">{currentSteps.find(step => step?.value == item?.status)?.label}</div></td>
+                                                        <td className="c-current-step"><div className="current-step">{currentStep}</div></td>
                                                     </tr>
                                         })
                                     }

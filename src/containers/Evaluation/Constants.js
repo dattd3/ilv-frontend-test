@@ -1,3 +1,5 @@
+import Constants from "commons/Constants"
+
 const evaluationStatus = {
     initialization: 1,
     launch: 2,
@@ -29,5 +31,20 @@ const formulaConfig = {
     CT3: 'VINBUS_CT3',
     CT4: 'VINBUS_CT4',
 }
+const processStep = {
+    zeroLevel: '0NF',
+    oneLevel: '1NF',
+    twoLevels: '2NF',
+    level360: '360NF',
+}
+const languageCodeMapping = {
+    [Constants.LANGUAGE_VI]: 'vi',
+    [Constants.LANGUAGE_EN]: 'en',
+}
+const stepEvaluation360Config = [
+    { value: evaluation360Status.waitingEvaluation, label: "WaitingForEvaluation" },
+    { value: evaluation360Status.evaluated, label: "Evaluated" },
+    { value: evaluation360Status.completed, label: "Completed" },
+]
 
-export { evaluationStatus, evaluation360Status, actionButton, formType, groupConfig, formulaConfig }
+export { evaluationStatus, evaluation360Status, actionButton, formType, groupConfig, formulaConfig, processStep, languageCodeMapping, stepEvaluation360Config }

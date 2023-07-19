@@ -2,9 +2,9 @@ import React from "react"
 import { useTranslation } from "react-i18next"
 import _ from 'lodash'
 import purify from "dompurify"
-import { evaluation360Status } from "../../Constants"
+import { evaluation360Status, languageCodeMapping } from "../../Constants"
 
-const VinGroup = ({ evaluationFormDetail, isEdit, currentLocale, languageCodeMapping, errors, handleInputChange }) => {
+const VinGroup = ({ evaluationFormDetail, isEdit, currentLocale, errors, handleInputChange }) => {
     const { t } = useTranslation()
     const listEvaluation = evaluationFormDetail?.listGroup[1] // Lấy item thứ 2
     const scores = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
