@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react"
 import { Image } from 'react-bootstrap'
 import { useTranslation } from "react-i18next"
+import Select from 'react-select'
 import axios from 'axios'
 import _ from 'lodash'
 import Constants from '../../../commons/Constants'
 import { getRequestConfigurations } from '../../../commons/Utils'
-import { calculateRating, isVinBusByCompanyCode, calculateScore, formatEvaluationNumber } from '../Utils'
-import { evaluation360Status } from '../Constants'
+import { evaluation360Status, stepEvaluation360Config } from '../Constants'
 import { useGuardStore } from '../../../modules'
 import LoadingModal from '../../../components/Common/LoadingModal'
 import StatusModal from '../../../components/Common/StatusModal'
@@ -18,22 +18,24 @@ import IconDownload from '../../../assets/img/icon/Icon_download_red.svg'
 import IconApprove from '../../../assets/img/icon/Icon_Check.svg'
 
 const currentLocale = localStorage.getItem("locale")
-const languageCodeMapping = {
-  [Constants.LANGUAGE_VI]: 'vi',
-  [Constants.LANGUAGE_EN]: 'en',
-}
+const companyThemeColor = localStorage.getItem("companyThemeColor")
 
-const Evaluation360 = (props) => {
+const Evaluation360 = ({ evaluationFormId, formCode, employeeCode }) => {
   const { t } = useTranslation()
   const [errors, SetErrors] = useState({})
   const [bottom, setBottom] = useState(false)
-  const [dataLoaded, setDataLoaded] = useState(false)
   const [isLoading, SetIsLoading] = useState(false)
   const [evaluationFormDetail, SetEvaluationFormDetail] = useState(null)
   const [statusModal, SetStatusModal] = useState({ isShow: false, isSuccess: true, content: "", needReload: true })
   const guard = useGuardStore()
   const user = guard.getCurentUser()
-  const { showByManager, evaluationFormId, formCode, employeeCode, isEvaluation360 } = props
+
+  const relations = [
+    { value: 'CT', label: t("RelationManager") },
+    { value: 'DN', label: t("RelationPeer") },
+    { value: 'CBCD', label: t("RelationStaff") },
+    { value: 'BT', label: t("RelationSelf") },
+  ]
 
   useEffect(() => {
     const processEvaluationFormDetailData = response => {
@@ -45,7 +47,6 @@ const Evaluation360 = (props) => {
             evaluationFormDetailTemp.listGroup = ([...evaluationFormDetailTemp?.listGroup] || []).sort((pre, next) => pre?.groupOrder - next?.groupOrder)
           }
           SetEvaluationFormDetail(evaluationFormDetailTemp)
-          setDataLoaded(true)
         }
       }
     }
@@ -56,7 +57,7 @@ const Evaluation360 = (props) => {
         const config = getRequestConfigurations()
         config.params = {
           checkPhaseFormId: evaluationFormId,
-          EmployeeCode: showByManager ? props.employeeCode : user?.employeeNo,
+          EmployeeCode: employeeCode,
           FormCode: formCode,
           UserName: user?.ad,
         }
@@ -104,16 +105,26 @@ const Evaluation360 = (props) => {
   }
 
   const isDataValid = () => {
-    const hasError = (evaluationFormDetail?.listGroup[1]?.listTarget || []).some(item => item?.seftPoint === '' || item?.seftPoint === null)
+    let messageError = ''
+    let hasError = false
+    if (!evaluationFormDetail?.relation) {
+      messageError = t("RequiredYourRelationshipWithEvaluatee")
+      hasError = true
+    } else {
+      messageError = t("RequiredEvaluationScore")
+      hasError = (evaluationFormDetail?.listGroup[1]?.listTarget || []).some(item => item?.seftPoint === '' || item?.seftPoint === null)
+    }
+
     if (hasError) {
       SetStatusModal({
         ...statusModal,
         isShow: true,
         isSuccess: false,
-        content: 'Vui lòng nhập các trường bắt buộc!',
+        content: messageError,
         needReload: false,
       })
     }
+
     return !hasError
   }
 
@@ -164,23 +175,42 @@ const Evaluation360 = (props) => {
   }
 
   const handleInputChange = (subIndex, stateName, element) => {
-    const val = stateName === 'seftPoint' ? element?.target?.value : (element?.target?.value || '')
+    let val = null
+    switch (stateName) {
+      case 'seftPoint':
+        val = element?.target?.value
+        break
+      case 'relation':
+        val = element?.value || null
+        break
+      default:
+        val = element?.target?.value || ''
+        break
+    }
+
     if (['seftPoint'].includes(stateName) && (!(/^\d*$/.test(Number(val))) || val.includes('.'))) {
       return
     }
 
     const evaluationFormDetailClone = {...evaluationFormDetail}
-    evaluationFormDetailClone.listGroup[1].listTarget[subIndex][stateName] = val
+    if (stateName === 'relation') {
+      evaluationFormDetailClone.relation = val
+    } else {
+      evaluationFormDetailClone.listGroup[1].listTarget[subIndex][stateName] = val
+    }
+
     SetEvaluationFormDetail(evaluationFormDetailClone)
   }
 
   const renderEvaluationStep = () => {
-    const stepEvaluationConfig = [
-      { value: evaluation360Status.waitingEvaluation, label: t("WaitingForEvaluation") },
-      { value: evaluation360Status.evaluated, label: t("Evaluated") },
-      { value: evaluation360Status.completed, label: t("Completed") },
-    ]
-    return (stepEvaluationConfig || []).map((item, index) => {
+    const stepEvaluation = stepEvaluation360Config.map(item => {
+      return {
+        ...item,
+        label: t(item?.label)
+      }
+    })
+
+    return (stepEvaluation || []).map((item, index) => {
       let activeClass = item?.value == evaluationFormDetail?.status ? 'active' : ''
       return (
         <div className="wrap-item" key={index}>
@@ -217,7 +247,7 @@ const Evaluation360 = (props) => {
             </div>
           </div>
           <div className="right">
-          <div className="info-item">
+            <div className="info-item">
               <span className="label"><span className="font-weight-bold">{t("EvaluationDetailEmployeeDivision")}</span><span>:</span></span>
               <span className="value">{evaluationFormDetail?.organization_lv3 || ''}</span>
             </div>
@@ -229,6 +259,22 @@ const Evaluation360 = (props) => {
               <span className="label"><span className="font-weight-bold">HR Admin</span><span>:</span></span>
               <span className="value">{`${evaluationFormDetail?.hrAdmin || ''}`}</span>
             </div>
+          </div>
+        </div>
+        <div className="detail align-items-start">
+          <div className="left" style={{ paddingTop: 10 }}>{t("YourRelationshipWithEvaluatee")} :</div>
+          <div className="right">
+            <Select
+              value={relations.find(item => item.value === evaluationFormDetail?.relation)}
+              onChange={relation => handleInputChange(null, 'relation', relation)}
+              isClearable={true} 
+              placeholder={t('Select')} 
+              options={relations}
+              styles={{
+                menu: provided => ({ ...provided, zIndex: 2 })
+              }}
+              isDisabled={!evaluationFormDetail?.isEdit || evaluationFormDetail?.status == evaluation360Status.completed}
+            />
           </div>
         </div>
       </div>
@@ -249,7 +295,7 @@ const Evaluation360 = (props) => {
           <h1 className="content-page-header">{evaluationFormDetail?.checkPhaseFormName}</h1>
           <button className="btn-export">
             <img src={IconDownload} alt="Download" />
-            <span>Tải PDF</span>
+            <span>{t("DownloadPDF")}</span>
           </button>
         </div>
         <div className="card shadow evaluation-process">
@@ -264,7 +310,6 @@ const Evaluation360 = (props) => {
             evaluationFormDetail={evaluationFormDetail}
             isEdit={evaluationFormDetail?.isEdit}
             currentLocale={currentLocale}
-            languageCodeMapping={languageCodeMapping}
             errors={errors}
             handleInputChange={handleInputChange}
           />
@@ -279,7 +324,7 @@ const Evaluation360 = (props) => {
       </div>
       {
         !bottom && evaluationFormDetail?.status != evaluation360Status.completed && evaluationFormDetail?.isEdit && (
-          <div className="scroll-to-save" style={{ color: localStorage.getItem("companyThemeColor"), zIndex: '10' }}>
+          <div className="scroll-to-save" style={{ color: companyThemeColor, zIndex: '10' }}>
             <div>
               <button className="btn-action save" onClick={handleSubmit}><Image src={IconApprove} alt="Save" />{t("EvaluationDetailPartSave")}</button>
             </div>
