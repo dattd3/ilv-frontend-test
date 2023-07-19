@@ -3,10 +3,10 @@ import { useTranslation } from "react-i18next"
 import _ from 'lodash'
 import purify from "dompurify"
 import { formatIndexText, formatTargetText } from '../Utils'
-import { formType, groupConfig } from '../Constants'
+import { formType, groupConfig, languageCodeMapping } from '../Constants'
 import Constants from '../../../commons/Constants' 
 
-const EvaluationVinBusTemplate = ({ evaluationFormDetail, isEdit, showByManager, evaluationStatus, currentLocale, languageCodeMapping, errors, handleInputChange }) => {
+const EvaluationVinBusTemplate = ({ evaluationFormDetail, isEdit, showByManager, evaluationStatus, currentLocale, errors, handleInputChange }) => {
     const { t } = useTranslation()
 
     // Hiển thị thông tin chính của form đánh giá
