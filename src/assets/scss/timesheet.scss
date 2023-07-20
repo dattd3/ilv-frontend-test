@@ -495,14 +495,14 @@
       margin-bottom: 0!important;
     }
     .time-sheet-table {
-      box-shadow: 0 0 4px 0 rgba(0,0,0,.251) !important;
+      box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px !important;
       .time-sheet-table-content {
         padding-bottom: 0 !important;
       }
     }
     .timesheet-box {
       margin: 16px 0;
-      box-shadow: 0 0 4px 0 rgba(0,0,0,.251);
+      box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
       border-radius: 4px;
       padding: 20px;
       .title {
@@ -526,7 +526,7 @@
       }
     }
     .summary .card {
-      box-shadow: 0 0 4px 0 rgba(0,0,0,.251) !important;
+      box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px !important;
     }
     .detail {
       .card {
@@ -1362,7 +1362,7 @@
     margin-top: 16px;
     background: #fff;
     border-radius: 4px;
-    box-shadow: 0px 0px 4px 0px #00000040;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
     padding: 20px;
   }
   .divider {

@@ -699,7 +699,7 @@ class SubstitutionComponent extends React.Component {
       <div className="shift-work">
         <ResultModal show={isShowResultModal} title={titleModal} message={messageModal} isSuccess={isSuccess} onHide={this.hideResultModal} />
         <StatusModal show={statusModal.isShow} isSuccess={statusModal.isSuccess} content={statusModal.content} onHide={this.hideStatusModal} />
-        <div className="box shadow">
+        <div className="box">
           <div className="row">
             <div className="col">
               {
