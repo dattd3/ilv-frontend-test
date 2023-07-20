@@ -1,7 +1,9 @@
 import React from 'react'
 import Spinner from 'react-bootstrap/Spinner'
 import { withTranslation  } from "react-i18next";
-import { validateFileMimeType, validateTotalFileSize } from '../../utils/file';
+import { validateFileMimeType, validateTotalFileSize } from '../../utils/file'
+import IconSend from 'assets/img/icon/Icon_send.svg'
+import IconUpload from 'assets/img/icon/ic_upload_attachment.svg'
 
 class ButtonComponent extends React.Component {
     constructor(props) {
@@ -44,12 +46,12 @@ class ButtonComponent extends React.Component {
     render() {
         const { t, validating, disabledSubmitButton } = this.props;
 
-        return <div className="bottom">
-            <div className="clearfix mt-5 mb-5">
-                <button type="button" className="btn btn-primary float-right ml-3 shadow" onClick={this.submit.bind(this)} disabled={disabledSubmitButton || validating}>
+        return <div className="bottom button-region">
+            <div className="clearfix">
+                <button type="button" className="btn btn-primary float-right ml-3" onClick={this.submit.bind(this)} disabled={disabledSubmitButton || validating}>
                     {
                         !disabledSubmitButton ? (
-                            <i className="fa fa-paper-plane mr-2" aria-hidden="true"></i>
+                            <img src={IconSend} alt="Send" className='ic-send' />
                         )
                         :
                         !validating && (
@@ -69,7 +71,8 @@ class ButtonComponent extends React.Component {
                     !this.props.isEdit ?
                     <>
                         <input type="file" hidden ref={this.inputReference} id="file-upload" name="file-upload[]" onChange={this.fileUploadInputChange.bind(this)} multiple accept=".docx, .doc, .pdf, .xls, .xlsx, .png, .jpg, .jpeg" />
-                        <button type="button" className="btn btn-light float-right shadow" onClick={this.fileUploadAction.bind(this)}><i className="fas fa-paperclip"></i> {t('AttachmentFile')}</button>
+                        <button type="button" className="btn btn-light float-right btn-attachment" onClick={this.fileUploadAction.bind(this)}>
+                            <img src={IconUpload} alt="Upload" className='ic-attachment' /> {t('AttachmentFile')}</button>
                     </> : null
                 }
                

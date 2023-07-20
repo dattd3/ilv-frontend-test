@@ -12,6 +12,8 @@ import VingroupLogo from '../../assets/img/LogoVingroup.svg';
 import 'react-metismenu/dist/react-metismenu-standart.min.css';
 import Constants from "../../commons/Constants";
 
+const currentLocale = localStorage.getItem("locale")
+
 class RouterLink extends React.Component {
     componentWillMount() {
       this.to = this.props.to;
@@ -108,6 +110,18 @@ class RouterLink extends React.Component {
           )}
           target={'_blank'}
           href={"https://vingroup.net/gioi-thieu"}
+        >
+        {children}
+        </a>
+        :
+        to === "/about-vinfast" ?
+        <a
+          className={classnames(
+            className,
+            active && classNameActive
+          )}
+          target={'_blank'}
+          href={`https://vinfastauto.com/${currentLocale === 'vi-VN' ? 'vn_vi' : 'vn_en'}/ve-chung-toi`}
         >
         {children}
         </a>
@@ -210,7 +224,7 @@ function SideBar(props) {
     return (
         <>
             <div style={{position: 'fixed'}}>
-                <div style={{borderColor: localStorage.getItem("companyThemeColor")}} className={show ? 'bg-vp-blue sidebar scroll-custom-sidebar' : 'bg-vp-blue sidebar scroll-custom-sidebar d-none'}>
+                <div style={{borderColor: localStorage.getItem("companyThemeColor")}} className={show ? 'bg-vp-blue scroll-custom-sidebar' : 'bg-vp-blue scroll-custom-sidebar d-none'}>
                     <Animated animationIn="fadeIn" isVisible={show} >
                         <div className="text-center">
                             <a href="/">
