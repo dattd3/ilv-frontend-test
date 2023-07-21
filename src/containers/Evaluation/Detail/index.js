@@ -183,7 +183,7 @@ function EvaluationProcess(props) {
   }
 
   const renderEvaluationStep = () => {
-      return stepEvaluationConfig.map((item, index) => {
+      return (stepEvaluationConfig || []).map((item, index) => {
         let activeClass = index === stepStatusMapping[evaluationFormDetail?.status] ? 'active' : '';
         return (
           <div className="wrap-item" key={index}>
