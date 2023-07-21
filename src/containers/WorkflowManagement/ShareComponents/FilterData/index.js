@@ -9,6 +9,7 @@ import axios from "axios";
 import MemberOption from "../MemberOption"
 import SelectTab from "../SelectTab"
 import { getMuleSoftHeaderConfigurations } from "../../../../commons/Utils"
+import IconDatePicker from 'assets/img/icon/Icon_DatePicker.svg'
 registerLocale("vi", vi);
 
 class FilterData extends React.Component {
@@ -191,14 +192,14 @@ class FilterData extends React.Component {
 
     return (
       <>
-        <div className="timesheet-box shadow">
+        <div className="timesheet-box search-block">
           <div className="row">
             {
               useDateFilter === false ? null :
                 <>
                   <div className="col-lg-3">
                     <div className="title">{t("From")}</div>
-                    <div className="content input-container">
+                    <label className="wrap-date-input">
                         <DatePicker
                           name="startDate"
                           selectsStart
@@ -210,14 +211,12 @@ class FilterData extends React.Component {
                           locale="vi"
                           className="form-control"
                         />
-                        <span className="ic-calendar">
-                          <i className="fas fa-calendar-alt"></i>
-                        </span>
-                    </div>
+                        <span className="input-group-addon input-img"><img src={IconDatePicker} alt="Date" /></span>
+                    </label>
                   </div>
                   <div className="col-lg-3">
                     <div className="title">{t("To")}</div>
-                    <div className="content input-container">
+                    <label className="wrap-date-input">
                         <DatePicker
                           name="endDate"
                           selectsEnd
@@ -231,10 +230,8 @@ class FilterData extends React.Component {
                           locale="vi"
                           className="form-control"
                         />
-                        <span className="ic-calendar">
-                          <i className="fas fa-calendar-alt"></i>
-                        </span>
-                    </div>
+                        <span className="input-group-addon input-img"><img src={IconDatePicker} alt="Date" /></span>
+                    </label>
                   </div>
                 </>
             }
