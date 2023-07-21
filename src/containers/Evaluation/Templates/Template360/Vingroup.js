@@ -34,9 +34,9 @@ const VinGroup = ({ evaluationFormDetail, isEdit, currentLocale, errors, handleI
                                     <span className="label">Điểm đánh giá</span>
                                     {
                                         isCompleted
-                                        ? (<div className="score-label">{target?.seftPoint || ''}</div>)
+                                        ? (<div className="score-label">{target?.seftPoint ?? ''}</div>)
                                         : (
-                                            <select onChange={(e) => handleInputChange(i, 'seftPoint', e)} value={target?.seftPoint || ''} disabled={isDisableInput}>
+                                            <select onChange={(e) => handleInputChange(i, 'seftPoint', e)} value={target?.seftPoint ?? ''} disabled={isDisableInput}>
                                                 <option value=''>{t("EvaluationDetailPartSelectScore")}</option>
                                                 {
                                                     (scores || []).map((score, i) => {

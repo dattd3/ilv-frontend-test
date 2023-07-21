@@ -292,12 +292,25 @@ const Evaluation360 = ({ evaluationFormId, formCode, employeeCode }) => {
   }
 
   const exportToPdfFile = () => {
-    document.getElementById('btn-export').style.visibility = 'hidden'
-    document.getElementById('button-block').style.visibility = 'hidden'
+    const btnExport = document.getElementById('btn-export')
+    const blockActionButton = document.getElementById('button-block')
     const elementView = document.getElementById('evaluation-360')
+
+    if (btnExport) {
+      btnExport.style.visibility = 'hidden'
+    }
+    if (blockActionButton) {
+      blockActionButton.style.visibility = 'hidden'
+    }
+
     exportToPDF(elementView, evaluationFormDetail?.checkPhaseFormName)
-    document.getElementById('btn-export').style.visibility = 'visible'
-    document.getElementById('button-block').style.visibility = 'visible'
+
+    if (btnExport) {
+      btnExport.style.visibility = 'visible'
+    }
+    if (blockActionButton) {
+      blockActionButton.style.visibility = 'visible'
+    }
   }
 
   return (
