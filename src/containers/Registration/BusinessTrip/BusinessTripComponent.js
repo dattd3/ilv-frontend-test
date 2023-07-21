@@ -16,6 +16,7 @@ import { withTranslation } from "react-i18next";
 import { getValueParamByQueryString, getRegistrationMinDateByConditions, isValidDateRequest } from "../../../commons/Utils"
 import { checkIsExactPnL } from '../../../commons/commonFunctions';
 import IconDatePicker from 'assets/img/icon/Icon_DatePicker.svg'
+import IconClock from 'assets/img/icon/ic_clock.svg'
 
 registerLocale("vi", vi)
 
@@ -914,8 +915,8 @@ class BusinessTripComponent extends React.Component {
                                                     </div>                                                    
                                                     : null
                                                 }
-                                                <div className="row p-2">
-                                                    <div className="col-lg-12 col-xl-6">
+                                                <div className="row wrap-date-time">
+                                                    <div className="col-lg-12 col-xl-6 col-first">
                                                         <p className="title">{t('StartDateTime')}</p>
                                                         <div className="row">
                                                             <div className="col-6">
@@ -956,13 +957,14 @@ class BusinessTripComponent extends React.Component {
                                                                             placeholderText={t('Select')}
                                                                             className="form-control input"
                                                                             disabled={req[0].isAllDay || reqDetail.isAllDayCheckbox} />
+                                                                        <span className="input-group-addon input-img"><img src={IconClock} alt="Clock" /></span>
                                                                     </label>
                                                                 </div>
                                                                 {reqDetail.errors.startTime ? this.error('startTime', reqDetail.groupId, reqDetail.groupItem) : null}
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div className="col-lg-12 col-xl-6">
+                                                    <div className="col-lg-12 col-xl-6 col-second">
                                                         <p className="title">{t('EndDateTime')}</p>
                                                         <div className="row">
                                                             <div className="col-6">
@@ -1004,6 +1006,7 @@ class BusinessTripComponent extends React.Component {
                                                                             className="form-control input"
                                                                             disabled={req[0].isAllDay || reqDetail.isAllDayCheckbox}
                                                                         />
+                                                                        <span className="input-group-addon input-img"><img src={IconClock} alt="Clock" /></span>
                                                                     </label>
                                                                 </div>
                                                                 {reqDetail.errors.endTime ? this.error('endTime', reqDetail.groupId, reqDetail.groupItem) : null}
@@ -1045,8 +1048,7 @@ class BusinessTripComponent extends React.Component {
                                         </div>
                                     </div>
                                 }
-
-                                <div className="row">
+                                <div className="row" style={{ marginTop: 5 }}>
                                     <div className="col-5">
                                         <p className="title">{t('TypeOfBizTripAndTraining')}</p>
                                         <div>

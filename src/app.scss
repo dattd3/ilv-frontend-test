@@ -247,6 +247,7 @@
 }
 
 .icon-sub-menu-lv2 {
+  width: 2em !important;
   font-size: 12px;
   padding-top: 9px;
   padding-right: 30px;
@@ -744,7 +745,7 @@
   }
 }
 .sidebar {
-  width: 300px !important;
+  width: 100% !important;
   -webkit-transition: 0.5s;
   -moz-transition: 0.5s;
   -o-transition: 0.5s;
@@ -4382,6 +4383,7 @@ span.badge-notification[data-badge]::after {
   overflow-x: hidden;
   height: 100vh;
   border-radius: 5px;
+  width: 265px;
   &::-webkit-scrollbar {
       width: 1px;
   }
@@ -4392,6 +4394,24 @@ span.badge-notification[data-badge]::after {
   &::-webkit-scrollbar-track {
     background-color: white;
     border-radius: 4px;
+  }
+  .sidebar {
+    & > .metismenu-container {
+      & > .metismenu-item {
+        margin-bottom: 6px;
+        > .metismenu-link {
+          height: auto;
+          padding-top: 6px;
+          padding-bottom: 6px;
+        }
+        & > .metismenu-container {
+          & > .metismenu-item {
+            & .metismenu-link {
+            }
+          }
+        }
+      }
+    }
   }
 }
 .footer-dash-board {

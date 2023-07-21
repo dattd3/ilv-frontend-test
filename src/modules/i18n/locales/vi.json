@@ -141,8 +141,8 @@
   "FormOfPunishment": "Hình thức xử lý",
   "AmountOfBonusDeducted": "Số tiền trừ thưởng",
   "PercentDeductionOfBonus": "% trừ",
-  "Menu_GroupInformation": "Thông tin tập đoàn",
-  "Menu_GroupIntroduction": "Giới thiệu tập đoàn",
+  "Menu_GroupInformation": "Thông tin Tập đoàn",
+  "Menu_GroupIntroduction": "Giới thiệu Tập đoàn",
   "Menu_VinpearlIntroduction": "Giới thiệu Vinpearl",
   "Menu_VinfastIntroduction": "Giới thiệu Vinfast",
   "Menu_VinmecIntroduction": "Giới thiệu Vinmec",
@@ -1891,5 +1891,6 @@
   "YourRelationshipWithEvaluatee": "Quan hệ của bạn với Người được đánh giá",
   "RequiredYourRelationshipWithEvaluatee": "Vui lòng chọn Quan hệ của bạn với Người được đánh giá!",
   "RequiredEvaluationScore": "Vui lòng nhập điểm đánh giá!",
-  "Evaluation360ButtonSend": "Gửi"
+  "Evaluation360ButtonSend": "Gửi",
+  "WaitingForFeedback360": "Chờ đánh giá (Đánh giá 360)"
 }
