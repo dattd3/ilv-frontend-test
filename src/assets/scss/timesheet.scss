@@ -784,6 +784,21 @@
   }
   &.department-timesheet {
     .timesheet-box {
+      box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px !important;
+      border-radius: 4px;
+      padding: 15px;
+      .wrap-date-input {
+        display: block;
+        position: relative;
+        .react-datepicker-wrapper {
+          width: 100%;
+        }
+        .input-img {
+          position: absolute;
+          top: 8px;
+          right: 12px;
+        }
+      }
       .input-container {
         .ic-calendar {
           position: absolute;
@@ -792,6 +807,15 @@
           right: 10px;
           top: 7px;
           left: unset;
+        }
+      }
+      .btn-search {
+        color: #FFFFFF;
+        height: 38px;
+      }
+      &.search-block {
+        .title {
+          margin: 0 0 10px 0;
         }
       }
     }

@@ -18,8 +18,10 @@ import map from '../../../../src/containers/map.config'
 import { getValueParamByQueryString, getMuleSoftHeaderConfigurations, formatStringByMuleValue, getRegistrationMinDateByConditions, isVinFast, isValidDateRequest } from "../../../commons/Utils"
 import EditIcon from '../../../assets/img/icon/Icon-edit.svg'
 import IconDatePicker from 'assets/img/icon/Icon_DatePicker.svg'
+import IconClock from 'assets/img/icon/ic_clock.svg'
 import 'react-datepicker/dist/react-datepicker.css'
 import vi from 'date-fns/locale/vi'
+import LoadingModal from 'components/Common/LoadingModal'
 registerLocale("vi", vi)
 
 const DATE_FORMAT = 'DD/MM/YYYY'
@@ -55,6 +57,7 @@ class SubstitutionComponent extends React.Component {
         content: ""
       },
       needReload: true,
+      isLoading: false,
     }
 
     this.isVin3S = currentUserCompanyVCode === Constants.pnlVCode.Vin3S
@@ -536,46 +539,52 @@ class SubstitutionComponent extends React.Component {
 
   search() {
     const { startDate, endDate } = this.state
-    const start = moment(startDate, DATE_FORMAT).format('YYYYMMDD').toString()
-    const end = moment(endDate, DATE_FORMAT).format('YYYYMMDD').toString()
+    if (startDate && endDate) {
+      this.setState({ isLoading: true })
+      const start = moment(startDate, DATE_FORMAT).format('YYYYMMDD').toString()
+      const end = moment(endDate, DATE_FORMAT).format('YYYYMMDD').toString()
 
-    const config = getMuleSoftHeaderConfigurations()
-    config['params'] = {
-      from_date: start,
-      to_date: end
+      const config = getMuleSoftHeaderConfigurations()
+      config['params'] = {
+        from_date: start,
+        to_date: end
+      }
+
+      axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/timeoverview`, config)
+        .then(res => {
+          if (res && res.data && res.data.data) {
+            let dataSorted = res.data.data.sort((a, b) => moment(a.date, "DD-MM-YYYY").format("YYYYMMDD") < moment(b.date, "DD-MM-YYYY").format("YYYYMMDD") ? 1 : -1)
+            const timesheets = dataSorted.flatMap(timesheet => {
+              return  {
+                date: timesheet.date,
+                fromTime: timesheet[`from_time1`],
+                toTime: timesheet[`to_time1`],
+                fromTime2: timesheet[`from_time2`],
+                toTime2: timesheet[`to_time2`],
+                isEdited: false,
+                note: null,
+                error: {},
+                startTime: null,
+                endTime: null,
+                startBreakTime: null,
+                endBreakTime: null,
+                shiftType: Constants.SUBSTITUTION_SHIFT_CODE,
+                shiftId: null,
+                shiftHours: null,
+                substitutionType: this.isVin3S ? (this.substitutionTypes || []).find(substitutionType => substitutionType?.value === substitutionTypeAllowedToUpdateForVin3S) : null,
+                // substitutionType: (this.isVin3S || isVinFast()) ? (this.substitutionTypes || []).find(substitutionType => substitutionType?.value === substitutionTypeAllowedToUpdateForVin3S) : null,
+                shifts: this.state.shifts,
+                applyFrom: null,
+                applyTo: null
+              }
+            }).filter(t => t !== undefined)
+            this.setState({ timesheets: timesheets })
+          }
+        }).catch(error => { })
+        .finally (() => {
+          this.setState({ isLoading: false })
+        })
     }
-
-    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/timeoverview`, config)
-      .then(res => {
-        if (res && res.data && res.data.data) {
-          let dataSorted = res.data.data.sort((a, b) => moment(a.date, "DD-MM-YYYY").format("YYYYMMDD") < moment(b.date, "DD-MM-YYYY").format("YYYYMMDD") ? 1 : -1)
-          const timesheets = dataSorted.flatMap(timesheet => {
-            return  {
-              date: timesheet.date,
-              fromTime: timesheet[`from_time1`],
-              toTime: timesheet[`to_time1`],
-              fromTime2: timesheet[`from_time2`],
-              toTime2: timesheet[`to_time2`],
-              isEdited: false,
-              note: null,
-              error: {},
-              startTime: null,
-              endTime: null,
-              startBreakTime: null,
-              endBreakTime: null,
-              shiftType: Constants.SUBSTITUTION_SHIFT_CODE,
-              shiftId: null,
-              shiftHours: null,
-              substitutionType: this.isVin3S ? (this.substitutionTypes || []).find(substitutionType => substitutionType?.value === substitutionTypeAllowedToUpdateForVin3S) : null,
-              // substitutionType: (this.isVin3S || isVinFast()) ? (this.substitutionTypes || []).find(substitutionType => substitutionType?.value === substitutionTypeAllowedToUpdateForVin3S) : null,
-              shifts: this.state.shifts,
-              applyFrom: null,
-              applyTo: null
-            }
-          }).filter(t => t !== undefined)
-          this.setState({ timesheets: timesheets })
-        }
-      }).catch(error => { })
   }
 
   filterShiftListByTimesAndShiftCode = (index, startTime, endTime, shiftCode) => {
@@ -669,7 +678,7 @@ class SubstitutionComponent extends React.Component {
   render() {
     const { t, substitution, recentlyManagers } = this.props;
     const {startDate, endDate, isShowResultModal, titleModal, messageModal, isSuccess, timesheets, errors, isShowStartBreakTimeAndEndBreakTime, 
-      files, disabledSubmitButton, shifts, statusModal} = this.state
+      files, disabledSubmitButton, shifts, statusModal, isLoading} = this.state
     
     const substitutionTypes = this.isVin3S
     // const substitutionTypes = (this.isVin3S || isVinFast())
@@ -680,8 +689,8 @@ class SubstitutionComponent extends React.Component {
     const customStyles = {
       control: base => ({
         ...base,
-        height: 35,
-        minHeight: 35
+        height: 38,
+        minHeight: 38
       })
     };
 
@@ -697,9 +706,10 @@ class SubstitutionComponent extends React.Component {
 
     return (
       <div className="shift-work">
+        <LoadingModal show={isLoading} />
         <ResultModal show={isShowResultModal} title={titleModal} message={messageModal} isSuccess={isSuccess} onHide={this.hideResultModal} />
         <StatusModal show={statusModal.isShow} isSuccess={statusModal.isSuccess} content={statusModal.content} onHide={this.hideStatusModal} />
-        <div className="box">
+        <div className="box search-box">
           <div className="row">
             <div className="col">
               {
@@ -710,8 +720,8 @@ class SubstitutionComponent extends React.Component {
               }
             </div>
           </div>
-          <div className="row">
-            <div className="col-4">
+          <div className="row search-form">
+            <div className="col-md-4">
               <p className="title">{t('From')}</p>
               <div className="content input-container">
                 <label>
@@ -735,7 +745,7 @@ class SubstitutionComponent extends React.Component {
               {this.errorWithoutItem('startDate')}
             </div>
 
-            <div className="col-4">
+            <div className="col-md-4">
               <p className="title">{t('To')}</p>
               <div className="content input-container">
                 <label>
@@ -758,7 +768,7 @@ class SubstitutionComponent extends React.Component {
               {this.errorWithoutItem('endDate')}
             </div>
 
-            <div className="col-4">
+            <div className="col-md-4">
               <p className="title">&nbsp;</p>
               <button type="button" className="btn btn-warning btn-search-substitution w-100" onClick={this.search.bind(this)}>{t("Search")}</button>
             </div>
@@ -766,17 +776,17 @@ class SubstitutionComponent extends React.Component {
         </div>
 
         {timesheets.map((timesheet, index) => {
-          return <div className="box shadow" key={index}>
+          return <div className="box list-items" key={index}>
             <div className="row">
-              <div className="col-2"><p><i className="fa fa-clock-o"></i> <b>{this.getDayName(timesheet.date)} {lang === Constants.LANGUAGE_VI && "Ngày"} {timesheet.date.replace(/-/g, '/')}</b></p></div>
-              <div className="col-8">
+              <div className="col-sm-4 col-md-3 col-date-time"><p className="d-inline-flex"><img src={IconClock} className="ic-clock" /><b style={{ marginLeft: 5 }}>{this.getDayName(timesheet.date)} {lang === Constants.LANGUAGE_VI && "Ngày"} {timesheet.date.replace(/-/g, '/')}</b></p></div>
+              <div className="col-sm-6 col-md-7 col-time-sheet">
                 <p className="text-uppercase"><b>{t("ScheduledTime")}</b></p>
                 <p>{t("Start")} 1: <b>{!this.isNullCustomize(timesheet.fromTime) ? moment(timesheet.fromTime, TIME_OF_SAP_FORMAT).format(TIME_FORMAT):''}</b> | {t("End")} 1: <b>{ !this.isNullCustomize(timesheet.toTime)? moment(timesheet.toTime, TIME_OF_SAP_FORMAT).format(TIME_FORMAT):''}</b></p>
                 {!this.isNullCustomize(timesheet.fromTime2) ? <p>{t("Start")} 2: <b>{moment(timesheet.fromTime2, TIME_OF_SAP_FORMAT).format(TIME_FORMAT)}</b> | {t("End")} 2: <b>{!this.isNullCustomize(timesheet.fromTime2) ? moment(timesheet.toTime2, TIME_OF_SAP_FORMAT).format(TIME_FORMAT) : ''}</b></p> : ''}
               </div>
-              <div className="col-2 ">
+              <div className="col-sm-2 col-md-2 action-item">
                 {!timesheet.isEdited
-                  ? <p className="edit text-right" onClick={this.updateEditMode.bind(this, index, false)}><Image src={EditIcon} alt="Edit" className="ic-edit" />{t("Modify")}</p>
+                  ? <p className="edit" onClick={this.updateEditMode.bind(this, index, false)}><Image src={EditIcon} alt="Edit" className="ic-edit" />{t("Modify")}</p>
                   : <p className="edit text-danger" onClick={this.updateEditMode.bind(this, index, true)}><i className="fas fa-times-circle"></i>{t("Cancel")}</p>}
               </div>
             </div>
@@ -798,9 +808,9 @@ class SubstitutionComponent extends React.Component {
                   {/* } */}
                 </div>
                 <div className="row shift-change-type-field">
-                  <div className="col-2">
+                  <div className="col-sm-6 col-md-2 col-start-date">
                     <p className="title">{t("ShiftChangeFrom")}<span className="text-danger required">(*)</span></p>
-                    <div>
+                    <label className="wrap-date-input">
                       <DatePicker
                         selected={timesheet && timesheet.applyFrom ? moment(timesheet.applyFrom, 'YYYYMMDD').toDate() : null}
                         onChange={applyFrom => this.handleDatePickerInputChange(index, applyFrom, "applyFrom")}
@@ -813,12 +823,13 @@ class SubstitutionComponent extends React.Component {
                         popperPlacement="bottom-start"
                         className="form-control input"
                         disabled />
-                    </div>
+                        <span className="input-img"><img src={IconDatePicker} alt="Date" /></span>
+                    </label>
                     {this.error(index, 'applyFrom')}
                   </div>
-                  <div className="col-2">
+                  <div className="col-sm-6 col-md-2 col-to-date">
                     <p className="title">{t("ShiftChangeTo")}<span className="text-danger required">(*)</span></p>
-                    <div>
+                    <label className="wrap-date-input">
                       <DatePicker
                           selected={timesheet && timesheet.applyTo ? moment(timesheet.applyTo, 'YYYYMMDD').toDate() : null}
                           onChange={applyTo => this.handleDatePickerInputChange(index, applyTo, "applyTo")}
@@ -833,12 +844,13 @@ class SubstitutionComponent extends React.Component {
                           className="form-control input" 
                           // disabled={isVinFast()} 
                       />
-                    </div>
+                      <span className="input-img"><img src={IconDatePicker} alt="Date" /></span>
+                    </label>
                     {this.error(index, 'applyTo')}
                   </div>
-                  <div className="col-4">
+                  <div className="col-md-3 col-shift-type">
                     <p className="title">{t("ShiftCategory")}<span className="text-danger required">(*)</span></p>
-                    <div style={{paddingTop: 10}}>
+                    <div>
                       <Select 
                         name="substitutionType" 
                         value={timesheet.substitutionType} 
@@ -870,9 +882,9 @@ class SubstitutionComponent extends React.Component {
             }
 
             {timesheet.isEdited ? 
-              <div>
+              <div style={{ paddingTop: 5 }}>
                 <p>{t("ShiftChangeReason")}</p>
-                <textarea placeholder={t("EnterReason")} value={timesheet.note || ""} onChange={this.updateNote.bind(this, index)} className="form-control mt-3 note" name="note" rows="4" />
+                <textarea placeholder={t("EnterReason")} value={timesheet.note || ""} onChange={this.updateNote.bind(this, index)} className="form-control note" name="note" rows="4" />
                 {this.error(index, 'note')}
               </div> 
               : null
