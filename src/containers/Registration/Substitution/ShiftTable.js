@@ -195,7 +195,7 @@ class ShiftTable extends React.Component {
         }
 
         return (
-            <div className="shift-table mt-3">
+            <div className="shift-table">
                 <table className="shift">
                     <thead>
                         <tr>

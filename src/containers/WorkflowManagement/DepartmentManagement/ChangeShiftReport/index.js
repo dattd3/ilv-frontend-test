@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { withTranslation } from "react-i18next";
-import FilterDataShirfReport from "../../ShareComponents/FilterDataShirfReport";
+import FilterDataShiftReport from "../../ShareComponents/FilterDataShirfReport/index";
 import HOCComponent from '../../../../components/Common/HOCComponent'
 
 class ChangeShiftReport extends Component {
@@ -51,7 +51,7 @@ class ChangeShiftReport extends Component {
     return (
       <div className="timesheet-section change-shift-report">
         <h1 className="content-page-header">{t("MenuChangeShiftReport")}</h1>
-        <FilterDataShirfReport />
+        <FilterDataShiftReport />
       </div>
     );
   }
