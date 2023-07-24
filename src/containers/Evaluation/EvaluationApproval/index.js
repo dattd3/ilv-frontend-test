@@ -21,6 +21,7 @@ import IconCollapse from '../../../assets/img/icon/pms/icon-collapse.svg'
 import IconSearch from '../../../assets/img/icon/Icon_Loop.svg'
 import IconReject from '../../../assets/img/icon/Icon_Cancel.svg'
 import IconApprove from '../../../assets/img/icon/Icon_Check.svg'
+import IconDatePicker from 'assets/img/icon/Icon_DatePicker.svg'
 import 'react-datepicker/dist/react-datepicker.css'
 import vi from 'date-fns/locale/vi'
 registerLocale("vi", vi)
@@ -223,14 +224,17 @@ function AdvancedFilter(props) {
                     <Form.Group as={Row} controlId="from-date">
                         <Form.Label column sm={12}>{t("EvaluationFromDate")}</Form.Label>
                         <Col sm={12}>
-                            <DatePicker
-                                selected={filter.fromDate ? moment(filter.fromDate, 'YYYY-MM-DD').toDate() : null}
-                                onChange={fromDate => handleInputChange('fromDate', fromDate ? moment(fromDate).format('YYYY-MM-DD') : null)}
-                                dateFormat="dd/MM/yyyy"
-                                showMonthDropdown={true}
-                                showYearDropdown={true}
-                                locale="vi"
-                                className="form-control input" />
+                            <label className="wrap-date-input">
+                                <DatePicker
+                                    selected={filter.fromDate ? moment(filter.fromDate, 'YYYY-MM-DD').toDate() : null}
+                                    onChange={fromDate => handleInputChange('fromDate', fromDate ? moment(fromDate).format('YYYY-MM-DD') : null)}
+                                    dateFormat="dd/MM/yyyy"
+                                    showMonthDropdown={true}
+                                    showYearDropdown={true}
+                                    locale="vi"
+                                    className="form-control input" />
+                                <span className="input-img"><img src={IconDatePicker} alt="Date" /></span>
+                            </label>
                         </Col>
                     </Form.Group>
                 </Col>
@@ -238,15 +242,18 @@ function AdvancedFilter(props) {
                     <Form.Group as={Row} controlId="to-date">
                         <Form.Label column sm={12}>{t("EvaluationToDate")}</Form.Label>
                         <Col sm={12}>
-                            <DatePicker 
-                                selected={filter.toDate ? moment(filter.toDate, 'YYYY-MM-DD').toDate() : null}
-                                minDate={filter.fromDate ? moment(filter.fromDate, 'YYYY-MM-DD').toDate() : null}
-                                onChange={toDate => handleInputChange('toDate', toDate ? moment(toDate).format('YYYY-MM-DD') : null)}
-                                dateFormat="dd/MM/yyyy"
-                                showMonthDropdown={true}
-                                showYearDropdown={true}
-                                locale="vi"
-                                className="form-control input" />
+                            <label className="wrap-date-input">
+                                <DatePicker 
+                                    selected={filter.toDate ? moment(filter.toDate, 'YYYY-MM-DD').toDate() : null}
+                                    minDate={filter.fromDate ? moment(filter.fromDate, 'YYYY-MM-DD').toDate() : null}
+                                    onChange={toDate => handleInputChange('toDate', toDate ? moment(toDate).format('YYYY-MM-DD') : null)}
+                                    dateFormat="dd/MM/yyyy"
+                                    showMonthDropdown={true}
+                                    showYearDropdown={true}
+                                    locale="vi"
+                                    className="form-control input" />
+                                <span className="input-img"><img src={IconDatePicker} alt="Date" /></span>
+                            </label>
                         </Col>
                     </Form.Group>
                 </Col>

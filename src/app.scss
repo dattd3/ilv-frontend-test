@@ -1273,7 +1273,7 @@ span.badge-notification[data-badge]::after {
 .navigation-top-bar-custom {
   margin-top: 0px;
   margin-bottom: 0px;
-  padding: 20px;
+  padding: 15px;
   .dropdown-menu {
     min-width: 12rem;
     left: 20px;
@@ -3161,9 +3161,6 @@ span.badge-notification[data-badge]::after {
       margin-bottom: 0;
     }
   }
-  .content-page-header {
-    margin-bottom: 16px;
-  }
 }
 .qna-detail-page {
   font-size: 14px;
@@ -3848,7 +3845,8 @@ span.badge-notification[data-badge]::after {
   text-transform: uppercase !important;
   font-size: 16px !important;
   font-weight: bold;
-  margin-top: 24px;
+  margin-top: 15px;
+  margin-bottom: 15px;
 }
 
 .vaccine-info-page {
@@ -3954,7 +3952,7 @@ span.badge-notification[data-badge]::after {
   }
   .btn-create {
     font-size: inherit;
-    border-radius: 8px;
+    border-radius: 4px;
     border: 1px solid #347EF9;
     color: #347EF9;
     padding: 0.375rem 1rem;
@@ -4018,7 +4016,7 @@ span.badge-notification[data-badge]::after {
     text-transform: uppercase;
     display: flex;
     align-items: center;
-    margin: 15px 0 20px 0;
+    margin: 15px 0;
     .ic-page-title {
       height: 18px;
       margin-right: 5px;
