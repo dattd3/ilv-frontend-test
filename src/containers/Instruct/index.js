@@ -7,68 +7,73 @@ import iconGlobal from '../../assets/img/global.PNG';
 import iconVersionHistory from '../../assets/img/icon/ic_version_history.svg';
 import HOCComponent from '../../components/Common/HOCComponent'
 
-const dataDummies = [
-   { 
-      title: 'Phiên bản 3.0.5',
-      desc: '- Thêm tính năng cập nhật quá trình công tác ngoài Tập đoàn cho VinES \n- Sửa lỗi hệ thống'
-   },
-   { 
-      title: 'Phiên bản 3.0.4',
-      desc: '- Thêm tính năng cập nhật quá trình công tác ngoài Tập đoàn cho VinES'
-   },
-   { 
-      title: 'Phiên bản 3.0.3',
-      desc: '- Thêm tính năng cập nhật quá trình công tác ngoài Tập đoàn cho VinES \n- Sửa lỗi hệ thống \n- Cải tiến tính năng đăng ký chấm dứt HĐLĐ \n- Thêm tính năng cập nhật quá trình công tác ngoài Tập đoàn cho VinES \n- Sửa lỗi hệ thống - Cải tiến tính năng đăng ký chấm dứt HĐLĐ'
-   },
-   { 
-      title: 'Phiên bản 3.0.2',
-      desc: '- Thêm tính năng cập nhật quá trình công tác ngoài Tập đoàn cho VinES \n- Sửa lỗi hệ thống'
-   },
-   { 
-      title: 'Phiên bản 3.0.1',
-      desc: '- Thêm tính năng cập nhật quá trình công tác ngoài Tập đoàn cho VinES'
-   },
-];
-
 class Instruct extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             mobileUri: [],
-            webUri: []
+            webUri: [],
+            histories: [],
         };
     }
 
     componentDidMount() {
-      const { t } = this.props;
+      this.fetchData();
+    }
+
+    async fetchData() {
+      try {
         let config = {
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+          },
+        };
+        const [guide, versions] = await Promise.all([
+          axios.get(
+            `${process.env.REACT_APP_REQUEST_URL}user/user-guide`,
+            config
+          ),
+          axios.get(
+            `${process.env.REACT_APP_REQUEST_URL}api/system/list/versions`,
+            {
+              params: {
+                appId: 1,
+                device: 'MOBILE',
+                type: 1,
+                pageIndex: 1,
+                pageSize: 5,
+              },
+              ...config,
             }
+          ),
+        ]);
+  
+        if (guide?.data?.data) {
+         guide?.data?.data.map((ele) => {
+            const stateTmp = {};
+            stateTmp[ele.isMobile ? 'mobileUri' : 'webUri'] = ele['docs'];
+            this.setState(stateTmp);
+          });
         }
-        axios.get(`${process.env.REACT_APP_REQUEST_URL}user/user-guide`, config)
-        .then(res => {
-            if (res && res.data && res.data.data) {
-               res.data.data.map(t => {
-                  const e = {};
-                  e[t.isMobile ? 'mobileUri': 'webUri'] = t['docs'];
-                  this.setState(e);
-               });
-            }
-        }).catch(error => {
-        });
+
+        if(versions?.data?.data) {
+         this.setState({ histories: versions?.data?.data?.lstData || [] })
+        }
+      } catch (err) {}
     }
 
     download(lang, p) {
       const data = this.state[p == "web" ? 'webUri' : 'mobileUri'];
       const uridata = data.filter(x => x.language == lang);
-      if(uridata.length){
-         window.open(uridata[0].fileUrl);
-      }
+      console.log('uridata: ', uridata)
+      // if(uridata.length){
+      //    window.open(uridata[0].fileUrl);
+      // }
     }
     
     render() {
-        const { t } = this.props;
+        const { t } = this.props,
+            { histories } = this.state;
         return <>
             <div className="text-dark user-manual-page">
                <h1 className="content-page-header">{t('instruct')}</h1>
@@ -142,13 +147,13 @@ class Instruct extends React.Component {
 
                <h1 className="content-page-header">{t('instruct_version_history')}</h1>
                <div className="card  p-3 version_histories">
-                  {dataDummies.map((ele, i) => (
+                  {histories.map((ele, i) => (
                      <div className="content-body" key={i}>
                         <img className="icon" src={iconVersionHistory} />
 
                         <div className="content">
-                           <div className="ttl"> {ele.title}</div>
-                           <div className="desc">{ele.desc}</div>
+                           <div className="ttl"> {`Phiên bản ${ele.versionCode || ''}`}</div>
+                           <div className="desc">{ele.forceUpdateContentVi}</div>
                         </div>
                      </div>
                   ))}
