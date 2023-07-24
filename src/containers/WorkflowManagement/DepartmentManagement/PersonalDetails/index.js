@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import FilterData from "../../ShareComponents/FilterData";
-import LeaveTimeCard from "../../ShareComponents/LeaveTimeData";
+import FilterData from "../../ShareComponents/FilterData/index";
+import LeaveTimeCard from "../../ShareComponents/LeaveTimeData/index";
 import TimeTableDetail from '../../../Timesheet/TimeTableDetail'
 import axios from "axios";
 import moment from "moment";

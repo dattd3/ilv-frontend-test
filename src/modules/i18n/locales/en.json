@@ -1874,5 +1874,6 @@
   "YourRelationshipWithEvaluatee": "Your relationship with Evaluatee",
   "RequiredYourRelationshipWithEvaluatee": "Please select your relationship with Evaluatee!",
   "RequiredEvaluationScore": "Please enter evaluation score!",
-  "Evaluation360ButtonSend": "Send"
+  "Evaluation360ButtonSend": "Send",
+  "WaitingForFeedback360": "Waiting for feedback (360)"
 }

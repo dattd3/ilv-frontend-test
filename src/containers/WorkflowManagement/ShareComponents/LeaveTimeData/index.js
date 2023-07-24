@@ -14,7 +14,7 @@ export default function LeaveTimeCard(props) {
   const [open, setOpen] = useState(false);
   return (
     <div className=" leave-time-card mb-2">
-      <div className="card shadow">
+      <div className="card">
         <div
           className={"card-header clearfix text-white " + "bg-" + props.bg}
           onClick={() => setOpen(!open)}

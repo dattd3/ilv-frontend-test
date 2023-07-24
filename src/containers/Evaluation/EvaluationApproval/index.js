@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next"
 import moment from 'moment'
 import axios from 'axios'
 import _ from 'lodash'
-import { evaluationStatus, actionButton, processStep, stepEvaluation360Config } from '../Constants'
+import { evaluationStatus, actionButton, processStep, stepEvaluation360Config, evaluation360Status } from '../Constants'
 import Constants from '../../../commons/Constants'
 import { getRequestConfigurations, getMuleSoftHeaderConfigurations } from '../../../commons/Utils'
 import LoadingModal from '../../../components/Common/LoadingModal'
@@ -35,6 +35,7 @@ function AdvancedFilter(props) {
     const { masterData, filter, updateData, tab } = props
 
     const currentSteps = [
+        { value: evaluation360Status.waitingEvaluation, label: t("WaitingForFeedback360") },
         { value: evaluationStatus.selfAssessment, label: t("EvaluationDetailEmployeeManagerAssessment") },
         { value: evaluationStatus.qlttAssessment, label: t("EvaluationDetailEmployeeManagerApprove") },
         { value: evaluationStatus.cbldApproved, label: t("EvaluationDetailCompleted") }
@@ -119,6 +120,7 @@ function AdvancedFilter(props) {
                                 <Select 
                                     placeholder={t("Select")} 
                                     isClearable={true} 
+                                    isMulti={false}
                                     value={filter.currentStep} 
                                     options={currentSteps} 
                                     onChange={e => handleInputChange('currentStep', e)} />
@@ -1162,7 +1164,7 @@ function EvaluationApproval(props) {
                                             ? stepEvaluation360.find(se => se.value == item?.status)?.label
                                             : currentSteps.find(step => step?.value == item?.status)?.label
                                             let sendDate = isEvaluation360 ? (item?.runFormDate && moment(item?.runFormDate).format('DD/MM/YYYY')) : (item?.sendDateLv1 && moment(item?.sendDateLv1).format('DD/MM/YYYY'))
-                                            let formCode = isEvaluation360 ? (item?.reviewFor || '') : (item?.formCode || '')
+                                            let formCode = isEvaluation360 ? (`${item?.formCode} - ${item?.reviewFor}`) : (item?.formCode || '')
 
                                             return <tr key={index} role='button' onClick={() => handleShowEvaluationDetail(item?.formCode, item?.checkPhaseFormId, item?.employeeCode, item?.reviewStreamCode)}>
                                                         <td className="c-form-code"><div className="form-code">{formCode}</div></td>
