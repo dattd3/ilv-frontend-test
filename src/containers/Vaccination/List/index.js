@@ -50,7 +50,7 @@ class Vaccination extends React.Component {
         const lastItem = listData && listData?.length > 0 ? listData[listData.length - 1] : {}
 
         return <>
-            <div className="row vaccine-info-page">
+            <div className="vaccine-info-page">
                 <div className="w-100">
                     <h1 className="content-page-header">{t("VaccinantionInformation")}</h1>
                 </div>

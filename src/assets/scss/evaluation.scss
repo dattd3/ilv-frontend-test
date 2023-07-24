@@ -3,7 +3,9 @@
     color: #000000;
     margin-top: 15px;
     .not-found-data {
-        margin-top: 20px;
+        margin: 15px 0 0 0;
+        padding: 15px;
+        font-size: 14px;
     }
     .card-evaluation {
         padding: 15px;
@@ -3000,6 +3002,19 @@
                 }
                 input {
                     width: 100%;
+                    font-size: 14px;
+                }
+                .wrap-date-input {
+                    position: relative;
+                    width: 100%;
+                    .input-img {
+                        position: absolute;
+                        top: 7px;
+                        right: 12px;
+                    }
+                    input[type="text"] {
+                        height: 38px;
+                    }
                 }
             }
             .btn-submit {
