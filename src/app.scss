@@ -3120,6 +3120,10 @@ span.badge-notification[data-badge]::after {
     button.btn {
       font-size: inherit;
     }
+    .btn {
+      font-size: 15px;
+      box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
+    }
     a.btn {
       &:last-child {
         margin-left: 5px;
@@ -3132,13 +3136,33 @@ span.badge-notification[data-badge]::after {
       }
     }
   }
+  .wrap-form-qna-search {
+    background: #FFFFFF;
+    padding: 15px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
+    border-radius: 4px;
+  }
   .form-qna-search {
+    margin-bottom: 0;
     input {
       font-size: inherit;
+      height: 38px;
     }
     .btn-search {
+      height: 38px;
       font-size: inherit;
+      width: 100%;
+      color: #FFFFFF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
+    .form-group {
+      margin-bottom: 0;
+    }
+  }
+  .content-page-header {
+    margin-bottom: 16px;
   }
 }
 .qna-detail-page {
@@ -3178,6 +3202,10 @@ span.badge-notification[data-badge]::after {
         outline: none;
       }
     }
+  }
+  .info-tab-content {
+    border-radius: 4px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
   }
 }
 .kpi-page {
@@ -3547,9 +3575,10 @@ span.badge-notification[data-badge]::after {
     z-index: 9999;
   }
   .filter-block {
-    padding-top: 1.5rem;
-    padding-bottom: 1.5rem;
+    padding-top: 15px;
+    padding-bottom: 15px;
     font-size: 15px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px !important;
     input {
       font-size: 14px;
       &::-webkit-input-placeholder { /* Chrome/Opera/Safari */
@@ -3572,7 +3601,7 @@ span.badge-notification[data-badge]::after {
       .btn-search {
         width: 100%;
         border: none;
-        border-radius: .3rem;
+        border-radius: 4px;
         background: #f6c23e;
         color: #FFFFFF;
         padding: 0.5rem 0;
@@ -3593,10 +3622,15 @@ span.badge-notification[data-badge]::after {
         justify-content: space-evenly;
       }
     }
+    .timesheet-box {
+      .title {
+        margin: 0 0 10px 0;
+      }
+    }
   }
   .btn-block {
     font-size: 14px;
-    margin-top: 1.5rem;
+    margin-top: 15px;
     button {
       font-size: inherit;
       background: #FFFFFF;
@@ -3611,8 +3645,9 @@ span.badge-notification[data-badge]::after {
   .result-block {
     color: #000000;
     font-size: 13px;
-    margin-top: 1.5rem;
-    padding: 1.5rem 1rem 1.5rem 1.5rem;
+    margin-top: 15px;
+    padding: 15px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
     .result-wrap-table {
       overflow: auto;
       max-height: 600px;
@@ -3964,6 +3999,9 @@ span.badge-notification[data-badge]::after {
 
 .user-manual-page {
   font-size: 14px;
+  & > .card {
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
+  }
   .item {
     .btn {
       font-size: inherit;

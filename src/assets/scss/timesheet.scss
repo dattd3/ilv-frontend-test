@@ -182,6 +182,9 @@
   }
   .detail-timesheet {
     margin-top: 1.5rem;
+    & > .card {
+      box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
+    }
     .btn-link {
       text-decoration: none;
       color: #858796;
@@ -784,6 +787,22 @@
   }
   &.department-timesheet {
     .timesheet-box {
+      box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px !important;
+      border-radius: 4px;
+      padding: 15px;
+      .wrap-date-input {
+        display: block;
+        position: relative;
+        margin-bottom: 0;
+        .react-datepicker-wrapper {
+          width: 100%;
+        }
+        .input-img {
+          position: absolute;
+          top: 7px;
+          right: 12px;
+        }
+      }
       .input-container {
         .ic-calendar {
           position: absolute;
@@ -794,10 +813,26 @@
           left: unset;
         }
       }
+      .btn-search {
+        color: #FFFFFF;
+        height: 38px;
+      }
+      &.search-block {
+        .title {
+          margin: 0 0 10px 0;
+        }
+        input[type="text"] {
+          font-size: 14px;
+          height: 38px;
+        }
+      }
     }
   }
   &.change-shift-report {
     .timesheet-box {
+      padding: 15px;
+      border-radius: 4px;
+      box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
       .content {
         button {
           width: unset;
@@ -814,11 +849,44 @@
         top: 8px;
         right: 10px;
       }
+      &.export-form {
+        .title {
+          margin: 0 0 10px 0;
+        }
+        .date-input {
+          height: 38px;
+        }
+        .btn-export {
+          width: 100%;
+          border-radius: 4px;
+          height: 38px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          img {
+            margin-right: 5px;
+          }
+        }
+        label.input-container {
+          position: relative;
+          margin-bottom: 0;
+          .input-img {
+            position: absolute;
+            height: unset;
+            width: unset;
+            top: 7px;
+            right: 12px;
+            bottom: unset;
+            left: unset;
+          }
+        }
+      }
     }
   }
   // Bảng chấm công khi CBLĐ vào xem chi tiết nhân viên
   &.employee-detail {
     .timesheet-box {
+      padding: 15px;
       .input-container {
         .input-img {
           top: 8px;
@@ -829,6 +897,34 @@
         position: absolute;
         top: 8px;
         right: 10px;
+      }
+      &.search-block {
+        border-radius: 4px;
+        box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
+        .title {
+          margin: 0 0 10px 0;
+        }
+        .react-datepicker-wrapper {
+          width: 100%;
+          input {
+            font-size: 14px;
+            height: 38px;
+          }
+        }
+        .wrap-date-input {
+          margin-bottom: 0;
+          position: relative;
+          width: 100%;
+          .input-img {
+            position: absolute;
+            top: 7px;
+            right: 12px;
+          }
+        }
+        .btn-search {
+          color: #FFFFFF;
+          height: 38px;
+        }
       }
     }
     .detail {
@@ -884,6 +980,8 @@
       table-layout: fixed;
       padding: 0;
       width: 100%;
+      border-radius: 4px !important;
+      box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
       .arrow::after, .bs-popover-bottom .arrow::after {
         border-left-color: #6CB5F9 !important;
         border-right-color: #6CB5F9 !important;

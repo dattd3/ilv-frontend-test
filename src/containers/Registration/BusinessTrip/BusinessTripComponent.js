@@ -1049,25 +1049,36 @@ class BusinessTripComponent extends React.Component {
                                     </div>
                                 }
                                 <div className="row" style={{ marginTop: 5 }}>
-                                    <div className="col-5">
+                                    <div className="col-sm-6 col-md-5">
                                         <p className="title">{t('TypeOfBizTripAndTraining')}</p>
                                         <div>
                                             <Select name="attendanceQuotaType" value={req[0]?.attendanceQuotaType} onChange={attendanceQuotaType => this.handleSelectChange('attendanceQuotaType', attendanceQuotaType, req[0].groupId)} placeholder={t('Select')} key="attendanceQuotaType" options={attendanceQuotaTypes} />
                                         </div>
-
                                         {this.error('attendanceQuotaType', req[0].groupId)}
+                                        <div className="row business-type business-type-note">
+                                            <div className="col-md-12">
+                                                <div className="row">
+                                                    <div className="col-md-6 text-info smaller">* {t('PerDiemIncluded')}</div>
+                                                    <div className="col-md-6 text-info">* {t('NoPerDiem')}</div>
+                                                </div>
+                                                <div className="row">
+                                                    <div className="col-md-6 text-info smaller">* {t('MealsIncluded')}</div>
+                                                    <div className="col-md-6 text-info">* {t('NoMeals')}</div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                     {
                                         req[0]?.attendanceQuotaType?.value != "DT01" && !['V073'].includes(localStorage.getItem("companyCode")) ?
                                             <>
-                                                <div className="col-5">
+                                                <div className="col-sm-6 col-md-4">
                                                     <p className="title">{t('Location')}</p>
                                                     <div>
                                                         <Select name="place" value={req[0]?.place} onChange={place => this.handleSelectChange('place', place, req[0]?.groupId)} placeholder={t('Select')} key="place" options={places} />
                                                     </div>
                                                     {this.error('place', req[0]?.groupId)}
                                                 </div>
-                                                <div className="col-2">
+                                                <div className="col-sm-12 col-md-3">
                                                     <p className="title">{t('MeansOfTransportation')}</p>
                                                     <div>
                                                         <Select name="vehicle" value={req[0].vehicle} onChange={vehicle => this.handleSelectChange('vehicle', vehicle, req[0].groupId)} placeholder={t('Select')} key="vehicle" options={vehicles} />
@@ -1078,19 +1089,6 @@ class BusinessTripComponent extends React.Component {
                                             : null
                                     }
                                 </div>
-                                <div className="row business-type">
-                                    <div className="col-12">
-                                        <div className="row">
-                                            <div className="col-lg-3 col-md-6 text-info smaller">* {t('PerDiemIncluded')}</div>
-                                            <div className="col-lg-4 col-md-6 text-info">* {t('NoPerDiem')}</div>
-                                        </div>
-                                        <div className="row">
-                                            <div className="col-lg-3 col-md-6 text-info smaller">* {t('MealsIncluded')}</div>
-                                            <div className="col-lg-4 col-md-6 text-info">* {t('NoMeals')}</div>
-                                        </div>
-                                    </div>
-                                </div>
-
                                 <div className="row">
                                     <div className="col-12">
                                         <p className="title">{t('ReasonTripAndTrainning')}</p>

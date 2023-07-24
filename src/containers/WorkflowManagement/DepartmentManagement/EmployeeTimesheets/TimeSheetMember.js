@@ -594,7 +594,7 @@ function TimeSheetMember(props) {
 
     return (
         <div className="detail-timesheet">
-            <div className="card shadow">
+            <div className="card">
                 {/* <div className="card-header bg-success text-white text-uppercase">{t("WorkingDaysDetail")}</div> */}
                 <div className="card-body">
                     <Content timeTables={props.timesheets} dayList={props.dayList} dateChanged={props.dateChanged} employeesForFilter={props.employeesForFilter} employeeSelectedFilter={props.employeeSelectedFilter} updateTimeSheetsParent={updateTimeSheetsParent} />
