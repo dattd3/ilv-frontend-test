@@ -358,7 +358,7 @@ class LeaveFund extends React.Component {
               <div className="btn-block">
                 <button type="button" className="btn btn-outline-success" onClick={this.exportLeaveFundToExcel}><i className="fas fa-file-excel"></i>{t("ExportFile")}</button>
               </div>
-              <div className="card border shadow result-block">
+              <div className="card border result-block">
                 <div className="result-wrap-table">
                   <table className="result-table" id="result-table">
                     <thead>

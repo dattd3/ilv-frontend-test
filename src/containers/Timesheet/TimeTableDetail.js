@@ -997,7 +997,7 @@ const processDataForTable = (data1, fromDateString, toDateString, reasonData) =>
 
   return (
     <div className="detail mb-2">
-      <div className="card shadow time-sheet-table">
+      <div className="card time-sheet-table">
         <div className="card-header card-header-text" onClick={() => setOpen(!open)}>
           <div className="text-uppercase">{t("WorkingDaysDetail")}</div>
           {

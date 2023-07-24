@@ -197,7 +197,7 @@ class FilterData extends React.Component {
             {
               useDateFilter === false ? null :
                 <>
-                  <div className="col-lg-3">
+                  <div className="col-md-3">
                     <div className="title">{t("From")}</div>
                     <label className="wrap-date-input">
                         <DatePicker
@@ -214,7 +214,7 @@ class FilterData extends React.Component {
                         <span className="input-group-addon input-img"><img src={IconDatePicker} alt="Date" /></span>
                     </label>
                   </div>
-                  <div className="col-lg-3">
+                  <div className="col-md-3">
                     <div className="title">{t("To")}</div>
                     <label className="wrap-date-input">
                         <DatePicker
@@ -235,7 +235,7 @@ class FilterData extends React.Component {
                   </div>
                 </>
             }
-            <div className="col-lg-3">
+            <div className="col-md-3">
               <div className="title">{t("staff_selection_label")}{isUserRequired && <span className="required">(*)</span>}</div>
               <SelectTab className="content input-container" selectedMembers={selectedMembers} onClick={this.onClickSelectTab}
                 onCloseTab={this.onCloseTabEvent} onCloseAll={this.onCloseAllEvent} />
@@ -244,7 +244,7 @@ class FilterData extends React.Component {
                 )
               }
             </div>
-            <div className="col-lg-3">
+            <div className="col-md-3">
               <div className="title">&nbsp;</div>
               <div className="content">
                 <button

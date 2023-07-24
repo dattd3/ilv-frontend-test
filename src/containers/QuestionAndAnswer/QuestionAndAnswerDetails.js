@@ -299,7 +299,7 @@ class QuestionAndAnswerDetails extends React.Component {
               <h1 className="content-page-header">{t("QuestionAndAnswer")}</h1>
               { question && isShowCommentEditor && <Button variant="outline-primary pl-5 pr-5" onClick={() => this.showSelectSupporterModal(true)}>{t("EscalateToManagerOrHr")}</Button> }
             </div>
-            <Container fluid className="info-tab-content shadow mb-4">
+            <Container fluid className="info-tab-content mb-4">
               <Carousel
                 controls={true}
                 indicators={false}
@@ -412,7 +412,7 @@ class QuestionAndAnswerDetails extends React.Component {
               </Carousel>
             </Container>
 
-            <Container fluid className="info-tab-content shadow pl-5 pr-5">
+            <Container fluid className="info-tab-content pl-5 pr-5">
               <div className="content-center">
                 <div className="media">
                   <span className="align-self-center mr-25">
