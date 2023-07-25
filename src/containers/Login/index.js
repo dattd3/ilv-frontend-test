@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Button, Modal, Carousel } from 'react-bootstrap';
 import { useTranslation } from "react-i18next";
+import axios from "axios"
 import logo from '../../assets/img/LogoVingroup.svg';
 import imageIos from '../../assets/img/image_ios.png';
 import imageAndroid from '../../assets/img/image_android.png';
@@ -15,7 +16,7 @@ import Banner from 'assets/img/banner.svg'
 import { useLocalizeStore } from '../../modules';
 import Constants from "../../commons/Constants";
 import Select, { components } from 'react-select'
-import { getStateRedirect } from "../../commons/commonFunctions";
+import { getStateRedirect, getRequestConfigs } from "../../commons/commonFunctions";
 
 const CustomOption = ({ children, ...props }) => {
   return (<components.ValueContainer {...props}>
@@ -65,6 +66,7 @@ function Login() {
   const localizeStore = useLocalizeStore();
   const { t } = useTranslation();
   const [modalShow, setModalShow] = useState(false);
+  const [isDisableButtonLogin, setIsDisableButtonLogin] = useState(false)
   const [langCode, setLangCode] = useState(localStorage.getItem("locale")  || Constants.LANGUAGE_VI);
   const langData = [
     { value: Constants.LANGUAGE_VI, label: t("LangViet") },
@@ -105,6 +107,24 @@ function Login() {
   };
 
   useEffect(() => {
+    const fetchMaintenanceInfo = async () => {
+      const config = getRequestConfigs()
+      config.params = {
+        appId: 4,
+        device: 'WEBSITE',
+        type: 2, // Chế độ maintain
+      }
+      const response = await axios.get(`${process.env.REACT_APP_REQUEST_URL}api/guest/system`, config)
+      
+      if (response?.data?.data?.maintainStatus) {
+        // setIsDisableButtonLogin(true)
+      }
+    }
+
+    fetchMaintenanceInfo()
+  }, [])
+
+  useEffect(() => {
     localizeStore.setLocale(langCode || Constants.LANGUAGE_VI)
   }, [langCode, localizeStore]);
 
@@ -141,8 +161,8 @@ function Login() {
                       <div className="text-center w-100 d-flex justify-content-center" style={{ marginBottom: 40 }}>
                         <img src={logo} className="logo-login" alt='Logo' />
                       </div>
-                      <Button className="btn-user btn-block btn-login" variant="primary" onClick={handleLoginClick}> {t("Login")}</Button>
-                      <Button className="btn-user btn-block btn-help-login" variant="primary" onClick={() => setModalShow(true)}> {t("HelpToLogin")}</Button>
+                      <Button className="btn-user btn-block btn-login" variant="primary" onClick={handleLoginClick} disabled={isDisableButtonLogin}>{t("Login")}</Button>
+                      <Button className="btn-user btn-block btn-help-login" variant="primary" onClick={() => setModalShow(true)}>{t("HelpToLogin")}</Button>
                       <p className="select-title text-center" >{t('LoginGuideOS')}</p>
 
                       <div className="link-mobile">
