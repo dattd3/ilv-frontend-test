@@ -112,7 +112,7 @@ function ListNotifications(props) {
                         </div>
                         </div>
                     </div>
-                }) : <p className='text-center'>{t("NoNotifications")} !</p>
+                }) : <div className='text-center'>{t("NoNotifications")} !</div>
             }
             </>;
         }

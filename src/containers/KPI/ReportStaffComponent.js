@@ -16,13 +16,13 @@ class ReportStaffComponent extends React.Component {
                 <div className="row">
                     {/*HIỂN THỊ KẾT QUẢ ĐÁNH GIÁ THEO QUÝ*/}
                     <div className="col-8 panel">                                                      
-                        <div className="card shadow" style={{'border': '1px solid '+ this.props.Color }}>        
-                            <div style={{'backgroundColor': this.props.Color}} className="text-white p-3 h6 text-uppercase text-center">Quý {this.props.Quarter} năm {this.props.Period}</div>                      
+                        <div className="card" style={{'border': '1px solid '+ this.props.Color }}>        
+                            <div style={{'backgroundColor': this.props.Color}} className="text-white p-3 h6 text-uppercase text-center block-title">Quý {this.props.Quarter} năm {this.props.Period}</div>                      
                             <div className="card-body">          
                                 <table className="table table-bordered">
                                     <tbody>         
                                         <tr>
-                                            <td className="text-left text-primary item-row"><strong>{t("NumberOrder")}</strong></td>
+                                            <td className="text-center text-primary item-row"><strong>{t("NumberOrder")}</strong></td>
                                             <td className="text-left text-primary item-row"><strong>{t("EvaluationItems")}</strong></td>
                                             <td className="text-center text-primary item-row"><strong>{t("SelfEvaluation")}</strong></td>
                                             <td className="text-center text-primary item-row"><strong>{t("LineManagerSEvaluation")}</strong></td>
@@ -35,13 +35,13 @@ class ReportStaffComponent extends React.Component {
                                         </tr>
                                         <tr>
                                             <td className="item-row">02</td>
-                                            <td className="item-row" className="text-left">{t("JobPerformance")}</td>
+                                            <td className="item-row text-left">{t("JobPerformance")}</td>
                                             <td className="item-row">{this.props.kpiInfo.NDCVself}</td>
                                             <td className="item-row">{this.props.kpiInfo.NDCVmanager}</td>
                                         </tr>
                                         <tr>
                                             <td className="item-row"><strong>03</strong></td>
-                                            <td className="item-row" className="text-left"><strong>{t("OverallScore")}</strong></td>
+                                            <td className="item-row text-left"><strong>{t("OverallScore")}</strong></td>
                                             <td className="item-row"><strong>{this.props.kpiInfo.SelfOverAll}</strong></td>
                                             <td className="item-row"><strong>{this.props.kpiInfo.Score}</strong></td>
                                         </tr>
@@ -53,8 +53,8 @@ class ReportStaffComponent extends React.Component {
             
                     <div className="col-4 panel" style={{'paddingRight':'0px'}}>
                         {/* ĐÁNH GIÁ & PHÊ DUYỆT */}
-                        <div className="card shadow" style={{'height':'100%','border': '1px solid '+ this.props.Color}}>
-                            <div style={{'backgroundColor': this.props.Color}} className="text-white p-3 h6 text-uppercase text-center">{t("EvaluationAndApproval")}</div>
+                        <div className="card" style={{'height':'100%','border': '1px solid '+ this.props.Color}}>
+                            <div style={{'backgroundColor': this.props.Color}} className="text-white p-3 h6 text-uppercase text-center block-title">{t("EvaluationAndApproval")}</div>
                             <div className="card-body" style={{'padding':'0px'}}>
                                 <br/>
                                 <div className="text-center" style={{'color':'#FF0000'}}>{t("FinalScore")}</div>

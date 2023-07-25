@@ -652,11 +652,11 @@
 
 .vg-dard-board {
   background-color: #C11D2A;
-  border-radius: 10px;
-  margin-left: 10px;
-  margin-right: 10px;
+  border-radius: 4px;
+  margin-left: 15px;
+  margin-right: 15px;
   color: white;
-  padding: 0.5rem 0 !important;
+  padding: 10px 0 !important;
 }
 
 .opacity-1 {
@@ -1301,7 +1301,7 @@ span.badge-notification[data-badge]::after {
   }
   & > button {
     height: 34px;
-    border-radius: 8px;
+    border-radius: 4px;
     width: 34px;
     border: 1px solid #707070;
     padding: 0;
@@ -1573,7 +1573,6 @@ span.badge-notification[data-badge]::after {
 
 .personal-info {
   font-size: inherit;
-  padding: 1em 0;
   font-size: 14px;
   .edit-button {
     font-size: inherit;
@@ -2267,8 +2266,10 @@ span.badge-notification[data-badge]::after {
   .info-tab-content {
     padding: 1rem;
     background-color: #fff;
-    border-radius: 0.5em;
-
+    border-radius: 4px;
+    &.education, &.relationship, &.labor-contract, &.change-working-appointment {
+      box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px !important;
+    }
     table {
       width: 100%;
       tr {
@@ -2357,10 +2358,10 @@ span.badge-notification[data-badge]::after {
     }
     .nav-item {
       border: 1px solid #ccc;
-      border-radius: 0.5em;
-      // margin-right: 2em;
+      border-radius: 4px;
       background-color: #fff;
       color: #293281;
+      box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
     }
     .active {
       background-color: #347ef9;
@@ -2445,6 +2446,56 @@ span.badge-notification[data-badge]::after {
         tr {
           td {
             border-top: 1px solid #DDDDDD;
+          }
+        }
+      }
+    }
+  }
+  &.working-process {
+    .nav-tabs {
+      padding: 0;
+      .nav-item {
+        border-radius: 4px;
+        box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
+      }
+    }
+    .tab-content {
+      margin-top: 20px;
+      // box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
+      .info-tab-content {
+        border-radius: 4px;
+      }
+    }
+    .bonus-penalty {
+      .search-block {
+        font-size: 14px;
+        padding: 15px;
+        background: #FFFFFF;
+        font-size: inherit;
+        border-radius: 4px;
+        box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
+        input[type="text"] {
+          font-size: inherit;
+          height: 38px;
+        }
+        .title {
+          margin: 0 0 10px 0;
+        }
+        .btn-search {
+          color: #FFFFFF;
+          width: 100%;
+          font-size: inherit;
+          height: 38px;
+        }
+        .wrap-date-input {
+          position: relative;
+          .input-img {
+            position: absolute;
+            width: auto;
+            height: auto;
+            bottom: 0;
+            right: 12px;
+            top: 7px;
           }
         }
       }
@@ -3207,17 +3258,22 @@ span.badge-notification[data-badge]::after {
 }
 .kpi-page {
   font-size: 14px;
+  color: #000000;
   .kpi-staff-info {
-    margin-bottom: 15px;
+    margin-bottom: 10px;
     .main-info-table {
       margin-bottom: 0;
       td {
         color: #000000;
-        padding: 1rem 0.7rem;
+        padding: 10px 15px;
         div {
           padding: 0;
         }
       }
+    }
+    .card {
+      box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
+      border-radius: 4px;
     }
   }
   .kpi-detail {
@@ -3265,39 +3321,53 @@ span.badge-notification[data-badge]::after {
     .success-factor-guide-line {
       margin-top: 15px;
     }
+    .card {
+      .card-body {
+        padding: 15px;
+        table {
+          margin-bottom: 0;
+        }
+      }
+    }
+    .block-title {
+      margin-bottom: 0;
+    }
   }
   .kpi-staff-search {
-    margin-bottom: 15px;
+    margin-bottom: 10px;
     .table {
       color: #000000;
+      margin-bottom: 0;
     }
     .search-button {
-      width: 350px;
-      height: 40px;
+      width: 200px;
+      height: 38px;
       background: #f9c20a 0% 0% no-repeat padding-box;
-      border-radius: 30px;
+      border-radius: 4px;
       color: #ffffff;
       border: none;
-      margin-left: 20px;
       &:focus {
         outline: none;
       }
     }
+    .card {
+      box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
+      border-radius: 4px;
+    }
   }
   .title-group {
-    color: #283280 !important;
     text-transform: uppercase !important;
-    font-size: 15px !important;
+    font-size: 16px !important;
     font-weight: bold;
     overflow: hidden;
-    padding: 5px 0;
+    padding: 10px 0;
   }
   .success-factor-link-icon {
     width: 13px;
     height: 14px;
   }
   .success-factor-link {
-    color: #51b1fb;
+    color: #007bff;
     font-size: inherit;
   }
 }
@@ -3851,6 +3921,14 @@ span.badge-notification[data-badge]::after {
 
 .vaccine-info-page {
   font-size: 14px;
+  .card {
+    border-radius: 4px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
+    margin-top: 20px;
+    .table {
+      margin-bottom: 0;
+    }
+  }
   .table {
     overflow-x: auto;
     &::-webkit-scrollbar {
@@ -3872,6 +3950,7 @@ span.badge-notification[data-badge]::after {
     table {
       table-layout: fixed;
       border-collapse: separate;
+      margin-bottom: 0;
       tr {
         th {
           color: #383838;
@@ -3955,7 +4034,11 @@ span.badge-notification[data-badge]::after {
     border-radius: 4px;
     border: 1px solid #347EF9;
     color: #347EF9;
-    padding: 0.375rem 1rem;
+    padding: 0 15px;
+    height: 38px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     i {
       margin-right: 5px;
     }
@@ -4451,8 +4534,8 @@ span.badge-notification[data-badge]::after {
   }
 }
 .footer-dash-board {
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
+  margin-top: 15px;
+  margin-bottom: 1px;
 }
 .dialog-loading {
   z-index: 99999999999;

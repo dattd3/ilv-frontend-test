@@ -83,7 +83,7 @@ class ConfirmPasswordModal extends React.Component {
                         <Form.Row>
                             <Col xs={9}><Form.Control placeholder={t("EnterPasswordToSeePayslip")} type="password" onKeyPress={this.keyPress.bind(this)} onChange={this.setPassword.bind(this)} /></Col>
                             <Col xs={3}>
-                                <Button type="button" className="mb-3 btn-submit" onClick={this.checkPassword.bind(this)} disabled={this.state.disabledSubmitButton}>
+                                <Button type="button" className="btn-submit" onClick={this.checkPassword.bind(this)} disabled={this.state.disabledSubmitButton}>
                                     {!this.state.disabledSubmitButton ? t("Confirm") :
                                         <Spinner
                                             as="span"
