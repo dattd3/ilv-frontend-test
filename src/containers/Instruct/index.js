@@ -1,9 +1,10 @@
+import _ from "lodash";
 import React from "react";
 import axios from 'axios';
 import { withTranslation } from 'react-i18next';
 import iconPhone from '../../assets/img/phone.PNG';
 import iconGlobal from '../../assets/img/global.PNG';
-import _ from "lodash";
+import iconVersionHistory from '../../assets/img/icon/ic_version_history.svg';
 import HOCComponent from '../../components/Common/HOCComponent'
 
 class Instruct extends React.Component {
@@ -11,28 +12,54 @@ class Instruct extends React.Component {
         super(props);
         this.state = {
             mobileUri: [],
-            webUri: []
+            webUri: [],
+            histories: [],
         };
     }
 
     componentDidMount() {
-      const { t } = this.props;
+      this.fetchData();
+    }
+
+    async fetchData() {
+      try {
         let config = {
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+          },
+        };
+        const [guide, versions] = await Promise.all([
+          axios.get(
+            `${process.env.REACT_APP_REQUEST_URL}user/user-guide`,
+            config
+          ),
+          axios.get(
+            `${process.env.REACT_APP_REQUEST_URL}api/system/list/versions`,
+            {
+              params: {
+                appId: 1,
+                device: 'MOBILE',
+                type: 1,
+                pageIndex: 1,
+                pageSize: 5,
+              },
+              ...config,
             }
+          ),
+        ]);
+  
+        if (guide?.data?.data) {
+         guide?.data?.data.map((ele) => {
+            const stateTmp = {};
+            stateTmp[ele.isMobile ? 'mobileUri' : 'webUri'] = ele['docs'];
+            this.setState(stateTmp);
+          });
         }
-        axios.get(`${process.env.REACT_APP_REQUEST_URL}user/user-guide`, config)
-        .then(res => {
-            if (res && res.data && res.data.data) {
-               res.data.data.map(t => {
-                  const e = {};
-                  e[t.isMobile ? 'mobileUri': 'webUri'] = t['docs'];
-                  this.setState(e);
-               });
-            }
-        }).catch(error => {
-        });
+
+        if(versions?.data?.data) {
+         this.setState({ histories: versions?.data?.data?.lstData || [] })
+        }
+      } catch (err) {}
     }
 
     download(lang, p) {
@@ -44,7 +71,8 @@ class Instruct extends React.Component {
     }
     
     render() {
-        const { t } = this.props;
+        const { t } = this.props,
+            { histories } = this.state;
         return <>
             <div className="text-dark user-manual-page">
                <h1 className="content-page-header">{t('instruct')}</h1>
@@ -114,6 +142,24 @@ class Instruct extends React.Component {
                         </div>
                      </div>
                   </div>
+               </div>
+
+               <h1 className="content-page-header">{t('instruct_version_history')}</h1>
+               <div className="card  p-3 version_histories">
+                  {histories.length > 0 ? histories.map((ele, i) => (
+                     <div className="content-body" key={i}>
+                        <img className="icon" src={iconVersionHistory} />
+
+                        <div className="content">
+                           <div className="ttl"> {`Phiên bản ${ele.versionCode || ''}`}</div>
+                           <div className="desc">{ele.forceUpdateContentVi}</div>
+                        </div>
+                     </div>
+                  )) : (
+                     <div className="content-body">
+                        <div>No data</div>
+                     </div>
+                  )}
                </div>
             </div>
         </>
