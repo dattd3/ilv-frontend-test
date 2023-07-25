@@ -65,10 +65,9 @@ class Instruct extends React.Component {
     download(lang, p) {
       const data = this.state[p == "web" ? 'webUri' : 'mobileUri'];
       const uridata = data.filter(x => x.language == lang);
-      console.log('uridata: ', uridata)
-      // if(uridata.length){
-      //    window.open(uridata[0].fileUrl);
-      // }
+      if(uridata.length){
+         window.open(uridata[0].fileUrl);
+      }
     }
     
     render() {
@@ -147,7 +146,7 @@ class Instruct extends React.Component {
 
                <h1 className="content-page-header">{t('instruct_version_history')}</h1>
                <div className="card  p-3 version_histories">
-                  {histories.map((ele, i) => (
+                  {histories.length > 0 ? histories.map((ele, i) => (
                      <div className="content-body" key={i}>
                         <img className="icon" src={iconVersionHistory} />
 
@@ -156,7 +155,11 @@ class Instruct extends React.Component {
                            <div className="desc">{ele.forceUpdateContentVi}</div>
                         </div>
                      </div>
-                  ))}
+                  )) : (
+                     <div className="content-body">
+                        <div>No data</div>
+                     </div>
+                  )}
                </div>
             </div>
         </>
