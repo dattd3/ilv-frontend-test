@@ -11,7 +11,7 @@
         padding: 15px;
         .filter-block {
             .label-filter {
-                margin-bottom: 5px;
+                margin-bottom: 10px;
             }
             .form-filter {
                 display: flex;
@@ -3023,7 +3023,9 @@
                 align-items: center;
                 background: #347EF9;
                 font-size: 14px;
-                border-radius: 5px;
+                border-radius: 4px;
+                height: 38px;
+                padding: 0 20px;
                 img {
                     margin-right: 5px;
                 }

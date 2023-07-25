@@ -4,6 +4,7 @@ import 'react-datepicker/dist/react-datepicker.css'
 import moment from 'moment'
 import vi from 'date-fns/locale/vi'
 import { withTranslation } from "react-i18next"
+import IconDatePicker from 'assets/img/icon/Icon_DatePicker.svg'
 registerLocale("vi", vi)
 
 class WorkingProcessSearch extends React.Component {
@@ -39,12 +40,12 @@ class WorkingProcessSearch extends React.Component {
   render() {
     const { t } = this.props
     return <>
-    <div className="timesheet-box shadow p-3 mb-10">
+    <div className="search-block">
       <div className="row">
-        <div className="col">
+        <div className="col-md-4">
           <div className="title">{t("From")}</div>
           <div className="content input-container">
-            <label>
+            <label className="wrap-date-input">
               <DatePicker 
                 name="startDate" 
                 selectsStart 
@@ -54,15 +55,15 @@ class WorkingProcessSearch extends React.Component {
                 onChange={this.setStartDate}
                 dateFormat="dd/MM/yyyy"
                 locale="vi"
-                className="form-control form-control-lg input"/>
-                <span className="input-group-addon input-img"><i className="fas fa-calendar-alt"></i></span>
+                className="form-control input"/>
+                <span className="input-img"><img src={IconDatePicker} alt="Date" /></span>
             </label>
           </div>
         </div>
-        <div className="col">
+        <div className="col-md-4">
           <div className="title">{t("To")}</div>
           <div className="content input-container">
-          <label>
+            <label className="wrap-date-input">
               <DatePicker 
                 name="endDate" 
                 selectsEnd 
@@ -73,15 +74,15 @@ class WorkingProcessSearch extends React.Component {
                 onChange={this.setEndDate}
                 dateFormat="dd/MM/yyyy"
                 locale="vi"
-                className="form-control form-control-lg input"/>
-              <span className="input-group-addon input-img"><i className="fas fa-calendar-alt"></i></span>
+                className="form-control input"/>
+              <span className="input-img"><img src={IconDatePicker} alt="Date" /></span>
             </label>
           </div>
         </div>
-        <div className="col">
+        <div className="col-md-4">
         <div className="title">&nbsp;</div>
           <div className="content">
-          <button type="button" className="btn btn-lg btn-warning btn-search" onClick={this.search}>{t("SearchLabel")}</button>
+          <button type="button" className="btn btn-warning btn-search" onClick={this.search}>{t("SearchLabel")}</button>
           </div>
         </div>
       </div>

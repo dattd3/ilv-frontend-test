@@ -1,5 +1,6 @@
 import React from 'react'
 import { withTranslation } from "react-i18next"
+
 class StaffInfo extends React.Component {
   constructor(props) {
     super(props)
@@ -14,7 +15,7 @@ class StaffInfo extends React.Component {
     return (
       <div className="kpi-staff-info">
         <div className="title-group">{t("EmployeeInfo")}</div>
-        <div className="card border shadow">
+        <div className="card border">
           <table className="table table-borderless main-info-table">
             <tbody>
               <tr>
