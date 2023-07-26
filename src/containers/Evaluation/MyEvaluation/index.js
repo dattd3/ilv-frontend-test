@@ -165,7 +165,7 @@ function MyEvaluation(props) {
         <StatusModal show={statusModal.isShow} content={statusModal.content} isSuccess={statusModal.isSuccess} onHide={onHideStatusModal} />
         <div className="my-evaluation-page">
             <h1 className="content-page-header">{t("EvaluationLabel")}</h1>
-            <div className="card shadow card-evaluation">
+            <div className="card card-evaluation">
                 <form onSubmit={handleOnSubmit}>
                     <div className="filter-block">
                         <p className="label-filter">{t("EvaluationSelectYear")}</p>
