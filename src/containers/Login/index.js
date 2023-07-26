@@ -17,6 +17,7 @@ import { useLocalizeStore } from '../../modules';
 import Constants from "../../commons/Constants";
 import Select, { components } from 'react-select'
 import { getStateRedirect, getRequestConfigs } from "../../commons/commonFunctions";
+import map from "containers/map.config"
 
 const CustomOption = ({ children, ...props }) => {
   return (<components.ValueContainer {...props}>
@@ -66,7 +67,6 @@ function Login() {
   const localizeStore = useLocalizeStore();
   const { t } = useTranslation();
   const [modalShow, setModalShow] = useState(false);
-  const [isDisableButtonLogin, setIsDisableButtonLogin] = useState(false)
   const [langCode, setLangCode] = useState(localStorage.getItem("locale")  || Constants.LANGUAGE_VI);
   const langData = [
     { value: Constants.LANGUAGE_VI, label: t("LangViet") },
@@ -110,14 +110,13 @@ function Login() {
     const fetchMaintenanceInfo = async () => {
       const config = getRequestConfigs()
       config.params = {
-        appId: 4,
-        device: 'WEBSITE',
-        type: 2, // Chế độ maintain
+        appId: Constants.MAINTENANCE.APP_ID,
+        device: Constants.MAINTENANCE.DEVICE,
+        type: Constants.MAINTENANCE.MODE,
       }
       const response = await axios.get(`${process.env.REACT_APP_REQUEST_URL}api/guest/system`, config)
-      
       if (response?.data?.data?.maintainStatus) {
-        // setIsDisableButtonLogin(true)
+        window.location.href = map.Maintenance
       }
     }
 
@@ -161,7 +160,7 @@ function Login() {
                       <div className="text-center w-100 d-flex justify-content-center" style={{ marginBottom: 40 }}>
                         <img src={logo} className="logo-login" alt='Logo' />
                       </div>
-                      <Button className="btn-user btn-block btn-login" variant="primary" onClick={handleLoginClick} disabled={isDisableButtonLogin}>{t("Login")}</Button>
+                      <Button className="btn-user btn-block btn-login" variant="primary" onClick={handleLoginClick}>{t("Login")}</Button>
                       <Button className="btn-user btn-block btn-help-login" variant="primary" onClick={() => setModalShow(true)}>{t("HelpToLogin")}</Button>
                       <p className="select-title text-center" >{t('LoginGuideOS')}</p>
 
