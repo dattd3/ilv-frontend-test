@@ -234,7 +234,7 @@ const Evaluation360 = ({ evaluationFormId, formCode, employeeCode }) => {
 
     return (
       <div className="employee-info">
-        <div className="title">{t("EmployeeInformationIsEvaluated")}</div>
+        <div className="title">I. {t("EmployeeInformationIsEvaluated")}</div>
         <div className="detail align-items-start">
           <div className="left">
             <div className="info-item">

@@ -37,7 +37,7 @@ const VinGroup = ({ evaluationFormDetail, isEdit, currentLocale, errors, handleI
                                         ? (<div className="score-label">{target?.seftPoint ?? ''}</div>)
                                         : (
                                             <select onChange={(e) => handleInputChange(i, 'seftPoint', e)} value={target?.seftPoint ?? ''} disabled={isDisableInput}>
-                                                <option value=''>{t("EvaluationDetailPartSelectScore")}</option>
+                                                <option value=''>{t("Select")}</option>
                                                 {
                                                     (scores || []).map((score, i) => {
                                                         return <option value={score} key={i}>{score}</option>
