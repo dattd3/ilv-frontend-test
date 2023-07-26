@@ -73,6 +73,7 @@ const ComposeApiWithGuard = function ({ children }) {
           }]);
           if (err.response.status === 401) {
             guard.setLogOut();
+            window.location.href = process.env.REACT_APP_AWS_COGNITO_IDP_SIGNOUT_URL
             // Auth.signOut();
           } else if (err.response.status === 403) {
             render(<AccessDenied />, document.getElementById('main-content'));
@@ -93,6 +94,7 @@ const ComposeApiWithGuard = function ({ children }) {
         }]);
         if (err.response.status === 401) {
           guard.setLogOut();
+          window.location.href = process.env.REACT_APP_AWS_COGNITO_IDP_SIGNOUT_URL
           // Auth.signOut();
         } else if (err.response.status === 403) {
           render(<AccessDenied />, document.getElementById('main-content'));
