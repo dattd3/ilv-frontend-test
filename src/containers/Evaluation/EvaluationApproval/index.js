@@ -1124,7 +1124,7 @@ function EvaluationApproval(props) {
         <div className="evaluation-approval-page">
             <h1 className="content-page-header">{t("EvaluationLabel")}</h1>
             <div className="filter-block">
-                <div className="card shadow card-filter">
+                <div className="card card-filter">
                     <Tabs defaultActiveKey={activeTab} onSelect={key => SetActiveTab(key)}>
                         <Tab eventKey={approvalTabCode} title={t("EvaluationApprovalTab")} className="tab-item" id='approval-tab'>
                             <ApprovalTabContent 
@@ -1147,7 +1147,7 @@ function EvaluationApproval(props) {
             <div className="data-block">
                 {
                     activeTab === approvalTabCode && 
-                    <div className="card shadow approval-data">
+                    <div className="card approval-data">
                     {
                         evaluationData?.data?.length > 0 ?
                         <>
@@ -1172,6 +1172,9 @@ function EvaluationApproval(props) {
                                             : currentSteps.find(step => step?.value == item?.status)?.label
                                             let sendDate = isEvaluation360 ? (item?.runFormDate && moment(item?.runFormDate).format('DD/MM/YYYY')) : (item?.sendDateLv1 && moment(item?.sendDateLv1).format('DD/MM/YYYY'))
                                             let formCode = isEvaluation360 ? (`${item?.formCode} - ${item?.reviewFor}`) : (item?.formCode || '')
+                                            let formName = isEvaluation360
+                                            ? `${t("360DegreeFeedbackFormFor")} ${item?.poolUser?.fullname}`
+                                            : item?.checkPhaseFormName
 
                                             return <tr key={index} role='button' onClick={() => handleShowEvaluationDetail(item?.formCode, item?.checkPhaseFormId, item?.employeeCode, item?.reviewStreamCode)}>
                                                         <td className="c-form-code"><div className="form-code">{formCode}</div></td>
@@ -1180,7 +1183,7 @@ function EvaluationApproval(props) {
                                                             { item?.poolUser?.username && <div className="ad">({item?.poolUser?.username || ''})</div> }
                                                         </td>
                                                         <td className="c-form-name">
-                                                            <div className="form-name">{item?.checkPhaseFormName || ''}</div>
+                                                            <div className="form-name">{formName || ''}</div>
                                                         </td>
                                                         <td className="c-sent-date"><div className="sent-date">{sendDate}</div></td>
                                                         <td className="c-status"><div className={`status ${item?.status == statusDone ? 'done' : 'in-progress'}`}>{item?.status == statusDone ? t("EvaluationDetailCompleted") : t("EvaluationInProgress")}</div></td>
