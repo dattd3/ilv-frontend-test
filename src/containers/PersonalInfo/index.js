@@ -611,7 +611,7 @@ class MyComponent extends React.Component {
                       </div>
                     </Col>
                   </> :
-                    <Container fluid className="info-tab-content shadow">
+                    <Container fluid className="info-tab-content shadow" style={{ marginLeft: 15, marginRight: 15 }}>
                       {t("NoDataFound")}
                     </Container>
                   }

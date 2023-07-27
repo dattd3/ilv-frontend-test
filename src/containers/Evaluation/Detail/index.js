@@ -726,7 +726,7 @@ function EvaluationDetail(props) {
         ...statusModal,
         isShow: true,
         isSuccess: false,
-        content: 'Vui lòng nhập các trường bắt buộc!',
+        content: t("PleaseEnterTheRequiredFields"),
         needReload: false,
       })
     }

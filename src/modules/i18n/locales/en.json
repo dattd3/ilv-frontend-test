@@ -1879,5 +1879,6 @@
   "ContentsOfAssessment": "Contents of Assessment",
   "EvaluationScore": "Point",
   "360DegreeFeedbackFormFor": "360 degree feedback form for",
-  "NoDataInfo": "No data"
+  "NoDataInfo": "No data",
+  "PleaseEnterTheRequiredFields": "Please enter the required fields!"
 }
