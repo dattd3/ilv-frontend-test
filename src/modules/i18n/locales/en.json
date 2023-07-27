@@ -1880,5 +1880,7 @@
   "EvaluationScore": "Point",
   "360DegreeFeedbackFormFor": "360 degree feedback form for",
   "NoDataInfo": "No data",
-  "PleaseEnterTheRequiredFields": "Please enter the required fields!"
+  "PleaseEnterTheRequiredFields": "Please enter the required fields!",
+  "VinSchoolSickLeave": "VSC Expat sick leave",
+  "SickLeaveFundForVinSchool": "Expat Sick leave fund for VSC"
 }
