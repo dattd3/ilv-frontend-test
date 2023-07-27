@@ -23,8 +23,8 @@ function Learning(props) {
 
     return (
         <>
-            <div>
-                <h1 className="h3 mb-3 text-uppercase text-gray-800 d-inline-block">{t("LearningHistory")}</h1>
+            <div className="training-learning-page">
+                <h1 className="content-page-header d-inline-block">{t("LearningHistory")}</h1>
                 <Form.Control as="select" onChange={onChangeYear} className='w-auto float-md-right'>
                     <option value={0}>{t("All")}</option>
                     {
@@ -35,8 +35,6 @@ function Learning(props) {
                     
                 </Form.Control>
             </div>
-            
-            
             <OnGoingClass _year={year}/>
             <SuccessClass _year={year} />
             <RejectClass _year = {year}/>
