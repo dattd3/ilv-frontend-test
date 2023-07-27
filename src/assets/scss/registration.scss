@@ -95,21 +95,21 @@
             margin-bottom: 10px;
             .wrap-items {
                 border: 1px solid #d1d3e2;
-                border-radius: 10px;
+                border-radius: 4px;
                 display: flex;
                 flex-wrap: wrap;
                 @media only screen and (max-width: 940px) {
-                    border-radius: 10px;
+                    border-radius: 4px;
                     .item {
-                        border-radius: 9px;
+                        border-radius: 4px;
                         border: none !important;
                         .title {
                             border-radius: 0 !important;
                         }
                         &:first-child {
                             .title {
-                                border-top-left-radius: 10px !important;
-                                border-top-right-radius: 10px !important;
+                                border-top-left-radius: 4px !important;
+                                border-top-right-radius: 4px !important;
                             }
                         }
                         &:last-child {
@@ -147,7 +147,7 @@
                         flex: 0 0 36%;
                         max-width: 36%;
                         .title {
-                            border-top-right-radius: 10px;
+                            border-top-right-radius: 4px;
                         }
                     }
                     .title {
@@ -162,7 +162,7 @@
                     }
                     &:first-child {
                         .title {
-                            border-top-left-radius: 10px;
+                            border-top-left-radius: 4px;
                         }
                     }
                     .content {
@@ -195,7 +195,7 @@
                         border-right: none;
                         @media only screen and (max-width: 1200px) {
                             .title {
-                                border-top-right-radius: 10px !important;
+                                border-top-right-radius: 4px !important;
                             }
                         }
                         @media only screen and (max-width: 940px) {
@@ -1056,9 +1056,6 @@
                             }
                         }
                     }
-                    .reason {
-
-                    }
                 }
             }
         }
@@ -1124,6 +1121,16 @@
         .title2{
             margin: 0 0 10px 0;
             padding: 0;
+        }
+        .input-text {
+            font-size: inherit;
+            height: 38px;
+        }
+    }
+    .appraiser {
+        .input-text {
+            font-size: inherit;
+            height: 38px;
         }
     }
     .nav-item {
@@ -1437,7 +1444,7 @@
                 .value {
                     min-height: 38px;
                     background: #F2F2F2;
-                    border-radius: 3px;
+                    border-radius: 4px;
                     display: flex;
                     align-items: center;
                     padding: 8px 12px;
@@ -1461,8 +1468,8 @@
                         background: #E2E2E2;
                         height: 34px;
                         display: flex;
-                        border-top-right-radius: 3px;
-                        border-top-left-radius: 3px;
+                        border-top-right-radius: 4px;
+                        border-top-left-radius: 4px;
                         h5 {
                             color: #000000 !important;
                             font-weight: bold;

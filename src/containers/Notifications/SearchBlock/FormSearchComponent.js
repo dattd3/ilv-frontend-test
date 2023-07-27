@@ -37,7 +37,7 @@ function FormSearchComponent(props) {
         <div className="search-block">
             <div className="block-left">
                 <h1 className="content-page-header">{t("AnnouncementInternal")}</h1>
-                <input type="text" name="textSearch" className="text-search" placeholder={t("SearchTextPlaceholder")} onChange={onChangeTextSearch} />
+                <input type="text" name="textSearch" className="text-search" placeholder={t("SearchTextPlaceholder")} onChange={onChangeTextSearch} autoComplete="off" />
             </div>
             <div className="block-right">{dataBlock}</div>
         </div>

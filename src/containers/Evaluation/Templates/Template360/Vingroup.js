@@ -11,7 +11,7 @@ const VinGroup = ({ evaluationFormDetail, isEdit, currentLocale, errors, handleI
 
     return (
         <div className={`part-block`}>
-            <div className="title">II. Nội dung đánh giá</div>
+            <div className="title">II. {t("ContentsOfAssessment")}</div>
             <div className="list-evaluation">
             {
                 (listEvaluation?.listTarget || []).map((target, i) => {
@@ -31,13 +31,13 @@ const VinGroup = ({ evaluationFormDetail, isEdit, currentLocale, errors, handleI
                             />
                             <div className="score">
                                 <div className="item">
-                                    <span className="label">Điểm đánh giá</span>
+                                    <span className="label">{t("EvaluationScore")}</span>
                                     {
                                         isCompleted
                                         ? (<div className="score-label">{target?.seftPoint ?? ''}</div>)
                                         : (
                                             <select onChange={(e) => handleInputChange(i, 'seftPoint', e)} value={target?.seftPoint ?? ''} disabled={isDisableInput}>
-                                                <option value=''>{t("EvaluationDetailPartSelectScore")}</option>
+                                                <option value=''>{t("Select")}</option>
                                                 {
                                                     (scores || []).map((score, i) => {
                                                         return <option value={score} key={i}>{score}</option>

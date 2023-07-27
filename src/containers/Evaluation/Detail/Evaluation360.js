@@ -234,7 +234,7 @@ const Evaluation360 = ({ evaluationFormId, formCode, employeeCode }) => {
 
     return (
       <div className="employee-info">
-        <div className="title">{t("EmployeeInformationIsEvaluated")}</div>
+        <div className="title">I. {t("EmployeeInformationIsEvaluated")}</div>
         <div className="detail align-items-start">
           <div className="left">
             <div className="info-item">
@@ -324,7 +324,7 @@ const Evaluation360 = ({ evaluationFormId, formCode, employeeCode }) => {
         onHide={onHideStatusModal} />
       <div className="evaluation-360" id="evaluation-360">
         <div className="header-block">
-          <h1 className="content-page-header">{evaluationFormDetail?.checkPhaseFormName}</h1>
+          <h1 className="content-page-header">{`${t("360DegreeFeedbackFormFor")} ${evaluationFormDetail?.fullName}`}</h1>
           <button className="btn-export" onClick={exportToPdfFile} id="btn-export">
             <img src={IconDownload} alt="Download" />
             <span>{t("DownloadPDF")}</span>

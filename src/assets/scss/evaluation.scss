@@ -3,13 +3,16 @@
     color: #000000;
     margin-top: 15px;
     .not-found-data {
-        margin-top: 20px;
+        margin: 15px 0 0 0;
+        padding: 15px;
+        font-size: 14px;
     }
     .card-evaluation {
         padding: 15px;
+        box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
         .filter-block {
             .label-filter {
-                margin-bottom: 5px;
+                margin-bottom: 10px;
             }
             .form-filter {
                 display: flex;
@@ -2965,6 +2968,7 @@
     .filter-block {
         .card-filter {
             padding: 15px;
+            box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
             .nav-item {
                 color: #707070;
                 border-radius: 0;
@@ -3000,6 +3004,19 @@
                 }
                 input {
                     width: 100%;
+                    font-size: 14px;
+                }
+                .wrap-date-input {
+                    position: relative;
+                    width: 100%;
+                    .input-img {
+                        position: absolute;
+                        top: 7px;
+                        right: 12px;
+                    }
+                    input[type="text"] {
+                        height: 38px;
+                    }
                 }
             }
             .btn-submit {
@@ -3008,7 +3025,9 @@
                 align-items: center;
                 background: #347EF9;
                 font-size: 14px;
-                border-radius: 5px;
+                border-radius: 4px;
+                height: 38px;
+                padding: 0 20px;
                 img {
                     margin-right: 5px;
                 }
@@ -3027,6 +3046,7 @@
         margin-top: 15px;
         .approval-data {
             padding: 15px;
+            box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
             .wrap-table-list-evaluation {
                 padding: 0 10px;
                 // border: 1px solid #DEE2E6;

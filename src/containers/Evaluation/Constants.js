@@ -43,7 +43,7 @@ const languageCodeMapping = {
 }
 const stepEvaluation360Config = [
     { value: evaluation360Status.waitingEvaluation, label: "WaitingForEvaluation" },
-    { value: evaluation360Status.evaluated, label: "Evaluated" },
+    { value: evaluation360Status.evaluated, label: "Feedbacked" },
     { value: evaluation360Status.completed, label: "Completed" },
 ]
 

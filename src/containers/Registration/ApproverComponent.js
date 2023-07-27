@@ -258,13 +258,13 @@ class ApproverComponent extends React.Component {
           <div className="col-12 col-xl-4">
             <p className="title">{t('Position')}</p>
             <div>
-              <input type="text" className="form-control" value={approver?.current_position || ""} readOnly />
+              <input type="text" className="form-control input-text text-truncate" title={approver?.current_position || ""} value={approver?.current_position || ""} readOnly />
             </div>
           </div>
           <div className="col-12 col-xl-4">
             <p className="title">{t('DepartmentManage')}</p>
             <div>
-              <input type="text" className="form-control" value={approver?.department || ""} readOnly />
+              <input type="text" className="form-control input-text text-truncate" title={approver?.department || ""} value={approver?.department || ""} readOnly />
             </div>
           </div>
         </div>

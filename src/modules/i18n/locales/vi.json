@@ -1041,6 +1041,7 @@
   "PleaseEnterInfo": "Vui lòng nhập đủ thông tin!",
   "dtls": "Đào tạo lâm sàng",
   "instruct": "Hướng dẫn sử dụng",
+  "instruct_version_history": "lịch sử phiên bản mobile",
   "instruct_download": "Tải về",
   "instruct_vi": "Tiếng Việt",
   "instruct_en": "English",
@@ -1883,7 +1884,7 @@
   "InvalidDatePeriod": "Ngày kết thúc của Công ty không được nhỏ hơn Ngày kết thúc của các quá trình!",
   "Vin30Chronicles": "Sử ký VIN30",
   "WaitingForEvaluation": "Chờ đánh giá",
-  "Evaluated": "Đã đánh giá",
+  "Feedbacked": "Đã đánh giá",
   "EmployeeInformationIsEvaluated": "Thông tin nhân viên được đánh giá",
   "RelationManager": "CBLĐ cấp trên",
   "RelationPeer": "Đồng nghiệp",
@@ -1893,5 +1894,8 @@
   "RequiredYourRelationshipWithEvaluatee": "Vui lòng chọn Quan hệ của bạn với Người được đánh giá!",
   "RequiredEvaluationScore": "Vui lòng nhập điểm đánh giá!",
   "Evaluation360ButtonSend": "Gửi",
-  "WaitingForFeedback360": "Chờ đánh giá (Đánh giá 360)"
+  "WaitingForFeedback360": "Chờ đánh giá (Đánh giá 360)",
+  "ContentsOfAssessment": "Nội dung đánh giá",
+  "EvaluationScore": "Điểm đánh giá",
+  "360DegreeFeedbackFormFor": "Biểu mẫu đánh giá 360 cho"
 }

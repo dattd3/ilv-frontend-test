@@ -209,7 +209,7 @@ function NewsOnHome(props) {
 
             </div>
             {
-              isShowNotiGuideModal && <div className="noti-guide-modal" >
+              isShowNotiGuideModal && <div className="noti-guide-modal">
                 <img className="close-icon" src={IconX} alt="icon-lock" onClick={() => setIsShowNotiGuideModal(false)} />
                   <div className="title">{t("NotificationGuide1")} <br /> ILoveVingroup</div>
                   <div className="guide-text">

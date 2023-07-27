@@ -340,7 +340,7 @@ class LeaveFund extends React.Component {
         <h1 className="content-page-header">{t("MenuLeaveTOILManagement")}</h1>
         <div className="card border container-fluid filter-block">
           <div className="row">
-            <div className="col-md-3 column">
+            <div className="col-md-4 column">
               <DropdownCustomize getSelecteMembers = {this.updateParent} resetSelectedMember = {this.updateParent}
               onCloseTabEvent = {this.updateParent} onCloseAllEvent = {this.updateParent}/>
             </div>

@@ -21,6 +21,7 @@ import IconCollapse from '../../../assets/img/icon/pms/icon-collapse.svg'
 import IconSearch from '../../../assets/img/icon/Icon_Loop.svg'
 import IconReject from '../../../assets/img/icon/Icon_Cancel.svg'
 import IconApprove from '../../../assets/img/icon/Icon_Check.svg'
+import IconDatePicker from 'assets/img/icon/Icon_DatePicker.svg'
 import 'react-datepicker/dist/react-datepicker.css'
 import vi from 'date-fns/locale/vi'
 registerLocale("vi", vi)
@@ -223,14 +224,17 @@ function AdvancedFilter(props) {
                     <Form.Group as={Row} controlId="from-date">
                         <Form.Label column sm={12}>{t("EvaluationFromDate")}</Form.Label>
                         <Col sm={12}>
-                            <DatePicker
-                                selected={filter.fromDate ? moment(filter.fromDate, 'YYYY-MM-DD').toDate() : null}
-                                onChange={fromDate => handleInputChange('fromDate', fromDate ? moment(fromDate).format('YYYY-MM-DD') : null)}
-                                dateFormat="dd/MM/yyyy"
-                                showMonthDropdown={true}
-                                showYearDropdown={true}
-                                locale="vi"
-                                className="form-control input" />
+                            <label className="wrap-date-input">
+                                <DatePicker
+                                    selected={filter.fromDate ? moment(filter.fromDate, 'YYYY-MM-DD').toDate() : null}
+                                    onChange={fromDate => handleInputChange('fromDate', fromDate ? moment(fromDate).format('YYYY-MM-DD') : null)}
+                                    dateFormat="dd/MM/yyyy"
+                                    showMonthDropdown={true}
+                                    showYearDropdown={true}
+                                    locale="vi"
+                                    className="form-control input" />
+                                <span className="input-img"><img src={IconDatePicker} alt="Date" /></span>
+                            </label>
                         </Col>
                     </Form.Group>
                 </Col>
@@ -238,15 +242,18 @@ function AdvancedFilter(props) {
                     <Form.Group as={Row} controlId="to-date">
                         <Form.Label column sm={12}>{t("EvaluationToDate")}</Form.Label>
                         <Col sm={12}>
-                            <DatePicker 
-                                selected={filter.toDate ? moment(filter.toDate, 'YYYY-MM-DD').toDate() : null}
-                                minDate={filter.fromDate ? moment(filter.fromDate, 'YYYY-MM-DD').toDate() : null}
-                                onChange={toDate => handleInputChange('toDate', toDate ? moment(toDate).format('YYYY-MM-DD') : null)}
-                                dateFormat="dd/MM/yyyy"
-                                showMonthDropdown={true}
-                                showYearDropdown={true}
-                                locale="vi"
-                                className="form-control input" />
+                            <label className="wrap-date-input">
+                                <DatePicker 
+                                    selected={filter.toDate ? moment(filter.toDate, 'YYYY-MM-DD').toDate() : null}
+                                    minDate={filter.fromDate ? moment(filter.fromDate, 'YYYY-MM-DD').toDate() : null}
+                                    onChange={toDate => handleInputChange('toDate', toDate ? moment(toDate).format('YYYY-MM-DD') : null)}
+                                    dateFormat="dd/MM/yyyy"
+                                    showMonthDropdown={true}
+                                    showYearDropdown={true}
+                                    locale="vi"
+                                    className="form-control input" />
+                                <span className="input-img"><img src={IconDatePicker} alt="Date" /></span>
+                            </label>
                         </Col>
                     </Form.Group>
                 </Col>
@@ -1117,7 +1124,7 @@ function EvaluationApproval(props) {
         <div className="evaluation-approval-page">
             <h1 className="content-page-header">{t("EvaluationLabel")}</h1>
             <div className="filter-block">
-                <div className="card shadow card-filter">
+                <div className="card card-filter">
                     <Tabs defaultActiveKey={activeTab} onSelect={key => SetActiveTab(key)}>
                         <Tab eventKey={approvalTabCode} title={t("EvaluationApprovalTab")} className="tab-item" id='approval-tab'>
                             <ApprovalTabContent 
@@ -1140,7 +1147,7 @@ function EvaluationApproval(props) {
             <div className="data-block">
                 {
                     activeTab === approvalTabCode && 
-                    <div className="card shadow approval-data">
+                    <div className="card approval-data">
                     {
                         evaluationData?.data?.length > 0 ?
                         <>
@@ -1165,6 +1172,9 @@ function EvaluationApproval(props) {
                                             : currentSteps.find(step => step?.value == item?.status)?.label
                                             let sendDate = isEvaluation360 ? (item?.runFormDate && moment(item?.runFormDate).format('DD/MM/YYYY')) : (item?.sendDateLv1 && moment(item?.sendDateLv1).format('DD/MM/YYYY'))
                                             let formCode = isEvaluation360 ? (`${item?.formCode} - ${item?.reviewFor}`) : (item?.formCode || '')
+                                            let formName = isEvaluation360
+                                            ? `${t("360DegreeFeedbackFormFor")} ${item?.poolUser?.fullname}`
+                                            : item?.checkPhaseFormName
 
                                             return <tr key={index} role='button' onClick={() => handleShowEvaluationDetail(item?.formCode, item?.checkPhaseFormId, item?.employeeCode, item?.reviewStreamCode)}>
                                                         <td className="c-form-code"><div className="form-code">{formCode}</div></td>
@@ -1173,7 +1183,7 @@ function EvaluationApproval(props) {
                                                             { item?.poolUser?.username && <div className="ad">({item?.poolUser?.username || ''})</div> }
                                                         </td>
                                                         <td className="c-form-name">
-                                                            <div className="form-name">{item?.checkPhaseFormName || ''}</div>
+                                                            <div className="form-name">{formName || ''}</div>
                                                         </td>
                                                         <td className="c-sent-date"><div className="sent-date">{sendDate}</div></td>
                                                         <td className="c-status"><div className={`status ${item?.status == statusDone ? 'done' : 'in-progress'}`}>{item?.status == statusDone ? t("EvaluationDetailCompleted") : t("EvaluationInProgress")}</div></td>

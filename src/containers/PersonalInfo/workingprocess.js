@@ -166,11 +166,11 @@ class MyComponent extends React.Component {
         const { userChangeWorkingAppointments } = this.state
 
         return (
-            <div className="personal-info">
+            <div className="personal-info working-process">
                 <h1 className="content-page-header">{t("WorkingProcess")}</h1>
                 <Tabs defaultActiveKey="LaborContract" id="uncontrolled-tab-example">
                     <Tab eventKey="LaborContract" title={t("LaborContract")}>
-                        <Container fluid className="info-tab-content shadow">
+                        <Container fluid className="info-tab-content labor-contract">
                             {(this.state.userContract !== undefined && this.state.userContract.length > 0) ?
                                 this.state.userContract.map((item, i) => {
                                     return <div key={i}>
@@ -215,7 +215,7 @@ class MyComponent extends React.Component {
                     </Tab>
                     <Tab eventKey="BonusAndPenalty" title={t("BonusAndPenalty")}>
                         <Row>
-                            <Container fluid className="p-0">
+                            <Container fluid className="bonus-penalty">
                                 <div className="timesheet-section p-0 search-box">
                                     <WorkingProcessSearch clickSearch={this.search.bind(this)} />
                                 </div>
@@ -262,7 +262,7 @@ class MyComponent extends React.Component {
                                         </div>
                                         </form>
                                     </Container>;
-                                }) : t("NoDataFound")
+                                }) : <span style={{ marginRight: 15 }}>{t("NoDataFound")}</span>
                             }
                         </Row>
                         <Row>
@@ -327,13 +327,13 @@ class MyComponent extends React.Component {
                                                 </div>
                                             </form>
                                         </Container>
-                                    }) : t("NoDataFound")
+                                    }) : <span style={{ marginRight: 15 }}>{t("NoDataFound")}</span>
                                 }
                             </>
                         </Row>
                     </Tab>
                     <Tab eventKey="ChangeWorkingAppointment" title={t("ChangeWorkingAppointment")}>
-                        <Container fluid className="info-tab-content shadow">
+                        <Container fluid className="info-tab-content change-working-appointment">
                             <ChangeWorkingAppointment userChangeWorkingAppointments={userChangeWorkingAppointments} />
                         </Container>
                     </Tab>

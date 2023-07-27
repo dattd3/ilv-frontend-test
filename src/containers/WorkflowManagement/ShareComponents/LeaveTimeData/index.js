@@ -13,7 +13,7 @@ export default function LeaveTimeCard(props) {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   return (
-    <div className=" leave-time-card mb-2">
+    <div className="leave-time-card">
       <div className="card">
         <div
           className={"card-header clearfix text-white " + "bg-" + props.bg}
