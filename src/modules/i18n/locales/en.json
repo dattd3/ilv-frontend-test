@@ -1859,6 +1859,7 @@
   "Specialist": "Specialist",
   "Staff": "Staff",
   "NotePrevDayOT": "Only choose when you request OT for overnight shift that need pull in/out of previous day.",
+  "NotePrevDayOT2": "EX: July 21, 2023 has a shift from 22h00 to 06h00. and OT from 06h00-07h00 on 22/07/2023<br/> Create a request for OT Registration, select July 21, 2023 from 06h00-07h00, then you need to <b>tick \"Previous day\"</b>",
   "CompanyTimeNotOverlap": "The Start date and End date of the companies must not overlap!",
   "StartDateEndDateRequired": "(*) Please select Start date and End date!",
   "InvalidDataPleaseCheckAgain": "Invalid data, please check again!",
