@@ -95,6 +95,9 @@
     font-size: 14px;
     color: #000000;
     margin-top: 15px;
+    .shadow {
+        box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px !important;
+    }
     .block-overall {
         display: flex;
         justify-content: space-between;
@@ -124,7 +127,7 @@
         }
         .card-overall {
             width: 25%;
-            margin: 0 15px 0 0;
+            margin: 0 15px;
             .chart-title {
                 margin: 10px 0;
             }
@@ -211,7 +214,7 @@
                         padding: 8px 10px;
                         display: flex;
                         align-items: center;
-                        border-radius: 5px;
+                        border-radius: 4px;
                         .no {
                             border: 1px solid #A7A7A7;
                             color: #A7A7A7 ;
@@ -544,51 +547,6 @@
                             &:last-child {
                                 border-right: 1px solid #DEE2E6;
                             }
-                            // &.measurement {
-                            //     width: 20%;
-                            //     text-align: left;
-                            //     ul {
-                            //         padding: 0;
-                            //         margin: 0 0 0 15px;
-                            //         font-size: 13px;
-                            //         &.second {
-                            //             list-style-type: upper-greek;
-                            //         }
-                            //     }
-                            //     .note {
-                            //         font-size: 13px;
-                            //         font-style: italic;
-                            //         font-weight: normal;
-                            //         margin-left: 5px;
-                            //     }
-                            // }
-                            // &.proportion {
-                            //     width: 11%;
-                            // }
-                            // &.target {
-                            //     width: 11%;
-                            // }
-                            // &.deviant {
-                            //     width: 12%;
-                            //     .value {
-                            //         display: inline-flex;
-                            //         align-items: center;
-                            //         justify-content: center;
-                            //         width: 65px;
-                            //         background: #F2F2F2;
-                            //         padding: 4px 8px;
-                            //         &.up {
-                            //             color: #05BD29;
-                            //         }
-                            //         &.down {
-                            //             color: #C11D2A;
-                            //         }
-                            //         img {
-                            //             height: 10px;
-                            //             margin-left: 3px;
-                            //         }
-                            //     }
-                            // }
                             &.first {
                                 width: 14%;
                             }
@@ -809,8 +767,9 @@
                                 }
                             }
                             &.actual-results {
+                                padding: 8px;
                                 textarea {
-                                    width: 90%;
+                                    width: 100%;
                                     border: 1px solid #DEE2E6;
                                     outline: none;
                                 }
@@ -905,12 +864,12 @@
         display: flex;
         align-items: center;
         justify-content: flex-end;
-        margin: 10px 0 30px 0;
+        margin: 10px 0 0 0;
         .btn-action {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            border-radius: 5px;
+            border-radius: 4px;
             color: #FFFFFF;
             border-color: transparent;
             height: 35px;
@@ -2652,6 +2611,9 @@
                     .button-block {
                         margin: 10px 0 0 0;
                     }
+                    .shadow {
+                        box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px !important;
+                    }
                 }
                 .evaluation-360 {
                     font-size: 14px;
@@ -2717,7 +2679,7 @@
                                         padding: 8px 10px;
                                         display: flex;
                                         align-items: center;
-                                        border-radius: 5px;
+                                        border-radius: 4px;
                                         .no {
                                             border: 1px solid #A7A7A7;
                                             color: #A7A7A7 ;
