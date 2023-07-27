@@ -1,6 +1,6 @@
 .position-recruiting-section {
     margin-bottom: 30px;
-
+    font-size: 14px;
     .paging {
         margin-top: 20px;
     }
@@ -51,24 +51,20 @@
         display: block;
         background-color: #FFFFFF;
         width: 100%;
-        padding: 30px 10px;
-        margin: 10px 0;
-        border-radius: 10px;
-
-        .form-control-lg {
-            height: calc(1.8em + 1rem + 2px);
-            padding: 0.5rem 1rem;
-            font-size: 17px;
-            line-height: 0.5;
-            border-radius: 0.3rem;
-        }
-
+        padding: 15px;
+        margin: 0;
+        border-radius: 4px;
+        box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
         .title {
             display: block;
-            margin-bottom: 10px;
+            margin: 0 0 10px 0;
         }
         .content {
             display: block;
+        }
+        .input-text {
+            font-size: inherit;
+            height: 38px;
         }
         .input-container {
             position:relative;
@@ -91,6 +87,9 @@
         }
         .btn-search {
             width: 100%;
+            color: #FFFFFF;
+            font-size: inherit;
+            height: 38px;
         }
     }
     .searchTitle {
@@ -127,6 +126,17 @@
         }
         hr {
             margin-left: 15px;
+        }
+    }
+    .recruiting-search-result-block {
+        margin: 0;
+        .result-label {
+            margin: 20px 0 15px 0;
+            font-size: 16px;
+            color: #000000;
+        }
+        & > .card {
+            box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
         }
     }
 }
@@ -178,6 +188,11 @@
 
 
 .position-applied-block {
+    font-size: 14px;
+    & > .card {
+        box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
+        border-radius: 4px;
+    }
     .result-label {
         color: #2a377c;
         font-weight: bold;
@@ -189,10 +204,10 @@
             border: none;
             background-color: #F4F5F9;
             &:first-child {
-                border-top-left-radius: 0.35rem;
+                border-top-left-radius: 4px;
             }
             &:last-child {
-                border-top-right-radius: 0.35rem;
+                border-top-right-radius: 4px;
             }
         }
         tbody {
