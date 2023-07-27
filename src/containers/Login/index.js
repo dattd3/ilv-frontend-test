@@ -17,6 +17,7 @@ import { useLocalizeStore } from '../../modules';
 import Constants from "../../commons/Constants";
 import Select, { components } from 'react-select'
 import { getStateRedirect, getRequestConfigs } from "../../commons/commonFunctions";
+import { isExistCurrentUserInWhiteList } from "commons/Utils";
 import map from "containers/map.config"
 
 const CustomOption = ({ children, ...props }) => {
@@ -72,7 +73,6 @@ function Login() {
     { value: Constants.LANGUAGE_VI, label: t("LangViet") },
     { value: Constants.LANGUAGE_EN, label: t("LangEng") }
   ];
-  
 
   const customStyles = {
     indicatorSeparator: base => ({
@@ -120,7 +120,7 @@ function Login() {
       }
     }
 
-    fetchMaintenanceInfo()
+    !isExistCurrentUserInWhiteList() && fetchMaintenanceInfo()
   }, [])
 
   useEffect(() => {
