@@ -26,7 +26,7 @@ function HistoryVinGroup(props) {
         <>
             <LoadingModal show={isLoading} />
             <div className="history-vingroup-page" id="history-vingroup-page">
-                <iframe src={linkHistoryVinGroup} allowFullScreen={true}></iframe>
+                <iframe src={linkHistoryVinGroup} allowFullScreen={true} title="Sử ký Vin30"></iframe>
             </div>
         </>
     )

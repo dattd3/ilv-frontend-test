@@ -19,6 +19,7 @@ import Select, { components } from 'react-select'
 import { getStateRedirect, getRequestConfigs } from "../../commons/commonFunctions";
 import { isExistCurrentUserInWhiteList } from "commons/Utils";
 import map from "containers/map.config"
+import LoadingModal from "components/Common/LoadingModal";
 
 const CustomOption = ({ children, ...props }) => {
   return (<components.ValueContainer {...props}>
@@ -68,6 +69,7 @@ function Login() {
   const localizeStore = useLocalizeStore();
   const { t } = useTranslation();
   const [modalShow, setModalShow] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [langCode, setLangCode] = useState(localStorage.getItem("locale")  || Constants.LANGUAGE_VI);
   const langData = [
     { value: Constants.LANGUAGE_VI, label: t("LangViet") },
@@ -108,6 +110,7 @@ function Login() {
 
   useEffect(() => {
     const fetchMaintenanceInfo = async () => {
+      setIsLoading(true)
       const config = getRequestConfigs()
       config.params = {
         appId: Constants.MAINTENANCE.APP_ID,
@@ -115,6 +118,7 @@ function Login() {
         type: Constants.MAINTENANCE.MODE,
       }
       const response = await axios.get(`${process.env.REACT_APP_REQUEST_URL}api/guest/system`, config)
+      setIsLoading(false)
       if (response?.data?.data?.maintainStatus) {
         window.location.href = map.Maintenance
       }
@@ -138,6 +142,8 @@ function Login() {
   }
 
   return (
+    <>
+    <LoadingModal show={isLoading} />
     <Container className="login-page">
       <Row className="justify-content-center">
         <Col className="col-xl-12 col-lg-12 col-md-12">
@@ -286,6 +292,7 @@ function Login() {
       <LoginGuideModal show={modalShow} onHide={() => setModalShow(false)}
       />
     </Container>
+    </>
   );
 
 
