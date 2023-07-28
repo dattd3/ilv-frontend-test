@@ -25,6 +25,8 @@ import ConfirmModal from "components/Common/ConfirmModalNew";
 import LoadingModal from "components/Common/LoadingModal";
 import IconPlus from "assets/img/ic-add-green.svg";
 import IconCancel from "assets/img/icon/ic_x_red.svg";
+import IconDatePicker from 'assets/img/icon/Icon_DatePicker.svg'
+import IconClock from 'assets/img/icon/ic_clock.svg'
 import { Button } from "react-bootstrap";
 import NoteModal from "./NoteModal";
 
@@ -311,6 +313,7 @@ export default function OTRequestComponent({ recentlyManagers }) {
 
   const searchData = async () => {
     if (startDate && endDate) {
+      setIsSendingRequest(true)
       const muleSoftConfig = getMuleSoftHeaderConfigurations();
       muleSoftConfig["params"] = {
         from_date: moment(startDate, "DD/MM/YYYY")
@@ -353,6 +356,9 @@ export default function OTRequestComponent({ recentlyManagers }) {
           }
         }
       } catch (error) {}
+      finally {
+        setIsSendingRequest(false)
+      }
     }
   };
 
@@ -859,11 +865,11 @@ export default function OTRequestComponent({ recentlyManagers }) {
       <NoteModal show={showNoteModal} onHide={() => setShowNoteModal(false)} />
       <LoadingModal show={isSendingRequest} />
       <div className="box shadow">
-        <div className="row">
+        <div className="row search-form">
           <div className="col-4">
             <p className="title">{t("From")}</p>
             <div className="content input-container">
-              <label>
+              <label className="wrap-date-input">
                 <DatePicker
                   name="startDate"
                   selectsStart
@@ -882,9 +888,7 @@ export default function OTRequestComponent({ recentlyManagers }) {
                   shouldCloseOnSelect={true}
                   className="form-control input"
                 />
-                <span className="input-group-addon input-img">
-                  <i className="fas fa-calendar-alt text-info"></i>
-                </span>
+                <span className="input-img"><img src={IconDatePicker} alt="Date" /></span>
               </label>
             </div>
           </div>
@@ -892,7 +896,7 @@ export default function OTRequestComponent({ recentlyManagers }) {
           <div className="col-4">
             <p className="title">{t("To")}</p>
             <div className="content input-container">
-              <label>
+              <label className="wrap-date-input">
                 <DatePicker
                   name="endDate"
                   selectsEnd
@@ -910,9 +914,7 @@ export default function OTRequestComponent({ recentlyManagers }) {
                   locale={"vi"}
                   className="form-control input"
                 />
-                <span className="input-group-addon input-img text-info">
-                  <i className="fas fa-calendar-alt"></i>
-                </span>
+                <span className="input-img"><img src={IconDatePicker} alt="Date" /></span>
               </label>
             </div>
           </div>
@@ -935,9 +937,9 @@ export default function OTRequestComponent({ recentlyManagers }) {
         requestInfoData.map((timesheet, index) => (
           <div className="box shadow pt-1 pb-1" key={timesheet.date}>
             <div className="timesheet-container">
-              <p>
-                <i className="fa fa-clock-o"></i>{" "}
-                <b>
+              <p className="d-inline-flex">
+                <img src={IconClock} className="ic-clock" />
+                <b style={{ marginLeft: 5 }}>
                   {getDayNameFromDate(timesheet.date)}&nbsp;
                   {lang === Constants.LANGUAGE_VI ? t("Day") : null}{" "}
                   {timesheet?.date?.replace(/-/g, "/")}
@@ -1262,7 +1264,7 @@ export default function OTRequestComponent({ recentlyManagers }) {
                                 />
                                 &nbsp;
                                 <label
-                                  for={`prevDayCheckbox_${index}_${rangeIndex}`}
+                                  htmlFor={`prevDayCheckbox_${index}_${rangeIndex}`}
                                 >
                                   {t("PrevDay")}
                                 </label>{" "}

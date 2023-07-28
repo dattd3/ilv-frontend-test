@@ -26,9 +26,8 @@ class TimesheetSearch extends React.Component {
   }
 
   componentDidMount() {
-    if(this.props?.queryParams?.has('start')) {
-      this.props.clickSearch(this.state.startDate, this.state.endDate)
-    }
+    // if(this.props?.queryParams?.has('start')) {}
+    this.props.clickSearch(this.state.startDate, this.state.endDate)
   }
 
   getClosingSalaryDatePreMonth = () => {

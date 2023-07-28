@@ -135,4 +135,5 @@ export default {
   MyProfile: "/my-profile",
   SalaryPropse: '/salarypropse/:idContract/:idSalary/:type',
   HistoryVingroup: "/vingroup-history",
+  Maintenance: '/maintenance'
 };

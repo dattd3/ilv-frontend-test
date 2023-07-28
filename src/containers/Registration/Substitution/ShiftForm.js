@@ -4,6 +4,7 @@ import moment from 'moment'
 import 'react-datepicker/dist/react-datepicker.css'
 import _ from 'lodash'
 import { withTranslation  } from "react-i18next";
+import IconClock from 'assets/img/icon/ic_clock.svg'
 
 const TIME_FORMAT = 'HH:mm:00'
 
@@ -115,7 +116,7 @@ class ShiftForm extends React.Component {
                             <div className="col">
                                 <p>{t("StartTime")} 1 - Thay đổi<span className="text-danger required">(*)</span></p>
                                 <div className="content input-container">
-                                    <label>
+                                    <label className="wrap-time-input">
                                         <DatePicker
                                             selected={timesheet.startTime && moment(timesheet.startTime, TIME_FORMAT).isValid() ? moment(timesheet.startTime, TIME_FORMAT).toDate() : null}
                                             onChange={this.updateTime.bind(this, 'startTime')}
@@ -130,6 +131,7 @@ class ShiftForm extends React.Component {
                                             placeholderText={t('option')}
                                             className="form-control input"
                                         />
+                                        <span className="input-group-addon input-img"><img src={IconClock} alt="Clock" /></span>
                                     </label>
                                 </div>
                                 {this.error(this.props.timesheet.index, 'startTime')}
@@ -137,7 +139,7 @@ class ShiftForm extends React.Component {
                             <div className="col">
                                 <p>{t("EndTime")} 1 - Thay đổi<span className="text-danger required">(*)</span></p>
                                 <div className="content input-container">
-                                    <label>
+                                    <label className="wrap-time-input">
                                         <DatePicker
                                             selected={timesheet.endTime && moment(timesheet.endTime, TIME_FORMAT).isValid() ? moment(timesheet.endTime, TIME_FORMAT).toDate() : null}
                                             onChange={this.updateTime.bind(this, 'endTime')}
@@ -152,6 +154,7 @@ class ShiftForm extends React.Component {
                                             placeholderText={t('option')}
                                             className="form-control input"
                                         />
+                                        <span className="input-group-addon input-img"><img src={IconClock} alt="Clock" /></span>
                                     </label>
                                 </div>
                                 {this.error(timesheet.index, 'endTime')}
@@ -163,7 +166,7 @@ class ShiftForm extends React.Component {
                             <div className="col">
                                 <p>{t("BreakStartTime")}{isShowStartBreakTimeAndEndBreakTime && <span className="text-danger required">(*)</span>}</p>
                                 <div className="content input-container">
-                                    <label>
+                                    <label className="wrap-time-input">
                                         <DatePicker
                                             selected={timesheet.startBreakTime && moment(timesheet.startBreakTime, TIME_FORMAT).isValid() ? moment(timesheet.startBreakTime, TIME_FORMAT).toDate() : null}
                                             onChange={this.updateTime.bind(this, 'startBreakTime')}
@@ -178,6 +181,7 @@ class ShiftForm extends React.Component {
                                             placeholderText={t('option')}
                                             className="form-control input"
                                         />
+                                        <span className="input-group-addon input-img"><img src={IconClock} alt="Clock" /></span>
                                     </label>
                                 </div>
                                 {this.error(timesheet.index, 'startBreakTime')}
@@ -185,7 +189,7 @@ class ShiftForm extends React.Component {
                             <div className="col">
                                 <p>{t("BreakEndTime")}{isShowStartBreakTimeAndEndBreakTime && <span className="text-danger required">(*)</span>}</p>
                                 <div className="content input-container">
-                                    <label>
+                                    <label className="wrap-time-input">
                                         <DatePicker
                                             selected={timesheet.endBreakTime && moment(timesheet.endBreakTime, TIME_FORMAT).isValid() ? moment(timesheet.endBreakTime, TIME_FORMAT).toDate() : null}
                                             onChange={this.updateTime.bind(this, 'endBreakTime')}
@@ -200,6 +204,7 @@ class ShiftForm extends React.Component {
                                             placeholderText={t("Select")}
                                             className="form-control input"
                                         />
+                                        <span className="input-group-addon input-img"><img src={IconClock} alt="Clock" /></span>
                                     </label>
                                 </div>
                                 {this.error(timesheet.index, 'endBreakTime')}

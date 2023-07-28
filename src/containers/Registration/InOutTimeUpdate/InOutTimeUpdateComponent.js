@@ -15,6 +15,7 @@ import { getValueParamByQueryString, getMuleSoftHeaderConfigurations, isEnableFu
 import Constants from '../../../commons/Constants'
 import LoadingModal from 'components/Common/LoadingModal'
 import IconDatePicker from 'assets/img/icon/Icon_DatePicker.svg'
+import IconClock from 'assets/img/icon/ic_clock.svg'
 registerLocale("vi", vi)
 
 const CLOSING_SALARY_DATE_PRE_MONTH = 26
@@ -409,12 +410,12 @@ class InOutTimeUpdateComponent extends React.Component {
       <div className="in-out-time-update">
         <LoadingModal show={isLoading} />
         <ResultModal show={isShowStatusModal} title={titleModal} message={messageModal} isSuccess={isSuccess} onHide={this.hideStatusModal} />
-        <div className="box shadow">
+        <div className="box search-form">
           <div className="row">
             <div className="col-4">
               <p className="title">{t('From')}</p>
               <div className="content input-container">
-                <label>
+                <label className="wrap-date-input">
                   <DatePicker
                     name="startDate"
                     selectsStart
@@ -438,7 +439,7 @@ class InOutTimeUpdateComponent extends React.Component {
             <div className="col-4">
               <p className="title">{t('To')}</p>
               <div className="content input-container">
-                <label>
+                <label className="wrap-date-input">
                   <DatePicker
                     name="endDate"
                     selectsEnd
@@ -471,7 +472,7 @@ class InOutTimeUpdateComponent extends React.Component {
         {timesheets.map((timesheet, index) => {
           return <div className="box shadow pt-1 pb-1" key={index}>
             <div className="row">
-              <div className="col-4"><p><i className="fa fa-clock-o"></i> <b>{this.getDayName(timesheet.date)} {lang === Constants.LANGUAGE_VI ? t("Day") : null} {timesheet.date.replace(/-/g, '/')}</b></p></div>
+              <div className="col-4"><p className="d-inline-flex"><img src={IconClock} className="ic-clock" /><b style={{ marginLeft: 5 }}>{this.getDayName(timesheet.date)} {lang === Constants.LANGUAGE_VI ? t("Day") : null} {timesheet.date.replace(/-/g, '/')}</b></p></div>
               <div className="col-6">
                 {!timesheet.isEdited ? <p>{t("StartTime")} 1: <b>{this.printTimeFormat(timesheet.start_time1_fact)}</b> | {t("EndTime")} 1: <b>{this.printTimeFormat(timesheet.end_time1_fact)}</b></p> : null}
                 {!timesheet.isEdited && (!this.isNullCustomize(timesheet.start_time2_fact) || !this.isNullCustomize(timesheet.end_time2_fact)) ?

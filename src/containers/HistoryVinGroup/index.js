@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react"
-import axios from 'axios'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import HOCComponent from "components/Common/HOCComponent"
@@ -8,31 +7,26 @@ import LoadingModal from "components/Common/LoadingModal"
 
 function HistoryVinGroup(props) {
     const [isLoading, SetIsLoading] = useState(true)
-    const [htmlPdfView, setHtmlPdfView] = useState(null)
+    const linkHistoryVinGroup = "https://online.flippingbook.com/view/211567232/"
 
     useEffect(() => {
         // props.handleFullScreen(true)
+        const timeOut = setTimeout(() => { SetIsLoading(false) }, 1000)
         const body = document.querySelector('#history-vingroup-page')
         body.scrollIntoView({
             behavior: 'smooth'
         }, 800)
 
-        fetchData()
+        return () => {
+            clearTimeout(timeOut)
+        }
     }, [])
-
-    const fetchData = async() => {
-        try {
-            const viewData = await axios.get(`https://online.flippingbook.com/view/211567232/1/`);
-            setHtmlPdfView(viewData.data?.replace("</head>", "<style>.logo-container{display:none!important;}</style></head>"))
-        } catch (error) {}
-        SetIsLoading(false)
-    }
 
     return (
         <>
             <LoadingModal show={isLoading} />
             <div className="history-vingroup-page" id="history-vingroup-page">
-                <iframe id="myIframe" srcDoc={htmlPdfView} allowFullScreen={true} className="myIframe"></iframe>
+                <iframe src={linkHistoryVinGroup} allowFullScreen={true}></iframe>
             </div>
         </>
     )

@@ -35,7 +35,6 @@
     background-color: #fff;
     width: 100%;
     padding: 30px 10px;
-    margin: 20px 0px;
     border-radius: 10px;
     .title {
       display: block;
@@ -182,6 +181,9 @@
   }
   .detail-timesheet {
     margin-top: 1.5rem;
+    & > .card {
+      box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
+    }
     .btn-link {
       text-decoration: none;
       color: #858796;
@@ -470,6 +472,7 @@
   }
   &.personal-timesheet {
     // Bảng chấm công cá nhân
+    margin-bottom: 0;
     .summary {
       margin: 15px 0;
       .card {
@@ -491,18 +494,14 @@
         }
       }
     }
-    .content-page-header {
-      margin-bottom: 0!important;
-    }
     .time-sheet-table {
-      box-shadow: 0 0 4px 0 rgba(0,0,0,.251) !important;
+      box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px !important;
       .time-sheet-table-content {
         padding-bottom: 0 !important;
       }
     }
     .timesheet-box {
-      margin: 16px 0;
-      box-shadow: 0 0 4px 0 rgba(0,0,0,.251);
+      box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
       border-radius: 4px;
       padding: 20px;
       .title {
@@ -526,7 +525,7 @@
       }
     }
     .summary .card {
-      box-shadow: 0 0 4px 0 rgba(0,0,0,.251) !important;
+      box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px !important;
     }
     .detail {
       .card {
@@ -784,6 +783,22 @@
   }
   &.department-timesheet {
     .timesheet-box {
+      box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px !important;
+      border-radius: 4px;
+      padding: 15px;
+      .wrap-date-input {
+        display: block;
+        position: relative;
+        margin-bottom: 0;
+        .react-datepicker-wrapper {
+          width: 100%;
+        }
+        .input-img {
+          position: absolute;
+          top: 7px;
+          right: 12px;
+        }
+      }
       .input-container {
         .ic-calendar {
           position: absolute;
@@ -794,10 +809,26 @@
           left: unset;
         }
       }
+      .btn-search {
+        color: #FFFFFF;
+        height: 38px;
+      }
+      &.search-block {
+        .title {
+          margin: 0 0 10px 0;
+        }
+        input[type="text"] {
+          font-size: 14px;
+          height: 38px;
+        }
+      }
     }
   }
   &.change-shift-report {
     .timesheet-box {
+      padding: 15px;
+      border-radius: 4px;
+      box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
       .content {
         button {
           width: unset;
@@ -814,11 +845,44 @@
         top: 8px;
         right: 10px;
       }
+      &.export-form {
+        .title {
+          margin: 0 0 10px 0;
+        }
+        .date-input {
+          height: 38px;
+        }
+        .btn-export {
+          width: 100%;
+          border-radius: 4px;
+          height: 38px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          img {
+            margin-right: 5px;
+          }
+        }
+        label.input-container {
+          position: relative;
+          margin-bottom: 0;
+          .input-img {
+            position: absolute;
+            height: unset;
+            width: unset;
+            top: 7px;
+            right: 12px;
+            bottom: unset;
+            left: unset;
+          }
+        }
+      }
     }
   }
   // Bảng chấm công khi CBLĐ vào xem chi tiết nhân viên
   &.employee-detail {
     .timesheet-box {
+      padding: 15px;
       .input-container {
         .input-img {
           top: 8px;
@@ -830,11 +894,46 @@
         top: 8px;
         right: 10px;
       }
+      &.search-block {
+        border-radius: 4px;
+        box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
+        .title {
+          margin: 0 0 10px 0;
+        }
+        .react-datepicker-wrapper {
+          width: 100%;
+          input {
+            font-size: 14px;
+            height: 38px;
+          }
+        }
+        .wrap-date-input {
+          margin-bottom: 0;
+          position: relative;
+          width: 100%;
+          .input-img {
+            position: absolute;
+            top: 7px;
+            right: 12px;
+          }
+        }
+        .btn-search {
+          color: #FFFFFF;
+          height: 38px;
+        }
+      }
+    }
+    & > .detail {
+      margin-top: 15px;
     }
     .detail {
       .card {
+        margin: 15px 0 0 0;
+        border-radius: 4px;
         .card-header {
           background: #FFFFFF;
+          border-top-left-radius: 4px;
+          border-top-right-radius: 4px;
           &.card-header-text {
             color: #383838;
             font-weight: bold;
@@ -842,6 +941,9 @@
             align-items: center;
             justify-content: space-between;
           }
+        }
+        .card-body {
+          padding: 15px;
         }
       }
       .item-tooltip {
@@ -884,6 +986,8 @@
       table-layout: fixed;
       padding: 0;
       width: 100%;
+      border-radius: 4px !important;
+      box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
       .arrow::after, .bs-popover-bottom .arrow::after {
         border-left-color: #6CB5F9 !important;
         border-right-color: #6CB5F9 !important;
@@ -1308,7 +1412,7 @@
     border-radius: 4px;
     .date-card-header {
       background: #F2F2F2;
-      padding: 9px 20px;
+      padding: 10px 15px;
       font-size: 14px;
       font-weight: 400;
       line-height: 17px;
@@ -1317,7 +1421,7 @@
       }
     }
     .date-card-body-container {
-      padding: 16px 20px;
+      padding: 15px;
     }
     .infor-block {
       display: flex;
@@ -1351,7 +1455,7 @@
 }
 
 .time-keeping-page {
-  margin-top: 24px;
+  margin-top: 15px;
   color: #000;
   .page-title {
     font-size: 16px;
@@ -1359,17 +1463,17 @@
     line-height: 20px;
   }
   .container-card {
-    margin-top: 16px;
+    margin-top: 15px;
     background: #fff;
     border-radius: 4px;
-    box-shadow: 0px 0px 4px 0px #00000040;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
     padding: 20px;
   }
   .divider {
     width: 100%;
     height: 1px;
     background: #DEE2E6;
-    margin: 16px 0px;
+    margin: 15px 0px;
   }
   .margin-bt-20 {
     margin: 20px 0px;

@@ -81,19 +81,19 @@ class PositionRecruitingSearch extends React.Component {
     const customStyles = {
       control: base => ({
         ...base,
-        height: 48,
-        minHeight: 48
+        height: 38,
+        minHeight: 38
       })
     };
 
     return <>
-    <h5 className="searchTitle">{t("Search")}</h5>
-    <div className="recruiting-search-box shadow">
+    <h1 className="content-page-header">{t("Search")}</h1>
+    <div className="recruiting-search-box">
       <div className="row">
         <div className="col">
           <div className="title">{t("Position")}</div>
           <div className="content input-container">
-            <input placeholder={t("EnterPositionSearch")} onKeyPress={this.keyPress.bind(this)} className="form-control form-control-lg" styles={customStyles} onChange={this.setPosition.bind(this)} />
+            <input placeholder={t("EnterPositionSearch")} onKeyPress={this.keyPress.bind(this)} className="form-control input-text" onChange={this.setPosition.bind(this)} />
           </div>
         </div>
         <div className="col">
@@ -105,7 +105,7 @@ class PositionRecruitingSearch extends React.Component {
         <div className="col block-button">
           <div className="title">&nbsp;</div>
           <div className="content">
-            <button type="button" className="btn btn-lg btn-warning btn-search" onClick={this.search}>{t("Search")}</button>
+            <button type="button" className="btn btn-warning btn-search" onClick={this.search}>{t("Search")}</button>
           </div>
         </div>
       </div>

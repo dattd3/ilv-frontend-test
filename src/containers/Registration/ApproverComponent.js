@@ -234,8 +234,8 @@ class ApproverComponent extends React.Component {
         </div>
       </div>
         <div className="row">
-          <div className="col-4">
-            <p className="title2">{t('FullName')}</p>
+          <div className="col-12 col-xl-4">
+            <p className="title">{t('FullName')}</p>
             <div>
               <Select
                 isClearable={true}
@@ -255,16 +255,16 @@ class ApproverComponent extends React.Component {
             </div>
             {errors && errors['approver'] ? <div className="text-danger validation-message">{errors['approver']}</div> : null}
           </div>
-          <div className="col-4">
-            <p className="title2">{t('Position')}</p>
+          <div className="col-12 col-xl-4">
+            <p className="title">{t('Position')}</p>
             <div>
-              <input type="text" className="form-control" value={approver?.current_position || ""} readOnly />
+              <input type="text" className="form-control input-text text-truncate" title={approver?.current_position || ""} value={approver?.current_position || ""} readOnly />
             </div>
           </div>
-          <div className="col-4">
-            <p className="title2">{t('DepartmentManage')}</p>
+          <div className="col-12 col-xl-4">
+            <p className="title">{t('DepartmentManage')}</p>
             <div>
-              <input type="text" className="form-control" value={approver?.department || ""} readOnly />
+              <input type="text" className="form-control input-text text-truncate" title={approver?.department || ""} value={approver?.department || ""} readOnly />
             </div>
           </div>
         </div>

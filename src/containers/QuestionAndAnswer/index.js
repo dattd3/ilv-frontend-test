@@ -184,19 +184,19 @@ class MyComponent extends React.Component {
           showEditModal={this.showEditModal.bind(this)}
         />
         <div className="clearfix edit-button action-buttons mb-2">
-          <span type="button" className="btn btn-light float-left shadow pl-4 pr-4 ml-0" onClick={() => this.showSubmitModal(true)}> {t("CreateQuestions")} </span>
-          <span type="button" className="btn btn-light float-left shadow" onClick={() => this.showHistoryModal(true)}>{t("HistoryAnswer")}</span>
+          <span type="button" className="btn btn-light float-left pl-4 pr-4 ml-0" onClick={() => this.showSubmitModal(true)}> {t("CreateQuestions")} </span>
+          <span type="button" className="btn btn-light float-left" onClick={() => this.showHistoryModal(true)}>{t("HistoryAnswer")}</span>
           { isShowStaffHandbookLink && this.showStaffHandbookLink() }
         </div>
         <h1 className="content-page-header">{t("QuestionAndAnswer")}</h1>
-        <Container fluid className="info-tab-content shadow mb-3">
+        <Container fluid className="wrap-form-qna-search mb-3">
           <div className="form-group form-qna-search">
-            <label htmlFor="exampleInputEmail1">{t("SearchKeywords")}</label>
+            <label>{t("SearchKeywords")}</label>
             <div className="form-group row">
-              <div className="col-sm-12 col-md-9 mb-2">
+              <div className="col-sm-12 col-md-9">
                 <input type="text" className="form-control" placeholder={t("Search")} id="txt-search" name="keySearch" aria-describedby="emailHelp" onKeyPress={this.handleKeyPress.bind(this)} onChange={this.handleChange.bind(this)} />
               </div>
-              <div className="col-sm-12 col-md-3 mb-2">
+              <div className="col-sm-12 col-md-3">
                 <button type="button" className="btn btn-warning pr-5 pl-5 btn-search" onClick={() => this.search(keySearch)}><i className="icon-search mr-1"></i>{t("Search")}</button>
               </div>
             </div>

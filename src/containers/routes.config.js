@@ -12,7 +12,7 @@ export const RouteSettings = {
   },
   authentication: {
     defaultRoute: map.Login,
-    routes: [map.Login, map.Auth, map.NewsDetailApp, map.TermPolicy],
+    routes: [map.Login, map.Auth, map.NewsDetailApp, map.TermPolicy, map.Maintenance],
   },
 };
 
@@ -48,6 +48,14 @@ export default [
       path: map.TermPolicy,
     },
     component: lazy(() => import("./Dashboard/Policy")),
+  },
+  {
+    key: "maintenance",
+    routeProps: {
+      exact: true,
+      path: map.Maintenance
+    },
+    component: lazy(() => import("../containers/Maintenance"))
   },
   {
     key: "main",
