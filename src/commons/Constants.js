@@ -180,6 +180,7 @@ const Constants = {
     VinES: "V079",
     VinBigData: "V098",
     VinCon: "V041",
+    VinHoliday1: "V036",
   },
   listFunctionsForPnLACL: {
     editProfile: 'EDIT_PROFILE',
@@ -232,7 +233,7 @@ const Constants = {
   },
   MODULE_COMPANY_AVAILABE: process.env.REACT_APP_ENVIRONMENT === 'PRODUCTION' ? 
   { //production todo: add  "V077", "V070" to TUYENDUNG
-    1: ["V040", "V005", "V079", "V041", "V030", "V077", "V070", "V099"],//TUYENDUNG + V061
+    1: ["V040", "V005", "V079", "V041", "V030", "V035", "V036", "V077", "V070", "V099"],//TUYENDUNG + V061
     2: ["V040", "V005", "V061", "V077", "V070"],//DANHGIA_TAIKI
     3: [],//DEXUATLUONG
     4: ["V040", "V077", "V070"],//NGHIVIEC
@@ -241,7 +242,7 @@ const Constants = {
     7: ["V077", "V070"], //BONHIEM
   } :
   { //Development
-    1: ["V040", "V005", "V079", "V041", "V030", "V077", "V070", "V099"],//TUYENDUNG + V061
+    1: ["V040", "V005", "V079", "V041", "V030", "V035", "V036", "V077", "V070", "V099"],//TUYENDUNG + V061
     2: ["V061","V040", "V005", "V079", "V041", "V070", "V077", "V099"],//DANHGIA_TAIKI
     3: [],//DEXUATLUONG "V061", "V040", "V005", "V079", "V041", "V070", "V077"
     4: ["V040", "V005", "V079", "V070", "V077"],//NGHIVIEC

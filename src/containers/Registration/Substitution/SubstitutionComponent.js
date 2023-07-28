@@ -713,7 +713,7 @@ class SubstitutionComponent extends React.Component {
           <div className="row">
             <div className="col">
               {
-                [Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl].includes(currentUserCompanyVCode) ? <div className="text-danger guide-message"><i className="fa fa-info-circle"></i> {t("NotApplicable")}</div> : null
+                [Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinHoliday1].includes(currentUserCompanyVCode) ? <div className="text-danger guide-message"><i className="fa fa-info-circle"></i> {t("NotApplicable")}</div> : null
               }
               {
                 currentUserCompanyVCode === Constants.pnlVCode.VinMec ? <div className="text-danger guide-message"><i className="fa fa-info-circle"></i> {t("ShiftChangeApplied")}</div> : null
@@ -732,7 +732,7 @@ class SubstitutionComponent extends React.Component {
                     selected={startDate ? moment(startDate, DATE_FORMAT).toDate() : null}
                     startDate={startDate ? moment(startDate, DATE_FORMAT).toDate() : null}
                     endDate={endDate ? moment(endDate, DATE_FORMAT).toDate() : null}
-                    // minDate={[Constants.pnlVCode.VinPearl].includes(currentUserCompanyVCode) ? moment(new Date().getDate() - 1, DATE_FORMAT).toDate() : null}
+                    // minDate={[Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinHoliday1].includes(currentUserCompanyVCode) ? moment(new Date().getDate() - 1, DATE_FORMAT).toDate() : null}
                     minDate={minDate?.toDate() || null}
                     onChange={this.setStartDate.bind(this)}
                     dateFormat="dd/MM/yyyy"
@@ -816,7 +816,7 @@ class SubstitutionComponent extends React.Component {
                         onChange={applyFrom => this.handleDatePickerInputChange(index, applyFrom, "applyFrom")}
                         dateFormat="dd/MM/yyyy"
                         locale="vi"
-                        minDate={[Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl].includes(currentUserCompanyVCode) ? moment(new Date().getDate() - 1, DATE_FORMAT).toDate() : null}
+                        minDate={[Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinHoliday1].includes(currentUserCompanyVCode) ? moment(new Date().getDate() - 1, DATE_FORMAT).toDate() : null}
                         showMonthDropdown={true}
                         showYearDropdown={true}
                         autoComplete='off'
