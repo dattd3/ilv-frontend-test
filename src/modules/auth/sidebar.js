@@ -13,6 +13,14 @@ export const Navigation = [
     role: "U",
   },
   {
+    id: 123456789,
+    parentId: 0,
+    icon: "c-vingroup-history",
+    label: "Vin30Chronicles",
+    to: map.HistoryVingroup,
+    role: "U",
+  },
+  {
     id: 10,
     parentId: 0,
     icon: "c-hr",

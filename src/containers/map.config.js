@@ -134,6 +134,6 @@ export default {
   DetailInsuranceHealth: '/insurance-manager/detail-health/:id',
   MyProfile: "/my-profile",
   SalaryPropse: '/salarypropse/:idContract/:idSalary/:type',
-
+  HistoryVingroup: "/vingroup-history",
   Maintenance: '/maintenance'
 };
