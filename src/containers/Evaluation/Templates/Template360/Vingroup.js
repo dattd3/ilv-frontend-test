@@ -15,15 +15,28 @@ const VinGroup = ({ evaluationFormDetail, isEdit, currentLocale, errors, handleI
             <div className="list-evaluation">
             {
                 (listEvaluation?.listTarget || []).map((target, i) => {
-                    const isCompleted = evaluationFormDetail.status == evaluation360Status.completed
+                    const isCompleted = evaluationFormDetail.status == evaluation360Status.completed || evaluationFormDetail.status == evaluation360Status.evaluated
                     const isDisableInput = !isEdit || isCompleted
                     return (
                         <div className="evaluation-item" key={i}>
-                            <div dangerouslySetInnerHTML={{
-                                __html: purify.sanitize(target?.metric1 || ''),
-                                }}
-                                className="matrix-info" 
-                            />
+                            {
+                                target?.metric1 !== null && target?.metric1?.trim() !== '' && (
+                                    <div dangerouslySetInnerHTML={{
+                                        __html: purify.sanitize(target?.metric1 || ''),
+                                        }}
+                                        className="matrix-info" 
+                                    />
+                                )
+                            }
+                            {
+                                target?.kpiGroup !== null && target?.kpiGroup?.trim() !== '' && (
+                                    <div dangerouslySetInnerHTML={{
+                                        __html: purify.sanitize(target?.kpiGroup || ''),
+                                        }}
+                                        className="matrix-info" 
+                                    />
+                                )
+                            }
                             <div dangerouslySetInnerHTML={{
                                 __html: purify.sanitize(`${i + 1}. ${JSON.parse(target?.targetName || '{}')[languageCodeMapping[currentLocale]]}`),
                                 }}
@@ -40,7 +53,7 @@ const VinGroup = ({ evaluationFormDetail, isEdit, currentLocale, errors, handleI
                                                 <option value=''>{t("Select")}</option>
                                                 {
                                                     (scores || []).map((score, i) => {
-                                                        return <option value={score} key={i}>{score}</option>
+                                                        return <option value={score} key={i}>{score === 0 ? 'N/A' : score}</option>
                                                     })
                                                 }
                                             </select>
