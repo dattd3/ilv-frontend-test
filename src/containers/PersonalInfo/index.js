@@ -561,8 +561,8 @@ class MyComponent extends React.Component {
           }
           {
            checkVersionPnLSameAsVinhome(Constants.MODULE.DANHGIA_TAIKI) ? // open for golive1106
-           /*  checkIsExactPnL(Constants.pnlVCode.VinPearl) || checkIsExactPnL(Constants.pnlVCode.MeliaVinpearl) || IS_VINFAST  ?  */
-            // (checkIsExactPnL(Constants.pnlVCode.VinPearl) || checkIsExactPnL(Constants.pnlVCode.MeliaVinpearl)) ? // open for golive1106
+           /*  checkIsExactPnL(Constants.pnlVCode.VinPearl) || checkIsExactPnL(Constants.pnlVCode.MeliaVinpearl) || checkIsExactPnL(Constants.pnlVCode.VinHoliday1) || IS_VINFAST  ?  */
+            // (checkIsExactPnL(Constants.pnlVCode.VinPearl) || checkIsExactPnL(Constants.pnlVCode.MeliaVinpearl) || checkIsExactPnL(Constants.pnlVCode.VinHoliday1)) ? // open for golive1106
               <Tab eventKey="PersonalDocument" title={t("PersonalDocuments")}>
                 <Row >
                   {documents && documents.length > 0 ? <>
