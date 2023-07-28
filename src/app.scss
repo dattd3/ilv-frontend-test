@@ -4981,6 +4981,7 @@ span.badge-notification[data-badge]::after {
 .ot-info-modal-body {
   box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
 }
+<<<<<<< HEAD
 
 .logo-container {
   display: none!important;
@@ -4997,44 +4998,20 @@ span.badge-notification[data-badge]::after {
 .logo-container a[data-v-3832a65e] {
   display: none !important;
 }
+=======
+>>>>>>> uat
 
 .history-vingroup-page {
-  position: relative;
-  .hide-logo {
-    width: 119px;
-    height: 30px;
-    position: absolute;
-    bottom: 15px;
-    right: 10px;
-    background: url("./assets/img/bg-hide-logo-flippingbook.svg");
-    background-repeat: no-repeat;
-    background-size: cover;
-    z-index: 99999999999;
-    @media all and (display-mode: fullscreen) {
-      bottom: 0px;
-      right: 0px;
-      position: fixed;
-    }
-  }
   iframe {
     border: none;
     width: 100%;
     height: 100vh;
-    .logo-container {
-      display: none !important;
-    }
-    .logo-link {
-      display: none !important;
-    }
-    // .logo-svg {
-    //   display: none!important;
-    // }
-    // .book-container {
-    //   .logo-container {
-    //     .logo-link {
-
-    //     }
-    //   }
-    // }
   }
 }
+<<<<<<< HEAD
+=======
+
+.training-learning-page {
+  font-size: 14px;
+}
+>>>>>>> uat

@@ -969,10 +969,6 @@ function EvaluationApproval(props) {
             SetEvaluationDetailPopup({
                 ...evaluationDetailPopup,
                 isShow: false,
-                evaluationFormId: null,
-                formCode: null,
-                employeeCode: null,
-                isEvaluation360: false,
             })
         }
 

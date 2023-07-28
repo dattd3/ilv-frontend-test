@@ -7,10 +7,8 @@ import { Redirect } from 'react-router-dom';
 import map from '../map.config';
 
 class MyComponent extends React.Component {
-
   constructor(props) {
     super(props);
-
     this.state = {
       userProfile: {},
       userDetail: {},
@@ -18,10 +16,6 @@ class MyComponent extends React.Component {
       userFamily: {},
       userHealth: {}
     };
-  }
-
-  componentDidMount() {
-
   }
 
   render() {

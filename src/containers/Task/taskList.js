@@ -621,6 +621,7 @@ class TaskList extends React.Component {
                                 onChange={this.handleInputChange}
                             />
                         </div> 
+                        <div className="line-break" />
                         <div className="w-120px position-relative date-picker-container">
                             <DatePicker 
                               name="fromDate"
@@ -666,7 +667,7 @@ class TaskList extends React.Component {
                             />
                             <img src={IconCalender} alt="" className="calender-icon" />
                         </div>
-                        <div className="w-120px">
+                        <div className="w-120px search-btn-container">
                             <button type="button" onClick={() => this.searchRemoteData(true)} className="btn btn-warning w-100">{t("Search")}</button>
                         </div>
                     </div>
