@@ -843,7 +843,7 @@ class RequestTaskList extends React.Component {
                             onChange={this.handleInputChange}
                         />
                     </div>
-                    <div className="line-break"></div>
+                    <div className="line-break" />
                     <div className="w-120px position-relative date-picker-container">
                         <DatePicker 
                           name="fromDate"

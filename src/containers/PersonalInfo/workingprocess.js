@@ -4,7 +4,7 @@ import { withTranslation, useTranslation } from 'react-i18next'
 import { Container, Row, Col, Tabs, Tab, Form } from 'react-bootstrap'
 import moment from 'moment'
 import map from '../map.config'
-import { getRequestConfigurations, getMuleSoftHeaderConfigurations } from "../../commons/Utils"
+import { getRequestConfigurations, getMuleSoftHeaderConfigurations, isVinFast } from "../../commons/Utils"
 import WorkingProcessSearch from './workingProcessSearch'
 import HOCComponent from '../../components/Common/HOCComponent'
 import Constants from '../../commons/Constants'
@@ -26,7 +26,6 @@ const ChangeWorkingAppointment = (props) => {
     const formatValueBySAPValue = value => {
         return (!value || value === "#") ? "" : value
     }
-
     return (
         userChangeWorkingAppointments.length > 0 ?
             <div className="change-working-appointment-wrapper">
@@ -193,7 +192,11 @@ class MyComponent extends React.Component {
                                         </Row>
                                         <Row className="info-value">
                                             <Col xs={12} md={6} lg={3}>
-                                                <p className="mb-0">&nbsp;{item.contract_number}</p>
+                                                <p className="mb-0">&nbsp;
+                                                  {isVinFast() ? <a href='https://econtract.vinfast.vn/portal/index.aspx' target='_blank'>
+                                                    {item.contract_number}
+                                                  </a> : <>{item.contract_number}</>}
+                                                </p>
                                             </Col>
                                             <Col xs={12} md={6} lg={2}>
                                                 <p className="mb-0">&nbsp;{item.contract_type}</p>
