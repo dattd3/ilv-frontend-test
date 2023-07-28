@@ -796,6 +796,14 @@ export default [
           },
           component: lazy(() => import("./Registration/ContractEvaluation/SalaryPropose"))
         },
+        {
+          key: "vingroup-history",
+          routeProps: {
+            exact: true,
+            path: map.HistoryVingroup
+          },
+          component: lazy(() => import("./HistoryVinGroup/index"))
+        },
       ],
     },
   },
