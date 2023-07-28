@@ -2,11 +2,12 @@ import React, { useState, useEffect, useRef, Fragment } from "react"
 import Select from 'react-select'
 import { Image, Tabs, Tab, Form, Button, Modal, Row, Col, Collapse } from 'react-bootstrap'
 import DatePicker, { registerLocale } from 'react-datepicker'
+import { useHistory } from "react-router"
 import { useTranslation } from "react-i18next"
 import moment from 'moment'
 import axios from 'axios'
 import _ from 'lodash'
-import { evaluationStatus, actionButton } from '../Constants'
+import { evaluationStatus, actionButton, processStep, stepEvaluation360Config, evaluation360Status } from '../Constants'
 import Constants from '../../../commons/Constants'
 import { getRequestConfigurations, getMuleSoftHeaderConfigurations } from '../../../commons/Utils'
 import LoadingModal from '../../../components/Common/LoadingModal'
@@ -20,6 +21,7 @@ import IconCollapse from '../../../assets/img/icon/pms/icon-collapse.svg'
 import IconSearch from '../../../assets/img/icon/Icon_Loop.svg'
 import IconReject from '../../../assets/img/icon/Icon_Cancel.svg'
 import IconApprove from '../../../assets/img/icon/Icon_Check.svg'
+import IconDatePicker from 'assets/img/icon/Icon_DatePicker.svg'
 import 'react-datepicker/dist/react-datepicker.css'
 import vi from 'date-fns/locale/vi'
 registerLocale("vi", vi)
@@ -34,6 +36,7 @@ function AdvancedFilter(props) {
     const { masterData, filter, updateData, tab } = props
 
     const currentSteps = [
+        { value: evaluation360Status.waitingEvaluation, label: t("WaitingForFeedback360") },
         { value: evaluationStatus.selfAssessment, label: t("EvaluationDetailEmployeeManagerAssessment") },
         { value: evaluationStatus.qlttAssessment, label: t("EvaluationDetailEmployeeManagerApprove") },
         { value: evaluationStatus.cbldApproved, label: t("EvaluationDetailCompleted") }
@@ -118,6 +121,7 @@ function AdvancedFilter(props) {
                                 <Select 
                                     placeholder={t("Select")} 
                                     isClearable={true} 
+                                    isMulti={false}
                                     value={filter.currentStep} 
                                     options={currentSteps} 
                                     onChange={e => handleInputChange('currentStep', e)} />
@@ -220,14 +224,17 @@ function AdvancedFilter(props) {
                     <Form.Group as={Row} controlId="from-date">
                         <Form.Label column sm={12}>{t("EvaluationFromDate")}</Form.Label>
                         <Col sm={12}>
-                            <DatePicker
-                                selected={filter.fromDate ? moment(filter.fromDate, 'YYYY-MM-DD').toDate() : null}
-                                onChange={fromDate => handleInputChange('fromDate', fromDate ? moment(fromDate).format('YYYY-MM-DD') : null)}
-                                dateFormat="dd/MM/yyyy"
-                                showMonthDropdown={true}
-                                showYearDropdown={true}
-                                locale="vi"
-                                className="form-control input" />
+                            <label className="wrap-date-input">
+                                <DatePicker
+                                    selected={filter.fromDate ? moment(filter.fromDate, 'YYYY-MM-DD').toDate() : null}
+                                    onChange={fromDate => handleInputChange('fromDate', fromDate ? moment(fromDate).format('YYYY-MM-DD') : null)}
+                                    dateFormat="dd/MM/yyyy"
+                                    showMonthDropdown={true}
+                                    showYearDropdown={true}
+                                    locale="vi"
+                                    className="form-control input" />
+                                <span className="input-img"><img src={IconDatePicker} alt="Date" /></span>
+                            </label>
                         </Col>
                     </Form.Group>
                 </Col>
@@ -235,15 +242,18 @@ function AdvancedFilter(props) {
                     <Form.Group as={Row} controlId="to-date">
                         <Form.Label column sm={12}>{t("EvaluationToDate")}</Form.Label>
                         <Col sm={12}>
-                            <DatePicker 
-                                selected={filter.toDate ? moment(filter.toDate, 'YYYY-MM-DD').toDate() : null}
-                                minDate={filter.fromDate ? moment(filter.fromDate, 'YYYY-MM-DD').toDate() : null}
-                                onChange={toDate => handleInputChange('toDate', toDate ? moment(toDate).format('YYYY-MM-DD') : null)}
-                                dateFormat="dd/MM/yyyy"
-                                showMonthDropdown={true}
-                                showYearDropdown={true}
-                                locale="vi"
-                                className="form-control input" />
+                            <label className="wrap-date-input">
+                                <DatePicker 
+                                    selected={filter.toDate ? moment(filter.toDate, 'YYYY-MM-DD').toDate() : null}
+                                    minDate={filter.fromDate ? moment(filter.fromDate, 'YYYY-MM-DD').toDate() : null}
+                                    onChange={toDate => handleInputChange('toDate', toDate ? moment(toDate).format('YYYY-MM-DD') : null)}
+                                    dateFormat="dd/MM/yyyy"
+                                    showMonthDropdown={true}
+                                    showYearDropdown={true}
+                                    locale="vi"
+                                    className="form-control input" />
+                                <span className="input-img"><img src={IconDatePicker} alt="Date" /></span>
+                            </label>
                         </Col>
                     </Form.Group>
                 </Col>
@@ -621,13 +631,15 @@ const usePrevious = (value) => {
 
 function EvaluationApproval(props) {
     const { t } = useTranslation()
+    const history = useHistory()
     const [isLoading, SetIsLoading] = useState(false)
     const [isSelectedAll, SetIsSelectedAll] = useState(false)
     const [evaluationDetailPopup, SetEvaluationDetailPopup] = useState({
         isShow: false,
         evaluationFormId: null,
         formCode: null,
-        employeeCode: null
+        employeeCode: null,
+        isEvaluation360: false,
     })
     const [statusModal, SetStatusModal] = useState({isShow: false, isSuccess: true, content: "", needReload: true})
     const [paging, SetPaging] = useState({
@@ -941,13 +953,14 @@ function EvaluationApproval(props) {
         }
     }
 
-    const handleShowEvaluationDetailPopup = (formCode, checkPhaseFormId, employeeCode) => {
+    const handleShowEvaluationDetail = (formCode, checkPhaseFormId, employeeCode, reviewStreamCode) => {
         SetEvaluationDetailPopup({
             ...evaluationDetailPopup,
             isShow: true,
             evaluationFormId: checkPhaseFormId,
             formCode: formCode,
-            employeeCode: employeeCode
+            employeeCode: employeeCode,
+            isEvaluation360: reviewStreamCode === processStep.level360
         })
     }
 
@@ -956,19 +969,18 @@ function EvaluationApproval(props) {
             SetEvaluationDetailPopup({
                 ...evaluationDetailPopup,
                 isShow: false,
-                evaluationFormId: null,
-                formCode: null,
-                employeeCode: null
             })
         }
 
-        SetStatusModal({
-            ...statusModal,
-            isShow: statusModalFromChild?.isShow,
-            isSuccess: statusModalFromChild?.isSuccess,
-            content: statusModalFromChild?.content,
-            needReload: keepPopupEvaluationDetail ? false : true
-        })
+        if (statusModalFromChild) {
+            SetStatusModal({
+                ...statusModal,
+                isShow: statusModalFromChild?.isShow,
+                isSuccess: statusModalFromChild?.isSuccess,
+                content: statusModalFromChild?.content,
+                needReload: keepPopupEvaluationDetail ? false : true
+            })
+        }
     }
 
     const isAllEvaluationFormSelected = (data) => {
@@ -1087,6 +1099,13 @@ function EvaluationApproval(props) {
         SetPaging(pagingTemp)
     }
 
+    const stepEvaluation360 = stepEvaluation360Config.map(item => {
+        return {
+          ...item,
+          label: t(item?.label)
+        }
+    })
+
     return (
         <>
         <LoadingModal show={isLoading} />
@@ -1096,11 +1115,12 @@ function EvaluationApproval(props) {
             evaluationFormId={evaluationDetailPopup.evaluationFormId} 
             formCode={evaluationDetailPopup.formCode} 
             employeeCode={evaluationDetailPopup.employeeCode} 
+            isEvaluation360={evaluationDetailPopup?.isEvaluation360}
             onHide={onHideEvaluationDetailModal} />
         <div className="evaluation-approval-page">
             <h1 className="content-page-header">{t("EvaluationLabel")}</h1>
             <div className="filter-block">
-                <div className="card shadow card-filter">
+                <div className="card card-filter">
                     <Tabs defaultActiveKey={activeTab} onSelect={key => SetActiveTab(key)}>
                         <Tab eventKey={approvalTabCode} title={t("EvaluationApprovalTab")} className="tab-item" id='approval-tab'>
                             <ApprovalTabContent 
@@ -1123,7 +1143,7 @@ function EvaluationApproval(props) {
             <div className="data-block">
                 {
                     activeTab === approvalTabCode && 
-                    <div className="card shadow approval-data">
+                    <div className="card approval-data">
                     {
                         evaluationData?.data?.length > 0 ?
                         <>
@@ -1142,18 +1162,28 @@ function EvaluationApproval(props) {
                                 <tbody>
                                     {
                                         evaluationData?.data.map((item, index) => {
-                                            return <tr key={index} role='button' onClick={() => handleShowEvaluationDetailPopup(item?.formCode, item?.checkPhaseFormId, item?.employeeCode)}>
-                                                        <td className="c-form-code"><div className="form-code">{item?.formCode || ''}</div></td>
+                                            let isEvaluation360 = item?.reviewStreamCode === processStep.level360
+                                            let currentStep = isEvaluation360
+                                            ? stepEvaluation360.find(se => se.value == item?.status)?.label
+                                            : currentSteps.find(step => step?.value == item?.status)?.label
+                                            let sendDate = isEvaluation360 ? (item?.runFormDate && moment(item?.runFormDate).format('DD/MM/YYYY')) : (item?.sendDateLv1 && moment(item?.sendDateLv1).format('DD/MM/YYYY'))
+                                            let formCode = isEvaluation360 ? (`${item?.formCode} - ${item?.reviewFor}`) : (item?.formCode || '')
+                                            let formName = isEvaluation360
+                                            ? `${t("360DegreeFeedbackFormFor")} ${item?.poolUser?.fullname}`
+                                            : item?.checkPhaseFormName
+
+                                            return <tr key={index} role='button' onClick={() => handleShowEvaluationDetail(item?.formCode, item?.checkPhaseFormId, item?.employeeCode, item?.reviewStreamCode)}>
+                                                        <td className="c-form-code"><div className="form-code">{formCode}</div></td>
                                                         <td className="c-form-sender">
                                                             <div className="form-sender">{item?.poolUser?.fullname || ''}</div>
                                                             { item?.poolUser?.username && <div className="ad">({item?.poolUser?.username || ''})</div> }
                                                         </td>
                                                         <td className="c-form-name">
-                                                            <div className="form-name">{item?.checkPhaseFormName || ''}</div>
+                                                            <div className="form-name">{formName || ''}</div>
                                                         </td>
-                                                        <td className="c-sent-date"><div className="sent-date">{item?.sendDateLv1 && moment(item?.sendDateLv1).format('DD/MM/YYYY')}</div></td>
+                                                        <td className="c-sent-date"><div className="sent-date">{sendDate}</div></td>
                                                         <td className="c-status"><div className={`status ${item?.status == statusDone ? 'done' : 'in-progress'}`}>{item?.status == statusDone ? t("EvaluationDetailCompleted") : t("EvaluationInProgress")}</div></td>
-                                                        <td className="c-current-step"><div className="current-step">{currentSteps.find(step => step?.value == item?.status)?.label}</div></td>
+                                                        <td className="c-current-step"><div className="current-step">{currentStep}</div></td>
                                                     </tr>
                                         })
                                     }

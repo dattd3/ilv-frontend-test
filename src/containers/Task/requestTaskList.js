@@ -416,7 +416,7 @@ class RequestTaskList extends React.Component {
             if ([Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP].includes(requestTypeId) && this.isDateValidForUpdateAndRecall(moment(firstStartDate, 'DD/MM/YYYY')?.isValid() ? moment(firstStartDate, 'DD/MM/YYYY').format('YYYYMMDD') : null)) {
                 return true
             }
-            if (requestTypeId === Constants.OT_REQUEST && startDate?.split(", ")?.every(item => this.checkDateLessThanPayPeriod(moment(item, 'DD/MM/YYYY')?.isValid() ? moment(firstStartDate, 'DD/MM/YYYY').format('YYYYMMDD') : null))) {
+            if (requestTypeId === Constants.OT_REQUEST && startDate?.split(", ")?.every(item => this.isDateValidForUpdateAndRecall(moment(item, 'DD/MM/YYYY')?.isValid() ? moment(firstStartDate, 'DD/MM/YYYY').format('YYYYMMDD') : null))) {
                 return true
             }
         }
@@ -843,6 +843,7 @@ class RequestTaskList extends React.Component {
                             onChange={this.handleInputChange}
                         />
                     </div>
+                    <div className="line-break"></div>
                     <div className="w-120px position-relative date-picker-container">
                         <DatePicker 
                           name="fromDate"
@@ -888,7 +889,7 @@ class RequestTaskList extends React.Component {
                         />
                         <img src={IconCalender} alt="" className="calender-icon" />
                     </div>
-                    <div className="w-120px">
+                    <div className="w-120px search-btn-container">
                         <button type="button" onClick={() => this.searchRemoteData(true)} className="btn btn-warning w-100">{t("Search")}</button>
                     </div>
                 </div>

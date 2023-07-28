@@ -209,13 +209,13 @@ class AssesserComponent extends React.Component {
                     <div className="col-12 col-xl-4">
                         <p className="title">{t('Position')}</p>
                         <div>
-                            <input type="text" className="form-control" value={displayAppraiser?.current_position || ""} readOnly />
+                            <input type="text" className="form-control input-text text-truncate" title={displayAppraiser?.current_position || ""} value={displayAppraiser?.current_position || ""} readOnly />
                         </div>
                     </div>
                     <div className="col-12 col-xl-4">
                         <p className="title">{t('DepartmentManage')}</p>
                         <div>
-                            <input type="text" className="form-control" value={displayAppraiser?.department || ""} readOnly />
+                            <input type="text" className="form-control input-text text-truncate" title={displayAppraiser?.department || ""} value={displayAppraiser?.department || ""} readOnly />
                         </div>
                     </div>
                 </div>

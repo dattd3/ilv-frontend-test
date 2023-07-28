@@ -338,9 +338,9 @@ class LeaveFund extends React.Component {
     return (
       <div className="leave-fund-section">
         <h1 className="content-page-header">{t("MenuLeaveTOILManagement")}</h1>
-        <div className="card border shadow container-fluid filter-block">
+        <div className="card border container-fluid filter-block">
           <div className="row">
-            <div className="col-md-3 column">
+            <div className="col-md-4 column">
               <DropdownCustomize getSelecteMembers = {this.updateParent} resetSelectedMember = {this.updateParent}
               onCloseTabEvent = {this.updateParent} onCloseAllEvent = {this.updateParent}/>
             </div>
@@ -358,7 +358,7 @@ class LeaveFund extends React.Component {
               <div className="btn-block">
                 <button type="button" className="btn btn-outline-success" onClick={this.exportLeaveFundToExcel}><i className="fas fa-file-excel"></i>{t("ExportFile")}</button>
               </div>
-              <div className="card border shadow result-block">
+              <div className="card border result-block">
                 <div className="result-wrap-table">
                   <table className="result-table" id="result-table">
                     <thead>

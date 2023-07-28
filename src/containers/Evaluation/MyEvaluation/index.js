@@ -35,7 +35,7 @@ function EvaluationFormItem(props) {
     return (
         <tr>
             <td className='c-form-name'><div className='form-name'><a href={`/evaluations/${item?.checkPhaseFormId}/${item?.formCode}`} alt={item?.checkPhaseFormName} className="form-name">{item?.checkPhaseFormName}</a></div></td>
-            <td className='c-created-date text-center'><div className='created-date'>{item?.createDate && moment(item?.createDate).format("DD/MM/YYYY")}</div></td>
+            <td className='c-created-date text-center'><div className='created-date'>{item?.runFormDate && moment(item?.runFormDate).format("DD/MM/YYYY")}</div></td>
             <td className='c-status text-center'><div className={`status ${statusMapping?.className}`}>{statusMapping?.label}</div></td>
             <td className='c-step text-center'><div className='step'>{stepMapping[item?.status]?.nextStep}</div></td>
         </tr>
@@ -165,7 +165,7 @@ function MyEvaluation(props) {
         <StatusModal show={statusModal.isShow} content={statusModal.content} isSuccess={statusModal.isSuccess} onHide={onHideStatusModal} />
         <div className="my-evaluation-page">
             <h1 className="content-page-header">{t("EvaluationLabel")}</h1>
-            <div className="card shadow card-evaluation">
+            <div className="card card-evaluation">
                 <form onSubmit={handleOnSubmit}>
                     <div className="filter-block">
                         <p className="label-filter">{t("EvaluationSelectYear")}</p>

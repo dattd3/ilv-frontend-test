@@ -281,7 +281,13 @@ function WorkOutSideGroup(props) {
             if (response && response?.data) {
                 const result = response?.data?.result
                 if (result?.code == Constants.API_SUCCESS_CODE) {
-                    const data = (response?.data?.data || []).map(item => {
+                    const experienceClone = [...(experiences || [])]
+                    const listIDs = (experienceClone || []).filter(item => item?.ID).map(item => item?.ID?.toString())
+                    const experienceOldCreateNew = (experienceClone || []).filter(item => item?.isAddNew)
+                    const data = (response?.data?.data || [])
+                    .filter(item => listIDs?.includes(item?.ID))
+                    .map((item, itemIndex) => {
+                        let experienceItemOld = experienceClone[itemIndex] || {}
                         for (const key in item) {
                             if (['ID', 'PERNR'].includes(key)) {
                                 item[key] = item[key]
@@ -291,10 +297,13 @@ function WorkOutSideGroup(props) {
                                     item[key] = formatValue(item[key], valueType.date)
                                 }
                             }
+                            if (experienceItemOld[`${key}_${prefixUpdating}`] !== undefined) {
+                                item[`${key}_${prefixUpdating}`] = experienceItemOld[`${key}_${prefixUpdating}`]
+                            }
                         }
                         return item
                     })
-                    SetExperiences(data)
+                    SetExperiences([...data, ...experienceOldCreateNew])
                     SetHiddenViewSalary(false)
                 }
             }
@@ -308,17 +317,19 @@ function WorkOutSideGroup(props) {
     const handleInputChangeOnParent = (index, key, value) => {
         // (!(/^\d*$/.test(Number(val))) || val.includes('.'))
         // !(/^[0-9][0-9,\.]*$/.test(Number(val))) 
+        // !(/^[0-9][0-9,\.]*$/.test(Number(value)))
         const lisKeyNumberType = [1, 2, 3, 4, 5].reduce((res, item) => {
             res = [...res, `DE_NET${item}`, `DE_GROSS${item}`, `DE_NET${item}_${prefixUpdating}`, `DE_GROSS${item}_${prefixUpdating}`]
             return res
         }, [])
 
-        if (lisKeyNumberType.includes(key) && !(/^[0-9][0-9,\.]*$/.test(Number(value)))) {
-            return
+        let temp = value
+        if (lisKeyNumberType.includes(key)) {
+            temp = value?.replace(/[^0-9]/g, '')
         }
 
         const experienceToSave = [...experiences]
-        experienceToSave[index][key] = value
+        experienceToSave[index][key] = temp
         SetExperiences(experienceToSave)
     }
 
@@ -387,8 +398,8 @@ function WorkOutSideGroup(props) {
         for (let i = 1; i < 6; i++) {
             result[`DE_GROSS${i}`] = item?.isAddNew ? item[`DE_GROSS${i}`] : getValueByCondition(item[`DE_GROSS${i}`], item[`DE_GROSS${i}_${prefixUpdating}`])
             result[`DE_NET${i}`] = item?.isAddNew ? item[`DE_NET${i}`] : getValueByCondition(item[`DE_NET${i}`], item[`DE_NET${i}_${prefixUpdating}`])
-            result[`BEG${i}`] = item?.isAddNew ? item[`BEG${i}`] : getValueByCondition(item[`BEG${i}`], item[`BEG${i}_${prefixUpdating}`])
-            result[`END${i}`] = item?.isAddNew ? item[`END${i}`] : getValueByCondition(item[`END${i}`], item[`END${i}_${prefixUpdating}`])
+            result[`BEG${i}`] = item?.isAddNew ? (item[`BEG${i}`] || null) : (getValueByCondition(item[`BEG${i}`], item[`BEG${i}_${prefixUpdating}`]) || null)
+            result[`END${i}`] = item?.isAddNew ? (item[`END${i}`] || null) : (getValueByCondition(item[`END${i}`], item[`END${i}_${prefixUpdating}`]) || null)
             result[`WAERS${i}`] = item?.isAddNew ? item[`WAERS${i}`] : getValueByCondition(item[`WAERS${i}`], item[`WAERS${i}_${prefixUpdating}`])
             result[`DUT${i}`] = item?.isAddNew ? item[`DUT${i}`] : getValueByCondition(item[`DUT${i}`], item[`DUT${i}_${prefixUpdating}`])
             result[`PLAN${i}`] = item?.isAddNew ? item[`PLAN${i}`] : getValueByCondition(item[`PLAN${i}`], item[`PLAN${i}_${prefixUpdating}`])
@@ -523,6 +534,7 @@ function WorkOutSideGroup(props) {
             for (let key in files) {
                 formData.append('Files', files[key])
             }
+
             SetIsShowConfirmSendRequestModal(false)
             const response = await axios.post(`${process.env.REACT_APP_REQUEST_URL}user-profile-histories/experience`, formData, config)
             statusModalClone.isShow = true

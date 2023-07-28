@@ -58,8 +58,8 @@ class PositionAppliedList extends React.Component {
     return (
       <>
       <div className="summary position-applied-block">
-        <h5 className="result-label">{t("AppliedPositions")}</h5>
-        <div className="card shadow">
+        <h1 className="content-page-header">{t("AppliedPositions")}</h1>
+        <div className="card">
           <div className="card-body">
             <table className="table" role="table">
               <thead className="position-applied-title-row" role="rowgroup">

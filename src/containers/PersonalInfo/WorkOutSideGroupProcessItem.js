@@ -19,9 +19,20 @@ function WorkOutSideGroupProcessItem({ index, item, maxEndDate, canUpdate, viewS
             if (hiddenViewSalary) {
                 return '**********'
             }
-            return val
+            return formatNumberSpecialCase(val)
         }
         return null
+    }
+
+    const formatNumberSpecialCase = (val = '') => {
+        if (val === '' || val === null || val === undefined) {
+            return ''
+        }
+
+        const temp = val?.replaceAll(" ", "")
+        return temp.replace(/./g, (c, i, a) => {
+            return i > 0 && c !== "." && (a.length - i) % 3 === 0 ? " " + c : c;
+        })
     }
     
     return (
@@ -182,10 +193,10 @@ function WorkOutSideGroupProcessItem({ index, item, maxEndDate, canUpdate, viewS
                                     <>
                                         {
                                             item?.isAddNew
-                                            ? (<input type="text" placeholder={t("import")} value={item[`DE_NET${itemNo}`] || ''} onChange={e => handleInputChange(`DE_NET${itemNo}`, e?.target?.value || '')} className="first" maxLength={13} />)
+                                            ? (<input type="text" placeholder={t("import")} value={formatNumberSpecialCase(item[`DE_NET${itemNo}`])} onChange={e => handleInputChange(`DE_NET${itemNo}`, e?.target?.value || '')} className="first" maxLength={13 + (formatNumberSpecialCase(item[`DE_NET${itemNo}`])?.split(' ').length - 1)} />)
                                             : (<div className="value salary-view"><span>{getSalaryByValue(item[`DE_NET${itemNo}`])}</span><img src={hiddenViewSalary ? IconEyeClosed : IconEyeOpened} alt='Eye' className="eye" onClick={handleToggleViewSalary} /></div>)
                                         }
-                                        {!item?.isAddNew && (<input type="text" placeholder={t("import")} value={item[`DE_NET${itemNo}_${prefixUpdating}`] || ''} onChange={e => handleInputChange(`DE_NET${itemNo}_${prefixUpdating}`, e?.target?.value || '')} className="second salary" maxLength={13} disabled={!viewSalaryAtLeastOnceTime} />)}
+                                        {!item?.isAddNew && (<input type="text" placeholder={t("import")} value={formatNumberSpecialCase(item[`DE_NET${itemNo}_${prefixUpdating}`])} onChange={e => handleInputChange(`DE_NET${itemNo}_${prefixUpdating}`, e?.target?.value || '')} className="second salary" maxLength={13 + (formatNumberSpecialCase(item[`DE_NET${itemNo}_${prefixUpdating}`])?.split(' ').length - 1)} disabled={!viewSalaryAtLeastOnceTime} />)}
                                     </>
                                 )
                                 : (<div className="value salary-view"><span>{getSalaryByValue(item[`DE_NET${itemNo}`])}</span><img src={hiddenViewSalary ? IconEyeClosed : IconEyeOpened} alt='Eye' className="eye" onClick={handleToggleViewSalary} /></div>)
@@ -201,10 +212,10 @@ function WorkOutSideGroupProcessItem({ index, item, maxEndDate, canUpdate, viewS
                                     <>
                                         {
                                             item?.isAddNew
-                                            ? (<input type="text" placeholder={t("import")} value={item[`DE_GROSS${itemNo}`] || ''} onChange={e => handleInputChange(`DE_GROSS${itemNo}`, e?.target?.value || '')} className="first" maxLength={13} />)
+                                            ? (<input type="text" placeholder={t("import")} value={formatNumberSpecialCase(item[`DE_GROSS${itemNo}`])} onChange={e => handleInputChange(`DE_GROSS${itemNo}`, e?.target?.value || '')} className="first" maxLength={13 + (formatNumberSpecialCase(item[`DE_GROSS${itemNo}`])?.split(' ').length - 1)} />)
                                             : (<div className="value salary-view"><span>{getSalaryByValue(item[`DE_GROSS${itemNo}`])}</span><img src={hiddenViewSalary ? IconEyeClosed : IconEyeOpened} alt='Eye' className="eye" onClick={handleToggleViewSalary} /></div>)
                                         }
-                                        {!item?.isAddNew && (<input type="text" placeholder={t("import")} value={item[`DE_GROSS${itemNo}_${prefixUpdating}`] || ''} onChange={e => handleInputChange(`DE_GROSS${itemNo}_${prefixUpdating}`, e?.target?.value || '')} className="second salary" maxLength={13} disabled={!viewSalaryAtLeastOnceTime} />)}
+                                        {!item?.isAddNew && (<input type="text" placeholder={t("import")} value={formatNumberSpecialCase(item[`DE_GROSS${itemNo}_${prefixUpdating}`])} onChange={e => handleInputChange(`DE_GROSS${itemNo}_${prefixUpdating}`, e?.target?.value || '')} className="second salary" maxLength={13 + (formatNumberSpecialCase(item[`DE_GROSS${itemNo}_${prefixUpdating}`])?.split(' ').length - 1)} disabled={!viewSalaryAtLeastOnceTime} />)}
                                     </>
                                 )
                                 : (<div className="value salary-view"><span>{getSalaryByValue(item[`DE_GROSS${itemNo}`])}</span><img src={hiddenViewSalary ? IconEyeClosed : IconEyeOpened} alt='Eye' className="eye" onClick={handleToggleViewSalary} /></div>)

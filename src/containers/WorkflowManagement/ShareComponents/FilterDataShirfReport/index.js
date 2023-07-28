@@ -14,6 +14,8 @@ import { saveAs } from 'file-saver'
 import { getMuleSoftHeaderConfigurations } from "../../../../commons/Utils"
 import { IS_VINFAST } from "commons/commonFunctions";
 import Spinner from 'react-bootstrap/Spinner';
+import IconDatePicker from 'assets/img/icon/Icon_DatePicker.svg'
+import IconDownload from 'assets/img/icon/ic_download.svg'
 
 registerLocale("vi", vi);
 
@@ -248,8 +250,8 @@ class FilterDataShirfReport extends React.Component {
     const customStyles = {
       control: base => ({
         ...base,
-        height: 35,
-        minHeight: 35
+        height: 38,
+        minHeight: 38
       })
     };
     const reportTypes = [
@@ -267,9 +269,9 @@ class FilterDataShirfReport extends React.Component {
     return (
       <>
         {/* <LoadingModal show={this.state.isLoading} /> */}
-        <div className="timesheet-box shadow">
+        <div className="timesheet-box export-form">
           <div className="row">
-            <div className="col-lg-2">
+            <div className="col-md-3">
               <div className="title">{t("LabelTypeReport")}</div>
               <Select name="reportType"
                 styles={customStyles}
@@ -280,7 +282,7 @@ class FilterDataShirfReport extends React.Component {
               {renderErrors("type")}
             </div>
             {(this.state.reportType === Constants.TYPE_REPORT.DETAIL_REPORT || this.state.reportType === Constants.TYPE_REPORT.TIMESHEET_REPORT) &&
-              <div className="col-lg-2">
+              <div className="col-md-3">
                 <div className="title">{t("staff_selection_label")}</div>
                 <SelectTab className="content input-container" selectedMembers={this.state.selectedMembers} onClick={this.onClickSelectTab}
                   onCloseTab={this.onCloseTabEvent} onCloseAll={this.onCloseAllEvent} />
@@ -290,14 +292,12 @@ class FilterDataShirfReport extends React.Component {
                 ) : null}
               </div>
             }
-
             {
-
               this.props.useDateFilter === false ? null :
                 <>
-                  <div className="col-lg-3">
+                  <div className="col-md-3">
                     <div className="title">{t("From")}</div>
-                    <div className="content input-container">
+                    <label className="content input-container">
                       <DatePicker
                         name="startDate"
                         selectsStart
@@ -307,16 +307,14 @@ class FilterDataShirfReport extends React.Component {
                         onChange={this.setStartDate}
                         dateFormat="dd/MM/yyyy"
                         locale="vi"
-                        className="form-control"
+                        className="form-control date-input"
                       />
-                      <span className="ic-calendar">
-                        <i className="fas fa-calendar-alt"></i>
-                      </span>
-                    </div>
+                      <span className="input-img"><img src={IconDatePicker} alt="Date" /></span>
+                    </label>
                   </div>
-                  <div className="col-lg-3">
+                  <div className="col-md-3">
                     <div className="title">{t("To")}</div>
-                    <div className="content input-container">
+                    <label className="content input-container">
                       <DatePicker
                         name="endDate"
                         selectsEnd
@@ -328,28 +326,25 @@ class FilterDataShirfReport extends React.Component {
                         onChange={this.setEndDate}
                         dateFormat="dd/MM/yyyy"
                         locale="vi"
-                        className="form-control"
+                        className="form-control date-input"
                       />
-                      <span className="ic-calendar">
-                        <i className="fas fa-calendar-alt"></i>
-                      </span>
-                    </div>
+                      <span className="input-img"><img src={IconDatePicker} alt="Date" /></span>
+                    </label>
                   </div>
                 </>
             }
-
-            <div className="col-lg-2">
+            <div className="col-md-3">
               <div className="title">&nbsp;</div>
               <div className="content">
                 <button
                   type="button"
-                  className="btn btn-primary"
+                  className="btn btn-primary btn-export"
                   onClick={this.download}
                   disabled={this.state.isLoading}
                 >
                   {
                     this.state.isLoading ? <Spinner animation="border" size="sm" /> : <>
-                      <i className="fas fa-download mr-1"></i>
+                      <img src={IconDownload} alt="Download" />
                       {t("LabelDownloadReport")}
                     </>
                   }
@@ -357,7 +352,6 @@ class FilterDataShirfReport extends React.Component {
               </div>
             </div>
           </div>
-
         </div>
         {renderErrors("data")}
       </>
