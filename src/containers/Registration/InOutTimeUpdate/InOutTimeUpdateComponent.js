@@ -13,6 +13,7 @@ import _ from 'lodash'
 import { withTranslation } from "react-i18next";
 import { getValueParamByQueryString, getMuleSoftHeaderConfigurations, isEnableFunctionByFunctionName, getRegistrationMinDateByConditions, isValidDateRequest } from "../../../commons/Utils"
 import Constants from '../../../commons/Constants'
+import NoteModal from 'components/Common/NoteModal'
 import LoadingModal from 'components/Common/LoadingModal'
 import IconDatePicker from 'assets/img/icon/Icon_DatePicker.svg'
 import IconClock from 'assets/img/icon/ic_clock.svg'
@@ -41,6 +42,10 @@ class InOutTimeUpdateComponent extends React.Component {
       disabledSubmitButton: false,
       needReload: true,
       isLoading: false,
+      noteModal: {
+        isShow: false,
+        content: ''
+      }
     }
   }
 
@@ -399,8 +404,25 @@ class InOutTimeUpdateComponent extends React.Component {
     return dayName
   }
 
+  handleShowNoteModal = () => {
+    const { t } = this.props
+    const noteModal = {...this.state.noteModal}
+    noteModal.isShow = true
+    noteModal.content = t("PreviousDayNoteUpdateInOutTime")
+    this.setState({noteModal})
+  }
+
+  handleHideNoteModal = () => {
+    this.setState({
+      noteModal: {
+        ...this.state.noteModal,
+        isShow: false,
+      }
+    })
+  }
+
   render() {
-    const { startDate, endDate, timesheets, errors, files, disabledSubmitButton, isShowStatusModal, titleModal, messageModal, isSuccess, isLoading } = this.state
+    const { startDate, endDate, timesheets, errors, files, disabledSubmitButton, isShowStatusModal, titleModal, messageModal, isSuccess, isLoading, noteModal } = this.state
     const { t, recentlyManagers } = this.props;
     const lang = localStorage.getItem("locale")
     const isShowSelectWorkingShift24h = isEnableFunctionByFunctionName(Constants.listFunctionsForPnLACL.selectWorkingShift24h)
@@ -410,6 +432,7 @@ class InOutTimeUpdateComponent extends React.Component {
       <div className="in-out-time-update">
         <LoadingModal show={isLoading} />
         <ResultModal show={isShowStatusModal} title={titleModal} message={messageModal} isSuccess={isSuccess} onHide={this.hideStatusModal} />
+        <NoteModal isShow={noteModal?.isShow} content={noteModal?.content} onHide={this.handleHideNoteModal} />
         <div className="box search-form">
           <div className="row">
             <div className="col-4">
@@ -625,6 +648,12 @@ class InOutTimeUpdateComponent extends React.Component {
                       <div className='previous-day-selection'>
                         <input type="checkbox" id={`previous-day-selection-${index}`} name={`previous-day-selection-${index}`} checked={timesheet.isPrevDay || false} onChange={e => this.handleCheckboxChange(index, 'isPrevDay', e)} />
                         <label htmlFor={`previous-day-selection-${index}`}>{t("PreviousDay")}</label>
+                        <button
+                            className="information-btn"
+                            onClick={this.handleShowNoteModal}
+                          >
+                            <i className="fas fa-info" />
+                        </button>
                       </div>
                       {
                         isShowSelectWorkingShift24h && 

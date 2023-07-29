@@ -1795,7 +1795,7 @@
   "WarningOverOTFundsConsent": "OT hours for this request exceeded the department's funds for the month (at time of registration). Please check/report to HR to replenish funds. Confirm continued consent?",
   "WarningOverOTFundsApproval": "OT hours for this request exceeded the department's funds for the month (at time of registration). Please check/report to HR to replenish funds. Confirm continued approve?",
   "OTMinimumHours": "(*) Minimum OT is 30m for Production department, 60m for other department",
-  "OTInvalidSpaceHours": "(*) Minimum break time is 1h",
+  "OTInvalidSpaceHours": "(*) Minimum break time is 45m",
   "OTOverlapEachOther": "(*) OT time segment is overlap",
   "IncludeSalaryAdjustment": "Include salary adjustment",
   "SearchByDate": "Search by date",
@@ -1883,6 +1883,7 @@
   "360DegreeFeedbackFormFor": "360 degree feedback form for",
   "NoDataInfo": "No data",
   "PleaseEnterTheRequiredFields": "Please enter the required fields!",
+  "PreviousDayNoteUpdateInOutTime": "If you edit the checkin and checkout on day T with an inter-day shift (EX: from 10 PM - 06 AM the next day), if enter the start time < end time and tick \"Previous day\", then the checkin/out time will be recorded for date T-1",
   "VinSchoolSickLeave": "VSC Expat sick leave",
   "SickLeaveFundForVinSchool": "Expat Sick leave fund for VSC"
 }
