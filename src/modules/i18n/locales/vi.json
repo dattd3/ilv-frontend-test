@@ -1812,7 +1812,7 @@
   "WarningOverOTFundsConsent": "Số giờ OT đang đăng ký đã vượt quỹ của bộ phận trong tháng (tại thời điểm đăng ký). Vui lòng kiểm tra/ báo với nhân sự để bổ sung quỹ. Xác nhận tiếp tục thẩm định?",
   "WarningOverOTFundsApproval": "Số giờ OT đang đăng ký đã vượt quỹ của bộ phận trong tháng (tại thời điểm đăng ký). Vui lòng kiểm tra/ báo với nhân sự để bổ sung quỹ. Xác nhận tiếp tục phê duyệt?",
   "OTMinimumHours": "(*) Vui lòng nhập tối thiểu 30 phút cho Khối sản xuất, 60 phút cho các khối khác",
-  "OTInvalidSpaceHours": "(*) Khoảng nghỉ tối thiểu là 1h",
+  "OTInvalidSpaceHours": "(*) Khoảng nghỉ tối thiểu là 45 phút",
   "OTOverlapEachOther": "(*) Các khoảng thời gian trùng nhau",
   "IncludeSalaryAdjustment": "Có điều chỉnh lương",
   "SearchByDate": "Tìm kiếm theo ngày",
