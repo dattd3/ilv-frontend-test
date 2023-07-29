@@ -24,7 +24,7 @@ function MainLayout(props) {
   const isApp = searchParams.get('isApp') || false;
   const currentCompanyCode = localStorage.getItem("companyCode")
   
-  if (props.location.pathname.indexOf("training") > 0 && ![Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl].includes(currentCompanyCode)) {
+  if (props.location.pathname.indexOf("training") > 0 && ![Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinHoliday1].includes(currentCompanyCode)) {
     history.push(map.NotFound);
   }
 

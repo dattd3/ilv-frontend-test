@@ -158,7 +158,7 @@ function SideBar(props) {
                 rootNav[i].content = getSubNav(allNav, rootNav[i].id);
             }
         }
-        if (![Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl].includes(user.companyCode)) {
+        if (![Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinHoliday1].includes(user.companyCode)) {
             rootNav = rootNav.filter(x => x.label !== 'Menu_Training')
         }
         if(![

@@ -1879,5 +1879,6 @@
   "StartDateEndDateRequired": "(*) Vui lòng nhập Ngày bắt đầu và Ngày kết thúc!",
   "InvalidDataPleaseCheckAgain": "Dữ liệu không hợp lệ. Vui lòng kiểm tra lại!",
   "PreviousDay": "Ngày trước đó",
-  "InvalidDatePeriod": "Ngày kết thúc của Công ty không được nhỏ hơn Ngày kết thúc của các quá trình!"
+  "InvalidDatePeriod": "Ngày kết thúc của Công ty không được nhỏ hơn Ngày kết thúc của các quá trình!",
+  "PreviousDayNoteUpdateInOutTime": "Nếu sửa giờ vào ra ngày T có phân ca liên ngày (ví dụ từ 22h-6h sáng ngày hôm sau) mà nhập thời gian bắt đầu < thời gian kết thúc và tích chọn \"Ngày trước đó\" thì giờ checkin/out sẽ được ghi nhận cho ngày T-1"
 }

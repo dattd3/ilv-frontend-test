@@ -180,6 +180,7 @@ const Constants = {
     VinES: "V079",
     VinBigData: "V098",
     VinCon: "V041",
+    VinHoliday1: "V036",
   },
   listFunctionsForPnLACL: {
     editProfile: 'EDIT_PROFILE',

@@ -104,6 +104,18 @@
                             cursor: pointer;
                         }
                     }
+                    .information-btn {
+                        margin-left: 5px;
+                        border-radius: 50%;
+                        background: #347EF9;
+                        color: #fff;
+                        border-color: transparent;
+                        width: 16px;
+                        height: 16px;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                    }
                     &:last-child {
                         border: none;
                         flex: 0 0 36%;
