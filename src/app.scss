@@ -4990,6 +4990,23 @@ span.badge-notification[data-badge]::after {
   }
 }
 
-.training-learning-page {
+.training-learning-page, .training-instruction-page {
   font-size: 14px;
+  .card {
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
+    .card-header {
+      border-radius: 4px 4px 0 0;
+      padding: 15px;
+      h6 {
+        font-size: 16px;
+        font-weight: bold;
+      }
+    }
+    .card-body {
+      padding: 0 15px 15px 15px;
+    }
+  }
+  .filter-by-year, select {
+    font-size: inherit;
+  }
 }
