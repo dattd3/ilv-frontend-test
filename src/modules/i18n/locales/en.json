@@ -1882,5 +1882,6 @@
   "EvaluationScore": "Point",
   "360DegreeFeedbackFormFor": "360 degree feedback form for",
   "NoDataInfo": "No data",
-  "PleaseEnterTheRequiredFields": "Please enter the required fields!"
+  "PleaseEnterTheRequiredFields": "Please enter the required fields!",
+  "PreviousDayNoteUpdateInOutTime": "If you edit the checkin and checkout on day T with an inter-day shift (EX: from 10 PM - 06 AM the next day), if enter the start time < end time and tick \"Previous day\", then the checkin/out time will be recorded for date T-1"
 }
