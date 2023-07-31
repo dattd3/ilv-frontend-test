@@ -2465,6 +2465,10 @@ span.badge-notification[data-badge]::after {
       // box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
       .info-tab-content {
         border-radius: 4px;
+        &.change-working-appointment {
+          padding-top: 5px;
+          padding-bottom: 5px;
+        }
       }
     }
     .bonus-penalty {
@@ -4804,12 +4808,52 @@ span.badge-notification[data-badge]::after {
 }
 
 .kpi-training-page {
+  font-size: 14px;
   .online-search-link {
     text-decoration: none;
+    font-size: inherit;
     border-radius: 3px;
-    margin: 10px 0 15px 0;
-    width: 200px;
-    font-size: 14px;
+    margin: 15px 0 15px 0;
+    height: 38px;
+    padding: 0 30px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .learning-target, .training-target {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+  .learning-progress, .teaching-progress {
+    margin-bottom: 15px;
+  }
+  .card-body {
+    padding: 20px;
+    .training-kpi-info {
+      display: flex;
+      font-size: 15px;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 0;
+      &:last-child {
+        padding-bottom: 0;
+      }
+      i {
+        margin-right: 8px;
+      }
+    }
+    .kpi-training {
+      margin: 0 auto 20px auto;
+      font-size: 3.5rem;
+      color: #fff;
+      border-radius: 50%;
+      width: 98px;
+      height: 98px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
   }
 }
 
@@ -5009,4 +5053,7 @@ span.badge-notification[data-badge]::after {
   .filter-by-year, select {
     font-size: inherit;
   }
+}
+.shadow-customize {
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px !important;
 }

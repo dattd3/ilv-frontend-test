@@ -298,12 +298,12 @@ function Vingroup(props) {
                   <div className="text">
                     <p>Hơn cả việc tạo nên một chiếc xe mới, VinFast ra đời đại diện cho tinh thần và niềm kiêu hãnh
                     dân
-                    tộc. Khát vọng và phong thái chuyên nghiệp của tập đoàn Vingroup hứa hẹn sẽ đưa thương hiệu
+                    tộc. Khát vọng và phong thái chuyên nghiệp của Tập đoàn Vingroup hứa hẹn sẽ đưa thương hiệu
                     VinFast trở thành ngôi sao sáng vươn tầm
                   châu lục.</p>
                     <p>“Chúng tôi khát vọng xây dựng xe ô tô thương hiệu Việt có thể cạnh tranh trên toàn thế giới”
                     -
-                  Chủ tịch tập đoàn Vingroup - Phạm Nhật Vượng</p>
+                  Chủ tịch Tập đoàn Vingroup - Phạm Nhật Vượng</p>
                   </div>
                 </div>
               </div>
