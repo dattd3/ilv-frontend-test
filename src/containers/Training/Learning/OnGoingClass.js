@@ -55,18 +55,18 @@ function OnGoingClass({_year}) {
 
     return (
         <>
-            <div className="card mb-4 shadow">
+            <div className="card mb-4">
                 <div className="card-header py-3">
-                    <h6 className="m-0 font-weight-500 text-uppercase text-color-vp">{t("ClassInprogress")}</h6>
+                    <h6 className="m-0 font-weight-500 text-uppercase">{t("ClassInprogress")}</h6>
                 </div>
                 <div className="card-body">
                     <div className="table-responsive">
                         <Table striped bordered hover>
                             <thead>
                                 <tr>
-                                    <th>#</th>
+                                    <th className="text-center">#</th>
                                     <th>{t("ClassName")}</th>
-                                    <th>{t("ClassStartDate")}</th>
+                                    <th className="text-center">{t("ClassStartDate")}</th>
                                     <th>{t("ClassCredit")}</th>
                                 </tr>
                             </thead>
@@ -76,9 +76,9 @@ function OnGoingClass({_year}) {
                                         sabaEnrollments.data.classes.map(function (obj, i) {
                                             return (
                                                 <tr key={obj.id}>
-                                                    <td>{(pageSize * pageIndex) - (pageSize - i) + 1}</td>
+                                                    <td className="text-center">{(pageSize * pageIndex) - (pageSize - i) + 1}</td>
                                                     <td>{obj.name}</td>
-                                                    <td>{obj.start_date}</td>
+                                                    <td className="text-center">{obj.start_date}</td>
                                                     <td>{obj.credits}</td>
                                                 </tr>
                                             );

@@ -24,20 +24,22 @@ function Learning(props) {
     return (
         <>
             <div className="training-learning-page">
-                <h1 className="content-page-header d-inline-block">{t("LearningHistory")}</h1>
-                <Form.Control as="select" onChange={onChangeYear} className='w-auto float-md-right'>
-                    <option value={0}>{t("All")}</option>
-                    {
-                        yearArr.map((item, index) => {
-                            return <option value={item} key = {index}>{item}</option>        
-                        })
-                    }
-                    
-                </Form.Control>
+                <div className="top-header">
+                    <h1 className="content-page-header d-inline-block">{t("LearningHistory")}</h1>
+                    <Form.Control as="select" onChange={onChangeYear} className='w-auto float-md-right filter-by-year'>
+                        <option value={0}>{t("All")}</option>
+                        {
+                            yearArr.map((item, index) => {
+                                return <option value={item} key = {index}>{item}</option>        
+                            })
+                        }
+                        
+                    </Form.Control>
+                </div>
+                <OnGoingClass _year={year}/>
+                <SuccessClass _year={year} />
+                <RejectClass _year = {year}/>
             </div>
-            <OnGoingClass _year={year}/>
-            <SuccessClass _year={year} />
-            <RejectClass _year = {year}/>
         </>
     );
 }
