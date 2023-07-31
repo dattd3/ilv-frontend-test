@@ -58,7 +58,7 @@ class RequestTaskList extends React.Component {
                 id: '',
                 status: 0,
                 needRefresh: false,
-                fromDate: moment().subtract(7, "days").format("YYYYMMDD"),
+                fromDate: moment().subtract(30, "days").format("YYYYMMDD"),
                 toDate: moment().format("YYYYMMDD"),
             }
         }
