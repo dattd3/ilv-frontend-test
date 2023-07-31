@@ -180,6 +180,7 @@ const Constants = {
     VinES: "V079",
     VinBigData: "V098",
     VinCon: "V041",
+    VinHoliday1: "V036",
   },
   listFunctionsForPnLACL: {
     editProfile: 'EDIT_PROFILE',
@@ -275,7 +276,12 @@ const Constants = {
     MOD: "MOD",
     DEL: "DEL",
   },
-  TIME_DEBOUNCE_FOR_SEARCH: 1400
+  TIME_DEBOUNCE_FOR_SEARCH: 1400,
+  MAINTENANCE: {
+    APP_ID: 1,
+    DEVICE: 'WEBSITE',
+    MODE: 2,
+  },
 };
 
 Constants.REQUEST_CATEGORY_1_LIST = {

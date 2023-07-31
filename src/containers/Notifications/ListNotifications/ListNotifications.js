@@ -112,7 +112,7 @@ function ListNotifications(props) {
                         </div>
                         </div>
                     </div>
-                }) : <p className='text-center'>{t("NoNotifications")} !</p>
+                }) : <div className='text-center'>{t("NoNotifications")} !</div>
             }
             </>;
         }
@@ -121,13 +121,13 @@ function ListNotifications(props) {
         <>
         <div className="list-notifications-section">
             <FormSearchComponent handler={handler} phones={preparePhoneSupport()} />
-            <div className="card shadow mb-4">
-            <div className="card-body">
-                <div className="list-notifications-block">
-                {dataBlock}
+            <div className="card wrap-list-notifications-section mb-4">
+                <div className="card-body">
+                    <div className="list-notifications-block">
+                    {dataBlock}
+                    </div>
+                    <CustomPaging pageSize={parseInt(pageSize)} onChangePage={onChangePage} totalRecords={total} />
                 </div>
-                <CustomPaging pageSize={parseInt(pageSize)} onChangePage={onChangePage} totalRecords={total} />
-            </div>
             </div>
         </div>
         </>

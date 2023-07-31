@@ -53,9 +53,9 @@ function RejectClass({_year}) {
 
     return (
         <>
-            <div className="card mb-4 shadow">
+            <div className="card">
                 <div className="card-header py-3">
-                    <h6 className="m-0 font-weight-500 text-uppercase text-color-vp">{t("UnsuccessfulClass")}</h6>
+                    <h6 className="m-0 text-uppercase">{t("UnsuccessfulClass")}</h6>
                 </div>
                 <div className="card-body">
                     <div className="table-responsive">

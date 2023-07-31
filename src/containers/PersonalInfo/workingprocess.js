@@ -4,7 +4,7 @@ import { withTranslation, useTranslation } from 'react-i18next'
 import { Container, Row, Col, Tabs, Tab, Form } from 'react-bootstrap'
 import moment from 'moment'
 import map from '../map.config'
-import { getRequestConfigurations, getMuleSoftHeaderConfigurations } from "../../commons/Utils"
+import { getRequestConfigurations, getMuleSoftHeaderConfigurations, isVinFast } from "../../commons/Utils"
 import WorkingProcessSearch from './workingProcessSearch'
 import HOCComponent from '../../components/Common/HOCComponent'
 import Constants from '../../commons/Constants'
@@ -26,7 +26,6 @@ const ChangeWorkingAppointment = (props) => {
     const formatValueBySAPValue = value => {
         return (!value || value === "#") ? "" : value
     }
-
     return (
         userChangeWorkingAppointments.length > 0 ?
             <div className="change-working-appointment-wrapper">
@@ -166,11 +165,11 @@ class MyComponent extends React.Component {
         const { userChangeWorkingAppointments } = this.state
 
         return (
-            <div className="personal-info">
+            <div className="personal-info working-process">
                 <h1 className="content-page-header">{t("WorkingProcess")}</h1>
                 <Tabs defaultActiveKey="LaborContract" id="uncontrolled-tab-example">
                     <Tab eventKey="LaborContract" title={t("LaborContract")}>
-                        <Container fluid className="info-tab-content shadow">
+                        <Container fluid className="info-tab-content labor-contract">
                             {(this.state.userContract !== undefined && this.state.userContract.length > 0) ?
                                 this.state.userContract.map((item, i) => {
                                     return <div key={i}>
@@ -193,7 +192,11 @@ class MyComponent extends React.Component {
                                         </Row>
                                         <Row className="info-value">
                                             <Col xs={12} md={6} lg={3}>
-                                                <p className="mb-0">&nbsp;{item.contract_number}</p>
+                                                <p className="mb-0">&nbsp;
+                                                  {isVinFast() ? <a href='https://econtract.vinfast.vn/portal/index.aspx' target='_blank'>
+                                                    {item.contract_number}
+                                                  </a> : <>{item.contract_number}</>}
+                                                </p>
                                             </Col>
                                             <Col xs={12} md={6} lg={2}>
                                                 <p className="mb-0">&nbsp;{item.contract_type}</p>
@@ -215,13 +218,13 @@ class MyComponent extends React.Component {
                     </Tab>
                     <Tab eventKey="BonusAndPenalty" title={t("BonusAndPenalty")}>
                         <Row>
-                            <Container fluid className="p-0">
+                            <Container fluid className="bonus-penalty">
                                 <div className="timesheet-section p-0 search-box">
                                     <WorkingProcessSearch clickSearch={this.search.bind(this)} />
                                 </div>
                             </Container>
                             <Col>
-                                <h4 className="pl-0 pt-0">{t("Awards")}</h4>
+                                <h4 className="pl-0 pt-0" style={{ marginBottom: 0 }}>{t("Awards")}</h4>
                             </Col>
 
                             {(this.state.userBonuses !== undefined && this.state.userBonuses.length > 0) ?
@@ -233,7 +236,7 @@ class MyComponent extends React.Component {
                                     bonusTitle += (item.merit_and_cash_certificate ? 'Bằng khen & tiền mặt | ' : '');
                                     bonusTitle += (item.other_rewards ? `${t("Other")} | ` : '');
                                     bonusTitle = bonusTitle.length > 3 ? bonusTitle.substring(0, bonusTitle.length - 3) : '';
-                                    return <Container key={i} fluid className="info-tab-content shadow mb-3 pb-0">
+                                    return <Container key={i} fluid className="info-tab-content shadow-customize mb-3 pb-0" style={{ marginLeft: 15, marginRight: 15 }}>
                                         <form className="info-value pb-0"><div >
                                             <div className="form-row">
                                                 <div className="form-group col-md-6 ">
@@ -262,12 +265,12 @@ class MyComponent extends React.Component {
                                         </div>
                                         </form>
                                     </Container>;
-                                }) : t("NoDataFound")
+                                }) : <span style={{ marginRight: 15 }}>{t("NoDataFound")}</span>
                             }
                         </Row>
                         <Row>
                             <Col>
-                                <h4>{t("Penalties")}</h4>
+                                <h4 style={{ marginBottom: 0 }}>{t("Penalties")}</h4>
                             </Col>
                             <>
                                 {(this.state.userPenalties !== undefined && this.state.userPenalties.length > 0) ?
@@ -279,7 +282,7 @@ class MyComponent extends React.Component {
                                         penaltiesTitle += (item.compensation ? `${t("DeductionOnLoss")} | ` : '');
                                         penaltiesTitle += (item.other ? `${t("Other")} | ` : '');
                                         penaltiesTitle = penaltiesTitle.length > 3 ? penaltiesTitle.substring(0, penaltiesTitle.length - 3) : '';
-                                        return <Container key={i} fluid className="info-tab-content shadow mb-3 pb-0">
+                                        return <Container key={i} fluid className="info-tab-content shadow-customize pb-0" style={{ marginLeft: 15, marginRight: 15 }}>
                                             <form className="info-value pb-0">
                                                 <div >
                                                     <div className="form-row">
@@ -327,13 +330,13 @@ class MyComponent extends React.Component {
                                                 </div>
                                             </form>
                                         </Container>
-                                    }) : t("NoDataFound")
+                                    }) : <span style={{ marginRight: 15 }}>{t("NoDataFound")}</span>
                                 }
                             </>
                         </Row>
                     </Tab>
                     <Tab eventKey="ChangeWorkingAppointment" title={t("ChangeWorkingAppointment")}>
-                        <Container fluid className="info-tab-content shadow">
+                        <Container fluid className="info-tab-content change-working-appointment">
                             <ChangeWorkingAppointment userChangeWorkingAppointments={userChangeWorkingAppointments} />
                         </Container>
                     </Tab>

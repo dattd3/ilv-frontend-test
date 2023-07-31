@@ -6,11 +6,11 @@ export default {
   TermPolicy: "/policy",
 
   // Training
-  Roadmap: "/training/roadmap",
+  Roadmap: "/training-roadmap",
   RoadmapDetails: "/training/roadmap-detail/:id",
-  Learning: "/training/learning",
-  Instruction: "/training/instruction",
-  TraniningKPI: "/training/kpi",
+  Learning: "/training-learning",
+  Instruction: "/training-instruction",
+  TraniningKPI: "/training-kpi",
   PersonalInfo: "/personal-info",
   EditPersonalInfo: "/personal-info/edit",
   Timesheet: "/timesheet",
@@ -133,5 +133,7 @@ export default {
   DetailInsuranceSocial: '/insurance-manager/detail/:id',
   DetailInsuranceHealth: '/insurance-manager/detail-health/:id',
   MyProfile: "/my-profile",
-  SalaryPropse: '/salarypropse/:idContract/:idSalary/:type'
+  SalaryPropse: '/salarypropse/:idContract/:idSalary/:type',
+  HistoryVingroup: "/vin30-chronicles",
+  Maintenance: '/maintenance'
 };

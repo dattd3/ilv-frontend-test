@@ -2,9 +2,10 @@ import React, { useState, useEffect, useContext } from "react";
 import { useGuardStore } from '../../modules';
 import { Navbar, Form, InputGroup, Button, FormControl, Dropdown, Image } from 'react-bootstrap';
 import { useTranslation } from "react-i18next";
-import { useApi, useFetcher } from "../../modules";
 import axios from 'axios'
 import moment from 'moment';
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
 import Constants from "../../commons/Constants"
 import { Animated } from "react-animated-css";
 import { useLocalizeStore } from '../../modules';
@@ -18,6 +19,7 @@ import BellIcon from 'assets/img/icon/bell-icon.svg';
 import VingroupIcon from 'assets/img/icon/vingroup-icon.svg';
 import ArrowDownIcon from 'assets/img/icon/arrow-down.svg';
 import NewestNotificationContext from "modules/context/newest-notification-context";
+import { handleFullScreen } from "actions/index"
 
 const getOrganizationLevelByRawLevel = level => {
     return (level == undefined || level == null || level == "" || level == "#") ? 0 : level
@@ -29,9 +31,8 @@ const APIConfig = getRequestConfigurations();
 
 function Header(props) {
     const localizeStore = useLocalizeStore();
-    const { fullName, email, avatar } = props?.user || {};
-    const { setShow, isApp } = props;
-    const [isShow, SetIsShow] = useState(false);
+    const { isApp, user } = props
+    const { fullName, avatar } = user || {};
     const [activeLang, setActiveLang] = useState(currentLocale);
     const [totalNotificationUnRead, setTotalNotificationUnRead] = useState("");
     const [totalNotificationCount, setTotalNotificationCount] = useState(0);
@@ -299,12 +300,6 @@ function Header(props) {
         userLogOut()
     }
 
-    const handleClickSetShow = () => {
-        SetIsShow(!isShow);
-        setShow(isShow);
-        props.updateLayout(!isShow)
-    }
-
     const onChangeLocale = async lang => {
         const isChangedLanguage = await updateLanguageByCode(lang)
         if (isChangedLanguage) {
@@ -358,133 +353,144 @@ function Header(props) {
         setLatestTimeKeeping(response.data?.data?.notifications);
       } catch (error) {}
     };
-  
 
     return (
-        isApp ? null :
-            <div className="page-header">
-                <UploadAvatar show={isShowUploadAvatar} onHide={onHideUploadAvatar} />
-                <Navbar expand="lg" className="navigation-top-bar-custom">
-                    <Button variant="outline-secondary" className='d-block' onClick={handleClickSetShow}><i className='fas fa-bars'></i></Button>
-                    <Form className="form-inline mr-auto navbar-search d-none d-lg-block">
-                        <InputGroup className='d-none'>
-                            <InputGroup.Prepend>
-                                <Button className="bg-light border-0" variant="outline-secondary"><i className="fas fa-sm fa-sm fa-search"></i></Button>
-                            </InputGroup.Prepend>
-                            <FormControl className="bg-light border-0" placeholder={t("SearchTextPlaceholder")} aria-label="Search" aria-describedby="basic-addon1" />
-                        </InputGroup>
-                    </Form>
-                    <div className="notification-icons-block">
-                      <Dropdown id="notifications-block" 
-                        className="notification-guide" 
-                        show={checkinOutNoti} 
-                        onToggle={() => setCheckinOutNoti(!checkinOutNoti)}
-                      >
-                          <Animated animationIn="lightSpeedIn" animationOutDuration={10}>
-                              <Dropdown.Toggle>
-                                  <Image
-                                  className="guide-icon"
-                                  alt="checkin notification"
-                                  src={CheckinNotificationIcon}
-                                  />
-                              </Dropdown.Toggle>
-                          </Animated>
-                          <Dropdown.Menu className="list-notification-popup">
-                              <div className="timekeeping-title-block">
-                                  {t('timekeeping_history')?.toUpperCase()}
-                                  <Image
-                                    onClick={() => setCheckinOutNoti(false)}
-                                    className="close-icon"
-                                    alt="details notification"
-                                    src={CloseIcon}
-                                  />
-                              </div>
-                              <br />
-                              {
-                                latestTimekeeping?.length > 0 ? <>
-                                  <TimeKeepingList apiResponseData={latestTimekeeping} />
-                                  <br />
-                                  <a href={"/timekeeping-history"} className="details-link">
-                                      {t("Details")} &nbsp;
-                                      <Image
-                                        // className="guide-icon"
-                                        alt="details notification"
-                                        src={RedArrowIcon}
-                                      />
-                                  </a>
-                                </> : <div className="text-danger no-data-div">
-                                    {t("NodataExport")}
-                                  </div>
-                              }
-                          </Dropdown.Menu>
-                      </Dropdown>
-                      <Dropdown id="notifications-block" onToggle={(isOpen) => OnClickBellFn(isOpen)}>
-                          <Animated animationIn="lightSpeedIn" isVisible={dataNotificationsUnReadComponent != ""} animationOutDuration={10} >
-                              <Dropdown.Toggle>
-                                  <span className="notifications-block">
-                                      {/* <i className="far fa-bell ic-customize"></i> */}
-                                      <Image
-                                        // className="guide-icon"
-                                        alt="details notification"
-                                        src={BellIcon}
-                                      />
-                                      {totalNotificationUnRead != "" ? <span className="count">{totalNotificationUnRead}</span> : ""}
-                                  </span>
-                              </Dropdown.Toggle>
-                          </Animated>
-                          {dataNotificationsUnReadComponent != "" ?
-                              <Dropdown.Menu className="list-notification-popup">
-                                  <div className="title-block text-center">{t("AnnouncementInternal")}</div>
-                                  <div className="all-items">
-                                      {dataNotificationsUnReadComponent}
-                                  </div>
-                                  {/* <a href="/notifications-unread" title="Xem tất cả" className="view-all">Xem tất cả</a> */}
-                              </Dropdown.Menu>
-                              : null
-                          }
-                      </Dropdown>
-                    </div>
-                    <Dropdown>
-                        <div className='mr-2 small text-right username'>
-                            <Dropdown.Toggle variant="light" className='text-right dropdown-menu-right user-infor-header user-info-margin'>
-                                {
-                                    (avatar != null && avatar !== '' && avatar !== 'null') ?
-                                        <img className="img-profile rounded-circle" src={`data:image/png;base64, ${avatar}`} alt={fullName} />
-                                        :
-                                        <span className="text-gray-600 img-profile no-avt">
-                                          <Image src={VingroupIcon} alt="default-icon" />
-                                        </span>
-                                }
-                                &nbsp;&nbsp;
-                                <span className="full-name">{fullName}</span>
-                                &nbsp;&nbsp;
+        !isApp &&
+        <div className="page-header">
+            <UploadAvatar show={isShowUploadAvatar} onHide={onHideUploadAvatar} />
+            <Navbar expand="lg" className="navigation-top-bar-custom">
+                <Button variant="outline-secondary" className='d-block' onClick={() => props.handleFullScreen(!props?.isFullScreen)}><i className='fas fa-bars'></i></Button>
+                <Form className="form-inline mr-auto navbar-search d-none d-lg-block">
+                    <InputGroup className='d-none'>
+                        <InputGroup.Prepend>
+                            <Button className="bg-light border-0" variant="outline-secondary"><i className="fas fa-sm fa-sm fa-search"></i></Button>
+                        </InputGroup.Prepend>
+                        <FormControl className="bg-light border-0" placeholder={t("SearchTextPlaceholder")} aria-label="Search" aria-describedby="basic-addon1" />
+                    </InputGroup>
+                </Form>
+                <div className="notification-icons-block">
+                    <Dropdown id="notifications-block" 
+                    className="notification-guide" 
+                    show={checkinOutNoti} 
+                    onToggle={() => setCheckinOutNoti(!checkinOutNoti)}
+                    >
+                        <Animated animationIn="lightSpeedIn" animationOutDuration={10}>
+                            <Dropdown.Toggle>
                                 <Image
-                                  alt="more"
-                                  src={ArrowDownIcon}
+                                className="guide-icon"
+                                alt="checkin notification"
+                                src={CheckinNotificationIcon}
                                 />
                             </Dropdown.Toggle>
-                        </div>
-                        <Dropdown.Menu className='animated--grow-in'>
-                            {/* <Dropdown.Item onClick={openUploadAvatarPopup}>
-                                <img alt="cam" src={uploadAvatarIcon} className="mr-2"/>
-                                {t("ChangeAvatar")}
-                            </Dropdown.Item> */}
-                            <Dropdown.Item onClick={() => onChangeLocale(Constants.LANGUAGE_VI)}>
-                                <i className="fas fa-circle fa-sm fa-fw mr-2" style={{ color: activeLang === Constants.LANGUAGE_VI ? "#347ef9" : "#FFFFFF" }}></i>
-                                {t("LangViet")}
-                            </Dropdown.Item>
-                            <Dropdown.Item onClick={() => onChangeLocale(Constants.LANGUAGE_EN)}>
-                                <i className="fas fa-circle fa-sm fa-fw mr-2" style={{ color: activeLang === Constants.LANGUAGE_EN ? "#347ef9" : "#FFFFFF" }}></i>
-                                {t("LangEng")}
-                            </Dropdown.Item>
-                            <Dropdown.Item onClick={userLogOut}><i className="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-                                {t("Logout")}
-                            </Dropdown.Item>
+                        </Animated>
+                        <Dropdown.Menu className="list-notification-popup">
+                            <div className="timekeeping-title-block">
+                                {t('timekeeping_history')?.toUpperCase()}
+                                <Image
+                                onClick={() => setCheckinOutNoti(false)}
+                                className="close-icon"
+                                alt="details notification"
+                                src={CloseIcon}
+                                />
+                            </div>
+                            <br />
+                            {
+                            latestTimekeeping?.length > 0 ? <>
+                                <TimeKeepingList apiResponseData={latestTimekeeping} />
+                                <br />
+                                <a href={"/timekeeping-history"} className="details-link">
+                                    {t("Details")} &nbsp;
+                                    <Image
+                                    // className="guide-icon"
+                                    alt="details notification"
+                                    src={RedArrowIcon}
+                                    />
+                                </a>
+                            </> : <div className="text-danger no-data-div">
+                                {t("NodataExport")}
+                                </div>
+                            }
                         </Dropdown.Menu>
                     </Dropdown>
-                </Navbar>
-            </div >
+                    <Dropdown id="notifications-block" onToggle={(isOpen) => OnClickBellFn(isOpen)}>
+                        <Animated animationIn="lightSpeedIn" isVisible={dataNotificationsUnReadComponent != ""} animationOutDuration={10} >
+                            <Dropdown.Toggle>
+                                <span className="notifications-block">
+                                    {/* <i className="far fa-bell ic-customize"></i> */}
+                                    <Image
+                                    // className="guide-icon"
+                                    alt="details notification"
+                                    src={BellIcon}
+                                    />
+                                    {totalNotificationUnRead != "" ? <span className="count">{totalNotificationUnRead}</span> : ""}
+                                </span>
+                            </Dropdown.Toggle>
+                        </Animated>
+                        {dataNotificationsUnReadComponent != "" ?
+                            <Dropdown.Menu className="list-notification-popup">
+                                <div className="title-block text-center">{t("AnnouncementInternal")}</div>
+                                <div className="all-items">
+                                    {dataNotificationsUnReadComponent}
+                                </div>
+                                {/* <a href="/notifications-unread" title="Xem tất cả" className="view-all">Xem tất cả</a> */}
+                            </Dropdown.Menu>
+                            : null
+                        }
+                    </Dropdown>
+                </div>
+                <Dropdown>
+                    <div className='mr-2 small text-right username'>
+                        <Dropdown.Toggle variant="light" className='text-right dropdown-menu-right user-infor-header user-info-margin'>
+                            {
+                                (avatar != null && avatar !== '' && avatar !== 'null') ?
+                                    <img className="img-profile rounded-circle" src={`data:image/png;base64, ${avatar}`} alt={fullName} />
+                                    :
+                                    <span className="text-gray-600 img-profile no-avt">
+                                        <Image src={VingroupIcon} alt="default-icon" />
+                                    </span>
+                            }
+                            &nbsp;&nbsp;
+                            <span className="full-name">{fullName}</span>
+                            &nbsp;&nbsp;
+                            <Image
+                                alt="more"
+                                src={ArrowDownIcon}
+                            />
+                        </Dropdown.Toggle>
+                    </div>
+                    <Dropdown.Menu className='animated--grow-in'>
+                        {/* <Dropdown.Item onClick={openUploadAvatarPopup}>
+                            <img alt="cam" src={uploadAvatarIcon} className="mr-2"/>
+                            {t("ChangeAvatar")}
+                        </Dropdown.Item> */}
+                        <Dropdown.Item onClick={() => onChangeLocale(Constants.LANGUAGE_VI)}>
+                            <i className="fas fa-circle fa-sm fa-fw mr-2" style={{ color: activeLang === Constants.LANGUAGE_VI ? "#347ef9" : "#FFFFFF" }}></i>
+                            {t("LangViet")}
+                        </Dropdown.Item>
+                        <Dropdown.Item onClick={() => onChangeLocale(Constants.LANGUAGE_EN)}>
+                            <i className="fas fa-circle fa-sm fa-fw mr-2" style={{ color: activeLang === Constants.LANGUAGE_EN ? "#347ef9" : "#FFFFFF" }}></i>
+                            {t("LangEng")}
+                        </Dropdown.Item>
+                        <Dropdown.Item onClick={userLogOut}><i className="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                            {t("Logout")}
+                        </Dropdown.Item>
+                    </Dropdown.Menu>
+                </Dropdown>
+            </Navbar>
+        </div>
     );
 }
 
-export default Header
+const mapStateToProps = (state, ownProps) => {
+    return {
+        isFullScreen: state?.globalStatuses?.isFullScreen,
+    }
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        handleFullScreen: bindActionCreators(handleFullScreen, dispatch)
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Header)

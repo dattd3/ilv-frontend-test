@@ -18,8 +18,8 @@ function KPISearch(props) {
   const customStyles = {
     control: base => ({
       ...base,
-      height: 40,
-      minHeight: 40,
+      height: 38,
+      minHeight: 38,
       fontSize: '14px'
     })
   }
@@ -27,16 +27,16 @@ function KPISearch(props) {
   return (    
     <div className="kpi-staff-search">
       <div className="title-group">{t("SelectPeriod")}</div>
-      <div className="card border shadow">
+      <div className="card border">
         <table className="table table-borderless">
           <tbody>
             <tr>
-              <td style={{'paddingTop':'20px', 'paddingBottom':'5px'}}>
+              <td style={{padding: "15px 15px 10px 15px"}}>
                 <span className="kpi-staff-info period-title">Lựa chọn năm (bắt buộc)</span>
               </td>
             </tr>
             <tr>
-              <td style={{'width': '350px', paddingLeft: 12}}>
+              <td style={{'width': 350, padding: "0 15px 15px 15px"}}>
                 <Select style={customStyles}
                   selectedValue={years}
                   defaultValue={years.find(item => item.value == props.period)}
@@ -44,7 +44,7 @@ function KPISearch(props) {
                   styles={customStyles}
                   ref={selectRef} />
               </td>
-              <td>
+              <td style={{padding: "0 15px 15px 15px"}}>
                 <button type="button" className="search-button" onClick={searchOnClick}>{t("Search")}</button>                                
               </td>
             </tr>
