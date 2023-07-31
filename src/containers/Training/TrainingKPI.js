@@ -57,7 +57,7 @@ function TrainingKPI(props) {
             <a href="https://app.powerbi.com/links/7luTy2-bVy?ctid=ed6a2939-d153-4f92-94f8-3d790d96c9f8&pbi_source=linkShare" target="_blank" className='btn btn-primary online-search-link'>{t("OnlineSearchLink")}</a>
             <Row className="summary-chart">
                 <Col xl={6} className="mb-4">
-                    <Card>
+                    <Card className="shadow-customize">
                         <Card.Body>
                             <div className="text-center">
                                 <div className="kpi-learning kpi-training">
@@ -70,25 +70,25 @@ function TrainingKPI(props) {
                     </Card>
                 </Col>
                 <Col xl={6} className="mb-4">
-                    <Card>
+                    <Card className="shadow-customize">
                         <Card.Body>
-                            <h4 className="mb-4 text-gray-800 text-uppercase">{t("LearnKPI")}</h4>
+                            <h4 className="text-uppercase learning-target">{t("LearnKPI")}</h4>
                             <ProgressBar className="training-kpi-progress learning-progress" now={teachingKpi.perLearned} label={teachingKpi.perLearned + '%'} />
-                            <Row className="training-kpi-info">
-                                <Col><i className="fa fa-square color-fe6927"></i> {t("Status_Done")}</Col>
-                                <Col><span>{teachingKpi.totalEarned}/{teachingKpi.totalHours}</span></Col>
-                            </Row>
-                            <Row className="training-kpi-info">
-                                <Col><i className="fa fa-square"></i> {t("Status_NotDoneYet")}</Col>
-                                <Col><span>{teachingKpi.totalHours - teachingKpi.totalEarned}/{teachingKpi.totalHours}</span></Col>
-                            </Row>
+                            <div className="training-kpi-info">
+                                <div><i className="fa fa-square color-fe6927"></i>{t("Status_Done")}</div>
+                                <div><span>{teachingKpi.totalEarned}/{teachingKpi.totalHours}</span></div>
+                            </div>
+                            <div className="training-kpi-info">
+                                <div><i className="fa fa-square"></i>{t("Status_NotDoneYet")}</div>
+                                <div><span>{teachingKpi.totalHours - teachingKpi.totalEarned}/{teachingKpi.totalHours}</span></div>
+                            </div>
                         </Card.Body>
                     </Card>
                 </Col>
             </Row>
             <Row className="summary-chart">
-                <Col xl={6} className="mb-4">
-                    <Card>
+                <Col xl={6}>
+                    <Card className="shadow-customize">
                         <Card.Body>
                             <div className="text-center">
                                 <div className="kpi-teaching kpi-training">
@@ -100,17 +100,17 @@ function TrainingKPI(props) {
                         </Card.Body>
                     </Card>
                 </Col>
-                <Col xl={6} className="mb-4">
-                    <Card>
+                <Col xl={6}>
+                    <Card className="shadow-customize">
                         <Card.Body>
-                            <h4 className="mb-4 text-gray-800 text-uppercase">{t("TeachingKPI")}</h4>
+                            <h4 className="text-uppercase training-target">{t("TeachingKPI")}</h4>
                             <ProgressBar className="training-kpi-progress teaching-progress" now={learningKpi.totalHours} label={learningKpi.totalHours + `%`} />
                             <Row className="training-kpi-info">
-                                <Col><i className="fa fa-square color-67BA24"></i> {t("Status_Done")}</Col>
+                                <Col><i className="fa fa-square color-67BA24"></i>{t("Status_Done")}</Col>
                                 <Col><span>{learningKpi.totalEarned}/{learningKpi.totalHours}</span></Col>
                             </Row>
                             <Row className="training-kpi-info">
-                                <Col><i className="fa fa-square"></i> {t("Status_NotDoneYet")}</Col>
+                                <Col><i className="fa fa-square"></i>{t("Status_NotDoneYet")}</Col>
                                 <Col><span>{learningKpi.totalHours - learningKpi.totalEarned}/{learningKpi.totalHours}</span></Col>
                             </Row>
                         </Card.Body>
