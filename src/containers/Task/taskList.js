@@ -51,7 +51,7 @@ class TaskList extends React.Component {
                 sender: '',
                 status: 0,
                 needRefresh: false,
-                fromDate: moment().subtract(7, "days").format("YYYYMMDD"),
+                fromDate: moment().subtract(30, "days").format("YYYYMMDD"),
                 toDate: moment().format("YYYYMMDD"),
             },
             isAutoShowDetailModal: new URLSearchParams(props?.history?.location?.search).has('id') // Chỉ dùng cho Công tác ngoài Tập đoàn
