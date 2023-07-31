@@ -54,19 +54,19 @@ function SuccessClass({_year}) {
 
     return (
         <>
-            <div className="card mb-4 shadow">
+            <div className="card">
                 <div className="card-header py-3">
-                    <h6 className="m-0 font-weight-500 text-uppercase text-color-vp">{t("SuccessfulClass")}</h6>
+                    <h6 className="m-0 text-uppercase">{t("SuccessfulClass")}</h6>
                 </div>
                 <div className="card-body">
                     <div className="table-responsive">
                         <Table striped bordered hover>
                             <thead>
                                 <tr>
-                                    <th>#</th>
+                                    <th className="text-center">#</th>
                                     <th>{t("ClassName")}</th>
-                                    <th>{t("ClassStartDate")}</th>
-                                    <th>{t("ClassCredit")}</th>
+                                    <th className="text-center">{t("ClassStartDate")}</th>
+                                    <th className="text-center">{t("ClassCredit")}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -75,10 +75,10 @@ function SuccessClass({_year}) {
                                         sabaEnrollments.data.classes.map(function (obj, i) {
                                             return (
                                                 <tr key={obj.id}>
-                                                    <td>{(pageSize * pageIndex) - (pageSize - i) + 1}</td>
+                                                    <td className="text-center">{(pageSize * pageIndex) - (pageSize - i) + 1}</td>
                                                     <td>{obj.course_name}</td>
-                                                    <td>{moment(obj.start_date).format('DD/MM/YYYY')}</td>
-                                                    <td>{obj.credits}</td>
+                                                    <td className="text-center">{moment(obj.start_date).format('DD/MM/YYYY')}</td>
+                                                    <td className="text-center">{obj.credits}</td>
                                                 </tr>
                                             );
                                         })

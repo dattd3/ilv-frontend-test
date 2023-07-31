@@ -626,10 +626,33 @@ const getRequestTypesList = (category = 1, isRequestTab = false) => {
   return Object.keys(category == 1 ? Constants.REQUEST_CATEGORY_1_LIST : Constants.REQUEST_CATEGORY_2_LIST)
 }
 
+const isExistCurrentUserInWhiteList = () => {
+    const currentUserEmail = localStorage.getItem('email')?.toLowerCase()
+    const whiteListAccessToSystem = process.env.REACT_APP_ENVIRONMENT === "PRODUCTION"
+    ? [
+        "vuongvt2@vingroup.net",
+        "thuypx2@vingroup.net",
+        "chiendv4@vingroup.net",
+        "hoangnh34@vingroup.net",
+        "minhkv1@vingroup.net",
+        "tammt9@vingroup.net",
+        "hoalp2@vingroup.net",
+        "cuongnv56@vingroup.net",
+        "chiennd4@vingroup.net",
+        "dattd3@vingroup.net",
+        "datth3@vingroup.net",
+        "hieunm25@vingroup.net",
+        "loint8@vingroup.net",
+        "sonlt5@vingroup.net",
+    ]
+    : ["hrms_test1@vingroup.net"]
+    return whiteListAccessToSystem?.includes(currentUserEmail)
+}
+
 export {
     getRequestConfigurations, removeAccents, formatStringByMuleValue, formatNumberInteger, exportToPDF, isEnableFunctionByFunctionName, getValueParamByQueryString, getDateByRangeAndFormat,
     calculateBackDateByPnLVCodeAndFormatType, isEnableShiftChangeFunctionByPnLVCode, isEnableInOutTimeUpdateFunctionByPnLVCode, getRequestTypeIdsAllowedToReApproval, getMuleSoftHeaderConfigurations,
     isAdjacentDateBy2Date, showRangeDateGroupByArrayDate, generateTaskCodeByCode, parsteStringToHtml, getRegistrationMinDateByConditions, isVinFast, isEnableOTFunctionByPnLVCode, getCurrentLanguage, 
     getResignResonsMasterData, formatStringDateTimeByMuleValue, genderConfig, marriageConfig, formatProcessTime, setURLSearchParam, getCulture, isValidDateRequest, prepareOrganization, getRequestTypesList,
-    formatStringDateByMuleValue
+    formatStringDateByMuleValue, isExistCurrentUserInWhiteList
 }

@@ -50,20 +50,17 @@ class Vaccination extends React.Component {
         const lastItem = listData && listData?.length > 0 ? listData[listData.length - 1] : {}
 
         return <>
-            <div className="row vaccine-info-page">
+            <div className="vaccine-info-page">
                 <div className="w-100">
                     <h1 className="content-page-header">{t("VaccinantionInformation")}</h1>
                 </div>
-                <div className="clearfix edit-button w-100 pt-3 pb-4">
+                <div className="clearfix button-block w-100">
                     <div className="btn bg-white btn-create" 
                     onClick={() => this.setState({showModelDetail: true})}><i className="fas fa-plus"></i> {t('vaccination_btn_declare')}</div>
                     {/* <Button disabled={!this.state.loadSuccess} variant="info" ></Button> */}
                     {/* <Button disabled={!this.state.loadSuccess} variant="primary" className="ml-3" onClick={() => this.exportExcel()}><i className="fas fa-file-excel"></i> Xuất báo cáo</Button> */}
                 </div>
-                <div className="card mb-4 px-3" style={{
-                    borderRadius: "10px",
-                    border: "none"
-                }}>
+                <div className="card">
                     <div className="table">
                         <table className="table m-0 text-dark">
                             <thead>

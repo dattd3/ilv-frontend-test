@@ -13,8 +13,10 @@ import _ from 'lodash'
 import { withTranslation } from "react-i18next";
 import { getValueParamByQueryString, getMuleSoftHeaderConfigurations, isEnableFunctionByFunctionName, getRegistrationMinDateByConditions, isValidDateRequest } from "../../../commons/Utils"
 import Constants from '../../../commons/Constants'
+import NoteModal from 'components/Common/NoteModal'
 import LoadingModal from 'components/Common/LoadingModal'
 import IconDatePicker from 'assets/img/icon/Icon_DatePicker.svg'
+import IconClock from 'assets/img/icon/ic_clock.svg'
 registerLocale("vi", vi)
 
 const CLOSING_SALARY_DATE_PRE_MONTH = 26
@@ -40,6 +42,10 @@ class InOutTimeUpdateComponent extends React.Component {
       disabledSubmitButton: false,
       needReload: true,
       isLoading: false,
+      noteModal: {
+        isShow: false,
+        content: ''
+      }
     }
   }
 
@@ -398,8 +404,25 @@ class InOutTimeUpdateComponent extends React.Component {
     return dayName
   }
 
+  handleShowNoteModal = () => {
+    const { t } = this.props
+    const noteModal = {...this.state.noteModal}
+    noteModal.isShow = true
+    noteModal.content = t("PreviousDayNoteUpdateInOutTime")
+    this.setState({noteModal})
+  }
+
+  handleHideNoteModal = () => {
+    this.setState({
+      noteModal: {
+        ...this.state.noteModal,
+        isShow: false,
+      }
+    })
+  }
+
   render() {
-    const { startDate, endDate, timesheets, errors, files, disabledSubmitButton, isShowStatusModal, titleModal, messageModal, isSuccess, isLoading } = this.state
+    const { startDate, endDate, timesheets, errors, files, disabledSubmitButton, isShowStatusModal, titleModal, messageModal, isSuccess, isLoading, noteModal } = this.state
     const { t, recentlyManagers } = this.props;
     const lang = localStorage.getItem("locale")
     const isShowSelectWorkingShift24h = isEnableFunctionByFunctionName(Constants.listFunctionsForPnLACL.selectWorkingShift24h)
@@ -409,12 +432,13 @@ class InOutTimeUpdateComponent extends React.Component {
       <div className="in-out-time-update">
         <LoadingModal show={isLoading} />
         <ResultModal show={isShowStatusModal} title={titleModal} message={messageModal} isSuccess={isSuccess} onHide={this.hideStatusModal} />
-        <div className="box shadow">
+        <NoteModal isShow={noteModal?.isShow} content={noteModal?.content} onHide={this.handleHideNoteModal} />
+        <div className="box search-form">
           <div className="row">
             <div className="col-4">
               <p className="title">{t('From')}</p>
               <div className="content input-container">
-                <label>
+                <label className="wrap-date-input">
                   <DatePicker
                     name="startDate"
                     selectsStart
@@ -438,7 +462,7 @@ class InOutTimeUpdateComponent extends React.Component {
             <div className="col-4">
               <p className="title">{t('To')}</p>
               <div className="content input-container">
-                <label>
+                <label className="wrap-date-input">
                   <DatePicker
                     name="endDate"
                     selectsEnd
@@ -471,7 +495,7 @@ class InOutTimeUpdateComponent extends React.Component {
         {timesheets.map((timesheet, index) => {
           return <div className="box shadow pt-1 pb-1" key={index}>
             <div className="row">
-              <div className="col-4"><p><i className="fa fa-clock-o"></i> <b>{this.getDayName(timesheet.date)} {lang === Constants.LANGUAGE_VI ? t("Day") : null} {timesheet.date.replace(/-/g, '/')}</b></p></div>
+              <div className="col-4"><p className="d-inline-flex"><img src={IconClock} className="ic-clock" /><b style={{ marginLeft: 5 }}>{this.getDayName(timesheet.date)} {lang === Constants.LANGUAGE_VI ? t("Day") : null} {timesheet.date.replace(/-/g, '/')}</b></p></div>
               <div className="col-6">
                 {!timesheet.isEdited ? <p>{t("StartTime")} 1: <b>{this.printTimeFormat(timesheet.start_time1_fact)}</b> | {t("EndTime")} 1: <b>{this.printTimeFormat(timesheet.end_time1_fact)}</b></p> : null}
                 {!timesheet.isEdited && (!this.isNullCustomize(timesheet.start_time2_fact) || !this.isNullCustomize(timesheet.end_time2_fact)) ?
@@ -624,6 +648,12 @@ class InOutTimeUpdateComponent extends React.Component {
                       <div className='previous-day-selection'>
                         <input type="checkbox" id={`previous-day-selection-${index}`} name={`previous-day-selection-${index}`} checked={timesheet.isPrevDay || false} onChange={e => this.handleCheckboxChange(index, 'isPrevDay', e)} />
                         <label htmlFor={`previous-day-selection-${index}`}>{t("PreviousDay")}</label>
+                        <button
+                            className="information-btn"
+                            onClick={this.handleShowNoteModal}
+                          >
+                            <i className="fas fa-info" />
+                        </button>
                       </div>
                       {
                         isShowSelectWorkingShift24h && 

@@ -12,6 +12,8 @@ import VingroupLogo from '../../assets/img/LogoVingroup.svg';
 import 'react-metismenu/dist/react-metismenu-standart.min.css';
 import Constants from "../../commons/Constants";
 
+const currentLocale = localStorage.getItem("locale")
+
 class RouterLink extends React.Component {
     componentWillMount() {
       this.to = this.props.to;
@@ -112,6 +114,18 @@ class RouterLink extends React.Component {
         {children}
         </a>
         :
+        to === "/about-vinfast" ?
+        <a
+          className={classnames(
+            className,
+            active && classNameActive
+          )}
+          target={'_blank'}
+          href={`https://vinfastauto.com/${currentLocale === 'vi-VN' ? 'vn_vi' : 'vn_en'}/ve-chung-toi`}
+        >
+        {children}
+        </a>
+        :
         <Link
           className={classnames(
             className,
@@ -158,7 +172,7 @@ function SideBar(props) {
                 rootNav[i].content = getSubNav(allNav, rootNav[i].id);
             }
         }
-        if (![Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl].includes(user.companyCode)) {
+        if (![Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinHoliday1].includes(user.companyCode)) {
             rootNav = rootNav.filter(x => x.label !== 'Menu_Training')
         }
         if(![
@@ -210,7 +224,7 @@ function SideBar(props) {
     return (
         <>
             <div style={{position: 'fixed'}}>
-                <div style={{borderColor: localStorage.getItem("companyThemeColor")}} className={show ? 'bg-vp-blue sidebar scroll-custom-sidebar' : 'bg-vp-blue sidebar scroll-custom-sidebar d-none'}>
+                <div style={{borderColor: localStorage.getItem("companyThemeColor")}} className={show ? 'bg-vp-blue scroll-custom-sidebar' : 'bg-vp-blue scroll-custom-sidebar d-none'}>
                     <Animated animationIn="fadeIn" isVisible={show} >
                         <div className="text-center">
                             <a href="/">

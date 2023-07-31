@@ -330,7 +330,7 @@ const DoneTabContent = ({ filter, approverInfo, targetSelected = [], error, hand
 
 const ActionButton = ({ stepActive, totalWeight, isDisableNextStep, isDisableSaveRequest, isDisableSendRequest, error, onHideRegisterTargetModal, handleChangeStep, handleSubmitRequest }) => {
     const totalWeightToShow = Number(totalWeight).toFixed(2)
-    const totalWeightClass = totalWeightToShow >= 99.5 && totalWeightToShow <= 100 ? 'full-weight' : ''
+    const totalWeightClass = totalWeightToShow == 100 ? 'full-weight' : ''
     const isSendRequest = true
 
     return (
@@ -346,7 +346,7 @@ const ActionButton = ({ stepActive, totalWeight, isDisableNextStep, isDisableSav
                         stepActive === stepConfig.done &&
                         <span className={`wrap-total-weight ${totalWeightClass}`}>
                             <span className="font-weight-bold label">*Tổng trọng số:</span>
-                            <span>{totalWeight}%</span>
+                            <span>{totalWeightToShow}%</span>
                         </span>
                     }
                 </span>

@@ -143,7 +143,7 @@ class NotificationDetailComponent extends React.Component {
               }
             </div>
           </div>
-          <div className="card shadow mb-4">
+          <div className="card notification-detail-card mb-4">
             <div className="card-body">
               <div className="detail-notifications-block">
                 <div className="content"
