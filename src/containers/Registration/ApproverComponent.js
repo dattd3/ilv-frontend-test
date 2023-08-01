@@ -189,10 +189,11 @@ class ApproverComponent extends React.Component {
   }
 
   searchApprover = (keyword) => {
+    const { disableApproverParams } = this.props;
     const config = getRequestConfigurations()
     const payload = {
       account: keyword,
-      employee_type: "APPROVER",
+      employee_type: !disableApproverParams ?  "APPROVER" : null,
       status: Constants.statusUserActiveMulesoft
     }
     return axios.post(`${process.env.REACT_APP_REQUEST_URL}user/employee/search`, payload, config)
