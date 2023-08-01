@@ -1496,7 +1496,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                     appraiser={appraiser} 
                     approver={approver} 
                     recentlyApprover={recentlyManagers?.approver}
-                    disableApproverParams={requestInfo?.some(item => [FOREIGN_SICK_LEAVE, VIN_UNI_SICK_LEAVE].includes(item.absenceType?.value))}
+                    disableApproverParams={requestInfo?.some(item => item.absenceType?.value === FOREIGN_SICK_LEAVE)}
                     updateApprover={this.updateApprover.bind(this)} />
 
                 <ul className="list-inline">
