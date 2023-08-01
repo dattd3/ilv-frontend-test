@@ -37,7 +37,7 @@ const RegisteredBusinessTripInfo = ({ businessTrip, t }) => {
                   </div>
                   <div className="col-xl-4">
                     {t('TotalTimeForBizTripAndTraining')}
-                    <div className="detail">{(businessTrip && info?.days >=1) ? info?.days + ' ' + t("Day") : info?.hours + ' ' + t("Hour")}</div>
+                    <div className="detail">{info?.isAllDay ? info?.days + ' ' + t("Day") : info?.hours + ' ' + t("Hour")}</div>
                   </div>
                 </div>
                 <div className="row">
