@@ -1876,7 +1876,7 @@
   "Specialist": "Chuyên viên",
   "Staff": "Nhân viên",
   "NotePrevDayOT": "Chỉ chọn khi bạn đăng ký OT cho phân ca xuyên đêm cần kéo giờ in/out của ngày trước đó.",
-  "NotePrevDayOT2": "VD: Ngày 21/07/2023 có phân ca từ 22h00-06h00. và OT từ 06h00-07h00 ngày 22/07/2023 <br />Tạo yêu cầu Đăng ký OT chọn ngày 21/07/2023 từ 06h00-07h00 thì <b>cần tích chọn \"Ngày trước đó\"</b> để lấy được giờ checkout ghi nhận OT",
+  "NotePrevDayOT2": "VD: Ngày 21/07/2023 có phân ca từ 22h00-06h00 và OT từ 06h00-07h00 ngày 22/07/2023 <br />Tạo yêu cầu Đăng ký OT chọn ngày 22/07/2023 từ 06h00-07h00 thì <b>cần tích chọn \"Ngày trước đó\"</b> để lấy được giờ checkout ghi nhận OT",
   "CompanyTimeNotOverlap": "Ngày bắt đầu và Ngày kết thúc của các Công ty không được trùng nhau!",
   "StartDateEndDateRequired": "(*) Vui lòng nhập Ngày bắt đầu và Ngày kết thúc!",
   "InvalidDataPleaseCheckAgain": "Dữ liệu không hợp lệ. Vui lòng kiểm tra lại!",
@@ -1900,5 +1900,7 @@
   "360DegreeFeedbackFormFor": "Biểu mẫu đánh giá 360 cho",
   "NoDataInfo": "Không có dữ liệu",
   "PleaseEnterTheRequiredFields": "Vui lòng nhập các trường bắt buộc!",
-  "PreviousDayNoteUpdateInOutTime": "Nếu sửa giờ vào ra ngày T có phân ca liên ngày (ví dụ từ 22h-6h sáng ngày hôm sau) mà nhập thời gian bắt đầu < thời gian kết thúc và tích chọn \"Ngày trước đó\" thì giờ checkin/out sẽ được ghi nhận cho ngày T-1"
+  "PreviousDayNoteUpdateInOutTime": "Nếu sửa giờ vào ra ngày T có phân ca liên ngày (ví dụ từ 22h-6h sáng ngày hôm sau) mà nhập thời gian bắt đầu < thời gian kết thúc và tích chọn \"Ngày trước đó\" thì giờ checkin/out sẽ được ghi nhận cho ngày T-1",
+  "ForeignLeaveWarningText": "Lưu ý: Nghỉ ốm người nước ngoài không cho phép tạo yêu cầu chung với các loại nghỉ khác",
+  "Warning": "Lưu ý"
 }
