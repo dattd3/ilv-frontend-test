@@ -684,7 +684,6 @@ class LeaveOfAbsenceComponent extends React.Component {
         const { t, leaveOfAbsence } = this.props
         const { files, isEdit, requestInfo } = this.state
         const err = this.verifyInput()
-
         this.setDisabledSubmitButton(true)
         if (!err) {
             this.setDisabledSubmitButton(false)
@@ -1518,7 +1517,8 @@ class LeaveOfAbsenceComponent extends React.Component {
                     errors={errors} 
                     appraiser={appraiser} 
                     approver={approver} 
-                    recentlyApprover={recentlyManagers?.approver} 
+                    recentlyApprover={recentlyManagers?.approver}
+                    disableApproverParams={requestInfo?.some(item => item.absenceType?.value === FOREIGN_SICK_LEAVE)}
                     updateApprover={this.updateApprover.bind(this)} />
 
                 <ul className="list-inline">
