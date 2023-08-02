@@ -561,10 +561,13 @@ class PersonalInfoEdit extends React.Component {
     this.setState({ isLoading: true })
 
     let userProfileInfoToSave = {...data}
-    userProfileInfoToSave.update.userProfileHistoryMainInfo.UserGender = 
-    (data?.update?.userProfileHistoryMainInfo?.NewMainInfo?.Gender !== null && data?.update?.userProfileHistoryMainInfo?.NewMainInfo?.Gender !== undefined)
-    ? data?.update?.userProfileHistoryMainInfo?.NewMainInfo?.Gender
-    : userDetail?.gender
+
+    if (userProfileInfoToSave?.update?.userProfileHistoryMainInfo) {
+      userProfileInfoToSave.update.userProfileHistoryMainInfo.UserGender = 
+      (data?.update?.userProfileHistoryMainInfo?.NewMainInfo?.Gender !== null && data?.update?.userProfileHistoryMainInfo?.NewMainInfo?.Gender !== undefined)
+      ? data?.update?.userProfileHistoryMainInfo?.NewMainInfo?.Gender
+      : userDetail?.gender
+    }
     
     const updateFields = this.getFieldUpdates();
     const dataPostToSAP = this.getDataPostToSap(data);
