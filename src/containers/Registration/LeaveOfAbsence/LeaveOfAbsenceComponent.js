@@ -529,7 +529,7 @@ class LeaveOfAbsenceComponent extends React.Component {
             const check = value.value === MOTHER_LEAVE_KEY
 
             // Check if NNN => Not combine with other types
-            if (requestInfo.length > 1 ) {
+            if (requestInfo?.filter(item => !!item?.absenceType?.value)?.length > 1 ) {
               const isHasForeignSickLeave = requestInfo.some(item => item.absenceType?.value === FOREIGN_SICK_LEAVE);
               if ((isHasForeignSickLeave && value.value !== FOREIGN_SICK_LEAVE) || (!isHasForeignSickLeave && value.value === FOREIGN_SICK_LEAVE)) {
                 return this.setState({
