@@ -522,12 +522,26 @@ class LeaveOfAbsenceComponent extends React.Component {
     }
 
     handleSelectChange(name, value, groupId) {
+        const { t } = this.props
         const requestInfo = [...this.state.requestInfo]
         const index = groupId - 1 // groupId bắt đầu từ 1. Cần trừ đi 1 để đúng với index của mảng
-
         let newRequestInfo = []
         if (name === "absenceType") {
             const check = value.value === MOTHER_LEAVE_KEY
+
+            // Check if NNN => Not combine with other types
+            if (requestInfo.length > 1 ) {
+              const isHasForeignSickLeave = requestInfo.some(item => item.absenceType?.value === FOREIGN_SICK_LEAVE);
+              if ((isHasForeignSickLeave && value.value !== FOREIGN_SICK_LEAVE) || (!isHasForeignSickLeave && value.value === FOREIGN_SICK_LEAVE)) {
+                return this.setState({
+                  isShowStatusModal: true,
+                  isSuccess: false,
+                  titleModal: t("Warning"),
+                  messageModal: t("ForeignLeaveWarningText"),
+                  needReload: false
+                })
+              }
+            }
             newRequestInfo = requestInfo.map(item => {
                 return item.groupId === groupId ? {
                     ...item,
@@ -556,7 +570,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                 : {...item}
             })
         }
-        this.setState({ requestInfo: newRequestInfo })
+        this.setState({ requestInfo: newRequestInfo, isShowStatusModal: false, disabledSubmitButton: false, needReload: true })
         this.validateTimeRequest(newRequestInfo, index)
     }
 
@@ -982,7 +996,6 @@ class LeaveOfAbsenceComponent extends React.Component {
         const checkVinmec = checkIsExactPnL(Constants.pnlVCode.VinMec);
         const minDate = getRegistrationMinDateByConditions()
         const registeredInformation = (leaveOfAbsence?.requestInfoOld || leaveOfAbsence?.requestInfoOld?.length > 0) ? leaveOfAbsence.requestInfoOld : leaveOfAbsence?.requestInfo
-
         return (
             <div className="leave-of-absence">
                 <ResultModal show={isShowStatusModal} title={titleModal} message={messageModal} isSuccess={isSuccess} onHide={this.hideStatusModal} />
