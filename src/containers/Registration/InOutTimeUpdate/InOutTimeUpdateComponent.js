@@ -22,6 +22,7 @@ registerLocale("vi", vi)
 const CLOSING_SALARY_DATE_PRE_MONTH = 26
 const queryString = window.location.search
 const currentUserPnLCode = localStorage.getItem("companyCode")
+const listCompanyCodeIgnoreEvidence = [Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading, Constants.pnlVCode.VinSmart, "V001", Constants.pnlVCode.VinES, "V002"]
 
 class InOutTimeUpdateComponent extends React.Component {
   constructor(props) {
@@ -191,6 +192,8 @@ class InOutTimeUpdateComponent extends React.Component {
       this.showStatusModal(t("Notification"), t("ApproverAndConsenterCannotBeIdentical"), false)
       this.setState({ needReload: false })
     }
+
+    errors['files'] = (!listCompanyCodeIgnoreEvidence.includes(currentUserPnLCode) && (!files || files?.length === 0)) ? this.props.t("Required") : null
 
     this.setState({ errors: errors })
     return errors
@@ -709,7 +712,7 @@ class InOutTimeUpdateComponent extends React.Component {
         </ul>
 
         {
-          (timesheets.filter(t => t.isEdited).length > 0 && !["V070", "V077", "V073", "V001", "V079", "V002"].includes(currentUserPnLCode)) ?
+          (timesheets.filter(t => t.isEdited).length > 0 && !listCompanyCodeIgnoreEvidence.includes(currentUserPnLCode)) ?
             <div className="p-3 mb-2 bg-warning text-dark">{t('EvidenceRequired')}</div>
             : null
         }
