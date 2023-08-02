@@ -226,6 +226,7 @@ class EducationComponent extends React.Component {
     })
     const majors = this.props.majors.map(major => { return { value: major.ID, label: major.TEXT } })
     const schools = this.state.schools.filter(s => s.education_level_id == item.education_level_id).map(school => { return { value: school.ID, label: school.TEXT } })
+    const isEducationLevelKhac = item.education_level_id === 'VK'
 
     return <Row className="info-value">
       <Col xs={12} md={6} lg={3}>
@@ -276,7 +277,8 @@ class EducationComponent extends React.Component {
           <DatePicker
             name="to_time"
             key="to_time"
-            maxDate={new Date()}
+            minDate={item?.from_time && moment(item?.from_time, 'DD-MM-YYYY').isValid() ? moment(item?.from_time, 'DD-MM-YYYY').toDate() : null}
+            maxDate={isEducationLevelKhac ? null : new Date()}
             selected={item && item.to_time ? moment(item.to_time, 'DD-MM-YYYY').toDate() : null}
             onChange={toTime => this.handleDatePickerInputChange(index, toTime, "to_time", name)}
             dateFormat="dd-MM-yyyy"
