@@ -298,7 +298,7 @@ function Header(props) {
     //     }
     // });
 
-    if (!accessToken || accessToken == 'null' || accessToken == 'undefined' || !tokenExpired || !moment(tokenExpired, 'YYYYMMDDHHmmss').isValid() || moment().isAfter(moment(tokenExpired, 'YYYYMMDDHHmmss'))) {
+    if (accessToken && (!tokenExpired || !moment(tokenExpired, 'YYYYMMDDHHmmss').isValid() || moment().isAfter(moment(tokenExpired, 'YYYYMMDDHHmmss')))) {
         userLogOut()
     }
 
