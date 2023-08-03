@@ -405,7 +405,7 @@ class LeaveOfAbsenceComponent extends React.Component {
         axios.post(`${process.env.REACT_APP_REQUEST_URL}request/validate`, {perno: currentEmployeeNo, ...(isEdit && { requestId: this.props.taskId }), times: times}, config)
             .then(res => {
                 if (res && res.data && res.data.data && res.data.data.times.length > 0) {
-                    const newRequestInfo = requestInfo.map((req, index) => {
+                    const newRequestInfo = this.state.requestInfo.map((req, index) => {
                         let errors = req.errors
                         let totalTimes
                         let totalDays
