@@ -316,75 +316,93 @@ class PersonalInfoEdit extends React.Component {
     return idRegex.test(id)
   }
 
-  verifyInput = (data, files = null, listIndexChanged = null) => {
-    let errors = listIndexChanged === null ? {...this.state.errors} : {}
+  verifyInput = (data, files = null, listIndexChanged = null, type) => {
+    let errors = {...this.state.errors}
     let newMainInfo = {}
     const lengthPhoneValid = 10
     const maxLengthPersonalIdentifyPlace = 30
     const { t } = this.props;
     const isValidFileUpload = this.isValidFileUpload(data, files)
 
+    delete errors?.notChange
     if ((data && !data.create && !data.update) || (data && !data.create && data.update && data.update.userProfileHistoryMainInfo
       && data.update.userProfileHistoryMainInfo.NewMainInfo && _.size(data.update.userProfileHistoryMainInfo.NewMainInfo) == 0)) {
       errors.notChange = `(${t("NoInformationUpdated")})`
     }
 
+    delete errors?.fileUpload
     if (!isValidFileUpload && ![Constants.pnlVCode.VinSmart].includes(currentCompanyCode)) {
       errors.fileUpload = t("AttachmentRequired")
-    } else {
-      delete errors.fileUpload
     }
 
     if (data && data.update) {
       const update = data.update
       if (update.userProfileHistoryMainInfo) {
         newMainInfo = update.userProfileHistoryMainInfo.NewMainInfo
+        delete errors?.personalEmail
         if (newMainInfo.PersonalEmail && !this.isValidEmail(newMainInfo.PersonalEmail)) {
           errors.personalEmail = t("IncorrectEmail")
         }
+        delete errors?.cellPhoneNo
         if (newMainInfo.CellPhoneNo && !this.isValidPhoneNumber(newMainInfo.CellPhoneNo)) {
           errors.cellPhoneNo = t("IncorrectMobileNo")
         }
         if (newMainInfo?.CellPhoneNo && newMainInfo?.CellPhoneNo?.length !== lengthPhoneValid) {
           errors.cellPhoneNo = t("IncorrectMobileNoLength")
         }
+        delete errors?.UrgentContactNo
         if (newMainInfo.UrgentContactNo && !this.isValidPhoneNumber(newMainInfo.UrgentContactNo)) {
           errors.urgentContactNo = t("IncorrectEmergencyNo")
         }
         if (newMainInfo?.UrgentContactNo && newMainInfo?.UrgentContactNo?.length !== lengthPhoneValid) {
           errors.urgentContactNo = t("IncorrectMobileNoLength")
         }
+        delete errors?.birthProvince
         if (newMainInfo.BirthCountry && !newMainInfo.BirthProvince) {
           errors.birthProvince = t("PlaceOfBirthRequired")
         }
+        delete errors?.maritalDate
         if ((newMainInfo.MaritalStatus && newMainInfo.MaritalStatus !== "" && newMainInfo.MaritalStatus != 0) && !newMainInfo.MarriageDate) {
           errors.maritalDate = t("DateOfChangeRequired")
-        } else if ((newMainInfo.MaritalStatus == null || newMainInfo.MaritalStatus === "") && newMainInfo.MarriageDate) {
-          errors.maritalStatus = t("MaritalStatusRequired")
+        } else {
+          delete errors?.maritalStatus
+          if ((newMainInfo.MaritalStatus == null || newMainInfo.MaritalStatus === "") && newMainInfo.MarriageDate) {
+            errors.maritalStatus = t("MaritalStatusRequired")
+          }
         }
+        delete errors?.bankAccountNumber
         if (newMainInfo.Bank && !newMainInfo.BankAccountNumber) {
           errors.bankAccountNumber = t("BankAccountRequired")
-        } else if (newMainInfo.BankAccountNumber && !newMainInfo.Bank) {
-          errors.bank = t("BankNameRequired")
+        } else {
+          delete errors?.bank
+          if (newMainInfo.BankAccountNumber && !newMainInfo.Bank) {
+            errors.bank = t("BankNameRequired")
+          }
         }
+        delete errors?.passportDate
         if ((newMainInfo.PassportNumber || newMainInfo.PassportPlace) && !newMainInfo.PassportDate) {
           errors.passportDate = t("DateOfIssueRequiredPassport")
         }
+        delete errors?.passportNumber
         if ((newMainInfo.PassportDate || newMainInfo.PassportPlace) && !newMainInfo.PassportNumber) {
           errors.passportNumber = t("PassportRequired")
         }
+        delete errors?.passportPlace
         if ((newMainInfo.PassportDate || newMainInfo.PassportNumber) && !newMainInfo.PassportPlace) {
           errors.passportPlace = t("PlaceOfIssueRequiredPassport")
         }
+        delete errors?.personalIdentifyDate
         if ((newMainInfo.PersonalIdentifyNumber || newMainInfo.PersonalIdentifyPlace) && !newMainInfo.PersonalIdentifyDate) {
           errors.personalIdentifyDate = t("DateOfIssueRequiredIdCard")
         }
+        delete errors?.personalIdentifyNumber
         if ((newMainInfo.PersonalIdentifyDate || newMainInfo.PersonalIdentifyPlace) && !newMainInfo.PersonalIdentifyNumber) {
           errors.personalIdentifyNumber = t("IdRequired")
         }
         if (newMainInfo.PersonalIdentifyNumber && !this.isValidIdentifyNumber(newMainInfo.PersonalIdentifyNumber)) {
           errors.personalIdentifyNumber = '(' + t("IncorrectPersonalIdentifyNumber") + ')'
         }
+        delete errors?.personalIdentifyPlace
         if ((newMainInfo.PersonalIdentifyDate || newMainInfo.PersonalIdentifyNumber) && !newMainInfo.PersonalIdentifyPlace) {
           errors.personalIdentifyPlace = t("PlaceOfIssueRequiredIdCard")
         }
@@ -393,18 +411,18 @@ class PersonalInfoEdit extends React.Component {
         }
       }
       
-      if (update?.userProfileHistoryEducation && listIndexChanged !== null) {
+      if (update?.userProfileHistoryEducation && type === actionTypes.update) {
         const educationUpdated = update.userProfileHistoryEducation
-        const updateErrors = this.getValidationEducations(educationUpdated, actionTypes.update, listIndexChanged)
+        const updateErrors = this.getValidationEducations(educationUpdated, type, listIndexChanged)
         if (_.size(updateErrors) > 0) {
           errors[[actionTypes.update]] = {...updateErrors}
         }
       }
     }
 
-    if (data && data.create && data.create.educations && data.create.educations.length > 0 && listIndexChanged !== null) {
+    if (data && data.create && data.create.educations && data.create.educations.length > 0 && type === actionTypes.create) {
       const educationCreated = data.create.educations
-      const createErrors = this.getValidationEducations(educationCreated, actionTypes.create, listIndexChanged)
+      const createErrors = this.getValidationEducations(educationCreated, type, listIndexChanged)
       if (_.size(createErrors) > 0) {
         errors[[actionTypes.create]] = {...createErrors}
       }
@@ -1170,7 +1188,7 @@ class PersonalInfoEdit extends React.Component {
         });
 
         let dataClone = this.removeItemForValueNull({ ...this.state.data, update: this.state.update })
-        this.verifyInput(dataClone, null, listIndexChanged)
+        this.verifyInput(dataClone, null, listIndexChanged, actionTypes.update)
       })
     });
   }
@@ -1196,7 +1214,7 @@ class PersonalInfoEdit extends React.Component {
         }
       });
       let dataClone = this.removeItemForValueNull({ ...this.state.data, create: this.state.create })
-      this.verifyInput(dataClone, null, listIndexChanged)
+      this.verifyInput(dataClone, null, listIndexChanged, actionTypes.create)
     });
   }
 
