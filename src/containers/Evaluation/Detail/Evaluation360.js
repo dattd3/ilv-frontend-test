@@ -268,23 +268,7 @@ const Evaluation360 = ({ evaluationFormId, formCode, employeeCode }) => {
         <div className="detail align-items-start">
           <div className="left" style={{ paddingTop: 10 }}>{t("YourRelationshipWithEvaluatee")} :</div>
           <div className="right">
-            {
-              isCompleted
-              ? (<div className="relation-label">{relationOption?.label}</div>)
-              : (
-                <Select
-                  value={relationOption}
-                  onChange={relation => handleInputChange(null, 'relation', relation)}
-                  isClearable={true} 
-                  placeholder={t('Select')} 
-                  options={relations}
-                  styles={{
-                    menu: provided => ({ ...provided, zIndex: 2 })
-                  }}
-                  isDisabled={isDisableInput}
-                />
-              )
-            }
+            <div className="relation-label">{relationOption?.label}</div>
           </div>
         </div>
       </div>
