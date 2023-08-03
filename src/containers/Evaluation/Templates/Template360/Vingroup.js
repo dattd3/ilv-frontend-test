@@ -47,7 +47,7 @@ const VinGroup = ({ evaluationFormDetail, isEdit, currentLocale, errors, handleI
                                     <span className="label">{t("EvaluationScore")}</span>
                                     {
                                         isCompleted
-                                        ? (<div className="score-label">{target?.seftPoint ?? ''}</div>)
+                                        ? (<div className="score-label">{parseInt(target?.seftPoint) === 0 ? 'N/A' : (target?.seftPoint ?? '')}</div>)
                                         : (
                                             <select onChange={(e) => handleInputChange(i, 'seftPoint', e)} value={target?.seftPoint ?? ''} disabled={isDisableInput}>
                                                 <option value=''>{t("Select")}</option>
