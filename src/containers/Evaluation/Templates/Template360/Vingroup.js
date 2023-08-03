@@ -33,14 +33,14 @@ const VinGroup = ({ evaluationFormDetail, isEdit, currentLocale, errors, handleI
                                     <div dangerouslySetInnerHTML={{
                                         __html: purify.sanitize(target?.kpiGroup || ''),
                                         }}
-                                        className="matrix-info" 
+                                        className="matrix-info font-weight-bold" 
                                     />
                                 )
                             }
                             <div dangerouslySetInnerHTML={{
                                 __html: purify.sanitize(`${i + 1}. ${JSON.parse(target?.targetName || '{}')[languageCodeMapping[currentLocale]]}`),
                                 }}
-                                className="title" 
+                                className="title font-weight-normal" 
                             />
                             <div className="score">
                                 <div className="item">
