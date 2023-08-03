@@ -316,8 +316,8 @@ class PersonalInfoEdit extends React.Component {
     return idRegex.test(id)
   }
 
-  verifyInput = (data, files = null, listIndexChanged) => {
-    let errors = {}
+  verifyInput = (data, files = null, listIndexChanged = null) => {
+    let errors = listIndexChanged === null ? {...this.state.errors} : {}
     let newMainInfo = {}
     const lengthPhoneValid = 10
     const maxLengthPersonalIdentifyPlace = 30
@@ -331,6 +331,8 @@ class PersonalInfoEdit extends React.Component {
 
     if (!isValidFileUpload && ![Constants.pnlVCode.VinSmart].includes(currentCompanyCode)) {
       errors.fileUpload = t("AttachmentRequired")
+    } else {
+      delete errors.fileUpload
     }
 
     if (data && data.update) {
@@ -391,7 +393,7 @@ class PersonalInfoEdit extends React.Component {
         }
       }
       
-      if (update.userProfileHistoryEducation) {
+      if (update?.userProfileHistoryEducation && listIndexChanged !== null) {
         const educationUpdated = update.userProfileHistoryEducation
         const updateErrors = this.getValidationEducations(educationUpdated, actionTypes.update, listIndexChanged)
         if (_.size(updateErrors) > 0) {
@@ -400,13 +402,15 @@ class PersonalInfoEdit extends React.Component {
       }
     }
 
-    if (data && data.create && data.create.educations && data.create.educations.length > 0) {
+    if (data && data.create && data.create.educations && data.create.educations.length > 0 && listIndexChanged !== null) {
       const educationCreated = data.create.educations
       const createErrors = this.getValidationEducations(educationCreated, actionTypes.create, listIndexChanged)
       if (_.size(createErrors) > 0) {
         errors[[actionTypes.create]] = {...createErrors}
       }
     }
+
+    console.log('errors => ', errors)
 
     this.setState({ errors: errors })
     return errors
@@ -512,29 +516,18 @@ class PersonalInfoEdit extends React.Component {
     if (errors == null || _.isEmpty(errors)) {
       return true
     }
-    const create = errors.create
-    const update = errors.update
-    const fileValid = errors.fileUpload
-    const noChanges = errors.notChange
 
-    if (fileValid || noChanges) {
-      return false;
+    if (errors?.fileUpload || errors?.notChange) {
+      return false
     }
-    if (create) {
-      for (let i = 0, countCreate = create.length; i < countCreate; i++) {
-        if (_.size(create[i]) > 0) {
-          return false
-        }
-      }
+
+    const createValues = Object.values(errors?.create || {})
+    const updateValues = Object.values(errors?.update || {})
+    if ((createValues || []).some(item => _.size(item) > 0) || (updateValues || []).some(item => _.size(item) > 0)) {
+      return false
     }
-    if (update) {
-      for (let j = 0, countUpdate = update.length; j < countUpdate; j++) {
-        if (_.size(update[j]) > 0) {
-          return false
-        }
-      }
-    }
-    return false
+
+    return true
   }
 
   hasValue = (value) => {

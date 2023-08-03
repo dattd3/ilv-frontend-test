@@ -1902,5 +1902,6 @@
   "PleaseEnterTheRequiredFields": "Vui lòng nhập các trường bắt buộc!",
   "PreviousDayNoteUpdateInOutTime": "Nếu sửa giờ vào ra ngày T có phân ca liên ngày (ví dụ từ 22h-6h sáng ngày hôm sau) mà nhập thời gian bắt đầu < thời gian kết thúc và tích chọn \"Ngày trước đó\" thì giờ checkin/out sẽ được ghi nhận cho ngày T-1",
   "ForeignLeaveWarningText": "Lưu ý: Nghỉ ốm người nước ngoài không cho phép tạo yêu cầu chung với các loại nghỉ khác",
-  "Warning": "Lưu ý"
+  "Warning": "Lưu ý",
+  "EffectiveTime": "Thời gian hiệu lực"
 }
