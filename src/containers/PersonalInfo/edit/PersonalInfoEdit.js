@@ -1073,11 +1073,12 @@ class PersonalInfoEdit extends React.Component {
 
   getFieldUpdates = () => {
     const data = this.state.data;
-    if (data && data.update) {
-      const fieldsUpdate = this.state.data.update;
-      const mainInfos = (fieldsUpdate && fieldsUpdate.userProfileHistoryMainInfo) ? fieldsUpdate.userProfileHistoryMainInfo.NewMainInfo : {};
+
+    if (data) {
+      const fieldsUpdate = data?.update;
+      const mainInfos = (fieldsUpdate && fieldsUpdate?.userProfileHistoryMainInfo) ? fieldsUpdate?.userProfileHistoryMainInfo?.NewMainInfo : {};
       let educations = {};
-      if (fieldsUpdate.userProfileHistoryEducation && fieldsUpdate.userProfileHistoryEducation.length > 0) {
+      if ((fieldsUpdate?.userProfileHistoryEducation && fieldsUpdate?.userProfileHistoryEducation?.length > 0) || (data?.create?.educations && data?.create?.educations?.length > 0)) {
         educations = { Education: "Education" }
       }
       const mainInfoKeys = this.convertObjectKeyToArray(mainInfos);
