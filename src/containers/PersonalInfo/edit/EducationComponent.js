@@ -10,6 +10,8 @@ import vi from 'date-fns/locale/vi'
 import { withTranslation } from "react-i18next"
 registerLocale("vi", vi)
 
+const educationLevelKhac = 'VK'
+
 class EducationComponent extends React.Component {
   constructor(props) {
     super();
@@ -195,7 +197,7 @@ class EducationComponent extends React.Component {
     return value;
   }
 
-  itemHeader() {
+  itemHeader(educationLevelId) {
     const { t } = this.props;
     return <Row className="info-label">
       <Col xs={12} md={6} lg={3}>
@@ -208,7 +210,7 @@ class EducationComponent extends React.Component {
         {t("Major")}
       </Col>
       <Col xs={12} md={6} lg={3}>
-        {t("Cohort")}
+        {educationLevelId === educationLevelKhac ? t("EffectiveTime") : t("Cohort")}
       </Col>
     </Row>
   }
@@ -225,7 +227,7 @@ class EducationComponent extends React.Component {
     })
     const majors = this.props.majors.map(major => { return { value: major.ID, label: major.TEXT } })
     const schools = this.state.schools.filter(s => s.education_level_id == item.education_level_id).map(school => { return { value: school.ID, label: school.TEXT } })
-    const isEducationLevelKhac = item.education_level_id === 'VK'
+    const isEducationLevelKhac = item.education_level_id === educationLevelKhac
 
     return <Row className="info-value">
       <Col xs={12} md={6} lg={3}>
@@ -309,7 +311,7 @@ class EducationComponent extends React.Component {
     })
     const majors = this.props.majors.map(major => { return { value: major.ID, label: major.TEXT } })
     const schools = this.state.schools.filter(s => s.education_level_id == item.education_level_id).map(school => { return { value: school.ID, label: school.TEXT } })
-    const isEducationLevelKhac = item.education_level_id === 'VK'
+    const isEducationLevelKhac = item.education_level_id === educationLevelKhac
 
     return <Row className="info-value">
       <Col xs={12} md={6} lg={3}>
@@ -422,7 +424,7 @@ class EducationComponent extends React.Component {
 
           {userEducation.map((item, i) => {
             return <div className="item" key={i}>
-              {this.itemHeader()}
+              {this.itemHeader(this.state.userEducation[i]?.education_level_id)}
               {item ? this.educationItem(item) : null}
               {this.state.userEducation[i] ? this.updateEducationInput(this.state.userEducation[i], i, 'userEducation') : null}
             </div>
@@ -435,7 +437,7 @@ class EducationComponent extends React.Component {
                     <span className="btn-remove-education-item" onClick={this.removeEducation.bind(this, i)}><i className="fas fa-times"></i></span>
                     <div className="float-left input-table">
                       <div key={i}>
-                        {this.itemHeader()}
+                        {this.itemHeader(item?.education_level_id)}
                         {this.educationInput(item, i, 'newUserEducation')}
                       </div>
                     </div>
