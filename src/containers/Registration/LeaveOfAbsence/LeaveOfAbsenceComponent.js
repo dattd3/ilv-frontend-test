@@ -528,19 +528,6 @@ class LeaveOfAbsenceComponent extends React.Component {
         if (name === "absenceType") {
             const check = value.value === MOTHER_LEAVE_KEY
 
-            // Check if NNN => Not combine with other types
-            if (requestInfo?.filter(item => !!item?.absenceType?.value)?.length > 1 ) {
-              const isHasForeignSickLeave = requestInfo.some(item => item.absenceType?.value === FOREIGN_SICK_LEAVE);
-              if ((isHasForeignSickLeave && value.value !== FOREIGN_SICK_LEAVE) || (!isHasForeignSickLeave && value.value === FOREIGN_SICK_LEAVE)) {
-                return this.setState({
-                  isShowStatusModal: true,
-                  isSuccess: false,
-                  titleModal: t("Warning"),
-                  messageModal: t("ForeignLeaveWarningText"),
-                  needReload: false
-                })
-              }
-            }
             newRequestInfo = requestInfo.map(item => {
                 return item.groupId === groupId ? {
                     ...item,
@@ -552,6 +539,19 @@ class LeaveOfAbsenceComponent extends React.Component {
                 }
                 : {...item}
             })
+
+            // Check if NNN => Not combine with other types
+            if (newRequestInfo?.length > 1 ) {
+              if (newRequestInfo?.some((item => item.absenceType?.value === FOREIGN_SICK_LEAVE)) && newRequestInfo?.some((item => item.absenceType?.value && item.absenceType?.value !== FOREIGN_SICK_LEAVE))) {
+                return this.setState({
+                  isShowStatusModal: true,
+                  isSuccess: false,
+                  titleModal: t("Warning"),
+                  messageModal: t("ForeignLeaveWarningText"),
+                  needReload: false
+                })
+              }
+            }
         } else if (name === "funeralWeddingInfo") {
             newRequestInfo = requestInfo.map(item => {
                 let errors = item.errors
