@@ -70,10 +70,10 @@ export default function UseGuideModal({ show, onHide }) {
               <b>{t("FeatureName")}</b>
             </div>
             <div className="content-col-3">
-              <b>Website</b>
+              <b>{t("Website")}</b>
             </div>
             <div className="content-col-4">
-              <b>Mobile</b>
+              <b>{t("Mobile")}</b>
             </div>
           </div>
           {
