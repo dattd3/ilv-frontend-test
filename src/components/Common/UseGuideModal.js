@@ -34,9 +34,7 @@ export default function UseGuideModal({ show, onHide }) {
       })) || []
       setUseGuideData(data);
       setUseGuideDataShow(data);
-    } catch (error) {
-      console.log(error)
-    }
+    } catch (error) {}
   }
 
   const handleSearchInputChange = (e) => {
