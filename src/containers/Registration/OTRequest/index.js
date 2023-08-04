@@ -722,7 +722,7 @@ export default function OTRequestComponent({ recentlyManagers }) {
                       nextTimeIsAfter ? nextTime.startTime : nextTime.endTime,
                       false
                     )
-                  ) < 1
+                  ) < 0.75
                 ) {
                   _errors[`range_space_hours_${index}_${i}`] = t(
                     "OTInvalidSpaceHours"
