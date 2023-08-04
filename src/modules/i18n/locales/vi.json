@@ -1904,5 +1904,7 @@
   "VinSchoolSickLeave": "Nghỉ ốm VSC Expat",
   "SickLeaveFundForVinSchool": "Quỹ Nghỉ ốm NNN VSC",
   "ForeignLeaveWarningText": "Lưu ý: Nghỉ ốm người nước ngoài không cho phép tạo yêu cầu chung với các loại nghỉ khác",
-  "Warning": "Lưu ý"
+  "Warning": "Lưu ý",
+  "EffectiveTime": "Thời gian hiệu lực",
+  "InterDayShiftNotice": "Bạn đang giải trình công cho phân ca ngày {{day}}"
 }

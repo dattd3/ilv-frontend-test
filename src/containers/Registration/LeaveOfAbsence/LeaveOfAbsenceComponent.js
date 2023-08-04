@@ -406,7 +406,7 @@ class LeaveOfAbsenceComponent extends React.Component {
         axios.post(`${process.env.REACT_APP_REQUEST_URL}request/validate`, {perno: currentEmployeeNo, ...(isEdit && { requestId: this.props.taskId }), times: times}, config)
             .then(res => {
                 if (res && res.data && res.data.data && res.data.data.times.length > 0) {
-                    const newRequestInfo = requestInfo.map((req, index) => {
+                    const newRequestInfo = this.state.requestInfo.map((req, index) => {
                         let errors = req.errors
                         let totalTimes
                         let totalDays
@@ -529,19 +529,6 @@ class LeaveOfAbsenceComponent extends React.Component {
         if (name === "absenceType") {
             const check = value.value === MOTHER_LEAVE_KEY
 
-            // Check if NNN => Not combine with other types
-            if (requestInfo.length > 1 ) {
-              const isHasForeignSickLeave = requestInfo.some(item => item.absenceType?.value === FOREIGN_SICK_LEAVE);
-              if ((isHasForeignSickLeave && value.value !== FOREIGN_SICK_LEAVE) || (!isHasForeignSickLeave && value.value === FOREIGN_SICK_LEAVE)) {
-                return this.setState({
-                  isShowStatusModal: true,
-                  isSuccess: false,
-                  titleModal: t("Warning"),
-                  messageModal: t("ForeignLeaveWarningText"),
-                  needReload: false
-                })
-              }
-            }
             newRequestInfo = requestInfo.map(item => {
                 return item.groupId === groupId ? {
                     ...item,
@@ -553,6 +540,19 @@ class LeaveOfAbsenceComponent extends React.Component {
                 }
                 : {...item}
             })
+
+            // Check if NNN => Not combine with other types
+            if (newRequestInfo?.length > 1 ) {
+              if (newRequestInfo?.some((item => item.absenceType?.value === FOREIGN_SICK_LEAVE)) && newRequestInfo?.some((item => item.absenceType?.value && item.absenceType?.value !== FOREIGN_SICK_LEAVE))) {
+                return this.setState({
+                  isShowStatusModal: true,
+                  isSuccess: false,
+                  titleModal: t("Warning"),
+                  messageModal: t("ForeignLeaveWarningText"),
+                  needReload: false
+                })
+              }
+            }
         } else if (name === "funeralWeddingInfo") {
             newRequestInfo = requestInfo.map(item => {
                 let errors = item.errors
