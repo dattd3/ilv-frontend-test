@@ -1890,5 +1890,7 @@
   "ModifiedDate": "Modified Date",
   "WatchFile": "File",
   "WatchVideo": "Video",
-  "SearchByFeatureName": "Search by feature name"
+  "SearchByFeatureName": "Search by feature name",
+  "Website": "Website",
+  "Mobile": "Mobile"
 }
