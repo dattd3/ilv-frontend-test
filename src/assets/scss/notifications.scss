@@ -419,6 +419,12 @@
       padding: 20px;
       background: #F9F9F9;
       border-radius: 4px;
+      .link {
+        color: #212529;
+      }
+      .link:hover {
+        text-decoration: none;
+      }
       .cursor-pointer {
         cursor: pointer;
       }
