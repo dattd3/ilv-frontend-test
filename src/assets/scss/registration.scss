@@ -182,8 +182,9 @@
                         .row-customize {
                             padding: 0 5px;
                             display: flex;
-                            height: 50px;
+                            min-height: 50px;
                             align-items: center;
+                            flex-wrap: wrap;
                             .col-customize {
                                 flex: 0 0 50%;
                                 max-width: 50%;
