@@ -129,6 +129,8 @@ class EducationComponent extends React.Component {
       newUserEducation[index].index = index
       newUserEducation[index].from_time = null
       newUserEducation[index].to_time = null
+      newUserEducation[index].isLockOtherSchool = false
+      newUserEducation[index].isLockOtherMajor = false
     }
     this.updateParent(name, [...newUserEducation], index)
     this.setState({ [name]: [...newUserEducation] })
