@@ -1245,7 +1245,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                         : null
                                                 }
                                                 {
-                                                    (req[0].isShowHintLeaveForMother || isLeaveForMother) ?
+                                                    (req[0]?.isShowHintLeaveForMother || isLeaveForMother) ?
                                                         (
                                                             <div className="row wrap-date-time">
                                                                 <div className="col-lg-12 col-xl-6 col-first">
@@ -1316,7 +1316,8 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                                                         startDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
                                                                                         endDate={reqDetail.endDate ? moment(reqDetail.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
                                                                                         minDate={minDate ? minDate?.toDate() : reqDetail.endDate ? this.addDays(reqDetail.endDate, -31) : null}
-                                                                                        onChange={date => this.setStartDate(date, reqDetail.groupId, reqDetail.groupItem, req[0].isShowHintLeaveForMother)}
+                                                                                        maxDate={reqDetail?.endDate ? moment(reqDetail?.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+                                                                                        onChange={date => this.setStartDate(date, reqDetail.groupId, reqDetail.groupItem, isLeaveForMother || req[0]?.isShowHintLeaveForMother)}
                                                                                         dateFormat="dd/MM/yyyy"
                                                                                         placeholderText={t('Select')}
                                                                                         locale={t("locale")}
@@ -1339,7 +1340,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                                                         endDate={reqDetail.endDate ? moment(reqDetail.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
                                                                                         minDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : minDate ? minDate?.toDate() : this.getMinDate()}
                                                                                         maxDate={reqDetail.startDate ? this.addDays(reqDetail.startDate, 31) : null}
-                                                                                        onChange={date => this.setEndDate(date, reqDetail.groupId, reqDetail.groupItem, req[0].isShowHintLeaveForMother)}
+                                                                                        onChange={date => this.setEndDate(date, reqDetail.groupId, reqDetail.groupItem, isLeaveForMother || req[0]?.isShowHintLeaveForMother)}
                                                                                         dateFormat="dd/MM/yyyy"
                                                                                         placeholderText={t('Select')}
                                                                                         locale={t("locale")}
