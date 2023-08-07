@@ -125,7 +125,7 @@ class DepartmentTimeSheetDetail extends React.Component {
     const { t } = this.props
     const requestTypeId = this.props.substitution.requestTypeId
     const companyVCodeUserLogged = localStorage.getItem('companyCode')
-    const isDisableTimeSheetFunction = [Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl].includes(companyVCodeUserLogged)
+    const isDisableTimeSheetFunction = [Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinHoliday1].includes(companyVCodeUserLogged)
 
     return (
       <div className="leave-of-absence">

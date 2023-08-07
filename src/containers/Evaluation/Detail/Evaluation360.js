@@ -228,7 +228,7 @@ const Evaluation360 = ({ evaluationFormId, formCode, employeeCode }) => {
   }
 
   const renderEmployeeInfos = () => {
-    const isCompleted = evaluationFormDetail?.status == evaluation360Status.completed
+    const isCompleted = evaluationFormDetail?.status == evaluation360Status.completed || evaluationFormDetail?.status == evaluation360Status.evaluated
     const isDisableInput = !evaluationFormDetail?.isEdit || isCompleted
     const relationOption = relations.find(item => item.value === evaluationFormDetail?.relation)
 
@@ -268,23 +268,7 @@ const Evaluation360 = ({ evaluationFormId, formCode, employeeCode }) => {
         <div className="detail align-items-start">
           <div className="left" style={{ paddingTop: 10 }}>{t("YourRelationshipWithEvaluatee")} :</div>
           <div className="right">
-            {
-              isCompleted
-              ? (<div className="relation-label">{relationOption?.label}</div>)
-              : (
-                <Select
-                  value={relationOption}
-                  onChange={relation => handleInputChange(null, 'relation', relation)}
-                  isClearable={true} 
-                  placeholder={t('Select')} 
-                  options={relations}
-                  styles={{
-                    menu: provided => ({ ...provided, zIndex: 2 })
-                  }}
-                  isDisabled={isDisableInput}
-                />
-              )
-            }
+            <div className="relation-label">{relationOption?.label}</div>
           </div>
         </div>
       </div>
@@ -347,7 +331,7 @@ const Evaluation360 = ({ evaluationFormId, formCode, employeeCode }) => {
           />
         </div>
         {
-          evaluationFormDetail?.status != evaluation360Status.completed && evaluationFormDetail?.isEdit && (
+          evaluationFormDetail?.status == evaluation360Status.waitingEvaluation && evaluationFormDetail?.isEdit && (
             <div className="button-block" id="button-block">
               <button className="btn-action confirm" onClick={handleSubmit}><Image src={IconSend} alt="Send" />{t("Evaluation360ButtonSend")}</button>
             </div>
@@ -355,7 +339,7 @@ const Evaluation360 = ({ evaluationFormId, formCode, employeeCode }) => {
         }
       </div>
       {
-        !bottom && evaluationFormDetail?.status != evaluation360Status.completed && evaluationFormDetail?.isEdit && (
+        !bottom && evaluationFormDetail?.status == evaluation360Status.waitingEvaluation && evaluationFormDetail?.isEdit && (
           <div className="scroll-to-save" style={{ color: companyThemeColor, zIndex: '10' }}>
             <div>
               <button className="btn-action save" onClick={handleSubmit}><Image src={IconSend} alt="Send" />{t("Evaluation360ButtonSend")}</button>
