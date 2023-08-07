@@ -1795,7 +1795,7 @@
   "WarningOverOTFundsConsent": "OT hours for this request exceeded the department's funds for the month (at time of registration). Please check/report to HR to replenish funds. Confirm continued consent?",
   "WarningOverOTFundsApproval": "OT hours for this request exceeded the department's funds for the month (at time of registration). Please check/report to HR to replenish funds. Confirm continued approve?",
   "OTMinimumHours": "(*) Minimum OT is 30m for Production department, 60m for other department",
-  "OTInvalidSpaceHours": "(*) Minimum break time is 1h",
+  "OTInvalidSpaceHours": "(*) Minimum break time is 45m",
   "OTOverlapEachOther": "(*) OT time segment is overlap",
   "IncludeSalaryAdjustment": "Include salary adjustment",
   "SearchByDate": "Search by date",
@@ -1859,7 +1859,7 @@
   "Specialist": "Specialist",
   "Staff": "Staff",
   "NotePrevDayOT": "Only choose when you request OT for overnight shift that need pull in/out of previous day.",
-  "NotePrevDayOT2": "EX: July 21, 2023 has a shift from 22h00 to 06h00. and OT from 06h00-07h00 on 22/07/2023<br/> Create a request for OT Registration, select July 21, 2023 from 06h00-07h00, then you need to <b>tick \"Previous day\"</b>",
+  "NotePrevDayOT2": "EX: July 21, 2023 has a shift from 22h00 to 06h00. and OT from 06h00-07h00 on 22/07/2023<br/> Create a request for OT Registration, select July 22, 2023 from 06h00-07h00, then you need to <b>tick \"Previous day\"</b>",
   "CompanyTimeNotOverlap": "The Start date and End date of the companies must not overlap!",
   "StartDateEndDateRequired": "(*) Please select Start date and End date!",
   "InvalidDataPleaseCheckAgain": "Invalid data, please check again!",
@@ -1883,5 +1883,11 @@
   "360DegreeFeedbackFormFor": "360 degree feedback form for",
   "NoDataInfo": "No data",
   "PleaseEnterTheRequiredFields": "Please enter the required fields!",
-  "PreviousDayNoteUpdateInOutTime": "If you edit the checkin and checkout on day T with an inter-day shift (EX: from 10 PM - 06 AM the next day), if enter the start time < end time and tick \"Previous day\", then the checkin/out time will be recorded for date T-1"
+  "VinSchoolSickLeave": "VSC Expat sick leave",
+  "SickLeaveFundForVinSchool": "Expat Sick leave fund for VSC",
+  "PreviousDayNoteUpdateInOutTime": "If you edit the checkin and checkout on day T with an inter-day shift (EX: from 10 PM - 06 AM the next day), if enter the start time < end time and tick \"Previous day\", then the checkin/out time will be recorded for date T-1",
+  "ForeignLeaveWarningText": "Note: Expat sick leave can't combine other types of leave in the same request",
+  "Warning": "Warning",
+  "EffectiveTime": "Effective time",
+  "InterDayShiftNotice": "You are currently change in-out for date {{day}} shift"
 }
