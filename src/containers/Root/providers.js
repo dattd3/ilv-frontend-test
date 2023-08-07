@@ -65,12 +65,12 @@ const ComposeApiWithGuard = function ({ children }) {
       api.inject.response((err) => { 
         SetIsShowModal(false);
         if (err) {
-          SetAlert(...alert, [{
-            id: (new Date()).getTime(),
-            type: 'danger',
-            headline: `Hmm, something went wrong :(`,
-            message: err.message
-          }]);
+          // SetAlert(...alert, [{
+          //   id: (new Date()).getTime(),
+          //   type: 'danger',
+          //   headline: `Hmm, something went wrong :(`,
+          //   message: err.message
+          // }]);
           if (err.response.status === 401) {
             guard.setLogOut();
             window.location.href = process.env.REACT_APP_AWS_COGNITO_IDP_SIGNOUT_URL
@@ -86,12 +86,12 @@ const ComposeApiWithGuard = function ({ children }) {
     api.eject.response((err) => {
       SetIsShowModal(false);
       if (err) {
-        SetAlert(...alert, [{
-          id: (new Date()).getTime(),
-          type: 'danger',
-          headline: `Hmm, something went wrong :(`,
-          message: err.message
-        }]);
+        // SetAlert(...alert, [{
+        //   id: (new Date()).getTime(),
+        //   type: 'danger',
+        //   headline: `Hmm, something went wrong :(`,
+        //   message: err.message
+        // }]);
         if (err.response.status === 401) {
           guard.setLogOut();
           window.location.href = process.env.REACT_APP_AWS_COGNITO_IDP_SIGNOUT_URL
