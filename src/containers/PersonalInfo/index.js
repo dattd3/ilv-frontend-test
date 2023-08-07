@@ -497,9 +497,9 @@ class MyComponent extends React.Component {
         <Tabs defaultActiveKey={defaultTab} onSelect={(key) => this.updateTabLink(key)}>
           <Tab eventKey="PersonalInformation" title={t("PersonalInformation")} className="tab-main-info">
             <div className="top-button-actions">
-              <a href="/tasks" className="btn btn-info shadow"><i className="far fa-address-card"></i> {t("History")}</a>
+              <a href="/tasks" className="btn btn-info shadow-customize"><i className="far fa-address-card"></i> {t("History")}</a>
               {
-                isEnableEditProfiles ? <span className="btn btn-primary shadow ml-3" onClick={() => this.handleEditInfo("mainInformation")}><i className="fas fa-user-edit"></i>{t("Edit")}</span> : null
+                isEnableEditProfiles ? <span className="btn btn-primary shadow-customize ml-3" onClick={() => this.handleEditInfo("mainInformation")}><i className="fas fa-user-edit"></i>{t("Edit")}</span> : null
               }
             </div>
             <h5 className="content-page-header">{t("PersonalInformation")}</h5>
@@ -514,7 +514,7 @@ class MyComponent extends React.Component {
           </Tab>
           <Tab eventKey="Degree" title={t("Degree") + `/` + t("Certificate")} className="tab-education">
             <div className="top-button-actions">
-              <a href="/tasks" className="btn btn-info shadow"><i className="far fa-address-card"></i> {t("History")}</a>
+              <a href="/tasks" className="btn btn-info shadow-customize"><i className="far fa-address-card"></i> {t("History")}</a>
               {
                 isEnableEditEducations ? <span className="btn btn-primary shadow ml-3" onClick={() => this.handleEditInfo("educationInformation")}><i className="fas fa-user-edit"></i>{t("Edit")}</span> : null
               }
@@ -531,7 +531,7 @@ class MyComponent extends React.Component {
           </Tab>
           <Tab eventKey="PersonalRelations" title={t("Family")} className="tab-relationship">
             <div className="top-button-actions">
-              <a href="/tasks" className="btn btn-info shadow"><i className="far fa-address-card"></i> {t("History")}</a>
+              <a href="/tasks" className="btn btn-info shadow-customize"><i className="far fa-address-card"></i> {t("History")}</a>
               {
                 isEnableEditRelationships ? <span className="btn btn-primary shadow ml-3" onClick={() => this.handleEditInfo("relationshipInformation")}><i className="fas fa-user-edit"></i>{t("Edit")}</span> : null
               }

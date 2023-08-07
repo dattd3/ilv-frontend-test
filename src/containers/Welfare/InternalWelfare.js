@@ -70,7 +70,7 @@ class InternalWelfareComponent extends React.Component {
             <>
                 <LoadingModal show={isLoading} />
                 <div className="registration-section personal-info justify-content-between internal-welfare">
-                    <div className="row pb-4 pt-2">
+                    <div className="row pt-2 button-block">
                         <div className="col-md-6 text-left">
                             <div className="clearfix w-100 pb-2">
                                 <div className="btn bg-white btn-create color-red" style={{ cursor: 'default', border: '1px solid' }}>
@@ -81,7 +81,7 @@ class InternalWelfareComponent extends React.Component {
                         </div>
                         <div className="col-md-6 text-right">
                             <div className="clearfix w-100 pb-2">
-                                <button className="btn btn-primary shadow ml-3"
+                                <button className="btn btn-primary shadow-customize btn-download"
                                     onClick={() => this.handleDownloadWelfare(true)} disabled={hiddenButton}
                                 >
                                     <img src={ICDownload} className="mr-2" />
@@ -101,10 +101,10 @@ class InternalWelfareComponent extends React.Component {
                     }
                     {dataWelfare.length !== 0 &&
                         <div className="notice">
-                            <span>* {t("WelfareNoteTitle")}</span><br />
-                            <span>- {t("WelfareNoteContent1")}</span><br />
-                            <span>- {t("WelfareNoteContent2")}</span><br />
-                            <span>- {t("WelfareNoteContent3")}</span><br />
+                            <div className='font-weight-bold'>* {t("WelfareNoteTitle")}</div>
+                            <div>- {t("WelfareNoteContent1")}</div>
+                            <div>- {t("WelfareNoteContent2")}</div>
+                            <div>- {t("WelfareNoteContent3")}</div>
                         </div>
                     }
                 </div>

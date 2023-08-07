@@ -9,7 +9,7 @@ export default function BenefitItem(props) {
   if (data && data.title && data.benefits) {
     return (
       <div className="p-2 bg-white shadow">
-        <div id="benefit-title"> {data.title} </div>
+        <h5 id="benefit-title" className="content-page-header">{data?.title}</h5>
         <table className="table table-striped">
           <thead className="benefit-title-row">
             <tr>
