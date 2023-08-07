@@ -17,9 +17,7 @@ import RegistrationConfirmationModal from '../Registration/ConfirmationModal'
 import { FormControl, Form, Button } from 'react-bootstrap'
 import { withTranslation } from "react-i18next"
 import { showRangeDateGroupByArrayDate, generateTaskCodeByCode, getValueParamByQueryString, setURLSearchParam, getRequestTypesList } from "../../commons/Utils"
-import { getRequestTypeByConditions } from './index'
 import { REQUEST_CATEGORIES, absenceRequestTypes, requestTypes } from "../Task/Constants"
-import { MOTHER_LEAVE_KEY } from "./Constants"
 // import IconInformation from "assets/img/icon/icon-blue-information.svg"
 import IconFilter from "assets/img/icon/icon-filter.svg"
 import IconSearch from "assets/img/icon/icon-search.svg"
@@ -988,9 +986,8 @@ class RequestTaskList extends React.Component {
                                                     <td className="status">{t(`operationType.${child.operationType?.toLowerCase()}`)}</td>
                                                     <td className="status text-center">{this.showStatus(child.processStatusId, child.requestType.id, child.approver, child.statusName)}</td>
                                                     <td className="tool">
-                                                        {(isShowEditButton && child?.absenceType?.value != MOTHER_LEAVE_KEY) && <a href={editLink} title={t("Edit")}><img alt="Sửa" src={editButton} /></a>}
-                                                        {isShowEvictionButton && child.absenceType?.value != MOTHER_LEAVE_KEY
-                                                            && <span title="Thu hồi" onClick={e => this.evictionRequest(child.requestTypeId, child)}><img alt="Thu hồi" src={evictionButton} /></span>}
+                                                        {isShowEditButton && (<a href={editLink} title={t("Edit")}><img alt="Sửa" src={editButton} /></a>)}
+                                                        {isShowEvictionButton && (<span title="Thu hồi" onClick={e => this.evictionRequest(child.requestTypeId, child)}><img alt="Thu hồi" src={evictionButton} /></span>)}
                                                         {isShowDeleteButton && <span title="Hủy" onClick={e => this.deleteRequest(child.requestTypeId, child)}><img alt="Hủy" src={deleteButton} /></span>}
                                                         {isShowSyncRequest && <span title={t("Sync")} onClick={e => this.syncRequest(child.requestTypeId, child)}><img alt={t("Sync")} src={IconSync} /></span>}
                                                     </td>
