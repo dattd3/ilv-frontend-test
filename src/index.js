@@ -1,11 +1,17 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import { Provider } from 'react-redux'
 import { Root } from "./containers";
 import * as serviceWorker from "./serviceWorker";
+import store from "store/index";
 import './assets/scss/sb-admin-2.scss';
 import './app.scss';
 
-ReactDOM.render(<Root />, document.getElementById("wrapper"));
+ReactDOM.render(
+    <Provider store={store}>
+        <Root />
+    </Provider>
+, document.getElementById("wrapper"));
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
