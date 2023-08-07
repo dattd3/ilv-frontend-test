@@ -8,7 +8,7 @@ import axios from 'axios'
 import _ from 'lodash'
 import moment from 'moment'
 import { withTranslation } from "react-i18next"
-import { getMuleSoftHeaderConfigurations } from "../../../commons/Utils"
+import { getMuleSoftHeaderConfigurations, formatStringByMuleValue } from "../../../commons/Utils"
 import Constants from '../../../commons/Constants'
 import HOCComponent from '../../../components/Common/HOCComponent'
 import LoadingModal from 'components/Common/LoadingModal'
@@ -756,7 +756,8 @@ class PersonalInfoEdit extends React.Component {
         if (newMainInfo.Ethinic) {
           const userDetail = this.state.userDetail;
           let obj = { ...this.objectToSap };
-          obj.actio = [Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinHoliday1].includes(currentCompanyCode) ? "MOD" : "INS";
+          // obj.actio = [Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinHoliday1].includes(currentCompanyCode) ? "MOD" : "INS";
+          obj.actio = formatStringByMuleValue(data?.update?.userProfileHistoryMainInfo?.OldMainInfo?.Ethinic) === '' ? "INS" : "MOD"
           obj.racky = this.getDataSpecificFields(newMainInfo.Ethinic, userDetail.race_id);
           return [obj];
         }

@@ -12,7 +12,7 @@ import st from '../../../store'
 import { Provider } from 'react-redux'
 import { updatePersonalDataAction } from '../../../actions'
 import { convertObjectkeyToCamelCase } from '../../Utils/ObjectHelpers'
-import { getMuleSoftHeaderConfigurations, getRequestConfigurations } from "../../../commons/Utils"
+import { getMuleSoftHeaderConfigurations, getRequestConfigurations, formatStringByMuleValue } from "../../../commons/Utils"
 import moment from 'moment'
 import * as actions from '../../../actions'
 import { t } from 'i18next'
@@ -308,12 +308,12 @@ class PersonalInfoEdit extends React.Component {
     let shouldUpdateRace = updatedFieldName_arr.some(u => raceKeyNames.indexOf(u) >= 0);
     if (shouldUpdateRace) {
       let actio = 'MOD';
-      if (!st.userDetail.race_id) {
+      if (formatStringByMuleValue(st?.userDetail?.race_id) === '') {
         actio = 'INS';
       }
-      if (![Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinHoliday1].includes(currentCompanyCode)) {
-        actio = 'INS';
-      }
+      // if (![Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinHoliday1].includes(currentCompanyCode)) {
+      //   actio = 'INS';
+      // }
       sapData.race = [{
         actio: actio,
         racky: dt.update.userProfileHistoryMainInfo.NewMainInfo.Ethinic === undefined ? st.userDetail.race_id : dt.update.userProfileHistoryMainInfo.NewMainInfo.Ethinic,
