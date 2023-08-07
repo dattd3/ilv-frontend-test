@@ -11,7 +11,7 @@ import map from '../../../../src/containers/map.config'
 import vi from 'date-fns/locale/vi'
 import _ from 'lodash'
 import { withTranslation } from "react-i18next";
-import { getValueParamByQueryString, getMuleSoftHeaderConfigurations, isEnableFunctionByFunctionName, getRegistrationMinDateByConditions, isValidDateRequest } from "../../../commons/Utils"
+import { getValueParamByQueryString, getMuleSoftHeaderConfigurations, isEnableFunctionByFunctionName, getRegistrationMinDateByConditions, isValidDateRequest, formatStringByMuleValue } from "../../../commons/Utils"
 import Constants from '../../../commons/Constants'
 import NoteModal from 'components/Common/NoteModal'
 import LoadingModal from 'components/Common/LoadingModal'
@@ -421,6 +421,35 @@ class InOutTimeUpdateComponent extends React.Component {
     })
   }
 
+  prepareInterDayShift = (date, shiftFromTimeInput, shiftToTimeInput, actualFromTimeInput, actualToTimeInput, isPreviousDay = false) => {
+    try {
+      const shiftFromTime = formatStringByMuleValue(shiftFromTimeInput) || 0
+      const shiftToTime = formatStringByMuleValue(shiftToTimeInput) || 0
+      const actualFromTime = !actualFromTimeInput ? 0 : moment(actualFromTimeInput).format("HHmmss")
+      const actualToTime = !actualToTimeInput ? 0 : moment(actualToTimeInput).format("HHmmss")
+  
+      if (!date || !shiftFromTime || !shiftToTime || !actualFromTime || !actualToTime) {
+        return null
+      }
+  
+      const { t } = this.props
+      if (parseInt(shiftFromTime) > parseInt(shiftToTime)) {
+        switch (true) {
+          case (parseInt(actualFromTime) < parseInt(actualToTime) && isPreviousDay):
+            return t("InterDayShiftNotice", { day: moment(date, "DD-MM-YYYY").subtract(1, 'day').format("DD/MM/YYYY") })
+          case (parseInt(actualFromTime) < parseInt(actualToTime) && !isPreviousDay):
+          case (parseInt(actualFromTime) > parseInt(actualToTime) && isPreviousDay):
+          case (parseInt(actualFromTime) > parseInt(actualToTime) && !isPreviousDay):
+            return t("InterDayShiftNotice", { day: moment(date, "DD-MM-YYYY").format("DD/MM/YYYY") })
+        }
+      }
+  
+      return null
+    } catch (error) {
+      return null
+    }
+  }
+
   render() {
     const { startDate, endDate, timesheets, errors, files, disabledSubmitButton, isShowStatusModal, titleModal, messageModal, isSuccess, isLoading, noteModal } = this.state
     const { t, recentlyManagers } = this.props;
@@ -493,6 +522,9 @@ class InOutTimeUpdateComponent extends React.Component {
           </div>
         </div>
         {timesheets.map((timesheet, index) => {
+          let interDayShift1Message = this.prepareInterDayShift(timesheet?.date, timesheet?.from_time1, timesheet?.to_time1, timesheet?.start_time1_fact_update, timesheet?.end_time1_fact_update, timesheet?.isPrevDay)
+          let interDayShift2Message = this.prepareInterDayShift(timesheet?.date, timesheet?.from_time2, timesheet?.to_time2, timesheet?.start_time2_fact_update, timesheet?.end_time2_fact_update, timesheet?.isPrevDay)
+
           return <div className="box shadow pt-1 pb-1" key={index}>
             <div className="row">
               <div className="col-4"><p className="d-inline-flex"><img src={IconClock} className="ic-clock" /><b style={{ marginLeft: 5 }}>{this.getDayName(timesheet.date)} {lang === Constants.LANGUAGE_VI ? t("Day") : null} {timesheet.date.replace(/-/g, '/')}</b></p></div>
@@ -606,6 +638,7 @@ class InOutTimeUpdateComponent extends React.Component {
                             {this.error(index, 'end_time1_fact_update')}
                           </span>
                         </div>
+                        { interDayShift1Message && (<div style={{ width: "100%", textAlign: "center", margin: "10px 0", color: "#e52c08" }} dangerouslySetInnerHTML={{__html: interDayShift1Message}} />) }
                       </div>
                       <div className="row-customize">
                         <div className="col-customize">
@@ -644,9 +677,10 @@ class InOutTimeUpdateComponent extends React.Component {
                             {this.error(index, 'end_time2_fact_update')}
                           </span>
                         </div>
+                        { interDayShift2Message && (<div style={{ width: "100%", textAlign: "center", margin: "10px 0 0 0", color: "#e52c08" }} dangerouslySetInnerHTML={{__html: interDayShift2Message}} />) }
                       </div>
                       <div className='previous-day-selection'>
-                        <input type="checkbox" id={`previous-day-selection-${index}`} name={`previous-day-selection-${index}`} checked={timesheet.isPrevDay || false} onChange={e => this.handleCheckboxChange(index, 'isPrevDay', e)} />
+                        <input type="checkbox" id={`previous-day-selection-${index}`} name={`previous-day-selection-${index}`} checked={timesheet?.isPrevDay || false} onChange={e => this.handleCheckboxChange(index, 'isPrevDay', e)} />
                         <label htmlFor={`previous-day-selection-${index}`}>{t("PreviousDay")}</label>
                         <button
                             className="information-btn"
