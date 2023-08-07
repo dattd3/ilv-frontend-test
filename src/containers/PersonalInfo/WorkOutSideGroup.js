@@ -592,7 +592,7 @@ function WorkOutSideGroup(props) {
         />
         <div className="work-outside-group">
             <div className="top-button-actions">
-                <a href="/tasks" className="btn btn-info shadow"><i className="far fa-address-card"></i> {t("History")}</a>
+                <a href="/tasks" className="btn btn-info shadow-customize"><i className="far fa-address-card"></i> {t("History")}</a>
                 { isEnableEditWorkOutsideGroup && <span className="btn btn-primary shadow ml-3" onClick={handleCanUpdate}><i className="fas fa-user-edit"></i>{t("Edit")}</span> }
             </div>
             <h5 className="content-page-header text-uppercase">{t("WorkingProcessOutSideGroup")}</h5>

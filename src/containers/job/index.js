@@ -68,7 +68,7 @@ function JobDescriptionPage() {
 
   return !!Object.keys(data).length ? (
     <div className="jd-section">
-      <div id="benefit-title"> {data.titleSAP} </div>
+      <h5 id="benefit-title" className="content-page-header">{data?.titleSAP}</h5>
       <JobDescriptionContent
         bg="primary"
         headerTitle={t('GeneralDescription')}

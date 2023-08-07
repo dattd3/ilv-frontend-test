@@ -1222,13 +1222,6 @@
 }
 
 /* benefit */
-#benefit-title {
-  font-size: 20px;
-  font-weight: bold;
-  text-transform: uppercase;
-  color: #2a377c;
-  margin: 10px 0 20px 10px;
-}
 
 .benefit-title-row {
   color: #4d4d4d;
@@ -2506,6 +2499,17 @@ span.badge-notification[data-badge]::after {
       }
     }
   }
+  .block-action-buttons {
+    .btn {
+      height: 38px;
+      img {
+        margin-right: 5px;
+      }
+    }
+    .btn-upload-file {
+      border: 1px solid #ced4da;
+    }
+  }
 }
 
 .registration-employment-termination {
@@ -2984,10 +2988,12 @@ span.badge-notification[data-badge]::after {
 }
 
 .contract-termination-interview {
-  border-radius: 10px;
+  border-radius: 4px;
   background: #FFFFFF;
   color: #000000;
-  padding: 30px 1.5rem;
+  padding: 20px;
+  font-size: 14px;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
   .logo-block {
     text-align: center;
     margin-bottom: 30px;
@@ -3002,10 +3008,13 @@ span.badge-notification[data-badge]::after {
     text-transform: uppercase;
     margin-bottom: 30px;
   }
+  .btn {
+    font-size: inherit;
+  }
   .box {
     color: inherit;
     border: 1px solid #ddd;
-    border-radius: 10px;
+    border-radius: 4px;
     padding: 20px;
     background-color: #fff;
     margin: 15px 0;
@@ -3038,6 +3047,10 @@ span.badge-notification[data-badge]::after {
           margin-right: 5px;
         }
       }
+    }
+    .form-control {
+      font-size: inherit;
+      height: 38px
     }
   }
   .block {
@@ -3073,7 +3086,7 @@ span.badge-notification[data-badge]::after {
       border-spacing: 0;
       border-collapse: separate;
       border: 1px solid #CCCCCC;
-      border-radius: 10px;
+      border-radius: 4px;
       thead {
         background: #eaecf4;
         tr {
@@ -3082,7 +3095,7 @@ span.badge-notification[data-badge]::after {
             font-weight: bold;
             text-align: center;
             &.col-first {
-              border-top-left-radius: 10px;
+              border-top-left-radius: 4px;
               border-bottom: 1px solid #CCCCCC;
               border-right: 1px solid #CCCCCC;
             }
@@ -3091,7 +3104,7 @@ span.badge-notification[data-badge]::after {
               border-right: 1px solid #CCCCCC;
             }
             &.col-third {
-              border-top-right-radius: 10px;
+              border-top-right-radius: 4px;
               border-bottom: 1px solid #CCCCCC;
             }
           }
@@ -5056,4 +5069,14 @@ span.badge-notification[data-badge]::after {
 }
 .shadow-customize {
   box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px !important;
+}
+.request-management {
+  .filter-box {
+    padding: 15px;
+    background: #FFFFFF;
+    border-radius: 4px;
+    .title {
+      margin: 0 0 10px 0;
+    }
+  }
 }

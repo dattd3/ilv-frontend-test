@@ -1227,7 +1227,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                 </>
                                             )
                                         }
-                                        { req[0].isShowHintLeaveForMother && <p className="message-danger"><i className="text-danger">* {t('AllowRegisterFor1Hour')}</i></p> }
+                                        { (req[0]?.isShowHintLeaveForMother || isLeaveForMother) && <p className="message-danger"><i className="text-danger">* {t('AllowRegisterFor1Hour')}</i></p> }
                                     </div>
                                 </div>
                                 <div className="row">
@@ -1245,7 +1245,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                         : null
                                                 }
                                                 {
-                                                    req[0].isShowHintLeaveForMother ?
+                                                    (req[0].isShowHintLeaveForMother || isLeaveForMother) ?
                                                         (
                                                             <div className="row wrap-date-time">
                                                                 <div className="col-lg-12 col-xl-6 col-first">

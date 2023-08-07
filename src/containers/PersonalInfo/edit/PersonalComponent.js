@@ -10,6 +10,7 @@ import { withTranslation } from "react-i18next"
 import _ from 'lodash'
 import Constants from 'commons/Constants'
 import { getMuleSoftHeaderConfigurations, genderConfig, marriageConfig } from "commons/Utils"
+import IconDatePicker from 'assets/img/icon/Icon_DatePicker.svg'
 
 registerLocale("vi", vi)
 
@@ -385,7 +386,7 @@ class PersonalComponent extends React.Component {
                                     showYearDropdown={true}
                                     locale="vi"
                                     className="form-control input" />
-                                <span className="input-group-addon input-img"><i className="fas fa-calendar-alt"></i></span>
+                                <span className="input-img"><img src={IconDatePicker} alt="Date" /></span>
                             </label>
                         </div>
                     </div>
@@ -494,7 +495,7 @@ class PersonalComponent extends React.Component {
                                     showYearDropdown={true}
                                     locale="vi"
                                     className="form-control input" />
-                                <span className="input-group-addon input-img"><i className="fas fa-calendar-alt"></i></span>
+                                <span className="input-img"><img src={IconDatePicker} alt="Date" /></span>
                             </label>
                             {
                                 validationMessagesFromParent?.personalIdentifyDate && <p className="text-danger">{validationMessagesFromParent?.personalIdentifyDate}</p>
@@ -551,7 +552,7 @@ class PersonalComponent extends React.Component {
                                     showYearDropdown={true}
                                     locale="vi"
                                     className="form-control input" />
-                                <span className="input-group-addon input-img"><i className="fas fa-calendar-alt"></i></span>
+                                <span className="input-img"><img src={IconDatePicker} alt="Date" /></span>
                             </label>
                             {
                                 validationMessagesFromParent?.passportDate && <p className="text-danger">{validationMessagesFromParent?.passportDate}</p>
@@ -682,7 +683,7 @@ class PersonalComponent extends React.Component {
                                     showYearDropdown={true}
                                     locale="vi"
                                     className="form-control input" />
-                                <span className="input-group-addon input-img"><i className="fas fa-calendar-alt"></i></span>
+                                <span className="input-img"><img src={IconDatePicker} alt="Date" /></span>
                             </label>
                             {
                                 validationMessagesFromParent?.maritalDate && <p className="text-danger">{validationMessagesFromParent?.maritalDate}</p>
