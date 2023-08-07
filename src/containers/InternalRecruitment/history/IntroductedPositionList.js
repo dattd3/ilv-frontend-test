@@ -56,6 +56,7 @@ class PositionAppliedList extends React.Component {
   render() {
     const INTRODUCTION = 2
     const { t } = this.props
+
     return (
       <>
       <div className="summary position-applied-block">
@@ -65,13 +66,13 @@ class PositionAppliedList extends React.Component {
             <table className="table" role="table">
               <thead className="position-applied-title-row" role="rowgroup">
                 <tr role="row">
-                  <th role="columnheader">{t("Position")}</th>
+                  <th role="columnheader" className="title">{t("Position")}</th>
                   <th role="columnheader" className="name">{t("FullName")}</th>
                   <th role="columnheader" className="phone">{t("MobileNo")}</th>
                   <th role="columnheader" className="email">Email</th>
-                  <th role="columnheader">{t("Time")}</th>
+                  <th role="columnheader" className="time">{t("Time")}</th>
                   <th role="columnheader" className="result">{t("Result")}</th>
-                  <th role="columnheader" className="note" >{t("DownloadCV")}</th>
+                  <th role="columnheader" className="download-cv">{t("DownloadCV")}</th>
                   <th role="columnheader" className="note" >{t("Note")}</th>
                 </tr>
               </thead>
@@ -79,7 +80,7 @@ class PositionAppliedList extends React.Component {
               {this.state.jobs.map(job => {
                 return job.applicants.filter(app => app.applicationFormId == INTRODUCTION).map((applicant, index) => {
                 return <tr role="row" key={index}>
-                  <td role="cell" data-title={t("Position")}>
+                  <td role="cell" data-title={t("Position")} className="title">
                     <a href={`/position-recruiting-detail/${job.id}`} className="position">{job.jobTitle}</a>
                   </td>
                   <td role="cell" className="name" data-title={t("NameOfApplicant")}>
@@ -91,13 +92,13 @@ class PositionAppliedList extends React.Component {
                   <td role="cell" className="email" data-title="Email">
                     <p>{applicant.email}</p>
                   </td>
-                  <td role="cell" data-title={t("Time")}>
+                  <td role="cell" data-title={t("Time")} className="time">
                     <p>{moment(applicant.applicationDate).format('DD/MM/YYYY')}</p>
                   </td>
                   <td role="cell" className="result" data-title={t("Result")}>
                     <p className={'recruiting-status ' + this.showColor(applicant.applicantStatusId)}>{this.showStatus(applicant.applicantStatusId)}</p>
                   </td>
-                  <td role="cell" className="note">
+                  <td role="cell" className="download-cv">
                     <p><a className="download text-success" title={t("DownloadCV")} href={applicant.cvFileLink} target="_blank"><i className="fas fa-download" aria-hidden="true"></i></a></p>
                   </td>
                   <td role="cell" className="note">

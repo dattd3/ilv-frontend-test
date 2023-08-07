@@ -58,7 +58,7 @@ class RequestTaskList extends React.Component {
                 id: '',
                 status: 0,
                 needRefresh: false,
-                fromDate: moment().subtract(7, "days").format("YYYYMMDD"),
+                fromDate: moment().subtract(30, "days").format("YYYYMMDD"),
                 toDate: moment().format("YYYYMMDD"),
             }
         }
@@ -843,7 +843,7 @@ class RequestTaskList extends React.Component {
                             onChange={this.handleInputChange}
                         />
                     </div>
-                    <div className="line-break"></div>
+                    <div className="line-break" />
                     <div className="w-120px position-relative date-picker-container">
                         <DatePicker 
                           name="fromDate"

@@ -26,7 +26,7 @@ class RequestComponent extends React.Component {
   }
 
   componentDidMount() {
-    const params = `pageIndex=${Constants.TASK_PAGE_INDEX_DEFAULT}&pageSize=${Constants.TASK_PAGE_SIZE_DEFAULT}&fromDate=${moment().subtract(7, "days").format("YYYYMMDD")}&toDate=${moment().format("YYYYMMDD")}&`;
+    const params = `pageIndex=${Constants.TASK_PAGE_INDEX_DEFAULT}&pageSize=${Constants.TASK_PAGE_SIZE_DEFAULT}&fromDate=${moment().subtract(30, "days").format("YYYYMMDD")}&toDate=${moment().format("YYYYMMDD")}&`;
     this.requestRemoteData(params);
   }
 
