@@ -71,6 +71,7 @@ function IncomeComponent(props) {
     switch (currentCompanyCode) {
         case Constants.pnlVCode.VinPearl:
         case Constants.pnlVCode.MeliaVinpearl:
+        case Constants.pnlVCode.VinHoliday1:
             incomeTables = IncomeTablesConfig(t).Vinpearl
             break;
         case Constants.pnlVCode.VinSoftware:
