@@ -140,7 +140,7 @@ const Storage = {
     localStorage.removeItem('tokenExpired');
     localStorage.removeItem('refreshToken');
     localStorage.removeItem('isCancelRefreshToken');
-    localStorage.removeItem('email');
+    // localStorage.removeItem('email');
     localStorage.removeItem('plEmail');
     localStorage.removeItem('fullName');
     localStorage.removeItem('jobTitle');

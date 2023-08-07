@@ -6,7 +6,7 @@ class PositionRecruitingTable extends React.Component {
     const { t } = this.props
     return <div className="summary recruiting-search-result-block">
       <h5 className="result-label">các vị trí đang tuyển dụng</h5>
-      <div className="card shadow">
+      <div className="card">
         <div className="card-body">
           <table className="table" role="table">
             <thead className="search-result-title-row" role="rowgroup">

@@ -406,7 +406,7 @@ class LeaveOfAbsenceComponent extends React.Component {
         axios.post(`${process.env.REACT_APP_REQUEST_URL}request/validate`, {perno: currentEmployeeNo, ...(isEdit && { requestId: this.props.taskId }), times: times}, config)
             .then(res => {
                 if (res && res.data && res.data.data && res.data.data.times.length > 0) {
-                    const newRequestInfo = requestInfo.map((req, index) => {
+                    const newRequestInfo = this.state.requestInfo.map((req, index) => {
                         let errors = req.errors
                         let totalTimes
                         let totalDays
@@ -522,12 +522,13 @@ class LeaveOfAbsenceComponent extends React.Component {
     }
 
     handleSelectChange(name, value, groupId) {
+        const { t } = this.props
         const requestInfo = [...this.state.requestInfo]
         const index = groupId - 1 // groupId bắt đầu từ 1. Cần trừ đi 1 để đúng với index của mảng
-
         let newRequestInfo = []
         if (name === "absenceType") {
             const check = value.value === MOTHER_LEAVE_KEY
+
             newRequestInfo = requestInfo.map(item => {
                 return item.groupId === groupId ? {
                     ...item,
@@ -539,6 +540,19 @@ class LeaveOfAbsenceComponent extends React.Component {
                 }
                 : {...item}
             })
+
+            // Check if NNN => Not combine with other types
+            if (newRequestInfo?.length > 1 ) {
+              if (newRequestInfo?.some((item => item.absenceType?.value === FOREIGN_SICK_LEAVE)) && newRequestInfo?.some((item => item.absenceType?.value && item.absenceType?.value !== FOREIGN_SICK_LEAVE))) {
+                return this.setState({
+                  isShowStatusModal: true,
+                  isSuccess: false,
+                  titleModal: t("Warning"),
+                  messageModal: t("ForeignLeaveWarningText"),
+                  needReload: false
+                })
+              }
+            }
         } else if (name === "funeralWeddingInfo") {
             newRequestInfo = requestInfo.map(item => {
                 let errors = item.errors
@@ -556,7 +570,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                 : {...item}
             })
         }
-        this.setState({ requestInfo: newRequestInfo })
+        this.setState({ requestInfo: newRequestInfo, isShowStatusModal: false, disabledSubmitButton: false, needReload: true })
         this.validateTimeRequest(newRequestInfo, index)
     }
 
@@ -684,7 +698,6 @@ class LeaveOfAbsenceComponent extends React.Component {
         const { t, leaveOfAbsence } = this.props
         const { files, isEdit, requestInfo } = this.state
         const err = this.verifyInput()
-
         this.setDisabledSubmitButton(true)
         if (!err) {
             this.setDisabledSubmitButton(false)
@@ -983,7 +996,6 @@ class LeaveOfAbsenceComponent extends React.Component {
         const checkVinmec = checkIsExactPnL(Constants.pnlVCode.VinMec);
         const minDate = getRegistrationMinDateByConditions()
         const registeredInformation = (leaveOfAbsence?.requestInfoOld || leaveOfAbsence?.requestInfoOld?.length > 0) ? leaveOfAbsence.requestInfoOld : leaveOfAbsence?.requestInfo
-
         return (
             <div className="leave-of-absence">
                 <ResultModal show={isShowStatusModal} title={titleModal} message={messageModal} isSuccess={isSuccess} onHide={this.hideStatusModal} />
@@ -1518,7 +1530,8 @@ class LeaveOfAbsenceComponent extends React.Component {
                     errors={errors} 
                     appraiser={appraiser} 
                     approver={approver} 
-                    recentlyApprover={recentlyManagers?.approver} 
+                    recentlyApprover={recentlyManagers?.approver}
+                    disableApproverParams={requestInfo?.some(item => item.absenceType?.value === FOREIGN_SICK_LEAVE)}
                     updateApprover={this.updateApprover.bind(this)} />
 
                 <ul className="list-inline">

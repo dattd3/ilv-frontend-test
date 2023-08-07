@@ -24,6 +24,10 @@ export function updateProvinceAction(payload) {
     return actionCreator(actionNames.UPDATE_PROVINCE, payload);
 }
 
+export function handleFullScreen(payload) {
+    return actionCreator(actionNames.FULL_SCREEN, payload);
+}
+
 function actionCreator(type, payload) {
     return {
         type: type,
@@ -37,5 +41,6 @@ export const actionNames = {
     UPDATE_INFORMATION_DATA: 'UPDATEINFORMATIONDATA',
     UPDATE_PROVINCE: 'UPDATEPROVINCE',
     UPDATE_EDUCATION: 'UPDATEEDUCATION',
-    UPDATE_SCHOOL: 'UPDATESCHOOL'
+    UPDATE_SCHOOL: 'UPDATESCHOOL',
+    FULL_SCREEN: 'FULL_SCREEN',
 };

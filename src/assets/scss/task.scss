@@ -169,6 +169,15 @@
                 right: 8px;
               }
             }
+            @media screen and (max-width: 1440px) {
+              .date-picker-container, .search-btn-container {
+                margin-top: 12px;
+                width: 180px;
+              }
+              .line-break {
+                width: 100%;
+              }
+            }
             .request-category-guide-container {
               position: absolute;
               top: 46px;
