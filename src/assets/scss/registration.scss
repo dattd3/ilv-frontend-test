@@ -1206,7 +1206,23 @@
         border: 1px solid #d1d3e2;
         border-radius: 4px;
         margin-top: 15px;
-        
+        &.editing {
+            padding-top: 15px;
+            padding-bottom: 15px;
+            .wrap-date-time {
+                padding-left: 15px;
+                padding-right: 15px;
+                .input-container {
+                    position: relative;
+                    .react-datepicker-wrapper [class$=-container] {
+                        margin-top: 0;
+                        .input {
+                            height: 38px;
+                        }
+                    }
+                }
+            }
+        }
     }
     .btn-save{
         background-color: #05BD29;

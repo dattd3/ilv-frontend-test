@@ -1162,6 +1162,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                         }
                     })
 
+                    let isLeaveForMother = req[0]?.absenceType?.value === MOTHER_LEAVE_KEY
                     return (
                         <div className="box shadow position-relative" key={index}>
                             { isEdit && <div className='text-uppercase font-weight-bold box-title'>Thông tin điều chỉnh đăng ký nghỉ</div> }
@@ -1232,7 +1233,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                 <div className="row">
                                     <div className="col-lg-8 col-xl-8">
                                         {req.map((reqDetail, indexDetail) => {
-                                            return <div className="time-area" key={index + indexDetail}>
+                                            return <div className={`time-area ${isEdit ? 'editing' : ''}`} key={index + indexDetail}>
                                                 {
                                                     !req[0].isAllDay ?
                                                         <div className="all-day-area">
@@ -1369,7 +1370,8 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                                                         startDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
                                                                                         endDate={reqDetail.endDate ? moment(reqDetail.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
                                                                                         minDate={minDate?.toDate() || null}
-                                                                                        onChange={date => this.setStartDate(date, reqDetail.groupId, reqDetail.groupItem, req[0].isShowHintLeaveForMother)}
+                                                                                        maxDate={reqDetail?.endDate ? moment(reqDetail?.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+                                                                                        onChange={date => this.setStartDate(date, reqDetail.groupId, reqDetail.groupItem, isLeaveForMother || req[0]?.isShowHintLeaveForMother)}
                                                                                         dateFormat="dd/MM/yyyy"
                                                                                         placeholderText={t('Select')}
                                                                                         locale={t("locale")}
@@ -1418,7 +1420,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                                                         startDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
                                                                                         endDate={reqDetail.endDate ? moment(reqDetail.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
                                                                                         minDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : minDate?.toDate() || null}
-                                                                                        onChange={date => this.setEndDate(date, reqDetail.groupId, reqDetail.groupItem, req[0].isShowHintLeaveForMother)}
+                                                                                        onChange={date => this.setEndDate(date, reqDetail.groupId, reqDetail.groupItem, isLeaveForMother || req[0]?.isShowHintLeaveForMother)}
                                                                                         dateFormat="dd/MM/yyyy"
                                                                                         placeholderText={t('Select')}
                                                                                         locale={t("locale")}

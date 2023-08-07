@@ -500,10 +500,8 @@ class InOutTimeUpdateComponent extends React.Component {
                     selectsEnd
                     autoComplete="off"
                     selected={endDate ? moment(endDate, 'DD/MM/YYYY').toDate() : null}
-                    // minDate={this.state.startDate}
-                    // maxDate={new Date()}
                     minDate={startDate ? moment(startDate, 'DD/MM/YYYY').toDate() : null}
-                    maxDate={endDate ? moment(endDate, 'DD/MM/YYYY').toDate() : null}
+                    maxDate={new Date()}
                     onChange={this.setEndDate.bind(this)}
                     showDisabledMonthNavigation
                     dateFormat="dd/MM/yyyy"
