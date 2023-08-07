@@ -1888,5 +1888,6 @@
   "PreviousDayNoteUpdateInOutTime": "If you edit the checkin and checkout on day T with an inter-day shift (EX: from 10 PM - 06 AM the next day), if enter the start time < end time and tick \"Previous day\", then the checkin/out time will be recorded for date T-1",
   "ForeignLeaveWarningText": "Note: Expat sick leave can't combine other types of leave in the same request",
   "Warning": "Warning",
-  "EffectiveTime": "Effective time"
+  "EffectiveTime": "Effective time",
+  "InterDayShiftNotice": "You are currently change in-out for date {{day}} shift"
 }
