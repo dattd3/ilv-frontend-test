@@ -54,7 +54,7 @@ class EducationComponent extends React.Component {
         <h4 className="title text-uppercase">{t("Certification")}</h4>
         <div className="box shadow">
             <span className="mr-5"><i className="note note-old"></i> {t("Record")}</span>
-            <span className="mr-5"><i className="note note-new"></i> {t("NewInformation")}</span>
+            <span className="mr-5"><i className="note note-new"></i> {t("UpdateInformation")}</span>
             <span><i className="note note-create"></i> {t("NewInformation")}</span>
             <hr/>
             {(userEducationUpdate || []).map((item, i) => {

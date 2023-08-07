@@ -10,6 +10,8 @@ import vi from 'date-fns/locale/vi'
 import { withTranslation } from "react-i18next"
 registerLocale("vi", vi)
 
+const educationLevelKhac = 'VK'
+
 class EducationComponent extends React.Component {
   constructor(props) {
     super();
@@ -125,6 +127,10 @@ class EducationComponent extends React.Component {
       newUserEducation[index].school_id = ''
       newUserEducation[index].degree_text = level ? level.label : ""
       newUserEducation[index].index = index
+      newUserEducation[index].from_time = null
+      newUserEducation[index].to_time = null
+      newUserEducation[index].isLockOtherSchool = false
+      newUserEducation[index].isLockOtherMajor = false
     }
     this.updateParent(name, [...newUserEducation], index)
     this.setState({ [name]: [...newUserEducation] })
@@ -153,16 +159,13 @@ class EducationComponent extends React.Component {
   }
 
   handleDatePickerInputChange(index, dateInput, field, name) {
-    if (moment(dateInput, 'DD-MM-YYYY').isValid()) {
-      const oldPrefix = "old_"
-      const date = moment(dateInput).format('DD-MM-YYYY')
-      let newUserEducation = [...this.state[name]]
-      newUserEducation[index][oldPrefix + field] = newUserEducation[index][field]
-      newUserEducation[index][field] = date
-      newUserEducation[index].index = index
-      this.setState({ [name]: [...newUserEducation] })
-      this.updateParent(name, newUserEducation, index)
-    }
+    const oldPrefix = "old_"
+    let newUserEducation = [...this.state[name]]
+    newUserEducation[index][oldPrefix + field] = newUserEducation[index][field]
+    newUserEducation[index][field] = dateInput ? moment(dateInput).format('DD-MM-YYYY') : null
+    newUserEducation[index].index = index
+    this.setState({ [name]: [...newUserEducation] })
+    this.updateParent(name, newUserEducation, index)
   }
 
   otherInputChange(index, name, inputType, e) {
@@ -196,7 +199,7 @@ class EducationComponent extends React.Component {
     return value;
   }
 
-  itemHeader() {
+  itemHeader(educationLevelId) {
     const { t } = this.props;
     return <Row className="info-label">
       <Col xs={12} md={6} lg={3}>
@@ -209,7 +212,7 @@ class EducationComponent extends React.Component {
         {t("Major")}
       </Col>
       <Col xs={12} md={6} lg={3}>
-        {t("Cohort")}
+        {educationLevelId === educationLevelKhac ? t("EffectiveTime") : t("Cohort")}
       </Col>
     </Row>
   }
@@ -226,6 +229,7 @@ class EducationComponent extends React.Component {
     })
     const majors = this.props.majors.map(major => { return { value: major.ID, label: major.TEXT } })
     const schools = this.state.schools.filter(s => s.education_level_id == item.education_level_id).map(school => { return { value: school.ID, label: school.TEXT } })
+    const isEducationLevelKhac = item.education_level_id === educationLevelKhac
 
     return <Row className="info-value">
       <Col xs={12} md={6} lg={3}>
@@ -260,8 +264,8 @@ class EducationComponent extends React.Component {
             <DatePicker
               name="from_time"
               key="from_time"
-              maxDate={new Date()}
-              selected={item && item.from_time ? moment(item.from_time, 'DD-MM-YYYY').toDate() : null}
+              maxDate={(item?.to_time && moment().isSameOrAfter(moment(item?.to_time, 'DD-MM-YYYY'))) ? moment(item.to_time, 'DD-MM-YYYY').toDate() : new Date()}
+              selected={item?.from_time ? moment(item.from_time, 'DD-MM-YYYY').toDate() : null}
               onChange={fromTime => this.handleDatePickerInputChange(index, fromTime, "from_time", name)}
               dateFormat="dd-MM-yyyy"
               locale="vi"
@@ -276,8 +280,9 @@ class EducationComponent extends React.Component {
           <DatePicker
             name="to_time"
             key="to_time"
-            maxDate={new Date()}
-            selected={item && item.to_time ? moment(item.to_time, 'DD-MM-YYYY').toDate() : null}
+            minDate={item?.from_time && moment(item?.from_time, 'DD-MM-YYYY').isValid() ? moment(item.from_time, 'DD-MM-YYYY').toDate() : null}
+            maxDate={isEducationLevelKhac ? null : new Date()}
+            selected={item?.to_time ? moment(item.to_time, 'DD-MM-YYYY').toDate() : null}
             onChange={toTime => this.handleDatePickerInputChange(index, toTime, "to_time", name)}
             dateFormat="dd-MM-yyyy"
             locale="vi"
@@ -308,6 +313,7 @@ class EducationComponent extends React.Component {
     })
     const majors = this.props.majors.map(major => { return { value: major.ID, label: major.TEXT } })
     const schools = this.state.schools.filter(s => s.education_level_id == item.education_level_id).map(school => { return { value: school.ID, label: school.TEXT } })
+    const isEducationLevelKhac = item.education_level_id === educationLevelKhac
 
     return <Row className="info-value">
       <Col xs={12} md={6} lg={3}>
@@ -342,8 +348,8 @@ class EducationComponent extends React.Component {
             <DatePicker
               name="from_time"
               key="from_time"
-              maxDate={new Date()}
-              selected={item && item.from_time ? moment(item.from_time, 'DD-MM-YYYY').toDate() : null}
+              maxDate={(item?.to_time && moment().isSameOrAfter(moment(item?.to_time, 'DD-MM-YYYY'))) ? moment(item.to_time, 'DD-MM-YYYY').toDate() : new Date()}
+              selected={item?.from_time ? moment(item.from_time, 'DD-MM-YYYY').toDate() : null}
               onChange={fromTime => this.handleDatePickerInputChange(index, fromTime, "from_time", name)}
               dateFormat="dd-MM-yyyy"
               locale="vi"
@@ -358,8 +364,9 @@ class EducationComponent extends React.Component {
             <DatePicker
               name="to_time"
               key="to_time"
-              maxDate={new Date()}
-              selected={item && item.to_time ? moment(item.to_time, 'DD-MM-YYYY').toDate() : null}
+              maxDate={isEducationLevelKhac ? null : new Date()}
+              minDate={item?.from_time && moment(item?.from_time, 'DD-MM-YYYY').isValid() ? moment(item.from_time, 'DD-MM-YYYY').toDate() : null}
+              selected={item?.to_time ? moment(item.to_time, 'DD-MM-YYYY').toDate() : null}
               onChange={toTime => this.handleDatePickerInputChange(index, toTime, "to_time", name)}
               dateFormat="dd-MM-yyyy"
               locale="vi"
@@ -419,7 +426,7 @@ class EducationComponent extends React.Component {
 
           {userEducation.map((item, i) => {
             return <div className="item" key={i}>
-              {this.itemHeader()}
+              {this.itemHeader(this.state.userEducation[i]?.education_level_id)}
               {item ? this.educationItem(item) : null}
               {this.state.userEducation[i] ? this.updateEducationInput(this.state.userEducation[i], i, 'userEducation') : null}
             </div>
@@ -432,7 +439,7 @@ class EducationComponent extends React.Component {
                     <span className="btn-remove-education-item" onClick={this.removeEducation.bind(this, i)}><i className="fas fa-times"></i></span>
                     <div className="float-left input-table">
                       <div key={i}>
-                        {this.itemHeader()}
+                        {this.itemHeader(item?.education_level_id)}
                         {this.educationInput(item, i, 'newUserEducation')}
                       </div>
                     </div>

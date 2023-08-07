@@ -224,7 +224,7 @@ class MyComponent extends React.Component {
                                 </div>
                             </Container>
                             <Col>
-                                <h4 className="pl-0 pt-0">{t("Awards")}</h4>
+                                <h4 className="pl-0 pt-0" style={{ marginBottom: 0 }}>{t("Awards")}</h4>
                             </Col>
 
                             {(this.state.userBonuses !== undefined && this.state.userBonuses.length > 0) ?
@@ -236,7 +236,7 @@ class MyComponent extends React.Component {
                                     bonusTitle += (item.merit_and_cash_certificate ? 'Bằng khen & tiền mặt | ' : '');
                                     bonusTitle += (item.other_rewards ? `${t("Other")} | ` : '');
                                     bonusTitle = bonusTitle.length > 3 ? bonusTitle.substring(0, bonusTitle.length - 3) : '';
-                                    return <Container key={i} fluid className="info-tab-content shadow mb-3 pb-0">
+                                    return <Container key={i} fluid className="info-tab-content shadow-customize mb-3 pb-0" style={{ marginLeft: 15, marginRight: 15 }}>
                                         <form className="info-value pb-0"><div >
                                             <div className="form-row">
                                                 <div className="form-group col-md-6 ">
@@ -270,7 +270,7 @@ class MyComponent extends React.Component {
                         </Row>
                         <Row>
                             <Col>
-                                <h4>{t("Penalties")}</h4>
+                                <h4 style={{ marginBottom: 0 }}>{t("Penalties")}</h4>
                             </Col>
                             <>
                                 {(this.state.userPenalties !== undefined && this.state.userPenalties.length > 0) ?
@@ -282,7 +282,7 @@ class MyComponent extends React.Component {
                                         penaltiesTitle += (item.compensation ? `${t("DeductionOnLoss")} | ` : '');
                                         penaltiesTitle += (item.other ? `${t("Other")} | ` : '');
                                         penaltiesTitle = penaltiesTitle.length > 3 ? penaltiesTitle.substring(0, penaltiesTitle.length - 3) : '';
-                                        return <Container key={i} fluid className="info-tab-content shadow mb-3 pb-0">
+                                        return <Container key={i} fluid className="info-tab-content shadow-customize pb-0" style={{ marginLeft: 15, marginRight: 15 }}>
                                             <form className="info-value pb-0">
                                                 <div >
                                                     <div className="form-row">

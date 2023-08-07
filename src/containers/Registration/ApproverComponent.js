@@ -105,11 +105,12 @@ class ApproverComponent extends React.Component {
 
   handleSelectChange(name, value) {
     if (value) {
+      const { disableApproverParams } = this.props;
       const currentUserLevel = localStorage.getItem('employeeLevel')
       this.setState({ [name]: value })
       const isApprover = this.isApprover(value.employeeLevel, value.orglv2Id, currentUserLevel, value.account)
       const isException = this.isExceptionApprover(value)
-      this.props.updateApprover(value, isException ? true : isApprover)
+      this.props.updateApprover(value, (isException || disableApproverParams) ? true : isApprover)
     } else {
       this.setState({ [name]: value, users: [] })
       this.props.updateApprover(value, true)
@@ -189,10 +190,11 @@ class ApproverComponent extends React.Component {
   }
 
   searchApprover = (keyword) => {
+    const { disableApproverParams } = this.props;
     const config = getRequestConfigurations()
     const payload = {
       account: keyword,
-      employee_type: "APPROVER",
+      employee_type: !disableApproverParams ?  "APPROVER" : null,
       status: Constants.statusUserActiveMulesoft
     }
     return axios.post(`${process.env.REACT_APP_REQUEST_URL}user/employee/search`, payload, config)
