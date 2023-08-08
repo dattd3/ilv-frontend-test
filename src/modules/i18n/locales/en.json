@@ -919,7 +919,7 @@
   "successfulDisApprovalReq": "Successfully disapprove request",
   "successfulConsentReq": "Successfully consent request",
   "successfulRejectConsentReq": "Successfully reject request",
-  "AnErrorOccurred": "Something went wrong",
+  "AnErrorOccurred": "Something went wrong. Please try again!",
   "successfulRevocationApproval": "Successfully revocation approval",
   "VaccinantionInformation": "COVID-19 Vaccination Information",
   "vaccination": "COVID-19 Vaccination Information",
@@ -977,7 +977,7 @@
   "ReasonReject": "Reason for rejecting",
   "SelectLeaveType":"Select Leave Type",
   "QuestionSubmissionSuccessful": "Question submission/transfer successful!",
-  "HasErrorOccurred": "Sorry, an error occurred!",
+  "HasErrorOccurred": "Sorry, an error occurred. Please try again!",
   "EnterAnswerToContinue": "Enter your answer to continue!",
   "ConfirmEndedAnswers": "Are you sure to end this conversation?",
   "RejectQuestionButtonLabel": "Reject",
@@ -1889,5 +1889,6 @@
   "ForeignLeaveWarningText": "Note: Expat sick leave can't combine other types of leave in the same request",
   "Warning": "Warning",
   "EffectiveTime": "Effective time",
-  "InterDayShiftNotice": "You are currently change in-out for date {{day}} shift"
+  "InterDayShiftNotice": "You are currently change in-out for date {{day}} shift",
+  "PaidDayLocked": "Workday locked"
 }

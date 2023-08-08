@@ -779,7 +779,6 @@ class LeaveOfAbsenceComponent extends React.Component {
         })
         .then(response => {
             const result = response?.data?.result
-            
             if (result?.code === Constants.API_SUCCESS_CODE) {
                 this.showStatusModal(t("Successful"), t("RequestSent"), true)
                 this.setState({ needReload: true })
@@ -789,12 +788,8 @@ class LeaveOfAbsenceComponent extends React.Component {
             }
         })
         .catch(error => {
-            let message = t("Error")
-            if (error?.response?.data?.result?.code == Constants.API_ERROR_CODE) {
-              message = error?.response?.data?.result?.message
-            }
             this.setState({ needReload: false })
-            this.showStatusModal(t("Notification"), message, false)
+            this.showStatusModal(t("Notification"), error?.response?.data?.result?.message || t("AnErrorOccurred"), false)
         })
         .finally(() => {
             this.setDisabledSubmitButton(false)

@@ -607,25 +607,19 @@ class BusinessTripComponent extends React.Component {
             headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` }
         })
         .then(response => {
-            if (response && response.data && response.data.result && response.data.result.code != Constants.API_ERROR_CODE) {
-                this.showStatusModal(this.props.t("Successful"), this.props.t("RequestSent"), true)
-                this.setDisabledSubmitButton(false)
-            }
-            else {
-                this.showStatusModal(this.props.t("Notification"), response.data.result.message, false)
-                this.setDisabledSubmitButton(false)
+            const result = response?.data?.result
+            if (result?.code === Constants.API_SUCCESS_CODE) {
+                this.showStatusModal(t("Successful"), t("RequestSent"), true)
+            } else {
+                this.showStatusModal(t("Notification"), result?.message, false)
             }
         })
         .catch(error => {
-            let message = t("Error")
-            if (error?.response?.data?.result?.code == Constants.API_ERROR_CODE) {
-              message = error?.response?.data?.result?.message
-            }
-            this.showStatusModal(this.props.t("Notification"), message, false)
-            this.setDisabledSubmitButton(false)
+            this.showStatusModal(t("Notification"), error?.response?.data?.result?.message || t("AnErrorOccurred"), false)
         })
         .finally(() => {
             this.setState({ needReload: true })
+            this.setDisabledSubmitButton(false)
         })
     }
 
