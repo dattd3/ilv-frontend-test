@@ -251,7 +251,8 @@ class RequestTaskList extends React.Component {
                 7: { label: t("Rejected"), className: 'request-status fail' },
                 8: { label: t("PendingConsent"), className: 'request-status' },
                 20: { label: t("Consented"), className: 'request-status' },
-                100: { label: t("Waiting"), className: 'request-status' }
+                100: { label: t("Waiting"), className: 'request-status' },
+                [Constants.STATUS_PAID_DAY_LOCKED]: { label: t("PaidDayLocked"), className: 'request-status fail' },
             }
             // options = [
             //     { value: 0, label: 'Đang chờ xử lý' },

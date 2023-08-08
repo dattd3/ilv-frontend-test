@@ -314,21 +314,19 @@ class SubstitutionComponent extends React.Component {
       headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` }
     })
     .then(response => {
-      if (response && response.data && response.data.result) {
-        this.showResultModal(this.props.t("Successful"), this.props.t("RequestSent"), true)
-        this.setDisabledSubmitButton(false)
+      const result = response?.data?.result
+      if (result?.code === Constants.API_SUCCESS_CODE) {
+        this.showResultModal(t("Successful"), t("RequestSent"), true)
+      } else {
+        this.showResultModal(t("Notification"), result?.message, false)
       }
     })
     .catch(error => {
-      let message = this.props.t("Error")
-      if (error?.response?.data?.result?.code == Constants.API_ERROR_CODE) {
-        message = error?.response?.data?.result?.message
-      }
-      this.showResultModal(this.props.t("Notification"), message, false)
-      this.setDisabledSubmitButton(false)
+      this.showResultModal(t("Notification"), error?.response?.data?.result?.message || t("AnErrorOccurred"), false)
     })
     .finally(() => {
       this.setState({ needReload: true })
+      this.setDisabledSubmitButton(false)
     })
   }
 
