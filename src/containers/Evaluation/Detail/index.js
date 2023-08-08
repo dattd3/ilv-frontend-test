@@ -87,7 +87,7 @@ function EvaluationOverall(props) {
         </div>
       </div>
     </div>
-    <div className="card shadow card-overall">
+    <div className="card shadow card-overall" style={{ marginLeft: isOffLineType && 0 }}>
       <h6 className="text-center text-uppercase font-weight-bold chart-title">{t("EvaluationDetailOverallScore")}</h6>
       <div className="chart">
         <div className="detail">

@@ -503,7 +503,7 @@ class MyComponent extends React.Component {
               }
             </div>
             <h5 className="content-page-header">{t("PersonalInformation")}</h5>
-            <Container fluid className="info-tab-content shadow main-info">
+            <Container fluid className="info-tab-content shadow-customize main-info">
               {
                 mainInformation.isEditing ?
                 <PersonalInfoEdit isEnableEditEducation={false} isEnableEditMainInfo={true} />
@@ -611,7 +611,7 @@ class MyComponent extends React.Component {
                       </div>
                     </Col>
                   </> :
-                    <Container fluid className="info-tab-content shadow" style={{ marginLeft: 15, marginRight: 15 }}>
+                    <Container fluid className="info-tab-content shadow-customize" style={{ marginLeft: 15, marginRight: 15 }}>
                       {t("NoDataFound")}
                     </Container>
                   }

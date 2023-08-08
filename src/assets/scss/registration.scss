@@ -982,10 +982,14 @@
                 font-size: inherit;
             }
         }
-        &.shift-change-section {
+        &.shift-change-section-detail {
             .date-info-edit {
                 padding-left: 0;
                 padding-right: 0;
+            }
+            .box-time {
+                border-radius: 4px;
+                border-color: #DEE2E6;
             }
         }
         .detail {
@@ -1722,6 +1726,10 @@
                 margin-bottom: 0;
                 margin-left: 6px;
             }
+        }
+        .box-time {
+            border-radius: 4px;
+            border: 1px solid #DEE2E6;
         }
     }
     &.request-registration {

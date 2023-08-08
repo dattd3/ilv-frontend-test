@@ -2258,7 +2258,7 @@ span.badge-notification[data-badge]::after {
     padding: 1em 0;
   }
   .info-tab-content {
-    padding: 1rem;
+    padding: 15px;
     background-color: #fff;
     border-radius: 4px;
     &.education, &.relationship, &.labor-contract, &.change-working-appointment {
@@ -2292,7 +2292,7 @@ span.badge-notification[data-badge]::after {
         background-color: #ececec;
         color: #353535;
         padding: 0.8em;
-        border-radius: 0.3em;
+        border-radius: 4px;
       }
     }
   }
@@ -4176,7 +4176,7 @@ span.badge-notification[data-badge]::after {
   }
   .version_histories {
     .content-body {
-      padding: 10px 20px;
+      padding: 10px 15px;
       background: #FFF;
       border-radius: 4px;
       border: 1px solid #DEE2E6;

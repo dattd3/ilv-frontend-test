@@ -64,7 +64,7 @@ const ChangeWorkingAppointment = (props) => {
                     </tbody>
                 </table>
             </div>
-        : t("NoDataFound")
+        : <div style={{ margin: '10px 0' }}>{t("NoDataFound")}</div>
     )
 }
 

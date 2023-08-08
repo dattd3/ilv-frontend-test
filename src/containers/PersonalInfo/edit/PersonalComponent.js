@@ -360,7 +360,7 @@ class PersonalComponent extends React.Component {
 
         return (
             <div className="info edit-main-user-info">
-                <div className="box shadow">
+                <div className="box" style={{ boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px" }}>
                     <div className="row">
                         <div className="col"><i className="note note-old"></i> {t("Record")}</div>
                         <div className="col"><i className="note note-new"></i> {t("NewInformation")}</div>

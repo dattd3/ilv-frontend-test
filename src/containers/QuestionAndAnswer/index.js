@@ -138,7 +138,7 @@ class MyComponent extends React.Component {
 
     if (!staffHandbookLink) {
       return (
-        <a href='#' target='_self' className="btn btn-light float-left shadow">{linkName}</a>
+        <a href='#' target='_self' className="btn btn-light float-left shadow-customize">{linkName}</a>
       )
     }
 
@@ -147,12 +147,12 @@ class MyComponent extends React.Component {
 
     if (officeExtensionFile.includes(extensionStaffHandbook)) {
       return (
-        <a href={`https://view.officeapps.live.com/op/view.aspx?src=${staffHandbookLink}`} target='_blank' className="btn btn-light float-left shadow">{linkName}</a>
+        <a href={`https://view.officeapps.live.com/op/view.aspx?src=${staffHandbookLink}`} target='_blank' className="btn btn-light float-left shadow-customize">{linkName}</a>
       )
     }
 
     return (
-      <a href={staffHandbookLink} target='_blank' className="btn btn-light float-left shadow">{linkName}</a>
+      <a href={staffHandbookLink} target='_blank' className="btn btn-light float-left shadow-customize">{linkName}</a>
     )
   }
 
