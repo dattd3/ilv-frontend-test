@@ -1886,7 +1886,7 @@
   "PreviousDayNoteUpdateInOutTime": "If you edit the checkin and checkout on day T with an inter-day shift (EX: from 10 PM - 06 AM the next day), if enter the start time < end time and tick \"Previous day\", then the checkin/out time will be recorded for date T-1",
   "NO": "NO",
   "FeatureName": "Feature Name",
-  "HowToUseOurSystem": "How To Use Our System",
+  "HowToUseOurSystem": "How To Use ILoveVingroup System",
   "ModifiedDate": "Modified Date",
   "WatchFile": "File",
   "WatchVideo": "Video",

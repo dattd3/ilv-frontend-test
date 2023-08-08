@@ -42,6 +42,7 @@ function Header(props) {
     const [latestTimekeeping, setLatestTimeKeeping]= useState(null);
     const [checkinOutNoti, setCheckinOutNoti] = useState(false);
     const [showUseGuideModal, setShowUseGuideModal] = useState(false);
+    const [showUseGuideIcon, setShowUseGuideIcon] = useState(false);
     const [lastNotificationIdSeen, setLastNotificationIdSeen] = useState(0);
     const [dataNotificationsUnReadComponent, setDataNotificationsComponent] = useState("");
     const newestNotification = useContext(NewestNotificationContext);
@@ -361,7 +362,7 @@ function Header(props) {
 
     return (
       <>
-        <UseGuideModal show={showUseGuideModal} onHide={() => setShowUseGuideModal(false)} />
+        <UseGuideModal show={showUseGuideModal} onHide={() => setShowUseGuideModal(false)} setShowUseGuideIcon={setShowUseGuideIcon} />
         {!isApp &&
         <div className="page-header">
             <UploadAvatar show={isShowUploadAvatar} onHide={onHideUploadAvatar} />
@@ -376,12 +377,14 @@ function Header(props) {
                     </InputGroup>
                 </Form>
                 <div className="notification-icons-block">
-                    <Image
-                      className="mr-3 guide-icon"
-                      alt="checkin notification"
-                      src={UseGuideIcon}
-                      onClick={() => setShowUseGuideModal(true)}
-                    />
+                    {
+                      showUseGuideIcon && <Image
+                        className="mr-3 guide-icon"
+                        alt="checkin notification"
+                        src={UseGuideIcon}
+                        onClick={() => setShowUseGuideModal(true)}
+                      />
+                    }
                     <Dropdown id="notifications-block" 
                     className="notification-guide" 
                     show={checkinOutNoti} 
