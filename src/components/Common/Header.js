@@ -10,6 +10,7 @@ import Constants from "../../commons/Constants"
 import { Animated } from "react-animated-css";
 import { useLocalizeStore } from '../../modules';
 import CheckinNotificationIcon from '../../assets/img/icon/ic-checkin-noti.svg';
+import UseGuideIcon from '../../assets/img/icon/Icon-useGuide.svg';
 import UploadAvatar from '../../containers/UploadAvatar'
 import { getRequestConfigurations, getRequestTypesList } from "../../commons/Utils"
 import TimeKeepingList from "containers/TimeKeepingHistory/TimeKeepingList";
@@ -20,6 +21,7 @@ import VingroupIcon from 'assets/img/icon/vingroup-icon.svg';
 import ArrowDownIcon from 'assets/img/icon/arrow-down.svg';
 import NewestNotificationContext from "modules/context/newest-notification-context";
 import { handleFullScreen } from "actions/index"
+import UseGuideModal from "./UseGuideModal";
 
 const getOrganizationLevelByRawLevel = level => {
     return (level == undefined || level == null || level == "" || level == "#") ? 0 : level
@@ -39,6 +41,7 @@ function Header(props) {
     const [isShowUploadAvatar, setIsShowUploadAvatar]= useState(false);
     const [latestTimekeeping, setLatestTimeKeeping]= useState(null);
     const [checkinOutNoti, setCheckinOutNoti] = useState(false);
+    const [showUseGuideModal, setShowUseGuideModal] = useState(false);
     const [lastNotificationIdSeen, setLastNotificationIdSeen] = useState(0);
     const [dataNotificationsUnReadComponent, setDataNotificationsComponent] = useState("");
     const newestNotification = useContext(NewestNotificationContext);
@@ -357,7 +360,9 @@ function Header(props) {
     };
 
     return (
-        !isApp &&
+      <>
+        <UseGuideModal show={showUseGuideModal} onHide={() => setShowUseGuideModal(false)} />
+        {!isApp &&
         <div className="page-header">
             <UploadAvatar show={isShowUploadAvatar} onHide={onHideUploadAvatar} />
             <Navbar expand="lg" className="navigation-top-bar-custom">
@@ -371,6 +376,12 @@ function Header(props) {
                     </InputGroup>
                 </Form>
                 <div className="notification-icons-block">
+                    <Image
+                      className="mr-3 guide-icon"
+                      alt="checkin notification"
+                      src={UseGuideIcon}
+                      onClick={() => setShowUseGuideModal(true)}
+                    />
                     <Dropdown id="notifications-block" 
                     className="notification-guide" 
                     show={checkinOutNoti} 
@@ -479,7 +490,8 @@ function Header(props) {
                     </Dropdown.Menu>
                 </Dropdown>
             </Navbar>
-        </div>
+        </div>}
+      </>
     );
 }
 
