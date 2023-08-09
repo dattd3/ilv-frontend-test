@@ -2,6 +2,7 @@ import React from 'react'
 import axios from 'axios'
 import { withTranslation, useTranslation } from 'react-i18next'
 import { Container, Row, Col, Tabs, Tab, Form } from 'react-bootstrap'
+import ReactTooltip from 'react-tooltip'
 import moment from 'moment'
 import map from '../map.config'
 import { getRequestConfigurations, getMuleSoftHeaderConfigurations, isVinFast } from "../../commons/Utils"
@@ -153,6 +154,22 @@ class MyComponent extends React.Component {
         return penalties && penalties.length > 0 ? penalties.filter(pen => Date.parse(moment(pen.effective_date).format('YYYY-MM-DD').toString()) >= Date.parse(startDate) && Date.parse(pen.effective_date) <= Date.parse(endDate)) : [];
     }
 
+    handleClickContractNumber = (contractNumber) => {
+        if (!contractNumber) {
+            return
+        }
+
+        navigator.clipboard.writeText(contractNumber).then(res => {
+            setTimeout(() => {
+                const url = "https://econtract.vinfast.vn/portal/index.aspx"
+                window.open(url, '_blank')
+            }, 1500)
+        })
+        .catch(e => {
+
+        })
+    }
+
     render() {
         function isNotNull(input) {
             if (input !== undefined && input !== null && input !== 'null' && input !== '#' && input !== '') {
@@ -192,23 +209,46 @@ class MyComponent extends React.Component {
                                         </Row>
                                         <Row className="info-value">
                                             <Col xs={12} md={6} lg={3}>
-                                                <p className="mb-0">&nbsp;
-                                                  {isVinFast() ? <a href='https://econtract.vinfast.vn/portal/index.aspx' target='_blank'>
-                                                    {item.contract_number}
-                                                  </a> : <>{item.contract_number}</>}
-                                                </p>
+                                                <div className="mb-0 contract-number">&nbsp;
+                                                    {
+                                                        isVinFast() ? (
+                                                            <span 
+                                                                data-tip data-for={`contract_number-${item?.contract_number}`} 
+                                                                className="cursor-pointer contract-number-text" 
+                                                                onClick={() => this.handleClickContractNumber(item?.contract_number)}>
+                                                                <ReactTooltip 
+                                                                    id={`contract_number-${item?.contract_number}`} 
+                                                                    delayHide={1500}
+                                                                    afterShow={() => {
+                                                                        ReactTooltip.hide()
+                                                                    }}
+                                                                    event="click" 
+                                                                    scrollHide 
+                                                                    isCapture 
+                                                                    globalEventOff="click" 
+                                                                    effect="solid" 
+                                                                    place="right" 
+                                                                    type='dark'>
+                                                                    Copied: {item?.contract_number}
+                                                                </ReactTooltip>
+                                                                {item?.contract_number}
+                                                            </span>
+                                                        )
+                                                        : (<>{item?.contract_number}</>)
+                                                    }
+                                                </div>
                                             </Col>
                                             <Col xs={12} md={6} lg={2}>
-                                                <p className="mb-0">&nbsp;{item.contract_type}</p>
+                                                <p className="mb-0">&nbsp;{item?.contract_type}</p>
                                             </Col>
                                             <Col xs={12} md={6} lg={2}>
-                                                <p className="mb-0">&nbsp;{item.from_time}</p>
+                                                <p className="mb-0">&nbsp;{item?.from_time}</p>
                                             </Col>
                                             <Col xs={12} md={6} lg={2}>
-                                                <p className="mb-0">&nbsp;{item.to_time}</p>
+                                                <p className="mb-0">&nbsp;{item?.to_time}</p>
                                             </Col>
                                             <Col xs={12} md={6} lg={3}>
-                                                <p className="mb-0">&nbsp;{item.company_name}</p>
+                                                <p className="mb-0">&nbsp;{item?.company_name}</p>
                                             </Col>
                                         </Row>
                                     </div>;
