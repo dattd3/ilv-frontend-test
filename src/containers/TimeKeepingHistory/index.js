@@ -84,7 +84,7 @@ export default function TimeKeepingHistory() {
           <TimeKeepingList apiResponseData={timeKeepingData} fromPage={true} />
         </div>
       ) : (
-        <div className="text-danger mt-3">
+        <div className="text-danger mt-3 not-found-data shadow-customize">
           {t("NodataExport")}
         </div>
       )}
