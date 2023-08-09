@@ -91,7 +91,7 @@ class RequestComponent extends React.Component {
       // { value: Constants.STATUS_NO_CONSENTED , label: t("NotConsent") },
       // { value: Constants.STATUS_EVICTION , label: t("Recalled") },
       { value: Constants.STATUS_REVOCATION , label: t("Canceled") },
-      { value: Constants.STATUS_PAID_DAY_LOCKED , label: t("PaidDayLocked") },
+      { value: Constants.STATUS_WORK_DAY_LOCKED_CREATE , label: t("PaidDayLocked") },
     ]
     return (
       <>
