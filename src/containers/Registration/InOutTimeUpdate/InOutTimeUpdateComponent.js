@@ -453,6 +453,18 @@ class InOutTimeUpdateComponent extends React.Component {
     }
   }
 
+  isInterDayShift = (shiftFromTimeInput1, shiftToTimeInput1, shiftFromTimeInput2, shiftToTimeInput2) => {
+    try {
+      const shiftFromTime1 = formatStringByMuleValue(shiftFromTimeInput1) || 0
+      const shiftToTime1 = formatStringByMuleValue(shiftToTimeInput1) || 0
+      const shiftFromTime2 = formatStringByMuleValue(shiftFromTimeInput2) || 0
+      const shiftToTime2 = formatStringByMuleValue(shiftToTimeInput2) || 0
+      return parseInt(shiftFromTime1) > parseInt(shiftToTime1) || parseInt(shiftFromTime2) > parseInt(shiftToTime2)
+    } catch (error) {
+      return false
+    }
+  }
+
   render() {
     const { startDate, endDate, timesheets, errors, files, disabledSubmitButton, isShowStatusModal, titleModal, messageModal, isSuccess, isLoading, noteModal } = this.state
     const { t, recentlyManagers } = this.props;
@@ -500,10 +512,8 @@ class InOutTimeUpdateComponent extends React.Component {
                     selectsEnd
                     autoComplete="off"
                     selected={endDate ? moment(endDate, 'DD/MM/YYYY').toDate() : null}
-                    // minDate={this.state.startDate}
-                    // maxDate={new Date()}
                     minDate={startDate ? moment(startDate, 'DD/MM/YYYY').toDate() : null}
-                    maxDate={endDate ? moment(endDate, 'DD/MM/YYYY').toDate() : null}
+                    maxDate={new Date()}
                     onChange={this.setEndDate.bind(this)}
                     showDisabledMonthNavigation
                     dateFormat="dd/MM/yyyy"
@@ -527,6 +537,7 @@ class InOutTimeUpdateComponent extends React.Component {
         {timesheets.map((timesheet, index) => {
           let interDayShift1Message = this.prepareInterDayShift(timesheet?.date, timesheet?.from_time1, timesheet?.to_time1, timesheet?.start_time1_fact_update, timesheet?.end_time1_fact_update, timesheet?.isPrevDay)
           let interDayShift2Message = this.prepareInterDayShift(timesheet?.date, timesheet?.from_time2, timesheet?.to_time2, timesheet?.start_time2_fact_update, timesheet?.end_time2_fact_update, timesheet?.isPrevDay)
+          let isInterDayShift = this.isInterDayShift(timesheet?.from_time1, timesheet?.to_time1, timesheet?.from_time2, timesheet?.to_time2)
 
           return <div className="box shadow pt-1 pb-1" key={index}>
             <div className="row">
@@ -682,16 +693,20 @@ class InOutTimeUpdateComponent extends React.Component {
                         </div>
                         { interDayShift2Message && (<div style={{ width: "100%", textAlign: "center", margin: "10px 0 0 0", color: "#e52c08" }} dangerouslySetInnerHTML={{__html: interDayShift2Message}} />) }
                       </div>
-                      <div className='previous-day-selection'>
-                        <input type="checkbox" id={`previous-day-selection-${index}`} name={`previous-day-selection-${index}`} checked={timesheet?.isPrevDay || false} onChange={e => this.handleCheckboxChange(index, 'isPrevDay', e)} />
-                        <label htmlFor={`previous-day-selection-${index}`}>{t("PreviousDay")}</label>
-                        <button
-                            className="information-btn"
-                            onClick={this.handleShowNoteModal}
-                          >
-                            <i className="fas fa-info" />
-                        </button>
-                      </div>
+                      {
+                        isInterDayShift && (
+                          <div className='previous-day-selection'>
+                            <input type="checkbox" id={`previous-day-selection-${index}`} name={`previous-day-selection-${index}`} checked={timesheet?.isPrevDay || false} onChange={e => this.handleCheckboxChange(index, 'isPrevDay', e)} />
+                            <label htmlFor={`previous-day-selection-${index}`}>{t("PreviousDay")}</label>
+                            <button
+                                className="information-btn"
+                                onClick={this.handleShowNoteModal}
+                              >
+                                <i className="fas fa-info" />
+                            </button>
+                          </div>
+                        )
+                      }
                       {
                         isShowSelectWorkingShift24h && 
                         <div className='next-day-selection'>
