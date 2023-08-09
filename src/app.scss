@@ -2498,6 +2498,18 @@ span.badge-notification[data-badge]::after {
         }
       }
     }
+    .contract-number {
+      background: #ececec;
+      color: #353535;
+      border-radius: 4px;
+      padding: 0.6rem;
+      .contract-number-text {
+        color: #007bff;
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
   }
   .block-action-buttons {
     .btn {
@@ -5079,4 +5091,7 @@ span.badge-notification[data-badge]::after {
       margin: 0 0 10px 0;
     }
   }
+}
+.cursor-pointer {
+  cursor: pointer;
 }
