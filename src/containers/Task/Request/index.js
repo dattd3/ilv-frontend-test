@@ -7,7 +7,7 @@ import processingDataReq from "../../Utils/Common"
 import LoadingSpinner from "../../../components/Forms/CustomForm/LoadingSpinner";
 import RequestTaskList from '../requestTaskList';
 import HOCComponent from '../../../components/Common/HOCComponent'
-import { getRequestTypesList, getValueParamByQueryString, setURLSearchParam } from 'commons/Utils'
+import { getRequestTypesList, getValueParamByQueryString, setURLSearchParam, isVinITIS } from 'commons/Utils'
 import { REQUEST_CATEGORIES } from '../Constants'
 import LoadingModal from 'components/Common/LoadingModal'
 
@@ -91,8 +91,11 @@ class RequestComponent extends React.Component {
       // { value: Constants.STATUS_NO_CONSENTED , label: t("NotConsent") },
       // { value: Constants.STATUS_EVICTION , label: t("Recalled") },
       { value: Constants.STATUS_REVOCATION , label: t("Canceled") },
-      { value: Constants.STATUS_WORK_DAY_LOCKED_CREATE , label: t("PaidDayLocked") },
     ]
+    if (isVinITIS()) {
+      statusFiler = [...statusFiler, { value: Constants.STATUS_WORK_DAY_LOCKED_CREATE, label: t("PaidDayLocked") }]
+    }
+
     return (
       <>
         <LoadingModal show={this.state.isLoading} />

@@ -438,6 +438,11 @@
                         color: #FFA200;
                         background: #FFFFFF;
                     }
+                    &.work-day_locked {
+                        border-color: #812C34;
+                        color: #812C34;
+                        background: #FFFFFF;
+                    }
                 }
                 .task-title {
                     font-weight: normal;
