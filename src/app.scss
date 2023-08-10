@@ -4616,8 +4616,8 @@ span.badge-notification[data-badge]::after {
 .scroll-custom {
   overflow-y: auto;
   overflow-x: hidden;
-  height: 85vh;
-  border-radius: 5px;
+  height: calc(100vh - 71px);
+  // border-radius: 5px;
   // &::-webkit-scrollbar {
   //     width: 10px;
   // }
