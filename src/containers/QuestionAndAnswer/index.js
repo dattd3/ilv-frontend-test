@@ -208,7 +208,7 @@ class MyComponent extends React.Component {
             (
               (categories && categories.length && commonTicketListFilter && commonTicketListFilter.length) ? categories.map((category, index) => {
                 let commonticketFiler = this.filterCommonTicket(commonTicketListFilter, category.id)
-                return (commonticketFiler && commonticketFiler.length > 0) ? <div key={index} className="mb-2 shadow border-radius-035">
+                return (commonticketFiler && commonticketFiler.length > 0) ? <div key={index} className="shadow-customize group-item">
                   <CommonQuestionComponent questions={commonticketFiler} categoryName={category.name} />
                 </div>
                   : null
