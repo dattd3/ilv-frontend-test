@@ -1,43 +1,57 @@
 import React, { useState } from "react";
 import Collapse from "react-bootstrap/Collapse";
-import DatePicker, { registerLocale } from "react-datepicker";
-import moment from "moment";
+import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { vi, enUS } from "date-fns/locale";
-import IconDatePicker from "assets/img/icon/Icon_DatePicker.svg";
-import IconAdd from "assets/img/ic-add-green.svg";
-import IconRemove from "assets/img/ic-remove.svg";
 import ServiceItem from "./ServiceItem";
 import { Image } from "react-bootstrap";
-
-function ServiceRequest({ t, headerTitle, isCreateMode = false, request, cancelRequest, updateRequest }) {
+import {
+  IPaymentRequest,
+  IPaymentService,
+} from "../../../models/welfare/PaymentModel";
+const IconDatePicker = require("assets/img/icon/Icon_DatePicker.svg").default;
+const IconAdd = require("../../../assets/img/ic-add-green.svg").default;
+interface IServiceRequestProps {
+  t: any;
+  headerTitle: string;
+  isCreateMode: boolean;
+  request: IPaymentRequest;
+  cancelRequest: Function;
+  updateRequest: Function;
+}
+function ServiceRequest({
+  t,
+  headerTitle,
+  isCreateMode = false,
+  request,
+  cancelRequest,
+  updateRequest,
+}: IServiceRequestProps) {
   const [open, setOpen] = useState(true);
 
-  const handleChangeValue = (value, key) => {
+  const handleChangeValue = (value: any, key: string) => {
     const newRequest = {
       ...request,
-      [key]: value
+      [key]: value,
     };
     updateRequest(newRequest);
-  }
+  };
 
   const addMoreSevice = () => {
-    const lastRequest = {...request};
+    const lastRequest = { ...request };
     lastRequest.services.push({
       name: "Dich vu " + (lastRequest.services.length + 1),
     });
     updateRequest(lastRequest);
   };
-  
-  const updateService = (index, service) => {
-    const lastRequest = {...request};
+
+  const updateService = (index: number, service: IPaymentService) => {
+    const lastRequest = { ...request };
     lastRequest.services[index] = service;
     updateRequest(lastRequest);
-  }
+  };
 
   return (
     <div className="service-request position-relative">
-      
       <div className="card">
         <div
           className={"card-header clearfix text-black"}
@@ -49,33 +63,33 @@ function ServiceRequest({ t, headerTitle, isCreateMode = false, request, cancelR
           </div>
         </div>
         {isCreateMode ? (
-        <button
-          className="position-absolute d-flex align-items-center"
-          style={{
-            gap: "4px",
-            top: 0,
-            right: 0,
-            backgroundColor: "#C74141",
-            color: "#FFFFFF",
-            fontSize: 12,
-            border: "none",
-            padding: "6px 11px",
-            borderTopRightRadius: "4px",
-            borderBottomLeftRadius: "4px",
-          }}
-          onClick={() => {
-            if(cancelRequest) {
+          <button
+            className="position-absolute d-flex align-items-center"
+            style={{
+              gap: "4px",
+              top: 0,
+              right: 0,
+              backgroundColor: "#C74141",
+              color: "#FFFFFF",
+              fontSize: 12,
+              border: "none",
+              padding: "6px 11px",
+              borderTopRightRadius: "4px",
+              borderBottomLeftRadius: "4px",
+            }}
+            onClick={() => {
+              if (cancelRequest) {
                 cancelRequest();
-            }
-          }}
-        >
-          <i
-            className="fas fa-times mr- text-white"
-            style={{ fontSize: 12 }}
-          ></i>
-          {t("Cancel")}
-        </button>
-      ) : null}
+              }
+            }}
+          >
+            <i
+              className="fas fa-times mr- text-white"
+              style={{ fontSize: 12 }}
+            ></i>
+            {t("Cancel")}
+          </button>
+        ) : null}
         <Collapse in={open}>
           <div id="example-collapse-text" className="request-content">
             <div className="trip-contain">
@@ -86,8 +100,10 @@ function ServiceRequest({ t, headerTitle, isCreateMode = false, request, cancelR
                   <input
                     type="text"
                     placeholder={t("import")}
-                    value={request.TripCode || ''}
-                    onChange={(e) => handleChangeValue(e.target.value, "TripCode")}
+                    value={request.TripCode || ""}
+                    onChange={(e) =>
+                      handleChangeValue(e.target.value, "TripCode")
+                    }
                     className="form-control input mv-10 w-100"
                     name="inputName"
                     autoComplete="off"
@@ -104,7 +120,7 @@ function ServiceRequest({ t, headerTitle, isCreateMode = false, request, cancelR
                         autoComplete="off"
                         selected={request.DateCome}
                         maxDate={request.DateLeave}
-                        onChange={date => handleChangeValue(date, 'DateCome')}
+                        onChange={(date) => handleChangeValue(date, "DateCome")}
                         dateFormat="dd/MM/yyyy"
                         placeholderText={t("Select")}
                         locale={t("locale")}
@@ -127,7 +143,9 @@ function ServiceRequest({ t, headerTitle, isCreateMode = false, request, cancelR
                         autoComplete="off"
                         minDate={request.DateCome}
                         selected={request.DateLeave}
-                        onChange={date => handleChangeValue(date, 'DateLeave')}
+                        onChange={(date) =>
+                          handleChangeValue(date, "DateLeave")
+                        }
                         dateFormat="dd/MM/yyyy"
                         placeholderText={t("Select")}
                         locale={t("locale")}
@@ -151,8 +169,10 @@ function ServiceRequest({ t, headerTitle, isCreateMode = false, request, cancelR
                   <input
                     type="text"
                     placeholder={t("import")}
-                    value={request.TripAddress || ''}
-                    onChange={(e) => handleChangeValue(e.target.value, "TripAddress")}
+                    value={request.TripAddress || ""}
+                    onChange={(e) =>
+                      handleChangeValue(e.target.value, "TripAddress")
+                    }
                     className="form-control input mv-10 w-100"
                     name="inputName"
                     autoComplete="off"
@@ -162,15 +182,18 @@ function ServiceRequest({ t, headerTitle, isCreateMode = false, request, cancelR
               </div>
             </div>
             {/* danh sách cac loại dich vu */}
-            {
-                (request?.services || []).map((service, index) => {
-                    return (
-                        <ServiceItem key={index} t={t} headerTitle={service.name} service = {service} 
-                        isCreateMode={isCreateMode}
-                        updateService = {(ser) => updateService(index, ser)}/>
-                    )
-                })
-            }
+            {(request?.services || []).map((service, index) => {
+              return (
+                <ServiceItem
+                  key={index}
+                  t={t}
+                  headerTitle={service.name}
+                  service={service}
+                  isCreateMode={isCreateMode}
+                  updateService={(ser) => updateService(index, ser)}
+                />
+              );
+            })}
 
             {isCreateMode ? (
               <button

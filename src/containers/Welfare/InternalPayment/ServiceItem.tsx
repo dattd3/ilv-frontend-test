@@ -3,16 +3,24 @@ import DatePicker, { registerLocale } from "react-datepicker";
 import moment from "moment";
 import "react-datepicker/dist/react-datepicker.css";
 import { vi, enUS } from "date-fns/locale";
-import IconDatePicker from "assets/img/icon/Icon_DatePicker.svg";
 import Select from "react-select";
+import { IPaymentService } from "models/welfare/PaymentModel";
+const IconDatePicker = require("assets/img/icon/Icon_DatePicker.svg").default;
 
+interface IServiceItem {
+  t: any;
+  headerTitle: string;
+  service: IPaymentService;
+  isCreateMode: boolean;
+  updateService: Function;
+}
 function ServiceItem({
   t,
   headerTitle,
   service,
   isCreateMode = false,
   updateService,
-}) {
+}: IServiceItem) {
   const OPTIONS = [{ label: "test data", value: "aa" }];
   const handleChangeValue = (value, key) => {
     const newService = {
