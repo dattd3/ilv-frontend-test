@@ -5,7 +5,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { vi, enUS } from "date-fns/locale";
 import Select from "react-select";
 import { IPaymentService } from "models/welfare/PaymentModel";
-const IconDatePicker = require("assets/img/icon/Icon_DatePicker.svg").default;
+import IconDatePicker from 'assets/img/icon/Icon_DatePicker.svg';
 
 interface IServiceItem {
   t: any;
