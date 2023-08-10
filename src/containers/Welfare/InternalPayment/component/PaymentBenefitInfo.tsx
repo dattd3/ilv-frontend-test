@@ -7,7 +7,8 @@ interface IPaymentBenefitInfoProps {
   data: any;
   options: IDropdownValue[];
   isCreateMode: boolean;
-  handleChangeSelectInputs: Function;
+  setYearSelected: Function;
+  yearSelected?: IDropdownValue;
 }
 
 function PaymentBenefitInfo({
@@ -15,7 +16,8 @@ function PaymentBenefitInfo({
   data,
   options = [],
   isCreateMode = false,
-  handleChangeSelectInputs,
+  setYearSelected,
+  yearSelected
 }: IPaymentBenefitInfoProps) {
   return (
     <>
@@ -28,8 +30,8 @@ function PaymentBenefitInfo({
               placeholder={t("option")}
               options={options}
               isClearable={false}
-              value={data.workingCondition}
-              onChange={(e) => handleChangeSelectInputs(e, "workingCondition")}
+              value={yearSelected}
+              onChange={(e) => setYearSelected(e)}
               className="input mv-10"
               styles={{ menu: (provided) => ({ ...provided, zIndex: 2 }) }}
               isDisabled={!isCreateMode}

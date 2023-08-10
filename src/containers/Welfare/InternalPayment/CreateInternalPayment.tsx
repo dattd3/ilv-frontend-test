@@ -10,6 +10,7 @@ import {
   IPaymentUserInfo,
 } from "../../../models/welfare/PaymentModel";
 import PaymentBenefitInfo from "./component/PaymentBenefitInfo";
+import PaymentActionButtons from "./component/PaymentActionButton";
 
 function CreateInternalPayment(props: any) {
   const { t } = props;
@@ -26,7 +27,10 @@ function CreateInternalPayment(props: any) {
   const [isAddMore, setIsAddMore] = useState(false);
   const [userInfo, setUserInfo] = useState<IPaymentUserInfo>({});
   const [OPTIONS, setOPTIONS] = useState<IDropdownValue[]>([]);
-  const [yearSelected, setYearSelected] = useState(null);
+  const [yearSelected, setYearSelected] = useState<
+    IDropdownValue | undefined
+  >();
+  const [files, setFiles] = useState<any[]>([]);
 
   useEffect(() => {
     setUserInfo({
@@ -44,11 +48,8 @@ function CreateInternalPayment(props: any) {
       { label: year + 1, value: year + 1 },
       { label: year + 2, value: year + 2 },
     ]);
+    setYearSelected({ label: year, value: year });
   }, []);
-
-  const handleChangeSelectInputs = (e: IDropdownValue, key: string) => {
-    setYearSelected(e.value);
-  };
 
   const addMoreRequest = () => {
     if (isAddMore) return;
@@ -64,11 +65,16 @@ function CreateInternalPayment(props: any) {
     if (isAddMore == false) return;
     setIsAddMore(false);
     setNewRequest(null);
+    setFiles([]);
   };
 
   const updateRequest = (request: IPaymentRequest) => {
     setNewRequest(request);
   };
+
+  const handleSubmit = () => {
+    //TODO handle submit new request
+  }
 
   return (
     <div className="registration-insurance-section input-style">
@@ -91,12 +97,12 @@ function CreateInternalPayment(props: any) {
       </div>
       {/* Thông tin CBLĐ */}
       <PaymentUserInfo t={t} userInfo={userInfo} />
-
       {/* thông tin chế độ phúc lợi */}
       <PaymentBenefitInfo
         t={t}
         data={data}
-        handleChangeSelectInputs={handleChangeSelectInputs}
+        yearSelected={yearSelected}
+        setYearSelected={setYearSelected}
         isCreateMode={true}
         options={OPTIONS}
       />
@@ -116,16 +122,25 @@ function CreateInternalPayment(props: any) {
           />
         );
       })}
+
       <div className="mv-10"></div>
       {isAddMore && newRequest ? (
-        <ServiceRequest
-          t={t}
-          request={newRequest}
-          isCreateMode={true}
-          headerTitle={newRequest.name}
-          cancelRequest={cancelRequest}
-          updateRequest={(req: IPaymentRequest) => updateRequest(req)}
-        />
+        <>
+          <ServiceRequest
+            t={t}
+            request={newRequest}
+            isCreateMode={true}
+            headerTitle={newRequest.name}
+            cancelRequest={cancelRequest}
+            updateRequest={(req: IPaymentRequest) => updateRequest(req)}
+          />
+          <PaymentActionButtons
+            errors={{}}
+            t={t}
+            sendRequests={() => handleSubmit()}
+            updateFilesToParent={(_files) => {setFiles(_files)}}
+          />
+        </>
       ) : (
         <button
           className="btn btn-success btn-lg w-fit-content mt-3 d-flex align-items-center"
