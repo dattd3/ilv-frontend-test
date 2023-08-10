@@ -1889,5 +1889,6 @@
   "ForeignLeaveWarningText": "Note: Expat sick leave can't combine other types of leave in the same request",
   "Warning": "Warning",
   "EffectiveTime": "Effective time",
-  "InterDayShiftNotice": "You are currently change in-out for date {{day}} shift"
+  "InterDayShiftNotice": "You are currently change in-out for date {{day}} shift",
+  "Copied": "Copied"
 }
