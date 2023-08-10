@@ -4,10 +4,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import ServiceItem from "./ServiceItem";
 import { Image } from "react-bootstrap";
-import {
-  IPaymentRequest,
-  IPaymentService,
-} from "models/welfare/PaymentModel";
+import { IPaymentRequest, IPaymentService } from "models/welfare/PaymentModel";
 import IconDatePicker from "assets/img/icon/Icon_DatePicker.svg";
 import IconAdd from "assets/img/ic-add-green.svg";
 interface IServiceRequestProps {
@@ -50,6 +47,12 @@ function ServiceRequest({
     updateRequest(lastRequest);
   };
 
+  const removeService = (index: number) => {
+    const lastRequest = {...request};
+    lastRequest.services.splice(index, 1);
+    updateRequest(lastRequest);
+  }
+
   return (
     <div className="service-request position-relative">
       <div className="card">
@@ -90,7 +93,7 @@ function ServiceRequest({
             {t("Cancel")}
           </button>
         ) : null}
-        <Collapse in={open}>
+        <Collapse in={open || isCreateMode}>
           <div id="example-collapse-text" className="request-content">
             <div className="trip-contain">
               {/* thông tin hành trình */}
@@ -191,6 +194,7 @@ function ServiceRequest({
                   service={service}
                   isCreateMode={isCreateMode}
                   updateService={(ser) => updateService(index, ser)}
+                  removeService={() => removeService(index)}
                 />
               );
             })}

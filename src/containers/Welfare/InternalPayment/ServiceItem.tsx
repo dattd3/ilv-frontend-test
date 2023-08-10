@@ -6,6 +6,7 @@ import { vi, enUS } from "date-fns/locale";
 import Select from "react-select";
 import { IPaymentService } from "models/welfare/PaymentModel";
 import IconDatePicker from 'assets/img/icon/Icon_DatePicker.svg';
+import { getPaymentObjects, getPaymentServiceTypes } from "./PaymentData";
 
 interface IServiceItem {
   t: any;
@@ -13,6 +14,7 @@ interface IServiceItem {
   service: IPaymentService;
   isCreateMode: boolean;
   updateService: Function;
+  removeService: Function;
 }
 function ServiceItem({
   t,
@@ -20,6 +22,7 @@ function ServiceItem({
   service,
   isCreateMode = false,
   updateService,
+  removeService
 }: IServiceItem) {
   const OPTIONS = [{ label: "test data", value: "aa" }];
   const handleChangeValue = (value, key) => {
@@ -31,10 +34,37 @@ function ServiceItem({
   };
 
   return (
-    <div className="item-contain">
+    <div className="item-contain position-relative">
       <div className={"card-header clearfix item-header"}>
         <div className="float-left text-uppercase">{headerTitle}</div>
       </div>
+      {isCreateMode ? (
+          <button
+            className="position-absolute d-flex align-items-center"
+            style={{
+              gap: "4px",
+              top: 0,
+              right: 0,
+              backgroundColor: "#C74141",
+              color: "#FFFFFF",
+              fontSize: 12,
+              border: "none",
+              padding: "6px 11px",
+              borderTopRightRadius: "4px",
+              borderBottomLeftRadius: "4px",
+            }}
+            onClick={() => {
+              if (removeService) {
+                removeService();
+              }
+            }}
+          >
+            <i
+              className="fas fa-times mr- text-white"
+              style={{ fontSize: 12 }}
+            ></i>
+          </button>
+        ) : null}
       <div className="request-content">
         <div className="row">
           <div className="col-3">
@@ -67,7 +97,7 @@ function ServiceItem({
             {t("UseWelfareType")}
             <Select
               placeholder={t("option")}
-              options={OPTIONS}
+              options={getPaymentServiceTypes()}
               isClearable={false}
               value={service.UseWelfareType}
               onChange={(e) => handleChangeValue(e, "UseWelfareType")}
@@ -80,7 +110,7 @@ function ServiceItem({
             {t("UseFor")}
             <Select
               placeholder={t("option")}
-              options={OPTIONS}
+              options={getPaymentObjects()}
               isClearable={false}
               value={service.UseFor}
               onChange={(e) => handleChangeValue(e, "UseFor")}
