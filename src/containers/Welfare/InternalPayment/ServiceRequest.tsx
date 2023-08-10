@@ -9,7 +9,6 @@ import {
   IPaymentService,
 } from "models/welfare/PaymentModel";
 import IconDatePicker from "assets/img/icon/Icon_DatePicker.svg";
-import logo from "assets/img/myvp-logo.png";
 import IconAdd from "assets/img/ic-add-green.svg";
 interface IServiceRequestProps {
   t: any;
@@ -54,7 +53,6 @@ function ServiceRequest({
   return (
     <div className="service-request position-relative">
       <div className="card">
-        <img src={logo} />
         <div
           className={"card-header clearfix text-black"}
           onClick={() => setOpen(!open)}
