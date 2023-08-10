@@ -19,6 +19,6 @@
     },
     // "files": []
   },
-  "include": ["src"],
+  "include": ["src", "image.d.ts"],
   "exclude": ["node_modules"]
 }
