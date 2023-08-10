@@ -380,7 +380,11 @@
     }
   }
 }
-
+.input-style {
+  input:disabled {
+    background-color: #eee;
+ }
+}
 .registration-insurance-section {
   font: normal 14px Arial, Helvetica, sans-serif;
   color: #000000;

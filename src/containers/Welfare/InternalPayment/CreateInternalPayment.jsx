@@ -11,7 +11,13 @@ function CreateInternalPayment(props) {
   const userInfo = {},
     OPTIONS = [{ label: "test data", value: "aa" }];
   const [data, setData] = useState({});
-  const [requests, setRequests] = useState([]);
+  const [requests, setRequests] = useState([
+    {
+      name: "yêu cầu 1",
+      services: [],
+    }
+  ]);
+  const [newRequest, setNewRequest] = useState(null);
   const [isAddMore, setIsAddMore] = useState(false);
 
   const handleTextInputChange = (e, key) => {};
@@ -19,41 +25,29 @@ function CreateInternalPayment(props) {
   const addMoreRequest = () => {
     if (isAddMore) return;
     setIsAddMore(true);
-    setRequests([
-      ...requests,
+    setNewRequest(
       {
         name: "yêu cầu " + (requests.length + 1),
         isDeleted: false,
         isCreateMode: true,
         services: [],
-      },
-    ]);
+      }
+    );
   };
   const cancelRequest = () => {
     if (isAddMore == false) return;
     setIsAddMore(false);
-    const _requests = [...requests];
-    _requests.splice(-1);
-    setRequests(_requests);
+    setNewRequest(null);
   };
 
-  const updateRequest = (index, request) => {
-    const _request = [...requests];
-    _request[index] = request;
-    setRequests(_request);
+  const updateRequest = (request) => {
+    console.log('updateRequest>>>>', request);
+    setNewRequest(request);
   }
-
-  const addMoreSevice = () => {
-    const lastRequest = requests[requests.length - 1];
-    lastRequest.services.push({
-      name: "Dich vu " + (lastRequest.services.length + 1),
-    });
-    setRequests([...requests]);
-  };
   
 
   return (
-    <div className="registration-insurance-section">
+    <div className="registration-insurance-section input-style">
       {/* loại yêu cầu */}
       <h5 style={{ color: "#000000" }}>{t("QUẢN LÝ YÊU CẦU")}</h5>
       <div className="box shadow cbnv">
@@ -236,19 +230,28 @@ function CreateInternalPayment(props) {
         return (
           <ServiceRequest
             key={index}
-            index={index}
             t={t}
             request={request}
-            isCreateMode={request.isCreateMode}
+            isCreateMode={request.isCreateMode || false}
             headerTitle={request.name}
             cancelRequest={cancelRequest}
-            addMoreSevice={addMoreSevice}
-            updateRequest={req => updateRequest(index, req)}
+            updateRequest={req => updateRequest(req)}
           />
         );
       })}
-
-      {isAddMore == false && (
+      
+      {isAddMore && newRequest ?
+        (
+          <ServiceRequest
+            t={t}
+            request={newRequest}
+            isCreateMode={true}
+            headerTitle={newRequest.name}
+            cancelRequest={cancelRequest}
+            updateRequest={req => updateRequest(req)}
+          />
+        )
+      : (
         <button
           className="btn btn-success btn-lg w-fit-content mt-3 d-flex align-items-center"
           style={{ gap: "4px", fontSize: "14px" }}
@@ -258,7 +261,7 @@ function CreateInternalPayment(props) {
             className="fas fa-plus"
             style={{ fontSize: 12, fontWeight: 600 }}
           ></i>
-          {t("AddService")}
+          {t("AddRequest")}
         </button>
       )}
     </div>
