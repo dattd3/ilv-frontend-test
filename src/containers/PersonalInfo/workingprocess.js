@@ -229,7 +229,7 @@ class MyComponent extends React.Component {
                                                                     effect="solid" 
                                                                     place="right" 
                                                                     type='dark'>
-                                                                    Copied: {item?.contract_number}
+                                                                    {t("Copied")}: {item?.contract_number}
                                                                 </ReactTooltip>
                                                                 {item?.contract_number}
                                                             </span>
