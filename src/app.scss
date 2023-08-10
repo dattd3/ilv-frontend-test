@@ -3241,6 +3241,24 @@ span.badge-notification[data-badge]::after {
       margin-bottom: 0;
     }
   }
+  .group-item {
+    border-radius: 4px;
+    margin-bottom: 20px;
+    .collapse {
+      .card-body {
+        background: #FFFFFF;
+        border-bottom-left-radius: 4px;
+        border-bottom-right-radius: 4px;
+        .info-tab-content {
+          margin-bottom: 10px;
+          box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+          &:last-child {
+            margin-bottom: 0;
+          }
+        }
+      }
+    }
+  }
 }
 .qna-detail-page {
   font-size: 14px;
