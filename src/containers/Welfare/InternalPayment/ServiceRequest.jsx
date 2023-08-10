@@ -10,14 +10,30 @@ import IconRemove from "assets/img/ic-remove.svg";
 import ServiceItem from "./ServiceItem";
 import { Image } from "react-bootstrap";
 
-function ServiceRequest({ t, headerTitle, isCreateMode = false, request, cancelRequest, updateRequest, addMoreSevice }) {
+function ServiceRequest({ t, headerTitle, isCreateMode = false, request, cancelRequest, updateRequest }) {
   const [open, setOpen] = useState(true);
-  const handleTextInputChange = (e, key) => {
 
-  };
-  const handleChangeSelectInputs = (e, key) => {
+  const handleChangeValue = (value, key) => {
+    const newRequest = {
+      ...request,
+      [key]: value
+    };
+    updateRequest(newRequest);
+  }
 
+  const addMoreSevice = () => {
+    const lastRequest = {...request};
+    lastRequest.services.push({
+      name: "Dich vu " + (lastRequest.services.length + 1),
+    });
+    updateRequest(lastRequest);
   };
+  
+  const updateService = (index, service) => {
+    const lastRequest = {...request};
+    lastRequest.services[index] = service;
+    updateRequest(lastRequest);
+  }
 
   return (
     <div className="service-request position-relative">
@@ -70,11 +86,12 @@ function ServiceRequest({ t, headerTitle, isCreateMode = false, request, cancelR
                   <input
                     type="text"
                     placeholder={t("import")}
-                    //value={request.leaveOfWeek}
-                    //onChange={(e) => handleTextInputChange(e, "leaveOfWeek")}
+                    value={request.TripCode || ''}
+                    onChange={(e) => handleChangeValue(e.target.value, "TripCode")}
                     className="form-control input mv-10 w-100"
                     name="inputName"
                     autoComplete="off"
+                    disabled={!isCreateMode}
                   />
                 </div>
                 <div className="col-3">
@@ -85,15 +102,14 @@ function ServiceRequest({ t, headerTitle, isCreateMode = false, request, cancelR
                         name="endDate"
                         selectsEnd
                         autoComplete="off"
-                        // selected={reqDetail.endDate ? moment(reqDetail.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
-                        // startDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
-                        // endDate={reqDetail.endDate ? moment(reqDetail.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
-                        // minDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : minDate?.toDate() || null}
-                        // onChange={date => this.setEndDate(date, reqDetail.groupId, reqDetail.groupItem, isLeaveForMother || req[0]?.isShowHintLeaveForMother)}
+                        selected={request.DateCome}
+                        maxDate={request.DateLeave}
+                        onChange={date => handleChangeValue(date, 'DateCome')}
                         dateFormat="dd/MM/yyyy"
                         placeholderText={t("Select")}
                         locale={t("locale")}
                         className="form-control input"
+                        disabled={!isCreateMode}
                       />
                       <span className="input-group-addon input-img">
                         <img src={IconDatePicker} alt="Date" />
@@ -109,15 +125,14 @@ function ServiceRequest({ t, headerTitle, isCreateMode = false, request, cancelR
                         name="endDate"
                         selectsEnd
                         autoComplete="off"
-                        // selected={reqDetail.endDate ? moment(reqDetail.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
-                        // startDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
-                        // endDate={reqDetail.endDate ? moment(reqDetail.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
-                        // minDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : minDate?.toDate() || null}
-                        // onChange={date => this.setEndDate(date, reqDetail.groupId, reqDetail.groupItem, isLeaveForMother || req[0]?.isShowHintLeaveForMother)}
+                        minDate={request.DateCome}
+                        selected={request.DateLeave}
+                        onChange={date => handleChangeValue(date, 'DateLeave')}
                         dateFormat="dd/MM/yyyy"
                         placeholderText={t("Select")}
                         locale={t("locale")}
                         className="form-control input"
+                        disabled={!isCreateMode}
                       />
                       <span className="input-group-addon input-img">
                         <img src={IconDatePicker} alt="Date" />
@@ -136,11 +151,12 @@ function ServiceRequest({ t, headerTitle, isCreateMode = false, request, cancelR
                   <input
                     type="text"
                     placeholder={t("import")}
-                    //value={data.leaveOfWeek}
-                    //onChange={(e) => handleTextInputChange(e, "leaveOfWeek")}
+                    value={request.TripAddress || ''}
+                    onChange={(e) => handleChangeValue(e.target.value, "TripAddress")}
                     className="form-control input mv-10 w-100"
                     name="inputName"
                     autoComplete="off"
+                    disabled={!isCreateMode}
                   />
                 </div>
               </div>
@@ -149,7 +165,9 @@ function ServiceRequest({ t, headerTitle, isCreateMode = false, request, cancelR
             {
                 (request?.services || []).map((service, index) => {
                     return (
-                        <ServiceItem key={index} t={t} headerTitle={service.name} service = {service} />
+                        <ServiceItem key={index} t={t} headerTitle={service.name} service = {service} 
+                        isCreateMode={isCreateMode}
+                        updateService = {(ser) => updateService(index, ser)}/>
                     )
                 })
             }

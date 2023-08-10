@@ -6,7 +6,22 @@ import { vi, enUS } from "date-fns/locale";
 import IconDatePicker from "assets/img/icon/Icon_DatePicker.svg";
 import Select from "react-select";
 
-function ServiceItem({ t, headerTitle }) {
+function ServiceItem({
+  t,
+  headerTitle,
+  service,
+  isCreateMode = false,
+  updateService,
+}) {
+  const OPTIONS = [{ label: "test data", value: "aa" }];
+  const handleChangeValue = (value, key) => {
+    const newService = {
+      ...service,
+      [key]: value,
+    };
+    updateService(newService);
+  };
+
   return (
     <div className="item-contain">
       <div className={"card-header clearfix item-header"}>
@@ -22,15 +37,13 @@ function ServiceItem({ t, headerTitle }) {
                   name="endDate"
                   selectsEnd
                   autoComplete="off"
-                  // selected={reqDetail.endDate ? moment(reqDetail.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
-                  // startDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
-                  // endDate={reqDetail.endDate ? moment(reqDetail.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
-                  // minDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : minDate?.toDate() || null}
-                  // onChange={date => this.setEndDate(date, reqDetail.groupId, reqDetail.groupItem, isLeaveForMother || req[0]?.isShowHintLeaveForMother)}
+                  selected={service.DateUse}
+                  onChange={(date) => handleChangeValue(date, "DateUse")}
                   dateFormat="dd/MM/yyyy"
                   placeholderText={t("Select")}
                   locale={t("locale")}
                   className="form-control input"
+                  disabled={!isCreateMode}
                 />
                 <span className="input-group-addon input-img">
                   <img src={IconDatePicker} alt="Date" />
@@ -46,24 +59,26 @@ function ServiceItem({ t, headerTitle }) {
             {t("UseWelfareType")}
             <Select
               placeholder={t("option")}
-              options={[]}
+              options={OPTIONS}
               isClearable={false}
-              //value={data.workingCondition}
-              //onChange={(e) => handleChangeSelectInputs(e, "workingCondition")}
+              value={service.UseWelfareType}
+              onChange={(e) => handleChangeValue(e, "UseWelfareType")}
               className="input mv-10"
               styles={{ menu: (provided) => ({ ...provided, zIndex: 2 }) }}
+              isDisabled={!isCreateMode}
             />
           </div>
           <div className="col-3">
             {t("UseFor")}
             <Select
               placeholder={t("option")}
-              options={[]}
+              options={OPTIONS}
               isClearable={false}
-              //value={data.workingCondition}
-              //onChange={(e) => handleChangeSelectInputs(e, "workingCondition")}
+              value={service.UseFor}
+              onChange={(e) => handleChangeValue(e, "UseFor")}
               className="input mv-10"
               styles={{ menu: (provided) => ({ ...provided, zIndex: 2 }) }}
+              isDisabled={!isCreateMode}
             />
           </div>
         </div>
@@ -72,26 +87,28 @@ function ServiceItem({ t, headerTitle }) {
           <div className="col-3">
             {t("FeePayment")}
             <input
-                    type="text"
-                    placeholder={t("import")}
-                    //value={data.leaveOfWeek}
-                    //onChange={(e) => handleTextInputChange(e, "leaveOfWeek")}
-                    className="form-control input mv-10 w-100"
-                    name="inputName"
-                    autoComplete="off"
-                  />
+              type="text"
+              placeholder={t("import")}
+              value={service.FeePayment || ""}
+              onChange={(e) => handleChangeValue(e.target.value, "FeePayment")}
+              className="form-control input mv-10 w-100"
+              name="inputName"
+              autoComplete="off"
+              disabled={!isCreateMode}
+            />
           </div>
           <div className="col-3">
             {t("FeeUpgrade")}
             <input
-                    type="text"
-                    placeholder={t("import")}
-                    //value={data.leaveOfWeek}
-                    //onChange={(e) => handleTextInputChange(e, "leaveOfWeek")}
-                    className="form-control input mv-10 w-100"
-                    name="inputName"
-                    autoComplete="off"
-                  />
+              type="text"
+              placeholder={t("import")}
+              value={service.FeeUpgrade || ""}
+              onChange={(e) => handleChangeValue(e.target.value, "FeeUpgrade")}
+              className="form-control input mv-10 w-100"
+              name="inputName"
+              autoComplete="off"
+              disabled={!isCreateMode}
+            />
           </div>
           <div className="col-3">
             {t("ReducePercent")}
