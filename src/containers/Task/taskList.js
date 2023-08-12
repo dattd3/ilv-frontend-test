@@ -76,6 +76,7 @@ class TaskList extends React.Component {
         const queryParams = new URLSearchParams(this.props?.history?.location?.search)
         if (queryParams.has('id')) {
             queryParams.delete('id')
+            queryParams.append('requestTypes', getRequestTypesList(REQUEST_CATEGORIES.CATEGORY_1, false).join(","))
             this.props.history.replace({
                 search: queryParams.toString(),
             })
