@@ -11,7 +11,7 @@ function Resource(props) {
             <div className='title-group'>
                 {t("RegimeInfoBy")} {props?.plName}
             </div>
-            <div className="card border shadow regime-contain">
+            <div className="card border shadow-customize regime-contain">
                 <div className='box table-content'>
                     <table>
                         <thead>

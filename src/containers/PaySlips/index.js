@@ -88,10 +88,10 @@ class PaySlipsComponent extends React.Component {
       <ConfirmPasswordModal show={acessToken == null} onUpdateToken={this.updateToken.bind(this)} />
       <div className="payslips-section">
         <h1 className="content-page-header">{t("PaySlip")}</h1>
-        <div className="card shadow mb-4">
+        <div className="card shadow-customize mb-4">
           <div className="card-body">
             <FormSearchComponent search={this.handleSubmitSearch} />
-            { isSearch && !payslip && <p className="text-danger">{t("NoDataFound")}</p> }
+            { isSearch && !payslip && <p className="text-danger" style={{ marginTop: 15, marginBottom: 0 }}>{t("NoDataFound")}</p> }
           </div>
         </div>
         {

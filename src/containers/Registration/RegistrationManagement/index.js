@@ -36,9 +36,9 @@ const RegistrationManagement = (props) => {
   };
 
   return (
-    <div className="timesheet-section proposal-management">
+    <div className="timesheet-section proposal-management request-management">
       <h1 className="content-page-header">{t('Menu_RequestManage')}</h1>
-      <div className="timesheet-box shadow">
+      <div className="filter-box shadow-customize">
         <div className="row">
           <div className="col-12">
             <div className="title">{t('TypeOfRequest')}</div>

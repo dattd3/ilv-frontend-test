@@ -482,7 +482,7 @@ class MyComponent extends React.Component {
     const isEnableEditEducations = isEnableFunctionByFunctionName(Constants.listFunctionsForPnLACL.editEducation)
     const isEnableEditRelationships = isEnableFunctionByFunctionName(Constants.listFunctionsForPnLACL.editRelationship)
     const isEnableWorkOutsideGroup = currentCompanyCode === Constants.pnlVCode.VinES
-    let defaultTab = getValueParamByQueryString(window.location.search, 'tab') || 'PersonalInformation' 
+    let defaultTab = getValueParamByQueryString(window.location.search, 'tab') || 'PersonalInformation'
 
     const documents = this.state.userDocument.documents;
 
@@ -497,13 +497,13 @@ class MyComponent extends React.Component {
         <Tabs defaultActiveKey={defaultTab} onSelect={(key) => this.updateTabLink(key)}>
           <Tab eventKey="PersonalInformation" title={t("PersonalInformation")} className="tab-main-info">
             <div className="top-button-actions">
-              <a href="/tasks" className="btn btn-info shadow"><i className="far fa-address-card"></i> {t("History")}</a>
+              <a href="/tasks" className="btn btn-info shadow-customize"><i className="far fa-address-card"></i> {t("History")}</a>
               {
-                isEnableEditProfiles ? <span className="btn btn-primary shadow ml-3" onClick={() => this.handleEditInfo("mainInformation")}><i className="fas fa-user-edit"></i>{t("Edit")}</span> : null
+                isEnableEditProfiles ? <span className="btn btn-primary shadow-customize ml-3" onClick={() => this.handleEditInfo("mainInformation")}><i className="fas fa-user-edit"></i>{t("Edit")}</span> : null
               }
             </div>
             <h5 className="content-page-header">{t("PersonalInformation")}</h5>
-            <Container fluid className="info-tab-content shadow main-info">
+            <Container fluid className="info-tab-content shadow-customize main-info">
               {
                 mainInformation.isEditing ?
                 <PersonalInfoEdit isEnableEditEducation={false} isEnableEditMainInfo={true} />
@@ -514,7 +514,7 @@ class MyComponent extends React.Component {
           </Tab>
           <Tab eventKey="Degree" title={t("Degree") + `/` + t("Certificate")} className="tab-education">
             <div className="top-button-actions">
-              <a href="/tasks" className="btn btn-info shadow"><i className="far fa-address-card"></i> {t("History")}</a>
+              <a href="/tasks" className="btn btn-info shadow-customize"><i className="far fa-address-card"></i> {t("History")}</a>
               {
                 isEnableEditEducations ? <span className="btn btn-primary shadow ml-3" onClick={() => this.handleEditInfo("educationInformation")}><i className="fas fa-user-edit"></i>{t("Edit")}</span> : null
               }
@@ -531,7 +531,7 @@ class MyComponent extends React.Component {
           </Tab>
           <Tab eventKey="PersonalRelations" title={t("Family")} className="tab-relationship">
             <div className="top-button-actions">
-              <a href="/tasks" className="btn btn-info shadow"><i className="far fa-address-card"></i> {t("History")}</a>
+              <a href="/tasks" className="btn btn-info shadow-customize"><i className="far fa-address-card"></i> {t("History")}</a>
               {
                 isEnableEditRelationships ? <span className="btn btn-primary shadow ml-3" onClick={() => this.handleEditInfo("relationshipInformation")}><i className="fas fa-user-edit"></i>{t("Edit")}</span> : null
               }
@@ -561,8 +561,8 @@ class MyComponent extends React.Component {
           }
           {
            checkVersionPnLSameAsVinhome(Constants.MODULE.DANHGIA_TAIKI) ? // open for golive1106
-           /*  checkIsExactPnL(Constants.pnlVCode.VinPearl) || checkIsExactPnL(Constants.pnlVCode.MeliaVinpearl) || IS_VINFAST  ?  */
-            // (checkIsExactPnL(Constants.pnlVCode.VinPearl) || checkIsExactPnL(Constants.pnlVCode.MeliaVinpearl)) ? // open for golive1106
+           /*  checkIsExactPnL(Constants.pnlVCode.VinPearl) || checkIsExactPnL(Constants.pnlVCode.MeliaVinpearl) || checkIsExactPnL(Constants.pnlVCode.VinHoliday1) || IS_VINFAST  ?  */
+            // (checkIsExactPnL(Constants.pnlVCode.VinPearl) || checkIsExactPnL(Constants.pnlVCode.MeliaVinpearl) || checkIsExactPnL(Constants.pnlVCode.VinHoliday1)) ? // open for golive1106
               <Tab eventKey="PersonalDocument" title={t("PersonalDocuments")}>
                 <Row >
                   {documents && documents.length > 0 ? <>
@@ -611,7 +611,7 @@ class MyComponent extends React.Component {
                       </div>
                     </Col>
                   </> :
-                    <Container fluid className="info-tab-content shadow" style={{ marginLeft: 15, marginRight: 15 }}>
+                    <Container fluid className="info-tab-content shadow-customize" style={{ marginLeft: 15, marginRight: 15 }}>
                       {t("NoDataFound")}
                     </Container>
                   }

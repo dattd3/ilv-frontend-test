@@ -112,7 +112,7 @@ function NewsOnHome(props) {
                             <div className="top-news">
                                 <div className="row">
                                     <div className="col-md-6 special">
-                                        <div className="top-one">
+                                        <div className="top-one shadow-customize">
                                             <a href={`/news/${convertToSlug(topOne?.title)}/${topOne.id}`} className="link-detail">
                                                 <Image src={topOne?.thumbnail} alt="News" className="thumbnail"
                                                     onError={(e) => {
@@ -134,7 +134,7 @@ function NewsOnHome(props) {
                                         </div>
                                     </div>
                                     <div className="col-md-6 other">
-                                        <div className="top-four">
+                                        <div className="top-four shadow-customize">
                                             {
                                                 topFour.length > 0 ?
                                                     topFour.map((item, index) => {
@@ -163,7 +163,7 @@ function NewsOnHome(props) {
                                     </div>
                                 </div>
                             </div>
-                            <div className="other-news">
+                            <div className="other-news shadow-customize">
                                 <div className="row">
                                     <div className="col-md-12">
                                         <ReactList
