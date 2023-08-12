@@ -9,6 +9,7 @@ import ExcelIcon from "assets/img/excel-icon.svg";
 import { getOperationType } from "containers/Utils/Common";
 import { Button } from "react-bootstrap";
 import NoteModal from "./NoteModal";
+import IconClock from 'assets/img/icon/ic_clock.svg'
 
 const config = getRequestConfigurations();
 
@@ -179,9 +180,9 @@ export default function OTRequestDetailComponent({ data, action }) {
         <div className="mb-30">
           {requestInfo.map((timesheet, index) => (
             <div className="box shadow mb-15" key={index}>
-              <p>
-                <i className="fa fa-clock-o"></i>{" "}
-                <b>
+              <p className="d-flex align-items-center">
+                <img src={IconClock} alt="Clock" className="ic-clock" />
+                <b style={{ marginLeft: 5 }}>
                   {getDayNameFromDate(timesheet.date)}&nbsp;
                   {lang === Constants.LANGUAGE_VI ? t("Day") : null}{" "}
                   {moment(timesheet.date, "YYYYMMDD").format("DD/MM/YYYY")}

@@ -47,7 +47,7 @@ function NewsDetailElement({ match, location }) {
 
         return (
             <>
-            <a className="back-block" href="/" title={t("ComeBack")}><Image src={IconBack} alt="Back" className="ic-back" />{t("ComeBack")}</a>
+            <div className="back-block"><a href="/" title={t("ComeBack")}><Image src={IconBack} alt="Back" className="ic-back" />{t("ComeBack")}</a></div>
             <div className="news-detail-page">
                 {/* {
                     isApp ? null : <nav aria-label="breadcrumb">

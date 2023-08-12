@@ -15,32 +15,45 @@ const VinGroup = ({ evaluationFormDetail, isEdit, currentLocale, errors, handleI
             <div className="list-evaluation">
             {
                 (listEvaluation?.listTarget || []).map((target, i) => {
-                    const isCompleted = evaluationFormDetail.status == evaluation360Status.completed
+                    const isCompleted = evaluationFormDetail.status == evaluation360Status.completed || evaluationFormDetail.status == evaluation360Status.evaluated
                     const isDisableInput = !isEdit || isCompleted
                     return (
                         <div className="evaluation-item" key={i}>
-                            <div dangerouslySetInnerHTML={{
-                                __html: purify.sanitize(target?.metric1 || ''),
-                                }}
-                                className="matrix-info" 
-                            />
+                            {
+                                target?.metric1 !== null && target?.metric1?.trim() !== '' && (
+                                    <div dangerouslySetInnerHTML={{
+                                        __html: purify.sanitize(target?.metric1 || ''),
+                                        }}
+                                        className="matrix-info" 
+                                    />
+                                )
+                            }
+                            {
+                                target?.kpiGroup !== null && target?.kpiGroup?.trim() !== '' && (
+                                    <div dangerouslySetInnerHTML={{
+                                        __html: purify.sanitize(target?.kpiGroup || ''),
+                                        }}
+                                        className="matrix-info font-weight-bold" 
+                                    />
+                                )
+                            }
                             <div dangerouslySetInnerHTML={{
                                 __html: purify.sanitize(`${i + 1}. ${JSON.parse(target?.targetName || '{}')[languageCodeMapping[currentLocale]]}`),
                                 }}
-                                className="title" 
+                                className="title font-weight-normal" 
                             />
                             <div className="score">
                                 <div className="item">
                                     <span className="label">{t("EvaluationScore")}</span>
                                     {
                                         isCompleted
-                                        ? (<div className="score-label">{target?.seftPoint ?? ''}</div>)
+                                        ? (<div className="score-label">{parseInt(target?.seftPoint) === 0 ? 'N/A' : (target?.seftPoint ?? '')}</div>)
                                         : (
                                             <select onChange={(e) => handleInputChange(i, 'seftPoint', e)} value={target?.seftPoint ?? ''} disabled={isDisableInput}>
                                                 <option value=''>{t("Select")}</option>
                                                 {
                                                     (scores || []).map((score, i) => {
-                                                        return <option value={score} key={i}>{score}</option>
+                                                        return <option value={score} key={i}>{score === 0 ? 'N/A' : score}</option>
                                                     })
                                                 }
                                             </select>

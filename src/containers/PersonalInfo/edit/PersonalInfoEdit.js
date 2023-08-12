@@ -8,11 +8,13 @@ import axios from 'axios'
 import _ from 'lodash'
 import moment from 'moment'
 import { withTranslation } from "react-i18next"
-import { getMuleSoftHeaderConfigurations } from "../../../commons/Utils"
+import { getMuleSoftHeaderConfigurations, formatStringByMuleValue } from "../../../commons/Utils"
 import Constants from '../../../commons/Constants'
 import HOCComponent from '../../../components/Common/HOCComponent'
 import LoadingModal from 'components/Common/LoadingModal'
 import { validateFileMimeType, validateTotalFileSize } from '../../../utils/file'
+import IconSend from 'assets/img/icon/Icon_send.svg'
+import IconUpload from 'assets/img/icon/ic_upload_attachment.svg'
 
 const code = localStorage.getItem('employeeNo') || "";
 const fullName = localStorage.getItem('fullName') || "";
@@ -708,7 +710,7 @@ class PersonalInfoEdit extends React.Component {
         if (newMainInfo.Religion || newMainInfo.Birthday || newMainInfo.Nationality || newMainInfo.BirthProvince || newMainInfo.MaritalStatus || newMainInfo.Religion || newMainInfo.Gender) {
           const userDetail = this.state.userDetail;
           let obj = { ...this.objectToSap };
-          obj.actio = [Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl].includes(currentCompanyCode) ? "MOD" : "INS";
+          obj.actio = [Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinHoliday1].includes(currentCompanyCode) ? "MOD" : "INS";
           obj.gbdat = this.prepareBirthday(newMainInfo, userDetail);
           const nationalityAndBirthCountry = this.prepareNationalityAndBirthCountry(newMainInfo, userDetail);
           obj.natio = nationalityAndBirthCountry[1];
@@ -736,7 +738,7 @@ class PersonalInfoEdit extends React.Component {
         if (newMainInfo.BankAccountNumber || newMainInfo.Bank) {
           const userDetail = this.state.userDetail;
           let obj = { ...this.objectToSap };
-          obj.actio = [Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl].includes(currentCompanyCode) ? "MOD" : "INS";
+          obj.actio = [Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinHoliday1].includes(currentCompanyCode) ? "MOD" : "INS";
           obj.bankn = this.getDataSpecificFields(newMainInfo.BankAccountNumber, userDetail.bank_number);
           obj.bankl = this.getDataSpecificFields(newMainInfo.Bank, userDetail.bank_name_id);
           return [obj];
@@ -756,7 +758,8 @@ class PersonalInfoEdit extends React.Component {
         if (newMainInfo.Ethinic) {
           const userDetail = this.state.userDetail;
           let obj = { ...this.objectToSap };
-          obj.actio = [Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl].includes(currentCompanyCode) ? "MOD" : "INS";
+          // obj.actio = [Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinHoliday1].includes(currentCompanyCode) ? "MOD" : "INS";
+          obj.actio = formatStringByMuleValue(data?.update?.userProfileHistoryMainInfo?.OldMainInfo?.Ethinic) === '' ? "INS" : "MOD"
           obj.racky = this.getDataSpecificFields(newMainInfo.Ethinic, userDetail.race_id);
           return [obj];
         }
@@ -785,7 +788,7 @@ class PersonalInfoEdit extends React.Component {
               } else {
                 obj.actio = "MOD";
               }
-              if (![Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl].includes(currentCompanyCode)) {
+              if (![Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinHoliday1].includes(currentCompanyCode)) {
                 obj.actio = "INS";
               }
               obj.subty = "0030";
@@ -795,7 +798,7 @@ class PersonalInfoEdit extends React.Component {
               } else {
                 obj.actio = "MOD";
               }
-              if (![Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl].includes(currentCompanyCode)) {
+              if (![Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinHoliday1].includes(currentCompanyCode)) {
                 obj.actio = "INS";
               }
               obj.subty = "CELL";
@@ -805,7 +808,7 @@ class PersonalInfoEdit extends React.Component {
               } else {
                 obj.actio = "MOD";
               }
-              if (![Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl].includes(currentCompanyCode)) {
+              if (![Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinHoliday1].includes(currentCompanyCode)) {
                 obj.actio = "INS";
               }
               obj.subty = "V002";
@@ -852,7 +855,7 @@ class PersonalInfoEdit extends React.Component {
           if (newMainInfo.District || newMainInfo.Province || newMainInfo.Wards || newMainInfo.StreetName || newMainInfo.Country) {
             let obj = { ...this.objectToSap };
             // obj.actio = "MOD";
-            // if (![Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl].includes(currentCompanyCode)) {
+            // if (![Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinHoliday1].includes(currentCompanyCode)) {
             //   obj.actio = "INS";
             // }
             obj.actio = "INS";
@@ -1001,7 +1004,7 @@ class PersonalInfoEdit extends React.Component {
         obj.isspl = this.resetValueInValid(newMainInfo.PassportPlace) || "";
       } else {
         obj.actio = "MOD";
-        if (![Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl].includes(currentCompanyCode)) {
+        if (![Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinHoliday1].includes(currentCompanyCode)) {
           obj.actio = "INS";
         }
         obj.icnum = this.resetValueInValid(newMainInfo.PassportNumber) || passportIdNo;
@@ -1027,7 +1030,7 @@ class PersonalInfoEdit extends React.Component {
         obj.isspl = this.resetValueInValid(newMainInfo.PersonalIdentifyPlace) || "";
       } else {
         obj.actio = "MOD";
-        if (![Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl].includes(currentCompanyCode)) {
+        if (![Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinHoliday1].includes(currentCompanyCode)) {
           obj.actio = "INS";
         }
         obj.icnum = this.resetValueInValid(newMainInfo.PersonalIdentifyNumber) || personalIdNo;
@@ -1399,9 +1402,9 @@ class PersonalInfoEdit extends React.Component {
           {(errors && !errors.notChange) ? this.error('fileUpload') : null}
 
           <div className="clearfix mb-5 block-action-buttons">
-            <button type="button" className="btn btn-primary float-right ml-3 shadow" onClick={this.handleSendRequest}><i className="fa fa-paper-plane" aria-hidden="true"></i>{t("Send")}</button>
+            <button type="button" className="btn btn-primary float-right ml-3 btn-send-request" onClick={this.handleSendRequest}><img src={IconSend} alt="Send" />{t("Send")}</button>
             <input type="file" hidden accept=".xls, .xlsx, .doc, .docx, .jpg, .png, .pdf" ref={this.inputReference} id="file-upload" name="file-upload[]" onChange={this.fileUploadInputChange.bind(this)} multiple />
-            <button type="button" className="btn btn-light float-right shadow" onClick={this.fileUploadAction.bind(this)}><i className="fas fa-paperclip"></i> {t("AttachmentFile")}</button>
+            <button type="button" className="btn btn-light float-right btn-upload-file" onClick={this.fileUploadAction.bind(this)}><img src={IconUpload} alt="Upload" />{t("AttachmentFile")}</button>
           </div>
         </Form>
       </div>

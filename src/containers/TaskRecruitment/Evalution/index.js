@@ -205,11 +205,9 @@ class EvaluationComponent extends React.Component {
       <ResultModal show={modal.isShowStatusModal} title={modal.modalTitle} message={modal.textContentStatusModal} isSuccess={modal.isSuccess} onHide={e => this.hideModalByStateName('isShowStatusModal')} />
       {this.state.dataResponse ?
       <>
-      <div className="task-section1">
-        <div className="block-title" >
-          <h4 className="title text-uppercase">{t('manager_evaluating_title')}</h4>
-        </div>
-        <div className="candidate-list shadow">
+      <div className="task-section1 job-evaluation-information-management">
+        <h4 className="content-page-header">{t('manager_evaluating_title')}</h4>
+        <div className="candidate-list shadow-customize">
                     <table className="table table-borderless table-hover">
                         <thead>
                             <tr>

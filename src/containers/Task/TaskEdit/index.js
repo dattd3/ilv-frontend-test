@@ -9,16 +9,19 @@ import BusinessTripComponent from '../../Registration/BusinessTrip/BusinessTripC
 import TerminationDetailComponent from '../../Registration/RegistrationEmploymentTermination/RegistrationTerninationEdit'
 import ProposedResignationEdit from '../../Registration/RegistrationEmploymentTermination/ProposedResignationEdit'
 import HOCComponent from '../../../components/Common/HOCComponent'
+import LoadingModal from 'components/Common/LoadingModal'
 
 class TaskEditComponent extends React.Component {
     constructor(props) {
         super();
         this.state = {
-          data: {}
+          data: {},
+          isLoading: false,
         }
     }
 
     componentDidMount() {
+      this.setState({ isLoading: true })
       const taskId = this.props.match.params.id
       const subId = this.props.match.params.childId
         let config = {
@@ -43,13 +46,17 @@ class TaskEditComponent extends React.Component {
               }
           }).catch(error => {
             console.log(error)
-          });
+          }).finally(() => {
+            this.setState({ isLoading: false })
+          })
         }
 
     render() {
-      const {data} = this.state
+      const {data, isLoading} = this.state
       
       return (
+      <>
+      <LoadingModal show={isLoading} />
       <div className="registration-section">
         {data && data.requestTypeId === Constants.LEAVE_OF_ABSENCE ? <LeaveOfAbsenceComponent leaveOfAbsence={data} isEdit={true} taskId={this.props.match.params.id} /> : null}
         {data && data.requestTypeId === Constants.BUSINESS_TRIP ? <BusinessTripComponent businessTrip={data} isEdit={true} taskId={this.props.match.params.id} /> : null}
@@ -58,6 +65,7 @@ class TaskEditComponent extends React.Component {
         {/* {this.state.data.requestTypeId === Constants.IN_OUT_TIME_UPDATE ? <InOutTimeUpdateComponent inOutTimeUpdate={this.state.data}/> : null}
         {this.state.data.requestTypeId === Constants.SUBSTITUTION ? <SubstitutionComponent substitution={this.state.data}/> : null} */}
       </div>
+      </>
       )
     }
   }
