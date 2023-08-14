@@ -317,6 +317,9 @@ class SubstitutionComponent extends React.Component {
       const result = response?.data?.result
       if (result?.code === Constants.API_SUCCESS_CODE) {
         this.showResultModal(t("Successful"), t("RequestSent"), true)
+      } else if (result?.code == Constants.API_ERROR_CODE_WORKING_DAY_LOCKED) {
+        this.setState({ needReload: true })
+        this.showResultModal(t("Notification"), result?.message, false)
       } else {
         this.showResultModal(t("Notification"), result?.message, false)
       }

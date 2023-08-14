@@ -32,6 +32,7 @@ const Constants = {
   //error_code
   API_ERROR_CODE: 1,
   API_ERROR_NOT_FOUND_CODE: "404",
+  API_ERROR_CODE_WORKING_DAY_LOCKED: 2,
 
   // file_type
   PDF_FILE_TYPE: 'pdf',
@@ -95,7 +96,10 @@ const Constants = {
     7: { label: "Rejected", className: 'fail' },
     8: { label: "PendingConsent", className: '' },
     20:{ label: "Consented", className: '' },
-    0: {label: "Waiting", className: ''}
+    0: {label: "Waiting", className: ''},
+    101: { label: "PaidDayLocked", className: 'work-day_locked' },
+    102: { label: "PaidDayLocked", className: 'work-day_locked' },
+    103: { label: "PaidDayLocked", className: 'work-day_locked' },
   },
   //
   mappingActionType : {
