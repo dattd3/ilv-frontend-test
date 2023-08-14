@@ -157,7 +157,7 @@ export default function UseGuideModal({ show, onHide, setShowUseGuideIcon }) {
                       target="_blank"
                       rel="noreferrer"
                       style={
-                        !item.webFileUrlLocale
+                        !item.mobileFileUrlLocale
                           ? { opacity: 0.3, pointerEvents: "none" }
                           : {}
                       }
@@ -172,7 +172,7 @@ export default function UseGuideModal({ show, onHide, setShowUseGuideIcon }) {
                       target="_blank"
                       rel="noreferrer"
                       style={
-                        !item.webFileUrlLocale
+                        !item.mobileVideoUrlLocale
                           ? { opacity: 0.3, pointerEvents: "none" }
                           : {}
                       }
