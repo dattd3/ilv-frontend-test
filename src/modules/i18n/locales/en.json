@@ -1890,5 +1890,6 @@
   "Warning": "Warning",
   "EffectiveTime": "Effective time",
   "InterDayShiftNotice": "You are currently change in-out for date {{day}} shift",
-  "PaidDayLocked": "Workday locked"
+  "PaidDayLocked": "Workday locked",
+  "Copied": "Copied"
 }
