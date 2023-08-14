@@ -782,6 +782,9 @@ class LeaveOfAbsenceComponent extends React.Component {
             if (result?.code === Constants.API_SUCCESS_CODE) {
                 this.showStatusModal(t("Successful"), t("RequestSent"), true)
                 this.setState({ needReload: true })
+            } else if (result?.code == Constants.API_ERROR_CODE_WORKING_DAY_LOCKED) {
+                this.setState({ needReload: true })
+                this.showStatusModal(t("Notification"), response?.data?.result?.message, false)
             } else {
                 this.setState({ needReload: false })
                 this.showStatusModal(t("Notification"), response?.data?.result?.message, false)
