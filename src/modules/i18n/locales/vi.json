@@ -1907,5 +1907,6 @@
   "Warning": "Lưu ý",
   "EffectiveTime": "Thời gian hiệu lực",
   "InterDayShiftNotice": "Bạn đang giải trình công cho phân ca ngày {{day}}",
-  "PaidDayLocked": "Đã khóa công"
+  "PaidDayLocked": "Đã khóa công",
+  "Copied": "Đã sao chép"
 }

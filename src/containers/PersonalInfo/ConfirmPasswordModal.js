@@ -26,7 +26,7 @@ class ConfirmPasswordModal extends React.Component {
 
     checkPassword() {
         const { disabledSubmitButton, password } = this.state
-        if (disabledSubmitButton) {
+        if (disabledSubmitButton || password === '') {
             return
         }
 
@@ -79,7 +79,7 @@ class ConfirmPasswordModal extends React.Component {
         const isCancel = true
 
         return (
-            <Modal className='modal-confirm-password' centered show={show} onHide={onHide}>
+            <Modal className='modal-confirm-password' centered backdrop="static" show={show} onHide={onHide}>
                 <Modal.Header className='modal-confirm-password__header'>
                     <p className='modal-confirm-password__title font-weight-bold'>{t("EnterPasswordToViewPayslip")}</p>
                     <img

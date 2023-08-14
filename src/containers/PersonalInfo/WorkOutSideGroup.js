@@ -7,6 +7,7 @@ import { extendMoment } from "moment-range"
 import { omit } from "lodash"
 import { useGuardStore } from 'modules/index'
 import { getValueParamByQueryString, getMuleSoftHeaderConfigurations, getRequestConfigurations, formatStringByMuleValue } from "commons/Utils"
+import map from "containers/map.config"
 import WorkOutSideGroupItem from './WorkOutSideGroupItem'
 import ActionButtons from "./ActionButtons"
 import ConfirmPasswordModal from "./ConfirmPasswordModal"
@@ -74,6 +75,7 @@ function WorkOutSideGroup(props) {
                 })
                 SetExperiences(data)
                 SetExperienceOriginal(data)
+                SetIsShowConfirmPasswordModal(!accessToken && tabActive === 'WorkOutsideGroup' && data?.length > 0)
             } catch (e) {
                 SetExperiences([])
                 SetExperienceOriginal([])
@@ -92,7 +94,7 @@ function WorkOutSideGroup(props) {
             if (accessToken) {
                 updateToken(accessToken)
             } else {
-                fetchData()   
+                fetchData()
             }
         }
     }, [tabActive])
@@ -240,11 +242,11 @@ function WorkOutSideGroup(props) {
             SetHiddenViewSalary(!hiddenViewSalary)
         }
 
-        let isShow = false
-        if (!accessToken && tabActive == 'WorkOutsideGroup') {
-            isShow = true
-        }
-        SetIsShowConfirmPasswordModal(isShow)
+        // let isShow = false
+        // if (!accessToken && tabActive == 'WorkOutsideGroup') {
+        //     isShow = true
+        // }
+        // SetIsShowConfirmPasswordModal(isShow)
     }
 
     const handleCanUpdate = () => {
@@ -266,6 +268,7 @@ function WorkOutSideGroup(props) {
     }
 
     const updateToken = async (token) => {
+        SetIsShowLoading(true)
         SetAccessToken(token)
         try {
             const config = getRequestConfigurations()
@@ -281,36 +284,38 @@ function WorkOutSideGroup(props) {
             if (response && response?.data) {
                 const result = response?.data?.result
                 if (result?.code == Constants.API_SUCCESS_CODE) {
-                    const experienceClone = [...(experiences || [])]
-                    const listIDs = (experienceClone || []).filter(item => item?.ID).map(item => item?.ID?.toString())
-                    const experienceOldCreateNew = (experienceClone || []).filter(item => item?.isAddNew)
-                    const data = (response?.data?.data || [])
-                    .filter(item => listIDs?.includes(item?.ID))
-                    .map((item, itemIndex) => {
-                        let experienceItemOld = experienceClone[itemIndex] || {}
-                        for (const key in item) {
-                            if (['ID', 'PERNR'].includes(key)) {
-                                item[key] = item[key]
-                            } else {
-                                item[key] = formatValue(item[key], valueType.other)
-                                if (key.startsWith('BEG') || key.startsWith('END')) {
-                                    item[key] = formatValue(item[key], valueType.date)
-                                }
-                            }
-                            if (experienceItemOld[`${key}_${prefixUpdating}`] !== undefined) {
-                                item[`${key}_${prefixUpdating}`] = experienceItemOld[`${key}_${prefixUpdating}`]
-                            }
-                        }
-                        return item
-                    })
-                    SetExperiences([...data, ...experienceOldCreateNew])
-                    SetHiddenViewSalary(false)
+                    // const experienceClone = [...(experiences || [])]
+                    // const listIDs = (experienceClone || []).filter(item => item?.ID).map(item => item?.ID?.toString())
+                    // const experienceOldCreateNew = (experienceClone || []).filter(item => item?.isAddNew)
+                    // const data = (response?.data?.data || [])
+                    // .filter(item => listIDs?.includes(item?.ID))
+                    // .map((item, itemIndex) => {
+                    //     let experienceItemOld = experienceClone[itemIndex] || {}
+                    //     for (const key in item) {
+                    //         if (['ID', 'PERNR'].includes(key)) {
+                    //             item[key] = item[key]
+                    //         } else {
+                    //             item[key] = formatValue(item[key], valueType.other)
+                    //             if (key.startsWith('BEG') || key.startsWith('END')) {
+                    //                 item[key] = formatValue(item[key], valueType.date)
+                    //             }
+                    //         }
+                    //         if (experienceItemOld[`${key}_${prefixUpdating}`] !== undefined) {
+                    //             item[`${key}_${prefixUpdating}`] = experienceItemOld[`${key}_${prefixUpdating}`]
+                    //         }
+                    //     }
+                    //     return item
+                    // })
+                    // SetExperiences([...data, ...experienceOldCreateNew])
+
+                    SetExperiences(response?.data?.data || [])
+                    // SetHiddenViewSalary(false)
                 }
             }
         } catch (error) {
 
         } finally {
-
+            SetIsShowLoading(false)
         }
     }
 
@@ -335,7 +340,7 @@ function WorkOutSideGroup(props) {
 
     const onHideConfirmPasswordModal = (isCancel) => {
         if (isCancel) {
-            SetHiddenViewSalary(true)
+            window.location.href = map.Root
         }
         SetIsShowConfirmPasswordModal(false)
     }
@@ -593,7 +598,7 @@ function WorkOutSideGroup(props) {
         <div className="work-outside-group">
             <div className="top-button-actions">
                 <a href="/tasks" className="btn btn-info shadow-customize"><i className="far fa-address-card"></i> {t("History")}</a>
-                { isEnableEditWorkOutsideGroup && <span className="btn btn-primary shadow ml-3" onClick={handleCanUpdate}><i className="fas fa-user-edit"></i>{t("Edit")}</span> }
+                { isEnableEditWorkOutsideGroup && <span className="btn btn-primary shadow-customize ml-3" onClick={handleCanUpdate}><i className="fas fa-user-edit"></i>{t("Edit")}</span> }
             </div>
             <h5 className="content-page-header text-uppercase">{t("WorkingProcessOutSideGroup")}</h5>
             <div className="container-fluid info-tab-content shadow work-outside-group">
