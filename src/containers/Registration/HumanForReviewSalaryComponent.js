@@ -279,7 +279,7 @@ class HumanForReviewSalaryComponent extends React.Component {
           </div>
         )} */}
         {isAppraiserNote && (
-          <div className="row business-type">
+          <div className="row business-type" style={{ marginTop: 10 }}>
             <span className="col-12 text-info smaller">
               * {t('NoteSelectApproverAppraiser')}{' '}
               <b>

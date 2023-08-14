@@ -75,7 +75,7 @@ function JobDescriptionPage() {
         </button>
       </div>
       <div className="jd-page pt-4" id="id-jd-page">
-        <h5 className="font-weight-bold text-uppercase">
+        <h5 className="content-page-header">
           I. {t('GeneralInfo')}
         </h5>
         <div className="jd-container mt-4 mb-4">
@@ -107,7 +107,7 @@ function JobDescriptionPage() {
           })}
         </div>
 
-        <h5 className="font-weight-bold text-uppercase">
+        <h5 className="content-page-header">
           II. {t('Requirement')}
         </h5>
         <div className="jd-container mt-2 mb-4">
@@ -137,7 +137,7 @@ function JobDescriptionPage() {
           </table>
         </div>
 
-        <h5 className="font-weight-bold text-uppercase">
+        <h5 className="content-page-header">
           III. {t('JobDescription')}
         </h5>
         <div className="jd-container mt-2 mb-4">
@@ -167,7 +167,7 @@ function JobDescriptionPage() {
           </table>
         </div>
 
-        <div className="jd-container mb-5 pl-5 pr-5">
+        <div className="jd-container pl-5 pr-5">
           <div className="jd-approver">
             <div className="jd-approver-item">
               <div className="jd-approver-content">

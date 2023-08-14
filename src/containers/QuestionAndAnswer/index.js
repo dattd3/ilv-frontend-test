@@ -138,7 +138,7 @@ class MyComponent extends React.Component {
 
     if (!staffHandbookLink) {
       return (
-        <a href='#' target='_self' className="btn btn-light float-left shadow">{linkName}</a>
+        <a href='#' target='_self' className="btn btn-light float-left shadow-customize">{linkName}</a>
       )
     }
 
@@ -147,12 +147,12 @@ class MyComponent extends React.Component {
 
     if (officeExtensionFile.includes(extensionStaffHandbook)) {
       return (
-        <a href={`https://view.officeapps.live.com/op/view.aspx?src=${staffHandbookLink}`} target='_blank' className="btn btn-light float-left shadow">{linkName}</a>
+        <a href={`https://view.officeapps.live.com/op/view.aspx?src=${staffHandbookLink}`} target='_blank' className="btn btn-light float-left shadow-customize">{linkName}</a>
       )
     }
 
     return (
-      <a href={staffHandbookLink} target='_blank' className="btn btn-light float-left shadow">{linkName}</a>
+      <a href={staffHandbookLink} target='_blank' className="btn btn-light float-left shadow-customize">{linkName}</a>
     )
   }
 
@@ -208,7 +208,7 @@ class MyComponent extends React.Component {
             (
               (categories && categories.length && commonTicketListFilter && commonTicketListFilter.length) ? categories.map((category, index) => {
                 let commonticketFiler = this.filterCommonTicket(commonTicketListFilter, category.id)
-                return (commonticketFiler && commonticketFiler.length > 0) ? <div key={index} className="mb-2 shadow border-radius-035">
+                return (commonticketFiler && commonticketFiler.length > 0) ? <div key={index} className="shadow-customize group-item">
                   <CommonQuestionComponent questions={commonticketFiler} categoryName={category.name} />
                 </div>
                   : null
