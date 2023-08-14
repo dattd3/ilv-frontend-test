@@ -122,7 +122,7 @@
         padding: 15px;
         border: 0;
         background-color: #fff;
-        border-radius: 10px;
+        border-radius: 4px;
         margin-bottom: 30px;
         .note {
             padding: 0 8px;
@@ -190,7 +190,7 @@
 
     .education {
         .item {
-            border: 1px solid #707070;
+            border: 1px solid #DEE2E6;
             padding: 15px 15px 0 15px;
             margin-bottom: 15px;
             .info-value {
@@ -337,8 +337,6 @@
             position: absolute;
             top: 6px;
             right: 7px;
-            width: 24px;
-            height: 24px;
         }
         i {
             font-size: 24px;
@@ -356,7 +354,7 @@
             }
             .input-img {
                 position: absolute;
-                top: 10px;
+                top: 7px;
                 left: 272px;
             }
             i {

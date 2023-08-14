@@ -54,6 +54,7 @@
 
 .payslips-section {
     margin-top: 10px;
+    font-size: 14px;
     .clear {
         clear: both;
     }
@@ -75,13 +76,17 @@
                 padding-top: 5px;
                 padding-bottom: 5px;
             }
-    
+            .form-group {
+                margin-bottom: 0;
+            }
             .btn-submit {
                 width: 100%;
                 background: #F9C20A;
                 border: 1px solid #F9C20A;
                 color: #FFFFFF;
                 outline: none;
+                font-size: inherit;
+                height: 38px;
             }
         }
     }

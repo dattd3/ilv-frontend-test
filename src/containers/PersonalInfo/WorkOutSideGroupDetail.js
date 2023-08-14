@@ -116,6 +116,7 @@ const WorkOutSideGroupDetail = (props) => {
     }
 
     const updateToken = async (token) => {
+        SetIsShowLoading(true)
         SetAccessToken(token)
         try {
             const config = getRequestConfigurations()
@@ -138,7 +139,7 @@ const WorkOutSideGroupDetail = (props) => {
         } catch (error) {
 
         } finally {
-
+            SetIsShowLoading(false)
         }
     }
 

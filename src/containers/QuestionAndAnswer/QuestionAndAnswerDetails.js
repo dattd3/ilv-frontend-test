@@ -292,8 +292,8 @@ class QuestionAndAnswerDetails extends React.Component {
           />
           <div className="personal-info qna-detail-page">
             <div className="clearfix edit-button action-buttons mb-2">
-              <span type="button" className="btn btn-light float-left shadow pl-4 pr-4 ml-0" onClick={() => this.showSubmitModal(true)}>{t("CreateQuestions")}</span>
-              <span type="button" className="btn btn-light float-left shadow" onClick={() => this.showHistoryModal(true)}>{t("HistoryAnswer")}</span>
+              <span type="button" className="btn btn-light float-left shadow-customize pl-4 pr-4 ml-0" onClick={() => this.showSubmitModal(true)}>{t("CreateQuestions")}</span>
+              <span type="button" className="btn btn-light float-left shadow-customize" onClick={() => this.showHistoryModal(true)}>{t("HistoryAnswer")}</span>
             </div>
             <div className="wrap-header">
               <h1 className="content-page-header">{t("QuestionAndAnswer")}</h1>

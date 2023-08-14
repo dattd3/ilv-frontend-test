@@ -182,8 +182,9 @@
                         .row-customize {
                             padding: 0 5px;
                             display: flex;
-                            height: 50px;
+                            min-height: 50px;
                             align-items: center;
+                            flex-wrap: wrap;
                             .col-customize {
                                 flex: 0 0 50%;
                                 max-width: 50%;
@@ -981,10 +982,14 @@
                 font-size: inherit;
             }
         }
-        &.shift-change-section {
+        &.shift-change-section-detail {
             .date-info-edit {
                 padding-left: 0;
                 padding-right: 0;
+            }
+            .box-time {
+                border-radius: 4px;
+                border-color: #DEE2E6;
             }
         }
         .detail {
@@ -1205,7 +1210,23 @@
         border: 1px solid #d1d3e2;
         border-radius: 4px;
         margin-top: 15px;
-        
+        &.editing {
+            padding-top: 15px;
+            padding-bottom: 15px;
+            .wrap-date-time {
+                padding-left: 15px;
+                padding-right: 15px;
+                .input-container {
+                    position: relative;
+                    .react-datepicker-wrapper [class$=-container] {
+                        margin-top: 0;
+                        .input {
+                            height: 38px;
+                        }
+                    }
+                }
+            }
+        }
     }
     .btn-save{
         background-color: #05BD29;
@@ -1706,6 +1727,10 @@
                 margin-left: 6px;
             }
         }
+        .box-time {
+            border-radius: 4px;
+            border: 1px solid #DEE2E6;
+        }
     }
     &.request-registration {
         .nav-tabs {
@@ -1728,7 +1753,7 @@
             }
         }
         .time-area {
-            padding-top: 15px;
+            padding-top: 25px;
             .react-datepicker-wrapper {
                 [class$=-container] {
                     margin-top: 0;

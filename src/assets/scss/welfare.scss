@@ -1,4 +1,25 @@
 .internal-welfare {
+  font-size: 14px;
+  .button-block {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    margin-bottom: 15px;
+    .btn {
+      font-size: inherit;
+      height: 38px;
+      border-radius: 4px;
+      &.btn-download {
+        padding: 0 20px;
+        cursor: pointer;
+      }
+    }
+  }
+  .resource {
+    table {
+      font-size: inherit !important;
+    }
+  }
   .color-red {
     color: red !important;
   }
@@ -16,7 +37,7 @@
   }
   .regime-contain {
     margin-top: 15px;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
     padding: 20px;
 
     .download-contain {
@@ -144,6 +165,15 @@
   }
   .notice {
     font-style: italic;
+    & > div {
+      margin-bottom: 6px;
+      &:first-child {
+        margin-bottom: 10px;
+      }
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
   }
 }
 

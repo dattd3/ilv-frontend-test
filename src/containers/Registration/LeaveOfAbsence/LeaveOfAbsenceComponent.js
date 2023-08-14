@@ -16,7 +16,8 @@ import { withTranslation } from "react-i18next";
 import { getValueParamByQueryString, getMuleSoftHeaderConfigurations, getRequestConfigurations, getRegistrationMinDateByConditions, isValidDateRequest, isEnableFunctionByFunctionName } from "../../../commons/Utils"
 import NoteModal from '../NoteModal'
 import { checkIsExactPnL } from '../../../commons/commonFunctions';
-import { absenceRequestTypes, PN03List, MATERNITY_LEAVE_KEY, MARRIAGE_FUNERAL_LEAVE_KEY, MOTHER_LEAVE_KEY, FOREIGN_SICK_LEAVE, ANNUAL_LEAVE_KEY, ADVANCE_ABSENCE_LEAVE_KEY, COMPENSATORY_LEAVE_KEY, VIN_UNI_SICK_LEAVE } from "../../Task/Constants"
+import { absenceRequestTypes, PN03List, MATERNITY_LEAVE_KEY, MARRIAGE_FUNERAL_LEAVE_KEY, MOTHER_LEAVE_KEY, FOREIGN_SICK_LEAVE, ANNUAL_LEAVE_KEY, ADVANCE_ABSENCE_LEAVE_KEY, COMPENSATORY_LEAVE_KEY, 
+    VIN_UNI_SICK_LEAVE, VIN_SCHOOL_SICK_LEAVE } from "../../Task/Constants"
 import IconDatePicker from 'assets/img/icon/Icon_DatePicker.svg'
 import IconClock from 'assets/img/icon/ic_clock.svg'
 
@@ -528,19 +529,6 @@ class LeaveOfAbsenceComponent extends React.Component {
         if (name === "absenceType") {
             const check = value.value === MOTHER_LEAVE_KEY
 
-            // Check if NNN => Not combine with other types
-            if (requestInfo?.filter(item => !!item?.absenceType?.value)?.length > 1 ) {
-              const isHasForeignSickLeave = requestInfo.some(item => item.absenceType?.value === FOREIGN_SICK_LEAVE);
-              if ((isHasForeignSickLeave && value.value !== FOREIGN_SICK_LEAVE) || (!isHasForeignSickLeave && value.value === FOREIGN_SICK_LEAVE)) {
-                return this.setState({
-                  isShowStatusModal: true,
-                  isSuccess: false,
-                  titleModal: t("Warning"),
-                  messageModal: t("ForeignLeaveWarningText"),
-                  needReload: false
-                })
-              }
-            }
             newRequestInfo = requestInfo.map(item => {
                 return item.groupId === groupId ? {
                     ...item,
@@ -552,6 +540,19 @@ class LeaveOfAbsenceComponent extends React.Component {
                 }
                 : {...item}
             })
+
+            // Check if NNN => Not combine with other types
+            if (newRequestInfo?.length > 1 ) {
+              if (newRequestInfo?.some((item => item.absenceType?.value === FOREIGN_SICK_LEAVE)) && newRequestInfo?.some((item => item.absenceType?.value && item.absenceType?.value !== FOREIGN_SICK_LEAVE))) {
+                return this.setState({
+                  isShowStatusModal: true,
+                  isSuccess: false,
+                  titleModal: t("Warning"),
+                  messageModal: t("ForeignLeaveWarningText"),
+                  needReload: false
+                })
+              }
+            }
         } else if (name === "funeralWeddingInfo") {
             newRequestInfo = requestInfo.map(item => {
                 let errors = item.errors
@@ -969,6 +970,10 @@ class LeaveOfAbsenceComponent extends React.Component {
             absenceRequestTypesPrepare = (absenceRequestTypesPrepare || []).filter(item => item?.value !== VIN_UNI_SICK_LEAVE)
         }
 
+        if (currentCompanyCode !== Constants.pnlVCode.VinSchool) {
+            absenceRequestTypesPrepare = (absenceRequestTypesPrepare || []).filter(item => item?.value !== VIN_SCHOOL_SICK_LEAVE)
+        }
+
         const PN03ListPrepare = PN03List.map(item => ({...item, label: t(item.label)}))
         const {
             requestInfo,
@@ -1042,10 +1047,13 @@ class LeaveOfAbsenceComponent extends React.Component {
                                 (registeredInformation || []).map((ri, riIndex) => {
                                     let  totalTimeRegistered = ri?.isAllDay ? `${ri?.days || 0} ${t('DayUnit')}` : `${ri?.hours || 0} ${t('HourUnit')}`
                                     let isForeignSickLeave = ri?.absenceType?.value === FOREIGN_SICK_LEAVE
+                                    let isForeignSickLeaveForVinUni = ri?.absenceType?.value === VIN_UNI_SICK_LEAVE
+                                    let isForeignSickLeaveForVSC = ri?.absenceType?.value === VIN_SCHOOL_SICK_LEAVE
+
                                     return (
                                         <div className='item' key={`old-request-info-${riIndex}`}>
                                             {
-                                                (isForeignSickLeave || ri?.absenceType?.value === VIN_UNI_SICK_LEAVE) ? (
+                                                (isForeignSickLeave || isForeignSickLeaveForVinUni || isForeignSickLeaveForVSC) ? (
                                                     <>
                                                         <div className='row'>
                                                             <div className='col-md-4'>
@@ -1080,10 +1088,16 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                                         <div className='d-flex align-items-center value'>{`${Number(annualLeaveSummary?.SICK_LEA_EXPAT || 0).toFixed(3)} ${this.formatDayUnitByValue(annualLeaveSummary?.SICK_LEA_EXPAT || 0)}` }</div>
                                                                     </div>
                                                                 )
-                                                                : (
+                                                                : isForeignSickLeaveForVinUni ? (
                                                                     <div className='col-md-4'>
                                                                         <label>{t('SickLeaveFundForVinUni')}</label>
                                                                         <div className='d-flex align-items-center value'>{`${Number(annualLeaveSummary?.SICK_LEA_VUNI || 0).toFixed(3)} ${this.formatDayUnitByValue(annualLeaveSummary?.SICK_LEA_VUNI || 0)}` }</div>
+                                                                    </div>
+                                                                )
+                                                                : (
+                                                                    <div className='col-md-4'>
+                                                                        <label>{t('SickLeaveFundForVinSchool')}</label>
+                                                                        <div className='d-flex align-items-center value'>{`${Number(annualLeaveSummary?.SICK_LEA_VSC || 0).toFixed(3)} ${this.formatDayUnitByValue(annualLeaveSummary?.SICK_LEA_VSC || 0)}` }</div>
                                                                     </div>
                                                                 )
                                                             }
@@ -1148,6 +1162,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                         }
                     })
 
+                    let isLeaveForMother = req[0]?.absenceType?.value === MOTHER_LEAVE_KEY
                     return (
                         <div className="box shadow position-relative" key={index}>
                             { isEdit && <div className='text-uppercase font-weight-bold box-title'>Thông tin điều chỉnh đăng ký nghỉ</div> }
@@ -1204,13 +1219,21 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                 </>
                                             )
                                         }
-                                        { req[0].isShowHintLeaveForMother && <p className="message-danger"><i className="text-danger">* {t('AllowRegisterFor1Hour')}</i></p> }
+                                        {
+                                            req[0]?.absenceType?.value === VIN_SCHOOL_SICK_LEAVE && (
+                                                <>
+                                                    <p className="title">{t("SickLeaveFundForVinSchool")}</p>
+                                                    <input type="text" className="form-control" style={{ height: 38, borderRadius: 4, padding: '0 15px' }} value={`${Number(annualLeaveSummary?.SICK_LEA_VSC || 0).toFixed(3)} ${this.formatDayUnitByValue(annualLeaveSummary?.SICK_LEA_VSC || 0)}`} disabled />
+                                                </>
+                                            )
+                                        }
+                                        { (req[0]?.isShowHintLeaveForMother || isLeaveForMother) && <p className="message-danger"><i className="text-danger">* {t('AllowRegisterFor1Hour')}</i></p> }
                                     </div>
                                 </div>
                                 <div className="row">
                                     <div className="col-lg-8 col-xl-8">
                                         {req.map((reqDetail, indexDetail) => {
-                                            return <div className="time-area" key={index + indexDetail}>
+                                            return <div className={`time-area ${isEdit ? 'editing' : ''}`} key={index + indexDetail}>
                                                 {
                                                     !req[0].isAllDay ?
                                                         <div className="all-day-area">
@@ -1222,7 +1245,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                         : null
                                                 }
                                                 {
-                                                    req[0].isShowHintLeaveForMother ?
+                                                    (req[0]?.isShowHintLeaveForMother || isLeaveForMother) ?
                                                         (
                                                             <div className="row wrap-date-time">
                                                                 <div className="col-lg-12 col-xl-6 col-first">
@@ -1293,7 +1316,8 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                                                         startDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
                                                                                         endDate={reqDetail.endDate ? moment(reqDetail.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
                                                                                         minDate={minDate ? minDate?.toDate() : reqDetail.endDate ? this.addDays(reqDetail.endDate, -31) : null}
-                                                                                        onChange={date => this.setStartDate(date, reqDetail.groupId, reqDetail.groupItem, req[0].isShowHintLeaveForMother)}
+                                                                                        maxDate={reqDetail?.endDate ? moment(reqDetail?.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+                                                                                        onChange={date => this.setStartDate(date, reqDetail.groupId, reqDetail.groupItem, isLeaveForMother || req[0]?.isShowHintLeaveForMother)}
                                                                                         dateFormat="dd/MM/yyyy"
                                                                                         placeholderText={t('Select')}
                                                                                         locale={t("locale")}
@@ -1316,7 +1340,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                                                         endDate={reqDetail.endDate ? moment(reqDetail.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
                                                                                         minDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : minDate ? minDate?.toDate() : this.getMinDate()}
                                                                                         maxDate={reqDetail.startDate ? this.addDays(reqDetail.startDate, 31) : null}
-                                                                                        onChange={date => this.setEndDate(date, reqDetail.groupId, reqDetail.groupItem, req[0].isShowHintLeaveForMother)}
+                                                                                        onChange={date => this.setEndDate(date, reqDetail.groupId, reqDetail.groupItem, isLeaveForMother || req[0]?.isShowHintLeaveForMother)}
                                                                                         dateFormat="dd/MM/yyyy"
                                                                                         placeholderText={t('Select')}
                                                                                         locale={t("locale")}
@@ -1347,7 +1371,8 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                                                         startDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
                                                                                         endDate={reqDetail.endDate ? moment(reqDetail.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
                                                                                         minDate={minDate?.toDate() || null}
-                                                                                        onChange={date => this.setStartDate(date, reqDetail.groupId, reqDetail.groupItem, req[0].isShowHintLeaveForMother)}
+                                                                                        maxDate={reqDetail?.endDate ? moment(reqDetail?.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
+                                                                                        onChange={date => this.setStartDate(date, reqDetail.groupId, reqDetail.groupItem, isLeaveForMother || req[0]?.isShowHintLeaveForMother)}
                                                                                         dateFormat="dd/MM/yyyy"
                                                                                         placeholderText={t('Select')}
                                                                                         locale={t("locale")}
@@ -1396,7 +1421,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                                                         startDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
                                                                                         endDate={reqDetail.endDate ? moment(reqDetail.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
                                                                                         minDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : minDate?.toDate() || null}
-                                                                                        onChange={date => this.setEndDate(date, reqDetail.groupId, reqDetail.groupItem, req[0].isShowHintLeaveForMother)}
+                                                                                        onChange={date => this.setEndDate(date, reqDetail.groupId, reqDetail.groupItem, isLeaveForMother || req[0]?.isShowHintLeaveForMother)}
                                                                                         dateFormat="dd/MM/yyyy"
                                                                                         placeholderText={t('Select')}
                                                                                         locale={t("locale")}
