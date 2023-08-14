@@ -463,7 +463,6 @@
     padding: 9px 0;
     font-family: inherit;
     font-size: 14px;
-    letter-spacing: 1px;
     margin-top: 15px;
   }
 
@@ -3242,6 +3241,33 @@ span.badge-notification[data-badge]::after {
       margin-bottom: 0;
     }
   }
+  .group-item {
+    border-radius: 4px;
+    margin-bottom: 20px;
+    .collapse {
+      .card-body {
+        background: #FFFFFF;
+        border-bottom-left-radius: 4px;
+        border-bottom-right-radius: 4px;
+        .info-tab-content {
+          margin-bottom: 10px;
+          box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+          &:last-child {
+            margin-bottom: 0;
+          }
+        }
+      }
+    }
+    .accordion {
+      .card-header {
+        &:first-child {
+          border-top-left-radius: 4px;
+          border-top-right-radius: 4px;
+          border: 1px solid rgba(0,0,0,.125);
+        }
+      }
+    }
+  }
 }
 .qna-detail-page {
   font-size: 14px;
@@ -3872,6 +3898,8 @@ span.badge-notification[data-badge]::after {
     .modal-content {
       .modal-header {
         background: #FFFFFF;
+        border-top-left-radius: 4px;
+        border-top-right-radius: 4px;
         .close {
           &:focus {
             outline: none;
@@ -3884,8 +3912,8 @@ span.badge-notification[data-badge]::after {
         }
       }
       .modal-body {
-        border-bottom-left-radius: 0.6rem;
-        border-bottom-right-radius: 0.6rem;
+        border-bottom-left-radius: 4px;
+        border-bottom-right-radius: 4px;
         padding: 0.5rem 2rem 1rem 2rem;
         p {
           line-height: 1.3;
@@ -4243,7 +4271,6 @@ span.badge-notification[data-badge]::after {
       .top-one {
         background: #FFFFFF;
         border-radius: 10px;
-        box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
         .link-detail {
           display: block;
           color: #000000;
@@ -4311,7 +4338,6 @@ span.badge-notification[data-badge]::after {
         justify-content: space-between;
         background: #FFFFFF;
         border-radius: 10px;
-        box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
         padding: 20px;
       }
     }
@@ -4363,7 +4389,6 @@ span.badge-notification[data-badge]::after {
     padding: 10px 0;
     border-radius: 10px;
     background: #FFFFFF;
-    box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
     margin-bottom: 1.5rem;
     .item {
       margin-bottom: 0;
@@ -4422,15 +4447,18 @@ span.badge-notification[data-badge]::after {
   }
 }
 .back-block {
-  color: #000000;
   background: #FFFFFF;
   display: flex;
   align-items: center;
-  padding: 10px;
+  padding: 10px 15px;
   margin-bottom: 15px;
+  a {
+    color: #000000;
+  }
   .ic-back {
     height: 12px;
-    margin-right: 6px;
+    margin-right: 8px;
+    margin-top: -2px;
   }
 }
 .news-detail-page {
@@ -4615,8 +4643,8 @@ span.badge-notification[data-badge]::after {
 .scroll-custom {
   overflow-y: auto;
   overflow-x: hidden;
-  height: 85vh;
-  border-radius: 5px;
+  height: calc(100vh - 71px);
+  // border-radius: 5px;
   // &::-webkit-scrollbar {
   //     width: 10px;
   // }

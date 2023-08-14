@@ -1898,5 +1898,11 @@
   "ForeignLeaveWarningText": "Note: Expat sick leave can't combine other types of leave in the same request",
   "Warning": "Warning",
   "EffectiveTime": "Effective time",
-  "InterDayShiftNotice": "You are currently change in-out for date {{day}} shift"
+  "InterDayShiftNotice": "You are currently change in-out for date {{day}} shift",
+  "Copied": "Copied",
+  "vinai_excellent": "OutStanding",
+  "vinai_good": "Exceed Expectation",
+  "vinai_medium": "Meet Expectation",
+  "vinai_normal": "Need Improvement",
+  "vinai_bad": "Unsatisfactory"
 }
