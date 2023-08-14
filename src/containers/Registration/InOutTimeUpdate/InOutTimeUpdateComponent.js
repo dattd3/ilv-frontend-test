@@ -288,6 +288,9 @@ class InOutTimeUpdateComponent extends React.Component {
       const result = response?.data?.result
       if (result?.code === Constants.API_SUCCESS_CODE) {
         this.showStatusModal(t("Successful"), t("RequestSent"), true)
+      } else if (result?.code == Constants.API_ERROR_CODE_WORKING_DAY_LOCKED) {
+        this.setState({ needReload: true })
+        this.showStatusModal(t("Notification"), result?.message, false)
       } else {
         this.showStatusModal(t("Notification"), result?.message, false)
       }
