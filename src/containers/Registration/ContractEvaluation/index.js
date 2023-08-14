@@ -1479,7 +1479,7 @@ renderEvalution = (name, data, isDisable) => {
           onHide={this.onHideModalConfirm}
         />
         <LoadingModal show={loading}/>
-      <div className="leave-of-absence evalution">
+      <div className="leave-of-absence evalution evaluate-contract-renewal">
         <div className="eval-heading">
             {t('evaluation_title')} 
         </div>
@@ -1487,7 +1487,7 @@ renderEvalution = (name, data, isDisable) => {
         <div className="sub-heading">
           {showComponent.employeeSide ? '' : t('fill_evaluation_note')}
         </div>
-        <h5>{t('personal_informations')}</h5>
+        <h5 className="content-page-header">{t('personal_informations')}</h5>
         <div className="box shadow cbnv">
           <div className="row">
             <div className="col-4">
@@ -1516,7 +1516,7 @@ renderEvalution = (name, data, isDisable) => {
         </div>
         <StatusModal show={this.state.isShowStatusModal} content={this.state.content} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
         <SalaryModal show={this.state.isShowSalaryPropose} content={this.state.content} isSuccess={this.state.isSuccess} onAccept = {this.createFormSalary} onHide={this.hideStatusModal} />
-        <h5>{t('assessment_informations')}</h5>
+        <h5 className="content-page-header">{t('assessment_informations')}</h5>
         <div className="box shadow cbnv">
           <div className="row description">
             <div className="col-3">
@@ -1653,7 +1653,7 @@ renderEvalution = (name, data, isDisable) => {
           
         </div>
 
-        <h5>{t('more_information')}</h5>
+        <h5 className="content-page-header">{t('more_information')}</h5>
         <div className="box shadow cbnv more-description">
           <div className="title">
               {t('self_assessment')}
@@ -1667,7 +1667,7 @@ renderEvalution = (name, data, isDisable) => {
               {t('weakness')}
               <ResizableTextarea disabled={disableComponent.disableAll || !disableComponent.employeeSide} value={data.selfEvalution.weak} onChange={(e) => this.handleTextInputChange(e, 'selfEvalution', 'weak')} className="mv-10"/>
             </div>
-            <div className="col-12">
+            <div className="col-12" style={{ marginTop: 15 }}>
               {t('suggest_of_staff')}
               <ResizableTextarea disabled={disableComponent.disableAll || !disableComponent.employeeSide} value={data.selfEvalution.opinion} onChange={(e) => this.handleTextInputChange(e, 'selfEvalution', 'opinion')} className="mv-10"/>
             </div>
@@ -1693,7 +1693,7 @@ renderEvalution = (name, data, isDisable) => {
           false ?
           null :
         <>
-        <h5>{t('course_information')}</h5>
+        <h5 className="content-page-header">{t('course_information')}</h5>
         <div className="box shadow cbnv">
           <div className="row task">
             <div className="col-12">
@@ -1746,7 +1746,7 @@ renderEvalution = (name, data, isDisable) => {
           </div>
         </div>
         
-        <h5>{t('profile_information')}</h5>
+        <h5 className="content-page-header">{t('profile_information')}</h5>
         <div className="box shadow cbnv document">
           <div className="row">
             <div className="col-12">

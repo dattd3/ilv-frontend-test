@@ -212,11 +212,11 @@ class EvaluationComponent extends React.Component {
                         <thead>
                             <tr>
                                 <th scope="col" className="col-code text-center">{t('RequestNo')}</th>
-                                <th scope="col" className="col-content text-center">{t('TypeOfRequest')}</th>
-                                <th scope="col" className="col-region text-center">{t('completed_dealine')}</th>
-                                <th scope="col" className="col-code text-center">{t('Approver')} </th>
-                                <th scope="col" className="col-content text-center">{t('Status')}</th>
-                                <th scope="col" className="col-code text-center">{t('Withdraw')}</th>                             
+                                <th scope="col" className="col-request-type">{t('TypeOfRequest')}</th>
+                                <th scope="col" className="col-deadline text-center">{t('completed_dealine')}</th>
+                                <th scope="col" className="col-approval text-center">{t('Approver')} </th>
+                                <th scope="col" className="col-status text-center">{t('Status')}</th>
+                                <th scope="col" className="col-action text-center">{t('Withdraw')}</th>                             
                             </tr>
                         </thead>
                         <tbody>
@@ -226,11 +226,11 @@ class EvaluationComponent extends React.Component {
                                 <td className="col-code text-center">
                                     <a href={`/evaluation/${item.taskId}/request`}>{item.taskId}</a>
                                 </td>
-                                <td className="col-name text-center">{t('ContractEvaluationType')}</td>
-                                <td className="col-region text-center">{item.dateExpire ? moment(item.dateExpire).format('DD/MM/YYYY') : ''}</td>
-                                <td className="col-unit text-center">{item.approver}</td>
-                                <td className="col-unit text-center">{item.status}</td>
-                                <td className="col-code text-center">
+                                <td className="col-request-type">{t('ContractEvaluationType')}</td>
+                                <td className="col-deadline text-center">{item.dateExpire ? moment(item.dateExpire).format('DD/MM/YYYY') : ''}</td>
+                                <td className="col-approval text-center">{item.approver}</td>
+                                <td className="col-status text-center">{item.status}</td>
+                                <td className="col-action text-center">
                                     {
                                         item.canRecall ? <Image src={IconRecall} onClick={() => this.recallRequest(item.taskId)}/> : null
                                     }                                    

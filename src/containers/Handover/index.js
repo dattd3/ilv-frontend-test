@@ -622,8 +622,8 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
             {t('handover_title')}
         </div>
 
-        <h5>I. {t('ben_ban_giao')}</h5>
-        <div className="box cbnv">
+        <h5 className="content-page-header">I. {t('ben_ban_giao')}</h5>
+        <div className="box shadow-customize cbnv">
           <div className="row">
             <div className="col-4">
              {t('FullName')}
@@ -662,12 +662,12 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
           </div>
         </div>
         <StatusModal show={this.state.isShowStatusModal} content={this.state.content} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
-        <h5>II. {t('handover_info')}</h5>
+        <h5 className="content-page-header">II. {t('handover_info')}</h5>
         <div className="box" style={{padding: '10px 20px'}}>
           <span>{t('handover_supporter')}</span>
           <span style={{color: '#4e73df', paddingLeft: '10px', cursor: 'pointer'}} onClick={() => this.onDownloadsupporterFile()}>{t('view_here')}</span>
         </div>
-        <div className="box  cbnv more-description">
+        <div className="box shadow-customize cbnv more-description">
           <div className="title" style={{ marginBottom: '16px'}}>
             {t('handover_1')}
           </div>
@@ -712,7 +712,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
             </>
           }
         </div>
-        <div className="box cbnv more-description">
+        <div className="box shadow-customize cbnv more-description">
             <div className="title">
             {t('handover_2')}
             </div>

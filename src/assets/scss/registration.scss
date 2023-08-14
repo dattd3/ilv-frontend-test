@@ -817,7 +817,7 @@
                 margin-right: 5px;
             }
             .sub-title{
-                color: #283280;
+                color: #000000;
                 font-size: 16px;
             }
         }
@@ -1834,14 +1834,16 @@
 
     .textarea{
         box-sizing: border-box;
-        border-radius: 3px;
+        border-radius: 4px;
         resize: none;
         font-size: inherit;
         overflow: auto;
         height: auto;
-        padding: 6px;
+        padding: 5px 10px;
         width: 100%;
         min-height: 40px;
+        border: 1px solid #ddd;
+        outline: none;
         &:disabled{
             border: 1px solid #ddd;
             background-color: #eee;
@@ -2034,6 +2036,7 @@
 
 .handover-section {
     color: #000000;
+    font-size: 14px;
     .sub-title{
         color: #000000;
         font-weight: bold;
@@ -2066,14 +2069,14 @@
 
     .textarea{
         box-sizing: border-box;
-        border-radius: 3px;
+        border-radius: 4px;
         resize: none;
         font-size: inherit;
         overflow: auto;
         height: auto;
-        padding: 6px;
+        padding: 5px 10px;
         width: 100%;
-        min-height: 40px;
+        min-height: 38px;
         &:disabled{
             border: 1px solid #ddd;
             background-color: #eee;
@@ -2105,7 +2108,7 @@
     }
     .box {
         border: 1px solid #ddd;
-        border-radius: 10px;
+        border-radius: 4px;
         padding: 20px;
         background-color: #fff;
         margin: 15px 0;
@@ -2115,7 +2118,7 @@
             .title{
                 padding: 10px 20px 10px 16px;
                 margin: 0px -20px 0px;
-                border-radius: 10px 10px 0 0 ;
+                border-radius: 4px 4px 0 0 ;
                 background-color: rgba(40, 50, 128, 0.1);
                 color: #000000;
                 font-weight: bold;
@@ -2204,10 +2207,12 @@
         margin: 10px 0;
         border: 1px solid #ddd;
         background-color: #eee;
-        padding: 7px;
-        border-radius: 5px;
+        display: flex;
+        align-items: center;
+        padding: 5px 10px;
+        border-radius: 4px;
         width: 100%;
-        min-height: 40px;
+        min-height: 38px;
     }
 
     .leave-of-absence {
