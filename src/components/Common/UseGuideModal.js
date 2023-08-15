@@ -106,7 +106,7 @@ export default function UseGuideModal({ show, onHide, setShowUseGuideIcon }) {
               </div>
               {useGuideDataShow?.map((item, index) => (
                 <div className="content-item mb-15" key={index}>
-                  <div className="content-col-1">{index + 1}</div>
+                  <div className="content-col-1">{item.order}</div>
                   <div className="content-col-2">
                     <div>
                       <b>{item.nameLocale}</b>
@@ -140,7 +140,7 @@ export default function UseGuideModal({ show, onHide, setShowUseGuideIcon }) {
                       target="_blank"
                       rel="noreferrer"
                       style={
-                        !item.webFileUrlLocale
+                        !item.webVideoUrlLocale
                           ? { opacity: 0.3, pointerEvents: "none" }
                           : {}
                       }
