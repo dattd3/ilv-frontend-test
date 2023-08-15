@@ -288,6 +288,9 @@ class InOutTimeUpdateComponent extends React.Component {
       const result = response?.data?.result
       if (result?.code === Constants.API_SUCCESS_CODE) {
         this.showStatusModal(t("Successful"), t("RequestSent"), true)
+      } else if (result?.code == Constants.API_ERROR_CODE_WORKING_DAY_LOCKED) {
+        this.setState({ needReload: true })
+        this.showStatusModal(t("Notification"), result?.message, false, true)
       } else {
         this.showStatusModal(t("Notification"), result?.message, false)
       }
@@ -356,8 +359,8 @@ class InOutTimeUpdateComponent extends React.Component {
       })
   }
 
-  showStatusModal = (title, message, isSuccess = false) => {
-    this.setState({ isShowStatusModal: true, titleModal: title, messageModal: message, isSuccess: isSuccess });
+  showStatusModal = (title, message, isSuccess = false, isWarningCreateRequest = false) => {
+    this.setState({ isShowStatusModal: true, titleModal: title, messageModal: message, isSuccess: isSuccess, isWarningCreateRequest: isWarningCreateRequest });
   };
 
   hideStatusModal = () => {
@@ -464,7 +467,7 @@ class InOutTimeUpdateComponent extends React.Component {
   }
 
   render() {
-    const { startDate, endDate, timesheets, errors, files, disabledSubmitButton, isShowStatusModal, titleModal, messageModal, isSuccess, isLoading, noteModal } = this.state
+    const { startDate, endDate, timesheets, errors, files, disabledSubmitButton, isShowStatusModal, titleModal, messageModal, isSuccess, isLoading, noteModal, isWarningCreateRequest } = this.state
     const { t, recentlyManagers } = this.props;
     const lang = localStorage.getItem("locale")
     const isShowSelectWorkingShift24h = isEnableFunctionByFunctionName(Constants.listFunctionsForPnLACL.selectWorkingShift24h)
@@ -473,7 +476,7 @@ class InOutTimeUpdateComponent extends React.Component {
     return (
       <div className="in-out-time-update">
         <LoadingModal show={isLoading} />
-        <ResultModal show={isShowStatusModal} title={titleModal} message={messageModal} isSuccess={isSuccess} onHide={this.hideStatusModal} />
+        <ResultModal show={isShowStatusModal} title={titleModal} message={messageModal} isSuccess={isSuccess} isWarningCreateRequest={isWarningCreateRequest} onHide={this.hideStatusModal} />
         <NoteModal isShow={noteModal?.isShow} content={noteModal?.content} onHide={this.handleHideNoteModal} />
         <div className="box search-form">
           <div className="row">
