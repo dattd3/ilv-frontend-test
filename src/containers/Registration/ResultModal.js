@@ -1,5 +1,6 @@
 import React from "react"
 import { Modal, Image } from 'react-bootstrap'
+import purify from "dompurify"
 import IconSuccess from '../../assets/img/ic-success.svg'
 import IconFailed from '../../assets/img/ic-failed.svg'
 import IconWarning from 'assets/img/icon/Icon-warning-orange.svg'
@@ -19,7 +20,9 @@ class ResultModal extends React.Component {
                 </Modal.Header>
                 <Modal.Body>
                     <div className="wrap-result">
-                        <p className="text-center">{message}</p>
+                        <p className="text-center" dangerouslySetInnerHTML={{
+                            __html: purify.sanitize(message || ''),
+                        }} />
                         {
                             isWarningCreateRequest
                             ? <Image src={IconWarning} alt="Warning" className="ic-status" />
