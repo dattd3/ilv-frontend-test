@@ -784,10 +784,10 @@ class LeaveOfAbsenceComponent extends React.Component {
                 this.setState({ needReload: true })
             } else if (result?.code == Constants.API_ERROR_CODE_WORKING_DAY_LOCKED) {
                 this.setState({ needReload: true })
-                this.showStatusModal(t("Notification"), response?.data?.result?.message, false)
+                this.showStatusModal(t("Notification"), result?.message, false, true)
             } else {
                 this.setState({ needReload: false })
-                this.showStatusModal(t("Notification"), response?.data?.result?.message, false)
+                this.showStatusModal(t("Notification"), result?.message, false)
             }
         })
         .catch(error => {
@@ -811,8 +811,8 @@ class LeaveOfAbsenceComponent extends React.Component {
         return errorMsg ? <p className="text-danger p-2">{errorMsg}</p> : null
     }
 
-    showStatusModal = (title, message, isSuccess = false) => {
-        this.setState({ isShowStatusModal: true, titleModal: title, messageModal: message, isSuccess: isSuccess });
+    showStatusModal = (title, message, isSuccess = false, isWarningCreateRequest = false) => {
+        this.setState({ isShowStatusModal: true, titleModal: title, messageModal: message, isSuccess: isSuccess, isWarningCreateRequest: isWarningCreateRequest });
     }
 
     hideStatusModal = () => {
@@ -988,15 +988,17 @@ class LeaveOfAbsenceComponent extends React.Component {
             appraiser,
             approver,
             validating,
+            isWarningCreateRequest,
         } = this.state
         const sortRequestListByGroup = requestInfo.sort((reqPrev, reqNext) => reqPrev.groupId - reqNext.groupId)
         const requestInfoArr = _.valuesIn(_.groupBy(sortRequestListByGroup, (req) => req.groupId))
         const checkVinmec = checkIsExactPnL(Constants.pnlVCode.VinMec);
         const minDate = getRegistrationMinDateByConditions()
         const registeredInformation = (leaveOfAbsence?.requestInfoOld || leaveOfAbsence?.requestInfoOld?.length > 0) ? leaveOfAbsence.requestInfoOld : leaveOfAbsence?.requestInfo
+
         return (
             <div className="leave-of-absence">
-                <ResultModal show={isShowStatusModal} title={titleModal} message={messageModal} isSuccess={isSuccess} onHide={this.hideStatusModal} />
+                <ResultModal show={isShowStatusModal} title={titleModal} message={messageModal} isSuccess={isSuccess} isWarningCreateRequest={isWarningCreateRequest} onHide={this.hideStatusModal} />
                 <NoteModal show={isShowNoteModal} onHide={this.hideNoteModal} />
                 <div className="row summary">
                     <div className="col">

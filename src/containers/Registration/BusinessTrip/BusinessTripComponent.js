@@ -612,7 +612,7 @@ class BusinessTripComponent extends React.Component {
                 this.showStatusModal(t("Successful"), t("RequestSent"), true)
             } else if (result?.code == Constants.API_ERROR_CODE_WORKING_DAY_LOCKED) {
                 this.setState({ needReload: true })
-                this.showStatusModal(t("Notification"), result?.message, false)
+                this.showStatusModal(t("Notification"), result?.message, false, true)
             } else {
                 this.showStatusModal(t("Notification"), result?.message, false)
             }
@@ -642,8 +642,8 @@ class BusinessTripComponent extends React.Component {
         return (value == null || value == "null" || value == "" || value == undefined || value == 0 || value == "#") ? true : false
     }
 
-    showStatusModal = (title, message, isSuccess = false) => {
-        this.setState({ isShowStatusModal: true, titleModal: title, messageModal: message, isSuccess: isSuccess });
+    showStatusModal = (title, message, isSuccess = false, isWarningCreateRequest = false) => {
+        this.setState({ isShowStatusModal: true, titleModal: title, messageModal: message, isSuccess: isSuccess, isWarningCreateRequest });
     };
 
     hideStatusModal = () => {
@@ -776,7 +776,7 @@ class BusinessTripComponent extends React.Component {
 
     render() {
         const { t, businessTrip, recentlyManagers } = this.props;
-        const { requestInfo, errors, approver, appraiser, isEdit, validating } = this.state
+        const { requestInfo, errors, approver, appraiser, isEdit, validating, isShowStatusModal, titleModal, messageModal, isSuccess, isWarningCreateRequest } = this.state
         const sortRequestListByGroup = requestInfo.sort((reqPrev, reqNext) => reqPrev.groupId - reqNext.groupId)
         const requestInfoArr = _.valuesIn(_.groupBy(sortRequestListByGroup, (req) => req.groupId))
         const vehicles = [
@@ -816,7 +816,13 @@ class BusinessTripComponent extends React.Component {
         
         return (
             <div className="business-trip">
-                <ResultModal show={this.state.isShowStatusModal} title={this.state.titleModal} message={this.state.messageModal} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
+                <ResultModal 
+                    show={isShowStatusModal} 
+                    title={titleModal} 
+                    message={messageModal} 
+                    isSuccess={isSuccess} 
+                    isWarningCreateRequest={isWarningCreateRequest} 
+                    onHide={this.hideStatusModal} />
 
                 { isEdit && 
                     <div className="box shadow registered-information">
