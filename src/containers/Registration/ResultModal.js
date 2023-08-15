@@ -1,7 +1,8 @@
 import React from "react"
+import { Modal, Image } from 'react-bootstrap'
 import IconSuccess from '../../assets/img/ic-success.svg'
 import IconFailed from '../../assets/img/ic-failed.svg'
-import { Modal, Image } from 'react-bootstrap'
+import IconWarning from 'assets/img/icon/Icon-warning-orange.svg'
 
 class ResultModal extends React.Component {
     constructor(props) {
@@ -9,7 +10,7 @@ class ResultModal extends React.Component {
     }
 
     render () {
-        const { show, title, message, isSuccess } = this.props
+        const { show, title, message, isSuccess, isWarningCreateRequest } = this.props
 
         return (
             <Modal className='info-modal-common position-apply-modal result-modal' centered show={show} onHide={this.props.onHide}>
@@ -19,7 +20,11 @@ class ResultModal extends React.Component {
                 <Modal.Body>
                     <div className="wrap-result">
                         <p className="text-center">{message}</p>
-                        {isSuccess ? <Image src={IconSuccess} alt="Success" className="ic-status" /> : <Image src={IconFailed} alt="Success" className="ic-status" />}
+                        {
+                            isWarningCreateRequest
+                            ? <Image src={IconWarning} alt="Warning" className="ic-status" />
+                            : isSuccess ? <Image src={IconSuccess} alt="Success" className="ic-status" /> : <Image src={IconFailed} alt="Failed" className="ic-status" />
+                        }
                     </div>
                 </Modal.Body>
             </Modal>
