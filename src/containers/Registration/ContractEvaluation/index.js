@@ -579,7 +579,8 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         departmentName: infos.staffContracts.departmentName,
         startDate: infos.staffContracts.startDate,
         expireDate: infos.staffContracts.expireDate,
-        employeeEmail: infos.staffContracts.employeeEmail
+        employeeEmail: infos.staffContracts.employeeEmail,
+        rankName: infos.staffContracts.rankName
       }
     }
 
@@ -1519,6 +1520,13 @@ renderEvalution = (name, data, isDisable) => {
               {t('expired_day_contract')}
               <div className="detail">{data.employeeInfo.expireDate ? moment(data.employeeInfo.expireDate).format("DD/MM/YYYY") : '' }</div>
             </div>
+            {
+              checkIsExactPnL(Constants.pnlVCode.VinAI) &&
+              <div className="col-4">
+                {t('Grade')}
+                <div className="detail">{data.employeeInfo.rankName || '' }</div>
+              </div>
+            }
           </div>
         </div>
         <StatusModal show={this.state.isShowStatusModal} content={this.state.content} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
