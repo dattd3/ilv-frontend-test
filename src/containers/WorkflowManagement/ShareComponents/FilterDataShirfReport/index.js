@@ -258,7 +258,7 @@ class FilterDataShirfReport extends React.Component {
       { value: Constants.TYPE_REPORT.DETAIL_REPORT, label: t("DetailReport") },
       { value: Constants.TYPE_REPORT.SUMARY_REPORT, label: t("SumaryReport") },
     ];
-    if(IS_VINFAST) {
+    if(IS_VINFAST()) {
       reportTypes.push({ value: Constants.TYPE_REPORT.TIMESHEET_REPORT, label: t("TimesheetSumaryReport") });
     }
 
