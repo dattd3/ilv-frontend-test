@@ -184,7 +184,7 @@ class ResignationRequestsManagementActionButton extends React.PureComponent {
             {value: 'isHandoverSoftware', key: 'statusSoftware', label: t('software_status')},
             {value: 'isHandoverConfirmation', key: 'statusConfirmation', label: t('policy_status')},
         ]
-        if(IS_VINFAST) {
+        if(IS_VINFAST()) {
             taskLists = [
                 {value: 'isHandoverWork', key: 'statusWork', label: t('work_status')},
                 {value: 'isHandoverAsset', key: 'statusAsset', label: t('laptop_status')},
