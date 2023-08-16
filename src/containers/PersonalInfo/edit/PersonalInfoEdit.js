@@ -8,11 +8,13 @@ import axios from 'axios'
 import _ from 'lodash'
 import moment from 'moment'
 import { withTranslation } from "react-i18next"
-import { getMuleSoftHeaderConfigurations } from "../../../commons/Utils"
+import { getMuleSoftHeaderConfigurations, formatStringByMuleValue } from "../../../commons/Utils"
 import Constants from '../../../commons/Constants'
 import HOCComponent from '../../../components/Common/HOCComponent'
 import LoadingModal from 'components/Common/LoadingModal'
 import { validateFileMimeType, validateTotalFileSize } from '../../../utils/file'
+import IconSend from 'assets/img/icon/Icon_send.svg'
+import IconUpload from 'assets/img/icon/ic_upload_attachment.svg'
 
 const code = localStorage.getItem('employeeNo') || "";
 const fullName = localStorage.getItem('fullName') || "";
@@ -316,19 +318,21 @@ class PersonalInfoEdit extends React.Component {
     return idRegex.test(id)
   }
 
-  verifyInput = (data, files = null, listIndexChanged) => {
-    let errors = {}
+  verifyInput = (data, files = null, listIndexChanged = null, type) => {
+    let errors = {...this.state.errors}
     let newMainInfo = {}
     const lengthPhoneValid = 10
     const maxLengthPersonalIdentifyPlace = 30
     const { t } = this.props;
     const isValidFileUpload = this.isValidFileUpload(data, files)
 
+    delete errors?.notChange
     if ((data && !data.create && !data.update) || (data && !data.create && data.update && data.update.userProfileHistoryMainInfo
       && data.update.userProfileHistoryMainInfo.NewMainInfo && _.size(data.update.userProfileHistoryMainInfo.NewMainInfo) == 0)) {
       errors.notChange = `(${t("NoInformationUpdated")})`
     }
 
+    delete errors?.fileUpload
     if (!isValidFileUpload && ![Constants.pnlVCode.VinSmart].includes(currentCompanyCode)) {
       errors.fileUpload = t("AttachmentRequired")
     }
@@ -337,52 +341,70 @@ class PersonalInfoEdit extends React.Component {
       const update = data.update
       if (update.userProfileHistoryMainInfo) {
         newMainInfo = update.userProfileHistoryMainInfo.NewMainInfo
+        delete errors?.personalEmail
         if (newMainInfo.PersonalEmail && !this.isValidEmail(newMainInfo.PersonalEmail)) {
           errors.personalEmail = t("IncorrectEmail")
         }
+        delete errors?.cellPhoneNo
         if (newMainInfo.CellPhoneNo && !this.isValidPhoneNumber(newMainInfo.CellPhoneNo)) {
           errors.cellPhoneNo = t("IncorrectMobileNo")
         }
         if (newMainInfo?.CellPhoneNo && newMainInfo?.CellPhoneNo?.length !== lengthPhoneValid) {
           errors.cellPhoneNo = t("IncorrectMobileNoLength")
         }
+        delete errors?.UrgentContactNo
         if (newMainInfo.UrgentContactNo && !this.isValidPhoneNumber(newMainInfo.UrgentContactNo)) {
           errors.urgentContactNo = t("IncorrectEmergencyNo")
         }
         if (newMainInfo?.UrgentContactNo && newMainInfo?.UrgentContactNo?.length !== lengthPhoneValid) {
           errors.urgentContactNo = t("IncorrectMobileNoLength")
         }
+        delete errors?.birthProvince
         if (newMainInfo.BirthCountry && !newMainInfo.BirthProvince) {
           errors.birthProvince = t("PlaceOfBirthRequired")
         }
+        delete errors?.maritalDate
         if ((newMainInfo.MaritalStatus && newMainInfo.MaritalStatus !== "" && newMainInfo.MaritalStatus != 0) && !newMainInfo.MarriageDate) {
           errors.maritalDate = t("DateOfChangeRequired")
-        } else if ((newMainInfo.MaritalStatus == null || newMainInfo.MaritalStatus === "") && newMainInfo.MarriageDate) {
-          errors.maritalStatus = t("MaritalStatusRequired")
+        } else {
+          delete errors?.maritalStatus
+          if ((newMainInfo.MaritalStatus == null || newMainInfo.MaritalStatus === "") && newMainInfo.MarriageDate) {
+            errors.maritalStatus = t("MaritalStatusRequired")
+          }
         }
+        delete errors?.bankAccountNumber
         if (newMainInfo.Bank && !newMainInfo.BankAccountNumber) {
           errors.bankAccountNumber = t("BankAccountRequired")
-        } else if (newMainInfo.BankAccountNumber && !newMainInfo.Bank) {
-          errors.bank = t("BankNameRequired")
+        } else {
+          delete errors?.bank
+          if (newMainInfo.BankAccountNumber && !newMainInfo.Bank) {
+            errors.bank = t("BankNameRequired")
+          }
         }
+        delete errors?.passportDate
         if ((newMainInfo.PassportNumber || newMainInfo.PassportPlace) && !newMainInfo.PassportDate) {
           errors.passportDate = t("DateOfIssueRequiredPassport")
         }
+        delete errors?.passportNumber
         if ((newMainInfo.PassportDate || newMainInfo.PassportPlace) && !newMainInfo.PassportNumber) {
           errors.passportNumber = t("PassportRequired")
         }
+        delete errors?.passportPlace
         if ((newMainInfo.PassportDate || newMainInfo.PassportNumber) && !newMainInfo.PassportPlace) {
           errors.passportPlace = t("PlaceOfIssueRequiredPassport")
         }
+        delete errors?.personalIdentifyDate
         if ((newMainInfo.PersonalIdentifyNumber || newMainInfo.PersonalIdentifyPlace) && !newMainInfo.PersonalIdentifyDate) {
           errors.personalIdentifyDate = t("DateOfIssueRequiredIdCard")
         }
+        delete errors?.personalIdentifyNumber
         if ((newMainInfo.PersonalIdentifyDate || newMainInfo.PersonalIdentifyPlace) && !newMainInfo.PersonalIdentifyNumber) {
           errors.personalIdentifyNumber = t("IdRequired")
         }
         if (newMainInfo.PersonalIdentifyNumber && !this.isValidIdentifyNumber(newMainInfo.PersonalIdentifyNumber)) {
           errors.personalIdentifyNumber = '(' + t("IncorrectPersonalIdentifyNumber") + ')'
         }
+        delete errors?.personalIdentifyPlace
         if ((newMainInfo.PersonalIdentifyDate || newMainInfo.PersonalIdentifyNumber) && !newMainInfo.PersonalIdentifyPlace) {
           errors.personalIdentifyPlace = t("PlaceOfIssueRequiredIdCard")
         }
@@ -391,22 +413,24 @@ class PersonalInfoEdit extends React.Component {
         }
       }
       
-      if (update.userProfileHistoryEducation) {
+      if (update?.userProfileHistoryEducation && type === actionTypes.update) {
         const educationUpdated = update.userProfileHistoryEducation
-        const updateErrors = this.getValidationEducations(educationUpdated, actionTypes.update, listIndexChanged)
+        const updateErrors = this.getValidationEducations(educationUpdated, type, listIndexChanged)
         if (_.size(updateErrors) > 0) {
           errors[[actionTypes.update]] = {...updateErrors}
         }
       }
     }
 
-    if (data && data.create && data.create.educations && data.create.educations.length > 0) {
+    if (data && data.create && data.create.educations && data.create.educations.length > 0 && type === actionTypes.create) {
       const educationCreated = data.create.educations
-      const createErrors = this.getValidationEducations(educationCreated, actionTypes.create, listIndexChanged)
+      const createErrors = this.getValidationEducations(educationCreated, type, listIndexChanged)
       if (_.size(createErrors) > 0) {
         errors[[actionTypes.create]] = {...createErrors}
       }
     }
+
+    console.log('errors => ', errors)
 
     this.setState({ errors: errors })
     return errors
@@ -512,29 +536,18 @@ class PersonalInfoEdit extends React.Component {
     if (errors == null || _.isEmpty(errors)) {
       return true
     }
-    const create = errors.create
-    const update = errors.update
-    const fileValid = errors.fileUpload
-    const noChanges = errors.notChange
 
-    if (fileValid || noChanges) {
-      return false;
+    if (errors?.fileUpload || errors?.notChange) {
+      return false
     }
-    if (create) {
-      for (let i = 0, countCreate = create.length; i < countCreate; i++) {
-        if (_.size(create[i]) > 0) {
-          return false
-        }
-      }
+
+    const createValues = Object.values(errors?.create || {})
+    const updateValues = Object.values(errors?.update || {})
+    if ((createValues || []).some(item => _.size(item) > 0) || (updateValues || []).some(item => _.size(item) > 0)) {
+      return false
     }
-    if (update) {
-      for (let j = 0, countUpdate = update.length; j < countUpdate; j++) {
-        if (_.size(update[j]) > 0) {
-          return false
-        }
-      }
-    }
-    return false
+
+    return true
   }
 
   hasValue = (value) => {
@@ -561,10 +574,13 @@ class PersonalInfoEdit extends React.Component {
     this.setState({ isLoading: true })
 
     let userProfileInfoToSave = {...data}
-    userProfileInfoToSave.update.userProfileHistoryMainInfo.UserGender = 
-    (data?.update?.userProfileHistoryMainInfo?.NewMainInfo?.Gender !== null && data?.update?.userProfileHistoryMainInfo?.NewMainInfo?.Gender !== undefined)
-    ? data?.update?.userProfileHistoryMainInfo?.NewMainInfo?.Gender
-    : userDetail?.gender
+
+    if (userProfileInfoToSave?.update?.userProfileHistoryMainInfo) {
+      userProfileInfoToSave.update.userProfileHistoryMainInfo.UserGender = 
+      (data?.update?.userProfileHistoryMainInfo?.NewMainInfo?.Gender !== null && data?.update?.userProfileHistoryMainInfo?.NewMainInfo?.Gender !== undefined)
+      ? data?.update?.userProfileHistoryMainInfo?.NewMainInfo?.Gender
+      : userDetail?.gender
+    }
     
     const updateFields = this.getFieldUpdates();
     const dataPostToSAP = this.getDataPostToSap(data);
@@ -694,7 +710,7 @@ class PersonalInfoEdit extends React.Component {
         if (newMainInfo.Religion || newMainInfo.Birthday || newMainInfo.Nationality || newMainInfo.BirthProvince || newMainInfo.MaritalStatus || newMainInfo.Religion || newMainInfo.Gender) {
           const userDetail = this.state.userDetail;
           let obj = { ...this.objectToSap };
-          obj.actio = [Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl].includes(currentCompanyCode) ? "MOD" : "INS";
+          obj.actio = [Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinHoliday1].includes(currentCompanyCode) ? "MOD" : "INS";
           obj.gbdat = this.prepareBirthday(newMainInfo, userDetail);
           const nationalityAndBirthCountry = this.prepareNationalityAndBirthCountry(newMainInfo, userDetail);
           obj.natio = nationalityAndBirthCountry[1];
@@ -722,7 +738,7 @@ class PersonalInfoEdit extends React.Component {
         if (newMainInfo.BankAccountNumber || newMainInfo.Bank) {
           const userDetail = this.state.userDetail;
           let obj = { ...this.objectToSap };
-          obj.actio = [Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl].includes(currentCompanyCode) ? "MOD" : "INS";
+          obj.actio = [Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinHoliday1].includes(currentCompanyCode) ? "MOD" : "INS";
           obj.bankn = this.getDataSpecificFields(newMainInfo.BankAccountNumber, userDetail.bank_number);
           obj.bankl = this.getDataSpecificFields(newMainInfo.Bank, userDetail.bank_name_id);
           return [obj];
@@ -742,7 +758,8 @@ class PersonalInfoEdit extends React.Component {
         if (newMainInfo.Ethinic) {
           const userDetail = this.state.userDetail;
           let obj = { ...this.objectToSap };
-          obj.actio = [Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl].includes(currentCompanyCode) ? "MOD" : "INS";
+          // obj.actio = [Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinHoliday1].includes(currentCompanyCode) ? "MOD" : "INS";
+          obj.actio = formatStringByMuleValue(data?.update?.userProfileHistoryMainInfo?.OldMainInfo?.Ethinic) === '' ? "INS" : "MOD"
           obj.racky = this.getDataSpecificFields(newMainInfo.Ethinic, userDetail.race_id);
           return [obj];
         }
@@ -771,7 +788,7 @@ class PersonalInfoEdit extends React.Component {
               } else {
                 obj.actio = "MOD";
               }
-              if (![Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl].includes(currentCompanyCode)) {
+              if (![Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinHoliday1].includes(currentCompanyCode)) {
                 obj.actio = "INS";
               }
               obj.subty = "0030";
@@ -781,7 +798,7 @@ class PersonalInfoEdit extends React.Component {
               } else {
                 obj.actio = "MOD";
               }
-              if (![Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl].includes(currentCompanyCode)) {
+              if (![Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinHoliday1].includes(currentCompanyCode)) {
                 obj.actio = "INS";
               }
               obj.subty = "CELL";
@@ -791,7 +808,7 @@ class PersonalInfoEdit extends React.Component {
               } else {
                 obj.actio = "MOD";
               }
-              if (![Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl].includes(currentCompanyCode)) {
+              if (![Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinHoliday1].includes(currentCompanyCode)) {
                 obj.actio = "INS";
               }
               obj.subty = "V002";
@@ -838,7 +855,7 @@ class PersonalInfoEdit extends React.Component {
           if (newMainInfo.District || newMainInfo.Province || newMainInfo.Wards || newMainInfo.StreetName || newMainInfo.Country) {
             let obj = { ...this.objectToSap };
             // obj.actio = "MOD";
-            // if (![Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl].includes(currentCompanyCode)) {
+            // if (![Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinHoliday1].includes(currentCompanyCode)) {
             //   obj.actio = "INS";
             // }
             obj.actio = "INS";
@@ -987,7 +1004,7 @@ class PersonalInfoEdit extends React.Component {
         obj.isspl = this.resetValueInValid(newMainInfo.PassportPlace) || "";
       } else {
         obj.actio = "MOD";
-        if (![Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl].includes(currentCompanyCode)) {
+        if (![Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinHoliday1].includes(currentCompanyCode)) {
           obj.actio = "INS";
         }
         obj.icnum = this.resetValueInValid(newMainInfo.PassportNumber) || passportIdNo;
@@ -1013,7 +1030,7 @@ class PersonalInfoEdit extends React.Component {
         obj.isspl = this.resetValueInValid(newMainInfo.PersonalIdentifyPlace) || "";
       } else {
         obj.actio = "MOD";
-        if (![Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl].includes(currentCompanyCode)) {
+        if (![Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinHoliday1].includes(currentCompanyCode)) {
           obj.actio = "INS";
         }
         obj.icnum = this.resetValueInValid(newMainInfo.PersonalIdentifyNumber) || personalIdNo;
@@ -1070,11 +1087,12 @@ class PersonalInfoEdit extends React.Component {
 
   getFieldUpdates = () => {
     const data = this.state.data;
-    if (data && data.update) {
-      const fieldsUpdate = this.state.data.update;
-      const mainInfos = (fieldsUpdate && fieldsUpdate.userProfileHistoryMainInfo) ? fieldsUpdate.userProfileHistoryMainInfo.NewMainInfo : {};
+
+    if (data) {
+      const fieldsUpdate = data?.update;
+      const mainInfos = (fieldsUpdate && fieldsUpdate?.userProfileHistoryMainInfo) ? fieldsUpdate?.userProfileHistoryMainInfo?.NewMainInfo : {};
       let educations = {};
-      if (fieldsUpdate.userProfileHistoryEducation && fieldsUpdate.userProfileHistoryEducation.length > 0) {
+      if ((fieldsUpdate?.userProfileHistoryEducation && fieldsUpdate?.userProfileHistoryEducation?.length > 0) || (data?.create?.educations && data?.create?.educations?.length > 0)) {
         educations = { Education: "Education" }
       }
       const mainInfoKeys = this.convertObjectKeyToArray(mainInfos);
@@ -1173,7 +1191,7 @@ class PersonalInfoEdit extends React.Component {
         });
 
         let dataClone = this.removeItemForValueNull({ ...this.state.data, update: this.state.update })
-        this.verifyInput(dataClone, null, listIndexChanged)
+        this.verifyInput(dataClone, null, listIndexChanged, actionTypes.update)
       })
     });
   }
@@ -1199,7 +1217,7 @@ class PersonalInfoEdit extends React.Component {
         }
       });
       let dataClone = this.removeItemForValueNull({ ...this.state.data, create: this.state.create })
-      this.verifyInput(dataClone, null, listIndexChanged)
+      this.verifyInput(dataClone, null, listIndexChanged, actionTypes.create)
     });
   }
 
@@ -1384,9 +1402,9 @@ class PersonalInfoEdit extends React.Component {
           {(errors && !errors.notChange) ? this.error('fileUpload') : null}
 
           <div className="clearfix mb-5 block-action-buttons">
-            <button type="button" className="btn btn-primary float-right ml-3 shadow" onClick={this.handleSendRequest}><i className="fa fa-paper-plane" aria-hidden="true"></i>{t("Send")}</button>
+            <button type="button" className="btn btn-primary float-right ml-3 btn-send-request" onClick={this.handleSendRequest}><img src={IconSend} alt="Send" />{t("Send")}</button>
             <input type="file" hidden accept=".xls, .xlsx, .doc, .docx, .jpg, .png, .pdf" ref={this.inputReference} id="file-upload" name="file-upload[]" onChange={this.fileUploadInputChange.bind(this)} multiple />
-            <button type="button" className="btn btn-light float-right shadow" onClick={this.fileUploadAction.bind(this)}><i className="fas fa-paperclip"></i> {t("AttachmentFile")}</button>
+            <button type="button" className="btn btn-light float-right btn-upload-file" onClick={this.fileUploadAction.bind(this)}><img src={IconUpload} alt="Upload" />{t("AttachmentFile")}</button>
           </div>
         </Form>
       </div>

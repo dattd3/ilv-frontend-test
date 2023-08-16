@@ -40,7 +40,7 @@ export const Navigation = [
     icon: 'c-recruiment',
     label: "Menu_InternalRecruitment",
     to: map.InternalRecruitment,
-    role: [Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl]
+    role: [Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinHoliday1]
   },
   // {
   //   id: 12,
@@ -178,7 +178,7 @@ export const Navigation = [
     parentId: 1001,
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     to: map.EmployeeTimeSheets,
-    label: [Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl].includes(companyVCodeUserLogged) ? "SubMenuTimesheetManagementDivision" : "SubMenuTimesheetManagement",
+    label: [Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinHoliday1].includes(companyVCodeUserLogged) ? "SubMenuTimesheetManagementDivision" : "SubMenuTimesheetManagement",
     role: 'U'
   },
   {
@@ -285,7 +285,7 @@ export const Navigation = [
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     label: "Menu_VinpearlIntroduction",
     to: map.Vinpearl,
-    role: [Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl]
+    role: [Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinHoliday1]
   },
   {
     id: 102,
@@ -396,7 +396,7 @@ export const Navigation = [
   //   icon: "menu-bullet-lv2 icon-sub-menu-lv2",
   //   label: "Phúc lợi",
   //   to: map.Benefit,
-  //   role: [Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl]
+  //   role: [Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinHoliday1]
   // },
   {
     id: 19,
@@ -404,7 +404,7 @@ export const Navigation = [
     icon: "menu-bullet-lv2 icon-sub-menu-lv2",
     label: "JobRequirements",
     to: map.Job,
-    role: [Constants.pnlVCode.VinSmart, Constants.pnlVCode.VinMec, Constants.pnlVCode.VinSoftware, Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading]
+    role: [Constants.pnlVCode.VinSmart, Constants.pnlVCode.VinMec, Constants.pnlVCode.VinSoftware, Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinHoliday1, Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading]
   },
   {
     id: 181,
@@ -477,7 +477,7 @@ export const Navigation = [
     icon: 'c-qa',
     label: "QuestionAndAnswer",
     to: map.QuestionAndAnswer,
-    role: [Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinSoftware, Constants.pnlVCode.VinMec, Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading,
+    role: [Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinHoliday1, Constants.pnlVCode.VinSoftware, Constants.pnlVCode.VinMec, Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading,
       Constants.pnlVCode.VinSmart, Constants.pnlVCode.VincomRetail, Constants.pnlVCode.VinAI, Constants.pnlVCode.Vin3S, Constants.pnlVCode.VinHome]
   },
   {

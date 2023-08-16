@@ -2,6 +2,7 @@ import React from 'react'
 import axios from 'axios'
 import { withTranslation, useTranslation } from 'react-i18next'
 import { Container, Row, Col, Tabs, Tab, Form } from 'react-bootstrap'
+import ReactTooltip from 'react-tooltip'
 import moment from 'moment'
 import map from '../map.config'
 import { getRequestConfigurations, getMuleSoftHeaderConfigurations, isVinFast } from "../../commons/Utils"
@@ -64,7 +65,7 @@ const ChangeWorkingAppointment = (props) => {
                     </tbody>
                 </table>
             </div>
-        : t("NoDataFound")
+        : <div style={{ margin: '10px 0' }}>{t("NoDataFound")}</div>
     )
 }
 
@@ -153,6 +154,22 @@ class MyComponent extends React.Component {
         return penalties && penalties.length > 0 ? penalties.filter(pen => Date.parse(moment(pen.effective_date).format('YYYY-MM-DD').toString()) >= Date.parse(startDate) && Date.parse(pen.effective_date) <= Date.parse(endDate)) : [];
     }
 
+    handleClickContractNumber = (contractNumber) => {
+        if (!contractNumber) {
+            return
+        }
+
+        navigator.clipboard.writeText(contractNumber).then(res => {
+            setTimeout(() => {
+                const url = "https://econtract.vinfast.vn/portal/index.aspx"
+                window.open(url, '_blank')
+            }, 1500)
+        })
+        .catch(e => {
+
+        })
+    }
+
     render() {
         function isNotNull(input) {
             if (input !== undefined && input !== null && input !== 'null' && input !== '#' && input !== '') {
@@ -192,23 +209,46 @@ class MyComponent extends React.Component {
                                         </Row>
                                         <Row className="info-value">
                                             <Col xs={12} md={6} lg={3}>
-                                                <p className="mb-0">&nbsp;
-                                                  {isVinFast() ? <a href='https://econtract.vinfast.vn/portal/index.aspx' target='_blank'>
-                                                    {item.contract_number}
-                                                  </a> : <>{item.contract_number}</>}
-                                                </p>
+                                                <div className="mb-0 contract-number">&nbsp;
+                                                    {
+                                                        isVinFast() ? (
+                                                            <span 
+                                                                data-tip data-for={`contract_number-${item?.contract_number}`} 
+                                                                className="cursor-pointer contract-number-text" 
+                                                                onClick={() => this.handleClickContractNumber(item?.contract_number)}>
+                                                                <ReactTooltip 
+                                                                    id={`contract_number-${item?.contract_number}`} 
+                                                                    delayHide={1500}
+                                                                    afterShow={() => {
+                                                                        ReactTooltip.hide()
+                                                                    }}
+                                                                    event="click" 
+                                                                    scrollHide 
+                                                                    isCapture 
+                                                                    globalEventOff="click" 
+                                                                    effect="solid" 
+                                                                    place="right" 
+                                                                    type='dark'>
+                                                                    {t("Copied")}: {item?.contract_number}
+                                                                </ReactTooltip>
+                                                                {item?.contract_number}
+                                                            </span>
+                                                        )
+                                                        : (<>{item?.contract_number}</>)
+                                                    }
+                                                </div>
                                             </Col>
                                             <Col xs={12} md={6} lg={2}>
-                                                <p className="mb-0">&nbsp;{item.contract_type}</p>
+                                                <p className="mb-0">&nbsp;{item?.contract_type}</p>
                                             </Col>
                                             <Col xs={12} md={6} lg={2}>
-                                                <p className="mb-0">&nbsp;{item.from_time}</p>
+                                                <p className="mb-0">&nbsp;{item?.from_time}</p>
                                             </Col>
                                             <Col xs={12} md={6} lg={2}>
-                                                <p className="mb-0">&nbsp;{item.to_time}</p>
+                                                <p className="mb-0">&nbsp;{item?.to_time}</p>
                                             </Col>
                                             <Col xs={12} md={6} lg={3}>
-                                                <p className="mb-0">&nbsp;{item.company_name}</p>
+                                                <p className="mb-0">&nbsp;{item?.company_name}</p>
                                             </Col>
                                         </Row>
                                     </div>;
@@ -224,7 +264,7 @@ class MyComponent extends React.Component {
                                 </div>
                             </Container>
                             <Col>
-                                <h4 className="pl-0 pt-0">{t("Awards")}</h4>
+                                <h4 className="pl-0 pt-0" style={{ marginBottom: 0 }}>{t("Awards")}</h4>
                             </Col>
 
                             {(this.state.userBonuses !== undefined && this.state.userBonuses.length > 0) ?
@@ -236,7 +276,7 @@ class MyComponent extends React.Component {
                                     bonusTitle += (item.merit_and_cash_certificate ? 'Bằng khen & tiền mặt | ' : '');
                                     bonusTitle += (item.other_rewards ? `${t("Other")} | ` : '');
                                     bonusTitle = bonusTitle.length > 3 ? bonusTitle.substring(0, bonusTitle.length - 3) : '';
-                                    return <Container key={i} fluid className="info-tab-content shadow mb-3 pb-0">
+                                    return <Container key={i} fluid className="info-tab-content shadow-customize mb-3 pb-0" style={{ marginLeft: 15, marginRight: 15 }}>
                                         <form className="info-value pb-0"><div >
                                             <div className="form-row">
                                                 <div className="form-group col-md-6 ">
@@ -270,7 +310,7 @@ class MyComponent extends React.Component {
                         </Row>
                         <Row>
                             <Col>
-                                <h4>{t("Penalties")}</h4>
+                                <h4 style={{ marginBottom: 0 }}>{t("Penalties")}</h4>
                             </Col>
                             <>
                                 {(this.state.userPenalties !== undefined && this.state.userPenalties.length > 0) ?
@@ -282,7 +322,7 @@ class MyComponent extends React.Component {
                                         penaltiesTitle += (item.compensation ? `${t("DeductionOnLoss")} | ` : '');
                                         penaltiesTitle += (item.other ? `${t("Other")} | ` : '');
                                         penaltiesTitle = penaltiesTitle.length > 3 ? penaltiesTitle.substring(0, penaltiesTitle.length - 3) : '';
-                                        return <Container key={i} fluid className="info-tab-content shadow mb-3 pb-0">
+                                        return <Container key={i} fluid className="info-tab-content shadow-customize pb-0" style={{ marginLeft: 15, marginRight: 15 }}>
                                             <form className="info-value pb-0">
                                                 <div >
                                                     <div className="form-row">

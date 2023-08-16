@@ -34,7 +34,7 @@ function MainInfoList(props) {
     return (
         <Row >
             <Col xs={12} md={12} lg={6}>
-                <div className="info-tab-content shadow">
+                <div className="info-tab-content" style={{ boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px" }}>
                     <table>
                         <tbody>
                             <tr>
@@ -156,7 +156,7 @@ function MainInfoList(props) {
               </Col>
               <Col xs={12} md={12} lg={6}>
                 <h4>{t("WorkingInformation")}</h4>
-                <div className="info-tab-content shadow">
+                <div className="info-tab-content" style={{ boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px" }}>
                   <table>
                     <tbody>
                       <tr>
@@ -222,7 +222,7 @@ function MainInfoList(props) {
                   (userHealth !== undefined && userHealth !== null) ?
                     <>
                       <h4>{t("HealthCheckInfo")}</h4>
-                      <div className="info-tab-content shadow">
+                      <div className="info-tab-content" style={{ boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px" }}>
                         <table>
                           <tbody>
                             <tr>
@@ -245,7 +245,7 @@ function MainInfoList(props) {
                         </table>
                       </div>
                       <h4>{t("OccupationalDisease")}</h4>
-                      <div className="info-tab-content shadow">
+                      <div className="info-tab-content" style={{ boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px" }}>
                         <table>
                           <tbody>
                             <tr>
@@ -264,7 +264,7 @@ function MainInfoList(props) {
                         </table>
                       </div>
                       <h4>{t("AccidentsAtWork")}</h4>
-                      <div className="info-tab-content shadow">
+                      <div className="info-tab-content" style={{ boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px" }}>
                         <table>
                           <tbody>
                             <tr>
