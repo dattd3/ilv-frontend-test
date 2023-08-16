@@ -665,8 +665,32 @@ function TimeTableDetail(props) {
     
   }
 
+  //thêm những ngày còn thiếu vào mảng danh sachs bảng chấm công
+const getListDateFilled = (dataRaw, dateDiff) => {
+  if(dataRaw?.length < 2 || dateDiff == dataRaw?.length) {
+    return dataRaw;
+  }
+  let data = [];
+  for(let i = 1; i < dataRaw.length; i++) {
+    let countDiff = moment(dataRaw[i - 1].date, 'DD-MM-YYYY').diff(moment(dataRaw[i].date, 'DD-MM-YYYY'), 'days');
+    data.push(dataRaw[i - 1]);
+    // thêm vào những ngày thiếu giữa 2 ngày không liên tiêps
+    if(countDiff > 1){
+      for(let offset = 1; offset <= countDiff - 1; offset++) {
+        data.push({
+          "date": moment(dataRaw[i-1].date, 'DD-MM-YYYY').subtract(offset, 'day').format('DD-MM-YYYY'),
+          "shift_id": "EMPTY",
+        })
+      }
+    }
+  }
+  data.push(dataRaw[dataRaw.length - 1])
+  return data;
+}
+
 const processDataForTable = (data1, fromDateString, toDateString, reasonData) => {
-    const data = [...data1];
+    const dateDiff = moment(data1[0].date, 'DD-MM-YYYY').diff(moment(data1[data1.length - 1].date, 'DD-MM-YYYY'), 'days') + 1;
+    const data = getListDateFilled(data1, dateDiff);
     const fromDate = moment(fromDateString, 'YYYYMMDD').toDate();
     const toDate = moment(toDateString, 'YYYYMMDD').toDate();
     
@@ -690,6 +714,14 @@ const processDataForTable = (data1, fromDateString, toDateString, reasonData) =>
     const today = moment(new Date()).format("YYYYMMDD")
     for(let index = 0; index < data.length; index++) {
       const item = data[index];
+      if(item.shift_id == 'EMPTY') {
+        data[index] = {
+          date_type : DATE_TYPE.DATE_OFFSET, //ngay trắng,
+          date: 1,  // thu 2
+          day: moment(item.date, 'DD-MM-YYYY').format('DD/MM/YYYY')
+        }
+        continue;
+      }
       const currentDay = moment(item.date, "DD-MM-YYYY").format("YYYYMMDD");
       const nextDay = moment( getDayOffset( moment(item.date, 'DD-MM-YYYY').toDate(), 1)).format('YYYYMMDD');
       
