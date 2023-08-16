@@ -717,7 +717,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
             {t('handover_2')}
             </div>
             {
-              IS_VINFAST ? 
+              IS_VINFAST() ? 
               <>
                 <div className="row">
                     <div className="sub-title" style={{marginTop: '16px'}}>{t('handover_2_1a')}</div>
@@ -863,7 +863,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
             }
 
             {
-              IS_VINFAST ? <>
+              IS_VINFAST() ? <>
               <div className="row">
                 <div className="sub-title" style={{ marginTop: data.uniform.isShow ? 40 : 0 }}>{t('handover_2_4a')}</div>
               </div>
@@ -1061,7 +1061,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
             }
 
             {
-              IS_VINFAST ?
+              IS_VINFAST() ?
               <>
                 <div className="row">
                     <div className="sub-title" style={{ marginTop: data.policy.isShow ? 40 : 0 }}>{t('handover_2_8')}</div>

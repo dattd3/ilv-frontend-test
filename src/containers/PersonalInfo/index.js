@@ -575,7 +575,7 @@ class MyComponent extends React.Component {
                               <th style={{ width: '2%' }}>STT</th>
                               <th style={{ width: '66%' }}>Danh mục hồ sơ CBNV</th>
                               <th style={{ width: '2%' }}>SL</th>
-                              {!IS_VINFAST && <th style={{ width: '11%' }}>Thời hạn nộp</th>}
+                              {!IS_VINFAST() && <th style={{ width: '11%' }}>Thời hạn nộp</th>}
                               <th style={{ width: '8%' }}>Tình trạng</th>
                             </tr>
                           </thead>
@@ -592,7 +592,7 @@ class MyComponent extends React.Component {
                                       <td>{item.index}</td>
                                       <td className="name">{item.name}</td>
                                       <td>{item.number}</td>
-                                      {!IS_VINFAST && <td rowSpan={obj.documentList.length}>{item.timExpire}</td>}
+                                      {!IS_VINFAST() && <td rowSpan={obj.documentList.length}>{item.timExpire}</td>}
                                       <td><input type="checkbox" checked={item.status} readOnly /></td>
                                     </tr>
                                   } else {
