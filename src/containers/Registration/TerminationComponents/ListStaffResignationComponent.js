@@ -322,7 +322,7 @@ class ListStaffResignationComponent extends React.PureComponent {
                                               isShowJobHandoverCol && <th>{t('work_status')}</th>
                                             }
                                             {
-                                                IS_VINFAST ? 
+                                                IS_VINFAST() ? 
                                                 <>
                                                 {
                                                   isShowAssetHandoverCol && <th>{t('laptop_status')}</th>
@@ -345,7 +345,7 @@ class ListStaffResignationComponent extends React.PureComponent {
                                               isShowUniformHandoverCol && <th>{t('uniform_status')}</th>
                                             }
                                             {
-                                              IS_VINFAST ? <>
+                                              IS_VINFAST() ? <>
                                               {
                                                 isShowFingerHandoverCol && <th>
                                                 {t("BlockFingerprint")}
@@ -377,7 +377,7 @@ class ListStaffResignationComponent extends React.PureComponent {
                                             }
                                             
                                             {
-                                                IS_VINFAST ? 
+                                                IS_VINFAST() ? 
                                                 <>
                                                 {
                                                   isShowTrainingHandoverCol && <th>{t('training_status')}</th>
@@ -434,7 +434,7 @@ class ListStaffResignationComponent extends React.PureComponent {
                                                             }
                                                             
                                                             {
-                                                                IS_VINFAST ? 
+                                                                IS_VINFAST() ? 
                                                                 <>
                                                                 {
                                                                   isShowAssetHandoverCol && <td className="asset-transfer-col"><div className="data asset-transfer">{this.renderStatus(index, item.isHandoverAsset, item.statusAsset, "statusAsset")}</div></td>
@@ -457,7 +457,7 @@ class ListStaffResignationComponent extends React.PureComponent {
                                                               isShowUniformHandoverCol && <td className="handover-uniforms-col"><div className="data handover-uniforms">{this.renderStatus(index, item.isHandoverUniform, item.statusUniform, "statusUniform")}</div></td>
                                                             }
                                                             {
-                                                              IS_VINFAST ? <>
+                                                              IS_VINFAST() ? <>
                                                                 
                                                                 {
                                                                   isShowFingerHandoverCol && <td className="handover-fingerprints-email-col">
@@ -491,7 +491,7 @@ class ListStaffResignationComponent extends React.PureComponent {
                                                               isShowPolicyHandoverCol && <td className="confirm-violation-records-col" style={{textAlign: 'center'}}><div className="data confirm-violation-records">{this.renderStatus(index, item.isHandoverConfirmation, item.statusConfirmation, "statusConfirmation")}</div></td>
                                                             }
                                                             {
-                                                                IS_VINFAST ? 
+                                                                IS_VINFAST() ? 
                                                                 <>
                                                                 {
                                                                   isShowTrainingHandoverCol && <td className="confirm-violation-records-col" style={{textAlign: 'center'}}><div className="data confirm-violation-records">{this.renderStatus(index, item.isTrainingDebt, item.trainingDebtStatus, "trainingDebtStatus")}</div></td>
