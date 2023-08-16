@@ -46,13 +46,14 @@ function Header(props) {
     const [lastNotificationIdSeen, setLastNotificationIdSeen] = useState(0);
     const [dataNotificationsUnReadComponent, setDataNotificationsComponent] = useState("");
     const newestNotification = useContext(NewestNotificationContext);
+    const accessToken = localStorage.getItem('accessToken')
 
     useEffect(() => {
       localizeStore.setLocale(activeLang || Constants.LANGUAGE_VI)
     }, [activeLang, localizeStore]);
 
     useEffect(() => {
-      if (newestNotification) {
+      if (newestNotification && accessToken) {
         if (["IN", "OUT"].includes(newestNotification.data?.detailType)) {
           fetchLatestTimeKeeping();
         } else {
@@ -62,8 +63,10 @@ function Header(props) {
     }, [JSON.stringify(newestNotification)]);
 
     useEffect(() => {
-      fetchNotification();
-      fetchLatestTimeKeeping();
+        if (accessToken) {
+            fetchNotification();
+            fetchLatestTimeKeeping();
+        }
     }, [])
 
     const guard = useGuardStore();
@@ -290,8 +293,7 @@ function Header(props) {
     }
 
     const tokenExpired = localStorage.getItem('tokenExpired')
-    const accessToken = localStorage.getItem('accessToken')
-
+    
     // Auth.currentUserInfo().then(currentAuthUser => {
     //     if (currentAuthUser === undefined || currentAuthUser === null) {
     //         Auth.signOut({ global: true });
@@ -300,7 +302,7 @@ function Header(props) {
     //     }
     // });
 
-    if (!accessToken || accessToken == 'null' || accessToken == 'undefined' || !tokenExpired || !moment(tokenExpired, 'YYYYMMDDHHmmss').isValid() || moment().isAfter(moment(tokenExpired, 'YYYYMMDDHHmmss'))) {
+    if (accessToken && (!tokenExpired || !moment(tokenExpired, 'YYYYMMDDHHmmss').isValid() || moment().isAfter(moment(tokenExpired, 'YYYYMMDDHHmmss')))) {
         userLogOut()
     }
 

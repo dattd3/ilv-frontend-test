@@ -9,6 +9,7 @@ import StatusModal from '../../../components/Common/StatusModal'
 import Constants from '../.../../../../commons/Constants'
 import { getRequestTypeIdsAllowedToReApproval } from "../../../commons/Utils"
 import { getOperationType } from 'containers/Utils/Common'
+import IconClock from 'assets/img/icon/ic_clock.svg'
 
 const TIME_FORMAT = 'HH:mm:00'
 const TIME_OF_SAP_FORMAT = 'HHmm00'
@@ -92,12 +93,6 @@ class SubstitutionDetailComponent extends React.Component {
       }
     }
 
-    let isShowAppraisalInfo = false
-    if (substitution && Object.values(substitution.appraiser).some(item => item !== null && item !== '')
-      && Constants.STATUS_TO_SHOW_CONSENTER.includes(substitution.processStatusId)) {
-      isShowAppraisalInfo = true
-    }
-
     const timeProcessing = {
       createDate: substitution?.createDate,
       assessedDate: substitution?.assessedDate,
@@ -108,8 +103,8 @@ class SubstitutionDetailComponent extends React.Component {
     const operationType = getOperationType(requestTypeId, substitution.actionType, substitution.processStatusId)
 
     return (
-      <div className="leave-of-absence shift-change-section">
-        <h5>{t("EmployeeInfomation")}</h5>
+      <div className="leave-of-absence shift-change-section-detail">
+        <h5 className="content-page-header">{t("EmployeeInfomation")}</h5>
         <div className="box shadow cbnv">
           <div className="row group">
             <div className="col-xl-3">
@@ -131,7 +126,7 @@ class SubstitutionDetailComponent extends React.Component {
           </div>
         </div>
         <StatusModal show={isShowStatusModal} content={content} isSuccess={isSuccess} onHide={this.hideStatusModal} />
-        <h5>{t("ShiftChangeRequestInformation")}</h5>
+        <h5 className="content-page-header">{t("ShiftChangeRequestInformation")}</h5>
         {substitution.requestInfo.filter(t => t.isEdited).map((timesheet, index) => {
           let dateInfoElementEdited = <b>{t("Day")} {moment(timesheet.date).format("DD/MM/YYYY")}</b>
           if (timesheet.applyFrom !== timesheet.applyTo) {
@@ -139,7 +134,7 @@ class SubstitutionDetailComponent extends React.Component {
           }
 
           return <div className="box shadow cbnv" key={index}>
-            <div className="col text-uppercase date-info-edit"><p><i className="fa fa-clock-o"></i> {dateInfoElementEdited}</p></div>
+            <div className="col text-uppercase date-info-edit"><p className="d-flex align-items-center"><img src={IconClock} alt="Clock" className="ic-clock" style={{ marginRight: 5 }} />{dateInfoElementEdited}</p></div>
             <div className="row">
               <div className="col-6">
                 <div className="box-time">
@@ -205,29 +200,31 @@ class SubstitutionDetailComponent extends React.Component {
         })}
 
         {
-          isShowAppraisalInfo && 
-          <>
-            <h5>{t("ConsenterInformation")}</h5>
-            <ApproverDetailComponent
-              title={t("Consenter")}
-              manager={substitution.appraiser}
-              status={substitution.requestInfo ? substitution.processStatusId : ""}
-              hrComment={substitution.appraiserComment}
-              isApprover={false} />
-          </>
+          substitution?.appraiser?.fullName && (
+            <>
+              <h5 className="content-page-header">{t("ConsenterInformation")}</h5>
+              <ApproverDetailComponent
+                title={t("Consenter")}
+                manager={substitution.appraiser}
+                status={substitution.requestInfo ? substitution.processStatusId : ""}
+                hrComment={substitution.appraiserComment}
+                isApprover={false} />
+            </>
+          )
         }
         
         {
-          substitution && (Constants.STATUS_TO_SHOW_APPROVER.includes(substitution.processStatusId )) &&
-          <>
-            <h5>{t("ApproverInformation")}</h5>
-            <ApproverDetailComponent
-              title={t("Approver")}
-              manager={substitution.approver}
-              status={substitution.processStatusId}
-              hrComment={substitution.approverComment}
-              isApprover={true} />
-          </>
+          substitution?.approver?.fullName && (
+            <>
+              <h5 className="content-page-header">{t("ApproverInformation")}</h5>
+              <ApproverDetailComponent
+                title={t("Approver")}
+                manager={substitution.approver}
+                status={substitution.processStatusId}
+                hrComment={substitution.approverComment}
+                isApprover={true} />
+            </>
+          )
         }
 
         <RequestProcessing {...timeProcessing} operationType={operationType} />

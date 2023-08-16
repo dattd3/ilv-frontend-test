@@ -10,7 +10,7 @@ import RequestProcessing from '../RequestProcessing'
 import StatusModal from '../../../components/Common/StatusModal'
 import Constants from '../.../../../../commons/Constants'
 import { getOperationType } from 'containers/Utils/Common'
-import { FOREIGN_SICK_LEAVE, MARRIAGE_FUNERAL_LEAVE_KEY, VIN_UNI_SICK_LEAVE } from 'containers/Task/Constants'
+import { FOREIGN_SICK_LEAVE, MARRIAGE_FUNERAL_LEAVE_KEY, VIN_UNI_SICK_LEAVE, VIN_SCHOOL_SICK_LEAVE } from 'containers/Task/Constants'
 
 const TIME_FORMAT = 'HH:mm'
 
@@ -31,11 +31,12 @@ const RegisteredLeaveInfo = ({ leaveOfAbsence, t, annualLeaveSummary }) => {
           (leaveOfAbsence?.requestInfoOld && leaveOfAbsence?.requestInfoOld?.length > 0 ? leaveOfAbsence?.requestInfoOld : leaveOfAbsence?.requestInfo).map((info, infoIndex) => {
             let isForeignSickLeave = info?.absenceType?.value === FOREIGN_SICK_LEAVE
             let isVinUniSickLeave = info?.absenceType?.value === VIN_UNI_SICK_LEAVE
+            let isVinSchoolSickLeave = info?.absenceType?.value === VIN_SCHOOL_SICK_LEAVE
 
             return (
               <div className='item' key={`info-${infoIndex}`}>
                 {
-                  (isForeignSickLeave || isVinUniSickLeave) ? (
+                  (isForeignSickLeave || isVinUniSickLeave || isVinSchoolSickLeave) ? (
                     <>
                       <div className="row">
                         <div className="col-xl-4">
@@ -64,10 +65,16 @@ const RegisteredLeaveInfo = ({ leaveOfAbsence, t, annualLeaveSummary }) => {
                               <div className="detail">{`${Number(annualLeaveSummary?.SICK_LEA_EXPAT || 0).toFixed(3)} ${formatDayUnitByValue(annualLeaveSummary?.SICK_LEA_EXPAT || 0)}`}</div>
                             </div>
                           )
-                          : (
+                          : isVinUniSickLeave ? (
                             <div className="col-xl-4">
                               {t("SickLeaveFundForVinUni")}
                               <div className="detail">{`${Number(annualLeaveSummary?.SICK_LEA_VUNI || 0).toFixed(3)} ${formatDayUnitByValue(annualLeaveSummary?.SICK_LEA_VUNI || 0)}`}</div>
+                            </div>
+                          )
+                          : (
+                            <div className="col-xl-4">
+                              {t("SickLeaveFundForVinSchool")}
+                              <div className="detail">{`${Number(annualLeaveSummary?.SICK_LEA_VSC || 0).toFixed(3)} ${formatDayUnitByValue(annualLeaveSummary?.SICK_LEA_VSC || 0)}`}</div>
                             </div>
                           )
                         }
@@ -328,12 +335,6 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
       }
     }
 
-    let isShowAppraisalInfo = false
-    if (appraiser && Object.values(appraiser).some(item => item !== null && item !== '')
-      && requestInfo && Constants.STATUS_TO_SHOW_CONSENTER.includes(requestInfo.processStatusId)) {
-      isShowAppraisalInfo = true
-    }
-
     const newItem = [...requestInfo?.newItem]
     const requestInfoToShow = [_.omit(requestInfo, ['newItem']) || [], ...newItem || []]
     const requestedTime = (requestInfoToShow || []).reduce((initial, current) => {
@@ -368,20 +369,21 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         }
 
         {
-          isShowAppraisalInfo && 
-          <>
-            <h5 className='content-page-header'>{t("ConsenterInformation")}</h5>
-            <ApproverDetailComponent 
-              title={t("Consenter")}
-              manager={leaveOfAbsence.appraiser}
-              status={requestInfo ? requestInfo.processStatusId : ""}
-              hrComment={requestInfo.appraiserComment}
-              isApprover={false} />
-          </>
+          appraiser?.fullName && (
+            <>
+              <h5 className='content-page-header'>{t("ConsenterInformation")}</h5>
+              <ApproverDetailComponent 
+                title={t("Consenter")}
+                manager={leaveOfAbsence.appraiser}
+                status={requestInfo ? requestInfo.processStatusId : ""}
+                hrComment={requestInfo.appraiserComment}
+                isApprover={false} />
+            </>
+          )
         }
 
         {
-          requestInfo && (Constants.STATUS_TO_SHOW_APPROVER.includes(requestInfo.processStatusId )) &&
+          leaveOfAbsence?.approver?.fullName && (
             <>
               <h5 className='content-page-header'>{t("ApproverInformation")}</h5>
               <ApproverDetailComponent
@@ -391,6 +393,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
                 hrComment={requestInfo.approverComment}
                 isApprover={true} />
             </>
+          )
         }
 
         <RequestProcessing {...timeProcessing} operationType={operationType} />

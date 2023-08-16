@@ -37,7 +37,7 @@ const RegisteredBusinessTripInfo = ({ businessTrip, t }) => {
                   </div>
                   <div className="col-xl-4">
                     {t('TotalTimeForBizTripAndTraining')}
-                    <div className="detail">{(businessTrip && info?.days >=1) ? info?.days + ' ' + t("Day") : info?.hours + ' ' + t("Hour")}</div>
+                    <div className="detail">{info?.isAllDay ? info?.days + ' ' + t("Day") : info?.hours + ' ' + t("Hour")}</div>
                   </div>
                 </div>
                 <div className="row">
@@ -198,13 +198,6 @@ class BusinessTripDetailComponent extends React.Component {
       }
     }
 
-    let isShowAppraisalInfo = false
-    if (businessTrip && businessTrip.appraiser 
-      && Object.values(businessTrip.appraiser).some(item => item !== null && item !== '')
-      && requestInfo && Constants.STATUS_TO_SHOW_CONSENTER.includes(requestInfo.processStatusId)) {
-      isShowAppraisalInfo = true
-    }
-
     const newItem = [...requestInfo?.newItem]
     const requestInfoToShow = [_.omit(requestInfo, ['newItem']) || [], ...newItem || []]
     const requestedTime = (requestInfoToShow || []).reduce((initial, current) => {
@@ -240,29 +233,31 @@ class BusinessTripDetailComponent extends React.Component {
         }
 
         {
-          isShowAppraisalInfo && 
-          <>
-            <h5 className='content-page-header'>{t("ConsenterInformation")}</h5>
-            <ApproverDetailComponent
-              title={t("Consenter")}
-              manager={businessTrip.appraiser}
-              status={requestInfo ? requestInfo.processStatusId : ""}
-              hrComment={requestInfo.appraiserComment}
-              isApprover={false} />
-          </>
+          businessTrip?.appraiser?.fullName && (
+            <>
+              <h5 className='content-page-header'>{t("ConsenterInformation")}</h5>
+              <ApproverDetailComponent
+                title={t("Consenter")}
+                manager={businessTrip.appraiser}
+                status={requestInfo ? requestInfo.processStatusId : ""}
+                hrComment={requestInfo.appraiserComment}
+                isApprover={false} />
+            </>
+          )
         }
 
         {
-          (this.getTypeDetail() === "request" || Constants.STATUS_TO_SHOW_APPROVER.includes(requestInfo.processStatusId)) &&
-          <>
-            <h5 className='content-page-header'>{t("ApproverInformation")}</h5>
-            <ApproverDetailComponent
-              title={t("Approver")}
-              manager={businessTrip.approver}
-              status={requestInfo.processStatusId}
-              hrComment={requestInfo.approverComment}
-              isApprover={true} />
-          </>
+          businessTrip?.approver?.fullName && (
+            <>
+              <h5 className='content-page-header'>{t("ApproverInformation")}</h5>
+              <ApproverDetailComponent
+                title={t("Approver")}
+                manager={businessTrip.approver}
+                status={requestInfo.processStatusId}
+                hrComment={requestInfo.approverComment}
+                isApprover={true} />
+            </>
+          )
         }
 
         <RequestProcessing {...timeProcessing} operationType={operationType} />

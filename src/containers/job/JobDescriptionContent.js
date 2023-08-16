@@ -6,7 +6,7 @@ export default function JobDescriptionContent(props) {
 
   return (
     <div className="job-description">
-      <div className="card shadow">
+      <div className="card shadow-customize">
           <div className={open ? 'card-header clearfix text-white ' + 'bg-' + props.bg : 'card-header clearfix jd-border border-left-' + props.bg } onClick={() => setOpen(!open)}>
             <div className="float-left">{props.headerTitle}</div>
             <div className="float-right"><i className={open ? 'fas fa-caret-up' : 'fas fa-caret-down' }></i></div>

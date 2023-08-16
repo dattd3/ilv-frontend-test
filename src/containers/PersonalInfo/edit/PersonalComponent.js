@@ -9,7 +9,8 @@ import vi from 'date-fns/locale/vi'
 import { withTranslation } from "react-i18next"
 import _ from 'lodash'
 import Constants from 'commons/Constants'
-import { getMuleSoftHeaderConfigurations, genderConfig, marriageConfig } from "commons/Utils"
+import { getMuleSoftHeaderConfigurations, genderConfig, marriageConfig, isVinFast } from "commons/Utils"
+import IconDatePicker from 'assets/img/icon/Icon_DatePicker.svg'
 
 registerLocale("vi", vi)
 
@@ -359,7 +360,7 @@ class PersonalComponent extends React.Component {
 
         return (
             <div className="info edit-main-user-info">
-                <div className="box shadow">
+                <div className="box" style={{ boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px" }}>
                     <div className="row">
                         <div className="col"><i className="note note-old"></i> {t("Record")}</div>
                         <div className="col"><i className="note note-new"></i> {t("NewInformation")}</div>
@@ -385,7 +386,7 @@ class PersonalComponent extends React.Component {
                                     showYearDropdown={true}
                                     locale="vi"
                                     className="form-control input" />
-                                <span className="input-group-addon input-img"><i className="fas fa-calendar-alt"></i></span>
+                                <span className="input-img"><img src={IconDatePicker} alt="Date" /></span>
                             </label>
                         </div>
                     </div>
@@ -494,7 +495,7 @@ class PersonalComponent extends React.Component {
                                     showYearDropdown={true}
                                     locale="vi"
                                     className="form-control input" />
-                                <span className="input-group-addon input-img"><i className="fas fa-calendar-alt"></i></span>
+                                <span className="input-img"><img src={IconDatePicker} alt="Date" /></span>
                             </label>
                             {
                                 validationMessagesFromParent?.personalIdentifyDate && <p className="text-danger">{validationMessagesFromParent?.personalIdentifyDate}</p>
@@ -551,7 +552,7 @@ class PersonalComponent extends React.Component {
                                     showYearDropdown={true}
                                     locale="vi"
                                     className="form-control input" />
-                                <span className="input-group-addon input-img"><i className="fas fa-calendar-alt"></i></span>
+                                <span className="input-img"><img src={IconDatePicker} alt="Date" /></span>
                             </label>
                             {
                                 validationMessagesFromParent?.passportDate && <p className="text-danger">{validationMessagesFromParent?.passportDate}</p>
@@ -682,7 +683,7 @@ class PersonalComponent extends React.Component {
                                     showYearDropdown={true}
                                     locale="vi"
                                     className="form-control input" />
-                                <span className="input-group-addon input-img"><i className="fas fa-calendar-alt"></i></span>
+                                <span className="input-img"><img src={IconDatePicker} alt="Date" /></span>
                             </label>
                             {
                                 validationMessagesFromParent?.maritalDate && <p className="text-danger">{validationMessagesFromParent?.maritalDate}</p>
@@ -737,7 +738,7 @@ class PersonalComponent extends React.Component {
                         </div>
                     </div>
                     {
-                        localStorage.getItem("companyCode") != "V070" ?
+                        !isVinFast() ?
                         <>
                             <div className="row">
                                 <div className="col-2">

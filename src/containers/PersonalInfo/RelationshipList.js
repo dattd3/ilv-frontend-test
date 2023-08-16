@@ -10,12 +10,12 @@ function RelationshipList(props) {
     return (
         <div className="relationship-item">
             <div className="info-label">
-                <div className="col-item full-name">{t("FullName")}</div>
-                <div className="col-item relationship">{t("Relationship")}</div>
-                <div className="col-item birthday">{t("DateOfBirth")}</div>
-                <div className="col-item tax-no">{t("AllowancesTaxNo")}</div>
-                <div className="col-item allowances">{t("FamilyAllowances")}</div>
-                <div className="col-item allowances-date">{t("AllowancesDate")}</div>
+                <div className="col-item full-name font-weight-bold">{t("FullName")}</div>
+                <div className="col-item relationship font-weight-bold">{t("Relationship")}</div>
+                <div className="col-item birthday font-weight-bold">{t("DateOfBirth")}</div>
+                <div className="col-item tax-no font-weight-bold">{t("AllowancesTaxNo")}</div>
+                <div className="col-item allowances font-weight-bold">{t("FamilyAllowances")}</div>
+                <div className="col-item allowances-date font-weight-bold">{t("AllowancesDate")}</div>
             </div>
             {
                 relationships && relationships.length > 0 ?

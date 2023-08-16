@@ -7,6 +7,7 @@ import RequestProcessing from '../RequestProcessing'
 import Constants from '../.../../../../commons/Constants'
 import { getRequestTypeIdsAllowedToReApproval } from "../../../commons/Utils"
 import { getOperationType } from 'containers/Utils/Common'
+import IconClock from 'assets/img/icon/ic_clock.svg'
 
 const TIME_FORMAT = 'HH:mm:ss'
 const DATE_FORMAT = 'DD-MM-YYYY'
@@ -125,7 +126,7 @@ class InOutUpdateDetailComponent extends React.Component {
 
     return (
       <div className="leave-of-absence in-out-update-detail">
-        <h5>{t("EmployeeInfomation")}</h5>
+        <h5 className="content-page-header">{t("EmployeeInfomation")}</h5>
         <div className="box shadow cbnv">
           <div className="row group">
             <div className="col-xl-3">
@@ -146,10 +147,10 @@ class InOutUpdateDetailComponent extends React.Component {
             </div>
           </div>
         </div>
-        <h5>{t("InOutChangeRequestInfo")}</h5>
+        <h5 className="content-page-header">{t("InOutChangeRequestInfo")}</h5>
         {inOutTimeUpdate.requestInfo.filter(t => t.isEdited).map((timesheet, index) => {
           return <div className="box shadow" key={index}>
-            <div className="col"><p><i className="fa fa-clock-o text-capitalize"></i> <b>{t("Day")} {moment(timesheet.date).format("DD/MM/YYYY")}</b></p></div>
+            <div className="d-flex align-items-center"><p><img src={IconClock} alt="Clock" className="ic-clock" /><b style={{ marginLeft: 5, textTransform: 'capitalize' }}>{t("Day")} {moment(timesheet.date).format("DD/MM/YYYY")}</b></p></div>
             <div className="row">
               <div className="col-6">
                 <div className="box-time">
@@ -206,23 +207,25 @@ class InOutUpdateDetailComponent extends React.Component {
             </div>
           </div>
         })}
+
         {
-          isShowAppraisalInfo &&
-          <>
-            <h5>{t("ConsenterInformation")}</h5>
-            <ApproverDetailComponent
-              title={t("Consenter")}
-              manager={inOutTimeUpdate.appraiser}
-              status={inOutTimeUpdate.requestInfo ? inOutTimeUpdate.processStatusId : ""}
-              hrComment={inOutTimeUpdate.appraiserComment}
-              isApprover={false} />
-          </>
+          inOutTimeUpdate?.appraiser?.fullName && (
+            <>
+              <h5 className="content-page-header">{t("ConsenterInformation")}</h5>
+              <ApproverDetailComponent
+                title={t("Consenter")}
+                manager={inOutTimeUpdate.appraiser}
+                status={inOutTimeUpdate.requestInfo ? inOutTimeUpdate.processStatusId : ""}
+                hrComment={inOutTimeUpdate.appraiserComment}
+                isApprover={false} />
+            </>
+          )
         }
         
         {
-          inOutTimeUpdate && (Constants.STATUS_TO_SHOW_APPROVER.includes(inOutTimeUpdate.processStatusId )) &&
+          inOutTimeUpdate?.approver?.fullName && (
             <>
-              <h5>{t("ApproverInformation")}</h5>
+              <h5 className="content-page-header">{t("ApproverInformation")}</h5>
               <ApproverDetailComponent
                 title={t("Approver")}
                 manager={inOutTimeUpdate.approver}
@@ -230,6 +233,7 @@ class InOutUpdateDetailComponent extends React.Component {
                 hrComment={inOutTimeUpdate.approverComment}
                 isApprover={true} />
             </>
+          )
         }
 
         <RequestProcessing {...timeProcessing} operationType={operationType} />
