@@ -337,7 +337,7 @@ const ContractEvaluationdetail = (props) => {
           </div>
 
           {
-              IS_VINFAST && <div className="box cbnv">
+              IS_VINFAST() && <div className="box cbnv">
                 <div className="row approve">
                   <div className="col-12">
                     <span className="title">{t('hr_review')}</span>
