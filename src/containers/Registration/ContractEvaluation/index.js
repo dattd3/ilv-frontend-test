@@ -185,7 +185,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         }
         break;
       case 12:
-        if(this.checkSameVinfast()){
+        if(IS_VINFAST()){
           shouldDisable = true;
         }
         break;
@@ -202,7 +202,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         shouldDisable = true;
     }
     let canAddJob = !isAfterT_7; //data.canAddJob && !isAfterT_7
-    if(IS_VINFAST) {
+    if(IS_VINFAST()) {
       canAddJob = true//data.canAddJob;
     }
     if(checkIsExactPnL(Constants.pnlVCode.VinAI)) {
@@ -1363,7 +1363,7 @@ renderEvalution = (name, data, isDisable) => {
   // }
 
   // checkShowApprovalComment = (data) => {
-  //   if (IS_VINFAST) {
+  //   if (IS_VINFAST()) {
   //     return data.processStatus == 12;
   //   }
   //   if(checkVersionPnLSameAsVinhome(Constants.MODULE.DANHGIA_TAIKI)) {
