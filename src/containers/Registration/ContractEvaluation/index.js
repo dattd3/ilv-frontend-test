@@ -24,7 +24,7 @@ import { vi, enUS } from 'date-fns/locale'
 import { formatProcessTime, getMuleSoftHeaderConfigurations, prepareOrganization } from '../../../commons/Utils'
 import LoadingSpinner from '../../../components/Forms/CustomForm/LoadingSpinner'
 import LoadingModal from '../../../components/Common/LoadingModal'
-import { checkVersionPnLSameAsVinhome, IS_VINFAST } from '../../../commons/commonFunctions'
+import { checkIsExactPnL, checkVersionPnLSameAsVinhome, IS_VINFAST } from '../../../commons/commonFunctions'
 import ContractEvaluationdetail from './detail'
 import HOCComponent from '../../../components/Common/HOCComponent'
 import SalaryModal from './SalaryModal'
@@ -161,7 +161,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     const currentEmployeeNo = localStorage.getItem('email');
     const currentEmployeeCode = localStorage.getItem('employeeNo');
     const data = this.state.data;
-    const dateToCheck = data.contractType == 'VA' ? (checkVersionPnLSameAsVinhome(Constants.MODULE.DANHGIA_TAIKI) ? -75 : -45) : (IS_VINFAST() ? -14 : -7); 
+    const dateToCheck = data.contractType == 'VA' ? (checkVersionPnLSameAsVinhome(Constants.MODULE.DANHGIA_TAIKI) ? -75 : -45) : (IS_VINFAST() ? -14 : -7);
     const isAfterT_7 = data.employeeInfo && data.employeeInfo.startDate && moment(new Date()).diff(moment(data.employeeInfo.expireDate), 'days') > dateToCheck ? true : false;
     let shouldDisable = false;
     let isNguoidanhgia = false;
@@ -185,7 +185,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         }
         break;
       case 12:
-        if(IS_VINFAST()){
+        if(this.checkSameVinfast()){
           shouldDisable = true;
         }
         break;
@@ -205,6 +205,9 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     if(IS_VINFAST()) {
       canAddJob = true//data.canAddJob;
     }
+    if(checkIsExactPnL(Constants.pnlVCode.VinAI)) {
+      canAddJob = false;
+    }
     if(this.state.type == 'edit' && data.processStatus == 9 && canAddJob ){
       const subordinates = await this.getSubordinates()
       const directManagerValidation = this.validateDirectManager( data.employeeInfo.employeeNo, subordinates)
@@ -215,6 +218,10 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
       isNguoidanhgia: isNguoidanhgia,
       loading: false
     })
+  }
+
+  checkSameVinfast = () => {
+    return IS_VINFAST() || checkIsExactPnL(Constants.pnlVCode.VinAI);
   }
 
   getSubordinates = async () => {
@@ -351,7 +358,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     }
   
     if(type === 'request'){
-      let _showComponent = {...this.employeeSetting.showComponent, JobEditing: IS_VINFAST() ? false : this.employeeSetting.showComponent.JobEditing}
+      let _showComponent = {...this.employeeSetting.showComponent, JobEditing: this.checkSameVinfast() ? false : this.employeeSetting.showComponent.JobEditing}
       this.setState({
         showComponent: _showComponent,
         disableComponent: {...this.employeeSetting.disableComponent, disableAll: true},
@@ -404,7 +411,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         if (result.code != Constants.API_ERROR_CODE) {
           const responseData = this.saveStateInfos(res.data.data);
           this.setState({data : responseData}, () => {
-            if (IS_VINFAST() && responseData.processStatus == 9 && !responseData.nguoidanhgia?.account) {
+            if (this.checkSameVinfast() && responseData.processStatus == 9 && !responseData.nguoidanhgia?.account) {
               this.setDirectManagerAppraise();
             }
             this.getDataSalary();
@@ -572,7 +579,8 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         departmentName: infos.staffContracts.departmentName,
         startDate: infos.staffContracts.startDate,
         expireDate: infos.staffContracts.expireDate,
-        employeeEmail: infos.staffContracts.employeeEmail
+        employeeEmail: infos.staffContracts.employeeEmail,
+        rankName: infos.staffContracts.rankName
       }
     }
 
@@ -768,7 +776,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         } else if(isMissing)
           errors['rating'] = t('require_fill_self_evaluation')
       }
-      if (IS_VINFAST() && !this.state.data.hrAppraiser?.account) {
+      if (this.checkSameVinfast() && !this.state.data.hrAppraiser?.account) {
         errors["hrAppraiser"] = t('Required');
       }
       if(checkVersionPnLSameAsVinhome(Constants.MODULE.DANHGIA_TAIKI)) {
@@ -1512,6 +1520,13 @@ renderEvalution = (name, data, isDisable) => {
               {t('expired_day_contract')}
               <div className="detail">{data.employeeInfo.expireDate ? moment(data.employeeInfo.expireDate).format("DD/MM/YYYY") : '' }</div>
             </div>
+            {
+              checkIsExactPnL(Constants.pnlVCode.VinAI) &&
+              <div className="col-4">
+                {t('Grade')}
+                <div className="detail">{data.employeeInfo.rankName || '' }</div>
+              </div>
+            }
           </div>
         </div>
         <StatusModal show={this.state.isShowStatusModal} content={this.state.content} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
@@ -1523,11 +1538,11 @@ renderEvalution = (name, data, isDisable) => {
              {t('assessment_scale')}
             </div>
             <div className="col-9">
-                   <span>(5) {t('excellent')}</span>
-                    <span>(4) {t('good')}</span>
-                    <span>(3) {t('medium')}</span>
-                    <span>(2) {t('normal')}</span>
-                    <span>(1) {t('bad')}</span>
+                   <span>(5) {t((checkIsExactPnL(Constants.pnlVCode.VinAI) ? 'vinai_' : '') + 'excellent')}</span>
+                    <span>(4) {t((checkIsExactPnL(Constants.pnlVCode.VinAI) ? 'vinai_' : '') + 'good')}</span>
+                    <span>(3) {t((checkIsExactPnL(Constants.pnlVCode.VinAI) ? 'vinai_' : '') + 'medium')}</span>
+                    <span>(2) {t((checkIsExactPnL(Constants.pnlVCode.VinAI) ? 'vinai_' : '') + 'normal')}</span>
+                    <span>(1) {t((checkIsExactPnL(Constants.pnlVCode.VinAI) ? 'vinai_' : '') + 'bad')}</span>
             </div>
           </div>
           <div className="row">
@@ -1844,7 +1859,7 @@ renderEvalution = (name, data, isDisable) => {
             </div>
 
             {
-              IS_VINFAST() && <div className="box shadow cbnv">
+              this.checkSameVinfast() && <div className="box shadow cbnv">
                 <div className="row approve">
                   <div className="col-12">
                     <span className="title">{t('hr_review')}</span>
@@ -1959,7 +1974,7 @@ renderEvalution = (name, data, isDisable) => {
               {this.state.errors && this.state.errors['qltt'] ? <p className="text-danger">{this.state.errors['qltt']}</p> : null}
             </div>
             {
-                IS_VINFAST() && <div className="box shadow cbnv">
+                this.checkSameVinfast() && <div className="box shadow cbnv">
                   <div className="row approve">
                     <div className="col-12">
                       <span className="title">{t('hr_review')}</span>
@@ -2109,7 +2124,7 @@ renderEvalution = (name, data, isDisable) => {
               null :
               <>
               {
-                IS_VINFAST() && <div className="box shadow cbnv">
+                this.checkSameVinfast() && <div className="box shadow cbnv">
                   <div className="row approve">
                     <div className="col-12">
                       <span className="title">{t('hr_review')}</span>
