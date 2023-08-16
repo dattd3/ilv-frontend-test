@@ -17,6 +17,7 @@ import { getValueParamByQueryString, getRegistrationMinDateByConditions, isValid
 import { checkIsExactPnL } from '../../../commons/commonFunctions';
 import IconDatePicker from 'assets/img/icon/Icon_DatePicker.svg'
 import IconClock from 'assets/img/icon/ic_clock.svg'
+import LoadingModal from 'components/Common/LoadingModal'
 
 registerLocale("vi", vi)
 
@@ -311,14 +312,14 @@ class BusinessTripComponent extends React.Component {
         })
 
         if (times.length === 0) return
-        this.setState({ validating: true })
+        this.setState({ validating: true, isLoading: true })
         axios.post(`${process.env.REACT_APP_REQUEST_URL}request/validate`, {
             perno: localStorage.getItem('employeeNo'),
             ...(this.state.isEdit && { requestId: this.props.taskId }),
             times: times,
         }, config)
             .then(res => {
-                if (res && res.data && res.data.data && res.data.data.times.length > 0) {
+                if (res?.data?.data?.times?.length > 0) {
                     const newRequestInfo = requestInfo.map(req => {
                         const errors = req.errors
                         let totalTimes
@@ -339,8 +340,8 @@ class BusinessTripComponent extends React.Component {
                         }
                     })
                     this.setState({ requestInfo: newRequestInfo })
-                }
-                else {
+                } else {
+                    this.showStatusModal(this.props.t("Notification"), res?.data?.result?.message, false)
                     const newRequestInfo = requestInfo.map(req => {
                         const errors = req.errors
                         errors.startTimeAndEndTime =  res.data.result.message
@@ -358,7 +359,7 @@ class BusinessTripComponent extends React.Component {
                 else { 
                     const newRequestInfo = requestInfo.map(req => {
                         const errors = req.errors
-                        errors.startTimeAndEndTime = "Có lỗi xảy ra trong quá trình xác thực dữ liệu. Xin vui lòng nhập lại thông tin ngày/giờ nghỉ!"
+                        errors.startTimeAndEndTime = error?.response?.data?.result?.message || "Có lỗi xảy ra trong quá trình xác thực dữ liệu. Xin vui lòng nhập lại thông tin ngày/giờ nghỉ!"
                         return {
                             ...req,
                             errors,
@@ -366,7 +367,7 @@ class BusinessTripComponent extends React.Component {
                     })
                     this.setState({ newRequestInfo })
                 }
-            }).finally(() => this.setState({ validating: false }))
+            }).finally(() => this.setState({ validating: false, isLoading: false }))
     }
 
     isOverlapDateTime(startDateTime, endDateTime) {
@@ -607,21 +608,16 @@ class BusinessTripComponent extends React.Component {
             headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` }
         })
         .then(response => {
-            if (response && response.data && response.data.result && response.data.result.code != Constants.API_ERROR_CODE) {
+            if (response?.data?.result?.code != Constants.API_ERROR_CODE) {
                 this.showStatusModal(this.props.t("Successful"), this.props.t("RequestSent"), true)
                 this.setDisabledSubmitButton(false)
-            }
-            else {
-                this.showStatusModal(this.props.t("Notification"), response.data.result.message, false)
+            } else {
+                this.showStatusModal(this.props.t("Notification"), response?.data?.result?.message, false)
                 this.setDisabledSubmitButton(false)
             }
         })
         .catch(error => {
-            let message = t("Error")
-            if (error?.response?.data?.result?.code == Constants.API_ERROR_CODE) {
-              message = error?.response?.data?.result?.message
-            }
-            this.showStatusModal(this.props.t("Notification"), message, false)
+            this.showStatusModal(this.props.t("Notification"), error?.response?.data?.result?.message || t("Error"), false)
             this.setDisabledSubmitButton(false)
         })
         .finally(() => {
@@ -779,7 +775,7 @@ class BusinessTripComponent extends React.Component {
 
     render() {
         const { t, businessTrip, recentlyManagers } = this.props;
-        const { requestInfo, errors, approver, appraiser, isEdit, validating } = this.state
+        const { requestInfo, errors, approver, appraiser, isEdit, validating, isLoading } = this.state
         const sortRequestListByGroup = requestInfo.sort((reqPrev, reqNext) => reqPrev.groupId - reqNext.groupId)
         const requestInfoArr = _.valuesIn(_.groupBy(sortRequestListByGroup, (req) => req.groupId))
         const vehicles = [
@@ -820,7 +816,7 @@ class BusinessTripComponent extends React.Component {
         return (
             <div className="business-trip">
                 <ResultModal show={this.state.isShowStatusModal} title={this.state.titleModal} message={this.state.messageModal} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
-
+                <LoadingModal show={isLoading} />
                 { isEdit && 
                     <div className="box shadow registered-information">
                         <div className='text-uppercase font-weight-bold box-title'>Thông tin đã đăng ký công tác/đào tạo</div>
