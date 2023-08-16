@@ -161,7 +161,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     const currentEmployeeNo = localStorage.getItem('email');
     const currentEmployeeCode = localStorage.getItem('employeeNo');
     const data = this.state.data;
-    const dateToCheck = data.contractType == 'VA' ? (checkVersionPnLSameAsVinhome(Constants.MODULE.DANHGIA_TAIKI) ? -75 : -45) : (IS_VINFAST ? -14 : -7); 
+    const dateToCheck = data.contractType == 'VA' ? (checkVersionPnLSameAsVinhome(Constants.MODULE.DANHGIA_TAIKI) ? -75 : -45) : (IS_VINFAST() ? -14 : -7); 
     const isAfterT_7 = data.employeeInfo && data.employeeInfo.startDate && moment(new Date()).diff(moment(data.employeeInfo.expireDate), 'days') > dateToCheck ? true : false;
     let shouldDisable = false;
     let isNguoidanhgia = false;
@@ -351,7 +351,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     }
   
     if(type === 'request'){
-      let _showComponent = {...this.employeeSetting.showComponent, JobEditing: IS_VINFAST ? false : this.employeeSetting.showComponent.JobEditing}
+      let _showComponent = {...this.employeeSetting.showComponent, JobEditing: IS_VINFAST() ? false : this.employeeSetting.showComponent.JobEditing}
       this.setState({
         showComponent: _showComponent,
         disableComponent: {...this.employeeSetting.disableComponent, disableAll: true},
@@ -404,7 +404,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         if (result.code != Constants.API_ERROR_CODE) {
           const responseData = this.saveStateInfos(res.data.data);
           this.setState({data : responseData}, () => {
-            if (IS_VINFAST && responseData.processStatus == 9 && !responseData.nguoidanhgia?.account) {
+            if (IS_VINFAST() && responseData.processStatus == 9 && !responseData.nguoidanhgia?.account) {
               this.setDirectManagerAppraise();
             }
             this.getDataSalary();
@@ -768,7 +768,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         } else if(isMissing)
           errors['rating'] = t('require_fill_self_evaluation')
       }
-      if (IS_VINFAST && !this.state.data.hrAppraiser?.account) {
+      if (IS_VINFAST() && !this.state.data.hrAppraiser?.account) {
         errors["hrAppraiser"] = t('Required');
       }
       if(checkVersionPnLSameAsVinhome(Constants.MODULE.DANHGIA_TAIKI)) {
@@ -1844,7 +1844,7 @@ renderEvalution = (name, data, isDisable) => {
             </div>
 
             {
-              IS_VINFAST && <div className="box shadow cbnv">
+              IS_VINFAST() && <div className="box shadow cbnv">
                 <div className="row approve">
                   <div className="col-12">
                     <span className="title">{t('hr_review')}</span>
@@ -1959,7 +1959,7 @@ renderEvalution = (name, data, isDisable) => {
               {this.state.errors && this.state.errors['qltt'] ? <p className="text-danger">{this.state.errors['qltt']}</p> : null}
             </div>
             {
-                IS_VINFAST && <div className="box shadow cbnv">
+                IS_VINFAST() && <div className="box shadow cbnv">
                   <div className="row approve">
                     <div className="col-12">
                       <span className="title">{t('hr_review')}</span>
@@ -2109,7 +2109,7 @@ renderEvalution = (name, data, isDisable) => {
               null :
               <>
               {
-                IS_VINFAST && <div className="box shadow cbnv">
+                IS_VINFAST() && <div className="box shadow cbnv">
                   <div className="row approve">
                     <div className="col-12">
                       <span className="title">{t('hr_review')}</span>
