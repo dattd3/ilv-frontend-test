@@ -20,6 +20,7 @@ import { absenceRequestTypes, PN03List, MATERNITY_LEAVE_KEY, MARRIAGE_FUNERAL_LE
     VIN_UNI_SICK_LEAVE, VIN_SCHOOL_SICK_LEAVE } from "../../Task/Constants"
 import IconDatePicker from 'assets/img/icon/Icon_DatePicker.svg'
 import IconClock from 'assets/img/icon/ic_clock.svg'
+import LoadingModal from 'components/Common/LoadingModal'
 
 const absenceTypesAndDaysOffMapping = {
     1: { day: 3, time: 24 },
@@ -69,6 +70,7 @@ class LeaveOfAbsenceComponent extends React.Component {
             totalPendingLeaves: null,
             totalPendingTOILs: null,
             validating: false,
+            isLoading: false,
         }
     }
 
@@ -402,10 +404,10 @@ class LeaveOfAbsenceComponent extends React.Component {
                 }
             })
         }
-        this.setState({ validating: true })
+        this.setState({ validating: true, isLoading: true })
         axios.post(`${process.env.REACT_APP_REQUEST_URL}request/validate`, {perno: currentEmployeeNo, ...(isEdit && { requestId: this.props.taskId }), times: times}, config)
             .then(res => {
-                if (res && res.data && res.data.data && res.data.data.times.length > 0) {
+                if (res?.data?.data?.times?.length > 0) {
                     const newRequestInfo = this.state.requestInfo.map((req, index) => {
                         let errors = req.errors
                         let totalTimes
@@ -434,38 +436,37 @@ class LeaveOfAbsenceComponent extends React.Component {
                         }
                     })
                     this.setState({ requestInfo: newRequestInfo })
-                }
-                else {
+                } else {
                     this.setState({ needReload: false })
                     this.showStatusModal(this.props.t("Notification"), res?.data?.result?.message, false)
-                    // const newRequestInfo = requestInfo.map(req => {
-                    //     const errors = req.errors
-                    //     errors.totalDaysOff = res.data.result.message
-                    //     return {
-                    //         ...req,
-                    //         errors,
-                    //     }
-                    // })
-                    // this.setState({ newRequestInfo })
+                    const newRequestInfo = requestInfo.map(req => {
+                        const errors = req.errors
+                        errors.totalDaysOff = res.data.result.message
+                        return {
+                            ...req,
+                            errors,
+                        }
+                    })
+                    this.setState({ newRequestInfo })
                 }
             }).catch(error => {
                 if (error.response?.status == 401) {
                     window.location.reload();
                 } else {
                     this.setState({ needReload: false })
-                    this.showStatusModal(this.props.t("Notification"), "Có lỗi xảy ra trong quá trình xác thực dữ liệu. Xin vui lòng nhập lại thông tin ngày/giờ nghỉ!", false)
+                    this.showStatusModal(this.props.t("Notification"), error?.response?.data?.result?.message || "Có lỗi xảy ra trong quá trình xác thực dữ liệu. Xin vui lòng nhập lại thông tin ngày/giờ nghỉ!", false)
                     
-                    // const newRequestInfo = requestInfo.map(req => {
-                    //     const errors = req.errors
-                    //     errors.totalDaysOff = "Có lỗi xảy ra trong quá trình xác thực dữ liệu. Xin vui lòng nhập lại thông tin ngày/giờ nghỉ!"
-                    //     return {
-                    //         ...req,
-                    //         errors,
-                    //     }
-                    // })
-                    // this.setState({ newRequestInfo })
+                    const newRequestInfo = requestInfo.map(req => {
+                        const errors = req.errors
+                        errors.totalDaysOff = error?.response?.data?.result?.message || "Có lỗi xảy ra trong quá trình xác thực dữ liệu. Xin vui lòng nhập lại thông tin ngày/giờ nghỉ!"
+                        return {
+                            ...req,
+                            errors,
+                        }
+                    })
+                    this.setState({ newRequestInfo })
                 }
-            }).finally(() => this.setState({ validating: false }))
+            }).finally(() => this.setState({ validating: false, isLoading: false }))
     }
 
     calFullDay(timesheets) {
@@ -789,12 +790,8 @@ class LeaveOfAbsenceComponent extends React.Component {
             }
         })
         .catch(error => {
-            let message = t("Error")
-            if (error?.response?.data?.result?.code == Constants.API_ERROR_CODE) {
-              message = error?.response?.data?.result?.message
-            }
             this.setState({ needReload: false })
-            this.showStatusModal(t("Notification"), message, false)
+            this.showStatusModal(t("Notification"), error?.response?.data?.result?.message || t("Error"), false)
         })
         .finally(() => {
             this.setDisabledSubmitButton(false)
@@ -810,7 +807,7 @@ class LeaveOfAbsenceComponent extends React.Component {
             indexReq = requestInfo.findIndex(req => req.groupId === groupId)
         }
         const errorMsg = requestInfo[indexReq].errors[name]
-        return errorMsg ? <p className="text-danger p-2">{errorMsg}</p> : null
+        return errorMsg ? <p className="text-danger" style={{ padding: '0 15px', marginTop: 0 }}>{errorMsg}</p> : null
     }
 
     showStatusModal = (title, message, isSuccess = false) => {
@@ -990,6 +987,7 @@ class LeaveOfAbsenceComponent extends React.Component {
             appraiser,
             approver,
             validating,
+            isLoading,
         } = this.state
         const sortRequestListByGroup = requestInfo.sort((reqPrev, reqNext) => reqPrev.groupId - reqNext.groupId)
         const requestInfoArr = _.valuesIn(_.groupBy(sortRequestListByGroup, (req) => req.groupId))
@@ -1000,6 +998,7 @@ class LeaveOfAbsenceComponent extends React.Component {
             <div className="leave-of-absence">
                 <ResultModal show={isShowStatusModal} title={titleModal} message={messageModal} isSuccess={isSuccess} onHide={this.hideStatusModal} />
                 <NoteModal show={isShowNoteModal} onHide={this.hideNoteModal} />
+                <LoadingModal show={isLoading} />
                 <div className="row summary">
                     <div className="col">
                         <div className="item">
