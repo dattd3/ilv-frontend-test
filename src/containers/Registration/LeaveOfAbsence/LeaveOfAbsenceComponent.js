@@ -375,7 +375,6 @@ class LeaveOfAbsenceComponent extends React.Component {
             if (req.startDate && req.endDate && ((!req.isAllDay && !req.isAllDayCheckbox && startTime && startTime) || req.isAllDay || req.isAllDayCheckbox)) {
                 times.push({
                     id: req.groupItem,
-                    // subid:req.id,
                     subid: req.id,
                     from_date: moment(req.startDate, Constants.LEAVE_DATE_FORMAT).format('YYYYMMDD').toString(),
                     from_time: !req.isAllDay && !req.isAllDayCheckbox ? startTime : "",
@@ -404,6 +403,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                 }
             })
         }
+
         this.setState({ validating: true, isLoading: true })
         axios.post(`${process.env.REACT_APP_REQUEST_URL}request/validate`, {perno: currentEmployeeNo, ...(isEdit && { requestId: this.props.taskId }), times: times}, config)
             .then(res => {
@@ -441,7 +441,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                     this.showStatusModal(this.props.t("Notification"), res?.data?.result?.message, false)
                     const newRequestInfo = requestInfo.map(req => {
                         const errors = req.errors
-                        errors.totalDaysOff = res.data.result.message
+                        errors.totalDaysOff = res?.data?.result?.message
                         return {
                             ...req,
                             errors,
@@ -572,6 +572,11 @@ class LeaveOfAbsenceComponent extends React.Component {
             })
         }
         this.setState({ requestInfo: newRequestInfo, isShowStatusModal: false, disabledSubmitButton: false, needReload: true })
+
+        if (['absenceType', 'funeralWeddingInfo'].includes(name) && (newRequestInfo || []).filter(item => item?.groupId == groupId).every(item => !item?.startDate && !item?.endDate) ) {
+            return
+        }
+
         this.validateTimeRequest(newRequestInfo, index)
     }
 
@@ -994,6 +999,7 @@ class LeaveOfAbsenceComponent extends React.Component {
         const checkVinmec = checkIsExactPnL(Constants.pnlVCode.VinMec);
         const minDate = getRegistrationMinDateByConditions()
         const registeredInformation = (leaveOfAbsence?.requestInfoOld || leaveOfAbsence?.requestInfoOld?.length > 0) ? leaveOfAbsence.requestInfoOld : leaveOfAbsence?.requestInfo
+
         return (
             <div className="leave-of-absence">
                 <ResultModal show={isShowStatusModal} title={titleModal} message={messageModal} isSuccess={isSuccess} onHide={this.hideStatusModal} />
