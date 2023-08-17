@@ -161,7 +161,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     const currentEmployeeNo = localStorage.getItem('email');
     const currentEmployeeCode = localStorage.getItem('employeeNo');
     const data = this.state.data;
-    const dateToCheck = data.contractType == 'VA' ? (checkVersionPnLSameAsVinhome(Constants.MODULE.DANHGIA_TAIKI) ? -75 : -45) : (IS_VINFAST ? -14 : -7); 
+    const dateToCheck = data.contractType == 'VA' ? (checkVersionPnLSameAsVinhome(Constants.MODULE.DANHGIA_TAIKI) ? -75 : -45) : (IS_VINFAST() ? -14 : -7);
     const isAfterT_7 = data.employeeInfo && data.employeeInfo.startDate && moment(new Date()).diff(moment(data.employeeInfo.expireDate), 'days') > dateToCheck ? true : false;
     let shouldDisable = false;
     let isNguoidanhgia = false;
@@ -221,7 +221,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
   }
 
   checkSameVinfast = () => {
-    return IS_VINFAST || checkIsExactPnL(Constants.pnlVCode.VinAI);
+    return IS_VINFAST() || checkIsExactPnL(Constants.pnlVCode.VinAI);
   }
 
   getSubordinates = async () => {

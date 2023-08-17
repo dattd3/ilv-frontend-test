@@ -460,8 +460,19 @@ a {
     }
   }
   &.result-modal {
-    .modal-content {
-      box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
+    .modal-dialog {
+      .modal-content {
+        box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
+        .modal-header {
+          padding: 12px 15px;
+          .close {
+            top: 30px;
+          }
+        }
+        .modal-body {
+          padding: 20px 15px;
+        }
+      }
     }
   }
   &.request-confirm-modal {
