@@ -288,6 +288,7 @@ function ApprovalTabContent(props) {
         { value: 0, label: t("EvaluationInProgress") },
         { value: 1, label: t("EvaluationDetailCompleted") },
     ]
+    const prevFilter = useRef(null)
 
     useEffect(() => {
         if (isOpen) {
@@ -361,7 +362,8 @@ function ApprovalTabContent(props) {
     const handleFormFilter = (e, tab) => {
         e.preventDefault()
         const filterToSubmit = _.omit({...filter}, 'blocks', 'employees', 'groups', 'isOpenFilterAdvanced', 'regions', 'units')
-        handleFilter(filterToSubmit, 'approval')
+        handleFilter(filterToSubmit, 'approval', null, null, prevFilter?.current)
+        prevFilter.current = filterToSubmit
     }
 
     return (
@@ -634,6 +636,7 @@ function EvaluationApproval(props) {
     const history = useHistory()
     const [isLoading, SetIsLoading] = useState(false)
     const [isSelectedAll, SetIsSelectedAll] = useState(false)
+    const [refresh, SetRefresh] = useState(false)
     const [evaluationDetailPopup, SetEvaluationDetailPopup] = useState({
         isShow: false,
         evaluationFormId: null,
@@ -836,54 +839,11 @@ function EvaluationApproval(props) {
         }
     }, [activeTab])
 
-    useEffect(() => {
-        if (!prevApprovalPageIndex || activeTab === batchApprovalTabCode) {
-            return
-        }
-
-        if (prevApprovalPageIndex && prevApprovalPageIndex != paging.approval.pageIndex) {
-            handleFilter(dataFilter, activeTab)
-        }
-    }, [paging?.approval?.pageIndex])
-
-    useEffect(() => {
-        if (activeTab === batchApprovalTabCode) {
-            return
-        }
-
-        const pagingTemp = {...paging}
-        pagingTemp.approval.pageIndex = 1
-        SetPaging(pagingTemp)
-
-        handleFilter(dataFilter, activeTab)
-    }, [paging.approval.pageSize])
-
-    useEffect(() => {
-        if (!prevBatchApprovalPageIndex || activeTab === approvalTabCode) {
-            return
-        }
-
-        if (prevBatchApprovalPageIndex && prevBatchApprovalPageIndex != paging.batchApproval.pageIndex) {
-            handleFilter(dataFilter, activeTab)
-        }
-    }, [paging.batchApproval.pageIndex])
-
-    useEffect(() => {
-        if (activeTab === approvalTabCode) {
-            return
-        }
-
-        const pagingTemp = {...paging}
-        pagingTemp.batchApproval.pageIndex = 1
-        SetPaging(pagingTemp)
-
-        handleFilter(dataFilter, activeTab)
-    }, [paging.batchApproval.pageSize])
-
     const handleChangePage = (key, page) => {
         const pagingTemp = {...paging}
         pagingTemp[key].pageIndex = page
         SetPaging(pagingTemp)
+        // SetRefresh(true)
     }
 
     const prepareStatusToFilter = status => {
@@ -893,15 +853,24 @@ function EvaluationApproval(props) {
         return status
     }
 
-    const handleFilter = async (data, tab) => {
+    const handleFilter = async (dataFilterInput, tab, pageIndex = null, pageSize = null, prevFilter = null) => {
+        // console.log('ahihihihi do ngoc =============')
+        // console.log("data => ", data)
+        // console.log("tab => ", tab)
+        // console.log("prevFilter => ", prevFilter)
+
         SetIsLoading(true)
+        const data = dataFilterInput ? dataFilterInput : dataFilter
+        const hasFilterChanged = JSON.stringify(data) !== JSON.stringify(prevFilter)
         const config = getRequestConfigurations()
         config.headers['content-type'] = 'multipart/form-data'
         const organizationLevel6Selected = (data?.group || []).map(item => item.value)
         let apiPath = ''
         let formData = new FormData()
-        formData.append('PageIndex', paging[tab].pageIndex)
-        formData.append('PageSize', paging[tab].pageSize)
+        // formData.append('PageIndex', hasFilterChanged ? 1 : paging[tab].pageIndex)
+        // formData.append('PageSize', paging[tab].pageSize)
+        formData.append('PageIndex', pageIndex ? pageIndex : paging[tab].pageIndex)
+        formData.append('PageSize', pageSize ? pageSize : paging[tab].pageSize)
         formData.append('Employee', data?.employee?.value || '')
         formData.append('startDate', data?.fromDate || '')
         formData.append('endDate', data?.toDate || '')
@@ -928,7 +897,11 @@ function EvaluationApproval(props) {
         }
         formData.append('CurrentStep', data?.currentStep?.value || 0)
         SetDataFilter(data)
-     
+
+        if (hasFilterChanged) {
+            SetRefresh(true)
+        }
+
         try {
             const response = await axios.post(apiPath, formData, config)
             if (response && response?.data) {
@@ -945,9 +918,6 @@ function EvaluationApproval(props) {
                     })
                 }
             }
-            SetIsLoading(false)
-        } catch (e) {
-            SetIsLoading(false)
         } finally {
             SetIsLoading(false)
         }
@@ -1202,7 +1172,7 @@ function EvaluationApproval(props) {
                                 </select>
                             </div>
                             <div className="paging-block">
-                                <CustomPaging pageSize={parseInt(paging.approval.pageSize)} onChangePage={(page) => handleChangePage('approval', page)} totalRecords={evaluationData?.total} />
+                                <CustomPaging pageSize={parseInt(paging.approval.pageSize)} onChangePage={(page) => handleChangePage('approval', page)} totalRecords={evaluationData?.total} needReset={refresh} />
                             </div>
                         </div>
                         </>
@@ -1274,7 +1244,7 @@ function EvaluationApproval(props) {
                                 </select>
                             </div>
                             <div className="paging-block">
-                                <CustomPaging pageSize={parseInt(paging.batchApproval.pageSize)} onChangePage={(page) => handleChangePage('batchApproval', page)} totalRecords={evaluationData?.total} />
+                                <CustomPaging pageSize={parseInt(paging.batchApproval.pageSize)} onChangePage={(page) => handleChangePage('batchApproval', page)} totalRecords={evaluationData?.total} needReset={refresh} />
                             </div>
                         </div>
                         </>
