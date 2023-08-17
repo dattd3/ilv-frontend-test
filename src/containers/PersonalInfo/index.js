@@ -481,7 +481,7 @@ class MyComponent extends React.Component {
     const isEnableEditProfiles = isEnableFunctionByFunctionName(Constants.listFunctionsForPnLACL.editProfile)
     const isEnableEditEducations = isEnableFunctionByFunctionName(Constants.listFunctionsForPnLACL.editEducation)
     const isEnableEditRelationships = isEnableFunctionByFunctionName(Constants.listFunctionsForPnLACL.editRelationship)
-    const isEnableWorkOutsideGroup = currentCompanyCode === Constants.pnlVCode.VinES
+    const isEnableWorkOutsideGroup = true
     let defaultTab = getValueParamByQueryString(window.location.search, 'tab') || 'PersonalInformation'
 
     const documents = this.state.userDocument.documents;
