@@ -4,11 +4,12 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import ServiceItem from "./ServiceItem";
 import { Image } from "react-bootstrap";
-import { IPaymentRequest, IPaymentService } from "models/welfare/PaymentModel";
+import { IPaymentRequest, IPaymentService, IQuota } from "models/welfare/PaymentModel";
 import IconDatePicker from "assets/img/icon/Icon_DatePicker.svg";
 import IconAdd from "assets/img/ic-add-green.svg";
 import { IDropdownValue } from "models/CommonModel";
 import moment from "moment";
+import { formatNumberSpecialCase } from "commons/Utils";
 interface IServiceRequestProps {
   t: any;
   headerTitle: string;
@@ -17,6 +18,7 @@ interface IServiceRequestProps {
   cancelRequest: Function;
   updateRequest: Function;
   typeServices: IDropdownValue[];
+  setLoading?: Function
 }
 function ServiceRequest({
   t,
@@ -25,7 +27,8 @@ function ServiceRequest({
   request,
   cancelRequest,
   updateRequest,
-  typeServices
+  typeServices,
+  setLoading
 }: IServiceRequestProps) {
   const [open, setOpen] = useState(true);
 
@@ -37,14 +40,15 @@ function ServiceRequest({
     updateRequest(newRequest);
   };
   const handleChangeDatetimeValue = (value: any, key: string) => {
-    value = moment(value).format('DD/MM/YYYY');
+    value = moment(value).format("DD/MM/YYYY");
     handleChangeValue(value, key);
-  }
+  };
 
   const addMoreSevice = () => {
     const lastRequest = { ...request };
     lastRequest.services.push({
-      name: t('ServicePayment', {id: request.services.length + 1}),
+      name: t("ServicePayment", { id: request.services.length + 1 }),
+      FeeBenefit: 0
     });
     updateRequest(lastRequest);
   };
@@ -52,19 +56,63 @@ function ServiceRequest({
   const updateService = (index: number, service: IPaymentService) => {
     const lastRequest = { ...request };
     lastRequest.services[index] = service;
+    lastRequest.TotalRefund = 0;
+    lastRequest.services.map((ser) => {
+      lastRequest.TotalRefund += parseInt(
+        ser.FeeReturn ? ser.FeeReturn + "" : "0"
+      );
+    });
+
     updateRequest(lastRequest);
   };
 
   const removeService = (index: number) => {
-    const lastRequest = {...request};
+    const lastRequest = { ...request };
     lastRequest.services.splice(index, 1);
-    lastRequest.services = lastRequest.services.map((_it, _indx) => ({
-      ..._it,
-      name: t('ServicePayment', {id: _indx + 1})
-    }))
+    lastRequest.TotalRefund = 0;
+    lastRequest.services = lastRequest.services.map((_it, _indx) => {
+      lastRequest.TotalRefund += parseInt(
+        _it.FeeReturn ? _it.FeeReturn + "" : "0"
+      );
+      return {
+        ..._it,
+        name: t("ServicePayment", { id: _indx + 1 }),
+      };
+    });
     updateRequest(lastRequest);
-  }
+  };
 
+  const showStatus = (
+    statusOriginal: number | undefined,
+    approverId: string | undefined
+  ) => {
+    if (statusOriginal == undefined) return null;
+    const status = {
+      1: { label: t("Rejected"), className: "request-status fail" },
+      2: { label: t("Approved"), className: "request-status success" },
+      3: { label: t("Canceled"), className: "request-status" },
+      4: { label: t("Canceled"), className: "request-status" },
+      5: { label: t("PendingApproval"), className: "request-status" },
+      6: {
+        label: t("PartiallySuccessful"),
+        className: "request-status warning",
+      },
+      7: { label: t("Rejected"), className: "request-status fail" },
+      8: { label: t("PendingConsent"), className: "request-status" },
+      20: { label: t("Consented"), className: "request-status" },
+      100: { label: t("Waiting"), className: "request-status" },
+    };
+
+    if (!approverId && statusOriginal === 5) {
+      statusOriginal = 6;
+    }
+
+    return (
+      <span className={status[statusOriginal]?.className}>
+        {status[statusOriginal]?.label}
+      </span>
+    );
+  };
   return (
     <div className="service-request position-relative mb-3">
       <div className="card">
@@ -133,9 +181,19 @@ function ServiceRequest({
                         name="endDate"
                         selectsEnd
                         autoComplete="off"
-                        selected={request.DateCome ? moment(request.DateCome, 'DD/MM/YYYY').toDate() : undefined}
-                        maxDate={request.DateLeave ? moment(request.DateLeave, 'DD/MM/YYYY').toDate() : undefined}
-                        onChange={(date) => handleChangeDatetimeValue(date, "DateCome")}
+                        selected={
+                          request.DateCome
+                            ? moment(request.DateCome, "DD/MM/YYYY").toDate()
+                            : undefined
+                        }
+                        maxDate={
+                          request.DateLeave
+                            ? moment(request.DateLeave, "DD/MM/YYYY").toDate()
+                            : undefined
+                        }
+                        onChange={(date) =>
+                          handleChangeDatetimeValue(date, "DateCome")
+                        }
                         dateFormat="dd/MM/yyyy"
                         placeholderText={t("Select")}
                         locale={t("locale")}
@@ -156,8 +214,16 @@ function ServiceRequest({
                         name="endDate"
                         selectsEnd
                         autoComplete="off"
-                        minDate={request.DateCome ? moment(request.DateCome, 'DD/MM/YYYY').toDate() : undefined}
-                        selected={request.DateLeave ? moment(request.DateLeave, 'DD/MM/YYYY').toDate() : undefined}
+                        minDate={
+                          request.DateCome
+                            ? moment(request.DateCome, "DD/MM/YYYY").toDate()
+                            : undefined
+                        }
+                        selected={
+                          request.DateLeave
+                            ? moment(request.DateLeave, "DD/MM/YYYY").toDate()
+                            : undefined
+                        }
                         onChange={(date) =>
                           handleChangeDatetimeValue(date, "DateLeave")
                         }
@@ -175,7 +241,9 @@ function ServiceRequest({
                 </div>
                 <div className="col-3">
                   {t("PaymentTotal")}
-                  <div className="detail1">{request.TotalRefund}</div>
+                  <div className="detail1">
+                    {formatNumberSpecialCase(request.TotalRefund)}
+                  </div>
                 </div>
               </div>
               <div className="row mv-10">
@@ -195,6 +263,16 @@ function ServiceRequest({
                   />
                 </div>
               </div>
+              {!isCreateMode && (
+                <div className="row mv-10">
+                  <div className="col-12 status mv-10">
+                    {showStatus(
+                      request.requestHistory?.processStatusId,
+                      request.requestHistory?.approverId
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
             {/* danh sách cac loại dich vu */}
             {(request?.services || []).map((service, index) => {
@@ -204,6 +282,7 @@ function ServiceRequest({
                   t={t}
                   headerTitle={service.name}
                   service={service}
+                  setLoading={setLoading}
                   isCreateMode={isCreateMode}
                   typeServices={typeServices}
                   updateService={(ser) => updateService(index, ser)}

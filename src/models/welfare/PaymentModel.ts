@@ -15,11 +15,12 @@ export interface IPaymentRequest {
     DateLeave?: string;
     TripAddress?: string;
     TripCode?: string;
-    TotalRefund?: number;
+    TotalRefund: number;
     name:     string;
     isDeleted?:    boolean;
     isCreateMode?: boolean;
     services: IPaymentService[];
+    requestHistory?: IPaymentRequestHistory
 }
 
 export interface IPaymentService {
@@ -32,7 +33,7 @@ export interface IPaymentService {
     name: string;
     PnlDiscountPercent?: number;
     QuotedPrice?: number;
-    FeeBenefit?: number | string;
+    FeeBenefit: number;
     FeeReturn?: number | string;
 }
 
@@ -175,5 +176,15 @@ export interface IPaymentRequestHistory {
     otUploads:            null;
     benefitRefundInfos:   null;
 }
+
+export interface IResponseCalculatePayment {
+    detail:                 string;
+    quotedPrice:            number;
+    pnlDiscountPercent:     number;
+    benefitDiscountPercent: number;
+    refundAmount:           number;
+}
+
+
 
 

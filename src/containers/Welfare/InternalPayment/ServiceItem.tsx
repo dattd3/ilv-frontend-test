@@ -1,13 +1,17 @@
-import React from "react";
+import React, { useCallback } from "react";
 import DatePicker, { registerLocale } from "react-datepicker";
 import moment from "moment";
 import "react-datepicker/dist/react-datepicker.css";
 import { vi, enUS } from "date-fns/locale";
 import Select from "react-select";
-import { IPaymentService } from "models/welfare/PaymentModel";
+import { IPaymentService, IResponseCalculatePayment } from "models/welfare/PaymentModel";
 import IconDatePicker from 'assets/img/icon/Icon_DatePicker.svg';
 import { getPaymentObjects } from "./PaymentData";
 import { IDropdownValue } from "models/CommonModel";
+import InputNumberComponent from "./component/InputNumberComponent";
+import { formatNumberSpecialCase, getRequestConfigurations } from "commons/Utils";
+import _ from "lodash";
+import axios from "axios";
 
 interface IServiceItem {
   t: any;
@@ -17,6 +21,7 @@ interface IServiceItem {
   updateService: Function;
   removeService: Function;
   typeServices: IDropdownValue[];
+  setLoading?: Function
 }
 function ServiceItem({
   t,
@@ -25,19 +30,56 @@ function ServiceItem({
   isCreateMode = false,
   updateService,
   removeService,
-  typeServices
+  typeServices,
+  setLoading =()=>{}
 }: IServiceItem) {
+  const delayedQuery = useCallback(_.debounce(ser => calculateService(ser), 1000), []);
+
   const handleChangeValue = (value, key) => {
     const newService = {
       ...service,
       [key]: value,
     };
+    if(newService.DateUse && newService.UseWelfareType?.value && newService.UseFor?.value && newService.FeePayment) {
+      delayedQuery(newService)
+    }
     updateService(newService);
   };
   const handleChangeDatetimeValue = (value: any, key: string) => {
     value = moment(value).format('DD/MM/YYYY');
     handleChangeValue(value, key);
   }
+  const calculateService = async (ser: IPaymentService) => {
+    const benefitRefundInfoEndpoint = `${process.env.REACT_APP_REQUEST_URL}benefit-refund/calculate`;
+    const config = getRequestConfigurations();
+    try {
+      setLoading(true);
+      const result = await axios.post(benefitRefundInfoEndpoint, {
+        "userType": ser.UseFor?.value,
+        "benefitRank": localStorage.getItem('benefitLevel'),
+        "serviceTypeId": ser.UseWelfareType?.value,
+        "amountPaid": ser.FeePayment || 0,
+        "upgradeRoomFee": ser.FeeUpgrade || 0
+      }, config);
+      if (result.data?.data) {
+        const data : IResponseCalculatePayment = result.data.data;
+        const newService : IPaymentService = {
+          ...ser,
+          Detail: data.detail,
+          QuotedPrice: data.quotedPrice,
+          PnlDiscountPercent: data.pnlDiscountPercent,
+          FeeBenefit: data.benefitDiscountPercent,
+          FeeReturn: data.refundAmount
+        }
+        updateService(newService);
+      }
+    } catch (err) {
+      console.log("calculate error>>>", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
 
   return (
     <div className="item-contain position-relative">
@@ -130,37 +172,33 @@ function ServiceItem({
         <div className="row mv-10">
           <div className="col-3">
             {t("FeePayment")}
-            <input
-              type="text"
-              placeholder={t("import")}
-              value={service.FeePayment || ""}
-              onChange={(e) => handleChangeValue(e.target.value, "FeePayment")}
-              className="form-control input mv-10 w-100"
-              name="inputName"
-              autoComplete="off"
-              disabled={!isCreateMode}
+            <InputNumberComponent
+            value={service.FeePayment || ""}
+            onChange={(value) => handleChangeValue(value, "FeePayment")}
+            placeholder={t("import")}
+            className="form-control input mv-10 w-100"
+            disabled={!isCreateMode}
+            name="FeePayment"
             />
           </div>
           <div className="col-3">
             {t("FeeUpgrade")}
-            <input
-              type="text"
-              placeholder={t("import")}
+            <InputNumberComponent
               value={service.FeeUpgrade || ""}
-              onChange={(e) => handleChangeValue(e.target.value, "FeeUpgrade")}
+              onChange={(value) => handleChangeValue(value, "FeeUpgrade")}
+              placeholder={t("import")}
               className="form-control input mv-10 w-100"
-              name="inputName"
-              autoComplete="off"
               disabled={!isCreateMode}
-            />
+              name="FeeUpgrade"
+              />
           </div>
           <div className="col-3">
             {t("ReducePercent")}
-            <div className="detail1">{service.PnlDiscountPercent}</div>
+            <div className="detail1">{service.PnlDiscountPercent ? service.PnlDiscountPercent + '%' : ''}</div>
           </div>
           <div className="col-3">
             {t("PricePublish")}
-            <div className="detail1">{service.QuotedPrice}</div>
+            <div className="detail1">{formatNumberSpecialCase(service.QuotedPrice)}</div>
           </div>
         </div>
 
@@ -171,7 +209,7 @@ function ServiceItem({
           </div>
           <div className="col-3">
             {t("FeeReturn")}
-            <div className="detail1">{service.FeeReturn || ''}</div>
+            <div className="detail1">{formatNumberSpecialCase(service.FeeReturn)}</div>
           </div>
         </div>
       </div>
