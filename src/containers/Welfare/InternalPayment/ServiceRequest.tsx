@@ -7,6 +7,8 @@ import { Image } from "react-bootstrap";
 import { IPaymentRequest, IPaymentService } from "models/welfare/PaymentModel";
 import IconDatePicker from "assets/img/icon/Icon_DatePicker.svg";
 import IconAdd from "assets/img/ic-add-green.svg";
+import { IDropdownValue } from "models/CommonModel";
+import moment from "moment";
 interface IServiceRequestProps {
   t: any;
   headerTitle: string;
@@ -14,6 +16,7 @@ interface IServiceRequestProps {
   request: IPaymentRequest;
   cancelRequest: Function;
   updateRequest: Function;
+  typeServices: IDropdownValue[];
 }
 function ServiceRequest({
   t,
@@ -22,6 +25,7 @@ function ServiceRequest({
   request,
   cancelRequest,
   updateRequest,
+  typeServices
 }: IServiceRequestProps) {
   const [open, setOpen] = useState(true);
 
@@ -32,11 +36,15 @@ function ServiceRequest({
     };
     updateRequest(newRequest);
   };
+  const handleChangeDatetimeValue = (value: any, key: string) => {
+    value = moment(value).format('DD/MM/YYYY');
+    handleChangeValue(value, key);
+  }
 
   const addMoreSevice = () => {
     const lastRequest = { ...request };
     lastRequest.services.push({
-      name: "Dich vu " + (lastRequest.services.length + 1),
+      name: t('ServicePayment', {id: request.services.length + 1}),
     });
     updateRequest(lastRequest);
   };
@@ -50,11 +58,15 @@ function ServiceRequest({
   const removeService = (index: number) => {
     const lastRequest = {...request};
     lastRequest.services.splice(index, 1);
+    lastRequest.services = lastRequest.services.map((_it, _indx) => ({
+      ..._it,
+      name: t('ServicePayment', {id: _indx + 1})
+    }))
     updateRequest(lastRequest);
   }
 
   return (
-    <div className="service-request position-relative">
+    <div className="service-request position-relative mb-3">
       <div className="card">
         <div
           className={"card-header clearfix text-black"}
@@ -121,9 +133,9 @@ function ServiceRequest({
                         name="endDate"
                         selectsEnd
                         autoComplete="off"
-                        selected={request.DateCome}
-                        maxDate={request.DateLeave}
-                        onChange={(date) => handleChangeValue(date, "DateCome")}
+                        selected={request.DateCome ? moment(request.DateCome, 'DD/MM/YYYY').toDate() : undefined}
+                        maxDate={request.DateLeave ? moment(request.DateLeave, 'DD/MM/YYYY').toDate() : undefined}
+                        onChange={(date) => handleChangeDatetimeValue(date, "DateCome")}
                         dateFormat="dd/MM/yyyy"
                         placeholderText={t("Select")}
                         locale={t("locale")}
@@ -144,10 +156,10 @@ function ServiceRequest({
                         name="endDate"
                         selectsEnd
                         autoComplete="off"
-                        minDate={request.DateCome}
-                        selected={request.DateLeave}
+                        minDate={request.DateCome ? moment(request.DateCome, 'DD/MM/YYYY').toDate() : undefined}
+                        selected={request.DateLeave ? moment(request.DateLeave, 'DD/MM/YYYY').toDate() : undefined}
                         onChange={(date) =>
-                          handleChangeValue(date, "DateLeave")
+                          handleChangeDatetimeValue(date, "DateLeave")
                         }
                         dateFormat="dd/MM/yyyy"
                         placeholderText={t("Select")}
@@ -163,7 +175,7 @@ function ServiceRequest({
                 </div>
                 <div className="col-3">
                   {t("PaymentTotal")}
-                  <div className="detail1">{""}</div>
+                  <div className="detail1">{request.TotalRefund}</div>
                 </div>
               </div>
               <div className="row mv-10">
@@ -193,6 +205,7 @@ function ServiceRequest({
                   headerTitle={service.name}
                   service={service}
                   isCreateMode={isCreateMode}
+                  typeServices={typeServices}
                   updateService={(ser) => updateService(index, ser)}
                   removeService={() => removeService(index)}
                 />

@@ -6,7 +6,8 @@ import { vi, enUS } from "date-fns/locale";
 import Select from "react-select";
 import { IPaymentService } from "models/welfare/PaymentModel";
 import IconDatePicker from 'assets/img/icon/Icon_DatePicker.svg';
-import { getPaymentObjects, getPaymentServiceTypes } from "./PaymentData";
+import { getPaymentObjects } from "./PaymentData";
+import { IDropdownValue } from "models/CommonModel";
 
 interface IServiceItem {
   t: any;
@@ -15,6 +16,7 @@ interface IServiceItem {
   isCreateMode: boolean;
   updateService: Function;
   removeService: Function;
+  typeServices: IDropdownValue[];
 }
 function ServiceItem({
   t,
@@ -22,9 +24,9 @@ function ServiceItem({
   service,
   isCreateMode = false,
   updateService,
-  removeService
+  removeService,
+  typeServices
 }: IServiceItem) {
-  const OPTIONS = [{ label: "test data", value: "aa" }];
   const handleChangeValue = (value, key) => {
     const newService = {
       ...service,
@@ -32,6 +34,10 @@ function ServiceItem({
     };
     updateService(newService);
   };
+  const handleChangeDatetimeValue = (value: any, key: string) => {
+    value = moment(value).format('DD/MM/YYYY');
+    handleChangeValue(value, key);
+  }
 
   return (
     <div className="item-contain position-relative">
@@ -75,8 +81,8 @@ function ServiceItem({
                   name="endDate"
                   selectsEnd
                   autoComplete="off"
-                  selected={service.DateUse}
-                  onChange={(date) => handleChangeValue(date, "DateUse")}
+                  selected={service.DateUse ? moment(service.DateUse, 'DD/MM/YYYY').toDate() : undefined}
+                  onChange={(date) => handleChangeDatetimeValue(date, "DateUse")}
                   dateFormat="dd/MM/yyyy"
                   placeholderText={t("Select")}
                   locale={t("locale")}
@@ -91,13 +97,13 @@ function ServiceItem({
           </div>
           <div className="col-3">
             {t("UseDetail")}
-            <div className="detail1">{""}</div>
+            <div className="detail1">{service.Detail}</div>
           </div>
           <div className="col-3">
             {t("UseWelfareType")}
             <Select
               placeholder={t("option")}
-              options={getPaymentServiceTypes()}
+              options={typeServices}
               isClearable={false}
               value={service.UseWelfareType}
               onChange={(e) => handleChangeValue(e, "UseWelfareType")}
@@ -150,22 +156,22 @@ function ServiceItem({
           </div>
           <div className="col-3">
             {t("ReducePercent")}
-            <div className="detail1">{"35%"}</div>
+            <div className="detail1">{service.PnlDiscountPercent}</div>
           </div>
           <div className="col-3">
             {t("PricePublish")}
-            <div className="detail1">{"4 095 238"}</div>
+            <div className="detail1">{service.QuotedPrice}</div>
           </div>
         </div>
 
         <div className="row">
           <div className="col-3">
             {t("FeeBenefit")}
-            <div className="detail1">{"100%"}</div>
+            <div className="detail1">{ service.FeeBenefit ? service.FeeBenefit + "%" : ''}</div>
           </div>
           <div className="col-3">
             {t("FeeReturn")}
-            <div className="detail1">{"2 661 905"}</div>
+            <div className="detail1">{service.FeeReturn || ''}</div>
           </div>
         </div>
       </div>

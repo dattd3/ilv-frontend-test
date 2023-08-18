@@ -1918,5 +1918,8 @@
   "FeeBenefit": "Quyền lợi",
   "FeeReturn": "Hoàn trả",
   "AddService": "Thêm dịch vụ",
-  "AddRequest": "Thêm yêu cầu"
+  "AddRequest": "Thêm yêu cầu",
+  "NewRequest": "Yêu cầu mới",
+  "RequestPayment": "Yêu cầu {{id}}",
+  "ServicePayment": "Dịch vu {{id}}"
 }
