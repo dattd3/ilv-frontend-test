@@ -253,6 +253,8 @@ class RequestTaskList extends React.Component {
                 20: { label: t("Consented"), className: 'request-status' },
                 100: { label: t("Waiting"), className: 'request-status' },
                 [Constants.STATUS_WORK_DAY_LOCKED_CREATE]: { label: t("PaidDayLocked"), className: 'request-status work-day_locked' },
+                [Constants.STATUS_WORK_DAY_LOCKED_APPRAISAL]: { label: t("PaidDayLocked"), className: 'request-status work-day_locked' },
+                [Constants.STATUS_WORK_DAY_LOCKED_APPROVAL]: { label: t("PaidDayLocked"), className: 'request-status work-day_locked' },
             }
             // options = [
             //     { value: 0, label: 'Đang chờ xử lý' },
