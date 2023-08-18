@@ -365,6 +365,18 @@
         .input {
             height: 38px;
         }
+        .wrap-input-text {
+            position: relative;
+            input {
+                padding-right: 35px;
+            }
+            .remove-input {
+                position: absolute;
+                right: 12px;
+                top: 12px;
+                width: 11px;
+            }
+        }
     }
     .block-action-buttons {
         button {
