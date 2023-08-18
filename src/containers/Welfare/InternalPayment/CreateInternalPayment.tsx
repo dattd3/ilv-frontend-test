@@ -148,6 +148,7 @@ function CreateInternalPayment(props: any) {
         TotalRefund: it.totalRefund,
         isCreateMode: false,
         services: _services,
+        requestHistory: it.requestHistory
       };
     });
     setRequests(_request);
@@ -167,7 +168,7 @@ function CreateInternalPayment(props: any) {
       });
       if (result.data?.data) {
         const _benefitInfo: IResponseBenefitInfo = result.data.data;
-        setQuota({ ...quota, ..._benefitInfo.quota });
+        processBenefitInfoResponse(_benefitInfo, typeServices);
       }
       setYearSelected(yearDropDown);
     } catch (err) {
@@ -184,6 +185,7 @@ function CreateInternalPayment(props: any) {
       name: t('NewRequest'),
       isDeleted: false,
       isCreateMode: true,
+      TotalRefund: 0,
       services: [],
     });
   };
@@ -196,10 +198,91 @@ function CreateInternalPayment(props: any) {
 
   const updateRequest = (request: IPaymentRequest) => {
     setNewRequest(request);
+    let nightFree = 0, nightDiscount = 0;
+    request.services.map(ser => {
+      if(ser.Detail == 'LT') {
+        nightFree += ser.FeeBenefit == 100 ? 1 : 0;
+        nightDiscount += ser.FeeBenefit < 100 && ser.FeeBenefit > 0 ? 1 : 0;
+      }
+    })
+    if(quota.discountNightNeedClaim != nightDiscount || quota.freeNightNeedClaim != nightFree) {
+      const _qouta: IQuota = {...quota, discountNightNeedClaim: nightDiscount, freeNightNeedClaim: nightFree};
+      setQuota(_qouta);
+    }
   };
 
   const handleSubmit = () => {
     //TODO handle submit new request
+    const _services = newRequest?.services.map(item => {
+      return {
+        date:                   moment(item.DateUse, 'DD/MM/YYYY').format('YYYYMMDD'),
+        serviceTypeId:          item .UseWelfareType?.value,
+        userType:               item.UseFor?.value,
+        amountPaid:             item.FeePayment || 0,
+        upgradeRoomFee:         item.FeeUpgrade || 0,
+        detail:                 item.Detail || '',
+        quotedPrice:            item.QuotedPrice || 0,
+        pnlDiscountPercent:     item.PnlDiscountPercent || 0,
+        benefitDiscountPercent: item.FeeBenefit || 0,
+        refundAmount:           item.FeeReturn || 0
+      }
+    });
+    const _requestInfo = {
+      year:              yearSelected?.value,
+      freeNightsToClaim: quota.freeNightNeedClaim || 0,
+      discountNightsToClaim: quota.discountNightNeedClaim || 0,
+      code:              newRequest?.TripCode || '',
+      startDate:         moment(newRequest?.DateCome, 'DD/MM/YYYY').format('YYYYMMDD'),
+      endDate:           moment(newRequest?.DateLeave, 'DD/MM/YYYY').format('YYYYMMDD'),
+      totalRefund:       newRequest?.TotalRefund,
+      place:             newRequest?.TripAddress || '',
+      services:          _services
+    }
+    const formData = new FormData();
+    formData.append("divisionId", localStorage.getItem("divisionId") || '');
+    formData.append("division", localStorage.getItem("division") || '');
+    formData.append("regionId", localStorage.getItem("regionId") || '');
+    formData.append("region", localStorage.getItem("region") || '');
+    formData.append("unitId", localStorage.getItem("unitId") || '');
+    formData.append("unit", localStorage.getItem("unit") || '');
+    formData.append("partId", localStorage.getItem("partId") || '');
+    formData.append("part", localStorage.getItem("part") || '');
+    formData.append("companyCode", localStorage.getItem("companyCode") || '')
+    formData.append("benefitRank", localStorage.getItem("benefitLevel") || '');
+    formData.append('requestInfo', JSON.stringify(_requestInfo));
+    files.forEach(file => {
+      formData.append('files', file)
+    })
+    setLoading(true);
+    axios({
+      method: 'POST',
+      url: `${process.env.REACT_APP_REQUEST_URL}Request/benefit-refund`,
+      data: formData,
+      headers: { 'Content-Type': 'multipart/form-data', Authorization: `${localStorage.getItem('accessToken')}` }
+  })
+  .then(response => {
+    console.log(response?.data);
+      // if (response && response.data && response.data.result && response.data.result.code != Constants.API_ERROR_CODE) {
+      //     this.showStatusModal(this.props.t("Successful"), this.props.t("RequestSent"), true)
+      //     this.setDisabledSubmitButton(false)
+      // }
+      // else {
+      //     this.showStatusModal(this.props.t("Notification"), response.data.result.message, false)
+      //     this.setDisabledSubmitButton(false)
+      // }
+  })
+  .catch(error => {
+    console.log(error);
+      // let message = t("Error")
+      // if (error?.response?.data?.result?.code == Constants.API_ERROR_CODE) {
+      //   message = error?.response?.data?.result?.message
+      // }
+      // this.showStatusModal(this.props.t("Notification"), message, false)
+      // this.setDisabledSubmitButton(false)
+  })
+  .finally(() => {
+      setLoading(false);
+  })
   };
 
   return (
@@ -262,6 +345,7 @@ function CreateInternalPayment(props: any) {
             headerTitle={newRequest.name}
             typeServices={typeServices}
             cancelRequest={cancelRequest}
+            setLoading={setLoading}
             updateRequest={(req: IPaymentRequest) => updateRequest(req)}
           />
           <PaymentActionButtons
