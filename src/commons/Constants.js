@@ -251,7 +251,7 @@ const Constants = {
     5: ["V061", "V040", "V005", "V079", "V041", "V070", "V077"],//PHUCLOI
     6: ["V040", "V070", "V077"], //DIEUCHUYEN
     7: ["V040", "V070", "V077"], //BONHIEM
-    8: ["V040", "V070", "V077"] //THANH TOAN NOI BO
+    8: ["V040", "V070", "V077", "V030"] //THANH TOAN NOI BO
   },
   CURRENCY: {
     VND: 'VNĐ',
