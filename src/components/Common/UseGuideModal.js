@@ -106,8 +106,8 @@ export default function UseGuideModal({ show, onHide, setShowUseGuideIcon }) {
               </div>
               {useGuideDataShow?.map((item, index) => (
                 <div className="content-item mb-15" key={index}>
-                  <div className="content-col-1">{item.order}</div>
-                  <div className="content-col-2">
+                  <div className="content-col content-col-1">{item.order}</div>
+                  <div className="content-col content-col-2">
                     <div>
                       <b>{item.nameLocale}</b>
                     </div>
@@ -118,7 +118,7 @@ export default function UseGuideModal({ show, onHide, setShowUseGuideIcon }) {
                       )}
                     </div>
                   </div>
-                  <div className="content-col-3">
+                  <div className="content-col content-col-3">
                     <a
                       className="cursor-pointer link"
                       href={`https://view.officeapps.live.com/op/view.aspx?src=${item.webFileUrlLocale}`}
@@ -150,7 +150,7 @@ export default function UseGuideModal({ show, onHide, setShowUseGuideIcon }) {
                       {t("WatchVideo")}
                     </a>
                   </div>
-                  <div className="content-col-4">
+                  <div className="content-col content-col-4">
                     <a
                       className="cursor-pointer link"
                       href={`https://view.officeapps.live.com/op/view.aspx?src=${item.mobileFileUrlLocale}`}
