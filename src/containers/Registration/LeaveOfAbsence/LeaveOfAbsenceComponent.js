@@ -21,6 +21,7 @@ import { absenceRequestTypes, PN03List, MATERNITY_LEAVE_KEY, MARRIAGE_FUNERAL_LE
 import IconDatePicker from 'assets/img/icon/Icon_DatePicker.svg'
 import IconClock from 'assets/img/icon/ic_clock.svg'
 import LoadingModal from 'components/Common/LoadingModal'
+import ProcessingModal from 'components/Common/ProcessingModal'
 
 const absenceTypesAndDaysOffMapping = {
     1: { day: 3, time: 24 },
@@ -404,7 +405,7 @@ class LeaveOfAbsenceComponent extends React.Component {
             })
         }
 
-        this.setState({ validating: true, isLoading: true })
+        this.setState({ validating: true, isProcessing: true })
         axios.post(`${process.env.REACT_APP_REQUEST_URL}request/validate`, {perno: currentEmployeeNo, ...(isEdit && { requestId: this.props.taskId }), times: times}, config)
             .then(res => {
                 if (res?.data?.data?.times?.length > 0) {
@@ -466,7 +467,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                     })
                     this.setState({ newRequestInfo })
                 }
-            }).finally(() => this.setState({ validating: false, isLoading: false }))
+            }).finally(() => this.setState({ validating: false, isProcessing: false }))
     }
 
     calFullDay(timesheets) {
@@ -993,6 +994,7 @@ class LeaveOfAbsenceComponent extends React.Component {
             approver,
             validating,
             isLoading,
+            isProcessing,
         } = this.state
         const sortRequestListByGroup = requestInfo.sort((reqPrev, reqNext) => reqPrev.groupId - reqNext.groupId)
         const requestInfoArr = _.valuesIn(_.groupBy(sortRequestListByGroup, (req) => req.groupId))
@@ -1005,6 +1007,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                 <ResultModal show={isShowStatusModal} title={titleModal} message={messageModal} isSuccess={isSuccess} onHide={this.hideStatusModal} />
                 <NoteModal show={isShowNoteModal} onHide={this.hideNoteModal} />
                 <LoadingModal show={isLoading} />
+                <ProcessingModal isShow={isProcessing} />
                 <div className="row summary">
                     <div className="col">
                         <div className="item">

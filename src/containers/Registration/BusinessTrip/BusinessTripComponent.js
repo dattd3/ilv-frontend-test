@@ -18,6 +18,7 @@ import { checkIsExactPnL } from '../../../commons/commonFunctions';
 import IconDatePicker from 'assets/img/icon/Icon_DatePicker.svg'
 import IconClock from 'assets/img/icon/ic_clock.svg'
 import LoadingModal from 'components/Common/LoadingModal'
+import ProcessingModal from 'components/Common/ProcessingModal'
 
 registerLocale("vi", vi)
 
@@ -312,7 +313,7 @@ class BusinessTripComponent extends React.Component {
         })
 
         if (times.length === 0) return
-        this.setState({ validating: true, isLoading: true })
+        this.setState({ validating: true, isProcessing: true })
         axios.post(`${process.env.REACT_APP_REQUEST_URL}request/validate`, {
             perno: localStorage.getItem('employeeNo'),
             ...(this.state.isEdit && { requestId: this.props.taskId }),
@@ -367,7 +368,7 @@ class BusinessTripComponent extends React.Component {
                     })
                     this.setState({ newRequestInfo })
                 }
-            }).finally(() => this.setState({ validating: false, isLoading: false }))
+            }).finally(() => this.setState({ validating: false, isProcessing: false }))
     }
 
     isOverlapDateTime(startDateTime, endDateTime) {
@@ -775,7 +776,7 @@ class BusinessTripComponent extends React.Component {
 
     render() {
         const { t, businessTrip, recentlyManagers } = this.props;
-        const { requestInfo, errors, approver, appraiser, isEdit, validating, isLoading } = this.state
+        const { requestInfo, errors, approver, appraiser, isEdit, validating, isLoading, isProcessing } = this.state
         const sortRequestListByGroup = requestInfo.sort((reqPrev, reqNext) => reqPrev.groupId - reqNext.groupId)
         const requestInfoArr = _.valuesIn(_.groupBy(sortRequestListByGroup, (req) => req.groupId))
         const vehicles = [
@@ -817,6 +818,7 @@ class BusinessTripComponent extends React.Component {
             <div className="business-trip">
                 <ResultModal show={this.state.isShowStatusModal} title={this.state.titleModal} message={this.state.messageModal} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
                 <LoadingModal show={isLoading} />
+                <ProcessingModal isShow={isProcessing} />
                 { isEdit && 
                     <div className="box shadow registered-information">
                         <div className='text-uppercase font-weight-bold box-title'>Thông tin đã đăng ký công tác/đào tạo</div>
