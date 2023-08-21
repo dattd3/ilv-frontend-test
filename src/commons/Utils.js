@@ -655,10 +655,21 @@ const isVinITIS = () => {
     return Constants.pnlVCode.VinITIS === companyCode
 }
 
+const formatNumberSpecialCase = (val) => {
+    if (val === "" || val === null || val === undefined) {
+      return "";
+    }
+    val = val + "";
+    const temp = val?.replaceAll(" ", "");
+    return temp.replace(/./g, (c, i, a) => {
+      return i > 0 && c !== "." && (a.length - i) % 3 === 0 ? " " + c : c;
+    });
+};
+
 export {
     getRequestConfigurations, removeAccents, formatStringByMuleValue, formatNumberInteger, exportToPDF, isEnableFunctionByFunctionName, getValueParamByQueryString, getDateByRangeAndFormat,
     calculateBackDateByPnLVCodeAndFormatType, isEnableShiftChangeFunctionByPnLVCode, isEnableInOutTimeUpdateFunctionByPnLVCode, getRequestTypeIdsAllowedToReApproval, getMuleSoftHeaderConfigurations,
     isAdjacentDateBy2Date, showRangeDateGroupByArrayDate, generateTaskCodeByCode, parsteStringToHtml, getRegistrationMinDateByConditions, isVinFast, isEnableOTFunctionByPnLVCode, getCurrentLanguage, 
     getResignResonsMasterData, formatStringDateTimeByMuleValue, genderConfig, marriageConfig, formatProcessTime, setURLSearchParam, getCulture, isValidDateRequest, prepareOrganization, getRequestTypesList,
-    formatStringDateByMuleValue, isExistCurrentUserInWhiteList, isVinITIS
+    formatStringDateByMuleValue, isExistCurrentUserInWhiteList, isVinITIS, formatNumberSpecialCase
 }

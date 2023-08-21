@@ -804,6 +804,14 @@ export default [
           },
           component: lazy(() => import("./HistoryVinGroup/index"))
         },
+        {
+          key: "registration-internal-payment",
+          routeProps: {
+            exact: true,
+            path: map.RegistrationInternalPayment
+          },
+          component: lazy(() => import("./Welfare/InternalPayment/CreateInternalPayment"))
+        },
       ],
     },
   },
