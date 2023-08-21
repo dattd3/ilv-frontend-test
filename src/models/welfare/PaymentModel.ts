@@ -20,7 +20,8 @@ export interface IPaymentRequest {
     isDeleted?:    boolean;
     isCreateMode?: boolean;
     services: IPaymentService[];
-    requestHistory?: IPaymentRequestHistory
+    requestHistory?: IPaymentRequestHistory;
+    documentFileUrl?: string;
 }
 
 export interface IPaymentService {
@@ -35,6 +36,7 @@ export interface IPaymentService {
     QuotedPrice?: number;
     FeeBenefit: number;
     FeeReturn?: number | string;
+    documentFileUrl?: string;
 }
 
 // ----------QUOTA INFO ----------------
@@ -99,6 +101,7 @@ export interface IRequestDTO {
     requestHistoryID:      number;
     startDate:             string;
     totalRefund:           number;
+    documentFileUrl?:      string;
 }
 
 
