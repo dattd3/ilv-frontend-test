@@ -291,7 +291,7 @@ class TaskList extends React.Component {
                 || (child.processStatusId == Constants.STATUS_WAITING_CONSENTED && ![Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER, Constants.PROPOSAL_APPOINTMENT].includes(child.requestTypeId)) 
                 || (child.processStatusId == Constants.STATUS_OB_SUPERVISOR_EVALUATION && child.supervisorId?.toLowerCase() == currentEmail) 
                 || (child.processStatusId == Constants.STATUS_OB_APPRAISER_EVALUATION && child.appraiserId?.toLowerCase() == currentEmail) 
-                || (page == "approval" && ((child.processStatusId == Constants.STATUS_WAITING && ![Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER, Constants.PROPOSAL_APPOINTMENT].includes(child.requestTypeId)) || child.processStatusId == Constants.STATUS_OB_APPROVER_EVALUATION || (child.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && requestTypeIdsAllowedToReApproval.includes(child.requestTypeId))))
+                || (page == "approval" && ((child.processStatusId == Constants.STATUS_WAITING && ![Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER, Constants.PROPOSAL_APPOINTMENT, Constants.WELFARE_REFUND].includes(child.requestTypeId)) || child.processStatusId == Constants.STATUS_OB_APPROVER_EVALUATION || (child.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && requestTypeIdsAllowedToReApproval.includes(child.requestTypeId))))
             ) {
                 child.isChecked = event.target.checked;
                 if (child.isChecked) {
@@ -752,7 +752,7 @@ class TaskList extends React.Component {
                                                                 || (child.processStatusId == 10 && child.appraiserId?.toLowerCase() == localStorage.getItem('email')?.toLowerCase()) 
                                                                 || ([Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER, Constants.PROPOSAL_APPOINTMENT].includes(child.requestTypeId) && child.isEdit == true)
                                                             )
-                                                            && child.requestTypeId != Constants.UPDATE_PROFILE
+                                                            && child.requestTypeId != Constants.UPDATE_PROFILE && child.requestTypeId != Constants.WELFARE_REFUND
                                                         ) ?
                                                         <td scope="col" className="check-box text-left sticky-col">
                                                             <input type="checkbox" onChange={this.handleCheckChildElement} checked={!!child.isChecked} value={child.id || ''}/>

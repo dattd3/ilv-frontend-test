@@ -123,6 +123,11 @@ export default function processingDataReq(dataRawFromApi, tab) {
                 element.operationType = getOperationType(element.requestTypeId, element.updateField, element.processStatusId);
                 taskList.push(element);
             }
+            if(element.requestTypeId == Constants.WELFARE_REFUND) {
+                element.operationType = Constants.OPERATION_TYPES.INS
+                element.id = element.id.toString()
+                taskList.push(element);
+            }
         }
     });
 

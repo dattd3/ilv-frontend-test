@@ -293,7 +293,7 @@ class RequestTaskList extends React.Component {
         //     return <span className={status[statusOriginal].className}>{status[statusOriginal].label}</span>
         // }
         
-        if(!approverData?.account && statusOriginal === 5 && request !== Constants.UPDATE_PROFILE) {
+        if((!approverData?.account && request != Constants.WELFARE_REFUND) && statusOriginal === 5 && request !== Constants.UPDATE_PROFILE) {
             statusOriginal = 6;
         }
         
@@ -333,7 +333,9 @@ class RequestTaskList extends React.Component {
             '14-2': 'proposed-transfer',
             '15-2': 'proposed-appointment',
           };
-        if (request.parentRequestHistoryId) {
+        if(request?.requestTypeId == Constants.WELFARE_REFUND) {
+            url = `register-internal-payment`;
+        } else if (request.parentRequestHistoryId) {
           //xu ly mot nguoi
           url = `salarypropse/${request.parentRequestHistoryId}/${request.salaryId}/request`;
         } else {
@@ -932,7 +934,7 @@ class RequestTaskList extends React.Component {
                                             }
 
                                             let editLink = this.getRequestEditLink(child.id, child.requestTypeId, child.processStatusId)
-                                            let detailLink = [Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER, Constants.PROPOSAL_APPOINTMENT].includes(child.requestTypeId) ? this.getSalaryProposeLink(child) : this.getRequestDetailLink(child.id, child.requestTypeId)
+                                            let detailLink = [Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER, Constants.PROPOSAL_APPOINTMENT, Constants.WELFARE_REFUND].includes(child.requestTypeId) ? this.getSalaryProposeLink(child) : this.getRequestDetailLink(child.id, child.requestTypeId)
                                             let dateChanged = showRangeDateGroupByArrayDate(child.startDate)
 
                                             if ([Constants.OT_REQUEST].includes(child.requestTypeId)) {
