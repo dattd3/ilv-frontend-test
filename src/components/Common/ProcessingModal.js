@@ -1,8 +1,11 @@
 import React from "react"
-import IconLoading from "assets/img/icon/ic_long_loading.gif"
 import { Modal, Image } from "react-bootstrap"
+import { useTranslation } from "react-i18next"
+import IconLoading from "assets/img/icon/ic_long_loading.gif"
 
 function ProcessingModal({ isShow }) {
+    const { t } = useTranslation()
+
     return (
         <>
             <Modal
@@ -14,8 +17,8 @@ function ProcessingModal({ isShow }) {
             >
                 <Modal.Body className="text-center">
                     <Image src={IconLoading} alt="Success" className="ic-status" />
-                    <p className="processing font-weight-bold">Đang chờ xử lý</p>
-                    <div className="process-wait">Dữ liệu đang được xử lý. Vui lòng chờ trong giây lát...</div>
+                    <p className="processing font-weight-bold">{t("WaitProcessing")}</p>
+                    <div className="process-wait">{t("WaitProcessingContentMessage")}...</div>
                 </Modal.Body>
             </Modal>
         </>
