@@ -5085,6 +5085,37 @@ span.badge-notification[data-badge]::after {
     width: 100%;
     height: 100vh;
   }
+
+  // Implement Su ky Vin30
+  background-image: url("./assets/img/vingroup_history/bg-vingroup-history.jpg");
+  background-repeat: repeat;
+  // background-size: contain;
+  // background-position: center center;
+  width: 100%;
+  max-height: calc(100vh - 120px);
+  // background: #f59062;
+  overflow: hidden;
+  .page {
+    // background: yellow;
+    
+    &.--left {
+      text-align: right;
+      box-shadow: 25px 0 20px -20px rgba(0, 0, 0, 0.45);
+      img {
+        box-shadow: -20px 0 10px -20px rgba(0,0,0,0.45) inset;
+      }
+    }
+    &.--right {
+      border-left: 1px solid #ced4da;
+      // box-shadow: inset 7px 0 30px -7px rgba(0,0,0,.4);
+    }
+    img {
+      max-height: calc(100vh - 120px);
+      // max-height: 100%;
+      // object-fit: cover;
+      // height: fit-content;
+    }
+  }
 }
 
 .training-learning-page, .training-instruction-page {

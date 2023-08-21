@@ -38,6 +38,7 @@
     "react-metismenu": "^1.4.0",
     "react-moment": "^0.9.7",
     "react-overlays": "^5.2.1",
+    "react-pageflip": "^2.0.3",
     "react-paginate": "^6.3.2",
     "react-rating": "^2.0.5",
     "react-redux": "^7.2.1",
