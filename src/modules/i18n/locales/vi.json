@@ -1921,5 +1921,6 @@
   "vinai_good": "Vượt yêu cầu",
   "vinai_medium": "Đạt yêu cầu",
   "vinai_normal": "Cần cải thiện",
-  "vinai_bad": "Không đạt yêu cầu"
+  "vinai_bad": "Không đạt yêu cầu",
+  "WaitProcessingContentMessage": "Dữ liệu đang được xử lý. Vui lòng chờ trong giây lát"
 }
