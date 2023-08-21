@@ -185,7 +185,7 @@ function ServiceItem({
             {t("UseWelfareType")}{" "}
             {isCreateMode && <span className="required">(*)</span>}
             <Select
-              placeholder={t("option")}
+              placeholder={isCreateMode ? t("option") : ''}
               options={typeServices}
               isClearable={false}
               value={service.UseWelfareType}
@@ -199,7 +199,7 @@ function ServiceItem({
             {t("UseFor")}{" "}
             {isCreateMode && <span className="required">(*)</span>}
             <Select
-              placeholder={t("option")}
+              placeholder={ isCreateMode ? t("option") : ''}
               options={getPaymentObjects()}
               isClearable={false}
               value={service.UseFor}

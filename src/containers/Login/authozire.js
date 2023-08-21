@@ -278,7 +278,8 @@ function Authorize(props) {
             orgLv4Id: userProfile.organization_lv4,
             orgLv5Id: userProfile.organization_lv5,
             divisionName: userProfile.division,
-            unitName: userProfile.unit
+            unitName: userProfile.unit,
+            costCenter: userProfile?.cost_center
         }
 
         axios({

@@ -58,6 +58,7 @@ const Constants = {
   OT_REQUEST: 13, // OT
   PROPOSAL_TRANSFER: 14, // Dieu chuyen
   PROPOSAL_APPOINTMENT: 15, // Bo nhiem, mien nhiem
+  WELFARE_REFUND: 16,
 
   //Status request
   STATUS_PENDING: 0,
@@ -298,6 +299,7 @@ Constants.REQUEST_CATEGORY_1_LIST = {
   [Constants.OT_REQUEST]: "OTRequest",
   [Constants.CHANGE_DIVISON_SHIFT]: "AdminUploadShiftChange",
   [Constants.DEPARTMENT_TIMESHEET]: "DepartmentTimesheet",
+  [Constants.WELFARE_REFUND]: "WelfareRefund"
 }
 
 Constants.REQUEST_CATEGORY_2_LIST = {
@@ -307,6 +309,6 @@ Constants.REQUEST_CATEGORY_2_LIST = {
 }
 
 Constants.REQUEST_CATEGORY_1_LIST_ORDER = [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP, Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE, Constants.UPDATE_PROFILE,
-  Constants.ONBOARDING, Constants.RESIGN_SELF, Constants.OT_REQUEST, Constants.CHANGE_DIVISON_SHIFT, Constants.DEPARTMENT_TIMESHEET]
+  Constants.ONBOARDING, Constants.RESIGN_SELF, Constants.OT_REQUEST, Constants.CHANGE_DIVISON_SHIFT, Constants.DEPARTMENT_TIMESHEET, Constants.WELFARE_REFUND]
 
 export default Constants
