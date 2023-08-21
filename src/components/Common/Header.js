@@ -156,11 +156,13 @@ function Header(props) {
                                             };
                                             return `/${urls[`${item.requestTypeId}-${item.formType}`]}/${subId}/${suffix}`;
                                         }
-                                        
-                                        if (item.detailType == 'APPRAISAL')
-                                            return `/tasks?tab=consent${item.groupId ? `&requestTypes=${getRequestTypesList(item.groupId, false).join(",")}` : ''}`
+
+                                        if (item?.detailType == 'REQUEST')
+                                            return `/tasks${item?.groupId ? `?requestTypes=${getRequestTypesList(item.groupId, false).join(",")}` : ''}`
+                                        else if (item?.detailType == 'APPRAISAL')
+                                            return `/tasks?tab=consent${item?.groupId ? `&requestTypes=${getRequestTypesList(item.groupId, false).join(",")}` : ''}`                                       
                                         else
-                                            return `/tasks?tab=approval${item.groupId ? `&requestTypes=${getRequestTypesList(item.groupId, false).join(",")}` : ''}`
+                                            return `/tasks?tab=approval${item?.groupId ? `&requestTypes=${getRequestTypesList(item.groupId, false).join(",")}` : ''}`
                                     case 6:
                                         return '/personal-info?tab=document'
                                     case Constants.notificationType.NOTIFICATION_REJECT:
