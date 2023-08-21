@@ -1938,5 +1938,9 @@
   "AddRequest": "Thêm yêu cầu",
   "NewRequest": "Yêu cầu mới",
   "RequestPayment": "Yêu cầu {{id}}",
-  "ServicePayment": "Dịch vu {{id}}"
+  "ServicePayment": "Dịch vụ {{id}}",
+  "CheckPayment": "Kiểm tra",
+  "notCheckPayment": "Dịch vụ {{id}} chưa kiểm tra",
+  "outDateRange": "Ngảy sử dụng {{name}} không nằm trong khoảng check-in",
+  "DownloadFile": "Tải về tệp tin"
 }

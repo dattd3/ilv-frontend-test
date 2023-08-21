@@ -19,6 +19,10 @@ import { getRequestConfigurations } from "commons/Utils";
 import axios from "axios";
 import { getPaymentObjects } from "./PaymentData";
 import LoadingModal from "components/Common/LoadingModal";
+import StatusModal from 'components/Common/StatusModal'
+import _ from 'lodash';
+import { toast } from "react-toastify";
+import Constants from 'commons/Constants'
 
 function CreateInternalPayment(props: any) {
   const { t } = props;
@@ -35,6 +39,11 @@ function CreateInternalPayment(props: any) {
     IDropdownValue | undefined
   >();
   const [loading, setLoading] = useState(false);
+  const [statusModal, setStatusModal] = useState({
+    isShowStatusModal: false,
+    content: '',
+    isSuccess: false
+  })
   const [files, setFiles] = useState<any[]>([]);
   const [typeServices, setTypeServices] = useState<IDropdownValue[]>([]);
   const [quota, setQuota] = useState<IQuota>({
@@ -94,6 +103,7 @@ function CreateInternalPayment(props: any) {
               return {
                 label: locale == "vi" ? it.serviceName : it.serviceNameEn,
                 value: it.id,
+                code: it.serviceCode
               };
             });
             setTypeServices(_typeServices);
@@ -148,7 +158,8 @@ function CreateInternalPayment(props: any) {
         TotalRefund: it.totalRefund,
         isCreateMode: false,
         services: _services,
-        requestHistory: it.requestHistory
+        requestHistory: it.requestHistory,
+        documentFileUrl: it.documentFileUrl
       };
     });
     setRequests(_request);
@@ -186,7 +197,12 @@ function CreateInternalPayment(props: any) {
       isDeleted: false,
       isCreateMode: true,
       TotalRefund: 0,
-      services: [],
+      services: [
+        {
+          name: t("ServicePayment", { id: 1 }),
+          FeeBenefit: 0,
+        }
+      ],
     });
   };
   const cancelRequest = () => {
@@ -211,8 +227,73 @@ function CreateInternalPayment(props: any) {
     }
   };
 
+  const verifyError= () => {
+    const candidateInfos = { ...newRequest };
+    const requireFieldRequest = [
+      "DateLeave",
+      "DateCome",
+      "TripCode",
+    ];
+    const requiredFields = [
+      "FeePayment",
+      "UseFor",
+      "UseWelfareType",
+      "DateUse",
+    ];
+    const notCheckServices: number[] = [];
+    const optionFields = ["UseWelfareType", "UseFor"];
+    let _error: string | null = null;
+    (candidateInfos.services || []).map((ser, index) => {
+      requiredFields.forEach((name) => {
+        if (
+          _.isEmpty(ser[name]) ||
+          (!ser[name].value && optionFields.includes(name))
+        ) {
+          _error = t('PleaseEnter') + ' ' + t(name) + ` (${ser.name})`;
+        }
+      });
+      if(!ser.Detail) {
+        notCheckServices.push(index + 1);
+      }
+      if(candidateInfos.DateCome && candidateInfos.DateLeave && ser.DateUse) {
+        let compareDate = moment(ser.DateUse, "DD/MM/YYYY").format('YYYYMMDD');
+        let startDate   = moment(candidateInfos.DateCome, "DD/MM/YYYY").format('YYYYMMDD');
+        let endDate     = moment(candidateInfos.DateLeave, "DD/MM/YYYY").format('YYYYMMDD');
+        if(compareDate < startDate || compareDate > endDate) {
+          _error = t('outDateRange', {name: ser.name});
+        }
+      }
+    });
+    if(_error == null && notCheckServices.length > 0) {
+      _error = t('notCheckPayment', {id: notCheckServices.join(',')})
+    }
+
+    requireFieldRequest.forEach((name) => {
+      if (
+        _.isEmpty(candidateInfos[name]) ||
+        (!candidateInfos[name].value && optionFields.includes(name))
+      ) {
+        _error = t('PleaseEnter') + ' ' + t(name);
+      }
+    });
+    return _error;
+  };
+
+  const notifyMessage = (message, isError = true) => {
+    if (isError) {
+      toast.error(message);
+    } else {
+      toast.success(message);
+    }
+  };
+
   const handleSubmit = () => {
-    //TODO handle submit new request
+    const message = verifyError();
+    if(message) {
+      notifyMessage(message);
+      return;
+    }
+    
     const _services = newRequest?.services.map(item => {
       return {
         date:                   moment(item.DateUse, 'DD/MM/YYYY').format('YYYYMMDD'),
@@ -261,33 +342,49 @@ function CreateInternalPayment(props: any) {
       headers: { 'Content-Type': 'multipart/form-data', Authorization: `${localStorage.getItem('accessToken')}` }
   })
   .then(response => {
-    console.log(response?.data);
-      // if (response && response.data && response.data.result && response.data.result.code != Constants.API_ERROR_CODE) {
-      //     this.showStatusModal(this.props.t("Successful"), this.props.t("RequestSent"), true)
-      //     this.setDisabledSubmitButton(false)
-      // }
-      // else {
-      //     this.showStatusModal(this.props.t("Notification"), response.data.result.message, false)
-      //     this.setDisabledSubmitButton(false)
-      // }
+      setLoading(false);
+      if (response && response.data && response.data.result && response.data.result.code != Constants.API_ERROR_CODE) {
+          setStatusModal({
+            isShowStatusModal: true,
+            content: t("RequestSent"),
+            isSuccess: true
+          });
+      }
+      else {
+          setStatusModal({
+            isShowStatusModal: true,
+            content: response.data.result.message || '',
+            isSuccess: false
+          });
+      }
   })
   .catch(error => {
     console.log(error);
-      // let message = t("Error")
-      // if (error?.response?.data?.result?.code == Constants.API_ERROR_CODE) {
-      //   message = error?.response?.data?.result?.message
-      // }
-      // this.showStatusModal(this.props.t("Notification"), message, false)
-      // this.setDisabledSubmitButton(false)
+      let message = t("Error")
+      if (error?.response?.data?.result?.code == Constants.API_ERROR_CODE) {
+        message = error?.response?.data?.result?.message
+      }
+      setStatusModal({
+        isShowStatusModal: true,
+        content: message,
+        isSuccess: false
+      });
   })
   .finally(() => {
       setLoading(false);
   })
   };
 
+  const hideStatusModal = () => {
+    if(statusModal.isSuccess == true) {
+      window.location.reload();
+    }
+  }
+
   return (
     <div className="registration-insurance-section input-style">
       <LoadingModal show={loading}/>
+      <StatusModal show={statusModal.isShowStatusModal} content={statusModal.content} isSuccess={statusModal.isSuccess} onHide={hideStatusModal} />
       {/* loại yêu cầu */}
       <h5 style={{ color: "#000000" }}>{t("QUẢN LÝ YÊU CẦU")}</h5>
       <div className="box shadow cbnv">
@@ -319,7 +416,7 @@ function CreateInternalPayment(props: any) {
       />
 
       {/* Dịch vụ nội bộ đã sử dung */}
-      <h5 style={{ color: "#000000" }}>{t("WelfareServiceUsed")}</h5>
+      <h5 style={{ color: "#000000" }} className="mb-3">{t("WelfareServiceUsed")}</h5>
       {(requests || []).map((request: IPaymentRequest, index: number) => {
         return (
           <ServiceRequest

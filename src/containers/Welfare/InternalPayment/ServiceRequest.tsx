@@ -4,9 +4,14 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import ServiceItem from "./ServiceItem";
 import { Image } from "react-bootstrap";
-import { IPaymentRequest, IPaymentService, IQuota } from "models/welfare/PaymentModel";
+import {
+  IPaymentRequest,
+  IPaymentService,
+  IQuota,
+} from "models/welfare/PaymentModel";
 import IconDatePicker from "assets/img/icon/Icon_DatePicker.svg";
 import IconAdd from "assets/img/ic-add-green.svg";
+import IconDownload from "assets/img/ic_download_red.svg";
 import { IDropdownValue } from "models/CommonModel";
 import moment from "moment";
 import { formatNumberSpecialCase } from "commons/Utils";
@@ -18,7 +23,7 @@ interface IServiceRequestProps {
   cancelRequest: Function;
   updateRequest: Function;
   typeServices: IDropdownValue[];
-  setLoading?: Function
+  setLoading?: Function;
 }
 function ServiceRequest({
   t,
@@ -28,7 +33,7 @@ function ServiceRequest({
   cancelRequest,
   updateRequest,
   typeServices,
-  setLoading
+  setLoading,
 }: IServiceRequestProps) {
   const [open, setOpen] = useState(true);
 
@@ -48,7 +53,7 @@ function ServiceRequest({
     const lastRequest = { ...request };
     lastRequest.services.push({
       name: t("ServicePayment", { id: request.services.length + 1 }),
-      FeeBenefit: 0
+      FeeBenefit: 0,
     });
     updateRequest(lastRequest);
   };
@@ -81,6 +86,17 @@ function ServiceRequest({
     });
     updateRequest(lastRequest);
   };
+
+  const downloadFile = (url: string) => {
+    const filename = url.substring(url.lastIndexOf('/')+1);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute("download", filename);
+    link.setAttribute("target", "_blank");
+    document.body.appendChild(link);
+    link.click();
+    link.parentNode?.removeChild(link);
+  }
 
   const showStatus = (
     statusOriginal: number | undefined,
@@ -120,7 +136,7 @@ function ServiceRequest({
           className={"card-header clearfix text-black"}
           onClick={() => setOpen(!open)}
         >
-          <div className="float-left text-uppercase">{headerTitle}</div>
+          <div className="float-left">{headerTitle}</div>
           <div className="float-right">
             <i className={open ? "fas fa-caret-up" : "fas fa-caret-down"}></i>
           </div>
@@ -159,7 +175,7 @@ function ServiceRequest({
               {/* thông tin hành trình */}
               <div className="row">
                 <div className="col-3">
-                  {t("TripCode")}
+                  {t("TripCode")} {isCreateMode && <span className="required">(*)</span>}
                   <input
                     type="text"
                     placeholder={t("import")}
@@ -174,7 +190,7 @@ function ServiceRequest({
                   />
                 </div>
                 <div className="col-3">
-                  {t("DateCome")}
+                  {t("DateCome")} {isCreateMode && <span className="required">(*)</span>}
                   <div className="content input-container">
                     <label>
                       <DatePicker
@@ -207,7 +223,7 @@ function ServiceRequest({
                   </div>
                 </div>
                 <div className="col-3">
-                  {t("DateLeave")}
+                  {t("DateLeave")} {isCreateMode && <span className="required">(*)</span>}
                   <div className="content input-container">
                     <label>
                       <DatePicker
@@ -270,6 +286,22 @@ function ServiceRequest({
                       request.requestHistory?.processStatusId,
                       request.requestHistory?.approverId
                     )}
+                    <span style={{ width: "20px", display: "inline-block" }}>
+                      {""}
+                    </span>
+                    {request.documentFileUrl ? (
+                      <span className="request-status fail" style={{cursor: 'pointer'}} onClick={() => {downloadFile(request.documentFileUrl!)}}>
+                        <Image
+                          src={IconDownload}
+                          style={{
+                            width: "15px",
+                            height: "16px",
+                            marginRight: "5px",
+                          }}
+                        />
+                        {t("DownloadFile")}
+                      </span>
+                    ) : null}
                   </div>
                 </div>
               )}
@@ -285,6 +317,7 @@ function ServiceRequest({
                   setLoading={setLoading}
                   isCreateMode={isCreateMode}
                   typeServices={typeServices}
+                  canDelete={request.services.length > 1 ? true : false}
                   updateService={(ser) => updateService(index, ser)}
                   removeService={() => removeService(index)}
                 />
