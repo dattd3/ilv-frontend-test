@@ -194,7 +194,8 @@ function Authorize(props) {
                             prepare: shouldShowPrepareOnboard,
                             jobCode: user?.job_code,
                             ad: user?.username,
-                            master_code: user.master_code || ''
+                            master_code: user.master_code || '',
+                            cost_center: user?.cost_center
                         });
                         FirebaseUpdateToken();
                     }
@@ -241,7 +242,8 @@ function Authorize(props) {
                         prepare: shouldShowPrepareOnboard,
                         jobCode: user?.job_code,
                         ad: user?.username,
-                        master_code: ''
+                        master_code: '',
+                        cost_center: user?.cost_center
                     });
                 })
                 .finally(result => {
@@ -276,7 +278,8 @@ function Authorize(props) {
             orgLv4Id: userProfile.organization_lv4,
             orgLv5Id: userProfile.organization_lv5,
             divisionName: userProfile.division,
-            unitName: userProfile.unit
+            unitName: userProfile.unit,
+            costCenter: userProfile?.cost_center
         }
 
         axios({
