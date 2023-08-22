@@ -1803,8 +1803,7 @@ const SalaryAdjustmentPropse = (props) => {
                       className={`form-control w-100 bg-white ${
                         isProposalTransfer ? 'disabled' : ''
                       }`}
-                      style={{ fontSize: '14px', paddingLeft: '8px' }}
-                      disabled
+                      style={{ fontSize: '14px', paddingLeft: '8px', pointerEvents: 'none' }}
                     >
                       <option
                       >
