@@ -46,7 +46,19 @@ export default function MyBook(props) {
         <div className="history-vingroup-page" id="history-vingroup-page">
             {/* <button onClick={() => book.current.pageFlip().flipNext()}>Next page</button> */}
             <div className="d-flex wrap-page">
-                <div className="sidebar-left"></div>
+                <div className="sidebar-left">
+                    <div className="d-flex align-items-center justify-content-between top-sidebar">
+                        <span className="d-inline-flex align-items-center thumbnails">
+                            <span className="d-inline-flex justify-content-center align-items-center menu-item">
+                                <svg data-v-78b93dcc="" version="1.1" viewBox="0 0 24 24" className="svg-icon svg-icon svg-fill" focusable="false"><path pid="0" d="M9 3c.6 0 1 .4 1 1v5c0 .6-.4 1-1 1H4c-.6 0-1-.4-1-1V4c0-.6.4-1 1-1h5zm11 0c.6 0 1 .4 1 1v5c0 .6-.4 1-1 1h-5c-.6 0-1-.4-1-1V4c0-.6.4-1 1-1h5zM9 14c.6 0 1 .4 1 1v5c0 .6-.4 1-1 1H4c-.6 0-1-.4-1-1v-5c0-.6.4-1 1-1h5zm11 0c.6 0 1 .4 1 1v5c0 .6-.4 1-1 1h-5c-.6 0-1-.4-1-1v-5c0-.6.4-1 1-1h5z"></path></svg>
+                            </span>
+                            <span>Thumbnails</span>
+                        </span>
+                        <span className="d-inline-flex justify-content-center align-items-center cursor-pointer menu-close">
+                            <svg data-v-78b93dcc="" version="1.1" viewBox="0 0 24 24" class="svg-icon svg-icon svg-fill" focusable="false"><path pid="0" d="M14.251 12.003l3.747-3.746-2.248-2.248-3.747 3.746-3.746-3.746-2.248 2.248 3.746 3.746-3.746 3.747 2.248 2.248 3.746-3.747 3.747 3.747 2.248-2.248z"></path></svg>
+                        </span>
+                    </div>
+                </div>
                 <div className="main-content">
                     <div className="d-flex align-items-center header-block">
                         <h1 className="book-title">Sử ký VIN30</h1>
@@ -102,6 +114,9 @@ export default function MyBook(props) {
                             <Page number="29"><img src={Page29} /></Page>
                             <Page number="10"><img src={Page30} /></Page>
                         </HTMLFlipBook>
+                    </div>
+                    <div className="d-flex align-items-center bottom-block">
+                        
                     </div>
                 </div>
             </div>
