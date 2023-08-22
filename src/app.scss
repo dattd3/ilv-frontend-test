@@ -5089,31 +5089,65 @@ span.badge-notification[data-badge]::after {
   // Implement Su ky Vin30
   background-image: url("./assets/img/vingroup_history/bg-vingroup-history.jpg");
   background-repeat: repeat;
-  // background-size: contain;
-  // background-position: center center;
   width: 100%;
-  max-height: calc(100vh - 120px);
-  // background: #f59062;
+  // max-height: calc(100vh - 120px);
   overflow: hidden;
-  .page {
-    // background: yellow;
-    
-    &.--left {
-      text-align: right;
-      box-shadow: 25px 0 20px -20px rgba(0, 0, 0, 0.45);
-      img {
-        box-shadow: -20px 0 10px -20px rgba(0,0,0,0.45) inset;
+  font-size: 14px;
+  .wrap-page {
+    .sidebar-left {
+      width: 190px;
+    }
+    .main-content {
+      // width: ;
+      .header-block {
+        height: 45px;
+        background: #5a5f63;
+        color: #F6F7F7;
+        .book-title {
+          font-size: inherit;
+          margin: 0;
+          padding: 0 20px;
+          border-right: 1px solid #F6F7F7;
+        }
+        .page-block {
+          padding: 0 20px;
+          font-size: 13px;
+          .page-input {
+            margin: 0 10px;
+            border: none;
+            outline: none;
+            width: 70px;
+            -webkit-user-select: all;
+            user-select: all;
+          }
+          .seperate {
+            margin: 0 10px 0 0;
+          }
+        }
+      }
+      .book {
+        padding: 10px 0;
       }
     }
-    &.--right {
-      border-left: 1px solid #ced4da;
-      // box-shadow: inset 7px 0 30px -7px rgba(0,0,0,.4);
-    }
-    img {
-      max-height: calc(100vh - 120px);
-      // max-height: 100%;
-      // object-fit: cover;
-      // height: fit-content;
+    .page {
+      // background: yellow;
+      &.--left {
+        text-align: right;
+        box-shadow: 25px 0 20px -20px rgba(0, 0, 0, 0.45);
+        img {
+          box-shadow: -20px 0 10px -20px rgba(0,0,0,0.45) inset;
+        }
+      }
+      &.--right {
+        // border-left: 1px solid #ced4da;
+        // box-shadow: inset 7px 0 30px -7px rgba(0,0,0,.4);
+      }
+      img {
+        max-height: calc(100vh - 120px);
+        // max-height: 100%;
+        // object-fit: cover;
+        // height: fit-content;
+      }
     }
   }
 }
