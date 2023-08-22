@@ -267,7 +267,7 @@ function ServiceRequest({
                   {t("TripAddress")}
                   <input
                     type="text"
-                    placeholder={t("import")}
+                    placeholder={isCreateMode ? t("import") : ''}
                     value={request.TripAddress || ""}
                     onChange={(e) =>
                       handleChangeValue(e.target.value, "TripAddress")
