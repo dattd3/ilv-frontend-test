@@ -13,6 +13,8 @@ import PaymentBenefitInfo from "./component/PaymentBenefitInfo";
 import { IDropdownValue } from "models/CommonModel";
 import Constants from "commons/Constants";
 import DetailButtonComponent from "containers/Registration/DetailButtonComponent";
+import { getCurrentLanguage } from "commons/Utils";
+import { getPaymentObjects } from "./PaymentData";
 
 interface IInternalPaymentDetailProps {
   action: any;
@@ -58,8 +60,8 @@ const InternalPaymentDetail = (props: any) => {
             it.benefitRefundService || []
           ).map((_se, index) => ({
             DateUse: moment(_se.date, "YYYYMMDD").format("DD/MM/YYYY"),
-            UseWelfareType: _se.serviceName || "",
-            UseFor: _se.userType || "",
+            UseWelfareType: {value: _se.serviceTypeId, label: ( getCurrentLanguage() == 'vi' ? _se.serviceType?.serviceName : _se.serviceType?.serviceNameEn) || ""} ,
+            UseFor: {value: _se.userType, label: getPaymentObjects().find(ob => ob.value == _se.userType)?.label || ""} ,
             FeePayment: _se.amountPaid,
             FeeUpgrade: _se.upgradeRoomFee,
             name: t("ServicePayment", { id: index + 1 }),
