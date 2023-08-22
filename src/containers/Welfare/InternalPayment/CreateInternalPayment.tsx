@@ -23,6 +23,7 @@ import StatusModal from 'components/Common/StatusModal'
 import _ from 'lodash';
 import { toast } from "react-toastify";
 import Constants from 'commons/Constants'
+import HOCComponent from "components/Common/HOCComponent";
 
 function CreateInternalPayment(props: any) {
   const { t } = props;
@@ -67,7 +68,7 @@ function CreateInternalPayment(props: any) {
       costCenter: localStorage.getItem("cost_center") || "",
       employeeEmail: localStorage.getItem("plEmail") || "",
     });
-    const year = moment().year();
+    const year = 2023;
     setOPTIONS([
       { label: year, value: year },
       { label: year + 1, value: year + 1 },
@@ -378,6 +379,11 @@ function CreateInternalPayment(props: any) {
   const hideStatusModal = () => {
     if(statusModal.isSuccess == true) {
       window.location.reload();
+    } else {
+      setStatusModal({
+        ...statusModal,
+        isShowStatusModal: false
+      });
     }
   }
 
@@ -471,4 +477,4 @@ function CreateInternalPayment(props: any) {
   );
 }
 
-export default withTranslation()(CreateInternalPayment);
+export default HOCComponent(withTranslation()(CreateInternalPayment));
