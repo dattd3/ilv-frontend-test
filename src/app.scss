@@ -5086,16 +5086,17 @@ span.badge-notification[data-badge]::after {
     height: 100vh;
   }
 
+
   // Implement Su ky Vin30
   background-image: url("./assets/img/vingroup_history/bg-vingroup-history.jpg");
   background-repeat: repeat;
   width: 100%;
-  // max-height: calc(100vh - 120px);
-  overflow: hidden;
+  max-height: calc(100vh - 120px);
+  // overflow: hidden;
   font-size: 14px;
   .wrap-page {
     .sidebar-left {
-      width: 260px;
+      flex: 0 0 260px;
       font-size: 13px;
       box-shadow: 0 0 4px rgba(0,0,0,.3);
       .top-sidebar {
@@ -5162,21 +5163,68 @@ span.badge-notification[data-badge]::after {
         }
       }
       .book {
-        padding: 10px 0;
+        .wrap-book {
+          margin: 15px 0 0 0;
+        }
+        .stf__block {
+
+        }
+        .stf__parent {
+        }
+      }
+      .bottom-block {
+        height: 45px;
+        .menu-item {
+          padding: 2px;
+          &.active {
+            background: rgba(0,0,0,.3);
+          }
+          svg {
+            height: 24px;
+            width: 24px;
+            color: #6d6d6d;
+            fill: #6d6d6d;
+          }
+        }
+        .btn-download {
+          padding: 2px;
+          margin: 0 15px;
+          &.active {
+            background: rgba(0,0,0,.3);
+          }
+          svg {
+            height: 24px;
+            width: 24px;
+            color: #6d6d6d;
+            fill: #6d6d6d;
+          }
+        }
+        .btn-full-screen {
+          padding: 2px;
+          &.active {
+            background: rgba(0,0,0,.3);
+          }
+          svg {
+            height: 24px;
+            width: 24px;
+            color: #6d6d6d;
+            fill: #6d6d6d;
+          }
+        }
       }
     }
     .page {
       // background: yellow;
+      // width: auto !important;
+      // height: max-content !important;
       &.--left {
         text-align: right;
-        box-shadow: 25px 0 20px -20px rgba(0, 0, 0, 0.45);
         img {
           box-shadow: -20px 0 10px -20px rgba(0,0,0,0.45) inset;
         }
       }
       &.--right {
-        // border-left: 1px solid #ced4da;
-        // box-shadow: inset 7px 0 30px -7px rgba(0,0,0,.4);
+        text-align: left;
       }
       img {
         max-height: calc(100vh - 120px);
@@ -5186,6 +5234,69 @@ span.badge-notification[data-badge]::after {
       }
     }
   }
+
+
+
+
+
+  // TODO
+  .book {
+    // box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgb(209, 213, 219) 0px 0px 0px 1px inset;
+    // background-size: cover;
+
+    .wrap-book {
+      margin: 15px 30px !important;
+
+      .stf__wrapper {
+        // padding-bottom: 0!important;
+      }
+    }
+  }
+  .page {
+    // padding: 20px;
+    // background-color: hsl(35, 55, 98);
+    color: hsl(35, 35, 35);
+    // border: solid 1px hsl(35, 20, 70);
+    overflow: hidden;
+    height: 750px !important;
+    .page-content {
+      // width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: stretch; 
+      .page-image {
+        height: 100%;
+        background-size: contain;
+        // background-position: center center;
+        background-repeat: no-repeat;
+      }
+    }
+  
+    &.--left {
+      border-right: 0;
+      // box-shadow: inset -7px 0 20px -7px rgba(0, 0, 0, 0.3);
+      .page-image {
+        background-position: right top;
+      }
+    }
+  
+    &.--right {
+      border-left: 0;
+      // box-shadow: inset 7px 0 20px -7px rgba(0, 0, 0, 0.3);
+      .page-image {
+        background-position: left top;
+      }
+    }
+  
+    &.hard {
+      background-color: hsl(35, 50, 90);
+      border: solid 1px hsl(35, 20, 50);
+    }
+  }
+  // End TODO
+  
 }
 
 .training-learning-page, .training-instruction-page {
