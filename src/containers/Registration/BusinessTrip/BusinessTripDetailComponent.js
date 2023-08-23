@@ -185,17 +185,10 @@ class BusinessTripDetailComponent extends React.Component {
     const isShowApproval = (requestInfo.processStatusId === Constants.STATUS_WAITING) || (action === "approval" && requestInfo.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && requestTypeIdsAllowedToReApproval.includes(requestTypeId))
 
     let messageSAP = null;
-    if (businessTrip.processStatusId === Constants.STATUS_PARTIALLY_SUCCESSFUL)
-    {
-      if (businessTrip.responseDataFromSAP && Array.isArray(businessTrip.responseDataFromSAP)) {
-        const data = businessTrip.responseDataFromSAP.filter(val => val.STATUS === 'E');
-        if (data) {
-          const temp = data.map(val => val?.MESSAGE);
-          messageSAP = temp.filter(function(item, pos) {
-            return temp.indexOf(item) === pos;
-          })
-        }
-      }
+    if (requestInfo?.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL) {
+      messageSAP = (businessTrip?.responseDataFromSAP || [])
+      .filter(item => item?.STATUS?.toUpperCase() === 'E' && item?.MESSAGE)
+      .map(item => item?.MESSAGE)
     }
 
     let isShowAppraisalInfo = false
