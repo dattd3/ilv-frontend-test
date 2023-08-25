@@ -610,18 +610,20 @@ class BusinessTripComponent extends React.Component {
             const result = response?.data?.result
             if (result?.code === Constants.API_SUCCESS_CODE) {
                 this.showStatusModal(t("Successful"), t("RequestSent"), true)
+                this.setState({ needReload: true })
             } else if (result?.code == Constants.API_ERROR_CODE_WORKING_DAY_LOCKED) {
                 this.setState({ needReload: true })
                 this.showStatusModal(t("Notification"), result?.message, false, true)
             } else {
+                this.setState({ needReload: false })
                 this.showStatusModal(t("Notification"), result?.message, false)
             }
         })
         .catch(error => {
+            this.setState({ needReload: false })
             this.showStatusModal(t("Notification"), error?.response?.data?.result?.message || t("AnErrorOccurred"), false)
         })
         .finally(() => {
-            this.setState({ needReload: true })
             this.setDisabledSubmitButton(false)
         })
     }
