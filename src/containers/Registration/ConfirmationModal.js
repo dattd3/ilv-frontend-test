@@ -9,6 +9,7 @@ import ResultChangeShiftModal from './ResultChangeShiftModal'
 import Constants from '../../commons/Constants'
 import map from "../map.config"
 import { getCulture } from "commons/Utils"
+import LoadingModal from "components/Common/LoadingModal"
 
 // Thẩm định, Phê duyệt từng yêu cầu
 class ConfirmationModal extends React.Component {
@@ -21,7 +22,8 @@ class ConfirmationModal extends React.Component {
             isShowStatusModal: false,
             disabledSubmitButton: false,
             isShowStatusChangeShiftModal: false,
-            errorMessage: null
+            errorMessage: null,
+            isShowLoading: false,
         }
     }
 
@@ -109,7 +111,7 @@ class ConfirmationModal extends React.Component {
 
     sync = () => {
         const { dataToSap, t, onHide } = this.props;
-
+        this.setState({ isShowLoading: true })
         axios({
             method: 'POST',
             url: `${process.env.REACT_APP_REQUEST_URL}request/user-approve`,
@@ -145,6 +147,7 @@ class ConfirmationModal extends React.Component {
             this.showStatusModal(t("Notification"), error?.response?.data?.result?.message || t("AnErrorOccurred"), false)
         })
         .finally(res => {
+            this.setState({ isShowLoading: false })
             onHide()
         })
     }
@@ -459,14 +462,14 @@ class ConfirmationModal extends React.Component {
             [Constants.STATUS_TRANSFER_REFUSE]: "bg-not-approved",
             [Constants.STATUS_APPROVED]: "bg-approved",
         },
-            { isShowStatusModal, resultTitle, resultMessage, isSuccess, isShowStatusChangeShiftModal } = this.state,
-            { message, errorMessage, disabledSubmitButton } = this.state,
+            { isShowStatusModal, resultTitle, resultMessage, isSuccess, isShowStatusChangeShiftModal, message, errorMessage, disabledSubmitButton, isShowLoading } = this.state,
             { t, isSyncFromEmployee, show, onHide, type, title } = this.props;
         
         return (
             <>
                 <ResultModal show={isShowStatusModal} title={resultTitle} message={resultMessage} isSuccess={isSuccess} onHide={this.hideStatusModal} />
                 <ResultChangeShiftModal show={isShowStatusChangeShiftModal} title={resultTitle} result={resultMessage} onHide={this.hideStatusChangeShiftModal} />
+                <LoadingModal show={isShowLoading} />
                 
                 <Modal className='info-modal-common position-apply-modal request-confirm-modal' centered show={show} onHide={onHide}>
                     <Modal.Header className={`apply-position-modal ${ isSyncFromEmployee ? 'bg-approved' : backgroundColorMapping[type] }`} closeButton>
