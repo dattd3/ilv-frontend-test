@@ -5091,6 +5091,7 @@ span.badge-notification[data-badge]::after {
   background-image: url("./assets/img/vingroup_history/bg-vingroup-history.jpg");
   background-repeat: repeat;
   height: 100vh;
+  width: 100%;
   // overflow: hidden;
   font-size: 14px;
   border: 1px solid red;
@@ -5219,8 +5220,10 @@ span.badge-notification[data-badge]::after {
       // background: yellow;
       // width: auto !important;
       // height: max-content !important;
+      background: blue;
       &.--left {
         text-align: right;
+        // left: 0!important;
         img {
           box-shadow: -20px 0 10px -20px rgba(0,0,0,0.45) inset;
         }
