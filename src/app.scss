@@ -5090,11 +5090,12 @@ span.badge-notification[data-badge]::after {
   // Implement Su ky Vin30
   background-image: url("./assets/img/vingroup_history/bg-vingroup-history.jpg");
   background-repeat: repeat;
-  width: 100%;
-  max-height: calc(100vh - 120px);
+  height: 100vh;
   // overflow: hidden;
   font-size: 14px;
+  border: 1px solid red;
   .wrap-page {
+    height: 100vh;
     .sidebar-left {
       flex: 0 0 260px;
       font-size: 13px;
@@ -5134,7 +5135,10 @@ span.badge-notification[data-badge]::after {
       }
     }
     .main-content {
-      flex: 1 1 auto;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: gold;
       .header-block {
         height: 45px;
         background: #5a5f63;
@@ -5163,14 +5167,12 @@ span.badge-notification[data-badge]::after {
         }
       }
       .book {
-        .wrap-book {
-          margin: 15px 0 0 0;
-        }
-        .stf__block {
-
-        }
-        .stf__parent {
-        }
+        flex: 1;
+        height: calc(100% - 45px - 45px);
+        background: red;
+        // .wrap-book {
+        //   margin: 15px 0 0 0;
+        // }
       }
       .bottom-block {
         height: 45px;
@@ -5243,12 +5245,23 @@ span.badge-notification[data-badge]::after {
   .book {
     // box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgb(209, 213, 219) 0px 0px 0px 1px inset;
     // background-size: cover;
-
+    width: 100%;
+    padding: 15px 0;
+    // overflow: hidden;
     .wrap-book {
-      margin: 15px 30px !important;
-
+      height: 100%;
+      width: 100%;
+      .stf__parent {
+        height: 100%;
+        width: 100%;
+      }
       .stf__wrapper {
-        // padding-bottom: 0!important;
+        height: 100%;
+        padding-bottom: 0 !important;
+        width: 100%;
+      }
+      .stf__block {
+        // height: auto !important;
       }
     }
   }
@@ -5258,16 +5271,18 @@ span.badge-notification[data-badge]::after {
     color: hsl(35, 35, 35);
     // border: solid 1px hsl(35, 20, 70);
     overflow: hidden;
-    height: 750px !important;
+    // height: 750px !important;
     .page-content {
       // width: 100%;
-      height: 100%;
+
+
+      // height: 100%;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       align-items: stretch; 
       .page-image {
-        height: 100%;
+        // height: 100%;
         background-size: contain;
         // background-position: center center;
         background-repeat: no-repeat;
@@ -5298,6 +5313,9 @@ span.badge-notification[data-badge]::after {
   // End TODO
   
 }
+
+
+
 
 .training-learning-page, .training-instruction-page {
   font-size: 14px;
