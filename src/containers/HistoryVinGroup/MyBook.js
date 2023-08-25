@@ -73,7 +73,8 @@ const Page = forwardRef((props, ref) => {
         <div className={`page page-${props?.page}`} ref={ref}>
             <div className="page-content">
                 {/* <div className="page-image" style={{ backgroundImage: `url(${Page1})` }}></div> */}
-                <div className="page-image" style={{ backgroundImage: `url(${imageMapping[props?.page]})` }}></div>
+                {/* <div className="page-image" style={{ backgroundImage: `url(${imageMapping[props?.page]})` }}></div> */}
+                <div className="page-image"><img src={imageMapping[props?.page]} /></div>
             </div>
         </div>
     )
