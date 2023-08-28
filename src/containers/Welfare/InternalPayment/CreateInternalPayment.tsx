@@ -448,6 +448,7 @@ function CreateInternalPayment(props: any) {
             t={t}
             request={newRequest}
             isCreateMode={true}
+            isOpen={true}
             headerTitle={newRequest.name}
             typeServices={typeServices}
             cancelRequest={cancelRequest}
