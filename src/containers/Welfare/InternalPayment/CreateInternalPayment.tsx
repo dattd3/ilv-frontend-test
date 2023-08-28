@@ -26,7 +26,7 @@ import Constants from 'commons/Constants'
 import HOCComponent from "components/Common/HOCComponent";
 
 function CreateInternalPayment(props: any) {
-  const { t } = props;
+  const { t, year} = props;
   const type = { label: t("RequestInternalPayment"), value: 1 };
   const locale = localStorage.getItem("locale") == "vi-VN" ? "vi" : "en";
   //const OPTIONS = [{ label: "test data", value: "aa" }];
@@ -68,14 +68,14 @@ function CreateInternalPayment(props: any) {
       costCenter: localStorage.getItem("cost_center") || "",
       employeeEmail: localStorage.getItem("plEmail") || "",
     });
-    const year = 2023;
+    const _year = 2023;
     setOPTIONS([
-      { label: year, value: year },
-      { label: year + 1, value: year + 1 },
-      { label: year + 2, value: year + 2 },
+      { label: _year, value: _year },
+      { label: _year + 1, value: _year + 1 },
+      { label: _year + 2, value: _year + 2 },
     ]);
-    setYearSelected({ label: year, value: year });
-    initData(localStorage.getItem("companyCode") || "", year);
+    setYearSelected({label: year || moment().year(), value: year || moment().year()});
+    initData(localStorage.getItem("companyCode") || "", year || moment().year());
   }, []);
 
   const initData = async (companyCode: string, year: number) => {
@@ -129,7 +129,10 @@ function CreateInternalPayment(props: any) {
     const ObjectInfos = getPaymentObjects();
     setQuota({ ...quota, ..._benefitInfo.quota });
     const _requestInfo = _benefitInfo.info;
-    if (!_requestInfo) return;
+    if (!_requestInfo) {
+      setRequests([]);
+      return;
+    }
     const _request: IPaymentRequest[] = (
       _requestInfo.benefitRefundItem || []
     ).map((it) => {
@@ -445,6 +448,7 @@ function CreateInternalPayment(props: any) {
             t={t}
             request={newRequest}
             isCreateMode={true}
+            isOpen={true}
             headerTitle={newRequest.name}
             typeServices={typeServices}
             cancelRequest={cancelRequest}

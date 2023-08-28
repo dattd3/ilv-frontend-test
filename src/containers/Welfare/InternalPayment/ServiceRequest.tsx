@@ -24,6 +24,7 @@ interface IServiceRequestProps {
   updateRequest: Function;
   typeServices: IDropdownValue[];
   setLoading?: Function;
+  isOpen?: boolean;
 }
 function ServiceRequest({
   t,
@@ -34,9 +35,9 @@ function ServiceRequest({
   updateRequest,
   typeServices,
   setLoading,
+  isOpen = false
 }: IServiceRequestProps) {
-  const [open, setOpen] = useState(true);
-
+  const [open, setOpen] = useState(isOpen);
   const handleChangeValue = (value: any, key: string) => {
     const newRequest = {
       ...request,
@@ -88,15 +89,15 @@ function ServiceRequest({
   };
 
   const downloadFile = (url: string) => {
-    const filename = url.substring(url.lastIndexOf('/')+1);
-    const link = document.createElement('a');
+    const filename = url.substring(url.lastIndexOf("/") + 1);
+    const link = document.createElement("a");
     link.href = url;
     link.setAttribute("download", filename);
     link.setAttribute("target", "_blank");
     document.body.appendChild(link);
     link.click();
     link.parentNode?.removeChild(link);
-  }
+  };
 
   const showStatus = (
     statusOriginal: number | undefined,
@@ -169,173 +170,185 @@ function ServiceRequest({
             {t("Cancel")}
           </button>
         ) : null}
-        <Collapse in={open || isCreateMode}>
-          <div id="example-collapse-text" className="request-content">
-            <div className="trip-contain">
-              {/* thông tin hành trình */}
-              <div className="row">
-                <div className="col-3">
-                  {t("TripCode")} {isCreateMode && <span className="required">(*)</span>}
-                  <input
-                    type="text"
-                    placeholder={t("import")}
-                    value={request.TripCode || ""}
-                    onChange={(e) =>
-                      handleChangeValue(e.target.value, "TripCode")
-                    }
-                    className="form-control input mv-10 w-100"
-                    name="inputName"
-                    autoComplete="off"
-                    disabled={!isCreateMode}
-                  />
-                </div>
-                <div className="col-3">
-                  {t("DateCome")} {isCreateMode && <span className="required">(*)</span>}
-                  <div className="content input-container">
-                    <label>
-                      <DatePicker
-                        name="endDate"
-                        selectsEnd
-                        autoComplete="off"
-                        selected={
-                          request.DateCome
-                            ? moment(request.DateCome, "DD/MM/YYYY").toDate()
-                            : undefined
-                        }
-                        maxDate={
-                          request.DateLeave
-                            ? moment(request.DateLeave, "DD/MM/YYYY").toDate()
-                            : undefined
-                        }
-                        onChange={(date) =>
-                          handleChangeDatetimeValue(date, "DateCome")
-                        }
-                        dateFormat="dd/MM/yyyy"
-                        placeholderText={t("Select")}
-                        locale={t("locale")}
-                        className="form-control input"
-                        disabled={!isCreateMode}
-                      />
-                      <span className="input-group-addon input-img">
-                        <img src={IconDatePicker} alt="Date" />
-                      </span>
-                    </label>
-                  </div>
-                </div>
-                <div className="col-3">
-                  {t("DateLeave")} {isCreateMode && <span className="required">(*)</span>}
-                  <div className="content input-container">
-                    <label>
-                      <DatePicker
-                        name="endDate"
-                        selectsEnd
-                        autoComplete="off"
-                        minDate={
-                          request.DateCome
-                            ? moment(request.DateCome, "DD/MM/YYYY").toDate()
-                            : undefined
-                        }
-                        selected={
-                          request.DateLeave
-                            ? moment(request.DateLeave, "DD/MM/YYYY").toDate()
-                            : undefined
-                        }
-                        onChange={(date) =>
-                          handleChangeDatetimeValue(date, "DateLeave")
-                        }
-                        dateFormat="dd/MM/yyyy"
-                        placeholderText={t("Select")}
-                        locale={t("locale")}
-                        className="form-control input"
-                        disabled={!isCreateMode}
-                      />
-                      <span className="input-group-addon input-img">
-                        <img src={IconDatePicker} alt="Date" />
-                      </span>
-                    </label>
-                  </div>
-                </div>
-                <div className="col-3">
-                  {t("PaymentTotal")}
-                  <div className="detail1">
-                    {formatNumberSpecialCase(request.TotalRefund)}
-                  </div>
-                </div>
-              </div>
-              <div className="row mv-10">
-                <div className="col-12">
-                  {t("TripAddress")}
-                  <input
-                    type="text"
-                    placeholder={isCreateMode ? t("import") : ''}
-                    value={request.TripAddress || ""}
-                    onChange={(e) =>
-                      handleChangeValue(e.target.value, "TripAddress")
-                    }
-                    className="form-control input mv-10 w-100"
-                    name="inputName"
-                    autoComplete="off"
-                    disabled={!isCreateMode}
-                  />
-                </div>
-              </div>
-              {!isCreateMode && (
-                <div className="row mv-10">
-                  <div className="col-12 status mv-10">
-                    {showStatus(
-                      request.requestHistory?.processStatusId,
-                      request.requestHistory?.approverId
-                    )}
-                    <span style={{ width: "20px", display: "inline-block" }}>
-                      {""}
-                    </span>
-                    {request.documentFileUrl ? (
-                      <span className="request-status fail" style={{cursor: 'pointer'}} onClick={() => {downloadFile(request.documentFileUrl!)}}>
-                        <Image
-                          src={IconDownload}
-                          style={{
-                            width: "15px",
-                            height: "16px",
-                            marginRight: "5px",
-                          }}
-                        />
-                        {t("DownloadFile")}
-                      </span>
-                    ) : null}
-                  </div>
-                </div>
-              )}
-            </div>
-            {/* danh sách cac loại dich vu */}
-            {(request?.services || []).map((service, index) => {
-              return (
-                <ServiceItem
-                  key={index}
-                  t={t}
-                  headerTitle={service.name}
-                  service={service}
-                  setLoading={setLoading}
-                  isCreateMode={isCreateMode}
-                  typeServices={typeServices}
-                  canDelete={request.services.length > 1 ? true : false}
-                  updateService={(ser) => updateService(index, ser)}
-                  removeService={() => removeService(index)}
-                />
-              );
-            })}
 
-            {isCreateMode ? (
-              <button
-                className="btn btn-outline-success btn-lg w-fit-content mt-3 d-flex align-items-center"
-                style={{ gap: "4px", fontSize: "14px" }}
-                onClick={addMoreSevice}
-              >
-                <Image src={IconAdd} />
-                {t("AddService")}
-              </button>
-            ) : null}
+        <div id="example-collapse-text" className="request-content">
+          <div className="trip-contain">
+            {/* thông tin hành trình */}
+            <div className="row">
+              <div className="col-3">
+                {t("TripCode")}{" "}
+                {isCreateMode && <span className="required">(*)</span>}
+                <input
+                  type="text"
+                  placeholder={t("import")}
+                  value={request.TripCode || ""}
+                  onChange={(e) =>
+                    handleChangeValue(e.target.value, "TripCode")
+                  }
+                  className="form-control input mv-10 w-100"
+                  name="inputName"
+                  autoComplete="off"
+                  disabled={!isCreateMode}
+                />
+              </div>
+              <div className="col-3">
+                {t("DateCome")}{" "}
+                {isCreateMode && <span className="required">(*)</span>}
+                <div className="content input-container">
+                  <label>
+                    <DatePicker
+                      name="endDate"
+                      selectsEnd
+                      autoComplete="off"
+                      selected={
+                        request.DateCome
+                          ? moment(request.DateCome, "DD/MM/YYYY").toDate()
+                          : undefined
+                      }
+                      maxDate={
+                        request.DateLeave
+                          ? moment(request.DateLeave, "DD/MM/YYYY").toDate()
+                          : undefined
+                      }
+                      onChange={(date) =>
+                        handleChangeDatetimeValue(date, "DateCome")
+                      }
+                      dateFormat="dd/MM/yyyy"
+                      placeholderText={t("Select")}
+                      locale={t("locale")}
+                      className="form-control input"
+                      disabled={!isCreateMode}
+                    />
+                    <span className="input-group-addon input-img">
+                      <img src={IconDatePicker} alt="Date" />
+                    </span>
+                  </label>
+                </div>
+              </div>
+              <div className="col-3">
+                {t("DateLeave")}{" "}
+                {isCreateMode && <span className="required">(*)</span>}
+                <div className="content input-container">
+                  <label>
+                    <DatePicker
+                      name="endDate"
+                      selectsEnd
+                      autoComplete="off"
+                      minDate={
+                        request.DateCome
+                          ? moment(request.DateCome, "DD/MM/YYYY").toDate()
+                          : undefined
+                      }
+                      selected={
+                        request.DateLeave
+                          ? moment(request.DateLeave, "DD/MM/YYYY").toDate()
+                          : undefined
+                      }
+                      onChange={(date) =>
+                        handleChangeDatetimeValue(date, "DateLeave")
+                      }
+                      dateFormat="dd/MM/yyyy"
+                      placeholderText={t("Select")}
+                      locale={t("locale")}
+                      className="form-control input"
+                      disabled={!isCreateMode}
+                    />
+                    <span className="input-group-addon input-img">
+                      <img src={IconDatePicker} alt="Date" />
+                    </span>
+                  </label>
+                </div>
+              </div>
+              <div className="col-3">
+                {t("PaymentTotal")}
+                <div className="detail1">
+                  {formatNumberSpecialCase(request.TotalRefund)}
+                </div>
+              </div>
+            </div>
+            <div className="row mv-10">
+              <div className="col-12">
+                {t("TripAddress")}
+                <input
+                  type="text"
+                  placeholder={isCreateMode ? t("import") : ""}
+                  value={request.TripAddress || ""}
+                  onChange={(e) =>
+                    handleChangeValue(e.target.value, "TripAddress")
+                  }
+                  className="form-control input mv-10 w-100"
+                  name="inputName"
+                  autoComplete="off"
+                  disabled={!isCreateMode}
+                />
+              </div>
+            </div>
+            {!isCreateMode && (
+              <div className="row mv-10">
+                <div className="col-12 status mv-10">
+                  {showStatus(
+                    request.requestHistory?.processStatusId,
+                    request.requestHistory?.approverId
+                  )}
+                  <span style={{ width: "20px", display: "inline-block" }}>
+                    {""}
+                  </span>
+                  {request.documentFileUrl ? (
+                    <span
+                      className="request-status fail"
+                      style={{ cursor: "pointer" }}
+                      onClick={() => {
+                        downloadFile(request.documentFileUrl!);
+                      }}
+                    >
+                      <Image
+                        src={IconDownload}
+                        style={{
+                          width: "15px",
+                          height: "16px",
+                          marginRight: "5px",
+                        }}
+                      />
+                      {t("DownloadFile")}
+                    </span>
+                  ) : null}
+                </div>
+              </div>
+            )}
           </div>
-        </Collapse>
+          <Collapse in={open || isCreateMode}>
+            <div>
+              {/* danh sách cac loại dich vu */}
+              {(request?.services || []).map((service, index) => {
+                return (
+                  <ServiceItem
+                    key={index}
+                    t={t}
+                    headerTitle={service.name}
+                    service={service}
+                    setLoading={setLoading}
+                    isCreateMode={isCreateMode}
+                    typeServices={typeServices}
+                    canDelete={request.services.length > 1 ? true : false}
+                    updateService={(ser) => updateService(index, ser)}
+                    removeService={() => removeService(index)}
+                  />
+                );
+              })}
+            </div>
+          </Collapse>
+
+          {isCreateMode ? (
+            <button
+              className="btn btn-outline-success btn-lg w-fit-content mt-3 d-flex align-items-center"
+              style={{ gap: "4px", fontSize: "14px" }}
+              onClick={addMoreSevice}
+            >
+              <Image src={IconAdd} />
+              {t("AddService")}
+            </button>
+          ) : null}
+        </div>
       </div>
     </div>
   );
