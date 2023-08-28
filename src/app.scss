@@ -5094,7 +5094,6 @@ span.badge-notification[data-badge]::after {
   width: 100%;
   // overflow: hidden;
   font-size: 14px;
-  border: 1px solid red;
   .wrap-page {
     height: 100vh;
     .sidebar-left {
@@ -5139,7 +5138,6 @@ span.badge-notification[data-badge]::after {
       flex: 1;
       display: flex;
       flex-direction: column;
-      background: gold;
       .header-block {
         height: 45px;
         background: #5a5f63;
@@ -5170,7 +5168,7 @@ span.badge-notification[data-badge]::after {
       .book {
         flex: 1;
         height: calc(100% - 45px - 45px);
-        background: red;
+        // background: red;
         // .wrap-book {
         //   margin: 15px 0 0 0;
         // }
@@ -5220,7 +5218,7 @@ span.badge-notification[data-badge]::after {
       // background: yellow;
       // width: auto !important;
       // height: max-content !important;
-      background: blue;
+      // background: blue;
       &.--left {
         text-align: right;
         // left: 0!important;
@@ -5316,7 +5314,7 @@ span.badge-notification[data-badge]::after {
       // box-shadow: inset 7px 0 20px -7px rgba(0, 0, 0, 0.3);
       .page-image {
         // background-position: left top;
-        background: #0D1B3C;
+        // background: #0D1B3C;
       }
       &.--simple {
         left: unset !important;

@@ -38,7 +38,6 @@
     "react-metismenu": "^1.4.0",
     "react-moment": "^0.9.7",
     "react-overlays": "^5.2.1",
-    "react-pageflip": "^2.0.3",
     "react-paginate": "^6.3.2",
     "react-rating": "^2.0.5",
     "react-redux": "^7.2.1",
@@ -53,7 +52,8 @@
     "sass": "^1.49.8",
     "socket.io": "^2.4.1",
     "xlsx": "^0.17.0",
-    "xlsx-js-style": "^1.0.0"
+    "xlsx-js-style": "^1.0.0",
+    "react-pageflip": "git://cuongnv56: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@github.com/cuongnv56/react-pageflip.git"
   },
   "scripts": {
     "start": "react-scripts start",
