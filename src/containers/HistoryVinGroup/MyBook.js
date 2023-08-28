@@ -70,7 +70,7 @@ const Page = forwardRef((props, ref) => {
     }
 
     return (
-        <div className={`page page-${props?.page}`} ref={ref}>
+        <div className={`page page-${props?.page}`} ref={ref} data-density="soft">
             <div className="page-content">
                 {/* <div className="page-image" style={{ backgroundImage: `url(${Page1})` }}></div> */}
                 {/* <div className="page-image" style={{ backgroundImage: `url(${imageMapping[props?.page]})` }}></div> */}
@@ -151,8 +151,6 @@ export default function MyBook(props) {
         pages.push(index + 1)
     }
 
-    console.log(pages)
-
     return (
         <div className="history-vingroup-page" id="history-vingroup-page" ref={page}>
             {/* <button onClick={() => book.current.pageFlip().flipNext()}>Next page</button> */}
@@ -197,7 +195,7 @@ export default function MyBook(props) {
                                 maxWidth={1000}
                                 minHeight={420}
                                 maxHeight={1350}
-                                maxShadowOpacity={0.5}
+                                // maxShadowOpacity={0.5}
                                 drawShadow={false}
                                 mobileScrollSupport={false}
                                 ref={book}>
