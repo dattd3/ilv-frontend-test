@@ -146,12 +146,35 @@ const CreateMaternityInsurance = ({
     const requiredFields = [
       "declareForm",
       "receiveType",
-      "accountNumber",
+      "plan",
+      "leaveOfWeek",
+      "seri",
+      "fromDate",
+      "toDate",
+      "total"
+    ];
+    if(checkRequireAtm()) {
+      requiredFields.push("accountNumber",
       "accountName",
       "bankId",
-      "bankName",
-    ];
-    const optionFields = ["declareForm", "receiveType"];
+      "bankName");
+    }
+    if(checkRequireGestationalAge()) {
+      requiredFields.push('age');
+    }
+    if(checkRequireChildNumber()) {
+      requiredFields.push('childBirth','childNumbers')
+    }
+    if(checkRequireChildDie()) {
+      requiredFields.push('childDead', 'childDeadNumbers');
+    }
+    if(checkRequireChildReceiveDate()) {
+      requiredFields.push('childReceiveDate');
+    }
+    if(checkRequireMomInfo()) {
+      requiredFields.push('momInsuranceNumber', 'momHealthNumber', 'momIdNumber');
+    }
+    const optionFields = ["declareForm", "receiveType", "plan"];
 
     requiredFields.forEach((name) => {
       if (
@@ -174,6 +197,56 @@ const CreateMaternityInsurance = ({
     }
     return hasErrors ? false : true;
   };
+
+  const showError = (key) => {
+    if(!key) return null;
+    return errors[key] ? (
+      <p className="text-danger">{errors[key]}</p>
+    ) : null
+  }
+
+  //check yêu cầu tuổi thai
+  const checkRequireGestationalAge = () => {
+    if(data.plan?.value && ['T1', 'T2'].includes(data.plan.value)) {
+      return true;
+    }
+    return false;
+  }
+
+  //check yeu cau ngay sinh con + so con
+  const checkRequireChildNumber = () => {
+    if(data.plan?.value && ['T4.1', 'T4.2', 'T8', 'T10', 'T11', 'T12', 'T13'].includes(data.plan.value)) {
+      return true;
+    }
+    return false;
+  }
+
+  const checkRequireChildDie = () => {
+    if(data.plan?.value && ['T6.1', 'T6.2', 'T6.3'].includes(data.plan.value)) {
+      return true;
+    }
+    return false;
+  }
+  
+  const checkRequireChildReceiveDate = () => {
+    if(data.plan?.value && ['T8'].includes(data.plan.value)) {
+      return true;
+    }
+    return false;
+  }
+
+  const checkRequireMomInfo = () => {
+    if(data.plan?.value && ['T12', 'T13'].includes(data.plan.value)) {
+      return true;
+    }
+    return false;
+  }
+  const checkRequireAtm = () => {
+    if(data.receiveType?.value && [2].includes(data.receiveType.value)) {
+      return true;
+    }
+    return false;
+  }
 
   return (
     <>
@@ -329,6 +402,7 @@ const CreateMaternityInsurance = ({
           </div>
           <div className="col-8">
             {t('plan')}
+            <span className="required">(*)</span>
             <Select
               placeholder={t('option')}
               options={MATERNITY_PLAN}
@@ -338,9 +412,7 @@ const CreateMaternityInsurance = ({
               className="input mv-10"
               styles={{ menu: (provided) => ({ ...provided, zIndex: 2 }) }}
             />
-            {errors["plan"] ? (
-              <p className="text-danger">{errors["plan"]}</p>
-            ) : null}
+            {showError('plan')}
           </div>
         </div>
         <div className="row mv-10">
@@ -395,6 +467,7 @@ const CreateMaternityInsurance = ({
 
           <div className="col-4">
             {t('weekly_holiday')}
+            <span className="required">(*)</span>
             <input
               type="text"
               value={data.leaveOfWeek}
@@ -403,6 +476,7 @@ const CreateMaternityInsurance = ({
               name="inputName"
               autoComplete="off"
             />
+            {showError('leaveOfWeek')}
           </div>
 
           <div className="col-4">
@@ -435,6 +509,7 @@ const CreateMaternityInsurance = ({
         <div className="row mv-10">
           <div className="col-4">
             {t('seri_storage')}
+            <span className="required">(*)</span>
             <input
               value={data.seri}
               onChange={(e) => handleTextInputChange(e, "seri")}
@@ -443,9 +518,10 @@ const CreateMaternityInsurance = ({
               name="inputName"
               autoComplete="off"
             />
+            {showError("seri")}
           </div>
           <div className="col-4">
-            <div>{t('StartDate')}</div>
+            <div>{t('StartDate')} <span className="required">(*)</span></div>
             <DatePicker
               selectsStart
               name="startDate"
@@ -462,9 +538,10 @@ const CreateMaternityInsurance = ({
               className="form-control input"
               styles={{ width: "100%" }}
             />
+            {showError("fromDate")}
           </div>
           <div className="col-4">
-            <div>{t('EndDate')}</div>
+            <div>{t('EndDate')} <span className="required">(*)</span></div>
             <DatePicker
               selectsEnd
               name="startDate"
@@ -481,11 +558,13 @@ const CreateMaternityInsurance = ({
               className="form-control input"
               styles={{ width: "100%" }}
             />
+            {showError("toDate")}
           </div>
         </div>
         <div className="row mv-10">
           <div className="col-12">
             {t('total')}
+            <span className="required">(*)</span>
             <input
               value={data.total}
               onChange={(e) => handleTextInputChange(e, "total")}
@@ -494,6 +573,7 @@ const CreateMaternityInsurance = ({
               name="inputName"
               autoComplete="off"
             />
+            {showError("total")}
           </div>
         </div>
       </div>
@@ -525,7 +605,9 @@ const CreateMaternityInsurance = ({
             />
           </div>
           <div className="col-4">
-            <div>{t('gestational_age')}</div>
+            <div>{t('gestational_age')}
+              {checkRequireGestationalAge() ? <span className="required">(*)</span> : null}
+            </div>
             <input
               value={data.age}
               onChange={(e) => handleTextInputChange(e, "age")}
@@ -534,11 +616,14 @@ const CreateMaternityInsurance = ({
               name="inputName"
               autoComplete="off"
             />
+            {showError("age")}
           </div>
         </div>
         <div className="row mv-10">
           <div className="col-4">
-            <div>{t('birth_date')}</div>
+            <div>{t('birth_date')}
+            {checkRequireChildNumber() ? <span className="required">(*)</span> : null}
+            </div>
             <DatePicker
               name="startDate"
               //readOnly={disableComponent.disableAll || !disableComponent.qlttSide || data.qlttOpinion.disableTime == true}
@@ -560,9 +645,12 @@ const CreateMaternityInsurance = ({
               className="form-control input"
               styles={{ width: "100%" }}
             />
+            {showError('childBirth')}
           </div>
           <div className="col-4">
-            <div>{t('date_son_die')}</div>
+            <div>{t('date_son_die')}
+            {checkRequireChildDie() ? <span className="required">(*)</span> : null}
+            </div>
             <DatePicker
               name="startDate"
               //readOnly={disableComponent.disableAll || !disableComponent.qlttSide || data.qlttOpinion.disableTime == true}
@@ -581,10 +669,12 @@ const CreateMaternityInsurance = ({
               className="form-control input"
               styles={{ width: "100%" }}
             />
+            {showError('childDead')}
           </div>
 
           <div className="col-4">
             {t('number_of_children')}
+            {checkRequireChildNumber() ? <span className="required">(*)</span> : null}
             <input
               value={data.childNumbers}
               onChange={(e) => handleTextInputChange(e, "childNumbers")}
@@ -593,12 +683,14 @@ const CreateMaternityInsurance = ({
               name="inputName"
               autoComplete="off"
             />
+            {showError('childNumbers')}
           </div>
         </div>
 
         <div className="row mv-10">
           <div className="col-8">
-            <div>{t('number_of_children_stillborn')}</div>
+            <div>{t('number_of_children_stillborn')}
+            {checkRequireChildDie() ? <span className="required">(*)</span> : null}</div>
             <input
               value={data.childDeadNumbers}
               onChange={(e) => handleTextInputChange(e, "childDeadNumbers")}
@@ -607,9 +699,12 @@ const CreateMaternityInsurance = ({
               name="inputName"
               autoComplete="off"
             />
+            {showError('childDeadNumbers')}
           </div>
           <div className="col-4">
-            <div>{t('addoption_day')}</div>
+            <div>{t('addoption_day')}
+            {checkRequireChildReceiveDate() ? <span className="required">(*)</span> : null}
+            </div>
             <DatePicker
               name="startDate"
               //readOnly={disableComponent.disableAll || !disableComponent.qlttSide || data.qlttOpinion.disableTime == true}
@@ -631,6 +726,7 @@ const CreateMaternityInsurance = ({
               className="form-control input"
               styles={{ width: "100%" }}
             />
+            {showError('childReceiveDate')}
           </div>
         </div>
 
@@ -669,7 +765,8 @@ const CreateMaternityInsurance = ({
       <div className="box shadow cbnv">
         <div className="row mv-10">
           <div className="col-4">
-            <div>{t('number_insurance_social_mother')}</div>
+            <div>{t('number_insurance_social_mother')}
+            {checkRequireMomInfo() ? <span className="required">(*)</span> : null}</div>
             <input
               value={data.momInsuranceNumber}
               onChange={(e) => handleTextInputChange(e, "momInsuranceNumber")}
@@ -678,9 +775,11 @@ const CreateMaternityInsurance = ({
               name="inputName"
               autoComplete="off"
             />
+            {showError('momInsuranceNumber')}
           </div>
           <div className="col-4">
-            <div>{t('number_insurance_health_mother')}</div>
+            <div>{t('number_insurance_health_mother')}
+            {checkRequireMomInfo() ? <span className="required">(*)</span> : null}</div>
             <input
               value={data.momHealthNumber}
               onChange={(e) => handleTextInputChange(e, "momHealthNumber")}
@@ -689,9 +788,10 @@ const CreateMaternityInsurance = ({
               name="inputName"
               autoComplete="off"
             />
+            {showError('momHealthNumber')}
           </div>
           <div className="col-4">
-            <div>{t('mother_id_number')}</div>
+            <div>{t('mother_id_number')}{checkRequireMomInfo() ? <span className="required">(*)</span> : null}</div>
             <input
               value={data.momIdNumber}
               onChange={(e) => handleTextInputChange(e, "momIdNumber")}
@@ -700,6 +800,7 @@ const CreateMaternityInsurance = ({
               name="inputName"
               autoComplete="off"
             />
+            {showError('momIdNumber')}
           </div>
         </div>
         <div className="row mv-10">
@@ -917,7 +1018,7 @@ const CreateMaternityInsurance = ({
           <div className="col-4">
             <div>
               {t('account_number')}
-              <span className="required">(*)</span>
+              {checkRequireAtm() ? <span className="required">(*)</span> : null}
             </div>
             <input
               value={data.accountNumber}
@@ -933,7 +1034,7 @@ const CreateMaternityInsurance = ({
           </div>
           <div className="col-4">
             {t('account_name')}
-            <span className="required">(*)</span>
+            {checkRequireAtm() ? <span className="required">(*)</span> : null}
             <input
               value={data.accountName}
               onChange={(e) => handleTextInputChange(e, "accountName")}
@@ -951,7 +1052,7 @@ const CreateMaternityInsurance = ({
           <div className="col-4">
             <div>
               {t('bank_code')}
-              <span className="required">(*)</span>
+              {checkRequireAtm() ? <span className="required">(*)</span> : null}
             </div>
             <input
               value={data.bankId}
@@ -968,7 +1069,7 @@ const CreateMaternityInsurance = ({
           <div className="col-8">
             <div>
               {t('bank_name')}
-              <span className="required">(*)</span>
+              {checkRequireAtm() ? <span className="required">(*)</span> : null}
             </div>
             <input
               value={data.bankName}
