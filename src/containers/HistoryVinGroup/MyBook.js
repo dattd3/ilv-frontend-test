@@ -1,6 +1,7 @@
-import React, { useState, useEffect, useRef, forwardRef } from "react"
+import React, { useState, useEffect, useRef, forwardRef, Fragment } from "react"
 import HTMLFlipBook from "react-pageflip"
 import { saveAs } from 'file-saver'
+import { chunk } from 'lodash'
 import Page1 from 'assets/img/vingroup_history/Page1.png'
 import Page2 from 'assets/img/vingroup_history/Page2.png'
 import Page3 from 'assets/img/vingroup_history/Page3.png'
@@ -33,43 +34,43 @@ import Page29 from 'assets/img/vingroup_history/Page29.png'
 import Page30 from 'assets/img/vingroup_history/Page30.png'
 import LoadingModal from "components/Common/LoadingModal"
 
+const imageMapping = {
+    1: Page1,
+    2: Page2,
+    3: Page3,
+    4: Page4,
+    5: Page5,
+    6: Page6,
+    7: Page7,
+    8: Page8,
+    9: Page9,
+    10: Page10,
+    11: Page11,
+    12: Page12,
+    13: Page13,
+    14: Page14,
+    15: Page15,
+    16: Page16,
+    17: Page17,
+    18: Page18,
+    19: Page19,
+    20: Page20,
+    21: Page21,
+    22: Page22,
+    23: Page23,
+    24: Page24,
+    25: Page25,
+    26: Page26,
+    27: Page27,
+    28: Page28,
+    29: Page29,
+    30: Page30,
+}
+
 const Page = forwardRef((props, ref) => {
     // return (
     //     <div className={`page page-${props?.number}`} ref={ref}>{props.children}</div>
     // )
-
-    const imageMapping = {
-        1: Page1,
-        2: Page2,
-        3: Page3,
-        4: Page4,
-        5: Page5,
-        6: Page6,
-        7: Page7,
-        8: Page8,
-        9: Page9,
-        10: Page10,
-        11: Page11,
-        12: Page12,
-        13: Page13,
-        14: Page14,
-        15: Page15,
-        16: Page16,
-        17: Page17,
-        18: Page18,
-        19: Page19,
-        20: Page20,
-        21: Page21,
-        22: Page22,
-        23: Page23,
-        24: Page24,
-        25: Page25,
-        26: Page26,
-        27: Page27,
-        28: Page28,
-        29: Page29,
-        30: Page30,
-    }
 
     return (
         <div className={`page page-${props?.page}`} ref={ref} data-density="soft">
@@ -85,8 +86,10 @@ const Page = forwardRef((props, ref) => {
 export default function MyBook(props) {
     const book = useRef()
     const page = useRef()
+    const totalPages = 30
     const [isShowThumbnails, setIsShowThumbnails] = useState(false)
     const [isFullScreen, setIsFullScreen] = useState(false)
+    const [currentPage, setCurrentPage] = useState(1)
     // const [isLoading, SetIsLoading] = useState(true)
     // style={{ height: 800, objectFit: 'cover' }}
 
@@ -117,12 +120,24 @@ export default function MyBook(props) {
         }
     }, [isFullScreen])
 
+    useEffect(() => {
+        switch (currentPage) {
+            case 1:
+                book?.current?.pageFlip()?.turnToPage(0)
+                break;
+    
+            case totalPages:
+                book?.current?.pageFlip()?.turnToPage(29)
+                break;
+        
+            default:
+                book?.current?.pageFlip()?.turnToPage(currentPage)
+                break;
+        }
+    }, [currentPage])
+
     const handleCloseMenu = () => {
         setIsShowThumbnails(false)
-    }
-
-    const handleChangePageFilter = e => {
-
     }
 
     const openFullscreen = () => {
@@ -188,10 +203,29 @@ export default function MyBook(props) {
         saveAs("https://myvinpearl.s3.ap-southeast-1.amazonaws.com/shared/SK.pdf")
     }
 
-    let pages = []
-    for (let index = 0; index < 30; index++) {
-        pages.push(index + 1)
+    const handleFlip = e => setCurrentPage(e?.data + 1)
+
+    const handleChangePage = p => {
+        console.log('page ne cung oi ', p)
+        console.log('kieu du lieu ', typeof p)
+
+        setCurrentPage(p)
     }
+
+    const pages = (() => {
+        let pageItems = []
+        for (let index = 0; index < totalPages; index++) {
+            pageItems.push(index + 1)
+        }
+        return pageItems
+    })()
+
+    const sidebarPages = (() => {
+        const firstPage = 1
+        const lastPage = totalPages
+        const center = chunk(pages.filter(item => item !== firstPage && item !== lastPage), 2)
+        return [[firstPage], ...center , [lastPage]]
+    })()
 
     return (
         <>
@@ -213,6 +247,45 @@ export default function MyBook(props) {
                                         <svg data-v-78b93dcc="" version="1.1" viewBox="0 0 24 24" className="svg-icon svg-icon svg-fill" focusable="false"><path pid="0" d="M14.251 12.003l3.747-3.746-2.248-2.248-3.747 3.746-3.746-3.746-2.248 2.248 3.746 3.746-3.746 3.747 2.248 2.248 3.746-3.747 3.747 3.747 2.248-2.248z"></path></svg>
                                     </span>
                                 </div>
+                                <div className="wrap-sidebar-content">
+                                    <div className="sidebar-content">
+                                        {
+                                            sidebarPages.map((item, index) => {
+                                                return (
+                                                    <div className="wrap-page-item" key={`Sidebar-${index}`}>
+                                                        <div className={`d-flex align-items-center justify-content-center top cursor-pointer ${currentPage == item[0] && item[1] ? 'active' : ''}`} onClick={() => handleChangePage(item[0])}>
+                                                            {
+                                                                <>
+                                                                    <div className={`item ${(currentPage == 1 || currentPage == totalPages) && currentPage == item[0] ? 'active' : ''}`}>
+                                                                        <img src={imageMapping[item[0]]} alt={`Page ${item[0]}`} />
+                                                                    </div>
+                                                                    {
+                                                                        item[1] && (
+                                                                            <>
+                                                                                <div className="book-spine"></div>
+                                                                                <div className="item">
+                                                                                    <img src={imageMapping[item[1]]} alt={`Page ${item[1]}`} />
+                                                                                </div>
+                                                                            </>
+                                                                        )
+                                                                    }
+                                                                </>
+                                                            }
+                                                        </div>
+                                                        <div className="d-flex align-items-center justify-content-center bottom">
+                                                            {
+                                                                <>
+                                                                    <div className="text-center page-number">{ item[0] }</div>
+                                                                    { item[1] && (<div className="text-center page-number">{ item[1] }</div>) }
+                                                                </>
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                )
+                                            })
+                                        }
+                                    </div>
+                                </div>
                             </div>
                         )
                     }
@@ -221,9 +294,9 @@ export default function MyBook(props) {
                             <h1 className="book-title">Sử ký VIN30</h1>
                             <div className="page-block">
                                 <span className="page-label">pages:</span>
-                                <input type="text" value={"1"} className="text-center page-input" onChange={handleChangePageFilter} />
+                                <input type="text" value={currentPage?.toString()} className="text-center page-input" onChange={e => handleChangePage(e?.target?.value)} />
                                 <span className="seperate">/</span>
-                                <span>260</span>
+                                <span>{ totalPages }</span>
                             </div>
                         </div>
                         <div className="book">
@@ -242,6 +315,7 @@ export default function MyBook(props) {
                                     // maxShadowOpacity={0.5}
                                     drawShadow={false}
                                     mobileScrollSupport={false}
+                                    onFlip={handleFlip}
                                     ref={book}>
                                     {
                                         pages.map((item) => {
