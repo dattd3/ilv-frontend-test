@@ -162,13 +162,24 @@ const CreateSickInsurance = ({
       "declareForm",
       "plan",
       "seri",
+      "fromDate",
+      "toDate",
       "total",
       "receiveType",
-      "accountNumber",
+    ];
+    if(checkRequireAtm()) {
+      requiredFields.push("accountNumber",
       "accountName",
       "bankId",
-      "bankName",
-    ];
+      "bankName");
+    }
+    if(checkRequireChildInfo()) {
+      requiredFields.push(
+        'childBirth',
+        'childInsuranceNumber',
+        'childSickNumbers'
+      )
+    }
     const optionFields = ["declareForm", "plan", "receiveType"];
 
     requiredFields.forEach((name) => {
@@ -192,6 +203,20 @@ const CreateSickInsurance = ({
     }
     return hasErrors ? false : true;
   };
+
+  const checkRequireAtm = () => {
+    if(data.receiveType?.value && [2].includes(data.receiveType.value)) {
+      return true;
+    }
+    return false;
+  }
+
+  const checkRequireChildInfo = () => {
+    if(data.plan?.value && ['O2'].includes(data.plan.value)) {
+      return true;
+    }
+    return false;
+  }
 
   return (
     <>
@@ -394,7 +419,7 @@ const CreateSickInsurance = ({
         </div>
         <div className="row mv-10">
           <div className="col-4">
-            <div>{t('StartDate')}</div>
+            <div>{t('StartDate')} <span className="required">(*)</span></div>
             <DatePicker
               selectsStart
               name="startDate"
@@ -411,9 +436,12 @@ const CreateSickInsurance = ({
               className="form-control input"
               styles={{ width: "100%" }}
             />
+            {errors["fromDate"] ? (
+              <p className="text-danger">{errors["fromDate"]}</p>
+            ) : null}
           </div>
           <div className="col-4">
-            <div>{t('EndDate')}</div>
+            <div>{t('EndDate')} <span className="required">(*)</span></div>
             <DatePicker
               selectsEnd
               name="startDate"
@@ -430,6 +458,9 @@ const CreateSickInsurance = ({
               className="form-control input"
               styles={{ width: "100%" }}
             />
+            {errors["toDate"] ? (
+              <p className="text-danger">{errors["toDate"]}</p>
+            ) : null}
           </div>
           <div className="col-4">
             {t('total')}
@@ -453,7 +484,7 @@ const CreateSickInsurance = ({
       <div className="box shadow cbnv">
         <div className="row mv-10">
           <div className="col-4">
-            <div>{t('birth_date')}</div>
+            <div>{t('birth_date')} {checkRequireChildInfo() ? <span className="required">(*)</span> : null}</div>
             <DatePicker
               name="startDate"
               //readOnly={disableComponent.disableAll || !disableComponent.qlttSide || data.qlttOpinion.disableTime == true}
@@ -475,9 +506,12 @@ const CreateSickInsurance = ({
               className="form-control input"
               styles={{ width: "100%" }}
             />
+            {errors["childBirth"] ? (
+              <p className="text-danger">{errors["childBirth"]}</p>
+            ) : null}
           </div>
           <div className="col-4">
-            <div>{t('number_insurance_of_child')}</div>
+            <div>{t('number_insurance_of_child')} {checkRequireChildInfo() ? <span className="required">(*)</span> : null}</div>
             <input
               type="text"
               value={data.childInsuranceNumber}
@@ -486,9 +520,13 @@ const CreateSickInsurance = ({
               name="inputName"
               autoComplete="off"
             />
+            {errors["childInsuranceNumber"] ? (
+              <p className="text-danger">{errors["childInsuranceNumber"]}</p>
+            ) : null}
           </div>
           <div className="col-4">
             {t('child_sick')}
+            {checkRequireChildInfo() ? <span className="required">(*)</span> : null}
             <input
               type="text"
               value={data.childSickNumbers}
@@ -497,6 +535,9 @@ const CreateSickInsurance = ({
               name="inputName"
               autoComplete="off"
             />
+            {errors["childSickNumbers"] ? (
+              <p className="text-danger">{errors["childSickNumbers"]}</p>
+            ) : null}
           </div>
         </div>
       </div>
@@ -635,7 +676,7 @@ const CreateSickInsurance = ({
           <div className="col-4">
             <div>
               {t('account_number')}
-              <span className="required">(*)</span>
+              {checkRequireAtm() ? <span className="required">(*)</span> : null}
             </div>
             <input
               value={data.accountNumber}
@@ -651,7 +692,7 @@ const CreateSickInsurance = ({
           </div>
           <div className="col-4">
             {t('account_name')}
-            <span className="required">(*)</span>
+            {checkRequireAtm() ? <span className="required">(*)</span> : null}
             <input
               value={data.accountName}
               onChange={(e) => handleTextInputChange(e, "accountName")}
@@ -669,7 +710,7 @@ const CreateSickInsurance = ({
           <div className="col-4">
             <div>
               {t('bank_code')}
-              <span className="required">(*)</span>
+              {checkRequireAtm() ? <span className="required">(*)</span> : null}
             </div>
             <input
               value={data.bankId}
@@ -686,7 +727,7 @@ const CreateSickInsurance = ({
           <div className="col-8">
             <div>
               {t('bank_name')}
-              <span className="required">(*)</span>
+              {checkRequireAtm() ? <span className="required">(*)</span> : null}
             </div>
             <input
               value={data.bankName}
