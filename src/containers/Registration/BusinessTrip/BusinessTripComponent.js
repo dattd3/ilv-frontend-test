@@ -17,6 +17,8 @@ import { getValueParamByQueryString, getRegistrationMinDateByConditions, isValid
 import { checkIsExactPnL } from '../../../commons/commonFunctions';
 import IconDatePicker from 'assets/img/icon/Icon_DatePicker.svg'
 import IconClock from 'assets/img/icon/ic_clock.svg'
+import LoadingModal from 'components/Common/LoadingModal'
+import ProcessingModal from 'components/Common/ProcessingModal'
 
 registerLocale("vi", vi)
 
@@ -90,7 +92,7 @@ class BusinessTripComponent extends React.Component {
         return prevState
     }
 
-    componentDidMount() {       
+    componentDidMount() {
         const { businessTrip } = this.props
         if (businessTrip && businessTrip && businessTrip.requestInfo) {
             const { groupID, days, id, startDate, startTime, processStatusId, endDate, endTime, hours, attendanceType, location, vehicle, isAllDay, comment } = businessTrip.requestInfo[0]
@@ -151,7 +153,6 @@ class BusinessTripComponent extends React.Component {
         requestInfo[indexReq].errors.startDate = null
         requestInfo[indexReq].errors.overlapDateTime = null
         this.setState({ requestInfo })
-        this.calculateTotalTime(start, end, startTime, endTime, indexReq)
     }
 
     setEndDate(endDate, groupId, groupItem) {
@@ -166,98 +167,72 @@ class BusinessTripComponent extends React.Component {
         requestInfo[indexReq].errors.endDate = null
         requestInfo[indexReq].errors.overlapDateTime = null
         this.setState({ requestInfo })
-        this.calculateTotalTime(start, end, startTime, endTime, indexReq)
-    }
-
-    onBlurStartTime(groupId, groupItem) {
-        const checkVinmec = checkIsExactPnL(Constants.pnlVCode.VinMec);
-        if (checkVinmec === true) {
-            let { requestInfo } = this.state
-            const request = requestInfo.find(req => req.groupId === groupId && req.groupItem === groupItem)
-            const { startDate, endDate } = request
-            const indexReq = requestInfo.findIndex(req => req.groupId === groupId && req.groupItem === groupItem);
-            const time = moment(requestInfo[indexReq].startTime, Constants.LEAVE_TIME_FORMAT);
-            let m = time.minutes();
-            if (m > 30) {
-                time.set('minute', 30);
-                const start = time.format(Constants.LEAVE_TIME_FORMAT);
-                requestInfo[indexReq].startTime = start;
-                this.setState({ requestInfo })
-            }
-            else if (m < 30 && m > 0) {
-                time.set('minute', 0);
-                const start = time.format(Constants.LEAVE_TIME_FORMAT);
-                requestInfo[indexReq].startTime = start;
-                this.setState({ requestInfo })
-            }
-            
-            this.calculateTotalTime(startDate, endDate, requestInfo[indexReq].startTime, requestInfo[indexReq].endTime, indexReq)
-        }
     }
 
     setStartTime(startTime, groupId, groupItem) {
+        const isVinMecUsers = checkIsExactPnL(Constants.pnlVCode.VinMec)
         let { requestInfo } = this.state
-        const request = requestInfo.find(req => req.groupId === groupId && req.groupItem === groupItem)
-        const { startDate, endDate } = request
         const indexReq = requestInfo.findIndex(req => req.groupId === groupId && req.groupItem === groupItem);
-
         const start = moment(startTime).isValid() ? moment(startTime).format(Constants.LEAVE_TIME_FORMAT) : null
-        requestInfo[indexReq].startTime = start
+        requestInfo[indexReq].startTime = isVinMecUsers ? this.roundTimeForVinMec(start, 'startTime') : start
         requestInfo[indexReq].errors.startTime = null
         requestInfo[indexReq].errors.overlapDateTime = null
         this.setState({ requestInfo })
-        const checkVinmec = checkIsExactPnL(Constants.pnlVCode.VinMec);
-        if (checkVinmec === false)
-            this.calculateTotalTime(startDate, endDate, start, requestInfo[indexReq].endTime, indexReq)
     }
 
-    onBlurEndTime(groupId, groupItem) {
-        const checkVinmec = checkIsExactPnL(Constants.pnlVCode.VinMec);
-        if (checkVinmec === true) {
-            let { requestInfo } = this.state
-            const request = requestInfo.find(req => req.groupId === groupId && req.groupItem === groupItem)
-            const { startDate, endDate } = request
-            const indexReq = requestInfo.findIndex(req => req.groupId === groupId && req.groupItem === groupItem);
-            const time = moment(requestInfo[indexReq].endTime, Constants.LEAVE_TIME_FORMAT);
-            let h = time.hours();
-            let m = time.minutes();
-            if (m > 30) {
-                if (h < 24) {
-                    h = h + 1;
-                    m = 0;
-                    time.set('hour', h);
-                    time.set('minute', m);
-                    const end = time.format(Constants.LEAVE_TIME_FORMAT);
-                    requestInfo[indexReq].endTime = end;
-                    this.setState({ requestInfo })
-                    
+    roundTimeForVinMec = (timeInput, type = 'startTime') => {
+        let time = moment(timeInput, Constants.LEAVE_TIME_FORMAT)
+        let m = time.minutes()
+        let timeOutput = time
+
+        switch (type) {
+            case 'startTime':
+                if (m > 30) {
+                    time.set('minute', 30);
+                    timeOutput = time.format(Constants.LEAVE_TIME_FORMAT);
+                } else if (m < 30 && m > 0) {
+                    time.set('minute', 0);
+                    timeOutput = time.format(Constants.LEAVE_TIME_FORMAT);
                 }
-            }
-            else if (m < 30 && m > 0) {
-                time.set('minute', 30);
-                const end = time.format(Constants.LEAVE_TIME_FORMAT);
-                requestInfo[indexReq].endTime = end;
-                this.setState({ requestInfo })
-            }
-            // Trường hợp vinmec tính thời gian khi lost focus
-            this.calculateTotalTime(startDate, endDate, requestInfo[indexReq].startTime, requestInfo[indexReq].endTime, indexReq)
+
+                return timeOutput
+            case 'endTime':
+                let h = time.hours()
+                if (m > 30) {
+                    if (h < 24) {
+                        h = h + 1;
+                        m = 0;
+                        time.set('hour', h);
+                        time.set('minute', m);
+                        timeOutput = time.format(Constants.LEAVE_TIME_FORMAT);               
+                    }
+                } else if (m < 30 && m > 0) {
+                    time.set('minute', 30);
+                    timeOutput = time.format(Constants.LEAVE_TIME_FORMAT);
+                }
+        
+                return timeOutput
         }
+        return timeOutput
+    }
+
+    onBlurDateTimePicker = (groupId, groupItem) => {
+        const requestInfo = [...this.state.requestInfo]
+        const request = requestInfo.find(req => req?.groupId === groupId && req?.groupItem === groupItem)
+        const { startDate, endDate, startTime, endTime } = request
+        const indexReq = requestInfo.findIndex(req => req?.groupId === groupId && req?.groupItem === groupItem)
+        this.calculateTotalTime(startDate, endDate, startTime, endTime, indexReq)
     }
 
     setEndTime(endTime, groupId, groupItem) {
+        const isVinMecUsers = checkIsExactPnL(Constants.pnlVCode.VinMec)
         let { requestInfo } = this.state
-        const request = requestInfo.find(req => req.groupId === groupId && req.groupItem === groupItem)
-        const { startDate, endDate } = request
         const indexReq = requestInfo.findIndex(req => req.groupId === groupId && req.groupItem === groupItem)
-
         const end = moment(endTime).isValid() && moment(endTime).format(Constants.LEAVE_TIME_FORMAT)
-        requestInfo[indexReq].endTime = end
+        requestInfo[indexReq].endTime = isVinMecUsers ? this.roundTimeForVinMec(end, 'endTime') : end
         requestInfo[indexReq].errors.endTime = null
         requestInfo[indexReq].errors.overlapDateTime = null
         this.setState({ requestInfo })
-        const checkVinmec = checkIsExactPnL(Constants.pnlVCode.VinMec);
-        if (checkVinmec === false)
-            this.calculateTotalTime(startDate, endDate, requestInfo[indexReq].startTime, end, indexReq)
     }
 
     calculateTotalTime(startDateInput, endDateInput, startTimeInput = null, endTimeInput = null, indexReq) {
@@ -283,6 +258,9 @@ class BusinessTripComponent extends React.Component {
         // if (startDateTime && endDateTime) {
         //     this.validationFromDB(start, end, startTimeInput, endTimeInput, indexReq)
         // }
+
+        if (!startDateInput || !endDateInput) return
+
         this.validateTimeRequest(requestInfo)
     }
 
@@ -311,14 +289,14 @@ class BusinessTripComponent extends React.Component {
         })
 
         if (times.length === 0) return
-        this.setState({ validating: true })
+        this.setState({ validating: true, isProcessing: true })
         axios.post(`${process.env.REACT_APP_REQUEST_URL}request/validate`, {
             perno: localStorage.getItem('employeeNo'),
             ...(this.state.isEdit && { requestId: this.props.taskId }),
             times: times,
         }, config)
             .then(res => {
-                if (res && res.data && res.data.data && res.data.data.times.length > 0) {
+                if (res?.data?.data?.times?.length > 0) {
                     const newRequestInfo = requestInfo.map(req => {
                         const errors = req.errors
                         let totalTimes
@@ -339,8 +317,8 @@ class BusinessTripComponent extends React.Component {
                         }
                     })
                     this.setState({ requestInfo: newRequestInfo })
-                }
-                else {
+                } else {
+                    // this.showStatusModal(this.props.t("Notification"), res?.data?.result?.message, false)
                     const newRequestInfo = requestInfo.map(req => {
                         const errors = req.errors
                         errors.startTimeAndEndTime =  res.data.result.message
@@ -358,7 +336,7 @@ class BusinessTripComponent extends React.Component {
                 else { 
                     const newRequestInfo = requestInfo.map(req => {
                         const errors = req.errors
-                        errors.startTimeAndEndTime = "Có lỗi xảy ra trong quá trình xác thực dữ liệu. Xin vui lòng nhập lại thông tin ngày/giờ nghỉ!"
+                        errors.startTimeAndEndTime = error?.response?.data?.result?.message || "Có lỗi xảy ra trong quá trình xác thực dữ liệu. Xin vui lòng nhập lại thông tin ngày/giờ nghỉ!"
                         return {
                             ...req,
                             errors,
@@ -366,7 +344,7 @@ class BusinessTripComponent extends React.Component {
                     })
                     this.setState({ newRequestInfo })
                 }
-            }).finally(() => this.setState({ validating: false }))
+            }).finally(() => this.setState({ validating: false, isProcessing: false }))
     }
 
     isOverlapDateTime(startDateTime, endDateTime) {
@@ -607,21 +585,16 @@ class BusinessTripComponent extends React.Component {
             headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` }
         })
         .then(response => {
-            if (response && response.data && response.data.result && response.data.result.code != Constants.API_ERROR_CODE) {
+            if (response?.data?.result?.code != Constants.API_ERROR_CODE) {
                 this.showStatusModal(this.props.t("Successful"), this.props.t("RequestSent"), true)
                 this.setDisabledSubmitButton(false)
-            }
-            else {
-                this.showStatusModal(this.props.t("Notification"), response.data.result.message, false)
+            } else {
+                this.showStatusModal(this.props.t("Notification"), response?.data?.result?.message, false)
                 this.setDisabledSubmitButton(false)
             }
         })
         .catch(error => {
-            let message = t("Error")
-            if (error?.response?.data?.result?.code == Constants.API_ERROR_CODE) {
-              message = error?.response?.data?.result?.message
-            }
-            this.showStatusModal(this.props.t("Notification"), message, false)
+            this.showStatusModal(this.props.t("Notification"), error?.response?.data?.result?.message || t("Error"), false)
             this.setDisabledSubmitButton(false)
         })
         .finally(() => {
@@ -638,7 +611,7 @@ class BusinessTripComponent extends React.Component {
             indexReq = requestInfo.findIndex(req => req.groupId === groupId)
         }
         const errorMsg = requestInfo[indexReq]?.errors[name]
-        return errorMsg ? <p className="text-danger">{errorMsg}</p> : null
+        return errorMsg ? <p className="text-danger" style={{ padding: '0 15px', marginTop: 0 }}>{errorMsg}</p> : null
     }
 
     isNullCustomize = value => {
@@ -779,7 +752,7 @@ class BusinessTripComponent extends React.Component {
 
     render() {
         const { t, businessTrip, recentlyManagers } = this.props;
-        const { requestInfo, errors, approver, appraiser, isEdit, validating } = this.state
+        const { requestInfo, errors, approver, appraiser, isEdit, validating, isLoading, isProcessing } = this.state
         const sortRequestListByGroup = requestInfo.sort((reqPrev, reqNext) => reqPrev.groupId - reqNext.groupId)
         const requestInfoArr = _.valuesIn(_.groupBy(sortRequestListByGroup, (req) => req.groupId))
         const vehicles = [
@@ -820,7 +793,8 @@ class BusinessTripComponent extends React.Component {
         return (
             <div className="business-trip">
                 <ResultModal show={this.state.isShowStatusModal} title={this.state.titleModal} message={this.state.messageModal} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
-
+                <LoadingModal show={isLoading} />
+                <ProcessingModal isShow={isProcessing} />
                 { isEdit && 
                     <div className="box shadow registered-information">
                         <div className='text-uppercase font-weight-bold box-title'>Thông tin đã đăng ký công tác/đào tạo</div>
@@ -925,6 +899,7 @@ class BusinessTripComponent extends React.Component {
                                                                         <DatePicker
                                                                             name="startDate"
                                                                             selectsStart
+                                                                            onBlur={() => this.onBlurDateTimePicker(reqDetail.groupId, reqDetail.groupItem)}
                                                                             autoComplete="off"
                                                                             selected={reqDetail.startDate ? moment(reqDetail.startDate, DATE_FORMAT).toDate() : null}
                                                                             startDate={reqDetail.startDate ? moment(reqDetail.startDate, DATE_FORMAT).toDate() : null}
@@ -944,7 +919,7 @@ class BusinessTripComponent extends React.Component {
                                                                 <div className="content input-container">
                                                                     <label>
                                                                         <DatePicker
-                                                                            onBlur={e => this.onBlurStartTime(reqDetail.groupId, reqDetail.groupItem)}
+                                                                            onBlur={() => this.onBlurDateTimePicker(reqDetail.groupId, reqDetail.groupItem)}
                                                                             selected={reqDetail.startTime ? moment(reqDetail.startTime, TIME_FORMAT).toDate() : null}
                                                                             onChange={time => this.setStartTime(time, reqDetail.groupId, reqDetail.groupItem)}
                                                                             autoComplete="off"
@@ -973,6 +948,7 @@ class BusinessTripComponent extends React.Component {
                                                                         <DatePicker
                                                                             name="endDate"
                                                                             selectsEnd
+                                                                            onBlur={() => this.onBlurDateTimePicker(reqDetail.groupId, reqDetail.groupItem)}
                                                                             autoComplete="off"
                                                                             selected={reqDetail.endDate ? moment(reqDetail.endDate, DATE_FORMAT).toDate() : null}
                                                                             startDate={reqDetail.startDate ? moment(reqDetail.startDate, DATE_FORMAT).toDate() : null}
@@ -992,7 +968,7 @@ class BusinessTripComponent extends React.Component {
                                                                 <div className="content input-container">
                                                                     <label>
                                                                         <DatePicker
-                                                                            onBlur={e => this.onBlurEndTime(reqDetail.groupId, reqDetail.groupItem)}
+                                                                            onBlur={() => this.onBlurDateTimePicker(reqDetail.groupId, reqDetail.groupItem)}
                                                                             selected={reqDetail.endTime ? moment(reqDetail.endTime, TIME_FORMAT).toDate() : null}
                                                                             onChange={time => this.setEndTime(time, reqDetail.groupId, reqDetail.groupItem)}
                                                                             autoComplete="off"
