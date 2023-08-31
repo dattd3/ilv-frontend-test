@@ -1768,6 +1768,18 @@
                     top: 10px;
                 }
             }
+            .total-days-off {
+                .text-danger {
+                    padding: 0 15px;
+                    margin-top: 0;
+                }
+            }
+            .time-message {
+                .text-danger {
+                    padding: 0 15px;
+                    margin-top: 0;
+                }
+            }
         }
         @media (max-width: 1200px) {
             .time-area {
