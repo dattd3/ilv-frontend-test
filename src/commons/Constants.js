@@ -32,6 +32,7 @@ const Constants = {
   //error_code
   API_ERROR_CODE: 1,
   API_ERROR_NOT_FOUND_CODE: "404",
+  API_ERROR_CODE_WORKING_DAY_LOCKED: 2,
 
   // file_type
   PDF_FILE_TYPE: 'pdf',
@@ -77,6 +78,9 @@ const Constants = {
   STATUS_OB_SUPERVISOR_EVALUATION: 11,
   STATUS_OB_HR_EVALUATION: 12,
   STATUS_OB_APPROVER_EVALUATION: 13,
+  STATUS_WORK_DAY_LOCKED_CREATE: 101,
+  STATUS_WORK_DAY_LOCKED_APPRAISAL: 102,
+  STATUS_WORK_DAY_LOCKED_APPROVAL: 103,
 
   STATUS_USE_COMMENT: [0,1,3,4,7, 9998],
 
@@ -90,7 +94,10 @@ const Constants = {
     7: { label: "Rejected", className: 'fail' },
     8: { label: "PendingConsent", className: '' },
     20:{ label: "Consented", className: '' },
-    0: {label: "Waiting", className: ''}
+    0: {label: "Waiting", className: ''},
+    101: { label: "PaidDayLocked", className: 'work-day_locked' },
+    102: { label: "PaidDayLocked", className: 'work-day_locked' },
+    103: { label: "PaidDayLocked", className: 'work-day_locked' },
   },
   //
   mappingActionType : {
@@ -232,7 +239,7 @@ const Constants = {
   MODULE_COMPANY_AVAILABE: process.env.REACT_APP_ENVIRONMENT === 'PRODUCTION' ? 
   { //production todo: add  "V077", "V070" to TUYENDUNG
     1: ["V040", "V005", "V079", "V041", "V030", "V035", "V036", "V077", "V070", "V099"],//TUYENDUNG + V061
-    2: ["V040", "V005", "V061", "V077", "V070"],//DANHGIA_TAIKI
+    2: ["V040", "V005", "V061", "V077", "V070", "V099"],//DANHGIA_TAIKI
     3: [],//DEXUATLUONG
     4: ["V040", "V077", "V070"],//NGHIVIEC
     5: ["V077", "V070"],//PHUCLOI

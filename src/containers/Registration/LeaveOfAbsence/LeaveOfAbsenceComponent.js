@@ -21,6 +21,7 @@ import { absenceRequestTypes, PN03List, MATERNITY_LEAVE_KEY, MARRIAGE_FUNERAL_LE
 import IconDatePicker from 'assets/img/icon/Icon_DatePicker.svg'
 import IconClock from 'assets/img/icon/ic_clock.svg'
 import LoadingModal from 'components/Common/LoadingModal'
+import ProcessingModal from 'components/Common/ProcessingModal'
 
 const absenceTypesAndDaysOffMapping = {
     1: { day: 3, time: 24 },
@@ -208,7 +209,6 @@ class LeaveOfAbsenceComponent extends React.Component {
         requestInfo[indexReq].errors.startDate = null
         requestInfo[indexReq].errors.totalDaysOff = null
         this.setState({requestInfo: requestInfo})
-        this.calculateTotalTime(start, end, startTime, endTime, indexReq)
     }
 
     setEndDate(endDate, groupId, groupItem, isShowHintLeaveForMother) {
@@ -230,98 +230,72 @@ class LeaveOfAbsenceComponent extends React.Component {
         requestInfo[indexReq].errors.endDate = null
         requestInfo[indexReq].errors.totalDaysOff = null
         this.setState({ requestInfo })
-        this.calculateTotalTime(start, end, startTime, endTime, indexReq)
-    }
-
-    onBlurStartTime(groupId, groupItem) {
-        const checkVinmec = checkIsExactPnL(Constants.pnlVCode.VinMec);
-        if (checkVinmec === true) {
-            let { requestInfo } = this.state
-            const request = requestInfo.find(req => req.groupId === groupId && req.groupItem === groupItem)
-            const { startDate, endDate } = request
-            const indexReq = requestInfo.findIndex(req => req.groupId === groupId && req.groupItem === groupItem);
-            const time = moment(requestInfo[indexReq].startTime, Constants.LEAVE_TIME_FORMAT);
-            let m = time.minutes();
-            if (m > 30) {
-                time.set('minute', 30);
-                const start = time.format(Constants.LEAVE_TIME_FORMAT);
-                requestInfo[indexReq].startTime = start;
-                this.setState({ requestInfo })
-            }
-            else if (m < 30 && m > 0) {
-                time.set('minute', 0);
-                const start = time.format(Constants.LEAVE_TIME_FORMAT);
-                requestInfo[indexReq].startTime = start;
-                this.setState({ requestInfo })
-            }
-            
-            this.calculateTotalTime(startDate, endDate, requestInfo[indexReq].startTime, requestInfo[indexReq].endTime, indexReq)
-        }
     }
 
     setStartTime(startTime, groupId, groupItem) {
+        const isVinMecUsers = checkIsExactPnL(Constants.pnlVCode.VinMec)
         let { requestInfo } = this.state
-        const request = requestInfo.find(req => req.groupId === groupId && req.groupItem === groupItem)
-        const { startDate, endDate } = request
         const indexReq = requestInfo.findIndex(req => req.groupId === groupId && req.groupItem === groupItem);
-
         const start = moment(startTime).isValid() ? moment(startTime).format(Constants.LEAVE_TIME_FORMAT) : null
-        requestInfo[indexReq].startTime = start
+        requestInfo[indexReq].startTime = isVinMecUsers ? this.roundTimeForVinMec(start, 'startTime') : start
         requestInfo[indexReq].errors.startTime = null
         requestInfo[indexReq].errors.totalDaysOff = null
         this.setState({ requestInfo })
-        const checkVinmec = checkIsExactPnL(Constants.pnlVCode.VinMec);
-        if (checkVinmec === false)
-            this.calculateTotalTime(startDate, endDate, start, requestInfo[indexReq].endTime, indexReq)
-    }
-
-    onBlurEndTime(groupId, groupItem) {
-        const checkVinmec = checkIsExactPnL(Constants.pnlVCode.VinMec);
-        if (checkVinmec === true) {
-            let { requestInfo } = this.state
-            const request = requestInfo.find(req => req.groupId === groupId && req.groupItem === groupItem)
-            const { startDate, endDate } = request
-            const indexReq = requestInfo.findIndex(req => req.groupId === groupId && req.groupItem === groupItem);
-            const time = moment(requestInfo[indexReq].endTime, Constants.LEAVE_TIME_FORMAT);
-            let h = time.hours();
-            let m = time.minutes();
-            if (m > 30) {
-                if (h < 24) {
-                    h = h + 1;
-                    m = 0;
-                    time.set('hour', h);
-                    time.set('minute', m);
-                    const end = time.format(Constants.LEAVE_TIME_FORMAT);
-                    requestInfo[indexReq].endTime = end;
-                    this.setState({ requestInfo })
-                    
-                }
-            }
-            else if (m < 30 && m > 0) {
-                time.set('minute', 30);
-                const end = time.format(Constants.LEAVE_TIME_FORMAT);
-                requestInfo[indexReq].endTime = end;
-                this.setState({ requestInfo })
-            }
-            // Trường hợp vinmec tính thời gian khi lost focus
-            this.calculateTotalTime(startDate, endDate, requestInfo[indexReq].startTime, requestInfo[indexReq].endTime, indexReq)
-        }
     }
 
     setEndTime(endTime, groupId, groupItem) {
+        const isVinMecUsers = checkIsExactPnL(Constants.pnlVCode.VinMec)
         let { requestInfo } = this.state
-        const request = requestInfo.find(req => req.groupId === groupId && req.groupItem === groupItem)
-        const { startDate, endDate } = request
-        const indexReq = requestInfo.findIndex(req => req.groupId === groupId && req.groupItem === groupItem)
-
+        const indexReq = requestInfo.findIndex(req => req.groupId === groupId && req.groupItem === groupItem);
         const end = moment(endTime).isValid() && moment(endTime).format(Constants.LEAVE_TIME_FORMAT)
-        requestInfo[indexReq].endTime = end
+        requestInfo[indexReq].endTime = isVinMecUsers ? this.roundTimeForVinMec(end, 'endTime') : end
         requestInfo[indexReq].errors.endTime = null
         requestInfo[indexReq].errors.totalDaysOff = null
         this.setState({ requestInfo })
-        const checkVinmec = checkIsExactPnL(Constants.pnlVCode.VinMec);
-        if (checkVinmec === false) // Trường hợp vinmec tính thời gian khi lost focus
-            this.calculateTotalTime(startDate, endDate, requestInfo[indexReq].startTime, end, indexReq)
+    }
+
+    roundTimeForVinMec = (timeInput, type = 'startTime') => {
+        let time = moment(timeInput, Constants.LEAVE_TIME_FORMAT)
+        let m = time.minutes()
+        let timeOutput = time
+
+        switch (type) {
+            case 'startTime':
+                if (m > 30) {
+                    time.set('minute', 30);
+                    timeOutput = time.format(Constants.LEAVE_TIME_FORMAT);
+                } else if (m < 30 && m > 0) {
+                    time.set('minute', 0);
+                    timeOutput = time.format(Constants.LEAVE_TIME_FORMAT);
+                }
+
+                return timeOutput
+            case 'endTime':
+                let h = time.hours()
+                if (m > 30) {
+                    if (h < 24) {
+                        h = h + 1;
+                        m = 0;
+                        time.set('hour', h);
+                        time.set('minute', m);
+                        timeOutput = time.format(Constants.LEAVE_TIME_FORMAT);               
+                    }
+                } else if (m < 30 && m > 0) {
+                    time.set('minute', 30);
+                    timeOutput = time.format(Constants.LEAVE_TIME_FORMAT);
+                }
+        
+                return timeOutput
+        }
+        return timeOutput
+    }
+
+    onBlurDateTimePicker = (groupId, groupItem) => {
+        const requestInfo = [...this.state.requestInfo]
+        const request = requestInfo.find(req => req?.groupId === groupId && req?.groupItem === groupItem)
+        const { startDate, endDate, startTime, endTime } = request
+        const indexReq = requestInfo.findIndex(req => req?.groupId === groupId && req?.groupItem === groupItem)
+        this.calculateTotalTime(startDate, endDate, startTime, endTime, indexReq)
     }
 
     isOverlapDateTime(startDateTimeInput, endDateTimeInput, indexReq) {
@@ -404,7 +378,7 @@ class LeaveOfAbsenceComponent extends React.Component {
             })
         }
 
-        this.setState({ validating: true, isLoading: true })
+        this.setState({ validating: true, isProcessing: true })
         axios.post(`${process.env.REACT_APP_REQUEST_URL}request/validate`, {perno: currentEmployeeNo, ...(isEdit && { requestId: this.props.taskId }), times: times}, config)
             .then(res => {
                 if (res?.data?.data?.times?.length > 0) {
@@ -437,8 +411,8 @@ class LeaveOfAbsenceComponent extends React.Component {
                     })
                     this.setState({ requestInfo: newRequestInfo })
                 } else {
-                    this.setState({ needReload: false })
-                    this.showStatusModal(this.props.t("Notification"), res?.data?.result?.message, false)
+                    // this.setState({ needReload: false })
+                    // this.showStatusModal(this.props.t("Notification"), res?.data?.result?.message, false)
                     const newRequestInfo = requestInfo.map(req => {
                         const errors = req.errors
                         errors.totalDaysOff = res?.data?.result?.message
@@ -454,7 +428,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                     window.location.reload();
                 } else {
                     this.setState({ needReload: false })
-                    this.showStatusModal(this.props.t("Notification"), error?.response?.data?.result?.message || "Có lỗi xảy ra trong quá trình xác thực dữ liệu. Xin vui lòng nhập lại thông tin ngày/giờ nghỉ!", false)
+                    // this.showStatusModal(this.props.t("Notification"), error?.response?.data?.result?.message || "Có lỗi xảy ra trong quá trình xác thực dữ liệu. Xin vui lòng nhập lại thông tin ngày/giờ nghỉ!", false)
                     
                     const newRequestInfo = requestInfo.map(req => {
                         const errors = req.errors
@@ -466,7 +440,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                     })
                     this.setState({ newRequestInfo })
                 }
-            }).finally(() => this.setState({ validating: false, isLoading: false }))
+            }).finally(() => this.setState({ validating: false, isProcessing: false }))
     }
 
     calFullDay(timesheets) {
@@ -785,18 +759,20 @@ class LeaveOfAbsenceComponent extends React.Component {
         })
         .then(response => {
             const result = response?.data?.result
-            
             if (result?.code === Constants.API_SUCCESS_CODE) {
                 this.showStatusModal(t("Successful"), t("RequestSent"), true)
                 this.setState({ needReload: true })
+            } else if (result?.code == Constants.API_ERROR_CODE_WORKING_DAY_LOCKED) {
+                this.setState({ needReload: true })
+                this.showStatusModal(t("Notification"), result?.message, false, true)
             } else {
                 this.setState({ needReload: false })
-                this.showStatusModal(t("Notification"), response?.data?.result?.message, false)
+                this.showStatusModal(t("Notification"), result?.message, false)
             }
         })
         .catch(error => {
             this.setState({ needReload: false })
-            this.showStatusModal(t("Notification"), error?.response?.data?.result?.message || t("Error"), false)
+            this.showStatusModal(t("Notification"), error?.response?.data?.result?.message || t("AnErrorOccurred"), false)
         })
         .finally(() => {
             this.setDisabledSubmitButton(false)
@@ -815,8 +791,8 @@ class LeaveOfAbsenceComponent extends React.Component {
         return errorMsg ? <p className="text-danger" style={{ padding: '0 15px', marginTop: 0 }}>{errorMsg}</p> : null
     }
 
-    showStatusModal = (title, message, isSuccess = false) => {
-        this.setState({ isShowStatusModal: true, titleModal: title, messageModal: message, isSuccess: isSuccess });
+    showStatusModal = (title, message, isSuccess = false, isWarningCreateRequest = false) => {
+        this.setState({ isShowStatusModal: true, titleModal: title, messageModal: message, isSuccess: isSuccess, isWarningCreateRequest: isWarningCreateRequest });
     }
 
     hideStatusModal = () => {
@@ -992,7 +968,9 @@ class LeaveOfAbsenceComponent extends React.Component {
             appraiser,
             approver,
             validating,
+            isWarningCreateRequest,
             isLoading,
+            isProcessing,
         } = this.state
         const sortRequestListByGroup = requestInfo.sort((reqPrev, reqNext) => reqPrev.groupId - reqNext.groupId)
         const requestInfoArr = _.valuesIn(_.groupBy(sortRequestListByGroup, (req) => req.groupId))
@@ -1002,9 +980,10 @@ class LeaveOfAbsenceComponent extends React.Component {
 
         return (
             <div className="leave-of-absence">
-                <ResultModal show={isShowStatusModal} title={titleModal} message={messageModal} isSuccess={isSuccess} onHide={this.hideStatusModal} />
+                <ResultModal show={isShowStatusModal} title={titleModal} message={messageModal} isSuccess={isSuccess} isWarningCreateRequest={isWarningCreateRequest} onHide={this.hideStatusModal} />
                 <NoteModal show={isShowNoteModal} onHide={this.hideNoteModal} />
                 <LoadingModal show={isLoading} />
+                <ProcessingModal isShow={isProcessing} />
                 <div className="row summary">
                     <div className="col">
                         <div className="item">
@@ -1260,7 +1239,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                                             <div className="content input-container">
                                                                                 <label>
                                                                                     <DatePicker
-                                                                                        onBlur={e => this.onBlurStartTime(reqDetail.groupId, reqDetail.groupItem)}
+                                                                                        onBlur={() => this.onBlurDateTimePicker(reqDetail.groupId, reqDetail.groupItem)}
                                                                                         selected={reqDetail.startTime ? moment(reqDetail.startTime, Constants.LEAVE_TIME_FORMAT).toDate() : null}
                                                                                         onChange={time => this.setStartTime(time, reqDetail.groupId, reqDetail.groupItem)}
                                                                                         autoComplete="off"
@@ -1284,7 +1263,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                                             <div className="content input-container">
                                                                                 <label>
                                                                                     <DatePicker
-                                                                                        onBlur={e => this.onBlurEndTime(reqDetail.groupId, reqDetail.groupItem)}
+                                                                                        onBlur={() => this.onBlurDateTimePicker(reqDetail?.groupId, reqDetail?.groupItem)}
                                                                                         selected={reqDetail.endTime ? moment(reqDetail.endTime, Constants.LEAVE_TIME_FORMAT).toDate() : null}
                                                                                         onChange={time => this.setEndTime(time, reqDetail.groupId, reqDetail.groupItem)}
                                                                                         showTimeSelect
@@ -1316,6 +1295,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                                                     <DatePicker
                                                                                         name="startDate"
                                                                                         selectsStart
+                                                                                        onBlur={() => this.onBlurDateTimePicker(reqDetail?.groupId, reqDetail?.groupItem)}
                                                                                         autoComplete="off"
                                                                                         selected={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
                                                                                         startDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
@@ -1339,6 +1319,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                                                     <DatePicker
                                                                                         name="endDate"
                                                                                         selectsEnd
+                                                                                        onBlur={() => this.onBlurDateTimePicker(reqDetail?.groupId, reqDetail?.groupItem)}
                                                                                         autoComplete="off"
                                                                                         selected={reqDetail.endDate ? moment(reqDetail.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
                                                                                         startDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
@@ -1370,6 +1351,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                                                 <label>
                                                                                     <DatePicker
                                                                                         name="startDate"
+                                                                                        onBlur={() => this.onBlurDateTimePicker(reqDetail?.groupId, reqDetail?.groupItem)}
                                                                                         selectsStart
                                                                                         autoComplete="off"
                                                                                         selected={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
@@ -1391,7 +1373,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                                             <div className="content input-container">
                                                                                 <label>
                                                                                     <DatePicker
-                                                                                        onBlur={e => this.onBlurStartTime(reqDetail.groupId, reqDetail.groupItem)}
+                                                                                        onBlur={() => this.onBlurDateTimePicker(reqDetail?.groupId, reqDetail?.groupItem)}
                                                                                         selected={reqDetail.startTime ? moment(reqDetail.startTime, Constants.LEAVE_TIME_FORMAT).toDate() : null}
                                                                                         onChange={time => this.setStartTime(time, reqDetail.groupId, reqDetail.groupItem)}
                                                                                         autoComplete="off"
@@ -1420,6 +1402,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                                                 <label>
                                                                                     <DatePicker
                                                                                         name="endDate"
+                                                                                        onBlur={() => this.onBlurDateTimePicker(reqDetail?.groupId, reqDetail?.groupItem)}
                                                                                         selectsEnd
                                                                                         autoComplete="off"
                                                                                         selected={reqDetail.endDate ? moment(reqDetail.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
@@ -1440,7 +1423,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                                             <div className="content input-container">
                                                                                 <label>
                                                                                     <DatePicker
-                                                                                        onBlur={e => this.onBlurEndTime(reqDetail.groupId, reqDetail.groupItem)}
+                                                                                        onBlur={() => this.onBlurDateTimePicker(reqDetail?.groupId, reqDetail?.groupItem)}
                                                                                         selected={reqDetail.endTime ? moment(reqDetail.endTime, Constants.LEAVE_TIME_FORMAT).toDate() : null}
                                                                                         onChange={time => this.setEndTime(time, reqDetail.groupId, reqDetail.groupItem)}
                                                                                         showTimeSelect

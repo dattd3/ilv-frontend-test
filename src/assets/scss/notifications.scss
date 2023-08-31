@@ -478,6 +478,9 @@
         .content-item {
           border: 1px solid #DEE2E6;
           display: flex;
+          .content-col {
+            word-break: break-all;
+          }
         }
         .content-col-1 {
           width: 52px;
