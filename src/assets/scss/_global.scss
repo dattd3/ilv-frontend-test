@@ -151,7 +151,19 @@ a {
   }
 }
 
-
+.processing-modal {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  .modal-content {
+    .modal-body {
+      padding: 15px;
+      border-radius: 4px;
+      .processing {
+        margin: 15px 0;
+      }
+    }
+  }
+}
 
 
 .info-modal-common {
