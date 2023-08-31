@@ -615,7 +615,7 @@ class BusinessTripComponent extends React.Component {
             indexReq = requestInfo.findIndex(req => req.groupId === groupId)
         }
         const errorMsg = requestInfo[indexReq]?.errors[name]
-        return errorMsg ? <p className="text-danger" style={{ padding: '0 15px', marginTop: 0 }}>{errorMsg}</p> : null
+        return errorMsg ? <p className="text-danger">{errorMsg}</p> : null
     }
 
     isNullCustomize = value => {
@@ -910,7 +910,7 @@ class BusinessTripComponent extends React.Component {
                                                                         <DatePicker
                                                                             name="startDate"
                                                                             selectsStart
-                                                                            onBlur={() => this.onBlurDateTimePicker(reqDetail.groupId, reqDetail.groupItem)}
+                                                                            onClickOutside={() => this.onBlurDateTimePicker(reqDetail.groupId, reqDetail.groupItem)}
                                                                             autoComplete="off"
                                                                             selected={reqDetail.startDate ? moment(reqDetail.startDate, DATE_FORMAT).toDate() : null}
                                                                             startDate={reqDetail.startDate ? moment(reqDetail.startDate, DATE_FORMAT).toDate() : null}
@@ -930,7 +930,7 @@ class BusinessTripComponent extends React.Component {
                                                                 <div className="content input-container">
                                                                     <label>
                                                                         <DatePicker
-                                                                            onBlur={() => this.onBlurDateTimePicker(reqDetail.groupId, reqDetail.groupItem)}
+                                                                            onClickOutside={() => this.onBlurDateTimePicker(reqDetail.groupId, reqDetail.groupItem)}
                                                                             selected={reqDetail.startTime ? moment(reqDetail.startTime, TIME_FORMAT).toDate() : null}
                                                                             onChange={time => this.setStartTime(time, reqDetail.groupId, reqDetail.groupItem)}
                                                                             autoComplete="off"
@@ -959,7 +959,7 @@ class BusinessTripComponent extends React.Component {
                                                                         <DatePicker
                                                                             name="endDate"
                                                                             selectsEnd
-                                                                            onBlur={() => this.onBlurDateTimePicker(reqDetail.groupId, reqDetail.groupItem)}
+                                                                            onClickOutside={() => this.onBlurDateTimePicker(reqDetail.groupId, reqDetail.groupItem)}
                                                                             autoComplete="off"
                                                                             selected={reqDetail.endDate ? moment(reqDetail.endDate, DATE_FORMAT).toDate() : null}
                                                                             startDate={reqDetail.startDate ? moment(reqDetail.startDate, DATE_FORMAT).toDate() : null}
@@ -979,7 +979,7 @@ class BusinessTripComponent extends React.Component {
                                                                 <div className="content input-container">
                                                                     <label>
                                                                         <DatePicker
-                                                                            onBlur={() => this.onBlurDateTimePicker(reqDetail.groupId, reqDetail.groupItem)}
+                                                                            onClickOutside={() => this.onBlurDateTimePicker(reqDetail.groupId, reqDetail.groupItem)}
                                                                             selected={reqDetail.endTime ? moment(reqDetail.endTime, TIME_FORMAT).toDate() : null}
                                                                             onChange={time => this.setEndTime(time, reqDetail.groupId, reqDetail.groupItem)}
                                                                             autoComplete="off"
@@ -1008,7 +1008,7 @@ class BusinessTripComponent extends React.Component {
                                                 {
                                                     reqDetail.errors.startTimeAndEndTime ?
                                                         <>
-                                                            <div className="row">
+                                                            <div className="row time-message">
                                                                 <div className="col">
                                                                     {this.error('startTimeAndEndTime', reqDetail.groupId, reqDetail.groupItem)}
                                                                 </div>
