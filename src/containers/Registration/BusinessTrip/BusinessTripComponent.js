@@ -585,20 +585,24 @@ class BusinessTripComponent extends React.Component {
             headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` }
         })
         .then(response => {
-            if (response?.data?.result?.code != Constants.API_ERROR_CODE) {
-                this.showStatusModal(this.props.t("Successful"), this.props.t("RequestSent"), true)
-                this.setDisabledSubmitButton(false)
+            const result = response?.data?.result
+            if (result?.code === Constants.API_SUCCESS_CODE) {
+                this.showStatusModal(t("Successful"), t("RequestSent"), true)
+                this.setState({ needReload: true })
+            } else if (result?.code == Constants.API_ERROR_CODE_WORKING_DAY_LOCKED) {
+                this.setState({ needReload: true })
+                this.showStatusModal(t("Notification"), result?.message, false, true)
             } else {
-                this.showStatusModal(this.props.t("Notification"), response?.data?.result?.message, false)
-                this.setDisabledSubmitButton(false)
+                this.setState({ needReload: false })
+                this.showStatusModal(t("Notification"), result?.message, false)
             }
         })
         .catch(error => {
-            this.showStatusModal(this.props.t("Notification"), error?.response?.data?.result?.message || t("Error"), false)
-            this.setDisabledSubmitButton(false)
+            this.setState({ needReload: false })
+            this.showStatusModal(t("Notification"), error?.response?.data?.result?.message || t("AnErrorOccurred"), false)
         })
         .finally(() => {
-            this.setState({ needReload: true })
+            this.setDisabledSubmitButton(false)
         })
     }
 
@@ -618,8 +622,8 @@ class BusinessTripComponent extends React.Component {
         return (value == null || value == "null" || value == "" || value == undefined || value == 0 || value == "#") ? true : false
     }
 
-    showStatusModal = (title, message, isSuccess = false) => {
-        this.setState({ isShowStatusModal: true, titleModal: title, messageModal: message, isSuccess: isSuccess });
+    showStatusModal = (title, message, isSuccess = false, isWarningCreateRequest = false) => {
+        this.setState({ isShowStatusModal: true, titleModal: title, messageModal: message, isSuccess: isSuccess, isWarningCreateRequest });
     };
 
     hideStatusModal = () => {
@@ -752,7 +756,7 @@ class BusinessTripComponent extends React.Component {
 
     render() {
         const { t, businessTrip, recentlyManagers } = this.props;
-        const { requestInfo, errors, approver, appraiser, isEdit, validating, isLoading, isProcessing } = this.state
+        const { requestInfo, errors, approver, appraiser, isEdit, validating, isShowStatusModal, titleModal, messageModal, isSuccess, isWarningCreateRequest, isLoading, isProcessing } = this.state
         const sortRequestListByGroup = requestInfo.sort((reqPrev, reqNext) => reqPrev.groupId - reqNext.groupId)
         const requestInfoArr = _.valuesIn(_.groupBy(sortRequestListByGroup, (req) => req.groupId))
         const vehicles = [
@@ -792,9 +796,16 @@ class BusinessTripComponent extends React.Component {
         
         return (
             <div className="business-trip">
-                <ResultModal show={this.state.isShowStatusModal} title={this.state.titleModal} message={this.state.messageModal} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
+                <ResultModal 
+                    show={isShowStatusModal} 
+                    title={titleModal} 
+                    message={messageModal} 
+                    isSuccess={isSuccess} 
+                    isWarningCreateRequest={isWarningCreateRequest} 
+                    onHide={this.hideStatusModal} />
                 <LoadingModal show={isLoading} />
                 <ProcessingModal isShow={isProcessing} />
+
                 { isEdit && 
                     <div className="box shadow registered-information">
                         <div className='text-uppercase font-weight-bold box-title'>Thông tin đã đăng ký công tác/đào tạo</div>

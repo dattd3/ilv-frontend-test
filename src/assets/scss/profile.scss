@@ -9,6 +9,7 @@
         border-radius: 30px;
         background: #FFFFFF;
         margin-right: 40px;
+        font-size: 13px;
         &.success {
             border-color: #05BD29;
             color: #05BD29;
@@ -25,6 +26,11 @@
         &.waiting {
             border-color: #dddddd;
             color: #383838;
+            background: #FFFFFF;
+        }
+        &.work-day_locked {
+            border-color: #812C34;
+            color: #812C34;
             background: #FFFFFF;
         }
     }

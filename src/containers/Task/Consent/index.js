@@ -6,7 +6,7 @@ import Constants from '../../../commons/Constants'
 import TaskList from '../taskList'
 import LoadingSpinner from "../../../components/Forms/CustomForm/LoadingSpinner";
 import processingDataReq from "../../Utils/Common"
-import { getRequestTypesList, getValueParamByQueryString, setURLSearchParam } from 'commons/Utils'
+import { getRequestTypesList, getValueParamByQueryString, setURLSearchParam, isVinITIS } from 'commons/Utils'
 import { REQUEST_CATEGORIES } from '../Constants'
 import LoadingModal from 'components/Common/LoadingModal'
 
@@ -77,6 +77,10 @@ class ConsentComponent extends React.Component {
       { value: Constants.STATUS_NO_CONSENTED , label: t("Rejected") },
       // { value: Constants.STATUS_REVOCATION , label: t("Canceled") },
     ]
+    if (isVinITIS()) {
+      statusFiler = [...statusFiler, { value: Constants.STATUS_WORK_DAY_LOCKED_APPRAISAL, label: t("PaidDayLocked") }]
+    }
+    
     return (
       this.state.dataResponse ?
       <>

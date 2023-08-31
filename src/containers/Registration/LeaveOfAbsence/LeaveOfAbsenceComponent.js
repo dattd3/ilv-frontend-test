@@ -759,18 +759,20 @@ class LeaveOfAbsenceComponent extends React.Component {
         })
         .then(response => {
             const result = response?.data?.result
-            
             if (result?.code === Constants.API_SUCCESS_CODE) {
                 this.showStatusModal(t("Successful"), t("RequestSent"), true)
                 this.setState({ needReload: true })
+            } else if (result?.code == Constants.API_ERROR_CODE_WORKING_DAY_LOCKED) {
+                this.setState({ needReload: true })
+                this.showStatusModal(t("Notification"), result?.message, false, true)
             } else {
                 this.setState({ needReload: false })
-                this.showStatusModal(t("Notification"), response?.data?.result?.message, false)
+                this.showStatusModal(t("Notification"), result?.message, false)
             }
         })
         .catch(error => {
             this.setState({ needReload: false })
-            this.showStatusModal(t("Notification"), error?.response?.data?.result?.message || t("Error"), false)
+            this.showStatusModal(t("Notification"), error?.response?.data?.result?.message || t("AnErrorOccurred"), false)
         })
         .finally(() => {
             this.setDisabledSubmitButton(false)
@@ -789,8 +791,8 @@ class LeaveOfAbsenceComponent extends React.Component {
         return errorMsg ? <p className="text-danger" style={{ padding: '0 15px', marginTop: 0 }}>{errorMsg}</p> : null
     }
 
-    showStatusModal = (title, message, isSuccess = false) => {
-        this.setState({ isShowStatusModal: true, titleModal: title, messageModal: message, isSuccess: isSuccess });
+    showStatusModal = (title, message, isSuccess = false, isWarningCreateRequest = false) => {
+        this.setState({ isShowStatusModal: true, titleModal: title, messageModal: message, isSuccess: isSuccess, isWarningCreateRequest: isWarningCreateRequest });
     }
 
     hideStatusModal = () => {
@@ -966,6 +968,7 @@ class LeaveOfAbsenceComponent extends React.Component {
             appraiser,
             approver,
             validating,
+            isWarningCreateRequest,
             isLoading,
             isProcessing,
         } = this.state
@@ -977,7 +980,7 @@ class LeaveOfAbsenceComponent extends React.Component {
 
         return (
             <div className="leave-of-absence">
-                <ResultModal show={isShowStatusModal} title={titleModal} message={messageModal} isSuccess={isSuccess} onHide={this.hideStatusModal} />
+                <ResultModal show={isShowStatusModal} title={titleModal} message={messageModal} isSuccess={isSuccess} isWarningCreateRequest={isWarningCreateRequest} onHide={this.hideStatusModal} />
                 <NoteModal show={isShowNoteModal} onHide={this.hideNoteModal} />
                 <LoadingModal show={isLoading} />
                 <ProcessingModal isShow={isProcessing} />
