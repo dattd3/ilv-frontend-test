@@ -756,8 +756,7 @@ class BusinessTripComponent extends React.Component {
 
     render() {
         const { t, businessTrip, recentlyManagers } = this.props;
-        const { requestInfo, errors, approver, appraiser, isEdit, validating, isLoading, isShowStatusModal, titleModal, messageModal, isSuccess, isWarningCreateRequest, isProcessing } = this.state
-
+        const { requestInfo, errors, approver, appraiser, isEdit, validating, isShowStatusModal, titleModal, messageModal, isSuccess, isWarningCreateRequest, isLoading, isProcessing } = this.state
         const sortRequestListByGroup = requestInfo.sort((reqPrev, reqNext) => reqPrev.groupId - reqNext.groupId)
         const requestInfoArr = _.valuesIn(_.groupBy(sortRequestListByGroup, (req) => req.groupId))
         const vehicles = [
