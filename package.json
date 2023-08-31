@@ -4,6 +4,10 @@
   "private": true,
   "dependencies": {
     "@material-ui/core": "^4.12.3",
+    "@types/jest": "^29.5.3",
+    "@types/node": "^20.4.9",
+    "@types/react": "^18.2.20",
+    "@types/react-dom": "^18.2.7",
     "axios": "^0.27.2",
     "bootstrap": "^4.3.1",
     "broadcast-channel": "^4.17.0",
@@ -51,6 +55,7 @@
     "redux": "^4.0.5",
     "sass": "^1.49.8",
     "socket.io": "^2.4.1",
+    "typescript": "^5.1.6",
     "xlsx": "^0.17.0",
     "xlsx-js-style": "^1.0.0"
   },
@@ -59,6 +64,7 @@
     "build": "react-scripts build",
     "build:staging": "rename .env.staging .env.production.local & npm run-script build & rename .env.production.local .env.staging",
     "build:uat": "env-cmd -f .env.uat npm run build",
+    "build:dev": "env-cmd -f .env.staging npm run build",
     "build:staging:linux": "env-cmd -f .env.staging npm run build",
     "build:production": "rename .env.production .env.production.local & npm run-script build & rename .env.production.local .env.production",
     "test": "react-scripts test",
@@ -81,6 +87,7 @@
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "@types/react-select": "^5.0.1",
     "eslint-plugin-only-warn": "^1.1.0",
     "eslint-plugin-react": "^7.32.2",
     "gulp": "^4.0.2",

@@ -135,5 +135,8 @@ export default {
   MyProfile: "/my-profile",
   SalaryPropse: '/salarypropse/:idContract/:idSalary/:type',
   HistoryVingroup: "/vin30-chronicles",
-  Maintenance: '/maintenance'
+  Maintenance: '/maintenance',
+  
+  // Thanh toán phúc lợi nội bộ
+  RegistrationInternalPayment: "/register-internal-payment",
 };

@@ -348,7 +348,7 @@ export const Navigation = [
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     label: "InsuranceRegime",
     to: map.InsuranceRegime,
-    role: 'NA'
+    role: 'U'
   },
   {
     id: 30,
@@ -503,7 +503,7 @@ export const Navigation = [
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     label: "RequestCreate",
     to: map.RegistrationManagement,
-    role: [...Constants.MODULE_COMPANY_AVAILABE[Constants.MODULE.NGHIVIEC], ...Constants.MODULE_COMPANY_AVAILABE[Constants.MODULE.DIEUCHUYEN], ...Constants.MODULE_COMPANY_AVAILABE[Constants.MODULE.BONHIEM]]
+    role: [...Constants.MODULE_COMPANY_AVAILABE[Constants.MODULE.NGHIVIEC], ...Constants.MODULE_COMPANY_AVAILABE[Constants.MODULE.DIEUCHUYEN], ...Constants.MODULE_COMPANY_AVAILABE[Constants.MODULE.BONHIEM], ...Constants.MODULE_COMPANY_AVAILABE[Constants.MODULE.THANHTOAN_NOIBO]]
     //role: 'NA'
   },
   // {

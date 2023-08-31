@@ -792,7 +792,7 @@
 }
 .metismenu-link {
   padding-left: 0 !important;
-  height: 2.8em;
+  height: 3.2em;
   line-height: 1.4 !important;
   font-size: 14px !important;
   display: flex !important;
@@ -5092,6 +5092,22 @@ span.badge-notification[data-badge]::after {
 
 .ot-info-modal-body {
   box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
+}
+
+.logo-container {
+  display: none!important;
+  visibility: hidden !important;
+}
+
+.logo-container {
+  display: none !important;
+}
+.logo-link {
+  display: none !important;
+}
+
+.logo-container a[data-v-3832a65e] {
+  display: none !important;
 }
 
 .history-vingroup-page {
