@@ -132,7 +132,7 @@
         margin-bottom: 30px;
         .note {
             padding: 0 8px;
-            margin-right: 5px;
+            margin-right: 8px;
         }
         .note-old {
             background-color: #ececec;
@@ -161,7 +161,7 @@
             border: 1px solid #E7E4E4;
             border-radius: 5px;
             padding: 6px 10px;
-            min-height: 40px;
+            min-height: 38px;
             display: flex;
             align-items: center;
         }
@@ -170,8 +170,7 @@
                 background-color: #ececec;
                 display: flex;
                 align-items: center;
-                height: 38px;
-                min-height: auto;
+                min-height: 38px;
             }
         }
         .new {
@@ -261,7 +260,7 @@
                     border: 1px solid #e7e4e4;
                     border-radius: 5px;
                     padding: 6px 10px;
-                    min-height: 40px;
+                    min-height: 38px;
                     display: flex;
                     align-items: center;
                 }
@@ -370,6 +369,24 @@
         }
         .input {
             height: 38px;
+        }
+        .wrap-input-text {
+            position: relative;
+            input {
+                padding-right: 35px;
+            }
+            .remove-input {
+                position: absolute;
+                right: 12px;
+                top: 12px;
+                width: 11px;
+            }
+        }
+        .error-message {
+            margin: 5px 0;
+        }
+        .error-message-inline {
+            margin: 0 0 0 10px;
         }
     }
     .block-action-buttons {
