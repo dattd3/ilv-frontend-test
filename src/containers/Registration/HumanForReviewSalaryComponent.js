@@ -23,7 +23,7 @@ const MyOption = props => {
         </div>
         <div className="float-left text-wrap w-75">
           <div className="title">{props.data.fullName}</div>
-          <div className="comment"><i>({props.data.account}) {props.data.current_position}</i></div>
+          <div className="comment"><span style={{fontStyle: 'italic'}}>({props.data.account}) {props.data.current_position}</span></div>
         </div>
       </div>
     </div>

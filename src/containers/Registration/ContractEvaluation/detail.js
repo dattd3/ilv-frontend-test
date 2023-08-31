@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom'
 import moment from 'moment'
 import Rating from 'react-rating'
 import Constants from '../.../../../../commons/Constants'
-import { checkVersionPnLSameAsVinhome, IS_VINFAST } from '../../../commons/commonFunctions'
+import { checkIsExactPnL, checkVersionPnLSameAsVinhome, IS_VINFAST } from '../../../commons/commonFunctions'
 import 'react-datepicker/dist/react-datepicker.css'
 import { withTranslation } from "react-i18next";
 import './styles.scss';
@@ -60,6 +60,13 @@ const ContractEvaluationdetail = (props) => {
                 {t('expired_day_contract')}
                 <div className="detail">{data.employeeInfo.expireDate ? moment(data.employeeInfo.expireDate).format("DD/MM/YYYY") : ''}</div>
               </div>
+              {
+              checkIsExactPnL(Constants.pnlVCode.VinAI) &&
+                <div className="col-4">
+                  {t('Grade')}
+                  <div className="detail">{data.employeeInfo.rankName || '' }</div>
+                </div>
+              }
             </div>
           </div>
 
@@ -330,7 +337,7 @@ const ContractEvaluationdetail = (props) => {
           </div>
 
           {
-              IS_VINFAST && <div className="box cbnv">
+              IS_VINFAST() && <div className="box cbnv">
                 <div className="row approve">
                   <div className="col-12">
                     <span className="title">{t('hr_review')}</span>

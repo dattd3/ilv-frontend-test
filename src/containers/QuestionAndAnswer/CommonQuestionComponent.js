@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { Fragment, useState } from "react";
 import { Container, Row, Col, Tabs, Tab, Form } from 'react-bootstrap';
 import Button from 'react-bootstrap/Button'
 import Fade from 'react-bootstrap/Fade'
@@ -22,7 +22,7 @@ class CommonQuestionComponent extends React.Component {
     return <>
       <Accordion defaultActiveKey="0">
         <Accordion.Toggle as={Card.Header} eventKey="0" onClick= {() => this.setOpen()}>
-          <h4 className="text-uppercase text-gray-800 common-category pointer">
+          <h4 className="text-uppercase common-category cursor-pointer">
             {
               open ? <i className="fas fa-caret-down"></i> : <i className="fas fa-caret-up"></i>
             }
@@ -33,8 +33,8 @@ class CommonQuestionComponent extends React.Component {
             {
               this.props.questions && this.props.questions.length > 0 ?
                 this.props.questions.map((question, index) => {
-                  return <div key={index}>
-                    <Container fluid className="info-tab-content shadow pl-3 pr-3 mb-2">
+                  return <Fragment key={index}>
+                    <Container fluid className="info-tab-content pl-3 pr-3">
                       <div className="mb-1 multiline">
                         <span className="icon-Icon-Question mr-1"><span className="path1"></span><span className="path2"></span><span className="path3"></span></span>
                         <span>
@@ -48,10 +48,9 @@ class CommonQuestionComponent extends React.Component {
                             <span className="font-italic">{question.answer}</span>
                           </div>
                         </div>
-
                       </div>
                     </Container>
-                  </div>
+                  </Fragment>
                 })
                 : null
             }

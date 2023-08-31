@@ -169,16 +169,22 @@ class DepartmentTimeSheetDetail extends React.Component {
           </div>
         </div>
 
-        <h5>{t("ConsenterInformation")}</h5>
-        <ApproverDetailComponent
-          title={t("Consenter")}
-          manager={this.props.substitution.appraiser}
-          status={this.props.substitution.requestInfo ? this.props.substitution.processStatusId : ""}
-          hrComment={this.props.substitution.appraiserComment}
-          isApprover={false} />
+        {
+          this.props?.substitution?.appraiser?.fullName && (
+            <>
+              <h5>{t("ConsenterInformation")}</h5>
+              <ApproverDetailComponent
+                title={t("Consenter")}
+                manager={this.props.substitution.appraiser}
+                status={this.props.substitution.requestInfo ? this.props.substitution.processStatusId : ""}
+                hrComment={this.props.substitution.appraiserComment}
+                isApprover={false} />
+            </>
+          )
+        }
         
         {
-          this.props.substitution && (Constants.STATUS_TO_SHOW_APPROVER.includes(this.props.substitution.processStatusId)) &&
+          this.props?.substitution?.approver?.fullName && (
             <>
               <h5>{t("ApproverInformation")}</h5>
               <ApproverDetailComponent
@@ -188,6 +194,7 @@ class DepartmentTimeSheetDetail extends React.Component {
                 hrComment={this.props.substitution.approverComment}
                 isApprover={true} />
             </>
+          )
         }
 
         {/* <RequestProcessing 

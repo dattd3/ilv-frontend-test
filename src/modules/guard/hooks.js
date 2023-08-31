@@ -181,6 +181,7 @@ const Storage = {
     localStorage.removeItem('actualDepartment');
     localStorage.removeItem('ad');
     localStorage.removeItem('master_code');
+    localStorage.removeItem("user-guides")
     localStorage.removeItem('cost_center');
   }
 }

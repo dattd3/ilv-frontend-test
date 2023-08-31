@@ -249,7 +249,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
       remoteData.handoverConfirmation = data.policy.user?.account ? data.policy.user : null;
       remoteData.trainingDebt = data.traning.user?.account ? data.traning.user : null;
       remoteData.internalDebt = data.internal.user?.account ? data.internal.user : null;
-      if (IS_VINFAST) {
+      if (IS_VINFAST()) {
         remoteData.faceIdApprover = data.faceId.user;
         remoteData.adBlockApprover = data.adBlock.user;
       }
@@ -441,7 +441,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
       note: infos.internalDebtNote || '',
       isShow: isViewAll || currentUserEmail === infos.internalDebtAccount?.toLowerCase()
     }
-    if (IS_VINFAST) {
+    if (IS_VINFAST()) {
       candidateInfos.faceId = {
         user: infos.faceIdApprover || {},
         status: infos.statusFaceId,
@@ -465,7 +465,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     const data = this.state.data;
     const isEmployee = true//this.state.canEditable.currentActive.includes("employee");
     const noRequireFields = ['employee', 'tool', 'policy', 'traning', 'internal'];
-    if(!IS_VINFAST) {
+    if(!IS_VINFAST()) {
       noRequireFields.push(...["taxi", "faceId", "adBlock"]);
     } 
     if(isEmployee) {
@@ -717,7 +717,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
             {t('handover_2')}
             </div>
             {
-              IS_VINFAST ? 
+              IS_VINFAST() ? 
               <>
                 <div className="row">
                     <div className="sub-title" style={{marginTop: '16px'}}>{t('handover_2_1a')}</div>
@@ -863,7 +863,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
             }
 
             {
-              IS_VINFAST ? <>
+              IS_VINFAST() ? <>
               <div className="row">
                 <div className="sub-title" style={{ marginTop: data.uniform.isShow ? 40 : 0 }}>{t('handover_2_4a')}</div>
               </div>
@@ -1061,7 +1061,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
             }
 
             {
-              IS_VINFAST ?
+              IS_VINFAST() ?
               <>
                 <div className="row">
                     <div className="sub-title" style={{ marginTop: data.policy.isShow ? 40 : 0 }}>{t('handover_2_8')}</div>

@@ -185,24 +185,10 @@ class BusinessTripDetailComponent extends React.Component {
     const isShowApproval = (requestInfo.processStatusId === Constants.STATUS_WAITING) || (action === "approval" && requestInfo.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && requestTypeIdsAllowedToReApproval.includes(requestTypeId))
 
     let messageSAP = null;
-    if (businessTrip.processStatusId === Constants.STATUS_PARTIALLY_SUCCESSFUL)
-    {
-      if (businessTrip.responseDataFromSAP && Array.isArray(businessTrip.responseDataFromSAP)) {
-        const data = businessTrip.responseDataFromSAP.filter(val => val.STATUS === 'E');
-        if (data) {
-          const temp = data.map(val => val?.MESSAGE);
-          messageSAP = temp.filter(function(item, pos) {
-            return temp.indexOf(item) === pos;
-          })
-        }
-      }
-    }
-
-    let isShowAppraisalInfo = false
-    if (businessTrip && businessTrip.appraiser 
-      && Object.values(businessTrip.appraiser).some(item => item !== null && item !== '')
-      && requestInfo && Constants.STATUS_TO_SHOW_CONSENTER.includes(requestInfo.processStatusId)) {
-      isShowAppraisalInfo = true
+    if (requestInfo?.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL) {
+      messageSAP = (businessTrip?.responseDataFromSAP || [])
+      .filter(item => item?.STATUS?.toUpperCase() === 'E' && item?.MESSAGE)
+      .map(item => item?.MESSAGE)
     }
 
     const newItem = [...requestInfo?.newItem]
@@ -240,29 +226,31 @@ class BusinessTripDetailComponent extends React.Component {
         }
 
         {
-          isShowAppraisalInfo && 
-          <>
-            <h5 className='content-page-header'>{t("ConsenterInformation")}</h5>
-            <ApproverDetailComponent
-              title={t("Consenter")}
-              manager={businessTrip.appraiser}
-              status={requestInfo ? requestInfo.processStatusId : ""}
-              hrComment={requestInfo.appraiserComment}
-              isApprover={false} />
-          </>
+          businessTrip?.appraiser?.fullName && (
+            <>
+              <h5 className='content-page-header'>{t("ConsenterInformation")}</h5>
+              <ApproverDetailComponent
+                title={t("Consenter")}
+                manager={businessTrip.appraiser}
+                status={requestInfo ? requestInfo.processStatusId : ""}
+                hrComment={requestInfo.appraiserComment}
+                isApprover={false} />
+            </>
+          )
         }
 
         {
-          (this.getTypeDetail() === "request" || Constants.STATUS_TO_SHOW_APPROVER.includes(requestInfo.processStatusId)) &&
-          <>
-            <h5 className='content-page-header'>{t("ApproverInformation")}</h5>
-            <ApproverDetailComponent
-              title={t("Approver")}
-              manager={businessTrip.approver}
-              status={requestInfo.processStatusId}
-              hrComment={requestInfo.approverComment}
-              isApprover={true} />
-          </>
+          businessTrip?.approver?.fullName && (
+            <>
+              <h5 className='content-page-header'>{t("ApproverInformation")}</h5>
+              <ApproverDetailComponent
+                title={t("Approver")}
+                manager={businessTrip.approver}
+                status={requestInfo.processStatusId}
+                hrComment={requestInfo.approverComment}
+                isApprover={true} />
+            </>
+          )
         }
 
         <RequestProcessing {...timeProcessing} operationType={operationType} />
