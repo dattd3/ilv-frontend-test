@@ -86,9 +86,12 @@ const Page = forwardRef((props, ref) => {
 export default function MyBook(props) {
     const book = useRef()
     const page = useRef()
+    const wrapBookRef = useRef()
+    const pageScrollRef = useRef([])
     const totalPages = 30
     const [isShowThumbnails, setIsShowThumbnails] = useState(false)
     const [isFullScreen, setIsFullScreen] = useState(false)
+    const [isZoomIn, setIsZoomIn] = useState(false)
     const [currentPage, setCurrentPage] = useState(1)
     // const [isLoading, SetIsLoading] = useState(true)
     // style={{ height: 800, objectFit: 'cover' }}
@@ -102,8 +105,13 @@ export default function MyBook(props) {
             setIsFullScreen(Boolean(document.fullscreenElement))
         }
 
+        wrapBookRef?.current?.addEventListener('wheel', onWheel, { passive: false })
         document.addEventListener('fullscreenchange', onFullscreenChange)
-        return () => document.removeEventListener('fullscreenchange', onFullscreenChange)
+        
+        return () => {
+            document.removeEventListener('fullscreenchange', onFullscreenChange)
+            wrapBookRef?.current?.removeEventListener('wheel', onWheel, { passive: false })
+        }
     }, [])
 
     useEffect(() => {
@@ -203,13 +211,31 @@ export default function MyBook(props) {
         saveAs("https://myvinpearl.s3.ap-southeast-1.amazonaws.com/shared/SK.pdf")
     }
 
-    const handleFlip = e => setCurrentPage(e?.data + 1)
+    const handleZoom = () => {
+        setIsZoomIn(!isZoomIn)
+    }
+
+    const handleFlip = e => {
+        const p = e?.data + 1
+        setCurrentPage(p)
+        pageScrollRef?.current?.[p]?.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center'
+        }, 800)
+    }
 
     const handleChangePage = p => {
-        console.log('page ne cung oi ', p)
-        console.log('kieu du lieu ', typeof p)
-
         setCurrentPage(p)
+    }
+
+    const onWheel = e => {
+        e.stopPropagation()
+        const delta = Math.sign(e?.deltaY);
+        if (delta === 1) { // Cuộn chuột xuống đọc tiếp
+            book?.current?.pageFlip()?.flipNext('bottom')
+        } else if (delta === -1) { // Cuộn chuột lên đọc lại
+            book?.current?.pageFlip()?.flipPrev('bottom')
+        }
     }
 
     const pages = (() => {
@@ -231,64 +257,63 @@ export default function MyBook(props) {
         <>
             {/* <LoadingModal show={isLoading} /> */}
             <div className="history-vingroup-page" id="history-vingroup-page" ref={page}>
-                {/* <button onClick={() => book.current.pageFlip().flipNext()}>Next page</button> */}
                 <div className="d-flex wrap-page">
-                    {
-                        isShowThumbnails && (
-                            <div className="sidebar-left">
-                                <div className="d-flex align-items-center justify-content-between top-sidebar">
-                                    <span className="d-inline-flex align-items-center thumbnails">
-                                        <span className="d-inline-flex justify-content-center align-items-center menu-item">
-                                            <svg data-v-78b93dcc="" version="1.1" viewBox="0 0 24 24" className="svg-icon svg-icon svg-fill" focusable="false"><path pid="0" d="M9 3c.6 0 1 .4 1 1v5c0 .6-.4 1-1 1H4c-.6 0-1-.4-1-1V4c0-.6.4-1 1-1h5zm11 0c.6 0 1 .4 1 1v5c0 .6-.4 1-1 1h-5c-.6 0-1-.4-1-1V4c0-.6.4-1 1-1h5zM9 14c.6 0 1 .4 1 1v5c0 .6-.4 1-1 1H4c-.6 0-1-.4-1-1v-5c0-.6.4-1 1-1h5zm11 0c.6 0 1 .4 1 1v5c0 .6-.4 1-1 1h-5c-.6 0-1-.4-1-1v-5c0-.6.4-1 1-1h5z"></path></svg>
-                                        </span>
-                                        <span>Thumbnails</span>
-                                    </span>
-                                    <span className="d-inline-flex justify-content-center align-items-center cursor-pointer menu-close" onClick={handleCloseMenu}>
-                                        <svg data-v-78b93dcc="" version="1.1" viewBox="0 0 24 24" className="svg-icon svg-icon svg-fill" focusable="false"><path pid="0" d="M14.251 12.003l3.747-3.746-2.248-2.248-3.747 3.746-3.746-3.746-2.248 2.248 3.746 3.746-3.746 3.747 2.248 2.248 3.746-3.747 3.747 3.747 2.248-2.248z"></path></svg>
-                                    </span>
-                                </div>
-                                <div className="wrap-sidebar-content">
-                                    <div className="sidebar-content">
-                                        {
-                                            sidebarPages.map((item, index) => {
-                                                return (
-                                                    <div className="wrap-page-item" key={`Sidebar-${index}`}>
-                                                        <div className={`d-flex align-items-center justify-content-center top cursor-pointer ${currentPage == item[0] && item[1] ? 'active' : ''}`} onClick={() => handleChangePage(item[0])}>
+                    <div className={`sidebar-left ${ isShowThumbnails ? 'visible' : '' }`}>
+                        <div className="d-flex align-items-center justify-content-between top-sidebar">
+                            <span className="d-inline-flex align-items-center thumbnails">
+                                <span className="d-inline-flex justify-content-center align-items-center menu-item">
+                                    <svg data-v-78b93dcc="" version="1.1" viewBox="0 0 24 24" className="svg-icon svg-icon svg-fill" focusable="false"><path pid="0" d="M9 3c.6 0 1 .4 1 1v5c0 .6-.4 1-1 1H4c-.6 0-1-.4-1-1V4c0-.6.4-1 1-1h5zm11 0c.6 0 1 .4 1 1v5c0 .6-.4 1-1 1h-5c-.6 0-1-.4-1-1V4c0-.6.4-1 1-1h5zM9 14c.6 0 1 .4 1 1v5c0 .6-.4 1-1 1H4c-.6 0-1-.4-1-1v-5c0-.6.4-1 1-1h5zm11 0c.6 0 1 .4 1 1v5c0 .6-.4 1-1 1h-5c-.6 0-1-.4-1-1v-5c0-.6.4-1 1-1h5z"></path></svg>
+                                </span>
+                                <span>Thumbnails</span>
+                            </span>
+                            <span className="d-inline-flex justify-content-center align-items-center cursor-pointer menu-close" onClick={handleCloseMenu}>
+                                <svg data-v-78b93dcc="" version="1.1" viewBox="0 0 24 24" className="svg-icon svg-icon svg-fill" focusable="false"><path pid="0" d="M14.251 12.003l3.747-3.746-2.248-2.248-3.747 3.746-3.746-3.746-2.248 2.248 3.746 3.746-3.746 3.747 2.248 2.248 3.746-3.747 3.747 3.747 2.248-2.248z"></path></svg>
+                            </span>
+                        </div>
+                        <div className="wrap-sidebar-content">
+                            <div className="sidebar-content">
+                                {
+                                    sidebarPages.map((item, index) => {
+                                        return (
+                                            // aaaaaaaaaaaaaaaaaaa
+                                            <div 
+                                                className="wrap-page-item" 
+                                                key={`Sidebar-${index}`}
+                                                ref={(el) => (pageScrollRef.current[item[0]] = el)}>
+                                                <div className={`d-flex align-items-center justify-content-center top cursor-pointer ${currentPage == item[0] && item[1] ? 'active' : ''}`} onClick={() => handleChangePage(item[0])}>
+                                                    {
+                                                        <>
+                                                            <div className={`item ${(currentPage == 1 || currentPage == totalPages) && currentPage == item[0] ? 'active' : ''}`}>
+                                                                <img src={imageMapping[item[0]]} alt={`Page ${item[0]}`} />
+                                                            </div>
                                                             {
-                                                                <>
-                                                                    <div className={`item ${(currentPage == 1 || currentPage == totalPages) && currentPage == item[0] ? 'active' : ''}`}>
-                                                                        <img src={imageMapping[item[0]]} alt={`Page ${item[0]}`} />
-                                                                    </div>
-                                                                    {
-                                                                        item[1] && (
-                                                                            <>
-                                                                                <div className="book-spine"></div>
-                                                                                <div className="item">
-                                                                                    <img src={imageMapping[item[1]]} alt={`Page ${item[1]}`} />
-                                                                                </div>
-                                                                            </>
-                                                                        )
-                                                                    }
-                                                                </>
+                                                                item[1] && (
+                                                                    <>
+                                                                        <div className="book-spine"></div>
+                                                                        <div className="item">
+                                                                            <img src={imageMapping[item[1]]} alt={`Page ${item[1]}`} />
+                                                                        </div>
+                                                                    </>
+                                                                )
                                                             }
-                                                        </div>
-                                                        <div className="d-flex align-items-center justify-content-center bottom">
-                                                            {
-                                                                <>
-                                                                    <div className="text-center page-number">{ item[0] }</div>
-                                                                    { item[1] && (<div className="text-center page-number">{ item[1] }</div>) }
-                                                                </>
-                                                            }
-                                                        </div>
-                                                    </div>
-                                                )
-                                            })
-                                        }
-                                    </div>
-                                </div>
+                                                        </>
+                                                    }
+                                                </div>
+                                                <div className="d-flex align-items-center justify-content-center bottom">
+                                                    {
+                                                        <>
+                                                            <div className="text-center page-number">{ item[0] }</div>
+                                                            { item[1] && (<div className="text-center page-number">{ item[1] }</div>) }
+                                                        </>
+                                                    }
+                                                </div>
+                                            </div>
+                                        )
+                                    })
+                                }
                             </div>
-                        )
-                    }
+                        </div>
+                    </div>
                     <div className="main-content">
                         <div className="d-flex align-items-center header-block">
                             <h1 className="book-title">Sử ký VIN30</h1>
@@ -299,7 +324,7 @@ export default function MyBook(props) {
                                 <span>{ totalPages }</span>
                             </div>
                         </div>
-                        <div className="book">
+                        <div className="book" ref={wrapBookRef} onWheel={onWheel}>
                             <div className="wrap-book">
                                 <HTMLFlipBook 
                                     showCover={true}
@@ -361,11 +386,19 @@ export default function MyBook(props) {
                             <span className={`menu-item cursor-pointer ${isShowThumbnails ? 'active' : ''}`} onClick={handleShowThumbnails}>
                                 <svg data-v-71c99c82="" version="1.1" viewBox="0 0 24 24" className="svg-icon svg-fill" focusable="false"><path pid="0" d="M9 3c.6 0 1 .4 1 1v5c0 .6-.4 1-1 1H4c-.6 0-1-.4-1-1V4c0-.6.4-1 1-1h5zm11 0c.6 0 1 .4 1 1v5c0 .6-.4 1-1 1h-5c-.6 0-1-.4-1-1V4c0-.6.4-1 1-1h5zM9 14c.6 0 1 .4 1 1v5c0 .6-.4 1-1 1H4c-.6 0-1-.4-1-1v-5c0-.6.4-1 1-1h5zm11 0c.6 0 1 .4 1 1v5c0 .6-.4 1-1 1h-5c-.6 0-1-.4-1-1v-5c0-.6.4-1 1-1h5z"></path></svg>
                             </span>
-                            <span className="btn-download cursor-pointer" onClick={handlePrint}>
-                                <svg data-v-71c99c82="" version="1.1" viewBox="0 0 24 24" className="svg-icon svg-fill" focusable="false"><path pid="0" d="M17.511 10.276h-2.516V4.201c.087-.456-.1-.921-.48-1.191H9.482c-.38.27-.567.735-.48 1.19v6.076H6.247L12 16.352l5.512-6.076zM18.597 17v2H5.402v-2H3.003v2.8c-.049.603.479 1.132 1.2 1.2h15.593c.724-.063 1.256-.595 1.2-1.2V17h-2.4z"></path></svg>
-                            </span>
                             <span className="btn-download cursor-pointer" onClick={downloadBook}>
                                 <svg data-v-71c99c82="" version="1.1" viewBox="0 0 24 24" className="svg-icon svg-fill" focusable="false"><path pid="0" d="M17.511 10.276h-2.516V4.201c.087-.456-.1-.921-.48-1.191H9.482c-.38.27-.567.735-.48 1.19v6.076H6.247L12 16.352l5.512-6.076zM18.597 17v2H5.402v-2H3.003v2.8c-.049.603.479 1.132 1.2 1.2h15.593c.724-.063 1.256-.595 1.2-1.2V17h-2.4z"></path></svg>
+                            </span>
+                            <span className={`btn-zoom cursor-pointer ${isZoomIn ? 'active' : ''}`} onClick={handleZoom}>
+                                {
+                                    isZoomIn
+                                    ? (
+                                        <svg data-v-71c99c82="" version="1.1" viewBox="0 0 24 24" className="svg-icon svg-fill" focusable="false"><path pid="0" d="M15.49 17.611a8.144 8.144 0 01-4.35 1.39c-4.452-.102-8.038-3.625-8.14-8 .036-4.35 3.575-7.89 8-8 4.425.112 7.965 3.65 8 8a7.813 7.813 0 01-1.38 4.498l4.451 4.45-2.121 2.122-4.46-4.46zm-4.385-.61c3.3-.09 5.919-2.757 5.895-6-.026-3.263-2.681-5.916-6-6-3.319.083-5.973 2.737-6 6 .077 3.281 2.766 5.923 6.105 6zM7 12v-2h8v2H7z"></path></svg>
+                                    )
+                                    : (
+                                        <svg data-v-71c99c82="" version="1.1" viewBox="0 0 24 24" className="svg-icon svg-fill" focusable="false"><path pid="0" d="M15.49 17.61A8.144 8.144 0 0111.14 19c-4.452-.102-8.038-3.625-8.14-8 .036-4.35 3.575-7.89 8-8 4.425.112 7.965 3.65 8 8a7.813 7.813 0 01-1.38 4.499l4.451 4.45-2.121 2.122-4.46-4.46zM11.104 17c3.3-.09 5.919-2.757 5.895-6-.026-3.263-2.681-5.916-6-6-3.319.083-5.973 2.737-6 6 .077 3.281 2.766 5.923 6.105 6zM12 7v3h3v2h-3v3h-2v-3H7v-2h3V7h2z"></path></svg>
+                                    )
+                                }
                             </span>
                             <span className={`btn-full-screen cursor-pointer ${isFullScreen ? 'active' : ''}`} onClick={handleScreen}>
                                 {
