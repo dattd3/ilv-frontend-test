@@ -93,12 +93,6 @@ class SubstitutionDetailComponent extends React.Component {
       }
     }
 
-    let isShowAppraisalInfo = false
-    if (substitution && Object.values(substitution.appraiser).some(item => item !== null && item !== '')
-      && Constants.STATUS_TO_SHOW_CONSENTER.includes(substitution.processStatusId)) {
-      isShowAppraisalInfo = true
-    }
-
     const timeProcessing = {
       createDate: substitution?.createDate,
       assessedDate: substitution?.assessedDate,
@@ -206,29 +200,31 @@ class SubstitutionDetailComponent extends React.Component {
         })}
 
         {
-          isShowAppraisalInfo && 
-          <>
-            <h5 className="content-page-header">{t("ConsenterInformation")}</h5>
-            <ApproverDetailComponent
-              title={t("Consenter")}
-              manager={substitution.appraiser}
-              status={substitution.requestInfo ? substitution.processStatusId : ""}
-              hrComment={substitution.appraiserComment}
-              isApprover={false} />
-          </>
+          substitution?.appraiser?.fullName && (
+            <>
+              <h5 className="content-page-header">{t("ConsenterInformation")}</h5>
+              <ApproverDetailComponent
+                title={t("Consenter")}
+                manager={substitution.appraiser}
+                status={substitution.requestInfo ? substitution.processStatusId : ""}
+                hrComment={substitution.appraiserComment}
+                isApprover={false} />
+            </>
+          )
         }
         
         {
-          substitution && (Constants.STATUS_TO_SHOW_APPROVER.includes(substitution.processStatusId )) &&
-          <>
-            <h5 className="content-page-header">{t("ApproverInformation")}</h5>
-            <ApproverDetailComponent
-              title={t("Approver")}
-              manager={substitution.approver}
-              status={substitution.processStatusId}
-              hrComment={substitution.approverComment}
-              isApprover={true} />
-          </>
+          substitution?.approver?.fullName && (
+            <>
+              <h5 className="content-page-header">{t("ApproverInformation")}</h5>
+              <ApproverDetailComponent
+                title={t("Approver")}
+                manager={substitution.approver}
+                status={substitution.processStatusId}
+                hrComment={substitution.approverComment}
+                isApprover={true} />
+            </>
+          )
         }
 
         <RequestProcessing {...timeProcessing} operationType={operationType} />

@@ -321,24 +321,11 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     const requestTypeIdsAllowedToReApproval = getRequestTypeIdsAllowedToReApproval()
     const isShowApproval = (requestInfo.processStatusId === Constants.STATUS_WAITING) || (action === "approval" && requestInfo.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && requestTypeIdsAllowedToReApproval.includes(requestTypeId))
     
-    let messageSAP = null;
-    if (leaveOfAbsence.processStatusId === Constants.STATUS_PARTIALLY_SUCCESSFUL)
-    {
-      if (leaveOfAbsence.responseDataFromSAP && Array.isArray(leaveOfAbsence.responseDataFromSAP)) {
-        const data = leaveOfAbsence.responseDataFromSAP.filter(val => val.STATUS === 'E');
-        if (data) {
-          const temp = data.map(val => val?.MESSAGE);
-          messageSAP = temp.filter(function(item, pos) {
-            return temp.indexOf(item) === pos;
-          })
-        }
-      }
-    }
-
-    let isShowAppraisalInfo = false
-    if (appraiser && Object.values(appraiser).some(item => item !== null && item !== '')
-      && requestInfo && Constants.STATUS_TO_SHOW_CONSENTER.includes(requestInfo.processStatusId)) {
-      isShowAppraisalInfo = true
+    let messageSAP = null
+    if (requestInfo?.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL) {
+      messageSAP = (leaveOfAbsence?.responseDataFromSAP || [])
+      .filter(item => item?.STATUS?.toUpperCase() === 'E' && item?.MESSAGE)
+      .map(item => item?.MESSAGE)
     }
 
     const newItem = [...requestInfo?.newItem]
@@ -375,20 +362,21 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         }
 
         {
-          isShowAppraisalInfo && 
-          <>
-            <h5 className='content-page-header'>{t("ConsenterInformation")}</h5>
-            <ApproverDetailComponent 
-              title={t("Consenter")}
-              manager={leaveOfAbsence.appraiser}
-              status={requestInfo ? requestInfo.processStatusId : ""}
-              hrComment={requestInfo.appraiserComment}
-              isApprover={false} />
-          </>
+          appraiser?.fullName && (
+            <>
+              <h5 className='content-page-header'>{t("ConsenterInformation")}</h5>
+              <ApproverDetailComponent 
+                title={t("Consenter")}
+                manager={leaveOfAbsence.appraiser}
+                status={requestInfo ? requestInfo.processStatusId : ""}
+                hrComment={requestInfo.appraiserComment}
+                isApprover={false} />
+            </>
+          )
         }
 
         {
-          requestInfo && (Constants.STATUS_TO_SHOW_APPROVER.includes(requestInfo.processStatusId )) &&
+          leaveOfAbsence?.approver?.fullName && (
             <>
               <h5 className='content-page-header'>{t("ApproverInformation")}</h5>
               <ApproverDetailComponent
@@ -398,6 +386,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
                 hrComment={requestInfo.approverComment}
                 isApprover={true} />
             </>
+          )
         }
 
         <RequestProcessing {...timeProcessing} operationType={operationType} />
