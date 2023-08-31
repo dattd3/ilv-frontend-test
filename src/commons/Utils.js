@@ -650,10 +650,15 @@ const isExistCurrentUserInWhiteList = () => {
     return whiteListAccessToSystem?.includes(currentUserEmail)
 }
 
+const isVinITIS = () => {
+    const companyCode = localStorage.getItem("companyCode")
+    return Constants.pnlVCode.VinITIS === companyCode
+}
+
 export {
     getRequestConfigurations, removeAccents, formatStringByMuleValue, formatNumberInteger, exportToPDF, isEnableFunctionByFunctionName, getValueParamByQueryString, getDateByRangeAndFormat,
     calculateBackDateByPnLVCodeAndFormatType, isEnableShiftChangeFunctionByPnLVCode, isEnableInOutTimeUpdateFunctionByPnLVCode, getRequestTypeIdsAllowedToReApproval, getMuleSoftHeaderConfigurations,
     isAdjacentDateBy2Date, showRangeDateGroupByArrayDate, generateTaskCodeByCode, parsteStringToHtml, getRegistrationMinDateByConditions, isVinFast, isEnableOTFunctionByPnLVCode, getCurrentLanguage, 
     getResignResonsMasterData, formatStringDateTimeByMuleValue, genderConfig, marriageConfig, formatProcessTime, setURLSearchParam, getCulture, isValidDateRequest, prepareOrganization, getRequestTypesList,
-    formatStringDateByMuleValue, isExistCurrentUserInWhiteList
+    formatStringDateByMuleValue, isExistCurrentUserInWhiteList, isVinITIS
 }
