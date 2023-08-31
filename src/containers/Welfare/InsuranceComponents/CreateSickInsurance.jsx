@@ -15,6 +15,8 @@ import {
   WORKING_CONDITION,
 } from "./InsuranceData";
 import { Spinner } from "react-bootstrap";
+import AssessorInfoComponent from "../InternalPayment/component/AssessorInfoComponent";
+import ButtonComponent from "containers/Registration/ButtonComponent";
 
 const CreateSickInsurance = ({
   t,
@@ -28,6 +30,13 @@ const CreateSickInsurance = ({
   onSend,
   notifyMessage,
   disabledSubmitButton,
+  supervisors,
+  setSupervisors,
+  approver,
+  setApprover,
+  files,
+  updateFiles,
+  removeFile
 }) => {
   const [errors, setErrors] = useState({});
   const InsuranceOptions = [
@@ -41,6 +50,44 @@ const CreateSickInsurance = ({
     if (!verify) {
       return;
     }
+
+    let appIndex = 1;
+    const appraiserInfoLst = supervisors
+        .filter((item) => item != null)
+        .map((item, index) => ({
+          avatar: "",
+          account: item?.username.toLowerCase() + "@vingroup.net",
+          fullName: item?.fullName,
+          employeeLevel: item?.employeeLevel,
+          pnl: item?.pnl,
+          orglv2Id: item?.orglv2Id,
+          current_position: item?.current_position,
+          department: item?.department,
+          order: appIndex++,
+          company_email: item?.company_email?.toLowerCase(),
+          type: Constants.STATUS_PROPOSAL.LEADER_APPRAISER,
+          employeeNo: item?.uid || item?.employeeNo,
+          username: item?.username.toLowerCase(),
+        }));
+
+    const approverInfoLst = [
+        approver
+      ].map((ele, i) => ({
+        avatar: "",
+        account: ele?.username?.toLowerCase() + "@vingroup.net",
+        fullName: ele?.fullName,
+        employeeLevel: ele?.employeeLevel,
+        pnl: ele?.pnl,
+        orglv2Id: ele?.orglv2Id,
+        current_position: ele?.current_position,
+        department: ele?.department,
+        order: appIndex++,
+        company_email: ele?.company_email?.toLowerCase(),
+        type: Constants.STATUS_PROPOSAL.CONSENTER,
+        employeeNo: ele?.uid || ele?.employeeNo,
+        username: ele?.username?.toLowerCase(),
+      }))
+
     const formData = new FormData();
     formData.append("requestType", type.value);
     formData.append("requestName", type.label);
@@ -152,6 +199,14 @@ const CreateSickInsurance = ({
     formData.append("partId", localStorage.getItem("partId"));
     formData.append("part", localStorage.getItem("part"));
     formData.append("companyCode", localStorage.getItem("companyCode"));
+
+    formData.append("appraiserInfoLst", JSON.stringify(appraiserInfoLst));
+    formData.append("approverInfoLst", JSON.stringify(approverInfoLst));
+    if (files.filter(item=> item.id == undefined).length > 0) {
+      files.filter(item=> item.id == undefined).forEach((file) => {
+        formData.append("attachedFiles", file);
+      });
+    }
     onSend(formData);
   };
 
@@ -167,6 +222,9 @@ const CreateSickInsurance = ({
       "total",
       "receiveType",
     ];
+    if(!approver) {
+      _errors['approver'] = 'Vui lòng nhập giá trị !';
+    }
     if(checkRequireAtm()) {
       requiredFields.push("accountNumber",
       "accountName",
@@ -743,30 +801,40 @@ const CreateSickInsurance = ({
           </div>
         </div>
       </div>
-      <div className="clearfix mb-5 mt-4">
-        {/* <button type="button" className="btn btn-primary float-right ml-3 shadow" onClick={this.showConfirm.bind(this, 'isConfirm')}><i className="fa fa-paper-plane" aria-hidden="true"></i>  Gửi yêu cầu</button> */}
-        <button
-          type="button"
-          className="btn btn-primary float-right ml-3 shadow"
-          onClick={() => onSubmit()}
-        >
-          {!disabledSubmitButton ? (
-            <>
-              <i className="fa fa-paper-plane mr-2" aria-hidden="true"></i>
-            </>
-          ) : (
-            <Spinner
-              as="span"
-              animation="border"
-              size="sm"
-              role="status"
-              aria-hidden="true"
-              className="mr-2"
-            />
-          )}
-          {t("Send")}
-        </button>
+
+      <AssessorInfoComponent
+        t={t}
+        isCreateMode={true}
+        setSupervisors={setSupervisors}
+        supervisors={supervisors}
+        approver={approver}
+        setApprover={setApprover}
+      />
+      {errors["approver"] ? (
+        <p className="text-danger">{errors["approver"]}</p>
+      ) : null}
+
+      <div className="registration-section">
+        <ul className="list-inline">
+          {files.map((file, index) => {
+              return <li className="list-inline-item" key={index}>
+                  <span className="file-name">
+                      <a title={file.name} href={file.fileUrl} download={file.name} target="_blank">{file.name}</a>
+                      <i className="fa fa-times remove" aria-hidden="true" onClick={() => removeFile(index)}></i>
+                  </span>
+              </li>
+          })}
+        </ul>
+        <ButtonComponent
+          isEdit={false} 
+          files={files} 
+          updateFiles={updateFiles} 
+          submit={onSubmit} 
+          isUpdateFiles={()=>{}} 
+          disabledSubmitButton={disabledSubmitButton} 
+          validating={disabledSubmitButton}/>
       </div>
+
     </>
   );
 };

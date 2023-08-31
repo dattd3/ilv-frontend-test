@@ -136,7 +136,9 @@ const CreateInsuranceSocial = (props) => {
         IndentifiD: '',
         employeeNo: ''
     });
-
+    const [supervisors, setSupervisors] = useState([]);
+    const [approver, setApprover] = useState(null); // CBLĐ phê duyệt
+    const [files, updateFiles] = useState([]);
     const [errors, setErrors] = useState({
         sickData: {
 
@@ -254,6 +256,11 @@ const CreateInsuranceSocial = (props) => {
         setData(candidateInfos)
     }
 
+    const removeFile = (index) => {
+        const _files = [...files.slice(0, index), ...files.slice(index + 1)];
+        updateFiles(_files);
+    }
+
     const onSubmit = (data) => {
         setdisabledSubmitButton(true);
         axios({
@@ -336,6 +343,13 @@ const CreateInsuranceSocial = (props) => {
                             handleDatePickerInputChange={(value, key) => handleDatePickerInputChange(value, 'sickData', key)}
                             onSend={(data) => onSubmit(data)}
                             notifyMessage={notifyMessage}
+                            supervisors={supervisors}
+                            setSupervisors={setSupervisors}
+                            approver={approver}
+                            setApprover={setApprover}
+                            updateFiles={updateFiles}
+                            files={files}
+                            removeFile={removeFile}
                         />
                         : type.value == 2 ?
                             <CreateMaternityInsurance type={type} setType={setType}
@@ -347,6 +361,13 @@ const CreateInsuranceSocial = (props) => {
                                 handleChangeSelectInputs={(e, key) => handleChangeSelectInputs(e, 'maternityData', key)}
                                 handleDatePickerInputChange={(value, key) => handleDatePickerInputChange(value, 'maternityData', key)}
                                 onSend={(data) => onSubmit(data)}
+                                supervisors={supervisors}
+                                setSupervisors={setSupervisors}
+                                approver={approver}
+                                setApprover={setApprover}
+                                updateFiles={updateFiles}
+                                files={files}
+                                removeFile={removeFile}
                                 notifyMessage={notifyMessage} />
                             : type.value == 3 ?
                                 <CreateConvalesInsurance type={type} setType={setType}
@@ -358,6 +379,13 @@ const CreateInsuranceSocial = (props) => {
                                     handleChangeSelectInputs={(e, key) => handleChangeSelectInputs(e, 'convalesData', key)}
                                     handleDatePickerInputChange={(value, key) => handleDatePickerInputChange(value, 'convalesData', key)}
                                     onSend={(data) => onSubmit(data)}
+                                    supervisors={supervisors}
+                                    setSupervisors={setSupervisors}
+                                    approver={approver}
+                                    setApprover={setApprover}
+                                    updateFiles={updateFiles}
+                                    files={files}
+                                    removeFile={removeFile}
                                     notifyMessage={notifyMessage} />
                                 : null
             }
