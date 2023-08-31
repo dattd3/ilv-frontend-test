@@ -9,7 +9,7 @@ import vi from 'date-fns/locale/vi'
 import { withTranslation } from "react-i18next"
 import _ from 'lodash'
 import Constants from 'commons/Constants'
-import { getMuleSoftHeaderConfigurations, genderConfig, marriageConfig } from "commons/Utils"
+import { getMuleSoftHeaderConfigurations, genderConfig, marriageConfig, isVinFast } from "commons/Utils"
 import IconDatePicker from 'assets/img/icon/Icon_DatePicker.svg'
 
 registerLocale("vi", vi)
@@ -738,7 +738,7 @@ class PersonalComponent extends React.Component {
                         </div>
                     </div>
                     {
-                        localStorage.getItem("companyCode") != "V070" ?
+                        !isVinFast() ?
                         <>
                             <div className="row">
                                 <div className="col-2">

@@ -6,7 +6,7 @@ import TaskList from '../taskList'
 import Constants from '../../../commons/Constants'
 import processingDataReq from "../../Utils/Common"
 import HOCComponent from '../../../components/Common/HOCComponent'
-import { getRequestTypesList, getValueParamByQueryString, setURLSearchParam } from 'commons/Utils'
+import { getRequestTypesList, getValueParamByQueryString, setURLSearchParam, isVinITIS } from 'commons/Utils'
 import { REQUEST_CATEGORIES } from '../Constants'
 import LoadingModal from 'components/Common/LoadingModal'
 
@@ -95,6 +95,10 @@ class ApprovalComponent extends React.Component {
       { value: Constants.STATUS_NOT_APPROVED , label: t("Rejected") },
       // { value: Constants.STATUS_REVOCATION , label: t("Canceled") },
     ]
+    if (isVinITIS()) {
+      statusFiler = [...statusFiler, { value: Constants.STATUS_WORK_DAY_LOCKED_APPROVAL, label: t("PaidDayLocked") }]
+    }
+    
     return (
       <>
         <LoadingModal show={this.state.isLoading} />

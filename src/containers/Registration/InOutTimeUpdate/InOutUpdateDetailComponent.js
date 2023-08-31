@@ -207,21 +207,23 @@ class InOutUpdateDetailComponent extends React.Component {
             </div>
           </div>
         })}
+
         {
-          isShowAppraisalInfo &&
-          <>
-            <h5 className="content-page-header">{t("ConsenterInformation")}</h5>
-            <ApproverDetailComponent
-              title={t("Consenter")}
-              manager={inOutTimeUpdate.appraiser}
-              status={inOutTimeUpdate.requestInfo ? inOutTimeUpdate.processStatusId : ""}
-              hrComment={inOutTimeUpdate.appraiserComment}
-              isApprover={false} />
-          </>
+          inOutTimeUpdate?.appraiser?.fullName && (
+            <>
+              <h5 className="content-page-header">{t("ConsenterInformation")}</h5>
+              <ApproverDetailComponent
+                title={t("Consenter")}
+                manager={inOutTimeUpdate.appraiser}
+                status={inOutTimeUpdate.requestInfo ? inOutTimeUpdate.processStatusId : ""}
+                hrComment={inOutTimeUpdate.appraiserComment}
+                isApprover={false} />
+            </>
+          )
         }
         
         {
-          inOutTimeUpdate && (Constants.STATUS_TO_SHOW_APPROVER.includes(inOutTimeUpdate.processStatusId )) &&
+          inOutTimeUpdate?.approver?.fullName && (
             <>
               <h5 className="content-page-header">{t("ApproverInformation")}</h5>
               <ApproverDetailComponent
@@ -231,6 +233,7 @@ class InOutUpdateDetailComponent extends React.Component {
                 hrComment={inOutTimeUpdate.approverComment}
                 isApprover={true} />
             </>
+          )
         }
 
         <RequestProcessing {...timeProcessing} operationType={operationType} />

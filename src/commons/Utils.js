@@ -650,6 +650,11 @@ const isExistCurrentUserInWhiteList = () => {
     return whiteListAccessToSystem?.includes(currentUserEmail)
 }
 
+const isVinITIS = () => {
+    const companyCode = localStorage.getItem("companyCode")
+    return Constants.pnlVCode.VinITIS === companyCode
+}
+
 const formatNumberSpecialCase = (val) => {
     if (val === "" || val === null || val === undefined) {
       return "";
@@ -666,5 +671,5 @@ export {
     calculateBackDateByPnLVCodeAndFormatType, isEnableShiftChangeFunctionByPnLVCode, isEnableInOutTimeUpdateFunctionByPnLVCode, getRequestTypeIdsAllowedToReApproval, getMuleSoftHeaderConfigurations,
     isAdjacentDateBy2Date, showRangeDateGroupByArrayDate, generateTaskCodeByCode, parsteStringToHtml, getRegistrationMinDateByConditions, isVinFast, isEnableOTFunctionByPnLVCode, getCurrentLanguage, 
     getResignResonsMasterData, formatStringDateTimeByMuleValue, genderConfig, marriageConfig, formatProcessTime, setURLSearchParam, getCulture, isValidDateRequest, prepareOrganization, getRequestTypesList,
-    formatStringDateByMuleValue, isExistCurrentUserInWhiteList, formatNumberSpecialCase
+    formatStringDateByMuleValue, isExistCurrentUserInWhiteList, isVinITIS, formatNumberSpecialCase
 }

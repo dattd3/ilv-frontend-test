@@ -314,21 +314,22 @@ class SubstitutionComponent extends React.Component {
       headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` }
     })
     .then(response => {
-      if (response && response.data && response.data.result) {
-        this.showResultModal(this.props.t("Successful"), this.props.t("RequestSent"), true)
-        this.setDisabledSubmitButton(false)
+      const result = response?.data?.result
+      if (result?.code === Constants.API_SUCCESS_CODE) {
+        this.showResultModal(t("Successful"), t("RequestSent"), true)
+      } else if (result?.code == Constants.API_ERROR_CODE_WORKING_DAY_LOCKED) {
+        this.setState({ needReload: true })
+        this.showResultModal(t("Notification"), result?.message, false, true)
+      } else {
+        this.showResultModal(t("Notification"), result?.message, false)
       }
     })
     .catch(error => {
-      let message = this.props.t("Error")
-      if (error?.response?.data?.result?.code == Constants.API_ERROR_CODE) {
-        message = error?.response?.data?.result?.message
-      }
-      this.showResultModal(this.props.t("Notification"), message, false)
-      this.setDisabledSubmitButton(false)
+      this.showResultModal(t("Notification"), error?.response?.data?.result?.message || t("AnErrorOccurred"), false)
     })
     .finally(() => {
       this.setState({ needReload: true })
+      this.setDisabledSubmitButton(false)
     })
   }
 
@@ -496,8 +497,8 @@ class SubstitutionComponent extends React.Component {
     this.setState({ totalHours: totalHours, timesheets: timesheets }, () => { this.verifyInput() })
   }
 
-  showResultModal = (title, message, isSuccess = false) => {
-    this.setState({ isShowResultModal: true, titleModal: title, messageModal: message, isSuccess: isSuccess });
+  showResultModal = (title, message, isSuccess = false, isWarningCreateRequest = false) => {
+    this.setState({ isShowResultModal: true, titleModal: title, messageModal: message, isSuccess: isSuccess, isWarningCreateRequest: isWarningCreateRequest });
   }
 
   hideResultModal = () => {
@@ -678,7 +679,7 @@ class SubstitutionComponent extends React.Component {
   render() {
     const { t, substitution, recentlyManagers } = this.props;
     const {startDate, endDate, isShowResultModal, titleModal, messageModal, isSuccess, timesheets, errors, isShowStartBreakTimeAndEndBreakTime, 
-      files, disabledSubmitButton, shifts, statusModal, isLoading} = this.state
+      files, disabledSubmitButton, shifts, statusModal, isLoading, isWarningCreateRequest} = this.state
     
     const substitutionTypes = this.isVin3S
     // const substitutionTypes = (this.isVin3S || isVinFast())
@@ -707,7 +708,7 @@ class SubstitutionComponent extends React.Component {
     return (
       <div className="shift-work">
         <LoadingModal show={isLoading} />
-        <ResultModal show={isShowResultModal} title={titleModal} message={messageModal} isSuccess={isSuccess} onHide={this.hideResultModal} />
+        <ResultModal show={isShowResultModal} title={titleModal} message={messageModal} isSuccess={isSuccess} isWarningCreateRequest={isWarningCreateRequest} onHide={this.hideResultModal} />
         <StatusModal show={statusModal.isShow} isSuccess={statusModal.isSuccess} content={statusModal.content} onHide={this.hideStatusModal} />
         <div className="box search-box">
           <div className="row">
