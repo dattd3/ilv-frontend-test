@@ -5097,11 +5097,16 @@ span.badge-notification[data-badge]::after {
   .wrap-page {
     height: 100vh;
     .sidebar-left {
-      flex: 0 0 260px;
+      visibility: hidden;
+      width: 0;
+      flex: 0 0 0;
       font-size: 13px;
       // box-shadow: 0 0 4px rgba(0,0,0,.3);
-
       box-shadow: 3px 0px 10px -5px rgba(9,30,66,0.25);
+      &.visible {
+        visibility: visible;
+        flex: 0 0 260px;
+      }
       .top-sidebar {
         height: 45px;
         background: #5a5f63;
@@ -5242,6 +5247,7 @@ span.badge-notification[data-badge]::after {
       .book {
         flex: 1;
         height: calc(100% - 45px - 45px);
+        touch-action: manipulation;
         // background: red;
         // .wrap-book {
         //   margin: 15px 0 0 0;
@@ -5275,6 +5281,19 @@ span.badge-notification[data-badge]::after {
           }
         }
         .btn-full-screen {
+          padding: 2px;
+          margin-left: 15px;
+          &.active {
+            background: rgba(0,0,0,.3);
+          }
+          svg {
+            height: 24px;
+            width: 24px;
+            color: #6d6d6d;
+            fill: #6d6d6d;
+          }
+        }
+        .btn-zoom {
           padding: 2px;
           &.active {
             background: rgba(0,0,0,.3);
