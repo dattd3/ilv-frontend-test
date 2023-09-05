@@ -261,13 +261,19 @@ function Authorize(props) {
     }
 
     function updateUser(userProfile, jwtToken) {
+        var benefitTitle = "";
+        if (userProfile.benefit_level && userProfile.benefit_level !== '#') {
+            benefitTitle = userProfile.benefit_level.replace('PL', '');
+        } else {
+            benefitTitle = userProfile.employee_level;
+        }
        let userData = {
             fullName: userProfile.fullname,
             employeeNo: userProfile.uid,
             mobile: "",
             avatar: userProfile.avatar,
             jobTitle: userProfile.job_name,
-            benefitLevel: userProfile.employee_level,
+            benefitLevel: benefitTitle,
             companyName: userProfile.pnl,
             companyCode: userProfile.company_code,
             departmentName: userProfile.department,
