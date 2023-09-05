@@ -15,6 +15,8 @@ import {
   WORKING_CONDITION,
 } from "./InsuranceData";
 import { Spinner } from "react-bootstrap";
+import AssessorInfoComponent from "../InternalPayment/component/AssessorInfoComponent";
+import ButtonComponent from "containers/Registration/ButtonComponent";
 
 const CreateSickInsurance = ({
   t,
@@ -28,6 +30,13 @@ const CreateSickInsurance = ({
   onSend,
   notifyMessage,
   disabledSubmitButton,
+  supervisors,
+  setSupervisors,
+  approver,
+  setApprover,
+  files,
+  updateFiles,
+  removeFile
 }) => {
   const [errors, setErrors] = useState({});
   const InsuranceOptions = [
@@ -41,6 +50,44 @@ const CreateSickInsurance = ({
     if (!verify) {
       return;
     }
+
+    let appIndex = 1;
+    const appraiserInfoLst = supervisors
+        .filter((item) => item != null)
+        .map((item, index) => ({
+          avatar: "",
+          account: item?.username.toLowerCase() + "@vingroup.net",
+          fullName: item?.fullName,
+          employeeLevel: item?.employeeLevel,
+          pnl: item?.pnl,
+          orglv2Id: item?.orglv2Id,
+          current_position: item?.current_position,
+          department: item?.department,
+          order: appIndex++,
+          company_email: item?.company_email?.toLowerCase(),
+          type: Constants.STATUS_PROPOSAL.LEADER_APPRAISER,
+          employeeNo: item?.uid || item?.employeeNo,
+          username: item?.username.toLowerCase(),
+        }));
+
+    const approverInfoLst = [
+        approver
+      ].map((ele, i) => ({
+        avatar: "",
+        account: ele?.username?.toLowerCase() + "@vingroup.net",
+        fullName: ele?.fullName,
+        employeeLevel: ele?.employeeLevel,
+        pnl: ele?.pnl,
+        orglv2Id: ele?.orglv2Id,
+        current_position: ele?.current_position,
+        department: ele?.department,
+        order: appIndex++,
+        company_email: ele?.company_email?.toLowerCase(),
+        type: Constants.STATUS_PROPOSAL.CONSENTER,
+        employeeNo: ele?.uid || ele?.employeeNo,
+        username: ele?.username?.toLowerCase(),
+      }))
+
     const formData = new FormData();
     formData.append("requestType", type.value);
     formData.append("requestName", type.label);
@@ -152,6 +199,14 @@ const CreateSickInsurance = ({
     formData.append("partId", localStorage.getItem("partId"));
     formData.append("part", localStorage.getItem("part"));
     formData.append("companyCode", localStorage.getItem("companyCode"));
+
+    formData.append("appraiserInfoLst", JSON.stringify(appraiserInfoLst));
+    formData.append("approverInfoLst", JSON.stringify(approverInfoLst));
+    if (files.filter(item=> item.id == undefined).length > 0) {
+      files.filter(item=> item.id == undefined).forEach((file) => {
+        formData.append("attachedFiles", file);
+      });
+    }
     onSend(formData);
   };
 
@@ -162,13 +217,27 @@ const CreateSickInsurance = ({
       "declareForm",
       "plan",
       "seri",
+      "fromDate",
+      "toDate",
       "total",
       "receiveType",
-      "accountNumber",
+    ];
+    if(!approver) {
+      _errors['approver'] = 'Vui lòng nhập giá trị !';
+    }
+    if(checkRequireAtm()) {
+      requiredFields.push("accountNumber",
       "accountName",
       "bankId",
-      "bankName",
-    ];
+      "bankName");
+    }
+    if(checkRequireChildInfo()) {
+      requiredFields.push(
+        'childBirth',
+        'childInsuranceNumber',
+        'childSickNumbers'
+      )
+    }
     const optionFields = ["declareForm", "plan", "receiveType"];
 
     requiredFields.forEach((name) => {
@@ -192,6 +261,20 @@ const CreateSickInsurance = ({
     }
     return hasErrors ? false : true;
   };
+
+  const checkRequireAtm = () => {
+    if(data.receiveType?.value && [2].includes(data.receiveType.value)) {
+      return true;
+    }
+    return false;
+  }
+
+  const checkRequireChildInfo = () => {
+    if(data.plan?.value && ['O2'].includes(data.plan.value)) {
+      return true;
+    }
+    return false;
+  }
 
   return (
     <>
@@ -394,7 +477,7 @@ const CreateSickInsurance = ({
         </div>
         <div className="row mv-10">
           <div className="col-4">
-            <div>{t('StartDate')}</div>
+            <div>{t('StartDate')} <span className="required">(*)</span></div>
             <DatePicker
               selectsStart
               name="startDate"
@@ -411,9 +494,12 @@ const CreateSickInsurance = ({
               className="form-control input"
               styles={{ width: "100%" }}
             />
+            {errors["fromDate"] ? (
+              <p className="text-danger">{errors["fromDate"]}</p>
+            ) : null}
           </div>
           <div className="col-4">
-            <div>{t('EndDate')}</div>
+            <div>{t('EndDate')} <span className="required">(*)</span></div>
             <DatePicker
               selectsEnd
               name="startDate"
@@ -430,6 +516,9 @@ const CreateSickInsurance = ({
               className="form-control input"
               styles={{ width: "100%" }}
             />
+            {errors["toDate"] ? (
+              <p className="text-danger">{errors["toDate"]}</p>
+            ) : null}
           </div>
           <div className="col-4">
             {t('total')}
@@ -453,7 +542,7 @@ const CreateSickInsurance = ({
       <div className="box shadow cbnv">
         <div className="row mv-10">
           <div className="col-4">
-            <div>{t('birth_date')}</div>
+            <div>{t('birth_date')} {checkRequireChildInfo() ? <span className="required">(*)</span> : null}</div>
             <DatePicker
               name="startDate"
               //readOnly={disableComponent.disableAll || !disableComponent.qlttSide || data.qlttOpinion.disableTime == true}
@@ -475,9 +564,12 @@ const CreateSickInsurance = ({
               className="form-control input"
               styles={{ width: "100%" }}
             />
+            {errors["childBirth"] ? (
+              <p className="text-danger">{errors["childBirth"]}</p>
+            ) : null}
           </div>
           <div className="col-4">
-            <div>{t('number_insurance_of_child')}</div>
+            <div>{t('number_insurance_of_child')} {checkRequireChildInfo() ? <span className="required">(*)</span> : null}</div>
             <input
               type="text"
               value={data.childInsuranceNumber}
@@ -486,9 +578,13 @@ const CreateSickInsurance = ({
               name="inputName"
               autoComplete="off"
             />
+            {errors["childInsuranceNumber"] ? (
+              <p className="text-danger">{errors["childInsuranceNumber"]}</p>
+            ) : null}
           </div>
           <div className="col-4">
             {t('child_sick')}
+            {checkRequireChildInfo() ? <span className="required">(*)</span> : null}
             <input
               type="text"
               value={data.childSickNumbers}
@@ -497,6 +593,9 @@ const CreateSickInsurance = ({
               name="inputName"
               autoComplete="off"
             />
+            {errors["childSickNumbers"] ? (
+              <p className="text-danger">{errors["childSickNumbers"]}</p>
+            ) : null}
           </div>
         </div>
       </div>
@@ -635,7 +734,7 @@ const CreateSickInsurance = ({
           <div className="col-4">
             <div>
               {t('account_number')}
-              <span className="required">(*)</span>
+              {checkRequireAtm() ? <span className="required">(*)</span> : null}
             </div>
             <input
               value={data.accountNumber}
@@ -651,7 +750,7 @@ const CreateSickInsurance = ({
           </div>
           <div className="col-4">
             {t('account_name')}
-            <span className="required">(*)</span>
+            {checkRequireAtm() ? <span className="required">(*)</span> : null}
             <input
               value={data.accountName}
               onChange={(e) => handleTextInputChange(e, "accountName")}
@@ -669,7 +768,7 @@ const CreateSickInsurance = ({
           <div className="col-4">
             <div>
               {t('bank_code')}
-              <span className="required">(*)</span>
+              {checkRequireAtm() ? <span className="required">(*)</span> : null}
             </div>
             <input
               value={data.bankId}
@@ -686,7 +785,7 @@ const CreateSickInsurance = ({
           <div className="col-8">
             <div>
               {t('bank_name')}
-              <span className="required">(*)</span>
+              {checkRequireAtm() ? <span className="required">(*)</span> : null}
             </div>
             <input
               value={data.bankName}
@@ -702,30 +801,40 @@ const CreateSickInsurance = ({
           </div>
         </div>
       </div>
-      <div className="clearfix mb-5 mt-4">
-        {/* <button type="button" className="btn btn-primary float-right ml-3 shadow" onClick={this.showConfirm.bind(this, 'isConfirm')}><i className="fa fa-paper-plane" aria-hidden="true"></i>  Gửi yêu cầu</button> */}
-        <button
-          type="button"
-          className="btn btn-primary float-right ml-3 shadow"
-          onClick={() => onSubmit()}
-        >
-          {!disabledSubmitButton ? (
-            <>
-              <i className="fa fa-paper-plane mr-2" aria-hidden="true"></i>
-            </>
-          ) : (
-            <Spinner
-              as="span"
-              animation="border"
-              size="sm"
-              role="status"
-              aria-hidden="true"
-              className="mr-2"
-            />
-          )}
-          {t("Send")}
-        </button>
+
+      <AssessorInfoComponent
+        t={t}
+        isCreateMode={true}
+        setSupervisors={setSupervisors}
+        supervisors={supervisors}
+        approver={approver}
+        setApprover={setApprover}
+      />
+      {errors["approver"] ? (
+        <p className="text-danger">{errors["approver"]}</p>
+      ) : null}
+
+      <div className="registration-section">
+        <ul className="list-inline">
+          {files.map((file, index) => {
+              return <li className="list-inline-item" key={index}>
+                  <span className="file-name">
+                      <a title={file.name} href={file.fileUrl} download={file.name} target="_blank">{file.name}</a>
+                      <i className="fa fa-times remove" aria-hidden="true" onClick={() => removeFile(index)}></i>
+                  </span>
+              </li>
+          })}
+        </ul>
+        <ButtonComponent
+          isEdit={false} 
+          files={files} 
+          updateFiles={updateFiles} 
+          submit={onSubmit} 
+          isUpdateFiles={()=>{}} 
+          disabledSubmitButton={disabledSubmitButton} 
+          validating={disabledSubmitButton}/>
       </div>
+
     </>
   );
 };
