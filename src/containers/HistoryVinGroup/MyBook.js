@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, forwardRef, Fragment } from "react"
-import HTMLFlipBook from "react-pageflip"
+import HTMLFlipBook from "@cuongnv56/react-pageflip"
 import { saveAs } from 'file-saver'
 import { chunk } from 'lodash'
 import Page1 from 'assets/img/vingroup_history/Page1.png'
