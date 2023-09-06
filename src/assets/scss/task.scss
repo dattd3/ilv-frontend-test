@@ -168,6 +168,9 @@
                 top: 12px;
                 right: 8px;
               }
+              .react-datepicker-popper {
+                z-index: 99;
+              }
             }
             @media screen and (max-width: 1440px) {
               .date-picker-container, .search-btn-container {
