@@ -51,6 +51,24 @@ const CreateConvalesInsurance = ({
       return;
     }
 
+    const employeeInfo = {
+      employeeNo: localStorage.getItem('employeeNo'),
+      username: localStorage.getItem('ad')?.toLowerCase(),
+      account: localStorage.getItem('email'),
+      fullName: localStorage.getItem('fullName'),
+      jobTitle: localStorage.getItem('jobTitle'),
+      employeeLevel: localStorage.getItem('employeeLevel'),
+      department: localStorage.getItem('department')
+    }
+    const userEmployeeInfo = {
+      employeeNo:localStorage.getItem('employeeNo'),
+      fullName:localStorage.getItem('fullName'),
+      jobTitle:localStorage.getItem('jobTitle'),
+      department:localStorage.getItem('department'),
+      company_email:localStorage.getItem('plEmail'),
+      costCenter: localStorage.getItem('cost_center')
+    }
+
     let appIndex = 1;
     const appraiserInfoLst = supervisors
         .filter((item) => item != null)
@@ -130,16 +148,19 @@ const CreateConvalesInsurance = ({
     formData.append('SettlementPeriod', data.resolveDate ? moment(data.resolveDate, 'DD/MM/YYYY').format('YYYY-MM-DD') : '');
     formData.append('AdditionalPhaseContent', data.addtionContent);
     formData.append('AdditionalPhasePeriod', data.addtionDate ? moment(data.addtionDate, 'DD/MM/YYYY').format('YYYY-MM-DD') : '');
-    formData.append('orgLv2Id', localStorage.getItem('organizationLv2'));
-    formData.append('divisionId', localStorage.getItem('divisionId'));
-    formData.append('division', localStorage.getItem('division'));
-    formData.append('regionId', localStorage.getItem('regionId'));
-    formData.append('region', localStorage.getItem('region'));
-    formData.append('unitId', localStorage.getItem('unitId'));
-    formData.append('unit', localStorage.getItem('unit'));
-    formData.append('partId', localStorage.getItem('partId'));
-    formData.append('part', localStorage.getItem('part'));
-    formData.append('companyCode', localStorage.getItem('companyCode'));
+    
+    formData.append("orgLv2Id", localStorage.getItem("organizationLv2"));
+    formData.append("orgLv3Id", localStorage.getItem("divisionId"));
+    formData.append("orgLv3Text", localStorage.getItem("division"));
+    formData.append("orgLv4Id", localStorage.getItem("regionId"));
+    formData.append("orgLv4Text", localStorage.getItem("region"));
+    formData.append("orgLv5Id", localStorage.getItem("unitId"));
+    formData.append("orgLv5Text", localStorage.getItem("unit"));
+    formData.append("orgLv6Id", localStorage.getItem("partId"));
+    formData.append("orgLv6Text", localStorage.getItem("part"));
+    formData.append("companyCode", localStorage.getItem("companyCode"));
+    formData.append('employeeInfo', JSON.stringify(employeeInfo));
+    formData.append('UserInfo', JSON.stringify(userEmployeeInfo));
 
     formData.append("appraiserInfoLst", JSON.stringify(appraiserInfoLst));
     formData.append("approverInfoLst", JSON.stringify(approverInfoLst));
