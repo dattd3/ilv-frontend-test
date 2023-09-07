@@ -132,6 +132,7 @@ function CreateInternalPayment(props: any) {
     let _quota = { ...quota, ..._benefitInfo.quota };
     const _requestInfo = _benefitInfo.info;
     if (!_requestInfo) {
+      setQuota(_quota);
       setRequests([]);
       return;
     }
