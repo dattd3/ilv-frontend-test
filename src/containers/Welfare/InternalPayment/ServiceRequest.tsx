@@ -14,7 +14,7 @@ import IconAdd from "assets/img/ic-add-green.svg";
 import IconDownload from "assets/img/ic_download_red.svg";
 import { IDropdownValue } from "models/CommonModel";
 import moment from "moment";
-import { formatNumberSpecialCase } from "commons/Utils";
+import { formatNumberSpecialCase, formatProcessTime } from "commons/Utils";
 import Constants from "commons/Constants";
 interface IServiceRequestProps {
   t: any;
@@ -280,6 +280,7 @@ function ServiceRequest({
                   className="form-control input mv-10 w-100"
                   name="inputName"
                   autoComplete="off"
+                  maxLength={255}
                   disabled={!isCreateMode}
                 />
               </div>
@@ -289,13 +290,13 @@ function ServiceRequest({
                 <div className="col-4">
                   {t("TimeToSendRequest")}{" "}
                   <div className="detail1">
-                    {request.requestHistory?.createdDate ? moment(request.requestHistory?.createdDate).format('DD/MM/YYYY | HH:mm:ss') : ''}
+                    {formatProcessTime(request.requestHistory?.createdDate || '')}
                   </div>
                 </div>
                 <div className="col-4">
                   {t("ApprovalDate")}{" "}
                   <div className="detail1">
-                  {request.requestHistory?.approvedDate ? moment(request.requestHistory?.approvedDate).format('DD/MM/YYYY | HH:mm:ss') : ''}
+                    {formatProcessTime(request.requestHistory?.approvedDate || '')}
                   </div>
                 </div>
                 <div className="col-4">

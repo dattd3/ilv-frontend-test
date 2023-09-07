@@ -13,7 +13,7 @@ import PaymentBenefitInfo from "./component/PaymentBenefitInfo";
 import { IDropdownValue } from "models/CommonModel";
 import Constants from "commons/Constants";
 import DetailButtonComponent from "containers/Registration/DetailButtonComponent";
-import { getCurrentLanguage } from "commons/Utils";
+import { getCurrentLanguage, getRequestTypeIdsAllowedToReApproval } from "commons/Utils";
 import { getPaymentObjects } from "./PaymentData";
 
 interface IInternalPaymentDetailProps {
@@ -36,6 +36,8 @@ const InternalPaymentDetail = (props: any) => {
     examTimesUsed: 0,
     discountNightNeedClaim: 0,
     freeNightNeedClaim: 0,
+    freeNightWaitClaim: 0,
+    discountNightWaitClaim: 0
   });
   useEffect(() => {
     if (data) {
@@ -53,6 +55,7 @@ const InternalPaymentDetail = (props: any) => {
         employeeEmail: "",
       });
       if (data.requestInfo) {
+        let freeNightWaitClaim = 0, discountNightWaitClaim = 0;
         const _request: IPaymentRequest[] = (
           data.requestInfo.benefitRefundItem || []
         ).map((it) => {
@@ -71,6 +74,12 @@ const InternalPaymentDetail = (props: any) => {
             FeeBenefit: _se.benefitDiscountPercent,
             FeeReturn: _se.refundAmount,
           }));
+          if( it.requestHistory?.processStatusId == Constants.STATUS_WAITING && it.discountNightsToClaim) {
+            discountNightWaitClaim += it.discountNightsToClaim;
+          }
+          if( it.requestHistory?.processStatusId == Constants.STATUS_WAITING && it.freeNightsToClaim) {
+            freeNightWaitClaim += it.freeNightsToClaim;
+          }
           return {
             DateCome: moment(it.startDate, "YYYYMMDD").format("DD/MM/YYYY"),
             DateLeave: moment(it.endDate, "YYYYMMDD").format("DD/MM/YYYY"),
@@ -83,6 +92,9 @@ const InternalPaymentDetail = (props: any) => {
             requestHistory: {
               processStatusId: data.processStatusId == 5 ? 100 : data.processStatusId,
               approverId: data.approverId,
+              createdDate: data.createDate,
+              approvedDate: data.approvedDate,
+              approverComment: data.approverComment
             },
             documentFileUrl: it.documentFileUrl,
           };
@@ -108,10 +120,14 @@ const InternalPaymentDetail = (props: any) => {
           examTimesUsed: 0,
           discountNightNeedClaim: discountNightNeedClaim,
           freeNightNeedClaim: freeNightNeedClaim,
+          freeNightWaitClaim: freeNightWaitClaim,
+          discountNightWaitClaim: discountNightWaitClaim
         });
       }
     }
   }, [data]);
+  const requestTypeIdsAllowedToReApproval = getRequestTypeIdsAllowedToReApproval();
+  const isShowApproval = (props.action != "consent" && data.processStatusId === Constants.STATUS_WAITING) || (props.action != "consent" && data.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && requestTypeIdsAllowedToReApproval.includes(Constants.WELFARE_REFUND))
   return (
     <div
       className="registration-insurance-section input-style"
@@ -147,7 +163,7 @@ const InternalPaymentDetail = (props: any) => {
           />
         );
       })}
-      {props.action != "consent" && data.processStatusId === 5 ? (
+      {isShowApproval ? (
         <DetailButtonComponent
           dataToSap={[
             {
@@ -161,7 +177,7 @@ const InternalPaymentDetail = (props: any) => {
             },
           ]}
           isShowRevocationOfApproval={false}
-          isShowApproval={data.processStatusId === Constants.STATUS_WAITING}
+          isShowApproval={isShowApproval}
           isShowConsent={
             false
           }
