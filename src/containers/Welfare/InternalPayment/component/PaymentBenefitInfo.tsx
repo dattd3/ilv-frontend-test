@@ -62,14 +62,15 @@ function PaymentBenefitInfo({
           </div>
           <div className="col-4">
             {t("FreeNightClaim")}
-            <div className="detail1">{quota?.freeNightNeedClaim}</div>
+            <div className="detail1">{quota?.freeNightNeedClaim + quota?.freeNightWaitClaim}</div>
           </div>
           <div className="col-4">
             {t("FreeNightRemain")}
             <div className="detail1">
               {quota.freeNightTotal -
                 quota.freeNightClaimed -
-                quota.freeNightNeedClaim}
+                quota.freeNightNeedClaim -
+                quota.freeNightWaitClaim}
             </div>
           </div>
         </div>
@@ -83,14 +84,15 @@ function PaymentBenefitInfo({
           </div>
           <div className="col-4">
             {t("DiscountNightClaim")}
-            <div className="detail1">{quota.discountNightNeedClaim}</div>
+            <div className="detail1">{quota.discountNightNeedClaim + quota.discountNightWaitClaim}</div>
           </div>
           <div className="col-4">
             {t("DiscountNightRemain")}
             <div className="detail1">
               {quota?.discountNightTotal -
                 quota.discountNightClaimed -
-                quota.discountNightNeedClaim}
+                quota.discountNightNeedClaim -
+                quota.discountNightWaitClaim}
             </div>
           </div>
           
