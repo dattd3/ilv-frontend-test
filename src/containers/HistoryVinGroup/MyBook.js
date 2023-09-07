@@ -73,7 +73,7 @@ const Page = forwardRef((props, ref) => {
     // )
 
     return (
-        <div className={`page page-${props?.page}`} ref={ref} data-density="soft">
+        <div className={`page page-${props?.page}`} ref={ref}>
             <div className="page-content">
                 {/* <div className="page-image" style={{ backgroundImage: `url(${Page1})` }}></div> */}
                 {/* <div className="page-image" style={{ backgroundImage: `url(${imageMapping[props?.page]})` }}></div> */}
@@ -220,7 +220,7 @@ export default function MyBook(props) {
         setCurrentPage(p)
         pageScrollRef?.current?.[p]?.scrollIntoView({
             behavior: 'smooth',
-            block: 'center'
+            block: 'nearest'
         }, 800)
     }
 
@@ -229,7 +229,8 @@ export default function MyBook(props) {
     }
 
     const onWheel = e => {
-        e.stopPropagation()
+        e?.preventDefault()
+        e?.stopPropagation()
         const delta = Math.sign(e?.deltaY);
         if (delta === 1) { // Cuộn chuột xuống đọc tiếp
             book?.current?.pageFlip()?.flipNext('bottom')
@@ -275,7 +276,6 @@ export default function MyBook(props) {
                                 {
                                     sidebarPages.map((item, index) => {
                                         return (
-                                            // aaaaaaaaaaaaaaaaaaa
                                             <div 
                                                 className="wrap-page-item" 
                                                 key={`Sidebar-${index}`}
