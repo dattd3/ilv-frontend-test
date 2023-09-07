@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useRef, forwardRef, Fragment } from "react"
+import React, { useState, useEffect, useRef, forwardRef } from "react"
 import HTMLFlipBook from "@cuongnv56/react-pageflip"
 import { saveAs } from 'file-saver'
 import { chunk } from 'lodash'
+import { TransformWrapper, TransformComponent, ReactZoomPanPinchRef } from "react-zoom-pan-pinch"
 import Page1 from 'assets/img/vingroup_history/Page1.png'
 import Page2 from 'assets/img/vingroup_history/Page2.png'
 import Page3 from 'assets/img/vingroup_history/Page3.png'
@@ -68,20 +69,61 @@ const imageMapping = {
 }
 
 const Page = forwardRef((props, ref) => {
+    const transformComponentRef = useRef()
     // return (
     //     <div className={`page page-${props?.number}`} ref={ref}>{props.children}</div>
     // )
 
+    const zoomToImage = () => {
+        if (transformComponentRef.current) {
+          const { zoomToElement } = transformComponentRef.current;
+          zoomToElement("imgExample");
+        }
+    };
+
     return (
-        <div className={`page page-${props?.page}`} ref={ref}>
-            <div className="page-content">
-                {/* <div className="page-image" style={{ backgroundImage: `url(${Page1})` }}></div> */}
-                {/* <div className="page-image" style={{ backgroundImage: `url(${imageMapping[props?.page]})` }}></div> */}
-                <div className="page-image"><img src={imageMapping[props?.page]} /></div>
-            </div>
-        </div>
+        <TransformWrapper
+        initialScale={1}
+        // initialPositionX={200}
+        // initialPositionY={100}
+        ref={transformComponentRef}
+      >
+        {(utils) => (
+          <React.Fragment>
+            <Controls {...utils} />
+            <TransformComponent>
+                <div className="page-image">
+                    <img src={imageMapping[props?.page]} />
+                </div>
+              <div onClick={zoomToImage}>Example text</div>
+            </TransformComponent>
+          </React.Fragment>
+        )}
+      </TransformWrapper>
+
+        // <TransformWrapper>
+        //     <TransformComponent>
+        //         <div className={`page page-${props?.page}`} ref={ref}>
+        //             <div className="page-content">
+        //                 {/* <div className="page-image" style={{ backgroundImage: `url(${Page1})` }}></div> */}
+        //                 {/* <div className="page-image" style={{ backgroundImage: `url(${imageMapping[props?.page]})` }}></div> */}
+        //                 <div className="page-image">
+        //                     <img src={imageMapping[props?.page]} />
+        //                 </div>
+        //             </div>
+        //         </div>
+        //     </TransformComponent>
+        // </TransformWrapper>
     )
 });
+
+const Controls = ({ zoomIn, zoomOut, resetTransform }) => (
+    <>
+      <button onClick={() => zoomIn()}>+</button>
+      <button onClick={() => zoomOut()}>-</button>
+      <button onClick={() => resetTransform()}>x</button>
+    </>
+);
 
 export default function MyBook(props) {
     const book = useRef()
@@ -213,6 +255,11 @@ export default function MyBook(props) {
 
     const handleZoom = () => {
         setIsZoomIn(!isZoomIn)
+        if (isZoomIn) {
+
+        } else {
+
+        }
     }
 
     const handleFlip = e => {

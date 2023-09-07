@@ -5101,7 +5101,6 @@ span.badge-notification[data-badge]::after {
       width: 0;
       flex: 0 0 0;
       font-size: 13px;
-      // box-shadow: 0 0 4px rgba(0,0,0,.3);
       box-shadow: 3px 0px 10px -5px rgba(9,30,66,0.25);
       &.visible {
         visibility: visible;
@@ -5184,19 +5183,9 @@ span.badge-notification[data-badge]::after {
                 }
                 &:first-child {
                   flex: 0 0 50%;
-                  // box-shadow: -20px 0 10px -20px rgba(0,0,0,0.45) inset;
-                  // box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.15);
-                  // margin-right: 4px;
-                  // background: -webkit-gradient(linear, left top, right top, color-stop(.90, rgba(0,0,0,0)), color-stop(1, rgba(0, 0, 0, .2)));
-                  // background-image: linear-gradient(to right, rgba(0,0,0,0) 90%, rgba(0,0,0,.2) 100%);
                 }
                 &:last-child {
-                  // margin-left: 1px;
-                  // box-shadow: 20px 0 10px -20px rgba(0,0,0,0.45) inset;
-                  // box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.15);
-                  // margin-left: 4px;
-                  // background: -webkit-gradient(linear, right top, left top, color-stop(.90, rgba(0,0,0,0)), color-stop(1, rgba(0,0,0,.15)));
-                  // background-image: linear-gradient(to left, rgba(0,0,0,0) 90%, rgba(0,0,0,.15) 100%);
+
                 }
               }
             }
@@ -5249,10 +5238,6 @@ span.badge-notification[data-badge]::after {
         flex: 1;
         height: calc(100% - 45px - 45px);
         touch-action: manipulation;
-        // background: red;
-        // .wrap-book {
-        //   margin: 15px 0 0 0;
-        // }
       }
       .bottom-block {
         height: 45px;
@@ -5309,13 +5294,8 @@ span.badge-notification[data-badge]::after {
       }
     }
     .page {
-      // background: yellow;
-      // width: auto !important;
-      // height: max-content !important;
-      // background: blue;
       &.--left {
         text-align: right;
-        // left: 0!important;
         img {
           box-shadow: -20px 0 10px -20px rgba(0,0,0,0.45) inset;
         }
@@ -5325,9 +5305,6 @@ span.badge-notification[data-badge]::after {
       }
       img {
         max-height: calc(100vh - 120px);
-        // max-height: 100%;
-        // object-fit: cover;
-        // height: fit-content;
       }
     }
   }
