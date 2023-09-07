@@ -1960,5 +1960,6 @@
   "outDateRange": "Ngày sử dụng {{name}} không nằm trong khoảng check-in",
   "DownloadFile": "Tải về tệp tin",
   "WelfareRefund": "Hoàn trả dịch vụ phúc lợi",
-  "WaitProcessingContentMessage": "Dữ liệu đang được xử lý. Vui lòng chờ trong giây lát"
+  "WaitProcessingContentMessage": "Dữ liệu đang được xử lý. Vui lòng chờ trong giây lát",
+  "HolidayGifts": "Quà ngày lễ (cộng vào lương)"
 }
