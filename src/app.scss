@@ -5147,6 +5147,7 @@ span.badge-notification[data-badge]::after {
           height: 100%;
           overflow-y: auto;
           padding: 15px 10px 15px 15px;
+          overscroll-behavior: contain;
           &::-webkit-scrollbar {
             width: 6px;
           }
