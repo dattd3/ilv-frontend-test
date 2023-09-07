@@ -43,6 +43,8 @@ export interface IPaymentService {
 export interface IQuota extends IResponseQuota{
     freeNightNeedClaim:       number;
     discountNightNeedClaim:       number;
+    freeNightWaitClaim: number;
+    discountNightWaitClaim: number;
 }
 
 export interface IResponseServices {
