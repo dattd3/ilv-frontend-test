@@ -15,6 +15,7 @@ import IconDownload from "assets/img/ic_download_red.svg";
 import { IDropdownValue } from "models/CommonModel";
 import moment from "moment";
 import { formatNumberSpecialCase } from "commons/Utils";
+import Constants from "commons/Constants";
 interface IServiceRequestProps {
   t: any;
   headerTitle: string;
@@ -285,6 +286,25 @@ function ServiceRequest({
             </div>
             {!isCreateMode && (
               <div className="row mv-10">
+                <div className="col-4">
+                  {t("TimeToSendRequest")}{" "}
+                  <div className="detail1">
+                    {request.requestHistory?.createdDate ? moment(request.requestHistory?.createdDate).format('DD/MM/YYYY | HH:mm:ss') : ''}
+                  </div>
+                </div>
+                <div className="col-4">
+                  {t("ApprovalDate")}{" "}
+                  <div className="detail1">
+                  {request.requestHistory?.approvedDate ? moment(request.requestHistory?.approvedDate).format('DD/MM/YYYY | HH:mm:ss') : ''}
+                  </div>
+                </div>
+                <div className="col-4">
+                  {t("reason_reject")}
+                  <div className="detail1">
+                    { request.requestHistory?.processStatusId == Constants.STATUS_NOT_APPROVED && request.requestHistory?.approverComment  ? request.requestHistory?.approverComment : ''}
+                  </div>
+                </div>
+            
                 <div className="col-12 status mv-10">
                   {showStatus(
                     request.requestHistory?.processStatusId,

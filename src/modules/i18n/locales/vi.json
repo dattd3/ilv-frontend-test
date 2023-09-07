@@ -1958,7 +1958,7 @@
   "ServicePayment": "Dịch vụ {{id}}",
   "CheckPayment": "Kiểm tra",
   "notCheckPayment": "Dịch vụ {{id}} chưa kiểm tra",
-  "outDateRange": "Ngảy sử dụng {{name}} không nằm trong khoảng check-in",
+  "outDateRange": "Ngày sử dụng {{name}} không nằm trong khoảng check-in",
   "DownloadFile": "Tải về tệp tin",
   "WelfareRefund": "Hoàn trả dịch vụ phúc lợi"
 }
