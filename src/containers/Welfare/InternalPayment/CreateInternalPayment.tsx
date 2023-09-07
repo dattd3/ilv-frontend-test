@@ -56,6 +56,8 @@ function CreateInternalPayment(props: any) {
     examTimesUsed: 0,
     discountNightNeedClaim: 0,
     freeNightNeedClaim: 0,
+    freeNightWaitClaim: 0,
+    discountNightWaitClaim: 0
   });
 
   useEffect(() => {
@@ -127,12 +129,13 @@ function CreateInternalPayment(props: any) {
     listService: IDropdownValue[]
   ) => {
     const ObjectInfos = getPaymentObjects();
-    setQuota({ ...quota, ..._benefitInfo.quota });
+    let _quota = { ...quota, ..._benefitInfo.quota };
     const _requestInfo = _benefitInfo.info;
     if (!_requestInfo) {
       setRequests([]);
       return;
     }
+    let freeNightWaitClaim = 0, discountNightWaitClaim = 0;
     const _request: IPaymentRequest[] = (
       _requestInfo.benefitRefundItem || []
     ).map((it) => {
@@ -153,6 +156,13 @@ function CreateInternalPayment(props: any) {
           FeeReturn: _se.refundAmount
         })
       );
+      if( it.requestHistory?.processStatusId == Constants.STATUS_WAITING && it.discountNightsToClaim) {
+        discountNightWaitClaim += it.discountNightsToClaim;
+      }
+      if( it.requestHistory?.processStatusId == Constants.STATUS_WAITING && it.freeNightsToClaim) {
+        freeNightWaitClaim += it.freeNightsToClaim;
+      }
+
       return {
         DateCome: moment(it.startDate, "YYYYMMDD").format("DD/MM/YYYY"),
         DateLeave: moment(it.endDate, "YYYYMMDD").format("DD/MM/YYYY"),
@@ -166,6 +176,9 @@ function CreateInternalPayment(props: any) {
         documentFileUrl: it.documentFileUrl
       };
     });
+    _quota.discountNightWaitClaim = discountNightWaitClaim;
+    _quota.freeNightWaitClaim = freeNightWaitClaim;
+    setQuota(_quota);
     setRequests(_request);
   };
 
