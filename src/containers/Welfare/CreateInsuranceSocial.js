@@ -265,7 +265,7 @@ const CreateInsuranceSocial = (props) => {
         setdisabledSubmitButton(true);
         axios({
             method: 'POST',
-            url: `${process.env.REACT_APP_HRDX_URL}api/BenefitClaim`,
+            url: `${process.env.REACT_APP_REQUEST_SERVICE_URL}BenefitClaim`,
             data: data,
             headers: { 'Content-Type': 'multipart/form-data', Authorization: `${localStorage.getItem('accessToken')}` }
         })
