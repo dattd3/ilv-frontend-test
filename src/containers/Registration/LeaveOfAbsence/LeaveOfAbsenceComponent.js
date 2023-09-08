@@ -759,18 +759,20 @@ class LeaveOfAbsenceComponent extends React.Component {
         })
         .then(response => {
             const result = response?.data?.result
-            
             if (result?.code === Constants.API_SUCCESS_CODE) {
                 this.showStatusModal(t("Successful"), t("RequestSent"), true)
                 this.setState({ needReload: true })
+            } else if (result?.code == Constants.API_ERROR_CODE_WORKING_DAY_LOCKED) {
+                this.setState({ needReload: true })
+                this.showStatusModal(t("Notification"), result?.message, false, true)
             } else {
                 this.setState({ needReload: false })
-                this.showStatusModal(t("Notification"), response?.data?.result?.message, false)
+                this.showStatusModal(t("Notification"), result?.message, false)
             }
         })
         .catch(error => {
             this.setState({ needReload: false })
-            this.showStatusModal(t("Notification"), error?.response?.data?.result?.message || t("Error"), false)
+            this.showStatusModal(t("Notification"), error?.response?.data?.result?.message || t("AnErrorOccurred"), false)
         })
         .finally(() => {
             this.setDisabledSubmitButton(false)
@@ -786,11 +788,11 @@ class LeaveOfAbsenceComponent extends React.Component {
             indexReq = requestInfo.findIndex(req => req.groupId === groupId)
         }
         const errorMsg = requestInfo[indexReq].errors[name]
-        return errorMsg ? <p className="text-danger" style={{ padding: '0 15px', marginTop: 0 }}>{errorMsg}</p> : null
+        return errorMsg ? <p className="text-danger">{errorMsg}</p> : null
     }
 
-    showStatusModal = (title, message, isSuccess = false) => {
-        this.setState({ isShowStatusModal: true, titleModal: title, messageModal: message, isSuccess: isSuccess });
+    showStatusModal = (title, message, isSuccess = false, isWarningCreateRequest = false) => {
+        this.setState({ isShowStatusModal: true, titleModal: title, messageModal: message, isSuccess: isSuccess, isWarningCreateRequest: isWarningCreateRequest });
     }
 
     hideStatusModal = () => {
@@ -966,6 +968,7 @@ class LeaveOfAbsenceComponent extends React.Component {
             appraiser,
             approver,
             validating,
+            isWarningCreateRequest,
             isLoading,
             isProcessing,
         } = this.state
@@ -977,7 +980,7 @@ class LeaveOfAbsenceComponent extends React.Component {
 
         return (
             <div className="leave-of-absence">
-                <ResultModal show={isShowStatusModal} title={titleModal} message={messageModal} isSuccess={isSuccess} onHide={this.hideStatusModal} />
+                <ResultModal show={isShowStatusModal} title={titleModal} message={messageModal} isSuccess={isSuccess} isWarningCreateRequest={isWarningCreateRequest} onHide={this.hideStatusModal} />
                 <NoteModal show={isShowNoteModal} onHide={this.hideNoteModal} />
                 <LoadingModal show={isLoading} />
                 <ProcessingModal isShow={isProcessing} />
@@ -1236,7 +1239,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                                             <div className="content input-container">
                                                                                 <label>
                                                                                     <DatePicker
-                                                                                        onBlur={() => this.onBlurDateTimePicker(reqDetail.groupId, reqDetail.groupItem)}
+                                                                                        onClickOutside={() => this.onBlurDateTimePicker(reqDetail.groupId, reqDetail.groupItem)}
                                                                                         selected={reqDetail.startTime ? moment(reqDetail.startTime, Constants.LEAVE_TIME_FORMAT).toDate() : null}
                                                                                         onChange={time => this.setStartTime(time, reqDetail.groupId, reqDetail.groupItem)}
                                                                                         autoComplete="off"
@@ -1260,7 +1263,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                                             <div className="content input-container">
                                                                                 <label>
                                                                                     <DatePicker
-                                                                                        onBlur={() => this.onBlurDateTimePicker(reqDetail?.groupId, reqDetail?.groupItem)}
+                                                                                        onClickOutside={() => this.onBlurDateTimePicker(reqDetail?.groupId, reqDetail?.groupItem)}
                                                                                         selected={reqDetail.endTime ? moment(reqDetail.endTime, Constants.LEAVE_TIME_FORMAT).toDate() : null}
                                                                                         onChange={time => this.setEndTime(time, reqDetail.groupId, reqDetail.groupItem)}
                                                                                         showTimeSelect
@@ -1292,7 +1295,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                                                     <DatePicker
                                                                                         name="startDate"
                                                                                         selectsStart
-                                                                                        onBlur={() => this.onBlurDateTimePicker(reqDetail?.groupId, reqDetail?.groupItem)}
+                                                                                        onClickOutside={() => this.onBlurDateTimePicker(reqDetail?.groupId, reqDetail?.groupItem)}
                                                                                         autoComplete="off"
                                                                                         selected={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
                                                                                         startDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
@@ -1316,7 +1319,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                                                     <DatePicker
                                                                                         name="endDate"
                                                                                         selectsEnd
-                                                                                        onBlur={() => this.onBlurDateTimePicker(reqDetail?.groupId, reqDetail?.groupItem)}
+                                                                                        onClickOutside={() => this.onBlurDateTimePicker(reqDetail?.groupId, reqDetail?.groupItem)}
                                                                                         autoComplete="off"
                                                                                         selected={reqDetail.endDate ? moment(reqDetail.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
                                                                                         startDate={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
@@ -1348,7 +1351,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                                                 <label>
                                                                                     <DatePicker
                                                                                         name="startDate"
-                                                                                        onBlur={() => this.onBlurDateTimePicker(reqDetail?.groupId, reqDetail?.groupItem)}
+                                                                                        onClickOutside={() => this.onBlurDateTimePicker(reqDetail?.groupId, reqDetail?.groupItem)}
                                                                                         selectsStart
                                                                                         autoComplete="off"
                                                                                         selected={reqDetail.startDate ? moment(reqDetail.startDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
@@ -1370,7 +1373,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                                             <div className="content input-container">
                                                                                 <label>
                                                                                     <DatePicker
-                                                                                        onBlur={() => this.onBlurDateTimePicker(reqDetail?.groupId, reqDetail?.groupItem)}
+                                                                                        onClickOutside={() => this.onBlurDateTimePicker(reqDetail?.groupId, reqDetail?.groupItem)}
                                                                                         selected={reqDetail.startTime ? moment(reqDetail.startTime, Constants.LEAVE_TIME_FORMAT).toDate() : null}
                                                                                         onChange={time => this.setStartTime(time, reqDetail.groupId, reqDetail.groupItem)}
                                                                                         autoComplete="off"
@@ -1399,7 +1402,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                                                 <label>
                                                                                     <DatePicker
                                                                                         name="endDate"
-                                                                                        onBlur={() => this.onBlurDateTimePicker(reqDetail?.groupId, reqDetail?.groupItem)}
+                                                                                        onClickOutside={() => this.onBlurDateTimePicker(reqDetail?.groupId, reqDetail?.groupItem)}
                                                                                         selectsEnd
                                                                                         autoComplete="off"
                                                                                         selected={reqDetail.endDate ? moment(reqDetail.endDate, Constants.LEAVE_DATE_FORMAT).toDate() : null}
@@ -1420,7 +1423,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                                             <div className="content input-container">
                                                                                 <label>
                                                                                     <DatePicker
-                                                                                        onBlur={() => this.onBlurDateTimePicker(reqDetail?.groupId, reqDetail?.groupItem)}
+                                                                                        onClickOutside={() => this.onBlurDateTimePicker(reqDetail?.groupId, reqDetail?.groupItem)}
                                                                                         selected={reqDetail.endTime ? moment(reqDetail.endTime, Constants.LEAVE_TIME_FORMAT).toDate() : null}
                                                                                         onChange={time => this.setEndTime(time, reqDetail.groupId, reqDetail.groupItem)}
                                                                                         showTimeSelect
@@ -1456,7 +1459,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                                                 {
                                                     reqDetail.errors.totalDaysOff ?
                                                         <>
-                                                            <div className="row">
+                                                            <div className="row total-days-off">
                                                                 <div className="col">
                                                                     {this.error('totalDaysOff', reqDetail.groupId, reqDetail.groupItem)}
                                                                 </div>
