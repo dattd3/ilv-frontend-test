@@ -164,6 +164,14 @@ function ServiceRequest({
     );
   };
 
+  const getApproveFailReason = () => {
+    try {
+      return request.requestHistory?.comment ? request.requestHistory?.comment : JSON.parse(request.requestHistory?.responseSyncFromSap || "[]")?.[0]?.MESSAGE
+    } catch (error) {
+      return ""
+    }
+  }
+
   return (
     <div className="service-request position-relative mb-3">
       <div className="card">
@@ -396,9 +404,15 @@ function ServiceRequest({
                     request.requestHistory?.processStatusId,
                     request.requestHistory?.approverId
                   )}
-                  <span style={{ width: "20px", display: "inline-block" }}>
-                    {""}
-                  </span>
+                  <span style={{ width: "20px", display: "inline-block" }} />
+                  {
+                    request.requestHistory?.processStatusId === 6 && getApproveFailReason() && <>
+                      <span className="request-status warning" style={{ width: "auto" }}>
+                        {getApproveFailReason()}
+                      </span>
+                      <span style={{ width: "20px", display: "inline-block" }} />
+                    </>
+                  }
                   {request.documentFileUrl ? (
                     <span
                       className="request-status fail"
