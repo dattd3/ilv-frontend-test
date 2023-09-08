@@ -8,6 +8,7 @@ import { getRequestTypeIdsAllowedToReApproval } from 'commons/Utils'
 import Spinner from 'react-bootstrap/Spinner'
 import { withTranslation  } from "react-i18next"
 
+// Thẩm định, Phê duyệt hàng loạt
 class ConfirmRequestModal extends React.Component {
     constructor(props) {
         super();
@@ -95,26 +96,26 @@ class ConfirmRequestModal extends React.Component {
             },
             headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` }
         })
-            .then(res => {
-                if (res && res.data) {
-                    const result = res.data.result
-                    const code = result.code
-                    if (code == Constants.API_SUCCESS_CODE) {
-                        this.showStatusModal(titleModalRes, result.message, res.data.data, true)
-                        // this.props.updateTask(id,2)
-                        // setTimeout(() => { this.hideStatusModal() }, 1000);
-                    } else if (code == Constants.API_ERROR_NOT_FOUND_CODE) {
-                        return window.location.href = map.NotFound
-                    } else {
-                        this.showStatusModal(this.props.t("Notification"), result.message,null, false)
-                        // this.props.updateTask(id,0)
-                    }
+        .then(res => {
+            if (res && res?.data) {
+                const result = res.data?.result
+                const code = result?.code
+                if (code == Constants.API_SUCCESS_CODE) {
+                    this.showStatusModal(titleModalRes, result?.message, res.data?.data, true)
+                    // this.props.updateTask(id,2)
+                    // setTimeout(() => { this.hideStatusModal() }, 1000);
+                } else if (code == Constants.API_ERROR_NOT_FOUND_CODE) {
+                    return window.location.href = map.NotFound
+                } else {
+                    this.showStatusModal(this.props.t("Notification"), result?.message, null, false)
+                    // this.props.updateTask(id,0)
                 }
-            })
-            .catch(error => {
+            }
+        })
+        .catch(error => {
                 const errorCode = error?.response?.status
                 this.setState({statusCodeAPIException: errorCode})
-                this.showStatusModal(this.props.t("Notification"), errorCode === 504 ? "Yêu cầu đang được xử lý." : "Có lỗi xảy ra! Xin vui lòng liên hệ IT để hỗ trợ", [], errorCode === 504 ? true : false)
+                this.showStatusModal(this.props.t("Notification"), errorCode === 504 ? "Yêu cầu đang được xử lý." : (error?.response?.data?.result?.message || this.props.t("AnErrorOccurred")), [], errorCode === 504 ? true : false)
                 // this.props.updateTask(id,0)
         })
         .finally(res => {
@@ -248,7 +249,7 @@ class ConfirmRequestModal extends React.Component {
     }
 
     showStatusModal = (title, message, data, isSuccess = false) => {
-        this.setState({ isShowStatusModal: true, resultTitle: title, resultMessage: message,resultDetail: data, isSuccess: isSuccess })
+        this.setState({ isShowStatusModal: true, resultTitle: title, resultMessage: message, resultDetail: data, isSuccess: isSuccess })
         this.setState({ disabledSubmitButton: false });
     }
 

@@ -75,6 +75,7 @@ export const IncomeTablesConfig = t => {
                                     { label: t("LivingConditionSupport"), field: 'region_allowance' },
                                     { label: t("RelocationSupport"), field: 'region_displace_allowance' },
                                     { label: t("IntermittenShiftSupport"), field: 'shifts_allowance' },
+                                    { label: t("HolidayGifts"), field: 'holiday_gifts' },
                                     { label: t("SpecializedJobSupport"), field: 'specific_work_allowance' },
                                     { label: t("IslandSupport"), field: 'work_on_island_allowance' },
                                     { label: t("OtBonus"), field: 'overtime_payment' },
@@ -87,7 +88,7 @@ export const IncomeTablesConfig = t => {
                                     { label: t("BenefitForVfPurchase"), field: 'car_rent_allowance_welfare' },
                                     { label: t("BankInterestSupportForVfPurchase"), field: 'interest_rate_allowance' },
                                     { label: t("BenefitNet"), field: 'welfare_net_allowance' },
-                                    { label: t("AnnualWelfare"), field: 'annual_welfare_allowance' },
+                                    // { label: t("AnnualWelfare"), field: 'annual_welfare_allowance' },
                                     { label: t("OtherPayment"), field: 'other_payment' },
                                     { label: t("VFCarElectricStakeGross"), field: 'vf_car_electric_stake' },
                                     { label: t("VinmecTaxRefundsAfterTaxFinalization"), field: 'tax_refunds_after' }

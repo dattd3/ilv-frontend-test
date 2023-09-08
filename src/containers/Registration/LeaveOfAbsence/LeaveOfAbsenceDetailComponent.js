@@ -296,9 +296,9 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
 
   showStatus = (status, appraiser) => {
     if (this.getTypeDetail() == 'request' && this.props.action == undefined) {
-      return Constants.mappingStatusRequest[status].label;
+      return Constants.mappingStatusRequest[status]?.label;
     } 
-    return (this.props.action == "consent" && status == 5 && appraiser) ? Constants.mappingStatusRequest[20].label : Constants.mappingStatusRequest[status].label
+    return (this.props.action == "consent" && status == 5 && appraiser) ? Constants.mappingStatusRequest[20].label : Constants.mappingStatusRequest[status]?.label
   }
 
   formatDayUnitByValue = (val) => {
@@ -394,7 +394,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         { leaveOfAbsence.requestDocuments.length > 0 && <Attachment leaveOfAbsence={leaveOfAbsence} t={t} /> }
 
         <div className="block-status">
-          <span className={`status ${Constants.mappingStatusRequest[requestInfo.processStatusId].className}`}>{t(this.showStatus(requestInfo.processStatusId, appraiser))}</span>
+          <span className={`status ${Constants.mappingStatusRequest[requestInfo.processStatusId]?.className}`}>{t(this.showStatus(requestInfo?.processStatusId, appraiser))}</span>
           { requestInfo?.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && messageSAP && 
             <div className={`d-flex status fail`}>
               <i className="fas fa-times pr-2 text-danger align-self-center"></i>

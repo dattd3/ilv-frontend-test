@@ -585,20 +585,24 @@ class BusinessTripComponent extends React.Component {
             headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` }
         })
         .then(response => {
-            if (response?.data?.result?.code != Constants.API_ERROR_CODE) {
-                this.showStatusModal(this.props.t("Successful"), this.props.t("RequestSent"), true)
-                this.setDisabledSubmitButton(false)
+            const result = response?.data?.result
+            if (result?.code === Constants.API_SUCCESS_CODE) {
+                this.showStatusModal(t("Successful"), t("RequestSent"), true)
+                this.setState({ needReload: true })
+            } else if (result?.code == Constants.API_ERROR_CODE_WORKING_DAY_LOCKED) {
+                this.setState({ needReload: true })
+                this.showStatusModal(t("Notification"), result?.message, false, true)
             } else {
-                this.showStatusModal(this.props.t("Notification"), response?.data?.result?.message, false)
-                this.setDisabledSubmitButton(false)
+                this.setState({ needReload: false })
+                this.showStatusModal(t("Notification"), result?.message, false)
             }
         })
         .catch(error => {
-            this.showStatusModal(this.props.t("Notification"), error?.response?.data?.result?.message || t("Error"), false)
-            this.setDisabledSubmitButton(false)
+            this.setState({ needReload: false })
+            this.showStatusModal(t("Notification"), error?.response?.data?.result?.message || t("AnErrorOccurred"), false)
         })
         .finally(() => {
-            this.setState({ needReload: true })
+            this.setDisabledSubmitButton(false)
         })
     }
 
@@ -611,15 +615,15 @@ class BusinessTripComponent extends React.Component {
             indexReq = requestInfo.findIndex(req => req.groupId === groupId)
         }
         const errorMsg = requestInfo[indexReq]?.errors[name]
-        return errorMsg ? <p className="text-danger" style={{ padding: '0 15px', marginTop: 0 }}>{errorMsg}</p> : null
+        return errorMsg ? <p className="text-danger">{errorMsg}</p> : null
     }
 
     isNullCustomize = value => {
         return (value == null || value == "null" || value == "" || value == undefined || value == 0 || value == "#") ? true : false
     }
 
-    showStatusModal = (title, message, isSuccess = false) => {
-        this.setState({ isShowStatusModal: true, titleModal: title, messageModal: message, isSuccess: isSuccess });
+    showStatusModal = (title, message, isSuccess = false, isWarningCreateRequest = false) => {
+        this.setState({ isShowStatusModal: true, titleModal: title, messageModal: message, isSuccess: isSuccess, isWarningCreateRequest });
     };
 
     hideStatusModal = () => {
@@ -752,7 +756,7 @@ class BusinessTripComponent extends React.Component {
 
     render() {
         const { t, businessTrip, recentlyManagers } = this.props;
-        const { requestInfo, errors, approver, appraiser, isEdit, validating, isLoading, isProcessing } = this.state
+        const { requestInfo, errors, approver, appraiser, isEdit, validating, isShowStatusModal, titleModal, messageModal, isSuccess, isWarningCreateRequest, isLoading, isProcessing } = this.state
         const sortRequestListByGroup = requestInfo.sort((reqPrev, reqNext) => reqPrev.groupId - reqNext.groupId)
         const requestInfoArr = _.valuesIn(_.groupBy(sortRequestListByGroup, (req) => req.groupId))
         const vehicles = [
@@ -792,9 +796,16 @@ class BusinessTripComponent extends React.Component {
         
         return (
             <div className="business-trip">
-                <ResultModal show={this.state.isShowStatusModal} title={this.state.titleModal} message={this.state.messageModal} isSuccess={this.state.isSuccess} onHide={this.hideStatusModal} />
+                <ResultModal 
+                    show={isShowStatusModal} 
+                    title={titleModal} 
+                    message={messageModal} 
+                    isSuccess={isSuccess} 
+                    isWarningCreateRequest={isWarningCreateRequest} 
+                    onHide={this.hideStatusModal} />
                 <LoadingModal show={isLoading} />
                 <ProcessingModal isShow={isProcessing} />
+
                 { isEdit && 
                     <div className="box shadow registered-information">
                         <div className='text-uppercase font-weight-bold box-title'>Thông tin đã đăng ký công tác/đào tạo</div>
@@ -899,7 +910,7 @@ class BusinessTripComponent extends React.Component {
                                                                         <DatePicker
                                                                             name="startDate"
                                                                             selectsStart
-                                                                            onBlur={() => this.onBlurDateTimePicker(reqDetail.groupId, reqDetail.groupItem)}
+                                                                            onClickOutside={() => this.onBlurDateTimePicker(reqDetail.groupId, reqDetail.groupItem)}
                                                                             autoComplete="off"
                                                                             selected={reqDetail.startDate ? moment(reqDetail.startDate, DATE_FORMAT).toDate() : null}
                                                                             startDate={reqDetail.startDate ? moment(reqDetail.startDate, DATE_FORMAT).toDate() : null}
@@ -919,7 +930,7 @@ class BusinessTripComponent extends React.Component {
                                                                 <div className="content input-container">
                                                                     <label>
                                                                         <DatePicker
-                                                                            onBlur={() => this.onBlurDateTimePicker(reqDetail.groupId, reqDetail.groupItem)}
+                                                                            onClickOutside={() => this.onBlurDateTimePicker(reqDetail.groupId, reqDetail.groupItem)}
                                                                             selected={reqDetail.startTime ? moment(reqDetail.startTime, TIME_FORMAT).toDate() : null}
                                                                             onChange={time => this.setStartTime(time, reqDetail.groupId, reqDetail.groupItem)}
                                                                             autoComplete="off"
@@ -948,7 +959,7 @@ class BusinessTripComponent extends React.Component {
                                                                         <DatePicker
                                                                             name="endDate"
                                                                             selectsEnd
-                                                                            onBlur={() => this.onBlurDateTimePicker(reqDetail.groupId, reqDetail.groupItem)}
+                                                                            onClickOutside={() => this.onBlurDateTimePicker(reqDetail.groupId, reqDetail.groupItem)}
                                                                             autoComplete="off"
                                                                             selected={reqDetail.endDate ? moment(reqDetail.endDate, DATE_FORMAT).toDate() : null}
                                                                             startDate={reqDetail.startDate ? moment(reqDetail.startDate, DATE_FORMAT).toDate() : null}
@@ -968,7 +979,7 @@ class BusinessTripComponent extends React.Component {
                                                                 <div className="content input-container">
                                                                     <label>
                                                                         <DatePicker
-                                                                            onBlur={() => this.onBlurDateTimePicker(reqDetail.groupId, reqDetail.groupItem)}
+                                                                            onClickOutside={() => this.onBlurDateTimePicker(reqDetail.groupId, reqDetail.groupItem)}
                                                                             selected={reqDetail.endTime ? moment(reqDetail.endTime, TIME_FORMAT).toDate() : null}
                                                                             onChange={time => this.setEndTime(time, reqDetail.groupId, reqDetail.groupItem)}
                                                                             autoComplete="off"
@@ -997,7 +1008,7 @@ class BusinessTripComponent extends React.Component {
                                                 {
                                                     reqDetail.errors.startTimeAndEndTime ?
                                                         <>
-                                                            <div className="row">
+                                                            <div className="row time-message">
                                                                 <div className="col">
                                                                     {this.error('startTimeAndEndTime', reqDetail.groupId, reqDetail.groupItem)}
                                                                 </div>
