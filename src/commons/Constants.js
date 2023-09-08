@@ -59,7 +59,7 @@ const Constants = {
   OT_REQUEST: 13, // OT
   PROPOSAL_TRANSFER: 14, // Dieu chuyen
   PROPOSAL_APPOINTMENT: 15, // Bo nhiem, mien nhiem
-  WELFARE_REFUND: 16,
+  WELFARE_REFUND: 16, // Hoàn trả dịch vụ phúc lợi
   INSURANCE_SOCIAL: 20, //bảo hiểm xã hội
 
   //Status request
@@ -248,7 +248,7 @@ const Constants = {
     5: ["V077", "V070"],//PHUCLOI
     6: ["V077", "V070"], //DIEUCHUYEN
     7: ["V077", "V070"], //BONHIEM,
-    8: [] //THANHTOAN_NOIBO
+    8: ["V070", "V077"] //THANHTOAN_NOIBO
   } :
   { //Development
     1: ["V040", "V005", "V079", "V041", "V030", "V035", "V036", "V077", "V070", "V099"],//TUYENDUNG + V061

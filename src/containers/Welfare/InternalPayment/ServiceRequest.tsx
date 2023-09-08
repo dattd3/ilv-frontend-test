@@ -4,13 +4,10 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import ServiceItem from "./ServiceItem";
 import { Image } from "react-bootstrap";
-import {
-  IPaymentRequest,
-  IPaymentService,
-  IQuota,
-} from "models/welfare/PaymentModel";
+import { IPaymentRequest, IPaymentService } from "models/welfare/PaymentModel";
 import IconDatePicker from "assets/img/icon/Icon_DatePicker.svg";
 import IconAdd from "assets/img/ic-add-green.svg";
+import IconCancel from "assets/img/icon/ic_x_red.svg";
 import IconDownload from "assets/img/ic_download_red.svg";
 import { IDropdownValue } from "models/CommonModel";
 import moment from "moment";
@@ -36,7 +33,7 @@ function ServiceRequest({
   updateRequest,
   typeServices,
   setLoading,
-  isOpen = false
+  isOpen = false,
 }: IServiceRequestProps) {
   const [open, setOpen] = useState(isOpen);
   const handleChangeValue = (value: any, key: string) => {
@@ -46,9 +43,21 @@ function ServiceRequest({
     };
     updateRequest(newRequest);
   };
-  const handleChangeDatetimeValue = (value: any, key: string) => {
-    value = moment(value).format("DD/MM/YYYY");
-    handleChangeValue(value, key);
+  const handleChangeTripInfoValue = (
+    key: string,
+    value: any,
+    tripIndex: number
+  ) => {
+    const newTripInfo = request.tripInfo ? [...request.tripInfo] : [];
+    if (newTripInfo.length && newTripInfo[tripIndex]) {
+      if (["DateCome", "DateLeave"].includes(key))
+        value = moment(value).format("DD/MM/YYYY");
+      newTripInfo[tripIndex] = {
+        ...newTripInfo[tripIndex],
+        [key]: value,
+      };
+    }
+    handleChangeValue(newTripInfo, "tripInfo");
   };
 
   const addMoreSevice = () => {
@@ -56,8 +65,31 @@ function ServiceRequest({
     lastRequest.services.push({
       name: t("ServicePayment", { id: request.services.length + 1 }),
       FeeBenefit: 0,
+      isCalculated: false,
     });
     updateRequest(lastRequest);
+  };
+
+  const addMoreTrip = () => {
+    const newTripInfo = request.tripInfo
+      ? [
+          ...request.tripInfo,
+          {
+            TripCode: "",
+            DateCome: undefined,
+            DateLeave: undefined,
+          },
+        ]
+      : [];
+
+    handleChangeValue(newTripInfo, "tripInfo");
+  };
+
+  const removeTrip = (index: number) => {
+    handleChangeValue(
+      request.tripInfo?.filter((_, _index) => _index !== index),
+      "tripInfo"
+    );
   };
 
   const updateService = (index: number, service: IPaymentService) => {
@@ -131,6 +163,7 @@ function ServiceRequest({
       </span>
     );
   };
+
   return (
     <div className="service-request position-relative mb-3">
       <div className="card">
@@ -175,100 +208,144 @@ function ServiceRequest({
         <div id="example-collapse-text" className="request-content">
           <div className="trip-contain">
             {/* thông tin hành trình */}
-            <div className="row">
-              <div className="col-3">
-                {t("TripCode")}{" "}
-                {isCreateMode && <span className="required">(*)</span>}
-                <input
-                  type="text"
-                  placeholder={t("import")}
-                  value={request.TripCode || ""}
-                  onChange={(e) =>
-                    handleChangeValue(e.target.value, "TripCode")
-                  }
-                  className="form-control input mv-10 w-100"
-                  name="inputName"
-                  autoComplete="off"
-                  disabled={!isCreateMode}
-                />
-              </div>
-              <div className="col-3">
-                {t("DateCome")}{" "}
-                {isCreateMode && <span className="required">(*)</span>}
-                <div className="content input-container">
-                  <label>
-                    <DatePicker
-                      name="endDate"
-                      selectsEnd
-                      autoComplete="off"
-                      selected={
-                        request.DateCome
-                          ? moment(request.DateCome, "DD/MM/YYYY").toDate()
-                          : undefined
-                      }
-                      maxDate={
-                        request.DateLeave
-                          ? moment(request.DateLeave, "DD/MM/YYYY").toDate()
-                          : undefined
-                      }
-                      onChange={(date) =>
-                        handleChangeDatetimeValue(date, "DateCome")
-                      }
-                      dateFormat="dd/MM/yyyy"
-                      placeholderText={t("Select")}
-                      locale={t("locale")}
-                      className="form-control input"
-                      disabled={!isCreateMode}
-                    />
-                    <span className="input-group-addon input-img">
-                      <img src={IconDatePicker} alt="Date" />
-                    </span>
-                  </label>
+            {request.tripInfo?.map((trip, index) => (
+              <div className="row mt-15px" key={index}>
+                <div className="col-4">
+                  {t("TripCode")}{" "}
+                  {isCreateMode && <span className="required">(*)</span>}
+                  <input
+                    type="text"
+                    placeholder={t("import")}
+                    value={trip.TripCode || ""}
+                    onChange={(e) =>
+                      handleChangeTripInfoValue(
+                        "TripCode",
+                        e.target.value,
+                        index
+                      )
+                    }
+                    className="form-control input mv-10 w-100"
+                    name="inputName"
+                    autoComplete="off"
+                    disabled={!isCreateMode}
+                  />
                 </div>
-              </div>
-              <div className="col-3">
-                {t("DateLeave")}{" "}
-                {isCreateMode && <span className="required">(*)</span>}
-                <div className="content input-container">
-                  <label>
-                    <DatePicker
-                      name="endDate"
-                      selectsEnd
-                      autoComplete="off"
-                      minDate={
-                        request.DateCome
-                          ? moment(request.DateCome, "DD/MM/YYYY").toDate()
-                          : undefined
-                      }
-                      selected={
-                        request.DateLeave
-                          ? moment(request.DateLeave, "DD/MM/YYYY").toDate()
-                          : undefined
-                      }
-                      onChange={(date) =>
-                        handleChangeDatetimeValue(date, "DateLeave")
-                      }
-                      dateFormat="dd/MM/yyyy"
-                      placeholderText={t("Select")}
-                      locale={t("locale")}
-                      className="form-control input"
-                      disabled={!isCreateMode}
-                    />
-                    <span className="input-group-addon input-img">
-                      <img src={IconDatePicker} alt="Date" />
-                    </span>
-                  </label>
+                <div className="flex-1">
+                  {t("DateCome")}{" "}
+                  {isCreateMode && <span className="required">(*)</span>}
+                  <div className="content input-container">
+                    <label>
+                      <DatePicker
+                        name="endDate"
+                        selectsEnd
+                        autoComplete="off"
+                        selected={
+                          trip.DateCome
+                            ? moment(trip.DateCome, "DD/MM/YYYY").toDate()
+                            : undefined
+                        }
+                        maxDate={
+                          trip.DateLeave
+                            ? moment(trip.DateLeave, "DD/MM/YYYY").toDate()
+                            : undefined
+                        }
+                        onChange={(date) =>
+                          handleChangeTripInfoValue("DateCome", date, index)
+                        }
+                        dateFormat="dd/MM/yyyy"
+                        placeholderText={t("Select")}
+                        locale={t("locale")}
+                        className="form-control input"
+                        disabled={!isCreateMode}
+                      />
+                      <span className="input-group-addon input-img">
+                        <img src={IconDatePicker} alt="Date" />
+                      </span>
+                    </label>
+                  </div>
                 </div>
+                <div className="flex-1">
+                  {t("DateLeave")}{" "}
+                  {isCreateMode && <span className="required">(*)</span>}
+                  <div className="content input-container">
+                    <label>
+                      <DatePicker
+                        name="endDate"
+                        selectsEnd
+                        autoComplete="off"
+                        minDate={
+                          trip.DateCome
+                            ? moment(trip.DateCome, "DD/MM/YYYY").toDate()
+                            : undefined
+                        }
+                        selected={
+                          trip.DateLeave
+                            ? moment(trip.DateLeave, "DD/MM/YYYY").toDate()
+                            : undefined
+                        }
+                        onChange={(date) =>
+                          handleChangeTripInfoValue("DateLeave", date, index)
+                        }
+                        dateFormat="dd/MM/yyyy"
+                        placeholderText={t("Select")}
+                        locale={t("locale")}
+                        className="form-control input"
+                        disabled={!isCreateMode}
+                      />
+                      <span className="input-group-addon input-img">
+                        <img src={IconDatePicker} alt="Date" />
+                      </span>
+                    </label>
+                  </div>
+                </div>
+                {isCreateMode && (
+                  <div className="action-btn-container">
+                    {request.tripInfo?.length &&
+                    request.tripInfo?.length < 2 ? (
+                      <button
+                        className="btn btn-outline-success btn-lg w-fit-content d-flex align-items-center"
+                        style={{ gap: "4px", fontSize: "14px" }}
+                        onClick={addMoreTrip}
+                      >
+                        <Image src={IconAdd} />
+                        {t("AddMore")}
+                      </button>
+                    ) : (
+                      <>
+                        <button
+                          className="btn btn-action-trip"
+                          onClick={() => removeTrip(index)}
+                        >
+                          <img alt="addMore" src={IconCancel} />
+                        </button>
+                        <button
+                          className="btn btn-action-trip"
+                          disabled={index !== request.tripInfo.length - 1}
+                          onClick={addMoreTrip}
+                        >
+                          <img
+                            alt="addMore"
+                            src={IconAdd}
+                            style={{
+                              opacity:
+                                index === request.tripInfo.length - 1 ? 1 : 0.2,
+                            }}
+                          />
+                        </button>
+                      </>
+                    )}
+                  </div>
+                )}
               </div>
-              <div className="col-3">
+            ))}
+            <div className="row mv-10">
+              <div className="col-4">
                 {t("PaymentTotal")}
                 <div className="detail1">
                   {formatNumberSpecialCase(request.TotalRefund)}
                 </div>
               </div>
-            </div>
-            <div className="row mv-10">
-              <div className="col-12">
+              <div className="col-8">
                 {t("TripAddress")}
                 <input
                   type="text"
@@ -290,22 +367,30 @@ function ServiceRequest({
                 <div className="col-4">
                   {t("TimeToSendRequest")}{" "}
                   <div className="detail1">
-                    {formatProcessTime(request.requestHistory?.createdDate || '')}
+                    {formatProcessTime(
+                      request.requestHistory?.createdDate || ""
+                    )}
                   </div>
                 </div>
                 <div className="col-4">
                   {t("ApprovalDate")}{" "}
                   <div className="detail1">
-                    {formatProcessTime(request.requestHistory?.approvedDate || '')}
+                    {formatProcessTime(
+                      request.requestHistory?.approvedDate || ""
+                    )}
                   </div>
                 </div>
                 <div className="col-4">
                   {t("reason_reject")}
                   <div className="detail1">
-                    { request.requestHistory?.processStatusId == Constants.STATUS_NOT_APPROVED && request.requestHistory?.approverComment  ? request.requestHistory?.approverComment : ''}
+                    {request.requestHistory?.processStatusId ==
+                      Constants.STATUS_NOT_APPROVED &&
+                    request.requestHistory?.approverComment
+                      ? request.requestHistory?.approverComment
+                      : ""}
                   </div>
                 </div>
-            
+
                 <div className="col-12 status mv-10">
                   {showStatus(
                     request.requestHistory?.processStatusId,

@@ -16,6 +16,8 @@ import DetailButtonComponent from "containers/Registration/DetailButtonComponent
 import { getCurrentLanguage, getRequestTypeIdsAllowedToReApproval } from "commons/Utils";
 import { getPaymentObjects } from "./PaymentData";
 
+const KDATE_FORMAT = "YYYYMMDD";
+
 interface IInternalPaymentDetailProps {
   action: any;
   data: any;
@@ -81,8 +83,8 @@ const InternalPaymentDetail = (props: any) => {
             freeNightWaitClaim += it.freeNightsToClaim;
           }
           return {
-            DateCome: moment(it.startDate, "YYYYMMDD").format("DD/MM/YYYY"),
-            DateLeave: moment(it.endDate, "YYYYMMDD").format("DD/MM/YYYY"),
+            //DateCome: moment(it.startDate, "YYYYMMDD").format("DD/MM/YYYY"),
+            //DateLeave: moment(it.endDate, "YYYYMMDD").format("DD/MM/YYYY"),
             TripAddress: it.place,
             TripCode: it.code,
             name: t("RequestPayment", { id: it.requestHistoryID }),
@@ -97,6 +99,11 @@ const InternalPaymentDetail = (props: any) => {
               approverComment: data.approverComment
             },
             documentFileUrl: it.documentFileUrl,
+            tripInfo: (it.code.split(",")?.map((code, index) => ({
+              TripCode: code,
+              DateCome: moment(it.startDate?.split(",")?.[index], "YYYYMMDD").format("DD/MM/YYYY"),
+              DateLeave: moment(it.endDate?.split(",")?.[index], "YYYYMMDD").format("DD/MM/YYYY"),
+            })))
           };
         });
         setRequests(_request);
@@ -128,6 +135,12 @@ const InternalPaymentDetail = (props: any) => {
   }, [data]);
   const requestTypeIdsAllowedToReApproval = getRequestTypeIdsAllowedToReApproval();
   const isShowApproval = (props.action != "consent" && data.processStatusId === Constants.STATUS_WAITING) || (props.action != "consent" && data.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && requestTypeIdsAllowedToReApproval.includes(Constants.WELFARE_REFUND))
+  const getNextKDateSentSap = (lastKDateSentSap: string | null) => {
+    const today = moment().format(KDATE_FORMAT);
+    if (!lastKDateSentSap || lastKDateSentSap < today) return null;
+    return moment(lastKDateSentSap, KDATE_FORMAT).add(1, "d").format("DD/MM/YYYY")
+  }
+
   return (
     <div
       className="registration-insurance-section input-style"
@@ -188,6 +201,7 @@ const InternalPaymentDetail = (props: any) => {
           urlName={"requestattendance"}
           requestTypeId={data.requestTypeId}
           action={props.action}
+          nextKDateSentSap={getNextKDateSentSap(data.requestInfo?.lastKDateSentSap)}
         />
       ) : null}
     </div>

@@ -41,7 +41,7 @@ function ServiceItem({
   canDelete,
   setLoading = () => {},
 }: IServiceItem) {
-  const [canCheck, setCanCheck] = useState(false);
+  // const [canCheck, setCanCheck] = useState(false);
   const [canEditFeeUpgrade, setcanEditFeeUpgrade] = useState(false);
   const [disabledSubmitButton, setdisabledSubmitButton] = useState(false);
 
@@ -63,12 +63,15 @@ function ServiceItem({
       newService.UseFor?.value &&
       newService.FeePayment
     ) {
-      setCanCheck(true);
-    } else if (canCheck) {
-      setCanCheck(false);
+      //setCanCheck(true);
+      newService.isCalculated = false;
+    } else if (!newService.isCalculated) {
+      //setCanCheck(false);
+      newService.isCalculated = true;
     }
     if (key == "FeeUpgrade" && value) {
-      setCanCheck(true);
+      newService.isCalculated = false;
+      //setCanCheck(true);
     }
 
     updateService(newService);
@@ -78,7 +81,7 @@ function ServiceItem({
     handleChangeValue(value, key);
   };
   const calculateService = async (ser: IPaymentService) => {
-    if (canCheck == false || disabledSubmitButton) return;
+    if (ser.isCalculated || disabledSubmitButton) return;
     const benefitRefundInfoEndpoint = `${process.env.REACT_APP_REQUEST_URL}benefit-refund/calculate`;
     const config = getRequestConfigurations();
     try {
@@ -103,8 +106,9 @@ function ServiceItem({
           PnlDiscountPercent: data.pnlDiscountPercent,
           FeeBenefit: data.benefitDiscountPercent,
           FeeReturn: data.refundAmount,
+          isCalculated: true
         };
-        setCanCheck(false);
+        //setCanCheck(false);
         updateService(newService);
       }
     } catch (err) {
@@ -270,7 +274,7 @@ function ServiceItem({
               <div
                 className="btn detail1 btn-check"
                 style={
-                  canCheck ? {} : { opacity: "0.4", cursor: "not-allowed" }
+                  !service.isCalculated ? {} : { opacity: "0.4", cursor: "not-allowed" }
                 }
                 onClick={() => {
                   calculateService(service);

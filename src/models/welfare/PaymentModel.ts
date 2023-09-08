@@ -11,10 +11,7 @@ export interface IPaymentUserInfo {
 }
 
 export interface IPaymentRequest {
-    DateCome?: string;
-    DateLeave?: string;
     TripAddress?: string;
-    TripCode?: string;
     TotalRefund: number;
     name:     string;
     isDeleted?:    boolean;
@@ -22,6 +19,7 @@ export interface IPaymentRequest {
     services: IPaymentService[];
     requestHistory?: IPaymentRequestHistory;
     documentFileUrl?: string;
+    tripInfo: ITripInfo[]
 }
 
 export interface IPaymentService {
@@ -37,6 +35,7 @@ export interface IPaymentService {
     FeeBenefit: number;
     FeeReturn?: number | string;
     documentFileUrl?: string;
+    isCalculated: boolean
 }
 
 // ----------QUOTA INFO ----------------
@@ -190,6 +189,8 @@ export interface IResponseCalculatePayment {
     refundAmount:           number;
 }
 
-
-
-
+export interface ITripInfo {
+  TripCode: string,
+  DateCome?: string;
+  DateLeave?: string;
+}
