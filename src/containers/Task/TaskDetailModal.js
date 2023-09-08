@@ -57,8 +57,13 @@ class TaskDetailModal extends React.Component {
         const { t, action, taskId, show, onHide, isAutoShowDetailModal } = this.props // isAutoShowDetailModal chỉ sử dụng cho Quá trình công tác ngoài Tập đoàn
         const data = this.state.data;
         let { requestTypeId, updateField } = data
-        updateField = JSON.parse(updateField || '{}')
-        const isWorkOutSideGroup = requestTypeId == Constants.UPDATE_PROFILE && updateField?.UpdateField?.length === 1 && updateField?.UpdateField[0] === 'WorkOutside'
+        let isWorkOutSideGroup = false;
+        if (requestTypeId == Constants.UPDATE_PROFILE) {
+          updateField = JSON.parse(updateField || '{}')
+          isWorkOutSideGroup = updateField?.UpdateField?.length === 1 && updateField?.UpdateField[0] === 'WorkOutside'
+        }
+        // updateField = JSON.parse(updateField || '{}')
+        // const isWorkOutSideGroup = requestTypeId == Constants.UPDATE_PROFILE && updateField?.UpdateField?.length === 1 && updateField?.UpdateField[0] === 'WorkOutside'
 
         if(!data) {
           return null;
