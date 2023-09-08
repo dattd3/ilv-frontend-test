@@ -262,7 +262,7 @@ class RequestTaskList extends React.Component {
             //     { value: 2, label: 'Phê duyệt' }
             // ];
             
-        if([Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER, Constants.PROPOSAL_APPOINTMENT].includes(request)) {
+        if([Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER, Constants.PROPOSAL_APPOINTMENT, Constants.INSURANCE_SOCIAL].includes(request)) {
             if(statusName) {
                 let statusLabel = t(statusName),
                     tmp = Object.keys(status).filter(key => status[key].label == statusLabel );
@@ -338,6 +338,8 @@ class RequestTaskList extends React.Component {
           };
         if(request?.requestTypeId == Constants.WELFARE_REFUND) {
             url = `register-internal-payment`;
+        } else if (request?.requestTypeId == Constants.INSURANCE_SOCIAL) {
+            url = `insurance-manager/detail/${request?.salaryId}/request`;
         } else if (request.parentRequestHistoryId) {
           //xu ly mot nguoi
           url = `salarypropse/${request.parentRequestHistoryId}/${request.salaryId}/request`;
@@ -937,7 +939,7 @@ class RequestTaskList extends React.Component {
                                             }
 
                                             let editLink = this.getRequestEditLink(child.id, child.requestTypeId, child.processStatusId)
-                                            let detailLink = [Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER, Constants.PROPOSAL_APPOINTMENT, Constants.WELFARE_REFUND].includes(child.requestTypeId) ? this.getSalaryProposeLink(child) : this.getRequestDetailLink(child.id, child.requestTypeId)
+                                            let detailLink = [Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER, Constants.PROPOSAL_APPOINTMENT, Constants.WELFARE_REFUND, Constants.INSURANCE_SOCIAL].includes(child.requestTypeId) ? this.getSalaryProposeLink(child) : this.getRequestDetailLink(child.id, child.requestTypeId)
                                             let dateChanged = showRangeDateGroupByArrayDate(child.startDate)
 
                                             if ([Constants.OT_REQUEST].includes(child.requestTypeId)) {
