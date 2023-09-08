@@ -36,7 +36,8 @@ const CreateSickInsurance = ({
   setApprover,
   files,
   updateFiles,
-  removeFile
+  removeFile,
+  isCreateMode = true
 }) => {
   const [errors, setErrors] = useState({});
   const InsuranceOptions = [
@@ -154,7 +155,7 @@ const CreateSickInsurance = ({
     formData.append(
       "certificateInsuranceBenefit",
       JSON.stringify({
-        hospitalLine: data.hospitalLine?.label || "",
+        hospitalLine: data.hospitalLine ? { id: data.hospitalLine.value, name: data.hospitalLine.label } : "",
         seriNumber: data.seri,
         fromDate: data.fromDate
           ? moment(data.fromDate, "DD/MM/YYYY").format("YYYY-MM-DD")
@@ -185,7 +186,7 @@ const CreateSickInsurance = ({
     formData.append(
       "receiveSubsidiesInfo",
       JSON.stringify({
-        receivingForm: data.receiveType?.label || "",
+        receivingForm: { id: data.receiveType.value, name: data.receiveType.label },
         bankAccountNumber: data.accountNumber,
         accountName: data.accountName,
         bankCode: data.bankId,
@@ -310,6 +311,7 @@ const CreateSickInsurance = ({
               options={InsuranceOptions}
               isClearable={false}
               value={type}
+              isDisabled={!isCreateMode}
               onChange={(e) => setType(e)}
               className="input mv-10"
               styles={{ menu: (provided) => ({ ...provided, zIndex: 2 }) }}
@@ -325,6 +327,7 @@ const CreateSickInsurance = ({
               value={data.declareForm}
               onChange={(e) => handleChangeSelectInputs(e, "declareForm")}
               className="input mv-10"
+              isDisabled={!isCreateMode}
               styles={{ menu: (provided) => ({ ...provided, zIndex: 2 }) }}
             />
             {errors["declareForm"] ? (
@@ -353,6 +356,7 @@ const CreateSickInsurance = ({
               dateFormat="dd/MM/yyyy"
               placeholderText={t("Select")}
               locale={t("locale")}
+              disabled={!isCreateMode}
               className="form-control input"
               styles={{ width: "100%" }}
             />
@@ -377,6 +381,7 @@ const CreateSickInsurance = ({
               dateFormat="dd/MM/yyyy"
               placeholderText={t("Select")}
               locale={t("locale")}
+              disabled={!isCreateMode}
               className="form-control input"
               styles={{ width: "100%" }}
             />
@@ -391,6 +396,7 @@ const CreateSickInsurance = ({
               value={data.plan}
               onChange={(e) => handleChangeSelectInputs(e, "plan")}
               className="input mv-10"
+              isDisabled={!isCreateMode}
               styles={{ menu: (provided) => ({ ...provided, zIndex: 2 }) }}
             />
             {errors["plan"] ? (
@@ -404,6 +410,7 @@ const CreateSickInsurance = ({
             <textarea
               rows={3}
               value={data.note}
+              disabled={!isCreateMode}
               onChange={(e) => handleTextInputChange(e, "note")}
               className="mv-10 form-control input w-100"
             />
@@ -445,6 +452,7 @@ const CreateSickInsurance = ({
               value={data.workingCondition}
               onChange={(e) => handleChangeSelectInputs(e, "workingCondition")}
               className="input mv-10"
+              isDisabled={!isCreateMode}
               styles={{ menu: (provided) => ({ ...provided, zIndex: 2 }) }}
             />
           </div>
@@ -459,6 +467,7 @@ const CreateSickInsurance = ({
               className="form-control input mv-10 w-100"
               name="inputName"
               autoComplete="off"
+              disabled={!isCreateMode}
             />
           </div>
         </div>
@@ -476,6 +485,7 @@ const CreateSickInsurance = ({
               value={data.hospitalLine}
               onChange={(e) => handleChangeSelectInputs(e, "hospitalLine")}
               className="input mv-10"
+              isDisabled={!isCreateMode}
               styles={{ menu: (provided) => ({ ...provided, zIndex: 2 }) }}
             />
           </div>
@@ -489,6 +499,7 @@ const CreateSickInsurance = ({
               className="form-control input mv-10 w-100"
               name="inputName"
               autoComplete="off"
+              disabled={!isCreateMode}
             />
             {errors["seri"] ? (
               <p className="text-danger">{errors["seri"]}</p>
@@ -512,6 +523,7 @@ const CreateSickInsurance = ({
               placeholderText={t("Select")}
               locale={t("locale")}
               className="form-control input"
+              disabled={!isCreateMode}
               styles={{ width: "100%" }}
             />
             {errors["fromDate"] ? (
@@ -533,6 +545,7 @@ const CreateSickInsurance = ({
               dateFormat="dd/MM/yyyy"
               placeholderText={t("Select")}
               locale={t("locale")}
+              disabled={!isCreateMode}
               className="form-control input"
               styles={{ width: "100%" }}
             />
@@ -549,6 +562,7 @@ const CreateSickInsurance = ({
               onChange={(e) => handleTextInputChange(e, "total")}
               className="form-control input mv-10 w-100"
               name="inputName"
+              disabled={!isCreateMode}
               autoComplete="off"
             />
             {errors["total"] ? (
@@ -581,6 +595,7 @@ const CreateSickInsurance = ({
               dateFormat="dd/MM/yyyy"
               placeholderText={t("Select")}
               locale={t("locale")}
+              disabled={!isCreateMode}
               className="form-control input"
               styles={{ width: "100%" }}
             />
@@ -596,6 +611,7 @@ const CreateSickInsurance = ({
               onChange={(e) => handleTextInputChange(e, "childInsuranceNumber")}
               className="form-control input mv-10 w-100"
               name="inputName"
+              disabled={!isCreateMode}
               autoComplete="off"
             />
             {errors["childInsuranceNumber"] ? (
@@ -611,6 +627,7 @@ const CreateSickInsurance = ({
               onChange={(e) => handleTextInputChange(e, "childSickNumbers")}
               className="form-control input mv-10 w-100"
               name="inputName"
+              disabled={!isCreateMode}
               autoComplete="off"
             />
             {errors["childSickNumbers"] ? (
@@ -631,6 +648,7 @@ const CreateSickInsurance = ({
               type="text"
               className="form-control input mv-10 w-100"
               name="inputName"
+              disabled={!isCreateMode}
               autoComplete="off"
             />
           </div>
@@ -642,6 +660,7 @@ const CreateSickInsurance = ({
               type="text"
               className="form-control input mv-10 w-100"
               name="inputName"
+              disabled={!isCreateMode}
               autoComplete="off"
             />
           </div>
@@ -659,6 +678,7 @@ const CreateSickInsurance = ({
               type="text"
               className="form-control input mv-10 w-100"
               name="inputName"
+              disabled={!isCreateMode}
               autoComplete="off"
             />
           </div>
@@ -682,6 +702,7 @@ const CreateSickInsurance = ({
               dateFormat="dd/MM/yyyy"
               placeholderText={t("option")}
               locale={t("locale")}
+              disabled={!isCreateMode}
               className="form-control input"
               styles={{ width: "100%" }}
             />
@@ -701,6 +722,7 @@ const CreateSickInsurance = ({
               className="form-control input mv-10 w-100"
               name="inputName"
               autoComplete="off"
+              disabled={!isCreateMode}
             />
           </div>
           <div className="col-4">
@@ -723,6 +745,7 @@ const CreateSickInsurance = ({
               dateFormat="dd/MM/yyyy"
               placeholderText={t("option")}
               locale={t("locale")}
+              disabled={!isCreateMode}
               className="form-control input"
               styles={{ width: "100%" }}
             />
@@ -745,6 +768,8 @@ const CreateSickInsurance = ({
               value={data.receiveType}
               onChange={(e) => handleChangeSelectInputs(e, "receiveType")}
               className="input mv-10"
+              disabled={!isCreateMode}
+              isDisabled={!isCreateMode}
               styles={{ menu: (provided) => ({ ...provided, zIndex: 2 }) }}
             />
             {errors["receiveType"] ? (
@@ -762,6 +787,7 @@ const CreateSickInsurance = ({
               type="text"
               className="form-control input mv-10 w-100"
               name="inputName"
+              disabled={!isCreateMode}
               autoComplete="off"
             />
             {errors["accountNumber"] ? (
@@ -777,6 +803,7 @@ const CreateSickInsurance = ({
               type="text"
               className="form-control input mv-10 w-100"
               name="inputName"
+              disabled={!isCreateMode}
               autoComplete="off"
             />
             {errors["accountName"] ? (
@@ -796,6 +823,7 @@ const CreateSickInsurance = ({
               type="text"
               className="form-control input mv-10 w-100"
               name="inputName"
+              disabled={!isCreateMode}
               autoComplete="off"
             />
             {errors["bankId"] ? (
@@ -811,6 +839,7 @@ const CreateSickInsurance = ({
               value={data.bankName}
               onChange={(e) => handleTextInputChange(e, "bankName")}
               type="text"
+              disabled={!isCreateMode}
               className="form-control input mv-10 w-100"
               name="inputName"
               autoComplete="off"
@@ -824,7 +853,7 @@ const CreateSickInsurance = ({
 
       <AssessorInfoComponent
         t={t}
-        isCreateMode={true}
+        isCreateMode={isCreateMode}
         setSupervisors={setSupervisors}
         supervisors={supervisors}
         approver={approver}
@@ -840,19 +869,25 @@ const CreateSickInsurance = ({
               return <li className="list-inline-item" key={index}>
                   <span className="file-name">
                       <a title={file.name} href={file.fileUrl} download={file.name} target="_blank">{file.name}</a>
-                      <i className="fa fa-times remove" aria-hidden="true" onClick={() => removeFile(index)}></i>
+                      {
+                        isCreateMode ? <i className="fa fa-times remove" aria-hidden="true" onClick={() => removeFile(index)}></i> : null
+                      }
                   </span>
               </li>
           })}
         </ul>
-        <ButtonComponent
+        {
+          isCreateMode ?
+          <ButtonComponent
           isEdit={false} 
           files={files} 
           updateFiles={updateFiles} 
           submit={onSubmit} 
           isUpdateFiles={()=>{}} 
           disabledSubmitButton={disabledSubmitButton} 
-          validating={disabledSubmitButton}/>
+          validating={disabledSubmitButton}/> 
+          : null
+        }
       </div>
 
     </>

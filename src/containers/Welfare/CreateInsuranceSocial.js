@@ -270,7 +270,7 @@ const CreateInsuranceSocial = (props) => {
             headers: { 'Content-Type': 'multipart/form-data', Authorization: `${localStorage.getItem('accessToken')}` }
         })
             .then(response => {
-                if (response && response.data && response.data.result && response.data.result.code == 200) {
+                if (response && response.data && response.data.result && response.data.result.code == '000000') {
                     showStatusModal(t("Successful"), t("RequestSent"), true)
                     setdisabledSubmitButton(false)
                 }
