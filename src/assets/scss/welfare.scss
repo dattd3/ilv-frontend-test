@@ -710,6 +710,32 @@
     }
     .request-content {
         padding: 15px 20px;
+        .mt-15px {
+          margin-bottom: 15px;
+        }
+
+        .flex-1 {
+          flex: 1;
+          padding: 0px 15px;
+        }
+
+        .action-btn-container {
+          padding-right: 15px;
+          margin-top: 24px;
+          display: flex;
+          gap: 8px;
+        }
+
+        .btn-action-trip {
+          border: 1px solid #DEE2E6;
+          border-radius: 4px;
+          font-size: 14px;
+          width: 42px;
+          height: 42px;
+          align-items: center;
+          justify-content: center;
+          display: flex;
+        }
 
         .trip-contain {
           border: 1px solid #DEE2E6;

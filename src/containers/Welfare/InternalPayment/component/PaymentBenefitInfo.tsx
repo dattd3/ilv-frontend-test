@@ -40,7 +40,7 @@ function PaymentBenefitInfo({
               isDisabled={!isCreateMode}
             />
           </div>
-          {isCreateMode ? (
+          {/* {isCreateMode ? (
             <>
               <div className="col-4">
                 {t("FreeExamCanUse")}
@@ -51,9 +51,9 @@ function PaymentBenefitInfo({
                 <div className="detail1">{quota.examTimesUsed}</div>
               </div>
             </>
-          ) : null}
-        </div>
-        <div className="row mv-10">
+          ) : null} */}
+          {/* </div> */}
+          {/* <div className="row mv-10"> */}
           <div className="col-4">
             {t("FreeNightNotClaim")}
             <div className="detail1">
@@ -62,7 +62,9 @@ function PaymentBenefitInfo({
           </div>
           <div className="col-4">
             {t("FreeNightClaim")}
-            <div className="detail1">{quota?.freeNightNeedClaim + quota?.freeNightWaitClaim}</div>
+            <div className="detail1">
+              {quota?.freeNightNeedClaim + quota?.freeNightWaitClaim}
+            </div>
           </div>
           <div className="col-4">
             {t("FreeNightRemain")}
@@ -73,9 +75,8 @@ function PaymentBenefitInfo({
                 quota.freeNightWaitClaim}
             </div>
           </div>
-        </div>
 
-        <div className="row mv-10">
+          {/* <div className="row mv-10"> */}
           <div className="col-4">
             {t("DiscountNightNotClaim")}
             <div className="detail1">
@@ -84,7 +85,9 @@ function PaymentBenefitInfo({
           </div>
           <div className="col-4">
             {t("DiscountNightClaim")}
-            <div className="detail1">{quota.discountNightNeedClaim + quota.discountNightWaitClaim}</div>
+            <div className="detail1">
+              {quota.discountNightNeedClaim + quota.discountNightWaitClaim}
+            </div>
           </div>
           <div className="col-4">
             {t("DiscountNightRemain")}
@@ -95,9 +98,9 @@ function PaymentBenefitInfo({
                 quota.discountNightWaitClaim}
             </div>
           </div>
-          
         </div>
       </div>
+      {/* </div> */}
     </>
   );
 }

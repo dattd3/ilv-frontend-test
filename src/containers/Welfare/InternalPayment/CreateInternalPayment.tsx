@@ -12,6 +12,7 @@ import {
   IQuota,
   IResponseBenefitInfo,
   IResponseServices,
+  ITripInfo,
 } from "../../../models/welfare/PaymentModel";
 import PaymentBenefitInfo from "./component/PaymentBenefitInfo";
 import PaymentActionButtons from "./component/PaymentActionButton";
@@ -154,9 +155,15 @@ function CreateInternalPayment(props: any) {
           PnlDiscountPercent: _se.pnlDiscountPercent,
           QuotedPrice: _se.quotedPrice,
           FeeBenefit: _se.benefitDiscountPercent,
-          FeeReturn: _se.refundAmount
+          FeeReturn: _se.refundAmount,
+          isCalculated: true
         })
       );
+      const _tripInfo: ITripInfo[] = (it.code.split(",")?.map((code, index) => ({
+        TripCode: code,
+        DateCome: moment(it.startDate?.split(",")?.[index], "YYYYMMDD").format("DD/MM/YYYY"),
+        DateLeave: moment(it.endDate?.split(",")?.[index], "YYYYMMDD").format("DD/MM/YYYY"),
+      })));
       if( it.requestHistory?.processStatusId == Constants.STATUS_WAITING && it.discountNightsToClaim) {
         discountNightWaitClaim += it.discountNightsToClaim;
       }
@@ -165,16 +172,17 @@ function CreateInternalPayment(props: any) {
       }
 
       return {
-        DateCome: moment(it.startDate, "YYYYMMDD").format("DD/MM/YYYY"),
-        DateLeave: moment(it.endDate, "YYYYMMDD").format("DD/MM/YYYY"),
+        // TripCode: it.code,
+        // DateCome: moment(it.startDate, "YYYYMMDD").format("DD/MM/YYYY"),
+        // DateLeave: moment(it.endDate, "YYYYMMDD").format("DD/MM/YYYY"),
         TripAddress: it.place,
-        TripCode: it.code,
         name: t('RequestPayment', {id: it.requestHistoryID}),
         TotalRefund: it.totalRefund,
         isCreateMode: false,
         services: _services,
         requestHistory: it.requestHistory,
-        documentFileUrl: it.documentFileUrl
+        documentFileUrl: it.documentFileUrl,
+        tripInfo: _tripInfo
       };
     });
     _quota.discountNightWaitClaim = discountNightWaitClaim;
@@ -219,8 +227,16 @@ function CreateInternalPayment(props: any) {
         {
           name: t("ServicePayment", { id: 1 }),
           FeeBenefit: 0,
+          isCalculated: false
         }
       ],
+      tripInfo: [
+        {
+          TripCode: "",
+          DateCome: undefined,
+          DateLeave: undefined
+        }
+      ]
     });
   };
   const cancelRequest = () => {
@@ -261,6 +277,17 @@ function CreateInternalPayment(props: any) {
     const notCheckServices: number[] = [];
     const optionFields = ["UseWelfareType", "UseFor"];
     let _error: string | null = null;
+
+    candidateInfos.tripInfo?.forEach((it, index) => {
+      requireFieldRequest.forEach(field => {
+        if (_.isEmpty(it[field])) {
+          _error =`${t('PleaseEnter')} ${t(field)} ${index + 1}`;
+        }
+      })
+    });
+
+    if (_error) return _error;
+    
     (candidateInfos.services || []).map((ser, index) => {
       requiredFields.forEach((name) => {
         if (
@@ -270,30 +297,30 @@ function CreateInternalPayment(props: any) {
           _error = t('PleaseEnter') + ' ' + t(name) + ` (${ser.name})`;
         }
       });
-      if(!ser.Detail) {
+      if(!ser.Detail || !ser.isCalculated) {
         notCheckServices.push(index + 1);
       }
-      if(candidateInfos.DateCome && candidateInfos.DateLeave && ser.DateUse) {
-        let compareDate = moment(ser.DateUse, "DD/MM/YYYY").format('YYYYMMDD');
-        let startDate   = moment(candidateInfos.DateCome, "DD/MM/YYYY").format('YYYYMMDD');
-        let endDate     = moment(candidateInfos.DateLeave, "DD/MM/YYYY").format('YYYYMMDD');
-        if(compareDate < startDate || compareDate > endDate) {
-          _error = t('outDateRange', {name: ser.name});
+      let isOutDateRange = true;
+
+      candidateInfos.tripInfo?.every((it) => {
+        if(it.DateCome && it.DateLeave && ser.DateUse) {
+          if(moment(ser.DateUse, "DD/MM/YYYY") >= moment(it.DateCome, "DD/MM/YYYY") && moment(ser.DateUse, "DD/MM/YYYY") <= moment(it.DateLeave, "DD/MM/YYYY")) {
+            isOutDateRange = false
+            return false;
+          }
+          return true;
         }
-      }
+      })
+
+      if (isOutDateRange) _error = t('outDateRange', {name: ser.name});
     });
+
+    if (_error) return _error;
+
     if(_error == null && notCheckServices.length > 0) {
       _error = t('notCheckPayment', {id: notCheckServices.join(',')})
     }
-
-    requireFieldRequest.forEach((name) => {
-      if (
-        _.isEmpty(candidateInfos[name]) ||
-        (!candidateInfos[name].value && optionFields.includes(name))
-      ) {
-        _error = t('PleaseEnter') + ' ' + t(name);
-      }
-    });
+    
     return _error;
   };
 
@@ -330,9 +357,9 @@ function CreateInternalPayment(props: any) {
       year:              yearSelected?.value,
       freeNightsToClaim: quota.freeNightNeedClaim || 0,
       discountNightsToClaim: quota.discountNightNeedClaim || 0,
-      code:              newRequest?.TripCode || '',
-      startDate:         moment(newRequest?.DateCome, 'DD/MM/YYYY').format('YYYYMMDD'),
-      endDate:           moment(newRequest?.DateLeave, 'DD/MM/YYYY').format('YYYYMMDD'),
+      code:              newRequest?.tripInfo?.map(it => it.TripCode).join(","),
+      startDate:         newRequest?.tripInfo?.map(it => moment(it.DateCome, 'DD/MM/YYYY').format('YYYYMMDD')).join(","),
+      endDate:           newRequest?.tripInfo?.map(it => moment(it.DateLeave, 'DD/MM/YYYY').format('YYYYMMDD')).join(","),
       totalRefund:       newRequest?.TotalRefund,
       place:             newRequest?.TripAddress || '',
       services:          _services

@@ -23,12 +23,15 @@ class DetailButtonComponent extends React.Component {
     }
 
     approval = async () => {
-      const { t, requestTypeId, haveOverOTFund, isNotEnoughTimeResign } = this.props
+      const { t, requestTypeId, haveOverOTFund, isNotEnoughTimeResign, nextKDateSentSap } = this.props
       if (requestTypeId === Constants.OT_REQUEST && haveOverOTFund) {
           return this.setState({ isConfirmShow: true, modalTitle: t("ApproveRequest"), modalMessage: t("WarningOverOTFundsApproval"), typeRequest: Constants.STATUS_APPROVED })
       }
       if (requestTypeId === Constants.RESIGN_SELF && isNotEnoughTimeResign) {
         return this.setState({ isConfirmShow: true, modalTitle: t("ApproveRequest"), modalMessage: t("WarningNotEnoughTimeResignApprover"), typeRequest: Constants.STATUS_APPROVED })
+      }
+      if (requestTypeId === Constants.WELFARE_REFUND && nextKDateSentSap) {
+        return this.setState({ isConfirmShow: true, modalTitle: t("ApproveRequest"), modalMessage: t("WelfareRefundApproveWarning", {date: nextKDateSentSap}), typeRequest: Constants.STATUS_APPROVED })
       }
       this.setState({ isConfirmShow: true, modalTitle: t("ApproveRequest"), modalMessage:t("ConfirmApproveRequestHolder",{name: t(this.requestRegistraion[this.props.requestTypeId])}) , typeRequest: Constants.STATUS_APPROVED })
     }
