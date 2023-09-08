@@ -1,38 +1,40 @@
 import React, { useState, useEffect, useRef, forwardRef } from "react"
 import HTMLFlipBook from "@cuongnv56/react-pageflip"
 import { saveAs } from 'file-saver'
+import QuickPinchZoom from "react-quick-pinch-zoom"
 import { chunk } from 'lodash'
 import { TransformWrapper, TransformComponent, ReactZoomPanPinchRef } from "react-zoom-pan-pinch"
-import Page1 from 'assets/img/vingroup_history/Page1.png'
-import Page2 from 'assets/img/vingroup_history/Page2.png'
-import Page3 from 'assets/img/vingroup_history/Page3.png'
-import Page4 from 'assets/img/vingroup_history/Page4.png'
-import Page5 from 'assets/img/vingroup_history/Page5.png'
-import Page6 from 'assets/img/vingroup_history/Page6.png'
-import Page7 from 'assets/img/vingroup_history/Page7.png'
-import Page8 from 'assets/img/vingroup_history/Page8.png'
-import Page9 from 'assets/img/vingroup_history/Page9.png'
-import Page10 from 'assets/img/vingroup_history/Page10.png'
-import Page11 from 'assets/img/vingroup_history/Page11.png'
-import Page12 from 'assets/img/vingroup_history/Page12.png'
-import Page13 from 'assets/img/vingroup_history/Page13.png'
-import Page14 from 'assets/img/vingroup_history/Page14.png'
-import Page15 from 'assets/img/vingroup_history/Page15.png'
-import Page16 from 'assets/img/vingroup_history/Page16.png'
-import Page17 from 'assets/img/vingroup_history/Page17.png'
-import Page18 from 'assets/img/vingroup_history/Page18.png'
-import Page19 from 'assets/img/vingroup_history/Page19.png'
-import Page20 from 'assets/img/vingroup_history/Page20.png'
-import Page21 from 'assets/img/vingroup_history/Page21.png'
-import Page22 from 'assets/img/vingroup_history/Page22.png'
-import Page23 from 'assets/img/vingroup_history/Page23.png'
-import Page24 from 'assets/img/vingroup_history/Page24.png'
-import Page25 from 'assets/img/vingroup_history/Page25.png'
-import Page26 from 'assets/img/vingroup_history/Page26.png'
-import Page27 from 'assets/img/vingroup_history/Page27.png'
-import Page28 from 'assets/img/vingroup_history/Page28.png'
-import Page29 from 'assets/img/vingroup_history/Page29.png'
-import Page30 from 'assets/img/vingroup_history/Page30.png'
+import ReactTooltip from 'react-tooltip'
+import Page1 from 'assets/img/vingroup_history/Page1.jpg'
+import Page2 from 'assets/img/vingroup_history/Page2.jpg'
+import Page3 from 'assets/img/vingroup_history/Page3.jpg'
+import Page4 from 'assets/img/vingroup_history/Page4.jpg'
+import Page5 from 'assets/img/vingroup_history/Page5.jpg'
+import Page6 from 'assets/img/vingroup_history/Page6.jpg'
+import Page7 from 'assets/img/vingroup_history/Page7.jpg'
+import Page8 from 'assets/img/vingroup_history/Page8.jpg'
+import Page9 from 'assets/img/vingroup_history/Page9.jpg'
+import Page10 from 'assets/img/vingroup_history/Page10.jpg'
+// import Page11 from 'assets/img/vingroup_history/Page11.jpg'
+// import Page12 from 'assets/img/vingroup_history/Page12.jpg'
+// import Page13 from 'assets/img/vingroup_history/Page13.jpg'
+// import Page14 from 'assets/img/vingroup_history/Page14.jpg'
+// import Page15 from 'assets/img/vingroup_history/Page15.jpg'
+// import Page16 from 'assets/img/vingroup_history/Page16.jpg'
+// import Page17 from 'assets/img/vingroup_history/Page17.jpg'
+// import Page18 from 'assets/img/vingroup_history/Page18.jpg'
+// import Page19 from 'assets/img/vingroup_history/Page19.jpg'
+// import Page20 from 'assets/img/vingroup_history/Page20.jpg'
+// import Page21 from 'assets/img/vingroup_history/Page21.jpg'
+// import Page22 from 'assets/img/vingroup_history/Page22.jpg'
+// import Page23 from 'assets/img/vingroup_history/Page23.jpg'
+// import Page24 from 'assets/img/vingroup_history/Page24.jpg'
+// import Page25 from 'assets/img/vingroup_history/Page25.jpg'
+// import Page26 from 'assets/img/vingroup_history/Page26.jpg'
+// import Page27 from 'assets/img/vingroup_history/Page27.jpg'
+// import Page28 from 'assets/img/vingroup_history/Page28.jpg'
+// import Page29 from 'assets/img/vingroup_history/Page29.jpg'
+// import Page30 from 'assets/img/vingroup_history/Page30.jpg'
 import LoadingModal from "components/Common/LoadingModal"
 
 const imageMapping = {
@@ -46,26 +48,26 @@ const imageMapping = {
     8: Page8,
     9: Page9,
     10: Page10,
-    11: Page11,
-    12: Page12,
-    13: Page13,
-    14: Page14,
-    15: Page15,
-    16: Page16,
-    17: Page17,
-    18: Page18,
-    19: Page19,
-    20: Page20,
-    21: Page21,
-    22: Page22,
-    23: Page23,
-    24: Page24,
-    25: Page25,
-    26: Page26,
-    27: Page27,
-    28: Page28,
-    29: Page29,
-    30: Page30,
+    // 11: Page11,
+    // 12: Page12,
+    // 13: Page13,
+    // 14: Page14,
+    // 15: Page15,
+    // 16: Page16,
+    // 17: Page17,
+    // 18: Page18,
+    // 19: Page19,
+    // 20: Page20,
+    // 21: Page21,
+    // 22: Page22,
+    // 23: Page23,
+    // 24: Page24,
+    // 25: Page25,
+    // 26: Page26,
+    // 27: Page27,
+    // 28: Page28,
+    // 29: Page29,
+    // 30: Page30,
 }
 
 const Page = forwardRef((props, ref) => {
@@ -83,26 +85,30 @@ const Page = forwardRef((props, ref) => {
 
     return (
         <TransformWrapper
-        initialScale={1}
-        // initialPositionX={200}
-        // initialPositionY={100}
-        ref={transformComponentRef}
-      >
+            initialScale={1}
+            // panning={{ disabled: true, }}
+            // initialPositionX={200}
+            // initialPositionY={100}
+            wheel={{wheelDisabled: true}}
+            doubleClick={{disabled: true}}
+            ref={transformComponentRef}
+        >
         {(utils) => (
-          <React.Fragment>
-            <Controls {...utils} />
-            <TransformComponent>
-                <div className="page-image">
-                    <img src={imageMapping[props?.page]} />
+            <div className={`page page-${props?.page}`} ref={ref}>
+                <Controls {...utils} />
+                <div className="page-content">
+                <TransformComponent>
+                    <div className="page-image">
+                        <img src={imageMapping[props?.page]} />
+                    </div>
+                    {/* <div onClick={zoomToImage}>Example text</div> */}
+                </TransformComponent>
                 </div>
-              <div onClick={zoomToImage}>Example text</div>
-            </TransformComponent>
-          </React.Fragment>
-        )}
+            </div>
+            )}
       </TransformWrapper>
 
-        // <TransformWrapper>
-        //     <TransformComponent>
+
         //         <div className={`page page-${props?.page}`} ref={ref}>
         //             <div className="page-content">
         //                 {/* <div className="page-image" style={{ backgroundImage: `url(${Page1})` }}></div> */}
@@ -112,16 +118,15 @@ const Page = forwardRef((props, ref) => {
         //                 </div>
         //             </div>
         //         </div>
-        //     </TransformComponent>
-        // </TransformWrapper>
+
     )
 });
 
 const Controls = ({ zoomIn, zoomOut, resetTransform }) => (
     <>
-      <button onClick={() => zoomIn()}>+</button>
+      {/* <button onClick={() => zoomIn()}>+</button>
       <button onClick={() => zoomOut()}>-</button>
-      <button onClick={() => resetTransform()}>x</button>
+      <button onClick={() => resetTransform()}>x</button> */}
     </>
 );
 
@@ -130,10 +135,13 @@ export default function MyBook(props) {
     const page = useRef()
     const wrapBookRef = useRef()
     const pageScrollRef = useRef([])
-    const totalPages = 30
+    const totalPages = 10
     const [isShowThumbnails, setIsShowThumbnails] = useState(false)
     const [isFullScreen, setIsFullScreen] = useState(false)
-    const [isZoomIn, setIsZoomIn] = useState(false)
+    const [zoom, setZoom] = useState({
+        isZoomIn: false,
+        zoomLevel: 1,
+    })
     const [currentPage, setCurrentPage] = useState(1)
     // const [isLoading, SetIsLoading] = useState(true)
     // style={{ height: 800, objectFit: 'cover' }}
@@ -254,8 +262,11 @@ export default function MyBook(props) {
     }
 
     const handleZoom = () => {
-        setIsZoomIn(!isZoomIn)
-        if (isZoomIn) {
+        const zoomClone = {...zoom}
+        zoomClone.isZoomIn = !zoomClone.isZoomIn
+        setZoom(zoomClone)
+
+        if (zoomClone.isZoomIn) {
 
         } else {
 
@@ -284,6 +295,14 @@ export default function MyBook(props) {
         } else if (delta === -1) { // Cuộn chuột lên đọc lại
             book?.current?.pageFlip()?.flipPrev('bottom')
         }
+    }
+
+    const handleChangeZoomLevel = e => {
+        e.stopPropagation()
+        const zoomClone = {...zoom}
+        zoomClone.isZoomIn = false
+        zoomClone.zoomLevel = e?.target.value || 1
+        setZoom(zoomClone)
     }
 
     const pages = (() => {
@@ -378,17 +397,21 @@ export default function MyBook(props) {
                                     flippingTime={500}
                                     width={550}
                                     height={733}
-                                    // size="fixed"
                                     size="stretch"
                                     minWidth={315}
                                     maxWidth={1000}
                                     minHeight={420}
                                     maxHeight={1350}
-                                    // maxShadowOpacity={0.5}
+                                    maxShadowOpacity={0.5}
+                                    // disableFlipByClick
                                     drawShadow={false}
                                     mobileScrollSupport={false}
+                                    clickEventForward={false}
                                     onFlip={handleFlip}
+                                    showPageCorners={false}
+                                    useMouseEvents={false}
                                     ref={book}>
+                                    {/* <div>a</div> */}
                                     {
                                         pages.map((item) => {
                                             return (
@@ -396,6 +419,7 @@ export default function MyBook(props) {
                                             )
                                         })
                                     }
+                                    {/* <div>b</div> */}
                                     {/* <Page number="1"><img src={Page1} /></Page>
                                     <Page number="2"><img src={Page2} /></Page>
                                     <Page number="3"><img src={Page3} /></Page>
@@ -436,9 +460,48 @@ export default function MyBook(props) {
                             <span className="btn-download cursor-pointer" onClick={downloadBook}>
                                 <svg data-v-71c99c82="" version="1.1" viewBox="0 0 24 24" className="svg-icon svg-fill" focusable="false"><path pid="0" d="M17.511 10.276h-2.516V4.201c.087-.456-.1-.921-.48-1.191H9.482c-.38.27-.567.735-.48 1.19v6.076H6.247L12 16.352l5.512-6.076zM18.597 17v2H5.402v-2H3.003v2.8c-.049.603.479 1.132 1.2 1.2h15.593c.724-.063 1.256-.595 1.2-1.2V17h-2.4z"></path></svg>
                             </span>
-                            <span className={`btn-zoom cursor-pointer ${isZoomIn ? 'active' : ''}`} onClick={handleZoom}>
+                            <span 
+                                data-tip data-for={`zoom-tooltip`}
+                                className={`btn-zoom cursor-pointer ${zoom?.isZoomIn ? 'active' : ''}`} 
+                                onClick={handleZoom}>
+                                <ReactTooltip 
+                                    id={`zoom-tooltip`} 
+                                    // delayHide={1500}
+                                    // afterShow={() => {
+                                    //     ReactTooltip.hide()
+                                    // }}
+                                    event="click" 
+                                    clickable="true"
+                                    scrollHide 
+                                    isCapture 
+                                    globalEventOff="click" 
+                                    effect="solid" 
+                                    place="top" 
+                                    type='dark'
+                                    className='zoom-tooltip'>
+                                    <div class="range">
+                                        <div class="range-slider">
+                                            <input
+                                                type="range"
+                                                min="1"
+                                                max="3"
+                                                value={zoom?.zoomLevel}
+                                                class="cursor-pointer range-input"
+                                                step="0.5"
+                                                onChange={handleChangeZoomLevel}
+                                            />
+                                            <div class="sliderticks">
+                                                <span>1</span>
+                                                <span>1.5</span>
+                                                <span>2</span>
+                                                <span>2.5</span>
+                                                <span>3</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </ReactTooltip>
                                 {
-                                    isZoomIn
+                                    zoom?.isZoomIn
                                     ? (
                                         <svg data-v-71c99c82="" version="1.1" viewBox="0 0 24 24" className="svg-icon svg-fill" focusable="false"><path pid="0" d="M15.49 17.611a8.144 8.144 0 01-4.35 1.39c-4.452-.102-8.038-3.625-8.14-8 .036-4.35 3.575-7.89 8-8 4.425.112 7.965 3.65 8 8a7.813 7.813 0 01-1.38 4.498l4.451 4.45-2.121 2.122-4.46-4.46zm-4.385-.61c3.3-.09 5.919-2.757 5.895-6-.026-3.263-2.681-5.916-6-6-3.319.083-5.973 2.737-6 6 .077 3.281 2.766 5.923 6.105 6zM7 12v-2h8v2H7z"></path></svg>
                                     )

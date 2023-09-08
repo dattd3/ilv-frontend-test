@@ -5290,6 +5290,67 @@ span.badge-notification[data-badge]::after {
             color: #6d6d6d;
             fill: #6d6d6d;
           }
+          .zoom-tooltip {
+            padding: 8px 15px;
+          }
+          .range {
+            display: flex;
+            align-items: center;
+            margin-bottom: 18px;
+            .range-slider {
+              .sliderticks {
+                display: flex;
+                justify-content: space-between;
+                padding: 2px 7px;
+                font-size: 11px;
+                span {
+                  display: flex;
+                  justify-content: center;
+                  width: 1px;
+                  height: 6px;
+                  background: #d3d3d3;
+                  line-height: 35px;
+                  font-weight: normal !important;
+                }
+              }
+              .range-input {
+                &::-webkit-slider-thumb {
+                  -webkit-appearance: none;
+                  appearance: none; 
+                  height: 15px;
+                  width: 15px;
+                  background-color: #f50;
+                  border-radius: 50%;
+                  border: none;
+                  transition: .2s ease-in-out;
+                }
+                &::-moz-range-thumb {
+                  height: 15px;
+                  width: 15px;
+                  background-color: #f50;
+                  border-radius: 50%;
+                  border: none;
+                  transition: .2s ease-in-out;
+                }
+                &::-webkit-slider-thumb:hover {
+                  box-shadow: 0 0 0 10px rgba(255,85,0, .1)
+                }
+                &::-moz-range-thumb:hover {
+                  box-shadow: 0 0 0 10px rgba(255,85,0, .1)
+                }
+                &:active {
+                  &::-webkit-slider-thumb {
+                    box-shadow: 0 0 0 13px rgba(255,85,0, .2)
+                  }
+                }
+                &:focus {
+                  &::-webkit-slider-thumb {
+                    box-shadow: 0 0 0 13px rgba(255,85,0, .2)
+                  }
+                }
+              }
+            }
+          }
         }
       }
     }
