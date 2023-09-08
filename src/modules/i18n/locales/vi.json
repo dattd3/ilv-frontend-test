@@ -1900,6 +1900,8 @@
   "360DegreeFeedbackFormFor": "Biểu mẫu đánh giá 360 cho",
   "NoDataInfo": "Không có dữ liệu",
   "PleaseEnterTheRequiredFields": "Vui lòng nhập các trường bắt buộc!",
+  "VinSchoolSickLeave": "Nghỉ ốm VSC Expat",
+  "SickLeaveFundForVinSchool": "Quỹ Nghỉ ốm NNN VSC",
   "PreviousDayNoteUpdateInOutTime": "Nếu sửa giờ vào ra ngày T có phân ca liên ngày (ví dụ từ 22h-6h sáng ngày hôm sau) mà nhập thời gian bắt đầu < thời gian kết thúc và tích chọn \"Ngày trước đó\" thì giờ checkin/out sẽ được ghi nhận cho ngày T-1",
   "NO": "STT",
   "FeatureName": "Tên tính năng",
@@ -1910,8 +1912,6 @@
   "SearchByFeatureName": "Tìm kiếm theo tên tính năng",
   "Website": "Website",
   "Mobile": "Mobile",
-  "VinSchoolSickLeave": "Nghỉ ốm VSC Expat",
-  "SickLeaveFundForVinSchool": "Quỹ Nghỉ ốm NNN VSC",
   "ForeignLeaveWarningText": "Lưu ý: Nghỉ ốm người nước ngoài không cho phép tạo yêu cầu chung với các loại nghỉ khác",
   "Warning": "Lưu ý",
   "EffectiveTime": "Thời gian hiệu lực",
@@ -1923,7 +1923,6 @@
   "vinai_medium": "Đạt yêu cầu",
   "vinai_normal": "Cần cải thiện",
   "vinai_bad": "Không đạt yêu cầu",
-  "WaitProcessingContentMessage": "Dữ liệu đang được xử lý. Vui lòng chờ trong giây lát",
   "RequestInternalPayment": "Yêu cầu thanh toán sử dụng chế độ nội bộ",
   "ManagerInfo": "THÔNG TIN CBLĐ",
   "WelfareInfo": "THÔNG TIN CHẾ ĐỘ PHÚC LỢI",
@@ -1962,5 +1961,7 @@
   "DownloadFile": "Tải về tệp tin",
   "WelfareRefund": "Hoàn trả dịch vụ phúc lợi",
   "WelfareRefundApproveWarning": "Đã có phê duyệt thanh toán cho CBLĐ trước đó, hệ thống sẽ điều chỉnh ngày duyệt ở SAP là {{date}}",
-  "InsuranceSocialRequest": "Thanh toán báo hiểm xã hội"
+  "WaitProcessingContentMessage": "Dữ liệu đang được xử lý. Vui lòng chờ trong giây lát",
+  "InsuranceSocialRequest": "Thanh toán báo hiểm xã hội",
+  "HolidayGifts": "Quà ngày lễ (cộng vào lương)"
 }

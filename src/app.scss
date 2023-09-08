@@ -792,7 +792,7 @@
 }
 .metismenu-link {
   padding-left: 0 !important;
-  height: 2.8em;
+  height: 3.2em;
   line-height: 1.4 !important;
   font-size: 14px !important;
   display: flex !important;
@@ -1589,7 +1589,10 @@ span.badge-notification[data-badge]::after {
     .info-value {
       p {
         font-size: inherit !important;
-        padding: 0.6rem !important;
+        min-height: 38px;
+        padding: 4px 10px !important;
+        display: flex;
+        align-items: center;
       }
     }
     &.relationship {
@@ -2130,6 +2133,10 @@ span.badge-notification[data-badge]::after {
       font-size: inherit;
       .btn {
         font-size: inherit;
+        img {
+          height: 14px;
+          margin-right: 5px;
+        }
         i {
           font-size: 12px;
           margin-right: 5px;
@@ -2223,6 +2230,10 @@ span.badge-notification[data-badge]::after {
       font-size: inherit;
       .btn {
         font-size: inherit;
+        img {
+          height: 14px;
+          margin-right: 5px;
+        }
         i {
           font-size: 12px;
           margin-right: 5px;
@@ -2242,6 +2253,10 @@ span.badge-notification[data-badge]::after {
       font-size: inherit;
       .btn {
         font-size: inherit;
+        img {
+          height: 14px;
+          margin-right: 5px;
+        }
         i {
           font-size: 12px;
           margin-right: 5px;
@@ -5079,6 +5094,22 @@ span.badge-notification[data-badge]::after {
   box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
 }
 
+.logo-container {
+  display: none!important;
+  visibility: hidden !important;
+}
+
+.logo-container {
+  display: none !important;
+}
+.logo-link {
+  display: none !important;
+}
+
+.logo-container a[data-v-3832a65e] {
+  display: none !important;
+}
+
 .history-vingroup-page {
   iframe {
     border: none;
@@ -5121,5 +5152,5 @@ span.badge-notification[data-badge]::after {
   }
 }
 .cursor-pointer {
-  cursor: pointer;
+  cursor: pointer !important;
 }
