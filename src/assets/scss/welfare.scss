@@ -384,6 +384,12 @@
   input:disabled {
     background-color: #eee;
  }
+  textarea:disabled {
+    background-color: #eee;
+  }
+  [class$="-singleValue"]{
+    color:#000;
+  }
 }
 .registration-insurance-section {
   font: normal 14px Arial, Helvetica, sans-serif;

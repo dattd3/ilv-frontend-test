@@ -43,7 +43,8 @@ const requestTypes = [
   { value: [Constants.OT_REQUEST], label: 'MoneyOT' },
   { value: [Constants.PROPOSAL_TRANSFER], label: 'ProposalTransfer' },
   { value: [Constants.PROPOSAL_APPOINTMENT], label: 'ProposalAppointment' },
-  {value: [Constants.WELFARE_REFUND], label: 'WelfareRefund'}
+  {value: [Constants.WELFARE_REFUND], label: 'WelfareRefund'},
+  { value: [Constants.INSURANCE_SOCIAL], label: 'InsuranceSocialRequest' },
 ]
 
 const PN03List = [
