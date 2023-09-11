@@ -222,6 +222,7 @@ const CreateMaternityInsurance = ({
     const requiredFields = [
       "declareForm",
       "receiveType",
+      "maternityRegime",
       "plan",
       "leaveOfWeek",
       "seri",
@@ -286,7 +287,7 @@ const CreateMaternityInsurance = ({
 
   //check yêu cầu tuổi thai
   const checkRequireGestationalAge = () => {
-    if(data.plan?.value && ['T1', 'T2'].includes(data.plan.value)) {
+    if(data.maternityRegime?.value && ['T1', 'T2'].includes(data.maternityRegime.value)) {
       return true;
     }
     return false;
@@ -294,28 +295,28 @@ const CreateMaternityInsurance = ({
 
   //check yeu cau ngay sinh con + so con
   const checkRequireChildNumber = () => {
-    if(data.plan?.value && ['T4.1', 'T4.2', 'T8', 'T10', 'T11', 'T12', 'T13'].includes(data.plan.value)) {
+    if(data.maternityRegime?.value && ['T4.1', 'T4.2', 'T8', 'T10', 'T11', 'T12', 'T13'].includes(data.maternityRegime.value)) {
       return true;
     }
     return false;
   }
 
   const checkRequireChildDie = () => {
-    if(data.plan?.value && ['T6.1', 'T6.2', 'T6.3'].includes(data.plan.value)) {
+    if(data.maternityRegime?.value && ['T6.1', 'T6.2', 'T6.3'].includes(data.maternityRegime.value)) {
       return true;
     }
     return false;
   }
   
   const checkRequireChildReceiveDate = () => {
-    if(data.plan?.value && ['T8'].includes(data.plan.value)) {
+    if(data.maternityRegime?.value && ['T8'].includes(data.maternityRegime.value)) {
       return true;
     }
     return false;
   }
 
   const checkRequireMomInfo = () => {
-    if(data.plan?.value && ['T12', 'T13'].includes(data.plan.value)) {
+    if(data.maternityRegime?.value && ['T12', 'T13'].includes(data.maternityRegime.value)) {
       return true;
     }
     return false;
@@ -366,6 +367,7 @@ const CreateMaternityInsurance = ({
           </div>
           <div className="col-4">
             {t('case_of_maternity_benefits')}
+            <span className="required">(*)</span>
             <Select
               placeholder={t('option')}
               options={MATERNITY_REGIME}
@@ -376,6 +378,7 @@ const CreateMaternityInsurance = ({
               className="input mv-10"
               styles={{ menu: (provided) => ({ ...provided, zIndex: 2 }) }}
             />
+            {showError('maternityRegime')}
           </div>
         </div>
         <div className="row mv-10">
