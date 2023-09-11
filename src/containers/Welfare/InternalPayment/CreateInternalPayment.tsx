@@ -188,7 +188,7 @@ function CreateInternalPayment(props: any) {
     _quota.discountNightWaitClaim = discountNightWaitClaim;
     _quota.freeNightWaitClaim = freeNightWaitClaim;
     setQuota(_quota);
-    setRequests(_request);
+    setRequests(_.reverse(_request));
   };
 
   const onYearChange = async (yearDropDown: IDropdownValue) => {
