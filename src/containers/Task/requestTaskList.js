@@ -946,7 +946,7 @@ class RequestTaskList extends React.Component {
                                               dateChanged = child.dateRange;
                                             }
                                             let isShowSyncRequest = child?.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL 
-                                            && [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP, Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE, Constants.OT_REQUEST].includes(child?.requestTypeId)
+                                            && [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP, Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE, Constants.OT_REQUEST, Constants.WELFARE_REFUND].includes(child?.requestTypeId)
 
                                             // let isWorkOutSideGroup = false
                                             // if ([Constants.UPDATE_PROFILE].includes(child?.requestTypeId)) {
