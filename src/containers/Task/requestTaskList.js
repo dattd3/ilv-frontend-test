@@ -442,7 +442,7 @@ class RequestTaskList extends React.Component {
                     && [Constants.UPDATE_PROFILE, Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP, Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE, Constants.CHANGE_DIVISON_SHIFT, Constants.DEPARTMENT_TIMESHEET].includes(requestTypeId)) {
                     return true
                 }
-                if (status == Constants.STATUS_PARTIALLY_SUCCESSFUL && ![Constants.CHANGE_DIVISON_SHIFT, Constants.SUBSTITUTION].includes(requestTypeId)) {
+                if (status == Constants.STATUS_PARTIALLY_SUCCESSFUL && ![Constants.CHANGE_DIVISON_SHIFT, Constants.SUBSTITUTION, Constants.WELFARE_REFUND].includes(requestTypeId)) {
                     return true
                 }
                 // Case Self Resign
