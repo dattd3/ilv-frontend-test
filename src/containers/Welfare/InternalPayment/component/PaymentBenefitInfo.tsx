@@ -52,8 +52,8 @@ function PaymentBenefitInfo({
               </div>
             </>
           ) : null} */}
-          {/* </div> */}
-          {/* <div className="row mv-10"> */}
+          </div>
+          <div className="row mv-10">
           <div className="col-4">
             {t("FreeNightNotClaim")}
             <div className="detail1">
