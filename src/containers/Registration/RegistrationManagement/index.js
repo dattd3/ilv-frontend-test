@@ -36,7 +36,7 @@ const RegistrationManagement = (props) => {
         props.history.push(`/registration-employment-termination`);
         break;
       case 4:
-        props.history.push('/register-internal-payment');
+        props.history.push('/benefit-claim-request');
         break;
     }
   };
