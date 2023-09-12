@@ -14,6 +14,8 @@ import IconTime from '../../assets/img/icon/Icon-Time.svg'
 import IconLock from '../../assets/img/icon/icon-lock.svg'
 import IconSwitchPopup from '../../assets/img/icon/icon-switch-popup.svg'
 import IconX from '../../assets/img/icon/icon_x.svg'
+import IconGift from '../../assets/img/icon/Icon_gift_red.svg'
+import DacQuyen from '../../assets/img/vinpearl-dacquyen.png'
 
 const usePreload = (params) => {
     const api = useApi();
@@ -108,57 +110,84 @@ function NewsOnHome(props) {
                 {
                     totalArticles > 0 ?
                         <>
-                            <h1 className="page-title"><Image src={IconDiamond} alt="News" className="ic-page-title" />{t("NewsAndEvent")}</h1>
                             <div className="top-news">
                                 <div className="row">
-                                    <div className="col-md-6 special">
+                                    <div className="col-md-4 privilege">
+                                        <h1 className="page-title" style={{ color: "#D13238" }}><Image src={IconGift} alt="Gift" className="ic-page-title" />{t("Đặc quyền CBNV VGR")}</h1>
                                         <div className="top-one shadow-customize">
                                             <a href={`/news/${convertToSlug(topOne?.title)}/${topOne.id}`} className="link-detail">
-                                                <Image src={topOne?.thumbnail} alt="News" className="thumbnail"
+                                                <Image src={DacQuyen} alt="News" className="thumbnail"
                                                     onError={(e) => {
                                                         e.target.src = "/logo-large.svg"
                                                     }}
                                                 />
-                                                <p className="title">{topOne?.title || ""}</p>
+                                                <p className="title" style={{ color: "#D13238" }}>Ưu đãi tại Thiên đường giải trí Vinpearl Land dành cho CBNV Tập đoàn Vingroup</p>
                                             </a>
                                             <div className="other-info">
                                                 <div className="source-time-info">
-                                                    <span className="source"><Image src={IconUser} alt="Source" className="icon" /><span className="source-name">{topOne?.sourceSite || ""}</span></span>
+                                                    <span className="source"><Image src={IconUser} alt="Source" className="icon" /><span className="source-name">Vinpearl.com</span></span>
                                                     <span className="time"><Image src={IconTime} alt="Time" className="icon" /><span className="hour">{timePublishedTopOne?.date}</span></span>
                                                 </div>
-                                                <p className="description">{subStringDescription(topOne?.description)}...</p>
+                                                <p className="description">Công viên giải trí Vinpearl – Wonders bao gồm nhiều công trình có quy mô tầm cỡ ...</p>
                                                 <div className="btn-detail">
                                                     <a href={`/news/${convertToSlug(topOne?.title)}/${topOne?.id}`} className="detail"><span>{t("Details")}</span><Image src={IconViewDetail} alt="Detail" className="icon-view-detail" /></a>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="col-md-6 other">
-                                        <div className="top-four shadow-customize">
-                                            {
-                                                topFour.length > 0 ?
-                                                    topFour.map((item, index) => {
-                                                        let timePublished = getTimeByRawTime(item?.publishedDate)
-                                                        return <div className="item" key={item.id}>
-                                                            <a href={`/news/${convertToSlug(item.title)}/${item.id}`} className="link-image-detail">
-                                                                <Image src={item.thumbnail} className="thumbnail"
-                                                                    onError={(e) => {
-                                                                        e.target.src = "/logo-small.svg"
-                                                                        e.target.className = `thumbnail error`
-                                                                    }}
-                                                                />
-                                                            </a>
-                                                            <div className="title-source-time-info">
-                                                                <a href={`/news/${convertToSlug(item.title)}/${item.id}`} className="title">{item.title}</a>
-                                                                <div className="source-time-info">
-                                                                    <span className="source"><Image src={IconUser} alt="Source" className="icon" /><span className="source-name">{item.sourceSite || ""}</span></span>
-                                                                    <span className="time"><Image src={IconTime} alt="Time" className="icon" /><span className="hour">{timePublished.date}</span></span>
+                                    <div className="col-md-8 special">
+                                        <h2 className="page-title"><Image src={IconDiamond} alt="News" className="ic-page-title" />{t("NewsAndEvent")}</h2>
+                                        <div className="d-flex shadow-customize wrap-news">
+                                            <div className="top-one">
+                                                <a href={`/news/${convertToSlug(topOne?.title)}/${topOne.id}`} className="link-detail">
+                                                    <Image src={topOne?.thumbnail} alt="News" className="thumbnail"
+                                                        onError={(e) => {
+                                                            e.target.src = "/logo-large.svg"
+                                                        }}
+                                                    />
+                                                    <p className="title">{topOne?.title || ""}</p>
+                                                </a>
+                                                <div className="other-info">
+                                                    <div className="source-time-info">
+                                                        <span className="source"><Image src={IconUser} alt="Source" className="icon" /><span className="source-name">{topOne?.sourceSite || ""}</span></span>
+                                                        <span className="time"><Image src={IconTime} alt="Time" className="icon" /><span className="hour">{timePublishedTopOne?.date}</span></span>
+                                                    </div>
+                                                    <p className="description">{subStringDescription(topOne?.description)}...</p>
+                                                    <div className="btn-detail">
+                                                        <a href={`/news/${convertToSlug(topOne?.title)}/${topOne?.id}`} className="detail"><span>{t("Details")}</span><Image src={IconViewDetail} alt="Detail" className="icon-view-detail" /></a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {/* <div className="line-space"></div> */}
+                                            <div className="other">
+                                                <h1 className="" style={{ textTransform: 'initial', fontSize: 18, color: '#000000', fontWeight: 'bold', margin: "5px 20px 15px 20px" }}>Tin tức khác</h1>
+                                                <div className="top-four">
+                                                    {
+                                                        topFour.length > 0 ?
+                                                            topFour.map((item, index) => {
+                                                                let timePublished = getTimeByRawTime(item?.publishedDate)
+                                                                return <div className="item" key={item.id}>
+                                                                    <a href={`/news/${convertToSlug(item.title)}/${item.id}`} className="link-image-detail">
+                                                                        <Image src={item.thumbnail} className="thumbnail"
+                                                                            onError={(e) => {
+                                                                                e.target.src = "/logo-small.svg"
+                                                                                e.target.className = `thumbnail error`
+                                                                            }}
+                                                                        />
+                                                                    </a>
+                                                                    <div className="title-source-time-info">
+                                                                        <a href={`/news/${convertToSlug(item.title)}/${item.id}`} className="title">{item.title}</a>
+                                                                        <div className="source-time-info">
+                                                                            <span className="source"><Image src={IconUser} alt="Source" className="icon" /><span className="source-name">{item.sourceSite || ""}</span></span>
+                                                                            <span className="time"><Image src={IconTime} alt="Time" className="icon" /><span className="hour">{timePublished.date}</span></span>
+                                                                        </div>
+                                                                    </div>
                                                                 </div>
-                                                            </div>
-                                                        </div>
-                                                    })
-                                                    : t("DataNotFound")
-                                            }
+                                                            })
+                                                            : t("DataNotFound")
+                                                    }
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
