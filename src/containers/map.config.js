@@ -139,5 +139,5 @@ export default {
   Maintenance: '/maintenance',
   
   // Thanh toán phúc lợi nội bộ
-  RegistrationInternalPayment: "/register-internal-payment",
+  RegistrationInternalPayment: "/benefit-claim-request",
 };
