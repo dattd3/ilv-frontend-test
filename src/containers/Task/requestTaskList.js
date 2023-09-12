@@ -337,7 +337,7 @@ class RequestTaskList extends React.Component {
             '15-2': 'proposed-appointment',
           };
         if(request?.requestTypeId == Constants.WELFARE_REFUND) {
-            url = `register-internal-payment`;
+            url = `benefit-claim-request`;
         } else if (request?.requestTypeId == Constants.INSURANCE_SOCIAL) {
             url = `insurance-manager/detail/${request?.salaryId}/request`;
         } else if (request.parentRequestHistoryId) {
