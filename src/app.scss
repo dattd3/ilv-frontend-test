@@ -4263,14 +4263,16 @@ span.badge-notification[data-badge]::after {
     .ic-page-title {
       height: 18px;
       margin-right: 5px;
+      margin-top: -4px;
     }
   }
   .top-news {
     margin-bottom: 1.5rem;
-    .special {
+    .special, .privilege {
       .top-one {
         background: #FFFFFF;
         border-radius: 10px;
+        flex: 1;
         .link-detail {
           display: block;
           color: #000000;
@@ -4286,6 +4288,8 @@ span.badge-notification[data-badge]::after {
           .title {
             padding: 15px 15px 0 15px;
             margin: 0;
+            text-transform: capitalize;
+            margin-left: 0;
           }
         }
         .other-info {
@@ -4311,6 +4315,13 @@ span.badge-notification[data-badge]::after {
             color: #0d1904;
             margin: 0;
             padding-bottom: 15px;
+            height: 47px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;  
+            overflow: hidden;
+            text-overflow: ellipsis;
+            word-wrap:break-word;
           }
           .btn-detail {
             overflow: hidden;
@@ -4329,16 +4340,50 @@ span.badge-notification[data-badge]::after {
           }
         }
       }
-    }
-    .other {
-      .top-four {
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
+      .wrap-news {
         background: #FFFFFF;
         border-radius: 10px;
-        padding: 20px;
+      }
+      // .line-space {
+      //   width: 1px;
+      //   border-right: 1px solid #DEE2E6;
+      //   margin: 20px;
+      // }
+      .other {
+        flex: 1;
+        // padding: 20 20px 0 20px;
+        border-left: 1px solid #DEE2E6;
+        // margin-left: 20px;
+        margin: 20px;
+        overflow: hidden;
+        .top-four {
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-start;
+          background: #FFFFFF;
+          border-radius: 10px;
+          padding-left: 20px;
+          .item {
+            // margin-bottom: 15px;
+            .title-source-time-info {
+              .title {
+                margin-left: 0;
+              }
+            }
+            .link-image-detail {
+              display: inline-block;
+              width: 70px;
+              height: 70px;
+              flex: none;
+              .thumbnail {
+                width: 100%;
+                height: 100%;
+                border-radius: 50%;
+              }
+            }
+          }
+        }
       }
     }
   }
