@@ -1,8 +1,8 @@
 import { IDropdownValue } from "models/CommonModel";
 
 const PAYMENT_OBJECT = [
-    {value: 1, labelVi: 'Bản thân', labelEn: 'Bản thân'},
-    {value: 2, labelVi: 'Người thân', labelEn: 'Người thân'},
+    {value: 1, labelVi: 'Bản thân', labelEn: 'Self'},
+    {value: 2, labelVi: 'Người thân', labelEn: 'Families'},
 ]
 
 export const getPaymentObjects = () : IDropdownValue[] => {
