@@ -13,6 +13,7 @@ import HOCComponent from '../../../components/Common/HOCComponent'
 import Constants from '../../../commons/Constants';
 import LoadingModal from 'components/Common/LoadingModal';
 import InsuranceApproveActionButtons from '../InsuranceComponents/InsuranceApproveActionButtons';
+import ProcessHistoryComponent from 'containers/WorkflowManagement/DepartmentManagement/ProposalManagement/ProcessHistoryComponent';
 
 const DetailInsuranceSocial = (props) => {
     const { t } = props;
@@ -34,6 +35,7 @@ const DetailInsuranceSocial = (props) => {
     ];
     const [loading, setLoading] = useState(false);
     const [type, setType] = useState(null);
+    const [timeRequest, setTimerRequest] = useState({});
     const [data, setData] = useState({
         sickData: {
             declareForm: null,
@@ -212,6 +214,10 @@ const DetailInsuranceSocial = (props) => {
             employeeNo: infoDetail.employeeCode || '',
             IndentifiD: infoDetail.idNumber || '',
         })
+        setTimerRequest({
+          createdDate: data.createdDate,
+          approvedDate: data.approvedDate
+        })
         setType(InsuranceOptions.find(is => is.value == infoDetail.claimType));
         if (infoDetail.claimType == 3) {
             const receiveBenefitsUnitInfo = infoDetail.receiveBenefitsUnitInfo ? JSON.parse(infoDetail.receiveBenefitsUnitInfo) : {};
@@ -351,6 +357,7 @@ const DetailInsuranceSocial = (props) => {
                   employeeNo: _itemInfo?.employeeNo,
                   requestHistoryId: item.requestHistoryId,
                   appraiserComment: item?.appraiserComment,
+                  appraisalDate: item.appraisalDate
                 });
               }
             });
@@ -525,6 +532,20 @@ const DetailInsuranceSocial = (props) => {
                                     isCreateMode={false} />
                                 : null
             }
+            <h5 style={{paddingTop: '16px'}}>
+              {t("RequestHistory").toUpperCase()}
+            </h5>
+            <div className="timesheet-section">
+              <div className="timesheet-box1 timesheet-box shadow">
+                <ProcessHistoryComponent
+                  createdDate={timeRequest?.createdDate}
+                  coordinatorDate={null}
+                  requestAppraisers={supervisors}
+                  approvedDate={timeRequest.approvedDate}
+                />
+              </div>
+            </div>
+            
             <InsuranceApproveActionButtons
                 showComponent={viewSetting.showComponent}
                 t={t}
