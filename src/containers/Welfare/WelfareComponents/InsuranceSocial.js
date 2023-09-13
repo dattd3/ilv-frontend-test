@@ -37,7 +37,7 @@ class InsuranceSocial extends React.Component {
     fetchData = (page, size) => {
         const config = getRequestConfigurations()
 
-        axios.get(`${process.env.REACT_APP_HRDX_URL}api/BenefitClaim/list?pageIndex=${page}&pageSize=${size}`, config)
+        axios.get(`${process.env.REACT_APP_REQUEST_SERVICE_URL}BenefitClaim/list?pageIndex=${page}&pageSize=${size}`, config)
             .then(res => {
                 if (res && res.data && res.data.data) {
                     this.setState({ listData: res.data.data?.requests || [],
