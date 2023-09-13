@@ -30,6 +30,7 @@ export default {
   NewsDetailApp: "/news-app/:id",
   News: "/news",
   NewsDetail: "/news/:slug/:id",
+  EmployeePrivileges: "/employee-privileges",
 
   //about us
   Vingroup: "/about-vingroup",
