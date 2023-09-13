@@ -11,6 +11,7 @@ import { toast } from "react-toastify";
 import ResultModal from '../Registration/ResultModal';
 import HOCComponent from '../../components/Common/HOCComponent'
 import Constants from '../../commons/Constants';
+import LoadingModal from 'components/Common/LoadingModal';
 
 const CreateInsuranceSocial = (props) => {
     const { t } = props;
@@ -153,6 +154,7 @@ const CreateInsuranceSocial = (props) => {
     const [resultModal, setresultModal] = useState({
         isShowStatusModal: false, titleModal: '', messageModal: '', isSuccess: false
     });
+    const [loading, setLoading] = useState(false);
     const [disabledSubmitButton, setdisabledSubmitButton] = useState(false);
 
     useEffect(() => {
@@ -161,11 +163,13 @@ const CreateInsuranceSocial = (props) => {
         const getProfile = axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/profile`, muleSoftConfig)
         const getPersionalInfo = axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/personalinfo`, muleSoftConfig);
         const getShiftInfo = axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/timeoverview?from_date=${listDates[0]}&to_date=${listDates[listDates.length - 1]}`, muleSoftConfig);
+        setLoading(true);
         Promise.allSettled([getProfile, getPersionalInfo, getShiftInfo]).then(res => {
             if (res && res[0].value && res[1].value) {
                 let userProfile = res[0].value.data.data[0];
                 let userDetail = res[1].value.data.data[0];
                 let shiftInfo = res[2].value?.data?.data || [];
+                setLoading(false);
                 setUserInfo({
                     ...userInfo,
                     socialId: userProfile.insurance_number || '',
@@ -209,6 +213,9 @@ const CreateInsuranceSocial = (props) => {
                     },
                 })
             }
+        }).catch((err) => {
+            console.log(err);
+            setLoading(false);
         })
     }, []);
 
@@ -263,6 +270,7 @@ const CreateInsuranceSocial = (props) => {
 
     const onSubmit = (data) => {
         setdisabledSubmitButton(true);
+        setLoading(true);
         axios({
             method: 'POST',
             url: `${process.env.REACT_APP_REQUEST_SERVICE_URL}BenefitClaim`,
@@ -278,10 +286,12 @@ const CreateInsuranceSocial = (props) => {
                     notifyMessage(response.data.result.message || t("Error"))
                     setdisabledSubmitButton(false)
                 }
+                setLoading(false);
             })
             .catch(response => {
                 notifyMessage(t("Error"));
                 setdisabledSubmitButton(false);
+                setLoading(false);
             })
     }
 
@@ -301,9 +311,12 @@ const CreateInsuranceSocial = (props) => {
 
     const hideStatusModal = () => {
         setresultModal({
+            ...resultModal,
             isShowStatusModal: false
         })
-        window.location.reload();
+        if(resultModal.isSuccess) {
+            window.location.href = '/tasks?requestTypes=14,15,20';
+        }
     }
 
     const showStatusModal = (title, message, isSuccess = false) => {
@@ -312,10 +325,10 @@ const CreateInsuranceSocial = (props) => {
         })
     };
 
-
     return (
         <div className="registration-insurance-section">
             <ResultModal show={resultModal.isShowStatusModal} title={resultModal.titleModal} message={resultModal.messageModal} isSuccess={resultModal.isSuccess} onHide={hideStatusModal} />
+            {loading ? <LoadingModal show={loading}/> : null}
             {
                 type == null ?
                     <>

@@ -244,7 +244,7 @@ const CreateSickInsurance = ({
       "receiveType",
     ];
     if(!approver) {
-      _errors['approver'] = 'Vui lòng nhập giá trị !';
+      _errors['approver'] = t('PleaseEnterInfo');
     }
     if(checkRequireAtm()) {
       requiredFields.push("accountNumber",
@@ -266,10 +266,10 @@ const CreateSickInsurance = ({
         _.isEmpty(candidateInfos[name]) ||
         (!candidateInfos[name].value && optionFields.includes(name))
       ) {
-        _errors[name] = "Vui lòng nhập giá trị !";
+        _errors[name] = t('PleaseEnterInfo');
       } else {
         _errors[name] =
-          _errors[name] == "Vui lòng nhập giá trị !" ? null : _errors[name];
+          _errors[name] == t('PleaseEnterInfo') ? null : _errors[name];
       }
     });
     setErrors(_errors);
@@ -278,7 +278,7 @@ const CreateSickInsurance = ({
       (item) => item === null || item === undefined
     );
     if (hasErrors) {
-      notifyMessage("Vui lòng nhập giá trị !", true);
+      notifyMessage(t('PleaseEnterInfo'), true);
     }
     return hasErrors ? false : true;
   };
