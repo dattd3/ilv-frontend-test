@@ -25,7 +25,6 @@ import _ from 'lodash';
 import { toast } from "react-toastify";
 import Constants from 'commons/Constants'
 import HOCComponent from "components/Common/HOCComponent";
-import { getCulture } from "../../../commons/Utils";
 
 function CreateInternalPayment(props: any) {
   const { t, year} = props;
@@ -383,7 +382,7 @@ function CreateInternalPayment(props: any) {
     setLoading(true);
     axios({
       method: 'POST',
-      url: `${process.env.REACT_APP_REQUEST_URL}Request/benefit-refund?culture=${getCulture()}`,
+      url: `${process.env.REACT_APP_REQUEST_URL}Request/benefit-refund?culture=${t('langCode')}`,
       data: formData,
       headers: { 'Content-Type': 'multipart/form-data', Authorization: `${localStorage.getItem('accessToken')}` }
   })

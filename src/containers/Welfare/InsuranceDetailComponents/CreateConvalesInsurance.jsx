@@ -163,7 +163,7 @@ const CreateConvalesInsurance = ({
         <div className="row mv-10">
           <div className="col-4">
             <strong>{"Hình thức nhận"}</strong>
-            <div className="detail">{data.receiveType}</div>
+            <div className="detail">{data.receiveType?.name || ''}</div>
           </div>
           <div className="col-4">
             <strong>{"Số tài khoản"}</strong>
