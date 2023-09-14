@@ -96,9 +96,9 @@ class InsuranceSocial extends React.Component {
                                                     <td className="request-type text-center">{child.claimTypeName || ''}</td>
                                                     <td className="request-type text-center">{child.createdDate ? moment(child.createdDate).format('DD/MM/YYYY') : ''}</td>
                                                     <td className="status1 text-left">{child.statusName || ''}</td>
-                                                    <td className="request-type text-center">{'' || ''}</td>
+                                                    <td className="request-type text-center">{child.amountPaid || ''}</td>
                                                     <td className="tool">
-                                                        <a href={`/insurance-manager/detail/${child.id}/request`}><img alt="Sửa" src={Download} className="icon-download" /></a>
+                                                        <a href={`/insurance-manager/detail/${child.idDisplay}/request`}><img alt="Sửa" src={Download} className="icon-download" /></a>
                                                     </td>
                                                 </tr>
                                             )
