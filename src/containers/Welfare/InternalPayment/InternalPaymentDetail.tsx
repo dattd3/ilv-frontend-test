@@ -96,7 +96,9 @@ const InternalPaymentDetail = (props: any) => {
               approverId: data.approverId,
               createdDate: data.createDate,
               approvedDate: data.approvedDate,
-              approverComment: data.approverComment
+              approverComment: data.approverComment,
+              comment: data.comment,
+              responseSyncFromSap: JSON.stringify(data.responseDataFromSAP),
             },
             documentFileUrl: it.documentFileUrl,
             tripInfo: (it.code.split(",")?.map((code, index) => ({
