@@ -812,6 +812,14 @@ export default [
           },
           component: lazy(() => import("./Dashboard/EmployeePrivileges"))
         },
+        {
+          key: "employee-privilege-detail",
+          routeProps: {
+            exact: true,
+            path: map.EmployeePrivilegeDetail,
+          },
+          component: lazy(() => import("./Corporation/News/EmployeePrivilegeDetail")),
+        },
       ],
     },
   },
