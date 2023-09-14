@@ -148,9 +148,8 @@ const ExportInsuranceSocial = (props) => {
     useEffect(() => {
         setLoading(true);
         const requestId = props.match.params.id;
-        const muleSoftConfig = getMuleSoftHeaderConfigurations()
         const requestConfig = getRequestConfigurations();
-        const getInfoDetail = axios.get(`${process.env.REACT_APP_HRDX_URL}api/BenefitClaim/details?id=${requestId}`, requestConfig)
+        const getInfoDetail = axios.get(`${process.env.REACT_APP_REQUEST_SERVICE_URL}request/${requestId}`, requestConfig)
         Promise.allSettled([ getInfoDetail]).then(res => {
             if (res && res[0].value) {
                 let infoDetail = res[0].value.data.data;
@@ -163,8 +162,9 @@ const ExportInsuranceSocial = (props) => {
             })
     }, []);
 
-    const prepareDetailData = (infoDetail) => {
-        if (infoDetail.requestType == 3) {
+    const prepareDetailData = (_data) => {
+        const infoDetail = _data.benefitClaim || {};
+        if (infoDetail.claimType == 3) {
             setType({ value: 3, label: 'Dưỡng sức' });
             const receiveBenefitsUnitInfo = infoDetail.receiveBenefitsUnitInfo ? JSON.parse(infoDetail.receiveBenefitsUnitInfo) : {};
             const inspectionDataInfo = infoDetail.inspectionDataInfo ? JSON.parse(infoDetail.inspectionDataInfo) : {}
@@ -172,10 +172,11 @@ const ExportInsuranceSocial = (props) => {
             setData({
                 ...data,
                 convalesData: {
-                    fullName: infoDetail.fullName || '',
                     socialId: infoDetail.insuranceNumber || '',
+                    healthId: '',
+                    fullName: infoDetail.fullName || '',
+                    employeeNo: infoDetail.employeeCode || '',
                     IndentifiD: infoDetail.idNumber || '',
-                    employeeNo: infoDetail.employeeNo || '',
                     declareForm: infoDetail.formTypeInfo ? JSON.parse(infoDetail.formTypeInfo).name : '',
                     dateRequest: infoDetail.recommendEnjoyDate ? moment(infoDetail.recommendEnjoyDate).format('DD/MM/YYYY') : '',
                     dateLastResolved: infoDetail.solvedFirstDate ? moment(infoDetail.solvedFirstDate).format('DD/MM/YYYY') : '',
@@ -200,7 +201,7 @@ const ExportInsuranceSocial = (props) => {
                 },
             })
 
-        } else if (infoDetail.requestType == 2) {
+        } else if (infoDetail.claimType == 2) {
             setType({ value: 2, label: 'Thai sản' });
             const childrenDataInfo = infoDetail.childrenDataInfo ? JSON.parse(infoDetail.childrenDataInfo) : {};
             const certificateInsuranceBenefit = infoDetail.certificateInsuranceBenefit ? JSON.parse(infoDetail.certificateInsuranceBenefit) : {}
@@ -210,10 +211,11 @@ const ExportInsuranceSocial = (props) => {
             setData({
                 ...data,
                 maternityData: {
-                    fullName: infoDetail.fullName || '',
                     socialId: infoDetail.insuranceNumber || '',
+                    healthId: '',
+                    fullName: infoDetail.fullName || '',
+                    employeeNo: infoDetail.employeeCode || '',
                     IndentifiD: infoDetail.idNumber || '',
-                    employeeNo: infoDetail.employeeNo || '',
                     declareForm: infoDetail.formTypeInfo ? JSON.parse(infoDetail.formTypeInfo).name : '',
                     maternityRegime: infoDetail.maternityRegimeInfo ? JSON.parse(infoDetail.maternityRegimeInfo).name : '',
                     dateRequest: infoDetail.recommendEnjoyDate ? moment(infoDetail.recommendEnjoyDate).format('DD/MM/YYYY') : '',
@@ -260,7 +262,7 @@ const ExportInsuranceSocial = (props) => {
                     bankName: receiveSubsidiesInfo.bankName || ''
                 }
             })
-        } else if (infoDetail.requestType == 1) {
+        } else if (infoDetail.claimType == 1) {
             setType({ value: 1, label: 'Ốm đau' });
             const sickChildrenInfo = infoDetail.sickChildrenInfo ? JSON.parse(infoDetail.sickChildrenInfo) : {};
             const certificateInsuranceBenefit = infoDetail.certificateInsuranceBenefit ? JSON.parse(infoDetail.certificateInsuranceBenefit) : {}
@@ -270,10 +272,11 @@ const ExportInsuranceSocial = (props) => {
             setData({
                 ...data,
                 sickData: {
-                    fullName: infoDetail.fullName || '',
                     socialId: infoDetail.insuranceNumber || '',
+                    healthId: '',
+                    fullName: infoDetail.fullName || '',
+                    employeeNo: infoDetail.employeeCode || '',
                     IndentifiD: infoDetail.idNumber || '',
-                    employeeNo: infoDetail.employeeNo || '',
                     declareForm: infoDetail.formTypeInfo ? JSON.parse(infoDetail.formTypeInfo).name : '',
                     dateRequest: infoDetail.recommendEnjoyDate ? moment(infoDetail.recommendEnjoyDate).format('DD/MM/YYYY') : '',
                     dateLastResolved: infoDetail.solvedFirstDate ? moment(infoDetail.solvedFirstDate).format('DD/MM/YYYY') : '',
@@ -309,13 +312,13 @@ const ExportInsuranceSocial = (props) => {
     const handleTextInputChange = (e, name, subName) => {
         const candidateInfos = { ...data }
         candidateInfos[name][subName] = e != null ? e.target.value : "";
-        setData(candidateInfos);
+        //setData(candidateInfos);
     }
 
     const handleChangeSelectInputs = (e, name, subName) => {
         const candidateInfos = { ...data }
         candidateInfos[name][subName] = e != null ? { value: e.value, label: e.label } : {}
-        setData(candidateInfos);
+        //setData(candidateInfos);
     }
 
     const handleDatePickerInputChange = (value, name, subname) => {
@@ -327,7 +330,7 @@ const ExportInsuranceSocial = (props) => {
         } else {
             candidateInfos[name][subname] = null
         }
-        setData(candidateInfos)
+        //setData(candidateInfos)
     }
 
     const onSubmit = (data) => {
@@ -383,9 +386,8 @@ const ExportInsuranceSocial = (props) => {
 
     const exportToPDF1 = (type, name) => {
         const elementView = document.getElementById('frame-for-export')
-        exportToPDF(elementView, `BHXH_${type}`)
-      }
-
+        exportToPDF(elementView, `BHXH_${type}`, false)
+    }
     return (
         <div className="registration-insurance-section">
             <LoadingModal show={loading} />
