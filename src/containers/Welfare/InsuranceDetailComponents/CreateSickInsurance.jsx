@@ -104,7 +104,7 @@ const CreateSickInsurance = ({
         <div className="row">
           <div className="col-8">
             <strong>{"Tuyến bệnh viện"}</strong>
-            <div className="detail">{data.hospitalLine}</div>
+            <div className="detail">{data.hospitalLine?.name || ''}</div>
           </div>
           <div className="col-4">
             <strong>{"Số Seri"}</strong>
@@ -127,10 +127,8 @@ const CreateSickInsurance = ({
         </div>
       </div>
       {/* TRƯỜNG HỢP CON ỐM */}
-      <h5>TRƯỜNG HỢP CON ỐM</h5>{" "}
-      <span className="sub-h5">
-        (vui lòng điền đầy đủ thông tin để được hỗ trợ phúc lợi)
-      </span>
+      <h5>{t('case_of_children_sick')}</h5>{" "}
+      
       <div className="box shadow cbnv">
         <div className="row mv-10">
           <div className="col-4">
@@ -195,7 +193,7 @@ const CreateSickInsurance = ({
         <div className="row mv-10">
           <div className="col-4">
             <strong>{"Hình thức nhận"}</strong>
-            <div className="detail">{data.receiveType}</div>
+            <div className="detail">{data.receiveType?.name || ''}</div>
           </div>
           <div className="col-4">
             <strong>{"Số tài khoản"}</strong>
