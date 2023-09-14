@@ -35,8 +35,8 @@ const getTimeByRawTime = rawTime => {
 }
 
 export default function NewsItemGrid(props) {
-    const { id, title, thumbnail, description, sourceSite, publishedDate } = props.article;
-    const { col } = props;
+    const { id, title, thumbnail, sourceSite, publishedDate } = props.article;
+    const { col, isEmployeePrivilege } = props;
     var column = 4;
     if (col) column = col;
 
@@ -45,7 +45,7 @@ export default function NewsItemGrid(props) {
     return (
         <div key={id} className={`col-md-6`}>
             <div className="item" key={id}>
-                <a href={`/news/${convertToSlug(title)}/${id}`} className="link-image-detail">
+                <a href={`/${isEmployeePrivilege ? 'employee-privileges' : 'news'}/${convertToSlug(title)}/${id}`} className="link-image-detail">
                     <Image src={thumbnail} className="thumbnail"
                         onError={(e) => {
                             e.target.src = "/logo-normal.svg"
@@ -54,10 +54,10 @@ export default function NewsItemGrid(props) {
                     />
                 </a>
                 <div className="title-source-time-info">
-                    <a href={`/news/${convertToSlug(title)}/${id}`} className="title">{title}</a>
+                    <a href={`/${isEmployeePrivilege ? 'employee-privileges' : 'news'}/${convertToSlug(title)}/${id}`} className="title">{title}</a>
                     <div className="source-time-info">
-                        <span className="source"><Image src={IconUser} alt="Source" className="icon" /><span className="source-name">{sourceSite || ""}</span></span>
-                        <span className="time"><Image src={IconTime} alt="Time" className="icon" /><span className="hour">{timePublished.date}</span></span>
+                        { !isEmployeePrivilege && (<span className="source"><Image src={IconUser} alt="Source" className="icon" /><span className="source-name">{sourceSite || ""}</span></span>) }
+                        <span className="time"><Image src={IconTime} alt="Time" className="icon" /><span className="hour">{timePublished?.date}</span></span>
                     </div>
                 </div>
             </div>
