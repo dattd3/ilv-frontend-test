@@ -12,7 +12,7 @@ class InsuranceRegime extends React.Component {
     constructor(props) {
         super();
         this.state = {
-            tab: new URLSearchParams(props?.history?.location?.search).get('tab') || "Health",
+            tab: new URLSearchParams(props?.history?.location?.search).get('tab') || "Social",
         }
     }
 
@@ -30,9 +30,9 @@ class InsuranceRegime extends React.Component {
         return (
             <div className="registration-section personal-info justify-content-between internal-welfare">
                 <Tabs defaultActiveKey={this.state.tab} onSelect={(key) => this.updateTabLink(key)}>
-                    <Tab eventKey="Health" title={t('heath_insurance')}>
+                    {/* <Tab eventKey="Health" title={t('heath_insurance')}>
                         <Health title={t('welfare_regime_internal')}/>
-                    </Tab>
+                    </Tab> */}
                     <Tab eventKey="Social" title={t('social_insurance')}>
                         <InsuranceSocial title={t('Vinwonder/Safari')}/>
                     </Tab>

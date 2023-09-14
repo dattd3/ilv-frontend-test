@@ -550,7 +550,7 @@ const CreateMaternityInsurance = ({
           <div className="col-4">
             {t('indenfy_number_2')}
             <span className="required">(*)</span>
-            <div className="detail1">{userInfo.personal_id_no}</div>
+            <div className="detail1">{userInfo.IndentifiD}</div>
           </div>
         </div>
         <div className="row mv-10">

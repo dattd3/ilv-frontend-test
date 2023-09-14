@@ -389,7 +389,7 @@ function ServiceRequest({
                   </div>
                 </div>
                 <div className="col-4">
-                  {t("reason_reject")}
+                  {t("lyDoTuChoi")}
                   <div className="detail1">
                     {request.requestHistory?.processStatusId ==
                       Constants.STATUS_NOT_APPROVED &&
