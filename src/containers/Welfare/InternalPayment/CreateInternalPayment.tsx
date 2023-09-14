@@ -382,7 +382,7 @@ function CreateInternalPayment(props: any) {
     setLoading(true);
     axios({
       method: 'POST',
-      url: `${process.env.REACT_APP_REQUEST_URL}Request/benefit-refund`,
+      url: `${process.env.REACT_APP_REQUEST_URL}Request/benefit-refund?culture=${t('langCode')}`,
       data: formData,
       headers: { 'Content-Type': 'multipart/form-data', Authorization: `${localStorage.getItem('accessToken')}` }
   })
