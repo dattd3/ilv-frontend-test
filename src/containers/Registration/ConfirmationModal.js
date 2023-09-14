@@ -114,7 +114,7 @@ class ConfirmationModal extends React.Component {
         this.setState({ isShowLoading: true })
         axios({
             method: 'POST',
-            url: `${process.env.REACT_APP_REQUEST_URL}request/user-approve`,
+            url: `${process.env.REACT_APP_REQUEST_URL}request/user-approve?culture=${t("langCode")}`,
             data: [dataToSap],
             headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` }
         })
