@@ -1964,5 +1964,7 @@
   "WaitProcessingContentMessage": "Dữ liệu đang được xử lý. Vui lòng chờ trong giây lát",
   "InsuranceSocialRequest": "Thanh toán báo hiểm xã hội",
   "HolidayGifts": "Quà ngày lễ (cộng vào lương)",
-  "lyDoTuChoi": "Lý do từ chối"
+  "lyDoTuChoi": "Lý do từ chối",
+  "DocumentRequired": "HỒ SƠ BẮT BUỘC",
+  "DocumentDownload": "Để tải về hồ sơ bắt buộc"
 }

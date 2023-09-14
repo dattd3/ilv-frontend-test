@@ -17,6 +17,7 @@ import {
 import { Spinner } from "react-bootstrap";
 import AssessorInfoComponent from "../InternalPayment/component/AssessorInfoComponent";
 import ButtonComponent from "containers/Registration/ButtonComponent";
+import DocumentRequired from "./DocumentRequired";
 
 const CreateSickInsurance = ({
   t,
@@ -862,6 +863,11 @@ const CreateSickInsurance = ({
       {errors["approver"] ? (
         <p className="text-danger">{errors["approver"]}</p>
       ) : null}
+      {
+        isCreateMode ?
+        <DocumentRequired
+        t={t}/> : null
+      }
 
       <div className="registration-section">
         <ul className="list-inline">
