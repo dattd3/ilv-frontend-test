@@ -194,6 +194,7 @@ const DetailInsuranceSocial = (props) => {
     }, []);
 
     const convertFormalDropdrowValue =(jsonString) => {
+        if(!jsonString) return null;
         try{
             if(jsonString && typeof jsonString == 'string' && JSON.parse(jsonString)?.name) {
                 return {value: JSON.parse(jsonString).id, label: JSON.parse(jsonString).name};

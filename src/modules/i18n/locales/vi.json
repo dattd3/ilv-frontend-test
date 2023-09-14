@@ -1963,5 +1963,6 @@
   "WelfareRefundApproveWarning": "Đã có phê duyệt thanh toán cho CBLĐ trước đó, hệ thống sẽ điều chỉnh ngày duyệt ở SAP là {{date}}",
   "WaitProcessingContentMessage": "Dữ liệu đang được xử lý. Vui lòng chờ trong giây lát",
   "InsuranceSocialRequest": "Thanh toán báo hiểm xã hội",
-  "HolidayGifts": "Quà ngày lễ (cộng vào lương)"
+  "HolidayGifts": "Quà ngày lễ (cộng vào lương)",
+  "lyDoTuChoi": "Lý do từ chối"
 }
