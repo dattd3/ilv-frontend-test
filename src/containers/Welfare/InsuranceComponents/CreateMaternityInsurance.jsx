@@ -20,6 +20,7 @@ import _ from "lodash";
 import { Spinner } from "react-bootstrap";
 import AssessorInfoComponent from "../InternalPayment/component/AssessorInfoComponent";
 import ButtonComponent from "containers/Registration/ButtonComponent";
+import DocumentRequired from "./DocumentRequired";
 
 const CreateMaternityInsurance = ({
   t,
@@ -1221,6 +1222,13 @@ const CreateMaternityInsurance = ({
         setApprover={setApprover}
       />
       {showError('approver')}
+
+      {
+        isCreateMode ?
+        <DocumentRequired
+        t={t}/> : null
+      }
+
       <div className="registration-section">
         <ul className="list-inline">
           {files.map((file, index) => {

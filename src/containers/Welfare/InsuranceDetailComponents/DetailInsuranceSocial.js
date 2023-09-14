@@ -382,7 +382,7 @@ const DetailInsuranceSocial = (props) => {
             (data?.userProfileDocuments || []).map((u) => ({
               id: u.id,
               name: u.fileName,
-              link: u.fileUrl,
+              fileUrl: u.fileUrl,
             })) || [];
       
         updateFiles(requestDocuments);
