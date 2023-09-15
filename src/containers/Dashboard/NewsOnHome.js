@@ -16,6 +16,7 @@ import IconLock from '../../assets/img/icon/icon-lock.svg'
 import IconSwitchPopup from '../../assets/img/icon/icon-switch-popup.svg'
 import IconX from '../../assets/img/icon/icon_x.svg'
 import IconGift from 'assets/img/icon/Icon_gift_red.svg'
+import IconBackToTop from "assets/img/icon/Icon_back_to_top.svg"
 import LoadingModal from "components/Common/LoadingModal"
 
 function NewsOnHome(props) {
@@ -261,10 +262,8 @@ function NewsOnHome(props) {
             { loaded && (<Footer />) }
             {
                 isVisibleGoToTop && (
-                    <div onClick={e => scrollToTop()} className="scroll-to-top2" style={{ color: localStorage.getItem("companyThemeColor"), zIndex: '10' }}>
-                        <div>
-                            <span><i className="fa fa-arrow-circle-o-up fa-2x"></i></span>
-                        </div>
+                    <div onClick={e => scrollToTop()} className="scroll-to-top2" style={{ zIndex: '10' }}>
+                        <span><img src={IconBackToTop} /></span>
                     </div>
                 )
             }
