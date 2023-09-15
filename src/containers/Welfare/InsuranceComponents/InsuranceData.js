@@ -54,8 +54,7 @@ export const MATERNITY_PLAN = [ //Phương án Thai sản
     { value: 'KNV', label: 'Trường hợp NLĐ nhận nuôi con nuôi nhưng không nghỉ việc/  Trường hợp người mẹ nhờ mang thai hộ không nghỉ việc' },
     { value: 'TT1', label: 'Tránh thai' },
     { value: 'TT2', label: 'Triệt sản' }
-
-];
+]; 
 
 export const CONVALES_PLAN = [ //Phương án Dưỡng sức
     { value: 'D1', label: 'Dưỡng sức sau ốm' },
