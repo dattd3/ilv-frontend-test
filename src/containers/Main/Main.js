@@ -11,6 +11,7 @@ import ScrollToTop from '../../components/Common/ScrollToTop';
 import map from "../map.config";
 import Constants from '../../commons/Constants'
 import { handleFullScreen } from "actions/index"
+import GuideLineTicketSupport from "components/Common/GuideLineTicketSupport";
 
 function MainLayout(props) {
   const guard = useGuardStore();
@@ -36,6 +37,7 @@ function MainLayout(props) {
           <div className={`${isDashBoard === true ? "" : "container-fluid"}`} id='main-content'>
             <NestedRoute routes={props.routes} show={!isFullScreen} />
           </div>
+          { isDashBoard && (<GuideLineTicketSupport />) }
           <ScrollToTop />
         </div>
         {isDashBoard !== true &&
