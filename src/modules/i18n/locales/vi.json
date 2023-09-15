@@ -1962,7 +1962,6 @@
   "WelfareRefund": "Hoàn trả dịch vụ phúc lợi",
   "WelfareRefundApproveWarning": "Đã có phê duyệt thanh toán cho CBLĐ trước đó, hệ thống sẽ điều chỉnh ngày duyệt ở SAP là {{date}}",
   "WaitProcessingContentMessage": "Dữ liệu đang được xử lý. Vui lòng chờ trong giây lát",
-  "HolidayGifts": "Quà ngày lễ (cộng vào lương)",
   "ViewMore": "Xem thêm",
   "OtherIncentives": "Ưu đãi khác",
   "VingroupEmployeePrivileges": "Đặc quyền CBNV VGR",
@@ -1970,5 +1969,6 @@
   "HolidayGifts": "Quà ngày lễ (cộng vào lương)",
   "lyDoTuChoi": "Lý do từ chối",
   "DocumentRequired": "HỒ SƠ BẮT BUỘC",
-  "DocumentDownload": "Để tải về hồ sơ bắt buộc"
+  "DocumentDownload": "Để tải về hồ sơ bắt buộc",
+  "RatingSuccessfully": "Đánh giá câu trả lời thành công"
 }

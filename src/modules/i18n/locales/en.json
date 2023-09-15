@@ -1907,7 +1907,6 @@
   "vinai_normal": "Need Improvement",
   "vinai_bad": "Unsatisfactory",
   "WaitProcessingContentMessage": "Data is being processed. Please wait in minunues",
-  "HolidayGifts": "Holiday gifts (added to salary)",
   "ViewMore": "View more",
   "OtherIncentives": "Other incentives",
   "VingroupEmployeePrivileges": "Vingroup employee privileges",
@@ -1953,5 +1952,6 @@
   "HolidayGifts": "Holiday gifts (added to salary)",
   "lyDoTuChoi": "Declined reason",
   "DocumentRequired": "Required Files",
-  "DocumentDownload": "To download require files"
+  "DocumentDownload": "To download require files",
+  "RatingSuccessfully": "Rating comment successfully"
 }

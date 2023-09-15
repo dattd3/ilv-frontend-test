@@ -130,3 +130,27 @@
   padding: 0 !important;
   font-size: 16px;
 }
+
+.rate-star-container {
+  .icon-star {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+    cursor: pointer;
+  }
+  .send-button {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    border: 1px solid #347EF9;
+    width: 123px;
+    height: 36px;
+    color: #347EF9;
+    border-radius: 4px;
+    background-color: #fff;
+  }
+  .send-button:disabled {
+    opacity: 0.6;
+  }
+}
