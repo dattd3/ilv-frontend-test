@@ -4,6 +4,7 @@ import Carousel from 'react-bootstrap/Carousel'
 import SubmitQuestionModal from './SubmitQuestionModal'
 import HistoryModal from './HistoryModal'
 import { Container, Button } from 'react-bootstrap';
+import { toast } from "react-toastify";
 import StatusModal from '../../components/Common/StatusModal'
 import FormControl from 'react-bootstrap/FormControl'
 import ConfirmModal from './ConfirmModal'
@@ -11,6 +12,9 @@ import SelectSupporterModal from './SelectSupporterModal'
 import defaultAvartar from '../../components/Common/DefaultAvartar'
 import { withTranslation } from 'react-i18next';
 import HOCComponent from '../../components/Common/HOCComponent'
+import IconRateStar from 'assets/img/icon/icon-rate-star.svg'
+import IconRateStarFull from 'assets/img/icon/icon-rate-star-full.svg'
+import IconSend from 'assets/img/icon/icon-send.svg'
 
 class QuestionAndAnswerDetails extends React.Component {
 
@@ -21,7 +25,6 @@ class QuestionAndAnswerDetails extends React.Component {
       isShowHistoryModal: false,
       question: {},
       isShowStatusModal: false,
-      isShowConfirmModal: false,
       content: "",
       isSuccess: false,
       questionContent: {},
@@ -29,7 +32,8 @@ class QuestionAndAnswerDetails extends React.Component {
       comment: "",
       isShowCommentEditor: false,
       isShowSelectSupporterModal: false,
-      categories: []
+      categories: [],
+      isRatingLoading: false
     }
     this.submitSelectSupporterModal = this.submitSelectSupporterModal.bind(this)
   }
@@ -79,7 +83,7 @@ class QuestionAndAnswerDetails extends React.Component {
   }
 
   showStatusModal = (message, isSuccess = false) => {
-    this.setState({ isShowStatusModal: true, content: message, isSuccess: isSuccess, isShowConfirmModal: false });
+    this.setState({ isShowStatusModal: true, content: message, isSuccess: isSuccess });
     this.showSubmitModal(false);
     this.showHistoryModal(false);
     this.showSelectSupporterModal(false);
@@ -108,7 +112,7 @@ class QuestionAndAnswerDetails extends React.Component {
         return;
       }
       this.setState({ comment: event.target.value })
-      this.showConfirmModal(true)
+      this.submit(true);
     }
   }
 
@@ -175,10 +179,6 @@ class QuestionAndAnswerDetails extends React.Component {
       .catch(function (error) {
         return false
       });
-  }
-
-  showConfirmModal = (modalStatus) => {
-    this.setState({ isShowConfirmModal: modalStatus });
   }
 
   showSelectSupporterModal = (modalStatus) => {
@@ -250,11 +250,72 @@ class QuestionAndAnswerDetails extends React.Component {
     this.setState({ [event.target.name]: event.target.value });
   }
 
+  handleChangeCommentRating(id, rating) {
+    const newComments = [...this.state.question?.ticketComments];
+    const objChange = newComments.find(comment => comment.id === id);
+
+    if (objChange) {
+      objChange.rating = rating;
+    }
+    this.setState({
+      question: {
+        ...this.state.question,
+        ticketComments: newComments
+      }
+    })
+  }
+
+  submitRating(id) {
+    this.setState({
+      isRatingLoading: true
+    })
+    const { t } = this.props
+
+    const commentRating = this.state.question?.ticketComments?.find(comment => comment.id === id);
+    if (commentRating?.rating > 0) {
+      const config = {
+        method: 'post',
+        url: `${process.env.REACT_APP_REQUEST_URL}ticket/rated`,
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+          'Content-Type': 'application/json'
+        },
+        data: {
+          id, 
+          rated: commentRating?.rating
+        }
+      };
+
+      axios(config)
+        .then(response => {
+          this.setState({
+            question: {
+              ...this.state.question,
+              ticketComments: this.state.question?.ticketComments?.map(item => {
+                return item.id === id ? {
+                  ...item,
+                  rated: item.rating
+                } : item
+              })
+            }
+          })
+          toast.success(t("RatingSuccessfully"));
+        })
+        .catch(error => {
+          toast.error(t("HasErrorOccurred"))
+        });
+    }
+    this.setState({
+      isRatingLoading: false
+    })
+  }
+
   render() {
     const { t } = this.props
-    const { isShowStatusModal, question, isShowConfirmModal, isShowSelectSupporterModal, content, isSuccess, isEditQuestion, 
-            questionContent, isShowSubmitQuestionModal, isShowHistoryModal, isShowCommentEditor, comment, categories } = this.state
+    const { isShowStatusModal, question, isShowSelectSupporterModal, content, isSuccess, isEditQuestion, 
+            questionContent, isShowSubmitQuestionModal, isShowHistoryModal, isShowCommentEditor, comment, categories, isRatingLoading } = this.state
     const comments = question.ticketComments
+    const isEmployeeView = question.userId === localStorage.getItem("email")
 
     const reload = () => {
       if (isShowStatusModal) {
@@ -265,14 +326,6 @@ class QuestionAndAnswerDetails extends React.Component {
     return (
       question && question.content ?
         <>
-          <ConfirmModal
-            show={isShowConfirmModal}
-            onHide={() => this.showConfirmModal(false)}
-            onAcceptClick={() => this.submit(true)}
-            onCancelClick={() => this.submit(false)}
-            confirmHeader={t("CloseQA")}
-            confirmContent={t("ConfirmEndedAnswers")}
-          />
           <SelectSupporterModal
             show={isShowSelectSupporterModal}
             onHide={() => this.showSelectSupporterModal(false)}
@@ -446,6 +499,41 @@ class QuestionAndAnswerDetails extends React.Component {
                             <p className="mb-0 text-break">
                               <b className="text-left">{t('Answer')}: </b>
                               {item.content}
+                              {
+                                (!item.isExpire || (item.isExpire && item.rated)) && isEmployeeView && <div className="rate-star-container">
+                                <img src={(item.rating >= 1 || item.rated >= 1) ? IconRateStarFull : IconRateStar} 
+                                  alt="" 
+                                  className="icon-star" 
+                                  onClick={() => item.rated ? {} : this.handleChangeCommentRating(item.id, 1)} 
+                                />
+                                <img src={(item.rating >= 2 || item.rated >= 2) ? IconRateStarFull : IconRateStar} 
+                                  alt="" 
+                                  className="icon-star" 
+                                  onClick={() => item.rated ? {} : this.handleChangeCommentRating(item.id, 2)} 
+                                />
+                                <img src={(item.rating >= 3 || item.rated >= 3) ? IconRateStarFull : IconRateStar} 
+                                  alt="" 
+                                  className="icon-star" 
+                                  onClick={() => item.rated ? {} : this.handleChangeCommentRating(item.id, 3)} 
+                                />
+                                <img src={(item.rating >= 4 || item.rated >= 4) ? IconRateStarFull : IconRateStar} 
+                                  alt="" 
+                                  className="icon-star" 
+                                  onClick={() => item.rated ? {} : this.handleChangeCommentRating(item.id, 4)} 
+                                />
+                                <img src={(item.rating >= 5 || item.rated >= 5) ? IconRateStarFull : IconRateStar} 
+                                  alt="" 
+                                  className="icon-star" 
+                                  onClick={() => item.rated ? {} : this.handleChangeCommentRating(item.id, 5)}
+                                />
+                                {
+                                  (!item.isExpire && !item.rated) && <button className="send-button" disabled={isRatingLoading} onClick={() => this.submitRating(item.id)}>
+                                    <img src={IconSend} alt="" />{" "}
+                                    {t("Confirm")}
+                                  </button>
+                                }
+                              </div>
+                              }
                             </p>
                           </div>
                         </div>
@@ -468,7 +556,7 @@ class QuestionAndAnswerDetails extends React.Component {
                     </div>
                     <div className="mt-2 text-right">
                       <Button variant="danger pl-3 pr-3 mr-2" onClick={this.rejectComment}>{t("RejectQuestionButtonLabel")}</Button>{' '}
-                      <Button variant="primary pl-4 pr-4" disabled={(comment === ""? true: false)} onClick={() => this.showConfirmModal(true)}>{t('Answer')}</Button>{' '}
+                      <Button variant="primary pl-4 pr-4" disabled={(comment === ""? true: false)} onClick={() => this.submit(true)}>{t('Answer')}</Button>{' '}
                     </div>
                   </div>
                   : null
