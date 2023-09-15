@@ -332,7 +332,7 @@ export const Navigation = [
     parentId: 10,
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     label: "Welfare",
-    role: [...Constants.MODULE_COMPANY_AVAILABE[Constants.MODULE.PHUCLOI]]
+    role: [...Constants.MODULE_COMPANY_AVAILABE[Constants.MODULE.PHUCLOI], ...Constants.MODULE_COMPANY_AVAILABE[Constants.MODULE.BAOHIEM]]
   },
   {
     id: 111,
@@ -340,7 +340,7 @@ export const Navigation = [
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     label: "InteralWelfare",
     to: map.InteralWelfare,
-    role: 'U'
+    role: [...Constants.MODULE_COMPANY_AVAILABE[Constants.MODULE.PHUCLOI]]
   },
   {
     id: 112,
@@ -348,7 +348,7 @@ export const Navigation = [
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     label: "InsuranceRegime",
     to: map.InsuranceRegime,
-    role: 'U'
+    role: [...Constants.MODULE_COMPANY_AVAILABE[Constants.MODULE.BAOHIEM]]
   },
   {
     id: 30,
