@@ -1908,5 +1908,9 @@
   "vinai_bad": "Unsatisfactory",
   "WaitProcessingContentMessage": "Data is being processed. Please wait in minunues",
   "HolidayGifts": "Holiday gifts (added to salary)",
-  "RatingSuccessfully": "Rating comment successfully"
+  "lyDoTuChoi": "Declined reason",
+  "DocumentRequired": "Required Files",
+  "DocumentDownload": "To download require files",
+  "RatingSuccessfully": "Rating comment successfully",
+  "Expired": "Expired"
 }
