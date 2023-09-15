@@ -5123,3 +5123,61 @@ span.badge-notification[data-badge]::after {
 .cursor-pointer {
   cursor: pointer;
 }
+.guide-line-ticket {
+  border: none;
+  outline: none;
+  position: fixed;
+  right: 32px;
+  bottom: 112px;
+  background: transparent;
+  padding: 0;
+  img {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+  }
+}
+.guide-line-ticket-modal {
+  font: normal 14px Arial, Helvetica, sans-serif;
+  .modal-dialog {
+    max-width: 600px;
+    margin: 0 auto!important;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    .modal-body {
+      padding: 1rem 1.5rem;
+      .header {
+        position: relative;
+        .close {
+          position: absolute;
+          top: -15px;
+          right: -15px;
+          cursor: pointer;
+        }
+      }
+      .text-title {
+        font-weight: bold;
+        font-size: 16px;
+        color: #000000;
+        border-bottom: 1px solid #CED4DA;
+        padding-bottom: 1rem;
+      }
+      .content {
+        color: #0D1B3C;
+        padding: 1rem 0 5px 0;
+        .note {
+          line-height: 18px;
+          &:last-child {
+            margin-top: 5px;
+          }
+          .highlight {
+            color: #4E73DF;
+            cursor: pointer;
+          }
+        }
+      }
+    }
+  }
+}
