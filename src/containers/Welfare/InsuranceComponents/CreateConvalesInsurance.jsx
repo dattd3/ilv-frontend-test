@@ -182,6 +182,8 @@ const CreateConvalesInsurance = ({
       "receiveType",
       'plan',
       "seri",
+      "fromDate",
+      "toDate",
       "total",
     ];
     if(checkRequireAtm()) {
@@ -434,6 +436,9 @@ const CreateConvalesInsurance = ({
               disabled={!isCreateMode}
               styles={{ width: "100%" }}
             />
+            {errors["fromDate"] ? (
+              <p className="text-danger">{errors["fromDate"]}</p>
+            ) : null}
           </div>
           <div className="col-4">
             <div>{t('EndDate')}</div>
@@ -454,6 +459,9 @@ const CreateConvalesInsurance = ({
               disabled={!isCreateMode}
               styles={{ width: "100%" }}
             />
+            {errors["toDate"] ? (
+              <p className="text-danger">{errors["toDate"]}</p>
+            ) : null}
           </div>
         </div>
         <div className="row mv-10">

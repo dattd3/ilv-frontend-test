@@ -242,6 +242,7 @@ const CreateSickInsurance = ({
       "fromDate",
       "toDate",
       "total",
+      "sickName",
       "receiveType",
     ];
     if(!approver) {
@@ -655,6 +656,7 @@ const CreateSickInsurance = ({
           </div>
           <div className="col-8">
             {t('name_disease')}
+            <span className="required">(*)</span>
             <input
               value={data.sickName}
               onChange={(e) => handleTextInputChange(e, "sickName")}
@@ -664,6 +666,9 @@ const CreateSickInsurance = ({
               disabled={!isCreateMode}
               autoComplete="off"
             />
+            {errors["sickName"] ? (
+              <p className="text-danger">{errors["sickName"]}</p>
+            ) : null}
           </div>
         </div>
       </div>
