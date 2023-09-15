@@ -1,11 +1,11 @@
 import React from "react";
-
+import IconBackToTop from "assets/img/icon/Icon_back_to_top.svg"
 
 class ScrollToTop extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      is_visible: false
+      isVisibleGoToTop: false
     };
   }
 
@@ -19,11 +19,11 @@ class ScrollToTop extends React.Component {
   toggleVisibility() {
     if (window.pageYOffset > 250) {
       this.setState({
-        is_visible: true
+        isVisibleGoToTop: true
       });
     } else {
       this.setState({
-        is_visible: false
+        isVisibleGoToTop: false
       });
     }
   }
@@ -36,16 +36,19 @@ class ScrollToTop extends React.Component {
   }
 
   render() {
-    const { is_visible } = this.state;
+    const { isVisibleGoToTop } = this.state
+
     return (
-      <div className="scroll-to-top2" style={{color: localStorage.getItem("companyThemeColor")}}>
-        {is_visible && (
-          <div onClick={() => this.scrollToTop()}>
-            <span><i className="fa fa-arrow-circle-o-up fa-2x" aria-hidden="true"></i></span>
-          </div>
-        )}
-      </div>
-    );
+      <>
+        {
+          isVisibleGoToTop && (
+            <div className="scroll-to-top2" onClick={() => this.scrollToTop()}>
+              <span><img src={IconBackToTop} alt="Back to top" /></span>
+            </div>
+          )
+        }
+      </>
+    )
   }
 }
 
