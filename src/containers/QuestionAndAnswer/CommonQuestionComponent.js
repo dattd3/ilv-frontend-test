@@ -21,7 +21,7 @@ class CommonQuestionComponent extends React.Component {
     const { open } = this.state;
     return <>
       {
-        this.props.questions?.every(question => question.subject && question.answer) &&  <Accordion defaultActiveKey="0">
+        this.props.questions?.some(question => question.subject && question.answer) &&  <Accordion defaultActiveKey="0">
         <Accordion.Toggle as={Card.Header} eventKey="0" onClick= {() => this.setOpen()}>
           <h4 className="text-uppercase common-category cursor-pointer">
             {
