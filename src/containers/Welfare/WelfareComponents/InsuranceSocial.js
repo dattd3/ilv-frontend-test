@@ -6,7 +6,7 @@ import { withTranslation } from 'react-i18next';
 import moment from 'moment';
 import axios from 'axios';
 import _ from "lodash";
-import { getRequestConfigurations } from "../../../commons/Utils"
+import { formatNumberSpecialCase, getRequestConfigurations } from "../../../commons/Utils"
 
 import Download from "../../../assets/img/icon/ic_download_blue.svg";
 import CustomPaging from "../../../components/Common/CustomPaging";
@@ -82,7 +82,7 @@ class InsuranceSocial extends React.Component {
                                         <th scope="col" className="request-type text-center">{t('TypeOfRequest')}</th>
                                         <th scope="col" className="request-type text-center">{t('claim_submission_date')}</th>
                                         <th scope="col" className="status1 pl-8">{t('EvaluationStatus')}</th>
-                                        <th scope="col" className="request-type pl-8">{t('price')}</th>
+                                        <th scope="col" className="request-type text-center">{t('price')}</th>
                                         <th scope="col" className="tool text-center">{t("action")}</th>
                                     </tr>
                                 </thead>
@@ -96,7 +96,7 @@ class InsuranceSocial extends React.Component {
                                                     <td className="request-type text-center">{child.claimTypeName || ''}</td>
                                                     <td className="request-type text-center">{child.createdDate ? moment(child.createdDate).format('DD/MM/YYYY') : ''}</td>
                                                     <td className="status1 text-left">{child.statusName || ''}</td>
-                                                    <td className="request-type text-left">{child.amountMoney || ''}</td>
+                                                    <td className="request-type text-center">{formatNumberSpecialCase(child.amountMoney) || ''}</td>
                                                     <td className="tool">
                                                         <a href={`/insurance-manager/export/${child.idDisplay}`}><img alt="Sửa" src={Download} className="icon-download" /></a>
                                                     </td>
