@@ -1953,5 +1953,6 @@
   "lyDoTuChoi": "Declined reason",
   "DocumentRequired": "Required Files",
   "DocumentDownload": "To download require files",
-  "RatingSuccessfully": "Rating comment successfully"
+  "RatingSuccessfully": "Rating comment successfully",
+  "Expired": "Expired"
 }
