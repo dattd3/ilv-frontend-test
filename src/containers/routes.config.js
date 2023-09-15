@@ -773,6 +773,14 @@ export default [
           component: lazy(() => import("./Welfare/CreateInsuranceHealth"))
         },
         {
+          key: "export-insurance-social",
+          routeProps: {
+            exact: true,
+            path: map.ExportInsuranceSocial
+          },
+          component: lazy(() => import("./Welfare/InsuranceDetailComponents/ExportInsuranceSocial"))
+        },
+        {
           key: "detail-insurance-social",
           routeProps: {
             exact: true,
@@ -803,6 +811,30 @@ export default [
             path: map.HistoryVingroup
           },
           component: lazy(() => import("./HistoryVinGroup/index"))
+        },
+        {
+          key: "employee-privileges",
+          routeProps: {
+            exact: true,
+            path: map.EmployeePrivileges
+          },
+          component: lazy(() => import("./Dashboard/EmployeePrivileges"))
+        },
+        {
+          key: "employee-privilege-detail",
+          routeProps: {
+            exact: true,
+            path: map.EmployeePrivilegeDetail,
+          },
+          component: lazy(() => import("./Corporation/News/EmployeePrivilegeDetail")),
+        },
+        {
+          key: "registration-internal-payment",
+          routeProps: {
+            exact: true,
+            path: map.RegistrationInternalPayment
+          },
+          component: lazy(() => import("./Welfare/InternalPayment/CreateInternalPayment"))
         },
       ],
     },

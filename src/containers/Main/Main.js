@@ -26,7 +26,7 @@ function MainLayout(props) {
     history.push(map.NotFound);
   }
 
-  const isDashBoard = props.location.pathname === '/';
+  const isDashBoard = props.location.pathname === '/' || props.location.pathname === map.EmployeePrivileges;
 
   return (
     <>

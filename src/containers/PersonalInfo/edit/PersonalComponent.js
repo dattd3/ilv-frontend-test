@@ -9,10 +9,13 @@ import vi from 'date-fns/locale/vi'
 import { withTranslation } from "react-i18next"
 import _ from 'lodash'
 import Constants from 'commons/Constants'
-import { getMuleSoftHeaderConfigurations, genderConfig, marriageConfig, isVinFast } from "commons/Utils"
+import { getMuleSoftHeaderConfigurations, getRequestConfigurations, genderConfig, marriageConfig, isVinFast } from "commons/Utils"
 import IconDatePicker from 'assets/img/icon/Icon_DatePicker.svg'
+import IconClear from 'assets/img/icon/icon_x.svg'
+import LoadingModal from 'components/Common/LoadingModal'
 
 registerLocale("vi", vi)
+const placeCodeOther = -1
 
 class PersonalComponent extends React.Component {
     constructor(props) {
@@ -27,7 +30,9 @@ class PersonalComponent extends React.Component {
             tempAddressFromModal: {},
             birthProvinces: [],
             birthCountryNotUpdate: "",
-            validationMessagesFromParent: props.validationMessages
+            validationMessagesFromParent: props.validationMessages,
+            places: [],
+            isLoading: false,
         }
 
         this.mappingFields = {
@@ -70,7 +75,9 @@ class PersonalComponent extends React.Component {
             TempDistrictText: "tmp_district",
             TempWards: "tmp_ward_id",
             TempWardsText: "tmp_wards",
-            TempStreetName: "tmp_street_name"
+            TempStreetName: "tmp_street_name",
+            passportPlaceOfIssue: "passport_place_of_issue",
+            personalIdentifyPlace: "pid_place_of_issue",
         }
     }
 
@@ -80,21 +87,10 @@ class PersonalComponent extends React.Component {
         }
     }
 
-    async componentDidMount() {
-        let config = getMuleSoftHeaderConfigurations()
-        const profileEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/profile`;
-        const personalInfoEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/personalinfo`;
-        const requestProfile = axios.get(profileEndpoint, config);
-        const requestPersonalInfo = axios.get(personalInfoEndpoint, config);
-
-        await axios.all([requestProfile, requestPersonalInfo]).then(axios.spread((...responses) => {
-            this.processProfile(responses[0]);
-            this.processPersonalInfo(responses[1]);
-        })).catch(errors => {
-            console.log(errors);
-        })
-
-        this.bindBirthCountryAndProvince(config);
+    componentDidMount() {
+        this.setState({ isLoading: true })
+        this.fetchMasterData()
+        this.bindBirthCountryAndProvince()
 
         if (this.props.requestedUserProfile) {
             const requestedUserProfile = this.props.requestedUserProfile
@@ -112,7 +108,42 @@ class PersonalComponent extends React.Component {
         }
     }
 
-    bindBirthCountryAndProvince = (config) => {
+    fetchMasterData = () => {
+        const muleConfig = getMuleSoftHeaderConfigurations()
+        const config = getRequestConfigurations()
+        const profileEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/profile`
+        const personalInfoEndpoint = `${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/personalinfo`
+        const placeInfoEndpoint = `${process.env.REACT_APP_REQUEST_URL}user/places`
+        const requestProfile = axios.get(profileEndpoint, muleConfig)
+        const requestPersonalInfo = axios.get(personalInfoEndpoint, muleConfig)
+        const requestPlaceInfo = axios.get(placeInfoEndpoint, config)
+
+        axios.all([requestProfile, requestPersonalInfo, requestPlaceInfo]).then(axios.spread((...responses) => {
+            this.processProfile(responses[0]);
+            this.processPersonalInfo(responses[1]);
+            this.processPlaceInfo(responses[2]?.data?.data || [])
+        })).catch(errors => {
+            console.log(errors);
+        }).finally(() => {
+            this.setState({ isLoading: false })
+        })
+    }
+
+    processPlaceInfo = (res = []) => {
+        const places = res
+        .filter(item => !item?.isDeleted)
+        .map(item => {
+            return {
+                value: item?.id,
+                label: item?.name,
+                type: item?.code,
+            }
+        })
+        this.setState({ places })
+    }
+
+    bindBirthCountryAndProvince = () => {
+        const config = getMuleSoftHeaderConfigurations()
         if (!this.props.isEdit) {
             // Edit profile
         } else {
@@ -176,8 +207,9 @@ class PersonalComponent extends React.Component {
     handleTextInputChange = (event) => {
         let targetVal = event.target
         const target = targetVal
-        const value = target.type === 'checkbox' ? target.checked : target.value?.trim()
+        const value = target.type === 'checkbox' ? target.checked : target?.value
         const name = target.name;
+
         this.props.updateInfo(name, this.props.userDetail[this.mappingFields[name]], value)
         this.setState({
             userDetail: {
@@ -188,25 +220,42 @@ class PersonalComponent extends React.Component {
     }
 
     handleSelectInputs = (e, name, textOld) => {
-        let val;
-        let label;
-        if (e != null) {
-            val = e.value;
-            label = e.label;
-        } else {
-            val = "";
-            label = "";
-        }
+        const val = e != null ? e.value : ''
+        const label = e != null ? e.label : ''
+
         if (name == "BirthCountry") {
             this.getBirthProvinces(val);
         }
-        this.setState({
-            userDetail: {
-                ...this.state.userDetail,
-                [this.mappingFields[name]]: val
+
+        const userDetail = {...this.state.userDetail}
+        if (['passportPlaceOfIssue', 'personalIdentifyPlace']?.includes(name)) {
+            const placeMapping = {
+                passportPlaceOfIssue: 'PassportPlace',
+                personalIdentifyPlace: 'PersonalIdentifyPlace',
             }
-        })
-        this.props.updateInfo(name, this.props.userDetail[this.mappingFields[name]], val, textOld, label)
+            userDetail[name] = e
+            if (val == placeCodeOther) {
+                if (name === 'passportPlaceOfIssue') {
+                    userDetail.passport_place_of_issue = ''
+                } else {
+                    userDetail.pid_place_of_issue = ''
+                }
+            } else {
+                this.props.updateInfo(placeMapping[name], this.props.userDetail[this.mappingFields[name]], label)
+            }
+        } else {
+            userDetail[this.mappingFields[name]] = val
+            this.props.updateInfo(name, this.props.userDetail[this.mappingFields[name]], val, textOld, label)
+        }
+
+        this.setState({ userDetail })
+
+        // this.setState({
+        //     userDetail: {
+        //         ...this.state.userDetail,
+        //         [this.mappingFields[name]]: val
+        //     }
+        // })        
     }
 
     getBirthProvinces = (country_id) => {
@@ -336,6 +385,12 @@ class PersonalComponent extends React.Component {
         })
     }
 
+    handleRemoveInput = (name) => {
+        const userDetail = {...this.state.userDetail}
+        userDetail[name] = null
+        this.setState({ userDetail })
+    }
+
     render() {
         const genderMapping = genderConfig()
         const marriageMapping = marriageConfig()
@@ -344,9 +399,8 @@ class PersonalComponent extends React.Component {
             [Constants.MARRIAGE_STATUS.MARRIED]: marriageMapping.married,
             [Constants.MARRIAGE_STATUS.DIVORCED]: marriageMapping.divorced,
         }
-        const { t } = this.props
-        const { validationMessagesFromParent } = this.state
-        const userDetail = this.props.userDetail
+        const { t, userDetail } = this.props
+        const { validationMessagesFromParent, places, userDetail: userDetailState, isLoading } = this.state
         const genders = this.props.genders.map(gender => { return { value: gender.ID, label: gender.ID == Constants.GENDER.MALE ? genderMapping.male : genderMapping.female} })
         const races = this.props.races.map(race => { return { value: race.ID, label: race.TEXT } })
         const marriages = this.props.marriages.map(marriage => { return { value: marriage.ID, label: marriageStatus[marriage.ID] } })
@@ -357,8 +411,12 @@ class PersonalComponent extends React.Component {
         // const provinces = this.state.provinces.map(province => { return { value: province.ID, label: province.TEXT } })
         const religions = this.props.religions.map(r => { return { value: r.ID, label: r.TEXT } })
         const birthProvinces = this.state.birthProvinces.map(province => { return { value: province.ID, label: province.TEXT } })
+        const passportPlaceOfIssue = (places || []).filter(item => item?.type === 'HC')
+        const personalIdentifyPlace = (places || []).filter(item => ['CCCD', 'CMT']?.includes(item?.type))
 
         return (
+            <>
+            <LoadingModal show={isLoading} />
             <div className="info edit-main-user-info">
                 <div className="box" style={{ boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px" }}>
                     <div className="row">
@@ -379,7 +437,7 @@ class PersonalComponent extends React.Component {
                                     name="Birthday"
                                     key="Birthday"
                                     maxDate={new Date()}
-                                    selected={this.state.userDetail.birthday ? moment(this.state.userDetail.birthday, 'DD-MM-YYYY').toDate() : null}
+                                    selected={userDetailState?.birthday ? moment(userDetailState?.birthday, 'DD-MM-YYYY').toDate() : null}
                                     onChange={birthday => this.handleDatePickerInputChange(birthday, "Birthday")}
                                     dateFormat="dd-MM-yyyy"
                                     showMonthDropdown={true}
@@ -401,7 +459,7 @@ class PersonalComponent extends React.Component {
                         <div className="col-6">
                             <Select name="BirthCountry" placeholder={t("SelectCountryOfBirth")} key="birthCountry"
                                 isClearable={true}
-                                options={countries} value={countries.filter(n => n.value == (this.state.birthCountryNotUpdate ? this.state.birthCountryNotUpdate : this.state.userDetail.birth_country_id))}
+                                options={countries} value={countries.filter(n => n.value == (this.state.birthCountryNotUpdate ? this.state.birthCountryNotUpdate : userDetailState?.birth_country_id))}
                                 onChange={e => this.handleSelectInputs(e, 'BirthCountry', userDetail.birth_country_name || "")} />
                         </div>
                     </div>
@@ -415,9 +473,9 @@ class PersonalComponent extends React.Component {
                         </div>
                         <div className="col-6">
                             <Select name="BirthProvince" placeholder={t("SelectPlaceOfBirth")} key="birthProvince" options={birthProvinces} isClearable={true}
-                                value={birthProvinces.filter(p => p.value == this.state.userDetail.birth_province_id)} onChange={e => this.handleSelectInputs(e, 'BirthProvince', userDetail.birth_province)} />
+                                value={birthProvinces.filter(p => p.value == userDetailState?.birth_province_id)} onChange={e => this.handleSelectInputs(e, 'BirthProvince', userDetail.birth_province)} />
                             {
-                                validationMessagesFromParent?.birthProvince && <p className="text-danger">{validationMessagesFromParent?.birthProvince}</p>
+                                validationMessagesFromParent?.birthProvince && <p className="text-danger error-message">{validationMessagesFromParent?.birthProvince}</p>
                             }
                         </div>
                     </div>
@@ -430,7 +488,7 @@ class PersonalComponent extends React.Component {
                             <div className="detail">{userDetail?.gender == Constants.GENDER.MALE ? t("Male") : t("Female")}</div>
                         </div>
                         <div className="col-6">
-                            <Select name="Gender" placeholder={t("SelectGender")} isClearable={true} key="gender" options={genders} value={genders.filter(g => g.value == this.state.userDetail.gender)}
+                            <Select name="Gender" placeholder={t("SelectGender")} isClearable={true} key="gender" options={genders} value={genders.filter(g => g.value == userDetailState?.gender)}
                                 onChange={e => this.handleSelectInputs(e, 'Gender', userDetail?.gender == Constants.GENDER.MALE ? t("Male") : t("Female"))} />
                         </div>
                     </div>
@@ -443,7 +501,7 @@ class PersonalComponent extends React.Component {
                             <div className="detail">{userDetail.ethinic || ""}</div>
                         </div>
                         <div className="col-6">
-                            <Select name="Ethinic" placeholder={t("SelectEthnics")} isClearable={true} options={races} value={races.filter(r => r.value == this.state.userDetail.race_id)}
+                            <Select name="Ethinic" placeholder={t("SelectEthnics")} isClearable={true} options={races} value={races.filter(r => r.value == userDetailState?.race_id)}
                                 onChange={e => this.handleSelectInputs(e, "Ethinic", userDetail.ethinic || "")} />
                         </div>
                     </div>
@@ -457,7 +515,7 @@ class PersonalComponent extends React.Component {
                         </div>
                         <div className="col-6">
                             <Select name="Religion" placeholder={t("SelectReligion")} isClearable={true} options={religions}
-                                value={religions.filter(r => r.value == (this.state.userDetail.religion_id))} onChange={e => this.handleSelectInputs(e, "Religion", userDetail.religion)} />
+                                value={religions.filter(r => r.value == (userDetailState?.religion_id))} onChange={e => this.handleSelectInputs(e, "Religion", userDetail.religion)} />
                         </div>
                     </div>
                     <div className="row">
@@ -469,9 +527,9 @@ class PersonalComponent extends React.Component {
                         </div>
                         <div className="col-6 form-inline">
                             <input className="form-control input" name="PersonalIdentifyNumber" type="text"
-                                value={this.state.userDetail.personal_id_no || ""} onChange={(e) => this.handleTextInputChange(e)} />
+                                value={userDetailState?.personal_id_no || ""} onChange={(e) => this.handleTextInputChange(e)} />
                             {
-                                validationMessagesFromParent?.personalIdentifyNumber && <span className="text-danger">{validationMessagesFromParent?.personalIdentifyNumber}</span>
+                                validationMessagesFromParent?.personalIdentifyNumber && <span className="text-danger error-message-inline">{validationMessagesFromParent?.personalIdentifyNumber}</span>
                             }
                         </div>
                     </div>
@@ -488,7 +546,7 @@ class PersonalComponent extends React.Component {
                                     name="PersonalIdentifyDate"
                                     key="PersonalIdentifyDate"
                                     maxDate={new Date()}
-                                    selected={this.state.userDetail.pid_date_of_issue ? moment(this.state.userDetail.pid_date_of_issue, 'DD-MM-YYYY').toDate() : null}
+                                    selected={userDetailState?.pid_date_of_issue ? moment(userDetailState?.pid_date_of_issue, 'DD-MM-YYYY').toDate() : null}
                                     onChange={pidDateOfIssue => this.handleDatePickerInputChange(pidDateOfIssue, "PersonalIdentifyDate")}
                                     dateFormat="dd-MM-yyyy"
                                     showMonthDropdown={true}
@@ -498,7 +556,7 @@ class PersonalComponent extends React.Component {
                                 <span className="input-img"><img src={IconDatePicker} alt="Date" /></span>
                             </label>
                             {
-                                validationMessagesFromParent?.personalIdentifyDate && <p className="text-danger">{validationMessagesFromParent?.personalIdentifyDate}</p>
+                                validationMessagesFromParent?.personalIdentifyDate && <p className="text-danger error-message">{validationMessagesFromParent?.personalIdentifyDate}</p>
                             }
                         </div>
                     </div>
@@ -510,11 +568,35 @@ class PersonalComponent extends React.Component {
                             <div className="detail">{userDetail.pid_place_of_issue || ""}</div>
                         </div>
                         <div className="col-6">
-                            <input className="form-control input" name="PersonalIdentifyPlace" type="text" onChange={this.handleTextInputChange.bind(this)}
-                                value={this.state.userDetail.pid_place_of_issue || ""} />
+                            {
+                                (personalIdentifyPlace?.length > 0 && userDetailState?.personalIdentifyPlace?.value != placeCodeOther) && (
+                                    <Select 
+                                        placeholder={t("Select")} 
+                                        isClearable={true} 
+                                        options={personalIdentifyPlace.concat([{value: placeCodeOther, label: t("Other")}])}
+                                        value={personalIdentifyPlace.concat([{value: placeCodeOther, label: t("Other")}]).find(o => o?.value == userDetailState?.personalIdentifyPlace?.value)} 
+                                        onChange={e => this.handleSelectInputs(e, 'personalIdentifyPlace', userDetail?.pid_place_of_issue || null)} />
+                                )
+                            }
+                            {
+                                (!personalIdentifyPlace || personalIdentifyPlace?.length === 0 || userDetailState?.personalIdentifyPlace?.value == placeCodeOther) && (
+                                    <div className="wrap-input-text">
+                                        <input className="form-control input" name="PersonalIdentifyPlace" type="text" onChange={this.handleTextInputChange.bind(this)}
+                                        value={userDetailState?.pid_place_of_issue || ""} />
+                                        <img src={IconClear} alt='Clear' className='remove-input cursor-pointer' title='Exit' onClick={() => this.handleRemoveInput('personalIdentifyPlace')} />
+                                    </div>
+                                )
+                            }
+                            {
+                                validationMessagesFromParent?.personalIdentifyPlace && <p className="text-danger error-message">{validationMessagesFromParent?.personalIdentifyPlace}</p>
+                            }
+
+
+                            {/* <input className="form-control input" name="PersonalIdentifyPlace" type="text" onChange={this.handleTextInputChange.bind(this)}
+                                value={userDetailState?.pid_place_of_issue || ""} />
                             {
                                 validationMessagesFromParent?.personalIdentifyPlace && <p className="text-danger">{validationMessagesFromParent?.personalIdentifyPlace}</p>
-                            }
+                            } */}
                         </div>
                     </div>
                     <div className="row">
@@ -526,9 +608,9 @@ class PersonalComponent extends React.Component {
                         </div>
                         <div className="col-6 form-inline">
                             <input className="form-control input" name="PassportNumber" type="text"
-                                value={this.state.userDetail.passport_id_no || ""} onChange={this.handleTextInputChange.bind(this)} />
+                                value={userDetailState?.passport_id_no || ""} onChange={this.handleTextInputChange.bind(this)} />
                             {
-                                validationMessagesFromParent?.passportNumber && <p className="text-danger">{validationMessagesFromParent?.passportNumber}</p>
+                                validationMessagesFromParent?.passportNumber && <p className="text-danger error-message-inline">{validationMessagesFromParent?.passportNumber}</p>
                             }
                         </div>
                     </div>
@@ -545,7 +627,7 @@ class PersonalComponent extends React.Component {
                                     name="PassportDate"
                                     key="PassportDate"
                                     maxDate={new Date()}
-                                    selected={this.state.userDetail.passport_date_of_issue ? moment(this.state.userDetail.passport_date_of_issue, 'DD-MM-YYYY').toDate() : null}
+                                    selected={userDetailState?.passport_date_of_issue ? moment(userDetailState?.passport_date_of_issue, 'DD-MM-YYYY').toDate() : null}
                                     onChange={passportDateOfIssue => this.handleDatePickerInputChange(passportDateOfIssue, "PassportDate")}
                                     dateFormat="dd-MM-yyyy"
                                     showMonthDropdown={true}
@@ -555,7 +637,7 @@ class PersonalComponent extends React.Component {
                                 <span className="input-img"><img src={IconDatePicker} alt="Date" /></span>
                             </label>
                             {
-                                validationMessagesFromParent?.passportDate && <p className="text-danger">{validationMessagesFromParent?.passportDate}</p>
+                                validationMessagesFromParent?.passportDate && <p className="text-danger error-message">{validationMessagesFromParent?.passportDate}</p>
                             }
                         </div>
                     </div>
@@ -567,10 +649,27 @@ class PersonalComponent extends React.Component {
                             <div className="detail">{userDetail.passport_place_of_issue || ""}</div>
                         </div>
                         <div className="col-6">
-                            <input className="form-control input" name="PassportPlace" type="text" onChange={this.handleTextInputChange.bind(this)}
-                                value={this.state.userDetail.passport_place_of_issue || ""} />
                             {
-                                validationMessagesFromParent?.passportPlace && <p className="text-danger">{validationMessagesFromParent?.passportPlace}</p>
+                                (passportPlaceOfIssue?.length > 0 && userDetailState?.passportPlaceOfIssue?.value != placeCodeOther) && (
+                                    <Select 
+                                        placeholder={t("Select")} 
+                                        isClearable={true} 
+                                        options={passportPlaceOfIssue.concat([{value: placeCodeOther, label: t("Other")}])}
+                                        value={passportPlaceOfIssue.concat([{value: placeCodeOther, label: t("Other")}]).find(o => o?.value == userDetailState?.passportPlaceOfIssue?.value)} 
+                                        onChange={e => this.handleSelectInputs(e, 'passportPlaceOfIssue', userDetail?.passport_place_of_issue || null)} />
+                                )
+                            }
+                            {
+                                (!passportPlaceOfIssue || passportPlaceOfIssue?.length === 0 || userDetailState?.passportPlaceOfIssue?.value == placeCodeOther) && (
+                                    <div className="wrap-input-text">
+                                        <input className="form-control input" name="PassportPlace" type="text" onChange={this.handleTextInputChange.bind(this)}
+                                        value={userDetailState?.passport_place_of_issue || ""} />
+                                        <img src={IconClear} alt='Clear' className='remove-input cursor-pointer' title='Exit' onClick={() => this.handleRemoveInput('passportPlaceOfIssue')} />
+                                    </div>
+                                )
+                            }
+                            {
+                                validationMessagesFromParent?.passportPlace && <p className="text-danger error-message">{validationMessagesFromParent?.passportPlace}</p>
                             }
                         </div>
                     </div>
@@ -583,7 +682,7 @@ class PersonalComponent extends React.Component {
                             <div className="detail">{userDetail.nationality || ""}</div>
                         </div>
                         <div className="col-6">
-                            <Select name="Nationality" placeholder={t("SelectNationality")} isClearable={true} options={nations} value={nations.filter(n => n.value == this.state.userDetail.nationality_id)}
+                            <Select name="Nationality" placeholder={t("SelectNationality")} isClearable={true} options={nations} value={nations.filter(n => n.value == userDetailState?.nationality_id)}
                                 onChange={e => this.handleSelectInputs(e, 'Nationality', userDetail.nationality || "")} />
                         </div>
                     </div>
@@ -601,11 +700,11 @@ class PersonalComponent extends React.Component {
                                 show={this.state.isAddressEdit}
                                 onHide={this.hideModal.bind(this, 'isAddressEdit')}
                                 countries={this.props.countries}
-                                country={_.size(this.state.mainAddressFromModal) > 0 ? { value: this.state.mainAddressFromModal.country_id, label: this.state.mainAddressFromModal.nation } : { value: this.state.userDetail.country_id, label: this.state.userDetail.nation }}
-                                province={_.size(this.state.mainAddressFromModal) > 0 ? { value: this.state.mainAddressFromModal.province_id, label: this.state.mainAddressFromModal.province } : { value: this.state.userDetail.province_id, label: this.state.userDetail.province }}
-                                district={_.size(this.state.mainAddressFromModal) > 0 ? { value: this.state.mainAddressFromModal.district_id, label: this.state.mainAddressFromModal.district } : { value: this.state.userDetail.district_id, label: this.state.userDetail.district }}
-                                ward={_.size(this.state.mainAddressFromModal) > 0 ? { value: this.state.mainAddressFromModal.ward_id, label: this.state.mainAddressFromModal.wards } : { value: this.state.userDetail.ward_id, label: this.state.userDetail.wards }}
-                                street={_.size(this.state.mainAddressFromModal) > 0 ? this.state.mainAddressFromModal.street_name : this.state.userDetail.street_name}
+                                country={_.size(this.state.mainAddressFromModal) > 0 ? { value: this.state.mainAddressFromModal.country_id, label: this.state.mainAddressFromModal.nation } : { value: userDetailState?.country_id, label: userDetailState?.nation }}
+                                province={_.size(this.state.mainAddressFromModal) > 0 ? { value: this.state.mainAddressFromModal.province_id, label: this.state.mainAddressFromModal.province } : { value: userDetailState?.province_id, label: userDetailState?.province }}
+                                district={_.size(this.state.mainAddressFromModal) > 0 ? { value: this.state.mainAddressFromModal.district_id, label: this.state.mainAddressFromModal.district } : { value: userDetailState?.district_id, label: userDetailState?.district }}
+                                ward={_.size(this.state.mainAddressFromModal) > 0 ? { value: this.state.mainAddressFromModal.ward_id, label: this.state.mainAddressFromModal.wards } : { value: userDetailState?.ward_id, label: userDetailState?.wards }}
+                                street={_.size(this.state.mainAddressFromModal) > 0 ? this.state.mainAddressFromModal.street_name : userDetailState?.street_name}
                                 updateAddress={this.updateAddress.bind(this)}
                             /> : null}
                             {
@@ -613,7 +712,7 @@ class PersonalComponent extends React.Component {
                                     <div className="edit" onClick={this.showModal.bind(this, 'isAddressEdit')}>
                                         {this.SummaryAddress([this.state.mainAddressFromModal.street_name, this.state.mainAddressFromModal.wards, this.state.mainAddressFromModal.district, this.state.mainAddressFromModal.province, this.state.mainAddressFromModal.nation])}
                                     </div>
-                                    : <div className="edit" onClick={this.showModal.bind(this, 'isAddressEdit')}>{this.SummaryAddress([this.state.userDetail.street_name, this.state.userDetail.wards, this.state.userDetail.district, this.state.userDetail.province])}</div>
+                                    : <div className="edit" onClick={this.showModal.bind(this, 'isAddressEdit')}>{this.SummaryAddress([userDetailState?.street_name, userDetailState?.wards, userDetailState?.district, userDetailState?.province])}</div>
                             }
                         </div>
                     </div>
@@ -631,11 +730,11 @@ class PersonalComponent extends React.Component {
                                 show={this.state.isTmpAddressEdit}
                                 onHide={this.hideModal.bind(this, 'isTmpAddressEdit')}
                                 countries={this.props.countries}
-                                country={_.size(this.state.tempAddressFromModal) > 0 ? { value: this.state.tempAddressFromModal.tmp_country_id, label: this.state.tempAddressFromModal.tmp_nation } : { value: this.state.userDetail.tmp_country_id, label: this.state.userDetail.tmp_nation }}
-                                province={_.size(this.state.tempAddressFromModal) > 0 ? { value: this.state.tempAddressFromModal.tmp_province_id, label: this.state.tempAddressFromModal.tmp_province } : { value: this.state.userDetail.tmp_province_id, label: this.state.userDetail.tmp_province }}
-                                district={_.size(this.state.tempAddressFromModal) > 0 ? { value: this.state.tempAddressFromModal.tmp_district_id, label: this.state.tempAddressFromModal.tmp_district } : { value: this.state.userDetail.tmp_district_id, label: this.state.userDetail.tmp_district }}
-                                ward={_.size(this.state.tempAddressFromModal) > 0 ? { value: this.state.tempAddressFromModal.tmp_ward_id, label: this.state.tempAddressFromModal.tmp_wards } : { value: this.state.userDetail.tmp_ward_id, label: this.state.userDetail.tmp_wards }}
-                                street={_.size(this.state.tempAddressFromModal) > 0 ? this.state.tempAddressFromModal.tmp_street_name : this.state.userDetail.tmp_street_name}
+                                country={_.size(this.state.tempAddressFromModal) > 0 ? { value: this.state.tempAddressFromModal.tmp_country_id, label: this.state.tempAddressFromModal.tmp_nation } : { value: userDetailState?.tmp_country_id, label: userDetailState?.tmp_nation }}
+                                province={_.size(this.state.tempAddressFromModal) > 0 ? { value: this.state.tempAddressFromModal.tmp_province_id, label: this.state.tempAddressFromModal.tmp_province } : { value: userDetailState?.tmp_province_id, label: userDetailState?.tmp_province }}
+                                district={_.size(this.state.tempAddressFromModal) > 0 ? { value: this.state.tempAddressFromModal.tmp_district_id, label: this.state.tempAddressFromModal.tmp_district } : { value: userDetailState?.tmp_district_id, label: userDetailState?.tmp_district }}
+                                ward={_.size(this.state.tempAddressFromModal) > 0 ? { value: this.state.tempAddressFromModal.tmp_ward_id, label: this.state.tempAddressFromModal.tmp_wards } : { value: userDetailState?.tmp_ward_id, label: userDetailState?.tmp_wards }}
+                                street={_.size(this.state.tempAddressFromModal) > 0 ? this.state.tempAddressFromModal.tmp_street_name : userDetailState?.tmp_street_name}
                                 updateAddress={this.updateTmpAddress.bind(this)}
                             /> : null}
                             {
@@ -643,7 +742,7 @@ class PersonalComponent extends React.Component {
                                     <div className="edit" onClick={this.showModal.bind(this, 'isTmpAddressEdit')}>
                                         {this.SummaryAddress([this.state.tempAddressFromModal.tmp_street_name, this.state.tempAddressFromModal.tmp_wards, this.state.tempAddressFromModal.tmp_district, this.state.tempAddressFromModal.tmp_province, this.state.tempAddressFromModal.tmp_nation])}
                                     </div>
-                                    : <div className="edit" onClick={this.showModal.bind(this, 'isTmpAddressEdit')}>{this.SummaryAddress([this.state.userDetail.tmp_street_name, this.state.userDetail.tmp_wards, this.state.userDetail.tmp_district, this.state.userDetail.tmp_province])}</div>
+                                    : <div className="edit" onClick={this.showModal.bind(this, 'isTmpAddressEdit')}>{this.SummaryAddress([userDetailState?.tmp_street_name, userDetailState?.tmp_wards, userDetailState?.tmp_district, userDetailState?.tmp_province])}</div>
                             }
                         </div>
                     </div>
@@ -657,9 +756,9 @@ class PersonalComponent extends React.Component {
                         </div>
                         <div className="col-6">
                             <Select name="MaritalStatus" placeholder={t("SelectMaritalStatus")} isClearable={true} options={marriages}
-                                value={marriages.filter(m => m.value == this.state.userDetail.marital_status_code)} onChange={e => this.handleSelectInputs(e, 'MaritalStatus', marriage?.label || null)} />
+                                value={marriages.filter(m => m.value == userDetailState?.marital_status_code)} onChange={e => this.handleSelectInputs(e, 'MaritalStatus', marriage?.label || null)} />
                             {
-                                validationMessagesFromParent?.maritalStatus && <p className="text-danger">{validationMessagesFromParent?.maritalStatus}</p>
+                                validationMessagesFromParent?.maritalStatus && <p className="text-danger error-message">{validationMessagesFromParent?.maritalStatus}</p>
                             }
                         </div>
                     </div>
@@ -676,7 +775,7 @@ class PersonalComponent extends React.Component {
                                     name="MarriageDate"
                                     key="MarriageDate"
                                     maxDate={new Date()}
-                                    selected={this.state.userDetail.marital_date ? moment(this.state.userDetail.marital_date, 'DD-MM-YYYY').toDate() : null}
+                                    selected={userDetailState?.marital_date ? moment(userDetailState?.marital_date, 'DD-MM-YYYY').toDate() : null}
                                     onChange={maritalDate => this.handleDatePickerInputChange(maritalDate, "MarriageDate")}
                                     dateFormat="dd-MM-yyyy"
                                     showMonthDropdown={true}
@@ -686,7 +785,7 @@ class PersonalComponent extends React.Component {
                                 <span className="input-img"><img src={IconDatePicker} alt="Date" /></span>
                             </label>
                             {
-                                validationMessagesFromParent?.maritalDate && <p className="text-danger">{validationMessagesFromParent?.maritalDate}</p>
+                                validationMessagesFromParent?.maritalDate && <p className="text-danger error-message">{validationMessagesFromParent?.maritalDate}</p>
                             }
                         </div>
                     </div>
@@ -698,10 +797,10 @@ class PersonalComponent extends React.Component {
                             <div className="detail">{userDetail.personal_email || ""}</div>
                         </div>
                         <div className="col-6">
-                            <input className="form-control input" name="PersonalEmail" type="text" value={this.state.userDetail.personal_email || ""}
+                            <input className="form-control input" name="PersonalEmail" type="text" value={userDetailState?.personal_email || ""}
                                 onChange={this.handleTextInputChange.bind(this)} />
                             {
-                                validationMessagesFromParent?.personalEmail && <p className="text-danger">{validationMessagesFromParent?.personalEmail}</p>
+                                validationMessagesFromParent?.personalEmail && <p className="text-danger error-message">{validationMessagesFromParent?.personalEmail}</p>
                             }
                         </div>
                     </div>
@@ -714,10 +813,10 @@ class PersonalComponent extends React.Component {
                             <div className="detail">{userDetail.cell_phone_no || ""}</div>
                         </div>
                         <div className="col-6">
-                            <input className="form-control input" name="CellPhoneNo" type="text" value={this.state.userDetail.cell_phone_no || ""}
+                            <input className="form-control input" name="CellPhoneNo" type="text" value={userDetailState?.cell_phone_no || ""}
                                 onChange={this.handleTextInputChange.bind(this)} />
                             {
-                                validationMessagesFromParent?.cellPhoneNo && <p className="text-danger">{validationMessagesFromParent?.cellPhoneNo}</p>
+                                validationMessagesFromParent?.cellPhoneNo && <p className="text-danger error-message">{validationMessagesFromParent?.cellPhoneNo}</p>
                             }
                         </div>
                     </div>
@@ -731,9 +830,9 @@ class PersonalComponent extends React.Component {
                         </div>
                         <div className="col-6">
                             <input className="form-control input" name="UrgentContactNo" type="text"
-                                value={this.isNotNull(this.state.userDetail.urgent_contact_no) ? this.state.userDetail.urgent_contact_no : ""} onChange={this.handleTextInputChange.bind(this)} />
+                                value={this.isNotNull(userDetailState?.urgent_contact_no) ? userDetailState?.urgent_contact_no : ""} onChange={this.handleTextInputChange.bind(this)} />
                             {
-                                validationMessagesFromParent?.urgentContactNo && <p className="text-danger">{validationMessagesFromParent?.urgentContactNo}</p>
+                                validationMessagesFromParent?.urgentContactNo && <p className="text-danger error-message">{validationMessagesFromParent?.urgentContactNo}</p>
                             }
                         </div>
                     </div>
@@ -748,10 +847,10 @@ class PersonalComponent extends React.Component {
                                     <div className="detail">{userDetail.bank_number || ""}</div>
                                 </div>
                                 <div className="col-6">
-                                    <input className="form-control input" name="BankAccountNumber" type="text" value={this.state.userDetail.bank_number || ""}
+                                    <input className="form-control input" name="BankAccountNumber" type="text" value={userDetailState?.bank_number || ""}
                                         onChange={this.handleTextInputChange.bind(this)} />
                                     {
-                                        validationMessagesFromParent?.bankAccountNumber && <p className="text-danger">{validationMessagesFromParent?.bankAccountNumber}</p>
+                                        validationMessagesFromParent?.bankAccountNumber && <p className="text-danger error-message">{validationMessagesFromParent?.bankAccountNumber}</p>
                                     }
                                 </div>
                             </div>
@@ -763,10 +862,10 @@ class PersonalComponent extends React.Component {
                                     <div className="detail">{userDetail.bank_name || ""}</div>
                                 </div>
                                 <div className="col-6">
-                                    <Select placeholder={t("SelectBank")} name="Bank" isClearable={true} options={banks} value={banks.filter(b => b.value == this.state.userDetail.bank_name_id)}
+                                    <Select placeholder={t("SelectBank")} name="Bank" isClearable={true} options={banks} value={banks.filter(b => b.value == userDetailState?.bank_name_id)}
                                         onChange={e => this.handleSelectInputs(e, 'Bank', userDetail.bank_name || "")} />
                                     {
-                                        validationMessagesFromParent?.bank && <p className="text-danger">{validationMessagesFromParent?.bank}</p>
+                                        validationMessagesFromParent?.bank && <p className="text-danger error-message">{validationMessagesFromParent?.bank}</p>
                                     }
                                 </div>
                             </div>
@@ -775,6 +874,7 @@ class PersonalComponent extends React.Component {
                     }
                 </div>
             </div>
+            </>
         )
     }
 }

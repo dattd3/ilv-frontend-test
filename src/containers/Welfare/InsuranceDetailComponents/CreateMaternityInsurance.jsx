@@ -110,7 +110,7 @@ const CreateMaternityInsurance = ({
           </div>
           <div className="col-4">
             <strong>{"Số CMND/Hộ chiếu/Thẻ căn cước"}</strong>
-            <div className="detail">{data.personal_id_no}</div>
+            <div className="detail">{data.IndentifiD}</div>
           </div>
         </div>
         <div className="row mv-10">
@@ -293,7 +293,7 @@ const CreateMaternityInsurance = ({
         <div className="row mv-10">
           <div className="col-4">
             <strong>{"Hình thức nhận"}</strong>
-            <div className="detail">{data.receiveType}</div>
+            <div className="detail">{data.receiveType?.name || ''}</div>
           </div>
           <div className="col-4">
             <strong>{"Số tài khoản"}</strong>
