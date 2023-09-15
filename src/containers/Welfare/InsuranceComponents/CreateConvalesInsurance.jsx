@@ -418,7 +418,7 @@ const CreateConvalesInsurance = ({
             ) : null}
           </div>
           <div className="col-4">
-            <div>{t('StartDate')}</div>
+            <div>{t('StartDate')}<span className="required">(*)</span></div>
             <DatePicker
               selectsStart
               name="startDate"
@@ -441,7 +441,7 @@ const CreateConvalesInsurance = ({
             ) : null}
           </div>
           <div className="col-4">
-            <div>{t('EndDate')}</div>
+            <div>{t('EndDate')}<span className="required">(*)</span></div>
             <DatePicker
               selectsEnd
               name="startDate"
