@@ -1,9 +1,9 @@
-import React, { Fragment, useState } from "react";
-import { Container, Row, Col, Tabs, Tab, Form } from 'react-bootstrap';
-import Button from 'react-bootstrap/Button'
-import Fade from 'react-bootstrap/Fade'
+import React, { Fragment } from "react";
+import { Container } from 'react-bootstrap';
 import Card from 'react-bootstrap/Card'
 import Accordion from 'react-bootstrap/Accordion'
+import { urlify } from "utils/string"
+import purify from "dompurify"
 
 class CommonQuestionComponent extends React.Component {
   constructor(props) {
@@ -45,7 +45,10 @@ class CommonQuestionComponent extends React.Component {
                         <div className="media">
                           <span className="lg icon-Icon-Answer mr-1 pt-2"><span className="path1"></span><span className="path2"></span><span className="path3"></span></span>
                           <div className="media-body">
-                            <span className="font-italic">{question.answer}</span>
+                            <span 
+                              className="font-italic" 
+                              dangerouslySetInnerHTML={{__html: purify.sanitize(urlify(question.answer))}} 
+                            />
                           </div>
                         </div>
                       </div>
