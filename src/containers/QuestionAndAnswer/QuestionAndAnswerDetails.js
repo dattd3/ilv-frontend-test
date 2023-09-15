@@ -506,7 +506,7 @@ class QuestionAndAnswerDetails extends React.Component {
                                   alt="" 
                                   className="icon-star"
                                   style={{ opacity: (item.isExpire && !item.rated) ? 0.5 : 1 }}
-                                  onClick={() => item.rated ? {} : this.handleChangeCommentRating(item.id, starIndex + 1)} 
+                                  onClick={() => (item.isExpire || item.rated) ? {} : this.handleChangeCommentRating(item.id, starIndex + 1)} 
                                 />)
                                 }
                                 {
@@ -516,13 +516,13 @@ class QuestionAndAnswerDetails extends React.Component {
                                   </button>
                                 }
                                 {
-                                  item.rated &&<button className="completed-button" onClick={() => this.submitRating(item.id)}>
+                                  item.rated && <button className="completed-button">
                                   <img src={IconTickGreen} alt="" />{" "}
                                     {t("Completed")}
                                   </button>
                                 }
                                 {
-                                  item.isExpire && !item.rated &&<button className="expired-button" onClick={() => this.submitRating(item.id)}>
+                                  item.isExpire && !item.rated && <button className="expired-button">
                                   <img src={IconXRed} alt="" />{" "}
                                     {t("Expired")}
                                   </button>
