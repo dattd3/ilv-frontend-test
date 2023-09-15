@@ -4,10 +4,8 @@ import Carousel from 'react-bootstrap/Carousel'
 import SubmitQuestionModal from './SubmitQuestionModal'
 import HistoryModal from './HistoryModal'
 import { Container, Button } from 'react-bootstrap';
-import { toast } from "react-toastify";
 import StatusModal from '../../components/Common/StatusModal'
 import FormControl from 'react-bootstrap/FormControl'
-import ConfirmModal from './ConfirmModal'
 import SelectSupporterModal from './SelectSupporterModal'
 import defaultAvartar from '../../components/Common/DefaultAvartar'
 import { withTranslation } from 'react-i18next';
@@ -15,6 +13,8 @@ import HOCComponent from '../../components/Common/HOCComponent'
 import IconRateStar from 'assets/img/icon/icon-rate-star.svg'
 import IconRateStarFull from 'assets/img/icon/icon-rate-star-full.svg'
 import IconSend from 'assets/img/icon/icon-send.svg'
+import IconXRed from 'assets/img/icon/ic_x_red.svg'
+import IconTickGreen from 'assets/img/icon/ic_tick_green.svg'
 
 class QuestionAndAnswerDetails extends React.Component {
 
@@ -299,10 +299,10 @@ class QuestionAndAnswerDetails extends React.Component {
               })
             }
           })
-          toast.success(t("RatingSuccessfully"));
+          this.showStatusModal(t("RatingSuccessfully"), true)
         })
         .catch(error => {
-          toast.error(t("HasErrorOccurred"))
+          this.showStatusModal(t("HasErrorOccurred"))
         });
     }
     this.setState({
@@ -500,36 +500,31 @@ class QuestionAndAnswerDetails extends React.Component {
                               <b className="text-left">{t('Answer')}: </b>
                               {item.content}
                               {
-                                (!item.isExpire || (item.isExpire && item.rated)) && isEmployeeView && <div className="rate-star-container">
-                                <img src={(item.rating >= 1 || item.rated >= 1) ? IconRateStarFull : IconRateStar} 
+                                isEmployeeView && <div className="rate-star-container">
+                                {
+                                  Array.from(Array(5).keys()).map(starIndex => <img key={starIndex} src={(item.rating >= starIndex + 1 || item.rated >= starIndex + 1) ? IconRateStarFull : IconRateStar} 
                                   alt="" 
-                                  className="icon-star" 
-                                  onClick={() => item.rated ? {} : this.handleChangeCommentRating(item.id, 1)} 
-                                />
-                                <img src={(item.rating >= 2 || item.rated >= 2) ? IconRateStarFull : IconRateStar} 
-                                  alt="" 
-                                  className="icon-star" 
-                                  onClick={() => item.rated ? {} : this.handleChangeCommentRating(item.id, 2)} 
-                                />
-                                <img src={(item.rating >= 3 || item.rated >= 3) ? IconRateStarFull : IconRateStar} 
-                                  alt="" 
-                                  className="icon-star" 
-                                  onClick={() => item.rated ? {} : this.handleChangeCommentRating(item.id, 3)} 
-                                />
-                                <img src={(item.rating >= 4 || item.rated >= 4) ? IconRateStarFull : IconRateStar} 
-                                  alt="" 
-                                  className="icon-star" 
-                                  onClick={() => item.rated ? {} : this.handleChangeCommentRating(item.id, 4)} 
-                                />
-                                <img src={(item.rating >= 5 || item.rated >= 5) ? IconRateStarFull : IconRateStar} 
-                                  alt="" 
-                                  className="icon-star" 
-                                  onClick={() => item.rated ? {} : this.handleChangeCommentRating(item.id, 5)}
-                                />
+                                  className="icon-star"
+                                  style={{ opacity: (item.isExpire && !item.rated) ? 0.5 : 1 }}
+                                  onClick={() => item.rated ? {} : this.handleChangeCommentRating(item.id, starIndex + 1)} 
+                                />)
+                                }
                                 {
                                   (!item.isExpire && !item.rated) && <button className="send-button" disabled={isRatingLoading} onClick={() => this.submitRating(item.id)}>
                                     <img src={IconSend} alt="" />{" "}
                                     {t("Confirm")}
+                                  </button>
+                                }
+                                {
+                                  item.rated &&<button className="completed-button" onClick={() => this.submitRating(item.id)}>
+                                  <img src={IconTickGreen} alt="" />{" "}
+                                    {t("Completed")}
+                                  </button>
+                                }
+                                {
+                                  item.isExpire && !item.rated &&<button className="expired-button" onClick={() => this.submitRating(item.id)}>
+                                  <img src={IconXRed} alt="" />{" "}
+                                    {t("Expired")}
                                   </button>
                                 }
                               </div>

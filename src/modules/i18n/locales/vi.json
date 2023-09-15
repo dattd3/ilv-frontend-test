@@ -1925,5 +1925,9 @@
   "vinai_bad": "Không đạt yêu cầu",
   "WaitProcessingContentMessage": "Dữ liệu đang được xử lý. Vui lòng chờ trong giây lát",
   "HolidayGifts": "Quà ngày lễ (cộng vào lương)",
-  "RatingSuccessfully": "Đánh giá câu trả lời thành công"
+  "lyDoTuChoi": "Lý do từ chối",
+  "DocumentRequired": "HỒ SƠ BẮT BUỘC",
+  "DocumentDownload": "Để tải về hồ sơ bắt buộc",
+  "RatingSuccessfully": "Đánh giá câu trả lời thành công",
+  "Expired": "Hết hạn"
 }

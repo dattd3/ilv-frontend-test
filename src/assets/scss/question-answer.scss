@@ -132,6 +132,9 @@
 }
 
 .rate-star-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   .icon-star {
     width: 20px;
     height: 20px;
@@ -152,5 +155,31 @@
   }
   .send-button:disabled {
     opacity: 0.6;
+  }
+  .completed-button {
+    cursor: auto;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    border: 1px solid #05BD29;
+    width: 123px;
+    height: 36px;
+    color: #05BD29;
+    border-radius: 4px;
+    background-color: #fff;
+  }
+  .expired-button {
+    cursor: auto;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    border: 1px solid #FF0000;
+    width: 123px;
+    height: 36px;
+    color: #FF0000;
+    border-radius: 4px;
+    background-color: #fff;
   }
 }
