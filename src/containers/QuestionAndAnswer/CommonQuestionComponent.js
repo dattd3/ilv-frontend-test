@@ -20,7 +20,8 @@ class CommonQuestionComponent extends React.Component {
   render() {
     const { open } = this.state;
     return <>
-      <Accordion defaultActiveKey="0">
+      {
+        this.props.questions?.every(question => question.subject && question.answer) &&  <Accordion defaultActiveKey="0">
         <Accordion.Toggle as={Card.Header} eventKey="0" onClick= {() => this.setOpen()}>
           <h4 className="text-uppercase common-category cursor-pointer">
             {
@@ -34,25 +35,27 @@ class CommonQuestionComponent extends React.Component {
               this.props.questions && this.props.questions.length > 0 ?
                 this.props.questions.map((question, index) => {
                   return <Fragment key={index}>
-                    <Container fluid className="info-tab-content pl-3 pr-3">
-                      <div className="mb-1 multiline">
-                        <span className="icon-Icon-Question mr-1"><span className="path1"></span><span className="path2"></span><span className="path3"></span></span>
-                        <span>
-                          <b>{question.subject}</b>
-                        </span>
-                      </div>
-                      <div className="pl-4 pr-4 multiline">
-                        <div className="media">
-                          <span className="lg icon-Icon-Answer mr-1 pt-2"><span className="path1"></span><span className="path2"></span><span className="path3"></span></span>
-                          <div className="media-body">
-                            <span 
-                              className="font-italic" 
-                              dangerouslySetInnerHTML={{__html: purify.sanitize(urlify(question.answer))}} 
-                            />
+                    {
+                      question.subject && question.answer && <Container fluid className="info-tab-content pl-3 pr-3">
+                        <div className="mb-1 multiline">
+                          <span className="icon-Icon-Question mr-1"><span className="path1"></span><span className="path2"></span><span className="path3"></span></span>
+                          <span>
+                            <b>{question.subject}</b>
+                          </span>
+                        </div>
+                        <div className="pl-4 pr-4 multiline">
+                          <div className="media">
+                            <span className="lg icon-Icon-Answer mr-1 pt-2"><span className="path1"></span><span className="path2"></span><span className="path3"></span></span>
+                            <div className="media-body">
+                              <span 
+                                className="font-italic" 
+                                dangerouslySetInnerHTML={{__html: purify.sanitize(urlify(question?.answer))}} 
+                              />
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </Container>
+                      </Container>
+                    }
                   </Fragment>
                 })
                 : null
@@ -60,7 +63,7 @@ class CommonQuestionComponent extends React.Component {
           </Card.Body>
         </Accordion.Collapse>
       </Accordion>
-
+      }
     </>
   }
 }
