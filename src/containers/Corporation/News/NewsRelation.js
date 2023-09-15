@@ -6,6 +6,7 @@ import { getRequestConfigurations } from "commons/Utils"
 import { prepareNews } from "./NewsUtils"
 import NewsItemGrid from "./NewsItemGrid"
 import IconDiamond from '../../../assets/img/icon/Icon-Diamond.svg'
+import IconGift from '../../../assets/img/icon/Icon_gift_gray.svg'
 
 export default function NewsRelation(props) {
     const { t } = useTranslation();
@@ -18,13 +19,12 @@ export default function NewsRelation(props) {
             config.params = {
                 id: id,
                 count: 4,
-                // ...(isEmployeePrivilege && {type: 'PRIVILEGE'})
-                type: isEmployeePrivilege ? 'PRIVILEGE' : ''
+                ...(isEmployeePrivilege && {type: 'PRIVILEGE'})
             }
 
             try {
                 const response = await axios.get(`${process.env.REACT_APP_REQUEST_URL}article/listothers`, config)
-                setOtherInfo(response?.data?.data?.listPrivilege || [])
+                setOtherInfo(response?.data?.data || [])
             } finally {
 
             }
@@ -35,7 +35,7 @@ export default function NewsRelation(props) {
 
     return (
         <div className="news-others">
-            <h4 className="page-title"><Image src={IconDiamond} alt="News" />{t("OtherNews")}</h4>
+            <h4 className="page-title"><Image src={isEmployeePrivilege ? IconGift : IconDiamond} alt="News" />{isEmployeePrivilege ? t("OtherIncentives") : t("OtherNews") }</h4>
             <div className="row list-news">
                 {
                     (otherInfo || []).map((item, i) => {
