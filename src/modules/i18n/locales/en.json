@@ -1914,7 +1914,6 @@
   "SubContentSupportSAP": "describe error in details, employee ID when need help related to SAP HCM system.",
   "ViewMore": "View more",
   "OtherIncentives": "Other incentives",
-  "VingroupEmployeePrivileges": "Vingroup employee privileges",
   "RequestInternalPayment": "Used Internal benefit reimbursement request",
   "ManagerInfo": "EMPLOYEE INFORMATION",
   "WelfareInfo": "INTERNAL BENEFIT INFORMATION",
@@ -1958,6 +1957,7 @@
   "lyDoTuChoi": "Declined reason",
   "DocumentRequired": "Required Files",
   "DocumentDownload": "To download require files",
+  "VingroupEmployeePrivileges": "Vingroup member privileges",
   "RatingSuccessfully": "Rating comment successfully",
   "Expired": "Expired"
 }
