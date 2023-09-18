@@ -35,7 +35,7 @@ export default function NewsRelation(props) {
 
     return (
         <div className="news-others">
-            <h4 className="page-title"><Image src={isEmployeePrivilege ? IconGift : IconDiamond} alt="News" />{isEmployeePrivilege ? t("OtherIncentives") : t("OtherNews") }</h4>
+            <h4 className="page-title"><Image src={isEmployeePrivilege ? IconGift : IconDiamond} alt="News" /><span style={{ marginTop: 4 }}>{isEmployeePrivilege ? t("OtherIncentives") : t("OtherNews") }</span></h4>
             <div className="row list-news">
                 {
                     (otherInfo || []).map((item, i) => {
