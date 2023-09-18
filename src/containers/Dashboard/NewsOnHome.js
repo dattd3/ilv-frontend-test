@@ -137,7 +137,7 @@ function NewsOnHome(props) {
                                             </a>
                                             <div className="other-info">
                                                 <div className="source-time-info">
-                                                    <span className="time"><Image src={IconTime} alt="Time" className="icon" /><span className="hour">{getTimeByRawTime(privilegeBanner?.publishedDate)?.date}</span></span>
+                                                    <span className="time"><Image src={IconTime} alt="Time" className="icon" /><span className="hour">{getTimeByRawTime(privilegeBanner?.publishedDate)?.time + ' | ' + getTimeByRawTime(privilegeBanner?.publishedDate)?.date}</span></span>
                                                 </div>
                                                 <p className="description">{privilegeBanner?.description || ''}</p>
                                                 <div className="btn-detail">

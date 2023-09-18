@@ -111,7 +111,7 @@ const EmployeePrivileges = (props) => {
                                                 </a>
                                                 <div className="other-info">
                                                     <div className="source-time-info">
-                                                        <span className="time"><Image src={IconTime} alt="Time" className="icon" /><span className="hour">{timePublishedTopOne?.date}</span></span>
+                                                        <span className="time"><Image src={IconTime} alt="Time" className="icon" /><span className="hour">{timePublishedTopOne?.time + ' | ' + timePublishedTopOne?.date}</span></span>
                                                     </div>
                                                     <p className="description">{subStringDescription(topOne?.description)}</p>
                                                     <div className="btn-detail">
@@ -138,7 +138,7 @@ const EmployeePrivileges = (props) => {
                                                             <div className="title-source-time-info">
                                                                 <a href={`/employee-privileges/${convertToSlug(item?.title)}/${item?.id}`} className="title">{item?.title}</a>
                                                                 <div className="source-time-info">
-                                                                    <span className="time"><Image src={IconTime} alt="Time" className="icon" /><span className="hour">{timePublished?.date}</span></span>
+                                                                    <span className="time"><Image src={IconTime} alt="Time" className="icon" /><span className="hour">{timePublished?.time + ' | ' + timePublished?.date}</span></span>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -173,7 +173,7 @@ const EmployeePrivileges = (props) => {
                                                                             <a href={`/employee-privileges/${convertToSlug(item?.title)}/${item?.id}`} className="title">{item?.title}</a>
                                                                             <p className="description">{subStringDescription(item?.description)}</p>
                                                                             <div className="source-time-info">
-                                                                                <span className="time"><Image src={IconTime} alt="Time" className="icon" /><span className="hour">{timePublished?.date}</span></span>
+                                                                                <span className="time"><Image src={IconTime} alt="Time" className="icon" /><span className="hour">{timePublished?.time + ' | ' + timePublished?.date}</span></span>
                                                                             </div>
                                                                         </div>
                                                                         <div className="btn-detail">

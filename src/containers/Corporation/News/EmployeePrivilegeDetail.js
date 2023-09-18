@@ -46,7 +46,7 @@ function EmployeePrivilegeDetailElement({ match, location }) {
             <div className="news-content">
                 <h1 className="news-title">{detail?.title || ''}</h1>
                 <div className="source-time-info">
-                    <span className="time"><Image src={IconTime} alt="Time" className="icon" /><span className="hour">{timePublished?.date}</span></span>
+                    <span className="time"><Image src={IconTime} alt="Time" className="icon" /><span className="hour">{timePublished?.time + ' | ' + timePublished?.date}</span></span>
                 </div>
                 <h2 className="news-description">{detail?.description || ''}</h2>
                 <div className="news-detail" dangerouslySetInnerHTML={{

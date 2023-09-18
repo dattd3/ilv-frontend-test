@@ -57,7 +57,7 @@ export default function NewsItemGrid(props) {
                     <a href={`/${isEmployeePrivilege ? 'employee-privileges' : 'news'}/${convertToSlug(title)}/${id}`} className="title">{title}</a>
                     <div className="source-time-info">
                         { !isEmployeePrivilege && (<span className="source"><Image src={IconUser} alt="Source" className="icon" /><span className="source-name">{sourceSite || ""}</span></span>) }
-                        <span className="time"><Image src={IconTime} alt="Time" className="icon" /><span className="hour">{timePublished?.date}</span></span>
+                        <span className="time"><Image src={IconTime} alt="Time" className="icon" /><span className="hour">{isEmployeePrivilege ? (timePublished?.time + ' | ' + timePublished?.date) : timePublished?.date}</span></span>
                     </div>
                 </div>
             </div>
