@@ -10,6 +10,7 @@ interface AssessorInfoComponentProps {
   supervisors: any;
   approver: any;
   setApprover: Function;
+  errors: any
 }
 
 const AssessorInfoComponent: React.FC<AssessorInfoComponentProps> = ({
@@ -19,6 +20,7 @@ const AssessorInfoComponent: React.FC<AssessorInfoComponentProps> = ({
   setSupervisors,
   approver,
   setApprover,
+  errors = {}
 }) => {
   const removeSupervisorItem = (index) => {
     const newData = [...supervisors];
@@ -40,10 +42,7 @@ const AssessorInfoComponent: React.FC<AssessorInfoComponentProps> = ({
   return (
     <div className="timesheet-section proposal-management status-contain" style={{marginBottom: '10px'}}>
       <h5>
-        {t("Consenter")}
-        <span className="font-weight-normal ml-1 text-lowercase">
-          ({t("if_any")})
-        </span>
+        {t("Appraiser")}
       </h5>
       <div className="timesheet-box1 timesheet-box shadow">
         {supervisors.map((item, key) => (
@@ -65,6 +64,7 @@ const AssessorInfoComponent: React.FC<AssessorInfoComponentProps> = ({
             <HumanForReviewSalaryComponent
               isEdit={!isCreateMode}
               isAppraiser={true}
+              isEmployee={true}
               approver={item}
               updateApprover={(sup) => handleUpdateSupervisors(sup, key)}
               comment={item?.appraiserComment}
@@ -81,17 +81,28 @@ const AssessorInfoComponent: React.FC<AssessorInfoComponentProps> = ({
             {t("Add")}
           </button>
         )}
+        
       </div>
-      <h5>{t("BossApproved")}</h5>
+      {errors['supervisors'] ? (
+        <p className="text-danger mt-1">{errors['supervisors']}</p>
+      ) : null}
+      <h5>{t("Approver")}</h5>
       <div className="timesheet-box1 timesheet-box shadow">
         <HumanForReviewSalaryComponent
           isEdit={!isCreateMode}
           approver={approver}
+          isEmployee={true}
           updateApprover={setApprover}
           comment={approver?.appraiserComment}
           isAppraiserNote={false}
         />
+        
       </div>
+      {
+        errors['approver'] ? (
+          <p className="text-danger mt-1">{errors['approver']}</p>
+        ) : null
+      }
     </div>
   );
 };
