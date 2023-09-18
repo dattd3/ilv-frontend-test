@@ -245,6 +245,10 @@ const CreateSickInsurance = ({
       "sickName",
       "receiveType",
     ];
+    //check người thẩm định
+    if(supervisors?.length == 0 || !supervisors.every(sup => sup != null)) {
+      _errors['supervisors'] = t('PleaseEnterInfo');
+    }
     if(!approver) {
       _errors['approver'] = t('PleaseEnterInfo');
     }
@@ -276,11 +280,19 @@ const CreateSickInsurance = ({
     });
     setErrors(_errors);
 
-    const hasErrors = !Object.values(_errors).every(
+    let hasErrors = !Object.values(_errors).every(
       (item) => item === null || item === undefined
     );
     if (hasErrors) {
       notifyMessage(t('PleaseEnterInfo'), true);
+    }
+    //check files
+    if(!hasErrors) {
+      let checkfiles = (!files || files?.length === 0) ? t("Required") + ' ' + t('AttachmentFile') : null
+      if(checkfiles) {
+        notifyMessage(checkfiles);
+        hasErrors = true;
+      }
     }
     return hasErrors ? false : true;
   };
@@ -864,10 +876,8 @@ const CreateSickInsurance = ({
         supervisors={supervisors}
         approver={approver}
         setApprover={setApprover}
+        errors={errors}
       />
-      {errors["approver"] ? (
-        <p className="text-danger">{errors["approver"]}</p>
-      ) : null}
       {
         isCreateMode ?
         <DocumentRequired
