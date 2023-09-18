@@ -1907,6 +1907,11 @@
   "vinai_normal": "Need Improvement",
   "vinai_bad": "Unsatisfactory",
   "WaitProcessingContentMessage": "Data is being processed. Please wait in minunues",
+  "SupportEmailBoxes": "Support email-boxes",
+  "PleaseEmailTo": "Please email to",
+  "WithSubjectIncludeKeyword": "with subject include keyword",
+  "SubContentSupportILV": "describe error in details, employee ID when need help related to ILoveVingroup system.",
+  "SubContentSupportSAP": "describe error in details, employee ID when need help related to SAP HCM system.",
   "ViewMore": "View more",
   "OtherIncentives": "Other incentives",
   "RequestInternalPayment": "Used Internal benefit reimbursement request",
@@ -1952,5 +1957,7 @@
   "lyDoTuChoi": "Declined reason",
   "DocumentRequired": "Required Files",
   "DocumentDownload": "To download require files",
-  "VingroupEmployeePrivileges": "Vingroup member privileges"
+  "VingroupEmployeePrivileges": "Vingroup member privileges",
+  "RatingSuccessfully": "Rating comment successfully",
+  "Expired": "Expired"
 }
