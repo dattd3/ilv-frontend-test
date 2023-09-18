@@ -34,7 +34,7 @@ const GuideLineTicketSupport = (props) => {
     >
       <Modal.Body className='rounded'>
         <div className="header">
-          <div className='text-title'>{t("SupportEmailBoxes")}</div>
+          <div className='text-title text-uppercase'>{t("SupportEmailBoxes")}</div>
           <span className="close" onClick={onHide}><img src={IconClose} alt="Close" /></span>
         </div>
         <div className='content'>
