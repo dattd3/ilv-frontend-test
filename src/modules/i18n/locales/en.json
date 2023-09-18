@@ -1907,10 +1907,8 @@
   "vinai_normal": "Need Improvement",
   "vinai_bad": "Unsatisfactory",
   "WaitProcessingContentMessage": "Data is being processed. Please wait in minunues",
-  "HolidayGifts": "Holiday gifts (added to salary)",
   "ViewMore": "View more",
   "OtherIncentives": "Other incentives",
-  "VingroupEmployeePrivileges": "Vingroup employee privileges",
   "RequestInternalPayment": "Used Internal benefit reimbursement request",
   "ManagerInfo": "EMPLOYEE INFORMATION",
   "WelfareInfo": "INTERNAL BENEFIT INFORMATION",
@@ -1953,5 +1951,6 @@
   "HolidayGifts": "Holiday gifts (added to salary)",
   "lyDoTuChoi": "Declined reason",
   "DocumentRequired": "Required Files",
-  "DocumentDownload": "To download require files"
+  "DocumentDownload": "To download require files",
+  "VingroupEmployeePrivileges": "Vingroup member privileges"
 }
