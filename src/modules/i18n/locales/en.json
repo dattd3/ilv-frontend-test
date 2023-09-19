@@ -1907,5 +1907,8 @@
   "vinai_normal": "Need Improvement",
   "vinai_bad": "Unsatisfactory",
   "WaitProcessingContentMessage": "Data is being processed. Please wait in minunues",
-  "HolidayGifts": "Holiday gifts (added to salary)"
+  "HolidayGifts": "Holiday gifts (added to salary)",
+  "ViewMore": "View more",
+  "OtherIncentives": "Other incentives",
+  "VingroupEmployeePrivileges": "Vingroup member privileges"
 }

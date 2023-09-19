@@ -804,6 +804,22 @@ export default [
           },
           component: lazy(() => import("./HistoryVinGroup/index"))
         },
+        {
+          key: "employee-privileges",
+          routeProps: {
+            exact: true,
+            path: map.EmployeePrivileges
+          },
+          component: lazy(() => import("./Dashboard/EmployeePrivileges"))
+        },
+        {
+          key: "employee-privilege-detail",
+          routeProps: {
+            exact: true,
+            path: map.EmployeePrivilegeDetail,
+          },
+          component: lazy(() => import("./Corporation/News/EmployeePrivilegeDetail")),
+        },
       ],
     },
   },
