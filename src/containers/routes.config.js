@@ -820,6 +820,22 @@ export default [
           },
           component: lazy(() => import("./Welfare/InternalPayment/CreateInternalPayment"))
         },
+        {
+          key: "employee-privileges",
+          routeProps: {
+            exact: true,
+            path: map.EmployeePrivileges
+          },
+          component: lazy(() => import("./Dashboard/EmployeePrivileges"))
+        },
+        {
+          key: "employee-privilege-detail",
+          routeProps: {
+            exact: true,
+            path: map.EmployeePrivilegeDetail,
+          },
+          component: lazy(() => import("./Corporation/News/EmployeePrivilegeDetail")),
+        },
       ],
     },
   },
