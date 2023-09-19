@@ -15,6 +15,9 @@ import {
   WORKING_CONDITION,
 } from "./InsuranceData";
 import { Spinner } from "react-bootstrap";
+import AssessorInfoComponent from "../InternalPayment/component/AssessorInfoComponent";
+import ButtonComponent from "containers/Registration/ButtonComponent";
+import DocumentRequired from "./DocumentRequired";
 
 const CreateSickInsurance = ({
   t,
@@ -28,6 +31,14 @@ const CreateSickInsurance = ({
   onSend,
   notifyMessage,
   disabledSubmitButton,
+  supervisors,
+  setSupervisors,
+  approver,
+  setApprover,
+  files,
+  updateFiles,
+  removeFile,
+  isCreateMode = true
 }) => {
   const [errors, setErrors] = useState({});
   const InsuranceOptions = [
@@ -41,6 +52,62 @@ const CreateSickInsurance = ({
     if (!verify) {
       return;
     }
+
+    const employeeInfo = {
+      employeeNo: localStorage.getItem('employeeNo'),
+      username: localStorage.getItem('ad')?.toLowerCase(),
+      account: localStorage.getItem('email'),
+      fullName: localStorage.getItem('fullName'),
+      jobTitle: localStorage.getItem('jobTitle'),
+      employeeLevel: localStorage.getItem('employeeLevel'),
+      department: localStorage.getItem('department')
+    }
+    const userEmployeeInfo = {
+      employeeNo:localStorage.getItem('employeeNo'),
+      fullName:localStorage.getItem('fullName'),
+      jobTitle:localStorage.getItem('jobTitle'),
+      department:localStorage.getItem('department'),
+      company_email:localStorage.getItem('plEmail'),
+      costCenter: localStorage.getItem('cost_center')
+    }
+
+    let appIndex = 1;
+    const appraiserInfoLst = supervisors
+        .filter((item) => item != null)
+        .map((item, index) => ({
+          avatar: "",
+          account: item?.username.toLowerCase() + "@vingroup.net",
+          fullName: item?.fullName,
+          employeeLevel: item?.employeeLevel,
+          pnl: item?.pnl,
+          orglv2Id: item?.orglv2Id,
+          current_position: item?.current_position,
+          department: item?.department,
+          order: appIndex++,
+          company_email: item?.company_email?.toLowerCase(),
+          type: Constants.STATUS_PROPOSAL.LEADER_APPRAISER,
+          employeeNo: item?.uid || item?.employeeNo,
+          username: item?.username.toLowerCase(),
+        }));
+
+    const approverInfoLst = [
+        approver
+      ].map((ele, i) => ({
+        avatar: "",
+        account: ele?.username?.toLowerCase() + "@vingroup.net",
+        fullName: ele?.fullName,
+        employeeLevel: ele?.employeeLevel,
+        pnl: ele?.pnl,
+        orglv2Id: ele?.orglv2Id,
+        current_position: ele?.current_position,
+        department: ele?.department,
+        order: appIndex++,
+        company_email: ele?.company_email?.toLowerCase(),
+        type: Constants.STATUS_PROPOSAL.CONSENTER,
+        employeeNo: ele?.uid || ele?.employeeNo,
+        username: ele?.username?.toLowerCase(),
+      }))
+
     const formData = new FormData();
     formData.append("requestType", type.value);
     formData.append("requestName", type.label);
@@ -89,7 +156,7 @@ const CreateSickInsurance = ({
     formData.append(
       "certificateInsuranceBenefit",
       JSON.stringify({
-        hospitalLine: data.hospitalLine?.label || "",
+        hospitalLine: data.hospitalLine ? { id: data.hospitalLine.value, name: data.hospitalLine.label } : "",
         seriNumber: data.seri,
         fromDate: data.fromDate
           ? moment(data.fromDate, "DD/MM/YYYY").format("YYYY-MM-DD")
@@ -120,7 +187,7 @@ const CreateSickInsurance = ({
     formData.append(
       "receiveSubsidiesInfo",
       JSON.stringify({
-        receivingForm: data.receiveType?.label || "",
+        receivingForm: { id: data.receiveType.value, name: data.receiveType.label },
         bankAccountNumber: data.accountNumber,
         accountName: data.accountName,
         bankCode: data.bankId,
@@ -143,15 +210,25 @@ const CreateSickInsurance = ({
         : ""
     );
     formData.append("orgLv2Id", localStorage.getItem("organizationLv2"));
-    formData.append("divisionId", localStorage.getItem("divisionId"));
-    formData.append("division", localStorage.getItem("division"));
-    formData.append("regionId", localStorage.getItem("regionId"));
-    formData.append("region", localStorage.getItem("region"));
-    formData.append("unitId", localStorage.getItem("unitId"));
-    formData.append("unit", localStorage.getItem("unit"));
-    formData.append("partId", localStorage.getItem("partId"));
-    formData.append("part", localStorage.getItem("part"));
+    formData.append("orgLv3Id", localStorage.getItem("divisionId"));
+    formData.append("orgLv3Text", localStorage.getItem("division"));
+    formData.append("orgLv4Id", localStorage.getItem("regionId"));
+    formData.append("orgLv4Text", localStorage.getItem("region"));
+    formData.append("orgLv5Id", localStorage.getItem("unitId"));
+    formData.append("orgLv5Text", localStorage.getItem("unit"));
+    formData.append("orgLv6Id", localStorage.getItem("partId"));
+    formData.append("orgLv6Text", localStorage.getItem("part"));
     formData.append("companyCode", localStorage.getItem("companyCode"));
+    formData.append('employeeInfo', JSON.stringify(employeeInfo));
+    formData.append('UserInfo', JSON.stringify(userEmployeeInfo));
+
+    formData.append("appraiserInfoLst", JSON.stringify(appraiserInfoLst));
+    formData.append("approverInfoLst", JSON.stringify(approverInfoLst));
+    if (files.filter(item=> item.id == undefined).length > 0) {
+      files.filter(item=> item.id == undefined).forEach((file) => {
+        formData.append("attachedFiles", file);
+      });
+    }
     onSend(formData);
   };
 
@@ -162,13 +239,32 @@ const CreateSickInsurance = ({
       "declareForm",
       "plan",
       "seri",
+      "fromDate",
+      "toDate",
       "total",
+      "sickName",
       "receiveType",
-      "accountNumber",
+    ];
+    //check người thẩm định
+    if(supervisors?.length == 0 || !supervisors.every(sup => sup != null)) {
+      _errors['supervisors'] = t('PleaseEnterInfo');
+    }
+    if(!approver) {
+      _errors['approver'] = t('PleaseEnterInfo');
+    }
+    if(checkRequireAtm()) {
+      requiredFields.push("accountNumber",
       "accountName",
       "bankId",
-      "bankName",
-    ];
+      "bankName");
+    }
+    if(checkRequireChildInfo()) {
+      requiredFields.push(
+        'childBirth',
+        'childInsuranceNumber',
+        'childSickNumbers'
+      )
+    }
     const optionFields = ["declareForm", "plan", "receiveType"];
 
     requiredFields.forEach((name) => {
@@ -176,22 +272,44 @@ const CreateSickInsurance = ({
         _.isEmpty(candidateInfos[name]) ||
         (!candidateInfos[name].value && optionFields.includes(name))
       ) {
-        _errors[name] = "Vui lòng nhập giá trị !";
+        _errors[name] = t('PleaseEnterInfo');
       } else {
         _errors[name] =
-          _errors[name] == "Vui lòng nhập giá trị !" ? null : _errors[name];
+          _errors[name] == t('PleaseEnterInfo') ? null : _errors[name];
       }
     });
     setErrors(_errors);
 
-    const hasErrors = !Object.values(_errors).every(
+    let hasErrors = !Object.values(_errors).every(
       (item) => item === null || item === undefined
     );
     if (hasErrors) {
-      notifyMessage("Vui lòng nhập giá trị !", true);
+      notifyMessage(t('PleaseEnterInfo'), true);
+    }
+    //check files
+    if(!hasErrors) {
+      let checkfiles = (!files || files?.length === 0) ? t("Required") + ' ' + t('AttachmentFile') : null
+      if(checkfiles) {
+        notifyMessage(checkfiles);
+        hasErrors = true;
+      }
     }
     return hasErrors ? false : true;
   };
+
+  const checkRequireAtm = () => {
+    if(data.receiveType?.value && [2].includes(data.receiveType.value)) {
+      return true;
+    }
+    return false;
+  }
+
+  const checkRequireChildInfo = () => {
+    if(data.plan?.value && ['O2'].includes(data.plan.value)) {
+      return true;
+    }
+    return false;
+  }
 
   return (
     <>
@@ -207,6 +325,7 @@ const CreateSickInsurance = ({
               options={InsuranceOptions}
               isClearable={false}
               value={type}
+              isDisabled={!isCreateMode}
               onChange={(e) => setType(e)}
               className="input mv-10"
               styles={{ menu: (provided) => ({ ...provided, zIndex: 2 }) }}
@@ -222,6 +341,7 @@ const CreateSickInsurance = ({
               value={data.declareForm}
               onChange={(e) => handleChangeSelectInputs(e, "declareForm")}
               className="input mv-10"
+              isDisabled={!isCreateMode}
               styles={{ menu: (provided) => ({ ...provided, zIndex: 2 }) }}
             />
             {errors["declareForm"] ? (
@@ -250,6 +370,7 @@ const CreateSickInsurance = ({
               dateFormat="dd/MM/yyyy"
               placeholderText={t("Select")}
               locale={t("locale")}
+              disabled={!isCreateMode}
               className="form-control input"
               styles={{ width: "100%" }}
             />
@@ -274,6 +395,7 @@ const CreateSickInsurance = ({
               dateFormat="dd/MM/yyyy"
               placeholderText={t("Select")}
               locale={t("locale")}
+              disabled={!isCreateMode}
               className="form-control input"
               styles={{ width: "100%" }}
             />
@@ -288,6 +410,7 @@ const CreateSickInsurance = ({
               value={data.plan}
               onChange={(e) => handleChangeSelectInputs(e, "plan")}
               className="input mv-10"
+              isDisabled={!isCreateMode}
               styles={{ menu: (provided) => ({ ...provided, zIndex: 2 }) }}
             />
             {errors["plan"] ? (
@@ -301,6 +424,7 @@ const CreateSickInsurance = ({
             <textarea
               rows={3}
               value={data.note}
+              disabled={!isCreateMode}
               onChange={(e) => handleTextInputChange(e, "note")}
               className="mv-10 form-control input w-100"
             />
@@ -342,6 +466,7 @@ const CreateSickInsurance = ({
               value={data.workingCondition}
               onChange={(e) => handleChangeSelectInputs(e, "workingCondition")}
               className="input mv-10"
+              isDisabled={!isCreateMode}
               styles={{ menu: (provided) => ({ ...provided, zIndex: 2 }) }}
             />
           </div>
@@ -356,6 +481,7 @@ const CreateSickInsurance = ({
               className="form-control input mv-10 w-100"
               name="inputName"
               autoComplete="off"
+              disabled={!isCreateMode}
             />
           </div>
         </div>
@@ -373,6 +499,7 @@ const CreateSickInsurance = ({
               value={data.hospitalLine}
               onChange={(e) => handleChangeSelectInputs(e, "hospitalLine")}
               className="input mv-10"
+              isDisabled={!isCreateMode}
               styles={{ menu: (provided) => ({ ...provided, zIndex: 2 }) }}
             />
           </div>
@@ -386,6 +513,7 @@ const CreateSickInsurance = ({
               className="form-control input mv-10 w-100"
               name="inputName"
               autoComplete="off"
+              disabled={!isCreateMode}
             />
             {errors["seri"] ? (
               <p className="text-danger">{errors["seri"]}</p>
@@ -394,7 +522,7 @@ const CreateSickInsurance = ({
         </div>
         <div className="row mv-10">
           <div className="col-4">
-            <div>{t('StartDate')}</div>
+            <div>{t('StartDate')} <span className="required">(*)</span></div>
             <DatePicker
               selectsStart
               name="startDate"
@@ -409,11 +537,15 @@ const CreateSickInsurance = ({
               placeholderText={t("Select")}
               locale={t("locale")}
               className="form-control input"
+              disabled={!isCreateMode}
               styles={{ width: "100%" }}
             />
+            {errors["fromDate"] ? (
+              <p className="text-danger">{errors["fromDate"]}</p>
+            ) : null}
           </div>
           <div className="col-4">
-            <div>{t('EndDate')}</div>
+            <div>{t('EndDate')} <span className="required">(*)</span></div>
             <DatePicker
               selectsEnd
               name="startDate"
@@ -427,9 +559,13 @@ const CreateSickInsurance = ({
               dateFormat="dd/MM/yyyy"
               placeholderText={t("Select")}
               locale={t("locale")}
+              disabled={!isCreateMode}
               className="form-control input"
               styles={{ width: "100%" }}
             />
+            {errors["toDate"] ? (
+              <p className="text-danger">{errors["toDate"]}</p>
+            ) : null}
           </div>
           <div className="col-4">
             {t('total')}
@@ -440,6 +576,7 @@ const CreateSickInsurance = ({
               onChange={(e) => handleTextInputChange(e, "total")}
               className="form-control input mv-10 w-100"
               name="inputName"
+              disabled={!isCreateMode}
               autoComplete="off"
             />
             {errors["total"] ? (
@@ -453,7 +590,7 @@ const CreateSickInsurance = ({
       <div className="box shadow cbnv">
         <div className="row mv-10">
           <div className="col-4">
-            <div>{t('birth_date')}</div>
+            <div>{t('birth_date')} {checkRequireChildInfo() ? <span className="required">(*)</span> : null}</div>
             <DatePicker
               name="startDate"
               //readOnly={disableComponent.disableAll || !disableComponent.qlttSide || data.qlttOpinion.disableTime == true}
@@ -472,31 +609,44 @@ const CreateSickInsurance = ({
               dateFormat="dd/MM/yyyy"
               placeholderText={t("Select")}
               locale={t("locale")}
+              disabled={!isCreateMode}
               className="form-control input"
               styles={{ width: "100%" }}
             />
+            {errors["childBirth"] ? (
+              <p className="text-danger">{errors["childBirth"]}</p>
+            ) : null}
           </div>
           <div className="col-4">
-            <div>{t('number_insurance_of_child')}</div>
+            <div>{t('number_insurance_of_child')} {checkRequireChildInfo() ? <span className="required">(*)</span> : null}</div>
             <input
               type="text"
               value={data.childInsuranceNumber}
               onChange={(e) => handleTextInputChange(e, "childInsuranceNumber")}
               className="form-control input mv-10 w-100"
               name="inputName"
+              disabled={!isCreateMode}
               autoComplete="off"
             />
+            {errors["childInsuranceNumber"] ? (
+              <p className="text-danger">{errors["childInsuranceNumber"]}</p>
+            ) : null}
           </div>
           <div className="col-4">
             {t('child_sick')}
+            {checkRequireChildInfo() ? <span className="required">(*)</span> : null}
             <input
               type="text"
               value={data.childSickNumbers}
               onChange={(e) => handleTextInputChange(e, "childSickNumbers")}
               className="form-control input mv-10 w-100"
               name="inputName"
+              disabled={!isCreateMode}
               autoComplete="off"
             />
+            {errors["childSickNumbers"] ? (
+              <p className="text-danger">{errors["childSickNumbers"]}</p>
+            ) : null}
           </div>
         </div>
       </div>
@@ -512,19 +662,25 @@ const CreateSickInsurance = ({
               type="text"
               className="form-control input mv-10 w-100"
               name="inputName"
+              disabled={!isCreateMode}
               autoComplete="off"
             />
           </div>
           <div className="col-8">
             {t('name_disease')}
+            <span className="required">(*)</span>
             <input
               value={data.sickName}
               onChange={(e) => handleTextInputChange(e, "sickName")}
               type="text"
               className="form-control input mv-10 w-100"
               name="inputName"
+              disabled={!isCreateMode}
               autoComplete="off"
             />
+            {errors["sickName"] ? (
+              <p className="text-danger">{errors["sickName"]}</p>
+            ) : null}
           </div>
         </div>
       </div>
@@ -540,6 +696,7 @@ const CreateSickInsurance = ({
               type="text"
               className="form-control input mv-10 w-100"
               name="inputName"
+              disabled={!isCreateMode}
               autoComplete="off"
             />
           </div>
@@ -563,6 +720,7 @@ const CreateSickInsurance = ({
               dateFormat="dd/MM/yyyy"
               placeholderText={t("option")}
               locale={t("locale")}
+              disabled={!isCreateMode}
               className="form-control input"
               styles={{ width: "100%" }}
             />
@@ -582,6 +740,7 @@ const CreateSickInsurance = ({
               className="form-control input mv-10 w-100"
               name="inputName"
               autoComplete="off"
+              disabled={!isCreateMode}
             />
           </div>
           <div className="col-4">
@@ -604,6 +763,7 @@ const CreateSickInsurance = ({
               dateFormat="dd/MM/yyyy"
               placeholderText={t("option")}
               locale={t("locale")}
+              disabled={!isCreateMode}
               className="form-control input"
               styles={{ width: "100%" }}
             />
@@ -626,6 +786,8 @@ const CreateSickInsurance = ({
               value={data.receiveType}
               onChange={(e) => handleChangeSelectInputs(e, "receiveType")}
               className="input mv-10"
+              disabled={!isCreateMode}
+              isDisabled={!isCreateMode}
               styles={{ menu: (provided) => ({ ...provided, zIndex: 2 }) }}
             />
             {errors["receiveType"] ? (
@@ -635,7 +797,7 @@ const CreateSickInsurance = ({
           <div className="col-4">
             <div>
               {t('account_number')}
-              <span className="required">(*)</span>
+              {checkRequireAtm() ? <span className="required">(*)</span> : null}
             </div>
             <input
               value={data.accountNumber}
@@ -643,6 +805,7 @@ const CreateSickInsurance = ({
               type="text"
               className="form-control input mv-10 w-100"
               name="inputName"
+              disabled={!isCreateMode}
               autoComplete="off"
             />
             {errors["accountNumber"] ? (
@@ -651,13 +814,14 @@ const CreateSickInsurance = ({
           </div>
           <div className="col-4">
             {t('account_name')}
-            <span className="required">(*)</span>
+            {checkRequireAtm() ? <span className="required">(*)</span> : null}
             <input
               value={data.accountName}
               onChange={(e) => handleTextInputChange(e, "accountName")}
               type="text"
               className="form-control input mv-10 w-100"
               name="inputName"
+              disabled={!isCreateMode}
               autoComplete="off"
             />
             {errors["accountName"] ? (
@@ -669,7 +833,7 @@ const CreateSickInsurance = ({
           <div className="col-4">
             <div>
               {t('bank_code')}
-              <span className="required">(*)</span>
+              {checkRequireAtm() ? <span className="required">(*)</span> : null}
             </div>
             <input
               value={data.bankId}
@@ -677,6 +841,7 @@ const CreateSickInsurance = ({
               type="text"
               className="form-control input mv-10 w-100"
               name="inputName"
+              disabled={!isCreateMode}
               autoComplete="off"
             />
             {errors["bankId"] ? (
@@ -686,12 +851,13 @@ const CreateSickInsurance = ({
           <div className="col-8">
             <div>
               {t('bank_name')}
-              <span className="required">(*)</span>
+              {checkRequireAtm() ? <span className="required">(*)</span> : null}
             </div>
             <input
               value={data.bankName}
               onChange={(e) => handleTextInputChange(e, "bankName")}
               type="text"
+              disabled={!isCreateMode}
               className="form-control input mv-10 w-100"
               name="inputName"
               autoComplete="off"
@@ -702,30 +868,49 @@ const CreateSickInsurance = ({
           </div>
         </div>
       </div>
-      <div className="clearfix mb-5 mt-4">
-        {/* <button type="button" className="btn btn-primary float-right ml-3 shadow" onClick={this.showConfirm.bind(this, 'isConfirm')}><i className="fa fa-paper-plane" aria-hidden="true"></i>  Gửi yêu cầu</button> */}
-        <button
-          type="button"
-          className="btn btn-primary float-right ml-3 shadow"
-          onClick={() => onSubmit()}
-        >
-          {!disabledSubmitButton ? (
-            <>
-              <i className="fa fa-paper-plane mr-2" aria-hidden="true"></i>
-            </>
-          ) : (
-            <Spinner
-              as="span"
-              animation="border"
-              size="sm"
-              role="status"
-              aria-hidden="true"
-              className="mr-2"
-            />
-          )}
-          {t("Send")}
-        </button>
+
+      <AssessorInfoComponent
+        t={t}
+        isCreateMode={isCreateMode}
+        setSupervisors={setSupervisors}
+        supervisors={supervisors}
+        approver={approver}
+        setApprover={setApprover}
+        errors={errors}
+      />
+      {
+        isCreateMode ?
+        <DocumentRequired
+        t={t}/> : null
+      }
+
+      <div className="registration-section">
+        <ul className="list-inline">
+          {files.map((file, index) => {
+              return <li className="list-inline-item" key={index}>
+                  <span className="file-name">
+                      <a title={file.name} href={file.fileUrl} download={file.name} target="_blank">{file.name}</a>
+                      {
+                        isCreateMode ? <i className="fa fa-times remove" aria-hidden="true" onClick={() => removeFile(index)}></i> : null
+                      }
+                  </span>
+              </li>
+          })}
+        </ul>
+        {
+          isCreateMode ?
+          <ButtonComponent
+          isEdit={false} 
+          files={files} 
+          updateFiles={updateFiles} 
+          submit={onSubmit} 
+          isUpdateFiles={()=>{}} 
+          disabledSubmitButton={disabledSubmitButton} 
+          validating={disabledSubmitButton}/> 
+          : null
+        }
       </div>
+
     </>
   );
 };

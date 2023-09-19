@@ -1,41 +1,25 @@
 import React, { useEffect, useState } from 'react'
 import { withTranslation } from 'react-i18next';
 import Select from 'react-select'
-import CreateConvalesInsurance from '../InsuranceComponents/CreateConvalesInsurance';
-import CreateMaternityInsurance from '../InsuranceComponents/CreateMaternityInsurance';
-import CreateSickInsurance from '../InsuranceComponents/CreateSickInsurance';
+import CreateConvalesInsurance from './CreateConvalesInsurance';
+import CreateMaternityInsurance from './CreateMaternityInsurance';
+import CreateSickInsurance from './CreateSickInsurance';
 import moment from 'moment';
 import axios from 'axios';
-import { getMuleSoftHeaderConfigurations, getRequestConfigurations, removeAccents } from '../../../commons/Utils';
+import { exportToPDF, getMuleSoftHeaderConfigurations, getRequestConfigurations } from '../../../commons/Utils';
 import { toast } from "react-toastify";
-import ResultModal from '../../Registration/ResultModal';
+import LoadingModal from '../../../components/Common/LoadingModal';
+import { Image } from 'react-bootstrap';
 import HOCComponent from '../../../components/Common/HOCComponent'
-import Constants from '../../../commons/Constants';
-import LoadingModal from 'components/Common/LoadingModal';
-import InsuranceApproveActionButtons from '../InsuranceComponents/InsuranceApproveActionButtons';
-import ProcessHistoryComponent from 'containers/WorkflowManagement/DepartmentManagement/ProposalManagement/ProcessHistoryComponent';
 
-const DetailInsuranceSocial = (props) => {
+const ExportInsuranceSocial = (props) => {
     const { t } = props;
-    const { id, action } = props?.match?.params;
-    
     const InsuranceOptions = [
-        {
-            label: t('sick'),
-            value: 1,
-          },
-          {
-            label: t('maternity'),
-            value: 2,
-          },
-          {
-            label: t('convales'),
-            value: 3,
-          },
+        { value: 1, label: 'Ốm đau' },
+        { value: 2, label: 'Thai sản' },
+        { value: 3, label: 'Dưỡng sức' }
     ];
-    const [loading, setLoading] = useState(false);
     const [type, setType] = useState(null);
-    const [timeRequest, setTimerRequest] = useState({});
     const [data, setData] = useState({
         sickData: {
             declareForm: null,
@@ -136,19 +120,7 @@ const DetailInsuranceSocial = (props) => {
         },
 
     });
-
-    const [viewSetting, setViewSetting] = useState({
-        showComponent: {
-          btnCancel: false, // Button Hủy
-          btnRefuse: false, // Button Từ chối
-          btnApprove: false, // Button phê duyệt
-          btnExpertise: false, // Button Thẩm định
-          btnAttachFile: false, // Button Dinh kem tep
-          btnSendRequest: false, // Button Gửi yêu cầu
-          btnNotApprove: false, // Button Không phê duyệt
-          stateProcess: false, // Button trang thai
-        }
-      });
+    const [loading, setLoading] = useState(false);
     const [userInfo, setUserInfo] = useState({
         fullName: '',
         socialId: '',
@@ -156,9 +128,7 @@ const DetailInsuranceSocial = (props) => {
         IndentifiD: '',
         employeeNo: ''
     });
-    const [supervisors, setSupervisors] = useState([]);
-    const [approver, setApprover] = useState(null); // CBLĐ phê duyệt
-    const [files, updateFiles] = useState([]);
+
     const [errors, setErrors] = useState({
         sickData: {
 
@@ -184,53 +154,33 @@ const DetailInsuranceSocial = (props) => {
             if (res && res[0].value) {
                 let infoDetail = res[0].value.data.data;
                 prepareDetailData(infoDetail);
-                setLoading(false);
             }
         })
-        .catch(err => {
-            setLoading(false);
-            console.log(err);
-        })
+            .catch(err => {
+                setLoading(false);
+                console.log(err);
+            })
     }, []);
 
-    const convertFormalDropdrowValue =(jsonString) => {
-        if(!jsonString) return null;
-        try{
-            if(jsonString && typeof jsonString == 'string' && JSON.parse(jsonString)?.name) {
-                return {value: JSON.parse(jsonString).id, label: JSON.parse(jsonString).name};
-            }
-        } catch(err) {
-            return null;
-        }
-        if(typeof jsonString == 'object') return {value: jsonString.id, label: jsonString.name};;
-        return null;
-    }
-
-    const prepareDetailData = (data) => {
-        const infoDetail = data.benefitClaim;
-        setUserInfo({
-            socialId: infoDetail.insuranceNumber || '',
-            healthId: '',
-            fullName: infoDetail.fullName || '',
-            employeeNo: infoDetail.employeeCode || '',
-            IndentifiD: infoDetail.idNumber || '',
-        })
-        setTimerRequest({
-          createdDate: data.createdDate,
-          approvedDate: data.approvedDate
-        })
-        setType(InsuranceOptions.find(is => is.value == infoDetail.claimType));
+    const prepareDetailData = (_data) => {
+        const infoDetail = _data.benefitClaim || {};
         if (infoDetail.claimType == 3) {
+            setType({ value: 3, label: 'Dưỡng sức' });
             const receiveBenefitsUnitInfo = infoDetail.receiveBenefitsUnitInfo ? JSON.parse(infoDetail.receiveBenefitsUnitInfo) : {};
             const inspectionDataInfo = infoDetail.inspectionDataInfo ? JSON.parse(infoDetail.inspectionDataInfo) : {}
             const receiveSubsidiesInfo = infoDetail.receiveSubsidiesInfo ? JSON.parse(infoDetail.receiveSubsidiesInfo) : {};
             setData({
                 ...data,
                 convalesData: {
-                    declareForm: convertFormalDropdrowValue(infoDetail.formTypeInfo),
+                    socialId: infoDetail.insuranceNumber || '',
+                    healthId: '',
+                    fullName: infoDetail.fullName || '',
+                    employeeNo: infoDetail.employeeCode || '',
+                    IndentifiD: infoDetail.idNumber || '',
+                    declareForm: infoDetail.formTypeInfo ? JSON.parse(infoDetail.formTypeInfo).name : '',
                     dateRequest: infoDetail.recommendEnjoyDate ? moment(infoDetail.recommendEnjoyDate).format('DD/MM/YYYY') : '',
                     dateLastResolved: infoDetail.solvedFirstDate ? moment(infoDetail.solvedFirstDate).format('DD/MM/YYYY') : '',
-                    plan: convertFormalDropdrowValue(infoDetail.planInfo),
+                    plan: infoDetail.planInfo ? JSON.parse(infoDetail.planInfo).name : '',
                     note: infoDetail.description || '',
                     startWork: infoDetail.backToWorkDate ? moment(infoDetail.backToWorkDate).format('DD/MM/YYYY') : '',
                     seri: receiveBenefitsUnitInfo.seriNumber || '',
@@ -243,7 +193,7 @@ const DetailInsuranceSocial = (props) => {
                     resolveDate: infoDetail.settlementPeriod ? moment(infoDetail.settlementPeriod).format('DD/MM/YYYY') : '',
                     addtionContent: infoDetail.additionalPhaseContent || '',
                     addtionDate: infoDetail.additionalPhasePeriod ? moment(infoDetail.additionalPhasePeriod).format('DD/MM/YYYY') : '',
-                    receiveType: convertFormalDropdrowValue(receiveSubsidiesInfo.receivingForm),
+                    receiveType: receiveSubsidiesInfo.receivingForm || '',
                     accountNumber: receiveSubsidiesInfo.bankAccountNumber || '',
                     accountName: receiveSubsidiesInfo.accountName || '',
                     bankId: receiveSubsidiesInfo.bankCode || '',
@@ -252,6 +202,7 @@ const DetailInsuranceSocial = (props) => {
             })
 
         } else if (infoDetail.claimType == 2) {
+            setType({ value: 2, label: 'Thai sản' });
             const childrenDataInfo = infoDetail.childrenDataInfo ? JSON.parse(infoDetail.childrenDataInfo) : {};
             const certificateInsuranceBenefit = infoDetail.certificateInsuranceBenefit ? JSON.parse(infoDetail.certificateInsuranceBenefit) : {}
             const motherDataInfo = infoDetail.motherDataInfo ? JSON.parse(infoDetail.motherDataInfo) : {};
@@ -260,15 +211,20 @@ const DetailInsuranceSocial = (props) => {
             setData({
                 ...data,
                 maternityData: {
-                    declareForm: convertFormalDropdrowValue(infoDetail.formTypeInfo),
-                    maternityRegime: convertFormalDropdrowValue(infoDetail.maternityRegimeInfo),
+                    socialId: infoDetail.insuranceNumber || '',
+                    healthId: '',
+                    fullName: infoDetail.fullName || '',
+                    employeeNo: infoDetail.employeeCode || '',
+                    IndentifiD: infoDetail.idNumber || '',
+                    declareForm: infoDetail.formTypeInfo ? JSON.parse(infoDetail.formTypeInfo).name : '',
+                    maternityRegime: infoDetail.maternityRegimeInfo ? JSON.parse(infoDetail.maternityRegimeInfo).name : '',
                     dateRequest: infoDetail.recommendEnjoyDate ? moment(infoDetail.recommendEnjoyDate).format('DD/MM/YYYY') : '',
                     dateLastResolved: infoDetail.solvedFirstDate ? moment(infoDetail.solvedFirstDate).format('DD/MM/YYYY') : '',
-                    maternityCondition: convertFormalDropdrowValue(infoDetail.pregnancyCheckUpInfo),
-                    birthCondition: convertFormalDropdrowValue(infoDetail.conditionsChildbirth),
+                    maternityCondition: infoDetail.pregnancyCheckUpInfo ? JSON.parse(infoDetail.pregnancyCheckUpInfo).name : '',
+                    birthCondition: infoDetail.conditionsChildbirth ? JSON.parse(infoDetail.conditionsChildbirth).name : '',
                     raiserInsuranceNumber: infoDetail.nurturerInsuranceNumber || '',
-                    dadCare: convertFormalDropdrowValue(infoDetail.childcareLeaveInfo),
-                    plan: convertFormalDropdrowValue(infoDetail.planInfo),
+                    dadCare: infoDetail.childcareLeaveInfo ? JSON.parse(infoDetail.childcareLeaveInfo).name : '',
+                    plan: infoDetail.planInfo ? JSON.parse(infoDetail.planInfo).name : '',
                     reason: infoDetail.reasonRequestingAdjustment || '',
                     note:  infoDetail.description || '',
                     leaveOfWeek: infoDetail.weeklyRestDay || '',
@@ -289,9 +245,9 @@ const DetailInsuranceSocial = (props) => {
                     momInsuranceNumber: motherDataInfo.socialInsuranceNumber || '',
                     momHealthNumber: motherDataInfo.healthInsuranceNumber || '',
                     momIdNumber: motherDataInfo.motherIdNumber || '',
-                    maternityLeave: convertFormalDropdrowValue(motherDataInfo.pregnancyVacation),
-                    hasRainser: convertFormalDropdrowValue(motherDataInfo.surrogacy),
-                    hasSurgery: convertFormalDropdrowValue(motherDataInfo.surgeryOrPregnancy),
+                    maternityLeave: motherDataInfo.pregnancyVacation ? motherDataInfo.pregnancyVacation.name : '',
+                    hasRainser: motherDataInfo.surrogacy ? motherDataInfo.surrogacy.name : '',
+                    hasSurgery: motherDataInfo.surgeryOrPregnancy ? motherDataInfo.surgeryOrPregnancy.name : '',
                     momDeadDate: motherDataInfo.motherDiedDate ? moment(motherDataInfo.motherDiedDate).format('DD/MM/YYYY') : '',
                     resultDate: motherDataInfo.conclusionDate ? moment(motherDataInfo.conclusionDate).format('DD/MM/YYYY') : '',
                     assessment: motherDataInfo.medicalAssessmentFee || '',
@@ -299,7 +255,7 @@ const DetailInsuranceSocial = (props) => {
                     resolveDate: infoDetail.settlementPeriod ? moment(infoDetail.settlementPeriod).format('DD/MM/YYYY') : '',
                     addtionContent: infoDetail.additionalPhaseContent || '',
                     addtionDate: infoDetail.additionalPhasePeriod ? moment(infoDetail.additionalPhasePeriod).format('DD/MM/YYYY') : '',
-                    receiveType: convertFormalDropdrowValue(receiveSubsidiesInfo.receivingForm),
+                    receiveType: receiveSubsidiesInfo.receivingForm || '',
                     accountNumber: receiveSubsidiesInfo.bankAccountNumber || '',
                     accountName: receiveSubsidiesInfo.accountName || '',
                     bankId: receiveSubsidiesInfo.bankCode || '',
@@ -307,21 +263,28 @@ const DetailInsuranceSocial = (props) => {
                 }
             })
         } else if (infoDetail.claimType == 1) {
+            setType({ value: 1, label: 'Ốm đau' });
             const sickChildrenInfo = infoDetail.sickChildrenInfo ? JSON.parse(infoDetail.sickChildrenInfo) : {};
             const certificateInsuranceBenefit = infoDetail.certificateInsuranceBenefit ? JSON.parse(infoDetail.certificateInsuranceBenefit) : {}
+            const workingConditionInfo = infoDetail.workingConditionInfo ? JSON.parse(infoDetail.workingConditionInfo) : {};
             const diagnosisDiseaseInfo = infoDetail.diagnosisDiseaseInfo ? JSON.parse(infoDetail.diagnosisDiseaseInfo) : {};
             const receiveSubsidiesInfo = infoDetail.receiveSubsidiesInfo ? JSON.parse(infoDetail.receiveSubsidiesInfo) : {};
             setData({
                 ...data,
                 sickData: {
-                    declareForm: convertFormalDropdrowValue(infoDetail.formTypeInfo),
+                    socialId: infoDetail.insuranceNumber || '',
+                    healthId: '',
+                    fullName: infoDetail.fullName || '',
+                    employeeNo: infoDetail.employeeCode || '',
+                    IndentifiD: infoDetail.idNumber || '',
+                    declareForm: infoDetail.formTypeInfo ? JSON.parse(infoDetail.formTypeInfo).name : '',
                     dateRequest: infoDetail.recommendEnjoyDate ? moment(infoDetail.recommendEnjoyDate).format('DD/MM/YYYY') : '',
                     dateLastResolved: infoDetail.solvedFirstDate ? moment(infoDetail.solvedFirstDate).format('DD/MM/YYYY') : '',
-                    plan: convertFormalDropdrowValue(infoDetail.planInfo),
+                    plan: infoDetail.planInfo ? JSON.parse(infoDetail.planInfo).name : '',
                     note: infoDetail.description || '',
-                    workingCondition: convertFormalDropdrowValue(infoDetail.workingConditionInfo),
+                    workingCondition: workingConditionInfo.name || '',
                     leaveOfWeek: infoDetail.weeklyRestDay || '',
-                    hospitalLine: convertFormalDropdrowValue(certificateInsuranceBenefit.hospitalLine),
+                    hospitalLine: certificateInsuranceBenefit.hospitalLine || '',
                     seri: certificateInsuranceBenefit.seriNumber || '',
                     fromDate: certificateInsuranceBenefit.fromDate ? moment(certificateInsuranceBenefit.fromDate).format('DD/MM/YYYY') : '',
                     toDate: certificateInsuranceBenefit.toDate ? moment(certificateInsuranceBenefit.toDate).format('DD/MM/YYYY') : '',
@@ -335,7 +298,7 @@ const DetailInsuranceSocial = (props) => {
                     resolveDate: infoDetail.settlementPeriod ? moment(infoDetail.settlementPeriod).format('DD/MM/YYYY') : '',
                     addtionContent: infoDetail.additionalPhaseContent || '',
                     addtionDate: infoDetail.additionalPhasePeriod ? moment(infoDetail.additionalPhasePeriod).format('DD/MM/YYYY') : '',
-                    receiveType: convertFormalDropdrowValue(receiveSubsidiesInfo.receivingForm),
+                    receiveType: receiveSubsidiesInfo.receivingForm || '',
                     accountNumber: receiveSubsidiesInfo.bankAccountNumber || '',
                     accountName: receiveSubsidiesInfo.accountName || '',
                     bankId: receiveSubsidiesInfo.bankCode,
@@ -343,113 +306,70 @@ const DetailInsuranceSocial = (props) => {
                 }
             })
         }
-        const requestAppraisers = data?.requestAppraisers;
-
-        if (requestAppraisers?.length > 0) {
-            const _supervisors = [];
-            requestAppraisers.map((item) => {
-              const _itemInfo = JSON.parse(item.appraiserInfo);
-              if (
-                _itemInfo.type === Constants.STATUS_PROPOSAL.LEADER_APPRAISER
-              ) {
-                _supervisors.push({
-                  ..._itemInfo,
-                  uid: _itemInfo?.employeeNo,
-                  employeeNo: _itemInfo?.employeeNo,
-                  requestHistoryId: item.requestHistoryId,
-                  appraiserComment: item?.appraiserComment,
-                  appraisalDate: item.appraisalDate
-                });
-              }
-            });
-            setSupervisors(_supervisors);
-          }
-          // CBLĐ phê duyệt
-          if (requestAppraisers?.length > 0) {
-            const [approverRes, approverArriveRes] = requestAppraisers.filter(
-                (ele) => ele.type === Constants.STATUS_PROPOSAL.CONSENTER
-              ),
-              approvalData = JSON.parse(approverRes?.appraiserInfo || '{}');
-            setApprover({
-              ...approvalData,
-              uid: approvalData?.employeeNo,
-              employeeNo: approvalData?.employeeNo,
-              appraiserComment: approverRes?.appraiserComment,
-            });
-          }
-
-          const requestDocuments =
-            (data?.userProfileDocuments || []).map((u) => ({
-              id: u.id,
-              name: u.fileName,
-              fileUrl: u.fileUrl,
-            })) || [];
-      
-        updateFiles(requestDocuments);
-        checkAuthorize(data);
         setLoading(false);
     }
 
-    const showStatus = (status, hasAppraiser) => {
-      if (action == 'request') {
-        return Constants.mappingStatusRequest[status]?.label;
-      } 
-      return (action == "assess" && status == 5 && hasAppraiser) ? Constants.mappingStatusRequest[20].label : Constants.mappingStatusRequest[status]?.label
+    const handleTextInputChange = (e, name, subName) => {
+        const candidateInfos = { ...data }
+        candidateInfos[name][subName] = e != null ? e.target.value : "";
+        //setData(candidateInfos);
     }
 
-    const checkAuthorize = (data) => {
-        const currentEmail = localStorage.getItem('email'),
-          {
-            requestAppraisers,
-            processStatusId,
-          } = data,
-          hasAppraiser = requestAppraisers.some(app => app.type == Constants.STATUS_PROPOSAL.LEADER_APPRAISER),
-          indexAppraiser = requestAppraisers?.findIndex(
-            (app) => app.status === Constants.SALARY_APPRAISER_STATUS.WAITING
-          ),
+    const handleChangeSelectInputs = (e, name, subName) => {
+        const candidateInfos = { ...data }
+        candidateInfos[name][subName] = e != null ? { value: e.value, label: e.label } : {}
+        //setData(candidateInfos);
+    }
 
-          isCurrentAppraiser =
-            indexAppraiser !== -1 &&
-            currentEmail.toLowerCase() ===
-              requestAppraisers[indexAppraiser].appraiserId?.toLowerCase(),
-          typeAppraise =
-            indexAppraiser !== -1 && requestAppraisers[indexAppraiser].type;
-    
-        let viewSettingTmp = { ...viewSetting};
-            
-        viewSettingTmp.showComponent.stateProcess = true;
-        viewSettingTmp.showComponent.processStatusId = processStatusId;
-        viewSettingTmp.showComponent.processLabel = showStatus(processStatusId, hasAppraiser);
-        
-        switch (processStatusId) {
-          case 8: // Đang chờ CBQL Cấp cơ sở thẩm định
-            if (isCurrentAppraiser && action === 'assess') {
-                viewSettingTmp.showComponent.btnRefuse = true;
-                viewSettingTmp.showComponent.btnExpertise = true;
-            } else if (action !== 'request') {
-              //currentStatus = 20;
-            }
-            break;
-          case 5: // Đang chờ CBLĐ phê duyệt
-            if (isCurrentAppraiser && action === 'approval') {
-              viewSettingTmp.showComponent.btnApprove = true;
-              viewSettingTmp.showComponent.btnNotApprove = true;
-            }
-            break;
-          case 2: // View phe duyet thanh cong
-          // viewSettingTmp.disableComponent.showEye = true;
-          // break;
-          case 7: // Case từ chối
-          // viewSettingTmp.disableComponent.showEye = true;
-          // break;
-          case 1: // Case không phê duyệt
-            break;
-          default:
-            break;
+    const handleDatePickerInputChange = (value, name, subname) => {
+        const candidateInfos = { ...data }
+        if (moment(value, 'DD/MM/YYYY').isValid()) {
+            const date = moment(value).format('DD/MM/YYYY')
+            candidateInfos[name][subname] = date
+
+        } else {
+            candidateInfos[name][subname] = null
         }
-        
-        setViewSetting(viewSettingTmp);
-    };
+        //setData(candidateInfos)
+    }
+
+    const onSubmit = (data) => {
+        setdisabledSubmitButton(true);
+        axios({
+            method: 'POST',
+            url: `${process.env.REACT_APP_HRDX_URL}api/BenefitClaim`,
+            data: data,
+            headers: { 'Content-Type': 'multipart/form-data', Authorization: `${localStorage.getItem('accessToken')}` }
+        })
+            .then(response => {
+                if (response && response.data && response.data.result && response.data.result.code == 200) {
+                    showStatusModal(t("Successful"), t("RequestSent"), true)
+                    setdisabledSubmitButton(false)
+                }
+                else {
+                    notifyMessage(response.data.result.message || t("Error"))
+                    setdisabledSubmitButton(false)
+                }
+            })
+            .catch(response => {
+                notifyMessage(t("Error"));
+                setdisabledSubmitButton(false);
+            })
+    }
+
+    const notifyMessage = (message, isError = true) => {
+        if (isError) {
+            toast.error(message, {
+                onClose: () => {
+                }
+            });
+        } else {
+            toast.success(message, {
+                onClose: () => {
+                }
+            })
+        }
+    }
 
     const hideStatusModal = () => {
         setresultModal({
@@ -464,99 +384,58 @@ const DetailInsuranceSocial = (props) => {
         })
     };
 
-
+    const exportToPDF1 = (type, name) => {
+        const elementView = document.getElementById('frame-for-export')
+        exportToPDF(elementView, `BHXH_${type}`, false)
+    }
     return (
-        <div className="registration-insurance-section input-style">
-            <ResultModal show={resultModal.isShowStatusModal} title={resultModal.titleModal} message={resultModal.messageModal} isSuccess={resultModal.isSuccess} onHide={hideStatusModal} />
+        <div className="registration-insurance-section">
+            <LoadingModal show={loading} />
+            <div className="block-buttons">
+            <button className="btn-download download-pdf" onClick={() => exportToPDF1(type?.label || '')}>Tải PDF</button>
+            </div>
+            <div id="frame-for-export">
             {
-                type == null ?
-                    <>
-                        <LoadingModal show={loading}/>
-                    </>
-                    : type.value == 1 ?
-                        <CreateSickInsurance type={type} setType={setType}
-                            data={data.sickData}
-                            errors={errors.sickData}
+                type?.value == 1 ?
+                    <CreateSickInsurance type={type} setType={setType}
+                        data={data.sickData}
+                        errors={errors.sickData}
+                        userInfo={userInfo}
+                        disabledSubmitButton={disabledSubmitButton}
+                        handleTextInputChange={(e, key) => handleTextInputChange(e, 'sickData', key)}
+                        handleChangeSelectInputs={(e, key) => handleChangeSelectInputs(e, 'sickData', key)}
+                        handleDatePickerInputChange={(value, key) => handleDatePickerInputChange(value, 'sickData', key)}
+                        onSend={(data) => onSubmit(data)}
+                        notifyMessage={notifyMessage}
+                    />
+                    : type?.value == 2 ?
+                        <CreateMaternityInsurance type={type} setType={setType}
+                            data={data.maternityData}
+                            errors={errors.maternityData}
                             userInfo={userInfo}
                             disabledSubmitButton={disabledSubmitButton}
-                            handleTextInputChange={(e, key) => {}}
-                            handleChangeSelectInputs={(e, key) => {}}
-                            handleDatePickerInputChange={(value, key) => {}}
-                            onSend={(data) => {}}
-                            notifyMessage={()=>{}}
-                            supervisors={supervisors}
-                            setSupervisors={setSupervisors}
-                            approver={approver}
-                            setApprover={setApprover}
-                            updateFiles={()=>{}}
-                            files={files}
-                            removeFile={()=>{}}
-                            isCreateMode={false} 
-                        />
-                        : type.value == 2 ?
-                            <CreateMaternityInsurance type={type} setType={setType}
-                                data={data.maternityData}
-                                errors={errors.maternityData}
+                            handleTextInputChange={(e, key) => handleTextInputChange(e, 'maternityData', key)}
+                            handleChangeSelectInputs={(e, key) => handleChangeSelectInputs(e, 'maternityData', key)}
+                            handleDatePickerInputChange={(value, key) => handleDatePickerInputChange(value, 'maternityData', key)}
+                            onSend={(data) => onSubmit(data)}
+                            notifyMessage={notifyMessage} />
+                        : type?.value == 3 ?
+                            <CreateConvalesInsurance type={type} setType={setType}
+                                data={data.convalesData}
                                 userInfo={userInfo}
+                                errors={errors.convalesData}
                                 disabledSubmitButton={disabledSubmitButton}
-                                handleTextInputChange={(e, key) => {}}
-                                handleChangeSelectInputs={(e, key) => {}}
-                                handleDatePickerInputChange={(value, key) => {}}
-                                onSend={(data) => {}}
-                                notifyMessage={()=>{}}
-                                supervisors={supervisors}
-                                setSupervisors={setSupervisors}
-                                approver={approver}
-                                setApprover={setApprover}
-                                updateFiles={()=>{}}
-                                files={files}
-                                removeFile={()=>{}}
-                                isCreateMode={false} />
-                            : type.value == 3 ?
-                                <CreateConvalesInsurance type={type} setType={setType}
-                                    data={data.convalesData}
-                                    userInfo={userInfo}
-                                    errors={errors.convalesData}
-                                    disabledSubmitButton={disabledSubmitButton}
-                                    handleTextInputChange={(e, key) => {}}
-                                    handleChangeSelectInputs={(e, key) => {}}
-                                    handleDatePickerInputChange={(value, key) => {}}
-                                    onSend={(data) => {}}
-                                    notifyMessage={()=>{}}
-                                    supervisors={supervisors}
-                                    setSupervisors={setSupervisors}
-                                    approver={approver}
-                                    setApprover={setApprover}
-                                    updateFiles={()=>{}}
-                                    files={files}
-                                    removeFile={()=>{}}
-                                    isCreateMode={false} />
-                                : null
+                                handleTextInputChange={(e, key) => handleTextInputChange(e, 'convalesData', key)}
+                                handleChangeSelectInputs={(e, key) => handleChangeSelectInputs(e, 'convalesData', key)}
+                                handleDatePickerInputChange={(value, key) => handleDatePickerInputChange(value, 'convalesData', key)}
+                                onSend={(data) => onSubmit(data)}
+                                notifyMessage={notifyMessage} />
+                            : null
             }
-            <h5 style={{paddingTop: '16px'}}>
-              {t("RequestHistory").toUpperCase()}
-            </h5>
-            <div className="timesheet-section">
-              <div className="timesheet-box1 timesheet-box shadow">
-                <ProcessHistoryComponent
-                  createdDate={timeRequest?.createdDate}
-                  coordinatorDate={null}
-                  requestAppraisers={supervisors}
-                  approvedDate={timeRequest.approvedDate}
-                />
-              </div>
             </div>
-            
-            <InsuranceApproveActionButtons
-                showComponent={viewSetting.showComponent}
-                t={t}
-                id={id}
-            />
-
-
 
         </div>
     )
 }
 
-export default HOCComponent(withTranslation()(DetailInsuranceSocial))
+export default HOCComponent(withTranslation()(ExportInsuranceSocial))

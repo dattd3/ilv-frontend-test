@@ -14,6 +14,9 @@ import {
 import Constants from "../../../commons/Constants";
 import _ from "lodash";
 import { Spinner } from "react-bootstrap";
+import AssessorInfoComponent from "../InternalPayment/component/AssessorInfoComponent";
+import ButtonComponent from "containers/Registration/ButtonComponent";
+import DocumentRequired from "./DocumentRequired";
 
 const CreateConvalesInsurance = ({
   t,
@@ -26,7 +29,15 @@ const CreateConvalesInsurance = ({
   handleDatePickerInputChange,
   onSend,
   notifyMessage,
-  disabledSubmitButton
+  disabledSubmitButton,
+  supervisors,
+  setSupervisors,
+  approver,
+  setApprover,
+  files,
+  updateFiles,
+  removeFile,
+  isCreateMode = true
 }) => {
 
   const [errors, setErrors] = useState({});
@@ -41,6 +52,61 @@ const CreateConvalesInsurance = ({
     if (!verify) {
       return;
     }
+
+    const employeeInfo = {
+      employeeNo: localStorage.getItem('employeeNo'),
+      username: localStorage.getItem('ad')?.toLowerCase(),
+      account: localStorage.getItem('email'),
+      fullName: localStorage.getItem('fullName'),
+      jobTitle: localStorage.getItem('jobTitle'),
+      employeeLevel: localStorage.getItem('employeeLevel'),
+      department: localStorage.getItem('department')
+    }
+    const userEmployeeInfo = {
+      employeeNo:localStorage.getItem('employeeNo'),
+      fullName:localStorage.getItem('fullName'),
+      jobTitle:localStorage.getItem('jobTitle'),
+      department:localStorage.getItem('department'),
+      company_email:localStorage.getItem('plEmail'),
+      costCenter: localStorage.getItem('cost_center')
+    }
+
+    let appIndex = 1;
+    const appraiserInfoLst = supervisors
+        .filter((item) => item != null)
+        .map((item, index) => ({
+          avatar: "",
+          account: item?.username.toLowerCase() + "@vingroup.net",
+          fullName: item?.fullName,
+          employeeLevel: item?.employeeLevel,
+          pnl: item?.pnl,
+          orglv2Id: item?.orglv2Id,
+          current_position: item?.current_position,
+          department: item?.department,
+          order: appIndex++,
+          company_email: item?.company_email?.toLowerCase(),
+          type: Constants.STATUS_PROPOSAL.LEADER_APPRAISER,
+          employeeNo: item?.uid || item?.employeeNo,
+          username: item?.username.toLowerCase(),
+        }));
+
+    const approverInfoLst = [
+        approver
+      ].map((ele, i) => ({
+        avatar: "",
+        account: ele?.username?.toLowerCase() + "@vingroup.net",
+        fullName: ele?.fullName,
+        employeeLevel: ele?.employeeLevel,
+        pnl: ele?.pnl,
+        orglv2Id: ele?.orglv2Id,
+        current_position: ele?.current_position,
+        department: ele?.department,
+        order: appIndex++,
+        company_email: ele?.company_email?.toLowerCase(),
+        type: Constants.STATUS_PROPOSAL.CONSENTER,
+        employeeNo: ele?.uid || ele?.employeeNo,
+        username: ele?.username?.toLowerCase(),
+      }))
 
     const formData = new FormData();
     formData.append('requestType', type.value);
@@ -72,7 +138,7 @@ const CreateConvalesInsurance = ({
     formData.append(
       "receiveSubsidiesInfo",
       JSON.stringify({
-        receivingForm: data.receiveType?.label || "",
+        receivingForm: { id: data.receiveType.value, name: data.receiveType.label },
         bankAccountNumber: data.accountNumber,
         accountName: data.accountName,
         bankCode: data.bankId,
@@ -84,16 +150,27 @@ const CreateConvalesInsurance = ({
     formData.append('SettlementPeriod', data.resolveDate ? moment(data.resolveDate, 'DD/MM/YYYY').format('YYYY-MM-DD') : '');
     formData.append('AdditionalPhaseContent', data.addtionContent);
     formData.append('AdditionalPhasePeriod', data.addtionDate ? moment(data.addtionDate, 'DD/MM/YYYY').format('YYYY-MM-DD') : '');
-    formData.append('orgLv2Id', localStorage.getItem('organizationLv2'));
-    formData.append('divisionId', localStorage.getItem('divisionId'));
-    formData.append('division', localStorage.getItem('division'));
-    formData.append('regionId', localStorage.getItem('regionId'));
-    formData.append('region', localStorage.getItem('region'));
-    formData.append('unitId', localStorage.getItem('unitId'));
-    formData.append('unit', localStorage.getItem('unit'));
-    formData.append('partId', localStorage.getItem('partId'));
-    formData.append('part', localStorage.getItem('part'));
-    formData.append('companyCode', localStorage.getItem('companyCode'));
+    
+    formData.append("orgLv2Id", localStorage.getItem("organizationLv2"));
+    formData.append("orgLv3Id", localStorage.getItem("divisionId"));
+    formData.append("orgLv3Text", localStorage.getItem("division"));
+    formData.append("orgLv4Id", localStorage.getItem("regionId"));
+    formData.append("orgLv4Text", localStorage.getItem("region"));
+    formData.append("orgLv5Id", localStorage.getItem("unitId"));
+    formData.append("orgLv5Text", localStorage.getItem("unit"));
+    formData.append("orgLv6Id", localStorage.getItem("partId"));
+    formData.append("orgLv6Text", localStorage.getItem("part"));
+    formData.append("companyCode", localStorage.getItem("companyCode"));
+    formData.append('employeeInfo', JSON.stringify(employeeInfo));
+    formData.append('UserInfo', JSON.stringify(userEmployeeInfo));
+
+    formData.append("appraiserInfoLst", JSON.stringify(appraiserInfoLst));
+    formData.append("approverInfoLst", JSON.stringify(approverInfoLst));
+    if (files.filter(item=> item.id == undefined).length > 0) {
+      files.filter(item=> item.id == undefined).forEach((file) => {
+        formData.append("attachedFiles", file);
+      });
+    }
     onSend(formData);
   };
 
@@ -105,34 +182,59 @@ const CreateConvalesInsurance = ({
       "receiveType",
       'plan',
       "seri",
+      "fromDate",
+      "toDate",
       "total",
-      "accountNumber",
+    ];
+    if(checkRequireAtm()) {
+      requiredFields.push("accountNumber",
       "accountName",
       "bankId",
-      "bankName",
-    ];
+      "bankName");
+    }
     const optionFields = ['plan', "declareForm", "receiveType"];
-
+    //check người thẩm định
+    if(supervisors?.length == 0 || !supervisors.every(sup => sup != null)) {
+      _errors['supervisors'] = t('PleaseEnterInfo');
+    }
+    if(!approver) {
+      _errors['approver'] = t('PleaseEnterInfo');
+    }
     requiredFields.forEach((name) => {
       if (
         _.isEmpty(candidateInfos[name]) ||
         (!candidateInfos[name].value && optionFields.includes(name))
       ) {
-        _errors[name] = "Vui lòng nhập giá trị !";
+        _errors[name] = t('PleaseEnterInfo');
       } else {
         _errors[name] =
-          _errors[name] == "Vui lòng nhập giá trị !" ? null : _errors[name];
+          _errors[name] == t('PleaseEnterInfo') ? null : _errors[name];
       }
     });
     setErrors(_errors);
-    const hasErrors = !Object.values(_errors).every(
+    let hasErrors = !Object.values(_errors).every(
       (item) => item === null || item === undefined
     );
     if (hasErrors) {
-      notifyMessage('Vui lòng nhập giá trị !', true);
+      notifyMessage(t('PleaseEnterInfo'), true);
+    }
+    //check files
+    if(!hasErrors) {
+      let checkfiles = (!files || files?.length === 0) ? t("Required") + ' ' + t('AttachmentFile') : null
+      if(checkfiles) {
+        notifyMessage(checkfiles);
+        hasErrors = true;
+      }
     }
     return hasErrors ? false : true;
   };
+
+  const checkRequireAtm = () => {
+    if(data.receiveType?.value && [2].includes(data.receiveType.value)) {
+      return true;
+    }
+    return false;
+  }
 
   return (
     <>
@@ -150,6 +252,7 @@ const CreateConvalesInsurance = ({
               value={type}
               onChange={(e) => setType(e)}
               className="input mv-10"
+              isDisabled={!isCreateMode}
               styles={{ menu: (provided) => ({ ...provided, zIndex: 2 }) }}
             />
           </div>
@@ -163,6 +266,7 @@ const CreateConvalesInsurance = ({
               value={data?.declareForm}
               onChange={(e) => handleChangeSelectInputs(e, "declareForm")}
               className="input mv-10"
+              isDisabled={!isCreateMode}
               styles={{ menu: (provided) => ({ ...provided, zIndex: 2 }) }}
             />
             {errors["declareForm"] ? (
@@ -189,6 +293,7 @@ const CreateConvalesInsurance = ({
               dateFormat="dd/MM/yyyy"
               placeholderText={t("Select")}
               locale={t("locale")}
+              disabled={!isCreateMode}
               className="form-control input"
               styles={{ width: "100%" }}
             />
@@ -212,6 +317,7 @@ const CreateConvalesInsurance = ({
               onChange={(date) =>
                 handleDatePickerInputChange(date, "dateLastResolved")
               }
+              disabled={!isCreateMode}
               dateFormat="dd/MM/yyyy"
               placeholderText={t("Select")}
               locale={t("locale")}
@@ -227,6 +333,7 @@ const CreateConvalesInsurance = ({
               options={CONVALES_PLAN}
               isClearable={false}
               value={data.plan}
+              isDisabled={!isCreateMode}
               onChange={(e) => handleChangeSelectInputs(e, "plan")}
               className="input mv-10"
               styles={{ menu: (provided) => ({ ...provided, zIndex: 2 }) }}
@@ -243,6 +350,7 @@ const CreateConvalesInsurance = ({
               value={data.note}
               onChange={(e) => handleTextInputChange(e, "note")}
               rows={3}
+              disabled={!isCreateMode}
               className="mv-10 form-control input w-100"
             />
           </div>
@@ -266,7 +374,7 @@ const CreateConvalesInsurance = ({
           <div className="col-4">
             {t('indenfy_number_2')}
             <span className="required">(*)</span>
-            <div className="detail1">{userInfo.personal_id_no}</div>
+            <div className="detail1">{userInfo.IndentifiD}</div>
           </div>
         </div>
         <div className="row mv-10">
@@ -286,6 +394,7 @@ const CreateConvalesInsurance = ({
                   ? moment(data.startWork, Constants.LEAVE_DATE_FORMAT).toDate()
                   : null
               }
+              disabled={!isCreateMode}
               onChange={(date) =>
                 handleDatePickerInputChange(date, "startWork")
               }
@@ -308,6 +417,7 @@ const CreateConvalesInsurance = ({
             <span className="required">(*)</span>
             <input
               value={data.seri}
+              disabled={!isCreateMode}
               onChange={(e) => handleTextInputChange(e, "seri")}
               type="text"
               className="form-control input mv-10 w-100"
@@ -319,7 +429,7 @@ const CreateConvalesInsurance = ({
             ) : null}
           </div>
           <div className="col-4">
-            <div>{t('StartDate')}</div>
+            <div>{t('StartDate')}<span className="required">(*)</span></div>
             <DatePicker
               selectsStart
               name="startDate"
@@ -334,11 +444,15 @@ const CreateConvalesInsurance = ({
               placeholderText={t("Select")}
               locale={t("locale")}
               className="form-control input"
+              disabled={!isCreateMode}
               styles={{ width: "100%" }}
             />
+            {errors["fromDate"] ? (
+              <p className="text-danger">{errors["fromDate"]}</p>
+            ) : null}
           </div>
           <div className="col-4">
-            <div>{t('EndDate')}</div>
+            <div>{t('EndDate')}<span className="required">(*)</span></div>
             <DatePicker
               selectsEnd
               name="startDate"
@@ -353,8 +467,12 @@ const CreateConvalesInsurance = ({
               placeholderText={t("Select")}
               locale={t("locale")}
               className="form-control input"
+              disabled={!isCreateMode}
               styles={{ width: "100%" }}
             />
+            {errors["toDate"] ? (
+              <p className="text-danger">{errors["toDate"]}</p>
+            ) : null}
           </div>
         </div>
         <div className="row mv-10">
@@ -367,6 +485,7 @@ const CreateConvalesInsurance = ({
               type="number"
               className="form-control input mv-10 w-100"
               name="inputName"
+              disabled={!isCreateMode}
               autoComplete="off"
             />
             {errors["total"] ? (
@@ -389,6 +508,7 @@ const CreateConvalesInsurance = ({
               className="form-control input mv-10 w-100"
               name="inputName"
               autoComplete="off"
+              disabled={!isCreateMode}
             />
           </div>
           <div className="col-4">
@@ -411,6 +531,7 @@ const CreateConvalesInsurance = ({
               dateFormat="dd/MM/yyyy"
               placeholderText={t("Select")}
               locale={t("locale")}
+              disabled={!isCreateMode}
               className="form-control input"
               styles={{ width: "100%" }}
             />
@@ -431,6 +552,7 @@ const CreateConvalesInsurance = ({
               className="form-control input mv-10 w-100"
               name="inputName"
               autoComplete="off"
+              disabled={!isCreateMode}
             />
           </div>
           <div className="col-4">
@@ -450,6 +572,7 @@ const CreateConvalesInsurance = ({
               onChange={(date) =>
                 handleDatePickerInputChange(date, "resolveDate")
               }
+              disabled={!isCreateMode}
               dateFormat="dd/MM/yyyy"
               placeholderText={t("Select")}
               locale={t("locale")}
@@ -473,6 +596,7 @@ const CreateConvalesInsurance = ({
               className="form-control input mv-10 w-100"
               name="inputName"
               autoComplete="off"
+              disabled={!isCreateMode}
             />
           </div>
           <div className="col-4">
@@ -492,6 +616,7 @@ const CreateConvalesInsurance = ({
               onChange={(date) =>
                 handleDatePickerInputChange(date, "addtionDate")
               }
+              disabled={!isCreateMode}
               dateFormat="dd/MM/yyyy"
               placeholderText={t("Select")}
               locale={t("locale")}
@@ -516,6 +641,7 @@ const CreateConvalesInsurance = ({
               options={RECEIVE_TYPE}
               isClearable={false}
               value={data.receiveType}
+              isDisabled={!isCreateMode}
               onChange={(e) => handleChangeSelectInputs(e, "receiveType")}
               className="input mv-10"
               styles={{ menu: (provided) => ({ ...provided, zIndex: 2 }) }}
@@ -527,7 +653,7 @@ const CreateConvalesInsurance = ({
           <div className="col-4">
             <div>
               {t('account_number')}
-              <span className="required">(*)</span>
+              {checkRequireAtm() ? <span className="required">(*)</span> : null}
             </div>
             <input
               value={data.accountNumber}
@@ -535,6 +661,7 @@ const CreateConvalesInsurance = ({
               type="text"
               className="form-control input mv-10 w-100"
               name="inputName"
+              disabled={!isCreateMode}
               autoComplete="off"
             />
             {errors["accountNumber"] ? (
@@ -543,11 +670,12 @@ const CreateConvalesInsurance = ({
           </div>
           <div className="col-4">
             {t('account_name')}
-            <span className="required">(*)</span>
+            {checkRequireAtm() ? <span className="required">(*)</span> : null}
             <input
               value={data.accountName}
               onChange={(e) => handleTextInputChange(e, "accountName")}
               type="text"
+              disabled={!isCreateMode}
               className="form-control input mv-10 w-100"
               name="inputName"
               autoComplete="off"
@@ -561,7 +689,7 @@ const CreateConvalesInsurance = ({
           <div className="col-4">
             <div>
               {t('bank_code')}
-              <span className="required">(*)</span>
+              {checkRequireAtm() ? <span className="required">(*)</span> : null}
             </div>
             <input
               value={data.bankId}
@@ -570,6 +698,7 @@ const CreateConvalesInsurance = ({
               className="form-control input mv-10 w-100"
               name="inputName"
               autoComplete="off"
+              disabled={!isCreateMode}
             />
             {errors["bankId"] ? (
               <p className="text-danger">{errors["bankId"]}</p>
@@ -578,7 +707,7 @@ const CreateConvalesInsurance = ({
           <div className="col-8">
             <div>
               {t('bank_name')}
-              <span className="required">(*)</span>
+              {checkRequireAtm() ? <span className="required">(*)</span> : null}
             </div>
             <input
               value={data.bankName}
@@ -586,6 +715,7 @@ const CreateConvalesInsurance = ({
               type="text"
               className="form-control input mv-10 w-100"
               name="inputName"
+              disabled={!isCreateMode}
               autoComplete="off"
             />
             {errors["bankName"] ? (
@@ -595,29 +725,48 @@ const CreateConvalesInsurance = ({
         </div>
       </div>
 
-      <div className="clearfix mb-5 mt-4">
-        {/* <button type="button" className="btn btn-primary float-right ml-3 shadow" onClick={this.showConfirm.bind(this, 'isConfirm')}><i className="fa fa-paper-plane" aria-hidden="true"></i>  Gửi yêu cầu</button> */}
-        <button
-          type="button"
-          className="btn btn-primary float-right ml-3 shadow"
-          onClick={() => onSubmit()}
-        >
-          {!disabledSubmitButton ? (
-            <>
-              <i className="fa fa-paper-plane mr-2" aria-hidden="true"></i>
-            </>
-          ) : (
-            <Spinner
-              as="span"
-              animation="border"
-              size="sm"
-              role="status"
-              aria-hidden="true"
-              className="mr-2"
-            />
-          )}
-          {t("Send")}
-        </button>
+      <AssessorInfoComponent
+        t={t}
+        isCreateMode={isCreateMode}
+        setSupervisors={setSupervisors}
+        supervisors={supervisors}
+        approver={approver}
+        setApprover={setApprover}
+        errors={errors}
+      />
+
+      {
+        isCreateMode ?
+        <DocumentRequired
+        t={t}/> : null
+      }
+
+      <div className="registration-section">
+        <ul className="list-inline">
+          {files.map((file, index) => {
+              return <li className="list-inline-item" key={index}>
+                  <span className="file-name">
+                      <a title={file.name} href={file.fileUrl} download={file.name} target="_blank">{file.name}</a>
+                      {
+                        isCreateMode ? <i className="fa fa-times remove" aria-hidden="true" onClick={() => removeFile(index)}></i> : null
+                      }
+                  </span>
+              </li>
+          })}
+        </ul>
+        {
+          isCreateMode ?
+          <ButtonComponent
+            isEdit={false} 
+            files={files} 
+            updateFiles={updateFiles} 
+            submit={onSubmit} 
+            isUpdateFiles={()=>{}} 
+            disabledSubmitButton={disabledSubmitButton} 
+            validating={disabledSubmitButton}/>
+          : null
+        }
+        
       </div>
     </>
   );

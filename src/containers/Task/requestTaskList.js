@@ -262,7 +262,7 @@ class RequestTaskList extends React.Component {
             //     { value: 2, label: 'Phê duyệt' }
             // ];
             
-        if([Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER, Constants.PROPOSAL_APPOINTMENT].includes(request)) {
+        if([Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER, Constants.PROPOSAL_APPOINTMENT, Constants.INSURANCE_SOCIAL].includes(request)) {
             if(statusName) {
                 let statusLabel = t(statusName),
                     tmp = Object.keys(status).filter(key => status[key].label == statusLabel );
@@ -296,7 +296,7 @@ class RequestTaskList extends React.Component {
         //     return <span className={status[statusOriginal].className}>{status[statusOriginal].label}</span>
         // }
         
-        if(!approverData?.account && statusOriginal === 5 && request !== Constants.UPDATE_PROFILE) {
+        if((!approverData?.account && request != Constants.WELFARE_REFUND) && statusOriginal === 5 && request !== Constants.UPDATE_PROFILE) {
             statusOriginal = 6;
         }
         
@@ -336,7 +336,11 @@ class RequestTaskList extends React.Component {
             '14-2': 'proposed-transfer',
             '15-2': 'proposed-appointment',
           };
-        if (request.parentRequestHistoryId) {
+        if(request?.requestTypeId == Constants.WELFARE_REFUND) {
+            url = `benefit-claim-request`;
+        } else if (request?.requestTypeId == Constants.INSURANCE_SOCIAL) {
+            url = `insurance-manager/detail/${request?.salaryId}/request`;
+        } else if (request.parentRequestHistoryId) {
           //xu ly mot nguoi
           url = `salarypropse/${request.parentRequestHistoryId}/${request.salaryId}/request`;
         } else {
@@ -438,7 +442,7 @@ class RequestTaskList extends React.Component {
                     && [Constants.UPDATE_PROFILE, Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP, Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE, Constants.CHANGE_DIVISON_SHIFT, Constants.DEPARTMENT_TIMESHEET].includes(requestTypeId)) {
                     return true
                 }
-                if (status == Constants.STATUS_PARTIALLY_SUCCESSFUL && ![Constants.CHANGE_DIVISON_SHIFT, Constants.SUBSTITUTION].includes(requestTypeId)) {
+                if (status == Constants.STATUS_PARTIALLY_SUCCESSFUL && ![Constants.CHANGE_DIVISON_SHIFT, Constants.SUBSTITUTION, Constants.WELFARE_REFUND].includes(requestTypeId)) {
                     return true
                 }
                 // Case Self Resign
@@ -935,14 +939,14 @@ class RequestTaskList extends React.Component {
                                             }
 
                                             let editLink = this.getRequestEditLink(child.id, child.requestTypeId, child.processStatusId)
-                                            let detailLink = [Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER, Constants.PROPOSAL_APPOINTMENT].includes(child.requestTypeId) ? this.getSalaryProposeLink(child) : this.getRequestDetailLink(child.id, child.requestTypeId)
+                                            let detailLink = [Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER, Constants.PROPOSAL_APPOINTMENT, Constants.WELFARE_REFUND, Constants.INSURANCE_SOCIAL].includes(child.requestTypeId) ? this.getSalaryProposeLink(child) : this.getRequestDetailLink(child.id, child.requestTypeId)
                                             let dateChanged = showRangeDateGroupByArrayDate(child.startDate)
 
                                             if ([Constants.OT_REQUEST].includes(child.requestTypeId)) {
                                               dateChanged = child.dateRange;
                                             }
                                             let isShowSyncRequest = child?.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL 
-                                            && [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP, Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE, Constants.OT_REQUEST].includes(child?.requestTypeId)
+                                            && [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP, Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE, Constants.OT_REQUEST, Constants.WELFARE_REFUND].includes(child?.requestTypeId)
 
                                             // let isWorkOutSideGroup = false
                                             // if ([Constants.UPDATE_PROFILE].includes(child?.requestTypeId)) {

@@ -104,7 +104,7 @@ class ConfirmationModal extends React.Component {
     getHostByRequestTypeId = (dataToSap) => {
         const requestTypeId = dataToSap?.[0]?.requestTypeId || dataToSap?.requestTypeId || "";
 
-        return !!requestTypeId && [12, 14, 15].includes(requestTypeId)
+        return !!requestTypeId && [12, 14, 15, Constants.INSURANCE_SOCIAL].includes(requestTypeId)
           ? process.env.REACT_APP_REQUEST_SERVICE_URL
           : process.env.REACT_APP_REQUEST_URL;
     }
@@ -114,7 +114,7 @@ class ConfirmationModal extends React.Component {
         this.setState({ isShowLoading: true })
         axios({
             method: 'POST',
-            url: `${process.env.REACT_APP_REQUEST_URL}request/user-approve`,
+            url: `${process.env.REACT_APP_REQUEST_URL}request/user-approve?culture=${t("langCode")}`,
             data: [dataToSap],
             headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` }
         })
