@@ -49,7 +49,9 @@ class CommonQuestionComponent extends React.Component {
                             <div className="media-body">
                               <span 
                                 className="font-italic" 
-                                dangerouslySetInnerHTML={{__html: purify.sanitize(urlify(question?.answer))}} 
+                                dangerouslySetInnerHTML={{__html: purify.sanitize(urlify(question?.answer), {
+                                  ADD_ATTR: ['target']
+                                })}} 
                               />
                             </div>
                           </div>
