@@ -1929,5 +1929,13 @@
   "DocumentRequired": "HỒ SƠ BẮT BUỘC",
   "DocumentDownload": "Để tải về hồ sơ bắt buộc",
   "RatingSuccessfully": "Đánh giá câu trả lời thành công",
-  "Expired": "Hết hạn"
+  "Expired": "Hết hạn",
+  "SupportEmailBoxes": "Hộp thư hỗ trợ",
+  "PleaseEmailTo": "Vui lòng gửi email đến",
+  "WithSubjectIncludeKeyword": "với tiêu đề bao gồm từ khóa",
+  "SubContentSupportILV": "mô tả chi tiết lỗi, mã nhân viên khi cần trợ giúp liên quan đến hệ thống ILoveVingroup.",
+  "SubContentSupportSAP": "mô tả chi tiết lỗi, mã nhân viên khi cần trợ giúp liên quan đến hệ thống SAP HCM.",
+  "ViewMore": "Xem thêm",
+  "OtherIncentives": "Ưu đãi khác",
+  "VingroupEmployeePrivileges": "Đặc quyền CBNV VGR"
 }

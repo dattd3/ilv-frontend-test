@@ -6,6 +6,7 @@ import ReactTooltip from 'react-tooltip'
 import moment from 'moment'
 import map from '../map.config'
 import { getRequestConfigurations, getMuleSoftHeaderConfigurations, isVinFast } from "../../commons/Utils"
+import { checkIsExactPnL } from 'commons/commonFunctions'
 import WorkingProcessSearch from './workingProcessSearch'
 import HOCComponent from '../../components/Common/HOCComponent'
 import Constants from '../../commons/Constants'
@@ -159,27 +160,24 @@ class MyComponent extends React.Component {
             return
         }
 
+        const companyCode = localStorage.getItem("companyCode")
+        const eContractUrlMapping = {
+            [Constants.pnlVCode.VinHome]: "https://chukyso.vinhomes.vn/portal/index.aspx",
+            [Constants.pnlVCode.VinFast]: "https://econtract.vinfast.vn/portal/index.aspx",
+            [Constants.pnlVCode.VinFastTrading]: "https://econtract.vinfast.vn/portal/index.aspx",
+        }
+
         navigator.clipboard.writeText(contractNumber).then(res => {
             setTimeout(() => {
-                const url = "https://econtract.vinfast.vn/portal/index.aspx"
-                window.open(url, '_blank')
+                window.open(eContractUrlMapping[companyCode], '_blank')
             }, 1500)
-        })
-        .catch(e => {
-
         })
     }
 
     render() {
-        function isNotNull(input) {
-            if (input !== undefined && input !== null && input !== 'null' && input !== '#' && input !== '') {
-                return true;
-            }
-            return false;
-        }
-
         const { t } = this.props;
         const { userChangeWorkingAppointments } = this.state
+        const isEnableContractNumberTooltip = isVinFast() || checkIsExactPnL(Constants.pnlVCode.VinHome)
 
         return (
             <div className="personal-info working-process">
@@ -211,7 +209,7 @@ class MyComponent extends React.Component {
                                             <Col xs={12} md={6} lg={3}>
                                                 <div className="mb-0 contract-number">&nbsp;
                                                     {
-                                                        isVinFast() ? (
+                                                        isEnableContractNumberTooltip ? (
                                                             <span 
                                                                 data-tip data-for={`contract_number-${item?.contract_number}`} 
                                                                 className="cursor-pointer contract-number-text" 

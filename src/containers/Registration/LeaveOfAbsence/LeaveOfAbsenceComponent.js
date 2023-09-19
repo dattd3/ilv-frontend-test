@@ -325,13 +325,13 @@ class LeaveOfAbsenceComponent extends React.Component {
         if (isAllDay && isAllDayCheckbox && (!startDate || !endDate)) return
         if (!isAllDay && !isAllDayCheckbox && (!startDate || !endDate || !startTime || !endTime)) return
 
-        const startDateTime = !startDate ? null : `${startDate} ${startTime || "00:00"}`
-        const endDateTime = !endDate ? null : `${endDate} ${endTime || "23:59"}`
-        const isOverlapDateTime = this.isOverlapDateTime(startDateTime, endDateTime, indexReq)
-        if (isOverlapDateTime) {
-            requestInfo[indexReq].errors.totalDaysOff = "Trùng với thời gian nghỉ đã chọn trước đó. Vui lòng chọn lại thời gian!"
-            return this.setState({ requestInfo })
-        }
+        // const startDateTime = !startDate ? null : `${startDate} ${startTime || "00:00"}`
+        // const endDateTime = !endDate ? null : `${endDate} ${endTime || "23:59"}`
+        // const isOverlapDateTime = this.isOverlapDateTime(startDateTime, endDateTime, indexReq)
+        // if (isOverlapDateTime) {
+        //     requestInfo[indexReq].errors.totalDaysOff = "Trùng với thời gian nghỉ đã chọn trước đó. Vui lòng chọn lại thời gian!"
+        //     return this.setState({ requestInfo })
+        // }
         
         if (!startDate || !endDate) {
             return
