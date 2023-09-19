@@ -1589,7 +1589,10 @@ span.badge-notification[data-badge]::after {
     .info-value {
       p {
         font-size: inherit !important;
-        padding: 0.6rem !important;
+        min-height: 38px;
+        padding: 4px 10px !important;
+        display: flex;
+        align-items: center;
       }
     }
     &.relationship {
@@ -2130,6 +2133,10 @@ span.badge-notification[data-badge]::after {
       font-size: inherit;
       .btn {
         font-size: inherit;
+        img {
+          height: 14px;
+          margin-right: 5px;
+        }
         i {
           font-size: 12px;
           margin-right: 5px;
@@ -2223,6 +2230,10 @@ span.badge-notification[data-badge]::after {
       font-size: inherit;
       .btn {
         font-size: inherit;
+        img {
+          height: 14px;
+          margin-right: 5px;
+        }
         i {
           font-size: 12px;
           margin-right: 5px;
@@ -2242,6 +2253,10 @@ span.badge-notification[data-badge]::after {
       font-size: inherit;
       .btn {
         font-size: inherit;
+        img {
+          height: 14px;
+          margin-right: 5px;
+        }
         i {
           font-size: 12px;
           margin-right: 5px;
@@ -5121,5 +5136,5 @@ span.badge-notification[data-badge]::after {
   }
 }
 .cursor-pointer {
-  cursor: pointer;
+  cursor: pointer !important;
 }
