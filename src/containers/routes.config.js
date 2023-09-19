@@ -16,7 +16,7 @@ export const RouteSettings = {
   },
 };
 
-export default [
+const ROUTES = [
   {
     key: "login",
     routeProps: {
@@ -813,6 +813,14 @@ export default [
           component: lazy(() => import("./HistoryVinGroup/index"))
         },
         {
+          key: "registration-internal-payment",
+          routeProps: {
+            exact: true,
+            path: map.RegistrationInternalPayment
+          },
+          component: lazy(() => import("./Welfare/InternalPayment/CreateInternalPayment"))
+        },
+        {
           key: "employee-privileges",
           routeProps: {
             exact: true,
@@ -840,3 +848,5 @@ export default [
     },
   },
 ];
+
+export default ROUTES;
