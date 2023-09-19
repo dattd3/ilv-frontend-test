@@ -1976,9 +1976,5 @@
   "DownloadFile": "Tải về tệp tin",
   "WelfareRefund": "Hoàn trả dịch vụ phúc lợi",
   "WelfareRefundApproveWarning": "Đã có phê duyệt thanh toán cho CBLĐ trước đó, hệ thống sẽ điều chỉnh ngày duyệt ở SAP là {{date}}",
-  "InsuranceSocialRequest": "Thanh toán báo hiểm xã hội",
-  "HolidayGifts": "Quà ngày lễ (cộng vào lương)",
-  "lyDoTuChoi": "Lý do từ chối",
-  "DocumentRequired": "HỒ SƠ BẮT BUỘC",
-  "DocumentDownload": "Để tải về hồ sơ bắt buộc"
+  "InsuranceSocialRequest": "Thanh toán báo hiểm xã hội"
 }

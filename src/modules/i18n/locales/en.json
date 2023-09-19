@@ -1959,9 +1959,5 @@
   "DownloadFile": "Attached files",
   "WelfareRefund": "Internal benefit reimbursement",
   "WelfareRefundApproveWarning": "There was previous approval for this employee today, our system will adjust this approval date to {{date}}",
-  "InsuranceSocialRequest": "Thanh toán báo hiểm xã hội",
-  "HolidayGifts": "Holiday gifts (added to salary)",
-  "lyDoTuChoi": "Declined reason",
-  "DocumentRequired": "Required Files",
-  "DocumentDownload": "To download require files"
+  "InsuranceSocialRequest": "Thanh toán báo hiểm xã hội"
 }
