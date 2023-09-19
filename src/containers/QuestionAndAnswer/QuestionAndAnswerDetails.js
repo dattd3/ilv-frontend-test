@@ -689,7 +689,7 @@ class QuestionAndAnswerDetails extends React.Component {
                                         {t("Confirm")}
                                       </button>
                                     )}
-                                    {item.rated && (
+                                    {!!item.rated && (
                                       <button className="completed-button">
                                         <img src={IconTickGreen} alt="" />{" "}
                                         {t("Completed")}
