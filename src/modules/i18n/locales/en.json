@@ -1912,5 +1912,8 @@
   "PleaseEmailTo": "Please email to",
   "WithSubjectIncludeKeyword": "with subject include keyword",
   "SubContentSupportILV": "describe error in details, employee ID when need help related to ILoveVingroup system.",
-  "SubContentSupportSAP": "describe error in details, employee ID when need help related to SAP HCM system."
+  "SubContentSupportSAP": "describe error in details, employee ID when need help related to SAP HCM system.",
+  "ViewMore": "View more",
+  "OtherIncentives": "Other incentives",
+  "VingroupEmployeePrivileges": "Vingroup member privileges"
 }

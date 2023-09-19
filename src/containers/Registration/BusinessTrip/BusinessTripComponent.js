@@ -243,18 +243,18 @@ class BusinessTripComponent extends React.Component {
             return false
         }
 
-        const startDateTime = moment(`${startDateInput} ${startTimeInput || "00:00"}`, 'DD/MM/YYYY hh:mm').format('x')
-        const endDateTime = moment(`${endDateInput} ${endTimeInput || "23:59"}`, 'DD/MM/YYYY hh:mm').format('x')
+        // const startDateTime = moment(`${startDateInput} ${startTimeInput || "00:00"}`, 'DD/MM/YYYY hh:mm').format('x')
+        // const endDateTime = moment(`${endDateInput} ${endTimeInput || "23:59"}`, 'DD/MM/YYYY hh:mm').format('x')
 
-        const isOverlapDateTime = this.isOverlapDateTime(startDateTime, endDateTime, indexReq)
-        if (isOverlapDateTime && startDateTime && endDateTime) {
-            requestInfo[indexReq].errors.startTimeAndEndTime = "Trùng với thời gian nghỉ đã chọn trước đó. Vui lòng chọn lại thời gian!"
-            this.setState({ requestInfo })
-            return
-        }
+        // const isOverlapDateTime = this.isOverlapDateTime(startDateTime, endDateTime, indexReq)
+        // if (isOverlapDateTime && startDateTime && endDateTime) {
+        //     requestInfo[indexReq].errors.startTimeAndEndTime = "Trùng với thời gian nghỉ đã chọn trước đó. Vui lòng chọn lại thời gian!"
+        //     this.setState({ requestInfo })
+        //     return
+        // }
 
-        const start = moment(startDateInput, DATE_FORMAT).format('YYYYMMDD').toString()
-        const end = moment(endDateInput, DATE_FORMAT).format('YYYYMMDD').toString()
+        // const start = moment(startDateInput, DATE_FORMAT).format('YYYYMMDD').toString()
+        // const end = moment(endDateInput, DATE_FORMAT).format('YYYYMMDD').toString()
         // if (startDateTime && endDateTime) {
         //     this.validationFromDB(start, end, startTimeInput, endTimeInput, indexReq)
         // }
