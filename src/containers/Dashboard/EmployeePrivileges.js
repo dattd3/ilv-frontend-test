@@ -9,6 +9,7 @@ import Footer from '../../components/Common/Footer';
 import IconViewDetail from '../../assets/img/icon/Icon-Arrow-Right.svg'
 import IconTime from '../../assets/img/icon/Icon-Time.svg'
 import IconGift from 'assets/img/icon/Icon_gift_red.svg'
+import IconBackToTop from "assets/img/icon/Icon_back_to_top.svg"
 import LoadingModal from "components/Common/LoadingModal"
 
 const EmployeePrivileges = (props) => {
@@ -198,10 +199,8 @@ const EmployeePrivileges = (props) => {
                     { listPrivileges?.length === 0 && (<Footer />) }
                     {
                         isVisibleGoToTop && (
-                            <div onClick={e => scrollToTop()} className="scroll-to-top2" style={{ color: localStorage.getItem("companyThemeColor"), zIndex: '10' }}>
-                                <div>
-                                    <span><i className="fa fa-arrow-circle-o-up fa-2x"></i></span>
-                                </div>
+                            <div onClick={e => scrollToTop()} className="scroll-to-top2" style={{ zIndex: '10' }}>
+                                <span><img src={IconBackToTop} alt="Back to top" /></span>
                             </div>
                         )
                     }
