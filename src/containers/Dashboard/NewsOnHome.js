@@ -14,6 +14,7 @@ import IconUser from '../../assets/img/icon/Icon-User.svg'
 import IconTime from '../../assets/img/icon/Icon-Time.svg'
 import IconLock from '../../assets/img/icon/icon-lock.svg'
 import IconSwitchPopup from '../../assets/img/icon/icon-switch-popup.svg'
+import BgBannerPrivilege from '../../assets/img/bg_banner_privilege.png'
 import IconX from '../../assets/img/icon/icon_x.svg'
 import IconGift from 'assets/img/icon/Icon_gift_red.svg'
 import LoadingModal from "components/Common/LoadingModal"
@@ -122,6 +123,11 @@ function NewsOnHome(props) {
                     totalArticles > 0 ?
                         <>
                             <div className="top-news">
+                                <div className="row">
+                                    <div className="col-md-12 banner-privilege">
+                                        <img src={BgBannerPrivilege} className="privilege-img" alt="banner privilege" />
+                                    </div>
+                                </div>
                                 <div className="row">
                                     <div className="col-md-4 privilege">
                                         <h1 className="page-title" style={{ color: "#D13238", fontSize: 16 }}><Image src={IconGift} alt="Gift" className="ic-page-title" />{t("VingroupEmployeePrivileges")}</h1>
