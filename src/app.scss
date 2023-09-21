@@ -4291,14 +4291,6 @@ span.badge-notification[data-badge]::after {
         object-fit: cover;
       }
     }
-    // Responsive for focus center image content with size 1920*300
-    @media only screen and (max-width: 1900px) {
-      .banner-privilege {
-        .privilege-img {
-          height: 300px;
-        }
-      }
-    }
     .special, .privilege {
       display: flex;
       flex-direction: column;
