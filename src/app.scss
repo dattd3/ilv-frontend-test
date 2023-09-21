@@ -4283,10 +4283,20 @@ span.badge-notification[data-badge]::after {
   }
   .top-news {
     margin-bottom: 1.5rem;
-    .banner-privilege{ 
+    .banner-privilege{
+      width: 100%;
+      padding: 0 15px;
       .privilege-img {
         width: 100%;
-        object-fit: contain;
+        object-fit: cover;
+      }
+    }
+    // Responsive for focus center image content with size 1920*300
+    @media only screen and (max-width: 1900px) {
+      .banner-privilege {
+        .privilege-img {
+          height: 300px;
+        }
       }
     }
     .special, .privilege {

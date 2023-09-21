@@ -125,7 +125,7 @@ function NewsOnHome(props) {
                         <>
                             <div className="top-news">
                                 <div className="row">
-                                    <div className="col-md-12 banner-privilege">
+                                    <div className="banner-privilege">
                                         <img src={BgBannerPrivilege} className="privilege-img" alt="banner privilege" />
                                     </div>
                                 </div>
