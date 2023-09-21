@@ -110,7 +110,7 @@ const GuideLineTicketSupport = (props) => {
             </span>&nbsp;
             <span>{t("WithSubjectIncludeKeyword")}</span><br />
             <span>OM/PA/TM</span>,&nbsp;
-            <span>{t("SubContentSupportILV")}</span>
+            <span>{t("SubContentSupportSAP")}</span>
           </div>
         </div>
       </Modal.Body>
