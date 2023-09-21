@@ -4283,6 +4283,12 @@ span.badge-notification[data-badge]::after {
   }
   .top-news {
     margin-bottom: 1.5rem;
+    .banner-privilege{ 
+      .privilege-img {
+        width: 100%;
+        object-fit: contain;
+      }
+    }
     .special, .privilege {
       display: flex;
       flex-direction: column;
