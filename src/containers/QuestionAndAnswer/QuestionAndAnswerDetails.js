@@ -644,7 +644,7 @@ class QuestionAndAnswerDetails extends React.Component {
                               <b className="text-left">{t("Answer")}: </b>
                               {item.content}
                               <div className="rate-star-container">
-                                {Array.from(Array(5).keys()).map(
+                                {(isEmployeeView || !!item.rated) && Array.from(Array(5).keys()).map(
                                   (starIndex) => (
                                     <img
                                       key={starIndex}
