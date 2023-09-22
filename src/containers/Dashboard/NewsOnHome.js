@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react"
-import { Image } from 'react-bootstrap'
+import { Image, Carousel } from 'react-bootstrap'
 import { useTranslation } from "react-i18next"
 import axios from "axios"
 import moment from 'moment'
@@ -15,10 +15,14 @@ import IconTime from '../../assets/img/icon/Icon-Time.svg'
 import IconLock from '../../assets/img/icon/icon-lock.svg'
 import IconSwitchPopup from '../../assets/img/icon/icon-switch-popup.svg'
 // import BgBannerPrivilege from '../../assets/img/bg_banner_privilege.png'
+import BgBannerPrivilege1 from '../../assets/img/bg_banner_privilege_1.png'
+import BgBannerPrivilege2 from '../../assets/img/bg_banner_privilege_2.png'
 import BgBannerPrivilege from '../../assets/img/bg_banner_privilege_short.png'
 import IconX from '../../assets/img/icon/icon_x.svg'
 import IconGift from 'assets/img/icon/Icon_gift_red.svg'
 import LoadingModal from "components/Common/LoadingModal"
+
+const MOCK_BANNERS = [BgBannerPrivilege, BgBannerPrivilege1, BgBannerPrivilege2];
 
 function NewsOnHome(props) {
     const { t } = useTranslation()
@@ -124,10 +128,16 @@ function NewsOnHome(props) {
                     totalArticles > 0 ?
                         <>
                             <div className="top-news">
-                                <div className="row">
-                                    <div className="banner-privilege">
-                                        <img src={BgBannerPrivilege} className="privilege-img" alt="banner privilege" />
-                                    </div>
+                                <div className="row banner-privilege">
+                                    <Carousel>
+                                        {Array.from(Array(30).keys()).map((ele, i) => (
+                                            <Carousel.Item interval={3000} key={i}>
+                                                <div className="banner-privilege-item">
+                                                    <img src={MOCK_BANNERS[ele%3]} className="privilege-img" alt="banner privilege" />
+                                                </div>
+                                            </Carousel.Item>
+                                        ))}
+                                    </Carousel>
                                 </div>
                                 <div className="row">
                                     <div className="col-md-4 privilege">
