@@ -1865,7 +1865,7 @@
   "InvalidDataPleaseCheckAgain": "Invalid data, please check again!",
   "PreviousDay": "Previous Day",
   "InvalidDatePeriod": "The End Date of the Company should not be less than the End Date of the processes!",
-  "Vin30Chronicles": "Vin30 Chronicles",
+  "VingroupCultural": "Văn hóa Vingroup",
   "WaitingForEvaluation": "Waiting for feedback",
   "Feedbacked": "Feedbacked",
   "EmployeeInformationIsEvaluated": "Employee information is evaluated",
@@ -1959,5 +1959,11 @@
   "DownloadFile": "Attached files",
   "WelfareRefund": "Internal benefit reimbursement",
   "WelfareRefundApproveWarning": "There was previous approval for this employee today, our system will adjust this approval date to {{date}}",
-  "InsuranceSocialRequest": "Thanh toán bảo hiểm xã hội"
+  "InsuranceSocialRequest": "Thanh toán bảo hiểm xã hội",
+  "Vin30Chronicles": "Vin30 Chronicles",
+  "VingroupHistory": "Lịch sử Vingroup",
+  "VingroupHistoryGeneral": "Tổng quan văn hóa VGR",
+  "SixCoreValues": "Sáu giá trị cốt lõi",
+  "SixManagementRules": "Sáu nguyên tắc quản trị",
+  "VingroupWorkingEnvironment": "Môi trường làm việc VGR"
 }
