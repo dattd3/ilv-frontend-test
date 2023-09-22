@@ -14,15 +14,10 @@ import IconUser from '../../assets/img/icon/Icon-User.svg'
 import IconTime from '../../assets/img/icon/Icon-Time.svg'
 import IconLock from '../../assets/img/icon/icon-lock.svg'
 import IconSwitchPopup from '../../assets/img/icon/icon-switch-popup.svg'
-// import BgBannerPrivilege from '../../assets/img/bg_banner_privilege.png'
-import BgBannerPrivilege1 from '../../assets/img/bg_banner_privilege_1.png'
-import BgBannerPrivilege2 from '../../assets/img/bg_banner_privilege_2.png'
-import BgBannerPrivilege from '../../assets/img/bg_banner_privilege_short.png'
 import IconX from '../../assets/img/icon/icon_x.svg'
 import IconGift from 'assets/img/icon/Icon_gift_red.svg'
 import LoadingModal from "components/Common/LoadingModal"
-
-const MOCK_BANNERS = [BgBannerPrivilege, BgBannerPrivilege1, BgBannerPrivilege2];
+import Constants from "commons/Constants"
 
 function NewsOnHome(props) {
     const { t } = useTranslation()
@@ -31,6 +26,7 @@ function NewsOnHome(props) {
 
     const [isVisibleGoToTop, setIsVisibleGoToTop] = useState(false);
     const [isShowNoticeGuideModal, setIsShowNoticeGuideModal] = useState(false)
+    const [banners, setBanners] = useState([])
     const [listArticles, setListArticles] = useState(null)
     const [privilegeBanner, setPrivilegeBanner] = useState(null)
     const [isLoading, setIsLoading] = useState(true)
@@ -42,20 +38,30 @@ function NewsOnHome(props) {
         }
 
         const fetchListNewsAndEmployeePrivilegeBanner = async () => {
-            const config = getRequestConfigurations()
+            const config = getRequestConfigurations(),
+                locale = localStorage.getItem("locale"),
+                languageKeyMapping = {
+                    [Constants.LANGUAGE_EN]: 'en',
+                    [Constants.LANGUAGE_VI]: 'vi'
+                };
             try {
                 const requestGetListNews = axios.get(`${process.env.REACT_APP_REQUEST_URL}article/list`, {...config, params: {
                     pageIndex: 1,
                     pageSize: 100,
                     domain: '',
-                }})
-                const requestGetEmployeePrivilegeBanner = axios.get(`${process.env.REACT_APP_REQUEST_URL}article/detail`, {...config, params: {
+                }}),
+                requestGetEmployeePrivilegeBanner = axios.get(`${process.env.REACT_APP_REQUEST_URL}article/detail`, {...config, params: {
                     type: 'BANNER',
+                }}),
+                getPrivilegeBanners = axios.get(`${process.env.REACT_APP_REQUEST_URL}api/vanhoavin/list`, {...config, params: {
+                    language: languageKeyMapping[locale],
+                    // categoryCode=
                 }})
         
-                const [listNews, employeePrivilegeBanner] = await Promise.allSettled([requestGetListNews, requestGetEmployeePrivilegeBanner])
-                setListArticles(listNews?.value?.data)
-                setPrivilegeBanner(employeePrivilegeBanner?.value?.data?.data)
+                const [listNews, employeePrivilegeBanner, privilegeBanners] = await Promise.allSettled([requestGetListNews, requestGetEmployeePrivilegeBanner, getPrivilegeBanners])
+                setListArticles(listNews?.value?.data);
+                setPrivilegeBanner(employeePrivilegeBanner?.value?.data?.data);
+                setBanners((privilegeBanners?.value?.data?.data || []).filter(ele => ele.documnentType === 1 && ele.categryCode === '2.1'));
             } finally {
                 setIsLoading(false)
             }
@@ -130,10 +136,10 @@ function NewsOnHome(props) {
                             <div className="top-news">
                                 <div className="row banner-privilege">
                                     <Carousel>
-                                        {Array.from(Array(30).keys()).map((ele, i) => (
-                                            <Carousel.Item interval={3000} key={i}>
+                                        {banners.map((ele, i) => (
+                                            <Carousel.Item interval={9000} key={i}>
                                                 <div className="banner-privilege-item">
-                                                    <img src={MOCK_BANNERS[ele%3]} className="privilege-img" alt="banner privilege" />
+                                                    <img src={ele.link} className="privilege-img" alt="banner privilege" />
                                                 </div>
                                             </Carousel.Item>
                                         ))}
