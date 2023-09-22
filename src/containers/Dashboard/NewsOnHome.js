@@ -147,7 +147,7 @@ function NewsOnHome(props) {
                                         </div>
                                     </div>
                                     <div className="col-md-8 special">
-                                        <h2 className="page-title" style={{ fontSize: 16 }}><Image src={IconDiamond} alt="News" className="ic-page-title" />{t("NewsAndEvent")}</h2>
+                                        <h2 className="page-title" style={{ fontSize: 16 }}><Image src={IconDiamond} alt="News" className="ic-page-title" />{t("News")}</h2>
                                         <div className="d-flex shadow-customize wrap-news">
                                             <div className="top-one">
                                                 <a href={`/news/${convertToSlug(topOne?.title)}/${topOne.id}`} className="link-detail">
