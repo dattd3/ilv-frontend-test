@@ -4283,6 +4283,29 @@ span.badge-notification[data-badge]::after {
   }
   .top-news {
     margin-bottom: 1.5rem;
+    .banner-privilege {
+      padding: 0 15px;
+      max-height: 600px;
+      .carousel {
+        width: 100%;
+        .banner-privilege-item {
+          width: 100%;
+          .privilege-img {
+            width: 100%;
+            object-fit: cover;
+          }
+        }
+        .carousel-control-prev {
+          margin-left: 5px;
+        }
+        .carousel-control-next {
+          margin-right: 5px;
+        }
+        .carousel-indicators {
+          margin-bottom: 0px;
+        }
+      }
+    }
     .special, .privilege {
       display: flex;
       flex-direction: column;
