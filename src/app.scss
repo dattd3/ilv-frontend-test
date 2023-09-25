@@ -4437,6 +4437,21 @@ span.badge-notification[data-badge]::after {
         }
       }
     }
+    .privilege {
+      .top-one {
+        display: flex;
+        flex-direction: column;
+        .other-info {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          .description {
+            margin-top: 27px;
+          }
+        }
+      }
+    }
   }
   .item {
     display: flex;
