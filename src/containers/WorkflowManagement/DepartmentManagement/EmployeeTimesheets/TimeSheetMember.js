@@ -360,10 +360,10 @@ function Content(props) {
         let isEnableChangeStaffShift = isEnableFunctionByFunctionName(Constants.listFunctionsForPnLACL.changeStaffShift)
         if ([Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinHoliday1, Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading].includes(currentUserPnL)) {
             const currentUserRankTitle = localStorage.getItem("employeeLevel").toUpperCase() // Cấp bậc chức danh của user logged
-            let levelAccessFunction = ["P2", "P1", "T4", "T3", "T2", "T1", "T0"]
+            let levelAccessFunction = ["P2", "P1", "T6", "T5", "T4", "T3", "T2", "T1", "T0"]
             //ILVG-679: VF sản xuất cho phép CBLĐ từ cấp C có thể phân ca bộ phận
             if ([Constants.pnlVCode.VinFast].includes(currentUserPnL)) {
-                levelAccessFunction = [...levelAccessFunction, "C2", "C1","C"];
+                levelAccessFunction = [...levelAccessFunction,"C2", "C1","C","T7"];
             }
             if (!levelAccessFunction.includes(currentUserRankTitle)) {
                 isEnableChangeStaffShift = false
