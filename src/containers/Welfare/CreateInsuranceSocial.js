@@ -179,7 +179,7 @@ const CreateInsuranceSocial = (props) => {
                     IndentifiD: userDetail.personal_id_no || ''
                 })
                 let infoBank = {
-                    receiveType:  { value: 2, label: 'Chi trả qua ATM' },
+                    receiveType:  { value: '2', label: 'Chi trả qua ATM' },
                     accountNumber: userDetail.bank_number && userDetail.bank_number != '#' ? userDetail.bank_number : '',
                     accountName: userDetail.fullname && userDetail.fullname != '#' ? removeAccents(userDetail.fullname).toUpperCase() : '',
                     bankId: userDetail.bank_name_id && userDetail.bank_name_id != '#' ? userDetail.bank_name_id : '',
