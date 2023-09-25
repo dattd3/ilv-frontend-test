@@ -14,16 +14,13 @@ import IconUser from '../../assets/img/icon/Icon-User.svg'
 import IconTime from '../../assets/img/icon/Icon-Time.svg'
 import IconLock from '../../assets/img/icon/icon-lock.svg'
 import IconSwitchPopup from '../../assets/img/icon/icon-switch-popup.svg'
-// import BgBannerPrivilege from '../../assets/img/bg_banner_privilege.png'
-import BgBannerPrivilege1 from '../../assets/img/bg_banner_privilege_1.png'
-import BgBannerPrivilege2 from '../../assets/img/bg_banner_privilege_2.png'
-import BgBannerPrivilege from '../../assets/img/bg_banner_privilege_short.png'
 import IconX from '../../assets/img/icon/icon_x.svg'
 import IconGift from 'assets/img/icon/Icon_gift_red.svg'
 import IconBackToTop from "assets/img/icon/Icon_back_to_top.svg"
 import LoadingModal from "components/Common/LoadingModal"
-
-const MOCK_BANNERS = [BgBannerPrivilege, BgBannerPrivilege1, BgBannerPrivilege2];
+import Constants from "commons/Constants"
+import { getCurrentLanguage } from "../../commons/Utils"
+import { isJsonString } from "../../utils/string"
 
 function NewsOnHome(props) {
     const { t } = useTranslation()
@@ -32,9 +29,11 @@ function NewsOnHome(props) {
 
     const [isVisibleGoToTop, setIsVisibleGoToTop] = useState(false);
     const [isShowNoticeGuideModal, setIsShowNoticeGuideModal] = useState(false)
+    const [banners, setBanners] = useState([])
     const [listArticles, setListArticles] = useState(null)
     const [privilegeBanner, setPrivilegeBanner] = useState(null)
     const [isLoading, setIsLoading] = useState(true)
+    const lang = getCurrentLanguage();
 
     useEffect(() => {
         if (Notification.permission !== "granted" && !sessionStorage.getItem("isCloseNotificationGuide")) {
@@ -43,20 +42,36 @@ function NewsOnHome(props) {
         }
 
         const fetchListNewsAndEmployeePrivilegeBanner = async () => {
-            const config = getRequestConfigurations()
+            const config = getRequestConfigurations(),
+                locale = localStorage.getItem("locale"),
+                languageKeyMapping = {
+                    [Constants.LANGUAGE_EN]: 'en',
+                    [Constants.LANGUAGE_VI]: 'vi'
+                };
             try {
                 const requestGetListNews = axios.get(`${process.env.REACT_APP_REQUEST_URL}article/list`, {...config, params: {
                     pageIndex: 1,
                     pageSize: 100,
                     domain: '',
-                }})
-                const requestGetEmployeePrivilegeBanner = axios.get(`${process.env.REACT_APP_REQUEST_URL}article/detail`, {...config, params: {
+                }}),
+                requestGetEmployeePrivilegeBanner = axios.get(`${process.env.REACT_APP_REQUEST_URL}article/detail`, {...config, params: {
                     type: 'BANNER',
+                }}),
+                getPrivilegeBanners = axios.get(`${process.env.REACT_APP_REQUEST_URL}api/vanhoavin/list`, {...config, params: {
+                    language: languageKeyMapping[locale],
+                    // categoryCode=
                 }})
         
-                const [listNews, employeePrivilegeBanner] = await Promise.allSettled([requestGetListNews, requestGetEmployeePrivilegeBanner])
-                setListArticles(listNews?.value?.data)
-                setPrivilegeBanner(employeePrivilegeBanner?.value?.data?.data)
+                const [listNews, employeePrivilegeBanner, privilegeBanners] = await Promise.allSettled([requestGetListNews, requestGetEmployeePrivilegeBanner, getPrivilegeBanners])
+                setListArticles(listNews?.value?.data);
+                const _privilegeBanner = employeePrivilegeBanner?.value?.data?.data;
+                setPrivilegeBanner({
+                  ...privilegeBanner,
+                  description: isJsonString(_privilegeBanner.description) ? JSON.parse(_privilegeBanner.description)?.[lang] : _privilegeBanner.description,
+                  thumbnail: isJsonString(_privilegeBanner.thumbnail) ? JSON.parse(_privilegeBanner.thumbnail)?.[lang] : _privilegeBanner.thumbnail,
+                  title: isJsonString(_privilegeBanner.title) ? JSON.parse(_privilegeBanner.title)?.[lang] : _privilegeBanner.title
+                });
+                setBanners((privilegeBanners?.value?.data?.data || []).filter(ele => ele.documnentType === 1 && ele.categryCode === '2.1'));
             } finally {
                 setIsLoading(false)
             }
@@ -64,6 +79,7 @@ function NewsOnHome(props) {
 
         fetchListNewsAndEmployeePrivilegeBanner()
     }, [])
+
 
     const convertToSlug = input => {
         let slug = input?.toLowerCase()
@@ -131,10 +147,10 @@ function NewsOnHome(props) {
                             <div className="top-news">
                                 <div className="row banner-privilege">
                                     <Carousel>
-                                        {Array.from(Array(30).keys()).map((ele, i) => (
-                                            <Carousel.Item interval={3000} key={i}>
+                                        {banners.map((ele, i) => (
+                                            <Carousel.Item interval={9000} key={i}>
                                                 <div className="banner-privilege-item">
-                                                    <img src={MOCK_BANNERS[ele%3]} className="privilege-img" alt="banner privilege" />
+                                                    <img src={ele.link} className="privilege-img" alt="banner privilege" />
                                                 </div>
                                             </Carousel.Item>
                                         ))}
@@ -150,11 +166,15 @@ function NewsOnHome(props) {
                                                         e.target.src = "/logo-large.svg"
                                                     }}
                                                 />
-                                                <p className="title" style={{ color: "#D13238" }}>{privilegeBanner?.title || ''}</p>
+                                                <p className="title privilege-banner-title">
+                                                  {privilegeBanner?.title}
+                                                </p>
                                             </a>
                                             <div className="other-info">
                                                 <div className="source-time-info">
-                                                    <span className="time"><Image src={IconTime} alt="Time" className="icon" /><span className="hour">{getTimeByRawTime(privilegeBanner?.publishedDate)?.time + ' | ' + getTimeByRawTime(privilegeBanner?.publishedDate)?.date}</span></span>
+                                                    <span className="time"><Image src={IconTime} alt="Time" className="icon" />
+                                                      <span className="hour">{moment(privilegeBanner?.publishedDate).format("HH:mm | DD/MM/YYYY")}</span>
+                                                    </span>
                                                 </div>
                                                 <p className="description">{privilegeBanner?.description || ''}</p>
                                                 <div className="btn-detail">
@@ -187,7 +207,6 @@ function NewsOnHome(props) {
                                                 </div>
                                             </div>
                                             <div className="other">
-                                                <h1 className="" style={{ textTransform: 'initial', fontSize: 16, color: '#000000', fontWeight: 'bold', margin: "0 20px 15px 20px" }}>Tin tức khác</h1>
                                                 <div className="top-four">
                                                     {
                                                         topFour.length > 0 ?
@@ -280,7 +299,7 @@ function NewsOnHome(props) {
             {
                 isVisibleGoToTop && (
                     <div onClick={e => scrollToTop()} className="scroll-to-top2" style={{ zIndex: '10' }}>
-                        <span><img src={IconBackToTop} /></span>
+                        <span><img src={IconBackToTop} alt="Back to top" /></span>
                     </div>
                 )
             }
