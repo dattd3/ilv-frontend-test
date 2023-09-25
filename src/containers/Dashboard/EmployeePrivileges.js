@@ -11,6 +11,8 @@ import IconTime from '../../assets/img/icon/Icon-Time.svg'
 import IconGift from 'assets/img/icon/Icon_gift_red.svg'
 import IconBackToTop from "assets/img/icon/Icon_back_to_top.svg"
 import LoadingModal from "components/Common/LoadingModal"
+import { getCurrentLanguage } from "../../commons/Utils"
+import { isJsonString } from "../../utils/string"
 
 const EmployeePrivileges = (props) => {
     const { t } = useTranslation()
@@ -22,6 +24,7 @@ const EmployeePrivileges = (props) => {
     const [listPrivileges, setListPrivileges] = useState(null)
     const [topOneHeight, setTopOneHeight] = useState(0)
     const [isLoading, setIsLoading] = useState(true)
+    const lang = getCurrentLanguage();
 
     useEffect(() => {
         const fetchEmployeePrivileges = async () => {
@@ -34,7 +37,13 @@ const EmployeePrivileges = (props) => {
 
             try {
                 const response = await axios.get(`${process.env.REACT_APP_REQUEST_URL}article/privilege/list`, config)
-                setListPrivileges(response?.data?.data?.listPrivilege || [])
+                setListPrivileges(response?.data?.data?.listPrivilege?.map(item => ({
+                    ...item,
+                    description: isJsonString(item.description) ? JSON.parse(item.description)?.[lang] : item.description,
+                    thumbnail: isJsonString(item.thumbnail) ? JSON.parse(item.thumbnail)?.[lang] : item.thumbnail,
+                    title: isJsonString(item.title) ? JSON.parse(item.title)?.[lang] : item.title
+                  })
+                ))
             } finally {
                 setIsLoading(false)
             }

@@ -19,6 +19,8 @@ import IconGift from 'assets/img/icon/Icon_gift_red.svg'
 import IconBackToTop from "assets/img/icon/Icon_back_to_top.svg"
 import LoadingModal from "components/Common/LoadingModal"
 import Constants from "commons/Constants"
+import { getCurrentLanguage } from "../../commons/Utils"
+import { isJsonString } from "../../utils/string"
 
 function NewsOnHome(props) {
     const { t } = useTranslation()
@@ -31,6 +33,7 @@ function NewsOnHome(props) {
     const [listArticles, setListArticles] = useState(null)
     const [privilegeBanner, setPrivilegeBanner] = useState(null)
     const [isLoading, setIsLoading] = useState(true)
+    const lang = getCurrentLanguage();
 
     useEffect(() => {
         if (Notification.permission !== "granted" && !sessionStorage.getItem("isCloseNotificationGuide")) {
@@ -61,7 +64,13 @@ function NewsOnHome(props) {
         
                 const [listNews, employeePrivilegeBanner, privilegeBanners] = await Promise.allSettled([requestGetListNews, requestGetEmployeePrivilegeBanner, getPrivilegeBanners])
                 setListArticles(listNews?.value?.data);
-                setPrivilegeBanner(employeePrivilegeBanner?.value?.data?.data);
+                const _privilegeBanner = employeePrivilegeBanner?.value?.data?.data;
+                setPrivilegeBanner({
+                  ...privilegeBanner,
+                  description: isJsonString(_privilegeBanner.description) ? JSON.parse(_privilegeBanner.description)?.[lang] : _privilegeBanner.description,
+                  thumbnail: isJsonString(_privilegeBanner.thumbnail) ? JSON.parse(_privilegeBanner.thumbnail)?.[lang] : _privilegeBanner.thumbnail,
+                  title: isJsonString(_privilegeBanner.title) ? JSON.parse(_privilegeBanner.title)?.[lang] : _privilegeBanner.title
+                });
                 setBanners((privilegeBanners?.value?.data?.data || []).filter(ele => ele.documnentType === 1 && ele.categryCode === '2.1'));
             } finally {
                 setIsLoading(false)
@@ -70,6 +79,7 @@ function NewsOnHome(props) {
 
         fetchListNewsAndEmployeePrivilegeBanner()
     }, [])
+
 
     const convertToSlug = input => {
         let slug = input?.toLowerCase()
@@ -156,8 +166,16 @@ function NewsOnHome(props) {
                                                         e.target.src = "/logo-large.svg"
                                                     }}
                                                 />
+                                                <p className="title privilege-banner-title">
+                                                  {privilegeBanner?.title}
+                                                </p>
                                             </a>
                                             <div className="other-info">
+                                                <div className="source-time-info">
+                                                    <span className="time"><Image src={IconTime} alt="Time" className="icon" />
+                                                      <span className="hour">{moment(privilegeBanner?.publishedDate).format("HH:mm | DD/MM/YYYY")}</span>
+                                                    </span>
+                                                </div>
                                                 <p className="description">{privilegeBanner?.description || ''}</p>
                                                 <div className="btn-detail">
                                                     <a href={mapConfig.EmployeePrivileges} className="detail"><span>{t("ViewMore")}</span><Image src={IconViewDetail} alt="Detail" className="icon-view-detail" /></a>
@@ -189,7 +207,6 @@ function NewsOnHome(props) {
                                                 </div>
                                             </div>
                                             <div className="other">
-                                                <h1 className="" style={{ textTransform: 'initial', fontSize: 16, color: '#000000', fontWeight: 'bold', margin: "0 20px 15px 20px" }}>Tin tức khác</h1>
                                                 <div className="top-four">
                                                     {
                                                         topFour.length > 0 ?

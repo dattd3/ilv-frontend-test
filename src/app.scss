@@ -4306,6 +4306,10 @@ span.badge-notification[data-badge]::after {
         }
       }
     }
+    .privilege-banner-title {
+      color: #D13238;
+      //font-size: 16;
+    }
     .special, .privilege {
       display: flex;
       flex-direction: column;
@@ -4446,9 +4450,9 @@ span.badge-notification[data-badge]::after {
           display: flex;
           flex-direction: column;
           justify-content: space-between;
-          .description {
-            margin-top: 27px;
-          }
+          // .description {
+          //   margin-top: 27px;
+          // }
         }
       }
     }
