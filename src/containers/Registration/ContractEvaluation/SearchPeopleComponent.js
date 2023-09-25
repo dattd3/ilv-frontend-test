@@ -120,7 +120,6 @@ class ApproverComponent extends React.Component {
   }
 
   isApprover = (levelApproverFilter, orglv2Id, currentUserLevel, account) => {
-    const APPROVER_LIST_LEVEL = ["C2", "C1", "C", "P2", "P1", "T4", "T3", "T2", "T1", "T0"]
     const orglv2IdCurrentUser = localStorage.getItem('organizationLv2')
     let indexCurrentUserLevel = _.findIndex(APPROVER_LIST_LEVEL, function (item) { return item == currentUserLevel });
     let indexApproverFilterLevel = _.findIndex(APPROVER_LIST_LEVEL, function (item) { return item == levelApproverFilter });
