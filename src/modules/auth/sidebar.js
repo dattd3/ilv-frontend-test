@@ -171,7 +171,8 @@ export const Navigation = [
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     to: "",
     label: 'MenuMyTeam',
-    role: ["C2", "C1","C", "P2", "P1", "T4", "T3", "T2", "T1", "T0"]
+    // role: ["C2", "C1","C", "P2", "P1", "T4", "T3", "T2", "T1", "T0"]
+    role: ["C2", "C1", "C", "P2", "P1", "T7", "T6", "T5", "T4", "T3", "T2", "T1", "T0"]
   },
   {
     id:1002,
@@ -237,7 +238,8 @@ export const Navigation = [
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     to: map.ProposalManagement,
     label: 'CreateProposal',
-    role: ["C2", "C1","C", "P2", "P1", "P","T","P2", "P1", "T4", "T3", "T2", "T1"]
+    //role: ["C2", "C1","C", "P2", "P1", "P","T","P2", "P1", "T4", "T3", "T2", "T1"]
+    role: ["C2", "C1","C", "P2", "P1", "P","T","P2", "P1", "T7", "T6", "T5", "T4", "T3", "T2", "T1"]
   },
   {
     id: 4,
@@ -245,7 +247,8 @@ export const Navigation = [
     icon: "menu-bullet-lv2 icon-sub-menu-lv2",
     label: "Menu_Intruction",
     to: map.Instruction,
-    role: ["P","T","P2", "P1", "T4", "T3", "T2", "T1"],
+    // role: ["P","T","P2", "P1", "T4", "T3", "T2", "T1"],
+    role: ["P","T","P2", "P1", "T6", "T5", "T4", "T3", "T2", "T1"]
   },
   {
     id: 5,
@@ -253,7 +256,8 @@ export const Navigation = [
     icon: "menu-bullet-lv2 icon-sub-menu-lv2",
     label: "Menu_TrainingRoadmap",
     to: map.Roadmap,
-    role: ["P","T","P2", "P1", "T4", "T3", "T2", "T1"],
+    //role: ["P","T","P2", "P1", "T4", "T3", "T2", "T1"],
+    role: ["P","T","P2", "P1", "T6", "T5", "T4", "T3", "T2", "T1"]
   },
   {
     id: 7,

@@ -141,9 +141,10 @@ const Constants = {
   SUBSTITUTION_TPKLA_HALF_DAY: 2,
   SHIFT_CODE_OFF:  'OFF',
   // user level
-  CONSENTER_LIST_LEVEL : ["C1", "P2", "P1", "T4", "T3", "T2", "T1", "T0"],
-  APPROVER_LIST_LEVEL :  ["C1", "P2", "P1", "T4", "T3", "T2", "T1", "T0"],
-  CONSENTER_LIST_LEVEL_V073 : ["M0", "M1", "M2", "M3", "C1", "P2", "P1", "T4", "T3", "T2", "T1", "T0"],
+  //CONSENTER_LIST_LEVEL : ["C1", "P2", "P1", "T4", "T3", "T2", "T1", "T0"],
+  CONSENTER_LIST_LEVEL : ["C1", "T7", "P2", "T6", "P1", "T5", "T4", "T3", "T2", "T1", "T0"],
+  APPROVER_LIST_LEVEL :  ["C1", "T7", "P2","T6", "P1","T5", "T4", "T3", "T2", "T1", "T0"],
+  //CONSENTER_LIST_LEVEL_V073 : ["M0", "M1", "M2", "M3", "C1", "P2", "P1", "T4", "T3", "T2", "T1", "T0"],
   APPROVAL_DELEGATION_LIST_LEVEL : ["T3", "T2", "T1", "T0"],
 
   //other
@@ -249,7 +250,7 @@ const Constants = {
   { //Development
     1: ["V040", "V005", "V079", "V041", "V030", "V035", "V036", "V077", "V070", "V099"],//TUYENDUNG + V061
     2: ["V061","V040", "V005", "V079", "V041", "V070", "V077", "V099"],//DANHGIA_TAIKI
-    3: [],//DEXUATLUONG "V061", "V040", "V005", "V079", "V041", "V070", "V077"
+    3: [""],//DEXUATLUONG "V061", "V040", "V005", "V079", "V041", "V070", "V077"
     4: ["V040", "V005", "V079", "V070", "V077"],//NGHIVIEC
     5: ["V061", "V040", "V005", "V079", "V041", "V070", "V077"],//PHUCLOI
     6: ["V040", "V070", "V077"], //DIEUCHUYEN
