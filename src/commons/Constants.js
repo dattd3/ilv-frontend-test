@@ -143,9 +143,10 @@ const Constants = {
   SUBSTITUTION_TPKLA_HALF_DAY: 2,
   SHIFT_CODE_OFF:  'OFF',
   // user level
-  CONSENTER_LIST_LEVEL : ["C1", "P2", "P1", "T4", "T3", "T2", "T1", "T0"],
-  APPROVER_LIST_LEVEL :  ["C1", "P2", "P1", "T4", "T3", "T2", "T1", "T0"],
-  CONSENTER_LIST_LEVEL_V073 : ["M0", "M1", "M2", "M3", "C1", "P2", "P1", "T4", "T3", "T2", "T1", "T0"],
+  //CONSENTER_LIST_LEVEL : ["C1", "P2", "P1", "T4", "T3", "T2", "T1", "T0"],
+  CONSENTER_LIST_LEVEL : ["C1", "T7", "P2", "T6", "P1", "T5", "T4", "T3", "T2", "T1", "T0"],
+  APPROVER_LIST_LEVEL :  ["C1", "T7", "P2","T6", "P1","T5", "T4", "T3", "T2", "T1", "T0"],
+  //CONSENTER_LIST_LEVEL_V073 : ["M0", "M1", "M2", "M3", "C1", "P2", "P1", "T4", "T3", "T2", "T1", "T0"],
   APPROVAL_DELEGATION_LIST_LEVEL : ["T3", "T2", "T1", "T0"],
 
   //other
