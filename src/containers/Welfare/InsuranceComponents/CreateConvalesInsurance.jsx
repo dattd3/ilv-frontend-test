@@ -230,7 +230,7 @@ const CreateConvalesInsurance = ({
   };
 
   const checkRequireAtm = () => {
-    if(data.receiveType?.value && [2].includes(data.receiveType.value)) {
+    if(data.receiveType?.value && ['2'].includes(data.receiveType.value)) {
       return true;
     }
     return false;

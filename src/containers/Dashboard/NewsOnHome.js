@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react"
-import { Image } from 'react-bootstrap'
+import { Image, Carousel } from 'react-bootstrap'
 import { useTranslation } from "react-i18next"
 import axios from "axios"
 import moment from 'moment'
@@ -18,6 +18,9 @@ import IconX from '../../assets/img/icon/icon_x.svg'
 import IconGift from 'assets/img/icon/Icon_gift_red.svg'
 import IconBackToTop from "assets/img/icon/Icon_back_to_top.svg"
 import LoadingModal from "components/Common/LoadingModal"
+import Constants from "commons/Constants"
+import { getCurrentLanguage } from "../../commons/Utils"
+import { isJsonString } from "../../utils/string"
 
 function NewsOnHome(props) {
     const { t } = useTranslation()
@@ -26,9 +29,11 @@ function NewsOnHome(props) {
 
     const [isVisibleGoToTop, setIsVisibleGoToTop] = useState(false);
     const [isShowNoticeGuideModal, setIsShowNoticeGuideModal] = useState(false)
+    const [banners, setBanners] = useState([])
     const [listArticles, setListArticles] = useState(null)
     const [privilegeBanner, setPrivilegeBanner] = useState(null)
     const [isLoading, setIsLoading] = useState(true)
+    const lang = getCurrentLanguage();
 
     useEffect(() => {
         if (Notification.permission !== "granted" && !sessionStorage.getItem("isCloseNotificationGuide")) {
@@ -37,20 +42,36 @@ function NewsOnHome(props) {
         }
 
         const fetchListNewsAndEmployeePrivilegeBanner = async () => {
-            const config = getRequestConfigurations()
+            const config = getRequestConfigurations(),
+                locale = localStorage.getItem("locale"),
+                languageKeyMapping = {
+                    [Constants.LANGUAGE_EN]: 'en',
+                    [Constants.LANGUAGE_VI]: 'vi'
+                };
             try {
                 const requestGetListNews = axios.get(`${process.env.REACT_APP_REQUEST_URL}article/list`, {...config, params: {
                     pageIndex: 1,
                     pageSize: 100,
                     domain: '',
-                }})
-                const requestGetEmployeePrivilegeBanner = axios.get(`${process.env.REACT_APP_REQUEST_URL}article/detail`, {...config, params: {
+                }}),
+                requestGetEmployeePrivilegeBanner = axios.get(`${process.env.REACT_APP_REQUEST_URL}article/detail`, {...config, params: {
                     type: 'BANNER',
+                }}),
+                getPrivilegeBanners = axios.get(`${process.env.REACT_APP_REQUEST_URL}api/vanhoavin/list`, {...config, params: {
+                    language: languageKeyMapping[locale],
+                    // categoryCode=
                 }})
         
-                const [listNews, employeePrivilegeBanner] = await Promise.allSettled([requestGetListNews, requestGetEmployeePrivilegeBanner])
-                setListArticles(listNews?.value?.data)
-                setPrivilegeBanner(employeePrivilegeBanner?.value?.data?.data)
+                const [listNews, employeePrivilegeBanner, privilegeBanners] = await Promise.allSettled([requestGetListNews, requestGetEmployeePrivilegeBanner, getPrivilegeBanners])
+                setListArticles(listNews?.value?.data);
+                const _privilegeBanner = employeePrivilegeBanner?.value?.data?.data;
+                setPrivilegeBanner({
+                  ...privilegeBanner,
+                  description: isJsonString(_privilegeBanner.description) ? JSON.parse(_privilegeBanner.description)?.[lang] : _privilegeBanner.description,
+                  thumbnail: isJsonString(_privilegeBanner.thumbnail) ? JSON.parse(_privilegeBanner.thumbnail)?.[lang] : _privilegeBanner.thumbnail,
+                  title: isJsonString(_privilegeBanner.title) ? JSON.parse(_privilegeBanner.title)?.[lang] : _privilegeBanner.title
+                });
+                setBanners((privilegeBanners?.value?.data?.data || []).filter(ele => ele.documnentType === 1 && ele.categryCode === '2.1'));
             } finally {
                 setIsLoading(false)
             }
@@ -58,6 +79,7 @@ function NewsOnHome(props) {
 
         fetchListNewsAndEmployeePrivilegeBanner()
     }, [])
+
 
     const convertToSlug = input => {
         let slug = input?.toLowerCase()
@@ -123,6 +145,17 @@ function NewsOnHome(props) {
                     totalArticles > 0 ?
                         <>
                             <div className="top-news">
+                                <div className="row banner-privilege">
+                                    <Carousel>
+                                        {banners.map((ele, i) => (
+                                            <Carousel.Item interval={9000} key={i}>
+                                                <div className="banner-privilege-item">
+                                                    <img src={ele.link} className="privilege-img" alt="banner privilege" />
+                                                </div>
+                                            </Carousel.Item>
+                                        ))}
+                                    </Carousel>
+                                </div>
                                 <div className="row">
                                     <div className="col-md-4 privilege">
                                         <h1 className="page-title" style={{ color: "#D13238", fontSize: 16 }}><Image src={IconGift} alt="Gift" className="ic-page-title" />{t("VingroupEmployeePrivileges")}</h1>
@@ -133,11 +166,15 @@ function NewsOnHome(props) {
                                                         e.target.src = "/logo-large.svg"
                                                     }}
                                                 />
-                                                <p className="title" style={{ color: "#D13238" }}>{privilegeBanner?.title || ''}</p>
+                                                <p className="title privilege-banner-title">
+                                                  {privilegeBanner?.title}
+                                                </p>
                                             </a>
                                             <div className="other-info">
                                                 <div className="source-time-info">
-                                                    <span className="time"><Image src={IconTime} alt="Time" className="icon" /><span className="hour">{getTimeByRawTime(privilegeBanner?.publishedDate)?.time + ' | ' + getTimeByRawTime(privilegeBanner?.publishedDate)?.date}</span></span>
+                                                    <span className="time"><Image src={IconTime} alt="Time" className="icon" />
+                                                      <span className="hour">{moment(privilegeBanner?.publishedDate).format("HH:mm | DD/MM/YYYY")}</span>
+                                                    </span>
                                                 </div>
                                                 <p className="description">{privilegeBanner?.description || ''}</p>
                                                 <div className="btn-detail">
@@ -170,7 +207,6 @@ function NewsOnHome(props) {
                                                 </div>
                                             </div>
                                             <div className="other">
-                                                <h1 className="" style={{ textTransform: 'initial', fontSize: 16, color: '#000000', fontWeight: 'bold', margin: "0 20px 15px 20px" }}>Tin tức khác</h1>
                                                 <div className="top-four">
                                                     {
                                                         topFour.length > 0 ?
