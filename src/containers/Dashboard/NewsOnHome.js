@@ -166,16 +166,8 @@ function NewsOnHome(props) {
                                                         e.target.src = "/logo-large.svg"
                                                     }}
                                                 />
-                                                <p className="title privilege-banner-title">
-                                                  {privilegeBanner?.title}
-                                                </p>
                                             </a>
                                             <div className="other-info">
-                                                <div className="source-time-info">
-                                                    <span className="time"><Image src={IconTime} alt="Time" className="icon" />
-                                                      <span className="hour">{moment(privilegeBanner?.publishedDate).format("HH:mm | DD/MM/YYYY")}</span>
-                                                    </span>
-                                                </div>
                                                 <p className="description">{privilegeBanner?.description || ''}</p>
                                                 <div className="btn-detail">
                                                     <a href={mapConfig.EmployeePrivileges} className="detail"><span>{t("ViewMore")}</span><Image src={IconViewDetail} alt="Detail" className="icon-view-detail" /></a>
