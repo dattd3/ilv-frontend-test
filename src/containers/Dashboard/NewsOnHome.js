@@ -67,9 +67,9 @@ function NewsOnHome(props) {
                 const _privilegeBanner = employeePrivilegeBanner?.value?.data?.data;
                 setPrivilegeBanner({
                   ...privilegeBanner,
-                  description: isJsonString(_privilegeBanner.description) ? JSON.parse(_privilegeBanner.description)?.[lang] : _privilegeBanner.description,
-                  thumbnail: isJsonString(_privilegeBanner.thumbnail) ? JSON.parse(_privilegeBanner.thumbnail)?.[lang] : _privilegeBanner.thumbnail,
-                  title: isJsonString(_privilegeBanner.title) ? JSON.parse(_privilegeBanner.title)?.[lang] : _privilegeBanner.title
+                  description: isJsonString(_privilegeBanner?.description) ? (JSON.parse(_privilegeBanner?.description)?.[lang] || JSON.parse(_privilegeBanner?.description)?.['vi']) : _privilegeBanner?.description,
+                  thumbnail: isJsonString(_privilegeBanner?.thumbnail) ? (JSON.parse(_privilegeBanner?.thumbnail)?.[lang] || JSON.parse(_privilegeBanner?.thumbnail)?.['vi']) : _privilegeBanner?.thumbnail,
+                  title: isJsonString(_privilegeBanner?.title) ? (JSON.parse(_privilegeBanner?.title)?.[lang] || JSON.parse(_privilegeBanner?.title)?.['vi']) : _privilegeBanner?.title
                 });
                 setBanners((privilegeBanners?.value?.data?.data || []).filter(ele => ele.documnentType === 1 && ele.categryCode === '2.1'));
             } finally {
