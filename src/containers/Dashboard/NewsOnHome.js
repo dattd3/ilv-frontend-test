@@ -59,7 +59,8 @@ function NewsOnHome(props) {
                 }}),
                 getPrivilegeBanners = axios.get(`${process.env.REACT_APP_REQUEST_URL}api/vanhoavin/list`, {...config, params: {
                     language: languageKeyMapping[locale],
-                    // categoryCode=
+                    categoryCode: '6.1',
+                    device: 'WEB',
                 }})
         
                 const [listNews, employeePrivilegeBanner, privilegeBanners] = await Promise.allSettled([requestGetListNews, requestGetEmployeePrivilegeBanner, getPrivilegeBanners])
@@ -71,7 +72,7 @@ function NewsOnHome(props) {
                   thumbnail: isJsonString(_privilegeBanner.thumbnail) ? JSON.parse(_privilegeBanner.thumbnail)?.[lang] : _privilegeBanner.thumbnail,
                   title: isJsonString(_privilegeBanner.title) ? JSON.parse(_privilegeBanner.title)?.[lang] : _privilegeBanner.title
                 });
-                setBanners((privilegeBanners?.value?.data?.data || []).filter(ele => ele.documnentType === 1 && ele.categryCode === '2.1'));
+                setBanners((privilegeBanners?.value?.data?.data || []));
             } finally {
                 setIsLoading(false)
             }
