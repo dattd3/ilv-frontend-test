@@ -37,13 +37,13 @@ const EmployeePrivileges = (props) => {
 
             try {
                 const response = await axios.get(`${process.env.REACT_APP_REQUEST_URL}article/privilege/list`, config)
-                setListPrivileges(response?.data?.data?.listPrivilege?.map(item => ({
+                const listPrivilegeData = (response?.data?.data?.listPrivilege || []).map(item => ({
                     ...item,
-                    description: isJsonString(item.description) ? JSON.parse(item.description)?.[lang] : item.description,
-                    thumbnail: isJsonString(item.thumbnail) ? JSON.parse(item.thumbnail)?.[lang] : item.thumbnail,
-                    title: isJsonString(item.title) ? JSON.parse(item.title)?.[lang] : item.title
-                  })
-                ))
+                    description: isJsonString(item?.description) ? (JSON.parse(item?.description)?.[lang] || JSON.parse(item?.description)?.['vi']) : item?.description,
+                    thumbnail: isJsonString(item?.thumbnail) ? (JSON.parse(item?.thumbnail)?.[lang] || JSON.parse(item?.thumbnail)?.['vi']) : item?.thumbnail,
+                    title: isJsonString(item?.title) ? (JSON.parse(item?.title)?.[lang] || JSON.parse(item?.title)?.['vi']) : item?.title
+                }))
+                setListPrivileges(listPrivilegeData)
             } finally {
                 setIsLoading(false)
             }
