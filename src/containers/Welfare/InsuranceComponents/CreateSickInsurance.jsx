@@ -894,6 +894,7 @@ const CreateSickInsurance = ({
       {
         isCreateMode ?
         <DocumentRequired
+        url={data.documentLink}
         t={t}/> : null
       }
 
