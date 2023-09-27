@@ -808,9 +808,9 @@ export default [
           key: "vingroup-history",
           routeProps: {
             exact: true,
-            path: map.HistoryVingroup
+            path: map.Vin30Chronicles
           },
-          component: lazy(() => import("./HistoryVinGroup/index"))
+          component: lazy(() => import("./Vin30Chronicles/index"))
         },
         {
           key: "registration-internal-payment",
@@ -835,6 +835,22 @@ export default [
             path: map.EmployeePrivilegeDetail,
           },
           component: lazy(() => import("./Corporation/News/EmployeePrivilegeDetail")),
+        },
+        {
+          key: "vingroup-history",
+          routeProps: {
+            exact: true,
+            path: map.HistoryVingroup,
+          },
+          component: lazy(() => import("./VingroupHistory")),
+        },
+        {
+          key: "vingroup-cultural-gallery",
+          routeProps: {
+            exact: true,
+            path: map.VingroupCulturalGallery
+          },
+          component: lazy(() => import("./VingroupCulturalGallery/index"))
         },
       ],
     },
