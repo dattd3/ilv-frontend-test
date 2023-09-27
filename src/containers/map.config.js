@@ -142,4 +142,5 @@ export default {
   
   // Thanh toán phúc lợi nội bộ
   RegistrationInternalPayment: "/benefit-claim-request",
+  CreateSocialDistributeInfo: "/insurance-manager/social-contribute-info"
 };
