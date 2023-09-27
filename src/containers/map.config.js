@@ -137,8 +137,9 @@ export default {
   DetailInsuranceHealth: '/insurance-manager/detail-health/:id',
   MyProfile: "/my-profile",
   SalaryPropse: '/salarypropse/:idContract/:idSalary/:type',
-  HistoryVingroup: "/vin30-chronicles",
+  HistoryVingroup: "/vingroup-history",
   Vin30Chronicles: "/vin30-chronicles",
+  VingroupCulturalGallery: "/vingroup-cultural-gallery",
   Maintenance: '/maintenance',
   
   // Thanh toán phúc lợi nội bộ
