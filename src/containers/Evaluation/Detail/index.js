@@ -7,7 +7,7 @@ import _ from 'lodash'
 import Constants from '../../../commons/Constants'
 import { getRequestConfigurations } from '../../../commons/Utils'
 import { calculateRating, isVinBusByCompanyCode, calculateScore, formatEvaluationNumber } from '../Utils'
-import { evaluationStatus, actionButton, processStep, languageCodeMapping } from '../Constants'
+import { evaluationStatus, actionButton, processStep, languageCodeMapping, evaluationApiVersion } from '../Constants'
 import { useGuardStore } from '../../../modules'
 import LoadingModal from '../../../components/Common/LoadingModal'
 import StatusModal from '../../../components/Common/StatusModal'
@@ -21,6 +21,7 @@ import IconSave from '../../../assets/img/ic-save.svg'
 import IconSendRequest from '../../../assets/img/icon/Icon_send.svg'
 import IconReject from '../../../assets/img/icon/Icon_Cancel.svg'
 import IconApprove from '../../../assets/img/icon/Icon_Check.svg'
+import VinFastForm from "./v2/Vinfast"
 
 const currentLocale = localStorage.getItem("locale")
 
@@ -71,7 +72,6 @@ function EvaluationOverall(props) {
                       height = chart.height,
                       ctx = chart.ctx;
                     ctx.restore()
-                    // const fontSize = (height / 160).toFixed(2)
                     ctx.font = `normal normal bold 1.2em arial`
                     ctx.textBaseline = "top"
                     const text = chart?.options?.plugins?.report,
@@ -877,6 +877,18 @@ function EvaluationDetail(props) {
     }
   }
 
+  const componentMapping = (companyCode) => {
+    switch (true) {
+      case [Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading].includes(companyCode) :
+        return (
+          <VinFastForm 
+            evaluationFormDetail={evaluationFormDetail}
+            showByManager={showByManager}
+          />
+        )
+    }
+  }
+
   console.log('evaluationFormDetail => ', evaluationFormDetail)
 
   return (
@@ -896,29 +908,37 @@ function EvaluationDetail(props) {
                 )
                 : (
                   <>
-                    <StatusModal 
-                      show={statusModal.isShow} 
-                      isSuccess={statusModal.isSuccess} 
-                      content={statusModal.content} 
-                      className="evaluation-status-modal"
-                      onHide={onHideStatusModal} />
                     <h1 className="content-page-header">{`${evaluationFormDetail?.checkPhaseFormName} ${t("of")} ${evaluationFormDetail?.fullName}`}</h1>
-                    <div>
-                      <EvaluationOverall evaluationFormDetail={evaluationFormDetail} showByManager={showByManager} />
-                      <EvaluationProcess evaluationFormDetail={evaluationFormDetail} showByManager={showByManager} errors={errors} updateData={updateData} />
-                      <div className="button-block" style={isOffLineType ? { display: 'none' } : {}} >
-                        {renderButtonBlock()}
-                      </div>
-                    </div>
                     {
-                      !bottom && !isOffLineType &&
-                      (evaluationFormDetail?.status == evaluationStatus.launch || (evaluationFormDetail?.status == evaluationStatus.selfAssessment && localStorage.getItem('employeeNo') == JSON.parse(evaluationFormDetail?.reviewer || '{}')?.uid))
-                      && evaluationFormDetail?.isEdit && (
-                        <div className="scroll-to-save" style={{ color: localStorage.getItem("companyThemeColor"), zIndex: '10' }}>
+                      version === evaluationApiVersion.v2
+                      ? componentMapping(evaluationFormDetail?.companyCode)
+                      : (
+                        <>
+                          <StatusModal 
+                            show={statusModal.isShow} 
+                            isSuccess={statusModal.isSuccess} 
+                            content={statusModal.content} 
+                            className="evaluation-status-modal"
+                            onHide={onHideStatusModal} />
                           <div>
-                            <button className="btn-action save mr-3" onClick={() => handleSubmit(actionButton.save, null, true)}><Image src={IconSave} alt="Save" />{t("EvaluationDetailPartSave")}</button>
+                            <EvaluationOverall evaluationFormDetail={evaluationFormDetail} showByManager={showByManager} />
+                            <EvaluationProcess evaluationFormDetail={evaluationFormDetail} showByManager={showByManager} errors={errors} updateData={updateData} />
+                            <div className="button-block" style={isOffLineType ? { display: 'none' } : {}} >
+                              {renderButtonBlock()}
+                            </div>
                           </div>
-                        </div>
+                          {
+                            !bottom && !isOffLineType &&
+                            (evaluationFormDetail?.status == evaluationStatus.launch || (evaluationFormDetail?.status == evaluationStatus.selfAssessment && localStorage.getItem('employeeNo') == JSON.parse(evaluationFormDetail?.reviewer || '{}')?.uid))
+                            && evaluationFormDetail?.isEdit && (
+                              <div className="scroll-to-save" style={{ color: localStorage.getItem("companyThemeColor"), zIndex: '10' }}>
+                                <div>
+                                  <button className="btn-action save mr-3" onClick={() => handleSubmit(actionButton.save, null, true)}><Image src={IconSave} alt="Save" />{t("EvaluationDetailPartSave")}</button>
+                                </div>
+                              </div>
+                            )
+                          }
+                        </>
                       )
                     }
                   </>
