@@ -395,6 +395,11 @@
   .box {
     border-radius: 3px !important;
   }
+  .item-contain {
+    border: 1px solid #DEE2E6;
+    border-radius: 4px;
+    padding: 12px 15px;
+  }
 }
 .registration-insurance-section {
   font: normal 14px Arial, Helvetica, sans-serif;
@@ -602,7 +607,6 @@
   }
   .input {
     margin: 0;
-    padding-right: 10px;
     width: 100%;
     color: #000;
   }

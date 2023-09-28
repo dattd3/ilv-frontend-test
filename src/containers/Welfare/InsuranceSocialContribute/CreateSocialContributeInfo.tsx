@@ -1,5 +1,5 @@
-import React, { FC, useState } from "react";
-import { withTranslation } from "react-i18next";
+import React, { FC, useEffect, useState } from "react";
+import { WithTranslation, withTranslation } from "react-i18next";
 import Select from "react-select";
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -7,6 +7,7 @@ import { vi, enUS } from "date-fns/locale";
 import moment from "moment";
 import Constants from "../../../commons/Constants";
 import _ from "lodash";
+import { Image } from "react-bootstrap";
 import {
   DECLARE_FORM_OPTIONS,
   HOSPITAL_LINE,
@@ -18,319 +19,225 @@ import { Spinner } from "react-bootstrap";
 import AssessorInfoComponent from "../InternalPayment/component/AssessorInfoComponent";
 import ButtonComponent from "containers/Registration/ButtonComponent";
 import DocumentRequired from "../InsuranceComponents/DocumentRequired";
+import { IMemberInfo, ISocialContributeModel } from "models/welfare/SocialContributeModel";
+import MemberInfo from "./MemberInfo";
+import IconAdd from "assets/img/ic-add-green.svg";
+import { socialNumberType } from "./SocialContributeData";
+import { IDropdownValue } from "models/CommonModel";
+import { getMuleSoftHeaderConfigurations } from "commons/Utils";
+import axios from "axios";
+import IconClear from 'assets/img/icon/icon_x.svg'
 
-const CreateSocialContributeInfo: FC<any> = ({
+interface ICreateSocialContributeInfoProps {
+  t: any;
+  data?: ISocialContributeModel;
+  setData: Function;
+  supervisors: any[],
+  setSupervisors: Function,
+  approver: any,
+  setApprover?: Function,
+  files: any[],
+  updateFiles: Function,
+  removeFile: Function ,
+  members: IMemberInfo[], 
+  setMembers: Function,
+  isCreateMode: boolean,
+};
+
+const CreateSocialContributeInfo: FC<ICreateSocialContributeInfoProps> = ({
   t,
-  type,
-  setType,
-  data = {},
-  userInfo = {},
-  handleTextInputChange,
-  handleChangeSelectInputs,
-  handleDatePickerInputChange,
-  onSend,
-  notifyMessage,
-  disabledSubmitButton,
-  supervisors,
-  setSupervisors,
+  data,
+  setData,
+  supervisors = [],
+  setSupervisors=()=>{},
   approver,
-  setApprover,
-  files,
-  updateFiles,
-  removeFile,
+  setApprover=()=>{},
+  files = [],
+  updateFiles=()=>{},
+  removeFile=()=>{},
+  members = [{}], 
+  setMembers=()=>{},
   isCreateMode = true,
 }) => {
+  const [provinces, setprovinces] = useState<IDropdownValue[]>([]);
+  const [districts, setdistricts] = useState<IDropdownValue[]>([]);
+  const [wards, setwards] = useState<IDropdownValue[]>([]);
   const [errors, setErrors] = useState({});
-  const InsuranceOptions = [
-    { value: 1, label: t("sick") },
-    { value: 2, label: t("maternity") },
-    { value: 3, label: t("convales") },
-  ];
 
-  const onSubmit = () => {
-    const verify = verifyData();
-    if (!verify) {
-      return;
-    }
-
-    const employeeInfo = {
-      employeeNo: localStorage.getItem("employeeNo"),
-      username: localStorage.getItem("ad")?.toLowerCase(),
-      account: localStorage.getItem("email"),
-      fullName: localStorage.getItem("fullName"),
-      jobTitle: localStorage.getItem("jobTitle"),
-      employeeLevel: localStorage.getItem("employeeLevel"),
-      department: localStorage.getItem("department"),
-    };
-    const userEmployeeInfo = {
-      employeeNo: localStorage.getItem("employeeNo"),
-      fullName: localStorage.getItem("fullName"),
-      jobTitle: localStorage.getItem("jobTitle"),
-      department: localStorage.getItem("department"),
-      company_email: localStorage.getItem("plEmail"),
-      costCenter: localStorage.getItem("cost_center"),
-    };
-
-    let appIndex = 1;
-    const appraiserInfoLst = supervisors
-      .filter((item) => item != null)
-      .map((item, index) => ({
-        avatar: "",
-        account: item?.username.toLowerCase() + "@vingroup.net",
-        fullName: item?.fullName,
-        employeeLevel: item?.employeeLevel,
-        pnl: item?.pnl,
-        orglv2Id: item?.orglv2Id,
-        current_position: item?.current_position,
-        department: item?.department,
-        order: appIndex++,
-        company_email: item?.company_email?.toLowerCase(),
-        type: Constants.STATUS_PROPOSAL.LEADER_APPRAISER,
-        employeeNo: item?.uid || item?.employeeNo,
-        username: item?.username.toLowerCase(),
-      }));
-
-    const approverInfoLst = [approver].map((ele, i) => ({
-      avatar: "",
-      account: ele?.username?.toLowerCase() + "@vingroup.net",
-      fullName: ele?.fullName,
-      employeeLevel: ele?.employeeLevel,
-      pnl: ele?.pnl,
-      orglv2Id: ele?.orglv2Id,
-      current_position: ele?.current_position,
-      department: ele?.department,
-      order: appIndex++,
-      company_email: ele?.company_email?.toLowerCase(),
-      type: Constants.STATUS_PROPOSAL.CONSENTER,
-      employeeNo: ele?.uid || ele?.employeeNo,
-      username: ele?.username?.toLowerCase(),
-    }));
-
-    const formData = new FormData();
-    formData.append("requestType", type.value);
-    formData.append("requestName", type.label);
-    formData.append(
-      "formTypeInfo",
-      JSON.stringify({
-        id: data.declareForm.value,
-        name: data.declareForm.label,
-      })
-    );
-    formData.append(
-      "recommendEnjoyDate",
-      data.dateRequest
-        ? moment(data.dateRequest, "DD/MM/YYYY").format("YYYY-MM-DD")
-        : ""
-    );
-    formData.append(
-      "solvedFirstDate",
-      data.dateLastResolved
-        ? moment(data.dateLastResolved, "DD/MM/YYYY").format("YYYY-MM-DD")
-        : ""
-    );
-    formData.append(
-      "planInfo",
-      data.plan
-        ? JSON.stringify({ id: data.plan.value, name: data.plan.label })
-        : ""
-    );
-    formData.append("description", data.note);
-    //thong tin ca nhan
-    formData.append("fullName", userInfo.fullName);
-    formData.append("insuranceNumber", userInfo.socialId);
-    formData.append("idNumber", userInfo.IndentifiD);
-    formData.append("employeeNo", userInfo.employeeNo);
-    formData.append(
-      "workingConditionInfo",
-      data.workingCondition
-        ? JSON.stringify({
-            id: data.workingCondition.value,
-            name: data.workingCondition.label,
-          })
-        : ""
-    );
-    formData.append("weeklyRestDay", data.leaveOfWeek);
-
-    formData.append(
-      "certificateInsuranceBenefit",
-      JSON.stringify({
-        hospitalLine: data.hospitalLine
-          ? { id: data.hospitalLine.value, name: data.hospitalLine.label }
-          : "",
-        seriNumber: data.seri,
-        fromDate: data.fromDate
-          ? moment(data.fromDate, "DD/MM/YYYY").format("YYYY-MM-DD")
-          : "",
-        toDate: data.toDate
-          ? moment(data.toDate, "DD/MM/YYYY").format("YYYY-MM-DD")
-          : "",
-        total: data.total,
-      })
-    );
-    formData.append(
-      "sickChildrenInfo",
-      JSON.stringify({
-        childDob: data.childBirth
-          ? moment(data.childBirth, "DD/MM/YYYY").format("YYYY-MM-DD")
-          : "",
-        healthInsuranceNumber: data.childInsuranceNumber,
-        sickChildrenNumber: data.childSickNumbers,
-      })
-    );
-    formData.append(
-      "diagnosisDiseaseInfo",
-      JSON.stringify({
-        diseaseCode: data.sickId,
-        diseaseName: data.sickName,
-      })
-    );
-    formData.append(
-      "receiveSubsidiesInfo",
-      JSON.stringify({
-        receivingForm: {
-          id: data.receiveType.value,
-          name: data.receiveType.label,
-        },
-        bankAccountNumber: data.accountNumber,
-        accountName: data.accountName,
-        bankCode: data.bankId,
-        bankName: data.bankName,
-      })
-    );
-
-    formData.append("SettlementContent", data.resolveContent);
-    formData.append(
-      "SettlementPeriod",
-      data.resolveDate
-        ? moment(data.resolveDate, "DD/MM/YYYY").format("YYYY-MM-DD")
-        : ""
-    );
-    formData.append("AdditionalPhaseContent", data.addtionContent);
-    formData.append(
-      "AdditionalPhasePeriod",
-      data.addtionDate
-        ? moment(data.addtionDate, "DD/MM/YYYY").format("YYYY-MM-DD")
-        : ""
-    );
-    formData.append("employeeInfo", JSON.stringify(employeeInfo));
-    formData.append("UserInfo", JSON.stringify(userEmployeeInfo));
-
-    formData.append("appraiserInfoLst", JSON.stringify(appraiserInfoLst));
-    formData.append("approverInfoLst", JSON.stringify(approverInfoLst));
-    if (files.filter((item) => item.id == undefined).length > 0) {
-      files
-        .filter((item) => item.id == undefined)
-        .forEach((file) => {
-          formData.append("attachedFiles", file);
-        });
-    }
-    onSend(formData);
-  };
-
-  const verifyData = () => {
-    let _errors = {};
-    const candidateInfos = { ...data };
-    const requiredFields = [
-      "declareForm",
-      "plan",
-      "seri",
-      "fromDate",
-      "toDate",
-      "total",
-      "sickName",
-      "receiveType",
-    ];
-    //check người thẩm định
-    if (supervisors?.length == 0 || !supervisors.every((sup) => sup != null)) {
-      _errors["supervisors"] = t("PleaseEnterInfo");
-    }
-    if (!approver) {
-      _errors["approver"] = t("PleaseEnterInfo");
-    }
-    if (checkRequireAtm()) {
-      requiredFields.push("accountNumber", "accountName", "bankId", "bankName");
-    }
-    if (checkRequireChildInfo()) {
-      requiredFields.push(
-        "childBirth",
-        "childInsuranceNumber",
-        "childSickNumbers"
-      );
-    }
-    if (checkRequireSickCode()) {
-      requiredFields.push("sickId");
-    }
-    const optionFields = ["declareForm", "plan", "receiveType"];
-
-    requiredFields.forEach((name) => {
-      if (
-        _.isEmpty(candidateInfos[name]) ||
-        (!candidateInfos[name].value && optionFields.includes(name))
-      ) {
-        _errors[name] = t("PleaseEnterInfo");
-      } else {
-        _errors[name] =
-          _errors[name] == t("PleaseEnterInfo") ? null : _errors[name];
+  useEffect(() => {
+    if(isCreateMode) {
+      getProvices('VN');
+      if(data?.province?.value) {
+        getDistricts(data.province.value);
       }
-    });
-    setErrors(_errors);
-
-    let hasErrors = !Object.values(_errors).every(
-      (item) => item === null || item === undefined
-    );
-    if (hasErrors) {
-      notifyMessage(t("PleaseEnterInfo"), true);
-    }
-    //check files
-    if (!hasErrors) {
-      let checkfiles =
-        !files || files?.length === 0
-          ? t("Required") + " " + t("AttachmentFile")
-          : null;
-      if (checkfiles) {
-        notifyMessage(checkfiles);
-        hasErrors = true;
+      if(data?.district?.value) {
+        getWards(data.district.value);
+      }
+    } else {
+      if(data?.province?.value) {
+        setprovinces([data.province]);
+      }
+      if(data?.district?.value) {
+        setdistricts([data.district]);
+      }
+      if(data?.ward?.value) {
+        setwards([data.ward]);
       }
     }
-    return hasErrors ? false : true;
+  }, [isCreateMode]);
+
+  const getProvices = (country_id) =>{
+    const config = getMuleSoftHeaderConfigurations()
+    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/masterdata/provinces?country_id=${country_id}`, config)
+        .then(res => {
+            if (res && res.data && res.data.data) {
+                let _provinces = res.data.data?.map(item => {
+                  return {
+                      value: item.ID,
+                      label: item.TEXT
+                  };
+              });
+              setprovinces(_provinces);
+            }
+        }).catch(error => { })
+  }
+
+  const getDistricts = (province_id) => {
+    const config = getMuleSoftHeaderConfigurations()
+    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/masterdata/districts?province_id=${province_id}`, config)
+        .then(res => {
+            if (res && res.data && res.data.data) {
+                let _districts = res.data.data?.map(item => {
+                    return {
+                        value: item.ID,
+                        label: item.TEXT
+                    };
+                });
+                setdistricts(_districts);
+            }
+        }).catch(error => { })
+}
+
+    const getWards = (district_id) => {
+        const config = getMuleSoftHeaderConfigurations()
+        axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/masterdata/wards?district_id=${district_id}`, config)
+            .then(res => {
+                if (res && res.data && res.data.data) {
+                    let _wards = res.data.data?.map(item => {
+                        return {
+                            value: item.ID,
+                            label: item.TEXT
+                        };
+                    });
+                    setwards(_wards)
+                }
+            }).catch(error => { })
+    }
+
+  const handleTextInputChange = (e, name) => {
+    const candidateInfos = { ...data }
+    candidateInfos[name] = e != null ? e.target.value : "";
+    setData(candidateInfos);
+}
+
+const handleChangeSelectInputs = (e, name) => {
+    const candidateInfos = { ...data }
+    candidateInfos[name] = e != null ? { value: e.value, label: e.label, code: e.code } : {}
+    setData(candidateInfos);
+}
+
+const handleRemoveInput = (key) => {
+
+}
+
+const handleDatePickerInputChange = (value, name) => {
+    const candidateInfos = { ...data }
+    if (moment(value, 'DD/MM/YYYY').isValid()) {
+        const date = moment(value).format('DD/MM/YYYY')
+        candidateInfos[name] = date
+
+    } else {
+        candidateInfos[name]= null
+    }
+    setData(candidateInfos)
+}
+
+  const addMoreMember = () => {
+    const lastRequest = [...members];
+    lastRequest.push({});
+    setMembers(lastRequest);
   };
 
-  const checkRequireAtm = () => {
-    if (data.receiveType?.value && ["2"].includes(data.receiveType.value)) {
-      return true;
-    }
-    return false;
+  const updateMember = (index: number, request: IMemberInfo) => {
+    const _members = [...members];
+    _members[index] = request;
+    setMembers(_members);
   };
 
-  const checkRequireChildInfo = () => {
-    if (data.plan?.value && ["O2"].includes(data.plan.value)) {
-      return true;
-    }
-    return false;
+  const removeMember = (index: number) => {
+    const lastRequest = [...members ];
+    lastRequest.splice(index, 1);
+    setMembers(lastRequest);
   };
 
-  const checkRequireSickCode = () => {
-    if (data.plan?.value && ["O3"].includes(data.plan.value)) {
-      return true;
+  const updateProvice = (e) => {
+    if(e?.value && e?.value != data?.province?.value) {
+      setdistricts([]);
+      setwards([]);
+      setData({
+        ...data,
+        'province' : e,
+        'district': null,
+        'ward': null,
+        'street': ''
+      })
+      getDistricts(e.value);
     }
-    return false;
-  };
+  }
+
+  const updateDistrict = (e) => {
+    if(e?.value && e?.value != data?.district?.value) {
+      setwards([]);
+      setData({
+        ...data,
+        'district': e,
+        'ward': null,
+        'street': ''
+      })
+      getWards(e.value);
+    }
+  }
+
+  const updateWard = (e) => {
+    if(e?.value && e?.value != data?.ward?.value) {
+      setData({
+        ...data,
+        'ward': e,
+        'street': ''
+      })
+    }
+  }
 
   return (
-    <div className="registration-insurance-section social-contribute">
-      <h5>{t("lastUpdateDate")}</h5>
-      <div className="box shadow-sm cbnv">
-        <span style={{ fontWeight: "700" }}>{t("Update") + ": "}</span>
-        <span style={{ fontWeight: "100" }}>20/09/2023 10:00:00</span>
-        <span style={{ fontWeight: "700" }}>
-          {" | " + t("Notification_Created_By") + ": "}
-        </span>
-        <span style={{ fontWeight: "100" }}>annv8</span>
-      </div>
+    <div className="registration-insurance-section social-contribute input-style">
+      {
+        !isCreateMode ?
+        <>
+          <h5 className="pt-0">{'NGÀY CHỈNH SỬA CUỐI CÙNG'}</h5>
+          <div className="box shadow-sm cbnv">
+            <span style={{ fontWeight: "700" }}>{"Cập nhật: "}</span>
+            <span style={{ fontWeight: "100" }}>20/09/2023 10:00:00</span>
+            <span style={{ fontWeight: "700" }}>
+              {" | Bởi "  + ": "}
+            </span>
+            <span style={{ fontWeight: "100" }}>annv8</span>
+          </div>
+        </> : null
+      }
 
       <div className="row">
         <div className="col-6">
-          <h5>
+          <h5 className={`${isCreateMode ? 'pt-0' : ''}`}>
             {"SỐ SỔ BHXH "}
             <span
               style={{
@@ -345,29 +252,48 @@ const CreateSocialContributeInfo: FC<any> = ({
           </h5>
           <div className="box shadow-sm cbnv">
             {"Số sổ BHXH"}
-            <input
-              type="text"
-              value={data.leaveOfWeek}
-              onChange={(e) => handleTextInputChange(e, "leaveOfWeek")}
-              className="form-control input mv-10 w-100"
-              name="inputName"
-              autoComplete="off"
-              disabled={!isCreateMode}
-            />
+            {
+              data?.socialNumberType?.code != undefined ?
+              <label className="input-container">
+                <input
+                  type="text"
+                  value={data.socialNumberType.code}
+                  onChange={(e) => handleChangeSelectInputs({...data.socialNumberType, code: e?.target?.value}, "socialNumberType")}
+                  className="form-control input mv-10 w-100"
+                  name="inputName"
+                  autoComplete="off"
+                  disabled={!isCreateMode}
+                />
+                <span className="input-group-addon input-img">
+                  <img src={IconClear} alt='Clear' className='remove-input cursor-pointer' title='Exit' onClick={() => handleChangeSelectInputs(null, 'socialNumberType')} />
+                </span>
+              </label>
+                 :
+                <Select
+                  placeholder={"Lựa chọn"}
+                  options={socialNumberType}
+                  isClearable={false}
+                  value={data?.socialNumberType}
+                  onChange={(e) => handleChangeSelectInputs(e, "socialNumberType")}
+                  className="input mv-10"
+                  isDisabled={!isCreateMode}
+                  styles={{ menu: (provided) => ({ ...provided, zIndex: 2 }) }}
+                />
+            }
           </div>
         </div>
 
         
         <div className="col-6">
-          <h5>{"NƠI ĐĂNG KÝ KCB"}</h5>
+          <h5 className={`${isCreateMode ? 'pt-0' : ''}`}>{"NƠI ĐĂNG KÝ KCB"}</h5>
           <div className="box shadow-sm cbnv">
             {"Tên cơ sở đăng ký KCB"}
             <Select
-              placeholder={t("option")}
+              placeholder={"Lựa chọn"}
               options={SICK_PLAN}
               isClearable={false}
-              value={data.plan}
-              onChange={(e) => handleChangeSelectInputs(e, "plan")}
+              value={data?.facilityRegisterName || ''}
+              onChange={(e) => handleChangeSelectInputs(e, "facilityRegisterName")}
               className="input mv-10"
               isDisabled={!isCreateMode}
               styles={{ menu: (provided) => ({ ...provided, zIndex: 2 }) }}
@@ -384,10 +310,10 @@ const CreateSocialContributeInfo: FC<any> = ({
             {'Số sổ hộ khẩu/số sổ tạm trú'}
             <input
               type="text"
-              value={data.leaveOfWeek}
-              onChange={(e) => handleTextInputChange(e, "leaveOfWeek")}
+              value={data?.houseHoldNumber || ''}
+              onChange={(e) => handleTextInputChange(e, "houseHoldNumber")}
               className="form-control input mv-10 w-100"
-              name="inputName"
+              name="houseHoldNumber"
               autoComplete="off"
               disabled={!isCreateMode}
             />
@@ -396,11 +322,11 @@ const CreateSocialContributeInfo: FC<any> = ({
             {'Tỉnh/Thành phố'}
             <span className="required">(*)</span>
             <Select
-              placeholder={t("option")}
-              options={SICK_PLAN}
+              placeholder={"Lựa chọn"}
+              options={provinces}
               isClearable={false}
-              value={data.plan}
-              onChange={(e) => handleChangeSelectInputs(e, "plan")}
+              value={data?.province}
+              onChange={(e) => updateProvice(e)}
               className="input mv-10"
               isDisabled={!isCreateMode}
               styles={{ menu: (provided) => ({ ...provided, zIndex: 2 }) }}
@@ -410,11 +336,11 @@ const CreateSocialContributeInfo: FC<any> = ({
             {'Quận/Huyện'}
             <span className="required">(*)</span>
             <Select
-              placeholder={t("option")}
-              options={SICK_PLAN}
+              placeholder={"Lựa chọn"}
+              options={districts}
               isClearable={false}
-              value={data.plan}
-              onChange={(e) => handleChangeSelectInputs(e, "plan")}
+              value={data?.district}
+              onChange={(e) => updateDistrict(e)}
               className="input mv-10"
               isDisabled={!isCreateMode}
               styles={{ menu: (provided) => ({ ...provided, zIndex: 2 }) }}
@@ -425,11 +351,11 @@ const CreateSocialContributeInfo: FC<any> = ({
           <div className="col-4">
             {'Xã/Phường'}
             <Select
-              placeholder={t("option")}
-              options={SICK_PLAN}
+              placeholder={"Lựa chọn"}
+              options={wards}
               isClearable={false}
-              value={data.plan}
-              onChange={(e) => handleChangeSelectInputs(e, "plan")}
+              value={data?.ward}
+              onChange={(e) => updateWard(e)}
               className="input mv-10"
               isDisabled={!isCreateMode}
               styles={{ menu: (provided) => ({ ...provided, zIndex: 2 }) }}
@@ -440,11 +366,12 @@ const CreateSocialContributeInfo: FC<any> = ({
             {'Số nhà, đường phố, xóm'}
             <input
               type="text"
-              value={data.leaveOfWeek}
-              onChange={(e) => handleTextInputChange(e, "leaveOfWeek")}
+              value={data?.street || ''}
+              onChange={(e) => handleTextInputChange(e, "street")}
               className="form-control input mv-10 w-100"
-              name="inputName"
+              name="street"
               autoComplete="off"
+              maxLength={255}
               disabled={!isCreateMode}
             />
           </div>
@@ -453,87 +380,33 @@ const CreateSocialContributeInfo: FC<any> = ({
 
       <h5>{'THÔNG TIN HỘ GIA ĐÌNH'}</h5>
       <div className="box shadow-sm cbnv">
-        <div className="row mv-10">
-          <div className="col-4">
-            {t("from_date_applies_benefits")}
-            <DatePicker
-              name="startDate"
-              //readOnly={disableComponent.disableAll || !disableComponent.qlttSide || data.qlttOpinion.disableTime == true}
-              autoComplete="off"
-              selected={
-                data.dateRequest
-                  ? moment(
-                      data.dateRequest,
-                      Constants.LEAVE_DATE_FORMAT
-                    ).toDate()
-                  : null
-              }
-              onChange={(date) =>
-                handleDatePickerInputChange(date, "dateRequest")
-              }
-              dateFormat="dd/MM/yyyy"
-              placeholderText={t("Select")}
-              locale={t("locale")}
-              disabled={!isCreateMode}
-              className="form-control input"
-              styles={{ width: "100%" }}
-            />
-          </div>
-          <div className="col-4">
-            {t("from_date_settlement")}
-            <DatePicker
-              name="startDate"
-              //readOnly={disableComponent.disableAll || !disableComponent.qlttSide || data.qlttOpinion.disableTime == true}
-              autoComplete="off"
-              selected={
-                data.dateLastResolved
-                  ? moment(
-                      data.dateLastResolved,
-                      Constants.LEAVE_DATE_FORMAT
-                    ).toDate()
-                  : null
-              }
-              onChange={(date) =>
-                handleDatePickerInputChange(date, "dateLastResolved")
-              }
-              dateFormat="dd/MM/yyyy"
-              placeholderText={t("Select")}
-              locale={t("locale")}
-              disabled={!isCreateMode}
-              className="form-control input"
-              styles={{ width: "100%" }}
-            />
-          </div>
-          <div className="col-4">
-            {t("plan")}
-            <span className="required">(*)</span>
-            <Select
-              placeholder={t("option")}
-              options={SICK_PLAN}
-              isClearable={false}
-              value={data.plan}
-              onChange={(e) => handleChangeSelectInputs(e, "plan")}
-              className="input mv-10"
-              isDisabled={!isCreateMode}
-              styles={{ menu: (provided) => ({ ...provided, zIndex: 2 }) }}
-            />
-            {errors["plan"] ? (
-              <p className="text-danger">{errors["plan"]}</p>
-            ) : null}
-          </div>
-        </div>
-        <div className="row mv-10">
-          <div className="col-12">
-            {t("note")}
-            <textarea
-              rows={3}
-              value={data.note}
-              disabled={!isCreateMode}
-              onChange={(e) => handleTextInputChange(e, "note")}
-              className="mv-10 form-control input w-100"
-            />
-          </div>
-        </div>
+        {(members || []).map((request: IMemberInfo, index: number) => {
+          return (
+            <>
+              <MemberInfo
+                key={index}
+                t={t}
+                request={request}
+                canDelete={members?.length > 0 ? true : false}
+                isCreateMode={isCreateMode}
+                provinces = {provinces}
+                cancelRequest={() => removeMember(index)}
+                updateRequest={(req: IMemberInfo) => updateMember(index, req)}
+              />
+              <div className="mv-10"></div>
+            </>
+          );
+        })}
+        {isCreateMode ? (
+            <button
+              className="btn btn-outline-success btn-lg w-fit-content mt-3 d-flex align-items-center"
+              style={{ gap: "4px", fontSize: "14px" }}
+              onClick={addMoreMember}
+            >
+              <Image src={IconAdd} />
+              {'Thêm'}
+            </button>
+          ) : null}
       </div>
       
       <h5>{'GHI CHÚ'}</h5>
@@ -541,21 +414,21 @@ const CreateSocialContributeInfo: FC<any> = ({
         <div className="row">
           <div className="col-12">
             {'Nội dung'}
-            <Select
-              placeholder={t("option")}
-              options={HOSPITAL_LINE}
-              isClearable={false}
-              value={data.hospitalLine}
-              onChange={(e) => handleChangeSelectInputs(e, "hospitalLine")}
-              className="input mv-10"
-              isDisabled={!isCreateMode}
-              styles={{ menu: (provided) => ({ ...provided, zIndex: 2 }) }}
+            <input
+              type="text"
+              value={data?.note || ''}
+              onChange={(e) => handleTextInputChange(e, "note")}
+              className="form-control input mv-10 w-100"
+              name="note"
+              autoComplete="off"
+              disabled={!isCreateMode}
+              maxLength={255}
             />
           </div>
         </div>
       </div>
 
-      {/* <AssessorInfoComponent
+      <AssessorInfoComponent
         t={t}
         isCreateMode={isCreateMode}
         setSupervisors={setSupervisors}
@@ -563,9 +436,9 @@ const CreateSocialContributeInfo: FC<any> = ({
         approver={approver}
         setApprover={setApprover}
         errors={errors}
-      /> */}
+      />
 
-      {/* <div className="registration-section">
+      <div className="registration-section">
         <ul className="list-inline">
           {files.map((file, index) => {
               return <li className="list-inline-item" key={index}>
@@ -584,15 +457,15 @@ const CreateSocialContributeInfo: FC<any> = ({
           isEdit={false} 
           files={files} 
           updateFiles={updateFiles} 
-          submit={onSubmit} 
+          submit={() => {}} 
           isUpdateFiles={()=>{}} 
-          disabledSubmitButton={disabledSubmitButton} 
-          validating={disabledSubmitButton}/> 
+          disabledSubmitButton={false} 
+          validating={false}/> 
           : null
         }
-      </div> */}
+      </div>
     </div>
   );
 };
 
-export default withTranslation()(CreateSocialContributeInfo);
+export default CreateSocialContributeInfo;
