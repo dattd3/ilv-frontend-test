@@ -334,6 +334,7 @@ function EvaluationDetail(props) {
   const { showByManager, updateParent } = props;
   const formCode = showByManager ? props?.formCode : props.match.params.formCode;
   const evaluationFormId = showByManager ? props?.evaluationFormId : props.match.params.id;
+  const version = showByManager ? props?.version : props.match.params.version;
 
   useEffect(() => {
     const processEvaluationFormDetailData = response => {
@@ -344,18 +345,7 @@ function EvaluationDetail(props) {
           if (evaluationFormDetailTemp.listGroup) {
             evaluationFormDetailTemp.listGroup = ([...evaluationFormDetailTemp?.listGroup] || []).sort((pre, next) => pre?.groupOrder - next?.groupOrder)
           }
-
-          // const totalQuestionsAnswered = (evaluationFormDetailTemp?.listGroup || []).reduce((initial, current) => {
-          //     let questionsAnswered = (current?.listTarget || []).reduce((subInitial, subCurrent) => {
-          //         subInitial += subCurrent?.seftPoint ? 1 : 0
-          //         return subInitial
-          //     }, 0)
-          //     initial += questionsAnswered
-          //     return initial
-          // }, 0)
-          // evaluationFormDetailTemp.totalComplete = totalQuestionsAnswered
           SetEvaluationFormDetail(evaluationFormDetailTemp)
-          // SetEvaluationFormDetail(testEvaluationData)
           setDataLoaded(true)
         }
       }
@@ -370,7 +360,7 @@ function EvaluationDetail(props) {
           EmployeeCode: showByManager ? props.employeeCode : user?.employeeNo,
           FormCode: formCode
         }
-        const response = await axios.get(`${process.env.REACT_APP_HRDX_PMS_URL}api/targetform/formbyuser`, config)
+        const response = await axios.get(`${process.env.REACT_APP_HRDX_PMS_URL}api/${version}/targetform/formbyuser`, config)
         processEvaluationFormDetailData(response)
       } catch (e) {
         SetStatusModal({
@@ -886,6 +876,8 @@ function EvaluationDetail(props) {
       }
     }
   }
+
+  console.log('evaluationFormDetail => ', evaluationFormDetail)
 
   return (
     <>
