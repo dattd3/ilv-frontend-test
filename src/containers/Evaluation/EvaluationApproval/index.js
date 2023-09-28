@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useRef, Fragment } from "react"
 import Select from 'react-select'
-import { Image, Tabs, Tab, Form, Button, Modal, Row, Col, Collapse } from 'react-bootstrap'
+import { Image, Tabs, Tab, Form, Button, Row, Col, Collapse } from 'react-bootstrap'
 import DatePicker, { registerLocale } from 'react-datepicker'
 import { useHistory } from "react-router"
 import { useTranslation } from "react-i18next"
 import moment from 'moment'
 import axios from 'axios'
 import _ from 'lodash'
-import { evaluationStatus, actionButton, processStep, stepEvaluation360Config, evaluation360Status } from '../Constants'
+import { evaluationStatus, actionButton, processStep, stepEvaluation360Config, evaluation360Status, evaluationApiVersion } from '../Constants'
 import Constants from '../../../commons/Constants'
 import { getRequestConfigurations, getMuleSoftHeaderConfigurations } from '../../../commons/Utils'
 import LoadingModal from '../../../components/Common/LoadingModal'
@@ -642,6 +642,7 @@ function EvaluationApproval(props) {
         evaluationFormId: null,
         formCode: null,
         employeeCode: null,
+        version: evaluationApiVersion.v1,
         isEvaluation360: false,
     })
     const [statusModal, SetStatusModal] = useState({isShow: false, isSuccess: true, content: "", needReload: true})
@@ -916,13 +917,14 @@ function EvaluationApproval(props) {
         }
     }
 
-    const handleShowEvaluationDetail = (formCode, checkPhaseFormId, employeeCode, reviewStreamCode) => {
+    const handleShowEvaluationDetail = (formCode, checkPhaseFormId, employeeCode, version = evaluationApiVersion.v1, reviewStreamCode) => {
         SetEvaluationDetailPopup({
             ...evaluationDetailPopup,
             isShow: true,
             evaluationFormId: checkPhaseFormId,
             formCode: formCode,
             employeeCode: employeeCode,
+            version: version,
             isEvaluation360: reviewStreamCode === processStep.level360
         })
     }
@@ -1080,6 +1082,7 @@ function EvaluationApproval(props) {
             evaluationFormId={evaluationDetailPopup.evaluationFormId} 
             formCode={evaluationDetailPopup.formCode} 
             employeeCode={evaluationDetailPopup.employeeCode} 
+            version={evaluationDetailPopup?.version}
             isEvaluation360={evaluationDetailPopup?.isEvaluation360}
             onHide={onHideEvaluationDetailModal} />
         <div className="evaluation-approval-page">
@@ -1137,7 +1140,7 @@ function EvaluationApproval(props) {
                                             ? `${t("360DegreeFeedbackFormFor")} ${item?.poolUser?.fullname}`
                                             : item?.checkPhaseFormName
 
-                                            return <tr key={index} role='button' onClick={() => handleShowEvaluationDetail(item?.formCode, item?.checkPhaseFormId, item?.employeeCode, item?.reviewStreamCode)}>
+                                            return <tr key={index} role='button' onClick={() => handleShowEvaluationDetail(item?.formCode, item?.checkPhaseFormId, item?.employeeCode, item?.version, item?.reviewStreamCode)}>
                                                         <td className="c-form-code"><div className="form-code">{formCode}</div></td>
                                                         <td className="c-form-sender">
                                                             <div className="form-sender">{item?.poolUser?.fullname || ''}</div>

@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react"
 import { Image } from 'react-bootstrap'
 import { useTranslation } from "react-i18next"
-import Select from 'react-select'
 import axios from 'axios'
 import _ from 'lodash'
 import Constants from '../../../commons/Constants'
 import { getRequestConfigurations, exportToPDF } from '../../../commons/Utils'
-import { evaluation360Status, stepEvaluation360Config } from '../Constants'
+import { evaluation360Status, stepEvaluation360Config, evaluationApiVersion } from '../Constants'
 import { useGuardStore } from '../../../modules'
 import LoadingModal from '../../../components/Common/LoadingModal'
 import StatusModal from '../../../components/Common/StatusModal'
@@ -61,7 +60,7 @@ const Evaluation360 = ({ evaluationFormId, formCode, employeeCode }) => {
           FormCode: formCode,
           UserName: user?.ad,
         }
-        const response = await axios.get(`${process.env.REACT_APP_HRDX_PMS_URL}api/targetform/formbyuser`, config)
+        const response = await axios.get(`${process.env.REACT_APP_HRDX_PMS_URL}api/${evaluationApiVersion.v1}/targetform/formbyuser`, config)
         processEvaluationFormDetailData(response)
       } catch (e) {
         SetStatusModal({
