@@ -4285,7 +4285,6 @@ span.badge-notification[data-badge]::after {
     margin-bottom: 1.5rem;
     .banner-privilege {
       padding: 0 15px;
-      max-height: 600px;
       .carousel {
         width: 100%;
         .banner-privilege-item {
@@ -4324,10 +4323,9 @@ span.badge-notification[data-badge]::after {
           font-weight: bold;
           img {
             width: 100%;
-            height: 210px;
-            object-fit: cover;
+            max-height: 500px;
+            aspect-ratio: 3/2;
             border-top-left-radius: 10px;
-            border-top-right-radius: 10px;
           }
           .title {
             padding: 15px 15px 0 15px;
@@ -4398,6 +4396,7 @@ span.badge-notification[data-badge]::after {
         flex: 1;
         border-left: 1px solid #DEE2E6;
         margin: 20px;
+        margin-left: 0px;
         display: flex;
         flex-direction: column;
         font-size: 12px;
@@ -4409,8 +4408,10 @@ span.badge-notification[data-badge]::after {
           background: #FFFFFF;
           border-radius: 10px;
           padding-left: 20px;
+          max-height: 400px;
+          overflow-y: auto;
           .item {
-            margin-bottom: 0;
+            margin-bottom: 12px;
             .title-source-time-info {
               .title {
                 margin-left: 0;
@@ -4449,10 +4450,10 @@ span.badge-notification[data-badge]::after {
           flex: 1;
           display: flex;
           flex-direction: column;
-          justify-content: space-between;
-          .description {
-            margin-top: 27px;
-          }
+          // justify-content: space-between;
+          // .description {
+          //   margin-top: 27px;
+          // }
         }
       }
     }

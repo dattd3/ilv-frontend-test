@@ -1959,5 +1959,6 @@
   "DownloadFile": "Attached files",
   "WelfareRefund": "Internal benefit reimbursement",
   "WelfareRefundApproveWarning": "There was previous approval for this employee today, our system will adjust this approval date to {{date}}",
-  "InsuranceSocialRequest": "Thanh toán bảo hiểm xã hội"
+  "InsuranceSocialRequest": "Thanh toán bảo hiểm xã hội",
+  "VingroupCulture": "Vingroup Culture"
 }
