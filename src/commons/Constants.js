@@ -295,8 +295,8 @@ const Constants = {
     APP_ID: 1,
     DEVICE: 'WEBSITE',
     MODE: 2,
-  },
-};
+  }
+}
 
 Constants.REQUEST_CATEGORY_1_LIST = {
   [Constants.LEAVE_OF_ABSENCE]: "LeaveRequest",

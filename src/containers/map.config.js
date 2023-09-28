@@ -139,7 +139,7 @@ export default {
   SalaryPropse: '/salarypropse/:idContract/:idSalary/:type',
   HistoryVingroup: "/vingroup-history",
   Vin30Chronicles: "/vin30-chronicles",
-  VingroupCulturalGallery: "/vingroup-cultural-gallery",
+  VingroupCulturalGallery: "/vingroup-cultural-gallery/:code",
   Maintenance: '/maintenance',
   
   // Thanh toán phúc lợi nội bộ
