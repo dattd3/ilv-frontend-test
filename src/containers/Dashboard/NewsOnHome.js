@@ -25,7 +25,8 @@ import { isJsonString } from "../../utils/string"
 function NewsOnHome(props) {
     const { t } = useTranslation()
     const myRef = useRef(null);
-    const totalTopArticles = 5
+    const privilegesRef = useRef(null);
+    const totalTopArticles = 9;
 
     const [isVisibleGoToTop, setIsVisibleGoToTop] = useState(false);
     const [isShowNoticeGuideModal, setIsShowNoticeGuideModal] = useState(false)
@@ -33,7 +34,17 @@ function NewsOnHome(props) {
     const [listArticles, setListArticles] = useState(null)
     const [privilegeBanner, setPrivilegeBanner] = useState(null)
     const [isLoading, setIsLoading] = useState(true)
+    const [privilegesRefHeight, setPrivilegesRefHeight] = useState(0);
     const lang = getCurrentLanguage();
+
+    useEffect(() => {
+      if (!privilegesRef.current) return;
+      const resizeObserver = new ResizeObserver(() => {
+        setPrivilegesRefHeight(privilegesRef?.current?.clientHeight)
+      });
+      resizeObserver.observe(privilegesRef.current);
+      return () => resizeObserver.disconnect();
+    }, [privilegesRef.current]);
 
     useEffect(() => {
         if (Notification.permission !== "granted" && !sessionStorage.getItem("isCloseNotificationGuide")) {
@@ -134,7 +145,7 @@ function NewsOnHome(props) {
 
     const topOne = totalArticlesPerPage > 0 ? prepareNews(articles.listArticles[0]) : null
     const timePublishedTopOne = getTimeByRawTime(topOne?.publishedDate)
-    const topFour = totalArticlesPerPage > 1 && articles.listArticles?.slice(1, totalTopArticles).map(item => prepareNews(item)) || []
+    const topEight = totalArticlesPerPage > 1 && articles.listArticles?.slice(1, totalTopArticles).map(item => prepareNews(item)) || []
     const others = totalArticlesPerPage > totalTopArticles && articles.listArticles?.slice(totalTopArticles).map(item => prepareNews(item)) || []
 
     return (
@@ -158,7 +169,7 @@ function NewsOnHome(props) {
                                     </Carousel>
                                 </div>
                                 <div className="row">
-                                    <div className="col-md-4 privilege">
+                                    <div className="col-md-4 privilege" ref={privilegesRef}>
                                         <h1 className="page-title" style={{ color: "#D13238", fontSize: 16 }}><Image src={IconGift} alt="Gift" className="ic-page-title" />{t("VingroupEmployeePrivileges")}</h1>
                                         <div className="top-one shadow-customize">
                                             <a href={mapConfig.EmployeePrivileges} className="link-detail">
@@ -167,8 +178,13 @@ function NewsOnHome(props) {
                                                         e.target.src = "/logo-large.svg"
                                                     }}
                                                 />
+                                                <p className="title">{privilegeBanner?.title || ""}</p>
                                             </a>
                                             <div className="other-info">
+                                                <div className="source-time-info">
+                                                    <span className="source"><Image src={IconUser} alt="Source" className="icon" /><span className="source-name">{t("VingroupCulture")}</span></span>
+                                                    <span className="time"><Image src={IconTime} alt="Time" className="icon" /><span className="hour">{timePublishedTopOne?.date}</span></span>
+                                                </div>
                                                 <p className="description">{privilegeBanner?.description || ''}</p>
                                                 <div className="btn-detail">
                                                     <a href={mapConfig.EmployeePrivileges} className="detail"><span>{t("ViewMore")}</span><Image src={IconViewDetail} alt="Detail" className="icon-view-detail" /></a>
@@ -200,10 +216,10 @@ function NewsOnHome(props) {
                                                 </div>
                                             </div>
                                             <div className="other">
-                                                <div className="top-four">
+                                                <div className="top-four" style={{ height: privilegesRefHeight }}>
                                                     {
-                                                        topFour.length > 0 ?
-                                                            topFour.map((item, index) => {
+                                                        topEight.length > 0 ?
+                                                            topEight.map((item, index) => {
                                                                 let timePublished = getTimeByRawTime(item?.publishedDate)
                                                                 return <div className="item" key={item.id}>
                                                                     <a href={`/news/${convertToSlug(item.title)}/${item.id}`} className="link-image-detail">
