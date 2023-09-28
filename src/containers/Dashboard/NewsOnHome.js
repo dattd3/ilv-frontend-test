@@ -183,7 +183,6 @@ function NewsOnHome(props) {
                                             <div className="other-info">
                                                 <div className="source-time-info">
                                                     <span className="source"><Image src={IconUser} alt="Source" className="icon" /><span className="source-name">{t("VingroupCulture")}</span></span>
-                                                    <span className="time"><Image src={IconTime} alt="Time" className="icon" /><span className="hour">{timePublishedTopOne?.date}</span></span>
                                                 </div>
                                                 <p className="description">{privilegeBanner?.description || ''}</p>
                                                 <div className="btn-detail">
