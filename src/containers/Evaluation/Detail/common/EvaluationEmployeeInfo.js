@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next"
-import { evaluationStatus, processStep } from '../../Constants'
+import { processStep } from '../../Constants'
 
 const EvaluationEmployeeInfo = ({ fullName, position, employeeLevel, organization_lv3, organization_lv4, hrAdmin, reviewStreamCode, reviewer, approver }) => {
   const { t } = useTranslation()
