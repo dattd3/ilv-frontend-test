@@ -7,6 +7,7 @@ export interface IMemberInfo {
     birthDate?: string;
     identityId?: string;
     type?: IDropdownValue;
+    status?: number
 }
 
 export interface ISocialContributeModel {
@@ -18,4 +19,14 @@ export interface ISocialContributeModel {
     ward?: IDropdownValue;
     street?: string;
     note?: string;
+}
+const STATUS = {
+    NEW: 1,
+    UPDATE: 2,
+    DELETE: 3
+}
+let data = {
+    relation: STATUS.UPDATE,
+    fullName: STATUS.NEW,
+    member: []
 }
