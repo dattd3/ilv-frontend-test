@@ -4326,6 +4326,7 @@ span.badge-notification[data-badge]::after {
             max-height: 500px;
             aspect-ratio: 3/2;
             border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
           }
           .title {
             padding: 15px 15px 0 15px;
@@ -5538,4 +5539,8 @@ span.badge-notification[data-badge]::after {
       }
     }
   }
+}
+
+iframe#webpack-dev-server-client-overlay {
+  display: none !important
 }
