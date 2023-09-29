@@ -214,7 +214,7 @@ function NewsOnHome(props) {
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div className="other" style={{ maxHeight: privilegesRefHeight }}>
+                                            <div className="other" style={{ maxHeight: privilegesRefHeight > 0 ? privilegesRefHeight - 40 : 0 }}>
                                                 <div className="top-four">
                                                     {
                                                         topEight.length > 0 ?
