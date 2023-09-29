@@ -50,4 +50,5 @@ const evaluationApiVersion = {
     v1: 'v1',
     v2: 'v2',
 }
-export { evaluationStatus, evaluation360Status, actionButton, formType, groupConfig, formulaConfig, processStep, languageCodeMapping, stepEvaluation360Config, evaluationApiVersion }
+const scores = [1, 2, 3, 4, 5]
+export { evaluationStatus, evaluation360Status, actionButton, formType, groupConfig, formulaConfig, processStep, languageCodeMapping, stepEvaluation360Config, evaluationApiVersion, scores }
