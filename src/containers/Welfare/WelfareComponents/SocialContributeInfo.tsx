@@ -15,6 +15,7 @@ import { IMemberInfo, ISocialContributeModel } from "models/welfare/SocialContri
 
 const SocialContributeInfo = (props: any) => {
         const { t } = props;
+        const [oldData, setOldData] = useState<ISocialContributeModel>({});
         const [data, setData] = useState<ISocialContributeModel>({});
         const [members, setMembers] = useState<IMemberInfo[]>([]);
         const [supervisors, setSupervisors] = useState<any[]>([])
@@ -26,6 +27,35 @@ const SocialContributeInfo = (props: any) => {
             isSuccess: false
         })
         const [files, setFiles] = useState<any[]>([]);
+
+        const checkDataChange = () => {
+            const STATUS = {
+                NEW: 1,
+                UPDATE: 2,
+                DELETE: 3
+            }
+            const change = {};
+            const keyDropDown = ['socialNumberType', 'province', 'district', 'ward'];
+            
+            Object.keys(data).forEach(key => {
+                if(data[key] && !oldData[key]) {
+                    change[key] = STATUS.NEW;
+                } else if (!data[key] && oldData[key]) {
+                    change[key] = STATUS.DELETE
+                } else if(data[key] && keyDropDown.includes(key)){
+                    if(oldData[key].value != data[key].value || oldData[key].label != data[key].label) {
+                        change[key] = STATUS.UPDATE;
+                    }
+                } else if(data[key] && !keyDropDown.includes(key)) {
+                    if(data[key] != oldData[key]) {
+                        change[key] = STATUS.UPDATE
+                    }
+                }
+                if(change[key]) {
+                    change[key +'_value'] = data[key];
+                }
+            });
+        }
 
         return (<>
             <div className="health-info-page">
