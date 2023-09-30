@@ -22,7 +22,7 @@ import DocumentRequired from "../InsuranceComponents/DocumentRequired";
 import { IMemberInfo, ISocialContributeModel } from "models/welfare/SocialContributeModel";
 import MemberInfo from "./MemberInfo";
 import IconAdd from "assets/img/ic-add-green.svg";
-import { socialNumberType } from "./SocialContributeData";
+import { STATUS, socialNumberType } from "./SocialContributeData";
 import { IDropdownValue } from "models/CommonModel";
 import { getMuleSoftHeaderConfigurations } from "commons/Utils";
 import axios from "axios";
@@ -42,6 +42,7 @@ interface ICreateSocialContributeInfoProps {
   members: IMemberInfo[], 
   setMembers: Function,
   isCreateMode: boolean,
+  onSubmit: Function
 };
 
 const CreateSocialContributeInfo: FC<ICreateSocialContributeInfoProps> = ({
@@ -58,6 +59,7 @@ const CreateSocialContributeInfo: FC<ICreateSocialContributeInfoProps> = ({
   members = [{}], 
   setMembers=()=>{},
   isCreateMode = true,
+  onSubmit
 }) => {
   const [provinces, setprovinces] = useState<IDropdownValue[]>([]);
   const [districts, setdistricts] = useState<IDropdownValue[]>([]);
@@ -164,19 +166,30 @@ const handleDatePickerInputChange = (value, name) => {
 
   const addMoreMember = () => {
     const lastRequest = [...members];
-    lastRequest.push({});
+    lastRequest.push({
+      status: STATUS.NEW
+    });
     setMembers(lastRequest);
   };
 
   const updateMember = (index: number, request: IMemberInfo) => {
     const _members = [...members];
-    _members[index] = request;
+    _members[index] = {
+      ...request,
+      status: !request.status ?  STATUS.UPDATE : request.status
+    };
     setMembers(_members);
   };
 
   const removeMember = (index: number) => {
-    const lastRequest = [...members ];
-    lastRequest.splice(index, 1);
+    const lastRequest = [...members ].map((mem, _index) => {
+      if(_index != index) return mem;
+      return {
+        ...mem,
+        status: STATUS.DELETE
+      }
+    }
+    );
     setMembers(lastRequest);
   };
 
@@ -291,7 +304,7 @@ const handleDatePickerInputChange = (value, name) => {
             <Select
               placeholder={"Lựa chọn"}
               options={SICK_PLAN}
-              isClearable={false}
+              isClearable={true}
               value={data?.facilityRegisterName || ''}
               onChange={(e) => handleChangeSelectInputs(e, "facilityRegisterName")}
               className="input mv-10"
@@ -381,6 +394,7 @@ const handleDatePickerInputChange = (value, name) => {
       <h5>{'THÔNG TIN HỘ GIA ĐÌNH'}</h5>
       <div className="box shadow-sm cbnv">
         {(members || []).map((request: IMemberInfo, index: number) => {
+          if(request.status == STATUS.DELETE) return null;
           return (
             <>
               <MemberInfo
@@ -457,7 +471,7 @@ const handleDatePickerInputChange = (value, name) => {
           isEdit={false} 
           files={files} 
           updateFiles={updateFiles} 
-          submit={() => {}} 
+          submit={() => onSubmit()} 
           isUpdateFiles={()=>{}} 
           disabledSubmitButton={false} 
           validating={false}/> 

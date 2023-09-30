@@ -13,6 +13,7 @@ import { IDropdownValue } from "models/CommonModel";
 import InputNumberComponent from "../InternalPayment/component/InputNumberComponent";
 import {
   formatNumberSpecialCase,
+  genderConfig,
   getMuleSoftHeaderConfigurations,
   getRequestConfigurations,
 } from "commons/Utils";
@@ -20,6 +21,7 @@ import _ from "lodash";
 import axios from "axios";
 import { Spinner } from "react-bootstrap";
 import { IMemberInfo } from "models/welfare/SocialContributeModel";
+import { GENDER_LIST, RELATIONSHIP_WITH_INSURED, ROLE_TYPE } from "./SocialContributeData";
 
 interface IMemberInfoProps {
   t: any;
@@ -30,6 +32,7 @@ interface IMemberInfoProps {
   updateRequest: Function;
   cancelRequest: Function;
 }
+
 function MemberInfo({
   t,
   provinces = [],
@@ -87,7 +90,7 @@ function MemberInfo({
             {isCreateMode && <span className="required">(*)</span>}
             <Select
               placeholder={isCreateMode ? t("option") : ""}
-              options={[]}
+              options={RELATIONSHIP_WITH_INSURED}
               isClearable={false}
               value={request.relation}
               onChange={(e) => handleChangeValue(e, "relation")}
@@ -113,7 +116,7 @@ function MemberInfo({
             {isCreateMode && <span className="required">(*)</span>}
             <Select
               placeholder={isCreateMode ? t("option") : ""}
-              options={[]}
+              options={GENDER_LIST}
               isClearable={false}
               value={request.sex}
               onChange={(e) => handleChangeValue(e, "sex")}
@@ -140,7 +143,7 @@ function MemberInfo({
                       : undefined
                   }
                   onChange={(date) =>
-                    handleChangeDatetimeValue(date, "DateUse")
+                    handleChangeDatetimeValue(date, "birthDate")
                   }
                   dateFormat="dd/MM/yyyy"
                   placeholderText={t("Select")}
@@ -170,7 +173,7 @@ function MemberInfo({
             {"Chủ hộ/Thành viên"}
             <Select
               placeholder={isCreateMode ? t("option") : ""}
-              options={[]}
+              options={ROLE_TYPE}
               isClearable={false}
               value={request.type}
               onChange={(e) => handleChangeValue(e, "type")}

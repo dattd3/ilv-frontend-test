@@ -12,7 +12,7 @@ export interface IMemberInfo {
 
 export interface ISocialContributeModel {
     socialNumberType?: IDropdownValue;
-    facilityRegisterName?: string;
+    facilityRegisterName?: IDropdownValue;
     houseHoldNumber?: string;
     province?: IDropdownValue;
     district?: IDropdownValue;
