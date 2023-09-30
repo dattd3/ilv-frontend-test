@@ -22,12 +22,8 @@ import IconDown from 'assets/img/icon/pms/icon-down.svg'
 const currentLocale = localStorage.getItem("locale")
 
 // KPI không thuộc Kết quả công việc)
-const OtherKpiItem = ({ kpi, deviant, status, isEdit, showByManager, errors, isDisableEmployeeComment = false, isDisableManagerComment = false, groupIndex, kpiIndex, groupChildrenLv1Index }) => {
+const OtherKpiItem = ({ kpi, deviant, status, isEdit, showByManager, groupIndex, kpiIndex, groupChildrenLv1Index, errors, isDisableEmployeeComment = false, isDisableManagerComment = false, handleInputChange }) => {
     const { t } = useTranslation()
-
-    const handleInputChange = (groupIndex, groupChildrenLv1Index, kpiIndex, key, e) => {
-
-    }
 
     return (
         <div className="evaluation-item">
@@ -135,12 +131,8 @@ const OtherKpiItem = ({ kpi, deviant, status, isEdit, showByManager, errors, isD
     )
 }
 
-const WorkResultKpiItem = ({ kpi, deviant, status, isEdit, showByManager, errors, groupIndex, kpiIndex, groupChildrenLv1Index }) => {
+const WorkResultKpiItem = ({ kpi, deviant, status, isEdit, showByManager, groupIndex, kpiIndex, groupChildrenLv1Index, errors, handleInputChange }) => {
     const { t } = useTranslation()
-
-    const handleInputChange = (groupIndex, groupChildrenLv1Index, kpiIndex, key, e) => {
-
-    }
 
     return (
         <div className="evaluation-item">
@@ -244,16 +236,16 @@ const WorkResultKpiItem = ({ kpi, deviant, status, isEdit, showByManager, errors
     )
 }
 
-const EvaluationGroup = ({ isWorkResultBlock, group, status, isEdit, showByManager, groupIndex, isDisableEmployeeComment, isDisableManagerComment, errors }) => {
+const EvaluationGroup = ({ isWorkResultBlock, group, status, isEdit, showByManager, groupIndex, isDisableEmployeeComment, isDisableManagerComment, errors, handleInputChange }) => {
     const { t } = useTranslation()
     const hasGroupChildrenLv1 = group?.groupChildren?.length > 0
 
-    const renderListKPIs = (listKPIs = [], isWorkResultBlock = false, showDivider = false) => {
+    const renderListKPIs = (listKPIs = [], groupChildIndex, isWorkResultBlock = false, showDivider = false) => {
         return (
             (listKPIs).map((kpi, kIndex) => {
                 let deviant = (kpi?.leadReviewPoint === '' || kpi?.leadReviewPoint === null || kpi?.seftPoint === '' || kpi?.seftPoint === null) ? '' : Number(kpi?.leadReviewPoint) - Number(kpi?.seftPoint)
                 return (
-                    <React.Fragment key={`i-${gIndex}-${kIndex}`}>
+                    <React.Fragment key={`i-${groupIndex}-${groupChildIndex || 0}-${kIndex}`}>
                         {
                             isWorkResultBlock
                             ? (
@@ -265,8 +257,9 @@ const EvaluationGroup = ({ isWorkResultBlock, group, status, isEdit, showByManag
                                     showByManager={showByManager}
                                     groupIndex={groupIndex}
                                     kpiIndex={kIndex}
-                                    groupChildrenLv1Index={gIndex}
+                                    groupChildrenLv1Index={groupChildIndex}
                                     errors={errors}
+                                    handleInputChange={handleInputChange}
                                 />
                             )
                             : (
@@ -278,8 +271,11 @@ const EvaluationGroup = ({ isWorkResultBlock, group, status, isEdit, showByManag
                                     showByManager={showByManager}
                                     groupIndex={groupIndex}
                                     kpiIndex={kIndex}
-                                    groupChildrenLv1Index={gIndex}
+                                    groupChildrenLv1Index={groupChildIndex}
                                     errors={errors}
+                                    isDisableEmployeeComment={isDisableEmployeeComment}
+                                    isDisableManagerComment={isDisableManagerComment}
+                                    handleInputChange={handleInputChange}
                                 />
                             )
                         }
@@ -340,18 +336,18 @@ const EvaluationGroup = ({ isWorkResultBlock, group, status, isEdit, showByManag
                 {
                     hasGroupChildrenLv1
                     ? (
-                        (group?.groupChildren || []).map((gChildren, gIndex) => {
+                        (group?.groupChildren || []).map((gChildren, gcIndex) => {
                             return (
-                                <div className="evaluation-sub-group" key={`group-children-${gIndex}`}>
+                                <div className="evaluation-sub-group" key={`group-children-${gcIndex}`}>
                                     <div className='sub-group-name'>{`${JSON.parse(gChildren?.groupName || '{}')[languageCodeMapping[currentLocale]]}`} <span className="red">({gChildren?.groupWeight}%)</span></div>
                                     <div className="sub-group-targets">
-                                        { renderListKPIs(gChildren?.listKPI, isWorkResultBlock, true) }
+                                        { renderListKPIs(gChildren?.listKPI, gcIndex, isWorkResultBlock, true) }
                                     </div>
                                 </div>
                             )
                         })
                     )
-                    : renderListKPIs(group?.listKPI, isWorkResultBlock, false)
+                    : renderListKPIs(group?.listKPI, null, isWorkResultBlock, false)
                 }
             </div>
         </div>
@@ -370,8 +366,15 @@ const VinFastForm = (props) => {
 
     }
 
-    const handleInputChange = () => {
-
+    const handleInputChange = (groupIndex, groupChildrenLv1Index, kpiIndex, key, e) => {
+        console.log("==================================")
+        console.log(evaluationFormDetail)
+        console.log('input changing => ')
+        console.log('groupIndex => ', groupIndex)
+        console.log('groupChildrenLv1Index => ', groupChildrenLv1Index)
+        console.log('kpiIndex => ', kpiIndex)
+        console.log('key => ', key)
+        console.log('e => ', e)
     }
 
     return (
@@ -422,7 +425,6 @@ const VinFastForm = (props) => {
                         const isDisableEmployeeComment = isEdit ? (showByManager || status != evaluationStatus.launch) : true
                         const isDisableManagerComment = isEdit ? (!showByManager || (showByManager && Number(status) >= Number(evaluationStatus.qlttAssessment))) : true
                         const isVinBus = false
-                        const hasGroupChildrenLv1 = group?.groupChildren?.length > 0
 
                         return (
                             <EvaluationGroup
@@ -436,6 +438,7 @@ const VinFastForm = (props) => {
                                 isDisableEmployeeComment={isDisableEmployeeComment}
                                 isDisableManagerComment={isDisableManagerComment}
                                 errors={errors}
+                                handleInputChange={handleInputChange}
                             />
                         )
                     })
