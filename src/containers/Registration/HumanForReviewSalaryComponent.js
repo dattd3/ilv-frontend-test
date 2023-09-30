@@ -23,7 +23,7 @@ const MyOption = props => {
         </div>
         <div className="float-left text-wrap w-75">
           <div className="title">{props.data.fullName}</div>
-          <div className="comment"><i>({props.data.account}) {props.data.current_position}</i></div>
+          <div className="comment"><span style={{fontStyle: 'italic'}}>({props.data.account}) {props.data.current_position}</span></div>
         </div>
       </div>
     </div>
@@ -108,16 +108,18 @@ class HumanForReviewSalaryComponent extends React.Component {
 
   getApproverInfo = (value) => {
     this.setState({ isSearch: false })
-    const { isRemoveCurrentAccount, isHR, isAppraiser } = this.props;
+    const { isRemoveCurrentAccount, isHR, isAppraiser, isEmployee } = this.props;
     if (value !== "") {
       this.setState({ isSearch: true })
       const config = getRequestConfigurations()
       let payload = {
         account: value,
-        status: 3,
-        employee_type: isAppraiser ? "APPRAISER" : "APPROVER",
+        status: 3
       },
       url = `${process.env.REACT_APP_REQUEST_URL}user/employee/search`;
+      if(isEmployee != true) {
+        payload.employee_type = isAppraiser ? "APPRAISER" : "APPROVER";
+      }
       if(isHR) {
         url = `${process.env.REACT_APP_REQUEST_URL}user/employee/hr_officer`;
         payload = {

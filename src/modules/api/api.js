@@ -277,12 +277,6 @@ export default class Api {
     });
   };
 
-  getPhoneSupportForRegion = async (region) => {
-    return await this.request.post(`${process.env.REACT_APP_REQUEST_URL}hotline/list?regionName=${region}`, {
-      params: {}
-    });
-  };
-
   fetchNotificationsUnRead = async (companyCode, page, pageSize, level3, level4, level5, keyword) => {
     return await this.request.get(`${process.env.REACT_APP_REQUEST_URL}notifications-unread`, {
       params: {

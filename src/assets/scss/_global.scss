@@ -77,25 +77,13 @@ a {
 
 .scroll-to-top2 {
   position: fixed;
-  right: 1rem;
+  right: 32px;
   bottom: 4em;
-  display: block;
-  width: 2.75rem;
-  height: 2.75rem;
-  text-align: center;
-  color: #e74a3b;
-  opacity: 0.5;
-  background: transparent;
-  line-height: 46px;
-  &:focus,
-  &:hover {
-    opacity: 1;
-  }
-  &:hover {
-    cursor: pointer;
-  }
-  i {
-    font-weight: 800;
+  cursor: pointer;
+  img {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
   }
 }
 

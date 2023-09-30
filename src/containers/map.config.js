@@ -30,6 +30,8 @@ export default {
   NewsDetailApp: "/news-app/:id",
   News: "/news",
   NewsDetail: "/news/:slug/:id",
+  EmployeePrivileges: "/employee-privileges",
+  EmployeePrivilegeDetail: "/employee-privileges/:slug/:id",
 
   //about us
   Vingroup: "/about-vingroup",
@@ -130,10 +132,14 @@ export default {
   InsuranceRegime: '/insurance-manager',
   CreateInsuranceSocial: '/insurance-manager/createSocialInsurance',
   CreateInsuranceHealth: '/insurance-manager/createHealthInsurance',
-  DetailInsuranceSocial: '/insurance-manager/detail/:id',
+  DetailInsuranceSocial: '/insurance-manager/detail/:id/:action',
+  ExportInsuranceSocial: '/insurance-manager/export/:id',
   DetailInsuranceHealth: '/insurance-manager/detail-health/:id',
   MyProfile: "/my-profile",
   SalaryPropse: '/salarypropse/:idContract/:idSalary/:type',
   HistoryVingroup: "/vin30-chronicles",
-  Maintenance: '/maintenance'
+  Maintenance: '/maintenance',
+  
+  // Thanh toán phúc lợi nội bộ
+  RegistrationInternalPayment: "/benefit-claim-request",
 };

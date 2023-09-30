@@ -16,6 +16,9 @@ const RegistrationManagement = (props) => {
       ...(checkVersionPnLSameAsVinhome(Constants.MODULE.NGHIVIEC)
         ? [{ value: 3, label: t('RequestContractTermination') }]
         : []),
+      ...(checkVersionPnLSameAsVinhome(Constants.MODULE.THANHTOAN_NOIBO)
+        ? [{ value: 4, label: t('RequestInternalPayment') }]
+        : []),
     ];
   const [type, setType] = useState(null);
 
@@ -31,6 +34,9 @@ const RegistrationManagement = (props) => {
         break;
       case 3:
         props.history.push(`/registration-employment-termination`);
+        break;
+      case 4:
+        props.history.push('/benefit-claim-request');
         break;
     }
   };

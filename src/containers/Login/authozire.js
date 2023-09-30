@@ -194,7 +194,8 @@ function Authorize(props) {
                             prepare: shouldShowPrepareOnboard,
                             jobCode: user?.job_code,
                             ad: user?.username,
-                            master_code: user.master_code || ''
+                            master_code: user.master_code || '',
+                            cost_center: user?.cost_center
                         });
                         FirebaseUpdateToken();
                     }
@@ -241,7 +242,8 @@ function Authorize(props) {
                         prepare: shouldShowPrepareOnboard,
                         jobCode: user?.job_code,
                         ad: user?.username,
-                        master_code: ''
+                        master_code: '',
+                        cost_center: user?.cost_center
                     });
                 })
                 .finally(result => {
@@ -259,13 +261,19 @@ function Authorize(props) {
     }
 
     function updateUser(userProfile, jwtToken) {
+        var benefitTitle = "";
+        if (userProfile.benefit_level && userProfile.benefit_level !== '#') {
+            benefitTitle = userProfile.benefit_level.replace('PL', '');
+        } else {
+            benefitTitle = userProfile.employee_level;
+        }
        let userData = {
             fullName: userProfile.fullname,
             employeeNo: userProfile.uid,
             mobile: "",
             avatar: userProfile.avatar,
             jobTitle: userProfile.job_name,
-            benefitLevel: userProfile.employee_level,
+            benefitLevel: benefitTitle,
             companyName: userProfile.pnl,
             companyCode: userProfile.company_code,
             departmentName: userProfile.department,
@@ -276,7 +284,8 @@ function Authorize(props) {
             orgLv4Id: userProfile.organization_lv4,
             orgLv5Id: userProfile.organization_lv5,
             divisionName: userProfile.division,
-            unitName: userProfile.unit
+            unitName: userProfile.unit,
+            costCenter: userProfile?.cost_center
         }
 
         axios({

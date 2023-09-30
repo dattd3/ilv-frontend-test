@@ -13,6 +13,8 @@ import ActionButtons from "./ActionButtons"
 import ConfirmPasswordModal from "./ConfirmPasswordModal"
 import StatusModal from "components/Common/StatusModal"
 import IconAddWhite from "assets/img/icon/ic_btn_add_white.svg"
+import IconEdit from 'assets/img/icon/ic_edit_information_white.svg'
+import IconHistory from 'assets/img/icon/ic_history_white.svg'
 import Constants from "commons/Constants"
 import LoadingModal from "components/Common/LoadingModal"
 import ConfirmSendRequestModal from "./ConfirmSendRequestModal"
@@ -597,8 +599,8 @@ function WorkOutSideGroup(props) {
         />
         <div className="work-outside-group">
             <div className="top-button-actions">
-                <a href="/tasks" className="btn btn-info shadow-customize"><i className="far fa-address-card"></i> {t("History")}</a>
-                { isEnableEditWorkOutsideGroup && <span className="btn btn-primary shadow-customize ml-3" onClick={handleCanUpdate}><i className="fas fa-user-edit"></i>{t("Edit")}</span> }
+                <a href="/tasks" className="btn btn-info shadow-customize d-flex align-items-center"><img src={IconHistory} alt='History' />{t("History")}</a>
+                { isEnableEditWorkOutsideGroup && <span className="btn btn-primary shadow-customize ml-3 d-flex align-items-center" onClick={handleCanUpdate}><img src={IconEdit} alt='Edit' />{t("Edit")}</span> }
             </div>
             <h5 className="content-page-header text-uppercase">{t("WorkingProcessOutSideGroup")}</h5>
             <div className="container-fluid info-tab-content shadow work-outside-group">
