@@ -1,6 +1,7 @@
 import React from 'react';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
+import Constants from 'commons/Constants';
 
 const formatProcessTime = (time) => {
   if (time === '0001-01-01T00:00:00' || !time) return '';
@@ -14,11 +15,10 @@ export default function ProcessHistoryComponent(props) {
       props,
     { t } = useTranslation(),
     lastConsenter = requestAppraisers
-      ?.filter((item) => item.type === 0)
+      ?.filter((item) => item.type === Constants.STATUS_PROPOSAL.LEADER_APPRAISER)
       ?.toReversed()
       ?.find((item) => !!formatProcessTime(item.appraisalDate)),
-    HRconsenter = requestAppraisers?.filter((item) => item.type === 1)?.[0];
-
+    HRconsenter = requestAppraisers?.filter((item) => item.type === 2)?.[0];
   return (
     <div className="row" style={{ rowGap: 18 }}>
       <div className="col-4">

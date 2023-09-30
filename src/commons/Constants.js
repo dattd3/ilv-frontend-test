@@ -59,6 +59,8 @@ const Constants = {
   OT_REQUEST: 13, // OT
   PROPOSAL_TRANSFER: 14, // Dieu chuyen
   PROPOSAL_APPOINTMENT: 15, // Bo nhiem, mien nhiem
+  WELFARE_REFUND: 16, // Hoàn trả dịch vụ phúc lợi
+  INSURANCE_SOCIAL: 20, //bảo hiểm xã hội
 
   //Status request
   STATUS_PENDING: 0,
@@ -236,6 +238,8 @@ const Constants = {
     PHUCLOI: 5,
     DIEUCHUYEN: 6,
     BONHIEM: 7,
+    THANHTOAN_NOIBO: 8,
+    BAOHIEM: 9
   },
   MODULE_COMPANY_AVAILABE: process.env.REACT_APP_ENVIRONMENT === 'PRODUCTION' ? 
   { //production todo: add  "V077", "V070" to TUYENDUNG
@@ -245,7 +249,9 @@ const Constants = {
     4: ["V040", "V077", "V070"],//NGHIVIEC
     5: ["V077", "V070"],//PHUCLOI
     6: ["V077", "V070"], //DIEUCHUYEN
-    7: ["V077", "V070"], //BONHIEM
+    7: ["V077", "V070"], //BONHIEM,
+    8: [], //THANHTOAN_NOIBO
+    9: ["V061"],//BAOHIEM
   } :
   { //Development
     1: ["V040", "V005", "V079", "V041", "V030", "V035", "V036", "V077", "V070", "V099"],//TUYENDUNG + V061
@@ -255,6 +261,8 @@ const Constants = {
     5: ["V061", "V040", "V005", "V079", "V041", "V070", "V077"],//PHUCLOI
     6: ["V040", "V070", "V077"], //DIEUCHUYEN
     7: ["V040", "V070", "V077"], //BONHIEM
+    8: ["V040", "V070", "V077", "V030"], //THANH TOAN NOI BO
+    9: ["V077", "V070", "V061"],//BAOHIEM
   },
   CURRENCY: {
     VND: 'VNĐ',
@@ -301,15 +309,17 @@ Constants.REQUEST_CATEGORY_1_LIST = {
   [Constants.OT_REQUEST]: "OTRequest",
   [Constants.CHANGE_DIVISON_SHIFT]: "AdminUploadShiftChange",
   [Constants.DEPARTMENT_TIMESHEET]: "DepartmentTimesheet",
+  [Constants.WELFARE_REFUND]: "WelfareRefund"
 }
 
 Constants.REQUEST_CATEGORY_2_LIST = {
   // [Constants.SALARY_PROPOSE]: "SalaryType",
   [Constants.PROPOSAL_TRANSFER]: "ProposalTransfer",
-  [Constants.PROPOSAL_APPOINTMENT]: "AppointmentDismissalRequest"
+  [Constants.PROPOSAL_APPOINTMENT]: "AppointmentDismissalRequest",
+  [Constants.INSURANCE_SOCIAL]: "InsuranceSocialRequest"
 }
 
 Constants.REQUEST_CATEGORY_1_LIST_ORDER = [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP, Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE, Constants.UPDATE_PROFILE,
-  Constants.ONBOARDING, Constants.RESIGN_SELF, Constants.OT_REQUEST, Constants.CHANGE_DIVISON_SHIFT, Constants.DEPARTMENT_TIMESHEET]
+  Constants.ONBOARDING, Constants.RESIGN_SELF, Constants.OT_REQUEST, Constants.CHANGE_DIVISON_SHIFT, Constants.DEPARTMENT_TIMESHEET, Constants.WELFARE_REFUND]
 
 export default Constants

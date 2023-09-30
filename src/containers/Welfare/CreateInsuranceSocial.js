@@ -6,11 +6,12 @@ import CreateMaternityInsurance from './InsuranceComponents/CreateMaternityInsur
 import CreateSickInsurance from './InsuranceComponents/CreateSickInsurance';
 import moment from 'moment';
 import axios from 'axios';
-import { getMuleSoftHeaderConfigurations } from '../../commons/Utils';
+import { getMuleSoftHeaderConfigurations, getRequestConfigurations, removeAccents } from '../../commons/Utils';
 import { toast } from "react-toastify";
 import ResultModal from '../Registration/ResultModal';
 import HOCComponent from '../../components/Common/HOCComponent'
 import Constants from '../../commons/Constants';
+import LoadingModal from 'components/Common/LoadingModal';
 
 const CreateInsuranceSocial = (props) => {
     const { t } = props;
@@ -136,7 +137,9 @@ const CreateInsuranceSocial = (props) => {
         IndentifiD: '',
         employeeNo: ''
     });
-
+    const [supervisors, setSupervisors] = useState([]);
+    const [approver, setApprover] = useState(null); // CBLĐ phê duyệt
+    const [files, updateFiles] = useState([]);
     const [errors, setErrors] = useState({
         sickData: {
 
@@ -151,16 +154,25 @@ const CreateInsuranceSocial = (props) => {
     const [resultModal, setresultModal] = useState({
         isShowStatusModal: false, titleModal: '', messageModal: '', isSuccess: false
     });
+    const [loading, setLoading] = useState(false);
     const [disabledSubmitButton, setdisabledSubmitButton] = useState(false);
 
     useEffect(() => {
+        const listDates = getDateOffset();
         const muleSoftConfig = getMuleSoftHeaderConfigurations()
         const getProfile = axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/profile`, muleSoftConfig)
         const getPersionalInfo = axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/personalinfo`, muleSoftConfig);
-        Promise.allSettled([getProfile, getPersionalInfo]).then(res => {
+        const getShiftInfo = axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/timeoverview?from_date=${listDates[0]}&to_date=${listDates[listDates.length - 1]}`, muleSoftConfig);
+        const getLinkDocument = axios.get(`${process.env.REACT_APP_REQUEST_SERVICE_URL}benefitclaim/download-updated-template?type=1`, getRequestConfigurations())
+
+        setLoading(true);
+        Promise.allSettled([getProfile, getPersionalInfo, getShiftInfo, getLinkDocument]).then(res => {
             if (res && res[0].value && res[1].value) {
                 let userProfile = res[0].value.data.data[0];
                 let userDetail = res[1].value.data.data[0];
+                let shiftInfo = res[2].value?.data?.data || [];
+                let documentLink = res[3].value?.data?.data;
+                setLoading(false);
                 setUserInfo({
                     ...userInfo,
                     socialId: userProfile.insurance_number || '',
@@ -169,9 +181,69 @@ const CreateInsuranceSocial = (props) => {
                     employeeNo: userProfile.uid || '',
                     IndentifiD: userDetail.personal_id_no || ''
                 })
+                let infoBank = {
+                    receiveType:  { value: '2', label: 'Chi trả qua ATM' },
+                    accountNumber: userDetail.bank_number && userDetail.bank_number != '#' ? userDetail.bank_number : '',
+                    accountName: userDetail.fullname && userDetail.fullname != '#' ? removeAccents(userDetail.fullname).toUpperCase() : '',
+                    bankId: userDetail.bank_name_id && userDetail.bank_name_id != '#' ? userDetail.bank_name_id : '',
+                    bankName: userDetail.bank_name && userDetail.bank_name != '#' ? userDetail.bank_name : '',
+                };
+                const days = ['t2', 't3', 't4', 't5', 't6', 't7', 'cn'];
+                const dayOffs = [];
+                if(shiftInfo?.length > 0) {
+                    shiftInfo.map(shift => {
+                        if(shift.shift_id == 'OFF') {
+                            const index = listDates.indexOf(moment(shift.date, 'DD-MM-YYYY').format('YYYYMMDD'));
+                            dayOffs.push(days[index]);
+                        }
+                    })
+                }
+                setData({
+                    sickData: {
+                        ...data.sickData,
+                        ...infoBank,
+                        leaveOfWeek: dayOffs.join(';') || '',
+                        documentLink: documentLink
+                    },
+                    convalesData: {
+                        ...data.convalesData,
+                        ...infoBank,
+                        leaveOfWeek: dayOffs.join(';') || '',
+                        documentLink: documentLink
+                    },
+                    maternityData: {
+                        ...data.maternityData,
+                        ...infoBank,
+                        leaveOfWeek: dayOffs.join(';') || '',
+                        documentLink: documentLink
+                    },
+                })
             }
+        }).catch((err) => {
+            console.log(err);
+            setLoading(false);
         })
     }, []);
+
+    const getDayOffset = (currentDate, offset) => {
+        const tomorrow = new Date(currentDate.getTime());
+        tomorrow.setDate(currentDate.getDate()+ offset);
+        return tomorrow;
+      }
+
+    const getDateOffset = () => {
+        const currentDate = moment().toDate();
+        // Lấy số thứ tự của ngày hiện tại
+        const fromDate_day = currentDate.getDay() == 0 ? 7 : currentDate.getDay();
+        const toDate_day = currentDate.getDay() == 0 ? 7 : currentDate.getDay();
+        const firstArray = Array.from({length:fromDate_day - 1}).map((x, index) => {
+            return moment( getDayOffset(currentDate, -1 *(fromDate_day - index - 1))).format('YYYYMMDD');
+        })
+        const lastArray = Array.from({length:7 - toDate_day}).map((x, index) => {
+            return moment( getDayOffset(currentDate, index + 1)).format('YYYYMMDD')
+        });
+        return [...firstArray, moment(currentDate).format('YYYYMMDD'), ...lastArray]
+    }
 
     const handleTextInputChange = (e, name, subName) => {
         const candidateInfos = { ...data }
@@ -197,16 +269,22 @@ const CreateInsuranceSocial = (props) => {
         setData(candidateInfos)
     }
 
+    const removeFile = (index) => {
+        const _files = [...files.slice(0, index), ...files.slice(index + 1)];
+        updateFiles(_files);
+    }
+
     const onSubmit = (data) => {
         setdisabledSubmitButton(true);
+        setLoading(true);
         axios({
             method: 'POST',
-            url: `${process.env.REACT_APP_HRDX_URL}api/BenefitClaim`,
+            url: `${process.env.REACT_APP_REQUEST_SERVICE_URL}BenefitClaim`,
             data: data,
             headers: { 'Content-Type': 'multipart/form-data', Authorization: `${localStorage.getItem('accessToken')}` }
         })
             .then(response => {
-                if (response && response.data && response.data.result && response.data.result.code == 200) {
+                if (response && response.data && response.data.result && response.data.result.code == '000000') {
                     showStatusModal(t("Successful"), t("RequestSent"), true)
                     setdisabledSubmitButton(false)
                 }
@@ -214,10 +292,12 @@ const CreateInsuranceSocial = (props) => {
                     notifyMessage(response.data.result.message || t("Error"))
                     setdisabledSubmitButton(false)
                 }
+                setLoading(false);
             })
             .catch(response => {
                 notifyMessage(t("Error"));
                 setdisabledSubmitButton(false);
+                setLoading(false);
             })
     }
 
@@ -237,9 +317,12 @@ const CreateInsuranceSocial = (props) => {
 
     const hideStatusModal = () => {
         setresultModal({
+            ...resultModal,
             isShowStatusModal: false
         })
-        window.location.reload();
+        if(resultModal.isSuccess) {
+            window.location.href = '/tasks?requestTypes=14,15,20';
+        }
     }
 
     const showStatusModal = (title, message, isSuccess = false) => {
@@ -248,10 +331,10 @@ const CreateInsuranceSocial = (props) => {
         })
     };
 
-
     return (
         <div className="registration-insurance-section">
             <ResultModal show={resultModal.isShowStatusModal} title={resultModal.titleModal} message={resultModal.messageModal} isSuccess={resultModal.isSuccess} onHide={hideStatusModal} />
+            {loading ? <LoadingModal show={loading}/> : null}
             {
                 type == null ?
                     <>
@@ -279,6 +362,13 @@ const CreateInsuranceSocial = (props) => {
                             handleDatePickerInputChange={(value, key) => handleDatePickerInputChange(value, 'sickData', key)}
                             onSend={(data) => onSubmit(data)}
                             notifyMessage={notifyMessage}
+                            supervisors={supervisors}
+                            setSupervisors={setSupervisors}
+                            approver={approver}
+                            setApprover={setApprover}
+                            updateFiles={updateFiles}
+                            files={files}
+                            removeFile={removeFile}
                         />
                         : type.value == 2 ?
                             <CreateMaternityInsurance type={type} setType={setType}
@@ -290,6 +380,13 @@ const CreateInsuranceSocial = (props) => {
                                 handleChangeSelectInputs={(e, key) => handleChangeSelectInputs(e, 'maternityData', key)}
                                 handleDatePickerInputChange={(value, key) => handleDatePickerInputChange(value, 'maternityData', key)}
                                 onSend={(data) => onSubmit(data)}
+                                supervisors={supervisors}
+                                setSupervisors={setSupervisors}
+                                approver={approver}
+                                setApprover={setApprover}
+                                updateFiles={updateFiles}
+                                files={files}
+                                removeFile={removeFile}
                                 notifyMessage={notifyMessage} />
                             : type.value == 3 ?
                                 <CreateConvalesInsurance type={type} setType={setType}
@@ -301,6 +398,13 @@ const CreateInsuranceSocial = (props) => {
                                     handleChangeSelectInputs={(e, key) => handleChangeSelectInputs(e, 'convalesData', key)}
                                     handleDatePickerInputChange={(value, key) => handleDatePickerInputChange(value, 'convalesData', key)}
                                     onSend={(data) => onSubmit(data)}
+                                    supervisors={supervisors}
+                                    setSupervisors={setSupervisors}
+                                    approver={approver}
+                                    setApprover={setApprover}
+                                    updateFiles={updateFiles}
+                                    files={files}
+                                    removeFile={removeFile}
                                     notifyMessage={notifyMessage} />
                                 : null
             }

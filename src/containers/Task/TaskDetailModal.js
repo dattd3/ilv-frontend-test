@@ -15,6 +15,7 @@ import WorkOutSideGroupDetail from 'containers/PersonalInfo/WorkOutSideGroupDeta
 import axios from 'axios'
 import Constants from '../../commons/Constants'
 import map from "../map.config"
+import InternalPaymentDetail from 'containers/Welfare/InternalPayment/InternalPaymentDetail'
 
 class TaskDetailModal extends React.Component {
     constructor(props) {
@@ -95,6 +96,7 @@ class TaskDetailModal extends React.Component {
                         {data && data?.requestTypeId === Constants.CHANGE_DIVISON_SHIFT ? <ChangeDivisionShiftDetail action={action} substitution={data}/> : null}
                         {data && data?.requestTypeId === Constants.DEPARTMENT_TIMESHEET ? <DepartmentTimeSheetDetail action={action} substitution={data}/> : null}
                         {data && data?.requestTypeId === Constants.OT_REQUEST ? <OTRequestDetailComponent action={action} data={data}/> : null}
+                        {data && data?.requestTypeId === Constants.WELFARE_REFUND ? <InternalPaymentDetail action={action} data={data} viewPopup={true} /> : null}
                     </div>
                 </Modal.Body>
             </Modal>
