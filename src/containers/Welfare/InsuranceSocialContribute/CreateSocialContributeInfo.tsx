@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, Fragment, useEffect, useState } from "react";
 import { WithTranslation, withTranslation } from "react-i18next";
 import Select from "react-select";
 import DatePicker, { registerLocale } from "react-datepicker";
@@ -144,7 +144,7 @@ const CreateSocialContributeInfo: FC<ICreateSocialContributeInfoProps> = ({
 
 const handleChangeSelectInputs = (e, name) => {
     const candidateInfos = { ...data }
-    candidateInfos[name] = e != null ? { value: e.value, label: e.label, code: e.code } : {}
+    candidateInfos[name] = e != null ? { value: e.value, label: e.label, code: e.code } : null
     setData(candidateInfos);
 }
 
@@ -396,9 +396,8 @@ const handleDatePickerInputChange = (value, name) => {
         {(members || []).map((request: IMemberInfo, index: number) => {
           if(request.status == STATUS.DELETE) return null;
           return (
-            <>
+            <Fragment key={index}>
               <MemberInfo
-                key={index}
                 t={t}
                 request={request}
                 canDelete={members?.length > 0 ? true : false}
@@ -408,7 +407,7 @@ const handleDatePickerInputChange = (value, name) => {
                 updateRequest={(req: IMemberInfo) => updateMember(index, req)}
               />
               <div className="mv-10"></div>
-            </>
+            </Fragment>
           );
         })}
         {isCreateMode ? (

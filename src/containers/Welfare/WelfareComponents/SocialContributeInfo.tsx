@@ -13,10 +13,13 @@ import CustomPaging from "../../../components/Common/CustomPaging";
 import CreateSocialContributeInfo from "../InsuranceSocialContribute/CreateSocialContributeInfo";
 import { IMemberInfo, ISocialContributeModel } from "models/welfare/SocialContributeModel";
 import { STATUS } from "../InsuranceSocialContribute/SocialContributeData";
+import DetailSocailContributeComponent from "../InsuranceSocialContribute/DetailSocialContributeInfoComponent";
 
 const SocialContributeInfo = (props: any) => {
         const { t } = props;
         const [isCreateMode, setIsCreateMode] = useState(false);
+        const [showCreate, setShowCreate] = useState(true); 
+        const [changeData, setChangeData] = useState<any>({});
         const [oldData, setOldData] = useState<ISocialContributeModel>({});
         const [data, setData] = useState<ISocialContributeModel>({
             "socialNumberType": {
@@ -138,6 +141,10 @@ const SocialContributeInfo = (props: any) => {
             })
 
             console.log('change>>>', change, memberChange);
+            setChangeData({
+                data: change,
+                member: memberChange
+            });
         }
 
         const onEdit = () => {
@@ -161,6 +168,7 @@ const SocialContributeInfo = (props: any) => {
             console.log('data>>', data);
             console.log('members>>>', members);
             checkDataChange();
+            setShowCreate(false);
         }
         return (<>
             <div className="health-info-page">
@@ -170,22 +178,43 @@ const SocialContributeInfo = (props: any) => {
                     <a onClick={() => onEdit()}><div className="btn bg-white btn-create"
                     ><i className="fas fa-plus"></i> {t('Edit')}</div></a>
                 </div>
-                <CreateSocialContributeInfo
-                    t={t}
-                    data = {data}
-                    setData={setData}
-                    supervisors={supervisors}
-                    setSupervisors={setSupervisors}
-                    approver={approver}
-                    setApprover={setApprover}
-                    files = {files}
-                    updateFiles={setFiles}
-                    removeFile={()=>{}}
-                    members = {members}
-                    setMembers={setMembers}
-                    onSubmit={onSubmit}
-                    isCreateMode = {isCreateMode}
-                />
+                {
+                    showCreate ?
+                    <CreateSocialContributeInfo
+                        t={t}
+                        data = {data}
+                        setData={setData}
+                        supervisors={supervisors}
+                        setSupervisors={setSupervisors}
+                        approver={approver}
+                        setApprover={setApprover}
+                        files = {files}
+                        updateFiles={setFiles}
+                        removeFile={()=>{}}
+                        members = {members}
+                        setMembers={setMembers}
+                        onSubmit={onSubmit}
+                        isCreateMode = {isCreateMode}
+                    /> :
+                    <DetailSocailContributeComponent
+                        t={t}
+                        data = {oldData}
+                        change={changeData}
+                        setData={setData}
+                        supervisors={supervisors}
+                        setSupervisors={setSupervisors}
+                        approver={approver}
+                        setApprover={setApprover}
+                        files = {files}
+                        updateFiles={setFiles}
+                        removeFile={()=>{}}
+                        members = {members}
+                        setMembers={setMembers}
+                        onSubmit={onSubmit}
+                        isCreateMode = {isCreateMode}
+                    />
+                }
+                
             </div>
         </>)
 }
