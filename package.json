@@ -8,6 +8,7 @@
     "@types/node": "^20.4.9",
     "@types/react": "^18.2.20",
     "@types/react-dom": "^18.2.7",
+    "aos": "^2.3.4",
     "axios": "^0.27.2",
     "bootstrap": "^4.3.1",
     "broadcast-channel": "^4.17.0",
