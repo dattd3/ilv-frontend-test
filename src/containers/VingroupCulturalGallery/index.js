@@ -6,7 +6,7 @@ import { getRequestConfigs } from "commons/commonFunctions";
 import { useTranslation } from "react-i18next";
 
 const DEMO_IMAGE_URL =
-  "https://vingroupjsc.sharepoint.com/sites/hrdx/Shared%20Documents/General/testimg.png";
+  "https://vingroupjsc.sharepoint.com/:i:/r/sites/hrdx/Shared%20Documents/General/Quote+11.jpg";
 
 const VINGROUP_CULTURE_CATEGORIES = [
   {
@@ -161,7 +161,7 @@ function VingroupCulturalGalleryPage(props) {
               {isNotLoggedSharepoint ? (
                 <>
                   <iframe
-                    src="https://vingroupjsc.sharepoint.com/sites/hrdx/_layouts/15/embed.aspx?UniqueId=cdd2a63c-4fe3-4b04-8b6b-7793440bc15b"
+                    src={item?.link}
                     width="640"
                     height="360"
                     frameborder="0"
@@ -175,7 +175,7 @@ function VingroupCulturalGalleryPage(props) {
                 <>
                   {data.map((item) => (
                     <iframe
-                      src="https://vingroupjsc.sharepoint.com/sites/hrdx/_layouts/15/embed.aspx?UniqueId=0fbff127-5132-4c53-a616-c1242393a260"
+                      src={item?.link}
                       width="540"
                       height="360"
                       frameborder="0"
