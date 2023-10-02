@@ -161,7 +161,7 @@ function VingroupCulturalGalleryPage(props) {
               {isNotLoggedSharepoint ? (
                 <>
                   <iframe
-                    src={item?.link}
+                    src={data?.[0]?.link}
                     width="640"
                     height="360"
                     frameborder="0"
