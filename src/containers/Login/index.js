@@ -3,16 +3,11 @@ import { Container, Row, Col, Button, Modal, Carousel } from 'react-bootstrap';
 import { useTranslation } from "react-i18next";
 import axios from "axios"
 import logo from '../../assets/img/LogoVingroup.svg';
-import imageIos from '../../assets/img/image_ios.png';
-import imageAndroid from '../../assets/img/image_android.png';
-import imageWeb from '../../assets/img/image_web.svg';
 import ic_ios from '../../assets/img/icon/ic_ios.svg';
 import ic_android from '../../assets/img/icon/ic_android.svg';
-import qrAndroid from '../../assets/img/qr_android.svg';
+import qrCode from '../../assets/img/qr_code.svg';
 import icVietnam from '../../assets/img/icon/ic_vietnam.svg';
 import icEnglish from '../../assets/img/icon/ic_english.svg';
-import qrIos from '../../assets/img/qr_ios.svg';
-import Banner from 'assets/img/banner.svg'
 import { useLocalizeStore } from '../../modules';
 import Constants from "../../commons/Constants";
 import Select, { components } from 'react-select'
@@ -174,11 +169,17 @@ function Login() {
                         <a style={{ flex: 1, textDecoration: 'none' }} href="https://apps.apple.com/app/ilovevingroup/id1617033050" target="_blank">
                           <div className="mobile-contain shadow-sm">
                             <img src={ic_ios} className='ic-mobile' />
-
+                            {/* <br /> */}
                             <div className="mobile-title-contain" >
                               <span className="mobile-title">Available on the</span>
                               <span className="mobile-subtitle">App Store</span>
                             </div>
+                          </div>
+                        </a>
+                        <div style={{ width: '20px' }}></div>
+                        <a style={{ flex: 1, textDecoration: 'none' }} href="https://apps.apple.com/app/ilovevingroup/id1617033050" target="_blank">
+                          <div className="mobile-contain shadow-sm">
+                            <img src={qrCode} className='qr-code' />
                           </div>
                         </a>
                         <div style={{ width: '20px' }}></div>
@@ -192,93 +193,12 @@ function Login() {
                           </div>
                         </a>
                       </div>
-
-                      {/* <div className="text-center login-guide">
-                      <Button className="small color-C11D2A" variant="link" onClick={() => setModalShow(true)}>{t("HelpToLogin")}</Button>
-                    </div> */}
                     </div>
                   </div>
                 </div>
                 <div className="col-lg-7 d-flex flex-column banner-region">
-                  {/* <Carousel nextIcon={null} prevIcon={null}>
-                    <Carousel.Item interval={1000}>
-                      <div className="detail-contain">
-                        <div className="version-contain">
-                          <span className="version-web-subtitle">Welcome to </span>
-                          <span className="version-web-title">ILOVEVINGROUP!</span>
-                        </div>
-                        <img
-                          className="d-block h-270"
-                          src={imageWeb}
-                          alt="First slide"
-                        />
-                        <span style={{ visibility: "hidden" }} className="scan-title">Quét mã QR Code để cài đặt ứng dụng</span>
-                        <img style={{ visibility: "hidden" }} className="scan-image" src={qrAndroid} />
-                      </div>
-
-                    </Carousel.Item>
-                    <Carousel.Item interval={1000}>
-                      <div className="detail-contain">
-                        <div className="version-contain">
-                          {
-                            langCode == Constants.LANGUAGE_VI ?
-                              <>
-                                <span className="version-subtitle">{t('LoginVersionOS')}</span>
-                                <span className="version-title">iOS</span>
-                              </>
-                              :
-                              <>
-                                <span className="version-title">iOS</span>
-                                <span className="version-subtitle">{t('LoginVersionOS')}</span>
-                              </>
-                          }
-
-                        </div>
-                        <img
-                          className="d-block h-270"
-                          src={imageIos}
-                          alt="First slide"
-                        />
-                        <span className="scan-title">{t('LoginGuideQr')}</span>
-                        <img className="scan-image" src={qrIos} />
-                      </div>
-                    </Carousel.Item>
-                    <Carousel.Item interval={1000}>
-                      <div className="detail-contain">
-                        <div className="version-contain">
-                          {
-                            langCode == Constants.LANGUAGE_VI
-                              ?
-                              <>
-                                <span className="version-subtitle">{t('LoginVersionOS')}</span>
-                                <span className="version-title">Android</span>
-                              </>
-                              :
-                              <>
-                                <span className="version-title">Android</span>
-                                <span className="version-subtitle">{t('LoginVersionOS')}</span>
-                              </>
-                          }
-
-                        </div>
-                        <img
-                          className="d-block h-270"
-                          src={imageAndroid}
-                          alt="First slide"
-                        />
-                        <span className="scan-title">{t('LoginGuideQr')}</span>
-                        <img className="scan-image" src={qrAndroid} />
-                      </div>
-
-                    </Carousel.Item>
-
-                  </Carousel> */}
                   <div className="banner-block">
                     <div className="text-center banner-title">Welcome to&nbsp;<span className="font-weight-bold">ILOVEVINGROUP!</span></div>
-                    <div className="text-center banner-img-block">
-                      <img src={Banner} alt="Banner" />
-                    </div>
-                    <div className="text-center banner-footer">Quét mã QR Code để cài đặt ứng dụng</div>
                   </div>
                   <div className="bottom-link">
                     <span>Website: https://myvingroup.vingroup.net</span>
