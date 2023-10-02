@@ -40,11 +40,11 @@ function NewsOnHome(props) {
     useEffect(() => {
       if (!privilegesRef.current) return;
       const resizeObserver = new ResizeObserver(() => {
-        setPrivilegesRefHeight(privilegesRef?.current?.clientHeight)
+        if (privilegesRefHeight === 0 && privilegesRef?.current?.clientHeight > 0) setPrivilegesRefHeight(privilegesRef?.current?.clientHeight)
       });
       resizeObserver.observe(privilegesRef.current);
       return () => resizeObserver.disconnect();
-    }, [privilegesRef.current]);
+    }, [privilegesRef.current, privilegesRefHeight]);
 
     useEffect(() => {
         if (Notification.permission !== "granted" && !sessionStorage.getItem("isCloseNotificationGuide")) {
@@ -169,9 +169,9 @@ function NewsOnHome(props) {
                                     </Carousel>
                                 </div>
                                 <div className="row">
-                                    <div className="col-md-4 privilege" ref={privilegesRef}>
+                                    <div className="col-md-4 privilege">
                                         <h1 className="page-title" style={{ color: "#D13238", fontSize: 16 }}><Image src={IconGift} alt="Gift" className="ic-page-title" />{t("VingroupEmployeePrivileges")}</h1>
-                                        <div className="top-one shadow-customize">
+                                        <div className="top-one shadow-customize" ref={privilegesRef}>
                                             <a href={mapConfig.EmployeePrivileges} className="link-detail">
                                                 <Image src={privilegeBanner?.thumbnail} alt="News" className="thumbnail"
                                                     onError={(e) => {
@@ -214,11 +214,11 @@ function NewsOnHome(props) {
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div className="other">
-                                                <div className="top-four" style={{ height: privilegesRefHeight }}>
+                                            <div className="other" style={{ maxHeight: privilegesRefHeight > 0 ? privilegesRefHeight - 40 : 0 }}>
+                                                <div className="top-four">
                                                     {
                                                         topEight.length > 0 ?
-                                                            topEight.map((item, index) => {
+                                                            topEight.map((item) => {
                                                                 let timePublished = getTimeByRawTime(item?.publishedDate)
                                                                 return <div className="item" key={item.id}>
                                                                     <a href={`/news/${convertToSlug(item.title)}/${item.id}`} className="link-image-detail">
