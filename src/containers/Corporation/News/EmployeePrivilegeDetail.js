@@ -49,7 +49,7 @@ function EmployeePrivilegeDetailElement({ match, location }) {
     return (
         <>
         <div className="back-block"><a href={mapConfig.EmployeePrivileges} title={t("ComeBack")}><Image src={IconBack} alt="Back" className="ic-back" />{t("ComeBack")}</a></div>
-        <div className="news-detail-page">
+        <div className="news-detail-page employee-privilege-detail">
             <div className="news-content">
                 <h1 className="news-title">{title || ''}</h1>
                 <div className="source-time-info">
