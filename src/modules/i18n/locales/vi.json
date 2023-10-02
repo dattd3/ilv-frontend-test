@@ -148,6 +148,7 @@
   "Menu_VinmecIntroduction": "Giới thiệu Vinmec",
   "Menu_News": "Tin tức",
   "NewsAndEvent": "Tin tức sự kiện",
+  "OtherNews": "Tin tức khác",
   "BenefitRegime": "Chế độ phúc lợi",
   "BenefitNumber": "STT",
   "BenefitService": "Dịch vụ",
@@ -1987,5 +1988,12 @@
   "EventPicture": "Ảnh sự kiện",
   "Photo": "Ảnh",
   "Arts": "Tác phẩm nghệ thuật",
-  "AboutPnL": "Thông tin PnL"
+  "AboutPnL": "Thông tin PnL",
+  "VingroupCulture": "Văn hóa Vingroup",
+  "PresidentQuotes": "Trích dẫn CTTĐ",
+  "OverviewCulture": "Tổng quan Văn hóa",
+  "Textbook": "Sách giáo khoa",
+  "StoryTelling": "Kỷ yếu",
+  "InspiringShortFilm": "Phim ngắn truyền cảm hứng",
+  "CivillyVingroup": "Người Vingroup văn minh"
 }
