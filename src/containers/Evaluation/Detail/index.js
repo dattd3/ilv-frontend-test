@@ -889,8 +889,6 @@ function EvaluationDetail(props) {
     }
   }
 
-  console.log('evaluationFormDetail => ', evaluationFormDetail)
-
   return (
     <>
       <LoadingModal show={isLoading} />
