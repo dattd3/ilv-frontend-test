@@ -128,7 +128,7 @@ function MemberInfo({
           <div className="col-4">
             {"Ngày sinh"}<span className="required">(*)</span>
             <div className="content input-container">
-              <label>
+              <label style={{position: 'relative'}}>
                 <DatePicker
                   name="endDate"
                   selectsEnd
