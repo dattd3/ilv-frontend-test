@@ -44,6 +44,10 @@ const formatEvaluationNumber = val => {
     return parseInt(val) === Number(val) ? val : Number(Number(val).toFixed(2)) || 0
 }
 
+const hasNotValue = val => {
+    return val === null || val === undefined || val?.toString()?.trim() === ''
+}
+
 const calculateScore = (formulaCode, targetValue, weight, actualResult) => {
     if (actualResult === '') {
         return ''
@@ -71,4 +75,4 @@ const calculateScore = (formulaCode, targetValue, weight, actualResult) => {
     }
 }
 
-export { formatIndexText, calculateRating, formatTargetText, calculateScore, isVinBusByCompanyCode, formatEvaluationNumber }
+export { formatIndexText, calculateRating, formatTargetText, calculateScore, isVinBusByCompanyCode, formatEvaluationNumber, hasNotValue }
