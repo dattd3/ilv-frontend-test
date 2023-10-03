@@ -42,6 +42,8 @@ const Buttons = ({ showByManager, status, isEdit, reviewer, approver, handleSubm
                 )
             }
             return null
+        default:
+            return null
     }
 }
 

@@ -21,7 +21,8 @@ import IconSave from '../../../assets/img/ic-save.svg'
 import IconSendRequest from '../../../assets/img/icon/Icon_send.svg'
 import IconReject from '../../../assets/img/icon/Icon_Cancel.svg'
 import IconApprove from '../../../assets/img/icon/Icon_Check.svg'
-import VinFastForm from "./v2/Vinfast"
+import VinGroupForm from "./v2/Vingroup"
+import VinBusForm from "./v2/VinBus"
 
 const currentLocale = localStorage.getItem("locale")
 
@@ -879,11 +880,22 @@ function EvaluationDetail(props) {
 
   const componentMapping = (companyCode) => {
     switch (true) {
-      case [Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading].includes(companyCode) :
+      case [Constants.pnlVCode.VinBus].includes(companyCode) :
+          return (
+            <VinBusForm 
+              evaluationFormDetail={evaluationFormDetail}
+              showByManager={showByManager}
+              version={version}
+              updateParent={updateParent}
+            />
+          )
+      default:
         return (
-          <VinFastForm 
+          <VinGroupForm 
             evaluationFormDetail={evaluationFormDetail}
             showByManager={showByManager}
+            version={version}
+            updateParent={updateParent}
           />
         )
     }
