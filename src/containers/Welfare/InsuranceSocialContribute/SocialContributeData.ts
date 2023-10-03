@@ -1,12 +1,13 @@
 import { IDropdownValue } from "models/CommonModel";
 
+export const SOCIAL_NUMBER_INPUT = '2';
 export const socialNumberType: IDropdownValue[] = [
     {
         value: '1',
         label: 'Đề nghị cấp sổ',
     },
     {
-        value: '2',
+        value: SOCIAL_NUMBER_INPUT,
         label: 'Khác',
         code: ''
     }

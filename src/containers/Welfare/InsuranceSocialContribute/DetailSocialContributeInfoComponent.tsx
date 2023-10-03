@@ -1,47 +1,18 @@
 import React, { FC, Fragment, useEffect, useState } from "react";
-import { WithTranslation, withTranslation } from "react-i18next";
-import Select from "react-select";
-import DatePicker, { registerLocale } from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-import { vi, enUS } from "date-fns/locale";
-import moment from "moment";
-import Constants from "../../../commons/Constants";
 import _ from "lodash";
-import { Image } from "react-bootstrap";
-import {
-  DECLARE_FORM_OPTIONS,
-  HOSPITAL_LINE,
-  RECEIVE_TYPE,
-  SICK_PLAN,
-  WORKING_CONDITION,
-} from "../InsuranceComponents/InsuranceData";
-import { Spinner } from "react-bootstrap";
 import AssessorInfoComponent from "../InternalPayment/component/AssessorInfoComponent";
-import ButtonComponent from "containers/Registration/ButtonComponent";
-import DocumentRequired from "../InsuranceComponents/DocumentRequired";
 import { IMemberInfo, ISocialContributeModel } from "models/welfare/SocialContributeModel";
-import MemberInfo from "./MemberInfo";
-import IconAdd from "assets/img/ic-add-green.svg";
 import { STATUS, socialNumberType } from "./SocialContributeData";
-import { IDropdownValue } from "models/CommonModel";
-import { getMuleSoftHeaderConfigurations } from "commons/Utils";
-import axios from "axios";
-import IconClear from 'assets/img/icon/icon_x.svg'
+import DetailMemberInfo from "./DetailMemberInfo";
 
 interface IDetailSocialContributeInfoProps {
   t: any;
   data?: ISocialContributeModel;
   change: any;
-  setData: Function;
   supervisors: any[],
-  setSupervisors: Function,
   approver: any,
-  setApprover?: Function,
   files: any[],
-  updateFiles: Function,
-  removeFile: Function ,
-  members: IMemberInfo[], 
-  setMembers: Function,
+  members: IMemberInfo[],
   isCreateMode: boolean,
   onSubmit: Function
 };
@@ -50,23 +21,13 @@ const DetailSocailContributeComponent: FC<IDetailSocialContributeInfoProps> = ({
   t,
   data,
   change,
-  setData,
   supervisors = [],
-  setSupervisors=()=>{},
   approver,
-  setApprover=()=>{},
   files = [],
-  updateFiles=()=>{},
-  removeFile=()=>{},
-  members = [{}], 
-  setMembers=()=>{},
+  members = [{}],
   isCreateMode = false,
   onSubmit
 }) => {
-  const [provinces, setprovinces] = useState<IDropdownValue[]>([]);
-  const [districts, setdistricts] = useState<IDropdownValue[]>([]);
-  const [wards, setwards] = useState<IDropdownValue[]>([]);
-  const [errors, setErrors] = useState({});
 
   const renderValue = (type = STATUS.OLD, value, newValue) => {
     if(type == STATUS.OLD) {
@@ -88,24 +49,17 @@ const DetailSocailContributeComponent: FC<IDetailSocialContributeInfoProps> = ({
       )
     }
   }
-
-  
   return (
     <div className="registration-insurance-section social-contribute input-style">
-      {
-        !isCreateMode ?
-        <>
-          <h5 className="pt-0">{'NGÀY CHỈNH SỬA CUỐI CÙNG'}</h5>
-          <div className="box shadow-sm cbnv">
-            <span style={{ fontWeight: "700" }}>{"Cập nhật: "}</span>
-            <span style={{ fontWeight: "100" }}>20/09/2023 10:00:00</span>
-            <span style={{ fontWeight: "700" }}>
-              {" | Bởi "  + ": "}
-            </span>
-            <span style={{ fontWeight: "100" }}>annv8</span>
-          </div>
-        </> : null
-      }
+      <h5 className="pt-0">{'NGÀY CHỈNH SỬA CUỐI CÙNG'}</h5>
+      <div className="box shadow-sm cbnv mb-4">
+        <span style={{ fontWeight: "700" }}>{"Cập nhật: "}</span>
+        <span style={{ fontWeight: "100" }}>20/09/2023 10:00:00</span>
+        <span style={{ fontWeight: "700" }}>
+          {" | Bởi "  + ": "}
+        </span>
+        <span style={{ fontWeight: "100" }}>annv8</span>
+      </div>
 
       <div className="row">
         <div className="col-6">
@@ -148,12 +102,10 @@ const DetailSocailContributeComponent: FC<IDetailSocialContributeInfoProps> = ({
           </div>
           <div className="col-4">
             {'Tỉnh/Thành phố'}
-            <span className="required">(*)</span>
             {renderValue(change?.data?.province, data?.province?.label, change?.data?.province_value?.label)}
           </div>
           <div className="col-4">
             {'Quận/Huyện'}
-            <span className="required">(*)</span>
             {renderValue(change?.data?.district, data?.district?.label, change?.data?.district_value?.label)}
           </div>
         </div>
@@ -173,21 +125,27 @@ const DetailSocailContributeComponent: FC<IDetailSocialContributeInfoProps> = ({
       <h5>{'THÔNG TIN HỘ GIA ĐÌNH'}</h5>
       <div className="box shadow-sm cbnv">
         {(members || []).map((request: IMemberInfo, index: number) => {
-          if(request.status == STATUS.DELETE) return null;
           return (
             <Fragment key={index}>
-              <MemberInfo
+              <DetailMemberInfo
                 t={t}
                 request={request}
-                canDelete={members?.length > 0 ? true : false}
-                isCreateMode={isCreateMode}
-                provinces = {provinces}
-                cancelRequest={() => {}}
-                updateRequest={(req: IMemberInfo) => {}}
+                status = {change.member[index]?.status}
+                change={change.member[index]?.value}
               />
               <div className="mv-10"></div>
             </Fragment>
           );
+        })}
+        {(change?.member?.filter((mem: any) => mem?.status == STATUS.NEW)?.map((mem: any) => mem.value) || []).map((request: IMemberInfo , index: number) => {
+          return (<Fragment key={index}>
+              <DetailMemberInfo
+                t={t}
+                request={request}
+                status = {STATUS.NEW}
+              />
+              <div className="mv-10"></div>
+            </Fragment>)
         })}
       </div>
       
@@ -203,12 +161,12 @@ const DetailSocailContributeComponent: FC<IDetailSocialContributeInfoProps> = ({
 
       <AssessorInfoComponent
         t={t}
-        isCreateMode={isCreateMode}
-        setSupervisors={setSupervisors}
+        isCreateMode={false}
+        setSupervisors={() => {}}
         supervisors={supervisors}
         approver={approver}
-        setApprover={setApprover}
-        errors={errors}
+        setApprover={() => {}}
+        errors={{}}
       />
 
       <div className="registration-section">
@@ -217,25 +175,10 @@ const DetailSocailContributeComponent: FC<IDetailSocialContributeInfoProps> = ({
               return <li className="list-inline-item" key={index}>
                   <span className="file-name">
                       <a title={file.name} href={file.fileUrl} download={file.name} target="_blank">{file.name}</a>
-                      {
-                        isCreateMode ? <i className="fa fa-times remove" aria-hidden="true" onClick={() => removeFile(index)}></i> : null
-                      }
                   </span>
               </li>
           })}
         </ul>
-        {
-          isCreateMode ?
-          <ButtonComponent
-          isEdit={false} 
-          files={files} 
-          updateFiles={updateFiles} 
-          submit={() => onSubmit()} 
-          isUpdateFiles={()=>{}} 
-          disabledSubmitButton={false} 
-          validating={false}/> 
-          : null
-        }
       </div>
     </div>
   );

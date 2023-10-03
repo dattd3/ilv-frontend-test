@@ -3,29 +3,17 @@ import DatePicker, { registerLocale } from "react-datepicker";
 import moment from "moment";
 import "react-datepicker/dist/react-datepicker.css";
 import Select from "react-select";
-import {
-  IPaymentService,
-  IResponseCalculatePayment,
-} from "models/welfare/PaymentModel";
 import IconDatePicker from "assets/img/icon/Icon_DatePicker.svg";
-import { getPaymentObjects } from "../InternalPayment/PaymentData";
 import { IDropdownValue } from "models/CommonModel";
 import InputNumberComponent from "../InternalPayment/component/InputNumberComponent";
-import {
-  formatNumberSpecialCase,
-  genderConfig,
-  getMuleSoftHeaderConfigurations,
-  getRequestConfigurations,
-} from "commons/Utils";
 import _ from "lodash";
-import axios from "axios";
-import { Spinner } from "react-bootstrap";
 import { IMemberInfo } from "models/welfare/SocialContributeModel";
 import { GENDER_LIST, RELATIONSHIP_WITH_INSURED, ROLE_TYPE } from "./SocialContributeData";
 
 interface IMemberInfoProps {
   t: any;
-  provinces: IDropdownValue[];
+  errors: any;
+  index: number;
   request: IMemberInfo;
   isCreateMode: boolean;
   canDelete: boolean;
@@ -35,12 +23,13 @@ interface IMemberInfoProps {
 
 function MemberInfo({
   t,
-  provinces = [],
   request,
   isCreateMode = false,
   canDelete,
   updateRequest,
   cancelRequest,
+  index,
+  errors
 }: IMemberInfoProps) {
   const handleChangeValue = (value, key) => {
     const newService = {
@@ -87,7 +76,7 @@ function MemberInfo({
         <div className="row">
           <div className="col-4">
             {"Quan hệ với CBNV"}{" "}
-            {isCreateMode && <span className="required">(*)</span>}
+            <span className="required">(*)</span>
             <Select
               placeholder={isCreateMode ? t("option") : ""}
               options={RELATIONSHIP_WITH_INSURED}
@@ -98,9 +87,12 @@ function MemberInfo({
               styles={{ menu: (provided) => ({ ...provided, zIndex: 2 }) }}
               isDisabled={!isCreateMode}
             />
+            {errors['member_' + index + '_relation'] ? (
+              <p className="text-danger">{errors['member_' + index + '_relation']}</p>
+            ) : null}
           </div>
           <div className="col-4">
-            {"Họ tên"}
+            {"Họ tên"}<span className="required">(*)</span>
             <InputNumberComponent
               value={request.fullName || ""}
               onChange={(value) => handleChangeValue(value, "fullName")}
@@ -110,10 +102,12 @@ function MemberInfo({
               name="fullName"
               type="text"
             />
+            {errors['member_' + index + '_fullName'] ? (
+              <p className="text-danger">{errors['member_' + index + '_fullName']}</p>
+            ) : null}
           </div>
           <div className="col-4">
-            {"Giới tính"}{" "}
-            {isCreateMode && <span className="required">(*)</span>}
+            {"Giới tính"}<span className="required">(*)</span>
             <Select
               placeholder={isCreateMode ? t("option") : ""}
               options={GENDER_LIST}
@@ -124,13 +118,15 @@ function MemberInfo({
               styles={{ menu: (provided) => ({ ...provided, zIndex: 2 }) }}
               isDisabled={!isCreateMode}
             />
+            {errors['member_' + index + '_sex'] ? (
+              <p className="text-danger">{errors['member_' + index + '_sex']}</p>
+            ) : null}
           </div>
         </div>
 
         <div className="row mv-10">
           <div className="col-4">
-            {"Ngày sinh"}{" "}
-            {isCreateMode && <span className="required">(*)</span>}
+            {"Ngày sinh"}<span className="required">(*)</span>
             <div className="content input-container">
               <label>
                 <DatePicker
@@ -155,10 +151,13 @@ function MemberInfo({
                   <img src={IconDatePicker} alt="Date" />
                 </span>
               </label>
+              {errors['member_' + index + '_birthDate'] ? (
+              <p className="text-danger">{errors['member_' + index + '_birthDate']}</p>
+            ) : null}
             </div>
           </div>
           <div className="col-4">
-            {"CMTND"} {isCreateMode && <span className="required">(*)</span>}
+            {"CMTND"} <span className="required">(*)</span>
             <InputNumberComponent
               value={request.identityId || ""}
               onChange={(value) => handleChangeValue(value, "identityId")}
@@ -168,9 +167,12 @@ function MemberInfo({
               name="identityId"
               type="text"
             />
+            {errors['member_' + index + '_identityId'] ? (
+              <p className="text-danger">{errors['member_' + index + '_identityId']}</p>
+            ) : null}
           </div>
           <div className="col-4">
-            {"Chủ hộ/Thành viên"}
+            {"Chủ hộ/Thành viên"}<span className="required">(*)</span>
             <Select
               placeholder={isCreateMode ? t("option") : ""}
               options={ROLE_TYPE}
@@ -181,6 +183,9 @@ function MemberInfo({
               styles={{ menu: (provided) => ({ ...provided, zIndex: 2 }) }}
               isDisabled={!isCreateMode}
             />
+            {errors['member_' + index + '_type'] ? (
+              <p className="text-danger">{errors['member_' + index + '_type']}</p>
+            ) : null}
           </div>
         </div>
       </div>

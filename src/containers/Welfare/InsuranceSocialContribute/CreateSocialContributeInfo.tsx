@@ -1,28 +1,15 @@
 import React, { FC, Fragment, useEffect, useState } from "react";
-import { WithTranslation, withTranslation } from "react-i18next";
 import Select from "react-select";
-import DatePicker, { registerLocale } from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 import { vi, enUS } from "date-fns/locale";
 import moment from "moment";
-import Constants from "../../../commons/Constants";
 import _ from "lodash";
 import { Image } from "react-bootstrap";
-import {
-  DECLARE_FORM_OPTIONS,
-  HOSPITAL_LINE,
-  RECEIVE_TYPE,
-  SICK_PLAN,
-  WORKING_CONDITION,
-} from "../InsuranceComponents/InsuranceData";
-import { Spinner } from "react-bootstrap";
 import AssessorInfoComponent from "../InternalPayment/component/AssessorInfoComponent";
 import ButtonComponent from "containers/Registration/ButtonComponent";
-import DocumentRequired from "../InsuranceComponents/DocumentRequired";
 import { IMemberInfo, ISocialContributeModel } from "models/welfare/SocialContributeModel";
 import MemberInfo from "./MemberInfo";
 import IconAdd from "assets/img/ic-add-green.svg";
-import { STATUS, socialNumberType } from "./SocialContributeData";
+import { SOCIAL_NUMBER_INPUT, STATUS, socialNumberType } from "./SocialContributeData";
 import { IDropdownValue } from "models/CommonModel";
 import { getMuleSoftHeaderConfigurations } from "commons/Utils";
 import axios from "axios";
@@ -30,7 +17,7 @@ import IconClear from 'assets/img/icon/icon_x.svg'
 
 interface ICreateSocialContributeInfoProps {
   t: any;
-  data?: ISocialContributeModel;
+  data: ISocialContributeModel;
   setData: Function;
   supervisors: any[],
   setSupervisors: Function,
@@ -42,7 +29,8 @@ interface ICreateSocialContributeInfoProps {
   members: IMemberInfo[], 
   setMembers: Function,
   isCreateMode: boolean,
-  onSubmit: Function
+  onSubmit: Function;
+  notifyMessage: Function;
 };
 
 const CreateSocialContributeInfo: FC<ICreateSocialContributeInfoProps> = ({
@@ -59,7 +47,8 @@ const CreateSocialContributeInfo: FC<ICreateSocialContributeInfoProps> = ({
   members = [{}], 
   setMembers=()=>{},
   isCreateMode = true,
-  onSubmit
+  onSubmit,
+  notifyMessage =() => {}
 }) => {
   const [provinces, setprovinces] = useState<IDropdownValue[]>([]);
   const [districts, setdistricts] = useState<IDropdownValue[]>([]);
@@ -142,27 +131,15 @@ const CreateSocialContributeInfo: FC<ICreateSocialContributeInfoProps> = ({
     setData(candidateInfos);
 }
 
-const handleChangeSelectInputs = (e, name) => {
-    const candidateInfos = { ...data }
-    candidateInfos[name] = e != null ? { value: e.value, label: e.label, code: e.code } : null
-    setData(candidateInfos);
-}
-
-const handleRemoveInput = (key) => {
-
-}
-
-const handleDatePickerInputChange = (value, name) => {
-    const candidateInfos = { ...data }
-    if (moment(value, 'DD/MM/YYYY').isValid()) {
-        const date = moment(value).format('DD/MM/YYYY')
-        candidateInfos[name] = date
-
-    } else {
-        candidateInfos[name]= null
-    }
-    setData(candidateInfos)
-}
+  const handleChangeSelectInputs = (e, name) => {
+      const candidateInfos = { ...data }
+      let shouldReset = false;
+      if(name == 'socialNumberType' && e?.value == SOCIAL_NUMBER_INPUT && candidateInfos[name]?.value != SOCIAL_NUMBER_INPUT) {
+        shouldReset = true;
+      }
+      candidateInfos[name] = e != null ? { value: e.value, label: shouldReset ? '' : e.label} : null
+      setData(candidateInfos);
+  }
 
   const addMoreMember = () => {
     const lastRequest = [...members];
@@ -231,6 +208,74 @@ const handleDatePickerInputChange = (value, name) => {
     }
   }
 
+  const verifyData = () => {
+    let _errors = {};
+    const requiredFields = [
+      "socialNumberType",
+      "facilityRegisterName",
+      "houseHoldNumber",
+      "province",
+      "district",
+      "ward",
+      "street"
+    ];
+    const optionFields = [
+      "socialNumberType",
+      "facilityRegisterName",
+      "province",
+      "district",
+      "ward"
+    ]
+    //check người thẩm định
+    if(supervisors?.length == 0 || !supervisors.every(sup => sup != null)) {
+      _errors['supervisors'] = t('PleaseEnterInfo');
+    }
+    if(!approver) {
+      _errors['approver'] = t('PleaseEnterInfo');
+    }
+
+    requiredFields.forEach((name) => {
+      if (
+        _.isEmpty(data[name]) ||
+        (optionFields.includes(name) && (!data[name].value || !data[name].label))
+      ) {
+        _errors[name] = t('PleaseEnterInfo');
+      }
+    });
+    const memberRequirer = ["relation", "fullName", "sex", "birthDate", "identityId", "type"];
+    members.map((mem, index) => {
+      if(mem.status == STATUS.DELETE) return;
+      memberRequirer.forEach(key => {
+        if(_.isEmpty(mem[key])) {
+          _errors['member_' + index + '_' + key] = t('PleaseEnterInfo');
+        }
+      });
+    })
+    setErrors(_errors);
+
+    let hasErrors = !Object.values(_errors).every(
+      (item) => item === null || item === undefined
+    );
+    if (hasErrors) {
+      notifyMessage(t('PleaseEnterInfo'), true);
+    }
+    //check files
+    if(!hasErrors) {
+      let checkfiles = (!files || files?.length === 0) ? t("Required") + ' ' + t('AttachmentFile') : null
+      if(checkfiles) {
+        notifyMessage(checkfiles);
+        hasErrors = true;
+      }
+    }
+    return hasErrors ? false : true;
+  };
+
+  const submitData = () => {
+    if(verifyData() == false) {
+      return;
+    }
+    onSubmit();
+  }
   return (
     <div className="registration-insurance-section social-contribute input-style">
       {
@@ -264,14 +309,14 @@ const handleDatePickerInputChange = (value, name) => {
             </span>
           </h5>
           <div className="box shadow-sm cbnv">
-            {"Số sổ BHXH"}
+            {"Số sổ BHXH"} <span className="required">(*)</span>
             {
-              data?.socialNumberType?.code != undefined ?
+              data?.socialNumberType?.value == SOCIAL_NUMBER_INPUT ?
               <label className="input-container">
                 <input
                   type="text"
-                  value={data.socialNumberType.code}
-                  onChange={(e) => handleChangeSelectInputs({...data.socialNumberType, code: e?.target?.value}, "socialNumberType")}
+                  value={data.socialNumberType.label}
+                  onChange={(e) => handleChangeSelectInputs({...data.socialNumberType, label: e?.target?.value}, "socialNumberType")}
                   className="form-control input mv-10 w-100"
                   name="inputName"
                   autoComplete="off"
@@ -293,6 +338,9 @@ const handleDatePickerInputChange = (value, name) => {
                   styles={{ menu: (provided) => ({ ...provided, zIndex: 2 }) }}
                 />
             }
+            {errors["socialNumberType"] ? (
+              <p className="text-danger">{errors["socialNumberType"]}</p>
+            ) : null}
           </div>
         </div>
 
@@ -300,10 +348,10 @@ const handleDatePickerInputChange = (value, name) => {
         <div className="col-6">
           <h5 className={`${isCreateMode ? 'pt-0' : ''}`}>{"NƠI ĐĂNG KÝ KCB"}</h5>
           <div className="box shadow-sm cbnv">
-            {"Tên cơ sở đăng ký KCB"}
+            {"Tên cơ sở đăng ký KCB"} <span className="required">(*)</span>
             <Select
               placeholder={"Lựa chọn"}
-              options={SICK_PLAN}
+              options={socialNumberType}
               isClearable={true}
               value={data?.facilityRegisterName || ''}
               onChange={(e) => handleChangeSelectInputs(e, "facilityRegisterName")}
@@ -311,6 +359,9 @@ const handleDatePickerInputChange = (value, name) => {
               isDisabled={!isCreateMode}
               styles={{ menu: (provided) => ({ ...provided, zIndex: 2 }) }}
             />
+            {errors["facilityRegisterName"] ? (
+              <p className="text-danger">{errors["facilityRegisterName"]}</p>
+            ) : null}
           </div>
         </div>
       </div>
@@ -320,7 +371,7 @@ const handleDatePickerInputChange = (value, name) => {
       <div className="box shadow-sm cbnv">
         <div className="row">
           <div className="col-4">
-            {'Số sổ hộ khẩu/số sổ tạm trú'}
+            {'Số sổ hộ khẩu/số sổ tạm trú'} <span className="required">(*)</span>
             <input
               type="text"
               value={data?.houseHoldNumber || ''}
@@ -330,6 +381,9 @@ const handleDatePickerInputChange = (value, name) => {
               autoComplete="off"
               disabled={!isCreateMode}
             />
+            {errors["houseHoldNumber"] ? (
+              <p className="text-danger">{errors["houseHoldNumber"]}</p>
+            ) : null}
           </div>
           <div className="col-4">
             {'Tỉnh/Thành phố'}
@@ -344,6 +398,9 @@ const handleDatePickerInputChange = (value, name) => {
               isDisabled={!isCreateMode}
               styles={{ menu: (provided) => ({ ...provided, zIndex: 2 }) }}
             />
+            {errors["province"] ? (
+              <p className="text-danger">{errors["province"]}</p>
+            ) : null}
           </div>
           <div className="col-4">
             {'Quận/Huyện'}
@@ -358,11 +415,14 @@ const handleDatePickerInputChange = (value, name) => {
               isDisabled={!isCreateMode}
               styles={{ menu: (provided) => ({ ...provided, zIndex: 2 }) }}
             />
+            {errors["district"] ? (
+              <p className="text-danger">{errors["district"]}</p>
+            ) : null}
           </div>
         </div>
         <div className="row mv-10">
           <div className="col-4">
-            {'Xã/Phường'}
+            {'Xã/Phường'} <span className="required">(*)</span>
             <Select
               placeholder={"Lựa chọn"}
               options={wards}
@@ -373,10 +433,13 @@ const handleDatePickerInputChange = (value, name) => {
               isDisabled={!isCreateMode}
               styles={{ menu: (provided) => ({ ...provided, zIndex: 2 }) }}
             />
+            {errors["ward"] ? (
+              <p className="text-danger">{errors["ward"]}</p>
+            ) : null}
           </div>
 
           <div className="col-8">
-            {'Số nhà, đường phố, xóm'}
+            {'Số nhà, đường phố, xóm'} <span className="required">(*)</span>
             <input
               type="text"
               value={data?.street || ''}
@@ -387,6 +450,9 @@ const handleDatePickerInputChange = (value, name) => {
               maxLength={255}
               disabled={!isCreateMode}
             />
+            {errors["street"] ? (
+              <p className="text-danger">{errors["street"]}</p>
+            ) : null}
           </div>
         </div>
       </div>
@@ -400,9 +466,10 @@ const handleDatePickerInputChange = (value, name) => {
               <MemberInfo
                 t={t}
                 request={request}
+                index={index}
+                errors={errors}
                 canDelete={members?.length > 0 ? true : false}
                 isCreateMode={isCreateMode}
-                provinces = {provinces}
                 cancelRequest={() => removeMember(index)}
                 updateRequest={(req: IMemberInfo) => updateMember(index, req)}
               />
@@ -440,16 +507,18 @@ const handleDatePickerInputChange = (value, name) => {
           </div>
         </div>
       </div>
-
-      <AssessorInfoComponent
-        t={t}
-        isCreateMode={isCreateMode}
-        setSupervisors={setSupervisors}
-        supervisors={supervisors}
-        approver={approver}
-        setApprover={setApprover}
-        errors={errors}
-      />
+      {
+        isCreateMode ?
+        <AssessorInfoComponent
+          t={t}
+          isCreateMode={isCreateMode}
+          setSupervisors={setSupervisors}
+          supervisors={supervisors}
+          approver={approver}
+          setApprover={setApprover}
+          errors={errors}
+        /> : null
+      }
 
       <div className="registration-section">
         <ul className="list-inline">
@@ -470,7 +539,7 @@ const handleDatePickerInputChange = (value, name) => {
           isEdit={false} 
           files={files} 
           updateFiles={updateFiles} 
-          submit={() => onSubmit()} 
+          submit={() => submitData()} 
           isUpdateFiles={()=>{}} 
           disabledSubmitButton={false} 
           validating={false}/> 
