@@ -119,7 +119,7 @@ const MapConfig = {
   // Đánh giá
   // Evaluation: "",
   TargetManagement: "/target-management",
-  EvaluationDetail: "/evaluations/:id/:formCode",
+  EvaluationDetail: "/evaluations/:id/:formCode/:version",
   MyEvaluation: "/my-evaluation",
   EvaluationApproval: "/evaluation-approval",
   
