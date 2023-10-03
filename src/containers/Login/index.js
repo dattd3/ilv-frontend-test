@@ -1,13 +1,30 @@
-import React, { useState, useEffect } from "react";
-import { Container, Row, Col, Button, Modal, Carousel } from 'react-bootstrap';
+import { useState, useEffect, useRef } from "react";
+import { Container, Row, Col, Button, Modal } from 'react-bootstrap';
 import { useTranslation } from "react-i18next";
 import axios from "axios"
+import { Swiper, SwiperSlide } from 'swiper/react';
+import moment from "moment";
+import { FreeMode, Navigation } from 'swiper/modules';
 import logo from '../../assets/img/LogoVingroup.svg';
 import ic_ios from '../../assets/img/icon/ic_ios.svg';
 import ic_android from '../../assets/img/icon/ic_android.svg';
 import qrCode from '../../assets/img/qr_code.svg';
 import icVietnam from '../../assets/img/icon/ic_vietnam.svg';
 import icEnglish from '../../assets/img/icon/ic_english.svg';
+import prevSlideIcon from '../../assets/img/icon/prev-slide-icon.png';
+import nextSlideIcon from '../../assets/img/icon/next-slide-icon.png';
+import IconUser from 'assets/img/icon/Icon-User.svg'
+import IconTime from 'assets/img/icon/Icon-Time.svg'
+import IconVinfast from 'assets/img/icon/pnl/vinfast.svg'
+import IconES from 'assets/img/icon/pnl/vines.svg'
+import IconVinhomes from 'assets/img/icon/pnl/vinhomes.svg'
+import IconVinperl from 'assets/img/icon/pnl/vinpearl.svg'
+import IconVingroup from 'assets/img/icon/pnl/vingroup.svg'
+import IconVinAI from 'assets/img/icon/pnl/vinai.svg'
+import IconVinbigdata from 'assets/img/icon/pnl/vinbigdata.svg'
+import IconVinbrain from 'assets/img/icon/pnl/vinbrain.svg'
+import IconVinbus from 'assets/img/icon/pnl/vinbus.svg'
+
 import { useLocalizeStore } from '../../modules';
 import Constants from "../../commons/Constants";
 import Select, { components } from 'react-select'
@@ -15,6 +32,57 @@ import { getStateRedirect, getRequestConfigs } from "../../commons/commonFunctio
 import { isExistCurrentUserInWhiteList } from "commons/Utils";
 import map from "containers/map.config"
 import LoadingModal from "components/Common/LoadingModal";
+
+import 'swiper/css';
+import 'swiper/css/free-mode';
+import 'swiper/css/navigation';
+
+const PNL_SWIPER_LIST = [
+  [
+    {
+      logo: IconVinfast,
+      url: "#",
+    },
+    {
+      logo: IconES,
+      url: "#",
+    },
+    {
+      logo: IconVingroup,
+      url: "#",
+    },
+    {
+      logo: IconVinhomes,
+      url: "#",
+    },
+    {
+      logo: IconVinperl,
+      url: "#",
+    },
+  ],
+  [
+    {
+      logo: IconVinAI,
+      url: "#",
+    },
+    {
+      logo: IconVinbigdata,
+      url: "#",
+    },
+    {
+      logo: IconVingroup,
+      url: "#",
+    },
+    {
+      logo: IconVinbrain,
+      url: "#",
+    },
+    {
+      logo: IconVinbus,
+      url: "#",
+    },
+  ],
+];
 
 const CustomOption = ({ children, ...props }) => {
   return (<components.ValueContainer {...props}>
@@ -60,16 +128,62 @@ function LoginGuideModal(props) {
   );
 }
 
-function Login() {
+function Login(props) {
   const localizeStore = useLocalizeStore();
   const { t } = useTranslation();
   const [modalShow, setModalShow] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [langCode, setLangCode] = useState(localStorage.getItem("locale")  || Constants.LANGUAGE_VI);
+  const [newsData, setNewsData] = useState([]);
+  const newsSwiperRef = useRef(null);
   const langData = [
     { value: Constants.LANGUAGE_VI, label: t("LangViet") },
     { value: Constants.LANGUAGE_EN, label: t("LangEng") }
   ];
+
+  useEffect(()=> {
+    const fetchNewsData = async () => {
+      try {
+        const newsResponse = await axios.get(
+          `${process.env.REACT_APP_REQUEST_URL}article/list`,
+          {
+            params: {
+              domain: "",
+              pageIndex: 1,
+              pageSize: 15,
+            },
+          }
+        );
+        console.log(newsResponse)
+        setNewsData(newsResponse.data?.data?.listArticles)
+      } catch {}
+    }
+    
+    fetchNewsData();
+  }, []);
+
+  useEffect(() => {
+    const fetchMaintenanceInfo = async () => {
+      setIsLoading(true)
+      const config = getRequestConfigs()
+      config.params = {
+        appId: Constants.MAINTENANCE.APP_ID,
+        device: Constants.MAINTENANCE.DEVICE,
+        type: Constants.MAINTENANCE.MODE,
+      }
+      const response = await axios.get(`${process.env.REACT_APP_REQUEST_URL}api/guest/system`, config)
+      setIsLoading(false)
+      if (response?.data?.data?.maintainStatus) {
+        window.location.href = map.Maintenance
+      }
+    }
+
+    !isExistCurrentUserInWhiteList() && fetchMaintenanceInfo()
+  }, []);
+
+  useEffect(() => {
+    localizeStore.setLocale(langCode || Constants.LANGUAGE_VI)
+  }, [langCode, localizeStore]);
 
   const customStyles = {
     indicatorSeparator: base => ({
@@ -103,29 +217,6 @@ function Login() {
     }
   };
 
-  useEffect(() => {
-    const fetchMaintenanceInfo = async () => {
-      setIsLoading(true)
-      const config = getRequestConfigs()
-      config.params = {
-        appId: Constants.MAINTENANCE.APP_ID,
-        device: Constants.MAINTENANCE.DEVICE,
-        type: Constants.MAINTENANCE.MODE,
-      }
-      const response = await axios.get(`${process.env.REACT_APP_REQUEST_URL}api/guest/system`, config)
-      setIsLoading(false)
-      if (response?.data?.data?.maintainStatus) {
-        window.location.href = map.Maintenance
-      }
-    }
-
-    !isExistCurrentUserInWhiteList() && fetchMaintenanceInfo()
-  }, [])
-
-  useEffect(() => {
-    localizeStore.setLocale(langCode || Constants.LANGUAGE_VI)
-  }, [langCode, localizeStore]);
-
   const handleLoginClick = () => {
     const state = getStateRedirect(process.env.REACT_APP_AWS_COGNITO_IDP_SIGNIN_URL, process.env.REACT_APP_ENVIRONMENT);
     const url = `${process.env.REACT_APP_LOGIN_V2_PATH}&redirect_uri=${process.env.REACT_APP_REDIRECT_URL}&scope=user.read&prompt=select_account&state=${state}%26response_type%3Dcode`;
@@ -134,6 +225,23 @@ function Login() {
 
   const handleChangeSelectInputs = (e) => {
     setLangCode(e ? e.value : Constants.LANGUAGE_VI)
+  }
+
+  const handleNextNewsSwiper = () => {
+    return (newsSwiperRef && newsSwiperRef.current?.swiper?.activeIndex < 15) ? newsSwiperRef.current?.swiper?.slideNext() : null;
+  }
+
+  const handlePrevNewsSwiper = () => {
+    return (newsSwiperRef && newsSwiperRef.current?.swiper?.activeIndex > 0) ? newsSwiperRef.current?.swiper?.slidePrev() : null;
+  }
+
+  const handleClickNewsCard = (id) => {
+    props.history.push({
+      pathname: `/guest-news/${id}`,
+      state: {
+        newsData
+      }
+    });
   }
 
   return (
@@ -146,7 +254,7 @@ function Login() {
             <div className="card-body p-0">
               <div className="row" style={{ height: 545 }}>
 
-                <div className="col-lg-5 bg-white-trasparent">
+                <div className="col-lg-5 bg-gray-trasparent">
                   <div className="opacity-1 wrap-left">
                     <div className="language-selector">
                       {/* <Button className={langCode === Constants.LANGUAGE_VI ? "lang-active" : ""} variant="link" onClick={(e) => setLangCode(Constants.LANGUAGE_VI)}>{t("LangViet")}</Button>|
@@ -200,6 +308,78 @@ function Login() {
                   <div className="banner-block">
                     <div className="text-center banner-title">Welcome to&nbsp;<span className="font-weight-bold">ILOVEVINGROUP!</span></div>
                   </div>
+                  <div className="banner-body">
+                    {
+                      newsData.length > 0 && <>
+                        <div className="news-event-header">
+                          <div className="news-event-title">
+                            {t("NewsAndEvent")}
+                          </div>
+                          <div>
+                            <img src={prevSlideIcon} alt="" className="slide-action-icon" onClick={handlePrevNewsSwiper} />
+                            <img src={nextSlideIcon} alt="" className="slide-action-icon" onClick={handleNextNewsSwiper} />
+                          </div>
+                        </div>
+                        <Swiper
+                          // slidesPerView={2.5}
+                          spaceBetween={20}
+                          freeMode={true}
+                          modules={[FreeMode]}
+                          rewind={true}
+                          ref={newsSwiperRef}
+                          slidesPerView="auto"
+                        >
+                          {
+                            newsData.map(news => <SwiperSlide key={news.id} style={{width: "auto"}}>
+                              <div className="news-card" onClick={() => handleClickNewsCard(news.id)}>
+                                <img className="news-img" alt="" src={news.thumbnail} />
+                                <div className="news-card-body">
+                                  <div className="title">
+                                    {news.title}
+                                  </div>
+                                  <div className="source-time-info">
+                                    <span className="source">
+                                      <img src={IconUser} alt="Source" className="icon" />&nbsp;
+                                      <span className="source-name">{news.sourceSite || ""}</span>
+                                    </span>
+                                    <span className="time">
+                                      <img src={IconTime} alt="Time" className="icon" />&nbsp;
+                                      <span className="hour">{getTimeByRawTime(news.publishedDate).time} | {getTimeByRawTime(news.publishedDate).date}</span>
+                                    </span>
+                                  </div>
+                                  <div className="description">
+                                    {news.description}
+                                  </div>
+                                </div>
+                              </div>
+                            </SwiperSlide>)
+                          }
+                        </Swiper>
+                      </>
+                    }
+                  </div>
+                  <div className="banner-footer">
+                    <div className="title">
+                      {t("PnlOfVingroup")}
+                    </div>
+                    <Swiper 
+                      rewind={true}
+                      navigation={true}
+                      modules={[Navigation]}
+                      className="pnlSwipper"
+                    >
+                      {
+                        PNL_SWIPER_LIST.map((pnlList, index) => <SwiperSlide key={index}>
+                          {
+                            pnlList.map(pnl => <a className="pnl-icon-wrapper" href={pnl.url} key={pnl.url} target="_blank" rel="noreferrer">
+                              <img src={pnl.logo} alt="" width="60%" />
+                            </a>)
+                          }
+                        </SwiperSlide>)
+                      }
+
+                    </Swiper>
+                  </div>
                   <div className="bottom-link">
                     <span>Website: https://myvingroup.vingroup.net</span>
                   </div>
@@ -214,7 +394,14 @@ function Login() {
     </Container>
     </>
   );
-
-
 }
+
+const getTimeByRawTime = rawTime => {
+  const time = moment(rawTime).isValid() ? moment(rawTime) : null
+  return {
+      time: time?.format("HH:mm") || "",
+      date: time?.format("DD/MM/YYYY") || ""
+  }
+}
+
 export default Login;

@@ -12,7 +12,7 @@ export const RouteSettings = {
   },
   authentication: {
     defaultRoute: map.Login,
-    routes: [map.Login, map.Auth, map.NewsDetailApp, map.TermPolicy, map.Maintenance],
+    routes: [map.Login, map.Auth, map.NewsDetailApp, map.TermPolicy, map.Maintenance, map.GuestNews],
   },
 };
 
@@ -32,6 +32,14 @@ export default [
       path: map.Auth,
     },
     component: lazy(() => import("./Login/authozire")),
+  },
+  {
+    key: "guest-news",
+    routeProps: {
+      exact: true,
+      path: map.GuestNews,
+    },
+    component: lazy(() => import("./GuestNews")),
   },
   {
     key: "newsdetailapp",
