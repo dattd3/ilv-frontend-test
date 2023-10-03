@@ -8,6 +8,7 @@ import IconCamera from "assets/img/icon/camera-icon.svg";
 import HOCComponent from "components/Common/HOCComponent";
 
 const CATEGORY_CODES = {
+  VIN30_CHRONICLES: "1.1",
   MIRACLES_AWARDS: "1.2",
   EVENT_PICTURE: "1.3",
   ARTS:"1.4",
@@ -25,7 +26,7 @@ function HistoryVinGroup(props) {
           <img src={IconDocument} alt="" />&nbsp;&nbsp;{t("VingroupChronicles")}
         </div>
         <div className="btn-group">
-          <a href="/vin30-chronicles" target="_blank" className="btn-link">
+          <a href={`/vingroup-cultural-gallery/${CATEGORY_CODES.VIN30_CHRONICLES}`} target="_blank" className="btn-link" rel="noreferrer">
             <button className="btn-item">
               <img src={IconPdf} alt="" />&nbsp; PDF
             </button>
