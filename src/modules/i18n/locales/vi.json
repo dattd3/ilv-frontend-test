@@ -17,7 +17,7 @@
   "LoginGuide_Note": "Trường hợp không rõ Account AD của mình, vui lòng liên hệ bộ phận HR và IT của đơn vị để kiểm tra.",
   "LoginGuideNoteSecond": "Trường hợp lỗi không đăng nhập được, bạn vui lòng xem chi tiết hướng dẫn khắc phục ",
   "LoginVersionOS" : "Phiên bản Hệ điều hành ",
-  "LoginGuideOS": "Vui lòng lựa chọn cài đặt phiên bản iOS hoặc Android",
+  "LoginGuideOS": "*Lựa chọn phiên bản iOS, Android hoặc quét mã QR Code",
   "LoginGuideQr": "Quét mã QR Code để cài đặt ứng dụng",
   "Here": "tại đây",
   "LoginSuccessful": "Đăng nhập thành công...",
@@ -147,7 +147,7 @@
   "Menu_VinfastIntroduction": "Giới thiệu VinFast",
   "Menu_VinmecIntroduction": "Giới thiệu Vinmec",
   "Menu_News": "Tin tức",
-  "NewsAndEvent": "Tin tức sự kiện",
+  "NewsAndEvent": "Tin tức & sự kiện",
   "OtherNews": "Tin tức khác",
   "BenefitRegime": "Chế độ phúc lợi",
   "BenefitNumber": "STT",
@@ -1995,5 +1995,6 @@
   "Textbook": "Sách giáo khoa",
   "StoryTelling": "Kỷ yếu",
   "InspiringShortFilm": "Phim ngắn truyền cảm hứng",
-  "CivillyVingroup": "Người Vingroup văn minh"
+  "CivillyVingroup": "Người Vingroup văn minh",
+  "PnlOfVingroup": "Các thương hiệu của Tập đoàn Vingroup"
 }
