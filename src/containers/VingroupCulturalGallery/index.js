@@ -167,8 +167,8 @@ function VingroupCulturalGalleryPage(props) {
           {isNotLoggedSharepoint ? (
             <iframe
               src={DEMO_EMBED_URL}
-              width="640"
-              height="360"
+              width="100%"
+              height="500"
               frameborder="0"
               scrolling="no"
               allowfullscreen
@@ -191,8 +191,8 @@ function VingroupCulturalGalleryPage(props) {
                   {data.map((item) => (
                     <iframe
                       src={item?.link}
-                      width="540"
-                      height="360"
+                      width="100%"
+                      height="500"
                       frameborder="0"
                       scrolling="no"
                       allowfullscreen
