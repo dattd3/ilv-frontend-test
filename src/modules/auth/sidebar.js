@@ -306,14 +306,14 @@ export const Navigation = [
     to: map.TraniningKPI,
     role: "U",
   },
-  {
-    id: 13,
-    parentId: 0,
-    icon: "c-group",
-    label: "Menu_GroupInformation",
-    to: "/announcement",
-    role: "U",
-  },
+  // {
+  //   id: 13,
+  //   parentId: 0,
+  //   icon: "c-group",
+  //   label: "Menu_GroupInformation",
+  //   to: "/announcement",
+  //   role: "U",
+  // },
   {
     id: 14,
     parentId: 13,
@@ -523,14 +523,14 @@ export const Navigation = [
     role: [Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinHoliday1, Constants.pnlVCode.VinSoftware, Constants.pnlVCode.VinMec, Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading,
       Constants.pnlVCode.VinSmart, Constants.pnlVCode.VincomRetail, Constants.pnlVCode.VinAI, Constants.pnlVCode.Vin3S, Constants.pnlVCode.VinHome]
   },
-  {
-    id: 99999,
-    parentId: 17,
-    icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
-    label: "vaccination",
-    to: map.VaccineList,
-    role: 'U'
-  },
+  // {
+  //   id: 99999,
+  //   parentId: 17,
+  //   icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+  //   label: "vaccination",
+  //   to: map.VaccineList,
+  //   role: 'U'
+  // },
 
   {
     id: 109999,
