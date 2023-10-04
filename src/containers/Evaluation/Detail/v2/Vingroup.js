@@ -558,7 +558,7 @@ const VinGroupForm = (props) => {
         return Number(totalSeftPoint).toFixed(2) < 0 || Number(totalSeftPoint).toFixed(2) > 100 || Number(totalLeadReviewPoint).toFixed(2) < 0 || Number(totalLeadReviewPoint).toFixed(2) > 100 ? false : true
     }
 
-    const isValidScoreFunc = () => {
+    const isValidScoreFunc = (actionCode) => {
         const maximumScore = 5;
         const minimumScore = 1;
         const groups = evaluationFormDetailState?.groups || []
@@ -571,7 +571,7 @@ const VinGroupForm = (props) => {
                     for (let kpiIndex = 0; kpiIndex < groupChildren?.listKPI?.length; kpiIndex++) {
                         let kpi = groupChildren?.listKPI[kpiIndex]
                         if (showByManager) {
-                            if (hasNotValue(kpi?.leadReviewPoint) || Number(kpi?.leadReviewPoint) > maximumScore || Number(kpi?.leadReviewPoint) < minimumScore) {
+                            if (actionCode == actionButton.approve && (hasNotValue(kpi?.leadReviewPoint) || Number(kpi?.leadReviewPoint) > maximumScore || Number(kpi?.leadReviewPoint) < minimumScore)) {
                                 return false
                             }
                         } else {
@@ -585,7 +585,7 @@ const VinGroupForm = (props) => {
                 for (let kpiIndex = 0; kpiIndex < group?.listKPI?.length; kpiIndex++) {
                     let kpi = group?.listKPI[kpiIndex]
                     if (showByManager) {
-                        if (hasNotValue(kpi?.leadReviewPoint) || Number(kpi?.leadReviewPoint) > maximumScore || Number(kpi?.leadReviewPoint) < minimumScore) {
+                        if (actionCode == actionButton.approve && (hasNotValue(kpi?.leadReviewPoint) || Number(kpi?.leadReviewPoint) > maximumScore || Number(kpi?.leadReviewPoint) < minimumScore)) {
                             return false
                         }
                     } else {
@@ -707,7 +707,7 @@ const VinGroupForm = (props) => {
     
         const statusModalTemp = { ...statusModal }
         const isValidTotalScore = isValidTotalScoreFunc()
-        const isValidScore = isValidScoreFunc()
+        const isValidScore = isValidScoreFunc(actionCode)
     
         if (!isValidTotalScore || !isValidScore) {
           statusModalTemp.isShow = true
@@ -752,7 +752,7 @@ const VinGroupForm = (props) => {
                     if (!showByManager) {
                         SetStatusModal(statusModalTemp)
                     } else {
-                        // updateParent(statusModalTemp)
+                        updateParent(statusModalTemp)
                     }
             } else { // Lưu, CBNV Gửi tới bước tiếp theo, CBQLTT xác nhận
                 const payload = { ...evaluationFormDetailState }
@@ -802,8 +802,6 @@ const VinGroupForm = (props) => {
     }
 
     const isOffLineType = evaluationFormDetailState?.formType === 'OFF'
-
-    console.log("evaluationFormDetailState => ", evaluationFormDetailState)
 
     return (
         <>
