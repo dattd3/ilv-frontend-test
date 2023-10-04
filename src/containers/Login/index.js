@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import axios from "axios"
 import { Swiper, SwiperSlide } from 'swiper/react';
 import moment from "moment";
-import { FreeMode, Navigation } from 'swiper/modules';
+import { FreeMode, Navigation, Autoplay } from 'swiper/modules';
 import logo from '../../assets/img/LogoVingroup.svg';
 import ic_ios from '../../assets/img/icon/ic_ios.svg';
 import ic_android from '../../assets/img/icon/ic_android.svg';
@@ -24,6 +24,10 @@ import IconVinAI from 'assets/img/icon/pnl/vinai.svg'
 import IconVinbigdata from 'assets/img/icon/pnl/vinbigdata.svg'
 import IconVinbrain from 'assets/img/icon/pnl/vinbrain.svg'
 import IconVinbus from 'assets/img/icon/pnl/vinbus.svg'
+import IconVinschool from 'assets/img/icon/pnl/vinschool.svg'
+import IconVinUni from 'assets/img/icon/pnl/vinuni.svg'
+import IconVinHMS from 'assets/img/icon/pnl/vinhms.png'
+import IconVinmec from 'assets/img/icon/pnl/vinmec.svg'
 
 import { useLocalizeStore } from '../../modules';
 import Constants from "../../commons/Constants";
@@ -41,45 +45,67 @@ const PNL_SWIPER_LIST = [
   [
     {
       logo: IconVinfast,
-      url: "#",
+      url: "https://vinfastauto.com",
     },
     {
       logo: IconES,
-      url: "#",
+      url: "https://vines.net.vn",
     },
     {
       logo: IconVingroup,
-      url: "#",
+      url: "https://vingroup.net",
     },
     {
       logo: IconVinhomes,
-      url: "#",
+      url: "https://vinhomes.vn",
     },
     {
       logo: IconVinperl,
-      url: "#",
+      url: "https://vinpearl.vn",
     },
   ],
   [
     {
       logo: IconVinAI,
-      url: "#",
+      url: "https://www.vinai.io",
     },
     {
       logo: IconVinbigdata,
-      url: "#",
+      url: "https://www.vinbigdata.com",
     },
     {
       logo: IconVingroup,
-      url: "#",
+      url: "https://vingroup.net",
     },
     {
       logo: IconVinbrain,
-      url: "#",
+      url: "https://vinbrain.net",
     },
     {
       logo: IconVinbus,
-      url: "#",
+      url: "https://vinbus.net",
+    },
+  ],
+  [
+    {
+      logo: IconVinschool,
+      url: "https://vinschool.edu.vn/",
+    },
+    {
+      logo: IconVinUni,
+      url: "https://vinuni.edu.vn/",
+    },
+    {
+      logo: IconVingroup,
+      url: "https://vingroup.net",
+    },
+    {
+      logo: IconVinHMS,
+      url: "https://vinhms.com.net",
+    },
+    {
+      logo: IconVinmec,
+      url: "https://vinmec.com",
     },
   ],
 ];
@@ -328,6 +354,7 @@ function Login(props) {
                           rewind={true}
                           ref={newsSwiperRef}
                           slidesPerView="auto"
+                          loop={true}
                         >
                           {
                             newsData.map(news => <SwiperSlide key={news.id} style={{width: "auto"}}>
@@ -365,8 +392,12 @@ function Login(props) {
                     <Swiper 
                       rewind={true}
                       navigation={true}
-                      modules={[Navigation]}
+                      modules={[Navigation, Autoplay]}
                       className="pnlSwipper"
+                      autoplay={{
+                        delay: 5000,
+                        disableOnInteraction: false,
+                      }}
                     >
                       {
                         PNL_SWIPER_LIST.map((pnlList, index) => <SwiperSlide key={index}>
@@ -377,7 +408,6 @@ function Login(props) {
                           }
                         </SwiperSlide>)
                       }
-
                     </Swiper>
                   </div>
                   <div className="bottom-link">

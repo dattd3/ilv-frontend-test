@@ -101,7 +101,7 @@ function GuestNewsPage({ match, location, history }) {
               <div className="row list-news">
                 {(newsData || [])
                   .filter((item) => item.id != id)
-                  ?.slice(0, 3)
+                  ?.slice(0, 4)
                   .map((item, i) => {
                     const news = prepareNews(item);
                     return (
