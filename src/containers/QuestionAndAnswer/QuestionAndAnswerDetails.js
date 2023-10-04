@@ -117,21 +117,6 @@ class QuestionAndAnswerDetails extends React.Component {
     this.showHistoryModal(false);
   };
 
-  handleKeyPress = (event) => {
-    if (event.key === "Enter" && event.shiftKey) {
-      return;
-    }
-
-    if (event.key === "Enter") {
-      if (this.state.comment === "") {
-        this.showStatusModal(this.props.t("EnterAnswerToContinue"));
-        return;
-      }
-      this.setState({ comment: event.target.value });
-      this.submit(true);
-    }
-  };
-
   submit = (isCloseTicket = false) => {
     let userId = localStorage.getItem("email");
     if (isCloseTicket) {
@@ -735,7 +720,6 @@ class QuestionAndAnswerDetails extends React.Component {
                         as="textarea"
                         name="comment"
                         onChange={this.handleChange.bind(this)}
-                        onKeyPress={this.handleKeyPress.bind(this)}
                       />
                     </div>
                   </div>
