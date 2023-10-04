@@ -606,7 +606,7 @@ const VinBusForm = (props) => {
         return Number(totalSeftPoint).toFixed(2) < 0 || Number(totalSeftPoint).toFixed(2) > 100 || Number(totalLeadReviewPoint).toFixed(2) < 0 || Number(totalLeadReviewPoint).toFixed(2) > 100 ? false : true
     }
 
-    const isValidScoreFunc = () => {
+    const isValidScoreFunc = (actionCode) => {
         const groups = evaluationFormDetailState?.groups || []
 
         for (let groupIndex = 0; groupIndex < groups.length; groupIndex++) {
@@ -617,7 +617,7 @@ const VinBusForm = (props) => {
                     for (let kpiIndex = 0; kpiIndex < groupChildren?.listKPI?.length; kpiIndex++) {
                         let kpi = groupChildren?.listKPI[kpiIndex]
                         if (showByManager) {
-                            if (hasNotValue(kpi?.leadReviewPoint)) {
+                            if (actionCode == actionButton.approve && hasNotValue(kpi?.leadReviewPoint)) {
                                 return false
                             }
                         } else {
@@ -631,7 +631,7 @@ const VinBusForm = (props) => {
                 for (let kpiIndex = 0; kpiIndex < group?.listKPI?.length; kpiIndex++) {
                     let kpi = group?.listKPI[kpiIndex]
                     if (showByManager) {
-                        if (hasNotValue(kpi?.leadReviewPoint)) {
+                        if (actionCode == actionButton.approve && hasNotValue(kpi?.leadReviewPoint)) {
                             return false
                         }
                     } else {
@@ -741,7 +741,7 @@ const VinBusForm = (props) => {
     
         const statusModalTemp = { ...statusModal }
         const isValidTotalScore = isValidTotalScoreFunc()
-        const isValidScore = isValidScoreFunc()
+        const isValidScore = isValidScoreFunc(actionCode)
     
         if (!isValidTotalScore || !isValidScore) {
           statusModalTemp.isShow = true
@@ -786,7 +786,7 @@ const VinBusForm = (props) => {
                     if (!showByManager) {
                         SetStatusModal(statusModalTemp)
                     } else {
-                        // updateParent(statusModalTemp)
+                        updateParent(statusModalTemp)
                     }
             } else { // Lưu, CBNV Gửi tới bước tiếp theo, CBQLTT xác nhận
                 const payload = { ...evaluationFormDetailState }
@@ -836,8 +836,6 @@ const VinBusForm = (props) => {
     }
 
     const isOffLineType = evaluationFormDetailState?.formType === 'OFF'
-
-    console.log("evaluationFormDetailState => ", evaluationFormDetailState)
 
     return (
         <>
