@@ -28,6 +28,14 @@ import IconVinschool from 'assets/img/icon/pnl/vinschool.svg'
 import IconVinUni from 'assets/img/icon/pnl/vinuni.svg'
 import IconVinHMS from 'assets/img/icon/pnl/vinhms.png'
 import IconVinmec from 'assets/img/icon/pnl/vinmec.svg'
+import IconVinits from 'assets/img/icon/pnl/vinitis.svg'
+import IconGSM from 'assets/img/icon/pnl/gsm.png'
+import IconVincons from 'assets/img/icon/pnl/vincons.svg'
+import IconVincss from 'assets/img/icon/pnl/vincss.svg'
+import IconQTT from 'assets/img/icon/pnl/qtt.png'
+import IconVTLX from 'assets/img/icon/pnl/tuonglaixanh.jpg'
+import IconVinFuture from 'assets/img/icon/pnl/vinfuture.png'
+import IconVinif from 'assets/img/icon/pnl/vinif.png'
 
 import { useLocalizeStore } from '../../modules';
 import Constants from "../../commons/Constants";
@@ -82,8 +90,8 @@ const PNL_SWIPER_LIST = [
       url: "https://vinbrain.net",
     },
     {
-      logo: IconVinbus,
-      url: "https://vinbus.net",
+      logo: IconVinits,
+      url: "https://vingroup.net",
     },
   ],
   [
@@ -106,6 +114,50 @@ const PNL_SWIPER_LIST = [
     {
       logo: IconVinmec,
       url: "https://vinmec.com",
+    },
+  ],
+  [
+    {
+      logo: IconVinbus,
+      url: "https://vinbus.vn",
+    },
+    {
+      logo: IconGSM,
+      url: "https://xanhsm.com",
+    },
+    {
+      logo: IconVingroup,
+      url: "https://vingroup.net",
+    },
+    {
+      logo: IconVincons,
+      url: "https://vingroup.net",
+    },
+    {
+      logo: IconVincss,
+      url: "https://vincss.net",
+    },
+  ],
+  [
+    {
+      logo: IconVTLX,
+      url: "https://vingroup.net",
+    },
+    {
+      logo: IconVinFuture,
+      url: "https://vinfutureprize.org",
+    },
+    {
+      logo: IconVingroup,
+      url: "https://vingroup.net",
+    },
+    {
+      logo: IconQTT,
+      url: "https://quythientam.com",
+    },
+    {
+      logo: IconVinif,
+      url: "https://vinif.org",
     },
   ],
 ];
