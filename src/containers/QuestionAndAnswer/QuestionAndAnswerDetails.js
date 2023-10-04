@@ -3,7 +3,7 @@ import axios from "axios";
 import Carousel from "react-bootstrap/Carousel";
 import SubmitQuestionModal from "./SubmitQuestionModal";
 import HistoryModal from "./HistoryModal";
-import { Container, Button } from "react-bootstrap";
+import { Container, Button, Spinner } from "react-bootstrap";
 import StatusModal from "../../components/Common/StatusModal";
 import FormControl from "react-bootstrap/FormControl";
 import SelectSupporterModal from "./SelectSupporterModal";
@@ -33,6 +33,7 @@ class QuestionAndAnswerDetails extends React.Component {
       isShowSelectSupporterModal: false,
       categories: [],
       isRatingLoading: false,
+      isLoading: false,
     };
     this.submitSelectSupporterModal =
       this.submitSelectSupporterModal.bind(this);
@@ -118,6 +119,9 @@ class QuestionAndAnswerDetails extends React.Component {
   };
 
   submit = (isCloseTicket = false) => {
+    this.setState({
+      isLoading: true,
+    });
     let userId = localStorage.getItem("email");
     if (isCloseTicket) {
       this.completeQuestion(this.state.question.id);
@@ -131,6 +135,9 @@ class QuestionAndAnswerDetails extends React.Component {
   };
 
   rejectComment = () => {
+    this.setState({
+      isLoading: true,
+    });
     let userId = localStorage.getItem("email");
     const rejectReason = this.props.t("QAAlreadyExist");
     this.completeQuestion(this.state.question.id);
@@ -165,6 +172,11 @@ class QuestionAndAnswerDetails extends React.Component {
       })
       .catch((error) => {
         callBack(t("HasErrorOccurred"));
+      })
+      .finally(() => {
+        this.setState({
+          isLoading: false,
+        });
       });
   };
 
@@ -345,7 +357,9 @@ class QuestionAndAnswerDetails extends React.Component {
       comment,
       categories,
       isRatingLoading,
+      isLoading,
     } = this.state;
+    console.log(isLoading)
     const comments = question.ticketComments;
     const isEmployeeView = question.userId === localStorage.getItem("email");
 
@@ -629,37 +643,38 @@ class QuestionAndAnswerDetails extends React.Component {
                               <b className="text-left">{t("Answer")}: </b>
                               {item.content}
                               <div className="rate-star-container">
-                                {(isEmployeeView || !!item.rated) && Array.from(Array(5).keys()).map(
-                                  (starIndex) => (
-                                    <img
-                                      key={starIndex}
-                                      src={
-                                        item.rating >= starIndex + 1 ||
-                                        item.rated >= starIndex + 1
-                                          ? IconRateStarFull
-                                          : IconRateStar
-                                      }
-                                      alt=""
-                                      className="icon-star"
-                                      style={{
-                                        opacity:
-                                          item.isExpire && !item.rated
-                                            ? 0.5
-                                            : 1,
-                                      }}
-                                      onClick={() =>
-                                        item.isExpire ||
-                                        item.rated ||
-                                        !isEmployeeView
-                                          ? {}
-                                          : this.handleChangeCommentRating(
-                                              item.id,
-                                              starIndex + 1
-                                            )
-                                      }
-                                    />
-                                  )
-                                )}
+                                {(isEmployeeView || !!item.rated) &&
+                                  Array.from(Array(5).keys()).map(
+                                    (starIndex) => (
+                                      <img
+                                        key={starIndex}
+                                        src={
+                                          item.rating >= starIndex + 1 ||
+                                          item.rated >= starIndex + 1
+                                            ? IconRateStarFull
+                                            : IconRateStar
+                                        }
+                                        alt=""
+                                        className="icon-star"
+                                        style={{
+                                          opacity:
+                                            item.isExpire && !item.rated
+                                              ? 0.5
+                                              : 1,
+                                        }}
+                                        onClick={() =>
+                                          item.isExpire ||
+                                          item.rated ||
+                                          !isEmployeeView
+                                            ? {}
+                                            : this.handleChangeCommentRating(
+                                                item.id,
+                                                starIndex + 1
+                                              )
+                                        }
+                                      />
+                                    )
+                                  )}
                                 {isEmployeeView && (
                                   <>
                                     {!item.isExpire && !item.rated && (
@@ -733,10 +748,15 @@ class QuestionAndAnswerDetails extends React.Component {
                   </Button>{" "}
                   <Button
                     variant="primary pl-4 pr-4"
-                    disabled={comment === "" ? true : false}
+                    disabled={(comment === "" || isLoading) ? true : false}
                     onClick={() => this.submit(true)}
+                    style={{ minWidth: 95 }}
                   >
-                    {t("Answer")}
+                    {this.state.isLoading ? (
+                      <Spinner animation="border" size="sm" />
+                    ) : (
+                      <>{t("Answer")}</>
+                    )}
                   </Button>{" "}
                 </div>
               </div>
