@@ -4,11 +4,19 @@ import { getCurrentLanguage, getValueParamByQueryString } from "commons/Utils";
 import axios from "axios";
 import { getRequestConfigs } from "commons/commonFunctions";
 import { useTranslation } from "react-i18next";
+import Gallery from "react-photo-gallery";
 
 const DEMO_IMAGE_URL =
   "https://vingroupjsc.sharepoint.com/:i:/r/sites/hrdx/Shared%20Documents/General/Quote+11.jpg";
 
+const DEMO_EMBED_URL =
+  "https://vingroupjsc.sharepoint.com/sites/hrdx/_layouts/15/embed.aspx?UniqueId=cdd2a63c-4fe3-4b04-8b6b-7793440bc15b";
+
 const VINGROUP_CULTURE_CATEGORIES = [
+  {
+    code: "1.1",
+    label: "Vin30Chronicles",
+  },
   {
     code: "1.2",
     label: "MiraclesAndAwards",
@@ -71,16 +79,29 @@ const VINGROUP_CULTURE_CATEGORIES = [
   },
 ];
 
+const ImageTypes = ["Image", "Poster"];
+
 function VingroupCulturalGalleryPage(props) {
   const { t } = useTranslation();
   const [testUrl, setTestUrl] = useState(DEMO_IMAGE_URL);
   const [intervalId, setIntervalId] = useState(null);
   const [isNotLoggedSharepoint, setIsNotLoggedSharepoint] = useState(false);
   const [data, setData] = useState([]);
+  const [photoData, setPhotoData] = useState([]);
   const [isFetched, setIsFetched] = useState(false);
 
   const categoryCode = props.match.params.code;
   const fileType = getValueParamByQueryString(window.location.search, "type");
+
+  useEffect(() => {
+    const processPhotoData = async () => {
+      const _data = await generateGalleryItems(data);
+      setPhotoData(_data);
+    };
+    if (ImageTypes.includes(fileType) && data.length > 0) {
+      processPhotoData();
+    }
+  }, [fileType, data]);
 
   useEffect(() => {
     const _interval = setInterval(() => {
@@ -128,9 +149,9 @@ function VingroupCulturalGalleryPage(props) {
 
   const onTestImageLoad = () => {
     clearInterval(intervalId);
+    setIsNotLoggedSharepoint(false);
     isNotLoggedSharepoint && reloadIframe();
   };
-  console.log(data)
 
   return (
     <div className="vingroup-cultural-page">
@@ -143,33 +164,27 @@ function VingroupCulturalGalleryPage(props) {
       {isFetched && data.length === 0 && <div>{t("NodataExport")}</div>}
       {data.length > 0 && (
         <div className="gallery-container">
-          {categoryCode === "2.1" ? (
-            <>
-              {data.map((item) => (
-                  <img
-                    src={item?.link}
-                    width="540"
-                    height="360"
-                    key={item.keyFrame}
-                    alt=""
-                  />
-                ))
-              }
-            </>
+          {isNotLoggedSharepoint ? (
+            <iframe
+              src={DEMO_EMBED_URL}
+              width="640"
+              height="360"
+              frameborder="0"
+              scrolling="no"
+              allowfullscreen
+              title={"DEMO"}
+            />
           ) : (
             <>
-              {isNotLoggedSharepoint ? (
+              {ImageTypes.includes(fileType) ? (
                 <>
-                  <iframe
-                    src={data?.[0]?.link}
-                    width="640"
-                    height="360"
-                    frameborder="0"
-                    scrolling="no"
-                    allowfullscreen
-                    title={data[0].fileName}
-                    key={data[0].keyFrame}
-                  />
+                  {photoData.length > 0 && (
+                    <Gallery
+                      photos={photoData}
+                      direction="column"
+                      columns={photoData.length > 3 ? 3 : 2}
+                    />
+                  )}
                 </>
               ) : (
                 <>
@@ -201,5 +216,29 @@ function VingroupCulturalGalleryPage(props) {
     </div>
   );
 }
+
+const generateGalleryItems = async (data = []) => {
+  const results = [];
+  for (let i = 0; i < data.length; i++) {
+    try {
+      const imgMeta = await getMeta(data[i].link);
+      results.push({
+        src: data[i].link,
+        width: imgMeta.naturalWidth,
+        height: imgMeta.naturalHeight,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  return results;
+};
+
+const getMeta = async (url) => {
+  const img = new Image();
+  img.src = url;
+  await img.decode();
+  return img;
+};
 
 export default HOCComponent(VingroupCulturalGalleryPage);
