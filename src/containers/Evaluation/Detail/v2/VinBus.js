@@ -327,7 +327,7 @@ const EvaluationGroup = ({ isWorkResultBlock, group, status, isEdit, showByManag
         <div className={`part-block ${isWorkResultBlock ? 'work-result' : 'attitude'}`}>
             <div className="title">{`${JSON.parse(group?.groupName || '{}')[languageCodeMapping[currentLocale]]}`} <span className="red">({group?.groupWeight || 0}%)</span></div>
             {
-                group?.listGroupConfig > 0 && (
+                group?.listGroupConfig?.length > 0 && (
                     <div className="wrap-score-table">
                         <table className={'vin-group'}>
                             <thead>
