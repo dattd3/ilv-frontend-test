@@ -1,60 +1,96 @@
+import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-
 import IconDocument from "assets/img/icon/document-blue-icon.svg";
-import IconBluePlay from "assets/img/icon/Icon-blue-play.svg";
-import IconPdf from "assets/img/icon/pdf-icon.svg";
 import HOCComponent from "components/Common/HOCComponent";
+import { getCurrentLanguage } from "commons/Utils";
+import axios from "axios";
+import { getRequestConfigs } from "commons/commonFunctions";
+import { generateAvailableTypeComp } from "./utils";
 
 const CATEGORY_CODES = {
   TEXTBOOK: "3.1",
   STORYTELLING: "3.2",
-  INSPIRING_SHORT_FILM:"3.3",
-}
+  INSPIRING_SHORT_FILM: "3.3",
+};
 
 function SixCoreValuesPage() {
+  const [availableTypes, setAvailableTypes] = useState({});
+
   const { t } = useTranslation();
 
-  return <div className="vingroup-cultural-page">
-    <h1 className="content-page-header">{t("SixCoreValues")}</h1>
-    <div className="content-page-body">
-      <div className="content-item">
-        <div className="title-container">
-          <img src={IconDocument} alt="" />&nbsp;&nbsp;{t("Textbook")}
+  useEffect(() => {
+    const url = `${
+      process.env.REACT_APP_REQUEST_URL
+    }api/vanhoavin/list?language=${getCurrentLanguage()}&categoryCode=3.1,3.2,3.3`;
+    axios.get(url, getRequestConfigs()).then((response) => {
+      const respData = response.data?.data;
+      if (respData.length > 0) {
+        setAvailableTypes({
+          [CATEGORY_CODES.TEXTBOOK]: respData
+            ?.filter((item) => item.categoryCode === CATEGORY_CODES.TEXTBOOK)
+            ?.map((item) => item.fileType),
+          [CATEGORY_CODES.STORYTELLING]: respData
+            ?.filter(
+              (item) => item.categoryCode === CATEGORY_CODES.STORYTELLING
+            )
+            ?.map((item) => item.fileType),
+          [CATEGORY_CODES.INSPIRING_SHORT_FILM]: respData
+            ?.filter(
+              (item) =>
+                item.categoryCode === CATEGORY_CODES.INSPIRING_SHORT_FILM
+            )
+            ?.map((item) => item.fileType),
+        });
+      }
+    });
+  }, []);
+
+  return (
+    <div className="vingroup-cultural-page">
+      <h1 className="content-page-header">{t("SixCoreValues")}</h1>
+      <div className="content-page-body">
+        <div className="content-item">
+          <div className="title-container">
+            <img src={IconDocument} alt="" />
+            &nbsp;&nbsp;{t("Textbook")}
+          </div>
+          <div className="btn-group">
+            {generateAvailableTypeComp(
+              availableTypes,
+              CATEGORY_CODES.TEXTBOOK,
+              t
+            )}
+          </div>
         </div>
-        <div className="btn-group">
-          <a href={`/vingroup-cultural-gallery/${CATEGORY_CODES.TEXTBOOK}?type=Pdf`} target="_blank" className="btn-link" rel="noreferrer">
-            <button className="btn-item">
-              <img src={IconPdf} alt="" />&nbsp; PDF
-            </button>
-          </a>
+        <div className="content-item">
+          <div className="title-container">
+            <img src={IconDocument} alt="" />
+            &nbsp;&nbsp;{t("StoryTelling")}
+          </div>
+          <div className="btn-group">
+            {generateAvailableTypeComp(
+              availableTypes,
+              CATEGORY_CODES.STORYTELLING,
+              t
+            )}
+          </div>
         </div>
-      </div>
-      <div className="content-item">
-        <div className="title-container">
-          <img src={IconDocument} alt="" />&nbsp;&nbsp;{t("StoryTelling")}
-        </div>
-        <div className="btn-group">
-          <a href={`/vingroup-cultural-gallery/${CATEGORY_CODES.STORYTELLING}?type=Pdf`} target="_blank" className="btn-link" rel="noreferrer">
-            <button className="btn-item">
-              <img src={IconPdf} alt="" />&nbsp; PDF
-            </button>
-          </a>
-        </div>
-      </div>
-      <div className="content-item">
-        <div className="title-container">
-          <img src={IconDocument} alt="" />&nbsp;&nbsp;{t("InspiringShortFilm")}
-        </div>
-        <div className="btn-group">
-          <a href={`/vingroup-cultural-gallery/${CATEGORY_CODES.INSPIRING_SHORT_FILM}?type=Video`} target="_blank" className="btn-link" rel="noreferrer">
-            <button className="btn-item">
-              <img src={IconBluePlay} alt="" />&nbsp; Video
-            </button>
-          </a>
+        <div className="content-item">
+          <div className="title-container">
+            <img src={IconDocument} alt="" />
+            &nbsp;&nbsp;{t("InspiringShortFilm")}
+          </div>
+          <div className="btn-group">
+            {generateAvailableTypeComp(
+              availableTypes,
+              CATEGORY_CODES.INSPIRING_SHORT_FILM,
+              t
+            )}
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  );
 }
 
-export default HOCComponent(SixCoreValuesPage)
+export default HOCComponent(SixCoreValuesPage);

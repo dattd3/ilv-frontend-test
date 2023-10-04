@@ -1,61 +1,94 @@
+import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
 import IconDocument from "assets/img/icon/document-blue-icon.svg";
-import IconBluePlay from "assets/img/icon/Icon-blue-play.svg";
-import IconPdf from "assets/img/icon/pdf-icon.svg";
-import IconImage from "assets/img/icon/image-icon.svg";
 import HOCComponent from "components/Common/HOCComponent";
+import { generateAvailableTypeComp } from "./utils";
+import { getCurrentLanguage } from "commons/Utils";
+import axios from "axios";
+import { getRequestConfigs } from "commons/commonFunctions";
 
 const CATEGORY_CODES = {
-  TEXTBOOK: "3.1",
-  STORYTELLING: "3.2",
-  INSPIRING_SHORT_FILM:"3.3",
-}
+  INSPIRING_SHORT_FILM: "5.1",
+  CIVILLY_VINGROUP: "5.2",
+};
 
 function WorkingEnvironmentPage() {
+  const [availableTypes, setAvailableTypes] = useState({});
   const { t } = useTranslation();
 
-  return <div className="vingroup-cultural-page">
-    <h1 className="content-page-header">{t("VingroupWorkingEnvironment")}</h1>
-    <div className="content-page-body">
-    <div className="content-item">
-        <div className="title-container">
-          <img src={IconDocument} alt="" />&nbsp;&nbsp;{t("InspiringShortFilm")}
+  useEffect(() => {
+    const url = `${
+      process.env.REACT_APP_REQUEST_URL
+    }api/vanhoavin/list?language=${getCurrentLanguage()}&categoryCode=5.1,5.2`;
+    axios.get(url, getRequestConfigs()).then((response) => {
+      const respData = response.data?.data;
+      if (respData.length > 0) {
+        setAvailableTypes({
+          [CATEGORY_CODES.TEXTBOOK]: respData
+            ?.filter((item) => item.categoryCode === CATEGORY_CODES.TEXTBOOK)
+            ?.map((item) => item.fileType),
+          [CATEGORY_CODES.STORYTELLING]: respData
+            ?.filter(
+              (item) => item.categoryCode === CATEGORY_CODES.STORYTELLING
+            )
+            ?.map((item) => item.fileType),
+          [CATEGORY_CODES.INSPIRING_SHORT_FILM]: respData
+            ?.filter(
+              (item) =>
+                item.categoryCode === CATEGORY_CODES.INSPIRING_SHORT_FILM
+            )
+            ?.map((item) => item.fileType),
+        });
+      }
+    });
+  }, []);
+
+  return (
+    <div className="vingroup-cultural-page">
+      <h1 className="content-page-header">{t("VingroupWorkingEnvironment")}</h1>
+      <div className="content-page-body">
+        <div className="content-item">
+          <div className="title-container">
+            <img src={IconDocument} alt="" />
+            &nbsp;&nbsp;{t("InspiringShortFilm")}
+          </div>
+          <div className="btn-group">
+            {generateAvailableTypeComp(
+              availableTypes,
+              CATEGORY_CODES.INSPIRING_SHORT_FILM,
+              t
+            )}
+          </div>
         </div>
-        <div className="btn-group">
-          <a href={`/vingroup-cultural-gallery/${CATEGORY_CODES.INSPIRING_SHORT_FILM}?type=Video`} target="_blank" className="btn-link" rel="noreferrer">
-            <button className="btn-item">
-              <img src={IconBluePlay} alt="" />&nbsp; Video
-            </button>
-          </a>
+        <div className="content-item">
+          <div className="title-container">
+            <img src={IconDocument} alt="" />
+            &nbsp;&nbsp;{t("CivillyVingroup")}
+          </div>
+          <div className="btn-group">
+            {generateAvailableTypeComp(
+              availableTypes,
+              CATEGORY_CODES.CIVILLY_VINGROUP,
+              t
+            )}
+          </div>
         </div>
-      </div>
-      <div className="content-item">
-        <div className="title-container">
-          <img src={IconDocument} alt="" />&nbsp;&nbsp;{t("CivillyVingroup")}
-        </div>
-        <div className="btn-group">
-          <a href={`/vingroup-cultural-gallery/${CATEGORY_CODES.STORYTELLING}?type=Image`} target="_blank" className="btn-link" rel="noreferrer">
-            <button className="btn-item">
-              <img src={IconPdf} alt="" />&nbsp; PDF
-            </button>
-          </a>
-        </div>
-      </div>
-      <div className="content-item">
+        {/* <div className="content-item">
         <div className="title-container">
           <img src={IconDocument} alt="" />&nbsp;&nbsp;{t("Banner")}
         </div>
         <div className="btn-group">
-          <a href={`/vingroup-cultural-gallery/${CATEGORY_CODES.STORYTELLING}?type=Image`} target="_blank" className="btn-link" rel="noreferrer">
+          <a href={`/vingroup-cultural-gallery/${CATEGORY_CODES.STORYTELLING}?type=Image`}  className="btn-link" rel="noreferrer">
             <button className="btn-item">
               <img src={IconImage} alt="" />&nbsp; {t("Photo")}
             </button>
           </a>
         </div>
+      </div> */}
       </div>
     </div>
-  </div>
+  );
 }
 
-export default HOCComponent(WorkingEnvironmentPage)
+export default HOCComponent(WorkingEnvironmentPage);
