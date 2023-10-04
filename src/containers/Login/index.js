@@ -28,6 +28,10 @@ import IconVinschool from 'assets/img/icon/pnl/vinschool.svg'
 import IconVinUni from 'assets/img/icon/pnl/vinuni.svg'
 import IconVinHMS from 'assets/img/icon/pnl/vinhms.png'
 import IconVinmec from 'assets/img/icon/pnl/vinmec.svg'
+import IconVinits from 'assets/img/icon/pnl/vinitis.svg'
+import IconGSM from 'assets/img/icon/pnl/gsm.png'
+import IconVincons from 'assets/img/icon/pnl/vincons.svg'
+import IconVincss from 'assets/img/icon/pnl/vincss.svg'
 
 import { useLocalizeStore } from '../../modules';
 import Constants from "../../commons/Constants";
@@ -82,18 +86,18 @@ const PNL_SWIPER_LIST = [
       url: "https://vinbrain.net",
     },
     {
-      logo: IconVinbus,
-      url: "https://vinbus.net",
+      logo: IconVinits,
+      url: "#",
     },
   ],
   [
     {
       logo: IconVinschool,
-      url: "https://vinschool.edu.vn/",
+      url: "https://vinschool.edu.vn",
     },
     {
       logo: IconVinUni,
-      url: "https://vinuni.edu.vn/",
+      url: "https://vinuni.edu.vn",
     },
     {
       logo: IconVingroup,
@@ -106,6 +110,28 @@ const PNL_SWIPER_LIST = [
     {
       logo: IconVinmec,
       url: "https://vinmec.com",
+    },
+  ],
+  [
+    {
+      logo: IconVinAI,
+      url: "https://www.vinai.io",
+    },
+    {
+      logo: IconVinbrain,
+      url: "https://vinbrain.net",
+    },
+    {
+      logo: IconVingroup,
+      url: "https://vingroup.net",
+    },
+    {
+      logo: IconVinHMS,
+      url: "https://vinhms.com.net",
+    },
+    {
+      logo: IconVincss,
+      url: "https://vincss.net",
     },
   ],
 ];
