@@ -1176,76 +1176,111 @@ function EvaluationApproval(props) {
                     </div>
                 }
                 {
-                    activeTab === batchApprovalTabCode &&
-                    <div className="card shadow batch-approval-data">
-                    {
-                        evaluationData?.data?.length > 0 ?
-                        <>
-                        <div className="wrap-table-list-evaluation">
-                            <div className="select-item-block">
-                                <input type="checkbox" checked={isSelectedAll} id="check-all" name="check-all" onChange={(e) => handleCheckboxChange(e, null)} />
-                                <label htmlFor="check-all">{t("EvaluationSelectAll")}</label>
-                            </div>
-                            <table className='table-list-evaluation'>
-                                <thead>
-                                    <tr>
-                                        <th className="c-user-info" colSpan="2"></th>
-                                        <th className="text-center text-uppercase c-attitude" colSpan="2">{t("EvaluationDetailAttitude")}</th>
-                                        <th className="text-center text-uppercase c-work-results" colSpan="2">{t("EvaluationDetailPartWORKINGPERFORMANCERESULT")}</th>
-                                        <th className="text-center text-uppercase highlight-third c-summary" colSpan="2">{t("EvaluationSummary")}</th>
-                                    </tr>
-                                    <tr>
-                                        <th className="c-user-info" colSpan="2"><div className="user-info">{t("EvaluationEmployeeFullName")}</div></th>
-                                        <th className="c-self-assessment"><div className="text-center self-assessment">{t("EvaluationSelfAssessment")}</div></th>
-                                        <th className="highlight-first c-cbql-assessment"><div className="text-center cbql-assessment">{t("EvaluationDetailManagerAssessment")}</div></th>
-                                        <th className="c-self-assessment"><div className="text-center self-assessment">{t("EvaluationSelfAssessment")}</div></th>
-                                        <th className="highlight-first c-cbql-assessment"><div className="text-center cbql-assessment">{t("EvaluationDetailManagerAssessment")}</div></th>
-                                        <th className="highlight-second c-self-assessment"><div className="text-center self-assessment">{t("EvaluationSelfAssessment")}</div></th>
-                                        <th className="highlight-third c-cbql-assessment"><div className="text-center cbql-assessment">{t("EvaluationDetailManagerAssessment")}</div></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {
-                                        evaluationData?.data.map((item, i) => {
-                                            let attitudeData = item?.listGroup?.filter(item => item.groupTargetCode == 'G1')?.length > 0 ? item?.listGroup?.filter(item => item.groupTargetCode == 'G1')[0] : null
-                                            let workResultData = item?.listGroup?.filter(item => item.groupTargetCode == 'G2')?.length > 0 ? item?.listGroup?.filter(item => item.groupTargetCode == 'G2')[0] : null
-                                            return <Fragment key={i}>
-                                                        <tr className="divider"></tr>
-                                                        <tr>
-                                                            <td className="c-check"><div className="check"><input type="checkbox" checked={item?.isSelected || false} onChange={(e) => handleCheckboxChange(e, i)} /></div></td>
-                                                            <td className="c-full-name"><div className="full-name">{item?.fullName || ''} ({item?.username || ''})</div></td>
-                                                            <td className="text-center c-self-assessment">{attitudeData?.seftPoint?.toFixed(2) || 0}</td>
-                                                            <td className="text-center highlight-first c-cbql-assessment">{attitudeData?.leadReviewPoint?.toFixed(2) || 0}</td>
-                                                            <td className="text-center c-self-assessment">{workResultData?.seftPoint?.toFixed(2) || 0}</td>
-                                                            <td className="text-center highlight-first c-cbql-assessment">{workResultData?.leadReviewPoint?.toFixed(2) || 0}</td>
-                                                            <td className="text-center highlight-second c-self-assessment">{item?.totalSeftPoint?.toFixed(2) || 0}</td>
-                                                            <td className="text-center highlight-third c-cbql-assessment">{item?.totalLeadReviewPoint?.toFixed(2) || 0}</td>
-                                                        </tr>
-                                                    </Fragment>
-                                        })
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
-                        <div className="bottom-region">
-                            <div className="customize-display">
-                                <label>{t("EvaluationShow")}</label>
-                                <select value={paging.batchApproval.pageSize || listPageSizes[0]} onChange={(e) => handleChangePageSize('batchApproval', e?.target?.value)}>
-                                    {
-                                        listPageSizes.map((page, i) => {
-                                            return <option value={page} key={i}>{page}</option>
-                                        })
-                                    }
-                                </select>
-                            </div>
-                            <div className="paging-block">
-                                <CustomPaging pageSize={parseInt(paging.batchApproval.pageSize)} onChangePage={(page) => handleChangePage('batchApproval', page)} totalRecords={evaluationData?.total} needRefresh={refresh} />
+                    activeTab === batchApprovalTabCode && 
+                    (
+                        <div className="card shadow batch-evaluation-360">
+                            <div className="wrap-table-batch-evaluation-360">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th className="col-customize evaluation-content">Nội dung đánh giá</th>
+                                            <th className="col-customize user">
+                                                <div className="user">
+                                                    <div className="full-name">Nguyễn Hoàng Minh Duy</div>
+                                                    <div>(3651641)</div>
+                                                </div>
+                                            </th>
+                                            <th className="col-customize user">
+                                                <div className="user">
+                                                    <div className="full-name">Nguyễn Đức Chiến</div>
+                                                    <div>(3651642)</div>
+                                                </div>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td className="col-customize evaluation-content">
+
+                                            </td>
+                                            <td>
+                                                
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
-                        </>
-                        : <h6 className="alert alert-danger not-found-data" role="alert">{t("NoDataFound")}</h6>
-                    }
-                    </div>
+                    )
+                    // <div className="card shadow batch-approval-data">
+                    // {
+                    //     evaluationData?.data?.length > 0 ?
+                    //     <>
+                    //     <div className="wrap-table-list-evaluation">
+                    //         <div className="select-item-block">
+                    //             <input type="checkbox" checked={isSelectedAll} id="check-all" name="check-all" onChange={(e) => handleCheckboxChange(e, null)} />
+                    //             <label htmlFor="check-all">{t("EvaluationSelectAll")}</label>
+                    //         </div>
+                    //         <table className='table-list-evaluation'>
+                    //             <thead>
+                    //                 <tr>
+                    //                     <th className="c-user-info" colSpan="2"></th>
+                    //                     <th className="text-center text-uppercase c-attitude" colSpan="2">{t("EvaluationDetailAttitude")}</th>
+                    //                     <th className="text-center text-uppercase c-work-results" colSpan="2">{t("EvaluationDetailPartWORKINGPERFORMANCERESULT")}</th>
+                    //                     <th className="text-center text-uppercase highlight-third c-summary" colSpan="2">{t("EvaluationSummary")}</th>
+                    //                 </tr>
+                    //                 <tr>
+                    //                     <th className="c-user-info" colSpan="2"><div className="user-info">{t("EvaluationEmployeeFullName")}</div></th>
+                    //                     <th className="c-self-assessment"><div className="text-center self-assessment">{t("EvaluationSelfAssessment")}</div></th>
+                    //                     <th className="highlight-first c-cbql-assessment"><div className="text-center cbql-assessment">{t("EvaluationDetailManagerAssessment")}</div></th>
+                    //                     <th className="c-self-assessment"><div className="text-center self-assessment">{t("EvaluationSelfAssessment")}</div></th>
+                    //                     <th className="highlight-first c-cbql-assessment"><div className="text-center cbql-assessment">{t("EvaluationDetailManagerAssessment")}</div></th>
+                    //                     <th className="highlight-second c-self-assessment"><div className="text-center self-assessment">{t("EvaluationSelfAssessment")}</div></th>
+                    //                     <th className="highlight-third c-cbql-assessment"><div className="text-center cbql-assessment">{t("EvaluationDetailManagerAssessment")}</div></th>
+                    //                 </tr>
+                    //             </thead>
+                    //             <tbody>
+                    //                 {
+                    //                     evaluationData?.data.map((item, i) => {
+                    //                         let attitudeData = item?.listGroup?.filter(item => item.groupTargetCode == 'G1')?.length > 0 ? item?.listGroup?.filter(item => item.groupTargetCode == 'G1')[0] : null
+                    //                         let workResultData = item?.listGroup?.filter(item => item.groupTargetCode == 'G2')?.length > 0 ? item?.listGroup?.filter(item => item.groupTargetCode == 'G2')[0] : null
+                    //                         return <Fragment key={i}>
+                    //                                     <tr className="divider"></tr>
+                    //                                     <tr>
+                    //                                         <td className="c-check"><div className="check"><input type="checkbox" checked={item?.isSelected || false} onChange={(e) => handleCheckboxChange(e, i)} /></div></td>
+                    //                                         <td className="c-full-name"><div className="full-name">{item?.fullName || ''} ({item?.username || ''})</div></td>
+                    //                                         <td className="text-center c-self-assessment">{attitudeData?.seftPoint?.toFixed(2) || 0}</td>
+                    //                                         <td className="text-center highlight-first c-cbql-assessment">{attitudeData?.leadReviewPoint?.toFixed(2) || 0}</td>
+                    //                                         <td className="text-center c-self-assessment">{workResultData?.seftPoint?.toFixed(2) || 0}</td>
+                    //                                         <td className="text-center highlight-first c-cbql-assessment">{workResultData?.leadReviewPoint?.toFixed(2) || 0}</td>
+                    //                                         <td className="text-center highlight-second c-self-assessment">{item?.totalSeftPoint?.toFixed(2) || 0}</td>
+                    //                                         <td className="text-center highlight-third c-cbql-assessment">{item?.totalLeadReviewPoint?.toFixed(2) || 0}</td>
+                    //                                     </tr>
+                    //                                 </Fragment>
+                    //                     })
+                    //                 }
+                    //             </tbody>
+                    //         </table>
+                    //     </div>
+                    //     <div className="bottom-region">
+                    //         <div className="customize-display">
+                    //             <label>{t("EvaluationShow")}</label>
+                    //             <select value={paging.batchApproval.pageSize || listPageSizes[0]} onChange={(e) => handleChangePageSize('batchApproval', e?.target?.value)}>
+                    //                 {
+                    //                     listPageSizes.map((page, i) => {
+                    //                         return <option value={page} key={i}>{page}</option>
+                    //                     })
+                    //                 }
+                    //             </select>
+                    //         </div>
+                    //         <div className="paging-block">
+                    //             <CustomPaging pageSize={parseInt(paging.batchApproval.pageSize)} onChangePage={(page) => handleChangePage('batchApproval', page)} totalRecords={evaluationData?.total} needRefresh={refresh} />
+                    //         </div>
+                    //     </div>
+                    //     </>
+                    //     : <h6 className="alert alert-danger not-found-data" role="alert">{t("NoDataFound")}</h6>
+                    // }
+                    // </div>
                 }
                 {
                     activeTab === batchApprovalTabCode && evaluationData?.data?.length > 0 && 
