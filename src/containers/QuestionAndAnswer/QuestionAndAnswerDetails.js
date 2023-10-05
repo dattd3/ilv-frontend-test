@@ -173,11 +173,6 @@ class QuestionAndAnswerDetails extends React.Component {
       .catch((error) => {
         callBack(t("HasErrorOccurred"));
       })
-      .finally(() => {
-        this.setState({
-          isLoading: false,
-        });
-      });
   };
 
   completeQuestion = (questionId) => {

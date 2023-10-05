@@ -5,7 +5,7 @@ import HOCComponent from "components/Common/HOCComponent";
 import { getCurrentLanguage } from "commons/Utils";
 import axios from "axios";
 import { getRequestConfigs } from "commons/commonFunctions";
-import { generateAvailableTypeComp } from "./utils";
+import ButtonAction from "./ButtonActionComponent";
 
 const CATEGORY_CODES = {
   VIN30_CHRONICLES: "1.1",
@@ -63,11 +63,10 @@ function HistoryVinGroup(props) {
             &nbsp;&nbsp;{t("VingroupChronicles")}
           </div>
           <div className="btn-group">
-            {generateAvailableTypeComp(
-              availableTypes,
-              CATEGORY_CODES.VIN30_CHRONICLES,
-              t
-            )}
+            <ButtonAction
+              availableTypes={availableTypes}
+              cateCode={CATEGORY_CODES.VIN30_CHRONICLES}
+            />
           </div>
         </div>
         <div className="content-item">
@@ -76,11 +75,10 @@ function HistoryVinGroup(props) {
             &nbsp;&nbsp;{t("MiraclesAndAwards")}
           </div>
           <div className="btn-group">
-            {generateAvailableTypeComp(
-              availableTypes,
-              CATEGORY_CODES.MIRACLES_AWARDS,
-              t
-            )}
+            <ButtonAction
+              availableTypes={availableTypes}
+              cateCode={CATEGORY_CODES.MIRACLES_AWARDS}
+            />
           </div>
         </div>
         <div className="content-item">
@@ -89,11 +87,10 @@ function HistoryVinGroup(props) {
             &nbsp;&nbsp;{t("EventPicture")}
           </div>
           <div className="btn-group">
-            {generateAvailableTypeComp(
-              availableTypes,
-              CATEGORY_CODES.EVENT_PICTURE,
-              t
-            )}
+            <ButtonAction
+              availableTypes={availableTypes}
+              cateCode={CATEGORY_CODES.EVENT_PICTURE}
+            />
           </div>
         </div>
         <div className="content-item">
@@ -102,7 +99,10 @@ function HistoryVinGroup(props) {
             &nbsp;&nbsp;{t("Arts")}
           </div>
           <div className="btn-group">
-            {generateAvailableTypeComp(availableTypes, CATEGORY_CODES.ARTS, t)}
+            <ButtonAction
+              availableTypes={availableTypes}
+              cateCode={CATEGORY_CODES.ARTS}
+            />{" "}
           </div>
         </div>
         <div className="content-item">
@@ -111,7 +111,10 @@ function HistoryVinGroup(props) {
             &nbsp;&nbsp;{t("AboutPnL")}
           </div>
           <div className="btn-group">
-            {generateAvailableTypeComp(availableTypes, CATEGORY_CODES.ABOUT_PL, t)}
+            <ButtonAction
+              availableTypes={availableTypes}
+              cateCode={CATEGORY_CODES.ABOUT_PL}
+            />{" "}
           </div>
         </div>
       </div>
