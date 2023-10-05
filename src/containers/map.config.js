@@ -148,6 +148,7 @@ const MapConfig = {
   SixGovernancePrinciples: "/6-governance-principles",
   WorkingEnvironment: "/working-environment",
   VingroupCulturalGallery: "/vingroup-cultural-gallery/:code",
+  CreateSocialDistributeInfo: "/insurance-manager/social-contribute-info"
 };
 
 export default MapConfig;
