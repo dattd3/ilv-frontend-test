@@ -21,10 +21,10 @@ const ImageGallery = ({ data }) => {
     const tasks = photoData.map((item) => getMeta(item.link));
 
     const responses = await Promise.allSettled(tasks);
-    const results = responses.map((item, index) => ({
+    const results = responses?.filter(item => item.status === "fulfilled" && item.value)?.map((item, index) => ({
       src: photoData[index]?.link,
-      width: item.value.naturalWidth,
-      height: item.value.naturalHeight,
+      width: item.value?.naturalWidth,
+      height: item.value?.naturalHeight,
     }));
     setIsImageLoading(false);
     return results;
