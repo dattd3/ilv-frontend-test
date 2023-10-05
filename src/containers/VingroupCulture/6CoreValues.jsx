@@ -5,7 +5,7 @@ import HOCComponent from "components/Common/HOCComponent";
 import { getCurrentLanguage } from "commons/Utils";
 import axios from "axios";
 import { getRequestConfigs } from "commons/commonFunctions";
-import { generateAvailableTypeComp } from "./utils";
+import ButtonAction from "./ButtonActionComponent";
 
 const CATEGORY_CODES = {
   TEXTBOOK: "3.1",
@@ -55,11 +55,7 @@ function SixCoreValuesPage() {
             &nbsp;&nbsp;{t("Textbook")}
           </div>
           <div className="btn-group">
-            {generateAvailableTypeComp(
-              availableTypes,
-              CATEGORY_CODES.TEXTBOOK,
-              t
-            )}
+            <ButtonAction availableTypes={availableTypes} cateCode={CATEGORY_CODES.TEXTBOOK} />
           </div>
         </div>
         <div className="content-item">
@@ -68,11 +64,7 @@ function SixCoreValuesPage() {
             &nbsp;&nbsp;{t("StoryTelling")}
           </div>
           <div className="btn-group">
-            {generateAvailableTypeComp(
-              availableTypes,
-              CATEGORY_CODES.STORYTELLING,
-              t
-            )}
+            <ButtonAction availableTypes={availableTypes} cateCode={CATEGORY_CODES.STORYTELLING} />
           </div>
         </div>
         <div className="content-item">
@@ -81,11 +73,7 @@ function SixCoreValuesPage() {
             &nbsp;&nbsp;{t("InspiringShortFilm")}
           </div>
           <div className="btn-group">
-            {generateAvailableTypeComp(
-              availableTypes,
-              CATEGORY_CODES.INSPIRING_SHORT_FILM,
-              t
-            )}
+            <ButtonAction availableTypes={availableTypes} cateCode={CATEGORY_CODES.INSPIRING_SHORT_FILM} />
           </div>
         </div>
       </div>

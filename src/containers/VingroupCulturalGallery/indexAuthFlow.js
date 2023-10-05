@@ -4,8 +4,7 @@ import { getCurrentLanguage, getValueParamByQueryString } from "commons/Utils";
 import axios from "axios";
 import { getRequestConfigs } from "commons/commonFunctions";
 import { useTranslation } from "react-i18next";
-import PdfGallery from "./PdfGallery";
-import ImageGallery from "./ImageGallery";
+import Gallery from "react-photo-gallery";
 
 const DEMO_IMAGE_URL =
   "https://vingroupjsc.sharepoint.com/:i:/r/sites/hrdx/Shared%20Documents/General/Quote+11.jpg";
@@ -84,24 +83,22 @@ const ImageTypes = ["Image", "Poster"];
 
 function VingroupCulturalGalleryPage(props) {
   const { t } = useTranslation();
-  const [testUrl, setTestUrl] = useState(DEMO_IMAGE_URL);
-  const [intervalId, setIntervalId] = useState(null);
-  const [isNotLoggedSharepoint, setIsNotLoggedSharepoint] = useState(false);
   const [data, setData] = useState([]);
+  const [photoData, setPhotoData] = useState([]);
   const [isFetched, setIsFetched] = useState(false);
 
   const categoryCode = props.match.params.code;
   const fileType = getValueParamByQueryString(window.location.search, "type");
 
   useEffect(() => {
-    const _interval = setInterval(() => {
-      setTestUrl(testUrl + `?${new Date().getTime()}`);
-    }, 5000);
-    setIntervalId(_interval);
-    fetchData();
-
-    return () => clearInterval(_interval);
-  }, []);
+    const processPhotoData = async () => {
+      const _data = await generateGalleryItems(data);
+      setPhotoData(_data);
+    };
+    if (ImageTypes.includes(fileType) && data.length > 0) {
+      processPhotoData();
+    }
+  }, [fileType, data]);
 
   const fetchData = async () => {
     try {
@@ -124,15 +121,6 @@ function VingroupCulturalGalleryPage(props) {
     }
   };
 
-  const onTestImageError = () => {
-    setIsNotLoggedSharepoint(true);
-  };
-
-  const onTestImageLoad = () => {
-    clearInterval(intervalId);
-    setIsNotLoggedSharepoint(false);
-  };
-
   return (
     <div className="vingroup-cultural-page">
       <h1 className="content-page-header">
@@ -144,55 +132,61 @@ function VingroupCulturalGalleryPage(props) {
       {isFetched && data.length === 0 && <div>{t("NodataExport")}</div>}
       {data.length > 0 && (
         <div className="gallery-container">
-          {isNotLoggedSharepoint ? (
-            <iframe
-              src={DEMO_EMBED_URL}
-              width="100%"
-              height="500"
-              frameborder="0"
-              scrolling="no"
-              allowfullscreen
-              title={"DEMO"}
-            />
+          {ImageTypes.includes(fileType) ? (
+            <>
+              {photoData.length > 0 && (
+                <Gallery
+                  photos={photoData}
+                  direction="column"
+                  columns={photoData.length > 3 ? 3 : 2}
+                />
+              )}
+            </>
           ) : (
             <>
-              {ImageTypes.includes(fileType) ? (
-                <ImageGallery data={data} />
-              ) : (
-                <>
-                  {fileType === "Pdf" ? (
-                    <PdfGallery data={data} />
-                  ) : (
-                    <>
-                      {data.map((item) => (
-                        <iframe
-                          src={item?.link}
-                          width="31%"
-                          height={350}
-                          frameborder="0"
-                          scrolling="no"
-                          allowfullscreen
-                          allow="fullscreen;"
-                          title={item.fileName}
-                        />
-                      ))}
-                    </>
-                  )}
-                </>
-              )}
+              {data.map((item) => (
+                <iframe
+                  src={item?.link}
+                  width={data.length > 3 ? "31%" : "48%"}
+                  height="400"
+                  frameborder="0"
+                  scrolling="no"
+                  allowfullscreen
+                  allow="fullscreen;"
+                  title={item.fileName}
+                  key={item.keyFrame}
+                />
+              ))}
             </>
           )}
         </div>
       )}
-      <img
-        style={{ display: "none" }}
-        src={testUrl}
-        onError={onTestImageError}
-        onLoad={onTestImageLoad}
-        alt=""
-      />
     </div>
   );
 }
+
+const generateGalleryItems = async (data = []) => {
+  const results = [];
+  for (let i = 0; i < data.length; i++) {
+    try {
+      const imgMeta = await getMeta(data[i].link);
+      results.push({
+        src: data[i].link,
+        width: imgMeta.naturalWidth,
+        height: imgMeta.naturalHeight,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  return results;
+};
+
+const getMeta = async (url) => {
+  const img = new Image();
+  img.src = url;
+  await img.decode();
+  return img;
+};
 
 export default HOCComponent(VingroupCulturalGalleryPage);

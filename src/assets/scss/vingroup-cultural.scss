@@ -40,14 +40,20 @@
     }
   }
   .gallery-container {
-    text-align: center;
+    // text-align: center;
     iframe {
       margin-top: 16px;
       margin-right: 16px;
     }
-    img {
-      margin-top: 16px;
-      margin-right: 16px;
-    }
+  }
+  .back-block {
+    cursor: pointer;
+    margin-bottom: 0;
+  }
+  .pdf-file-title {
+    padding: 16px;
+    border-bottom: 1px solid rgb(243, 242, 241);
+    background: #fff;
+    cursor: pointer;
   }
 }
