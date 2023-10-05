@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import HOCComponent from "components/Common/HOCComponent";
 import { getCurrentLanguage, getValueParamByQueryString } from "commons/Utils";
 import axios from "axios";
@@ -8,10 +8,10 @@ import PdfGallery from "./PdfGallery";
 import ImageGallery from "./ImageGallery";
 
 const DEMO_IMAGE_URL =
-  "https://vingroupjsc.sharepoint.com/:i:/r/sites/hrdx/Shared%20Documents/General/Quote+11.jpg";
+  "https://vingroupjsc.sharepoint.com/sites/TDVG-Video-Podcast/Shared%20Documents/D%E1%BB%B1%20%C3%A1n%20c%E1%BA%A3i%20ti%E1%BA%BFn%20ILVG/M%E1%BB%A5c%20V%C4%83n%20h%C3%B3a%20Vingroup/%5BDEV%5DFile%20check%20quy%E1%BB%81n.%20Vui%20l%C3%B2ng%20kh%C3%B4ng%20x%C3%B3a%20file%20n%C3%A0y.png";
 
 const DEMO_EMBED_URL =
-  "https://vingroupjsc.sharepoint.com/sites/hrdx/_layouts/15/embed.aspx?UniqueId=cdd2a63c-4fe3-4b04-8b6b-7793440bc15b";
+  "https://vingroupjsc.sharepoint.com/sites/TDVG-Video-Podcast/_layouts/15/embed.aspx?UniqueId=276723bf-dbb1-48cd-b302-7040a8dfff5c";
 
 const VINGROUP_CULTURE_CATEGORIES = [
   {
