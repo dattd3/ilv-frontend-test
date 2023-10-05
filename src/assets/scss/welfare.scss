@@ -396,8 +396,24 @@
   .value-new {
     background: #FEE7D0;
   }
+  .value-old {
+    background-color: #F2F2F2;
+  }
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    gap: 30px;
+  }
   .value-delete {
     background: #F5E3E4;
+  }
+  .box-color {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    margin-right: 5px;
   }
 }
 .social-contribute {
