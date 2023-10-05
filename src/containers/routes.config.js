@@ -908,6 +908,14 @@ const ROUTES = [
           },
           component: lazy(() => import("./VingroupCulture/WorkingEnvironment")),
         },
+        {
+          key: "registration-social-contribution",
+          routeProps: {
+            exact: true,
+            path: map.CreateSocialDistributeInfo,
+          },
+          component: lazy(() => import("./Welfare/InsuranceSocialContribute/CreateSocialContributeInfo")),
+        },
       ],
     },
   },
