@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 
 import IconDocument from "assets/img/icon/document-blue-icon.svg";
 import HOCComponent from "components/Common/HOCComponent";
-import { generateAvailableTypeComp } from "./utils";
+import ButtonAction from "./ButtonActionComponent";
 import { getCurrentLanguage } from "commons/Utils";
 import axios from "axios";
 import { getRequestConfigs } from "commons/commonFunctions";
@@ -54,11 +54,10 @@ function WorkingEnvironmentPage() {
             &nbsp;&nbsp;{t("InspiringShortFilm")}
           </div>
           <div className="btn-group">
-            {generateAvailableTypeComp(
-              availableTypes,
-              CATEGORY_CODES.INSPIRING_SHORT_FILM,
-              t
-            )}
+          <ButtonAction
+              availableTypes={availableTypes}
+              cateCode={CATEGORY_CODES.INSPIRING_SHORT_FILM}
+            />
           </div>
         </div>
         <div className="content-item">
@@ -67,25 +66,12 @@ function WorkingEnvironmentPage() {
             &nbsp;&nbsp;{t("CivillyVingroup")}
           </div>
           <div className="btn-group">
-            {generateAvailableTypeComp(
-              availableTypes,
-              CATEGORY_CODES.CIVILLY_VINGROUP,
-              t
-            )}
+          <ButtonAction
+              availableTypes={availableTypes}
+              cateCode={CATEGORY_CODES.CIVILLY_VINGROUP}
+            />
           </div>
         </div>
-        {/* <div className="content-item">
-        <div className="title-container">
-          <img src={IconDocument} alt="" />&nbsp;&nbsp;{t("Banner")}
-        </div>
-        <div className="btn-group">
-          <a href={`/vingroup-cultural-gallery/${CATEGORY_CODES.STORYTELLING}?type=Image`}  className="btn-link" rel="noreferrer">
-            <button className="btn-item">
-              <img src={IconImage} alt="" />&nbsp; {t("Photo")}
-            </button>
-          </a>
-        </div>
-      </div> */}
       </div>
     </div>
   );

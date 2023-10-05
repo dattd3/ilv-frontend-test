@@ -3,6 +3,7 @@ const MapConfig = {
   Dashboard: "/dashboard",
   Login: "/login",
   Auth: "/auth",
+  AuthSharepoint: "/auth-sharepoint",
   TermPolicy: "/policy",
   GuestNews: "/guest-news/:id",
 

@@ -35,6 +35,25 @@ const getStateRedirect = (url, environment) => {
     if(item) return item.ConfigureId || '0'
 }
 
+const getStateSharepointRedirect = (url, environment) => {
+  let mapping = [
+      { ConfigureId: "8CF7WUiX-e425-264A-953m-QlXs4BsL5Fe", Url: "http://localhost:3000/auth-sharepoint"},
+      { ConfigureId: "CiSfEo7c-e425-264A-953m-834002a3vh", Url: "https://myvingroup-uat.cloudvst.net/auth-sharepoint"},
+      { ConfigureId: "mcI3v7hn-e425-264A-953m-834002a3td", Url: "https://myvingroup.cloudvst.net/auth-sharepoint"},
+
+  ]
+
+  if (environment === 'PRODUCTION') {
+      mapping = [
+          { ConfigureId: "8CF7WUiX-e425-264A-953m-QlXs4BsL5Fe", Url: "http://localhost:3000/auth"},
+          { ConfigureId: "Oe9Cr7eG-58f9-93i4-6347-d33PRJ2Oe2", Url: "https://myvingroup.vingroup.net/auth-sharepoint"},
+      ]
+  }
+
+  const item = mapping.find(ele => ele.Url == url);
+  if(item) return item.ConfigureId || '0'
+}
+
 const checkVersionPnLSameAsVinhome = (moduleType = 1, ...otherPnl) => {
     const pnlAvaiable = [...Constants.MODULE_COMPANY_AVAILABE[moduleType], ...otherPnl]; 
     return checkIsExactPnL(...pnlAvaiable);
@@ -42,4 +61,4 @@ const checkVersionPnLSameAsVinhome = (moduleType = 1, ...otherPnl) => {
 
 const IS_VINFAST = () => checkIsExactPnL(Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading);
 
-export { getRequestConfigs, checkIsExactPnL, getStateRedirect, checkVersionPnLSameAsVinhome, IS_VINFAST }
+export { getRequestConfigs, checkIsExactPnL, getStateRedirect, checkVersionPnLSameAsVinhome, IS_VINFAST, getStateSharepointRedirect }
