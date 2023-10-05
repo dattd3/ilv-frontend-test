@@ -330,7 +330,7 @@ function Login(props) {
         <Col className="col-xl-12 col-lg-12 col-md-12">
           <div className="card o-hidden border-0 shadow-lg">
             <div className="card-body p-0">
-              <div className="row" style={{ height: 545 }}>
+              <div className="row" style={{ height: 618 }}>
 
                 <div className="col-lg-5 bg-gray-trasparent">
                   <div className="opacity-1 wrap-left">
