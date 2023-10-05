@@ -61,6 +61,16 @@ const DetailSocailContributeComponent: FC<IDetailSocialContributeInfoProps> = ({
         <span style={{ fontWeight: "100" }}>annv8</span>
       </div>
 
+      <h5 className="pt-0">{'THÔNG TIN ĐĂNG KÝ CHỈNH SỬA'}</h5>
+      <div className="box shadow-sm cbnv mb-4">
+        <ul className="d-flex">
+            <li className="d-flex align-items-center"><span className="box-color value-old"></span><span>{t("Record")}</span></li>
+            <li className="d-flex align-items-center"><span className="box-color value-update"></span><span>{t("UpdateInformation")}</span></li>
+            <li className="d-flex align-items-center"><span className="box-color value-new"></span><span>{t("NewInformation")}</span></li>
+            <li className="d-flex align-items-center"><span className="box-color value-delete"></span><span>{t("RemovedInfo")}</span></li>
+        </ul>
+      </div>
+
       <div className="row">
         <div className="col-6">
           <h5 className={`${isCreateMode ? 'pt-0' : ''}`}>
