@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import IconBack from "assets/img/icon/Icon-Arrow-Left.svg";
 
 const PdfGallery = ({ data }) => {
-  const [fileSelectedIndex, setFileSelectedIndex] = useState(0);
+  const [fileSelectedIndex, setFileSelectedIndex] = useState(-1);
   const { t } = useTranslation();
 
   return (
