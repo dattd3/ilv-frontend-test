@@ -66,14 +66,6 @@ const ROUTES = [
     contentProps: {
       routes: [
         {
-          key: "auth-sharepoint",
-          routeProps: {
-            exact: true,
-            path: map.AuthSharepoint,
-          },
-          component: lazy(() => import("./Login/authSharepoint")),
-        },
-        {
           key: "dashboard",
           routeProps: {
             exact: true,
