@@ -312,7 +312,7 @@
                 border-radius: 4px;
                 font-style: italic;
             }
-            .vin-bus {
+            .vin-bus, .formula {
                 .invalid-message {
                     margin: 10px 0 0 0;
                     width: 100% !important;
@@ -583,7 +583,7 @@
                                 padding: 5px;
                             }
                         }
-                        &.vin-bus {
+                        &.vin-bus, &.formula {
                             th {
                                 background: #F9F9F9!important;
                                 color: #000000;
@@ -783,7 +783,7 @@
                                 padding: 5px;
                             }
                         }
-                        &.vin-bus {
+                        &.vin-bus, &.formula {
                             th {
                                 background: #F9F9F9;
                             }
