@@ -879,26 +879,35 @@ function EvaluationDetail(props) {
   }
 
   const componentMapping = (companyCode) => {
-    switch (true) {
-      case [Constants.pnlVCode.VinBus].includes(companyCode) :
-          return (
-            <VinBusForm 
-              evaluationFormDetail={evaluationFormDetail}
-              showByManager={showByManager}
-              version={version}
-              updateParent={updateParent}
-            />
-          )
-      default:
-        return (
-          <VinGroupForm 
-            evaluationFormDetail={evaluationFormDetail}
-            showByManager={showByManager}
-            version={version}
-            updateParent={updateParent}
-          />
-        )
-    }
+    // switch (true) {
+    //   case [Constants.pnlVCode.VinBus].includes(companyCode) :
+    //       return (
+    //         <VinBusForm 
+    //           evaluationFormDetail={evaluationFormDetail}
+    //           showByManager={showByManager}
+    //           version={version}
+    //           updateParent={updateParent}
+    //         />
+    //       )
+    //   default:
+    //     return (
+    //       <VinGroupForm 
+    //         evaluationFormDetail={evaluationFormDetail}
+    //         showByManager={showByManager}
+    //         version={version}
+    //         updateParent={updateParent}
+    //       />
+    //     )
+    // }
+
+    return (
+      <VinGroupForm 
+        evaluationFormDetail={evaluationFormDetail}
+        showByManager={showByManager}
+        version={version}
+        updateParent={updateParent}
+      />
+    )
   }
 
   return (
