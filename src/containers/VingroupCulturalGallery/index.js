@@ -168,7 +168,7 @@ function VingroupCulturalGalleryPage(props) {
                         <iframe
                           src={item?.link}
                           width="31%"
-                          height={350}
+                          height={320}
                           frameborder="0"
                           scrolling="no"
                           allowfullscreen
