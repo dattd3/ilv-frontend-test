@@ -16,7 +16,7 @@ export const RouteSettings = {
   },
 };
 
-export default [
+const ROUTES = [
   {
     key: "login",
     routeProps: {
@@ -65,6 +65,14 @@ export default [
     component: lazy(() => import("./Main/Main")),
     contentProps: {
       routes: [
+        {
+          key: "auth-sharepoint",
+          routeProps: {
+            exact: true,
+            path: map.AuthSharepoint,
+          },
+          component: lazy(() => import("./Login/authSharepoint")),
+        },
         {
           key: "dashboard",
           routeProps: {
@@ -808,9 +816,9 @@ export default [
           key: "vingroup-history",
           routeProps: {
             exact: true,
-            path: map.HistoryVingroup
+            path: map.Vin30Chronicles
           },
-          component: lazy(() => import("./HistoryVinGroup/index"))
+          component: lazy(() => import("./Vin30Chronicles/index"))
         },
         {
           key: "registration-internal-payment",
@@ -836,7 +844,57 @@ export default [
           },
           component: lazy(() => import("./Corporation/News/EmployeePrivilegeDetail")),
         },
+        {
+          key: "vingroup-history",
+          routeProps: {
+            exact: true,
+            path: map.HistoryVingroup,
+          },
+          component: lazy(() => import("./VingroupCulture/VingroupHistory")),
+        },
+        {
+          key: "vingroup-cultural-gallery",
+          routeProps: {
+            exact: true,
+            path: map.VingroupCulturalGallery
+          },
+          component: lazy(() => import("./VingroupCulturalGallery"))
+        },
+        {
+          key: "vingroup-culture",
+          routeProps: {
+            exact: true,
+            path: map.VingroupCulture,
+          },
+          component: lazy(() => import("./VingroupCulture/VingroupCulture")),
+        },
+        {
+          key: "6-core-values",
+          routeProps: {
+            exact: true,
+            path: map.SixCoreValues,
+          },
+          component: lazy(() => import("./VingroupCulture/6CoreValues")),
+        },
+        {
+          key: "6-governance-principles",
+          routeProps: {
+            exact: true,
+            path: map.SixGovernancePrinciples,
+          },
+          component: lazy(() => import("./VingroupCulture/6GovernancePrinciples")),
+        },
+        {
+          key: "working-environment",
+          routeProps: {
+            exact: true,
+            path: map.WorkingEnvironment,
+          },
+          component: lazy(() => import("./VingroupCulture/WorkingEnvironment")),
+        },
       ],
     },
   },
 ];
+
+export default ROUTES;
