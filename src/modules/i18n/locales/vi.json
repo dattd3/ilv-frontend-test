@@ -472,7 +472,7 @@
   "OpenVacancy": "Vị trí đang tuyển dụng",
   "OtBonus": "Tiền làm thêm ngoài giờ",
   "OtherBonus": "Các khoản chi trả khác",
-  "GrossOtherBonus": "Thưởng khác (GROSS)",
+  "GrossOtherBonus": "Thưởng khác (GROSSUP từ khoản Thưởng khác NET tương ứng)",
   "NetOtherBonusExceedRoomQuota": "Thưởng khác (NET) vượt khoán phòng",
   "OtherDeductions": "Các khoản khấu trừ khác",
   "OtherIncome": "Các khoản thu nhập khác",
