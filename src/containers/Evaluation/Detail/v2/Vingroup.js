@@ -5,7 +5,7 @@ import purify from "dompurify"
 import _ from 'lodash'
 import { actionButton, processStep, languageCodeMapping, evaluationStatus, scores } from '../../Constants'
 import { getRequestConfigurations } from "commons/Utils"
-import { hasNotValue } from "containers/Evaluation/Utils"
+import { hasNotValue, calculateScore, calculateRating } from "containers/Evaluation/Utils"
 import Constants from "commons/Constants"
 import Buttons from "../common/Buttons"
 import LoadingModal from 'components/Common/LoadingModal'
@@ -271,9 +271,163 @@ const WorkResultKpiItem = ({ kpi, deviant, status, isEdit, showByManager, groupI
     )
 }
 
+const WorkResultKpiItemForFormula = ({ kpi, deviant, status, isEdit, showByManager, groupIndex, kpiIndex, groupChildrenLv1Index, errors, isDisableEmployeeComment = false, isDisableManagerComment = false, handleInputChange }) => {
+    const { t } = useTranslation()
+    const errorRealResult = (groupChildrenLv1Index !== null && groupChildrenLv1Index !== undefined) ? errors[`${groupIndex}_${groupChildrenLv1Index}_${kpiIndex}_realResult`] : errors[`${groupIndex}_${kpiIndex}_realResult`]
+    const errorLeadRealResult = (groupChildrenLv1Index !== null && groupChildrenLv1Index !== undefined) ? errors[`${groupIndex}_${groupChildrenLv1Index}_${kpiIndex}_leadRealResult`] : errors[`${groupIndex}_${kpiIndex}_leadRealResult`]
+
+    return (
+        <div className="evaluation-item">
+            <div className="title">{`${JSON.parse(kpi?.targetName || '{}')[languageCodeMapping[currentLocale]]}`}</div>
+            <div className="wrap-score-table">
+                <table className="formula">
+                    <thead>
+                        <tr>
+                            <th className="measurement"><span>{t("EvaluationDetailPartLevelOfPerformance")}<span className="note">({t("EvaluationDetailPartByScore")})</span></span></th>
+                            <th className="text-center proportion"><span>{t("EvaluationDetailPartWeight")} %</span></th>
+                            <th className="text-center target"><span>{t("EvaluationDetailPartTarget")}</span></th>
+                            <th className="text-center self-assessment"><span>{t("Kết quả thực tế CBNV đánh giá")}</span>{!showByManager && <span className="required">(*)</span>}</th>
+                            <th className="text-center qltt-assessment"><span>{t("Kết quả thực tế CBQL đánh giá")}</span>{showByManager && <span className="required">(*)</span>}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td className="measurement">
+                                {
+                                    kpi?.jobDetail && (
+                                        <ul className="first">
+                                            <li>{kpi?.jobDetail}</li>
+                                        </ul>
+                                    )
+                                }
+                                <ul className="second">
+                                    <li>{!kpi?.metric1 ? '--' : kpi?.metric1}</li>
+                                    <li>{!kpi?.metric2 ? '--' : kpi?.metric2}</li>
+                                    <li>{!kpi?.metric3 ? '--' : kpi?.metric3}</li>
+                                    <li>{!kpi?.metric4 ? '--' : kpi?.metric4}</li>
+                                    <li>{!kpi?.metric5 ? '--' : kpi?.metric5}</li>
+                                </ul>
+                            </td>
+                            <td className="text-center proportion"><span>{kpi?.weight}%</span></td>
+                            <td className="text-center target"><span>{kpi?.target}</span></td>
+                            <td className="text-center self-assessment">
+                                <div className="data">
+                                    {
+                                        !showByManager && status == evaluationStatus.launch && isEdit
+                                        ? (
+                                            <>
+                                                <div>
+                                                    <input 
+                                                        className="value" 
+                                                        type="text" 
+                                                        placeholder={t("Nhập 0 - 100")} 
+                                                        value={kpi?.realResult ?? ''} 
+                                                        onChange={e => handleInputChange(groupIndex, groupChildrenLv1Index, kpiIndex, 'realResult', e, true)} />
+                                                </div>
+                                                { errorRealResult && <div className="alert alert-danger invalid-message" role="alert">{ errorRealResult }</div> }
+                                                <div>
+                                                    <span className="value label">{ kpi?.seftPoint ?? '' }</span>
+                                                </div>
+                                            </>
+                                        )
+                                        : (
+                                            <>
+                                                <div>
+                                                    <span className="value label">{ kpi?.realResult ?? '' }</span>
+                                                </div>
+                                                <div>
+                                                    <span className="value label">{ kpi?.seftPoint ?? '' }</span>
+                                                </div>
+                                            </>
+                                        )
+                                    }
+                                </div>
+                            </td>
+                            <td className="text-center qltt-assessment">
+                                <div className="data">
+                                    {
+                                        showByManager && status == evaluationStatus.selfAssessment && isEdit
+                                        ? (
+                                            <>
+                                                <div>
+                                                    <input 
+                                                        className="value" 
+                                                        type="text" 
+                                                        placeholder={t("Nhập 0 - 100")} 
+                                                        value={kpi?.leadRealResult ?? ''} 
+                                                        onChange={e => handleInputChange(groupIndex, groupChildrenLv1Index, kpiIndex, 'leadRealResult', e, true)} />
+                                                </div>
+                                                { errorLeadRealResult && <div className="alert alert-danger invalid-message" role="alert">{ errorLeadRealResult }</div> }
+                                                <div>
+                                                    <span className="value label">{ kpi?.leadReviewPoint ?? '' }</span>
+                                                </div>
+                                            </>
+                                        )
+                                        : (
+                                            <>
+                                                <div>
+                                                    <span className="value label">{ kpi?.leadRealResult ?? '' }</span>
+                                                </div>
+                                                <div>
+                                                    <span className="value label">{ kpi?.leadReviewPoint ?? '' }</span>
+                                                </div>
+                                            </>
+                                        )
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div className="comment">
+                <div className="self">
+                <p>{t("EvaluationDetailPartAttitudeCommentOfEmployee")}</p>
+                {
+                    isDisableEmployeeComment
+                    ? (
+                        <div className="comment-content" dangerouslySetInnerHTML={{
+                            __html: purify.sanitize(kpi?.seftOpinion || ""),
+                        }} />
+                    )
+                    : (
+                        <textarea 
+                            rows={3} 
+                            placeholder={isEdit ? !(showByManager || status != evaluationStatus.launch) ? t("EvaluationDetailPartSelectScoreInput") : '' : ''} 
+                            value={kpi?.seftOpinion || ""} 
+                            onChange={e => handleInputChange(groupIndex, groupChildrenLv1Index, kpiIndex, 'seftOpinion', e, true)} 
+                            disabled={isDisableEmployeeComment} />
+                    )
+                }
+                </div>
+                <div className="qltt">
+                <p>{t("EvaluationDetailPartAttitudeCommentOfManager")}</p>
+                {
+                    isDisableManagerComment
+                    ? (
+                        <div className="comment-content" dangerouslySetInnerHTML={{
+                            __html: purify.sanitize(kpi?.leaderReviewOpinion || ""),
+                        }} />
+                    )
+                    : (
+                        <textarea 
+                            rows={3} 
+                            placeholder={isEdit ? !(!showByManager || (showByManager && Number(status) >= Number(evaluationStatus.qlttAssessment))) ? t("EvaluationDetailPartSelectScoreInput") : '' : ''} 
+                            value={kpi?.leaderReviewOpinion || ""} 
+                            onChange={e => handleInputChange(groupIndex, groupChildrenLv1Index, kpiIndex, 'leaderReviewOpinion', e, true)} 
+                            disabled={isDisableManagerComment} />
+                    )
+                }
+                </div>
+            </div>
+        </div>
+    )
+}
+
 const EvaluationGroup = ({ isWorkResultBlock, group, status, isEdit, showByManager, groupIndex, isDisableEmployeeComment, isDisableManagerComment, errors, handleInputChange }) => {
     const { t } = useTranslation()
     const hasGroupChildrenLv1 = group?.groupChildren?.length > 0
+    const isFormula = group?.caculateType === 'CT' // Là công thức (Hiện tại đang áp dụng cho VinBus)
 
     const renderListKPIs = (listKPIs = [], groupChildIndex, isWorkResultBlock = false, showDivider = false) => {
         return (
@@ -282,9 +436,9 @@ const EvaluationGroup = ({ isWorkResultBlock, group, status, isEdit, showByManag
                 return (
                     <React.Fragment key={`i-${groupIndex}-${groupChildIndex || 0}-${kIndex}`}>
                         {
-                            isWorkResultBlock
+                            isFormula 
                             ? (
-                                <WorkResultKpiItem
+                                <WorkResultKpiItemForFormula 
                                     kpi={kpi}
                                     deviant={deviant}
                                     status={status}
@@ -298,22 +452,41 @@ const EvaluationGroup = ({ isWorkResultBlock, group, status, isEdit, showByManag
                                     isDisableManagerComment={isDisableManagerComment}
                                     handleInputChange={handleInputChange}
                                 />
-                            )
+                            ) 
                             : (
-                                <OtherKpiItem
-                                    kpi={kpi}
-                                    deviant={deviant}
-                                    status={status}
-                                    isEdit={isEdit}
-                                    showByManager={showByManager}
-                                    groupIndex={groupIndex}
-                                    kpiIndex={kIndex}
-                                    groupChildrenLv1Index={groupChildIndex}
-                                    errors={errors}
-                                    isDisableEmployeeComment={isDisableEmployeeComment}
-                                    isDisableManagerComment={isDisableManagerComment}
-                                    handleInputChange={handleInputChange}
-                                />
+                                isWorkResultBlock
+                                ? (
+                                    <WorkResultKpiItem
+                                        kpi={kpi}
+                                        deviant={deviant}
+                                        status={status}
+                                        isEdit={isEdit}
+                                        showByManager={showByManager}
+                                        groupIndex={groupIndex}
+                                        kpiIndex={kIndex}
+                                        groupChildrenLv1Index={groupChildIndex}
+                                        errors={errors}
+                                        isDisableEmployeeComment={isDisableEmployeeComment}
+                                        isDisableManagerComment={isDisableManagerComment}
+                                        handleInputChange={handleInputChange}
+                                    />
+                                )
+                                : (
+                                    <OtherKpiItem
+                                        kpi={kpi}
+                                        deviant={deviant}
+                                        status={status}
+                                        isEdit={isEdit}
+                                        showByManager={showByManager}
+                                        groupIndex={groupIndex}
+                                        kpiIndex={kIndex}
+                                        groupChildrenLv1Index={groupChildIndex}
+                                        errors={errors}
+                                        isDisableEmployeeComment={isDisableEmployeeComment}
+                                        isDisableManagerComment={isDisableManagerComment}
+                                        handleInputChange={handleInputChange}
+                                    />
+                                )
                             )
                         }
                         { showDivider && (<div className="divider" />)}
@@ -429,17 +602,65 @@ const VinGroupForm = (props) => {
         setBottom(bottom)
     }
 
-    const handleInputChange = (groupIndex, groupChildrenLv1Index, kpiIndex, key, e) => {
+    const handleInputChange = (groupIndex, groupChildrenLv1Index, kpiIndex, key, e, isFormula = false) => {
         const val = e?.target?.value || ""
-        if (['seftPoint', 'leadReviewPoint'].includes(key) && (!(/^\d*$/.test(Number(val))) || val.includes('.'))) {
-            return
+
+        if (isFormula) {
+            if (['realResult', 'leadRealResult'].includes(key) 
+                && (
+                !(/^[0-9][0-9,\.]*$/.test(Number(val))) 
+                || Number(val) > 100 
+                || (val?.split('.')[1] && val?.split('.')[1]?.length > 2) 
+                || (Number(val) === 0 && !val?.includes('.') && val?.length > 1)
+                )
+            ) {
+                return
+            }
+        } else {
+            if (['seftPoint', 'leadReviewPoint'].includes(key) && (!(/^\d*$/.test(Number(val))) || val.includes('.'))) {
+                return
+            }
         }
 
         const evaluationFormDetailClone = {...evaluationFormDetailState}
         if (groupChildrenLv1Index !== null && groupChildrenLv1Index !== undefined) {
             evaluationFormDetailClone.groups[groupIndex].groupChildren[groupChildrenLv1Index].listKPI[kpiIndex][key] = val
+            if (isFormula) {
+                if (key === 'realResult') {
+                    evaluationFormDetailClone.groups[groupIndex].groupChildren[groupChildrenLv1Index].listKPI[kpiIndex]['seftPoint'] = calculateScore(
+                        evaluationFormDetailClone.groups[groupIndex].groupChildren[groupChildrenLv1Index].listKPI[kpiIndex]?.formulaCode,
+                        evaluationFormDetailClone.groups[groupIndex].groupChildren[groupChildrenLv1Index].listKPI[kpiIndex]?.targetValue,
+                        evaluationFormDetailClone.groups[groupIndex].groupChildren[groupChildrenLv1Index].listKPI[kpiIndex]?.weight,
+                        val
+                    )
+                }
+                if (key === 'leadRealResult') {
+                    evaluationFormDetailClone.groups[groupIndex].groupChildren[groupChildrenLv1Index].listKPI[kpiIndex]['leadReviewPoint'] = calculateScore(
+                        evaluationFormDetailClone.groups[groupIndex].groupChildren[groupChildrenLv1Index].listKPI[kpiIndex]?.formulaCode,
+                        evaluationFormDetailClone.groups[groupIndex].groupChildren[groupChildrenLv1Index].listKPI[kpiIndex]?.targetValue,
+                        evaluationFormDetailClone.groups[groupIndex].groupChildren[groupChildrenLv1Index].listKPI[kpiIndex]?.weight,
+                        val
+                    )
+                }
+            }
         } else {
             evaluationFormDetailClone.groups[groupIndex].listKPI[kpiIndex][key] = val
+            if (key === 'realResult') {
+                evaluationFormDetailClone.groups[groupIndex].listKPI[kpiIndex]['seftPoint'] = calculateScore(
+                    evaluationFormDetailClone.groups[groupIndex].listKPI[kpiIndex]?.formulaCode,
+                    evaluationFormDetailClone.groups[groupIndex].listKPI[kpiIndex]?.targetValue,
+                    evaluationFormDetailClone.groups[groupIndex].listKPI[kpiIndex]?.weight,
+                    val
+                )
+            }
+            if (key === 'leadRealResult') {
+                evaluationFormDetailClone.groups[groupIndex].listKPI[kpiIndex]['leadReviewPoint'] = calculateScore(
+                    evaluationFormDetailClone.groups[groupIndex].listKPI[kpiIndex]?.formulaCode,
+                    evaluationFormDetailClone.groups[groupIndex].listKPI[kpiIndex]?.targetValue,
+                    evaluationFormDetailClone.groups[groupIndex].listKPI[kpiIndex]?.weight,
+                    val
+                )
+            }
         }
 
         let totalQuestionsAnswered = 0
@@ -448,10 +669,10 @@ const VinGroupForm = (props) => {
                 let questionsAnswered = 0
                 if (groupChildrenLv1Index !== null && groupChildrenLv1Index !== undefined) {
                     questionsAnswered = (current?.listKPI || []).reduce((subInitial, subCurrent) => {
-                        subInitial += (subCurrent?.leadReviewPoint) ? 1 : 0
+                        subInitial += (subCurrent?.leadReviewPoint || (isFormula && subCurrent?.leadRealResult)) ? 1 : 0
                         if (subCurrent?.listKPI?.length > 0) {
                             const subQuestionsAnswered = (subCurrent?.listKPI || []).reduce((res, item) => {
-                                res += (item?.leadReviewPoint) ? 1 : 0
+                                res += (item?.leadReviewPoint || (isFormula && item?.leadRealResult)) ? 1 : 0
                                 return res
                             }, 0)
                             subInitial += subQuestionsAnswered
@@ -460,7 +681,7 @@ const VinGroupForm = (props) => {
                     }, 0)
                 } else {
                     questionsAnswered = (current?.listKPI || []).reduce((subInitial, subCurrent) => {
-                        subInitial += (subCurrent?.leadReviewPoint) ? 1 : 0
+                        subInitial += (subCurrent?.leadReviewPoint || (isFormula && subCurrent?.leadRealResult)) ? 1 : 0
                         return subInitial
                     }, 0)
                 }
@@ -472,10 +693,10 @@ const VinGroupForm = (props) => {
                 let questionsAnswered = 0
                 if (groupChildrenLv1Index !== null && groupChildrenLv1Index !== undefined) {
                     questionsAnswered = (current?.listKPI || []).reduce((subInitial, subCurrent) => {
-                        subInitial += (subCurrent?.seftPoint) ? 1 : 0
+                        subInitial += (subCurrent?.seftPoint || (isFormula && subCurrent?.realResult)) ? 1 : 0
                         if (subCurrent?.listKPI?.length > 0) {
                             const subQuestionsAnswered = (subCurrent?.listKPI || []).reduce((res, item) => {
-                                res += (item?.seftPoint) ? 1 : 0
+                                res += (item?.seftPoint || (isFormula && item?.realResult)) ? 1 : 0
                                 return res
                             }, 0)
                             subInitial += subQuestionsAnswered
@@ -484,7 +705,7 @@ const VinGroupForm = (props) => {
                     }, 0)
                 } else {
                     questionsAnswered = (current?.listKPI || []).reduce((subInitial, subCurrent) => {
-                        subInitial += (subCurrent?.seftPoint) ? 1 : 0
+                        subInitial += (subCurrent?.seftPoint || (isFormula && subCurrent?.realResult)) ? 1 : 0
                         return subInitial
                     }, 0)
                 }
@@ -511,6 +732,16 @@ const VinGroupForm = (props) => {
         evaluationFormDetailClone.totalSeftPoint = totalInfos?.self || 0
         evaluationFormDetailClone.totalLeadReviewPoint = totalInfos?.manager || 0
 
+        if (isFormula) {
+            evaluationFormDetailClone.evaluateRating = evaluationFormDetailClone?.status == evaluationStatus.launch && evaluationFormDetailClone?.evaluateRating
+            ? evaluationFormDetailClone?.evaluateRating
+            : calculateRating(
+                evaluationFormDetailClone?.reviewStreamCode === processStep.zeroLevel 
+                ? Number(totalInfos?.self || 0) 
+                : evaluationFormDetailClone?.status > evaluationStatus.launch ? Number(totalInfos?.manager || 0) : null
+            )
+        }
+
         SetEvaluationFormDetailState(evaluationFormDetailClone)
     }
 
@@ -527,14 +758,15 @@ const VinGroupForm = (props) => {
 
     const calculateAssessment = (group) => {
         const assessmentScale = 5
+        const isFormula = group?.caculateType === 'CT' // Là công thức (Hiện tại đang áp dụng cho VinBus)
         let assessment
 
         if (group?.groupChildren?.length > 0) {
             assessment = (group?.groupChildren || []).reduce((initial, current) => {
                 if (current?.listKPI?.length > 0) {
                     const sub = (current?.listKPI || []).reduce((subInitial, item) => {
-                        subInitial.selfAssessment += Number(item?.seftPoint || 0) / assessmentScale * Number(item?.weight || 0)
-                        subInitial.managerAssessment += Number(item?.leadReviewPoint || 0) / assessmentScale * Number(item?.weight || 0)
+                        subInitial.selfAssessment += isFormula ? Number(item?.seftPoint || 0) : Number(item?.seftPoint || 0) / assessmentScale * Number(item?.weight || 0)
+                        subInitial.managerAssessment += isFormula ? Number(item?.leadReviewPoint || 0) : Number(item?.leadReviewPoint || 0) / assessmentScale * Number(item?.weight || 0)
                         return subInitial
                     }, { selfAssessment: 0, managerAssessment: 0 })
                     initial.selfAssessment += sub.selfAssessment
@@ -545,8 +777,8 @@ const VinGroupForm = (props) => {
     
         } else {
             assessment = (group?.listKPI || []).reduce((initial, current) => {
-                initial.selfAssessment += Number(current?.seftPoint || 0) / assessmentScale * Number(current?.weight || 0)
-                initial.managerAssessment += Number(current?.leadReviewPoint || 0) / assessmentScale * Number(current?.weight || 0)
+                initial.selfAssessment += isFormula ? Number(current?.seftPoint || 0) : Number(current?.seftPoint || 0) / assessmentScale * Number(current?.weight || 0)
+                initial.managerAssessment += isFormula ? Number(current?.leadReviewPoint || 0) : Number(current?.leadReviewPoint || 0) / assessmentScale * Number(current?.weight || 0)
                 return initial
             }, { selfAssessment: 0, managerAssessment: 0 })
         }
@@ -565,17 +797,18 @@ const VinGroupForm = (props) => {
 
         for (let groupIndex = 0; groupIndex < groups.length; groupIndex++) {
             let group = groups[groupIndex]
+            const isFormula = group?.caculateType === 'CT' // Là công thức (Hiện tại đang áp dụng cho VinBus)
             if (group?.groupChildren?.length > 0) {
                 for (let groupChildrenIndex = 0; groupChildrenIndex < group?.groupChildren?.length; groupChildrenIndex++) {
                     let groupChildren = group?.groupChildren[groupChildrenIndex]
                     for (let kpiIndex = 0; kpiIndex < groupChildren?.listKPI?.length; kpiIndex++) {
                         let kpi = groupChildren?.listKPI[kpiIndex]
                         if (showByManager) {
-                            if (actionCode == actionButton.approve && (hasNotValue(kpi?.leadReviewPoint) || Number(kpi?.leadReviewPoint) > maximumScore || Number(kpi?.leadReviewPoint) < minimumScore)) {
+                            if (actionCode == actionButton.approve && (hasNotValue(kpi?.leadReviewPoint) || (!isFormula && (Number(kpi?.leadReviewPoint) > maximumScore || Number(kpi?.leadReviewPoint) < minimumScore)))) {
                                 return false
                             }
                         } else {
-                            if (hasNotValue(kpi?.seftPoint) || Number(kpi?.seftPoint) > maximumScore || Number(kpi?.seftPoint) < minimumScore) {
+                            if (hasNotValue(kpi?.seftPoint) || (!isFormula && (Number(kpi?.seftPoint) > maximumScore || Number(kpi?.seftPoint) < minimumScore))) {
                                 return false
                             }
                         }
@@ -585,11 +818,11 @@ const VinGroupForm = (props) => {
                 for (let kpiIndex = 0; kpiIndex < group?.listKPI?.length; kpiIndex++) {
                     let kpi = group?.listKPI[kpiIndex]
                     if (showByManager) {
-                        if (actionCode == actionButton.approve && (hasNotValue(kpi?.leadReviewPoint) || Number(kpi?.leadReviewPoint) > maximumScore || Number(kpi?.leadReviewPoint) < minimumScore)) {
+                        if (actionCode == actionButton.approve && (hasNotValue(kpi?.leadReviewPoint) || (!isFormula && (Number(kpi?.leadReviewPoint) > maximumScore || Number(kpi?.leadReviewPoint) < minimumScore)))) {
                             return false
                         }
                     } else {
-                        if (hasNotValue(kpi?.seftPoint) || Number(kpi?.seftPoint) > maximumScore || Number(kpi?.seftPoint) < minimumScore) {
+                        if (hasNotValue(kpi?.seftPoint) || (!isFormula && (Number(kpi?.seftPoint) > maximumScore || Number(kpi?.seftPoint) < minimumScore))) {
                             return false
                         }
                     }
@@ -603,14 +836,30 @@ const VinGroupForm = (props) => {
     const isDataValid = () => {
         const errorResult = (evaluationFormDetailState?.groups || []).reduce((initial, group, groupIndex) => {
             const isWorkResultBlock= groupIndex === evaluationFormDetailState?.groups?.length - 1
+            const isFormula = group?.caculateType === 'CT' // Là công thức (Hiện tại đang áp dụng cho VinBus)
             let targetErrors = {}
             if (group?.groupChildren?.length > 0) {
                 targetErrors = (group?.groupChildren || []).reduce((subInitial, subGroup, subGroupIndex) => {
-                    let keyData = showByManager ? 'leadReviewPoint' : 'seftPoint'
                     const subError = (subGroup?.listKPI || []).reduce((kpiInitial, kpi, kpiIndex) => {
-                        kpiInitial[`${groupIndex}_${subGroupIndex}_${kpiIndex}_${keyData}`] = null
-                        if (!Number(kpi[keyData])) {
-                            kpiInitial[`${groupIndex}_${subGroupIndex}_${kpiIndex}_${keyData}`] = t("Required")
+                        if (showByManager) {
+                            kpiInitial[`${groupIndex}_${subGroupIndex}_${kpiIndex}_leadReviewPoint`] = null
+                            kpiInitial[`${groupIndex}_${subGroupIndex}_${kpiIndex}_leadRealResult`] = null
+                            if ((hasNotValue(kpi?.leadRealResult) && isFormula) || (hasNotValue(kpi?.leadRealResult) && !isFormula && isWorkResultBlock)) {
+                                kpiInitial[`${groupIndex}_${subGroupIndex}_${kpiIndex}_leadRealResult`] = t("Required")
+                            }
+                            if (hasNotValue(kpi?.leadReviewPoint) || (!Number(kpi?.leadReviewPoint) && !isFormula)) {
+                                kpiInitial[`${groupIndex}_${subGroupIndex}_${kpiIndex}_leadReviewPoint`] = t("Required")
+                            }
+                        } else {
+                            kpiInitial[`${groupIndex}_${subGroupIndex}_${kpiIndex}_seftPoint`] = null
+                            kpiInitial[`${groupIndex}_${subGroupIndex}_${kpiIndex}_realResult`] = null
+    
+                            if ((hasNotValue(kpi?.realResult) && isFormula) || (hasNotValue(kpi?.realResult) && !isFormula && isWorkResultBlock)) {
+                                kpiInitial[`${groupIndex}_${subGroupIndex}_${kpiIndex}_realResult`] = t("Required")
+                            }
+                            if (hasNotValue(kpi?.seftPoint) || (!Number(kpi?.seftPoint) && !isFormula)) {
+                                kpiInitial[`${groupIndex}_${subGroupIndex}_${kpiIndex}_seftPoint`] = t("Required")
+                            }
                         }
                         return kpiInitial
                     }, {})
@@ -620,21 +869,25 @@ const VinGroupForm = (props) => {
                 targetErrors = (group?.listKPI || []).reduce((subInitial, kpi, kpiIndex) => {
                     if (showByManager) {
                         subInitial[`${groupIndex}_${kpiIndex}_leadReviewPoint`] = null
-                        if (!Number(kpi?.leadReviewPoint)) {
+                        subInitial[`${groupIndex}_${kpiIndex}_leadRealResult`] = null
+                        if ((hasNotValue(kpi?.leadRealResult) && isFormula) || (hasNotValue(kpi?.leadRealResult) && !isFormula && isWorkResultBlock)) {
+                            subInitial[`${groupIndex}_${kpiIndex}_leadRealResult`] = t("Required")
+                        }
+                        if (hasNotValue(kpi?.leadReviewPoint) || (!Number(kpi?.leadReviewPoint) && !isFormula)) {
                             subInitial[`${groupIndex}_${kpiIndex}_leadReviewPoint`] = t("Required")
                         }
-                        return subInitial
                     } else {
                         subInitial[`${groupIndex}_${kpiIndex}_seftPoint`] = null
                         subInitial[`${groupIndex}_${kpiIndex}_realResult`] = null
-                        if (!Number(kpi?.seftPoint)) {
-                            subInitial[`${groupIndex}_${kpiIndex}_seftPoint`] = t("Required")
-                        }
-                        if (isWorkResultBlock && !kpi?.realResult) {
+
+                        if ((hasNotValue(kpi?.realResult) && isFormula) || (hasNotValue(kpi?.realResult) && !isFormula && isWorkResultBlock)) {
                             subInitial[`${groupIndex}_${kpiIndex}_realResult`] = t("Required")
                         }
-                        return subInitial
+                        if (hasNotValue(kpi?.seftPoint) || (!Number(kpi?.seftPoint) && !isFormula)) {
+                            subInitial[`${groupIndex}_${kpiIndex}_seftPoint`] = t("Required")
+                        }
                     }
+                    return subInitial
                 }, {})
             }
             return { ...initial, ...targetErrors }
@@ -710,12 +963,12 @@ const VinGroupForm = (props) => {
         const isValidScore = isValidScoreFunc(actionCode)
     
         if (!isValidTotalScore || !isValidScore) {
-          statusModalTemp.isShow = true
-          statusModalTemp.isSuccess = false
-          statusModalTemp.content = t("EvaluationTotalScoreInValid")
-          statusModalTemp.needReload = false
-          SetStatusModal(statusModalTemp)
-          return
+            statusModalTemp.isShow = true
+            statusModalTemp.isSuccess = false
+            statusModalTemp.content = t("EvaluationTotalScoreInValid")
+            statusModalTemp.needReload = false
+            SetStatusModal(statusModalTemp)
+            return
         }
     
         SetIsLoading(true)
