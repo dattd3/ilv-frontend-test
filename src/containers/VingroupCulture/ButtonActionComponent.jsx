@@ -4,7 +4,7 @@ import IconImage from "assets/img/icon/image-icon.svg";
 import IconPdf from "assets/img/icon/pdf-icon.svg";
 import IconCamera from "assets/img/icon/camera-icon.svg";
 
-const ButtonActionComponent = ({ availableTypes, cateCode }) => {
+const ButtonActionComponent = ({ parentLink, availableTypes, cateCode }) => {
   const { t } = useTranslation();
 
   const results = [];
@@ -12,7 +12,7 @@ const ButtonActionComponent = ({ availableTypes, cateCode }) => {
   if (availableTypes[cateCode] && availableTypes[cateCode].includes("Image")) {
     results.push(
       <a
-        href={`/vingroup-cultural-gallery/${cateCode}?type=Image`}
+        href={`/${parentLink}/gallery/${cateCode}?type=Image`}
         className="btn-link"
       >
         <button className="btn-item">
@@ -25,7 +25,7 @@ const ButtonActionComponent = ({ availableTypes, cateCode }) => {
   if (availableTypes[cateCode] && availableTypes[cateCode].includes("Pdf")) {
     results.push(
       <a
-        href={cateCode === "1.1" ? `/vin30-chronicles` : `/vingroup-cultural-gallery/${cateCode}?type=Pdf`}
+        href={cateCode === "1.1" ? `/vin30-chronicles` : `/${parentLink}/gallery/${cateCode}?type=Pdf`}
         className="btn-link"
       >
         <button className="btn-item">
@@ -38,7 +38,7 @@ const ButtonActionComponent = ({ availableTypes, cateCode }) => {
   if (availableTypes[cateCode] && availableTypes[cateCode].includes("Poster")) {
     results.push(
       <a
-        href={`/vingroup-cultural-gallery/${cateCode}?type=Poster`}
+        href={`/${parentLink}/gallery/${cateCode}?type=Poster`}
         className="btn-link"
       >
         <button className="btn-item">
@@ -51,7 +51,7 @@ const ButtonActionComponent = ({ availableTypes, cateCode }) => {
   if (availableTypes[cateCode] && availableTypes[cateCode].includes("Video")) {
     results.push(
       <a
-        href={`/vingroup-cultural-gallery/${cateCode}?type=Video`}
+        href={`/${parentLink}/gallery/${cateCode}?type=Video`}
         className="btn-link"
       >
         <button className="btn-item">

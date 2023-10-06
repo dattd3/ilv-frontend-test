@@ -845,10 +845,42 @@ const ROUTES = [
           component: lazy(() => import("./VingroupCulture/VingroupHistory")),
         },
         {
-          key: "vingroup-cultural-gallery",
+          key: "vingroup-history-gallery",
           routeProps: {
             exact: true,
-            path: map.VingroupCulturalGallery
+            path: map.HistoryVingroupGallery
+          },
+          component: lazy(() => import("./VingroupCulturalGallery"))
+        },
+        {
+          key: "vingroup-culture-gallery",
+          routeProps: {
+            exact: true,
+            path: map.VingroupCultureGallery
+          },
+          component: lazy(() => import("./VingroupCulturalGallery"))
+        },
+        {
+          key: "6-values-gallery",
+          routeProps: {
+            exact: true,
+            path: map.SixCoreValuesGallery
+          },
+          component: lazy(() => import("./VingroupCulturalGallery"))
+        },
+        {
+          key: "6-gorv-gallery",
+          routeProps: {
+            exact: true,
+            path: map.SixGovernancePrinciplesGallery
+          },
+          component: lazy(() => import("./VingroupCulturalGallery"))
+        },
+        {
+          key: "working-env-gallery",
+          routeProps: {
+            exact: true,
+            path: map.WorkingEnvironmentGallery
           },
           component: lazy(() => import("./VingroupCulturalGallery"))
         },

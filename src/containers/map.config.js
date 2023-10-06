@@ -146,7 +146,11 @@ const MapConfig = {
   SixCoreValues: "/6-core-values",
   SixGovernancePrinciples: "/6-governance-principles",
   WorkingEnvironment: "/working-environment",
-  VingroupCulturalGallery: "/vingroup-cultural-gallery/:code",
+  HistoryVingroupGallery: "/vingroup-history/gallery/:code",
+  VingroupCultureGallery: "/vingroup-culture/gallery/:code",
+  SixCoreValuesGallery: "/6-core-values/gallery/:code",
+  SixGovernancePrinciplesGallery: "/6-governance-principles/gallery/:code",
+  WorkingEnvironmentGallery: "/working-environment/gallery/:code",
 };
 
 export default MapConfig;

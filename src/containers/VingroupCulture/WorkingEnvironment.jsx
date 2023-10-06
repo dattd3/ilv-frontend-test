@@ -54,7 +54,8 @@ function WorkingEnvironmentPage() {
             &nbsp;&nbsp;{t("InspiringShortFilm")}
           </div>
           <div className="btn-group">
-          <ButtonAction
+            <ButtonAction
+              parentLink="working-environment"
               availableTypes={availableTypes}
               cateCode={CATEGORY_CODES.INSPIRING_SHORT_FILM}
             />
@@ -66,7 +67,8 @@ function WorkingEnvironmentPage() {
             &nbsp;&nbsp;{t("CivillyVingroup")}
           </div>
           <div className="btn-group">
-          <ButtonAction
+            <ButtonAction
+              parentLink="working-environment"
               availableTypes={availableTypes}
               cateCode={CATEGORY_CODES.CIVILLY_VINGROUP}
             />

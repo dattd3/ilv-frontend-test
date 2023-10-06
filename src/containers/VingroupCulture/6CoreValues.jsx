@@ -55,7 +55,11 @@ function SixCoreValuesPage() {
             &nbsp;&nbsp;{t("Textbook")}
           </div>
           <div className="btn-group">
-            <ButtonAction availableTypes={availableTypes} cateCode={CATEGORY_CODES.TEXTBOOK} />
+            <ButtonAction
+              parentLink="6-core-values"
+              availableTypes={availableTypes}
+              cateCode={CATEGORY_CODES.TEXTBOOK}
+            />
           </div>
         </div>
         <div className="content-item">
@@ -64,7 +68,11 @@ function SixCoreValuesPage() {
             &nbsp;&nbsp;{t("StoryTelling")}
           </div>
           <div className="btn-group">
-            <ButtonAction availableTypes={availableTypes} cateCode={CATEGORY_CODES.STORYTELLING} />
+            <ButtonAction
+              parentLink="6-core-values"
+              availableTypes={availableTypes}
+              cateCode={CATEGORY_CODES.STORYTELLING}
+            />
           </div>
         </div>
         <div className="content-item">
@@ -73,7 +81,11 @@ function SixCoreValuesPage() {
             &nbsp;&nbsp;{t("InspiringShortFilm")}
           </div>
           <div className="btn-group">
-            <ButtonAction availableTypes={availableTypes} cateCode={CATEGORY_CODES.INSPIRING_SHORT_FILM} />
+            <ButtonAction
+              parentLink="6-core-values"
+              availableTypes={availableTypes}
+              cateCode={CATEGORY_CODES.INSPIRING_SHORT_FILM}
+            />
           </div>
         </div>
       </div>

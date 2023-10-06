@@ -45,6 +45,13 @@
       margin-top: 16px;
       margin-right: 16px;
     }
+    .poster-img {
+      width: auto;
+      height: auto;
+      max-width: calc(100vw - 320px);
+      margin-bottom: 12px;
+      display: block;
+    }
     .image-gallery {
       line-height: 0;
       -webkit-column-count: 3;
@@ -53,11 +60,20 @@
       -moz-column-gap: 5px;
       column-count: 3;
       column-gap: 5px;
-      img {
+      text-align: center;
+      .image {
         display: block;
         width: 100% !important;
         height: auto !important;
         margin-bottom: 5px;
+        cursor: zoom-in;
+      }
+      .zoomed-in-img {
+        width: auto;
+        height: auto;
+        max-width: calc(100vw - 320px);
+        // max-height: 1000px;
+        cursor: zoom-out;
       }
       .shimmer-div {
         width: 100% !important;
