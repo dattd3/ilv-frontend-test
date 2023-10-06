@@ -393,6 +393,12 @@
 }
 .login-page {
   margin: auto;
+  @media screen and (max-width: 990px) {
+    .card-body {
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+  }
   .detail-contain {
     display: flex;
     flex-direction: column;
@@ -495,6 +501,7 @@
     display: flex;
   }
   .mobile-contain {
+    background: #fff;
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -712,11 +719,12 @@
   .banner-footer {
     margin-top: 20px;
     padding-top: 16px;
+    margin-bottom: 12px;
     border-top: 1px solid #CED4DA;
     .title {
       font-size: 14px;
       font-weight: 300;
-      margin-bottom: 8px;
+      margin-bottom: 15px;
       padding-left: 20px;
     }
     .pnl-icon-wrapper {
@@ -760,7 +768,7 @@
       right: 0;
     }
     .left-main-content {
-      padding: 0 3rem;
+      padding: 1rem 3rem;
       height: 100%;
       display: flex;
       flex-direction: column;
