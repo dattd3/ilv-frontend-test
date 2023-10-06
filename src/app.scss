@@ -1173,7 +1173,11 @@
     margin: 0.5em auto;
   }
 }
-
+.employee-privilege-detail {
+  figure {
+    text-align: initial;
+  }
+}
 .no-padding {
   padding: 0px !important;
 }
@@ -4331,7 +4335,7 @@ span.badge-notification[data-badge]::after {
           }
           .title {
             padding: 15px 15px 0 15px;
-            text-transform: capitalize;
+            // text-transform: capitalize;
             margin-left: 0;
             display: -webkit-box;
             -webkit-line-clamp: 3;
