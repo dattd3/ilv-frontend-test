@@ -5,7 +5,7 @@ import HOCComponent from "components/Common/HOCComponent"
 import { handleFullScreen } from "actions/index"
 import LoadingModal from "components/Common/LoadingModal"
 
-function HistoryVinGroup(props) {
+function Vin30Chronicles(props) {
     const [isLoading, SetIsLoading] = useState(true)
     const linkHistoryVinGroup = "https://online.flippingbook.com/view/211567232/"
 
@@ -44,4 +44,4 @@ const mapDispatchToProps = (dispatch) => {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(HOCComponent(HistoryVinGroup))
+export default connect(mapStateToProps, mapDispatchToProps)(HOCComponent(Vin30Chronicles))

@@ -11,15 +11,20 @@ import IconTime from '../../assets/img/icon/Icon-Time.svg'
 import IconGift from 'assets/img/icon/Icon_gift_red.svg'
 import IconBackToTop from "assets/img/icon/Icon_back_to_top.svg"
 import LoadingModal from "components/Common/LoadingModal"
+import { getCurrentLanguage } from "../../commons/Utils"
+import { isJsonString } from "../../utils/string"
 
 const EmployeePrivileges = (props) => {
     const { t } = useTranslation()
-    const myRef = useRef(null);
-    const totalTopArticles = 5
+    const myRef = useRef(null)
+    const topOneRef = useRef(null)
+    const totalTopArticles = 9
 
     const [isVisibleGoToTop, setIsVisibleGoToTop] = useState(false)
     const [listPrivileges, setListPrivileges] = useState(null)
+    const [topOneHeight, setTopOneHeight] = useState(0)
     const [isLoading, setIsLoading] = useState(true)
+    const lang = getCurrentLanguage();
 
     useEffect(() => {
         const fetchEmployeePrivileges = async () => {
@@ -32,7 +37,13 @@ const EmployeePrivileges = (props) => {
 
             try {
                 const response = await axios.get(`${process.env.REACT_APP_REQUEST_URL}article/privilege/list`, config)
-                setListPrivileges(response?.data?.data?.listPrivilege || [])
+                const listPrivilegeData = (response?.data?.data?.listPrivilege || []).map(item => ({
+                    ...item,
+                    description: isJsonString(item?.description) ? (JSON.parse(item?.description)?.[lang] || JSON.parse(item?.description)?.['vi']) : item?.description,
+                    thumbnail: isJsonString(item?.thumbnail) ? (JSON.parse(item?.thumbnail)?.[lang] || JSON.parse(item?.thumbnail)?.['vi']) : item?.thumbnail,
+                    title: isJsonString(item?.title) ? (JSON.parse(item?.title)?.[lang] || JSON.parse(item?.title)?.['vi']) : item?.title
+                }))
+                setListPrivileges(listPrivilegeData)
             } finally {
                 setIsLoading(false)
             }
@@ -40,6 +51,15 @@ const EmployeePrivileges = (props) => {
 
         fetchEmployeePrivileges()
     }, [])
+
+    useEffect(() => {
+      if (!topOneRef.current) return;
+      const resizeObserver = new ResizeObserver(() => {
+        setTopOneHeight(topOneRef?.current?.clientHeight)
+      });
+      resizeObserver.observe(topOneRef.current);
+      return () => resizeObserver.disconnect();
+    }, [topOneRef.current]);
 
     const convertToSlug = input => {
         let slug = input?.toLowerCase()
@@ -101,7 +121,7 @@ const EmployeePrivileges = (props) => {
                                 <div className="top-news">
                                     <div className="row">
                                         <div className="col-md-6 special">
-                                            <div className="top-one shadow-customize">
+                                            <div className="top-one shadow-customize" ref={topOneRef}>
                                                 <a href={`/employee-privileges/${convertToSlug(topOne?.title)}/${topOne.id}`} className="link-detail">
                                                     <Image src={topOne?.thumbnail} alt="News" className="thumbnail"
                                                         onError={(e) => {
@@ -122,7 +142,7 @@ const EmployeePrivileges = (props) => {
                                             </div>
                                         </div>
                                         <div className="col-md-6 other">
-                                            <div className="top-four shadow-customize">
+                                            <div className="top-four shadow-customize" style={{ height: topOneHeight }}>
                                                 {
                                                     topFour?.length > 0 ?
                                                     topFour.map((item, index) => {
