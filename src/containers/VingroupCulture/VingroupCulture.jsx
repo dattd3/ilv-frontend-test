@@ -51,6 +51,7 @@ function VingroupCulture(props) {
           <div className="btn-group">
             {
               <ButtonAction
+                parentLink="vingroup-culture"
                 availableTypes={availableTypes}
                 cateCode={CATEGORY_CODES.PRESIDENT_QUOTES}
               />
@@ -65,6 +66,7 @@ function VingroupCulture(props) {
           <div className="btn-group">
             {
               <ButtonAction
+                parentLink="vingroup-culture"
                 availableTypes={availableTypes}
                 cateCode={CATEGORY_CODES.OVERVIEW_CULTURE}
               />

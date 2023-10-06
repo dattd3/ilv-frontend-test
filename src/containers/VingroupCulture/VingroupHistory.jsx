@@ -64,6 +64,7 @@ function HistoryVinGroup(props) {
           </div>
           <div className="btn-group">
             <ButtonAction
+              parentLink="vingroup-history"
               availableTypes={availableTypes}
               cateCode={CATEGORY_CODES.VIN30_CHRONICLES}
             />
@@ -76,6 +77,7 @@ function HistoryVinGroup(props) {
           </div>
           <div className="btn-group">
             <ButtonAction
+              parentLink="vingroup-history"
               availableTypes={availableTypes}
               cateCode={CATEGORY_CODES.MIRACLES_AWARDS}
             />
@@ -88,6 +90,7 @@ function HistoryVinGroup(props) {
           </div>
           <div className="btn-group">
             <ButtonAction
+              parentLink="vingroup-history"
               availableTypes={availableTypes}
               cateCode={CATEGORY_CODES.EVENT_PICTURE}
             />
@@ -100,6 +103,7 @@ function HistoryVinGroup(props) {
           </div>
           <div className="btn-group">
             <ButtonAction
+              parentLink="vingroup-history"
               availableTypes={availableTypes}
               cateCode={CATEGORY_CODES.ARTS}
             />{" "}
@@ -112,6 +116,7 @@ function HistoryVinGroup(props) {
           </div>
           <div className="btn-group">
             <ButtonAction
+              parentLink="vingroup-history"
               availableTypes={availableTypes}
               cateCode={CATEGORY_CODES.ABOUT_PL}
             />{" "}
