@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Image, Shimmer } from "react-shimmer";
 
 const ImageGallery = ({ data }) => {
   const [indexZoomIn, setIndexZoomIn] = useState(-1);
@@ -17,21 +16,18 @@ const ImageGallery = ({ data }) => {
           onClick={() => handleZoomInImage(-1)}
         />
       )}
-      {data.map((img, index) => (
-        <Image
-          key={img.id}
-          src={img.link}
-          fallback={
-            <Shimmer width={300} height={200} className="shimmer-div" />
-          }
-          alt=""
-          NativeImgProps={{
-            onClick: () => handleZoomInImage(index),
-            className: "image",
-            style: { display: indexZoomIn > -1 ? "none" : "block" }
-          }}
-        />
-      ))}
+      {data.map(
+        (img, index) => (
+          <img
+            style={{ display: indexZoomIn > -1 ? "none" : "block" }}
+            key={img.id}
+            src={img.link}
+            alt=""
+            onClick={() => handleZoomInImage(index)}
+            className="image"
+          />
+        )
+      )}
     </div>
   );
 };
