@@ -4,7 +4,6 @@ import { Image, Shimmer } from "react-shimmer";
 const ImageGallery = ({ data }) => {
   const [indexZoomIn, setIndexZoomIn] = useState(-1);
   const handleZoomInImage = (index) => {
-    console.log(index);
     setIndexZoomIn(index);
   };
 
