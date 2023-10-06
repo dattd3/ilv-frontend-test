@@ -1,9 +1,12 @@
 import React from 'react'
 
 const DocumentRequired = ({
-    t
+    t,
+    url
 }: any) => {
-    const link = 'https://view.officeapps.live.com/op/view.aspx?src=https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/templates/DS-ho-so-bat-buoc-cho-tung-nghiep-vu-OD-TS-DS.docx'
+    if(!url) return null;
+    url = url.trim();
+    const link = `https://view.officeapps.live.com/op/view.aspx?src=${url}`
   return (
     <div>
         <h5>{t('DocumentRequired')}</h5>

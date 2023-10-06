@@ -265,6 +265,9 @@ const CreateSickInsurance = ({
         'childSickNumbers'
       )
     }
+    if(checkRequireSickCode()) {
+      requiredFields.push('sickId');
+    }
     const optionFields = ["declareForm", "plan", "receiveType"];
 
     requiredFields.forEach((name) => {
@@ -298,7 +301,7 @@ const CreateSickInsurance = ({
   };
 
   const checkRequireAtm = () => {
-    if(data.receiveType?.value && [2].includes(data.receiveType.value)) {
+    if(data.receiveType?.value && ['2'].includes(data.receiveType.value)) {
       return true;
     }
     return false;
@@ -306,6 +309,13 @@ const CreateSickInsurance = ({
 
   const checkRequireChildInfo = () => {
     if(data.plan?.value && ['O2'].includes(data.plan.value)) {
+      return true;
+    }
+    return false;
+  }
+
+  const checkRequireSickCode = () => {
+    if(data.plan?.value && ['O3'].includes(data.plan.value)) {
       return true;
     }
     return false;
@@ -655,7 +665,7 @@ const CreateSickInsurance = ({
       <div className="box shadow cbnv">
         <div className="row mv-10">
           <div className="col-4">
-            <div>{t('id_ilness')}</div>
+            <div>{t('id_ilness')}{checkRequireSickCode() ? <span className="required">(*)</span> : null}</div>
             <input
               value={data.sickId}
               onChange={(e) => handleTextInputChange(e, "sickId")}
@@ -665,6 +675,9 @@ const CreateSickInsurance = ({
               disabled={!isCreateMode}
               autoComplete="off"
             />
+            {errors["sickId"] ? (
+              <p className="text-danger">{errors["sickId"]}</p>
+            ) : null}
           </div>
           <div className="col-8">
             {t('name_disease')}
@@ -881,6 +894,7 @@ const CreateSickInsurance = ({
       {
         isCreateMode ?
         <DocumentRequired
+        url={data.documentLink}
         t={t}/> : null
       }
 

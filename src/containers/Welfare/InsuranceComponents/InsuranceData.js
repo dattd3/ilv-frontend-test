@@ -18,8 +18,8 @@ export const MATERNITY_REGIME = [ //Trường hợp hưởng chế độ thai s�
 ];
 
 export const YES_NO = [
-    {value: 0, label: 'Không'},
-    {value : 1,  label: 'Có'}
+    {value: '0', label: 'Không'},
+    {value : '1',  label: 'Có'}
 ];
 
 export const DECLARE_FORM_OPTIONS = [ //Danh mục hình thức phát sinh
@@ -71,9 +71,9 @@ export const CONVALES_PLAN = [ //Phương án Dưỡng sức
 ];
 
 export const WORKING_CONDITION = [ //điều kiện làm việc
-    { value: 1, label: 'Điều kiện bình thường' },
-    { value: 2, label: 'Làm việc trong đk NNĐH' },
-    { value: 3, label: 'Nơi có PCKV > 0.7' },
+    { value: '1', label: 'Điều kiện bình thường' },
+    { value: '2', label: 'Làm việc trong đk NNĐH' },
+    { value: '3', label: 'Nơi có PCKV > 0.7' },
 ];
 
 export const HOSPITAL_LINE = [ //tuyến bệnh viện
@@ -92,31 +92,31 @@ export const HOSPITAL_LINE = [ //tuyến bệnh viện
 ];
 
 export const RECEIVE_TYPE = [ //hinh thức nhận
-    { value: 1, label: 'Chi trả qua đơn vị' },
-    { value: 2, label: 'Chi trả qua ATM' },
-    { value: 3, label: 'BHXH thực hiện chi trả' },
-    { value: 4, label: 'Đại diện chi thực hiện chi trả' }
+    { value: '1', label: 'Chi trả qua đơn vị' },
+    { value: '2', label: 'Chi trả qua ATM' },
+    { value: '3', label: 'BHXH thực hiện chi trả' },
+    { value: '4', label: 'Đại diện chi thực hiện chi trả' }
 ];
 
 export const MATERNITY_CONDITION = [ // điều kiện khám thai
-    { value: 1, label: 'Thai bình thường' },
-    { value: 2, label: 'Xa cơ sở y tế' },
-    { value: 3, label: 'Thai có bệnh lý không bình thường' },
+    { value: '1', label: 'Thai bình thường' },
+    { value: '2', label: 'Xa cơ sở y tế' },
+    { value: '3', label: 'Thai có bệnh lý không bình thường' },
 ];
 
 export const BIRTH_CONDITION = [ //điều kiện sinh
-    { value: 1, label: 'Điều kiện bình thường' },
-    { value: 2, label: 'Làm việc theo chế độ 3 ca' },
-    { value: 3, label: 'Làm việc thường xuyên ở nơi có phụ cấp KV >0.7' },
-    { value: 4, label: 'Nặng nhọc, độc hại, nguy hiểm' },
-    { value: 5, label: 'Người tàn tật suy giảm >=21% khả năng lao động' },
-    { value: 6, label: 'Nữ quân nhân, nữ Công an nhân dân' },
+    { value: '1', label: 'Điều kiện bình thường' },
+    { value: '2', label: 'Làm việc theo chế độ 3 ca' },
+    { value: '3', label: 'Làm việc thường xuyên ở nơi có phụ cấp KV >0.7' },
+    { value: '4', label: 'Nặng nhọc, độc hại, nguy hiểm' },
+    { value: '5', label: 'Người tàn tật suy giảm >=21% khả năng lao động' },
+    { value: '6', label: 'Nữ quân nhân, nữ Công an nhân dân' },
 ];
 
 export const SUROGACY = [ // mang thai hộ
-    { value: 1, label: 'Không mang thai hộ và không nhờ mang thai hộ' },
-    { value: 2, label: 'Mang thai hộ' },
-    { value: 3, label: 'Nhờ mang thai hộ' },
+    { value: '1', label: 'Không mang thai hộ và không nhờ mang thai hộ' },
+    { value: '2', label: 'Mang thai hộ' },
+    { value: '3', label: 'Nhờ mang thai hộ' },
 ]
 
 

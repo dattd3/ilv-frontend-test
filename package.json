@@ -48,6 +48,7 @@
     "react-router-dom": "^5.0.1",
     "react-scripts": "5.0.1",
     "react-select": "^3.1.0",
+    "react-shimmer": "^3.2.0",
     "react-toastify": "^4.4.2",
     "react-tooltip": "^4.2.21",
     "reactstrap": "^6.5.0",
@@ -65,7 +66,7 @@
     "build:staging": "rename .env.staging .env.production.local & npm run-script build & rename .env.production.local .env.staging",
     "build:uat": "env-cmd -f .env.uat npm run build",
     "build:staging:linux": "env-cmd -f .env.staging npm run build",
-    "build:production": "rename .env.production .env.production.local & npm run-script build & rename .env.production.local .env.production",
+    "build:production": "env-cmd -f .env.production react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
