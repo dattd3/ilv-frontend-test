@@ -613,6 +613,9 @@
                                         font-size: 13px;
                                         &.second {
                                             list-style-type: upper-greek;
+                                            &.v2 {
+                                                list-style: none;
+                                            }
                                         }
                                     }
                                     .note {
@@ -711,6 +714,9 @@
                                     font-size: 13px;
                                     &.second {
                                         list-style-type: upper-greek;
+                                        &.v2 {
+                                            list-style: none;
+                                        }
                                     }
                                 }
                                 .note {
@@ -810,6 +816,9 @@
                                         font-size: 13px;
                                         &.second {
                                             list-style-type: upper-greek;
+                                            &.v2 {
+                                                list-style: none;
+                                            }
                                         }
                                     }
                                     .note {

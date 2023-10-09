@@ -17,7 +17,7 @@ const Buttons = ({ showByManager, status, isEdit, reviewer, approver, handleSubm
         case evaluationStatus.launch:
             return (
                 <>
-                    <button className="btn-action save" onClick={() => handleSubmit(actionButton.save, null, true)}><img src={IconSave} alt="Save" />{t("EvaluationDetailPartSave")}</button>
+                    <button className="btn-action save" onClick={() => handleSubmit(actionButton.save, null, false)}><img src={IconSave} alt="Save" />{t("EvaluationDetailPartSave")}</button>
                     <button className="btn-action send" onClick={() => handleSubmit(actionButton.approve)}><img src={IconSendRequest} alt="Send" />{t("EvaluationDetailPartSubmitToNextStep")}</button>
                 </>
             )
@@ -25,8 +25,8 @@ const Buttons = ({ showByManager, status, isEdit, reviewer, approver, handleSubm
             if (showByManager && currentUserLoggedUID == reviewerUID) {
                 return (
                     <>
-                        <button className="btn-action save mr-3" onClick={() => handleSubmit(actionButton.save, null, true)}><img src={IconSave} alt="Save" />{t("EvaluationDetailPartSave")}</button>
-                        <button className="btn-action reject" onClick={() => handleSubmit(actionButton.reject, null, true)}><img src={IconReject} alt="Reject" />{t("EvaluationDetailPartReject")}</button>
+                        <button className="btn-action save mr-3" onClick={() => handleSubmit(actionButton.save, null, false)}><img src={IconSave} alt="Save" />{t("EvaluationDetailPartSave")}</button>
+                        <button className="btn-action reject" onClick={() => handleSubmit(actionButton.reject, null, false)}><img src={IconReject} alt="Reject" />{t("EvaluationDetailPartReject")}</button>
                         <button className="btn-action confirm" onClick={() => handleSubmit(actionButton.approve)}><img src={IconApprove} alt="Confirm" />{t("EvaluationDetailPartConfirm")}</button>
                     </>
                 )
@@ -36,7 +36,7 @@ const Buttons = ({ showByManager, status, isEdit, reviewer, approver, handleSubm
             if (showByManager && currentUserLoggedUID == approverUID) {
                 return (
                     <>
-                        <button className="btn-action reject" onClick={() => handleSubmit(actionButton.reject, null, true)}><img src={IconReject} alt="Reject" />{t("EvaluationDetailPartReject")}</button>
+                        <button className="btn-action reject" onClick={() => handleSubmit(actionButton.reject, null, false)}><img src={IconReject} alt="Reject" />{t("EvaluationDetailPartReject")}</button>
                         <button className="btn-action approve" onClick={() => handleSubmit(actionButton.approve, true)}><img src={IconApprove} alt="Approve" />{t("EvaluationDetailPartApprove")}</button>
                     </>
                 )
