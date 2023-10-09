@@ -45,7 +45,7 @@ const ImageGallery = ({ data }) => {
     case 1:
       col1 = data.slice(0, countItem + 1);
       col2 = data.slice(countItem + 1, countItem * 2);
-      col3 = countItem >= 3 ? data.slice(countItem * 2, length) : [];
+      col3 = length >= 3 ? data.slice(countItem * 2, length) : [];
       break;
     case 2:
       col1 = data.slice(0, countItem + 1);
@@ -55,8 +55,8 @@ const ImageGallery = ({ data }) => {
     case 0:
     default:
       col1 = data.slice(0, countItem);
-      col2 = countItem >= 3 ? data.slice(countItem, countItem * 2) : [];
-      col3 = countItem >= 3 ? data.slice(countItem * 2, length) : [];
+      col2 = length >= 3 ? data.slice(countItem, countItem * 2) : [];
+      col3 = length >= 3 ? data.slice(countItem * 2, length) : [];
       break;
   }
 
