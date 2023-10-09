@@ -262,7 +262,7 @@ const Constants = {
     6: ["V040", "V070", "V077"], //DIEUCHUYEN
     7: ["V040", "V070", "V077"], //BONHIEM
     8: ["V040", "V070", "V077", "V030"], //THANH TOAN NOI BO
-    9: ["V077", "V070", "V061"],//BAOHIEM
+    9: ["V077", "V070", "V061", "V079"],//BAOHIEM
   },
   CURRENCY: {
     VND: 'VNĐ',
@@ -295,8 +295,8 @@ const Constants = {
     APP_ID: 1,
     DEVICE: 'WEBSITE',
     MODE: 2,
-  },
-};
+  }
+}
 
 Constants.REQUEST_CATEGORY_1_LIST = {
   [Constants.LEAVE_OF_ABSENCE]: "LeaveRequest",

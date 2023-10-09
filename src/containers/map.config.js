@@ -1,9 +1,11 @@
-export default {
+const MapConfig = {
   Root: "/",
   Dashboard: "/dashboard",
   Login: "/login",
   Auth: "/auth",
+  AuthSharepoint: "/auth-sharepoint",
   TermPolicy: "/policy",
+  GuestNews: "/guest-news/:id",
 
   // Training
   Roadmap: "/training-roadmap",
@@ -124,8 +126,6 @@ export default {
   EvaluationApproval: "/evaluation-approval",
   
   MyProjectDetail: "/my-projects/project/:id",
-  ProjectDetail: "/list-projects/project/:id",
-  MyProfile: "/my-profile",
 
   //Phúc lợi
   InteralWelfare: '/welfare-manager',
@@ -135,11 +135,21 @@ export default {
   DetailInsuranceSocial: '/insurance-manager/detail/:id/:action',
   ExportInsuranceSocial: '/insurance-manager/export/:id',
   DetailInsuranceHealth: '/insurance-manager/detail-health/:id',
-  MyProfile: "/my-profile",
   SalaryPropse: '/salarypropse/:idContract/:idSalary/:type',
-  HistoryVingroup: "/vin30-chronicles",
   Maintenance: '/maintenance',
   
   // Thanh toán phúc lợi nội bộ
   RegistrationInternalPayment: "/benefit-claim-request",
+
+  // Vingroup culture
+  HistoryVingroup: "/vingroup-history",
+  Vin30Chronicles: "/vin30-chronicles",
+  VingroupCulture: "/vingroup-culture",
+  SixCoreValues: "/6-core-values",
+  SixGovernancePrinciples: "/6-governance-principles",
+  WorkingEnvironment: "/working-environment",
+  VingroupCulturalGallery: "/vingroup-cultural-gallery/:code",
+  CreateSocialDistributeInfo: "/insurance-manager/social-contribute-info"
 };
+
+export default MapConfig;
