@@ -80,8 +80,6 @@ const VINGROUP_CULTURE_CATEGORIES = [
   },
 ];
 
-const ImageTypes = ["Image", "Poster"];
-
 function VingroupCulturalGalleryPage(props) {
   const { t } = useTranslation();
   const [testUrl, setTestUrl] = useState(DEMO_IMAGE_URL);
