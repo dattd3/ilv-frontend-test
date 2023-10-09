@@ -1981,5 +1981,7 @@
   "CivillyVingroup": "Vingroup Etiquette",
   "PnlOfVingroup": "Vingroup's Member",
   "social_contribute_info": "Thông tin đóng BHXH",
-  "lastUpdateDate": "NGÀY CHỈNH SỬA CUỐI CÙNG"
+  "lastUpdateDate": "NGÀY CHỈNH SỬA CUỐI CÙNG",
+  "ActualResult_SelfAssess": "Actual result (self assess)",
+  "ActualResult_ManagerAssess": "Actual result (manager assess)"
 }
