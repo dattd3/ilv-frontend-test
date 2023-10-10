@@ -837,12 +837,12 @@ export default [
           component: lazy(() => import("./Corporation/News/EmployeePrivilegeDetail")),
         },
         {
-          key: "registration-social-contribution",
+          key: "registration-detail-contribution",
           routeProps: {
             exact: true,
-            path: map.CreateSocialDistributeInfo,
+            path: map.SocialContributeDetail,
           },
-          component: lazy(() => import("./Welfare/InsuranceSocialContribute/CreateSocialContributeInfo")),
+          component: lazy(() => import("./Welfare/WelfareComponents/SocialContributeInfoDetail")),
         },
       ],
     },

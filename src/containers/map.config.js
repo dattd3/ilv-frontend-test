@@ -142,5 +142,7 @@ export default {
   
   // Thanh toán phúc lợi nội bộ
   RegistrationInternalPayment: "/benefit-claim-request",
-  CreateSocialDistributeInfo: "/insurance-manager/social-contribute-info"
+  CreateSocialDistributeInfo: "/insurance-manager/social-contribute-info",
+  //thông tin đóng BHXH
+  SocialContributeDetail: "/social-contribute/:id/:type"
 };

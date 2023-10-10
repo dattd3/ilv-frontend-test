@@ -1961,5 +1961,6 @@
   "WelfareRefundApproveWarning": "There was previous approval for this employee today, our system will adjust this approval date to {{date}}",
   "InsuranceSocialRequest": "Thanh toán bảo hiểm xã hội",
   "social_contribute_info": "Thông tin đóng BHXH",
-  "lastUpdateDate": "NGÀY CHỈNH SỬA CUỐI CÙNG"
+  "lastUpdateDate": "NGÀY CHỈNH SỬA CUỐI CÙNG",
+  "InsuranceSocialInfoRequest": "Thay đổi thông tin đóng BHXH"
 }
