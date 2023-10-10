@@ -160,12 +160,13 @@ function MemberInfo({
             {"CMTND"} <span className="required">(*)</span>
             <InputNumberComponent
               value={request.identityId || ""}
-              onChange={(value) => handleChangeValue(value, "identityId")}
+              onChange={(value) => handleChangeValue(value?.replace(/[^0-9]/g,''), "identityId")}
               placeholder={t("import")}
               className="form-control input mv-10 w-100"
               disabled={!isCreateMode}
               name="identityId"
               type="text"
+              maxLeng={12}
             />
             {errors['member_' + index + '_identityId'] ? (
               <p className="text-danger">{errors['member_' + index + '_identityId']}</p>

@@ -23,7 +23,7 @@ function DetailMemberInfo({
 
   const renderValue = (type = STATUS.OLD, value, newValue) => {
     if (type == STATUS.UPDATE) {
-        if(newValue != undefined) {
+        if(newValue != undefined && newValue != value) {
             return (
                 <>
                   <div className="detail">{value}</div>
