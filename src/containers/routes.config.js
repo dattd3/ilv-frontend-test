@@ -813,7 +813,7 @@ const ROUTES = [
           component: lazy(() => import("./Registration/ContractEvaluation/SalaryPropose"))
         },
         {
-          key: "vingroup-history",
+          key: "Vin30-chronicles",
           routeProps: {
             exact: true,
             path: map.Vin30Chronicles
