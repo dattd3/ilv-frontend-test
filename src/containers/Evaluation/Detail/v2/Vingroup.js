@@ -4,9 +4,10 @@ import axios from 'axios'
 import purify from "dompurify"
 import _ from 'lodash'
 import { actionButton, processStep, languageCodeMapping, evaluationStatus, scores } from '../../Constants'
-import { getRequestConfigurations } from "commons/Utils"
+import { getRequestConfigurations, getCurrentLanguage } from "commons/Utils"
 import { hasNotValue, calculateScore, calculateRating } from "containers/Evaluation/Utils"
 import Constants from "commons/Constants"
+import { isJsonString } from "utils/string"
 import Buttons from "../common/Buttons"
 import LoadingModal from 'components/Common/LoadingModal'
 import StatusModal from 'components/Common/StatusModal'
@@ -18,6 +19,7 @@ import IconUp from 'assets/img/icon/pms/icon-up.svg'
 import IconDown from 'assets/img/icon/pms/icon-down.svg'
 
 const currentLocale = localStorage.getItem("locale")
+const lang = getCurrentLanguage()
 
 // KPI không thuộc Kết quả công việc)
 const OtherKpiItem = ({ kpi, deviant, status, isEdit, showByManager, groupIndex, kpiIndex, groupChildrenLv1Index, errors, isDisableEmployeeComment = false, isDisableManagerComment = false, scores = [], handleInputChange }) => {
@@ -128,6 +130,11 @@ const WorkResultKpiItem = ({ kpi, deviant, status, isEdit, showByManager, groupI
     const errorRealResult = (groupChildrenLv1Index !== null && groupChildrenLv1Index !== undefined) ? errors[`${groupIndex}_${groupChildrenLv1Index}_${kpiIndex}_realResult`] : errors[`${groupIndex}_${kpiIndex}_realResult`]
     const errorSelfPoint = (groupChildrenLv1Index !== null && groupChildrenLv1Index !== undefined) ? errors[`${groupIndex}_${groupChildrenLv1Index}_${kpiIndex}_seftPoint`] : errors[`${groupIndex}_${kpiIndex}_seftPoint`]
     const errorLeadReviewPoint = (groupChildrenLv1Index !== null && groupChildrenLv1Index !== undefined) ? errors[`${groupIndex}_${groupChildrenLv1Index}_${kpiIndex}_leadReviewPoint`] : errors[`${groupIndex}_${kpiIndex}_leadReviewPoint`]
+    const metric1 = isJsonString(kpi?.metric1) ? (JSON.parse(kpi?.metric1)?.[lang] || JSON.parse(kpi?.metric1)?.['vi']) : kpi?.metric1
+    const metric2 = isJsonString(kpi?.metric2) ? (JSON.parse(kpi?.metric2)?.[lang] || JSON.parse(kpi?.metric2)?.['vi']) : kpi?.metric2
+    const metric3 = isJsonString(kpi?.metric3) ? (JSON.parse(kpi?.metric3)?.[lang] || JSON.parse(kpi?.metric3)?.['vi']) : kpi?.metric3
+    const metric4 = isJsonString(kpi?.metric4) ? (JSON.parse(kpi?.metric4)?.[lang] || JSON.parse(kpi?.metric4)?.['vi']) : kpi?.metric4
+    const metric5 = isJsonString(kpi?.metric5) ? (JSON.parse(kpi?.metric5)?.[lang] || JSON.parse(kpi?.metric5)?.['vi']) : kpi?.metric5
 
     return (
         <div className="evaluation-item">
@@ -156,11 +163,11 @@ const WorkResultKpiItem = ({ kpi, deviant, status, isEdit, showByManager, groupI
                                     )
                                 }
                                 <ul className="second v2">
-                                    { !hasNotValue(kpi?.metric1) && (<li>{kpi?.metric1}</li>) }
-                                    { !hasNotValue(kpi?.metric2) && (<li>{kpi?.metric2}</li>) }
-                                    { !hasNotValue(kpi?.metric3) && (<li>{kpi?.metric3}</li>) }
-                                    { !hasNotValue(kpi?.metric4) && (<li>{kpi?.metric4}</li>) }
-                                    { !hasNotValue(kpi?.metric5) && (<li>{kpi?.metric5}</li>) }
+                                    { !hasNotValue(metric1) && (<li>{metric1}</li>) }
+                                    { !hasNotValue(metric2) && (<li>{metric2}</li>) }
+                                    { !hasNotValue(metric3) && (<li>{metric3}</li>) }
+                                    { !hasNotValue(metric4) && (<li>{metric4}</li>) }
+                                    { !hasNotValue(metric5) && (<li>{metric5}</li>) }
                                 </ul>
                             </td>
                             <td className="text-center proportion"><span>{kpi?.weight}%</span></td>
@@ -275,6 +282,11 @@ const WorkResultKpiItemForFormula = ({ kpi, deviant, status, isEdit, showByManag
     const { t } = useTranslation()
     const errorRealResult = (groupChildrenLv1Index !== null && groupChildrenLv1Index !== undefined) ? errors[`${groupIndex}_${groupChildrenLv1Index}_${kpiIndex}_realResult`] : errors[`${groupIndex}_${kpiIndex}_realResult`]
     const errorLeadRealResult = (groupChildrenLv1Index !== null && groupChildrenLv1Index !== undefined) ? errors[`${groupIndex}_${groupChildrenLv1Index}_${kpiIndex}_leadRealResult`] : errors[`${groupIndex}_${kpiIndex}_leadRealResult`]
+    const metric1 = isJsonString(kpi?.metric1) ? (JSON.parse(kpi?.metric1)?.[lang] || JSON.parse(kpi?.metric1)?.['vi']) : kpi?.metric1
+    const metric2 = isJsonString(kpi?.metric2) ? (JSON.parse(kpi?.metric2)?.[lang] || JSON.parse(kpi?.metric2)?.['vi']) : kpi?.metric2
+    const metric3 = isJsonString(kpi?.metric3) ? (JSON.parse(kpi?.metric3)?.[lang] || JSON.parse(kpi?.metric3)?.['vi']) : kpi?.metric3
+    const metric4 = isJsonString(kpi?.metric4) ? (JSON.parse(kpi?.metric4)?.[lang] || JSON.parse(kpi?.metric4)?.['vi']) : kpi?.metric4
+    const metric5 = isJsonString(kpi?.metric5) ? (JSON.parse(kpi?.metric5)?.[lang] || JSON.parse(kpi?.metric5)?.['vi']) : kpi?.metric5
 
     return (
         <div className="evaluation-item">
@@ -301,11 +313,11 @@ const WorkResultKpiItemForFormula = ({ kpi, deviant, status, isEdit, showByManag
                                     )
                                 }
                                 <ul className="second v2">
-                                    { !hasNotValue(kpi?.metric1) && (<li>{kpi?.metric1}</li>) }
-                                    { !hasNotValue(kpi?.metric2) && (<li>{kpi?.metric2}</li>) }
-                                    { !hasNotValue(kpi?.metric3) && (<li>{kpi?.metric3}</li>) }
-                                    { !hasNotValue(kpi?.metric4) && (<li>{kpi?.metric4}</li>) }
-                                    { !hasNotValue(kpi?.metric5) && (<li>{kpi?.metric5}</li>) }
+                                    { !hasNotValue(metric1) && (<li>{metric1}</li>) }
+                                    { !hasNotValue(metric2) && (<li>{metric2}</li>) }
+                                    { !hasNotValue(metric3) && (<li>{metric3}</li>) }
+                                    { !hasNotValue(metric4) && (<li>{metric4}</li>) }
+                                    { !hasNotValue(metric5) && (<li>{metric5}</li>) }
                                 </ul>
                             </td>
                             <td className="text-center proportion"><span>{kpi?.weight}%</span></td>
