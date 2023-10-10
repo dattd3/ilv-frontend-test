@@ -14,6 +14,7 @@ import { IDropdownValue } from "models/CommonModel";
 import { getMuleSoftHeaderConfigurations } from "commons/Utils";
 import axios from "axios";
 import IconClear from 'assets/img/icon/icon_x.svg'
+import { getRequestConfigs } from "commons/commonFunctions";
 
 interface ICreateSocialContributeInfoProps {
   t: any;
@@ -53,10 +54,12 @@ const CreateSocialContributeInfo: FC<ICreateSocialContributeInfoProps> = ({
   const [provinces, setprovinces] = useState<IDropdownValue[]>([]);
   const [districts, setdistricts] = useState<IDropdownValue[]>([]);
   const [wards, setwards] = useState<IDropdownValue[]>([]);
+  const [hospitals, setHospitals] = useState<IDropdownValue[]>([]);
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
     if(isCreateMode) {
+      getHospitalList();
       getProvices('VN');
       if(data?.province?.value) {
         getDistricts(data.province.value);
@@ -74,8 +77,27 @@ const CreateSocialContributeInfo: FC<ICreateSocialContributeInfoProps> = ({
       if(data?.ward?.value) {
         setwards([data.ward]);
       }
+      if(data?.facilityRegisterName?.value) {
+        setHospitals([data.facilityRegisterName]);
+      }
     }
   }, [isCreateMode]);
+
+  const getHospitalList = () => {
+    const config = getRequestConfigs()
+    axios.get(`${process.env.REACT_APP_REQUEST_SERVICE_URL}socialinsurance/get-hospitals`, config)
+        .then(res => {
+            if (res && res.data && res.data.data) {
+                let _hospitals = res.data.data?.map(item => {
+                  return {
+                      value: item.code,
+                      label: item.name
+                  };
+              });
+              setHospitals(_hospitals);
+            }
+        }).catch(error => { })
+  }
 
   const getProvices = (country_id) =>{
     const config = getMuleSoftHeaderConfigurations()
@@ -127,7 +149,11 @@ const CreateSocialContributeInfo: FC<ICreateSocialContributeInfoProps> = ({
 
   const handleTextInputChange = (e, name) => {
     const candidateInfos = { ...data }
-    candidateInfos[name] = e != null ? e.target.value : "";
+    let value = e?.target?.value;
+    if(name == 'houseHoldNumber' && value) {
+      value = value.replace(/[^0-9]/g,'');
+    }
+    candidateInfos[name] = e != null ? value : "";
     setData(candidateInfos);
 }
 
@@ -243,13 +269,18 @@ const CreateSocialContributeInfo: FC<ICreateSocialContributeInfoProps> = ({
       }
     });
     const memberRequirer = ["relation", "fullName", "sex", "birthDate", "identityId", "type"];
+    let countMainFamily = 0;
     members.map((mem, index) => {
       if(mem.status == STATUS.DELETE) return;
       memberRequirer.forEach(key => {
         if(_.isEmpty(mem[key])) {
           _errors['member_' + index + '_' + key] = t('PleaseEnterInfo');
         }
+        if(key == 'identityId' && !_.isEmpty(mem[key]) && (mem[key]?.length != 9 && mem[key]?.length != 12)) {
+          _errors['member_' + index + '_' + key] = 'Yêu cầu độ dài 9 hoặc 12 ký tự';
+        }
       });
+      if(mem.type?.value == '1') countMainFamily++;
     })
     setErrors(_errors);
 
@@ -258,6 +289,10 @@ const CreateSocialContributeInfo: FC<ICreateSocialContributeInfoProps> = ({
     );
     if (hasErrors) {
       notifyMessage(t('PleaseEnterInfo'), true);
+    }
+    if(!hasErrors && countMainFamily != 1) {
+      notifyMessage('Yêu cầu chỉ có duy nhất 1 chủ hộ!');
+      hasErrors = true;
     }
     //check files
     if(!hasErrors) {
@@ -316,10 +351,11 @@ const CreateSocialContributeInfo: FC<ICreateSocialContributeInfoProps> = ({
                 <input
                   type="text"
                   value={data.socialNumberType.label}
-                  onChange={(e) => handleChangeSelectInputs({...data.socialNumberType, label: e?.target?.value}, "socialNumberType")}
+                  onChange={(e) => handleChangeSelectInputs({...data.socialNumberType, label: e?.target?.value?.replace(/[^0-9]/g,'')}, "socialNumberType")}
                   className="form-control input mv-10 w-100"
                   name="inputName"
                   autoComplete="off"
+                  maxLength={10}
                   disabled={!isCreateMode}
                 />
                 <span className="input-group-addon input-img">
@@ -351,7 +387,7 @@ const CreateSocialContributeInfo: FC<ICreateSocialContributeInfoProps> = ({
             {"Tên cơ sở đăng ký KCB"} <span className="required">(*)</span>
             <Select
               placeholder={"Lựa chọn"}
-              options={socialNumberType}
+              options={hospitals}
               isClearable={true}
               value={data?.facilityRegisterName || ''}
               onChange={(e) => handleChangeSelectInputs(e, "facilityRegisterName")}
@@ -379,6 +415,7 @@ const CreateSocialContributeInfo: FC<ICreateSocialContributeInfoProps> = ({
               className="form-control input mv-10 w-100"
               name="houseHoldNumber"
               autoComplete="off"
+              maxLength={15}
               disabled={!isCreateMode}
             />
             {errors["houseHoldNumber"] ? (

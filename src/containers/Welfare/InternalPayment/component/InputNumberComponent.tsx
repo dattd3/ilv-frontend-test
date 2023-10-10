@@ -8,6 +8,7 @@ interface IInputNumber {
   className?: string;
   placeholder?: string;
   disabled?: boolean;
+  maxLeng?: number;
   type?: 'number' | 'text'
 }
 function InputNumberComponent({
@@ -17,7 +18,8 @@ function InputNumberComponent({
   className,
   placeholder,
   disabled = false,
-  type = 'number'
+  type = 'number',
+  maxLeng = 255
 }: IInputNumber) {
   const handleInputChange = (value : string) => {
     let temp = value;
@@ -36,7 +38,7 @@ function InputNumberComponent({
       onChange={(e) => handleInputChange(e?.target?.value || "")}
       className={className || ""}
       disabled={disabled}
-      maxLength={ type == 'number' ? 13 + (formatNumberSpecialCase(value)?.split(" ").length - 1) : 255}
+      maxLength={ type == 'number' ? 13 + (formatNumberSpecialCase(value)?.split(" ").length - 1) : maxLeng}
     />
   );
 }
