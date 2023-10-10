@@ -1977,5 +1977,6 @@
   "WelfareRefundApproveWarning": "Đã có phê duyệt thanh toán cho CBLĐ trước đó, hệ thống sẽ điều chỉnh ngày duyệt ở SAP là {{date}}",
   "InsuranceSocialRequest": "Thanh toán bảo hiểm xã hội",
   "social_contribute_info": "Thông tin đóng BHXH",
-  "lastUpdateDate": "NGÀY CHỈNH SỬA CUỐI CÙNG"
+  "lastUpdateDate": "NGÀY CHỈNH SỬA CUỐI CÙNG",
+  "InsuranceSocialInfoRequest": "Thay đổi thông tin đóng BHXH"
 }

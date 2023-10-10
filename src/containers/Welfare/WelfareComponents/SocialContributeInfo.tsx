@@ -24,7 +24,6 @@ import { getMuleSoftHeaderConfigurations } from "commons/Utils";
 const SocialContributeInfo = (props: any) => {
   const { t } = props;
   const [isCreateMode, setIsCreateMode] = useState(false);
-  const [showCreate, setShowCreate] = useState(true);
   const [changeData, setChangeData] = useState<any>({});
   const [oldData, setOldData] = useState<ISocialContributeModel>({});
   const [data, setData] = useState<ISocialContributeModel>({});
@@ -456,7 +455,6 @@ const SocialContributeInfo = (props: any) => {
             </div>
           </a>
         </div>
-        {showCreate ? (
           <CreateSocialContributeInfo
             t={t}
             data={data}
@@ -474,19 +472,6 @@ const SocialContributeInfo = (props: any) => {
             isCreateMode={isCreateMode}
             notifyMessage={notifyMessage}
           />
-        ) : (
-          <DetailSocailContributeComponent
-            t={t}
-            data={oldData}
-            change={changeData}
-            supervisors={supervisors}
-            approver={approver}
-            files={files}
-            members={oldMembers}
-            onSubmit={onSubmit}
-            isCreateMode={isCreateMode}
-          />
-        )}
       </div>
     </>
   );
