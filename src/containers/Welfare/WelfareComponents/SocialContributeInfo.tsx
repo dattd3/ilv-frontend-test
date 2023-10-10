@@ -7,7 +7,9 @@ import {
   ISocialContributeModel,
 } from "models/welfare/SocialContributeModel";
 import {
+  GENDER_LIST,
   ROLE_TYPE,
+  SOCIAL_NUMBER_INPUT,
   STATUS,
 } from "../InsuranceSocialContribute/SocialContributeData";
 import DetailSocailContributeComponent from "../InsuranceSocialContribute/DetailSocialContributeInfoComponent";
@@ -17,6 +19,7 @@ import Constants from "commons/Constants";
 import axios from "axios";
 import ResultModal from "containers/Registration/ResultModal";
 import LoadingModal from "components/Common/LoadingModal";
+import { getMuleSoftHeaderConfigurations } from "commons/Utils";
 
 const SocialContributeInfo = (props: any) => {
   const { t } = props;
@@ -30,6 +33,7 @@ const SocialContributeInfo = (props: any) => {
   const [supervisors, setSupervisors] = useState<any[]>([]);
   const [approver, setApprover] = useState<any>();
   const [loading, setLoading] = useState(false);
+  const [userprofile, setUserProfile] = useState<any>({});
   const [resultModal, setresultModal] = useState({
     isShowStatusModal: false,
     titleModal: "",
@@ -235,8 +239,56 @@ const SocialContributeInfo = (props: any) => {
       });
       setOldMembers(_oldmember);
     }
+    if(localStorage.getItem('insurance_number')) {
+      setData({
+        ...data,
+        socialNumberType: {value: SOCIAL_NUMBER_INPUT, label: localStorage.getItem('insurance_number') || ''}
+      })
+    }
+    getPersonalInfo();
     setIsCreateMode(newEditable);
   };
+
+  const getPersonalInfo = () => {
+    const config = getMuleSoftHeaderConfigurations()
+    setLoading(true);
+    axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/personalinfo`, config)
+      .then(res => {
+        if (res && res.data && res.data.data) {
+          let profile = res.data.data[0];
+          const _userInfo = {
+            "gender": GENDER_LIST.find(u => u?.value == profile?.gender)?.label || '',
+            "birthday": profile?.birthday ? moment(profile.birthday, 'DD-MM-YYYY').format('YYYY-MM-DD') : '',
+            "permanentAddress": [profile?.street_name, profile?.wards, profile?.district, profile?.province ].filter(val => val).join(', '),
+            "streetName": [profile?.tmp_street_name, profile?.tmp_wards, profile?.tmp_district, profile?.tmp_province ].filter(val => val).join(', '),
+            "ethinicCode": '',
+            "ethinic": profile?.ethinic || '',
+            "idNumber": profile?.personal_id_no || '',
+            "dateOfIssue": profile?.date_of_issue ? moment(profile.date_of_issue, 'DD-MM-YYYY').format('YYYY-MM-DD') : '',
+            "pidPlaceOfIssue": profile?.place_of_issue || '',
+            "cellPhoneNo": profile?.cell_phone_no || ''
+          };
+          setUserProfile(_userInfo);
+        }
+      }).catch(error => {
+        const _userInfo = {
+          "gender": '',
+          "birthday": '',
+          "permanentAddress": '',
+          "streetName": '',
+          "ethinicCode": '',
+          "ethinic": '',
+          "idNumber": '',
+          "dateOfIssue": '',
+          "pidPlaceOfIssue": '',
+          "cellPhoneNo": ''
+
+        };
+        setUserProfile(_userInfo);
+      }).finally(() => {
+        setLoading(false);
+      });
+  }
 
   const notifyMessage = (message, isError = true) => {
     if (isError) {
@@ -267,6 +319,7 @@ const SocialContributeInfo = (props: any) => {
       jobTitle: localStorage.getItem("jobTitle"),
       employeeLevel: localStorage.getItem("employeeLevel"),
       department: localStorage.getItem("department"),
+      ...userProfileInfo
     };
     const userEmployeeInfo = {
       employeeNo: localStorage.getItem("employeeNo"),
@@ -324,7 +377,7 @@ const SocialContributeInfo = (props: any) => {
     formData.append("orgLv6Id", localStorage.getItem("partId") || "");
     formData.append("orgLv6Text", localStorage.getItem("part") || "");
     formData.append("companyCode", localStorage.getItem("companyCode") || "");
-    formData.append("employeeInfo", JSON.stringify(employeeInfo));
+    formData.append("staffInfo", JSON.stringify(employeeInfo));
     formData.append("UserInfo", JSON.stringify(userEmployeeInfo));
 
     formData.append("appraiserInfoLst", JSON.stringify(appraiserInfoLst));
