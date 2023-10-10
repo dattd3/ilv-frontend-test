@@ -56,6 +56,7 @@ function SixManagementRulesPage() {
           </div>
           <div className="btn-group">
             <ButtonAction
+              parentLink="6-governance-principles"
               availableTypes={availableTypes}
               cateCode={CATEGORY_CODES.TEXTBOOK}
             />
@@ -68,6 +69,7 @@ function SixManagementRulesPage() {
           </div>
           <div className="btn-group">
             <ButtonAction
+              parentLink="6-governance-principles"
               availableTypes={availableTypes}
               cateCode={CATEGORY_CODES.STORYTELLING}
             />
@@ -80,6 +82,7 @@ function SixManagementRulesPage() {
           </div>
           <div className="btn-group">
             <ButtonAction
+              parentLink="6-governance-principles"
               availableTypes={availableTypes}
               cateCode={CATEGORY_CODES.INSPIRING_SHORT_FILM}
             />

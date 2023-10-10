@@ -80,8 +80,6 @@ const VINGROUP_CULTURE_CATEGORIES = [
   },
 ];
 
-const ImageTypes = ["Image", "Poster"];
-
 function VingroupCulturalGalleryPage(props) {
   const { t } = useTranslation();
   const [testUrl, setTestUrl] = useState(DEMO_IMAGE_URL);
@@ -96,7 +94,7 @@ function VingroupCulturalGalleryPage(props) {
   useEffect(() => {
     const _interval = setInterval(() => {
       setTestUrl(testUrl + `?${new Date().getTime()}`);
-    }, 5000);
+    }, 3000);
     setIntervalId(_interval);
     fetchData();
 
@@ -133,6 +131,40 @@ function VingroupCulturalGalleryPage(props) {
     setIsNotLoggedSharepoint(false);
   };
 
+  const generateGalleryContent = () => {
+    switch (fileType) {
+      case "Image":
+        return  <ImageGallery data={data} />
+      case "Pdf":
+        return <PdfGallery data={data} />;
+      case "Poster":
+        return (
+          <>
+            {data.map((item) => (
+              <img className="poster-img" src={item?.link} alt="" />
+            ))}
+          </>
+        );
+      default:
+        return (
+          <>
+            {data.map((item) => (
+              <iframe
+                src={item?.link}
+                width="31%"
+                height={320}
+                frameborder="0"
+                scrolling="no"
+                allowfullscreen
+                allow="fullscreen;"
+                title={item.fileName}
+              />
+            ))}
+          </>
+        );
+    }
+  };
+
   return (
     <div className="vingroup-cultural-page">
       <h1 className="content-page-header">
@@ -155,32 +187,7 @@ function VingroupCulturalGalleryPage(props) {
               title={"DEMO"}
             />
           ) : (
-            <>
-              {ImageTypes.includes(fileType) ? (
-                <ImageGallery data={data} />
-              ) : (
-                <>
-                  {fileType === "Pdf" ? (
-                    <PdfGallery data={data} />
-                  ) : (
-                    <>
-                      {data.map((item) => (
-                        <iframe
-                          src={item?.link}
-                          width="31%"
-                          height={350}
-                          frameborder="0"
-                          scrolling="no"
-                          allowfullscreen
-                          allow="fullscreen;"
-                          title={item.fileName}
-                        />
-                      ))}
-                    </>
-                  )}
-                </>
-              )}
-            </>
+            <>{generateGalleryContent()}</>
           )}
         </div>
       )}

@@ -1,56 +1,111 @@
-import LoadingSpinner from "components/Forms/CustomForm/LoadingSpinner";
-import { useState, useEffect } from "react";
-import Gallery from "react-photo-gallery";
+import { useEffect, useState } from "react";
 
 const ImageGallery = ({ data }) => {
-  const [isImageLoading, setIsImageLoading] = useState(false);
-  const [photoData, setPhotoData] = useState([]);
+  const [idZoomIn, setIdZoomIn] = useState(-1);
+  const [scrollPosition, setScrollPosition] = useState(0);
+  const [lastScrollPosition, setLastScrollPosition] = useState(0);
 
   useEffect(() => {
-    const processPhotoData = async () => {
-      setIsImageLoading(true);
-      const _data = await generateGalleryItems(data);
-      setPhotoData(_data);
-    };
-    if (data.length > 0) {
-      processPhotoData();
+    document.getElementById("content-wrapper").addEventListener("scroll", handleScroll, false);
+    return () => document.getElementById("content-wrapper").removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const handleScroll = () => {
+    if (idZoomIn === -1) {
+      setScrollPosition(document.getElementById("content-wrapper").scrollTop);
     }
-  }, [data]);
-
-  const generateGalleryItems = async (photoData = []) => {
-    const tasks = photoData.map((item) => getMeta(item.link));
-
-    const responses = await Promise.allSettled(tasks);
-    const results = responses?.filter(item => item.status === "fulfilled" && item.value)?.map((item, index) => ({
-      src: photoData[index]?.link,
-      width: item.value?.naturalWidth,
-      height: item.value?.naturalHeight,
-    }));
-    setIsImageLoading(false);
-    return results;
   };
 
+  useEffect(() => {
+    if (idZoomIn === -1) {
+      scrollToLastPosition();
+    }
+  }, [idZoomIn]);
+
+  const scrollToLastPosition = () => {
+    document.getElementById("content-wrapper").scrollTo({
+      left: 0,
+      top: lastScrollPosition,
+      behavior: "instant"
+    });
+  };
+
+  const handleZoomInImage = (index) => {
+    if (index > 0) setLastScrollPosition(scrollPosition);
+    setIdZoomIn(index);
+  };
+
+  const length = data.length,
+    countItem = Math.floor(data.length / 3);
+  let col1 = [],
+    col2 = [],
+    col3 = [];
+
+  switch (length % 3) {
+    case 1:
+      col1 = data.slice(0, countItem + 1);
+      col2 = data.slice(countItem + 1, countItem * 2);
+      col3 = length >= 3 ? data.slice(countItem * 2, length) : [];
+      break;
+    case 2:
+      col1 = data.slice(0, countItem + 1);
+      col2 = data.slice(countItem + 1, countItem * 2 + 1);
+      col3 = data.slice(countItem * 2 + 1, length);
+      break;
+    case 0:
+    default:
+      col1 = data.slice(0, countItem);
+      col2 = length >= 3 ? data.slice(countItem, countItem * 2) : [];
+      col3 = length >= 3 ? data.slice(countItem * 2, length) : [];
+      break;
+  }
+
   return (
-    <>
-      {isImageLoading && <LoadingSpinner />}
-
-      {photoData.length > 0 && (
-        <Gallery
-          photos={photoData}
-          direction="column"
-          columns={photoData.length > 3 ? 3 : 2}
-          margin={5}
-        />
-      )}
-    </>
+    <div className="image-gallery" style={idZoomIn > -1 ? { display: "flex", justifyContent: "center" } : {}}>
+      <div className="col-image">
+        {col1.map(
+          (img) => (
+            <img
+              style={{ display: (idZoomIn > -1 && idZoomIn !== img.id) ? "none" : "block" }}
+              key={img.id}
+              src={img.link}
+              alt=""
+              onClick={() => handleZoomInImage(idZoomIn === img.id ? - 1 : img.id)}
+              className={(idZoomIn === img.id) ? "zoomed-in-img" : "image"}
+            />
+          )
+        )}
+      </div>
+      <div className="col-image">
+        {col2.map(
+          (img) => (
+            <img
+              style={{ display: (idZoomIn > -1 && idZoomIn !== img.id) ? "none" : "block" }}
+              key={img.id}
+              src={img.link}
+              alt=""
+              onClick={() => handleZoomInImage(idZoomIn === img.id ? - 1 : img.id)}
+              className={(idZoomIn === img.id) ? "zoomed-in-img" : "image"}
+            />
+          )
+        )}
+      </div>
+      <div className="col-image">
+        {col3.map(
+          (img) => (
+            <img
+              style={{ display: (idZoomIn > -1 && idZoomIn !== img.id) ? "none" : "block" }}
+              key={img.id}
+              src={img.link}
+              alt=""
+              onClick={() => handleZoomInImage(idZoomIn === img.id ? - 1 : img.id)}
+              className={(idZoomIn === img.id) ? "zoomed-in-img" : "image"}
+            />
+          )
+        )}
+      </div>
+    </div>
   );
-};
-
-const getMeta = async (url) => {
-  const img = new Image();
-  img.src = url;
-  await img.decode();
-  return img;
 };
 
 export default ImageGallery;
