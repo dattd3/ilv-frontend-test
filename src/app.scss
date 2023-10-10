@@ -4521,6 +4521,8 @@ span.badge-notification[data-badge]::after {
             overflow: hidden;
             text-overflow: ellipsis;
             word-wrap: break-word;
+            min-height: 50px;
+
           }
           .btn-detail {
             overflow: hidden;
@@ -4552,6 +4554,7 @@ span.badge-notification[data-badge]::after {
         display: flex;
         flex-direction: column;
         font-size: 12px;
+        max-height: 400px;
         .top-four {
           flex: 1;
           display: flex;
@@ -4574,6 +4577,7 @@ span.badge-notification[data-badge]::after {
                 overflow: hidden;
                 text-overflow: ellipsis;
                 word-wrap: break-word;
+                min-height: 28px;
               }
               .source-time-info {
                 padding-top: 6px;

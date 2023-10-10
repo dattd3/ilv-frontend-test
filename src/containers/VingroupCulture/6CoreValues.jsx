@@ -9,8 +9,6 @@ import ButtonAction from "./ButtonActionComponent";
 
 const CATEGORY_CODES = {
   TEXTBOOK: "3.1",
-  // STORYTELLING: "3.2",
-  // INSPIRING_SHORT_FILM: "3.3",
 };
 
 function SixCoreValuesPage() {
