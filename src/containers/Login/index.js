@@ -30,12 +30,12 @@ import IconVinHMS from 'assets/img/icon/pnl/vinhms.png'
 import IconVinmec from 'assets/img/icon/pnl/vinmec.svg'
 import IconVinits from 'assets/img/icon/pnl/vinitis.svg'
 import IconGSM from 'assets/img/icon/pnl/gsm.png'
-import IconVincons from 'assets/img/icon/pnl/vincons.svg'
+import IconVincom from 'assets/img/icon/pnl/vincom.svg'
 import IconVincss from 'assets/img/icon/pnl/vincss.svg'
-import IconQTT from 'assets/img/icon/pnl/qtt.png'
+import IconQTT from 'assets/img/icon/pnl/qtt.svg'
 import IconVTLX from 'assets/img/icon/pnl/tuonglaixanh.jpg'
-import IconVinFuture from 'assets/img/icon/pnl/vinfuture.png'
-import IconVinif from 'assets/img/icon/pnl/vinif.png'
+import IconVinFuture from 'assets/img/icon/pnl/vinfuture.svg'
+import IconVinif from 'assets/img/icon/pnl/vinif.svg'
 
 import { useLocalizeStore } from '../../modules';
 import Constants from "../../commons/Constants";
@@ -130,8 +130,8 @@ const PNL_SWIPER_LIST = [
       url: "https://vingroup.net",
     },
     {
-      logo: IconVincons,
-      url: "https://vingroup.net",
+      logo: IconVincom,
+      url: "https://vincom.com.vn",
     },
     {
       logo: IconVincss,
@@ -402,11 +402,15 @@ function Login(props) {
                           // slidesPerView={2.5}
                           spaceBetween={20}
                           freeMode={true}
-                          modules={[FreeMode]}
+                          modules={[FreeMode, Autoplay]}
                           rewind={true}
                           ref={newsSwiperRef}
                           slidesPerView="auto"
                           loop={true}
+                          autoplay={{
+                            delay: 3000,
+                            disableOnInteraction: false,
+                          }}
                         >
                           {
                             newsData.map(news => <SwiperSlide key={news.id} style={{width: "auto"}}>
