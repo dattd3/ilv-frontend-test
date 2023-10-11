@@ -53,10 +53,13 @@ const EmployeePrivileges = (props) => {
     }, [])
 
     useEffect(() => {
-        if (topOneRef?.current) {
-            setTopOneHeight(topOneRef?.current?.clientHeight)
-        }
-    })
+      if (!topOneRef.current) return;
+      const resizeObserver = new ResizeObserver(() => {
+        setTopOneHeight(topOneRef?.current?.clientHeight)
+      });
+      resizeObserver.observe(topOneRef.current);
+      return () => resizeObserver.disconnect();
+    }, [topOneRef.current]);
 
     const convertToSlug = input => {
         let slug = input?.toLowerCase()

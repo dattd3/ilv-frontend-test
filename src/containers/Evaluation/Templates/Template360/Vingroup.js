@@ -63,7 +63,7 @@ const VinGroup = ({ evaluationFormDetail, isEdit, currentLocale, errors, handleI
                             </div>
                             <div className="comment">
                                 <div className="self">
-                                    <p>{t("EvaluationDetailPartAttitudeCommentOfEmployee")}</p>
+                                    <p>{t("Opinion")}</p>
                                     {
                                     isCompleted
                                     ? <div className="comment-content" dangerouslySetInnerHTML={{

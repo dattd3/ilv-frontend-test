@@ -251,7 +251,7 @@ const Constants = {
     5: ["V077", "V070"],//PHUCLOI
     6: ["V077", "V070"], //DIEUCHUYEN
     7: ["V077", "V070"], //BONHIEM,
-    8: ["V070", "V077"], //THANHTOAN_NOIBO
+    8: [], //THANHTOAN_NOIBO
     9: ["V061"],//BAOHIEM
   } :
   { //Development
@@ -296,8 +296,8 @@ const Constants = {
     APP_ID: 1,
     DEVICE: 'WEBSITE',
     MODE: 2,
-  },
-};
+  }
+}
 
 Constants.REQUEST_CATEGORY_1_LIST = {
   [Constants.LEAVE_OF_ABSENCE]: "LeaveRequest",
