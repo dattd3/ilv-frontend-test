@@ -79,6 +79,21 @@ function VingroupCulture(props) {
             }
           </div>
         </div>
+        <div className="content-item">
+          <div className="title-container">
+            <img src={IconDocument} alt="" />
+            &nbsp;&nbsp;{t("InternalNews")}
+          </div>
+          <div className="btn-group">
+            {
+              <ButtonAction
+                parentLink="vingroup-culture"
+                availableTypes={availableTypes}
+                cateCode={CATEGORY_CODES.INTERNAL_NEWS}
+              />
+            }
+          </div>
+        </div>
       </div>
     </div>
   );
