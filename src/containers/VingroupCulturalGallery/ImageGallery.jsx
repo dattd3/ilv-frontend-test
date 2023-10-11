@@ -4,23 +4,37 @@ const ImageGallery = ({ data }) => {
   const [idZoomIn, setIdZoomIn] = useState(-1);
   const [scrollPosition, setScrollPosition] = useState(0);
   const [lastScrollPosition, setLastScrollPosition] = useState(0);
+  const [reOrderData, setReOrderData] = useState(data);
 
   useEffect(() => {
     document.getElementById("content-wrapper").addEventListener("scroll", handleScroll, false);
     return () => document.getElementById("content-wrapper").removeEventListener("scroll", handleScroll);
   }, []);
 
-  const handleScroll = () => {
-    if (idZoomIn === -1) {
-      setScrollPosition(document.getElementById("content-wrapper").scrollTop);
-    }
-  };
-
   useEffect(() => {
     if (idZoomIn === -1) {
       scrollToLastPosition();
     }
   }, [idZoomIn]);
+
+  useEffect(() => {
+    const result = [];
+
+    for (let i = 0; i < 3; i++) {
+      let index = i;
+      while (index < data.length) {
+        result.push(data[index]);
+        index += 3;
+      }
+    }
+    setReOrderData(result);
+  }, [data])
+
+  const handleScroll = () => {
+    if (idZoomIn === -1) {
+      setScrollPosition(document.getElementById("content-wrapper").scrollTop);
+    }
+  };
 
   const scrollToLastPosition = () => {
     document.getElementById("content-wrapper").scrollTo({
@@ -35,28 +49,28 @@ const ImageGallery = ({ data }) => {
     setIdZoomIn(index);
   };
 
-  const length = data.length,
-    countItem = Math.floor(data.length / 3);
+  const length = reOrderData.length,
+    countItem = Math.floor(reOrderData.length / 3);
   let col1 = [],
     col2 = [],
     col3 = [];
 
   switch (length % 3) {
     case 1:
-      col1 = data.slice(0, countItem + 1);
-      col2 = data.slice(countItem + 1, countItem * 2);
-      col3 = length >= 3 ? data.slice(countItem * 2, length) : [];
+      col1 = reOrderData.slice(0, countItem + 1);
+      col2 = reOrderData.slice(countItem + 1, countItem * 2);
+      col3 = length >= 3 ? reOrderData.slice(countItem * 2, length) : [];
       break;
     case 2:
-      col1 = data.slice(0, countItem + 1);
-      col2 = data.slice(countItem + 1, countItem * 2 + 1);
-      col3 = data.slice(countItem * 2 + 1, length);
+      col1 = reOrderData.slice(0, countItem + 1);
+      col2 = reOrderData.slice(countItem + 1, countItem * 2 + 1);
+      col3 = reOrderData.slice(countItem * 2 + 1, length);
       break;
     case 0:
     default:
-      col1 = data.slice(0, countItem);
-      col2 = length >= 3 ? data.slice(countItem, countItem * 2) : [];
-      col3 = length >= 3 ? data.slice(countItem * 2, length) : [];
+      col1 = reOrderData.slice(0, countItem);
+      col2 = length >= 3 ? reOrderData.slice(countItem, countItem * 2) : [];
+      col3 = length >= 3 ? reOrderData.slice(countItem * 2, length) : [];
       break;
   }
 
