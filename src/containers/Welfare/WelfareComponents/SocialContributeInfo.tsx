@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { withTranslation } from "react-i18next";
 import _ from "lodash";
 import CreateSocialContributeInfo from "../InsuranceSocialContribute/CreateSocialContributeInfo";
@@ -19,7 +19,10 @@ import Constants from "commons/Constants";
 import axios from "axios";
 import ResultModal from "containers/Registration/ResultModal";
 import LoadingModal from "components/Common/LoadingModal";
-import { getMuleSoftHeaderConfigurations } from "commons/Utils";
+import { getMuleSoftHeaderConfigurations, getRequestConfigurations } from "commons/Utils";
+import { IDropdownValue } from "models/CommonModel";
+import IconEdit from 'assets/img/icon/ic_edit_information_white.svg'
+import IconHistory from 'assets/img/icon/ic_history_white.svg'
 
 const SocialContributeInfo = (props: any) => {
   const { t } = props;
@@ -33,6 +36,7 @@ const SocialContributeInfo = (props: any) => {
   const [approver, setApprover] = useState<any>();
   const [loading, setLoading] = useState(false);
   const [userprofile, setUserProfile] = useState<any>({});
+  const [lastModified, setLastModified] = useState<any>({});
   const [resultModal, setresultModal] = useState({
     isShowStatusModal: false,
     titleModal: "",
@@ -45,6 +49,108 @@ const SocialContributeInfo = (props: any) => {
     isSuccess: false,
   });
   const [files, setFiles] = useState<any[]>([]);
+
+  useEffect(() => {
+    getSocialInfoData();
+  }, []);
+  
+  //get detail data
+
+  const getSocialInfoData = async () => {
+    setLoading(true);
+    const requestConfig = getRequestConfigurations();
+    const getInfoDetail = axios.get(`${process.env.REACT_APP_REQUEST_SERVICE_URL}socialinsurance/detail`, requestConfig)
+    Promise.allSettled([ getInfoDetail]).then((res: any) => {
+        if (res && res[0].value) {
+            let data = res[0].value.data.data;
+            prepareDetailData(data?.socialInsuranceInfo);
+            setLoading(false);
+        }
+    })
+    .catch(err => {
+        setLoading(false);
+        console.log(err);
+    })
+  }
+
+  const convertDataExtract = (value: any) => {
+    if (!value) return "";
+    if (typeof value == "object" && value.name) {
+      return {
+        value: value.id,
+        label: value.name || '',
+      };
+    } else if (typeof value == "string" || typeof value == "number")
+      return value;
+    return "";
+  };
+
+  const convertMemberFamily = (value: any) => {
+    if(!value) return {};
+    const result: IMemberInfo = {
+        fullName: value.fullName,
+        relation: {value: value.relationshipCode, label: value.relationshipText},
+        sex: {value: value.genderCode, label: value.genderText},
+        birthDate: moment(value.birthday, "YYYY").format("DD/MM/YYYY"),
+        type: value.isHouseholdOwner ? ROLE_TYPE[0] : ROLE_TYPE[1],
+        identityId: value.idNumber || ''
+    };
+    return result;
+  }
+
+  const prepareDetailData = (requestInfo: any) => {
+    //address data 
+    const processStatusId  = requestInfo?.processStatusId;
+    const extractRequestInfo = JSON.parse(requestInfo.requestInfo) || {};
+    const addressData = extractRequestInfo.addressData || {};
+
+    let _oldData = {...data};
+    const _oldmember: any = [];
+    if(processStatusId == Constants.STATUS_APPROVED) {
+      _oldData.province = convertDataExtract(addressData.provinceData.province) as IDropdownValue;
+      _oldData.district = convertDataExtract(addressData.districtData.district) as IDropdownValue;
+      _oldData.ward = convertDataExtract(addressData.wardData.ward) as IDropdownValue;
+      _oldData.houseHoldNumber = convertDataExtract(addressData.householdBookNumberData.householdBookNumber) as string;
+      _oldData.street = convertDataExtract(addressData.streetData.street) as string;
+      _oldData.socialNumberType = convertDataExtract(extractRequestInfo.socialInsuranceBookData.socialInsuranceBook) as IDropdownValue;
+      _oldData.facilityRegisterName = convertDataExtract(extractRequestInfo.healthcarePlaceData.healthcarePlace) as IDropdownValue;
+      _oldData.note = convertDataExtract(extractRequestInfo.noteData.note) as string;
+      //family
+      const familyData = extractRequestInfo.familyDatas || [];
+      _.sortBy(familyData, 'order').map(familyItem => {
+          const displayType = parseInt(familyItem.displayType);
+          if(displayType != STATUS.DELETE) {
+            _oldmember.push(convertMemberFamily(familyItem.family));
+          }
+      });
+    } else {
+      _oldData.province = convertDataExtract(addressData.provinceData.oldProvince) as IDropdownValue;
+      _oldData.district = convertDataExtract(addressData.districtData.oldDistrict) as IDropdownValue;
+      _oldData.ward = convertDataExtract(addressData.wardData.oldWard) as IDropdownValue;
+      _oldData.houseHoldNumber = convertDataExtract(addressData.householdBookNumberData.oldHouseholdBookNumber) as string;
+      _oldData.street = convertDataExtract(addressData.streetData.oldStreet) as string;
+      _oldData.socialNumberType = convertDataExtract(extractRequestInfo.socialInsuranceBookData.oldSocialInsuranceBook) as IDropdownValue;
+      _oldData.facilityRegisterName = convertDataExtract(extractRequestInfo.healthcarePlaceData.oldHealthcarePlace) as IDropdownValue;
+      _oldData.note = convertDataExtract(extractRequestInfo.noteData.oldNote) as string;
+      //family
+      const familyData = extractRequestInfo.familyDatas || [];
+      _.sortBy(familyData, 'order').map(familyItem => {
+          const displayType = parseInt(familyItem.displayType);
+          if(displayType != STATUS.NEW) {
+              _oldmember.push(convertMemberFamily(familyItem.oldFamily));
+          }
+      });
+    }
+    
+    setData(_oldData);
+    setMembers(_oldmember);
+    setLastModified({
+        date: requestInfo.modifiedDate ? moment(requestInfo?.modifiedDate).format('DD/MM/YYYY HH:mm:ss') : '',
+        by: requestInfo.modifiedBy?.replace('@vingroup.net', '') || ''
+    })
+    }
+
+  //end get detail data
 
   const checkDataChange = () => {
     const change = {};
@@ -225,6 +331,7 @@ const SocialContributeInfo = (props: any) => {
   };
 
   const onEdit = () => {
+    if(isCreateMode) return;
     let newEditable = !isCreateMode;
     if (newEditable) {
       setOldData({
@@ -238,7 +345,7 @@ const SocialContributeInfo = (props: any) => {
       });
       setOldMembers(_oldmember);
     }
-    if(localStorage.getItem('insurance_number')) {
+    if(!data.socialNumberType && localStorage.getItem('insurance_number')) {
       setData({
         ...data,
         socialNumberType: {value: SOCIAL_NUMBER_INPUT, label: localStorage.getItem('insurance_number') || ''}
@@ -301,11 +408,6 @@ const SocialContributeInfo = (props: any) => {
     }
   };
 
-  //   const onSubmit = () => {
-  //     const change = checkDataChange();
-  //     prepareSubmitData(change.data, change.member);
-  //     //setShowCreate(false);
-  //   };
   const onSubmit = () => {
     const change = checkDataChange();
     const userProfileInfo = prepareSubmitData(change.data, change.member);
@@ -449,9 +551,11 @@ const SocialContributeInfo = (props: any) => {
         <div className="clearfix edit-button w-100 pb-2">
           {/* <a href="/insurance-manager/social-contribute-info"><div className="btn bg-white btn-create"
                     ><i className="fas fa-plus"></i> {t('createRequest')}</div></a> */}
+          <a href="/tasks?requestTypes=14,15,20,21" className="btn btn-info shadow-customize d-flex align-items-center"><img src={IconHistory} alt='History' style={{marginRight: '4px'}}/>{t("History")}</a>
+
           <a onClick={() => onEdit()}>
-            <div className="btn bg-white btn-create">
-              <i className="fas fa-plus"></i> {t("Edit")}
+            <div className="btn shadow-customize ml-3 d-flex align-items-center" style={{backgroundColor: '#FF7F00', color: 'white'}}>
+            <img src={IconEdit} alt='Edit' style={{marginRight: '4px'}} />{t("Edit")}
             </div>
           </a>
         </div>
@@ -470,6 +574,7 @@ const SocialContributeInfo = (props: any) => {
             setMembers={setMembers}
             onSubmit={onSubmit}
             isCreateMode={isCreateMode}
+            lastModified ={lastModified}
             notifyMessage={notifyMessage}
           />
       </div>
