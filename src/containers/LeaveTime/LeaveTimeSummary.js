@@ -89,76 +89,220 @@ const DetailModal = ({ isShow, titleModal, onHide }) => {
                 <div className='content'>
                 <Tabs defaultActiveKey={tab} onSelect={(key) => handleChangeTab(key)}>
                     <Tab eventKey={tabConfig.currentYear} title={t('Năm nay')}>
-                        <table className='table-detail'>
-                            <thead>
-                                <tr>
-                                    <th>Ngày bắt đầu</th>
-                                    <th>Ngày hết hạn</th>
-                                    <th>Tổng số</th>
-                                    <th>Đã sử dụng</th>
-                                    <th>Còn lại</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>05/03/2023</td>
-                                    <td>31/03/2023</td>
-                                    <td>02</td>
-                                    <td>01</td>
-                                    <td>01</td>
-                                </tr>
-                                <tr>
-                                    <td>10/02/2023</td>
-                                    <td>31/03/2023</td>
-                                    <td>02</td>
-                                    <td>01</td>
-                                    <td>01</td>
-                                </tr>
-                                <tr>
-                                    <td>15/01/2023</td>
-                                    <td>31/03/2023</td>
-                                    <td>02</td>
-                                    <td>01</td>
-                                    <td>01</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    <div className="wrap-table-detail">
+                            <table className='table-detail'>
+                                <thead>
+                                    <tr>
+                                        <th>Ngày bắt đầu</th>
+                                        <th>Ngày hết hạn</th>
+                                        <th>Tổng số</th>
+                                        <th>Đã sử dụng</th>
+                                        <th>Còn lại</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>05/03/2023</td>
+                                        <td>31/03/2023</td>
+                                        <td>02</td>
+                                        <td>01</td>
+                                        <td>01</td>
+                                    </tr>
+                                    <tr>
+                                        <td>10/02/2023</td>
+                                        <td>31/03/2023</td>
+                                        <td>02</td>
+                                        <td>01</td>
+                                        <td>01</td>
+                                    </tr>
+                                    <tr>
+                                        <td>15/01/2023</td>
+                                        <td>31/03/2023</td>
+                                        <td>02</td>
+                                        <td>01</td>
+                                        <td>01</td>
+                                    </tr>
+                                    <tr>
+                                        <td>05/03/2023</td>
+                                        <td>31/03/2023</td>
+                                        <td>02</td>
+                                        <td>01</td>
+                                        <td>01</td>
+                                    </tr>
+                                    <tr>
+                                        <td>10/02/2023</td>
+                                        <td>31/03/2023</td>
+                                        <td>02</td>
+                                        <td>01</td>
+                                        <td>01</td>
+                                    </tr>
+                                    <tr>
+                                        <td>15/01/2023</td>
+                                        <td>31/03/2023</td>
+                                        <td>02</td>
+                                        <td>01</td>
+                                        <td>01</td>
+                                    </tr>
+                                    <tr>
+                                        <td>05/03/2023</td>
+                                        <td>31/03/2023</td>
+                                        <td>02</td>
+                                        <td>01</td>
+                                        <td>01</td>
+                                    </tr>
+                                    <tr>
+                                        <td>10/02/2023</td>
+                                        <td>31/03/2023</td>
+                                        <td>02</td>
+                                        <td>01</td>
+                                        <td>01</td>
+                                    </tr>
+                                    <tr>
+                                        <td>15/01/2023</td>
+                                        <td>31/03/2023</td>
+                                        <td>02</td>
+                                        <td>01</td>
+                                        <td>01</td>
+                                    </tr>
+                                    <tr>
+                                        <td>15/01/2023</td>
+                                        <td>31/03/2023</td>
+                                        <td>02</td>
+                                        <td>01</td>
+                                        <td>01</td>
+                                    </tr>
+                                    <tr>
+                                        <td>05/03/2023</td>
+                                        <td>31/03/2023</td>
+                                        <td>02</td>
+                                        <td>01</td>
+                                        <td>01</td>
+                                    </tr>
+                                    <tr>
+                                        <td>10/02/2023</td>
+                                        <td>31/03/2023</td>
+                                        <td>02</td>
+                                        <td>01</td>
+                                        <td>01</td>
+                                    </tr>
+                                    <tr>
+                                        <td>15/01/2023</td>
+                                        <td>31/03/2023</td>
+                                        <td>02</td>
+                                        <td>01</td>
+                                        <td>01</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </Tab>
                     <Tab eventKey={tabConfig.lastYear} title={t('Năm trước')}>
-                        <table className='table-detail'>
-                            <thead>
-                                <tr>
-                                    <th>Ngày bắt đầu</th>
-                                    <th>Ngày hết hạn</th>
-                                    <th>Tổng số</th>
-                                    <th>Đã sử dụng</th>
-                                    <th>Còn lại</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>05/03/2023</td>
-                                    <td>31/03/2023</td>
-                                    <td>02</td>
-                                    <td>01</td>
-                                    <td>01</td>
-                                </tr>
-                                <tr>
-                                    <td>10/02/2023</td>
-                                    <td>31/03/2023</td>
-                                    <td>02</td>
-                                    <td>01</td>
-                                    <td>01</td>
-                                </tr>
-                                <tr>
-                                    <td>15/01/2023</td>
-                                    <td>31/03/2023</td>
-                                    <td>02</td>
-                                    <td>01</td>
-                                    <td>01</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <div className="wrap-table-detail">
+                            <table className='table-detail'>
+                                <thead>
+                                    <tr>
+                                        <th>Ngày bắt đầu</th>
+                                        <th>Ngày hết hạn</th>
+                                        <th>Tổng số</th>
+                                        <th>Đã sử dụng</th>
+                                        <th>Còn lại</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>05/03/2023</td>
+                                        <td>31/03/2023</td>
+                                        <td>02</td>
+                                        <td>01</td>
+                                        <td>01</td>
+                                    </tr>
+                                    <tr>
+                                        <td>10/02/2023</td>
+                                        <td>31/03/2023</td>
+                                        <td>02</td>
+                                        <td>01</td>
+                                        <td>01</td>
+                                    </tr>
+                                    <tr>
+                                        <td>15/01/2023</td>
+                                        <td>31/03/2023</td>
+                                        <td>02</td>
+                                        <td>01</td>
+                                        <td>01</td>
+                                    </tr>
+                                    <tr>
+                                        <td>05/03/2023</td>
+                                        <td>31/03/2023</td>
+                                        <td>02</td>
+                                        <td>01</td>
+                                        <td>01</td>
+                                    </tr>
+                                    <tr>
+                                        <td>10/02/2023</td>
+                                        <td>31/03/2023</td>
+                                        <td>02</td>
+                                        <td>01</td>
+                                        <td>01</td>
+                                    </tr>
+                                    <tr>
+                                        <td>15/01/2023</td>
+                                        <td>31/03/2023</td>
+                                        <td>02</td>
+                                        <td>01</td>
+                                        <td>01</td>
+                                    </tr>
+                                    <tr>
+                                        <td>05/03/2023</td>
+                                        <td>31/03/2023</td>
+                                        <td>02</td>
+                                        <td>01</td>
+                                        <td>01</td>
+                                    </tr>
+                                    <tr>
+                                        <td>10/02/2023</td>
+                                        <td>31/03/2023</td>
+                                        <td>02</td>
+                                        <td>01</td>
+                                        <td>01</td>
+                                    </tr>
+                                    <tr>
+                                        <td>15/01/2023</td>
+                                        <td>31/03/2023</td>
+                                        <td>02</td>
+                                        <td>01</td>
+                                        <td>01</td>
+                                    </tr>
+                                    <tr>
+                                        <td>15/01/2023</td>
+                                        <td>31/03/2023</td>
+                                        <td>02</td>
+                                        <td>01</td>
+                                        <td>01</td>
+                                    </tr>
+                                    <tr>
+                                        <td>05/03/2023</td>
+                                        <td>31/03/2023</td>
+                                        <td>02</td>
+                                        <td>01</td>
+                                        <td>01</td>
+                                    </tr>
+                                    <tr>
+                                        <td>10/02/2023</td>
+                                        <td>31/03/2023</td>
+                                        <td>02</td>
+                                        <td>01</td>
+                                        <td>01</td>
+                                    </tr>
+                                    <tr>
+                                        <td>15/01/2023</td>
+                                        <td>31/03/2023</td>
+                                        <td>02</td>
+                                        <td>01</td>
+                                        <td>01</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </Tab>
                 </Tabs>
                 </div>
