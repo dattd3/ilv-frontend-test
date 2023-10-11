@@ -838,13 +838,15 @@ const VinGroupForm = (props) => {
             const isWorkResultBlock= groupIndex === evaluationFormDetailState?.groups?.length - 1
             const isFormula = group?.caculateType === 'CT' // Là công thức (Hiện tại đang áp dụng cho VinBus)
             let targetErrors = {}
+
             if (group?.groupChildren?.length > 0) {
                 targetErrors = (group?.groupChildren || []).reduce((subInitial, subGroup, subGroupIndex) => {
                     const subError = (subGroup?.listKPI || []).reduce((kpiInitial, kpi, kpiIndex) => {
                         if (showByManager) {
                             kpiInitial[`${groupIndex}_${subGroupIndex}_${kpiIndex}_leadReviewPoint`] = null
                             kpiInitial[`${groupIndex}_${subGroupIndex}_${kpiIndex}_leadRealResult`] = null
-                            if ((hasNotValue(kpi?.leadRealResult) && isFormula) || (hasNotValue(kpi?.leadRealResult) && !isFormula && isWorkResultBlock)) {
+
+                            if (hasNotValue(kpi?.leadRealResult) && isFormula) {
                                 kpiInitial[`${groupIndex}_${subGroupIndex}_${kpiIndex}_leadRealResult`] = t("Required")
                             }
                             if (hasNotValue(kpi?.leadReviewPoint) || (!Number(kpi?.leadReviewPoint) && !isFormula)) {
@@ -870,9 +872,13 @@ const VinGroupForm = (props) => {
                     if (showByManager) {
                         subInitial[`${groupIndex}_${kpiIndex}_leadReviewPoint`] = null
                         subInitial[`${groupIndex}_${kpiIndex}_leadRealResult`] = null
-                        if ((hasNotValue(kpi?.leadRealResult) && isFormula) || (hasNotValue(kpi?.leadRealResult) && !isFormula && isWorkResultBlock)) {
+
+                        if (hasNotValue(kpi?.leadRealResult) && isFormula) {
                             subInitial[`${groupIndex}_${kpiIndex}_leadRealResult`] = t("Required")
                         }
+                        // if (!isFormula && isWorkResultBlock && hasNotValue(kpi?.leadReviewPoint)) {
+                        //     subInitial[`${groupIndex}_${kpiIndex}_leadReviewPoint`] = t("Required")
+                        // }
                         if (hasNotValue(kpi?.leadReviewPoint) || (!Number(kpi?.leadReviewPoint) && !isFormula)) {
                             subInitial[`${groupIndex}_${kpiIndex}_leadReviewPoint`] = t("Required")
                         }
