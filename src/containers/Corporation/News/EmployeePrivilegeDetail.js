@@ -12,6 +12,7 @@ import NewsRelation from './NewsRelation';
 import HOCComponent from '../../../components/Common/HOCComponent'
 import IconBack from '../../../assets/img/icon/Icon-Arrow-Left.svg'
 import IconTime from '../../../assets/img/icon/Icon-Time.svg'
+import '../../../assets/css/ck-editor5.css';
 
 const usePreload = (params) => {
     const api = useApi();
@@ -48,14 +49,14 @@ function EmployeePrivilegeDetailElement({ match, location }) {
     return (
         <>
         <div className="back-block"><a href={mapConfig.EmployeePrivileges} title={t("ComeBack")}><Image src={IconBack} alt="Back" className="ic-back" />{t("ComeBack")}</a></div>
-        <div className="news-detail-page">
+        <div className="news-detail-page employee-privilege-detail">
             <div className="news-content">
                 <h1 className="news-title">{title || ''}</h1>
                 <div className="source-time-info">
                     <span className="time"><Image src={IconTime} alt="Time" className="icon" /><span className="hour">{timePublished?.time + ' | ' + timePublished?.date}</span></span>
                 </div>
                 <h2 className="news-description">{description || ''}</h2>
-                <div className="news-detail" dangerouslySetInnerHTML={{
+                <div className="news-detail ck ck-content" dangerouslySetInnerHTML={{
                     __html: purify.sanitize(content || ''),
                 }} />
             </div>
