@@ -9,7 +9,7 @@ import axios from "axios";
 import { getRequestConfigs } from "commons/commonFunctions";
 
 const CATEGORY_CODES = {
-  INSPIRING_SHORT_FILM: "5.1",
+  // INSPIRING_SHORT_FILM: "5.1",
   CIVILLY_VINGROUP: "5.2",
 };
 
@@ -20,14 +20,14 @@ function WorkingEnvironmentPage() {
   useEffect(() => {
     const url = `${
       process.env.REACT_APP_REQUEST_URL
-    }api/vanhoavin/list?language=${getCurrentLanguage()}&categoryCode=5.1,5.2`;
+    }api/vanhoavin/list?language=${getCurrentLanguage()}&categoryCode=5.2`;
     axios.get(url, getRequestConfigs()).then((response) => {
       const respData = response.data?.data;
       if (respData.length > 0) {
         setAvailableTypes({
-          [CATEGORY_CODES.TEXTBOOK]: respData
-            ?.filter((item) => item.categoryCode === CATEGORY_CODES.TEXTBOOK)
-            ?.map((item) => item.fileType),
+          // [CATEGORY_CODES.TEXTBOOK]: respData
+          //   ?.filter((item) => item.categoryCode === CATEGORY_CODES.TEXTBOOK)
+          //   ?.map((item) => item.fileType),
           [CATEGORY_CODES.STORYTELLING]: respData
             ?.filter(
               (item) => item.categoryCode === CATEGORY_CODES.STORYTELLING
@@ -53,13 +53,13 @@ function WorkingEnvironmentPage() {
             <img src={IconDocument} alt="" />
             &nbsp;&nbsp;{t("InspiringShortFilm")}
           </div>
-          <div className="btn-group">
+          {/* <div className="btn-group">
             <ButtonAction
               parentLink="working-environment"
               availableTypes={availableTypes}
               cateCode={CATEGORY_CODES.INSPIRING_SHORT_FILM}
             />
-          </div>
+          </div> */}
         </div>
         <div className="content-item">
           <div className="title-container">
