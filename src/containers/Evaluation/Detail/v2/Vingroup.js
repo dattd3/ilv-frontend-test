@@ -139,7 +139,7 @@ const WorkResultKpiItem = ({ kpi, deviant, status, isEdit, showByManager, groupI
     return (
         <div className="evaluation-item">
             <div className="title">{`${JSON.parse(kpi?.targetName || '{}')[languageCodeMapping[currentLocale]]}`}</div>
-            <div className="wrap-score-table">
+            <div className="wrap-evaluation-table">
                 <table>
                     <thead>
                         <tr>
@@ -291,7 +291,7 @@ const WorkResultKpiItemForFormula = ({ kpi, deviant, status, isEdit, showByManag
     return (
         <div className="evaluation-item">
             <div className="title">{`${JSON.parse(kpi?.targetName || '{}')[languageCodeMapping[currentLocale]]}`}</div>
-            <div className="wrap-score-table">
+            <div className="wrap-evaluation-table">
                 <table className="formula">
                     <thead>
                         <tr>
@@ -520,7 +520,7 @@ const EvaluationGroup = ({ isWorkResultBlock, group, status, isEdit, showByManag
             <div className="title">{`${JSON.parse(group?.groupName || '{}')[languageCodeMapping[currentLocale]]}`} <span className="red">({group?.groupWeight || 0}%)</span></div>
             {
                 group?.listGroupConfig?.length > 0 && (
-                    <div className="wrap-score-table">
+                    <div className="wrap-score-table v2">
                         <table className={'vin-group'}>
                             <thead>
                                 <tr>
