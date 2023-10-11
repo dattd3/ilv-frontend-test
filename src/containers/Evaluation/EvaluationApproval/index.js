@@ -9,7 +9,8 @@ import axios from 'axios'
 import _ from 'lodash'
 import { evaluationStatus, actionButton, processStep, stepEvaluation360Config, evaluation360Status, evaluationApiVersion } from '../Constants'
 import Constants from '../../../commons/Constants'
-import { getRequestConfigurations, getMuleSoftHeaderConfigurations } from '../../../commons/Utils'
+import { getRequestConfigurations, getMuleSoftHeaderConfigurations, getCurrentLanguage } from '../../../commons/Utils'
+import { isJsonString } from "utils/string"
 import LoadingModal from '../../../components/Common/LoadingModal'
 import StatusModal from '../../../components/Common/StatusModal'
 import EvaluationDetailModal from '../EvaluationDetailModal'
@@ -1073,6 +1074,8 @@ function EvaluationApproval(props) {
         }
     })
 
+    const lang = getCurrentLanguage()
+
     return (
         <>
         <LoadingModal show={isLoading} />
@@ -1193,16 +1196,28 @@ function EvaluationApproval(props) {
                                 <thead>
                                     <tr>
                                         <th className="c-user-info" colSpan="2"></th>
-                                        <th className="text-center text-uppercase c-attitude" colSpan="2">{t("EvaluationDetailAttitude")}</th>
-                                        <th className="text-center text-uppercase c-work-results" colSpan="2">{t("EvaluationDetailPartWORKINGPERFORMANCERESULT")}</th>
+                                        {
+                                            (evaluationData?.data[0]?.listGroup || []).map((item, index) => {
+                                                let groupName = isJsonString(item?.groupName) ? (JSON.parse(item?.groupName)?.[lang] || JSON.parse(item?.groupName)?.['vi']) : item?.groupName
+                                                return (
+                                                    <th key={`n1-${index}`} className="text-center text-uppercase" colSpan="2">{ groupName }</th>
+                                                )
+                                            })
+                                        }
                                         <th className="text-center text-uppercase highlight-third c-summary" colSpan="2">{t("EvaluationSummary")}</th>
                                     </tr>
                                     <tr>
                                         <th className="c-user-info" colSpan="2"><div className="user-info">{t("EvaluationEmployeeFullName")}</div></th>
-                                        <th className="c-self-assessment"><div className="text-center self-assessment">{t("EvaluationSelfAssessment")}</div></th>
-                                        <th className="highlight-first c-cbql-assessment"><div className="text-center cbql-assessment">{t("EvaluationDetailManagerAssessment")}</div></th>
-                                        <th className="c-self-assessment"><div className="text-center self-assessment">{t("EvaluationSelfAssessment")}</div></th>
-                                        <th className="highlight-first c-cbql-assessment"><div className="text-center cbql-assessment">{t("EvaluationDetailManagerAssessment")}</div></th>
+                                        {
+                                            (evaluationData?.data[0]?.listGroup || []).map((item, index) => {
+                                                return (
+                                                    <Fragment key={`n2-${index}`}>
+                                                        <th className="c-self-assessment"><div className="text-center self-assessment">{t("EvaluationSelfAssessment")}</div></th>
+                                                        <th className="highlight-first c-cbql-assessment"><div className="text-center cbql-assessment">{t("EvaluationDetailManagerAssessment")}</div></th>
+                                                    </Fragment>
+                                                )
+                                            })
+                                        }
                                         <th className="highlight-second c-self-assessment"><div className="text-center self-assessment">{t("EvaluationSelfAssessment")}</div></th>
                                         <th className="highlight-third c-cbql-assessment"><div className="text-center cbql-assessment">{t("EvaluationDetailManagerAssessment")}</div></th>
                                     </tr>
@@ -1210,21 +1225,29 @@ function EvaluationApproval(props) {
                                 <tbody>
                                     {
                                         evaluationData?.data.map((item, i) => {
-                                            let attitudeData = item?.listGroup?.filter(item => item.groupTargetCode == 'G1')?.length > 0 ? item?.listGroup?.filter(item => item.groupTargetCode == 'G1')[0] : null
-                                            let workResultData = item?.listGroup?.filter(item => item.groupTargetCode == 'G2')?.length > 0 ? item?.listGroup?.filter(item => item.groupTargetCode == 'G2')[0] : null
-                                            return <Fragment key={i}>
-                                                        <tr className="divider"></tr>
-                                                        <tr>
-                                                            <td className="c-check"><div className="check"><input type="checkbox" checked={item?.isSelected || false} onChange={(e) => handleCheckboxChange(e, i)} /></div></td>
-                                                            <td className="c-full-name"><div className="full-name">{item?.fullName || ''} ({item?.username || ''})</div></td>
-                                                            <td className="text-center c-self-assessment">{attitudeData?.seftPoint?.toFixed(2) || 0}</td>
-                                                            <td className="text-center highlight-first c-cbql-assessment">{attitudeData?.leadReviewPoint?.toFixed(2) || 0}</td>
-                                                            <td className="text-center c-self-assessment">{workResultData?.seftPoint?.toFixed(2) || 0}</td>
-                                                            <td className="text-center highlight-first c-cbql-assessment">{workResultData?.leadReviewPoint?.toFixed(2) || 0}</td>
-                                                            <td className="text-center highlight-second c-self-assessment">{item?.totalSeftPoint?.toFixed(2) || 0}</td>
-                                                            <td className="text-center highlight-third c-cbql-assessment">{item?.totalLeadReviewPoint?.toFixed(2) || 0}</td>
-                                                        </tr>
-                                                    </Fragment>
+                                            // let attitudeData = item?.listGroup?.filter(item => item.groupTargetCode == 'G1')?.length > 0 ? item?.listGroup?.filter(item => item.groupTargetCode == 'G1')[0] : null
+                                            // let workResultData = item?.listGroup?.filter(item => item.groupTargetCode == 'G2')?.length > 0 ? item?.listGroup?.filter(item => item.groupTargetCode == 'G2')[0] : null
+                                            return (
+                                                <Fragment key={`r- ${i}`}>
+                                                    <tr className="divider"></tr>
+                                                    <tr>
+                                                        <td className="c-check"><div className="check"><input type="checkbox" checked={item?.isSelected || false} onChange={(e) => handleCheckboxChange(e, i)} /></div></td>
+                                                        <td className="c-full-name"><div className="full-name">{item?.fullName || ''} ({item?.username || ''})</div></td>
+                                                        {
+                                                            (item?.listGroup || []).map((sub, subIndex) => {
+                                                                return (
+                                                                    <Fragment key={`rc-${subIndex}`}>
+                                                                        <td className="text-center c-self-assessment">{sub?.seftPoint?.toFixed(2) || 0}</td>
+                                                                        <td className="text-center highlight-first c-cbql-assessment">{sub?.leadReviewPoint?.toFixed(2) || 0}</td>
+                                                                    </Fragment>
+                                                                )
+                                                            })
+                                                        }
+                                                        <td className="text-center highlight-second c-self-assessment">{item?.totalSeftPoint?.toFixed(2) || 0}</td>
+                                                        <td className="text-center highlight-third c-cbql-assessment">{item?.totalLeadReviewPoint?.toFixed(2) || 0}</td>
+                                                    </tr>
+                                                </Fragment>
+                                            )
                                         })
                                     }
                                 </tbody>
