@@ -845,14 +845,6 @@ const ROUTES = [
           component: lazy(() => import("./Corporation/News/EmployeePrivilegeDetail")),
         },
         {
-          key: "registration-internal-payment",
-          routeProps: {
-            exact: true,
-            path: map.RegistrationInternalPayment
-          },
-          component: lazy(() => import("./Welfare/InternalPayment/CreateInternalPayment"))
-        },
-        {
           key: "vingroup-history",
           routeProps: {
             exact: true,
