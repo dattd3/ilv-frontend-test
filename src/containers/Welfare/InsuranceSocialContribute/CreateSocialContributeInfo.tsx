@@ -32,6 +32,7 @@ interface ICreateSocialContributeInfoProps {
   isCreateMode: boolean,
   onSubmit: Function;
   notifyMessage: Function;
+  lastModified?: any;
 };
 
 const CreateSocialContributeInfo: FC<ICreateSocialContributeInfoProps> = ({
@@ -49,6 +50,7 @@ const CreateSocialContributeInfo: FC<ICreateSocialContributeInfoProps> = ({
   setMembers=()=>{},
   isCreateMode = true,
   onSubmit,
+  lastModified,
   notifyMessage =() => {}
 }) => {
   const [provinces, setprovinces] = useState<IDropdownValue[]>([]);
@@ -319,11 +321,11 @@ const CreateSocialContributeInfo: FC<ICreateSocialContributeInfoProps> = ({
           <h5 className="pt-0">{'NGÀY CHỈNH SỬA CUỐI CÙNG'}</h5>
           <div className="box shadow-sm cbnv">
             <span style={{ fontWeight: "700" }}>{"Cập nhật: "}</span>
-            <span style={{ fontWeight: "100" }}>20/09/2023 10:00:00</span>
+            <span style={{ fontWeight: "100" }}>{lastModified?.date}</span>
             <span style={{ fontWeight: "700" }}>
               {" | Bởi "  + ": "}
             </span>
-            <span style={{ fontWeight: "100" }}>annv8</span>
+            <span style={{ fontWeight: "100" }}>{lastModified?.by}</span>
           </div>
         </> : null
       }
@@ -358,9 +360,13 @@ const CreateSocialContributeInfo: FC<ICreateSocialContributeInfoProps> = ({
                   maxLength={10}
                   disabled={!isCreateMode}
                 />
-                <span className="input-group-addon input-img">
+                {
+                  isCreateMode ? 
+                  <span className="input-group-addon input-img">
                   <img src={IconClear} alt='Clear' className='remove-input cursor-pointer' title='Exit' onClick={() => handleChangeSelectInputs(null, 'socialNumberType')} />
-                </span>
+                </span> : null
+                }
+                
               </label>
                  :
                 <Select
