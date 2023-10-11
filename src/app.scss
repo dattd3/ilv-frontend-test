@@ -5576,26 +5576,69 @@ span.badge-notification[data-badge]::after {
       .content {
         color: #0D1B3C;
         padding: 1rem 0 5px 0;
-        .table-detail {
+        .wrap-table-detail {
+          max-height: 75vh;
+          overflow-y: auto;
           margin-top: 15px;
-          width: 100%;
-          border: 1px solid #DEE2E6;
-          border-radius: 4px;
-          thead {
-            background: #F2F2F2;
-            th {
-              width: 20%;
-              padding: 10px;
-              text-align: center;
-            }
+          padding-right: 5px;
+          &::-webkit-scrollbar {
+            width: 6px;
           }
-          tbody {
-            tr {
-              border-bottom: 1px solid #F2F2F2;
-              td {
+          &::-webkit-scrollbar-thumb {
+            background-color: #B3B3B3;
+            border-radius: 3px;
+          }
+          &::-webkit-scrollbar-track {
+            background-color: transparent;
+          }
+          .table-detail {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            thead {
+              position: sticky;
+              z-index: 99;
+              top: 0;
+              background: #F2F2F2;
+              th {
                 width: 20%;
                 padding: 10px;
                 text-align: center;
+                border-top: 1px solid #DEE2E6;
+                &:first-child {
+                  border-top-left-radius: 4px;
+                  border-left: 1px solid #DEE2E6;
+                }
+                &:last-child {
+                  border-top-right-radius: 4px;
+                  border-right: 1px solid #DEE2E6;
+                }
+              }
+            }
+            tbody {
+              tr {
+                td {
+                  width: 20%;
+                  padding: 10px;
+                  text-align: center;
+                  border-bottom: 1px solid #DEE2E6;
+                  &:first-child {
+                    border-left: 1px solid #DEE2E6;
+                  }
+                  &:last-child {
+                    border-right: 1px solid #DEE2E6;
+                  }
+                }
+                &:last-child {
+                  td {
+                    &:first-child {
+                      border-bottom-left-radius: 4px;
+                    }
+                    &:last-child {
+                      border-bottom-right-radius: 4px;
+                    }
+                  }
+                }
               }
             }
           }
@@ -5605,10 +5648,20 @@ span.badge-notification[data-badge]::after {
           .nav-item {
             border: 1px solid #36B9CC;
             border-radius: 4px;
+            color: #36B9CC;
+            background: #FFFFFF;
+            &:first-child {
+              border-top-right-radius: 0;
+              border-bottom-right-radius: 0;
+            }
             &:last-child {
               border-left: none;
               border-top-left-radius: 0;
               border-bottom-left-radius: 0;
+            }
+            &.active {
+              background: #36B9CC;
+              color: #FFFFFF;
             }
           }
         }
