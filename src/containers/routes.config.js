@@ -820,14 +820,14 @@ const ROUTES = [
           },
           component: lazy(() => import("./Vin30Chronicles/index"))
         },
-        // {
-        //   key: "registration-internal-payment",
-        //   routeProps: {
-        //     exact: true,
-        //     path: map.RegistrationInternalPayment
-        //   },
-        //   component: lazy(() => import("./Welfare/InternalPayment/CreateInternalPayment"))
-        // },
+        {
+          key: "registration-internal-payment",
+          routeProps: {
+            exact: true,
+            path: map.RegistrationInternalPayment
+          },
+          component: lazy(() => import("./Welfare/InternalPayment/CreateInternalPayment"))
+        },
         {
           key: "employee-privileges",
           routeProps: {
