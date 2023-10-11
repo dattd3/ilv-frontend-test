@@ -48,19 +48,19 @@ function WorkingEnvironmentPage() {
     <div className="vingroup-cultural-page">
       <h1 className="content-page-header">{t("VingroupWorkingEnvironment")}</h1>
       <div className="content-page-body">
-        <div className="content-item">
+        {/* <div className="content-item">
           <div className="title-container">
             <img src={IconDocument} alt="" />
             &nbsp;&nbsp;{t("InspiringShortFilm")}
           </div>
-          {/* <div className="btn-group">
+          <div className="btn-group">
             <ButtonAction
               parentLink="working-environment"
               availableTypes={availableTypes}
               cateCode={CATEGORY_CODES.INSPIRING_SHORT_FILM}
             />
-          </div> */}
-        </div>
+          </div>
+        </div> */}
         <div className="content-item">
           <div className="title-container">
             <img src={IconDocument} alt="" />
