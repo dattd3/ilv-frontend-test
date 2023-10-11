@@ -69,7 +69,7 @@ const PNL_SWIPER_LIST = [
     },
     {
       logo: IconVinperl,
-      url: "https://vinpearl.vn",
+      url: "https://vinpearl.com",
     },
   ],
   [
@@ -91,7 +91,7 @@ const PNL_SWIPER_LIST = [
     },
     {
       logo: IconVinits,
-      url: "https://vingroup.net",
+      url: "#",
     },
   ],
   [
@@ -109,7 +109,7 @@ const PNL_SWIPER_LIST = [
     },
     {
       logo: IconVinHMS,
-      url: "https://vinhms.com.net",
+      url: "https://vinhms.com",
     },
     {
       logo: IconVinmec,
@@ -153,7 +153,7 @@ const PNL_SWIPER_LIST = [
     },
     {
       logo: IconQTT,
-      url: "https://quythientam.com",
+      url: "#",
     },
     {
       logo: IconVinif,
