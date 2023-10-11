@@ -420,7 +420,7 @@ const SocialContributeInfo = (props: any) => {
       jobTitle: localStorage.getItem("jobTitle"),
       employeeLevel: localStorage.getItem("employeeLevel"),
       department: localStorage.getItem("department"),
-      ...userProfileInfo
+      ...userprofile
     };
     const userEmployeeInfo = {
       employeeNo: localStorage.getItem("employeeNo"),
