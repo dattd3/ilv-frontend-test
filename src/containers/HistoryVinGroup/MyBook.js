@@ -2,94 +2,51 @@ import React, { useState, useEffect, useRef, forwardRef, Fragment } from "react"
 import HTMLFlipBook from "@cuongnv56/react-pageflip"
 import { saveAs } from 'file-saver'
 import { chunk } from 'lodash'
-import Page1 from 'assets/img/vingroup_history/Page1.png'
-import Page2 from 'assets/img/vingroup_history/Page2.png'
-import Page3 from 'assets/img/vingroup_history/Page3.png'
-import Page4 from 'assets/img/vingroup_history/Page4.png'
-import Page5 from 'assets/img/vingroup_history/Page5.png'
-import Page6 from 'assets/img/vingroup_history/Page6.png'
-import Page7 from 'assets/img/vingroup_history/Page7.png'
-import Page8 from 'assets/img/vingroup_history/Page8.png'
-import Page9 from 'assets/img/vingroup_history/Page9.png'
-import Page10 from 'assets/img/vingroup_history/Page10.png'
-import Page11 from 'assets/img/vingroup_history/Page11.png'
-import Page12 from 'assets/img/vingroup_history/Page12.png'
-import Page13 from 'assets/img/vingroup_history/Page13.png'
-import Page14 from 'assets/img/vingroup_history/Page14.png'
-import Page15 from 'assets/img/vingroup_history/Page15.png'
-import Page16 from 'assets/img/vingroup_history/Page16.png'
-import Page17 from 'assets/img/vingroup_history/Page17.png'
-import Page18 from 'assets/img/vingroup_history/Page18.png'
-import Page19 from 'assets/img/vingroup_history/Page19.png'
-import Page20 from 'assets/img/vingroup_history/Page20.png'
-import Page21 from 'assets/img/vingroup_history/Page21.png'
-import Page22 from 'assets/img/vingroup_history/Page22.png'
-import Page23 from 'assets/img/vingroup_history/Page23.png'
-import Page24 from 'assets/img/vingroup_history/Page24.png'
-import Page25 from 'assets/img/vingroup_history/Page25.png'
-import Page26 from 'assets/img/vingroup_history/Page26.png'
-import Page27 from 'assets/img/vingroup_history/Page27.png'
-import Page28 from 'assets/img/vingroup_history/Page28.png'
-import Page29 from 'assets/img/vingroup_history/Page29.png'
-import Page30 from 'assets/img/vingroup_history/Page30.png'
-import Page31 from 'assets/img/vingroup_history/Page31.png'
-import Page32 from 'assets/img/vingroup_history/Page32.png'
-import Page33 from 'assets/img/vingroup_history/Page33.png'
-import Page34 from 'assets/img/vingroup_history/Page34.png'
-import Page35 from 'assets/img/vingroup_history/Page35.png'
-import Page36 from 'assets/img/vingroup_history/Page36.png'
-import Page37 from 'assets/img/vingroup_history/Page37.png'
-import Page38 from 'assets/img/vingroup_history/Page38.png'
-import Page39 from 'assets/img/vingroup_history/Page39.png'
-import Page40 from 'assets/img/vingroup_history/Page40.png'
-import Page41 from 'assets/img/vingroup_history/Page41.png'
-import Page42 from 'assets/img/vingroup_history/Page42.png'
-
 import LoadingModal from "components/Common/LoadingModal"
 
 const imageMapping = {
-    1: Page1,
-    2: Page2,
-    3: Page3,
-    4: Page4,
-    5: Page5,
-    6: Page6,
-    7: Page7,
-    8: Page8,
-    9: Page9,
-    10: Page10,
-    11: Page11,
-    12: Page12,
-    13: Page13,
-    14: Page14,
-    15: Page15,
-    16: Page16,
-    17: Page17,
-    18: Page18,
-    19: Page19,
-    20: Page20,
-    21: Page21,
-    22: Page22,
-    23: Page23,
-    24: Page24,
-    25: Page25,
-    26: Page26,
-    27: Page27,
-    28: Page28,
-    29: Page29,
-    30: Page30,
-    31: Page31,
-    32: Page32,
-    33: Page33,
-    34: Page34,
-    35: Page35,
-    36: Page36,
-    37: Page37,
-    38: Page38,
-    39: Page39,
-    40: Page40,
-    41: Page41,
-    42: Page42,
+    1: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page1.png",
+    2: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page2.png",
+    3: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page3.png",
+    4: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page4.png",
+    5: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page5.png",
+    6: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page6.png",
+    7: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page7.png",
+    8: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page8.png",
+    9: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page9.png",
+    10: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page10.png",
+    11: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page11.png",
+    12: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page12.png",
+    13: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page13.png",
+    14: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page14.png",
+    15: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page15.png",
+    16: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page16.png",
+    17: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page17.png",
+    18: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page18.png",
+    19: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page19.png",
+    20: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page20.png",
+    21: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page21.png",
+    22: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page22.png",
+    23: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page23.png",
+    24: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page24.png",
+    25: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page25.png",
+    26: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page26.png",
+    27: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page27.png",
+    28: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page28.png",
+    29: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page29.png",
+    30: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page30.png",
+    31: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page31.png",
+    32: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page32.png",
+    33: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page33.png",
+    34: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page34.png",
+    35: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page35.png",
+    36: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page36.png",
+    37: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page37.png",
+    38: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page38.png",
+    39: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page39.png",
+    40: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page40.png",
+    41: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page41.png",
+    42: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page42.png",
 }
 
 const Page = forwardRef((props, ref) => {
