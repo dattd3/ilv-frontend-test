@@ -1,38 +1,3 @@
-<<<<<<< HEAD
-<svg width="111" height="88" viewBox="0 0 111 88" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g id="Group 78962">
-<g id="Group 79212">
-<g id="Group 79616">
-<path id="Vector" fill-rule="evenodd" clip-rule="evenodd" d="M64.4938 9.06094C67.7586 4.65589 72.6436 1.5076 81.4818 0.0601503C81.4729 0.0383938 81.4639 0.0166373 81.4575 0C26.9037 5.69764 50.2523 44.2015 50.4955 44.6879C50.2689 44.3845 38.7265 31.2743 18.3291 33.1544C36.8784 37.3751 59.1776 56.4044 35.0189 54.4565C44.7492 59.6064 59.7394 64.27 65.94 61.8627C82.992 54.852 51.8277 26.159 64.4926 9.06094" fill="url(#paint0_linear_3748_7067)"/>
-<path id="Vector_2" d="M8.0627 88.0003L0 67.8691H5.63237L10.9384 82.6802L16.2444 67.8691H21.6695L13.5185 88.0003H8.06398H8.0627Z" fill="#9F1E25"/>
-<path id="Vector_3" d="M23.7158 88.0003V67.8691H28.9924V88.0003H23.7158Z" fill="#9F1E25"/>
-<path id="Vector_4" d="M47.6366 88.0003L38.0918 75.6055V88.0003H33.1416V67.8691H37.7949L47.3691 80.2934V67.8691H52.2899V88.0003H47.6366Z" fill="#9F1E25"/>
-<path id="Vector_5" d="M57.6514 87.7396V67.6084H62.928V87.7396H57.6514Z" fill="url(#paint1_linear_3748_7067)"/>
-<path id="Vector_6" d="M76.6817 71.7205V87.7397H71.4051V71.7205H65.2109V67.5791H82.9361V71.7205H76.6817Z" fill="url(#paint2_linear_3748_7067)"/>
-<path id="Vector_7" d="M85.1885 87.7396V67.6084H90.4651V87.7396H85.1885Z" fill="url(#paint3_linear_3748_7067)"/>
-<path id="Vector_8" d="M110.771 69.6201L108.785 73.6182C106.591 72.3819 103.835 71.5193 102.145 71.5193C100.782 71.5193 99.8634 72.0082 99.8634 72.986C99.8634 76.4657 110.831 74.4821 110.831 81.7577C110.831 85.7839 107.156 87.9122 102.532 87.9122C99.0635 87.9122 95.5069 86.6465 93.0459 84.691L95.091 80.7505C97.2257 82.5627 100.426 83.7708 102.591 83.7708C104.25 83.7708 105.288 83.1668 105.288 82.0162C105.288 78.4507 94.3206 80.579 94.3206 73.4467C94.3206 69.7366 97.6109 67.3779 102.591 67.3779C105.584 67.3779 108.638 68.2699 110.772 69.6214L110.771 69.6201Z" fill="url(#paint4_linear_3748_7067)"/>
-</g>
-</g>
-</g>
-<defs>
-<linearGradient id="paint0_linear_3748_7067" x1="74.1153" y1="43.1035" x2="47.9935" y2="16.9816" gradientUnits="userSpaceOnUse">
-<stop stop-color="#FFC10E"/>
-<stop offset="1" stop-color="#C0802B"/>
-</linearGradient>
-<linearGradient id="paint1_linear_3748_7067" x1="57.6514" y1="77.674" x2="62.9267" y2="77.674" gradientUnits="userSpaceOnUse">
-<stop stop-color="#104D89"/>
-<stop offset="1" stop-color="#203364"/>
-</linearGradient>
-<linearGradient id="paint2_linear_3748_7067" x1="65.2097" y1="77.6588" x2="82.9348" y2="77.6588" gradientUnits="userSpaceOnUse">
-<stop stop-color="#104D89"/>
-<stop offset="1" stop-color="#203364"/>
-</linearGradient>
-<linearGradient id="paint3_linear_3748_7067" x1="85.1885" y1="-0.000577085" x2="90.4651" y2="-0.000577085" gradientUnits="userSpaceOnUse">
-<stop stop-color="#104D89"/>
-<stop offset="1" stop-color="#203364"/>
-</linearGradient>
-<linearGradient id="paint4_linear_3748_7067" x1="93.0446" y1="77.6444" x2="110.83" y2="77.6444" gradientUnits="userSpaceOnUse">
-=======
 <svg width="54" height="43" viewBox="0 0 54 43" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path fill-rule="evenodd" clip-rule="evenodd" d="M31.2066 4.38426C32.7863 2.25282 35.1499 0.729472 39.4265 0.0291046C39.4221 0.0185774 39.4178 0.0080502 39.4147 0C13.0181 2.75688 24.3156 21.3875 24.4333 21.6228C24.3237 21.4761 18.7387 15.1325 8.86914 16.0422C17.8445 18.0845 28.6342 27.292 16.9447 26.3495C21.6529 28.8414 28.9061 31.0979 31.9063 29.9331C40.1572 26.5409 25.0779 12.6574 31.206 4.38426" fill="url(#paint0_linear_612_25284)"/>
 <path d="M3.90125 42.5799L0 32.8391H2.7253L5.2927 40.0057L7.86009 32.8391H10.4851L6.54109 42.5799H3.90187H3.90125Z" fill="#9F1E25"/>
@@ -60,7 +25,6 @@
 <stop offset="1" stop-color="#203364"/>
 </linearGradient>
 <linearGradient id="paint4_linear_612_25284" x1="45.0209" y1="37.5698" x2="53.6265" y2="37.5698" gradientUnits="userSpaceOnUse">
->>>>>>> uat
 <stop stop-color="#104D89"/>
 <stop offset="1" stop-color="#203364"/>
 </linearGradient>
