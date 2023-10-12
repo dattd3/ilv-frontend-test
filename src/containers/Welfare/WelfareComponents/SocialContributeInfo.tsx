@@ -91,7 +91,7 @@ const SocialContributeInfo = (props: any) => {
         fullName: value.fullName,
         relation: {value: value.relationshipCode, label: value.relationshipText},
         sex: {value: value.genderCode, label: value.genderText},
-        birthDate: moment(value.birthday, "YYYY").format("DD/MM/YYYY"),
+        birthDate: moment(value.birthday, "YYYY-MM-DD").format("DD/MM/YYYY"),
         type: value.isHouseholdOwner ? ROLE_TYPE[0] : ROLE_TYPE[1],
         identityId: value.idNumber || ''
     };
