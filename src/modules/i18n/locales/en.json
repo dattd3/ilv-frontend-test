@@ -1960,8 +1960,6 @@
   "WelfareRefund": "Internal benefit reimbursement",
   "WelfareRefundApproveWarning": "There was previous approval for this employee today, our system will adjust this approval date to {{date}}",
   "InsuranceSocialRequest": "Thanh toán bảo hiểm xã hội",
-  "VingroupCulture": "Vingroup Culture",
-  "PnlOfVingroup": "Vingroup's Member",
   "Vin30Chronicles": "Vingroup Chronicles",
   "VingroupHistory": "Vingroup History",
   "VingroupCulturalGeneral": "Vingroup Culture",
@@ -1985,5 +1983,7 @@
   "ActualResult_ManagerAssess": "Actual result (manager assess)",
   "InsuranceSocialInfoRequest": "Thay đổi thông tin đóng BHXH",
   "CivillyVingroup": "Vingroup Etiquette",
-  "InternalNews": "Internal Employee Newsletter"
+  "InternalNews": "Internal Employee Newsletter",
+  "VingroupCulture": "Vingroup Culture",
+  "PnlOfVingroup": "Vingroup's Member"
 }
