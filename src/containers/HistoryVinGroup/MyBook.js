@@ -32,6 +32,19 @@ import Page27 from 'assets/img/vingroup_history/Page27.png'
 import Page28 from 'assets/img/vingroup_history/Page28.png'
 import Page29 from 'assets/img/vingroup_history/Page29.png'
 import Page30 from 'assets/img/vingroup_history/Page30.png'
+import Page31 from 'assets/img/vingroup_history/Page31.png'
+import Page32 from 'assets/img/vingroup_history/Page32.png'
+import Page33 from 'assets/img/vingroup_history/Page33.png'
+import Page34 from 'assets/img/vingroup_history/Page34.png'
+import Page35 from 'assets/img/vingroup_history/Page35.png'
+import Page36 from 'assets/img/vingroup_history/Page36.png'
+import Page37 from 'assets/img/vingroup_history/Page37.png'
+import Page38 from 'assets/img/vingroup_history/Page38.png'
+import Page39 from 'assets/img/vingroup_history/Page39.png'
+import Page40 from 'assets/img/vingroup_history/Page40.png'
+import Page41 from 'assets/img/vingroup_history/Page41.png'
+import Page42 from 'assets/img/vingroup_history/Page42.png'
+
 import LoadingModal from "components/Common/LoadingModal"
 
 const imageMapping = {
@@ -65,6 +78,18 @@ const imageMapping = {
     28: Page28,
     29: Page29,
     30: Page30,
+    31: Page31,
+    32: Page32,
+    33: Page33,
+    34: Page34,
+    35: Page35,
+    36: Page36,
+    37: Page37,
+    38: Page38,
+    39: Page39,
+    40: Page40,
+    41: Page41,
+    42: Page42,
 }
 
 const Page = forwardRef((props, ref) => {
@@ -88,7 +113,7 @@ export default function MyBook(props) {
     const page = useRef()
     const wrapBookRef = useRef()
     const pageScrollRef = useRef([])
-    const totalPages = 30
+    const totalPages = 42
     const [isShowThumbnails, setIsShowThumbnails] = useState(false)
     const [isFullScreen, setIsFullScreen] = useState(false)
     const [isZoomIn, setIsZoomIn] = useState(false)
@@ -135,7 +160,7 @@ export default function MyBook(props) {
                 break;
     
             case totalPages:
-                book?.current?.pageFlip()?.turnToPage(29)
+                book?.current?.pageFlip()?.turnToPage(totalPages - 1)
                 break;
         
             default:
