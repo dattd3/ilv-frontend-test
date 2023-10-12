@@ -1971,12 +1971,13 @@
   "EventPicture": "Event Gallery",
   "Photo": "Photo",
   "Arts": "Art Collection",
-  "AboutPnL": "About P&Ls",
+  "AboutPnL": "About P&L",
   "VingroupCulture": "Vingroup Culture",
   "PresidentQuotes": "Chairman's Quotes",
   "OverviewCulture": "Cultural Compass",
   "Textbook": "Learning Resources",
   "StoryTelling": "Journey",
   "InspiringShortFilm": "Inspirational Clips",
-  "CivillyVingroup": "Vingroup Etiquette"
+  "CivillyVingroup": "Vingroup Etiquette",
+  "InternalNews": "Internal Employee Newsletter"
 }

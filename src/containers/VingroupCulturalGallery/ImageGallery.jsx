@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import Masonry from "react-responsive-masonry";
 
 const ImageGallery = ({ data }) => {
   const [idZoomIn, setIdZoomIn] = useState(-1);
@@ -6,15 +7,14 @@ const ImageGallery = ({ data }) => {
   const [lastScrollPosition, setLastScrollPosition] = useState(0);
 
   useEffect(() => {
-    document.getElementById("content-wrapper").addEventListener("scroll", handleScroll, false);
-    return () => document.getElementById("content-wrapper").removeEventListener("scroll", handleScroll);
+    document
+      .getElementById("content-wrapper")
+      .addEventListener("scroll", handleScroll, false);
+    return () =>
+      document
+        .getElementById("content-wrapper")
+        .removeEventListener("scroll", handleScroll);
   }, []);
-
-  const handleScroll = () => {
-    if (idZoomIn === -1) {
-      setScrollPosition(document.getElementById("content-wrapper").scrollTop);
-    }
-  };
 
   useEffect(() => {
     if (idZoomIn === -1) {
@@ -22,11 +22,17 @@ const ImageGallery = ({ data }) => {
     }
   }, [idZoomIn]);
 
+  const handleScroll = () => {
+    if (idZoomIn === -1) {
+      setScrollPosition(document.getElementById("content-wrapper").scrollTop);
+    }
+  };
+
   const scrollToLastPosition = () => {
     document.getElementById("content-wrapper").scrollTo({
       left: 0,
       top: lastScrollPosition,
-      behavior: "instant"
+      behavior: "instant",
     });
   };
 
@@ -35,75 +41,27 @@ const ImageGallery = ({ data }) => {
     setIdZoomIn(index);
   };
 
-  const length = data.length,
-    countItem = Math.floor(data.length / 3);
-  let col1 = [],
-    col2 = [],
-    col3 = [];
-
-  switch (length % 3) {
-    case 1:
-      col1 = data.slice(0, countItem + 1);
-      col2 = data.slice(countItem + 1, countItem * 2);
-      col3 = length >= 3 ? data.slice(countItem * 2, length) : [];
-      break;
-    case 2:
-      col1 = data.slice(0, countItem + 1);
-      col2 = data.slice(countItem + 1, countItem * 2 + 1);
-      col3 = data.slice(countItem * 2 + 1, length);
-      break;
-    case 0:
-    default:
-      col1 = data.slice(0, countItem);
-      col2 = length >= 3 ? data.slice(countItem, countItem * 2) : [];
-      col3 = length >= 3 ? data.slice(countItem * 2, length) : [];
-      break;
-  }
-
   return (
-    <div className="image-gallery" style={idZoomIn > -1 ? { display: "flex", justifyContent: "center" } : {}}>
-      <div className="col-image">
-        {col1.map(
-          (img) => (
+    <div
+      className="image-gallery"
+    >
+        <Masonry gutter="4px" columnsCount={idZoomIn > -1 ? 1 : 3}>
+          {data.map((img) => (
             <img
-              style={{ display: (idZoomIn > -1 && idZoomIn !== img.id) ? "none" : "block" }}
+              style={{
+                display:
+                  idZoomIn > -1 && idZoomIn !== img.id ? "none" : "block",
+              }}
               key={img.id}
               src={img.link}
               alt=""
-              onClick={() => handleZoomInImage(idZoomIn === img.id ? - 1 : img.id)}
-              className={(idZoomIn === img.id) ? "zoomed-in-img" : "image"}
+              onClick={() =>
+                handleZoomInImage(idZoomIn === img.id ? -1 : img.id)
+              }
+              className={idZoomIn === img.id ? "zoomed-in-img" : "image"}
             />
-          )
-        )}
-      </div>
-      <div className="col-image">
-        {col2.map(
-          (img) => (
-            <img
-              style={{ display: (idZoomIn > -1 && idZoomIn !== img.id) ? "none" : "block" }}
-              key={img.id}
-              src={img.link}
-              alt=""
-              onClick={() => handleZoomInImage(idZoomIn === img.id ? - 1 : img.id)}
-              className={(idZoomIn === img.id) ? "zoomed-in-img" : "image"}
-            />
-          )
-        )}
-      </div>
-      <div className="col-image">
-        {col3.map(
-          (img) => (
-            <img
-              style={{ display: (idZoomIn > -1 && idZoomIn !== img.id) ? "none" : "block" }}
-              key={img.id}
-              src={img.link}
-              alt=""
-              onClick={() => handleZoomInImage(idZoomIn === img.id ? - 1 : img.id)}
-              className={(idZoomIn === img.id) ? "zoomed-in-img" : "image"}
-            />
-          )
-        )}
-      </div>
+          ))}
+        </Masonry>
     </div>
   );
 };
