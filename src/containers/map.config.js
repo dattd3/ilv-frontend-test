@@ -4,6 +4,7 @@ const MapConfig = {
   Login: "/login",
   Auth: "/auth",
   TermPolicy: "/policy",
+  GuestNews: "/guest-news/:id",
 
   // Training
   Roadmap: "/training-roadmap",
