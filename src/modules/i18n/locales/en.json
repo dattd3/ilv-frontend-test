@@ -1973,7 +1973,7 @@
   "EventPicture": "Event Gallery",
   "Photo": "Photo",
   "Arts": "Art Collection",
-  "AboutPnL": "About P&Ls",
+  "AboutPnL": "About P&L",
   "PresidentQuotes": "Chairman's Quotes",
   "OverviewCulture": "Cultural Compass",
   "Textbook": "Learning Resources",
@@ -1983,6 +1983,7 @@
   "lastUpdateDate": "NGÀY CHỈNH SỬA CUỐI CÙNG",
   "ActualResult_SelfAssess": "Actual result (self assess)",
   "ActualResult_ManagerAssess": "Actual result (manager assess)",
+  "InsuranceSocialInfoRequest": "Thay đổi thông tin đóng BHXH",
   "CivillyVingroup": "Vingroup Etiquette",
-  "InsuranceSocialInfoRequest": "Thay đổi thông tin đóng BHXH"
+  "InternalNews": "Internal Employee Newsletter"
 }
