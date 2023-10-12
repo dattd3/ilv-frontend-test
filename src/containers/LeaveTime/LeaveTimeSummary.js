@@ -1,12 +1,14 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Modal, Tabs, Tab } from "react-bootstrap"
 import 'chart.piecelabel.js'
 import { useTranslation } from "react-i18next"
+import moment from 'moment'
 import IconArrow from 'assets/img/icon/Icon-Arrow-Right_Red.svg'
 import IconClose from "assets/img/icon/icon_x.svg"
 
 function displayMeric(total) {
-    return total?.toString()?.length == 1 ? '0' + total : total?.toFixed(2)
+    return total
+    // return total?.toString()?.length == 1 ? '0' + total : total?.toFixed(2)
 }
 
 function LeaveTimeGraph(props) {
@@ -65,13 +67,17 @@ function LeaveTimeGraph(props) {
     </>
 }
 
-const DetailModal = ({ isShow, titleModal, onHide }) => {
+const DetailModal = ({ isShow, titleModal, currentYearData = [], lastYearData = [], onHide }) => {
     const tabConfig = {
         lastYear: 'lastYear',
         currentYear: 'currentYear',
     }
     const { t } = useTranslation()
     const [tab, SetTab] = useState(tabConfig.currentYear)
+
+    useEffect(() => {
+        SetTab(tabConfig.currentYear)
+    }, [isShow])
 
     const handleChangeTab = key => SetTab(key)
 
@@ -101,97 +107,19 @@ const DetailModal = ({ isShow, titleModal, onHide }) => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>05/03/2023</td>
-                                        <td>31/03/2023</td>
-                                        <td>02</td>
-                                        <td>01</td>
-                                        <td>01</td>
-                                    </tr>
-                                    <tr>
-                                        <td>10/02/2023</td>
-                                        <td>31/03/2023</td>
-                                        <td>02</td>
-                                        <td>01</td>
-                                        <td>01</td>
-                                    </tr>
-                                    <tr>
-                                        <td>15/01/2023</td>
-                                        <td>31/03/2023</td>
-                                        <td>02</td>
-                                        <td>01</td>
-                                        <td>01</td>
-                                    </tr>
-                                    <tr>
-                                        <td>05/03/2023</td>
-                                        <td>31/03/2023</td>
-                                        <td>02</td>
-                                        <td>01</td>
-                                        <td>01</td>
-                                    </tr>
-                                    <tr>
-                                        <td>10/02/2023</td>
-                                        <td>31/03/2023</td>
-                                        <td>02</td>
-                                        <td>01</td>
-                                        <td>01</td>
-                                    </tr>
-                                    <tr>
-                                        <td>15/01/2023</td>
-                                        <td>31/03/2023</td>
-                                        <td>02</td>
-                                        <td>01</td>
-                                        <td>01</td>
-                                    </tr>
-                                    <tr>
-                                        <td>05/03/2023</td>
-                                        <td>31/03/2023</td>
-                                        <td>02</td>
-                                        <td>01</td>
-                                        <td>01</td>
-                                    </tr>
-                                    <tr>
-                                        <td>10/02/2023</td>
-                                        <td>31/03/2023</td>
-                                        <td>02</td>
-                                        <td>01</td>
-                                        <td>01</td>
-                                    </tr>
-                                    <tr>
-                                        <td>15/01/2023</td>
-                                        <td>31/03/2023</td>
-                                        <td>02</td>
-                                        <td>01</td>
-                                        <td>01</td>
-                                    </tr>
-                                    <tr>
-                                        <td>15/01/2023</td>
-                                        <td>31/03/2023</td>
-                                        <td>02</td>
-                                        <td>01</td>
-                                        <td>01</td>
-                                    </tr>
-                                    <tr>
-                                        <td>05/03/2023</td>
-                                        <td>31/03/2023</td>
-                                        <td>02</td>
-                                        <td>01</td>
-                                        <td>01</td>
-                                    </tr>
-                                    <tr>
-                                        <td>10/02/2023</td>
-                                        <td>31/03/2023</td>
-                                        <td>02</td>
-                                        <td>01</td>
-                                        <td>01</td>
-                                    </tr>
-                                    <tr>
-                                        <td>15/01/2023</td>
-                                        <td>31/03/2023</td>
-                                        <td>02</td>
-                                        <td>01</td>
-                                        <td>01</td>
-                                    </tr>
+                                    {
+                                        currentYearData?.map((item, index) => {
+                                            return (
+                                                <tr key={`current-${index}`}>
+                                                    <td>{moment(item?.start_date, 'DD-MM-YYYY').isValid() ? moment(item?.start_date, 'DD-MM-YYYY').format('DD/MM/YYYY') : ''}</td>
+                                                    <td>{moment(item?.expire_date, 'DD-MM-YYYY').isValid() ? moment(item?.expire_date, 'DD-MM-YYYY').format('DD/MM/YYYY') : ''}</td>
+                                                    <td>{item?.total || 0}</td>
+                                                    <td>{item?.userUsed || 0}</td>
+                                                    <td>{item?.remain || 0}</td>
+                                                </tr>
+                                            )
+                                        })
+                                    }
                                 </tbody>
                             </table>
                         </div>
@@ -209,97 +137,19 @@ const DetailModal = ({ isShow, titleModal, onHide }) => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>05/03/2023</td>
-                                        <td>31/03/2023</td>
-                                        <td>02</td>
-                                        <td>01</td>
-                                        <td>01</td>
-                                    </tr>
-                                    <tr>
-                                        <td>10/02/2023</td>
-                                        <td>31/03/2023</td>
-                                        <td>02</td>
-                                        <td>01</td>
-                                        <td>01</td>
-                                    </tr>
-                                    <tr>
-                                        <td>15/01/2023</td>
-                                        <td>31/03/2023</td>
-                                        <td>02</td>
-                                        <td>01</td>
-                                        <td>01</td>
-                                    </tr>
-                                    <tr>
-                                        <td>05/03/2023</td>
-                                        <td>31/03/2023</td>
-                                        <td>02</td>
-                                        <td>01</td>
-                                        <td>01</td>
-                                    </tr>
-                                    <tr>
-                                        <td>10/02/2023</td>
-                                        <td>31/03/2023</td>
-                                        <td>02</td>
-                                        <td>01</td>
-                                        <td>01</td>
-                                    </tr>
-                                    <tr>
-                                        <td>15/01/2023</td>
-                                        <td>31/03/2023</td>
-                                        <td>02</td>
-                                        <td>01</td>
-                                        <td>01</td>
-                                    </tr>
-                                    <tr>
-                                        <td>05/03/2023</td>
-                                        <td>31/03/2023</td>
-                                        <td>02</td>
-                                        <td>01</td>
-                                        <td>01</td>
-                                    </tr>
-                                    <tr>
-                                        <td>10/02/2023</td>
-                                        <td>31/03/2023</td>
-                                        <td>02</td>
-                                        <td>01</td>
-                                        <td>01</td>
-                                    </tr>
-                                    <tr>
-                                        <td>15/01/2023</td>
-                                        <td>31/03/2023</td>
-                                        <td>02</td>
-                                        <td>01</td>
-                                        <td>01</td>
-                                    </tr>
-                                    <tr>
-                                        <td>15/01/2023</td>
-                                        <td>31/03/2023</td>
-                                        <td>02</td>
-                                        <td>01</td>
-                                        <td>01</td>
-                                    </tr>
-                                    <tr>
-                                        <td>05/03/2023</td>
-                                        <td>31/03/2023</td>
-                                        <td>02</td>
-                                        <td>01</td>
-                                        <td>01</td>
-                                    </tr>
-                                    <tr>
-                                        <td>10/02/2023</td>
-                                        <td>31/03/2023</td>
-                                        <td>02</td>
-                                        <td>01</td>
-                                        <td>01</td>
-                                    </tr>
-                                    <tr>
-                                        <td>15/01/2023</td>
-                                        <td>31/03/2023</td>
-                                        <td>02</td>
-                                        <td>01</td>
-                                        <td>01</td>
-                                    </tr>
+                                    {
+                                        lastYearData?.map((item, index) => {
+                                            return (
+                                                <tr key={`last-${index}`}>
+                                                    <td>{moment(item?.start_date, 'DD-MM-YYYY').isValid() ? moment(item?.start_date, 'DD-MM-YYYY').format('DD/MM/YYYY') : ''}</td>
+                                                    <td>{moment(item?.expire_date, 'DD-MM-YYYY').isValid() ? moment(item?.expire_date, 'DD-MM-YYYY').format('DD/MM/YYYY') : ''}</td>
+                                                    <td>{item?.total || 0}</td>
+                                                    <td>{item?.userUsed || 0}</td>
+                                                    <td>{item?.remain || 0}</td>
+                                                </tr>
+                                            )
+                                        })
+                                    }
                                 </tbody>
                             </table>
                         </div>
@@ -317,12 +167,16 @@ function LeaveTimeSummary(props) {
     const [detailModal, SetDetailModal] = useState({
         isShow: false,
         titleModal: "Xem chi tiết nghỉ phép",
+        currentYearData: [],
+        lastYearData: [],
     })
 
     const onHide = () => {
         SetDetailModal({
             isShow: false,
             titleModal: "",
+            currentYearData: [],
+            lastYearData: [],
         })
     }
 
@@ -330,6 +184,8 @@ function LeaveTimeSummary(props) {
         SetDetailModal({
             isShow: true,
             titleModal: isCompensatoryLeave ? "Xem chi tiết nghỉ bù" : "Xem chi tiết nghỉ phép",
+            currentYearData: isCompensatoryLeave ? data?.unused_compensatory_leave_current_year_detail : data?.unused_annual_leave_current_year_detail,
+            lastYearData: isCompensatoryLeave ? data?.unused_compensatory_leave_last_year_detail : data?.unused_annual_leave_last_year_detail,
         })
     }
 
@@ -348,7 +204,13 @@ function LeaveTimeSummary(props) {
 
     return (
         <>
-            <DetailModal isShow={detailModal?.isShow} titleModal={detailModal?.titleModal} onHide={onHide} />
+            <DetailModal 
+                isShow={detailModal?.isShow} 
+                titleModal={detailModal?.titleModal} 
+                currentYearData={detailModal?.currentYearData}
+                lastYearData={detailModal?.lastYearData}
+                onHide={onHide} 
+            />
             <div className="summary">
                 <div className="row">
                     <div className="col box shadow">
