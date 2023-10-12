@@ -5219,7 +5219,7 @@ span.badge-notification[data-badge]::after {
       display: flex;
       flex-direction: column;
       .header-block {
-        height: 45px;
+        height: 40px;
         background: #5a5f63;
         color: #F6F7F7;
         // opacity: 0.95;
@@ -5247,9 +5247,9 @@ span.badge-notification[data-badge]::after {
       }
       .book {
         flex: 1;
-        height: calc(100% - 45px - 45px);
+        height: calc(100% - 40px - 45px);
         touch-action: manipulation;
-        // background: red;
+        background: red;
         // .wrap-book {
         //   margin: 15px 0 0 0;
         // }
@@ -5324,7 +5324,7 @@ span.badge-notification[data-badge]::after {
         text-align: left;
       }
       img {
-        max-height: calc(100vh - 120px);
+        max-height: calc(100vh - 115px);
         // max-height: 100%;
         // object-fit: cover;
         // height: fit-content;
