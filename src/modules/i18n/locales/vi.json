@@ -17,7 +17,7 @@
   "LoginGuide_Note": "Trường hợp không rõ Account AD của mình, vui lòng liên hệ bộ phận HR và IT của đơn vị để kiểm tra.",
   "LoginGuideNoteSecond": "Trường hợp lỗi không đăng nhập được, bạn vui lòng xem chi tiết hướng dẫn khắc phục ",
   "LoginVersionOS" : "Phiên bản Hệ điều hành ",
-  "LoginGuideOS": "Vui lòng lựa chọn cài đặt phiên bản iOS hoặc Android",
+  "LoginGuideOS": "*Lựa chọn phiên bản iOS, Android hoặc quét mã QR Code",
   "LoginGuideQr": "Quét mã QR Code để cài đặt ứng dụng",
   "Here": "tại đây",
   "LoginSuccessful": "Đăng nhập thành công...",
@@ -1989,12 +1989,13 @@
   "Photo": "Ảnh",
   "Arts": "Tác phẩm nghệ thuật",
   "AboutPnL": "Thông tin P&L",
-  "VingroupCulture": "Văn hóa Vingroup",
   "PresidentQuotes": "Trích dẫn CTTĐ",
   "OverviewCulture": "Tổng quan Văn hóa",
   "Textbook": "Sách giáo khoa",
   "StoryTelling": "Kỷ yếu",
   "InspiringShortFilm": "Phim ngắn truyền cảm hứng",
   "CivillyVingroup": "Người Vingroup văn minh",
-  "InternalNews": "Bản tin nội bộ"
+  "InternalNews": "Bản tin nội bộ",
+  "VingroupCulture": "Văn hóa Vingroup",
+  "PnlOfVingroup": "Các thương hiệu của Tập đoàn Vingroup"
 }
