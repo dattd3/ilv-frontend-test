@@ -1,6 +1,6 @@
 import { IDropdownValue } from "models/CommonModel";
 
-export const SOCIAL_NUMBER_INPUT = '2';
+export const SOCIAL_NUMBER_INPUT = '-1';
 export const socialNumberType: IDropdownValue[] = [
     {
         value: '1',
@@ -14,7 +14,7 @@ export const socialNumberType: IDropdownValue[] = [
 ]
 
 export const RELATIONSHIP_WITH_INSURED = [
-    { value: 'V000', label: 'Bản thân' },
+    { value: SOCIAL_NUMBER_INPUT, label: 'Khác' },
     { value: 'V001', label: 'Cha ruột' },
     { value: 'V002', label: 'Mẹ ruột' },
     { value: 'V005', label: 'Vợ' },
@@ -26,6 +26,11 @@ export const RELATIONSHIP_WITH_INSURED = [
     { value: 'V014', label: 'Con trai' },
     { value: 'V015', label: 'Con gái' },
 ];
+export const IDENTITY_LIST = [
+    {value: SOCIAL_NUMBER_INPUT, label: 'Có'},
+    {value: '2', label: 'Không có'}
+]
+
 export const GENDER_LIST = [
     {value: '1', label: 'Nam'},
     {value: '2', label: 'Nữ'},
