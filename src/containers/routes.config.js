@@ -12,7 +12,7 @@ export const RouteSettings = {
   },
   authentication: {
     defaultRoute: map.Login,
-    routes: [map.Login, map.Auth, map.NewsDetailApp, map.TermPolicy, map.Maintenance],
+    routes: [map.Login, map.Auth, map.NewsDetailApp, map.TermPolicy, map.Maintenance, map.GuestNews],
   },
 };
 
@@ -32,6 +32,14 @@ const ROUTES = [
       path: map.Auth,
     },
     component: lazy(() => import("./Login/authozire")),
+  },
+  {
+    key: "guest-news",
+    routeProps: {
+      exact: true,
+      path: map.GuestNews,
+    },
+    component: lazy(() => import("./GuestNews")),
   },
   {
     key: "newsdetailapp",
@@ -916,6 +924,30 @@ const ROUTES = [
           },
           component: lazy(() => import("./VingroupCulture/WorkingEnvironment")),
         },
+        {
+          key: "registration-detail-contribution",
+          routeProps: {
+            exact: true,
+            path: map.SocialContributeDetail,
+          },
+          component: lazy(() => import("./Welfare/WelfareComponents/SocialContributeInfoDetail")),
+        },
+        {
+          key: "internal-news-list",
+          routeProps: {
+            exact: true,
+            path: map.InternalNewsList,
+          },
+          component: lazy(() => import("./InternalNews")),
+        },
+        {
+          key: "internal-news-detail",
+          routeProps: {
+            exact: true,
+            path: map.InternalNewsDetail,
+          },
+          component: lazy(() => import("./InternalNews/Detail")),
+        }
       ],
     },
   },
