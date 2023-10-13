@@ -26,10 +26,9 @@ function WorkingEnvironmentPage() {
         setAvailableTypes({
           [CATEGORY_CODES.CIVILLY_VINGROUP]: respData
             ?.filter(
-              (item) =>
-                item.categoryCode === CATEGORY_CODES.CIVILLY_VINGROUP
+              (item) => item.categoryCode === CATEGORY_CODES.CIVILLY_VINGROUP
             )
-            ?.map((item) => item.fileType),
+            ?.map((item) => item.fileType)
         });
       }
     });
