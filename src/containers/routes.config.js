@@ -932,6 +932,22 @@ const ROUTES = [
           },
           component: lazy(() => import("./Welfare/WelfareComponents/SocialContributeInfoDetail")),
         },
+        {
+          key: "internal-news-list",
+          routeProps: {
+            exact: true,
+            path: map.InternalNewsList,
+          },
+          component: lazy(() => import("./InternalNews")),
+        },
+        {
+          key: "internal-news-detail",
+          routeProps: {
+            exact: true,
+            path: map.InternalNewsDetail,
+          },
+          component: lazy(() => import("./InternalNews/Detail")),
+        }
       ],
     },
   },

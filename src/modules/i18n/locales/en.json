@@ -1981,9 +1981,11 @@
   "lastUpdateDate": "NGÀY CHỈNH SỬA CUỐI CÙNG",
   "ActualResult_SelfAssess": "Actual result (self assess)",
   "ActualResult_ManagerAssess": "Actual result (manager assess)",
-  "InsuranceSocialInfoRequest": "Thay đổi thông tin đóng BHXH",
   "CivillyVingroup": "Vingroup Etiquette",
   "InternalNews": "Internal Employee Newsletter",
+  "NewsInternal": "Internal News",
+  "PlayNow": "Watch now",
+  "InsuranceSocialInfoRequest": "Thay đổi thông tin đóng BHXH",
   "VingroupCulture": "Vingroup Culture",
   "PnlOfVingroup": "Vingroup's Member",
   "ReferralBonusGrossup": "Referral Bonus (GROSSUP)"
