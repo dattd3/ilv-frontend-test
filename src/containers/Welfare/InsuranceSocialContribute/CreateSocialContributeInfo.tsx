@@ -15,6 +15,7 @@ import { getMuleSoftHeaderConfigurations } from "commons/Utils";
 import axios from "axios";
 import IconClear from 'assets/img/icon/icon_x.svg'
 import { getRequestConfigs } from "commons/commonFunctions";
+import SelectInputComponent from "../InternalPayment/component/SelectInputComponent";
 
 interface ICreateSocialContributeInfoProps {
   t: any;
@@ -270,6 +271,9 @@ const CreateSocialContributeInfo: FC<ICreateSocialContributeInfoProps> = ({
         _errors[name] = t('PleaseEnterInfo');
       }
     });
+    if(!_errors['socialNumberType'] && data['socialNumberType']?.value == SOCIAL_NUMBER_INPUT && (data['socialNumberType'].label + '')?.length != 10) {
+      _errors['socialNumberType'] = 'Yêu cầu độ dài 10 ký tự';
+    }
     const memberRequirer = ["relation", "fullName", "sex", "birthDate", "identityId", "type"];
     let countMainFamily = 0;
     members.map((mem, index) => {
@@ -278,7 +282,7 @@ const CreateSocialContributeInfo: FC<ICreateSocialContributeInfoProps> = ({
         if(_.isEmpty(mem[key])) {
           _errors['member_' + index + '_' + key] = t('PleaseEnterInfo');
         }
-        if(key == 'identityId' && !_.isEmpty(mem[key]) && (mem[key]?.length != 9 && mem[key]?.length != 12)) {
+        if(key == 'identityId' && !_.isEmpty(mem[key]) && (mem[key]?.value == SOCIAL_NUMBER_INPUT &&  (mem[key]?.label + '').length != 9 && (mem[key]?.label + '')?.length != 12)) {
           _errors['member_' + index + '_' + key] = 'Yêu cầu độ dài 9 hoặc 12 ký tự';
         }
       });
@@ -316,7 +320,7 @@ const CreateSocialContributeInfo: FC<ICreateSocialContributeInfoProps> = ({
   return (
     <div className="registration-insurance-section social-contribute input-style">
       {
-        !isCreateMode ?
+        !isCreateMode && lastModified?.date?
         <>
           <h5 className="pt-0">{'NGÀY CHỈNH SỬA CUỐI CÙNG'}</h5>
           <div className="box shadow-sm cbnv">
@@ -347,39 +351,18 @@ const CreateSocialContributeInfo: FC<ICreateSocialContributeInfoProps> = ({
           </h5>
           <div className="box shadow-sm cbnv">
             {"Số sổ BHXH"} <span className="required">(*)</span>
-            {
-              data?.socialNumberType?.value == SOCIAL_NUMBER_INPUT ?
-              <label className="input-container">
-                <input
-                  type="text"
-                  value={data.socialNumberType.label}
-                  onChange={(e) => handleChangeSelectInputs({...data.socialNumberType, label: e?.target?.value?.replace(/[^0-9]/g,'')}, "socialNumberType")}
-                  className="form-control input mv-10 w-100"
-                  name="inputName"
-                  autoComplete="off"
-                  maxLength={10}
-                  disabled={!isCreateMode}
-                />
-                {
-                  isCreateMode ? 
-                  <span className="input-group-addon input-img">
-                  <img src={IconClear} alt='Clear' className='remove-input cursor-pointer' title='Exit' onClick={() => handleChangeSelectInputs(null, 'socialNumberType')} />
-                </span> : null
-                }
-                
-              </label>
-                 :
-                <Select
-                  placeholder={"Lựa chọn"}
-                  options={socialNumberType}
-                  isClearable={false}
-                  value={data?.socialNumberType}
-                  onChange={(e) => handleChangeSelectInputs(e, "socialNumberType")}
-                  className="input mv-10"
-                  isDisabled={!isCreateMode}
-                  styles={{ menu: (provided) => ({ ...provided, zIndex: 2 }) }}
-                />
-            }
+            <SelectInputComponent
+              options={socialNumberType}
+              handleInputChange={(text) => {return text?.replace(/[^0-9]/g, '')}}
+              maxLeng={10}
+              otherValueDefault={SOCIAL_NUMBER_INPUT}
+              name="socialNumberType"
+              value={data?.socialNumberType}
+              onChange={(value, name) => handleChangeSelectInputs(value, name)}
+              placeholder={t("import")}
+              className="form-control input mv-10 w-100"
+              disabled={!isCreateMode}
+            />
             {errors["socialNumberType"] ? (
               <p className="text-danger">{errors["socialNumberType"]}</p>
             ) : null}

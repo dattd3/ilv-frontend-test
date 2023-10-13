@@ -103,7 +103,7 @@ const SocialContributeDetailInfo = (props: any) => {
         sex: {value: value.genderCode, label: value.genderText},
         birthDate: moment(value.birthday, "YYYY").format("DD/MM/YYYY"),
         type: value.isHouseholdOwner ? ROLE_TYPE[0] : ROLE_TYPE[1],
-        identityId: value.idNumber || ''
+        identityId: convertData(value.idNumber) as IDropdownValue
     };
     return result;
   }
@@ -173,8 +173,8 @@ const SocialContributeDetailInfo = (props: any) => {
     });
     setOldMembers(_oldmember);
     setLastModified({
-        date: requestInfo.socialInsuranceInfo?.modifiedDate ? moment(requestInfo.socialInsuranceInfo?.modifiedDate).format('DD/MM/YYYY HH:mm:ss') : '',
-        by: requestInfo.socialInsuranceInfo?.modifiedBy?.replace('@vingroup.net', '') || ''
+        date: requestInfo.socialInsuranceInfo?.updatedDate ? moment(requestInfo.socialInsuranceInfo?.updatedDate).format('DD/MM/YYYY HH:mm:ss') : '',
+        by: requestInfo.socialInsuranceInfo?.updatedInfo ? JSON.parse(requestInfo.socialInsuranceInfo?.updatedInfo).account?.replace('@vingroup.net', '') : ''
     })
 
     //appraiser
