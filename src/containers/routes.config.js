@@ -813,7 +813,7 @@ const ROUTES = [
           component: lazy(() => import("./Registration/ContractEvaluation/SalaryPropose"))
         },
         {
-          key: "vingroup-history",
+          key: "Vin30-chronicles",
           routeProps: {
             exact: true,
             path: map.Vin30Chronicles
@@ -940,6 +940,22 @@ const ROUTES = [
           },
           component: lazy(() => import("./Welfare/InsuranceSocialContribute/CreateSocialContributeInfo")),
         },
+        {
+          key: "internal-news-list",
+          routeProps: {
+            exact: true,
+            path: map.InternalNewsList,
+          },
+          component: lazy(() => import("./InternalNews")),
+        },
+        {
+          key: "internal-news-detail",
+          routeProps: {
+            exact: true,
+            path: map.InternalNewsDetail,
+          },
+          component: lazy(() => import("./InternalNews/Detail")),
+        }
       ],
     },
   },

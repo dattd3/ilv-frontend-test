@@ -43,6 +43,10 @@ const VINGROUP_CULTURE_CATEGORIES = [
     label: "OverviewCulture",
   },
   {
+    code: "2.3",
+    label: "InternalNews",
+  },
+  {
     code: "3.1",
     label: "Textbook",
   },
