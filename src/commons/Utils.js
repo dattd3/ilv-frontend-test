@@ -667,13 +667,25 @@ const formatNumberSpecialCase = (val) => {
 };
 
 const formatInternalNewsData = (data = [], currentLang = "vi") => {
-  return data.map(item => ({
+  return data.map(item => formatInternalNewsDataItem(item, currentLang));
+};
+
+const formatInternalNewsDataItem = (item, currentLang = "vi") => {
+  return {
     ...item,
     thumbnail: currentLang === "vi" ? item.thumbnailVi : (item.thumbnailEn || item.thumbnailVi),
     title: currentLang === "vi" ? item.titleVi : (item.titleEn || item.titleVi),
     description: currentLang === "vi" ? item.descriptionVi : (item.descriptionEn || item.descriptionVi),
     content: currentLang === "vi" ? item.contentVi : (item.contentEn || item.contentVi),
-  }))
+  }
+}
+
+const getPublishedTimeByRawTime = (rawTime) => {
+  const time = moment(rawTime).isValid() ? moment(rawTime) : null;
+  return {
+    time: time?.format("HH:mm") || "",
+    date: time?.format("DD/MM/YYYY") || "",
+  };
 };
 
 export {
@@ -681,5 +693,5 @@ export {
     calculateBackDateByPnLVCodeAndFormatType, isEnableShiftChangeFunctionByPnLVCode, isEnableInOutTimeUpdateFunctionByPnLVCode, getRequestTypeIdsAllowedToReApproval, getMuleSoftHeaderConfigurations,
     isAdjacentDateBy2Date, showRangeDateGroupByArrayDate, generateTaskCodeByCode, parsteStringToHtml, getRegistrationMinDateByConditions, isVinFast, isEnableOTFunctionByPnLVCode, getCurrentLanguage, 
     getResignResonsMasterData, formatStringDateTimeByMuleValue, genderConfig, marriageConfig, formatProcessTime, setURLSearchParam, getCulture, isValidDateRequest, prepareOrganization, getRequestTypesList,
-    formatStringDateByMuleValue, isExistCurrentUserInWhiteList, isVinITIS, formatNumberSpecialCase, formatInternalNewsData
+    formatStringDateByMuleValue, isExistCurrentUserInWhiteList, isVinITIS, formatNumberSpecialCase, formatInternalNewsData, getPublishedTimeByRawTime, formatInternalNewsDataItem
 }
