@@ -15,6 +15,7 @@ interface IDetailSocialContributeInfoProps {
   members: IMemberInfo[],
   isCreateMode: boolean,
   onSubmit: Function
+  lastModified?: any
 };
 
 const DetailSocailContributeComponent: FC<IDetailSocialContributeInfoProps> = ({
@@ -26,10 +27,12 @@ const DetailSocailContributeComponent: FC<IDetailSocialContributeInfoProps> = ({
   files = [],
   members = [{}],
   isCreateMode = false,
-  onSubmit
+  onSubmit,
+  lastModified
 }) => {
 
   const renderValue = (type = STATUS.OLD, value, newValue) => {
+    if(typeof type == 'string') type = parseInt(type);
     if(type == STATUS.OLD) {
       return <>
       <div className="detail">{value}</div>
@@ -51,15 +54,20 @@ const DetailSocailContributeComponent: FC<IDetailSocialContributeInfoProps> = ({
   }
   return (
     <div className="registration-insurance-section social-contribute input-style">
-      <h5 className="pt-0">{'NGÀY CHỈNH SỬA CUỐI CÙNG'}</h5>
-      <div className="box shadow-sm cbnv mb-4">
-        <span style={{ fontWeight: "700" }}>{"Cập nhật: "}</span>
-        <span style={{ fontWeight: "100" }}>20/09/2023 10:00:00</span>
-        <span style={{ fontWeight: "700" }}>
-          {" | Bởi "  + ": "}
-        </span>
-        <span style={{ fontWeight: "100" }}>annv8</span>
-      </div>
+      {
+        lastModified?.date ?
+        <>
+          <h5 className="pt-0">{'NGÀY CHỈNH SỬA CUỐI CÙNG'}</h5>
+          <div className="box shadow-sm cbnv mb-4">
+            <span style={{ fontWeight: "700" }}>{"Cập nhật: "}</span>
+            <span style={{ fontWeight: "100" }}>{lastModified?.date}</span>
+            <span style={{ fontWeight: "700" }}>
+              {" | Bởi "  + ": "}
+            </span>
+            <span style={{ fontWeight: "100" }}>{lastModified?.by}</span>
+          </div>
+        </> : null
+      }
 
       <h5 className="pt-0">{'THÔNG TIN ĐĂNG KÝ CHỈNH SỬA'}</h5>
       <div className="box shadow-sm cbnv mb-4">

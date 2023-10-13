@@ -148,7 +148,6 @@ const MapConfig = {
   SixGovernancePrinciples: "/6-governance-principles",
   WorkingEnvironment: "/working-environment",
   VingroupCulturalGallery: "/vingroup-cultural-gallery/:code",
-  CreateSocialDistributeInfo: "/insurance-manager/social-contribute-info",
   HistoryVingroupGallery: "/vingroup-history/gallery/:code",
   VingroupCultureGallery: "/vingroup-culture/gallery/:code",
   SixCoreValuesGallery: "/6-core-values/gallery/:code",
@@ -157,7 +156,10 @@ const MapConfig = {
 
   // Internal news
   InternalNewsList: "/internal-news",
-  InternalNewsDetail: "/internal-news/detail/:id"
+  InternalNewsDetail: "/internal-news/detail/:id",
+  CreateSocialDistributeInfo: "/insurance-manager/social-contribute-info",
+  //thông tin đóng BHXH
+  SocialContributeDetail: "/social-contribute/:id/:type"
 };
 
 export default MapConfig;

@@ -8,7 +8,8 @@ import { IDropdownValue } from "models/CommonModel";
 import InputNumberComponent from "../InternalPayment/component/InputNumberComponent";
 import _ from "lodash";
 import { IMemberInfo } from "models/welfare/SocialContributeModel";
-import { GENDER_LIST, RELATIONSHIP_WITH_INSURED, ROLE_TYPE } from "./SocialContributeData";
+import { GENDER_LIST, IDENTITY_LIST, RELATIONSHIP_WITH_INSURED, ROLE_TYPE, SOCIAL_NUMBER_INPUT } from "./SocialContributeData";
+import SelectInputComponent from "../InternalPayment/component/SelectInputComponent";
 
 interface IMemberInfoProps {
   t: any;
@@ -77,15 +78,16 @@ function MemberInfo({
           <div className="col-4">
             {"Quan hệ với CBNV"}{" "}
             <span className="required">(*)</span>
-            <Select
-              placeholder={isCreateMode ? t("option") : ""}
+            <SelectInputComponent
               options={RELATIONSHIP_WITH_INSURED}
-              isClearable={false}
+              maxLeng={255}
+              otherValueDefault={SOCIAL_NUMBER_INPUT}
+              name="relation"
               value={request.relation}
-              onChange={(e) => handleChangeValue(e, "relation")}
-              className="input mv-10"
-              styles={{ menu: (provided) => ({ ...provided, zIndex: 2 }) }}
-              isDisabled={!isCreateMode}
+              onChange={(value, name) => handleChangeValue(value, name)}
+              placeholder={t("import")}
+              className="form-control input mv-10 w-100"
+              disabled={!isCreateMode}
             />
             {errors['member_' + index + '_relation'] ? (
               <p className="text-danger">{errors['member_' + index + '_relation']}</p>
@@ -157,15 +159,18 @@ function MemberInfo({
             </div>
           </div>
           <div className="col-4">
-            {"CMTND"} <span className="required">(*)</span>
-            <InputNumberComponent
-              value={request.identityId || ""}
-              onChange={(value) => handleChangeValue(value, "identityId")}
+            {"CMND/CCCD/Định danh cá nhân"} <span className="required">(*)</span>
+            <SelectInputComponent
+              options={IDENTITY_LIST}
+              maxLeng={12}
+              otherValueDefault={SOCIAL_NUMBER_INPUT}
+              name="identityId"
+              handleInputChange={(text) => {return text?.replace(/[^0-9]/g, '')}}
+              value={request.identityId}
+              onChange={(value, name) => handleChangeValue(value, name)}
               placeholder={t("import")}
               className="form-control input mv-10 w-100"
               disabled={!isCreateMode}
-              name="identityId"
-              type="text"
             />
             {errors['member_' + index + '_identityId'] ? (
               <p className="text-danger">{errors['member_' + index + '_identityId']}</p>

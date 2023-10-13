@@ -23,7 +23,7 @@ function DetailMemberInfo({
 
   const renderValue = (type = STATUS.OLD, value, newValue) => {
     if (type == STATUS.UPDATE) {
-        if(newValue != undefined) {
+        if(newValue != undefined && newValue != value) {
             return (
                 <>
                   <div className="detail">{value}</div>
@@ -78,8 +78,8 @@ function DetailMemberInfo({
             </div>
           </div>
           <div className="col-4">
-            {"CMTND"}
-            {renderValue(status, request.identityId, change?.identityId)}
+            {"CMND/CCCD/Định danh cá nhân"}
+            {renderValue(status, request.identityId?.label, change?.identityId?.label)}
 
           </div>
           <div className="col-4">

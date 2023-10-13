@@ -381,6 +381,9 @@
   }
 }
 .input-style {
+  input {
+    font-size: 14px;
+  }
   input:disabled {
     background-color: #eee;
  }

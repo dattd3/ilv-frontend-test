@@ -845,14 +845,6 @@ const ROUTES = [
           component: lazy(() => import("./Corporation/News/EmployeePrivilegeDetail")),
         },
         {
-          key: "registration-internal-payment",
-          routeProps: {
-            exact: true,
-            path: map.RegistrationInternalPayment
-          },
-          component: lazy(() => import("./Welfare/InternalPayment/CreateInternalPayment"))
-        },
-        {
           key: "vingroup-history",
           routeProps: {
             exact: true,
@@ -933,12 +925,12 @@ const ROUTES = [
           component: lazy(() => import("./VingroupCulture/WorkingEnvironment")),
         },
         {
-          key: "registration-social-contribution",
+          key: "registration-detail-contribution",
           routeProps: {
             exact: true,
-            path: map.CreateSocialDistributeInfo,
+            path: map.SocialContributeDetail,
           },
-          component: lazy(() => import("./Welfare/InsuranceSocialContribute/CreateSocialContributeInfo")),
+          component: lazy(() => import("./Welfare/WelfareComponents/SocialContributeInfoDetail")),
         },
         {
           key: "internal-news-list",

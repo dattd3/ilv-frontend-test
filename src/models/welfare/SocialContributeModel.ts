@@ -5,7 +5,7 @@ export interface IMemberInfo {
     fullName?: string;
     sex?: IDropdownValue;
     birthDate?: string;
-    identityId?: string;
+    identityId?: IDropdownValue;
     type?: IDropdownValue;
     status?: number
 }

@@ -14,6 +14,8 @@ import { IDropdownValue } from "models/CommonModel";
 import { getMuleSoftHeaderConfigurations } from "commons/Utils";
 import axios from "axios";
 import IconClear from 'assets/img/icon/icon_x.svg'
+import { getRequestConfigs } from "commons/commonFunctions";
+import SelectInputComponent from "../InternalPayment/component/SelectInputComponent";
 
 interface ICreateSocialContributeInfoProps {
   t: any;
@@ -31,6 +33,7 @@ interface ICreateSocialContributeInfoProps {
   isCreateMode: boolean,
   onSubmit: Function;
   notifyMessage: Function;
+  lastModified?: any;
 };
 
 const CreateSocialContributeInfo: FC<ICreateSocialContributeInfoProps> = ({
@@ -48,15 +51,18 @@ const CreateSocialContributeInfo: FC<ICreateSocialContributeInfoProps> = ({
   setMembers=()=>{},
   isCreateMode = true,
   onSubmit,
+  lastModified,
   notifyMessage =() => {}
 }) => {
   const [provinces, setprovinces] = useState<IDropdownValue[]>([]);
   const [districts, setdistricts] = useState<IDropdownValue[]>([]);
   const [wards, setwards] = useState<IDropdownValue[]>([]);
+  const [hospitals, setHospitals] = useState<IDropdownValue[]>([]);
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
     if(isCreateMode) {
+      getHospitalList();
       getProvices('VN');
       if(data?.province?.value) {
         getDistricts(data.province.value);
@@ -74,8 +80,27 @@ const CreateSocialContributeInfo: FC<ICreateSocialContributeInfoProps> = ({
       if(data?.ward?.value) {
         setwards([data.ward]);
       }
+      if(data?.facilityRegisterName?.value) {
+        setHospitals([data.facilityRegisterName]);
+      }
     }
   }, [isCreateMode]);
+
+  const getHospitalList = () => {
+    const config = getRequestConfigs()
+    axios.get(`${process.env.REACT_APP_REQUEST_SERVICE_URL}socialinsurance/get-hospitals`, config)
+        .then(res => {
+            if (res && res.data && res.data.data) {
+                let _hospitals = res.data.data?.map(item => {
+                  return {
+                      value: item.code,
+                      label: item.name
+                  };
+              });
+              setHospitals(_hospitals);
+            }
+        }).catch(error => { })
+  }
 
   const getProvices = (country_id) =>{
     const config = getMuleSoftHeaderConfigurations()
@@ -127,7 +152,11 @@ const CreateSocialContributeInfo: FC<ICreateSocialContributeInfoProps> = ({
 
   const handleTextInputChange = (e, name) => {
     const candidateInfos = { ...data }
-    candidateInfos[name] = e != null ? e.target.value : "";
+    let value = e?.target?.value;
+    if(name == 'houseHoldNumber' && value) {
+      value = value.replace(/[^0-9]/g,'');
+    }
+    candidateInfos[name] = e != null ? value : "";
     setData(candidateInfos);
 }
 
@@ -242,14 +271,22 @@ const CreateSocialContributeInfo: FC<ICreateSocialContributeInfoProps> = ({
         _errors[name] = t('PleaseEnterInfo');
       }
     });
+    if(!_errors['socialNumberType'] && data['socialNumberType']?.value == SOCIAL_NUMBER_INPUT && (data['socialNumberType'].label + '')?.length != 10) {
+      _errors['socialNumberType'] = 'Yêu cầu độ dài 10 ký tự';
+    }
     const memberRequirer = ["relation", "fullName", "sex", "birthDate", "identityId", "type"];
+    let countMainFamily = 0;
     members.map((mem, index) => {
       if(mem.status == STATUS.DELETE) return;
       memberRequirer.forEach(key => {
         if(_.isEmpty(mem[key])) {
           _errors['member_' + index + '_' + key] = t('PleaseEnterInfo');
         }
+        if(key == 'identityId' && !_.isEmpty(mem[key]) && (mem[key]?.value == SOCIAL_NUMBER_INPUT &&  (mem[key]?.label + '').length != 9 && (mem[key]?.label + '')?.length != 12)) {
+          _errors['member_' + index + '_' + key] = 'Yêu cầu độ dài 9 hoặc 12 ký tự';
+        }
       });
+      if(mem.type?.value == '1') countMainFamily++;
     })
     setErrors(_errors);
 
@@ -258,6 +295,10 @@ const CreateSocialContributeInfo: FC<ICreateSocialContributeInfoProps> = ({
     );
     if (hasErrors) {
       notifyMessage(t('PleaseEnterInfo'), true);
+    }
+    if(!hasErrors && countMainFamily != 1) {
+      notifyMessage('Yêu cầu chỉ có duy nhất 1 chủ hộ!');
+      hasErrors = true;
     }
     //check files
     if(!hasErrors) {
@@ -279,16 +320,16 @@ const CreateSocialContributeInfo: FC<ICreateSocialContributeInfoProps> = ({
   return (
     <div className="registration-insurance-section social-contribute input-style">
       {
-        !isCreateMode ?
+        !isCreateMode && lastModified?.date?
         <>
           <h5 className="pt-0">{'NGÀY CHỈNH SỬA CUỐI CÙNG'}</h5>
           <div className="box shadow-sm cbnv">
             <span style={{ fontWeight: "700" }}>{"Cập nhật: "}</span>
-            <span style={{ fontWeight: "100" }}>20/09/2023 10:00:00</span>
+            <span style={{ fontWeight: "100" }}>{lastModified?.date}</span>
             <span style={{ fontWeight: "700" }}>
               {" | Bởi "  + ": "}
             </span>
-            <span style={{ fontWeight: "100" }}>annv8</span>
+            <span style={{ fontWeight: "100" }}>{lastModified?.by}</span>
           </div>
         </> : null
       }
@@ -310,34 +351,18 @@ const CreateSocialContributeInfo: FC<ICreateSocialContributeInfoProps> = ({
           </h5>
           <div className="box shadow-sm cbnv">
             {"Số sổ BHXH"} <span className="required">(*)</span>
-            {
-              data?.socialNumberType?.value == SOCIAL_NUMBER_INPUT ?
-              <label className="input-container">
-                <input
-                  type="text"
-                  value={data.socialNumberType.label}
-                  onChange={(e) => handleChangeSelectInputs({...data.socialNumberType, label: e?.target?.value}, "socialNumberType")}
-                  className="form-control input mv-10 w-100"
-                  name="inputName"
-                  autoComplete="off"
-                  disabled={!isCreateMode}
-                />
-                <span className="input-group-addon input-img">
-                  <img src={IconClear} alt='Clear' className='remove-input cursor-pointer' title='Exit' onClick={() => handleChangeSelectInputs(null, 'socialNumberType')} />
-                </span>
-              </label>
-                 :
-                <Select
-                  placeholder={"Lựa chọn"}
-                  options={socialNumberType}
-                  isClearable={false}
-                  value={data?.socialNumberType}
-                  onChange={(e) => handleChangeSelectInputs(e, "socialNumberType")}
-                  className="input mv-10"
-                  isDisabled={!isCreateMode}
-                  styles={{ menu: (provided) => ({ ...provided, zIndex: 2 }) }}
-                />
-            }
+            <SelectInputComponent
+              options={socialNumberType}
+              handleInputChange={(text) => {return text?.replace(/[^0-9]/g, '')}}
+              maxLeng={10}
+              otherValueDefault={SOCIAL_NUMBER_INPUT}
+              name="socialNumberType"
+              value={data?.socialNumberType}
+              onChange={(value, name) => handleChangeSelectInputs(value, name)}
+              placeholder={t("import")}
+              className="form-control input mv-10 w-100"
+              disabled={!isCreateMode}
+            />
             {errors["socialNumberType"] ? (
               <p className="text-danger">{errors["socialNumberType"]}</p>
             ) : null}
@@ -351,7 +376,7 @@ const CreateSocialContributeInfo: FC<ICreateSocialContributeInfoProps> = ({
             {"Tên cơ sở đăng ký KCB"} <span className="required">(*)</span>
             <Select
               placeholder={"Lựa chọn"}
-              options={socialNumberType}
+              options={hospitals}
               isClearable={true}
               value={data?.facilityRegisterName || ''}
               onChange={(e) => handleChangeSelectInputs(e, "facilityRegisterName")}
@@ -379,6 +404,7 @@ const CreateSocialContributeInfo: FC<ICreateSocialContributeInfoProps> = ({
               className="form-control input mv-10 w-100"
               name="houseHoldNumber"
               autoComplete="off"
+              maxLength={15}
               disabled={!isCreateMode}
             />
             {errors["houseHoldNumber"] ? (
