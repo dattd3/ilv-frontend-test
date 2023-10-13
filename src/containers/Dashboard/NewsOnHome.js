@@ -1,11 +1,14 @@
-import React, { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Image, Carousel } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import axios from "axios";
-import moment from "moment";
 import ReactList from "react-list";
 import Footer from "../../components/Common/Footer";
-import { formatInternalNewsData, getRequestConfigurations } from "commons/Utils";
+import {
+  formatInternalNewsData,
+  getPublishedTimeByRawTime,
+  getRequestConfigurations,
+} from "commons/Utils";
 import mapConfig from "containers/map.config";
 import IconViewDetail from "../../assets/img/icon/Icon-Arrow-Right.svg";
 import IconUser from "../../assets/img/icon/Icon-User.svg";
@@ -16,6 +19,11 @@ import IconX from "../../assets/img/icon/icon_x.svg";
 import IconGift from "assets/img/icon/Icon_gift_red.svg";
 import IconBackToTop from "assets/img/icon/Icon_back_to_top.svg";
 import IconInternalNews from "assets/img/icon/internal_news_icon.svg";
+import IconMic from "assets/img/icon/mic-icon.svg";
+import IconVideo from "assets/img/icon/video-icon.svg";
+import IconPlay from "assets/img/icon/play-icon-red.svg";
+import IconArrowNext from "assets/img/icon/arrow-next-red.svg";
+
 import LoadingModal from "components/Common/LoadingModal";
 import Constants from "commons/Constants";
 import { getCurrentLanguage } from "../../commons/Utils";
@@ -33,6 +41,7 @@ function NewsOnHome() {
   const [listInternalNewsVideo, setListInternalNewsVideo] = useState([]);
   const [totalListInternalNews, setTotalListInternalNews] = useState(0);
   const [currentPageInternalNews, setCurrentPageInternalNews] = useState(1);
+  const [isLoadingInternalNews, setIsLoadingInternalNews] = useState(false);
 
   const [privilegeBanner, setPrivilegeBanner] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -63,6 +72,7 @@ function NewsOnHome() {
                 page: currentPageInternalNews,
                 size: 10,
                 newsType: 1,
+                culture: lang
               },
             }
           ),
@@ -74,6 +84,7 @@ function NewsOnHome() {
                 page: 1,
                 size: 3,
                 newsType: 2,
+                culture: lang
               },
             }
           ),
@@ -85,6 +96,7 @@ function NewsOnHome() {
                 page: 1,
                 size: 3,
                 newsType: 3,
+                culture: lang
               },
             }
           ),
@@ -122,14 +134,24 @@ function NewsOnHome() {
           requestGetEmployeePrivilegeBanner,
           getPrivilegeBanners,
         ]);
-        setListInternalNews(formatInternalNewsData(_listInternalNews.value.data?.data?.data, lang));
+        setListInternalNews(
+          formatInternalNewsData(_listInternalNews.value.data?.data?.data, lang)
+        );
         setListInternalNewsPodcasts(
-          formatInternalNewsData(_listInternalNewsPodcasts.value.data?.data?.data, lang)
+          formatInternalNewsData(
+            _listInternalNewsPodcasts.value.data?.data?.data,
+            lang
+          )
         );
         setListInternalNewsVideo(
-          formatInternalNewsData(_listInternalNewsVideos.value.data?.data.data, lang)
+          formatInternalNewsData(
+            _listInternalNewsVideos.value.data?.data.data,
+            lang
+          )
         );
-        setTotalListInternalNews(_listInternalNews.value.data?.data?.total || 0);
+        setTotalListInternalNews(
+          _listInternalNews.value.data?.data?.total || 0
+        );
         const _privilegeBanner = employeePrivilegeBanner?.value?.data?.data;
         setPrivilegeBanner({
           ...privilegeBanner,
@@ -159,14 +181,6 @@ function NewsOnHome() {
     return input && input?.length > 150 ? input.substr(0, 149) : input;
   };
 
-  const getTimeByRawTime = (rawTime) => {
-    const time = moment(rawTime).isValid() ? moment(rawTime) : null;
-    return {
-      time: time?.format("HH:mm") || "",
-      date: time?.format("DD/MM/YYYY") || "",
-    };
-  };
-
   const scrollToTop = () => {
     myRef.current.scrollTo({ behavior: "smooth", top: 0 });
   };
@@ -176,6 +190,8 @@ function NewsOnHome() {
   };
 
   const fetchNextInternalNews = async () => {
+    if (isLoadingInternalNews) return;
+    setIsLoadingInternalNews(true);
     try {
       const response = await axios.get(
         `${process.env.REACT_APP_REQUEST_URL}internal-news/list`,
@@ -185,46 +201,50 @@ function NewsOnHome() {
             page: currentPageInternalNews + 1,
             size: 10,
             newsType: 1,
+            culture: lang
           },
         }
       );
       setCurrentPageInternalNews(currentPageInternalNews + 1);
-      setTotalListInternalNews(response.value.data?.data?.total || 0);
-      setListInternalNews(...listInternalNews ,...formatInternalNewsData(response.value.data?.data?.data, lang));
+      setTotalListInternalNews(response.data?.data?.total || 0);
+      setListInternalNews([
+        ...listInternalNews,
+        ...formatInternalNewsData(response.data?.data?.data, lang),
+      ]);
     } catch (error) {
-      
+      console.log(error);
     }
-  }
+    setIsLoadingInternalNews(false);
+  };
 
   const loaded = listInternalNews?.data ? true : false;
 
   const topOne = listInternalNews.length > 0 ? listInternalNews[0] : null;
-  const timePublishedTopOne = getTimeByRawTime(topOne?.publishedDate);
-  const listInternalNewsOther = listInternalNews.length > 1 ? listInternalNews?.slice(1, listInternalNews.length) : [];
-  
+  const timePublishedTopOne = getPublishedTimeByRawTime(topOne?.publishedDate);
+  const listInternalNewsOther =
+    listInternalNews.length > 1
+      ? listInternalNews?.slice(1, listInternalNews.length)
+      : [];
+
   const onListInternalNewsScroll = () => {
-    const [
-      _,
-      lastIndexVisible
-  ] = listInternalNewsRef.current?.getVisibleRange();
-  console.log(lastIndexVisible)
+    const [_, lastIndexVisible] =
+      listInternalNewsRef.current?.getVisibleRange();
     // Fetch Next page
-    if (lastIndexVisible === listInternalNewsOther.length - 2 && listInternalNews.length < totalListInternalNews) {
+    if (
+      lastIndexVisible === listInternalNewsOther.length - 2 &&
+      listInternalNews.length < totalListInternalNews
+    ) {
       fetchNextInternalNews();
     }
-  }
-  
+  };
+
   const renderItemInternalNews = (index, key) => {
     const itemNews = listInternalNewsOther[index];
-    const timePublished = getTimeByRawTime(
-      itemNews?.publishedDate
-    );
+    const timePublished = getPublishedTimeByRawTime(itemNews?.publishedDate);
 
-    return <div className="item" key={itemNews.id}>
-        <a
-          href={`/internal-news/${itemNews.id}`}
-          className="link-image-detail"
-        >
+    return (
+      <div className="item" key={itemNews.id}>
+        <a href={`/internal-news/detail/${itemNews.id}`} className="link-image-detail">
           <Image
             src={itemNews.thumbnail}
             className="thumbnail"
@@ -235,37 +255,23 @@ function NewsOnHome() {
           />
         </a>
         <div className="title-source-time-info">
-          <a
-            href={`/internal-news/${itemNews.id}`}
-            className="title"
-          >
+          <a href={`/internal-news/detail/${itemNews.id}`} className="title">
             {itemNews.title}
           </a>
           <div className="source-time-info">
             <span className="source">
-              <Image
-                src={IconUser}
-                alt="Source"
-                className="icon"
-              />
-              <span className="source-name">
-                {t("VingroupCultural")}
-              </span>
+              <Image src={IconUser} alt="Source" className="icon" />
+              <span className="source-name">{t("VingroupCultural")}</span>
             </span>
             <span className="time">
-              <Image
-                src={IconTime}
-                alt="Time"
-                className="icon"
-              />
-              <span className="hour">
-                {timePublished.date || "N/A"}
-              </span>
+              <Image src={IconTime} alt="Time" className="icon" />
+              <span className="hour">{timePublished.date || "N/A"}</span>
             </span>
           </div>
         </div>
       </div>
-  }
+    );
+  };
 
   return (
     <>
@@ -402,68 +408,114 @@ function NewsOnHome() {
                       </div>
                     </div>
                   )}
-                  <div
-                    className="other"
-                  >
-                    <div className="top-four" onScroll={onListInternalNewsScroll}>
-                      {
-                        listInternalNews.length > 1 &&  <ReactList
-                        itemRenderer={renderItemInternalNews}
-                        length={listInternalNewsOther.length}
-                        ref={listInternalNewsRef}
-                      />
-                      }
-                      {/* {listInternalNewsOther.length > 0
-                        ? listInternalNewsOther.map((item) => {
-                            
-                            );
-                          })
-                        : t("DataNotFound")} */}
+                  <div className="other">
+                    <div
+                      className="top-four"
+                      onScroll={onListInternalNewsScroll}
+                    >
+                      {listInternalNews.length > 1 && (
+                        <ReactList
+                          itemRenderer={renderItemInternalNews}
+                          length={listInternalNewsOther.length}
+                          ref={listInternalNewsRef}
+                        />
+                      )}
                     </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-          <div className="other-news shadow-customize">
-            <div className="row">
-              <div className="col-md-12">
-                {/* <ReactList
-                                            itemRenderer={
-                                                (index, key) => {
-                                                    const item = others[index];
-                                                    let timePublished = getTimeByRawTime(item?.publishedDate)
-                                                    return <div className="item" key={key}>
-                                                        <a href={`/news/${convertToSlug(item.title)}/${item.id}`} className="link-image-detail">
-                                                            <Image src={item.thumbnail} alt="News" className="thumbnail"
-                                                                onError={(e) => {
-                                                                    e.target.src = "/logo-normal.svg"
-                                                                    e.target.className = `thumbnail error`
-                                                                }}
-                                                            />
-                                                        </a>
-                                                        <div className="title-source-time-info">
-                                                            <div className="main-info">
-                                                                <a href={`/news/${convertToSlug(item.title)}/${item.id}`} className="title">{item.title}</a>
-                                                                <p className="description">{subStringDescription(item.description)}</p>
-                                                                <div className="source-time-info">
-                                                                    <span className="source"><Image src={IconUser} alt="Source" className="icon" /><span className="source-name">{item.sourceSite || ""}</span></span>
-                                                                    <span className="time"><Image src={IconTime} alt="Time" className="icon" /><span className="hour">{timePublished.date}</span></span>
-                                                                </div>
-                                                            </div>
-                                                            <div className="btn-detail">
-                                                                <a href={`/news/${convertToSlug(item.title)}/${item.id}`} className="detail"><span>{t("Details")}</span><Image src={IconViewDetail} alt="Detail" className="icon-view-detail" /></a>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                }
-                                            }
-                                            length={others.length}
-                                            type='variable'
-                                        /> */}
+          {listInternalNewsPodcasts?.length > 0 && (
+            <>
+              <div className="internal-news-title">
+                <div className="title">
+                  <img src={IconMic} alt="" />
+                  &nbsp; PODCASTS
+                </div>
+                <a href="/internal-news?type=2"  className="news-link">
+                  <div className="expand-all-container">
+                    {t("ExpandAll")}&nbsp;&nbsp;
+                    <img src={IconArrowNext} alt="" />
+                  </div>
+                </a>
               </div>
-            </div>
-          </div>
+              <div className="other-news shadow-customize">
+                <div className="row internal-news-grid">
+                  {listInternalNewsPodcasts.map((item) => (
+                    <div className="col-md-4" key={item.id}>
+                      <div className="internal-news-card">
+                        <img
+                          src={item.thumbnail}
+                          alt=""
+                          className="thumbnail"
+                        />
+                        <div className="card-body">
+                          <div className="title">{item.title}</div>
+                          <div className="description">{item.description}</div>
+                          <a
+                            href={`/internal-news/detail/${item.id}`}
+                            className="news-link"
+                          >
+                            <button className="play-btn">
+                              <img src={IconPlay} alt="" />
+                              &nbsp;&nbsp;
+                              {t("PlayNow")}
+                            </button>
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </>
+          )}
+          {listInternalNewsVideo && (
+            <>
+              <div className="internal-news-title">
+                <div className="title">
+                  <img src={IconVideo} alt="" />
+                  &nbsp; VIDEOS
+                </div>
+                <a href="/internal-news?type=3"  className="news-link">
+                  <div className="expand-all-container">
+                    {t("ExpandAll")}&nbsp;&nbsp;
+                    <img src={IconArrowNext} alt="" />
+                  </div>
+                </a>
+              </div>
+              <div className="other-news shadow-customize">
+                <div className="row internal-news-grid">
+                  {listInternalNewsVideo.map((item) => (
+                    <div className="col-md-4" key={item.id}>
+                      <div className="internal-news-card">
+                        <img
+                          src={item.thumbnail}
+                          alt=""
+                          className="thumbnail"
+                        />
+                        <div className="card-body">
+                          <div className="title">{item.title}</div>
+                          <div className="description">{item.description}</div>
+                          <a
+                            href={`/internal-news/detail/${item.id}`}
+                            className="news-link"
+                          >
+                            <button className="play-btn">
+                              <img src={IconPlay} alt="" />
+                              &nbsp;&nbsp;
+                              {t("PlayNow")}
+                            </button>
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </>
+          )}
         </div>
         {isShowNoticeGuideModal && (
           <div className="noti-guide-modal">
@@ -511,6 +563,5 @@ function NewsOnHome() {
     </>
   );
 }
-
 
 export default NewsOnHome;
