@@ -94,16 +94,16 @@ const DetailModal = ({ isShow, titleModal, currentYearData = [], lastYearData = 
                 </div>
                 <div className='content'>
                 <Tabs defaultActiveKey={tab} onSelect={(key) => handleChangeTab(key)}>
-                    <Tab eventKey={tabConfig.currentYear} title={t('Năm nay')}>
+                    <Tab eventKey={tabConfig.currentYear} title={t('CurrentYear')}>
                     <div className="wrap-table-detail">
                             <table className='table-detail'>
                                 <thead>
                                     <tr>
-                                        <th>Ngày bắt đầu</th>
-                                        <th>Ngày hết hạn</th>
-                                        <th>Tổng số</th>
-                                        <th>Đã sử dụng</th>
-                                        <th>Còn lại</th>
+                                        <th>{t("StartDate")}</th>
+                                        <th>{t("ExpiryDate")}</th>
+                                        <th>{t("total")}</th>
+                                        <th>{t("Status_Used")}</th>
+                                        <th>{t("Available2")}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -124,16 +124,16 @@ const DetailModal = ({ isShow, titleModal, currentYearData = [], lastYearData = 
                             </table>
                         </div>
                     </Tab>
-                    <Tab eventKey={tabConfig.lastYear} title={t('Năm trước')}>
+                    <Tab eventKey={tabConfig.lastYear} title={t('LastYear')}>
                         <div className="wrap-table-detail">
                             <table className='table-detail'>
                                 <thead>
                                     <tr>
-                                        <th>Ngày bắt đầu</th>
-                                        <th>Ngày hết hạn</th>
-                                        <th>Tổng số</th>
-                                        <th>Đã sử dụng</th>
-                                        <th>Còn lại</th>
+                                        <th>{t("StartDate")}</th>
+                                        <th>{t("ExpiryDate")}</th>
+                                        <th>{t("total")}</th>
+                                        <th>{t("Status_Used")}</th>
+                                        <th>{t("Available2")}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -166,7 +166,7 @@ function LeaveTimeSummary(props) {
     const { pendingTimeInfo, data } = props
     const [detailModal, SetDetailModal] = useState({
         isShow: false,
-        titleModal: "Xem chi tiết nghỉ phép",
+        titleModal: t("LeaveUsedHistory"),
         currentYearData: [],
         lastYearData: [],
     })
@@ -183,7 +183,7 @@ function LeaveTimeSummary(props) {
     const handleShowModal = (isCompensatoryLeave = false) => {
         SetDetailModal({
             isShow: true,
-            titleModal: isCompensatoryLeave ? "Xem chi tiết nghỉ bù" : "Xem chi tiết nghỉ phép",
+            titleModal: isCompensatoryLeave ? t("TOILUsedHistory") : t("LeaveUsedHistory"),
             currentYearData: isCompensatoryLeave ? data?.unused_compensatory_leave_current_year_detail : data?.unused_annual_leave_current_year_detail,
             lastYearData: isCompensatoryLeave ? data?.unused_compensatory_leave_last_year_detail : data?.unused_annual_leave_last_year_detail,
         })
@@ -264,7 +264,7 @@ function LeaveTimeSummary(props) {
                             </div>
                         </div>
                         <div className="d-flex justify-content-center view-detail-block">
-                            <button className="view-detail" onClick={() => handleShowModal(false)}>{t("Details")}<img src={IconArrow} alt='Arrow' /></button>
+                            <button className="view-detail" onClick={() => handleShowModal(false)}>{t("ViewDetail2")}<img src={IconArrow} alt='Arrow' /></button>
                         </div>
                     </div>
                     <div className="col box shadow">
@@ -324,7 +324,7 @@ function LeaveTimeSummary(props) {
                             </div>
                         </div>
                         <div className="d-flex justify-content-center view-detail-block">
-                            <button className="view-detail" onClick={() => handleShowModal(true)}>{t("Details")}<img src={IconArrow} alt='Arrow' /></button>
+                            <button className="view-detail" onClick={() => handleShowModal(true)}>{t("ViewDetail2")}<img src={IconArrow} alt='Arrow' /></button>
                         </div>
                     </div>
                 </div>
