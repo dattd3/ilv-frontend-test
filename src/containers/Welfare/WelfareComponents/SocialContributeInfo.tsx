@@ -91,9 +91,9 @@ const SocialContributeInfo = (props: any) => {
         fullName: value.fullName,
         relation: {value: value.relationshipCode, label: value.relationshipText},
         sex: {value: value.genderCode, label: value.genderText},
-        birthDate: moment(value.birthday, "YYYY").format("DD/MM/YYYY"),
+        birthDate: moment(value.birthday, "YYYY-MM-DD").format("DD/MM/YYYY"),
         type: value.isHouseholdOwner ? ROLE_TYPE[0] : ROLE_TYPE[1],
-        identityId: value.idNumber || ''
+        identityId: convertDataExtract(value.idNumber) as IDropdownValue
     };
     return result;
   }
@@ -145,8 +145,8 @@ const SocialContributeInfo = (props: any) => {
     setData(_oldData);
     setMembers(_oldmember);
     setLastModified({
-        date: requestInfo.modifiedDate ? moment(requestInfo?.modifiedDate).format('DD/MM/YYYY HH:mm:ss') : '',
-        by: requestInfo.modifiedBy?.replace('@vingroup.net', '') || ''
+        date: requestInfo.updatedDate ? moment(requestInfo?.updatedDate).format('DD/MM/YYYY HH:mm:ss') : '',
+        by: requestInfo.updatedInfo ? JSON.parse(requestInfo.updatedInfo)?.account.replace('@vingroup.net', '') : ''
     })
     }
 
@@ -218,13 +218,6 @@ const SocialContributeInfo = (props: any) => {
       data: change,
       member: memberChange,
     });
-    console.log("data>>>", data);
-    console.log("member>>", members);
-
-    console.log("chagne>>>", {
-      data: change,
-      member: memberChange,
-    });
     return {
       data: change,
       member: memberChange,
@@ -253,7 +246,7 @@ const SocialContributeInfo = (props: any) => {
       genderText: value.sex?.label,
       birthday: moment(value.birthDate, "DD/MM/YYYY").format("YYYY-MM-DD"),
       isHouseholdOwner: value.type?.value == ROLE_TYPE[0].value,
-      idNumber: value.identityId,
+      idNumber: convertData(value.identityId)
     };
   };
 

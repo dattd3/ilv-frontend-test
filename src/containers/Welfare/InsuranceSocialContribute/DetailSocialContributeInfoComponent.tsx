@@ -54,15 +54,20 @@ const DetailSocailContributeComponent: FC<IDetailSocialContributeInfoProps> = ({
   }
   return (
     <div className="registration-insurance-section social-contribute input-style">
-      <h5 className="pt-0">{'NGÀY CHỈNH SỬA CUỐI CÙNG'}</h5>
-      <div className="box shadow-sm cbnv mb-4">
-        <span style={{ fontWeight: "700" }}>{"Cập nhật: "}</span>
-        <span style={{ fontWeight: "100" }}>{lastModified?.date}</span>
-        <span style={{ fontWeight: "700" }}>
-          {" | Bởi "  + ": "}
-        </span>
-        <span style={{ fontWeight: "100" }}>{lastModified?.by}</span>
-      </div>
+      {
+        lastModified?.date ?
+        <>
+          <h5 className="pt-0">{'NGÀY CHỈNH SỬA CUỐI CÙNG'}</h5>
+          <div className="box shadow-sm cbnv mb-4">
+            <span style={{ fontWeight: "700" }}>{"Cập nhật: "}</span>
+            <span style={{ fontWeight: "100" }}>{lastModified?.date}</span>
+            <span style={{ fontWeight: "700" }}>
+              {" | Bởi "  + ": "}
+            </span>
+            <span style={{ fontWeight: "100" }}>{lastModified?.by}</span>
+          </div>
+        </> : null
+      }
 
       <h5 className="pt-0">{'THÔNG TIN ĐĂNG KÝ CHỈNH SỬA'}</h5>
       <div className="box shadow-sm cbnv mb-4">
