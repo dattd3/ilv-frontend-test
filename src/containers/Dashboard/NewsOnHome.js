@@ -357,7 +357,7 @@ function NewsOnHome() {
                   {topOne && (
                     <div className="top-one">
                       <a
-                        href={`/internal-news/${topOne.id}`}
+                        href={`/internal-news/detail/${topOne.id}`}
                         className="link-detail"
                       >
                         <Image
@@ -394,7 +394,7 @@ function NewsOnHome() {
                         </p>
                         <div className="btn-detail">
                           <a
-                            href={`/internal-news/${topOne?.id}`}
+                            href={`/internal-news/detail/${topOne?.id}`}
                             className="detail"
                           >
                             <span>{t("Details")}</span>
