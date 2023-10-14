@@ -4,6 +4,7 @@ import AssessorInfoComponent from "../InternalPayment/component/AssessorInfoComp
 import { IMemberInfo, ISocialContributeModel } from "models/welfare/SocialContributeModel";
 import { STATUS, socialNumberType } from "./SocialContributeData";
 import DetailMemberInfo from "./DetailMemberInfo";
+import ProcessHistoryComponent from "containers/WorkflowManagement/DepartmentManagement/ProposalManagement/ProcessHistoryComponent";
 
 interface IDetailSocialContributeInfoProps {
   t: any;
@@ -15,7 +16,9 @@ interface IDetailSocialContributeInfoProps {
   members: IMemberInfo[],
   isCreateMode: boolean,
   onSubmit: Function
-  lastModified?: any
+  lastModified?: any,
+  timeRequest: any;
+  userInfo: any;
 };
 
 const DetailSocailContributeComponent: FC<IDetailSocialContributeInfoProps> = ({
@@ -23,11 +26,13 @@ const DetailSocailContributeComponent: FC<IDetailSocialContributeInfoProps> = ({
   data,
   change,
   supervisors = [],
+  timeRequest,
   approver,
   files = [],
   members = [{}],
   isCreateMode = false,
   onSubmit,
+  userInfo,
   lastModified
 }) => {
 
@@ -69,6 +74,28 @@ const DetailSocailContributeComponent: FC<IDetailSocialContributeInfoProps> = ({
         </> : null
       }
 
+      <h5 className="pt-0">{'THÔNG TIN NGƯỜI TẠO YÊU CẦU'}</h5>
+      <div className="box shadow-sm cbnv mb-4">
+        <div className="row">
+          <div className="col-3">
+            {t('FullName')}
+            <div className="detail">{userInfo.fullName}</div>
+          </div>
+          <div className="col-3">
+            {t('EmployeeNo')}
+            <div className="detail">{userInfo.employeeNo}</div>
+          </div>
+          <div className="col-3">
+            {t('Title')}
+            <div className="detail">{userInfo.jobTitle}</div>
+          </div>
+          <div className="col-3">
+            {t('DepartmentManage')}
+            <div className="detail">{userInfo.department}</div>
+          </div>
+        </div>
+      </div>
+
       <h5 className="pt-0">{'THÔNG TIN ĐĂNG KÝ CHỈNH SỬA'}</h5>
       <div className="box shadow-sm cbnv mb-4">
         <ul className="d-flex">
@@ -81,7 +108,7 @@ const DetailSocailContributeComponent: FC<IDetailSocialContributeInfoProps> = ({
 
       <div className="row">
         <div className="col-6">
-          <h5 className={`${isCreateMode ? 'pt-0' : ''}`}>
+          <h5 className={`pt-0`}>
             {"SỐ SỔ BHXH "}
             <span
               style={{
@@ -102,7 +129,7 @@ const DetailSocailContributeComponent: FC<IDetailSocialContributeInfoProps> = ({
 
         
         <div className="col-6">
-          <h5 className={`${isCreateMode ? 'pt-0' : ''}`}>{"NƠI ĐĂNG KÝ KCB"}</h5>
+          <h5 className={`pt-0`}>{"NƠI ĐĂNG KÝ KCB"}</h5>
           <div className="box shadow-sm cbnv">
             {"Tên cơ sở đăng ký KCB"}
             {renderValue(change?.data?.facilityRegisterName, data?.facilityRegisterName?.label, change?.data?.facilityRegisterName_value?.label)}
@@ -111,7 +138,7 @@ const DetailSocailContributeComponent: FC<IDetailSocialContributeInfoProps> = ({
       </div>
 
     {/* ĐỊA CHỈ THEO HỘ KHẨU THƯỜNG TRÚ */}
-      <h5>{'ĐỊA CHỈ THEO HỘ KHẨU THƯỜNG TRÚ'}</h5>
+      <h5 className="pt-0">{'ĐỊA CHỈ THEO HỘ KHẨU THƯỜNG TRÚ'}</h5>
       <div className="box shadow-sm cbnv">
         <div className="row">
           <div className="col-4">
@@ -140,7 +167,7 @@ const DetailSocailContributeComponent: FC<IDetailSocialContributeInfoProps> = ({
         </div>
       </div>
 
-      <h5>{'THÔNG TIN HỘ GIA ĐÌNH'}</h5>
+      <h5 className="pt-0">{'THÔNG TIN HỘ GIA ĐÌNH'}</h5>
       <div className="box shadow-sm cbnv">
         {(members || []).map((request: IMemberInfo, index: number) => {
           return (
@@ -167,7 +194,7 @@ const DetailSocailContributeComponent: FC<IDetailSocialContributeInfoProps> = ({
         })}
       </div>
       
-      <h5>{'GHI CHÚ'}</h5>
+      <h5 className="pt-0">{'GHI CHÚ'}</h5>
       <div className="box shadow-sm cbnv">
         <div className="row">
           <div className="col-12">
@@ -186,6 +213,20 @@ const DetailSocailContributeComponent: FC<IDetailSocialContributeInfoProps> = ({
         setApprover={() => {}}
         errors={{}}
       />
+
+      <h5 style={{paddingTop: '16px'}}>
+        {t("RequestHistory").toUpperCase()}
+      </h5>
+      <div className="timesheet-section">
+        <div className="timesheet-box1 timesheet-box shadow-sm">
+          <ProcessHistoryComponent
+            createdDate={timeRequest?.createDate}
+            coordinatorDate={null}
+            requestAppraisers={supervisors}
+            approvedDate={timeRequest?.approvedDate}
+          />
+        </div>
+      </div>
 
       <div className="registration-section">
         <ul className="list-inline">
