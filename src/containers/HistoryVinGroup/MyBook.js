@@ -47,6 +47,224 @@ const imageMapping = {
     40: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page40.png",
     41: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page41.png",
     42: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page42.png",
+    43: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page43.png",
+    44: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page44.png",
+    45: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page45.png",
+    46: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page46.png",
+    47: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page47.png",
+    48: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page48.png",
+    49: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page49.png",
+    50: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page50.png",
+    51: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page51.png",
+    52: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page52.png",
+    53: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page53.png",
+    54: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page54.png",
+    55: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page55.png",
+    56: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page56.png",
+    57: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page57.png",
+    58: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page58.png",
+    59: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page59.png",
+    60: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page60.png",
+    61: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page61.png",
+    62: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page62.png",
+    63: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page63.png",
+    64: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page64.png",
+    65: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page65.png",
+    66: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page66.png",
+    67: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page67.png",
+    68: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page68.png",
+    69: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page69.png",
+    70: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page70.png",
+    71: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page71.png",
+    72: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page72.png",
+    73: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page73.png",
+    74: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page74.png",
+    75: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page75.png",
+    76: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page76.png",
+    77: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page77.png",
+    78: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page78.png",
+    79: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page79.png",
+    80: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page80.png",
+    81: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page81.png",
+    82: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page82.png",
+    83: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page83.png",
+    84: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page84.png",
+    85: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page85.png",
+    86: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page86.png",
+    87: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page87.png",
+    88: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page88.png",
+    89: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page89.png",
+    90: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page90.png",
+    91: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page91.png",
+    92: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page92.png",
+    93: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page93.png",
+    94: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page94.png",
+    95: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page95.png",
+    96: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page96.png",
+    97: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page97.png",
+    98: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page98.png",
+    99: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page99.png",
+    100: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page100.png",
+    101: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page101.png",
+    102: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page102.png",
+    103: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page103.png",
+    104: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page104.png",
+    105: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page105.png",
+    106: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page106.png",
+    107: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page107.png",
+    108: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page108.png",
+    109: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page109.png",
+    110: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page110.png",
+    111: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page111.png",
+    112: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page112.png",
+    113: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page113.png",
+    114: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page114.png",
+    115: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page115.png",
+    116: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page116.png",
+    117: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page117.png",
+    118: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page118.png",
+    119: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page119.png",
+    120: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page120.png",
+    121: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page121.png",
+    122: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page122.png",
+    123: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page123.png",
+    124: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page124.png",
+    125: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page125.png",
+    126: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page126.png",
+    127: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page127.png",
+    128: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page128.png",
+    129: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page129.png",
+    130: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page130.png",
+    131: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page131.png",
+    132: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page132.png",
+    133: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page133.png",
+    134: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page134.png",
+    135: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page135.png",
+    136: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page136.png",
+    137: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page137.png",
+    138: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page138.png",
+    139: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page139.png",
+    140: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page140.png",
+    141: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page141.png",
+    142: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page142.png",
+    143: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page143.png",
+    144: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page144.png",
+    145: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page145.png",
+    146: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page146.png",
+    147: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page147.png",
+    148: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page148.png",
+    149: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page149.png",
+    150: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page150.png",
+    151: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page151.png",
+    152: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page152.png",
+    153: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page153.png",
+    154: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page154.png",
+    155: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page155.png",
+    156: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page156.png",
+    157: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page157.png",
+    158: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page158.png",
+    159: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page159.png",
+    160: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page160.png",
+    161: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page161.png",
+    162: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page162.png",
+    163: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page163.png",
+    164: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page164.png",
+    165: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page165.png",
+    166: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page166.png",
+    167: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page167.png",
+    168: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page168.png",
+    169: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page169.png",
+    170: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page170.png",
+    171: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page171.png",
+    172: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page172.png",
+    173: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page173.png",
+    174: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page174.png",
+    175: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page175.png",
+    176: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page176.png",
+    177: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page177.png",
+    178: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page178.png",
+    179: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page179.png",
+    180: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page180.png",
+    181: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page181.png",
+    182: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page182.png",
+    183: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page183.png",
+    184: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page184.png",
+    185: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page185.png",
+    186: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page186.png",
+    187: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page187.png",
+    188: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page188.png",
+    189: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page189.png",
+    190: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page190.png",
+    191: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page191.png",
+    192: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page192.png",
+    193: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page193.png",
+    194: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page194.png",
+    195: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page195.png",
+    196: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page196.png",
+    197: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page197.png",
+    198: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page198.png",
+    199: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page199.png",
+    200: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page200.png",
+    201: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page201.png",
+    202: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page202.png",
+    203: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page203.png",
+    204: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page204.png",
+    205: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page205.png",
+    206: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page206.png",
+    207: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page207.png",
+    208: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page208.png",
+    209: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page209.png",
+    210: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page210.png",
+    211: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page211.png",
+    212: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page212.png",
+    213: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page213.png",
+    214: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page214.png",
+    215: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page215.png",
+    216: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page216.png",
+    217: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page217.png",
+    218: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page218.png",
+    219: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page219.png",
+    220: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page220.png",
+    221: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page221.png",
+    222: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page222.png",
+    223: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page223.png",
+    224: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page224.png",
+    225: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page225.png",
+    226: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page226.png",
+    227: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page227.png",
+    228: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page228.png",
+    229: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page229.png",
+    230: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page230.png",
+    231: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page231.png",
+    232: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page232.png",
+    233: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page233.png",
+    234: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page234.png",
+    235: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page235.png",
+    236: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page236.png",
+    237: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page237.png",
+    238: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page238.png",
+    239: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page239.png",
+    240: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page240.png",
+    241: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page241.png",
+    242: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page242.png",
+    243: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page243.png",
+    244: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page244.png",
+    245: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page245.png",
+    246: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page246.png",
+    247: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page247.png",
+    248: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page248.png",
+    249: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page249.png",
+    250: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page250.png",
+    251: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page251.png",
+    252: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page252.png",
+    253: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page253.png",
+    254: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page254.png",
+    255: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page255.png",
+    256: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page256.png",
+    257: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page257.png",
+    258: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page258.png",
+    259: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page259.png",
+    260: "https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page260.png"
 }
 
 const Page = forwardRef((props, ref) => {
@@ -70,15 +288,17 @@ export default function MyBook(props) {
     const page = useRef()
     const wrapBookRef = useRef()
     const pageScrollRef = useRef([])
-    const totalPages = 42
+    const totalPages = 260
+    const itemPerLoad = 20
     const [isShowThumbnails, setIsShowThumbnails] = useState(false)
     const [isFullScreen, setIsFullScreen] = useState(false)
     const [isZoomIn, setIsZoomIn] = useState(false)
     const [currentPage, setCurrentPage] = useState(1)
-    // const [isLoading, SetIsLoading] = useState(true)
-    // style={{ height: 800, objectFit: 'cover' }}
+    const [pages, SetPages] = useState([])
 
     useEffect(() => {
+        SetPages(initialPages())
+
         page.current.scrollIntoView({
             behavior: 'instant'
         }, 0)
@@ -95,6 +315,14 @@ export default function MyBook(props) {
             wrapBookRef?.current?.removeEventListener('wheel', onWheel, { passive: false })
         }
     }, [])
+
+    const initialPages = () => {
+        let pageItems = []
+        for (let index = 0; index < itemPerLoad; index++) {
+            pageItems.push(index + 1)
+        }
+        return pageItems
+    }
 
     useEffect(() => {
         const timeOut = setTimeout(() => {
@@ -221,20 +449,14 @@ export default function MyBook(props) {
         }
     }
 
-    const pages = (() => {
-        let pageItems = []
-        for (let index = 0; index < totalPages; index++) {
-            pageItems.push(index + 1)
-        }
-        return pageItems
-    })()
-
     const sidebarPages = (() => {
         const firstPage = 1
-        const lastPage = totalPages
+        const lastPage = pages?.length
         const center = chunk(pages.filter(item => item !== firstPage && item !== lastPage), 2)
         return [[firstPage], ...center , [lastPage]]
     })()
+
+    console.log('hihihih => ', pages)
 
     return (
         <>
@@ -331,36 +553,6 @@ export default function MyBook(props) {
                                             )
                                         })
                                     }
-                                    {/* <Page number="1"><img src={Page1} /></Page>
-                                    <Page number="2"><img src={Page2} /></Page>
-                                    <Page number="3"><img src={Page3} /></Page>
-                                    <Page number="4"><img src={Page4} /></Page>
-                                    <Page number="5"><img src={Page5} /></Page>
-                                    <Page number="6"><img src={Page6} /></Page>
-                                    <Page number="7"><img src={Page7} /></Page>
-                                    <Page number="8"><img src={Page8} /></Page>
-                                    <Page number="9"><img src={Page9} /></Page>
-                                    <Page number="10"><img src={Page10} /></Page>
-                                    <Page number="11"><img src={Page11} /></Page>
-                                    <Page number="12"><img src={Page12} /></Page>
-                                    <Page number="13"><img src={Page13} /></Page>
-                                    <Page number="14"><img src={Page14} /></Page>
-                                    <Page number="15"><img src={Page15} /></Page>
-                                    <Page number="16"><img src={Page16} /></Page>
-                                    <Page number="17"><img src={Page17} /></Page>
-                                    <Page number="18"><img src={Page18} /></Page>
-                                    <Page number="19"><img src={Page19} /></Page>
-                                    <Page number="20"><img src={Page20} /></Page>
-                                    <Page number="21"><img src={Page21} /></Page>
-                                    <Page number="22"><img src={Page22} /></Page>
-                                    <Page number="23"><img src={Page23} /></Page>
-                                    <Page number="24"><img src={Page24} /></Page>
-                                    <Page number="25"><img src={Page25} /></Page>
-                                    <Page number="26"><img src={Page26} /></Page>
-                                    <Page number="27"><img src={Page27} /></Page>
-                                    <Page number="28"><img src={Page28} /></Page>
-                                    <Page number="29"><img src={Page29} /></Page>
-                                    <Page number="10"><img src={Page30} /></Page> */}
                                 </HTMLFlipBook>
                             </div>
                         </div>
@@ -371,7 +563,7 @@ export default function MyBook(props) {
                             <span className="btn-download cursor-pointer" onClick={downloadBook}>
                                 <svg data-v-71c99c82="" version="1.1" viewBox="0 0 24 24" className="svg-icon svg-fill" focusable="false"><path pid="0" d="M17.511 10.276h-2.516V4.201c.087-.456-.1-.921-.48-1.191H9.482c-.38.27-.567.735-.48 1.19v6.076H6.247L12 16.352l5.512-6.076zM18.597 17v2H5.402v-2H3.003v2.8c-.049.603.479 1.132 1.2 1.2h15.593c.724-.063 1.256-.595 1.2-1.2V17h-2.4z"></path></svg>
                             </span>
-                            <span className={`btn-zoom cursor-pointer ${isZoomIn ? 'active' : ''}`} onClick={handleZoom}>
+                            {/* <span className={`btn-zoom cursor-pointer ${isZoomIn ? 'active' : ''}`} onClick={handleZoom}>
                                 {
                                     isZoomIn
                                     ? (
@@ -381,7 +573,7 @@ export default function MyBook(props) {
                                         <svg data-v-71c99c82="" version="1.1" viewBox="0 0 24 24" className="svg-icon svg-fill" focusable="false"><path pid="0" d="M15.49 17.61A8.144 8.144 0 0111.14 19c-4.452-.102-8.038-3.625-8.14-8 .036-4.35 3.575-7.89 8-8 4.425.112 7.965 3.65 8 8a7.813 7.813 0 01-1.38 4.499l4.451 4.45-2.121 2.122-4.46-4.46zM11.104 17c3.3-.09 5.919-2.757 5.895-6-.026-3.263-2.681-5.916-6-6-3.319.083-5.973 2.737-6 6 .077 3.281 2.766 5.923 6.105 6zM12 7v3h3v2h-3v3h-2v-3H7v-2h3V7h2z"></path></svg>
                                     )
                                 }
-                            </span>
+                            </span> */}
                             <span className={`btn-full-screen cursor-pointer ${isFullScreen ? 'active' : ''}`} onClick={handleScreen}>
                                 {
                                     isFullScreen ? (
