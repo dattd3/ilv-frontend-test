@@ -1,5 +1,5 @@
 import axios from "axios";
-import { formatInternalNewsDataItem } from "commons/Utils";
+import { formatInternalNewsDataItem, getCurrentLanguage } from "commons/Utils";
 import { getRequestConfigs } from "commons/commonFunctions";
 import { useEffect, useState } from "react";
 import IconInternalNews from "assets/img/icon/internal_news_icon.svg";
@@ -13,6 +13,7 @@ import moment from "moment";
 function InternalNewsDetail(props) {
   const id = props.match.params.id;
   const [newsDetail, setNewsDetail] = useState(null);
+  const lang = getCurrentLanguage();
 
   useEffect(() => {
     axios
@@ -21,7 +22,12 @@ function InternalNewsDetail(props) {
         getRequestConfigs()
       )
       .then((response) => {
-        setNewsDetail(formatInternalNewsDataItem(response.data?.data));
+        const formattedNews = formatInternalNewsDataItem(response.data?.data, lang);
+        if (!formattedNews.title || !formattedNews.content) {
+          window.location.href = "/";
+          return
+        }
+        setNewsDetail(formattedNews);
       });
   }, [id]);
 
@@ -35,7 +41,6 @@ function InternalNewsDetail(props) {
         return <img src={IconInternalNews} alt="" />;
     }
   };
-  console.log(newsDetail);
 
   return (
     <>

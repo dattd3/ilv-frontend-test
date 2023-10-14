@@ -16,7 +16,6 @@ import nextSlideIcon from '../../assets/img/icon/next-slide-icon.png';
 import IconUser from 'assets/img/icon/Icon-User.svg'
 import IconTime from 'assets/img/icon/Icon-Time.svg'
 import IconVinfast from 'assets/img/icon/pnl/vinfast.svg'
-import IconES from 'assets/img/icon/pnl/vines.svg'
 import IconVinhomes from 'assets/img/icon/pnl/vinhomes.svg'
 import IconVinperl from 'assets/img/icon/pnl/vinpearl.svg'
 import IconVingroup from 'assets/img/icon/pnl/vingroup.svg'
@@ -56,8 +55,8 @@ const PNL_SWIPER_LIST = [
       url: "https://vinfastauto.com",
     },
     {
-      logo: IconES,
-      url: "https://vines.net.vn",
+      logo: IconVinHMS,
+      url: "https://vinhms.com",
     },
     {
       logo: IconVingroup,
