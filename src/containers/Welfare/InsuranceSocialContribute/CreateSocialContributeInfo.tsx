@@ -154,7 +154,7 @@ const CreateSocialContributeInfo: FC<ICreateSocialContributeInfoProps> = ({
     const candidateInfos = { ...data }
     let value = e?.target?.value;
     if(name == 'houseHoldNumber' && value) {
-      value = value.replace(/[^0-9]/g,'');
+      value = value.replace(/[^0-9a-zA-Z]/g,'');
     }
     candidateInfos[name] = e != null ? value : "";
     setData(candidateInfos);
@@ -297,7 +297,7 @@ const CreateSocialContributeInfo: FC<ICreateSocialContributeInfoProps> = ({
       notifyMessage(t('PleaseEnterInfo'), true);
     }
     if(!hasErrors && countMainFamily != 1) {
-      notifyMessage('Yêu cầu chỉ có duy nhất 1 chủ hộ!');
+      notifyMessage('Vui lòng chọn 1 chủ hộ!');
       hasErrors = true;
     }
     //check files

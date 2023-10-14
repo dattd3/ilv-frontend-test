@@ -22,6 +22,7 @@ import LoadingModal from "components/Common/LoadingModal";
 import { getMuleSoftHeaderConfigurations, getRequestConfigurations } from "commons/Utils";
 import { IDropdownValue } from "models/CommonModel";
 import InsuranceApproveActionButtons from "../InsuranceComponents/InsuranceApproveActionButtons";
+import ProcessHistoryComponent from "containers/WorkflowManagement/DepartmentManagement/ProposalManagement/ProcessHistoryComponent";
 
 const SocialContributeDetailInfo = (props: any) => {
   const { t } = props;
@@ -36,6 +37,8 @@ const SocialContributeDetailInfo = (props: any) => {
   const [lastModified, setLastModified] = useState<any>({});
   const [approver, setApprover] = useState<any>();
   const [loading, setLoading] = useState(false);
+  const [timeRequest, setTimerRequest] = useState<any>({});
+  const [useInfo, setUserInfo] = useState<any>({});
   const [resultModal, setresultModal] = useState({
     isShowStatusModal: false,
     titleModal: "",
@@ -179,6 +182,7 @@ const SocialContributeDetailInfo = (props: any) => {
 
     //appraiser
     const requestAppraisers = requestInfo?.requestAppraisers;
+    let dateAppraiser = null;
 
         if (requestAppraisers?.length > 0) {
             const _supervisors: any = [];
@@ -195,6 +199,9 @@ const SocialContributeDetailInfo = (props: any) => {
                   appraiserComment: item?.appraiserComment,
                   appraisalDate: item.appraisalDate
                 });
+                dateAppraiser = item.appraisalDate
+                ? item.appraisalDate
+                : dateAppraiser;
               }
             });
             setSupervisors(_supervisors);
@@ -221,6 +228,14 @@ const SocialContributeDetailInfo = (props: any) => {
             })) || [];
       
         setFiles(requestDocuments);
+        setTimerRequest({
+          createDate: requestInfo.createdDate,
+          approvedDate: requestInfo.approvedDate,
+          assessedDate: dateAppraiser,
+        });
+        if(requestInfo?.userInfo) {
+          setUserInfo(JSON.parse(requestInfo.userInfo));
+        }
   }
 
 
@@ -325,6 +340,8 @@ const SocialContributeDetailInfo = (props: any) => {
         members={oldMembers}
         onSubmit={() => {}}
         isCreateMode={false}
+        timeRequest={timeRequest}
+        userInfo={useInfo}
         />
         <div className="mv-10"/>
         <InsuranceApproveActionButtons
