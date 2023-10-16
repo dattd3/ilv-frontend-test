@@ -291,6 +291,7 @@ export default function MyBook(props) {
     const [currentPage, setCurrentPage] = useState(1)
     const [pages, SetPages] = useState([])
     const [isLoading, SetIsLoading] = useState(true)
+    let isWheeling
 
     useEffect(() => {
         setTimeout(() => {
@@ -336,24 +337,24 @@ export default function MyBook(props) {
     }, [isFullScreen])
 
     useEffect(() => {
+        let pageToSwitch = currentPage
         switch (currentPage) {
-            case 1:
-                book?.current?.pageFlip()?.turnToPage(0)
-                break;
-    
-            case totalPages:
-                book?.current?.pageFlip()?.turnToPage(totalPages - 1)
-                break;
-        
-            default:
-                book?.current?.pageFlip()?.turnToPage(currentPage)
-                break;
+            case 1: // Page đầu tiên
+                pageToSwitch = 0
+                break
+            case totalPages: // Page cuối cùng
+                pageToSwitch = totalPages - 1
+                break
         }
 
-        if (currentPage === pages?.length - leftPagesToLoad) { // leftPagesToLoad page cuối của mỗi lượt load mới bắt đầu load thêm
+        if (currentPage >= pages?.length - leftPagesToLoad) { // leftPagesToLoad page cuối của mỗi lượt load mới bắt đầu load thêm
             const pagesToSave = [...pages, ...generatePages(itemPerLoad, last(pages))]
             SetPages(pagesToSave)
         }
+
+        setTimeout(() => {
+            book?.current?.pageFlip()?.turnToPage(pageToSwitch)
+        }, 200)
     }, [currentPage])
 
     const handleCloseMenu = () => {
@@ -443,12 +444,15 @@ export default function MyBook(props) {
     const onWheel = e => {
         e?.preventDefault()
         e?.stopPropagation()
-        const delta = Math.sign(e?.deltaY);
-        if (delta === 1) { // Cuộn chuột xuống đọc tiếp
-            book?.current?.pageFlip()?.flipNext('bottom')
-        } else if (delta === -1) { // Cuộn chuột lên đọc lại
-            book?.current?.pageFlip()?.flipPrev('bottom')
-        }
+        window.clearTimeout(isWheeling)
+        isWheeling = setTimeout(() => {
+            const delta = Math.sign(e?.deltaY);
+            if (delta > 0) { // Cuộn chuột xuống đọc tiếp
+                book?.current?.pageFlip()?.flipNext('bottom')
+            } else if (delta < 0) { // Cuộn chuột lên đọc lại
+                book?.current?.pageFlip()?.flipPrev('bottom')
+            }
+        }, 100)
     }
 
     const sidebarPages = (() => {
@@ -457,6 +461,8 @@ export default function MyBook(props) {
         const center = chunk(pages.filter(item => item !== firstPage && item !== lastPage), 2)
         return [[firstPage], ...center , [lastPage]]
     })()
+
+    // console.log('pages => ', pages)
 
     return (
         <>
