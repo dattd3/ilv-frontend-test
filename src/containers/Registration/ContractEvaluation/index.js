@@ -31,6 +31,9 @@ import HOCComponent from '../../../components/Common/HOCComponent'
 import SalaryModal from './SalaryModal'
 import ConfirmationModal from '../ConfirmationModal'
 import SearchHREvaluationComponent from './SearchHREvaluationComponent'
+import NoteModal from 'components/Common/NoteModal'
+import purify from "dompurify"
+import ResultInfo from './ResultInfo'
 
 const TIME_FORMAT = 'HH:mm'
 const DATE_FORMAT = 'DD/MM/YYYY'
@@ -264,6 +267,10 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         modalMessage: "",
         confirmStatus: "",
         dataToUpdate: [],
+      },
+      noteModal: {
+        visible: false,
+        content: '',
       },
       annualLeaveSummary: {},
       data: {
@@ -1460,6 +1467,20 @@ renderEvalution = (name, data, isDisable) => {
     this.props.history.push(`/salarypropse/${this.props.match.params.id}/${this.state.data.childRequestHistoryId}/${typeRequest}`)
   }
 
+  hideShowNoteModal = (visible) => {
+    const _noteModal = {...this.state.noteModal, visible: visible};
+    if(visible) {
+      _noteModal.content = (<p
+        dangerouslySetInnerHTML={{
+          __html: purify.sanitize(this.props.t("ContractTimeNote") || ""),
+        }}
+      />);
+    }
+    this.setState({
+      noteModal: _noteModal
+    })
+  }
+
   render() {
     const { t } = this.props
     const showComponent = this.state.showComponent;
@@ -1470,14 +1491,17 @@ renderEvalution = (name, data, isDisable) => {
     const comment =  data?.comment || null;
     const type = this.props.match.params.type;
     const confirmModal = this.state.confirmModal;
+    const noteModal = this.state.noteModal;
     if(data?.processStatus == 2 || type === 'salary') {
       return  <div className="registration-section">
+        <ResultInfo t={t} content={noteModal.content} title={t('ContractTimeTitle')} show={noteModal.visible} onHide={() => this.hideShowNoteModal(false)}/>
         <LoadingModal show={loading}/>
-        <ContractEvaluationdetail id={this.props.match.params.id} data={data} type={type} dataSalary ={this.state.dataSalary} idSalary={data?.childRequestHistoryId}/>
+        <ContractEvaluationdetail id={this.props.match.params.id} data={data} type={type} dataSalary ={this.state.dataSalary} idSalary={data?.childRequestHistoryId} hideShowNoteModal = {this.hideShowNoteModal}/>
        </div>
     }
     return (
       <div className="registration-section">
+        <ResultInfo t={t} content={noteModal.content} title={t('ContractTimeTitle')} show={noteModal.visible} onHide={() => this.hideShowNoteModal(false)}/>
         <ConfirmationModal
           show={confirmModal.isShowModalConfirm}
           title={confirmModal.modalTitle}
@@ -1899,7 +1923,7 @@ renderEvalution = (name, data, isDisable) => {
                   {/* <div className="detail">{requestInfo ? moment(requestInfo.startDate).format("DD/MM/YYYY") + (requestInfo.startTime ? ' ' + moment(requestInfo.startTime, TIME_FORMAT).lang('en-us').format('HH:mm') : '') : ""}</div> */}
                 </div>
                 <div className="col-3">
-                  {t('contract_type')} <Image src={IconInfo} alt="Info" style={{width: '15px', height: '15px'}}  />
+                  {t('contract_type')} <Image src={IconInfo} alt="Info" style={{width: '15px', height: '15px'}} onClick={() => this.hideShowNoteModal(true)} />
                   <Select  placeholder={t('Select') + ' ' + t('contract_type')} options={this.contractTypeOptions} isDisabled={disableComponent.disableAll || !disableComponent.qlttSide}  isClearable={true} 
                   value={this.contractTypeOptions.filter(d => data.qlttOpinion.contract != null && d.value == data.qlttOpinion.contract.value)}
                   onChange={e => this.handleChangeSelectInputs(e,'qlttOpinion', 'contract')} className="input mv-10"
@@ -2031,7 +2055,7 @@ renderEvalution = (name, data, isDisable) => {
                   {/* <div className="detail">{requestInfo ? moment(requestInfo.startDate).format("DD/MM/YYYY") + (requestInfo.startTime ? ' ' + moment(requestInfo.startTime, TIME_FORMAT).lang('en-us').format('HH:mm') : '') : ""}</div> */}
                 </div>
                 <div className="col-3">
-                  {t('contract_type')} hello
+                  {t('contract_type')} <Image src={IconInfo} alt="Info" style={{width: '15px', height: '15px'}} onClick={() => this.hideShowNoteModal(true)} />
                   <Select  placeholder={t('Select') + ' ' + t('contract_type')} options={this.contractTypeOptions} isDisabled={disableComponent.disableAll || !disableComponent.qlttSide}  isClearable={true} 
                   value={this.contractTypeOptions.filter(d => data.qlttOpinion.contract != null && d.value == data.qlttOpinion.contract.value)}
                   onChange={e => this.handleChangeSelectInputs(e,'qlttOpinion', 'contract')} className="input mv-10"

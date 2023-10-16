@@ -1,17 +1,37 @@
 import React from "react";
+import IconSuccess from '../../../assets/img/ic-success.svg';
+import IconFailed from '../../../assets/img/ic-failed.svg';
 import { Modal, Image } from 'react-bootstrap';
-import IconLoading from '../../assets/img/icon/ic-loading.gif';
+import './styles.scss'
 
-function ResultContractModal(props) {
-    const { show, content, isloading = true } = props;
+function ResultInfo(props) {
+    
+    const processOkButton = () => {
+        props.onHide();
+    }
+
     return (
-        <Modal show={show} onHide={() => { return; }} className='dialog-loading' backdropClassName="dialog-loading2" dialogClassName="modal-loading">
-            <Modal.Body className='text-center no-bg'>
-                {isloading && <Image src={IconLoading} alt='Loading' />}
-                {/* {content ? <p className='loading-note'>{content}</p> : ''} */}
-            </Modal.Body>
-        </Modal>
+        <>
+            <Modal className='create-salary-modal' centered show={props.show} onHide={props.onHide}>
+                <Modal.Header>
+                    <div className="header-contain">
+                    <span className="sigle-text-header">{props.title || ''}</span>
+                    {/* <span className="ic-close"><i className='fas fa-times ic-action ic-accept mr-2'></i></span> */}
+                    </div>
+                </Modal.Header>
+                <Modal.Body>
+                    <div className="block-input">
+                        <label className="label">{props.content}</label>
+                    </div>
+                    <div className="action-block">
+                        <span className="btn-action btn-accept" onClick={processOkButton}>
+                            <span>{props.t("OK")}</span>
+                        </span>
+                    </div>
+                </Modal.Body>
+            </Modal>
+        </>
     );
 }
 
-export default ResultContractModal;
+export default ResultInfo;
