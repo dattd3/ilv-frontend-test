@@ -40,10 +40,11 @@ function MemberInfo({
     updateRequest(newService);
   };
   const handleChangeDatetimeValue = (value: any, key: string) => {
-    value = moment(value).format("DD/MM/YYYY");
+    if(value) {
+      value = moment(value).format("DD/MM/YYYY");
+    }
     handleChangeValue(value, key);
   };
-
   return (
     <div className="item-contain position-relative">
       {isCreateMode && canDelete ? (
