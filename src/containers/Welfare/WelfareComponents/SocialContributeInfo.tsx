@@ -297,7 +297,9 @@ const SocialContributeInfo = (props: any) => {
         _oldmember = oldMembers[index];
         _newmember = oldMembers[index];
       }
-      familyItem.oldFamily = convertFamilyItem(_oldmember);
+      if(_oldmember) {
+        familyItem.oldFamily = convertFamilyItem(_oldmember);
+      }
       familyItem.family = convertFamilyItem(_newmember);
       return familyItem;
     });
