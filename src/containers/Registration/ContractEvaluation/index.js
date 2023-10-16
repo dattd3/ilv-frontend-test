@@ -9,6 +9,7 @@ import IconRemove from '../../../assets/img/ic-remove.svg';
 import IconAdd from '../../../assets/img/ic-add.svg';
 import IconDelete from '../../../assets/img/icon/Icon_Cancel.svg';
 import IconSave from '../../../assets/img/ic-save.svg';
+import IconInfo from '../../../assets/img/icon-info.svg';
 import ResizableTextarea from '../TextareaComponent';
 import ApproverComponent from './SearchPeopleComponent'
 import Select from 'react-select'
@@ -1503,15 +1504,19 @@ renderEvalution = (name, data, isDisable) => {
               <div className="detail">{data.employeeInfo.fullName || ""}</div>
             </div>
             <div className="col-4">
+              {t("EmployeeNo")}
+              <div className="detail">{data.employeeInfo.employeeNo || ""}</div>
+            </div>
+            <div className="col-4">
               {t("Title")}
               <div className="detail">{data.employeeInfo.positionName || ""}</div>
             </div>
+          </div>
+          <div className="row mv-10">
             <div className="col-4">
               {t('DepartmentManage')}
               <div className="detail">{data.employeeInfo.departmentName || ""}</div>
             </div>
-          </div>
-          <div className="row mv-10">
             <div className="col-4">
               {t('working_day')}
               <div className="detail">{data.employeeInfo.startDate ? moment(data.employeeInfo.startDate).format("DD/MM/YYYY") : '' }</div>
@@ -1894,7 +1899,7 @@ renderEvalution = (name, data, isDisable) => {
                   {/* <div className="detail">{requestInfo ? moment(requestInfo.startDate).format("DD/MM/YYYY") + (requestInfo.startTime ? ' ' + moment(requestInfo.startTime, TIME_FORMAT).lang('en-us').format('HH:mm') : '') : ""}</div> */}
                 </div>
                 <div className="col-3">
-                  {t('contract_type')}
+                  {t('contract_type')} <Image src={IconInfo} alt="Info" style={{width: '15px', height: '15px'}}  />
                   <Select  placeholder={t('Select') + ' ' + t('contract_type')} options={this.contractTypeOptions} isDisabled={disableComponent.disableAll || !disableComponent.qlttSide}  isClearable={true} 
                   value={this.contractTypeOptions.filter(d => data.qlttOpinion.contract != null && d.value == data.qlttOpinion.contract.value)}
                   onChange={e => this.handleChangeSelectInputs(e,'qlttOpinion', 'contract')} className="input mv-10"
@@ -2026,7 +2031,7 @@ renderEvalution = (name, data, isDisable) => {
                   {/* <div className="detail">{requestInfo ? moment(requestInfo.startDate).format("DD/MM/YYYY") + (requestInfo.startTime ? ' ' + moment(requestInfo.startTime, TIME_FORMAT).lang('en-us').format('HH:mm') : '') : ""}</div> */}
                 </div>
                 <div className="col-3">
-                  {t('contract_type')}
+                  {t('contract_type')} hello
                   <Select  placeholder={t('Select') + ' ' + t('contract_type')} options={this.contractTypeOptions} isDisabled={disableComponent.disableAll || !disableComponent.qlttSide}  isClearable={true} 
                   value={this.contractTypeOptions.filter(d => data.qlttOpinion.contract != null && d.value == data.qlttOpinion.contract.value)}
                   onChange={e => this.handleChangeSelectInputs(e,'qlttOpinion', 'contract')} className="input mv-10"
