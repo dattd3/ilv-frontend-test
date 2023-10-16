@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useRef, forwardRef, Fragment } from "react"
+import React, { useState, useEffect, useRef, forwardRef } from "react"
 import HTMLFlipBook from "@cuongnv56/react-pageflip"
 import { saveAs } from 'file-saver'
-import { chunk } from 'lodash'
+import { chunk, last } from 'lodash'
 import LoadingModal from "components/Common/LoadingModal"
 
 const imageMapping = {
@@ -268,15 +268,9 @@ const imageMapping = {
 }
 
 const Page = forwardRef((props, ref) => {
-    // return (
-    //     <div className={`page page-${props?.number}`} ref={ref}>{props.children}</div>
-    // )
-
     return (
         <div className={`page page-${props?.page}`} ref={ref}>
             <div className="page-content">
-                {/* <div className="page-image" style={{ backgroundImage: `url(${Page1})` }}></div> */}
-                {/* <div className="page-image" style={{ backgroundImage: `url(${imageMapping[props?.page]})` }}></div> */}
                 <div className="page-image"><img src={imageMapping[props?.page]} /></div>
             </div>
         </div>
@@ -289,15 +283,21 @@ export default function MyBook(props) {
     const wrapBookRef = useRef()
     const pageScrollRef = useRef([])
     const totalPages = 260
-    const itemPerLoad = 20
+    const leftPagesToLoad = 10
+    const itemPerLoad = 30 // số pages mỗi lượt load
     const [isShowThumbnails, setIsShowThumbnails] = useState(false)
     const [isFullScreen, setIsFullScreen] = useState(false)
     const [isZoomIn, setIsZoomIn] = useState(false)
     const [currentPage, setCurrentPage] = useState(1)
     const [pages, SetPages] = useState([])
+    const [isLoading, SetIsLoading] = useState(true)
 
     useEffect(() => {
-        SetPages(initialPages())
+        setTimeout(() => {
+            SetIsLoading(false)
+        }, 400)
+
+        SetPages(generatePages())
 
         page.current.scrollIntoView({
             behavior: 'instant'
@@ -316,11 +316,8 @@ export default function MyBook(props) {
         }
     }, [])
 
-    const initialPages = () => {
-        let pageItems = []
-        for (let index = 0; index < itemPerLoad; index++) {
-            pageItems.push(index + 1)
-        }
+    const generatePages = (pageToLoad = itemPerLoad, startNumber = 0) => {
+        const pageItems = new Array(pageToLoad).fill().map((value, index) => startNumber + index + 1)
         return pageItems
     }
 
@@ -351,6 +348,11 @@ export default function MyBook(props) {
             default:
                 book?.current?.pageFlip()?.turnToPage(currentPage)
                 break;
+        }
+
+        if (currentPage === pages?.length - leftPagesToLoad) { // leftPagesToLoad page cuối của mỗi lượt load mới bắt đầu load thêm
+            const pagesToSave = [...pages, ...generatePages(itemPerLoad, last(pages))]
+            SetPages(pagesToSave)
         }
     }, [currentPage])
 
@@ -456,11 +458,9 @@ export default function MyBook(props) {
         return [[firstPage], ...center , [lastPage]]
     })()
 
-    console.log('hihihih => ', pages)
-
     return (
         <>
-            {/* <LoadingModal show={isLoading} /> */}
+            <LoadingModal show={isLoading} />
             <div className="history-vingroup-page" id="history-vingroup-page" ref={page}>
                 <div className="d-flex wrap-page">
                     <div className={`sidebar-left ${ isShowThumbnails ? 'visible' : '' }`}>
@@ -549,7 +549,7 @@ export default function MyBook(props) {
                                     {
                                         pages.map((item) => {
                                             return (
-                                                <Page key={item} page={item}></Page>
+                                                <Page key={`page-item-${item}`} page={item} />
                                             )
                                         })
                                     }

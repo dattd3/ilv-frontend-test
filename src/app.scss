@@ -5108,7 +5108,7 @@ span.badge-notification[data-badge]::after {
         flex: 0 0 260px;
       }
       .top-sidebar {
-        height: 45px;
+        height: 40px;
         background: #5a5f63;
         color: #F6F7F7;
         opacity: 0.95;
@@ -5249,7 +5249,7 @@ span.badge-notification[data-badge]::after {
         flex: 1;
         height: calc(100% - 40px - 45px);
         touch-action: manipulation;
-        background: red;
+        // background: red;
         // .wrap-book {
         //   margin: 15px 0 0 0;
         // }
@@ -5283,7 +5283,7 @@ span.badge-notification[data-badge]::after {
         }
         .btn-full-screen {
           padding: 2px;
-          margin-left: 15px;
+          // margin-left: 15px;
           &.active {
             background: rgba(0,0,0,.3);
           }
@@ -5324,7 +5324,7 @@ span.badge-notification[data-badge]::after {
         text-align: left;
       }
       img {
-        max-height: calc(100vh - 115px);
+        max-height: calc(100vh - 100px);
         // max-height: 100%;
         // object-fit: cover;
         // height: fit-content;
@@ -5341,7 +5341,7 @@ span.badge-notification[data-badge]::after {
     // box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgb(209, 213, 219) 0px 0px 0px 1px inset;
     // background-size: cover;
     width: 100%;
-    padding: 15px 0;
+    padding: 15px 0 0 0;
     // overflow: hidden;
     .wrap-book {
       height: 100%;
