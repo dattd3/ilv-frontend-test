@@ -362,7 +362,7 @@ const SocialContributeInfo = (props: any) => {
             "birthday": profile?.birthday ? moment(profile.birthday, 'DD-MM-YYYY').format('YYYY-MM-DD') : '',
             "permanentAddress": [profile?.street_name, profile?.wards, profile?.district, profile?.province ].filter(val => val).join(', '),
             "streetName": [profile?.tmp_street_name, profile?.tmp_wards, profile?.tmp_district, profile?.tmp_province ].filter(val => val).join(', '),
-            "ethinicCode": '',
+            "ethinicCode": profile?.race_id || '',
             "ethinic": profile?.ethinic || '',
             "idNumber": profile?.personal_id_no || '',
             "dateOfIssue": profile?.date_of_issue ? moment(profile.date_of_issue, 'DD-MM-YYYY').format('YYYY-MM-DD') : '',
