@@ -32,6 +32,7 @@ import { isJsonString } from "../../utils/string";
 function NewsOnHome() {
   const { t } = useTranslation();
   const myRef = useRef(null);
+  const privilegesRef = useRef(null);
   const listInternalNewsRef = useRef(null);
   const [isVisibleGoToTop, setIsVisibleGoToTop] = useState(false);
   const [isShowNoticeGuideModal, setIsShowNoticeGuideModal] = useState(false);
@@ -45,7 +46,19 @@ function NewsOnHome() {
 
   const [privilegeBanner, setPrivilegeBanner] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [privilegesRefHeight, setPrivilegesRefHeight] = useState(0);
   const lang = getCurrentLanguage();
+
+  useEffect(() => {
+    const privileges = privilegesRef.current;
+    if (!privileges) return;
+    const resizeObserver = new ResizeObserver(() => {
+      if (privilegesRefHeight !== privileges?.clientHeight && privileges?.clientHeight > 0) setPrivilegesRefHeight(privileges?.clientHeight)
+    });
+    resizeObserver.observe(privileges);
+
+    return () => resizeObserver.disconnect();
+  }, [privilegesRef.current, privilegesRefHeight]);
 
   useEffect(() => {
     if (
@@ -226,18 +239,6 @@ function NewsOnHome() {
       ? listInternalNews?.slice(1, listInternalNews.length)
       : [];
 
-  const onListInternalNewsScroll = () => {
-    const [_, lastIndexVisible] =
-      listInternalNewsRef.current?.getVisibleRange();
-    // Fetch Next page
-    if (
-      lastIndexVisible === listInternalNewsOther.length - 2 &&
-      listInternalNews.length < totalListInternalNews
-    ) {
-      fetchNextInternalNews();
-    }
-  };
-
   const renderItemInternalNews = (index, key) => {
     const itemNews = listInternalNewsOther[index];
     const timePublished = getPublishedTimeByRawTime(itemNews?.publishedDate);
@@ -293,14 +294,15 @@ function NewsOnHome() {
             </div>
             <div className="row">
               <div className="col-md-4 privilege">
-                <h1
-                  className="page-title"
-                  style={{ color: "#D13238", fontSize: 16 }}
-                >
-                  <Image src={IconGift} alt="Gift" className="ic-page-title" />
-                  {t("VingroupEmployeePrivileges")}
-                </h1>
-                <div className="top-one shadow-customize">
+                <div className="block-page-title">
+                  <h1
+                    className="page-title" style={{ color: "#D13238" }}
+                  >
+                    <Image src={IconGift} alt="Gift" className="ic-page-title" />
+                    {t("VingroupEmployeePrivileges")}
+                  </h1>
+                </div>
+                <div className="top-one shadow-customize" ref={privilegesRef}>
                   <a
                     href={mapConfig.EmployeePrivileges}
                     className="link-detail"
@@ -341,14 +343,23 @@ function NewsOnHome() {
                 </div>
               </div>
               <div className="col-md-8 special">
-                <h2 className="page-title" style={{ fontSize: 16 }}>
-                  <Image
-                    src={IconInternalNews}
-                    alt="News"
-                    className="ic-page-title"
-                  />
-                  {t("NewsInternal")}
-                </h2>
+                <div className="block-page-title">
+                  <h2 className="page-title">
+                    <Image
+                      src={IconInternalNews}
+                      alt="News"
+                      className="ic-page-title"
+                    />
+                    {t("NewsInternal")}
+                  </h2>
+                    
+                  <a href="/internal-news?type=1"  className="news-link">
+                    <div className="expand-all-container">
+                      {t("ExpandAll")}&nbsp;&nbsp;
+                      <img src={IconArrowNext} alt="" />
+                    </div>
+                  </a>
+                </div>
                 <div className="d-flex shadow-customize wrap-news">
                   {topOne && (
                     <div className="top-one">
@@ -368,16 +379,6 @@ function NewsOnHome() {
                       </a>
                       <div className="other-info">
                         <div className="source-time-info">
-                          <span className="source">
-                            <Image
-                              src={IconUser}
-                              alt="Source"
-                              className="icon"
-                            />
-                            <span className="source-name">
-                              {t("VingroupCultural")}
-                            </span>
-                          </span>
                           <span className="time">
                             <Image src={IconTime} alt="Time" className="icon" />
                             <span className="hour">
@@ -404,11 +405,8 @@ function NewsOnHome() {
                       </div>
                     </div>
                   )}
-                  <div className="other">
-                    <div
-                      className="top-four"
-                      onScroll={onListInternalNewsScroll}
-                    >
+                  <div className="other" style={{ maxHeight: privilegesRefHeight > 0 ? privilegesRefHeight - 40 : 0 }}>
+                    <div className="top-four">
                       {listInternalNews.length > 1 && (
                         <ReactList
                           itemRenderer={renderItemInternalNews}
@@ -493,7 +491,7 @@ function NewsOnHome() {
                         />
                         <div className="card-body">
                           <div className="title">{item.title}</div>
-                          {item.description && <div className="description">{item.description}</div>}
+                          <div className="description">{item.description}</div>
                           <a
                             href={`/internal-news/detail/${item.id}`}
                             className="news-link"
