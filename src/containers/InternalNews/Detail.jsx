@@ -9,6 +9,7 @@ import purify from "dompurify";
 import LoadingModal from "components/Common/LoadingModal";
 import IconTime from "assets/img/icon/Icon-Time.svg";
 import moment from "moment";
+import '../../assets/css/ck-editor5.css';
 
 function InternalNewsDetail(props) {
   const id = props.match.params.id;
@@ -56,9 +57,10 @@ function InternalNewsDetail(props) {
                 <span className="hour">{newsDetail?.publishedDate ? moment(newsDetail?.publishedDate)?.format("HH:mm | DD/MM/YYYY") : "N/A"}</span>
             </div>
             <div
+              className="ck ck-content"
               dangerouslySetInnerHTML={{
                 __html: purify.sanitize(newsDetail.content || "", {
-                  ALLOWED_TAGS: ["iframe"],
+                  ADD_TAGS: ["iframe"],
                   ADD_ATTR: [
                     "allow",
                     "allowfullscreen",

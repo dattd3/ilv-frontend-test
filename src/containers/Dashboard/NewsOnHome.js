@@ -259,10 +259,6 @@ function NewsOnHome() {
             {itemNews.title}
           </a>
           <div className="source-time-info">
-            <span className="source">
-              <Image src={IconUser} alt="Source" className="icon" />
-              <span className="source-name">{t("VingroupCultural")}</span>
-            </span>
             <span className="time">
               <Image src={IconTime} alt="Time" className="icon" />
               <span className="hour">{timePublished.date || "N/A"}</span>
@@ -329,7 +325,7 @@ function NewsOnHome() {
                       </span>
                     </div>
                     <p className="description">
-                      {privilegeBanner?.description || ""}
+                      {subStringDescription(privilegeBanner?.description)}...
                     </p>
                     <div className="btn-detail">
                       <a href={mapConfig.EmployeePrivileges} className="detail">
@@ -351,7 +347,7 @@ function NewsOnHome() {
                     alt="News"
                     className="ic-page-title"
                   />
-                  {t("InternalNews")}
+                  {t("NewsInternal")}
                 </h2>
                 <div className="d-flex shadow-customize wrap-news">
                   {topOne && (
@@ -471,12 +467,12 @@ function NewsOnHome() {
               </div>
             </>
           )}
-          {listInternalNewsVideo && (
+          {listInternalNewsVideo.length > 0 && (
             <>
               <div className="internal-news-title">
                 <div className="title">
                   <img src={IconVideo} alt="" />
-                  &nbsp; VIDEOS
+                  &nbsp; VIDEO
                 </div>
                 <a href="/internal-news?type=3"  className="news-link">
                   <div className="expand-all-container">
@@ -497,7 +493,7 @@ function NewsOnHome() {
                         />
                         <div className="card-body">
                           <div className="title">{item.title}</div>
-                          <div className="description">{item.description}</div>
+                          {item.description && <div className="description">{item.description}</div>}
                           <a
                             href={`/internal-news/detail/${item.id}`}
                             className="news-link"
