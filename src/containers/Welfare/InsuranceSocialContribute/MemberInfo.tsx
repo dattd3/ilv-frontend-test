@@ -47,33 +47,6 @@ function MemberInfo({
   };
   return (
     <div className="item-contain position-relative">
-      {isCreateMode && canDelete ? (
-        <button
-          className="position-absolute d-flex align-items-center"
-          style={{
-            gap: "4px",
-            top: 0,
-            right: 0,
-            backgroundColor: "#C74141",
-            color: "#FFFFFF",
-            fontSize: 12,
-            border: "none",
-            padding: "6px 11px",
-            borderTopRightRadius: "4px",
-            borderBottomLeftRadius: "4px",
-          }}
-          onClick={() => {
-            if (canDelete && cancelRequest) {
-              cancelRequest();
-            }
-          }}
-        >
-          <i
-            className="fas fa-times mr- text-white"
-            style={{ fontSize: 12 }}
-          ></i>
-        </button>
-      ) : null}
       <div className="request-content">
         <div className="row">
           <div className="col-4">
@@ -195,6 +168,33 @@ function MemberInfo({
           </div>
         </div>
       </div>
+      {isCreateMode && canDelete ? (
+        <button
+          className="position-absolute d-flex align-items-center"
+          style={{
+            gap: "4px",
+            top: 0,
+            right: 0,
+            backgroundColor: "#C74141",
+            color: "#FFFFFF",
+            fontSize: 12,
+            border: "none",
+            padding: "6px 11px",
+            borderTopRightRadius: "4px",
+            borderBottomLeftRadius: "4px",
+          }}
+          onClick={() => {
+            if (canDelete && cancelRequest) {
+              cancelRequest();
+            }
+          }}
+        >
+          <i
+            className="fas fa-times mr- text-white"
+            style={{ fontSize: 12 }}
+          ></i>
+        </button>
+      ) : null}
     </div>
   );
 }

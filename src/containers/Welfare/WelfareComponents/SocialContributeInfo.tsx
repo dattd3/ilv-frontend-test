@@ -244,7 +244,7 @@ const SocialContributeInfo = (props: any) => {
       relationshipText: value.relation?.label,
       genderCode: value.sex?.value,
       genderText: value.sex?.label,
-      birthday: moment(value.birthDate, "DD/MM/YYYY").format("YYYY-MM-DD"),
+      birthday: value.birthDate ? moment(value.birthDate, "DD/MM/YYYY").format("YYYY-MM-DD") : '',
       isHouseholdOwner: value.type?.value == ROLE_TYPE[0].value,
       idNumber: convertData(value.identityId)
     };
@@ -280,7 +280,7 @@ const SocialContributeInfo = (props: any) => {
       },
     };
     const familyData = memberChange.map((change, index) => {
-      const familyItem: any = { displayType: change.status, order: index + 1 };
+      let familyItem: any = { displayType: change.status, order: index + 1 };
       let _oldmember: any = null,
         _newmember: any = null;
       if (change.status == STATUS.NEW) {
@@ -300,8 +300,16 @@ const SocialContributeInfo = (props: any) => {
       if(_oldmember) {
         familyItem.oldFamily = convertFamilyItem(_oldmember);
       }
-      familyItem.family = convertFamilyItem(_newmember);
+      if(_newmember) {
+        familyItem.family = convertFamilyItem(_newmember);
+      }
+      if(!_oldmember && !_newmember) familyItem = null;
       return familyItem;
+    }).filter(mem => mem != null).map((mem, index) => {
+      return {
+        ...mem,
+        order: index + 1
+      }
     });
     const result = {
       addressData: addressData,
@@ -406,7 +414,6 @@ const SocialContributeInfo = (props: any) => {
   const onSubmit = () => {
     const change = checkDataChange();
     const userProfileInfo = prepareSubmitData(change.data, change.member);
-
     const employeeInfo = {
       employeeNo: localStorage.getItem("employeeNo"),
       username: localStorage.getItem("ad")?.toLowerCase(),

@@ -38,21 +38,25 @@ const DetailSocailContributeComponent: FC<IDetailSocialContributeInfoProps> = ({
 
   const renderValue = (type = STATUS.OLD, value, newValue) => {
     if(typeof type == 'string') type = parseInt(type);
+    let showColumn = false;
+    if((value && typeof value != 'string') || (newValue && typeof newValue != 'string')) {
+      showColumn = true;
+    }
     if(type == STATUS.OLD) {
       return <>
-      <div className="detail">{value}</div>
+      <div className={`detail ${showColumn ? 'show-column' : ''}`}>{value}</div>
       </> 
     } else if (type == STATUS.NEW) {
-      return <div className="detail value-new">{newValue}</div>
+      return <div className={`detail ${showColumn ? 'show-column' : ''} value-new`}>{newValue}</div>
     } else if (type == STATUS.DELETE) {
       return <>
-       <div className="detail value-delete">{value}</div>
+       <div className={`detail ${showColumn ? 'show-column' : ''} value-delete`}>{value}</div>
       </> 
     } else if (type == STATUS.UPDATE) {
       return (
         <>
-          <div className="detail">{value}</div>
-          <div className="detail value-update">{newValue}</div>
+          <div className={`detail ${showColumn ? 'show-column' : ''}`}>{value}</div>
+          <div className={`detail ${showColumn ? 'show-column' : ''} value-update`}>{newValue}</div>
         </>
       )
     }
@@ -199,7 +203,9 @@ const DetailSocailContributeComponent: FC<IDetailSocialContributeInfoProps> = ({
         <div className="row">
           <div className="col-12">
             {'Nội dung'}
-            {renderValue(change?.data?.note, data?.note, change?.data?.note_value)}
+            {renderValue(change?.data?.note, data?.note?.split ('\n').map ((item, i) => <p style={{margin: 0}} key={i}>{item}</p>),
+            change?.data?.note_value?.split ('\n').map ((item, i) => <p style={{margin: 0}} key={i}>{item}</p>)
+            )}
           </div>
         </div>
       </div>

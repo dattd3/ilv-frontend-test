@@ -57,6 +57,7 @@ function SelectInputComponent({
         style={disabled ? {} : {paddingRight: '30px'}}
         name="inputName"
         autoComplete="off"
+        placeholder={placeholder}
         maxLength={maxLeng}
         disabled={disabled}
       />
