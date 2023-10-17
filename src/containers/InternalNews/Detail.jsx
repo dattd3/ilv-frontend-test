@@ -1,5 +1,5 @@
 import axios from "axios";
-import { formatInternalNewsDataItem } from "commons/Utils";
+import { formatInternalNewsDataItem, getCurrentLanguage } from "commons/Utils";
 import { getRequestConfigs } from "commons/commonFunctions";
 import { useEffect, useState } from "react";
 import IconInternalNews from "assets/img/icon/internal_news_icon.svg";
@@ -9,10 +9,12 @@ import purify from "dompurify";
 import LoadingModal from "components/Common/LoadingModal";
 import IconTime from "assets/img/icon/Icon-Time.svg";
 import moment from "moment";
+import '../../assets/css/ck-editor5.css';
 
 function InternalNewsDetail(props) {
   const id = props.match.params.id;
   const [newsDetail, setNewsDetail] = useState(null);
+  const lang = getCurrentLanguage();
 
   useEffect(() => {
     axios
@@ -21,7 +23,12 @@ function InternalNewsDetail(props) {
         getRequestConfigs()
       )
       .then((response) => {
-        setNewsDetail(formatInternalNewsDataItem(response.data?.data));
+        const formattedNews = formatInternalNewsDataItem(response.data?.data, lang);
+        if (!formattedNews.title || !formattedNews.content) {
+          window.location.href = "/";
+          return
+        }
+        setNewsDetail(formattedNews);
       });
   }, [id]);
 
@@ -35,7 +42,6 @@ function InternalNewsDetail(props) {
         return <img src={IconInternalNews} alt="" />;
     }
   };
-  console.log(newsDetail);
 
   return (
     <>
@@ -51,9 +57,10 @@ function InternalNewsDetail(props) {
                 <span className="hour">{newsDetail?.publishedDate ? moment(newsDetail?.publishedDate)?.format("HH:mm | DD/MM/YYYY") : "N/A"}</span>
             </div>
             <div
+              className="ck ck-content"
               dangerouslySetInnerHTML={{
                 __html: purify.sanitize(newsDetail.content || "", {
-                  ALLOWED_TAGS: ["iframe"],
+                  ADD_TAGS: ["iframe"],
                   ADD_ATTR: [
                     "allow",
                     "allowfullscreen",
