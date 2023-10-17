@@ -520,8 +520,8 @@ const CreateSocialContributeInfo: FC<ICreateSocialContributeInfoProps> = ({
         <div className="row">
           <div className="col-12">
             {'Nội dung'}
-            <input
-              type="text"
+            <textarea
+              rows={4}
               value={data?.note || ''}
               onChange={(e) => handleTextInputChange(e, "note")}
               className="form-control input mv-10 w-100"
