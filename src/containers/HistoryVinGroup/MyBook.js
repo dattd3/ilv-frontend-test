@@ -289,6 +289,8 @@ export default function MyBook(props) {
     const [isFullScreen, setIsFullScreen] = useState(false)
     const [isZoomIn, setIsZoomIn] = useState(false)
     const [currentPage, setCurrentPage] = useState(1)
+    const [isPageSidebarLeftSelected, setIsPageSidebarLeftSelected] = useState(false)
+    const [isFilterPage, setIsFilterPage] = useState(false)
     const [pages, SetPages] = useState([])
     const [isLoading, SetIsLoading] = useState(true)
     let isWheeling
@@ -337,25 +339,27 @@ export default function MyBook(props) {
     }, [isFullScreen])
 
     useEffect(() => {
-        let pageToSwitch = currentPage
-        switch (currentPage) {
-            case 1: // Page đầu tiên
-                pageToSwitch = 0
-                break
-            case totalPages: // Page cuối cùng
-                pageToSwitch = totalPages - 1
-                break
-        }
+        if (isFilterPage || isPageSidebarLeftSelected) {
+            let pageToSwitch = currentPage
+            switch (currentPage) {
+                case 1: // Page đầu tiên
+                    pageToSwitch = 0
+                    break
+                case totalPages: // Page cuối cùng
+                    pageToSwitch = totalPages - 1
+                    break
+            }
 
-        if (currentPage >= pages?.length - leftPagesToLoad) { // leftPagesToLoad page cuối của mỗi lượt load mới bắt đầu load thêm
-            const pagesToSave = [...pages, ...generatePages(itemPerLoad, last(pages))]
-            SetPages(pagesToSave)
-        }
+            if (currentPage >= pages?.length - leftPagesToLoad) { // leftPagesToLoad page cuối của mỗi lượt load mới bắt đầu load thêm
+                const pagesToSave = [...pages, ...generatePages(itemPerLoad, last(pages))]
+                SetPages(pagesToSave)
+            }
 
-        setTimeout(() => {
-            book?.current?.pageFlip()?.turnToPage(pageToSwitch)
-        }, 200)
-    }, [currentPage])
+            setTimeout(() => {
+                book?.current?.pageFlip()?.turnToPage(pageToSwitch)
+            }, 200)
+        }
+    }, [currentPage, isFilterPage, isPageSidebarLeftSelected])
 
     const handleCloseMenu = () => {
         setIsShowThumbnails(false)
@@ -396,6 +400,11 @@ export default function MyBook(props) {
         setIsShowThumbnails(!isShowThumbnails)
     }
 
+    const handleKeyDown = e => {
+        setIsFilterPage(e?.key === 'Enter')
+        setIsPageSidebarLeftSelected(false)
+    }
+
     const handlePrint = (event) => {
         // if('print' in window){
         //     window.print();
@@ -430,15 +439,21 @@ export default function MyBook(props) {
 
     const handleFlip = e => {
         const p = e?.data + 1
-        setCurrentPage(p)
+        setCurrentPage(Number(p))
+        setIsPageSidebarLeftSelected(true)
+        setIsFilterPage(true)
         pageScrollRef?.current?.[p]?.scrollIntoView({
             behavior: 'smooth',
             block: 'nearest'
         }, 800)
     }
 
-    const handleChangePage = p => {
-        setCurrentPage(p)
+    const handleChangePage = (p, onSideBarLeft = false) => {
+        setIsPageSidebarLeftSelected(onSideBarLeft)
+        setCurrentPage(Number(p))
+        if (onSideBarLeft) {
+            setIsFilterPage(false)
+        }
     }
 
     const onWheel = e => {
@@ -461,8 +476,6 @@ export default function MyBook(props) {
         const center = chunk(pages.filter(item => item !== firstPage && item !== lastPage), 2)
         return [[firstPage], ...center , [lastPage]]
     })()
-
-    // console.log('pages => ', pages)
 
     return (
         <>
@@ -490,7 +503,7 @@ export default function MyBook(props) {
                                                 className="wrap-page-item" 
                                                 key={`Sidebar-${index}`}
                                                 ref={(el) => (pageScrollRef.current[item[0]] = el)}>
-                                                <div className={`d-flex align-items-center justify-content-center top cursor-pointer ${currentPage == item[0] && item[1] ? 'active' : ''}`} onClick={() => handleChangePage(item[0])}>
+                                                <div className={`d-flex align-items-center justify-content-center top cursor-pointer ${currentPage == item[0] && item[1] ? 'active' : ''}`} onClick={() => handleChangePage(item[0], true)}>
                                                     {
                                                         <>
                                                             <div className={`item ${(currentPage == 1 || currentPage == totalPages) && currentPage == item[0] ? 'active' : ''}`}>
@@ -529,7 +542,7 @@ export default function MyBook(props) {
                             <h1 className="book-title">Sử ký VIN30</h1>
                             <div className="page-block">
                                 <span className="page-label">pages:</span>
-                                <input type="text" value={currentPage?.toString()} className="text-center page-input" onChange={e => handleChangePage(e?.target?.value)} />
+                                <input type="text" value={currentPage || 1} className="text-center page-input" onChange={e => handleChangePage(e?.target?.value, false)} onKeyDown={handleKeyDown} />
                                 <span className="seperate">/</span>
                                 <span>{ totalPages }</span>
                             </div>
