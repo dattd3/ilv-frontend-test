@@ -393,6 +393,10 @@
   [class$="-singleValue"]{
     color:#000;
   }
+  .show-column {
+    flex-direction: column;
+    align-items: unset;
+  }
   .value-update {
     background: #CCCEE2 !important;
   }
