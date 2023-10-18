@@ -1994,5 +1994,7 @@
   "InsuranceSocialInfoRequest": "Thay đổi thông tin đóng BHXH",
   "VingroupCulture": "Vingroup Culture",
   "PnlOfVingroup": "Vingroup's Member",
-  "ReferralBonusGrossup": "Referral Bonus (GROSSUP)"
+  "ReferralBonusGrossup": "Referral Bonus (GROSSUP)",
+  "ContractTimeTitle": "Labor contract duration regulation when renewal:",
+  "ContractTimeNote": "1. Employees may sign a definite <b>term labor contract</b> after an apprenticeship, and then switch to an <b>indefinite term labor contract</b>, unless otherwise approved by competent Leaders. <br />2. In the <b>Manufacturing Division</b>, Employees may sign two (2) <b>definite term labor contract</b> after an apprenticeship, and then switch to an <b>indefinite term labor contract</b>, unless otherwise approved by competent Leaders."
 }
