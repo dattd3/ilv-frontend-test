@@ -206,7 +206,7 @@ const SocialContributeInfo = (props: any) => {
           }
           if (
             typeof mem[key] == "object" &&
-            mem[key].value != oldMembers[index][key]?.value
+            (mem[key].value != oldMembers[index][key]?.value || mem[key].label != oldMembers[index][key]?.label)
           ) {
             _newMem[key] = mem[key];
           }
