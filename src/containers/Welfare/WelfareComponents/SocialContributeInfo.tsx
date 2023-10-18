@@ -485,7 +485,7 @@ const SocialContributeInfo = (props: any) => {
 
     formData.append("appraiserInfoLst", JSON.stringify(appraiserInfoLst));
     formData.append("approverInfoLst", JSON.stringify(approverInfoLst));
-    if (files.filter((item) => item.id == undefined).length > 0) {
+    if (files?.filter((item) => item.id == undefined).length > 0) {
       files
         .filter((item) => item.id == undefined)
         .forEach((file) => {
@@ -539,6 +539,11 @@ const SocialContributeInfo = (props: any) => {
     }
   };
 
+  const removeFile = (index) => {
+    const _files = [...files.slice(0, index), ...files.slice(index + 1)];
+    setFiles(_files);
+  }
+
   return (
     <>
       <ResultModal
@@ -571,7 +576,7 @@ const SocialContributeInfo = (props: any) => {
             setApprover={setApprover}
             files={files}
             updateFiles={setFiles}
-            removeFile={() => {}}
+            removeFile={removeFile}
             members={members}
             setMembers={setMembers}
             onSubmit={onSubmit}
