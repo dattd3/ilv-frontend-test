@@ -1,82 +1,86 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import InfiniteScroll from "react-infinite-scroll-component";
 import {
   getCurrentLanguage,
   getValueParamByQueryString,
   formatInternalNewsData,
   getRequestConfigurations,
+  getPublishedTimeByRawTime,
 } from "commons/Utils";
-import IconBack from "assets/img/icon/Icon-Arrow-Left.svg";
+import IconTime from "assets/img/icon/Icon-Time.svg";
 import IconPlay from "assets/img/icon/play-icon-red.svg";
+import IconBack from "assets/img/icon/Icon-Arrow-Left.svg";
+import CustomPaging from "components/Common/CustomPaging";
 
 function InternalNewsPage(props) {
   const { t } = useTranslation();
   const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [total, setTotal] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const type = getValueParamByQueryString(window.location.search, "type") || 2;
-  const lang = getCurrentLanguage();
+  const lang = getCurrentLanguage(),
+    INTERNAL_NEWS_TYPE = {
+      1: t('NewsInternal'),
+      2: 'Podcasts',
+      3: ' Video',
+    };
 
   useEffect(() => {
     fetchNextInternalNews();
-  }, [type]);
+  }, [type, currentPage]);
 
   const fetchNextInternalNews = async () => {
-    if (loading) return;
-    setLoading(true);
     try {
       const response = await axios.get(
         `${process.env.REACT_APP_REQUEST_URL}internal-news/list`,
         {
           ...getRequestConfigurations(),
           params: {
+            size: 12,
             page: currentPage,
-            size: 10,
-            newsType: type,
             culture: lang,
+            newsType: type,
           },
         }
       );
-      setCurrentPage(currentPage + 1);
       setTotal(response.data?.data?.total || 0);
-      setData([
-        ...data,
-        ...formatInternalNewsData(response.data?.data?.data, lang),
-      ]);
+      setData(formatInternalNewsData(response.data?.data?.data, lang));
     } catch (error) {
       console.log(error);
     }
-    setLoading(false);
   };
+
+  const onChangePage = (page) => {
+    setCurrentPage(page);
+  }
 
   return (
     <div className="internal-news-page">
       <div className="back-block">
-        <a href="/" title={t("ComeBack")}>
+        <a href="/" title={t("Menu")}>
           <img src={IconBack} alt="Back" className="ic-back" />
-          {t("ComeBack")}
+          {t("Menu")}
         </a>
+        <span>/ {INTERNAL_NEWS_TYPE[type]}</span>
       </div>
       <div className="body">
-        <InfiniteScroll
-          dataLength={data.length} //This is important field to render the next data
-          next={fetchNextInternalNews}
-          height="calc(100vh - 180px)"
-          hasMore={data.length < total}
-          loader={<h5>Loading...</h5>}
-          style={{ overflowX: "hidden" }}
-        >
-          <div className="internal-news-grid row">
+        {data.length > 0 ? (
+          <div className="internal-news-grid">
             {data.map((item) => (
               <div className="col-md-4" key={item.id}>
                 <div className="internal-news-card">
                   <img src={item.thumbnail} alt="" className="thumbnail" />
                   <div className="card-body">
                     <div className="title">{item.title}</div>
-                    <div className="description">{item.description}</div>
+                    <div className="source-time-info">
+                      <span className="time">
+                        <img src={IconTime} alt="Time" className="icon" />
+                        <span className="hour">
+                          {getPublishedTimeByRawTime(item.publishedDate)?.date || "N/A"}
+                        </span>
+                      </span>
+                    </div>
                     <a
                       href={`/internal-news/detail/${item.id}`}
                       className="news-link"
@@ -91,8 +95,16 @@ function InternalNewsPage(props) {
                 </div>
               </div>
             ))}
+            <div className="wrap-paging">
+              <CustomPaging
+                pageSize={12}
+                onChangePage={onChangePage}
+                totalRecords={total} />
+            </div>
           </div>
-        </InfiniteScroll>
+        ) : (
+          <div className="col-md-12 pt-3 pb-3">{t('NodataExport')}</div>
+        )}
       </div>
     </div>
   );

@@ -40,9 +40,7 @@ function NewsOnHome() {
   const [listInternalNews, setListInternalNews] = useState([]);
   const [listInternalNewsPodcasts, setListInternalNewsPodcasts] = useState([]);
   const [listInternalNewsVideo, setListInternalNewsVideo] = useState([]);
-  const [totalListInternalNews, setTotalListInternalNews] = useState(0);
   const [currentPageInternalNews, setCurrentPageInternalNews] = useState(1);
-  const [isLoadingInternalNews, setIsLoadingInternalNews] = useState(false);
 
   const [privilegeBanner, setPrivilegeBanner] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -162,9 +160,6 @@ function NewsOnHome() {
             lang
           )
         );
-        setTotalListInternalNews(
-          _listInternalNews.value.data?.data?.total || 0
-        );
         const _privilegeBanner = employeePrivilegeBanner?.value?.data?.data;
         setPrivilegeBanner({
           ...privilegeBanner,
@@ -202,33 +197,7 @@ function NewsOnHome() {
     setIsVisibleGoToTop(myRef && myRef?.current?.scrollTop > 0);
   };
 
-  const fetchNextInternalNews = async () => {
-    if (isLoadingInternalNews) return;
-    setIsLoadingInternalNews(true);
-    try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_REQUEST_URL}internal-news/list`,
-        {
-          ...getRequestConfigurations(),
-          params: {
-            page: currentPageInternalNews + 1,
-            size: 10,
-            newsType: 1,
-            culture: lang
-          },
-        }
-      );
-      setCurrentPageInternalNews(currentPageInternalNews + 1);
-      setTotalListInternalNews(response.data?.data?.total || 0);
-      setListInternalNews([
-        ...listInternalNews,
-        ...formatInternalNewsData(response.data?.data?.data, lang),
-      ]);
-    } catch (error) {
-      console.log(error);
-    }
-    setIsLoadingInternalNews(false);
-  };
+  const handleViewDetail = link => window.location.href = link;
 
   const loaded = listInternalNews?.data ? true : false;
 
@@ -273,7 +242,7 @@ function NewsOnHome() {
   return (
     <>
       <LoadingModal show={isLoading} />
-      <div onScroll={(e) => onScroll()} ref={myRef} className="scroll-custom">
+      <div onScroll={onScroll} ref={myRef} className="scroll-custom">
         <div className="container-fluid">
           <div className="top-news">
             <div className="row banner-privilege">
@@ -326,9 +295,6 @@ function NewsOnHome() {
                         </span>
                       </span>
                     </div>
-                    <p className="description">
-                      {subStringDescription(privilegeBanner?.description)}...
-                    </p>
                     <div className="btn-detail">
                       <a href={mapConfig.EmployeePrivileges} className="detail">
                         <span>{t("ViewMore")}</span>
@@ -386,9 +352,6 @@ function NewsOnHome() {
                             </span>
                           </span>
                         </div>
-                        <p className="description">
-                          {subStringDescription(topOne?.description)}...
-                        </p>
                         <div className="btn-detail">
                           <a
                             href={`/internal-news/detail/${topOne?.id}`}
@@ -438,7 +401,7 @@ function NewsOnHome() {
                 <div className="row internal-news-grid">
                   {listInternalNewsPodcasts.map((item) => (
                     <div className="col-md-4" key={item.id}>
-                      <div className="internal-news-card">
+                      <div className="internal-news-card" onClick={() => handleViewDetail(`/internal-news/detail/${item.id}`)}>
                         <img
                           src={item.thumbnail}
                           alt=""
@@ -446,7 +409,6 @@ function NewsOnHome() {
                         />
                         <div className="card-body">
                           <div className="title">{item.title}</div>
-                          <div className="description">{item.description}</div>
                           <a
                             href={`/internal-news/detail/${item.id}`}
                             className="news-link"
@@ -483,7 +445,7 @@ function NewsOnHome() {
                 <div className="row internal-news-grid">
                   {listInternalNewsVideo.map((item) => (
                     <div className="col-md-4" key={item.id}>
-                      <div className="internal-news-card">
+                      <div className="internal-news-card" onClick={() => handleViewDetail(`/internal-news/detail/${item.id}`)}>
                         <img
                           src={item.thumbnail}
                           alt=""
@@ -491,7 +453,6 @@ function NewsOnHome() {
                         />
                         <div className="card-body">
                           <div className="title">{item.title}</div>
-                          <div className="description">{item.description}</div>
                           <a
                             href={`/internal-news/detail/${item.id}`}
                             className="news-link"
