@@ -4683,7 +4683,6 @@ span.badge-notification[data-badge]::after {
     padding: 10px 0;
     border-radius: 10px;
     background: #FFFFFF;
-    margin-bottom: 1.5rem;
     .item {
       margin-bottom: 0;
       padding: 10px 20px;
@@ -4772,7 +4771,7 @@ span.badge-notification[data-badge]::after {
 .internal-news-page {
   .page-title {
     color: #000;
-    font-size: 24px;
+    font-size: 20px;
     font-weight: 700;
     display: flex;
   }
@@ -4784,11 +4783,8 @@ span.badge-notification[data-badge]::after {
     }
   }
   .body {
-    margin-top: 16px;
     background: #fff;
     border-radius: 6px;
-    max-width: 100vw;
-    overflow: auto;
 
     .ck-content {
       iframe {
@@ -4798,13 +4794,33 @@ span.badge-notification[data-badge]::after {
     }
 
     .internal-news-grid {
-      .internal-news-card {
-        .title  {
-          min-height: 42px;
+      display: flex;
+      flex-wrap: wrap;
+      padding: 30px 0px;
+      max-width: 1300px;
+      margin: 0 auto;
+      .col-md-4 {
+        .internal-news-card {
+          margin-bottom: 30px;
+          .title  {
+            min-height: 42px;
+          }
+          .source-time-info {
+            font-size: 12px;
+            .icon {
+              width: 13px;
+              height: 13px;
+              margin-right: 4px;
+              margin-top: -3px;
+            }
+          }
         }
-        .description  {
-          min-height: 63px;
-        }
+
+      }
+      .wrap-paging {
+        display: flex;
+        justify-content: center;
+        width: 100%;
       }
     }
   }
@@ -4840,18 +4856,6 @@ span.badge-notification[data-badge]::after {
       -webkit-box-orient: vertical;
       margin: 0px;
       margin-bottom: 4px;
-    }
-    .description {
-      color: #0D1904;
-      font-size: 14px;
-      min-height: 32px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      display: -webkit-box;
-      overflow: hidden;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
-      margin-bottom: 12px;
     }
     .play-btn {
       display: flex;
