@@ -301,13 +301,13 @@ const CreateSocialContributeInfo: FC<ICreateSocialContributeInfoProps> = ({
       hasErrors = true;
     }
     //check files
-    if(!hasErrors) {
-      let checkfiles = (!files || files?.length === 0) ? t("Required") + ' ' + t('AttachmentFile') : null
-      if(checkfiles) {
-        notifyMessage(checkfiles);
-        hasErrors = true;
-      }
-    }
+    // if(!hasErrors) {
+    //   let checkfiles = (!files || files?.length === 0) ? t("Required") + ' ' + t('AttachmentFile') : null
+    //   if(checkfiles) {
+    //     notifyMessage(checkfiles);
+    //     hasErrors = true;
+    //   }
+    // }
     return hasErrors ? false : true;
   };
 
