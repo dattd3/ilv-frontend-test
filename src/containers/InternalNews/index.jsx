@@ -37,7 +37,7 @@ function InternalNewsPage(props) {
         {
           ...getRequestConfigurations(),
           params: {
-            size: 12,
+            size: 15,
             page: currentPage,
             culture: lang,
             newsType: type,
@@ -55,6 +55,8 @@ function InternalNewsPage(props) {
     setCurrentPage(page);
   }
 
+  const handleViewDetail = link => window.location.href = link;
+
   return (
     <div className="internal-news-page">
       <div className="back-block">
@@ -69,7 +71,7 @@ function InternalNewsPage(props) {
           <div className="internal-news-grid">
             {data.map((item) => (
               <div className="col-md-4" key={item.id}>
-                <div className="internal-news-card">
+                <div className="internal-news-card" onClick={() => handleViewDetail(`/internal-news/detail/${item.id}`)}>
                   <img src={item.thumbnail} alt="" className="thumbnail" />
                   <div className="card-body">
                     <div className="title">{item.title}</div>

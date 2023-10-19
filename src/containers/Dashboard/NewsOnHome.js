@@ -146,17 +146,17 @@ function NewsOnHome() {
           getPrivilegeBanners,
         ]);
         setListInternalNews(
-          formatInternalNewsData(_listInternalNews.value.data?.data?.data, lang)
+          formatInternalNewsData(_listInternalNews.value?.data?.data?.data, lang)
         );
         setListInternalNewsPodcasts(
           formatInternalNewsData(
-            _listInternalNewsPodcasts.value.data?.data?.data,
+            _listInternalNewsPodcasts.value?.data?.data?.data,
             lang
           )
         );
         setListInternalNewsVideo(
           formatInternalNewsData(
-            _listInternalNewsVideos.value.data?.data.data,
+            _listInternalNewsVideos.value?.data?.data.data,
             lang
           )
         );
@@ -186,7 +186,8 @@ function NewsOnHome() {
   }, []);
 
   const subStringDescription = (input) => {
-    return input && input?.length > 150 ? input.substr(0, 149) : input;
+    if (!input) return input;
+    return input?.length > 150 ? `${input.substr(0, 149)}...` : input;
   };
 
   const scrollToTop = () => {
@@ -297,7 +298,7 @@ function NewsOnHome() {
                     </div>
                     {privilegeBanner?.description && (
                       <p className="description">
-                        {subStringDescription(privilegeBanner?.description)}...
+                        {subStringDescription(privilegeBanner?.description)}
                       </p>
                     )}
                     <div className="btn-detail">
@@ -359,7 +360,7 @@ function NewsOnHome() {
                         </div>
                         {privilegeBanner?.description && (
                           <p className="description">
-                            {subStringDescription(topOne?.description)}...
+                            {subStringDescription(topOne?.description)}
                           </p>
                         )}
                         <div className="btn-detail">
