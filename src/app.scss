@@ -4503,11 +4503,12 @@ span.badge-notification[data-badge]::after {
             // text-transform: capitalize;
             margin-left: 0;
             display: -webkit-box;
-            -webkit-line-clamp: 3;
+            -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
             text-overflow: ellipsis;
             word-wrap: break-word;
+            min-height: 47px;
           }
         }
         .other-info {
@@ -4774,6 +4775,13 @@ span.badge-notification[data-badge]::after {
     font-size: 20px;
     font-weight: 700;
     display: flex;
+  }
+  .source-time-info {
+    font-size: 12px;
+    margin-bottom: 8px;
+    img {
+      width: 12px;
+    }
   }
   .body {
     background: #fff;
