@@ -62,7 +62,7 @@ function InternalNewsPage(props) {
           <img src={IconBack} alt="Back" className="ic-back" />
           {t("Menu")}
         </a>
-        <span>/ {INTERNAL_NEWS_TYPE[type]}</span>
+        <span>{`/ ${INTERNAL_NEWS_TYPE[type]}`}</span>
       </div>
       <div className="body">
         {data.length > 0 ? (

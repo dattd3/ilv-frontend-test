@@ -4843,6 +4843,7 @@ span.badge-notification[data-badge]::after {
       border-top-right-radius: 6px;
       border-top-left-radius: 6px;
       border-bottom: 1px solid #DEE2E6;
+      cursor: pointer;
     }
     .title {
       color: #0D1904;
@@ -4856,6 +4857,7 @@ span.badge-notification[data-badge]::after {
       -webkit-box-orient: vertical;
       margin: 0px;
       margin-bottom: 4px;
+      cursor: pointer;
     }
     .play-btn {
       display: flex;
@@ -5185,6 +5187,7 @@ span.badge-notification[data-badge]::after {
   margin-bottom: 15px;
   a {
     color: #000000;
+    margin-right: 5px;
   }
   .ic-back {
     height: 12px;
