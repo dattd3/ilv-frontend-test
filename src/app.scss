@@ -4775,13 +4775,6 @@ span.badge-notification[data-badge]::after {
     font-weight: 700;
     display: flex;
   }
-  .source-time-info {
-    font-size: 12px;
-    margin-bottom: 8px;
-    img {
-      width: 12px;
-    }
-  }
   .body {
     background: #fff;
     border-radius: 6px;
@@ -4804,15 +4797,6 @@ span.badge-notification[data-badge]::after {
           margin-bottom: 30px;
           .title  {
             min-height: 42px;
-          }
-          .source-time-info {
-            font-size: 12px;
-            .icon {
-              width: 13px;
-              height: 13px;
-              margin-right: 4px;
-              margin-top: -3px;
-            }
           }
         }
 
@@ -4858,6 +4842,16 @@ span.badge-notification[data-badge]::after {
       margin: 0px;
       margin-bottom: 4px;
       cursor: pointer;
+    }
+    .source-time-info {
+      font-size: 12px;
+      margin-bottom: 8px;
+      .icon {
+        width: 13px;
+        height: 13px;
+        margin-right: 4px;
+        margin-top: -3px;
+      }
     }
     .play-btn {
       display: flex;
