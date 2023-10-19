@@ -135,5 +135,6 @@ export default {
   MyProfile: "/my-profile",
   SalaryPropse: '/salarypropse/:idContract/:idSalary/:type',
   HistoryVingroup: "/vin30-chronicles",
+  HistoryVingroupMobile: "/vin30-chronicles-mobile",
   Maintenance: '/maintenance'
 };
