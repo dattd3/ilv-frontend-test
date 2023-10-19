@@ -2,7 +2,8 @@ import React, { useState, useEffect, useRef, forwardRef } from 'react';
 import { saveAs } from 'file-saver';
 import { chunk, last } from 'lodash';
 import { useRouteMatch } from "react-router-dom";
-import HTMLFlipBook from '@cuongnv56/react-pageflip';
+// import HTMLFlipBook from '@cuongnv56/react-pageflip';
+import HTMLFlipBook from 'react-pageflip';
 import LoadingModal from 'components/Common/LoadingModal';
 import mapConfig from 'containers/map.config';
 
@@ -294,11 +295,11 @@ export default function MyBook(props) {
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [isShowThumbnails, setIsShowThumbnails] = useState(false);
   const [isPageSidebarLeftSelected, setIsPageSidebarLeftSelected] = useState(false);
-  const routeMatch = useRouteMatch({ path: mapConfig.HistoryVingroupMobile }) || {};
+  const isMobile = (useRouteMatch({ path: mapConfig.HistoryVingroupMobile }) || {})?.isExact;
   const itemPerLoad = 30,
     totalPages = 260,
     leftPagesToLoad = 10; // số pages mỗi lượt load
-  let isWheeling;
+  let isWheeling, flipTimeOut;
 
   useEffect(() => {
     const timeOut = setTimeout(() => SetIsLoading(false), 400);
@@ -333,8 +334,7 @@ export default function MyBook(props) {
 
   useEffect(() => {
     if (isFilterPage || isPageSidebarLeftSelected) {
-      let pageToSwitch = currentPage;
-      const timeOut = setTimeout(() => book?.current?.pageFlip()?.turnToPage(pageToSwitch), 200);
+      let pageToSwitch = currentPage, timeOut;
 
       switch (currentPage) {
         case 1: // Page đầu tiên
@@ -354,7 +354,17 @@ export default function MyBook(props) {
         SetPages(pagesToSave);
       }
 
-      return () => clearTimeout(timeOut);
+      if (isMobile) {
+        if (!isFilterPage || !isPageSidebarLeftSelected) {
+          book?.current?.pageFlip()?.turnToPage(pageToSwitch)
+        }
+      } else {
+        timeOut = setTimeout(() => book?.current?.pageFlip()?.turnToPage(pageToSwitch), 200);
+      }
+
+      return () => {
+        if (!isMobile) clearTimeout(timeOut);
+      }
     }
   }, [currentPage, isFilterPage, isPageSidebarLeftSelected]);
 
@@ -477,7 +487,7 @@ export default function MyBook(props) {
     <>
       <LoadingModal show={isLoading} />
       <div
-        className={routeMatch?.isExact ? "history-vingroup-page" : "history-vingroup-page"}
+        className="history-vingroup-page"
         id="history-vingroup-page"
         ref={page}
       >
