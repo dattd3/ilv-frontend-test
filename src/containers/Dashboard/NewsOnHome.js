@@ -295,6 +295,11 @@ function NewsOnHome() {
                         </span>
                       </span>
                     </div>
+                    {privilegeBanner?.description && (
+                      <p className="description">
+                        {subStringDescription(privilegeBanner?.description)}...
+                      </p>
+                    )}
                     <div className="btn-detail">
                       <a href={mapConfig.EmployeePrivileges} className="detail">
                         <span>{t("ViewMore")}</span>
@@ -352,6 +357,11 @@ function NewsOnHome() {
                             </span>
                           </span>
                         </div>
+                        {privilegeBanner?.description && (
+                          <p className="description">
+                            {subStringDescription(topOne?.description)}...
+                          </p>
+                        )}
                         <div className="btn-detail">
                           <a
                             href={`/internal-news/detail/${topOne?.id}`}
@@ -409,6 +419,14 @@ function NewsOnHome() {
                         />
                         <div className="card-body">
                           <div className="title">{item.title}</div>
+                          <div className="source-time-info">
+                            <span className="time">
+                              <img src={IconTime} alt="Time" className="icon" />
+                              <span className="hour">
+                                {getPublishedTimeByRawTime(item.publishedDate)?.date || "N/A"}
+                              </span>
+                            </span>
+                          </div>
                           <a
                             href={`/internal-news/detail/${item.id}`}
                             className="news-link"
@@ -453,6 +471,14 @@ function NewsOnHome() {
                         />
                         <div className="card-body">
                           <div className="title">{item.title}</div>
+                          <div className="source-time-info">
+                            <span className="time">
+                              <img src={IconTime} alt="Time" className="icon" />
+                              <span className="hour">
+                                {getPublishedTimeByRawTime(item.publishedDate)?.date || "N/A"}
+                              </span>
+                            </span>
+                          </div>
                           <a
                             href={`/internal-news/detail/${item.id}`}
                             className="news-link"
