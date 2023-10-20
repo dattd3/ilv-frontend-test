@@ -3,7 +3,6 @@ import moment from "moment";
 import purify from "dompurify";
 import { useTranslation } from "react-i18next";
 import { useApi, useFetcher } from "modules";
-import { Link } from "react-router-dom";
 import LoadingSpinner from "components/Forms/CustomForm/LoadingSpinner";
 import IconBack from "assets/img/icon/Icon-Arrow-Left.svg";
 import IconUser from "assets/img/icon/Icon-User.svg";
