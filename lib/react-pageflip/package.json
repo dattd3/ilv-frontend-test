@@ -1,7 +1,7 @@
 {
     "name": "@cuongnv56/react-pageflip",
     "author": "oleg.litovski9@gmail.com",
-    "description": "Simple React.js wrapper for StPageFlip library, for creating realistic and beautiful page turning effect",
+    "description": "Simple React.js wrapper for StPageFlip / page-flip library, for creating realistic and beautiful page turning effect",
     "version": "1.0.0",
     "license": "MIT",
     "private": true,
@@ -16,7 +16,7 @@
         "eslint": "eslint . --ext .ts,.tsx"
     },
     "dependencies": {
-        "@cuongnv56/page-flip": "file:../StPageFlip"
+        "@cuongnv56/page-flip": "file:../page-flip"
     },
     "devDependencies": {
         "@rollup/plugin-commonjs": "^15.1.0",
