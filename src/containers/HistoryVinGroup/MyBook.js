@@ -2,14 +2,14 @@ import React, { useState, useEffect, useRef, forwardRef } from 'react';
 import { saveAs } from 'file-saver';
 import { chunk, last } from 'lodash';
 import { useRouteMatch } from "react-router-dom";
-// import HTMLFlipBook from '@cuongnv56/react-pageflip';
-import HTMLFlipBook from 'react-pageflip';
+import HTMLFlipBook from '@cuongnv56/react-pageflip';
+// import HTMLFlipBook from 'react-pageflip';
 import LoadingModal from 'components/Common/LoadingModal';
 import mapConfig from 'containers/map.config';
 
 const IMAGE_MAPPING = {
-  2: 'https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page2.jpg',
   1: 'https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page1.jpg',
+  2: 'https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page2.jpg',
   3: 'https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page3.jpg',
   4: 'https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page4.jpg',
   5: 'https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page5.jpg',
@@ -268,7 +268,10 @@ const IMAGE_MAPPING = {
   258: 'https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page258.jpg',
   259: 'https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page259.jpg',
   260: 'https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page260.jpg',
-};
+},
+  PER_LOAD = 30,
+  TOTAL_PAGES = 260,
+  LEFT_PAGE_TO_LOAD = 10;
 
 const Page = forwardRef((props, ref) => {
   return (
@@ -283,31 +286,25 @@ const Page = forwardRef((props, ref) => {
 });
 
 export default function MyBook(props) {
-  const book = useRef();
-  const page = useRef();
+  const bookRef = useRef();
+  const pageRef = useRef();
   const wrapBookRef = useRef();
   const pageScrollRef = useRef([]);
-  const [pages, SetPages] = useState([]);
+  const [page, setPage] = useState(1);
+  const [pages, setPages] = useState([]);
   const [isZoomIn, setIsZoomIn] = useState(false);
-  const [isLoading, SetIsLoading] = useState(true);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [isFilterPage, setIsFilterPage] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [isShowThumbnails, setIsShowThumbnails] = useState(false);
-  const [isPageSidebarLeftSelected, setIsPageSidebarLeftSelected] = useState(false);
   const isMobile = (useRouteMatch({ path: mapConfig.HistoryVingroupMobile }) || {})?.isExact;
-  const itemPerLoad = 30,
-    totalPages = 260,
-    leftPagesToLoad = 10; // số pages mỗi lượt load
   let isWheeling, flipTimeOut;
 
   useEffect(() => {
-    const timeOut = setTimeout(() => SetIsLoading(false), 400);
+    const timeOut = setTimeout(() => setIsLoading(false), 400);
     const onFullscreenChange = () => setIsFullScreen(Boolean(document.fullscreenElement));
 
-    SetPages(generatePages());
-    page.current.scrollIntoView({ behavior: 'instant' }, 0);
-
+    setPages(generatePages());
+    pageRef.current.scrollIntoView({ behavior: 'instant' }, 0);
     document.addEventListener('fullscreenchange', onFullscreenChange);
     wrapBookRef?.current?.addEventListener('wheel', onWheel, { passive: false });
 
@@ -318,14 +315,10 @@ export default function MyBook(props) {
     };
   }, []);
 
-  const generatePages = (pageToLoad = itemPerLoad, startNumber = 0) => {
-    return new Array(pageToLoad).fill().map((value, index) => startNumber + index + 1);
-  }
-
   useEffect(() => {
     const timeOut = setTimeout(() => {
       if (!isFullScreen) {
-        page.current.scrollIntoView({ behavior: 'smooth' }, 0);
+        pageRef.current.scrollIntoView({ behavior: 'smooth' }, 0);
       }
     }, 100);
 
@@ -333,82 +326,63 @@ export default function MyBook(props) {
   }, [isFullScreen]);
 
   useEffect(() => {
-    if (isFilterPage || isPageSidebarLeftSelected) {
-      let pageToSwitch = currentPage, timeOut;
+    const length = pages?.length, countLoad = PER_LOAD;
 
-      switch (currentPage) {
-        case 1: // Page đầu tiên
-          pageToSwitch = 0;
-          break;
-        case totalPages: // Page cuối cùng
-          pageToSwitch = totalPages - 1;
-          break;
+    if (page >= length - LEFT_PAGE_TO_LOAD) {
+      // LEFT_PAGE_TO_LOAD page cuối của mỗi lượt load mới bắt đầu load thêm
+      if (page > length + PER_LOAD && length > 0) {
+        countLoad = page - length;
       }
 
-      if (currentPage >= pages?.length - leftPagesToLoad) {
-        // leftPagesToLoad page cuối của mỗi lượt load mới bắt đầu load thêm
-        const pagesToSave = [
-          ...pages,
-          ...generatePages(itemPerLoad, last(pages)),
-        ];
-        SetPages(pagesToSave);
-      }
-
-      if (isMobile) {
-        if (!isFilterPage || !isPageSidebarLeftSelected) {
-          book?.current?.pageFlip()?.turnToPage(pageToSwitch)
-        }
-      } else {
-        timeOut = setTimeout(() => book?.current?.pageFlip()?.turnToPage(pageToSwitch), 200);
-      }
-
-      return () => {
-        if (!isMobile) clearTimeout(timeOut);
-      }
+      // const _pages = [
+      //   ...pages,
+      //   ...generatePages(countLoad, last(pages)),
+      // ];
+      // console.log('----------------------------------------');
+      // console.log('_pages: ', _pages);
+      // console.log('----------------------------------------');
+      // setPages(_pages);
     }
-  }, [currentPage, isFilterPage, isPageSidebarLeftSelected]);
+
+    // let pageToSwitch = page, timeOut;
+
+    // switch (page) {
+    //   case 1: // Page đầu tiên
+    //     pageToSwitch = 0;
+    //     break;
+    //   case TOTAL_PAGES: // Page cuối cùng
+    //     pageToSwitch = TOTAL_PAGES - 1;
+    //     break;
+    // }
+    // if (isMobile) {
+    //   console.log('pageToSwitch: ', pageToSwitch)
+    //   bookRef?.current?.pageFlip()?.turnToPage(pageToSwitch)
+    // } else {
+    //   clearTimeout(timeOut);
+    //   timeOut = setTimeout(() => bookRef?.current?.pageFlip()?.turnToPage(pageToSwitch), 200);
+    // }
+  }, [page]);
+
+  const generatePages = (pageToLoad = PER_LOAD, startNumber = 0) => {
+    return new Array(pageToLoad).fill().map((value, index) => startNumber + index + 1);
+  }
 
   const handleCloseMenu = () => setIsShowThumbnails(false);
 
-  const openFullscreen = () => {
-    if (page?.current?.requestFullscreen) {
-      page?.current.requestFullscreen();
-    } else if (page?.current?.webkitRequestFullscreen) { /* Safari */
-      page?.current?.webkitRequestFullscreen();
-    } else if (page?.current?.msRequestFullscreen) { /* IE11 */
-      page?.current?.msRequestFullscreen();
-    }
-
-    setIsFullScreen(true);
-  };
-
-  const closeFullscreen = () => {
-    if (document?.exitFullscreen) {
-      document?.exitFullscreen();
-    } else if (document?.webkitExitFullscreen) { /* Safari */
-      document?.webkitExitFullscreen();
-    } else if (document?.msExitFullscreen) { /* IE11 */
-      document?.msExitFullscreen();
-    }
-
-    setIsFullScreen(false);
-  };
+  const handleShowThumbnails = () => setIsShowThumbnails(!isShowThumbnails);
 
   const handleScreen = () => {
     setIsFullScreen(!isFullScreen);
 
     if (!isFullScreen) {
-      openFullscreen();
+      if (pageRef?.current?.requestFullscreen) pageRef?.current.requestFullscreen();
+      if (pageRef?.current?.webkitRequestFullscreen) pageRef?.current?.webkitRequestFullscreen(); /* Safari */
+      if (pageRef?.current?.msRequestFullscreen) pageRef?.current?.msRequestFullscreen(); /* IE11 */
     } else {
-      closeFullscreen();
+      if (document?.exitFullscreen) document?.exitFullscreen();
+      if (document?.webkitExitFullscreen) document?.webkitExitFullscreen(); /* Safari */
+      if (document?.msExitFullscreen) document?.msExitFullscreen(); /* IE11 */
     }
-  };
-
-  const handleShowThumbnails = () => setIsShowThumbnails(!isShowThumbnails);
-
-  const handleKeyDown = (e) => {
-    setIsFilterPage(e?.key === 'Enter');
-    setIsPageSidebarLeftSelected(false);
   };
 
   const handlePrint = (event) => {
@@ -435,15 +409,23 @@ export default function MyBook(props) {
     iframe.src = 'https://myvinpearl.s3.ap-southeast-1.amazonaws.com/shared/SK.pdf';
   };
 
+  const handleZoom = () => setIsZoomIn(!isZoomIn);
+
   const downloadBook = () => saveAs('https://myvinpearl.s3.ap-southeast-1.amazonaws.com/shared/SK.pdf');
 
-  const handleZoom = () => setIsZoomIn(!isZoomIn);
+  const handleKeyDown = (e) => {
+    console.log('----------------------------------------');
+    console.log('e: ', e?.target?.value);
+    console.log('----------------------------------------');
+  };
 
   const handleFlip = (e) => {
     const p = e?.data + 1;
-    setIsFilterPage(true);
-    setCurrentPage(Number(p));
-    setIsPageSidebarLeftSelected(true);
+
+    console.log('----------------------------------------');
+    console.log('p: ', p);
+    console.log('----------------------------------------');
+    setPage(Number(p));
     pageScrollRef?.current?.[p]?.scrollIntoView(
       {
         behavior: 'smooth',
@@ -453,13 +435,38 @@ export default function MyBook(props) {
     );
   };
 
-  const handleChangePage = (p, onSideBarLeft = false) => {
-    setCurrentPage(Number(p));
-    setIsPageSidebarLeftSelected(onSideBarLeft);
-    if (onSideBarLeft) {
-      setIsFilterPage(false);
-    }
-  };
+  const handleChangePage = (p) => {
+    let pageToSwitch = page, timeOut;
+
+    console.log('----------------------------------------');
+    console.log('p: ', p);
+    console.log('----------------------------------------');
+
+    // setPage(Number(p));
+    // pageScrollRef?.current?.[p]?.scrollIntoView(
+    //   {
+    //     behavior: 'smooth',
+    //     block: 'nearest',
+    //   },
+    //   800
+    // );
+
+    // switch (page) {
+    //   case 1: // Page đầu tiên
+    //     pageToSwitch = 0;
+    //     break;
+    //   case TOTAL_PAGES: // Page cuối cùng
+    //     pageToSwitch = TOTAL_PAGES - 1;
+    //     break;
+    // }
+    // if (isMobile) {
+    //   console.log('pageToSwitch: ', pageToSwitch)
+    //   bookRef?.current?.pageFlip()?.turnToPage(pageToSwitch)
+    // } else {
+    //   clearTimeout(timeOut);
+    //   timeOut = setTimeout(() => bookRef?.current?.pageFlip()?.turnToPage(pageToSwitch), 200);
+    // }
+  }
 
   const onWheel = (e) => {
     e?.preventDefault();
@@ -468,17 +475,17 @@ export default function MyBook(props) {
     isWheeling = setTimeout(() => {
       const delta = Math.sign(e?.deltaY);
       if (delta > 0) { // Cuộn chuột xuống đọc tiếp
-        book?.current?.pageFlip()?.flipNext('bottom');
+        bookRef?.current?.pageFlip()?.flipNext('bottom');
       } else if (delta < 0) { // Cuộn chuột lên đọc lại
-        book?.current?.pageFlip()?.flipPrev('bottom');
+        bookRef?.current?.pageFlip()?.flipPrev('bottom');
       }
     }, 100);
   };
 
   const sidebarPages = (() => {
     const firstPage = 1,
-        lastPage = pages?.length,
-        center = chunk(pages.filter((item) => item !== firstPage && item !== lastPage), 2);
+      lastPage = pages?.length,
+      center = chunk(pages.filter((item) => item !== firstPage && item !== lastPage), 2);
 
     return [[firstPage], ...center, [lastPage]];
   })();
@@ -487,9 +494,9 @@ export default function MyBook(props) {
     <>
       <LoadingModal show={isLoading} />
       <div
-        className="history-vingroup-page"
+        // className="history-vingroup-page"
         id="history-vingroup-page"
-        ref={page}
+        ref={pageRef}
       >
         <div className="d-flex wrap-page">
           <div className={`sidebar-left ${isShowThumbnails ? 'visible' : ''}`}>
@@ -540,14 +547,14 @@ export default function MyBook(props) {
                     >
                       <div
                         className={`d-flex align-items-center justify-content-center top cursor-pointer ${
-                          currentPage === item[0] && item[1] ? 'active' : ''
+                          page === item[0] && item[1] ? 'active' : ''
                         }`}
-                        onClick={() => handleChangePage(item[0], true)}
+                        onClick={() => handleChangePage(item[0])}
                       >
                         <div
                           className={`item ${
-                            (currentPage === 1 || currentPage === totalPages) &&
-                            currentPage === item[0]
+                            (page === 1 || page === TOTAL_PAGES) &&
+                            page === item[0]
                               ? 'active'
                               : ''
                           }`}
@@ -590,13 +597,13 @@ export default function MyBook(props) {
                 <span className="page-label">pages:</span>
                 <input
                   type="text"
-                  value={currentPage || 1}
+                  value={page}
                   className="text-center page-input"
-                  onChange={(e) => handleChangePage(e?.target?.value, false)}
+                  onChange={(e) => handleChangePage(e?.target?.value)}
                   onKeyDown={handleKeyDown}
                 />
                 <span className="seperate">/</span>
-                <span>{totalPages}</span>
+                <span>{TOTAL_PAGES}</span>
               </div>
             </div>
             <div className="book" ref={wrapBookRef} onWheel={onWheel}>
@@ -616,7 +623,7 @@ export default function MyBook(props) {
                   drawShadow={false}
                   mobileScrollSupport={false}
                   onFlip={handleFlip}
-                  ref={book}
+                  ref={bookRef}
                 >
                   {pages.map((item) => (
                     <Page key={`page-item-${item}`} page={item} />
