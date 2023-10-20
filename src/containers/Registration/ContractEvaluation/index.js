@@ -453,6 +453,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
               employeeLevel: data?.rank_title,
               pnl: localStorage.getItem("company"),
               orglv2Id: "",
+              employeeNo: data?.uid,
               account: data?.userid?.toLowerCase() || "",
               current_position: data?.title || "",
               department: prepareOrganization(data?.division, data?.department, data?.unit, data?.part)
