@@ -1971,8 +1971,7 @@
   "EventPicture": "Event Gallery",
   "Photo": "Photo",
   "Arts": "Art Collection",
-  "AboutPnL": "About P&Ls",
-  "VingroupCulture": "Vingroup Culture",
+  "AboutPnL": "About P&L",
   "PresidentQuotes": "Chairman's Quotes",
   "OverviewCulture": "Cultural Compass",
   "Textbook": "Learning Resources",
@@ -1984,5 +1983,13 @@
   "TOILUsedHistory": "TOIL used history",
   "CurrentYear": "Current year",
   "LastYear": "Last year",
-  "Available2": "Available"
+  "Available2": "Available",
+  "InternalNews": "Internal Employee Newsletter",
+  "VingroupCulture": "Vingroup Culture",
+  "PnlOfVingroup": "Vingroup's Member",
+  "NewsInternal": "Internal News",
+  "PlayNow": "Watch now",
+  "social_contribute_info": "Thông tin đóng BHXH",
+  "lastUpdateDate": "NGÀY CHỈNH SỬA CUỐI CÙNG",
+  "InsuranceSocialInfoRequest": "Thay đổi thông tin đóng BHXH"
 }
