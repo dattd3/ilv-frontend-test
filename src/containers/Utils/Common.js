@@ -39,7 +39,7 @@ export default function processingDataReq(dataRawFromApi, tab) {
         listRequestTypeIdToGetSubId = [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP];
 
     dataRawFromApi.forEach(element => {
-        if([Constants.ONBOARDING, Constants.RESIGN_SELF, Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER, Constants.PROPOSAL_APPOINTMENT, Constants.OT_REQUEST, Constants.INSURANCE_SOCIAL].includes(element.requestTypeId)) {
+        if([Constants.ONBOARDING, Constants.RESIGN_SELF, Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER, Constants.PROPOSAL_APPOINTMENT, Constants.OT_REQUEST, Constants.INSURANCE_SOCIAL, Constants.INSURANCE_SOCIAL_INFO].includes(element.requestTypeId)) {
         // if(element.requestTypeId == Constants.ONBOARDING || element.requestTypeId == Constants.RESIGN_SELF || element.requestTypeId == Constants.SALARY_PROPOSE) {
             if(element.requestTypeId === Constants.RESIGN_SELF) {
                 element.id = element.id + '.1';
@@ -48,7 +48,7 @@ export default function processingDataReq(dataRawFromApi, tab) {
                 element.startDate = "";
             }
 
-            if([Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER, Constants.PROPOSAL_APPOINTMENT, Constants.INSURANCE_SOCIAL].includes(element.requestTypeId)) {
+            if([Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER, Constants.PROPOSAL_APPOINTMENT, Constants.INSURANCE_SOCIAL, Constants.INSURANCE_SOCIAL_INFO].includes(element.requestTypeId)) {
                 element.salaryId = element.id;
                 element.id = element.id + '.1';
                 element.appraiser = {};

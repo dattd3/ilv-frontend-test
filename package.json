@@ -45,6 +45,7 @@
     "react-paginate": "^6.3.2",
     "react-rating": "^2.0.5",
     "react-redux": "^7.2.1",
+    "react-responsive-masonry": "^2.1.7",
     "react-router-dom": "^5.0.1",
     "react-scripts": "5.0.1",
     "react-select": "^3.1.0",
@@ -55,6 +56,7 @@
     "redux": "^4.0.5",
     "sass": "^1.49.8",
     "socket.io": "^2.4.1",
+    "swiper": "^10.3.1",
     "typescript": "^5.1.6",
     "xlsx": "^0.17.0",
     "xlsx-js-style": "^1.0.0"
