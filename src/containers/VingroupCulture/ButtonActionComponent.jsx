@@ -14,6 +14,7 @@ const ButtonActionComponent = ({ parentLink, availableTypes, cateCode }) => {
       <a
         href={`/${parentLink}/gallery/${cateCode}?type=Image`}
         className="btn-link"
+        key="Image"
       >
         <button className="btn-item">
           <img src={IconCamera} alt="" />
@@ -27,6 +28,7 @@ const ButtonActionComponent = ({ parentLink, availableTypes, cateCode }) => {
       <a
         href={cateCode === "1.1" ? `/vin30-chronicles` : `/${parentLink}/gallery/${cateCode}?type=Pdf`}
         className="btn-link"
+        key="Pdf"
       >
         <button className="btn-item">
           <img src={IconPdf} alt="" />
@@ -40,6 +42,7 @@ const ButtonActionComponent = ({ parentLink, availableTypes, cateCode }) => {
       <a
         href={`/${parentLink}/gallery/${cateCode}?type=Poster`}
         className="btn-link"
+        key="Poster"
       >
         <button className="btn-item">
           <img src={IconImage} alt="" />
@@ -53,6 +56,7 @@ const ButtonActionComponent = ({ parentLink, availableTypes, cateCode }) => {
       <a
         href={`/${parentLink}/gallery/${cateCode}?type=Video`}
         className="btn-link"
+        key="Video"
       >
         <button className="btn-item">
           <img src={IconBluePlay} alt="" />

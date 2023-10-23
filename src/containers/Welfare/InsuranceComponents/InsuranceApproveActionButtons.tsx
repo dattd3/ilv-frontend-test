@@ -11,7 +11,7 @@ import IconNotEye from "../../../assets/img/icon/not-eye.svg";
 import IconDelete from "../../../assets/img/icon/Icon_Cancel.svg";
 import { useHistory } from "react-router";
 
-const InsuranceApproveActionButtons = ({ showComponent, t, id }: any) => {
+const InsuranceApproveActionButtons = ({ showComponent, t, id, requestTypeId = Constants.INSURANCE_SOCIAL }: any) => {
   const history = useHistory();
   const [resultModal, setResultModal] = useState({
     title: "",
@@ -65,7 +65,7 @@ const InsuranceApproveActionButtons = ({ showComponent, t, id }: any) => {
       dataToUpdate: [
         {
           id: id,
-          requestTypeId: Constants.INSURANCE_SOCIAL,
+          requestTypeId: requestTypeId,
           sub: [
             {
               id: id,
@@ -90,7 +90,7 @@ const InsuranceApproveActionButtons = ({ showComponent, t, id }: any) => {
       dataToUpdate: [
         {
           id: id,
-          requestTypeId: Constants.INSURANCE_SOCIAL,
+          requestTypeId: requestTypeId,
           sub: [
             {
               id: id,
@@ -115,7 +115,7 @@ const InsuranceApproveActionButtons = ({ showComponent, t, id }: any) => {
       dataToUpdate: [
         {
           id: id,
-          requestTypeId: Constants.INSURANCE_SOCIAL,
+          requestTypeId: requestTypeId,
           sub: [
             {
               id: id,
@@ -139,7 +139,7 @@ const InsuranceApproveActionButtons = ({ showComponent, t, id }: any) => {
       dataToUpdate: [
         {
           id: id,
-          requestTypeId: Constants.INSURANCE_SOCIAL,
+          requestTypeId: requestTypeId,
           sub: [
             {
               id: id,
