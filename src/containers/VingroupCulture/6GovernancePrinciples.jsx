@@ -9,9 +9,7 @@ import axios from "axios";
 import { getRequestConfigs } from "commons/commonFunctions";
 
 const CATEGORY_CODES = {
-  TEXTBOOK: "4.1",
-  STORYTELLING: "4.2",
-  INSPIRING_SHORT_FILM: "4.3",
+  TEXTBOOK: "4.1"
 };
 
 function SixManagementRulesPage() {
@@ -21,25 +19,14 @@ function SixManagementRulesPage() {
   useEffect(() => {
     const url = `${
       process.env.REACT_APP_REQUEST_URL
-    }api/vanhoavin/list?language=${getCurrentLanguage()}&categoryCode=4.1,4.2,4.3`;
+    }api/vanhoavin/list?language=${getCurrentLanguage()}&categoryCode=4.1`;
     axios.get(url, getRequestConfigs()).then((response) => {
       const respData = response.data?.data;
       if (respData.length > 0) {
         setAvailableTypes({
           [CATEGORY_CODES.TEXTBOOK]: respData
             ?.filter((item) => item.categoryCode === CATEGORY_CODES.TEXTBOOK)
-            ?.map((item) => item.fileType),
-          [CATEGORY_CODES.STORYTELLING]: respData
-            ?.filter(
-              (item) => item.categoryCode === CATEGORY_CODES.STORYTELLING
-            )
-            ?.map((item) => item.fileType),
-          [CATEGORY_CODES.INSPIRING_SHORT_FILM]: respData
-            ?.filter(
-              (item) =>
-                item.categoryCode === CATEGORY_CODES.INSPIRING_SHORT_FILM
-            )
-            ?.map((item) => item.fileType),
+            ?.map((item) => item.fileType)
         });
       }
     });
@@ -59,32 +46,6 @@ function SixManagementRulesPage() {
               parentLink="6-governance-principles"
               availableTypes={availableTypes}
               cateCode={CATEGORY_CODES.TEXTBOOK}
-            />
-          </div>
-        </div>
-        <div className="content-item">
-          <div className="title-container">
-            <img src={IconDocument} alt="" />
-            &nbsp;&nbsp;{t("StoryTelling")}
-          </div>
-          <div className="btn-group">
-            <ButtonAction
-              parentLink="6-governance-principles"
-              availableTypes={availableTypes}
-              cateCode={CATEGORY_CODES.STORYTELLING}
-            />
-          </div>
-        </div>
-        <div className="content-item">
-          <div className="title-container">
-            <img src={IconDocument} alt="" />
-            &nbsp;&nbsp;{t("InspiringShortFilm")}
-          </div>
-          <div className="btn-group">
-            <ButtonAction
-              parentLink="6-governance-principles"
-              availableTypes={availableTypes}
-              cateCode={CATEGORY_CODES.INSPIRING_SHORT_FILM}
             />
           </div>
         </div>

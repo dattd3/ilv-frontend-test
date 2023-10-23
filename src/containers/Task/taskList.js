@@ -242,7 +242,9 @@ class TaskList extends React.Component {
           '15-2': 'proposed-appointment',
         };
         const typeRequest = this.props.page === "approval" ? "approval" : "assess"
-        if(request.parentRequestHistoryId) {
+        if(request?.requestTypeId == Constants.INSURANCE_SOCIAL_INFO) {
+            url = `social-contribute/${request?.salaryId}/${typeRequest}`;
+        } else if(request.parentRequestHistoryId) {
             //xu ly mot nguoi
             url = `salarypropse/${request.parentRequestHistoryId}/${request.salaryId}/${typeRequest}`
         } else if (request?.requestTypeId == Constants.INSURANCE_SOCIAL) {
@@ -773,7 +775,7 @@ class TaskList extends React.Component {
                                                                  {generateTaskCodeByCode(child.id)}
                                                             </a>
                                                         </td>
-                                                        : [Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER, Constants.PROPOSAL_APPOINTMENT, Constants.INSURANCE_SOCIAL].includes(child.requestType?.id) ?
+                                                        : [Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER, Constants.PROPOSAL_APPOINTMENT, Constants.INSURANCE_SOCIAL, Constants.INSURANCE_SOCIAL_INFO].includes(child.requestType?.id) ?
                                                         <td className="code sticky-col">
                                                             <a href={this.getSalaryProposeLink(child)}
                                                              title={child.id} className="task-title">
