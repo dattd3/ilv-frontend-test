@@ -939,7 +939,15 @@ const ROUTES = [
             path: map.InternalNewsDetail,
           },
           component: lazy(() => import("./InternalNews/Detail")),
-        }
+        },
+        {
+          key: "registration-detail-contribution",
+          routeProps: {
+            exact: true,
+            path: map.SocialContributeDetail,
+          },
+          component: lazy(() => import("./Welfare/WelfareComponents/SocialContributeInfoDetail")),
+        },
       ],
     },
   },
