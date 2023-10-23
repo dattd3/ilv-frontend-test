@@ -96,120 +96,127 @@ function Header(props) {
     }
 
     const fetchNotification = async () => {
-      const result = await axios.get(`${process.env.REACT_APP_REQUEST_URL}notifications-unread-limitation`, {
-        params: {     
-          companyCode: companyCode,     
-          level3: lv3,
-          level4: lv4,
-          level5: lv5,
-          culture: lang
-        },
-        ...APIConfig,
-      });
-      if (result.data?.data && result.data?.result) {
-        const res = result.data.result;
-        const data = result.data.data;
-        if (res.code != 1) {
-            if (data.notifications && data.notifications.length > 0) {
-                if (data.total > 99 && data.total !== totalNotificationCount) {
-                    setTotalNotificationCount(data.total)
-                    setTotalNotificationUnRead("+99");
-                } else if (data.total == 0 && data.total !== totalNotificationCount) {
-                    setTotalNotificationCount(data.total)
-                    setTotalNotificationUnRead("");
-                } else if (data.total !== totalNotificationCount) {
-                    setTotalNotificationCount(data.total)
-                    setTotalNotificationUnRead(data.total);
-                }
-                if (data.notifications[0]) {
-                    setLastNotificationIdSeen(data.notifications[0].id);
-                }
-                const qnaDetailType = 'TICKET'
-
-                const dataRender = <>
-                    {
-                        data.notifications.map((item, i) => {
-                            const timePost = getTimePost(item.createdDate);
-                            let notificationLink = (type) => {
-                                switch (type) {
-                                    case Constants.notificationType.NOTIFICATION_DEFAULT:
-                                    case 12:
-                                    case 13:
-                                    case 14:
-                                    case 15:
-                                    case 11:
-                                        return `/notifications/${item.id}`
-                                    case Constants.notificationType.NOTIFICATION_OTHER:
-                                        if (item?.detailType == qnaDetailType) {
-                                            return `${item.url}`
+        try {
+            const result = await axios.get(`${process.env.REACT_APP_REQUEST_URL}notifications-unread-limitation`, {
+                params: {     
+                    companyCode: companyCode,     
+                    level3: lv3,
+                    level4: lv4,
+                    level5: lv5,
+                    culture: lang
+                },
+                ...APIConfig,
+            });
+            if (result.data?.data && result.data?.result) {
+                const res = result.data.result;
+                const data = result.data.data;
+                if (res.code != 1) {
+                    if (data.notifications && data.notifications.length > 0) {
+                        if (data.total > 99 && data.total !== totalNotificationCount) {
+                            setTotalNotificationCount(data.total)
+                            setTotalNotificationUnRead("+99");
+                        } else if (data.total == 0 && data.total !== totalNotificationCount) {
+                            setTotalNotificationCount(data.total)
+                            setTotalNotificationUnRead("");
+                        } else if (data.total !== totalNotificationCount) {
+                            setTotalNotificationCount(data.total)
+                            setTotalNotificationUnRead(data.total);
+                        }
+                        if (data.notifications[0]) {
+                            setLastNotificationIdSeen(data.notifications[0].id);
+                        }
+                        const qnaDetailType = 'TICKET'
+        
+                        const dataRender = <>
+                            {
+                                data.notifications.map((item, i) => {
+                                    const timePost = getTimePost(item.createdDate);
+                                    let notificationLink = (type) => {
+                                        switch (type) {
+                                            case Constants.notificationType.NOTIFICATION_DEFAULT:
+                                            case 12:
+                                            case 13:
+                                            case 14:
+                                            case 15:
+                                            case 11:
+                                                return `/notifications/${item.id}`
+                                            case Constants.notificationType.NOTIFICATION_OTHER:
+                                                if (item?.detailType == qnaDetailType) {
+                                                    return `${item.url}`
+                                                }
+                                                return `/notifications/${item.id}`
+                                            case Constants.notificationType.NOTIFICATION_REGISTRATION: 
+                                                if([Constants.PROPOSAL_TRANSFER, Constants.PROPOSAL_APPOINTMENT].includes(item.requestTypeId)) {
+                                                    let subId = item.subRequestId?.includes('.') ? item.subRequestId.split('.')[1] : item.subRequestId;
+                                                    let suffix = item.detailType == 'APPRAISAL' ? 'assess' : item.detailType == 'APPROVAL' ? 'approval' : 'request';
+                                                    let urls = {
+                                                        '14-1': 'registration-transfer',
+                                                        '15-1': 'registration-transfer',
+                                                        '14-2': 'proposed-transfer',
+                                                        '15-2': 'proposed-appointment',
+                                                    };
+                                                    return `/${urls[`${item.requestTypeId}-${item.formType}`]}/${subId}/${suffix}`;
+                                                }
+        
+                                                if (item?.detailType == 'REQUEST')
+                                                    return `/tasks${item?.groupId ? `?requestTypes=${getRequestTypesList(item.groupId, false).join(",")}` : ''}`
+                                                else if (item?.detailType == 'APPRAISAL')
+                                                    return `/tasks?tab=consent${item?.groupId ? `&requestTypes=${getRequestTypesList(item.groupId, false).join(",")}` : ''}`                                       
+                                                else
+                                                    return `/tasks?tab=approval${item?.groupId ? `&requestTypes=${getRequestTypesList(item.groupId, false).join(",")}` : ''}`
+                                            case 6:
+                                                return '/personal-info?tab=document'
+                                            case Constants.notificationType.NOTIFICATION_REJECT:
+                                                return `/tasks?${item.groupId ? `&requestTypes=${getRequestTypesList(item.groupId, true).join(",")}` : ''}`
+                                            case Constants.notificationType.NOTIFICATION_AUTO_JOB:
+                                                return `/tasks?tab=approval${item.groupId ? `&requestTypes=${getRequestTypesList(item.groupId, false).join(",")}` : ''}`
+                                            case Constants.notificationType.NOTIFICATION_SHIFT_CHANGE:
+                                                const param = getDateShiftChange(item?.title || '');
+                                                return `/timesheet${param}`
+                                            case 20:
+                                                 return '/personal-info?tab=document'
+                                            case Constants.notificationType.NOTIFICATION_ADD_MEMBER_TO_PROJECT:
+                                                return `/my-projects/project/${item?.userProfileHistoryId}` 
+                                            case Constants.notificationType.NOTIFICATION_MY_EVALUATION:
+                                                return `/my-evaluation`
+                                            case Constants.notificationType.NOTIFICATION_LEAD_EVALUATION:
+                                                return `/evaluation-approval`
+                                            case Constants.notificationType.NOTIFICATION_MY_KPI_REGISTRATION_REQUEST:
+                                                return `/target-management?tab=OWNER&id=${item?.subRequestId || 0}`
+                                            case Constants.notificationType.NOTIFICATION_MY_KPI_REGISTRATION_APPROVAL_REQUEST:
+                                                return `/target-management?tab=REQUEST&id=${item?.subRequestId || 0}`
+                                            default:
+                                                return `${item.url}`
                                         }
-                                        return `/notifications/${item.id}`
-                                    case Constants.notificationType.NOTIFICATION_REGISTRATION: 
-                                        if([Constants.PROPOSAL_TRANSFER, Constants.PROPOSAL_APPOINTMENT].includes(item.requestTypeId)) {
-                                            let subId = item.subRequestId?.includes('.') ? item.subRequestId.split('.')[1] : item.subRequestId;
-                                            let suffix = item.detailType == 'APPRAISAL' ? 'assess' : item.detailType == 'APPROVAL' ? 'approval' : 'request';
-                                            let urls = {
-                                                '14-1': 'registration-transfer',
-                                                '15-1': 'registration-transfer',
-                                                '14-2': 'proposed-transfer',
-                                                '15-2': 'proposed-appointment',
-                                            };
-                                            return `/${urls[`${item.requestTypeId}-${item.formType}`]}/${subId}/${suffix}`;
-                                        }
-
-                                        if (item?.detailType == 'REQUEST')
-                                            return `/tasks${item?.groupId ? `?requestTypes=${getRequestTypesList(item.groupId, false).join(",")}` : ''}`
-                                        else if (item?.detailType == 'APPRAISAL')
-                                            return `/tasks?tab=consent${item?.groupId ? `&requestTypes=${getRequestTypesList(item.groupId, false).join(",")}` : ''}`                                       
-                                        else
-                                            return `/tasks?tab=approval${item?.groupId ? `&requestTypes=${getRequestTypesList(item.groupId, false).join(",")}` : ''}`
-                                    case 6:
-                                        return '/personal-info?tab=document'
-                                    case Constants.notificationType.NOTIFICATION_REJECT:
-                                        return `/tasks?${item.groupId ? `&requestTypes=${getRequestTypesList(item.groupId, true).join(",")}` : ''}`
-                                    case Constants.notificationType.NOTIFICATION_AUTO_JOB:
-                                        return `/tasks?tab=approval${item.groupId ? `&requestTypes=${getRequestTypesList(item.groupId, false).join(",")}` : ''}`
-                                    case Constants.notificationType.NOTIFICATION_SHIFT_CHANGE:
-                                        const param = getDateShiftChange(item?.title || '');
-                                        return `/timesheet${param}`
-                                    case 20:
-                                         return '/personal-info?tab=document'
-                                    case Constants.notificationType.NOTIFICATION_ADD_MEMBER_TO_PROJECT:
-                                        return `/my-projects/project/${item?.userProfileHistoryId}` 
-                                    case Constants.notificationType.NOTIFICATION_MY_EVALUATION:
-                                        return `/my-evaluation`
-                                    case Constants.notificationType.NOTIFICATION_LEAD_EVALUATION:
-                                        return `/evaluation-approval`
-                                    case Constants.notificationType.NOTIFICATION_MY_KPI_REGISTRATION_REQUEST:
-                                        return `/target-management?tab=OWNER&id=${item?.subRequestId || 0}`
-                                    case Constants.notificationType.NOTIFICATION_MY_KPI_REGISTRATION_APPROVAL_REQUEST:
-                                        return `/target-management?tab=REQUEST&id=${item?.subRequestId || 0}`
-                                    default:
-                                        return `${item.url}`
-                                }
+                                    }
+                                    let titleNotice = [Constants.notificationType.NOTIFICATION_MY_EVALUATION, Constants.notificationType.NOTIFICATION_LEAD_EVALUATION].includes(item?.type)
+                                    ? currentLocale == Constants.LANGUAGE_VI ? item?.title : item?.en_Title || ''
+                                    : item?.title || ''
+                                    let descriptionNotice = [Constants.notificationType.NOTIFICATION_MY_EVALUATION, Constants.notificationType.NOTIFICATION_LEAD_EVALUATION].includes(item?.type)
+                                    ? currentLocale == Constants.LANGUAGE_VI ? item?.description : item?.en_Description || ''
+                                    : item?.description || ''
+        
+                                    return <div key={i} className="item">
+                                        <a onClick={() => clickNotification(item.id)} className="title" href={notificationLink(item.type)} title={titleNotice}>{titleNotice}</a>
+                                        <p className="description">{descriptionNotice}</p>
+                                        <div className="time-file">
+                                            <span className="time"><i className='far fa-clock ic-clock'></i><span>{timePost}</span></span>
+                                            {item.hasAttachmentFiles ? <span className="attachment-files"><i className='fa fa-paperclip ic-attachment'></i><span>{t("HasAttachments")}</span></span> : ""}
+                                        </div>
+                                    </div>
+                                })
                             }
-                            let titleNotice = [Constants.notificationType.NOTIFICATION_MY_EVALUATION, Constants.notificationType.NOTIFICATION_LEAD_EVALUATION].includes(item?.type)
-                            ? currentLocale == Constants.LANGUAGE_VI ? item?.title : item?.en_Title || ''
-                            : item?.title || ''
-                            let descriptionNotice = [Constants.notificationType.NOTIFICATION_MY_EVALUATION, Constants.notificationType.NOTIFICATION_LEAD_EVALUATION].includes(item?.type)
-                            ? currentLocale == Constants.LANGUAGE_VI ? item?.description : item?.en_Description || ''
-                            : item?.description || ''
-
-                            return <div key={i} className="item">
-                                <a onClick={() => clickNotification(item.id)} className="title" href={notificationLink(item.type)} title={titleNotice}>{titleNotice}</a>
-                                <p className="description">{descriptionNotice}</p>
-                                <div className="time-file">
-                                    <span className="time"><i className='far fa-clock ic-clock'></i><span>{timePost}</span></span>
-                                    {item.hasAttachmentFiles ? <span className="attachment-files"><i className='fa fa-paperclip ic-attachment'></i><span>{t("HasAttachments")}</span></span> : ""}
-                                </div>
-                            </div>
-                        })
+                        </>;
+                        setDataNotificationsComponent(dataRender);
                     }
-                </>;
-                setDataNotificationsComponent(dataRender);
+                }
+            }
+        } catch (error) {
+            if (error?.response?.status === 401 || error?.response?.data?.result?.code == 401) {
+                guard.setLogOut();
+                window.location.href = process.env.REACT_APP_AWS_COGNITO_IDP_SIGNOUT_URL;
             }
         }
-      }
     }
 
     const getDateShiftChange = (title) => {

@@ -381,6 +381,9 @@
   }
 }
 .input-style {
+  input {
+    font-size: 14px;
+  }
   input:disabled {
     background-color: #eee;
  }
@@ -389,6 +392,45 @@
   }
   [class$="-singleValue"]{
     color:#000;
+  }
+  .show-column {
+    flex-direction: column;
+    align-items: unset;
+  }
+  .value-update {
+    background: #CCCEE2 !important;
+  }
+  .value-new {
+    background: #FEE7D0;
+  }
+  .value-old {
+    background-color: #F2F2F2;
+  }
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    gap: 30px;
+  }
+  .value-delete {
+    background: #F5E3E4;
+  }
+  .box-color {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    margin-right: 5px;
+  }
+}
+.social-contribute {
+  .box {
+    border-radius: 3px !important;
+  }
+  .item-contain {
+    border: 1px solid #DEE2E6;
+    border-radius: 4px;
+    padding: 12px 15px;
   }
 }
 .registration-insurance-section {
@@ -597,7 +639,6 @@
   }
   .input {
     margin: 0;
-    padding-right: 10px;
     width: 100%;
     color: #000;
   }

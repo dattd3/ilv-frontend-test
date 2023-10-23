@@ -1995,8 +1995,21 @@
   "StoryTelling": "Kỷ yếu",
   "InspiringShortFilm": "Phim ngắn truyền cảm hứng",
   "CivillyVingroup": "Người Vingroup văn minh",
-  "InternalNews": "Bản tin nội bộ",
+  "ViewDetail2": "Xem chi tiết",
+  "LeaveUsedHistory": "Xem chi tiết nghỉ phép",
+  "TOILUsedHistory": "Xem chi tiết nghỉ bù",
+  "CurrentYear": "Năm nay",
+  "LastYear": "Năm trước",
+  "Available2": "Còn lại",
   "VingroupCulture": "Văn hóa Vingroup",
   "PnlOfVingroup": "Các thương hiệu của Tập đoàn Vingroup",
-  "ReferralBonusGrossup": "Thưởng giới thiệu ứng viên (GROSSUP từ khoản thưởng NET tương ứng)"
+  "ReferralBonusGrossup": "Thưởng giới thiệu ứng viên (GROSSUP từ khoản thưởng NET tương ứng)",
+  "ActualResult_SelfAssess": "Kết quả thực tế CBNV đánh giá",
+  "ActualResult_ManagerAssess": "Kết quả thực tế CBQL đánh giá",
+  "InternalNews": "Bản tin nội bộ",
+  "NewsInternal": "Tin nội bộ",
+  "PlayNow": "Xem ngay",
+  "social_contribute_info": "Thông tin đóng BHXH",
+  "lastUpdateDate": "NGÀY CHỈNH SỬA CUỐI CÙNG",
+  "InsuranceSocialInfoRequest": "Thay đổi thông tin đóng BHXH"
 }
