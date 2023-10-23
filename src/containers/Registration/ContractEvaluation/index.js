@@ -1473,7 +1473,7 @@ renderEvalution = (name, data, isDisable) => {
     if(visible) {
       _noteModal.content = (<p
         dangerouslySetInnerHTML={{
-          __html: purify.sanitize(this.props.t("ContractTimeNote") || ""),
+          __html: purify.sanitize(this.props.t(IS_VINFAST() ? "ContractTimeNote" : 'ContractTimeNoteOther') || ""),
         }}
       />);
     }
