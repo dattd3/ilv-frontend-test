@@ -7,7 +7,9 @@ interface IInputNumber {
   onChange?: (value: string) => void;
   className?: string;
   placeholder?: string;
-  disabled?: boolean
+  disabled?: boolean;
+  maxLeng?: number;
+  type?: 'number' | 'text'
 }
 function InputNumberComponent({
   name,
@@ -15,10 +17,15 @@ function InputNumberComponent({
   onChange,
   className,
   placeholder,
-  disabled = false
+  disabled = false,
+  type = 'number',
+  maxLeng = 255
 }: IInputNumber) {
   const handleInputChange = (value : string) => {
-    let temp = value?.replace(/[^0-9]/g, '').replace(/^0+/, '');
+    let temp = value;
+    if(type == 'number') {
+      value?.replace(/[^0-9]/g, '').replace(/^0+/, '');
+    }
     if(onChange)
         onChange(temp);
 }
@@ -27,11 +34,11 @@ function InputNumberComponent({
     <input
       type="text"
       placeholder={disabled ? '' : placeholder || ""}
-      value={formatNumberSpecialCase(value)}
+      value={type == 'number' ? formatNumberSpecialCase(value) : value}
       onChange={(e) => handleInputChange(e?.target?.value || "")}
       className={className || ""}
       disabled={disabled}
-      maxLength={13 + (formatNumberSpecialCase(value)?.split(" ").length - 1)}
+      maxLength={ type == 'number' ? 13 + (formatNumberSpecialCase(value)?.split(" ").length - 1) : maxLeng}
     />
   );
 }

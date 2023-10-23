@@ -66,7 +66,7 @@ class ConfirmRequestModal extends React.Component {
 
     getHostByRequestTypeId = (dataToSap) => {
       const requestTypeId = dataToSap?.[0]?.requestTypeId || dataToSap?.requestTypeId || "";
-      return !!requestTypeId && [12, 14, 15].includes(requestTypeId)
+      return !!requestTypeId && [12, 14, 15, Constants.INSURANCE_SOCIAL_INFO].includes(requestTypeId)
         ? process.env.REACT_APP_REQUEST_SERVICE_URL
         : process.env.REACT_APP_REQUEST_URL;
     }
@@ -137,6 +137,9 @@ class ConfirmRequestModal extends React.Component {
             } else if([Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER, Constants.PROPOSAL_APPOINTMENT].includes(element.requestTypeId) && element.isEdit == true) {
                 taskObj = {"id":element.salaryId ,"requestTypeId":element.requestTypeId,"sub":[]};
                 taskObj.sub.push({"id":element.salaryId,"processStatusId": Constants.STATUS_APPROVED})
+            } else if ([Constants.INSURANCE_SOCIAL_INFO].includes(element.requestTypeId)) {
+                taskObj = {"id":element.salaryId ,"requestTypeId":element.requestTypeId,"sub":[]};
+                taskObj.sub.push({"id":element.salaryId,"processStatusId": Constants.STATUS_APPROVED})
             } else {
                 taskObj = {
                     "id": element.requestTypeId == Constants.SUBSTITUTION || element.requestTypeId == Constants.IN_OUT_TIME_UPDATE || element.requestTypeId == Constants.CHANGE_DIVISON_SHIFT || element.requestTypeId == Constants.UPDATE_PROFILE || element.requestTypeId == Constants.DEPARTMENT_TIMESHEET
@@ -172,6 +175,9 @@ class ConfirmRequestModal extends React.Component {
             } else if([Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER, Constants.PROPOSAL_APPOINTMENT].includes(element.requestTypeId) && element.isEdit == true) {
                 taskObj = {"id":element.salaryId ,"requestTypeId":element.requestTypeId,"sub":[]};
                 taskObj.sub.push({"id":element.salaryId,"processStatusId": Constants.STATUS_NOT_APPROVED,"comment":this.state.message})
+            } else if ([Constants.INSURANCE_SOCIAL_INFO].includes(element.requestTypeId)) {
+                taskObj = {"id":element.salaryId ,"requestTypeId":element.requestTypeId,"sub":[]};
+                taskObj.sub.push({"id":element.salaryId,"processStatusId": Constants.STATUS_NOT_APPROVED,"comment":this.state.message})
             } else {
                 taskObj = {
                     "id": element.requestTypeId == Constants.SUBSTITUTION || element.requestTypeId == Constants.IN_OUT_TIME_UPDATE || element.requestTypeId == Constants.CHANGE_DIVISON_SHIFT ? element.id : parseInt(element.id.split(".")[0]),
@@ -200,6 +206,9 @@ class ConfirmRequestModal extends React.Component {
             } else if([Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER, Constants.PROPOSAL_APPOINTMENT].includes(element.requestTypeId) && element.isEdit == true) {
                 taskObj = {"id":element.salaryId ,"requestTypeId":element.requestTypeId,"sub":[]};
                 taskObj.sub.push({"id":element.salaryId,"processStatusId": Constants.STATUS_WAITING})
+            } else if ([Constants.INSURANCE_SOCIAL_INFO].includes(element.requestTypeId)) {
+                taskObj = {"id":element.salaryId ,"requestTypeId":element.requestTypeId,"sub":[]};
+                taskObj.sub.push({"id":element.salaryId,"processStatusId": Constants.STATUS_WAITING})
             } else {
                 taskObj = {"id": element.requestTypeId == Constants.SUBSTITUTION || element.requestTypeId == Constants.IN_OUT_TIME_UPDATE || element.requestTypeId == Constants.CHANGE_DIVISON_SHIFT  ? element.id : parseInt(element.id.split(".")[0]),"requestTypeId":element.requestTypeId,"sub":[]};
                 // element.requestInfo.forEach(sub => {
@@ -222,6 +231,9 @@ class ConfirmRequestModal extends React.Component {
                 taskObj = {"id":element.id ,"requestTypeId":element.requestTypeId,"sub":[]};
                 taskObj.sub.push({"id":element.id,"processStatusId": element.processStatusId, 'status': '0' ,"comment":this.state.message})
             } else if([Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER, Constants.PROPOSAL_APPOINTMENT].includes(element.requestTypeId) && element.isEdit == true) {
+                taskObj = {"id":element.salaryId ,"requestTypeId":element.requestTypeId,"sub":[]};
+                taskObj.sub.push({"id":element.salaryId,"processStatusId": Constants.STATUS_NO_CONSENTED,"comment":this.state.message})
+            } else if ([Constants.INSURANCE_SOCIAL_INFO].includes(element.requestTypeId)) {
                 taskObj = {"id":element.salaryId ,"requestTypeId":element.requestTypeId,"sub":[]};
                 taskObj.sub.push({"id":element.salaryId,"processStatusId": Constants.STATUS_NO_CONSENTED,"comment":this.state.message})
             } else{
