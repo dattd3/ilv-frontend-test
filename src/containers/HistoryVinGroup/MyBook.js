@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, forwardRef } from 'react';
+import { Modal } from "react-bootstrap";
 import { saveAs } from 'file-saver';
 import { chunk, last } from 'lodash';
 import { useRouteMatch } from "react-router-dom";
@@ -6,6 +7,7 @@ import HTMLFlipBook from '@cuongnv56/react-pageflip';
 // import HTMLFlipBook from 'react-pageflip';
 import LoadingModal from 'components/Common/LoadingModal';
 import mapConfig from 'containers/map.config';
+import IconClose from "assets/img/icon/icon_x.svg";
 
 const IMAGE_MAPPING = {
   1: 'https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page1.jpg',
@@ -285,6 +287,41 @@ const Page = forwardRef((props, ref) => {
   );
 });
 
+const ThumbnailModal = ({ isShow, onHide }) => {
+  return (
+    <Modal show={isShow} onHide={onHide} className="thumbnail-modal" dialogClassName="thumbnail-modal">
+      <Modal.Header className="d-flex justify-content-center">
+        <div className="modal-title">Thumbnails</div>
+        <span className='btn-close' onClick={onHide}><img src={IconClose} alt='Close' /></span>
+      </Modal.Header>
+      <Modal.Body className='text-center'>
+        <div className='content'>
+          <div className='item'>
+            <span className='thumbnail'><img src={IMAGE_MAPPING[1]} alt='Page' /></span>
+            <span className='page'>1</span>
+          </div>
+          <div className='item'>
+            <span className='thumbnail'><img src={IMAGE_MAPPING[1]} alt='Page' /></span>
+            <span className='page'>2</span>
+          </div>
+          <div className='item'>
+            <span className='thumbnail'><img src={IMAGE_MAPPING[3]} alt='Page' /></span>
+            <span className='page'>3</span>
+          </div>
+          <div className='item'>
+            <span className='thumbnail'><img src={IMAGE_MAPPING[4]} alt='Page' /></span>
+            <span className='page'>4</span>
+          </div>
+          <div className='item'>
+            <span className='thumbnail'><img src={IMAGE_MAPPING[5]} alt='Page' /></span>
+            <span className='page'>5</span>
+          </div>
+        </div>
+      </Modal.Body>
+    </Modal>
+  );
+}
+
 export default function MyBook(props) {
   const bookRef = useRef();
   const pageRef = useRef();
@@ -296,7 +333,9 @@ export default function MyBook(props) {
   const [isLoading, setIsLoading] = useState(true);
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [isShowThumbnails, setIsShowThumbnails] = useState(false);
-  const isMobile = (useRouteMatch({ path: mapConfig.HistoryVingroupMobile }) || {})?.isExact;
+  const [isShowThumbnailModal, setIsShowThumbnailModal] = useState(false);
+  // const isMobile = (useRouteMatch({ path: mapConfig.HistoryVingroupMobile }) || {})?.isExact;
+  const isMobile = true;
   let isWheeling, flipTimeOut;
 
   useEffect(() => {
@@ -347,7 +386,13 @@ export default function MyBook(props) {
 
   const handleCloseMenu = () => setIsShowThumbnails(false);
 
-  const handleShowThumbnails = () => setIsShowThumbnails(!isShowThumbnails);
+  const handleShowThumbnails = () => {
+    if (isMobile) {
+      setIsShowThumbnailModal(true)
+    } else {
+      setIsShowThumbnails(!isShowThumbnails);
+    }
+  }
 
   const handleScreen = () => {
     setIsFullScreen(!isFullScreen);
@@ -458,6 +503,10 @@ export default function MyBook(props) {
     }, 100);
   };
 
+  const onHideThumbnailModal = () => {
+    setIsShowThumbnailModal(false)
+  }
+
   const sidebarPages = (() => {
     const firstPage = 1,
       lastPage = pages?.length,
@@ -487,6 +536,7 @@ export default function MyBook(props) {
   return (
     <>
       <LoadingModal show={isLoading} />
+      <ThumbnailModal isShow={isShowThumbnailModal} onHide={onHideThumbnailModal} />
       <div
         className="history-vingroup-page"
         id="history-vingroup-page"
