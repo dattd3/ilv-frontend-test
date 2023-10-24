@@ -393,10 +393,6 @@ export default function MyBook(props) {
 
   const handleKeyDown = (e) => {
     if(e.key === 'Enter'){
-      console.log('----------------------------------------');
-      console.log('page: ', page, pageScrollRef?.current);
-      console.log('----------------------------------------');
-
       pageScrollRef?.current?.[page]?.scrollIntoView(
         {
           behavior: 'smooth',
@@ -404,16 +400,12 @@ export default function MyBook(props) {
         },
         800
       );
-
       bookRef?.current?.pageFlip()?.turnToPage(page)
-      if (isMobile) {
-      } else {
-        clearTimeout(flipTimeOut);
-        flipTimeOut = setTimeout(() => bookRef?.current?.pageFlip()?.turnToPage(page), 400);
-        console.log('----------------------------------------');
-        console.log('flipTimeOut: ', flipTimeOut);
-        console.log('----------------------------------------');
-      }
+
+      clearTimeout(flipTimeOut);
+      flipTimeOut = setTimeout(() => {
+        bookRef?.current?.pageFlip()?.flip(page, 'top')
+      }, 500);
     }
   };
 
@@ -474,6 +466,24 @@ export default function MyBook(props) {
     return [[firstPage], ...center, [lastPage]];
   })();
 
+  const handleScrollSidebar = (e) => {
+    const isBottom = e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
+
+    if (isBottom) {
+      let existedPage = TOTAL_PAGES - pages?.length, countLoad = PER_LOAD;
+
+      if (existedPage < PER_LOAD) {
+        countLoad = existedPage;
+      }
+
+      const _pages = [
+        ...pages,
+        ...generatePages(countLoad, last(pages) || 0),
+      ];
+      setPages(_pages);
+    }
+  }
+
   return (
     <>
       <LoadingModal show={isLoading} />
@@ -521,7 +531,7 @@ export default function MyBook(props) {
               </span>
             </div>
             <div className="wrap-sidebar-content">
-              <div className="sidebar-content">
+              <div className="sidebar-content" onScroll={handleScrollSidebar}>
                 {sidebarPages.map((item, index) => {
                   return (
                     <div
