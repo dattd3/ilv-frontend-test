@@ -78,7 +78,7 @@ const PNL_SWIPER_LIST = [
     },
     {
       logo: IconVinbigdata,
-      url: "https://www.vinbigdata.com",
+      url: "https://vinbigdata.com",
     },
     {
       logo: IconVingroup,
