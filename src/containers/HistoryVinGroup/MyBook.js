@@ -303,7 +303,6 @@ export default function MyBook(props) {
     const timeOut = setTimeout(() => setIsLoading(false), 400);
     const onFullscreenChange = () => setIsFullScreen(Boolean(document.fullscreenElement));
 
-    setPages(generatePages());
     pageRef.current.scrollIntoView({ behavior: 'instant' }, 0);
     document.addEventListener('fullscreenchange', onFullscreenChange);
     wrapBookRef?.current?.addEventListener('wheel', onWheel, { passive: false });
@@ -334,33 +333,12 @@ export default function MyBook(props) {
         countLoad = page - length;
       }
 
-      // const _pages = [
-      //   ...pages,
-      //   ...generatePages(countLoad, last(pages)),
-      // ];
-      // console.log('----------------------------------------');
-      // console.log('_pages: ', _pages);
-      // console.log('----------------------------------------');
-      // setPages(_pages);
+      const _pages = [
+        ...pages,
+        ...generatePages(countLoad, last(pages)),
+      ];
+      setPages(_pages);
     }
-
-    // let pageToSwitch = page, timeOut;
-
-    // switch (page) {
-    //   case 1: // Page đầu tiên
-    //     pageToSwitch = 0;
-    //     break;
-    //   case TOTAL_PAGES: // Page cuối cùng
-    //     pageToSwitch = TOTAL_PAGES - 1;
-    //     break;
-    // }
-    // if (isMobile) {
-    //   console.log('pageToSwitch: ', pageToSwitch)
-    //   bookRef?.current?.pageFlip()?.turnToPage(pageToSwitch)
-    // } else {
-    //   clearTimeout(timeOut);
-    //   timeOut = setTimeout(() => bookRef?.current?.pageFlip()?.turnToPage(pageToSwitch), 200);
-    // }
   }, [page]);
 
   const generatePages = (pageToLoad = PER_LOAD, startNumber = 0) => {
@@ -422,9 +400,6 @@ export default function MyBook(props) {
   const handleFlip = (e) => {
     const p = e?.data + 1;
 
-    console.log('----------------------------------------');
-    console.log('p: ', p);
-    console.log('----------------------------------------');
     setPage(Number(p));
     pageScrollRef?.current?.[p]?.scrollIntoView(
       {
@@ -442,7 +417,7 @@ export default function MyBook(props) {
     console.log('p: ', p);
     console.log('----------------------------------------');
 
-    // setPage(Number(p));
+    setPage(Number(p));
     // pageScrollRef?.current?.[p]?.scrollIntoView(
     //   {
     //     behavior: 'smooth',
@@ -459,13 +434,14 @@ export default function MyBook(props) {
     //     pageToSwitch = TOTAL_PAGES - 1;
     //     break;
     // }
-    // if (isMobile) {
-    //   console.log('pageToSwitch: ', pageToSwitch)
-    //   bookRef?.current?.pageFlip()?.turnToPage(pageToSwitch)
-    // } else {
-    //   clearTimeout(timeOut);
-    //   timeOut = setTimeout(() => bookRef?.current?.pageFlip()?.turnToPage(pageToSwitch), 200);
-    // }
+
+    console.log('pageToSwitch: ', pageToSwitch)
+    if (isMobile) {
+      bookRef?.current?.pageFlip()?.turnToPage(pageToSwitch)
+    } else {
+      clearTimeout(timeOut);
+      timeOut = setTimeout(() => bookRef?.current?.pageFlip()?.turnToPage(pageToSwitch), 200);
+    }
   }
 
   const onWheel = (e) => {
@@ -494,7 +470,7 @@ export default function MyBook(props) {
     <>
       <LoadingModal show={isLoading} />
       <div
-        // className="history-vingroup-page"
+        className="history-vingroup-page"
         id="history-vingroup-page"
         ref={pageRef}
       >
