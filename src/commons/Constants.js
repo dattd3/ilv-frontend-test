@@ -61,6 +61,7 @@ const Constants = {
   PROPOSAL_APPOINTMENT: 15, // Bo nhiem, mien nhiem
   WELFARE_REFUND: 16, // Hoàn trả dịch vụ phúc lợi
   INSURANCE_SOCIAL: 20, //bảo hiểm xã hội
+  INSURANCE_SOCIAL_INFO: 21, // thông tin đóng BHXH
 
   //Status request
   STATUS_PENDING: 0,
@@ -262,7 +263,7 @@ const Constants = {
     6: ["V040", "V070", "V077"], //DIEUCHUYEN
     7: ["V040", "V070", "V077"], //BONHIEM
     8: ["V040", "V070", "V077", "V030"], //THANH TOAN NOI BO
-    9: ["V077", "V070", "V061"],//BAOHIEM
+    9: ["V077", "V070", "V061", "V079"],//BAOHIEM
   },
   CURRENCY: {
     VND: 'VNĐ',
@@ -316,7 +317,9 @@ Constants.REQUEST_CATEGORY_2_LIST = {
   // [Constants.SALARY_PROPOSE]: "SalaryType",
   [Constants.PROPOSAL_TRANSFER]: "ProposalTransfer",
   [Constants.PROPOSAL_APPOINTMENT]: "AppointmentDismissalRequest",
-  [Constants.INSURANCE_SOCIAL]: "InsuranceSocialRequest"
+  [Constants.INSURANCE_SOCIAL]: "InsuranceSocialRequest",
+  [Constants.INSURANCE_SOCIAL_INFO]: "InsuranceSocialInfoRequest"
+
 }
 
 Constants.REQUEST_CATEGORY_1_LIST_ORDER = [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP, Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE, Constants.UPDATE_PROFILE,
