@@ -63,7 +63,7 @@ export default [
       exact: true,
       path: map.HistoryVingroupMobile
     },
-    component: lazy(() => import("./HistoryVinGroup/MyBookMobile"))
+    component: lazy(() => import("./HistoryVinGroup/MyBook"))
   },
   {
     key: "main",

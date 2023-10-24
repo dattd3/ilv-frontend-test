@@ -325,17 +325,17 @@ export default function MyBook(props) {
   }, [isFullScreen]);
 
   useEffect(() => {
-    const length = pages?.length, countLoad = PER_LOAD;
+    let length = pages?.length, countLoad = PER_LOAD;
 
     if (page >= length - LEFT_PAGE_TO_LOAD) {
       // LEFT_PAGE_TO_LOAD page cuối của mỗi lượt load mới bắt đầu load thêm
-      if (page > length + PER_LOAD && length > 0) {
+      if (page > length + PER_LOAD && length >= 0) {
         countLoad = page - length;
       }
 
       const _pages = [
         ...pages,
-        ...generatePages(countLoad, last(pages)),
+        ...generatePages(countLoad, last(pages) || 0),
       ];
       setPages(_pages);
     }
@@ -392,9 +392,29 @@ export default function MyBook(props) {
   const downloadBook = () => saveAs('https://myvinpearl.s3.ap-southeast-1.amazonaws.com/shared/SK.pdf');
 
   const handleKeyDown = (e) => {
-    console.log('----------------------------------------');
-    console.log('e: ', e?.target?.value);
-    console.log('----------------------------------------');
+    if(e.key === 'Enter'){
+      console.log('----------------------------------------');
+      console.log('page: ', page, pageScrollRef?.current);
+      console.log('----------------------------------------');
+
+      pageScrollRef?.current?.[page]?.scrollIntoView(
+        {
+          behavior: 'smooth',
+          block: 'nearest',
+        },
+        800
+      );
+
+      bookRef?.current?.pageFlip()?.turnToPage(page)
+      if (isMobile) {
+      } else {
+        clearTimeout(flipTimeOut);
+        flipTimeOut = setTimeout(() => bookRef?.current?.pageFlip()?.turnToPage(page), 400);
+        console.log('----------------------------------------');
+        console.log('flipTimeOut: ', flipTimeOut);
+        console.log('----------------------------------------');
+      }
+    }
   };
 
   const handleFlip = (e) => {
@@ -411,37 +431,25 @@ export default function MyBook(props) {
   };
 
   const handleChangePage = (p) => {
-    let pageToSwitch = page, timeOut;
+    const pageNumber = Number(p);
 
-    console.log('----------------------------------------');
-    console.log('p: ', p);
-    console.log('----------------------------------------');
-
-    setPage(Number(p));
-    // pageScrollRef?.current?.[p]?.scrollIntoView(
-    //   {
-    //     behavior: 'smooth',
-    //     block: 'nearest',
-    //   },
-    //   800
-    // );
-
-    // switch (page) {
-    //   case 1: // Page đầu tiên
-    //     pageToSwitch = 0;
-    //     break;
-    //   case TOTAL_PAGES: // Page cuối cùng
-    //     pageToSwitch = TOTAL_PAGES - 1;
-    //     break;
-    // }
-
-    console.log('pageToSwitch: ', pageToSwitch)
+    setPage(pageNumber);
     if (isMobile) {
-      bookRef?.current?.pageFlip()?.turnToPage(pageToSwitch)
+      bookRef?.current?.pageFlip()?.turnToPage(pageNumber)
     } else {
-      clearTimeout(timeOut);
-      timeOut = setTimeout(() => bookRef?.current?.pageFlip()?.turnToPage(pageToSwitch), 200);
+      clearTimeout(flipTimeOut);
+      flipTimeOut = setTimeout(() => bookRef?.current?.pageFlip()?.turnToPage(pageNumber), 200);
     }
+  }
+
+  const handleChangePageByFilter = (p) => {
+    let pageNumber = Number(p);
+
+    if (pageNumber > TOTAL_PAGES) {
+      pageNumber = TOTAL_PAGES;
+    }
+
+    setPage(pageNumber);
   }
 
   const onWheel = (e) => {
@@ -575,7 +583,7 @@ export default function MyBook(props) {
                   type="text"
                   value={page}
                   className="text-center page-input"
-                  onChange={(e) => handleChangePage(e?.target?.value)}
+                  onChange={(e) => handleChangePageByFilter(e?.target?.value)}
                   onKeyDown={handleKeyDown}
                 />
                 <span className="seperate">/</span>
