@@ -5079,19 +5079,17 @@ span.badge-notification[data-badge]::after {
   box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
 }
 
+// Start Sử ký
 .history-vingroup-page {
   iframe {
     border: none;
     width: 100%;
     height: 100vh;
   }
-
-  // Implement Su ky Vin30
   background-image: url("./assets/img/vingroup_history/bg-vingroup-history.jpg");
   background-repeat: repeat;
   height: 100vh;
   width: 100%;
-  // overflow: hidden;
   font-size: 14px;
   .wrap-page {
     height: 100vh;
@@ -5100,7 +5098,6 @@ span.badge-notification[data-badge]::after {
       width: 0;
       flex: 0 0 0;
       font-size: 13px;
-      // box-shadow: 0 0 4px rgba(0,0,0,.3);
       box-shadow: 3px 0px 10px -5px rgba(9,30,66,0.25);
       &.visible {
         visibility: visible;
@@ -5169,11 +5166,6 @@ span.badge-notification[data-badge]::after {
               &.active {
                 border: 2px solid #C11D2A;
               }
-              // .book-spine {
-              //   width: 1px;
-              //   box-shadow: 0 1px 1px rgba(0,0,0,0.08), 0 2px 2px rgba(0,0,0,0.12), 0 4px 4px rgba(0,0,0,0.16), 0 8px 8px rgba(0,0,0,0.20);
-              //   margin: 0 2px;
-              // }
               .item {
                 &.active {
                   border: 2px solid #C11D2A;
@@ -5183,19 +5175,8 @@ span.badge-notification[data-badge]::after {
                 }
                 &:first-child {
                   flex: 0 0 50%;
-                  // box-shadow: -20px 0 10px -20px rgba(0,0,0,0.45) inset;
-                  // box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.15);
-                  // margin-right: 4px;
-                  // background: -webkit-gradient(linear, left top, right top, color-stop(.90, rgba(0,0,0,0)), color-stop(1, rgba(0, 0, 0, .2)));
-                  // background-image: linear-gradient(to right, rgba(0,0,0,0) 90%, rgba(0,0,0,.2) 100%);
                 }
                 &:last-child {
-                  // margin-left: 1px;
-                  // box-shadow: 20px 0 10px -20px rgba(0,0,0,0.45) inset;
-                  // box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.15);
-                  // margin-left: 4px;
-                  // background: -webkit-gradient(linear, right top, left top, color-stop(.90, rgba(0,0,0,0)), color-stop(1, rgba(0,0,0,.15)));
-                  // background-image: linear-gradient(to left, rgba(0,0,0,0) 90%, rgba(0,0,0,.15) 100%);
                 }
               }
             }
@@ -5221,7 +5202,6 @@ span.badge-notification[data-badge]::after {
         height: 40px;
         background: #5a5f63;
         color: #F6F7F7;
-        // opacity: 0.95;
         .book-title {
           font-size: inherit;
           margin: 0;
@@ -5243,15 +5223,6 @@ span.badge-notification[data-badge]::after {
             margin: 0 10px 0 0;
           }
         }
-      }
-      .book {
-        flex: 1;
-        height: calc(100% - 40px - 45px);
-        touch-action: manipulation;
-        // background: red;
-        // .wrap-book {
-        //   margin: 15px 0 0 0;
-        // }
       }
       .bottom-block {
         height: 45px;
@@ -5282,7 +5253,6 @@ span.badge-notification[data-badge]::after {
         }
         .btn-full-screen {
           padding: 2px;
-          // margin-left: 15px;
           &.active {
             background: rgba(0,0,0,.3);
           }
@@ -5308,13 +5278,8 @@ span.badge-notification[data-badge]::after {
       }
     }
     .page {
-      // background: yellow;
-      // width: auto !important;
-      // height: max-content !important;
-      // background: blue;
       &.--left {
         text-align: right;
-        // left: 0!important;
         img {
           box-shadow: -20px 0 10px -20px rgba(0,0,0,0.45) inset;
         }
@@ -5324,20 +5289,15 @@ span.badge-notification[data-badge]::after {
       }
       img {
         max-height: calc(100vh - 100px);
-        // max-height: 100%;
-        // object-fit: cover;
-        // height: fit-content;
       }
     }
   }
-
-  // TODO
   .book {
-    // box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgb(209, 213, 219) 0px 0px 0px 1px inset;
-    // background-size: cover;
+    flex: 1;
+    height: calc(100% - 40px - 45px);
+    touch-action: manipulation;
     width: 100%;
     padding: 15px 0 0 0;
-    // overflow: hidden;
     .wrap-book {
       height: 100%;
       width: 100%;
@@ -5347,47 +5307,43 @@ span.badge-notification[data-badge]::after {
       }
       .stf__wrapper {
         height: 100%;
-        padding-bottom: 0 !important;
+
+        @media (min-width: 481px) {
+          padding-bottom: 0 !important;
+        }
+
         width: 100%;
       }
       .stf__block {
-        // height: auto !important;
-        position: relative !important;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        overflow: hidden;
-        // left: 50% !important;
+        @media (min-width: 481px) {
+          overflow: hidden;
+          position: relative !important;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
       }
     }
   }
   .page {
-    // padding: 20px;
-    // background-color: hsl(35, 55, 98);
     color: hsl(35, 35, 35);
-    // border: solid 1px hsl(35, 20, 70);
-    overflow: hidden;
-    // height: 750px !important;
+    @media (min-width: 481px) {
+      overflow: hidden;
+    }
     .page-content {
-      // width: 100%;
-
-
-      // height: 100%;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      // align-items: stretch;
       .page-image {
-        // height: 100%;
-        // background-size: contain;
-        // background-position: center center;
-        // background-repeat: no-repeat;
+        width: 100%;
+        img {
+          width: 100%;
+        }
       }
     }
   
     &.--left {
       border-right: 0;
-      // box-shadow: inset -7px 0 20px -7px rgba(0, 0, 0, 0.3);
       .page-image {
         background-position: right top;
       }
@@ -5400,29 +5356,19 @@ span.badge-notification[data-badge]::after {
   
     &.--right {
       border-left: 0;
-      // box-shadow: inset 7px 0 20px -7px rgba(0, 0, 0, 0.3);
-      .page-image {
-        // background-position: left top;
-        // background: #0D1B3C;
-      }
       &.--simple {
         left: unset !important;
         position: relative !important;
         width: auto !important;
       }
     }
-  
     &.hard {
       background-color: hsl(35, 50, 90);
       border: solid 1px hsl(35, 20, 50);
     }
   }
-  // End TODO
-  
 }
-
-
-
+// End Sử ký
 
 .training-learning-page, .training-instruction-page {
   font-size: 14px;
