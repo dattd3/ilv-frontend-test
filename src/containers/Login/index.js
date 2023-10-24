@@ -16,7 +16,6 @@ import nextSlideIcon from '../../assets/img/icon/next-slide-icon.png';
 import IconUser from 'assets/img/icon/Icon-User.svg'
 import IconTime from 'assets/img/icon/Icon-Time.svg'
 import IconVinfast from 'assets/img/icon/pnl/vinfast.svg'
-import IconES from 'assets/img/icon/pnl/vines.svg'
 import IconVinhomes from 'assets/img/icon/pnl/vinhomes.svg'
 import IconVinperl from 'assets/img/icon/pnl/vinpearl.svg'
 import IconVingroup from 'assets/img/icon/pnl/vingroup.svg'
@@ -56,8 +55,8 @@ const PNL_SWIPER_LIST = [
       url: "https://vinfastauto.com",
     },
     {
-      logo: IconES,
-      url: "https://vines.net.vn",
+      logo: IconVinHMS,
+      url: "https://vinhms.com",
     },
     {
       logo: IconVingroup,
@@ -79,7 +78,7 @@ const PNL_SWIPER_LIST = [
     },
     {
       logo: IconVinbigdata,
-      url: "https://www.vinbigdata.com",
+      url: "https://vinbigdata.com",
     },
     {
       logo: IconVingroup,
@@ -332,7 +331,7 @@ function Login(props) {
             <div className="card-body p-0">
               <div className="row" style={{ height: 618 }}>
 
-                <div className="col-lg-5 bg-gray-trasparent">
+                <div className="col-lg-4 bg-gray-trasparent pr-0">
                   <div className="opacity-1 wrap-left">
                     <div className="language-selector">
                       {/* <Button className={langCode === Constants.LANGUAGE_VI ? "lang-active" : ""} variant="link" onClick={(e) => setLangCode(Constants.LANGUAGE_VI)}>{t("LangViet")}</Button>|
@@ -347,8 +346,8 @@ function Login(props) {
                       <div className="text-center w-100 d-flex justify-content-center" style={{ marginBottom: 40 }}>
                         <img src={logo} className="logo-login" alt='Logo' />
                       </div>
-                      <Button className="btn-user btn-block btn-login" variant="primary" onClick={handleLoginClick}>{t("Login")}</Button>
-                      <Button className="btn-user btn-block btn-help-login" variant="primary" onClick={() => setModalShow(true)}>{t("HelpToLogin")}</Button>
+                      <Button className="btn-user btn-login" variant="primary" onClick={handleLoginClick}>{t("Login")}</Button>
+                      <Button className="btn-user btn-help-login" variant="primary" onClick={() => setModalShow(true)}>{t("HelpToLogin")}</Button>
                       <p className="select-title text-center" >{t('LoginGuideOS')}</p>
 
                       <div className="link-mobile">
@@ -382,7 +381,7 @@ function Login(props) {
                     </div>
                   </div>
                 </div>
-                <div className="col-lg-7 d-flex flex-column banner-region">
+                <div className="col-lg-8 d-flex flex-column banner-region">
                   <div className="banner-block">
                     <div className="text-center banner-title">Welcome to&nbsp;<span className="font-weight-bold">ILOVEVINGROUP!</span></div>
                   </div>
@@ -400,7 +399,7 @@ function Login(props) {
                         </div>
                         <Swiper
                           // slidesPerView={2.5}
-                          spaceBetween={20}
+                          spaceBetween={15}
                           freeMode={true}
                           modules={[FreeMode, Autoplay]}
                           rewind={true}
@@ -412,8 +411,8 @@ function Login(props) {
                             disableOnInteraction: false,
                           }}
                         >
-                          {
-                            newsData.map(news => <SwiperSlide key={news.id} style={{width: "auto"}}>
+                          {newsData.map(news => (
+                            <SwiperSlide key={news.id} style={{width: "auto"}}>
                               <div className="news-card" onClick={() => handleClickNewsCard(news.id)}>
                                 <img className="news-img" alt="" src={news.thumbnail} />
                                 <div className="news-card-body">
@@ -435,8 +434,8 @@ function Login(props) {
                                   </div>
                                 </div>
                               </div>
-                            </SwiperSlide>)
-                          }
+                            </SwiperSlide>
+                          ))}
                         </Swiper>
                       </>
                     }
@@ -455,15 +454,15 @@ function Login(props) {
                         disableOnInteraction: false,
                       }}
                     >
-                      {
-                        PNL_SWIPER_LIST.map((pnlList, index) => <SwiperSlide key={index}>
-                          {
-                            pnlList.map(pnl => <a className="pnl-icon-wrapper" href={pnl.url} key={pnl.url} target="_blank" rel="noreferrer">
-                              <img src={pnl.logo} alt="" width="60%" />
-                            </a>)
-                          }
-                        </SwiperSlide>)
-                      }
+                      {PNL_SWIPER_LIST.map((pnlList, index) => (
+                        <SwiperSlide key={index}>
+                          {pnlList.map(pnl => (
+                            <a className="pnl-icon-wrapper" href={pnl.url} key={pnl.url} target="_blank" rel="noreferrer">
+                            <img src={pnl.logo} alt="" width="60%" />
+                          </a>
+                          ))}
+                        </SwiperSlide>
+                      ))}
                     </Swiper>
                   </div>
                   <div className="bottom-link">
