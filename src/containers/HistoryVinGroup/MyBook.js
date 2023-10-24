@@ -594,18 +594,17 @@ export default function MyBook(props) {
               <div className="wrap-book">
                 <HTMLFlipBook
                   showCover={true}
-                  flippingTime={500}
+                  flippingTime={700}
                   width={550}
                   height={733}
-                  // size="fixed"
                   size="stretch"
                   minWidth={315}
                   maxWidth={1000}
                   minHeight={420}
                   maxHeight={1350}
-                  // maxShadowOpacity={0.5}
+                  maxShadowOpacity={0.5}
                   drawShadow={false}
-                  mobileScrollSupport={false}
+                  mobileScrollSupport={true}
                   onFlip={handleFlip}
                   ref={bookRef}
                 >
