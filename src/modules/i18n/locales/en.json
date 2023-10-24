@@ -1992,5 +1992,8 @@
   "PlayNow": "Watch now",
   "social_contribute_info": "Thông tin đóng BHXH",
   "lastUpdateDate": "NGÀY CHỈNH SỬA CUỐI CÙNG",
-  "InsuranceSocialInfoRequest": "Thay đổi thông tin đóng BHXH"
+  "InsuranceSocialInfoRequest": "Thay đổi thông tin đóng BHXH",
+  "ContractTimeTitle": "Labor contract duration regulation when renewal:",
+  "ContractTimeNote": "1. Employees may sign a definite <b>term labor contract</b> after an apprenticeship, and then switch to an <b>indefinite term labor contract</b>, unless otherwise approved by competent Leaders. <br />2. In the <b>Manufacturing Division</b>, Employees may sign two (2) <b>definite term labor contract</b> after an apprenticeship, and then switch to an <b>indefinite term labor contract</b>, unless otherwise approved by competent Leaders.",
+  "ContractTimeNoteOther": "Please make sure to check your company regulation with HR to choose the right kind of contract propose."
 }
