@@ -730,7 +730,11 @@ function EvaluationDetail(props) {
     return Number(totalSeftPoint).toFixed(2) < 0 || Number(totalSeftPoint).toFixed(2) > 100 || Number(totalLeadReviewPoint).toFixed(2) < 0 || Number(totalLeadReviewPoint).toFixed(2) > 100 ? false : true
   }
 
-  const isValidScoreFunc = () => {
+  const isValidScoreFunc = (actionCode) => {
+    if (actionCode == actionButton.save) {
+      return true
+    }
+
     const maximumScore = 5;
     const minimumScore = 1;
     const listGroup = evaluationFormDetail?.listGroup || []
@@ -782,7 +786,7 @@ function EvaluationDetail(props) {
     const statusModalTemp = { ...statusModal }
 
     const isValidTotalScore = isValidTotalScoreFunc()
-    const isValidScore = isValidScoreFunc()
+    const isValidScore = isValidScoreFunc(actionCode)
 
     if (!isValidTotalScore || !isValidScore) {
       statusModalTemp.isShow = true
