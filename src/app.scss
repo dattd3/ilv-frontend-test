@@ -5254,6 +5254,7 @@ span.badge-notification[data-badge]::after {
         }
         .btn-full-screen {
           padding: 2px;
+          margin-left: 15px;
           &.active {
             background: rgba(0,0,0,.3);
           }
@@ -5386,10 +5387,12 @@ span.badge-notification[data-badge]::after {
       background: #FFFFFF;
       border-bottom: 1px solid #C0C0C0 !important;
       position: relative;
+      height: 38px;
       .btn-close {
         position: absolute;
         right: 10px;
         top: 7px;
+        cursor: pointer;
         img {
           height: 12px;
         }
@@ -5397,22 +5400,45 @@ span.badge-notification[data-badge]::after {
     }
     .modal-body {
       border-radius: 0;
-      padding: 10px 0;
+      padding: 15px 0 5px 0;
+      max-height: calc(100% - 38px);
+      padding-right: 2px;
       .content {
         display: flex;
-        // grid-gap: 14px 15px!important;
-        justify-content: space-between;
+        grid-gap: 8px 0 !important;
+        justify-content: space-evenly;
         flex-wrap: wrap;
+        border-bottom: none;
+        height: 100%;
+        overflow-y: auto;
+        &::-webkit-scrollbar {
+          width: 6px;
+        }
+        &::-webkit-scrollbar-thumb {
+          background-color: #B3B3B3;
+          border-radius: 3px;
+        }
+        &::-webkit-scrollbar-track {
+          background-color: transparent;
+        }
         .item {
-          flex: 1 0 17%;
-          margin: 4%;
+          flex: 0 0 22%;
           .thumbnail {
             display: inline-block;
             width: 100%;
-            border: 1px solid #C0C0C0;
+            padding: 0 15px;
+            img {
+              border: 1px solid #C0C0C0;
+              width: 100%;
+            }
+            &.active {
+              img {
+                border: 2px solid #C11D2A;
+              }
+            }
           }
-          img {
-            width: 100%;
+          .page {
+            font-size: 12px;
           }
         }
       }

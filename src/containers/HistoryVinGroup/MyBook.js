@@ -4,7 +4,6 @@ import { saveAs } from 'file-saver';
 import { chunk, last } from 'lodash';
 import { useRouteMatch } from "react-router-dom";
 import HTMLFlipBook from '@cuongnv56/react-pageflip';
-// import HTMLFlipBook from 'react-pageflip';
 import LoadingModal from 'components/Common/LoadingModal';
 import mapConfig from 'containers/map.config';
 import IconClose from "assets/img/icon/icon_x.svg";
@@ -287,7 +286,7 @@ const Page = forwardRef((props, ref) => {
   );
 });
 
-const ThumbnailModal = ({ isShow, onHide }) => {
+const ThumbnailModal = ({ isShow, page, thumbnailPages, handleScrollSidebar, handleChangePage, onHide }) => {
   return (
     <Modal show={isShow} onHide={onHide} className="thumbnail-modal" dialogClassName="thumbnail-modal">
       <Modal.Header className="d-flex justify-content-center">
@@ -295,30 +294,110 @@ const ThumbnailModal = ({ isShow, onHide }) => {
         <span className='btn-close' onClick={onHide}><img src={IconClose} alt='Close' /></span>
       </Modal.Header>
       <Modal.Body className='text-center'>
-        <div className='content'>
-          <div className='item'>
-            <span className='thumbnail'><img src={IMAGE_MAPPING[1]} alt='Page' /></span>
-            <span className='page'>1</span>
-          </div>
-          <div className='item'>
-            <span className='thumbnail'><img src={IMAGE_MAPPING[1]} alt='Page' /></span>
-            <span className='page'>2</span>
-          </div>
-          <div className='item'>
-            <span className='thumbnail'><img src={IMAGE_MAPPING[3]} alt='Page' /></span>
-            <span className='page'>3</span>
-          </div>
-          <div className='item'>
-            <span className='thumbnail'><img src={IMAGE_MAPPING[4]} alt='Page' /></span>
-            <span className='page'>4</span>
-          </div>
-          <div className='item'>
-            <span className='thumbnail'><img src={IMAGE_MAPPING[5]} alt='Page' /></span>
-            <span className='page'>5</span>
-          </div>
+        <div className='content' onScroll={handleScrollSidebar}>
+          {
+            (thumbnailPages || []).map(item => {
+              return (
+                <div key={`thumbnail-${item}`} className='item'>
+                  <span className={`thumbnail ${page === item ? 'active' : ''}`} onClick={() => handleChangePage(item)}><img src={IMAGE_MAPPING[item]} alt='Page' /></span>
+                  <span className='page'>{item}</span>
+                </div>
+              )
+            })
+          }
         </div>
       </Modal.Body>
     </Modal>
+  );
+}
+
+const ButtonBlock = ({ isShowThumbnails, isFullScreen, isMobile, handleShowThumbnails, downloadBook, handleScreen }) => {
+  return (
+    <div className={`d-flex align-items-center bottom-block ${isMobile ? 'justify-content-start' : 'justify-content-center'}`}>
+      <span
+        className={`menu-item cursor-pointer ${
+          isShowThumbnails ? 'active' : ''
+        }`}
+        style={{ marginLeft: isMobile ? 10 : 0 }}
+        onClick={handleShowThumbnails}
+      >
+        <svg
+          data-v-71c99c82=""
+          version="1.1"
+          viewBox="0 0 24 24"
+          className="svg-icon svg-fill"
+          focusable="false"
+        >
+          <path
+            pid="0"
+            d="M9 3c.6 0 1 .4 1 1v5c0 .6-.4 1-1 1H4c-.6 0-1-.4-1-1V4c0-.6.4-1 1-1h5zm11 0c.6 0 1 .4 1 1v5c0 .6-.4 1-1 1h-5c-.6 0-1-.4-1-1V4c0-.6.4-1 1-1h5zM9 14c.6 0 1 .4 1 1v5c0 .6-.4 1-1 1H4c-.6 0-1-.4-1-1v-5c0-.6.4-1 1-1h5zm11 0c.6 0 1 .4 1 1v5c0 .6-.4 1-1 1h-5c-.6 0-1-.4-1-1v-5c0-.6.4-1 1-1h5z"
+          ></path>
+        </svg>
+      </span>
+      {/* <span
+        className="btn-download cursor-pointer"
+        onClick={downloadBook}
+      >
+        <svg
+          data-v-71c99c82=""
+          version="1.1"
+          viewBox="0 0 24 24"
+          className="svg-icon svg-fill"
+          focusable="false"
+        >
+          <path
+            pid="0"
+            d="M17.511 10.276h-2.516V4.201c.087-.456-.1-.921-.48-1.191H9.482c-.38.27-.567.735-.48 1.19v6.076H6.247L12 16.352l5.512-6.076zM18.597 17v2H5.402v-2H3.003v2.8c-.049.603.479 1.132 1.2 1.2h15.593c.724-.063 1.256-.595 1.2-1.2V17h-2.4z"
+          ></path>
+        </svg>
+      </span> */}
+      {/* <span className={`btn-zoom cursor-pointer ${isZoomIn ? 'active' : ''}`} onClick={handleZoom}>
+        {isZoomIn ? (
+            <svg data-v-71c99c82="" version="1.1" viewBox="0 0 24 24" className="svg-icon svg-fill" focusable="false"><path pid="0" d="M15.49 17.611a8.144 8.144 0 01-4.35 1.39c-4.452-.102-8.038-3.625-8.14-8 .036-4.35 3.575-7.89 8-8 4.425.112 7.965 3.65 8 8a7.813 7.813 0 01-1.38 4.498l4.451 4.45-2.121 2.122-4.46-4.46zm-4.385-.61c3.3-.09 5.919-2.757 5.895-6-.026-3.263-2.681-5.916-6-6-3.319.083-5.973 2.737-6 6 .077 3.281 2.766 5.923 6.105 6zM7 12v-2h8v2H7z"></path></svg>
+        )
+        : (
+            <svg data-v-71c99c82="" version="1.1" viewBox="0 0 24 24" className="svg-icon svg-fill" focusable="false"><path pid="0" d="M15.49 17.61A8.144 8.144 0 0111.14 19c-4.452-.102-8.038-3.625-8.14-8 .036-4.35 3.575-7.89 8-8 4.425.112 7.965 3.65 8 8a7.813 7.813 0 01-1.38 4.499l4.451 4.45-2.121 2.122-4.46-4.46zM11.104 17c3.3-.09 5.919-2.757 5.895-6-.026-3.263-2.681-5.916-6-6-3.319.083-5.973 2.737-6 6 .077 3.281 2.766 5.923 6.105 6zM12 7v3h3v2h-3v3h-2v-3H7v-2h3V7h2z"></path></svg>
+        )}
+      </span> */}
+      {
+        !isMobile && (
+          <span
+            className={`btn-full-screen cursor-pointer ${
+              isFullScreen ? 'active' : ''
+            }`}
+            onClick={handleScreen}
+          >
+            {isFullScreen ? (
+              <svg
+                data-v-71c99c82=""
+                version="1.1"
+                viewBox="0 0 24 24"
+                className="svg-icon svg-fill"
+                focusable="false"
+              >
+                <path
+                  pid="0"
+                  d="M20.664 19.114l-2.806-2.854L19.845 14H14v5.947l2.104-2.141 2.806 2.854a1.155 1.155 0 001.637 0 .96.96 0 00.117-1.546zM6.197 7.864l-2.141 2.14h5.947V4.059L7.862 6.2 5.007 3.345a1.19 1.19 0 00-1.665 0 1.19 1.19 0 000 1.665l2.855 2.854zm-.06 8.308L3.242 19.07a1.207 1.207 0 001.69 1.69l2.897-2.897L10 20.034V14H3.965l2.173 2.172zM17.743 7.86l2.924-2.854a1.204 1.204 0 000-1.665 1.156 1.156 0 00-1.637 0l-2.807 2.973L14 4.053V10h5.847l-2.105-2.14z"
+                ></path>
+              </svg>
+            ) : (
+              <svg
+                data-v-71c99c82=""
+                version="1.1"
+                viewBox="0 0 24 24"
+                className="svg-icon svg-fill"
+                focusable="false"
+              >
+                <path
+                  pid="0"
+                  d="M6.733 5.1l2.1-2.1H3v5.833l2.1-2.1 2.8 2.8A1.167 1.167 0 109.533 7.9l-2.8-2.8zM18.9 17.328l-2.8-2.869a1.18 1.18 0 00-1.633-.23 1.135 1.135 0 000 1.837l2.916 2.754L15.167 21H21v-5.738l-2.1 2.066zm-3.014-7.664l2.854-2.806L21 8.845V3h-5.947l2.141 2.104L14.34 7.91a1.155 1.155 0 000 1.637.96.96 0 001.546.117zm-7.857 4.673L5.222 17.26 3 15.156v5.847h5.847l-2.105-2.105 2.924-2.807a1.17 1.17 0 000-1.637 1.052 1.052 0 00-1.637-.117z"
+                ></path>
+              </svg>
+            )}
+          </span>
+        )
+      }
+    </div>
   );
 }
 
@@ -334,8 +413,7 @@ export default function MyBook(props) {
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [isShowThumbnails, setIsShowThumbnails] = useState(false);
   const [isShowThumbnailModal, setIsShowThumbnailModal] = useState(false);
-  // const isMobile = (useRouteMatch({ path: mapConfig.HistoryVingroupMobile }) || {})?.isExact;
-  const isMobile = true;
+  const isMobile = (useRouteMatch({ path: mapConfig.HistoryVingroupMobile }) || {})?.isExact;
   let isWheeling, flipTimeOut;
 
   useEffect(() => {
@@ -468,11 +546,12 @@ export default function MyBook(props) {
   };
 
   const handleChangePage = (p) => {
-    const pageNumber = Number(p);
-
+    const pageNumber = isMobile ? Number(p) - 1 : Number(p);
     setPage(pageNumber);
+
     if (isMobile) {
-      bookRef?.current?.pageFlip()?.turnToPage(pageNumber)
+      bookRef?.current?.pageFlip()?.turnToPage(pageNumber);
+      setIsShowThumbnailModal(false);
     } else {
       clearTimeout(flipTimeOut);
       flipTimeOut = setTimeout(() => bookRef?.current?.pageFlip()?.turnToPage(pageNumber), 200);
@@ -507,14 +586,6 @@ export default function MyBook(props) {
     setIsShowThumbnailModal(false)
   }
 
-  const sidebarPages = (() => {
-    const firstPage = 1,
-      lastPage = pages?.length,
-      center = chunk(pages.filter((item) => item !== firstPage && item !== lastPage), 2);
-
-    return [[firstPage], ...center, [lastPage]];
-  })();
-
   const handleScrollSidebar = (e) => {
     const isBottom = e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
 
@@ -533,10 +604,26 @@ export default function MyBook(props) {
     }
   }
 
+  const sidebarPages = (() => {
+    const firstPage = 1,
+      lastPage = pages?.length,
+      center = chunk(pages.filter((item) => item !== firstPage && item !== lastPage), 2);
+
+    return [[firstPage], ...center, [lastPage]];
+  })();
+
   return (
     <>
       <LoadingModal show={isLoading} />
-      <ThumbnailModal isShow={isShowThumbnailModal} onHide={onHideThumbnailModal} />
+      <ThumbnailModal 
+        isShow={isShowThumbnailModal} 
+        page={page}
+        thumbnailPages={pages}
+        handleScrollSidebar={handleScrollSidebar}
+        handleChangePage={handleChangePage}
+        onHide={onHideThumbnailModal} 
+      />
+
       <div
         className="history-vingroup-page"
         id="history-vingroup-page"
@@ -654,7 +741,7 @@ export default function MyBook(props) {
               <div className="wrap-book">
                 <HTMLFlipBook
                   showCover={true}
-                  flippingTime={700}
+                  flippingTime={800}
                   width={550}
                   height={733}
                   size="stretch"
@@ -674,86 +761,14 @@ export default function MyBook(props) {
                 </HTMLFlipBook>
               </div>
             </div>
-            <div className="d-flex align-items-center justify-content-center bottom-block">
-              <span
-                className={`menu-item cursor-pointer ${
-                  isShowThumbnails ? 'active' : ''
-                }`}
-                onClick={handleShowThumbnails}
-              >
-                <svg
-                  data-v-71c99c82=""
-                  version="1.1"
-                  viewBox="0 0 24 24"
-                  className="svg-icon svg-fill"
-                  focusable="false"
-                >
-                  <path
-                    pid="0"
-                    d="M9 3c.6 0 1 .4 1 1v5c0 .6-.4 1-1 1H4c-.6 0-1-.4-1-1V4c0-.6.4-1 1-1h5zm11 0c.6 0 1 .4 1 1v5c0 .6-.4 1-1 1h-5c-.6 0-1-.4-1-1V4c0-.6.4-1 1-1h5zM9 14c.6 0 1 .4 1 1v5c0 .6-.4 1-1 1H4c-.6 0-1-.4-1-1v-5c0-.6.4-1 1-1h5zm11 0c.6 0 1 .4 1 1v5c0 .6-.4 1-1 1h-5c-.6 0-1-.4-1-1v-5c0-.6.4-1 1-1h5z"
-                  ></path>
-                </svg>
-              </span>
-              <span
-                className="btn-download cursor-pointer"
-                onClick={downloadBook}
-              >
-                <svg
-                  data-v-71c99c82=""
-                  version="1.1"
-                  viewBox="0 0 24 24"
-                  className="svg-icon svg-fill"
-                  focusable="false"
-                >
-                  <path
-                    pid="0"
-                    d="M17.511 10.276h-2.516V4.201c.087-.456-.1-.921-.48-1.191H9.482c-.38.27-.567.735-.48 1.19v6.076H6.247L12 16.352l5.512-6.076zM18.597 17v2H5.402v-2H3.003v2.8c-.049.603.479 1.132 1.2 1.2h15.593c.724-.063 1.256-.595 1.2-1.2V17h-2.4z"
-                  ></path>
-                </svg>
-              </span>
-              {/* <span className={`btn-zoom cursor-pointer ${isZoomIn ? 'active' : ''}`} onClick={handleZoom}>
-                {isZoomIn ? (
-                    <svg data-v-71c99c82="" version="1.1" viewBox="0 0 24 24" className="svg-icon svg-fill" focusable="false"><path pid="0" d="M15.49 17.611a8.144 8.144 0 01-4.35 1.39c-4.452-.102-8.038-3.625-8.14-8 .036-4.35 3.575-7.89 8-8 4.425.112 7.965 3.65 8 8a7.813 7.813 0 01-1.38 4.498l4.451 4.45-2.121 2.122-4.46-4.46zm-4.385-.61c3.3-.09 5.919-2.757 5.895-6-.026-3.263-2.681-5.916-6-6-3.319.083-5.973 2.737-6 6 .077 3.281 2.766 5.923 6.105 6zM7 12v-2h8v2H7z"></path></svg>
-                )
-                : (
-                    <svg data-v-71c99c82="" version="1.1" viewBox="0 0 24 24" className="svg-icon svg-fill" focusable="false"><path pid="0" d="M15.49 17.61A8.144 8.144 0 0111.14 19c-4.452-.102-8.038-3.625-8.14-8 .036-4.35 3.575-7.89 8-8 4.425.112 7.965 3.65 8 8a7.813 7.813 0 01-1.38 4.499l4.451 4.45-2.121 2.122-4.46-4.46zM11.104 17c3.3-.09 5.919-2.757 5.895-6-.026-3.263-2.681-5.916-6-6-3.319.083-5.973 2.737-6 6 .077 3.281 2.766 5.923 6.105 6zM12 7v3h3v2h-3v3h-2v-3H7v-2h3V7h2z"></path></svg>
-                )}
-              </span> */}
-              <span
-                className={`btn-full-screen cursor-pointer ${
-                  isFullScreen ? 'active' : ''
-                }`}
-                onClick={handleScreen}
-              >
-                {isFullScreen ? (
-                  <svg
-                    data-v-71c99c82=""
-                    version="1.1"
-                    viewBox="0 0 24 24"
-                    className="svg-icon svg-fill"
-                    focusable="false"
-                  >
-                    <path
-                      pid="0"
-                      d="M20.664 19.114l-2.806-2.854L19.845 14H14v5.947l2.104-2.141 2.806 2.854a1.155 1.155 0 001.637 0 .96.96 0 00.117-1.546zM6.197 7.864l-2.141 2.14h5.947V4.059L7.862 6.2 5.007 3.345a1.19 1.19 0 00-1.665 0 1.19 1.19 0 000 1.665l2.855 2.854zm-.06 8.308L3.242 19.07a1.207 1.207 0 001.69 1.69l2.897-2.897L10 20.034V14H3.965l2.173 2.172zM17.743 7.86l2.924-2.854a1.204 1.204 0 000-1.665 1.156 1.156 0 00-1.637 0l-2.807 2.973L14 4.053V10h5.847l-2.105-2.14z"
-                    ></path>
-                  </svg>
-                ) : (
-                  <svg
-                    data-v-71c99c82=""
-                    version="1.1"
-                    viewBox="0 0 24 24"
-                    className="svg-icon svg-fill"
-                    focusable="false"
-                  >
-                    <path
-                      pid="0"
-                      d="M6.733 5.1l2.1-2.1H3v5.833l2.1-2.1 2.8 2.8A1.167 1.167 0 109.533 7.9l-2.8-2.8zM18.9 17.328l-2.8-2.869a1.18 1.18 0 00-1.633-.23 1.135 1.135 0 000 1.837l2.916 2.754L15.167 21H21v-5.738l-2.1 2.066zm-3.014-7.664l2.854-2.806L21 8.845V3h-5.947l2.141 2.104L14.34 7.91a1.155 1.155 0 000 1.637.96.96 0 001.546.117zm-7.857 4.673L5.222 17.26 3 15.156v5.847h5.847l-2.105-2.105 2.924-2.807a1.17 1.17 0 000-1.637 1.052 1.052 0 00-1.637-.117z"
-                    ></path>
-                  </svg>
-                )}
-              </span>
-            </div>
+            <ButtonBlock 
+              isShowThumbnails={isShowThumbnails}
+              isFullScreen={isFullScreen}
+              isMobile={isMobile}
+              handleShowThumbnails={handleShowThumbnails}
+              downloadBook={downloadBook}
+              handleScreen={handleScreen}
+            />
           </div>
         </div>
       </div>
