@@ -9,7 +9,9 @@ import ResultChangeShiftModal from './ResultChangeShiftModal'
 import Constants from '../../commons/Constants'
 import map from "../map.config"
 import { getCulture } from "commons/Utils"
+import LoadingModal from "components/Common/LoadingModal"
 
+// Thẩm định, Phê duyệt từng yêu cầu
 class ConfirmationModal extends React.Component {
     constructor(props) {
         super();
@@ -20,7 +22,8 @@ class ConfirmationModal extends React.Component {
             isShowStatusModal: false,
             disabledSubmitButton: false,
             isShowStatusChangeShiftModal: false,
-            errorMessage: null
+            errorMessage: null,
+            isShowLoading: false,
         }
     }
 
@@ -101,17 +104,17 @@ class ConfirmationModal extends React.Component {
     getHostByRequestTypeId = (dataToSap) => {
         const requestTypeId = dataToSap?.[0]?.requestTypeId || dataToSap?.requestTypeId || "";
 
-        return !!requestTypeId && [12, 14, 15].includes(requestTypeId)
+        return !!requestTypeId && [12, 14, 15, Constants.INSURANCE_SOCIAL, Constants.INSURANCE_SOCIAL_INFO].includes(requestTypeId)
           ? process.env.REACT_APP_REQUEST_SERVICE_URL
           : process.env.REACT_APP_REQUEST_URL;
     }
 
     sync = () => {
         const { dataToSap, t, onHide } = this.props;
-
+        this.setState({ isShowLoading: true })
         axios({
             method: 'POST',
-            url: `${process.env.REACT_APP_REQUEST_URL}request/user-approve`,
+            url: `${process.env.REACT_APP_REQUEST_URL}request/user-approve?culture=${t("langCode")}`,
             data: [dataToSap],
             headers: { 'Content-Type': 'application/json', Authorization: `${localStorage.getItem('accessToken')}` }
         })
@@ -140,10 +143,11 @@ class ConfirmationModal extends React.Component {
 
             this.showStatusModal(titleModal, messageModal, isSuccess)
         })
-        .catch(response => {
-            this.showStatusModal(t("Notification"), "Có lỗi xảy ra! Xin vui lòng liên hệ IT để hỗ trợ", false)
+        .catch(error => {
+            this.showStatusModal(t("Notification"), error?.response?.data?.result?.message || t("AnErrorOccurred"), false)
         })
         .finally(res => {
+            this.setState({ isShowLoading: false })
             onHide()
         })
     }
@@ -174,8 +178,8 @@ class ConfirmationModal extends React.Component {
             .finally(res => {
                 onHide()
             })
-            .catch(response => {
-                this.showStatusModal(t("Notification"), "Có lỗi xảy ra! Xin vui lòng liên hệ IT để hỗ trợ", false)
+            .catch(error => {
+                this.showStatusModal(t("Notification"), error?.response?.data?.result?.message || t("AnErrorOccurred"), false)
             })
     }
 
@@ -205,8 +209,8 @@ class ConfirmationModal extends React.Component {
             .finally(res => {
                 onHide()
             })
-            .catch(response => {
-                this.showStatusModal(t("Notification"), "Có lỗi xảy ra! Xin vui lòng liên hệ IT để hỗ trợ", false)
+            .catch(error => {
+                this.showStatusModal(t("Notification"), error?.response?.data?.result?.message || t("AnErrorOccurred"), false)
             })
     }
 
@@ -236,8 +240,8 @@ class ConfirmationModal extends React.Component {
             .finally(res => {
                 onHide()
             })
-            .catch(response => {
-                this.showStatusModal(t("Notification"), "Có lỗi xảy ra! Xin vui lòng liên hệ IT để hỗ trợ", false)
+            .catch(error => {
+                this.showStatusModal(t("Notification"), error?.response?.data?.result?.message || t("AnErrorOccurred"), false)
             })
     }
 
@@ -284,7 +288,7 @@ class ConfirmationModal extends React.Component {
             })
             .catch(error => {
                 const errorCode = error?.response?.status
-                this.showStatusModal(t("Notification"), errorCode === 504 ? "Yêu cầu đang được xử lý." : "Có lỗi xảy ra! Xin vui lòng liên hệ IT để hỗ trợ", errorCode === 504 ? true : false)
+                this.showStatusModal(t("Notification"), errorCode === 504 ? "Yêu cầu đang được xử lý." : (error?.response?.data?.result?.message || t("AnErrorOccurred")), errorCode === 504 ? true : false)
                 // updateTask(id,0)
             })
             .finally(res => {
@@ -301,9 +305,8 @@ class ConfirmationModal extends React.Component {
               culture: getCulture()
             }
         }).then(res => {
-                if (res && res.data) {
+                if (res && res?.data) {
                     const data = res.data
-                    
                     if (data.result && data.result.code == Constants.API_ERROR_NOT_FOUND_CODE) {
                         return window.location.href = map.NotFound
                     } 
@@ -322,8 +325,8 @@ class ConfirmationModal extends React.Component {
             .finally(res => {
                 onHide();
             })
-            .catch(response => {
-                this.showStatusModal(t("Notification"), "Có lỗi xảy ra! Xin vui lòng liên hệ IT để hỗ trợ", false)
+            .catch(error => {
+                this.showStatusModal(t("Notification"), error?.response?.data?.result?.message || t("AnErrorOccurred"), false)
             })
     }
 
@@ -340,12 +343,12 @@ class ConfirmationModal extends React.Component {
             }
         })
             .then(res => {
-                if (res && res.data) {
-                    const result = res.data.result
-                    const code = result.code
+                if (res && res?.data) {
+                    const result = res.data?.result
+                    const code = result?.code
                     if (code == Constants.API_SUCCESS_CODE) {
-                        if (res.data.data[0].sub[0].status == "E") {
-                            this.showStatusModal(t("Notification"), res.data.data[0].sub[0].message, false)
+                        if (res?.data?.data[0]?.sub[0]?.status == "E") {
+                            this.showStatusModal(t("Notification"), res?.data?.data[0]?.sub[0]?.message, false)
                         } else {
                             this.showStatusModal(
                               t('Successful'),
@@ -361,15 +364,15 @@ class ConfirmationModal extends React.Component {
                     } else if (code == Constants.API_ERROR_NOT_FOUND_CODE) {
                         return window.location.href = map.NotFound
                     } else {
-                        this.showStatusModal(t("Notification"), result.message, false)
+                        this.showStatusModal(t("Notification"), result?.message, false)
                     }
                 }
             })
             .finally(res => {
                 onHide()
             })
-            .catch(response => {
-                this.showStatusModal(t("Notification"), "Có lỗi xảy ra! Xin vui lòng liên hệ IT để hỗ trợ", false)
+            .catch(error => {
+                this.showStatusModal(t("Notification"), error?.response?.data?.result?.message || t("AnErrorOccurred"), false)
             })
     }
 
@@ -385,12 +388,12 @@ class ConfirmationModal extends React.Component {
             }
         })
             .then(res => {
-                if (res && res.data) {
-                    const result = res.data.result
-                    const code = result.code
+                if (res && res?.data) {
+                    const result = res.data?.result
+                    const code = result?.code
                     if (code == Constants.API_SUCCESS_CODE) {
-                        if (res.data.data[0].sub[0].status == "E") {
-                            this.showStatusModal(t("Notification"), res.data.data[0].sub[0].message, false)
+                        if (res.data?.data[0]?.sub[0]?.status == "E") {
+                            this.showStatusModal(t("Notification"), res.data?.data[0]?.sub[0]?.message, false)
                         } else {
                             this.showStatusModal(t("Successful"), t("successfulRejectConsentReq"), true)
                         }
@@ -399,15 +402,15 @@ class ConfirmationModal extends React.Component {
                     } else if (code == Constants.API_ERROR_NOT_FOUND_CODE) {
                         return window.location.href = map.NotFound
                     } else {
-                        this.showStatusModal(t("Notification"), result.message, false)
+                        this.showStatusModal(t("Notification"), result?.message, false)
                     }
                 }
             })
             .finally(res => {
                 onHide()
             })
-            .catch(response => {
-                this.showStatusModal(t("Notification"), "Có lỗi xảy ra! Xin vui lòng liên hệ IT để hỗ trợ", false)
+            .catch(error => {
+                this.showStatusModal(t("Notification"),  error?.response?.data?.result?.message || t("AnErrorOccurred"), false)
             })
     }
 
@@ -459,14 +462,14 @@ class ConfirmationModal extends React.Component {
             [Constants.STATUS_TRANSFER_REFUSE]: "bg-not-approved",
             [Constants.STATUS_APPROVED]: "bg-approved",
         },
-            { isShowStatusModal, resultTitle, resultMessage, isSuccess, isShowStatusChangeShiftModal } = this.state,
-            { message, errorMessage, disabledSubmitButton } = this.state,
+            { isShowStatusModal, resultTitle, resultMessage, isSuccess, isShowStatusChangeShiftModal, message, errorMessage, disabledSubmitButton, isShowLoading } = this.state,
             { t, isSyncFromEmployee, show, onHide, type, title } = this.props;
         
         return (
             <>
                 <ResultModal show={isShowStatusModal} title={resultTitle} message={resultMessage} isSuccess={isSuccess} onHide={this.hideStatusModal} />
                 <ResultChangeShiftModal show={isShowStatusChangeShiftModal} title={resultTitle} result={resultMessage} onHide={this.hideStatusChangeShiftModal} />
+                <LoadingModal show={isShowLoading} />
                 
                 <Modal className='info-modal-common position-apply-modal request-confirm-modal' centered show={show} onHide={onHide}>
                     <Modal.Header className={`apply-position-modal ${ isSyncFromEmployee ? 'bg-approved' : backgroundColorMapping[type] }`} closeButton>

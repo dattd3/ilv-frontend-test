@@ -120,7 +120,7 @@ const CreateInsuranceHealth = ({ t }) => {
 
   const getPersonalInfo = async () => {
     const config = getMuleSoftHeaderConfigurations()
-    await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v1/ws/user/personalinfo`, config)
+    await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/personalinfo`, config)
       .then(res => {
         if (res && res.data && res.data.data) {
           let profile = res.data.data[0];
@@ -327,10 +327,10 @@ const CreateInsuranceHealth = ({ t }) => {
         _.isEmpty(candidateInfos[name]) ||
         (!candidateInfos[name].value && optionFields.includes(name))
       ) {
-        _errors[name] = "Vui lòng nhập giá trị !";
+        _errors[name] = t('PleaseEnterInfo');
       } else {
         _errors[name] =
-          _errors[name] == "Vui lòng nhập giá trị !" ? null : _errors[name];
+          _errors[name] == t('PleaseEnterInfo') ? null : _errors[name];
       }
 
       if (name === 'email') {
@@ -353,7 +353,7 @@ const CreateInsuranceHealth = ({ t }) => {
       (item) => item === null || item === undefined
     );
     if (hasErrors) {
-      notifyMessage("Vui lòng nhập giá trị !", true);
+      notifyMessage(t('PleaseEnterInfo'), true);
     }
     return hasErrors ? false : true;
   };

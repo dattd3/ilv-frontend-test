@@ -42,6 +42,10 @@ const getStorage = (key) => localStorage.getItem(key) || '',
     { value: 'T2', label: 'T2', parentId: 'I' },
     { value: 'T3', label: 'T3', parentId: 'J' },
     { value: 'T4', label: 'T4', parentId: 'J' },
+    { value: 'T5', label: 'T5', parentId: 'K' },
+    { value: 'T6', label: 'T6', parentId: 'K' },
+    { value: 'T7', label: 'T7', parentId: 'M' },
+    { value: 'T8', label: 'T8', parentId: 'N' },
     { value: 'C1', label: 'C1', parentId: 'K' },
     { value: 'P1', label: 'P1', parentId: 'K' },
     { value: 'P2', label: 'P2', parentId: 'K' },
@@ -1803,8 +1807,7 @@ const SalaryAdjustmentPropse = (props) => {
                       className={`form-control w-100 bg-white ${
                         isProposalTransfer ? 'disabled' : ''
                       }`}
-                      style={{ fontSize: '14px', paddingLeft: '8px' }}
-                      disabled
+                      style={{ fontSize: '14px', paddingLeft: '8px', pointerEvents: 'none' }}
                     >
                       <option
                       >

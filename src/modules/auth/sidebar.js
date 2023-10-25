@@ -13,11 +13,50 @@ export const Navigation = [
     role: "U",
   },
   {
-    id: 123456789,
+    id: 995,
     parentId: 0,
     icon: "c-vingroup-history",
-    label: "Vin30Chronicles",
+    label: "VingroupCultural",
+    role: "U",
+  },
+  {
+    id: 9951,
+    parentId: 995,
+    icon: "menu-bullet-lv2 icon-sub-menu-lv2",
+    label: "VingroupHistory",
     to: map.HistoryVingroup,
+    role: "U",
+  },
+  {
+    id: 9952,
+    parentId: 995,
+    icon: "menu-bullet-lv2 icon-sub-menu-lv2",
+    label: "VingroupCulturalGeneral",
+    to: map.VingroupCulture,
+    role: "U",
+  },
+  {
+    id: 9953,
+    parentId: 995,
+    icon: "menu-bullet-lv2 icon-sub-menu-lv2",
+    label: "SixCoreValues",
+    to: map.SixCoreValues,
+    role: "U",
+  },
+  {
+    id: 9954,
+    parentId: 995,
+    icon: "menu-bullet-lv2 icon-sub-menu-lv2",
+    label: "SixManagementRules",
+    to: map.SixGovernancePrinciples,
+    role: "U",
+  },
+  {
+    id: 9955,
+    parentId: 995,
+    icon: "menu-bullet-lv2 icon-sub-menu-lv2",
+    label: "VingroupWorkingEnvironment",
+    to: map.WorkingEnvironment,
     role: "U",
   },
   {
@@ -171,7 +210,8 @@ export const Navigation = [
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     to: "",
     label: 'MenuMyTeam',
-    role: ["C2", "C1","C", "P2", "P1", "T4", "T3", "T2", "T1", "T0"]
+    // role: ["C2", "C1","C", "P2", "P1", "T4", "T3", "T2", "T1", "T0"]
+    role: ["C2", "C1", "C", "P2", "P1", "T7", "T6", "T5", "T4", "T3", "T2", "T1", "T0"]
   },
   {
     id:1002,
@@ -237,7 +277,8 @@ export const Navigation = [
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     to: map.ProposalManagement,
     label: 'CreateProposal',
-    role: ["C2", "C1","C", "P2", "P1", "P","T","P2", "P1", "T4", "T3", "T2", "T1"]
+    //role: ["C2", "C1","C", "P2", "P1", "P","T","P2", "P1", "T4", "T3", "T2", "T1"]
+    role: ["C2", "C1","C", "P2", "P1","P2", "P1", "T7", "T6", "T5", "T4", "T3", "T2", "T1"]
   },
   {
     id: 4,
@@ -245,7 +286,8 @@ export const Navigation = [
     icon: "menu-bullet-lv2 icon-sub-menu-lv2",
     label: "Menu_Intruction",
     to: map.Instruction,
-    role: ["P","T","P2", "P1", "T4", "T3", "T2", "T1"],
+    // role: ["P","T","P2", "P1", "T4", "T3", "T2", "T1"],
+    role: ["P2", "P1", "T6", "T5", "T4", "T3", "T2", "T1"]
   },
   {
     id: 5,
@@ -253,7 +295,8 @@ export const Navigation = [
     icon: "menu-bullet-lv2 icon-sub-menu-lv2",
     label: "Menu_TrainingRoadmap",
     to: map.Roadmap,
-    role: ["P","T","P2", "P1", "T4", "T3", "T2", "T1"],
+    //role: ["P","T","P2", "P1", "T4", "T3", "T2", "T1"],
+    role: ["P2", "P1", "T6", "T5", "T4", "T3", "T2", "T1"]
   },
   {
     id: 7,
@@ -263,14 +306,14 @@ export const Navigation = [
     to: map.TraniningKPI,
     role: "U",
   },
-  {
-    id: 13,
-    parentId: 0,
-    icon: "c-group",
-    label: "Menu_GroupInformation",
-    to: "/announcement",
-    role: "U",
-  },
+  // {
+  //   id: 13,
+  //   parentId: 0,
+  //   icon: "c-group",
+  //   label: "Menu_GroupInformation",
+  //   to: "/announcement",
+  //   role: "U",
+  // },
   {
     id: 14,
     parentId: 13,
@@ -332,7 +375,7 @@ export const Navigation = [
     parentId: 10,
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     label: "Welfare",
-    role: [...Constants.MODULE_COMPANY_AVAILABE[Constants.MODULE.PHUCLOI]]
+    role: [...Constants.MODULE_COMPANY_AVAILABE[Constants.MODULE.PHUCLOI], ...Constants.MODULE_COMPANY_AVAILABE[Constants.MODULE.BAOHIEM]]
   },
   {
     id: 111,
@@ -340,7 +383,7 @@ export const Navigation = [
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     label: "InteralWelfare",
     to: map.InteralWelfare,
-    role: 'U'
+    role: [...Constants.MODULE_COMPANY_AVAILABE[Constants.MODULE.PHUCLOI]]
   },
   {
     id: 112,
@@ -348,7 +391,7 @@ export const Navigation = [
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     label: "InsuranceRegime",
     to: map.InsuranceRegime,
-    role: 'NA'
+    role: [...Constants.MODULE_COMPANY_AVAILABE[Constants.MODULE.BAOHIEM]]
   },
   {
     id: 30,
@@ -480,14 +523,14 @@ export const Navigation = [
     role: [Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinHoliday1, Constants.pnlVCode.VinSoftware, Constants.pnlVCode.VinMec, Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading,
       Constants.pnlVCode.VinSmart, Constants.pnlVCode.VincomRetail, Constants.pnlVCode.VinAI, Constants.pnlVCode.Vin3S, Constants.pnlVCode.VinHome]
   },
-  {
-    id: 99999,
-    parentId: 17,
-    icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
-    label: "vaccination",
-    to: map.VaccineList,
-    role: 'U'
-  },
+  // {
+  //   id: 99999,
+  //   parentId: 17,
+  //   icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
+  //   label: "vaccination",
+  //   to: map.VaccineList,
+  //   role: 'U'
+  // },
 
   {
     id: 109999,
@@ -503,7 +546,7 @@ export const Navigation = [
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     label: "RequestCreate",
     to: map.RegistrationManagement,
-    role: [...Constants.MODULE_COMPANY_AVAILABE[Constants.MODULE.NGHIVIEC], ...Constants.MODULE_COMPANY_AVAILABE[Constants.MODULE.DIEUCHUYEN], ...Constants.MODULE_COMPANY_AVAILABE[Constants.MODULE.BONHIEM]]
+    role: [...Constants.MODULE_COMPANY_AVAILABE[Constants.MODULE.NGHIVIEC], ...Constants.MODULE_COMPANY_AVAILABE[Constants.MODULE.DIEUCHUYEN], ...Constants.MODULE_COMPANY_AVAILABE[Constants.MODULE.BONHIEM], ...Constants.MODULE_COMPANY_AVAILABE[Constants.MODULE.THANHTOAN_NOIBO]]
     //role: 'NA'
   },
   // {

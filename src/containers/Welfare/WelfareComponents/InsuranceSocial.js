@@ -6,7 +6,7 @@ import { withTranslation } from 'react-i18next';
 import moment from 'moment';
 import axios from 'axios';
 import _ from "lodash";
-import { getRequestConfigurations } from "../../../commons/Utils"
+import { formatNumberSpecialCase, getRequestConfigurations } from "../../../commons/Utils"
 
 import Download from "../../../assets/img/icon/ic_download_blue.svg";
 import CustomPaging from "../../../components/Common/CustomPaging";
@@ -37,7 +37,7 @@ class InsuranceSocial extends React.Component {
     fetchData = (page, size) => {
         const config = getRequestConfigurations()
 
-        axios.get(`${process.env.REACT_APP_HRDX_URL}api/BenefitClaim/list?pageIndex=${page}&pageSize=${size}`, config)
+        axios.get(`${process.env.REACT_APP_REQUEST_SERVICE_URL}benefitClaim/list?pageIndex=${page}&pageSize=${size}`, config)
             .then(res => {
                 if (res && res.data && res.data.data) {
                     this.setState({ listData: res.data.data?.requests || [],
@@ -82,6 +82,7 @@ class InsuranceSocial extends React.Component {
                                         <th scope="col" className="request-type text-center">{t('TypeOfRequest')}</th>
                                         <th scope="col" className="request-type text-center">{t('claim_submission_date')}</th>
                                         <th scope="col" className="status1 pl-8">{t('EvaluationStatus')}</th>
+                                        <th scope="col" className="request-type text-center">{t('price')}</th>
                                         <th scope="col" className="tool text-center">{t("action")}</th>
                                     </tr>
                                 </thead>
@@ -92,11 +93,12 @@ class InsuranceSocial extends React.Component {
                                             return (
                                                 <tr key={index}>
                                                     <td className="code text-center">{child.idDisplay}</td>
-                                                    <td className="request-type text-center">{child.requestName || ''}</td>
+                                                    <td className="request-type text-center">{child.claimTypeName || ''}</td>
                                                     <td className="request-type text-center">{child.createdDate ? moment(child.createdDate).format('DD/MM/YYYY') : ''}</td>
                                                     <td className="status1 text-left">{child.statusName || ''}</td>
+                                                    <td className="request-type text-center">{formatNumberSpecialCase(child.amountMoney) || ''}</td>
                                                     <td className="tool">
-                                                        <a href={`/insurance-manager/detail/${child.id}`}><img alt="Sửa" src={Download} className="icon-download" /></a>
+                                                        <a href={`/insurance-manager/export/${child.idDisplay}`}><img alt="Sửa" src={Download} className="icon-download" /></a>
                                                     </td>
                                                 </tr>
                                             )
