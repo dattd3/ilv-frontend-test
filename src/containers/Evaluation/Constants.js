@@ -46,5 +46,9 @@ const stepEvaluation360Config = [
     { value: evaluation360Status.evaluated, label: "Feedbacked" },
     { value: evaluation360Status.completed, label: "Completed" },
 ]
-
-export { evaluationStatus, evaluation360Status, actionButton, formType, groupConfig, formulaConfig, processStep, languageCodeMapping, stepEvaluation360Config }
+const evaluationApiVersion = {
+    v1: 'v1',
+    v2: 'v2',
+}
+const scores = [1, 2, 3, 4, 5]
+export { evaluationStatus, evaluation360Status, actionButton, formType, groupConfig, formulaConfig, processStep, languageCodeMapping, stepEvaluation360Config, evaluationApiVersion, scores }

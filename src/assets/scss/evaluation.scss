@@ -312,7 +312,7 @@
                 border-radius: 4px;
                 font-style: italic;
             }
-            .vin-bus {
+            .vin-bus, .formula {
                 .invalid-message {
                     margin: 10px 0 0 0;
                     width: 100% !important;
@@ -460,6 +460,196 @@
                 .title {
                     border-radius: 4px;
                 }
+                .wrap-evaluation-table {
+                    .invalid-message {
+                        display: inline-block;
+                        width: 60%;
+                    }
+                    table {
+                        white-space: pre-wrap;
+                        margin: 0;
+                        border: none;
+                        border-collapse: separate;
+                        border-spacing: 0;
+                        table-layout: fixed;
+                        width: 100%;
+                        th, td {
+                            padding: 5px;
+                            border-radius: 0;
+                            border: 0.5px solid #DEE2E6;
+                            &:nth-child(2n + 1) {
+                                border-right: none;
+                                border-left: none;
+                            }
+                            &:first-child {
+                                border-left: 0.5px solid #DEE2E6;
+                            }
+                            &:last-child {
+                                border-right: 0.5px solid #DEE2E6;
+                            }
+                            &.measurement {
+                                width: 28%;
+                                text-align: left;
+                                ul {
+                                    padding: 0;
+                                    margin: 0 0 0 15px;
+                                    font-size: 13px;
+                                    &.second {
+                                        list-style-type: upper-greek;
+                                        &.v2 {
+                                            list-style: none;
+                                            margin-left: 0;
+                                        }
+                                    }
+                                }
+                                .note {
+                                    font-size: 13px;
+                                    font-style: italic;
+                                    font-weight: normal;
+                                    margin-left: 5px;
+                                }
+                            }
+                            &.proportion {
+                                width: 10%;
+                            }
+                            &.target {
+                                width: 16%;
+                            }
+                            &.qltt-assessment, &.self-assessment, &.actual-results {
+                                width: 11.5%;
+                            }
+                            &.deviant {
+                                width: 11.5%;
+                                .value {
+                                    display: inline-flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    width: 65px;
+                                    background: #F2F2F2;
+                                    padding: 4px 8px;
+                                    &.up {
+                                        color: #05BD29;
+                                    }
+                                    &.down {
+                                        color: #C11D2A;
+                                    }
+                                    img {
+                                        height: 10px;
+                                        margin-left: 3px;
+                                    }
+                                }
+                            }
+                        }
+                        td {
+                            border-top: none;
+                            border-radius: 0;
+                            input {
+                                border: 1px solid #DEE2E6;
+                                font-size: 13px;
+                                width: 65px;
+                                padding: 4px 8px;
+                                &:active {
+                                    outline: none;
+                                }
+                                &:focus {
+                                    outline: none;
+                                }
+                            }
+                            &.actual-results {
+                                padding: 8px;
+                                textarea {
+                                    width: 100%;
+                                    border: 1px solid #DEE2E6;
+                                    outline: none;
+                                }
+                            }
+                            select {
+                                border: 1px solid #DEE2E6;
+                                border-radius: 5px;
+                                cursor: pointer;
+                                height: 30px;
+                                width: 110px;
+                                padding: 5px;
+                            }
+                        }
+                        &.vin-bus, &.formula {
+                            th {
+                                background: #F9F9F9;
+                            }
+                            th, td {
+                                padding: 5px;
+                                border-radius: 0;
+                                border: 0.5px solid #DEE2E6;
+                                &:nth-child(2n + 1) {
+                                    border-right: none;
+                                    border-left: none;
+                                }
+                                &:first-child {
+                                    border-left: 0.5px solid #DEE2E6;
+                                }
+                                &:last-child {
+                                    border-right: 0.5px solid #DEE2E6;
+                                }
+                                &.measurement {
+                                    width: 46%;
+                                    text-align: left;
+                                    ul {
+                                        padding: 0;
+                                        margin: 0 0 0 15px;
+                                        font-size: 13px;
+                                        &.second {
+                                            list-style-type: upper-greek;
+                                            &.v2 {
+                                                list-style: none;
+                                                margin-left: 0;
+                                            }
+                                        }
+                                    }
+                                    .note {
+                                        font-size: 13px;
+                                        font-style: italic;
+                                        font-weight: normal;
+                                        margin-left: 5px;
+                                    }
+                                }
+                                &.proportion {
+                                    width: 12%;
+                                } 
+                                &.target {
+                                    width: 12%;
+                                }
+                                &.self-assessment, &.qltt-assessment {
+                                    width: 15%;
+                                    padding: 10px 20px;
+                                }
+                                & > .data {
+                                    div {
+                                        height: 30px;
+                                        &:last-child {
+                                            margin-top: 10px;
+                                        }
+                                        input {
+
+                                        }
+                                    }
+                                    .value {
+                                        display: inline-flex;
+                                        align-items: center;
+                                        justify-content: center;
+                                        text-align: center;
+                                        width: 100%;
+                                        height: 100%;
+                                        padding: 0 10px;
+                                        border-radius: 4px;
+                                        &.label {
+                                            background: #F2F2F2;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
                 .wrap-score-table {
                     margin-top: 15px;
                     .invalid-message {
@@ -583,7 +773,7 @@
                                 padding: 5px;
                             }
                         }
-                        &.vin-bus {
+                        &.vin-bus, &.formula {
                             th {
                                 background: #F9F9F9!important;
                                 color: #000000;
@@ -613,6 +803,10 @@
                                         font-size: 13px;
                                         &.second {
                                             list-style-type: upper-greek;
+                                            &.v2 {
+                                                list-style: none;
+                                                margin-left: 0;
+                                            }
                                         }
                                     }
                                     .note {
@@ -672,7 +866,7 @@
                         }
                     }
                 }
-                .wrap-score-table {
+                .wrap-evaluation-table {
                     .invalid-message {
                         display: inline-block;
                         width: 60%;
@@ -685,9 +879,6 @@
                         border-spacing: 0;
                         table-layout: fixed;
                         width: 100%;
-                        .actual-results {
-
-                        }
                         th, td {
                             padding: 5px;
                             border-radius: 0;
@@ -711,6 +902,10 @@
                                     font-size: 13px;
                                     &.second {
                                         list-style-type: upper-greek;
+                                        &.v2 {
+                                            list-style: none;
+                                            margin-left: 0;
+                                        }
                                     }
                                 }
                                 .note {
@@ -783,7 +978,7 @@
                                 padding: 5px;
                             }
                         }
-                        &.vin-bus {
+                        &.vin-bus, &.formula {
                             th {
                                 background: #F9F9F9;
                             }
@@ -810,6 +1005,252 @@
                                         font-size: 13px;
                                         &.second {
                                             list-style-type: upper-greek;
+                                            &.v2 {
+                                                list-style: none;
+                                                margin-left: 0;
+                                            }
+                                        }
+                                    }
+                                    .note {
+                                        font-size: 13px;
+                                        font-style: italic;
+                                        font-weight: normal;
+                                        margin-left: 5px;
+                                    }
+                                }
+                                &.proportion {
+                                    width: 12%;
+                                } 
+                                &.target {
+                                    width: 12%;
+                                }
+                                &.self-assessment, &.qltt-assessment {
+                                    width: 15%;
+                                    padding: 10px 20px;
+                                }
+                                & > .data {
+                                    div {
+                                        height: 30px;
+                                        &:last-child {
+                                            margin-top: 10px;
+                                        }
+                                        input {
+
+                                        }
+                                    }
+                                    .value {
+                                        display: inline-flex;
+                                        align-items: center;
+                                        justify-content: center;
+                                        text-align: center;
+                                        width: 100%;
+                                        height: 100%;
+                                        padding: 0 10px;
+                                        border-radius: 4px;
+                                        &.label {
+                                            background: #F2F2F2;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                .wrap-score-table {
+                    &.v2 {
+                        margin-top: 15px;
+                        table {
+                            thead {
+                                tr {
+                                    th {
+                                        text-align: center;
+                                        .milestones {
+                                            height: 20px;
+                                            width: 20px;
+                                            display: inline-flex;
+                                            align-items: center;
+                                            justify-content: center;
+                                            border-radius: 10px;
+                                            padding: 1px;
+                                            border: 1px solid #C11D2A;
+                                            span {
+                                                display: inline-block;
+                                                width: 100%;
+                                                height: 100%;
+                                                text-align: center;
+                                                color: #FFFFFF;
+                                                background: #C11D2A;
+                                                font-weight: normal;
+                                                font-size: 11px;
+                                                border-radius: 50%;
+                                            }
+                                        }
+                                    }
+                                    &:first-child {
+                                        th {
+                                            background: #FFEAEB;
+                                            border-bottom: none;
+                                            &:first-child {
+                                                border-top-left-radius: 4px;
+                                            }
+                                            &:last-child {
+                                                border-top-right-radius: 4px;
+                                            }
+                                        }
+                                    }
+                                    &:last-child {
+                                        color: #2C72C6;
+                                        font-weight: bold;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    .invalid-message {
+                        display: inline-block;
+                        width: 60%;
+                    }
+                    table {
+                        white-space: pre-wrap;
+                        margin: 0;
+                        border: none;
+                        border-collapse: separate;
+                        border-spacing: 0;
+                        table-layout: fixed;
+                        width: 100%;
+                        .actual-results {
+
+                        }
+                        th, td {
+                            padding: 5px;
+                            border-radius: 0;
+                            border: 0.5px solid #DEE2E6;
+                            &:nth-child(2n + 1) {
+                                border-right: none;
+                                border-left: none;
+                            }
+                            &:first-child {
+                                border-left: 0.5px solid #DEE2E6;
+                            }
+                            &:last-child {
+                                border-right: 0.5px solid #DEE2E6;
+                            }
+                            &.measurement {
+                                width: 28%;
+                                text-align: left;
+                                ul {
+                                    padding: 0;
+                                    margin: 0 0 0 15px;
+                                    font-size: 13px;
+                                    &.second {
+                                        list-style-type: upper-greek;
+                                        &.v2 {
+                                            list-style: none;
+                                            margin-left: 0;
+                                        }
+                                    }
+                                }
+                                .note {
+                                    font-size: 13px;
+                                    font-style: italic;
+                                    font-weight: normal;
+                                    margin-left: 5px;
+                                }
+                            }
+                            &.proportion {
+                                width: 10%;
+                            }
+                            &.target {
+                                width: 16%;
+                            }
+                            &.qltt-assessment, &.self-assessment, &.actual-results {
+                                width: 11.5%;
+                            }
+                            &.deviant {
+                                width: 11.5%;
+                                .value {
+                                    display: inline-flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    width: 65px;
+                                    background: #F2F2F2;
+                                    padding: 4px 8px;
+                                    &.up {
+                                        color: #05BD29;
+                                    }
+                                    &.down {
+                                        color: #C11D2A;
+                                    }
+                                    img {
+                                        height: 10px;
+                                        margin-left: 3px;
+                                    }
+                                }
+                            }
+                        }
+                        td {
+                            border-top: none;
+                            border-radius: 0;
+                            input {
+                                border: 1px solid #DEE2E6;
+                                font-size: 13px;
+                                width: 65px;
+                                padding: 4px 8px;
+                                &:active {
+                                    outline: none;
+                                }
+                                &:focus {
+                                    outline: none;
+                                }
+                            }
+                            &.actual-results {
+                                padding: 8px;
+                                textarea {
+                                    width: 100%;
+                                    border: 1px solid #DEE2E6;
+                                    outline: none;
+                                }
+                            }
+                            select {
+                                border: 1px solid #DEE2E6;
+                                border-radius: 5px;
+                                cursor: pointer;
+                                height: 30px;
+                                width: 110px;
+                                padding: 5px;
+                            }
+                        }
+                        &.vin-bus, &.formula {
+                            th {
+                                background: #F9F9F9;
+                            }
+                            th, td {
+                                padding: 5px;
+                                border-radius: 0;
+                                border: 0.5px solid #DEE2E6;
+                                &:nth-child(2n + 1) {
+                                    border-right: none;
+                                    border-left: none;
+                                }
+                                &:first-child {
+                                    border-left: 0.5px solid #DEE2E6;
+                                }
+                                &:last-child {
+                                    border-right: 0.5px solid #DEE2E6;
+                                }
+                                &.measurement {
+                                    width: 46%;
+                                    text-align: left;
+                                    ul {
+                                        padding: 0;
+                                        margin: 0 0 0 15px;
+                                        font-size: 13px;
+                                        &.second {
+                                            list-style-type: upper-greek;
+                                            &.v2 {
+                                                list-style: none;
+                                                margin-left: 0;
+                                            }
                                         }
                                     }
                                     .note {

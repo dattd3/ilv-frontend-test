@@ -96,11 +96,11 @@ const PNL_SWIPER_LIST = [
   [
     {
       logo: IconVinschool,
-      url: "https://vinschool.edu.vn/",
+      url: "https://vinschool.edu.vn",
     },
     {
       logo: IconVinUni,
-      url: "https://vinuni.edu.vn/",
+      url: "https://vinuni.edu.vn",
     },
     {
       logo: IconVingroup,
