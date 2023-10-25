@@ -71,7 +71,7 @@ const ROUTES = [
       exact: true,
       path: map.HistoryVinGroupMobile
     },
-    component: lazy(() => import("./HistoryVinGroup/MyBook"))
+    component: lazy(() => import("./Vin30Chronicles/MyBook"))
   },
   {
     key: "main",
