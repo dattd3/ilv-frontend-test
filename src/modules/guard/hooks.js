@@ -84,6 +84,8 @@ const Storage = {
     localStorage.setItem('actualDepartment', currentAuthUser.actualDepartment);
     localStorage.setItem('ad', currentAuthUser.ad);
     localStorage.setItem('master_code', currentAuthUser.master_code);
+    localStorage.setItem('cost_center', currentAuthUser.cost_center);
+    localStorage.setItem('insurance_number', currentAuthUser.insurance_number);
   },
   load() {
     const accessToken = localStorage.getItem('accessToken');
@@ -131,7 +133,9 @@ const Storage = {
       jobCode: localStorage.getItem('jobCode'),
       actualDepartment: localStorage.getItem('actualDepartment'),
       ad: localStorage.getItem('ad'),
-      master_code: localStorage.getItem('master_code')
+      master_code: localStorage.getItem('master_code'),
+      cost_center: localStorage.getItem('cost_center'),
+      insurance_number: localStorage.getItem('insurance_number')
     }
   },
   reset() {
@@ -180,6 +184,8 @@ const Storage = {
     localStorage.removeItem('ad');
     localStorage.removeItem('master_code');
     localStorage.removeItem("user-guides")
+    localStorage.removeItem('cost_center');
+    localStorage.removeItem('insurance_number');
   }
 }
 
@@ -226,5 +232,7 @@ const deserialize = (currentAuthUser) => ({
   jobCode: currentAuthUser.jobCode,
   actualDepartment: currentAuthUser.actualDepartment,
   ad: currentAuthUser.ad,
-  master_code: currentAuthUser.master_code
+  master_code: currentAuthUser.master_code,
+  cost_center: currentAuthUser.cost_center,
+  insurance_number: currentAuthUser.insurance_number
 })

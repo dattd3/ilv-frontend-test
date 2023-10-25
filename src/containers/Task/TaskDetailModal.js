@@ -15,6 +15,7 @@ import WorkOutSideGroupDetail from 'containers/PersonalInfo/WorkOutSideGroupDeta
 import axios from 'axios'
 import Constants from '../../commons/Constants'
 import map from "../map.config"
+import InternalPaymentDetail from 'containers/Welfare/InternalPayment/InternalPaymentDetail'
 
 class TaskDetailModal extends React.Component {
     constructor(props) {
@@ -56,8 +57,13 @@ class TaskDetailModal extends React.Component {
         const { t, action, taskId, show, onHide, isAutoShowDetailModal } = this.props // isAutoShowDetailModal chỉ sử dụng cho Quá trình công tác ngoài Tập đoàn
         const data = this.state.data;
         let { requestTypeId, updateField } = data
-        updateField = JSON.parse(updateField || '{}')
-        const isWorkOutSideGroup = requestTypeId == Constants.UPDATE_PROFILE && updateField?.UpdateField?.length === 1 && updateField?.UpdateField[0] === 'WorkOutside'
+        let isWorkOutSideGroup = false;
+        if (requestTypeId == Constants.UPDATE_PROFILE) {
+          updateField = JSON.parse(updateField || '{}')
+          isWorkOutSideGroup = updateField?.UpdateField?.length === 1 && updateField?.UpdateField[0] === 'WorkOutside'
+        }
+        // updateField = JSON.parse(updateField || '{}')
+        // const isWorkOutSideGroup = requestTypeId == Constants.UPDATE_PROFILE && updateField?.UpdateField?.length === 1 && updateField?.UpdateField[0] === 'WorkOutside'
 
         if(!data) {
           return null;
@@ -90,6 +96,7 @@ class TaskDetailModal extends React.Component {
                         {data && data?.requestTypeId === Constants.CHANGE_DIVISON_SHIFT ? <ChangeDivisionShiftDetail action={action} substitution={data}/> : null}
                         {data && data?.requestTypeId === Constants.DEPARTMENT_TIMESHEET ? <DepartmentTimeSheetDetail action={action} substitution={data}/> : null}
                         {data && data?.requestTypeId === Constants.OT_REQUEST ? <OTRequestDetailComponent action={action} data={data}/> : null}
+                        {data && data?.requestTypeId === Constants.WELFARE_REFUND ? <InternalPaymentDetail action={action} data={data} viewPopup={true} /> : null}
                     </div>
                 </Modal.Body>
             </Modal>

@@ -94,7 +94,7 @@ class ChangeReqBtnComponent extends React.Component {
                     updateTask={this.updateTaskStatus}
                     updateButtonStatus={this.updateButtonStatus}
             />
-            <div className="bg-white d-flex justify-content-center mt-2 action-btn">
+            <div className="bg-white d-flex justify-content-center mt-2 action-btn button-block-bottom-fixed">
                 {
                     action === "approval" &&
                     <>

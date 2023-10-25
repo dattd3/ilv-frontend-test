@@ -380,7 +380,59 @@
     }
   }
 }
-
+.input-style {
+  input {
+    font-size: 14px;
+  }
+  input:disabled {
+    background-color: #eee;
+ }
+  textarea:disabled {
+    background-color: #eee;
+  }
+  [class$="-singleValue"]{
+    color:#000;
+  }
+  .show-column {
+    flex-direction: column;
+    align-items: unset;
+  }
+  .value-update {
+    background: #CCCEE2 !important;
+  }
+  .value-new {
+    background: #FEE7D0;
+  }
+  .value-old {
+    background-color: #F2F2F2;
+  }
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    gap: 30px;
+  }
+  .value-delete {
+    background: #F5E3E4;
+  }
+  .box-color {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    margin-right: 5px;
+  }
+}
+.social-contribute {
+  .box {
+    border-radius: 3px !important;
+  }
+  .item-contain {
+    border: 1px solid #DEE2E6;
+    border-radius: 4px;
+    padding: 12px 15px;
+  }
+}
 .registration-insurance-section {
   font: normal 14px Arial, Helvetica, sans-serif;
   color: #000000;
@@ -587,16 +639,15 @@
   }
   .input {
     margin: 0;
-    padding-right: 10px;
     width: 100%;
     color: #000;
   }
   .input-img {
-    position: absolute;
-    top: 8px;
-    right: 2px;
-    width: 24px;
-    height: 24px;
+    // position: absolute;
+    // top: 8px;
+    // right: 2px;
+    // width: 24px;
+    // height: 24px;
   }
   .input-clock {
     position: absolute;
@@ -610,7 +661,6 @@
   }
   i {
     font-size: 20px;
-    font-weight: 100;
   }
 
   .list-inline-item {
@@ -635,10 +685,12 @@
     margin: 10px 0;
     border: 1px solid #ddd;
     background-color: #eee;
-    padding: 7px;
     border-radius: 5px;
     width: 100%;
-    min-height: 40px;
+    min-height: 38px;
+    display: flex;
+    align-items: center;
+    padding: 0px 7px;
   }
 
   .btn-save {
@@ -690,6 +742,98 @@
   }
   .btn-save {
     background-color: #05bd29;
+  }
+
+  .service-request {
+    font-size: inherit;
+    i {
+      font-weight: 700;
+    }
+    .card-header {
+      background-color: #E2E2E2;
+      font-weight: 700;
+      padding-top: 8px;
+      padding-bottom: 8px;
+    }
+    .request-content {
+        padding: 15px 20px;
+        .mt-15px {
+          margin-bottom: 15px;
+        }
+
+        .flex-1 {
+          flex: 1;
+          padding: 0px 15px;
+        }
+
+        .action-btn-container {
+          padding-right: 15px;
+          margin-top: 24px;
+          display: flex;
+          gap: 8px;
+        }
+
+        .btn-action-trip {
+          border: 1px solid #DEE2E6;
+          border-radius: 4px;
+          font-size: 14px;
+          width: 42px;
+          height: 42px;
+          align-items: center;
+          justify-content: center;
+          display: flex;
+        }
+
+        .trip-contain {
+          border: 1px solid #DEE2E6;
+          border-radius: 4px;
+          padding: 12px 15px;
+        }
+        .item-contain {
+          border-radius: 4px;
+          border: 1px solid #DEE2E6;
+          margin-top: 20px;
+        }
+        .item-header {
+          background-color: #F2F2F2;
+          color: #000000;
+          font-weight: 700;
+          padding-top: 6px;
+          padding-bottom: 6px;
+        }
+        .status {
+          .request-status {
+            display: inline-block;
+            padding: 5px;
+            width: 160px;
+            text-align: center;
+            border-radius: 20px;
+            border: 1px solid;
+            &.success {
+              border-color: #05BD29;
+              color: #05BD29;
+              background: #FFFFFF;
+          }
+          &.fail {
+              border-color: #FF0000;
+              color: #FF0000;
+              background: #FFFFFF;
+          }
+          &.warning {
+              border-color: #FFA200;
+              color: #FFA200;
+              background: #FFFFFF;
+          }
+          }
+        }
+        .btn-check {
+          background-color: #FFBA00;
+          color: white;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+    }
   }
 }
 

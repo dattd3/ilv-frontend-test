@@ -155,15 +155,15 @@ const isEnableFunctionByFunctionName = name => {
             break
         case Constants.listFunctionsForPnLACL.editProfile:
             listPnLAccepted = [Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinHoliday1, Constants.pnlVCode.VinMec, Constants.pnlVCode.VinSmart, Constants.pnlVCode.VincomRetail, 
-                Constants.pnlVCode.VinITIS, Constants.pnlVCode.VinUni, Constants.pnlVCode.Vin3S, Constants.pnlVCode.VinAI, Constants.pnlVCode.VinES, Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading]
+                Constants.pnlVCode.VinITIS, Constants.pnlVCode.VinUni, Constants.pnlVCode.Vin3S, Constants.pnlVCode.VinAI, Constants.pnlVCode.VinES, Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading, Constants.pnlVCode.VinSchool]
             break
         case Constants.listFunctionsForPnLACL.editEducation:
             listPnLAccepted = [Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinHoliday1, Constants.pnlVCode.VinMec, Constants.pnlVCode.VinSmart, Constants.pnlVCode.VincomRetail, 
-                Constants.pnlVCode.VinITIS, Constants.pnlVCode.VinUni, Constants.pnlVCode.Vin3S, Constants.pnlVCode.VinAI, Constants.pnlVCode.VinES, Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading]
+                Constants.pnlVCode.VinITIS, Constants.pnlVCode.VinUni, Constants.pnlVCode.Vin3S, Constants.pnlVCode.VinAI, Constants.pnlVCode.VinES, Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading, Constants.pnlVCode.VinSchool]
             break
         case Constants.listFunctionsForPnLACL.editRelationship:
             listPnLAccepted = [Constants.pnlVCode.VinSmart, Constants.pnlVCode.VincomRetail, Constants.pnlVCode.VinITIS, Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinHoliday1,
-                Constants.pnlVCode.VinUni, Constants.pnlVCode.Vin3S, Constants.pnlVCode.VinAI, Constants.pnlVCode.VinES, Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading, 'V096']
+                Constants.pnlVCode.VinUni, Constants.pnlVCode.Vin3S, Constants.pnlVCode.VinAI, Constants.pnlVCode.VinES, Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading, 'V096', Constants.pnlVCode.VinSchool]
             break
         case Constants.listFunctionsForPnLACL.changeStaffShift:
             listPnLAccepted = [Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinHoliday1, Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading]
@@ -217,7 +217,7 @@ const isEnableOTFunctionByPnLVCode = PnLVCode => {
 }
 
 const getRequestTypeIdsAllowedToReApproval = () => {
-    return [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP, Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE, Constants.OT_REQUEST, Constants.UPDATE_PROFILE, Constants.CHANGE_DIVISON_SHIFT, Constants.DEPARTMENT_TIMESHEET]
+    return [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP, Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE, Constants.OT_REQUEST, Constants.UPDATE_PROFILE, Constants.CHANGE_DIVISON_SHIFT, Constants.DEPARTMENT_TIMESHEET, Constants.WELFARE_REFUND]
 }
 
 const getRequestConfigurations = () => {
@@ -650,10 +650,48 @@ const isExistCurrentUserInWhiteList = () => {
     return whiteListAccessToSystem?.includes(currentUserEmail)
 }
 
+const isVinITIS = () => {
+    const companyCode = localStorage.getItem("companyCode")
+    return Constants.pnlVCode.VinITIS === companyCode
+}
+
+const formatNumberSpecialCase = (val) => {
+    if (val === "" || val === null || val === undefined) {
+      return "";
+    }
+    val = val + "";
+    const temp = val?.replaceAll(" ", "");
+    return temp.replace(/./g, (c, i, a) => {
+      return i > 0 && c !== "." && (a.length - i) % 3 === 0 ? " " + c : c;
+    });
+};
+
+const formatInternalNewsData = (data = [], currentLang = "vi") => {
+  return data.map(item => formatInternalNewsDataItem(item, currentLang));
+};
+
+const formatInternalNewsDataItem = (item, currentLang = "vi") => {
+  return {
+    ...item,
+    thumbnail: currentLang === "vi" ? item.thumbnailVi : (item.thumbnailEn || item.thumbnailVi),
+    title: currentLang === "vi" ? item.titleVi : (item.titleEn || item.titleVi),
+    description: currentLang === "vi" ? item.descriptionVi : (item.descriptionEn || item.descriptionVi),
+    content: currentLang === "vi" ? item.contentVi : (item.contentEn || item.contentVi),
+  }
+}
+
+const getPublishedTimeByRawTime = (rawTime) => {
+  const time = moment(rawTime).isValid() ? moment(rawTime) : null;
+  return {
+    time: time?.format("HH:mm") || "",
+    date: time?.format("DD/MM/YYYY") || "",
+  };
+};
+
 export {
     getRequestConfigurations, removeAccents, formatStringByMuleValue, formatNumberInteger, exportToPDF, isEnableFunctionByFunctionName, getValueParamByQueryString, getDateByRangeAndFormat,
     calculateBackDateByPnLVCodeAndFormatType, isEnableShiftChangeFunctionByPnLVCode, isEnableInOutTimeUpdateFunctionByPnLVCode, getRequestTypeIdsAllowedToReApproval, getMuleSoftHeaderConfigurations,
     isAdjacentDateBy2Date, showRangeDateGroupByArrayDate, generateTaskCodeByCode, parsteStringToHtml, getRegistrationMinDateByConditions, isVinFast, isEnableOTFunctionByPnLVCode, getCurrentLanguage, 
     getResignResonsMasterData, formatStringDateTimeByMuleValue, genderConfig, marriageConfig, formatProcessTime, setURLSearchParam, getCulture, isValidDateRequest, prepareOrganization, getRequestTypesList,
-    formatStringDateByMuleValue, isExistCurrentUserInWhiteList
+    formatStringDateByMuleValue, isExistCurrentUserInWhiteList, isVinITIS, formatNumberSpecialCase, formatInternalNewsData, getPublishedTimeByRawTime, formatInternalNewsDataItem
 }

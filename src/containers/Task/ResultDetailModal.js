@@ -4,6 +4,7 @@ import IconFailed from '../../assets/img/ic-failed.svg';
 import { Modal, Image } from 'react-bootstrap';
 import { withTranslation  } from "react-i18next"
 
+// Show kết quả khi Thẩm định, Phê duyệt hàng loạt
 class ResultDetailModal extends React.Component {
     constructor(props) {
         super();

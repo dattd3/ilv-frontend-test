@@ -32,6 +32,7 @@ const Constants = {
   //error_code
   API_ERROR_CODE: 1,
   API_ERROR_NOT_FOUND_CODE: "404",
+  API_ERROR_CODE_WORKING_DAY_LOCKED: 2,
 
   // file_type
   PDF_FILE_TYPE: 'pdf',
@@ -58,6 +59,9 @@ const Constants = {
   OT_REQUEST: 13, // OT
   PROPOSAL_TRANSFER: 14, // Dieu chuyen
   PROPOSAL_APPOINTMENT: 15, // Bo nhiem, mien nhiem
+  WELFARE_REFUND: 16, // Hoàn trả dịch vụ phúc lợi
+  INSURANCE_SOCIAL: 20, //bảo hiểm xã hội
+  INSURANCE_SOCIAL_INFO: 21, // thông tin đóng BHXH
 
   //Status request
   STATUS_PENDING: 0,
@@ -77,6 +81,9 @@ const Constants = {
   STATUS_OB_SUPERVISOR_EVALUATION: 11,
   STATUS_OB_HR_EVALUATION: 12,
   STATUS_OB_APPROVER_EVALUATION: 13,
+  STATUS_WORK_DAY_LOCKED_CREATE: 101,
+  STATUS_WORK_DAY_LOCKED_APPRAISAL: 102,
+  STATUS_WORK_DAY_LOCKED_APPROVAL: 103,
 
   STATUS_USE_COMMENT: [0,1,3,4,7, 9998],
 
@@ -90,7 +97,10 @@ const Constants = {
     7: { label: "Rejected", className: 'fail' },
     8: { label: "PendingConsent", className: '' },
     20:{ label: "Consented", className: '' },
-    0: {label: "Waiting", className: ''}
+    0: {label: "Waiting", className: ''},
+    101: { label: "PaidDayLocked", className: 'work-day_locked' },
+    102: { label: "PaidDayLocked", className: 'work-day_locked' },
+    103: { label: "PaidDayLocked", className: 'work-day_locked' },
   },
   //
   mappingActionType : {
@@ -134,9 +144,10 @@ const Constants = {
   SUBSTITUTION_TPKLA_HALF_DAY: 2,
   SHIFT_CODE_OFF:  'OFF',
   // user level
-  CONSENTER_LIST_LEVEL : ["C1", "P2", "P1", "T4", "T3", "T2", "T1", "T0"],
-  APPROVER_LIST_LEVEL :  ["C1", "P2", "P1", "T4", "T3", "T2", "T1", "T0"],
-  CONSENTER_LIST_LEVEL_V073 : ["M0", "M1", "M2", "M3", "C1", "P2", "P1", "T4", "T3", "T2", "T1", "T0"],
+  //CONSENTER_LIST_LEVEL : ["C1", "P2", "P1", "T4", "T3", "T2", "T1", "T0"],
+  CONSENTER_LIST_LEVEL : ["C1", "T7", "P2", "T6", "P1", "T5", "T4", "T3", "T2", "T1", "T0"],
+  APPROVER_LIST_LEVEL :  ["C1", "T7", "P2","T6", "P1","T5", "T4", "T3", "T2", "T1", "T0"],
+  //CONSENTER_LIST_LEVEL_V073 : ["M0", "M1", "M2", "M3", "C1", "P2", "P1", "T4", "T3", "T2", "T1", "T0"],
   APPROVAL_DELEGATION_LIST_LEVEL : ["T3", "T2", "T1", "T0"],
 
   //other
@@ -228,16 +239,20 @@ const Constants = {
     PHUCLOI: 5,
     DIEUCHUYEN: 6,
     BONHIEM: 7,
+    THANHTOAN_NOIBO: 8,
+    BAOHIEM: 9
   },
   MODULE_COMPANY_AVAILABE: process.env.REACT_APP_ENVIRONMENT === 'PRODUCTION' ? 
   { //production todo: add  "V077", "V070" to TUYENDUNG
     1: ["V040", "V005", "V079", "V041", "V030", "V035", "V036", "V077", "V070", "V099"],//TUYENDUNG + V061
-    2: ["V040", "V005", "V061", "V077", "V070"],//DANHGIA_TAIKI
+    2: ["V040", "V005", "V061", "V077", "V070", "V099"],//DANHGIA_TAIKI
     3: [],//DEXUATLUONG
     4: ["V040", "V077", "V070"],//NGHIVIEC
     5: ["V077", "V070"],//PHUCLOI
     6: ["V077", "V070"], //DIEUCHUYEN
-    7: ["V077", "V070"], //BONHIEM
+    7: ["V077", "V070"], //BONHIEM,
+    8: [], //THANHTOAN_NOIBO
+    9: ["V061"],//BAOHIEM
   } :
   { //Development
     1: ["V040", "V005", "V079", "V041", "V030", "V035", "V036", "V077", "V070", "V099"],//TUYENDUNG + V061
@@ -247,6 +262,8 @@ const Constants = {
     5: ["V061", "V040", "V005", "V079", "V041", "V070", "V077"],//PHUCLOI
     6: ["V040", "V070", "V077"], //DIEUCHUYEN
     7: ["V040", "V070", "V077"], //BONHIEM
+    8: ["V040", "V070", "V077", "V030"], //THANH TOAN NOI BO
+    9: ["V077", "V070", "V061", "V079"],//BAOHIEM
   },
   CURRENCY: {
     VND: 'VNĐ',
@@ -279,8 +296,8 @@ const Constants = {
     APP_ID: 1,
     DEVICE: 'WEBSITE',
     MODE: 2,
-  },
-};
+  }
+}
 
 Constants.REQUEST_CATEGORY_1_LIST = {
   [Constants.LEAVE_OF_ABSENCE]: "LeaveRequest",
@@ -293,15 +310,19 @@ Constants.REQUEST_CATEGORY_1_LIST = {
   [Constants.OT_REQUEST]: "OTRequest",
   [Constants.CHANGE_DIVISON_SHIFT]: "AdminUploadShiftChange",
   [Constants.DEPARTMENT_TIMESHEET]: "DepartmentTimesheet",
+  [Constants.WELFARE_REFUND]: "WelfareRefund"
 }
 
 Constants.REQUEST_CATEGORY_2_LIST = {
   // [Constants.SALARY_PROPOSE]: "SalaryType",
   [Constants.PROPOSAL_TRANSFER]: "ProposalTransfer",
-  [Constants.PROPOSAL_APPOINTMENT]: "AppointmentDismissalRequest"
+  [Constants.PROPOSAL_APPOINTMENT]: "AppointmentDismissalRequest",
+  [Constants.INSURANCE_SOCIAL]: "InsuranceSocialRequest",
+  [Constants.INSURANCE_SOCIAL_INFO]: "InsuranceSocialInfoRequest"
+
 }
 
 Constants.REQUEST_CATEGORY_1_LIST_ORDER = [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP, Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE, Constants.UPDATE_PROFILE,
-  Constants.ONBOARDING, Constants.RESIGN_SELF, Constants.OT_REQUEST, Constants.CHANGE_DIVISON_SHIFT, Constants.DEPARTMENT_TIMESHEET]
+  Constants.ONBOARDING, Constants.RESIGN_SELF, Constants.OT_REQUEST, Constants.CHANGE_DIVISON_SHIFT, Constants.DEPARTMENT_TIMESHEET, Constants.WELFARE_REFUND]
 
 export default Constants

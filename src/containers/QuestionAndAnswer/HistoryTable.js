@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Button, Tooltip, OverlayTrigger } from "react-bootstrap";
+import moment from "moment";
 import deleteButton from '../../assets/img/icon-delete.svg'
 import { withTranslation } from "react-i18next";
 class HistoryTable extends React.Component {
@@ -65,7 +66,7 @@ class HistoryTable extends React.Component {
                       <span>
                         <i className="icon-hr mr-1"></i> {question.fullName}
                         <i className="fa fa-clock-o mr-1 ml-3"></i>
-                        {question.createdAt}
+                        {moment(question.createdAt).format("DD/MM/YYYY HH:mm:ss")}
                       </span>
                     </div>
 

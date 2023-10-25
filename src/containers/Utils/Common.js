@@ -18,9 +18,11 @@ const getDateByRange = (startDate, endDate) => {
 
 export const getOperationType = (requestTypeId, actionType, processStatusId) => {
   if ([Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP, Constants.OT_REQUEST].includes(requestTypeId)) {
-    if (actionType == Constants.OPERATION_TYPES.DEL && [Constants.STATUS_PARTIALLY_SUCCESSFUL, Constants.STATUS_NO_CONSENTED, 
-      Constants.STATUS_NOT_APPROVED, Constants.STATUS_EVICTION, 
-      Constants.STATUS_WAITING, Constants.STATUS_WAITING_CONSENTED].includes(processStatusId)) {
+    if (actionType == Constants.OPERATION_TYPES.DEL 
+      && [Constants.STATUS_PARTIALLY_SUCCESSFUL, Constants.STATUS_NO_CONSENTED,
+      Constants.STATUS_NOT_APPROVED, Constants.STATUS_EVICTION,
+      Constants.STATUS_WAITING, Constants.STATUS_WAITING_CONSENTED,
+      Constants.STATUS_WORK_DAY_LOCKED_CREATE, Constants.STATUS_WORK_DAY_LOCKED_APPRAISAL, Constants.STATUS_WORK_DAY_LOCKED_APPROVAL].includes(processStatusId)) {
       return Constants.OPERATION_TYPES.DEL;
     } else if (actionType == Constants.OPERATION_TYPES.DEL) {
       return Constants.OPERATION_TYPES.INS;
@@ -37,7 +39,7 @@ export default function processingDataReq(dataRawFromApi, tab) {
         listRequestTypeIdToGetSubId = [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP];
 
     dataRawFromApi.forEach(element => {
-        if([Constants.ONBOARDING, Constants.RESIGN_SELF, Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER, Constants.PROPOSAL_APPOINTMENT, Constants.OT_REQUEST].includes(element.requestTypeId)) {
+        if([Constants.ONBOARDING, Constants.RESIGN_SELF, Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER, Constants.PROPOSAL_APPOINTMENT, Constants.OT_REQUEST, Constants.INSURANCE_SOCIAL, Constants.INSURANCE_SOCIAL_INFO].includes(element.requestTypeId)) {
         // if(element.requestTypeId == Constants.ONBOARDING || element.requestTypeId == Constants.RESIGN_SELF || element.requestTypeId == Constants.SALARY_PROPOSE) {
             if(element.requestTypeId === Constants.RESIGN_SELF) {
                 element.id = element.id + '.1';
@@ -46,7 +48,7 @@ export default function processingDataReq(dataRawFromApi, tab) {
                 element.startDate = "";
             }
 
-            if([Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER, Constants.PROPOSAL_APPOINTMENT].includes(element.requestTypeId)) {
+            if([Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER, Constants.PROPOSAL_APPOINTMENT, Constants.INSURANCE_SOCIAL, Constants.INSURANCE_SOCIAL_INFO].includes(element.requestTypeId)) {
                 element.salaryId = element.id;
                 element.id = element.id + '.1';
                 element.appraiser = {};
@@ -121,6 +123,11 @@ export default function processingDataReq(dataRawFromApi, tab) {
                 element.id = element.id.toString()
                 element.operationType = Constants.OPERATION_TYPES.INS
                 element.operationType = getOperationType(element.requestTypeId, element.updateField, element.processStatusId);
+                taskList.push(element);
+            }
+            if(element.requestTypeId == Constants.WELFARE_REFUND) {
+                element.operationType = Constants.OPERATION_TYPES.INS
+                element.id = element.id.toString()
                 taskList.push(element);
             }
         }

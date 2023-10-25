@@ -6,8 +6,8 @@ import { handleFullScreen } from "actions/index"
 import LoadingModal from "components/Common/LoadingModal"
 import MyBook from "./MyBook"
 
-function HistoryVinGroup(props) {
-    const [isLoading, SetIsLoading] = useState(false)
+function Vin30Chronicles(props) {
+    // const [isLoading, SetIsLoading] = useState(true)
     const linkHistoryVinGroup = "https://online.flippingbook.com/view/211567232/"
 
     useEffect(() => {
@@ -26,7 +26,7 @@ function HistoryVinGroup(props) {
 
     return (
         <>
-            <LoadingModal show={isLoading} />
+            {/* <LoadingModal show={isLoading} /> */}
             <MyBook />
             {/* <div className="history-vingroup-page" id="history-vingroup-page">
                 <iframe src={linkHistoryVinGroup} allowFullScreen={true} title="Sử ký Vin30"></iframe>
@@ -47,4 +47,4 @@ const mapDispatchToProps = (dispatch) => {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(HOCComponent(HistoryVinGroup))
+export default connect(mapStateToProps, mapDispatchToProps)(HOCComponent(Vin30Chronicles))

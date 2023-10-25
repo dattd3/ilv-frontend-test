@@ -881,8 +881,8 @@
             width: auto;
             height: auto;
             right: 10px;
-            bottom: unset;
-            top: 10px;
+            top: unset;
+            bottom: 12px;
             img {
                 width: auto;
                 height: 15px;
@@ -1766,6 +1766,18 @@
                 padding: 0 15px 15px 15px;
                 .input-img {
                     top: 10px;
+                }
+            }
+            .total-days-off {
+                .text-danger {
+                    padding: 0 15px;
+                    margin-top: 0;
+                }
+            }
+            .time-message {
+                .text-danger {
+                    padding: 0 15px;
+                    margin-top: 0;
                 }
             }
         }
