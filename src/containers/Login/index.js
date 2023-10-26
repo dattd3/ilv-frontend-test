@@ -443,7 +443,7 @@ function Login(props) {
                       {t("PnlOfVingroup")}
                     </div>
                     <Swiper 
-                      //loop={true}
+                      loop={true}
                       navigation={true}
                       modules={[Navigation, Autoplay]}
                       className="pnlSwipper"
