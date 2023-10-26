@@ -275,7 +275,8 @@ const ContractEvaluationdetail = (props) => {
                 <div className="detail">{data && data.qlttOpinion ? data.qlttOpinion.result?.label : ""}</div>
               </div>
               <div className="col-3">
-              {t('contract_type')} <Image src={IconInfo} alt="Info" style={{width: '15px', height: '15px'}} onClick={() => props.hideShowNoteModal(true)} />
+              {t('contract_type')} 
+              {/* <Image src={IconInfo} alt="Info" style={{width: '15px', height: '15px'}} onClick={() => props.hideShowNoteModal(true)} /> */}
                 <div className="detail">{data && data.qlttOpinion ? data.qlttOpinion.contract?.label : ""}</div>
               </div>
               <div className="col-3">
