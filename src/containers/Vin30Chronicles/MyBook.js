@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useRef, forwardRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback , forwardRef } from 'react';
 import { Modal } from "react-bootstrap";
+import PrismaZoom from 'react-prismazoom'
 import { saveAs } from 'file-saver';
 import { chunk, last } from 'lodash';
 import { useRouteMatch } from "react-router-dom";
@@ -311,9 +312,26 @@ const ThumbnailModal = ({ isShow, page, thumbnailPages, handleScrollSidebar, han
   );
 }
 
-const ButtonBlock = ({ isShowThumbnails, isFullScreen, isMobile, handleShowThumbnails, downloadBook, handleScreen }) => {
+const ButtonBlock = ({ isShowThumbnails, isFullScreen, isMobile, isZoomIn, zoomLevel, handleZoom, handleChangeZoomLevel, handleShowThumbnails, downloadBook, handleScreen }) => {
   return (
     <div className={`d-flex align-items-center bottom-block ${isMobile ? 'justify-content-start' : 'justify-content-center'}`}>
+      <div className={`zoom-tooltip ${isZoomIn ? 'show' : ''}`}>
+        <input
+          type="range"
+          min="1"
+          max="5"
+          value={zoomLevel}
+          step="1"
+          onChange={handleChangeZoomLevel}
+        />
+        {/* <div className="slider-ticks">
+          <span>0</span>
+          <span>25</span>
+          <span>50</span>
+          <span>75</span>
+          <span>100</span>
+        </div> */}
+      </div>
       <span
         className={`menu-item cursor-pointer ${
           isShowThumbnails ? 'active' : ''
@@ -351,14 +369,20 @@ const ButtonBlock = ({ isShowThumbnails, isFullScreen, isMobile, handleShowThumb
           ></path>
         </svg>
       </span> */}
-      {/* <span className={`btn-zoom cursor-pointer ${isZoomIn ? 'active' : ''}`} onClick={handleZoom}>
-        {isZoomIn ? (
-            <svg data-v-71c99c82="" version="1.1" viewBox="0 0 24 24" className="svg-icon svg-fill" focusable="false"><path pid="0" d="M15.49 17.611a8.144 8.144 0 01-4.35 1.39c-4.452-.102-8.038-3.625-8.14-8 .036-4.35 3.575-7.89 8-8 4.425.112 7.965 3.65 8 8a7.813 7.813 0 01-1.38 4.498l4.451 4.45-2.121 2.122-4.46-4.46zm-4.385-.61c3.3-.09 5.919-2.757 5.895-6-.026-3.263-2.681-5.916-6-6-3.319.083-5.973 2.737-6 6 .077 3.281 2.766 5.923 6.105 6zM7 12v-2h8v2H7z"></path></svg>
+      <span className={`btn-zoom cursor-pointer ${isZoomIn ? 'active' : ''}`} onClick={handleZoom}>
+      {
+        isZoomIn ? (
+          <svg data-v-71c99c82="" version="1.1" viewBox="0 0 24 24" className="svg-icon svg-fill" focusable="false">
+            <path pid="0" d="M15.49 17.611a8.144 8.144 0 01-4.35 1.39c-4.452-.102-8.038-3.625-8.14-8 .036-4.35 3.575-7.89 8-8 4.425.112 7.965 3.65 8 8a7.813 7.813 0 01-1.38 4.498l4.451 4.45-2.121 2.122-4.46-4.46zm-4.385-.61c3.3-.09 5.919-2.757 5.895-6-.026-3.263-2.681-5.916-6-6-3.319.083-5.973 2.737-6 6 .077 3.281 2.766 5.923 6.105 6zM7 12v-2h8v2H7z"></path>
+          </svg>
         )
         : (
-            <svg data-v-71c99c82="" version="1.1" viewBox="0 0 24 24" className="svg-icon svg-fill" focusable="false"><path pid="0" d="M15.49 17.61A8.144 8.144 0 0111.14 19c-4.452-.102-8.038-3.625-8.14-8 .036-4.35 3.575-7.89 8-8 4.425.112 7.965 3.65 8 8a7.813 7.813 0 01-1.38 4.499l4.451 4.45-2.121 2.122-4.46-4.46zM11.104 17c3.3-.09 5.919-2.757 5.895-6-.026-3.263-2.681-5.916-6-6-3.319.083-5.973 2.737-6 6 .077 3.281 2.766 5.923 6.105 6zM12 7v3h3v2h-3v3h-2v-3H7v-2h3V7h2z"></path></svg>
-        )}
-      </span> */}
+          <svg data-v-71c99c82="" version="1.1" viewBox="0 0 24 24" className="svg-icon svg-fill" focusable="false">
+            <path pid="0" d="M15.49 17.61A8.144 8.144 0 0111.14 19c-4.452-.102-8.038-3.625-8.14-8 .036-4.35 3.575-7.89 8-8 4.425.112 7.965 3.65 8 8a7.813 7.813 0 01-1.38 4.499l4.451 4.45-2.121 2.122-4.46-4.46zM11.104 17c3.3-.09 5.919-2.757 5.895-6-.026-3.263-2.681-5.916-6-6-3.319.083-5.973 2.737-6 6 .077 3.281 2.766 5.923 6.105 6zM12 7v3h3v2h-3v3h-2v-3H7v-2h3V7h2z"></path>
+          </svg>
+        )
+      }
+      </span>
       {
         !isMobile && (
           <span
@@ -406,9 +430,12 @@ export default function MyBook(props) {
   const pageRef = useRef();
   const wrapBookRef = useRef();
   const pageScrollRef = useRef([]);
+  const zoomLevelRef = useRef()
+  // const zoomLevelRef = useRef<ComponentRef<typeof PrismaZoom>>(null)
   const [page, setPage] = useState(1);
   const [pages, setPages] = useState([]);
   const [isZoomIn, setIsZoomIn] = useState(false);
+  const [zoomLevel, setZoomLevel] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [isShowThumbnails, setIsShowThumbnails] = useState(false);
@@ -458,6 +485,11 @@ export default function MyBook(props) {
     }
   }, [page]);
 
+  useEffect(() => {
+    setZoomLevel(1);
+    zoomLevelRef.current?.reset();
+  }, [isZoomIn]);
+
   const generatePages = (pageToLoad = PER_LOAD, startNumber = 0) => {
     return new Array(pageToLoad).fill().map((value, index) => startNumber + index + 1);
   }
@@ -466,7 +498,7 @@ export default function MyBook(props) {
 
   const handleShowThumbnails = () => {
     if (isMobile) {
-      setIsShowThumbnailModal(true)
+      setIsShowThumbnailModal(true);
     } else {
       setIsShowThumbnails(!isShowThumbnails);
     }
@@ -510,7 +542,19 @@ export default function MyBook(props) {
     iframe.src = 'https://myvinpearl.s3.ap-southeast-1.amazonaws.com/shared/SK.pdf';
   };
 
-  const handleZoom = () => setIsZoomIn(!isZoomIn);
+  const handleZoom = () => {
+    setIsZoomIn(!isZoomIn);
+  }
+
+  const handleChangeZoomLevel = e => {
+    const _zoomLevel = parseInt(e?.target?.value || 1);
+    setZoomLevel(_zoomLevel)
+    if (_zoomLevel > zoomLevel) {
+      zoomLevelRef.current?.zoomIn(1);
+    } else {
+      zoomLevelRef.current?.zoomOut(1);
+    }
+  }
 
   const downloadBook = () => saveAs('https://myvinpearl.s3.ap-southeast-1.amazonaws.com/shared/SK.pdf');
 
@@ -523,7 +567,7 @@ export default function MyBook(props) {
         },
         800
       );
-      bookRef?.current?.pageFlip()?.turnToPage(page)
+      bookRef?.current?.pageFlip()?.turnToPage(page);
 
       clearTimeout(flipTimeOut);
       flipTimeOut = setTimeout(() => {
@@ -583,7 +627,7 @@ export default function MyBook(props) {
   };
 
   const onHideThumbnailModal = () => {
-    setIsShowThumbnailModal(false)
+    setIsShowThumbnailModal(false);
   }
 
   const handleScrollSidebar = (e) => {
@@ -739,32 +783,45 @@ export default function MyBook(props) {
             </div>
             <div className="book" ref={wrapBookRef} onWheel={onWheel}>
               <div className="wrap-book">
-                <HTMLFlipBook
-                  showCover={true}
-                  flippingTime={800}
-                  width={550}
-                  height={733}
-                  size="stretch"
-                  minWidth={315}
-                  maxWidth={1000}
-                  minHeight={420}
-                  maxHeight={1350}
-                  maxShadowOpacity={0.5}
-                  drawShadow={false}
-                  mobileScrollSupport={true}
-                  onFlip={handleFlip}
-                  ref={bookRef}
+                <PrismaZoom 
+                  allowWheel={false} 
+                  minZoom={1}
+                  maxZoom={5}
+                  className='zoom-wrapper'
+                  ref={zoomLevelRef}
                 >
-                  {pages.map((item) => (
-                    <Page key={`page-item-${item}`} page={item} />
-                  ))}
-                </HTMLFlipBook>
+                  <HTMLFlipBook
+                    showCover={true}
+                    flippingTime={600}
+                    width={550}
+                    height={733}
+                    size="stretch"
+                    minWidth={315}
+                    maxWidth={1000}
+                    minHeight={420}
+                    maxHeight={1350}
+                    maxShadowOpacity={0.5}
+                    drawShadow={false}
+                    mobileScrollSupport={true}
+                    onFlip={handleFlip}
+                    useMouseEvents={false}
+                    ref={bookRef}
+                  >
+                    {pages.map((item) => (
+                      <Page key={`page-item-${item}`} page={item} />
+                    ))}
+                  </HTMLFlipBook>
+                </PrismaZoom>
               </div>
             </div>
             <ButtonBlock 
               isShowThumbnails={isShowThumbnails}
               isFullScreen={isFullScreen}
               isMobile={isMobile}
+              isZoomIn={isZoomIn}
+              zoomLevel={zoomLevel}
+              handleZoom={handleZoom}
+              handleChangeZoomLevel={handleChangeZoomLevel}
               handleShowThumbnails={handleShowThumbnails}
               downloadBook={downloadBook}
               handleScreen={handleScreen}
