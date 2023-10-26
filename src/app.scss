@@ -6038,6 +6038,7 @@ span.badge-notification[data-badge]::after {
     .wrap-book {
       height: 100%;
       width: 100%;
+      overflow: hidden;
       .stf__parent {
         height: 100%;
         width: 100%;
@@ -6059,6 +6060,10 @@ span.badge-notification[data-badge]::after {
           align-items: center;
           justify-content: center;
         }
+      }
+      .zoom-wrapper {
+        width: 100% !important;
+        height: 100% !important;
       }
     }
   }
@@ -6097,6 +6102,7 @@ span.badge-notification[data-badge]::after {
         left: unset !important;
         position: relative !important;
         width: auto !important;
+        height: 100% !important;
       }
     }
     &.hard {

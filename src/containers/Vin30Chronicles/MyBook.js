@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, forwardRef } from 'react';
 import { Modal } from "react-bootstrap";
+import PrismaZoom from 'react-prismazoom'
 import { saveAs } from 'file-saver';
 import { chunk, last } from 'lodash';
 import { useRouteMatch } from "react-router-dom";
@@ -311,7 +312,7 @@ const ThumbnailModal = ({ isShow, page, thumbnailPages, handleScrollSidebar, han
   );
 }
 
-const ButtonBlock = ({ isShowThumbnails, isFullScreen, isMobile, handleShowThumbnails, downloadBook, handleScreen }) => {
+const ButtonBlock = ({ isShowThumbnails, isFullScreen, isMobile, isZoomIn, handleZoom, handleShowThumbnails, downloadBook, handleScreen }) => {
   return (
     <div className={`d-flex align-items-center bottom-block ${isMobile ? 'justify-content-start' : 'justify-content-center'}`}>
       <span
@@ -351,14 +352,14 @@ const ButtonBlock = ({ isShowThumbnails, isFullScreen, isMobile, handleShowThumb
           ></path>
         </svg>
       </span> */}
-      {/* <span className={`btn-zoom cursor-pointer ${isZoomIn ? 'active' : ''}`} onClick={handleZoom}>
+      <span className={`btn-zoom cursor-pointer ${isZoomIn ? 'active' : ''}`} onClick={handleZoom}>
         {isZoomIn ? (
             <svg data-v-71c99c82="" version="1.1" viewBox="0 0 24 24" className="svg-icon svg-fill" focusable="false"><path pid="0" d="M15.49 17.611a8.144 8.144 0 01-4.35 1.39c-4.452-.102-8.038-3.625-8.14-8 .036-4.35 3.575-7.89 8-8 4.425.112 7.965 3.65 8 8a7.813 7.813 0 01-1.38 4.498l4.451 4.45-2.121 2.122-4.46-4.46zm-4.385-.61c3.3-.09 5.919-2.757 5.895-6-.026-3.263-2.681-5.916-6-6-3.319.083-5.973 2.737-6 6 .077 3.281 2.766 5.923 6.105 6zM7 12v-2h8v2H7z"></path></svg>
         )
         : (
             <svg data-v-71c99c82="" version="1.1" viewBox="0 0 24 24" className="svg-icon svg-fill" focusable="false"><path pid="0" d="M15.49 17.61A8.144 8.144 0 0111.14 19c-4.452-.102-8.038-3.625-8.14-8 .036-4.35 3.575-7.89 8-8 4.425.112 7.965 3.65 8 8a7.813 7.813 0 01-1.38 4.499l4.451 4.45-2.121 2.122-4.46-4.46zM11.104 17c3.3-.09 5.919-2.757 5.895-6-.026-3.263-2.681-5.916-6-6-3.319.083-5.973 2.737-6 6 .077 3.281 2.766 5.923 6.105 6zM12 7v3h3v2h-3v3h-2v-3H7v-2h3V7h2z"></path></svg>
         )}
-      </span> */}
+      </span>
       {
         !isMobile && (
           <span
@@ -739,9 +740,10 @@ export default function MyBook(props) {
             </div>
             <div className="book" ref={wrapBookRef} onWheel={onWheel}>
               <div className="wrap-book">
+              <PrismaZoom allowWheel={false} className='zoom-wrapper'>
                 <HTMLFlipBook
                   showCover={true}
-                  flippingTime={800}
+                  flippingTime={600}
                   width={550}
                   height={733}
                   size="stretch"
@@ -753,18 +755,22 @@ export default function MyBook(props) {
                   drawShadow={false}
                   mobileScrollSupport={true}
                   onFlip={handleFlip}
+                  useMouseEvents={false}
                   ref={bookRef}
                 >
                   {pages.map((item) => (
                     <Page key={`page-item-${item}`} page={item} />
                   ))}
                 </HTMLFlipBook>
+                </PrismaZoom>
               </div>
             </div>
             <ButtonBlock 
               isShowThumbnails={isShowThumbnails}
               isFullScreen={isFullScreen}
               isMobile={isMobile}
+              isZoomIn={isZoomIn}
+              handleZoom={handleZoom}
               handleShowThumbnails={handleShowThumbnails}
               downloadBook={downloadBook}
               handleScreen={handleScreen}
