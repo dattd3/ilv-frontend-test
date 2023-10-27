@@ -602,7 +602,7 @@ export default function MyBook(props) {
 
       clearTimeout(flipTimeOut);
       flipTimeOut = setTimeout(() => {
-        bookRef?.current?.pageFlip()?.turnToPage(page - 1);
+        bookRef?.current?.pageFlip()?.turnToPage(page == 1 ? 0 : page);
       }, 400);
     }
   };
