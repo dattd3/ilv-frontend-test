@@ -279,7 +279,7 @@ const IMAGE_MAPPING = {
   ZOOM = {
     MIN: 1,
     MAX: 5,
-    STEP: 1,
+    STEP: 0.1,
   };
 
 const Page = forwardRef((props, ref) => {
@@ -570,7 +570,7 @@ export default function MyBook(props) {
   }
 
   const handleChangeZoomLevel = e => {
-    const _zoomLevel = parseInt(e?.target?.value || ZOOM.MIN);
+    const _zoomLevel = Number(e?.target?.value);
     setZoomLevel(_zoomLevel)
     if (_zoomLevel > zoomLevel) {
       zoomLevelRef.current?.zoomIn(_zoomLevel - zoomLevel);
