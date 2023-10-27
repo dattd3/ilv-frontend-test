@@ -8,6 +8,8 @@ import 'react-datepicker/dist/react-datepicker.css'
 import { withTranslation } from "react-i18next";
 import './styles.scss';
 import { formatProcessTime } from 'commons/Utils'
+import IconInfo from '../../../assets/img/icon-info.svg';
+import { Image } from 'react-bootstrap'
 
 const ContractEvaluationdetail = (props) => {
   const { data, id, type, idSalary, t } = props
@@ -43,15 +45,19 @@ const ContractEvaluationdetail = (props) => {
                 <div className="detail">{data.employeeInfo.fullName || ""}</div>
               </div>
               <div className="col-4">
+                {t("EmployeeNo")}
+                <div className="detail">{data.employeeInfo.employeeNo || ""}</div>
+              </div>
+              <div className="col-4">
                 {t("Title")}
                 <div className="detail">{data.employeeInfo.positionName || ""}</div>
               </div>
+            </div>
+            <div className="row">
               <div className="col-4">
                 {t('DepartmentManage')}
                 <div className="detail">{data.employeeInfo.departmentName || ""}</div>
               </div>
-            </div>
-            <div className="row">
               <div className="col-4">
                 {t('working_day')}
                 <div className="detail">{data.employeeInfo.startDate ? moment(data.employeeInfo.startDate).format("DD/MM/YYYY") : ''}</div>
@@ -269,7 +275,8 @@ const ContractEvaluationdetail = (props) => {
                 <div className="detail">{data && data.qlttOpinion ? data.qlttOpinion.result?.label : ""}</div>
               </div>
               <div className="col-3">
-              {t('contract_type')}
+              {t('contract_type')} 
+              {/* <Image src={IconInfo} alt="Info" style={{width: '15px', height: '15px'}} onClick={() => props.hideShowNoteModal(true)} /> */}
                 <div className="detail">{data && data.qlttOpinion ? data.qlttOpinion.contract?.label : ""}</div>
               </div>
               <div className="col-3">
