@@ -6175,7 +6175,7 @@ span.badge-notification[data-badge]::after {
       .page-image {
         background-position: right top;
       }
-      &.--simple {
+      &.page-cover.--simple {
         left: unset !important;
         position: relative !important;
         width: auto !important;
@@ -6184,7 +6184,7 @@ span.badge-notification[data-badge]::after {
   
     &.--right {
       border-left: 0;
-      &.--simple {
+      &.page-cover.--simple {
         left: unset !important;
         position: relative !important;
         width: auto !important;
