@@ -6070,7 +6070,7 @@ span.badge-notification[data-badge]::after {
   .page {
     color: hsl(35, 35, 35);
     @media (min-width: 481px) {
-      overflow: hidden;
+      // overflow: hidden;
     }
     .page-content {
       display: flex;
@@ -6078,8 +6078,25 @@ span.badge-notification[data-badge]::after {
       justify-content: space-between;
       .page-image {
         width: 100%;
+        position: relative;
         img {
           width: 100%;
+        }
+        .btn-previous, .btn-next {
+          img {
+            width: 15px;
+            box-shadow: unset;
+          }
+        }
+        .btn-previous {
+          position: absolute;
+          top: 50%;
+          left: -20px;
+        }
+        .btn-next {
+          position: absolute;
+          top: 50%;
+          right: -20px;
         }
       }
     }

@@ -8,6 +8,8 @@ import HTMLFlipBook from '@cuongnv56/react-pageflip';
 import LoadingModal from 'components/Common/LoadingModal';
 import mapConfig from 'containers/map.config';
 import IconClose from "assets/img/icon/icon_x.svg";
+import IconPrevious from 'assets/img/icon/arrow-previous.svg'
+import IconNext from 'assets/img/icon/arrow-next.svg'
 
 const IMAGE_MAPPING = {
   1: 'https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page1.jpg',
@@ -276,11 +278,16 @@ const IMAGE_MAPPING = {
   LEFT_PAGE_TO_LOAD = 10;
 
 const Page = forwardRef((props, ref) => {
+  const { page, prev, next } = props,
+    isPrev = page % 2 === 0, isNext = page % 2 === 1;
+
   return (
-    <div className={`page page-${props?.page}`} ref={ref}>
+    <div className={`page page-${page}`} ref={ref}>
       <div className="page-content">
         <div className="page-image">
-          <img src={IMAGE_MAPPING[props?.page]} />
+          {isPrev && prev()}
+          <img src={IMAGE_MAPPING[page]} />
+          {isNext && next()}
         </div>
       </div>
     </div>
@@ -443,12 +450,18 @@ export default function MyBook(props) {
   }, [isFullScreen]);
 
   useEffect(() => {
-    let length = pages?.length, countLoad = PER_LOAD;
+    let length = pages?.length,
+      countLoad = PER_LOAD,
+      existedPage = TOTAL_PAGES - length;
 
     if (page >= length - LEFT_PAGE_TO_LOAD) {
       // LEFT_PAGE_TO_LOAD page cuối của mỗi lượt load mới bắt đầu load thêm
       if (page > length + PER_LOAD && length >= 0) {
         countLoad = page - length;
+      }
+
+      if (existedPage < PER_LOAD) {
+        countLoad = existedPage;
       }
 
       const _pages = [
@@ -605,6 +618,14 @@ export default function MyBook(props) {
     }
   }
 
+  const handlePrevious = () => {
+    bookRef?.current?.pageFlip()?.flipPrev('bottom');
+  }
+
+  const handleNext = () => {
+    bookRef?.current?.pageFlip()?.flipNext('bottom');
+  }
+
   const sidebarPages = (() => {
     const firstPage = 1,
       lastPage = pages?.length,
@@ -740,28 +761,39 @@ export default function MyBook(props) {
             </div>
             <div className="book" ref={wrapBookRef} onWheel={onWheel}>
               <div className="wrap-book">
-              <PrismaZoom allowWheel={false} className='zoom-wrapper'>
-                <HTMLFlipBook
-                  showCover={true}
-                  flippingTime={600}
-                  width={550}
-                  height={733}
-                  size="stretch"
-                  minWidth={315}
-                  maxWidth={1000}
-                  minHeight={420}
-                  maxHeight={1350}
-                  maxShadowOpacity={0.5}
-                  drawShadow={false}
-                  mobileScrollSupport={true}
-                  onFlip={handleFlip}
-                  useMouseEvents={false}
-                  ref={bookRef}
-                >
-                  {pages.map((item) => (
-                    <Page key={`page-item-${item}`} page={item} />
-                  ))}
-                </HTMLFlipBook>
+                <PrismaZoom allowWheel={false} className='zoom-wrapper'>
+                  <HTMLFlipBook
+                    showCover={true}
+                    flippingTime={600}
+                    width={550}
+                    height={733}
+                    size="stretch"
+                    minWidth={315}
+                    maxWidth={1000}
+                    minHeight={420}
+                    maxHeight={1350}
+                    maxShadowOpacity={0.5}
+                    drawShadow={false}
+                    mobileScrollSupport={true}
+                    onFlip={handleFlip}
+                    useMouseEvents={false}
+                    ref={bookRef}
+                  >
+                    {pages.map((item) => (
+                      <Page key={`page-item-${item}`} page={item}
+                        prev={() => (
+                          <div className="btn-previous" onClick={handlePrevious}>
+                            <img src={IconPrevious} alt="previous" />
+                          </div>
+                        )}
+                        next={() => (
+                          <div className="btn-next" onClick={handleNext}>
+                            <img src={IconNext} alt="next" />
+                          </div>
+                        )}
+                      />
+                    ))}
+                  </HTMLFlipBook>
                 </PrismaZoom>
               </div>
             </div>
