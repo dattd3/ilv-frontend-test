@@ -276,8 +276,13 @@ const IMAGE_MAPPING = {
   LEFT_PAGE_TO_LOAD = 10;
 
 const Page = forwardRef((props, ref) => {
+  const { page, prev, next } = props,
+    isPrev = page % 2 === 0,
+    isNext = page % 2 === 1,
+    pageCover = [1, TOTAL_PAGES].includes(page) ? 'page-cover' : '';
+
   return (
-    <div className={`page page-${props?.page}`} ref={ref}>
+    <div className={`page page-${page} ${pageCover}`} ref={ref}>
       <div className="page-content">
         <div className="page-image">
           <img src={IMAGE_MAPPING[props?.page]} />
