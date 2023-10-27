@@ -6156,7 +6156,7 @@ span.badge-notification[data-badge]::after {
   .page {
     color: hsl(35, 35, 35);
     @media (min-width: 481px) {
-      overflow: hidden;
+      // overflow: hidden;
     }
     .page-content {
       display: flex;
@@ -6164,6 +6164,7 @@ span.badge-notification[data-badge]::after {
       justify-content: space-between;
       .page-image {
         width: 100%;
+        position: relative;
         img {
           width: 100%;
         }
@@ -6196,6 +6197,11 @@ span.badge-notification[data-badge]::after {
         position: relative !important;
         width: auto !important;
       }
+      &.show-thumbnail.--simple {
+        left: initial !important;
+        position: initial !important;
+        width: auto !important;
+      }
     }
   
     &.--right {
@@ -6206,6 +6212,11 @@ span.badge-notification[data-badge]::after {
         width: auto !important;
         height: 100% !important;
       }
+      &.show-thumbnail.--simple {
+        left: initial !important;
+        position: initial !important;
+        width: auto !important;
+      }
     }
     &.hard {
       background-color: hsl(35, 50, 90);
@@ -6214,6 +6225,7 @@ span.badge-notification[data-badge]::after {
   }
 }
 // End Sử ký
+
 
 .thumbnail-modal {
   width: 100%;

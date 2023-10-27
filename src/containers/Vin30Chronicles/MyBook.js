@@ -8,6 +8,8 @@ import HTMLFlipBook from '@cuongnv56/react-pageflip';
 import LoadingModal from 'components/Common/LoadingModal';
 import mapConfig from 'containers/map.config';
 import IconClose from "assets/img/icon/icon_x.svg";
+import IconPrevious from 'assets/img/icon/arrow-previous.svg'
+import IconNext from 'assets/img/icon/arrow-next.svg'
 
 const IMAGE_MAPPING = {
   1: 'https://hrdx-prod.s3.ap-southeast-1.amazonaws.com/Suky/Page1.jpg',
@@ -281,16 +283,18 @@ const IMAGE_MAPPING = {
   };
 
 const Page = forwardRef((props, ref) => {
-  const { page, prev, next } = props,
+  const { page, isShowThumbnails, prev, next } = props,
     isPrev = page % 2 === 0,
     isNext = page % 2 === 1,
     pageCover = [1, TOTAL_PAGES].includes(page) ? 'page-cover' : '';
 
   return (
-    <div className={`page page-${page} ${pageCover}`} ref={ref}>
+    <div className={`page ${isShowThumbnails ? 'show-thumbnail' : ''} page-${page} ${pageCover}`} ref={ref}>
       <div className="page-content">
         <div className="page-image">
-          <img src={IMAGE_MAPPING[props?.page]} />
+          {isPrev && prev()}
+          <img src={IMAGE_MAPPING[page]} />
+          {isNext && next()}
         </div>
       </div>
     </div>
@@ -328,10 +332,10 @@ const ButtonBlock = ({ isShowThumbnails, isFullScreen, isMobile, isZoomIn, zoomL
       <div className={`zoom-tooltip ${isZoomIn ? 'show' : ''}`}>
         <input
           type="range"
-          min="1"
-          max="5"
+          min={ZOOM.MIN}
+          max={ZOOM.MAX}
           value={zoomLevel}
-          step="1"
+          step={ZOOM.STEP}
           onChange={handleChangeZoomLevel}
         />
         {/* <div className="slider-ticks">
@@ -379,20 +383,24 @@ const ButtonBlock = ({ isShowThumbnails, isFullScreen, isMobile, isZoomIn, zoomL
           ></path>
         </svg>
       </span> */}
-      <span className={`btn-zoom cursor-pointer ${isZoomIn ? 'active' : ''}`} onClick={handleZoom}>
       {
-        isZoomIn ? (
-          <svg data-v-71c99c82="" version="1.1" viewBox="0 0 24 24" className="svg-icon svg-fill" focusable="false">
-            <path pid="0" d="M15.49 17.611a8.144 8.144 0 01-4.35 1.39c-4.452-.102-8.038-3.625-8.14-8 .036-4.35 3.575-7.89 8-8 4.425.112 7.965 3.65 8 8a7.813 7.813 0 01-1.38 4.498l4.451 4.45-2.121 2.122-4.46-4.46zm-4.385-.61c3.3-.09 5.919-2.757 5.895-6-.026-3.263-2.681-5.916-6-6-3.319.083-5.973 2.737-6 6 .077 3.281 2.766 5.923 6.105 6zM7 12v-2h8v2H7z"></path>
-          </svg>
-        )
-        : (
-          <svg data-v-71c99c82="" version="1.1" viewBox="0 0 24 24" className="svg-icon svg-fill" focusable="false">
-            <path pid="0" d="M15.49 17.61A8.144 8.144 0 0111.14 19c-4.452-.102-8.038-3.625-8.14-8 .036-4.35 3.575-7.89 8-8 4.425.112 7.965 3.65 8 8a7.813 7.813 0 01-1.38 4.499l4.451 4.45-2.121 2.122-4.46-4.46zM11.104 17c3.3-.09 5.919-2.757 5.895-6-.026-3.263-2.681-5.916-6-6-3.319.083-5.973 2.737-6 6 .077 3.281 2.766 5.923 6.105 6zM12 7v3h3v2h-3v3h-2v-3H7v-2h3V7h2z"></path>
-          </svg>
+        !isMobile && (
+          <span className={`btn-zoom cursor-pointer ${isZoomIn ? 'active' : ''}`} onClick={handleZoom}>
+          {
+            isZoomIn ? (
+              <svg data-v-71c99c82="" version="1.1" viewBox="0 0 24 24" className="svg-icon svg-fill" focusable="false">
+                <path pid="0" d="M15.49 17.611a8.144 8.144 0 01-4.35 1.39c-4.452-.102-8.038-3.625-8.14-8 .036-4.35 3.575-7.89 8-8 4.425.112 7.965 3.65 8 8a7.813 7.813 0 01-1.38 4.498l4.451 4.45-2.121 2.122-4.46-4.46zm-4.385-.61c3.3-.09 5.919-2.757 5.895-6-.026-3.263-2.681-5.916-6-6-3.319.083-5.973 2.737-6 6 .077 3.281 2.766 5.923 6.105 6zM7 12v-2h8v2H7z"></path>
+              </svg>
+            )
+            : (
+              <svg data-v-71c99c82="" version="1.1" viewBox="0 0 24 24" className="svg-icon svg-fill" focusable="false">
+                <path pid="0" d="M15.49 17.61A8.144 8.144 0 0111.14 19c-4.452-.102-8.038-3.625-8.14-8 .036-4.35 3.575-7.89 8-8 4.425.112 7.965 3.65 8 8a7.813 7.813 0 01-1.38 4.499l4.451 4.45-2.121 2.122-4.46-4.46zM11.104 17c3.3-.09 5.919-2.757 5.895-6-.026-3.263-2.681-5.916-6-6-3.319.083-5.973 2.737-6 6 .077 3.281 2.766 5.923 6.105 6zM12 7v3h3v2h-3v3h-2v-3H7v-2h3V7h2z"></path>
+              </svg>
+            )
+          }
+          </span>
         )
       }
-      </span>
       {
         !isMobile && (
           <span
@@ -441,7 +449,6 @@ export default function MyBook(props) {
   const wrapBookRef = useRef();
   const pageScrollRef = useRef([]);
   const zoomLevelRef = useRef()
-  // const zoomLevelRef = useRef<ComponentRef<typeof PrismaZoom>>(null)
   const [page, setPage] = useState(1);
   const [pages, setPages] = useState([]);
   const [isZoomIn, setIsZoomIn] = useState(false);
@@ -479,12 +486,18 @@ export default function MyBook(props) {
   }, [isFullScreen]);
 
   useEffect(() => {
-    let length = pages?.length, countLoad = PER_LOAD;
+    let length = pages?.length,
+      countLoad = PER_LOAD,
+      existedPage = TOTAL_PAGES - length;
 
     if (page >= length - LEFT_PAGE_TO_LOAD) {
       // LEFT_PAGE_TO_LOAD page cuối của mỗi lượt load mới bắt đầu load thêm
       if (page > length + PER_LOAD && length >= 0) {
         countLoad = page - length;
+      }
+
+      if (existedPage < PER_LOAD) {
+        countLoad = existedPage;
       }
 
       const _pages = [
@@ -560,16 +573,16 @@ export default function MyBook(props) {
     const _zoomLevel = Number(e?.target?.value);
     setZoomLevel(_zoomLevel)
     if (_zoomLevel > zoomLevel) {
-      zoomLevelRef.current?.zoomIn(1);
+      zoomLevelRef.current?.zoomIn(_zoomLevel - zoomLevel);
     } else {
-      zoomLevelRef.current?.zoomOut(1);
+      zoomLevelRef.current?.zoomOut(zoomLevel - _zoomLevel);
     }
   }
 
   const downloadBook = () => saveAs('https://myvinpearl.s3.ap-southeast-1.amazonaws.com/shared/SK.pdf');
 
   const handleKeyDown = (e) => {
-    if(e.key === 'Enter'){
+    if (e.key === 'Enter') {
       pageScrollRef?.current?.[page]?.scrollIntoView(
         {
           behavior: 'smooth',
@@ -577,12 +590,20 @@ export default function MyBook(props) {
         },
         800
       );
-      bookRef?.current?.pageFlip()?.turnToPage(page);
+
+      const lastPage = last(pages);
+      if (lastPage == page) {
+        const _pages = [
+          ...pages,
+          ...generatePages(PER_LOAD, lastPage || 0),
+        ];
+        setPages(_pages);
+      }
 
       clearTimeout(flipTimeOut);
       flipTimeOut = setTimeout(() => {
-        bookRef?.current?.pageFlip()?.flip(page, 'top')
-      }, 500);
+        bookRef?.current?.pageFlip()?.turnToPage(page == 1 ? 0 : page);
+      }, 400);
     }
   };
 
@@ -608,7 +629,7 @@ export default function MyBook(props) {
       setIsShowThumbnailModal(false);
     } else {
       clearTimeout(flipTimeOut);
-      flipTimeOut = setTimeout(() => bookRef?.current?.pageFlip()?.turnToPage(pageNumber), 200);
+      flipTimeOut = setTimeout(() => bookRef?.current?.pageFlip()?.turnToPage(pageNumber == 1 ? 0 : pageNumber == TOTAL_PAGES ? TOTAL_PAGES - 1 : pageNumber), 200);
     }
   }
 
@@ -656,6 +677,14 @@ export default function MyBook(props) {
       ];
       setPages(_pages);
     }
+  }
+
+  const handlePrevious = () => {
+    bookRef?.current?.pageFlip()?.flipPrev('bottom');
+  }
+
+  const handleNext = () => {
+    bookRef?.current?.pageFlip()?.flipNext('bottom');
   }
 
   const sidebarPages = (() => {
@@ -795,8 +824,8 @@ export default function MyBook(props) {
               <div className="wrap-book">
                 <PrismaZoom 
                   allowWheel={false} 
-                  minZoom={1}
-                  maxZoom={5}
+                  minZoom={ZOOM.MIN}
+                  maxZoom={ZOOM.MAX}
                   className='zoom-wrapper'
                   ref={zoomLevelRef}
                 >
@@ -818,7 +847,21 @@ export default function MyBook(props) {
                     ref={bookRef}
                   >
                     {pages.map((item) => (
-                      <Page key={`page-item-${item}`} page={item} />
+                      <Page 
+                        key={`page-item-${item}`} 
+                        page={item}
+                        isShowThumbnails={isShowThumbnails}
+                        prev={() => (
+                          <div className="btn-previous cursor-pointer" onClick={handlePrevious}>
+                            <img src={IconPrevious} alt="previous" />
+                          </div>
+                        )}
+                        next={() => (
+                          <div className="btn-next cursor-pointer" onClick={handleNext}>
+                            <img src={IconNext} alt="next" />
+                          </div>
+                        )}
+                      />
                     ))}
                   </HTMLFlipBook>
                 </PrismaZoom>
