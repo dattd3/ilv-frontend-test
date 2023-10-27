@@ -273,7 +273,12 @@ const IMAGE_MAPPING = {
 },
   PER_LOAD = 30,
   TOTAL_PAGES = 260,
-  LEFT_PAGE_TO_LOAD = 10;
+  LEFT_PAGE_TO_LOAD = 10,
+  ZOOM = {
+    MIN: 1,
+    MAX: 5,
+    STEP: 0.1,
+  };
 
 const Page = forwardRef((props, ref) => {
   const { page, prev, next } = props,
@@ -552,7 +557,7 @@ export default function MyBook(props) {
   }
 
   const handleChangeZoomLevel = e => {
-    const _zoomLevel = parseInt(e?.target?.value || 1);
+    const _zoomLevel = Number(e?.target?.value);
     setZoomLevel(_zoomLevel)
     if (_zoomLevel > zoomLevel) {
       zoomLevelRef.current?.zoomIn(1);
