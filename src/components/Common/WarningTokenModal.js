@@ -3,6 +3,7 @@ import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button'
 import Image from 'react-bootstrap/Image'
 import moment from 'moment'
+import { useTranslation } from "react-i18next"
 import { useCountdown } from '../../commons/hooks'
 import IconReject from '../../assets/img/icon/Icon_Cancel.svg'
 import IconCheck from '../../assets/img/icon/Icon_Check_White.svg'
@@ -10,6 +11,7 @@ import IconCheck from '../../assets/img/icon/Icon_Check_White.svg'
 const tokenTimeExpireStorage = localStorage.getItem('tokenExpired')
 
 const WarningTokenModal = ({isShow, type, title, content, handleHideModal, handleAccept}) => {
+    const { t } = useTranslation()
     const warning = 0
     const tokenTimeExpired = moment(tokenTimeExpireStorage, 'YYYYMMDDHHmmss').valueOf()
     const [minutes, seconds] = useCountdown(tokenTimeExpired)
@@ -42,8 +44,8 @@ const WarningTokenModal = ({isShow, type, title, content, handleHideModal, handl
                     className='button-cancel d-inline-flex align-items-center justify-content-center'
                     onClick={() => handleHideModal(true)}
                     >
-                    <Image src={IconReject} alt='Không' className='ic-status' />
-                    Hủy
+                    <Image src={IconReject} alt={t("Cancel2")} className='ic-status' />
+                    {t("Cancel2")}
                     </Button>
             }
             <Button
@@ -53,13 +55,13 @@ const WarningTokenModal = ({isShow, type, title, content, handleHideModal, handl
             >
                 <Image 
                     src={IconCheck} 
-                    alt='Đồng ý' 
+                    alt={t("Oke")} 
                     className='ic-status'
                     onError={(e) => {
                         e.target.src = "/Icon_Check_White.svg"
                         e.target.className = `ic-status`
                     }} />
-                Đồng ý
+                {t("Oke")}
             </Button>
             </div>
         </Modal.Body>
