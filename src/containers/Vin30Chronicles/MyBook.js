@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback , forwardRef } from 'react';
+import React, { useState, useEffect, useRef, forwardRef } from 'react';
 import { Modal } from "react-bootstrap";
 import PrismaZoom from 'react-prismazoom'
 import { saveAs } from 'file-saver';
@@ -283,9 +283,9 @@ const IMAGE_MAPPING = {
   };
 
 const Page = forwardRef((props, ref) => {
-  const { page, isShowThumbnails, prev, next } = props,
-    isPrev = page % 2 === 0,
-    isNext = page % 2 === 1,
+  const { page, isShowThumbnails, isMobile, prev, next } = props,
+    isPrev = (isMobile && page > 1) ? true : page % 2 === 0,
+    isNext = (isMobile && page < TOTAL_PAGES) ? true : page % 2 === 1,
     pageCover = [1, TOTAL_PAGES].includes(page) ? 'page-cover' : '';
 
   return (
@@ -827,6 +827,7 @@ export default function MyBook(props) {
                   minZoom={ZOOM.MIN}
                   maxZoom={ZOOM.MAX}
                   className='zoom-wrapper'
+                  allowTouchEvents={true}
                   ref={zoomLevelRef}
                 >
                   <HTMLFlipBook
@@ -851,13 +852,14 @@ export default function MyBook(props) {
                         key={`page-item-${item}`} 
                         page={item}
                         isShowThumbnails={isShowThumbnails}
+                        isMobile={isMobile}
                         prev={() => (
-                          <div className="btn-previous cursor-pointer" onClick={handlePrevious}>
+                          <div className={`btn-previous cursor-pointer ${isMobile ? 'mobile' : ''}`} onClick={handlePrevious}>
                             <img src={IconPrevious} alt="previous" />
                           </div>
                         )}
                         next={() => (
-                          <div className="btn-next cursor-pointer" onClick={handleNext}>
+                          <div className={`btn-next cursor-pointer ${isMobile ? 'mobile' : ''}`} onClick={handleNext}>
                             <img src={IconNext} alt="next" />
                           </div>
                         )}
