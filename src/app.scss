@@ -6126,8 +6126,10 @@ span.badge-notification[data-badge]::after {
       width: 100%;
       overflow: hidden;
       .stf__parent {
-        height: 100%;
-        width: 100%;
+        @media (min-width: 481px) {
+          height: 100%;
+          width: 100%;
+        }
       }
       .stf__wrapper {
         height: 100%;
@@ -6173,16 +6175,27 @@ span.badge-notification[data-badge]::after {
             width: 15px;
             box-shadow: unset;
           }
+          &.mobile {
+            img {
+              width: 20px;
+            }
+          }
         }
         .btn-previous {
           position: absolute;
           top: 50%;
           left: -25px;
+          &.mobile {
+            left: 5px;
+          }
         }
         .btn-next {
           position: absolute;
           top: 50%;
           right: -25px;
+          &.mobile {
+            right: 5px;
+          }
         }
       }
     }
