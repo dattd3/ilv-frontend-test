@@ -1,20 +1,20 @@
-import axios from "axios";
-import { formatInternalNewsDataItem, getCurrentLanguage } from "commons/Utils";
-import { getRequestConfigs } from "commons/commonFunctions";
 import { useEffect, useState } from "react";
-import IconInternalNews from "assets/img/icon/internal_news_icon.svg";
-import IconMic from "assets/img/icon/mic-icon.svg";
-import IconVideo from "assets/img/icon/video-icon.svg";
-import purify from "dompurify";
-import LoadingModal from "components/Common/LoadingModal";
-import IconTime from "assets/img/icon/Icon-Time.svg";
+import axios from "axios";
 import moment from "moment";
+import purify from "dompurify";
+import { useTranslation } from "react-i18next";
+import LoadingModal from "components/Common/LoadingModal";
+import { getRequestConfigs } from "commons/commonFunctions";
+import { formatInternalNewsDataItem, getCurrentLanguage } from "commons/Utils";
+import IconTime from "assets/img/icon/Icon-Time.svg";
+import IconBack from "assets/img/icon/Icon-Arrow-Left.svg";
 import '../../assets/css/ck-editor5.css';
 
 function InternalNewsDetail(props) {
   const id = props.match.params.id;
-  const [newsDetail, setNewsDetail] = useState(null);
+  const { t } = useTranslation();
   const lang = getCurrentLanguage();
+  const [newsDetail, setNewsDetail] = useState(null);
 
   useEffect(() => {
     axios
@@ -32,26 +32,18 @@ function InternalNewsDetail(props) {
       });
   }, [id]);
 
-  const generatIcon = (_type) => {
-    switch (_type) {
-      case 2:
-        return <img src={IconMic} alt="" />;
-      case 3:
-        return <img src={IconVideo} alt="" />;
-      default:
-        return <img src={IconInternalNews} alt="" />;
-    }
-  };
-
   return (
     <>
       {newsDetail ? (
         <div className="internal-news-page">
-          <div className="page-title">
-            {generatIcon(newsDetail.newsType)}&nbsp;
-            {newsDetail.title}
+          <div className="back-block">
+            <a href={`/internal-news?type=${newsDetail.newsType}`} title={t("ComeBack")}>
+              <img src={IconBack} alt="Back" className="ic-back" />
+              {t("ComeBack")}
+            </a>
           </div>
           <div className="body" style={{ padding: 12 }}>
+            <h1 className="internal-news-title">{newsDetail.title || ''}</h1>
             <div className="source-time-info">
                 <img src={IconTime} alt="Time" className="icon" />&nbsp;
                 <span className="hour">{newsDetail?.publishedDate ? moment(newsDetail?.publishedDate)?.format("HH:mm | DD/MM/YYYY") : "N/A"}</span>
