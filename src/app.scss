@@ -4787,6 +4787,11 @@ span.badge-notification[data-badge]::after {
     background: #fff;
     border-radius: 6px;
 
+    .internal-news-title {
+      font-size: 16px;
+      font-weight: bold;
+    }
+
     .ck-content {
       iframe {
         width: 100%;
