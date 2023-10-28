@@ -933,6 +933,14 @@ const ROUTES = [
           component: lazy(() => import("./VingroupCulture/WorkingEnvironment")),
         },
         {
+          key: "registration-detail-contribution",
+          routeProps: {
+            exact: true,
+            path: map.SocialContributeDetail,
+          },
+          component: lazy(() => import("./Welfare/WelfareComponents/SocialContributeInfoDetail")),
+        },
+        {
           key: "internal-news-list",
           routeProps: {
             exact: true,
