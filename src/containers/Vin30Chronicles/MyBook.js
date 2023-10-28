@@ -449,6 +449,10 @@ export default function MyBook(props) {
   const wrapBookRef = useRef();
   const pageScrollRef = useRef([]);
   const zoomLevelRef = useRef()
+  const touchStart = useRef(null);
+  const touchEnd = useRef(null);
+  // the required distance between touchStart and touchEnd to be detected as a swipe
+  const minSwipeDistance = 50;
   const [page, setPage] = useState(1);
   const [pages, setPages] = useState([]);
   const [isZoomIn, setIsZoomIn] = useState(false);
@@ -687,6 +691,30 @@ export default function MyBook(props) {
     bookRef?.current?.pageFlip()?.flipNext('bottom');
   }
 
+  const onTouchStart = (e) => {
+    touchEnd.current = null;
+    touchStart.current = e.targetTouches[0].clientX;
+  }
+
+  const onTouchMove = (e) => {
+    touchEnd.current = e.targetTouches[0].clientX;
+  }
+
+  const onTouchEnd = () => {
+    if (!touchStart.current || !touchEnd.current) return;
+    const distance = touchStart.current - touchEnd.current;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+    if (isLeftSwipe || isRightSwipe) {
+      if (isLeftSwipe) {
+        handleNext()
+      }
+      if (isRightSwipe) {
+        handlePrevious()
+      }
+    }
+  }
+
   const sidebarPages = (() => {
     const firstPage = 1,
       lastPage = pages?.length,
@@ -828,6 +856,9 @@ export default function MyBook(props) {
                   maxZoom={ZOOM.MAX}
                   className='zoom-wrapper'
                   allowTouchEvents={true}
+                  onTouchStart={onTouchStart}
+                  onTouchMove={onTouchMove}
+                  onTouchEnd={onTouchEnd}
                   ref={zoomLevelRef}
                 >
                   <HTMLFlipBook
