@@ -587,13 +587,15 @@ export default function MyBook(props) {
 
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
-      pageScrollRef?.current?.[page]?.scrollIntoView(
-        {
-          behavior: 'smooth',
-          block: 'nearest',
-        },
-        800
-      );
+      if (!isMobile) {
+        pageScrollRef?.current?.[page]?.scrollIntoView(
+          {
+            behavior: 'smooth',
+            block: 'nearest',
+          },
+          800
+        );
+      }
 
       const lastPage = last(pages);
       if (lastPage == page) {
