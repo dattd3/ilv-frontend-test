@@ -5971,7 +5971,7 @@ span.badge-notification[data-badge]::after {
           visibility: hidden;
           opacity: 0;
           transition: visibility 0s linear 0.33s, opacity 0.33s linear;
-          border: 1px solid #5A5F63;
+          // border: 1px solid #5A5F63;
           padding: 5px 10px 10px 10px;
           border-radius: 4px;
           &.show {
@@ -6010,7 +6010,7 @@ span.badge-notification[data-badge]::after {
             appearance: none; 
             height: 10px;
             width: 10px;
-            background-color: #f50;
+            background-color: #FFFFFF;
             border-radius: 50%;
             border: none;
             transition: .2s ease-in-out;
@@ -6020,33 +6020,33 @@ span.badge-notification[data-badge]::after {
           input[type="range"]::-moz-range-thumb {
             height: 10px;
             width: 10px;
-            background-color: #f50;
+            background-color: #FFFFFF;
             border-radius: 50%;
             border: none;
             transition: .2s ease-in-out;
           }
           
           /* Hover, active & focus Thumb: Webkit */
-          input[type="range"]::-webkit-slider-thumb:hover {
-            box-shadow: 0 0 0 5px rgba(255,85,0, .1)
-          }
-          input[type="range"]:active::-webkit-slider-thumb {
-            box-shadow: 0 0 0 7px rgba(209, 50, 56, .2)
-          }
-          input[type="range"]:focus::-webkit-slider-thumb {
-            box-shadow: 0 0 0 7px rgba(209, 50, 56, .2)
-          }
+          // input[type="range"]::-webkit-slider-thumb:hover {
+          //   box-shadow: 0 0 0 5px #FFFFFF
+          // }
+          // input[type="range"]:active::-webkit-slider-thumb {
+          //   box-shadow: 0 0 0 7px #FFFFFF
+          // }
+          // input[type="range"]:focus::-webkit-slider-thumb {
+          //   box-shadow: 0 0 0 7px #FFFFFF
+          // }
 
-          /* Hover, active & focus Thumb: Firfox */
-          input[type="range"]::-moz-range-thumb:hover {
-            box-shadow: 0 0 0 5px rgba(209, 50, 56, .1)
-          }
-          input[type="range"]:active::-moz-range-thumb {
-            box-shadow: 0 0 0 7px rgba(209, 50, 56, .2)
-          }
-          input[type="range"]:focus::-moz-range-thumb {
-            box-shadow: 0 0 0 7px rgba(209, 50, 56, .2)
-          }
+          // /* Hover, active & focus Thumb: Firfox */
+          // input[type="range"]::-moz-range-thumb:hover {
+          //   box-shadow: 0 0 0 5px #FFFFFF
+          // }
+          // input[type="range"]:active::-moz-range-thumb {
+          //   box-shadow: 0 0 0 7px #FFFFFF
+          // }
+          // input[type="range"]:focus::-moz-range-thumb {
+          //   box-shadow: 0 0 0 7px #FFFFFF
+          // }
         }
         .menu-item {
           padding: 2px;
@@ -6177,12 +6177,12 @@ span.badge-notification[data-badge]::after {
         .btn-previous {
           position: absolute;
           top: 50%;
-          left: -20px;
+          left: -25px;
         }
         .btn-next {
           position: absolute;
           top: 50%;
-          right: -20px;
+          right: -25px;
         }
       }
     }
@@ -6197,6 +6197,11 @@ span.badge-notification[data-badge]::after {
         position: relative !important;
         width: auto !important;
       }
+      &.show-thumbnail.--simple {
+        left: initial !important;
+        position: initial !important;
+        width: auto !important;
+      }
     }
   
     &.--right {
@@ -6205,7 +6210,11 @@ span.badge-notification[data-badge]::after {
         left: unset !important;
         position: relative !important;
         width: auto !important;
-        height: 100% !important;
+      }
+      &.show-thumbnail.--simple {
+        left: initial !important;
+        position: initial !important;
+        width: auto !important;
       }
     }
     &.hard {
@@ -6215,6 +6224,7 @@ span.badge-notification[data-badge]::after {
   }
 }
 // End Sử ký
+
 
 .thumbnail-modal {
   width: 100%;
