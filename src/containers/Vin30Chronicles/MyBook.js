@@ -608,6 +608,7 @@ export default function MyBook(props) {
       flipTimeOut = setTimeout(() => {
         bookRef?.current?.pageFlip()?.turnToPage(page == 1 ? 0 : page);
       }, 400);
+      zoomLevelRef.current?.reset();
     }
   };
 
