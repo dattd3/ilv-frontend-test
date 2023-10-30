@@ -6235,6 +6235,17 @@ span.badge-notification[data-badge]::after {
       border: solid 1px hsl(35, 20, 50);
     }
   }
+  &.mobile {
+    .header-block {
+      justify-content: center;
+    }
+    .book-title {
+      border-right: none !important;
+    }
+    .page-block {
+      display: none !important;
+    }
+  }
 }
 // End Sử ký
 
