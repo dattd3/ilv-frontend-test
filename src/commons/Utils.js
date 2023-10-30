@@ -186,17 +186,16 @@ const getValueParamByQueryString = (queryString, key) => {
     return value
 }
 
-const calculateBackDateByPnLVCodeAndFormatType = (pnlVCode, formatType) => {
+const calculateBackDateByPnLVCodeAndFormatType = (orgLv2Id, formatType) => {
     try {
-        const PnLVCodeDayMapping = {
-            [Constants.pnlVCode.VinPearl]: 1,
-            [Constants.pnlVCode.MeliaVinpearl]: 1,
-            [Constants.pnlVCode.VinHoliday1]: 1,
+        const orgLv2IdDayMapping = {
+            [Constants.ORG_ID_VINPEARL]: 1,
+            [Constants.ORG_ID_VINPEARL_MELIA]: 1,
         }
-        if (!PnLVCodeDayMapping[pnlVCode]) {
+        if (!orgLv2IdDayMapping[orgLv2Id]) {
             return null
         }
-        const date = moment().subtract(PnLVCodeDayMapping[pnlVCode], 'days').format(formatType)
+        const date = moment().subtract(orgLv2IdDayMapping[orgLv2Id], 'days').format(formatType)
 
         return date
     } catch (e) {
@@ -384,9 +383,9 @@ const isValidDateRequest = date => {
 }
 
 const getRegistrationMinDateByConditions = () => {
-    const userLoggedCompanyCode = localStorage.getItem('companyCode')
+    const userLoggedOrgLv2Id = localStorage.getItem('organizationLv2')
     let firstDay = null
-    if ([Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinHoliday1].includes(userLoggedCompanyCode)) {
+    if ([Constants.ORG_ID_VINPEARL, Constants.ORG_ID_VINPEARL_MELIA].includes(userLoggedOrgLv2Id)) {
         // let indexWednesdayInWeek = 3
         // let indexCurrentDayInWeek = moment().day()
         // firstDay = moment().startOf('week').isoWeekday(1) // Từ thứ 4 trở đi của tuần hiện tại đến cuối tuần hiện tại thì sẽ lấy ngày đầu tiên của tuần hiện tại
@@ -634,11 +633,9 @@ const isExistCurrentUserInWhiteList = () => {
         "vuongvt2@vingroup.net",
         "thuypx2@vingroup.net",
         "chiendv4@vingroup.net",
-        "hoangnh34@vingroup.net",
         "minhkv1@vingroup.net",
         "tammt9@vingroup.net",
         "hoalp2@vingroup.net",
-        "cuongnv56@vingroup.net",
         "chiennd4@vingroup.net",
         "dattd3@vingroup.net",
         "datth3@vingroup.net",
