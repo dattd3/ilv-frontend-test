@@ -146,7 +146,7 @@ const Evaluation360 = ({ evaluationFormId, formCode, employeeCode }) => {
     try {
       const config = getRequestConfigurations()
       const payload = { ...evaluationFormDetail }
-      const response = await axios.post(`${process.env.REACT_APP_HRDX_PMS_URL}api/targetform/update`, { requestString: JSON.stringify(payload || {}) }, config)
+      const response = await axios.post(`${process.env.REACT_APP_HRDX_PMS_URL}api/${evaluationApiVersion.v1}/targetform/update`, { requestString: JSON.stringify(payload || {}) }, config)
       SetErrors({})
       statusModalTemp.isShow = true
       statusModalTemp.isSuccess = false
