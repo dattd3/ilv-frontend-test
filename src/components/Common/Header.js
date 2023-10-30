@@ -163,7 +163,7 @@ function Header(props) {
                                                 else if (item?.detailType == 'APPRAISAL')
                                                     return `/tasks?tab=consent${item?.groupId ? `&requestTypes=${getRequestTypesList(item.groupId, false).join(",")}` : ''}`                                       
                                                 else
-                                                    return `/tasks?tab=approval${item?.groupId ? `&requestTypes=${getRequestTypesList(item.groupId, false).join(",")}` : ''}`
+                                                    return `/tasks?tab=approval${item?.groupId ? `&requestTypes=${getRequestTypesList(item.groupId, false).join(",")}` : ''}&id=${item?.subRequestId}`
                                             case 6:
                                                 return '/personal-info?tab=document'
                                             case Constants.notificationType.NOTIFICATION_REJECT:

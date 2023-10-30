@@ -409,8 +409,12 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         </div>
 
         {
-          requestInfo && (requestInfo.processStatusId === 8 || (action != "consent" && requestInfo.processStatusId === 5) || requestInfo.processStatusId === 2 || 
-          (action === "approval" && requestInfo.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && requestTypeIdsAllowedToReApproval.includes(requestTypeId))) 
+          (
+            requestInfo.processStatusId === Constants.STATUS_WAITING_CONSENTED 
+            || (action != "consent" && requestInfo.processStatusId === Constants.STATUS_WAITING) 
+            || requestInfo.processStatusId === Constants.STATUS_APPROVED 
+            || (action === "approval" && requestInfo.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && requestTypeIdsAllowedToReApproval.includes(requestTypeId))
+          )
           ? 
           <DetailButtonComponent dataToSap={
             [
