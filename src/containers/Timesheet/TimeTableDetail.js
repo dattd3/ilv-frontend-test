@@ -44,6 +44,7 @@ const totalTimeSheetLines = 4
 const timeSheetLinesAlwayShow = 2
 const timeSheetLinesIgnoreOnceLine = 3
 const currentUserPnLCode = localStorage.getItem("companyCode")
+const currentUserOrgLv2Id = localStorage.getItem("organizationLv2")
 
 function WorkingDay(props) {
   const { t } = useTranslation();
@@ -65,7 +66,7 @@ const chunk = (arr, size) => arr.reduce((acc, e, i) => (i % size ? acc[acc.lengt
 
 function RenderRow0(props) {
   const { t } = useTranslation()
-  // const backDate = calculateBackDateByPnLVCodeAndFormatType(currentUserPnLCode, 'YYYYMMDD')
+  // const backDate = calculateBackDateByPnLVCodeAndFormatType(currentUserOrgLv2Id, 'YYYYMMDD')
   let backDate = getRegistrationMinDateByConditions()
   if (backDate) {
     backDate = moment(backDate).format("DD/MM/YYYY")
@@ -87,7 +88,7 @@ function RenderRow0(props) {
       if (backDate) {
         isBlockActions = moment(item.day, "DD/MM/YYYY").isBefore(moment(backDate, "DD/MM/YYYY"))
       } else {
-        const backDateOldLogic = calculateBackDateByPnLVCodeAndFormatType(currentUserPnLCode, 'YYYYMMDD')
+        const backDateOldLogic = calculateBackDateByPnLVCodeAndFormatType(currentUserOrgLv2Id, 'YYYYMMDD')
         isBlockActions = moment(item.day, "DD/MM/YYYY").isBefore(moment(backDateOldLogic, "YYYYMMDD"))
       }
     }
