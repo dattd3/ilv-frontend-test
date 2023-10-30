@@ -54,7 +54,7 @@ class TaskDetailModal extends React.Component {
     }
 
     render() {
-        const { t, action, taskId, show, onHide, isAutoShowDetailModal } = this.props // isAutoShowDetailModal chỉ sử dụng cho Quá trình công tác ngoài Tập đoàn
+        const { t, action, taskId, show, onHide, isAutoShowDetailModal } = this.props
         const data = this.state.data;
         let { requestTypeId, updateField } = data
         let isWorkOutSideGroup = false;
