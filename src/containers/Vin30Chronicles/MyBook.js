@@ -854,7 +854,7 @@ export default function MyBook(props) {
             </div>
             <div className="book" ref={wrapBookRef} onWheel={onWheel}>
               <div className="wrap-book">
-                <PrismaZoom 
+                {/* <PrismaZoom 
                   allowWheel={false} 
                   minZoom={ZOOM.MIN}
                   maxZoom={ZOOM.MAX}
@@ -864,7 +864,7 @@ export default function MyBook(props) {
                   onTouchMove={onTouchMove}
                   onTouchEnd={onTouchEnd}
                   ref={zoomLevelRef}
-                >
+                > */}
                   <HTMLFlipBook
                     showCover={true}
                     flippingTime={600}
@@ -901,7 +901,7 @@ export default function MyBook(props) {
                       />
                     ))}
                   </HTMLFlipBook>
-                </PrismaZoom>
+                {/* </PrismaZoom> */}
               </div>
             </div>
             <ButtonBlock 
