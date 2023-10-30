@@ -326,7 +326,7 @@ const ThumbnailModal = ({ isShow, page, thumbnailPages, handleScrollSidebar, han
   );
 }
 
-const ButtonBlock = ({ isShowThumbnails, isFullScreen, isMobile, isZoomIn, zoomLevel, handleZoom, handleChangeZoomLevel, handleShowThumbnails, downloadBook, handleScreen }) => {
+const ButtonBlock = ({ isShowThumbnails, isFullScreen, isMobile, isZoomIn, zoomLevel, page, handleZoom, handleChangeZoomLevel, handleShowThumbnails, downloadBook, handleScreen }) => {
   return (
     <div className={`d-flex align-items-center bottom-block ${isMobile ? 'justify-content-start' : 'justify-content-center'}`}>
       <div className={`zoom-tooltip ${isZoomIn ? 'show' : ''}`}>
@@ -366,6 +366,11 @@ const ButtonBlock = ({ isShowThumbnails, isFullScreen, isMobile, isZoomIn, zoomL
           ></path>
         </svg>
       </span>
+      {
+        isMobile && (
+          <span style={{ marginLeft: 5, fontSize: 12 }}>{`${page} / ${TOTAL_PAGES}`}</span>
+        )
+      }
       {/* <span
         className="btn-download cursor-pointer"
         onClick={downloadBook}
@@ -740,7 +745,7 @@ export default function MyBook(props) {
       />
 
       <div
-        className="history-vingroup-page"
+        className={`history-vingroup-page ${isMobile ? 'mobile' : ''}`}
         id="history-vingroup-page"
         ref={pageRef}
       >
@@ -854,8 +859,9 @@ export default function MyBook(props) {
             </div>
             <div className="book" ref={wrapBookRef} onWheel={onWheel}>
               <div className="wrap-book">
-                {/* <PrismaZoom 
+                <PrismaZoom 
                   allowWheel={false} 
+                  initialZoom={ZOOM.MIN}
                   minZoom={ZOOM.MIN}
                   maxZoom={ZOOM.MAX}
                   className='zoom-wrapper'
@@ -864,7 +870,7 @@ export default function MyBook(props) {
                   onTouchMove={onTouchMove}
                   onTouchEnd={onTouchEnd}
                   ref={zoomLevelRef}
-                > */}
+                >
                   <HTMLFlipBook
                     showCover={true}
                     flippingTime={600}
@@ -901,7 +907,7 @@ export default function MyBook(props) {
                       />
                     ))}
                   </HTMLFlipBook>
-                {/* </PrismaZoom> */}
+                </PrismaZoom>
               </div>
             </div>
             <ButtonBlock 
@@ -910,6 +916,7 @@ export default function MyBook(props) {
               isMobile={isMobile}
               isZoomIn={isZoomIn}
               zoomLevel={zoomLevel}
+              page={page}
               handleZoom={handleZoom}
               handleChangeZoomLevel={handleChangeZoomLevel}
               handleShowThumbnails={handleShowThumbnails}
