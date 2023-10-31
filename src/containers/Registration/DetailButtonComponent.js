@@ -82,8 +82,13 @@ class DetailButtonComponent extends React.Component {
     }
 
     render() {
-        const {t, action, requestTypeId, isShowReject = true} = this.props
+        const {t, action, requestTypeId, isShowReject = true, viewPopup, isShowApproval, isShowConsent} = this.props
         const actionProcessing = action ? action : this.getAction()
+
+        console.log('actionProcessing ', actionProcessing)
+        console.log('this.props.isShowConsent ', this.props.isShowConsent)
+        console.log('isShowApproval ', isShowApproval)
+
         return <div className="bottom">
             <ConfirmationModal
                 urlName={this.props.urlName}
@@ -98,48 +103,44 @@ class DetailButtonComponent extends React.Component {
                 updateTask = {this.updateTaskStatus}
             />
             {
-            actionProcessing === "approval" ?
-            <div className="clearfix mt-2 mb-2">
-                {
-                    this.props.isShowApproval ?
-                    <>
-                    <button type="button" className="btn btn-success float-right ml-3 shadow" onClick={this.approval.bind(this)}>
-                        <i className="fas fa-check" aria-hidden="true"></i> {t("Approval")}</button>
+                actionProcessing === "approval" &&
+                <div className="clearfix mt-2 mb-2">
                     {
-                      isShowReject && <button type="button" className="btn btn-danger float-right shadow" onClick={this.disApproval.bind(this)}><i className="fa fa-close"></i> {t("Reject")}</button>
+                        isShowApproval &&
+                        <>
+                        <button type="button" className="btn btn-success float-right ml-3 shadow" onClick={this.approval.bind(this)}>
+                            <i className="fas fa-check" aria-hidden="true"></i> {t("Approval")}</button>
+                        {
+                        isShowReject && <button type="button" className="btn btn-danger float-right shadow" onClick={this.disApproval.bind(this)}><i className="fa fa-close"></i> {t("Reject")}</button>
+                        }
+                        </>
                     }
-                    </>
-                    : null
-                }
-                {
-                    (this.props.isShowRevocationOfApproval && !this.props.hiddenRevocationOfApprovalButton && [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP].includes(Number(requestTypeId || 0))) && (
-                        <button type="button" className="btn btn-danger float-right shadow" onClick={this.revocationApproval.bind(this)}><i className='fas fa-undo-alt'></i> {t("ApproralRecall")}</button>
-                    )
-                }
-            </div>
-            : null
+                    {
+                        (this.props.isShowRevocationOfApproval && !this.props.hiddenRevocationOfApprovalButton && [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP].includes(Number(requestTypeId || 0))) && (
+                            <button type="button" className="btn btn-danger float-right shadow" onClick={this.revocationApproval.bind(this)}><i className='fas fa-undo-alt'></i> {t("ApproralRecall")}</button>
+                        )
+                    }
+                </div>
             }
             {
-            actionProcessing === "consent" ?
-            <div className="clearfix mt-2 mb-2">
-                {
-                    this.props.isShowConsent ? 
-                    <>
-                    <button type="button" className="btn btn-warning float-right ml-3 shadow" onClick={this.consent.bind(this)}>
-                        <i className="fas fa-check" aria-hidden="true"></i> {t("Consent")}</button>
+                actionProcessing === "consent" &&
+                <div className="clearfix mt-2 mb-2">
                     {
-                      isShowReject && <button type="button" className="btn btn-danger float-right shadow" onClick={this.rejected.bind(this)}><i className="fa fa-close"></i> {t("Rejected")}</button>
+                        isShowConsent && 
+                        <>
+                        <button type="button" className="btn btn-warning float-right ml-3 shadow" onClick={this.consent.bind(this)}>
+                            <i className="fas fa-check" aria-hidden="true"></i> {t("Consent")}</button>
+                        {
+                        isShowReject && <button type="button" className="btn btn-danger float-right shadow" onClick={this.rejected.bind(this)}><i className="fa fa-close"></i> {t("Rejected")}</button>
+                        }
+                        </>
                     }
-                    </>
-                    : null
-                }
-                {/* {
-                    this.props.isShowRevocationOfConsent ?
-                    <button type="button" className="btn btn-danger float-right shadow" onClick={this.revocationApproval.bind(this)}><i className='fas fa-undo-alt'></i> Thu hồi thẩm định</button>
-                    : null
-                } */}
-            </div>
-            : null
+                    {/* {
+                        this.props.isShowRevocationOfConsent ?
+                        <button type="button" className="btn btn-danger float-right shadow" onClick={this.revocationApproval.bind(this)}><i className='fas fa-undo-alt'></i> Thu hồi thẩm định</button>
+                        : null
+                    } */}
+                </div>
             }
             {/* {
                 actionProcessing === "request" && this.props.isShowEvictionRequest ?

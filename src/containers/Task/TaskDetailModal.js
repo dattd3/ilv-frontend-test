@@ -26,17 +26,20 @@ class TaskDetailModal extends React.Component {
     }
   
     componentDidMount() {
-      let config = {
+      const { taskId, subId } = this.props
+      const requestId = taskId?.toString().includes('.') ? taskId?.toString()?.split('.')?.[0] : taskId
+      const subRequestId = taskId?.toString().includes('.') ? taskId?.toString()?.split('.')?.[1] : (subId ?? 1)
+      const config = {
         headers: {
           'Authorization': localStorage.getItem('accessToken')
         },
         params:{
-          id: this.props.taskId,
-          subid: this.props.subId??1
+          id: requestId,
+          subid: subRequestId,
         }
       }
-      if(this.props.taskId)
-      {
+
+      if (taskId) {
         axios.get(`${process.env.REACT_APP_REQUEST_URL}request/detail`, config)
         .then(res => {
           if (res && res.data) {

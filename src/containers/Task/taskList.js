@@ -82,8 +82,7 @@ class TaskList extends React.Component {
             this.props.history.replace({
                 search: queryParams.toString(),
             })
-            //TODO
-            this.setState({ isShowTaskDetailModal: true })
+            this.setState({ isShowTaskDetailModal: true, action: queryParams.get('tab') })
         }
     }
 
