@@ -147,8 +147,6 @@ function Header(props) {
                 const qnaDetailType = 'TICKET'
 
                 let notificationLink = (type) => {
-                    console.log(type)
-                    
                     switch (type) {
                         case Constants.notificationType.NOTIFICATION_DEFAULT:
                         case 12:

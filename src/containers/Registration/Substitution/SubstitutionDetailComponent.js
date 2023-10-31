@@ -77,7 +77,8 @@ class SubstitutionDetailComponent extends React.Component {
     const requestTypeId = substitution.requestTypeId
     const { isShowStatusModal, content, isSuccess } = this.state
     const requestTypeIdsAllowedToReApproval = getRequestTypeIdsAllowedToReApproval()
-    const isShowApproval = (substitution.processStatusId === Constants.STATUS_WAITING) || (action === "approval" && substitution.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && requestTypeIdsAllowedToReApproval.includes(substitution.requestTypeId))
+    const isShowApproval = requestTypeIdsAllowedToReApproval.includes(substitution.requestTypeId) && action === "approval" 
+    && (substitution.processStatusId == Constants.STATUS_WAITING || substitution.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL)
 
     let messageSAP = null;
     if (substitution.processStatusId === Constants.STATUS_PARTIALLY_SUCCESSFUL)

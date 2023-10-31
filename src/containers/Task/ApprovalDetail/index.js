@@ -42,10 +42,6 @@ class ApprovalDetail extends React.Component {
     };
   }
 
-  getUserProfileHistoryId = () => {
-    return this.props.id;
-  }
-
   processBlockStatuses = (response) => {
     if (response && response.data) {
       const data = response.data;
@@ -288,7 +284,7 @@ class ApprovalDetail extends React.Component {
     return (
       <>
       <ConfirmationModal data={data} show={isShowModalConfirm} manager={this.manager} title={modalTitle} type={typeRequest} message={modalMessage} 
-      taskId={this.getUserProfileHistoryId()} onHide={this.onHideModalConfirm} showConfirmModal={this.showConfirmModal} />
+      taskId={this.props.id} onHide={this.onHideModalConfirm} showConfirmModal={this.showConfirmModal} />
       <div className="edit-personal user-info-request">
         <h4 className="content-page-header">{t("EmployeeInfomation")}</h4>
       </div>
