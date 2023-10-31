@@ -143,8 +143,8 @@ const PNL_SWIPER_LIST = [
       url: "https://vingroup.net",
     },
     {
-      logo: IconVinFuture,
-      url: "https://vinfutureprize.org",
+      logo: IconVinUni,
+      url: "https://vinuni.edu.vn/",
     },
     {
       logo: IconVingroup,
