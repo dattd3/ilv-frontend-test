@@ -117,23 +117,26 @@ class LeaveTimePage extends React.Component {
       return <div className="leave-time-page">
           <LeaveTimeSummary data={annualLeaveSummary} pendingTimeInfo={pendingTimeInfo} />
           <LeaveTimeSearch clickSearch={this.searchTimesheetByDate.bind(this)} errorMessage={errorMessage}/>
-          {isSearch ? 
-          <><LeaveTimeDetail 
-              bg="primary" 
-              headerTitle={t("LeavesYear")}
-              headers={{month: t("Month"), annualLeaveOfArising: t("NewUsableLeaves"), usedAnnualLeave: t("UsedLeaves"), daysOfAnnualLeave: t("DateOfLeaves")}}
-              data={annualLeaves} 
-          />
-          <LeaveTimeDetail 
-              bg="success" 
-              headerTitle={t("ToilDay")}
-              headers={{month: t("Month"), annualLeaveOfArising: t("NewUsableToil"), usedAnnualLeave: t("UsedToil"), daysOfAnnualLeave: t("DateOfLeaves")}}
-              data={compensatoryLeaves} 
-          />
-          </> : null}
+          {
+            isSearch && (
+            <>
+              <LeaveTimeDetail 
+                bg="primary" 
+                headerTitle={t("LeavesYear")}
+                headers={{month: t("Month"), annualLeaveOfArising: t("NewUsableLeaves"), usedAnnualLeave: t("UsedLeaves"), daysOfAnnualLeave: t("DateOfLeaves")}}
+                data={annualLeaves} 
+              />
+              <LeaveTimeDetail 
+                  bg="success" 
+                  headerTitle={t("ToilDay")}
+                  headers={{month: t("Month"), annualLeaveOfArising: t("NewUsableToil"), usedAnnualLeave: t("UsedToil"), daysOfAnnualLeave: t("DateOfLeaves")}}
+                  data={compensatoryLeaves} 
+              />
+            </>
+          )
+        }
       </div>
     }
-
 }
 
 export default HOCComponent(withTranslation()(LeaveTimePage))
