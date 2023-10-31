@@ -320,10 +320,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     const annualLeaveSummary = this.state.annualLeaveSummary
     const requestTypeIdsAllowedToReApproval = getRequestTypeIdsAllowedToReApproval()
     const isShowApprovalButton = requestTypeIdsAllowedToReApproval.includes(requestTypeId) && action === "approval"
-    && (
-      (requestInfo.processStatusId == Constants.STATUS_WAITING && _.size(leaveOfAbsence?.approver) > 0) 
-      || requestInfo.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL
-    )
+    && (requestInfo.processStatusId == Constants.STATUS_WAITING || requestInfo.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL)
 
     let messageSAP = null
     if (requestInfo?.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL) {

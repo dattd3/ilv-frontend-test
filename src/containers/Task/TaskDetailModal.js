@@ -91,7 +91,7 @@ class TaskDetailModal extends React.Component {
                         {data && data?.requestTypeId === Constants.SUBSTITUTION ? <SubstitutionDetailComponent action={action} substitution={data}/> : null}
                         {
                           data && data?.requestTypeId === Constants.UPDATE_PROFILE 
-                          ? (isAutoShowDetailModal || isWorkOutSideGroup)
+                          ? (isWorkOutSideGroup)
                             ? (<WorkOutSideGroupDetail details={data} viewPopup={true} />)
                             : (<PersonalDetailComponent id={taskId} data={data} />)
                           : null

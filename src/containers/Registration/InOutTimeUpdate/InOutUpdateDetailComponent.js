@@ -94,7 +94,9 @@ class InOutUpdateDetailComponent extends React.Component {
   render() {
     const { t, action, inOutTimeUpdate } = this.props
     const requestTypeIdsAllowedToReApproval = getRequestTypeIdsAllowedToReApproval()
-    const isShowApproval = (inOutTimeUpdate.processStatusId === Constants.STATUS_WAITING) || (action === "approval" && inOutTimeUpdate.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && requestTypeIdsAllowedToReApproval.includes(inOutTimeUpdate.requestTypeId))
+    const isShowApproval = requestTypeIdsAllowedToReApproval.includes(inOutTimeUpdate.requestTypeId) && action === "approval" 
+    && (inOutTimeUpdate.processStatusId == Constants.STATUS_WAITING || inOutTimeUpdate.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL)
+    
     let messageSAP = null;
     if (inOutTimeUpdate.processStatusId === Constants.STATUS_PARTIALLY_SUCCESSFUL)
     {
