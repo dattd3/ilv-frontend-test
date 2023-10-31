@@ -336,7 +336,9 @@ class RequestTaskList extends React.Component {
             '14-2': 'proposed-transfer',
             '15-2': 'proposed-appointment',
           };
-        if(request?.requestTypeId == Constants.WELFARE_REFUND) {
+        if(request?.requestTypeId == Constants.INSURANCE_SOCIAL_INFO) {
+            url = `social-contribute/${request?.salaryId}/request`;
+        } else if(request?.requestTypeId == Constants.WELFARE_REFUND) {
             url = `benefit-claim-request`;
         } else if (request?.requestTypeId == Constants.INSURANCE_SOCIAL) {
             url = `insurance-manager/detail/${request?.salaryId}/request`;
@@ -939,7 +941,7 @@ class RequestTaskList extends React.Component {
                                             }
 
                                             let editLink = this.getRequestEditLink(child.id, child.requestTypeId, child.processStatusId)
-                                            let detailLink = [Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER, Constants.PROPOSAL_APPOINTMENT, Constants.WELFARE_REFUND, Constants.INSURANCE_SOCIAL].includes(child.requestTypeId) ? this.getSalaryProposeLink(child) : this.getRequestDetailLink(child.id, child.requestTypeId)
+                                            let detailLink = [Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER, Constants.PROPOSAL_APPOINTMENT, Constants.WELFARE_REFUND, Constants.INSURANCE_SOCIAL, Constants.INSURANCE_SOCIAL_INFO].includes(child.requestTypeId) ? this.getSalaryProposeLink(child) : this.getRequestDetailLink(child.id, child.requestTypeId)
                                             let dateChanged = showRangeDateGroupByArrayDate(child.startDate)
 
                                             if ([Constants.OT_REQUEST].includes(child.requestTypeId)) {
@@ -993,9 +995,9 @@ class RequestTaskList extends React.Component {
                                                     <td className="status">{t(`operationType.${child.operationType?.toLowerCase()}`)}</td>
                                                     <td className="status text-center">{this.showStatus(child.processStatusId, child.requestType.id, child.approver, child.statusName)}</td>
                                                     <td className="tool">
-                                                        {isShowEditButton && (<a href={editLink} title={t("Edit")}><img alt="Sửa" src={editButton} /></a>)}
-                                                        {isShowEvictionButton && (<span title="Thu hồi" onClick={e => this.evictionRequest(child.requestTypeId, child)}><img alt="Thu hồi" src={evictionButton} /></span>)}
-                                                        {isShowDeleteButton && <span title="Hủy" onClick={e => this.deleteRequest(child.requestTypeId, child)}><img alt="Hủy" src={deleteButton} /></span>}
+                                                        {isShowEditButton && (<a href={editLink} title={t("Edit")}><img alt={t("Edit")} src={editButton} /></a>)}
+                                                        {isShowEvictionButton && (<span title={t("Recall")} onClick={e => this.evictionRequest(child.requestTypeId, child)}><img alt={t("Recall")} src={evictionButton} /></span>)}
+                                                        {isShowDeleteButton && <span title={t("Cancel2")} onClick={e => this.deleteRequest(child.requestTypeId, child)}><img alt={t("Cancel2")} src={deleteButton} /></span>}
                                                         {isShowSyncRequest && <span title={t("Sync")} onClick={e => this.syncRequest(child.requestTypeId, child)}><img alt={t("Sync")} src={IconSync} /></span>}
                                                     </td>
                                                 </tr>
