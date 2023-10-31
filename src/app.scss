@@ -680,7 +680,7 @@
           overflow: hidden;
           -webkit-line-clamp: 2;
           -webkit-box-orient: vertical;
-          height: 32px;
+          height: 35px;
         }
         padding: 5px;
         .source-time-info {
@@ -4787,6 +4787,11 @@ span.badge-notification[data-badge]::after {
     background: #fff;
     border-radius: 6px;
 
+    .internal-news-title {
+      font-size: 16px;
+      font-weight: bold;
+    }
+
     .ck-content {
       iframe {
         width: 100%;
@@ -6456,7 +6461,6 @@ span.badge-notification[data-badge]::after {
           max-height: 75vh;
           overflow-y: auto;
           margin-top: 15px;
-          padding-right: 5px;
           &::-webkit-scrollbar {
             width: 6px;
           }
