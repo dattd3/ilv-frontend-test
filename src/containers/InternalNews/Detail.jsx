@@ -25,7 +25,7 @@ function InternalNewsDetail(props) {
       .then((response) => {
         const formattedNews = formatInternalNewsDataItem(response.data?.data, lang);
         if (!formattedNews.title || !formattedNews.content) {
-          window.location.href = "/";
+          window.history.back();
           return
         }
         setNewsDetail(formattedNews);
