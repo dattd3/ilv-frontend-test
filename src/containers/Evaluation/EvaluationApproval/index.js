@@ -25,6 +25,7 @@ import IconApprove from '../../../assets/img/icon/Icon_Check.svg'
 import IconDatePicker from 'assets/img/icon/Icon_DatePicker.svg'
 import 'react-datepicker/dist/react-datepicker.css'
 import vi from 'date-fns/locale/vi'
+import BatchEvaluation360 from "./BatchEvaluation360"
 registerLocale("vi", vi)
 
 const employeeCode = localStorage.getItem('employeeNo')
@@ -1183,95 +1184,98 @@ function EvaluationApproval(props) {
                 }
                 {
                     activeTab === batchApprovalTabCode &&
-                    <div className="card shadow batch-approval-data">
-                    {
-                        evaluationData?.data?.length > 0 ?
-                        <>
-                        <div className="wrap-table-list-evaluation">
-                            <div className="select-item-block">
-                                <input type="checkbox" checked={isSelectedAll} id="check-all" name="check-all" onChange={(e) => handleCheckboxChange(e, null)} />
-                                <label htmlFor="check-all">{t("EvaluationSelectAll")}</label>
-                            </div>
-                            <table className='table-list-evaluation'>
-                                <thead>
-                                    <tr>
-                                        <th className="c-user-info" colSpan="2"></th>
-                                        {
-                                            (evaluationData?.data[0]?.listGroup || []).map((item, index) => {
-                                                let groupName = isJsonString(item?.groupName) ? (JSON.parse(item?.groupName)?.[lang] || JSON.parse(item?.groupName)?.['vi']) : item?.groupName
-                                                return (
-                                                    <th key={`n1-${index}`} className="text-center text-uppercase" colSpan="2">{ groupName }</th>
-                                                )
-                                            })
-                                        }
-                                        <th className="text-center text-uppercase highlight-third c-summary" colSpan="2">{t("EvaluationSummary")}</th>
-                                    </tr>
-                                    <tr>
-                                        <th className="c-user-info" colSpan="2"><div className="user-info">{t("EvaluationEmployeeFullName")}</div></th>
-                                        {
-                                            (evaluationData?.data[0]?.listGroup || []).map((item, index) => {
-                                                return (
-                                                    <Fragment key={`n2-${index}`}>
-                                                        <th className="c-self-assessment"><div className="text-center self-assessment">{t("EvaluationSelfAssessment")}</div></th>
-                                                        <th className="highlight-first c-cbql-assessment"><div className="text-center cbql-assessment">{t("EvaluationDetailManagerAssessment")}</div></th>
-                                                    </Fragment>
-                                                )
-                                            })
-                                        }
-                                        <th className="highlight-second c-self-assessment"><div className="text-center self-assessment">{t("EvaluationSelfAssessment")}</div></th>
-                                        <th className="highlight-third c-cbql-assessment"><div className="text-center cbql-assessment">{t("EvaluationDetailManagerAssessment")}</div></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {
-                                        evaluationData?.data.map((item, i) => {
-                                            // let attitudeData = item?.listGroup?.filter(item => item.groupTargetCode == 'G1')?.length > 0 ? item?.listGroup?.filter(item => item.groupTargetCode == 'G1')[0] : null
-                                            // let workResultData = item?.listGroup?.filter(item => item.groupTargetCode == 'G2')?.length > 0 ? item?.listGroup?.filter(item => item.groupTargetCode == 'G2')[0] : null
-                                            return (
-                                                <Fragment key={`r- ${i}`}>
-                                                    <tr className="divider"></tr>
-                                                    <tr>
-                                                        <td className="c-check"><div className="check"><input type="checkbox" checked={item?.isSelected || false} onChange={(e) => handleCheckboxChange(e, i)} /></div></td>
-                                                        <td className="c-full-name"><div className="full-name">{item?.fullName || ''} ({item?.username || ''})</div></td>
-                                                        {
-                                                            (item?.listGroup || []).map((sub, subIndex) => {
-                                                                return (
-                                                                    <Fragment key={`rc-${subIndex}`}>
-                                                                        <td className="text-center c-self-assessment">{sub?.seftPoint?.toFixed(2) || 0}</td>
-                                                                        <td className="text-center highlight-first c-cbql-assessment">{sub?.leadReviewPoint?.toFixed(2) || 0}</td>
-                                                                    </Fragment>
-                                                                )
-                                                            })
-                                                        }
-                                                        <td className="text-center highlight-second c-self-assessment">{item?.totalSeftPoint?.toFixed(2) || 0}</td>
-                                                        <td className="text-center highlight-third c-cbql-assessment">{item?.totalLeadReviewPoint?.toFixed(2) || 0}</td>
-                                                    </tr>
-                                                </Fragment>
-                                            )
-                                        })
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
-                        <div className="bottom-region">
-                            <div className="customize-display">
-                                <label>{t("EvaluationShow")}</label>
-                                <select value={paging.batchApproval.pageSize || listPageSizes[0]} onChange={(e) => handleChangePageSize('batchApproval', e?.target?.value)}>
-                                    {
-                                        listPageSizes.map((page, i) => {
-                                            return <option value={page} key={i}>{page}</option>
-                                        })
-                                    }
-                                </select>
-                            </div>
-                            <div className="paging-block">
-                                <CustomPaging pageSize={parseInt(paging.batchApproval.pageSize)} onChangePage={(page) => handleChangePage('batchApproval', page)} totalRecords={evaluationData?.total} needRefresh={refresh} />
-                            </div>
-                        </div>
-                        </>
-                        : <h6 className="alert alert-danger not-found-data" role="alert">{t("NoDataFound")}</h6>
-                    }
-                    </div>
+                    // <div className="card shadow batch-approval-data">
+                    // {
+                    //     evaluationData?.data?.length > 0 ?
+                    //     <>
+                    //     <div className="wrap-table-list-evaluation">
+                    //         <div className="select-item-block">
+                    //             <input type="checkbox" checked={isSelectedAll} id="check-all" name="check-all" onChange={(e) => handleCheckboxChange(e, null)} />
+                    //             <label htmlFor="check-all">{t("EvaluationSelectAll")}</label>
+                    //         </div>
+                    //         <table className='table-list-evaluation'>
+                    //             <thead>
+                    //                 <tr>
+                    //                     <th className="c-user-info" colSpan="2"></th>
+                    //                     {
+                    //                         (evaluationData?.data[0]?.listGroup || []).map((item, index) => {
+                    //                             let groupName = isJsonString(item?.groupName) ? (JSON.parse(item?.groupName)?.[lang] || JSON.parse(item?.groupName)?.['vi']) : item?.groupName
+                    //                             return (
+                    //                                 <th key={`n1-${index}`} className="text-center text-uppercase" colSpan="2">{ groupName }</th>
+                    //                             )
+                    //                         })
+                    //                     }
+                    //                     <th className="text-center text-uppercase highlight-third c-summary" colSpan="2">{t("EvaluationSummary")}</th>
+                    //                 </tr>
+                    //                 <tr>
+                    //                     <th className="c-user-info" colSpan="2"><div className="user-info">{t("EvaluationEmployeeFullName")}</div></th>
+                    //                     {
+                    //                         (evaluationData?.data[0]?.listGroup || []).map((item, index) => {
+                    //                             return (
+                    //                                 <Fragment key={`n2-${index}`}>
+                    //                                     <th className="c-self-assessment"><div className="text-center self-assessment">{t("EvaluationSelfAssessment")}</div></th>
+                    //                                     <th className="highlight-first c-cbql-assessment"><div className="text-center cbql-assessment">{t("EvaluationDetailManagerAssessment")}</div></th>
+                    //                                 </Fragment>
+                    //                             )
+                    //                         })
+                    //                     }
+                    //                     <th className="highlight-second c-self-assessment"><div className="text-center self-assessment">{t("EvaluationSelfAssessment")}</div></th>
+                    //                     <th className="highlight-third c-cbql-assessment"><div className="text-center cbql-assessment">{t("EvaluationDetailManagerAssessment")}</div></th>
+                    //                 </tr>
+                    //             </thead>
+                    //             <tbody>
+                    //                 {
+                    //                     evaluationData?.data.map((item, i) => {
+                    //                         // let attitudeData = item?.listGroup?.filter(item => item.groupTargetCode == 'G1')?.length > 0 ? item?.listGroup?.filter(item => item.groupTargetCode == 'G1')[0] : null
+                    //                         // let workResultData = item?.listGroup?.filter(item => item.groupTargetCode == 'G2')?.length > 0 ? item?.listGroup?.filter(item => item.groupTargetCode == 'G2')[0] : null
+                    //                         return (
+                    //                             <Fragment key={`r- ${i}`}>
+                    //                                 <tr className="divider"></tr>
+                    //                                 <tr>
+                    //                                     <td className="c-check"><div className="check"><input type="checkbox" checked={item?.isSelected || false} onChange={(e) => handleCheckboxChange(e, i)} /></div></td>
+                    //                                     <td className="c-full-name"><div className="full-name">{item?.fullName || ''} ({item?.username || ''})</div></td>
+                    //                                     {
+                    //                                         (item?.listGroup || []).map((sub, subIndex) => {
+                    //                                             return (
+                    //                                                 <Fragment key={`rc-${subIndex}`}>
+                    //                                                     <td className="text-center c-self-assessment">{sub?.seftPoint?.toFixed(2) || 0}</td>
+                    //                                                     <td className="text-center highlight-first c-cbql-assessment">{sub?.leadReviewPoint?.toFixed(2) || 0}</td>
+                    //                                                 </Fragment>
+                    //                                             )
+                    //                                         })
+                    //                                     }
+                    //                                     <td className="text-center highlight-second c-self-assessment">{item?.totalSeftPoint?.toFixed(2) || 0}</td>
+                    //                                     <td className="text-center highlight-third c-cbql-assessment">{item?.totalLeadReviewPoint?.toFixed(2) || 0}</td>
+                    //                                 </tr>
+                    //                             </Fragment>
+                    //                         )
+                    //                     })
+                    //                 }
+                    //             </tbody>
+                    //         </table>
+                    //     </div>
+                    //     <div className="bottom-region">
+                    //         <div className="customize-display">
+                    //             <label>{t("EvaluationShow")}</label>
+                    //             <select value={paging.batchApproval.pageSize || listPageSizes[0]} onChange={(e) => handleChangePageSize('batchApproval', e?.target?.value)}>
+                    //                 {
+                    //                     listPageSizes.map((page, i) => {
+                    //                         return <option value={page} key={i}>{page}</option>
+                    //                     })
+                    //                 }
+                    //             </select>
+                    //         </div>
+                    //         <div className="paging-block">
+                    //             <CustomPaging pageSize={parseInt(paging.batchApproval.pageSize)} onChangePage={(page) => handleChangePage('batchApproval', page)} totalRecords={evaluationData?.total} needRefresh={refresh} />
+                    //         </div>
+                    //     </div>
+                    //     </>
+                    //     : <h6 className="alert alert-danger not-found-data" role="alert">{t("NoDataFound")}</h6>
+                    // }
+                    // </div>
+                    (
+                        <BatchEvaluation360 />
+                    )
                 }
                 {
                     activeTab === batchApprovalTabCode && evaluationData?.data?.length > 0 && 
