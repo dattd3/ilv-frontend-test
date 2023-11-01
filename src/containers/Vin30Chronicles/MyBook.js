@@ -859,55 +859,98 @@ export default function MyBook(props) {
             </div>
             <div className="book" ref={wrapBookRef} onWheel={onWheel}>
               <div className="wrap-book">
-                <PrismaZoom 
-                  allowWheel={false} 
-                  initialZoom={ZOOM.MIN}
-                  minZoom={ZOOM.MIN}
-                  maxZoom={ZOOM.MAX}
-                  className='zoom-wrapper'
-                  allowTouchEvents={true}
-                  onTouchStart={onTouchStart}
-                  onTouchMove={onTouchMove}
-                  onTouchEnd={onTouchEnd}
-                  ref={zoomLevelRef}
-                >
-                  <HTMLFlipBook
-                    showCover={true}
-                    flippingTime={600}
-                    width={550}
-                    height={733}
-                    size="stretch"
-                    minWidth={315}
-                    maxWidth={1000}
-                    minHeight={420}
-                    maxHeight={1350}
-                    maxShadowOpacity={0.5}
-                    drawShadow={false}
-                    mobileScrollSupport={true}
-                    onFlip={handleFlip}
-                    useMouseEvents={false}
-                    ref={bookRef}
+                {
+                  isMobile
+                  ? (
+                    <HTMLFlipBook
+                      showCover={true}
+                      flippingTime={600}
+                      width={550}
+                      height={733}
+                      size="stretch"
+                      minWidth={315}
+                      maxWidth={1000}
+                      minHeight={420}
+                      maxHeight={1350}
+                      maxShadowOpacity={0.5}
+                      drawShadow={false}
+                      mobileScrollSupport={true}
+                      onFlip={handleFlip}
+                      useMouseEvents={false}
+                      ref={bookRef}
+                    >
+                      {pages.map((item) => (
+                        <Page 
+                          key={`page-item-${item}`} 
+                          page={item}
+                          isShowThumbnails={isShowThumbnails}
+                          isMobile={isMobile}
+                          prev={() => (
+                            <div className={`btn-previous cursor-pointer ${isMobile ? 'mobile' : ''}`} onClick={handlePrevious}>
+                              <img src={IconPrevious} alt="previous" />
+                            </div>
+                          )}
+                          next={() => (
+                            <div className={`btn-next cursor-pointer ${isMobile ? 'mobile' : ''}`} onClick={handleNext}>
+                              <img src={IconNext} alt="next" />
+                            </div>
+                          )}
+                        />
+                      ))}
+                    </HTMLFlipBook>
+                  )
+                  : (
+                  <PrismaZoom 
+                    allowWheel={false} 
+                    initialZoom={ZOOM.MIN}
+                    minZoom={ZOOM.MIN}
+                    maxZoom={ZOOM.MAX}
+                    className='zoom-wrapper'
+                    allowTouchEvents={true}
+                    onTouchStart={onTouchStart}
+                    onTouchMove={onTouchMove}
+                    onTouchEnd={onTouchEnd}
+                    ref={zoomLevelRef}
                   >
-                    {pages.map((item) => (
-                      <Page 
-                        key={`page-item-${item}`} 
-                        page={item}
-                        isShowThumbnails={isShowThumbnails}
-                        isMobile={isMobile}
-                        prev={() => (
-                          <div className={`btn-previous cursor-pointer ${isMobile ? 'mobile' : ''}`} onClick={handlePrevious}>
-                            <img src={IconPrevious} alt="previous" />
-                          </div>
-                        )}
-                        next={() => (
-                          <div className={`btn-next cursor-pointer ${isMobile ? 'mobile' : ''}`} onClick={handleNext}>
-                            <img src={IconNext} alt="next" />
-                          </div>
-                        )}
-                      />
-                    ))}
-                  </HTMLFlipBook>
-                </PrismaZoom>
+                    <HTMLFlipBook
+                      showCover={true}
+                      flippingTime={600}
+                      width={550}
+                      height={733}
+                      size="stretch"
+                      minWidth={315}
+                      maxWidth={1000}
+                      minHeight={420}
+                      maxHeight={1350}
+                      maxShadowOpacity={0.5}
+                      drawShadow={false}
+                      mobileScrollSupport={true}
+                      onFlip={handleFlip}
+                      useMouseEvents={false}
+                      ref={bookRef}
+                    >
+                      {pages.map((item) => (
+                        <Page 
+                          key={`page-item-${item}`} 
+                          page={item}
+                          isShowThumbnails={isShowThumbnails}
+                          isMobile={isMobile}
+                          prev={() => (
+                            <div className={`btn-previous cursor-pointer ${isMobile ? 'mobile' : ''}`} onClick={handlePrevious}>
+                              <img src={IconPrevious} alt="previous" />
+                            </div>
+                          )}
+                          next={() => (
+                            <div className={`btn-next cursor-pointer ${isMobile ? 'mobile' : ''}`} onClick={handleNext}>
+                              <img src={IconNext} alt="next" />
+                            </div>
+                          )}
+                        />
+                      ))}
+                    </HTMLFlipBook>
+                  </PrismaZoom>
+                  )
+                }
               </div>
             </div>
             <ButtonBlock 
