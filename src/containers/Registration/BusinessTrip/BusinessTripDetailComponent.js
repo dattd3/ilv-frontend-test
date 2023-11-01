@@ -182,7 +182,8 @@ class BusinessTripDetailComponent extends React.Component {
     const requestInfo = businessTrip.requestInfo[0]
     const requestTypeId = businessTrip.requestTypeId
     const requestTypeIdsAllowedToReApproval = getRequestTypeIdsAllowedToReApproval()
-    const isShowApproval = (requestInfo.processStatusId === Constants.STATUS_WAITING) || (action === "approval" && requestInfo.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && requestTypeIdsAllowedToReApproval.includes(requestTypeId))
+    const isShowApproval = requestTypeIdsAllowedToReApproval.includes(requestTypeId) && action === "approval" 
+    && (requestInfo.processStatusId == Constants.STATUS_WAITING || requestInfo.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL)
 
     let messageSAP = null;
     if (requestInfo?.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL) {

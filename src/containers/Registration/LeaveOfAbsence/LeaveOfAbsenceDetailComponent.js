@@ -319,8 +319,9 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
     const appraiser = leaveOfAbsence.appraiser
     const annualLeaveSummary = this.state.annualLeaveSummary
     const requestTypeIdsAllowedToReApproval = getRequestTypeIdsAllowedToReApproval()
-    const isShowApproval = (requestInfo.processStatusId === Constants.STATUS_WAITING) || (action === "approval" && requestInfo.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && requestTypeIdsAllowedToReApproval.includes(requestTypeId))
-    
+    const isShowApprovalButton = requestTypeIdsAllowedToReApproval.includes(requestTypeId) && action === "approval"
+    && (requestInfo.processStatusId == Constants.STATUS_WAITING || requestInfo.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL)
+
     let messageSAP = null
     if (requestInfo?.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL) {
       messageSAP = (leaveOfAbsence?.responseDataFromSAP || [])
@@ -409,25 +410,30 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         </div>
 
         {
-          requestInfo && (requestInfo.processStatusId === 8 || (action != "consent" && requestInfo.processStatusId === 5) || requestInfo.processStatusId === 2 || 
-          (action === "approval" && requestInfo.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && requestTypeIdsAllowedToReApproval.includes(requestTypeId))) 
+          (
+            requestInfo.processStatusId === Constants.STATUS_WAITING_CONSENTED 
+            || (action != "consent" && requestInfo.processStatusId === Constants.STATUS_WAITING) 
+            || requestInfo.processStatusId === Constants.STATUS_APPROVED 
+            || (action === "approval" && requestInfo.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && requestTypeIdsAllowedToReApproval.includes(requestTypeId))
+          )
           ? 
-          <DetailButtonComponent dataToSap={
-            [
-              {
-                "id": leaveOfAbsence.id,
-                "requestTypeId":2,
-                "sub": [
-                  {
-                    "id": requestInfo.id,
-                  }
-                ]
-              }
-            ]
-          }
+          <DetailButtonComponent 
+            dataToSap={
+              [
+                {
+                  "id": leaveOfAbsence.id,
+                  "requestTypeId":2,
+                  "sub": [
+                    {
+                      "id": requestInfo.id,
+                    }
+                  ]
+                }
+              ]
+            }
             isShowRevocationOfApproval={requestInfo.processStatusId === Constants.STATUS_APPROVED && (requestInfo.actionType == "INS" || requestInfo.actionType == "MOD")}
-            isShowApproval={isShowApproval}
-            isShowConsent = {requestInfo.processStatusId === Constants.STATUS_WAITING_CONSENTED}
+            isShowApproval={isShowApprovalButton}
+            isShowConsent = {requestInfo?.processStatusId == Constants.STATUS_WAITING_CONSENTED}
             isShowRevocationOfConsent = {requestInfo.processStatusId === Constants.STATUS_WAITING && leaveOfAbsence.appraiser}
             id={leaveOfAbsence.id}
             urlName={'requestabsence'}
