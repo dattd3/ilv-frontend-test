@@ -865,9 +865,6 @@ export default function MyBook(props) {
                       maxZoom={ZOOM.MAX}
                       className='zoom-wrapper'
                       allowTouchEvents={true}
-                      onTouchStart={onTouchStart}
-                      onTouchMove={onTouchMove}
-                      onTouchEnd={onTouchEnd}
                       ref={zoomLevelRef}
                     >
                       <HTMLFlipBook
