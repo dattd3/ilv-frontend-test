@@ -874,7 +874,7 @@ export default function MyBook(props) {
                       maxHeight={1350}
                       maxShadowOpacity={0.5}
                       drawShadow={false}
-                      mobileScrollSupport={true}
+                      mobileScrollSupport={false}
                       onFlip={handleFlip}
                       // useMouseEvents={false}
                       ref={bookRef}
