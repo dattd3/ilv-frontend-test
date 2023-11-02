@@ -329,7 +329,7 @@ const ThumbnailModal = ({ isShow, page, thumbnailPages, handleScrollSidebar, han
 const ButtonBlock = ({ isShowThumbnails, isFullScreen, isMobile, isZoomIn, zoomLevel, page, handleZoom, handleChangeZoomLevel, handleShowThumbnails, downloadBook, handleScreen }) => {
   return (
     <div className={`d-flex align-items-center bottom-block ${isMobile ? 'justify-content-start' : 'justify-content-center'}`}>
-      <div className={`zoom-tooltip ${isZoomIn ? 'show' : ''}`}>
+      <div className={`zoom-tooltip ${isZoomIn ? 'show' : ''} ${isMobile ? 'zoom-mobile' : ''}`}>
         <input
           type="range"
           min={ZOOM.MIN}
@@ -388,24 +388,20 @@ const ButtonBlock = ({ isShowThumbnails, isFullScreen, isMobile, isZoomIn, zoomL
           ></path>
         </svg>
       </span> */}
-      {
-        !isMobile && (
-          <span className={`btn-zoom cursor-pointer ${isZoomIn ? 'active' : ''}`} onClick={handleZoom}>
-          {
-            isZoomIn ? (
-              <svg data-v-71c99c82="" version="1.1" viewBox="0 0 24 24" className="svg-icon svg-fill" focusable="false">
-                <path pid="0" d="M15.49 17.611a8.144 8.144 0 01-4.35 1.39c-4.452-.102-8.038-3.625-8.14-8 .036-4.35 3.575-7.89 8-8 4.425.112 7.965 3.65 8 8a7.813 7.813 0 01-1.38 4.498l4.451 4.45-2.121 2.122-4.46-4.46zm-4.385-.61c3.3-.09 5.919-2.757 5.895-6-.026-3.263-2.681-5.916-6-6-3.319.083-5.973 2.737-6 6 .077 3.281 2.766 5.923 6.105 6zM7 12v-2h8v2H7z"></path>
-              </svg>
-            )
-            : (
-              <svg data-v-71c99c82="" version="1.1" viewBox="0 0 24 24" className="svg-icon svg-fill" focusable="false">
-                <path pid="0" d="M15.49 17.61A8.144 8.144 0 0111.14 19c-4.452-.102-8.038-3.625-8.14-8 .036-4.35 3.575-7.89 8-8 4.425.112 7.965 3.65 8 8a7.813 7.813 0 01-1.38 4.499l4.451 4.45-2.121 2.122-4.46-4.46zM11.104 17c3.3-.09 5.919-2.757 5.895-6-.026-3.263-2.681-5.916-6-6-3.319.083-5.973 2.737-6 6 .077 3.281 2.766 5.923 6.105 6zM12 7v3h3v2h-3v3h-2v-3H7v-2h3V7h2z"></path>
-              </svg>
-            )
-          }
-          </span>
-        )
-      }
+      <span className={`btn-zoom cursor-pointer ${isZoomIn ? 'active' : ''}`} onClick={handleZoom}>
+        {
+          isZoomIn ? (
+            <svg data-v-71c99c82="" version="1.1" viewBox="0 0 24 24" className="svg-icon svg-fill" focusable="false">
+              <path pid="0" d="M15.49 17.611a8.144 8.144 0 01-4.35 1.39c-4.452-.102-8.038-3.625-8.14-8 .036-4.35 3.575-7.89 8-8 4.425.112 7.965 3.65 8 8a7.813 7.813 0 01-1.38 4.498l4.451 4.45-2.121 2.122-4.46-4.46zm-4.385-.61c3.3-.09 5.919-2.757 5.895-6-.026-3.263-2.681-5.916-6-6-3.319.083-5.973 2.737-6 6 .077 3.281 2.766 5.923 6.105 6zM7 12v-2h8v2H7z"></path>
+            </svg>
+          )
+          : (
+            <svg data-v-71c99c82="" version="1.1" viewBox="0 0 24 24" className="svg-icon svg-fill" focusable="false">
+              <path pid="0" d="M15.49 17.61A8.144 8.144 0 0111.14 19c-4.452-.102-8.038-3.625-8.14-8 .036-4.35 3.575-7.89 8-8 4.425.112 7.965 3.65 8 8a7.813 7.813 0 01-1.38 4.499l4.451 4.45-2.121 2.122-4.46-4.46zM11.104 17c3.3-.09 5.919-2.757 5.895-6-.026-3.263-2.681-5.916-6-6-3.319.083-5.973 2.737-6 6 .077 3.281 2.766 5.923 6.105 6zM12 7v3h3v2h-3v3h-2v-3H7v-2h3V7h2z"></path>
+            </svg>
+          )
+        }
+      </span>
       {
         !isMobile && (
           <span
@@ -862,42 +858,53 @@ export default function MyBook(props) {
                 {
                   isMobile
                   ? (
-                    <HTMLFlipBook
-                      showCover={true}
-                      flippingTime={600}
-                      width={550}
-                      height={733}
-                      size="stretch"
-                      minWidth={315}
-                      maxWidth={1000}
-                      minHeight={420}
-                      maxHeight={1350}
-                      maxShadowOpacity={0.5}
-                      drawShadow={false}
-                      mobileScrollSupport={false}
-                      onFlip={handleFlip}
-                      // useMouseEvents={false}
-                      ref={bookRef}
+                    <PrismaZoom 
+                      allowWheel={false} 
+                      initialZoom={ZOOM.MIN}
+                      minZoom={ZOOM.MIN}
+                      maxZoom={ZOOM.MAX}
+                      className='zoom-wrapper'
+                      allowTouchEvents={true}
+                      onTouchStart={onTouchStart}
+                      onTouchMove={onTouchMove}
+                      onTouchEnd={onTouchEnd}
+                      ref={zoomLevelRef}
                     >
-                      {pages.map((item) => (
-                        <Page 
-                          key={`page-item-${item}`} 
-                          page={item}
-                          isShowThumbnails={isShowThumbnails}
-                          isMobile={isMobile}
-                          prev={() => (
-                            <div className={`btn-previous cursor-pointer ${isMobile ? 'mobile' : ''}`} onClick={handlePrevious} onTouchStart={handlePrevious}>
-                              <img src={IconPrevious} alt="previous" />
-                            </div>
-                          )}
-                          next={() => (
-                            <div className={`btn-next cursor-pointer ${isMobile ? 'mobile' : ''}`} onClick={handleNext} onTouchStart={handleNext}>
-                              <img src={IconNext} alt="next" />
-                            </div>
-                          )}
-                        />
-                      ))}
-                    </HTMLFlipBook>
+                      <HTMLFlipBook
+                        showCover={true}
+                        flippingTime={600}
+                        width={550}
+                        height={733}
+                        size="stretch"
+                        minWidth={315}
+                        maxWidth={1000}
+                        minHeight={420}
+                        maxHeight={1350}
+                        maxShadowOpacity={0.5}
+                        drawShadow={false}
+                        onFlip={handleFlip}
+                        ref={bookRef}
+                      >
+                        {pages.map((item) => (
+                          <Page 
+                            key={`page-item-${item}`} 
+                            page={item}
+                            isShowThumbnails={isShowThumbnails}
+                            isMobile={isMobile}
+                            prev={() => (
+                              <div className={`btn-previous cursor-pointer ${isMobile ? 'mobile' : ''}`} onClick={handlePrevious} onTouchStart={handlePrevious}>
+                                <img src={IconPrevious} alt="previous" />
+                              </div>
+                            )}
+                            next={() => (
+                              <div className={`btn-next cursor-pointer ${isMobile ? 'mobile' : ''}`} onClick={handleNext} onTouchStart={handleNext}>
+                                <img src={IconNext} alt="next" />
+                              </div>
+                            )}
+                          />
+                        ))}
+                      </HTMLFlipBook>
+                    </PrismaZoom>
                   )
                   : (
                   <PrismaZoom 

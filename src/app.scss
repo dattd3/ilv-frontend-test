@@ -5976,7 +5976,6 @@ span.badge-notification[data-badge]::after {
           visibility: hidden;
           opacity: 0;
           transition: visibility 0s linear 0.33s, opacity 0.33s linear;
-          // border: 1px solid #5A5F63;
           padding: 5px 10px 10px 10px;
           border-radius: 4px;
           &.show {
@@ -6052,6 +6051,10 @@ span.badge-notification[data-badge]::after {
           // input[type="range"]:focus::-moz-range-thumb {
           //   box-shadow: 0 0 0 7px #FFFFFF
           // }
+          &.zoom-mobile {
+            width: 120px;
+            left: calc(50% - 60px);
+          }
         }
         .menu-item {
           padding: 2px;
