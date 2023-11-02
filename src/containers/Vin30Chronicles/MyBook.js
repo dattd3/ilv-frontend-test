@@ -889,6 +889,9 @@ export default function MyBook(props) {
                             page={item}
                             isShowThumbnails={isShowThumbnails}
                             isMobile={isMobile}
+                            onTouchStart={onTouchStart}
+                            onTouchMove={onTouchMove}
+                            onTouchEnd={onTouchEnd}
                             prev={() => (
                               <div className={`btn-previous cursor-pointer ${isMobile ? 'mobile' : ''}`} onClick={handlePrevious} onTouchStart={handlePrevious}>
                                 <img src={IconPrevious} alt="previous" />
