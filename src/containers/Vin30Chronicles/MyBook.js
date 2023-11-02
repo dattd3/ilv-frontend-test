@@ -864,7 +864,7 @@ export default function MyBook(props) {
                       minZoom={ZOOM.MIN}
                       maxZoom={ZOOM.MAX}
                       className='zoom-wrapper'
-                      allowTouchEvents={true}
+                      allowTouchEvents={false}
                       ref={zoomLevelRef}
                     >
                       <HTMLFlipBook
@@ -889,9 +889,9 @@ export default function MyBook(props) {
                             page={item}
                             isShowThumbnails={isShowThumbnails}
                             isMobile={isMobile}
-                            onTouchStart={onTouchStart}
-                            onTouchMove={onTouchMove}
-                            onTouchEnd={onTouchEnd}
+                            // onTouchStart={onTouchStart}
+                            // onTouchMove={onTouchMove}
+                            // onTouchEnd={onTouchEnd}
                             prev={() => (
                               <div className={`btn-previous cursor-pointer ${isMobile ? 'mobile' : ''}`} onClick={handlePrevious} onTouchStart={handlePrevious}>
                                 <img src={IconPrevious} alt="previous" />
