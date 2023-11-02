@@ -6176,30 +6176,30 @@ span.badge-notification[data-badge]::after {
           width: 100%;
         }
         .btn-previous, .btn-next {
+          position: absolute;
+          top: 50%;
+          z-index: 9999;
           img {
             width: 15px;
             box-shadow: unset;
           }
           &.mobile {
+            padding: 10px;
             img {
               width: 20px;
             }
           }
         }
         .btn-previous {
-          position: absolute;
-          top: 50%;
           left: -25px;
           &.mobile {
-            left: 5px;
+            left: 0;
           }
         }
         .btn-next {
-          position: absolute;
-          top: 50%;
           right: -25px;
           &.mobile {
-            right: 5px;
+            right: 0;
           }
         }
       }
