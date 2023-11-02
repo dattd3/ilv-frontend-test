@@ -876,7 +876,7 @@ export default function MyBook(props) {
                       drawShadow={false}
                       mobileScrollSupport={true}
                       onFlip={handleFlip}
-                      useMouseEvents={false}
+                      // useMouseEvents={false}
                       ref={bookRef}
                     >
                       {pages.map((item) => (
