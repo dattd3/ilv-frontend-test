@@ -879,6 +879,7 @@ export default function MyBook(props) {
                         maxHeight={1350}
                         maxShadowOpacity={0.5}
                         drawShadow={false}
+                        useMouseEvents={false}
                         onFlip={handleFlip}
                         ref={bookRef}
                       >
