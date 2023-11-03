@@ -6161,6 +6161,24 @@ span.badge-notification[data-badge]::after {
         width: 100% !important;
         height: 100% !important;
       }
+      &.mobile {
+        .btn-action {
+          padding: 10px;
+          position: absolute;
+          top: 50%;
+          display: inline-block;
+          z-index: 9999;
+          img {
+            width: 20px;
+          }
+          &.btn-previous {
+            left: 0;
+          }
+          &.btn-next {
+            right: 0;
+          }
+        }
+      }
     }
   }
   .page {
@@ -6186,24 +6204,12 @@ span.badge-notification[data-badge]::after {
             width: 15px;
             box-shadow: unset;
           }
-          &.mobile {
-            padding: 10px;
-            img {
-              width: 20px;
-            }
-          }
         }
         .btn-previous {
           left: -25px;
-          &.mobile {
-            left: 0;
-          }
         }
         .btn-next {
           right: -25px;
-          &.mobile {
-            right: 0;
-          }
         }
       }
     }

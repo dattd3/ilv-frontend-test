@@ -291,11 +291,20 @@ const Page = forwardRef((props, ref) => {
   return (
     <div className={`page ${isShowThumbnails ? 'show-thumbnail' : ''} page-${page} ${pageCover}`} ref={ref}>
       <div className="page-content">
-        <div className="page-image">
-          {isPrev && prev()}
-          <img src={IMAGE_MAPPING[page]} />
-          {isNext && next()}
-        </div>
+        {
+          isMobile ? (
+            <div className="page-image">
+              <img src={IMAGE_MAPPING[page]} />
+            </div>
+          )
+          : (
+            <div className="page-image">
+              {isPrev && prev()}
+              <img src={IMAGE_MAPPING[page]} />
+              {isNext && next()}
+            </div>
+          )
+        }
       </div>
     </div>
   );
@@ -388,20 +397,24 @@ const ButtonBlock = ({ isShowThumbnails, isFullScreen, isMobile, isZoomIn, zoomL
           ></path>
         </svg>
       </span> */}
-      <span className={`btn-zoom cursor-pointer ${isZoomIn ? 'active' : ''}`} onClick={handleZoom}>
-        {
-          isZoomIn ? (
-            <svg data-v-71c99c82="" version="1.1" viewBox="0 0 24 24" className="svg-icon svg-fill" focusable="false">
-              <path pid="0" d="M15.49 17.611a8.144 8.144 0 01-4.35 1.39c-4.452-.102-8.038-3.625-8.14-8 .036-4.35 3.575-7.89 8-8 4.425.112 7.965 3.65 8 8a7.813 7.813 0 01-1.38 4.498l4.451 4.45-2.121 2.122-4.46-4.46zm-4.385-.61c3.3-.09 5.919-2.757 5.895-6-.026-3.263-2.681-5.916-6-6-3.319.083-5.973 2.737-6 6 .077 3.281 2.766 5.923 6.105 6zM7 12v-2h8v2H7z"></path>
-            </svg>
-          )
-          : (
-            <svg data-v-71c99c82="" version="1.1" viewBox="0 0 24 24" className="svg-icon svg-fill" focusable="false">
-              <path pid="0" d="M15.49 17.61A8.144 8.144 0 0111.14 19c-4.452-.102-8.038-3.625-8.14-8 .036-4.35 3.575-7.89 8-8 4.425.112 7.965 3.65 8 8a7.813 7.813 0 01-1.38 4.499l4.451 4.45-2.121 2.122-4.46-4.46zM11.104 17c3.3-.09 5.919-2.757 5.895-6-.026-3.263-2.681-5.916-6-6-3.319.083-5.973 2.737-6 6 .077 3.281 2.766 5.923 6.105 6zM12 7v3h3v2h-3v3h-2v-3H7v-2h3V7h2z"></path>
-            </svg>
-          )
-        }
-      </span>
+      {
+        !isMobile && (
+          <span className={`btn-zoom cursor-pointer ${isZoomIn ? 'active' : ''}`} onClick={handleZoom}>
+            {
+              isZoomIn ? (
+                <svg data-v-71c99c82="" version="1.1" viewBox="0 0 24 24" className="svg-icon svg-fill" focusable="false">
+                  <path pid="0" d="M15.49 17.611a8.144 8.144 0 01-4.35 1.39c-4.452-.102-8.038-3.625-8.14-8 .036-4.35 3.575-7.89 8-8 4.425.112 7.965 3.65 8 8a7.813 7.813 0 01-1.38 4.498l4.451 4.45-2.121 2.122-4.46-4.46zm-4.385-.61c3.3-.09 5.919-2.757 5.895-6-.026-3.263-2.681-5.916-6-6-3.319.083-5.973 2.737-6 6 .077 3.281 2.766 5.923 6.105 6zM7 12v-2h8v2H7z"></path>
+                </svg>
+              )
+              : (
+                <svg data-v-71c99c82="" version="1.1" viewBox="0 0 24 24" className="svg-icon svg-fill" focusable="false">
+                  <path pid="0" d="M15.49 17.61A8.144 8.144 0 0111.14 19c-4.452-.102-8.038-3.625-8.14-8 .036-4.35 3.575-7.89 8-8 4.425.112 7.965 3.65 8 8a7.813 7.813 0 01-1.38 4.499l4.451 4.45-2.121 2.122-4.46-4.46zM11.104 17c3.3-.09 5.919-2.757 5.895-6-.026-3.263-2.681-5.916-6-6-3.319.083-5.973 2.737-6 6 .077 3.281 2.766 5.923 6.105 6zM12 7v3h3v2h-3v3h-2v-3H7v-2h3V7h2z"></path>
+                </svg>
+              )
+            }
+          </span>
+        )
+      }
       {
         !isMobile && (
           <span
@@ -854,7 +867,19 @@ export default function MyBook(props) {
               </div>
             </div>
             <div className="book" ref={wrapBookRef} onWheel={onWheel}>
-              <div className="wrap-book">
+              <div className={`wrap-book ${isMobile ? 'mobile' : ''}`}>
+                {
+                  isMobile && (
+                    <>
+                      <div className={`btn-action btn-previous cursor-pointer`} onClick={handlePrevious} onTouchStart={handlePrevious}>
+                        <img src={IconPrevious} alt="previous" />
+                      </div>
+                      <div className={`btn-action btn-next cursor-pointer`} onClick={handleNext} onTouchStart={handleNext}>
+                        <img src={IconNext} alt="next" />
+                      </div>
+                    </>
+                  )
+                }
                 {
                   isMobile
                   ? (
@@ -889,19 +914,6 @@ export default function MyBook(props) {
                             page={item}
                             isShowThumbnails={isShowThumbnails}
                             isMobile={isMobile}
-                            // onTouchStart={onTouchStart}
-                            // onTouchMove={onTouchMove}
-                            // onTouchEnd={onTouchEnd}
-                            prev={() => (
-                              <div className={`btn-previous cursor-pointer ${isMobile ? 'mobile' : ''}`} onClick={handlePrevious} onTouchStart={handlePrevious}>
-                                <img src={IconPrevious} alt="previous" />
-                              </div>
-                            )}
-                            next={() => (
-                              <div className={`btn-next cursor-pointer ${isMobile ? 'mobile' : ''}`} onClick={handleNext} onTouchStart={handleNext}>
-                                <img src={IconNext} alt="next" />
-                              </div>
-                            )}
                           />
                         ))}
                       </HTMLFlipBook>
@@ -944,12 +956,12 @@ export default function MyBook(props) {
                           isShowThumbnails={isShowThumbnails}
                           isMobile={isMobile}
                           prev={() => (
-                            <div className={`btn-previous cursor-pointer ${isMobile ? 'mobile' : ''}`} onClick={handlePrevious}>
+                            <div className={`btn-previous cursor-pointer`} onClick={handlePrevious}>
                               <img src={IconPrevious} alt="previous" />
                             </div>
                           )}
                           next={() => (
-                            <div className={`btn-next cursor-pointer ${isMobile ? 'mobile' : ''}`} onClick={handleNext}>
+                            <div className={`btn-next cursor-pointer`} onClick={handleNext}>
                               <img src={IconNext} alt="next" />
                             </div>
                           )}
