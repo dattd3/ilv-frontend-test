@@ -296,6 +296,11 @@ const Constants = {
     APP_ID: 1,
     DEVICE: 'WEBSITE',
     MODE: 2,
+  },
+  tabListRequestMapping: {
+    REQUEST: 'request',
+    APPROVAL: 'approval',
+    APPRAISAL: 'consent',
   }
 }
 
