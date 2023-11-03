@@ -291,11 +291,20 @@ const Page = forwardRef((props, ref) => {
   return (
     <div className={`page ${isShowThumbnails ? 'show-thumbnail' : ''} page-${page} ${pageCover}`} ref={ref}>
       <div className="page-content">
-        <div className="page-image">
-          {isPrev && prev()}
-          <img src={IMAGE_MAPPING[page]} />
-          {isNext && next()}
-        </div>
+        {
+          isMobile ? (
+            <div className="page-image">
+              <img src={IMAGE_MAPPING[page]} alt={`Page ${page}`} />
+            </div>
+          )
+          : (
+            <div className="page-image">
+              {isPrev && prev()}
+              <img src={IMAGE_MAPPING[page]} alt={`Page ${page}`} />
+              {isNext && next()}
+            </div>
+          )
+        }
       </div>
     </div>
   );
@@ -314,7 +323,7 @@ const ThumbnailModal = ({ isShow, page, thumbnailPages, handleScrollSidebar, han
             (thumbnailPages || []).map(item => {
               return (
                 <div key={`thumbnail-${item}`} className='item'>
-                  <span className={`thumbnail ${page === item ? 'active' : ''}`} onClick={() => handleChangePage(item)}><img src={IMAGE_MAPPING[item]} alt='Page' /></span>
+                  <span className={`thumbnail ${page === item ? 'active' : ''}`} onClick={() => handleChangePage(item)}><img src={IMAGE_MAPPING[item]} alt={`Thumbnail ${item}`} /></span>
                   <span className='page'>{item}</span>
                 </div>
               )
@@ -329,7 +338,7 @@ const ThumbnailModal = ({ isShow, page, thumbnailPages, handleScrollSidebar, han
 const ButtonBlock = ({ isShowThumbnails, isFullScreen, isMobile, isZoomIn, zoomLevel, page, handleZoom, handleChangeZoomLevel, handleShowThumbnails, downloadBook, handleScreen }) => {
   return (
     <div className={`d-flex align-items-center bottom-block ${isMobile ? 'justify-content-start' : 'justify-content-center'}`}>
-      <div className={`zoom-tooltip ${isZoomIn ? 'show' : ''}`}>
+      <div className={`zoom-tooltip ${isZoomIn ? 'show' : ''} ${isMobile ? 'zoom-mobile' : ''}`}>
         <input
           type="range"
           min={ZOOM.MIN}
@@ -858,46 +867,65 @@ export default function MyBook(props) {
               </div>
             </div>
             <div className="book" ref={wrapBookRef} onWheel={onWheel}>
-              <div className="wrap-book">
+              <div className={`wrap-book ${isMobile ? 'mobile' : ''}`}>
+                {
+                  isMobile && (
+                    <>
+                      {
+                        page > 1 && (
+                          <div className={`btn-action btn-previous cursor-pointer`} onTouchStart={handlePrevious}>
+                            <img src={IconPrevious} alt="previous" />
+                          </div>
+                        )
+                      }
+                      {
+                        page < TOTAL_PAGES && (
+                          <div className={`btn-action btn-next cursor-pointer`} onTouchStart={handleNext}>
+                            <img src={IconNext} alt="next" />
+                          </div>
+                        )
+                      }
+                    </>
+                  )
+                }
                 {
                   isMobile
                   ? (
-                    <HTMLFlipBook
-                      showCover={true}
-                      flippingTime={600}
-                      width={550}
-                      height={733}
-                      size="stretch"
-                      minWidth={315}
-                      maxWidth={1000}
-                      minHeight={420}
-                      maxHeight={1350}
-                      maxShadowOpacity={0.5}
-                      drawShadow={false}
-                      mobileScrollSupport={true}
-                      onFlip={handleFlip}
-                      useMouseEvents={false}
-                      ref={bookRef}
+                    <PrismaZoom 
+                      allowWheel={false} 
+                      initialZoom={ZOOM.MIN}
+                      minZoom={ZOOM.MIN}
+                      maxZoom={ZOOM.MAX}
+                      className='zoom-wrapper'
+                      allowTouchEvents={false}
+                      ref={zoomLevelRef}
                     >
-                      {pages.map((item) => (
-                        <Page 
-                          key={`page-item-${item}`} 
-                          page={item}
-                          isShowThumbnails={isShowThumbnails}
-                          isMobile={isMobile}
-                          prev={() => (
-                            <div className={`btn-previous cursor-pointer ${isMobile ? 'mobile' : ''}`} onClick={handlePrevious}>
-                              <img src={IconPrevious} alt="previous" />
-                            </div>
-                          )}
-                          next={() => (
-                            <div className={`btn-next cursor-pointer ${isMobile ? 'mobile' : ''}`} onClick={handleNext}>
-                              <img src={IconNext} alt="next" />
-                            </div>
-                          )}
-                        />
-                      ))}
-                    </HTMLFlipBook>
+                      <HTMLFlipBook
+                        showCover={true}
+                        flippingTime={600}
+                        width={550}
+                        height={733}
+                        size="stretch"
+                        minWidth={315}
+                        maxWidth={1000}
+                        minHeight={420}
+                        maxHeight={1350}
+                        maxShadowOpacity={0.5}
+                        drawShadow={false}
+                        useMouseEvents={false}
+                        onFlip={handleFlip}
+                        ref={bookRef}
+                      >
+                        {pages.map((item) => (
+                          <Page 
+                            key={`page-item-${item}`} 
+                            page={item}
+                            isShowThumbnails={isShowThumbnails}
+                            isMobile={isMobile}
+                          />
+                        ))}
+                      </HTMLFlipBook>
+                    </PrismaZoom>
                   )
                   : (
                   <PrismaZoom 
@@ -936,12 +964,12 @@ export default function MyBook(props) {
                           isShowThumbnails={isShowThumbnails}
                           isMobile={isMobile}
                           prev={() => (
-                            <div className={`btn-previous cursor-pointer ${isMobile ? 'mobile' : ''}`} onClick={handlePrevious}>
+                            <div className={`btn-previous cursor-pointer`} onClick={handlePrevious}>
                               <img src={IconPrevious} alt="previous" />
                             </div>
                           )}
                           next={() => (
-                            <div className={`btn-next cursor-pointer ${isMobile ? 'mobile' : ''}`} onClick={handleNext}>
+                            <div className={`btn-next cursor-pointer`} onClick={handleNext}>
                               <img src={IconNext} alt="next" />
                             </div>
                           )}
