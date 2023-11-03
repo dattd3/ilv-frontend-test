@@ -871,12 +871,20 @@ export default function MyBook(props) {
                 {
                   isMobile && (
                     <>
-                      <div className={`btn-action btn-previous cursor-pointer`} onClick={handlePrevious} onTouchStart={handlePrevious}>
-                        <img src={IconPrevious} alt="previous" />
-                      </div>
-                      <div className={`btn-action btn-next cursor-pointer`} onClick={handleNext} onTouchStart={handleNext}>
-                        <img src={IconNext} alt="next" />
-                      </div>
+                      {
+                        page > 1 && (
+                          <div className={`btn-action btn-previous cursor-pointer`} onClick={handlePrevious}>
+                            <img src={IconPrevious} alt="previous" />
+                          </div>
+                        )
+                      }
+                      {
+                        page < TOTAL_PAGES && (
+                          <div className={`btn-action btn-next cursor-pointer`} onClick={handleNext}>
+                            <img src={IconNext} alt="next" />
+                          </div>
+                        )
+                      }
                     </>
                   )
                 }
