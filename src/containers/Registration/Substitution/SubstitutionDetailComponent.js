@@ -73,7 +73,7 @@ class SubstitutionDetailComponent extends React.Component {
     return (this.props.action == "consent" && status == 5 && appraiser) ? Constants.mappingStatusRequest[20].label : Constants.mappingStatusRequest[status].label
   }
   render() {
-    const { t, substitution, action } = this.props
+    const { t, substitution, action, lockReload } = this.props
     const requestTypeId = substitution.requestTypeId
     const { isShowStatusModal, content, isSuccess } = this.state
     const requestTypeIdsAllowedToReApproval = getRequestTypeIdsAllowedToReApproval()
@@ -287,6 +287,7 @@ class SubstitutionDetailComponent extends React.Component {
             requestTypeId={requestTypeId}
             hiddenRevocationOfApprovalButton={1}
             action={action}
+            lockReload={lockReload}
           />
           : null
         }

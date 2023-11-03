@@ -178,7 +178,7 @@ class BusinessTripDetailComponent extends React.Component {
   }
 
   render() {
-    const { t, businessTrip, action, viewPopup } = this.props
+    const { t, businessTrip, action, viewPopup, lockReload } = this.props
     const requestInfo = businessTrip.requestInfo[0]
     const requestTypeId = businessTrip.requestTypeId
     const requestTypeIdsAllowedToReApproval = getRequestTypeIdsAllowedToReApproval()
@@ -295,6 +295,7 @@ class BusinessTripDetailComponent extends React.Component {
             urlName={'requestattendance'}
             requestTypeId={requestTypeId}
             action={action}
+            lockReload={lockReload}
           /> 
           : null
         }

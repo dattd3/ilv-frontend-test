@@ -139,6 +139,10 @@ function Header(props) {
     }
 
     const renderNoticeUI = () => {
+        const getAction = (noticeType, detailType) => {
+            return Constants.tabListRequestMapping[detailType]
+        }
+        
         return (
             (notices || []).map((item, i) => {
                 const timePost = getTimePost(item.createdDate);
@@ -174,11 +178,14 @@ function Header(props) {
                             }
 
                             if (item?.detailType == 'REQUEST')
-                                return `/tasks${item?.groupId ? `?requestTypes=${getRequestTypesList(item.groupId, false).join(",")}` : ''}`
+                                // return `/tasks${item?.groupId ? `?requestTypes=${getRequestTypesList(item.groupId, false).join(",")}` : ''}`
+                                return '#'
                             else if (item?.detailType == 'APPRAISAL')
-                                return `/tasks?tab=consent${item?.groupId ? `&requestTypes=${getRequestTypesList(item.groupId, false).join(",")}&id=${item?.subRequestId}` : ''}`
+                                // return `/tasks?tab=consent${item?.groupId ? `&requestTypes=${getRequestTypesList(item.groupId, false).join(",")}&id=${item?.subRequestId}` : ''}`
+                                return `#`
                             else
-                                return `/tasks?tab=approval${item?.groupId ? `&requestTypes=${getRequestTypesList(item.groupId, false).join(",")}` : ''}&id=${item?.subRequestId}`
+                                // return `/tasks?tab=approval${item?.groupId ? `&requestTypes=${getRequestTypesList(item.groupId, false).join(",")}` : ''}&id=${item?.subRequestId}`
+                                return `#`
                         case 6:
                             return '/personal-info?tab=document'
                         case Constants.notificationType.NOTIFICATION_APPROVED:
@@ -212,7 +219,7 @@ function Header(props) {
                 : item?.description || ''
 
                 return <div key={i} className="item">
-                    <a onClick={() => clickNotification(item.id)} className="title" href={notificationLink(item.type)} title={titleNotice}>{titleNotice}</a>
+                    <a onClick={() => clickNotification(item.id, requestId, subRequestId, getAction(item?.type, item?.detailType))} className="title" href={notificationLink(item.type)} title={titleNotice}>{titleNotice}</a>
                     <p className="description">{descriptionNotice}</p>
                     <div className="time-file">
                         <span className="time"><i className='far fa-clock ic-clock'></i><span>{timePost}</span></span>
@@ -234,10 +241,9 @@ function Header(props) {
         return param;
     }
 
-    const clickNotification = (id) => {
-        var axios = require('axios');
-        var data = '';
-        var config = {
+    const clickNotification = (id, requestId, subRequestId, action) => {
+        const data = '';
+        const config = {
             method: 'post',
             url: `${process.env.REACT_APP_REQUEST_URL}notifications/readnotification/` + id,
             headers: {
@@ -247,12 +253,8 @@ function Header(props) {
             data: data
         };
         axios(config)
-            .then(function (response) {
 
-            })
-            .catch(function (error) {
-
-            });
+        props.handleTaskDetailModal(true, requestId, subRequestId, action)
     }
 
     const OnClickBellFn = (isOpen) => {

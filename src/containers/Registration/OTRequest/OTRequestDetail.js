@@ -24,7 +24,7 @@ const isNullCustomize = (value) => {
 };
 const OTRequestType = 13;
 
-export default function OTRequestDetailComponent({ data, action }) {
+export default function OTRequestDetailComponent({ data, action, lockReload }) {
   const { t } = useTranslation();
   const [approvalMatrixUrl, setApprovalMatrixUrl] = useState(null);
   const [showNoteModal, setShowNoteModal] = useState(false);
@@ -658,6 +658,7 @@ export default function OTRequestDetailComponent({ data, action }) {
         action={action}
         haveOverOTFund={data?.requestInfo?.some((item) => item.isOverOTFund)}
         operationType={operationType}
+        lockReload={lockReload}
       />
     </div>
   );
