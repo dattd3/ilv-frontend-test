@@ -291,11 +291,20 @@ const Page = forwardRef((props, ref) => {
   return (
     <div className={`page ${isShowThumbnails ? 'show-thumbnail' : ''} page-${page} ${pageCover}`} ref={ref}>
       <div className="page-content">
-        <div className="page-image">
-          {/* {isPrev && prev()} */}
-          <img src={IMAGE_MAPPING[page]} />
-          {/* {isNext && next()} */}
-        </div>
+        {
+          isMobile ? (
+            <div className="page-image">
+              <img src={IMAGE_MAPPING[page]} />
+            </div>
+          )
+          : (
+            <div className="page-image">
+              {isPrev && prev()}
+              <img src={IMAGE_MAPPING[page]} />
+              {isNext && next()}
+            </div>
+          )
+        }
       </div>
     </div>
   );
@@ -858,14 +867,14 @@ export default function MyBook(props) {
               </div>
             </div>
             <div className="book" ref={wrapBookRef} onWheel={onWheel}>
-              <div className="wrap-book">
+              <div className={`wrap-book ${isMobile ? 'mobile' : ''}`}>
                 {
                   isMobile && (
                     <>
-                      <div className={`btn-previous cursor-pointer ${isMobile ? 'mobile' : ''}`} onClick={handlePrevious} onTouchStart={handlePrevious}>
+                      <div className={`btn-action btn-previous cursor-pointer`} onClick={handlePrevious} onTouchStart={handlePrevious}>
                         <img src={IconPrevious} alt="previous" />
                       </div>
-                      <div className={`btn-next cursor-pointer ${isMobile ? 'mobile' : ''}`} onClick={handleNext} onTouchStart={handleNext}>
+                      <div className={`btn-action btn-next cursor-pointer`} onClick={handleNext} onTouchStart={handleNext}>
                         <img src={IconNext} alt="next" />
                       </div>
                     </>
@@ -905,20 +914,6 @@ export default function MyBook(props) {
                             page={item}
                             isShowThumbnails={isShowThumbnails}
                             isMobile={isMobile}
-                            // onTouchStart={onTouchStart}
-                            // onTouchMove={onTouchMove}
-                            // onTouchEnd={onTouchEnd}
-
-                            // prev={() => (
-                            //   <div className={`btn-previous cursor-pointer ${isMobile ? 'mobile' : ''}`} onClick={handlePrevious} onTouchStart={handlePrevious}>
-                            //     <img src={IconPrevious} alt="previous" />
-                            //   </div>
-                            // )}
-                            // next={() => (
-                            //   <div className={`btn-next cursor-pointer ${isMobile ? 'mobile' : ''}`} onClick={handleNext} onTouchStart={handleNext}>
-                            //     <img src={IconNext} alt="next" />
-                            //   </div>
-                            // )}
                           />
                         ))}
                       </HTMLFlipBook>
