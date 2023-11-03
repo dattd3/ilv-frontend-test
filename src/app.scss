@@ -6163,7 +6163,6 @@ span.badge-notification[data-badge]::after {
       }
       &.mobile {
         .btn-action {
-          padding: 10px;
           position: absolute;
           top: 50%;
           display: inline-block;
@@ -6173,9 +6172,11 @@ span.badge-notification[data-badge]::after {
           }
           &.btn-previous {
             left: 0;
+            padding: 25px 15px 25px 10px;
           }
           &.btn-next {
             right: 0;
+            padding: 25px 10px 25px 15px;
           }
         }
       }
