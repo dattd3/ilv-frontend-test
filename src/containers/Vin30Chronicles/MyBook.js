@@ -294,13 +294,13 @@ const Page = forwardRef((props, ref) => {
         {
           isMobile ? (
             <div className="page-image">
-              <img src={IMAGE_MAPPING[page]} />
+              <img src={IMAGE_MAPPING[page]} alt={`Page ${page}`} />
             </div>
           )
           : (
             <div className="page-image">
               {isPrev && prev()}
-              <img src={IMAGE_MAPPING[page]} />
+              <img src={IMAGE_MAPPING[page]} alt={`Page ${page}`} />
               {isNext && next()}
             </div>
           )
@@ -323,7 +323,7 @@ const ThumbnailModal = ({ isShow, page, thumbnailPages, handleScrollSidebar, han
             (thumbnailPages || []).map(item => {
               return (
                 <div key={`thumbnail-${item}`} className='item'>
-                  <span className={`thumbnail ${page === item ? 'active' : ''}`} onClick={() => handleChangePage(item)}><img src={IMAGE_MAPPING[item]} alt='Page' /></span>
+                  <span className={`thumbnail ${page === item ? 'active' : ''}`} onClick={() => handleChangePage(item)}><img src={IMAGE_MAPPING[item]} alt={`Thumbnail ${item}`} /></span>
                   <span className='page'>{item}</span>
                 </div>
               )
@@ -873,14 +873,14 @@ export default function MyBook(props) {
                     <>
                       {
                         page > 1 && (
-                          <div className={`btn-action btn-previous cursor-pointer`} onClick={handlePrevious}>
+                          <div className={`btn-action btn-previous cursor-pointer`} onTouchStart={handlePrevious}>
                             <img src={IconPrevious} alt="previous" />
                           </div>
                         )
                       }
                       {
                         page < TOTAL_PAGES && (
-                          <div className={`btn-action btn-next cursor-pointer`} onClick={handleNext}>
+                          <div className={`btn-action btn-next cursor-pointer`} onTouchStart={handleNext}>
                             <img src={IconNext} alt="next" />
                           </div>
                         )
