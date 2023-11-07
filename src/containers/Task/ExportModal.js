@@ -173,7 +173,7 @@ class ExportModal extends React.Component {
                    aria-hidden="true"
                   />}                 
                   </button>
-                  <button type="button" className="btn btn-secondary mr-2 w-25 float-right" onClick={this.props.onHide}>Hủy</button>
+                  <button type="button" className="btn btn-secondary mr-2 w-25 float-right" onClick={this.props.onHide}>{t("Cancel2")}</button>
                 </div>
                 </Modal.Body>
                 </Modal>
