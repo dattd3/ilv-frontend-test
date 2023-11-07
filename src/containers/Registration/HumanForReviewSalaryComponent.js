@@ -247,20 +247,20 @@ class HumanForReviewSalaryComponent extends React.Component {
           <div className="col-4">
             <p className="title2">{t('Position')}</p>
             <div>
-              <input type="text" className="form-control" value={approver?.current_position || approver?.jobTitle|| ""} readOnly />
+              <input type="text" className="form-control" style={{backgroundColor: '#F2F2F2'}} value={approver?.current_position || approver?.jobTitle|| ""} readOnly />
             </div>
           </div>
           <div className="col-4">
             <p className="title2">{t('DepartmentManage')}</p>
             <div>
-              <input type="text" className="form-control" value={approver?.department || ""} readOnly />
+              <input type="text" className="form-control" style={{backgroundColor: '#F2F2F2'}} value={approver?.department || ""} readOnly />
             </div>
           </div>
           {comment && (
             <div className="col-12" style={{ marginTop: 12 }}>
               <p className="title2">{t('reason_reject')}</p>
               <div>
-                <input type="text" className="form-control" value={comment} readOnly />
+                <input type="text" className="form-control" style={{backgroundColor: '#F2F2F2'}} value={comment} readOnly />
               </div>
             </div>
           )}

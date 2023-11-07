@@ -155,15 +155,15 @@ const isEnableFunctionByFunctionName = name => {
             break
         case Constants.listFunctionsForPnLACL.editProfile:
             listPnLAccepted = [Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinHoliday1, Constants.pnlVCode.VinMec, Constants.pnlVCode.VinSmart, Constants.pnlVCode.VincomRetail, 
-                Constants.pnlVCode.VinITIS, Constants.pnlVCode.VinUni, Constants.pnlVCode.Vin3S, Constants.pnlVCode.VinAI, Constants.pnlVCode.VinES, Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading]
+                Constants.pnlVCode.VinITIS, Constants.pnlVCode.VinUni, Constants.pnlVCode.Vin3S, Constants.pnlVCode.VinAI, Constants.pnlVCode.VinES, Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading, Constants.pnlVCode.VinSchool]
             break
         case Constants.listFunctionsForPnLACL.editEducation:
             listPnLAccepted = [Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinHoliday1, Constants.pnlVCode.VinMec, Constants.pnlVCode.VinSmart, Constants.pnlVCode.VincomRetail, 
-                Constants.pnlVCode.VinITIS, Constants.pnlVCode.VinUni, Constants.pnlVCode.Vin3S, Constants.pnlVCode.VinAI, Constants.pnlVCode.VinES, Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading]
+                Constants.pnlVCode.VinITIS, Constants.pnlVCode.VinUni, Constants.pnlVCode.Vin3S, Constants.pnlVCode.VinAI, Constants.pnlVCode.VinES, Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading, Constants.pnlVCode.VinSchool]
             break
         case Constants.listFunctionsForPnLACL.editRelationship:
             listPnLAccepted = [Constants.pnlVCode.VinSmart, Constants.pnlVCode.VincomRetail, Constants.pnlVCode.VinITIS, Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinHoliday1,
-                Constants.pnlVCode.VinUni, Constants.pnlVCode.Vin3S, Constants.pnlVCode.VinAI, Constants.pnlVCode.VinES, Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading, 'V096']
+                Constants.pnlVCode.VinUni, Constants.pnlVCode.Vin3S, Constants.pnlVCode.VinAI, Constants.pnlVCode.VinES, Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading, 'V096', Constants.pnlVCode.VinSchool]
             break
         case Constants.listFunctionsForPnLACL.changeStaffShift:
             listPnLAccepted = [Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinHoliday1, Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading]
@@ -666,10 +666,32 @@ const formatNumberSpecialCase = (val) => {
     });
 };
 
+const formatInternalNewsData = (data = [], currentLang = "vi") => {
+  return data.map(item => formatInternalNewsDataItem(item, currentLang));
+};
+
+const formatInternalNewsDataItem = (item, currentLang = "vi") => {
+  return {
+    ...item,
+    thumbnail: currentLang === "vi" ? item.thumbnailVi : item.thumbnailEn,
+    title: currentLang === "vi" ? item.titleVi : item.titleEn,
+    description: currentLang === "vi" ? item.descriptionVi : item.descriptionEn,
+    content: currentLang === "vi" ? item.contentVi : item.contentEn,
+  }
+}
+
+const getPublishedTimeByRawTime = (rawTime) => {
+  const time = moment(rawTime).isValid() ? moment(rawTime) : null;
+  return {
+    time: time?.format("HH:mm") || "",
+    date: time?.format("DD/MM/YYYY") || "",
+  };
+};
+
 export {
     getRequestConfigurations, removeAccents, formatStringByMuleValue, formatNumberInteger, exportToPDF, isEnableFunctionByFunctionName, getValueParamByQueryString, getDateByRangeAndFormat,
     calculateBackDateByPnLVCodeAndFormatType, isEnableShiftChangeFunctionByPnLVCode, isEnableInOutTimeUpdateFunctionByPnLVCode, getRequestTypeIdsAllowedToReApproval, getMuleSoftHeaderConfigurations,
     isAdjacentDateBy2Date, showRangeDateGroupByArrayDate, generateTaskCodeByCode, parsteStringToHtml, getRegistrationMinDateByConditions, isVinFast, isEnableOTFunctionByPnLVCode, getCurrentLanguage, 
     getResignResonsMasterData, formatStringDateTimeByMuleValue, genderConfig, marriageConfig, formatProcessTime, setURLSearchParam, getCulture, isValidDateRequest, prepareOrganization, getRequestTypesList,
-    formatStringDateByMuleValue, isExistCurrentUserInWhiteList, isVinITIS, formatNumberSpecialCase
+    formatStringDateByMuleValue, isExistCurrentUserInWhiteList, isVinITIS, formatNumberSpecialCase, formatInternalNewsData, getPublishedTimeByRawTime, formatInternalNewsDataItem
 }

@@ -195,7 +195,8 @@ function Authorize(props) {
                             jobCode: user?.job_code,
                             ad: user?.username,
                             master_code: user.master_code || '',
-                            cost_center: user?.cost_center
+                            cost_center: user?.cost_center,
+                            insurance_number: user?.insurance_number
                         });
                         FirebaseUpdateToken();
                     }
@@ -243,7 +244,8 @@ function Authorize(props) {
                         jobCode: user?.job_code,
                         ad: user?.username,
                         master_code: '',
-                        cost_center: user?.cost_center
+                        cost_center: user?.cost_center,
+                        insurance_number: user?.insurance_number || ''
                     });
                 })
                 .finally(result => {

@@ -33,7 +33,35 @@ function HOCComponent(Component) {
         })
         // const isIdle = useIdle({timeToIdle: 5000})
 
+        const getOrganizationLevelByRawLevel = level => {
+            return (level == undefined || level == null || level == "" || level == "#") ? 0 : level
+        }
+
         React.useEffect(() => {
+            const companyCode = localStorage.getItem('companyCode')
+            const lv3 = localStorage.getItem('organizationLv3')
+            const lv4 = getOrganizationLevelByRawLevel(localStorage.getItem('organizationLv4'))
+            const lv5 = getOrganizationLevelByRawLevel(localStorage.getItem('organizationLv5'))
+            const lang = localStorage.getItem("locale")
+            const apiConfig = getRequestConfigurations()
+
+            axios.get(`${process.env.REACT_APP_REQUEST_URL}notifications-unread-limitation`, {
+                params: {
+                    companyCode: companyCode,
+                    level3: lv3,
+                    level4: lv4,
+                    level5: lv5,
+                    culture: lang
+                },
+                ...apiConfig,
+            })
+            .catch(error => {
+                if (error?.response?.status === 401 || error?.response?.data?.result?.code == 401) {
+                    guard.setLogOut();
+                    window.location.href = process.env.REACT_APP_AWS_COGNITO_IDP_SIGNOUT_URL;
+                }
+            })
+
             const tokenTimeExpireStorage = localStorage.getItem('tokenExpired')
             const now = moment()
             const tokenTimeExpired = moment(tokenTimeExpireStorage, 'YYYYMMDDHHmmss')
