@@ -12,7 +12,7 @@ export const RouteSettings = {
   },
   authentication: {
     defaultRoute: map.Login,
-    routes: [map.Login, map.Auth, map.NewsDetailApp, map.TermPolicy, map.Maintenance, map.GuestNews],
+    routes: [map.Login, map.Auth, map.NewsDetailApp, map.TermPolicy, map.Maintenance, map.GuestNews, map.HistoryVinGroupMobile],
   },
 };
 
@@ -64,6 +64,14 @@ const ROUTES = [
       path: map.Maintenance
     },
     component: lazy(() => import("../containers/Maintenance"))
+  },
+  {
+    key: "vin30-chronicles-mobile",
+    routeProps: {
+      exact: true,
+      path: map.HistoryVinGroupMobile
+    },
+    component: lazy(() => import("./Vin30Chronicles/MyBook"))
   },
   {
     key: "main",
@@ -923,6 +931,14 @@ const ROUTES = [
             path: map.WorkingEnvironment,
           },
           component: lazy(() => import("./VingroupCulture/WorkingEnvironment")),
+        },
+        {
+          key: "registration-detail-contribution",
+          routeProps: {
+            exact: true,
+            path: map.SocialContributeDetail,
+          },
+          component: lazy(() => import("./Welfare/WelfareComponents/SocialContributeInfoDetail")),
         },
         {
           key: "internal-news-list",

@@ -120,7 +120,7 @@ const MapConfig = {
   // Đánh giá
   // Evaluation: "",
   TargetManagement: "/target-management",
-  EvaluationDetail: "/evaluations/:id/:formCode",
+  EvaluationDetail: "/evaluations/:id/:formCode/:version",
   MyEvaluation: "/my-evaluation",
   EvaluationApproval: "/evaluation-approval",
   
@@ -135,6 +135,7 @@ const MapConfig = {
   ExportInsuranceSocial: '/insurance-manager/export/:id',
   DetailInsuranceHealth: '/insurance-manager/detail-health/:id',
   SalaryPropse: '/salarypropse/:idContract/:idSalary/:type',
+
   Maintenance: '/maintenance',
   
   // Thanh toán phúc lợi nội bộ
@@ -143,10 +144,12 @@ const MapConfig = {
   // Vingroup culture
   HistoryVingroup: "/vingroup-history",
   Vin30Chronicles: "/vin30-chronicles",
+  HistoryVinGroupMobile: "/vin30-chronicles-mobile",
   VingroupCulture: "/vingroup-culture",
   SixCoreValues: "/6-core-values",
   SixGovernancePrinciples: "/6-governance-principles",
   WorkingEnvironment: "/working-environment",
+  VingroupCulturalGallery: "/vingroup-cultural-gallery/:code",
   HistoryVingroupGallery: "/vingroup-history/gallery/:code",
   VingroupCultureGallery: "/vingroup-culture/gallery/:code",
   SixCoreValuesGallery: "/6-core-values/gallery/:code",

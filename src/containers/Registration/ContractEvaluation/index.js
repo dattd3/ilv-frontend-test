@@ -189,7 +189,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         }
         break;
       case 12:
-        if(this.checkSameVinfast()){
+        if(IS_VINFAST()){
           shouldDisable = true;
         }
         break;
