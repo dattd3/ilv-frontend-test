@@ -249,14 +249,13 @@ function Header(props) {
                             }
 
                             if (item?.detailType == 'REQUEST')
-                                // return `/tasks${item?.groupId ? `?requestTypes=${getRequestTypesList(item.groupId, false).join(",")}` : ''}`
-                                return '#'
+                                return `/tasks${item?.groupId ? `?requestTypes=${getRequestTypesList(item.groupId, false).join(",")}` : ''}`
                             else if (item?.detailType == 'APPRAISAL')
                                 // return `/tasks?tab=consent${item?.groupId ? `&requestTypes=${getRequestTypesList(item.groupId, false).join(",")}&id=${item?.subRequestId}` : ''}`
-                                return `#`
+                                return ''
                             else
                                 // return `/tasks?tab=approval${item?.groupId ? `&requestTypes=${getRequestTypesList(item.groupId, false).join(",")}` : ''}&id=${item?.subRequestId}`
-                                return `#`
+                                return ''
                         case 6:
                             return '/personal-info?tab=document'
                         case Constants.notificationType.NOTIFICATION_APPROVED:
@@ -305,7 +304,7 @@ function Header(props) {
                 : item?.description || ''
 
                 return <div key={i} className="item">
-                    <a onClick={() => clickNotification(item.id, requestId, subRequestId, getAction(item?.type, item?.detailType))} className="title" href={notificationLink(item.type)} title={titleNotice}>{titleNotice}</a>
+                    <a onClick={() => clickNotification(item.id, requestId, subRequestId, getAction(item?.type, item?.detailType), notificationLink(item.type))} className="title" href={notificationLink(item.type)} title={titleNotice}>{titleNotice}</a>
                     <p className="description">{descriptionNotice}</p>
                     <div className="time-file">
                         <span className="time"><i className='far fa-clock ic-clock'></i><span>{timePost}</span></span>
@@ -327,7 +326,7 @@ function Header(props) {
         return param;
     }
 
-    const clickNotification = (id, requestId, subRequestId, action) => {
+    const clickNotification = (id, requestId, subRequestId, action, url = '') => {
         const data = '';
         const config = {
             method: 'post',
@@ -340,7 +339,7 @@ function Header(props) {
         };
         axios(config)
 
-        props.handleTaskDetailModal(true, requestId, subRequestId, action)
+        !url && props.handleTaskDetailModal(true, requestId, subRequestId, action)
     }
 
     const OnClickBellFn = (isOpen) => {
