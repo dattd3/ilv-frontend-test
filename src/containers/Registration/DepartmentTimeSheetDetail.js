@@ -122,7 +122,7 @@ class DepartmentTimeSheetDetail extends React.Component {
       });
   }
   render() {
-    const { t, lockReload } = this.props
+    const { t, lockReload, onHideTaskDetailModal } = this.props
     const requestTypeId = this.props.substitution.requestTypeId
     const companyVCodeUserLogged = localStorage.getItem('companyCode')
     const isDisableTimeSheetFunction = [Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinHoliday1].includes(companyVCodeUserLogged)
@@ -259,6 +259,7 @@ class DepartmentTimeSheetDetail extends React.Component {
           hiddenRevocationOfApprovalButton={1}
           action={this.props.action}
           lockReload={lockReload}
+          onHideTaskDetailModal={onHideTaskDetailModal}
         /> : null}
       </div>
     )

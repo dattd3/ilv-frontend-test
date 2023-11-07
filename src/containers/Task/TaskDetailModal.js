@@ -20,7 +20,7 @@ import InternalPaymentDetail from 'containers/Welfare/InternalPayment/InternalPa
 
 const TaskDetailModal = (props) => {
   const { t } = useTranslation()
-  const { taskId, subId, action, show, lockReload, isAutoShowDetailModal, onHide } = props
+  const { taskId, subId, action, show, lockReload, onHide } = props
   const [data, setData] = useState({})
 
   useEffect(() => {
@@ -87,8 +87,8 @@ const TaskDetailModal = (props) => {
                   {
                     data && data?.requestTypeId === Constants.UPDATE_PROFILE 
                     ? (isWorkOutSideGroup)
-                      ? (<WorkOutSideGroupDetail details={data} viewPopup={true} lockReload={lockReload} onHideTaskDetailModal={() => onHide()} />)
-                      : (<PersonalDetailComponent id={taskId} data={data} lockReload={lockReload} onHideTaskDetailModal={() => onHide()} />)
+                      ? (<WorkOutSideGroupDetail details={data} viewPopup={true} action={action} lockReload={lockReload} onHideTaskDetailModal={() => onHide()} />)
+                      : (<PersonalDetailComponent id={taskId} data={data} action={action} lockReload={lockReload} onHideTaskDetailModal={() => onHide()} />)
                     : null
                   }
                   {data && data?.requestTypeId === Constants.CHANGE_DIVISON_SHIFT ? <ChangeDivisionShiftDetail action={action} substitution={data} lockReload={lockReload} onHideTaskDetailModal={() => onHide()} /> : null}
