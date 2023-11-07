@@ -82,12 +82,8 @@ class DetailButtonComponent extends React.Component {
     }
 
     render() {
-        const {t, action, requestTypeId, isShowReject = true, viewPopup, isShowApproval, isShowConsent} = this.props
+        const {t, action, requestTypeId, isShowReject = true, viewPopup, isShowApproval, isShowConsent, lockReload, onHideTaskDetailModal} = this.props
         const actionProcessing = action ? action : this.getAction()
-
-        console.log('actionProcessing ', actionProcessing)
-        console.log('this.props.isShowConsent ', this.props.isShowConsent)
-        console.log('isShowApproval ', isShowApproval)
 
         return <div className="bottom">
             <ConfirmationModal
@@ -101,6 +97,9 @@ class DetailButtonComponent extends React.Component {
                 message={this.state.modalMessage}
                 onHide={this.onHideModalConfirm.bind(this)}
                 updateTask = {this.updateTaskStatus}
+                lockReload={lockReload}
+                action={action}
+                onHideTaskDetailModal={onHideTaskDetailModal}
             />
             {
                 actionProcessing === "approval" &&

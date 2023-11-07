@@ -312,7 +312,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
   }
 
   render() {
-    const { t, action, viewPopup, leaveOfAbsence } = this.props
+    const { t, action, viewPopup, leaveOfAbsence, lockReload, onHideTaskDetailModal } = this.props
     const userProfileInfo = leaveOfAbsence.user
     const requestTypeId = leaveOfAbsence.requestTypeId
     const requestInfo = leaveOfAbsence.requestInfo[0]
@@ -439,6 +439,8 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
             urlName={'requestabsence'}
             requestTypeId={requestTypeId}
             action={action}
+            lockReload={lockReload}
+            onHideTaskDetailModal={onHideTaskDetailModal}
           />
           : null
         }

@@ -92,7 +92,7 @@ class InOutUpdateDetailComponent extends React.Component {
   }
 
   render() {
-    const { t, action, inOutTimeUpdate } = this.props
+    const { t, action, inOutTimeUpdate, lockReload, onHideTaskDetailModal } = this.props
     const requestTypeIdsAllowedToReApproval = getRequestTypeIdsAllowedToReApproval()
     const isShowApproval = requestTypeIdsAllowedToReApproval.includes(inOutTimeUpdate.requestTypeId) && action === "approval" 
     && (inOutTimeUpdate.processStatusId == Constants.STATUS_WAITING || inOutTimeUpdate.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL)
@@ -295,6 +295,8 @@ class InOutUpdateDetailComponent extends React.Component {
             urlName={'requesttimekeeping'}
             requestTypeId={inOutTimeUpdate.requestTypeId}
             action={action}
+            lockReload={lockReload}
+            onHideTaskDetailModal={onHideTaskDetailModal}
           />
           : null
         }

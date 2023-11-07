@@ -218,7 +218,7 @@ class ApprovalDetail extends React.Component {
   }
 
   render() {
-    const { t, data } = this.props
+    const { t, data, action, lockReload, onHideTaskDetailModal } = this.props
     const determineStatus = {
       5: {label: t("Waiting"), className: 'waiting'},
       1: {label: t("Reject"), className: 'fail'},
@@ -283,8 +283,20 @@ class ApprovalDetail extends React.Component {
 
     return (
       <>
-      <ConfirmationModal data={data} show={isShowModalConfirm} manager={this.manager} title={modalTitle} type={typeRequest} message={modalMessage} 
-      taskId={this.props.id} onHide={this.onHideModalConfirm} showConfirmModal={this.showConfirmModal} />
+      <ConfirmationModal 
+        data={data} 
+        show={isShowModalConfirm} 
+        manager={this.manager} 
+        title={modalTitle} 
+        type={typeRequest} 
+        message={modalMessage} 
+        taskId={this.props.id} 
+        onHide={this.onHideModalConfirm} 
+        showConfirmModal={this.showConfirmModal} 
+        lockReload={lockReload}
+        action={action}
+        onHideTaskDetailModal={onHideTaskDetailModal}
+      />
       <div className="edit-personal user-info-request">
         <h4 className="content-page-header">{t("EmployeeInfomation")}</h4>
       </div>
