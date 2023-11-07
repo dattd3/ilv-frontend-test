@@ -218,7 +218,7 @@ function Header(props) {
                 : item?.description || ''
 
                 return <div key={i} className="item">
-                    <a onClick={() => clickNotification(item.id, requestId, subRequestId, getAction(item?.type, item?.detailType), notificationLink(item.type))} className="title" href={notificationLink(item.type)} title={titleNotice}>{titleNotice}</a>
+                    <a onClick={(e) => clickNotification(e, item.id, requestId, subRequestId, getAction(item?.type, item?.detailType), notificationLink(item.type))} className="title" href={notificationLink(item.type)} title={titleNotice}>{titleNotice}</a>
                     <p className="description">{descriptionNotice}</p>
                     <div className="time-file">
                         <span className="time"><i className='far fa-clock ic-clock'></i><span>{timePost}</span></span>
@@ -240,7 +240,11 @@ function Header(props) {
         return param;
     }
 
-    const clickNotification = (id, requestId, subRequestId, action, url = '') => {
+    const clickNotification = (e, id, requestId, subRequestId, action, url = '') => {
+        if (!url) {
+            e.preventDefault()
+        }
+
         const data = '';
         const config = {
             method: 'post',
@@ -252,7 +256,6 @@ function Header(props) {
             data: data
         };
         axios(config)
-
         !url && props.handleTaskDetailModal(true, requestId, subRequestId, action)
     }
 
