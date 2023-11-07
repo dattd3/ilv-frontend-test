@@ -90,7 +90,7 @@ const PNL_SWIPER_LIST = [
     },
     {
       logo: IconVinits,
-      url: "#",
+      url: "https://vingroup.net",
     },
   ],
   [
@@ -143,8 +143,8 @@ const PNL_SWIPER_LIST = [
       url: "https://vingroup.net",
     },
     {
-      logo: IconVinFuture,
-      url: "https://vinfutureprize.org",
+      logo: IconVinUni,
+      url: "https://vinuni.edu.vn/",
     },
     {
       logo: IconVingroup,
@@ -152,7 +152,7 @@ const PNL_SWIPER_LIST = [
     },
     {
       logo: IconQTT,
-      url: "#",
+      url: "https://vingroup.net",
     },
     {
       logo: IconVinif,
@@ -231,7 +231,6 @@ function Login(props) {
             },
           }
         );
-        console.log(newsResponse)
         setNewsData(newsResponse.data?.data?.listArticles)
       } catch {}
     }
@@ -398,7 +397,6 @@ function Login(props) {
                           </div>
                         </div>
                         <Swiper
-                          // slidesPerView={2.5}
                           spaceBetween={15}
                           freeMode={true}
                           modules={[FreeMode, Autoplay]}
@@ -445,7 +443,7 @@ function Login(props) {
                       {t("PnlOfVingroup")}
                     </div>
                     <Swiper 
-                      rewind={true}
+                      loop={true}
                       navigation={true}
                       modules={[Navigation, Autoplay]}
                       className="pnlSwipper"
@@ -453,11 +451,12 @@ function Login(props) {
                         delay: 5000,
                         disableOnInteraction: false,
                       }}
+                      speed={1000}
                     >
                       {PNL_SWIPER_LIST.map((pnlList, index) => (
                         <SwiperSlide key={index}>
-                          {pnlList.map(pnl => (
-                            <a className="pnl-icon-wrapper" href={pnl.url} key={pnl.url} target="_blank" rel="noreferrer">
+                          {pnlList.map((pnl, pnlIndex) => (
+                            <a className="pnl-icon-wrapper" href={pnl.url} key={pnl.url + pnlIndex} target="_blank" rel="noreferrer">
                             <img src={pnl.logo} alt="" width="60%" />
                           </a>
                           ))}
