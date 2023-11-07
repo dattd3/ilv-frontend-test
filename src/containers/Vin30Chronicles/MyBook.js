@@ -486,15 +486,6 @@ export default function MyBook(props) {
     document.addEventListener('fullscreenchange', onFullscreenChange);
     wrapBookRef?.current?.addEventListener('wheel', onWheel, { passive: false });
 
-
-
-    const body = document.querySelector('#history-vingroup-page')
-    body.scrollIntoView({
-        behavior: 'smooth'
-    }, 800)
-
-    
-
     return () => {
       clearTimeout(timeOut);
       document.removeEventListener('fullscreenchange', onFullscreenChange);
@@ -750,8 +741,6 @@ export default function MyBook(props) {
     return [[firstPage], ...center, [lastPage]];
   })();
 
-  const linkHistoryVinGroup = "https://online.flippingbook.com/view/211567232/"
-
   return (
     <>
       <LoadingModal show={isLoading} />
@@ -763,263 +752,250 @@ export default function MyBook(props) {
         handleChangePage={handleChangePage}
         onHide={onHideThumbnailModal} 
       />
-
-      {
-        isMobile
-        ? (
-          <div
-            className={`history-vingroup-page ${isMobile ? 'mobile' : ''}`}
-            id="history-vingroup-page"
-            ref={pageRef}
-          >
-            <div className="d-flex wrap-page">
-              <div className={`sidebar-left ${isShowThumbnails ? 'visible' : ''}`}>
-                <div className="d-flex align-items-center justify-content-between top-sidebar">
-                  <span className="d-inline-flex align-items-center thumbnails">
-                    <span className="d-inline-flex justify-content-center align-items-center menu-item">
-                      <svg
-                        data-v-78b93dcc=""
-                        version="1.1"
-                        viewBox="0 0 24 24"
-                        className="svg-icon svg-icon svg-fill"
-                        focusable="false"
-                      >
-                        <path
-                          pid="0"
-                          d="M9 3c.6 0 1 .4 1 1v5c0 .6-.4 1-1 1H4c-.6 0-1-.4-1-1V4c0-.6.4-1 1-1h5zm11 0c.6 0 1 .4 1 1v5c0 .6-.4 1-1 1h-5c-.6 0-1-.4-1-1V4c0-.6.4-1 1-1h5zM9 14c.6 0 1 .4 1 1v5c0 .6-.4 1-1 1H4c-.6 0-1-.4-1-1v-5c0-.6.4-1 1-1h5zm11 0c.6 0 1 .4 1 1v5c0 .6-.4 1-1 1h-5c-.6 0-1-.4-1-1v-5c0-.6.4-1 1-1h5z"
-                        ></path>
-                      </svg>
-                    </span>
-                    <span>Thumbnails</span>
-                  </span>
-                  <span
-                    className="d-inline-flex justify-content-center align-items-center cursor-pointer menu-close"
-                    onClick={handleCloseMenu}
+      <div
+        className={`history-vingroup-page ${isMobile ? 'mobile' : ''}`}
+        id="history-vingroup-page"
+        ref={pageRef}
+      >
+        <div className="d-flex wrap-page">
+          <div className={`sidebar-left ${isShowThumbnails ? 'visible' : ''}`}>
+            <div className="d-flex align-items-center justify-content-between top-sidebar">
+              <span className="d-inline-flex align-items-center thumbnails">
+                <span className="d-inline-flex justify-content-center align-items-center menu-item">
+                  <svg
+                    data-v-78b93dcc=""
+                    version="1.1"
+                    viewBox="0 0 24 24"
+                    className="svg-icon svg-icon svg-fill"
+                    focusable="false"
                   >
-                    <svg
-                      data-v-78b93dcc=""
-                      version="1.1"
-                      viewBox="0 0 24 24"
-                      className="svg-icon svg-icon svg-fill"
-                      focusable="false"
+                    <path
+                      pid="0"
+                      d="M9 3c.6 0 1 .4 1 1v5c0 .6-.4 1-1 1H4c-.6 0-1-.4-1-1V4c0-.6.4-1 1-1h5zm11 0c.6 0 1 .4 1 1v5c0 .6-.4 1-1 1h-5c-.6 0-1-.4-1-1V4c0-.6.4-1 1-1h5zM9 14c.6 0 1 .4 1 1v5c0 .6-.4 1-1 1H4c-.6 0-1-.4-1-1v-5c0-.6.4-1 1-1h5zm11 0c.6 0 1 .4 1 1v5c0 .6-.4 1-1 1h-5c-.6 0-1-.4-1-1v-5c0-.6.4-1 1-1h5z"
+                    ></path>
+                  </svg>
+                </span>
+                <span>Thumbnails</span>
+              </span>
+              <span
+                className="d-inline-flex justify-content-center align-items-center cursor-pointer menu-close"
+                onClick={handleCloseMenu}
+              >
+                <svg
+                  data-v-78b93dcc=""
+                  version="1.1"
+                  viewBox="0 0 24 24"
+                  className="svg-icon svg-icon svg-fill"
+                  focusable="false"
+                >
+                  <path
+                    pid="0"
+                    d="M14.251 12.003l3.747-3.746-2.248-2.248-3.747 3.746-3.746-3.746-2.248 2.248 3.746 3.746-3.746 3.747 2.248 2.248 3.746-3.747 3.747 3.747 2.248-2.248z"
+                  ></path>
+                </svg>
+              </span>
+            </div>
+            <div className="wrap-sidebar-content">
+              <div className="sidebar-content" onScroll={handleScrollSidebar}>
+                {sidebarPages.map((item, index) => {
+                  return (
+                    <div
+                      className="wrap-page-item"
+                      key={`Sidebar-${index}`}
+                      ref={(el) => (pageScrollRef.current[item[0]] = el)}
                     >
-                      <path
-                        pid="0"
-                        d="M14.251 12.003l3.747-3.746-2.248-2.248-3.747 3.746-3.746-3.746-2.248 2.248 3.746 3.746-3.746 3.747 2.248 2.248 3.746-3.747 3.747 3.747 2.248-2.248z"
-                      ></path>
-                    </svg>
-                  </span>
-                </div>
-                <div className="wrap-sidebar-content">
-                  <div className="sidebar-content" onScroll={handleScrollSidebar}>
-                    {sidebarPages.map((item, index) => {
-                      return (
+                      <div
+                        className={`d-flex align-items-center justify-content-center top cursor-pointer ${
+                          page === item[0] && item[1] ? 'active' : ''
+                        }`}
+                        onClick={() => handleChangePage(item[0])}
+                      >
                         <div
-                          className="wrap-page-item"
-                          key={`Sidebar-${index}`}
-                          ref={(el) => (pageScrollRef.current[item[0]] = el)}
+                          className={`item ${
+                            (page === 1 || page === TOTAL_PAGES) &&
+                            page === item[0]
+                              ? 'active'
+                              : ''
+                          }`}
                         >
-                          <div
-                            className={`d-flex align-items-center justify-content-center top cursor-pointer ${
-                              page === item[0] && item[1] ? 'active' : ''
-                            }`}
-                            onClick={() => handleChangePage(item[0])}
-                          >
-                            <div
-                              className={`item ${
-                                (page === 1 || page === TOTAL_PAGES) &&
-                                page === item[0]
-                                  ? 'active'
-                                  : ''
-                              }`}
-                            >
+                          <img
+                            src={IMAGE_MAPPING[item[0]]}
+                            alt={`Page ${item[0]}`}
+                          />
+                        </div>
+                        {item[1] && (
+                          <>
+                            <div className="book-spine" />
+                            <div className="item">
                               <img
-                                src={IMAGE_MAPPING[item[0]]}
-                                alt={`Page ${item[0]}`}
+                                src={IMAGE_MAPPING[item[1]]}
+                                alt={`Page ${item[1]}`}
                               />
                             </div>
-                            {item[1] && (
-                              <>
-                                <div className="book-spine" />
-                                <div className="item">
-                                  <img
-                                    src={IMAGE_MAPPING[item[1]]}
-                                    alt={`Page ${item[1]}`}
-                                  />
-                                </div>
-                              </>
-                            )}
+                          </>
+                        )}
+                      </div>
+                      <div className="d-flex align-items-center justify-content-center bottom">
+                        <div className="text-center page-number">{item[0]}</div>
+                        {item[1] && (
+                          <div className="text-center page-number">
+                            {item[1]}
                           </div>
-                          <div className="d-flex align-items-center justify-content-center bottom">
-                            <div className="text-center page-number">{item[0]}</div>
-                            {item[1] && (
-                              <div className="text-center page-number">
-                                {item[1]}
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              </div>
-              <div className="main-content">
-                <div className="d-flex align-items-center header-block">
-                  <h1 className="book-title">Sử ký VIN30</h1>
-                  <div className="page-block">
-                    <span className="page-label">pages:</span>
-                    <input
-                      type="text"
-                      value={page}
-                      className="text-center page-input"
-                      onChange={(e) => handleChangePageByFilter(e?.target?.value)}
-                      onKeyDown={handleKeyDown}
-                    />
-                    <span className="seperate">/</span>
-                    <span>{TOTAL_PAGES}</span>
-                  </div>
-                </div>
-                <div className="book" ref={wrapBookRef} onWheel={onWheel}>
-                  <div className={`wrap-book ${isMobile ? 'mobile' : ''}`}>
-                    {
-                      isMobile && (
-                        <>
-                          {
-                            page > 1 && (
-                              <div className={`btn-action btn-previous cursor-pointer`} onTouchStart={handlePrevious}>
-                                <img src={IconPrevious} alt="previous" />
-                              </div>
-                            )
-                          }
-                          {
-                            page < TOTAL_PAGES && (
-                              <div className={`btn-action btn-next cursor-pointer`} onTouchStart={handleNext}>
-                                <img src={IconNext} alt="next" />
-                              </div>
-                            )
-                          }
-                        </>
-                      )
-                    }
-                    {
-                      isMobile
-                      ? (
-                        <PrismaZoom 
-                          allowWheel={false} 
-                          initialZoom={ZOOM.MIN}
-                          minZoom={ZOOM.MIN}
-                          maxZoom={ZOOM.MAX}
-                          className='zoom-wrapper'
-                          allowTouchEvents={false}
-                          ref={zoomLevelRef}
-                        >
-                          <HTMLFlipBook
-                            showCover={true}
-                            flippingTime={600}
-                            width={550}
-                            height={733}
-                            size="stretch"
-                            minWidth={315}
-                            maxWidth={1000}
-                            minHeight={420}
-                            maxHeight={1350}
-                            maxShadowOpacity={0.5}
-                            drawShadow={false}
-                            useMouseEvents={false}
-                            onFlip={handleFlip}
-                            ref={bookRef}
-                          >
-                            {pages.map((item) => (
-                              <Page 
-                                key={`page-item-${item}`} 
-                                page={item}
-                                isShowThumbnails={isShowThumbnails}
-                                isMobile={isMobile}
-                              />
-                            ))}
-                          </HTMLFlipBook>
-                        </PrismaZoom>
-                      )
-                      : (
-                      <PrismaZoom 
-                        allowWheel={false} 
-                        initialZoom={ZOOM.MIN}
-                        minZoom={ZOOM.MIN}
-                        maxZoom={ZOOM.MAX}
-                        className='zoom-wrapper'
-                        allowTouchEvents={true}
-                        onTouchStart={onTouchStart}
-                        onTouchMove={onTouchMove}
-                        onTouchEnd={onTouchEnd}
-                        ref={zoomLevelRef}
-                      >
-                        <HTMLFlipBook
-                          showCover={true}
-                          flippingTime={600}
-                          width={550}
-                          height={733}
-                          size="stretch"
-                          minWidth={315}
-                          maxWidth={1000}
-                          minHeight={420}
-                          maxHeight={1350}
-                          maxShadowOpacity={0.5}
-                          drawShadow={false}
-                          mobileScrollSupport={true}
-                          onFlip={handleFlip}
-                          useMouseEvents={false}
-                          ref={bookRef}
-                        >
-                          {pages.map((item) => (
-                            <Page 
-                              key={`page-item-${item}`} 
-                              page={item}
-                              isShowThumbnails={isShowThumbnails}
-                              isMobile={isMobile}
-                              prev={() => (
-                                <div className={`btn-previous cursor-pointer`} onClick={handlePrevious}>
-                                  <img src={IconPrevious} alt="previous" />
-                                </div>
-                              )}
-                              next={() => (
-                                <div className={`btn-next cursor-pointer`} onClick={handleNext}>
-                                  <img src={IconNext} alt="next" />
-                                </div>
-                              )}
-                            />
-                          ))}
-                        </HTMLFlipBook>
-                      </PrismaZoom>
-                      )
-                    }
-                  </div>
-                </div>
-                <ButtonBlock 
-                  isShowThumbnails={isShowThumbnails}
-                  isFullScreen={isFullScreen}
-                  isMobile={isMobile}
-                  isZoomIn={isZoomIn}
-                  zoomLevel={zoomLevel}
-                  page={page}
-                  handleZoom={handleZoom}
-                  handleChangeZoomLevel={handleChangeZoomLevel}
-                  handleShowThumbnails={handleShowThumbnails}
-                  downloadBook={downloadBook}
-                  handleScreen={handleScreen}
-                />
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </div>
-        )
-        : (
-          <div className="history-vingroup-page" id="history-vingroup-page">
-            <iframe src={linkHistoryVinGroup} allowFullScreen={true} title="Sử ký Vin30"></iframe>
+          <div className="main-content">
+            <div className="d-flex align-items-center header-block">
+              <h1 className="book-title">Sử ký VIN30</h1>
+              <div className="page-block">
+                <span className="page-label">pages:</span>
+                <input
+                  type="text"
+                  value={page}
+                  className="text-center page-input"
+                  onChange={(e) => handleChangePageByFilter(e?.target?.value)}
+                  onKeyDown={handleKeyDown}
+                />
+                <span className="seperate">/</span>
+                <span>{TOTAL_PAGES}</span>
+              </div>
+            </div>
+            <div className="book" ref={wrapBookRef} onWheel={onWheel}>
+              <div className={`wrap-book ${isMobile ? 'mobile' : ''}`}>
+                {
+                  isMobile && (
+                    <>
+                      {
+                        page > 1 && (
+                          <div className={`btn-action btn-previous cursor-pointer`} onTouchStart={handlePrevious}>
+                            <img src={IconPrevious} alt="previous" />
+                          </div>
+                        )
+                      }
+                      {
+                        page < TOTAL_PAGES && (
+                          <div className={`btn-action btn-next cursor-pointer`} onTouchStart={handleNext}>
+                            <img src={IconNext} alt="next" />
+                          </div>
+                        )
+                      }
+                    </>
+                  )
+                }
+                {
+                  isMobile
+                  ? (
+                    <PrismaZoom 
+                      allowWheel={false} 
+                      initialZoom={ZOOM.MIN}
+                      minZoom={ZOOM.MIN}
+                      maxZoom={ZOOM.MAX}
+                      className='zoom-wrapper'
+                      allowTouchEvents={false}
+                      ref={zoomLevelRef}
+                    >
+                      <HTMLFlipBook
+                        showCover={true}
+                        flippingTime={600}
+                        width={550}
+                        height={733}
+                        size="stretch"
+                        minWidth={315}
+                        maxWidth={1000}
+                        minHeight={420}
+                        maxHeight={1350}
+                        maxShadowOpacity={0.5}
+                        drawShadow={false}
+                        useMouseEvents={false}
+                        onFlip={handleFlip}
+                        ref={bookRef}
+                      >
+                        {pages.map((item) => (
+                          <Page 
+                            key={`page-item-${item}`} 
+                            page={item}
+                            isShowThumbnails={isShowThumbnails}
+                            isMobile={isMobile}
+                          />
+                        ))}
+                      </HTMLFlipBook>
+                    </PrismaZoom>
+                  )
+                  : (
+                  <PrismaZoom 
+                    allowWheel={false} 
+                    initialZoom={ZOOM.MIN}
+                    minZoom={ZOOM.MIN}
+                    maxZoom={ZOOM.MAX}
+                    className='zoom-wrapper'
+                    allowTouchEvents={true}
+                    onTouchStart={onTouchStart}
+                    onTouchMove={onTouchMove}
+                    onTouchEnd={onTouchEnd}
+                    ref={zoomLevelRef}
+                  >
+                    <HTMLFlipBook
+                      showCover={true}
+                      flippingTime={600}
+                      width={550}
+                      height={733}
+                      size="stretch"
+                      minWidth={315}
+                      maxWidth={1000}
+                      minHeight={420}
+                      maxHeight={1350}
+                      maxShadowOpacity={0.5}
+                      drawShadow={false}
+                      mobileScrollSupport={true}
+                      onFlip={handleFlip}
+                      useMouseEvents={false}
+                      ref={bookRef}
+                    >
+                      {pages.map((item) => (
+                        <Page 
+                          key={`page-item-${item}`} 
+                          page={item}
+                          isShowThumbnails={isShowThumbnails}
+                          isMobile={isMobile}
+                          prev={() => (
+                            <div className={`btn-previous cursor-pointer`} onClick={handlePrevious}>
+                              <img src={IconPrevious} alt="previous" />
+                            </div>
+                          )}
+                          next={() => (
+                            <div className={`btn-next cursor-pointer`} onClick={handleNext}>
+                              <img src={IconNext} alt="next" />
+                            </div>
+                          )}
+                        />
+                      ))}
+                    </HTMLFlipBook>
+                  </PrismaZoom>
+                  )
+                }
+              </div>
+            </div>
+            <ButtonBlock 
+              isShowThumbnails={isShowThumbnails}
+              isFullScreen={isFullScreen}
+              isMobile={isMobile}
+              isZoomIn={isZoomIn}
+              zoomLevel={zoomLevel}
+              page={page}
+              handleZoom={handleZoom}
+              handleChangeZoomLevel={handleChangeZoomLevel}
+              handleShowThumbnails={handleShowThumbnails}
+              downloadBook={downloadBook}
+              handleScreen={handleScreen}
+            />
           </div>
-        )
-      }
-
-      
+        </div>
+      </div>
     </>
   );
 }
