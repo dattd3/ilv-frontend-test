@@ -40,17 +40,9 @@ const SocialSupportInfo = (props: any) => {
   });
   const [files, setFiles] = useState<any[]>([]);
 
-  const convertData = (value: any) => {
-    if (!value) return "";
-    if (typeof value == "object" && value.label) {
-      return {
-        id: value.value,
-        name: value.label,
-      };
-    } else if (typeof value == "string" || typeof value == "number")
-      return value;
-    return "";
-  };
+  useEffect(() => {
+    getPersonalInfo();
+  }, []);
 
   const getPersonalInfo = () => {
     const config = getMuleSoftHeaderConfigurations()
@@ -106,9 +98,6 @@ const SocialSupportInfo = (props: any) => {
   };
 
   const onSubmit = () => {
-    const userProfileInfo = {
-        type: convertData(data.type)
-    };
     const employeeInfo = {
       employeeNo: localStorage.getItem("employeeNo"),
       username: localStorage.getItem("ad")?.toLowerCase(),
@@ -164,7 +153,8 @@ const SocialSupportInfo = (props: any) => {
     }));
 
     const formData = new FormData();
-    formData.append("userProfileInfo", JSON.stringify(userProfileInfo));
+    formData.append("typeId", data.type?.value);
+    formData.append("typeName", data.type?.label + '');
     formData.append("orgLv2Id", localStorage.getItem("organizationLv2") || "");
     formData.append("orgLv3Id", localStorage.getItem("divisionId") || "");
     formData.append("orgLv3Text", localStorage.getItem("division") || "");
@@ -190,7 +180,7 @@ const SocialSupportInfo = (props: any) => {
     setLoading(true);
     axios({
       method: "POST",
-      url: `${process.env.REACT_APP_REQUEST_SERVICE_URL}socialinsurance1`,
+      url: `${process.env.REACT_APP_REQUEST_SERVICE_URL}insurancesupport`,
       data: formData,
       headers: {
         "Content-Type": "multipart/form-data",
@@ -230,7 +220,7 @@ const SocialSupportInfo = (props: any) => {
       isShowStatusModal: false,
     });
     if (resultModal.isSuccess) {
-      window.location.href = "/tasks?requestTypes=14,15,20,21";
+      window.location.href = "/tasks?requestTypes=14,15,20,21,22";
     }
   };
 
