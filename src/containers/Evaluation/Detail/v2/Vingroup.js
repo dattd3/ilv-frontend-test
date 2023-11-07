@@ -791,12 +791,12 @@ const VinGroupForm = (props) => {
 
     const isValidScoreFunc = (actionCode) => {
         if (actionCode == actionButton.save) return true
-        const maximumScore = 5;
         const minimumScore = 1;
         const groups = evaluationFormDetailState?.groups || []
 
         for (let groupIndex = 0; groupIndex < groups.length; groupIndex++) {
             let group = groups[groupIndex]
+            const maximumScore = group?.listGroupConfig?.length;
             const isFormula = group?.caculateType === 'CT' // Là công thức (Hiện tại đang áp dụng cho VinBus)
             if (group?.groupChildren?.length > 0) {
                 for (let groupChildrenIndex = 0; groupChildrenIndex < group?.groupChildren?.length; groupChildrenIndex++) {
