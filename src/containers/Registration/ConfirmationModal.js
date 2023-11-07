@@ -453,7 +453,8 @@ class ConfirmationModal extends React.Component {
                     return window.location.reload();
                 default:
                     if (action === Constants.tabListRequestMapping.REQUEST)
-                    return window.location.reload();
+                    onHideTaskDetailModal()
+                    return
             }
         }
 
@@ -466,7 +467,6 @@ class ConfirmationModal extends React.Component {
 
     hideStatusChangeShiftModal= () => {
         this.setState({ isShowStatusChangeShiftModal: false })
-        alert(123456789)
         window.location.reload();
     }
 

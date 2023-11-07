@@ -100,7 +100,7 @@ class ChangeDivisionShiftDetail extends React.Component {
   }
 
   render() {
-    const { t, lockReload } = this.props
+    const { t, lockReload, onHideTaskDetailModal } = this.props
     const requestTypeId = this.props.substitution.requestTypeId
     const listChangeShift = TableUtil.updateData(this.props.substitution.requestInfo, this.state.pageNumber - 1, 10)
     const timeProcessing = {
@@ -303,6 +303,7 @@ class ChangeDivisionShiftDetail extends React.Component {
           hiddenRevocationOfApprovalButton={1}
           action={this.props.action}
           lockReload={lockReload}
+          onHideTaskDetailModal={onHideTaskDetailModal}
         /> : null}
       </div>
     )
