@@ -68,6 +68,7 @@
     "build": "react-scripts build",
     "build:staging": "rename .env.staging .env.production.local & npm run-script build & rename .env.production.local .env.staging",
     "build:uat": "env-cmd -f .env.uat npm run build",
+    "build:dev": "env-cmd -f .env.staging npm run build",
     "build:staging:linux": "env-cmd -f .env.staging npm run build",
     "build:production": "env-cmd -f .env.production react-scripts build",
     "test": "react-scripts test",

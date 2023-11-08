@@ -301,7 +301,9 @@ const Constants = {
     REQUEST: 'request',
     APPROVAL: 'approval',
     APPRAISAL: 'consent',
-  }
+  },
+  ORG_ID_VINPEARL: process.env.REACT_APP_ENVIRONMENT === 'PRODUCTION' ? '45001013' : '45001013',
+  ORG_ID_VINPEARL_MELIA: process.env.REACT_APP_ENVIRONMENT === 'PRODUCTION' ? '45033560' : '45001263'
 }
 
 Constants.REQUEST_CATEGORY_1_LIST = {
