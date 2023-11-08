@@ -138,6 +138,54 @@ function Header(props) {
         }
     }
 
+    const getSalaryProposeLinkRequest = (requestTypeId, requestId, formType, parentRequestHistoryId) => {
+        let url = '',
+          transferAppoints = {
+            '14-1': 'registration-transfer',
+            '15-1': 'registration-transfer',
+            '14-2': 'proposed-transfer',
+            '15-2': 'proposed-appointment',
+          };
+        if(requestTypeId == Constants.INSURANCE_SOCIAL_INFO) {
+            url = `social-contribute/${requestId}/request`;
+        } else if(requestTypeId == Constants.WELFARE_REFUND) {
+            url = `benefit-claim-request`;
+        } else if (requestTypeId == Constants.INSURANCE_SOCIAL) {
+            url = `insurance-manager/detail/${requestId}/request`;
+        } else if (parentRequestHistoryId) {
+          //xu ly mot nguoi
+          url = `salarypropse/${parentRequestHistoryId}/${requestId}/request`;
+        } else {
+          //xu ly nhieu nguoi
+          url = `${[14, 15].includes(requestTypeId) ? transferAppoints[`${requestTypeId}-${formType}`] : 'salaryadjustment'}/${requestId}/request`;
+        }
+        return '/' + url;
+    }
+
+    const getSalaryProposeLink = (requestTypeId, requestId, formType, detailType, parentRequestHistoryId) => {
+        let url = '',
+        transferAppoints = {
+          '14-1': 'registration-transfer',
+          '15-1': 'registration-transfer',
+          '14-2': 'proposed-transfer',
+          '15-2': 'proposed-appointment',
+        };
+        const typeRequest = detailType === "APPROVAL" ? "approval" : "assess"
+        if(requestTypeId == Constants.INSURANCE_SOCIAL_INFO) {
+            url = `social-contribute/${requestId}/${typeRequest}`;
+        } else if(parentRequestHistoryId) {
+            //xu ly mot nguoi
+            url = `salarypropse/${parentRequestHistoryId}/${requestId}/${typeRequest}`
+        } else if (requestTypeId == Constants.INSURANCE_SOCIAL) {
+            url = `insurance-manager/detail/${requestId}/${typeRequest}`;
+        }else {
+            //xu ly nhieu nguoi
+            url = `${[14, 15].includes(requestTypeId) ? transferAppoints[`${requestTypeId}-${formType}`] : 'salaryadjustment'}/${requestId}/${typeRequest}`
+        }
+        console.log('getSalaryProposeLink>>>', url);
+        return '/' + url;
+    }
+
     const renderNoticeUI = () => {
         const getAction = (noticeType, detailType) => {
             return Constants.tabListRequestMapping[detailType]
@@ -149,6 +197,25 @@ function Header(props) {
                 const requestId = item?.subRequestId?.toString().includes('.') ? item?.subRequestId?.toString()?.split('.')?.[0] : item?.subRequestId
                 const subRequestId = item?.subRequestId?.toString().includes('.') ? item?.subRequestId?.toString()?.split('.')?.[1] : 1
                 const qnaDetailType = 'TICKET'
+
+                const requestTypeId = item.requestTypeId; //Loại yêu cầu
+                if (requestTypeId == 6 && item?.type != 15) {
+                    if (item.detailType == 'APPROVAL') {
+                      return `/evaluation/${requestId}/approval`;
+                    } else {
+                      return `/evaluation/${requestId}/assess`
+                    }
+                }
+
+                //[ILVG-1472] mở danh sách yêu cầu khi là thông báo trước 30 phút VinITIS
+                if(requestTypeId == 0 && ['REQUEST', 'APPRAISAL', 'APPROVAL'].includes(item.detailType)) {
+                    if (item?.detailType == 'REQUEST')
+                        return `/tasks${item?.groupId ? `?requestTypes=${getRequestTypesList(item.groupId, false).join(",")}` : ''}`
+                    else if (item?.detailType == 'APPRAISAL')
+                        return `/tasks?tab=consent${item?.groupId ? `&requestTypes=${getRequestTypesList(item.groupId, false).join(",")}` : ''}`
+                    else
+                        return `/tasks?tab=approval${item?.groupId ? `&requestTypes=${getRequestTypesList(item.groupId, false).join(",")}` : ''}`
+                }
 
                 let notificationLink = (type) => {
                     switch (type) {
@@ -165,16 +232,20 @@ function Header(props) {
                             }
                             return `/notifications/${item.id}`
                         case Constants.notificationType.NOTIFICATION_REGISTRATION: 
-                            if([Constants.PROPOSAL_TRANSFER, Constants.PROPOSAL_APPOINTMENT].includes(item.requestTypeId)) {
-                                let subId = item.subRequestId?.includes('.') ? item.subRequestId.split('.')[1] : item.subRequestId;
-                                let suffix = item.detailType == 'APPRAISAL' ? 'assess' : item.detailType == 'APPROVAL' ? 'approval' : 'request';
-                                let urls = {
-                                    '14-1': 'registration-transfer',
-                                    '15-1': 'registration-transfer',
-                                    '14-2': 'proposed-transfer',
-                                    '15-2': 'proposed-appointment',
-                                };
-                                return `/${urls[`${item.requestTypeId}-${item.formType}`]}/${subId}/${suffix}`;
+                            if(item?.detailType == 'REQUEST' && [Constants.SALARY_PROPOSE, 
+                                Constants.PROPOSAL_TRANSFER, 
+                                Constants.PROPOSAL_APPOINTMENT, 
+                                Constants.WELFARE_REFUND, 
+                                Constants.INSURANCE_SOCIAL, 
+                                Constants.INSURANCE_SOCIAL_INFO].includes(requestTypeId)) {
+                                return getSalaryProposeLinkRequest(requestTypeId, requestId, item.formType, item.parentRequestHistoryId)
+                            }
+                            if(item?.detailType != 'REQUEST' && [Constants.SALARY_PROPOSE, 
+                                Constants.PROPOSAL_TRANSFER, 
+                                Constants.PROPOSAL_APPOINTMENT, 
+                                Constants.INSURANCE_SOCIAL, 
+                                Constants.INSURANCE_SOCIAL_INFO].includes(requestTypeId)) {
+                                    return getSalaryProposeLink(requestTypeId, requestId, item.formType, item.detailType, item.parentRequestHistoryId)
                             }
 
                             if (item?.detailType == 'REQUEST')
@@ -188,6 +259,21 @@ function Header(props) {
                         case 6:
                             return '/personal-info?tab=document'
                         case Constants.notificationType.NOTIFICATION_APPROVED:
+                            if(item?.detailType == 'REQUEST' && [Constants.SALARY_PROPOSE, 
+                                Constants.PROPOSAL_TRANSFER, 
+                                Constants.PROPOSAL_APPOINTMENT, 
+                                Constants.WELFARE_REFUND, 
+                                Constants.INSURANCE_SOCIAL, 
+                                Constants.INSURANCE_SOCIAL_INFO].includes(requestTypeId)) {
+                                return getSalaryProposeLinkRequest(requestTypeId, requestId, item.formType, item.parentRequestHistoryId)
+                            }
+                            if(item?.detailType != 'REQUEST' && [Constants.SALARY_PROPOSE, 
+                                Constants.PROPOSAL_TRANSFER, 
+                                Constants.PROPOSAL_APPOINTMENT, 
+                                Constants.INSURANCE_SOCIAL, 
+                                Constants.INSURANCE_SOCIAL_INFO].includes(requestTypeId)) {
+                                    return getSalaryProposeLink(requestTypeId, requestId, item.formType, item.detailType, item.parentRequestHistoryId)
+                            }
                             return `/registration/${requestId}/${subRequestId}/request`
                         case Constants.notificationType.NOTIFICATION_AUTO_JOB:
                             return `/tasks?tab=approval${item.groupId ? `&requestTypes=${getRequestTypesList(item.groupId, false).join(",")}` : ''}`
