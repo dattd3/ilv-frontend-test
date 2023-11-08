@@ -1,0 +1,13 @@
+.git/
+.github/
+node_modules/
+src/
+.eslintignore
+.eslintrc
+.gitignore
+.npmignore
+.prettierrc
+package-lock.json
+rollup.config.js
+tsconfig.json
+video.gif
