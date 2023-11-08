@@ -3,6 +3,7 @@
   "version": "0.2.0",
   "private": true,
   "dependencies": {
+    "@cuongnv56/react-pageflip": "file:./lib/react-pageflip",
     "@material-ui/core": "^4.12.3",
     "@types/jest": "^29.5.3",
     "@types/node": "^20.4.9",
@@ -43,6 +44,7 @@
     "react-moment": "^0.9.7",
     "react-overlays": "^5.2.1",
     "react-paginate": "^6.3.2",
+    "react-prismazoom": "^3.3.5",
     "react-rating": "^2.0.5",
     "react-redux": "^7.2.1",
     "react-responsive-masonry": "^2.1.7",

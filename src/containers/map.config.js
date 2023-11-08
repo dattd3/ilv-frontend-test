@@ -135,6 +135,7 @@ const MapConfig = {
   ExportInsuranceSocial: '/insurance-manager/export/:id',
   DetailInsuranceHealth: '/insurance-manager/detail-health/:id',
   SalaryPropse: '/salarypropse/:idContract/:idSalary/:type',
+
   Maintenance: '/maintenance',
   
   // Thanh toán phúc lợi nội bộ
@@ -143,6 +144,7 @@ const MapConfig = {
   // Vingroup culture
   HistoryVingroup: "/vingroup-history",
   Vin30Chronicles: "/vin30-chronicles",
+  HistoryVinGroupMobile: "/vin30-chronicles-mobile",
   VingroupCulture: "/vingroup-culture",
   SixCoreValues: "/6-core-values",
   SixGovernancePrinciples: "/6-governance-principles",
