@@ -1793,7 +1793,8 @@ export const IncomeTablesConfig = t => {
                                     { label: t("NetKpiBonus"), field: 'kpi_bonus_net', isSplit: true },
                                     { label: t("KpiGrossBonus"), field: 'kpi_grossup_bonus' },
                                     { label: t("OtherNetBonus"), field: 'other_net_bonus', isSplit: true },
-                                    { label: t("GrossOtherBonus"), field: 'other_gross_bonus' }
+                                    { label: t("GrossOtherBonus"), field: 'other_gross_bonus' },
+                                    { label: t("ReferralBonusGrossup"), field: 'reference_gross_bonus' }
                                 ]
                             },
                             {

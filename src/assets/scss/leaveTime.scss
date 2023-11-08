@@ -147,6 +147,24 @@
             }
         }
     }
+    .view-detail-block {
+        margin-top: 15px;
+        .view-detail {
+            outline: none;
+            border: 1px solid #DEE2E6;
+            color: #C11D2A;
+            border-radius: 4px;
+            padding: 0 30px;
+            height: 40px;
+            font-size: inherit;
+            background: #FFFFFF;
+            img {
+                margin-left: 10px;
+                height: 11px;
+                margin-top: -2px;
+            }
+        }
+    }
 }
 
 .leave-time-card {
