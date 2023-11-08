@@ -10,6 +10,7 @@ import { getCurrentLanguage } from "commons/Utils";
 const CATEGORY_CODES = {
   PRESIDENT_QUOTES: "2.1",
   OVERVIEW_CULTURE: "2.2",
+  INTERNAL_NEWS: "2.3"
 };
 
 function VingroupCulture(props) {
@@ -19,7 +20,7 @@ function VingroupCulture(props) {
   useEffect(() => {
     const url = `${
       process.env.REACT_APP_REQUEST_URL
-    }api/vanhoavin/list?language=${getCurrentLanguage()}&categoryCode=2.1,2.2`;
+    }api/vanhoavin/list?language=${getCurrentLanguage()}&categoryCode=2.1,2.2,2.3`;
     axios.get(url, getRequestConfigs()).then((response) => {
       const respData = response.data?.data;
       if (respData.length > 0) {
@@ -32,6 +33,11 @@ function VingroupCulture(props) {
           [CATEGORY_CODES.OVERVIEW_CULTURE]: respData
             ?.filter(
               (item) => item.categoryCode === CATEGORY_CODES.OVERVIEW_CULTURE
+            )
+            ?.map((item) => item.fileType),
+          [CATEGORY_CODES.INTERNAL_NEWS]: respData
+            ?.filter(
+              (item) => item.categoryCode === CATEGORY_CODES.INTERNAL_NEWS
             )
             ?.map((item) => item.fileType),
         });
@@ -69,6 +75,21 @@ function VingroupCulture(props) {
                 parentLink="vingroup-culture"
                 availableTypes={availableTypes}
                 cateCode={CATEGORY_CODES.OVERVIEW_CULTURE}
+              />
+            }
+          </div>
+        </div>
+        <div className="content-item">
+          <div className="title-container">
+            <img src={IconDocument} alt="" />
+            &nbsp;&nbsp;{t("InternalNews")}
+          </div>
+          <div className="btn-group">
+            {
+              <ButtonAction
+                parentLink="vingroup-culture"
+                availableTypes={availableTypes}
+                cateCode={CATEGORY_CODES.INTERNAL_NEWS}
               />
             }
           </div>

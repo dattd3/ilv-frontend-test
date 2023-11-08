@@ -4,6 +4,7 @@ const MapConfig = {
   Login: "/login",
   Auth: "/auth",
   TermPolicy: "/policy",
+  GuestNews: "/guest-news/:id",
 
   // Training
   Roadmap: "/training-roadmap",
@@ -134,6 +135,7 @@ const MapConfig = {
   ExportInsuranceSocial: '/insurance-manager/export/:id',
   DetailInsuranceHealth: '/insurance-manager/detail-health/:id',
   SalaryPropse: '/salarypropse/:idContract/:idSalary/:type',
+
   Maintenance: '/maintenance',
   
   // Thanh toán phúc lợi nội bộ
@@ -142,6 +144,7 @@ const MapConfig = {
   // Vingroup culture
   HistoryVingroup: "/vingroup-history",
   Vin30Chronicles: "/vin30-chronicles",
+  HistoryVinGroupMobile: "/vin30-chronicles-mobile",
   VingroupCulture: "/vingroup-culture",
   SixCoreValues: "/6-core-values",
   SixGovernancePrinciples: "/6-governance-principles",
@@ -151,6 +154,13 @@ const MapConfig = {
   SixCoreValuesGallery: "/6-core-values/gallery/:code",
   SixGovernancePrinciplesGallery: "/6-governance-principles/gallery/:code",
   WorkingEnvironmentGallery: "/working-environment/gallery/:code",
+
+  // Internal news
+  InternalNewsList: "/internal-news",
+  InternalNewsDetail: "/internal-news/detail/:id",
+  CreateSocialDistributeInfo: "/insurance-manager/social-contribute-info",
+  //thông tin đóng BHXH
+  SocialContributeDetail: "/social-contribute/:id/:type"
 };
 
 export default MapConfig;
