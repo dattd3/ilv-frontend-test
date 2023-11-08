@@ -34,7 +34,7 @@ const removeAccents = value => {
 }
 
 const formatStringByMuleValue = value => {
-    return (value === null || value === undefined || value === "" || value === "#" || value === "null") ? "" : value.trim()
+    return (value === null || value === undefined || value === "" || value === "#" || value === "null") ? "" : value?.toString().trim()
 }
 
 const formatStringDateTimeByMuleValue = value => {
@@ -673,10 +673,10 @@ const formatInternalNewsData = (data = [], currentLang = "vi") => {
 const formatInternalNewsDataItem = (item, currentLang = "vi") => {
   return {
     ...item,
-    thumbnail: currentLang === "vi" ? item.thumbnailVi : (item.thumbnailEn || item.thumbnailVi),
-    title: currentLang === "vi" ? item.titleVi : (item.titleEn || item.titleVi),
-    description: currentLang === "vi" ? item.descriptionVi : (item.descriptionEn || item.descriptionVi),
-    content: currentLang === "vi" ? item.contentVi : (item.contentEn || item.contentVi),
+    thumbnail: currentLang === "vi" ? item.thumbnailVi : item.thumbnailEn,
+    title: currentLang === "vi" ? item.titleVi : item.titleEn,
+    description: currentLang === "vi" ? item.descriptionVi : item.descriptionEn,
+    content: currentLang === "vi" ? item.contentVi : item.contentEn,
   }
 }
 
