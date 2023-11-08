@@ -35,7 +35,7 @@ const batchApprovalTabCode = 'batchApproval'
 
 function AdvancedFilter(props) {
     const { t } = useTranslation()
-    const { masterData, filter, updateData, tab } = props
+    const { masterData, filter, updateData, tab, isDisabled } = props
 
     const currentSteps = [
         { value: evaluation360Status.waitingEvaluation, label: t("WaitingForFeedback360") },
@@ -62,7 +62,8 @@ function AdvancedFilter(props) {
                                         isClearable={true} 
                                         value={filter.block} 
                                         options={masterData.blocks} 
-                                        onChange={e => handleInputChange('block', e, 'regions')} />
+                                        onChange={e => handleInputChange('block', e, 'regions')} 
+                                        isDisabled={isDisabled} />
                                 </Col>
                             </Form.Group>
                         </Col>
@@ -75,7 +76,8 @@ function AdvancedFilter(props) {
                                         isClearable={true} 
                                         value={filter.region} 
                                         options={filter.regions} 
-                                        onChange={e => handleInputChange('region', e, 'units')} />
+                                        onChange={e => handleInputChange('region', e, 'units')} 
+                                        isDisabled={isDisabled} />
                                 </Col>
                             </Form.Group>
                         </Col>
@@ -90,7 +92,8 @@ function AdvancedFilter(props) {
                                         isClearable={true} 
                                         value={filter.unit} 
                                         options={filter.units} 
-                                        onChange={e => handleInputChange('unit', e, 'groups')} />
+                                        onChange={e => handleInputChange('unit', e, 'groups')} 
+                                        isDisabled={isDisabled} />
                                 </Col>
                             </Form.Group>
                         </Col>
@@ -104,7 +107,8 @@ function AdvancedFilter(props) {
                                         isMulti 
                                         value={filter.group} 
                                         options={filter.groups} 
-                                        onChange={e => handleInputChange('group', e)} />
+                                        onChange={e => handleInputChange('group', e)} 
+                                        isDisabled={isDisabled} />
                                 </Col>
                             </Form.Group>
                         </Col>
@@ -205,7 +209,8 @@ function AdvancedFilter(props) {
                                 isClearable={true} 
                                 value={filter.rank} 
                                 options={masterData?.ranks} 
-                                onChange={e => handleInputChange('rank', e)} />
+                                onChange={e => handleInputChange('rank', e)} 
+                                isDisabled={isDisabled} />
                         </Col>
                     </Form.Group>
                 </Col>
@@ -218,7 +223,8 @@ function AdvancedFilter(props) {
                                 isClearable={true} 
                                 value={filter.title} 
                                 options={masterData?.titles} 
-                                onChange={e => handleInputChange('title', e)} />
+                                onChange={e => handleInputChange('title', e)} 
+                                isDisabled={isDisabled} />
                         </Col>
                     </Form.Group>
                 </Col>
@@ -234,7 +240,8 @@ function AdvancedFilter(props) {
                                     showMonthDropdown={true}
                                     showYearDropdown={true}
                                     locale="vi"
-                                    className="form-control input" />
+                                    className="form-control input" 
+                                    disabled={isDisabled} />
                                 <span className="input-img"><img src={IconDatePicker} alt="Date" /></span>
                             </label>
                         </Col>
@@ -253,7 +260,8 @@ function AdvancedFilter(props) {
                                     showMonthDropdown={true}
                                     showYearDropdown={true}
                                     locale="vi"
-                                    className="form-control input" />
+                                    className="form-control input" 
+                                    disabled={isDisabled} />
                                 <span className="input-img"><img src={IconDatePicker} alt="Date" /></span>
                             </label>
                         </Col>
@@ -455,7 +463,7 @@ function BatchApprovalTabContent(props) {
                 const result = response.data.result
                 if (result?.code == Constants.PMS_API_SUCCESS_CODE) {
                     const data = (response?.data?.data || []).map(item => {
-                        return {value: item?.id, label: item?.name}
+                        return {value: item?.id, label: item?.name, reviewStreamCode: item?.reviewStreamCode}
                     })
                     SetFilter({
                         ...filter,
@@ -589,7 +597,7 @@ function BatchApprovalTabContent(props) {
                         <Form.Group as={Row} controlId="employee">
                             <Form.Label column sm={12}>{t("EvaluationSearchForEmployees")}</Form.Label>
                             <Col sm={12}>
-                                <SearchUser updateUser={updateUser} />
+                                <SearchUser isDisabled={filter?.evaluationForm?.reviewStreamCode === processStep.level360} updateUser={updateUser} />
                             </Col>
                         </Form.Group>
                     </Col>
@@ -612,7 +620,8 @@ function BatchApprovalTabContent(props) {
                             tab={batchApprovalTabCode}
                             masterData={{blocks: masterData.blocks, ranks: masterData.ranks, titles: masterData.titles}} 
                             filter={_.omit({...filter}, 'isOpenFilterAdvanced', 'status', 'employees', 'employee')} 
-                            updateData={updateData} />
+                            updateData={updateData}
+                            isDisabled={filter?.evaluationForm?.reviewStreamCode === processStep.level360} />
                     </div>
                 </Collapse>
                 <Row>
@@ -887,7 +896,7 @@ function EvaluationApproval(props) {
             formData.append('ApproveEmployeeCode', employeeCode || '')
             formData.append('ApproveEmployeeAdCode', employeeAD || '')
             formData.append('CheckPhaseFormId', data?.evaluationForm?.value || null)
-            apiPath = `${process.env.REACT_APP_HRDX_PMS_URL}api/form/listApprove`
+            apiPath = data?.evaluationForm?.reviewStreamCode === processStep.level360 ? `${process.env.REACT_APP_HRDX_PMS_URL}api/v1/targetform/batch-360-list` : `${process.env.REACT_APP_HRDX_PMS_URL}api/form/listApprove`
         }
         formData.append('CurrentStep', data?.currentStep?.value || 0)
         SetDataFilter(data)
@@ -899,7 +908,17 @@ function EvaluationApproval(props) {
         }
 
         try {
-            const response = await axios.post(apiPath, formData, config)
+            let response
+            if (data?.evaluationForm?.reviewStreamCode === processStep.level360) {
+                delete config.headers['content-type']
+                config.params = {
+                    CheckPhaseFormId: data?.evaluationForm?.value || null,
+                }
+                response = await axios.get(apiPath, config)
+            } else {
+                response = await axios.post(apiPath, formData, config)
+            }
+
             if (response && response?.data) {
                 const result = response?.data?.result
                 if (result?.code == Constants.PMS_API_SUCCESS_CODE) {
@@ -1183,99 +1202,101 @@ function EvaluationApproval(props) {
                     </div>
                 }
                 {
-                    activeTab === batchApprovalTabCode &&
-                    // <div className="card shadow batch-approval-data">
-                    // {
-                    //     evaluationData?.data?.length > 0 ?
-                    //     <>
-                    //     <div className="wrap-table-list-evaluation">
-                    //         <div className="select-item-block">
-                    //             <input type="checkbox" checked={isSelectedAll} id="check-all" name="check-all" onChange={(e) => handleCheckboxChange(e, null)} />
-                    //             <label htmlFor="check-all">{t("EvaluationSelectAll")}</label>
-                    //         </div>
-                    //         <table className='table-list-evaluation'>
-                    //             <thead>
-                    //                 <tr>
-                    //                     <th className="c-user-info" colSpan="2"></th>
-                    //                     {
-                    //                         (evaluationData?.data[0]?.listGroup || []).map((item, index) => {
-                    //                             let groupName = isJsonString(item?.groupName) ? (JSON.parse(item?.groupName)?.[lang] || JSON.parse(item?.groupName)?.['vi']) : item?.groupName
-                    //                             return (
-                    //                                 <th key={`n1-${index}`} className="text-center text-uppercase" colSpan="2">{ groupName }</th>
-                    //                             )
-                    //                         })
-                    //                     }
-                    //                     <th className="text-center text-uppercase highlight-third c-summary" colSpan="2">{t("EvaluationSummary")}</th>
-                    //                 </tr>
-                    //                 <tr>
-                    //                     <th className="c-user-info" colSpan="2"><div className="user-info">{t("EvaluationEmployeeFullName")}</div></th>
-                    //                     {
-                    //                         (evaluationData?.data[0]?.listGroup || []).map((item, index) => {
-                    //                             return (
-                    //                                 <Fragment key={`n2-${index}`}>
-                    //                                     <th className="c-self-assessment"><div className="text-center self-assessment">{t("EvaluationSelfAssessment")}</div></th>
-                    //                                     <th className="highlight-first c-cbql-assessment"><div className="text-center cbql-assessment">{t("EvaluationDetailManagerAssessment")}</div></th>
-                    //                                 </Fragment>
-                    //                             )
-                    //                         })
-                    //                     }
-                    //                     <th className="highlight-second c-self-assessment"><div className="text-center self-assessment">{t("EvaluationSelfAssessment")}</div></th>
-                    //                     <th className="highlight-third c-cbql-assessment"><div className="text-center cbql-assessment">{t("EvaluationDetailManagerAssessment")}</div></th>
-                    //                 </tr>
-                    //             </thead>
-                    //             <tbody>
-                    //                 {
-                    //                     evaluationData?.data.map((item, i) => {
-                    //                         // let attitudeData = item?.listGroup?.filter(item => item.groupTargetCode == 'G1')?.length > 0 ? item?.listGroup?.filter(item => item.groupTargetCode == 'G1')[0] : null
-                    //                         // let workResultData = item?.listGroup?.filter(item => item.groupTargetCode == 'G2')?.length > 0 ? item?.listGroup?.filter(item => item.groupTargetCode == 'G2')[0] : null
-                    //                         return (
-                    //                             <Fragment key={`r- ${i}`}>
-                    //                                 <tr className="divider"></tr>
-                    //                                 <tr>
-                    //                                     <td className="c-check"><div className="check"><input type="checkbox" checked={item?.isSelected || false} onChange={(e) => handleCheckboxChange(e, i)} /></div></td>
-                    //                                     <td className="c-full-name"><div className="full-name">{item?.fullName || ''} ({item?.username || ''})</div></td>
-                    //                                     {
-                    //                                         (item?.listGroup || []).map((sub, subIndex) => {
-                    //                                             return (
-                    //                                                 <Fragment key={`rc-${subIndex}`}>
-                    //                                                     <td className="text-center c-self-assessment">{sub?.seftPoint?.toFixed(2) || 0}</td>
-                    //                                                     <td className="text-center highlight-first c-cbql-assessment">{sub?.leadReviewPoint?.toFixed(2) || 0}</td>
-                    //                                                 </Fragment>
-                    //                                             )
-                    //                                         })
-                    //                                     }
-                    //                                     <td className="text-center highlight-second c-self-assessment">{item?.totalSeftPoint?.toFixed(2) || 0}</td>
-                    //                                     <td className="text-center highlight-third c-cbql-assessment">{item?.totalLeadReviewPoint?.toFixed(2) || 0}</td>
-                    //                                 </tr>
-                    //                             </Fragment>
-                    //                         )
-                    //                     })
-                    //                 }
-                    //             </tbody>
-                    //         </table>
-                    //     </div>
-                    //     <div className="bottom-region">
-                    //         <div className="customize-display">
-                    //             <label>{t("EvaluationShow")}</label>
-                    //             <select value={paging.batchApproval.pageSize || listPageSizes[0]} onChange={(e) => handleChangePageSize('batchApproval', e?.target?.value)}>
-                    //                 {
-                    //                     listPageSizes.map((page, i) => {
-                    //                         return <option value={page} key={i}>{page}</option>
-                    //                     })
-                    //                 }
-                    //             </select>
-                    //         </div>
-                    //         <div className="paging-block">
-                    //             <CustomPaging pageSize={parseInt(paging.batchApproval.pageSize)} onChangePage={(page) => handleChangePage('batchApproval', page)} totalRecords={evaluationData?.total} needRefresh={refresh} />
-                    //         </div>
-                    //     </div>
-                    //     </>
-                    //     : <h6 className="alert alert-danger not-found-data" role="alert">{t("NoDataFound")}</h6>
-                    // }
-                    // </div>
-                    (
-                        <BatchEvaluation360 />
-                    )
+                    activeTab === batchApprovalTabCode && dataFilter?.evaluationForm?.reviewStreamCode !== processStep.level360 &&
+                    <div className="card shadow batch-approval-data">
+                    {
+                        evaluationData?.data?.length > 0 ?
+                        <>
+                        <div className="wrap-table-list-evaluation">
+                            <div className="select-item-block">
+                                <input type="checkbox" checked={isSelectedAll} id="check-all" name="check-all" onChange={(e) => handleCheckboxChange(e, null)} />
+                                <label htmlFor="check-all">{t("EvaluationSelectAll")}</label>
+                            </div>
+                            <div className="wrap-table">
+                                <table className='table-list-evaluation'>
+                                    <thead>
+                                        <tr>
+                                            <th className="c-user-info" colSpan="2"></th>
+                                            {
+                                                (evaluationData?.data[0]?.listGroup || []).map((item, index) => {
+                                                    let groupName = isJsonString(item?.groupName) ? (JSON.parse(item?.groupName)?.[lang] || JSON.parse(item?.groupName)?.['vi']) : item?.groupName
+                                                    return (
+                                                        <th key={`n1-${index}`} className="text-center text-uppercase" colSpan="2">{ groupName }</th>
+                                                    )
+                                                })
+                                            }
+                                            <th className="text-center text-uppercase highlight-third c-summary" colSpan="2">{t("EvaluationSummary")}</th>
+                                        </tr>
+                                        <tr>
+                                            <th className="c-user-info" colSpan="2"><div className="user-info">{t("EvaluationEmployeeFullName")}</div></th>
+                                            {
+                                                (evaluationData?.data[0]?.listGroup || []).map((item, index) => {
+                                                    return (
+                                                        <Fragment key={`n2-${index}`}>
+                                                            <th className="c-self-assessment"><div className="text-center self-assessment">{t("EvaluationSelfAssessment")}</div></th>
+                                                            <th className="highlight-first c-cbql-assessment"><div className="text-center cbql-assessment">{t("EvaluationDetailManagerAssessment")}</div></th>
+                                                        </Fragment>
+                                                    )
+                                                })
+                                            }
+                                            <th className="highlight-second c-self-assessment"><div className="text-center self-assessment">{t("EvaluationSelfAssessment")}</div></th>
+                                            <th className="highlight-third c-cbql-assessment"><div className="text-center cbql-assessment">{t("EvaluationDetailManagerAssessment")}</div></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {
+                                            evaluationData?.data.map((item, i) => {
+                                                // let attitudeData = item?.listGroup?.filter(item => item.groupTargetCode == 'G1')?.length > 0 ? item?.listGroup?.filter(item => item.groupTargetCode == 'G1')[0] : null
+                                                // let workResultData = item?.listGroup?.filter(item => item.groupTargetCode == 'G2')?.length > 0 ? item?.listGroup?.filter(item => item.groupTargetCode == 'G2')[0] : null
+                                                return (
+                                                    <Fragment key={`r- ${i}`}>
+                                                        <tr className="divider"></tr>
+                                                        <tr>
+                                                            <td className="c-check"><div className="check"><input type="checkbox" checked={item?.isSelected || false} onChange={(e) => handleCheckboxChange(e, i)} /></div></td>
+                                                            <td className="c-full-name"><div className="full-name">{item?.fullName || ''} ({item?.username || ''})</div></td>
+                                                            {
+                                                                (item?.listGroup || []).map((sub, subIndex) => {
+                                                                    return (
+                                                                        <Fragment key={`rc-${subIndex}`}>
+                                                                            <td className="text-center c-self-assessment">{sub?.seftPoint?.toFixed(2) || 0}</td>
+                                                                            <td className="text-center highlight-first c-cbql-assessment">{sub?.leadReviewPoint?.toFixed(2) || 0}</td>
+                                                                        </Fragment>
+                                                                    )
+                                                                })
+                                                            }
+                                                            <td className="text-center highlight-second c-self-assessment">{item?.totalSeftPoint?.toFixed(2) || 0}</td>
+                                                            <td className="text-center highlight-third c-cbql-assessment">{item?.totalLeadReviewPoint?.toFixed(2) || 0}</td>
+                                                        </tr>
+                                                    </Fragment>
+                                                )
+                                            })
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div className="bottom-region">
+                            <div className="customize-display">
+                                <label>{t("EvaluationShow")}</label>
+                                <select value={paging.batchApproval.pageSize || listPageSizes[0]} onChange={(e) => handleChangePageSize('batchApproval', e?.target?.value)}>
+                                    {
+                                        listPageSizes.map((page, i) => {
+                                            return <option value={page} key={i}>{page}</option>
+                                        })
+                                    }
+                                </select>
+                            </div>
+                            <div className="paging-block">
+                                <CustomPaging pageSize={parseInt(paging.batchApproval.pageSize)} onChangePage={(page) => handleChangePage('batchApproval', page)} totalRecords={evaluationData?.total} needRefresh={refresh} />
+                            </div>
+                        </div>
+                        </>
+                        : <h6 className="alert alert-danger not-found-data" role="alert">{t("NoDataFound")}</h6>
+                    }
+                    </div>
+                }
+                {
+                    activeTab === batchApprovalTabCode && dataFilter?.evaluationForm?.reviewStreamCode === processStep.level360 && (<BatchEvaluation360 />)
                 }
                 {
                     activeTab === batchApprovalTabCode && evaluationData?.data?.length > 0 && 
