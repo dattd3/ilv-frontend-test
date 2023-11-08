@@ -70,7 +70,13 @@ const SocialInfoDetailInfo = (props: any) => {
   }
 
   const prepareDetailData = (requestInfo: any) => {
-    setData({});
+    const extractRequestInfo = JSON.parse(requestInfo.requestInfo) || {};
+    setData({
+      type: {
+        value: extractRequestInfo.typeId,
+        label: extractRequestInfo.typeName
+      }
+    });
 
     //appraiser
     const requestAppraisers = requestInfo?.requestAppraisers;

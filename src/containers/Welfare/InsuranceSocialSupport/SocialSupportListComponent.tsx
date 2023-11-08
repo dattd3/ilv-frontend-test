@@ -22,8 +22,7 @@ const SocialSupportListComponent = ({t}: any) =>{
 
     const fetchData = (page: number, size: number) => {
         const config = getRequestConfigurations()
-
-        axios.get(`${process.env.REACT_APP_REQUEST_SERVICE_URL}benefitClaim/list?pageIndex=${page}&pageSize=${size}`, config)
+        axios.get(`${process.env.REACT_APP_REQUEST_SERVICE_URL}insurancesupport/list?pageIndex=${page}&pageSize=${size}`, config)
             .then(res => {
                 if (res && res.data && res.data.data) {
                     setListData(res.data.data?.requests || []);
@@ -52,10 +51,10 @@ const SocialSupportListComponent = ({t}: any) =>{
                         <thead>
                             <tr>
                                 <th scope="col" className="code text-center" style={{width: '102px'}}>{t('RequestNo')}</th>
-                                <th scope="col" className="request-type text-center">{t('TypeOfRequest')}</th>
+                                <th scope="col" className="status text-center">{t('TypeOfRequest')}</th>
                                 <th scope="col" className="request-type text-center">{t('userSentRequestDate')}</th>
                                 <th scope="col" className="request-type text-center">{t('AppovalStatus')}</th>
-                                <th scope="col" className="status1 text-center">{t('ReasonHRReject')}</th>
+                                <th scope="col" className="status text-center">{t('ReasonHRReject')}</th>
                                 <th scope="col" className="request-type text-center">{t('EvaluationStatus')}</th>
                                 <th scope="col" className="tool text-center">{t("action")}</th>
                             </tr>
@@ -67,10 +66,10 @@ const SocialSupportListComponent = ({t}: any) =>{
                                     return (
                                         <tr key={index}>
                                             <td className="code text-center">{child.idDisplay}</td>
-                                            <td className="request-type text-center">{child.claimTypeName || ''}</td>
+                                            <td className="status text-center" title={child.typeName}>{child.typeName || ''}</td>
                                             <td className="request-type text-center">{child.createdDate ? moment(child.createdDate).format('DD/MM/YYYY') : ''}</td>
-                                            <td className="request-type text-center">{child.statusName || ''}</td>
-                                            <td className="status1 text-center">{'Thiếu thông tin hồ sơ'}</td>
+                                            <td className="request-type text-center">{t(Constants.mappingStatusRequest[child.processStatusId]?.label || '')}</td>
+                                            <td className="status text-center">{'Thiếu thông tin hồ sơ'}</td>
                                             <td className="request-type text-center">{child.statusName || ''}</td>
                                             <td className="tool">
                                                 <a href={`/insurance-manager/export/${child.idDisplay}`}><img alt="Sửa" src={Download} className="icon-download" /></a>
