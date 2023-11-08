@@ -479,10 +479,10 @@ export default function MyBook(props) {
   let isWheeling, flipTimeOut;
 
   useEffect(() => {
-    const timeOut = setTimeout(() => setIsLoading(false), 400);
+    const timeOut = setTimeout(() => setIsLoading(false), 1000);
     const onFullscreenChange = () => setIsFullScreen(Boolean(document.fullscreenElement));
 
-    pageRef.current.scrollIntoView({ behavior: 'instant' }, 0);
+    pageRef?.current?.scrollIntoView({ behavior: 'instant' }, 0);
     document.addEventListener('fullscreenchange', onFullscreenChange);
     wrapBookRef?.current?.addEventListener('wheel', onWheel, { passive: false });
 
@@ -496,7 +496,7 @@ export default function MyBook(props) {
   useEffect(() => {
     const timeOut = setTimeout(() => {
       if (!isFullScreen) {
-        pageRef.current.scrollIntoView({ behavior: 'smooth' }, 0);
+        pageRef?.current?.scrollIntoView({ behavior: 'smooth' }, 0);
       }
     }, 100);
 
@@ -752,7 +752,6 @@ export default function MyBook(props) {
         handleChangePage={handleChangePage}
         onHide={onHideThumbnailModal} 
       />
-
       <div
         className={`history-vingroup-page ${isMobile ? 'mobile' : ''}`}
         id="history-vingroup-page"

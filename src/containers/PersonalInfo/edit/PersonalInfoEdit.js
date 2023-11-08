@@ -860,9 +860,9 @@ class PersonalInfoEdit extends React.Component {
             obj.anssa = "1";
             obj.land1 = newMainInfo.Country ? newMainInfo.Country : userDetail.country_id;
             obj.state = newMainInfo.Province ? newMainInfo.Province : userDetail.province_id;
-            obj.zdistrict_id = newMainInfo.District ? newMainInfo.District : userDetail.district_id;
-            obj.zwards_id = newMainInfo.Wards ? newMainInfo.Wards : userDetail.ward_id;
-            obj.stras = (newMainInfo.Country && newMainInfo.Province && newMainInfo.District && newMainInfo.Wards) ? this.resetValueInValid(newMainInfo.StreetName) : userDetail.street_name;
+            obj.zdistrict_id = obj.land1 !== 'VN' ? '' : newMainInfo.District ? formatStringByMuleValue(newMainInfo.District) : formatStringByMuleValue(userDetail.district_id);
+            obj.zwards_id = obj.land1 !== 'VN' ? '' : newMainInfo.Wards ? formatStringByMuleValue(newMainInfo.Wards) : formatStringByMuleValue(userDetail.ward_id);
+            obj.stras = (newMainInfo.Country && newMainInfo.Province && newMainInfo.District && newMainInfo.Wards) ? this.resetValueInValid(newMainInfo.StreetName) : (userDetail.street_name || '');
             listObj = [...listObj, obj];
           }
           if (newMainInfo.TempDistrict || newMainInfo.TempProvince || newMainInfo.TempWards || newMainInfo.TempStreetName || newMainInfo.TempCountry) {
@@ -871,9 +871,9 @@ class PersonalInfoEdit extends React.Component {
             obj2.anssa = "2";
             obj2.land1 = newMainInfo.TempCountry ? newMainInfo.TempCountry : userDetail.tmp_country_id;
             obj2.state = newMainInfo.TempProvince ? newMainInfo.TempProvince : userDetail.tmp_province_id;
-            obj2.zdistrict_id = newMainInfo.TempDistrict ? newMainInfo.TempDistrict : userDetail.tmp_district_id;
-            obj2.zwards_id = newMainInfo.TempWards ? newMainInfo.TempWards : userDetail.tmp_ward_id;
-            obj2.stras = (newMainInfo.TempCountry && newMainInfo.TempProvince && newMainInfo.TempDistrict && newMainInfo.TempWards) ? this.resetValueInValid(newMainInfo.TempStreetName) : userDetail.tmp_street_name;
+            obj2.zdistrict_id = obj2.land1 !== 'VN' ? '' : newMainInfo.TempDistrict ? formatStringByMuleValue(newMainInfo.TempDistrict) : formatStringByMuleValue(userDetail.tmp_district_id);
+            obj2.zwards_id = obj2.land1 !== 'VN' ? '' : newMainInfo.TempWards ? formatStringByMuleValue(newMainInfo.TempWards) : formatStringByMuleValue(userDetail.tmp_ward_id);
+            obj2.stras = (newMainInfo.TempCountry && newMainInfo.TempProvince && newMainInfo.TempDistrict && newMainInfo.TempWards) ? this.resetValueInValid(newMainInfo.TempStreetName) : (userDetail.tmp_street_name || '');
             listObj = [...listObj, obj2];
           }
           if (listObj.length > 0) {
