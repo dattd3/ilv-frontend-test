@@ -189,9 +189,7 @@ class LeaveOfAbsenceDetailComponent extends React.Component {
         }
         break;
       case 12:
-        if(this.checkSameVinfast()){
           shouldDisable = true;
-        }
         break;
       case 13: 
         if((this.state.type != 'approval') || (!data.nguoipheduyet || !data.nguoipheduyet.account || (data.nguoipheduyet.account.toLowerCase()  + '@vingroup.net') != currentEmployeeNo.toLowerCase())){
@@ -1137,8 +1135,8 @@ renderEvalution = (name, data, isDisable) => {
         {
            !isDisable && item.canEdit ? 
           <div className="action-group">
-            <Image src={IconEdit} alt="Hủy" className="ic-action ic-reset" onClick={() => this.changeEditingStatus(name, 'isEditing', item.id)} />
-            <Image src={IconRemove} alt="Hủy" className="ic-action ic-reset" onClick={() => this.changeEditingStatus(name, 'isDeleted', item.id)} />
+            <Image src={IconEdit} alt="Hủy" className="ic-action ic-reset" style={{cursor: 'pointer'}} onClick={() => this.changeEditingStatus(name, 'isEditing', item.id)} />
+            <Image src={IconRemove} alt="Hủy" className="ic-action ic-reset" style={{cursor: 'pointer'}} onClick={() => this.changeEditingStatus(name, 'isDeleted', item.id)} />
           </div> : null
         }
         
