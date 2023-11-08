@@ -197,27 +197,27 @@ function Header(props) {
                 const requestId = item?.subRequestId?.toString().includes('.') ? item?.subRequestId?.toString()?.split('.')?.[0] : item?.subRequestId
                 const subRequestId = item?.subRequestId?.toString().includes('.') ? item?.subRequestId?.toString()?.split('.')?.[1] : 1
                 const qnaDetailType = 'TICKET'
-
                 const requestTypeId = item.requestTypeId; //Loại yêu cầu
-                if (requestTypeId == 6 && item?.type != 15) {
-                    if (item.detailType == 'APPROVAL') {
-                      return `/evaluation/${requestId}/approval`;
-                    } else {
-                      return `/evaluation/${requestId}/assess`
-                    }
-                }
-
-                //[ILVG-1472] mở danh sách yêu cầu khi là thông báo trước 30 phút VinITIS
-                if(requestTypeId == 0 && ['REQUEST', 'APPRAISAL', 'APPROVAL'].includes(item.detailType)) {
-                    if (item?.detailType == 'REQUEST')
-                        return `/tasks${item?.groupId ? `?requestTypes=${getRequestTypesList(item.groupId, false).join(",")}` : ''}`
-                    else if (item?.detailType == 'APPRAISAL')
-                        return `/tasks?tab=consent${item?.groupId ? `&requestTypes=${getRequestTypesList(item.groupId, false).join(",")}` : ''}`
-                    else
-                        return `/tasks?tab=approval${item?.groupId ? `&requestTypes=${getRequestTypesList(item.groupId, false).join(",")}` : ''}`
-                }
 
                 let notificationLink = (type) => {
+                    if (requestTypeId == 6 && item?.type != 15) {
+                        if (item.detailType == 'APPROVAL') {
+                          return `/evaluation/${requestId}/approval`;
+                        } else {
+                          return `/evaluation/${requestId}/assess`
+                        }
+                    }
+    
+                    //[ILVG-1472] mở danh sách yêu cầu khi là thông báo trước 30 phút VinITIS
+                    if(requestTypeId == 0 && ['REQUEST', 'APPRAISAL', 'APPROVAL'].includes(item.detailType)) {
+                        if (item?.detailType == 'REQUEST')
+                            return `/tasks${item?.groupId ? `?requestTypes=${getRequestTypesList(item.groupId, false).join(",")}` : ''}`
+                        else if (item?.detailType == 'APPRAISAL')
+                            return `/tasks?tab=consent${item?.groupId ? `&requestTypes=${getRequestTypesList(item.groupId, false).join(",")}` : ''}`
+                        else
+                            return `/tasks?tab=approval${item?.groupId ? `&requestTypes=${getRequestTypesList(item.groupId, false).join(",")}` : ''}`
+                    }
+
                     switch (type) {
                         case Constants.notificationType.NOTIFICATION_DEFAULT:
                         case 12:
