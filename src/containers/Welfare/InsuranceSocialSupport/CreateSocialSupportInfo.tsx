@@ -23,6 +23,7 @@ interface ICreateSocialSupportInfoProps {
   onSubmit: Function;
   notifyMessage: Function;
   lastModified?: any;
+  templates: any
 };
 
 const CreateSocialSupportInfo: FC<ICreateSocialSupportInfoProps> = ({
@@ -40,7 +41,8 @@ const CreateSocialSupportInfo: FC<ICreateSocialSupportInfoProps> = ({
   setMembers=()=>{},
   isCreateMode = true,
   onSubmit,
-  notifyMessage =() => {}
+  notifyMessage =() => {},
+  templates = {}
 }) => {
   const [errors, setErrors] = useState({});
 
@@ -49,6 +51,22 @@ const CreateSocialSupportInfo: FC<ICreateSocialSupportInfoProps> = ({
       let shouldReset = false;
       candidateInfos[name] = e != null ? { value: e.value, label: shouldReset ? '' : e.label} : null
       setData(candidateInfos);
+  }
+
+  const onDownloadTemplate = () => {
+    if(!data?.type?.value) {
+      notifyMessage('Yêu cầu chọn loại yêu cầu', true);
+      return;
+    }
+    if(!templates[data.type.value]) {
+      notifyMessage('Không có tài liệu');
+      return;
+    }
+    const link = document.createElement('a');
+    link.href = templates[data.type.value];
+    document.body.appendChild(link);
+    link.click();
+    link.parentNode?.removeChild(link);
   }
 
   const verifyData = () => {
@@ -132,7 +150,7 @@ const CreateSocialSupportInfo: FC<ICreateSocialSupportInfoProps> = ({
       <h5>{t('ListDocumentNeedSend')}</h5>
       <div className="box shadow-sm cbnv">
         {t('RequestDownloadDocument')}
-        <a style={{color: '#007bff'}}>{t('Here')}</a>
+        <a style={{color: '#007bff', cursor: 'pointer'}} onClick={() => onDownloadTemplate()}>{t('Here')}</a>
       </div>
 
       {

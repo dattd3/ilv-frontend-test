@@ -14,7 +14,7 @@ import Constants from "commons/Constants";
 import axios from "axios";
 import ResultModal from "containers/Registration/ResultModal";
 import LoadingModal from "components/Common/LoadingModal";
-import { getMuleSoftHeaderConfigurations} from "commons/Utils";
+import { getMuleSoftHeaderConfigurations, getRequestConfigurations} from "commons/Utils";
 import SocialSupportListComponent from "../InsuranceSocialSupport/SocialSupportListComponent";
 import CreateSocialSupportInfo from "../InsuranceSocialSupport/CreateSocialSupportInfo";
 
@@ -39,10 +39,27 @@ const SocialSupportInfo = (props: any) => {
     isSuccess: false,
   });
   const [files, setFiles] = useState<any[]>([]);
+  const [templates, setTemplates] = useState<any>({});
 
   useEffect(() => {
     getPersonalInfo();
+    getTemplateFile();
   }, []);
+
+  const getTemplateFile = async () => {
+    try {
+      setLoading(true);
+      const requestConfig = getRequestConfigurations();
+      const getInfoDetail = await axios.post(`${process.env.REACT_APP_REQUEST_SERVICE_URL}common/getTemplateByTypes`, [1, 2, 3, 4, 5, 6], requestConfig)
+      if(getInfoDetail?.data?.data) {
+        setTemplates(getInfoDetail.data.data);
+      }
+    } catch(error) {
+
+    } finally {
+      setLoading(false);
+    }
+  }
 
   const getPersonalInfo = () => {
     const config = getMuleSoftHeaderConfigurations()
@@ -253,6 +270,7 @@ const SocialSupportInfo = (props: any) => {
             approver={approver}
             setApprover={setApprover}
             files={files}
+            templates={templates}
             updateFiles={setFiles}
             removeFile={removeFile}
             members={members}
