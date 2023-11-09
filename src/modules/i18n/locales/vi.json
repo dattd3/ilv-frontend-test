@@ -2014,5 +2014,12 @@
   "InsuranceSocialInfoRequest": "Thay đổi thông tin đóng BHXH",
   "ContractTimeTitle": "Quy định về Thời hạn Hợp đồng lao động (“HĐLĐ”):",
   "ContractTimeNote": "1. CBNV được ký kết <b>HĐLĐ xác định thời hạn</b> sau thử việc, tập nghề, sau đó chuyển sang ký <b>HĐLĐ không xác định thời hạn</b>, trừ trường hợp có phê duyệt khác của CBLĐ có thẩm quyền.<br />2. Riêng đối với <b>Khối Sản xuất</b>, CBNV được ký kết hai (02) lần <b>HĐLĐ xác định thời hạn</b> sau thử việc, tập nghề, sau đó chuyển sang ký <b>HĐLĐ không xác định thời hạn</b>, trừ trường hợp có phê duyệt khác của CBLĐ.",
-  "ContractTimeNoteOther": "Vui lòng kiểm tra thông tin với nhân sự công ty trước để có đề xuất thông tin hợp đồng mới đúng với quy định công ty."
+  "ContractTimeNoteOther": "Vui lòng kiểm tra thông tin với nhân sự công ty trước để có đề xuất thông tin hợp đồng mới đúng với quy định công ty.",
+  "social_support_info": "Yêu cầu hỗ trợ liên quan BH",
+  "userSentRequestDate": "Ngày CBNV gửi hồ sơ",
+  "AppovalStatus": "Trạng thái phê duyệt",
+  "ReasonHRReject": "Lý do PNS trả",
+  "ListDocumentNeedSend": "DANH SÁCH CÁC HỒ SƠ CẦN GỬI",
+  "RequestDownloadDocument": "Để tải về hồ sơ vui lòng bấm ",
+  "ListRequestCreated": "DANH SÁCH YÊU CẦU ĐÃ TẠO"
 }
