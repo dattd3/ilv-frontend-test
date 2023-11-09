@@ -3762,7 +3762,7 @@
                     border-spacing: 0;
                     table-layout: fixed;
                     th, td {
-                        padding: 5px 6px;
+                        padding: 10px 6px;
                         border: 1px solid #DEE2E6;
                     }
                     thead {
@@ -3782,10 +3782,16 @@
                                 font-weight: bold;
                             }
                         }
-                        .kpi {
-                            td {
-
-                            }
+                        textarea {
+                            width: 95%;
+                            border: 1px solid #DEE2E6;
+                            outline: none;
+                            padding: 5px;
+                        }
+                        select {
+                            border: 1px solid #DEE2E6;
+                            height: 30px;
+                            width: 90px;
                         }
                     }
                 }
