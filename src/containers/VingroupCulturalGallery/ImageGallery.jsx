@@ -5,6 +5,7 @@ const ImageGallery = ({ data }) => {
   const [idZoomIn, setIdZoomIn] = useState(-1);
   const [scrollPosition, setScrollPosition] = useState(0);
   const [lastScrollPosition, setLastScrollPosition] = useState(0);
+  const isZoom = idZoomIn > -1;
 
   useEffect(() => {
     document
@@ -17,13 +18,13 @@ const ImageGallery = ({ data }) => {
   }, []);
 
   useEffect(() => {
-    if (idZoomIn === -1) {
+    if (!isZoom) {
       scrollToLastPosition();
     }
   }, [idZoomIn]);
 
   const handleScroll = () => {
-    if (idZoomIn === -1) {
+    if (!isZoom) {
       setScrollPosition(document.getElementById("content-wrapper").scrollTop);
     }
   };
@@ -45,21 +46,34 @@ const ImageGallery = ({ data }) => {
     <div
       className="image-gallery"
     >
-        <Masonry gutter="4px" columnsCount={idZoomIn > -1 ? 1 : 3}>
+        <Masonry gutter="4px" columnsCount={isZoom ? 1 : 3}>
           {data.map((img) => (
-            <img
-              style={{
-                display:
-                  idZoomIn > -1 && idZoomIn !== img.id ? "none" : "block",
+            <div
+              className="image-item"
+              style={isZoom && idZoomIn !== img.id ? {
+                display: "none",
+              } : {
+                display: "block",
+                cursor: "zoom-in",
               }}
-              key={img.id}
-              src={img.link}
-              alt=""
               onClick={() =>
                 handleZoomInImage(idZoomIn === img.id ? -1 : img.id)
-              }
-              className={idZoomIn === img.id ? "zoomed-in-img" : "image"}
-            />
+              }>
+                <img
+                  alt=""
+                  key={img.id}
+                  src={img.link}
+                  className={idZoomIn === img.id ? "zoomed-in-img" : "image"}
+                />
+                {!isZoom && <div className="item-overlay"/>}
+                <div className={`${isZoom ? "item-content-zom" : "item-content"}`}>
+                  Chúng ta đã chọn con đường không đơn giản.
+                  Đó là con đường theo đuổi sứ mệnh đóng góp hết sức mình vì cuộc sống tốt đẹp hơn cho dân tộc,
+                  cho thế hệ mai sau. Tất cả những gì chúng ta làm đều xuất phát từ cái tâm đó, sứ mệnh đó,
+                  cộng với trí tuệ, sức trẻ và đóng góp không ngừng nghỉ của chúng ta thì
+                  tất yếu không thể có kết quả khác
+                </div>
+            </div>
           ))}
         </Masonry>
     </div>
