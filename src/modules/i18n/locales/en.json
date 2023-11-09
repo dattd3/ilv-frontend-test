@@ -1997,5 +1997,12 @@
   "InsuranceSocialInfoRequest": "Thay đổi thông tin đóng BHXH",
   "ContractTimeTitle": "Labor contract duration regulation when renewal:",
   "ContractTimeNote": "1. Employees may sign a definite <b>term labor contract</b> after an apprenticeship, and then switch to an <b>indefinite term labor contract</b>, unless otherwise approved by competent Leaders. <br />2. In the <b>Manufacturing Division</b>, Employees may sign two (2) <b>definite term labor contract</b> after an apprenticeship, and then switch to an <b>indefinite term labor contract</b>, unless otherwise approved by competent Leaders.",
-  "ContractTimeNoteOther": "Please make sure to check your company regulation with HR to choose the right kind of contract propose."
+  "ContractTimeNoteOther": "Please make sure to check your company regulation with HR to choose the right kind of contract propose.",
+  "social_support_info": "Yêu cầu hỗ trợ liên quan BH",
+  "userSentRequestDate": "Ngày CBNV gửi hồ sơ",
+  "AppovalStatus": "Trạng thái phê duyệt",
+  "ReasonHRReject": "Lý do PNS trả",
+  "ListDocumentNeedSend": "DANH SÁCH CÁC HỒ SƠ CẦN GỬI",
+  "RequestDownloadDocument": "Để tải về hồ sơ vui lòng bấm ",
+  "ListRequestCreated": "DANH SÁCH YÊU CẦU ĐÃ TẠO"
 }

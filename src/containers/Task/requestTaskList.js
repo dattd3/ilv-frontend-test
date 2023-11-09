@@ -338,6 +338,8 @@ class RequestTaskList extends React.Component {
           };
         if(request?.requestTypeId == Constants.INSURANCE_SOCIAL_INFO) {
             url = `social-contribute/${request?.salaryId}/request`;
+        } else if (request?.requestTypeId == Constants.SOCIAL_SUPPORT) {
+            url = `social-support/${request?.salaryId}/request`;
         } else if(request?.requestTypeId == Constants.WELFARE_REFUND) {
             url = `benefit-claim-request`;
         } else if (request?.requestTypeId == Constants.INSURANCE_SOCIAL) {
@@ -941,7 +943,7 @@ class RequestTaskList extends React.Component {
                                             }
 
                                             let editLink = this.getRequestEditLink(child.id, child.requestTypeId, child.processStatusId)
-                                            let detailLink = [Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER, Constants.PROPOSAL_APPOINTMENT, Constants.WELFARE_REFUND, Constants.INSURANCE_SOCIAL, Constants.INSURANCE_SOCIAL_INFO].includes(child.requestTypeId) ? this.getSalaryProposeLink(child) : this.getRequestDetailLink(child.id, child.requestTypeId)
+                                            let detailLink = [Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER, Constants.PROPOSAL_APPOINTMENT, Constants.WELFARE_REFUND, Constants.INSURANCE_SOCIAL, Constants.INSURANCE_SOCIAL_INFO, Constants.SOCIAL_SUPPORT].includes(child.requestTypeId) ? this.getSalaryProposeLink(child) : this.getRequestDetailLink(child.id, child.requestTypeId)
                                             let dateChanged = showRangeDateGroupByArrayDate(child.startDate)
 
                                             if ([Constants.OT_REQUEST].includes(child.requestTypeId)) {
