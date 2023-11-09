@@ -1296,7 +1296,11 @@ function EvaluationApproval(props) {
                     </div>
                 }
                 {
-                    activeTab === batchApprovalTabCode && dataFilter?.evaluationForm?.reviewStreamCode === processStep.level360 && (<BatchEvaluation360 />)
+                    activeTab === batchApprovalTabCode && dataFilter?.evaluationForm?.reviewStreamCode === processStep.level360 && (
+                        <BatchEvaluation360 
+                            evaluationData={evaluationData}
+                        />
+                    )
                 }
                 {
                     activeTab === batchApprovalTabCode && evaluationData?.data?.length > 0 && 
