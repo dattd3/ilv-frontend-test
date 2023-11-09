@@ -42,6 +42,17 @@ const SocialSupportListComponent = ({t}: any) =>{
         })
         fetchData(index, dataForSearch.pageSize);
     }
+
+    const onDownloadTemplate = (documents) => {
+        if(!documents || documents?.length == 0) {
+            return;
+        }
+        const link = document.createElement('a');
+        link.href = documents[0].fileUrl;
+        document.body.appendChild(link);
+        link.click();
+        link.parentNode?.removeChild(link);
+    }
     return <>
     <div className="health-info-page">
         <div className="task-list request-list shadow">
@@ -72,7 +83,7 @@ const SocialSupportListComponent = ({t}: any) =>{
                                             <td className="status text-center">{child.hrComment || ''}</td>
                                             <td className="request-type text-center">{child.statusName || ''}</td>
                                             <td className="tool">
-                                                <a href={`/insurance-manager/export/${child.idDisplay}`}><img alt="Sửa" src={Download} className="icon-download" /></a>
+                                                <a style={{cursor: 'pointer'}} onClick={() => onDownloadTemplate(child.userProfileDocuments)}><img alt="Sửa" src={Download} className="icon-download" /></a>
                                             </td>
                                         </tr>
                                     )
