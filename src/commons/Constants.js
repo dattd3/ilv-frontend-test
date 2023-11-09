@@ -10,7 +10,7 @@ const Constants = {
     NOTIFICATION_TRAINING_INFORMATION: 4,
     NOTIFICATION_OTHER: 5,
     NOTIFICATION_MISSING_DOC: 6,
-    NOTIFICATION_REJECT: 7,
+    NOTIFICATION_APPROVED: 7,
     NOTIFICATION_AUTO_JOB: 8,
     NOTIFICATION_UNUSUAL_TIMESHEET: 9,
     NOTIFICATION_SHIFT_CHANGE: 10,
@@ -62,6 +62,7 @@ const Constants = {
   WELFARE_REFUND: 16, // Hoàn trả dịch vụ phúc lợi
   INSURANCE_SOCIAL: 20, //bảo hiểm xã hội
   INSURANCE_SOCIAL_INFO: 21, // thông tin đóng BHXH
+  SOCIAL_SUPPORT: 22, // yêu cầu hỗ trợ liên quan BH
 
   //Status request
   STATUS_PENDING: 0,
@@ -296,7 +297,14 @@ const Constants = {
     APP_ID: 1,
     DEVICE: 'WEBSITE',
     MODE: 2,
-  }
+  },
+  tabListRequestMapping: {
+    REQUEST: 'request',
+    APPROVAL: 'approval',
+    APPRAISAL: 'consent',
+  },
+  ORG_ID_VINPEARL: process.env.REACT_APP_ENVIRONMENT === 'PRODUCTION' ? '45001013' : '45001013',
+  ORG_ID_VINPEARL_MELIA: process.env.REACT_APP_ENVIRONMENT === 'PRODUCTION' ? '45033560' : '45001263'
 }
 
 Constants.REQUEST_CATEGORY_1_LIST = {
@@ -318,7 +326,8 @@ Constants.REQUEST_CATEGORY_2_LIST = {
   [Constants.PROPOSAL_TRANSFER]: "ProposalTransfer",
   [Constants.PROPOSAL_APPOINTMENT]: "AppointmentDismissalRequest",
   [Constants.INSURANCE_SOCIAL]: "InsuranceSocialRequest",
-  [Constants.INSURANCE_SOCIAL_INFO]: "InsuranceSocialInfoRequest"
+  [Constants.INSURANCE_SOCIAL_INFO]: "InsuranceSocialInfoRequest",
+  [Constants.SOCIAL_SUPPORT]: "social_support_info",
 
 }
 

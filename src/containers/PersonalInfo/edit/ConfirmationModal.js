@@ -5,7 +5,9 @@ import ResultModal from '../../Task/ApprovalDetail/ResultModal';
 import { withTranslation } from "react-i18next"
 import Constants from '../../../commons/Constants'
 import _ from 'lodash'
+import map from "../../map.config"
 import Spinner from 'react-bootstrap/Spinner'
+import { getValueParamByQueryString } from "commons/Utils";
 
 class ConfirmationModal extends React.Component {
     constructor(props) {
@@ -153,7 +155,28 @@ class ConfirmationModal extends React.Component {
     }
 
     onHideResultModal = () => {
+        const { action, lockReload, onHideTaskDetailModal } = this.props
         this.setState({ isShowResultConfirm: false });
+        if (window.location.pathname === map.Task) {
+            const currentTab = getValueParamByQueryString(window.location.search, "tab")
+            switch (currentTab) {
+                case Constants.tabListRequestMapping.APPRAISAL:
+                    if (action === Constants.tabListRequestMapping.APPRAISAL)
+                    return window.location.reload();
+                case Constants.tabListRequestMapping.APPROVAL:
+                    if (action === Constants.tabListRequestMapping.APPROVAL)
+                    return window.location.reload();
+                default:
+                    if (action === Constants.tabListRequestMapping.REQUEST)
+                    onHideTaskDetailModal()
+                    return
+            }
+        }
+
+        if (lockReload) {
+            onHideTaskDetailModal()
+            return
+        }
         window.location.reload();
     }
 
