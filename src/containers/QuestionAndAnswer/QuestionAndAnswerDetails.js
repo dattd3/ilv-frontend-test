@@ -3,7 +3,7 @@ import axios from "axios";
 import Carousel from "react-bootstrap/Carousel";
 import SubmitQuestionModal from "./SubmitQuestionModal";
 import HistoryModal from "./HistoryModal";
-import { Container, Button } from "react-bootstrap";
+import { Container, Button, Spinner } from "react-bootstrap";
 import StatusModal from "../../components/Common/StatusModal";
 import FormControl from "react-bootstrap/FormControl";
 import SelectSupporterModal from "./SelectSupporterModal";
@@ -33,6 +33,8 @@ class QuestionAndAnswerDetails extends React.Component {
       isShowSelectSupporterModal: false,
       categories: [],
       isRatingLoading: false,
+      isLoading: false,
+      isRejectLoading: false,
     };
     this.submitSelectSupporterModal =
       this.submitSelectSupporterModal.bind(this);
@@ -117,22 +119,10 @@ class QuestionAndAnswerDetails extends React.Component {
     this.showHistoryModal(false);
   };
 
-  handleKeyPress = (event) => {
-    if (event.key === "Enter" && event.shiftKey) {
-      return;
-    }
-
-    if (event.key === "Enter") {
-      if (this.state.comment === "") {
-        this.showStatusModal(this.props.t("EnterAnswerToContinue"));
-        return;
-      }
-      this.setState({ comment: event.target.value });
-      this.submit(true);
-    }
-  };
-
   submit = (isCloseTicket = false) => {
+    this.setState({
+      isLoading: true,
+    });
     let userId = localStorage.getItem("email");
     if (isCloseTicket) {
       this.completeQuestion(this.state.question.id);
@@ -146,6 +136,9 @@ class QuestionAndAnswerDetails extends React.Component {
   };
 
   rejectComment = () => {
+    this.setState({
+      isRejectLoading: true,
+    });
     let userId = localStorage.getItem("email");
     const rejectReason = this.props.t("QAAlreadyExist");
     this.completeQuestion(this.state.question.id);
@@ -180,7 +173,7 @@ class QuestionAndAnswerDetails extends React.Component {
       })
       .catch((error) => {
         callBack(t("HasErrorOccurred"));
-      });
+      })
   };
 
   completeQuestion = (questionId) => {
@@ -360,6 +353,8 @@ class QuestionAndAnswerDetails extends React.Component {
       comment,
       categories,
       isRatingLoading,
+      isLoading,
+      isRejectLoading
     } = this.state;
     const comments = question.ticketComments;
     const isEmployeeView = question.userId === localStorage.getItem("email");
@@ -644,37 +639,38 @@ class QuestionAndAnswerDetails extends React.Component {
                               <b className="text-left">{t("Answer")}: </b>
                               {item.content}
                               <div className="rate-star-container">
-                                {Array.from(Array(5).keys()).map(
-                                  (starIndex) => (
-                                    <img
-                                      key={starIndex}
-                                      src={
-                                        item.rating >= starIndex + 1 ||
-                                        item.rated >= starIndex + 1
-                                          ? IconRateStarFull
-                                          : IconRateStar
-                                      }
-                                      alt=""
-                                      className="icon-star"
-                                      style={{
-                                        opacity:
-                                          item.isExpire && !item.rated
-                                            ? 0.5
-                                            : 1,
-                                      }}
-                                      onClick={() =>
-                                        item.isExpire ||
-                                        item.rated ||
-                                        !isEmployeeView
-                                          ? {}
-                                          : this.handleChangeCommentRating(
-                                              item.id,
-                                              starIndex + 1
-                                            )
-                                      }
-                                    />
-                                  )
-                                )}
+                                {(isEmployeeView || !!item.rated) &&
+                                  Array.from(Array(5).keys()).map(
+                                    (starIndex) => (
+                                      <img
+                                        key={starIndex}
+                                        src={
+                                          item.rating >= starIndex + 1 ||
+                                          item.rated >= starIndex + 1
+                                            ? IconRateStarFull
+                                            : IconRateStar
+                                        }
+                                        alt=""
+                                        className="icon-star"
+                                        style={{
+                                          opacity:
+                                            item.isExpire && !item.rated
+                                              ? 0.5
+                                              : 1,
+                                        }}
+                                        onClick={() =>
+                                          item.isExpire ||
+                                          item.rated ||
+                                          !isEmployeeView
+                                            ? {}
+                                            : this.handleChangeCommentRating(
+                                                item.id,
+                                                starIndex + 1
+                                              )
+                                        }
+                                      />
+                                    )
+                                  )}
                                 {isEmployeeView && (
                                   <>
                                     {!item.isExpire && !item.rated && (
@@ -735,7 +731,6 @@ class QuestionAndAnswerDetails extends React.Component {
                         as="textarea"
                         name="comment"
                         onChange={this.handleChange.bind(this)}
-                        onKeyPress={this.handleKeyPress.bind(this)}
                       />
                     </div>
                   </div>
@@ -743,16 +738,29 @@ class QuestionAndAnswerDetails extends React.Component {
                 <div className="mt-2 text-right">
                   <Button
                     variant="danger pl-3 pr-3 mr-2"
+                    disabled={isRejectLoading ? true : false}
                     onClick={this.rejectComment}
+                    style={{ minWidth: 95 }}
                   >
-                    {t("RejectQuestionButtonLabel")}
+                    {
+                      this.state.isRejectLoading ? (
+                        <Spinner animation="border" size="sm" />
+                      ) : (<>
+                        {t("RejectQuestionButtonLabel")}
+                      </>)
+                    }
                   </Button>{" "}
                   <Button
                     variant="primary pl-4 pr-4"
-                    disabled={comment === "" ? true : false}
+                    disabled={(comment === "" || isLoading) ? true : false}
                     onClick={() => this.submit(true)}
+                    style={{ minWidth: 95 }}
                   >
-                    {t("Answer")}
+                    {this.state.isLoading ? (
+                      <Spinner animation="border" size="sm" />
+                    ) : (
+                      <>{t("Answer")}</>
+                    )}
                   </Button>{" "}
                 </div>
               </div>

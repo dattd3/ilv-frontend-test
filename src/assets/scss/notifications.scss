@@ -502,7 +502,7 @@
           width: 110px;
           padding: 10px;
           display: inline-flex;
-          justify-content: start;
+          justify-content: flex-start;
           flex-direction: column;
           border-right: 1px solid #DEE2E6;
           gap: 5px;
@@ -510,7 +510,7 @@
         .content-col-4 {
           width: 110px;
           padding: 10px;
-          justify-content: start;
+          justify-content: flex-start;
           flex-direction: column;
           display: inline-flex;
           gap: 5px;

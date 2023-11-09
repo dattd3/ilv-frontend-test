@@ -1,9 +1,10 @@
-export default {
+const MapConfig = {
   Root: "/",
   Dashboard: "/dashboard",
   Login: "/login",
   Auth: "/auth",
   TermPolicy: "/policy",
+  GuestNews: "/guest-news/:id",
 
   // Training
   Roadmap: "/training-roadmap",
@@ -124,8 +125,6 @@ export default {
   EvaluationApproval: "/evaluation-approval",
   
   MyProjectDetail: "/my-projects/project/:id",
-  ProjectDetail: "/list-projects/project/:id",
-  MyProfile: "/my-profile",
 
   //Phúc lợi
   InteralWelfare: '/welfare-manager',
@@ -135,11 +134,35 @@ export default {
   DetailInsuranceSocial: '/insurance-manager/detail/:id/:action',
   ExportInsuranceSocial: '/insurance-manager/export/:id',
   DetailInsuranceHealth: '/insurance-manager/detail-health/:id',
-  MyProfile: "/my-profile",
   SalaryPropse: '/salarypropse/:idContract/:idSalary/:type',
-  HistoryVingroup: "/vin30-chronicles",
+
   Maintenance: '/maintenance',
   
   // Thanh toán phúc lợi nội bộ
   RegistrationInternalPayment: "/benefit-claim-request",
+
+  // Vingroup culture
+  HistoryVingroup: "/vingroup-history",
+  Vin30Chronicles: "/vin30-chronicles",
+  HistoryVinGroupMobile: "/vin30-chronicles-mobile",
+  VingroupCulture: "/vingroup-culture",
+  SixCoreValues: "/6-core-values",
+  SixGovernancePrinciples: "/6-governance-principles",
+  WorkingEnvironment: "/working-environment",
+  GreatStartUpSpirit: "/great-start-up-spirit",
+  HistoryVingroupGallery: "/vingroup-history/gallery/:code",
+  VingroupCultureGallery: "/vingroup-culture/gallery/:code",
+  SixCoreValuesGallery: "/6-core-values/gallery/:code",
+  SixGovernancePrinciplesGallery: "/6-governance-principles/gallery/:code",
+  WorkingEnvironmentGallery: "/working-environment/gallery/:code",
+  GreatStartUpSpiritGallery: "/working-environment/gallery/:code",
+
+  // Internal news
+  InternalNewsList: "/internal-news",
+  InternalNewsDetail: "/internal-news/detail/:id",
+  CreateSocialDistributeInfo: "/insurance-manager/social-contribute-info",
+  //thông tin đóng BHXH
+  SocialContributeDetail: "/social-contribute/:id/:type"
 };
+
+export default MapConfig;

@@ -6,6 +6,7 @@ import _, { debounce } from 'lodash'
 import { withTranslation } from "react-i18next"
 import { getMuleSoftHeaderConfigurations, prepareOrganization } from '../../../commons/Utils'
 import Constants from 'commons/Constants'
+import APPROVER_LIST_LEVEL from "../../../commons/Constants"
 
 const MyOption = props => {
     const { innerProps, innerRef } = props;
@@ -70,7 +71,6 @@ class SeniorExecutiveInfoComponent extends React.PureComponent {
   }
     
   isSeniorExecutive = (levelApproverFilter, orglv2Id, currentUserLevel, account) => {
-    const APPROVER_LIST_LEVEL = ["C2", "C1","C", "P2", "P1", "T4", "T3", "T2", "T1", "T0"]
     const orglv2IdCurrentUser = localStorage.getItem('organizationLv2')
     let indexCurrentUserLevel = _.findIndex(APPROVER_LIST_LEVEL, function (item) { return item == currentUserLevel });
     let indexApproverFilterLevel = _.findIndex(APPROVER_LIST_LEVEL, function (item) { return item == levelApproverFilter });

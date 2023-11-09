@@ -6,7 +6,7 @@ import CreateMaternityInsurance from './InsuranceComponents/CreateMaternityInsur
 import CreateSickInsurance from './InsuranceComponents/CreateSickInsurance';
 import moment from 'moment';
 import axios from 'axios';
-import { getMuleSoftHeaderConfigurations, removeAccents } from '../../commons/Utils';
+import { getMuleSoftHeaderConfigurations, getRequestConfigurations, removeAccents } from '../../commons/Utils';
 import { toast } from "react-toastify";
 import ResultModal from '../Registration/ResultModal';
 import HOCComponent from '../../components/Common/HOCComponent'
@@ -163,12 +163,15 @@ const CreateInsuranceSocial = (props) => {
         const getProfile = axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/profile`, muleSoftConfig)
         const getPersionalInfo = axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/personalinfo`, muleSoftConfig);
         const getShiftInfo = axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/timeoverview?from_date=${listDates[0]}&to_date=${listDates[listDates.length - 1]}`, muleSoftConfig);
+        const getLinkDocument = axios.get(`${process.env.REACT_APP_REQUEST_SERVICE_URL}benefitclaim/download-updated-template?type=1`, getRequestConfigurations())
+
         setLoading(true);
-        Promise.allSettled([getProfile, getPersionalInfo, getShiftInfo]).then(res => {
+        Promise.allSettled([getProfile, getPersionalInfo, getShiftInfo, getLinkDocument]).then(res => {
             if (res && res[0].value && res[1].value) {
                 let userProfile = res[0].value.data.data[0];
                 let userDetail = res[1].value.data.data[0];
                 let shiftInfo = res[2].value?.data?.data || [];
+                let documentLink = res[3].value?.data?.data;
                 setLoading(false);
                 setUserInfo({
                     ...userInfo,
@@ -179,7 +182,7 @@ const CreateInsuranceSocial = (props) => {
                     IndentifiD: userDetail.personal_id_no || ''
                 })
                 let infoBank = {
-                    receiveType:  { value: 2, label: 'Chi trả qua ATM' },
+                    receiveType:  { value: '2', label: 'Chi trả qua ATM' },
                     accountNumber: userDetail.bank_number && userDetail.bank_number != '#' ? userDetail.bank_number : '',
                     accountName: userDetail.fullname && userDetail.fullname != '#' ? removeAccents(userDetail.fullname).toUpperCase() : '',
                     bankId: userDetail.bank_name_id && userDetail.bank_name_id != '#' ? userDetail.bank_name_id : '',
@@ -199,17 +202,20 @@ const CreateInsuranceSocial = (props) => {
                     sickData: {
                         ...data.sickData,
                         ...infoBank,
-                        leaveOfWeek: dayOffs.join(';') || ''
+                        leaveOfWeek: dayOffs.join(';') || '',
+                        documentLink: documentLink
                     },
                     convalesData: {
                         ...data.convalesData,
                         ...infoBank,
-                        leaveOfWeek: dayOffs.join(';') || ''
+                        leaveOfWeek: dayOffs.join(';') || '',
+                        documentLink: documentLink
                     },
                     maternityData: {
                         ...data.maternityData,
                         ...infoBank,
-                        leaveOfWeek: dayOffs.join(';') || ''
+                        leaveOfWeek: dayOffs.join(';') || '',
+                        documentLink: documentLink
                     },
                 })
             }

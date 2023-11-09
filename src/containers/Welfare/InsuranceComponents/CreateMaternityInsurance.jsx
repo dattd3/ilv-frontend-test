@@ -335,7 +335,7 @@ const CreateMaternityInsurance = ({
     return false;
   }
   const checkRequireAtm = () => {
-    if(data.receiveType?.value && [2].includes(data.receiveType.value)) {
+    if(data.receiveType?.value && ['2'].includes(data.receiveType.value)) {
       return true;
     }
     return false;
@@ -1239,6 +1239,7 @@ const CreateMaternityInsurance = ({
       {
         isCreateMode ?
         <DocumentRequired
+        url={data.documentLink}
         t={t}/> : null
       }
 

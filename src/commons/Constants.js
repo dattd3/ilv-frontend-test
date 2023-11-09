@@ -61,6 +61,7 @@ const Constants = {
   PROPOSAL_APPOINTMENT: 15, // Bo nhiem, mien nhiem
   WELFARE_REFUND: 16, // Hoàn trả dịch vụ phúc lợi
   INSURANCE_SOCIAL: 20, //bảo hiểm xã hội
+  INSURANCE_SOCIAL_INFO: 21, // thông tin đóng BHXH
 
   //Status request
   STATUS_PENDING: 0,
@@ -143,9 +144,10 @@ const Constants = {
   SUBSTITUTION_TPKLA_HALF_DAY: 2,
   SHIFT_CODE_OFF:  'OFF',
   // user level
-  CONSENTER_LIST_LEVEL : ["C1", "P2", "P1", "T4", "T3", "T2", "T1", "T0"],
-  APPROVER_LIST_LEVEL :  ["C1", "P2", "P1", "T4", "T3", "T2", "T1", "T0"],
-  CONSENTER_LIST_LEVEL_V073 : ["M0", "M1", "M2", "M3", "C1", "P2", "P1", "T4", "T3", "T2", "T1", "T0"],
+  //CONSENTER_LIST_LEVEL : ["C1", "P2", "P1", "T4", "T3", "T2", "T1", "T0"],
+  CONSENTER_LIST_LEVEL : ["C1", "T7", "P2", "T6", "P1", "T5", "T4", "T3", "T2", "T1", "T0"],
+  APPROVER_LIST_LEVEL :  ["C1", "T7", "P2","T6", "P1","T5", "T4", "T3", "T2", "T1", "T0"],
+  //CONSENTER_LIST_LEVEL_V073 : ["M0", "M1", "M2", "M3", "C1", "P2", "P1", "T4", "T3", "T2", "T1", "T0"],
   APPROVAL_DELEGATION_LIST_LEVEL : ["T3", "T2", "T1", "T0"],
 
   //other
@@ -249,7 +251,7 @@ const Constants = {
     5: ["V077", "V070"],//PHUCLOI
     6: ["V077", "V070"], //DIEUCHUYEN
     7: ["V077", "V070"], //BONHIEM,
-    8: ["V070", "V077"], //THANHTOAN_NOIBO
+    8: [], //THANHTOAN_NOIBO
     9: ["V061"],//BAOHIEM
   } :
   { //Development
@@ -261,7 +263,7 @@ const Constants = {
     6: ["V040", "V070", "V077"], //DIEUCHUYEN
     7: ["V040", "V070", "V077"], //BONHIEM
     8: ["V040", "V070", "V077", "V030"], //THANH TOAN NOI BO
-    9: ["V077", "V070", "V061"],//BAOHIEM
+    9: ["V077", "V070", "V061", "V079"],//BAOHIEM
   },
   CURRENCY: {
     VND: 'VNĐ',
@@ -294,8 +296,8 @@ const Constants = {
     APP_ID: 1,
     DEVICE: 'WEBSITE',
     MODE: 2,
-  },
-};
+  }
+}
 
 Constants.REQUEST_CATEGORY_1_LIST = {
   [Constants.LEAVE_OF_ABSENCE]: "LeaveRequest",
@@ -315,7 +317,9 @@ Constants.REQUEST_CATEGORY_2_LIST = {
   // [Constants.SALARY_PROPOSE]: "SalaryType",
   [Constants.PROPOSAL_TRANSFER]: "ProposalTransfer",
   [Constants.PROPOSAL_APPOINTMENT]: "AppointmentDismissalRequest",
-  [Constants.INSURANCE_SOCIAL]: "InsuranceSocialRequest"
+  [Constants.INSURANCE_SOCIAL]: "InsuranceSocialRequest",
+  [Constants.INSURANCE_SOCIAL_INFO]: "InsuranceSocialInfoRequest"
+
 }
 
 Constants.REQUEST_CATEGORY_1_LIST_ORDER = [Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP, Constants.SUBSTITUTION, Constants.IN_OUT_TIME_UPDATE, Constants.UPDATE_PROFILE,
