@@ -69,7 +69,7 @@ const SocialSupportListComponent = ({t}: any) =>{
                                             <td className="status text-center" title={child.typeName}>{child.typeName || ''}</td>
                                             <td className="request-type text-center">{child.createdDate ? moment(child.createdDate).format('DD/MM/YYYY') : ''}</td>
                                             <td className="request-type text-center">{t(Constants.mappingStatusRequest[child.processStatusId]?.label || '')}</td>
-                                            <td className="status text-center">{'Thiếu thông tin hồ sơ'}</td>
+                                            <td className="status text-center">{child.hrComment || ''}</td>
                                             <td className="request-type text-center">{child.statusName || ''}</td>
                                             <td className="tool">
                                                 <a href={`/insurance-manager/export/${child.idDisplay}`}><img alt="Sửa" src={Download} className="icon-download" /></a>
