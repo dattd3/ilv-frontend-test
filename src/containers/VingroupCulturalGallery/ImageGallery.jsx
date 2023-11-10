@@ -66,13 +66,11 @@ const ImageGallery = ({ data }) => {
                   className={idZoomIn === img.id ? "zoomed-in-img" : "image"}
                 />
                 {!isZoom && <div className="item-overlay"/>}
-                <div className={`${isZoom ? "item-content-zom" : "item-content"}`}>
-                  Chúng ta đã chọn con đường không đơn giản.
-                  Đó là con đường theo đuổi sứ mệnh đóng góp hết sức mình vì cuộc sống tốt đẹp hơn cho dân tộc,
-                  cho thế hệ mai sau. Tất cả những gì chúng ta làm đều xuất phát từ cái tâm đó, sứ mệnh đó,
-                  cộng với trí tuệ, sức trẻ và đóng góp không ngừng nghỉ của chúng ta thì
-                  tất yếu không thể có kết quả khác
-                </div>
+                {img?.descriptions && (
+                  <div className={`${isZoom ? "item-content-zom" : "item-content"}`}>
+                    {img.descriptions}
+                  </div>
+                )}
             </div>
           ))}
         </Masonry>
