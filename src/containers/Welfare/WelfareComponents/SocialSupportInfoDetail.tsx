@@ -22,6 +22,7 @@ const SocialInfoDetailInfo = (props: any) => {
   const [loading, setLoading] = useState(false);
   const [timeRequest, setTimerRequest] = useState<any>({});
   const [useInfo, setUserInfo] = useState<any>({});
+  const [templates, setTemplates] = useState<any>({});
   const [resultModal, setresultModal] = useState({
     isShowStatusModal: false,
     titleModal: "",
@@ -49,7 +50,20 @@ const SocialInfoDetailInfo = (props: any) => {
 
   useEffect(() => {
     getSocialInfoData();
+    getTemplateFile();
   }, []);
+
+  const getTemplateFile = async () => {
+    try {
+      const requestConfig = getRequestConfigurations();
+      const getInfoDetail = await axios.post(`${process.env.REACT_APP_REQUEST_SERVICE_URL}common/getTemplateByTypes`, [1, 2, 3, 4, 5, 6], requestConfig)
+      if(getInfoDetail?.data?.data) {
+        setTemplates(getInfoDetail.data.data);
+      }
+    } catch(error) {
+
+    }
+  }
 
   const getSocialInfoData = async () => {
     setLoading(true);
@@ -233,6 +247,7 @@ const SocialInfoDetailInfo = (props: any) => {
         supervisors={supervisors}
         approver={approver}
         files={files}
+        templates={templates}
         timeRequest={timeRequest}
         userInfo={useInfo}
         />

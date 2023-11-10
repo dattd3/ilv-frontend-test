@@ -91,7 +91,7 @@ const SocialSupportListComponent = ({t}: any) =>{
                             }
                         </tbody>
                     </table>
-                    : <div className="data-not-found p-2">{t("NoDataFound")}</div>
+                    : <div className="data-not-found p-3">{t("NoDataFound")}</div>
             }
             {(listData.length > 0 || Math.ceil(total / Constants.TASK_PAGE_SIZE_DEFAULT) == dataForSearch.pageIndex) ? <div className="row paging mt-4">
                 <div className="col-sm"></div>

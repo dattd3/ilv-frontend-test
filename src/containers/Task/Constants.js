@@ -46,6 +46,7 @@ const requestTypes = [
   {value: [Constants.WELFARE_REFUND], label: 'WelfareRefund'},
   { value: [Constants.INSURANCE_SOCIAL], label: 'InsuranceSocialRequest' },
   { value: [Constants.INSURANCE_SOCIAL_INFO], label: 'InsuranceSocialInfoRequest' },
+  { value: [Constants.SOCIAL_SUPPORT], label: 'social_support_info' },
 ]
 
 const PN03List = [

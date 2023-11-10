@@ -1922,8 +1922,7 @@ renderEvalution = (name, data, isDisable) => {
                   {/* <div className="detail">{requestInfo ? moment(requestInfo.startDate).format("DD/MM/YYYY") + (requestInfo.startTime ? ' ' + moment(requestInfo.startTime, TIME_FORMAT).lang('en-us').format('HH:mm') : '') : ""}</div> */}
                 </div>
                 <div className="col-3">
-                  {t('contract_type')}
-                  {/* <Image src={IconInfo} alt="Info" style={{width: '15px', height: '15px'}} onClick={() => this.hideShowNoteModal(true)} /> */}
+                  {t('contract_type')} <Image src={IconInfo} alt="Info" style={{width: '15px', height: '15px'}} onClick={() => this.hideShowNoteModal(true)} />
                   <Select  placeholder={t('Select') + ' ' + t('contract_type')} options={this.contractTypeOptions} isDisabled={disableComponent.disableAll || !disableComponent.qlttSide}  isClearable={true} 
                   value={this.contractTypeOptions.filter(d => data.qlttOpinion.contract != null && d.value == data.qlttOpinion.contract.value)}
                   onChange={e => this.handleChangeSelectInputs(e,'qlttOpinion', 'contract')} className="input mv-10"
@@ -2055,8 +2054,7 @@ renderEvalution = (name, data, isDisable) => {
                   {/* <div className="detail">{requestInfo ? moment(requestInfo.startDate).format("DD/MM/YYYY") + (requestInfo.startTime ? ' ' + moment(requestInfo.startTime, TIME_FORMAT).lang('en-us').format('HH:mm') : '') : ""}</div> */}
                 </div>
                 <div className="col-3">
-                  {t('contract_type')} 
-                  {/* <Image src={IconInfo} alt="Info" style={{width: '15px', height: '15px'}} onClick={() => this.hideShowNoteModal(true)} /> */}
+                  {t('contract_type')} <Image src={IconInfo} alt="Info" style={{width: '15px', height: '15px'}} onClick={() => this.hideShowNoteModal(true)} />
                   <Select  placeholder={t('Select') + ' ' + t('contract_type')} options={this.contractTypeOptions} isDisabled={disableComponent.disableAll || !disableComponent.qlttSide}  isClearable={true} 
                   value={this.contractTypeOptions.filter(d => data.qlttOpinion.contract != null && d.value == data.qlttOpinion.contract.value)}
                   onChange={e => this.handleChangeSelectInputs(e,'qlttOpinion', 'contract')} className="input mv-10"
