@@ -1977,6 +1977,8 @@
   "WelfareRefund": "Hoàn trả dịch vụ phúc lợi",
   "WelfareRefundApproveWarning": "Đã có phê duyệt thanh toán cho CBLĐ trước đó, hệ thống sẽ điều chỉnh ngày duyệt ở SAP là {{date}}",
   "InsuranceSocialRequest": "Thanh toán bảo hiểm xã hội",
+  "ActualResult_SelfAssess": "Kết quả thực tế CBNV đánh giá",
+  "ActualResult_ManagerAssess": "Kết quả thực tế CBQL đánh giá",
   "Vin30Chronicles": "Sử ký Vin30",
   "VingroupHistory": "Lịch sử Vingroup",
   "VingroupCulturalGeneral": "Văn hóa Vingroup",

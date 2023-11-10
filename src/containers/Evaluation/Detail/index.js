@@ -7,7 +7,7 @@ import _ from 'lodash'
 import Constants from '../../../commons/Constants'
 import { getRequestConfigurations } from '../../../commons/Utils'
 import { calculateRating, isVinBusByCompanyCode, calculateScore, formatEvaluationNumber } from '../Utils'
-import { evaluationStatus, actionButton, processStep, languageCodeMapping } from '../Constants'
+import { evaluationStatus, actionButton, processStep, languageCodeMapping, evaluationApiVersion } from '../Constants'
 import { useGuardStore } from '../../../modules'
 import LoadingModal from '../../../components/Common/LoadingModal'
 import StatusModal from '../../../components/Common/StatusModal'
@@ -21,6 +21,8 @@ import IconSave from '../../../assets/img/ic-save.svg'
 import IconSendRequest from '../../../assets/img/icon/Icon_send.svg'
 import IconReject from '../../../assets/img/icon/Icon_Cancel.svg'
 import IconApprove from '../../../assets/img/icon/Icon_Check.svg'
+import VinGroupForm from "./v2/Vingroup"
+import VinBusForm from "./v2/VinBus"
 
 const currentLocale = localStorage.getItem("locale")
 
@@ -71,7 +73,6 @@ function EvaluationOverall(props) {
                       height = chart.height,
                       ctx = chart.ctx;
                     ctx.restore()
-                    // const fontSize = (height / 160).toFixed(2)
                     ctx.font = `normal normal bold 1.2em arial`
                     ctx.textBaseline = "top"
                     const text = chart?.options?.plugins?.report,
@@ -334,6 +335,7 @@ function EvaluationDetail(props) {
   const { showByManager, updateParent } = props;
   const formCode = showByManager ? props?.formCode : props.match.params.formCode;
   const evaluationFormId = showByManager ? props?.evaluationFormId : props.match.params.id;
+  const version = showByManager ? props?.version : props.match.params.version;
 
   useEffect(() => {
     const processEvaluationFormDetailData = response => {
@@ -344,18 +346,7 @@ function EvaluationDetail(props) {
           if (evaluationFormDetailTemp.listGroup) {
             evaluationFormDetailTemp.listGroup = ([...evaluationFormDetailTemp?.listGroup] || []).sort((pre, next) => pre?.groupOrder - next?.groupOrder)
           }
-
-          // const totalQuestionsAnswered = (evaluationFormDetailTemp?.listGroup || []).reduce((initial, current) => {
-          //     let questionsAnswered = (current?.listTarget || []).reduce((subInitial, subCurrent) => {
-          //         subInitial += subCurrent?.seftPoint ? 1 : 0
-          //         return subInitial
-          //     }, 0)
-          //     initial += questionsAnswered
-          //     return initial
-          // }, 0)
-          // evaluationFormDetailTemp.totalComplete = totalQuestionsAnswered
           SetEvaluationFormDetail(evaluationFormDetailTemp)
-          // SetEvaluationFormDetail(testEvaluationData)
           setDataLoaded(true)
         }
       }
@@ -370,7 +361,7 @@ function EvaluationDetail(props) {
           EmployeeCode: showByManager ? props.employeeCode : user?.employeeNo,
           FormCode: formCode
         }
-        const response = await axios.get(`${process.env.REACT_APP_HRDX_PMS_URL}api/targetform/formbyuser`, config)
+        const response = await axios.get(`${process.env.REACT_APP_HRDX_PMS_URL}api/${version}/targetform/formbyuser`, config)
         processEvaluationFormDetailData(response)
       } catch (e) {
         SetStatusModal({
@@ -891,6 +882,38 @@ function EvaluationDetail(props) {
     }
   }
 
+  const componentMapping = (companyCode) => {
+    // switch (true) {
+    //   case [Constants.pnlVCode.VinBus].includes(companyCode) :
+    //       return (
+    //         <VinBusForm 
+    //           evaluationFormDetail={evaluationFormDetail}
+    //           showByManager={showByManager}
+    //           version={version}
+    //           updateParent={updateParent}
+    //         />
+    //       )
+    //   default:
+    //     return (
+    //       <VinGroupForm 
+    //         evaluationFormDetail={evaluationFormDetail}
+    //         showByManager={showByManager}
+    //         version={version}
+    //         updateParent={updateParent}
+    //       />
+    //     )
+    // }
+
+    return (
+      <VinGroupForm 
+        evaluationFormDetail={evaluationFormDetail}
+        showByManager={showByManager}
+        version={version}
+        updateParent={updateParent}
+      />
+    )
+  }
+
   return (
     <>
       <LoadingModal show={isLoading} />
@@ -908,29 +931,37 @@ function EvaluationDetail(props) {
                 )
                 : (
                   <>
-                    <StatusModal 
-                      show={statusModal.isShow} 
-                      isSuccess={statusModal.isSuccess} 
-                      content={statusModal.content} 
-                      className="evaluation-status-modal"
-                      onHide={onHideStatusModal} />
                     <h1 className="content-page-header">{`${evaluationFormDetail?.checkPhaseFormName} ${t("of")} ${evaluationFormDetail?.fullName}`}</h1>
-                    <div>
-                      <EvaluationOverall evaluationFormDetail={evaluationFormDetail} showByManager={showByManager} />
-                      <EvaluationProcess evaluationFormDetail={evaluationFormDetail} showByManager={showByManager} errors={errors} updateData={updateData} />
-                      <div className="button-block" style={isOffLineType ? { display: 'none' } : {}} >
-                        {renderButtonBlock()}
-                      </div>
-                    </div>
                     {
-                      !bottom && !isOffLineType &&
-                      (evaluationFormDetail?.status == evaluationStatus.launch || (evaluationFormDetail?.status == evaluationStatus.selfAssessment && localStorage.getItem('employeeNo') == JSON.parse(evaluationFormDetail?.reviewer || '{}')?.uid))
-                      && evaluationFormDetail?.isEdit && (
-                        <div className="scroll-to-save" style={{ color: localStorage.getItem("companyThemeColor"), zIndex: '10' }}>
+                      version === evaluationApiVersion.v2
+                      ? componentMapping(evaluationFormDetail?.companyCode)
+                      : (
+                        <>
+                          <StatusModal 
+                            show={statusModal.isShow} 
+                            isSuccess={statusModal.isSuccess} 
+                            content={statusModal.content} 
+                            className="evaluation-status-modal"
+                            onHide={onHideStatusModal} />
                           <div>
-                            <button className="btn-action save mr-3" onClick={() => handleSubmit(actionButton.save, null, true)}><Image src={IconSave} alt="Save" />{t("EvaluationDetailPartSave")}</button>
+                            <EvaluationOverall evaluationFormDetail={evaluationFormDetail} showByManager={showByManager} />
+                            <EvaluationProcess evaluationFormDetail={evaluationFormDetail} showByManager={showByManager} errors={errors} updateData={updateData} />
+                            <div className="button-block" style={isOffLineType ? { display: 'none' } : {}} >
+                              {renderButtonBlock()}
+                            </div>
                           </div>
-                        </div>
+                          {
+                            !bottom && !isOffLineType &&
+                            (evaluationFormDetail?.status == evaluationStatus.launch || (evaluationFormDetail?.status == evaluationStatus.selfAssessment && localStorage.getItem('employeeNo') == JSON.parse(evaluationFormDetail?.reviewer || '{}')?.uid))
+                            && evaluationFormDetail?.isEdit && (
+                              <div className="scroll-to-save" style={{ color: localStorage.getItem("companyThemeColor"), zIndex: '10' }}>
+                                <div>
+                                  <button className="btn-action save mr-3" onClick={() => handleSubmit(actionButton.save, null, true)}><Image src={IconSave} alt="Save" />{t("EvaluationDetailPartSave")}</button>
+                                </div>
+                              </div>
+                            )
+                          }
+                        </>
                       )
                     }
                   </>
