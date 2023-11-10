@@ -3,6 +3,7 @@ import _ from "lodash";
 import AssessorInfoComponent from "../InternalPayment/component/AssessorInfoComponent";
 import { ISocialSupportModel } from "models/welfare/SocialContributeModel";
 import ProcessHistoryComponent from "containers/WorkflowManagement/DepartmentManagement/ProposalManagement/ProcessHistoryComponent";
+import { toast } from "react-toastify";
 
 interface IDetailSocialSupportInfoProps {
   t: any;
@@ -12,6 +13,7 @@ interface IDetailSocialSupportInfoProps {
   files: any[],
   timeRequest: any;
   userInfo: any;
+  templates: any
 };
 
 const DetailSocailSupportComponent: FC<IDetailSocialSupportInfoProps> = ({
@@ -21,12 +23,25 @@ const DetailSocailSupportComponent: FC<IDetailSocialSupportInfoProps> = ({
   timeRequest,
   approver,
   files = [],
-  userInfo
+  userInfo,
+  templates
 }) => {
+
+  const onDownloadTemplate = () => {
+    if(!data?.type?.value || !templates || !templates[data?.type?.value]) {
+      toast.error('Không có tài liệu')
+      return;
+    }
+    const link = document.createElement('a');
+    link.href = templates[data.type?.value];
+    document.body.appendChild(link);
+    link.click();
+    link.parentNode?.removeChild(link);
+  }
 
   return (
     <div className="registration-insurance-section social-contribute input-style">
-      <h5 className="pt-0">{'THÔNG TIN NGƯỜI TẠO YÊU CẦU'}</h5>
+      <h5 className="pt-0 m-0">{'THÔNG TIN NGƯỜI TẠO YÊU CẦU'}</h5>
       <div className="box shadow-sm cbnv mb-4">
         <div className="row">
           <div className="col-3">
@@ -48,21 +63,17 @@ const DetailSocailSupportComponent: FC<IDetailSocialSupportInfoProps> = ({
         </div>
       </div>
 
-      <div className="row">
-        <div className="col-12">
-          <div className="box shadow-sm cbnv">
-            {t('TypeOfRequest')} 
-            <div className={`detail`}>{data?.type?.label}</div>
-          </div>
-        </div>
+      <div className="box shadow-sm cbnv">
+        {t('TypeOfRequest')} 
+        <div className={`detail`}>{data?.type?.label}</div>
       </div>
 
-      <h5 className="pt-0">{t('ListDocumentNeedSend')}</h5>
-      <div className="box shadow-sm cbnv">
+      <h5 className="pt-0 m-0">{t('ListDocumentNeedSend')}</h5>
+      <div className="box shadow-sm cbnv mb-0">
         <div className="row">
           <div className="col-12">
             {t('RequestDownloadDocument')}
-            <a style={{color: '#007bff'}}>{t('Here')}</a>
+            <a style={{color: '#007bff', cursor: 'pointer'}} onClick={() => onDownloadTemplate()}>{t('Here')}</a>
           </div>
         </div>
       </div>
@@ -80,7 +91,7 @@ const DetailSocailSupportComponent: FC<IDetailSocialSupportInfoProps> = ({
       <h5 style={{paddingTop: '16px'}}>
         {t("RequestHistory").toUpperCase()}
       </h5>
-      <div className="timesheet-section">
+      <div className="timesheet-section" style={{marginBottom: '16px'}}>
         <div className="timesheet-box1 timesheet-box shadow-sm">
           <ProcessHistoryComponent
             createdDate={timeRequest?.createDate}
