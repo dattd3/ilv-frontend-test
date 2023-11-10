@@ -1303,7 +1303,7 @@ function EvaluationApproval(props) {
                     )
                 }
                 {
-                    activeTab === batchApprovalTabCode && evaluationData?.data?.length > 0 && 
+                    activeTab === batchApprovalTabCode && evaluationData?.data?.length > 0 && dataFilter?.evaluationForm?.reviewStreamCode !== processStep.level360 &&
                     <div className="button-block">
                         <button className="btn-action reject" onClick={() => handleAction(actionButton.reject)}><Image src={IconReject} alt="Reject" />{t("EvaluationDetailPartReject")}</button>
                         <button className="btn-action approve" onClick={() => handleAction(actionButton.approve)}><Image src={IconApprove} alt="Approve" />{t("EvaluationDetailPartApprove")}</button>
