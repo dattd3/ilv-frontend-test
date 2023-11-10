@@ -3792,8 +3792,14 @@
                             border: 1px solid #DEE2E6;
                             height: 30px;
                             width: 90px;
+                            outline: none;
                         }
                     }
+                }
+                .error-message {
+                    color: red;
+                    margin-top: 5px;
+                    font-size: 12px;
                 }
             }
         }
@@ -3831,6 +3837,25 @@
             margin: 0 auto;
             .pagination {
                 margin-bottom: 0;
+            }
+        }
+    }
+    .button-region-batch-evaluation-360 {
+        margin-top: 15px;
+        .btn-action {
+            border: none;
+            outline: none;
+            border-radius: 4px;
+            color: #FFFFFF;
+            font-size: 13px;
+            height: 38px;
+            padding: 0 30px;
+            img {
+                margin-right: 8px;
+                margin-top: -3px;
+            }
+            &.send {
+                background: #347EF9;
             }
         }
     }
