@@ -529,7 +529,9 @@ function NewsOnHome() {
             </div>
           </div>
         )}
-        {loaded && <Footer />}
+        <div className="footer-dash-board">
+          <Footer />
+        </div>
         {isVisibleGoToTop && (
           <div
             onClick={(e) => scrollToTop()}
