@@ -103,7 +103,7 @@ function ListNotifications(props) {
         <>
         <div className="list-notifications-section">
             <FormSearchComponent handler={handler} />
-            <div className="card wrap-list-notifications-section mb-4">
+            <div className="card wrap-list-notifications-section">
                 <div className="card-body">
                     <div className="list-notifications-block">
                     {dataBlock}
