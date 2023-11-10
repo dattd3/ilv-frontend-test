@@ -10,7 +10,7 @@ const Constants = {
     NOTIFICATION_TRAINING_INFORMATION: 4,
     NOTIFICATION_OTHER: 5,
     NOTIFICATION_MISSING_DOC: 6,
-    NOTIFICATION_REJECT: 7,
+    NOTIFICATION_APPROVED: 7,
     NOTIFICATION_AUTO_JOB: 8,
     NOTIFICATION_UNUSUAL_TIMESHEET: 9,
     NOTIFICATION_SHIFT_CHANGE: 10,
@@ -297,6 +297,11 @@ const Constants = {
     APP_ID: 1,
     DEVICE: 'WEBSITE',
     MODE: 2,
+  },
+  tabListRequestMapping: {
+    REQUEST: 'request',
+    APPROVAL: 'approval',
+    APPRAISAL: 'consent',
   }
 }
 
