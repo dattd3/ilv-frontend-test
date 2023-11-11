@@ -8,6 +8,7 @@ const evaluationStatus = {
     cbldApproved: 5,
 }
 const evaluation360Status = {
+    save: 2,
     waitingEvaluation: 3,
     evaluated: 4,
     completed: 5,
