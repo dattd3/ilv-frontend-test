@@ -3854,8 +3854,15 @@
                 margin-right: 8px;
                 margin-top: -3px;
             }
+            &.save {
+                background: #347EF9;
+                img {
+                    height: 14px;
+                }
+            }
             &.send {
                 background: #347EF9;
+                margin-left: 15px;
             }
         }
     }

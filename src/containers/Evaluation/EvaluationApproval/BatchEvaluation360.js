@@ -1,42 +1,21 @@
-import React, { useState, useEffect, useRef, Fragment } from "react"
-import Select from 'react-select'
-import { Image, Tabs, Tab, Form, Button, Row, Col, Collapse } from 'react-bootstrap'
-import DatePicker, { registerLocale } from 'react-datepicker'
-import { useHistory } from "react-router"
+import React, { useState, useEffect, Fragment } from "react"
 import { useTranslation } from "react-i18next"
-import moment from 'moment'
 import axios from 'axios'
 import _ from 'lodash'
-import { evaluationStatus, actionButton, processStep, stepEvaluation360Config, evaluation360Status, evaluationApiVersion } from '../Constants'
+import { actionButton, evaluation360Status, evaluationApiVersion } from '../Constants'
 import Constants from '../../../commons/Constants'
-import { getRequestConfigurations, getMuleSoftHeaderConfigurations, getCurrentLanguage } from '../../../commons/Utils'
+import { getRequestConfigurations, getCurrentLanguage } from '../../../commons/Utils'
 import { isJsonString } from "utils/string"
+import { hasNotValue } from "../Utils"
 import LoadingModal from '../../../components/Common/LoadingModal'
 import StatusModal from '../../../components/Common/StatusModal'
-import EvaluationDetailModal from '../EvaluationDetailModal'
-import SearchUser from '../SearchUser'
 import CustomPaging from '../../../components/Common/CustomPaging'
-import HOCComponent from '../../../components/Common/HOCComponent'
-import IconExpand from '../../../assets/img/icon/pms/icon-expand.svg'
-import IconCollapse from '../../../assets/img/icon/pms/icon-collapse.svg'
-import IconSearch from '../../../assets/img/icon/Icon_Loop.svg'
-import IconReject from '../../../assets/img/icon/Icon_Cancel.svg'
 import IconSend from '../../../assets/img/icon/Icon_send.svg'
-import IconDatePicker from 'assets/img/icon/Icon_DatePicker.svg'
-import 'react-datepicker/dist/react-datepicker.css'
-import vi from 'date-fns/locale/vi'
-import { hasNotValue } from "../Utils"
-registerLocale("vi", vi)
-
-const employeeCode = localStorage.getItem('employeeNo')
-const employeeAD = localStorage.getItem('email').split('@')[0]
-const approvalTabCode = 'approval'
-const batchApprovalTabCode = 'batchApproval'
+import IconSave from '../../../assets/img/ic-save.svg'
 
 const BatchEvaluation360 = ({ evaluationData }) => {
     const listPageSizes = [10, 20, 30, 40, 50]
     const { t } = useTranslation()
-    const history = useHistory()
     const [isLoading, SetIsLoading] = useState(false)
     const [users, SetUsers] = useState([])
     const [evaluationDataState, SetEvaluationDataState] = useState(null)
@@ -78,9 +57,6 @@ const BatchEvaluation360 = ({ evaluationData }) => {
     const handleScoreChange = (index, targetIndex, e) => {
         const evaluationDataStateClone = {...evaluationDataState}
         evaluationDataStateClone.data[index].listGroup[1].listTarget[targetIndex].seftPoint = e?.target?.value || null
-        if ((evaluationDataStateClone.data[index].listGroup[1].listTarget || []).every(item => !hasNotValue(item?.seftPoint))) {
-            evaluationDataStateClone.data[index].status = evaluation360Status.evaluated
-        }
         SetEvaluationDataState(evaluationDataStateClone)
     }
 
@@ -158,17 +134,25 @@ const BatchEvaluation360 = ({ evaluationData }) => {
         SetIsLoading(true)
         try {
             const config = getRequestConfigurations()
-            // return
-            const response = await axios.post(`${process.env.REACT_APP_HRDX_PMS_URL}api/${evaluationApiVersion.v1}/targetform/update-batch`, { requestString: JSON.stringify(evaluationDataState.data || []) }, config)
+            const payload = (evaluationDataState?.data || [])
+            .filter(item => !hasNotValue(item?.opinion) || (item?.listGroup?.[1]?.listTarget || []).some(target => !hasNotValue(target?.seftPoint)))
+            .map(item => {
+                return {
+                    ...item,
+                    status: action == actionButton.approve ? evaluation360Status.evaluated : evaluation360Status.save
+                }
+            })
+
+            const response = await axios.post(`${process.env.REACT_APP_HRDX_PMS_URL}api/${evaluationApiVersion.v1}/targetform/update-batch`, { requestStrings: JSON.stringify(payload || []) }, config)
             SetErrors({})
             statusModalTemp.isShow = true
             statusModalTemp.isSuccess = false
-            statusModalTemp.content = t("EvaluationFailedToEvaluateForm")
+            statusModalTemp.content = action == actionButton.approve ? t("EvaluationFailedToEvaluateForm") : t("EvaluationFailedToSaveForm")
             if (response?.data) {
                 const result = response.data?.result
                 if (result?.code == Constants.PMS_API_SUCCESS_CODE) {
                     statusModalTemp.isSuccess = true
-                    statusModalTemp.content = t("EvaluationFormEvaluatedSuccessfully")
+                    statusModalTemp.content = action == actionButton.approve ? t("EvaluationFormEvaluatedSuccessfully") : t("EvaluationFormSaveSuccessfully")
                     statusModalTemp.needReload = true
                 } else {
                     statusModalTemp.content = result?.message
@@ -244,7 +228,7 @@ const BatchEvaluation360 = ({ evaluationData }) => {
                                                                     <input type="text" value={parseInt(user?.listGroup?.[1]?.listTarget?.[tIndex]?.seftPoint) === 0 ? 'N/A' : (user?.listGroup?.[1]?.listTarget?.[tIndex]?.seftPoint ?? '')} disabled />
                                                                 )
                                                                 : (
-                                                                    <select onChange={e => handleScoreChange(uIndex, tIndex, e)} value={user?.listGroup?.[1]?.listTarget?.[tIndex]?.seftPoint || ''}>
+                                                                    <select onChange={e => handleScoreChange(uIndex, tIndex, e)} value={user?.listGroup?.[1]?.listTarget?.[tIndex]?.seftPoint ?? ''}>
                                                                         <option value=''>{t("EvaluationDetailPartSelectScore")}</option>
                                                                         {
                                                                             (scores || []).map((score, i) => {
@@ -292,266 +276,6 @@ const BatchEvaluation360 = ({ evaluationData }) => {
                                 </>
                             )
                         }
-
-
-
-                        
-                        {/* <tr className="kpi-item">
-                            <td className="col-customize sticky-col kpi">Năng lực chuyên môn sâu rộng, đáp ứng nhiệm vụ được giao | Extensive professional competence, meeting assigned tasks</td>
-                            <td className="col-customize user-point">
-                                <select onChange={e => handleInputChange(e)} value={''}>
-                                    <option value=''>{t("EvaluationDetailPartSelectScore")}</option>
-                                    {
-                                        (scores || []).map((score, i) => {
-                                            return (<option value={score} key={i}>{score}</option>)
-                                        })
-                                    }
-                                </select>
-                            </td>
-                            <td className="col-customize user-point">
-                                <select onChange={e => handleInputChange(e)} value={''}>
-                                    <option value=''>{t("EvaluationDetailPartSelectScore")}</option>
-                                    {
-                                        (scores || []).map((score, i) => {
-                                            return (<option value={score} key={i}>{score}</option>)
-                                        })
-                                    }
-                                </select>
-                            </td>
-                            <td className="col-customize user-point">
-                                <select onChange={e => handleInputChange(e)} value={''}>
-                                    <option value=''>{t("EvaluationDetailPartSelectScore")}</option>
-                                    {
-                                        (scores || []).map((score, i) => {
-                                            return (<option value={score} key={i}>{score}</option>)
-                                        })
-                                    }
-                                </select>
-                            </td>
-                            <td className="col-customize user-point">
-                                <select onChange={e => handleInputChange(e)} value={''}>
-                                    <option value=''>{t("EvaluationDetailPartSelectScore")}</option>
-                                    {
-                                        (scores || []).map((score, i) => {
-                                            return (<option value={score} key={i}>{score}</option>)
-                                        })
-                                    }
-                                </select>
-                            </td>
-                            <td className="col-customize user-point">
-                                <select onChange={e => handleInputChange(e)} value={''}>
-                                    <option value=''>{t("EvaluationDetailPartSelectScore")}</option>
-                                    {
-                                        (scores || []).map((score, i) => {
-                                            return (<option value={score} key={i}>{score}</option>)
-                                        })
-                                    }
-                                </select>
-                            </td>
-                            <td className="col-customize user-point">
-                                <select onChange={e => handleInputChange(e)} value={''}>
-                                    <option value=''>{t("EvaluationDetailPartSelectScore")}</option>
-                                    {
-                                        (scores || []).map((score, i) => {
-                                            return (<option value={score} key={i}>{score}</option>)
-                                        })
-                                    }
-                                </select>
-                            </td>
-                            <td className="col-customize user-point">
-                                <select onChange={e => handleInputChange(e)} value={''}>
-                                    <option value=''>{t("EvaluationDetailPartSelectScore")}</option>
-                                    {
-                                        (scores || []).map((score, i) => {
-                                            return (<option value={score} key={i}>{score}</option>)
-                                        })
-                                    }
-                                </select>
-                            </td>
-                            <td className="col-customize user-point">
-                                <select onChange={e => handleInputChange(e)} value={''}>
-                                    <option value=''>{t("EvaluationDetailPartSelectScore")}</option>
-                                    {
-                                        (scores || []).map((score, i) => {
-                                            return (<option value={score} key={i}>{score}</option>)
-                                        })
-                                    }
-                                </select>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colSpan={9} className="row-seperate"></td>
-                        </tr> */}
-
-                        {/* <tr className="kpi-item">
-                            <td className="col-customize sticky-col kpi">Năng lực chuyên môn sâu rộng, đáp ứng nhiệm vụ được giao | Extensive professional competence, meeting assigned tasks</td>
-                            <td className="col-customize user-point">
-                                <select onChange={e => handleInputChange(e)} value={''}>
-                                    <option value=''>{t("EvaluationDetailPartSelectScore")}</option>
-                                    {
-                                        (scores || []).map((score, i) => {
-                                            return (<option value={score} key={i}>{score}</option>)
-                                        })
-                                    }
-                                </select>
-                            </td>
-                            <td className="col-customize user-point">
-                                <select onChange={e => handleInputChange(e)} value={''}>
-                                    <option value=''>{t("EvaluationDetailPartSelectScore")}</option>
-                                    {
-                                        (scores || []).map((score, i) => {
-                                            return (<option value={score} key={i}>{score}</option>)
-                                        })
-                                    }
-                                </select>
-                            </td>
-                            <td className="col-customize user-point">
-                                <select onChange={e => handleInputChange(e)} value={''}>
-                                    <option value=''>{t("EvaluationDetailPartSelectScore")}</option>
-                                    {
-                                        (scores || []).map((score, i) => {
-                                            return (<option value={score} key={i}>{score}</option>)
-                                        })
-                                    }
-                                </select>
-                            </td>
-                            <td className="col-customize user-point">
-                                <select onChange={e => handleInputChange(e)} value={''}>
-                                    <option value=''>{t("EvaluationDetailPartSelectScore")}</option>
-                                    {
-                                        (scores || []).map((score, i) => {
-                                            return (<option value={score} key={i}>{score}</option>)
-                                        })
-                                    }
-                                </select>
-                            </td>
-                            <td className="col-customize user-point">
-                                <select onChange={e => handleInputChange(e)} value={''}>
-                                    <option value=''>{t("EvaluationDetailPartSelectScore")}</option>
-                                    {
-                                        (scores || []).map((score, i) => {
-                                            return (<option value={score} key={i}>{score}</option>)
-                                        })
-                                    }
-                                </select>
-                            </td>
-                            <td className="col-customize user-point">
-                                <select onChange={e => handleInputChange(e)} value={''}>
-                                    <option value=''>{t("EvaluationDetailPartSelectScore")}</option>
-                                    {
-                                        (scores || []).map((score, i) => {
-                                            return (<option value={score} key={i}>{score}</option>)
-                                        })
-                                    }
-                                </select>
-                            </td>
-                            <td className="col-customize user-point">
-                                <select onChange={e => handleInputChange(e)} value={''}>
-                                    <option value=''>{t("EvaluationDetailPartSelectScore")}</option>
-                                    {
-                                        (scores || []).map((score, i) => {
-                                            return (<option value={score} key={i}>{score}</option>)
-                                        })
-                                    }
-                                </select>
-                            </td>
-                            <td className="col-customize user-point">
-                                <select onChange={e => handleInputChange(e)} value={''}>
-                                    <option value=''>{t("EvaluationDetailPartSelectScore")}</option>
-                                    {
-                                        (scores || []).map((score, i) => {
-                                            return (<option value={score} key={i}>{score}</option>)
-                                        })
-                                    }
-                                </select>
-                            </td>
-                        </tr>
-                        <tr className="group">
-                            <td colSpan={3} className="sticky-col group">Năng lực chuyên môn | Professional competency</td>
-                        </tr>
-                        <tr className="kpi-item">
-                            <td className="col-customize sticky-col kpi">Năng lực chuyên môn sâu rộng, đáp ứng nhiệm vụ được giao | Extensive professional competence, meeting assigned tasks</td>
-                            <td className="col-customize user-point">
-                                <select onChange={e => handleInputChange(e)} value={''}>
-                                    <option value=''>{t("EvaluationDetailPartSelectScore")}</option>
-                                    {
-                                        (scores || []).map((score, i) => {
-                                            return (<option value={score} key={i}>{score}</option>)
-                                        })
-                                    }
-                                </select>
-                            </td>
-                            <td className="col-customize user-point">
-                                <select onChange={e => handleInputChange(e)} value={''}>
-                                    <option value=''>{t("EvaluationDetailPartSelectScore")}</option>
-                                    {
-                                        (scores || []).map((score, i) => {
-                                            return (<option value={score} key={i}>{score}</option>)
-                                        })
-                                    }
-                                </select>
-                            </td>
-                            <td className="col-customize user-point">
-                                <select onChange={e => handleInputChange(e)} value={''}>
-                                    <option value=''>{t("EvaluationDetailPartSelectScore")}</option>
-                                    {
-                                        (scores || []).map((score, i) => {
-                                            return (<option value={score} key={i}>{score}</option>)
-                                        })
-                                    }
-                                </select>
-                            </td>
-                            <td className="col-customize user-point">
-                                <select onChange={e => handleInputChange(e)} value={''}>
-                                    <option value=''>{t("EvaluationDetailPartSelectScore")}</option>
-                                    {
-                                        (scores || []).map((score, i) => {
-                                            return (<option value={score} key={i}>{score}</option>)
-                                        })
-                                    }
-                                </select>
-                            </td>
-                            <td className="col-customize user-point">
-                                <select onChange={e => handleInputChange(e)} value={''}>
-                                    <option value=''>{t("EvaluationDetailPartSelectScore")}</option>
-                                    {
-                                        (scores || []).map((score, i) => {
-                                            return (<option value={score} key={i}>{score}</option>)
-                                        })
-                                    }
-                                </select>
-                            </td>
-                            <td className="col-customize user-point">
-                                <select onChange={e => handleInputChange(e)} value={''}>
-                                    <option value=''>{t("EvaluationDetailPartSelectScore")}</option>
-                                    {
-                                        (scores || []).map((score, i) => {
-                                            return (<option value={score} key={i}>{score}</option>)
-                                        })
-                                    }
-                                </select>
-                            </td>
-                            <td className="col-customize user-point">
-                                <select onChange={e => handleInputChange(e)} value={''}>
-                                    <option value=''>{t("EvaluationDetailPartSelectScore")}</option>
-                                    {
-                                        (scores || []).map((score, i) => {
-                                            return (<option value={score} key={i}>{score}</option>)
-                                        })
-                                    }
-                                </select>
-                            </td>
-                            <td className="col-customize user-point">
-                                <select onChange={e => handleInputChange(e)} value={''}>
-                                    <option value=''>{t("EvaluationDetailPartSelectScore")}</option>
-                                    {
-                                        (scores || []).map((score, i) => {
-                                            return (<option value={score} key={i}>{score}</option>)
-                                        })
-                                    }
-                                </select>
-                            </td>
-                        </tr> */}
                     </tbody>
                 </table>
             </div>
@@ -577,7 +301,7 @@ const BatchEvaluation360 = ({ evaluationData }) => {
                 </div>
             </div>
             <div className="button-region-batch-evaluation-360 d-flex justify-content-end">
-                <button className="btn-action save" onClick={() => sendEvaluation(actionButton.save)}><img src={IconSend} alt="Save" />{t("Save")}</button>
+                <button className="btn-action save" onClick={() => sendEvaluation(actionButton.save)}><img src={IconSave} alt="Save" />{t("Save")}</button>
                 <button className="btn-action send" onClick={() => sendEvaluation(actionButton.approve)}><img src={IconSend} alt="Send" />{t("Evaluation360ButtonSend")}</button>
             </div>
         </>
