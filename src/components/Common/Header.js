@@ -202,7 +202,7 @@ function Header(props) {
                 const qnaDetailType = 'TICKET'
                 const requestTypeId = item.requestTypeId; //Loại yêu cầu
 
-                let notificationLink = (type) => {
+                let notificationLink = (type, levelData) => {
                     if (requestTypeId == 6 && item?.type != 15) {
                         if (item.detailType == 'APPROVAL') {
                           return `/evaluation/${requestId}/approval`;
@@ -255,12 +255,17 @@ function Header(props) {
 
                             if (item?.detailType == 'REQUEST')
                                 return `/tasks${item?.groupId ? `?requestTypes=${getRequestTypesList(item.groupId, false).join(",")}` : ''}`
-                            else if (item?.detailType == 'APPRAISAL')
-                                // return `/tasks?tab=consent${item?.groupId ? `&requestTypes=${getRequestTypesList(item.groupId, false).join(",")}&id=${item?.subRequestId}` : ''}`
-                                return ''
-                            else
-                                // return `/tasks?tab=approval${item?.groupId ? `&requestTypes=${getRequestTypesList(item.groupId, false).join(",")}` : ''}&id=${item?.subRequestId}`
-                                return ''
+                            else if (item?.detailType == 'APPRAISAL') {
+                                if (levelData === "" || levelData === null || levelData === undefined || levelData == 1) { // Chỉ có 1 yêu cầu
+                                    return ''
+                                }
+                                return `/tasks?tab=consent${item?.groupId ? `&requestTypes=${getRequestTypesList(item.groupId, false).join(",")}` : ''}`
+                            } else {
+                                if (levelData === "" || levelData === null || levelData === undefined || levelData == 1) { // Chỉ có 1 yêu cầu
+                                    return ''
+                                }
+                                return `/tasks?tab=approval${item?.groupId ? `&requestTypes=${getRequestTypesList(item.groupId, false).join(",")}` : ''}`
+                            }
                         case 6:
                             return '/personal-info?tab=document'
                         case Constants.notificationType.NOTIFICATION_APPROVED:
@@ -311,7 +316,7 @@ function Header(props) {
                 : item?.description || ''
 
                 return <div key={i} className="item">
-                    <a onClick={(e) => clickNotification(e, item.id, requestId, subRequestId, getAction(item?.type, item?.detailType), notificationLink(item.type))} className="title" href={notificationLink(item.type)} title={titleNotice}>{titleNotice}</a>
+                    <a onClick={(e) => clickNotification(e, item.id, requestId, subRequestId, getAction(item?.type, item?.detailType), notificationLink(item?.type, item?.levelData))} className="title" href={notificationLink(item?.type, item?.levelData)} title={titleNotice}>{titleNotice}</a>
                     <p className="description">{descriptionNotice}</p>
                     <div className="time-file">
                         <span className="time"><i className='far fa-clock ic-clock'></i><span>{timePost}</span></span>
