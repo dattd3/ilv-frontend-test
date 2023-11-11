@@ -3574,36 +3574,10 @@
                         cursor: pointer;
                     }
                 }
-                .wrap-table {
-                    overflow-x: auto;
-                    padding-bottom: 5px;
-                    &::-webkit-scrollbar {
-                        width: 8px;
-                        height: 8px;
-                        background-color: #f5f5f5;
-                    }
-                    &::-webkit-scrollbar-thumb {
-                        background-color: #a4afb7;
-                        border-left: 1px solid #FFFFFF;
-                        border-right: 1px solid #FFFFFF;
-                        border-top: 1px solid #FFFFFF;
-                        border-bottom: 1px solid #FFFFFF;
-                        border-radius: 4px;
-                    }
-                    &::-webkit-scrollbar-track {
-                        background-color: #d3d3d3;
-                        border-left: 3.5px solid #FFFFFF;
-                        border-right: 3.5px solid #FFFFFF;
-                        border-top: 3.5px solid #FFFFFF;
-                        border-bottom: 3.5px solid #FFFFFF;
-                    }
-                }
                 .table-list-evaluation {
+                    width: 100%;
                     color: #000000;
-                    table-layout: fixed;
-                    border: none;
                     border-collapse: collapse;
-                    border-spacing: 0;
                     .highlight-first {
                         background: #D9E6FA;;
                     }
@@ -3618,25 +3592,23 @@
                             padding: 6px 0;
                             border: 0.5px solid #DEE2E6;
                             &.c-user-info {
-                                padding-left: calc(32px + 10px);
+                                padding-left: calc(3% + 10px);
                             }
                         }
                     }
                     .c-check {
+                        width: 3%;
                         .check {
-                            width: 32px;
                             display: flex;
                             align-items: center;
                             justify-content: center;
                         }
                     }
                     .c-full-name {
-                        .full-name {
-                            width: 230px;
-                        }
+                        width: 25%;
                     }
-                    .self-assessment, .cbql-assessment {
-                        width: 140px;
+                    .c-self-assessment, .c-cbql-assessment {
+                        width: 12%;
                     }
                     tbody {
                         tr {
@@ -3710,99 +3682,6 @@
                 }
             }
         }
-        .batch-evaluation-360 {
-            padding: 15px;
-            font-size: 13px;
-            .wrap-table-batch-evaluation-360 {
-                overflow-x: auto;
-                &::-webkit-scrollbar {
-                  width: 8px;
-                  height: 8px;
-                  background-color: #f5f5f5;
-                }
-                &::-webkit-scrollbar-thumb {
-                  background-color: #a4afb7;
-                  border-left: 1px solid #FFFFFF;
-                  border-right: 1px solid #FFFFFF;
-                  border-top: 1px solid #FFFFFF;
-                  border-bottom: 1px solid #FFFFFF;
-                  border-radius: 4px;
-                }
-                &::-webkit-scrollbar-track {
-                  background-color: #d3d3d3;
-                  border-left: 3.5px solid #FFFFFF;
-                  border-right: 3.5px solid #FFFFFF;
-                  border-top: 3.5px solid #FFFFFF;
-                  border-bottom: 3.5px solid #FFFFFF;
-                }
-                .sticky-col {
-                    position: sticky;
-                    background: #FFFFFF;
-                    z-index: 1;
-                    left: 0;
-                }
-                .user-point {
-                    width: 150px;
-                    border-left: none;
-                    text-align: center;
-                }
-                .kpi {
-                    width: 300px;
-                }
-                .row-seperate {
-                    padding: 4px 0;
-                    border: none;
-                }
-                table {
-                    white-space: normal;
-                    margin: 0;
-                    width: 100%;
-                    border: none;
-                    border-collapse: separate;
-                    border-spacing: 0;
-                    table-layout: fixed;
-                    th, td {
-                        padding: 10px 6px;
-                        border: 1px solid #DEE2E6;
-                    }
-                    thead {
-                        th {
-                            border: 1px solid #DEE2E6;
-                            text-align: center;
-                            .employee-code {
-                                font-weight: normal;
-                            }
-                        }
-                    }
-                    tbody {
-                        .group {
-                            td {
-                                padding: 10px 0;
-                                border: none;
-                                font-weight: bold;
-                            }
-                        }
-                        textarea {
-                            width: 95%;
-                            border: 1px solid #DEE2E6;
-                            outline: none;
-                            padding: 5px;
-                        }
-                        select {
-                            border: 1px solid #DEE2E6;
-                            height: 30px;
-                            width: 90px;
-                            outline: none;
-                        }
-                    }
-                }
-                .error-message {
-                    color: red;
-                    margin-top: 5px;
-                    font-size: 12px;
-                }
-            }
-        }
     }
     .bottom-region {
         display: flex;
@@ -3837,32 +3716,6 @@
             margin: 0 auto;
             .pagination {
                 margin-bottom: 0;
-            }
-        }
-    }
-    .button-region-batch-evaluation-360 {
-        margin-top: 15px;
-        .btn-action {
-            border: none;
-            outline: none;
-            border-radius: 4px;
-            color: #FFFFFF;
-            font-size: 13px;
-            height: 38px;
-            padding: 0 30px;
-            img {
-                margin-right: 8px;
-                margin-top: -3px;
-            }
-            &.save {
-                background: #347EF9;
-                img {
-                    height: 14px;
-                }
-            }
-            &.send {
-                background: #347EF9;
-                margin-left: 15px;
             }
         }
     }
