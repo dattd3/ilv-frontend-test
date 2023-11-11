@@ -8,7 +8,7 @@ import ResultModal from './ResultModal'
 import ResultChangeShiftModal from './ResultChangeShiftModal'
 import Constants from '../../commons/Constants'
 import map from "../map.config"
-import { getCulture } from "commons/Utils"
+import { getCulture, getValueParamByQueryString } from "commons/Utils"
 import LoadingModal from "components/Common/LoadingModal"
 
 // Thẩm định, Phê duyệt từng yêu cầu
@@ -104,7 +104,7 @@ class ConfirmationModal extends React.Component {
     getHostByRequestTypeId = (dataToSap) => {
         const requestTypeId = dataToSap?.[0]?.requestTypeId || dataToSap?.requestTypeId || "";
 
-        return !!requestTypeId && [12, 14, 15, Constants.INSURANCE_SOCIAL, Constants.INSURANCE_SOCIAL_INFO].includes(requestTypeId)
+        return !!requestTypeId && [12, 14, 15, Constants.INSURANCE_SOCIAL, Constants.INSURANCE_SOCIAL_INFO, Constants.SOCIAL_SUPPORT].includes(requestTypeId)
           ? process.env.REACT_APP_REQUEST_SERVICE_URL
           : process.env.REACT_APP_REQUEST_URL;
     }
@@ -440,7 +440,28 @@ class ConfirmationModal extends React.Component {
     }
 
     hideStatusModal = () => {
+        const { action, lockReload, onHideTaskDetailModal } = this.props
         this.setState({ isShowStatusModal: false })
+        if (window.location.pathname === map.Task) {
+            const currentTab = getValueParamByQueryString(window.location.search, "tab")
+            switch (currentTab) {
+                case Constants.tabListRequestMapping.APPRAISAL:
+                    if (action === Constants.tabListRequestMapping.APPRAISAL)
+                    return window.location.reload();
+                case Constants.tabListRequestMapping.APPROVAL:
+                    if (action === Constants.tabListRequestMapping.APPROVAL)
+                    return window.location.reload();
+                default:
+                    if (action === Constants.tabListRequestMapping.REQUEST)
+                    onHideTaskDetailModal()
+                    return
+            }
+        }
+
+        if (lockReload) {
+            onHideTaskDetailModal()
+            return
+        }
         window.location.reload();
     }
 
