@@ -116,7 +116,6 @@ class SearchUser extends React.Component {
         }
         const { t, title } = this.props
         const { isSearching, user, users } = this.state
-        const isDisabled = this.props?.isDisabled || false
 
         return <Select
                     isClearable={true}
@@ -128,7 +127,6 @@ class SearchUser extends React.Component {
                     placeholder={t('SearchTextPlaceholder')}
                     filterOption={this.filterOption}
                     options={users}
-                    isDisabled={isDisabled}
                 />
     }
 }
