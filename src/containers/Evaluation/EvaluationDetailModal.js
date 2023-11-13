@@ -4,7 +4,7 @@ import EvaluationDetail from './Detail/index'
 import Evaluation360 from "./Detail/Evaluation360"
 
 function EvaluationDetailModal(props) {
-    const { isShow, evaluationFormId, formCode, employeeCode, isEvaluation360, onHide} = props
+    const { isShow, showByManager, evaluationFormId, formCode, employeeCode, version, isEvaluation360, onHide} = props
     
     const updateParent = (statusModal, keepPopupEvaluationDetail = false) => {
         onHide(statusModal, keepPopupEvaluationDetail)
@@ -32,7 +32,7 @@ function EvaluationDetailModal(props) {
                     )
                     : (
                         <EvaluationDetail 
-                            showByManager={true} 
+                            showByManager={showByManager} 
                             evaluationFormId={evaluationFormId} 
                             formCode={formCode} 
                             employeeCode={employeeCode}

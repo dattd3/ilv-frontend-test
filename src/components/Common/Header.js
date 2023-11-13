@@ -290,9 +290,10 @@ function Header(props) {
                         case Constants.notificationType.NOTIFICATION_ADD_MEMBER_TO_PROJECT:
                             return `/my-projects/project/${item?.userProfileHistoryId}` 
                         case Constants.notificationType.NOTIFICATION_MY_EVALUATION:
-                            return `/my-evaluation`
                         case Constants.notificationType.NOTIFICATION_LEAD_EVALUATION:
-                            return `/evaluation-approval`
+                            return ''
+                            // return `/my-evaluation`
+                            // return `/evaluation-approval`
                         case Constants.notificationType.NOTIFICATION_MY_KPI_REGISTRATION_REQUEST:
                             return `/target-management?tab=OWNER&id=${item?.subRequestId || 0}`
                         case Constants.notificationType.NOTIFICATION_MY_KPI_REGISTRATION_APPROVAL_REQUEST:
@@ -307,9 +308,15 @@ function Header(props) {
                 let descriptionNotice = [Constants.notificationType.NOTIFICATION_MY_EVALUATION, Constants.notificationType.NOTIFICATION_LEAD_EVALUATION].includes(item?.type)
                 ? currentLocale == Constants.LANGUAGE_VI ? item?.description : item?.en_Description || ''
                 : item?.description || ''
+                const isEvaluation = [Constants.notificationType.NOTIFICATION_MY_EVALUATION, Constants.notificationType.NOTIFICATION_LEAD_EVALUATION].includes(Number(item?.type))
+                const evaluationData = {
+                    isEvaluation: isEvaluation,
+                    isFromManager: item?.type == Constants.notificationType.NOTIFICATION_LEAD_EVALUATION,
+                    ...(isEvaluation && { data: JSON.parse(item?.formType) }),
+                }
 
                 return <div key={i} className="item">
-                    <a onClick={(e) => clickNotification(e, item.id, requestId, subRequestId, getAction(item?.type, item?.detailType), notificationLink(item?.type, item?.levelData))} className="title" href={notificationLink(item?.type, item?.levelData)} title={titleNotice}>{titleNotice}</a>
+                    <a onClick={(e) => clickNotification(e, item.id, requestId, subRequestId, getAction(item?.type, item?.detailType), notificationLink(item?.type, item?.levelData), evaluationData)} className="title" href={notificationLink(item?.type, item?.levelData)} title={titleNotice}>{titleNotice}</a>
                     <p className="description">{descriptionNotice}</p>
                     <div className="time-file">
                         <span className="time"><i className='far fa-clock ic-clock'></i><span>{timePost}</span></span>
@@ -331,7 +338,7 @@ function Header(props) {
         return param;
     }
 
-    const clickNotification = (e, id, requestId, subRequestId, action, url = '') => {
+    const clickNotification = (e, id, requestId, subRequestId, action, url = '', evaluationData) => {
         if (!url) {
             e.preventDefault()
         }
@@ -347,7 +354,7 @@ function Header(props) {
             data: data
         };
         axios(config)
-        !url && props.handleTaskDetailModal(true, requestId, subRequestId, action)
+        !url && props.handleTaskDetailModal(true, requestId, subRequestId, action, evaluationData)
     }
 
     const OnClickBellFn = (isOpen) => {
