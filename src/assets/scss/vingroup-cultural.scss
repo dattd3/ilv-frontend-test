@@ -50,16 +50,18 @@
   }
   .gallery-container {
     // text-align: center;
-    iframe {
-      margin-top: 16px;
-      margin-right: 16px;
-    }
-    .poster-img {
-      width: auto;
-      height: auto;
-      max-width: calc(100vw - 320px);
-      margin-bottom: 12px;
-      display: block;
+    .poster-item {
+      .poster-img {
+        width: auto;
+        height: auto;
+        max-width: calc(100vw - 320px);
+        margin-bottom: 12px;
+        display: block;
+      }
+      .poster-desc {
+        margin: 10px 0;
+        font-size: 14px;
+      }
     }
     .image-gallery {
       // line-height: 0;
@@ -119,15 +121,84 @@
         }
       }
     }
+    .pdf-list {
+      padding: 15px;
+      background: #fff;
+      border-radius: 4px;
+      box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.5);
+      -webkit-box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.5);
+      -moz-box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.5);
+      .pdf-file {
+        display: flex;
+        align-items: flex-start;
+        cursor: pointer;
+        padding: 12px 10px;
+        margin-bottom: 15px;
+        border-radius: 4px;
+        background: #fff;
+        border: 1px solid #DEE2E6;
+        &:last-child {
+          margin-bottom: 0px;
+        }
+        img {
+          margin-right: 8px;
+        }
+        .pdf-content {
+          font-size: 14px;
+          line-height: 14px;
+          .name {
+            font-weight: bold;
+          }
+          .desc {
+            margin-top: 5px
+          }
+        }
+      }
+    }
+
+    .video-list {
+      padding: 16px 8px;
+      background: #fff;
+      border-radius: 4px;
+      box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.5);
+      -webkit-box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.5);
+      -moz-box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.5);
+      display: flex;
+      flex-wrap: wrap;
+      .video-item {
+        width: 32.3%;
+        cursor: pointer;
+        margin-bottom: 15px;
+        border-radius: 4px;
+        overflow: hidden;
+        background: #fff;
+        border: 1px solid #DEE2E6;
+        margin: 0 8px;
+        margin-bottom: 16px;
+        &:nth-last-child(-n + 3):nth-child(3n + 1),
+        &:nth-last-child(-n + 3):nth-child(3n + 1) ~ .video-item {
+          margin-bottom: 0px;
+        }
+        iframe {
+          width: 100%;
+        }
+        .video-desc {
+          margin: 10px;
+          font-size: 14px;
+          line-height: 14px;
+          overflow: hidden;
+          display: -webkit-box;
+          line-clamp: 3;
+          -webkit-line-clamp: 3;
+          -webkit-box-orient: vertical;
+          height: 42px;
+        }
+      }
+
+    }
   }
   .back-block {
     cursor: pointer;
     margin-bottom: 0;
-  }
-  .pdf-file-title {
-    padding: 16px;
-    border-bottom: 1px solid rgb(243, 242, 241);
-    background: #fff;
-    cursor: pointer;
   }
 }
