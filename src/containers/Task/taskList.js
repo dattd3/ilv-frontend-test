@@ -56,7 +56,7 @@ class TaskList extends React.Component {
                 fromDate: moment().subtract(30, "days").format("YYYYMMDD"),
                 toDate: moment().format("YYYYMMDD"),
             },
-            isAutoShowDetailModal: new URLSearchParams(props?.history?.location?.search).has('id') // Chỉ dùng cho Công tác ngoài Tập đoàn
+            isAutoShowDetailModal: new URLSearchParams(props?.history?.location?.search).has('id')
         }
 
         this.manager = {
@@ -76,11 +76,13 @@ class TaskList extends React.Component {
         const queryParams = new URLSearchParams(this.props?.history?.location?.search)
         if (queryParams.has('id')) {
             queryParams.delete('id')
-            queryParams.append('requestTypes', getRequestTypesList(REQUEST_CATEGORIES.CATEGORY_1, false).join(","))
+            if (!queryParams.has('requestTypes')) {
+                queryParams.append('requestTypes', getRequestTypesList(REQUEST_CATEGORIES.CATEGORY_1, false).join(","))
+            }
             this.props.history.replace({
                 search: queryParams.toString(),
             })
-            this.setState({ isShowTaskDetailModal: true })
+            this.setState({ isShowTaskDetailModal: true, action: queryParams.get('tab') })
         }
     }
 
@@ -119,8 +121,8 @@ class TaskList extends React.Component {
         this.showModalConfirm(value, request)
     }
 
-    showModalTaskDetail = (tasskId, subId) => {
-        this.setState({isShowTaskDetailModal: true ,taskId: tasskId, subId: subId});
+    showModalTaskDetail = (taskId, subId) => {
+        this.setState({isShowTaskDetailModal: true, taskId: taskId, subId: subId});
         switch (this.props.page) {
             case "approval":
                 this.setState({action:"approval"})
