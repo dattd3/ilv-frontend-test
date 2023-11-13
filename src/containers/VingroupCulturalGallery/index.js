@@ -24,27 +24,39 @@ const VINGROUP_CULTURE_CATEGORIES = [
   },
   {
     code: "1.3",
-    label: "EventPicture",
-  },
-  {
-    code: "1.4",
-    label: "Arts",
-  },
-  {
-    code: "1.5",
-    label: "AboutPnL",
-  },
-  {
-    code: "2.1",
     label: "PresidentQuotes",
   },
   {
+    code: "1.4",
+    label: "ExceptionalMentor",
+  },
+  {
+    code: "1.5",
+    label: "VingroupGallery",
+  },
+  {
+    code: "2.1",
+    label: "CulturalImmersionTraining",
+  },
+  {
     code: "2.2",
-    label: "OverviewCulture",
+    label: "EmployeeHandbookTtl",
   },
   {
     code: "2.3",
-    label: "InternalNews",
+    label: "Newsletter",
+  },
+  {
+    code: "2.4",
+    label: "EventGallery",
+  },
+  {
+    code: "2.5",
+    label: "ArtCollection",
+  },
+  {
+    code: "2.6",
+    label: "HealthClub",
   },
   {
     code: "3.1",
@@ -52,7 +64,7 @@ const VINGROUP_CULTURE_CATEGORIES = [
   },
   {
     code: "3.2",
-    label: "Storytelling",
+    label: "CulturalReflections",
   },
   {
     code: "3.3",
@@ -64,7 +76,7 @@ const VINGROUP_CULTURE_CATEGORIES = [
   },
   {
     code: "4.2",
-    label: "Storytelling",
+    label: "CulturalReflections",
   },
   {
     code: "4.3",
@@ -72,7 +84,7 @@ const VINGROUP_CULTURE_CATEGORIES = [
   },
   {
     code: "5.1",
-    label: "InspiringShortFilm",
+    label: "ShortFilm",
   },
   {
     code: "5.2",
@@ -80,7 +92,11 @@ const VINGROUP_CULTURE_CATEGORIES = [
   },
   {
     code: "5.3",
-    label: "Banner",
+    label: "VingroupDiscipline",
+  },
+  {
+    code: "6.1",
+    label: "GreatStartUpSpirit",
   },
 ];
 
