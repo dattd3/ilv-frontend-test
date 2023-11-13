@@ -145,26 +145,36 @@ function VingroupCulturalGalleryPage(props) {
         return (
           <>
             {data.map((item) => (
-              <img className="poster-img" src={item?.link} alt="" />
+              <div className="poster-item">
+                <img className="poster-img" src={item?.link} alt="" />
+                {item?.descriptions && (
+                  <div className="poster-desc">{item.descriptions}</div>
+                )}
+              </div>
             ))}
           </>
         );
       default:
         return (
-          <>
+          <div className="video-list">
             {data.map((item) => (
-              <iframe
-                src={item?.link}
-                width="31%"
-                height={320}
-                frameborder="0"
-                scrolling="no"
-                allowfullscreen
-                allow="fullscreen;"
-                title={item.fileName}
-              />
+              <div className="video-item">
+                <iframe
+                  src={item?.link}
+                  width="31%"
+                  height={320}
+                  frameborder="0"
+                  scrolling="no"
+                  allowfullscreen
+                  allow="fullscreen;"
+                  title={item.fileName}
+                />
+                {item?.descriptions && (
+                  <div className="video-desc">{item.descriptions}</div>
+                )}
+              </div>
             ))}
-          </>
+          </div>
         );
     }
   };
@@ -190,9 +200,7 @@ function VingroupCulturalGalleryPage(props) {
               allowfullscreen
               title={"DEMO"}
             />
-          ) : (
-            <>{generateGalleryContent()}</>
-          )}
+          ) : generateGalleryContent()}
         </div>
       )}
       <img
