@@ -5,6 +5,7 @@ const ImageGallery = ({ data }) => {
   const [idZoomIn, setIdZoomIn] = useState(-1);
   const [scrollPosition, setScrollPosition] = useState(0);
   const [lastScrollPosition, setLastScrollPosition] = useState(0);
+  const isZoom = idZoomIn > -1;
 
   useEffect(() => {
     document
@@ -17,13 +18,13 @@ const ImageGallery = ({ data }) => {
   }, []);
 
   useEffect(() => {
-    if (idZoomIn === -1) {
+    if (!isZoom) {
       scrollToLastPosition();
     }
   }, [idZoomIn]);
 
   const handleScroll = () => {
-    if (idZoomIn === -1) {
+    if (!isZoom) {
       setScrollPosition(document.getElementById("content-wrapper").scrollTop);
     }
   };
@@ -45,21 +46,32 @@ const ImageGallery = ({ data }) => {
     <div
       className="image-gallery"
     >
-        <Masonry gutter="4px" columnsCount={idZoomIn > -1 ? 1 : 3}>
+        <Masonry gutter="4px" columnsCount={isZoom ? 1 : 3}>
           {data.map((img) => (
-            <img
-              style={{
-                display:
-                  idZoomIn > -1 && idZoomIn !== img.id ? "none" : "block",
+            <div
+              className="image-item"
+              style={isZoom && idZoomIn !== img.id ? {
+                display: "none",
+              } : {
+                display: "block",
+                cursor: "zoom-in",
               }}
-              key={img.id}
-              src={img.link}
-              alt=""
               onClick={() =>
                 handleZoomInImage(idZoomIn === img.id ? -1 : img.id)
-              }
-              className={idZoomIn === img.id ? "zoomed-in-img" : "image"}
-            />
+              }>
+                <img
+                  alt=""
+                  key={img.id}
+                  src={img.link}
+                  className={idZoomIn === img.id ? "zoomed-in-img" : "image"}
+                />
+                {!isZoom && <div className="item-overlay"/>}
+                {img?.descriptions && (
+                  <div className={`${isZoom ? "item-content-zom" : "item-content"}`}>
+                    {img.descriptions}
+                  </div>
+                )}
+            </div>
           ))}
         </Masonry>
     </div>

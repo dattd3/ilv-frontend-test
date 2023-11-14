@@ -6,7 +6,8 @@ import Constants from '../../../commons/Constants';
 import SubmitQuestionModal from '../../QuestionAndAnswer/SubmitQuestionModal'
 import StatusModal from '../../../components/Common/StatusModal'
 import HOCComponent from '../../../components/Common/HOCComponent'
-import { getCurrentLanguage, isEnableFunctionByFunctionName } from "../../../commons/Utils"
+import { getCurrentLanguage, isEnableFunctionByFunctionName } from "../../../commons/Utils";
+import '../../../assets/css/ck-editor5.css';
 
 purify.addHook('afterSanitizeAttributes', function (node) {
   if ('target' in node) {
@@ -146,7 +147,7 @@ class NotificationDetailComponent extends React.Component {
           <div className="card notification-detail-card mb-4">
             <div className="card-body">
               <div className="detail-notifications-block">
-                <div className="content"
+                <div className="content ck ck-content"
                   dangerouslySetInnerHTML={{
                     __html: purify.sanitize(this.state?.notificationInfo?.content || '', { ADD_TAGS: ["iframe"], ADD_ATTR: ['target', 'allow', 'allowfullscreen', 'scrolling'] }),
                 }} />
