@@ -298,7 +298,7 @@ function Header(props) {
                         case Constants.notificationType.NOTIFICATION_ADD_MEMBER_TO_PROJECT:
                             return `/my-projects/project/${item?.userProfileHistoryId}` 
                         case Constants.notificationType.NOTIFICATION_MY_EVALUATION:
-                            return `/evaluations/${JSON.parse(item?.formType)?.CheckPhaseFormId}/${JSON.parse(item?.formType)?.FormCode}`
+                            return `/evaluations/${JSON.parse(item?.formType)?.CheckPhaseFormId}/${JSON.parse(item?.formType)?.FormCode}/${JSON.parse(item?.formType)?.VersionAPI}`
                         case Constants.notificationType.NOTIFICATION_LEAD_EVALUATION:
                             return ''
                             // return `/my-evaluation`
