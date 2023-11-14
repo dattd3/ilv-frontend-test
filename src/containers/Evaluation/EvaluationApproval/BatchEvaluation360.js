@@ -178,132 +178,145 @@ const BatchEvaluation360 = ({ evaluationData }) => {
         <>
         <LoadingModal show={isLoading} />
         <StatusModal show={statusModal.isShow} isSuccess={statusModal.isSuccess} content={statusModal.content} onHide={onHideStatusModal} className='evaluation-status-modal' />
-        <div className="card shadow batch-evaluation-360">
-            <div className="wrap-table-batch-evaluation-360">
-                <table>
-                    <thead>
-                        <tr>
-                            <th className="col-customize sticky-col kpi">{t("ContentsOfAssessment")}</th>
-                            {
-                                (users || []).map((user, uIndex) => {
-                                    return (
-                                        <th key={`${paging.pageIndex}-${uIndex}`} className="col-customize user-point">
-                                            <div className="user">
-                                                <div className="full-name">{user?.fullName}</div>
-                                                <div className="employee-code">({user?.employeeCode})</div>
-                                            </div>
-                                        </th>
-                                    )
-                                })
-                            }
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {
-                            (jobPerformanceGroup?.listTarget || []).map((target, tIndex) => {
-                                return (
-                                    <Fragment key={target?.id}>
-                                        {
-                                            target?.kpiGroup 
-                                            ? (
-                                                <tr className="group">
-                                                    <td colSpan={3} className="sticky-col group">{target?.kpiGroup}</td>
-                                                </tr>
-                                            )
-                                            : (
-                                                <tr>
-                                                    <td colSpan={users?.length} className="row-seperate"></td>
-                                                </tr>
-                                            )
-                                        }
-                                        <tr className="kpi-item">
-                                            <td className="col-customize sticky-col kpi">{isJsonString(target?.targetName) ? (JSON.parse(target?.targetName)?.[lang] || JSON.parse(target?.targetName)?.['vi']) : target?.targetName}</td>
-                                            {
-                                                (users || []).map((user, uIndex) => {
-                                                    return (
-                                                        <td key={`${target?.id}-${uIndex}-${paging.pageIndex}`} className="col-customize user-point">
-                                                            {
-                                                                !user?.isEdit || user?.isDeleted || user?.status == evaluation360Status.completed 
-                                                                ? (
-                                                                    <input type="text" value={parseInt(user?.listGroup?.[1]?.listTarget?.[tIndex]?.seftPoint) === 0 ? 'N/A' : (user?.listGroup?.[1]?.listTarget?.[tIndex]?.seftPoint ?? '')} disabled />
-                                                                )
-                                                                : (
-                                                                    <select onChange={e => handleScoreChange(uIndex, tIndex, e)} value={user?.listGroup?.[1]?.listTarget?.[tIndex]?.seftPoint ?? ''}>
-                                                                        <option value=''>{t("EvaluationDetailPartSelectScore")}</option>
-                                                                        {
-                                                                            (scores || []).map((score, i) => {
-                                                                                return (<option value={score} key={i}>{score === 0 ? 'N/A' : score}</option>)
-                                                                            })
-                                                                        }
-                                                                    </select>
-                                                                )
-                                                            }
-                                                            { errors[`${uIndex}-${tIndex}-seftPoint`] && (<div className="error-message">{errors[`${uIndex}-${tIndex}-seftPoint`]}</div>) }
-                                                        </td>
-                                                    )
-                                                })
-                                            }
-                                        </tr>
-                                    </Fragment>
-                                )
-                            })
-                        }
+        {
 
-                        {
-                            users?.length > 0 && (
-                                <>
+            evaluationDataState?.data?.length > 0
+            ? (
+                <>
+                    <div className="card shadow batch-evaluation-360">
+                        <div className="wrap-table-batch-evaluation-360">
+                            <table>
+                                <thead>
                                     <tr>
-                                        <td colSpan={users?.length} className="row-seperate"></td>
-                                    </tr>
-                                    <tr className="kpi-item">
-                                        <td className="col-customize sticky-col kpi">{t("Opinion")}</td>
+                                        <th className="col-customize sticky-col kpi">{t("ContentsOfAssessment")}</th>
                                         {
                                             (users || []).map((user, uIndex) => {
                                                 return (
-                                                    <td key={`comment-${user?.id}-${uIndex}-${paging.pageIndex}`} className="col-customize user-point">
-                                                        <textarea 
-                                                            rows={3} 
-                                                            placeholder={t("EvaluationInput")} 
-                                                            value={user?.opinion || ""} 
-                                                            onChange={e => handleInputChange(uIndex, e)} 
-                                                            disabled={!user?.isEdit || user?.isDeleted || user?.status == evaluation360Status.completed} 
-                                                        />
-                                                    </td>
+                                                    <th key={`${paging.pageIndex}-${uIndex}`} className="col-customize user-point">
+                                                        <div className="user">
+                                                            <div className="full-name">{user?.fullName}</div>
+                                                            <div className="employee-code">({user?.employeeCode})</div>
+                                                        </div>
+                                                    </th>
                                                 )
                                             })
                                         }
                                     </tr>
-                                </>
-                            )
-                        }
-                    </tbody>
-                </table>
-            </div>
-            <div className="bottom-region">
-                    <div className="customize-display">
-                        <label>{t("EvaluationShow")}</label>
-                        <select value={paging.pageSize} onChange={(e) => handleChangePageSize(e?.target?.value)}>
-                            {
-                                listPageSizes.map((page, i) => {
-                                    return <option value={page} key={i}>{page}</option>
-                                })
-                            }
-                        </select>
+                                </thead>
+                                <tbody>
+                                    {
+                                        (jobPerformanceGroup?.listTarget || []).map((target, tIndex) => {
+                                            return (
+                                                <Fragment key={target?.id}>
+                                                    {
+                                                        target?.kpiGroup 
+                                                        ? (
+                                                            <tr className="group">
+                                                                <td colSpan={3} className="sticky-col group">{target?.kpiGroup}</td>
+                                                            </tr>
+                                                        )
+                                                        : (
+                                                            <tr>
+                                                                <td colSpan={users?.length} className="row-seperate"></td>
+                                                            </tr>
+                                                        )
+                                                    }
+                                                    <tr className="kpi-item">
+                                                        <td className="col-customize sticky-col kpi">{isJsonString(target?.targetName) ? (JSON.parse(target?.targetName)?.[lang] || JSON.parse(target?.targetName)?.['vi']) : target?.targetName}</td>
+                                                        {
+                                                            (users || []).map((user, uIndex) => {
+                                                                return (
+                                                                    <td key={`${target?.id}-${uIndex}-${paging.pageIndex}`} className="col-customize user-point">
+                                                                        {
+                                                                            !user?.isEdit || user?.isDeleted || user?.status == evaluation360Status.completed 
+                                                                            ? (
+                                                                                <input type="text" value={parseInt(user?.listGroup?.[1]?.listTarget?.[tIndex]?.seftPoint) === 0 ? 'N/A' : (user?.listGroup?.[1]?.listTarget?.[tIndex]?.seftPoint ?? '')} disabled />
+                                                                            )
+                                                                            : (
+                                                                                <select onChange={e => handleScoreChange(uIndex, tIndex, e)} value={user?.listGroup?.[1]?.listTarget?.[tIndex]?.seftPoint ?? ''}>
+                                                                                    <option value=''>{t("EvaluationDetailPartSelectScore")}</option>
+                                                                                    {
+                                                                                        (scores || []).map((score, i) => {
+                                                                                            return (<option value={score} key={i}>{score === 0 ? 'N/A' : score}</option>)
+                                                                                        })
+                                                                                    }
+                                                                                </select>
+                                                                            )
+                                                                        }
+                                                                        { errors[`${uIndex}-${tIndex}-seftPoint`] && (<div className="error-message">{errors[`${uIndex}-${tIndex}-seftPoint`]}</div>) }
+                                                                    </td>
+                                                                )
+                                                            })
+                                                        }
+                                                    </tr>
+                                                </Fragment>
+                                            )
+                                        })
+                                    }
+
+                                    {
+                                        users?.length > 0 && (
+                                            <>
+                                                <tr>
+                                                    <td colSpan={users?.length} className="row-seperate"></td>
+                                                </tr>
+                                                <tr className="kpi-item">
+                                                    <td className="col-customize sticky-col kpi">{t("Opinion")}</td>
+                                                    {
+                                                        (users || []).map((user, uIndex) => {
+                                                            return (
+                                                                <td key={`comment-${user?.id}-${uIndex}-${paging.pageIndex}`} className="col-customize user-point">
+                                                                    <textarea 
+                                                                        rows={3} 
+                                                                        placeholder={t("EvaluationInput")} 
+                                                                        value={user?.opinion || ""} 
+                                                                        onChange={e => handleInputChange(uIndex, e)} 
+                                                                        disabled={!user?.isEdit || user?.isDeleted || user?.status == evaluation360Status.completed} 
+                                                                    />
+                                                                </td>
+                                                            )
+                                                        })
+                                                    }
+                                                </tr>
+                                            </>
+                                        )
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        <div className="bottom-region">
+                            <div className="customize-display">
+                                <label>{t("EvaluationShow")}</label>
+                                <select value={paging.pageSize} onChange={(e) => handleChangePageSize(e?.target?.value)}>
+                                    {
+                                        listPageSizes.map((page, i) => {
+                                            return <option value={page} key={i}>{page}</option>
+                                        })
+                                    }
+                                </select>
+                            </div>
+                            <div className="paging-block">
+                                <CustomPaging 
+                                    pageSize={parseInt(paging.pageSize)} 
+                                    onChangePage={(page) => handleChangePage(page)} 
+                                    totalRecords={evaluationDataState?.total} 
+                                    needRefresh={refresh} 
+                                />
+                            </div>
+                        </div>
                     </div>
-                    <div className="paging-block">
-                        <CustomPaging 
-                            pageSize={parseInt(paging.pageSize)} 
-                            onChangePage={(page) => handleChangePage(page)} 
-                            totalRecords={evaluationDataState?.total} 
-                            needRefresh={refresh} 
-                        />
+                    <div className="button-region-batch-evaluation-360 d-flex justify-content-end">
+                        <button className="btn-action save" onClick={() => sendEvaluation(actionButton.save)}><img src={IconSave} alt="Save" />{t("Save")}</button>
+                        <button className="btn-action send" onClick={() => sendEvaluation(actionButton.approve)}><img src={IconSend} alt="Send" />{t("Evaluation360ButtonSend")}</button>
                     </div>
+                </>
+            )
+            : (
+                <div className="card shadow batch-evaluation-360">
+                    <h6 className="alert alert-danger not-found-data" role="alert">Không tìm thấy dữ liệu</h6>
                 </div>
-            </div>
-            <div className="button-region-batch-evaluation-360 d-flex justify-content-end">
-                <button className="btn-action save" onClick={() => sendEvaluation(actionButton.save)}><img src={IconSave} alt="Save" />{t("Save")}</button>
-                <button className="btn-action send" onClick={() => sendEvaluation(actionButton.approve)}><img src={IconSend} alt="Send" />{t("Evaluation360ButtonSend")}</button>
-            </div>
+            )
+        }
         </>
     )
 }
