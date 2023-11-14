@@ -820,7 +820,7 @@ function EvaluationApproval(props) {
     }, [])
 
     useEffect(() => {
-        SetDataFilter(null)
+        // SetDataFilter(null)
 
         if (activeTab === approvalTabCode) {
             const pagingTemp = {...paging}
@@ -1087,6 +1087,11 @@ function EvaluationApproval(props) {
         SetPaging(pagingTemp)
     }
 
+    const handleChangeTab = (key) => {
+        SetActiveTab(key)
+        SetDataFilter(null)
+    }
+
     const stepEvaluation360 = stepEvaluation360Config.map(item => {
         return {
           ...item,
@@ -1113,7 +1118,7 @@ function EvaluationApproval(props) {
             <h1 className="content-page-header">{t("EvaluationLabel")}</h1>
             <div className="filter-block">
                 <div className="card card-filter">
-                    <Tabs defaultActiveKey={activeTab} onSelect={key => SetActiveTab(key)}>
+                    <Tabs defaultActiveKey={activeTab} onSelect={key => handleChangeTab(key)}>
                         <Tab eventKey={approvalTabCode} title={t("EvaluationApprovalTab")} className="tab-item" id='approval-tab'>
                             <ApprovalTabContent 
                                 isOpen={activeTab === approvalTabCode} 
