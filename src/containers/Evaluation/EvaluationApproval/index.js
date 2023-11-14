@@ -1102,6 +1102,7 @@ function EvaluationApproval(props) {
         <StatusModal show={statusModal.isShow} isSuccess={statusModal.isSuccess} content={statusModal.content} onHide={onHideStatusModal} className='evaluation-status-modal' />
         <EvaluationDetailModal 
             isShow={evaluationDetailPopup.isShow} 
+            showByManager={true}
             evaluationFormId={evaluationDetailPopup.evaluationFormId} 
             formCode={evaluationDetailPopup.formCode} 
             employeeCode={evaluationDetailPopup.employeeCode} 
