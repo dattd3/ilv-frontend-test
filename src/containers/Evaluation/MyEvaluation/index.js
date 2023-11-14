@@ -9,7 +9,7 @@ import { useGuardStore } from '../../../modules'
 import { getRequestConfigurations } from '../../../commons/Utils'
 import LoadingModal from '../../../components/Common/LoadingModal'
 import StatusModal from '../../../components/Common/StatusModal'
-import { evaluationStatus } from '../Constants'
+import { evaluationStatus, evaluationApiVersion } from '../Constants'
 import IconLoop from '../../../assets/img/icon/Icon_Loop.svg'
 import { useCookiesHook } from '../../../commons/hooks'
 import HOCComponent from '../../../components/Common/HOCComponent'
@@ -34,7 +34,7 @@ function EvaluationFormItem(props) {
 
     return (
         <tr>
-            <td className='c-form-name'><div className='form-name'><a href={`/evaluations/${item?.checkPhaseFormId}/${item?.formCode}`} alt={item?.checkPhaseFormName} className="form-name">{item?.checkPhaseFormName}</a></div></td>
+            <td className='c-form-name'><div className='form-name'><a href={`/evaluations/${item?.checkPhaseFormId}/${item?.formCode}/${item?.version}`} alt={item?.checkPhaseFormName} className="form-name">{item?.checkPhaseFormName}</a></div></td>
             <td className='c-created-date text-center'><div className='created-date'>{item?.runFormDate && moment(item?.runFormDate).format("DD/MM/YYYY")}</div></td>
             <td className='c-status text-center'><div className={`status ${statusMapping?.className}`}>{statusMapping?.label}</div></td>
             <td className='c-step text-center'><div className='step'>{stepMapping[item?.status]?.nextStep}</div></td>
@@ -125,7 +125,7 @@ function MyEvaluation(props) {
         SetIsLoading(true)
         try {
             const response = await fetchListEvaluationForms()
-            if (response && response?.data && response?.data?.result && response?.data?.result?.code == Constants.PMS_API_SUCCESS_CODE) {
+            if (response?.data?.result?.code == Constants.PMS_API_SUCCESS_CODE) {
                 SetEvaluationForms(response?.data?.data || [])
             }
         } catch (e) {

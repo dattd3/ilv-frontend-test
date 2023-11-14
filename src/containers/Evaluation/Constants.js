@@ -8,6 +8,7 @@ const evaluationStatus = {
     cbldApproved: 5,
 }
 const evaluation360Status = {
+    save: 2,
     waitingEvaluation: 3,
     evaluated: 4,
     completed: 5,
@@ -50,4 +51,5 @@ const evaluationApiVersion = {
     v1: 'v1',
     v2: 'v2',
 }
-export { evaluationStatus, evaluation360Status, actionButton, formType, groupConfig, formulaConfig, processStep, languageCodeMapping, stepEvaluation360Config, evaluationApiVersion }
+const scores = [1, 2, 3, 4, 5]
+export { evaluationStatus, evaluation360Status, actionButton, formType, groupConfig, formulaConfig, processStep, languageCodeMapping, stepEvaluation360Config, evaluationApiVersion, scores }

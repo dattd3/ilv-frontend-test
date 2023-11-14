@@ -36,6 +36,7 @@ function EvaluationDetailModal(props) {
                             evaluationFormId={evaluationFormId} 
                             formCode={formCode} 
                             employeeCode={employeeCode}
+                            version={version}
                             updateParent={updateParent} />
                     ) 
                 }
