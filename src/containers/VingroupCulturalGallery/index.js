@@ -170,7 +170,7 @@ function VingroupCulturalGalleryPage(props) {
                   title={item.fileName}
                 />
                 {item?.descriptions && (
-                  <div className="video-desc">{item.descriptions}</div>
+                  <div className="video-desc" title={item.descriptions}>{item.descriptions}</div>
                 )}
               </div>
             ))}
