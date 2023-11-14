@@ -248,18 +248,19 @@ function Header(props) {
                                     return getSalaryProposeLink(requestTypeId, requestId, item.formType, item.detailType, item.parentRequestHistoryId)
                             }
 
-                            if (item?.detailType == 'REQUEST')
+                            if (item?.detailType == 'REQUEST') { // Yêu cầu
                                 return `/tasks${item?.groupId ? `?requestTypes=${getRequestTypesList(item.groupId, false).join(",")}` : ''}`
-                            else if (item?.detailType == 'APPRAISAL') {
+                            } else if (item?.detailType == 'APPRAISAL') { // Thẩm định
                                 if (levelData === "" || levelData === null || levelData === undefined || levelData == 1) { // Chỉ có 1 yêu cầu
                                     return ''
                                 }
                                 return `/tasks?tab=consent${item?.groupId ? `&requestTypes=${getRequestTypesList(item.groupId, false).join(",")}` : ''}`
-                            } else {
-                                if (levelData === "" || levelData === null || levelData === undefined || levelData == 1) { // Chỉ có 1 yêu cầu
-                                    return ''
-                                }
-                                return `/tasks?tab=approval${item?.groupId ? `&requestTypes=${getRequestTypesList(item.groupId, false).join(",")}` : ''}`
+                            } else { // Phê duyệt
+                                // if (levelData === "" || levelData === null || levelData === undefined || levelData == 1 || ) { // Chỉ có 1 yêu cầu
+                                //     return ''
+                                // }
+                                // return `/tasks?tab=approval${item?.groupId ? `&requestTypes=${getRequestTypesList(item.groupId, false).join(",")}` : ''}`
+                                return ''
                             }
                         case 6:
                             return '/personal-info?tab=document'
