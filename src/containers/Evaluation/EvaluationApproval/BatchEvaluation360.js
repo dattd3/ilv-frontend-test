@@ -139,7 +139,7 @@ const BatchEvaluation360 = ({ evaluationData }) => {
             .map(item => {
                 return {
                     ...item,
-                    status: action == actionButton.approve ? evaluation360Status.evaluated : evaluation360Status.save
+                    status: action == actionButton.approve ? evaluation360Status.evaluated : item?.status,
                 }
             })
 
