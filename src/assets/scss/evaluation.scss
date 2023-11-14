@@ -3326,6 +3326,34 @@
                                 }
                             }
                         }
+                        .opinion {
+                            margin-top: 15px;
+                            p {
+                                margin-bottom: 8px;
+                            }
+                            .comment-content {
+                                width: 100%;
+                                padding: 5px 15px;
+                                border-radius: 4px;
+                                background: #f2f2f2;
+                                display: flex;
+                                align-items: center;
+                                min-height: 38px;
+                            }
+                            textarea {
+                                width: 100%;
+                                border: 1px solid #DEE2E6;
+                                padding: 5px 10px;
+                                border-radius: 5px;
+                                &:focus-visible {
+                                    outline: none;
+                                    border: 1px solid #DEE2E6;
+                                }
+                                &:disabled {
+                                    background: #F2F2F2;
+                                }
+                            }
+                        }
                     }
                     .button-block {
                         display: flex;
@@ -3352,10 +3380,15 @@
                             &:focus {
                                 outline: none;
                             }
-                            &.confirm {
+                            &.send {
                                 width: 200px;
                                 background: #347EF9;
-                                margin-left: 15px;
+                                margin-left: 20px;
+                                width: 110px;
+                            }
+                            &.save {
+                                width: 200px;
+                                background: #FFAE46;
                                 width: 110px;
                             }
                         }
@@ -3855,7 +3888,7 @@
                 margin-top: -3px;
             }
             &.save {
-                background: #347EF9;
+                background: #FFAE46;
                 img {
                     height: 14px;
                 }
