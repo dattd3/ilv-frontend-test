@@ -178,11 +178,12 @@ class BusinessTripDetailComponent extends React.Component {
   }
 
   render() {
-    const { t, businessTrip, action, viewPopup } = this.props
+    const { t, businessTrip, action, viewPopup, lockReload, onHideTaskDetailModal } = this.props
     const requestInfo = businessTrip.requestInfo[0]
     const requestTypeId = businessTrip.requestTypeId
     const requestTypeIdsAllowedToReApproval = getRequestTypeIdsAllowedToReApproval()
-    const isShowApproval = (requestInfo.processStatusId === Constants.STATUS_WAITING) || (action === "approval" && requestInfo.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && requestTypeIdsAllowedToReApproval.includes(requestTypeId))
+    const isShowApproval = requestTypeIdsAllowedToReApproval.includes(requestTypeId) && action === "approval" 
+    && (requestInfo.processStatusId == Constants.STATUS_WAITING || requestInfo.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL)
 
     let messageSAP = null;
     if (requestInfo?.processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL) {
@@ -294,6 +295,8 @@ class BusinessTripDetailComponent extends React.Component {
             urlName={'requestattendance'}
             requestTypeId={requestTypeId}
             action={action}
+            lockReload={lockReload}
+            onHideTaskDetailModal={onHideTaskDetailModal}
           /> 
           : null
         }
