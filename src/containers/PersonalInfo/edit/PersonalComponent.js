@@ -400,7 +400,7 @@ class PersonalComponent extends React.Component {
             [Constants.MARRIAGE_STATUS.DIVORCED]: marriageMapping.divorced,
         }
         const { t, userDetail } = this.props
-        const { validationMessagesFromParent, places, userDetail: userDetailState, isLoading } = this.state
+        const { validationMessagesFromParent, places, userDetail: userDetailState, isLoading, mainAddressFromModal, tempAddressFromModal } = this.state
         const genders = this.props.genders.map(gender => { return { value: gender.ID, label: gender.ID == Constants.GENDER.MALE ? genderMapping.male : genderMapping.female} })
         const races = this.props.races.map(race => { return { value: race.ID, label: race.TEXT } })
         const marriages = this.props.marriages.map(marriage => { return { value: marriage.ID, label: marriageStatus[marriage.ID] } })
@@ -700,17 +700,17 @@ class PersonalComponent extends React.Component {
                                 show={this.state.isAddressEdit}
                                 onHide={this.hideModal.bind(this, 'isAddressEdit')}
                                 countries={this.props.countries}
-                                country={_.size(this.state.mainAddressFromModal) > 0 ? { value: this.state.mainAddressFromModal.country_id, label: this.state.mainAddressFromModal.nation } : { value: userDetailState?.country_id, label: userDetailState?.nation }}
-                                province={_.size(this.state.mainAddressFromModal) > 0 ? { value: this.state.mainAddressFromModal.province_id, label: this.state.mainAddressFromModal.province } : { value: userDetailState?.province_id, label: userDetailState?.province }}
-                                district={_.size(this.state.mainAddressFromModal) > 0 ? { value: this.state.mainAddressFromModal.district_id, label: this.state.mainAddressFromModal.district } : { value: userDetailState?.district_id, label: userDetailState?.district }}
-                                ward={_.size(this.state.mainAddressFromModal) > 0 ? { value: this.state.mainAddressFromModal.ward_id, label: this.state.mainAddressFromModal.wards } : { value: userDetailState?.ward_id, label: userDetailState?.wards }}
-                                street={_.size(this.state.mainAddressFromModal) > 0 ? this.state.mainAddressFromModal.street_name : userDetailState?.street_name}
+                                country={_.size(mainAddressFromModal) > 0 ? { value: mainAddressFromModal.country_id, label: mainAddressFromModal.nation } : { value: userDetailState?.country_id, label: userDetailState?.nation }}
+                                province={_.size(mainAddressFromModal) > 0 ? { value: mainAddressFromModal.province_id, label: mainAddressFromModal.province } : { value: userDetailState?.province_id, label: userDetailState?.province }}
+                                district={_.size(mainAddressFromModal) > 0 ? { value: mainAddressFromModal.district_id, label: mainAddressFromModal.district } : { value: userDetailState?.district_id, label: userDetailState?.district }}
+                                ward={_.size(mainAddressFromModal) > 0 ? { value: mainAddressFromModal.ward_id, label: mainAddressFromModal.wards } : { value: userDetailState?.ward_id, label: userDetailState?.wards }}
+                                street={_.size(mainAddressFromModal) > 0 ? mainAddressFromModal.street_name : userDetailState?.street_name}
                                 updateAddress={this.updateAddress.bind(this)}
                             /> : null}
                             {
-                                _.size(this.state.mainAddressFromModal) > 0 ?
+                                _.size(mainAddressFromModal) > 0 ?
                                     <div className="edit" onClick={this.showModal.bind(this, 'isAddressEdit')}>
-                                        {this.SummaryAddress([this.state.mainAddressFromModal.street_name, this.state.mainAddressFromModal.wards, this.state.mainAddressFromModal.district, this.state.mainAddressFromModal.province, this.state.mainAddressFromModal.nation])}
+                                        {this.SummaryAddress([mainAddressFromModal.street_name, mainAddressFromModal.wards, mainAddressFromModal.district, mainAddressFromModal.province, mainAddressFromModal.nation])}
                                     </div>
                                     : <div className="edit" onClick={this.showModal.bind(this, 'isAddressEdit')}>{this.SummaryAddress([userDetailState?.street_name, userDetailState?.wards, userDetailState?.district, userDetailState?.province])}</div>
                             }
@@ -730,17 +730,17 @@ class PersonalComponent extends React.Component {
                                 show={this.state.isTmpAddressEdit}
                                 onHide={this.hideModal.bind(this, 'isTmpAddressEdit')}
                                 countries={this.props.countries}
-                                country={_.size(this.state.tempAddressFromModal) > 0 ? { value: this.state.tempAddressFromModal.tmp_country_id, label: this.state.tempAddressFromModal.tmp_nation } : { value: userDetailState?.tmp_country_id, label: userDetailState?.tmp_nation }}
-                                province={_.size(this.state.tempAddressFromModal) > 0 ? { value: this.state.tempAddressFromModal.tmp_province_id, label: this.state.tempAddressFromModal.tmp_province } : { value: userDetailState?.tmp_province_id, label: userDetailState?.tmp_province }}
-                                district={_.size(this.state.tempAddressFromModal) > 0 ? { value: this.state.tempAddressFromModal.tmp_district_id, label: this.state.tempAddressFromModal.tmp_district } : { value: userDetailState?.tmp_district_id, label: userDetailState?.tmp_district }}
-                                ward={_.size(this.state.tempAddressFromModal) > 0 ? { value: this.state.tempAddressFromModal.tmp_ward_id, label: this.state.tempAddressFromModal.tmp_wards } : { value: userDetailState?.tmp_ward_id, label: userDetailState?.tmp_wards }}
-                                street={_.size(this.state.tempAddressFromModal) > 0 ? this.state.tempAddressFromModal.tmp_street_name : userDetailState?.tmp_street_name}
+                                country={_.size(tempAddressFromModal) > 0 ? { value: tempAddressFromModal.tmp_country_id, label: tempAddressFromModal.tmp_nation } : { value: userDetailState?.tmp_country_id, label: userDetailState?.tmp_nation }}
+                                province={_.size(tempAddressFromModal) > 0 ? { value: tempAddressFromModal.tmp_province_id, label: tempAddressFromModal.tmp_province } : { value: userDetailState?.tmp_province_id, label: userDetailState?.tmp_province }}
+                                district={_.size(tempAddressFromModal) > 0 ? { value: tempAddressFromModal.tmp_district_id, label: tempAddressFromModal.tmp_district } : { value: userDetailState?.tmp_district_id, label: userDetailState?.tmp_district }}
+                                ward={_.size(tempAddressFromModal) > 0 ? { value: tempAddressFromModal.tmp_ward_id, label: tempAddressFromModal.tmp_wards } : { value: userDetailState?.tmp_ward_id, label: userDetailState?.tmp_wards }}
+                                street={_.size(tempAddressFromModal) > 0 ? tempAddressFromModal.tmp_street_name : userDetailState?.tmp_street_name}
                                 updateAddress={this.updateTmpAddress.bind(this)}
                             /> : null}
                             {
-                                _.size(this.state.tempAddressFromModal) > 0 ?
+                                _.size(tempAddressFromModal) > 0 ?
                                     <div className="edit" onClick={this.showModal.bind(this, 'isTmpAddressEdit')}>
-                                        {this.SummaryAddress([this.state.tempAddressFromModal.tmp_street_name, this.state.tempAddressFromModal.tmp_wards, this.state.tempAddressFromModal.tmp_district, this.state.tempAddressFromModal.tmp_province, this.state.tempAddressFromModal.tmp_nation])}
+                                        {this.SummaryAddress([tempAddressFromModal.tmp_street_name, tempAddressFromModal.tmp_wards, tempAddressFromModal.tmp_district, tempAddressFromModal.tmp_province, tempAddressFromModal.tmp_nation])}
                                     </div>
                                     : <div className="edit" onClick={this.showModal.bind(this, 'isTmpAddressEdit')}>{this.SummaryAddress([userDetailState?.tmp_street_name, userDetailState?.tmp_wards, userDetailState?.tmp_district, userDetailState?.tmp_province])}</div>
                             }
