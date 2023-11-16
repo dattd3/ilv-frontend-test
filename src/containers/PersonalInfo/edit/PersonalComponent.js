@@ -91,21 +91,6 @@ class PersonalComponent extends React.Component {
         this.setState({ isLoading: true })
         this.fetchMasterData()
         this.bindBirthCountryAndProvince()
-
-        if (this.props.requestedUserProfile) {
-            const requestedUserProfile = this.props.requestedUserProfile
-            if (requestedUserProfile.userProfileInfo.update && requestedUserProfile.userProfileInfo.update.userProfileHistoryMainInfo) {
-                let userDetail = {}
-                Object.keys(this.mappingFields).forEach(key => {
-                    if (this.props.requestedUserProfile.userProfileInfo.update.userProfileHistoryMainInfo.NewMainInfo[key]) {
-                        userDetail[this.mappingFields[key]] = this.props.requestedUserProfile.userProfileInfo.update.userProfileHistoryMainInfo.NewMainInfo[key]
-                    }
-                });
-                this.setState({
-                    userDetail: userDetail
-                })
-            }
-        }
     }
 
     fetchMasterData = () => {
@@ -177,7 +162,6 @@ class PersonalComponent extends React.Component {
     processPersonalInfo = (res) => {
         if (res && res.data && res.data.data) {
             let userDetail = res.data.data[0];
-            // this.setState({countryId: userDetail.country_id, userDetail: userDetail});
             this.props.setState({ userDetail: userDetail });
         }
     }
@@ -249,13 +233,6 @@ class PersonalComponent extends React.Component {
         }
 
         this.setState({ userDetail })
-
-        // this.setState({
-        //     userDetail: {
-        //         ...this.state.userDetail,
-        //         [this.mappingFields[name]]: val
-        //     }
-        // })        
     }
 
     getBirthProvinces = (country_id) => {
@@ -408,11 +385,13 @@ class PersonalComponent extends React.Component {
         const countries = this.props.countries.map(country => { return { value: country.ID, label: country.TEXT } })
         const banks = this.props.banks.map(bank => { return { value: bank.ID, label: bank.TEXT } })
         const marriage = marriages.find(m => m.value == userDetail?.marital_status_code)
-        // const provinces = this.state.provinces.map(province => { return { value: province.ID, label: province.TEXT } })
         const religions = this.props.religions.map(r => { return { value: r.ID, label: r.TEXT } })
         const birthProvinces = this.state.birthProvinces.map(province => { return { value: province.ID, label: province.TEXT } })
         const passportPlaceOfIssue = (places || []).filter(item => item?.type === 'HC')
         const personalIdentifyPlace = (places || []).filter(item => ['CCCD', 'CMT']?.includes(item?.type))
+
+        console.log('userDetailState => ', userDetailState)
+        console.log('this.state.userDetail => ', this.state.userDetail)
 
         return (
             <>
@@ -700,11 +679,11 @@ class PersonalComponent extends React.Component {
                                 show={this.state.isAddressEdit}
                                 onHide={this.hideModal.bind(this, 'isAddressEdit')}
                                 countries={this.props.countries}
-                                country={_.size(mainAddressFromModal) > 0 ? { value: mainAddressFromModal.country_id, label: mainAddressFromModal.nation } : { value: userDetailState?.country_id, label: userDetailState?.nation }}
-                                province={_.size(mainAddressFromModal) > 0 ? { value: mainAddressFromModal.province_id, label: mainAddressFromModal.province } : { value: userDetailState?.province_id, label: userDetailState?.province }}
-                                district={_.size(mainAddressFromModal) > 0 ? { value: mainAddressFromModal.district_id, label: mainAddressFromModal.district } : { value: userDetailState?.district_id, label: userDetailState?.district }}
-                                ward={_.size(mainAddressFromModal) > 0 ? { value: mainAddressFromModal.ward_id, label: mainAddressFromModal.wards } : { value: userDetailState?.ward_id, label: userDetailState?.wards }}
-                                street={_.size(mainAddressFromModal) > 0 ? mainAddressFromModal.street_name : userDetailState?.street_name}
+                                country={_.size(mainAddressFromModal) > 0 ? { value: mainAddressFromModal.country_id, label: mainAddressFromModal.nation } : null}
+                                province={_.size(mainAddressFromModal) > 0 ? { value: mainAddressFromModal.province_id, label: mainAddressFromModal.province } : null}
+                                district={_.size(mainAddressFromModal) > 0 ? { value: mainAddressFromModal.district_id, label: mainAddressFromModal.district } : null}
+                                ward={_.size(mainAddressFromModal) > 0 ? { value: mainAddressFromModal.ward_id, label: mainAddressFromModal.wards } : null}
+                                street={_.size(mainAddressFromModal) > 0 ? mainAddressFromModal.street_name : ''}
                                 updateAddress={this.updateAddress.bind(this)}
                             /> : null}
                             {
@@ -730,11 +709,11 @@ class PersonalComponent extends React.Component {
                                 show={this.state.isTmpAddressEdit}
                                 onHide={this.hideModal.bind(this, 'isTmpAddressEdit')}
                                 countries={this.props.countries}
-                                country={_.size(tempAddressFromModal) > 0 ? { value: tempAddressFromModal.tmp_country_id, label: tempAddressFromModal.tmp_nation } : { value: userDetailState?.tmp_country_id, label: userDetailState?.tmp_nation }}
-                                province={_.size(tempAddressFromModal) > 0 ? { value: tempAddressFromModal.tmp_province_id, label: tempAddressFromModal.tmp_province } : { value: userDetailState?.tmp_province_id, label: userDetailState?.tmp_province }}
-                                district={_.size(tempAddressFromModal) > 0 ? { value: tempAddressFromModal.tmp_district_id, label: tempAddressFromModal.tmp_district } : { value: userDetailState?.tmp_district_id, label: userDetailState?.tmp_district }}
-                                ward={_.size(tempAddressFromModal) > 0 ? { value: tempAddressFromModal.tmp_ward_id, label: tempAddressFromModal.tmp_wards } : { value: userDetailState?.tmp_ward_id, label: userDetailState?.tmp_wards }}
-                                street={_.size(tempAddressFromModal) > 0 ? tempAddressFromModal.tmp_street_name : userDetailState?.tmp_street_name}
+                                country={_.size(tempAddressFromModal) > 0 ? { value: tempAddressFromModal.tmp_country_id, label: tempAddressFromModal.tmp_nation } : null}
+                                province={_.size(tempAddressFromModal) > 0 ? { value: tempAddressFromModal.tmp_province_id, label: tempAddressFromModal.tmp_province } : null}
+                                district={_.size(tempAddressFromModal) > 0 ? { value: tempAddressFromModal.tmp_district_id, label: tempAddressFromModal.tmp_district } : null}
+                                ward={_.size(tempAddressFromModal) > 0 ? { value: tempAddressFromModal.tmp_ward_id, label: tempAddressFromModal.tmp_wards } : null}
+                                street={_.size(tempAddressFromModal) > 0 ? tempAddressFromModal.tmp_street_name : ''}
                                 updateAddress={this.updateTmpAddress.bind(this)}
                             /> : null}
                             {

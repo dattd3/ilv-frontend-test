@@ -38,7 +38,6 @@ class PersonalInfoEdit extends React.Component {
     this.state = {
       id: null,
       isEdit: false,
-      requestedUserProfile: null,
       userProfile: {},
       userDetail: {},
       userEducation: [],
@@ -137,25 +136,6 @@ class PersonalInfoEdit extends React.Component {
       }).catch(error => {
 
       })
-
-    if (this.props.requestedUserProfile) {
-      const userProfileInfo = this.props.requestedUserProfile.userProfileInfo;
-      let oldMainInfo = {}
-      let newMainInfo = {}
-      if (userProfileInfo && userProfileInfo.update && userProfileInfo.update.userProfileHistoryMainInfo) {
-        oldMainInfo = userProfileInfo.update.userProfileHistoryMainInfo.OldMainInfo
-        newMainInfo = userProfileInfo.update.userProfileHistoryMainInfo.NewMainInfo
-      }
-
-      this.setState({
-        isEdit: true,
-        id: this.props.requestedUserProfile.id,
-        requestedUserProfile: this.props.requestedUserProfile,
-        data: userProfileInfo,
-        OldMainInfo: oldMainInfo,
-        NewMainInfo: newMainInfo
-      })
-    }
   }
 
   updateAddress(oldAddress, newAddress) {
@@ -1340,7 +1320,7 @@ class PersonalInfoEdit extends React.Component {
   render() {
     const { t, isEnableEditEducation, isEnableEditMainInfo, birthCountry } = this.props
     const { isShowModalConfirm, modalTitle, typeRequest, modalMessage, confirmStatus, isShowResultConfirm, isSuccess, userDetail, userProfile, genders, races, marriages,
-      nations, banks, countries, religions, documentTypes, requestedUserProfile, isEdit, errors, userEducation, certificates, educationLevels, majors, schools, files, isLoading } = this.state
+      nations, banks, countries, religions, documentTypes, isEdit, errors, userEducation, certificates, educationLevels, majors, schools, files, isLoading } = this.state
 
     return (
       <div className="edit-personal">
@@ -1365,7 +1345,6 @@ class PersonalInfoEdit extends React.Component {
                   countries={countries}
                   religions={religions}
                   documentTypes={documentTypes}
-                  requestedUserProfile={requestedUserProfile}
                   isEdit={isEdit}
                   birthCountry={birthCountry}
                   validationMessages={errors}
@@ -1382,7 +1361,6 @@ class PersonalInfoEdit extends React.Component {
                   schools={schools}
                   updateEducation={this.updateEducation.bind(this)}
                   addEducation={this.addEducation.bind(this)}
-                  requestedUserProfile={requestedUserProfile}
                   isEdit={isEdit}
                   validationMessages={errors}
                 />
