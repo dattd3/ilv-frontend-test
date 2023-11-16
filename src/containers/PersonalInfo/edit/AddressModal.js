@@ -46,9 +46,9 @@ class AddressModal extends React.Component {
     }
 
     componentDidMount() {
-        this.getProvices(this.state.country.value)
-        this.getDistricts(this.state.province.value)
-        this.getWards(this.state.district.value)
+        // this.getProvinces(this.state.country?.value || null)
+        // this.getDistricts(this.state.province?.value || null)
+        // this.getWards(this.state.district?.value || null)
     }
 
     getProvices(country_id) {
@@ -149,7 +149,8 @@ class AddressModal extends React.Component {
         if (!_.isEmpty(errors)) {
             return
         }
-        this.props.updateAddress(this.state.country, this.state.province, this.state.district, this.state.ward, this.state.street_name)
+        const { country, province, district, ward, street_name } = this.state
+        this.props.updateAddress(country, province, district, ward, street_name)
         setTimeout(() => { this.props.onHide() }, 200)
     }
 
