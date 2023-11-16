@@ -1023,7 +1023,7 @@ function RegisterTargetFromLibraryModal(props) {
                 </Modal.Header>
                 <Modal.Body>
                     <div className="register-target-page">
-                        <h1 className="content-page-header">Đăng ký mục tiêu</h1>
+                        <h1 className="content-page-header">{t("TargetRegistration")}</h1>
                         <RegistrationStep
                             stepActive={stepActive}
                             totalItemAdded={targetSelected?.length}
