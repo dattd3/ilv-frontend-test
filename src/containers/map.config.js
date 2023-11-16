@@ -155,7 +155,7 @@ const MapConfig = {
   SixCoreValuesGallery: "/6-core-values/gallery/:code",
   SixGovernancePrinciplesGallery: "/6-governance-principles/gallery/:code",
   WorkingEnvironmentGallery: "/working-environment/gallery/:code",
-  GreatStartUpSpiritGallery: "/working-environment/gallery/:code",
+  //GreatStartUpSpiritGallery: "/working-environment/gallery/:code",
 
   // Internal news
   InternalNewsList: "/internal-news",

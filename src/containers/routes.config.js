@@ -900,14 +900,14 @@ const ROUTES = [
           },
           component: lazy(() => import("./VingroupCulturalGallery"))
         },
-        {
-          key: "great-start-up-spirit-gallery",
-          routeProps: {
-            exact: true,
-            path: map.GreatStartUpSpiritGallery
-          },
-          component: lazy(() => import("./VingroupCulturalGallery"))
-        },
+        // {
+        //   key: "great-start-up-spirit-gallery",
+        //   routeProps: {
+        //     exact: true,
+        //     path: map.GreatStartUpSpiritGallery
+        //   },
+        //   component: lazy(() => import("./VingroupCulturalGallery"))
+        // },
         {
           key: "vingroup-culture",
           routeProps: {
