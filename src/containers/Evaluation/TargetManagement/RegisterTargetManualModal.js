@@ -429,7 +429,7 @@ export default function TargetRegistrationManualModal(props) {
         onHide={onHideStatusModal}
       />
       <Modal.Header closeButton>
-        <div className="modal-title">ĐĂNG KÝ MỤC TIÊU</div>
+        <div className="text-uppercase modal-title">{t("TargetRegistration")}</div>
       </Modal.Header>
       <Modal.Body>
         <div>

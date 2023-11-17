@@ -59,6 +59,14 @@ export const Navigation = [
     to: map.WorkingEnvironment,
     role: "U",
   },
+  // {
+  //   id: 9956,
+  //   parentId: 995,
+  //   icon: "menu-bullet-lv2 icon-sub-menu-lv2",
+  //   label: "GreatStartUpSpirit",
+  //   to: map.GreatStartUpSpirit,
+  //   role: "U",
+  // },
   {
     id: 10,
     parentId: 0,
