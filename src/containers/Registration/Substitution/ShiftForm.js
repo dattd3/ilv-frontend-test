@@ -114,7 +114,7 @@ class ShiftForm extends React.Component {
                     <div className="col-5">
                         <div className="row">
                             <div className="col">
-                                <p>{t("StartTime")} 1 - Thay đổi<span className="text-danger required">(*)</span></p>
+                                <p>{t("StartTime")} 1 - {t("Change2")}<span className="text-danger required">(*)</span></p>
                                 <div className="content input-container">
                                     <label className="wrap-time-input">
                                         <DatePicker
@@ -125,7 +125,7 @@ class ShiftForm extends React.Component {
                                             showTimeSelectOnly
                                             locale="vi"
                                             timeIntervals={15}
-                                            timeCaption="Giờ"
+                                            timeCaption={t("Hour")}
                                             dateFormat="HH:mm"
                                             timeFormat="HH:mm"
                                             placeholderText={t('option')}
@@ -137,7 +137,7 @@ class ShiftForm extends React.Component {
                                 {this.error(this.props.timesheet.index, 'startTime')}
                             </div>
                             <div className="col">
-                                <p>{t("EndTime")} 1 - Thay đổi<span className="text-danger required">(*)</span></p>
+                                <p>{t("EndTime")} 1 - {t("Change2")}<span className="text-danger required">(*)</span></p>
                                 <div className="content input-container">
                                     <label className="wrap-time-input">
                                         <DatePicker
@@ -148,7 +148,7 @@ class ShiftForm extends React.Component {
                                             showTimeSelect
                                             showTimeSelectOnly
                                             timeIntervals={15}
-                                            timeCaption="Giờ"
+                                            timeCaption={t("Hour")}
                                             dateFormat="HH:mm"
                                             timeFormat="HH:mm"
                                             placeholderText={t('option')}
@@ -175,7 +175,7 @@ class ShiftForm extends React.Component {
                                             showTimeSelect
                                             showTimeSelectOnly
                                             timeIntervals={15}
-                                            timeCaption="Giờ"
+                                            timeCaption={t("Hour")}
                                             dateFormat="HH:mm"
                                             timeFormat="HH:mm"
                                             placeholderText={t('option')}

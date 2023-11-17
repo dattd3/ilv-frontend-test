@@ -34,6 +34,7 @@ class QuestionAndAnswerDetails extends React.Component {
       categories: [],
       isRatingLoading: false,
       isLoading: false,
+      isRejectLoading: false,
     };
     this.submitSelectSupporterModal =
       this.submitSelectSupporterModal.bind(this);
@@ -136,7 +137,7 @@ class QuestionAndAnswerDetails extends React.Component {
 
   rejectComment = () => {
     this.setState({
-      isLoading: true,
+      isRejectLoading: true,
     });
     let userId = localStorage.getItem("email");
     const rejectReason = this.props.t("QAAlreadyExist");
@@ -353,8 +354,8 @@ class QuestionAndAnswerDetails extends React.Component {
       categories,
       isRatingLoading,
       isLoading,
+      isRejectLoading
     } = this.state;
-    console.log(isLoading)
     const comments = question.ticketComments;
     const isEmployeeView = question.userId === localStorage.getItem("email");
 
@@ -737,9 +738,17 @@ class QuestionAndAnswerDetails extends React.Component {
                 <div className="mt-2 text-right">
                   <Button
                     variant="danger pl-3 pr-3 mr-2"
+                    disabled={isRejectLoading ? true : false}
                     onClick={this.rejectComment}
+                    style={{ minWidth: 95 }}
                   >
-                    {t("RejectQuestionButtonLabel")}
+                    {
+                      this.state.isRejectLoading ? (
+                        <Spinner animation="border" size="sm" />
+                      ) : (<>
+                        {t("RejectQuestionButtonLabel")}
+                      </>)
+                    }
                   </Button>{" "}
                   <Button
                     variant="primary pl-4 pr-4"

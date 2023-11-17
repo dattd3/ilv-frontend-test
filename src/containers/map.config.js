@@ -120,7 +120,7 @@ const MapConfig = {
   // Đánh giá
   // Evaluation: "",
   TargetManagement: "/target-management",
-  EvaluationDetail: "/evaluations/:id/:formCode",
+  EvaluationDetail: "/evaluations/:id/:formCode/:version",
   MyEvaluation: "/my-evaluation",
   EvaluationApproval: "/evaluation-approval",
   
@@ -149,11 +149,13 @@ const MapConfig = {
   SixCoreValues: "/6-core-values",
   SixGovernancePrinciples: "/6-governance-principles",
   WorkingEnvironment: "/working-environment",
+  GreatStartUpSpirit: "/great-start-up-spirit",
   HistoryVingroupGallery: "/vingroup-history/gallery/:code",
   VingroupCultureGallery: "/vingroup-culture/gallery/:code",
   SixCoreValuesGallery: "/6-core-values/gallery/:code",
   SixGovernancePrinciplesGallery: "/6-governance-principles/gallery/:code",
   WorkingEnvironmentGallery: "/working-environment/gallery/:code",
+  //GreatStartUpSpiritGallery: "/working-environment/gallery/:code",
 
   // Internal news
   InternalNewsList: "/internal-news",
