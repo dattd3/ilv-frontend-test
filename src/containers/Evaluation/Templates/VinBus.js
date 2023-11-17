@@ -35,8 +35,8 @@ const EvaluationVinBusTemplate = ({ evaluationFormDetail, isEdit, showByManager,
                                 <th className="measurement"><span>{t("EvaluationDetailPartLevelOfPerformance")}<span className="note">({t("EvaluationDetailPartByScore")})</span></span></th>
                                 <th className="text-center proportion"><span>{t("EvaluationDetailPartWeight")} %</span></th>
                                 <th className="text-center target"><span>{t("EvaluationDetailPartTarget")}</span></th>
-                                <th className="text-center self-assessment"><span>{t("Kết quả thực tế CBNV đánh giá")}</span>{!showByManager && <span className="required">(*)</span>}</th>
-                                <th className="text-center qltt-assessment"><span>{t("Kết quả thực tế CBQL đánh giá")}</span>{!showByManager && <span className="required">(*)</span>}</th>
+                                <th className="text-center self-assessment"><span>{t("ActualResult_SelfAssess")}</span>{!showByManager && <span className="required">(*)</span>}</th>
+                                <th className="text-center qltt-assessment"><span>{t("ActualResult_ManagerAssess")}</span>{!showByManager && <span className="required">(*)</span>}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -210,8 +210,8 @@ const EvaluationVinBusTemplate = ({ evaluationFormDetail, isEdit, showByManager,
                                                         <th className="measurement"><span>{t("EvaluationDetailPartLevelOfPerformance")}<span className="note">({t("EvaluationDetailPartByScore")})</span></span></th>
                                                         <th className="text-center proportion"><span>{t("EvaluationDetailPartWeight")} %</span></th>
                                                         <th className="text-center target"><span>{t("EvaluationDetailPartTarget")}</span></th>
-                                                        <th className="text-center self-assessment"><span>{t("Kết quả thực tế CBNV đánh giá")}</span>{!showByManager && <span className="required">(*)</span>}</th>
-                                                        <th className="text-center qltt-assessment"><span>{t("Kết quả thực tế CBQL đánh giá")}</span>{!showByManager && <span className="required">(*)</span>}</th>
+                                                        <th className="text-center self-assessment"><span>{t("ActualResult_SelfAssess")}</span>{!showByManager && <span className="required">(*)</span>}</th>
+                                                        <th className="text-center qltt-assessment"><span>{t("ActualResult_ManagerAssess")}</span>{!showByManager && <span className="required">(*)</span>}</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
