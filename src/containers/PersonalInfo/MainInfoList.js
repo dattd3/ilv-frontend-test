@@ -127,6 +127,10 @@ function MainInfoList(props) {
                                 <td className="info-value"><p>&nbsp;{marriageStatus[userDetail?.marital_status_code]}</p></td>
                             </tr>
                             <tr>
+                                <td className="info-label">{t("Master code")}</td>
+                                <td className="info-value"><p>&nbsp;{userProfile?.master_code}</p></td>
+                            </tr>
+                            <tr>
                                 <td className="info-label">{t("PersonalEmail")}</td>
                                 <td className="info-value"><p>&nbsp;{userDetail.personal_email}</p></td>
                             </tr>
