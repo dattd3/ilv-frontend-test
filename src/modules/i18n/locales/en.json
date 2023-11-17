@@ -811,7 +811,6 @@
   "ResponseSentSuccessfully": "Response Sent Successfully",
   "recall": "Are you sure you want to recall?",
   "ManagementEfficiencyBonus": "Management Efficiency Bonus",
-  
   "NETCovidCampaignBonus": "NET Covid Campaign Bonus",
   "GROSSSUPCovidCampaignBonus": "GROSS Covid Campaign Bonus",
   "GROSSCovidCampaignBonus": "Covid - 19 Campaign Bonus(gross)",
@@ -820,7 +819,6 @@
   "NETCovid19PandemicSubsidy": "NET Covid 19 pandemic subsidy",
   "NETF0EmployeesSubsidy": "NET F0 employees subsidy",
   "GROSSF0EmployeesSubsidy": "GROSS F0 employees subsidy",
-
   "IfAny": "(If any)",
   "VSC1OutOfSalaryBonus": "VSC Out of Salary Bonus (1)",
   "VSC2OutOfSalaryBonus": "VSC Out of Salary Bonus (2)",
@@ -2015,5 +2013,8 @@
   "InsuranceSocialInfoRequest": "Thay đổi thông tin đóng BHXH",
   "ContractTimeTitle": "Labor contract duration regulation when renewal:",
   "ContractTimeNote": "1. Employees may sign a definite <b>term labor contract</b> after an apprenticeship, and then switch to an <b>indefinite term labor contract</b>, unless otherwise approved by competent Leaders. <br />2. In the <b>Manufacturing Division</b>, Employees may sign two (2) <b>definite term labor contract</b> after an apprenticeship, and then switch to an <b>indefinite term labor contract</b>, unless otherwise approved by competent Leaders.",
-  "ContractTimeNoteOther": "Please make sure to check your company regulation with HR to choose the right kind of contract propose."
+  "ContractTimeNoteOther": "Please make sure to check your company regulation with HR to choose the right kind of contract propose.",
+  "Change2": "Change",
+  "InformationOnRegisteredLeave": "Information on registered leave",
+  "InformationOnAdjustmentOfLeaveRegistration": "Information on adjustment of leave registration"
 }
