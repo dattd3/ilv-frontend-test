@@ -318,7 +318,7 @@ class ConfirmationModal extends React.Component {
                         } else {
                             this.showStatusModal(t("Successful"), t("successfulDisApprovalReq"), true)
                         }
-                        setTimeout(() => { this.redirectApprovalTab() }, 2000);
+                        // setTimeout(() => { this.redirectApprovalTab() }, 2000);
                     }
                 }
             })
