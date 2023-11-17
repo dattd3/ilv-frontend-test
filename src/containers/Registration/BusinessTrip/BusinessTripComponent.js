@@ -937,7 +937,7 @@ class BusinessTripComponent extends React.Component {
                                                                             showTimeSelect
                                                                             showTimeSelectOnly
                                                                             timeIntervals={checkVinmec === true ? 30 : 15}
-                                                                            timeCaption="Giờ"
+                                                                            timeCaption={t("Hour")}
                                                                             dateFormat="HH:mm"
                                                                             timeFormat="HH:mm"
                                                                             placeholderText={t('Select')}
@@ -986,7 +986,7 @@ class BusinessTripComponent extends React.Component {
                                                                             showTimeSelect
                                                                             showTimeSelectOnly
                                                                             timeIntervals={checkVinmec === true ? 30 : 15}
-                                                                            timeCaption="Giờ"
+                                                                            timeCaption={t("Hour")}
                                                                             dateFormat="HH:mm"
                                                                             timeFormat="HH:mm"
                                                                             placeholderText={t('Select')}
