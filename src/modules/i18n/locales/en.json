@@ -178,9 +178,8 @@
   "ReasonsOfAccidentsIncurred" : "Reasons",
   "SearchLabel": "Search",
   "QuestionAndAnswer": "Question & Answer",
-  "Registration": "Leave request",
+  "Registration": "Timekeeping",
   "Registration_V073": "Đăng ký nghỉ, công tác, sửa giờ vào-ra",
-  "RegistrationSeconds": "Đăng ký nghỉ, công tác, sửa giờ vào-ra",
   "BonusAndPenalty": "Awards/Penalties",
   "QAAlreadyExist": "The question is already in the Q&A section, please find the answer on ILoveVingroup",
   "Deducted": " Deducted",
@@ -406,7 +405,6 @@
   "LeaveForExpats": "Leave for Expats",
   "LeaveForMarriageFuneral": "Leave for Marriage/Funeral",
   "LeaveForWorkAccidentOccupationalDisease": "Leave for Work Accident/Occupational Disease",
-  "LeaveRequestBizExplanation": "Leave Request",
   "LeaveRequest": "Leave Request",
   "ExcessOfLeaveFundYear": "Leave request exceeds annual quota (including pending requests). Please select other types of leave",
   "ExcessOfLeaveFundAdvance ": "Leave request exceeds available advance balance (including pending requests). Please select other types of leave",
@@ -477,7 +475,7 @@
   "PassportNo": "Passport No.",
   "PassportPlaceOfIssue": "Passport Place of Issue",
   "PassportRequired": "Passport Required",
-  "PaySlip": "Pay Slip",
+  "PaySlip": "Payslip",
   "PaySlipMonth": "Payslip",
   "Penalties": "Penalties",
   "Pending": "Pending",
@@ -812,7 +810,6 @@
   "ResponseSentSuccessfully": "Response Sent Successfully",
   "recall": "Are you sure you want to recall?",
   "ManagementEfficiencyBonus": "Management Efficiency Bonus",
-  
   "NETCovidCampaignBonus": "NET Covid Campaign Bonus",
   "GROSSSUPCovidCampaignBonus": "GROSS Covid Campaign Bonus",
   "GROSSCovidCampaignBonus": "Covid - 19 Campaign Bonus(gross)",
@@ -821,7 +818,6 @@
   "NETCovid19PandemicSubsidy": "NET Covid 19 pandemic subsidy",
   "NETF0EmployeesSubsidy": "NET F0 employees subsidy",
   "GROSSF0EmployeesSubsidy": "GROSS F0 employees subsidy",
-
   "IfAny": "(If any)",
   "VSC1OutOfSalaryBonus": "VSC Out of Salary Bonus (1)",
   "VSC2OutOfSalaryBonus": "VSC Out of Salary Bonus (2)",
@@ -1961,6 +1957,8 @@
   "WelfareRefund": "Internal benefit reimbursement",
   "WelfareRefundApproveWarning": "There was previous approval for this employee today, our system will adjust this approval date to {{date}}",
   "InsuranceSocialRequest": "Thanh toán bảo hiểm xã hội",
+  "ActualResult_SelfAssess": "Actual result (self assess)",
+  "ActualResult_ManagerAssess": "Actual result (manager assess)",
   "Vin30Chronicles": "Vingroup Chronicles",
   "VingroupHistory": "Vingroup History",
   "VingroupCulturalGeneral": "Vingroup Culture Overview",
@@ -2014,5 +2012,8 @@
   "InsuranceSocialInfoRequest": "Thay đổi thông tin đóng BHXH",
   "ContractTimeTitle": "Labor contract duration regulation when renewal:",
   "ContractTimeNote": "1. Employees may sign a definite <b>term labor contract</b> after an apprenticeship, and then switch to an <b>indefinite term labor contract</b>, unless otherwise approved by competent Leaders. <br />2. In the <b>Manufacturing Division</b>, Employees may sign two (2) <b>definite term labor contract</b> after an apprenticeship, and then switch to an <b>indefinite term labor contract</b>, unless otherwise approved by competent Leaders.",
-  "ContractTimeNoteOther": "Please make sure to check your company regulation with HR to choose the right kind of contract propose."
+  "ContractTimeNoteOther": "Please make sure to check your company regulation with HR to choose the right kind of contract propose.",
+  "Change2": "Change",
+  "InformationOnRegisteredLeave": "Information on registered leave",
+  "InformationOnAdjustmentOfLeaveRegistration": "Information on adjustment of leave registration"
 }
