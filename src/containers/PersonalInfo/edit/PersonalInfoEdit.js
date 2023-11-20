@@ -430,8 +430,6 @@ class PersonalInfoEdit extends React.Component {
       }
     }
 
-    console.log('errors => ', errors)
-
     this.setState({ errors: errors })
     return errors
   }

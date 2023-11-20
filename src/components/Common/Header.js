@@ -44,7 +44,7 @@ function Header(props) {
     const [showUseGuideModal, setShowUseGuideModal] = useState(false);
     const [showUseGuideIcon, setShowUseGuideIcon] = useState(false);
     const [lastNotificationIdSeen, setLastNotificationIdSeen] = useState(0);
-    const [dataNotificationsUnReadComponent, setDataNotificationsComponent] = useState("");
+    const [notices, setNotices] = useState([]);
     const newestNotification = useContext(NewestNotificationContext);
     const accessToken = localStorage.getItem('accessToken')
 
@@ -110,7 +110,9 @@ function Header(props) {
             if (result.data?.data && result.data?.result) {
                 const res = result.data.result;
                 const data = result.data.data;
+
                 if (res.code != 1) {
+                    setNotices(data?.notifications || [])
                     if (data.notifications && data.notifications.length > 0) {
                         if (data.total > 99 && data.total !== totalNotificationCount) {
                             setTotalNotificationCount(data.total)
@@ -125,89 +127,6 @@ function Header(props) {
                         if (data.notifications[0]) {
                             setLastNotificationIdSeen(data.notifications[0].id);
                         }
-                        const qnaDetailType = 'TICKET'
-        
-                        const dataRender = <>
-                            {
-                                data.notifications.map((item, i) => {
-                                    const timePost = getTimePost(item.createdDate);
-                                    let notificationLink = (type) => {
-                                        switch (type) {
-                                            case Constants.notificationType.NOTIFICATION_DEFAULT:
-                                            case 12:
-                                            case 13:
-                                            case 14:
-                                            case 15:
-                                            case 11:
-                                                return `/notifications/${item.id}`
-                                            case Constants.notificationType.NOTIFICATION_OTHER:
-                                                if (item?.detailType == qnaDetailType) {
-                                                    return `${item.url}`
-                                                }
-                                                return `/notifications/${item.id}`
-                                            case Constants.notificationType.NOTIFICATION_REGISTRATION: 
-                                                if([Constants.PROPOSAL_TRANSFER, Constants.PROPOSAL_APPOINTMENT].includes(item.requestTypeId)) {
-                                                    let subId = item.subRequestId?.includes('.') ? item.subRequestId.split('.')[1] : item.subRequestId;
-                                                    let suffix = item.detailType == 'APPRAISAL' ? 'assess' : item.detailType == 'APPROVAL' ? 'approval' : 'request';
-                                                    let urls = {
-                                                        '14-1': 'registration-transfer',
-                                                        '15-1': 'registration-transfer',
-                                                        '14-2': 'proposed-transfer',
-                                                        '15-2': 'proposed-appointment',
-                                                    };
-                                                    return `/${urls[`${item.requestTypeId}-${item.formType}`]}/${subId}/${suffix}`;
-                                                }
-        
-                                                if (item?.detailType == 'REQUEST')
-                                                    return `/tasks${item?.groupId ? `?requestTypes=${getRequestTypesList(item.groupId, false).join(",")}` : ''}`
-                                                else if (item?.detailType == 'APPRAISAL')
-                                                    return `/tasks?tab=consent${item?.groupId ? `&requestTypes=${getRequestTypesList(item.groupId, false).join(",")}` : ''}`                                       
-                                                else
-                                                    return `/tasks?tab=approval${item?.groupId ? `&requestTypes=${getRequestTypesList(item.groupId, false).join(",")}` : ''}`
-                                            case 6:
-                                                return '/personal-info?tab=document'
-                                            case Constants.notificationType.NOTIFICATION_REJECT:
-                                                return `/tasks?${item.groupId ? `&requestTypes=${getRequestTypesList(item.groupId, true).join(",")}` : ''}`
-                                            case Constants.notificationType.NOTIFICATION_AUTO_JOB:
-                                                return `/tasks?tab=approval${item.groupId ? `&requestTypes=${getRequestTypesList(item.groupId, false).join(",")}` : ''}`
-                                            case Constants.notificationType.NOTIFICATION_SHIFT_CHANGE:
-                                                const param = getDateShiftChange(item?.title || '');
-                                                return `/timesheet${param}`
-                                            case 20:
-                                                 return '/personal-info?tab=document'
-                                            case Constants.notificationType.NOTIFICATION_ADD_MEMBER_TO_PROJECT:
-                                                return `/my-projects/project/${item?.userProfileHistoryId}` 
-                                            case Constants.notificationType.NOTIFICATION_MY_EVALUATION:
-                                                return `/my-evaluation`
-                                            case Constants.notificationType.NOTIFICATION_LEAD_EVALUATION:
-                                                return `/evaluation-approval`
-                                            case Constants.notificationType.NOTIFICATION_MY_KPI_REGISTRATION_REQUEST:
-                                                return `/target-management?tab=OWNER&id=${item?.subRequestId || 0}`
-                                            case Constants.notificationType.NOTIFICATION_MY_KPI_REGISTRATION_APPROVAL_REQUEST:
-                                                return `/target-management?tab=REQUEST&id=${item?.subRequestId || 0}`
-                                            default:
-                                                return `${item.url}`
-                                        }
-                                    }
-                                    let titleNotice = [Constants.notificationType.NOTIFICATION_MY_EVALUATION, Constants.notificationType.NOTIFICATION_LEAD_EVALUATION].includes(item?.type)
-                                    ? currentLocale == Constants.LANGUAGE_VI ? item?.title : item?.en_Title || ''
-                                    : item?.title || ''
-                                    let descriptionNotice = [Constants.notificationType.NOTIFICATION_MY_EVALUATION, Constants.notificationType.NOTIFICATION_LEAD_EVALUATION].includes(item?.type)
-                                    ? currentLocale == Constants.LANGUAGE_VI ? item?.description : item?.en_Description || ''
-                                    : item?.description || ''
-        
-                                    return <div key={i} className="item">
-                                        <a onClick={() => clickNotification(item.id)} className="title" href={notificationLink(item.type)} title={titleNotice}>{titleNotice}</a>
-                                        <p className="description">{descriptionNotice}</p>
-                                        <div className="time-file">
-                                            <span className="time"><i className='far fa-clock ic-clock'></i><span>{timePost}</span></span>
-                                            {item.hasAttachmentFiles ? <span className="attachment-files"><i className='fa fa-paperclip ic-attachment'></i><span>{t("HasAttachments")}</span></span> : ""}
-                                        </div>
-                                    </div>
-                                })
-                            }
-                        </>;
-                        setDataNotificationsComponent(dataRender);
                     }
                 }
             }
@@ -217,6 +136,192 @@ function Header(props) {
                 window.location.href = process.env.REACT_APP_AWS_COGNITO_IDP_SIGNOUT_URL;
             }
         }
+    }
+
+    const getSalaryProposeLinkRequest = (requestTypeId, requestId, formType, parentRequestHistoryId) => {
+        let url = '',
+          transferAppoints = {
+            '14-1': 'registration-transfer',
+            '15-1': 'registration-transfer',
+            '14-2': 'proposed-transfer',
+            '15-2': 'proposed-appointment',
+          };
+        if(requestTypeId == Constants.INSURANCE_SOCIAL_INFO) {
+            url = `social-contribute/${requestId}/request`;
+        } else if(requestTypeId == Constants.WELFARE_REFUND) {
+            url = `benefit-claim-request`;
+        } else if (requestTypeId == Constants.INSURANCE_SOCIAL) {
+            url = `insurance-manager/detail/${requestId}/request`;
+        } else if (parentRequestHistoryId) {
+          //xu ly mot nguoi
+          url = `salarypropse/${parentRequestHistoryId}/${requestId}/request`;
+        } else {
+          //xu ly nhieu nguoi
+          url = `${[14, 15].includes(requestTypeId) ? transferAppoints[`${requestTypeId}-${formType}`] : 'salaryadjustment'}/${requestId}/request`;
+        }
+        return '/' + url;
+    }
+
+    const getSalaryProposeLink = (requestTypeId, requestId, formType, detailType, parentRequestHistoryId) => {
+        let url = '',
+        transferAppoints = {
+          '14-1': 'registration-transfer',
+          '15-1': 'registration-transfer',
+          '14-2': 'proposed-transfer',
+          '15-2': 'proposed-appointment',
+        };
+        const typeRequest = detailType === "APPROVAL" ? "approval" : "assess"
+        if(requestTypeId == Constants.INSURANCE_SOCIAL_INFO) {
+            url = `social-contribute/${requestId}/${typeRequest}`;
+        } else if(parentRequestHistoryId) {
+            //xu ly mot nguoi
+            url = `salarypropse/${parentRequestHistoryId}/${requestId}/${typeRequest}`
+        } else if (requestTypeId == Constants.INSURANCE_SOCIAL) {
+            url = `insurance-manager/detail/${requestId}/${typeRequest}`;
+        }else {
+            //xu ly nhieu nguoi
+            url = `${[14, 15].includes(requestTypeId) ? transferAppoints[`${requestTypeId}-${formType}`] : 'salaryadjustment'}/${requestId}/${typeRequest}`
+        }
+        console.log('getSalaryProposeLink>>>', url);
+        return '/' + url;
+    }
+
+    const renderNoticeUI = () => {
+        const getAction = (noticeType, detailType) => {
+            return Constants.tabListRequestMapping[detailType]
+        }
+        
+        return (
+            (notices || []).map((item, i) => {
+                const timePost = getTimePost(item.createdDate);
+                const requestId = item?.subRequestId?.toString().includes('.') ? item?.subRequestId?.toString()?.split('.')?.[0] : item?.subRequestId
+                const subRequestId = item?.subRequestId?.toString().includes('.') ? item?.subRequestId?.toString()?.split('.')?.[1] : 1
+                const qnaDetailType = 'TICKET'
+                const requestTypeId = item.requestTypeId; //Loại yêu cầu
+
+                let notificationLink = (type, levelData) => {
+                    if (requestTypeId == 6 && item?.type != 15) {
+                        if (item.detailType == 'APPROVAL') {
+                          return `/evaluation/${requestId}/approval`;
+                        } else {
+                          return `/evaluation/${requestId}/assess`
+                        }
+                    }
+    
+                    //[ILVG-1472] mở danh sách yêu cầu khi là thông báo trước 30 phút VinITIS
+                    if(requestTypeId == 0 && ['REQUEST', 'APPRAISAL', 'APPROVAL'].includes(item.detailType)) {
+                        if (item?.detailType == 'REQUEST')
+                            return `/tasks${item?.groupId ? `?requestTypes=${getRequestTypesList(item.groupId, false).join(",")}` : ''}`
+                        else if (item?.detailType == 'APPRAISAL')
+                            return `/tasks?tab=consent${item?.groupId ? `&requestTypes=${getRequestTypesList(item.groupId, false).join(",")}` : ''}`
+                        else
+                            return `/tasks?tab=approval${item?.groupId ? `&requestTypes=${getRequestTypesList(item.groupId, false).join(",")}` : ''}`
+                    }
+
+                    switch (type) {
+                        case Constants.notificationType.NOTIFICATION_DEFAULT:
+                        case 12:
+                        case 13:
+                        case 14:
+                        case 15:
+                        case 11:
+                            return `/notifications/${item.id}`
+                        case Constants.notificationType.NOTIFICATION_OTHER:
+                            if (item?.detailType == qnaDetailType) {
+                                return `${item.url}`
+                            }
+                            return `/notifications/${item.id}`
+                        case Constants.notificationType.NOTIFICATION_REGISTRATION: 
+                            if(item?.detailType == 'REQUEST' && [Constants.SALARY_PROPOSE, 
+                                Constants.PROPOSAL_TRANSFER, 
+                                Constants.PROPOSAL_APPOINTMENT, 
+                                Constants.WELFARE_REFUND, 
+                                Constants.INSURANCE_SOCIAL, 
+                                Constants.INSURANCE_SOCIAL_INFO].includes(requestTypeId)) {
+                                return getSalaryProposeLinkRequest(requestTypeId, requestId, item.formType, item.parentRequestHistoryId)
+                            }
+                            if(item?.detailType != 'REQUEST' && [Constants.SALARY_PROPOSE, 
+                                Constants.PROPOSAL_TRANSFER, 
+                                Constants.PROPOSAL_APPOINTMENT, 
+                                Constants.INSURANCE_SOCIAL, 
+                                Constants.INSURANCE_SOCIAL_INFO].includes(requestTypeId)) {
+                                    return getSalaryProposeLink(requestTypeId, requestId, item.formType, item.detailType, item.parentRequestHistoryId)
+                            }
+
+                            if (item?.detailType == 'REQUEST') { // Yêu cầu
+                                return `/tasks${item?.groupId ? `?requestTypes=${getRequestTypesList(item.groupId, false).join(",")}` : ''}`
+                            } else if (item?.detailType == 'APPRAISAL') { // Thẩm định
+                                if (levelData === "" || levelData === null || levelData === undefined || levelData == 1) { // Chỉ có 1 yêu cầu
+                                    return ''
+                                }
+                                return `/tasks?tab=consent${item?.groupId ? `&requestTypes=${getRequestTypesList(item.groupId, false).join(",")}` : ''}`
+                            } else { // Phê duyệt
+                                // if (levelData === "" || levelData === null || levelData === undefined || levelData == 1 || ) { // Chỉ có 1 yêu cầu
+                                //     return ''
+                                // }
+                                // return `/tasks?tab=approval${item?.groupId ? `&requestTypes=${getRequestTypesList(item.groupId, false).join(",")}` : ''}`
+                                if (Number(levelData || 0) > 1 && !item?.subRequestId?.toString()?.includes('.')) {
+                                    return `/tasks?tab=approval${item?.groupId ? `&requestTypes=${getRequestTypesList(item.groupId, false).join(",")}` : ''}`
+                                }
+                                return ''
+                            }
+                        case 6:
+                            return '/personal-info?tab=document'
+                        case Constants.notificationType.NOTIFICATION_APPROVED:
+                            if(item?.detailType == 'REQUEST' && [Constants.SALARY_PROPOSE, 
+                                Constants.PROPOSAL_TRANSFER, 
+                                Constants.PROPOSAL_APPOINTMENT, 
+                                Constants.WELFARE_REFUND, 
+                                Constants.INSURANCE_SOCIAL, 
+                                Constants.INSURANCE_SOCIAL_INFO].includes(requestTypeId)) {
+                                return getSalaryProposeLinkRequest(requestTypeId, requestId, item.formType, item.parentRequestHistoryId)
+                            }
+                            if(item?.detailType != 'REQUEST' && [Constants.SALARY_PROPOSE, 
+                                Constants.PROPOSAL_TRANSFER, 
+                                Constants.PROPOSAL_APPOINTMENT, 
+                                Constants.INSURANCE_SOCIAL, 
+                                Constants.INSURANCE_SOCIAL_INFO].includes(requestTypeId)) {
+                                    return getSalaryProposeLink(requestTypeId, requestId, item.formType, item.detailType, item.parentRequestHistoryId)
+                            }
+                            return `/registration/${requestId}/${subRequestId}/request`
+                        case Constants.notificationType.NOTIFICATION_AUTO_JOB:
+                            return `/tasks?tab=approval${item.groupId ? `&requestTypes=${getRequestTypesList(item.groupId, false).join(",")}` : ''}`
+                        case Constants.notificationType.NOTIFICATION_SHIFT_CHANGE:
+                            const param = getDateShiftChange(item?.title || '');
+                            return `/timesheet${param}`
+                        case 20:
+                             return '/personal-info?tab=document'
+                        case Constants.notificationType.NOTIFICATION_ADD_MEMBER_TO_PROJECT:
+                            return `/my-projects/project/${item?.userProfileHistoryId}` 
+                        case Constants.notificationType.NOTIFICATION_MY_EVALUATION:
+                            return `/my-evaluation`
+                        case Constants.notificationType.NOTIFICATION_LEAD_EVALUATION:
+                            return `/evaluation-approval`
+                        case Constants.notificationType.NOTIFICATION_MY_KPI_REGISTRATION_REQUEST:
+                            return `/target-management?tab=OWNER&id=${item?.subRequestId || 0}`
+                        case Constants.notificationType.NOTIFICATION_MY_KPI_REGISTRATION_APPROVAL_REQUEST:
+                            return `/target-management?tab=REQUEST&id=${item?.subRequestId || 0}`
+                        default:
+                            return `${item.url}`
+                    }
+                }
+                let titleNotice = [Constants.notificationType.NOTIFICATION_MY_EVALUATION, Constants.notificationType.NOTIFICATION_LEAD_EVALUATION].includes(item?.type)
+                ? currentLocale == Constants.LANGUAGE_VI ? item?.title : item?.en_Title || ''
+                : item?.title || ''
+                let descriptionNotice = [Constants.notificationType.NOTIFICATION_MY_EVALUATION, Constants.notificationType.NOTIFICATION_LEAD_EVALUATION].includes(item?.type)
+                ? currentLocale == Constants.LANGUAGE_VI ? item?.description : item?.en_Description || ''
+                : item?.description || ''
+
+                return <div key={i} className="item">
+                    <a onClick={(e) => clickNotification(e, item.id, requestId, subRequestId, getAction(item?.type, item?.detailType), notificationLink(item?.type, item?.levelData))} className="title" href={notificationLink(item?.type, item?.levelData)} title={titleNotice}>{titleNotice}</a>
+                    <p className="description">{descriptionNotice}</p>
+                    <div className="time-file">
+                        <span className="time"><i className='far fa-clock ic-clock'></i><span>{timePost}</span></span>
+                        {item.hasAttachmentFiles ? <span className="attachment-files"><i className='fa fa-paperclip ic-attachment'></i><span>{t("HasAttachments")}</span></span> : ""}
+                    </div>
+                </div>
+            })
+        )
     }
 
     const getDateShiftChange = (title) => {
@@ -230,10 +335,13 @@ function Header(props) {
         return param;
     }
 
-    const clickNotification = (id) => {
-        var axios = require('axios');
-        var data = '';
-        var config = {
+    const clickNotification = (e, id, requestId, subRequestId, action, url = '') => {
+        if (!url) {
+            e.preventDefault()
+        }
+
+        const data = '';
+        const config = {
             method: 'post',
             url: `${process.env.REACT_APP_REQUEST_URL}notifications/readnotification/` + id,
             headers: {
@@ -243,12 +351,7 @@ function Header(props) {
             data: data
         };
         axios(config)
-            .then(function (response) {
-
-            })
-            .catch(function (error) {
-
-            });
+        !url && props.handleTaskDetailModal(true, requestId, subRequestId, action)
     }
 
     const OnClickBellFn = (isOpen) => {
@@ -438,7 +541,7 @@ function Header(props) {
                         </Dropdown.Menu>
                     </Dropdown>
                     <Dropdown id="notifications-block" onToggle={(isOpen) => OnClickBellFn(isOpen)}>
-                        <Animated animationIn="lightSpeedIn" isVisible={dataNotificationsUnReadComponent != ""} animationOutDuration={10} >
+                        <Animated animationIn="lightSpeedIn" isVisible={notices?.length > 0} animationOutDuration={10} >
                             <Dropdown.Toggle>
                                 <span className="notifications-block">
                                     {/* <i className="far fa-bell ic-customize"></i> */}
@@ -451,11 +554,11 @@ function Header(props) {
                                 </span>
                             </Dropdown.Toggle>
                         </Animated>
-                        {dataNotificationsUnReadComponent != "" ?
+                        {notices?.length > 0 ?
                             <Dropdown.Menu className="list-notification-popup">
                                 <div className="title-block text-center">{t("AnnouncementInternal")}</div>
                                 <div className="all-items">
-                                    {dataNotificationsUnReadComponent}
+                                    {renderNoticeUI()}
                                 </div>
                                 {/* <a href="/notifications-unread" title="Xem tất cả" className="view-all">Xem tất cả</a> */}
                             </Dropdown.Menu>

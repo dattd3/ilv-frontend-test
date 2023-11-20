@@ -42,7 +42,7 @@ class Task extends React.Component {
     }
 
     componentDidMount() {
-        this.fetchUserApprovalDelegations()
+        // this.fetchUserApprovalDelegations()
     }
 
     fetchUserApprovalDelegations = async () => {
