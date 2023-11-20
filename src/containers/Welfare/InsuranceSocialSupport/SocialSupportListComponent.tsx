@@ -62,10 +62,10 @@ const SocialSupportListComponent = ({t}: any) =>{
                         <thead>
                             <tr>
                                 <th scope="col" className="code text-center" style={{width: '102px'}}>{t('RequestNo')}</th>
-                                <th scope="col" className="status text-center">{t('TypeOfRequest')}</th>
+                                <th scope="col" className="status pl-4">{t('TypeOfRequest')}</th>
                                 <th scope="col" className="request-type text-center">{t('userSentRequestDate')}</th>
-                                <th scope="col" className="request-type text-center">{t('AppovalStatus')}</th>
-                                <th scope="col" className="status text-center">{t('ReasonHRReject')}</th>
+                                <th scope="col" className="request-type">{t('AppovalStatus')}</th>
+                                <th scope="col" className="status">{t('ReasonHRReject')}</th>
                                 <th scope="col" className="request-type text-center">{t('EvaluationStatus')}</th>
                                 <th scope="col" className="tool text-center">{t("action")}</th>
                             </tr>
@@ -77,10 +77,10 @@ const SocialSupportListComponent = ({t}: any) =>{
                                     return (
                                         <tr key={index}>
                                             <td className="code text-center">{child.idDisplay}</td>
-                                            <td className="status text-center" title={child.typeName}>{child.typeName || ''}</td>
+                                            <td className="status" title={child.typeName}>{child.typeName || ''}</td>
                                             <td className="request-type text-center">{child.createdDate ? moment(child.createdDate).format('DD/MM/YYYY') : ''}</td>
-                                            <td className="request-type text-center">{t(Constants.mappingStatusRequest[child.processStatusId]?.label || '')}</td>
-                                            <td className="status text-center">{child.hrComment || ''}</td>
+                                            <td className="request-type">{t(Constants.mappingStatusRequest[child.processStatusId]?.label || '')}</td>
+                                            <td className="status" title={child.hrComment}>{child.hrComment || ''}</td>
                                             <td className="request-type text-center">{child.statusName || ''}</td>
                                             <td className="tool">
                                                 <a style={{cursor: 'pointer'}} onClick={() => onDownloadTemplate(child.userProfileDocuments)}><img alt="Sửa" src={Download} className="icon-download" /></a>
