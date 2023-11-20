@@ -104,7 +104,7 @@ class ConfirmationModal extends React.Component {
     getHostByRequestTypeId = (dataToSap) => {
         const requestTypeId = dataToSap?.[0]?.requestTypeId || dataToSap?.requestTypeId || "";
 
-        return !!requestTypeId && [12, 14, 15, Constants.INSURANCE_SOCIAL, Constants.INSURANCE_SOCIAL_INFO].includes(requestTypeId)
+        return !!requestTypeId && [12, 14, 15, Constants.INSURANCE_SOCIAL, Constants.INSURANCE_SOCIAL_INFO, Constants.SOCIAL_SUPPORT].includes(requestTypeId)
           ? process.env.REACT_APP_REQUEST_SERVICE_URL
           : process.env.REACT_APP_REQUEST_URL;
     }
@@ -318,7 +318,7 @@ class ConfirmationModal extends React.Component {
                         } else {
                             this.showStatusModal(t("Successful"), t("successfulDisApprovalReq"), true)
                         }
-                        setTimeout(() => { this.redirectApprovalTab() }, 2000);
+                        // setTimeout(() => { this.redirectApprovalTab() }, 2000);
                     }
                 }
             })
@@ -442,21 +442,20 @@ class ConfirmationModal extends React.Component {
     hideStatusModal = () => {
         const { action, lockReload, onHideTaskDetailModal } = this.props
         this.setState({ isShowStatusModal: false })
-        if (window.location.pathname === map.Task) {
-            const currentTab = getValueParamByQueryString(window.location.search, "tab")
-            switch (currentTab) {
-                case Constants.tabListRequestMapping.APPRAISAL:
-                    if (action === Constants.tabListRequestMapping.APPRAISAL)
-                    return window.location.reload();
-                case Constants.tabListRequestMapping.APPROVAL:
-                    if (action === Constants.tabListRequestMapping.APPROVAL)
-                    return window.location.reload();
-                default:
-                    if (action === Constants.tabListRequestMapping.REQUEST)
-                    onHideTaskDetailModal()
-                    return
-            }
-        }
+        // if (window.location.pathname === map.Task) {
+        //     const currentTab = getValueParamByQueryString(window.location.search, "tab")
+        //     switch (currentTab) {
+        //         case Constants.tabListRequestMapping.APPRAISAL:
+        //             if (action === Constants.tabListRequestMapping.APPRAISAL)
+        //             return window.location.reload();
+        //         case Constants.tabListRequestMapping.APPROVAL:
+        //             if (action === Constants.tabListRequestMapping.APPROVAL)
+        //             return window.location.reload();
+        //         default:
+        //             if (action === Constants.tabListRequestMapping.REQUEST)
+        //             return window.location.reload();
+        //     }
+        // }
 
         if (lockReload) {
             onHideTaskDetailModal()

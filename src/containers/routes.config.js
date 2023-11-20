@@ -900,14 +900,14 @@ const ROUTES = [
           },
           component: lazy(() => import("./VingroupCulturalGallery"))
         },
-        {
-          key: "great-start-up-spirit-gallery",
-          routeProps: {
-            exact: true,
-            path: map.GreatStartUpSpiritGallery
-          },
-          component: lazy(() => import("./VingroupCulturalGallery"))
-        },
+        // {
+        //   key: "great-start-up-spirit-gallery",
+        //   routeProps: {
+        //     exact: true,
+        //     path: map.GreatStartUpSpiritGallery
+        //   },
+        //   component: lazy(() => import("./VingroupCulturalGallery"))
+        // },
         {
           key: "vingroup-culture",
           routeProps: {
@@ -971,6 +971,14 @@ const ROUTES = [
             path: map.SocialContributeDetail,
           },
           component: lazy(() => import("./Welfare/WelfareComponents/SocialContributeInfoDetail")),
+        },
+        {
+          key: "registration-detail-support-insurance",
+          routeProps: {
+            exact: true,
+            path: map.SocialSupportDetail,
+          },
+          component: lazy(() => import("./Welfare/WelfareComponents/SocialSupportInfoDetail")),
         },
       ],
     },

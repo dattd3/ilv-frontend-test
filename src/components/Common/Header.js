@@ -148,6 +148,8 @@ function Header(props) {
           };
         if(requestTypeId == Constants.INSURANCE_SOCIAL_INFO) {
             url = `social-contribute/${requestId}/request`;
+        } else if (requestTypeId == Constants.SOCIAL_SUPPORT) {
+            url = `social-support/${requestId}/request`;
         } else if(requestTypeId == Constants.WELFARE_REFUND) {
             url = `benefit-claim-request`;
         } else if (requestTypeId == Constants.INSURANCE_SOCIAL) {
@@ -173,6 +175,8 @@ function Header(props) {
         const typeRequest = detailType === "APPROVAL" ? "approval" : "assess"
         if(requestTypeId == Constants.INSURANCE_SOCIAL_INFO) {
             url = `social-contribute/${requestId}/${typeRequest}`;
+        } else if (requestTypeId == Constants.SOCIAL_SUPPORT) {
+            url = `social-support/${requestId}/${typeRequest}`;
         } else if(parentRequestHistoryId) {
             //xu ly mot nguoi
             url = `salarypropse/${parentRequestHistoryId}/${requestId}/${typeRequest}`
@@ -182,7 +186,6 @@ function Header(props) {
             //xu ly nhieu nguoi
             url = `${[14, 15].includes(requestTypeId) ? transferAppoints[`${requestTypeId}-${formType}`] : 'salaryadjustment'}/${requestId}/${typeRequest}`
         }
-        console.log('getSalaryProposeLink>>>', url);
         return '/' + url;
     }
 
@@ -237,14 +240,16 @@ function Header(props) {
                                 Constants.PROPOSAL_APPOINTMENT, 
                                 Constants.WELFARE_REFUND, 
                                 Constants.INSURANCE_SOCIAL, 
-                                Constants.INSURANCE_SOCIAL_INFO].includes(requestTypeId)) {
+                                Constants.INSURANCE_SOCIAL_INFO,
+                                Constants.SOCIAL_SUPPORT].includes(requestTypeId)) {
                                 return getSalaryProposeLinkRequest(requestTypeId, requestId, item.formType, item.parentRequestHistoryId)
                             }
                             if(item?.detailType != 'REQUEST' && [Constants.SALARY_PROPOSE, 
                                 Constants.PROPOSAL_TRANSFER, 
                                 Constants.PROPOSAL_APPOINTMENT, 
                                 Constants.INSURANCE_SOCIAL, 
-                                Constants.INSURANCE_SOCIAL_INFO].includes(requestTypeId)) {
+                                Constants.INSURANCE_SOCIAL_INFO,
+                                Constants.SOCIAL_SUPPORT].includes(requestTypeId)) {
                                     return getSalaryProposeLink(requestTypeId, requestId, item.formType, item.detailType, item.parentRequestHistoryId)
                             }
 
@@ -260,6 +265,9 @@ function Header(props) {
                                 //     return ''
                                 // }
                                 // return `/tasks?tab=approval${item?.groupId ? `&requestTypes=${getRequestTypesList(item.groupId, false).join(",")}` : ''}`
+                                if (Number(levelData || 0) > 1 && !item?.subRequestId?.toString()?.includes('.')) {
+                                    return `/tasks?tab=approval${item?.groupId ? `&requestTypes=${getRequestTypesList(item.groupId, false).join(",")}` : ''}`
+                                }
                                 return ''
                             }
                         case 6:
@@ -270,14 +278,16 @@ function Header(props) {
                                 Constants.PROPOSAL_APPOINTMENT, 
                                 Constants.WELFARE_REFUND, 
                                 Constants.INSURANCE_SOCIAL, 
-                                Constants.INSURANCE_SOCIAL_INFO].includes(requestTypeId)) {
+                                Constants.INSURANCE_SOCIAL_INFO,
+                                Constants.SOCIAL_SUPPORT].includes(requestTypeId)) {
                                 return getSalaryProposeLinkRequest(requestTypeId, requestId, item.formType, item.parentRequestHistoryId)
                             }
                             if(item?.detailType != 'REQUEST' && [Constants.SALARY_PROPOSE, 
                                 Constants.PROPOSAL_TRANSFER, 
                                 Constants.PROPOSAL_APPOINTMENT, 
                                 Constants.INSURANCE_SOCIAL, 
-                                Constants.INSURANCE_SOCIAL_INFO].includes(requestTypeId)) {
+                                Constants.INSURANCE_SOCIAL_INFO,
+                                Constants.SOCIAL_SUPPORT].includes(requestTypeId)) {
                                     return getSalaryProposeLink(requestTypeId, requestId, item.formType, item.detailType, item.parentRequestHistoryId)
                             }
                             return `/registration/${requestId}/${subRequestId}/request`
