@@ -25,7 +25,7 @@ const RegisteredLeaveInfo = ({ leaveOfAbsence, t, annualLeaveSummary }) => {
   }
   return (
     <div className='registered-leave-info'>
-      <h5 className='content-page-header'>{'Thông tin đã đăng ký nghỉ'}</h5>
+      <h5 className='content-page-header'>{t("InformationOnRegisteredLeave")}</h5>
       <div className="box shadow">
         {
           (leaveOfAbsence?.requestInfoOld && leaveOfAbsence?.requestInfoOld?.length > 0 ? leaveOfAbsence?.requestInfoOld : leaveOfAbsence?.requestInfo).map((info, infoIndex) => {

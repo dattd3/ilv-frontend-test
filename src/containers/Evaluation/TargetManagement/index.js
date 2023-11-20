@@ -519,7 +519,7 @@ function TargetManagement() {
     currentTab === TABS.OWNER
       ? [
           {
-            label: "Tất cả",
+            label: t("All"),
             value: null,
           },
           {
@@ -527,7 +527,7 @@ function TargetManagement() {
             value: REQUEST_STATUS.DRAFT,
           },
           {
-            label: t("WaitProcessing"),
+            label: t("PendingApproval"),
             value: REQUEST_STATUS.PROCESSING,
           },
           {
@@ -541,11 +541,11 @@ function TargetManagement() {
         ]
       : [
           {
-            label: "Tất cả",
+            label: t("All"),
             value: null,
           },
           {
-            label: t("WaitProcessing"),
+            label: t("PendingApproval"),
             value: REQUEST_STATUS.PROCESSING,
           },
           {
@@ -639,7 +639,7 @@ function TargetManagement() {
           options={[
             {
               value: 0,
-              label: "Tất cả",
+              label: t("All"),
             },
             ...phaseOptions,
           ]}
@@ -647,7 +647,7 @@ function TargetManagement() {
           value={[
             {
               value: 0,
-              label: "Tất cả",
+              label: t("All"),
             },
             ...phaseOptions,
           ].find((item) => item.value === phaseIdSelected)}
@@ -665,7 +665,7 @@ function TargetManagement() {
             onInputChange={onInputEmployeeSearchChange}
             className="select-container"
             classNamePrefix="filter-select"
-            placeholder={searchPlaceholder("Tìm kiếm nhân viên")}
+            placeholder={searchPlaceholder(t("EvaluationSearchForEmployees"))}
             options={employeeSearchOptions}
             onChange={(val) => setEmployeeSelected(val?.uid || null)}
             components={{ Option: (e) => EmployeeOption(e) }}
@@ -698,7 +698,7 @@ function TargetManagement() {
               <th>{t("AssessmentPeriod")}</th>
               <th className="text-center">{t("TotalTarget")}</th>
               <th>{t("Requestor")}</th>
-              <th className="text-center">Ngày gửi yêu cầu</th>
+              <th className="text-center">{t("RequestDate")}</th>
               <th>{t("ADCode")}</th>
               <th className="text-center">{t("Status")}</th>
               <th className="text-center">{t("Reason")}</th>
@@ -771,13 +771,13 @@ function TargetManagement() {
                 <td className="text-center sticky-col">
                   {STATUS_DELETEABLE.includes(item.status) &&
                     currentTab === TABS.OWNER && (
-                      <span title="Xóa">
+                      <span title={t("Cancel2")}>
                         <IconRemove
                           className="rm-icon action-icon"
                           onClick={(event) =>
                             onDeleteTargetRegisterClick(event, item)
                           }
-                          alt="Xóa"
+                          alt={t("Cancel2")}
                         />
                       </span>
                     )}
@@ -785,7 +785,7 @@ function TargetManagement() {
                     STATUS_RECALLABLE.includes(item.status)) ||
                     (currentTab === TABS.REQUEST &&
                       STATUS_RECALLABLE_APPROVE_TAB.includes(item.status))) && (
-                    <span title="Thu hồi">
+                    <span title={t("Recall")}>
                       <IconRecall
                         onClick={(event) =>
                           onRecallTargetRegisterClick(event, item)
@@ -797,7 +797,7 @@ function TargetManagement() {
                     STATUS_EDITABLE.includes(item.status)) ||
                     (currentTab === TABS.REQUEST &&
                       STATUS_EDITABLE_APPROVE_TAB.includes(item.status))) && (
-                    <span title="Chỉnh sửa">
+                    <span title={t("Edit")}>
                       <IconEdit
                         className="action-icon"
                         onClick={(event) =>

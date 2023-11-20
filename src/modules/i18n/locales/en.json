@@ -178,9 +178,8 @@
   "ReasonsOfAccidentsIncurred" : "Reasons",
   "SearchLabel": "Search",
   "QuestionAndAnswer": "Question & Answer",
-  "Registration": "Leave request",
+  "Registration": "Timekeeping",
   "Registration_V073": "Đăng ký nghỉ, công tác, sửa giờ vào-ra",
-  "RegistrationSeconds": "Đăng ký nghỉ, công tác, sửa giờ vào-ra",
   "BonusAndPenalty": "Awards/Penalties",
   "QAAlreadyExist": "The question is already in the Q&A section, please find the answer on ILoveVingroup",
   "Deducted": " Deducted",
@@ -406,7 +405,6 @@
   "LeaveForExpats": "Leave for Expats",
   "LeaveForMarriageFuneral": "Leave for Marriage/Funeral",
   "LeaveForWorkAccidentOccupationalDisease": "Leave for Work Accident/Occupational Disease",
-  "LeaveRequestBizExplanation": "Leave Request",
   "LeaveRequest": "Leave Request",
   "ExcessOfLeaveFundYear": "Leave request exceeds annual quota (including pending requests). Please select other types of leave",
   "ExcessOfLeaveFundAdvance ": "Leave request exceeds available advance balance (including pending requests). Please select other types of leave",
@@ -477,7 +475,7 @@
   "PassportNo": "Passport No.",
   "PassportPlaceOfIssue": "Passport Place of Issue",
   "PassportRequired": "Passport Required",
-  "PaySlip": "Pay Slip",
+  "PaySlip": "Payslip",
   "PaySlipMonth": "Payslip",
   "Penalties": "Penalties",
   "Pending": "Pending",
@@ -811,7 +809,6 @@
   "ResponseSentSuccessfully": "Response Sent Successfully",
   "recall": "Are you sure you want to recall?",
   "ManagementEfficiencyBonus": "Management Efficiency Bonus",
-  
   "NETCovidCampaignBonus": "NET Covid Campaign Bonus",
   "GROSSSUPCovidCampaignBonus": "GROSS Covid Campaign Bonus",
   "GROSSCovidCampaignBonus": "Covid - 19 Campaign Bonus(gross)",
@@ -820,7 +817,6 @@
   "NETCovid19PandemicSubsidy": "NET Covid 19 pandemic subsidy",
   "NETF0EmployeesSubsidy": "NET F0 employees subsidy",
   "GROSSF0EmployeesSubsidy": "GROSS F0 employees subsidy",
-
   "IfAny": "(If any)",
   "VSC1OutOfSalaryBonus": "VSC Out of Salary Bonus (1)",
   "VSC2OutOfSalaryBonus": "VSC Out of Salary Bonus (2)",
@@ -2023,5 +2019,8 @@
   "ReasonHRReject": "Lý do PNS trả",
   "ListDocumentNeedSend": "DANH SÁCH CÁC HỒ SƠ CẦN GỬI",
   "RequestDownloadDocument": "Để tải về hồ sơ vui lòng bấm ",
-  "ListRequestCreated": "DANH SÁCH YÊU CẦU ĐÃ TẠO"
+  "ListRequestCreated": "DANH SÁCH YÊU CẦU ĐÃ TẠO",
+  "Change2": "Change",
+  "InformationOnRegisteredLeave": "Information on registered leave",
+  "InformationOnAdjustmentOfLeaveRegistration": "Information on adjustment of leave registration"
 }

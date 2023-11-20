@@ -265,6 +265,9 @@ function Header(props) {
                                 //     return ''
                                 // }
                                 // return `/tasks?tab=approval${item?.groupId ? `&requestTypes=${getRequestTypesList(item.groupId, false).join(",")}` : ''}`
+                                if (Number(levelData || 0) > 1 && !item?.subRequestId?.toString()?.includes('.')) {
+                                    return `/tasks?tab=approval${item?.groupId ? `&requestTypes=${getRequestTypesList(item.groupId, false).join(",")}` : ''}`
+                                }
                                 return ''
                             }
                         case 6:
