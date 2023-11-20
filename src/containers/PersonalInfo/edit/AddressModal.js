@@ -6,12 +6,13 @@ import _ from 'lodash'
 import { withTranslation } from "react-i18next"
 import { getMuleSoftHeaderConfigurations } from "../../../commons/Utils"
 
+const countryCodeVN = 'VN'
+
 class AddressModal extends React.Component {
     constructor(props) {
         super();
 
         this.state = {
-            countries: props.countries,
             country: props.country || null,
             provinces: [],
             province: props.province || null,
@@ -25,9 +26,6 @@ class AddressModal extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.countries !== this.props.countries) {
-            this.setState({ countries: nextProps.countries })
-        }
         if (nextProps.country !== this.props.country) {
             this.setState({ country: nextProps.country })
         }
@@ -51,34 +49,48 @@ class AddressModal extends React.Component {
         // this.getWards(this.state.district?.value || null)
     }
 
-    getProvices(country_id) {
+    getProvinces(country_id) {
         const config = getMuleSoftHeaderConfigurations()
         axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/masterdata/provinces?country_id=${country_id}`, config)
             .then(res => {
-                if (res && res.data && res.data.data) {
-                    let provinces = res.data.data;
+                if (res?.data?.data) {
+                    const provinces = (res.data.data || []).map(item => {
+                        return { value: item?.ID, label: item?.TEXT }
+                    })
                     this.setState({ provinces: provinces })
                 }
             }).catch(error => { })
     }
 
-    getDistricts(province_id) {
+    getDistricts(province_id, country_id = countryCodeVN) {
+        if (country_id !== countryCodeVN) {
+            return []
+        }
+
         const config = getMuleSoftHeaderConfigurations()
         axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/masterdata/districts?province_id=${province_id}`, config)
             .then(res => {
-                if (res && res.data && res.data.data) {
-                    let districts = res.data.data;
+                if (res?.data?.data) {
+                    const districts = (res.data.data || []).map(item => {
+                        return { value: item?.ID, label: item?.TEXT }
+                    })
                     this.setState({ districts: districts })
                 }
             }).catch(error => { })
     }
 
-    getWards(district_id) {
+    getWards(district_id, country_id = countryCodeVN) {
+        if (country_id !== countryCodeVN) {
+            return []
+        }
+
         const config = getMuleSoftHeaderConfigurations()
         axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/masterdata/wards?district_id=${district_id}`, config)
             .then(res => {
-                if (res && res.data && res.data.data) {
-                    let wards = res.data.data;
+                if (res?.data?.data) {
+                    const wards = (res.data.data || []).map(item => {
+                        return { value: item?.ID, label: item?.TEXT }
+                    })
                     this.setState({ wards: wards })
                 }
             }).catch(error => { })
@@ -98,17 +110,17 @@ class AddressModal extends React.Component {
 
     updateCountry(item) {
         this.setState({ country: item, provinces: [], province: null, districts: [], district: null, wards: [], ward: null, streetName: null })
-        this.getProvices(item.value)
+        this.getProvinces(item.value)
     }
 
-    updateProvice(item) {
+    updateProvince(item) {
         this.setState({ province: item, districts: [], district: null, wards: [], ward: null, streetName: null })
-        this.getDistricts(item.value)
+        this.getDistricts(item?.value, this.state.country?.value)
     }
 
     updateDistrict(item) {
         this.setState({ district: item, wards: [], ward: null, streetName: null })
-        this.getWards(item.value)
+        this.getWards(item?.value, this.state.country?.value)
     }
 
     updateWard(item) {
@@ -124,8 +136,7 @@ class AddressModal extends React.Component {
         const { t } = this.props
         let errors = {}
         const RequiredFields = ['country']
-        if(this.state.country.value === "VN")
-        {
+        if (this.state.country.value === countryCodeVN) {
             RequiredFields.push('province');
             RequiredFields.push('district');
             RequiredFields.push('ward');
@@ -141,7 +152,7 @@ class AddressModal extends React.Component {
     }
 
     error(name) {
-        return this.state.errors[name] ? <div className="text-danger">{this.state.errors[name]}</div> : null
+        return this.state.errors[name] ? <div className="text-danger" style={{ marginTop: 5, fontSize: 13 }}>{this.state.errors[name]}</div> : null
     }
 
     save() {
@@ -156,65 +167,64 @@ class AddressModal extends React.Component {
 
     render() {
         const { t } = this.props
-        const provinces = this.state.provinces.map(province => { return { value: province.ID, label: province.TEXT } })
-        const districts = this.state.districts.map(district => { return { value: district.ID, label: district.TEXT } })
-        const wards = this.state.wards.map(ward => { return { value: ward.ID, label: ward.TEXT } })
-        const countries = this.props.countries.map(country => { return { value: country.ID, label: country.TEXT } })
+        const { provinces, districts, wards, country, province, district, ward, street_name } = this.state
+        const countries = (this.props?.countries || []).map(country => { return { value: country?.ID, label: country?.TEXT } })
+
         return (
             <>
-                <Modal className='info-modal-common position-apply-modal' centered show={this.props.show} onHide={this.props.onHide}>
-                    <Modal.Header className='apply-position-modal' closeButton>
+                <Modal className='info-modal-common address-selection-modal' centered show={this.props.show} onHide={this.props.onHide}>
+                    <Modal.Header closeButton>
                         <Modal.Title>{this.props.title}</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <div className="row mb-2">
-                            <div className="col-5">
+                        <div className="row mb-3">
+                            <div className="col-4">
                                 {t("Nation")}
                             </div>
-                            <div className="col-7">
-                                <Select options={countries} placeholder={`${t('Select')}...`} onChange={this.updateCountry.bind(this)} value={this.state.country} />
+                            <div className="col-8">
+                                <Select options={countries} placeholder={`${t('Select')}...`} onChange={this.updateCountry.bind(this)} value={country} />
                                 {this.error('country')}
                             </div>
                         </div>
-                        <div className="row mb-2">
-                            <div className="col-5">
+                        <div className="row mb-3">
+                            <div className="col-4">
                                 {t("City")}
                             </div>
-                            <div className="col-7">
-                                <Select options={provinces} placeholder={`${t("SelectProvince_City")}...`} onChange={this.updateProvice.bind(this)} value={this.state.province} />
+                            <div className="col-8">
+                                <Select options={provinces} placeholder={`${t("SelectProvince_City")}...`} onChange={this.updateProvince.bind(this)} value={province} />
                                 {this.error('province')}
                             </div>
                         </div>
-                        <div className="row mb-2">
-                            <div className="col-5">
+                        <div className="row mb-3">
+                            <div className="col-4">
                                 {t("District")}
                             </div>
-                            <div className="col-7">
-                                <Select options={districts} placeholder={`${t("SelectDistrict")}...`} onChange={this.updateDistrict.bind(this)} value={this.state.district} />
+                            <div className="col-8">
+                                <Select options={districts} placeholder={`${t("SelectDistrict")}...`} onChange={this.updateDistrict.bind(this)} value={district} />
                                 {this.error('district')}
                             </div>
                         </div>
-                        <div className="row mb-2">
-                            <div className="col-5">
+                        <div className="row mb-3">
+                            <div className="col-4">
                                 {t("Ward")}
                             </div>
-                            <div className="col-7">
-                                <Select options={wards} placeholder={`${t("SelectWard")}...`} onChange={this.updateWard.bind(this)} value={this.state.ward} />
+                            <div className="col-8">
+                                <Select options={wards} placeholder={`${t("SelectWard")}...`} onChange={this.updateWard.bind(this)} value={ward} />
                                 {this.error('ward')}
                             </div>
                         </div>
-                        <div className="row mb-2">
-                            <div className="col-5">
+                        <div className="row mb-3">
+                            <div className="col-4">
                                 {t("Street")}
                             </div>
-                            <div className="col-7">
-                                <input className="form-control" value={this.state.street_name} onChange={this.updateStreetName.bind(this)} type="text" placeholder={t("EnterStreet")} />
+                            <div className="col-8">
+                                <input className="form-control street" value={street_name || ''} onChange={this.updateStreetName.bind(this)} type="text" placeholder={t("EnterStreet")} />
                             </div>
                         </div>
                         <hr />
                         <div className="clearfix">
-                            <button type="button" className="btn btn-primary float-right mr-2 w-25" onClick={this.save.bind(this)}>{t("Save")}</button>
-                            <button type="button" className="btn btn-secondary float-right mr-2 w-25" onClick={this.props.onHide}>{t("Back")}</button>
+                            <button type="button" className="btn btn-primary float-right w-25" onClick={this.save.bind(this)}>{t("Save")}</button>
+                            <button type="button" className="btn btn-secondary float-right mr-3 w-25" onClick={this.props.onHide}>{t("Back")}</button>
                         </div>
                     </Modal.Body>
                 </Modal>
@@ -222,4 +232,5 @@ class AddressModal extends React.Component {
         )
     }
 }
+
 export default withTranslation()(AddressModal)

@@ -377,7 +377,7 @@ class PersonalComponent extends React.Component {
             [Constants.MARRIAGE_STATUS.DIVORCED]: marriageMapping.divorced,
         }
         const { t, userDetail } = this.props
-        const { validationMessagesFromParent, places, userDetail: userDetailState, isLoading } = this.state
+        const { validationMessagesFromParent, places, userDetail: userDetailState, isLoading, mainAddressFromModal, tempAddressFromModal } = this.state
         const genders = this.props.genders.map(gender => { return { value: gender.ID, label: gender.ID == Constants.GENDER.MALE ? genderMapping.male : genderMapping.female} })
         const races = this.props.races.map(race => { return { value: race.ID, label: race.TEXT } })
         const marriages = this.props.marriages.map(marriage => { return { value: marriage.ID, label: marriageStatus[marriage.ID] } })
@@ -687,9 +687,9 @@ class PersonalComponent extends React.Component {
                                 updateAddress={this.updateAddress.bind(this)}
                             /> : null}
                             {
-                                _.size(this.state.mainAddressFromModal) > 0 ?
+                                _.size(mainAddressFromModal) > 0 ?
                                     <div className="edit" onClick={this.showModal.bind(this, 'isAddressEdit')}>
-                                        {this.SummaryAddress([this.state.mainAddressFromModal.street_name, this.state.mainAddressFromModal.wards, this.state.mainAddressFromModal.district, this.state.mainAddressFromModal.province, this.state.mainAddressFromModal.nation])}
+                                        {this.SummaryAddress([mainAddressFromModal.street_name, mainAddressFromModal.wards, mainAddressFromModal.district, mainAddressFromModal.province, mainAddressFromModal.nation])}
                                     </div>
                                     : <div className="edit" onClick={this.showModal.bind(this, 'isAddressEdit')}>{this.SummaryAddress([userDetailState?.street_name, userDetailState?.wards, userDetailState?.district, userDetailState?.province])}</div>
                             }
@@ -717,9 +717,9 @@ class PersonalComponent extends React.Component {
                                 updateAddress={this.updateTmpAddress.bind(this)}
                             /> : null}
                             {
-                                _.size(this.state.tempAddressFromModal) > 0 ?
+                                _.size(tempAddressFromModal) > 0 ?
                                     <div className="edit" onClick={this.showModal.bind(this, 'isTmpAddressEdit')}>
-                                        {this.SummaryAddress([this.state.tempAddressFromModal.tmp_street_name, this.state.tempAddressFromModal.tmp_wards, this.state.tempAddressFromModal.tmp_district, this.state.tempAddressFromModal.tmp_province, this.state.tempAddressFromModal.tmp_nation])}
+                                        {this.SummaryAddress([tempAddressFromModal.tmp_street_name, tempAddressFromModal.tmp_wards, tempAddressFromModal.tmp_district, tempAddressFromModal.tmp_province, tempAddressFromModal.tmp_nation])}
                                     </div>
                                     : <div className="edit" onClick={this.showModal.bind(this, 'isTmpAddressEdit')}>{this.SummaryAddress([userDetailState?.tmp_street_name, userDetailState?.tmp_wards, userDetailState?.tmp_district, userDetailState?.tmp_province])}</div>
                             }
