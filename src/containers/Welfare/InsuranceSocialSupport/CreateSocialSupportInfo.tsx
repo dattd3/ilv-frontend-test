@@ -163,6 +163,7 @@ const CreateSocialSupportInfo: FC<ICreateSocialSupportInfoProps> = ({
           approver={approver}
           setApprover={setApprover}
           errors={errors}
+          notifyMessage={notifyMessage}
         /> : null
       }
 
