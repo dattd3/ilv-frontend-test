@@ -1,15 +1,13 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { withTranslation } from 'react-i18next';
-import Select from 'react-select'
 import CreateConvalesInsurance from './CreateConvalesInsurance';
 import CreateMaternityInsurance from './CreateMaternityInsurance';
 import CreateSickInsurance from './CreateSickInsurance';
 import moment from 'moment';
 import axios from 'axios';
-import { exportToPDF, getMuleSoftHeaderConfigurations, getRequestConfigurations } from '../../../commons/Utils';
+import { exportToPDF, getRequestConfigurations } from '../../../commons/Utils';
 import { toast } from "react-toastify";
 import LoadingModal from '../../../components/Common/LoadingModal';
-import { Image } from 'react-bootstrap';
 import HOCComponent from '../../../components/Common/HOCComponent'
 
 const ExportInsuranceSocial = (props) => {
@@ -408,29 +406,29 @@ const ExportInsuranceSocial = (props) => {
                         onSend={(data) => onSubmit(data)}
                         notifyMessage={notifyMessage}
                     />
-                    : type?.value == 2 ?
-                        <CreateMaternityInsurance type={type} setType={setType}
-                            data={data.maternityData}
-                            errors={errors.maternityData}
-                            userInfo={userInfo}
-                            disabledSubmitButton={disabledSubmitButton}
-                            handleTextInputChange={(e, key) => handleTextInputChange(e, 'maternityData', key)}
-                            handleChangeSelectInputs={(e, key) => handleChangeSelectInputs(e, 'maternityData', key)}
-                            handleDatePickerInputChange={(value, key) => handleDatePickerInputChange(value, 'maternityData', key)}
-                            onSend={(data) => onSubmit(data)}
-                            notifyMessage={notifyMessage} />
-                        : type?.value == 3 ?
-                            <CreateConvalesInsurance type={type} setType={setType}
-                                data={data.convalesData}
-                                userInfo={userInfo}
-                                errors={errors.convalesData}
-                                disabledSubmitButton={disabledSubmitButton}
-                                handleTextInputChange={(e, key) => handleTextInputChange(e, 'convalesData', key)}
-                                handleChangeSelectInputs={(e, key) => handleChangeSelectInputs(e, 'convalesData', key)}
-                                handleDatePickerInputChange={(value, key) => handleDatePickerInputChange(value, 'convalesData', key)}
-                                onSend={(data) => onSubmit(data)}
-                                notifyMessage={notifyMessage} />
-                            : null
+                : type?.value == 2 ?
+                    <CreateMaternityInsurance type={type} setType={setType}
+                        data={data.maternityData}
+                        errors={errors.maternityData}
+                        userInfo={userInfo}
+                        disabledSubmitButton={disabledSubmitButton}
+                        handleTextInputChange={(e, key) => handleTextInputChange(e, 'maternityData', key)}
+                        handleChangeSelectInputs={(e, key) => handleChangeSelectInputs(e, 'maternityData', key)}
+                        handleDatePickerInputChange={(value, key) => handleDatePickerInputChange(value, 'maternityData', key)}
+                        onSend={(data) => onSubmit(data)}
+                        notifyMessage={notifyMessage} />
+                : type?.value == 3 ?
+                    <CreateConvalesInsurance type={type} setType={setType}
+                        data={data.convalesData}
+                        userInfo={userInfo}
+                        errors={errors.convalesData}
+                        disabledSubmitButton={disabledSubmitButton}
+                        handleTextInputChange={(e, key) => handleTextInputChange(e, 'convalesData', key)}
+                        handleChangeSelectInputs={(e, key) => handleChangeSelectInputs(e, 'convalesData', key)}
+                        handleDatePickerInputChange={(value, key) => handleDatePickerInputChange(value, 'convalesData', key)}
+                        onSend={(data) => onSubmit(data)}
+                        notifyMessage={notifyMessage} />
+                : null
             }
             </div>
 

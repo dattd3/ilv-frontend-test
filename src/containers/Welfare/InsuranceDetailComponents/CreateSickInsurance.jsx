@@ -1,12 +1,6 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { withTranslation } from "react-i18next";
-import Select from "react-select";
-import DatePicker, { registerLocale } from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-import { vi, enUS } from "date-fns/locale";
-import moment from "moment";
 import _ from "lodash";
-import { Spinner } from "react-bootstrap";
 
 const CreateSickInsurance = ({
   t,
@@ -64,6 +58,7 @@ const CreateSickInsurance = ({
           </div>
         </div>
       </div>
+
       {/* THÔNG TIN CÁ NHÂN */}
       <h5>THÔNG TIN CÁ NHÂN</h5>
       <div className="box shadow cbnv">
@@ -98,6 +93,7 @@ const CreateSickInsurance = ({
           </div>
         </div>
       </div>
+
       {/* GIẤY RA VIỆN/CHỨNG NHẬN NGHỈ VIỆC HƯỞNG BHXH */}
       <h5>GIẤY RA VIỆN/CHỨNG NHẬN NGHỈ VIỆC HƯỞNG BHXH</h5>
       <div className="box shadow cbnv">
@@ -126,11 +122,11 @@ const CreateSickInsurance = ({
           </div>
         </div>
       </div>
+
       {/* TRƯỜNG HỢP CON ỐM */}
-      <h5>{t('case_of_children_sick')}</h5>{" "}
-      
+      <h5>{t('case_of_children_sick')}</h5>
       <div className="box shadow cbnv">
-        <div className="row mv-10">
+        <div className="row">
           <div className="col-4">
             <strong>{"Ngày sinh con"}</strong>
             <div className="detail">{data.childBirth}</div>
@@ -145,10 +141,11 @@ const CreateSickInsurance = ({
           </div>
         </div>
       </div>
+
       {/* CHUẨN ĐOÁN BỆNH */}
       <h5>CHUẨN ĐOÁN BỆNH</h5>
       <div className="box shadow cbnv">
-        <div className="row mv-10">
+        <div className="row">
           <div className="col-4">
             <strong>{"Mã bệnh dài ngày"}</strong>
             <div className="detail">{data.sickId}</div>
@@ -159,10 +156,11 @@ const CreateSickInsurance = ({
           </div>
         </div>
       </div>
+
       {/* ĐỢT GIẢI QUYẾT */}
       <h5>ĐỢT GIẢI QUYẾT</h5>
       <div className="box shadow cbnv">
-        <div className="row mv-10">
+        <div className="row">
           <div className="col-8">
             <strong>{"Nội dung đợt"}</strong>
             <div className="detail">{data.resolveContent}</div>
@@ -173,10 +171,11 @@ const CreateSickInsurance = ({
           </div>
         </div>
       </div>
+
       {/* ĐỢT BỔ SUNG */}
       <h5>ĐỢT BỔ SUNG</h5>
       <div className="box shadow cbnv">
-        <div className="row mv-10">
+        <div className="row">
           <div className="col-8">
             <strong>{"Nội dung đợt"}</strong>
             <div className="detail">{data.addtionContent}</div>
@@ -187,10 +186,11 @@ const CreateSickInsurance = ({
           </div>
         </div>
       </div>
+
       {/* HÌNH THỨC TRỢ CẤP */}
       <h5>HÌNH THỨC TRỢ CẤP</h5>
       <div className="box shadow cbnv">
-        <div className="row mv-10">
+        <div className="row">
           <div className="col-4">
             <strong>{"Hình thức nhận"}</strong>
             <div className="detail">{data.receiveType?.name || ''}</div>
@@ -212,6 +212,16 @@ const CreateSickInsurance = ({
           <div className="col-8">
             <strong>{"Tên ngân hàng"}</strong>
             <div className="detail">{data.bankName}</div>
+          </div>
+        </div>
+      </div>
+
+      {/* PHẢN HỒI CỦA NHÂN SỰ */}
+      <h5>PHẢN HỒI CỦA NHÂN SỰ</h5>
+      <div className="box shadow cbnv">
+        <div className="row">
+          <div className="col-12">
+            <div className="detail m-0 p-0">{data.note}</div>
           </div>
         </div>
       </div>

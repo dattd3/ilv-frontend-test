@@ -1,10 +1,5 @@
-import React, { useState } from "react";
 import { withTranslation } from "react-i18next";
-import Select from "react-select";
-import DatePicker, { registerLocale } from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 import _ from "lodash";
-import { Spinner } from "react-bootstrap";
 
 const CreateConvalesInsurance = ({
   t,
@@ -90,7 +85,7 @@ const CreateConvalesInsurance = ({
       {/* SỐ NGÀY ĐỀ NGHỊ HƯỞNG CHẾ ĐỘ TẠI ĐƠN VỊ */}
       <h5>SỐ NGÀY ĐỀ NGHỊ HƯỞNG CHẾ ĐỘ TẠI ĐƠN VỊ</h5>
       <div className="box shadow cbnv">
-        <div className="row mv-10">
+        <div className="row">
           <div className="col-4">
             <strong>{"Số Seri"}</strong>
             <div className="detail">{data.seri}</div>
@@ -115,7 +110,7 @@ const CreateConvalesInsurance = ({
       {/* THÔNG TIN GIÁM ĐỊNH */}
       <h5>THÔNG TIN GIÁM ĐỊNH</h5>
       <div className="box shadow cbnv">
-        <div className="row mv-10">
+        <div className="row">
           <div className="col-8">
             <strong>{"Tỷ lệ suy giảm"}</strong>
             <div className="detail">{data.declineRate}</div>
@@ -130,7 +125,7 @@ const CreateConvalesInsurance = ({
       {/* ĐỢT GIẢI QUYẾT */}
       <h5>ĐỢT GIẢI QUYẾT</h5>
       <div className="box shadow cbnv">
-        <div className="row mv-10">
+        <div className="row">
           <div className="col-8">
             <strong>{"Nội dung đợt"}</strong>
             <div className="detail">{data.resolveContent}</div>
@@ -145,7 +140,7 @@ const CreateConvalesInsurance = ({
       {/* ĐỢT BỔ SUNG */}
       <h5>ĐỢT BỔ SUNG</h5>
       <div className="box shadow cbnv">
-        <div className="row mv-10">
+        <div className="row">
           <div className="col-8">
             <strong>{"Nội dung đợt"}</strong>
             <div className="detail">{data.addtionContent}</div>
@@ -160,7 +155,7 @@ const CreateConvalesInsurance = ({
       {/* HÌNH THỨC TRỢ CẤP */}
       <h5>HÌNH THỨC TRỢ CẤP</h5>
       <div className="box shadow cbnv">
-        <div className="row mv-10">
+        <div className="row">
           <div className="col-4">
             <strong>{"Hình thức nhận"}</strong>
             <div className="detail">{data.receiveType?.name || ''}</div>
@@ -186,7 +181,15 @@ const CreateConvalesInsurance = ({
         </div>
       </div>
 
-     
+      {/* PHẢN HỒI CỦA NHÂN SỰ */}
+      <h5>PHẢN HỒI CỦA NHÂN SỰ</h5>
+      <div className="box shadow cbnv">
+        <div className="row">
+          <div className="col-12">
+            <div className="detail m-0 p-0">{data.note}</div>
+          </div>
+        </div>
+      </div>
     </>
   );
 };

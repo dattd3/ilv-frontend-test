@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { withTranslation } from 'react-i18next';
 import Select from 'react-select'
 import CreateConvalesInsurance from './InsuranceComponents/CreateConvalesInsurance';
@@ -10,7 +10,6 @@ import { getMuleSoftHeaderConfigurations, getRequestConfigurations, removeAccent
 import { toast } from "react-toastify";
 import ResultModal from '../Registration/ResultModal';
 import HOCComponent from '../../components/Common/HOCComponent'
-import Constants from '../../commons/Constants';
 import LoadingModal from 'components/Common/LoadingModal';
 
 const CreateInsuranceSocial = (props) => {
@@ -351,62 +350,62 @@ const CreateInsuranceSocial = (props) => {
                             </div>
                         </div>
                     </>
-                    : type.value == 1 ?
-                        <CreateSickInsurance type={type} setType={setType}
-                            data={data.sickData}
-                            errors={errors.sickData}
-                            userInfo={userInfo}
-                            disabledSubmitButton={disabledSubmitButton}
-                            handleTextInputChange={(e, key) => handleTextInputChange(e, 'sickData', key)}
-                            handleChangeSelectInputs={(e, key) => handleChangeSelectInputs(e, 'sickData', key)}
-                            handleDatePickerInputChange={(value, key) => handleDatePickerInputChange(value, 'sickData', key)}
-                            onSend={(data) => onSubmit(data)}
-                            notifyMessage={notifyMessage}
-                            supervisors={supervisors}
-                            setSupervisors={setSupervisors}
-                            approver={approver}
-                            setApprover={setApprover}
-                            updateFiles={updateFiles}
-                            files={files}
-                            removeFile={removeFile}
-                        />
-                        : type.value == 2 ?
-                            <CreateMaternityInsurance type={type} setType={setType}
-                                data={data.maternityData}
-                                errors={errors.maternityData}
-                                userInfo={userInfo}
-                                disabledSubmitButton={disabledSubmitButton}
-                                handleTextInputChange={(e, key) => handleTextInputChange(e, 'maternityData', key)}
-                                handleChangeSelectInputs={(e, key) => handleChangeSelectInputs(e, 'maternityData', key)}
-                                handleDatePickerInputChange={(value, key) => handleDatePickerInputChange(value, 'maternityData', key)}
-                                onSend={(data) => onSubmit(data)}
-                                supervisors={supervisors}
-                                setSupervisors={setSupervisors}
-                                approver={approver}
-                                setApprover={setApprover}
-                                updateFiles={updateFiles}
-                                files={files}
-                                removeFile={removeFile}
-                                notifyMessage={notifyMessage} />
-                            : type.value == 3 ?
-                                <CreateConvalesInsurance type={type} setType={setType}
-                                    data={data.convalesData}
-                                    userInfo={userInfo}
-                                    errors={errors.convalesData}
-                                    disabledSubmitButton={disabledSubmitButton}
-                                    handleTextInputChange={(e, key) => handleTextInputChange(e, 'convalesData', key)}
-                                    handleChangeSelectInputs={(e, key) => handleChangeSelectInputs(e, 'convalesData', key)}
-                                    handleDatePickerInputChange={(value, key) => handleDatePickerInputChange(value, 'convalesData', key)}
-                                    onSend={(data) => onSubmit(data)}
-                                    supervisors={supervisors}
-                                    setSupervisors={setSupervisors}
-                                    approver={approver}
-                                    setApprover={setApprover}
-                                    updateFiles={updateFiles}
-                                    files={files}
-                                    removeFile={removeFile}
-                                    notifyMessage={notifyMessage} />
-                                : null
+                : type.value == 1 ?
+                    <CreateSickInsurance type={type} setType={setType}
+                        data={data.sickData}
+                        errors={errors.sickData}
+                        userInfo={userInfo}
+                        disabledSubmitButton={disabledSubmitButton}
+                        handleTextInputChange={(e, key) => handleTextInputChange(e, 'sickData', key)}
+                        handleChangeSelectInputs={(e, key) => handleChangeSelectInputs(e, 'sickData', key)}
+                        handleDatePickerInputChange={(value, key) => handleDatePickerInputChange(value, 'sickData', key)}
+                        onSend={(data) => onSubmit(data)}
+                        notifyMessage={notifyMessage}
+                        supervisors={supervisors}
+                        setSupervisors={setSupervisors}
+                        approver={approver}
+                        setApprover={setApprover}
+                        updateFiles={updateFiles}
+                        files={files}
+                        removeFile={removeFile}
+                    />
+                : type.value == 2 ?
+                    <CreateMaternityInsurance type={type} setType={setType}
+                        data={data.maternityData}
+                        errors={errors.maternityData}
+                        userInfo={userInfo}
+                        disabledSubmitButton={disabledSubmitButton}
+                        handleTextInputChange={(e, key) => handleTextInputChange(e, 'maternityData', key)}
+                        handleChangeSelectInputs={(e, key) => handleChangeSelectInputs(e, 'maternityData', key)}
+                        handleDatePickerInputChange={(value, key) => handleDatePickerInputChange(value, 'maternityData', key)}
+                        onSend={(data) => onSubmit(data)}
+                        supervisors={supervisors}
+                        setSupervisors={setSupervisors}
+                        approver={approver}
+                        setApprover={setApprover}
+                        updateFiles={updateFiles}
+                        files={files}
+                        removeFile={removeFile}
+                        notifyMessage={notifyMessage} />
+                : type.value == 3 ?
+                    <CreateConvalesInsurance type={type} setType={setType}
+                        data={data.convalesData}
+                        userInfo={userInfo}
+                        errors={errors.convalesData}
+                        disabledSubmitButton={disabledSubmitButton}
+                        handleTextInputChange={(e, key) => handleTextInputChange(e, 'convalesData', key)}
+                        handleChangeSelectInputs={(e, key) => handleChangeSelectInputs(e, 'convalesData', key)}
+                        handleDatePickerInputChange={(value, key) => handleDatePickerInputChange(value, 'convalesData', key)}
+                        onSend={(data) => onSubmit(data)}
+                        supervisors={supervisors}
+                        setSupervisors={setSupervisors}
+                        approver={approver}
+                        setApprover={setApprover}
+                        updateFiles={updateFiles}
+                        files={files}
+                        removeFile={removeFile}
+                        notifyMessage={notifyMessage} />
+                : null
             }
 
 

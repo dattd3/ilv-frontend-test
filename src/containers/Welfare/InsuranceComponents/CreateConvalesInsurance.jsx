@@ -1,11 +1,9 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { withTranslation } from "react-i18next";
 import Select from "react-select";
-import DatePicker, { registerLocale } from "react-datepicker";
+import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { vi, enUS } from "date-fns/locale";
 import moment from "moment";
-import ResizableTextarea from "../../Registration/TextareaComponent";
 import {
   CONVALES_PLAN,
   DECLARE_FORM_OPTIONS,
@@ -13,7 +11,6 @@ import {
 } from "./InsuranceData";
 import Constants from "../../../commons/Constants";
 import _ from "lodash";
-import { Spinner } from "react-bootstrap";
 import AssessorInfoComponent from "../InternalPayment/component/AssessorInfoComponent";
 import ButtonComponent from "containers/Registration/ButtonComponent";
 import DocumentRequired from "./DocumentRequired";
@@ -411,7 +408,7 @@ const CreateConvalesInsurance = ({
       {/* SỐ NGÀY ĐỀ NGHỊ HƯỞNG CHẾ ĐỘ TẠI ĐƠN VỊ */}
       <h5>{t('number_of_day_benifit')}</h5>
       <div className="box shadow cbnv">
-        <div className="row mv-10">
+        <div className="row">
           <div className="col-4">
             {t('seri')}
             <span className="required">(*)</span>
@@ -498,7 +495,7 @@ const CreateConvalesInsurance = ({
       {/* THÔNG TIN GIÁM ĐỊNH */}
       <h5>{t('assessment_information')}</h5>
       <div className="box shadow cbnv">
-        <div className="row mv-10">
+        <div className="row">
           <div className="col-8">
             <div>{t('rate_of_decline')}</div>
             <input
@@ -542,7 +539,7 @@ const CreateConvalesInsurance = ({
       {/* ĐỢT GIẢI QUYẾT */}
       <h5>{t('resolution')}</h5>
       <div className="box shadow cbnv">
-        <div className="row mv-10">
+        <div className="row">
           <div className="col-8">
             <div>{t('content_batch')}</div>
             <input
@@ -586,7 +583,7 @@ const CreateConvalesInsurance = ({
       {/* ĐỢT BỔ SUNG */}
       <h5>{t('bonus_batch')}</h5>
       <div className="box shadow cbnv">
-        <div className="row mv-10">
+        <div className="row">
           <div className="col-8">
             <div>{t('content_batch')}</div>
             <input
@@ -630,7 +627,7 @@ const CreateConvalesInsurance = ({
       {/* HÌNH THỨC TRỢ CẤP */}
       <h5>{t('type_support')}</h5>
       <div className="box shadow cbnv">
-        <div className="row mv-10">
+        <div className="row">
           <div className="col-4">
             <div>
               {t('receiving_form')}
@@ -724,6 +721,26 @@ const CreateConvalesInsurance = ({
           </div>
         </div>
       </div>
+
+      {!isCreateMode && (
+        <>
+          {/* PHẢN HỒI CỦA NHÂN SỰ */}
+          <h5>{t('HrSResponse')}</h5>
+          <div className="box shadow cbnv">
+            <div className="row">
+              <div className="col-12">
+                <textarea
+                  rows={3}
+                  value={data.note || ""}
+                  disabled={!isCreateMode}
+                  onChange={(e) => handleTextInputChange(e, "note")}
+                  className="form-control input w-100"
+                />
+              </div>
+            </div>
+          </div>
+        </>
+      )}
 
       <AssessorInfoComponent
         t={t}
