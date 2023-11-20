@@ -1025,7 +1025,7 @@ class LeaveOfAbsenceComponent extends React.Component {
 
                 { isEdit && 
                     <div className="box shadow registered-information">
-                        <div className='text-uppercase font-weight-bold box-title'>Thông tin đã đăng ký nghỉ</div>
+                        <div className='text-uppercase font-weight-bold box-title'>{t("InformationOnRegisteredLeave")}</div>
                         <div className='content'>
                             {
                                 (registeredInformation || []).map((ri, riIndex) => {
@@ -1149,7 +1149,7 @@ class LeaveOfAbsenceComponent extends React.Component {
                     let isLeaveForMother = req[0]?.absenceType?.value === MOTHER_LEAVE_KEY
                     return (
                         <div className="box shadow position-relative" key={index}>
-                            { isEdit && <div className='text-uppercase font-weight-bold box-title'>Thông tin điều chỉnh đăng ký nghỉ</div> }
+                            { isEdit && <div className='text-uppercase font-weight-bold box-title'>{t("InformationOnAdjustmentOfLeaveRegistration")}</div> }
                             <div className="form">
                                 <div className="row">
                                     <div className="col-lg-8 col-xl-8">

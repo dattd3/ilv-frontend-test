@@ -100,7 +100,7 @@ function HistoryVinGroup(props) {
             />
           </div>
         </div>
-        <div className="content-item">
+        {/* <div className="content-item">
           <div className="title-container">
             <img src={IconDocument} alt="" />
             &nbsp;&nbsp;
@@ -116,7 +116,7 @@ function HistoryVinGroup(props) {
               cateCode={CATEGORY_CODES.ARTS}
             />{" "}
           </div>
-        </div>
+        </div> */}
         <div className="content-item">
           <div className="title-container">
             <img src={IconDocument} alt="" />

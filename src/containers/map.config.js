@@ -120,7 +120,7 @@ const MapConfig = {
   // Đánh giá
   // Evaluation: "",
   TargetManagement: "/target-management",
-  EvaluationDetail: "/evaluations/:id/:formCode",
+  EvaluationDetail: "/evaluations/:id/:formCode/:version",
   MyEvaluation: "/my-evaluation",
   EvaluationApproval: "/evaluation-approval",
   
@@ -155,14 +155,16 @@ const MapConfig = {
   SixCoreValuesGallery: "/6-core-values/gallery/:code",
   SixGovernancePrinciplesGallery: "/6-governance-principles/gallery/:code",
   WorkingEnvironmentGallery: "/working-environment/gallery/:code",
-  GreatStartUpSpiritGallery: "/working-environment/gallery/:code",
+  //GreatStartUpSpiritGallery: "/working-environment/gallery/:code",
 
   // Internal news
   InternalNewsList: "/internal-news",
   InternalNewsDetail: "/internal-news/detail/:id",
   CreateSocialDistributeInfo: "/insurance-manager/social-contribute-info",
   //thông tin đóng BHXH
-  SocialContributeDetail: "/social-contribute/:id/:type"
+  SocialContributeDetail: "/social-contribute/:id/:type",
+  //thông tin liên quan BH
+  SocialSupportDetail: "/social-support/:id/:type"
 };
 
 export default MapConfig;

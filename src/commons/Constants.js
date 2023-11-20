@@ -62,6 +62,7 @@ const Constants = {
   WELFARE_REFUND: 16, // Hoàn trả dịch vụ phúc lợi
   INSURANCE_SOCIAL: 20, //bảo hiểm xã hội
   INSURANCE_SOCIAL_INFO: 21, // thông tin đóng BHXH
+  SOCIAL_SUPPORT: 22, // yêu cầu hỗ trợ liên quan BH
 
   //Status request
   STATUS_PENDING: 0,
@@ -325,7 +326,8 @@ Constants.REQUEST_CATEGORY_2_LIST = {
   [Constants.PROPOSAL_TRANSFER]: "ProposalTransfer",
   [Constants.PROPOSAL_APPOINTMENT]: "AppointmentDismissalRequest",
   [Constants.INSURANCE_SOCIAL]: "InsuranceSocialRequest",
-  [Constants.INSURANCE_SOCIAL_INFO]: "InsuranceSocialInfoRequest"
+  [Constants.INSURANCE_SOCIAL_INFO]: "InsuranceSocialInfoRequest",
+  [Constants.SOCIAL_SUPPORT]: "social_support_info",
 
 }
 

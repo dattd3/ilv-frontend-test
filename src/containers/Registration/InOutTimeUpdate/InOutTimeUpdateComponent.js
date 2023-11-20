@@ -627,7 +627,7 @@ class InOutTimeUpdateComponent extends React.Component {
                               showTimeSelect
                               showTimeSelectOnly
                               timeIntervals={15}
-                              timeCaption="Giờ"
+                              timeCaption={t("Hour")}
                               dateFormat="HH:mm:ss"
                               timeFormat="HH:mm:ss"
                               className="form-control input"
@@ -645,7 +645,7 @@ class InOutTimeUpdateComponent extends React.Component {
                               showTimeSelect
                               showTimeSelectOnly
                               timeIntervals={15}
-                              timeCaption="Giờ"
+                              timeCaption={t("Hour")}
                               dateFormat="HH:mm:ss"
                               timeFormat="HH:mm:ss"
                               className="form-control input" 
@@ -666,7 +666,7 @@ class InOutTimeUpdateComponent extends React.Component {
                               showTimeSelect
                               showTimeSelectOnly
                               timeIntervals={15}
-                              timeCaption="Giờ"
+                              timeCaption={t("Hour")}
                               dateFormat="HH:mm:ss"
                               timeFormat="HH:mm:ss"
                               className="form-control input" 
@@ -684,7 +684,7 @@ class InOutTimeUpdateComponent extends React.Component {
                               showTimeSelect
                               showTimeSelectOnly
                               timeIntervals={15}
-                              timeCaption="Giờ"
+                              timeCaption={t("Hour")}
                               dateFormat="HH:mm:ss"
                               timeFormat="HH:mm:ss"
                               className="form-control input" 
