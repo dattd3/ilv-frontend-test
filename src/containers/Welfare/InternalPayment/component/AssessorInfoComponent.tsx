@@ -11,6 +11,7 @@ interface AssessorInfoComponentProps {
   approver: any;
   setApprover: Function;
   errors: any
+  notifyMessage?: Function;
 }
 
 const AssessorInfoComponent: React.FC<AssessorInfoComponentProps> = ({
@@ -20,7 +21,8 @@ const AssessorInfoComponent: React.FC<AssessorInfoComponentProps> = ({
   setSupervisors,
   approver,
   setApprover,
-  errors = {}
+  errors = {},
+  notifyMessage
 }) => {
   const removeSupervisorItem = (index) => {
     const newData = [...supervisors];
@@ -28,15 +30,17 @@ const AssessorInfoComponent: React.FC<AssessorInfoComponentProps> = ({
     setSupervisors(newData);
   };
 
-  const handleUpdateSupervisors = (approver, index) => {
+  const handleUpdateSupervisors = (_approver, index) => {
     let userExist = [...supervisors].findIndex(
-      (item) => approver?.uid && item?.uid == approver?.uid
+      (item) => _approver?.uid && item?.uid == _approver?.uid
     );
-    // if (userExist != -1) {
-    //   return showStatusModal(t("AppraiserExisted"), false);
-    // }
+    
+    if (notifyMessage && userExist != -1) {
+      notifyMessage(t("AppraiserExisted"));
+      return;
+    }
     const newData = [...supervisors];
-    newData[index] = approver;
+    newData[index] = _approver;
     setSupervisors(newData);
   };
   return (
