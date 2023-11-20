@@ -86,7 +86,11 @@ function HistoryVinGroup(props) {
         <div className="content-item">
           <div className="title-container">
             <img src={IconDocument} alt="" />
-            &nbsp;&nbsp;{t("EventPicture")}
+            &nbsp;&nbsp;
+            <div className="title-content">
+              <p>{t("PresidentQuotes")}</p>
+              <p className="sub-content">{t("PresidentQuotesSub")}</p>
+            </div>
           </div>
           <div className="btn-group">
             <ButtonAction
@@ -96,10 +100,14 @@ function HistoryVinGroup(props) {
             />
           </div>
         </div>
-        <div className="content-item">
+        {/* <div className="content-item">
           <div className="title-container">
             <img src={IconDocument} alt="" />
-            &nbsp;&nbsp;{t("Arts")}
+            &nbsp;&nbsp;
+            <div className="title-content">
+              <p>{t("ExceptionalMentor")}</p>
+              <p className="sub-content">{t("ExceptionalMentorSub")}</p>
+            </div>
           </div>
           <div className="btn-group">
             <ButtonAction
@@ -108,11 +116,11 @@ function HistoryVinGroup(props) {
               cateCode={CATEGORY_CODES.ARTS}
             />{" "}
           </div>
-        </div>
+        </div> */}
         <div className="content-item">
           <div className="title-container">
             <img src={IconDocument} alt="" />
-            &nbsp;&nbsp;{t("AboutPnL")}
+            &nbsp;&nbsp;{t("VingroupGallery")}
           </div>
           <div className="btn-group">
             <ButtonAction

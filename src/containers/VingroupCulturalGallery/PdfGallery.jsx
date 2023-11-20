@@ -10,18 +10,21 @@ const PdfGallery = ({ data }) => {
   return (
     <div>
       {fileSelectedIndex < 0 ? (
-        <>
+        <div className="pdf-list">
           {data.map((item, index) => (
             <div
               key={item.id}
-              className="pdf-file-title"
+              className="pdf-file"
               onClick={() => setFileSelectedIndex(index)}
             >
               <img src={IconPdf} alt="" />
-              &nbsp;&nbsp;{item.fileName}
+              <div className="pdf-content">
+                <div className="name">{item.fileName}</div>
+                {item?.descriptions && (<div className="desc">{item.descriptions}</div>)}
+              </div>
             </div>
           ))}
-        </>
+        </div>
       ) : (
         <>
           <div className="back-block" onClick={() => setFileSelectedIndex(-1)}>
