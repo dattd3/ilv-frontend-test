@@ -215,8 +215,11 @@ class HumanForReviewSalaryComponent extends React.Component {
         minHeight: 35
       })
     }
-    const { t, isEdit, errors, comment, isAppraiserNote, approver } = this.props;
+    const { t, isEdit, errors, comment, isAppraiserNote } = this.props;
     const { isSearch, users } = this.state;
+    const approver = this.props.approver ? {...this.props.approver,
+      label: this.props.approver?.fullName,
+      value: this.props.approver?.account} : this.props.approver;
 
     return <div className="approver">
       <div>
