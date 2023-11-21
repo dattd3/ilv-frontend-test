@@ -8,6 +8,7 @@ import { getRequestConfigurations, getCurrentLanguage } from "commons/Utils"
 import { hasNotValue, calculateScore, calculateRating } from "containers/Evaluation/Utils"
 import Constants from "commons/Constants"
 import { isJsonString } from "utils/string"
+import map from "../../../map.config"
 import Buttons from "../common/Buttons"
 import LoadingModal from 'components/Common/LoadingModal'
 import StatusModal from 'components/Common/StatusModal'
@@ -1011,7 +1012,7 @@ const VinGroupForm = (props) => {
                     if (!showByManager) {
                         SetStatusModal(statusModalTemp)
                     } else {
-                        updateParent(statusModalTemp)
+                        updateParent(statusModalTemp, !window.location.pathname?.includes(map.EvaluationApproval))
                     }
             } else { // Lưu, CBNV Gửi tới bước tiếp theo, CBQLTT xác nhận
                 const payload = { ...evaluationFormDetailState }
@@ -1042,7 +1043,7 @@ const VinGroupForm = (props) => {
                     SetStatusModal(statusModalTemp)
                 } else {
                     const keepPopupEvaluationDetail = actionCode == actionButton.save
-                    updateParent(statusModalTemp, keepPopupEvaluationDetail)
+                    updateParent(statusModalTemp, keepPopupEvaluationDetail ? keepPopupEvaluationDetail : !window.location.pathname?.includes(map.EvaluationApproval))
                 }
             }
         } catch (e) {

@@ -843,7 +843,7 @@ function EvaluationDetail(props) {
         // }
 
         const isZeroLevel = payload?.reviewStreamCode === processStep.zeroLevel
-        const response = await axios.post(`${process.env.REACT_APP_HRDX_PMS_URL}api/targetform/update`, { requestString: JSON.stringify(payload || {}) }, config)
+        const response = await axios.post(`${process.env.REACT_APP_HRDX_PMS_URL}api/${evaluationApiVersion.v1}/targetform/update`, { requestString: JSON.stringify(payload || {}) }, config)
         SetErrors({})
         SetIsLoading(false)
         statusModalTemp.isShow = true

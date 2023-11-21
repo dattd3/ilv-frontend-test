@@ -9,7 +9,7 @@ import vi from 'date-fns/locale/vi'
 import { withTranslation } from "react-i18next"
 import _ from 'lodash'
 import Constants from 'commons/Constants'
-import { getMuleSoftHeaderConfigurations, getRequestConfigurations, genderConfig, marriageConfig, isVinFast } from "commons/Utils"
+import { getMuleSoftHeaderConfigurations, getRequestConfigurations, genderConfig, marriageConfig, isVinFast, formatStringByMuleValue } from "commons/Utils"
 import IconDatePicker from 'assets/img/icon/Icon_DatePicker.svg'
 import IconClear from 'assets/img/icon/icon_x.svg'
 import LoadingModal from 'components/Common/LoadingModal'
@@ -91,21 +91,6 @@ class PersonalComponent extends React.Component {
         this.setState({ isLoading: true })
         this.fetchMasterData()
         this.bindBirthCountryAndProvince()
-
-        if (this.props.requestedUserProfile) {
-            const requestedUserProfile = this.props.requestedUserProfile
-            if (requestedUserProfile.userProfileInfo.update && requestedUserProfile.userProfileInfo.update.userProfileHistoryMainInfo) {
-                let userDetail = {}
-                Object.keys(this.mappingFields).forEach(key => {
-                    if (this.props.requestedUserProfile.userProfileInfo.update.userProfileHistoryMainInfo.NewMainInfo[key]) {
-                        userDetail[this.mappingFields[key]] = this.props.requestedUserProfile.userProfileInfo.update.userProfileHistoryMainInfo.NewMainInfo[key]
-                    }
-                });
-                this.setState({
-                    userDetail: userDetail
-                })
-            }
-        }
     }
 
     fetchMasterData = () => {
@@ -177,7 +162,6 @@ class PersonalComponent extends React.Component {
     processPersonalInfo = (res) => {
         if (res && res.data && res.data.data) {
             let userDetail = res.data.data[0];
-            // this.setState({countryId: userDetail.country_id, userDetail: userDetail});
             this.props.setState({ userDetail: userDetail });
         }
     }
@@ -189,19 +173,9 @@ class PersonalComponent extends React.Component {
         return false;
     }
 
-    SummaryAddress(obj) {
-        let result = '';
-        if (typeof (obj) == 'object' && obj.length > 0) {
-            for (let i = 0; i < obj.length; i++) {
-                const element = obj[i];
-                if (this.isNotNull(element)) {
-                    result += element + ', '
-                }
-            }
-        }
-        result = result.trim();
-        if (result.length > 0) { result = result.substring(0, result.length - 1); }
-        return result;
+    SummaryAddress(lstLocation = []) {
+        const address = lstLocation.filter(item => item).join(', ')
+        return address || ''
     }
 
     handleTextInputChange = (event) => {
@@ -249,13 +223,6 @@ class PersonalComponent extends React.Component {
         }
 
         this.setState({ userDetail })
-
-        // this.setState({
-        //     userDetail: {
-        //         ...this.state.userDetail,
-        //         [this.mappingFields[name]]: val
-        //     }
-        // })        
     }
 
     getBirthProvinces = (country_id) => {
@@ -400,7 +367,7 @@ class PersonalComponent extends React.Component {
             [Constants.MARRIAGE_STATUS.DIVORCED]: marriageMapping.divorced,
         }
         const { t, userDetail } = this.props
-        const { validationMessagesFromParent, places, userDetail: userDetailState, isLoading } = this.state
+        const { validationMessagesFromParent, places, userDetail: userDetailState, isLoading, mainAddressFromModal, tempAddressFromModal } = this.state
         const genders = this.props.genders.map(gender => { return { value: gender.ID, label: gender.ID == Constants.GENDER.MALE ? genderMapping.male : genderMapping.female} })
         const races = this.props.races.map(race => { return { value: race.ID, label: race.TEXT } })
         const marriages = this.props.marriages.map(marriage => { return { value: marriage.ID, label: marriageStatus[marriage.ID] } })
@@ -408,7 +375,6 @@ class PersonalComponent extends React.Component {
         const countries = this.props.countries.map(country => { return { value: country.ID, label: country.TEXT } })
         const banks = this.props.banks.map(bank => { return { value: bank.ID, label: bank.TEXT } })
         const marriage = marriages.find(m => m.value == userDetail?.marital_status_code)
-        // const provinces = this.state.provinces.map(province => { return { value: province.ID, label: province.TEXT } })
         const religions = this.props.religions.map(r => { return { value: r.ID, label: r.TEXT } })
         const birthProvinces = this.state.birthProvinces.map(province => { return { value: province.ID, label: province.TEXT } })
         const passportPlaceOfIssue = (places || []).filter(item => item?.type === 'HC')
@@ -692,7 +658,7 @@ class PersonalComponent extends React.Component {
                             <div className="label">{t("PermanentAddress")}</div>
                         </div>
                         <div className="col-4 old">
-                            <div className="detail">{this.SummaryAddress([userDetail.street_name || "", userDetail.wards || "", userDetail.district || "", userDetail.province || "", userDetail.nation || ""])}</div>
+                            <div className="detail">{this.SummaryAddress([formatStringByMuleValue(userDetail?.street_name), formatStringByMuleValue(userDetail?.wards), formatStringByMuleValue(userDetail?.district), formatStringByMuleValue(userDetail?.province), formatStringByMuleValue(userDetail?.nation)])}</div>
                         </div>
                         <div className="col-6">
                             {this.state.isAddressEdit ? <AddressModal
@@ -700,19 +666,19 @@ class PersonalComponent extends React.Component {
                                 show={this.state.isAddressEdit}
                                 onHide={this.hideModal.bind(this, 'isAddressEdit')}
                                 countries={this.props.countries}
-                                country={_.size(this.state.mainAddressFromModal) > 0 ? { value: this.state.mainAddressFromModal.country_id, label: this.state.mainAddressFromModal.nation } : { value: userDetailState?.country_id, label: userDetailState?.nation }}
-                                province={_.size(this.state.mainAddressFromModal) > 0 ? { value: this.state.mainAddressFromModal.province_id, label: this.state.mainAddressFromModal.province } : { value: userDetailState?.province_id, label: userDetailState?.province }}
-                                district={_.size(this.state.mainAddressFromModal) > 0 ? { value: this.state.mainAddressFromModal.district_id, label: this.state.mainAddressFromModal.district } : { value: userDetailState?.district_id, label: userDetailState?.district }}
-                                ward={_.size(this.state.mainAddressFromModal) > 0 ? { value: this.state.mainAddressFromModal.ward_id, label: this.state.mainAddressFromModal.wards } : { value: userDetailState?.ward_id, label: userDetailState?.wards }}
-                                street={_.size(this.state.mainAddressFromModal) > 0 ? this.state.mainAddressFromModal.street_name : userDetailState?.street_name}
+                                country={_.size(mainAddressFromModal) > 0 ? { value: mainAddressFromModal.country_id, label: mainAddressFromModal.nation } : null}
+                                province={_.size(mainAddressFromModal) > 0 ? { value: mainAddressFromModal.province_id, label: mainAddressFromModal.province } : null}
+                                district={_.size(mainAddressFromModal) > 0 ? { value: mainAddressFromModal.district_id, label: mainAddressFromModal.district } : null}
+                                ward={_.size(mainAddressFromModal) > 0 ? { value: mainAddressFromModal.ward_id, label: mainAddressFromModal.wards } : null}
+                                street={_.size(mainAddressFromModal) > 0 ? mainAddressFromModal.street_name : ''}
                                 updateAddress={this.updateAddress.bind(this)}
                             /> : null}
                             {
-                                _.size(this.state.mainAddressFromModal) > 0 ?
+                                _.size(mainAddressFromModal) > 0 ?
                                     <div className="edit" onClick={this.showModal.bind(this, 'isAddressEdit')}>
-                                        {this.SummaryAddress([this.state.mainAddressFromModal.street_name, this.state.mainAddressFromModal.wards, this.state.mainAddressFromModal.district, this.state.mainAddressFromModal.province, this.state.mainAddressFromModal.nation])}
+                                        {this.SummaryAddress([formatStringByMuleValue(mainAddressFromModal?.street_name), formatStringByMuleValue(mainAddressFromModal?.wards), formatStringByMuleValue(mainAddressFromModal?.district), formatStringByMuleValue(mainAddressFromModal?.province), formatStringByMuleValue(mainAddressFromModal?.nation)])}
                                     </div>
-                                    : <div className="edit" onClick={this.showModal.bind(this, 'isAddressEdit')}>{this.SummaryAddress([userDetailState?.street_name, userDetailState?.wards, userDetailState?.district, userDetailState?.province])}</div>
+                                    : <div className="edit" onClick={this.showModal.bind(this, 'isAddressEdit')}>{this.SummaryAddress([formatStringByMuleValue(userDetailState?.street_name), formatStringByMuleValue(userDetailState?.wards), formatStringByMuleValue(userDetailState?.district), formatStringByMuleValue(userDetailState?.province)])}</div>
                             }
                         </div>
                     </div>
@@ -722,7 +688,7 @@ class PersonalComponent extends React.Component {
                             <div className="label">{t("TemporaryAddress")}</div>
                         </div>
                         <div className="col-4 old">
-                            <div className="detail">{this.SummaryAddress([userDetail.tmp_street_name || "", userDetail.tmp_wards || "", userDetail.tmp_district || "", userDetail.tmp_province || "", userDetail.tmp_nation || ""])}</div>
+                            <div className="detail">{this.SummaryAddress([formatStringByMuleValue(userDetail?.tmp_street_name), formatStringByMuleValue(userDetail?.tmp_wards), formatStringByMuleValue(userDetail?.tmp_district), formatStringByMuleValue(userDetail?.tmp_province), formatStringByMuleValue(userDetail?.tmp_nation)])}</div>
                         </div>
                         <div className="col-6">
                             {this.state.isTmpAddressEdit ? <AddressModal
@@ -730,19 +696,19 @@ class PersonalComponent extends React.Component {
                                 show={this.state.isTmpAddressEdit}
                                 onHide={this.hideModal.bind(this, 'isTmpAddressEdit')}
                                 countries={this.props.countries}
-                                country={_.size(this.state.tempAddressFromModal) > 0 ? { value: this.state.tempAddressFromModal.tmp_country_id, label: this.state.tempAddressFromModal.tmp_nation } : { value: userDetailState?.tmp_country_id, label: userDetailState?.tmp_nation }}
-                                province={_.size(this.state.tempAddressFromModal) > 0 ? { value: this.state.tempAddressFromModal.tmp_province_id, label: this.state.tempAddressFromModal.tmp_province } : { value: userDetailState?.tmp_province_id, label: userDetailState?.tmp_province }}
-                                district={_.size(this.state.tempAddressFromModal) > 0 ? { value: this.state.tempAddressFromModal.tmp_district_id, label: this.state.tempAddressFromModal.tmp_district } : { value: userDetailState?.tmp_district_id, label: userDetailState?.tmp_district }}
-                                ward={_.size(this.state.tempAddressFromModal) > 0 ? { value: this.state.tempAddressFromModal.tmp_ward_id, label: this.state.tempAddressFromModal.tmp_wards } : { value: userDetailState?.tmp_ward_id, label: userDetailState?.tmp_wards }}
-                                street={_.size(this.state.tempAddressFromModal) > 0 ? this.state.tempAddressFromModal.tmp_street_name : userDetailState?.tmp_street_name}
+                                country={_.size(tempAddressFromModal) > 0 ? { value: tempAddressFromModal.tmp_country_id, label: tempAddressFromModal.tmp_nation } : null}
+                                province={_.size(tempAddressFromModal) > 0 ? { value: tempAddressFromModal.tmp_province_id, label: tempAddressFromModal.tmp_province } : null}
+                                district={_.size(tempAddressFromModal) > 0 ? { value: tempAddressFromModal.tmp_district_id, label: tempAddressFromModal.tmp_district } : null}
+                                ward={_.size(tempAddressFromModal) > 0 ? { value: tempAddressFromModal.tmp_ward_id, label: tempAddressFromModal.tmp_wards } : null}
+                                street={_.size(tempAddressFromModal) > 0 ? tempAddressFromModal.tmp_street_name : ''}
                                 updateAddress={this.updateTmpAddress.bind(this)}
                             /> : null}
                             {
-                                _.size(this.state.tempAddressFromModal) > 0 ?
+                                _.size(tempAddressFromModal) > 0 ?
                                     <div className="edit" onClick={this.showModal.bind(this, 'isTmpAddressEdit')}>
-                                        {this.SummaryAddress([this.state.tempAddressFromModal.tmp_street_name, this.state.tempAddressFromModal.tmp_wards, this.state.tempAddressFromModal.tmp_district, this.state.tempAddressFromModal.tmp_province, this.state.tempAddressFromModal.tmp_nation])}
+                                        {this.SummaryAddress([formatStringByMuleValue(tempAddressFromModal?.tmp_street_name), formatStringByMuleValue(tempAddressFromModal?.tmp_wards), formatStringByMuleValue(tempAddressFromModal?.tmp_district), formatStringByMuleValue(tempAddressFromModal?.tmp_province), formatStringByMuleValue(tempAddressFromModal?.tmp_nation)])}
                                     </div>
-                                    : <div className="edit" onClick={this.showModal.bind(this, 'isTmpAddressEdit')}>{this.SummaryAddress([userDetailState?.tmp_street_name, userDetailState?.tmp_wards, userDetailState?.tmp_district, userDetailState?.tmp_province])}</div>
+                                    : <div className="edit" onClick={this.showModal.bind(this, 'isTmpAddressEdit')}>{this.SummaryAddress([formatStringByMuleValue(userDetailState?.tmp_street_name), formatStringByMuleValue(userDetailState?.tmp_wards), formatStringByMuleValue(userDetailState?.tmp_district), formatStringByMuleValue(userDetailState?.tmp_province)])}</div>
                             }
                         </div>
                     </div>

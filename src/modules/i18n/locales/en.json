@@ -745,6 +745,7 @@
   "Nov": "November",
   "Dec": "December",
   "DayOffLabel": "OFF",
+  "Country_Code": "Country Code",
   "Province_City_Code": "Province City Code",
   "District_Code": "District Code",
   "Ward_Code": "Ward Code",
@@ -2014,5 +2015,12 @@
   "ContractTimeNoteOther": "Please make sure to check your company regulation with HR to choose the right kind of contract propose.",
   "Change2": "Change",
   "InformationOnRegisteredLeave": "Information on registered leave",
-  "InformationOnAdjustmentOfLeaveRegistration": "Information on adjustment of leave registration"
+  "InformationOnAdjustmentOfLeaveRegistration": "Information on adjustment of leave registration",
+  "social_support_info": "Yêu cầu hỗ trợ liên quan BH",
+  "userSentRequestDate": "Ngày CBNV gửi hồ sơ",
+  "AppovalStatus": "Trạng thái phê duyệt",
+  "ReasonHRReject": "Lý do PNS trả",
+  "ListDocumentNeedSend": "DANH SÁCH CÁC HỒ SƠ CẦN GỬI",
+  "RequestDownloadDocument": "Để tải về hồ sơ vui lòng bấm ",
+  "ListRequestCreated": "DANH SÁCH YÊU CẦU ĐÃ TẠO"
 }

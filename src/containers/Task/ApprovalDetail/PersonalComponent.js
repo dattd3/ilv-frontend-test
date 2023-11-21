@@ -64,6 +64,10 @@ class PersonalComponent extends React.Component {
                 return t("Bank");
             case "Education":
                 return t("Certification");
+            case "Country":
+                return `${t("Country_Code")} - ${t("PermanentAddress")}`;
+            case "CountryText":
+                return `${t("Country")} - ${t("PermanentAddress")}`;
             case "Province":
                 return `${t("Province_City_Code")} - ${t("PermanentAddress")}`;
             case "ProvinceText":
@@ -78,6 +82,10 @@ class PersonalComponent extends React.Component {
                 return `${t("Ward")} - ${t("PermanentAddress")}`;
             case "StreetName":
                 return `${t("Street")} - ${t("PermanentAddress")}`;
+            case "TempCountry":
+                return `${t("Country_Code")} - ${t("TemporaryAddress")}`;
+            case "TempCountryText":
+                return `${t("Country")} - ${t("TemporaryAddress")}`;
             case "TempProvince":
                 return `${t("Province_City_Code")} - ${t("TemporaryAddress")}`;
             case "TempProvinceText":
@@ -90,14 +98,14 @@ class PersonalComponent extends React.Component {
                 return `${t("Ward_Code")} - ${t("TemporaryAddress")}`;
             case "TempWardsText":
                 return `${t("Ward")} - ${t("TemporaryAddress")}`;
-            case "TempStreetNameText":
+            case "TempStreetName":
                 return `${t("Street")} - ${t("TemporaryAddress")}`;
         }
     }
 
     render() {
-        const userMainInfo = this.props.userMainInfo;
-        const { t } = this.props;
+        const { t, userMainInfo } = this.props;
+
         return (
             <div className="info">
                 <div className="box shadow wrap-item">
@@ -125,7 +133,7 @@ class PersonalComponent extends React.Component {
                                 addressClass = "temp-district"
                             } else if (key == "TempWardsText") {
                                 addressClass = "temp-wards"
-                            } else if (key == "TempStreetNameText") {
+                            } else if (key == "TempStreetName") {
                                 addressClass = "temp-street"
                             }
                             if (label && !label.includes("Mã")) {
