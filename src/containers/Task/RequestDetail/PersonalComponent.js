@@ -98,8 +98,8 @@ class PersonalComponent extends React.Component {
     }
 
     render() {
-        const userMainInfo = this.props.userMainInfo;
-        const { t } = this.props;
+        const { t, userMainInfo } = this.props;
+
         return (
             <div className="info">
                 <div className="box shadow wrap-item">

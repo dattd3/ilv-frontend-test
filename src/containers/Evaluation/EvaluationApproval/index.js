@@ -17,6 +17,7 @@ import EvaluationDetailModal from '../EvaluationDetailModal'
 import SearchUser from '../SearchUser'
 import CustomPaging from '../../../components/Common/CustomPaging'
 import HOCComponent from '../../../components/Common/HOCComponent'
+import BatchEvaluation360 from "./BatchEvaluation360"
 import IconExpand from '../../../assets/img/icon/pms/icon-expand.svg'
 import IconCollapse from '../../../assets/img/icon/pms/icon-collapse.svg'
 import IconSearch from '../../../assets/img/icon/Icon_Loop.svg'
@@ -34,7 +35,7 @@ const batchApprovalTabCode = 'batchApproval'
 
 function AdvancedFilter(props) {
     const { t } = useTranslation()
-    const { masterData, filter, updateData, tab } = props
+    const { masterData, filter, updateData, tab, isDisabled } = props
 
     const currentSteps = [
         { value: evaluation360Status.waitingEvaluation, label: t("WaitingForFeedback360") },
@@ -61,6 +62,7 @@ function AdvancedFilter(props) {
                                         isClearable={true} 
                                         value={filter.block} 
                                         options={masterData.blocks} 
+                                        isDisabled={isDisabled}
                                         onChange={e => handleInputChange('block', e, 'regions')} />
                                 </Col>
                             </Form.Group>
@@ -74,6 +76,7 @@ function AdvancedFilter(props) {
                                         isClearable={true} 
                                         value={filter.region} 
                                         options={filter.regions} 
+                                        isDisabled={isDisabled}
                                         onChange={e => handleInputChange('region', e, 'units')} />
                                 </Col>
                             </Form.Group>
@@ -89,6 +92,7 @@ function AdvancedFilter(props) {
                                         isClearable={true} 
                                         value={filter.unit} 
                                         options={filter.units} 
+                                        isDisabled={isDisabled}
                                         onChange={e => handleInputChange('unit', e, 'groups')} />
                                 </Col>
                             </Form.Group>
@@ -103,6 +107,7 @@ function AdvancedFilter(props) {
                                         isMulti 
                                         value={filter.group} 
                                         options={filter.groups} 
+                                        isDisabled={isDisabled}
                                         onChange={e => handleInputChange('group', e)} />
                                 </Col>
                             </Form.Group>
@@ -204,6 +209,7 @@ function AdvancedFilter(props) {
                                 isClearable={true} 
                                 value={filter.rank} 
                                 options={masterData?.ranks} 
+                                isDisabled={isDisabled}
                                 onChange={e => handleInputChange('rank', e)} />
                         </Col>
                     </Form.Group>
@@ -217,6 +223,7 @@ function AdvancedFilter(props) {
                                 isClearable={true} 
                                 value={filter.title} 
                                 options={masterData?.titles} 
+                                isDisabled={isDisabled}
                                 onChange={e => handleInputChange('title', e)} />
                         </Col>
                     </Form.Group>
@@ -233,6 +240,7 @@ function AdvancedFilter(props) {
                                     showMonthDropdown={true}
                                     showYearDropdown={true}
                                     locale="vi"
+                                    disabled={isDisabled}
                                     className="form-control input" />
                                 <span className="input-img"><img src={IconDatePicker} alt="Date" /></span>
                             </label>
@@ -252,6 +260,7 @@ function AdvancedFilter(props) {
                                     showMonthDropdown={true}
                                     showYearDropdown={true}
                                     locale="vi"
+                                    disabled={isDisabled}
                                     className="form-control input" />
                                 <span className="input-img"><img src={IconDatePicker} alt="Date" /></span>
                             </label>
@@ -410,6 +419,7 @@ function ApprovalTabContent(props) {
                         <AdvancedFilter 
                             masterData={{blocks: masterData.blocks, ranks: masterData.ranks, titles: masterData.titles}} 
                             filter={_.omit({...filter}, 'isOpenFilterAdvanced', 'status', 'employees', 'employee')} 
+                            isDisabled={filter?.evaluationForm?.reviewStreamCode === processStep.level360}
                             updateData={updateData} />
                     </div>
                 </Collapse>
@@ -454,7 +464,7 @@ function BatchApprovalTabContent(props) {
                 const result = response.data.result
                 if (result?.code == Constants.PMS_API_SUCCESS_CODE) {
                     const data = (response?.data?.data || []).map(item => {
-                        return {value: item?.id, label: item?.name}
+                        return {value: item?.id, label: item?.name, reviewStreamCode: item?.reviewStreamCode}
                     })
                     SetFilter({
                         ...filter,
@@ -588,7 +598,7 @@ function BatchApprovalTabContent(props) {
                         <Form.Group as={Row} controlId="employee">
                             <Form.Label column sm={12}>{t("EvaluationSearchForEmployees")}</Form.Label>
                             <Col sm={12}>
-                                <SearchUser updateUser={updateUser} />
+                                <SearchUser isDisabled={filter?.evaluationForm?.reviewStreamCode === processStep.level360} updateUser={updateUser} />
                             </Col>
                         </Form.Group>
                     </Col>
@@ -611,6 +621,7 @@ function BatchApprovalTabContent(props) {
                             tab={batchApprovalTabCode}
                             masterData={{blocks: masterData.blocks, ranks: masterData.ranks, titles: masterData.titles}} 
                             filter={_.omit({...filter}, 'isOpenFilterAdvanced', 'status', 'employees', 'employee')} 
+                            isDisabled={filter?.evaluationForm?.reviewStreamCode === processStep.level360}
                             updateData={updateData} />
                     </div>
                 </Collapse>
@@ -810,7 +821,7 @@ function EvaluationApproval(props) {
     }, [])
 
     useEffect(() => {
-        SetDataFilter(null)
+        // SetDataFilter(null)
 
         if (activeTab === approvalTabCode) {
             const pagingTemp = {...paging}
@@ -886,7 +897,7 @@ function EvaluationApproval(props) {
             formData.append('ApproveEmployeeCode', employeeCode || '')
             formData.append('ApproveEmployeeAdCode', employeeAD || '')
             formData.append('CheckPhaseFormId', data?.evaluationForm?.value || null)
-            apiPath = `${process.env.REACT_APP_HRDX_PMS_URL}api/form/listApprove`
+            apiPath = data?.evaluationForm?.reviewStreamCode === processStep.level360 ? `${process.env.REACT_APP_HRDX_PMS_URL}api/v1/targetform/batch-360-list` : `${process.env.REACT_APP_HRDX_PMS_URL}api/form/listApprove`
         }
         formData.append('CurrentStep', data?.currentStep?.value || 0)
         SetDataFilter(data)
@@ -898,7 +909,17 @@ function EvaluationApproval(props) {
         }
 
         try {
-            const response = await axios.post(apiPath, formData, config)
+            let response
+            if (data?.evaluationForm?.reviewStreamCode === processStep.level360) {
+                delete config.headers['content-type']
+                config.params = {
+                    CheckPhaseFormId: data?.evaluationForm?.value || null,
+                }
+                response = await axios.get(apiPath, config)
+            } else {
+                response = await axios.post(apiPath, formData, config)
+            }
+
             if (response && response?.data) {
                 const result = response?.data?.result
                 if (result?.code == Constants.PMS_API_SUCCESS_CODE) {
@@ -1067,6 +1088,11 @@ function EvaluationApproval(props) {
         SetPaging(pagingTemp)
     }
 
+    const handleChangeTab = (key) => {
+        SetActiveTab(key)
+        SetDataFilter(null)
+    }
+
     const stepEvaluation360 = stepEvaluation360Config.map(item => {
         return {
           ...item,
@@ -1093,7 +1119,7 @@ function EvaluationApproval(props) {
             <h1 className="content-page-header">{t("EvaluationLabel")}</h1>
             <div className="filter-block">
                 <div className="card card-filter">
-                    <Tabs defaultActiveKey={activeTab} onSelect={key => SetActiveTab(key)}>
+                    <Tabs defaultActiveKey={activeTab} onSelect={key => handleChangeTab(key)}>
                         <Tab eventKey={approvalTabCode} title={t("EvaluationApprovalTab")} className="tab-item" id='approval-tab'>
                             <ApprovalTabContent 
                                 isOpen={activeTab === approvalTabCode} 
@@ -1183,7 +1209,7 @@ function EvaluationApproval(props) {
                     </div>
                 }
                 {
-                    activeTab === batchApprovalTabCode &&
+                    activeTab === batchApprovalTabCode && dataFilter?.evaluationForm?.reviewStreamCode !== processStep.level360 &&
                     <div className="card shadow batch-approval-data">
                     {
                         evaluationData?.data?.length > 0 ?
@@ -1276,8 +1302,17 @@ function EvaluationApproval(props) {
                     }
                     </div>
                 }
+
                 {
-                    activeTab === batchApprovalTabCode && evaluationData?.data?.length > 0 && 
+                    activeTab === batchApprovalTabCode && dataFilter?.evaluationForm?.reviewStreamCode === processStep.level360 && (
+                        <BatchEvaluation360 
+                            evaluationData={evaluationData}
+                        />
+                    )
+                }
+
+                {
+                    activeTab === batchApprovalTabCode && evaluationData?.data?.length > 0 && dataFilter?.evaluationForm?.reviewStreamCode !== processStep.level360 &&
                     <div className="button-block">
                         <button className="btn-action reject" onClick={() => handleAction(actionButton.reject)}><Image src={IconReject} alt="Reject" />{t("EvaluationDetailPartReject")}</button>
                         <button className="btn-action approve" onClick={() => handleAction(actionButton.approve)}><Image src={IconApprove} alt="Approve" />{t("EvaluationDetailPartApprove")}</button>
