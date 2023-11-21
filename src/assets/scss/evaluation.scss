@@ -3743,6 +3743,99 @@
                 }
             }
         }
+        .batch-evaluation-360 {
+            padding: 15px;
+            font-size: 13px;
+            .wrap-table-batch-evaluation-360 {
+                overflow-x: auto;
+                &::-webkit-scrollbar {
+                  width: 8px;
+                  height: 8px;
+                  background-color: #f5f5f5;
+                }
+                &::-webkit-scrollbar-thumb {
+                  background-color: #a4afb7;
+                  border-left: 1px solid #FFFFFF;
+                  border-right: 1px solid #FFFFFF;
+                  border-top: 1px solid #FFFFFF;
+                  border-bottom: 1px solid #FFFFFF;
+                  border-radius: 4px;
+                }
+                &::-webkit-scrollbar-track {
+                  background-color: #d3d3d3;
+                  border-left: 3.5px solid #FFFFFF;
+                  border-right: 3.5px solid #FFFFFF;
+                  border-top: 3.5px solid #FFFFFF;
+                  border-bottom: 3.5px solid #FFFFFF;
+                }
+                .sticky-col {
+                    position: sticky;
+                    background: #FFFFFF;
+                    z-index: 1;
+                    left: 0;
+                }
+                .user-point {
+                    width: 150px;
+                    border-left: none;
+                    text-align: center;
+                }
+                .kpi {
+                    width: 300px;
+                }
+                .row-seperate {
+                    padding: 4px 0;
+                    border: none;
+                }
+                table {
+                    white-space: normal;
+                    margin: 0;
+                    width: 100%;
+                    border: none;
+                    border-collapse: separate;
+                    border-spacing: 0;
+                    table-layout: fixed;
+                    th, td {
+                        padding: 10px 6px;
+                        border: 1px solid #DEE2E6;
+                    }
+                    thead {
+                        th {
+                            border: 1px solid #DEE2E6;
+                            text-align: center;
+                            .employee-code {
+                                font-weight: normal;
+                            }
+                        }
+                    }
+                    tbody {
+                        .group {
+                            td {
+                                padding: 10px 0;
+                                border: none;
+                                font-weight: bold;
+                            }
+                        }
+                        textarea {
+                            width: 95%;
+                            border: 1px solid #DEE2E6;
+                            outline: none;
+                            padding: 5px;
+                        }
+                        select {
+                            border: 1px solid #DEE2E6;
+                            height: 30px;
+                            width: 90px;
+                            outline: none;
+                        }
+                    }
+                }
+                .error-message {
+                    color: red;
+                    margin-top: 5px;
+                    font-size: 12px;
+                }
+            }
+        }
     }
     .bottom-region {
         display: flex;
@@ -3803,6 +3896,9 @@
             &.send {
                 background: #347EF9;
                 margin-left: 15px;
+                &:disabled {
+                    opacity: .6;
+                }
             }
         }
     }
