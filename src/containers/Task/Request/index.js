@@ -95,7 +95,7 @@ class RequestComponent extends React.Component {
     if (isVinITIS()) {
       statusFiler = [...statusFiler, { value: Constants.STATUS_WORK_DAY_LOCKED_CREATE, label: t("PaidDayLocked") }]
     }
-    console.log(this.state.tasks);
+
     return (
       <>
         <LoadingModal show={this.state.isLoading} />

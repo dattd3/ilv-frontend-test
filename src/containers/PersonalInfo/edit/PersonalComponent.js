@@ -9,7 +9,7 @@ import vi from 'date-fns/locale/vi'
 import { withTranslation } from "react-i18next"
 import _ from 'lodash'
 import Constants from 'commons/Constants'
-import { getMuleSoftHeaderConfigurations, getRequestConfigurations, genderConfig, marriageConfig, isVinFast } from "commons/Utils"
+import { getMuleSoftHeaderConfigurations, getRequestConfigurations, genderConfig, marriageConfig, isVinFast, formatStringByMuleValue } from "commons/Utils"
 import IconDatePicker from 'assets/img/icon/Icon_DatePicker.svg'
 import IconClear from 'assets/img/icon/icon_x.svg'
 import LoadingModal from 'components/Common/LoadingModal'
@@ -173,19 +173,9 @@ class PersonalComponent extends React.Component {
         return false;
     }
 
-    SummaryAddress(obj) {
-        let result = '';
-        if (typeof (obj) == 'object' && obj.length > 0) {
-            for (let i = 0; i < obj.length; i++) {
-                const element = obj[i];
-                if (this.isNotNull(element)) {
-                    result += element + ', '
-                }
-            }
-        }
-        result = result.trim();
-        if (result.length > 0) { result = result.substring(0, result.length - 1); }
-        return result;
+    SummaryAddress(lstLocation = []) {
+        const address = lstLocation.filter(item => item).join(', ')
+        return address || ''
     }
 
     handleTextInputChange = (event) => {
@@ -668,7 +658,7 @@ class PersonalComponent extends React.Component {
                             <div className="label">{t("PermanentAddress")}</div>
                         </div>
                         <div className="col-4 old">
-                            <div className="detail">{this.SummaryAddress([userDetail.street_name || "", userDetail.wards || "", userDetail.district || "", userDetail.province || "", userDetail.nation || ""])}</div>
+                            <div className="detail">{this.SummaryAddress([formatStringByMuleValue(userDetail?.street_name), formatStringByMuleValue(userDetail?.wards), formatStringByMuleValue(userDetail?.district), formatStringByMuleValue(userDetail?.province), formatStringByMuleValue(userDetail?.nation)])}</div>
                         </div>
                         <div className="col-6">
                             {this.state.isAddressEdit ? <AddressModal
@@ -686,9 +676,9 @@ class PersonalComponent extends React.Component {
                             {
                                 _.size(mainAddressFromModal) > 0 ?
                                     <div className="edit" onClick={this.showModal.bind(this, 'isAddressEdit')}>
-                                        {this.SummaryAddress([mainAddressFromModal.street_name, mainAddressFromModal.wards, mainAddressFromModal.district, mainAddressFromModal.province, mainAddressFromModal.nation])}
+                                        {this.SummaryAddress([formatStringByMuleValue(mainAddressFromModal?.street_name), formatStringByMuleValue(mainAddressFromModal?.wards), formatStringByMuleValue(mainAddressFromModal?.district), formatStringByMuleValue(mainAddressFromModal?.province), formatStringByMuleValue(mainAddressFromModal?.nation)])}
                                     </div>
-                                    : <div className="edit" onClick={this.showModal.bind(this, 'isAddressEdit')}>{this.SummaryAddress([userDetailState?.street_name, userDetailState?.wards, userDetailState?.district, userDetailState?.province])}</div>
+                                    : <div className="edit" onClick={this.showModal.bind(this, 'isAddressEdit')}>{this.SummaryAddress([formatStringByMuleValue(userDetailState?.street_name), formatStringByMuleValue(userDetailState?.wards), formatStringByMuleValue(userDetailState?.district), formatStringByMuleValue(userDetailState?.province)])}</div>
                             }
                         </div>
                     </div>
@@ -698,7 +688,7 @@ class PersonalComponent extends React.Component {
                             <div className="label">{t("TemporaryAddress")}</div>
                         </div>
                         <div className="col-4 old">
-                            <div className="detail">{this.SummaryAddress([userDetail.tmp_street_name || "", userDetail.tmp_wards || "", userDetail.tmp_district || "", userDetail.tmp_province || "", userDetail.tmp_nation || ""])}</div>
+                            <div className="detail">{this.SummaryAddress([formatStringByMuleValue(userDetail?.tmp_street_name), formatStringByMuleValue(userDetail?.tmp_wards), formatStringByMuleValue(userDetail?.tmp_district), formatStringByMuleValue(userDetail?.tmp_province), formatStringByMuleValue(userDetail?.tmp_nation)])}</div>
                         </div>
                         <div className="col-6">
                             {this.state.isTmpAddressEdit ? <AddressModal
@@ -716,9 +706,9 @@ class PersonalComponent extends React.Component {
                             {
                                 _.size(tempAddressFromModal) > 0 ?
                                     <div className="edit" onClick={this.showModal.bind(this, 'isTmpAddressEdit')}>
-                                        {this.SummaryAddress([tempAddressFromModal.tmp_street_name, tempAddressFromModal.tmp_wards, tempAddressFromModal.tmp_district, tempAddressFromModal.tmp_province, tempAddressFromModal.tmp_nation])}
+                                        {this.SummaryAddress([formatStringByMuleValue(tempAddressFromModal?.tmp_street_name), formatStringByMuleValue(tempAddressFromModal?.tmp_wards), formatStringByMuleValue(tempAddressFromModal?.tmp_district), formatStringByMuleValue(tempAddressFromModal?.tmp_province), formatStringByMuleValue(tempAddressFromModal?.tmp_nation)])}
                                     </div>
-                                    : <div className="edit" onClick={this.showModal.bind(this, 'isTmpAddressEdit')}>{this.SummaryAddress([userDetailState?.tmp_street_name, userDetailState?.tmp_wards, userDetailState?.tmp_district, userDetailState?.tmp_province])}</div>
+                                    : <div className="edit" onClick={this.showModal.bind(this, 'isTmpAddressEdit')}>{this.SummaryAddress([formatStringByMuleValue(userDetailState?.tmp_street_name), formatStringByMuleValue(userDetailState?.tmp_wards), formatStringByMuleValue(userDetailState?.tmp_district), formatStringByMuleValue(userDetailState?.tmp_province)])}</div>
                             }
                         </div>
                     </div>
