@@ -173,6 +173,7 @@ const BatchEvaluation360 = ({ evaluationData }) => {
     const lang = getCurrentLanguage()
     const scores = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     const jobPerformanceGroup = evaluationDataState?.data?.[0]?.listGroup?.[1]
+    const isDisabledButtonSend = (evaluationDataState?.data || []).every(item => hasNotValue(item?.opinion) && (item?.listGroup?.[1]?.listTarget || []).every(target => hasNotValue(target?.seftPoint)))
 
     return (
         <>
@@ -307,7 +308,7 @@ const BatchEvaluation360 = ({ evaluationData }) => {
                     </div>
                     <div className="button-region-batch-evaluation-360 d-flex justify-content-end">
                         <button className="btn-action save" onClick={() => sendEvaluation(actionButton.save)}><img src={IconSave} alt="Save" />{t("Save")}</button>
-                        <button className="btn-action send" onClick={() => sendEvaluation(actionButton.approve)}><img src={IconSend} alt="Send" />{t("Evaluation360ButtonSend")}</button>
+                        <button className="btn-action send" onClick={() => sendEvaluation(actionButton.approve)} disabled={isDisabledButtonSend}><img src={IconSend} alt="Send" />{t("Evaluation360ButtonSend")}</button>
                     </div>
                 </>
             )
