@@ -418,7 +418,7 @@ export const Navigation = [
     role: 'U'
   },
   {
-    id: 24,
+    id: 25,
     parentId: 11,
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     label: "Menu_PositionRecruiting",
@@ -426,7 +426,7 @@ export const Navigation = [
     role: 'U'
   },
   {
-    id: 25,
+    id: 26,
     parentId: 11,
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     label: "Menu_PositionApplied",
@@ -434,7 +434,7 @@ export const Navigation = [
     role: 'U'
   },
   {
-    id: 26,
+    id: 27,
     parentId: 11,
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     label: "ReferredPositions",
@@ -468,13 +468,21 @@ export const Navigation = [
   {
     id: 20,
     parentId: 0,
+    icon: "c-recruitment",
+    label: "Menu_Recruitment",
+    to: map.Recruitment,
+    role: "U"
+  },
+  {
+    id: 21,
+    parentId: 0,
     icon: "c-notification",
     label: "Menu_Notification",
     to: map.Notifications,
     role: "U"
   },
   {
-    id: 21,
+    id: 22,
     parentId: 18,
     icon: "menu-bullet-lv2 icon-sub-menu-lv2",
     label: "Menu_KPI",
@@ -482,7 +490,7 @@ export const Navigation = [
     role: "U"
   },
   {
-    id: 22,
+    id: 23,
     parentId: 10,
     icon: "menu-bullet-lv2 icon-sub-menu-lv2",
     label: "Menu_Timesheet",
@@ -490,7 +498,7 @@ export const Navigation = [
     role: "U"
   },
   {
-    id: 28,
+    id: 29,
     parentId: 10,
     icon: "menu-bullet-lv2 icon-sub-menu-lv2",
     label: "timekeeping_history",
@@ -498,7 +506,7 @@ export const Navigation = [
     role: "U"
   },
   {
-    id: 23,
+    id: 24,
     parentId: 10,
     icon: "menu-bullet-lv2 icon-sub-menu-lv2",
     label: "Menu_LeaveTime",
@@ -506,7 +514,7 @@ export const Navigation = [
     role: "U"
   },
   {
-    id: 27,
+    id: 28,
     parentId: 10,
     icon: "menu-bullet-lv2 icon-sub-menu-lv2",
     label: "Menu_PaySlip",
