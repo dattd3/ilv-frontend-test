@@ -9,19 +9,9 @@ function MainInfoList(props) {
     const { t } = useTranslation()
     const { userDetail, userHealth, userProfile } = props
 
-    const summaryAddress = (obj) => {
-        let result = '';
-        if (typeof (obj) == 'object' && obj.length > 0) {
-            for (let i = 0; i < obj.length; i++) {
-                const element = obj[i];
-                if (formatStringByMuleValue(element)) {
-                    result += element + ', '
-                }
-            }
-        }
-        result = result.trim();
-        if (result.length > 0) { result = result.substring(0, result.length - 1); }
-        return result;
+    const summaryAddress = (lstLocation = []) => {
+      const address = lstLocation.filter(item => item).join(', ')
+      return address || ''
     }
 
     const marriageMapping = marriageConfig()
@@ -116,11 +106,11 @@ function MainInfoList(props) {
                             </tr>
                             <tr>
                                 <td className="info-label">{t("PermanentAddress")}</td>
-                                <td className="info-value"><p>&nbsp;{summaryAddress([userDetail.street_name, userDetail.wards, userDetail.district, userDetail.province])}</p></td>
+                                <td className="info-value"><p>&nbsp;{summaryAddress([formatStringByMuleValue(userDetail?.street_name), formatStringByMuleValue(userDetail?.wards), formatStringByMuleValue(userDetail?.district), formatStringByMuleValue(userDetail?.province), formatStringByMuleValue(userDetail?.nation)])}</p></td>
                             </tr>
                             <tr>
                                 <td className="info-label">{t("TemporaryAddress")}</td>
-                                <td className="info-value"><p>&nbsp;{summaryAddress([userDetail.tmp_street_name, userDetail.tmp_wards, userDetail.tmp_district, userDetail.tmp_province])}</p></td>
+                                <td className="info-value"><p>&nbsp;{summaryAddress([formatStringByMuleValue(userDetail?.tmp_street_name), formatStringByMuleValue(userDetail?.tmp_wards), formatStringByMuleValue(userDetail?.tmp_district), formatStringByMuleValue(userDetail?.tmp_province), formatStringByMuleValue(userDetail?.tmp_nation)])}</p></td>
                             </tr>
                             <tr>
                                 <td className="info-label">{t("MaritalStatus")}</td>
@@ -152,7 +142,7 @@ function MainInfoList(props) {
                             </tr>
                             <tr>
                                 <td className="info-label">{t("BankBranch")}</td>
-                                <td className="info-value"><p>&nbsp;{userDetail.bank_branch}</p></td>
+                                <td className="info-value"><p>&nbsp;{formatStringByMuleValue(userDetail.bank_branch)}</p></td>
                             </tr>
                         </tbody>
                     </table>
@@ -209,15 +199,15 @@ function MainInfoList(props) {
                       </tr>
                       <tr>
                         <td className="info-label">{t("CompanyPhone")}</td>
-                        <td className="info-value"><p>&nbsp;{userProfile.fix_phone}</p></td>
+                        <td className="info-value"><p>&nbsp;{formatStringByMuleValue(userProfile.fix_phone)}</p></td>
                       </tr>
                       <tr>
                         <td className="info-label">{t("CompanyPhoneExtension")}</td>
-                        <td className="info-value"><p>&nbsp;{userProfile.extension_no}</p></td>
+                        <td className="info-value"><p>&nbsp;{formatStringByMuleValue(userProfile.extension_no)}</p></td>
                       </tr>
                       <tr>
                         <td className="info-label">{t("WorkingAddress")}</td>
-                        <td className="info-value"><p>&nbsp;{summaryAddress([userProfile.building, userProfile.street_name, userProfile.wards, userProfile.district, userProfile.province])}</p></td>
+                        <td className="info-value"><p>&nbsp;{summaryAddress([formatStringByMuleValue(userProfile?.building), formatStringByMuleValue(userProfile?.street_name), formatStringByMuleValue(userProfile?.wards), formatStringByMuleValue(userProfile?.district), formatStringByMuleValue(userProfile?.province)])}</p></td>
                       </tr>
                     </tbody>
                   </table>

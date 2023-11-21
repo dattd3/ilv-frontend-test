@@ -13,6 +13,9 @@ import Constants from '../../commons/Constants'
 import { handleFullScreen } from "actions/index"
 import GuideLineTicketSupport from "components/Common/GuideLineTicketSupport";
 import TaskDetailModal from 'containers/Task/TaskDetailModal';
+import EvaluationDetailModal from "containers/Evaluation/EvaluationDetailModal";
+import { evaluationApiVersion, processStep } from "containers/Evaluation/Constants";
+import StatusModal from "components/Common/StatusModal";
 
 function MainLayout(props) {
   const guard = useGuardStore();
@@ -24,6 +27,21 @@ function MainLayout(props) {
     subTaskId: 1,
     action: '',
   });
+  const [evaluationDetailPopup, SetEvaluationDetailPopup] = useState({
+    isShow: false,
+    isFromManager: false,
+    evaluationFormId: null,
+    formCode: null,
+    employeeCode: null,
+    version: evaluationApiVersion.v1,
+    isEvaluation360: false,
+  })
+  const [statusModal, SetStatusModal] = useState({
+    isShow: false,
+    isSuccess: true,
+    content: "",
+    needReload: true,
+  })
 
   const searchParams = new URLSearchParams(props.location.search);
   const isApp = searchParams.get('isApp') || false;
@@ -35,7 +53,19 @@ function MainLayout(props) {
 
   const isDashBoard = props.location.pathname === '/' || props.location.pathname === map.EmployeePrivileges;
 
-  const handleTaskDetailModal = (isShow = true, taskId, subTaskId = 1, action) => {
+  const handleTaskDetailModal = (isShow = true, taskId, subTaskId = 1, action, evaluationData) => {
+    if (evaluationData?.isEvaluation) {
+      SetEvaluationDetailPopup({
+        isShow: true,
+        evaluationFormId: evaluationData?.data?.CheckPhaseFormId,
+        formCode: evaluationData?.data?.FormCode,
+        isFromManager: evaluationData?.isFromManager,
+        employeeCode: evaluationData?.data?.ReviewStreamCode === processStep.level360 ? null : evaluationData?.data?.EmployeeCode,
+        version: evaluationData?.data?.VersionAPI,
+        isEvaluation360: evaluationData?.data?.ReviewStreamCode === processStep.level360,
+      })
+      return
+    }
     setTaskDetailModal({
       isShow: isShow,
       taskId: taskId,
@@ -52,9 +82,53 @@ function MainLayout(props) {
       action: null,
     })
   }
+
+  const onHideEvaluationDetailModal = (statusModalFromChild, keepPopupEvaluationDetail = false) => {
+    if (!keepPopupEvaluationDetail) {
+      SetEvaluationDetailPopup({
+        ...evaluationDetailPopup,
+        isShow: false,
+      })
+    }
+
+    if (statusModalFromChild) {
+      SetStatusModal({
+        ...statusModal,
+        isShow: statusModalFromChild?.isShow,
+        isSuccess: statusModalFromChild?.isSuccess,
+        content: statusModalFromChild?.content,
+        needReload: keepPopupEvaluationDetail ? false : true
+      })
+    }
+  }
+
+  const onHideStatusModal = () => {
+    const statusModalTemp = { ...statusModal }
+    statusModalTemp.isShow = false
+    statusModalTemp.isSuccess = true
+    statusModalTemp.content = ""
+    statusModalTemp.needReload = true
+    SetStatusModal(statusModalTemp)
+
+    SetEvaluationDetailPopup({
+      ...evaluationDetailPopup,
+      isShow: false,
+    })
+
+    if (statusModal.needReload) {
+      window.location.reload()
+    }
+  }
  
   return (
     <>
+      <StatusModal 
+        show={statusModal.isShow} 
+        isSuccess={statusModal.isSuccess} 
+        content={statusModal.content} 
+        className="evaluation-status-modal"
+        onHide={onHideStatusModal} 
+      />
       <TaskDetailModal 
         show={taskDetailModal.isShow} 
         taskId={taskDetailModal.taskId} 
@@ -62,6 +136,16 @@ function MainLayout(props) {
         action={taskDetailModal.action}
         lockReload={true}
         onHide={onHideTaskDetailModal} 
+      />
+      <EvaluationDetailModal 
+        isShow={evaluationDetailPopup.isShow} 
+        showByManager={evaluationDetailPopup?.isFromManager}
+        evaluationFormId={evaluationDetailPopup.evaluationFormId} 
+        formCode={evaluationDetailPopup.formCode} 
+        employeeCode={evaluationDetailPopup.employeeCode} 
+        version={evaluationDetailPopup?.version}
+        isEvaluation360={evaluationDetailPopup?.isEvaluation360}
+        onHide={onHideEvaluationDetailModal} 
       />
       <SideBar show={!isFullScreen} user={user} />
       <div id="content-wrapper" className={`d-flex flex-column ${props?.isFullScreen ? 'w-100' : ''}`}>
