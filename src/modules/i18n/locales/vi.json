@@ -2033,5 +2033,12 @@
   "ContractTimeNoteOther": "Vui lòng kiểm tra thông tin với nhân sự công ty trước để có đề xuất thông tin hợp đồng mới đúng với quy định công ty.",
   "Change2": "Thay đổi",
   "InformationOnRegisteredLeave": "Thông tin đã đăng ký nghỉ",
-  "InformationOnAdjustmentOfLeaveRegistration": "Thông tin điều chỉnh đăng ký nghỉ"
+  "InformationOnAdjustmentOfLeaveRegistration": "Thông tin điều chỉnh đăng ký nghỉ",
+  "social_support_info": "Yêu cầu hỗ trợ liên quan BH",
+  "userSentRequestDate": "Ngày CBNV gửi hồ sơ",
+  "AppovalStatus": "Trạng thái phê duyệt",
+  "ReasonHRReject": "Lý do PNS trả",
+  "ListDocumentNeedSend": "DANH SÁCH CÁC HỒ SƠ CẦN GỬI",
+  "RequestDownloadDocument": "Để tải về hồ sơ vui lòng bấm ",
+  "ListRequestCreated": "DANH SÁCH YÊU CẦU ĐÃ TẠO"
 }
