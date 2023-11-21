@@ -3,9 +3,10 @@ import { Image } from 'react-bootstrap'
 import { useTranslation } from "react-i18next"
 import axios from 'axios'
 import _ from 'lodash'
+import purify from "dompurify"
 import Constants from '../../../commons/Constants'
 import { getRequestConfigurations, exportToPDF } from '../../../commons/Utils'
-import { evaluation360Status, stepEvaluation360Config, evaluationApiVersion } from '../Constants'
+import { evaluation360Status, stepEvaluation360Config, evaluationApiVersion, actionButton } from '../Constants'
 import { useGuardStore } from '../../../modules'
 import LoadingModal from '../../../components/Common/LoadingModal'
 import StatusModal from '../../../components/Common/StatusModal'
@@ -15,6 +16,7 @@ import IconArrowRightWhite from '../../../assets/img/icon/pms/arrow-right-white.
 import IconArrowRightGray from '../../../assets/img/icon/pms/arrow-right-gray.svg'
 import IconDownload from '../../../assets/img/icon/Icon_download_red.svg'
 import IconSend from '../../../assets/img/icon/Icon_send.svg'
+import IconSave from '../../../assets/img/icon/pms/icon-save.svg'
 
 const currentLocale = localStorage.getItem("locale")
 const companyThemeColor = localStorage.getItem("companyThemeColor")
@@ -127,25 +129,25 @@ const Evaluation360 = ({ evaluationFormId, formCode, employeeCode }) => {
     return !hasError
   }
 
-  const handleSubmit = async () => {
-    const isValid = isDataValid()
-    if (!isValid) {
-      return
+  const handleSubmit = async (action = actionButton.save) => {
+    if (action == actionButton.approve) {
+      const isValid = isDataValid()
+      if (!isValid) {
+        return
+      }
     }
 
     const statusModalTemp = { ...statusModal }
 
-    // statusModalTemp.isShow = true
-    // statusModalTemp.isSuccess = false
-    // statusModalTemp.content = t("EvaluationTotalScoreInValid")
-    // statusModalTemp.needReload = false
-    // SetStatusModal(statusModalTemp)
-    // return
-
     SetIsLoading(true)
     try {
       const config = getRequestConfigurations()
-      const payload = { ...evaluationFormDetail }
+      const payload = {...evaluationFormDetail}
+
+      if (action == actionButton.approve) {
+        payload.status = evaluation360Status.evaluated
+      }
+
       const response = await axios.post(`${process.env.REACT_APP_HRDX_PMS_URL}api/${evaluationApiVersion.v1}/targetform/update`, { requestString: JSON.stringify(payload || {}) }, config)
       SetErrors({})
       statusModalTemp.isShow = true
@@ -199,6 +201,13 @@ const Evaluation360 = ({ evaluationFormId, formCode, employeeCode }) => {
     }
 
     SetEvaluationFormDetail(evaluationFormDetailClone)
+  }
+
+  const handleChangeOpinion = (element) => {
+    SetEvaluationFormDetail({
+      ...evaluationFormDetail,
+      opinion: element?.target?.value || '',
+    })
   }
 
   const renderEvaluationStep = () => {
@@ -296,6 +305,8 @@ const Evaluation360 = ({ evaluationFormId, formCode, employeeCode }) => {
     }
   }
 
+  const isCompletedEvaluation = evaluationFormDetail?.status == evaluation360Status.completed || evaluationFormDetail?.status == evaluation360Status.evaluated
+
   return (
     <>
       <LoadingModal show={isLoading} />
@@ -328,11 +339,31 @@ const Evaluation360 = ({ evaluationFormId, formCode, employeeCode }) => {
             errors={errors}
             handleInputChange={handleInputChange}
           />
+          <div className="opinion">
+            <p>{t("Opinion")}</p>
+            {
+              isCompletedEvaluation
+              ? (
+                <div className="comment-content" dangerouslySetInnerHTML={{
+                __html: purify.sanitize(evaluationFormDetail?.opinion || ""),
+                }} />
+              )
+              : (
+                <textarea 
+                  rows={3} 
+                  placeholder={t("EvaluationDetailPartSelectScoreInput")} 
+                  value={evaluationFormDetail?.opinion || ""} 
+                  onChange={handleChangeOpinion} 
+                  disabled={!evaluationFormDetail?.isEdit || isCompletedEvaluation} />
+              )
+            }
+          </div>
         </div>
         {
           evaluationFormDetail?.status == evaluation360Status.waitingEvaluation && evaluationFormDetail?.isEdit && (
             <div className="button-block" id="button-block">
-              <button className="btn-action confirm" onClick={handleSubmit}><Image src={IconSend} alt="Send" />{t("Evaluation360ButtonSend")}</button>
+              <button className="btn-action save" onClick={() => handleSubmit(actionButton.save)}><Image src={IconSave} alt="Save" />{t("Save")}</button>
+              <button className="btn-action send" onClick={() => handleSubmit(actionButton.approve)}><Image src={IconSend} alt="Send" />{t("Evaluation360ButtonSend")}</button>
             </div>
           )
         }
@@ -341,7 +372,7 @@ const Evaluation360 = ({ evaluationFormId, formCode, employeeCode }) => {
         !bottom && evaluationFormDetail?.status == evaluation360Status.waitingEvaluation && evaluationFormDetail?.isEdit && (
           <div className="scroll-to-save" style={{ color: companyThemeColor, zIndex: '10' }}>
             <div>
-              <button className="btn-action save" onClick={handleSubmit}><Image src={IconSend} alt="Send" />{t("Evaluation360ButtonSend")}</button>
+              <button className="btn-action save" onClick={() => handleSubmit(actionButton.approve)}><Image src={IconSend} alt="Send" />{t("Evaluation360ButtonSend")}</button>
             </div>
           </div>
         )
