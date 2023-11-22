@@ -3,7 +3,6 @@ import IconDocument from 'assets/img/icon/document-blue-icon.svg';
 import HOCComponent from 'components/Common/HOCComponent';
 import axios from 'axios';
 import { getRequestConfigs } from 'commons/commonFunctions';
-import ButtonAction from './ButtonActionComponent';
 import { getCurrentLanguage } from 'commons/Utils';
 import Constants from 'commons/Constants';
 
@@ -23,9 +22,9 @@ function VingroupCulture(props) {
     // { lstCategory } = cultureParent;
 
   useEffect(() => {
-    console.log('----------------------------------------');
-    console.log('lstCategory: ', lstCategory);
-    console.log('----------------------------------------');
+    // console.log('----------------------------------------');
+    // console.log('lstCategory: ', lstCategory);
+    // console.log('----------------------------------------');
     // const url = `${
     //   process.env.REACT_APP_REQUEST_URL
     // }api/vanhoavin/list?language=${getCurrentLanguage()}&categoryCode=${lstCategory.map(

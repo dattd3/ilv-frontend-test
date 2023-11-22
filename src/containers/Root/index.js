@@ -6,7 +6,7 @@ import { Image, Toast } from "react-bootstrap";
 import { GuardianRouter } from "../../modules";
 import { ToastContainer } from "react-toastify";
 import Maintenance from "containers/Maintenance";
-import ROUTES, { RouteSettings } from "../routes.config";
+import routes, { RouteSettings } from "../routes.config";
 import LoadingModal from "../../components/Common/LoadingModal";
 import { FirebaseMessageListener } from "../../commons/Firebase";
 import NewestNotificationContext from "modules/context/newest-notification-context";
@@ -62,7 +62,6 @@ function Root() {
   const [notification, setNotification] = React.useState(
     INIT_NOTIFICATION_STATE
   );
-  const [routers, setRouters] = React.useState(ROUTES);
   const [notificationPayload, setNotificationPayload] = React.useState(null);
   const isVietnamese = localStorage.getItem("locale") === Constants.LANGUAGE_VI;
   const cultureMenu = JSON.parse(localStorage.getItem('cultureMenu') || "[]");
@@ -88,13 +87,9 @@ function Root() {
   }, []);
   if (
     cultureRouters.length > 0 && 
-    !routers.find(ele => ele.key === 'main').contentProps.routes.find(ele => ele.link === cultureRouters[0].key)
+    !routes.find(ele => ele.key === 'main').contentProps.routes.find(ele => ele.link === cultureRouters[0].key)
   ) {
-    // routers.find(ele => ele.key === 'main').contentProps.routes.push(...cultureRouters);
-    // console.log('----------------------------------------');
-    // console.log('routers: ', routers);
-    // console.log('----------------------------------------');
-    // setRouters(routers);
+    routes.find(ele => ele.key === 'main').contentProps.routes.push(...cultureRouters);
   }
 
   FirebaseMessageListener()
@@ -142,7 +137,7 @@ function Root() {
           {/* { !listUsersIgnoreMaintenanceMode.includes(currentUserLogged) && <Maintenance /> } */}
 
           <Switch>
-            {routers.map(
+            {routes.map(
               ({ component: Content, key, routeProps, contentProps }) => (
                 <Route
                   key={key}
