@@ -8,6 +8,7 @@ import InsuranceSocial from './WelfareComponents/InsuranceSocial'
 import Resource from './WelfareComponents/Resource'
 import HOCComponent from '../../components/Common/HOCComponent'
 import SocialContributeInfo from './WelfareComponents/SocialContributeInfo'
+import SocialSupportInfo from './WelfareComponents/SocialSupportInfo'
 
 class InsuranceRegime extends React.Component {
     constructor(props) {
@@ -39,6 +40,9 @@ class InsuranceRegime extends React.Component {
                     </Tab>
                     <Tab eventKey="SocialContribute" title={t('social_contribute_info')}>
                         <SocialContributeInfo title={t('Vinwonder/Safari')}/>
+                    </Tab>
+                    <Tab eventKey="SocialSupport" title={t('social_support_info')}>
+                        <SocialSupportInfo title={t('Vinwonder/Safari')}/>
                     </Tab>
                 </Tabs>
             </div>
