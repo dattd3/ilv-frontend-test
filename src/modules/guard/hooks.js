@@ -186,6 +186,7 @@ const Storage = {
     localStorage.removeItem("user-guides")
     localStorage.removeItem('cost_center');
     localStorage.removeItem('insurance_number');
+    localStorage.removeItem('cultureMenu');
   }
 }
 

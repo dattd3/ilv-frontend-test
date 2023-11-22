@@ -1,21 +1,20 @@
-import React, { Suspense, createContext } from "react";
+import React, { Suspense, lazy } from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
-import { FirebaseMessageListener } from "../../commons/Firebase";
-import { Image } from "react-bootstrap";
-import { GuardianRouter } from "../../modules";
-import routes, { RouteSettings } from "../routes.config";
+import Constants from "commons/Constants";
 import ContextProviders from "./providers";
-import "../../assets/scss/sb-admin-2.scss";
-import LoadingModal from "../../components/Common/LoadingModal";
-import { Toast } from "react-bootstrap";
-import "bootstrap/dist/css/bootstrap.min.css";
+import { Image, Toast } from "react-bootstrap";
+import { GuardianRouter } from "../../modules";
 import { ToastContainer } from "react-toastify";
-import RedArrowIcon from "assets/img/icon/red-arrow-right.svg";
+import Maintenance from "containers/Maintenance";
+import ROUTES, { RouteSettings } from "../routes.config";
+import LoadingModal from "../../components/Common/LoadingModal";
+import { FirebaseMessageListener } from "../../commons/Firebase";
+import NewestNotificationContext from "modules/context/newest-notification-context";
+import "../../assets/scss/sb-admin-2.scss";
+import "bootstrap/dist/css/bootstrap.min.css";
 import "react-toastify/dist/ReactToastify.css";
 import CloseIcon from "assets/img/icon/icon_x.svg";
-import Constants from "commons/Constants";
-import NewestNotificationContext from "modules/context/newest-notification-context";
-import Maintenance from "containers/Maintenance";
+import RedArrowIcon from "assets/img/icon/red-arrow-right.svg";
 
 const listUsersIgnoreMaintenanceMode = [
   "cuongnv56@vingroup.net",
@@ -34,10 +33,10 @@ const listUsersIgnoreMaintenanceMode = [
 const currentUserLogged = localStorage.getItem("email");
 
 const INIT_NOTIFICATION_STATE = {
-  isShow: false,
-  toastTitle: "",
   title: "",
   body: "",
+  isShow: false,
+  toastTitle: "",
   redirectLink: "",
 };
 
@@ -63,9 +62,40 @@ function Root() {
   const [notification, setNotification] = React.useState(
     INIT_NOTIFICATION_STATE
   );
+  const [routers, setRouters] = React.useState(ROUTES);
   const [notificationPayload, setNotificationPayload] = React.useState(null);
-
   const isVietnamese = localStorage.getItem("locale") === Constants.LANGUAGE_VI;
+  const cultureMenu = JSON.parse(localStorage.getItem('cultureMenu') || "[]");
+  const cultureRouters = cultureMenu.reduce((res, ele) => {
+    const link = ele.nameEn.toLowerCase().split(" ").join("-");
+
+    return res.concat([{
+      key: link,
+      routeProps: {
+        exact: true,
+        path: `/${link}`,
+      },
+      component: lazy(() => import("../VingroupCulture/index.jsx")),
+    },
+    {
+      key: `${link}-gallery`,
+      routeProps: {
+        exact: true,
+        path: `/${link}/gallery/:code`,
+      },
+      component: lazy(() => import("../VingroupCulturalGallery/index.js")),
+    }]);
+  }, []);
+  if (
+    cultureRouters.length > 0 && 
+    !routers.find(ele => ele.key === 'main').contentProps.routes.find(ele => ele.link === cultureRouters[0].key)
+  ) {
+    // routers.find(ele => ele.key === 'main').contentProps.routes.push(...cultureRouters);
+    // console.log('----------------------------------------');
+    // console.log('routers: ', routers);
+    // console.log('----------------------------------------');
+    // setRouters(routers);
+  }
 
   FirebaseMessageListener()
     .then((payload) => {
@@ -111,9 +141,8 @@ function Root() {
         <BrowserRouter>
           {/* { !listUsersIgnoreMaintenanceMode.includes(currentUserLogged) && <Maintenance /> } */}
 
-          {/* { listUsersIgnoreMaintenanceMode.includes(currentUserLogged) && */}
           <Switch>
-            {routes.map(
+            {routers.map(
               ({ component: Content, key, routeProps, contentProps }) => (
                 <Route
                   key={key}
