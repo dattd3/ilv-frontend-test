@@ -168,7 +168,7 @@
       display: flex;
       flex-wrap: wrap;
       .video-item {
-        width: 32.3%;
+        width: calc((100% - 48px) / 3);
         cursor: pointer;
         margin-bottom: 15px;
         border-radius: 4px;
