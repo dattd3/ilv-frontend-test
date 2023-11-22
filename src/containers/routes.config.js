@@ -980,6 +980,14 @@ const ROUTES = [
           },
           component: lazy(() => import("./Welfare/WelfareComponents/SocialSupportInfoDetail")),
         },
+        {
+          key: "recruitment",
+          routeProps: {
+            exact: true,
+            path: map.Recruitment,
+          },
+          component: lazy(() => import("./Recruitment/")),
+        },
       ],
     },
   },
