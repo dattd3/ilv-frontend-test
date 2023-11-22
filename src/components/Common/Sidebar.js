@@ -23,11 +23,11 @@ class RouterLink extends React.Component {
     }
   
     onLocationChange(e) {
-      let pathname = e.pathname;
-      if (e.pathname.indexOf('/', 1) > 0 ) {
-        pathname = e.pathname.substring(0, e.pathname.indexOf('/', 1));
-      }
-      if ((pathname || '/') === this.to) {
+      const url = new URL(this.props.to, window.location.origin),
+        pathname = e.pathname.indexOf('/', 1) > 0 ? e.pathname.substring(0, e.pathname.indexOf('/', 1)) : e.pathname,
+        currentPath = url.pathname.indexOf('/', 1) > 0 ? url.pathname.substring(0, url.pathname.indexOf('/', 1)) : url.pathname;
+
+      if ((pathname || '/') === (currentPath|| '/') && this.to !== '/#') {
         this.props.activateMe();
       }
     }
@@ -148,7 +148,18 @@ function SideBar(props) {
     const { show } = props;
 
     const getNavigation = (role) => {
+        const cultureMenu = JSON.parse(localStorage.getItem('cultureMenu') || "[]"),
+          culturalNavigation = cultureMenu.map((ele, i) => ({
+            id: Number(`${995}${i+1}`),
+            parentId: 995,
+            icon: "menu-bullet-lv2 icon-sub-menu-lv2",
+            label: currentLocale === 'vi-VN' ? ele.nameVn : ele.nameEn,
+            to: `/${ele.nameEn.toLowerCase().split(" ").join("-")}?categoryCode=${ele.categoryCode}`,
+            role: "U",
+          }));
+
         let _navigation = [...Navigation];
+        _navigation.splice(2, 0, ...culturalNavigation);
         let allNav = _navigation.filter(x => (x.role === 'A' || x.role === 'U' || x.role.includes(role) || x.role.indexOf(user.companyCode) >= 0));
         return getSubNav(allNav, 0);
     }
