@@ -328,7 +328,7 @@ class ApprovalDetail extends React.Component {
         {
           (data.requestTypeId != Constants.UPDATE_PROFILE && userInfo.manager && (processStatusId == Constants.STATUS_APPROVED || processStatusId == Constants.STATUS_NOT_APPROVED)) ?
           <>
-          <div className="edit-personal user-info-request"><h4 className="content-page-header">Thông tin CBLĐ phê duyệt</h4></div>
+          <div className="edit-personal user-info-request"><h4 className="content-page-header">{t("InformationApprover")}</h4></div>
           <div className="box shadow">
             <div className="row item-info">
               <div className="col-4">
