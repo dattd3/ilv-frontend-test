@@ -1,5 +1,129 @@
 .recruitment-page {
     font: normal 14px Arial, Helvetica, sans-serif;
+    .filter-block {
+        .status-block {
+            width: 180px;
+        }
+        .keyword-block {
+            flex: 1 1;
+            margin-left: 15px;
+        }
+        .date-block {
+            width: 150px;
+            margin-left: 15px;
+            img {
+                position: absolute;
+                right: 12px;
+                top: 11px;
+            }
+            input {
+                font-size: inherit;
+                height: 38px;
+            }
+        }
+        .btn-search-block {
+            width: 150px;
+            margin-left: 15px;
+        }
+        .request-user {
+            font-size: inherit;
+            border-color: #CCCCCC;
+            &:focus {
+                box-shadow: none;
+            }
+            padding-left: 28px;
+            height: 40px;
+        }
+        .input-group {
+            height: 38px;
+            input {
+                height: inherit;
+            }
+        }
+        .flex-1 {
+          flex: 1;
+          margin-left: 15px;
+        }
+        .icon-prefix-select {
+          position: absolute;
+          top: 12px;
+          left: 8px;
+          z-index: 999;
+        }
+        .date-picker-container {
+          .form-control {
+            height: 40px;
+            font-size: 14px;
+          }
+          .calender-icon {
+            position: absolute;
+            top: 12px;
+            right: 8px;
+          }
+          .react-datepicker-popper {
+            z-index: 99;
+          }
+        }
+        @media screen and (max-width: 1440px) {
+          .date-picker-container, .search-btn-container {
+            margin-top: 12px;
+            width: 180px;
+          }
+          .line-break {
+            width: 100%;
+          }
+        }
+        .filter-select__control {
+          height: 40px;
+        }
+        .filter-select__value-container {
+          padding-left: 28px;
+        }
+        .btn-warning {
+          color: #fff;
+          font-size: 14px;
+          font-weight: 400;
+          line-height: 17px;
+          height: 40px;
+        }
+    }
+
+    .page-content {
+        margin-top: 20px;
+        .header {
+            h1 {
+                font-size: 15px;
+                text-transform: uppercase;
+                color: #000000 !important;
+                font-size: 16px !important;
+                font-weight: bold;
+                margin-bottom: 0;
+            }
+            .btn-create-request {
+                border: 1px solid #44A257;
+                background: #FFFFFF;
+                color: #44A257;
+                border-radius: 4px;
+                height: 38px;
+                font-size: inherit;
+                padding: 0 15px;
+                img {
+                    margin-right: 5px;
+                    height: 12px;
+                }
+            }
+        }
+        .content {
+            margin-top: 20px;
+            .data-not-found {
+                background: #FFFFFF;
+                padding-left: 15px;
+                padding-right: 15px;
+                border-radius: 4px;
+            }
+        }
+    }
+
     .recruitment-tabs {
         font-size: inherit;
         .nav-item {
@@ -47,147 +171,6 @@
         }
     }
     .request-tab-content {
-        .filter-block {
-            .request-user {
-                font-size: inherit;
-                border-color: #CCCCCC;
-                &:focus {
-                    box-shadow: none;
-                }
-                padding-left: 28px;
-                height: 40px;
-            }
-            .input-group {
-                height: 38px;
-                input {
-                    height: inherit;
-                }
-            }
-            .flex-1 {
-              flex: 1;
-              margin-left: 15px;
-              // max-width: 476px;
-            }
-            .icon-prefix-select {
-              position: absolute;
-              top: 12px;
-              left: 8px;
-              z-index: 999;
-            }
-            .w-180px {
-              width: 180px;
-              margin-left: 15px;
-            }
-            .w-120px {
-              width: 120px;
-              margin-left: 15px;
-            }
-            .date-picker-container {
-              .form-control {
-                height: 40px;
-                font-size: 14px;
-              }
-              .calender-icon {
-                position: absolute;
-                top: 12px;
-                right: 8px;
-              }
-              .react-datepicker-popper {
-                z-index: 99;
-              }
-            }
-            @media screen and (max-width: 1440px) {
-              .date-picker-container, .search-btn-container {
-                margin-top: 12px;
-                width: 180px;
-              }
-              .line-break {
-                width: 100%;
-              }
-            }
-            .request-category-guide-container {
-              position: absolute;
-              top: 46px;
-              width: 343px;
-              border-radius: 4px;
-              box-shadow: 0px 0px 4px 0px #00000040;
-              color:#0D1B3C;
-              background-color: #fff;
-              z-index: 9999;
-              .request-category-guide-body {
-                padding: 15px;
-              }
-              .request-category-guide-footer {
-                padding: 15px;
-                background: #F2F2F2;
-                display: flex;
-                gap: 12px;
-                .cancel-btn {
-                  background: #CED4DA;
-                  font-size: 12px;
-                  font-weight: 400;
-                  // height: 30px;
-                  border-radius: 4px;
-                  color: #fff;
-                  border-color: #CED4DA;
-                  flex: 1;              
-                }
-                .apply-btn {
-                  background: #4099FF;
-                  font-size: 12px;
-                  font-weight: 400;
-                  // height: 30px;
-                  border-radius: 4px;
-                  color: #fff;
-                  border-color: #4099FF;
-                  flex: 1;              
-                }
-              }
-              .category-title {
-                padding-bottom: 12px;
-                margin-bottom: 15px;
-                border-bottom: 1px solid #CED4DA
-              }
-              .form-check {
-                display: flex;
-                margin-bottom: 12px;
-                .form-check-input {
-                  width: 13px;
-                  height: 13px;
-                  margin-top: 0.12rem
-                }
-                .form-check-label {
-                  font-weight: bold;
-                }
-              }
-              .type-list-ul {
-                padding-left: 20px;
-                margin-bottom: 18px;
-                .category-item {
-                  display: flex;
-                  input {
-                    width: 15px;
-                    height: 15px;
-                    margin-right: 8px;
-                  }
-                  margin-bottom: 12px;
-                }
-              }
-            }
-            .filter-select__control {
-              height: 40px;
-            }
-            .filter-select__value-container {
-              padding-left: 28px;
-            }
-            .btn-warning {
-              color: #fff;
-              font-size: 14px;
-              font-weight: 400;
-              line-height: 17px;
-              height: 40px;
-            }
-        }
         .block-title {
             display: flex;
             align-items: center;
@@ -210,7 +193,7 @@
             color: #2a377c;
             font-weight: bold;
         }
-        .task-list {
+        .request-list {
             display: block;
             background: #FFFFFF;
             border-radius: 4px;
@@ -403,64 +386,64 @@
                 cursor: none;
                 opacity: 0.2;
             }
-            &.request-list {
-                .table {
-                    .code {
-                        width: 12%;
-                    }
-                    .request-type {
-                        width: 20%;
-                    }
-                    .day-off {
-                        width: 18%;
-                    }
-                    .break-time {
-                        width: 15%;
-                    }
-                    .status {
-                        width: 20%;
-                    }
-                    .tool {
-                        width: 15%;
-                    }
-                }
-            }
-            &.consent {
-                .table {
-                    .check-box {
-                        width: 40px;
-                        left: 0;
-                    }
-                    .code {
-                        width: 120px;
-                    }
-                    .user-request {
-                        width: 170px;
-                    }
-                    .user-title {
-                        width: 180px;
-                    }
-                    .request-type {
-                        width: 180px;
-                    }
-                    .day-off {
-                        width: 140px;
-                        white-space: inherit !important;
-                    }
-                    .break-time {
-                        width: 140px;
-                    }
-                    .appraiser {
-                        width: 170px;
-                    }
-                    .tool {
-                        width: 240px;
-                    }
-                    .status {
-                        width: 200px;
-                    }
-                }
-            }
+            // &.request-list {
+            //     .table {
+            //         .code {
+            //             width: 12%;
+            //         }
+            //         .request-type {
+            //             width: 20%;
+            //         }
+            //         .day-off {
+            //             width: 18%;
+            //         }
+            //         .break-time {
+            //             width: 15%;
+            //         }
+            //         .status {
+            //             width: 20%;
+            //         }
+            //         .tool {
+            //             width: 15%;
+            //         }
+            //     }
+            // }
+            // &.consent {
+            //     .table {
+            //         .check-box {
+            //             width: 40px;
+            //             left: 0;
+            //         }
+            //         .code {
+            //             width: 120px;
+            //         }
+            //         .user-request {
+            //             width: 170px;
+            //         }
+            //         .user-title {
+            //             width: 180px;
+            //         }
+            //         .request-type {
+            //             width: 180px;
+            //         }
+            //         .day-off {
+            //             width: 140px;
+            //             white-space: inherit !important;
+            //         }
+            //         .break-time {
+            //             width: 140px;
+            //         }
+            //         .appraiser {
+            //             width: 170px;
+            //         }
+            //         .tool {
+            //             width: 240px;
+            //         }
+            //         .status {
+            //             width: 200px;
+            //         }
+            //     }
+            // }
         }
         .action-btn {
             button {
