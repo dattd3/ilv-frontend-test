@@ -1,5 +1,5 @@
-import React, { Suspense, lazy } from "react";
-import { BrowserRouter, Route, Switch } from "react-router-dom";
+import React, { Suspense, lazy, useEffect } from "react";
+import { Route, Switch, useLocation } from "react-router-dom";
 import Constants from "commons/Constants";
 import ContextProviders from "./providers";
 import { Image, Toast } from "react-bootstrap";
@@ -58,39 +58,44 @@ function Root() {
   //     }
   //   }
   // });
-
+  
+  const location = useLocation();
   const [notification, setNotification] = React.useState(
     INIT_NOTIFICATION_STATE
   );
   const [notificationPayload, setNotificationPayload] = React.useState(null);
   const isVietnamese = localStorage.getItem("locale") === Constants.LANGUAGE_VI;
-  const cultureMenu = JSON.parse(localStorage.getItem('cultureMenu') || "[]");
-  const cultureRouters = cultureMenu.reduce((res, ele) => {
-    const link = ele.nameEn.toLowerCase().split(" ").join("-");
 
-    return res.concat([{
-      key: link,
-      routeProps: {
-        exact: true,
-        path: `/${link}`,
+  useEffect(() => {
+    const cultureMenu = JSON.parse(localStorage.getItem('cultureMenu') || "[]");
+    const cultureRouters = cultureMenu.reduce((res, ele) => {
+      const link = ele.nameEn.toLowerCase().split(" ").join("-");
+
+      return res.concat([{
+        key: link,
+        routeProps: {
+          exact: true,
+          path: `/${link}`,
+        },
+        component: lazy(() => import("../VingroupCulture/index.jsx")),
       },
-      component: lazy(() => import("../VingroupCulture/index.jsx")),
-    },
-    {
-      key: `${link}-gallery`,
-      routeProps: {
-        exact: true,
-        path: `/${link}/gallery/:code`,
-      },
-      component: lazy(() => import("../VingroupCulturalGallery/index.js")),
-    }]);
-  }, []);
-  if (
-    cultureRouters.length > 0 && 
-    !routes.find(ele => ele.key === 'main').contentProps.routes.find(ele => ele.link === cultureRouters[0].key)
-  ) {
-    routes.find(ele => ele.key === 'main').contentProps.routes.push(...cultureRouters);
-  }
+      {
+        key: `${link}-gallery`,
+        routeProps: {
+          exact: true,
+          path: `/${link}/gallery/:code`,
+        },
+        component: lazy(() => import("../VingroupCulturalGallery/index.js")),
+      }]);
+    }, []);
+
+    if (
+      cultureRouters.length > 0 && 
+      !routes.find(ele => ele.key === 'main').contentProps.routes.find(ele => ele.key === cultureRouters[0].key)
+    ) {
+      routes.find(ele => ele.key === 'main').contentProps.routes.push(...cultureRouters);
+    }
+  }, [location]);
 
   FirebaseMessageListener()
     .then((payload) => {
@@ -133,32 +138,30 @@ function Root() {
   return (
     <>
       <ContextProviders>
-        <BrowserRouter>
-          {/* { !listUsersIgnoreMaintenanceMode.includes(currentUserLogged) && <Maintenance /> } */}
+        {/* { !listUsersIgnoreMaintenanceMode.includes(currentUserLogged) && <Maintenance /> } */}
 
-          <Switch>
-            {routes.map(
-              ({ component: Content, key, routeProps, contentProps }) => (
-                <Route
-                  key={key}
-                  {...routeProps}
-                  render={(props) => (
-                    <GuardianRouter {...props} settings={RouteSettings}>
-                      {(childProps) => (
-                        <Suspense fallback={<LoadingModal show={true} />}>
-                          <NewestNotificationContext.Provider value={notificationPayload}>
-                            <Content {...contentProps} {...childProps} />
-                          </NewestNotificationContext.Provider>
-                        </Suspense>
-                      )}
-                    </GuardianRouter>
-                  )}
-                />
-              )
-            )}
-          </Switch>
-          {/* } */}
-        </BrowserRouter>
+        <Switch>
+          {routes.map(
+            ({ component: Content, key, routeProps, contentProps }) => (
+              <Route
+                key={key}
+                {...routeProps}
+                render={(props) => (
+                  <GuardianRouter {...props} settings={RouteSettings}>
+                    {(childProps) => (
+                      <Suspense fallback={<LoadingModal show={true} />}>
+                        <NewestNotificationContext.Provider value={notificationPayload}>
+                          <Content {...contentProps} {...childProps} />
+                        </NewestNotificationContext.Provider>
+                      </Suspense>
+                    )}
+                  </GuardianRouter>
+                )}
+              />
+            )
+          )}
+        </Switch>
+        {/* } */}
         <Toast
           onClose={() =>
             setNotification(INIT_NOTIFICATION_STATE)
