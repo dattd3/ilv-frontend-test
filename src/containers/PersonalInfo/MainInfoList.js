@@ -117,10 +117,6 @@ function MainInfoList(props) {
                                 <td className="info-value"><p>&nbsp;{marriageStatus[userDetail?.marital_status_code]}</p></td>
                             </tr>
                             <tr>
-                                <td className="info-label">{t("Master code")}</td>
-                                <td className="info-value"><p>&nbsp;{userProfile?.master_code}</p></td>
-                            </tr>
-                            <tr>
                                 <td className="info-label">{t("PersonalEmail")}</td>
                                 <td className="info-value"><p>&nbsp;{userDetail.personal_email}</p></td>
                             </tr>
@@ -153,6 +149,10 @@ function MainInfoList(props) {
                 <div className="info-tab-content" style={{ boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px" }}>
                   <table>
                     <tbody>
+                      <tr>
+                        <td className="info-label">{t("MasterCode")}</td>
+                        <td className="info-value"><p>&nbsp;{formatStringByMuleValue(userProfile?.master_code)}</p></td>
+                      </tr>
                       <tr>
                         <td className="info-label">{t("VingroupOnboardDate")}</td>
                         <td className="info-value"><p>&nbsp;{moment(userProfile.starting_date_inc, 'DD-MM-YYYY').isValid() ? moment(userProfile.starting_date_inc, 'DD-MM-YYYY').format('DD/MM/YYYY') : ""}</p></td>
