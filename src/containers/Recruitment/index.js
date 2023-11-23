@@ -85,7 +85,7 @@ const Recruitment = (props) => {
 
     const handleChangeTab = (key) => {
         SetActiveTab(key)
-        SetDataFilter(null)
+        // SetDataFilter(null)
     }
 
     return (

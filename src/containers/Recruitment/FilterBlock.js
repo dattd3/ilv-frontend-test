@@ -110,7 +110,7 @@ const FilterBlock = (props) => {
     }
 
     return (
-        <div className="d-flex align-items-center mb-3 filter-block">
+        <div className="d-flex align-items-center filter-block">
             <div className="position-relative status-block">
                 <img src={IconFilter} alt="Filter" className="icon-prefix-select" />
                 <Select name="absenceType"
@@ -133,7 +133,7 @@ const FilterBlock = (props) => {
                     onChange={handleInputChange}
                 />
             </div>
-            <div className="position-relative">
+            <div className="position-relative date-block">
                 <DatePicker 
                     name="fromDate"
                     selectsStart
@@ -155,7 +155,7 @@ const FilterBlock = (props) => {
                 />
                 <img src={IconCalender} alt="DatePicker" className="calender-icon" />
             </div>
-            <div className="position-relative">
+            <div className="position-relative date-block">
                 <DatePicker 
                     name="endDate"
                     selectsEnd
@@ -174,7 +174,7 @@ const FilterBlock = (props) => {
                 />
                 <img src={IconCalender} alt="DatePicker" className="calender-icon" />
             </div>
-            <div className="search-block">
+            <div className="btn-search-block">
                 <button type="button" onClick={search} className="btn btn-warning w-100">{t("Search")}</button>
             </div>
         </div>
