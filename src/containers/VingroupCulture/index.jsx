@@ -1,12 +1,12 @@
-import HOCComponent from 'components/Common/HOCComponent';
 import Constants from 'commons/Constants';
+import { useTranslation } from 'react-i18next';
+import HOCComponent from 'components/Common/HOCComponent';
 
 import IconPdf from 'assets/img/icon/pdf-icon.svg';
 import IconImage from 'assets/img/icon/image-icon.svg';
 import IconCamera from 'assets/img/icon/camera-icon.svg';
 import IconBluePlay from 'assets/img/icon/Icon-blue-play.svg';
 import IconDocument from 'assets/img/icon/document-blue-icon.svg';
-import { useTranslation } from 'react-i18next';
 
 function VingroupCulture(props) {
   const { t } = useTranslation();
