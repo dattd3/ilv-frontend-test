@@ -1,0 +1,175 @@
+.my-voucher-page {
+  font: normal 14px Arial, Helvetica, sans-serif;
+  color: #000000;
+  .search-block {
+    .search-input {
+      height: 38px;
+      padding: 0 15px 0 35px;
+      outline-style: none;
+      border-radius: 4px;
+      border: none;
+      width: 100%;
+      background-color: #FFFFFF;
+      background: #FFFFFF url("../img/icon/ic_search.svg") no-repeat 12px 11px;
+    }
+  }
+  .content-block {
+    padding: 15px;
+    border-radius: 4px;
+    background: #FFFFFF;
+    margin-top: 20px;
+    .nav-tabs {
+      .nav-item {
+        margin-left: 10px;
+        padding: 8px;
+        &:first-child {
+          margin-left: 0;
+        }
+      }
+      .nav-link {
+        color: inherit;
+        border-radius: 0;
+        &:hover {
+          border-color: transparent;
+          border-bottom: 2px solid #C11D2A;
+        }
+      }
+      .active {
+        color: #C11D2A;
+        border-color: transparent;
+        border-bottom: 2px solid #C11D2A;
+      }
+    }
+    .tab-content {
+      .voucher-item {
+        border-radius: 4px;
+        border: 1px solid #DEE2E6 ;
+        margin-top: 15px;
+        padding: 15px;
+        .row-customize {
+          margin-top: 8px;
+          &:first-child {
+            margin-top: 0;
+          }
+          &.voucher {
+            .text {
+              color: #C11D2A;
+              font-weight: bold;
+            }
+          }
+          &.address {
+            img {
+              height: 16px;
+            }
+          }
+          .img-block {
+            display: inline-flex;
+            width: 20px;
+            justify-content: center;
+            margin-right: 8px;
+          }
+        }
+        .right {
+          .btn-view-qr {
+            border: 1px solid #347EF9;
+            border-radius: 4px;
+            color: #347EF9;
+            background: #FFFFFF;
+            padding: 10px 15px;
+            img {
+              margin-right: 6px;
+            }
+          }
+        }
+      }
+      .notice-item {
+        border-radius: 4px;
+        border: 1px solid #DEE2E6 ;
+        margin-top: 15px;
+        padding: 15px;
+        .img-block {
+          display: inline-flex;
+          align-items: center;
+          width: 40px;
+          height: 40px;
+          justify-content: center;
+          margin-right: 8px;
+          background: #4298FF;
+          border-radius: 20px;
+          img {
+            height: 16px;
+          }
+        }
+        .main {
+          .title {
+            margin-left: 0;
+            color: #000000;
+            &:hover {
+              color: #C11D2A;
+            }
+          }
+          .date {
+            margin-top: 5px;
+            color: #C2C2C2;
+            img {
+              height: 14px;
+              margin-right: 5px;
+              margin-top: 1px;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.voucher-notice-detail {
+  font: normal 14px Arial, Helvetica, sans-serif;
+  .wrap-content {
+    border-radius: 4px;
+    background: #FFFFFF; 
+    padding: 15px;
+  }
+}
+
+.qr-codes-modal {
+  font: normal 14px Arial, Helvetica, sans-serif;
+  z-index: 99999999;
+  .modal-dialog {
+    max-width: 600px;
+    margin: 0 auto!important;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    .modal-body {
+      padding: 1rem 1.5rem;
+      .btn-close {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        outline: none;
+        border: none;
+        background: transparent;
+      }
+      .content {
+        color: #0D1B3C;
+        padding: 1rem 0;
+        .carousel-control-prev {
+          left: 15%;
+          .carousel-control-prev-icon {
+            background-image: url("../img/icon/arrow-previous.svg");
+            height: 30px;
+          }
+        }
+        .carousel-control-next {
+          right: 15%;
+          .carousel-control-next-icon {
+            background-image: url("../img/icon/arrow-next.svg");
+            height: 30px;
+          }
+        }
+      }
+    }
+  }
+}
