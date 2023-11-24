@@ -566,4 +566,12 @@ export const Navigation = [
   //     role: ["P","T","P2", "P1", "T4", "T3", "T2", "T1"]
   //     //role: 'NA'
   //   },
+  {
+    id: 99,
+    parentId: 0,
+    icon: 'c-my-voucher',
+    label: "MyVoucher",
+    to: map.MyVoucher,
+    role: 'U'
+  },
 ];
