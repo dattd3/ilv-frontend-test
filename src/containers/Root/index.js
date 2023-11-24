@@ -68,7 +68,7 @@ function Root() {
 
   useEffect(() => {
     const cultureMenu = JSON.parse(localStorage.getItem('cultureMenu') || "[]");
-    const cultureRouters = cultureMenu.reduce((res, ele) => {
+    const cultureRouters = cultureMenu.filter(ele => ele?.lstCategory?.length > 0).reduce((res, ele) => {
       const link = ele.nameEn.toLowerCase().split(" ").join("-");
 
       return res.concat([{
