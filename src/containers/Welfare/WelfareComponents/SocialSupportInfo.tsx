@@ -50,7 +50,7 @@ const SocialSupportInfo = (props: any) => {
     try {
       setLoading(true);
       const requestConfig = getRequestConfigurations();
-      const getInfoDetail = await axios.post(`${process.env.REACT_APP_REQUEST_SERVICE_URL}common/getTemplateByTypes`, [1, 2, 3, 4, 5, 6], requestConfig)
+      const getInfoDetail = await axios.post(`${process.env.REACT_APP_REQUEST_SERVICE_URL}common/getTemplateByTypes`, [1, 2, 3, 4, 5, 6, 7], requestConfig)
       if(getInfoDetail?.data?.data) {
         setTemplates(getInfoDetail.data.data);
       }
