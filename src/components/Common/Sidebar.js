@@ -149,7 +149,7 @@ function SideBar(props) {
 
     const getNavigation = (role) => {
         const cultureMenu = JSON.parse(localStorage.getItem('cultureMenu') || "[]"),
-          culturalNavigation = cultureMenu.map((ele, i) => ({
+          culturalNavigation = cultureMenu.filter(ele => ele?.lstCategory?.length > 0).map((ele, i) => ({
             id: Number(`${995}${i+1}`),
             parentId: 995,
             icon: "menu-bullet-lv2 icon-sub-menu-lv2",
