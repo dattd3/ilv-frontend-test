@@ -202,19 +202,19 @@ const CreateInsuranceSocial = (props) => {
                     sickData: {
                         ...data.sickData,
                         ...infoBank,
-                        leaveOfWeek: dayOffs.join(';') || '',
+                        leaveOfWeek: dayOffs.join('; ') || '',
                         documentLink: documentLink
                     },
                     convalesData: {
                         ...data.convalesData,
                         ...infoBank,
-                        leaveOfWeek: dayOffs.join(';') || '',
+                        leaveOfWeek: dayOffs.join('; ') || '',
                         documentLink: documentLink
                     },
                     maternityData: {
                         ...data.maternityData,
                         ...infoBank,
-                        leaveOfWeek: dayOffs.join(';') || '',
+                        leaveOfWeek: dayOffs.join('; ') || '',
                         documentLink: documentLink
                     },
                 })
@@ -247,7 +247,11 @@ const CreateInsuranceSocial = (props) => {
 
     const handleTextInputChange = (e, name, subName) => {
         const candidateInfos = { ...data }
-        candidateInfos[name][subName] = e != null ? e.target.value : "";
+        let value = e?.target?.value;
+        if(subName == 'total' && value) {
+            value = value.replace(/[^0-9a-zA-Z]/g,'');
+        }
+        candidateInfos[name][subName] = e != null ? value : "";
         setData(candidateInfos);
     }
 
@@ -374,6 +378,7 @@ const CreateInsuranceSocial = (props) => {
                             <CreateMaternityInsurance type={type} setType={setType}
                                 data={data.maternityData}
                                 errors={errors.maternityData}
+                                setLoading={setLoading}
                                 userInfo={userInfo}
                                 disabledSubmitButton={disabledSubmitButton}
                                 handleTextInputChange={(e, key) => handleTextInputChange(e, 'maternityData', key)}
