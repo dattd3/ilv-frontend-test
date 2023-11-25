@@ -47,4 +47,3 @@ const ModalQRCodes = ({ isShowModal, listQRs = [], onHideModal }) => {
 }
 
 export default ModalQRCodes
-
