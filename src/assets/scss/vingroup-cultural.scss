@@ -16,6 +16,12 @@
           &:has( + .content-parent-item)  {
             border-bottom: none;
           }
+          .title-container {
+            font-weight: bold;
+          }
+        }
+        &:last-child {
+          margin-bottom: 0px;
         }
       }
       &.content-parent-child {}
@@ -37,16 +43,22 @@
         & + .content-parent-item {
           .content-item {
             border-bottom: none;
+            &:last-child {
+              border-bottom: 1px solid #dee2e6;
+            }
           }
         }
         &:hover {
           background: #F8F8F8;
         }
+        &.content-item-pointer {
+          cursor: pointer;
+        }
         .title-container {
           display: flex;
           align-items: center;
           .title-content {
-            margin-left: 10px;      
+            margin-left: 10px;
             p {
               margin: 0;
             }
