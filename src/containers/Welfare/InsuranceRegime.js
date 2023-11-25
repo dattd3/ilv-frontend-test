@@ -9,12 +9,21 @@ import Resource from './WelfareComponents/Resource'
 import HOCComponent from '../../components/Common/HOCComponent'
 import SocialContributeInfo from './WelfareComponents/SocialContributeInfo'
 import SocialSupportInfo from './WelfareComponents/SocialSupportInfo'
+import HealthInsurance from './WelfareComponents/HealthInsurance'
+
+const tabConfig = {
+    CreateInsuranceSocial: 'CreateInsuranceSocial',
+    Social: 'Social',
+    SocialContribute: 'SocialContribute',
+    SocialSupport: 'SocialSupport',
+    HealthInsurance: 'HealthInsurance',
+}
 
 class InsuranceRegime extends React.Component {
     constructor(props) {
         super();
         this.state = {
-            tab: new URLSearchParams(props?.history?.location?.search).get('tab') || "Social",
+            tab: new URLSearchParams(props?.history?.location?.search).get('tab') || tabConfig.Social,
         }
     }
 
@@ -25,7 +34,9 @@ class InsuranceRegime extends React.Component {
 
     render() {
         const { t } = this.props;
-        if(this.state.tab == 'CreateInsuranceSocial') {
+        const { tab } = this.state
+
+        if(tab == tabConfig.CreateInsuranceSocial) {
           return <CreateInsuranceSocial/>
         }
 
@@ -35,14 +46,19 @@ class InsuranceRegime extends React.Component {
                     {/* <Tab eventKey="Health" title={t('heath_insurance')}>
                         <Health title={t('welfare_regime_internal')}/>
                     </Tab> */}
-                    <Tab eventKey="Social" title={t('social_insurance')}>
+                    <Tab eventKey={tabConfig.Social} title={t('social_insurance')}>
                         <InsuranceSocial title={t('Vinwonder/Safari')}/>
                     </Tab>
-                    <Tab eventKey="SocialContribute" title={t('social_contribute_info')}>
+                    <Tab eventKey={tabConfig.SocialContribute} title={t('social_contribute_info')}>
                         <SocialContributeInfo title={t('Vinwonder/Safari')}/>
                     </Tab>
-                    <Tab eventKey="SocialSupport" title={t('social_support_info')}>
+                    <Tab eventKey={tabConfig.SocialSupport} title={t('social_support_info')}>
                         <SocialSupportInfo title={t('Vinwonder/Safari')}/>
+                    </Tab>
+                    <Tab eventKey={tabConfig.HealthInsurance} title={t('Bảo hiểm sức khỏe')}>
+                        <HealthInsurance
+                            needLoad={tab === tabConfig.HealthInsurance}
+                        />
                     </Tab>
                 </Tabs>
             </div>
