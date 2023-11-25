@@ -173,3 +173,40 @@
     }
   }
 }
+
+.banner-home-modal {
+  z-index: 99999;
+  .modal-dialog {
+    // max-width: unset!important;
+    width: fit-content;
+    margin: 0 auto!important;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    .modal-content {
+      width: fit-content;
+    }
+    .modal-body {
+      padding: 0;
+      // width: fit-content;
+      border-radius: 0;
+      .btn-close {
+        padding: 0;
+        position: absolute;
+        top: -16px;
+        right: -14px;
+        outline: none;
+        border: none;
+        background: transparent;
+        z-index: 999991;
+      }
+      .content {
+        // width: fit-content;
+        .image {
+          // width: fit-content;
+        }
+      }
+    }
+  }
+}
