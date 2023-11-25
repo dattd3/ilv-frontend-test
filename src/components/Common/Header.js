@@ -12,6 +12,7 @@ import { useLocalizeStore } from '../../modules';
 import CheckinNotificationIcon from '../../assets/img/icon/ic-checkin-noti.svg';
 import UseGuideIcon from '../../assets/img/icon/Icon-useGuide.svg';
 import UploadAvatar from '../../containers/UploadAvatar'
+import { FirebaseMessageListener } from "commons/Firebase"
 import { getRequestConfigurations, getRequestTypesList } from "../../commons/Utils"
 import TimeKeepingList from "containers/TimeKeepingHistory/TimeKeepingList";
 import RedArrowIcon from 'assets/img/icon/red-arrow-right.svg';
@@ -67,6 +68,12 @@ function Header(props) {
             fetchNotification();
             fetchLatestTimeKeeping();
         }
+
+        FirebaseMessageListener()
+        .then((payload) => {
+          fetchNotification()
+        })
+        .catch((err) => console.log("receive message fail: ", err));
     }, [])
 
     const guard = useGuardStore();
