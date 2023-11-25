@@ -2012,5 +2012,7 @@
   "ReasonHRReject": "Lý do PNS trả",
   "ListDocumentNeedSend": "DANH SÁCH CÁC HỒ SƠ CẦN GỬI",
   "RequestDownloadDocument": "Để tải về hồ sơ vui lòng bấm ",
-  "ListRequestCreated": "DANH SÁCH YÊU CẦU ĐÃ TẠO"
+  "ListRequestCreated": "DANH SÁCH YÊU CẦU ĐÃ TẠO",
+  "InformationApprover": "Thông tin CBLĐ phê duyệt",
+  "MasterCode": "Mã VG"
 }
