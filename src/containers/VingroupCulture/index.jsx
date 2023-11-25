@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import Constants from 'commons/Constants';
 import { useTranslation } from 'react-i18next';
 import HOCComponent from 'components/Common/HOCComponent';
@@ -8,7 +9,6 @@ import IconCamera from 'assets/img/icon/camera-icon.svg';
 import IconBluePlay from 'assets/img/icon/Icon-blue-play.svg';
 import IconExpand from 'assets/img/icon/icon-arrow-expand.svg';
 import IconCollapse from 'assets/img/icon/icon-arrow-collapse.svg';
-import { useState } from 'react';
 
 const CultureItem = (props) => {
   const { item, className, parentLevel } = props;
@@ -38,7 +38,7 @@ const CultureItem = (props) => {
       }${!isShowBtnGroup ? ' content-parent-child' : ''} ${className}`}
     >
       <div
-        className="content-item"
+        className={`content-item ${!isShowBtnGroup ? 'content-item-pointer' : ''}`}
         style={{ paddingLeft: parentLevel * 20 + 8 }}
         onClick={() => {
           if (!isShowBtnGroup) {
@@ -46,7 +46,7 @@ const CultureItem = (props) => {
           }
         }}
       >
-        <div className="title-container">
+        <div className={`title-container`}>
           {!isShowBtnGroup && (
             <img
               src={isOpen ? IconExpand : IconCollapse}
