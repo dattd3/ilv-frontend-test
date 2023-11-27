@@ -126,7 +126,7 @@ function NewsOnHome() {
               ...config,
               params: {
                 language: languageKeyMapping[locale],
-                categoryCode: "6.1",
+                categoryCode: "0",
                 device: "WEB",
               },
             }

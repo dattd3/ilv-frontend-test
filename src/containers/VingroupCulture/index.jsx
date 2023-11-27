@@ -1,5 +1,9 @@
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 import Constants from 'commons/Constants';
+import { useLocalizeStore } from 'modules';
 import { useTranslation } from 'react-i18next';
+import { getCurrentLanguage } from 'commons/Utils';
 import HOCComponent from 'components/Common/HOCComponent';
 
 import IconPdf from 'assets/img/icon/pdf-icon.svg';
@@ -8,7 +12,6 @@ import IconCamera from 'assets/img/icon/camera-icon.svg';
 import IconBluePlay from 'assets/img/icon/Icon-blue-play.svg';
 import IconExpand from 'assets/img/icon/icon-arrow-expand.svg';
 import IconCollapse from 'assets/img/icon/icon-arrow-collapse.svg';
-import { useState } from 'react';
 
 const CultureItem = (props) => {
   const { item, className, parentLevel } = props;
@@ -38,7 +41,9 @@ const CultureItem = (props) => {
       }${!isShowBtnGroup ? ' content-parent-child' : ''} ${className}`}
     >
       <div
-        className="content-item"
+        className={`content-item ${
+          !isShowBtnGroup ? 'content-item-pointer' : ''
+        }`}
         style={{ paddingLeft: parentLevel * 20 + 8 }}
         onClick={() => {
           if (!isShowBtnGroup) {
@@ -46,7 +51,7 @@ const CultureItem = (props) => {
           }
         }}
       >
-        <div className="title-container">
+        <div className={`title-container`}>
           {!isShowBtnGroup && (
             <img
               src={isOpen ? IconExpand : IconCollapse}
@@ -140,6 +145,8 @@ const CultureList = (props) => {
 };
 
 function VingroupCulture(props) {
+  const localizeStore = useLocalizeStore();
+  const [isRefresh, setIsRefresh] = useState(false);
   const cultureMenu = JSON.parse(localStorage.getItem('cultureMenu') || '[]'),
     isVietnamese = localStorage.getItem('locale') === Constants.LANGUAGE_VI,
     categoryCode = new URLSearchParams(props.location.search).get(
@@ -148,13 +155,55 @@ function VingroupCulture(props) {
     cultureParent = cultureMenu.find(
       (ele) => ele.categoryCode === categoryCode
     ),
-    { lstCategory } = cultureParent;
+    { lstCategory, id } = cultureParent,
+    title = isVietnamese ? cultureParent?.nameVn : cultureParent?.nameEn;
+
+  useEffect(() => {
+    fetchCultureMenu();
+  }, [localizeStore]);
+
+  useEffect(() => {
+    TrackingLogVinCulture();
+  }, []);
+
+  const TrackingLogVinCulture = () => {
+    try {
+      fetch(`${process.env.REACT_APP_REQUEST_URL}user/log/actions`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        },
+        body: JSON.stringify({ code: id, name: title }),
+        keepalive: true,
+      });
+    } catch (err) {}
+  };
+
+  const fetchCultureMenu = async () => {
+    const res = await axios.get(
+      `${
+        process.env.REACT_APP_REQUEST_URL
+      }api/vanhoavin/infos?language=${getCurrentLanguage()}&device=WEB`,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        },
+      }
+    );
+    const data = res.data?.data,
+      lstCategory = (data?.[0]?.lstCategory || []).sort(
+        (prev, val) => prev.categoryCode - val.categoryCode
+      );
+
+    localStorage.setItem('cultureMenu', JSON.stringify(lstCategory));
+    setIsRefresh(!isRefresh);
+  };
 
   return (
     <div className="vingroup-cultural-page">
-      <h1 className="content-page-header">
-        {isVietnamese ? cultureParent?.nameVn : cultureParent?.nameEn}
-      </h1>
+      <h1 className="content-page-header">{title}</h1>
       <div className="content-page-body">
         <CultureList data={lstCategory} parentLevel={0} />
       </div>
