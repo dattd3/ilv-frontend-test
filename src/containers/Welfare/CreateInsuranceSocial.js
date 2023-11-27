@@ -261,7 +261,7 @@ const CreateInsuranceSocial = (props) => {
         setData(candidateInfos);
     }
 
-    const handleDatePickerInputChange = (value, name, subname) => {
+    const handleDatePickerInputChange = async (value, name, subname) => {
         const candidateInfos = { ...data }
         if (moment(value, 'DD/MM/YYYY').isValid()) {
             const date = moment(value).format('DD/MM/YYYY')
@@ -270,7 +270,38 @@ const CreateInsuranceSocial = (props) => {
         } else {
             candidateInfos[name][subname] = null
         }
+        if(['fromDate', 'toDate'].includes(subname) && candidateInfos[name]['fromDate'] && candidateInfos[name]['toDate']) {
+            const totalDay = await getTotalLeaveDay(name, candidateInfos[name]['fromDate'], candidateInfos[name]['toDate']);
+            candidateInfos[name]['total'] = totalDay;
+        }
         setData(candidateInfos)
+    }
+
+    const getTotalLeaveDay = async (name, fromDate, toDate) => {
+        const muleSoftConfig = getMuleSoftHeaderConfigurations()
+        try {
+            setLoading(true);
+            fromDate = moment(fromDate, 'DD/MM/YYYY');
+            toDate = moment(toDate, 'DD/MM/YYYY');
+            const totalDays = toDate.diff(fromDate, 'days') + 1;
+            if(name == 'maternityData') return totalDays;
+
+            const result = await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/timeoverview?from_date=${fromDate.format('YYYYMMDD')}&to_date=${toDate.format('YYYYMMDD')}`, muleSoftConfig);
+            const timesheets = result.data?.data;
+            let totalOffDays = 0;
+            if(timesheets?.length > 0) {
+                timesheets.map((day) => {
+                    if(day.shift_id == 'OFF' || day.is_holiday == '1') {
+                        totalOffDays++;
+                    }
+                })
+            }
+            return totalDays - totalOffDays;
+        } catch(err) {
+            return '';
+        } finally {
+            setLoading(false);
+        }
     }
 
     const removeFile = (index) => {
