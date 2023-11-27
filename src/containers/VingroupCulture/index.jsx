@@ -1,9 +1,6 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
 import Constants from 'commons/Constants';
-import { useLocalizeStore } from 'modules';
 import { useTranslation } from 'react-i18next';
-import { getCurrentLanguage } from 'commons/Utils';
 import HOCComponent from 'components/Common/HOCComponent';
 
 import IconPdf from 'assets/img/icon/pdf-icon.svg';
@@ -145,8 +142,6 @@ const CultureList = (props) => {
 };
 
 function VingroupCulture(props) {
-  const localizeStore = useLocalizeStore();
-  const [isRefresh, setIsRefresh] = useState(false);
   const cultureMenu = JSON.parse(localStorage.getItem('cultureMenu') || '[]'),
     isVietnamese = localStorage.getItem('locale') === Constants.LANGUAGE_VI,
     categoryCode = new URLSearchParams(props.location.search).get(
@@ -155,12 +150,8 @@ function VingroupCulture(props) {
     cultureParent = cultureMenu.find(
       (ele) => ele.categoryCode === categoryCode
     ),
-    { lstCategory, id } = cultureParent,
+    { lstCategory } = cultureParent,
     title = isVietnamese ? cultureParent?.nameVn : cultureParent?.nameEn;
-
-  useEffect(() => {
-    fetchCultureMenu();
-  }, [localizeStore]);
 
   useEffect(() => {
     TrackingLogVinCulture();
@@ -174,31 +165,10 @@ function VingroupCulture(props) {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
         },
-        body: JSON.stringify({ code: id, name: title }),
+        body: JSON.stringify({ code: categoryCode, name: title }),
         keepalive: true,
       });
     } catch (err) {}
-  };
-
-  const fetchCultureMenu = async () => {
-    const res = await axios.get(
-      `${
-        process.env.REACT_APP_REQUEST_URL
-      }api/vanhoavin/infos?language=${getCurrentLanguage()}&device=WEB`,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-        },
-      }
-    );
-    const data = res.data?.data,
-      lstCategory = (data?.[0]?.lstCategory || []).sort(
-        (prev, val) => prev.categoryCode - val.categoryCode
-      );
-
-    localStorage.setItem('cultureMenu', JSON.stringify(lstCategory));
-    setIsRefresh(!isRefresh);
   };
 
   return (
