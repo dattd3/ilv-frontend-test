@@ -15,6 +15,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "react-toastify/dist/ReactToastify.css";
 import CloseIcon from "assets/img/icon/icon_x.svg";
 import RedArrowIcon from "assets/img/icon/red-arrow-right.svg";
+import { removeAccents } from "commons/Utils";
 
 const listUsersIgnoreMaintenanceMode = [
   "cuongnv56@vingroup.net",
@@ -69,7 +70,7 @@ function Root() {
   useEffect(() => {
     const cultureMenu = JSON.parse(localStorage.getItem('cultureMenu') || "[]");
     const cultureRouters = cultureMenu.filter(ele => ele?.lstCategory?.length > 0).reduce((res, ele) => {
-      const link = ele.nameEn.toLowerCase().split(" ").join("-");
+      const link = removeAccents(ele.nameEn.toLowerCase().split(" ").join("-"));
 
       return res.concat([{
         key: link,
