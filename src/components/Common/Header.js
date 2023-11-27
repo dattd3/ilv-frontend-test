@@ -26,7 +26,11 @@ import UseGuideModal from "./UseGuideModal";
 
 const getOrganizationLevelByRawLevel = level => {
     return (level == undefined || level == null || level == "" || level == "#") ? 0 : level
-}
+},
+languageKeyMapping = {
+    [Constants.LANGUAGE_EN]: 'en',
+    [Constants.LANGUAGE_VI]: 'vi'
+};
 
 const currentLocale = localStorage.getItem("locale")
 const timeKeepingHistoryEndpoint = `${process.env.REACT_APP_REQUEST_URL}notifications/in/out/listbydate`;
@@ -441,7 +445,8 @@ function Header(props) {
     }
 
     const onChangeLocale = async lang => {
-        const isChangedLanguage = await updateLanguageByCode(lang)
+        await fetchCultureMenu(lang);
+        const isChangedLanguage = await updateLanguageByCode(lang);
         if (isChangedLanguage) {
             setActiveLang(lang)
             window.location.reload()
@@ -454,12 +459,7 @@ function Header(props) {
     const updateLanguageByCode = async lang => {
         if (lang) {
             try {
-                const languageKeyMapping = {
-                    [Constants.LANGUAGE_EN]: 'en',
-                    [Constants.LANGUAGE_VI]: 'vi'
-                }
-                const config = getRequestConfigurations()
-                const response = await axios.post(`${process.env.REACT_APP_REQUEST_URL}user/setlanguage?culture=${languageKeyMapping[[lang]]}`, null, config)
+                const response = await axios.post(`${process.env.REACT_APP_REQUEST_URL}user/setlanguage?culture=${languageKeyMapping[[lang]]}`, null, getRequestConfigurations())
                 if (response && response.data) {
                     const result = response.data.result
                     if (result.code == Constants.API_SUCCESS_CODE) {
@@ -474,6 +474,20 @@ function Header(props) {
         }
         return false
     }
+
+    const fetchCultureMenu = async (lang) => {
+        try {
+            const res = await axios.get(`${process.env.REACT_APP_REQUEST_URL}api/vanhoavin/infos?language=${languageKeyMapping[lang]}&device=WEB`, getRequestConfigurations());
+            const data = res.data?.data,
+                lstCategory = (data?.[0]?.lstCategory || []).sort(
+                (prev, val) => prev.categoryCode - val.categoryCode
+                );
+            
+            localStorage.setItem('cultureMenu', JSON.stringify(lstCategory));
+        } catch (error) {
+            console.log(error)
+        } finally {}
+    };
 
     const onHideUploadAvatar = () => {
         setIsShowUploadAvatar(false);
