@@ -272,7 +272,7 @@ const CreateInsuranceSocial = (props) => {
         }
         if(['fromDate', 'toDate'].includes(subname) && candidateInfos[name]['fromDate'] && candidateInfos[name]['toDate']) {
             const totalDay = await getTotalLeaveDay(name, candidateInfos[name]['fromDate'], candidateInfos[name]['toDate']);
-            candidateInfos[name]['total'] = totalDay;
+            candidateInfos[name]['total'] = totalDay + '';
         }
         setData(candidateInfos)
     }
