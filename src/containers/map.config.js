@@ -143,7 +143,7 @@ const MapConfig = {
 
   // Vingroup culture
   Vin30Chronicles: "/vin30-chronicles",
-  HistoryVinGroupMobile: "/vin30-chronicles-mobile",
+  Vin30ChroniclesMobile: "/vin30-chronicles-mobile",
 
   // Internal news
   InternalNewsList: "/internal-news",
