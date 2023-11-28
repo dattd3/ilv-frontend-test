@@ -12,7 +12,7 @@ export const RouteSettings = {
   },
   authentication: {
     defaultRoute: map.Login,
-    routes: [map.Login, map.Auth, map.NewsDetailApp, map.TermPolicy, map.Maintenance, map.GuestNews, map.HistoryVinGroupMobile],
+    routes: [map.Login, map.Auth, map.NewsDetailApp, map.TermPolicy, map.Maintenance, map.GuestNews, map.Vin30ChroniclesMobile],
   },
 };
 
@@ -69,7 +69,7 @@ const ROUTES = [
     key: "vin30-chronicles-mobile",
     routeProps: {
       exact: true,
-      path: map.HistoryVinGroupMobile
+      path: map.Vin30ChroniclesMobile
     },
     component: lazy(() => import("./Vin30Chronicles/MyBook"))
   },
@@ -851,102 +851,6 @@ const ROUTES = [
             path: map.EmployeePrivilegeDetail,
           },
           component: lazy(() => import("./Corporation/News/EmployeePrivilegeDetail")),
-        },
-        {
-          key: "vingroup-history",
-          routeProps: {
-            exact: true,
-            path: map.HistoryVingroup,
-          },
-          component: lazy(() => import("./VingroupCulture/VingroupHistory")),
-        },
-        {
-          key: "vingroup-history-gallery",
-          routeProps: {
-            exact: true,
-            path: map.HistoryVingroupGallery
-          },
-          component: lazy(() => import("./VingroupCulturalGallery"))
-        },
-        {
-          key: "vingroup-culture-gallery",
-          routeProps: {
-            exact: true,
-            path: map.VingroupCultureGallery
-          },
-          component: lazy(() => import("./VingroupCulturalGallery"))
-        },
-        {
-          key: "6-values-gallery",
-          routeProps: {
-            exact: true,
-            path: map.SixCoreValuesGallery
-          },
-          component: lazy(() => import("./VingroupCulturalGallery"))
-        },
-        {
-          key: "6-gorv-gallery",
-          routeProps: {
-            exact: true,
-            path: map.SixGovernancePrinciplesGallery
-          },
-          component: lazy(() => import("./VingroupCulturalGallery"))
-        },
-        {
-          key: "working-env-gallery",
-          routeProps: {
-            exact: true,
-            path: map.WorkingEnvironmentGallery
-          },
-          component: lazy(() => import("./VingroupCulturalGallery"))
-        },
-        // {
-        //   key: "great-start-up-spirit-gallery",
-        //   routeProps: {
-        //     exact: true,
-        //     path: map.GreatStartUpSpiritGallery
-        //   },
-        //   component: lazy(() => import("./VingroupCulturalGallery"))
-        // },
-        {
-          key: "vingroup-culture",
-          routeProps: {
-            exact: true,
-            path: map.VingroupCulture,
-          },
-          component: lazy(() => import("./VingroupCulture/VingroupCulture")),
-        },
-        {
-          key: "6-core-values",
-          routeProps: {
-            exact: true,
-            path: map.SixCoreValues,
-          },
-          component: lazy(() => import("./VingroupCulture/6CoreValues")),
-        },
-        {
-          key: "6-governance-principles",
-          routeProps: {
-            exact: true,
-            path: map.SixGovernancePrinciples,
-          },
-          component: lazy(() => import("./VingroupCulture/6GovernancePrinciples")),
-        },
-        {
-          key: "working-environment",
-          routeProps: {
-            exact: true,
-            path: map.WorkingEnvironment,
-          },
-          component: lazy(() => import("./VingroupCulture/WorkingEnvironment")),
-        },
-        {
-          key: "great-start-up-spirit",
-          routeProps: {
-            exact: true,
-            path: map.GreatStartUpSpirit,
-          },
-          component: lazy(() => import("./VingroupCulture/GreatStartUpSpirit")),
         },
         {
           key: "internal-news-list",
