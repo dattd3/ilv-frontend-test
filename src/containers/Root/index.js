@@ -70,7 +70,7 @@ function Root() {
   useEffect(() => {
     const cultureMenu = JSON.parse(localStorage.getItem('cultureMenu') || "[]");
     const cultureRouters = cultureMenu.filter(ele => ele?.lstCategory?.length > 0).reduce((res, ele) => {
-      const link = removeAccents(ele.nameEn.toLowerCase().split(" ").join("-"));
+      const link = removeAccents(ele.nameEn.toLowerCase().replace(/\n|\r/gim, ' ').trim().split(" ").join("-"));
 
       return res.concat([{
         key: link,
