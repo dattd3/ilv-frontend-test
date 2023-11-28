@@ -884,6 +884,14 @@ const ROUTES = [
           },
           component: lazy(() => import("./Welfare/WelfareComponents/SocialSupportInfoDetail")),
         },
+        {
+          key: "request-support",
+          routeProps: {
+            exact: true,
+            path: map.RequestSupport,
+          },
+          component: lazy(() => import("./RequestSupport/")),
+        },
       ],
     },
   },

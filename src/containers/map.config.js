@@ -152,7 +152,9 @@ const MapConfig = {
   //thông tin đóng BHXH
   SocialContributeDetail: "/social-contribute/:id/:type",
   //thông tin liên quan BH
-  SocialSupportDetail: "/social-support/:id/:type"
+  SocialSupportDetail: "/social-support/:id/:type",
+
+  RequestSupport: "/request-support"
 };
 
 export default MapConfig;
