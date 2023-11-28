@@ -78,11 +78,7 @@ const CultureItem = (props) => {
             )}
             {(availableTypes[categoryCode] || []).includes('Pdf') && (
               <a
-                href={
-                  categoryCode === '1.1'
-                    ? `/vin30-chronicles`
-                    : `${pathname}/gallery/${categoryCode}?type=Pdf`
-                }
+                href={`${pathname}/gallery/${categoryCode}?type=Pdf`}
                 className="btn-link"
                 key="Pdf"
               >
