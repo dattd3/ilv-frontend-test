@@ -15,7 +15,7 @@ const Processing = (props) => {
     const [isLoading, setIsLoading] = useState(false)
 
     const handleChangeTab = key => {
-        setTabActivated(key)
+        // setTabActivated(key)
         props.history.push('?tab=' + key)
     }
 

@@ -11,6 +11,8 @@ import IconMailGreen from 'assets/img/icon/ic_mail-green.svg'
 import IconMailBlue from 'assets/img/icon/ic_mail-blue.svg'
 import IconAddNew from 'assets/img/icon/ic_btn_add_green.svg'
 import IconFilter from "assets/img/icon/icon-filter.svg"
+import IconSearch from "assets/img/icon/icon-search.svg"
+import IconRemove from 'assets/img/icon-delete.svg'
 import Note from "../common/Note"
  
 const CreatedReceiving = (props) => {
@@ -60,62 +62,66 @@ const CreatedReceiving = (props) => {
                                 <table className="table table-borderless">
                                     <thead>
                                         <tr>
+                                            <th scope="col" className="icon"><img src={IconSearch} alt="Search" /></th>
                                             <th scope="col" className="code">{t("RequestNo")}</th>
-                                            <th scope="col" className="request-type">{t("TypeOfRequest")}</th>
-                                            <th scope="col" className="day-off">{t("Times")}</th>
-                                            <th scope="col" className="break-time text-center">{t("TotalLeaveTime")}</th>
-                                            <th scope="col" className="status">{t("operation")}</th>
+                                            <th scope="col" className="title">{t("Tiêu đề")}</th>
+                                            <th scope="col" className="created-by">{t("Người tạo")}</th>
+                                            <th scope="col" className="group">{t("Nhóm")}</th>
+                                            <th scope="col" className="pic">{t("Người xử lý")}</th>
                                             <th scope="col" className="status text-center">{t("Status")}</th>
-                                            <th scope="col" className="tool text-center">{t("action2")}</th>
+                                            <th scope="col" className="created-date text-center">{t("Ngày tạo")}</th>
+                                            <th scope="col" className="action text-center">{t("Hành động")}</th>
+                                            <th scope="col" className="evaluation text-center">{t("Đánh giá")}</th>
+                                            <th scope="col" className="comment">{t("Nhận xét")}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                     {
                                         listRequests.map((child, index) => {
-                                            
                                             return (
                                                 <tr key={index}>
-                                                    <td className="code"><a href={detailLink} title={child.requestType.name} className="task-title">{generateTaskCodeByCode(child.id)}</a></td>
-                                                    <td className="request-type">{getRequestTypeLabel(child.requestType, child.absenceType?.value)}</td>
-                                                    <td className="day-off">
-                                                        <div dangerouslySetInnerHTML={{
-                                                            __html: purify.sanitize(dateChanged || ''),
-                                                        }} />
-                                                        {
-                                                            (child?.newItem || []).map((item, itemIndex) => {
-                                                                let subDateChanged = ''
-                                                                if ([Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP].includes(child.requestTypeId)) {
-                                                                    subDateChanged = showRangeDateGroupByArrayDate([moment(item?.startDate, 'YYYYMMDD').format('DD/MM/YYYY'), moment(item?.endDate, 'YYYYMMDD').format('DD/MM/YYYY')])
-                                                                } 
-                                                                return (
-                                                                    <div key={`sub-date-${itemIndex}`} dangerouslySetInnerHTML={{
-                                                                        __html: purify.sanitize(subDateChanged || ''),
-                                                                    }} style={{marginTop: 5}} />
-                                                                )
-                                                            })
-                                                        }
+                                                    <td className="icon"><img src={IconSearch} alt="Search" /></td>
+                                                    <td className="code">
+                                                        <a href={'#'} title={''} className="task-title">{1511320}</a>
                                                     </td>
-                                                    <td className="break-time text-center">
-                                                        <div>{totalTime}</div>
-                                                        {
-                                                            (child?.newItem || []).map((item, itemIndex) => {
-                                                                let subTotalTime = ''
-                                                                if ([Constants.LEAVE_OF_ABSENCE, Constants.BUSINESS_TRIP].includes(child.requestTypeId)) {
-                                                                    subTotalTime = item?.days >= fullDay ? `${item?.days} ${t('DayUnit')}` : `${item?.hours} ${t('HourUnit')}`
-                                                                }
-                                                                return (
-                                                                    <div key={`sub-break-time-${itemIndex}`} style={{marginTop: 5}}>{subTotalTime}</div>
-                                                                )
-                                                            })
-                                                        }
+                                                    <td className="title">
+                                                        <div className="val">ILOVEVINGROUP_Hỗ trợ kiểm tra lỗi không nhận được request</div>
                                                     </td>
-                                                    <td className="status">{t(`operationType.${child.operationType?.toLowerCase()}`)}</td>
-                                                    <td className="status text-center">{this.showStatus(child.processStatusId, child.requestType.id, child.approver, child.statusName)}</td>
-                                                    <td className="tool">
-                                                        {isShowEditButton && (<a href={editLink} title={t("Edit")}><img alt={t("Edit")} src={editButton} /></a>)}
-                                                        {isShowEvictionButton && (<span title={t("Recall")} onClick={e => this.evictionRequest(child.requestTypeId, child)}><img alt={t("Recall")} src={evictionButton} /></span>)}
-                                                        {isShowDeleteButton && <span title={t("Cancel2")} onClick={e => this.deleteRequest(child.requestTypeId, child)}><img alt={t("Cancel2")} src={deleteButton} /></span>}
-                                                        {isShowSyncRequest && <span title={t("Sync")} onClick={e => this.syncRequest(child.requestTypeId, child)}><img alt={t("Sync")} src={IconSync} /></span>}
+                                                    <td className="created-by">
+                                                        <div className="val">cuongnv56</div>
+                                                    </td>
+                                                    <td className="group">
+                                                        <div className="val">
+
+                                                        </div>
+                                                    </td>
+                                                    <td className="pic">
+                                                        <div className="val">
+
+                                                        </div>
+                                                    </td>
+                                                    <td className="status text-center">
+                                                        <div className="val">
+
+                                                        </div>
+                                                    </td>
+                                                    <td className="created-date">
+                                                        <div className="val">
+
+                                                        </div>
+                                                    </td>
+                                                    <td className="action">
+                                                        <span title={t("Cancel2")} onClick={null}><img alt={t("Remove")} src={IconRemove} /></span>
+                                                    </td>
+                                                    <td className="evaluation">
+                                                        <div className="val">
+
+                                                        </div>
+                                                    </td>
+                                                    <td className="comment">
+                                                        <div className="val">
+
+                                                        </div>
                                                     </td>
                                                 </tr>
                                             )
