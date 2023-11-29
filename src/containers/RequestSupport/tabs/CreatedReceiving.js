@@ -1,33 +1,101 @@
 import React, { useState, useEffect } from "react"
 import Select from 'react-select'
+import DatePicker, { registerLocale } from 'react-datepicker'
 import { useTranslation } from "react-i18next"
+import { Rating } from 'react-simple-star-rating'
 import axios from 'axios'
+import moment from 'moment'
 import _ from 'lodash'
 import Constants from 'commons/Constants'
 import { getRequestConfigurations } from 'commons/Utils'
 import LoadingModal from 'components/Common/LoadingModal'
-import HOCComponent from 'components/Common/HOCComponent'
-import IconMailGreen from 'assets/img/icon/ic_mail-green.svg'
-import IconMailBlue from 'assets/img/icon/ic_mail-blue.svg'
+import Note from "../common/Note"
+import IconClose from 'assets/img/icon/icon_x.svg'
 import IconAddNew from 'assets/img/icon/ic_btn_add_green.svg'
 import IconFilter from "assets/img/icon/icon-filter.svg"
 import IconSearch from "assets/img/icon/icon-search.svg"
 import IconRemove from 'assets/img/icon-delete.svg'
-import Note from "../common/Note"
- 
+import IconEmailGreen from 'assets/img/icon/ic_mail-green.svg'
+import IconEmailBlue from 'assets/img/icon/ic_mail-blue.svg'
+import IconEmailYellow from 'assets/img/icon/ic_mail-yellow.svg'
+import IconDatePicker from 'assets/img/icon/Icon_DatePicker.svg'
+import 'react-datepicker/dist/react-datepicker.css'
+import vi from 'date-fns/locale/vi'
+import CreatedRequest from "../popup/CreateRequest"
+registerLocale("vi", vi)
+
 const CreatedReceiving = (props) => {
     const { t } = useTranslation()
     const [isLoading, setIsLoading] = useState(false)
+    const [isShowFilter, setIsShowFilter] = useState(false)
 
-    const handleSelectChange = () => {
+    const handleInputChange = () => {
 
     }
 
-    const listRequests = [{}]
+    const listRequests = [{}, {}, {}, {}, {}, {}]
+
+    const classIndexMapping = {
+        0: 'new',
+        1: 'processing',
+        2: 'paused',
+        3: 'cancelled',
+        4: 'processed',
+        5: 'closed',
+    }
+
+    const customStyles = {
+        control: base => ({
+            ...base,
+            height: 35,
+            minHeight: 35
+        }),
+        valueContainer: (provided, state) => ({
+            ...provided,
+            height: 35,
+            padding: '0 10px'
+        }),
+        input: (provided, state) => ({
+            ...provided,
+            margin: 0,
+        }),
+        indicatorSeparator: (prevStyle, state) => ({
+            display: 'none'
+        }),
+        indicatorsContainer: (provided, state) => ({
+            ...provided,
+            height: 35,
+        }),
+    }
+
+    const customFilterStyles = {
+        control: base => ({
+            ...base,
+            height: 30,
+            minHeight: 30
+        }),
+        valueContainer: (provided, state) => ({
+            ...provided,
+            height: 30,
+            padding: '0 5px'
+        }),
+        input: (provided, state) => ({
+            ...provided,
+            margin: 0,
+        }),
+        indicatorSeparator: (prevStyle, state) => ({
+            display: 'none'
+        }),
+        indicatorsContainer: (provided, state) => ({
+            ...provided,
+            height: 30,
+        }),
+    }
 
     return (
         <>
             <LoadingModal show={isLoading} />
+            <CreatedRequest isShow={true} />
             <div className="created-receiving-tab">
                 <div className="header-block">
                     <h1 className="header-title">Quản lý yêu cầu</h1>
@@ -39,12 +107,9 @@ const CreatedReceiving = (props) => {
                                 <Select
                                     value={null}
                                     isClearable={false}
-                                    onChange={handleSelectChange}
+                                    onChange={handleInputChange}
                                     placeholder={t('Lọc nhanh')} 
                                     options={[]}
-                                    styles={{
-                                        menu: provided => ({ ...provided, zIndex: 2 })
-                                    }}
                                     classNamePrefix="filter-select"
                                 />
                             </div>
@@ -59,30 +124,104 @@ const CreatedReceiving = (props) => {
                         {
                             listRequests?.length > 0 
                             ? (
-                                <table className="table table-borderless">
+                                <table className="table">
                                     <thead>
                                         <tr>
-                                            <th scope="col" className="icon"><img src={IconSearch} alt="Search" /></th>
-                                            <th scope="col" className="code">{t("RequestNo")}</th>
-                                            <th scope="col" className="title">{t("Tiêu đề")}</th>
-                                            <th scope="col" className="created-by">{t("Người tạo")}</th>
-                                            <th scope="col" className="group">{t("Nhóm")}</th>
-                                            <th scope="col" className="pic">{t("Người xử lý")}</th>
-                                            <th scope="col" className="status text-center">{t("Status")}</th>
-                                            <th scope="col" className="created-date text-center">{t("Ngày tạo")}</th>
-                                            <th scope="col" className="action text-center">{t("Hành động")}</th>
-                                            <th scope="col" className="evaluation text-center">{t("Đánh giá")}</th>
-                                            <th scope="col" className="comment">{t("Nhận xét")}</th>
+                                            <th className="icon">
+                                                <div className="val"><img className="cursor-pointer" onClick={() => setIsShowFilter(true)} src={IconSearch} alt="Search" /></div>
+                                            </th>
+                                            <th className="code text-center"><div className="val">{t("RequestNo")}</div></th>
+                                            <th className="title"><div className="val">{t("Tiêu đề")}</div></th>
+                                            <th className="created-by"><div className="val">{t("Người tạo")}</div></th>
+                                            <th className="group"><div className="val">{t("Nhóm")}</div></th>
+                                            <th className="pic"><div className="val">{t("Người xử lý")}</div></th>
+                                            <th className="status-col text-center"><div className="val">{t("Status")}</div></th>
+                                            <th className="created-date text-center"><div className="val">{t("Ngày tạo")}</div></th>
+                                            <th className="action text-center"><div className="val">{t("Hành động")}</div></th>
+                                            <th className="evaluation text-center"><div className="val">{t("Đánh giá")}</div></th>
+                                            <th className="comment"><div className="val">{t("Nhận xét")}</div></th>
                                         </tr>
+                                        {
+                                            isShowFilter && (
+                                                <tr className="row-filter">
+                                                    <th className="icon">
+                                                        <div className="val"><img className="cursor-pointer" onClick={() => setIsShowFilter(false)} src={IconClose} alt="Close" /></div>
+                                                    </th>
+                                                    <th className="code text-center"><div className="val"><input type="text" value={''} placeholder="Nhập" /></div></th>
+                                                    <th className="title"><div className="val"><input type="text" value={''} placeholder="Nhập" /></div></th>
+                                                    <th className="created-by"><div className="val"><input type="text" value={''} placeholder="Nhập" /></div></th>
+                                                    <th className="group">
+                                                        <div className="val">
+                                                            <Select 
+                                                                placeholder={t("Chọn")} 
+                                                                isClearable={true} 
+                                                                value={null} 
+                                                                options={[]} 
+                                                                onChange={handleInputChange} 
+                                                                styles={customFilterStyles}
+                                                            />
+                                                        </div>
+                                                    </th>
+                                                    <th className="pic"><div className="val"><input type="text" value={''} placeholder="Nhập" /></div></th>
+                                                    <th className="status-col text-center">
+                                                        <div className="val">
+                                                            <Select 
+                                                                placeholder={t("Chọn")} 
+                                                                isClearable={true} 
+                                                                value={null} 
+                                                                options={[]} 
+                                                                onChange={handleInputChange} 
+                                                                styles={customFilterStyles}
+                                                            />
+                                                        </div>
+                                                    </th>
+                                                    <th colSpan={4} className="created-date">
+                                                        <div className="val">
+                                                            <label className="wrap-date-input">
+                                                                <DatePicker
+                                                                    // selected={filter.fromDate ? moment(filter.fromDate, 'YYYY-MM-DD').toDate() : null}
+                                                                    placeholderText={t("Từ ngày tạo")}
+                                                                    selected={null}
+                                                                    onChange={handleInputChange}
+                                                                    dateFormat="dd/MM/yyyy"
+                                                                    showMonthDropdown={true}
+                                                                    showYearDropdown={true}
+                                                                    locale="vi"
+                                                                    // disabled={isDisabled}
+                                                                    className="form-control input" />
+                                                                <span className="input-img"><img src={IconDatePicker} alt="Date" /></span>
+                                                            </label>
+                                                            <label className="wrap-date-input">
+                                                                <DatePicker
+                                                                    // selected={filter.fromDate ? moment(filter.fromDate, 'YYYY-MM-DD').toDate() : null}
+                                                                    placeholderText={t("Đến ngày tạo")}
+                                                                    selected={null}
+                                                                    onChange={handleInputChange}
+                                                                    dateFormat="dd/MM/yyyy"
+                                                                    showMonthDropdown={true}
+                                                                    showYearDropdown={true}
+                                                                    locale="vi"
+                                                                    // disabled={isDisabled}
+                                                                    className="form-control input" />
+                                                                <span className="input-img"><img src={IconDatePicker} alt="Date" /></span>
+                                                            </label>
+                                                            <button className="btn-search">Tìm kiếm</button>
+                                                        </div>
+                                                    </th>
+                                                </tr>
+                                            )
+                                        }
                                     </thead>
                                     <tbody>
                                     {
                                         listRequests.map((child, index) => {
                                             return (
                                                 <tr key={index}>
-                                                    <td className="icon"><img src={IconSearch} alt="Search" /></td>
-                                                    <td className="code">
-                                                        <a href={'#'} title={''} className="task-title">{1511320}</a>
+                                                    <td className="icon">
+                                                        <div className="val"><img src={index === 0 ? IconEmailGreen : index === 1 ? IconEmailBlue : IconEmailYellow} alt="Search" /></div>
+                                                    </td>
+                                                    <td className="code text-center">
+                                                        <a href={'#'} title={''} className="val">{1511320}</a>
                                                     </td>
                                                     <td className="title">
                                                         <div className="val">ILOVEVINGROUP_Hỗ trợ kiểm tra lỗi không nhận được request</div>
@@ -92,35 +231,46 @@ const CreatedReceiving = (props) => {
                                                     </td>
                                                     <td className="group">
                                                         <div className="val">
-
+                                                        <Select 
+                                                            placeholder={t("Select")} 
+                                                            isClearable={true} 
+                                                            value={null} 
+                                                            options={[]} 
+                                                            onChange={handleInputChange} 
+                                                            styles={customStyles}
+                                                        />
                                                         </div>
                                                     </td>
                                                     <td className="pic">
+                                                        <div className="val">datth3</div>
+                                                    </td>
+                                                    <td className="status-col text-center">
                                                         <div className="val">
-
+                                                            <span className={`status ${classIndexMapping[index]}`}>Mới</span>
                                                         </div>
                                                     </td>
-                                                    <td className="status text-center">
-                                                        <div className="val">
-
-                                                        </div>
+                                                    <td className="created-date text-center">
+                                                        <div className="val">25/11/2023</div>
                                                     </td>
-                                                    <td className="created-date">
-                                                        <div className="val">
-
-                                                        </div>
-                                                    </td>
-                                                    <td className="action">
+                                                    <td className="action text-center">
                                                         <span title={t("Cancel2")} onClick={null}><img alt={t("Remove")} src={IconRemove} /></span>
                                                     </td>
-                                                    <td className="evaluation">
+                                                    <td className="evaluation text-center">
                                                         <div className="val">
-
+                                                            <Rating
+                                                                transition
+                                                            />
                                                         </div>
                                                     </td>
                                                     <td className="comment">
                                                         <div className="val">
-
+                                                            <textarea 
+                                                                rows={2} 
+                                                                placeholder={'Nhập'} 
+                                                                value={""} 
+                                                                onChange={handleInputChange} 
+                                                                // disabled={isDisableManagerComment} 
+                                                            />
                                                         </div>
                                                     </td>
                                                 </tr>
