@@ -20,6 +20,11 @@ export interface ISocialContributeModel {
     street?: string;
     note?: string;
 }
+
+export interface ISocialSupportModel {
+    type?: IDropdownValue
+}
+
 const STATUS = {
     NEW: 1,
     UPDATE: 2,

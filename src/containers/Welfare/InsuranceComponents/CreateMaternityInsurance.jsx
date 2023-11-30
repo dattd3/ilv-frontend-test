@@ -21,6 +21,8 @@ import { Spinner } from "react-bootstrap";
 import AssessorInfoComponent from "../InternalPayment/component/AssessorInfoComponent";
 import ButtonComponent from "containers/Registration/ButtonComponent";
 import DocumentRequired from "./DocumentRequired";
+import axios from "axios";
+import ConfirmModal from "components/Common/ConfirmModal";
 
 const CreateMaternityInsurance = ({
   t,
@@ -41,9 +43,11 @@ const CreateMaternityInsurance = ({
   files,
   updateFiles,
   removeFile,
+  setLoading,
   isCreateMode = true
 }) => {
   const [errors, setErrors] = useState({});
+  const [showWarning, setShowWarning] = useState(null);
 
   const InsuranceOptions = [
     { value: 1, label: t('sick') },
@@ -51,10 +55,18 @@ const CreateMaternityInsurance = ({
     { value: 3, label: t('convales') },
   ];
 
-  const onSubmit = () => {
+  const onSubmit = async (isConfirmed = false) => {
     const verify = verifyData();
     if (!verify) {
       return;
+    }
+
+    if(isConfirmed == false) {
+      const messageTime = await onValidateTimeSocial();
+      if(messageTime) {
+        setShowWarning(messageTime);
+        return;
+      }
     }
 
     const employeeInfo = {
@@ -217,6 +229,37 @@ const CreateMaternityInsurance = ({
     onSend(formData);
   };
 
+  const onValidateTimeSocial = async () => {
+    let message = null;
+    const candidateInfos = { ...data };
+    const payload = {  
+      "startDate": moment(candidateInfos.fromDate, 'DD/MM/YYYY').format('YYYY-MM-DD'),
+      "endDate": moment(candidateInfos.toDate, 'DD/MM/YYYY').format('YYYY-MM-DD'),
+      "userId": localStorage.getItem('email'),
+      "employeeCode": localStorage.getItem('employeeNo'),
+      "totalDaysOff": candidateInfos.total,
+      "childDob": candidateInfos.childBirth ? moment(candidateInfos.childBirth, 'DD/MM/YYYY').format('YYYY-MM-DD') : '',
+      "absenceTypeInfoValue": "IN02"
+    }
+    setLoading(true);
+    try {
+        const response = await axios({
+            method: 'POST',
+            url: `${process.env.REACT_APP_REQUEST_SERVICE_URL}benefitclaim/validate-social-insurance`,
+            data: payload,
+            headers: {Authorization: `${localStorage.getItem('accessToken')}` }
+          });
+          message = response?.data?.data
+
+    } catch(err) {
+
+    } finally {
+      setLoading(false);
+    }
+    return message;
+
+  }
+
   const verifyData = () => {
     let _errors = {};
     const candidateInfos = { ...data };
@@ -344,6 +387,18 @@ const CreateMaternityInsurance = ({
   return (
     <>
       {/* YÊU CẦU BẢO HIỂM Y TẾ */}
+      <ConfirmModal
+        t={t} 
+        show={showWarning ? true : false}
+        confirmHeader = 'Cảnh báo' 
+        confirmContent = {showWarning}
+        onHide = {() => setShowWarning(null)}
+        onCancelClick = {() => setShowWarning(null)}
+        onAcceptClick = {() => {
+          setShowWarning(null);
+          onSubmit(true);
+        }}
+      />
       <h5>{t('health_insurance_claim')}</h5>
       <div className="box shadow cbnv">
         <div className="row">

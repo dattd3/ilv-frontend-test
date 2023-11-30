@@ -269,41 +269,41 @@ class RequestDetail extends React.Component {
         {isShowEducationComponent ? <EducationComponent userEducationUpdate={userEducationUpdate} userEducationCreate={userEducationCreate} /> : null }
         {isShowFamilyComponent ? <FamilyComponent userFamilyUpdate={userFamilyUpdate} userFamilyCreate={userFamilyCreate} /> : null }
         {
-          (userInfo.manager && (status == Constants.STATUS_APPROVED || status == Constants.STATUS_NOT_APPROVED)) ?
+          (userInfo.manager && (status == Constants.STATUS_APPROVED || status == Constants.STATUS_NOT_APPROVED)) &&
           <>
+          { requestTypeId != Constants.UPDATE_PROFILE && <div className="edit-personal user-info-request"><h4 className="content-page-header">{t("InformationApprover")}</h4></div> }
           {
-            requestTypeId != Constants.UPDATE_PROFILE && <div className="edit-personal user-info-request"><h4 className="content-page-header">Thông tin CBLĐ phê duyệt</h4></div>
+            status == Constants.STATUS_NOT_APPROVED 
+            ? (
+              <div className="box shadow">
+                <div className="row item-info">
+                  <div className="col-12">
+                    <div className="label">{t("ReasonNotApprove")}</div>
+                    <div className="detail">{hrComment}</div>
+                  </div>
+                </div>
+              </div>
+            )
+            : requestTypeId != Constants.UPDATE_PROFILE && (
+              <div className="box shadow">
+                <div className="row item-info">
+                  <div className="col-4">
+                    <div className="label">{t("Approver")}</div>
+                    <div className="detail">{userInfo.manager.fullName || ""}</div>
+                  </div>
+                  <div className="col-4">
+                    <div className="label">{t("Title")}</div>
+                    <div className="detail">{userInfo.manager.title || ""}</div>
+                  </div>
+                  <div className="col-4">
+                    <div className="label">{t("DepartmentManage")}</div>
+                    <div className="detail">{userInfo.manager.department || ""}</div>
+                  </div>
+                </div>
+              </div>
+            )
           }
-          <div className="box shadow">
-            {
-              requestTypeId != Constants.UPDATE_PROFILE &&
-              <div className="row item-info">
-                <div className="col-4">
-                  <div className="label">{t("Approver")}</div>
-                  <div className="detail">{userInfo.manager.fullName || ""}</div>
-                </div>
-                <div className="col-4">
-                  <div className="label">{t("Title")}</div>
-                  <div className="detail">{userInfo.manager.title || ""}</div>
-                </div>
-                <div className="col-4">
-                  <div className="label">{t("DepartmentManage")}</div>
-                  <div className="detail">{userInfo.manager.department || ""}</div>
-                </div>
-              </div>
-            }
-            {
-              status == Constants.STATUS_NOT_APPROVED &&
-              <div className="row item-info">
-                <div className="col-12">
-                  <div className="label">{t("ReasonNotApprove")}</div>
-                  <div className="detail">{hrComment}</div>
-                </div>
-              </div>
-            }
-          </div>
           </>
-          : null
         }
         
         <RequestProcessing {...timeProcessing} />

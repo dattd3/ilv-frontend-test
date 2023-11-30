@@ -40,6 +40,16 @@ export const ROLE_TYPE = [
     {value: '2', label: 'Thành viên'},
 ]
 
+export const SOCIAL_SUPPORT_TYPE = [
+    {value: '1', label: 'Cấp lại thẻ BHYT'},
+    {value: '2', label: 'Cấp lại sổ do bị mất'},
+    {value: '3', label: 'Cấp bìa sổ do chưa được cấp tờ bìa'},
+    {value: '4', label: 'Cấp lại sổ do đã thanh toán BHXH 1 lần'},
+    {value: '5', label: 'Điều chỉnh thông tin trên sổ BHXH/thẻ BHYT'},
+    {value: '6', label: 'Gộp sổ'},
+    {value: '7', label: 'Cấp tờ rời chốt sổ (áp dụng cho CBNV nghỉ việc)'}
+]
+
 export const STATUS = {
     OLD: 0,
     NEW: 1,

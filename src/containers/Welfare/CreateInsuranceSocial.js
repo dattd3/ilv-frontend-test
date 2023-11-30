@@ -202,19 +202,19 @@ const CreateInsuranceSocial = (props) => {
                     sickData: {
                         ...data.sickData,
                         ...infoBank,
-                        leaveOfWeek: dayOffs.join(';') || '',
+                        leaveOfWeek: dayOffs.join('; ') || '',
                         documentLink: documentLink
                     },
                     convalesData: {
                         ...data.convalesData,
                         ...infoBank,
-                        leaveOfWeek: dayOffs.join(';') || '',
+                        leaveOfWeek: dayOffs.join('; ') || '',
                         documentLink: documentLink
                     },
                     maternityData: {
                         ...data.maternityData,
                         ...infoBank,
-                        leaveOfWeek: dayOffs.join(';') || '',
+                        leaveOfWeek: dayOffs.join('; ') || '',
                         documentLink: documentLink
                     },
                 })
@@ -247,7 +247,11 @@ const CreateInsuranceSocial = (props) => {
 
     const handleTextInputChange = (e, name, subName) => {
         const candidateInfos = { ...data }
-        candidateInfos[name][subName] = e != null ? e.target.value : "";
+        let value = e?.target?.value;
+        if(subName == 'total' && value) {
+            value = value.replace(/[^0-9a-zA-Z]/g,'');
+        }
+        candidateInfos[name][subName] = e != null ? value : "";
         setData(candidateInfos);
     }
 
@@ -257,7 +261,7 @@ const CreateInsuranceSocial = (props) => {
         setData(candidateInfos);
     }
 
-    const handleDatePickerInputChange = (value, name, subname) => {
+    const handleDatePickerInputChange = async (value, name, subname) => {
         const candidateInfos = { ...data }
         if (moment(value, 'DD/MM/YYYY').isValid()) {
             const date = moment(value).format('DD/MM/YYYY')
@@ -266,7 +270,38 @@ const CreateInsuranceSocial = (props) => {
         } else {
             candidateInfos[name][subname] = null
         }
+        if(['fromDate', 'toDate'].includes(subname) && candidateInfos[name]['fromDate'] && candidateInfos[name]['toDate']) {
+            const totalDay = await getTotalLeaveDay(name, candidateInfos[name]['fromDate'], candidateInfos[name]['toDate']);
+            candidateInfos[name]['total'] = totalDay + '';
+        }
         setData(candidateInfos)
+    }
+
+    const getTotalLeaveDay = async (name, fromDate, toDate) => {
+        const muleSoftConfig = getMuleSoftHeaderConfigurations()
+        try {
+            setLoading(true);
+            fromDate = moment(fromDate, 'DD/MM/YYYY');
+            toDate = moment(toDate, 'DD/MM/YYYY');
+            const totalDays = toDate.diff(fromDate, 'days') + 1;
+            if(name == 'maternityData') return totalDays;
+
+            const result = await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/timeoverview?from_date=${fromDate.format('YYYYMMDD')}&to_date=${toDate.format('YYYYMMDD')}`, muleSoftConfig);
+            const timesheets = result.data?.data;
+            let totalOffDays = 0;
+            if(timesheets?.length > 0) {
+                timesheets.map((day) => {
+                    if(day.shift_id == 'OFF' || day.is_holiday == '1') {
+                        totalOffDays++;
+                    }
+                })
+            }
+            return totalDays - totalOffDays;
+        } catch(err) {
+            return '';
+        } finally {
+            setLoading(false);
+        }
     }
 
     const removeFile = (index) => {
@@ -374,6 +409,7 @@ const CreateInsuranceSocial = (props) => {
                             <CreateMaternityInsurance type={type} setType={setType}
                                 data={data.maternityData}
                                 errors={errors.maternityData}
+                                setLoading={setLoading}
                                 userInfo={userInfo}
                                 disabledSubmitButton={disabledSubmitButton}
                                 handleTextInputChange={(e, key) => handleTextInputChange(e, 'maternityData', key)}
