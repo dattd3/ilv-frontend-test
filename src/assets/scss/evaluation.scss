@@ -3768,6 +3768,9 @@
                   border-top: 3.5px solid #FFFFFF;
                   border-bottom: 3.5px solid #FFFFFF;
                 }
+                .break-line {
+                    white-space: pre-line;
+                }
                 .sticky-col {
                     position: sticky;
                     background: #FFFFFF;
