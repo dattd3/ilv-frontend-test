@@ -223,7 +223,7 @@ const BatchEvaluation360 = ({ evaluationData }) => {
                                                         )
                                                     }
                                                     <tr className="kpi-item">
-                                                        <td className="col-customize sticky-col kpi">{isJsonString(target?.targetName) ? (JSON.parse(target?.targetName)?.[lang] || JSON.parse(target?.targetName)?.['vi']) : target?.targetName}</td>
+                                                        <td className="col-customize sticky-col break-line kpi">{isJsonString(target?.targetName) ? (JSON.parse(target?.targetName)?.[lang] || JSON.parse(target?.targetName)?.['vi']) : target?.targetName}</td>
                                                         {
                                                             (users || []).map((user, uIndex) => {
                                                                 return (
