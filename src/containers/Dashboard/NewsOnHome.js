@@ -126,7 +126,7 @@ function NewsOnHome() {
               ...config,
               params: {
                 language: languageKeyMapping[locale],
-                categoryCode: "6.1",
+                categoryCode: "0",
                 device: "WEB",
               },
             }
@@ -248,12 +248,12 @@ function NewsOnHome() {
           <div className="top-news">
             <div className="row banner-privilege">
               <Carousel>
-                {banners.length > 0 &&
+                {banners?.length > 0 &&
                   banners.map((ele, i) => (
                     <Carousel.Item interval={9000} key={i}>
                       <div className="banner-privilege-item">
                         <img
-                          src={ele.link}
+                          src={ele?.link}
                           className="privilege-img"
                           alt="banner privilege"
                         />

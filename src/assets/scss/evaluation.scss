@@ -3326,6 +3326,34 @@
                                 }
                             }
                         }
+                        .opinion {
+                            margin-top: 15px;
+                            p {
+                                margin-bottom: 8px;
+                            }
+                            .comment-content {
+                                width: 100%;
+                                padding: 5px 15px;
+                                border-radius: 4px;
+                                background: #f2f2f2;
+                                display: flex;
+                                align-items: center;
+                                min-height: 38px;
+                            }
+                            textarea {
+                                width: 100%;
+                                border: 1px solid #DEE2E6;
+                                padding: 5px 10px;
+                                border-radius: 5px;
+                                &:focus-visible {
+                                    outline: none;
+                                    border: 1px solid #DEE2E6;
+                                }
+                                &:disabled {
+                                    background: #F2F2F2;
+                                }
+                            }
+                        }
                     }
                     .button-block {
                         display: flex;
@@ -3352,10 +3380,15 @@
                             &:focus {
                                 outline: none;
                             }
-                            &.confirm {
+                            &.send {
                                 width: 200px;
                                 background: #347EF9;
-                                margin-left: 15px;
+                                margin-left: 20px;
+                                width: 110px;
+                            }
+                            &.save {
+                                width: 200px;
+                                background: #FFAE46;
                                 width: 110px;
                             }
                         }
@@ -3710,6 +3743,100 @@
                 }
             }
         }
+        .batch-evaluation-360 {
+            padding: 15px;
+            font-size: 13px;
+            .wrap-table-batch-evaluation-360 {
+                overflow-x: auto;
+                &::-webkit-scrollbar {
+                  width: 8px;
+                  height: 8px;
+                  background-color: #f5f5f5;
+                }
+                &::-webkit-scrollbar-thumb {
+                  background-color: #a4afb7;
+                  border-left: 1px solid #FFFFFF;
+                  border-right: 1px solid #FFFFFF;
+                  border-top: 1px solid #FFFFFF;
+                  border-bottom: 1px solid #FFFFFF;
+                  border-radius: 4px;
+                }
+                &::-webkit-scrollbar-track {
+                  background-color: #d3d3d3;
+                  border-left: 3.5px solid #FFFFFF;
+                  border-right: 3.5px solid #FFFFFF;
+                  border-top: 3.5px solid #FFFFFF;
+                  border-bottom: 3.5px solid #FFFFFF;
+                }
+                .sticky-col {
+                    position: sticky;
+                    background: #FFFFFF;
+                    z-index: 1;
+                    left: 0;
+                }
+                .user-point {
+                    width: 150px;
+                    border-left: none;
+                    text-align: center;
+                }
+                .kpi {
+                    width: 300px;
+                }
+                .row-seperate {
+                    padding: 4px 0;
+                    border: none;
+                }
+                table {
+                    white-space: normal;
+                    margin: 0;
+                    width: 100%;
+                    border: none;
+                    border-collapse: separate;
+                    border-spacing: 0;
+                    table-layout: fixed;
+                    th, td {
+                        padding: 10px 6px;
+                        border: 1px solid #DEE2E6;
+                    }
+                    thead {
+                        th {
+                            border: 1px solid #DEE2E6;
+                            text-align: center;
+                            .employee-code {
+                                font-weight: normal;
+                            }
+                        }
+                    }
+                    tbody {
+                        .group {
+                            td {
+                                padding: 10px 0;
+                                border: none;
+                                font-weight: bold;
+                                white-space: pre-line;
+                            }
+                        }
+                        textarea {
+                            width: 95%;
+                            border: 1px solid #DEE2E6;
+                            outline: none;
+                            padding: 5px;
+                        }
+                        select {
+                            border: 1px solid #DEE2E6;
+                            height: 30px;
+                            width: 90px;
+                            outline: none;
+                        }
+                    }
+                }
+                .error-message {
+                    color: red;
+                    margin-top: 5px;
+                    font-size: 12px;
+                }
+            }
+        }
     }
     .bottom-region {
         display: flex;
@@ -3744,6 +3871,35 @@
             margin: 0 auto;
             .pagination {
                 margin-bottom: 0;
+            }
+        }
+    }
+    .button-region-batch-evaluation-360 {
+        margin-top: 15px;
+        .btn-action {
+            border: none;
+            outline: none;
+            border-radius: 4px;
+            color: #FFFFFF;
+            font-size: 13px;
+            height: 38px;
+            padding: 0 30px;
+            img {
+                margin-right: 8px;
+                margin-top: -3px;
+            }
+            &.save {
+                background: #FFAE46;
+                img {
+                    height: 14px;
+                }
+            }
+            &.send {
+                background: #347EF9;
+                margin-left: 15px;
+                &:disabled {
+                    opacity: .6;
+                }
             }
         }
     }

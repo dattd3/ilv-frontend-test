@@ -38,7 +38,6 @@ class PersonalInfoEdit extends React.Component {
     this.state = {
       id: null,
       isEdit: false,
-      requestedUserProfile: null,
       userProfile: {},
       userDetail: {},
       userEducation: [],
@@ -137,25 +136,6 @@ class PersonalInfoEdit extends React.Component {
       }).catch(error => {
 
       })
-
-    if (this.props.requestedUserProfile) {
-      const userProfileInfo = this.props.requestedUserProfile.userProfileInfo;
-      let oldMainInfo = {}
-      let newMainInfo = {}
-      if (userProfileInfo && userProfileInfo.update && userProfileInfo.update.userProfileHistoryMainInfo) {
-        oldMainInfo = userProfileInfo.update.userProfileHistoryMainInfo.OldMainInfo
-        newMainInfo = userProfileInfo.update.userProfileHistoryMainInfo.NewMainInfo
-      }
-
-      this.setState({
-        isEdit: true,
-        id: this.props.requestedUserProfile.id,
-        requestedUserProfile: this.props.requestedUserProfile,
-        data: userProfileInfo,
-        OldMainInfo: oldMainInfo,
-        NewMainInfo: newMainInfo
-      })
-    }
   }
 
   updateAddress(oldAddress, newAddress) {
@@ -206,10 +186,17 @@ class PersonalInfoEdit extends React.Component {
       ...this.state.update,
       userProfileHistoryMainInfo: userProfileHistoryMainInfo
     };
+    const dataChanged = {
+      userProfileHistoryMainInfo: {
+        NewMainInfo: {...this.state.data?.update?.userProfileHistoryMainInfo?.NewMainInfo, ...updatedData?.userProfileHistoryMainInfo?.NewMainInfo},
+        OldMainInfo: {...this.state.data?.update?.userProfileHistoryMainInfo?.OldMainInfo, ...updatedData?.userProfileHistoryMainInfo?.OldMainInfo},
+      }
+    }
+
     this.setState({
       data: {
         ...this.state.data,
-        update: updatedData
+        update: dataChanged
       },
       update: updatedData,
       userProfileHistoryMainInfo: userProfileHistoryMainInfo,
@@ -840,50 +827,41 @@ class PersonalInfoEdit extends React.Component {
   }
 
   prepareAddressToSap = (data) => {
-    if (data && data.update) {
-      const update = data.update;
-      if (update && update.userProfileHistoryMainInfo && update.userProfileHistoryMainInfo.NewMainInfo) {
-        const newMainInfo = update.userProfileHistoryMainInfo.NewMainInfo;
-        if (newMainInfo.District || newMainInfo.Province || newMainInfo.Wards || newMainInfo.StreetName || newMainInfo.Country
-          || newMainInfo.TempDistrict || newMainInfo.TempProvince || newMainInfo.TempWards || newMainInfo.TempStreetName || newMainInfo.TempCountry) {
-          const userDetail = this.state.userDetail;
-          let addressArr = this.getOnlyAddress(newMainInfo);
-          // addressArr = _.chunk(addressArr, 5);
-          let listObj = [];
-          if (newMainInfo.District || newMainInfo.Province || newMainInfo.Wards || newMainInfo.StreetName || newMainInfo.Country) {
-            let obj = { ...this.objectToSap };
-            // obj.actio = "MOD";
-            // if (![Constants.pnlVCode.VinPearl, Constants.pnlVCode.MeliaVinpearl, Constants.pnlVCode.VinHoliday1].includes(currentCompanyCode)) {
-            //   obj.actio = "INS";
-            // }
-            obj.actio = "INS";
-            obj.anssa = "1";
-            obj.land1 = newMainInfo.Country ? newMainInfo.Country : userDetail.country_id;
-            obj.state = newMainInfo.Province ? newMainInfo.Province : userDetail.province_id;
-            obj.zdistrict_id = obj.land1 !== 'VN' ? '' : newMainInfo.District ? formatStringByMuleValue(newMainInfo.District) : formatStringByMuleValue(userDetail.district_id);
-            obj.zwards_id = obj.land1 !== 'VN' ? '' : newMainInfo.Wards ? formatStringByMuleValue(newMainInfo.Wards) : formatStringByMuleValue(userDetail.ward_id);
-            obj.stras = (newMainInfo.Country && newMainInfo.Province && newMainInfo.District && newMainInfo.Wards) ? this.resetValueInValid(newMainInfo.StreetName) : (userDetail.street_name || '');
-            listObj = [...listObj, obj];
-          }
-          if (newMainInfo.TempDistrict || newMainInfo.TempProvince || newMainInfo.TempWards || newMainInfo.TempStreetName || newMainInfo.TempCountry) {
-            let obj2 = { ...this.objectToSap };
-            obj2.actio = "INS";
-            obj2.anssa = "2";
-            obj2.land1 = newMainInfo.TempCountry ? newMainInfo.TempCountry : userDetail.tmp_country_id;
-            obj2.state = newMainInfo.TempProvince ? newMainInfo.TempProvince : userDetail.tmp_province_id;
-            obj2.zdistrict_id = obj2.land1 !== 'VN' ? '' : newMainInfo.TempDistrict ? formatStringByMuleValue(newMainInfo.TempDistrict) : formatStringByMuleValue(userDetail.tmp_district_id);
-            obj2.zwards_id = obj2.land1 !== 'VN' ? '' : newMainInfo.TempWards ? formatStringByMuleValue(newMainInfo.TempWards) : formatStringByMuleValue(userDetail.tmp_ward_id);
-            obj2.stras = (newMainInfo.TempCountry && newMainInfo.TempProvince && newMainInfo.TempDistrict && newMainInfo.TempWards) ? this.resetValueInValid(newMainInfo.TempStreetName) : (userDetail.tmp_street_name || '');
-            listObj = [...listObj, obj2];
-          }
-          if (listObj.length > 0) {
-            return listObj;
-          }
-          return null;
+    const update = data?.update
+    if (update?.userProfileHistoryMainInfo?.NewMainInfo) {
+      const newMainInfo = update.userProfileHistoryMainInfo.NewMainInfo;
+      const oldMainInfo = update?.userProfileHistoryMainInfo?.OldMainInfo;
+      if (newMainInfo?.District || newMainInfo?.Province || newMainInfo?.Wards || newMainInfo?.StreetName || newMainInfo?.Country
+        || newMainInfo?.TempDistrict || newMainInfo?.TempProvince || newMainInfo?.TempWards || newMainInfo?.TempStreetName || newMainInfo?.TempCountry) {
+        const userDetail = this.state.userDetail;
+        let listObj = [];
+        if (newMainInfo?.District || newMainInfo?.Province || newMainInfo?.Wards || newMainInfo?.StreetName || newMainInfo?.Country) {
+          let obj = { ...this.objectToSap };
+          obj.actio = "INS";
+          obj.anssa = "1";
+          obj.land1 = newMainInfo?.Country ? newMainInfo.Country : formatStringByMuleValue(userDetail?.country_id);
+          obj.state = newMainInfo?.Province ? newMainInfo.Province : newMainInfo?.Country != oldMainInfo?.Country ? '' : formatStringByMuleValue(userDetail?.province_id);
+          obj.zdistrict_id = obj.land1 !== 'VN' ? '' : newMainInfo?.District ? newMainInfo.District : newMainInfo?.Province != oldMainInfo?.Province ? '' : formatStringByMuleValue(userDetail?.district_id);
+          obj.zwards_id = obj.land1 !== 'VN' ? '' : newMainInfo?.Wards ? newMainInfo.Wards : newMainInfo?.District != oldMainInfo?.District ? '' : formatStringByMuleValue(userDetail?.ward_id);
+          obj.stras = newMainInfo?.StreetName || '';
+          listObj = [...listObj, obj];
         }
-        return null;
+        if (newMainInfo?.TempDistrict || newMainInfo?.TempProvince || newMainInfo?.TempWards || newMainInfo?.TempStreetName || newMainInfo?.TempCountry) {
+          let obj2 = { ...this.objectToSap };
+          obj2.actio = "INS";
+          obj2.anssa = "2";
+          obj2.land1 = newMainInfo?.TempCountry ? newMainInfo?.TempCountry : formatStringByMuleValue(userDetail?.tmp_country_id);
+          obj2.state = newMainInfo?.TempProvince ? newMainInfo.TempProvince : newMainInfo?.TempCountry != oldMainInfo?.TempCountry ? '' : formatStringByMuleValue(userDetail?.tmp_province_id);
+          obj2.zdistrict_id = obj2.land1 !== 'VN' ? '' : newMainInfo?.TempDistrict ? newMainInfo.TempDistrict : newMainInfo?.TempProvince != oldMainInfo?.TempProvince ? '' : formatStringByMuleValue(userDetail?.tmp_district_id);
+          obj2.zwards_id = obj2.land1 !== 'VN' ? '' : newMainInfo?.TempWards ? newMainInfo.TempWards : newMainInfo?.TempDistrict != oldMainInfo?.TempDistrict ? '' : formatStringByMuleValue(userDetail?.tmp_ward_id);
+          obj2.stras = newMainInfo?.TempStreetName || '';
+          listObj = [...listObj, obj2];
+        }
+
+        if (listObj.length > 0) {
+          return listObj;
+        }
       }
-      return null;
     }
     return null;
   }
@@ -1340,7 +1318,7 @@ class PersonalInfoEdit extends React.Component {
   render() {
     const { t, isEnableEditEducation, isEnableEditMainInfo, birthCountry } = this.props
     const { isShowModalConfirm, modalTitle, typeRequest, modalMessage, confirmStatus, isShowResultConfirm, isSuccess, userDetail, userProfile, genders, races, marriages,
-      nations, banks, countries, religions, documentTypes, requestedUserProfile, isEdit, errors, userEducation, certificates, educationLevels, majors, schools, files, isLoading } = this.state
+      nations, banks, countries, religions, documentTypes, isEdit, errors, userEducation, certificates, educationLevels, majors, schools, files, isLoading } = this.state
 
     return (
       <div className="edit-personal">
@@ -1365,7 +1343,6 @@ class PersonalInfoEdit extends React.Component {
                   countries={countries}
                   religions={religions}
                   documentTypes={documentTypes}
-                  requestedUserProfile={requestedUserProfile}
                   isEdit={isEdit}
                   birthCountry={birthCountry}
                   validationMessages={errors}
@@ -1382,7 +1359,6 @@ class PersonalInfoEdit extends React.Component {
                   schools={schools}
                   updateEducation={this.updateEducation.bind(this)}
                   addEducation={this.addEducation.bind(this)}
-                  requestedUserProfile={requestedUserProfile}
                   isEdit={isEdit}
                   validationMessages={errors}
                 />
