@@ -475,7 +475,7 @@ export default function MyBook(props) {
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [isShowThumbnails, setIsShowThumbnails] = useState(false);
   const [isShowThumbnailModal, setIsShowThumbnailModal] = useState(false);
-  const isMobile = (useRouteMatch({ path: mapConfig.HistoryVinGroupMobile }) || {})?.isExact;
+  const isMobile = (useRouteMatch({ path: mapConfig.Vin30ChroniclesMobile }) || {})?.isExact;
   let isWheeling, flipTimeOut;
 
   useEffect(() => {

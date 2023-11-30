@@ -186,10 +186,17 @@ class PersonalInfoEdit extends React.Component {
       ...this.state.update,
       userProfileHistoryMainInfo: userProfileHistoryMainInfo
     };
+    const dataChanged = {
+      userProfileHistoryMainInfo: {
+        NewMainInfo: {...this.state.data?.update?.userProfileHistoryMainInfo?.NewMainInfo, ...updatedData?.userProfileHistoryMainInfo?.NewMainInfo},
+        OldMainInfo: {...this.state.data?.update?.userProfileHistoryMainInfo?.OldMainInfo, ...updatedData?.userProfileHistoryMainInfo?.OldMainInfo},
+      }
+    }
+
     this.setState({
       data: {
         ...this.state.data,
-        update: updatedData
+        update: dataChanged
       },
       update: updatedData,
       userProfileHistoryMainInfo: userProfileHistoryMainInfo,
