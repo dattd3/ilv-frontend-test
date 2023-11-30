@@ -400,12 +400,12 @@
     .modal-dialog {
         max-width: 1000px;
         margin: 0 auto!important;
-        height: 100vh;
+        // height: 100vh;
         display: flex;
         align-items: center;
         justify-content: center;
         .modal-body {
-            padding: 1rem 1.5rem;
+            padding: 15px 20px;
             background: #F2F2F2;
             .header {
                 position: relative;
@@ -417,48 +417,68 @@
                 }
             }
             .content {
-                padding: 1rem 0 5px 0;
                 h2 {
-                    font-size: 16px;
+                    font-size: 15px;
                     text-transform: uppercase;
                     font-weight: bold;
                 }
                 .user-info {
                     .content-region {
-                        background: #FFFFFF;
-                        border-radius: 4px;
                         padding: 15px;
-                        .col-item {
-                            .val {
-                                height: 38px;
-                                display: flex;
-                                align-items: center;
-                                padding: 0 10px;
-                                background: #F2F2F2;
-                                border-radius: 4px;
-                                &.btn {
-                                    background: #FFFFFF;
-                                    border: 1px solid #44A257;
-                                    font-size: inherit;
-                                    color: #44A257;
-                                    justify-content: center;
+                        background: #FFFFFF;
+                        .row-customize {
+                            border-radius: 4px;
+                            margin-top: 15px;
+                            &:first-child {
+                                margin-top: 0;
+                            }
+                            .col-item {
+                                flex: 1 1;
+                                .val {
+                                    height: 38px;
+                                    display: flex;
+                                    align-items: center;
+                                    padding: 0 10px;
+                                    background: #F2F2F2;
+                                    border-radius: 4px;
+                                    cursor: pointer;
+                                    &.collapsed {
+                                        background: #FFFFFF;
+                                        border: 1px solid #44A257;
+                                        font-size: inherit;
+                                        color: #44A257;
+                                        justify-content: center;
+                                    }
+                                    &.expanded {
+                                        background: #FFFFFF;
+                                        border: 1px solid #4099FF;
+                                        font-size: inherit;
+                                        color: #4099FF;
+                                        justify-content: center;
+                                    }
+                                }
+                                &:last-child {
+                                    margin-left: 15px;
+                                }
+                                &.single {
+                                    margin-left: 0;
                                 }
                             }
-                        }
-                        .full-name {
-                            flex: 0 0 30%;
-                        }
-                        .employee-code {
-                            flex: 0 0 30%;
-                            margin-left: 15px;
-                        }
-                        .employee-ad {
-                            flex: 0 0 20%;
-                            margin-left: 15px;
-                        }
-                        .view-more {
-                            flex: 1 1;
-                            margin-left: 15px;
+                            .full-name {
+                                flex: 0 0 30%;
+                            }
+                            .employee-code {
+                                flex: 0 0 30%;
+                                margin-left: 15px;
+                            }
+                            .employee-ad {
+                                flex: 0 0 20%;
+                                margin-left: 15px;
+                            }
+                            .view-more {
+                                flex: 1 1;
+                                margin-left: 15px;
+                            }
                         }
                     }
                 }
@@ -474,7 +494,7 @@
                             }
                             input {
                                 height: 38px;
-                                padding: 0 15px;
+                                padding: 0 10px;
                                 outline: none;
                                 border: 1px solid #DEE2E6;
                                 border-radius: 4px;
@@ -487,7 +507,7 @@
                                 display: block;
                             }
                             textarea {
-                                padding: 0 15px;
+                                padding: 10px;
                                 outline: none;
                                 border: 1px solid #DEE2E6;
                                 border-radius: 4px;
@@ -499,6 +519,19 @@
                             display: flex;
                             .col {
                                 flex: 1;
+                                padding: 0;
+                                margin-right: 15px;
+                                &:last-child {
+                                    margin-right: 0;
+                                }
+                            }
+                            .val {
+                                height: 38px;
+                                display: flex;
+                                align-items: center;
+                                padding: 0 10px;
+                                background: #F2F2F2;
+                                border-radius: 4px;
                             }
                         }
                     }
@@ -516,6 +549,7 @@
                             background: #F5F5F5;
                             border-radius: 4px;
                             margin-right: 15px;
+                            font-size: 13px;
                             .file-name {
                                 color: #4E73DF;
                                 font-weight: bold;
@@ -529,6 +563,37 @@
                             &:last-child {
                                 margin-right: 0;
                             }
+                        }
+                    }
+                }
+                .button-block {
+                    margin-top: 20px;
+                    .btn {
+                        height: 38px;
+                        font-size: inherit;
+                        display: inline-flex;
+                        align-items: center;
+                        justify-content: center;
+                        border-radius: 4px;
+                        margin-bottom: 0;
+                        padding: 0 20px;
+                        &.btn-send {
+                            background: #347EF9;
+                            color: #FFFFFF;
+                            margin-left: 15px;
+                            img {
+                                margin: -2px 6px 0 0;
+                            }
+                        }
+                        &.btn-attachment {
+                            background: #FFFFFF;
+                            border: 1px solid #DEE2E6;
+                            img {
+                                margin-right: 6px;
+                            }
+                        }
+                        #i_files {
+                            display: none !important;
                         }
                     }
                 }

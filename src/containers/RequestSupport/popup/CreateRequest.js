@@ -12,8 +12,10 @@ import { getRequestConfigurations } from 'commons/Utils'
 import LoadingModal from 'components/Common/LoadingModal'
 import IconClose from 'assets/img/icon/icon_x.svg'
 import IconSend from 'assets/img/icon/Icon_send.svg'
+import IconAttachment from 'assets/img/icon/ic_upload_attachment.svg'
 import 'react-datepicker/dist/react-datepicker.css'
 import vi from 'date-fns/locale/vi'
+import UserInfo from "../common/UserInfo"
 registerLocale("vi", vi)
 
 const CreatedRequest = (props) => {
@@ -23,6 +25,10 @@ const CreatedRequest = (props) => {
     const [isShowFilter, setIsShowFilter] = useState(false)
 
     const handleInputChange = () => {
+
+    }
+
+    const handleFileChange = () => {
 
     }
 
@@ -98,27 +104,7 @@ const CreatedRequest = (props) => {
                         <span className="close" onClick={onHide}><img src={IconClose} alt="Close" /></span>
                     </div>
                     <div className='content'>
-                        <div className="user-info">
-                            <h2>Thông tin CBNV tạo yêu cầu</h2>
-                            <div className="d-flex content-region shadow-customize">
-                                <div className="col-item full-name">
-                                    <label>Họ và tên</label>
-                                    <div className="val">Trần Tuấn Anh</div>
-                                </div>
-                                <div className="col-item employee-code">
-                                    <label>Mã nhân viên</label>
-                                    <div className="val">3651641</div>
-                                </div>
-                                <div className="col-item employee-ad">
-                                    <label>Mã AD</label>
-                                    <div className="val">anhnt35</div>
-                                </div>
-                                <div className="col-item view-more">
-                                    <label>&nbsp;</label>
-                                    <div className="val btn">Xem thêm</div>
-                                </div>
-                            </div>
-                        </div>
+                        <UserInfo />
                         <div className="request-info">
                             <h2>Thông tin yêu cầu</h2>
                             <div className="content-region shadow-customize">
@@ -127,7 +113,7 @@ const CreatedRequest = (props) => {
                                     <input type="text" placeholder="Nhập" value={""} />
                                 </div>
                                 <div className="content-block">
-                                    <label>Tiêu đề</label>
+                                    <label>Nội dung</label>
                                     <textarea 
                                         rows={5} 
                                         placeholder={'Nhập'} 
@@ -138,7 +124,7 @@ const CreatedRequest = (props) => {
                                 </div>
                                 <div className="row-customize">
                                     <div className="col">
-                                        <lable>Loại</lable>
+                                        <label>Loại</label>
                                         <Select
                                             value={null}
                                             isClearable={false}
@@ -149,7 +135,7 @@ const CreatedRequest = (props) => {
                                         />
                                     </div>
                                     <div className="col">
-                                        <lable>Bảo mật</lable>
+                                        <label>Bảo mật</label>
                                         <Select
                                             value={null}
                                             isClearable={false}
@@ -160,7 +146,7 @@ const CreatedRequest = (props) => {
                                         />
                                     </div>
                                     <div className="col">
-                                        <lable>Công ty</lable>
+                                        <label>Công ty</label>
                                         <Select
                                             value={null}
                                             isClearable={false}
@@ -171,7 +157,7 @@ const CreatedRequest = (props) => {
                                         />
                                     </div>
                                     <div className="col">
-                                        <lable>Nhóm</lable>
+                                        <label>Nhóm</label>
                                         <Select
                                             value={null}
                                             isClearable={false}
@@ -184,11 +170,11 @@ const CreatedRequest = (props) => {
                                 </div>
                                 <div className="row-customize">
                                     <div className="col">
-                                        <lable>Người xử lý</lable>
+                                        <label>Người xử lý</label>
                                         <div className="val">annv2</div>
                                     </div>
                                     <div className="col">
-                                        <lable>Người cùng nhận thông tin</lable>
+                                        <label>Người cùng nhận thông tin</label>
                                         <Select
                                             value={null}
                                             isClearable={false}
@@ -199,7 +185,7 @@ const CreatedRequest = (props) => {
                                         />
                                     </div>
                                     <div className="col">
-                                        <lable>Ưu tiên</lable>
+                                        <label>Ưu tiên</label>
                                         <Select
                                             value={null}
                                             isClearable={false}
@@ -210,7 +196,7 @@ const CreatedRequest = (props) => {
                                         />
                                     </div>
                                     <div className="col">
-                                        <lable>Trạng thái</lable>
+                                        <label>Trạng thái</label>
                                         <Select
                                             value={null}
                                             isClearable={false}
@@ -230,9 +216,19 @@ const CreatedRequest = (props) => {
                                 <span className="item"><span className="file-name">Điều chỉnh 1.docx</span><span>(129KB)</span><img src={IconClose} className="remove" alt="Close" /></span>
                             </div>
                         </div>
-                        <div className="d-flex justify-content-end button">
-                            <button className="btn btn-attachment">Đính kèm tệp tin</button>
-                            <button className="btn btn-send"><img src={IconSend} alt="Send" />Gửi yêu cầu</button>
+                        <div className="d-flex justify-content-end button-block">
+                            <label htmlFor="i_files" className="btn btn-attachment">
+                                <img src={IconAttachment} alt="Attachment" />
+                                {t("AttachFile")}
+                                <input
+                                    id="i_files"
+                                    type="file"
+                                    onChange={handleFileChange}
+                                    accept=".xls, .xlsx, .doc, .docx, .jpg, .png, .pdf"
+                                    multiple
+                                />
+                            </label>
+                            <button className="btn btn-send"><img src={IconSend} alt="Send" />{t("Send")}</button>
                         </div>
                     </div>
                 </Modal.Body>
