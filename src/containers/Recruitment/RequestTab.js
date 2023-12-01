@@ -23,7 +23,6 @@ import IconDatePicker from 'assets/img/icon/Icon_DatePicker.svg'
 import 'react-datepicker/dist/react-datepicker.css'
 import vi from 'date-fns/locale/vi'
 import FilterBlock from "./FilterBlock"
-import Content from "./Content"
 registerLocale("vi", vi)
 
 const RequestTab = (props) => {
@@ -89,7 +88,6 @@ const RequestTab = (props) => {
             <FilterBlock 
             
             />
-            <Content />
         </div>
     )
 }

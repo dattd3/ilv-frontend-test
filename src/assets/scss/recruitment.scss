@@ -268,7 +268,7 @@
                     position: -webkit-sticky;
                     z-index: 1;
                     &.code {
-                        left: 40px;
+                        left: 0px;
                     }
                     &.user-request {
                         left: 160px;
@@ -302,7 +302,6 @@
                 }
                 .tool {
                     width: 240px;
-                    text-align: center;
                     img {
                         height: 20px;
                         &:first-child {
