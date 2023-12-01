@@ -7,8 +7,6 @@ import { getRequestConfigurations } from 'commons/Utils'
 import LoadingModal from 'components/Common/LoadingModal'
 import HOCComponent from 'components/Common/HOCComponent'
 import IconMailGreen from 'assets/img/icon/ic_mail-green.svg'
-import IconMailBlue from 'assets/img/icon/ic_mail-blue.svg'
-import IconMailYellow from 'assets/img/icon/ic_mail-yellow.svg'
  
 const Processing = (props) => {
     const { t } = useTranslation()

@@ -16,6 +16,7 @@ import IconAttachment from 'assets/img/icon/ic_upload_attachment.svg'
 import 'react-datepicker/dist/react-datepicker.css'
 import vi from 'date-fns/locale/vi'
 import UserInfo from "../common/UserInfo"
+import FeedbackHistory from "../common/FeedbackHistory"
 registerLocale("vi", vi)
 
 const CreatedRequest = (props) => {
@@ -207,6 +208,7 @@ const CreatedRequest = (props) => {
                                         />
                                     </div>
                                 </div>
+                                <FeedbackHistory />
                             </div>
                         </div>
                         <div className="attachment">

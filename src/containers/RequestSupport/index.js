@@ -9,7 +9,7 @@ import LoadingModal from 'components/Common/LoadingModal'
 import HOCComponent from 'components/Common/HOCComponent'
 import IconMailGreen from 'assets/img/icon/ic_mail-green.svg'
 import IconMailBlue from 'assets/img/icon/ic_mail-blue.svg'
-import IconMailYellow from 'assets/img/icon/ic_mail-yellow.svg'
+import IconMailCyan from 'assets/img/icon/ic_mail-cyan.svg'
 import CreatedReceiving from "./tabs/CreatedReceiving"
 import Processing from "./tabs/Processing"
 
@@ -21,7 +21,7 @@ const tabConfig = {
 const groupUsersConfig = {
     sameGroup: { label: 'Người cùng nhóm', icon: IconMailGreen },
     receiveInformationTogether: { label: 'Người cùng nhận thông tin', icon: IconMailBlue },
-    requester: { label: 'Người yêu cầu', icon: IconMailYellow },
+    requester: { label: 'Người yêu cầu', icon: IconMailCyan },
 }
  
 const RequestSupport = (props) => {

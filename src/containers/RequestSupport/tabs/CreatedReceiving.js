@@ -10,27 +10,32 @@ import Constants from 'commons/Constants'
 import { getRequestConfigurations } from 'commons/Utils'
 import LoadingModal from 'components/Common/LoadingModal'
 import Note from "../common/Note"
+import CreatedRequest from "../popup/CreateRequest"
 import IconClose from 'assets/img/icon/icon_x.svg'
-import IconAddNew from 'assets/img/icon/ic_btn_add_green.svg'
+import IconAddNew from 'assets/img/ic-add-green.svg'
 import IconFilter from "assets/img/icon/icon-filter.svg"
 import IconSearch from "assets/img/icon/icon-search.svg"
 import IconRemove from 'assets/img/icon-delete.svg'
 import IconEmailGreen from 'assets/img/icon/ic_mail-green.svg'
 import IconEmailBlue from 'assets/img/icon/ic_mail-blue.svg'
-import IconEmailYellow from 'assets/img/icon/ic_mail-yellow.svg'
+import IconEmailCyan from 'assets/img/icon/ic_mail-cyan.svg'
 import IconDatePicker from 'assets/img/icon/Icon_DatePicker.svg'
 import 'react-datepicker/dist/react-datepicker.css'
 import vi from 'date-fns/locale/vi'
-import CreatedRequest from "../popup/CreateRequest"
 registerLocale("vi", vi)
 
 const CreatedReceiving = (props) => {
     const { t } = useTranslation()
     const [isLoading, setIsLoading] = useState(false)
     const [isShowFilter, setIsShowFilter] = useState(false)
+    const [isShowCreateRequestModal, setIsShowCreateRequestModal] = useState(false)
 
     const handleInputChange = () => {
 
+    }
+
+    const onHideCreatedRequestModal = () => {
+        setIsShowCreateRequestModal(false)
     }
 
     const listRequests = [{}, {}, {}, {}, {}, {}]
@@ -95,13 +100,13 @@ const CreatedReceiving = (props) => {
     return (
         <>
             <LoadingModal show={isLoading} />
-            <CreatedRequest isShow={true} />
+            <CreatedRequest isShow={isShowCreateRequestModal} onHide={onHideCreatedRequestModal} />
             <div className="created-receiving-tab">
                 <div className="header-block">
                     <h1 className="header-title">Quản lý yêu cầu</h1>
                     <div className="d-flex justify-content-between align-items-center content">
                         <div className="d-inline-flex left">
-                            <button className="btn btn-create-request"><img src={IconAddNew} alt="Create" />Tạo yêu cầu mới</button>
+                            <button className="btn btn-create-request" onClick={() => setIsShowCreateRequestModal(true)}><img src={IconAddNew} alt="Create" />Tạo yêu cầu mới</button>
                             <div className="filter position-relative">
                                 <img src={IconFilter} alt="Filter" className="icon-prefix-select" />
                                 <Select
@@ -218,7 +223,7 @@ const CreatedReceiving = (props) => {
                                             return (
                                                 <tr key={index}>
                                                     <td className="icon">
-                                                        <div className="val"><img src={index === 0 ? IconEmailGreen : index === 1 ? IconEmailBlue : IconEmailYellow} alt="Search" /></div>
+                                                        <div className="val"><img src={index === 0 ? IconEmailGreen : index === 1 ? IconEmailBlue : IconEmailCyan} alt="Search" /></div>
                                                     </td>
                                                     <td className="code text-center">
                                                         <a href={'#'} title={''} className="val">{1511320}</a>
