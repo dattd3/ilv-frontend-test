@@ -2042,5 +2042,15 @@
   "ListDocumentNeedSend": "DANH SÁCH CÁC HỒ SƠ CẦN GỬI",
   "RequestDownloadDocument": "Để tải về hồ sơ vui lòng bấm ",
   "ListRequestCreated": "DANH SÁCH YÊU CẦU ĐÃ TẠO",
-  "Menu_Recruitment": "Tuyển dụng"
+  "history_evaluation": "LỊCH SỬ ĐÁNH GIÁ",
+  "Menu_Recruitment": "Tuyển dụng",
+  "apply_position": "Vị trí ứng tuyển",
+  "candidate_name": "Tên ứng viên",
+  "interview_time": "Ngày giờ phỏng vấn",
+  "interview_place": "Địa điểm phỏng vấn",
+  "evaluation_deadline": "Hạn chót đánh giá",
+  "created_by": "Người gửi",
+  "created_at": "Ngày gửi",
+  "propose_type": "Loại đề xuất"
+
 }

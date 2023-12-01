@@ -23,6 +23,7 @@ import IconDatePicker from 'assets/img/icon/Icon_DatePicker.svg'
 
 import 'react-datepicker/dist/react-datepicker.css'
 import vi from 'date-fns/locale/vi'
+import EvaluationTab from "./EvaluationTab"
 registerLocale("vi", vi)
 
 const Recruitment = (props) => {
@@ -35,53 +36,6 @@ const Recruitment = (props) => {
     const { t } = useTranslation()
     const [isLoading, setIsLoading] = useState(false)
     const [activeTab, SetActiveTab] = useState(tabMapping.request)
-
-    useEffect(() => {
-        // const processEvaluationForms = response => {
-        //     if (response && response.data) {
-        //         const result = response.data.result
-        //         if (result?.code == Constants.PMS_API_SUCCESS_CODE) {
-        //             const data = (response?.data?.data || []).map(item => {
-        //                 return {value: item?.id, label: item?.name, reviewStreamCode: item?.reviewStreamCode}
-        //             })
-        //             SetFilter({
-        //                 ...filter,
-        //                 isOpenFilterAdvanced: false,
-        //                 evaluationForm: null,
-        //                 employees: [],
-        //                 employee: null,
-        //                 currentStep: null,
-        //                 blocks: [],
-        //                 block: null,
-        //                 regions: [],
-        //                 region: null,
-        //                 units: [],
-        //                 unit: null,
-        //                 groups: [],
-        //                 group: [],
-        //                 rank: null,
-        //                 title: null,
-        //                 fromDate: null,
-        //                 toDate: null,
-        //                 isFormFilterValid: true,
-        //                 evaluationForms: data,
-        //             })
-        //         }
-        //     }
-        //     processLoading(false)
-        // }
-
-        // const fetchEvaluationForms = async () => {
-        //     processLoading(true)
-        //     const config = getRequestConfigurations()
-        //     const response = await axios.get(`${process.env.REACT_APP_HRDX_PMS_URL}api/form/listFormToApprove?EmployeeCode=${employeeCode}&ApproverEmployeeAdCode=${employeeAD}`, config)
-        //     processEvaluationForms(response)
-        // }
-
-        // if (isOpen) {
-        //     fetchEvaluationForms()
-        // }
-    }, [])
 
     const handleChangeTab = (key) => {
         SetActiveTab(key)
@@ -103,7 +57,7 @@ const Recruitment = (props) => {
 
                 </Tab>
                 <Tab eventKey={tabMapping.evaluation} title={t("danh_gia")} className="tab-item" id={`${tabMapping.evaluation}-tab`}>
-
+                    <EvaluationTab isOpen={activeTab == tabMapping.evaluation}/>
                 </Tab>
             </Tabs>
         </div>
