@@ -12,7 +12,7 @@ export const RouteSettings = {
   },
   authentication: {
     defaultRoute: map.Login,
-    routes: [map.Login, map.Auth, map.NewsDetailApp, map.TermPolicy, map.Maintenance, map.GuestNews, map.HistoryVinGroupMobile],
+    routes: [map.Login, map.Auth, map.NewsDetailApp, map.TermPolicy, map.Maintenance, map.GuestNews, map.Vin30ChroniclesMobile],
   },
 };
 
@@ -69,7 +69,7 @@ const ROUTES = [
     key: "vin30-chronicles-mobile",
     routeProps: {
       exact: true,
-      path: map.HistoryVinGroupMobile
+      path: map.Vin30ChroniclesMobile
     },
     component: lazy(() => import("./Vin30Chronicles/MyBook"))
   },
