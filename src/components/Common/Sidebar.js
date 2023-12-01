@@ -11,6 +11,7 @@ import { useGuardStore } from '../../modules';
 import VingroupLogo from '../../assets/img/LogoVingroup.svg';
 import 'react-metismenu/dist/react-metismenu-standart.min.css';
 import Constants from "../../commons/Constants";
+import { removeAccents } from "commons/Utils";
 
 const currentLocale = localStorage.getItem("locale")
 
@@ -154,7 +155,7 @@ function SideBar(props) {
             parentId: 995,
             icon: "menu-bullet-lv2 icon-sub-menu-lv2",
             label: currentLocale === 'vi-VN' ? ele.nameVn : ele.nameEn,
-            to: `/${ele.nameEn.toLowerCase().split(" ").join("-")}?categoryCode=${ele.categoryCode}`,
+            to: `/${removeAccents(ele.nameEn.toLowerCase().replace(/\n|\r/gim, ' ').trim().split(" ").join("-"))}?categoryCode=${ele.categoryCode}`,
             role: "U",
           }));
 

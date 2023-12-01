@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Constants from 'commons/Constants';
 import { useTranslation } from 'react-i18next';
 import HOCComponent from 'components/Common/HOCComponent';
@@ -38,7 +38,9 @@ const CultureItem = (props) => {
       }${!isShowBtnGroup ? ' content-parent-child' : ''} ${className}`}
     >
       <div
-        className={`content-item ${!isShowBtnGroup ? 'content-item-pointer' : ''}`}
+        className={`content-item ${
+          !isShowBtnGroup ? 'content-item-pointer' : ''
+        }`}
         style={{ paddingLeft: parentLevel * 20 + 8 }}
         onClick={() => {
           if (!isShowBtnGroup) {
@@ -76,11 +78,7 @@ const CultureItem = (props) => {
             )}
             {(availableTypes[categoryCode] || []).includes('Pdf') && (
               <a
-                href={
-                  categoryCode === '1.1'
-                    ? `/vin30-chronicles`
-                    : `${pathname}/gallery/${categoryCode}?type=Pdf`
-                }
+                href={`${pathname}/gallery/${categoryCode}?type=Pdf`}
                 className="btn-link"
                 key="Pdf"
               >
@@ -148,13 +146,30 @@ function VingroupCulture(props) {
     cultureParent = cultureMenu.find(
       (ele) => ele.categoryCode === categoryCode
     ),
-    { lstCategory } = cultureParent;
+    { lstCategory } = cultureParent,
+    title = isVietnamese ? cultureParent?.nameVn : cultureParent?.nameEn;
+
+  useEffect(() => {
+    TrackingLogVinCulture();
+  }, []);
+
+  const TrackingLogVinCulture = () => {
+    try {
+      fetch(`${process.env.REACT_APP_REQUEST_URL}user/log/actions`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        },
+        body: JSON.stringify({ code: categoryCode, name: title }),
+        keepalive: true,
+      });
+    } catch (err) {}
+  };
 
   return (
     <div className="vingroup-cultural-page">
-      <h1 className="content-page-header">
-        {isVietnamese ? cultureParent?.nameVn : cultureParent?.nameEn}
-      </h1>
+      <h1 className="content-page-header">{title}</h1>
       <div className="content-page-body">
         <CultureList data={lstCategory} parentLevel={0} />
       </div>
