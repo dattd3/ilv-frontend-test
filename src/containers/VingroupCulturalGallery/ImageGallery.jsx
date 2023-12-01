@@ -42,13 +42,17 @@ const ImageGallery = ({ data }) => {
     setIdZoomIn(index);
   };
 
+  console.log('----------------------------------------');
+  console.log('data: ', data);
+  console.log('----------------------------------------');
   return (
     <div
       className="image-gallery"
     >
         <Masonry gutter="4px" columnsCount={isZoom ? 1 : 3}>
-          {data.map((img) => (
+          {data.map((img, i) => (
             <div
+              key={img?.id || i}
               className="image-item"
               style={isZoom && idZoomIn !== img.id ? {
                 display: "none",

@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useGuardStore } from '../../modules';
-import map from '../map.config';
 import LoadingModal from '../../components/Common/LoadingModal'
 import { useTranslation } from "react-i18next";
 import axios from 'axios';
-import { getMuleSoftHeaderConfigurations, getRequestConfigurations } from "../../commons/Utils"
+import { getCurrentLanguage, getMuleSoftHeaderConfigurations } from "../../commons/Utils"
 import Constants from "../../commons/Constants"
 import moment from 'moment';
 import { FirebaseUpdateToken } from '../../commons/Firebase';
@@ -46,6 +45,7 @@ function Authorize(props) {
                     checkUser(userProfile, jwtToken, refreshToken, timeTokenExpire, vgEmail, () => {
                         SetIsShowLoadingModal(false)
                     });
+                    getCultureMenu(jwtToken);
                     updateUser(userProfile,jwtToken)
                     updateLanguageByCode(localStorage.getItem('locale') || 'vi-VN', jwtToken)
                 }
@@ -302,6 +302,18 @@ function Authorize(props) {
         })
         .finally(res => {
         })    
+    }
+
+    function getCultureMenu(jwtToken) {
+        axios.get(
+            `${process.env.REACT_APP_REQUEST_URL}api/vanhoavin/infos?language=${getCurrentLanguage()}&device=WEB`,
+            { headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${jwtToken}`} }
+          ).then((res) => {
+            const data = res.data?.data,
+              lstCategory = (data?.[0]?.lstCategory || []).sort((prev, val) => prev.categoryCode - val.categoryCode);
+
+            localStorage.setItem('cultureMenu', JSON.stringify(lstCategory));
+          });
     }
 
     useEffect(() => {
