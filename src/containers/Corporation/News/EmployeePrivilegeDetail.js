@@ -71,7 +71,7 @@ function EmployeePrivilegeDetail(props) {
     return (
         <div>
             <Router>
-                <Route path="/employee-privileges/:Slug/:Id" component={EmployeePrivilegeDetailElement} />
+                <Route path="/employee-privileges/detail/:Id" component={EmployeePrivilegeDetailElement} />
             </Router>
         </div>
     );
