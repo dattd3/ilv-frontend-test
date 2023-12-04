@@ -4,11 +4,11 @@ import DatePicker, { registerLocale } from 'react-datepicker'
 import { useTranslation } from "react-i18next"
 import axios from 'axios'
 import moment from 'moment'
-import Constants from 'commons/Constants'
-import { getRequestConfigurations } from 'commons/Utils'
+import _ from 'lodash'
+import { formatStringByMuleValue, getMuleSoftHeaderConfigurations } from 'commons/Utils'
 import LoadingModal from 'components/Common/LoadingModal'
-import IconApprove from 'assets/img/icon/Icon_Check.svg'
 import IconDatePicker from 'assets/img/icon/Icon_DatePicker.svg'
+
 import 'react-datepicker/dist/react-datepicker.css'
 import vi from 'date-fns/locale/vi'
 registerLocale("vi", vi)
@@ -19,44 +19,58 @@ const HealthInsurance = (props) => {
     const { t } = useTranslation();
     const [isLoading, setIsLoading] = useState(false)
     const [healthInsuranceData, setHealthInsuranceData] = useState(null)
-
-//   props.match.params.version;
+    const [healthInsuranceByRelations, setHealthInsuranceByRelations] = useState(null)
+    const [healthInsuranceDetail, setHealthInsuranceDetail] = useState(null)
+    const [dataFilter, setDataFilter] = useState({
+        healthInsuranceByRelation: null,
+        startDate: null,
+    })
 
     useEffect(() => {
         const processHealthInsuranceData = response => {
-            // if (response && response.data) {
-            //     const result = response.data.result
-            //     if (result && result.code == Constants.PMS_API_SUCCESS_CODE) {
-            //         const evaluationFormDetailTemp = response.data?.data;
-            //         if (evaluationFormDetailTemp.listGroup) {
-            //             evaluationFormDetailTemp.listGroup = ([...evaluationFormDetailTemp?.listGroup] || []).sort((pre, next) => pre?.groupOrder - next?.groupOrder)
-            //         }
-            //         setHealthInsuranceData(evaluationFormDetailTemp)
-            //     }
-            // }
+            if (response?.data?.data) {
+                const data = _.chain(response?.data?.data)
+                .groupBy("insurance_relations")
+                .toPairs()
+                .map(item => _.zipObject(["insurance_relations", "start_date", "end_date", "card_number", "fullname_insured_person", "insurance_unit", "legal_company", "name_insured_person"], item))
+                .value()
+                .map(item => {
+                    return {
+                        insurance_relations: item?.insurance_relations,
+                        start_date: item?.start_date,
+                    }
+                })
+                setHealthInsuranceData(data || [])
+            }
         }
 
-        // const fetchHealthInsurance = async () => {
-        //     setIsLoading(true)
-        //     try {
-        //         const config = getRequestConfigurations()
-        //         // config.params = {
-        //         // checkPhaseFormId: evaluationFormId,
-        //         // EmployeeCode: showByManager ? props.employeeCode : user?.employeeNo,
-        //         // FormCode: formCode
-        //         // }
-        //         // const response = await axios.get(`${process.env.REACT_APP_HRDX_PMS_URL}api/${version}/targetform/formbyuser`, config)
-        //         processHealthInsuranceData(response)
-        //     } finally {
-        //         setIsLoading(false)
-        //     }
-        // }
+        const fetchHealthInsurance = async () => {
+            setIsLoading(true)
+            try {
+                const config = getMuleSoftHeaderConfigurations()
+                const response = await axios.get(`${process.env.REACT_APP_MULE_HOST}api/sap/hcm/v2/ws/user/health/insurance`, config)
+                processHealthInsuranceData(response)
+            } finally {
+                setIsLoading(false)
+            }
+        }
 
-        // props?.needLoad && fetchHealthInsurance()
+        props?.needLoad && fetchHealthInsurance()
     }, [props?.needLoad])
 
-    const handleInputChange = () => {
+    const handleSelectChange = (key, e) => {
+        const dataFilterClone = {...dataFilter}
+        dataFilterClone[key] = e
 
+        if (key === 'healthInsuranceByRelation') {
+            setHealthInsuranceByRelations((healthInsuranceData || []).find(item => item?.insurance_relations === e?.value))
+            setHealthInsuranceDetail(null)
+            dataFilterClone.startDate = null
+        } else {
+            setHealthInsuranceDetail((healthInsuranceByRelations?.start_date || []).find(item => item?.start_date === e?.value))
+        }
+
+        setDataFilter(dataFilterClone)
     }
 
     return (
@@ -68,63 +82,68 @@ const HealthInsurance = (props) => {
                     ? (<h6 className="alert alert-danger" role="alert">{t("NoDataFound")}</h6>)
                     : (
                         <>
-                        <h1 className="tab-title">{t("Bảo hiểm sức khỏe")}</h1>
+                        <h1 className="tab-title">{t("HealthInsurance")}</h1>
                         <div className="shadow-customize main-content">
                             <div className="row">
                                 <div className="col-md-6">
-                                    <p className="label">Quan hệ bảo hiểm</p>
+                                    <p className="label">{t("InsuranceRelations")}</p>
                                     <Select 
                                         placeholder={t("EvaluationSelectYear")} 
                                         isClearable={true} 
-                                        value={null} 
-                                        options={[]} 
-                                        onChange={handleInputChange}
+                                        value={dataFilter?.healthInsuranceByRelation} 
+                                        options={(healthInsuranceData || []).map(item => {
+                                            return {
+                                                value: item?.insurance_relations,
+                                                label: item?.insurance_relations,
+                                            }
+                                        })} 
+                                        onChange={e => handleSelectChange('healthInsuranceByRelation', e)}
                                     />
                                 </div>
                                 <div className="col-md-3">
-                                    <p className="label">Ngày bắt đầu</p>
-                                    <label className="wrap-date-input">
-                                        <DatePicker
-                                            // selected={filter.fromDate ? moment(filter.fromDate, 'YYYY-MM-DD').toDate() : null}
-                                            selected={null}
-                                            onChange={date => handleInputChange('fromDate', date ? moment(date).format('YYYY-MM-DD') : null)}
-                                            dateFormat="dd/MM/yyyy"
-                                            showMonthDropdown={true}
-                                            showYearDropdown={true}
-                                            locale="vi"
-                                            className="form-control input" />
-                                        <span className="input-img"><img src={IconDatePicker} alt="Date" /></span>
-                                    </label>
+                                    <p className="label">{t("StartDate")}</p>
+                                    <Select 
+                                        placeholder={t("EvaluationSelectYear")} 
+                                        isClearable={true} 
+                                        value={dataFilter?.startDate} 
+                                        options={(healthInsuranceByRelations?.start_date || []).map(item => {
+                                            return {
+                                                value: item?.start_date,
+                                                label: item?.start_date,
+                                            }
+                                        })} 
+                                        onChange={e => handleSelectChange('startDate', e)}
+                                    />
                                 </div>
                                 <div className="col-md-3">
-                                    <p className="label">Ngày kết thúc</p>
-                                    <div className="value">30/12/2023</div>
+                                    <p className="label">{t("EndDate")}</p>
+                                    <div className="value">{moment(healthInsuranceDetail?.end_date, "DD-MM-YYYY")?.isValid() ? moment(healthInsuranceDetail?.end_date, "DD-MM-YYYY").format("DD/MM/YYYY") : ''}</div>
                                 </div>
                             </div>
                             <div className="row">
                                 <div className="col-md-6">
-                                    <p className="label">Đơn vị bảo hiểm</p>
-                                    <div className="value">B - Bảo hiểm PVI</div>
+                                    <p className="label">{t("InsuranceUnit")}</p>
+                                    <div className="value">{formatStringByMuleValue(healthInsuranceDetail?.insurance_unit)}</div>
                                 </div>
                                 <div className="col-md-6">
-                                    <p className="label">Gói bảo hiểm</p>
-                                    <div className="value">G9-Gold 56 - 60</div>
+                                    <p className="label">{t("InsurancePackage")}</p>
+                                    <div className="value">{formatStringByMuleValue(healthInsuranceDetail?.fullname_insured_person)}</div>
                                 </div>
                             </div>
                             <div className="row">
                                 <div className="col-md-6">
-                                    <p className="label">Họ tên người được BH</p>
-                                    <div className="value">Nguyễn Văn Cường</div>
+                                    <p className="label">{t("FullNameOfInsured")}</p>
+                                    <div className="value">{formatStringByMuleValue(healthInsuranceDetail?.name_insured_person)}</div>
                                 </div>
                                 <div className="col-md-6">
-                                    <p className="label">Mã số thẻ</p>
-                                    <div className="value">0123456789</div>
+                                    <p className="label">{t("CardNumber")}</p>
+                                    <div className="value">{formatStringByMuleValue(healthInsuranceDetail?.card_number)}</div>
                                 </div>
                             </div>
                             <div className="row">
                                 <div className="col-md-12">
-                                    <p className="label">Công ty pháp lý</p>
-                                    <div className="value">AB31 - Công ty BĐS Vinhomes</div>
+                                    <p className="label">{t("PAndL")}</p>
+                                    <div className="value">{formatStringByMuleValue(healthInsuranceDetail?.legal_company)}</div>
                                 </div>
                             </div>
                         </div>

@@ -10,6 +10,7 @@ import HOCComponent from '../../components/Common/HOCComponent'
 import SocialContributeInfo from './WelfareComponents/SocialContributeInfo'
 import SocialSupportInfo from './WelfareComponents/SocialSupportInfo'
 import HealthInsurance from './WelfareComponents/HealthInsurance'
+import Constants from 'commons/Constants'
 
 const tabConfig = {
     CreateInsuranceSocial: 'CreateInsuranceSocial',
@@ -18,6 +19,8 @@ const tabConfig = {
     SocialSupport: 'SocialSupport',
     HealthInsurance: 'HealthInsurance',
 }
+
+const currentCompanyCode = localStorage.getItem('companyCode')
 
 class InsuranceRegime extends React.Component {
     constructor(props) {
@@ -55,11 +58,15 @@ class InsuranceRegime extends React.Component {
                     <Tab eventKey={tabConfig.SocialSupport} title={t('social_support_info')}>
                         <SocialSupportInfo title={t('Vinwonder/Safari')}/>
                     </Tab>
-                    <Tab eventKey={tabConfig.HealthInsurance} title={t('Bảo hiểm sức khỏe')}>
-                        <HealthInsurance
-                            needLoad={tab === tabConfig.HealthInsurance}
-                        />
-                    </Tab>
+                    {
+                        [Constants.pnlVCode.VinHome].includes(currentCompanyCode) && (
+                            <Tab eventKey={tabConfig.HealthInsurance} title={t('HealthInsurance')}>
+                                <HealthInsurance
+                                    needLoad={tab === tabConfig.HealthInsurance}
+                                />
+                            </Tab>
+                        )
+                    }
                 </Tabs>
             </div>
         )
