@@ -1,22 +1,33 @@
 import { useState, useEffect } from "react"
 import axios from 'axios'
+import { useGuardStore } from 'modules'
 import { getRequestConfigurations } from "commons/Utils"
 import NewsOnHome from './NewsOnHome'
 import HOCComponent from '../../components/Common/HOCComponent'
 import BannerModal from "./BannerModal"
  
 function Dashboard(props) {
-  const [isShow, setIsShow] = useState(true)
+  const guard = useGuardStore();
+  const user = guard.getCurentUser();
+
+  const [isShow, setIsShow] = useState(false)
   const [banners, setBanners] = useState([])
 
   useEffect(() => {   
     const fetchListBanners = async () => {
       try {
         const config = getRequestConfigurations()
+        config.params = {
+          pnl: user?.companyCode,
+          rank: user?.employeeLevel,
+          workingPlace: user?.streetName,
+        }
+
         const response = await axios.get(`${process.env.REACT_APP_REQUEST_URL}evoucher-vinhomes/popup`, config)
         setBanners(response?.data?.data || [])
+        setIsShow(response?.data?.data?.length > 0)
       } finally {
-        // SetIsLoading(false)
+
       }
     }
 
@@ -24,7 +35,10 @@ function Dashboard(props) {
   }, [])
 
   const onHideModal = () => {
-    setIsShow(false)
+    const config = getRequestConfigurations()
+    axios.post(`${process.env.REACT_APP_REQUEST_URL}evoucher-vinhomes/ignore-popup`, null, config).then(response => {
+      setIsShow(false)
+    })
   }
 
   return (
