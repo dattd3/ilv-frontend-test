@@ -85,7 +85,7 @@ const EvaluationTab = ({isOpen}) => {
     }
 
     return (
-        <div className="request-tab-content">
+        <div className="request-tab-content recruitment-page">
             <LoadingModal show={isLoading} />
             <EvaluationRecruitmentDetailModal
                 show={showDetailModal.visible} 
