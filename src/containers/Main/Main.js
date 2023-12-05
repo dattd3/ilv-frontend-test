@@ -77,7 +77,7 @@ function MainLayout(props) {
       setRecruitmentDetailModal({
         ...recruitmentDetailModal,
         isShow: true,
-        taskId: 113,
+        taskId: subTaskId,
       });
       return;
     }
