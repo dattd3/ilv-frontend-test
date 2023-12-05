@@ -16,6 +16,7 @@ import TaskDetailModal from 'containers/Task/TaskDetailModal';
 import EvaluationDetailModal from "containers/Evaluation/EvaluationDetailModal";
 import { evaluationApiVersion, processStep } from "containers/Evaluation/Constants";
 import StatusModal from "components/Common/StatusModal";
+import EvaluationRecruitmentDetailModal from "containers/Recruitment/components/EvaluationRecruitmentDetailModal";
 
 function MainLayout(props) {
   const guard = useGuardStore();
@@ -27,6 +28,12 @@ function MainLayout(props) {
     subTaskId: 1,
     action: '',
   });
+  const [recruitmentDetailModal, setRecruitmentDetailModal] = useState({
+    isShow: false,
+    taskId: 0,
+    subTaskId: 1,
+    action: ''
+  })
   const [evaluationDetailPopup, SetEvaluationDetailPopup] = useState({
     isShow: false,
     isFromManager: false,
@@ -66,6 +73,14 @@ function MainLayout(props) {
       })
       return
     }
+    if(evaluationData?.isRecruitmentEvaluation) {
+      setRecruitmentDetailModal({
+        ...recruitmentDetailModal,
+        isShow: true,
+        taskId: 113,
+      });
+      return;
+    }
     setTaskDetailModal({
       isShow: isShow,
       taskId: taskId,
@@ -100,6 +115,13 @@ function MainLayout(props) {
         needReload: keepPopupEvaluationDetail ? false : true
       })
     }
+  }
+
+  const onHideRecruitmentEvaluationDetailModal = () => {
+    setRecruitmentDetailModal({
+      ...recruitmentDetailModal,
+      isShow: false
+    });
   }
 
   const onHideStatusModal = () => {
@@ -146,6 +168,11 @@ function MainLayout(props) {
         version={evaluationDetailPopup?.version}
         isEvaluation360={evaluationDetailPopup?.isEvaluation360}
         onHide={onHideEvaluationDetailModal} 
+      />
+      <EvaluationRecruitmentDetailModal
+        show={recruitmentDetailModal.isShow} 
+        taskId={recruitmentDetailModal.taskId}
+        onHide={() => onHideRecruitmentEvaluationDetailModal()} 
       />
       <SideBar show={!isFullScreen} user={user} />
       <div id="content-wrapper" className={`d-flex flex-column ${props?.isFullScreen ? 'w-100' : ''}`}>
