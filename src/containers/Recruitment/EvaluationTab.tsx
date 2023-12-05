@@ -55,9 +55,11 @@ const EvaluationTab = ({isOpen}) => {
                 setTotal(res.data.data.total);
             }
           }
+          setIsLoading(false);
         }).catch(error => {
             setTasks([]);
-          setTotal(0);
+            setTotal(0);
+            setIsLoading(false);
         }).finally(() => {
           setIsLoading(false);
         });
@@ -81,23 +83,26 @@ const EvaluationTab = ({isOpen}) => {
         index = index < Constants.TASK_PAGE_INDEX_DEFAULT ? Constants.TASK_PAGE_INDEX_DEFAULT : index;
         index = index * Constants.PAGE_SIZE_DEFAULT > total ? (1 + parseInt((total / Constants.PAGE_SIZE_DEFAULT) + '')) : index;
         setPageIndex(index);
-        requestRemoteData(pageIndex);
+        requestRemoteData(index);
     }
-
     return (
         <div className="request-tab-content recruitment-page">
             <LoadingModal show={isLoading} />
-            <EvaluationRecruitmentDetailModal
+            {
+                showDetailModal.visible ?
+                <EvaluationRecruitmentDetailModal
                 show={showDetailModal.visible} 
                 taskId={showDetailModal.taskId}
-                onHide={() => onChangeVisibleTaskDetailModal()} />
+                onHide={() => onChangeVisibleTaskDetailModal()} /> : null
+            }
+            
             {/* <FilterBlock /> */}
             <EvaluationTabContent tasks = {tasks} onOpenDetailModel = {(id) => onChangeVisibleTaskDetailModal(true, id)}/>
             {(tasks.length > 0 || Math.ceil(total/Constants.TASK_PAGE_SIZE_DEFAULT) == pageIndex) ? <div className="row paging mt-4">
                     <div className="col-sm"></div>
                     <div className="col-sm"></div>
                     <div className="col-sm">
-                        <CustomPaging pageSize={Constants.PAGE_SIZE_DEFAULT} onChangePage={onChangePage} totalRecords={total} needRefresh={false} />
+                        <CustomPaging pageSize={Constants.PAGE_SIZE_DEFAULT} onChangePage={onChangePage} totalRecords={total}/>
                     </div>
                     <div className="col-sm"></div>
                     <div className="col-sm text-right">{t("Total")}: {total}</div>

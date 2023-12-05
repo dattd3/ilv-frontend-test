@@ -34,11 +34,12 @@ const Recruitment = (props) => {
         evaluation: 'evaluation',
     }
     const { t } = useTranslation()
-    const [isLoading, setIsLoading] = useState(false)
-    const [activeTab, SetActiveTab] = useState(tabMapping.request)
+    const [isLoading, setIsLoading] = useState(false) //tabActive: new URLSearchParams(props?.history?.location?.search).get('tab') || "request",
+    const [activeTab, SetActiveTab] = useState(new URLSearchParams(props?.history?.location?.search).get('tab') || "evaluation")
 
     const handleChangeTab = (key) => {
         SetActiveTab(key)
+        props.history?.push('?tab=' + key);
         // SetDataFilter(null)
     }
 
