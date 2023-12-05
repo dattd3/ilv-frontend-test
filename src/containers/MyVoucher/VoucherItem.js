@@ -1,44 +1,50 @@
-import { useState, useEffect } from "react"
-import { Tabs, Tab, Form, Button, Row, Col, Collapse } from 'react-bootstrap'
+import { useState } from "react"
 import { useTranslation } from "react-i18next"
 import axios from 'axios'
-import _ from 'lodash'
-import Constants from '../../commons/Constants'
 import { getRequestConfigurations } from '../../commons/Utils'
-import { useGuardStore } from '../../modules'
+import { tabStatusMapping } from "."
 import LoadingModal from 'components/Common/LoadingModal'
-import StatusModal from 'components/Common/StatusModal'
-import HOCComponent from 'components/Common/HOCComponent'
 import IconQR from 'assets/img/icon/ic_qr.svg'
 import IconVoucher from 'assets/img/icon/ic_voucher.svg'
-import IconClock from 'assets/img/icon/ic_clock.svg'
 import IconLocation from 'assets/img/icon/ic_location.svg'
 import ModalQRCodes from "./ModalQRCodes"
 
-const VoucherItem = ({ voucher }) => {
-    const tabMapping = {
-        valid: 'valid',
-        invalid: 'invalid',
-        used: 'used',
-        notification: 'notification',
-    }
+const VoucherItem = ({ voucher, activeTab }) => {
+    const currentEmployeeCode = localStorage.getItem('employeeNo')
     const { t } = useTranslation()
     const [isLoading, SetIsLoading] = useState(false)
-    const [keyword, setKeyword] = useState('')
-    const [activeTab, setActiveTab] = useState(tabMapping.valid)
     const [modalQRCodes, setModalQRCodes] = useState({
         isShow: false,
         listQRs: [],
     })
 
-    const guard = useGuardStore()
-    const user = guard.getCurentUser()
+    const handleShowQRs = async () => {
+        SetIsLoading(true)
+        try {
+            const config = getRequestConfigurations()
+            const payload = {
+                employeeCode: currentEmployeeCode,
+                voucherStatus: tabStatusMapping[activeTab],
+                pageIndex: 1,
+                pageSize: 20,
+                stallId: voucher?.id,
+            }
+            const response = await axios.post(`${process.env.REACT_APP_REQUEST_URL}evoucher-vinhomes/3rd/tickets`, payload, config)
 
-    const handleShowQRs = (qrs = []) => {
-        setModalQRCodes({
-            isShow: true,
-            listQRs: qrs,
-        })
+            if (response?.data?.data?.result?.data) {
+                setModalQRCodes({
+                    isShow: true,
+                    listQRs: response?.data?.data?.result?.data || [],
+                })
+            }
+        } catch (e) {
+            setModalQRCodes({
+                isShow: true,
+                listQRs: [],
+            })
+        } finally {
+            SetIsLoading(false)
+        }
     }
 
     const onHideModal = () => {
@@ -48,23 +54,9 @@ const VoucherItem = ({ voucher }) => {
         })
     }
 
-    const qrs = [
-        {
-            code: '123456ABCDEF',
-            image: "https://hrdx-dev.s3.ap-southeast-1.amazonaws.com/pms/qrcode_test.png"
-        },
-        {
-            code: 'ZXASDFDGEG3123',
-            image: "https://hrdx-dev.s3.ap-southeast-1.amazonaws.com/pms/qrcode_test.png"
-        },
-        {
-            code: 'OGFILOJFRIO78987',
-            image: "https://hrdx-dev.s3.ap-southeast-1.amazonaws.com/pms/qrcode_test.png"
-        }
-    ]
-
     return (
         <>
+            <LoadingModal show={isLoading} />
             <ModalQRCodes 
                 isShowModal={modalQRCodes.isShow} 
                 listQRs={modalQRCodes.listQRs}
@@ -79,21 +71,15 @@ const VoucherItem = ({ voucher }) => {
                             </span>
                             <span className="text">{voucher?.name || ''}</span>
                         </div>
-                        <div className="d-flex row-customize time">
-                            <span className="img-block">
-                                <img alt="Time" src={IconClock} />
-                            </span>
-                            <span className="text">Thời gian sử dụng: {voucher?.startDate} - {voucher?.endDate}</span>
-                        </div>
                         <div className="d-flex row-customize address">
                             <span className="img-block">
                                 <img alt="Address" src={IconLocation } />
                             </span>
-                            <span className="text">Địa điểm áp dụng: {voucher?.address}</span>
+                            <span className="text">Địa điểm áp dụng: {voucher?.location}</span>
                         </div>
                     </div>
                     <div className="right">
-                        <button className="d-inline-flex btn-view-qr" onClick={() => handleShowQRs(qrs)}>
+                        <button className="d-inline-flex btn-view-qr" onClick={handleShowQRs}>
                             <img alt="View QR" src={IconQR} />Mã QR Code
                         </button>
                     </div>
