@@ -676,7 +676,7 @@ function EvaluationApproval(props) {
         ranks: [],
         titles: []
     })
-    const [activeTab, SetActiveTab] = useState(approvalTabCode)
+    const [activeTab, SetActiveTab] = useState(new URLSearchParams(props?.history?.location?.search).get('tab') || approvalTabCode)
     const [evaluationData, SetEvaluationData] = useState({
         data: [],
         total: 0
@@ -1089,6 +1089,7 @@ function EvaluationApproval(props) {
     }
 
     const handleChangeTab = (key) => {
+        props.history.push('?tab=' + key);
         SetActiveTab(key)
         SetDataFilter(null)
     }

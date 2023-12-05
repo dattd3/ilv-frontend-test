@@ -1,4 +1,3 @@
-import React from "react";
 import { BrowserRouter as Router, Route } from 'react-router-dom'
 import { Image } from 'react-bootstrap'
 import moment from 'moment';
@@ -84,7 +83,7 @@ function NewsDetail(props) {
     return (
         <div>
             <Router>
-                <Route path="/news/:Slug/:Id" component={NewsDetailElement} />
+                <Route path="/news/detail/:Id" component={NewsDetailElement} />
             </Router>
         </div>
     );
