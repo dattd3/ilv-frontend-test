@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react"
+import { useTranslation } from "react-i18next"
 import axios from 'axios'
 import { tabMapping } from "."
 import { getRequestConfigurations } from '../../commons/Utils'
@@ -6,6 +7,7 @@ import LoadingModal from 'components/Common/LoadingModal'
 import NoticeItem from "./NoticeItem"
 
 const NoticeTabContent = ({ activeTab }) => {
+    const { t } = useTranslation()
     const [isLoading, SetIsLoading] = useState(false)
     const [notices, setNotices] = useState({
         total: 1,
@@ -44,14 +46,18 @@ const NoticeTabContent = ({ activeTab }) => {
         <>
             <LoadingModal show={isLoading} />
             {
-                (notices.listNotices || []).map((notice, index) => {
-                    return (
-                        <NoticeItem
-                            key={`${activeTab}-${index}`}
-                            notice={notice}
-                        />
-                    )
-                })
+                notices?.listNotices?.length > 0
+                ? (
+                    (notices.listNotices || []).map((notice, index) => {
+                        return (
+                            <NoticeItem
+                                key={`${activeTab}-${index}`}
+                                notice={notice}
+                            />
+                        )
+                    })
+                )
+                : (<div className="alert alert-danger data-not-found">{t("NoDataFound")}</div>)
             }
         </>
     )

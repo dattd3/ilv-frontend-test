@@ -1,86 +1,71 @@
 import { useState, useEffect } from "react"
+import { useTranslation } from "react-i18next"
 import axios from 'axios'
-import { tabMapping } from "."
+import { tabMapping, tabStatusMapping } from "."
 import { getRequestConfigurations } from '../../commons/Utils'
 import LoadingModal from 'components/Common/LoadingModal'
 import VoucherItem from "./VoucherItem"
 
-const VoucherTabContent = ({ activeTab }) => {
+const VoucherTabContent = ({ needLoadData, activeTab, vouchersSearched }) => {
+    const currentEmployeeCode = localStorage.getItem('employeeNo')
+    const { t } = useTranslation()
     const [isLoading, SetIsLoading] = useState(false)
     const [vouchers, setVouchers] = useState({
-        total: 4,
-        listVouchers: [
-            {
-                id: 1,
-                name: 'Thẻ xanh mua sắm - Gắn kết niềm vui',
-                startDate: '16/11/2023',
-                endDate: '20/11/2023',
-                address: 'Vincom Mega Mall Ocean Park',
-            },
-            {
-                id: 2,
-                name: 'Vui hè rực rỡ - Ưu đãi bất ngờ',
-                startDate: '16/11/2023',
-                endDate: '20/11/2023',
-                address: 'Vincom Mega Mall Ocean Park',
-            },
-            {
-                id: 3,
-                name: 'Tưng bừng khai trương - Voucher 100.000',
-                startDate: '16/11/2023',
-                endDate: '20/11/2023',
-                address: 'Vincom Mega Mall Ocean Park',
-            },
-            {
-                id: 4,
-                name: 'Phiếu giảm giá 200.000',
-                startDate: '16/11/2023',
-                endDate: '20/11/2023',
-                address: 'Vincom Mega Mall Ocean Park',
-            }
-        ],
+        total: 0,
+        listVouchers: [],
     })
     const [paging, setPaging] = useState({
         pageIndex: 1,
         pageSize: 10,
     })
 
-    useEffect(() => {   
-        const fetchListVouchers = async (tab) => {
+    useEffect(() => {
+        console.log("needLoadData ", needLoadData)
+        const fetchListVouchers = async () => {
             SetIsLoading(true)
             try {
-                // const config = getRequestConfigurations()
-                // config.params = {
-                //     page: 1,
-                //     size: 10,
-                // }
-                // const response = await axios.get(`${process.env.REACT_APP_REQUEST_URL}evoucher-vinhomes/list-notify`, config)
-                // if (response?.data?.data) {
-                //     setNotices({
-                //         total: response?.data?.data?.total || 0,
-                //         listNotices: response?.data?.data?.data || [],
-                //     })
-                // }
+                const config = getRequestConfigurations()
+                const payload = {
+                    employeeCode: currentEmployeeCode,
+                    voucherStatus: tabStatusMapping[activeTab],
+                    pageIndex: paging.pageIndex,
+                    pageSize: paging.pageSize,
+                    search: "",
+                }
+                const response = await axios.post(`${process.env.REACT_APP_REQUEST_URL}evoucher-vinhomes/3rd/stalls`, payload, config)
+                if (response?.data?.data?.result) {
+                    setVouchers({
+                        total: response?.data?.data?.result?.totalRecords || 0,
+                        listVouchers: response?.data?.data?.result?.data || []
+                    })
+                }
             } finally {
                 SetIsLoading(false)
             }
         }
     
-        fetchListVouchers(activeTab)
-    }, [activeTab])
+        needLoadData && fetchListVouchers(activeTab)
+    }, [needLoadData, activeTab])
+
+    const voucherInfos = vouchersSearched ? vouchersSearched : vouchers
 
     return (
         <>
             <LoadingModal show={isLoading} />
             {
-                (vouchers.listVouchers || []).map((voucher, index) => {
-                    return (
-                        <VoucherItem
-                            key={`${activeTab}-${index}`}
-                            voucher={voucher}
-                        />
-                    )
-                })
+                voucherInfos?.listVouchers?.length > 0
+                ? (
+                    (voucherInfos?.listVouchers || []).map((voucher, index) => {
+                        return (
+                            <VoucherItem
+                                key={`${activeTab}-${index}`}
+                                voucher={voucher}
+                                activeTab={activeTab}
+                            />
+                        )
+                    })
+                )
+                : (<div className="alert alert-danger data-not-found">{t("NoDataFound")}</div>)
             }
         </>
     )
