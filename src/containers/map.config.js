@@ -30,9 +30,9 @@ const MapConfig = {
 
   NewsDetailApp: "/news-app/:id",
   News: "/news",
-  NewsDetail: "/news/:slug/:id",
+  NewsDetail: "/news/detail/:id",
   EmployeePrivileges: "/employee-privileges",
-  EmployeePrivilegeDetail: "/employee-privileges/:slug/:id",
+  EmployeePrivilegeDetail: "/employee-privileges/detail/:id",
 
   //about us
   Vingroup: "/about-vingroup",
