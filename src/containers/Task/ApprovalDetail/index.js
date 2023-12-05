@@ -220,11 +220,15 @@ class ApprovalDetail extends React.Component {
   render() {
     const { t, data, action, lockReload, onHideTaskDetailModal } = this.props
     const determineStatus = {
-      5: {label: t("Waiting"), className: 'waiting'},
       1: {label: t("Reject"), className: 'fail'},
       2: {label: t("Approved"), className: 'success'},
       3: {label: t("Recalled"), className: 'fail'},
-      6: {label: t("Unsuccessful"), className: 'warning'}
+      4: {label: t("Canceled"), className: 'fail'},
+      5: {label: t("Waiting"), className: 'waiting'},
+      6: {label: t("Unsuccessful"), className: 'warning'},
+      7: { label: "Rejected", className: 'fail' },
+      8: { label: "PendingConsent", className: 'waiting' },
+      20:{ label: "Consented", className: 'waiting' },
     }
     const { isShowModalConfirm, modalTitle, typeRequest, modalMessage, userInfo, isShowPersonalComponent, userMainInfo, 
       isShowEducationComponent, isShowFamilyComponent, userEducationUpdate, userEducationCreate, userFamilyUpdate, userFamilyCreate, 
@@ -328,7 +332,7 @@ class ApprovalDetail extends React.Component {
         {
           (data.requestTypeId != Constants.UPDATE_PROFILE && userInfo.manager && (processStatusId == Constants.STATUS_APPROVED || processStatusId == Constants.STATUS_NOT_APPROVED)) ?
           <>
-          <div className="edit-personal user-info-request"><h4 className="content-page-header">Thông tin CBLĐ phê duyệt</h4></div>
+          <div className="edit-personal user-info-request"><h4 className="content-page-header">{t("InformationApprover")}</h4></div>
           <div className="box shadow">
             <div className="row item-info">
               <div className="col-4">
@@ -365,6 +369,7 @@ class ApprovalDetail extends React.Component {
           <span className={`status ${determineStatus[processStatusId]?.className}`}>{determineStatus[processStatusId]?.label}</span>
           { processStatusId == Constants.STATUS_PARTIALLY_SUCCESSFUL && getSAPResponsePartiallySuccess() }
         </div>
+        
         { isShowDocumentComponent ? 
           <>
           <div className="edit-personal user-info-request"><h4 className="content-page-header">{t("RegistrationAttachmentInformation")}</h4></div>
