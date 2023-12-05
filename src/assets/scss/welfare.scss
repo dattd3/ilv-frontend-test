@@ -175,6 +175,53 @@
       }
     }
   }
+  .health-insurance-tab {
+    .tab-title {
+      color: #000000 !important;
+      text-transform: uppercase !important;
+      font-size: 16px !important;
+      font-weight: bold;
+      margin-bottom: 15px;
+    }
+    .main-content {
+      background: #FFFFFF;
+      border-radius: 4px;
+      padding: 15px;
+      .row {
+        margin-bottom: 20px;
+        &:last-child {
+          margin-bottom: 0;
+        }
+        .value {
+          height: 38px;
+          background: #F2F2F2;
+          border-radius: 4px;
+          display: flex;
+          align-items: center;
+          padding: 0 10px;
+        }
+        .wrap-date-input {
+          position: relative;
+          margin-bottom: 0;
+          width: 100%;
+          .react-datepicker-wrapper {
+            width: 100%;
+          }
+          .react-datepicker-wrapper [class$=-container] {
+            margin-top: 0;
+          }
+          .input-img {
+            position: absolute;
+            top: 8px;
+            right: 12px;
+          }
+        }
+        .label {
+          margin-bottom: 10px;
+        }
+      }
+    }
+  }
 }
 
 .health-info-page {
