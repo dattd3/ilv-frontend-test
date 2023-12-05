@@ -1,21 +1,14 @@
 import { useState, useEffect } from "react"
 import Select from 'react-select'
-import DatePicker, { registerLocale } from 'react-datepicker'
 import { useTranslation } from "react-i18next"
 import axios from 'axios'
 import moment from 'moment'
 import _ from 'lodash'
 import { formatStringByMuleValue, getMuleSoftHeaderConfigurations } from 'commons/Utils'
 import LoadingModal from 'components/Common/LoadingModal'
-import IconDatePicker from 'assets/img/icon/Icon_DatePicker.svg'
-
-import 'react-datepicker/dist/react-datepicker.css'
-import vi from 'date-fns/locale/vi'
-registerLocale("vi", vi)
-
-const currentLocale = localStorage.getItem("locale")
 
 const HealthInsurance = (props) => {
+    const insuranceByRelationIndividual = 'V000' // Cá nhân
     const { t } = useTranslation();
     const [isLoading, setIsLoading] = useState(false)
     const [healthInsuranceData, setHealthInsuranceData] = useState(null)
@@ -41,6 +34,22 @@ const HealthInsurance = (props) => {
                     }
                 })
                 setHealthInsuranceData(data || [])
+
+                const defaultHealthInsuranceByRelations = (data || []).find(item => item?.insurance_relations === insuranceByRelationIndividual)
+                setHealthInsuranceByRelations(defaultHealthInsuranceByRelations)
+
+                const dateDefault = (defaultHealthInsuranceByRelations?.start_date || [])
+                .map(item => item?.start_date)
+                .sort((prev, next) => {
+                    return moment(prev, "DD-MM-YYYY").isBefore(moment(next, "DD-MM-YYYY")) ? 1 : -1
+                })[0] || null
+
+                setHealthInsuranceDetail((defaultHealthInsuranceByRelations?.start_date || []).find(item => item?.start_date === dateDefault))
+
+                const dataFilterClone = {...dataFilter}
+                dataFilterClone.healthInsuranceByRelation = { value: defaultHealthInsuranceByRelations?.insurance_relations, label: defaultHealthInsuranceByRelations?.insurance_relations }
+                dataFilterClone.startDate = dateDefault ? { value: dateDefault, label: moment(dateDefault, "DD-MM-YYYY")?.format("DD/MM/YYYY") } : null
+                setDataFilter(dataFilterClone)
             }
         }
 
@@ -72,7 +81,7 @@ const HealthInsurance = (props) => {
 
         setDataFilter(dataFilterClone)
     }
-
+    
     return (
         <>
             <LoadingModal show={isLoading} />
@@ -109,7 +118,7 @@ const HealthInsurance = (props) => {
                                         options={(healthInsuranceByRelations?.start_date || []).map(item => {
                                             return {
                                                 value: item?.start_date,
-                                                label: item?.start_date,
+                                                label: moment(item?.start_date, "DD-MM-YYYY")?.format("DD/MM/YYYY"),
                                             }
                                         })} 
                                         onChange={e => handleSelectChange('startDate', e)}
