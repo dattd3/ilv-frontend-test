@@ -90,7 +90,7 @@ const VoucherTabContent = ({ needLoadData, activeTab }) => {
             <LoadingModal show={isLoading} />
             <div className="search-block">
                 <form className="d-flex" onSubmit={handleSearch}>
-                    <input type="text" className="search-input" placeholder="Tìm kiếm" value={keyword || ""} onChange={handleInputChange} />
+                    <input type="text" className="search-input" placeholder={t("SearchForVoucher")} value={keyword || ""} onChange={handleInputChange} />
                     <button type="submit" className="btn-search">{t("Search")}</button>
                 </form>
             </div>

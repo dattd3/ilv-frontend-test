@@ -18,7 +18,6 @@ const BannerModal = ({ isShow, banners = [], onHideModal }) => {
                     banners?.length > 0 && (
                         <Carousel 
                             controls={false} 
-                            indicators={false}
                         >
                         {
                             (banners || []).map((banner, i) => (

@@ -2015,5 +2015,11 @@
   "ListRequestCreated": "DANH SÁCH YÊU CẦU ĐÃ TẠO",
   "InformationApprover": "Thông tin CBLĐ phê duyệt",
   "MasterCode": "Mã VG",
-  "MyVoucher": "Voucher của tôi"
+  "MyVoucher": "Voucher của tôi",
+  "SearchForVoucher": "Tìm kiếm Voucher",
+  "QRCode": "Mã QR Code",
+  "ApplicableLocations": "Địa điểm áp dụng",
+  "VoucherAvailable": "Còn hiệu lực",
+  "VoucherExpire": "Hết hiệu lực",
+  "EXP": "HSD"
 }

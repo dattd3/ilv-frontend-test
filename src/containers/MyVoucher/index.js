@@ -32,7 +32,7 @@ const MyVoucher = (props) => {
             <h1 className="content-page-header">{t("MyVoucher")}</h1>
             <div className="shadow-customize content-block">
                 <Tabs defaultActiveKey={activeTab} onSelect={key => handleChangeTab(key)}>
-                    <Tab eventKey={tabMapping.valid} title={t("Còn hiệu lực")} className="tab-item">
+                    <Tab eventKey={tabMapping.valid} title={t("VoucherAvailable")} className="tab-item">
                         <div className="tab-content">
                             <VoucherTabContent 
                                 needLoadData={activeTab === tabMapping.valid} 
@@ -40,7 +40,7 @@ const MyVoucher = (props) => {
                             />
                         </div>
                     </Tab>
-                    <Tab eventKey={tabMapping.invalid} title={t("Hết hiệu lực")} className="tab-item">
+                    <Tab eventKey={tabMapping.invalid} title={t("VoucherExpire")} className="tab-item">
                         <div className="tab-content">
                             <VoucherTabContent 
                                 needLoadData={activeTab === tabMapping.invalid} 
@@ -48,7 +48,7 @@ const MyVoucher = (props) => {
                             />
                         </div>
                     </Tab>
-                    <Tab eventKey={tabMapping.used} title={t("Đã sử dụng")} className="tab-item">
+                    <Tab eventKey={tabMapping.used} title={t("Used")} className="tab-item">
                         <div className="tab-content">
                             <VoucherTabContent 
                                 needLoadData={activeTab === tabMapping.used} 
@@ -56,7 +56,7 @@ const MyVoucher = (props) => {
                             />
                         </div>
                     </Tab>
-                    <Tab eventKey={tabMapping.notification} title={t("Thông báo")} className="tab-item">
+                    <Tab eventKey={tabMapping.notification} title={t("Notification")} className="tab-item">
                         <div className="tab-content">
                             <NoticeTabContent 
                                 activeTab={activeTab} 

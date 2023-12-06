@@ -1996,5 +1996,11 @@
   "ListRequestCreated": "DANH SÁCH YÊU CẦU ĐÃ TẠO",
   "InformationApprover": "Approver",
   "MasterCode": "Master code",
-  "MyVoucher": "My Voucher"
+  "MyVoucher": "My Voucher",
+  "SearchForVoucher": "Search for Vouchers",
+  "QRCode": "QR Code",
+  "ApplicableLocations": "Location",
+  "VoucherAvailable": "Available",
+  "VoucherExpire": "Expire",
+  "EXP": "EXP"
 }

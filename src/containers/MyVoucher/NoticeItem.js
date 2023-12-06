@@ -13,7 +13,11 @@ const NoticeItem = ({ notice }) => {
                     <img alt="Voucher" src={IconBell} />
                 </span>
                 <div className="main">
-                    <a href={`/my-voucher/notices/${notice?.evoucherProgramId || 0}`} title={notice?.title || ''} className="title">{locale === Constants.LANGUAGE_VI ? notice?.contentVi : notice?.contentEn}</a>
+                    {
+                        notice?.type == Constants.notificationType.VOUCHER_NEW_PROGRAM
+                        ? (<a href={`/my-voucher/notices/${notice?.subRequestId}`} title={locale === Constants.LANGUAGE_VI ? notice?.title : notice?.en_Title} className="title">{locale === Constants.LANGUAGE_VI ? notice?.title : notice?.en_Title}</a>)
+                        : (<span className="title">{locale === Constants.LANGUAGE_VI ? notice?.title : notice?.en_Title}</span>)
+                    }
                     <div className="d-flex date"><img alt="Date" src={IconClock} />{moment(notice?.createdDate).isValid() ? moment(notice?.createdDate).format("DD/MM/YYYY") : ''}</div>
                 </div>
             </div>

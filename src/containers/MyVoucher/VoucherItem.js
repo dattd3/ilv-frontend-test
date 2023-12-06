@@ -69,18 +69,18 @@ const VoucherItem = ({ voucher, activeTab }) => {
                             <span className="img-block">
                                 <img alt="Voucher" src={IconVoucher} />
                             </span>
-                            <span className="text">{voucher?.name || ''}</span>
+                            <span className="text">{voucher?.name?.trim() || ''}</span>
                         </div>
                         <div className="d-flex row-customize address">
                             <span className="img-block">
                                 <img alt="Address" src={IconLocation } />
                             </span>
-                            <span className="text">Địa điểm áp dụng: {voucher?.location}</span>
+                            <span className="text">{t("ApplicableLocations")}: {voucher?.location}</span>
                         </div>
                     </div>
                     <div className="right">
                         <button className="d-inline-flex btn-view-qr" onClick={handleShowQRs}>
-                            <img alt="View QR" src={IconQR} />Mã QR Code
+                            <img alt="View QR" src={IconQR} />{t("QRCode")}
                         </button>
                     </div>
                 </div>
