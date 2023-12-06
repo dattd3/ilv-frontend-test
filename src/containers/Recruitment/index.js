@@ -46,7 +46,7 @@ const Recruitment = (props) => {
     return (
         <div className="recruitment-page">
             <Tabs defaultActiveKey={activeTab} className="recruitment-tabs" onSelect={key => handleChangeTab(key)}>
-                <Tab eventKey={tabMapping.request} title={t("Request")} className="tab-item" id={`${tabMapping.request}-tab`}>
+                {/* <Tab eventKey={tabMapping.request} title={t("Request")} className="tab-item" id={`${tabMapping.request}-tab`}>
                     <RequestTab 
                         isOpen={activeTab === tabMapping.request} 
                     />
@@ -56,7 +56,7 @@ const Recruitment = (props) => {
                 </Tab>
                 <Tab eventKey={tabMapping.approval} title={t("Approval")} className="tab-item" id={`${tabMapping.approval}-tab`}>
 
-                </Tab>
+                </Tab> */}
                 <Tab eventKey={tabMapping.evaluation} title={t("danh_gia")} className="tab-item" id={`${tabMapping.evaluation}-tab`}>
                     <EvaluationTab isOpen={activeTab == tabMapping.evaluation}/>
                 </Tab>

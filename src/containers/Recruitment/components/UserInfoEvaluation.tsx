@@ -11,9 +11,9 @@ function UserInfoEvaluation({
   t: any;
 }) {
   const [layoutHeight, setLayoutHeight] = useState<any>(0);
-  const cadidateInfo = item.candidateInfo || {};
-  const degreeInfos = item.degreeInfo || [];
-  const experienceInfos = item.experienceInfo || [];
+  const cadidateInfo = item.candidate || {};
+  const degreeInfos = item.degrees || [];
+  const experienceInfos = item.experiences || [];
   const genderOptions = [
     { value: "1", label: "Nam" },
     { value: "2", label: "Nữ" },
@@ -359,9 +359,9 @@ const renderEducations = (t: any, degreeInfos: DegreeInfo[]) => {
 
 interface ICandidateApplication {
   id: number;
-  candidateInfo: CandidateInfo;
-  experienceInfo: ExperienceInfo[];
-  degreeInfo: DegreeInfo[];
+  candidate: CandidateInfo;
+  experiences: ExperienceInfo[];
+  degrees: DegreeInfo[];
   cvInfo: CvInfo;
   duplicateInfo: null;
 }
