@@ -108,12 +108,13 @@ const EvaluationRecruitmentDetailModal = (props) => {
       }
       if (candidateId) {
         const candidateResponse = await axios.get(
-          `${process.env.REACT_APP_HRDX_URL}api/appplications/applicationHistory`,
+          `${process.env.REACT_APP_HRDX_URL}api/candidate/fullDetails`,
           {
             ...config,
-            params: { CandidateId: candidateId, JobVacancyId: jobVacancyId },
+            params: { EntityId: candidateId},
           }
         );
+
         setEvaluationInfo(evaluationResponse?.data?.data);
         setCandidateApplication(candidateResponse?.data?.data);
       }
@@ -344,7 +345,7 @@ const EvaluationRecruitmentDetailModal = (props) => {
             <div className="row group">
               <div className={`col-xl-6`}>
                 {t("apply_position")}
-                <div className="detail">{"Chuyên viên SAP"}</div>
+                <div className="detail">{evaluationInfo.jobTitle}</div>
               </div>
             </div>
             <h5 className="content-page-header">{"I. " + t("GeneralInfo")}</h5>
