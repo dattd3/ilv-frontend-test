@@ -13,6 +13,7 @@ import {
   MATERNITY_PLAN,
   MATERNITY_REGIME,
   RECEIVE_TYPE,
+  UPDATE_KEYS_MAP,
   YES_NO,
 } from "./InsuranceData";
 import Constants from "../../../commons/Constants";
@@ -384,6 +385,12 @@ const CreateMaternityInsurance = ({
     return false;
   }
 
+  const checkHasChange = (key) => {
+    const actualKey = 'maternityData.' + key;
+    const mappkey = UPDATE_KEYS_MAP[actualKey];
+    return data.updatedKeys?.includes(mappkey) ? 'updated' : '';
+  }
+
   return (
     <>
       {/* YÊU CẦU BẢO HIỂM Y TẾ */}
@@ -411,7 +418,7 @@ const CreateMaternityInsurance = ({
               isClearable={false}
               value={type}
               onChange={(e) => setType(e)}
-              className="input mv-10"
+              className={`input mv-10 ${checkHasChange('type')}`}
               isDisabled={!isCreateMode}
               styles={{ menu: (provided) => ({ ...provided, zIndex: 2 }) }}
             />
@@ -425,7 +432,7 @@ const CreateMaternityInsurance = ({
               isClearable={false}
               value={data.declareForm}
               onChange={(e) => handleChangeSelectInputs(e, "declareForm")}
-              className="input mv-10"
+              className={`input mv-10 ${checkHasChange('declareForm')}`}
               isDisabled={!isCreateMode}
               styles={{ menu: (provided) => ({ ...provided, zIndex: 2 }) }}
             />
@@ -443,7 +450,7 @@ const CreateMaternityInsurance = ({
               value={data.maternityRegime}
               isDisabled={!isCreateMode}
               onChange={(e) => handleChangeSelectInputs(e, "maternityRegime")}
-              className="input mv-10"
+              className={`input mv-10 ${checkHasChange('maternityRegime')}`}
               styles={{ menu: (provided) => ({ ...provided, zIndex: 2 }) }}
             />
             {showError('maternityRegime')}
@@ -471,7 +478,7 @@ const CreateMaternityInsurance = ({
               placeholderText={t("Select")}
               disabled={!isCreateMode}
               locale={t("locale")}
-              className="form-control input"
+              className={`form-control input ${checkHasChange('dateRequest')}`}
               styles={{ width: "100%" }}
             />
           </div>
@@ -496,7 +503,7 @@ const CreateMaternityInsurance = ({
               placeholderText={t("Select")}
               disabled={!isCreateMode}
               locale={t("locale")}
-              className="form-control input"
+              className={`form-control input ${checkHasChange('dateLastResolved')}`}
               styles={{ width: "100%" }}
             />
           </div>
@@ -511,7 +518,7 @@ const CreateMaternityInsurance = ({
               onChange={(e) =>
                 handleChangeSelectInputs(e, "maternityCondition")
               }
-              className="input mv-10"
+              className={`input mv-10 ${checkHasChange('maternityCondition')}`}
               styles={{ menu: (provided) => ({ ...provided, zIndex: 2 }) }}
             />
           </div>
@@ -526,7 +533,7 @@ const CreateMaternityInsurance = ({
               value={data.birthCondition}
               isDisabled={!isCreateMode}
               onChange={(e) => handleChangeSelectInputs(e, "birthCondition")}
-              className="input mv-10"
+              className={`input mv-10 ${checkHasChange('birthCondition')}`}
               styles={{ menu: (provided) => ({ ...provided, zIndex: 2 }) }}
             />
           </div>
@@ -539,7 +546,7 @@ const CreateMaternityInsurance = ({
               onChange={(e) =>
                 handleTextInputChange(e, "raiserInsuranceNumber")
               }
-              className="form-control input mv-10 w-100"
+              className={`form-control input mv-10 w-100 ${checkHasChange('raiserInsuranceNumber')}`}
               name="inputName"
               autoComplete="off"
             />
@@ -555,7 +562,7 @@ const CreateMaternityInsurance = ({
               value={data.dadCare}
               isDisabled={!isCreateMode}
               onChange={(e) => handleChangeSelectInputs(e, "dadCare")}
-              className="input mv-10"
+              className={`input mv-10 ${checkHasChange('dadCare')}`}
               styles={{ menu: (provided) => ({ ...provided, zIndex: 2 }) }}
             />
           </div>
@@ -569,7 +576,7 @@ const CreateMaternityInsurance = ({
               value={data.plan}
               isDisabled={!isCreateMode}
               onChange={(e) => handleChangeSelectInputs(e, "plan")}
-              className="input mv-10"
+              className={`input mv-10 ${checkHasChange('plan')}`}
               styles={{ menu: (provided) => ({ ...provided, zIndex: 2 }) }}
             />
             {showError('plan')}
@@ -581,7 +588,7 @@ const CreateMaternityInsurance = ({
             <textarea
               rows={3}
               disabled={!isCreateMode}
-              className="mv-10 form-control input w-100"
+              className={`mv-10 form-control input w-100 ${checkHasChange('reason')}`}
               value={data.reason}
               onChange={(e) => handleTextInputChange(e, "reason")}
             />
@@ -593,7 +600,7 @@ const CreateMaternityInsurance = ({
             <textarea
               rows={3}
               disabled={!isCreateMode}
-              className="mv-10 form-control input w-100"
+              className={`mv-10 form-control input w-100 ${checkHasChange('note')}`}
               value={data.note}
               onChange={(e) => handleTextInputChange(e, "note")}
             />
@@ -634,7 +641,7 @@ const CreateMaternityInsurance = ({
               type="text"
               value={data.leaveOfWeek}
               onChange={(e) => handleTextInputChange(e, "leaveOfWeek")}
-              className="form-control input mv-10 w-100"
+              className={`form-control input mv-10 w-100 ${checkHasChange('leaveOfWeek')}`}
               name="inputName"
               disabled={!isCreateMode}
               autoComplete="off"
@@ -660,7 +667,7 @@ const CreateMaternityInsurance = ({
               dateFormat="dd/MM/yyyy"
               placeholderText={t("Select")}
               locale={t("locale")}
-              className="form-control input"
+              className={`form-control input ${checkHasChange('dateLastResolved')}`}
               styles={{ width: "100%" }}
             />
           </div>
@@ -678,7 +685,7 @@ const CreateMaternityInsurance = ({
               value={data.seri}
               onChange={(e) => handleTextInputChange(e, "seri")}
               type="text"
-              className="form-control input mv-10 w-100"
+              className={`form-control input mv-10 w-100 ${checkHasChange('seri')}`}
               name="inputName"
               disabled={!isCreateMode}
               autoComplete="off"
@@ -701,7 +708,7 @@ const CreateMaternityInsurance = ({
               placeholderText={t("Select")}
               disabled={!isCreateMode}
               locale={t("locale")}
-              className="form-control input"
+              className={`form-control input ${checkHasChange('fromDate')}`}
               styles={{ width: "100%" }}
             />
             {showError("fromDate")}
@@ -721,7 +728,7 @@ const CreateMaternityInsurance = ({
               dateFormat="dd/MM/yyyy"
               placeholderText={t("Select")}
               locale={t("locale")}
-              className="form-control input"
+              className={`form-control input ${checkHasChange('toDate')}`}
               disabled={!isCreateMode}
               styles={{ width: "100%" }}
             />
@@ -736,7 +743,7 @@ const CreateMaternityInsurance = ({
               value={data.total}
               onChange={(e) => handleTextInputChange(e, "total")}
               type="number"
-              className="form-control input mv-10 w-100"
+              className={`form-control input mv-10 w-100 ${checkHasChange('total')}`}
               name="inputName"
               autoComplete="off"
               disabled={!isCreateMode}
@@ -756,7 +763,7 @@ const CreateMaternityInsurance = ({
               value={data.childInsuranceNumber}
               onChange={(e) => handleTextInputChange(e, "childInsuranceNumber")}
               type="text"
-              className="form-control input mv-10 w-100"
+              className={`form-control input mv-10 w-100 ${checkHasChange('childInsuranceNumber')}`}
               name="inputName"
               autoComplete="off"
               disabled={!isCreateMode}
@@ -768,7 +775,7 @@ const CreateMaternityInsurance = ({
               value={data.childHealthNumber}
               onChange={(e) => handleTextInputChange(e, "childHealthNumber")}
               type="text"
-              className="form-control input mv-10 w-100"
+              className={`form-control input mv-10 w-100 ${checkHasChange('childHealthNumber')}`}
               name="inputName"
               autoComplete="off"
               disabled={!isCreateMode}
@@ -782,7 +789,7 @@ const CreateMaternityInsurance = ({
               value={data.age}
               onChange={(e) => handleTextInputChange(e, "age")}
               type="text"
-              className="form-control input mv-10 w-100"
+              className={`form-control input mv-10 w-100 ${checkHasChange('age')}`}
               name="inputName"
               autoComplete="off"
               disabled={!isCreateMode}
@@ -813,7 +820,7 @@ const CreateMaternityInsurance = ({
               dateFormat="dd/MM/yyyy"
               placeholderText={t("Select")}
               locale={t("locale")}
-              className="form-control input"
+              className={`form-control input ${checkHasChange('childBirth')}`}
               disabled={!isCreateMode}
               styles={{ width: "100%" }}
             />
@@ -838,7 +845,7 @@ const CreateMaternityInsurance = ({
               dateFormat="dd/MM/yyyy"
               placeholderText={t("Select")}
               locale={t("locale")}
-              className="form-control input"
+              className={`form-control input ${checkHasChange('childDead')}`}
               disabled={!isCreateMode}
               styles={{ width: "100%" }}
             />
@@ -852,7 +859,7 @@ const CreateMaternityInsurance = ({
               value={data.childNumbers}
               onChange={(e) => handleTextInputChange(e, "childNumbers")}
               type="text"
-              className="form-control input mv-10 w-100"
+              className={`form-control input mv-10 w-100 ${checkHasChange('childNumbers')}`}
               name="inputName"
               disabled={!isCreateMode}
               autoComplete="off"
@@ -869,7 +876,7 @@ const CreateMaternityInsurance = ({
               value={data.childDeadNumbers}
               onChange={(e) => handleTextInputChange(e, "childDeadNumbers")}
               type="text"
-              className="form-control input mv-10 w-100"
+              className={`form-control input mv-10 w-100 ${checkHasChange('childDeadNumbers')}`}
               name="inputName"
               disabled={!isCreateMode}
               autoComplete="off"
@@ -899,7 +906,7 @@ const CreateMaternityInsurance = ({
               placeholderText={t("Select")}
               disabled={!isCreateMode}
               locale={t("locale")}
-              className="form-control input"
+              className={`form-control input ${checkHasChange('childReceiveDate')}`}
               styles={{ width: "100%" }}
             />
             {showError('childReceiveDate')}
@@ -930,7 +937,7 @@ const CreateMaternityInsurance = ({
               dateFormat="dd/MM/yyyy"
               placeholderText={t("Select")}
               locale={t("locale")}
-              className="form-control input"
+              className={`form-control input ${checkHasChange('childRaiseDate')}`}
               styles={{ width: "100%" }}
             />
           </div>
@@ -948,7 +955,7 @@ const CreateMaternityInsurance = ({
               value={data.momInsuranceNumber}
               onChange={(e) => handleTextInputChange(e, "momInsuranceNumber")}
               type="text"
-              className="form-control input mv-10 w-100"
+              className={`form-control input mv-10 w-100 ${checkHasChange('momInsuranceNumber')}`}
               name="inputName"
               autoComplete="off"
               disabled={!isCreateMode}
@@ -962,7 +969,7 @@ const CreateMaternityInsurance = ({
               value={data.momHealthNumber}
               onChange={(e) => handleTextInputChange(e, "momHealthNumber")}
               type="text"
-              className="form-control input mv-10 w-100"
+              className={`form-control input mv-10 w-100 ${checkHasChange('momHealthNumber')}`}
               name="inputName"
               autoComplete="off"
               disabled={!isCreateMode}
@@ -975,7 +982,7 @@ const CreateMaternityInsurance = ({
               value={data.momIdNumber}
               onChange={(e) => handleTextInputChange(e, "momIdNumber")}
               type="text"
-              className="form-control input mv-10 w-100"
+              className={`form-control input mv-10 w-100 ${checkHasChange('momIdNumber')}`}
               name="inputName"
               autoComplete="off"
               disabled={!isCreateMode}
@@ -993,7 +1000,7 @@ const CreateMaternityInsurance = ({
               isDisabled={!isCreateMode}
               value={data.maternityLeave}
               onChange={(e) => handleChangeSelectInputs(e, "maternityLeave")}
-              className="input mv-10"
+              className={`input mv-10 ${checkHasChange('maternityLeave')}`}
               styles={{ menu: (provided) => ({ ...provided, zIndex: 2 }) }}
             />
           </div>
@@ -1006,7 +1013,7 @@ const CreateMaternityInsurance = ({
               isDisabled={!isCreateMode}
               value={data.hasRainser}
               onChange={(e) => handleChangeSelectInputs(e, "hasRainser")}
-              className="input mv-10"
+              className={`input mv-10 ${checkHasChange('hasRainser')}`}
               styles={{ menu: (provided) => ({ ...provided, zIndex: 2 }) }}
             />
           </div>
@@ -1020,7 +1027,7 @@ const CreateMaternityInsurance = ({
               isDisabled={!isCreateMode}
               value={data.hasSurgery}
               onChange={(e) => handleChangeSelectInputs(e, "hasSurgery")}
-              className="input mv-10"
+              className={`input mv-10 ${checkHasChange('hasSurgery')}`}
               styles={{ menu: (provided) => ({ ...provided, zIndex: 2 }) }}
             />
           </div>
@@ -1048,7 +1055,7 @@ const CreateMaternityInsurance = ({
               placeholderText={t("Select")}
               locale={t("locale")}
               disabled={!isCreateMode}
-              className="form-control input"
+              className={`form-control input ${checkHasChange('momDeadDate')}`}
               styles={{ width: "100%" }}
             />
           </div>
@@ -1073,7 +1080,7 @@ const CreateMaternityInsurance = ({
               placeholderText={t("Select")}
               locale={t("locale")}
               disabled={!isCreateMode}
-              className="form-control input"
+              className={`form-control input ${checkHasChange('resultDate')}`}
               styles={{ width: "100%" }}
             />
           </div>
@@ -1087,7 +1094,7 @@ const CreateMaternityInsurance = ({
               onChange={(e) => handleTextInputChange(e, "assessment")}
               type="text"
               disabled={!isCreateMode}
-              className="form-control input mv-10 w-100"
+              className={`form-control input mv-10 w-100 ${checkHasChange('assessment')}`}
               name="inputName"
               autoComplete="off"
             />
@@ -1105,7 +1112,7 @@ const CreateMaternityInsurance = ({
               value={data.resolveContent}
               onChange={(e) => handleTextInputChange(e, "resolveContent")}
               type="text"
-              className="form-control input mv-10 w-100"
+              className={`form-control input mv-10 w-100 ${checkHasChange('resolveContent')}`}
               name="inputName"
               autoComplete="off"
               disabled={!isCreateMode}
@@ -1132,7 +1139,7 @@ const CreateMaternityInsurance = ({
               placeholderText={t("Select")}
               locale={t("locale")}
               disabled={!isCreateMode}
-              className="form-control input"
+              className={`form-control input ${checkHasChange('resolveDate')}`}
               styles={{ width: "100%" }}
             />
           </div>
@@ -1149,7 +1156,7 @@ const CreateMaternityInsurance = ({
               value={data.addtionContent}
               onChange={(e) => handleTextInputChange(e, "addtionContent")}
               type="text"
-              className="form-control input mv-10 w-100"
+              className={`form-control input mv-10 w-100 ${checkHasChange('addtionContent')}`}
               name="inputName"
               disabled={!isCreateMode}
               autoComplete="off"
@@ -1176,7 +1183,7 @@ const CreateMaternityInsurance = ({
               disabled={!isCreateMode}
               placeholderText={t("Select")}
               locale={t("locale")}
-              className="form-control input"
+              className={`form-control input ${checkHasChange('addtionDate')}`}
               styles={{ width: "100%" }}
             />
           </div>
@@ -1199,7 +1206,7 @@ const CreateMaternityInsurance = ({
               isClearable={false}
               value={data.receiveType}
               onChange={(e) => handleChangeSelectInputs(e, "receiveType")}
-              className="input mv-10"
+              className={`input mv-10 ${checkHasChange('receiveType')}`}
               styles={{ menu: (provided) => ({ ...provided, zIndex: 2 }) }}
             />
             {errors["receiveType"] ? (
@@ -1215,7 +1222,7 @@ const CreateMaternityInsurance = ({
               value={data.accountNumber}
               onChange={(e) => handleTextInputChange(e, "accountNumber")}
               type="text"
-              className="form-control input mv-10 w-100"
+              className={`form-control input mv-10 w-100 ${checkHasChange('accountNumber')}`}
               name="inputName"
               autoComplete="off"
               disabled={!isCreateMode}
@@ -1231,7 +1238,7 @@ const CreateMaternityInsurance = ({
               value={data.accountName}
               onChange={(e) => handleTextInputChange(e, "accountName")}
               type="text"
-              className="form-control input mv-10 w-100"
+              className={`form-control input mv-10 w-100 ${checkHasChange('accountName')}`}
               name="inputName"
               autoComplete="off"
               disabled={!isCreateMode}
@@ -1251,7 +1258,7 @@ const CreateMaternityInsurance = ({
               value={data.bankId}
               onChange={(e) => handleTextInputChange(e, "bankId")}
               type="text"
-              className="form-control input mv-10 w-100"
+              className={`form-control input mv-10 w-100 ${checkHasChange('bankId')}`}
               name="inputName"
               autoComplete="off"
               disabled={!isCreateMode}
@@ -1269,7 +1276,7 @@ const CreateMaternityInsurance = ({
               value={data.bankName}
               onChange={(e) => handleTextInputChange(e, "bankName")}
               type="text"
-              className="form-control input mv-10 w-100"
+              className={`form-control input mv-10 w-100 ${checkHasChange('bankName')}`}
               name="inputName"
               autoComplete="off"
               disabled={!isCreateMode}
