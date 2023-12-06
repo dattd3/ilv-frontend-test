@@ -407,6 +407,12 @@
   .value-old {
     background-color: #F2F2F2;
   }
+  .updated {
+    background-color: #d1d3e2 !important;
+    > div:nth-child(1), > div:nth-child(2) {
+      background-color: #d1d3e2 !important;
+    }
+  }
   ul {
     list-style: none;
     padding: 0;
