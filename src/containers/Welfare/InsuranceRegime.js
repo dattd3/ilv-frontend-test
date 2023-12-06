@@ -9,6 +9,8 @@ import Resource from './WelfareComponents/Resource'
 import HOCComponent from '../../components/Common/HOCComponent'
 import SocialContributeInfo from './WelfareComponents/SocialContributeInfo'
 import SocialSupportInfo from './WelfareComponents/SocialSupportInfo'
+import { checkIsExactPnL } from 'commons/commonFunctions'
+import Constants from 'commons/Constants'
 
 class InsuranceRegime extends React.Component {
     constructor(props) {
@@ -35,15 +37,26 @@ class InsuranceRegime extends React.Component {
                     {/* <Tab eventKey="Health" title={t('heath_insurance')}>
                         <Health title={t('welfare_regime_internal')}/>
                     </Tab> */}
-                    <Tab eventKey="Social" title={t('social_insurance')}>
-                        <InsuranceSocial title={t('Vinwonder/Safari')}/>
-                    </Tab>
-                    <Tab eventKey="SocialContribute" title={t('social_contribute_info')}>
-                        <SocialContributeInfo title={t('Vinwonder/Safari')}/>
-                    </Tab>
-                    <Tab eventKey="SocialSupport" title={t('social_support_info')}>
-                        <SocialSupportInfo title={t('Vinwonder/Safari')}/>
-                    </Tab>
+                    {
+                        checkIsExactPnL(Constants.pnlVCode.VinSchool, Constants.pnlVCode.VinFast, Constants.pnlVCode.VinFastTrading, Constants.pnlVCode.VinES) && (
+                        <Tab eventKey="Social" title={t('social_insurance')}>
+                            <InsuranceSocial title={t('Vinwonder/Safari')}/>
+                        </Tab>)
+                    }
+                    {
+                        checkIsExactPnL(Constants.pnlVCode.VinSchool) && (
+                        <Tab eventKey="SocialContribute" title={t('social_contribute_info')}>
+                            <SocialContributeInfo title={t('Vinwonder/Safari')}/>
+                        </Tab>)
+                    }
+                    {
+                        checkIsExactPnL(Constants.pnlVCode.VinSchool) && (
+                            <Tab eventKey="SocialSupport" title={t('social_support_info')}>
+                                <SocialSupportInfo title={t('Vinwonder/Safari')}/>
+                            </Tab>
+                        )
+                    }
+                    
                 </Tabs>
             </div>
         )

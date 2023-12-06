@@ -253,7 +253,7 @@ const Constants = {
     6: ["V077", "V070"], //DIEUCHUYEN
     7: ["V077", "V070"], //BONHIEM,
     8: [], //THANHTOAN_NOIBO
-    9: ["V061"],//BAOHIEM
+    9: ["V061", "V070", "V071", "V079"],//BAOHIEM
   } :
   { //Development
     1: ["V040", "V005", "V079", "V041", "V030", "V035", "V036", "V077", "V070", "V099"],//TUYENDUNG + V061
