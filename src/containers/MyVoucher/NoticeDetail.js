@@ -32,7 +32,7 @@ const NoticeDetail = (props) => {
                 <h1 className="content-page-header">{locale === Constants.LANGUAGE_VI ? notice?.titleVi : notice?.titleEn}</h1>
                 <div className="shadow-customize wrap-content">
                     <div dangerouslySetInnerHTML={{
-                        __html: purify.sanitize(locale === Constants.LANGUAGE_VI ? notice?.contentVi : notice?.contentEn),
+                        __html: purify.sanitize(locale === Constants.LANGUAGE_VI ? notice?.contentVi?.trim() : notice?.contentEn?.trim()),
                     }} />
                 </div>
             </div>

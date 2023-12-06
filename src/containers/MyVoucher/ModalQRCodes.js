@@ -49,7 +49,7 @@ const ModalQRCodes = ({ isShowModal, listQRs = [], onHideModal }) => {
                                             />
                                         </div>
                                         <div className="d-flex justify-content-center code">{ele?.code}</div>
-                                        <div className="d-flex justify-content-center time">HSD: <span className="font-weight-bold">{moment(ele?.validFrom).format("DD/MM/YYYY")} - {moment(ele?.validTo).format("DD/MM/YYYY")}</span></div>
+                                        <div className="d-flex justify-content-center time">{t("EXP")}: <span className="font-weight-bold">{moment(ele?.validFrom).format("DD/MM/YYYY")} - {moment(ele?.validTo).format("DD/MM/YYYY")}</span></div>
                                     </div>
                                 </Carousel.Item>
                             ))

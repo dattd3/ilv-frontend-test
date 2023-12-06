@@ -35,6 +35,8 @@ function Dashboard(props) {
   }, [])
 
   const onHideModal = () => {
+    setIsShow(false)
+    return
     const config = getRequestConfigurations()
     axios.post(`${process.env.REACT_APP_REQUEST_URL}evoucher-vinhomes/ignore-popup`, null, config).then(response => {
       setIsShow(false)

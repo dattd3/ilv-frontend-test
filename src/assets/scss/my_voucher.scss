@@ -224,7 +224,7 @@
 .banner-home-modal {
   z-index: 99999;
   .modal-dialog {
-    // max-width: unset!important;
+    // width: 800px;
     width: fit-content;
     margin: 0 auto!important;
     height: 100vh;
@@ -249,9 +249,10 @@
         z-index: 999991;
       }
       .content {
-        // width: fit-content;
         .image {
           // width: fit-content;
+          width: 800px;
+          height: 533px;
         }
       }
     }
