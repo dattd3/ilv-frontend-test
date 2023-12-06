@@ -553,7 +553,7 @@ const EvaluationRecruitmentDetailModal = (props) => {
       </Modal.Body>
     </Modal>
     <LoadingModal show={loading} />
-    <StatusModal show={modal.visible} content={modal.message} isSuccess={modal.type != 'error'} onHide={hideStatusModal} />
+    <StatusModal show={modal.visible} content={modal.message} className= 'modal-dim' isSuccess={modal.type != 'error'} onHide={hideStatusModal} />
     </>
   );
 };
