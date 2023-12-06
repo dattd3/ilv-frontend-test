@@ -2,13 +2,14 @@
   font: normal 14px Arial, Helvetica, sans-serif;
   color: #000000;
   .search-block {
+    margin-top: 15px;
     form {
       .search-input {
         height: 38px;
         padding: 0 15px 0 35px;
         outline-style: none;
         border-radius: 4px;
-        border: none;
+        border: 1px solid #DEE2E6;
         flex: 1 1;
         background-color: #FFFFFF;
         background: #FFFFFF url("../img/icon/ic_search.svg") no-repeat 12px 11px;
@@ -135,6 +136,27 @@
       margin-top: 15px;
       margin-bottom: 0;
       padding: 12px;
+    }
+  }
+  .paging-region {
+    margin-top: 15px;
+    .customize-display {
+      & > label {
+        margin: 0 8px 0 0;
+      }
+      & > select {
+        cursor: pointer;
+        height: 28px;
+        width: 50px;
+        outline: none;
+        border-radius: 4px;
+      }
+    }
+    .paging-block {
+      margin: 0 auto;
+      .pagination {
+        margin-bottom: 0;
+      }
     }
   }
 }
