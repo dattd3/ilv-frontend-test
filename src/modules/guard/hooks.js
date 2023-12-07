@@ -87,7 +87,6 @@ const Storage = {
     localStorage.setItem('cost_center', currentAuthUser.cost_center);
     localStorage.setItem('insurance_number', currentAuthUser.insurance_number);
     localStorage.setItem('streetName', currentAuthUser.streetName);
-    localStorage.setItem('building', currentAuthUser.building);
   },
   load() {
     const accessToken = localStorage.getItem('accessToken');
@@ -139,7 +138,6 @@ const Storage = {
       cost_center: localStorage.getItem('cost_center'),
       insurance_number: localStorage.getItem('insurance_number'),
       streetName: localStorage.getItem('streetName'),
-      building: localStorage.getItem('building')
     }
   },
   reset() {
@@ -192,7 +190,6 @@ const Storage = {
     localStorage.removeItem('insurance_number');
     localStorage.removeItem('cultureMenu');
     localStorage.removeItem('streetName');
-    localStorage.removeItem('building');
   }
 }
 
@@ -243,5 +240,4 @@ const deserialize = (currentAuthUser) => ({
   cost_center: currentAuthUser.cost_center,
   insurance_number: currentAuthUser.insurance_number,
   streetName: currentAuthUser.streetName,
-  building: currentAuthUser.building,
 })

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react"
+import { useTranslation } from "react-i18next"
 import axios from 'axios'
 import purify from "dompurify"
 import Constants from 'commons/Constants'
@@ -7,6 +8,7 @@ import LoadingModal from 'components/Common/LoadingModal'
 
 const NoticeDetail = (props) => {
     const locale = localStorage.getItem("locale")
+    const { t } = useTranslation()
     const [isLoading, SetIsLoading] = useState(false)
     const [notice, setNotice] = useState(null)
 
@@ -28,14 +30,20 @@ const NoticeDetail = (props) => {
     return (
         <>
             <LoadingModal show={isLoading} />
-            <div className="voucher-notice-detail">
-                <h1 className="content-page-header">{locale === Constants.LANGUAGE_VI ? notice?.titleVi : notice?.titleEn}</h1>
-                <div className="shadow-customize wrap-content">
-                    <div dangerouslySetInnerHTML={{
-                        __html: purify.sanitize(locale === Constants.LANGUAGE_VI ? notice?.contentVi?.trim() : notice?.contentEn?.trim()),
-                    }} />
-                </div>
-            </div>
+            {
+                notice
+                ? (
+                    <div className="voucher-notice-detail">
+                        <h1 className="content-page-header">{locale === Constants.LANGUAGE_VI ? notice?.titleVi : notice?.titleEn}</h1>
+                        <div className="shadow-customize wrap-content">
+                            <div dangerouslySetInnerHTML={{
+                                __html: purify.sanitize(locale === Constants.LANGUAGE_VI ? notice?.contentVi?.trim() : notice?.contentEn?.trim()),
+                            }} />
+                        </div>
+                    </div>
+                )
+                : (<div className="alert alert-danger data-not-found" style={{ margin: 0, padding: 12, fontSize: 14 }}>{t("NoDataFound")}</div>)
+            }
         </>
     )
 }

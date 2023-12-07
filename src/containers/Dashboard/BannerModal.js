@@ -8,7 +8,8 @@ const BannerModal = ({ isShow, banners = [], onHideModal }) => {
     return (
         <Modal
             show={isShow}
-            onHide={onHideModal}
+            backdrop="static"
+            keyboard={false}
             className='banner-home-modal'
         >
             <Modal.Body>
@@ -23,10 +24,12 @@ const BannerModal = ({ isShow, banners = [], onHideModal }) => {
                             (banners || []).map((banner, i) => (
                                 <Carousel.Item interval={3000} key={i}>
                                     <div className="d-flex justify-content-center image">
-                                        <img
-                                            src={locale === Constants.LANGUAGE_VI ? banner?.imageVi : banner?.imageEn} className="title"
-                                            alt="Banner"
-                                        />
+                                        <a href={`/my-voucher/notices/${banner?.id}`}>
+                                            <img
+                                                src={locale === Constants.LANGUAGE_VI ? banner?.imageVi : banner?.imageEn} className="title"
+                                                alt="Banner"
+                                            />
+                                        </a>
                                     </div>
                                 </Carousel.Item>
                             ))
