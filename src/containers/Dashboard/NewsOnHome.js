@@ -227,10 +227,10 @@ function NewsOnHome() {
     const timePublished = getPublishedTimeByRawTime(itemNews?.publishedDate);
 
     return (
-      <div className="item" key={itemNews.id}>
+      <div className="item" key={itemNews?.id}>
         <a href={`/internal-news/detail/${itemNews.id}`} className="link-image-detail">
           <Image
-            src={itemNews.thumbnail}
+            src={itemNews?.thumbnail}
             className="thumbnail"
             onError={(e) => {
               e.target.src = "/logo-small.svg";
@@ -239,13 +239,13 @@ function NewsOnHome() {
           />
         </a>
         <div className="title-source-time-info">
-          <a href={`/internal-news/detail/${itemNews.id}`} className="title">
-            {itemNews.title}
+          <a href={`/internal-news/detail/${itemNews?.id}`} className="title">
+            {itemNews?.title?.trim()}
           </a>
           <div className="source-time-info">
             <span className="time">
               <Image src={IconTime} alt="Time" className="icon" />
-              <span className="hour">{timePublished.date || "N/A"}</span>
+              <span className="hour">{timePublished?.date || "N/A"}</span>
             </span>
           </div>
         </div>
@@ -276,7 +276,6 @@ function NewsOnHome() {
               </Carousel>
             </div>
             <div className="row">
-
               {/* <div className="col-md-4 privilege">
                 <div className="block-page-title">
                   <h1
@@ -328,7 +327,6 @@ function NewsOnHome() {
                   </div>
                 </div>
               </div> */}
-
               <div className="col-md-12 special">
                 <div className="block-page-title">
                   <h2 className="page-title">
@@ -347,63 +345,66 @@ function NewsOnHome() {
                     </div>
                   </a>
                 </div>
-                <div className="d-flex shadow-customize wrap-news">
-                  {topOne && (
-                    <div className="top-one" ref={topOneRef}>
-                      <a
-                        href={`/internal-news/detail/${topOne.id}`}
-                        className="link-detail"
-                      >
-                        <Image
-                          src={topOne?.thumbnail}
-                          alt="News"
-                          className="thumbnail"
-                          onError={(e) => {
-                            e.target.src = "/logo-large.svg";
-                          }}
-                        />
-                        <p className="title">{topOne?.title || ""}</p>
-                      </a>
-                      <div className="other-info">
-                        <div className="source-time-info">
-                          <span className="time">
-                            <Image src={IconTime} alt="Time" className="icon" />
-                            <span className="hour">
-                              {timePublishedTopOne?.date || "N/A"}
-                            </span>
-                          </span>
-                        </div>
-                        {privilegeBanner?.description && (
-                          <p className="description">
-                            {subStringDescription(topOne?.description)}
-                          </p>
-                        )}
-                        <div className="btn-detail">
+                <div className="d-flex wrap-news">
+                  <div className="row">
+                    {topOne && (
+                      <div className="col-md-6 top-one" ref={topOneRef} style={{ background: 'transparent' }}>
+                        <div className="shadow-customize" style={{ borderRadius: 10, background: '#FFFFFF' }}>
                           <a
-                            href={`/internal-news/detail/${topOne?.id}`}
-                            className="detail"
+                            href={`/internal-news/detail/${topOne.id}`}
+                            className="link-detail"
                           >
-                            <span>{t("Details")}</span>
                             <Image
-                              src={IconViewDetail}
-                              alt="Detail"
-                              className="icon-view-detail"
+                              src={topOne?.thumbnail}
+                              alt="News"
+                              className="thumbnail"
+                              onError={(e) => {
+                                e.target.src = "/logo-large.svg";
+                              }}
                             />
+                            <p className="title">{topOne?.title || ""}</p>
                           </a>
+                          <div className="other-info">
+                            <div className="source-time-info">
+                              <span className="time">
+                                <Image src={IconTime} alt="Time" className="icon" />
+                                <span className="hour">
+                                  {timePublishedTopOne?.date || "N/A"}
+                                </span>
+                              </span>
+                            </div>
+                            {privilegeBanner?.description && (
+                              <p className="description">
+                                {subStringDescription(topOne?.description)}
+                              </p>
+                            )}
+                            <div className="btn-detail">
+                              <a
+                                href={`/internal-news/detail/${topOne?.id}`}
+                                className="detail"
+                              >
+                                <span>{t("Details")}</span>
+                                <Image
+                                  src={IconViewDetail}
+                                  alt="Detail"
+                                  className="icon-view-detail"
+                                />
+                              </a>
+                            </div>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  )}
-                  {/* <div className="other" style={{ maxHeight: privilegesRefHeight > 0 ? privilegesRefHeight - 40 : 0 }}> */}
-                  <div className="other" style={{ maxHeight: topOneRefHeight > 0 ? topOneRefHeight - 40 : 0 }}>
-                    <div className="top-four">
-                      {listInternalNews.length > 1 && (
-                        <ReactList
-                          itemRenderer={renderItemInternalNews}
-                          length={listInternalNewsOther.length}
-                          ref={listInternalNewsRef}
-                        />
-                      )}
+                    )}
+                    <div className="col-md-6 other" style={{ maxHeight: topOneRefHeight > 0 ? topOneRefHeight : 0 }}>
+                      <div className="top-four shadow-customize">
+                        {listInternalNews.length > 1 && (
+                          <ReactList
+                            itemRenderer={renderItemInternalNews}
+                            length={listInternalNewsOther?.length}
+                            ref={listInternalNewsRef}
+                          />
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>

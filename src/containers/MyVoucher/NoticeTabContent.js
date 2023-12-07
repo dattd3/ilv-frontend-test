@@ -8,7 +8,7 @@ import NoticeItem from "./NoticeItem"
 import CustomPaging from "components/Common/CustomPaging"
 
 const NoticeTabContent = ({ activeTab }) => {
-    const listPageSizes = [1, 20, 30, 40, 50]
+    const listPageSizes = [10, 20, 30, 40, 50]
     const { t } = useTranslation()
     const [isLoading, SetIsLoading] = useState(false)
     const [notices, setNotices] = useState({
@@ -17,7 +17,7 @@ const NoticeTabContent = ({ activeTab }) => {
     })
     const [paging, setPaging] = useState({
         pageIndex: 1,
-        pageSize: 1,
+        pageSize: 10,
     })
 
     const fetchListNotices = async (pagingInput) => {
