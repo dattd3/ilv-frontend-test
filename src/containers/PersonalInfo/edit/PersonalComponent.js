@@ -380,6 +380,9 @@ class PersonalComponent extends React.Component {
         const passportPlaceOfIssue = (places || []).filter(item => item?.type === 'HC')
         const personalIdentifyPlace = (places || []).filter(item => ['CCCD', 'CMT']?.includes(item?.type))
 
+        console.log('userDetailState => ', userDetailState)
+        console.log('this.state.userDetail => ', this.state.userDetail)
+
         return (
             <>
             <LoadingModal show={isLoading} />

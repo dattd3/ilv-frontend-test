@@ -20,6 +20,7 @@
 @import "./assets/scss/target-management.scss";
 @import "./assets/scss/vingroup-cultural.scss";
 @import "./assets/scss/my_voucher.scss";
+@import "./assets/scss/recruitment.scss";
 
 @font-face {
   font-family: "icomoon";
@@ -945,7 +946,7 @@
 }
 .metismenu-link {
   padding-left: 0 !important;
-  height: 2.8em;
+  height: 3.2em;
   line-height: 1.4 !important;
   font-size: 14px !important;
   display: flex !important;
@@ -6239,6 +6240,7 @@ span.badge-notification[data-badge]::after {
         left: unset !important;
         position: relative !important;
         width: auto !important;
+        height: 100% !important;
       }
       &.show-thumbnail.--simple {
         left: initial !important;
