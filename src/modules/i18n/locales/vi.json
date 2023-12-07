@@ -2014,5 +2014,7 @@
   "RequestDownloadDocument": "Để tải về hồ sơ vui lòng bấm ",
   "ListRequestCreated": "DANH SÁCH YÊU CẦU ĐÃ TẠO",
   "InformationApprover": "Thông tin CBLĐ phê duyệt",
-  "MasterCode": "Mã VG"
+  "MasterCode": "Mã VG",
+  "StaffGeneralComment": "Nhận xét chung (của CBNV)",
+  "ManagerGeneralComment": "Nhận xét chung (của QLTT)"
 }
