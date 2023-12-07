@@ -23,19 +23,19 @@ const HealthInsurance = (props) => {
         const processHealthInsuranceData = response => {
             if (response?.data?.data) {
                 const data = _.chain(response?.data?.data)
-                .groupBy("insurance_relations")
+                .groupBy("code_insurance_relations")
                 .toPairs()
-                .map(item => _.zipObject(["insurance_relations", "start_date", "end_date", "card_number", "fullname_insured_person", "insurance_unit", "legal_company", "name_insured_person"], item))
+                .map(item => _.zipObject(["code_insurance_relations", "start_date", "end_date", "card_number", "fullname_insured_person", "name_insurance_relations", "insurance_unit", "legal_company", "name_insured_person"], item))
                 .value()
                 .map(item => {
                     return {
-                        insurance_relations: item?.insurance_relations,
+                        code_insurance_relations: item?.code_insurance_relations,
                         start_date: item?.start_date,
                     }
                 })
                 setHealthInsuranceData(data || [])
 
-                const defaultHealthInsuranceByRelations = (data || []).find(item => item?.insurance_relations === insuranceByRelationIndividual)
+                const defaultHealthInsuranceByRelations = (data || []).find(item => item?.code_insurance_relations === insuranceByRelationIndividual)
                 setHealthInsuranceByRelations(defaultHealthInsuranceByRelations)
 
                 const dateDefault = (defaultHealthInsuranceByRelations?.start_date || [])
@@ -47,7 +47,7 @@ const HealthInsurance = (props) => {
                 setHealthInsuranceDetail((defaultHealthInsuranceByRelations?.start_date || []).find(item => item?.start_date === dateDefault))
 
                 const dataFilterClone = {...dataFilter}
-                dataFilterClone.healthInsuranceByRelation = { value: defaultHealthInsuranceByRelations?.insurance_relations, label: defaultHealthInsuranceByRelations?.insurance_relations }
+                dataFilterClone.healthInsuranceByRelation = { value: defaultHealthInsuranceByRelations?.code_insurance_relations, label: defaultHealthInsuranceByRelations?.start_date?.[0]?.name_insurance_relations }
                 dataFilterClone.startDate = dateDefault ? { value: dateDefault, label: moment(dateDefault, "DD-MM-YYYY")?.format("DD/MM/YYYY") } : null
                 setDataFilter(dataFilterClone)
             }
@@ -72,7 +72,7 @@ const HealthInsurance = (props) => {
         dataFilterClone[key] = e
 
         if (key === 'healthInsuranceByRelation') {
-            setHealthInsuranceByRelations((healthInsuranceData || []).find(item => item?.insurance_relations === e?.value))
+            setHealthInsuranceByRelations((healthInsuranceData || []).find(item => item?.code_insurance_relations === e?.value))
             setHealthInsuranceDetail(null)
             dataFilterClone.startDate = null
         } else {
@@ -102,8 +102,8 @@ const HealthInsurance = (props) => {
                                         value={dataFilter?.healthInsuranceByRelation} 
                                         options={(healthInsuranceData || []).map(item => {
                                             return {
-                                                value: item?.insurance_relations,
-                                                label: item?.insurance_relations,
+                                                value: item?.code_insurance_relations,
+                                                label: item?.start_date?.[0]?.name_insurance_relations,
                                             }
                                         })} 
                                         onChange={e => handleSelectChange('healthInsuranceByRelation', e)}
