@@ -264,7 +264,7 @@ const DetailInsuranceSocial = (props) => {
                 ...data,
                 maternityData: {
                     hrComment: requestInfo.hrComment,
-                    updatedKeys: JSON.parse(requestInfo.updatedKeys || '[]'),
+                    updatedKeys: JSON.parse(infoDetail.updatedKeys || '[]'),
                     declareForm: convertFormalDropdrowValue(infoDetail.formTypeInfo),
                     maternityRegime: convertFormalDropdrowValue(infoDetail.maternityRegimeInfo),
                     dateRequest: infoDetail.recommendEnjoyDate ? moment(infoDetail.recommendEnjoyDate).format('DD/MM/YYYY') : '',
