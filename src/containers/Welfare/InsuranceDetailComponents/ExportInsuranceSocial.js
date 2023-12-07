@@ -12,6 +12,7 @@ import LoadingModal from '../../../components/Common/LoadingModal';
 import { Image } from 'react-bootstrap';
 import HOCComponent from '../../../components/Common/HOCComponent'
 import { UPDATE_KEYS_MAP } from '../InsuranceComponents/InsuranceData';
+import _ from 'lodash';
 
 const ExportInsuranceSocial = (props) => {
     const { t } = props;
