@@ -1996,6 +1996,8 @@
   "ListRequestCreated": "DANH SÁCH YÊU CẦU ĐÃ TẠO",
   "InformationApprover": "Approver",
   "MasterCode": "Master code",
+  "StaffGeneralComment": "General Comment (of Staff)",
+  "ManagerGeneralComment": "General Comment (of Manager)",
   "MyVoucher": "My Voucher",
   "SearchForVoucher": "Search for Vouchers",
   "QRCode": "QR Code",
