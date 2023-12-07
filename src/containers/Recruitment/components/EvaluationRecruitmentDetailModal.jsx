@@ -387,7 +387,7 @@ const EvaluationRecruitmentDetailModal = (props) => {
                 </div>
               </div>
               {candidateApplication ? (
-                <UserInfoEvaluation t={t} item={candidateApplication} />
+                <UserInfoEvaluation t={t} item={candidateApplication} templateUrl={evaluationInfo?.templateFileUrl}/>
               ) : null}
             </div>
 
@@ -553,7 +553,7 @@ const EvaluationRecruitmentDetailModal = (props) => {
       </Modal.Body>
     </Modal>
     <LoadingModal show={loading} />
-    <StatusModal show={modal.visible} content={modal.message} isSuccess={modal.type != 'error'} onHide={hideStatusModal} />
+    <StatusModal show={modal.visible} content={modal.message} className= 'modal-dim' isSuccess={modal.type != 'error'} onHide={hideStatusModal} />
     </>
   );
 };

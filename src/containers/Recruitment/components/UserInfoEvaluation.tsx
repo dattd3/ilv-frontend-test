@@ -6,9 +6,11 @@ import IconArrowUp from 'assets/img/icon-arrow-up-full.svg';
 function UserInfoEvaluation({
   item,
   t,
+  templateUrl
 }: {
   item: ICandidateApplication;
   t: any;
+  templateUrl?: string
 }) {
   const [layoutHeight, setLayoutHeight] = useState<any>(0);
   const cadidateInfo = item.candidate || {};
@@ -60,9 +62,9 @@ function UserInfoEvaluation({
             {t("Expand")}
           </div>
         </div>
-        <button type="button" className="btn btn-outline-danger">
+        <a className="btn btn-outline-danger pe-auto" style={{cursor: templateUrl ? 'pointer' : 'not-allowed'}} href={templateUrl}>
           {t("tai_tep_tin")}
-        </button>
+        </a>
       </div>
       <div
         className="d-flex flex-column mt-3"
