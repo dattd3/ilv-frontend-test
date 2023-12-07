@@ -11,6 +11,7 @@ import { toast } from "react-toastify";
 import LoadingModal from '../../../components/Common/LoadingModal';
 import { Image } from 'react-bootstrap';
 import HOCComponent from '../../../components/Common/HOCComponent'
+import { UPDATE_KEYS_MAP } from '../InsuranceComponents/InsuranceData';
 
 const ExportInsuranceSocial = (props) => {
     const { t } = props;
@@ -164,14 +165,18 @@ const ExportInsuranceSocial = (props) => {
 
     const prepareDetailData = (_data) => {
         const infoDetail = _data.benefitClaim || {};
+        const requestInfoChange = JSON.parse(infoDetail.requestInfo || '{}');
+        let result = {};
         if (infoDetail.claimType == 3) {
             setType({ value: 3, label: 'Dưỡng sức' });
             const receiveBenefitsUnitInfo = infoDetail.receiveBenefitsUnitInfo ? JSON.parse(infoDetail.receiveBenefitsUnitInfo) : {};
             const inspectionDataInfo = infoDetail.inspectionDataInfo ? JSON.parse(infoDetail.inspectionDataInfo) : {}
             const receiveSubsidiesInfo = infoDetail.receiveSubsidiesInfo ? JSON.parse(infoDetail.receiveSubsidiesInfo) : {};
-            setData({
+            result = {
                 ...data,
                 convalesData: {
+                    hrComment: infoDetail.hrComment,
+                    updatedKeys: JSON.parse(infoDetail.updatedKeys || '[]'),
                     socialId: infoDetail.insuranceNumber || '',
                     healthId: '',
                     fullName: infoDetail.fullName || '',
@@ -199,7 +204,8 @@ const ExportInsuranceSocial = (props) => {
                     bankId: receiveSubsidiesInfo.bankCode || '',
                     bankName: receiveSubsidiesInfo.bankName || ''
                 },
-            })
+            };
+            result = fillDataChange(result, 'convalesData', infoDetail.updatedKeys, requestInfoChange);
 
         } else if (infoDetail.claimType == 2) {
             setType({ value: 2, label: 'Thai sản' });
@@ -207,10 +213,11 @@ const ExportInsuranceSocial = (props) => {
             const certificateInsuranceBenefit = infoDetail.certificateInsuranceBenefit ? JSON.parse(infoDetail.certificateInsuranceBenefit) : {}
             const motherDataInfo = infoDetail.motherDataInfo ? JSON.parse(infoDetail.motherDataInfo) : {};
             const receiveSubsidiesInfo = infoDetail.receiveSubsidiesInfo ? JSON.parse(infoDetail.receiveSubsidiesInfo) : {};
-
-            setData({
+            result = {
                 ...data,
                 maternityData: {
+                    hrComment: infoDetail.hrComment,
+                    updatedKeys: JSON.parse(infoDetail.updatedKeys || '[]'),
                     socialId: infoDetail.insuranceNumber || '',
                     healthId: '',
                     fullName: infoDetail.fullName || '',
@@ -261,7 +268,9 @@ const ExportInsuranceSocial = (props) => {
                     bankId: receiveSubsidiesInfo.bankCode || '',
                     bankName: receiveSubsidiesInfo.bankName || ''
                 }
-            })
+            };
+            result = fillDataChange(result, 'maternityData', infoDetail.updatedKeys, requestInfoChange);
+            
         } else if (infoDetail.claimType == 1) {
             setType({ value: 1, label: 'Ốm đau' });
             const sickChildrenInfo = infoDetail.sickChildrenInfo ? JSON.parse(infoDetail.sickChildrenInfo) : {};
@@ -269,9 +278,12 @@ const ExportInsuranceSocial = (props) => {
             const workingConditionInfo = infoDetail.workingConditionInfo ? JSON.parse(infoDetail.workingConditionInfo) : {};
             const diagnosisDiseaseInfo = infoDetail.diagnosisDiseaseInfo ? JSON.parse(infoDetail.diagnosisDiseaseInfo) : {};
             const receiveSubsidiesInfo = infoDetail.receiveSubsidiesInfo ? JSON.parse(infoDetail.receiveSubsidiesInfo) : {};
-            setData({
+            
+            result = {
                 ...data,
                 sickData: {
+                    hrComment: infoDetail.hrComment,
+                    updatedKeys: JSON.parse(infoDetail.updatedKeys || '[]'),
                     socialId: infoDetail.insuranceNumber || '',
                     healthId: '',
                     fullName: infoDetail.fullName || '',
@@ -304,9 +316,40 @@ const ExportInsuranceSocial = (props) => {
                     bankId: receiveSubsidiesInfo.bankCode,
                     bankName: receiveSubsidiesInfo.bankName
                 }
-            })
+            }
+            result = fillDataChange(result, 'sickData', infoDetail.updatedKeys, requestInfoChange);
         }
+        setData(result);
         setLoading(false);
+    }
+
+    const fillDataChange = (result, type,  updatedKeysString, requestInfoChange) => {
+        const updatedKeys = JSON.parse(updatedKeysString || '[]');
+        const clientMapping = [];
+        Object.keys(UPDATE_KEYS_MAP).map(keyClient => {
+            if(keyClient.startsWith(type) && updatedKeys.includes(UPDATE_KEYS_MAP[keyClient])) {
+                clientMapping.push({client: keyClient, be: UPDATE_KEYS_MAP[keyClient]});
+            }
+        });
+        clientMapping.map(mapping => {
+            if(mapping.client && mapping.be) {
+                let valueBE = _.get(requestInfoChange, mapping.be);
+                if(typeof valueBE == 'string') {
+                    if(moment(valueBE).isValid()) {
+                        valueBE = moment(valueBE).format('DD/MM/YYYY')
+                    } else if(valueBE.indexOf('{') != -1){ //check is JSON
+                        try {
+                            valueBE = JSON.parse(valueBE);
+                        }catch(err) {}
+                    }
+                }
+                if(typeof valueBE == 'object') {
+                    valueBE = valueBE.name;
+                } 
+                _.set(result, mapping.client, valueBE);
+            }
+        })
+        return result;
     }
 
     const handleTextInputChange = (e, name, subName) => {
