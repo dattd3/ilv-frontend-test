@@ -197,8 +197,7 @@ function Authorize(props) {
                             master_code: user.master_code || '',
                             cost_center: user?.cost_center,
                             insurance_number: user?.insurance_number,
-                            streetName: formatStringByMuleValue(user?.street_name),
-                            building: formatStringByMuleValue(user?.building),
+                            streetName: (user?.street_name === null || user?.street_name === '#') ? "" : user?.street_name,
                         });
                         FirebaseUpdateToken();
                     }
@@ -248,8 +247,7 @@ function Authorize(props) {
                         master_code: '',
                         cost_center: user?.cost_center,
                         insurance_number: user?.insurance_number || '',
-                        streetName: formatStringByMuleValue(user?.street_name),
-                        building: formatStringByMuleValue(user?.building),
+                        streetName: (user?.street_name === null || user?.street_name === '#') ? "" : user?.street_name,
                     });
                 })
                 .finally(result => {
