@@ -26,6 +26,9 @@ const EvaluationTabContent = ({ tasks, onOpenDetailModel }: any) => {
                       <div className="code">{t("RequestNo")}</div>
                     </th>
                     <th scope="col" className="status">
+                      <div className="groundwork">{t("Status")}</div>
+                    </th>
+                    <th scope="col" className="status">
                       <div className="groundwork">{t("apply_position")}</div>
                     </th>
                     <th scope="col" className="status">
@@ -68,6 +71,7 @@ const EvaluationTabContent = ({ tasks, onOpenDetailModel }: any) => {
                         <td className="code sticky-col pl-4">
                           <a className="task-title" style={{cursor: 'pointer'}} onClick={() => {onOpenDetailModel(item.id)}}>{item.id}</a>
                         </td>
+                        <td className="status">{item.status == 10 ? t('WaitingForEvaluation') : t('Feedbacked')}</td>
                         <td className="status">{requestInfo.jobTitle}</td>
                         <td className="status">{jobVacancy.unitName}</td>
                         <td className="status">{item.candidateName}</td>
