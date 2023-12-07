@@ -66,7 +66,7 @@ const EvaluationTabContent = ({ tasks, onOpenDetailModel }: any) => {
                     return (
                       <tr key={index}>
                         <td className="code sticky-col pl-4">
-                          <a className="task-title" onClick={() => {onOpenDetailModel(item.id)}}>{item.id}</a>
+                          <a className="task-title" style={{cursor: 'pointer'}} onClick={() => {onOpenDetailModel(item.id)}}>{item.id}</a>
                         </td>
                         <td className="status">{requestInfo.jobTitle}</td>
                         <td className="status">{jobVacancy.unitName}</td>

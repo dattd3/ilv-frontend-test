@@ -387,7 +387,7 @@ const EvaluationRecruitmentDetailModal = (props) => {
                 </div>
               </div>
               {candidateApplication ? (
-                <UserInfoEvaluation t={t} item={candidateApplication} />
+                <UserInfoEvaluation t={t} item={candidateApplication} templateUrl={evaluationInfo?.templateFileUrl}/>
               ) : null}
             </div>
 
