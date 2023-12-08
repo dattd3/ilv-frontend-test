@@ -737,7 +737,12 @@
 
     &.updated {
       color: #4099FF !important;
+      pre {
+        color: #4099FF !important;
+        margin-bottom: 0;
+      }
     }
+    
   }
   .detail1 {
     margin: 10px 0;
