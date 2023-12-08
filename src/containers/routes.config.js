@@ -900,6 +900,14 @@ const ROUTES = [
           },
           component: lazy(() => import("./MyVoucher/NoticeDetail")),
         },
+        {
+          key: "recruitment",
+          routeProps: {
+            exact: true,
+            path: map.Recruitment,
+          },
+          component: lazy(() => import("./Recruitment/")),
+        },
       ],
     },
   },
