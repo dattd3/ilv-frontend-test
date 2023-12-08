@@ -299,7 +299,7 @@ const CreateMaternityInsurance = ({
         <div className="row mv-10">
           <div className="col-4">
             <strong>{"Hình thức nhận"}</strong>
-            <div className={`detail ${checkHasChange('receiveType')}`}>{data.receiveType?.name || ''}</div>
+            <div className={`detail ${checkHasChange('receiveType')}`}>{data.receiveType || ''}</div>
           </div>
           <div className="col-4">
             <strong>{"Số tài khoản"}</strong>
