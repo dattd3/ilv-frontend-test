@@ -2043,6 +2043,23 @@
   "vi_tri": "Vị trí",
   "school": "Trường",
   "tai_tep_tin": "Tải tệp tin",
-  "thong_tin_co_ban": "Thông tin cơ bản"
-
+  "thong_tin_co_ban": "Thông tin cơ bản",
+  "chon_ky_danh_gia": "Chọn kỳ đánh giá",
+  "ten_muc_tieu": "Tên mục tiêu",
+  "trong_so": "Trọng số",
+  "muc_tieu_can_dat_duoc": "Mục tiêu cần đạt được",
+  "cbql_phe_duyet": "CBQL phê duyệt",
+  "khoi_phong_bo_phan": "Khối/Phòng/Bộ phận",
+  "tong_trong_so": "Tổng trọng số",
+  "tu_choi": "Từ chối",
+  "lua_chon_muc_tieu": "Lựa chọn mục tiêu",
+  "hoan_thanh_thong_tin": "Hoàn thành thông tin",
+  "yeu_cau_cua_ban_da_duoc_gui_di": "Yêu cầu của bạn đã được gửi đi!",
+  "ban_co_dong_y_phe_duyet_yeu_cau_nay": "Bạn có đồng ý phê duyệt yêu cầu này?",
+  "dong_y": "Đồng ý",
+  "xac_nhan_thu_hoi": "Xác nhận thu hồi",
+  "Next": "Tiếp theo",
+  "them_muc_tieu": "Thêm mục tiêu",
+  "tim_kiem_muc_tieu": "Tìm kiếm mục tiêu",
+  "thu_vien_muc_tieu": "Thư viện mục tiêu"
 }
