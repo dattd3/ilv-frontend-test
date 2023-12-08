@@ -959,6 +959,13 @@ const VinGroupForm = (props) => {
         return messageMapping[actionCode][formStatus][apiStatus]
     }
 
+    const handleChangeOpinion = (key, e) => {
+        SetEvaluationFormDetailState({
+            ...evaluationFormDetailState,
+            [key]: e?.target?.value || '',
+        })
+    }
+
     const handleSubmit = async (actionCode, isApprove, needValidate = true) => {
         if (needValidate) { // Validate mandatory data
             const isValid = isDataValid()
@@ -1063,6 +1070,12 @@ const VinGroupForm = (props) => {
 
     const isOffLineType = evaluationFormDetailState?.formType === 'OFF'
 
+    // const isDisabledStaffGeneralComment = !evaluationFormDetailState?.isEdit || evaluationFormDetailState?.status != evaluationStatus.launch
+    // const isShowManagerGeneralComment = Number(evaluationFormDetailState?.status) > evaluationStatus.launch
+
+    const isDisabledStaffGeneralComment = evaluationFormDetailState?.isEdit ? (showByManager || evaluationFormDetailState?.status != evaluationStatus.launch) : true
+    const isDisabledManagerGeneralComment = evaluationFormDetailState?.isEdit ? (!showByManager || (showByManager && Number(evaluationFormDetailState?.status) >= Number(evaluationStatus.qlttAssessment))) : true
+
     return (
         <>
             <LoadingModal show={isLoading} />
@@ -1128,6 +1141,46 @@ const VinGroupForm = (props) => {
                         )
                     })
                 }
+                <div className="general-comment-block">
+                    <div className="self">
+                        <p className="label">{t("StaffGeneralComment")}</p>
+                        {
+                            isDisabledStaffGeneralComment
+                            ? (
+                                <div className="comment-content" dangerouslySetInnerHTML={{
+                                    __html: purify.sanitize(evaluationFormDetailState?.employeeOpinion?.trim() || ""),
+                                }} />
+                            )
+                            : (
+                                <textarea 
+                                    rows={3} 
+                                    placeholder={t("EvaluationDetailPartSelectScoreInput")} 
+                                    value={evaluationFormDetailState?.employeeOpinion || ""} 
+                                    onChange={(e) => handleChangeOpinion('employeeOpinion', e)}
+                                />
+                            )
+                        }
+                    </div>
+                    <div className="manager">
+                        <p className="label">{t("ManagerGeneralComment")}</p>
+                        {
+                            isDisabledManagerGeneralComment
+                            ? (
+                                <div className="comment-content" dangerouslySetInnerHTML={{
+                                    __html: purify.sanitize(evaluationFormDetailState?.opinion?.trim() || ""),
+                                }} />
+                            )
+                            : (
+                                <textarea 
+                                    rows={3} 
+                                    placeholder={t("EvaluationDetailPartSelectScoreInput")} 
+                                    value={evaluationFormDetailState?.opinion || ""} 
+                                    onChange={(e) => handleChangeOpinion('opinion', e)}
+                                />
+                            )
+                        }
+                    </div>
+                </div>
             </div>
             <div className="button-block" style={isOffLineType ? { display: 'none' } : {}} >
                 <Buttons 
