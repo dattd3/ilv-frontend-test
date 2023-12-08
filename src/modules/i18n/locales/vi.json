@@ -2015,6 +2015,8 @@
   "ListRequestCreated": "DANH SÁCH YÊU CẦU ĐÃ TẠO",
   "InformationApprover": "Thông tin CBLĐ phê duyệt",
   "MasterCode": "Mã VG",
+  "StaffGeneralComment": "Nhận xét chung (của CBNV)",
+  "ManagerGeneralComment": "Nhận xét chung (của QLTT)",
   "history_evaluation": "LỊCH SỬ ĐÁNH GIÁ",
   "Menu_Recruitment": "Tuyển dụng",
   "apply_position": "Vị trí ứng tuyển",
