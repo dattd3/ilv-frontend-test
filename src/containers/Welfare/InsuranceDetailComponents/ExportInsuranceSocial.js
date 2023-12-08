@@ -199,7 +199,7 @@ const ExportInsuranceSocial = (props) => {
                     resolveDate: infoDetail.settlementPeriod ? moment(infoDetail.settlementPeriod).format('DD/MM/YYYY') : '',
                     addtionContent: infoDetail.additionalPhaseContent || '',
                     addtionDate: infoDetail.additionalPhasePeriod ? moment(infoDetail.additionalPhasePeriod).format('DD/MM/YYYY') : '',
-                    receiveType: receiveSubsidiesInfo.receivingForm || '',
+                    receiveType: receiveSubsidiesInfo.receivingForm?.name || '',
                     accountNumber: receiveSubsidiesInfo.bankAccountNumber || '',
                     accountName: receiveSubsidiesInfo.accountName || '',
                     bankId: receiveSubsidiesInfo.bankCode || '',
@@ -263,7 +263,7 @@ const ExportInsuranceSocial = (props) => {
                     resolveDate: infoDetail.settlementPeriod ? moment(infoDetail.settlementPeriod).format('DD/MM/YYYY') : '',
                     addtionContent: infoDetail.additionalPhaseContent || '',
                     addtionDate: infoDetail.additionalPhasePeriod ? moment(infoDetail.additionalPhasePeriod).format('DD/MM/YYYY') : '',
-                    receiveType: receiveSubsidiesInfo.receivingForm || '',
+                    receiveType: receiveSubsidiesInfo.receivingForm?.name || '',
                     accountNumber: receiveSubsidiesInfo.bankAccountNumber || '',
                     accountName: receiveSubsidiesInfo.accountName || '',
                     bankId: receiveSubsidiesInfo.bankCode || '',
@@ -279,7 +279,6 @@ const ExportInsuranceSocial = (props) => {
             const workingConditionInfo = infoDetail.workingConditionInfo ? JSON.parse(infoDetail.workingConditionInfo) : {};
             const diagnosisDiseaseInfo = infoDetail.diagnosisDiseaseInfo ? JSON.parse(infoDetail.diagnosisDiseaseInfo) : {};
             const receiveSubsidiesInfo = infoDetail.receiveSubsidiesInfo ? JSON.parse(infoDetail.receiveSubsidiesInfo) : {};
-            
             result = {
                 ...data,
                 sickData: {
@@ -297,7 +296,7 @@ const ExportInsuranceSocial = (props) => {
                     note: infoDetail.description || '',
                     workingCondition: workingConditionInfo.name || '',
                     leaveOfWeek: infoDetail.weeklyRestDay || '',
-                    hospitalLine: certificateInsuranceBenefit.hospitalLine || '',
+                    hospitalLine: certificateInsuranceBenefit.hospitalLine?.name || '',
                     seri: certificateInsuranceBenefit.seriNumber || '',
                     fromDate: certificateInsuranceBenefit.fromDate ? moment(certificateInsuranceBenefit.fromDate).format('DD/MM/YYYY') : '',
                     toDate: certificateInsuranceBenefit.toDate ? moment(certificateInsuranceBenefit.toDate).format('DD/MM/YYYY') : '',
@@ -311,7 +310,7 @@ const ExportInsuranceSocial = (props) => {
                     resolveDate: infoDetail.settlementPeriod ? moment(infoDetail.settlementPeriod).format('DD/MM/YYYY') : '',
                     addtionContent: infoDetail.additionalPhaseContent || '',
                     addtionDate: infoDetail.additionalPhasePeriod ? moment(infoDetail.additionalPhasePeriod).format('DD/MM/YYYY') : '',
-                    receiveType: receiveSubsidiesInfo.receivingForm || '',
+                    receiveType: receiveSubsidiesInfo.receivingForm?.name || '',
                     accountNumber: receiveSubsidiesInfo.bankAccountNumber || '',
                     accountName: receiveSubsidiesInfo.accountName || '',
                     bankId: receiveSubsidiesInfo.bankCode,
@@ -320,6 +319,7 @@ const ExportInsuranceSocial = (props) => {
             }
             result = fillDataChange(result, 'sickData', infoDetail.updatedKeys, requestInfoChange);
         }
+        console.log(result);
         setData(result);
         setLoading(false);
     }
@@ -336,7 +336,7 @@ const ExportInsuranceSocial = (props) => {
             if(mapping.client && mapping.be) {
                 let valueBE = _.get(requestInfoChange, mapping.be);
                 if(typeof valueBE == 'string') {
-                    if(moment(valueBE).isValid()) {
+                    if(moment(valueBE.replace("T00:00:00", ""), "YYYY-MM-DD", true).isValid()) {
                         valueBE = moment(valueBE).format('DD/MM/YYYY')
                     } else if(valueBE.indexOf('{') != -1){ //check is JSON
                         try {
