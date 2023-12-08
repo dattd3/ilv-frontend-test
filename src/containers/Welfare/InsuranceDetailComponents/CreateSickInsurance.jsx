@@ -111,7 +111,7 @@ const CreateSickInsurance = ({
         <div className="row">
           <div className="col-8">
             <strong>{"Tuyến bệnh viện"}</strong>
-            <div className={`detail ${checkHasChange('hospitalLine')}`}>{data.hospitalLine?.name || ''}</div>
+            <div className={`detail ${checkHasChange('hospitalLine')}`}>{data.hospitalLine || ''}</div>
           </div>
           <div className="col-4">
             <strong>{"Số Seri"}</strong>
@@ -200,7 +200,7 @@ const CreateSickInsurance = ({
         <div className="row mv-10">
           <div className="col-4">
             <strong>{"Hình thức nhận"}</strong>
-            <div className={`detail ${checkHasChange('receiveType')}`}>{data.receiveType?.name || ''}</div>
+            <div className={`detail ${checkHasChange('receiveType')}`}>{data.receiveType || ''}</div>
           </div>
           <div className="col-4">
             <strong>{"Số tài khoản"}</strong>
