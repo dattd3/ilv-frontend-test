@@ -157,6 +157,7 @@ const MapConfig = {
   VingroupEmployeePrivileges: "/vingroup-employee-privileges",
   MyVoucher: "/my-voucher",
   MyVoucherNoticeDetail: "/my-voucher/notices/:id",
+  Recruitment: "/recruitment"
 };
 
 export default MapConfig;

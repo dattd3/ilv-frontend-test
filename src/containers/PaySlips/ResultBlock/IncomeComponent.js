@@ -120,7 +120,7 @@ function IncomeComponent(props) {
                     return <React.Fragment key={index}>
                         <TrTable
                             row={row}
-                            rowIndex={row.index + '.' + row.label}
+                            rowIndex={row.index + '. ' + row.label}
                             tdclsName="special bold color-black"
                             spanclsName="root"
                             clsName="root"
@@ -129,7 +129,7 @@ function IncomeComponent(props) {
                         />
                         {row.level2.map((row2, index2) => {
                             const lv3Number = row2.isSkipLevel4 ? row2.level3.filter(rw3 => rw3.field && (payslipCalculate[`${rw3.field}${currencyKeyMapping[currencySelected]}`] || payslipCalculate[`${rw3.field}${taxIncludedPrefix}${currencyKeyMapping[currencySelected]}`] || payslipCalculate[`${rw3.field}${withoutTaxPrefix}${currencyKeyMapping[currencySelected]}`])).length : row2.level3.length
-                            const lv2Label = lv3Number > 0 && !row2.isSkipSumLabel ? row2.label + ' = Sum (' + row.index + '.' + (index2 + 1) + '.1 : ' + row.index + '.' + (index2 + 1) + '.' + lv3Number + ')' : row2.label
+                            const lv2Label = lv3Number > 0 && !row2.isSkipSumLabel ? row2.label : row2.label
                             let countIndex3 = 0
                             return <React.Fragment key={index2}>
                                 <TrTable
@@ -143,7 +143,7 @@ function IncomeComponent(props) {
                                 />
                                 {row2.level3.map((row3, index3) => {
                                     const lv4Number = row3.level4 ? row3.level4.filter(rw4 => rw4.field && (payslipCalculate[`${rw4.field}${currencyKeyMapping[currencySelected]}`] || payslipCalculate[`${rw4.field}${taxIncludedPrefix}${currencyKeyMapping[currencySelected]}`] || payslipCalculate[`${rw4.field}${withoutTaxPrefix}${currencyKeyMapping[currencySelected]}`])).length : 0
-                                    const lv3Label = lv4Number > 0 && !row3.isSkipSumLabel ? row3.label + ' = Sum (' + row.index + '.' + (index2 + 1) + '.' + (index3 + 1) + '.1 : ' + row.index + '.' + (index2 + 1) + '.' + (index3 + 1) + '.' + lv4Number + ')' : row3.label
+                                    const lv3Label = lv4Number > 0 && !row3.isSkipSumLabel ? row3.label : row3.label
 
                                     if (row3.field && (row3.level4 || payslipCalculate[`${row3.field}${currencyKeyMapping[currencySelected]}`] || payslipCalculate[`${row3.field}${taxIncludedPrefix}${currencyKeyMapping[currencySelected]}`] || payslipCalculate[`${row3.field}${withoutTaxPrefix}${currencyKeyMapping[currencySelected]}`])) {
                                         countIndex3++

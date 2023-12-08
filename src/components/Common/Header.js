@@ -338,6 +338,7 @@ function Header(props) {
                 const isEvaluation = [Constants.notificationType.NOTIFICATION_MY_EVALUATION, Constants.notificationType.NOTIFICATION_LEAD_EVALUATION].includes(Number(item?.type))
                 const evaluationData = {
                     isEvaluation: isEvaluation,
+                    isRecruitmentEvaluation: item.detailType == 'EVALUATE' && item.requestTypeId == 30,
                     isFromManager: item?.type == Constants.notificationType.NOTIFICATION_LEAD_EVALUATION,
                     ...(isEvaluation && { data: JSON.parse(item?.formType) }),
                 }
