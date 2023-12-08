@@ -91,13 +91,21 @@ const CreateMaternityInsurance = ({
         <div className="row mv-10">
           <div className="col-12">
             <strong>{"Lý do đề nghị điều chỉnh"}</strong>
-            <div className={`detail ${checkHasChange('reason')}`}>{data.reason}</div>
+            <div className={`detail ${checkHasChange('reason')}`}>
+              <pre>
+                {data.reason}
+              </pre>
+            </div>
           </div>
         </div>
         <div className="row mv-10">
           <div className="col-12">
             <strong>{"Ghi chú"}</strong>
-            <div className={`detail ${checkHasChange('note')}`}>{data.note}</div>
+            <div className={`detail ${checkHasChange('note')}`}>
+              <pre>
+                {data.note}
+              </pre>
+              </div>
           </div>
         </div>
       </div>
@@ -326,7 +334,11 @@ const CreateMaternityInsurance = ({
       <div className="box shadow cbnv" style={{paddingTop: '0px', paddingBottom: '0px'}}>
         <div className="row">
           <div className="col-12">
-            <div className={`detail`}>{data.hrComment || ''}</div>
+            <div className={`detail`}>
+              <pre>
+                {data.hrComment || ''}
+              </pre>
+            </div>
           </div>
         </div>
       </div>
