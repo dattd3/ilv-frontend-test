@@ -120,23 +120,23 @@ const EmployeeOption = (props) => {
   );
 };
 
-const renderReasonTooltipTitle = (item) => {
+const renderReasonTooltipTitle = (t, item) => {
   const { userInfo, approverInfo, lastRecallBy, rejectReson } = item,
     user = JSON.parse(userInfo || "{}"),
     approverUser = JSON.parse(approverInfo || "{}");
   if (item.status === REQUEST_STATUS.REJECT && rejectReson) {
-    return "Lý do từ chối";
+    return t("lyDoTuChoi");
   }
   if (
     lastRecallBy
       ?.toLowerCase()
       ?.includes(approverUser?.account?.toLowerCase()) && rejectReson
   )
-    return "Lý do thu hồi của CBQL";
+    return t("ly_do_thu_hoi_cua_cbql");
   if (lastRecallBy?.toLowerCase()?.includes(user?.account?.toLowerCase()) && rejectReson)
-    return "Lý do thu hồi của CBNV";
+    return t("ly_do_thu_hoi_cua_cbnv");
 
-  return "Ý kiến của CBQL phê duyệt"; // status = 2/3/4 : từ chối
+  return t("y_kien_cua_cbql_phe_duyet"); // status = 2/3/4 : từ chối
 };
 
 function TargetManagement() {
@@ -301,13 +301,13 @@ function TargetManagement() {
   const updateStatusTargetRegister = async (id, type, reason = "") => {
     if (id && type) {
       setLoading(true);
-      let typeMessage = "Xoá yêu cầu ";
+      let typeMessage = t("xoa_yeu_cau");
       if (type === STATUS_TYPES.APPROVE) {
-        typeMessage = "Phê duyệt yêu cầu ";
+        typeMessage = t("phe_duyet_yeu_cau");
       } else if (type === STATUS_TYPES.REJECT) {
-        typeMessage = "Từ chối phê duyệt ";
+        typeMessage = t("RejectApprove");
       } else if (type === STATUS_TYPES.RECALL) {
-        typeMessage = "Thu hồi yêu cầu ";
+        typeMessage = t("thu_hoi_yeu_cau");
       }
       try {
         const response = await axios.post(
@@ -327,13 +327,13 @@ function TargetManagement() {
         } else {
           setModalManagement({
             type: MODAL_TYPES.SUCCESS,
-            data: `${typeMessage} thành công!`,
+            data: `${typeMessage} ${t("Successful")}!`,
           });
         }
       } catch (error) {
         setModalManagement({
           type: MODAL_TYPES.FAIL,
-          data: `${typeMessage} thất bại!`,
+          data: `${typeMessage} ${t("Failed")}!`,
         });
       }
       setLoading(false);
@@ -430,8 +430,8 @@ function TargetManagement() {
         return (
           <ConfirmModal
             show={true}
-            confirmHeader="XÁC NHẬN XOÁ"
-            confirmContent="Bạn chắc chắn muốn xoá yêu cầu này?"
+            confirmHeader={t("xac_nhan_xoa")}
+            confirmContent={t("ban_chac_chan_muon_xoa_yeu_cau_nay")}
             onHide={onHideModal}
             onCancelClick={onHideModal}
             onAcceptClick={() =>
@@ -449,8 +449,8 @@ function TargetManagement() {
         return (
           <ConfirmModal
             show={true}
-            confirmHeader="XÁC NHẬN PHÊ DUYỆT"
-            confirmContent={t("ban_co_dong_y_phe_duyet_yeu_cau_nay")}
+            confirmHeader={t("ApproveRequest")}
+            confirmContent={t("ConfirmApproveRequest")}
             onHide={onHideModal}
             onCancelClick={onHideModal}
             onAcceptClick={() =>
@@ -760,7 +760,7 @@ function TargetManagement() {
                         >
                           <div className="tooltip-content">
                             <div className="tooltip-header">
-                              {renderReasonTooltipTitle(item)}
+                              {renderReasonTooltipTitle(t, item)}
                             </div>
                             <div className="tooltip-body">{item.rejectReson || item.reviewComment}</div>
                           </div>

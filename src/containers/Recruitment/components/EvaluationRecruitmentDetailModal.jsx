@@ -465,7 +465,7 @@ const EvaluationRecruitmentDetailModal = (props) => {
                                 >
                                   <img
                                     src={IconReset}
-                                    alt="Xóa"
+                                    alt={t("Remove")}
                                     className="ic-action ic-reset"
                                   />
                                 </span>

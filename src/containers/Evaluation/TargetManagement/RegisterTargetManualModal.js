@@ -159,10 +159,10 @@ export default function TargetRegistrationManualModal(props) {
         });
         setTargetToggleStatuses(Array(data.listTarget.length).fill(!viewOnly));
       } else {
-        toast.error(`Không tìm thấy mục tiêu đăng ký! Vui lòng kiểm tra lại`);
+        toast.error(t("khong_tim_thay_muc_tieu_dang_ky"));
       }
     } catch (e) {
-      toast.error(`Không tìm thấy mục tiêu đăng ký! Vui lòng kiểm tra lại`);
+      toast.error(t("khong_tim_thay_muc_tieu_dang_ky"));
     }
     setIsLoading(false);
   };
@@ -251,7 +251,7 @@ export default function TargetRegistrationManualModal(props) {
       return setStatusModalManagement({
         isShow: true,
         isSuccess: false,
-        content: "Yêu cầu tổng trọng số bằng 100%. Vui lòng kiểm tra lại!",
+        content: `* ${t("yeu_cau_tong_trong_so_100")}`,
       });
     }
     setIsLoading(true);
@@ -294,14 +294,14 @@ export default function TargetRegistrationManualModal(props) {
         setStatusModalManagement({
           isShow: true,
           isSuccess: true,
-          content: "Lưu yêu cầu thành công!",
+          content: t("luu_yeu_cau_thanh_cong"),
         });
       }
     } catch {
       setStatusModalManagement({
         isShow: true,
         isSuccess: false,
-        content: "Lưu yêu cầu thất bại!",
+        content: t("luu_yeu_cau_that_bai"),
       });
     }
     setIsLoading(false);
@@ -341,11 +341,11 @@ export default function TargetRegistrationManualModal(props) {
       } else {
         setModalManagement({
           type: MODAL_TYPES.SUCCESS,
-          data: t("yeu_cau_cua_ban_da_duoc_gui_di"),
+          data: t("RequestSent"),
         });
       }
     } catch {
-      toast.error("Lưu yêu cầu thất bại!");
+      toast.error(t("luu_yeu_cau_that_bai"));
     }
     setIsEditing(false);
   };
@@ -492,7 +492,7 @@ export default function TargetRegistrationManualModal(props) {
                 target?.lastUpdateBy?.toLowerCase() ===
                   approverJSON?.account?.toLowerCase() && (
                   <div className="yellow-color">
-                    * Mục tiêu đã được QLTT chỉnh sửa
+                    * {t("muc_tieu_da_duoc_qltt_chinh_sua")}
                   </div>
                 )}
               {isEditing && formValues.listTarget?.length > 1 && (
@@ -501,7 +501,7 @@ export default function TargetRegistrationManualModal(props) {
                   onClick={(event) => onRemoveTarget(event, index)}
                 >
                   <IconRedRemove />
-                  &nbsp; Xóa
+                  &nbsp; {t("Remove")}
                 </button>
               )}
             </div>
@@ -640,7 +640,7 @@ export default function TargetRegistrationManualModal(props) {
                     (Number(target.weight) < 1 ||
                       Number(target.weight) > 100) && (
                       <div className="red-color">
-                        * Vui lòng nhập trọng số trong khoảng 1 - 100
+                        * {t("trong_so_trong_khoang_1_100")}
                       </div>
                     )}
                 </div>
@@ -696,7 +696,7 @@ export default function TargetRegistrationManualModal(props) {
         {/* Hiển thị lý do thu hồi của CBNV */}
         {isShowRevocationReasonByEmployee && (
           <div className="mb-15">
-            <div className="mb-15">Lý do thu hồi của CBNV</div>
+            <div className="mb-15">{t("ly_do_thu_hoi_cua_cbnv")}</div>
             <div className="read-only-text">{data.rejectReson || ""}</div>
           </div>
         )}
@@ -751,7 +751,7 @@ export default function TargetRegistrationManualModal(props) {
               />
             </div>
             <div className="col-xl-4">
-              <div className="mb-15">{t("khoi_phong_bo_phan")}</div>
+              <div className="mb-15">{t("DepartmentManage")}</div>
               <Form.Control
                 readOnly
                 className="form-input"
@@ -773,8 +773,8 @@ export default function TargetRegistrationManualModal(props) {
               <div className="col-xl-12">
                 <div className="mb-15">
                   {data?.status === REQUEST_STATUS.REJECT
-                    ? "Lý do từ chối"
-                    : "Lý do thu hồi của CBQL"}
+                    ? t("lyDoTuChoi")
+                    : t("ly_do_thu_hoi_cua_cbql")}
                 </div>
                 <Form.Control
                   readOnly
@@ -788,8 +788,7 @@ export default function TargetRegistrationManualModal(props) {
         <div className="custom-modal-footer">
           {!approverJSON && isFetchedApprover && (
             <div className="red-color mb-15">
-              * Chưa có thông tin CBQL phê duyệt. Vui lòng liên hệ Nhân sự để
-              được hỗ trợ!
+              {`* ${t("chua_co_thong_tin_cbql_phe_duyet")}`}
             </div>
           )}
 
@@ -799,12 +798,12 @@ export default function TargetRegistrationManualModal(props) {
             (isEditing ||
               (isApprover && data?.status === REQUEST_STATUS.PROCESSING)) && (
               <div className="red-color mb-15">
-                * Yêu cầu tổng trọng số bằng 100%. Vui lòng kiểm tra lại!
+                {`* ${t("yeu_cau_tong_trong_so_100")}`}
               </div>
             )}
           {isApprover && showRequiredWarning && !checkIsFormValidApprover() && (
             <div className="red-color mb-15">
-              * Vui lòng nhập đầy đủ thông tin bắt buộc!
+              {`* ${t("vui_long_nhap_cac_thong_tin_bat_buoc")}`}
             </div>
           )}
           <div className="modal-footer-action">
@@ -865,7 +864,7 @@ export default function TargetRegistrationManualModal(props) {
                           style={{ marginRight: 0 }}
                         >
                           <IconRecall />
-                          &nbsp; Thu hồi
+                          &nbsp; {t("Recall")}
                         </button>
                       )}
                     </>

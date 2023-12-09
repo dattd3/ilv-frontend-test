@@ -31,7 +31,7 @@ export default function RejectConfirmModal(props) {
       <Modal.Header closeButton>
         <div className="modal-title">
           {type === MODAL_TYPES.REJECT_CONFIRM ? (
-            <>XÁC NHẬN TỪ CHỐI</>
+            <>{t("xac_nhan_tu_choi")}</>
           ) : (
             <>{t("xac_nhan_thu_hoi")}</>
           )}
@@ -43,11 +43,11 @@ export default function RejectConfirmModal(props) {
             {type === MODAL_TYPES.REJECT_CONFIRM ? (
               <>
                 {" "}
-                Lý do <span className="red-color">(*)</span>
+                {t("Reason")} <span className="red-color">(*)</span>
               </>
             ) : (
               <>
-                Lý do thu hồi <span className="red-color">(*)</span>
+                {t("ly_do_thu_hoi")} <span className="red-color">(*)</span>
               </>
             )}
           </div>
