@@ -10,6 +10,7 @@ import {
   CONVALES_PLAN,
   DECLARE_FORM_OPTIONS,
   RECEIVE_TYPE,
+  UPDATE_KEYS_MAP,
 } from "./InsuranceData";
 import Constants from "../../../commons/Constants";
 import _ from "lodash";
@@ -236,6 +237,11 @@ const CreateConvalesInsurance = ({
     return false;
   }
 
+  const checkHasChange = (key) => {
+    const actualKey = 'convalesData.' + key;
+    const mappkey = UPDATE_KEYS_MAP[actualKey];
+    return data.updatedKeys?.includes(mappkey);
+  }
   return (
     <>
       {/* YÊU CẦU BẢO HIỂM Y TẾ */}
@@ -251,7 +257,7 @@ const CreateConvalesInsurance = ({
               isClearable={false}
               value={type}
               onChange={(e) => setType(e)}
-              className="input mv-10"
+              className={`input mv-10 ${checkHasChange('type')}`}
               isDisabled={!isCreateMode}
               styles={{ menu: (provided) => ({ ...provided, zIndex: 2 }) }}
             />
@@ -265,7 +271,7 @@ const CreateConvalesInsurance = ({
               isClearable={false}
               value={data?.declareForm}
               onChange={(e) => handleChangeSelectInputs(e, "declareForm")}
-              className="input mv-10"
+              className={`input mv-10 ${checkHasChange('declareForm')}`}
               isDisabled={!isCreateMode}
               styles={{ menu: (provided) => ({ ...provided, zIndex: 2 }) }}
             />
@@ -294,7 +300,7 @@ const CreateConvalesInsurance = ({
               placeholderText={t("Select")}
               locale={t("locale")}
               disabled={!isCreateMode}
-              className="form-control input"
+              className={`form-control input ${checkHasChange('dateRequest')}`}
               styles={{ width: "100%" }}
             />
           </div>
@@ -321,7 +327,7 @@ const CreateConvalesInsurance = ({
               dateFormat="dd/MM/yyyy"
               placeholderText={t("Select")}
               locale={t("locale")}
-              className="form-control input"
+              className={`form-control input ${checkHasChange('dateLastResolved')}`}
               styles={{ width: "100%" }}
             />
           </div>
@@ -335,7 +341,7 @@ const CreateConvalesInsurance = ({
               value={data.plan}
               isDisabled={!isCreateMode}
               onChange={(e) => handleChangeSelectInputs(e, "plan")}
-              className="input mv-10"
+              className={`input mv-10 ${checkHasChange('plan')}`}
               styles={{ menu: (provided) => ({ ...provided, zIndex: 2 }) }}
             />
             {errors["plan"] ? (
@@ -351,7 +357,7 @@ const CreateConvalesInsurance = ({
               onChange={(e) => handleTextInputChange(e, "note")}
               rows={3}
               disabled={!isCreateMode}
-              className="mv-10 form-control input w-100"
+              className={`mv-10 form-control input w-100 ${checkHasChange('note')}`}
             />
           </div>
         </div>
@@ -401,7 +407,7 @@ const CreateConvalesInsurance = ({
               dateFormat="dd/MM/yyyy"
               placeholderText={t("Select")}
               locale={t("locale")}
-              className="form-control input"
+              className={`form-control input ${checkHasChange('startWork')}`}
               styles={{ width: "100%" }}
             />
           </div>
@@ -420,7 +426,7 @@ const CreateConvalesInsurance = ({
               disabled={!isCreateMode}
               onChange={(e) => handleTextInputChange(e, "seri")}
               type="text"
-              className="form-control input mv-10 w-100"
+              className={`form-control input mv-10 w-100 ${checkHasChange('seri')}`}
               name="inputName"
               autoComplete="off"
             />
@@ -443,7 +449,7 @@ const CreateConvalesInsurance = ({
               dateFormat="dd/MM/yyyy"
               placeholderText={t("Select")}
               locale={t("locale")}
-              className="form-control input"
+              className={`form-control input ${checkHasChange('fromDate')}`}
               disabled={!isCreateMode}
               styles={{ width: "100%" }}
             />
@@ -466,7 +472,7 @@ const CreateConvalesInsurance = ({
               dateFormat="dd/MM/yyyy"
               placeholderText={t("Select")}
               locale={t("locale")}
-              className="form-control input"
+              className={`form-control input ${checkHasChange('toDate')}`}
               disabled={!isCreateMode}
               styles={{ width: "100%" }}
             />
@@ -483,7 +489,7 @@ const CreateConvalesInsurance = ({
               value={data.total}
               onChange={(e) => handleTextInputChange(e, "total")}
               type="number"
-              className="form-control input mv-10 w-100"
+              className={`form-control input mv-10 w-100 ${checkHasChange('total')}`}
               name="inputName"
               disabled={!isCreateMode}
               autoComplete="off"
@@ -505,7 +511,7 @@ const CreateConvalesInsurance = ({
               value={data.declineRate}
               onChange={(e) => handleTextInputChange(e, "declineRate")}
               type="text"
-              className="form-control input mv-10 w-100"
+              className={`form-control input mv-10 w-100 ${checkHasChange('declineRate')}`}
               name="inputName"
               autoComplete="off"
               disabled={!isCreateMode}
@@ -532,7 +538,7 @@ const CreateConvalesInsurance = ({
               placeholderText={t("Select")}
               locale={t("locale")}
               disabled={!isCreateMode}
-              className="form-control input"
+              className={`form-control input ${checkHasChange('assessmentDate')}`}
               styles={{ width: "100%" }}
             />
           </div>
@@ -549,7 +555,7 @@ const CreateConvalesInsurance = ({
               value={data.resolveContent}
               onChange={(e) => handleTextInputChange(e, "resolveContent")}
               type="text"
-              className="form-control input mv-10 w-100"
+              className={`form-control input mv-10 w-100 ${checkHasChange('resolveContent')}`}
               name="inputName"
               autoComplete="off"
               disabled={!isCreateMode}
@@ -576,7 +582,7 @@ const CreateConvalesInsurance = ({
               dateFormat="dd/MM/yyyy"
               placeholderText={t("Select")}
               locale={t("locale")}
-              className="form-control input"
+              className={`form-control input ${checkHasChange('resolveDate')}`}
               styles={{ width: "100%" }}
             />
           </div>
@@ -593,7 +599,7 @@ const CreateConvalesInsurance = ({
               value={data.addtionContent}
               onChange={(e) => handleTextInputChange(e, "addtionContent")}
               type="text"
-              className="form-control input mv-10 w-100"
+              className={`form-control input mv-10 w-100 ${checkHasChange('addtionContent')}`}
               name="inputName"
               autoComplete="off"
               disabled={!isCreateMode}
@@ -620,7 +626,7 @@ const CreateConvalesInsurance = ({
               dateFormat="dd/MM/yyyy"
               placeholderText={t("Select")}
               locale={t("locale")}
-              className="form-control input"
+              className={`form-control input ${checkHasChange('addtionDate')}`}
               styles={{ width: "100%" }}
             />
           </div>
@@ -643,7 +649,7 @@ const CreateConvalesInsurance = ({
               value={data.receiveType}
               isDisabled={!isCreateMode}
               onChange={(e) => handleChangeSelectInputs(e, "receiveType")}
-              className="input mv-10"
+              className={`input mv-10 ${checkHasChange('receiveType')}`}
               styles={{ menu: (provided) => ({ ...provided, zIndex: 2 }) }}
             />
             {errors["receiveType"] ? (
@@ -659,7 +665,7 @@ const CreateConvalesInsurance = ({
               value={data.accountNumber}
               onChange={(e) => handleTextInputChange(e, "accountNumber")}
               type="text"
-              className="form-control input mv-10 w-100"
+              className={`form-control input mv-10 w-100 ${checkHasChange('accountNumber')}`}
               name="inputName"
               disabled={!isCreateMode}
               autoComplete="off"
@@ -676,7 +682,7 @@ const CreateConvalesInsurance = ({
               onChange={(e) => handleTextInputChange(e, "accountName")}
               type="text"
               disabled={!isCreateMode}
-              className="form-control input mv-10 w-100"
+              className={`form-control input mv-10 w-100 ${checkHasChange('accountName')}`}
               name="inputName"
               autoComplete="off"
             />
@@ -695,7 +701,7 @@ const CreateConvalesInsurance = ({
               value={data.bankId}
               onChange={(e) => handleTextInputChange(e, "bankId")}
               type="text"
-              className="form-control input mv-10 w-100"
+              className={`form-control input mv-10 w-100 ${checkHasChange('bankId')}`}
               name="inputName"
               autoComplete="off"
               disabled={!isCreateMode}
@@ -713,7 +719,7 @@ const CreateConvalesInsurance = ({
               value={data.bankName}
               onChange={(e) => handleTextInputChange(e, "bankName")}
               type="text"
-              className="form-control input mv-10 w-100"
+              className={`form-control input mv-10 w-100 ${checkHasChange('bankName')}`}
               name="inputName"
               disabled={!isCreateMode}
               autoComplete="off"

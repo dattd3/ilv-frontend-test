@@ -423,7 +423,7 @@ export const Navigation = [
     icon: "c-recruitment",
     label: "Menu_Recruitment",
     to: map.Recruitment,
-    role: "U"
+    role: [...Constants.MODULE_COMPANY_AVAILABE[Constants.MODULE.DANHGIA_TUYENDUNG]]
   },
   {
     id: 21,
