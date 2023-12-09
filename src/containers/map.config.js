@@ -69,7 +69,6 @@ const MapConfig = {
   Registration: "/registration",
   RegistrationEdit: "/registration/:id/edit",
   RequestTaskEdit: "/tasks-request/:id/:childId/edit",
-  ApprovalTaskDetail: "/tasks-approval/:id",
   RegistrationDetailRequest: "/registration/:id/:childId/request",
   RegistrationDetailApproval: "/registration/:id/:childId/approval",
   RegistrationDetailConsent: "/registration/:id/:childId/consent",
