@@ -341,7 +341,7 @@ export default function TargetRegistrationManualModal(props) {
       } else {
         setModalManagement({
           type: MODAL_TYPES.SUCCESS,
-          data: "Yêu cầu của bạn đã được gửi đi!",
+          data: t("yeu_cau_cua_ban_da_duoc_gui_di"),
         });
       }
     } catch {
@@ -433,7 +433,7 @@ export default function TargetRegistrationManualModal(props) {
       </Modal.Header>
       <Modal.Body>
         <div>
-          Chọn kỳ đánh giá <span className="red-color">(*)</span>
+          {t("chon_ky_danh_gia")} <span className="red-color">(*)</span>
         </div>
         <Select
           className="select-container mb-20"
@@ -476,7 +476,7 @@ export default function TargetRegistrationManualModal(props) {
             >
               {targetToggleStatuses[index] ? <IconCollapse /> : <IconExpand />}
               <span>
-                <span>&nbsp; Mục tiêu {index + 1}</span>
+                <span>&nbsp; {t("EvaluationDetailPartTarget")} {index + 1}</span>
                 <span className="fw-400">
                   {!targetToggleStatuses[index] &&
                     target.targetName &&
@@ -509,14 +509,14 @@ export default function TargetRegistrationManualModal(props) {
               <div className="collapse-container">
                 <div className="mb-15">
                   <div className="mb-15">
-                    Tên mục tiêu <span className="red-color">(*)</span>
+                    {t("ten_muc_tieu")} <span className="red-color">(*)</span>
                   </div>
                   {isReadonlyField(target) ? (
                     <div className="read-only-text">{target.targetName}</div>
                   ) : (
                     <Form.Control
                       as="textarea"
-                      placeholder={(isEditing && "Nhập") || undefined}
+                      placeholder={(isEditing && t("EvaluationInput")) || undefined}
                       className="form-textarea"
                       name="targetName"
                       onChange={(e) =>
@@ -532,14 +532,14 @@ export default function TargetRegistrationManualModal(props) {
                 </div>
                 <div className="mb-15">
                   <div className="mb-15">
-                    Metric 1 (Điểm 1) <span className="red-color">(*)</span>
+                    Metric 1 ({t("EvaluationDetailPartAttitudeScore")} 1) <span className="red-color">(*)</span>
                   </div>
                   {isReadonlyField(target) ? (
                     <div className="read-only-text">{target.metric1}</div>
                   ) : (
                     <Form.Control
                       as="textarea"
-                      placeholder={(isEditing && "Nhập") || undefined}
+                      placeholder={(isEditing && t("EvaluationInput")) || undefined}
                       className="form-textarea"
                       name="metric1"
                       onChange={(e) =>
@@ -550,13 +550,13 @@ export default function TargetRegistrationManualModal(props) {
                   )}
                 </div>
                 <div className="mb-15">
-                  <div className="mb-15">Metric 2 (Điểm 2)</div>
+                  <div className="mb-15">Metric 2 ({t("EvaluationDetailPartAttitudeScore")} 2)</div>
                   {isReadonlyField(target) ? (
                     <div className="read-only-text">{target.metric2}</div>
                   ) : (
                     <Form.Control
                       as="textarea"
-                      placeholder={(isEditing && "Nhập") || undefined}
+                      placeholder={(isEditing && t("EvaluationInput")) || undefined}
                       className="form-textarea"
                       name="metric2"
                       onChange={(e) =>
@@ -567,13 +567,13 @@ export default function TargetRegistrationManualModal(props) {
                   )}
                 </div>
                 <div className="mb-15">
-                  <div className="mb-15">Metric 3 (Điểm 3)</div>
+                  <div className="mb-15">Metric 3 ({t("EvaluationDetailPartAttitudeScore")} 3)</div>
                   {isReadonlyField(target) ? (
                     <div className="read-only-text">{target.metric3}</div>
                   ) : (
                     <Form.Control
                       as="textarea"
-                      placeholder={(isEditing && "Nhập") || undefined}
+                      placeholder={(isEditing && t("EvaluationInput")) || undefined}
                       className="form-textarea"
                       name="metric3"
                       onChange={(e) =>
@@ -584,13 +584,13 @@ export default function TargetRegistrationManualModal(props) {
                   )}
                 </div>
                 <div className="mb-15">
-                  <div className="mb-15">Metric 4 (Điểm 4)</div>
+                  <div className="mb-15">Metric 4 ({t("EvaluationDetailPartAttitudeScore")} 4)</div>
                   {isReadonlyField(target) ? (
                     <div className="read-only-text">{target.metric4}</div>
                   ) : (
                     <Form.Control
                       as="textarea"
-                      placeholder={(isEditing && "Nhập") || undefined}
+                      placeholder={(isEditing && t("EvaluationInput")) || undefined}
                       className="form-textarea"
                       name="metric4"
                       onChange={(e) =>
@@ -601,13 +601,13 @@ export default function TargetRegistrationManualModal(props) {
                   )}
                 </div>
                 <div className="mb-15">
-                  <div className="mb-15">Metric 5 (Điểm 5)</div>
+                  <div className="mb-15">Metric 5 ({t("EvaluationDetailPartAttitudeScore")} 5)</div>
                   {isReadonlyField(target) ? (
                     <div className="read-only-text">{target.metric5}</div>
                   ) : (
                     <Form.Control
                       as="textarea"
-                      placeholder={(isEditing && "Nhập") || undefined}
+                      placeholder={(isEditing && t("EvaluationInput")) || undefined}
                       className="form-textarea"
                       name="metric5"
                       onChange={(e) =>
@@ -619,13 +619,13 @@ export default function TargetRegistrationManualModal(props) {
                 </div>
                 <div className="mb-15">
                   <div className="mb-15">
-                    Trọng số <span className="red-color">(*)</span>
+                    {t("trong_so")} <span className="red-color">(*)</span>
                   </div>
                   <div className="weight-input-box mb-15">
                     <span className="prefix">%</span>
                     <Form.Control
                       as="input"
-                      placeholder={(isEditing && "Nhập") || undefined}
+                      placeholder={(isEditing && t("EvaluationInput")) || undefined}
                       className="form-input border-none"
                       type="text"
                       name="weight"
@@ -651,7 +651,7 @@ export default function TargetRegistrationManualModal(props) {
                   ) : (
                     <Form.Control
                       as="textarea"
-                      placeholder={(isEditing && "Nhập") || undefined}
+                      placeholder={(isEditing && t("EvaluationInput")) || undefined}
                       className="form-textarea"
                       name="jobDetail"
                       onChange={(e) =>
@@ -666,13 +666,13 @@ export default function TargetRegistrationManualModal(props) {
                   )}
                 </div>
                 <div>
-                  <div className="mb-15">Mục tiêu cần đạt được</div>
+                  <div className="mb-15">{t("muc_tieu_can_dat_duoc")}</div>
                   {isReadonlyField(target) ? (
                     <div className="read-only-text">{target.target}</div>
                   ) : (
                     <Form.Control
                       as="textarea"
-                      placeholder={(isEditing && "Nhập") || undefined}
+                      placeholder={(isEditing && t("EvaluationInput")) || undefined}
                       className="form-textarea"
                       name="target"
                       onChange={(e) =>
@@ -689,7 +689,7 @@ export default function TargetRegistrationManualModal(props) {
 
         {isEditing && (
           <button className="add-target-btn mb-15" onClick={addNewTarget}>
-            + Thêm mục tiêu
+            + {t("them_muc_tieu")}
           </button>
         )}
 
@@ -709,7 +709,7 @@ export default function TargetRegistrationManualModal(props) {
             {isEditing ? (
               <Form.Control
                 as="textarea"
-                placeholder={(isEditing && "Nhập") || undefined}
+                placeholder={(isEditing && t("EvaluationInput")) || undefined}
                 className="form-textarea review-comment-textarea"
                 onChange={(e) =>
                   onChangeFormValues("reviewComment", e?.target?.value)
@@ -723,11 +723,11 @@ export default function TargetRegistrationManualModal(props) {
         )}
         <div className="form-container">
           <div className="approver-title mb-15">
-            {isApprover ? "CBNV đăng ký mục tiêu" : "CBQL phê duyệt"}
+            {isApprover ? "CBNV đăng ký mục tiêu" : t("cbql_phe_duyet")}
           </div>
           <div className="row group">
             <div className="col-xl-4">
-              <div className="mb-15">Họ và tên</div>
+              <div className="mb-15">{t("EvaluationDetailEmployeeFullName")}</div>
               <Form.Control
                 readOnly
                 value={
@@ -739,7 +739,7 @@ export default function TargetRegistrationManualModal(props) {
               />
             </div>
             <div className="col-xl-4">
-              <div className="mb-15">Chức danh</div>
+              <div className="mb-15">{t("Title")}</div>
               <Form.Control
                 readOnly
                 value={
@@ -751,7 +751,7 @@ export default function TargetRegistrationManualModal(props) {
               />
             </div>
             <div className="col-xl-4">
-              <div className="mb-15">Khối/Phòng/Bộ phận</div>
+              <div className="mb-15">{t("khoi_phong_bo_phan")}</div>
               <Form.Control
                 readOnly
                 className="form-input"
@@ -822,7 +822,7 @@ export default function TargetRegistrationManualModal(props) {
                     background: totalWeight !== 100 ? "#FEF3F4" : "#F1F8F2",
                   }}
                 >
-                  *Tổng trọng số:&nbsp;
+                  *{t("tong_trong_so")}:&nbsp;
                   <span>{totalWeight}%</span>
                 </div>
               )}
@@ -839,7 +839,7 @@ export default function TargetRegistrationManualModal(props) {
                     }}
                   >
                     <IconRemove />
-                    &nbsp; Hủy
+                    &nbsp; {t("Cancel2")}
                   </button>
                   {!isEditing ? (
                     <>
@@ -854,7 +854,7 @@ export default function TargetRegistrationManualModal(props) {
                         }}
                       >
                         <IconEdit />
-                        &nbsp; Sửa
+                        &nbsp; {t("Modify")}
                       </button>
                       {data?.status === REQUEST_STATUS.APPROVED && (
                         <button
@@ -881,7 +881,7 @@ export default function TargetRegistrationManualModal(props) {
                       }}
                     >
                       <IconSave />
-                      &nbsp; Lưu
+                      &nbsp; {t("Save")}
                     </button>
                   )}
                   {data?.status === REQUEST_STATUS.PROCESSING && (
@@ -897,7 +897,7 @@ export default function TargetRegistrationManualModal(props) {
                         disabled={isEditing}
                       >
                         <IconReject />
-                        &nbsp; Từ chối
+                        &nbsp; {t("tu_choi")}
                       </button>
                       <button
                         className="button approve-btn"
@@ -910,7 +910,7 @@ export default function TargetRegistrationManualModal(props) {
                         disabled={isEditing || totalWeight !== 100}
                       >
                         <IconApprove />
-                        &nbsp; Phê duyệt
+                        &nbsp; {t("Approve")}
                       </button>
                     </>
                   )}
@@ -930,7 +930,7 @@ export default function TargetRegistrationManualModal(props) {
                     )} */}
                 <button className="button cancel-btn" onClick={onHide}>
                   <IconRemove className="ic-remove-white" />
-                  &nbsp; Hủy
+                  &nbsp; {t("Cancel2")}
                 </button>
                 <button
                   className="button save-btn"
@@ -943,7 +943,7 @@ export default function TargetRegistrationManualModal(props) {
                   onClick={onSaveTargetRegister}
                 >
                   <IconSave />
-                  &nbsp; Lưu
+                  &nbsp; {t("Save")}
                 </button>
                 <button
                   className="button send-request-btn"
@@ -951,7 +951,7 @@ export default function TargetRegistrationManualModal(props) {
                   onClick={onSendTargetRegister}
                 >
                   <IconSend />
-                  &nbsp; Gửi yêu cầu
+                  &nbsp; {t("Send")}
                 </button>
               </div>
             )}

@@ -440,8 +440,8 @@ function TargetManagement() {
                 STATUS_TYPES.DELETE
               )
             }
-            tempButtonLabel="Hủy"
-            mainButtonLabel="Đồng ý"
+            tempButtonLabel={t("Cancel2")}
+            mainButtonLabel={t("dong_y")}
           />
         );
 
@@ -450,7 +450,7 @@ function TargetManagement() {
           <ConfirmModal
             show={true}
             confirmHeader="XÁC NHẬN PHÊ DUYỆT"
-            confirmContent="Bạn có đồng ý phê duyệt yêu cầu này?"
+            confirmContent={t("ban_co_dong_y_phe_duyet_yeu_cau_nay")}
             onHide={onHideModal}
             onCancelClick={onHideModal}
             onAcceptClick={() =>
@@ -459,8 +459,8 @@ function TargetManagement() {
                 STATUS_TYPES.APPROVE
               )
             }
-            tempButtonLabel="Hủy"
-            mainButtonLabel="Đồng ý"
+            tempButtonLabel={t("Cancel2")}
+            mainButtonLabel={t("dong_y")}
           />
         );
 
