@@ -246,12 +246,12 @@ const DoneTabContent = ({ filter, approverInfo, targetSelected = [], error, hand
                                     }
 
                                 </div>
-                                <span role='button' className="btn-remove" title='Xóa' onClick={(e) => handleRemoveItem(e, item)}>
+                                <span role='button' className="btn-remove" title={t("Remove")} onClick={(e) => handleRemoveItem(e, item)}>
                                     <img src={IconRemoveRed} alt='Remove' />
-                                    Xóa
+                                    {t("Remove")}
                                 </span>
                             </div>
-                            { isShowApproverMessage && <div className="row-second">* Mục tiêu đã được QLTT chỉnh sửa</div> }
+                            { isShowApproverMessage && <div className="row-second">* {t("muc_tieu_da_duoc_qltt_chinh_sua")}</div> }
                         </Button>
                         <Collapse in={item?.isExpand}>
                             <div id={`item-${i}`} className="item-content">
@@ -283,7 +283,7 @@ const DoneTabContent = ({ filter, approverInfo, targetSelected = [], error, hand
                                         { error[`error_${i}_weight`] && <div className="error-item">{ error[`error_${i}_weight`] }</div> }
                                     </div>
                                     <div className="row-content">
-                                        <label>Mục tiêu cần đạt</label>
+                                        <label>{t("muc_tieu_can_dat_duoc")}</label>
                                         <div className="input-block">
                                             <textarea rows={3} value={item?.target || ''} className="input-border" placeholder={t("EvaluationInput")} onChange={e => handleInputChange('target', e?.target?.value || '', i)} disabled={item?.fillByHr || false} />
                                         </div>
@@ -315,11 +315,11 @@ const DoneTabContent = ({ filter, approverInfo, targetSelected = [], error, hand
             <div className="collapse-expand-block">
                 <button className="btn-collapse" onClick={() => handleViewListTargetSelected(false)}>
                     <img src={IconCollapseBlue} alt='Collapse' />
-                    <span>Thu gọn</span>
+                    <span>{t("Collapse")}</span>
                 </button>
                 <button className="btn-expand" onClick={() => handleViewListTargetSelected(true)}>
                     <img src={IconExpandGreen} alt='Expand' />
-                    <span>Mở rộng</span>
+                    <span>{t("Expand")}</span>
                 </button>
             </div>
             <div className="list-target">
@@ -619,7 +619,7 @@ function RegisterTargetFromLibraryModal(props) {
                     } else {
                         SetError({
                             ...error,
-                            errorMissingApproverInfo: '* Chưa có thông tin CBQL phê duyệt. Vui lòng liên hệ Nhân sự để được hỗ trợ!'
+                            errorMissingApproverInfo: `* ${t("chua_co_thong_tin_cbql_phe_duyet")}`
                         })
                     }
                 } else if (requestInfo && requestInfo?.data && requestInfo?.data?.data?.requests) { // Khi sửa yêu cầu đăng ký mục tiêu từ thư viện ở trạng thái Nháp hoặc Từ chối
@@ -632,7 +632,7 @@ function RegisterTargetFromLibraryModal(props) {
                         if (!approverInfoData) {
                             SetError({
                                 ...error,
-                                errorMissingApproverInfo: '* Chưa có thông tin CBQL phê duyệt. Vui lòng liên hệ Nhân sự để được hỗ trợ!'
+                                errorMissingApproverInfo: `* ${t("chua_co_thong_tin_cbql_phe_duyet")}`
                             })
                         }
                     }
@@ -874,7 +874,7 @@ function RegisterTargetFromLibraryModal(props) {
     const processValidateData = (i = 0, weightInput = 0) => {
         const errorInfo = (targetSelected || []).reduce((res, current, index) => {
             let weight = index === i ? Number(weightInput || 0) : Number(current?.weight || 0)
-            res.item[`error_${index}_weight`] = (weight < 1 || weight > 100) ? '* Trọng số trong khoảng 1 - 100' : ''
+            res.item[`error_${index}_weight`] = (weight < 1 || weight > 100) ? `* ${t("trong_so_trong_khoang_1_100")}` : ''
             res.totalWeight += weight
 
             return res
@@ -888,14 +888,14 @@ function RegisterTargetFromLibraryModal(props) {
 
         SetError({
             ...errorInfo?.item,
-            ...(isItemsValid && !isTotalWeightValid && { totalWeight: '* Yêu cầu tổng trọng số bằng 100%. Vui lòng kiểm tra lại!' }),
+            ...(isItemsValid && !isTotalWeightValid && { totalWeight: `* ${t("yeu_cau_tong_trong_so_100")}` }),
         })
     }
 
     const isDataValid = () => {
         const errorInfo = (targetSelected || []).reduce((res, current, index) => {
             let weight = Number(current?.weight || 0)
-            res.item[`error_${index}_weight`] = (weight < 1 || weight > 100) ? '* Trọng số trong khoảng 1 - 100' : ''
+            res.item[`error_${index}_weight`] = (weight < 1 || weight > 100) ? `* ${t("trong_so_trong_khoang_1_100")}` : ''
             res.totalWeight += weight
 
             return res
@@ -910,7 +910,7 @@ function RegisterTargetFromLibraryModal(props) {
         SetError({
             ...error,
             ...errorInfo?.item,
-            ...(isItemsValid && !isTotalWeightValid && { totalWeight: '* Yêu cầu tổng trọng số bằng 100%. Vui lòng kiểm tra lại!' }),
+            ...(isItemsValid && !isTotalWeightValid && { totalWeight: `* ${t("yeu_cau_tong_trong_so_100")}` }),
         })
 
         if (isItemsValid && isTotalWeightValid) {
@@ -954,14 +954,14 @@ function RegisterTargetFromLibraryModal(props) {
                         ...statusModal,
                         isShow: true,
                         isSuccess: true,
-                        content: "Lưu mục tiêu thành công!",
+                        content: t("luu_muc_tieu_thanh_cong"),
                     })
                 }
 
                 if (isSendRequest) {
                     setModalManagement({
                         type: MODAL_TYPES.SUCCESS,
-                        data: t("yeu_cau_cua_ban_da_duoc_gui_di"),
+                        data: t("RequestSent"),
                     })
                 }
             }
@@ -970,7 +970,7 @@ function RegisterTargetFromLibraryModal(props) {
                 ...statusModal,
                 isShow: true,
                 isSuccess: false,
-                content: isSendRequest ? "Gửi yêu cầu thất bại. Xin vui lòng thử lại!" : "Lưu mục tiêu thất bại. Xin vui lòng thử lại!",
+                content: isSendRequest ? t("gui_yeu_cau_that_bai_vui_long_thu_lai") : t("luu_muc_tieu_that_bai_vui_long_thu_lai"),
             })
         } finally {
             SetIsLoading(false)
