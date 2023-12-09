@@ -687,7 +687,12 @@
     border-radius: 5px;
     width: 100%;
     min-height: 40px;
-
+    pre {
+      margin-bottom: 0;
+      font-size: 14px;
+      font-family: inherit;
+      color: #000000
+    }
     &.updated {
       color: #4099FF !important;
       pre {
