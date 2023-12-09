@@ -81,6 +81,7 @@ const VoucherItem = ({ voucher, activeTab }) => {
                     <div className="right">
                         <button className="d-inline-flex btn-view-qr" onClick={handleShowQRs}>
                             <img alt="View QR" src={IconQR} />{t("QRCode")}
+                            <span className="count">{voucher?.voucherCount || 0}</span>
                         </button>
                     </div>
                 </div>
