@@ -337,11 +337,13 @@ const EvaluationRecruitmentDetailModal = (props) => {
       show={show}
       onHide={onHide}
     >
-      <Modal.Header closeButton></Modal.Header>
+      <Modal.Header closeButton>
+      </Modal.Header>
       <Modal.Body>
         {candidateApplication ? (
-          <div className="registration-section">
-            <h5 className="content-page-header">{t("EmployeeInfomation")}</h5>
+          <div className="registration-section" style={{marginTop: '-20px'}}>
+            <h5 className="content-page-header">{t("bieu_mau_danh_gia")}</h5>
+            <div style={{height: '1px', width: '100%', backgroundColor: '#CED4DA', marginBottom: '15px'}}/>
             <div className="row group">
               <div className={`col-xl-6`}>
                 {t("apply_position")}
