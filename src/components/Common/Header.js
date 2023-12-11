@@ -329,12 +329,8 @@ function Header(props) {
                             return `${item.url}`
                     }
                 }
-                let titleNotice = [Constants.notificationType.NOTIFICATION_MY_EVALUATION, Constants.notificationType.NOTIFICATION_LEAD_EVALUATION].includes(item?.type)
-                ? currentLocale == Constants.LANGUAGE_VI ? item?.title : item?.en_Title || ''
-                : item?.title || ''
-                let descriptionNotice = [Constants.notificationType.NOTIFICATION_MY_EVALUATION, Constants.notificationType.NOTIFICATION_LEAD_EVALUATION].includes(item?.type)
-                ? currentLocale == Constants.LANGUAGE_VI ? item?.description : item?.en_Description || ''
-                : item?.description || ''
+                let titleNotice = currentLocale === Constants.LANGUAGE_VI ? (item?.title || item?.en_Title) : (item?.en_Title || item?.title)
+                let descriptionNotice = currentLocale === Constants.LANGUAGE_VI ? (item?.description || item?.en_Description) : (item?.en_Description || item?.description)
                 const isEvaluation = [Constants.notificationType.NOTIFICATION_MY_EVALUATION, Constants.notificationType.NOTIFICATION_LEAD_EVALUATION].includes(Number(item?.type))
                 const evaluationData = {
                     isEvaluation: isEvaluation,
