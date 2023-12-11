@@ -197,8 +197,11 @@
                     // background: #FFFFFF;
                     // border-top: 1px solid #DDDDDD;
                 }
+                .check {
+                    width: 20px;
+                }
                 .icon {
-                    width: 30px;
+                    width: 90px;
                     display: table-cell;
                     img {
 
@@ -265,10 +268,23 @@
                 .created-date {
                     width: 90px;
                 }
+                .deadline {
+                    width: 105px;
+                }
                 .action {
                     width: 100px;
+                    & > .val {
+                        justify-content: space-evenly;
+                        align-items: baseline;
+                    }
                     img {
                         height: 20px;
+                        &.ic-save {
+                            height: 15px;
+                        }
+                        &.ic-cancel {
+                            height: 24px;
+                        }
                     }
                 }
                 .evaluation {
