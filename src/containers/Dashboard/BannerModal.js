@@ -26,7 +26,7 @@ const BannerModal = ({ isShow, banners = [], onHideModal }) => {
                                     <div className="d-flex justify-content-center image">
                                         <a href={`/my-voucher/notices/${banner?.id}`}>
                                             <img
-                                                src={locale === Constants.LANGUAGE_VI ? banner?.imageVi : banner?.imageEn} className="title"
+                                                src={locale === Constants.LANGUAGE_VI ? (banner?.imageVi || banner?.imageEn) : (banner?.imageEn || banner?.imageVi)} className="title"
                                                 alt="Banner"
                                             />
                                         </a>
