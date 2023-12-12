@@ -283,9 +283,11 @@
       }
       .content {
         .image {
-          // width: fit-content;
-          width: 800px;
-          height: 533px;
+          img {
+            width: 800px;
+            height: 533px;
+            margin: 0;
+          }
         }
       }
     }
