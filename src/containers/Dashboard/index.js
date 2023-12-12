@@ -18,7 +18,7 @@ function Dashboard(props) {
       try {
         const config = getRequestConfigurations()
         config.params = {
-          pnl: user?.organizationLv2,
+          pnl: user?.companyCode,
           rank: user?.employeeLevel,
           workingPlace: user?.streetName,
         }
