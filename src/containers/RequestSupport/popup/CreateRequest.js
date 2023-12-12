@@ -19,17 +19,33 @@ import UserInfo from "../common/UserInfo"
 import FeedbackHistory from "../common/FeedbackHistory"
 registerLocale("vi", vi)
 
-const CreatedRequest = (props) => {
-    const { isShow, onHide } = props
+const CreatedRequest = ({ isShow, masterData, onHide }) => {
+    const locale = localStorage.getItem("locale") || Constants.LANGUAGE_VI
+
     const { t } = useTranslation()
     const [isLoading, setIsLoading] = useState(false)
-    const [isShowFilter, setIsShowFilter] = useState(false)
+    const [data, setData] = useState({
+        title: '',
+        content: '',
+        typeId: null,
+        isSecurity: false,
+        companyCode: null,
+        groupId: null,
+        handlerId: null,
+        receives: [],
+        priorityId: null,
+        statusId: null,
+    })
 
-    const handleInputChange = () => {
+    const handleFileChange = () => {
 
     }
 
-    const handleFileChange = () => {
+    const sendRequest = () => {
+         
+    }
+
+    const handleInputChange = () => {
 
     }
 
@@ -92,6 +108,44 @@ const CreatedRequest = (props) => {
         }),
     }
 
+    console.log('masterData => ',masterData)
+
+    const serviceTypes = (masterData?.serviceTypes || []).map(item => {
+        return {
+            value: item?.id,
+            label: locale === Constants.LANGUAGE_VI ? item?.typeVn : item?.typeEn,
+        }
+    })
+
+    const companies = (masterData?.companies || []).map(item => {
+        return {
+            value: item?.code,
+            label: item?.name,
+        }
+    })
+
+    const groups = (masterData?.groups || []).map(item => {
+        return {
+            value: item?.id,
+            label: item?.groupName,
+        }
+    })
+
+    const priorities = (masterData?.slas || []).map(item => {
+        return {
+            value: item?.id,
+            label: item?.prioritize,
+            groupId: item?.groupId,
+        }
+    })
+
+    const statuses = (masterData?.statuses || []).map(item => {
+        return {
+            value: item?.id,
+            label: locale === Constants.LANGUAGE_VI ? item?.statusVn : item?.statusEn,
+        }
+    })
+
     return (
         <>
             <LoadingModal show={isLoading} />
@@ -131,7 +185,7 @@ const CreatedRequest = (props) => {
                                             isClearable={false}
                                             onChange={handleInputChange}
                                             placeholder={t('Chọn')} 
-                                            options={[]}
+                                            options={serviceTypes}
                                             classNamePrefix="filter-select"
                                         />
                                     </div>
@@ -142,7 +196,10 @@ const CreatedRequest = (props) => {
                                             isClearable={false}
                                             onChange={handleInputChange}
                                             placeholder={t('Chọn')} 
-                                            options={[]}
+                                            options={[
+                                                { value: true, label: 'Có' },
+                                                { value: false, label: 'Không' },
+                                            ]}
                                             classNamePrefix="filter-select"
                                         />
                                     </div>
@@ -153,7 +210,7 @@ const CreatedRequest = (props) => {
                                             isClearable={false}
                                             onChange={handleInputChange}
                                             placeholder={t('Chọn')} 
-                                            options={[]}
+                                            options={companies}
                                             classNamePrefix="filter-select"
                                         />
                                     </div>
@@ -164,7 +221,7 @@ const CreatedRequest = (props) => {
                                             isClearable={false}
                                             onChange={handleInputChange}
                                             placeholder={t('Chọn')} 
-                                            options={[]}
+                                            options={groups}
                                             classNamePrefix="filter-select"
                                         />
                                     </div>
@@ -192,7 +249,7 @@ const CreatedRequest = (props) => {
                                             isClearable={false}
                                             onChange={handleInputChange}
                                             placeholder={t('Chọn')} 
-                                            options={[]}
+                                            options={priorities}
                                             classNamePrefix="filter-select"
                                         />
                                     </div>
@@ -203,7 +260,7 @@ const CreatedRequest = (props) => {
                                             isClearable={false}
                                             onChange={handleInputChange}
                                             placeholder={t('Chọn')} 
-                                            options={[]}
+                                            options={statuses}
                                             classNamePrefix="filter-select"
                                         />
                                     </div>
@@ -230,7 +287,7 @@ const CreatedRequest = (props) => {
                                     multiple
                                 />
                             </label>
-                            <button className="btn btn-send"><img src={IconSend} alt="Send" />{t("Send")}</button>
+                            <button className="btn btn-send" onClick={sendRequest}><img src={IconSend} alt="Send" />{t("Send")}</button>
                         </div>
                     </div>
                 </Modal.Body>

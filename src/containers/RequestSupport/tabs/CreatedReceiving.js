@@ -17,7 +17,7 @@ import 'react-datepicker/dist/react-datepicker.css'
 import vi from 'date-fns/locale/vi'
 registerLocale("vi", vi)
 
-const CreatedReceiving = (props) => {
+const CreatedReceiving = ({ masterData }) => {
     const { t } = useTranslation()
     const [isLoading, setIsLoading] = useState(false)
     const [isShowCreateRequestModal, setIsShowCreateRequestModal] = useState(false)
@@ -92,7 +92,11 @@ const CreatedReceiving = (props) => {
     return (
         <>
             <LoadingModal show={isLoading} />
-            <CreatedRequest isShow={isShowCreateRequestModal} onHide={onHideCreatedRequestModal} />
+            <CreatedRequest 
+                isShow={isShowCreateRequestModal}
+                masterData={masterData}
+                onHide={onHideCreatedRequestModal}
+            />
             <div className="created-receiving-tab">
                 <div className="header-block">
                     <h1 className="header-title">Quản lý yêu cầu</h1>

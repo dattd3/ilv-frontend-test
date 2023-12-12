@@ -27,7 +27,17 @@ const groupUsersConfig = {
 const RequestSupport = (props) => {
     const { t } = useTranslation()
     const [isLoading, setIsLoading] = useState(false)
+    const [masterData, setMasterData] = useState(null)
     const [tabActivated, setTabActivated] = useState(new URLSearchParams(props?.history?.location?.search).get('tab') || tabConfig.createdReceiving)
+
+    useEffect(() => {
+        const fetchMasterData = async () => {
+            const response = await axios.get(`${process.env.REACT_APP_REQUEST_URL}api/support/masterdata`, getRequestConfigurations())
+            setMasterData(response?.data?.data || null)
+        }
+
+        fetchMasterData()
+    }, [])
 
     const handleChangeTab = key => {
         setTabActivated(key)
@@ -40,10 +50,14 @@ const RequestSupport = (props) => {
             <div className="request-support-page">
                 <Tabs defaultActiveKey={tabActivated} className={`tabs`} onSelect={key => handleChangeTab(key)}>
                     <Tab eventKey={tabConfig.createdReceiving} title={t("Đã tạo/Đang nhận thông tin")}>
-                        <CreatedReceiving />
+                        <CreatedReceiving
+                            masterData={masterData}
+                        />
                     </Tab>
                     <Tab eventKey={tabConfig.processing} title={t("Đang xử lý")}>
-                        <Processing />
+                        <Processing
+                            masterData={masterData}
+                        />
                     </Tab>
                 </Tabs>
             </div> 

@@ -64,7 +64,7 @@ const TableRequests = ({ listRequests }) => {
     }
 
     const handleCheckboxChange = (e, index) => {
-        const value = element?.target?.checked || false
+        const value = e?.target?.checked || false
         // const evaluationDataTemp = {...evaluationData}
         // if (index !== null) {
         //     evaluationDataTemp.data[index].isSelected = value
@@ -106,7 +106,6 @@ const TableRequests = ({ listRequests }) => {
         }),
     }
 
-    
     const customStyles = {
         control: base => ({
             ...base,
