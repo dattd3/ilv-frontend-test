@@ -46,9 +46,9 @@ const EvaluationRecruitmentDetailModal = (props) => {
     message: "",
   });
   const ConclusionOptions = [
-    { value: "1", label: "Tuyển dụng", id: "1", name: "Tuyển dụng" }, //{"id":3,"name":"Loại"}
-    { value: "2", label: "Lưu hồ sơ", id: "2", name: "Lưu hồ sơ" },
-    { value: "3", label: "Loại", id: "3", name: "Loại" },
+    {value: '1', label: t('hire'), id: '1', name: 'Tuyển dụng'}, //{"id":3,"name":"Loại"}
+    {value: '2', label: t('save_position'), id: '2', name: 'Lưu hồ sơ'},
+    {value: '3', label: t('eliminate'), id: '3', name: 'Loại'},
   ];
   const [errors, setErrors] = useState({});
 
@@ -368,7 +368,7 @@ const EvaluationRecruitmentDetailModal = (props) => {
               </div>
               <div className="row">
                 <div className="col-xl-6">
-                  {capitalizeFirstLetter(t("reviewer").toLowerCase())}
+                  {(t("interviewer"))}
                   <div className="detail">
                     {evaluationInfo.interviewerName || ""}
                   </div>
@@ -475,7 +475,7 @@ const EvaluationRecruitmentDetailModal = (props) => {
                             </div>
                           );
                         })
-                      : "Không có tệp nào được chọn"}
+                      : t('no_file_selected')}
                   </div>
                   {
                     isCreateMode ?
@@ -579,35 +579,35 @@ const renderRatingEvaluation = (
             className="instruction-vinhome"
             style={{ paddingLeft: "64px" }}
           >
-            Yếu
+            {t('eva_weak')}
           </label>
           <label
             htmlFor="i_deadline"
             className="instruction-vinhome"
             style={{ paddingLeft: "25px" }}
           >
-            Trung bình{" "}
+            {t('eva_average')}{" "}
           </label>
           <label
             htmlFor="i_deadline"
             className="instruction-vinhome"
             style={{ paddingLeft: "33px" }}
           >
-            Khá{" "}
+            {t('eva_ok')}{" "}
           </label>
           <label
             htmlFor="i_deadline"
             className="instruction-vinhome"
             style={{ paddingLeft: "46px" }}
           >
-            Tốt
+            {t('eva_good')}
           </label>
           <label
             htmlFor="i_deadline"
             className="instruction-vinhome"
             style={{ paddingLeft: "30px" }}
           >
-            Xuất sắc
+            {t('eva_great')}
           </label>
         </div>
       </div>
@@ -643,7 +643,7 @@ const renderRatingEvaluation = (
             className="form-control"
             value={requestInfo.chuyenmon || ""}
             onChange={(e) => handleTextInputChange(e, "chuyenmon")}
-            placeholder={"Ghi chú"}
+            placeholder={t('import')}
           />
         </div>
       </div>
@@ -655,35 +655,35 @@ const renderRatingEvaluation = (
             className="instruction-vinhome"
             style={{ paddingLeft: "64px" }}
           >
-            Yếu
+            {t('eva_weak')}
           </label>
           <label
             htmlFor="i_deadline"
             className="instruction-vinhome"
             style={{ paddingLeft: "25px" }}
           >
-            Trung bình{" "}
+            {t('eva_average')}{" "}
           </label>
           <label
             htmlFor="i_deadline"
             className="instruction-vinhome"
             style={{ paddingLeft: "33px" }}
           >
-            Khá{" "}
+            {t('eva_ok')}{" "}
           </label>
           <label
             htmlFor="i_deadline"
             className="instruction-vinhome"
             style={{ paddingLeft: "46px" }}
           >
-            Tốt
+            {t('eva_good')}
           </label>
           <label
             htmlFor="i_deadline"
             className="instruction-vinhome"
             style={{ paddingLeft: "30px" }}
           >
-            Xuất sắc
+            {t('eva_great')}
           </label>
         </div>
       </div>
@@ -718,7 +718,7 @@ const renderRatingEvaluation = (
             className="form-control"
             value={requestInfo.thaido || ""}
             onChange={(e) => handleTextInputChange(e, "thaido")}
-            placeholder={"Ghi chú"}
+            placeholder={t('import')}
             disabled={!isCreateMode}
           />
         </div>
@@ -731,35 +731,35 @@ const renderRatingEvaluation = (
             className="instruction-vinhome"
             style={{ paddingLeft: "64px" }}
           >
-            Yếu
+            {t('eva_weak')}
           </label>
           <label
             htmlFor="i_deadline"
             className="instruction-vinhome"
             style={{ paddingLeft: "25px" }}
           >
-            Trung bình{" "}
+            {t('eva_average')}{" "}
           </label>
           <label
             htmlFor="i_deadline"
             className="instruction-vinhome"
             style={{ paddingLeft: "33px" }}
           >
-            Khá{" "}
+            {t('eva_ok')}{" "}
           </label>
           <label
             htmlFor="i_deadline"
             className="instruction-vinhome"
             style={{ paddingLeft: "46px" }}
           >
-            Tốt
+            {t('eva_good')}
           </label>
           <label
             htmlFor="i_deadline"
             className="instruction-vinhome"
             style={{ paddingLeft: "30px" }}
           >
-            Xuất sắc
+            {t('eva_great')}
           </label>
         </div>
       </div>
@@ -795,7 +795,7 @@ const renderRatingEvaluation = (
             className="form-control"
             value={requestInfo.muctieu || ""}
             onChange={(e) => handleTextInputChange(e, "muctieu")}
-            placeholder={"Ghi chú"}
+            placeholder={t('import')}
           />
         </div>
       </div>
@@ -804,7 +804,7 @@ const renderRatingEvaluation = (
       <div className="form-row">
         <div className=" score col-md-12">
           <label htmlFor="i_deadline" className="text1">
-            Tổng điểm:
+            {t('tong_diem_danh_gia')}
           </label>
           <label htmlFor="i_deadline" className="text2">{`${total}/10`}</label>
         </div>
