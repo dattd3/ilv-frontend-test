@@ -23,6 +23,10 @@ const TaskDetailModal = (props) => {
   const { taskId, subId, action, show, lockReload, onHide } = props
   const [data, setData] = useState({})
 
+  console.log('aasdfadfsasdf')
+  console.log(show)
+  console.log(taskId)
+
   useEffect(() => {
     if (show && taskId) {
       const requestId = taskId?.toString().includes('.') ? taskId?.toString()?.split('.')?.[0] : taskId

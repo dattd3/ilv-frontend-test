@@ -214,6 +214,10 @@ function Header(props) {
                 const requestTypeId = item.requestTypeId; //Loại yêu cầu
 
                 let notificationLink = (type, levelData) => {
+                    if (requestTypeId == 13) { // OT
+                        return ''
+                    }
+
                     if (requestTypeId == 6 && item?.type != 15) {
                         if (item.detailType == 'APPROVAL') {
                           return `/evaluation/${requestId}/approval`;
@@ -336,7 +340,7 @@ function Header(props) {
                 }
 
                 return <div key={i} className="item">
-                    <a onClick={(e) => clickNotification(e, item.id, requestId, subRequestId, getAction(item?.type, item?.detailType), notificationLink(item?.type, item?.levelData), evaluationData)} className="title" href={notificationLink(item?.type, item?.levelData)} title={titleNotice}>{titleNotice}</a>
+                    <a onClick={(e) => clickNotification(e, item.id, requestId, requestTypeId == 13 ? item?.userProfileHistoryId : subRequestId, getAction(item?.type, item?.detailType), notificationLink(item?.type, item?.levelData), evaluationData)} className="title" href={notificationLink(item?.type, item?.levelData)} title={titleNotice}>{titleNotice}</a>
                     <p className="description">{descriptionNotice}</p>
                     <div className="time-file">
                         <span className="time"><i className='far fa-clock ic-clock'></i><span>{timePost}</span></span>
@@ -359,6 +363,10 @@ function Header(props) {
     }
 
     const clickNotification = (e, id, requestId, subRequestId, action, url = '', evaluationData) => {
+        console.log('muahahahah')
+        console.log(subRequestId)
+        console.log(url)
+
         if (!url) {
             e.preventDefault()
         }

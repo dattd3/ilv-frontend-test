@@ -61,6 +61,7 @@ function MainLayout(props) {
   const isDashBoard = props.location.pathname === '/' || props.location.pathname === map.EmployeePrivileges;
 
   const handleTaskDetailModal = (isShow = true, taskId, subTaskId = 1, action, evaluationData) => {
+    debugger
     if (evaluationData?.isEvaluation) {
       SetEvaluationDetailPopup({
         isShow: true,
