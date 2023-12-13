@@ -9,6 +9,8 @@ import moment from 'moment'
 import _ from 'lodash'
 import Constants from 'commons/Constants'
 import { getRequestConfigurations } from 'commons/Utils'
+import { validateFileMimeType, validateTotalFileSize } from "utils/file"
+import Editor from "components/Forms/Editor"
 import LoadingModal from 'components/Common/LoadingModal'
 import IconClose from 'assets/img/icon/icon_x.svg'
 import IconSend from 'assets/img/icon/Icon_send.svg'
@@ -36,16 +38,51 @@ const CreatedRequest = ({ isShow, masterData, onHide }) => {
         priorityId: null,
         statusId: null,
     })
+    const [files, setFiles] = useState([])
 
-    const handleFileChange = () => {
-
+    const handleFileChange = (e) => {
+        if (validateFileMimeType(e, e?.target?.files, t)) {
+            const filesSelected = Object.values(e?.target?.files)
+            const fileClone = [...files, ...filesSelected];
+            if (validateTotalFileSize(e, fileClone, t)) {
+                setFiles(fileClone)
+            }
+        }
     }
 
     const sendRequest = () => {
          
     }
 
-    const handleInputChange = () => {
+    const handleInputChange = (key, e) => {
+        let val = null
+        switch (key) {
+            case 'title':
+                val = e?.target?.value || ''
+                break
+            case 'content':
+                val = e || ''
+                break
+            case 'typeId':
+            case 'isSecurity':
+            case 'companyCode':
+            case 'groupId':
+            case 'priorityId':
+            case 'statusId':
+                val = e?.value || null
+                break
+            case 'receives':
+                val = e || []
+                break
+        }
+
+        setData((data) => ({
+            ...data,
+            [key]: val,
+        }))
+    }
+
+    const handleRemoveFile = (index) => {
 
     }
 
@@ -131,7 +168,9 @@ const CreatedRequest = ({ isShow, masterData, onHide }) => {
         }
     })
 
-    const priorities = (masterData?.slas || []).map(item => {
+    const priorities = (masterData?.slas || [])
+    .filter(item => item?.groupId == data?.groupId)
+    .map(item => {
         return {
             value: item?.id,
             label: item?.prioritize,
@@ -145,6 +184,13 @@ const CreatedRequest = ({ isShow, masterData, onHide }) => {
             label: locale === Constants.LANGUAGE_VI ? item?.statusVn : item?.statusEn,
         }
     })
+
+    const securities = [
+        { value: true, label: 'Có' },
+        { value: false, label: 'Không' },
+    ]
+
+    console.log('TING TING => ', files)
 
     return (
         <>
@@ -165,25 +211,25 @@ const CreatedRequest = ({ isShow, masterData, onHide }) => {
                             <div className="content-region shadow-customize">
                                 <div className="title-block">
                                     <label>Tiêu đề</label>
-                                    <input type="text" placeholder="Nhập" value={""} />
+                                    <input type="text" placeholder="Nhập" onChange={e => handleInputChange('title', e)} value={data?.title || ''} />
                                 </div>
                                 <div className="content-block">
                                     <label>Nội dung</label>
-                                    <textarea 
-                                        rows={5} 
-                                        placeholder={'Nhập'} 
-                                        value={""} 
-                                        onChange={handleInputChange} 
-                                        // disabled={isDisableManagerComment} 
+                                    <Editor
+                                        data={data?.content || ""}
+                                        onChange={(e, editor) => {
+                                            handleInputChange('content', editor?.getData())
+                                        }}
+                                        // disabled={isReadOnly || false}
                                     />
                                 </div>
                                 <div className="row-customize">
                                     <div className="col">
                                         <label>Loại</label>
                                         <Select
-                                            value={null}
-                                            isClearable={false}
-                                            onChange={handleInputChange}
+                                            value={(serviceTypes || []).find(item => item?.value == data?.typeId)}
+                                            isClearable={true}
+                                            onChange={e => handleInputChange('typeId', e)}
                                             placeholder={t('Chọn')} 
                                             options={serviceTypes}
                                             classNamePrefix="filter-select"
@@ -192,23 +238,20 @@ const CreatedRequest = ({ isShow, masterData, onHide }) => {
                                     <div className="col">
                                         <label>Bảo mật</label>
                                         <Select
-                                            value={null}
+                                            value={(securities || []).find(item => item?.value == data?.isSecurity)}
                                             isClearable={false}
-                                            onChange={handleInputChange}
+                                            onChange={e => handleInputChange('isSecurity', e)}
                                             placeholder={t('Chọn')} 
-                                            options={[
-                                                { value: true, label: 'Có' },
-                                                { value: false, label: 'Không' },
-                                            ]}
+                                            options={securities}
                                             classNamePrefix="filter-select"
                                         />
                                     </div>
                                     <div className="col">
                                         <label>Công ty</label>
                                         <Select
-                                            value={null}
-                                            isClearable={false}
-                                            onChange={handleInputChange}
+                                            value={(companies || []).find(item => item?.value == data?.companyCode)}
+                                            isClearable={true}
+                                            onChange={e => handleInputChange('companyCode', e)}
                                             placeholder={t('Chọn')} 
                                             options={companies}
                                             classNamePrefix="filter-select"
@@ -217,9 +260,9 @@ const CreatedRequest = ({ isShow, masterData, onHide }) => {
                                     <div className="col">
                                         <label>Nhóm</label>
                                         <Select
-                                            value={null}
-                                            isClearable={false}
-                                            onChange={handleInputChange}
+                                            value={(groups || []).find(item => item?.value == data?.groupId)}
+                                            isClearable={true}
+                                            onChange={e => handleInputChange('groupId', e)}
                                             placeholder={t('Chọn')} 
                                             options={groups}
                                             classNamePrefix="filter-select"
@@ -229,14 +272,14 @@ const CreatedRequest = ({ isShow, masterData, onHide }) => {
                                 <div className="row-customize">
                                     <div className="col">
                                         <label>Người xử lý</label>
-                                        <div className="val">annv2</div>
+                                        <div className="val">{data?.handlerId || ''}</div>
                                     </div>
                                     <div className="col">
                                         <label>Người cùng nhận thông tin</label>
                                         <Select
                                             value={null}
-                                            isClearable={false}
-                                            onChange={handleInputChange}
+                                            isClearable={true}
+                                            onChange={e => handleInputChange('receives', e)}
                                             placeholder={t('Chọn')} 
                                             options={[]}
                                             classNamePrefix="filter-select"
@@ -245,9 +288,9 @@ const CreatedRequest = ({ isShow, masterData, onHide }) => {
                                     <div className="col">
                                         <label>Ưu tiên</label>
                                         <Select
-                                            value={null}
-                                            isClearable={false}
-                                            onChange={handleInputChange}
+                                            value={(priorities || []).find(item => item?.value == data?.priorityId)}
+                                            isClearable={true}
+                                            onChange={e => handleInputChange('priorityId', e)}
                                             placeholder={t('Chọn')} 
                                             options={priorities}
                                             classNamePrefix="filter-select"
@@ -256,23 +299,32 @@ const CreatedRequest = ({ isShow, masterData, onHide }) => {
                                     <div className="col">
                                         <label>Trạng thái</label>
                                         <Select
-                                            value={null}
-                                            isClearable={false}
-                                            onChange={handleInputChange}
+                                            value={(statuses || []).find(item => item?.value == data?.statusId)}
+                                            isClearable={true}
+                                            onChange={e => handleInputChange('statusId', e)}
                                             placeholder={t('Chọn')} 
                                             options={statuses}
                                             classNamePrefix="filter-select"
                                         />
                                     </div>
                                 </div>
-                                <FeedbackHistory />
+                                {/* <FeedbackHistory /> */}
                             </div>
                         </div>
                         <div className="attachment">
                             <h2>Tệp đính kèm</h2>
                             <div className="content-region shadow-customize">
-                                <span className="item"><span className="file-name">Điều chỉnh 1.docx</span><span>(129KB)</span><img src={IconClose} className="remove" alt="Close" /></span>
-                                <span className="item"><span className="file-name">Điều chỉnh 1.docx</span><span>(129KB)</span><img src={IconClose} className="remove" alt="Close" /></span>
+                                {
+                                    (files || []).map((file, index) => {
+                                        return (
+                                            <span className="item">
+                                                <span className="file-name">{file?.name}</span>
+                                                <span>({file?.size * 0.001}KB)</span>
+                                                <img src={IconClose} className="remove" alt="Close" onClick={() => handleRemoveFile(index)} />
+                                            </span>
+                                        )
+                                    }
+                                )}
                             </div>
                         </div>
                         <div className="d-flex justify-content-end button-block">
