@@ -892,6 +892,14 @@ const ROUTES = [
           },
           component: lazy(() => import("./Recruitment/")),
         },
+        {
+          key: "registration-tax-finalization",
+          routeProps: {
+            exact: true,
+            path: map.CreateTaxFinalization
+          },
+          component: lazy(() => import("./Registration/TaxFinalization"))
+        },
       ],
     },
   },

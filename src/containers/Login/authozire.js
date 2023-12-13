@@ -112,6 +112,31 @@ function Authorize(props) {
         }
     }
 
+    const checkEssAvaible = async (token, companyCode) => {
+        let essAvaible = false, taxFinalizationAvaible = false;
+        const listCompanyAvaible = [...Constants.MODULE_COMPANY_AVAILABE[Constants.MODULE.NGHIVIEC], ...Constants.MODULE_COMPANY_AVAILABE[Constants.MODULE.DIEUCHUYEN], ...Constants.MODULE_COMPANY_AVAILABE[Constants.MODULE.BONHIEM], ...Constants.MODULE_COMPANY_AVAILABE[Constants.MODULE.THANHTOAN_NOIBO]];
+        if(listCompanyAvaible.includes(companyCode)) {
+            essAvaible = true;
+        }
+        try {
+            const config = {
+                headers: {
+                  'Authorization': token
+                }
+            }
+            const response = await axios.get(`${process.env.REACT_APP_REQUEST_SERVICE_URL}common/taxsettlement-status`, config)
+            if (response && response.data) {
+                taxFinalizationAvaible = response.data.data?.status == 1 ? true : false;
+                //sample for dev
+                taxFinalizationAvaible = true;
+            }
+        } catch(e) {
+            console.log(e);
+        }
+        essAvaible = essAvaible || taxFinalizationAvaible;
+        return {essAvaible, taxFinalizationAvaible};
+    }
+
     const formatMuleSoftValue = val => {
         if (val == '#' || val == null || val == undefined) {
             return ""
@@ -141,6 +166,9 @@ function Authorize(props) {
             }
             //check permission show prepare tab 
             const shouldShowPrepareOnboard = await hasPermissonShowPrepareTab(jwtToken, user.company_code);
+
+            //check quyền mở quyết toán thuế
+            const {essAvaible, taxFinalizationAvaible} = await checkEssAvaible(jwtToken, user.company_code);
             // Get company config
             var companyConfig = null
             axios.get(`${process.env.REACT_APP_REQUEST_URL}company/detail/${user.company_code}/${user.pnl}`, {
@@ -196,7 +224,9 @@ function Authorize(props) {
                             ad: user?.username,
                             master_code: user.master_code || '',
                             cost_center: user?.cost_center,
-                            insurance_number: user?.insurance_number
+                            insurance_number: user?.insurance_number,
+                            essAvaible: essAvaible,
+                            taxEnable: taxFinalizationAvaible
                         });
                         FirebaseUpdateToken();
                     }

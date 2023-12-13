@@ -153,7 +153,9 @@ const MapConfig = {
   //thông tin liên quan BH
   SocialSupportDetail: "/social-support/:id/:type",
 
-  Recruitment: "/recruitment"
+  Recruitment: "/recruitment",
+  //thông tin quyết toán thuế
+  CreateTaxFinalization: "/register-tax-finalization",
 };
 
 export default MapConfig;
