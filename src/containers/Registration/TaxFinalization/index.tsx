@@ -331,7 +331,10 @@ const SocialContributeInfo = (props: any) => {
       });
     const result = {
       familyDatas: familyData,
-      type: data.typeRequest,
+      type: {
+        id: data.typeRequest?.value,
+        name: data.typeRequest?.label
+      },
       taxCode: {
         displayType: dataChange.PitNo || STATUS.OLD,
         new: convertData(data.PitNo),
@@ -348,7 +351,7 @@ const SocialContributeInfo = (props: any) => {
         old: convertData(oldData.email),
       },
       userAddress: {
-        displayType: dataChange.email || STATUS.OLD,
+        displayType: dataChange.address || STATUS.OLD,
         new: convertData(data.address),
         old: convertData(oldData.address),
       },
@@ -441,7 +444,7 @@ const SocialContributeInfo = (props: any) => {
     }));
 
     const formData = new FormData();
-    formData.append("userProfileInfo", JSON.stringify(userProfileInfo));
+    formData.append("requestInfo", JSON.stringify(userProfileInfo));
     formData.append("orgLv2Id", localStorage.getItem("organizationLv2") || "");
     formData.append("orgLv3Id", localStorage.getItem("divisionId") || "");
     formData.append("orgLv3Text", localStorage.getItem("division") || "");
