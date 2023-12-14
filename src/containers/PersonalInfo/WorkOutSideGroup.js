@@ -545,7 +545,7 @@ function WorkOutSideGroup(props) {
             SetIsShowConfirmSendRequestModal(false)
             const response = await axios.post(`${process.env.REACT_APP_REQUEST_URL}user-profile-histories/experience`, formData, config)
             statusModalClone.isShow = true
-            let content = "Gửi yêu cầu thất bại. Xin vui lòng thử lại!"
+            let content = t("gui_yeu_cau_that_bai_vui_long_thu_lai")
             let isSuccess = false
             if (response && response?.data) {
                 const result = response?.data?.result

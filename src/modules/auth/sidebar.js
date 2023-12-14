@@ -447,7 +447,7 @@ export const Navigation = [
     icon: "c-recruitment",
     label: "Menu_Recruitment",
     to: map.Recruitment,
-    role: "U"
+    role: [...Constants.MODULE_COMPANY_AVAILABE[Constants.MODULE.DANHGIA_TUYENDUNG]]
   },
   {
     id: 21,
@@ -538,8 +538,8 @@ export const Navigation = [
     icon: 'menu-bullet-lv2 icon-sub-menu-lv2',
     label: "RequestCreate",
     to: map.RegistrationManagement,
-    role: [...Constants.MODULE_COMPANY_AVAILABE[Constants.MODULE.NGHIVIEC], ...Constants.MODULE_COMPANY_AVAILABE[Constants.MODULE.DIEUCHUYEN], ...Constants.MODULE_COMPANY_AVAILABE[Constants.MODULE.BONHIEM], ...Constants.MODULE_COMPANY_AVAILABE[Constants.MODULE.THANHTOAN_NOIBO]]
-    //role: 'NA'
+    //role: [...Constants.MODULE_COMPANY_AVAILABE[Constants.MODULE.NGHIVIEC], ...Constants.MODULE_COMPANY_AVAILABE[Constants.MODULE.DIEUCHUYEN], ...Constants.MODULE_COMPANY_AVAILABE[Constants.MODULE.BONHIEM], ...Constants.MODULE_COMPANY_AVAILABE[Constants.MODULE.THANHTOAN_NOIBO]]
+    role: 'U' //check trong Sidebar.js
   },
   // {
   //     id: 129999,
