@@ -11,7 +11,7 @@ import { STATUS, TaxAuthorizationOptions } from "./TaxConstants";
 import { ITaxInfoModel, ITaxMemberInfo } from "./TaxModel.types";
 import AssessorInfoComponent from "containers/Welfare/InternalPayment/component/AssessorInfoComponent";
 
-interface ICreateSocialContributeInfoProps {
+interface ICreateTaxFinalizationComponent {
   t: any;
   data: ITaxInfoModel;
   setData: Function;
@@ -29,9 +29,10 @@ interface ICreateSocialContributeInfoProps {
   notifyMessage: Function;
   lastModified?: any;
   userprofile: any;
+  templates: any;
 }
 
-const CreateTaxFinalizationComponent: FC<ICreateSocialContributeInfoProps> = ({
+const CreateTaxFinalizationComponent: FC<ICreateTaxFinalizationComponent> = ({
   t,
   data,
   setData,
@@ -48,12 +49,9 @@ const CreateTaxFinalizationComponent: FC<ICreateSocialContributeInfoProps> = ({
   onSubmit,
   lastModified,
   userprofile,
+  templates,
   notifyMessage = () => {},
 }) => {
-  const [provinces, setprovinces] = useState<IDropdownValue[]>([]);
-  const [districts, setdistricts] = useState<IDropdownValue[]>([]);
-  const [wards, setwards] = useState<IDropdownValue[]>([]);
-  const [hospitals, setHospitals] = useState<IDropdownValue[]>([]);
   const [errors, setErrors] = useState({});
 
   const handleTextInputChange = (e, name) => {
@@ -334,7 +332,7 @@ const CreateTaxFinalizationComponent: FC<ICreateSocialContributeInfoProps> = ({
 
       <h5>{t('Request')}</h5>
       <div  className="box shadow-sm cbnv">
-        <TaxAuthrizationComponent isCreateMode={isCreateMode} t={t} setData ={setData} handleTextInputChange={handleTextInputChange} data = {data} errors = {errors}/>
+        <TaxAuthrizationComponent isCreateMode={isCreateMode} t={t} setData ={setData} handleTextInputChange={handleTextInputChange} data = {data} errors = {errors} templates={templates}/>
       </div>
 
       {isCreateMode ? (

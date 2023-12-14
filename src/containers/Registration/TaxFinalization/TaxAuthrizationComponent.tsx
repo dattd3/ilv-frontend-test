@@ -10,6 +10,7 @@ interface ITaxAuthrizationComponent {
   t: any;
   data: ITaxInfoModel;
   errors: any;
+  templates: any;
   setData: Function;
   handleTextInputChange: Function;
 }
@@ -20,7 +21,9 @@ const TaxAuthrizationComponent = ({
   handleTextInputChange,
   isCreateMode,
   errors,
+  templates = {}
 }: ITaxAuthrizationComponent) => {
+  const linkTemplate = templates[data.typeRequest?.value];
   return (
     <>
       <div className="d-flex flex-row">
@@ -184,7 +187,7 @@ const TaxAuthrizationComponent = ({
       <div className="d-flex flex-row">
         <span>{t("tax_document_guide")} </span>
         <span style={{ width: "5px" }} />
-        <a href="#">{t("Here")}</a>.
+        <a href={linkTemplate} target="_blank">{t("Here")}</a>.
       </div>
     </>
   );

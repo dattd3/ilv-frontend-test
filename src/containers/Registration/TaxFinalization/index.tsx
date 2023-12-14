@@ -10,6 +10,7 @@ import LoadingModal from "components/Common/LoadingModal";
 import {
   formatStringByMuleValue,
   getMuleSoftHeaderConfigurations,
+  getRequestConfigurations,
 } from "commons/Utils";
 import {
   TAX_TYPE_CONSTANT,
@@ -33,6 +34,7 @@ const SocialContributeInfo = (props: any) => {
   const [loading, setLoading] = useState(false);
   const [userprofile, setUserProfile] = useState<any>({});
   const [lastModified, setLastModified] = useState<any>({});
+  const [templates, setTemplates] = useState<any>({});
   const [resultModal, setresultModal] = useState({
     isShowStatusModal: false,
     titleModal: "",
@@ -47,6 +49,7 @@ const SocialContributeInfo = (props: any) => {
   const [files, setFiles] = useState<any[]>([]);
 
   useEffect(() => {
+    getTaxTemplate();
     initData();
   }, []);
 
@@ -106,6 +109,22 @@ const SocialContributeInfo = (props: any) => {
     const address = lstLocation.filter((item) => item).join(", ");
     return address || "";
   };
+
+  const getTaxTemplate = async () => {
+    const config = getRequestConfigurations();
+    try {
+      const res = await axios.post(
+        `${process.env.REACT_APP_REQUEST_SERVICE_URL}common/getTemplateDocumentByTypes`,
+        [2301, 2302],
+        config
+      );
+      if (res && res.data && res.data.data) {
+        setTemplates(res.data.data);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }
 
   const getFamilyInfo = async () => {
     const config = getMuleSoftHeaderConfigurations();
@@ -547,6 +566,7 @@ const SocialContributeInfo = (props: any) => {
           userprofile={userprofile}
           isCreateMode={isCreateMode}
           lastModified={lastModified}
+          templates={templates}
           notifyMessage={notifyMessage}
         />
       </div>
