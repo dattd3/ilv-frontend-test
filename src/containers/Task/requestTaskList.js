@@ -344,6 +344,8 @@ class RequestTaskList extends React.Component {
             url = `benefit-claim-request`;
         } else if (request?.requestTypeId == Constants.INSURANCE_SOCIAL) {
             url = `insurance-manager/detail/${request?.salaryId}/request`;
+        } else if (request?.requestTypeId == Constants.TAX_FINALIZATION) {
+            url = `tax-finalization/${request?.salaryId}/request`;
         } else if (request.parentRequestHistoryId) {
           //xu ly mot nguoi
           url = `salarypropse/${request.parentRequestHistoryId}/${request.salaryId}/request`;
@@ -943,7 +945,7 @@ class RequestTaskList extends React.Component {
                                             }
 
                                             let editLink = this.getRequestEditLink(child.id, child.requestTypeId, child.processStatusId)
-                                            let detailLink = [Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER, Constants.PROPOSAL_APPOINTMENT, Constants.WELFARE_REFUND, Constants.INSURANCE_SOCIAL, Constants.INSURANCE_SOCIAL_INFO, Constants.SOCIAL_SUPPORT].includes(child.requestTypeId) ? this.getSalaryProposeLink(child) : this.getRequestDetailLink(child.id, child.requestTypeId)
+                                            let detailLink = [Constants.SALARY_PROPOSE, Constants.PROPOSAL_TRANSFER, Constants.PROPOSAL_APPOINTMENT, Constants.WELFARE_REFUND, Constants.INSURANCE_SOCIAL, Constants.INSURANCE_SOCIAL_INFO, Constants.SOCIAL_SUPPORT, Constants.TAX_FINALIZATION].includes(child.requestTypeId) ? this.getSalaryProposeLink(child) : this.getRequestDetailLink(child.id, child.requestTypeId)
                                             let dateChanged = showRangeDateGroupByArrayDate(child.startDate)
 
                                             if ([Constants.OT_REQUEST].includes(child.requestTypeId)) {

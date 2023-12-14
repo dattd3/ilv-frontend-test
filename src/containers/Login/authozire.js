@@ -128,7 +128,7 @@ function Authorize(props) {
             if (response && response.data) {
                 taxFinalizationAvaible = response.data.data?.status == '1' ? true : false;
                 //sample for dev
-                taxFinalizationAvaible = true;
+                //taxFinalizationAvaible = true;
             }
         } catch(e) {
             console.log(e);

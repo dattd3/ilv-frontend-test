@@ -36,6 +36,7 @@ const DetailTaxFinalization = (props: any) => {
   const [loading, setLoading] = useState(false);
   const [timeRequest, setTimerRequest] = useState<any>({});
   const [useInfo, setUserInfo] = useState<any>({});
+  const [templates, setTemplates] = useState<any>({});
   const [resultModal, setresultModal] = useState({
     isShowStatusModal: false,
     titleModal: "",
@@ -62,6 +63,7 @@ const DetailTaxFinalization = (props: any) => {
   const [files, setFiles] = useState<any[]>([]);
 
   useEffect(() => {
+    getTaxTemplate();
     getSocialInfoData();
   }, []);
 
@@ -86,6 +88,22 @@ const DetailTaxFinalization = (props: any) => {
         console.log(err);
       });
   };
+
+  const getTaxTemplate = async () => {
+    const config = getRequestConfigurations();
+    try {
+      const res = await axios.post(
+        `${process.env.REACT_APP_REQUEST_SERVICE_URL}common/getTemplateDocumentByTypes`,
+        [2301, 2302],
+        config
+      );
+      if (res && res.data && res.data.data) {
+        setTemplates(res.data.data);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }
 
   const convertData = (value: any, type = "") => {
     if (!value) return "";
@@ -365,6 +383,7 @@ const DetailTaxFinalization = (props: any) => {
           onSubmit={() => {}}
           isCreateMode={false}
           timeRequest={timeRequest}
+          templates={templates}
           userInfo={useInfo}
         />
         <div className="mv-10" />

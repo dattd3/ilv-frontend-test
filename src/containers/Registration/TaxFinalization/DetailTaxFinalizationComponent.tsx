@@ -24,6 +24,7 @@ interface IDetailTaxFinalizationComponent {
   lastModified?: any;
   timeRequest: any;
   userInfo: any;
+  templates: any;
 }
 
 const DetailTaxFinalizationComponent: FC<IDetailTaxFinalizationComponent> = ({
@@ -39,6 +40,7 @@ const DetailTaxFinalizationComponent: FC<IDetailTaxFinalizationComponent> = ({
   onSubmit,
   userInfo,
   lastModified,
+  templates = {}
 }) => {
   const renderValue = (type = STATUS.OLD, value, newValue) => {
     if (typeof type == "string") type = parseInt(type);
@@ -88,6 +90,7 @@ const DetailTaxFinalizationComponent: FC<IDetailTaxFinalizationComponent> = ({
       );
     }
   };
+  const linkTemplate = data?.typeRequest?.value ? templates[data?.typeRequest?.value] : '';
   return (
     <div className="registration-insurance-section social-contribute input-style">
       <h5 className="pt-0">{t("RegistrationUpdateInformation")}</h5>
@@ -290,7 +293,7 @@ const DetailTaxFinalizationComponent: FC<IDetailTaxFinalizationComponent> = ({
         <div className="d-flex flex-row">
           <span>{t("tax_document_guide")} </span>
           <span style={{ width: "5px" }} />
-          <a href="#">{t("Here")}</a>.
+          <a href={linkTemplate} target="_blank">{t("Here")}</a>.
         </div>
       </div>
 
