@@ -900,6 +900,14 @@ const ROUTES = [
           },
           component: lazy(() => import("./Registration/TaxFinalization"))
         },
+        {
+          key: "registration-detail-tax-finalization",
+          routeProps: {
+            exact: true,
+            path: map.TaxFinalizationDetail,
+          },
+          component: lazy(() => import("./Registration/TaxFinalization/DetailTaxFinalization")),
+        },
       ],
     },
   },
